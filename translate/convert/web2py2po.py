@@ -33,7 +33,7 @@ class web2py2po:
 
     def convertunit(self, source_str, target_str):
         pounit = po.pounit(encoding="UTF-8")
-        pounit.settypecomment('python-format')
+        pounit.settypecomment("python-format")
         pounit.source = source_str
         if target_str:
             pounit.target = target_str
@@ -45,9 +45,9 @@ class web2py2po:
 
         for source_str in mydict.keys():
             target_str = mydict[source_str]
-            if target_str == source_str.replace('@markmin\x01', ''):
+            if target_str == source_str.replace("@markmin\x01", ""):
                 # a convention with new (untranslated) web2py files
-                target_str = ''
+                target_str = ""
             pounit = self.convertunit(source_str, target_str)
             self.mypofile.addunit(pounit)
 
@@ -85,5 +85,5 @@ def main(argv=None):
     parser.run(argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -63,16 +63,16 @@ class ts2po:
         tsfile = ts2.tsfile(inputfile)
         thetargetfile = po.pofile()
 
-        previouscontext = ''
+        previouscontext = ""
         for inputunit in tsfile.units:
-            contexts = inputunit.getcontext().split('\n')
+            contexts = inputunit.getcontext().split("\n")
 
             context = contexts[0]
             if context != previouscontext:
                 previouscontext = context
                 messagenum = 0
 
-            disambiguation = ''
+            disambiguation = ""
             if len(contexts) > 1:
                 disambiguation = contexts[1]
             messagenum += 1
@@ -111,5 +111,5 @@ def main(argv=None):
     parser.run(argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

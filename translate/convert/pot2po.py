@@ -197,7 +197,7 @@ def _unit_post_merge_pounit(input_unit, input_store, output_store, template_stor
         # untranslated plural unit; Let's ensure that we have the correct
         # number of plural forms:
         nplurals, plural = output_store.getheaderplural()
-        if nplurals and nplurals.isdigit() and nplurals != '2':
+        if nplurals and nplurals.isdigit() and nplurals != "2":
             input_unit.target = multistring([""] * int(nplurals))
 
 
@@ -360,5 +360,5 @@ def main(argv=None):
     parser.run(argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -32,12 +32,12 @@ class TestPO2Ical:
 
     def _convert_to_string(self, *args, **kwargs):
         """Helper that converts to target format string without using files."""
-        return self._convert(*args, **kwargs)[1].getvalue().decode('utf-8')
+        return self._convert(*args, **kwargs)[1].getvalue().decode("utf-8")
 
     def test_convert_empty_file(self):
         """Check that an empty PO converts to valid iCalendar."""
         input_string = ""
-        icalendar_boilerplate = '''BEGIN:VCALENDAR
+        icalendar_boilerplate = """BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//hacksw/handcal//NONSGML v1.0//EN
 BEGIN:VEVENT
@@ -49,7 +49,7 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:%s
 END:VEVENT
 END:VCALENDAR
-'''.replace(
+""".replace(
             "\n", "\r\n"
         )
         template_string = icalendar_boilerplate % "Value"
@@ -63,7 +63,7 @@ END:VCALENDAR
 msgid "Value"
 msgstr "Waarde"
 """
-        icalendar_boilerplate = '''BEGIN:VCALENDAR
+        icalendar_boilerplate = """BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//hacksw/handcal//NONSGML v1.0//EN
 BEGIN:VEVENT
@@ -75,7 +75,7 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:%s
 END:VEVENT
 END:VCALENDAR
-'''.replace(
+""".replace(
             "\n", "\r\n"
         )
         template_string = icalendar_boilerplate % "Value"
@@ -89,7 +89,7 @@ END:VCALENDAR
 msgid "My description"
 msgstr "A miña descrición"
 """
-        icalendar_boilerplate = '''BEGIN:VCALENDAR
+        icalendar_boilerplate = """BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//hacksw/handcal//NONSGML v1.0//EN
 BEGIN:VEVENT
@@ -101,7 +101,7 @@ DTSTAMP:19970714T170000Z
 ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 END:VEVENT
 END:VCALENDAR
-'''.replace(
+""".replace(
             "\n", "\r\n"
         )
         template_string = icalendar_boilerplate % "My description"
@@ -115,7 +115,7 @@ END:VCALENDAR
 msgid "The location"
 msgstr "O lugar"
 """
-        icalendar_boilerplate = '''BEGIN:VCALENDAR
+        icalendar_boilerplate = """BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//hacksw/handcal//NONSGML v1.0//EN
 BEGIN:VEVENT
@@ -127,7 +127,7 @@ LOCATION:%s
 ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 END:VEVENT
 END:VCALENDAR
-'''.replace(
+""".replace(
             "\n", "\r\n"
         )
         template_string = icalendar_boilerplate % "The location"
@@ -141,7 +141,7 @@ END:VCALENDAR
 msgid "Some comment"
 msgstr "Comentarios ao chou"
 """
-        icalendar_boilerplate = '''BEGIN:VCALENDAR
+        icalendar_boilerplate = """BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//hacksw/handcal//NONSGML v1.0//EN
 BEGIN:VEVENT
@@ -153,7 +153,7 @@ DTSTAMP:19970714T170000Z
 ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 END:VEVENT
 END:VCALENDAR
-'''.replace(
+""".replace(
             "\n", "\r\n"
         )
         template_string = icalendar_boilerplate % "Some comment"
@@ -179,7 +179,7 @@ msgstr "O lugar"
 msgid "Some comment"
 msgstr "Comentarios ao chou"
 """
-        icalendar_boilerplate = '''BEGIN:VCALENDAR
+        icalendar_boilerplate = """BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//hacksw/handcal//NONSGML v1.0//EN
 BEGIN:VEVENT
@@ -194,7 +194,7 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:%s
 END:VEVENT
 END:VCALENDAR
-'''.replace(
+""".replace(
             "\n", "\r\n"
         )
         template_string = icalendar_boilerplate % (
@@ -219,7 +219,7 @@ END:VCALENDAR
 msgid "Value"
 msgstr "Waarde"
 """
-        icalendar_boilerplate = '''BEGIN:VCALENDAR
+        icalendar_boilerplate = """BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//hacksw/handcal//NONSGML v1.0//EN
 BEGIN:VEVENT
@@ -231,7 +231,7 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:%s
 END:VEVENT
 END:VCALENDAR
-'''.replace(
+""".replace(
             "\n", "\r\n"
         )
         template_string = icalendar_boilerplate % "Value"
@@ -246,7 +246,7 @@ END:VCALENDAR
 msgid "Value"
 msgstr "Waarde"
 """
-        icalendar_boilerplate = '''BEGIN:VCALENDAR
+        icalendar_boilerplate = """BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//hacksw/handcal//NONSGML v1.0//EN
 BEGIN:VEVENT
@@ -258,7 +258,7 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:%s
 END:VEVENT
 END:VCALENDAR
-'''.replace(
+""".replace(
             "\n", "\r\n"
         )
         template_string = icalendar_boilerplate % "Value"
@@ -279,7 +279,7 @@ END:VCALENDAR
 msgid "Value"
 msgstr "Waarde"
 """
-        icalendar_boilerplate = '''BEGIN:VCALENDAR
+        icalendar_boilerplate = """BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//hacksw/handcal//NONSGML v1.0//EN
 BEGIN:VEVENT
@@ -291,7 +291,7 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:%s
 END:VEVENT
 END:VCALENDAR
-'''.replace(
+""".replace(
             "\n", "\r\n"
         )
         template_string = icalendar_boilerplate % "Random"
@@ -305,7 +305,7 @@ END:VCALENDAR
 msgid "Value"
 msgstr ""
 """
-        icalendar_boilerplate = '''BEGIN:VCALENDAR
+        icalendar_boilerplate = """BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//hacksw/handcal//NONSGML v1.0//EN
 BEGIN:VEVENT
@@ -317,7 +317,7 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:%s
 END:VEVENT
 END:VCALENDAR
-'''.replace(
+""".replace(
             "\n", "\r\n"
         )
         template_string = icalendar_boilerplate % "Value"
@@ -335,7 +335,7 @@ END:VCALENDAR
 msgid "Value"
 msgstr "Waarde"
 """
-        icalendar_boilerplate = '''BEGIN:VCALENDAR
+        icalendar_boilerplate = """BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//hacksw/handcal//NONSGML v1.0//EN
 BEGIN:VEVENT
@@ -347,7 +347,7 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:%s
 END:VEVENT
 END:VCALENDAR
-'''.replace(
+""".replace(
             "\n", "\r\n"
         )
         template_string = icalendar_boilerplate % "Value"

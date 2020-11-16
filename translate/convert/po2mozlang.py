@@ -61,8 +61,8 @@ class po2lang:
             target_unit.target = unit.target
         else:
             target_unit.target = ""
-        if unit.getnotes('developer'):
-            target_unit.addnote(unit.getnotes('developer'), 'developer')
+        if unit.getnotes("developer"):
+            target_unit.addnote(unit.getnotes("developer"), "developer")
         return target_unit
 
     def convert_store(self):
@@ -123,5 +123,5 @@ def main(argv=None):
     parser.run(argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

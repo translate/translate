@@ -27,14 +27,14 @@ class TestPO2OO:
 
     def roundtripstring(self, entitystring):
         oointro, oooutro = (
-            r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	',
-            '				2002-02-02 02:02:02' + '\r\n',
+            r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	",
+            "				2002-02-02 02:02:02" + "\r\n",
         )
         oosource = oointro + entitystring + oooutro
         ooinputfile = BytesIO(oosource.encode())
         ooinputfile2 = BytesIO(oosource.encode())
         pooutputfile = BytesIO()
-        oo2po.convertoo(ooinputfile, pooutputfile, ooinputfile2, targetlanguage='en-US')
+        oo2po.convertoo(ooinputfile, pooutputfile, ooinputfile2, targetlanguage="en-US")
         posource = pooutputfile.getvalue()
         poinputfile = BytesIO(posource)
         ootemplatefile = BytesIO(oosource.encode())
@@ -42,7 +42,7 @@ class TestPO2OO:
         po2oo.convertoo(
             poinputfile, oooutputfile, ootemplatefile, targetlanguage="en-US"
         )
-        ooresult = oooutputfile.getvalue().decode('utf-8')
+        ooresult = oooutputfile.getvalue().decode("utf-8")
         print(
             "original oo:\n",
             oosource,
@@ -58,18 +58,18 @@ class TestPO2OO:
         """Checks that the round-tripped string is the same as the original"""
         assert self.roundtripstring(oosource) == oosource
 
-    @mark.skipif(os.name == 'nt', reason="test or storage broken on Windows")
+    @mark.skipif(os.name == "nt", reason="test or storage broken on Windows")
     def test_convertoo(self):
         """checks that the convertoo function is working"""
         oobase = (
-            r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	%s	%s				20050924 09:13:58'
-            + '\r\n'
+            r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	%s	%s				20050924 09:13:58"
+            + "\r\n"
         )
-        posource = '''#: numpages.src#RID_SVXPAGE_NUM_OPTIONS.STR_BULLET.string.text\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n'''
-        ootemplate = oobase % ('en-US', 'Simple String')
-        ooexpected = oobase % ('zu', 'Dimpled Ring')
+        posource = """#: numpages.src#RID_SVXPAGE_NUM_OPTIONS.STR_BULLET.string.text\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n"""
+        ootemplate = oobase % ("en-US", "Simple String")
+        ooexpected = oobase % ("zu", "Dimpled Ring")
         newoo = self.convertoo(posource, ootemplate, language="zu")
-        assert newoo.decode('utf-8') == ootemplate + ooexpected
+        assert newoo.decode("utf-8") == ootemplate + ooexpected
 
     def test_pofilter(self):
         """Tests integration with pofilter"""
@@ -82,7 +82,7 @@ class TestPO2OO:
 
     def test_roundtrip_simple(self):
         """checks that simple strings make it through a oo->po->oo roundtrip"""
-        self.check_roundtrip('Hello')
+        self.check_roundtrip("Hello")
         self.check_roundtrip('"Hello"')
         self.check_roundtrip('"Hello Everybody"')
 
@@ -94,10 +94,10 @@ class TestPO2OO:
         self.check_roundtrip(r'"More escapes \\\\n \\\\t \\\\r \\\\: "')
         self.check_roundtrip(r'"End Line Escape \"')
         self.check_roundtrip(r'"\\rangle \\langle')
-        self.check_roundtrip(r'\\\\<')
-        self.check_roundtrip(r'\\\<')
-        self.check_roundtrip(r'\\<')
-        self.check_roundtrip(r'\<')
+        self.check_roundtrip(r"\\\\<")
+        self.check_roundtrip(r"\\\<")
+        self.check_roundtrip(r"\\<")
+        self.check_roundtrip(r"\<")
 
     def test_roundtrip_quotes(self):
         """checks that (escaped) quotes in strings make it through a oo->po->oo roundtrip"""
@@ -118,28 +118,28 @@ class TestPO2OO:
     def test_default_timestamp(self):
         """test to ensure that we revert to the default timestamp"""
         oointro, oooutro = (
-            r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Text				',
-            '\r\n',
+            r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Text				",
+            "\r\n",
         )
-        posource = '''#: numpages.src#RID_SVXPAGE_NUM_OPTIONS.STR_BULLET.string.text\nmsgid "Text"\nmsgstr "Text"\n'''
+        posource = """#: numpages.src#RID_SVXPAGE_NUM_OPTIONS.STR_BULLET.string.text\nmsgid "Text"\nmsgstr "Text"\n"""
         inputfile = BytesIO(posource.encode())
         outputfile = BytesIO()
-        templatefile = BytesIO((oointro + '20050924 09:13:58' + oooutro).encode())
+        templatefile = BytesIO((oointro + "20050924 09:13:58" + oooutro).encode())
         assert po2oo.convertoo(
             inputfile, outputfile, templatefile, targetlanguage="en-US"
         )
         assert (
-            outputfile.getvalue().decode('utf-8')
-            == oointro + '2002-02-02 02:02:02' + oooutro
+            outputfile.getvalue().decode("utf-8")
+            == oointro + "2002-02-02 02:02:02" + oooutro
         )
 
     def test_escape_conversion(self):
         """test to ensure that we convert escapes correctly"""
         oosource = (
-            r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Column1\tColumn2\r\n				2002-02-02 02:02:02'
-            + '\r\n'
+            r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Column1\tColumn2\r\n				2002-02-02 02:02:02"
+            + "\r\n"
         )
-        posource = '''#: numpages.src#RID_SVXPAGE_NUM_OPTIONS.STR_BULLET.string.text\nmsgid "Column1\\tColumn2\\r\\n"\nmsgstr "Kolom1\\tKolom2\\r\\n"\n'''
+        posource = """#: numpages.src#RID_SVXPAGE_NUM_OPTIONS.STR_BULLET.string.text\nmsgid "Column1\\tColumn2\\r\\n"\nmsgstr "Kolom1\\tKolom2\\r\\n"\n"""
         inputfile = BytesIO(posource.encode())
         outputfile = BytesIO()
         templatefile = BytesIO(oosource.encode())
@@ -154,17 +154,17 @@ class TestPO2OO:
         # translation. The extra space before 'hid' and an extra space before
         # the closing tag should not confuse us.
         oosource = (
-            r'helpcontent2	source\text\shared\3dsettings_toolbar.xhp	0	help	par_idN1056A				0	en-US	\<ahelp hid=\".\"\>The 3D-Settings toolbar controls properties of selected 3D objects.\</ahelp\>				2002-02-02 02:02:02'
-            + '\r\n'
+            r"helpcontent2	source\text\shared\3dsettings_toolbar.xhp	0	help	par_idN1056A				0	en-US	\<ahelp hid=\".\"\>The 3D-Settings toolbar controls properties of selected 3D objects.\</ahelp\>				2002-02-02 02:02:02"
+            + "\r\n"
         )
-        posource = r'''#: 3dsettings_toolbar.xhp#par_idN1056A.help.text
+        posource = r"""#: 3dsettings_toolbar.xhp#par_idN1056A.help.text
 msgid ""
 "<ahelp hid=\".\">The 3D-Settings toolbar controls properties of selected 3D "
 "ob jects.</ahelp>"
 msgstr ""
 "<ahelp  hid=\".\" >Zeee 3DDDD-Settings toolbar controls properties of selected 3D "
 "objects.</ahelp>"
-'''
+"""
         inputfile = BytesIO(posource.encode())
         outputfile = BytesIO()
         templatefile = BytesIO(oosource.encode())
@@ -179,13 +179,13 @@ msgstr ""
     def test_helpcontent_escapes2(self):
         """test to ensure that we convert helpcontent escapes correctly"""
         oosource = (
-            r'helpcontent2	source\text\scalc\05\empty_cells.xhp	0	help	par_id2629474				0	en-US	A1: <empty>				2002-02-02 02:02:02'
-            + '\r\n'
+            r"helpcontent2	source\text\scalc\05\empty_cells.xhp	0	help	par_id2629474				0	en-US	A1: <empty>				2002-02-02 02:02:02"
+            + "\r\n"
         )
-        posource = r'''#: empty_cells.xhp#par_id2629474.help.text
+        posource = r"""#: empty_cells.xhp#par_id2629474.help.text
 msgid "A1: <empty>"
 msgstr "Aa1: <empty>"
-'''
+"""
         inputfile = BytesIO(posource.encode())
         outputfile = BytesIO()
         templatefile = BytesIO(oosource.encode())

@@ -41,7 +41,7 @@ lsep = "\n#: "
 
 # general functions for quoting / unquoting po strings
 
-po_unescape_map = {"\\r": "\r", "\\t": "\t", '\\"': '"', '\\n': '\n', '\\\\': '\\'}
+po_unescape_map = {"\\r": "\r", "\\t": "\t", '\\"': '"', "\\n": "\n", "\\\\": "\\"}
 po_escape_map = dict([(value, key) for (key, value) in po_unescape_map.items()])
 
 
@@ -58,20 +58,20 @@ def splitlines(text):
     """
     # Strip UTF-8 BOM if present. This file would not be accepted
     # by gettext, but some editors might create it, so better handle it.
-    if text[:3] == b'\xEF\xBB\xBF':
+    if text[:3] == b"\xEF\xBB\xBF":
         text = text[3:]
     # Find first newline
-    newline = b'\n'
-    msgid_pos = max(0, text.find(b'msgid'))
+    newline = b"\n"
+    msgid_pos = max(0, text.find(b"msgid"))
     for i, ch in enumerate(text[msgid_pos:]):
         # Iteration over bytes yields numbers in Python 3
-        if ch in ('\n', 10):
+        if ch in ("\n", 10):
             break
-        if ch in ('\r', 13):
-            if text[msgid_pos + i + 1] in ('\n', 10):
-                newline = b'\r\n'
+        if ch in ("\r", 13):
+            if text[msgid_pos + i + 1] in ("\n", 10):
+                newline = b"\r\n"
             else:
-                newline = b'\r'
+                newline = b"\r"
             break
 
     return [x + newline for x in text.split(newline)]
@@ -102,7 +102,7 @@ def unescapehandler(escape):
 
 class PoWrapper(textwrap.TextWrapper):
     wordsep_re = re.compile(
-        r'''
+        r"""
             (
             \s+|                                  # any whitespace
             [a-z0-9A-Z_-]+/|                      # nicely split long URLs
@@ -113,7 +113,7 @@ class PoWrapper(textwrap.TextWrapper):
             [^\s\w]*\w+[a-zA-Z]-(?=\w+[a-zA-Z])|  # hyphenated words
             (?<=[\w\!\"\'\&\.\,\?])-{2,}(?=\w)    # em-dash
             )
-        ''',
+        """,
         re.VERBOSE,
     )
 
@@ -224,7 +224,7 @@ class pounit(pocommon.pounit):
 
     # Our homegrown way to indicate what must be copied in a shallow
     # fashion
-    __shallow__ = ['_store', 'wrapper']
+    __shallow__ = ["_store", "wrapper"]
 
     def __init__(self, source=None, wrapper=None, **kwargs):
         self.wrapper = wrapper
@@ -275,7 +275,7 @@ class pounit(pocommon.pounit):
         msgid_plural = None
         if isinstance(source, bytes):
             # Guessing utf-8, non-ascii encoded content should not reach this point
-            source = source.decode('utf-8')
+            source = source.decode("utf-8")
         if isinstance(source, multistring):
             source = source.strings
         if isinstance(source, list):
@@ -329,7 +329,7 @@ class pounit(pocommon.pounit):
         self._rich_target = None
         if isinstance(target, bytes):
             # Guessing utf-8, non-ascii encoded content should not reach this point
-            target = target.decode('utf-8')
+            target = target.decode("utf-8")
         if self.hasplural():
             if isinstance(target, multistring):
                 target = target.strings
@@ -537,7 +537,7 @@ class pounit(pocommon.pounit):
             # Remove kde-style comments from the translation (if any).
             if self._extract_msgidcomments(otherpo.target):
                 otherpo.target = otherpo.target.replace(
-                    '_: ' + otherpo._extract_msgidcomments() + '\n', ''
+                    "_: " + otherpo._extract_msgidcomments() + "\n", ""
                 )
             self.target = otherpo.target
             if (
@@ -582,7 +582,7 @@ class pounit(pocommon.pounit):
         for tc in self.typecomments:
             for flag in tc.split(","):
                 value = flag.strip()
-                if not value or value == '#':
+                if not value or value == "#":
                     continue
                 yield value
 
@@ -622,7 +622,7 @@ class pounit(pocommon.pounit):
                 self.typecomments = []
 
     def isfuzzy(self):
-        return self.hastypecomment('fuzzy')
+        return self.hastypecomment("fuzzy")
 
     def markfuzzy(self, present=True):
         if present:
@@ -640,7 +640,7 @@ class pounit(pocommon.pounit):
         if self.obsolete:
             self.makeobsolete()
         else:
-            self.markfuzzy(self.hastypecomment('fuzzy'))
+            self.markfuzzy(self.hastypecomment("fuzzy"))
 
     def isobsolete(self):
         return self.obsolete
@@ -683,7 +683,7 @@ class pounit(pocommon.pounit):
         elif partcomments:
             if partlines and not unquotefrompo(partlines[:1]):
                 # if there is a blank leader line, it must come before the comment
-                partstr.extend((partlines[0], '\n'))
+                partstr.extend((partlines[0], "\n"))
                 # but if the whole string is blank, leave it in
                 if len(partlines) > 1:
                     partstartline += 1
@@ -709,7 +709,7 @@ class pounit(pocommon.pounit):
             partstr.append(quote.rstripeol("\n".join(partcomments)))
         else:
             partstr.append('""')
-        partstr.append('\n')
+        partstr.append("\n")
         # add the rest
         previous = None
         for partline in partlines[partstartline:]:
@@ -717,7 +717,7 @@ class pounit(pocommon.pounit):
             if previous == '""' and partline == '""':
                 continue
             previous = partline
-            partstr.extend((partline, '\n'))
+            partstr.extend((partline, "\n"))
         return "".join(partstr)
 
     def __str__(self):
@@ -733,9 +733,9 @@ class pounit(pocommon.pounit):
                 lines.extend("%s %s\n" % (prefix, line) for line in var[1:])
 
         def add_prev_msgid_info(lines, prefix):
-            add_prev_msgid_lines(lines, prefix, 'msgctxt', self.prev_msgctxt)
-            add_prev_msgid_lines(lines, prefix, 'msgid', self.prev_msgid)
-            add_prev_msgid_lines(lines, prefix, 'msgid_plural', self.prev_msgid_plural)
+            add_prev_msgid_lines(lines, prefix, "msgctxt", self.prev_msgctxt)
+            add_prev_msgid_lines(lines, prefix, "msgid", self.prev_msgid)
+            add_prev_msgid_lines(lines, prefix, "msgid_plural", self.prev_msgid_plural)
 
         lines = []
         lines.extend(self.othercomments)
@@ -818,7 +818,7 @@ class pounit(pocommon.pounit):
 
         if not text:
             text = unquotefrompo(self.msgidcomments)
-        return text.split('\n')[0].replace('_: ', '', 1)
+        return text.split("\n")[0].replace("_: ", "", 1)
 
     def setmsgidcomment(self, msgidcomment):
         if msgidcomment:
@@ -869,10 +869,10 @@ class pofile(pocommon.pofile):
 
     def parse(self, input):
         """Parses the given file or file source string."""
-        if hasattr(input, 'name'):
+        if hasattr(input, "name"):
             self.filename = input.name
-        elif not getattr(self, 'filename', ''):
-            self.filename = ''
+        elif not getattr(self, "filename", ""):
+            self.filename = ""
         if not isinstance(input, bytes):
             input = input.read()
         input = iter(splitlines(input))
@@ -945,12 +945,12 @@ class pofile(pocommon.pofile):
         try:
             for unit in self.units:
                 if not at_start:
-                    out.write(b'\n')
+                    out.write(b"\n")
                 else:
                     at_start = False
                 out.write(unit._getoutput().encode(self.encoding))
         except UnicodeEncodeError:
-            if self.encoding == 'utf-8':
+            if self.encoding == "utf-8":
                 raise
             self.updateheader(add=True, Content_Type="text/plain; charset=UTF-8")
             self.encoding = "utf-8"

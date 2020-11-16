@@ -112,15 +112,15 @@ xerror2_prototype = CFUNCTYPE(
 
 # Structures (error handler)
 class po_xerror_handler(Structure):
-    _fields_ = [('xerror', xerror_prototype), ('xerror2', xerror2_prototype)]
+    _fields_ = [("xerror", xerror_prototype), ("xerror2", xerror2_prototype)]
 
 
 class po_error_handler(Structure):
     _fields_ = [
-        ('error', CFUNCTYPE(None, c_int, c_int, STRING)),
-        ('error_at_line', CFUNCTYPE(None, c_int, c_int, STRING, c_uint, STRING)),
-        ('multiline_warning', CFUNCTYPE(None, STRING, STRING)),
-        ('multiline_error', CFUNCTYPE(None, STRING, STRING)),
+        ("error", CFUNCTYPE(None, c_int, c_int, STRING)),
+        ("error_at_line", CFUNCTYPE(None, c_int, c_int, STRING, c_uint, STRING)),
+        ("multiline_warning", CFUNCTYPE(None, STRING, STRING)),
+        ("multiline_error", CFUNCTYPE(None, STRING, STRING)),
     ]
 
 
@@ -257,7 +257,7 @@ def setup_call_types(gpo):
 gpo = None
 # 'gettextpo' is recognised on Unix, while only 'libgettextpo' is recognised on
 # windows. Therefore we test both.
-names = ['gettextpo', 'libgettextpo']
+names = ["gettextpo", "libgettextpo"]
 for name in names:
     lib_location = ctypes.util.find_library(name)
     if lib_location:
@@ -269,12 +269,12 @@ else:
     # nothing special about use of xml here - any of the Mock classes set up
     # in docs/conf.py would work as well, but xml is likely always to be there.
     gpo = None
-    if 'xml' not in sys.modules or sys.modules['xml'].__path__ != '/dev/null':
+    if "xml" not in sys.modules or sys.modules["xml"].__path__ != "/dev/null":
 
         # Now we are getting desperate, so let's guess a unix type DLL that
         # might be in LD_LIBRARY_PATH or loaded with LD_PRELOAD
         try:
-            gpo = cdll.LoadLibrary('libgettextpo.so')
+            gpo = cdll.LoadLibrary("libgettextpo.so")
         except OSError:
             raise ImportError("gettext PO library not found")
 
@@ -306,7 +306,7 @@ def get_libgettextpo_version():
     :return: libgettextpo version in the following format::
         (major version, minor version, subminor version)
     """
-    libversion = c_long.in_dll(gpo, 'libgettextpo_version')
+    libversion = c_long.in_dll(gpo, "libgettextpo_version")
     major = libversion.value >> 16
     minor = (libversion.value >> 8) & 0xFF
     subminor = libversion.value - (major << 16) - (minor << 8)
@@ -314,26 +314,26 @@ def get_libgettextpo_version():
 
 
 def gpo_encode(value):
-    return value.encode('utf-8') if isinstance(value, str) else value
+    return value.encode("utf-8") if isinstance(value, str) else value
 
 
 def gpo_decode(value):
     if isinstance(value, str):
         return value
     elif isinstance(value, bytes):
-        return value.decode('utf-8')
+        return value.decode("utf-8")
     return value
 
 
 class pounit(pocommon.pounit):
 
     #: fixed encoding that is always used for cPO structure (self._gpo_message)
-    CPO_ENC = 'utf-8'
+    CPO_ENC = "utf-8"
 
-    def __init__(self, source=None, encoding='utf-8', gpo_message=None):
+    def __init__(self, source=None, encoding="utf-8", gpo_message=None):
         self._rich_source = None
         self._rich_target = None
-        encoding = encoding or 'utf-8'
+        encoding = encoding or "utf-8"
         if not gpo_message:
             self._gpo_message = gpo.po_message_create()
         if source or source == "":
@@ -341,13 +341,13 @@ class pounit(pocommon.pounit):
             self.target = ""
         elif gpo_message:
             if encoding.lower() != self.CPO_ENC:
-                features = ['msgctxt', 'msgid', 'msgid_plural']
-                features += ['prev_' + x for x in features]
-                features += ['comments', 'extracted_comments', 'msgstr']
+                features = ["msgctxt", "msgid", "msgid_plural"]
+                features += ["prev_" + x for x in features]
+                features += ["comments", "extracted_comments", "msgstr"]
                 for feature in features:
-                    text = getattr(gpo, 'po_message_' + feature)(gpo_message)
+                    text = getattr(gpo, "po_message_" + feature)(gpo_message)
                     if text:
-                        getattr(gpo, 'po_message_set_' + feature)(
+                        getattr(gpo, "po_message_set_" + feature)(
                             gpo_message, text.decode(encoding).encode(self.CPO_ENC)
                         )
                 # Also iterate through plural forms
@@ -550,7 +550,7 @@ class pounit(pocommon.pounit):
                             oldnoteslist.append(newline)
                     newnotes = "\n".join(oldnoteslist)
             else:
-                newnotes = text + '\n' + oldnotes
+                newnotes = text + "\n" + oldnotes
         else:
             newnotes = "\n".join([line.rstrip("\r") for line in text.split("\n")])
 
@@ -603,7 +603,7 @@ class pounit(pocommon.pounit):
             # Remove kde-style comments from the translation (if any).
             if self._extract_msgidcomments(otherpo.target):
                 otherpo.target = otherpo.target.replace(
-                    '_: ' + otherpo._extract_msgidcomments() + '\n', ''
+                    "_: " + otherpo._extract_msgidcomments() + "\n", ""
                 )
             self.target = otherpo.target
             if (
@@ -751,7 +751,7 @@ class pounit(pocommon.pounit):
             if unit.isobsolete():
                 newunit.makeobsolete()
             newunit.markfuzzy(unit.isfuzzy())
-            for tc in ['python-format', 'c-format', 'php-format']:
+            for tc in ["python-format", "c-format", "php-format"]:
                 if unit.hastypecomment(tc):
                     newunit.settypecomment(tc)
                     # We assume/guess/hope that there will only be one
@@ -771,7 +771,7 @@ class pofile(pocommon.pofile):
         self.targetlanguage = None
         if inputfile is None:
             self.units = []
-            self._encoding = kwargs.get('encoding')
+            self._encoding = kwargs.get("encoding")
             self._gpo_memory_file = gpo.po_file_create()
             self._gpo_message_iterator = gpo.po_message_iterator(
                 self._gpo_memory_file, None
@@ -874,14 +874,14 @@ class pofile(pocommon.pofile):
             self._gpo_memory_file = gpo.po_file_write_v2(
                 self._gpo_memory_file, gpo_encode(filename), xerror_handler
             )
-            with open(filename, 'rb') as tfile:
+            with open(filename, "rb") as tfile:
                 content = tfile.read()
             return content
 
         outputstring = ""
         if self._gpo_memory_file:
             obsolete_workaround()
-            f, fname = tempfile.mkstemp(prefix='translate', suffix='.po')
+            f, fname = tempfile.mkstemp(prefix="translate", suffix=".po")
             os.close(f)
             outputstring = writefile(fname)
             if self.encoding != pounit.CPO_ENC:
@@ -915,10 +915,10 @@ class pofile(pocommon.pofile):
         return True
 
     def parse(self, input):
-        if hasattr(input, 'name'):
+        if hasattr(input, "name"):
             self.filename = input.name
-        elif not getattr(self, 'filename', ''):
-            self.filename = ''
+        elif not getattr(self, "filename", ""):
+            self.filename = ""
 
         if hasattr(input, "read"):
             posrc = input.read()
@@ -928,7 +928,7 @@ class pofile(pocommon.pofile):
         needtmpfile = not os.path.isfile(input)
         if needtmpfile:
             # This is not a file - we write the string to a temporary file
-            fd, fname = tempfile.mkstemp(prefix='translate', suffix='.po')
+            fd, fname = tempfile.mkstemp(prefix="translate", suffix=".po")
             os.write(fd, input)
             input = fname
             os.close(fd)

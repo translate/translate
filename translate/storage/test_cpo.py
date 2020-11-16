@@ -8,7 +8,7 @@ from translate.storage import test_po
 
 
 pytestmark = mark.skipif(
-    not sys.platform.startswith('linux'), reason="cpo is only available on Linux"
+    not sys.platform.startswith("linux"), reason="cpo is only available on Linux"
 )
 
 
@@ -80,7 +80,7 @@ class TestCPOUnit(test_po.TestPOUnit):
         unit = self.UnitClass("File")
         unit.addnote("# Double commented comment")
         assert unit.getnotes() == "# Double commented comment"
-        assert not unit.hastypecomment('c-format')
+        assert not unit.hastypecomment("c-format")
 
 
 class TestCPOFile(test_po.TestPOFile):
@@ -138,7 +138,7 @@ class TestCPOFile(test_po.TestPOFile):
         # Now lets check for formating
         for i in (0, 1):
             expected = (
-                '''#: source%d\nmsgid ""\n"_: source%d\\n"\n"Same"\nmsgstr ""\n'''
+                """#: source%d\nmsgid ""\n"_: source%d\\n"\n"Same"\nmsgstr ""\n"""
                 % (i, i)
             )
             assert pofile.units[i].__str__() == expected
@@ -159,7 +159,7 @@ class TestCPOFile(test_po.TestPOFile):
 
     def test_output_str_unicode(self):
         """checks that we can serialize pofile, unit content is in unicode"""
-        posource = '''#: nb\nmsgid "Norwegian Bokm\xe5l"\nmsgstr ""\n'''
+        posource = """#: nb\nmsgid "Norwegian Bokm\xe5l"\nmsgstr ""\n"""
         pofile = self.StoreClass(BytesIO(posource.encode("UTF-8")), encoding="UTF-8")
         assert len(pofile.units) == 1
         print(bytes(pofile))
@@ -183,7 +183,7 @@ class TestCPOFile(test_po.TestPOFile):
         pofile = self.poparse(posource)
         print(pofile)
         assert len(pofile.units) == 1
-        assert bytes(pofile).decode('utf-8') == posource
+        assert bytes(pofile).decode("utf-8") == posource
 
     def test_multiline_obsolete(self):
         """Tests for correct output of mulitline obsolete messages"""
@@ -194,7 +194,7 @@ class TestCPOFile(test_po.TestPOFile):
         assert len(pofile.units) == 1
         assert pofile.units[0].isobsolete()
         assert not pofile.units[0].istranslatable()
-        assert bytes(pofile).decode('utf-8') == posource
+        assert bytes(pofile).decode("utf-8") == posource
 
     def test_unassociated_comments(self):
         """tests behaviour of unassociated comments."""
@@ -202,7 +202,7 @@ class TestCPOFile(test_po.TestPOFile):
         oldfile = self.poparse(oldsource)
         print("serialize", bytes(oldfile))
         assert len(oldfile.units) == 1
-        assert "# old lonesome comment\nmsgid" in bytes(oldfile).decode('utf-8')
+        assert "# old lonesome comment\nmsgid" in bytes(oldfile).decode("utf-8")
 
     @mark.xfail(reason="removal not working in cPO")
     def test_remove(self):

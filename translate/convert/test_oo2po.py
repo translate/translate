@@ -12,10 +12,10 @@ class TestOO2PO:
     conversion_module = oo2po
     conversion_class = oo2po.oo2po
 
-    def convert(self, oosource, sourcelanguage='en-US', targetlanguage='af-ZA'):
+    def convert(self, oosource, sourcelanguage="en-US", targetlanguage="af-ZA"):
         """helper that converts oo source to po source without requiring files"""
         if isinstance(oosource, str):
-            oosource = oosource.encode('utf-8')
+            oosource = oosource.encode("utf-8")
         inputoo = oo.oofile(oosource)
         convertor = self.conversion_class(sourcelanguage, targetlanguage)
         outputpo = convertor.convertstore(inputoo)
@@ -38,15 +38,15 @@ class TestOO2PO:
         Return the string once it has been through all the conversions.
         """
 
-        ootemplate = r'helpcontent2	%s	0	help	par_id3150670 35				0	en-US	%s				2002-02-02 02:02:02'
+        ootemplate = r"helpcontent2	%s	0	help	par_id3150670 35				0	en-US	%s				2002-02-02 02:02:02"
 
-        oosource = (ootemplate % (filename, entitystring)).encode('utf-8')
+        oosource = (ootemplate % (filename, entitystring)).encode("utf-8")
         ooinputfile = BytesIO(oosource)
         ootemplatefile = BytesIO(oosource)
         pooutputfile = BytesIO()
 
         self.conversion_module.convertoo(
-            ooinputfile, pooutputfile, ootemplatefile, targetlanguage='en-US'
+            ooinputfile, pooutputfile, ootemplatefile, targetlanguage="en-US"
         )
         posource = pooutputfile.getvalue()
 
@@ -56,7 +56,7 @@ class TestOO2PO:
         po2oo.convertoo(
             poinputfile, oooutputfile, ootemplatefile, targetlanguage="en-US"
         )
-        ooresult = oooutputfile.getvalue().decode('utf-8')
+        ooresult = oooutputfile.getvalue().decode("utf-8")
         print(
             "original oo:\n",
             oosource,
@@ -65,7 +65,7 @@ class TestOO2PO:
             "output oo:\n",
             ooresult,
         )
-        return ooresult.split('\t')[10]
+        return ooresult.split("\t")[10]
 
     def check_roundtrip(self, filename, text):
         """Checks that the text converted to po and back is the same as the original."""
@@ -73,7 +73,7 @@ class TestOO2PO:
 
     def test_simpleentity(self):
         """checks that a simple oo entry converts properly to a po entry"""
-        oosource = r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58'
+        oosource = r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58"
         pofile = self.convert(oosource)
         pounit = self.singleelement(pofile)
         assert pounit.source == "Character"
@@ -92,36 +92,36 @@ class TestOO2PO:
 
     def test_roundtrip_escape(self):
         self.check_roundtrip(
-            'strings.src',
-            r'The given command is not a SELECT statement.\nOnly queries are allowed.',
+            "strings.src",
+            r"The given command is not a SELECT statement.\nOnly queries are allowed.",
         )
         self.check_roundtrip(
-            'source\\ui\\dlg\\AutoControls_tmpl.hrc',
-            r';\t59\t,\t44\t:\t58\t{Tab}\t9\t{Space}\t32',
+            "source\\ui\\dlg\\AutoControls_tmpl.hrc",
+            r";\t59\t,\t44\t:\t58\t{Tab}\t9\t{Space}\t32",
         )
         self.check_roundtrip(
-            'inc_openoffice\\windows\\msi_languages\\Nsis.ulf',
-            r'The installation files must be unpacked and copied to your hard disk in preparation for the installation. After that, the %PRODUCTNAME installation will start automatically.\r\n\r\nClick \'Next\' to continue.',
+            "inc_openoffice\\windows\\msi_languages\\Nsis.ulf",
+            r"The installation files must be unpacked and copied to your hard disk in preparation for the installation. After that, the %PRODUCTNAME installation will start automatically.\r\n\r\nClick \'Next\' to continue.",
         )
-        self.check_roundtrip('file.xhp', r'\<ahelp\>')
-        self.check_roundtrip('file.xhp', r'\<ahelp prop=\"value\"\>')
+        self.check_roundtrip("file.xhp", r"\<ahelp\>")
+        self.check_roundtrip("file.xhp", r"\<ahelp prop=\"value\"\>")
         self.check_roundtrip(
-            'file.xhp', r'\<ahelp prop=\"value\"\>marked up text\</ahelp\>'
+            "file.xhp", r"\<ahelp prop=\"value\"\>marked up text\</ahelp\>"
         )
-        self.check_roundtrip('file.xhp', r'\<ahelp prop=\"value>>\"\>')
+        self.check_roundtrip("file.xhp", r"\<ahelp prop=\"value>>\"\>")
         self.check_roundtrip(
-            'file.xhp',
-            r'''\<ahelp prop=\"value>>\"\>'Next'>> or "<<Previous"\</ahelp\>''',
+            "file.xhp",
+            r"""\<ahelp prop=\"value>>\"\>'Next'>> or "<<Previous"\</ahelp\>""",
         )
         self.check_roundtrip(
-            'address_auto.xhp',
-            r'''example, \<item type=\"literal\"\>'Harry\\'s Bar'.\</item\>''',
+            "address_auto.xhp",
+            r"""example, \<item type=\"literal\"\>'Harry\\'s Bar'.\</item\>""",
         )
 
     def test_roundtrip_whitespaceonly(self):
         """check items that are only special instances of whitespce"""
-        self.check_roundtrip('choose_chart_type.xhp', r' ')
-        self.check_roundtrip('choose_chart_type.xhp', b'\xc2\xa0'.decode('utf-8'))
+        self.check_roundtrip("choose_chart_type.xhp", r" ")
+        self.check_roundtrip("choose_chart_type.xhp", b"\xc2\xa0".decode("utf-8"))
 
     def test_double_escapes(self):
         oosource = r"helpcontent2	source\text\shared\01\02100001.xhp	0	help	par_id3150670 35				0	en-US	\\<				2002-02-02 02:02:02"
@@ -138,7 +138,7 @@ class TestOO2PO:
         pounit = self.singleelement(pofile)
         poelementsrc = str(pounit)
         print(poelementsrc)
-        assert pounit.source == r'size *2 \langle x \rangle'
+        assert pounit.source == r"size *2 \langle x \rangle"
 
     def test_msgid_bug_error_address(self):
         """tests the we have the correct url for reporting msgid bugs"""
@@ -150,11 +150,11 @@ class TestOO2PO:
         print(bug_url)
         assert bug_url[:3] == ("http", "qa.openoffice.org", "/issues/enter_bug.cgi")
         assert parse.parse_qs(bug_url[4], True) == {
-            'comment': [''],
-            'component': ['l10n'],
-            'form_name': ['enter_issue'],
-            'short_desc': ['Localization issue in file: '],
-            'subcomponent': ['ui'],
+            "comment": [""],
+            "component": ["l10n"],
+            "form_name": ["enter_issue"],
+            "short_desc": ["Localization issue in file: "],
+            "subcomponent": ["ui"],
         }
 
     def test_x_comment_inclusion(self):
@@ -164,7 +164,7 @@ class TestOO2PO:
         # Real comment
         comment = "Comment"
         commentsource = (
-            en_USsource + '\n' + xcommentsource % (comment, comment, comment)
+            en_USsource + "\n" + xcommentsource % (comment, comment, comment)
         )
         pofile = self.convert(commentsource)
         if isinstance(pofile, poheader):
@@ -183,7 +183,7 @@ class TestOO2PO:
         # Whitespace and blank
         for comment in ("   ", ""):
             commentsource = (
-                en_USsource + '\n' + xcommentsource % (comment, comment, comment)
+                en_USsource + "\n" + xcommentsource % (comment, comment, comment)
             )
             pofile = self.convert(commentsource)
             if isinstance(pofile, poheader):
@@ -218,7 +218,7 @@ class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2PO):
 
     def test_preserve_filename(self):
         """Ensures that the filename is preserved."""
-        oosource = br'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58'
+        oosource = br"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58"
         self.create_testfile("snippet.sdf", oosource)
         oofile = oo.oofile(self.open_testfile("snippet.sdf"))
         assert oofile.filename.endswith("snippet.sdf")
@@ -227,7 +227,7 @@ class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2PO):
 
     def test_simple_pot(self):
         """tests the simplest possible conversion to a pot file"""
-        oosource = r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58'
+        oosource = r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58"
         self.create_testfile("simple.oo", oosource)
         self.run_command("simple.oo", "simple.pot", pot=True, nonrecursiveinput=True)
         pofile = self.target_filetype(self.open_testfile("simple.pot"))
@@ -237,8 +237,8 @@ class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2PO):
 
     def test_simple_po(self):
         """tests the simplest possible conversion to a po file"""
-        oosource1 = r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58'
-        oosource2 = r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	ku	Karakter				20050924 09:13:58'
+        oosource1 = r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58"
+        oosource2 = r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	ku	Karakter				20050924 09:13:58"
         self.create_testfile("simple.oo", oosource1 + "\n" + oosource2)
         self.run_command("simple.oo", "simple.po", lang="ku", nonrecursiveinput=True)
         pofile = self.target_filetype(self.open_testfile("simple.po"))
@@ -248,21 +248,21 @@ class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2PO):
 
     def test_onefile_nonrecursive(self):
         """tests the --multifile=onefile option and make sure it doesn't produce a directory"""
-        oosource = r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58'
+        oosource = r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58"
         self.create_testfile("simple.oo", oosource)
         self.run_command("simple.oo", "simple.pot", pot=True, multifile="onefile")
         assert os.path.isfile(self.get_testfilename("simple.pot"))
 
     def test_remove_duplicates(self):
         """test that removing of duplicates works correctly (bug 171)"""
-        oosource = r'''
+        oosource = r"""
 sd	source\ui\animations\SlideTransitionPane.src	0	checkbox	DLG_SLIDE_TRANSITION_PANE	CB_AUTO_PREVIEW	HID_SD_SLIDETRANSITIONPANE_CB_AUTO_PREVIEW		1	en-US	Automatic preview				20060725 03:26:42
 sd	source\ui\animations\AnimationSchemesPane.src	0	checkbox	DLG_ANIMATION_SCHEMES_PANE	CB_AUTO_PREVIEW	HID_SD_ANIMATIONSCHEMESPANE_CB_AUTO_PREVIEW		1	en-US	Automatic preview				20060725 03:26:42
 sd	source\ui\animations\CustomAnimationCreateDialog.src	0	checkbox	RID_TP_CUSTOMANIMATION_ENTRANCE	CBX_PREVIEW			143	en-US	Automatic preview				20060725 03:26:42
 sd	source\ui\animations\CustomAnimationCreateDialog.src	0	checkbox	RID_TP_CUSTOMANIMATION_ENTRANCE	CBX_PREVIEW			143	fr	Aperçu automatique				20060725 03:26:42
 sd	source\ui\animations\CustomAnimationSchemesPane.src	0	checkbox	DLG_CUSTOMANIMATION_SCHEMES_PANE	4			0	en-US	Automatic preview				20060725 03:26:42
 sd	source\ui\animations\CustomAnimationSchemesPane.src	0	checkbox	DLG_CUSTOMANIMATION_SCHEMES_PANE	4			0	fr	Aperçu automatique				20060725 03:26:42
-'''
+"""
         self.create_testfile("simple.oo", oosource)
         self.run_command(
             "simple.oo",

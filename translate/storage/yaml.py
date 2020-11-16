@@ -88,11 +88,11 @@ class YAMLFile(base.DictStore):
     def __init__(self, inputfile=None, **kwargs):
         """construct a YAML file, optionally reading in from inputfile."""
         super().__init__(**kwargs)
-        self.filename = ''
+        self.filename = ""
         self._original = self.get_root_node()
         self.dump_args = {
-            'default_flow_style': False,
-            'preserve_quotes': True,
+            "default_flow_style": False,
+            "preserve_quotes": True,
         }
         if inputfile is not None:
             self.parse(inputfile)
@@ -122,10 +122,10 @@ class YAMLFile(base.DictStore):
         for k, v in data.non_merged_items():
             if not isinstance(k, str):
                 raise base.ParseError(
-                    'Key not string: {0}/{1} ({2})'.format(prev, k, type(k))
+                    "Key not string: {0}/{1} ({2})".format(prev, k, type(k))
                 )
 
-            for x in self._flatten(v, prev + [('key', k)]):
+            for x in self._flatten(v, prev + [("key", k)]):
                 yield x
 
     def _flatten(self, data, prev=None):
@@ -142,7 +142,7 @@ class YAMLFile(base.DictStore):
                 yield (prev, str(data))
             elif isinstance(data, list):
                 for k, v in enumerate(data):
-                    for value in self._flatten(v, prev + [('index', k)]):
+                    for value in self._flatten(v, prev + [("index", k)]):
                         yield value
             elif isinstance(data, TaggedScalar):
                 yield (prev, data.value)
@@ -162,22 +162,22 @@ class YAMLFile(base.DictStore):
 
     def parse(self, input):
         """parse the given file or file source string"""
-        if hasattr(input, 'name'):
+        if hasattr(input, "name"):
             self.filename = input.name
-        elif not getattr(self, 'filename', ''):
-            self.filename = ''
+        elif not getattr(self, "filename", ""):
+            self.filename = ""
         if hasattr(input, "read"):
             src = input.read()
             input.close()
             input = src
         if isinstance(input, bytes):
-            input = input.decode('utf-8')
+            input = input.decode("utf-8")
         try:
             self._original = self.yaml.load(input)
         except YAMLError as e:
-            message = e.problem if hasattr(e, 'problem') else e.message
-            if hasattr(e, 'problem_mark'):
-                message += ' {0}'.format(e.problem_mark)
+            message = e.problem if hasattr(e, "problem") else e.message
+            if hasattr(e, "problem_mark"):
+                message += " {0}".format(e.problem_mark)
             raise base.ParseError(message)
 
         content = self.preprocess(self._original)
@@ -199,13 +199,13 @@ class RubyYAMLUnit(YAMLUnit):
         if not isinstance(self.target, multistring):
             return self.target
 
-        tags = plural_tags.get(self._store.targetlanguage, plural_tags['en'])
+        tags = plural_tags.get(self._store.targetlanguage, plural_tags["en"])
 
         strings = [str(s) for s in self.target.strings]
 
         # Sync plural_strings elements to plural_tags count.
         if len(strings) < len(tags):
-            strings += [''] * (len(tags) - len(strings))
+            strings += [""] * (len(tags) - len(strings))
         strings = strings[: len(tags)]
 
         return CommentedMap(zip(tags, strings))

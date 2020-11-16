@@ -78,7 +78,7 @@ class tmxunit(lisa.LISAunit):
         return note_list
 
     def getnotes(self, origin=None):
-        return '\n'.join(self._getnotelist(origin=origin))
+        return "\n".join(self._getnotelist(origin=origin))
 
     def removenotes(self, origin=None):
         """Remove all the translator notes."""
@@ -91,7 +91,7 @@ class tmxunit(lisa.LISAunit):
         # TODO: consider factoring out: some duplication between XLIFF and TMX
         text = errorname
         if errortext:
-            text += ': ' + errortext
+            text += ": " + errortext
         self.addnote(text, origin="pofilter")
 
     def geterrors(self):
@@ -100,7 +100,7 @@ class tmxunit(lisa.LISAunit):
         notelist = self._getnotelist(origin="pofilter")
         errordict = {}
         for note in notelist:
-            errorname, errortext = note.split(': ')
+            errorname, errortext = note.split(": ")
             errordict[errorname] = errortext
         return errordict
 
@@ -125,12 +125,12 @@ class tmxfile(lisa.LISAfile):
     Extensions = ["tmx"]
     rootNode = "tmx"
     bodyNode = "body"
-    XMLskeleton = '''<?xml version="1.0" encoding="utf-8"?>
+    XMLskeleton = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE tmx SYSTEM "tmx14.dtd">
 <tmx version="1.4">
 <header></header>
 <body></body>
-</tmx>'''
+</tmx>"""
 
     def addheader(self):
         headernode = next(
@@ -155,7 +155,7 @@ class tmxfile(lisa.LISAfile):
         if comment is not None and len(comment) > 0:
             unit.addnote(comment)
 
-        tuvs = unit.xmlelement.iterdescendants(self.namespaced('tuv'))
+        tuvs = unit.xmlelement.iterdescendants(self.namespaced("tuv"))
         setXMLlang(next(tuvs), srclang)
         setXMLlang(next(tuvs), translang)
 

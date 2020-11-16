@@ -29,5 +29,5 @@ class zh_tw(zh):
     specialchars = "←→↔×÷©…—‘’“”「」『』【】《》"
 
     ignoretests = {
-        'all': ["acronyms", "simplecaps", "startcaps"],
+        "all": ["acronyms", "simplecaps", "startcaps"],
     }

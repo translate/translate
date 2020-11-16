@@ -97,13 +97,13 @@ class BaseTestFactory:
     def test_get_noname_object(self):
         """Tests that we get a valid object from a file object without a name."""
         fileobj = BytesIO(self.file_content)
-        assert not hasattr(fileobj, 'name')
+        assert not hasattr(fileobj, "name")
         store = factory.getobject(fileobj)
         assert isinstance(store, self.expected_instance)
 
     def test_gzfile(self):
         """Test that we can open a gzip file correctly."""
-        filename = os.path.join(self.testdir, self.filename + '.gz')
+        filename = os.path.join(self.testdir, self.filename + ".gz")
         gzfile = GzipFile(filename, mode="wb")
         gzfile.write(self.file_content)
         gzfile.close()
@@ -112,7 +112,7 @@ class BaseTestFactory:
 
     def test_bz2file(self):
         """Test that we can open a gzip file correctly."""
-        filename = os.path.join(self.testdir, self.filename + '.bz2')
+        filename = os.path.join(self.testdir, self.filename + ".bz2")
         with BZ2File(filename, mode="wb") as bz2file:
             bz2file.write(self.file_content)
         store = factory.getobject(filename)
@@ -128,16 +128,16 @@ class TestPOFactory(BaseTestFactory):
     from translate.storage import po
 
     expected_instance = po.pofile
-    filename = 'dummy.po'
-    file_content = b'''#: test.c\nmsgid "test"\nmsgstr "rest"\n'''
+    filename = "dummy.po"
+    file_content = b"""#: test.c\nmsgid "test"\nmsgstr "rest"\n"""
 
 
 class TestXliffFactory(BaseTestFactory):
     from translate.storage import xliff
 
     expected_instance = xliff.xlifffile
-    filename = 'dummy.xliff'
-    file_content = b'''<?xml version="1.0" encoding="utf-8"?>
+    filename = "dummy.xliff"
+    file_content = b"""<?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
 <file>
 <body>
@@ -147,15 +147,15 @@ class TestXliffFactory(BaseTestFactory):
   </trans-unit>
 </body>
 </file>
-</xliff>'''
+</xliff>"""
 
 
 class TestPOXliffFactory(BaseTestFactory):
     from translate.storage import poxliff
 
     expected_instance = poxliff.PoXliffFile
-    filename = 'dummy.xliff'
-    file_content = b'''<?xml version="1.0" encoding="utf-8"?>
+    filename = "dummy.xliff"
+    file_content = b"""<?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
 <file datatype="po" original="file.po" source-language="en-US"><body><trans-unit approved="no" id="1" restype="x-gettext-domain-header" xml:space="preserve">
 <source>MIME-Version: 1.0
@@ -166,15 +166,15 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 </target>
-</trans-unit></body></file></xliff>'''
+</trans-unit></body></file></xliff>"""
 
 
 class TestWordfastFactory(BaseTestFactory):
     from translate.storage import wordfast
 
     expected_instance = wordfast.WordfastTMFile
-    filename = 'dummy.txt'
+    filename = "dummy.txt"
     file_content = (
-        b'''%20070801~103212	%User ID,S,S SMURRAY,SMS Samuel Murray-Smit,SM Samuel Murray-Smit,MW Mary White,DS Deepak Shota,MT! Machine translation (15),AL! Alignment (10),SM Samuel Murray,	%TU=00000075	%AF-ZA	%Wordfast TM v.5.51r/00	%EN-ZA	%---80597535	Subject (5),EL,EL Electronics,AC Accounting,LE Legal,ME Mechanics,MD Medical,LT Literary,AG Agriculture,CO Commercial	Client (5),LS,LS LionSoft Corp,ST SuperTron Inc,CA CompArt Ltd			'''
-        b'''20070801~103248	SM	0	AF-ZA	Langeraad en duimpie	EN-ZA	Big Ben and Little John	EL	LS'''
+        b"""%20070801~103212	%User ID,S,S SMURRAY,SMS Samuel Murray-Smit,SM Samuel Murray-Smit,MW Mary White,DS Deepak Shota,MT! Machine translation (15),AL! Alignment (10),SM Samuel Murray,	%TU=00000075	%AF-ZA	%Wordfast TM v.5.51r/00	%EN-ZA	%---80597535	Subject (5),EL,EL Electronics,AC Accounting,LE Legal,ME Mechanics,MD Medical,LT Literary,AG Agriculture,CO Commercial	Client (5),LS,LS LionSoft Corp,ST SuperTron Inc,CA CompArt Ltd			"""
+        b"""20070801~103248	SM	0	AF-ZA	Langeraad en duimpie	EN-ZA	Big Ben and Little John	EL	LS"""
     )

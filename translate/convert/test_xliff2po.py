@@ -8,14 +8,14 @@ from translate.storage.test_base import first_translatable, headerless_len
 
 class TestXLIFF2PO:
     target_filetype = po.pofile
-    xliffskeleton = '''<?xml version="1.0" ?>
+    xliffskeleton = """<?xml version="1.0" ?>
 <xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
   <file original="filename.po" source-language="en-US" datatype="po">
     <body>
         %s
     </body>
   </file>
-</xliff>'''
+</xliff>"""
 
     def xliff2po(self, xliffsource):
         """helper that converts xliff source to po source without requiring files"""
@@ -30,10 +30,10 @@ class TestXLIFF2PO:
     def test_minimal(self):
         minixlf = (
             self.xliffskeleton
-            % '''<trans-unit>
+            % """<trans-unit>
         <source>red</source>
         <target>rooi</target>
-      </trans-unit>'''
+      </trans-unit>"""
         )
         pofile = self.xliff2po(minixlf)
         assert headerless_len(pofile.units) == 1
@@ -41,7 +41,7 @@ class TestXLIFF2PO:
         assert pofile.translate("bla") is None
 
     def test_basic(self):
-        headertext = '''Project-Id-Version: program 2.1-branch
+        headertext = """Project-Id-Version: program 2.1-branch
 Report-Msgid-Bugs-To:
 POT-Creation-Date: 2006-01-09 07:15+0100
 PO-Revision-Date: 2004-03-30 17:02+0200
@@ -49,12 +49,12 @@ Last-Translator: Zuza Software Foundation &lt;xxx@translate.org.za>
 Language-Team: Afrikaans &lt;translate-discuss-xxx@lists.sourceforge.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit'''
+Content-Transfer-Encoding: 8bit"""
 
         minixlf = (
             (
                 self.xliffskeleton
-                % '''<trans-unit id="1" restype="x-gettext-domain-header" approved="no" xml:space="preserve">
+                % """<trans-unit id="1" restype="x-gettext-domain-header" approved="no" xml:space="preserve">
   <source>%s</source>
   <target>%s</target>
   <note from="po-translator">Zulu translation of program ABC</note>
@@ -62,7 +62,7 @@ Content-Transfer-Encoding: 8bit'''
   <trans-unit>
     <source>gras</source>
     <target>utshani</target>
-  </trans-unit>'''
+  </trans-unit>"""
             )
             % (headertext, headertext)
         )
@@ -71,17 +71,17 @@ Content-Transfer-Encoding: 8bit'''
         pofile = self.xliff2po(minixlf)
         assert pofile.translate("gras") == "utshani"
         assert pofile.translate("bla") is None
-        potext = bytes(pofile).decode('utf-8')
-        assert potext.index('# Zulu translation of program ABC') == 0
+        potext = bytes(pofile).decode("utf-8")
+        assert potext.index("# Zulu translation of program ABC") == 0
         assert potext.index('msgid "gras"\n')
         assert potext.index('msgstr "utshani"\n')
-        assert potext.index('MIME-Version: 1.0\\n')
+        assert potext.index("MIME-Version: 1.0\\n")
 
     def test_translatorcomments(self):
         """Tests translator comments"""
         minixlf = (
             self.xliffskeleton
-            % '''<trans-unit>
+            % """<trans-unit>
         <source>nonsense</source>
         <target>matlhapolosa</target>
         <context-group name="po-entry" purpose="information">
@@ -90,19 +90,19 @@ it</context>
         </context-group>
         <note from="po-translator">Couldn't do
 it</note>
-</trans-unit>'''
+</trans-unit>"""
         )
         pofile = self.xliff2po(minixlf)
         assert pofile.translate("nonsense") == "matlhapolosa"
         assert pofile.translate("bla") is None
         unit = first_translatable(pofile)
         assert unit.getnotes("translator") == "Couldn't do it"
-        potext = bytes(pofile).decode('utf-8')
+        potext = bytes(pofile).decode("utf-8")
         assert potext.index("# Couldn't do it\n") >= 0
 
         minixlf = (
             self.xliffskeleton
-            % '''<trans-unit xml:space="preserve">
+            % """<trans-unit xml:space="preserve">
         <source>nonsense</source>
         <target>matlhapolosa</target>
         <context-group name="po-entry" purpose="information">
@@ -111,21 +111,21 @@ it</context>
         </context-group>
         <note from="po-translator">Couldn't do
 it</note>
-</trans-unit>'''
+</trans-unit>"""
         )
         pofile = self.xliff2po(minixlf)
         assert pofile.translate("nonsense") == "matlhapolosa"
         assert pofile.translate("bla") is None
         unit = first_translatable(pofile)
         assert unit.getnotes("translator") == "Couldn't do\nit"
-        potext = bytes(pofile).decode('utf-8')
+        potext = bytes(pofile).decode("utf-8")
         assert potext.index("# Couldn't do\n# it\n") >= 0
 
     def test_autocomment(self):
         """Tests automatic comments"""
         minixlf = (
             self.xliffskeleton
-            % '''<trans-unit>
+            % """<trans-unit>
         <source>nonsense</source>
         <target>matlhapolosa</target>
         <context-group name="po-entry" purpose="information">
@@ -134,19 +134,19 @@ garbage</context>
         </context-group>
         <note from="developer">Note that this is
 garbage</note>
-</trans-unit>'''
+</trans-unit>"""
         )
         pofile = self.xliff2po(minixlf)
         assert pofile.translate("nonsense") == "matlhapolosa"
         assert pofile.translate("bla") is None
         unit = first_translatable(pofile)
         assert unit.getnotes("developer") == "Note that this is garbage"
-        potext = bytes(pofile).decode('utf-8')
+        potext = bytes(pofile).decode("utf-8")
         assert potext.index("#. Note that this is garbage\n") >= 0
 
         minixlf = (
             self.xliffskeleton
-            % '''<trans-unit xml:space="preserve">
+            % """<trans-unit xml:space="preserve">
         <source>nonsense</source>
         <target>matlhapolosa</target>
         <context-group name="po-entry" purpose="information">
@@ -155,21 +155,21 @@ garbage</context>
         </context-group>
         <note from="developer">Note that this is
 garbage</note>
-</trans-unit>'''
+</trans-unit>"""
         )
         pofile = self.xliff2po(minixlf)
         assert pofile.translate("nonsense") == "matlhapolosa"
         assert pofile.translate("bla") is None
         unit = first_translatable(pofile)
         assert unit.getnotes("developer") == "Note that this is\ngarbage"
-        potext = bytes(pofile).decode('utf-8')
+        potext = bytes(pofile).decode("utf-8")
         assert potext.index("#. Note that this is\n#. garbage\n") >= 0
 
     def test_locations(self):
         """Tests location comments (#:)"""
         minixlf = (
             self.xliffskeleton
-            % '''<trans-unit id="1">
+            % """<trans-unit id="1">
         <source>nonsense</source>
         <target>matlhapolosa</target>
         <context-group name="po-reference" purpose="location">
@@ -179,7 +179,7 @@ garbage</note>
         <context-group name="po-reference" purpose="location">
             <context context-type="sourcefile">place.py</context>
         </context-group>
-</trans-unit>'''
+</trans-unit>"""
         )
         pofile = self.xliff2po(minixlf)
         assert pofile.translate("nonsense") == "matlhapolosa"
@@ -194,7 +194,7 @@ garbage</note>
         """Tests fuzzyness"""
         minixlf = (
             self.xliffskeleton
-            % '''<trans-unit approved="no">
+            % """<trans-unit approved="no">
             <source>book</source>
         </trans-unit>
         <trans-unit id="2" approved="yes">
@@ -204,7 +204,7 @@ garbage</note>
         <trans-unit id="2" approved="no">
             <source>verb</source>
             <target state="needs-review-translation">lediri</target>
-        </trans-unit>'''
+        </trans-unit>"""
         )
         pofile = self.xliff2po(minixlf)
         assert pofile.translate("nonsense") == "matlhapolosa"
@@ -221,7 +221,7 @@ garbage</note>
         """Tests fuzzyness"""
         minixlf = (
             self.xliffskeleton
-            % '''<group id="1" restype="x-gettext-plurals">
+            % """<group id="1" restype="x-gettext-plurals">
         <trans-unit id="1[0]" xml:space="preserve">
             <source>cow</source>
             <target>inkomo</target>
@@ -230,11 +230,11 @@ garbage</note>
             <source>cows</source>
             <target>iinkomo</target>
         </trans-unit>
-</group>'''
+</group>"""
         )
         pofile = self.xliff2po(minixlf)
         print(bytes(pofile))
-        potext = bytes(pofile).decode('utf-8')
+        potext = bytes(pofile).decode("utf-8")
         assert headerless_len(pofile.units) == 1
         assert potext.index('msgid_plural "cows"')
         assert potext.index('msgstr[0] "inkomo"')
@@ -246,14 +246,14 @@ class TestBasicXLIFF2PO(test_convert.TestConvertCommand, TestXLIFF2PO):
 
     convertmodule = xliff2po
 
-    xliffskeleton = '''<?xml version="1.0" ?>
+    xliffskeleton = """<?xml version="1.0" ?>
 <xliff version="1.1">
   <file original="filename.po" source-language="en-US" datatype="po">
     <body>
         %s
     </body>
   </file>
-</xliff>'''
+</xliff>"""
 
     def test_simple_convert(self):
         self.create_testfile(
@@ -295,10 +295,10 @@ class TestXLIFF2POCommand(test_convert.TestConvertCommand, TestXLIFF2PO):
         """Ensures that the filename is preserved."""
         xliffsource = (
             self.xliffskeleton
-            % '''<trans-unit xml:space="preserve">
+            % """<trans-unit xml:space="preserve">
         <source>nonsense</source>
         <target>matlhapolosa</target>
-</trans-unit>'''
+</trans-unit>"""
         )
         self.create_testfile("snippet.xlf", xliffsource)
         xlifffile = xliff.xlifffile(self.open_testfile("snippet.xlf"))
@@ -310,10 +310,10 @@ class TestXLIFF2POCommand(test_convert.TestConvertCommand, TestXLIFF2PO):
         """tests the simplest possible conversion to a pot file"""
         xliffsource = (
             self.xliffskeleton
-            % '''<trans-unit xml:space="preserve">
+            % """<trans-unit xml:space="preserve">
         <source>nonsense</source>
         <target></target>
-</trans-unit>'''
+</trans-unit>"""
         )
         self.create_testfile("simple.xlf", xliffsource)
         self.run_command("simple.xlf", "simple.pot", pot=True)
@@ -326,10 +326,10 @@ class TestXLIFF2POCommand(test_convert.TestConvertCommand, TestXLIFF2PO):
         """tests the simplest possible conversion to a po file"""
         xliffsource = (
             self.xliffskeleton
-            % '''<trans-unit xml:space="preserve">
+            % """<trans-unit xml:space="preserve">
         <source>nonsense</source>
         <target>matlhapolosa</target>
-</trans-unit>'''
+</trans-unit>"""
         )
         self.create_testfile("simple.xlf", xliffsource)
         self.run_command("simple.xlf", "simple.po")
@@ -342,14 +342,14 @@ class TestXLIFF2POCommand(test_convert.TestConvertCommand, TestXLIFF2PO):
         """test that removing of duplicates works correctly"""
         xliffsource = (
             self.xliffskeleton
-            % '''<trans-unit xml:space="preserve">
+            % """<trans-unit xml:space="preserve">
         <source>nonsense</source>
         <target>matlhapolosa</target>
 </trans-unit>
 <trans-unit xml:space="preserve">
         <source>nonsense</source>
         <target>matlhapolosa</target>
-</trans-unit>'''
+</trans-unit>"""
         )
         self.create_testfile("simple.xlf", xliffsource)
         self.run_command(

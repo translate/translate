@@ -45,8 +45,8 @@ class es(common.Common):
         # protect against incorrectly handling an empty string
         if not first:
             return text
-        if first[-1] == '?':
+        if first[-1] == "?":
             text = "¿" + text
-        elif first[-1] == '!':
+        elif first[-1] == "!":
             text = "¡" + text
         return text

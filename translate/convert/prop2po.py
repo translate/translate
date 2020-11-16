@@ -182,12 +182,12 @@ class prop2po:
 
         # Map GWT variants to cldr names
         gwt2cldr = {
-            'none': 'zero',
-            'one': 'one',
-            'two': 'two',
-            'few': 'few',
-            'many': 'many',
-            '': 'other',
+            "none": "zero",
+            "one": "one",
+            "two": "two",
+            "few": "few",
+            "many": "many",
+            "": "other",
         }
 
         class Variants(object):
@@ -199,7 +199,7 @@ class prop2po:
 
         from translate.lang import data
 
-        regex = re.compile(r'([^\[\]]*)(?:\[(.*)\])?')
+        regex = re.compile(r"([^\[\]]*)(?:\[(.*)\])?")
         names = data.cldr_plural_categories
         new_store = type(postore)()
         plurals = {}
@@ -295,7 +295,7 @@ class prop2po:
                 location = unit.getlocations()[0]
                 if current_plural and location.startswith(current_plural):
                     plurals[current_plural].append(unit)
-                    if '[zero]' not in location:
+                    if "[zero]" not in location:
                         # We want to keep [zero] cases separately translatable
                         continue
                 elif current_plural:
@@ -500,5 +500,5 @@ def main(argv=None):
     parser.run(argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

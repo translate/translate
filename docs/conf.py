@@ -14,17 +14,17 @@ import os
 import sys
 
 
-sys.path.insert(0, os.path.abspath('_ext'))
-sys.path.insert(0, os.path.abspath('.'))
-sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath("_ext"))
+sys.path.insert(0, os.path.abspath("."))
+sys.path.insert(0, os.path.abspath(".."))
 
 # -- Project information -----------------------------------------------------
 
-project = 'Translate Toolkit'
-copyright = '2002-2020, Translate'
+project = "Translate Toolkit"
+copyright = "2002-2020, Translate"
 
 # The short X.Y version.
-version = '3.2.0'
+version = "3.2.0"
 
 # The full version, including alpha/beta/rc tags
 release = version
@@ -35,35 +35,35 @@ release = version
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'translate_docs',
-    'sphinx.ext.autodoc',
-    'sphinx.ext.coverage',
-    'sphinx.ext.extlinks',
-    'sphinx.ext.intersphinx',
-    'sphinx.ext.todo',
+    "translate_docs",
+    "sphinx.ext.autodoc",
+    "sphinx.ext.coverage",
+    "sphinx.ext.extlinks",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.todo",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ['_build', '_themes/README.rst', 'releases/README.rst']
+exclude_patterns = ["_build", "_themes/README.rst", "releases/README.rst"]
 
 # The master toctree document.
-master_doc = 'index'
+master_doc = "index"
 
 # -- Missing modules --------------------------------------------------
 
 autodoc_mock_imports = [
-    'aeidon',
-    'BeautifulSoup',
-    'glib',
-    'gobject',
-    'gtk',
-    'iniparse',
-    'vobject',
+    "aeidon",
+    "BeautifulSoup",
+    "glib",
+    "gobject",
+    "gtk",
+    "iniparse",
+    "vobject",
 ]
 
 # -- Options for HTML output -------------------------------------------------
@@ -71,25 +71,25 @@ autodoc_mock_imports = [
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx-bootstrap'
+html_theme = "sphinx-bootstrap"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 html_theme_options = {
-    'nosidebar': True,
+    "nosidebar": True,
 }
 
 # Add any paths that contain custom themes here, relative to this directory.
-html_theme_path = ['_themes']
+html_theme_path = ["_themes"]
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ["_static"]
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'TranslateToolkitdoc'
+htmlhelp_basename = "TranslateToolkitdoc"
 
 
 # -- Options for LaTeX output -------------------------------------------------
@@ -107,11 +107,11 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass [howto/manual])
 latex_documents = [
     (
-        'index',
-        'TranslateToolkit.tex',
-        'Translate Toolkit Documentation',
-        'Translate.org.za',
-        'manual',
+        "index",
+        "TranslateToolkit.tex",
+        "Translate Toolkit Documentation",
+        "Translate.org.za",
+        "manual",
     ),
 ]
 
@@ -142,10 +142,10 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     (
-        'index',
-        'translatetoolkit',
-        'Translate Toolkit Documentation',
-        ['Translate.org.za'],
+        "index",
+        "translatetoolkit",
+        "Translate Toolkit Documentation",
+        ["Translate.org.za"],
         1,
     )
 ]
@@ -161,13 +161,13 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (
-        'index',
-        'TranslateToolkit',
-        'Translate Toolkit Documentation',
-        'Translate.org.za',
-        'TranslateToolkit',
-        'One line description of project.',
-        'Miscellaneous',
+        "index",
+        "TranslateToolkit",
+        "Translate Toolkit Documentation",
+        "Translate.org.za",
+        "TranslateToolkit",
+        "One line description of project.",
+        "Miscellaneous",
     ),
 ]
 
@@ -185,7 +185,7 @@ texinfo_documents = [
 
 coverage_ignore_modules = []
 
-coverage_ignore_functions = ['main']
+coverage_ignore_functions = ["main"]
 
 coverage_ignore_classes = []
 
@@ -194,12 +194,12 @@ coverage_write_headline = False
 # -- Options for intersphinx extension ---------------------------------------
 
 intersphinx_mapping = {
-    'python': ('https://docs.python.org/3.8', None),
-    'pytest': ('https://docs.pytest.org/en/latest/', None),
-    'django': ('http://django.readthedocs.org/en/latest/', None),
-    'pootle': ('http://docs.translatehouse.org/projects/pootle/en/latest/', None),
-    'guide': (
-        'http://docs.translatehouse.org/projects/localization-guide/en/latest/',
+    "python": ("https://docs.python.org/3.8", None),
+    "pytest": ("https://docs.pytest.org/en/latest/", None),
+    "django": ("http://django.readthedocs.org/en/latest/", None),
+    "pootle": ("http://docs.translatehouse.org/projects/pootle/en/latest/", None),
+    "guide": (
+        "http://docs.translatehouse.org/projects/localization-guide/en/latest/",
         None,
     ),
 }
@@ -209,16 +209,16 @@ intersphinx_mapping = {
 
 extlinks = {
     # :role: (URL, prefix)
-    'issue': ('https://github.com/translate/translate/issues/%s', 'issue '),
-    'man': ('http://linux.die.net/man/1/%s', ''),
-    'wiki': ('http://translate.sourceforge.net/wiki/%s', ''),
-    'wp': ('http://en.wikipedia.org/wiki/%s', ''),
+    "issue": ("https://github.com/translate/translate/issues/%s", "issue "),
+    "man": ("http://linux.die.net/man/1/%s", ""),
+    "wiki": ("http://translate.sourceforge.net/wiki/%s", ""),
+    "wp": ("http://en.wikipedia.org/wiki/%s", ""),
 }
 
 # -- Options for Linkcheck -------------------------------------------------
 
 # Add regex's here for links that should be ignored.
 linkcheck_ignore = [
-    'http://your_server.com/filename.html',  # Example URL
-    '.*localhost.*',
+    "http://your_server.com/filename.html",  # Example URL
+    ".*localhost.*",
 ]

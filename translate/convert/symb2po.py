@@ -39,17 +39,17 @@ from translate.storage.symbian import (
 
 def read_header_items(ps):
     match = read_while(ps, header_item_or_end_re.match, lambda match: match is None)
-    if match.groupdict()['end_comment'] is not None:
+    if match.groupdict()["end_comment"] is not None:
         return {}
 
     results = {}
     while match:
         match_chunks = match.groupdict()
         ps.read_line()
-        results[match_chunks['key']] = match_chunks['value']
+        results[match_chunks["key"]] = match_chunks["value"]
         match = header_item_re.match(ps.current_line)
 
-    match = read_while(ps, identity, lambda line: not line.startswith('*/'))
+    match = read_while(ps, identity, lambda line: not line.startswith("*/"))
     ps.read_line()
     return results
 
@@ -64,7 +64,7 @@ def parse(ps):
             match = string_entry_re.match(ps.current_line)
             if match is not None:
                 units.append(
-                    (match.groupdict()['id'], unescape(match.groupdict()['str'][1:-1]))
+                    (match.groupdict()["id"], unescape(match.groupdict()["str"][1:-1]))
                 )
             ps.read_line()
     except StopIteration:
@@ -87,20 +87,20 @@ def get_template_dict(template_file):
 
 
 def build_output(units, template_header, template_dict):
-    output_store = factory.classes['po']()
-    ignore = set(['r_string_languagegroup_name'])
+    output_store = factory.classes["po"]()
+    ignore = set(["r_string_languagegroup_name"])
     header_entries = {
-        'Last-Translator': template_header.get('Author', ''),
-        'Language-Team': template_dict.get('r_string_languagegroup_name', ''),
-        'Content-Transfer-Encoding': '8bit',
-        'Content-Type': 'text/plain; charset=UTF-8',
+        "Last-Translator": template_header.get("Author", ""),
+        "Language-Team": template_dict.get("r_string_languagegroup_name", ""),
+        "Content-Transfer-Encoding": "8bit",
+        "Content-Type": "text/plain; charset=UTF-8",
     }
     output_store.updateheader(add=True, **header_entries)
     for id, source in units:
         if id in ignore:
             continue
         unit = output_store.UnitClass(source)
-        unit.target = template_dict.get(id, '')
+        unit.target = template_dict.get(id, "")
         unit.addlocation(id)
         output_store.addunit(unit)
     return output_store
@@ -132,5 +132,5 @@ def main(argv=None):
     parser.run(argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

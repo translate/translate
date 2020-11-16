@@ -56,7 +56,7 @@ class phppo2pypo:
         return unit
 
     def convertstring(self, input):
-        return re.sub(r'%(\d)\$s', lambda x: "{%d}" % (int(x.group(1)) - 1), input)
+        return re.sub(r"%(\d)\$s", lambda x: "{%d}" % (int(x.group(1)) - 1), input)
 
     def convertstrings(self, input):
         if isinstance(input, multistring):
@@ -67,7 +67,7 @@ class phppo2pypo:
             return self.convertstring(input)
         for index, string in enumerate(strings):
             strings[index] = re.sub(
-                r'%(\d)\$s', lambda x: "{%d}" % (int(x.group(1)) - 1), string
+                r"%(\d)\$s", lambda x: "{%d}" % (int(x.group(1)) - 1), string
             )
         return multistring(strings)
 
@@ -97,5 +97,5 @@ def main(argv=None):
     parser.run(argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -102,7 +102,7 @@ class TranslateBenchmarker:
         for dirpath, subdirs, filenames in os.walk(file_dir, topdown=False):
             for name in filenames:
                 pofilename = os.path.join(dirpath, name)
-                parsedfile = self.StoreClass(open(pofilename, 'r'))
+                parsedfile = self.StoreClass(open(pofilename, "r"))
                 count += len(parsedfile.units)
                 self.parsedfiles.append(parsedfile)
         print("counted %d units" % count)
@@ -119,33 +119,33 @@ class TranslateBenchmarker:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Process some integers.')
+    parser = argparse.ArgumentParser(description="Process some integers.")
     parser.add_argument(
-        'podir',
-        metavar='DIR',
+        "podir",
+        metavar="DIR",
         type=str,
-        nargs='?',
-        help='PO dir to use (default: create sample files)',
+        nargs="?",
+        help="PO dir to use (default: create sample files)",
     )
     parser.add_argument(
-        '--store-type',
-        dest='storetype',
-        action='store_const',
-        const='po',
+        "--store-type",
+        dest="storetype",
+        action="store_const",
+        const="po",
         default="po",
-        help='type of the store to benchmark (default: %(default)s)',
+        help="type of the store to benchmark (default: %(default)s)",
     )
     parser.add_argument(
-        '--check-parsing',
-        dest='check_parsing',
-        action='store_true',
-        help='benchmark parsing files',
+        "--check-parsing",
+        dest="check_parsing",
+        action="store_true",
+        help="benchmark parsing files",
     )
     parser.add_argument(
-        '--check-placeables',
-        dest='check_placeables',
-        action='store_true',
-        help='benchmark placeables',
+        "--check-placeables",
+        dest="check_placeables",
+        action="store_true",
+        help="benchmark placeables",
     )
     args = parser.parse_args()
 
@@ -200,10 +200,10 @@ if __name__ == "__main__":
             print("_______________________________________________________")
             statsfile = (
                 "%s_%s" % (methodname, storetype)
-                + '_%d_%d_%d_%d_%d.stats' % sample_file_sizes
+                + "_%d_%d_%d_%d_%d.stats" % sample_file_sizes
             )
-            cProfile.run('benchmarker.%s(%s)' % (methodname, methodparam), statsfile)
+            cProfile.run("benchmarker.%s(%s)" % (methodname, methodparam), statsfile)
             stats = pstats.Stats(statsfile)
-            stats.sort_stats('time').print_stats(20)
+            stats.sort_stats("time").print_stats(20)
             print("_______________________________________________________")
         benchmarker.clear_test_dir()

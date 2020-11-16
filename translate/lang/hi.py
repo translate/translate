@@ -29,5 +29,5 @@ class hi(common.Common):
     """This class represents Hindi."""
 
     ignoretests = {
-        'all': ["simplecaps", "startcaps"],
+        "all": ["simplecaps", "startcaps"],
     }

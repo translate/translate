@@ -57,7 +57,7 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
 
     def recursiveprocess(self, options):
         """recurse through directories and process files"""
-        if not self.isrecursive(options.output, 'output'):
+        if not self.isrecursive(options.output, "output"):
             self.warning("Output directory does not exist. Attempting to create")
             try:
                 # TODO: maybe we should only allow it to be created, otherwise
@@ -69,7 +69,7 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
                         "Output directory does not exist, attempt to create failed"
                     )
                 )
-        if self.isrecursive(options.input, 'input') and getattr(
+        if self.isrecursive(options.input, "input") and getattr(
             options, "allowrecursiveinput", True
         ):
             if isinstance(options.input, list):
@@ -114,14 +114,14 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
                     self.checkoutputsubdir(options, os.path.dirname(outputpath))
                     fulloutputpath = os.path.join(options.output, outputpath)
                     if os.path.isfile(fulloutputpath):
-                        outputfile = open(fulloutputpath, 'rb')
+                        outputfile = open(fulloutputpath, "rb")
                         outputpofile = po.pofile(outputfile)
                     else:
                         outputpofile = po.pofile()
                     outputpofile.units.append(
                         pounit
                     )  # TODO:perhaps check to see if it's already there...
-                    with open(fulloutputpath, 'wb') as fh:
+                    with open(fulloutputpath, "wb") as fh:
                         outputpofile.serialize(fh)
 
 
@@ -135,5 +135,5 @@ def main():
     parser.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

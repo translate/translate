@@ -40,5 +40,5 @@ class ur(common.Common):
     }
 
     ignoretests = {
-        'all': ["simplecaps", "startcaps"],
+        "all": ["simplecaps", "startcaps"],
     }

@@ -50,5 +50,5 @@ class ne(common.Common):
     }
 
     ignoretests = {
-        'all': ["accelerators", "simplecaps", "startcaps"],
+        "all": ["accelerators", "simplecaps", "startcaps"],
     }

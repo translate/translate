@@ -187,11 +187,11 @@ def is_comment_one_line(line):
     :rtype: bool
     """
     stripped = line.strip()
-    line_starters = ('#', '!', '//', ';')
+    line_starters = ("#", "!", "//", ";")
     for starter in line_starters:
         if stripped.startswith(starter):
             return True
-    if stripped.startswith('/*') and stripped.endswith('*/'):
+    if stripped.startswith("/*") and stripped.endswith("*/"):
         return True
     return False
 
@@ -205,7 +205,7 @@ def is_comment_start(line):
     :rtype: bool
     """
     stripped = line.strip()
-    return stripped.startswith('/*') and not stripped.endswith('*/')
+    return stripped.startswith("/*") and not stripped.endswith("*/")
 
 
 def is_comment_end(line):
@@ -217,7 +217,7 @@ def is_comment_end(line):
     :rtype: bool
     """
     stripped = line.strip()
-    return not stripped.startswith('/*') and stripped.endswith('*/')
+    return not stripped.startswith("/*") and stripped.endswith("*/")
 
 
 def _key_strip(key):
@@ -253,7 +253,7 @@ class Dialect:
     """Settings for the various behaviours in key=value files."""
 
     name = None
-    default_encoding = 'iso-8859-1'
+    default_encoding = "iso-8859-1"
     delimiters = None
     pair_terminator = ""
     key_wrap_char = ""
@@ -295,7 +295,7 @@ class Dialect:
         # Find the position of each delimiter type
         for delimiter, pos in delimiters.items():
             start_pos = len(line) - len(line.lstrip())  # Skip initial whitespace
-            if cls.key_wrap_char != '' and line[start_pos] == cls.key_wrap_char:
+            if cls.key_wrap_char != "" and line[start_pos] == cls.key_wrap_char:
                 # Skip the key if it is delimited by some char
                 start_pos += 1
                 while (
@@ -436,18 +436,18 @@ class DialectGaia(DialectMozilla):
 
 @register_dialect
 class DialectGwt(DialectJava):
-    plural_regex = re.compile(r'([^\[\]]*)(?:\[(.*)\])?')
+    plural_regex = re.compile(r"([^\[\]]*)(?:\[(.*)\])?")
     name = "gwt"
     default_encoding = "utf-8"
     delimiters = ["="]
 
     gwt_plural_categories = [
-        ('', "other"),
-        ('none', "zero"),
-        ('one', 'one'),
-        ('two', 'two'),
-        ('few', 'few'),
-        ('many', 'many'),
+        ("", "other"),
+        ("none", "zero"),
+        ("one", "one"),
+        ("two", "two"),
+        ("few", "few"),
+        ("many", "many"),
     ]
 
     gwt2cldr = collections.OrderedDict(gwt_plural_categories)
@@ -464,7 +464,7 @@ class DialectGwt(DialectJava):
         variant = cls.gwt2cldr.get(variant)
         # Some sanity checks
         if not variant:
-            raise Exception("Key \"%s\" variant \"%s\" is invalid" % (key, variant))
+            raise Exception('Key "%s" variant "%s" is invalid' % (key, variant))
         return (key, variant)
 
     @classmethod
@@ -477,7 +477,7 @@ class DialectGwt(DialectJava):
 
         # Some sanity checks
         if not variant:
-            raise Exception("Key \"%s\" variant \"%s\" is invalid" % (key, variant))
+            raise Exception('Key "%s" variant "%s" is invalid' % (key, variant))
         return "%s[%s]" % (key, variant)
 
     @classmethod
@@ -504,8 +504,8 @@ class DialectStrings(Dialect):
     pair_terminator = ";"
     key_wrap_char = '"'
     value_wrap_char = '"'
-    out_ending = ';'
-    out_delimiter_wrappers = ' '
+    out_ending = ";"
+    out_delimiter_wrappers = " "
     drop_comments = ["/* No comment provided by engineer. */"]
 
     @classmethod
@@ -521,7 +521,7 @@ class DialectStrings(Dialect):
     @classmethod
     def value_strip(cls, value):
         """Strip unneeded characters from the value"""
-        newvalue = value.rstrip().rstrip(';').rstrip('"')
+        newvalue = value.rstrip().rstrip(";").rstrip('"')
         # If string now ends in \ we put back the char that was escaped
         if newvalue[-1:] == "\\":
             newvalue += value[len(newvalue) : len(newvalue) + 1]
@@ -535,7 +535,7 @@ class DialectStrings(Dialect):
     @classmethod
     def is_line_continuation(self, line):
         l = line.rstrip()
-        if l and l[-1] == ';':
+        if l and l[-1] == ";":
             return False
         return True
 
@@ -551,7 +551,7 @@ class DialectStringsUtf8(DialectStrings):
 
 
 class proppluralunit(base.TranslationUnit):
-    KEY = 'other'
+    KEY = "other"
 
     def __init__(self, source="", personality="java"):
         """Construct a blank propunit."""
@@ -563,8 +563,8 @@ class proppluralunit(base.TranslationUnit):
     @staticmethod
     def _get_language_mapping(lang):
         if lang:
-            locale = lang.replace('_', '-').split('-')[0]
-            cldr_mapping = data.plural_tags.get(locale, data.plural_tags['en'])
+            locale = lang.replace("_", "-").split("-")[0]
+            cldr_mapping = data.plural_tags.get(locale, data.plural_tags["en"])
             if cldr_mapping:
                 return cldr_mapping
         return None
@@ -776,7 +776,7 @@ class DialectJoomla(Dialect):
     name = "joomla"
     default_encoding = "utf-8"
     delimiters = ["="]
-    out_delimiter_wrappers = ''
+    out_delimiter_wrappers = ""
 
     @classmethod
     def value_strip(cls, value):
@@ -820,11 +820,11 @@ class propunit(base.TranslationUnit):
         # a pair of symbols to enclose delimiter on the output
         # (a " " can be used for the sake of convenience)
         self.out_delimiter_wrappers = getattr(
-            self.personality, 'out_delimiter_wrappers', ''
+            self.personality, "out_delimiter_wrappers", ""
         )
         # symbol that should end every property sentence
         # (e.g. ";" is required for Mac OS X strings)
-        self.out_ending = getattr(self.personality, 'out_ending', '')
+        self.out_ending = getattr(self.personality, "out_ending", "")
         self.explicitely_missing = False
         self.output_missing = False
 
@@ -900,18 +900,18 @@ class propunit(base.TranslationUnit):
             key = self.name
             kwc = self.personality.key_wrap_char
             if kwc:
-                key = key.replace(kwc, '\\%s' % kwc)
-                key = '%s%s%s' % (kwc, key, kwc)
+                key = key.replace(kwc, "\\%s" % kwc)
+                key = "%s%s%s" % (kwc, key, kwc)
             # encode value, if needed
             value = self.translation or self.value
             vwc = self.personality.value_wrap_char
             if vwc:
-                value = value.replace(vwc, '\\%s' % vwc)
-                value = '%s%s%s' % (vwc, value, vwc)
+                value = value.replace(vwc, "\\%s" % vwc)
+                value = "%s%s%s" % (vwc, value, vwc)
             wrappers = self.out_delimiter_wrappers
-            delimiter = '%s%s%s' % (wrappers, self.delimiter, wrappers)
+            delimiter = "%s%s%s" % (wrappers, self.delimiter, wrappers)
             ending = self.out_ending
-            missing_prefix = ''
+            missing_prefix = ""
             if self.missing and self.output_missing:
                 missing_prefix = self.get_missing_part()
             out_dict = {
@@ -931,15 +931,15 @@ class propunit(base.TranslationUnit):
         return [self.name]
 
     def addnote(self, text, origin=None, position="append"):
-        if origin in ['programmer', 'developer', 'source code', None]:
+        if origin in ["programmer", "developer", "source code", None]:
             text = data.forceunicode(text)
             self.comments.append(text)
         else:
             return super().addnote(text, origin=origin, position=position)
 
     def getnotes(self, origin=None):
-        if origin in ['programmer', 'developer', 'source code', None]:
-            return '\n'.join(self.comments)
+        if origin in ["programmer", "developer", "source code", None]:
+            return "\n".join(self.comments)
         else:
             return super().getnotes(origin)
 
@@ -979,7 +979,7 @@ class xwikiunit(propunit):
     @classmethod
     def strip_missing_part(cls, line):
         """Remove the missing prefix from the line."""
-        return line.replace(cls.get_missing_part(), '')
+        return line.replace(cls.get_missing_part(), "")
 
     @classmethod
     def represents_missing(cls, line):
@@ -997,7 +997,7 @@ class propfile(base.TranslationStore):
         super().__init__()
         self.personality = get_dialect(personality)
         self.encoding = encoding or self.personality.default_encoding
-        self.filename = getattr(inputfile, 'name', '')
+        self.filename = getattr(inputfile, "name", "")
         if inputfile is not None:
             propsrc = inputfile.read()
             inputfile.close()
@@ -1008,7 +1008,7 @@ class propfile(base.TranslationStore):
         """Read the source of a properties file in and include them as units."""
         text, encoding = self.detect_encoding(
             propsrc,
-            default_encodings=[self.personality.default_encoding, 'utf-8', 'utf-16'],
+            default_encodings=[self.personality.default_encoding, "utf-8", "utf-16"],
         )
         if not text and propsrc:
             raise IOError(
@@ -1136,80 +1136,80 @@ class propfile(base.TranslationStore):
 
 class xwikifile(propfile):
     Name = "XWiki Properties"
-    Extensions = ['properties']
+    Extensions = ["properties"]
     UnitClass = xwikiunit
 
     def __init__(self, *args, **kwargs):
-        kwargs['personality'] = "xwiki"
-        kwargs['encoding'] = "iso-8859-1"
+        kwargs["personality"] = "xwiki"
+        kwargs["encoding"] = "iso-8859-1"
         super().__init__(*args, **kwargs)
 
 
 class javafile(propfile):
     Name = "Java Properties"
-    Extensions = ['properties']
+    Extensions = ["properties"]
 
     def __init__(self, *args, **kwargs):
-        kwargs['personality'] = "java"
-        kwargs['encoding'] = "auto"
+        kwargs["personality"] = "java"
+        kwargs["encoding"] = "auto"
         super().__init__(*args, **kwargs)
 
 
 class javautf8file(propfile):
     Name = "Java Properties (UTF-8)"
-    Extensions = ['properties']
+    Extensions = ["properties"]
 
     def __init__(self, *args, **kwargs):
-        kwargs['personality'] = "java-utf8"
-        kwargs['encoding'] = "utf-8"
+        kwargs["personality"] = "java-utf8"
+        kwargs["encoding"] = "utf-8"
         super().__init__(*args, **kwargs)
 
 
 class javautf16file(propfile):
     Name = "Java Properties (UTF-16)"
-    Extensions = ['properties']
+    Extensions = ["properties"]
 
     def __init__(self, *args, **kwargs):
-        kwargs['personality'] = "java-utf16"
-        kwargs['encoding'] = "utf-16"
+        kwargs["personality"] = "java-utf16"
+        kwargs["encoding"] = "utf-16"
         super().__init__(*args, **kwargs)
 
 
 class gwtfile(propfile):
     Name = "Gwt Properties"
-    Extensions = ['properties']
+    Extensions = ["properties"]
 
     def __init__(self, *args, **kwargs):
-        kwargs['personality'] = "gwt"
-        kwargs['encoding'] = "utf-8"
+        kwargs["personality"] = "gwt"
+        kwargs["encoding"] = "utf-8"
         super(gwtfile, self).__init__(*args, **kwargs)
 
 
 class stringsfile(propfile):
     Name = "OS X Strings"
-    Extensions = ['strings']
+    Extensions = ["strings"]
 
     def __init__(self, *args, **kwargs):
-        kwargs['personality'] = "strings"
+        kwargs["personality"] = "strings"
         super().__init__(*args, **kwargs)
 
 
 class stringsutf8file(stringsfile):
     Name = "OS X Strings (UTF-8)"
-    Extensions = ['strings']
+    Extensions = ["strings"]
 
     def __init__(self, *args, **kwargs):
-        kwargs['personality'] = "strings-utf8"
-        kwargs['encoding'] = "utf-8"
+        kwargs["personality"] = "strings-utf8"
+        kwargs["encoding"] = "utf-8"
         super().__init__(*args, **kwargs)
 
 
 class joomlafile(propfile):
     Name = "Joomla Translations"
-    Extensions = ['ini']
+    Extensions = ["ini"]
 
     def __init__(self, *args, **kwargs):
-        kwargs['personality'] = "joomla"
+        kwargs["personality"] = "joomla"
         super().__init__(*args, **kwargs)
 
 
@@ -1220,7 +1220,7 @@ class XWikiPageProperties(xwikifile):
     """
 
     Name = "XWiki Page Properties"
-    Extensions = ['xml']
+    Extensions = ["xml"]
     XML_HEADER = """<?xml version="1.1" encoding="UTF-8"?>
 
 <!--
@@ -1254,8 +1254,8 @@ class XWikiPageProperties(xwikifile):
     """
 
     def __init__(self, *args, **kwargs):
-        kwargs['personality'] = "xwiki"
-        kwargs['encoding'] = "utf-8"
+        kwargs["personality"] = "xwiki"
+        kwargs["encoding"] = "utf-8"
         self.root = None
         super(xwikifile, self).__init__(*args, **kwargs)
 
@@ -1299,7 +1299,7 @@ class XWikiPageProperties(xwikifile):
         xml_content = etree.tostring(newroot, encoding=self.encoding, method="xml")
         out.write(self.XML_HEADER.encode(self.encoding))
         out.write(xml_content)
-        out.write(b'\n')
+        out.write(b"\n")
 
     def serialize(self, out):
         if self.root is None:

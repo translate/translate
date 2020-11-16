@@ -56,9 +56,9 @@ msgstr "Eerste deel "
 
     def test_escapednewlines(self):
         """Test the escaping of newlines"""
-        minipo = r'''msgid "First line\nSecond line"
+        minipo = r"""msgid "First line\nSecond line"
 msgstr "Eerste lyn\nTweede lyn"
-'''
+"""
         csvfile = self.po2csv(minipo)
         unit = self.singleelement(csvfile)
         assert unit.source == "First line\nSecond line"
@@ -70,9 +70,9 @@ msgstr "Eerste lyn\nTweede lyn"
 
     def test_escapedtabs(self):
         """Test the escaping of tabs"""
-        minipo = r'''msgid "First column\tSecond column"
+        minipo = r"""msgid "First column\tSecond column"
 msgstr "Eerste kolom\tTweede kolom"
-'''
+"""
         csvfile = self.po2csv(minipo)
         unit = self.singleelement(csvfile)
         assert unit.source == "First column\tSecond column"
@@ -84,34 +84,34 @@ msgstr "Eerste kolom\tTweede kolom"
 
     def test_escapedquotes(self):
         """Test the escaping of quotes (and slash)"""
-        minipo = r'''msgid "Hello \"Everyone\""
+        minipo = r"""msgid "Hello \"Everyone\""
 msgstr "Good day \"All\""
 
 msgid "Use \\\"."
 msgstr "Gebruik \\\"."
-'''
+"""
         csvfile = self.po2csv(minipo)
         assert csvfile.findunit('Hello "Everyone"').target == 'Good day "All"'
         assert csvfile.findunit('Use \\".').target == 'Gebruik \\".'
 
     def test_escapedescape(self):
         """Test the escaping of pure escapes is unaffected"""
-        minipo = r'''msgid "Find\\Options"
+        minipo = r"""msgid "Find\\Options"
 msgstr "Vind\\Opsies"
-'''
+"""
         csvfile = self.po2csv(minipo)
         print(minipo)
         print(csvfile)
-        assert csvfile.findunit(r'Find\Options').target == r'Vind\Opsies'
+        assert csvfile.findunit(r"Find\Options").target == r"Vind\Opsies"
 
     def test_singlequotes(self):
         """Tests that single quotes are preserved correctly"""
-        minipo = '''msgid "source 'source'"\nmsgstr "target 'target'"\n'''
+        minipo = """msgid "source 'source'"\nmsgstr "target 'target'"\n"""
         csvfile = self.po2csv(minipo)
         print(bytes(csvfile))
         assert csvfile.findunit("source 'source'").target == "target 'target'"
         # Make sure we don't mess with start quotes until writing
-        minipo = '''msgid "'source'"\nmsgstr "'target'"\n'''
+        minipo = """msgid "'source'"\nmsgstr "'target'"\n"""
         csvfile = self.po2csv(minipo)
         print(bytes(csvfile))
         assert csvfile.findunit(r"'source'").target == r"'target'"

@@ -21,8 +21,8 @@ import zipfile
 
 # Tags to be extracted as placeables (tags that are within translatable texts).
 INLINE_ELEMENTS = [
-    ('', 'CharacterStyleRange'),
-    ('', 'Content'),
+    ("", "CharacterStyleRange"),
+    ("", "Content"),
     # ('', 'Br'),
 ]
 
@@ -30,56 +30,56 @@ INLINE_ELEMENTS = [
 # Skipping one of these tags doesn't imply nested acceptable tags are not
 # extracted.
 NO_TRANSLATE_ELEMENTS = [
-    ('http://ns.adobe.com/AdobeInDesign/idml/1.0/packaging', 'Story'),
-    ('', 'Story'),  # This is a different Story tag than the one above.
-    ('', 'StoryPreference'),
-    ('', 'InCopyExportOption'),
+    ("http://ns.adobe.com/AdobeInDesign/idml/1.0/packaging", "Story"),
+    ("", "Story"),  # This is a different Story tag than the one above.
+    ("", "StoryPreference"),
+    ("", "InCopyExportOption"),
     # ('', 'ParagraphStyleRange'),
     # ('', 'CharacterStyleRange'),
-    ('', 'MetadataPacketPreference'),
-    ('', 'Contents'),  # Don't confuse with Content tag. This tag contains a
+    ("", "MetadataPacketPreference"),
+    ("", "Contents"),  # Don't confuse with Content tag. This tag contains a
     # lot of CDATA we don't want to parse.
-    ('', 'Properties'),
-    ('', 'Leading'),
-    ('', 'AppliedFont'),
-    ('', 'TextFrame'),
-    ('', 'PathGeometry'),
-    ('', 'GeometryPathType'),
-    ('', 'PathPointArray'),
-    ('', 'PathPointType'),
-    ('', 'AnchoredObjectSetting'),
-    ('', 'TextFramePreference'),
-    ('', 'TextWrapPreference'),
-    ('', 'TextWrapOffset'),
-    ('', 'ContourOption'),
-    ('', 'EPS'),
-    ('', 'GraphicBounds'),
-    ('', 'Link'),
-    ('', 'ClippingPathSettings'),
-    ('', 'FrameFittingOption'),
-    ('', 'ObjectExportOption'),
-    ('', 'AltMetadataProperty'),
-    ('', 'ActualMetadataProperty'),
-    ('', 'TabList'),
-    ('', 'ListItem'),
-    ('', 'Alignment'),
-    ('', 'AlignmentCharacter'),
-    ('', 'Leader'),
-    ('', 'Position'),
-    ('', 'Rectangle'),
+    ("", "Properties"),
+    ("", "Leading"),
+    ("", "AppliedFont"),
+    ("", "TextFrame"),
+    ("", "PathGeometry"),
+    ("", "GeometryPathType"),
+    ("", "PathPointArray"),
+    ("", "PathPointType"),
+    ("", "AnchoredObjectSetting"),
+    ("", "TextFramePreference"),
+    ("", "TextWrapPreference"),
+    ("", "TextWrapOffset"),
+    ("", "ContourOption"),
+    ("", "EPS"),
+    ("", "GraphicBounds"),
+    ("", "Link"),
+    ("", "ClippingPathSettings"),
+    ("", "FrameFittingOption"),
+    ("", "ObjectExportOption"),
+    ("", "AltMetadataProperty"),
+    ("", "ActualMetadataProperty"),
+    ("", "TabList"),
+    ("", "ListItem"),
+    ("", "Alignment"),
+    ("", "AlignmentCharacter"),
+    ("", "Leader"),
+    ("", "Position"),
+    ("", "Rectangle"),
     # ('', 'Br'),
 ]
 
 
 def open_idml(filename):
-    z = zipfile.ZipFile(filename, 'r')
+    z = zipfile.ZipFile(filename, "r")
     # Return a dictionary containing all the files inside the Stories
     # subdirectory, being the keys the filenames (for example
     # 'Stories/Story_u49f.xml' and the values the strings for those files.
     return dict(
         (filename, z.read(filename))
         for filename in z.namelist()
-        if filename.startswith('Stories/')
+        if filename.startswith("Stories/")
     )
 
 

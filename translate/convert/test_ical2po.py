@@ -32,12 +32,12 @@ class TestIcal2PO:
 
     def _convert_to_string(self, *args, **kwargs):
         """Helper that converts to target format string without using files."""
-        return self._convert(*args, **kwargs)[1].getvalue().decode('utf-8')
+        return self._convert(*args, **kwargs)[1].getvalue().decode("utf-8")
 
     def test_convert_empty_file(self):
         """Check converting empty iCalendar returns no output."""
         with pytest.raises(StopIteration):
-            self._convert_to_string('', success_expected=False)
+            self._convert_to_string("", success_expected=False)
 
     def test_no_translations(self):
         """Check that iCalendar with no translations returns correct result."""
@@ -52,7 +52,7 @@ END:VCALENDAR
             "\n", "\r\n"
         )
         output = self._convert_to_string(input_string, success_expected=False)
-        assert output == ''
+        assert output == ""
 
     def test_summary(self):
         """Check that iCalendar SUMMARY converts valid PO output."""

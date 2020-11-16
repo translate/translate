@@ -29,7 +29,7 @@ from translate.storage.base import ParseError
 
 # Override the piclose tag from simple > to ?> otherwise we consume HTML
 # within the processing instructions
-html.parser.piclose = re.compile(r'\?>')
+html.parser.piclose = re.compile(r"\?>")
 
 
 class htmlunit(base.TranslationUnit):
@@ -126,11 +126,11 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
     TRAILING_WHITESPACE_RE = re.compile(r"(\s+)$")
 
     ENCODING_RE = re.compile(
-        br'''<meta.*
+        br"""<meta.*
                                 content.*=.*?charset.*?=\s*?
                                 ([^\s]*)
                                 \s*?["']\s*?>
-                             ''',
+                             """,
         re.VERBOSE | re.IGNORECASE,
     )
 
@@ -139,7 +139,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         base.TranslationStore.__init__(self)
 
         # store parameters
-        self.filename = getattr(inputfile, 'name', None)
+        self.filename = getattr(inputfile, "name", None)
         if callback is None:
             self.callback = self._simple_callback
         else:
@@ -168,7 +168,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         """
         result = self.ENCODING_RE.findall(htmlsrc)
         if result:
-            self.encoding = result[0].decode('ascii')
+            self.encoding = result[0].decode("ascii")
         return self.encoding
 
     def do_encoding(self, htmlsrc):
@@ -207,7 +207,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             self.tu_content.append(markup)
         else:
             self.emit_attribute_translation_units(markup)
-            self.filesrc += markup['html_content']
+            self.filesrc += markup["html_content"]
 
     def emit_translation_unit(self):
         # scan through the queue:
@@ -221,7 +221,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         tag = None
         for pos in range(len(self.tu_content)):
             if (
-                self.tu_content[pos]['type'] != 'endtag'
+                self.tu_content[pos]["type"] != "endtag"
                 and tag in self.EMPTY_HTML_ELEMENTS
             ):
                 match = tagstack.pop()
@@ -231,10 +231,10 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 if end == 0:
                     start = pos
                 end = pos + 1
-            elif self.tu_content[pos]['type'] == 'starttag':
+            elif self.tu_content[pos]["type"] == "starttag":
                 tagstack.append(pos)
-                tag = self.tu_content[pos]['tag']
-            elif self.tu_content[pos]['type'] == 'endtag':
+                tag = self.tu_content[pos]["tag"]
+            elif self.tu_content[pos]["type"] == "endtag":
                 if tagstack:
                     match = tagstack.pop()
                     tagmap[match] = pos
@@ -246,15 +246,15 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         if end == 0:
             for markup in self.tu_content:
                 self.emit_attribute_translation_units(markup)
-                self.filesrc += markup['html_content']
+                self.filesrc += markup["html_content"]
             return
 
         # scan the start and end tags captured between translatable content;
         # extend the captured interval to include the matching tags
         for pos in range(start + 1, end - 1):
             if (
-                self.tu_content[pos]['type'] == 'starttag'
-                or self.tu_content[pos]['type'] == 'endtag'
+                self.tu_content[pos]["type"] == "starttag"
+                or self.tu_content[pos]["type"] == "endtag"
             ) and pos in tagmap:
                 match = tagmap[pos]
                 start = min(start, match)
@@ -262,28 +262,28 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
         # emit leading uncaptured markup elements
         for markup in self.tu_content[0:start]:
-            if markup['type'] != 'comment':
+            if markup["type"] != "comment":
                 self.emit_attribute_translation_units(markup)
-                self.filesrc += markup['html_content']
+                self.filesrc += markup["html_content"]
 
         # emit captured markup elements
         if start < end:
             html_content = ""
             for markup in self.tu_content[start:end]:
-                if markup['type'] != 'comment':
-                    if 'untranslated_html' in markup:
-                        html_content += markup['untranslated_html']
+                if markup["type"] != "comment":
+                    if "untranslated_html" in markup:
+                        html_content += markup["untranslated_html"]
                     else:
-                        html_content += markup['html_content']
+                        html_content += markup["html_content"]
             normalized_content = self.WHITESPACE_RE.sub(" ", html_content.strip())
             assert normalized_content  # shouldn't be here otherwise
 
             unit = self.addsourceunit(normalized_content)
             unit.addlocation(self.tu_location)
             comments = [
-                markup['note']
+                markup["note"]
                 for markup in self.tu_content
-                if markup['type'] == 'comment'
+                if markup["type"] == "comment"
             ]
             if comments:
                 unit.addnote("\n".join(comments))
@@ -297,18 +297,18 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
         # emit trailing uncaptured markup elements
         for markup in self.tu_content[end : len(self.tu_content)]:
-            if markup['type'] != 'comment':
+            if markup["type"] != "comment":
                 self.emit_attribute_translation_units(markup)
-                self.filesrc += markup['html_content']
+                self.filesrc += markup["html_content"]
 
     @staticmethod
     def has_translatable_content(markup):
         # processing instructions count as translatable content, because PHP
-        return markup['type'] in {'data', 'pi'} and markup['html_content'].strip()
+        return markup["type"] in {"data", "pi"} and markup["html_content"].strip()
 
     def extract_translatable_attributes(self, tag, attrs):
         result = []
-        if tag == 'meta':
+        if tag == "meta":
             tu = self.create_metadata_attribute_tu(attrs)
             if tu:
                 result.append(tu)
@@ -325,34 +325,34 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
     def create_metadata_attribute_tu(self, attrs):
         attrs_dict = dict(attrs)
-        name = attrs_dict['name'].lower() if 'name' in attrs_dict else None
-        if name in self.TRANSLATABLE_METADATA and 'content' in attrs_dict:
-            return self.create_attribute_tu('content', attrs_dict['content'])
+        name = attrs_dict["name"].lower() if "name" in attrs_dict else None
+        if name in self.TRANSLATABLE_METADATA and "content" in attrs_dict:
+            return self.create_attribute_tu("content", attrs_dict["content"])
 
     def translatable_attribute_matches_tag(self, attrname, tag):
-        if attrname == 'lang':
-            return tag == 'html'
+        if attrname == "lang":
+            return tag == "html"
         return True
 
     def create_attribute_tu(self, attrname, attrvalue):
         normalized_value = self.WHITESPACE_RE.sub(" ", attrvalue).strip()
         if normalized_value:
             return {
-                'html_content': normalized_value,
-                'location': "%s+%s:%d-%d"
+                "html_content": normalized_value,
+                "location": "%s+%s:%d-%d"
                 % (
                     self.filename,
-                    ".".join(self.tag_path) + '[' + attrname + ']',
+                    ".".join(self.tag_path) + "[" + attrname + "]",
                     self.getpos()[0],
                     self.getpos()[1] + 1,
                 ),
             }
 
     def emit_attribute_translation_units(self, markup):
-        if 'attribute_tus' in markup:
-            for tu in markup['attribute_tus']:
-                unit = self.addsourceunit(tu['html_content'])
-                unit.addlocation(tu['location'])
+        if "attribute_tus" in markup:
+            for tu in markup["attribute_tus"]:
+                unit = self.addsourceunit(tu["html_content"])
+                unit.addlocation(tu["location"])
 
     def translate_attributes(self, attrs):
         result = []
@@ -398,11 +398,11 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
         translated_attrs = self.translate_attributes(attrs)
         markup = {
-            'type': 'starttag',
-            'tag': tag,
-            'html_content': self.create_start_tag(tag, translated_attrs),
-            'untranslated_html': self.create_start_tag(tag, attrs),
-            'attribute_tus': self.extract_translatable_attributes(tag, attrs),
+            "type": "starttag",
+            "tag": tag,
+            "html_content": self.create_start_tag(tag, translated_attrs),
+            "untranslated_html": self.create_start_tag(tag, attrs),
+            "attribute_tus": self.extract_translatable_attributes(tag, attrs),
         }
         self.append_markup(markup)
 
@@ -421,7 +421,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 "expected '%s' got '%s' at line %s" % (popped, tag, self.getpos()[0])
             )
 
-        self.append_markup({'type': 'endtag', 'html_content': '</%s>' % tag})
+        self.append_markup({"type": "endtag", "html_content": "</%s>" % tag})
 
         if tag in self.TRANSLATABLE_ELEMENTS:
             self.end_translation_unit()
@@ -437,10 +437,10 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
         translated_attrs = self.translate_attributes(attrs)
         markup = {
-            'type': 'startendtag',
-            'html_content': self.create_start_tag(tag, translated_attrs, startend=True),
-            'untranslated_html': self.create_start_tag(tag, attrs, startend=True),
-            'attribute_tus': self.extract_translatable_attributes(tag, attrs),
+            "type": "startendtag",
+            "html_content": self.create_start_tag(tag, translated_attrs, startend=True),
+            "untranslated_html": self.create_start_tag(tag, attrs, startend=True),
+            "attribute_tus": self.extract_translatable_attributes(tag, attrs),
         }
         self.append_markup(markup)
 
@@ -453,11 +453,11 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
     def handle_data(self, data):
         self.auto_close_empty_element()
-        self.append_markup({'type': 'data', 'html_content': data})
+        self.append_markup({"type": "data", "html_content": data})
 
     def handle_charref(self, name):
         """Handle entries in the form &#NNNN; e.g. &#8417;"""
-        if name.lower().startswith('x'):
+        if name.lower().startswith("x"):
             self.handle_data(chr(int(name[1:], 16)))
         else:
             self.handle_data(chr(int(name)))
@@ -465,7 +465,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
     def handle_entityref(self, name):
         """Handle named entities of the form &aaaa; e.g. &rsquo;"""
         converted = html5.get(name + ";", None)
-        if name in ['gt', 'lt', 'amp'] or not converted:
+        if name in ["gt", "lt", "amp"] or not converted:
             self.handle_data("&%s;" % name)
         else:
             self.handle_data(converted)
@@ -473,20 +473,20 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
     def handle_comment(self, data):
         self.auto_close_empty_element()
         self.append_markup(
-            {'type': 'comment', 'html_content': "<!--%s-->" % data, 'note': data}
+            {"type": "comment", "html_content": "<!--%s-->" % data, "note": data}
         )
 
     def handle_decl(self, decl):
         self.auto_close_empty_element()
-        self.append_markup({'type': 'decl', 'html_content': "<!%s>" % decl})
+        self.append_markup({"type": "decl", "html_content": "<!%s>" % decl})
 
     def handle_pi(self, data):
         self.auto_close_empty_element()
-        self.append_markup({'type': 'pi', 'html_content': "<?%s?>" % data})
+        self.append_markup({"type": "pi", "html_content": "<?%s?>" % data})
 
     def unknown_decl(self, data):
         self.auto_close_empty_element()
-        self.append_markup({'type': 'cdecl', 'html_content': "<![%s]>" % data})
+        self.append_markup({"type": "cdecl", "html_content": "<![%s]>" % data})
 
 
 class POHTMLParser(htmlfile):

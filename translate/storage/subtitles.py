@@ -54,7 +54,7 @@ except ImportError:
         _determiner = FormatDeterminer()
         determine = _determiner.determine
     except ImportError:
-        raise ImportError('\naeidon or gaupol package required for Subtitle support')
+        raise ImportError("\naeidon or gaupol package required for Subtitle support")
 
 
 class SubtitleUnit(base.TranslationUnit):
@@ -70,10 +70,10 @@ class SubtitleUnit(base.TranslationUnit):
         super().__init__(source)
 
     def getnotes(self, origin=None):
-        if origin in ['programmer', 'developer', 'source code', None]:
+        if origin in ["programmer", "developer", "source code", None]:
             return "visible for %d seconds" % self._duration
         else:
-            return ''
+            return ""
 
     def getlocations(self):
         return ["%s-->%s" % (self._start, self._end)]
@@ -123,10 +123,10 @@ class SubtitleFile(base.TranslationStore):
             raise base.ParseError(e)
 
     def _parsefile(self, storefile):
-        if hasattr(storefile, 'name'):
+        if hasattr(storefile, "name"):
             self.filename = storefile.name
             storefile.close()
-        elif hasattr(storefile, 'filename'):
+        elif hasattr(storefile, "filename"):
             self.filename = storefile.filename
             storefile.close()
         elif isinstance(storefile, str):
@@ -147,15 +147,15 @@ class SubtitleFile(base.TranslationStore):
     def parse(self, input):
         if isinstance(input, bytes):
             # Gaupol does not allow parsing from strings
-            kwargs = {'delete': False}
+            kwargs = {"delete": False}
             if self.filename:
-                kwargs['suffix'] = self.filename
+                kwargs["suffix"] = self.filename
 
             temp_file = NamedTemporaryFile(**kwargs)
             temp_file.close()
 
             try:
-                with open(temp_file.name, 'wb') as fh:
+                with open(temp_file.name, "wb") as fh:
                     fh.write(input)
                 self._parsefile(temp_file.name)
             finally:
@@ -174,12 +174,12 @@ class SubRipFile(SubtitleFile):
     """specialized class for SubRipFile's only"""
 
     Name = "SubRip subtitles file"
-    Extensions = ['srt']
+    Extensions = ["srt"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self._subtitlefile is None:
-            self._subtitlefile = SubRip(self.filename or '', self.encoding)
+            self._subtitlefile = SubRip(self.filename or "", self.encoding)
         if self._subtitlefile.newline is None:
             self._subtitlefile.newline = newlines.UNIX
 
@@ -188,12 +188,12 @@ class MicroDVDFile(SubtitleFile):
     """specialized class for SubRipFile's only"""
 
     Name = "MicroDVD subtitles file"
-    Extensions = ['sub']
+    Extensions = ["sub"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self._subtitlefile is None:
-            self._subtitlefile = MicroDVD(self.filename or '', self.encoding)
+            self._subtitlefile = MicroDVD(self.filename or "", self.encoding)
         if self._subtitlefile.newline is None:
             self._subtitlefile.newline = newlines.UNIX
 
@@ -202,12 +202,12 @@ class AdvSubStationAlphaFile(SubtitleFile):
     """specialized class for SubRipFile's only"""
 
     Name = "Advanced Substation Alpha subtitles file"
-    Extensions = ['ass']
+    Extensions = ["ass"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self._subtitlefile is None:
-            self._subtitlefile = AdvSubStationAlpha(self.filename or '', self.encoding)
+            self._subtitlefile = AdvSubStationAlpha(self.filename or "", self.encoding)
         if self._subtitlefile.newline is None:
             self._subtitlefile.newline = newlines.UNIX
 
@@ -216,11 +216,11 @@ class SubStationAlphaFile(SubtitleFile):
     """specialized class for SubRipFile's only"""
 
     Name = "Substation Alpha subtitles file"
-    Extensions = ['ssa']
+    Extensions = ["ssa"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self._subtitlefile is None:
-            self._subtitlefile = SubStationAlpha(self.filename or '', self.encoding)
+            self._subtitlefile = SubStationAlpha(self.filename or "", self.encoding)
         if self._subtitlefile.newline is None:
             self._subtitlefile.newline = newlines.UNIX

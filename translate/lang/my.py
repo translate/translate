@@ -33,5 +33,5 @@ class my(common.Common):
     }
 
     ignoretests = {
-        'all': ["simplecaps", "startcaps"],
+        "all": ["simplecaps", "startcaps"],
     }

@@ -118,7 +118,7 @@ def match_fuzzy(input_unit, matchers):
 
 
 def pretranslate_unit(
-    input_unit, template_store, matchers=None, mark_reused=False, merge_on='id'
+    input_unit, template_store, matchers=None, mark_reused=False, merge_on="id"
 ):
     """Pretranslate a unit or return unchanged if no translation was found.
 
@@ -134,7 +134,7 @@ def pretranslate_unit(
     # Do template matching
     if template_store:
         # :param:`merge_on` supports `location` and `id` for now
-        if merge_on == 'location':
+        if merge_on == "location":
             matching_unit = match_template_location(input_unit, template_store)
         else:
             matching_unit = match_template_id(input_unit, template_store)
@@ -261,5 +261,5 @@ def main(argv=None):
     parser.run(argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

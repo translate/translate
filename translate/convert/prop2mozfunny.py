@@ -130,7 +130,7 @@ def po2inc(
         outputpropfile.seek(0)
         pf = properties.propfile(outputpropfile, personality="mozilla")
         outputlines = prop2inc(pf)
-        outputfile.writelines([line.encode('utf-8') for line in outputlines])
+        outputfile.writelines([line.encode("utf-8") for line in outputlines])
     return result
 
 

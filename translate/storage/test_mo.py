@@ -11,20 +11,20 @@ class TestMOUnit(test_base.TestTranslationUnit):
 
     def test_context(self):
         unit = self.UnitClass("Message")
-        unit.setcontext('context')
-        assert unit.getcontext() == 'context'
+        unit.setcontext("context")
+        assert unit.getcontext() == "context"
 
 
 posources = [
-    r'''
+    r"""
 msgid ""
 msgstr ""
 "PO-Revision-Date: 2006-02-09 23:33+0200\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
-''',
-    r'''
+""",
+    r"""
 msgid ""
 msgstr ""
 "PO-Revision-Date: 2006-02-09 23:33+0200\n"
@@ -34,7 +34,7 @@ msgstr ""
 
 msgid "plant"
 msgstr ""
-''',
+""",
     # The following test is commented out, because the hash-size is different
     # compared to gettext, since we're not counting untranslated units.
     # r'''
@@ -53,7 +53,7 @@ msgstr ""
     # "convert"
     # msgstr "bekeerling"
     #''',
-    r'''
+    r"""
 msgid ""
 msgstr ""
 "PO-Revision-Date: 2006-02-09 23:33+0200\n"
@@ -73,8 +73,8 @@ msgctxt "verb"
 msgid ""
 "convert"
 msgstr "omskakel"
-''',
-    r'''
+""",
+    r"""
 msgid ""
 msgstr ""
 "PO-Revision-Date: 2006-02-09 23:33+0200\n"
@@ -98,7 +98,7 @@ msgstr "omskakel"
 msgid "tree"
 msgid_plural "trees"
 msgstr[0] ""
-''',
+""",
 ]
 
 
@@ -107,9 +107,9 @@ class TestMOFile(test_base.TestTranslationStore):
 
     def get_mo_and_po(self):
         return (
-            os.path.abspath(self.filename + '.po'),
-            os.path.abspath(self.filename + '.msgfmt.mo'),
-            os.path.abspath(self.filename + '.pocompile.mo'),
+            os.path.abspath(self.filename + ".po"),
+            os.path.abspath(self.filename + ".msgfmt.mo"),
+            os.path.abspath(self.filename + ".pocompile.mo"),
         )
 
     def remove_po_and_mo(self):
@@ -133,31 +133,31 @@ class TestMOFile(test_base.TestTranslationStore):
 
     def test_context(self):
         store = self.StoreClass()
-        unit = self.StoreClass.UnitClass('source')
-        unit.target = 'target'
-        unit.setcontext('context')
+        unit = self.StoreClass.UnitClass("source")
+        unit.target = "target"
+        unit.setcontext("context")
         store.addunit(unit)
-        assert b'context' in store.__bytes__()
+        assert b"context" in store.__bytes__()
 
         newstore = self.StoreClass.parsestring(store.__bytes__())
         assert len(newstore.units) == 1
-        assert newstore.units[0].getcontext(), 'context'
+        assert newstore.units[0].getcontext(), "context"
 
     def test_output(self):
         for posource in posources:
             print("PO source file")
             print(posource)
             PO_FILE, MO_MSGFMT, MO_POCOMPILE = self.get_mo_and_po()
-            posource = posource.encode('utf-8')
+            posource = posource.encode("utf-8")
 
-            with open(PO_FILE, 'wb') as out_file:
+            with open(PO_FILE, "wb") as out_file:
                 out_file.write(posource)
 
             subprocess.check_call(
-                ['msgfmt', PO_FILE, '-o', MO_MSGFMT, '--endianness', sys.byteorder]
+                ["msgfmt", PO_FILE, "-o", MO_MSGFMT, "--endianness", sys.byteorder]
             )
             subprocess.check_call(
-                ['pocompile', '--errorlevel=traceback', PO_FILE, MO_POCOMPILE]
+                ["pocompile", "--errorlevel=traceback", PO_FILE, MO_POCOMPILE]
             )
 
             store = factory.getobject(BytesIO(posource))
@@ -166,12 +166,12 @@ class TestMOFile(test_base.TestTranslationStore):
                 # can skip the checks here.
                 continue
 
-            with open(MO_MSGFMT, 'rb') as mo_msgfmt_f:
+            with open(MO_MSGFMT, "rb") as mo_msgfmt_f:
                 mo_msgfmt = mo_msgfmt_f.read()
             print("msgfmt output:")
             print(repr(mo_msgfmt))
 
-            with open(MO_POCOMPILE, 'rb') as mo_pocompile_f:
+            with open(MO_POCOMPILE, "rb") as mo_pocompile_f:
                 mo_pocompile = mo_pocompile_f.read()
             print("pocompile output:")
             print(repr(mo_pocompile))

@@ -44,7 +44,7 @@ class BaseTxt2POTester:
 
     def _convert_to_string(self, *args, **kwargs):
         """Helper that converts to target format string without using files."""
-        return self._convert(*args, **kwargs)[1].getvalue().decode('utf-8')
+        return self._convert(*args, **kwargs)[1].getvalue().decode("utf-8")
 
     def _count_elements(self, po_store):
         """Helper that counts the number of non-header units."""
@@ -55,7 +55,7 @@ class BaseTxt2POTester:
 class TestTxt2PO(BaseTxt2POTester):
     def test_convert_empty(self):
         """Check converting empty file returns no output."""
-        assert self._convert_to_string('', success_expected=False) == ''
+        assert self._convert_to_string("", success_expected=False) == ""
 
     def test_keep_duplicates(self):
         """Check converting keeps duplicates."""
@@ -144,7 +144,7 @@ class TestDoku2po(BaseTxt2POTester):
 
     def test_convert_empty(self):
         """Test converting empty file returns no output."""
-        assert self._convert_to_string('', success_expected=False) == ''
+        assert self._convert_to_string("", success_expected=False) == ""
 
     def test_keep_duplicates(self):
         """Check converting keeps duplicates."""
@@ -191,9 +191,9 @@ This is a wiki page.
         target_store = self._convert_to_store(input_string)
         assert self._count_elements(target_store) == 2
         assert target_store.units[1].source == "This is a fact."
-        assert target_store.units[1].getlocations() == [':1']
+        assert target_store.units[1].getlocations() == [":1"]
         assert target_store.units[2].source == "This is a fact."
-        assert target_store.units[2].getlocations() == [':2']
+        assert target_store.units[2].getlocations() == [":2"]
 
     def test_numbered_list(self):
         """Test Dokuwiki numbered list conversion."""
@@ -203,9 +203,9 @@ This is a wiki page.
         target_store = self._convert_to_store(input_string)
         assert self._count_elements(target_store) == 2
         assert target_store.units[1].source == "This is an item."
-        assert target_store.units[1].getlocations() == [':1']
+        assert target_store.units[1].getlocations() == [":1"]
         assert target_store.units[2].source == "This is an item."
-        assert target_store.units[2].getlocations() == [':2']
+        assert target_store.units[2].getlocations() == [":2"]
 
     def test_spacing(self):
         """Test Dokuwiki list nesting conversion."""

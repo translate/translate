@@ -54,5 +54,5 @@ class ja(common.Common):
     }
 
     ignoretests = {
-        'all': ["simplecaps", "startcaps"],
+        "all": ["simplecaps", "startcaps"],
     }

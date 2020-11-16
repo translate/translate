@@ -58,7 +58,7 @@ import vobject
 from translate.storage import base
 
 
-ICAL_UNIT_LOCATION_RE = re.compile('\\[(?P<uid>.+)\\](?P<property>.+)')
+ICAL_UNIT_LOCATION_RE = re.compile("\\[(?P<uid>.+)\\](?P<property>.+)")
 
 
 class icalunit(base.TranslationUnit):
@@ -85,7 +85,7 @@ class icalfile(base.TranslationStore):
     def __init__(self, inputfile=None, **kwargs):
         """construct an ical file, optionally reading in from inputfile."""
         super().__init__(**kwargs)
-        self.filename = ''
+        self.filename = ""
         self._icalfile = None
         if inputfile is not None:
             self.parse(inputfile)
@@ -98,10 +98,10 @@ class icalfile(base.TranslationStore):
                 for component in self._icalfile.components():
                     if component.name != "VEVENT":
                         continue
-                    if component.uid.value != match.groupdict()['uid']:
+                    if component.uid.value != match.groupdict()["uid"]:
                         continue
                     for property in component.getChildren():
-                        if property.name == match.groupdict()['property']:
+                        if property.name == match.groupdict()["property"]:
                             property.value = unit.target
 
         if _outicalfile:
@@ -109,10 +109,10 @@ class icalfile(base.TranslationStore):
 
     def parse(self, input):
         """parse the given file or file source string"""
-        if hasattr(input, 'name'):
+        if hasattr(input, "name"):
             self.filename = input.name
-        elif not getattr(self, 'filename', ''):
-            self.filename = ''
+        elif not getattr(self, "filename", ""):
+            self.filename = ""
         if isinstance(input, BytesIO):
             input = input.getvalue()
         elif hasattr(input, "read"):
@@ -127,10 +127,10 @@ class icalfile(base.TranslationStore):
             if component.name == "VEVENT":
                 for property in component.getChildren():
                     if property.name in (
-                        'SUMMARY',
-                        'DESCRIPTION',
-                        'COMMENT',
-                        'LOCATION',
+                        "SUMMARY",
+                        "DESCRIPTION",
+                        "COMMENT",
+                        "LOCATION",
                     ):
                         newunit = self.addsourceunit(property.value)
                         newunit.addnote("Start date: %s" % component.dtstart.value)

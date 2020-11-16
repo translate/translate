@@ -47,7 +47,7 @@ logger = logging.getLogger(__name__)
 # "%@" format specifier
 # (see https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/Strings/Articles/formatSpecifiers.html)
 printf_pat = re.compile(
-    r'''
+    r"""
         %(                          # initial %
         (?P<boost_ord>\d+)%         # boost::format style variable order, like %1%
         |
@@ -59,7 +59,7 @@ printf_pat = re.compile(
             (?:\.\d+)?              # precision
             (hh\|h\|l\|ll)?         # length formatting
             (?P<type>[\w@]))        # type (%s, %d, etc.)
-        )''',
+        )""",
     re.VERBOSE,
 )
 
@@ -76,14 +76,14 @@ tag_re = re.compile("<[^>]+>")
 gconf_attribute_re = re.compile('"[a-z_]+?"')
 
 # XML/HTML tags in LibreOffice help and readme, exclude short tags
-lo_tag_re = re.compile('''</?(?P<tag>[a-z][a-z_-]+)(?: +[a-z]+="[^"]+")* */?>''')
-lo_emptytags = frozenset(['br', 'embed', 'embedvar', 'object', 'help-id-missing'])
+lo_tag_re = re.compile("""</?(?P<tag>[a-z][a-z_-]+)(?: +[a-z]+="[^"]+")* */?>""")
+lo_emptytags = frozenset(["br", "embed", "embedvar", "object", "help-id-missing"])
 
 
 def tagname(string):
     """Returns the name of the XML/HTML tag in string"""
     tagname_match = tagname_re.match(string)
-    return tagname_match.groups(1)[0] + tagname_match.groups('')[1]
+    return tagname_match.groups(1)[0] + tagname_match.groups("")[1]
 
 
 def intuplelist(pair, list):
@@ -207,7 +207,7 @@ class CheckerConfig:
 
         # Lang data
         self.updatetargetlanguage(targetlanguage)
-        self.sourcelang = factory.getlanguage('en')
+        self.sourcelang = factory.getlanguage("en")
 
         # Inits with default values
         self.punctuation = self._init_default(
@@ -296,7 +296,7 @@ class CheckerConfig:
         """
         self.targetlanguage = langcode
         self.lang = factory.getlanguage(langcode)
-        self.language_script = ''
+        self.language_script = ""
 
         for script, langs in data.scripts.items():
             if langcode in langs or data.simplercode(langcode) in langs:
@@ -466,7 +466,7 @@ class UnitChecker:
         return list(
             set(
                 self.config.lang.ignoretests.get(self.checker_name, [])
-                + self.config.lang.ignoretests.get('all', [])
+                + self.config.lang.ignoretests.get("all", [])
             )
         )
 
@@ -526,8 +526,8 @@ class UnitChecker:
                 # failure
                 if functionname in self.defaultfilters:
                     failures[functionname] = {
-                        'message': filtermessage,
-                        'category': self.categories[functionname],
+                        "message": filtermessage,
+                        "category": self.categories[functionname],
                     }
 
                 if functionname in self.preconditions:
@@ -538,7 +538,7 @@ class UnitChecker:
 
         if not categorised:
             for name, info in failures.items():
-                failures[name] = info['message']
+                failures[name] = info["message"]
         return failures
 
 
@@ -1000,19 +1000,19 @@ class StandardChecker(TranslationChecker):
         count1 = count2 = plural = None
 
         # self.hasplural only set by run_filters, not always available
-        if 'hasplural' in self.__dict__:
+        if "hasplural" in self.__dict__:
             plural = self.hasplural
 
         for var_num2, match2 in enumerate(printf_pat.finditer(str2)):
             count2 = var_num2 + 1
             str2ord = (
-                match2.group('ord')
-                if not match2.group('boost_ord')
-                else match2.group('boost_ord')
+                match2.group("ord")
+                if not match2.group("boost_ord")
+                else match2.group("boost_ord")
             )
-            str2key = match2.group('key')
+            str2key = match2.group("key")
             str2fullvar = (
-                match2.group('fullvar') if not match2.group('boost_ord') else '%'
+                match2.group("fullvar") if not match2.group("boost_ord") else "%"
             )
 
             if str2ord:
@@ -1022,18 +1022,18 @@ class StandardChecker(TranslationChecker):
                 for var_num1, match1 in enumerate(printf_pat.finditer(str1)):
                     count1 = var_num1 + 1
                     localstr1ord = (
-                        match1.group('ord')
-                        if not match1.group('boost_ord')
-                        else match1.group('boost_ord')
+                        match1.group("ord")
+                        if not match1.group("boost_ord")
+                        else match1.group("boost_ord")
                     )
 
                     if localstr1ord:
                         if str2ord == localstr1ord:
                             str1ord = str2ord
                             str1fullvar = (
-                                match1.group('fullvar')
-                                if not match1.group('boost_ord')
-                                else '%'
+                                match1.group("fullvar")
+                                if not match1.group("boost_ord")
+                                else "%"
                             )
 
                             if str2fullvar == str1fullvar:
@@ -1041,9 +1041,9 @@ class StandardChecker(TranslationChecker):
                     elif int(str2ord) == var_num1 + 1:
                         str1ord = str2ord
                         str1fullvar = (
-                            match1.group('fullvar')
-                            if not match1.group('boost_ord')
-                            else '%'
+                            match1.group("fullvar")
+                            if not match1.group("boost_ord")
+                            else "%"
                         )
 
                         if str2fullvar == str1fullvar:
@@ -1062,16 +1062,16 @@ class StandardChecker(TranslationChecker):
                 for var_num1, match1 in enumerate(printf_pat.finditer(str1)):
                     count1 = var_num1 + 1
                     str1fullvar = (
-                        match1.group('fullvar')
-                        if not match1.group('boost_ord')
-                        else '%'
+                        match1.group("fullvar")
+                        if not match1.group("boost_ord")
+                        else "%"
                     )
 
-                    if match1.group('key') and str2key == match1.group('key'):
-                        str1key = match1.group('key')
+                    if match1.group("key") and str2key == match1.group("key"):
+                        str1key = match1.group("key")
 
                         # '%.0s' "placeholder" in plural will match anything
-                        if plural and str2fullvar == '.0s':
+                        if plural and str2fullvar == ".0s":
                             continue
 
                         if str1fullvar != str2fullvar:
@@ -1085,13 +1085,13 @@ class StandardChecker(TranslationChecker):
                 for var_num1, match1 in enumerate(printf_pat.finditer(str1)):
                     count1 = var_num1 + 1
                     str1fullvar = (
-                        match1.group('fullvar')
-                        if not match1.group('boost_ord')
-                        else '%'
+                        match1.group("fullvar")
+                        if not match1.group("boost_ord")
+                        else "%"
                     )
 
                     # '%.0s' "placeholder" in plural will match anything
-                    if plural and str2fullvar == '.0s':
+                    if plural and str2fullvar == ".0s":
                         continue
 
                     if (var_num1 == var_num2) and (str1fullvar != str2fullvar):
@@ -1131,7 +1131,7 @@ class StandardChecker(TranslationChecker):
 
             # implicit_n: you need at least as many anonymous args as
             # there are anonymous placeholders.
-            implicit_n = anons.count('')
+            implicit_n = anons.count("")
             # explicit_n: you need at least as many anonymous args as
             # the highest '{99}'-style placeholder. (The `+ 1` is to
             # correct for 0-indexing)
@@ -1154,24 +1154,24 @@ class StandardChecker(TranslationChecker):
         # Possible failure states: 0 = ok, 1 = mild, 2 = serious
         STATE_OK, STATE_MILD, STATE_SERIOUS = 0, 1, 2
         failure_state = STATE_OK
-        pythonbraceformat_pat = re.compile('{[^}]*}')
+        pythonbraceformat_pat = re.compile("{[^}]*}")
         data1 = {}
         data2 = {}
 
         # Populate the data1 and data2 dicts.
         for data_, str_ in [(data1, str1), (data2, str2)]:
             # Remove all escaped braces {{ and }}
-            data_['strclean'] = re.sub('{{|}}', '', str_)
-            data_['allvars'] = pythonbraceformat_pat.findall(data_['strclean'])
-            data_['anonvars'] = [
-                var[1:-1] for var in data_['allvars'] if re.match(r'^{[0-9]*}$', var)
+            data_["strclean"] = re.sub("{{|}}", "", str_)
+            data_["allvars"] = pythonbraceformat_pat.findall(data_["strclean"])
+            data_["anonvars"] = [
+                var[1:-1] for var in data_["allvars"] if re.match(r"^{[0-9]*}$", var)
             ]
-            data_['namedvars'] = [
-                var for var in data_['allvars'] if not re.match(r'^{[0-9]*}$', var)
+            data_["namedvars"] = [
+                var for var in data_["allvars"] if not re.match(r"^{[0-9]*}$", var)
             ]
 
-        max1 = max_anons(data1['anonvars'])
-        max2 = max_anons(data2['anonvars'])
+        max1 = max_anons(data1["anonvars"])
+        max2 = max_anons(data2["anonvars"])
 
         if max1 == max2:
             pass
@@ -1188,21 +1188,21 @@ class StandardChecker(TranslationChecker):
                 % (max1, max2)
             )
 
-        if set(data1['namedvars']) == set(data2['namedvars']):
+        if set(data1["namedvars"]) == set(data2["namedvars"]):
             pass
 
-        extra_in_2 = set(data2['namedvars']).difference(set(data1['namedvars']))
+        extra_in_2 = set(data2["namedvars"]).difference(set(data1["namedvars"]))
         if 0 < len(extra_in_2):
             failure_state = max(failure_state, STATE_SERIOUS)
             messages.append(
-                "Unknown named placeholders in translation: %s" % ', '.join(extra_in_2)
+                "Unknown named placeholders in translation: %s" % ", ".join(extra_in_2)
             )
 
-        extra_in_1 = set(data1['namedvars']).difference(set(data2['namedvars']))
+        extra_in_1 = set(data1["namedvars"]).difference(set(data2["namedvars"]))
         if 0 < len(extra_in_1):
             failure_state = max(failure_state, STATE_MILD)
             messages.append(
-                "Named placeholders absent in translation: %s" % ', '.join(extra_in_1)
+                "Named placeholders absent in translation: %s" % ", ".join(extra_in_1)
             )
 
         if failure_state == STATE_OK:
@@ -2312,7 +2312,7 @@ class LibreOfficeChecker(StandardChecker):
                 while match:
                     acttag = match.group(0)
                     if acttag.startswith("</"):
-                        if match.group('tag') in lo_emptytags:
+                        if match.group("tag") in lo_emptytags:
                             raise FilterFailure(
                                 "»%s« should be self-closing/empty" % acttag
                             )
@@ -2327,7 +2327,7 @@ class LibreOfficeChecker(StandardChecker):
                                 "don't match" % (opentag, acttag)
                             )
                     elif acttag.endswith("/>"):
-                        if match.group('tag') not in lo_emptytags:
+                        if match.group("tag") not in lo_emptytags:
                             raise FilterFailure(
                                 "»%s« should not be self-closing/empty" % acttag
                             )
@@ -2366,22 +2366,22 @@ mozillaconfig = CheckerConfig(
 
 class MozillaChecker(StandardChecker):
     accelerators_skipped_scripts = [
-        'Deva',
-        'Beng',
-        'Tibt',
-        'Orya',
-        'Gujr',
-        'Khmr',
-        'Knda',
-        'Laoo',
-        'Mlym',
-        'Mymr',
-        'Sind',
-        'Taml',
-        'assamese',
-        'perso-arabic',
-        'mon',
-        'chinese',
+        "Deva",
+        "Beng",
+        "Tibt",
+        "Orya",
+        "Gujr",
+        "Khmr",
+        "Knda",
+        "Laoo",
+        "Mlym",
+        "Mymr",
+        "Sind",
+        "Taml",
+        "assamese",
+        "perso-arabic",
+        "mon",
+        "chinese",
     ]
 
     def __init__(self, **kwargs):
@@ -2407,7 +2407,7 @@ class MozillaChecker(StandardChecker):
         units (such as urls, emails, etc.)
         """
         for location in self.locations:
-            if location in ['MOZ_LANGPACK_CONTRIBUTORS', 'credit.translation']:
+            if location in ["MOZ_LANGPACK_CONTRIBUTORS", "credit.translation"]:
                 raise FilterFailure("Don't translate. Just credit the translators.")
 
         return True
@@ -2422,7 +2422,7 @@ class MozillaChecker(StandardChecker):
                                    """,
         re.VERBOSE,
     )
-    mozilla_dialog_valid_units = ['em', 'px', 'ch']
+    mozilla_dialog_valid_units = ["em", "px", "ch"]
 
     @critical
     def dialogsizes(self, str1, str2):
@@ -2490,7 +2490,7 @@ class MozillaChecker(StandardChecker):
         """
         if (
             self.mozilla_dialog_re.findall(str1)
-            or str1.strip().lstrip('0123456789') in self.mozilla_dialog_valid_units
+            or str1.strip().lstrip("0123456789") in self.mozilla_dialog_valid_units
         ):
             return True
 
@@ -2576,8 +2576,8 @@ class GnomeChecker(StandardChecker):
         """
         for location in self.locations:
             if (
-                location.find('schemas.in') != -1
-                or location.find('gschema.xml.in') != -1
+                location.find("schemas.in") != -1
+                or location.find("gschema.xml.in") != -1
             ):
                 gconf_attributes = gconf_attribute_re.findall(str1)
                 # stopwords = [word for word in words1 if word in self.config.notranslatewords and word not in words2]
@@ -2833,7 +2833,7 @@ class StandardUnitChecker(UnitChecker):
         extracted. This is used by Pootle and is probably only useful in
         pofilter when using XLIFF files.
         """
-        self.suggestion_store = getattr(self, 'suggestion_store', None)
+        self.suggestion_store = getattr(self, "suggestion_store", None)
         suggestions = []
 
         if self.suggestion_store:
@@ -2859,7 +2859,7 @@ def runtests(str1, str2, ignorelist=()):
     for test in failures:
         print(
             "failure: %s: %s\n  %r\n  %r"
-            % (test, failures[test]['message'], str1, str2)
+            % (test, failures[test]["message"], str1, str2)
         )
 
     return failures
@@ -2876,7 +2876,7 @@ def batchruntests(pairs):
     print("\ntotal: %d/%d pairs passed" % (passed, numpairs))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     testset = [
         (r"simple", r"somple"),
         (r"\this equals \that", r"does \this equal \that?"),

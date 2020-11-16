@@ -132,7 +132,7 @@ class PoXliffUnit(xliff.xliffunit):
         else:
             return super().gettarget(lang)
 
-    def settarget(self, target, lang='xx', append=False):
+    def settarget(self, target, lang="xx", append=False):
         self._rich_target = None
         if self.target == target:
             return
@@ -276,7 +276,7 @@ class PoXliffUnit(xliff.xliffunit):
         group = cls(None, empty=True)
         group.xmlelement = element
         group.namespace = namespace
-        units = list(element.iterdescendants(group.namespaced('trans-unit')))
+        units = list(element.iterdescendants(group.namespaced("trans-unit")))
         for unit in units:
             subunit = xliff.xliffunit.createfromxmlElement(unit)
             subunit.namespace = namespace
@@ -375,7 +375,7 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
                     pluralgroup, namespace=self.namespace
                 )
 
-        self.filename = getattr(xml, 'name', '')
+        self.filename = getattr(xml, "name", "")
         if hasattr(xml, "read"):
             xml.seek(0)
             xmlsrc = xml.read()

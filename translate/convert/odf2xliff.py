@@ -37,7 +37,7 @@ def convertodf(inputfile, outputfile, templates):
     store = factory.getobject(outputfile)
 
     try:
-        store.setfilename(store.getfilenode('NoName'), inputfile.name)
+        store.setfilename(store.getfilenode("NoName"), inputfile.name)
     except Exception:
         print("couldn't set origin filename")
 
@@ -92,5 +92,5 @@ def main(argv=None):
     parser.run(argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

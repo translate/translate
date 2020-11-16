@@ -56,7 +56,7 @@ class pocheckfilter:
         """Lists the docs for filters available on checker."""
         filterdict = self.checker.getfilters()
         filterdocs = [
-            "%s\t%s" % (name, filterfunc.__doc__.split('\n\n')[0])
+            "%s\t%s" % (name, filterfunc.__doc__.split("\n\n")[0])
             for (name, filterfunc) in filterdict.items()
         ]
         filterdocs.sort()
@@ -107,7 +107,7 @@ class pocheckfilter:
             if filter_result:
                 if filter_result != autocorrect:
                     for filter_name in filter_result:
-                        filter_message = filter_result[filter_name]['message']
+                        filter_message = filter_result[filter_name]["message"]
 
                         if self.options.addnotes:
                             unit.adderror(filter_name, filter_message)
@@ -134,9 +134,9 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
             "-l",
             "--listfilters",
             action="callback",
-            dest='listfilters',
+            dest="listfilters",
             default=False,
-            callback_kwargs={'dest_value': True},
+            callback_kwargs={"dest_value": True},
             callback=self.parse_noinput,
             help="list filters available",
         )
@@ -145,7 +145,7 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
         """This sets an option to *True*, but also sets input to *-* to prevent
         an error.
         """
-        setattr(parser.values, option.dest, kwargs['dest_value'])
+        setattr(parser.values, option.dest, kwargs["dest_value"])
         parser.values.input = "-"
 
     def run(self):
@@ -184,7 +184,7 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
                     "notranslatefile %r does not exist" % options.notranslatefile
                 )
 
-            with open(options.notranslatefile, 'r') as fp:
+            with open(options.notranslatefile, "r") as fp:
                 notranslatewords = [line.strip() for line in fp.readlines()]
             notranslatewords = dict.fromkeys([key for key in notranslatewords])
 
@@ -198,7 +198,7 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
                     "musttranslatefile %r does not exist" % options.musttranslatefile
                 )
 
-            with open(options.musttranslatefile, 'r') as fp:
+            with open(options.musttranslatefile, "r") as fp:
                 musttranslatewords = [line.strip() for line in fp.readlines()]
             musttranslatewords = dict.fromkeys([key for key in musttranslatewords])
 
@@ -210,7 +210,7 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
             if not os.path.exists(options.validcharsfile):
                 self.error("validcharsfile %r does not exist" % options.validcharsfile)
 
-            with open(options.validcharsfile, 'r') as fp:
+            with open(options.validcharsfile, "r") as fp:
                 validchars = fp.read()
 
             checkerconfig.updatevalidchars(validchars)
@@ -410,7 +410,7 @@ def cmdlineparser():
         help="read list of all valid characters from FILE (must be in UTF-8)",
     )
 
-    parser.passthrough.append('checkfilter')
+    parser.passthrough.append("checkfilter")
     parser.description = __doc__
 
     return parser
@@ -421,5 +421,5 @@ def main():
     parser.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

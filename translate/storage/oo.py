@@ -85,11 +85,11 @@ def makekey(ookey, long_keys):
     :return: unique ascii identifier
     """
     project, sourcefile, resourcetype, groupid, localid, platform = ookey
-    sourcefile = sourcefile.replace('\\', '/')
+    sourcefile = sourcefile.replace("\\", "/")
     if long_keys:
-        sourcebase = '/'.join((project, sourcefile))
+        sourcebase = "/".join((project, sourcefile))
     else:
-        sourceparts = sourcefile.split('/')
+        sourceparts = sourcefile.split("/")
         sourcebase = "".join(sourceparts[-1:])
     if len(groupid) == 0 or len(localid) == 0:
         fullid = groupid + localid
@@ -138,7 +138,7 @@ def unescape_text(text):
     )
 
 
-helptagre = re.compile(r'''<[/]??[a-z_\-]+?(?:| +[a-z]+?=".*?") *[/]??>''')
+helptagre = re.compile(r"""<[/]??[a-z_\-]+?(?:| +[a-z]+?=".*?") *[/]??>""")
 
 
 def escape_help_text(text):
@@ -180,7 +180,7 @@ def unescape_help_text(text):
     return (
         text.replace(r"\<", "<")
         .replace(r"\>", ">")
-        .replace(r'\"', '"')
+        .replace(r"\"", '"')
         .replace(r"\\", "\\")
     )
 
@@ -334,7 +334,7 @@ class oofile:
     """this represents an entire .oo file"""
 
     UnitClass = oounit
-    encoding = 'utf-8'
+    encoding = "utf-8"
 
     def __init__(self, input=None):
         """constructs the oofile"""
@@ -362,7 +362,7 @@ class oofile:
     def parse(self, input):
         """parses lines and adds them to the file"""
         if not self.filename:
-            self.filename = getattr(input, 'name', '')
+            self.filename = getattr(input, "name", "")
         if hasattr(input, "read"):
             src = input.read()
             input.close()
@@ -410,16 +410,16 @@ class oomultifile:
     files...
     """
 
-    encoding = 'utf-8'
+    encoding = "utf-8"
 
     def __init__(self, filename, mode=None, multifilestyle="single"):
         """initialises oomultifile from a seekable inputfile or writable outputfile"""
         self.filename = filename
         if mode is None:
             if os.path.exists(filename):
-                mode = 'r'
+                mode = "r"
             else:
-                mode = 'w'
+                mode = "w"
         self.mode = mode
         self.multifilestyle = multifilestyle
         self.multifilename = os.path.splitext(filename)[0]

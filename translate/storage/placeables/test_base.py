@@ -33,40 +33,40 @@ class TestStringElem:
 
     def test_tree(self):
         assert len(self.elem.sub) == 4
-        assert str(self.elem.sub[0]) == 'Ģët '
+        assert str(self.elem.sub[0]) == "Ģët "
         assert (
             str(self.elem.sub[1])
             == '<a href="http://www.example.com" alt="Ģët &brand;!">'
         )
-        assert str(self.elem.sub[2]) == '&brandLong;'
-        assert str(self.elem.sub[3]) == '</a>'
+        assert str(self.elem.sub[2]) == "&brandLong;"
+        assert str(self.elem.sub[3]) == "</a>"
 
-        assert len(self.elem.sub[0].sub) == 1 and self.elem.sub[0].sub[0] == 'Ģët '
+        assert len(self.elem.sub[0].sub) == 1 and self.elem.sub[0].sub[0] == "Ģët "
         assert (
             len(self.elem.sub[1].sub) == 1
             and self.elem.sub[1].sub[0]
             == '<a href="http://www.example.com" alt="Ģët &brand;!">'
         )
         assert (
-            len(self.elem.sub[2].sub) == 1 and self.elem.sub[2].sub[0] == '&brandLong;'
+            len(self.elem.sub[2].sub) == 1 and self.elem.sub[2].sub[0] == "&brandLong;"
         )
-        assert len(self.elem.sub[3].sub) == 1 and self.elem.sub[3].sub[0] == '</a>'
+        assert len(self.elem.sub[3].sub) == 1 and self.elem.sub[3].sub[0] == "</a>"
 
     def test_add(self):
-        assert self.elem + ' ' == self.ORIGSTR + ' '
+        assert self.elem + " " == self.ORIGSTR + " "
         # ... and __radd__() ... doesn't work
         # assert ' ' + self.elem == ' ' + self.ORIGSTR
 
     def test_contains(self):
-        assert 'href' in self.elem
-        assert 'hrȩf' not in self.elem
+        assert "href" in self.elem
+        assert "hrȩf" not in self.elem
 
     def test_getitem(self):
-        assert self.elem[0] == 'Ģ'
-        assert self.elem[2] == 't'
+        assert self.elem[0] == "Ģ"
+        assert self.elem[2] == "t"
 
     def test_getslice(self):
-        assert self.elem[0:3] == 'Ģët'
+        assert self.elem[0:3] == "Ģët"
 
     def test_iter(self):
         for chunk in self.elem:
@@ -86,20 +86,20 @@ class TestStringElem:
 
     def test_elem_at_offset(self):
         assert self.elem.elem_at_offset(0) is self.elem.sub[0]
-        assert self.elem.elem_at_offset(self.elem.find('!')) is self.elem.sub[1]
+        assert self.elem.elem_at_offset(self.elem.find("!")) is self.elem.sub[1]
 
     def test_find(self):
-        assert self.elem.find('example') == 24
-        assert self.elem.find('example') == 24
-        searchelem = parse('&brand;', general.parsers)
+        assert self.elem.find("example") == 24
+        assert self.elem.find("example") == 24
+        searchelem = parse("&brand;", general.parsers)
         assert self.elem.find(searchelem) == 46
 
     def test_find_elems_with(self):
-        assert self.elem.find_elems_with('Ģët') == [self.elem.sub[0], self.elem.sub[1]]
-        assert len(self.elem.find_elems_with('a')) == 3
+        assert self.elem.find_elems_with("Ģët") == [self.elem.sub[0], self.elem.sub[1]]
+        assert len(self.elem.find_elems_with("a")) == 3
 
     def test_flatten(self):
-        assert ''.join([str(i) for i in self.elem.flatten()]) == self.ORIGSTR
+        assert "".join([str(i) for i in self.elem.flatten()]) == self.ORIGSTR
 
     def test_delete_range_case1(self):
         # Case 1: Entire string #
@@ -121,7 +121,7 @@ class TestStringElem:
         # Case 3: Within a single element #
         elem = self.elem.copy()
         deleted, parent, offset = elem.delete_range(1, 2)
-        assert deleted == StringElem('ë')
+        assert deleted == StringElem("ë")
         assert parent is elem.sub[0]
         assert offset == 1
 
@@ -140,52 +140,52 @@ class TestStringElem:
 
         # A separate test case where the delete range include elements between
         # the start- and end elements.
-        origelem = parse('foo %s bar', general.parsers)
+        origelem = parse("foo %s bar", general.parsers)
         elem = origelem.copy()
         assert len(elem.sub) == 3
         deleted, parent, offset = elem.delete_range(3, 7)
         assert deleted == origelem
         assert parent is None
         assert offset is None
-        assert str(elem) == 'foobar'
+        assert str(elem) == "foobar"
 
     def test_insert(self):
         # Test inserting at the beginning
         elem = self.elem.copy()
-        elem.insert(0, 'xxx')
-        assert str(elem.sub[0]) == 'xxx' + str(self.elem.sub[0])
+        elem.insert(0, "xxx")
+        assert str(elem.sub[0]) == "xxx" + str(self.elem.sub[0])
 
         # Test inserting at the end
         elem = self.elem.copy()
-        elem.insert(len(elem), 'xxx')
-        assert elem.flatten()[-1] == StringElem('xxx')
-        assert str(elem).endswith('&brandLong;</a>xxx')
+        elem.insert(len(elem), "xxx")
+        assert elem.flatten()[-1] == StringElem("xxx")
+        assert str(elem).endswith("&brandLong;</a>xxx")
 
         elem = self.elem.copy()
         elem.insert(len(elem), ">>>", preferred_parent=elem.sub[-1])
-        assert str(elem.flatten()[-1]) == '</a>>>>'
-        assert str(elem).endswith('&brandLong;</a>>>>')
+        assert str(elem.flatten()[-1]) == "</a>>>>"
+        assert str(elem).endswith("&brandLong;</a>>>>")
 
         # Test inserting in the middle of an existing string
         elem = self.elem.copy()
-        elem.insert(2, 'xxx')
-        assert str(elem.sub[0]) == 'Ģëxxxt '
+        elem.insert(2, "xxx")
+        assert str(elem.sub[0]) == "Ģëxxxt "
 
         # Test inserting between elements
         elem = self.elem.copy()
-        elem.insert(56, 'xxx')
-        assert str(elem)[56:59] == 'xxx'
+        elem.insert(56, "xxx")
+        assert str(elem)[56:59] == "xxx"
 
     def test_isleaf(self):
         for child in self.elem.sub:
             assert child.isleaf()
 
     def test_prune(self):
-        elem = StringElem('foo')
-        child = StringElem('bar')
+        elem = StringElem("foo")
+        child = StringElem("bar")
         elem.sub.append(child)
         elem.prune()
-        assert elem == StringElem('foobar')
+        assert elem == StringElem("foobar")
 
 
 class TestConverters:

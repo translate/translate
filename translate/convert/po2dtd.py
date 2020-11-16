@@ -118,7 +118,7 @@ class po2dtd:
         if len(entities) > 1:
             # don't yet handle multiple entities
             dtdunit.comments.append(
-                ("conversionnote", '<!-- CONVERSION NOTE - multiple entities -->\n')
+                ("conversionnote", "<!-- CONVERSION NOTE - multiple entities -->\n")
             )
             dtdunit.entity = entities[0]
         elif len(entities) == 1:
@@ -133,7 +133,7 @@ class po2dtd:
             if not note:
                 continue
             note = quote.unstripcomment(note)
-            if (note.find('LOCALIZATION NOTE') == -1) or (note.find('GROUP') == -1):
+            if (note.find("LOCALIZATION NOTE") == -1) or (note.find("GROUP") == -1):
                 dtdunit.comments.append(("comment", note))
         # msgidcomments are special - they're actually localization notes
         msgidcomment = inputunit._extract_msgidcomments()
@@ -223,5 +223,5 @@ def main(argv=None):
     parser.run(argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -29,5 +29,5 @@ class si(common.Common):
     """This class represents Sinhala."""
 
     ignoretests = {
-        'all': ["simplecaps", "startcaps"],
+        "all": ["simplecaps", "startcaps"],
     }

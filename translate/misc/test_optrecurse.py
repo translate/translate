@@ -24,10 +24,10 @@ class TestRecursiveOptionParser:
         temp_file.close()
         try:
             out = parser.openoutputfile(None, temp_file.name)
-            out.write(b'binary suff')
+            out.write(b"binary suff")
             out.close()
         finally:
             os.unlink(temp_file.name)
 
         out = parser.openoutputfile(None, None)  # To sys.stdout
-        out.write(b'binary suff')
+        out.write(b"binary suff")

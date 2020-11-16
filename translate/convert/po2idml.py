@@ -75,7 +75,7 @@ def translate_idml(template, input_file, translatable_files):
             return (filename, file_tree)
 
         return dict(
-            extract_unit_tree(filename, 'idPkg:Story')
+            extract_unit_tree(filename, "idPkg:Story")
             for filename in translatable_files
         )
 
@@ -146,7 +146,7 @@ def translate_idml(template, input_file, translatable_files):
 
 def write_idml(template_zip, output_file, dom_trees):
     """Write the translated IDML package."""
-    output_zip = ZipFile(output_file, 'w', compression=ZIP_DEFLATED)
+    output_zip = ZipFile(output_file, "w", compression=ZIP_DEFLATED)
 
     # Copy the IDML package.
     output_zip = copy_idml(template_zip, output_zip, dom_trees.keys())
@@ -156,7 +156,7 @@ def write_idml(template_zip, output_file, dom_trees):
         output_zip.writestr(
             filename,
             etree.tostring(
-                dom_tree, encoding='UTF-8', xml_declaration=True, standalone='yes'
+                dom_tree, encoding="UTF-8", xml_declaration=True, standalone="yes"
             ),
         )
 
@@ -164,12 +164,12 @@ def write_idml(template_zip, output_file, dom_trees):
 def convertpo(input_file, output_file, template):
     """Create a translated IDML using an IDML template and a PO file."""
     # Now proceed with the conversion.
-    template_zip = ZipFile(template, 'r')
+    template_zip = ZipFile(template, "r")
 
     translatable_files = [
         filename
         for filename in template_zip.namelist()
-        if filename.startswith('Stories/')
+        if filename.startswith("Stories/")
     ]
 
     po_data = input_file.read()
@@ -182,7 +182,7 @@ def convertpo(input_file, output_file, template):
 
 def main(argv=None):
     formats = {
-        ('po', 'idml'): ("idml", convertpo),
+        ("po", "idml"): ("idml", convertpo),
     }
     parser = convert.ConvertOptionParser(
         formats, usetemplates=True, description=__doc__
@@ -190,5 +190,5 @@ def main(argv=None):
     parser.run(argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

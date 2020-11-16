@@ -29,5 +29,5 @@ class ta(common.Common):
     """This class represents Tamil."""
 
     ignoretests = {
-        'all': ["simplecaps", "startcaps"],
+        "all": ["simplecaps", "startcaps"],
     }

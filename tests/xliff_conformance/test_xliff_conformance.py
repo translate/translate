@@ -33,7 +33,7 @@ def xmllint(fullpath):
 def setup_module(module):
     global schema
     os.chdir(path.dirname(__file__))
-    schema = etree.XMLSchema(etree.parse('xliff-core-1.1.xsd'))
+    schema = etree.XMLSchema(etree.parse("xliff-core-1.1.xsd"))
 
 
 def find_files(base, check_ext):
@@ -46,15 +46,15 @@ def find_files(base, check_ext):
 
 
 def test_open_office_to_xliff():
-    assert call(['oo2xliff', 'en-US.sdf', '-l', 'fr', 'fr']) == 0
-    for filepath in find_files('fr', '.xlf'):
+    assert call(["oo2xliff", "en-US.sdf", "-l", "fr", "fr"]) == 0
+    for filepath in find_files("fr", ".xlf"):
         assert xmllint(filepath)
-    cleardir('fr')
+    cleardir("fr")
 
 
 def test_po_to_xliff():
-    OUTPUT = 'af-pootle.xlf'
-    assert call(['po2xliff', 'af-pootle.po', OUTPUT]) == 0
+    OUTPUT = "af-pootle.xlf"
+    assert call(["po2xliff", "af-pootle.po", OUTPUT]) == 0
     assert xmllint(OUTPUT)
 
 

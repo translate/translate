@@ -50,5 +50,5 @@ class pa(common.Common):
     }
 
     ignoretests = {
-        'all': ["simplecaps", "startcaps"],
+        "all": ["simplecaps", "startcaps"],
     }

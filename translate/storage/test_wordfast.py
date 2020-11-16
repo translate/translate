@@ -29,11 +29,11 @@ class TestWFUnit(test_base.TestTranslationUnit):
         class test but eliminate a few of the actual tests.
         """
         unit = self.unit
-        specials = ['\\"', '\\ ', '\\\n', '\\\t', '\\\\r', '\\\\"']
+        specials = ['\\"', "\\ ", "\\\n", "\\\t", "\\\\r", '\\\\"']
         for special in specials:
             unit.source = special
-            print("unit.source:", repr(unit.source) + '|')
-            print("special:", repr(special) + '|')
+            print("unit.source:", repr(unit.source) + "|")
+            print("special:", repr(special) + "|")
             assert unit.source == special
 
     def test_wordfast_escaping(self):
@@ -41,12 +41,12 @@ class TestWFUnit(test_base.TestTranslationUnit):
 
         def compare(real, escaped):
             unit = self.UnitClass(real)
-            print(real.encode('utf-8'), unit.source.encode('utf-8'))
+            print(real.encode("utf-8"), unit.source.encode("utf-8"))
             assert unit.source == real
-            assert unit.dict['source'] == escaped
+            assert unit.dict["source"] == escaped
             unit.target = real
             assert unit.target == real
-            assert unit.dict['target'] == escaped
+            assert unit.dict["target"] == escaped
 
         for escaped, real in wf.WF_ESCAPE_MAP[
             :16
@@ -54,18 +54,18 @@ class TestWFUnit(test_base.TestTranslationUnit):
             compare(real, escaped)
         # Real world cases
         unit = self.UnitClass("Open &File. ’n Probleem.")
-        assert unit.dict['source'] == "Open &'26;File. &'92;n Probleem."
+        assert unit.dict["source"] == "Open &'26;File. &'92;n Probleem."
 
     def test_newlines(self):
         """Wordfast does not like real newlines"""
         unit = self.UnitClass("One\nTwo")
-        assert unit.dict['source'] == "One\\nTwo"
+        assert unit.dict["source"] == "One\\nTwo"
 
     def test_language_setting(self):
         """Check that we can set the target language"""
         unit = self.UnitClass("Test")
         unit.targetlang = "AF"
-        assert unit.dict['target-lang'] == 'AF'
+        assert unit.dict["target-lang"] == "AF"
 
     def test_istranslated(self):
         unit = self.UnitClass()

@@ -46,9 +46,9 @@ def writexml_helper(self, writer, indent="", addindent="", newl=""):
     a_names = sorted(attrs.keys())
 
     for a_name in a_names:
-        writer.write(" %s=\"" % a_name)
+        writer.write(' %s="' % a_name)
         minidom._write_data(writer, attrs[a_name].value)
-        writer.write("\"")
+        writer.write('"')
     if self.childNodes:
         # We need to write text nodes without newline and indentation, so
         # we handle them differently. Note that we here assume that "empty"
@@ -178,7 +178,7 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
         # All we want to do is construct our own Element instead of
         # minidom.Element, unfortunately the only way to do this is to
         # copy this whole function from expatbuilder.py
-        if ' ' in name:
+        if " " in name:
             uri, localname, prefix, qname = expatbuilder._parse_ns_name(self, name)
         else:
             uri = expatbuilder.EMPTY_NAMESPACE
@@ -194,7 +194,7 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
             for prefix, uri in self._ns_ordered_prefixes:
                 if prefix:
                     a = minidom.Attr(
-                        expatbuilder._intern(self, 'xmlns:' + prefix),
+                        expatbuilder._intern(self, "xmlns:" + prefix),
                         expatbuilder.XMLNS_NAMESPACE,
                         prefix,
                         "xmlns",
@@ -212,14 +212,14 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
             del self._ns_ordered_prefixes[:]
 
         if attributes:
-            if hasattr(node, '_ensure_attributes'):
+            if hasattr(node, "_ensure_attributes"):
                 node._ensure_attributes()  # Python 3 only
             _attrs = node._attrs
             _attrsNS = node._attrsNS
             for i in range(0, len(attributes), 2):
                 aname = attributes[i]
                 value = attributes[i + 1]
-                if ' ' in aname:
+                if " " in aname:
                     uri, localname, prefix, qname = expatbuilder._parse_ns_name(
                         self, aname
                     )
@@ -247,7 +247,7 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
 
         def end_element_handler(self, name):
             curNode = self.curNode
-            if ' ' in name:
+            if " " in name:
                 uri, localname, prefix, qname = expatbuilder._parse_ns_name(self, name)
                 assert (
                     curNode.namespaceURI == uri
@@ -272,7 +272,7 @@ def parse(file, parser=None, bufsize=None):
     """Parse a file into a DOM by filename or file object."""
     builder = ExpatBuilderNS()
     if isinstance(file, str):
-        with open(file, 'rb') as fp:
+        with open(file, "rb") as fp:
             result = builder.parseFile(fp)
     else:
         result = builder.parseFile(file)

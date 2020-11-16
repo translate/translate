@@ -40,13 +40,13 @@ def create_termunit(
     if unit is not None:
         termunit.merge(unit, overwrite=False, comments=False)
     if len(targets.keys()) > 1:
-        txt = '; '.join(
+        txt = "; ".join(
             [
-                "%s {%s}" % (target, ', '.join(files))
+                "%s {%s}" % (target, ", ".join(files))
                 for target, files in targets.items()
             ]
         )
-        if termunit.target.find('};') < 0:
+        if termunit.target.find("};") < 0:
             termunit.target = txt
             termunit.markfuzzy()
         else:
@@ -59,7 +59,7 @@ def create_termunit(
     for transnote in transnotes:
         termunit.addnote(transnote, "translator")
     for filename, count in filecounts.items():
-        termunit.addnote("(poterminology) %s (%d)\n" % (filename, count), 'translator')
+        termunit.addnote("(poterminology) %s (%d)\n" % (filename, count), "translator")
     return termunit
 
 
@@ -90,7 +90,7 @@ class TerminologyExtractor:
         if stopfile is None:
             try:
                 stopfile = file_discovery.get_abs_data_filename(
-                    'stoplist-%s' % self.sourcelanguage
+                    "stoplist-%s" % self.sourcelanguage
                 )
             except Exception:
                 pass
@@ -115,12 +115,12 @@ class TerminologyExtractor:
     def parse_stopword_file(self):
 
         actions = {
-            '+': frozenset(),
-            ':': frozenset(['skip']),
-            '<': frozenset(['phrase']),
-            '=': frozenset(['word']),
-            '>': frozenset(['word', 'skip']),
-            '@': frozenset(['word', 'phrase']),
+            "+": frozenset(),
+            ":": frozenset(["skip"]),
+            "<": frozenset(["phrase"]),
+            "=": frozenset(["word"]),
+            ">": frozenset(["word", "skip"]),
+            "@": frozenset(["word", "phrase"]),
         }
 
         with open(self.stopfile, "r") as stopfile:
@@ -129,16 +129,16 @@ class TerminologyExtractor:
                 for stopline in stopfile:
                     line += 1
                     stoptype = stopline[0]
-                    if stoptype == '#' or stoptype == "\n":
+                    if stoptype == "#" or stoptype == "\n":
                         continue
-                    elif stoptype == '!':
-                        if stopline[1] == 'C':
+                    elif stoptype == "!":
+                        if stopline[1] == "C":
                             self.stopfoldtitle = False
                             self.stopignorecase = False
-                        elif stopline[1] == 'F':
+                        elif stopline[1] == "F":
                             self.stopfoldtitle = True
                             self.stopignorecase = False
-                        elif stopline[1] == 'I':
+                        elif stopline[1] == "I":
                             self.stopignorecase = True
                         else:
                             logger.warning(
@@ -146,8 +146,8 @@ class TerminologyExtractor:
                                 self.stopfile,
                                 line,
                             )
-                    elif stoptype == '/':
-                        self.stoprelist.append(re.compile(stopline[1:-1] + '$'))
+                    elif stoptype == "/":
+                        self.stoprelist.append(re.compile(stopline[1:-1] + "$"))
                     else:
                         self.stopwords[stopline[1:-1]] = actions[stoptype]
             except KeyError as character:
@@ -185,25 +185,25 @@ class TerminologyExtractor:
         """adds (sub)phrases with non-skipwords and more than one word"""
         if (
             len(words) > skips + 1
-            and 'skip' not in self.stopword(words[0])
-            and 'skip' not in self.stopword(words[-1])
+            and "skip" not in self.stopword(words[0])
+            and "skip" not in self.stopword(words[-1])
         ):
-            self.glossary.setdefault(' '.join(words), []).append(translation)
+            self.glossary.setdefault(" ".join(words), []).append(translation)
         if partials:
             part = list(words)
             while len(part) > 2:
-                if 'skip' in self.stopword(part.pop()):
+                if "skip" in self.stopword(part.pop()):
                     skips -= 1
                 if (
                     len(part) > skips + 1
-                    and 'skip' not in self.stopword(part[0])
-                    and 'skip' not in self.stopword(part[-1])
+                    and "skip" not in self.stopword(part[0])
+                    and "skip" not in self.stopword(part[-1])
                 ):
-                    self.glossary.setdefault(' '.join(part), []).append(translation)
+                    self.glossary.setdefault(" ".join(part), []).append(translation)
 
     def processunits(self, units, fullinputpath):
         sourcelang = lang_factory.getlanguage(self.sourcelanguage)
-        rematchignore = frozenset(('word', 'phrase'))
+        rematchignore = frozenset(("word", "phrase"))
         defaultignore = frozenset()
         for unit in units:
             self.units += 1
@@ -233,34 +233,34 @@ class TerminologyExtractor:
                                 ignore = rematchignore
                                 break
                     translation = (source, target, unit, fullinputpath)
-                    if 'word' not in ignore:
+                    if "word" not in ignore:
                         # reduce plurals
                         root = word
                         if (
                             len(word) > 3
-                            and word[-1] == 's'
+                            and word[-1] == "s"
                             and word[0:-1] in self.glossary
                         ):
                             root = word[0:-1]
-                        elif len(root) > 2 and root + 's' in self.glossary:
-                            self.glossary[root] = self.glossary.pop(root + 's')
+                        elif len(root) > 2 and root + "s" in self.glossary:
+                            self.glossary[root] = self.glossary.pop(root + "s")
                         self.glossary.setdefault(root, []).append(translation)
                     if self.termlength > 1:
-                        if 'phrase' in ignore:
+                        if "phrase" in ignore:
                             # add trailing phrases in previous words
                             while len(words) > 2:
-                                if 'skip' in self.stopword(words.pop(0)):
+                                if "skip" in self.stopword(words.pop(0)):
                                     skips -= 1
                                 self.addphrases(words, skips, translation)
                             words = []
                             skips = 0
                         else:
                             words.append(word)
-                            if 'skip' in ignore:
+                            if "skip" in ignore:
                                 skips += 1
                             if len(words) > self.termlength + skips:
                                 while len(words) > self.termlength + skips:
-                                    if 'skip' in self.stopword(words.pop(0)):
+                                    if "skip" in self.stopword(words.pop(0)):
                                         skips -= 1
                                 self.addphrases(words, skips, translation)
                             else:
@@ -271,7 +271,7 @@ class TerminologyExtractor:
                     # add trailing phrases in sentence after reaching end
                     while self.termlength > 1 and len(words) > 2:
 
-                        if 'skip' in self.stopword(words.pop(0)):
+                        if "skip" in self.stopword(words.pop(0)):
                             skips -= 1
                         self.addphrases(words, skips, translation)
 
@@ -360,13 +360,13 @@ class TerminologyExtractor:
                 continue
             while len(words) > 2:
                 words.pop()
-                if terms[term][0] == terms.get(' '.join(words), [0])[0]:
-                    del terms[' '.join(words)]
+                if terms[term][0] == terms.get(" ".join(words), [0])[0]:
+                    del terms[" ".join(words)]
             words = term.split()
             while len(words) > 2:
                 words.pop(0)
-                if terms[term][0] == terms.get(' '.join(words), [0])[0]:
-                    del terms[' '.join(words)]
+                if terms[term][0] == terms.get(" ".join(words), [0])[0]:
+                    del terms[" ".join(words)]
         logger.info("%d terms after subphrase reduction", len(terms.keys()))
         termitems = list(terms.values())
         if sortorders is None:
@@ -467,7 +467,7 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
 
     def recursiveprocess(self, options):
         """recurse through directories and process files"""
-        if self.isrecursive(options.input, 'input') and getattr(
+        if self.isrecursive(options.input, "input") and getattr(
             options, "allowrecursiveinput", True
         ):
             if isinstance(options.input, list):
@@ -555,7 +555,7 @@ def main():
         metavar="STOPFILE",
         dest="stopfile",
         help="read stopword (term exclusion) list from STOPFILE (default %s)"
-        % file_discovery.get_abs_data_filename('stoplist-en'),
+        % file_discovery.get_abs_data_filename("stoplist-en"),
     )
 
     parser.set_defaults(foldtitle=True, ignorecase=False)
@@ -564,7 +564,7 @@ def main():
         "--fold-titlecase",
         callback=fold_case_option,
         action="callback",
-        help="fold \"Title Case\" to lowercase (default)",
+        help='fold "Title Case" to lowercase (default)',
     )
     parser.add_option(
         "-C",
@@ -653,7 +653,7 @@ def main():
         choices=TerminologyExtractor.sortorders_default,
         metavar="ORDER",
         help="output sort order(s): %s (may repeat option, default is all in above order)"
-        % ', '.join(TerminologyExtractor.sortorders_default),
+        % ", ".join(TerminologyExtractor.sortorders_default),
     )
 
     parser.add_option(
@@ -677,5 +677,5 @@ def main():
     parser.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

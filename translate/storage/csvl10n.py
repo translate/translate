@@ -29,10 +29,10 @@ from translate.storage import base
 class DefaultDialect(csv.excel):
     skipinitialspace = True
     quoting = csv.QUOTE_ALL
-    escapechar = '\\'
+    escapechar = "\\"
 
 
-csv.register_dialect('default', DefaultDialect)
+csv.register_dialect("default", DefaultDialect)
 
 
 class csvunit(base.TranslationUnit):
@@ -44,7 +44,7 @@ class csvunit(base.TranslationUnit):
         self.source = source or ""
         self.target = ""
         self.id = ""
-        self.fuzzy = 'False'
+        self.fuzzy = "False"
         self.developer_comments = ""
         self.translator_comments = ""
         self.context = ""
@@ -81,46 +81,46 @@ class csvunit(base.TranslationUnit):
             result = self.translator_comments
             if self.developer_comments:
                 if result:
-                    result += '\n' + self.developer_comments
+                    result += "\n" + self.developer_comments
                 else:
                     result = self.developer_comments
             return result
         elif origin == "translator":
             return self.translator_comments
-        elif origin in ('programmer', 'developer', 'source code'):
+        elif origin in ("programmer", "developer", "source code"):
             return self.developer_comments
         else:
             raise ValueError("Comment type not valid")
 
     def addnote(self, text, origin=None, position="append"):
-        if origin in ('programmer', 'developer', 'source code'):
-            if position == 'append' and self.developer_comments:
-                self.developer_comments += '\n' + text
-            elif position == 'prepend' and self.developer_comments:
-                self.developer_comments = text + '\n' + self.developer_comments
+        if origin in ("programmer", "developer", "source code"):
+            if position == "append" and self.developer_comments:
+                self.developer_comments += "\n" + text
+            elif position == "prepend" and self.developer_comments:
+                self.developer_comments = text + "\n" + self.developer_comments
             else:
                 self.developer_comments = text
         else:
-            if position == 'append' and self.translator_comments:
-                self.translator_comments += '\n' + text
-            elif position == 'prepend' and self.translator_comments:
-                self.translator_comments = self.translator_comments + '\n' + text
+            if position == "append" and self.translator_comments:
+                self.translator_comments += "\n" + text
+            elif position == "prepend" and self.translator_comments:
+                self.translator_comments = self.translator_comments + "\n" + text
             else:
                 self.translator_comments = text
 
     def removenotes(self, origin=None):
-        self.translator_comments = ''
+        self.translator_comments = ""
 
     def isfuzzy(self):
-        if self.fuzzy.lower() in ('1', 'x', 'true', 'yes', 'fuzzy'):
+        if self.fuzzy.lower() in ("1", "x", "true", "yes", "fuzzy"):
             return True
         return False
 
     def markfuzzy(self, value=True):
         if value:
-            self.fuzzy = 'True'
+            self.fuzzy = "True"
         else:
-            self.fuzzy = 'False'
+            self.fuzzy = "False"
 
     def match_header(self):
         """see if unit might be a header"""
@@ -128,7 +128,7 @@ class csvunit(base.TranslationUnit):
         for key, value in self.todict().items():
             if value:
                 some_value = True
-            if key.lower() != 'fuzzy' and value and key.lower() != value.lower():
+            if key.lower() != "fuzzy" and value and key.lower() != value.lower():
                 return False
         return some_value
 
@@ -150,7 +150,7 @@ class csvunit(base.TranslationUnit):
                 target = target.replace(escaped, unescaped, 1)
         return source, target
 
-    def fromdict(self, cedict, encoding='utf-8'):
+    def fromdict(self, cedict, encoding="utf-8"):
         for key, value in cedict.items():
             rkey = fieldname_map.get(key, key)
             if value is None or key is None or key == EXTRA_KEY:
@@ -180,14 +180,14 @@ class csvunit(base.TranslationUnit):
         source = self.source
         target = self.target
         output = {
-            'location': self.location,
-            'source': source,
-            'target': target,
-            'id': self.id,
-            'fuzzy': str(self.fuzzy),
-            'context': self.context,
-            'translator_comments': self.translator_comments,
-            'developer_comments': self.developer_comments,
+            "location": self.location,
+            "source": source,
+            "target": target,
+            "id": self.id,
+            "fuzzy": str(self.fuzzy),
+            "context": self.context,
+            "translator_comments": self.translator_comments,
+            "developer_comments": self.developer_comments,
         }
 
         return output
@@ -197,21 +197,21 @@ class csvunit(base.TranslationUnit):
 
 
 fieldname_map = {
-    'original': 'source',
-    'untranslated': 'source',
-    'translated': 'target',
-    'translation': 'target',
-    'identified': 'id',
-    'key': 'id',
-    'label': 'id',
-    'translator comments': 'translator_comments',
-    'notes': 'translator_comments',
-    'developer comments': 'developer_comments',
-    'state': 'fuzzy',
+    "original": "source",
+    "untranslated": "source",
+    "translated": "target",
+    "translation": "target",
+    "identified": "id",
+    "key": "id",
+    "label": "id",
+    "translator comments": "translator_comments",
+    "notes": "translator_comments",
+    "developer comments": "developer_comments",
+    "state": "fuzzy",
 }
 
 
-EXTRA_KEY = '__CSVL10N__EXTRA__'
+EXTRA_KEY = "__CSVL10N__EXTRA__"
 
 
 def try_dialects(inputfile, fieldnames, dialect):
@@ -225,12 +225,12 @@ def try_dialects(inputfile, fieldnames, dialect):
         try:
             inputfile.seek(0)
             reader = csv.DictReader(
-                inputfile, fieldnames=fieldnames, dialect='default', restkey=EXTRA_KEY
+                inputfile, fieldnames=fieldnames, dialect="default", restkey=EXTRA_KEY
             )
         except csv.Error:
             inputfile.seek(0)
             reader = csv.DictReader(
-                inputfile, fieldnames=fieldnames, dialect='excel', restkey=EXTRA_KEY
+                inputfile, fieldnames=fieldnames, dialect="excel", restkey=EXTRA_KEY
             )
     return reader
 
@@ -240,9 +240,9 @@ def valid_fieldnames(fieldnames):
     as the source.
     """
     for fieldname in fieldnames:
-        if fieldname == 'source':
+        if fieldname == "source":
             return True
-        elif fieldname in fieldname_map and fieldname_map[fieldname] == 'source':
+        elif fieldname in fieldname_map and fieldname_map[fieldname] == "source":
             return True
     return False
 
@@ -254,10 +254,10 @@ def detect_header(inputfile, dialect, fieldnames):
     except csv.Error:
         try:
             inputfile.seek(0)
-            reader = csv.reader(inputfile, 'default')
+            reader = csv.reader(inputfile, "default")
         except csv.Error:
             inputfile.seek(0)
-            reader = csv.reader(inputfile, 'excel')
+            reader = csv.reader(inputfile, "excel")
 
     header = next(reader)
     columncount = max(len(header), 3)
@@ -273,26 +273,26 @@ class csvfile(base.TranslationStore):
 
     UnitClass = csvunit
     Name = "Comma Separated Value"
-    Mimetypes = ['text/comma-separated-values', 'text/csv']
+    Mimetypes = ["text/comma-separated-values", "text/csv"]
     Extensions = ["csv"]
 
-    def __init__(self, inputfile=None, fieldnames=None, encoding='auto'):
+    def __init__(self, inputfile=None, fieldnames=None, encoding="auto"):
         super().__init__(encoding=encoding)
         if not fieldnames:
             self.fieldnames = [
-                'location',
-                'source',
-                'target',
-                'id',
-                'fuzzy',
-                'context',
-                'translator_comments',
-                'developer_comments',
+                "location",
+                "source",
+                "target",
+                "id",
+                "fuzzy",
+                "context",
+                "translator_comments",
+                "developer_comments",
             ]
         else:
             self.fieldnames = fieldnames
-        self.filename = getattr(inputfile, 'name', '')
-        self.dialect = 'default'
+        self.filename = getattr(inputfile, "name", "")
+        self.dialect = "default"
         if inputfile is not None:
             csvsrc = inputfile.read()
             inputfile.close()
@@ -300,10 +300,10 @@ class csvfile(base.TranslationStore):
 
     def parse(self, csvsrc, sample_length=1024):
         text, encoding = self.detect_encoding(
-            csvsrc, default_encodings=['utf-8', 'utf-16']
+            csvsrc, default_encodings=["utf-8", "utf-16"]
         )
         # FIXME: raise parse error if encoding detection fails?
-        self.encoding = encoding or 'utf-8'
+        self.encoding = encoding or "utf-8"
 
         sniffer = csv.Sniffer()
         if sample_length:
@@ -318,7 +318,7 @@ class csvfile(base.TranslationStore):
                 self.dialect.quoting = csv.QUOTE_ALL
                 self.dialect.doublequote = True
         except csv.Error:
-            self.dialect = 'default'
+            self.dialect = "default"
 
         inputfile = csv.StringIO(text)
         try:
@@ -350,7 +350,7 @@ class csvfile(base.TranslationStore):
     def getoutput(self):
         output = csv.StringIO()
         writer = csv.DictWriter(
-            output, self.fieldnames, extrasaction='ignore', dialect=self.dialect
+            output, self.fieldnames, extrasaction="ignore", dialect=self.dialect
         )
         writer.writeheader()
         for ce in self.units:

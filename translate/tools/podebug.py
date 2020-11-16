@@ -82,15 +82,15 @@ class podebug:
         if not isinstance(string, StringElem):
             string = StringElem(string)
         string.sub.insert(0, prepend)
-        if str(string).endswith('\n'):
+        if str(string).endswith("\n"):
             # Try and remove the last character from the tree
             try:
                 lastnode = string.flatten()[-1]
                 if isinstance(lastnode.sub[-1], str):
-                    lastnode.sub[-1] = lastnode.sub[-1].rstrip('\n')
+                    lastnode.sub[-1] = lastnode.sub[-1].rstrip("\n")
             except IndexError:
                 pass
-            string.sub.append(append + '\n')
+            string.sub.append(append + "\n")
         else:
             string.sub.append(append)
         return string
@@ -116,32 +116,32 @@ class podebug:
         # From Dive into Python which itself got it elsewhere
         # http://www.renderx.com/demos/examples/diveintopython.pdf
         subs = (
-            (r'a([nu])', r'u\1'),
-            (r'A([nu])', r'U\1'),
-            (r'a\B', r'e'),
-            (r'A\B', r'E'),
-            (r'en\b', r'ee'),
-            (r'\Bew', r'oo'),
-            (r'\Be\b', r'e-a'),
-            (r'\be', r'i'),
-            (r'\bE', r'I'),
-            (r'\Bf', r'ff'),
-            (r'\Bir', r'ur'),
-            (r'(\w*?)i(\w*?)$', r'\1ee\2'),
-            (r'\bow', r'oo'),
-            (r'\bo', r'oo'),
-            (r'\bO', r'Oo'),
-            (r'the', r'zee'),
-            (r'The', r'Zee'),
-            (r'th\b', r't'),
-            (r'\Btion', r'shun'),
-            (r'\Bu', r'oo'),
-            (r'\BU', r'Oo'),
-            (r'v', r'f'),
-            (r'V', r'F'),
-            (r'w', r'w'),
-            (r'W', r'W'),
-            (r'([a-z])[.]', r'\1. Bork Bork Bork!'),
+            (r"a([nu])", r"u\1"),
+            (r"A([nu])", r"U\1"),
+            (r"a\B", r"e"),
+            (r"A\B", r"E"),
+            (r"en\b", r"ee"),
+            (r"\Bew", r"oo"),
+            (r"\Be\b", r"e-a"),
+            (r"\be", r"i"),
+            (r"\bE", r"I"),
+            (r"\Bf", r"ff"),
+            (r"\Bir", r"ur"),
+            (r"(\w*?)i(\w*?)$", r"\1ee\2"),
+            (r"\bow", r"oo"),
+            (r"\bo", r"oo"),
+            (r"\bO", r"Oo"),
+            (r"the", r"zee"),
+            (r"The", r"Zee"),
+            (r"th\b", r"t"),
+            (r"\Btion", r"shun"),
+            (r"\Bu", r"oo"),
+            (r"\BU", r"Oo"),
+            (r"v", r"f"),
+            (r"V", r"F"),
+            (r"w", r"w"),
+            (r"W", r"W"),
+            (r"([a-z])[.]", r"\1. Bork Bork Bork!"),
         )
         for a, b in subs:
             self.apply_to_translatables(string, lambda s: re.sub(a, b, s))
@@ -172,7 +172,7 @@ class podebug:
             else:
                 transformed.append(element.sub[0])
 
-        return ''.join(transformed)
+        return "".join(transformed)
 
     REWRITE_UNICODE_MAP = (
         "ȦƁƇḒḖƑƓĦĪĴĶĿḾȠǾƤɊŘŞŦŬṼẆẊẎẐ" + "[\\]^_`" + "ȧƀƈḓḗƒɠħīĵķŀḿƞǿƥɋřşŧŭṽẇẋẏẑ"
@@ -193,7 +193,7 @@ class podebug:
             if self.preserveplaceholders:
                 return self.transform_characters_preserving_placeholders(s, transpose)
             else:
-                return ''.join([transpose(c) for c in s])
+                return "".join([transpose(c) for c in s])
 
         self.apply_to_translatables(string, transformer)
         return string
@@ -231,7 +231,7 @@ class podebug:
                     s, transpose
                 )
             else:
-                return "\u202e" + ''.join([transpose(c) for c in s])
+                return "\u202e" + "".join([transpose(c) for c in s])
             # To reverse instead of using the RTL override:
             # return ''.join(reversed([transpose(c) for c in s]))
 
@@ -293,7 +293,7 @@ class podebug:
                 hashable = unit.source
             prefix = prefix.replace(
                 "@hash_placeholder@",
-                md5(hashable.encode('utf-8')).hexdigest()[: self.hash_len],
+                md5(hashable.encode("utf-8")).hexdigest()[: self.hash_len],
             )
         if unit.istranslated():
             rich_string = unit.rich_target
@@ -330,7 +330,7 @@ class podebug:
             elif formatstr.endswith("h"):
                 try:
                     self.hash_len = int(
-                        ''.join([c for c in formatstr[1:-1] if c.isdigit()])
+                        "".join([c for c in formatstr[1:-1] if c.isdigit()])
                     )
                 except ValueError:
                     self.hash_len = 4
@@ -340,10 +340,10 @@ class podebug:
             formatoptions = formatstr[1:-1]
             if formatoptions and not formatstr.endswith("h"):
                 if "c" in formatoptions and formatted:
-                    formatted = formatted[0] + ''.join(
+                    formatted = formatted[0] + "".join(
                         [c for c in formatted[1:] if c.lower() not in "aeiou"]
                     )
-                length = ''.join([c for c in formatoptions if c.isdigit()])
+                length = "".join([c for c in formatoptions if c.isdigit()])
                 if length:
                     formatted = formatted[: int(length)]
             prefix = prefix.replace(formatstr, formatted)
@@ -446,5 +446,5 @@ def main():
     parser.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

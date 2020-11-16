@@ -8,40 +8,40 @@ from translate.storage import po, poheader, poxliff
 
 def test_parseheaderstring():
     """test for the header parsing function"""
-    source = r'''item1: one
+    source = r"""item1: one
 item2: two:two
 this item must get ignored because there is no colon sign in it
 item3: three
-'''
+"""
     d = poheader.parseheaderstring(source)
     print(type(d))
     assert len(d) == 3
-    assert d['item1'] == 'one'
-    assert d['item2'] == 'two:two'
-    assert d['item3'] == 'three'
+    assert d["item1"] == "one"
+    assert d["item2"] == "two:two"
+    assert d["item3"] == "three"
 
 
 def test_update():
     """test the update function"""
     # do we really add nothing if add==False ?
-    d = poheader.update({}, test='hello')
+    d = poheader.update({}, test="hello")
     assert len(d) == 0
     # do we add if add==True ?
-    d = poheader.update({}, add=True, Test='hello')
+    d = poheader.update({}, add=True, Test="hello")
     assert len(d) == 1
-    assert d['Test'] == 'hello'
+    assert d["Test"] == "hello"
     # do we really update ?
-    d = poheader.update({'Test': 'hello'}, add=True, Test='World')
+    d = poheader.update({"Test": "hello"}, add=True, Test="World")
     assert len(d) == 1
-    assert d['Test'] == 'World'
+    assert d["Test"] == "World"
     # does key rewrite work ?
-    d = poheader.update({}, add=True, test_me='hello')
-    assert d['Test-Me'] == 'hello'
+    d = poheader.update({}, add=True, test_me="hello")
+    assert d["Test-Me"] == "hello"
     # is the order correct ?
     d = OrderedDict()
-    d['Project-Id-Version'] = 'abc'
-    d['POT-Creation-Date'] = 'now'
-    d = poheader.update(d, add=True, Test='hello', Report_Msgid_Bugs_To='bugs@list.org')
+    d["Project-Id-Version"] = "abc"
+    d["POT-Creation-Date"] = "now"
+    d = poheader.update(d, add=True, Test="hello", Report_Msgid_Bugs_To="bugs@list.org")
     assert list(d.keys()) == [
         "Project-Id-Version",
         "Report-Msgid-Bugs-To",
@@ -102,26 +102,26 @@ def test_po_dates():
 
 def test_timezones():
     # The following will only work on Unix because of tzset() and %z
-    if 'tzset' in time.__dict__:
-        os.environ['TZ'] = 'Asia/Kabul'
+    if "tzset" in time.__dict__:
+        os.environ["TZ"] = "Asia/Kabul"
         time.tzset()
         assert time.timezone == -16200
         # Typically "+0430"
         assert poheader.tzstring() == time.strftime("%z")
 
-        os.environ['TZ'] = 'Asia/Seoul'
+        os.environ["TZ"] = "Asia/Seoul"
         time.tzset()
         assert time.timezone == -32400
         # Typically "+0900"
         assert poheader.tzstring() == time.strftime("%z")
 
-        os.environ['TZ'] = 'Africa/Johannesburg'
+        os.environ["TZ"] = "Africa/Johannesburg"
         time.tzset()
         assert time.timezone == -7200
         # Typically "+0200"
         assert poheader.tzstring() == time.strftime("%z")
 
-        os.environ['TZ'] = 'UTC'
+        os.environ["TZ"] = "UTC"
         time.tzset()
         assert time.timezone == 0
         # Typically "+0000"
@@ -149,7 +149,7 @@ def test_header_blank():
         assert headeritems["Plural-Forms"] == "nplurals=INTEGER; plural=EXPRESSION;"
 
     """test header functionality"""
-    posource = r'''# other comment\n
+    posource = r"""# other comment\n
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
@@ -162,7 +162,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
-'''
+"""
     pofile = poparse(posource)
     compare(pofile)
 
@@ -203,10 +203,10 @@ def test_plural_equation():
     test that we work with the equation even is the last semicolon is left out, since gettext
     tools don't seem to mind
     """
-    posource = r'''msgid ""
+    posource = r"""msgid ""
 msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1)%s\n"
-'''
+"""
     for colon in ("", ";"):
         pofile = poparse(posource % colon)
         print(pofile)
@@ -226,11 +226,11 @@ msgstr ""
 
 def test_plural_equation_across_lines():
     """test that we work if the plural equation spans more than one line"""
-    posource = r'''msgid ""
+    posource = r"""msgid ""
 msgstr ""
 "Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
 "10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-'''
+"""
     pofile = poparse(posource)
     print(pofile)
     assert len(pofile.units) == 1
@@ -252,16 +252,16 @@ msgstr ""
 
 def test_updatecontributor():
     """Test that we can update contributor information in the header comments."""
-    posource = r'''msgid ""
+    posource = r"""msgid ""
 msgstr ""
 "MIME-Version: 1.0"
-'''
+"""
     pofile = poparse(posource)
     pofile.updatecontributor("Grasvreter")
-    assert "# Grasvreter, 20" in bytes(pofile).decode('utf-8')
+    assert "# Grasvreter, 20" in bytes(pofile).decode("utf-8")
 
     pofile.updatecontributor("Koeivreter", "monster@grasveld.moe")
-    assert "# Koeivreter <monster@grasveld.moe>, 20" in bytes(pofile).decode('utf-8')
+    assert "# Koeivreter <monster@grasveld.moe>, 20" in bytes(pofile).decode("utf-8")
 
     pofile.header().addnote("Khaled Hosny <khaledhosny@domain.org>, 2006, 2007, 2008.")
     pofile.updatecontributor("Khaled Hosny", "khaledhosny@domain.org")
@@ -269,13 +269,13 @@ msgstr ""
     assert (
         "# Khaled Hosny <khaledhosny@domain.org>, 2006, 2007, 2008, %s."
         % time.strftime("%Y")
-        in bytes(pofile).decode('utf-8')
+        in bytes(pofile).decode("utf-8")
     )
 
 
 def test_updatecontributor_header():
     """Test preserving empty lines in comments"""
-    posource = r'''# Japanese translation of ibus.
+    posource = r"""# Japanese translation of ibus.
 # Copyright (C) 2015-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # This file is distributed under the same license as the ibus package.
 #
@@ -284,7 +284,7 @@ def test_updatecontributor_header():
 msgid ""
 msgstr ""
 "MIME-Version: 1.0"
-'''
+"""
     pofile = poparse(posource)
 
     # Add contributor
@@ -294,56 +294,56 @@ msgstr ""
     expected = posource.replace(
         "msgid", "# Grasvreter, %s.\nmsgid" % time.strftime("%Y")
     )
-    assert bytes(pofile).decode('utf-8') == expected
+    assert bytes(pofile).decode("utf-8") == expected
 
 
 def test_language():
     """Test that we can get a language from the relevant headers."""
-    posource = r'''msgid ""
+    posource = r"""msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"
-'''
+"""
 
     pofile = poparse(posource)
     assert pofile.gettargetlanguage() is None
 
     posource += '"Language-Team: translate-discuss-af@lists.sourceforge.net\\n"\n'
     pofile = poparse(posource)
-    assert pofile.gettargetlanguage() == 'af'
+    assert pofile.gettargetlanguage() == "af"
 
     posource += '"X-Poedit-Language: German\\n"\n'
     pofile = poparse(posource)
-    assert pofile.gettargetlanguage() == 'de'
+    assert pofile.gettargetlanguage() == "de"
 
     posource += '"Language: fr_CA\\n"\n'
     pofile = poparse(posource)
-    assert pofile.gettargetlanguage() == 'fr_CA'
+    assert pofile.gettargetlanguage() == "fr_CA"
 
 
 def test_project():
     """Test that we can get a project from the relevant headers."""
-    posource = r'''msgid ""
+    posource = r"""msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"
-'''
+"""
 
     pofile = poparse(posource)
     assert pofile.getprojectstyle() is None
 
     posource += '"X-Accelerator-Marker: ~\\n"\n'
     pofile = poparse(posource)
-    assert pofile.getprojectstyle() == 'openoffice'
+    assert pofile.getprojectstyle() == "openoffice"
 
     posource += '"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=system-\\n"\n'
     pofile = poparse(posource)
-    assert pofile.getprojectstyle() == 'gnome'
+    assert pofile.getprojectstyle() == "gnome"
 
     posource += '"X-Project-Style: drupal\\n"\n'
     pofile = poparse(posource)
-    assert pofile.getprojectstyle() == 'drupal'
+    assert pofile.getprojectstyle() == "drupal"
 
-    pofile.setprojectstyle('kde')
-    assert pofile.getprojectstyle() == 'kde'
+    pofile.setprojectstyle("kde")
+    assert pofile.getprojectstyle() == "kde"
 
-    pofile.setprojectstyle('complete-rubbish')
-    assert pofile.getprojectstyle() == 'complete-rubbish'
+    pofile.setprojectstyle("complete-rubbish")
+    assert pofile.getprojectstyle() == "complete-rubbish"

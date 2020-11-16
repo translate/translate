@@ -13,17 +13,17 @@ class TestCatkeysUnit(test_base.TestTranslationUnit):
         class test but eliminate a few of the actual tests.
         """
         unit = self.unit
-        specials = ['\\"', '\\ ', '\\\n', '\\\t', '\\\\r', '\\\\"']
+        specials = ['\\"', "\\ ", "\\\n", "\\\t", "\\\\r", '\\\\"']
         for special in specials:
             unit.source = special
-            print("unit.source:", repr(unit.source) + '|')
-            print("special:", repr(special) + '|')
+            print("unit.source:", repr(unit.source) + "|")
+            print("special:", repr(special) + "|")
             assert unit.source == special
 
     def test_newlines(self):
         """Wordfast does not like real newlines"""
         unit = self.UnitClass("One\nTwo")
-        assert unit.dict['source'] == "One\\nTwo"
+        assert unit.dict["source"] == "One\\nTwo"
 
     def test_istranslated(self):
         unit = self.UnitClass()

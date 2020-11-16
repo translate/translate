@@ -121,7 +121,7 @@ class BaseJsonUnit(base.DictUnit):
     def __str__(self):
         """Converts to a string representation."""
         return json.dumps(
-            self.getvalue(), separators=(',', ': '), indent=4, ensure_ascii=False
+            self.getvalue(), separators=(",", ": "), indent=4, ensure_ascii=False
         )
 
     def converttarget(self):
@@ -157,12 +157,12 @@ class JsonFile(base.DictStore):
         """construct a JSON file, optionally reading in from inputfile."""
         super().__init__(**kwargs)
         self._filter = filter
-        self.filename = ''
-        self._file = ''
+        self.filename = ""
+        self._file = ""
         self.dump_args = {
-            'separators': (',', ': '),
-            'indent': 4,
-            'ensure_ascii': False,
+            "separators": (",", ": "),
+            "indent": 4,
+            "ensure_ascii": False,
         }
         if inputfile is not None:
             self.parse(inputfile)
@@ -171,7 +171,7 @@ class JsonFile(base.DictStore):
         units = self.get_root_node()
         self.serialize_units(units)
         out.write(json.dumps(units, **self.dump_args).encode(self.encoding))
-        out.write(b'\n')
+        out.write(b"\n")
 
     def _extract_units(
         self,
@@ -196,13 +196,13 @@ class JsonFile(base.DictStore):
         if isinstance(data, dict):
             for k, v in data.items():
                 for x in self._extract_units(
-                    v, stop, prev + [('key', k)], k, None, data
+                    v, stop, prev + [("key", k)], k, None, data
                 ):
                     yield x
         elif isinstance(data, list):
             for i, item in enumerate(data):
                 for x in self._extract_units(
-                    item, stop, prev + [('index', i)], i, name_node, data
+                    item, stop, prev + [("index", i)], i, name_node, data
                 ):
                     yield x
         # apply filter
@@ -218,10 +218,10 @@ class JsonFile(base.DictStore):
 
     def parse(self, input):
         """parse the given file or file source string"""
-        if hasattr(input, 'name'):
+        if hasattr(input, "name"):
             self.filename = input.name
-        elif not getattr(self, 'filename', ''):
-            self.filename = ''
+        elif not getattr(self, "filename", ""):
+            self.filename = ""
         if hasattr(input, "read"):
             src = input.read()
             input.close()
@@ -253,11 +253,11 @@ class JsonNestedFile(JsonFile):
 
 class WebExtensionJsonUnit(BaseJsonUnit):
     def storevalues(self, output):
-        value = OrderedDict((('message', self.target),))
+        value = OrderedDict((("message", self.target),))
         if self.notes:
-            value['description'] = self.notes
+            value["description"] = self.notes
         if self.placeholders:
-            value['placeholders'] = self.placeholders
+            value["placeholders"] = self.placeholders
         self.storevalue(output, value)
 
 
@@ -283,10 +283,10 @@ class WebExtensionJsonFile(JsonFile):
     ):
         for item, value in data.items():
             unit = self.UnitClass(
-                value.get('message', ''),
+                value.get("message", ""),
                 item,
-                value.get('description', ''),
-                value.get('placeholders', None),
+                value.get("description", ""),
+                value.get("placeholders", None),
             )
             unit.setid(item)
             yield unit
@@ -306,15 +306,15 @@ class I18NextUnit(JsonNestedUnit):
     def target(self, target):
         def get_base(item):
             """Return base name for plurals"""
-            if '_0' in item[0]:
+            if "_0" in item[0]:
                 return item[0][:-2]
             else:
                 return item[0]
 
         def get_plurals(count, base):
             if count <= 2:
-                return [base, base + '_plural'][:count]
-            return ['{0}_{1}'.format(base, i) for i in range(count)]
+                return [base, base + "_plural"][:count]
+            return ["{0}_{1}".format(base, i) for i in range(count)]
 
         if isinstance(target, multistring):
             count = len(target.strings)
@@ -359,10 +359,10 @@ class I18NextFile(JsonNestedFile):
             prev = self.UnitClass.IdClass([])
         if isinstance(data, dict):
             plurals_multiple = [
-                key.rsplit('_', 1)[0] for key in data if key.endswith('_0')
+                key.rsplit("_", 1)[0] for key in data if key.endswith("_0")
             ]
             plurals_simple = [
-                key.rsplit('_', 1)[0] for key in data if key.endswith('_plural')
+                key.rsplit("_", 1)[0] for key in data if key.endswith("_plural")
             ]
             processed = set()
 
@@ -371,20 +371,20 @@ class I18NextFile(JsonNestedFile):
                 if k in processed:
                     continue
                 plurals = []
-                plural_base = ''
-                if k in plurals_simple or k + '_plural' in plurals_simple:
-                    if k.endswith('_plural'):
+                plural_base = ""
+                if k in plurals_simple or k + "_plural" in plurals_simple:
+                    if k.endswith("_plural"):
                         plural_base = k[:-7]
                     else:
                         plural_base = k
                     plurals_simple.remove(plural_base)
-                    plurals = [k, k + '_plural']
-                elif '_' in k:
-                    plural_base, digit = k.rsplit('_', 1)
+                    plurals = [k, k + "_plural"]
+                elif "_" in k:
+                    plural_base, digit = k.rsplit("_", 1)
                     if plural_base in plurals_multiple and digit.isdigit():
                         plurals_multiple.remove(plural_base)
                         plurals = [
-                            '{0}_{1}'.format(plural_base, order) for order in range(10)
+                            "{0}_{1}".format(plural_base, order) for order in range(10)
                         ]
                 if plurals:
                     sources = []
@@ -396,13 +396,13 @@ class I18NextFile(JsonNestedFile):
                         sources.append(data[key])
                         items.append(key)
                     unit = self.UnitClass(multistring(sources), items)
-                    newid = prev + [('key', plural_base)]
+                    newid = prev + [("key", plural_base)]
                     unit.set_unitid(newid)
                     yield unit
                     continue
 
                 for x in self._extract_units(
-                    v, stop, prev + [('key', k)], k, None, data
+                    v, stop, prev + [("key", k)], k, None, data
                 ):
                     yield x
         else:
@@ -428,10 +428,10 @@ class GoI18NJsonUnit(BaseJsonUnit):
                     for offset, plural in enumerate(self._store.plural_tags)
                 ]
             )
-        value = OrderedDict((('id', self.getid()),))
+        value = OrderedDict((("id", self.getid()),))
         if self.notes:
-            value['description'] = self.notes
-        value['translation'] = target
+            value["description"] = self.notes
+        value["translation"] = target
         return value
 
 
@@ -450,10 +450,10 @@ class GoI18NJsonFile(JsonFile):
     def plural_tags(self):
         locale = self.gettargetlanguage()
         if locale:
-            locale = locale.replace('_', '-').split('-')[0]
+            locale = locale.replace("_", "-").split("-")[0]
         else:
             locale = "en"
-        return plural_tags.get(locale, plural_tags['en'])
+        return plural_tags.get(locale, plural_tags["en"])
 
     def _extract_units(
         self,
@@ -465,7 +465,7 @@ class GoI18NJsonFile(JsonFile):
         last_node=None,
     ):
         for value in data:
-            translation = value.get('translation', '')
+            translation = value.get("translation", "")
             if isinstance(translation, dict):
                 # Ordered list of plurals
                 translation = multistring(
@@ -477,16 +477,16 @@ class GoI18NJsonFile(JsonFile):
                 )
             unit = self.UnitClass(
                 translation,
-                value.get('id', ''),
-                value.get('description', ''),
+                value.get("id", ""),
+                value.get("description", ""),
             )
-            unit.setid(value.get('id', ''))
+            unit.setid(value.get("id", ""))
             yield unit
 
     def serialize(self, out):
         units = [unit.getvalue() for unit in self.units]
         out.write(json.dumps(units, **self.dump_args).encode(self.encoding))
-        out.write(b'\n')
+        out.write(b"\n")
 
 
 class ARBJsonUnit(BaseJsonUnit):
@@ -506,7 +506,7 @@ class ARBJsonUnit(BaseJsonUnit):
 
     def storevalues(self, output):
         if self.notes:
-            self.metadata['description'] = self.notes
+            self.metadata["description"] = self.notes
         identifier = self.getid()
         if identifier == "@":
             for key, value in self.metadata.items():
@@ -514,7 +514,7 @@ class ARBJsonUnit(BaseJsonUnit):
         else:
             self.storevalue(output, self.target, override_key=identifier)
             self.storevalue(
-                output, self.metadata, override_key='@{}'.format(identifier)
+                output, self.metadata, override_key="@{}".format(identifier)
             )
 
     def isheader(self):
@@ -535,9 +535,9 @@ class ARBJsonFile(JsonFile):
     def __init__(self, inputfile=None, filter=None, **kwargs):
         super().__init__(inputfile, filter, **kwargs)
         self.dump_args = {
-            'separators': (',', ': '),
-            'indent': 2,
-            'ensure_ascii': False,
+            "separators": (",", ": "),
+            "indent": 2,
+            "ensure_ascii": False,
         }
 
     def _extract_units(
@@ -565,8 +565,8 @@ class ARBJsonFile(JsonFile):
             unit = self.UnitClass(
                 value,
                 item,
-                metadata.get('description', ''),
-                metadata.get('placeholders', None),
+                metadata.get("description", ""),
+                metadata.get("placeholders", None),
                 metadata=metadata,
             )
             unit.setid(item)

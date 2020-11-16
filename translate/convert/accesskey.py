@@ -138,7 +138,7 @@ def extract(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
             marker_pos += 1
             if marker_pos == len(string):
                 break
-            if accesskey_marker == '&' and XMLEntityPlaceable.regex.match(
+            if accesskey_marker == "&" and XMLEntityPlaceable.regex.match(
                 string[marker_pos - 1 :]
             ):
                 continue
@@ -184,9 +184,9 @@ def combine(label, accesskey, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
 
     while (accesskeypos < 0) and searchpos < len(label):
         searchchar = label[searchpos]
-        if searchchar == '&':
+        if searchchar == "&":
             in_entity = True
-        elif searchchar == ';' or searchchar == " ":
+        elif searchchar == ";" or searchchar == " ":
             in_entity = False
         if not in_entity:
             if searchchar == accesskey:  # Prefer supplied case

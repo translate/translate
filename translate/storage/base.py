@@ -31,13 +31,13 @@ from translate.storage.workflow import StateEnum as states
 
 # Simple BOM based encoding detection
 ENCODING_BOMS = (
-    (codecs.BOM_UTF8, 'utf-8-sig'),
-    (codecs.BOM_UTF16, 'utf-16'),
-    (codecs.BOM_UTF16_BE, 'utf-16-be'),
-    (codecs.BOM_UTF16_LE, 'utf-16-le'),
-    (codecs.BOM_UTF32, 'utf-32'),
-    (codecs.BOM_UTF32_BE, 'utf-32-be'),
-    (codecs.BOM_UTF32_LE, 'utf-32-le'),
+    (codecs.BOM_UTF8, "utf-8-sig"),
+    (codecs.BOM_UTF16, "utf-16"),
+    (codecs.BOM_UTF16_BE, "utf-16-be"),
+    (codecs.BOM_UTF16_LE, "utf-16-le"),
+    (codecs.BOM_UTF32, "utf-32"),
+    (codecs.BOM_UTF32_BE, "utf-32-be"),
+    (codecs.BOM_UTF32_LE, "utf-32-le"),
 )
 
 
@@ -151,7 +151,7 @@ class TranslationUnit:
             [
                 "%s: %s" % (k, self.__dict__[k])
                 for k in sorted(self.__dict__.keys())
-                if k != '_store'
+                if k != "_store"
             ]
         )
 
@@ -210,12 +210,12 @@ class TranslationUnit:
 
     @rich_source.setter
     def rich_source(self, value):
-        if not hasattr(value, '__iter__'):
-            raise ValueError('value must be iterable')
+        if not hasattr(value, "__iter__"):
+            raise ValueError("value must be iterable")
         if len(value) < 1:
-            raise ValueError('value must have at least one element.')
+            raise ValueError("value must have at least one element.")
         if not isinstance(value[0], StringElem):
-            raise ValueError('value[0] must be of type StringElem.')
+            raise ValueError("value[0] must be of type StringElem.")
         self._rich_source = list(value)
         multi = self.rich_to_multistring(value)
         if self.source != multi:
@@ -232,12 +232,12 @@ class TranslationUnit:
 
     @rich_target.setter
     def rich_target(self, value):
-        if not hasattr(value, '__iter__'):
-            raise ValueError('value must be iterable')
+        if not hasattr(value, "__iter__"):
+            raise ValueError("value must be iterable")
         if len(value) < 1:
-            raise ValueError('value must have at least one element.')
+            raise ValueError("value must have at least one element.")
         if not isinstance(value[0], StringElem):
-            raise ValueError('value[0] must be of type StringElem.')
+            raise ValueError("value[0] must be of type StringElem.")
         self._rich_target = list(value)
         self.target = self.rich_to_multistring(value)
 
@@ -343,13 +343,13 @@ class TranslationUnit:
                        - 'developer', 'programmer', 'source code' (synonyms)
         """
         if position == "append" and getattr(self, "notes", None):
-            self.notes += '\n' + text
+            self.notes += "\n" + text
         else:
             self.notes = text
 
     def removenotes(self, origin=None):
         """Remove all the translator's notes."""
-        self.notes = ''
+        self.notes = ""
 
     def adderror(self, errorname, errortext):
         """Adds an error message to this unit.
@@ -481,7 +481,7 @@ class TranslationUnit:
             if state_range[0] <= n < state_range[1]:
                 return state_id
         if self.STATE:
-            raise ValueError('No state containing value %s' % (n))
+            raise ValueError("No state containing value %s" % (n))
         else:
             return n
 
@@ -518,7 +518,7 @@ class TranslationStore:
     """Indicates if format can store suggestions and alternative translation
     for a unit"""
 
-    default_encoding = 'utf-8'
+    default_encoding = "utf-8"
     sourcelanguage = None
     targetlanguage = None
 
@@ -535,16 +535,16 @@ class TranslationStore:
     @property
     def encoding(self):
         # self._encoding is either defined by __init__ or auto-detected from parsed file
-        if self._encoding == 'auto':
-            return 'utf-8'
+        if self._encoding == "auto":
+            return "utf-8"
         return self._encoding or self.default_encoding
 
     @encoding.setter
     def encoding(self, value):
         if value == "CHARSET" or value is None:
             return
-        if value == 'ascii':
-            value = 'utf-8'
+        if value == "ascii":
+            value = "utf-8"
         self._encoding = value
 
     def getsourcelanguage(self):
@@ -565,7 +565,7 @@ class TranslationStore:
 
     def getprojectstyle(self):
         """Get the project type for this store."""
-        return getattr(self, '_project_style', None)
+        return getattr(self, "_project_style", None)
 
     def setprojectstyle(self, project_style):
         """Set the project type for this store."""
@@ -720,7 +720,7 @@ class TranslationStore:
     def __getstate__(self):
         odict = self.__dict__.copy()
         # fileobj is generally not picklable
-        odict['fileobj'] = None
+        odict["fileobj"] = None
         return odict
 
     def __bytes__(self):
@@ -772,7 +772,7 @@ class TranslationStore:
         """
         for bom, encoding in ENCODING_BOMS:
             if text.startswith(bom):
-                return {'encoding': encoding, 'confidence': 1.0}
+                return {"encoding": encoding, "confidence": 1.0}
         return None
 
     def detect_encoding(self, text, default_encodings=None):
@@ -781,7 +781,7 @@ class TranslationStore:
         or by trying to decode the file.
         """
         if not default_encodings:
-            default_encodings = ['utf-8']
+            default_encodings = ["utf-8"]
         try:
             import chardet
         except ImportError:
@@ -789,39 +789,39 @@ class TranslationStore:
         else:
             # many false complaints with ellipse (…) (see bug 1825)
             detected_encoding = chardet.detect(text.replace(b"\xe2\x80\xa6", b""))
-            if detected_encoding['confidence'] < 0.48:
+            if detected_encoding["confidence"] < 0.48:
                 detected_encoding = None
-            elif detected_encoding['encoding'] == 'ascii':
-                detected_encoding['encoding'] = self.encoding
+            elif detected_encoding["encoding"] == "ascii":
+                detected_encoding["encoding"] = self.encoding
             else:
-                detected_encoding['encoding'] = detected_encoding['encoding'].lower()
+                detected_encoding["encoding"] = detected_encoding["encoding"].lower()
 
         encodings = []
         # Purposefully accessed the internal _encoding, as encoding is never 'auto'
-        if self._encoding == 'auto':
-            if detected_encoding and detected_encoding['encoding'] not in encodings:
-                encodings.append(detected_encoding['encoding'])
+        if self._encoding == "auto":
+            if detected_encoding and detected_encoding["encoding"] not in encodings:
+                encodings.append(detected_encoding["encoding"])
             for encoding in default_encodings:
                 if encoding not in encodings:
                     encodings.append(encoding)
         elif detected_encoding:
-            if '-' in detected_encoding['encoding']:
-                encoding, suffix = detected_encoding['encoding'].rsplit('-', 1)
+            if "-" in detected_encoding["encoding"]:
+                encoding, suffix = detected_encoding["encoding"].rsplit("-", 1)
             else:
-                encoding = detected_encoding['encoding']
+                encoding = detected_encoding["encoding"]
                 suffix = None
 
             # Different charset, just with BOM
-            if encoding == self.encoding and suffix == 'sig':
-                encodings.append(detected_encoding['encoding'])
-            elif detected_encoding['encoding'] != self.encoding:
+            if encoding == self.encoding and suffix == "sig":
+                encodings.append(detected_encoding["encoding"])
+            elif detected_encoding["encoding"] != self.encoding:
                 logging.warning(
                     "trying to parse %s with encoding: %s but "
                     "detected encoding is %s (confidence: %s)",
                     self.filename,
                     self.encoding,
-                    detected_encoding['encoding'],
-                    detected_encoding['confidence'],
+                    detected_encoding["encoding"],
+                    detected_encoding["confidence"],
                 )
             encodings.append(self.encoding)
         else:
@@ -835,8 +835,8 @@ class TranslationStore:
             except UnicodeDecodeError:
                 r_text = None
                 r_encoding = None
-        if r_encoding == 'ascii':
-            r_encoding = 'utf-8'
+        if r_encoding == "ascii":
+            r_encoding = "utf-8"
         return r_text, r_encoding
 
     def parse(self, data):
@@ -846,7 +846,7 @@ class TranslationStore:
     def savefile(self, storefile):
         """Write the string representation to the given file (or filename)."""
         if isinstance(storefile, str):
-            storefile = open(storefile, 'wb')
+            storefile = open(storefile, "wb")
         self.fileobj = storefile
         self._assignname()
         self.serialize(storefile)
@@ -857,13 +857,13 @@ class TranslationStore:
         fileobj = getattr(self, "fileobj", None)
         if not fileobj:
             if hasattr(self, "filename"):
-                fileobj = open(self.filename, 'wb')
+                fileobj = open(self.filename, "wb")
         else:
             fileobj.close()
             filename = getattr(fileobj, "name", getattr(fileobj, "filename", None))
             if not filename:
                 raise ValueError("No file or filename to save to")
-            fileobj = open(filename, 'wb')
+            fileobj = open(filename, "wb")
         self.savefile(fileobj)
 
     @classmethod
@@ -872,8 +872,8 @@ class TranslationStore:
         to an object.
         """
         if isinstance(storefile, str):
-            storefile = open(storefile, 'rb')
-        mode = getattr(storefile, "mode", 'rb')
+            storefile = open(storefile, "rb")
+        mode = getattr(storefile, "mode", "rb")
         # For some reason GzipFile returns 1, so we have to test for that here
         if mode == 1 or "r" in mode:
             storestring = storefile.read()
@@ -905,18 +905,18 @@ class UnitId:
 
     def __str__(self):
         def fmt(element, key):
-            if element == 'key':
-                return '{}{}'.format(self.KEY_SEPARATOR, key)
-            elif element == 'index':
-                return '{}[{}]'.format(self.INDEX_SEPARATOR, key)
+            if element == "key":
+                return "{}{}".format(self.KEY_SEPARATOR, key)
+            elif element == "index":
+                return "{}[{}]".format(self.INDEX_SEPARATOR, key)
             else:
-                raise ValueError('Unsupported element: {}'.format(element))
+                raise ValueError("Unsupported element: {}".format(element))
 
-        return ''.join([fmt(*part) for part in self.parts])
+        return "".join([fmt(*part) for part in self.parts])
 
     def __add__(self, other):
         if not isinstance(other, list):
-            raise ValueError('Not supported type for add: {}'.format(type(other)))
+            raise ValueError("Not supported type for add: {}".format(type(other)))
         return self.__class__(self.parts + other)
 
     @classmethod
@@ -926,8 +926,8 @@ class UnitId:
         if text.startswith(cls.KEY_SEPARATOR):
             text = text[len(cls.KEY_SEPARATOR) :]
         for item in text.split(cls.KEY_SEPARATOR):
-            if '[' in item and item[-1] == ']':
-                item, pos = item[:-1].split('[')
+            if "[" in item and item[-1] == "]":
+                item, pos = item[:-1].split("[")
                 if cls.INDEX_SEPARATOR and item:
                     result.append(("key", item))
                 result.append(("index", int(pos)))
@@ -951,26 +951,26 @@ class DictUnit(TranslationUnit):
         parts = self._unitid.parts
         for pos, part in enumerate(parts[:-1]):
             element, key = part
-            default = [] if parts[pos + 1][0] == 'index' else self.DefaultDict()
-            if element == 'index':
+            default = [] if parts[pos + 1][0] == "index" else self.DefaultDict()
+            if element == "index":
                 if len(target) <= key and not unset:
                     target.append(default)
-            elif element == 'key':
+            elif element == "key":
                 if key not in target or isinstance(target[key], str):
                     target[key] = default
             else:
-                raise ValueError('Unsupported element: {}'.format(element))
+                raise ValueError("Unsupported element: {}".format(element))
             target = target[key]
         if override_key:
-            element, key = 'key', override_key
+            element, key = "key", override_key
         else:
             element, key = parts[-1]
-        if element == 'key':
+        if element == "key":
             if unset:
                 del target[key]
             else:
                 target[key] = value
-        elif element == 'index':
+        elif element == "index":
             if len(target) <= key:
                 if not unset:
                     target.append(value)
@@ -980,7 +980,7 @@ class DictUnit(TranslationUnit):
                 else:
                     target[key] = value
         else:
-            raise ValueError('Unsupported element: {}'.format(element))
+            raise ValueError("Unsupported element: {}".format(element))
 
     def storevalues(self, output):
         self.storevalue(output, self.value)
@@ -998,7 +998,7 @@ class DictUnit(TranslationUnit):
 
 class DictStore(TranslationStore):
     def get_root_node(self):
-        if self.units and self.units[0].getid().startswith('['):
+        if self.units and self.units[0].getid().startswith("["):
             return []
         return OrderedDict()
 

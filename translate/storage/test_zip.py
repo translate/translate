@@ -74,7 +74,7 @@ class TestZIPFile:
     def test_getunits(self):
         """Tests basic functionality."""
         files = ["a.po", "b.po", "c.po"]
-        posource = '''msgid "bla"\nmsgstr "blabla"\n'''
+        posource = """msgid "bla"\nmsgstr "blabla"\n"""
         self.touchfiles(self.testzip, files, posource, last=True)
 
         d = zip.ZIPFile(self.testzip)

@@ -9,12 +9,12 @@ def test_makekey():
     assert (
         oo.makekey(
             (
-                'project',
-                r'path\to\the\sourcefile.src',
-                'resourcetype',
-                'GROUP_ID',
-                'LOCAL_ID',
-                'platform',
+                "project",
+                r"path\to\the\sourcefile.src",
+                "resourcetype",
+                "GROUP_ID",
+                "LOCAL_ID",
+                "platform",
             ),
             False,
         )
@@ -24,12 +24,12 @@ def test_makekey():
     assert (
         oo.makekey(
             (
-                'project',
-                r'path\to\the\sourcefile.src',
-                'resourcetype',
-                'GROUP_ID',
-                'LOCAL_ID',
-                'platform',
+                "project",
+                r"path\to\the\sourcefile.src",
+                "resourcetype",
+                "GROUP_ID",
+                "LOCAL_ID",
+                "platform",
             ),
             True,
         )
@@ -38,12 +38,12 @@ def test_makekey():
     assert (
         oo.makekey(
             (
-                'project',
-                r'path\to\the\sourcefile.src',
-                'resourcetype',
-                'GROUP_ID',
-                '',
-                'platform',
+                "project",
+                r"path\to\the\sourcefile.src",
+                "resourcetype",
+                "GROUP_ID",
+                "",
+                "platform",
             ),
             False,
         )
@@ -52,12 +52,12 @@ def test_makekey():
     assert (
         oo.makekey(
             (
-                'project',
-                r'path\to\the\sourcefile.src',
-                'resourcetype',
-                '',
-                'LOCAL_ID',
-                'platform',
+                "project",
+                r"path\to\the\sourcefile.src",
+                "resourcetype",
+                "",
+                "LOCAL_ID",
+                "platform",
             ),
             False,
         )
@@ -66,12 +66,12 @@ def test_makekey():
     assert (
         oo.makekey(
             (
-                'project',
-                r'path\to\the\sourcefile.src',
-                '',
-                'GROUP_ID',
-                'LOCAL_ID',
-                'platform',
+                "project",
+                r"path\to\the\sourcefile.src",
+                "",
+                "GROUP_ID",
+                "LOCAL_ID",
+                "platform",
             ),
             False,
         )
@@ -79,7 +79,7 @@ def test_makekey():
     )
     assert (
         oo.makekey(
-            ('project', r'path\to\the\sourcefile.src', '', 'GROUP_ID', '', 'platform'),
+            ("project", r"path\to\the\sourcefile.src", "", "GROUP_ID", "", "platform"),
             False,
         )
         == "sourcefile.src#GROUP_ID"
@@ -123,68 +123,68 @@ class TestOO:
     def ooregen(self, oosource):
         """helper that converts oo source to oofile object and back"""
         oofile = self.ooparse(oosource)
-        return bytes(oofile).decode('utf-8')
+        return bytes(oofile).decode("utf-8")
 
     def test_simpleentry(self):
         """checks that a simple oo entry is parsed correctly"""
-        oosource = r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58'
+        oosource = r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58"
         oofile = self.ooparse(oosource)
         assert len(oofile.units) == 1
         oe = oofile.units[0]
         assert list(oe.languages.keys()) == ["en-US"]
         ol = oofile.oolines[0]
         assert ol.getkey() == (
-            'svx',
-            r'source\dialog\numpages.src',
-            'string',
-            'RID_SVXPAGE_NUM_OPTIONS',
-            'STR_BULLET',
-            '',
+            "svx",
+            r"source\dialog\numpages.src",
+            "string",
+            "RID_SVXPAGE_NUM_OPTIONS",
+            "STR_BULLET",
+            "",
         )
-        assert ol.text == 'Character'
+        assert ol.text == "Character"
         assert str(ol) == oosource
 
     def test_simpleentry_quickhelptest(self):
         """checks that a simple entry with quickhelptext is parsed correctly"""
-        oosource = r'sd	source\ui\dlg\sdobjpal.src	0	imagebutton	FLTWIN_SDOBJPALETTE	BTN_SYMSIZE			16	en-US	-		Toggle Symbol Size		20051017 21:40:56'
+        oosource = r"sd	source\ui\dlg\sdobjpal.src	0	imagebutton	FLTWIN_SDOBJPALETTE	BTN_SYMSIZE			16	en-US	-		Toggle Symbol Size		20051017 21:40:56"
         oofile = self.ooparse(oosource)
         assert len(oofile.units) == 1
         oe = oofile.units[0]
         assert list(oe.languages.keys()) == ["en-US"]
         ol = oofile.oolines[0]
         assert ol.getkey() == (
-            'sd',
-            r'source\ui\dlg\sdobjpal.src',
-            'imagebutton',
-            'FLTWIN_SDOBJPALETTE',
-            'BTN_SYMSIZE',
-            '',
+            "sd",
+            r"source\ui\dlg\sdobjpal.src",
+            "imagebutton",
+            "FLTWIN_SDOBJPALETTE",
+            "BTN_SYMSIZE",
+            "",
         )
-        assert ol.quickhelptext == 'Toggle Symbol Size'
+        assert ol.quickhelptext == "Toggle Symbol Size"
         assert str(ol) == oosource
 
     def test_simpleentry_title(self):
         """checks that a simple entry with title text is parsed correctly"""
-        oosource = r'dbaccess	source\ui\dlg\indexdialog.src	0	querybox	QUERY_SAVE_CURRENT_INDEX				0	en-US	Do you want to save the changes made to the current index?			Exit Index Design	20051017 21:40:56'
+        oosource = r"dbaccess	source\ui\dlg\indexdialog.src	0	querybox	QUERY_SAVE_CURRENT_INDEX				0	en-US	Do you want to save the changes made to the current index?			Exit Index Design	20051017 21:40:56"
         oofile = self.ooparse(oosource)
         assert len(oofile.units) == 1
         oe = oofile.units[0]
         assert list(oe.languages.keys()) == ["en-US"]
         ol = oofile.oolines[0]
         assert ol.getkey() == (
-            'dbaccess',
-            r'source\ui\dlg\indexdialog.src',
-            'querybox',
-            'QUERY_SAVE_CURRENT_INDEX',
-            '',
-            '',
+            "dbaccess",
+            r"source\ui\dlg\indexdialog.src",
+            "querybox",
+            "QUERY_SAVE_CURRENT_INDEX",
+            "",
+            "",
         )
-        assert ol.title == 'Exit Index Design'
+        assert ol.title == "Exit Index Design"
         assert str(ol) == oosource
 
     def test_blankline(self):
         """checks that a blank line is parsed correctly"""
-        oosource = '\n'
+        oosource = "\n"
         warnings.simplefilter("error")
         oofile = self.ooparse(oosource)
         assert len(oofile.units) == 0
@@ -192,7 +192,7 @@ class TestOO:
     def test_fieldlength(self):
         """checks that we process the length field correctly"""
         # Since the actual field is 18 characters long and the field width in this example is 16 we're not sure if they even use this!
-        oosource = r'sd	source\ui\dlg\sdobjpal.src	0	imagebutton	FLTWIN_SDOBJPALETTE	BTN_SYMSIZE			16	en-US	-		Toggle Symbol Size		20051017 21:40:56'
+        oosource = r"sd	source\ui\dlg\sdobjpal.src	0	imagebutton	FLTWIN_SDOBJPALETTE	BTN_SYMSIZE			16	en-US	-		Toggle Symbol Size		20051017 21:40:56"
         oofile = self.ooparse(oosource)
         assert len(oofile.units) == 1
         oe = oofile.units[0]
@@ -202,6 +202,6 @@ class TestOO:
 
     def test_escapes(self):
         """checks that we escape properly"""
-        oosource = r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	size *2 \\langle x \\rangle				20050924 09:13:58'
+        oosource = r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	size *2 \\langle x \\rangle				20050924 09:13:58"
         oofile = self.ooregen(oosource)
-        assert r'size *2 \\langle x \\rangle' in oofile
+        assert r"size *2 \\langle x \\rangle" in oofile

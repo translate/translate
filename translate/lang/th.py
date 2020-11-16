@@ -36,5 +36,5 @@ class th(common.Common):
     # No capitalisation. While we can't do sentence segmentation, sentencecount
     # is useless.
     ignoretests = {
-        'all': ["sentencecount", "simplecaps", "startcaps"],
+        "all": ["sentencecount", "simplecaps", "startcaps"],
     }

@@ -60,7 +60,7 @@ def filtertestmethod(testmethod, strfilter):
         return testmethod(strfilter(str1), strfilter(str2))
 
     filteredmethod.__doc__ = testmethod.__doc__
-    filteredmethod.name = getattr(testmethod, 'name', testmethod.__name__)
+    filteredmethod.name = getattr(testmethod, "name", testmethod.__name__)
     return filteredmethod
 
 
@@ -78,5 +78,5 @@ def multifiltertestmethod(testmethod, strfilters):
         return testmethod(multifilter(str1, strfilters), multifilter(str2, strfilters))
 
     filteredmethod.__doc__ = testmethod.__doc__
-    filteredmethod.name = getattr(testmethod, 'name', testmethod.__name__)
+    filteredmethod.name = getattr(testmethod, "name", testmethod.__name__)
     return filteredmethod

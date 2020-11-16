@@ -30,9 +30,9 @@ from translate.storage.base import TranslationStore
 
 
 class LanguageIdentifier:
-    MODEL_DIR = get_abs_data_filename('langmodels')
+    MODEL_DIR = get_abs_data_filename("langmodels")
     """The directory containing the ngram language model files."""
-    CONF_FILE = 'fpdb.conf'
+    CONF_FILE = "fpdb.conf"
     """
     The name of the file that contains language name-code pairs
     (relative to ``MODEL_DIR``).
@@ -42,13 +42,13 @@ class LanguageIdentifier:
         if model_dir is None:
             model_dir = self.MODEL_DIR
         if not path.isdir(model_dir):
-            raise ValueError('Directory does not exist: %s' % (model_dir))
+            raise ValueError("Directory does not exist: %s" % (model_dir))
 
         if conf_file is None:
             conf_file = self.CONF_FILE
         conf_file = path.abspath(path.join(model_dir, conf_file))
         if not path.isfile(conf_file):
-            raise ValueError('File does not exist: %s' % (conf_file))
+            raise ValueError("File does not exist: %s" % (conf_file))
 
         self._lang_codes = {}
         self._load_config(conf_file)
@@ -58,10 +58,10 @@ class LanguageIdentifier:
         """Load the mapping of language names to language codes as given in the
         configuration file.
         """
-        with open(conf_file, 'r') as fp:
+        with open(conf_file, "r") as fp:
             for line in fp:
                 parts = line.split()
-                if not parts or line.startswith('#'):
+                if not parts or line.startswith("#"):
                     continue  # Skip comment- and empty lines
                 lname, lcode = parts[0], parts[1]
 
@@ -71,9 +71,9 @@ class LanguageIdentifier:
                     lname = lname[: lname.rindex(extsep)]  # Remove extension if it has
 
                 # Remove trailing '[_-]-utf8' from code
-                if lcode.endswith('-utf8'):
-                    lcode = lcode[: -len('-utf8')]
-                if lcode.endswith('-') or lcode.endswith('_'):
+                if lcode.endswith("-utf8"):
+                    lcode = lcode[: -len("-utf8")]
+                if lcode.endswith("-") or lcode.endswith("_"):
                     lcode = lcode[:-1]
 
                 self._lang_codes[lname] = lcode
@@ -100,7 +100,7 @@ class LanguageIdentifier:
         if not isinstance(instore, (TranslationStore, list, tuple)):
             return None
 
-        text = ' '.join(
+        text = " ".join(
             unit.source
             for unit in instore[:50]
             if unit.istranslatable() and unit.source
@@ -122,7 +122,7 @@ class LanguageIdentifier:
         if not isinstance(instore, (TranslationStore, list, tuple)):
             return None
 
-        text = ' '.join(
+        text = " ".join(
             unit.target
             for unit in instore[:200]
             if unit.istranslatable() and unit.target
@@ -137,6 +137,6 @@ if __name__ == "__main__":
 
     script_dir = path.abspath(path.dirname(argv[0]))
     identifier = LanguageIdentifier()
-    with io.open(argv[1], 'r') as fh:
+    with io.open(argv[1], "r") as fh:
         text = fh.read()
     print("Language detected:", identifier.identify_lang(text))

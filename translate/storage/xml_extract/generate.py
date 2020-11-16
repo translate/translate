@@ -154,16 +154,16 @@ def _map_target_dom_to_source_dom(source_dom_node, target_dom_node):
     def map_id_to_dom_node(parent_node, node, id_to_dom_node):
         # If this DOM node has an 'id' attribute, then add an id -> node
         # mapping to 'id_to_dom_node'.
-        if 'id' in node.attrib:
-            id_to_dom_node[node.attrib['id']] = node
+        if "id" in node.attrib:
+            id_to_dom_node[node.attrib["id"]] = node
         return id_to_dom_node
 
     # Build a mapping of id attributes to the DOM nodes which have these ids.
     id_to_dom_node = reduce_dom_tree(map_id_to_dom_node, target_dom_node, {})
 
     def map_target_dom_to_source_dom_aux(parent_node, node, target_dom_to_source_dom):
-        if 'id' in node.attrib and node.attrib['id'] in id_to_dom_node:
-            target_dom_to_source_dom[id_to_dom_node[node.attrib['id']]] = node
+        if "id" in node.attrib and node.attrib["id"] in id_to_dom_node:
+            target_dom_to_source_dom[id_to_dom_node[node.attrib["id"]]] = node
         return target_dom_to_source_dom
 
     # For each node in the DOM tree rooted at source_dom_node:

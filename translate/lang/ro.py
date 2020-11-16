@@ -62,7 +62,7 @@ class RomanianChecker(TranslationChecker):
         :param str2: the target (translated) string
         :return: True if str2 contains a cedilla character
         """
-        if contains_illegal(['Ţ', 'Ş', 'ţ', 'ş'], str2):
+        if contains_illegal(["Ţ", "Ş", "ţ", "ş"], str2):
             raise FilterFailure("String contains illegal cedillas")
         return True
 
@@ -72,7 +72,7 @@ class RomanianChecker(TranslationChecker):
         Checks for sequences containing 'nici un'/'nici o' which are obsolete
         Romanian syntax. Correct is 'niciun'/'nicio'
         """
-        if contains_illegal(['nici un', 'nici o'], str2):
+        if contains_illegal(["nici un", "nici o"], str2):
             raise FilterFailure("String contains 'nici un' or 'nici o'")
         return True
 

@@ -125,10 +125,10 @@ def process_translatable(dom_node, state):
 
 def _has_idml_translatable_content(dom_node):
     has_translatable_content = True
-    if dom_node.tag == 'ParagraphStyleRange':
+    if dom_node.tag == "ParagraphStyleRange":
         has_translatable_content = False
 
-        for content_node in dom_node.findall('.//Content'):
+        for content_node in dom_node.findall(".//Content"):
             # Iterate over all the Content tags in this ParagraphStyleRange tag.
             if content_node.text is not None and content_node.text.strip():
                 return True
@@ -240,9 +240,9 @@ def _process_children(dom_node, state, process_func):
 
 def compact_tag(nsmap, namespace, tag):
     if namespace in nsmap:
-        return '%s:%s' % (nsmap[namespace], tag)
+        return "%s:%s" % (nsmap[namespace], tag)
     else:
-        return '{%s}%s' % (namespace, tag)
+        return "{%s}%s" % (namespace, tag)
 
 
 @contextmanager
@@ -330,7 +330,7 @@ def _make_store_adder(store):
         """Construct a new translation unit, set its source and location
         information and add it to 'store'.
         """
-        unit = store.UnitClass('')
+        unit = store.UnitClass("")
         unit.rich_source = [
             StringElem(_to_placeables(parent_translatable, translatable, id_maker))
         ]
@@ -351,7 +351,7 @@ def make_postore_adder(store, id_maker, filename):
         """Construct a new translation unit, set its source and location
         information and add it to 'store'.
         """
-        xliff_unit = xliffunit('')
+        xliff_unit = xliffunit("")
         placeables = _to_placeables(parent_translatable, translatable, id_maker)
         xliff_unit.rich_source = [StringElem(placeables)]
 

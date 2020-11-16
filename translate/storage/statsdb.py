@@ -43,14 +43,14 @@ logger = logging.getLogger(__name__)
 brtagre = re.compile(r"<br\s*?/?>")
 # xmltagre is a direct copy of the from placeables/general.py
 xmltagre = re.compile(
-    r'''
+    r"""
         <                         # start of opening tag
         ([\w.:]+)                 # tag name, possibly namespaced
         (\s([\w.:]+=              # space and attribute name followed by =
             ((".*?")|('.*?'))     # attribute value, single or double quoted
         )?)*/?>                   # end of opening tag, possibly self closing
         |</([\w.]+)>              # or a closing tag
-        ''',
+        """,
     re.VERBOSE,
 )
 numberre = re.compile("\\D\\.\\D")
@@ -175,13 +175,13 @@ def statefordb(unit):
 
 class FileTotals:
     keys = [
-        'translatedsourcewords',
-        'fuzzysourcewords',
-        'untranslatedsourcewords',
-        'translated',
-        'fuzzy',
-        'untranslated',
-        'translatedtargetwords',
+        "translatedsourcewords",
+        "fuzzysourcewords",
+        "untranslatedsourcewords",
+        "translated",
+        "fuzzy",
+        "untranslated",
+        "translatedtargetwords",
     ]
 
     def db_keys(self):
@@ -207,15 +207,15 @@ class FileTotals:
         record = Record(cls.keys, compute_derived_values=cls._compute_derived_values)
         if state_for_db is not None:
             if state_for_db is UNTRANSLATED:
-                record['untranslated'] = 1
-                record['untranslatedsourcewords'] = sourcewords
+                record["untranslated"] = 1
+                record["untranslatedsourcewords"] = sourcewords
             if state_for_db is TRANSLATED:
-                record['translated'] = 1
-                record['translatedsourcewords'] = sourcewords
-                record['translatedtargetwords'] = targetwords
+                record["translated"] = 1
+                record["translatedsourcewords"] = sourcewords
+                record["translatedtargetwords"] = targetwords
             elif state_for_db is FUZZY:
-                record['fuzzy'] = 1
-                record['fuzzysourcewords'] = sourcewords
+                record["fuzzy"] = 1
+                record["fuzzysourcewords"] = sourcewords
         return record
 
     @classmethod
@@ -236,7 +236,7 @@ class FileTotals:
             SELECT %(keys)s
             FROM   filetotals
             WHERE  fileid=?;"""
-            % {'keys': self.db_keys()},
+            % {"keys": self.db_keys()},
             (fileid,),
         )
         return Record(FileTotals.keys, result.fetchone(), self._compute_derived_values)
@@ -247,7 +247,7 @@ class FileTotals:
             INSERT OR REPLACE into filetotals
             VALUES (%(fileid)d, %(vals)s);
         """
-            % {'fileid': fileid, 'vals': record.as_string_for_db()}
+            % {"fileid": fileid, "vals": record.as_string_for_db()}
         )
 
     def __delitem__(self, fileid):
@@ -292,7 +292,7 @@ def get_mod_info(file_path):
 
 
 def suggestion_extension():
-    return os.path.extsep + 'pending'
+    return os.path.extsep + "pending"
 
 
 def suggestion_filename(filename):
@@ -770,7 +770,7 @@ class StatsCache:
         for value in values:
             if value[1] == -1:
                 continue
-            checkkey = 'check-' + value[0]  # value[0] is the error name
+            checkkey = "check-" + value[0]  # value[0] is the error name
             if checkkey not in errors:
                 errors[checkkey] = []
             errors[checkkey].append(value[1])  # value[1] is the unitindex

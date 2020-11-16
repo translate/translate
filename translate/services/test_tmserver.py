@@ -14,17 +14,17 @@ from translate.services.tmserver import TMServer
 class TestTMServer:
     def create_server(self, *args, **kwargs):
         test_dir = tempfile.mkdtemp()
-        po_file = os.path.join(test_dir, 'test.po')
-        with open(po_file, 'w') as handle:
+        po_file = os.path.join(test_dir, "test.po")
+        with open(po_file, "w") as handle:
             handle.write(
-                '''
+                """
 msgid "Hello"
 msgstr "Ahoj"
-'''
+"""
             )
-        test_file = os.path.join(test_dir, 'test.tmdb')
+        test_file = os.path.join(test_dir, "test.tmdb")
         application = TMServer(
-            test_file, tmfiles=[po_file], source_lang='en', target_lang='cs', **kwargs
+            test_file, tmfiles=[po_file], source_lang="en", target_lang="cs", **kwargs
         )
         return test_dir, application
 
@@ -38,22 +38,22 @@ msgstr "Ahoj"
         assert application.tmdb.preload_db() == 1
         self.cleanup(test_dir, application)
 
-    @mark.skipif(os.name == 'nt', reason="can not delete non closed files")
+    @mark.skipif(os.name == "nt", reason="can not delete non closed files")
     def test_server(self):
         """Test http server"""
         test_dir, application = self.create_server()
 
         # Prepare server thread
-        server = Server(('localhost', 0), application.rest)
+        server = Server(("localhost", 0), application.rest)
         server.prepare()
         server_port = server.bind_addr[1]
         thread = threading.Thread(target=server.serve)
         thread.start()
 
         # Run test
-        response = urlopen('http://localhost:{}/en/cs/unit/Hello/'.format(server_port))
-        payload = json.loads(response.read().decode('utf-8'))
-        assert payload[0]['target'] == 'Ahoj'
+        response = urlopen("http://localhost:{}/en/cs/unit/Hello/".format(server_port))
+        payload = json.loads(response.read().decode("utf-8"))
+        assert payload[0]["target"] == "Ahoj"
 
         # Shutdown the server thread
         server.stop()

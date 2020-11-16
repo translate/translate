@@ -71,9 +71,9 @@ def translate_odf(template, input_file):
 
         return dict(
             [
-                extract_unit_tree('content.xml', 'office:document-content'),
-                extract_unit_tree('meta.xml', 'office:document-meta'),
-                extract_unit_tree('styles.xml', 'office:document-styles'),
+                extract_unit_tree("content.xml", "office:document-content"),
+                extract_unit_tree("meta.xml", "office:document-meta"),
+                extract_unit_tree("styles.xml", "office:document-styles"),
             ]
         )
 
@@ -105,8 +105,8 @@ def write_odf(template, output_file, dom_trees):
     The resulting ODF package is a copy of the template ODF package, with the
     translatable files replaced by their translated versions.
     """
-    template_zip = zipfile.ZipFile(template, 'r')
-    output_zip = zipfile.ZipFile(output_file, 'w', compression=zipfile.ZIP_DEFLATED)
+    template_zip = zipfile.ZipFile(template, "r")
+    output_zip = zipfile.ZipFile(output_file, "w", compression=zipfile.ZIP_DEFLATED)
 
     # Copy the ODF package.
     output_zip = copy_odf(template_zip, output_zip, dom_trees.keys())
@@ -114,7 +114,7 @@ def write_odf(template, output_file, dom_trees):
     # Overwrite the translated files to the ODF package.
     for filename, dom_tree in dom_trees.items():
         output_zip.writestr(
-            filename, etree.tostring(dom_tree, encoding='UTF-8', xml_declaration=True)
+            filename, etree.tostring(dom_tree, encoding="UTF-8", xml_declaration=True)
         )
 
 
@@ -128,22 +128,22 @@ def convertxliff(input_file, output_file, template):
 
 def main(argv=None):
     formats = {
-        ('xlf', 'odt'): ("odt", convertxliff),  # Text
-        ('xlf', 'ods'): ("ods", convertxliff),  # Spreadsheet
-        ('xlf', 'odp'): ("odp", convertxliff),  # Presentation
-        ('xlf', 'odg'): ("odg", convertxliff),  # Drawing
-        ('xlf', 'odc'): ("odc", convertxliff),  # Chart
-        ('xlf', 'odf'): ("odf", convertxliff),  # Formula
-        ('xlf', 'odi'): ("odi", convertxliff),  # Image
-        ('xlf', 'odm'): ("odm", convertxliff),  # Master Document
-        ('xlf', 'ott'): ("ott", convertxliff),  # Text template
-        ('xlf', 'ots'): ("ots", convertxliff),  # Spreadsheet template
-        ('xlf', 'otp'): ("otp", convertxliff),  # Presentation template
-        ('xlf', 'otg'): ("otg", convertxliff),  # Drawing template
-        ('xlf', 'otc'): ("otc", convertxliff),  # Chart template
-        ('xlf', 'otf'): ("otf", convertxliff),  # Formula template
-        ('xlf', 'oti'): ("oti", convertxliff),  # Image template
-        ('xlf', 'oth'): ("oth", convertxliff),  # Web page template
+        ("xlf", "odt"): ("odt", convertxliff),  # Text
+        ("xlf", "ods"): ("ods", convertxliff),  # Spreadsheet
+        ("xlf", "odp"): ("odp", convertxliff),  # Presentation
+        ("xlf", "odg"): ("odg", convertxliff),  # Drawing
+        ("xlf", "odc"): ("odc", convertxliff),  # Chart
+        ("xlf", "odf"): ("odf", convertxliff),  # Formula
+        ("xlf", "odi"): ("odi", convertxliff),  # Image
+        ("xlf", "odm"): ("odm", convertxliff),  # Master Document
+        ("xlf", "ott"): ("ott", convertxliff),  # Text template
+        ("xlf", "ots"): ("ots", convertxliff),  # Spreadsheet template
+        ("xlf", "otp"): ("otp", convertxliff),  # Presentation template
+        ("xlf", "otg"): ("otg", convertxliff),  # Drawing template
+        ("xlf", "otc"): ("otc", convertxliff),  # Chart template
+        ("xlf", "otf"): ("otf", convertxliff),  # Formula template
+        ("xlf", "oti"): ("oti", convertxliff),  # Image template
+        ("xlf", "oth"): ("oth", convertxliff),  # Web page template
     }
     parser = convert.ConvertOptionParser(
         formats, usetemplates=True, description=__doc__
@@ -151,5 +151,5 @@ def main(argv=None):
     parser.run(argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

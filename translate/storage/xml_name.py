@@ -51,7 +51,7 @@ class XmlNamer:
     def __init__(self, dom_node):
         # Allow the user to pass a dom node of the
         # XML document nodle
-        if hasattr(dom_node, 'nsmap'):
+        if hasattr(dom_node, "nsmap"):
             self.nsmap = dom_node.nsmap
         else:
             self.nsmap = dom_node.getroot().nsmap
@@ -62,7 +62,7 @@ class XmlNamer:
         # 'short-namespace:tag'
         if tag is None:
             try:
-                namespace_shortcut, tag = namespace_shortcut.split(':')
+                namespace_shortcut, tag = namespace_shortcut.split(":")
             except ValueError:
                 # If there is no namespace in namespace_shortcut.
                 tag = namespace_shortcut.lstrip("{}")

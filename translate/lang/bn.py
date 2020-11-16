@@ -62,5 +62,5 @@ class bn(common.Common):
     )
 
     ignoretests = {
-        'all': ["simplecaps", "startcaps"],
+        "all": ["simplecaps", "startcaps"],
     }

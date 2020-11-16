@@ -23,7 +23,7 @@ Contains the placeable that represents a terminology term.
 from translate.storage.placeables import StringElem, base
 
 
-__all__ = ('TerminologyPlaceable', 'parsers')
+__all__ = ("TerminologyPlaceable", "parsers")
 
 
 class TerminologyPlaceable(base.Ph):
@@ -56,32 +56,32 @@ class TerminologyPlaceable(base.Ph):
         # match's starting position, putting the one with the longer
         # source text first, if two are the same.
         matches.sort(key=lambda x: len(x.source), reverse=True)
-        matches.sort(key=lambda x: match_info[x.source]['pos'])
+        matches.sort(key=lambda x: match_info[x.source]["pos"])
 
         for match in matches:
             info = match_info[match.source]
-            if info['pos'] < lastend:
+            if info["pos"] < lastend:
                 continue
-            end = info['pos'] + len(match.source)
-            if 'newtermlen' in info:
-                end = info['pos'] + info['newtermlen']
+            end = info["pos"] + len(match.source)
+            if "newtermlen" in info:
+                end = info["pos"] + info["newtermlen"]
 
-            if lastend < info['pos']:
-                parts.append(StringElem(pstr[lastend : info['pos']]))
+            if lastend < info["pos"]:
+                parts.append(StringElem(pstr[lastend : info["pos"]]))
 
-            term_string = pstr[info['pos'] : end]
+            term_string = pstr[info["pos"] : end]
             term_placeable = cls([term_string])
             parts.append(term_placeable)
 
             # Get translations for the placeable
             for m in matches:
                 m_info = match_info[m.source]
-                m_end = m_info['pos']
-                if 'newtermlen' in m_info:
-                    m_end += m_info['newtermlen']
+                m_end = m_info["pos"]
+                if "newtermlen" in m_info:
+                    m_end += m_info["newtermlen"]
                 else:
                     m_end += len(m.source)
-                if info['pos'] == m_info['pos'] and end == m_end:
+                if info["pos"] == m_info["pos"] and end == m_end:
                     term_placeable.translations.append(m.target)
 
             # remove duplicates:

@@ -99,38 +99,38 @@ class OmegaTUnit(base.TranslationUnit):
             self._dict[key] = newvalue
 
     def getnotes(self, origin=None):
-        return self._get_field('comment')
+        return self._get_field("comment")
 
     def addnote(self, text, origin=None, position="append"):
-        currentnote = self._get_field('comment')
-        if position == "append" and currentnote is not None and currentnote != '':
-            self._set_field('comment', currentnote + '\n' + text)
+        currentnote = self._get_field("comment")
+        if position == "append" and currentnote is not None and currentnote != "":
+            self._set_field("comment", currentnote + "\n" + text)
         else:
-            self._set_field('comment', text)
+            self._set_field("comment", text)
 
     def removenotes(self, origin=None):
-        self._set_field('comment', '')
+        self._set_field("comment", "")
 
     @property
     def source(self):
-        return self._get_field('source')
+        return self._get_field("source")
 
     @source.setter
     def source(self, source):
         self._rich_source = None
-        self._set_field('source', source)
+        self._set_field("source", source)
 
     @property
     def target(self):
-        return self._get_field('target')
+        return self._get_field("target")
 
     @target.setter
     def target(self, target):
         self._rich_target = None
-        self._set_field('target', target)
+        self._set_field("target", target)
 
     def settargetlang(self, newlang):
-        self._dict['target-lang'] = newlang
+        self._dict["target-lang"] = newlang
 
     targetlang = property(None, settargetlang)
 
@@ -138,7 +138,7 @@ class OmegaTUnit(base.TranslationUnit):
         return str(self._dict)
 
     def istranslated(self):
-        return bool(self._dict.get('target', None))
+        return bool(self._dict.get("target", None))
 
 
 class OmegaTFile(base.TranslationStore):
@@ -152,17 +152,17 @@ class OmegaTFile(base.TranslationStore):
     def __init__(self, inputfile=None, **kwargs):
         """Construct an OmegaT glossary, optionally reading in from inputfile."""
         super().__init__(**kwargs)
-        self.filename = ''
-        self.extension = ''
+        self.filename = ""
+        self.extension = ""
         if inputfile is not None:
             self.parse(inputfile)
 
     def parse(self, input):
         """parsese the given file or file source string"""
-        if hasattr(input, 'name'):
+        if hasattr(input, "name"):
             self.filename = input.name
-        elif not getattr(self, 'filename', ''):
-            self.filename = ''
+        elif not getattr(self, "filename", ""):
+            self.filename = ""
         if hasattr(input, "read"):
             tmsrc = input.read()
             input.close()

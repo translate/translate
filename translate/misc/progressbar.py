@@ -35,11 +35,11 @@ class DotsProgressBar:
     def show(self, verbosemessage):
         """show a dot for progress :-)"""
         # pylint: disable=W0613
-        self.stderr.write('.')
+        self.stderr.write(".")
         self.stderr.flush()
 
     def close(self):
-        self.stderr.write('\n')
+        self.stderr.write("\n")
         self.stderr.flush()
 
     def __del__(self):
@@ -91,8 +91,8 @@ class ProgressBar:
 
         # build a progress bar with hashes and spaces
         self.progBar = "[%s%s] %3d%%" % (
-            '#' * numHashes,
-            ' ' * (allFull - numHashes),
+            "#" * numHashes,
+            " " * (allFull - numHashes),
             percentDone,
         )
         return str(self.progBar)
@@ -115,7 +115,7 @@ class MessageProgressBar(ProgressBar):
         super().__init__(*args, **kwargs)
 
     def show(self, verbosemessage):
-        self.sys.stderr.write(verbosemessage + '\n')
+        self.sys.stderr.write(verbosemessage + "\n")
         self.sys.stderr.flush()
 
 
@@ -129,11 +129,11 @@ class HashProgressBar(ProgressBar):
         super().__init__(*args, **kwargs)
 
     def show(self, verbosemessage):
-        self.sys.stderr.write(str(self) + '\r')
+        self.sys.stderr.write(str(self) + "\r")
         self.sys.stderr.flush()
 
     def close(self):
-        self.sys.stderr.write('\n')
+        self.sys.stderr.write("\n")
         self.sys.stderr.flush()
 
     def __del__(self):
@@ -147,10 +147,10 @@ class VerboseProgressBar(HashProgressBar):
 
     def show(self, verbosemessage):
         output = str(self)
-        self.sys.stderr.write('\r' + ' ' * self.lastwidth)
-        self.sys.stderr.write('\r' + verbosemessage + '\n')
+        self.sys.stderr.write("\r" + " " * self.lastwidth)
+        self.sys.stderr.write("\r" + verbosemessage + "\n")
         self.lastwidth = len(output)
-        self.sys.stderr.write('\r' + output)
+        self.sys.stderr.write("\r" + output)
         self.sys.stderr.flush()
 
 
@@ -163,6 +163,6 @@ def test(progressbar):
         time.sleep(0.2)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     p = HashProgressBar(0, 100, 50)
     test(p)

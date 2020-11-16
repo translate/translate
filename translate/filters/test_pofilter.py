@@ -46,7 +46,7 @@ class BaseTestFilter:
         filter_result = self.filter(self.translationstore)
         print(filter_result)
         print(filter_result.units)
-        assert 'startcaps' in first_translatable(filter_result).geterrors()
+        assert "startcaps" in first_translatable(filter_result).geterrors()
 
     def test_variables_across_lines(self):
         """Test that variables can span lines and still fail/pass"""
@@ -60,13 +60,13 @@ class BaseTestFilter:
         check that we don't add another failing marker if the message is
         already marked as failed
         """
-        self.unit.target = ''
+        self.unit.target = ""
         filter_result = self.filter(
             self.translationstore, cmdlineoptions=["--test=untranslated"]
         )
         errors = first_translatable(filter_result).geterrors()
         assert len(errors) == 1
-        assert 'untranslated' in errors
+        assert "untranslated" in errors
 
         # Run a filter test on the result, to check that it doesn't mark the
         # same error twice.
@@ -75,7 +75,7 @@ class BaseTestFilter:
         )
         errors = first_translatable(filter_result2).geterrors()
         assert len(errors) == 1
-        assert 'untranslated' in errors
+        assert "untranslated" in errors
 
     def test_non_existant_check(self):
         """check that we report an error if a user tries to run a non-existant test"""
@@ -97,7 +97,7 @@ class BaseTestFilter:
         self.unit.markfuzzy()
 
         filter_result = self.filter(self.translationstore, cmdlineoptions=["--fuzzy"])
-        assert 'isfuzzy' in first_translatable(filter_result).geterrors()
+        assert "isfuzzy" in first_translatable(filter_result).geterrors()
 
         filter_result = self.filter(self.translationstore, cmdlineoptions=["--nofuzzy"])
         assert headerless_len(filter_result.units) == 0
@@ -172,7 +172,7 @@ class BaseTestFilter:
         # now we remove the existing error. self.unit is changed since we copy
         # units - very naughty
         if isinstance(self.unit, xliff.xliffunit):
-            self.unit.removenotes(origin='pofilter')
+            self.unit.removenotes(origin="pofilter")
         else:
             self.unit.removenotes()
         filter_result = self.filter(self.translationstore, cmdlineoptions=["--nonotes"])
@@ -184,8 +184,8 @@ class BaseTestFilter:
         tests that we can handle UTF-8 encoded characters when there is no
         known header specified encoding
         """
-        self.unit.source = 'Bézier curve'
-        self.unit.target = 'Bézier-kurwe'
+        self.unit.source = "Bézier curve"
+        self.unit.target = "Bézier-kurwe"
         filter_result = self.filter(self.translationstore)
         assert headerless_len(filter_result.units) == 0
 
@@ -204,7 +204,7 @@ class TestPOFilter(BaseTestFilter):
     """Test class for po-specific tests."""
 
     filetext = '#: test.c\nmsgid "test"\nmsgstr "rest"\n'
-    filename = 'test.po'
+    filename = "test.po"
 
     def setup_method(self, method):
         self.translationstore = self.parse_text(self.filetext)
@@ -212,11 +212,11 @@ class TestPOFilter(BaseTestFilter):
 
     def test_msgid_comments(self):
         """Tests that msgid comments don't feature anywhere."""
-        posource = '''
+        posource = """
 msgid "_: Capital.  ACRONYMN. (msgid) comment 3. %d Extra sentence.\\n"
 "cow"
 msgstr "koei"
-'''
+"""
         pofile = self.parse_text(posource)
         filter_result = self.filter(pofile)
         if headerless_len(filter_result.units):
@@ -227,7 +227,7 @@ msgstr "koei"
 class TestXliffFilter(BaseTestFilter):
     """Test class for xliff-specific tests."""
 
-    filetext = '''<?xml version="1.0" encoding="utf-8"?>
+    filetext = """<?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
 <file original='NoName' source-language="en" datatype="plaintext">
   <body>
@@ -237,11 +237,11 @@ class TestXliffFilter(BaseTestFilter):
     </trans-unit>
   </body>
 </file>
-</xliff>'''
+</xliff>"""
     filename = "test.xlf"
 
     def set_store_review(self, review=True):
-        self.filetext = '''<?xml version="1.0" encoding="utf-8"?>
+        self.filetext = """<?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
 <file datatype="po" original="example.po" source-language="en-US">
   <body>
@@ -251,7 +251,7 @@ class TestXliffFilter(BaseTestFilter):
     </trans-unit>
   </body>
 </file>
-</xliff>'''
+</xliff>"""
 
         self.translationstore = self.parse_text(self.filetext)
         self.unit = first_translatable(self.translationstore)
@@ -264,7 +264,7 @@ class TestXliffFilter(BaseTestFilter):
 class TestTMXFilter(BaseTestFilter):
     """Test class for TMX-specific tests."""
 
-    filetext = '''<!DOCTYPE tmx SYSTEM "tmx14.dtd">
+    filetext = """<!DOCTYPE tmx SYSTEM "tmx14.dtd">
 <tmx version="1.4">
   <header creationtool="Translate Toolkit"
           creationtoolversion="1.1.1rc1" segtype="sentence" o-tmf="UTF-8"
@@ -279,7 +279,7 @@ class TestTMXFilter(BaseTestFilter):
       </tuv>
     </tu>
   </body>
-</tmx>'''
+</tmx>"""
     filename = "test.tmx"
 
     def setup_method(self, method):
@@ -308,78 +308,78 @@ class TestRomanianPOFilter(TestPOFilter):
 
     def test_romanian_cedillas(self):
         """Test the Romanian cedillas check"""
-        posource = '''
+        posource = """
 msgid "cow"
 msgstr "blaŞbla"
-'''
+"""
         pofile = self.parse_text(posource)
         filter_result = self.filter(
             pofile, cmdlineoptions=["--language=ro", "--test=cedillas"]
         )
         errors = first_translatable(filter_result).geterrors()
         assert len(errors) == 1
-        assert 'cedillas' in errors
+        assert "cedillas" in errors
 
-        posource = '''
+        posource = """
 msgid "cow"
 msgstr "blaSbla"
-'''
+"""
         pofile = self.parse_text(posource)
         filter_result = self.filter(
             pofile, cmdlineoptions=["--language=ro", "--test=cedillas"]
         )
         errors = first_translatable(filter_result).geterrors()
         assert len(errors) == 0
-        assert 'cedillas' not in errors
+        assert "cedillas" not in errors
 
     def test_romanian_niciun(self):
         """Test the Romanian niciun check"""
-        posource = '''
+        posource = """
 msgid "cow"
 msgstr "bla nici un bla"
-'''
+"""
         pofile = self.parse_text(posource)
         filter_result = self.filter(
             pofile, cmdlineoptions=["--language=ro", "--test=niciun_nicio"]
         )
         errors = first_translatable(filter_result).geterrors()
         assert len(errors) == 1
-        assert 'niciun_nicio' in errors
+        assert "niciun_nicio" in errors
 
-        posource = '''
+        posource = """
 msgid "cow"
 msgstr "bla niciun bla"
-'''
+"""
         pofile = self.parse_text(posource)
         filter_result = self.filter(
             pofile, cmdlineoptions=["--language=ro", "--test=niciun_nicio"]
         )
         errors = first_translatable(filter_result).geterrors()
         assert len(errors) == 0
-        assert 'niciun_nicio' not in errors
+        assert "niciun_nicio" not in errors
 
     def test_romanian_nicio(self):
         """Test the Romanian nicio check"""
-        posource = '''
+        posource = """
 msgid "cow"
 msgstr "bla nici o bla"
-'''
+"""
         pofile = self.parse_text(posource)
         filter_result = self.filter(
             pofile, cmdlineoptions=["--language=ro", "--test=niciun_nicio"]
         )
         errors = first_translatable(filter_result).geterrors()
         assert len(errors) == 1
-        assert 'niciun_nicio' in errors
+        assert "niciun_nicio" in errors
 
-        posource = '''
+        posource = """
 msgid "cow"
 msgstr "bla nicio bla"
-'''
+"""
         pofile = self.parse_text(posource)
         filter_result = self.filter(
             pofile, cmdlineoptions=["--language=ro", "--test=niciun_nicio"]
         )
         errors = first_translatable(filter_result).geterrors()
         assert len(errors) == 0
-        assert 'niciun_nicio' not in errors
+        assert "niciun_nicio" not in errors

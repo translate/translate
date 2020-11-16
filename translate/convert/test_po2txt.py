@@ -13,7 +13,7 @@ class TestPO2Txt:
         template_string=None,
         include_fuzzy=False,
         output_threshold=None,
-        encoding='utf-8',
+        encoding="utf-8",
         wrap=None,
         success_expected=True,
     ):
@@ -38,7 +38,7 @@ class TestPO2Txt:
 
     def _convert_to_string(self, *args, **kwargs):
         """Helper that converts to target format string without using files."""
-        return self._convert(*args, **kwargs)[1].getvalue().decode('utf-8')
+        return self._convert(*args, **kwargs)[1].getvalue().decode("utf-8")
 
     def test_basic(self):
         """test basic conversion"""

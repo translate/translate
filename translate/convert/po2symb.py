@@ -46,13 +46,13 @@ def escape(text):
 
 def replace_header_items(ps, replacments):
     match = read_while(ps, header_item_or_end_re.match, lambda match: match is None)
-    while not ps.current_line.startswith('*/'):
+    while not ps.current_line.startswith("*/"):
         match = header_item_re.match(ps.current_line)
         if match is not None:
-            key = match.groupdict()['key']
+            key = match.groupdict()["key"]
             if key in replacments:
                 ps.current_line = match.expand(
-                    '\\g<key>\\g<space>%s\n' % replacments[key]
+                    "\\g<key>\\g<space>%s\n" % replacments[key]
                 )
         ps.read_line()
 
@@ -65,13 +65,13 @@ def parse(ps, header_replacements, body_replacements):
             skip_no_translate(ps)
             match = string_entry_re.match(ps.current_line)
             if match is not None:
-                key = match.groupdict()['id']
+                key = match.groupdict()["id"]
                 if key in body_replacements:
                     value = (
                         body_replacements[key].target or body_replacements[key].source
                     )
                     ps.current_line = match.expand(
-                        '\\g<start>\\g<id>\\g<space>%s\n' % escape(value)
+                        "\\g<start>\\g<id>\\g<space>%s\n" % escape(value)
                     )
             ps.read_line()
     except StopIteration:
@@ -105,7 +105,7 @@ def build_location_index(store):
     for unit in store.units:
         for location in unit.getlocations():
             index[location] = unit
-    index['r_string_languagegroup_name'] = store.UnitClass(po_header['Language-Team'])
+    index["r_string_languagegroup_name"] = store.UnitClass(po_header["Language-Team"])
     return index
 
 
@@ -114,7 +114,7 @@ def convert_symbian(
 ):
     store = factory.getobject(input_file)
     location_index = build_location_index(store)
-    header_index = {'Author': store.parseheader()['Last-Translator']}
+    header_index = {"Author": store.parseheader()["Last-Translator"]}
     output = write_symbian(template_file, header_index, location_index)
     for line in output:
         output_file.write(line)
@@ -131,5 +131,5 @@ def main(argv=None):
     parser.run(argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

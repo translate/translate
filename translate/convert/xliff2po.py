@@ -70,17 +70,17 @@ class xliff2po:
         for transunit in XliffFile.units:
             if transunit.isheader():
                 thetargetfile.updateheader(add=True, **XliffFile.parseheader())
-                if transunit.getnotes('translator'):
+                if transunit.getnotes("translator"):
                     targetheader.addnote(
-                        transunit.getnotes('translator'),
-                        origin='translator',
-                        position='replace',
+                        transunit.getnotes("translator"),
+                        origin="translator",
+                        position="replace",
                     )
-                if transunit.getnotes('developer'):
+                if transunit.getnotes("developer"):
                     targetheader.addnote(
-                        transunit.getnotes('developer'),
-                        origin='developer',
-                        position='replace',
+                        transunit.getnotes("developer"),
+                        origin="developer",
+                        position="replace",
                     )
                 targetheader.markfuzzy(transunit.isfuzzy())
                 continue

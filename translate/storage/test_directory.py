@@ -74,7 +74,7 @@ class TestDirectory:
     def test_getunits(self):
         """Tests basic functionality."""
         files = ["a.po", "b.po", "c.po"]
-        posource = '''msgid "bla"\nmsgstr "blabla"\n'''
+        posource = """msgid "bla"\nmsgstr "blabla"\n"""
         self.touchfiles(self.testdir, files, posource)
 
         d = directory.Directory(self.testdir)

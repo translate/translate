@@ -40,7 +40,7 @@ def extract_msgid_comment(text):
 
 def quote_plus(text):
     """Quote the query fragment of a URL; replacing ' ' with '+'"""
-    return parse.quote_plus(text.encode("utf-8"), safe='[]()/:,@')
+    return parse.quote_plus(text.encode("utf-8"), safe="[]()/:,@")
 
 
 def unquote_plus(text):
@@ -71,19 +71,19 @@ class pounit(base.TranslationUnit):
 
     def adderror(self, errorname, errortext):
         """Adds an error message to this unit."""
-        text = '(pofilter) %s: %s' % (errorname, errortext)
+        text = "(pofilter) %s: %s" % (errorname, errortext)
         # Don't add the same error twice:
-        if text not in self.getnotes(origin='translator'):
+        if text not in self.getnotes(origin="translator"):
             self.addnote(text, origin="translator")
 
     def geterrors(self):
         """Get all error messages."""
-        notes = self.getnotes(origin="translator").split('\n')
+        notes = self.getnotes(origin="translator").split("\n")
         errordict = {}
         for note in notes:
-            if '(pofilter) ' in note:
-                error = note.replace('(pofilter) ', '')
-                errorname, errortext = error.split(': ', 1)
+            if "(pofilter) " in note:
+                error = note.replace("(pofilter) ", "")
+                errorname, errortext = error.split(": ", 1)
                 errordict[errorname] = errortext
         return errordict
 
@@ -97,12 +97,12 @@ class pounit(base.TranslationUnit):
         else:
             # Strip (review) notes.
             notestring = self.getnotes(origin="translator")
-            notes = notestring.split('\n')
+            notes = notestring.split("\n")
             newnotes = []
             for note in notes:
-                if '(review)' not in note:
+                if "(review)" not in note:
                     newnotes.append(note)
-            newnotes = '\n'.join(newnotes)
+            newnotes = "\n".join(newnotes)
             self.removenotes()
             self.addnote(newnotes, origin="translator")
 
@@ -199,7 +199,7 @@ class pofile(poheader.poheader, base.TranslationStore):
 
     def __init__(self, inputfile=None, noheader=False, **kwargs):
         super().__init__(**kwargs)
-        self.filename = ''
+        self.filename = ""
         if inputfile is not None:
             self.parse(inputfile)
         elif not noheader:
@@ -208,4 +208,4 @@ class pofile(poheader.poheader, base.TranslationStore):
     @property
     def merge_on(self):
         """The matching criterion to use when merging on."""
-        return self.parseheader().get('X-Merge-On', 'id')
+        return self.parseheader().get("X-Merge-On", "id")

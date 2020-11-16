@@ -147,7 +147,7 @@ def summarize(title, stats, style=style_full, indent=8, incomplete_only=False):
         return 1
 
     if style == style_csv:
-        print("%s, " % title, end=' ')
+        print("%s, " % title, end=" ")
         print(
             "%d, %d, %d,"
             % (
@@ -155,16 +155,16 @@ def summarize(title, stats, style=style_full, indent=8, incomplete_only=False):
                 stats["translatedsourcewords"],
                 stats["translatedtargetwords"],
             ),
-            end=' ',
+            end=" ",
         )
-        print("%d, %d," % (stats["fuzzy"], stats["fuzzysourcewords"]), end=' ')
+        print("%d, %d," % (stats["fuzzy"], stats["fuzzysourcewords"]), end=" ")
         print(
             "%d, %d," % (stats["untranslated"], stats["untranslatedsourcewords"]),
-            end=' ',
+            end=" ",
         )
-        print("%d, %d" % (stats["total"], stats["totalsourcewords"]), end=' ')
+        print("%d, %d" % (stats["total"], stats["totalsourcewords"]), end=" ")
         if stats["review"] > 0:
-            print(", %d, %d" % (stats["review"], stats["reviewsourdcewords"]), end=' ')
+            print(", %d, %d" % (stats["review"], stats["reviewsourdcewords"]), end=" ")
         print()
     elif style == style_short_strings:
         spaces = " " * (indent - len(title))
@@ -451,5 +451,5 @@ def main():
     summarizer(args.files, args.style, args.incomplete_only)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

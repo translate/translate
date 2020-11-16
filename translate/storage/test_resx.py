@@ -27,7 +27,7 @@ class TestRESXUnit(test_monolingual.TestMonolingualUnit):
 
 
 class TestRESXUnitFromParsedString(TestRESXUnit):
-    resxsource = XMLskeleton = '''<?xml version="1.0" encoding="utf-8"?>
+    resxsource = XMLskeleton = """<?xml version="1.0" encoding="utf-8"?>
 <root>
   <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
@@ -85,10 +85,10 @@ class TestRESXUnitFromParsedString(TestRESXUnit):
     <value>Test String</value>
   </data>
   %s
-</root>'''
+</root>"""
 
     def setup_method(self, method):
-        self.store = resx.RESXFile.parsestring(self.resxsource % '')
+        self.store = resx.RESXFile.parsestring(self.resxsource % "")
         self.unit = self.store.units[0]
 
     def _assert_store(self, expected_resx):
@@ -104,9 +104,9 @@ class TestRESXUnitFromParsedString(TestRESXUnit):
 
         expected_resx = (
             self.resxsource
-            % '''<data name="test" xml:space="preserve">
+            % """<data name="test" xml:space="preserve">
     <value>New translated value</value>
-  </data>'''
+  </data>"""
         )
         self._assert_store(expected_resx)
 
@@ -118,10 +118,10 @@ class TestRESXUnitFromParsedString(TestRESXUnit):
 
         expected_resx = (
             self.resxsource
-            % '''<data name="test" xml:space="preserve">
+            % """<data name="test" xml:space="preserve">
     <value>New translated value</value>
     <comment>this unit didn't exist before</comment>
-  </data>'''
+  </data>"""
         )
         self._assert_store(expected_resx)
 

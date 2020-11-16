@@ -68,7 +68,7 @@ class TikiUnit(base.TranslationUnit):
         """Returns a string formatted to be inserted into a tiki language.php file."""
         ret = '"%s" => "%s",' % (self.source, self.target)
         if self.location == ["untranslated"]:
-            ret = '// ' + ret
+            ret = "// " + ret
         return ret + "\n"
 
     def addlocation(self, location):
@@ -77,7 +77,7 @@ class TikiUnit(base.TranslationUnit):
 
         :param location: Where the string is located in the file.  Must be a valid location.
         """
-        if location in ['unused', 'untranslated', 'possiblyuntranslated', 'translated']:
+        if location in ["unused", "untranslated", "possiblyuntranslated", "translated"]:
             self.location.append(location)
 
     def getlocations(self):
@@ -96,7 +96,7 @@ class TikiStore(base.TranslationStore):
         :param inputfile: Either a string or a filehandle of the source file
         """
         super().__init__()
-        self.filename = getattr(inputfile, 'name', '')
+        self.filename = getattr(inputfile, "name", "")
         if inputfile is not None:
             self.parse(inputfile)
 

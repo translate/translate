@@ -31,7 +31,7 @@ from translate.storage.placeables.interfaces import (
 from translate.storage.placeables.strelem import StringElem
 
 
-__all__ = ('Bpt', 'Ept', 'Ph', 'It', 'G', 'Bx', 'Ex', 'X', 'Sub', 'to_base_placeables')
+__all__ = ("Bpt", "Ept", "Ph", "It", "G", "Bx", "Ex", "X", "Sub", "to_base_placeables")
 
 
 # Basic placeable types.

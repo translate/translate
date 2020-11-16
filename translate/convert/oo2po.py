@@ -94,7 +94,7 @@ class oo2po:
         """converts an entire oo file to a base class format (.po or XLIFF)"""
         thetargetfile = po.pofile()
         # create a header for the file
-        bug_url = 'http://qa.openoffice.org/issues/enter_bug.cgi?%s' % parse.urlencode(
+        bug_url = "http://qa.openoffice.org/issues/enter_bug.cgi?%s" % parse.urlencode(
             {
                 "subcomponent": "ui",
                 "comment": "",
@@ -224,5 +224,5 @@ def main(argv=None):
     parser.run(argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -3,7 +3,7 @@ from translate.lang import factory
 
 def test_punctranslate():
     """Tests that we can translate punctuation."""
-    language = factory.getlanguage('fa')
+    language = factory.getlanguage("fa")
     assert language.punctranslate("") == ""
     assert language.punctranslate("abc efg") == "abc efg"
     assert language.punctranslate("abc efg.") == "abc efg."
@@ -20,7 +20,7 @@ def test_punctranslate():
     assert language.punctranslate('Watch the " mark') == 'Watch the " mark'
     assert language.punctranslate("Watch the ' mark") == "Watch the ' mark"
     assert language.punctranslate("Watch the ` mark") == "Watch the ` mark"
-    assert language.punctranslate('Watch the “mark”') == "Watch the «mark»"
+    assert language.punctranslate("Watch the “mark”") == "Watch the «mark»"
     assert (
         language.punctranslate('The <a href="info">user</a> "root"?')
         == 'The <a href="info">user</a> «root»؟'
@@ -43,7 +43,7 @@ def test_punctranslate():
 
 def test_sentences():
     """Tests basic functionality of sentence segmentation."""
-    language = factory.getlanguage('fa')
+    language = factory.getlanguage("fa")
     sentences = language.sentences("")
     assert sentences == []
 

@@ -3,7 +3,7 @@ from translate.lang import factory
 
 def test_punctranslate():
     """Tests that we can translate punctuation."""
-    language = factory.getlanguage('ne')
+    language = factory.getlanguage("ne")
     assert language.punctranslate("") == ""
     assert language.punctranslate("abc efg") == "abc efg"
     assert language.punctranslate("abc efg.") == "abc efg ।"
@@ -14,7 +14,7 @@ def test_punctranslate():
 
 def test_sentences():
     """Tests basic functionality of sentence segmentation."""
-    language = factory.getlanguage('ne')
+    language = factory.getlanguage("ne")
     sentences = language.sentences("")
     assert sentences == []
 

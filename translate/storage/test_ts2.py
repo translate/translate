@@ -119,8 +119,8 @@ for attrname in dir(xliff):
     attr = getattr(xliff, attrname)
     if (
         type(attr) is type
-        and attrname not in ('XLIFFPlaceable')
-        and hasattr(attr, 'parse')
+        and attrname not in ("XLIFFPlaceable")
+        and hasattr(attr, "parse")
         and attr.parse is not None
     ):
         xliffparsers.append(attr.parse)
@@ -178,10 +178,10 @@ class TestTSfile(test_base.TestTranslationStore):
         assert checkunit.hasplural()
 
     def test_nplural(self):
-        tsstr = '''<!DOCTYPE TS>
+        tsstr = """<!DOCTYPE TS>
 <TS version="2.0" language="xx" sourcelanguage="de">
 </TS>
-'''
+"""
         tsfile = ts.tsfile.parsestring(tsstr)
         assert tsfile.nplural() == 1
         tsfile = ts.tsfile.parsestring(TS_CONTEXT_QT4)
@@ -189,27 +189,27 @@ class TestTSfile(test_base.TestTranslationStore):
 
     def test_language(self):
         """Check that we can get and set language and sourcelanguage in the header"""
-        tsstr = '''<!DOCTYPE TS>
+        tsstr = """<!DOCTYPE TS>
 <TS version="2.0" language="fr" sourcelanguage="de">
 </TS>
-'''
+"""
         tsfile = ts.tsfile.parsestring(tsstr)
-        assert tsfile.gettargetlanguage() == 'fr'
-        assert tsfile.getsourcelanguage() == 'de'
-        tsfile.settargetlanguage('pt_BR')
-        assert 'pt_BR' in bytes(tsfile).decode('utf-8')
-        assert tsfile.gettargetlanguage() == 'pt-br'
+        assert tsfile.gettargetlanguage() == "fr"
+        assert tsfile.getsourcelanguage() == "de"
+        tsfile.settargetlanguage("pt_BR")
+        assert "pt_BR" in bytes(tsfile).decode("utf-8")
+        assert tsfile.gettargetlanguage() == "pt-br"
         # We convert en_US to en
-        tsstr = '''<!DOCTYPE TS>
+        tsstr = """<!DOCTYPE TS>
 <TS version="2.0" language="fr" sourcelanguage="en_US">
 </TS>
-'''
+"""
         tsfile = ts.tsfile.parsestring(tsstr)
-        assert tsfile.getsourcelanguage() == 'en'
+        assert tsfile.getsourcelanguage() == "en"
 
     def test_edit(self):
         """test editing works well"""
-        tsstr = '''<?xml version="1.0" encoding="utf-8"?>
+        tsstr = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.0" language="hu">
 <context>
@@ -224,12 +224,12 @@ class TestTSfile(test_base.TestTranslationStore):
     </message>
 </context>
 </TS>
-'''
+"""
         tsfile = ts.tsfile.parsestring(tsstr)
-        tsfile.units[1].target = 'TestTarget'
+        tsfile.units[1].target = "TestTarget"
         tsfile.units[1].markfuzzy(True)
-        newtsstr = tsstr.replace('>TargetString', ' type="unfinished">TestTarget')
-        assert newtsstr == bytes(tsfile).decode('utf-8')
+        newtsstr = tsstr.replace(">TargetString", ' type="unfinished">TestTarget')
+        assert newtsstr == bytes(tsfile).decode("utf-8")
 
     def test_obsolete(self):
         tsfile = ts.tsfile.parsestring(TS_CONTEXT_QT4)
@@ -247,7 +247,7 @@ class TestTSfile(test_base.TestTranslationStore):
 
     def test_locations(self):
         """test that locations work well"""
-        tsstr = '''<?xml version="1.0" encoding="utf-8"?>
+        tsstr = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.0" language="hu">
 <context>
@@ -273,19 +273,19 @@ class TestTSfile(test_base.TestTranslationStore):
     </message>
 </context>
 </TS>
-'''
+"""
         tsfile = ts.tsfile.parsestring(tsstr)
         assert len(tsfile.units) == 4
         assert tsfile.units[0].getlocations() == [
-            '../tools/qtconfig/mainwindow.cpp:+202'
+            "../tools/qtconfig/mainwindow.cpp:+202"
         ]
-        assert tsfile.units[1].getlocations() == ['+5']
+        assert tsfile.units[1].getlocations() == ["+5"]
         assert tsfile.units[2].getlocations() == []
         assert tsfile.units[3].getlocations() == []
 
     def test_merge_with_fuzzies(self):
         """test that merge with fuzzy works well"""
-        tsstr1 = '''<?xml version="1.0" encoding="utf-8"?>
+        tsstr1 = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.0" language="hu">
 <context>
@@ -302,9 +302,9 @@ class TestTSfile(test_base.TestTranslationStore):
     </message>
 </context>
 </TS>
-'''
+"""
 
-        tsstr2 = '''<?xml version="1.0" encoding="utf-8"?>
+        tsstr2 = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.0" language="hu">
 <context>
@@ -321,7 +321,7 @@ class TestTSfile(test_base.TestTranslationStore):
     </message>
 </context>
 </TS>
-'''
+"""
         tsfile = ts.tsfile.parsestring(tsstr1)
         tsfile2 = ts.tsfile.parsestring(tsstr2)
         assert len(tsfile.units) == 2
@@ -342,7 +342,7 @@ class TestTSfile(test_base.TestTranslationStore):
     def test_backnforth(self):
         """test that ts files are read and output properly"""
         tsfile = ts.tsfile.parsestring(TS_NUMERUS)
-        assert bytes(tsfile).decode('utf-8') == TS_NUMERUS
+        assert bytes(tsfile).decode("utf-8") == TS_NUMERUS
 
     def test_context(self):
         tsfile = ts.tsfile.parsestring(TS_NUMERUS)
@@ -352,10 +352,10 @@ class TestTSfile(test_base.TestTranslationStore):
         commentnode = unit.xmlelement.find(unit.namespaced("comment"))
         if commentnode is not None and commentnode.text is not None:
             contexts.append(commentnode.text)
-        message_id = unit.xmlelement.get('id')
+        message_id = unit.xmlelement.get("id")
         if message_id is not None:
             contexts.append(message_id)
-        context = '\n'.join(filter(None, contexts))
+        context = "\n".join(filter(None, contexts))
         assert unit.getcontext() == context
         # setting the context does nothing atm - if the unit is inserted
         unit.setcontext("FOO")
@@ -371,13 +371,13 @@ class TestTSfile(test_base.TestTranslationStore):
 
     def test_roundtrip_context(self):
         tsfile = ts.tsfile.parsestring(TS_CONTEXT_QT4)
-        assert bytes(tsfile).decode('utf-8') == TS_CONTEXT_QT4
+        assert bytes(tsfile).decode("utf-8") == TS_CONTEXT_QT4
         tsfile = ts.tsfile.parsestring(TS_CONTEXT_QT5)
-        assert bytes(tsfile).decode('utf-8') == TS_CONTEXT_QT5
+        assert bytes(tsfile).decode("utf-8") == TS_CONTEXT_QT5
 
     def test_edit_missing_translation(self):
         """test editing with missing translation element works well"""
-        tsstr = '''<?xml version="1.0" encoding="utf-8"?>
+        tsstr = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.0" language="hu">
 <context>
@@ -387,12 +387,12 @@ class TestTSfile(test_base.TestTranslationStore):
     </message>
 </context>
 </TS>
-'''
+"""
         tsfile = ts.tsfile.parsestring(tsstr)
         tsfile.units[0].markfuzzy(True)
-        tsfile.units[0].target = 'TestTarget'
+        tsfile.units[0].target = "TestTarget"
         newtsstr = tsstr.replace(
-            '/source>',
+            "/source>",
             '/source>\n        <translation type="unfinished">TestTarget</translation>',
         )
-        assert newtsstr == bytes(tsfile).decode('utf-8')
+        assert newtsstr == bytes(tsfile).decode("utf-8")

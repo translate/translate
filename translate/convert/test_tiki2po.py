@@ -33,7 +33,7 @@ class TestTiki2Po:
 
     def _convert_to_string(self, *args, **kwargs):
         """Helper that converts to target format string without using files."""
-        return self._convert(*args, **kwargs)[1].getvalue().decode('utf-8')
+        return self._convert(*args, **kwargs)[1].getvalue().decode("utf-8")
 
     def test_convert_empty(self):
         """Check converting empty file returns no output."""
@@ -47,7 +47,7 @@ class TestTiki2Po:
 // ### end of unused words
 """
         output = self._convert_to_string(input_string)
-        assert '#: translated' in output
+        assert "#: translated" in output
         assert 'msgid "zero_source"' in output
         assert "one_source" not in output
 
@@ -59,9 +59,9 @@ class TestTiki2Po:
 // ### end of unused words
 """
         output = self._convert_to_string(input_string, include_unused=True)
-        assert '#: translated' in output
+        assert "#: translated" in output
         assert 'msgid "zero_source"' in output
-        assert '#: unused' in output
+        assert "#: unused" in output
         assert 'msgid "one_source"' in output
 
 

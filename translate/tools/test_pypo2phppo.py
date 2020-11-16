@@ -21,7 +21,7 @@ msgstr "I have {1} apples and {0} oranges"
         outputfile = BytesIO()
         pypo2phppo.convertpy2php(inputfile, outputfile)
 
-        output = outputfile.getvalue().decode('utf-8')
+        output = outputfile.getvalue().decode("utf-8")
 
         assert "refers to: %1$s" in output
         assert "does too: %1$s" in output
@@ -40,7 +40,7 @@ msgstr[1] "I have {0} apples"
         """
         outputfile = BytesIO()
         pypo2phppo.convertpy2php(inputfile, outputfile)
-        output = outputfile.getvalue().decode('utf-8')
+        output = outputfile.getvalue().decode("utf-8")
 
         assert 'msgid "I have %1$s apple"' in output
         assert 'msgid_plural "I have %1$s apples"' in output

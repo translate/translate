@@ -126,7 +126,7 @@ class poheader:
         "X-Merge-On",
     ]
 
-    def init_headers(self, charset='UTF-8', encoding='8bit', **kwargs):
+    def init_headers(self, charset="UTF-8", encoding="8bit", **kwargs):
         """sets default values for po headers"""
         # FIXME: we need to allow at least setting target language, pluralforms and generator
         headerdict = self.makeheaderdict(charset=charset, encoding=encoding, **kwargs)
@@ -263,7 +263,7 @@ class poheader:
     def getheaderplural(self):
         """Returns the nplural and plural values from the header."""
         header = self.parseheader()
-        pluralformvalue = header.get('Plural-Forms', None)
+        pluralformvalue = header.get("Plural-Forms", None)
         if pluralformvalue is None:
             return None, None
         nplural = re.findall("nplurals=(.+?);", pluralformvalue)
@@ -295,7 +295,7 @@ class poheader:
           3. Analysing the 'Language-Team' entry.
         """
         header = self.parseheader()
-        lang = header.get('Language', None)
+        lang = header.get("Language", None)
         if lang is not None:
             from translate.lang.data import langcode_ire
 
@@ -303,18 +303,18 @@ class poheader:
                 return lang
             else:
                 lang = None
-        if 'X-Poedit-Language' in header:
+        if "X-Poedit-Language" in header:
             from translate.lang import poedit
 
-            language = header.get('X-Poedit-Language')
-            country = header.get('X-Poedit-Country')
+            language = header.get("X-Poedit-Language")
+            country = header.get("X-Poedit-Country")
             return poedit.isocode(language, country)
-        if 'Language-Code' in header:  # Used in Plone files
-            return header.get('Language-Code')
-        if 'Language-Team' in header:
+        if "Language-Code" in header:  # Used in Plone files
+            return header.get("Language-Code")
+        if "Language-Team" in header:
             from translate.lang.team import guess_language
 
-            return guess_language(header.get('Language-Team'))
+            return guess_language(header.get("Language-Team"))
         return None
 
     def settargetlanguage(self, lang):
@@ -341,24 +341,24 @@ class poheader:
           5. Analyse the file itself (not yet implemented)
         """
         header = self.parseheader()
-        project = header.get('X-Project-Style', None)
+        project = header.get("X-Project-Style", None)
         if project is not None:
             return project
-        bug_address = header.get('Report-Msgid-Bugs-To', None)
+        bug_address = header.get("Report-Msgid-Bugs-To", None)
         if bug_address is not None:
-            if 'bugzilla.gnome.org' in bug_address:
-                return 'gnome'
-            if 'bugs.kde.org' in bug_address:
-                return 'kde'
-        accelerator = header.get('X-Accelerator-Marker', None)
+            if "bugzilla.gnome.org" in bug_address:
+                return "gnome"
+            if "bugs.kde.org" in bug_address:
+                return "kde"
+        accelerator = header.get("X-Accelerator-Marker", None)
         if accelerator is not None:
             if accelerator == "~":
                 return "openoffice"
             elif accelerator == "&":
                 return "mozilla"
-        project_id = header.get('Project-Id-Version', None)
+        project_id = header.get("Project-Id-Version", None)
         if project_id is not None:
-            if 'gnome' in project_id.lower():
+            if "gnome" in project_id.lower():
                 return "gnome"
         # TODO Call some project guessing code and probably move all of the above there also
         return None
@@ -406,7 +406,7 @@ class poheader:
         contribexists = False
         incontrib = False
         outcontrib = False
-        for line in header.getnotes("translator").split('\n'):
+        for line in header.getnotes("translator").split("\n"):
             line = line.strip()
             if line == "FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.":
                 incontrib = True
@@ -435,7 +435,7 @@ class poheader:
                     break
                 else:
                     # The contributor is there, but not for this year
-                    if line[-1] == '.':
+                    if line[-1] == ".":
                         line = line[:-1]
                     contriblines[i] = "%s, %s." % (line, year)
 

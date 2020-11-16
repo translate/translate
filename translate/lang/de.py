@@ -29,5 +29,5 @@ class de(common.Common):
     """This class represents German."""
 
     ignoretests = {
-        'all': ["simplecaps"],
+        "all": ["simplecaps"],
     }

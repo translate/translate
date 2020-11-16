@@ -107,7 +107,7 @@ class TestMozLangFile(test_base.TestTranslationStore):
         assert unit.source == "Source"
         assert unit.target == "Target"
         assert "Comment" in unit.getnotes()
-        assert bytes(store).decode('utf-8') == lang
+        assert bytes(store).decode("utf-8") == lang
 
     def test_crlf(self):
         r"""While \n is preferred \r\n is allowed"""
@@ -118,14 +118,14 @@ class TestMozLangFile(test_base.TestTranslationStore):
         assert unit.source == "Source"
         assert unit.target == "Target"
         assert "Comment" in unit.getnotes()
-        assert bytes(store).decode('utf-8') == lang
+        assert bytes(store).decode("utf-8") == lang
 
     def test_active_flag(self):
         """Test the ## active ## flag"""
         lang = "## active ##\n" ";Source\n" "Target\n" "\n\n"
         store = self.StoreClass.parsestring(lang)
         assert store.is_active
-        assert bytes(store).decode('utf-8') == lang
+        assert bytes(store).decode("utf-8") == lang
 
     def test_multiline_comments(self):
         """Ensure we can handle and preserve miltiline comments"""
@@ -139,7 +139,7 @@ class TestMozLangFile(test_base.TestTranslationStore):
             "\n\n"
         )
         store = self.StoreClass.parsestring(lang)
-        assert bytes(store).decode('utf-8') == lang
+        assert bytes(store).decode("utf-8") == lang
 
     def test_template(self):
         """A template should have source == target, though it could be blank"""
@@ -148,7 +148,7 @@ class TestMozLangFile(test_base.TestTranslationStore):
         unit = store.units[0]
         assert unit.source == "Source"
         assert unit.target == ""
-        assert bytes(store).decode('utf-8') == lang
+        assert bytes(store).decode("utf-8") == lang
         lang2 = ";Source\n" "\n\n" ";Source2\n" "\n\n"
         store2 = self.StoreClass.parsestring(lang2)
         assert store2.units[0].source == "Source"
@@ -189,11 +189,11 @@ class TestMozLangFile(test_base.TestTranslationStore):
         )
         store = self.StoreClass.parsestring(lang)
         assert store.getlangheaders() == [
-            '## some_tag ##',
-            '## another_tag ##',
-            '## NOTE: foo',
-            '',
-            '',
+            "## some_tag ##",
+            "## another_tag ##",
+            "## NOTE: foo",
+            "",
+            "",
         ]
         out = io.BytesIO()
         store.serialize(out)
@@ -207,7 +207,7 @@ class TestMozLangFile(test_base.TestTranslationStore):
             ";Source\n"
             "Target\n"
             "\n\n"
-        ).encode('utf-8')
+        ).encode("utf-8")
 
     def test_not_headers(self):
         """Ensure we dont treat a tag immediately after headers as header"""
@@ -229,9 +229,9 @@ class TestMozLangFile(test_base.TestTranslationStore):
         """Ensure that blank lines following a header are recorded"""
         lang_header = "## active ##\n" "## some_tag ##\n"
         lang_unit1 = "# Comment\n" ";Source\n" "Target\n" "\n\n"
-        lang = lang_header + '\n' * nl + lang_unit1
+        lang = lang_header + "\n" * nl + lang_unit1
         store = self.StoreClass.parsestring(lang)
-        assert bytes(store).decode('utf-8') == lang
+        assert bytes(store).decode("utf-8") == lang
 
     def test_tag_comments(self):
         """Ensure we can handle comments and distinguish from headers"""
@@ -248,7 +248,7 @@ class TestMozLangFile(test_base.TestTranslationStore):
         )
         store = self.StoreClass.parsestring(lang)
         assert not store.getlangheaders()
-        assert bytes(store).decode('utf-8') == lang
+        assert bytes(store).decode("utf-8") == lang
         assert "# TAG: important_tag" in store.units[0].getnotes(
             origin="developer"
         ).split("\n")
@@ -284,7 +284,7 @@ class TestMozLangFile(test_base.TestTranslationStore):
         lang = "## MAX_LENGTH: 80\n" "# Comment\n" ";Source\n" "Target\n" "\n\n"
         store = self.StoreClass.parsestring(lang)
         assert not store.getlangheaders()
-        assert bytes(store).decode('utf-8') == lang
+        assert bytes(store).decode("utf-8") == lang
         assert "# MAX_LENGTH: 80" in store.units[0].getnotes(origin="developer").split(
             "\n"
         )

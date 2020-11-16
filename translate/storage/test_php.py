@@ -22,8 +22,8 @@ def test_php_escaping_single_quote():
     assert (
         php.phpdecode(r"\x") == r"\x"
     )  # Note that attempting to escape any other character will print the backslash too.
-    assert php.phpdecode(r'\t') == r'\t'
-    assert php.phpdecode(r'\n') == r'\n'
+    assert php.phpdecode(r"\t") == r"\t"
+    assert php.phpdecode(r"\n") == r"\n"
     assert php.phpdecode(r"this is a simple string") == r"this is a simple string"
     assert (
         php.phpdecode(
@@ -43,12 +43,12 @@ okay to do"""
         php.phpdecode(r'Arnold once said: "I\'ll be back"')
         == r'''Arnold once said: "I'll be back"'''
     )
-    assert php.phpdecode(r'You deleted C:\\*.*?') == r"You deleted C:\*.*?"
-    assert php.phpdecode(r'You deleted C:\*.*?') == r"You deleted C:\*.*?"
+    assert php.phpdecode(r"You deleted C:\\*.*?") == r"You deleted C:\*.*?"
+    assert php.phpdecode(r"You deleted C:\*.*?") == r"You deleted C:\*.*?"
     assert (
-        php.phpdecode(r'\117\143\164\141\154') == r'\117\143\164\141\154'
+        php.phpdecode(r"\117\143\164\141\154") == r"\117\143\164\141\154"
     )  # We don't handle Octal like " does
-    assert php.phpdecode(r'\x48\x65\x78') == r'\x48\x65\x78'  # Don't handle Hex either
+    assert php.phpdecode(r"\x48\x65\x78") == r"\x48\x65\x78"  # Don't handle Hex either
     # Should implement for false interpretation of double quoted data.
     # Encoding - Python -> PHP
     assert (
@@ -79,7 +79,7 @@ newline"""
         php.phpencode(r'''Arnold once said: "I'll be back"''')
         == r'''Arnold once said: "I\'ll be back"'''
     )
-    assert php.phpencode(r'You deleted C:\*.*?') == r"You deleted C:\*.*?"
+    assert php.phpencode(r"You deleted C:\*.*?") == r"You deleted C:\*.*?"
 
 
 def test_php_escaping_double_quote():
@@ -108,14 +108,14 @@ def test_php_escaping_double_quote():
     assert (
         php.phpdecode(r"\$", quotechar='"') == "\\$"
     )  # Just to check that we don't unescape this
-    assert php.phpdecode(r'\"', quotechar='"') == '"'  # See table of escaped characters
+    assert php.phpdecode(r"\"", quotechar='"') == '"'  # See table of escaped characters
     assert (
-        php.phpdecode(r'\117\143\164\141\154', quotechar='"') == 'Octal'
+        php.phpdecode(r"\117\143\164\141\154", quotechar='"') == "Octal"
     )  # Octal: \[0-7]{1,3}
     assert (
-        php.phpdecode(r'\x48\x65\x78', quotechar='"') == 'Hex'
+        php.phpdecode(r"\x48\x65\x78", quotechar='"') == "Hex"
     )  # Hex: \x[0-9A-Fa-f]{1,2}
-    assert php.phpdecode(r'\117\\c\164\141\154', quotechar='"') == r'O\ctal'  # Mixed
+    assert php.phpdecode(r"\117\\c\164\141\154", quotechar='"') == r"O\ctal"  # Mixed
     # Decoding - special examples
     assert (
         php.phpdecode(r"Don't escape me here\'s", quotechar='"')
@@ -149,7 +149,7 @@ def test_php_escaping_double_quote():
     assert (
         php.phpencode(r"\$", quotechar='"') == r"\$"
     )  # Just to check that we don't unescape this
-    assert php.phpencode('"', quotechar='"') == r'\"'
+    assert php.phpencode('"', quotechar='"') == r"\""
     assert (
         php.phpencode(r"Don't escape me here\'s", quotechar='"')
         == r"Don't escape me here\'s"
@@ -174,7 +174,7 @@ class TestPhpFile(test_monolingual.TestMonolingualStore):
 
     def phpregen(self, phpsource):
         """helper that converts php source to phpfile object and back"""
-        return bytes(self.phpparse(phpsource)).decode('utf-8')
+        return bytes(self.phpparse(phpsource)).decode("utf-8")
 
     def test_simpledefinition(self):
         """checks that a simple php definition is parsed correctly"""
@@ -190,7 +190,7 @@ class TestPhpFile(test_monolingual.TestMonolingualStore):
         phpsource = """<?php
 $lang['mediaselect'] = 'Bestand selectie';"""
         phpregen = self.phpregen(phpsource)
-        assert phpsource + '\n' == phpregen
+        assert phpsource + "\n" == phpregen
 
     def test_spaces_in_name(self):
         """check that spaces in the array name doesn't throw us off"""
@@ -258,13 +258,13 @@ $foo = 'bar';
         phpunit = phpfile.units[0]
         assert phpunit.name == "$foo"
         assert phpunit.source == "bar"
-        assert phpunit._comments == ['/* NOTE 1 */']
+        assert phpunit._comments == ["/* NOTE 1 */"]
         # Replace existing notes
-        phpunit.addnote('/* NOTE 2 */', None, 'replace')
+        phpunit.addnote("/* NOTE 2 */", None, "replace")
         # Set unknown note
-        phpunit.addnote('/* NOTE 2 */', 'unknown')
-        assert phpunit._comments == ['/* NOTE 2 */']
-        assert str(phpunit) == phpsource.replace('NOTE 1', 'NOTE 2')
+        phpunit.addnote("/* NOTE 2 */", "unknown")
+        assert phpunit._comments == ["/* NOTE 2 */"]
+        assert str(phpunit) == phpsource.replace("NOTE 1", "NOTE 2")
 
     def test_multiline(self):
         """check that we preserve newlines in a multiline message"""
@@ -279,11 +279,11 @@ $foo = 'bar';
 
     def test_parsing_arrays(self):
         """parse the array syntax"""
-        phpsource = '''$lang = %s(
+        phpsource = """$lang = %s(
          'item1' => 'value1',
          'item2' => 'value2',
-      );'''
-        for arrayfn in ['array', 'Array', 'ARRAY']:
+      );"""
+        for arrayfn in ["array", "Array", "ARRAY"]:
             phpfile = self.phpparse(phpsource % arrayfn)
             assert len(phpfile.units) == 2
             phpunit = phpfile.units[0]
@@ -292,10 +292,10 @@ $foo = 'bar';
 
     def test_parsing_array_no_array_syntax(self):
         """parse the array syntax"""
-        phpsource = '''global $_LANGPDF;
+        phpsource = """global $_LANGPDF;
         $_LANGPDF = array();
         $_LANGPDF['PDF065ab3a28ca4f16f55f103adc7d0226f'] = 'Delivery';
-        '''
+        """
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 1
         phpunit = phpfile.units[0]
@@ -304,10 +304,10 @@ $foo = 'bar';
 
     def test_parsing_arrays_keys_with_spaces(self):
         """Ensure that our identifiers can have spaces. Bug #1683"""
-        phpsource = '''$lang = array(
+        phpsource = """$lang = array(
          'item 1' => 'value1',
          'item 2' => 'value2',
-      );'''
+      );"""
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 2
         phpunit = phpfile.units[0]
@@ -316,11 +316,11 @@ $foo = 'bar';
 
     def test_parsing_arrays_non_textual(self):
         """Don't break on non-textual data. Bug #1684"""
-        phpsource = '''$lang = array(
+        phpsource = """$lang = array(
          'item 1' => 'value1',
          'item 2' => false,
          'item 3' => 'value3',
-      );'''
+      );"""
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 2
         phpunit = phpfile.units[1]
@@ -420,13 +420,13 @@ define("_REGISTER", "Register <a href=\"register.php\">here</a>");"""
         assert len(phpfile.units) == 3
         phpunit = phpfile.units[0]
         assert phpunit.name == "define('_SETTINGS_COOKIEPREFIX'"
-        assert phpunit.source == "Prefixo da \"cookie\""
+        assert phpunit.source == 'Prefixo da "cookie"'
         phpunit = phpfile.units[1]
         assert phpunit.name == "define('_YOUR_USERNAME'"
-        assert phpunit.source == "O seu nome de usuario: \"cookie\""
+        assert phpunit.source == 'O seu nome de usuario: "cookie"'
         phpunit = phpfile.units[2]
         assert phpunit.name == 'define("_REGISTER"'
-        assert phpunit.source == "Register <a href=\"register.php\">here</a>"
+        assert phpunit.source == 'Register <a href="register.php">here</a>'
 
     def test_parsing_define_comments_at_entry_line_end(self):
         """Parse define syntax with comments at the end of the entry line"""
@@ -490,13 +490,13 @@ $month_mar = 'Mar';"""
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 3
         phpunit = phpfile.units[0]
-        assert phpunit.name == '$month_jan'
+        assert phpunit.name == "$month_jan"
         assert phpunit.source == "Jan"
         phpunit = phpfile.units[1]
-        assert phpunit.name == '$month_feb'
+        assert phpunit.name == "$month_feb"
         assert phpunit.source == "Feb"
         phpunit = phpfile.units[2]
-        assert phpunit.name == '$month_mar'
+        assert phpunit.name == "$month_mar"
         assert phpunit.source == "Mar"
 
     def test_parsing_arrays_no_trailing_comma(self):
@@ -505,10 +505,10 @@ $month_mar = 'Mar';"""
 
         Bug #1685
         """
-        phpsource = '''$lang = array(
+        phpsource = """$lang = array(
          'item1' => 'value1',
          'item2' => 'value2'
-      );'''
+      );"""
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 2
         phpunit = phpfile.units[0]
@@ -524,10 +524,10 @@ $month_mar = 'Mar';"""
 
         Bug #1898
         """
-        phpsource = '''$lang = array(
+        phpsource = """$lang = array(
          'item1' => 'value1',
          'item2' => 'value2' ,
-        );'''
+        );"""
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 2
         phpunit = phpfile.units[0]
@@ -543,10 +543,10 @@ $month_mar = 'Mar';"""
 
         Bug #2646
         """
-        phpsource = '''$lang = array   (
+        phpsource = """$lang = array   (
          'item1' => 'value1',
          'item2' => 'value2',
-        );'''
+        );"""
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 2
         phpunit = phpfile.units[0]
@@ -562,7 +562,7 @@ $month_mar = 'Mar';"""
 
         Bug #3629
         """
-        phpsource = '''$lang = array( 'item1' => 'value1', 'item2' => 'value2', 'item3' => 'value3' );'''
+        phpsource = """$lang = array( 'item1' => 'value1', 'item2' => 'value2', 'item3' => 'value3' );"""
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 3
         phpunit = phpfile.units[0]
@@ -676,12 +676,12 @@ $messages['days_short'] = array(
 
     def test_parsing_arrays_using_short_array_syntax(self):
         """parse short array syntax.  Bug #3626"""
-        phpsource = '''<?php
+        phpsource = """<?php
 $lang = [
     'item1' => 'value1',
     'item2' => 'value2',
 ];
-'''
+"""
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 2
         phpunit = phpfile.units[0]
@@ -694,7 +694,7 @@ $lang = [
 
     def test_parsing_nested_arrays(self):
         """parse the nested array syntax. Bug #2240"""
-        phpsource = '''$app_list_strings = array(
+        phpsource = """$app_list_strings = array(
             'Mailbox' => 'Mailbox',
             'moduleList' => array(
                 'Home' => 'Home',
@@ -702,7 +702,7 @@ $lang = [
                 'Accounts' => 'Accounts',
             ),
             'FAQ' => 'FAQ',
-        );'''
+        );"""
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 5
         phpunit = phpfile.units[0]
@@ -723,7 +723,7 @@ $lang = [
 
     def test_parsing_nested_arrays_with_space_before_array_declaration(self):
         """parse the nested array syntax with whitespace before the array declaration."""
-        phpsource = '''$app_list_strings = array  (
+        phpsource = """$app_list_strings = array  (
             'Mailbox' => 'Mailbox',
             'moduleList' => array  (
                 'Home' => 'Home',
@@ -736,7 +736,7 @@ $lang = [
                 'Pencil' => 'Pencil',
             ),
             'FAQ' => 'FAQ',
-        );'''
+        );"""
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 8
         phpunit = phpfile.units[0]
@@ -767,7 +767,7 @@ $lang = [
     def test_parsing_unnamed_nested_arrays(self):
         """parse the unnamed nested array."""
 
-        phpsource = '''return array  (
+        phpsource = """return array  (
             'name1' => 'target1',
             'list1' => array(
                 'l1' => 'target_l1_1',
@@ -780,7 +780,7 @@ $lang = [
                 'l3' => 'target_l2_3',
             ),
             'name2' => 'target2',
-        );'''
+        );"""
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 8
         phpunit = phpfile.units[0]
@@ -805,14 +805,14 @@ $lang = [
 
         Bug #2647
         """
-        phpsource = '''$lang = array(
+        phpsource = """$lang = array(
             'item1' => 'value1',
             'newsletter_frequency_dom' =>
                 array(
                     'Weekly' => 'Weekly',
                 ),
             'item2' => 'value2',
-        );'''
+        );"""
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 3
         phpunit = phpfile.units[0]
@@ -831,12 +831,12 @@ $lang = [
 
         Bug #3628.
         """
-        phpsource = '''$lang = array(
+        phpsource = """$lang = array(
             'item1' => 'value1',
             'frequency' =>
                 'Weekly',
             'item2' => 'value2',
-        );'''
+        );"""
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 3
         phpunit = phpfile.units[0]
@@ -851,7 +851,7 @@ $lang = [
 
     def test_parsing_nested_arrays_with_blank_entries(self):
         """parse the nested array syntax with blank entries. Bug #2648"""
-        phpsource = '''<?php
+        phpsource = """<?php
 $lang = array(
     'item1' => 'value1',
     'newsletter_frequency_dom' => array(
@@ -860,7 +860,7 @@ $lang = array(
     ),
     'item2' => 'value2',
 );
-'''
+"""
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 4
         phpunit = phpfile.units[0]
@@ -879,12 +879,12 @@ $lang = array(
 
     def test_slashstar_in_string(self):
         """ignore the /* comment delimiter when it is part of a string.  Bug #3627"""
-        phpsource = '''$definition['key'] = 'Value /* value continued';
+        phpsource = """$definition['key'] = 'Value /* value continued';
       $lang = array(
          'somekey' => 'Some value',
          'otherkey' => 'Other value /* continued',
          'thirdkey' => 'Third value',
-      );'''
+      );"""
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 4
         phpunit = phpfile.units[0]
@@ -902,7 +902,7 @@ $lang = array(
 
     def test_parsing_simple_heredoc_syntax(self):
         """parse the heredoc syntax. Bug #2611"""
-        phpsource = '''$month_jan = 'Jan';
+        phpsource = """$month_jan = 'Jan';
 $lang_register_approve_email = <<<EOT
 A new user with the username "{USER_NAME}" has registered in your gallery.
 
@@ -916,23 +916,23 @@ Simple example
 FOOBAR;
 
 $month_mar = 'Mar';
-        '''
+        """
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 4
         phpunit = phpfile.units[0]
-        assert phpunit.name == '$month_jan'
+        assert phpunit.name == "$month_jan"
         assert phpunit.source == "Jan"
         phpunit = phpfile.units[1]
-        assert phpunit.name == '$lang_register_approve_email'
+        assert phpunit.name == "$lang_register_approve_email"
         assert (
             phpunit.source
-            == "A new user with the username \"{USER_NAME}\" has registered in your gallery.\n\nIn order to activate the account, you need to click on the link below.\n\n<a href=\"{ACT_LINK}\">{ACT_LINK}</a>"
+            == 'A new user with the username "{USER_NAME}" has registered in your gallery.\n\nIn order to activate the account, you need to click on the link below.\n\n<a href="{ACT_LINK}">{ACT_LINK}</a>'
         )
         phpunit = phpfile.units[2]
-        assert phpunit.name == '$foobar'
+        assert phpunit.name == "$foobar"
         assert phpunit.source == "Simple example"
         phpunit = phpfile.units[3]
-        assert phpunit.name == '$month_mar'
+        assert phpunit.name == "$month_mar"
         assert phpunit.source == "Mar"
 
     def test_simpledefinition_after_define(self):
@@ -949,9 +949,9 @@ $lang['mediaselect'] = 'Bestand selectie';"""
         assert phpunit.source == "Bestand selectie"
 
     def test_quotes(self):
-        phpsource = '''<?php
+        phpsource = """<?php
 $txt[\'DISPLAYEDINFOS\'] = "<a href=\\"__PARAM2__\\">Modificar...</a>";
-'''
+"""
         phpfile = self.phpparse(phpsource)
         assert bytes(phpfile).decode() == phpsource
 
@@ -966,7 +966,7 @@ $messages['greeting'] = 'Hi ' . $name;
         assert len(phpfile.units) == 3
         phpunit = phpfile.units[0]
         assert phpunit.name == "$lang['mediaselect']"
-        assert phpunit.source == "Really \"something\"$variable\"something else\""
+        assert phpunit.source == 'Really "something"$variable"something else"'
         phpunit = phpfile.units[1]
         assert phpunit.name == "$messages['welcome']"
         assert phpunit.source == "Welcome $name!"
@@ -1029,7 +1029,7 @@ $texts = array(
         """
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 1
-        assert phpfile.units[0].source == 'Message'
+        assert phpfile.units[0].source == "Message"
         assert phpfile.units[0].name == "$strings['key = value']"
 
     def test_comma_in_string(self):
@@ -1045,7 +1045,7 @@ $texts = array(
         """
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 1
-        assert phpfile.units[0].source == ' text (comment **),**'
+        assert phpfile.units[0].source == " text (comment **),**"
         assert phpfile.units[0].name == "$t->'key'"
 
     def test_nowdoc(self):
@@ -1060,11 +1060,11 @@ EOD;
         assert len(phpfile.units) == 1
         assert (
             phpfile.units[0].source
-            == '''Example of string
+            == """Example of string
 spanning multiple lines
-using nowdoc syntax.'''
+using nowdoc syntax."""
         )
-        assert phpfile.units[0].name == '$str'
+        assert phpfile.units[0].name == "$str"
 
     def test_plain_concatenation(self):
         """check parsing concatenated strings"""
@@ -1073,9 +1073,9 @@ using nowdoc syntax.'''
         """
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 2
-        assert phpfile.units[0].source == 'Concatenated string'
-        assert phpfile.units[0].name == '$str'
-        assert phpfile.units[1].source == 'Concatenated string'
+        assert phpfile.units[0].source == "Concatenated string"
+        assert phpfile.units[0].name == "$str"
+        assert phpfile.units[1].source == "Concatenated string"
         assert phpfile.units[1].name == "$arr['x']"
 
     def test_array_keys(self):
@@ -1089,11 +1089,11 @@ using nowdoc syntax.'''
         """
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 3
-        assert phpfile.units[0].source == 'First'
+        assert phpfile.units[0].source == "First"
         assert phpfile.units[0].name == "$arr[]->'1234'"
-        assert phpfile.units[1].source == 'Second'
+        assert phpfile.units[1].source == "Second"
         assert phpfile.units[1].name == "$arr[]->1234"
-        assert phpfile.units[2].source == 'Third'
+        assert phpfile.units[2].source == "Third"
         assert phpfile.units[2].name == "$arr[]->'1245'"
 
     def test_double_var(self):
@@ -1146,11 +1146,11 @@ return [
         phpunit = phpfile.units[0]
         assert phpunit.escape_type == '"'
         assert phpunit.name == "return[]->'peach'"
-        assert phpunit.source == "foo \"pesca\""
+        assert phpunit.source == 'foo "pesca"'
         assert bytes(phpfile).decode() == phpsource
         phpunit.source = "ryba"
         assert bytes(phpfile) != phpsource
-        phpunit.source = "foo \"pesca\""
+        phpunit.source = 'foo "pesca"'
         assert bytes(phpfile).decode() == phpsource
 
 
@@ -1182,8 +1182,8 @@ return [
         phpunit = phpfile.units[1]
         assert phpunit.name == "return[]->'apples'"
         assert phpunit.source == multistring(
-            ['There is one apple', 'There are many apples']
+            ["There is one apple", "There are many apples"]
         )
         assert bytes(phpfile).decode() == phpsource
-        phpunit.source = multistring(['There is an apple', 'There are many apples'])
+        phpunit.source = multistring(["There is an apple", "There are many apples"])
         assert bytes(phpfile).decode() == phpsource.replace("one apple", "an apple")

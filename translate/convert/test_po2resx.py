@@ -26,7 +26,7 @@ from translate.storage import po
 
 
 class TestPO2RESX:
-    XMLskeleton = '''<?xml version="1.0" encoding="utf-8"?>
+    XMLskeleton = """<?xml version="1.0" encoding="utf-8"?>
 <root>
   <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
@@ -81,15 +81,15 @@ class TestPO2RESX:
     <value>2.0</value>
   </resheader>
   %s
-</root>'''
+</root>"""
 
     def po2resx(self, resxsource, po_source):
         """Helper that merges po translations to .resx source without requiring files"""
-        po_store = po.pofile(po_source.encode('utf-8'))
+        po_store = po.pofile(po_source.encode("utf-8"))
         template_file = BytesIO(resxsource.encode())
         convertor = po2resx.po2resx(template_file, po_store)
         output_resx = convertor.convertstore()
-        return output_resx.decode('utf-8')
+        return output_resx.decode("utf-8")
 
     def test_simpleunit(self):
         """Checks that a simple po entry definition converts properly to a resx entry"""
@@ -98,15 +98,15 @@ msgid "Source Text"
 msgstr "Some translated text"'''
         resx_template = (
             self.XMLskeleton
-            % '''<data name="key" xml:space="preserve">
+            % """<data name="key" xml:space="preserve">
     <value></value>
-  </data>'''
+  </data>"""
         )
         expected_output = (
             self.XMLskeleton
-            % '''<data name="key" xml:space="preserve">
+            % """<data name="key" xml:space="preserve">
     <value>Some translated text</value>
-  </data>'''
+  </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
@@ -132,15 +132,15 @@ msgstr "Toepassings"
 """
         resx_template = (
             self.XMLskeleton
-            % '''<data name="ResourceKey" xml:space="preserve">
+            % """<data name="ResourceKey" xml:space="preserve">
     <value></value>
-  </data>'''
+  </data>"""
         )
         expected_output = (
             self.XMLskeleton
-            % '''<data name="ResourceKey" xml:space="preserve">
+            % """<data name="ResourceKey" xml:space="preserve">
     <value>Toepassings</value>
-  </data>'''
+  </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
@@ -154,89 +154,89 @@ msgstr "Eerste deel "
 "en ekstra"'''
         resx_template = (
             self.XMLskeleton
-            % '''<data name="ResourceKey" xml:space="preserve">
+            % """<data name="ResourceKey" xml:space="preserve">
     <value></value>
-  </data>'''
+  </data>"""
         )
         expected_output = (
             self.XMLskeleton
-            % '''<data name="ResourceKey" xml:space="preserve">
+            % """<data name="ResourceKey" xml:space="preserve">
     <value>Eerste deel en ekstra</value>
-  </data>'''
+  </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
 
     def test_escapednewlines(self):
         """Test the escaping of newlines"""
-        po_source = r'''#: ResourceKey
+        po_source = r"""#: ResourceKey
 msgid "First line\nSecond line"
 msgstr "Eerste lyn\nTweede lyn"
-'''
+"""
         resx_template = (
             self.XMLskeleton
-            % '''<data name="ResourceKey" xml:space="preserve">
+            % """<data name="ResourceKey" xml:space="preserve">
     <value></value>
-  </data>'''
+  </data>"""
         )
         expected_output = (
             self.XMLskeleton
-            % '''<data name="ResourceKey" xml:space="preserve">
+            % """<data name="ResourceKey" xml:space="preserve">
     <value>Eerste lyn
 Tweede lyn</value>
-  </data>'''
+  </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
 
     def test_escapedtabs(self):
         """Test the escaping of tabs"""
-        po_source = r'''#: ResourceKey
+        po_source = r"""#: ResourceKey
 msgid "First column\tSecond column"
 msgstr "Eerste kolom\tTweede kolom"
-'''
+"""
         resx_template = (
             self.XMLskeleton
-            % '''<data name="ResourceKey" xml:space="preserve">
+            % """<data name="ResourceKey" xml:space="preserve">
     <value></value>
-  </data>'''
+  </data>"""
         )
         expected_output = (
             self.XMLskeleton
-            % '''<data name="ResourceKey" xml:space="preserve">
+            % """<data name="ResourceKey" xml:space="preserve">
     <value>Eerste kolom\tTweede kolom</value>
-  </data>'''
+  </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
 
     def test_escapedquotes(self):
         """Test the escaping of quotes (and slash)"""
-        po_source = r'''#: ResourceKey
+        po_source = r"""#: ResourceKey
 msgid "Hello \"Everyone\""
 msgstr "Good day \"All\""
 
 msgid "Use \\\"."
 msgstr "Gebruik \\\"."
-'''
+"""
         resx_template = (
             self.XMLskeleton
-            % '''<data name="ResourceKey" xml:space="preserve">
+            % """<data name="ResourceKey" xml:space="preserve">
     <value></value>
-  </data>'''
+  </data>"""
         )
         expected_output = (
             self.XMLskeleton
-            % '''<data name="ResourceKey" xml:space="preserve">
+            % """<data name="ResourceKey" xml:space="preserve">
     <value>Good day "All"</value>
-  </data>'''
+  </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
 
     def test_exclusions(self):
         """Test that empty and fuzzy messages are excluded"""
-        po_source = r'''#: ResourceKey
+        po_source = r"""#: ResourceKey
 #, fuzzy
 msgid "One"
 msgstr "Een"
@@ -248,10 +248,10 @@ msgstr ""
 #: ResourceKey3
 msgid ""
 msgstr "Drie"
-'''
+"""
         resx_template = (
             self.XMLskeleton
-            % '''<data name="ResourceKey" xml:space="preserve">
+            % """<data name="ResourceKey" xml:space="preserve">
     <value />
   </data>
   <data name="ResourceKey2" xml:space="preserve">
@@ -259,11 +259,11 @@ msgstr "Drie"
   </data>
   <data name="ResourceKey3" xml:space="preserve">
     <value />
-  </data>'''
+  </data>"""
         )
         expected_output = (
             self.XMLskeleton
-            % '''<data name="ResourceKey" xml:space="preserve">
+            % """<data name="ResourceKey" xml:space="preserve">
     <value />
   </data>
   <data name="ResourceKey2" xml:space="preserve">
@@ -271,79 +271,79 @@ msgstr "Drie"
   </data>
   <data name="ResourceKey3" xml:space="preserve">
     <value />
-  </data>'''
+  </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
 
     def test_automaticcomments(self):
         """Tests that automatic comments are imported"""
-        po_source = '''#. This is a comment
+        po_source = """#. This is a comment
 #: ResourceKey
 msgid "Bézier curve"
 msgstr "Bézier-kurwe"
-'''
+"""
         resx_template = (
             self.XMLskeleton
-            % '''<data name="ResourceKey" xml:space="preserve">
+            % """<data name="ResourceKey" xml:space="preserve">
     <value></value>
-  </data>'''
+  </data>"""
         )
         expected_output = (
             self.XMLskeleton
-            % '''<data name="ResourceKey" xml:space="preserve">
+            % """<data name="ResourceKey" xml:space="preserve">
     <value>Bézier-kurwe</value>
     <comment>This is a comment</comment>
-  </data>'''
+  </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
 
     def test_automaticcomments_existingcomment(self):
         """Tests a differing automatic comment is added if there is an existing automatic comment"""
-        po_source = '''#. This is a new comment
+        po_source = """#. This is a new comment
 #: ResourceKey
 msgid "Bézier curve"
 msgstr "Bézier-kurwe"
-'''
+"""
         resx_template = (
             self.XMLskeleton
-            % '''<data name="ResourceKey" xml:space="preserve">
+            % """<data name="ResourceKey" xml:space="preserve">
     <value></value>
     <comment>This is an existing comment</comment>
-  </data>'''
+  </data>"""
         )
         expected_output = (
             self.XMLskeleton
-            % '''<data name="ResourceKey" xml:space="preserve">
+            % """<data name="ResourceKey" xml:space="preserve">
     <value>Bézier-kurwe</value>
     <comment>This is an existing comment
 This is a new comment</comment>
-  </data>'''
+  </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
 
     def test_automaticcomments_existingduplicatecomment(self):
         """Tests there is no duplication of automatic comments if it already exists and hasn't changed"""
-        po_source = '''#. This is an existing comment
+        po_source = """#. This is an existing comment
 #: ResourceKey
 msgid "Bézier curve"
 msgstr "Bézier-kurwe"
-'''
+"""
         resx_template = (
             self.XMLskeleton
-            % '''<data name="ResourceKey" xml:space="preserve">
+            % """<data name="ResourceKey" xml:space="preserve">
     <value></value>
     <comment>This is an existing comment</comment>
-  </data>'''
+  </data>"""
         )
         expected_output = (
             self.XMLskeleton
-            % '''<data name="ResourceKey" xml:space="preserve">
+            % """<data name="ResourceKey" xml:space="preserve">
     <value>Bézier-kurwe</value>
     <comment>This is an existing comment</comment>
-  </data>'''
+  </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
@@ -353,121 +353,121 @@ msgstr "Bézier-kurwe"
         Tests there is no duplication of automatic comments if it already
         exists, hasn't changed but has leading or trailing whitespaces
         """
-        po_source = '''#.  This is an existing comment with leading and trailing spaces
+        po_source = """#.  This is an existing comment with leading and trailing spaces
 #: ResourceKey
 msgid "Bézier curve"
 msgstr "Bézier-kurwe"
-'''
+"""
         resx_template = (
             self.XMLskeleton
-            % '''<data name="ResourceKey" xml:space="preserve">
+            % """<data name="ResourceKey" xml:space="preserve">
     <value></value>
     <comment> This is an existing comment with leading and trailing spaces </comment>
-  </data>'''
+  </data>"""
         )
         expected_output = (
             self.XMLskeleton
-            % '''<data name="ResourceKey" xml:space="preserve">
+            % """<data name="ResourceKey" xml:space="preserve">
     <value>Bézier-kurwe</value>
     <comment>This is an existing comment with leading and trailing spaces</comment>
-  </data>'''
+  </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
 
     def test_translatorcomments(self):
         """Tests that translator comments are imported"""
-        po_source = '''# This is a translator comment : 22.12.14
+        po_source = """# This is a translator comment : 22.12.14
 #: ResourceKey
 msgid "Bézier curve"
 msgstr "Bézier-kurwe"
-'''
+"""
         resx_template = (
             self.XMLskeleton
-            % '''<data name="ResourceKey" xml:space="preserve">
+            % """<data name="ResourceKey" xml:space="preserve">
     <value></value>
-  </data>'''
+  </data>"""
         )
         expected_output = (
             self.XMLskeleton
-            % '''<data name="ResourceKey" xml:space="preserve">
+            % """<data name="ResourceKey" xml:space="preserve">
     <value>Bézier-kurwe</value>
     <comment>[Translator Comment: This is a translator comment : 22.12.14]</comment>
-  </data>'''
+  </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
 
     def test_translatorcomments_existingcomment(self):
         """Tests a differing translator comment is added if there is an existing translator comment"""
-        po_source = '''# This is a new translator comment
+        po_source = """# This is a new translator comment
 #: ResourceKey
 msgid "Bézier curve"
 msgstr "Bézier-kurwe"
-'''
+"""
         resx_template = (
             self.XMLskeleton
-            % '''<data name="ResourceKey" xml:space="preserve">
+            % """<data name="ResourceKey" xml:space="preserve">
     <value></value>
     <comment>[Translator Comment: This is an existing comment]</comment>
-  </data>'''
+  </data>"""
         )
         expected_output = (
             self.XMLskeleton
-            % '''<data name="ResourceKey" xml:space="preserve">
+            % """<data name="ResourceKey" xml:space="preserve">
     <value>Bézier-kurwe</value>
     <comment>[Translator Comment: This is an existing comment]
 [Translator Comment: This is a new translator comment]</comment>
-  </data>'''
+  </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
 
     def test_translatorcomments_existingduplicatecomment(self):
         """Tests there is no duplication of translator comments if it already exists and hasn't changed"""
-        po_source = '''# This is an existing translator comment
+        po_source = """# This is an existing translator comment
 #: ResourceKey
 msgid "Bézier curve"
 msgstr "Bézier-kurwe"
-'''
+"""
         resx_template = (
             self.XMLskeleton
-            % '''<data name="ResourceKey" xml:space="preserve">
+            % """<data name="ResourceKey" xml:space="preserve">
     <value></value>
     <comment>[Translator Comment: This is an existing translator comment]</comment>
-  </data>'''
+  </data>"""
         )
         expected_output = (
             self.XMLskeleton
-            % '''<data name="ResourceKey" xml:space="preserve">
+            % """<data name="ResourceKey" xml:space="preserve">
     <value>Bézier-kurwe</value>
     <comment>[Translator Comment: This is an existing translator comment]</comment>
-  </data>'''
+  </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
 
     def test_combocomments(self):
         """Tests that translator comments and automatic comments are imported"""
-        po_source = '''#. This is a developer comment
+        po_source = """#. This is a developer comment
 # This is a translator comment : 22.12.14
 #: ResourceKey
 msgid "Bézier curve"
 msgstr "Bézier-kurwe"
-'''
+"""
         resx_template = (
             self.XMLskeleton
-            % '''<data name="ResourceKey" xml:space="preserve">
+            % """<data name="ResourceKey" xml:space="preserve">
     <value></value>
-  </data>'''
+  </data>"""
         )
         expected_output = (
             self.XMLskeleton
-            % '''<data name="ResourceKey" xml:space="preserve">
+            % """<data name="ResourceKey" xml:space="preserve">
     <value>Bézier-kurwe</value>
     <comment>This is a developer comment
 [Translator Comment: This is a translator comment : 22.12.14]</comment>
-  </data>'''
+  </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
@@ -477,26 +477,26 @@ msgstr "Bézier-kurwe"
         Tests there is no duplication of automatic comment if it already exists
         and hasn't changed, but still adds the translator comment
         """
-        po_source = '''#. This is an existing comment
+        po_source = """#. This is an existing comment
 # This is a translator comment : 22.12.14
 #: ResourceKey
 msgid "Bézier curve"
 msgstr "Bézier-kurwe"
-'''
+"""
         resx_template = (
             self.XMLskeleton
-            % '''<data name="ResourceKey" xml:space="preserve">
+            % """<data name="ResourceKey" xml:space="preserve">
     <value></value>
     <comment>This is an existing comment</comment>
-  </data>'''
+  </data>"""
         )
         expected_output = (
             self.XMLskeleton
-            % '''<data name="ResourceKey" xml:space="preserve">
+            % """<data name="ResourceKey" xml:space="preserve">
     <value>Bézier-kurwe</value>
     <comment>This is an existing comment
 [Translator Comment: This is a translator comment : 22.12.14]</comment>
-  </data>'''
+  </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
@@ -506,54 +506,54 @@ msgstr "Bézier-kurwe"
         Tests a differing automatic comment is added if there is an existing
         automatic comment, but still adds the translator comment
         """
-        po_source = '''#. This is a new comment
+        po_source = """#. This is a new comment
 # This is a translator comment : 22.12.14
 #: ResourceKey
 msgid "Bézier curve"
 msgstr "Bézier-kurwe"
-'''
+"""
         resx_template = (
             self.XMLskeleton
-            % '''<data name="ResourceKey" xml:space="preserve">
+            % """<data name="ResourceKey" xml:space="preserve">
     <value></value>
     <comment>This is an existing comment</comment>
-  </data>'''
+  </data>"""
         )
         expected_output = (
             self.XMLskeleton
-            % '''<data name="ResourceKey" xml:space="preserve">
+            % """<data name="ResourceKey" xml:space="preserve">
     <value>Bézier-kurwe</value>
     <comment>This is an existing comment
 This is a new comment
 [Translator Comment: This is a translator comment : 22.12.14]</comment>
-  </data>'''
+  </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
 
     def test_existingcomments(self):
         """Tests that no extra space is added when there are no changes to existing comments"""
-        po_source = '''#. This is an existing comment
+        po_source = """#. This is an existing comment
 # This is an existing translator comment : 22.12.14
 #: ResourceKey
 msgid "Bézier curve"
 msgstr "Bézier-kurwe"
-'''
+"""
         resx_template = (
             self.XMLskeleton
-            % '''<data name="ResourceKey" xml:space="preserve">
+            % """<data name="ResourceKey" xml:space="preserve">
     <value></value>
     <comment>This is an existing comment
 [Translator Comment: This is an existing translator comment : 22.12.14]</comment>
-  </data>'''
+  </data>"""
         )
         expected_output = (
             self.XMLskeleton
-            % '''<data name="ResourceKey" xml:space="preserve">
+            % """<data name="ResourceKey" xml:space="preserve">
     <value>Bézier-kurwe</value>
     <comment>This is an existing comment
 [Translator Comment: This is an existing translator comment : 22.12.14]</comment>
-  </data>'''
+  </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output

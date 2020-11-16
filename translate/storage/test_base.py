@@ -62,7 +62,7 @@ class TestTranslationUnit:
     def test_create(self):
         """tests a simple creation with a source string"""
         unit = self.unit
-        print('unit.source:', unit.source)
+        print("unit.source:", unit.source)
         assert unit.source == "Test String"
 
     def test_eq(self):
@@ -83,7 +83,7 @@ class TestTranslationUnit:
         assert unit1 == unit2
         assert unit1 != unit3
         assert unit4 != unit5
-        if unit1.__class__.__name__ in ('RESXUnit', 'dtdunit', 'TxtUnit'):
+        if unit1.__class__.__name__ in ("RESXUnit", "dtdunit", "TxtUnit"):
             # unit1 will generally equal unit6 for monolingual formats (resx, dtd, txt)
             # with the default comparison method which compare units by their
             # target and source properties only.
@@ -114,25 +114,25 @@ class TestTranslationUnit:
         """
         unit = self.unit
         specials = [
-            'Fish & chips',
-            'five < six',
-            'six > five',
-            'five &lt; six',
-            'Use &nbsp;',
-            'Use &amp;nbsp;',
-            'Use &amp;amp;nbsp;',
+            "Fish & chips",
+            "five < six",
+            "six > five",
+            "five &lt; six",
+            "Use &nbsp;",
+            "Use &amp;nbsp;",
+            "Use &amp;amp;nbsp;",
             'A "solution"',
             "skop 'n bal",
             '"""',
             "'''",
-            'µ',
-            '\n',
-            '\t',
-            '\r',
-            '\r\n',
-            '\\r',
-            '\\',
-            '\\\r',
+            "µ",
+            "\n",
+            "\t",
+            "\r",
+            "\r\n",
+            "\\r",
+            "\\",
+            "\\\r",
         ]
         for special in specials:
             unit.source = special
@@ -148,25 +148,25 @@ class TestTranslationUnit:
 
         unit = self.unit
         specials = [
-            '\\n',
-            '\\t',
+            "\\n",
+            "\\t",
             '\\"',
-            '\\ ',
-            '\\\n',
-            '\\\t',
-            '\\\\n',
-            '\\\\t',
-            '\\\\r',
+            "\\ ",
+            "\\\n",
+            "\\\t",
+            "\\\\n",
+            "\\\\t",
+            "\\\\r",
             '\\\\"',
-            '\\r\\n',
-            '\\\\r\\n',
-            '\\r\\\\n',
-            '\\\\n\\\\r',
+            "\\r\\n",
+            "\\\\r\\n",
+            "\\r\\\\n",
+            "\\\\n\\\\r",
         ]
         for special in specials:
             unit.source = special
-            print("unit.source:", repr(unit.source) + '|')
-            print("special:", repr(special) + '|')
+            print("unit.source:", repr(unit.source) + "|")
+            print("special:", repr(special) + "|")
             assert unit.source == special
 
     def test_note_sanity(self):
@@ -192,8 +192,8 @@ class TestTranslationUnit:
 
     def test_rich_get(self):
         """Basic test for converting from multistrings to StringElem trees."""
-        target_mstr = multistring(['tėst', '<b>string</b>'])
-        unit = self.UnitClass(multistring(['a', 'b']))
+        target_mstr = multistring(["tėst", "<b>string</b>"])
+        unit = self.UnitClass(multistring(["a", "b"]))
         unit.rich_parsers = general.parsers
         unit.target = target_mstr
         elems = unit.rich_target
@@ -206,9 +206,9 @@ class TestTranslationUnit:
             assert str(elems[0]) == target_mstr.strings[0]
             assert str(elems[1]) == target_mstr.strings[1]
 
-            assert str(elems[1].sub[0]) == '<b>'
-            assert str(elems[1].sub[1]) == 'string'
-            assert str(elems[1].sub[2]) == '</b>'
+            assert str(elems[1].sub[0]) == "<b>"
+            assert str(elems[1].sub[1]) == "string"
+            assert str(elems[1].sub[2]) == "</b>"
         else:
             assert len(elems[0].sub) == 1
             assert str(elems[0]) == target_mstr.strings[0]
@@ -216,17 +216,17 @@ class TestTranslationUnit:
     def test_rich_set(self):
         """Basic test for converting from multistrings to StringElem trees."""
         elems = [
-            rich_parse('Tëst <x>string</x>', general.parsers),
-            rich_parse('Another test string.', general.parsers),
+            rich_parse("Tëst <x>string</x>", general.parsers),
+            rich_parse("Another test string.", general.parsers),
         ]
-        unit = self.UnitClass(multistring(['a', 'b']))
+        unit = self.UnitClass(multistring(["a", "b"]))
         unit.rich_target = elems
 
         if unit.hasplural():
-            assert unit.target.strings[0] == 'Tëst <x>string</x>'
-            assert unit.target.strings[1] == 'Another test string.'
+            assert unit.target.strings[0] == "Tëst <x>string</x>"
+            assert unit.target.strings[1] == "Another test string."
         else:
-            assert unit.target == 'Tëst <x>string</x>'
+            assert unit.target == "Tëst <x>string</x>"
 
 
 class TestTranslationStore:

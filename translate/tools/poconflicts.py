@@ -71,10 +71,10 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
 
     def recursiveprocess(self, options):
         """recurse through directories and process files"""
-        if self.isrecursive(options.input, 'input') and getattr(
+        if self.isrecursive(options.input, "input") and getattr(
             options, "allowrecursiveinput", True
         ):
-            if not self.isrecursive(options.output, 'output'):
+            if not self.isrecursive(options.output, "output"):
                 self.warning("Output directory does not exist. Attempting to create")
                 try:
                     os.mkdir(options.output)
@@ -228,5 +228,5 @@ def main():
     parser.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

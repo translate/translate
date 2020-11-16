@@ -29,5 +29,5 @@ class mr(common.Common):
     """This class represents Marathi."""
 
     ignoretests = {
-        'all': ["simplecaps", "startcaps"],
+        "all": ["simplecaps", "startcaps"],
     }

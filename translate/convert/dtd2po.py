@@ -33,8 +33,8 @@ def is_css_entity(entity):
     """Says if the given entity is likely to contain CSS that should not be
     translated.
     """
-    if '.' in entity:
-        prefix, suffix = entity.rsplit('.', 1)
+    if "." in entity:
+        prefix, suffix = entity.rsplit(".", 1)
         suffixes = ["height", "width", "unixWidth", "macWidth", "size"]
         if suffix in suffixes or suffix.startswith("style"):
             return True
@@ -56,10 +56,10 @@ class dtd2po:
         for commenttype, comment in dtd_unit.comments:
             # handle groups
             if commenttype == "locgroupstart":
-                groupcomment = comment.replace('BEGIN', 'GROUP')
+                groupcomment = comment.replace("BEGIN", "GROUP")
                 self.currentgroup = groupcomment
             elif commenttype == "locgroupend":
-                groupcomment = comment.replace('END', 'GROUP')
+                groupcomment = comment.replace("END", "GROUP")
                 self.currentgroup = None
             # handle automatic comment
             if commenttype == "automaticcomment":
@@ -82,7 +82,7 @@ class dtd2po:
         # escape backslashes... but not if they're for a newline
         # unquoted = unquoted.replace("\\", "\\\\").replace("\\\\n", "\\n")
         # now split the string into lines and quote them
-        lines = unquoted.split('\n')
+        lines = unquoted.split("\n")
         while lines and not lines[0].strip():
             del lines[0]
         while lines and not lines[-1].strip():
@@ -91,8 +91,8 @@ class dtd2po:
         # start and end quotes
         if len(lines) > 1:
             po_unit.source = "".join(
-                [lines[0].rstrip() + ' ']
-                + [line.strip() + ' ' for line in lines[1:-1]]
+                [lines[0].rstrip() + " "]
+                + [line.strip() + " " for line in lines[1:-1]]
                 + [lines[-1].lstrip()]
             )
         elif lines:
@@ -113,18 +113,18 @@ class dtd2po:
         for commentnum in range(len(dtd_unit.comments)):
             commenttype, locnote = dtd_unit.comments[commentnum]
             # if this is a localization note
-            if commenttype == 'locnote':
+            if commenttype == "locnote":
                 # parse the locnote into the entity and the actual note
-                typeend = quote.findend(locnote, 'LOCALIZATION NOTE')
+                typeend = quote.findend(locnote, "LOCALIZATION NOTE")
                 # parse the id
-                idstart = locnote.find('(', typeend)
+                idstart = locnote.find("(", typeend)
                 if idstart == -1:
                     continue
-                idend = locnote.find(')', (idstart + 1))
+                idend = locnote.find(")", (idstart + 1))
                 entity = locnote[idstart + 1 : idend].strip()
                 # parse the actual note
-                actualnotestart = locnote.find(':', (idend + 1))
-                actualnoteend = locnote.find('-->', idend)
+                actualnotestart = locnote.find(":", (idend + 1))
+                actualnoteend = locnote.find("-->", idend)
                 actualnote = locnote[actualnotestart + 1 : actualnoteend].strip()
                 # if it's for this entity, process it
                 if dtd_unit.getid() == entity:
@@ -323,5 +323,5 @@ def main(argv=None):
     parser.run(argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

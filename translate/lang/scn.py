@@ -113,13 +113,13 @@ class SicilianChecker(TranslationChecker):
         :param str2: the target (translated) string
         :return: True if there are no words with endings not in respect of vocalism (or if they appear in source string as well)
         """
-        exceptions = ['me', 'to', 'so', 'po', 'no', 'jo', 'se', 'nne']
+        exceptions = ["me", "to", "so", "po", "no", "jo", "se", "nne"]
 
         stopwords = []
 
         for word in self.config.lang.words(str2):
             if word not in str1 and word.lower() not in exceptions:
-                if word.lower().endswith(('e', 'o')) and word.lower() not in stopwords:
+                if word.lower().endswith(("e", "o")) and word.lower() not in stopwords:
                     stopwords.append(word.lower())
 
         if stopwords:
@@ -158,5 +158,5 @@ class scn(common.Common):
     checker = SicilianChecker()
 
     ignoretests = {
-        'all': ['doublewords'],
+        "all": ["doublewords"],
     }

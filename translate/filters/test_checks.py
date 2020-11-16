@@ -42,7 +42,7 @@ def fails(filterfunction, str1, str2, message=None):
         if message:
             exc_message = e.messages[0]
             filterresult = exc_message != message
-            print(exc_message.encode('utf-8'))
+            print(exc_message.encode("utf-8"))
         else:
             filterresult = False
 
@@ -60,7 +60,7 @@ def fails_serious(filterfunction, str1, str2, message=None):
         if message:
             exc_message = e.messages[0]
             filterresult = exc_message != message
-            print(exc_message.encode('utf-8'))
+            print(exc_message.encode("utf-8"))
         else:
             filterresult = False
 
@@ -110,7 +110,7 @@ def test_messages():
     """test that our helpers can check for messages and that these error messages can contain Unicode"""
     stdchecker = checks.StandardChecker(
         checks.CheckerConfig(
-            validchars='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+            validchars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
         )
     )
     assert fails(
@@ -136,7 +136,7 @@ def test_accelerators():
     assert fails(stdchecker.accelerators, "File", "&Fayile")
     assert passes(stdchecker.accelerators, "Mail && News", "Pos en Nuus")
     assert fails(stdchecker.accelerators, "Mail &amp; News", "Pos en Nuus")
-    assert passes(stdchecker.accelerators, "&Allow", '&\ufeb2\ufee3\ufe8e\ufea3')
+    assert passes(stdchecker.accelerators, "&Allow", "&\ufeb2\ufee3\ufe8e\ufea3")
     assert fails(stdchecker.accelerators, "Open &File", "Vula& Ifayile")
     kdechecker = checks.KdeChecker()
     assert passes(kdechecker.accelerators, "&File", "&Fayile")
@@ -286,23 +286,21 @@ Leer nie gestoor""",
 def test_doublequoting():
     """tests double quotes"""
     stdchecker = checks.StandardChecker()
-    assert fails(stdchecker.doublequoting, "Hot plate", "\"Ipuleti\" elishisa")
-    assert passes(stdchecker.doublequoting, "\"Hot\" plate", "\"Ipuleti\" elishisa")
-    assert fails(stdchecker.doublequoting, "'Hot' plate", "\"Ipuleti\" elishisa")
-    assert passes(
-        stdchecker.doublequoting, "\\\"Hot\\\" plate", "\\\"Ipuleti\\\" elishisa"
-    )
+    assert fails(stdchecker.doublequoting, "Hot plate", '"Ipuleti" elishisa')
+    assert passes(stdchecker.doublequoting, '"Hot" plate', '"Ipuleti" elishisa')
+    assert fails(stdchecker.doublequoting, "'Hot' plate", '"Ipuleti" elishisa')
+    assert passes(stdchecker.doublequoting, '\\"Hot\\" plate', '\\"Ipuleti\\" elishisa')
 
     # We don't want the filter to complain about "untranslated" quotes in xml attributes
     frchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="fr"))
     assert passes(
         frchecker.doublequoting,
-        "Click <a href=\"page.html\">",
-        "Clique <a href=\"page.html\">",
+        'Click <a href="page.html">',
+        'Clique <a href="page.html">',
     )
-    assert fails(frchecker.doublequoting, "Do \"this\"", "Do \"this\"")
-    assert passes(frchecker.doublequoting, "Do \"this\"", "Do « this »")
-    assert fails(frchecker.doublequoting, "Do \"this\"", "Do « this » « this »")
+    assert fails(frchecker.doublequoting, 'Do "this"', 'Do "this"')
+    assert passes(frchecker.doublequoting, 'Do "this"', "Do « this »")
+    assert fails(frchecker.doublequoting, 'Do "this"', "Do « this » « this »")
     # This used to fail because we strip variables, and was left with an empty quotation that was not converted
     assert passes(
         frchecker.doublequoting, "Copying `%s' to `%s'", "Copie de « %s » vers « %s »"
@@ -414,28 +412,28 @@ def test_endpunc():
         "Pseudo-elemente kan nie '%1$S' ontken word nie.",
     )
 
-    stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='km'))
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="km"))
     assert passes(
         stdchecker.endpunc,
         "In this new version, there are some minor conversion improvements on complex style in Openoffice.org Writer.",
         "នៅ​ក្នុង​កំណែ​ថ្មីនេះ មាន​ការ​កែសម្រួល​មួយ​ចំនួន​តូច​ទាក់​ទង​នឹង​ការ​បំលែង​ពុម្ពអក្សរ​ខ្មែរ​ ក្នុង​កម្មវិធី​ការិយាល័យ​ ស្លឹករឹត ដែល​មាន​ប្រើ​ប្រាស់​រចនាប័ទ្មស្មុគស្មាញច្រើន\u00a0។",
     )
 
-    stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='zh'))
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="zh"))
     assert passes(
         stdchecker.endpunc,
         "To activate your account, follow this link:\n",
         "要啟用戶口，請瀏覽這個鏈結：\n",
     )
 
-    stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='vi'))
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="vi"))
     assert passes(
         stdchecker.endpunc,
         "Do you want to delete the XX dialog?",
         "Bạn có muốn xoá hộp thoại XX không?",
     )
 
-    stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='fr'))
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="fr"))
     assert passes(stdchecker.endpunc, "Header:", "En-tête :")
     assert passes(stdchecker.endpunc, "Header:", "En-tête\u00a0:")
 
@@ -452,7 +450,7 @@ def test_endwhitespace():
         "Probleem met iets: %s\n",
     )
 
-    zh_checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='zh'))
+    zh_checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="zh"))
     # This should pass since the space is not needed in Chinese
     assert passes(zh_checker.endwhitespace, "Init. Limit: ", "起始时间限制：")
 
@@ -658,7 +656,7 @@ def test_musttranslatewords():
     assert fails(
         stdchecker.musttranslatewords,
         'Click "Mozilla" button',
-        'Kliek «Mozilla» knoppie',
+        "Kliek «Mozilla» knoppie",
     )
     assert passes(
         stdchecker.musttranslatewords,
@@ -824,12 +822,12 @@ def test_numbers():
     )
     # Don't fail the numbers check if the entry is a dialogsize entry
     mozillachecker = checks.MozillaChecker()
-    assert passes(mozillachecker.numbers, 'width: 12em;', 'width: 20em;')
+    assert passes(mozillachecker.numbers, "width: 12em;", "width: 20em;")
 
 
 def test_persian_numbers():
     """test non latin numbers for Persian (RTL)"""
-    fa_checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='fa'))
+    fa_checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="fa"))
     assert passes(fa_checker.numbers, "&حرکت آهسته (۰.۵×)", "&Slow Motion (0.5×)")
     assert passes(fa_checker.numbers, "&حرکت آهسته (0.5×)", "&Slow Motion (0.5×)")
     assert passes(
@@ -871,7 +869,7 @@ def test_persian_numbers():
 
 def test_bengali_numbers():
     """test non latin numbers for Bengali (LTR)"""
-    bn_checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='bn'))
+    bn_checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="bn"))
     assert passes(bn_checker.numbers, "উচ্চ গতি (১.৫ গুন)", "&High Speed (1.5×)")
     assert passes(bn_checker.numbers, "উচ্চ গতি (0.5 গুন)", "&Slow Motion (0.5×)")
     assert passes(
@@ -899,7 +897,7 @@ def test_bengali_numbers():
 
 def test_arabic_numbers():
     """test non latin numbers for Arabic"""
-    ar_checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='ar'))
+    ar_checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="ar"))
     assert passes(
         ar_checker.numbers,
         "أقصى طول للوسم ٢٥ حرفًا",
@@ -917,7 +915,7 @@ def test_arabic_numbers():
 
 def test_assamese_numbers():
     """test non latin numbers for Assamese"""
-    as_checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='as'))
+    as_checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="as"))
     assert passes(
         as_checker.numbers,
         "প্ৰতি ৩ ছেকেণ্ডত স্বচালিতভাৱে সতেজ কৰক",
@@ -1136,9 +1134,9 @@ def test_puncspacing():
 
     # Some languages have padded puntuation marks
     frchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="fr"))
-    assert passes(frchecker.puncspacing, "Do \"this\"", "Do « this »")
-    assert passes(frchecker.puncspacing, "Do \"this\"", "Do «\u00a0this\u00a0»")
-    assert fails(frchecker.puncspacing, "Do \"this\"", "Do «this»")
+    assert passes(frchecker.puncspacing, 'Do "this"', "Do « this »")
+    assert passes(frchecker.puncspacing, 'Do "this"', "Do «\u00a0this\u00a0»")
+    assert fails(frchecker.puncspacing, 'Do "this"', "Do «this»")
 
     # Handle Bidi markers as non-characters
     hechecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="he"))
@@ -1180,7 +1178,7 @@ def test_sentencecount():
     assert passes(
         stdchecker.sentencecount, "Sentence with i.e. in it.", "Sin met d.w.s. in dit."
     )  # bug 178, description item 8
-    el_checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='el'))
+    el_checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="el"))
     assert fails(
         el_checker.sentencecount,
         "First sentence. Second sentence.",
@@ -1204,7 +1202,7 @@ def test_singlequoting():
     assert passes(stdchecker.singlequoting, "'Hot' plate", "Ipuleti 'elishisa'")
     # FIXME newlines also confuse our algorithm for single quotes
     assert passes(stdchecker.singlequoting, "File '%s'\n", "'%s' Faele\n")
-    assert fails(stdchecker.singlequoting, "'Hot' plate", "Ipuleti \"elishisa\"")
+    assert fails(stdchecker.singlequoting, "'Hot' plate", 'Ipuleti "elishisa"')
     assert passes(stdchecker.singlequoting, "It's here.", "Dit is hier.")
     # Don't get confused by punctuation that touches a single quote
     assert passes(stdchecker.singlequoting, "File '%s'.", "'%s' Faele.")
@@ -1237,8 +1235,8 @@ def test_singlequoting():
     )
     assert passes(
         stdchecker.singlequoting,
-        "\"%name%\" already exists. Please enter a different site name.",
-        "\"%name%\" bestaan reeds. Tik 'n ander werfnaam in.",
+        '"%name%" already exists. Please enter a different site name.',
+        '"%name%" bestaan reeds. Tik \'n ander werfnaam in.',
     )
     # Check that accelerators don't mess with removing singlequotes
     mozillachecker = checks.MozillaChecker()
@@ -1272,12 +1270,12 @@ def test_persian_single_and_double_quote_fail_at_the_same_time():
 
     # With single quote check.
     assert fails(checker.singlequoting, "Path: '%S'", "مسیر: '%S'‎")
-    assert fails(checker.singlequoting, "Path: '%S'", "مسیر: \"%S\"‎")
+    assert fails(checker.singlequoting, "Path: '%S'", 'مسیر: "%S"‎')
     assert passes(checker.singlequoting, "Path: '%S'", "مسیر: «%S»")
 
     # With double quote check.
     assert passes(checker.doublequoting, "Path: '%S'", "مسیر: '%S'‎")
-    assert passes(checker.doublequoting, "Path: '%S'", "مسیر: \"%S\"‎")
+    assert passes(checker.doublequoting, "Path: '%S'", 'مسیر: "%S"‎')
     assert passes(checker.doublequoting, "Path: '%S'", "مسیر: «%S»")
 
 
@@ -1286,28 +1284,28 @@ def test_persian_quoting():
     checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="fa"))
 
     # Just double quoting.
-    assert fails(checker.doublequoting, "Path: \"%S\"", "مسیر: '%S'‎")
-    assert fails(checker.doublequoting, "Path: \"%S\"", "مسیر: \"%S\"‎")
-    assert passes(checker.doublequoting, "Path: \"%S\"", "مسیر: «%S»")
+    assert fails(checker.doublequoting, 'Path: "%S"', "مسیر: '%S'‎")
+    assert fails(checker.doublequoting, 'Path: "%S"', 'مسیر: "%S"‎')
+    assert passes(checker.doublequoting, 'Path: "%S"', "مسیر: «%S»")
 
     # Just XML quoting.
     assert passes(
-        checker.singlequoting, "<area shape=\"circle\">", "<area shape=\"circle\">"
+        checker.singlequoting, '<area shape="circle">', '<area shape="circle">'
     )
     assert passes(
-        checker.doublequoting, "<area shape=\"circle\">", "<area shape=\"circle\">"
+        checker.doublequoting, '<area shape="circle">', '<area shape="circle">'
     )
 
     # XML quoting and double quoting.
     assert passes(
         checker.singlequoting,
-        "The \"coords\" attribute of the <area shape=\"circle\"> tag has a negative radius.",
-        "مشخصهٔ «coords» برچسب ‪<area shape=\"circle\">‬ دارای «radius» منفی است.",
+        'The "coords" attribute of the <area shape="circle"> tag has a negative radius.',
+        'مشخصهٔ «coords» برچسب ‪<area shape="circle">‬ دارای «radius» منفی است.',
     )
     assert passes(
         checker.doublequoting,
-        "The \"coords\" attribute of the <area shape=\"circle\"> tag has a negative \"radius\".",
-        "مشخصهٔ «coords» برچسب ‪<area shape=\"circle\">‬ دارای «radius» منفی است.",
+        'The "coords" attribute of the <area shape="circle"> tag has a negative "radius".',
+        'مشخصهٔ «coords» برچسب ‪<area shape="circle">‬ دارای «radius» منفی است.',
     )
 
     # Single quotes with variables in source fails both single and double quote
@@ -1317,13 +1315,13 @@ def test_persian_quoting():
     )
     # TODO the following should fail.
     assert passes(
-        checker.singlequoting, "'%1$S' is not a directory", "\"%1$S\" یک شاخه نیست"
+        checker.singlequoting, "'%1$S' is not a directory", '"%1$S" یک شاخه نیست'
     )
     assert fails(
         checker.doublequoting, "'%1$S' is not a directory", "'%1$S' یک شاخه نیست"
     )
     assert fails(
-        checker.doublequoting, "'%1$S' is not a directory", "\"%1$S\" یک شاخه نیست"
+        checker.doublequoting, "'%1$S' is not a directory", '"%1$S" یک شاخه نیست'
     )
     # But works when using the right quoting in translation.
     assert passes(
@@ -1390,8 +1388,8 @@ def test_simplecaps():
     )
     assert passes(
         stdchecker.simplecaps,
-        "The element \"%S\" is not recognized.",
-        "Elemente \"%S\" a yi tiveki.",
+        'The element "%S" is not recognized.',
+        'Elemente "%S" a yi tiveki.',
     )
     stdchecker = checks.StandardChecker(checks.CheckerConfig(varmatches=[("&", ";")]))
     assert passes(
@@ -1510,7 +1508,7 @@ def test_startcaps():
     assert passes(stdchecker.startcaps, "360 degrees", "grade 360")
 
     # Language specific stuff
-    afchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='af'))
+    afchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="af"))
     assert passes(afchecker.startcaps, "A cow", "'n Koei")
     assert passes(afchecker.startcaps, "A list of ", "'n Lys van ")
     # should pass:
@@ -1536,7 +1534,7 @@ def test_startpunc():
     )
 
     # The inverted Spanish question mark should be accepted
-    stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='es'))
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="es"))
     assert passes(
         stdchecker.startpunc,
         "Do you want to reload the file?",
@@ -1544,7 +1542,7 @@ def test_startpunc():
     )
 
     # The Afrikaans indefinite article should be accepted
-    stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='af'))
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="af"))
     assert passes(stdchecker.startpunc, "A human?", "'n Mens?")
 
 
@@ -1596,10 +1594,10 @@ def test_unchanged():
     )  # bug 178, description item 10
     # Don't fail unchanged if the entry is a dialogsize, quite plausible that you won't change it
     mozillachecker = checks.MozillaChecker()
-    assert passes(mozillachecker.unchanged, 'width: 12em;', 'width: 12em;')
-    assert fails(stdchecker.unchanged, 'width: 12em;', 'width: 12em;')
-    assert passes(mozillachecker.unchanged, '7em', '7em')
-    assert fails(stdchecker.unchanged, '7em', '7em')
+    assert passes(mozillachecker.unchanged, "width: 12em;", "width: 12em;")
+    assert fails(stdchecker.unchanged, "width: 12em;", "width: 12em;")
+    assert passes(mozillachecker.unchanged, "7em", "7em")
+    assert fails(stdchecker.unchanged, "7em", "7em")
 
 
 def test_untranslated():
@@ -1625,7 +1623,7 @@ def test_validchars():
     )
     stdchecker = checks.StandardChecker(
         checks.CheckerConfig(
-            validchars='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+            validchars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
         )
     )
     assert passes(
@@ -1636,7 +1634,7 @@ def test_validchars():
     assert fails(stdchecker.validchars, "Some unexpected characters", "©®°±÷¼½¾")
     stdchecker = checks.StandardChecker(
         checks.CheckerConfig(
-            validchars='⠁⠂⠃⠄⠅⠆⠇⠈⠉⠊⠋⠌⠍⠎⠏⠐⠑⠒⠓⠔⠕⠖⠗⠘⠙⠚⠛⠜⠝⠞⠟⠠⠡⠢⠣⠤⠥⠦⠧⠨⠩⠪⠫⠬⠭⠮⠯⠰'
+            validchars="⠁⠂⠃⠄⠅⠆⠇⠈⠉⠊⠋⠌⠍⠎⠏⠐⠑⠒⠓⠔⠕⠖⠗⠘⠙⠚⠛⠜⠝⠞⠟⠠⠡⠢⠣⠤⠥⠦⠧⠨⠩⠪⠫⠬⠭⠮⠯⠰"
         )
     )
     assert passes(
@@ -1649,12 +1647,12 @@ def test_validchars():
         "Our target language is all non-ascii",
         "Some ascii⠁⠂⠃⠄⠆⠇⠈⠉⠜⠝⠞⠟⠠⠡⠢⠣⠤⠥⠦⠧⠨⠩⠪⠫",
     )
-    stdchecker = checks.StandardChecker(checks.CheckerConfig(validchars='\u004c\u032d'))
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(validchars="\u004c\u032d"))
     assert passes(
         stdchecker.validchars, "This sentence contains valid chars", "\u004c\u032d"
     )
     assert passes(stdchecker.validchars, "This sentence contains valid chars", "\u1e3c")
-    stdchecker = checks.StandardChecker(checks.CheckerConfig(validchars='\u1e3c'))
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(validchars="\u1e3c"))
     assert passes(stdchecker.validchars, "This sentence contains valid chars", "\u1e3c")
     assert passes(
         stdchecker.validchars, "This sentence contains valid chars", "\u004c\u032d"
@@ -1679,14 +1677,14 @@ def test_minimalchecker():
     unit = base.TranslationUnit(src)
     unit.target = tgt
 
-    assert 'doublewords' not in minimalchecker.run_filters(unit).keys()
+    assert "doublewords" not in minimalchecker.run_filters(unit).keys()
 
     # Printf check is disabled.
     src, tgt, __ = strprep("Non-matching printf variables", "Ek is %s")
     unit = base.TranslationUnit(src)
     unit.target = tgt
 
-    assert 'printf' not in minimalchecker.run_filters(unit).keys()
+    assert "printf" not in minimalchecker.run_filters(unit).keys()
 
 
 def test_reducedchecker():
@@ -1720,14 +1718,14 @@ def test_reducedchecker():
     unit = base.TranslationUnit(src)
     unit.target = tgt
 
-    assert 'printf' not in reducedchecker.run_filters(unit).keys()
+    assert "printf" not in reducedchecker.run_filters(unit).keys()
 
     # Escapes check is disabled.
     src, tgt, __ = strprep("A file", "'n Leer\n")
     unit = base.TranslationUnit(src)
     unit.target = tgt
 
-    assert 'escapes' not in reducedchecker.run_filters(unit).keys()
+    assert "escapes" not in reducedchecker.run_filters(unit).keys()
 
 
 def test_variables_kde():
@@ -1843,8 +1841,8 @@ def test_variables_mozilla():
     # Variables that are missing in quotes should be detected
     assert fails_serious(
         mozillachecker.variables,
-        "\"%S\" is an executable file.... Are you sure you want to launch \"%S\"?",
-        ".... Uyaqiniseka ukuthi ufuna ukuqalisa I\"%S\"?",
+        '"%S" is an executable file.... Are you sure you want to launch "%S"?',
+        '.... Uyaqiniseka ukuthi ufuna ukuqalisa I"%S"?',
     )
     # False positive $ style variables
     assert passes(
@@ -1962,28 +1960,28 @@ def test_xmltags():
     assert passes(stdchecker.xmltags, "Do it <b>now</b>", "Doen dit <b>nou</b>")
     assert passes(
         stdchecker.xmltags,
-        "Click <img src=\"img.jpg\">here</img>",
-        "Klik <img src=\"img.jpg\">hier</img>",
+        'Click <img src="img.jpg">here</img>',
+        'Klik <img src="img.jpg">hier</img>',
     )
     assert fails(
         stdchecker.xmltags,
-        "Click <img src=\"image.jpg\">here</img>",
-        "Klik <img src=\"prent.jpg\">hier</img>",
+        'Click <img src="image.jpg">here</img>',
+        'Klik <img src="prent.jpg">hier</img>',
     )
     assert passes(
         stdchecker.xmltags,
-        "Click <img src=\"img.jpg\" alt=\"picture\">here</img>",
-        "Klik <img src=\"img.jpg\" alt=\"prentjie\">hier</img>",
+        'Click <img src="img.jpg" alt="picture">here</img>',
+        'Klik <img src="img.jpg" alt="prentjie">hier</img>',
     )
     assert passes(
         stdchecker.xmltags,
-        "Click <a title=\"tip\">here</a>",
-        "Klik <a title=\"wenk\">hier</a>",
+        'Click <a title="tip">here</a>',
+        'Klik <a title="wenk">hier</a>',
     )
     assert passes(
         stdchecker.xmltags,
-        "Click <div title=\"tip\">here</div>",
-        "Klik <div title=\"wenk\">hier</div>",
+        'Click <div title="tip">here</div>',
+        'Klik <div title="wenk">hier</div>',
     )
     assert passes(
         stdchecker.xmltags,
@@ -1993,23 +1991,23 @@ def test_xmltags():
 
     assert fails(
         stdchecker.xmltags,
-        "Click <a href=\"page.html\">",
-        "Klik <a hverw=\"page.html\">",
+        'Click <a href="page.html">',
+        'Klik <a hverw="page.html">',
     )
     assert passes(
         stdchecker.xmltags,
-        "Click <a xml-lang=\"en\" href=\"page.html\">",
-        "Klik <a xml-lang=\"af\" href=\"page.html\">",
+        'Click <a xml-lang="en" href="page.html">',
+        'Klik <a xml-lang="af" href="page.html">',
     )
     assert passes(
         stdchecker.xmltags,
-        "Click <div lang=\"en\" dir=\"ltr\">",
-        "Klik <div lang=\"ar\" dir=\"rtl\">",
+        'Click <div lang="en" dir="ltr">',
+        'Klik <div lang="ar" dir="rtl">',
     )
     assert fails(
         stdchecker.xmltags,
-        "Click <a href=\"page.html\" target=\"koei\">",
-        "Klik <a href=\"page.html\">",
+        'Click <a href="page.html" target="koei">',
+        'Klik <a href="page.html">',
     )
     assert fails(
         stdchecker.xmltags, "<b>Current Translation</b>", "<b>Traducción Actual:<b>"
@@ -2039,22 +2037,22 @@ def test_xmltags():
     # different regular expressions (because of the newlines)
     assert passes(
         stdchecker.xmltags,
-        '''<markup>
+        """<markup>
 <span weight="bold" size="large"
 style="oblique">
 Can't create server !
 </span>
-</markup>''',
-        '''<markup>
+</markup>""",
+        """<markup>
 <span weight="bold" size="large"
 style="oblique">
 No s'ha pogut crear el servidor
 </span>
-</markup>''',
+</markup>""",
     )
     frchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="fr"))
     assert fails(
-        frchecker.xmltags, "Click <a href=\"page.html\">", "Klik <a href=« page.html »>"
+        frchecker.xmltags, 'Click <a href="page.html">', "Klik <a href=« page.html »>"
     )
 
 
@@ -2075,45 +2073,45 @@ def test_ooxmltags():
         # some attributes can be changed or removed
         assert fails(
             ooochecker.xmltags,
-            "<img src=\"a.jpg\" width=\"400\">",
-            "<img src=\"b.jpg\" width=\"500\">",
+            '<img src="a.jpg" width="400">',
+            '<img src="b.jpg" width="500">',
         )
         assert passes(
             ooochecker.xmltags,
-            "<img src=\"a.jpg\" width=\"400\">",
-            "<img src=\"a.jpg\" width=\"500\">",
+            '<img src="a.jpg" width="400">',
+            '<img src="a.jpg" width="500">',
         )
         assert passes(
             ooochecker.xmltags,
-            "<img src=\"a.jpg\" width=\"400\">",
-            "<img src=\"a.jpg\">",
+            '<img src="a.jpg" width="400">',
+            '<img src="a.jpg">',
         )
         assert passes(
             ooochecker.xmltags,
-            "<img src=\"a.jpg\">",
-            "<img src=\"a.jpg\" width=\"400\">",
+            '<img src="a.jpg">',
+            '<img src="a.jpg" width="400">',
         )
         assert passes(
-            ooochecker.xmltags, "<alt xml-lang=\"ab\">text</alt>", "<alt>teks</alt>"
+            ooochecker.xmltags, '<alt xml-lang="ab">text</alt>', "<alt>teks</alt>"
         )
         assert passes(
             ooochecker.xmltags,
-            "<ahelp visibility=\"visible\">bla</ahelp>",
+            '<ahelp visibility="visible">bla</ahelp>',
             "<ahelp>blu</ahelp>",
         )
         assert fails(
             ooochecker.xmltags,
-            "<ahelp visibility=\"visible\">bla</ahelp>",
-            "<ahelp visibility=\"invisible\">blu</ahelp>",
+            '<ahelp visibility="visible">bla</ahelp>',
+            '<ahelp visibility="invisible">blu</ahelp>',
         )
         assert fails(
             ooochecker.xmltags,
-            "<ahelp visibility=\"invisible\">bla</ahelp>",
+            '<ahelp visibility="invisible">bla</ahelp>',
             "<ahelp>blu</ahelp>",
         )
         # some attributes can be changed, but not removed
-        assert passes(ooochecker.xmltags, "<link name=\"John\">", "<link name=\"Jan\">")
-        assert fails(ooochecker.xmltags, "<link name=\"John\">", "<link naam=\"Jan\">")
+        assert passes(ooochecker.xmltags, '<link name="John">', '<link name="Jan">')
+        assert fails(ooochecker.xmltags, '<link name="John">', '<link naam="Jan">')
 
         # Reported OOo error
         ## Bug 1910
@@ -2190,7 +2188,7 @@ def test_simpleplurals():
     )
 
     # Test a language that doesn't use plurals
-    stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='vi'))
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="vi"))
     assert passes(stdchecker.simpleplurals, "computer(s)", "Máy tính")
     assert fails(stdchecker.simpleplurals, "computer(s)", "Máy tính(s)")
 
@@ -2207,7 +2205,7 @@ def test_nplurals():
     unit.target = ["%d lêer", "%d lêers"]
     assert checker.nplurals(unit)
 
-    checker = checks.StandardUnitChecker(checks.CheckerConfig(targetlanguage='af'))
+    checker = checks.StandardUnitChecker(checks.CheckerConfig(targetlanguage="af"))
     unit.source = "%d files"
     unit.target = "%d lêer"
     assert checker.nplurals(unit)
@@ -2224,7 +2222,7 @@ def test_nplurals():
     unit.target = ["%d lêer"]
     assert not checker.nplurals(unit)
 
-    checker = checks.StandardUnitChecker(checks.CheckerConfig(targetlanguage='km'))
+    checker = checks.StandardUnitChecker(checks.CheckerConfig(targetlanguage="km"))
     unit.source = "%d files"
     unit.target = "%d ឯកសារ"
     assert checker.nplurals(unit)
@@ -2268,11 +2266,11 @@ def test_gconf():
     gnomechecker.locations = []
     assert passes(gnomechecker.gconf, 'Blah "gconf_setting"', 'Bleh "gconf_setting"')
     assert passes(gnomechecker.gconf, 'Blah "gconf_setting"', 'Bleh "gconf_steling"')
-    gnomechecker.locations = ['file.schemas.in.h:24']
+    gnomechecker.locations = ["file.schemas.in.h:24"]
     assert passes(gnomechecker.gconf, 'Blah "gconf_setting"', 'Bleh "gconf_setting"')
     assert fails(gnomechecker.gconf, 'Blah "gconf_setting"', 'Bleh "gconf_steling"')
     # redo the same, but with the new location comment:
-    gnomechecker.locations = ['file.gschema.xml.in.in.h:24']
+    gnomechecker.locations = ["file.gschema.xml.in.in.h:24"]
     assert passes(gnomechecker.gconf, 'Blah "gconf_setting"', 'Bleh "gconf_setting"')
     assert fails(gnomechecker.gconf, 'Blah "gconf_setting"', 'Bleh "gconf_steling"')
 
@@ -2296,7 +2294,7 @@ def test_validxml():
     assert fails(
         lochecker.validxml,
         "",
-        "<ahelp hid=\".\"> open tag not match with close tag</link>",
+        '<ahelp hid="."> open tag not match with close tag</link>',
     )
     assert passes(
         lochecker.validxml,
@@ -2324,17 +2322,17 @@ def test_validxml():
     assert passes(
         lochecker.validxml,
         "",
-        "<link href=\"text/scalc/01/04060184.xhp#average\">MITTELWERT</link>, <link href=\"text/scalc/01/04060184.xhp#averagea\">MITTELWERTA</link>, <embedvar href=\"text/scalc/01/func_averageifs.xhp#averageifs_head\"/>, <link href=\"text/scalc/01/04060184.xhp#max\">MAX</link>, <link href=\"text/scalc/01/04060184.xhp#min\">MIN</link>, <link href=\"text/scalc/01/04060183.xhp#large\">KGRÖSSTE</link>, <link href=\"text/scalc/01/04060183.xhp#small\">KKLEINSTE</link>",
+        '<link href="text/scalc/01/04060184.xhp#average">MITTELWERT</link>, <link href="text/scalc/01/04060184.xhp#averagea">MITTELWERTA</link>, <embedvar href="text/scalc/01/func_averageifs.xhp#averageifs_head"/>, <link href="text/scalc/01/04060184.xhp#max">MAX</link>, <link href="text/scalc/01/04060184.xhp#min">MIN</link>, <link href="text/scalc/01/04060183.xhp#large">KGRÖSSTE</link>, <link href="text/scalc/01/04060183.xhp#small">KKLEINSTE</link>',
     )
     assert fails(
         lochecker.validxml,
         "",
-        "Kullanıcı etkileşimi verisinin kaydedilmesini ve bu verilerin gönderilmesini dilediğiniz zaman etkinleştirebilir veya devre dışı bırakabilirsiniz.  <item type=\"menuitem\"><switchinline select=\"sys\"><caseinline select=\"MAC\">%PRODUCTNAME - Tercihler</caseinline><defaultinline>Araçlar - Seçenekler</defaultinline></switchinline> - %PRODUCTNAME - Gelişim Programı</item>'nı seçin. Daha fazla bilgi için web sitesinde gezinmek için <defaultinline>Bilgi</emph> simgesine tıklayın.",
+        'Kullanıcı etkileşimi verisinin kaydedilmesini ve bu verilerin gönderilmesini dilediğiniz zaman etkinleştirebilir veya devre dışı bırakabilirsiniz.  <item type="menuitem"><switchinline select="sys"><caseinline select="MAC">%PRODUCTNAME - Tercihler</caseinline><defaultinline>Araçlar - Seçenekler</defaultinline></switchinline> - %PRODUCTNAME - Gelişim Programı</item>\'nı seçin. Daha fazla bilgi için web sitesinde gezinmek için <defaultinline>Bilgi</emph> simgesine tıklayın.',
     )
     assert fails(
         lochecker.validxml,
         "",
-        "<caseinline select=\"DRAW\">Bir sayfanın içerik menüsünde ek komutlar vardır:</caseinline><caseinline select=\"IMPRESS\">Bir sayfanın içerik menüsünde ek komutlar vardır:</caseinline></switchinline>",
+        '<caseinline select="DRAW">Bir sayfanın içerik menüsünde ek komutlar vardır:</caseinline><caseinline select="IMPRESS">Bir sayfanın içerik menüsünde ek komutlar vardır:</caseinline></switchinline>',
     )
     assert fails(
         lochecker.validxml,
@@ -2352,7 +2350,7 @@ def test_hassuggestion():
     assert checker.hassuggestion(po_store.units[-1])
 
     xliff_store = xliff.xlifffile.parsestring(
-        '''
+        """
 <xliff version='1.2'
        xmlns='urn:oasis:names:tc:xliff:document:1.2'>
 <file original='hello.txt' source-language='en' target-language='fr' datatype='plaintext'>
@@ -2367,7 +2365,7 @@ def test_hassuggestion():
 </body>
 </file>
 </xliff>
-'''
+"""
     )
     assert not checker.hassuggestion(xliff_store.units[0])
 
@@ -2375,20 +2373,20 @@ def test_hassuggestion():
 def test_dialogsizes():
     """test Mozilla dialog sizes"""
     mozillachecker = checks.MozillaChecker()
-    assert passes(mozillachecker.dialogsizes, 'width: 12em;', 'width: 12em;')
+    assert passes(mozillachecker.dialogsizes, "width: 12em;", "width: 12em;")
     assert passes(
         mozillachecker.dialogsizes,
-        'width: 12em; height: 36em',
-        'width: 12em; height: 36em',
+        "width: 12em; height: 36em",
+        "width: 12em; height: 36em",
     )
-    assert fails(mozillachecker.dialogsizes, 'height: 12em;', 'hoogde: 12em;')
-    assert passes(mozillachecker.dialogsizes, 'height: 12em;', 'height: 24px;')
-    assert fails(mozillachecker.dialogsizes, 'height: 12em;', 'height: 24xx;')
-    assert fails(mozillachecker.dialogsizes, 'height: 12.5em;', 'height: 12,5em;')
+    assert fails(mozillachecker.dialogsizes, "height: 12em;", "hoogde: 12em;")
+    assert passes(mozillachecker.dialogsizes, "height: 12em;", "height: 24px;")
+    assert fails(mozillachecker.dialogsizes, "height: 12em;", "height: 24xx;")
+    assert fails(mozillachecker.dialogsizes, "height: 12.5em;", "height: 12,5em;")
     assert fails(
         mozillachecker.dialogsizes,
-        'width: 36em; height: 18em;',
-        'width: 30em; min-height: 20em;',
+        "width: 36em; height: 18em;",
+        "width: 30em; min-height: 20em;",
     )
 
 
@@ -2400,7 +2398,7 @@ def test_skip_checks_per_language_in_some_checkers():
     checker_config = checks.CheckerConfig(targetlanguage="gl")
     previous_ignoretests = checker_config.lang.ignoretests
     checker_config.lang.ignoretests = {
-        'mozilla': ['accelerators'],
+        "mozilla": ["accelerators"],
     }
 
     # Prepare the checkers and the unit.
@@ -2414,10 +2412,10 @@ def test_skip_checks_per_language_in_some_checkers():
     unit.target = str2
 
     # Accelerators check is disabled for this language in MozillaChecker.
-    assert 'accelerators' not in mozillachecker.run_filters(unit).keys()
+    assert "accelerators" not in mozillachecker.run_filters(unit).keys()
 
     # But it is not in StandardChecker.
-    assert 'accelerators' in stdchecker.run_filters(unit).keys()
+    assert "accelerators" in stdchecker.run_filters(unit).keys()
 
     # Undo hijack.
     checker_config.lang.ignoretests = previous_ignoretests
@@ -2470,11 +2468,11 @@ def test_noaccelerators_only_in_mozilla_checker():
     gl_failures = glmozillachecker.run_filters(unit)
     std_failures = stdchecker.run_filters(unit)
 
-    assert 'accelerators' not in asmozillachecker.run_filters(unit)
-    assert 'accelerators' in gl_failures
-    assert 'should not appear' not in gl_failures['accelerators']
-    assert 'accelerators' in std_failures
-    assert 'should not appear' not in std_failures['accelerators']
+    assert "accelerators" not in asmozillachecker.run_filters(unit)
+    assert "accelerators" in gl_failures
+    assert "should not appear" not in gl_failures["accelerators"]
+    assert "accelerators" in std_failures
+    assert "should not appear" not in std_failures["accelerators"]
 
     # Accelerators check passes. The ampersand should be detected as part of
     # a variable.
@@ -2482,9 +2480,9 @@ def test_noaccelerators_only_in_mozilla_checker():
     unit = base.TranslationUnit(str1)
     unit.target = str2
 
-    assert 'accelerators' not in asmozillachecker.run_filters(unit)
-    assert 'accelerators' not in glmozillachecker.run_filters(unit)
-    assert 'accelerators' not in stdchecker.run_filters(unit)
+    assert "accelerators" not in asmozillachecker.run_filters(unit)
+    assert "accelerators" not in glmozillachecker.run_filters(unit)
+    assert "accelerators" not in stdchecker.run_filters(unit)
 
     # Accelerators check fails for Assamesse in Mozilla checker since the
     # accelerator is present in the target. It passes for other languages or
@@ -2495,11 +2493,11 @@ def test_noaccelerators_only_in_mozilla_checker():
 
     as_failures = asmozillachecker.run_filters(unit)
 
-    assert asmozillachecker.config.language_script == 'assamese'
-    assert 'accelerators' in as_failures
-    assert 'should not appear' in as_failures['accelerators']
-    assert 'accelerators' not in glmozillachecker.run_filters(unit)
-    assert 'accelerators' not in stdchecker.run_filters(unit)
+    assert asmozillachecker.config.language_script == "assamese"
+    assert "accelerators" in as_failures
+    assert "should not appear" in as_failures["accelerators"]
+    assert "accelerators" not in glmozillachecker.run_filters(unit)
+    assert "accelerators" not in stdchecker.run_filters(unit)
 
 
 def test_ensure_accelerators_not_in_target_if_not_in_source():
@@ -2521,9 +2519,9 @@ def test_ensure_accelerators_not_in_target_if_not_in_source():
 
     km_failures = km_mozilla_checker.run_filters(unit)
 
-    assert 'accelerators' not in af_mozilla_checker.run_filters(unit)
-    assert 'accelerators' in km_failures
-    assert 'should not appear' in km_failures['accelerators']
+    assert "accelerators" not in af_mozilla_checker.run_filters(unit)
+    assert "accelerators" in km_failures
+    assert "should not appear" in km_failures["accelerators"]
 
     # Afrikaans fails: Translation is missing the accesskey.
     # Khmer passes: Translation doesn't need accesskey for this language.
@@ -2533,9 +2531,9 @@ def test_ensure_accelerators_not_in_target_if_not_in_source():
 
     af_failures = af_mozilla_checker.run_filters(unit)
 
-    assert 'accelerators' in af_failures
-    assert 'Missing accelerator' in af_failures['accelerators']
-    assert 'accelerators' not in km_mozilla_checker.run_filters(unit)
+    assert "accelerators" in af_failures
+    assert "Missing accelerator" in af_failures["accelerators"]
+    assert "accelerators" not in km_mozilla_checker.run_filters(unit)
 
     # Afrikaans fails: No accesskey in the source, but yes on translation.
     # Khmer fails: Translation doesn't need accesskey, but it has accesskey.
@@ -2546,10 +2544,10 @@ def test_ensure_accelerators_not_in_target_if_not_in_source():
     af_failures = af_mozilla_checker.run_filters(unit)
     km_failures = km_mozilla_checker.run_filters(unit)
 
-    assert 'accelerators' in af_failures
-    assert 'Added accelerator' in af_failures['accelerators']
-    assert 'accelerators' in km_failures
-    assert 'should not appear' in km_failures['accelerators']
+    assert "accelerators" in af_failures
+    assert "Added accelerator" in af_failures["accelerators"]
+    assert "accelerators" in km_failures
+    assert "should not appear" in km_failures["accelerators"]
 
 
 def test_ensure_bengali_languages_script_is_correct():
@@ -2563,34 +2561,34 @@ def test_ensure_bengali_languages_script_is_correct():
     bn_mozilla_checker = checks.MozillaChecker(
         checkerconfig=checks.CheckerConfig(targetlanguage="bn_IN")
     )
-    assert bn_BD_mozilla_checker.config.language_script == 'Beng'
-    assert bn_IN_mozilla_checker.config.language_script == 'Beng'
-    assert bn_mozilla_checker.config.language_script == 'Beng'
+    assert bn_BD_mozilla_checker.config.language_script == "Beng"
+    assert bn_IN_mozilla_checker.config.language_script == "Beng"
+    assert bn_mozilla_checker.config.language_script == "Beng"
 
 
 def test_category():
     """Tests checker categories aren't mixed up."""
     from translate.storage import base
 
-    unit = base.TranslationUnit('foo')
-    unit.target = 'bar'
+    unit = base.TranslationUnit("foo")
+    unit.target = "bar"
 
     standard_checker = checks.StandardChecker()
     assert standard_checker.categories == {}
     standard_checker.run_filters(unit)
     assert standard_checker.categories != {}
-    assert 'validxml' not in standard_checker.categories.keys()
+    assert "validxml" not in standard_checker.categories.keys()
     standard_categories_count = len(standard_checker.categories.values())
 
     libo_checker = checks.LibreOfficeChecker()
     assert libo_checker.categories == {}
     libo_checker.run_filters(unit)
     assert libo_checker.categories != {}
-    assert 'validxml' in libo_checker.categories.keys()
+    assert "validxml" in libo_checker.categories.keys()
 
     standard_checker = checks.StandardChecker()
     assert standard_checker.categories == {}
     standard_checker.run_filters(unit)
     assert standard_checker.categories != {}
     assert len(standard_checker.categories.values()) == standard_categories_count
-    assert 'validxml' not in standard_checker.categories.keys()
+    assert "validxml" not in standard_checker.categories.keys()

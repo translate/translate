@@ -60,7 +60,7 @@ def compose_mappings(left, right):
     return result_map
 
 
-tag_pattern = re.compile(r'({(?P<namespace>(\w|[-:./])*)})?(?P<tag>(\w|[-])*)')
+tag_pattern = re.compile(r"({(?P<namespace>(\w|[-:./])*)})?(?P<tag>(\w|[-])*)")
 
 
 def parse_tag(full_tag):
@@ -81,4 +81,4 @@ def parse_tag(full_tag):
             ret.append(value)
         return ret[0], ret[1]
     else:
-        raise Exception('Passed an invalid tag')
+        raise Exception("Passed an invalid tag")

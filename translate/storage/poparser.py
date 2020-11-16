@@ -33,7 +33,7 @@ From the GNU gettext manual:
      msgstr TRANSLATED-STRING
 """
 
-SINGLE_BYTE_ENCODING = 'iso-8859-1'
+SINGLE_BYTE_ENCODING = "iso-8859-1"
 isspace = str.isspace
 find = str.find
 rfind = str.rfind
@@ -49,7 +49,7 @@ class ParseState:
         # the encoding defined in the header is used for re-encoding the header
         # and for decoding all further strings.
         self._input_iterator = input_iterator
-        self.next_line = ''
+        self.next_line = ""
         self.lineno = 0
         self.eof = False
         self.encoding = encoding
@@ -72,7 +72,7 @@ class ParseState:
                 self.next_line = next(self._input_iterator)
                 self.lineno += 1
         except StopIteration:
-            self.next_line = ''
+            self.next_line = ""
             self.eof = True
         else:
             if isinstance(self.next_line, bytes) and self.encoding is not None:
@@ -90,9 +90,9 @@ def read_prevmsgid_lines(parse_state):
     """
     prevmsgid_lines = []
     next_line = parse_state.next_line
-    while startswith(next_line, '#| ') or startswith(next_line, '| '):
+    while startswith(next_line, "#| ") or startswith(next_line, "| "):
         content = parse_state.read_line()
-        prefix_len = content.index('| ')
+        prefix_len = content.index("| ")
         content = content[prefix_len + 2 :]
         append(prevmsgid_lines, content)
         next_line = parse_state.next_line
@@ -100,27 +100,27 @@ def read_prevmsgid_lines(parse_state):
 
 
 def parse_prev_msgctxt(parse_state, unit):
-    parse_message(parse_state, 'msgctxt', 7, unit.prev_msgctxt)
+    parse_message(parse_state, "msgctxt", 7, unit.prev_msgctxt)
     return len(unit.prev_msgctxt) > 0
 
 
 def parse_prev_msgid(parse_state, unit):
-    parse_message(parse_state, 'msgid', 5, unit.prev_msgid)
+    parse_message(parse_state, "msgid", 5, unit.prev_msgid)
     return len(unit.prev_msgid) > 0
 
 
 def parse_prev_msgid_plural(parse_state, unit):
-    parse_message(parse_state, 'msgid_plural', 12, unit.prev_msgid_plural)
+    parse_message(parse_state, "msgid_plural", 12, unit.prev_msgid_plural)
     return len(unit.prev_msgid_plural) > 0
 
 
 def parse_comment(parse_state, unit):
     next_line = parse_state.next_line.lstrip()
-    if next_line and next_line[0] in ('#', '|'):
+    if next_line and next_line[0] in ("#", "|"):
         next_char = next_line[1]
-        if next_char == '.':
+        if next_char == ".":
             append(unit.automaticcomments, next_line)
-        elif next_line[0] == '|' or next_char == '|':
+        elif next_line[0] == "|" or next_char == "|":
             # Read all the lines starting with #|
             prevmsgid_lines = read_prevmsgid_lines(parse_state)
             # Create a parse state object that holds these lines
@@ -132,11 +132,11 @@ def parse_comment(parse_state, unit):
             # Parse the msgid_plural if any
             parse_prev_msgid_plural(ps, unit)
             return parse_state.next_line
-        elif next_char == ':':
+        elif next_char == ":":
             append(unit.sourcecomments, next_line)
-        elif next_char == ',':
+        elif next_char == ",":
             append(unit.typecomments, next_line)
-        elif next_char == '~':
+        elif next_char == "~":
             # Special case: we refuse to parse obsoletes: they are done
             # elsewhere to ensure we reuse the normal unit parsing code
             return None
@@ -159,14 +159,14 @@ def read_obsolete_lines(parse_state):
     """Read all the lines belonging to the current unit if obsolete."""
     obsolete_lines = []
     next_line = parse_state.next_line
-    while startswith(next_line, '#~'):
+    while startswith(next_line, "#~"):
         content = parse_state.read_line()[2:].lstrip()
         append(obsolete_lines, content)
         next_line = parse_state.next_line
-        if startswith(content, 'msgstr'):
+        if startswith(content, "msgstr"):
             # now we saw a msgstr, so we need to become more conservative to
             # avoid parsing into the following unit
-            while startswith(next_line, '#~ "') or startswith(next_line, '#~ msgstr'):
+            while startswith(next_line, '#~ "') or startswith(next_line, "#~ msgstr"):
                 content = parse_state.read_line()[3:]
                 append(obsolete_lines, content)
                 next_line = parse_state.next_line
@@ -200,7 +200,7 @@ def parse_quoted(parse_state, start_pos=0):
 def parse_msg_comment(parse_state, msg_comment_list, string):
     while string is not None:
         append(msg_comment_list, string)
-        if find(string, '\\n') > -1:
+        if find(string, "\\n") > -1:
             return parse_quoted(parse_state)
         string = parse_quoted(parse_state)
     return None
@@ -226,28 +226,28 @@ def parse_message(
 
 
 def parse_msgctxt(parse_state, unit):
-    parse_message(parse_state, 'msgctxt', 7, unit.msgctxt)
+    parse_message(parse_state, "msgctxt", 7, unit.msgctxt)
     return len(unit.msgctxt) > 0
 
 
 def parse_msgid(parse_state, unit):
-    parse_message(parse_state, 'msgid', 5, unit.msgid, unit.msgidcomments)
+    parse_message(parse_state, "msgid", 5, unit.msgid, unit.msgidcomments)
     return len(unit.msgid) > 0 or len(unit.msgidcomments) > 0
 
 
 def parse_msgstr(parse_state, unit):
-    parse_message(parse_state, 'msgstr', 6, unit.msgstr)
+    parse_message(parse_state, "msgstr", 6, unit.msgstr)
     return len(unit.msgstr) > 0
 
 
 def parse_msgid_plural(parse_state, unit):
     parse_message(
-        parse_state, 'msgid_plural', 12, unit.msgid_plural, unit.msgid_pluralcomments
+        parse_state, "msgid_plural", 12, unit.msgid_plural, unit.msgid_pluralcomments
     )
     return len(unit.msgid_plural) > 0 or len(unit.msgid_pluralcomments) > 0
 
 
-MSGSTR_ARRAY_ENTRY_LEN = len('msgstr[')
+MSGSTR_ARRAY_ENTRY_LEN = len("msgstr[")
 
 
 def add_to_dict(msgstr_dict, line, right_bracket_pos, entry):
@@ -259,13 +259,13 @@ def add_to_dict(msgstr_dict, line, right_bracket_pos, entry):
 
 def get_entry(parse_state, right_bracket_pos):
     entry = []
-    parse_message(parse_state, 'msgstr[', right_bracket_pos + 1, entry)
+    parse_message(parse_state, "msgstr[", right_bracket_pos + 1, entry)
     return entry
 
 
 def parse_msgstr_array_entry(parse_state, msgstr_dict):
     line = parse_state.next_line
-    right_bracket_pos = find(line, ']', MSGSTR_ARRAY_ENTRY_LEN)
+    right_bracket_pos = find(line, "]", MSGSTR_ARRAY_ENTRY_LEN)
     if right_bracket_pos >= 0:
         entry = get_entry(parse_state, right_bracket_pos)
         if entry:
@@ -323,12 +323,12 @@ def set_encoding(parse_state, store, unit):
         charset = re.search("charset=([^\\s\\\\n]+)", "".join(unit.msgstr))
     if charset:
         encoding = charset.group(1)
-        if encoding != 'CHARSET':
+        if encoding != "CHARSET":
             store._encoding = encoding
         else:
-            store._encoding = 'utf-8'
+            store._encoding = "utf-8"
     else:
-        store._encoding = 'utf-8'
+        store._encoding = "utf-8"
     parse_state.encoding = store._encoding
 
 
@@ -343,16 +343,16 @@ def decode_header(unit, decode):
     (using decode_list above).
     """
     for attr in (
-        'msgctxt',
-        'msgid',
-        'msgid_pluralcomments',
-        'msgid_plural',
-        'msgstr',
-        'othercomments',
-        'automaticcomments',
-        'sourcecomments',
-        'typecomments',
-        'msgidcomments',
+        "msgctxt",
+        "msgid",
+        "msgid_pluralcomments",
+        "msgid_plural",
+        "msgstr",
+        "othercomments",
+        "automaticcomments",
+        "sourcecomments",
+        "typecomments",
+        "msgidcomments",
     ):
         element = getattr(unit, attr)
         if isinstance(element, list):
@@ -392,4 +392,4 @@ def parse_units(parse_state, store):
         store.addunit(unit)
         unit = parse_unit(parse_state)
     if not parse_state.eof:
-        raise ValueError('Syntax error on line {}'.format(parse_state.lineno))
+        raise ValueError("Syntax error on line {}".format(parse_state.lineno))

@@ -23,7 +23,7 @@ the header of a Gettext PO file.
 import re
 
 
-__all__ = ('LANG_TEAM_CONTACT_SNIPPETS', 'guess_language')
+__all__ = ("LANG_TEAM_CONTACT_SNIPPETS", "guess_language")
 
 LANG_TEAM_REGEX = (
     ("@li.org", "([a-z_A-Z]{2,})@li.org", ["LL", "XX", "TEAM"]),
@@ -718,7 +718,7 @@ def _regex_guesser(prefilter, regex, string, postfilter=None):
             return None
         if postfilter is not None and regex_lang in postfilter:
             return None
-        if regex_lang and regex_lang != 'en':
+        if regex_lang and regex_lang != "en":
             return regex_lang
     return None
 
@@ -780,4 +780,4 @@ if __name__ == "__main__":
 
     for fname in argv[1:]:
         store = factory.getobject(fname)
-        print(fname, guess_language(store.parseheader().get('Language-Team', "")))
+        print(fname, guess_language(store.parseheader().get("Language-Team", "")))

@@ -27,11 +27,11 @@ from translate.storage.placeables.base import G, Ph, StringElem
 
 
 __all__ = (
-    'AltAttrPlaceable',
-    'XMLEntityPlaceable',
-    'XMLTagPlaceable',
-    'parsers',
-    'to_general_placeables',
+    "AltAttrPlaceable",
+    "XMLEntityPlaceable",
+    "XMLTagPlaceable",
+    "parsers",
+    "to_general_placeables",
 )
 
 
@@ -68,7 +68,7 @@ class NewlinePlaceable(Ph):
     iseditable = False
     isfragile = True
     istranslatable = False
-    regex = re.compile(r'\r\n|\n|\r')
+    regex = re.compile(r"\r\n|\n|\r")
     parse = classmethod(regex_parse)
 
 
@@ -252,7 +252,7 @@ class PunctuationPlaceable(Ph):
     # is available on the translators keyboard.  Or easily expanded by their
     # configuration.
     regex = re.compile(
-        '''([™©®]|          # Marks
+        """([™©®]|          # Marks
              [℃℉°]|          # Degree related
              [±πθ×÷−√∞∆Σ′″]| # Maths
              [‘’ʼ‚‛“”„‟]|    # Quote characters
@@ -262,7 +262,7 @@ class PunctuationPlaceable(Ph):
              —|              # U2014 - em dash
              –|              # U2013 - en dash
              [ ]             # U202F - narrow no-break space
-            )+''',
+            )+""",
         re.VERBOSE,
     )
     parse = classmethod(regex_parse)
@@ -274,10 +274,10 @@ class XMLEntityPlaceable(Ph):
     iseditable = False
     istranslatable = False
     regex = re.compile(
-        r'''&(
+        r"""&(
         ([a-zA-Z][a-zA-Z0-9\.-]*)            #named entity
          |([#](\d{1,5}|x[a-fA-F0-9]{1,5})+)  #numeric entity
-        );''',
+        );""",
         re.VERBOSE,
     )
     parse = classmethod(regex_parse)
@@ -287,7 +287,7 @@ class CapsPlaceable(Ph):
     """Placeable handling long all-caps strings."""
 
     iseditable = True
-    regex = re.compile(r'\b[A-Z][A-Z_/\-:*0-9]{2,}\b[+]?')
+    regex = re.compile(r"\b[A-Z][A-Z_/\-:*0-9]{2,}\b[+]?")
     parse = classmethod(regex_parse)
 
 
@@ -296,13 +296,13 @@ class CamelCasePlaceable(Ph):
 
     iseditable = True
     regex = re.compile(
-        r'''(?x)
+        r"""(?x)
             \b(
                [a-z]+[A-Z]|         #Not that strict if we start with lower (iPod)
                [A-Z]+[a-z]+[A-Z]|   #One capital at the start is not enough (OpenTran)
                [A-Z]{2,}[a-z]       #Two capitals at the start is enough (KBabel)
             )[a-zA-Z0-9]*           #Let's allow any final lower/upper/digit
-            \b'''
+            \b"""
     )
     parse = classmethod(regex_parse)
 
@@ -329,14 +329,14 @@ class XMLTagPlaceable(Ph):
     iseditable = True
     istranslatable = False
     regex = re.compile(
-        r'''
+        r"""
         <                         # start of opening tag
         ([\w.:]+)                 # tag name, possibly namespaced
         (\s([\w.:]+=              # space and attribute name followed by =
             ((".*?")|('.*?'))     # attribute value, single or double quoted
         )?)*/?>                   # end of opening tag, possibly self closing
         |</([\w.]+)>              # or a closing tag
-        ''',
+        """,
         re.VERBOSE,
     )
     parse = classmethod(regex_parse)
@@ -347,11 +347,11 @@ class OptionPlaceable(Ph):
 
     istranslatable = False
     regex = re.compile(
-        r'''(?x)
+        r"""(?x)
                       \B(             # Empty string at the start of a non-word, ensures [space]-
                         -[a-zA-Z]|    # Single letter options: -i, -I
                         --[a-z\-]+    # Word options: --help
-                      )\b'''
+                      )\b"""
     )
     # regex = re.compile(r'''(-[a-zA-Z]|--[-a-z]+)\b''')
     parse = classmethod(regex_parse)

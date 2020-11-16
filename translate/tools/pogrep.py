@@ -40,7 +40,7 @@ class GrepMatch:
     """Just a small data structure that represents a search match."""
 
     # INITIALIZERS #
-    def __init__(self, unit, part='target', part_n=0, start=0, end=0):
+    def __init__(self, unit, part="target", part_n=0, start=0, end=0):
         self.unit = unit
         self.part = part
         self.part_n = part_n
@@ -49,25 +49,25 @@ class GrepMatch:
 
     # ACCESSORS #
     def get_getter(self):
-        if self.part == 'target':
+        if self.part == "target":
             if self.unit.hasplural():
                 getter = lambda: self.unit.target.strings[self.part_n]
             else:
                 getter = lambda: self.unit.target
             return getter
-        elif self.part == 'source':
+        elif self.part == "source":
             if self.unit.hasplural():
                 getter = lambda: self.unit.source.strings[self.part_n]
             else:
                 getter = lambda: self.unit.source
             return getter
-        elif self.part == 'notes':
+        elif self.part == "notes":
 
             def getter():
                 return self.unit.getnotes()[self.part_n]
 
             return getter
-        elif self.part == 'locations':
+        elif self.part == "locations":
 
             def getter():
                 return self.unit.getlocations()[self.part_n]
@@ -75,7 +75,7 @@ class GrepMatch:
             return getter
 
     def get_setter(self):
-        if self.part == 'target':
+        if self.part == "target":
             if self.unit.hasplural():
 
                 def setter(value):
@@ -151,7 +151,7 @@ class GrepFilter:
         invertmatch=False,
         keeptranslations=False,
         accelchar=None,
-        encoding='utf-8',
+        encoding="utf-8",
         max_matches=0,
     ):
         """builds a checkfilter using the given checker"""
@@ -163,10 +163,10 @@ class GrepFilter:
         if searchparts:
             # For now we still support the old terminology, except for the old 'source'
             # which has a new meaning now.
-            self.search_source = ('source' in searchparts) or ('msgid' in searchparts)
-            self.search_target = ('target' in searchparts) or ('msgstr' in searchparts)
-            self.search_notes = ('notes' in searchparts) or ('comment' in searchparts)
-            self.search_locations = 'locations' in searchparts
+            self.search_source = ("source" in searchparts) or ("msgid" in searchparts)
+            self.search_target = ("target" in searchparts) or ("msgstr" in searchparts)
+            self.search_notes = ("notes" in searchparts) or ("comment" in searchparts)
+            self.search_locations = "locations" in searchparts
         else:
             self.search_source = True
             self.search_target = True
@@ -258,7 +258,7 @@ class GrepFilter:
             flags |= re.IGNORECASE
         if not self.useregexp:
             searchstring = re.escape(searchstring)
-        self.re_search = re.compile('(%s)' % (searchstring), flags)
+        self.re_search = re.compile("(%s)" % (searchstring), flags)
 
         matches = []
         indexes = []
@@ -271,21 +271,21 @@ class GrepFilter:
                     targets = unit.target.strings
                 else:
                     targets = [unit.target]
-                matches.extend(find_matches(unit, 'target', targets, self.re_search))
+                matches.extend(find_matches(unit, "target", targets, self.re_search))
             if self.search_source:
                 if unit.hasplural():
                     sources = unit.source.strings
                 else:
                     sources = [unit.source]
-                matches.extend(find_matches(unit, 'source', sources, self.re_search))
+                matches.extend(find_matches(unit, "source", sources, self.re_search))
             if self.search_notes:
                 matches.extend(
-                    find_matches(unit, 'notes', unit.getnotes(), self.re_search)
+                    find_matches(unit, "notes", unit.getnotes(), self.re_search)
                 )
 
             if self.search_locations:
                 matches.extend(
-                    find_matches(unit, 'locations', unit.getlocations(), self.re_search)
+                    find_matches(unit, "locations", unit.getlocations(), self.re_search)
                 )
 
             # A search for a single letter or an all-inclusive regular
@@ -442,7 +442,7 @@ def cmdlineparser():
         help="always extract units with translations",
     )
     parser.set_usage()
-    parser.passthrough.append('checkfilter')
+    parser.passthrough.append("checkfilter")
     parser.description = __doc__
     return parser
 
@@ -452,5 +452,5 @@ def main():
     parser.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

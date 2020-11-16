@@ -305,7 +305,7 @@ def entitydecode(source, name2codepoint):
             if char == ";":
                 if len(possibleentity) > 0 and possibleentity in name2codepoint:
                     entchar = chr(name2codepoint[possibleentity])
-                    if entchar == '&' and _has_entity_end(source[i + 1 :]):
+                    if entchar == "&" and _has_entity_end(source[i + 1 :]):
                         output += "&" + possibleentity + ";"
                     else:
                         output += entchar
@@ -376,7 +376,7 @@ def java_utf8_properties_encode(source):
 def xwiki_properties_encode(source, encoding):
     if re.search(r"\{[0-9]+\}", source):
         source = source.replace("'", "''")
-    if encoding == 'utf-8':
+    if encoding == "utf-8":
         return java_utf8_properties_encode(source)
     else:
         return javapropertiesencode(source)
@@ -462,7 +462,7 @@ def propertiesdecode(source):
 
     while s < len(source):
         c = source[s]
-        if c != '\\':
+        if c != "\\":
             output += c
             s += 1
             continue
@@ -474,7 +474,7 @@ def propertiesdecode(source):
             continue
         c = source[s]
         s += 1
-        if c == '\n':
+        if c == "\n":
             pass
         # propertyescapes lookups
         elif c in propertyescapes:
@@ -492,9 +492,9 @@ def propertiesdecode(source):
                 if c.isdigit() or c in "abcdef":
                     x <<= 4
                     if c.isdigit():
-                        x += ord(c) - ord('0')
+                        x += ord(c) - ord("0")
                     else:
-                        x += ord(c) - ord('a') + 10
+                        x += ord(c) - ord("a") + 10
                 else:
                     digits = digit
                     break

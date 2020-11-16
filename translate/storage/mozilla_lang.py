@@ -62,7 +62,7 @@ class LangUnit(base.TranslationUnit):
             notes = (self.eol).join(
                 [
                     ("#%s" % note if note.startswith("#") else "# %s" % note)
-                    for note in self.getnotes('developer').split("\n")
+                    for note in self.getnotes("developer").split("\n")
                 ]
             )
             return "%s%s;%s%s%s" % (notes, self.eol, self.source, self.eol, target)
@@ -81,7 +81,7 @@ class LangStore(txt.TxtFile):
     UnitClass = LangUnit
 
     Name = "Mozilla .lang"
-    Extensions = ['lang']
+    Extensions = ["lang"]
 
     def __init__(self, inputfile=None, mark_active=False, **kwargs):
         self.is_active = False
@@ -108,8 +108,8 @@ class LangStore(txt.TxtFile):
 
             header_meta_data = (
                 line.startswith("## ")
-                and not line.startswith('## TAG')
-                and not line.startswith('## MAX_LENGTH')
+                and not line.startswith("## TAG")
+                and not line.startswith("## MAX_LENGTH")
             )
             if header_meta_data:
                 self._headers.append(line)
@@ -131,35 +131,35 @@ class LangStore(txt.TxtFile):
                 source_unit = None
                 continue
 
-            is_comment = line.startswith('#') and (
+            is_comment = line.startswith("#") and (
                 not line.startswith("##")
-                or line.startswith('## TAG')
-                or line.startswith('## MAX_LENGTH')
+                or line.startswith("## TAG")
+                or line.startswith("## MAX_LENGTH")
             )
             if is_comment:
                 # Read comments, *including* meta tags (e.g. '## TAG')
                 comment += line[1:].strip() + "\n"
 
-            if line.startswith(';'):
+            if line.startswith(";"):
                 source_unit = self.addsourceunit(line[1:])
                 source_unit.eol = self.eol
                 source_unit.addlocation(
                     "%s:%d" % (self.filename[len(self.location_root) :], lineoffset + 1)
                 )
                 if comment is not None:
-                    source_unit.addnote(comment[:-1], 'developer')
+                    source_unit.addnote(comment[:-1], "developer")
                     comment = ""
 
     def serialize(self, out):
-        eol = self.eol.encode('utf-8')
+        eol = self.eol.encode("utf-8")
         if self.is_active or self.mark_active:
             out.write(b"## active ##")
             out.write(eol)
         for header in self._headers:
-            out.write(str(header).encode('utf-8'))
+            out.write(str(header).encode("utf-8"))
             out.write(eol)
         for unit in self.units:
-            out.write(str(unit).encode('utf-8'))
+            out.write(str(unit).encode("utf-8"))
             out.write(eol * 3)
 
     def getlangheaders(self):

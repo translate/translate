@@ -49,8 +49,8 @@ def method_not_allowed(environ, start_response):
     start_response(
         "405 Method Not Allowed",
         [
-            ('Allow', ', '.join(environ['selector.methods'])),
-            ('Content-Type', 'text/plain'),
+            ("Allow", ", ".join(environ["selector.methods"])),
+            ("Content-Type", "text/plain"),
         ],
     )
     return [
@@ -62,7 +62,7 @@ def method_not_allowed(environ, start_response):
 
 def not_found(environ, start_response):
     """Respond with a 404."""
-    start_response("404 Not Found", [('Content-Type', 'text/plain')])
+    start_response("404 Not Found", [("Content-Type", "text/plain")])
     return [
         "404 Not Found\n\n"
         "The server has not found anything matching the Request-URI."
@@ -154,28 +154,28 @@ class Selector:
     def __call__(self, environ, start_response):
         """Delegate request to the appropriate WSGI app."""
         app, svars, methods, matched = self.select(
-            environ['PATH_INFO'], environ['REQUEST_METHOD']
+            environ["PATH_INFO"], environ["REQUEST_METHOD"]
         )
         unnamed, named = [], {}
         for k, v in svars.items():
-            if k.startswith('__pos'):
+            if k.startswith("__pos"):
                 k = k[5:]
             named[k] = v
-        environ['selector.vars'] = dict(named)
+        environ["selector.vars"] = dict(named)
         for k in named.keys():
             if k.isdigit():
                 unnamed.append((k, named.pop(k)))
         unnamed.sort()
         unnamed = [v for k, v in unnamed]
-        cur_unnamed, cur_named = environ.get('wsgiorg.routing_args', ([], {}))
+        cur_unnamed, cur_named = environ.get("wsgiorg.routing_args", ([], {}))
         unnamed = cur_unnamed + unnamed
         named.update(cur_named)
-        environ['wsgiorg.routing_args'] = unnamed, named
-        environ['selector.methods'] = methods
-        environ.setdefault('selector.matches', []).append(matched)
+        environ["wsgiorg.routing_args"] = unnamed, named
+        environ["selector.methods"] = methods
+        environ.setdefault("selector.matches", []).append(matched)
         if self.consume_path:
-            environ['SCRIPT_NAME'] = environ.get('SCRIPT_NAME', '') + matched
-            environ['PATH_INFO'] = environ['PATH_INFO'][len(matched) :]
+            environ["SCRIPT_NAME"] = environ.get("SCRIPT_NAME", "") + matched
+            environ["PATH_INFO"] = environ["PATH_INFO"][len(matched) :]
         return app(environ, start_response)
 
     def select(self, path, method):
@@ -191,16 +191,16 @@ class Selector:
                         methods,
                         match.group(0),
                     )
-                elif '_ANY_' in method_dict:
+                elif "_ANY_" in method_dict:
                     return (
-                        method_dict['_ANY_'],
+                        method_dict["_ANY_"],
                         match.groupdict(),
                         methods,
                         match.group(0),
                     )
                 else:
-                    return self.status405, {}, methods, ''
-        return self.status404, {}, [], ''
+                    return self.status405, {}, methods, ""
+        return self.status404, {}, [], ""
 
     def slurp_file(self, the_file, prefix=None, parser=None, wrap=None):
         """Read mappings from a simple text file.
@@ -266,34 +266,34 @@ class Selector:
 
         This method is for the use of selector.slurp_file.
         """
-        if not line.strip() or line.strip()[0] == '#':
+        if not line.strip() or line.strip()[0] == "#":
             pass
-        elif not line.strip() or line.strip()[0] == '@':
+        elif not line.strip() or line.strip()[0] == "@":
             #
             if path and methods:
                 self.add(path, methods)
             path = line.strip()
             methods = {}
             #
-            parts = line.strip()[1:].split(' ', 1)
+            parts = line.strip()[1:].split(" ", 1)
             if len(parts) == 2:
                 directive, rest = parts
             else:
                 directive = parts[0]
-                rest = ''
-            if directive == 'prefix':
+                rest = ""
+            if directive == "prefix":
                 self.prefix = rest.strip()
-            if directive == 'parser':
+            if directive == "parser":
                 self.parser = resolve(rest.strip())
-            if directive == 'wrap':
+            if directive == "wrap":
                 self.wrap = resolve(rest.strip())
-        elif line and line[0] not in ' \t':
+        elif line and line[0] not in " \t":
             if path and methods:
                 self.add(path, methods)
             path = line.strip()
             methods = {}
         else:
-            meth, app = line.strip().split(' ', 1)
+            meth, app = line.strip().split(" ", 1)
             methods[meth.strip()] = resolve(app)
         return path, methods
 
@@ -326,18 +326,18 @@ class SimpleParser:
     and retrieving an individual entry. It depends, though.)
     """
 
-    start, end = '{}'
-    ostart, oend = '[]'
+    start, end = "{}"
+    ostart, oend = "[]"
     _patterns = {
-        'word': r'\w+',
-        'alpha': r'[a-zA-Z]+',
-        'digits': r'\d+',
-        'number': r'\d*.?\d+',
-        'chunk': r'[^/^.]+',
-        'segment': r'[^/]+',
-        'any': r'.+',
+        "word": r"\w+",
+        "alpha": r"[a-zA-Z]+",
+        "digits": r"\d+",
+        "number": r"\d*.?\d+",
+        "chunk": r"[^/^.]+",
+        "segment": r"[^/]+",
+        "any": r".+",
     }
-    default_pattern = 'chunk'
+    default_pattern = "chunk"
 
     def __init__(self, patterns=None):
         """Initialize with character class mappings."""
@@ -347,15 +347,15 @@ class SimpleParser:
 
     def lookup(self, name):
         """Return the replacement for the name found."""
-        if ':' in name:
-            name, pattern = name.split(':')
+        if ":" in name:
+            name, pattern = name.split(":")
             pattern = self.patterns[pattern]
         else:
             pattern = self.patterns[self.default_pattern]
-        if name == '':
-            name = '__pos%s' % self._pos
+        if name == "":
+            name = "__pos%s" % self._pos
             self._pos += 1
-        return '(?P<%s>%s)' % (name, pattern)
+        return "(?P<%s>%s)" % (name, pattern)
 
     def lastly(self, regex):
         """Process the result of __call__ right before it returns.
@@ -411,12 +411,12 @@ class SimpleParser:
             parts = [y for x in parts for y in x]
             parts[::2] = map(re.escape, parts[::2])
             parts[1::2] = map(self.lookup, parts[1::2])
-        return ''.join(parts)
+        return "".join(parts)
 
     def __call__(self, url_pattern):
         """Turn a path expression into regex via parse and lastly."""
         self._pos = 0
-        if url_pattern.endswith('|'):
+        if url_pattern.endswith("|"):
             return self.openended(self.parse(url_pattern[:-1]))
         else:
             return self.lastly(self.parse(url_pattern))
@@ -488,14 +488,14 @@ class Naked:
         If ``self._expose_all`` is True, always return True.
         Otherwise, look at obj._exposed.
         """
-        return self._expose_all or getattr(obj, '_exposed', False)
+        return self._expose_all or getattr(obj, "_exposed", False)
 
     def __call__(self, environ, start_response):
         """Dispatch to the method named by the next bit of PATH_INFO."""
         name = shift_path_info(
-            dict(SCRIPT_NAME=environ['SCRIPT_NAME'], PATH_INFO=environ['PATH_INFO'])
+            dict(SCRIPT_NAME=environ["SCRIPT_NAME"], PATH_INFO=environ["PATH_INFO"])
         )
-        callable = getattr(self, name or 'index', None)
+        callable = getattr(self, name or "index", None)
         if callable is not None and self._is_exposed(callable):
             shift_path_info(environ)
             return callable(environ, start_response)
@@ -510,8 +510,8 @@ class ByMethod:
 
     def __call__(self, environ, start_response):
         """Dispatch based on REQUEST_METHOD."""
-        environ['selector.methods'] = [m for m in dir(self) if not m.startswith('_')]
-        return getattr(self, environ['REQUEST_METHOD'], self._method_not_allowed)(
+        environ["selector.methods"] = [m for m in dir(self) if not m.startswith("_")]
+        return getattr(self, environ["REQUEST_METHOD"], self._method_not_allowed)(
             environ, start_response
         )
 
@@ -527,7 +527,7 @@ def pliant(func):
     """
 
     def wsgi_func(environ, start_response):
-        args, kwargs = environ.get('wsgiorg.routing_args', ([], {}))
+        args, kwargs = environ.get("wsgiorg.routing_args", ([], {}))
         args = list(args)
         args.insert(0, start_response)
         args.insert(0, environ)
@@ -548,7 +548,7 @@ def opliant(meth):
     """
 
     def wsgi_meth(self, environ, start_response):
-        args, kwargs = environ.get('wsgiorg.routing_args', ([], {}))
+        args, kwargs = environ.get("wsgiorg.routing_args", ([], {}))
         args = list(args)
         args.insert(0, start_response)
         args.insert(0, environ)

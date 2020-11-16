@@ -41,12 +41,12 @@ class TestPO2Ini:
 
     def _convert_to_string(self, *args, **kwargs):
         """Helper that converts to target format string without using files."""
-        return self._convert(*args, **kwargs)[1].getvalue().decode('utf-8')
+        return self._convert(*args, **kwargs)[1].getvalue().decode("utf-8")
 
     def test_convert_no_templates(self):
         """Check converter doesn't allow to pass no templates."""
         with raises(ValueError):
-            self._convert_to_string('')
+            self._convert_to_string("")
 
     def test_merging_simple(self):
         """check the simplest case of merging a translation"""

@@ -50,7 +50,7 @@ class tsunit(lisa.LISAunit):
     rootNode = "message"
     languageNode = "source"
     textNode = ""
-    namespace = ''
+    namespace = ""
     rich_parsers = general.parsers
 
     S_OBSOLETE = state.OBSOLETE
@@ -187,7 +187,7 @@ class tsunit(lisa.LISAunit):
             notenode = self.xmlelement.find(self.namespaced("translatorcomment"))
             if notenode is not None and notenode.text is not None:
                 comments.append(notenode.text)
-        return '\n'.join(comments)
+        return "\n".join(comments)
 
     def removenotes(self, origin=None):
         """Remove all the translator notes."""
@@ -276,18 +276,18 @@ class tsunit(lisa.LISAunit):
         commentnode = self.xmlelement.find(self.namespaced("comment"))
         if commentnode is not None and commentnode.text is not None:
             contexts.append(commentnode.text)
-        message_id = self.xmlelement.get('id')
+        message_id = self.xmlelement.get("id")
         if message_id is not None:
             contexts.append(message_id)
         contexts = filter(None, contexts)
-        return '\n'.join(contexts)
+        return "\n".join(contexts)
 
     def addlocation(self, location):
         if isinstance(location, bytes):
             location = location.decode("utf-8")
         newlocation = etree.SubElement(self.xmlelement, self.namespaced("location"))
         try:
-            filename, line = location.split(':', 1)
+            filename, line = location.split(":", 1)
         except ValueError:
             filename = location
             line = None
@@ -303,7 +303,7 @@ class tsunit(lisa.LISAunit):
             line = location_tag.get("line")
             if line:
                 if location:
-                    location += ':' + line
+                    location += ":" + line
                 else:
                     location = line
             if location:
@@ -355,11 +355,11 @@ class tsfile(lisa.LISAfile):
     rootNode = "TS"
     # We will switch out .body to fit with the context we are working on
     bodyNode = "context"
-    XMLskeleton = '''<!DOCTYPE TS>
+    XMLskeleton = """<!DOCTYPE TS>
 <TS>
 </TS>
-'''
-    namespace = ''
+"""
+    namespace = ""
 
     def __init__(self, *args, **kwargs):
         self._contextname = None
@@ -387,9 +387,9 @@ class tsfile(lisa.LISAfile):
         :return: ISO code e.g. af, fr, pt_BR
         :rtype: String
         """
-        lang = data.normalize_code(self.header.get('sourcelanguage', "en"))
-        if lang == 'en-us':
-            return 'en'
+        lang = data.normalize_code(self.header.get("sourcelanguage", "en"))
+        if lang == "en-us":
+            return "en"
         return lang
 
     def gettargetlanguage(self):
@@ -398,7 +398,7 @@ class tsfile(lisa.LISAfile):
         :return: ISO code e.g. af, fr, pt_BR
         :rtype: String
         """
-        return data.normalize_code(self.header.get('language'))
+        return data.normalize_code(self.header.get("language"))
 
     def settargetlanguage(self, targetlanguage):
         """Set the target language for this .ts file to *targetlanguage*.
@@ -407,7 +407,7 @@ class tsfile(lisa.LISAfile):
         :type targetlanguage: String
         """
         if targetlanguage:
-            self.header.set('language', targetlanguage)
+            self.header.set("language", targetlanguage)
 
     def _createcontext(self, contextname, comment=None):
         """Creates a context node with an optional comment"""
@@ -484,7 +484,7 @@ class tsfile(lisa.LISAfile):
     def serialize(self, out):
         """Write the XML document to a file."""
         root = self.document.getroot()
-        reindent(root, indent="    ", skip=['TS'])
+        reindent(root, indent="    ", skip=["TS"])
         doctype = self.document.docinfo.doctype
         # Iterate over empty tags without children and force empty text
         # This will prevent self-closing tags in pretty_print mode
@@ -494,7 +494,7 @@ class tsfile(lisa.LISAfile):
         ):
             e.text = ""
         # For conformance with Qt output, write XML declaration with double quotes
-        out.write(str('<?xml version="1.0" encoding="utf-8"?>\n').encode('utf-8'))
+        out.write(str('<?xml version="1.0" encoding="utf-8"?>\n').encode("utf-8"))
         # For conformance with Qt output, post-process etree.tostring output,
         # replacing ' with &apos; and " with &quot; in text elements
         treestring = etree.tostring(
@@ -502,18 +502,18 @@ class tsfile(lisa.LISAfile):
             doctype=doctype,
             pretty_print=True,
             xml_declaration=False,
-            encoding='utf-8',
+            encoding="utf-8",
         )
         pos = 0
         while pos >= 0:
-            nextpos = treestring.find(b'<', pos)
+            nextpos = treestring.find(b"<", pos)
             out.write(
                 treestring[pos:nextpos]
                 .replace(b"'", b"&apos;")
                 .replace(b'"', b"&quot;")
             )
             pos = nextpos
-            nextpos = treestring.find(b'>', pos)
+            nextpos = treestring.find(b">", pos)
             out.write(treestring[pos:nextpos])
             pos = nextpos
         out.write(treestring[pos:])

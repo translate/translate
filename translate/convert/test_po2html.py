@@ -12,18 +12,18 @@ class TestPO2Html:
         templatefile = BytesIO(htmltemplate.encode())
         assert po2html.converthtml(inputfile, outputfile, templatefile, includefuzzy)
         print(outputfile.getvalue())
-        return outputfile.getvalue().decode('utf-8')
+        return outputfile.getvalue().decode("utf-8")
 
     def test_simple(self):
         """simple po to html test"""
-        htmlsource = '<p>A sentence.</p>'
-        posource = '''#: html:3\nmsgid "A sentence."\nmsgstr "'n Sin."\n'''
-        htmlexpected = '''<p>'n Sin.</p>'''
+        htmlsource = "<p>A sentence.</p>"
+        posource = """#: html:3\nmsgid "A sentence."\nmsgstr "'n Sin."\n"""
+        htmlexpected = """<p>'n Sin.</p>"""
         assert htmlexpected in self.converthtml(posource, htmlsource)
 
     def test_linebreaks(self):
         """Test that a po file can be merged into a template with linebreaks in it."""
-        htmlsource = '''<html>
+        htmlsource = """<html>
 <head>
 </head>
 <body>
@@ -34,8 +34,8 @@ with indentation, and it consists of at least one sentence.
 </div>
 </body>
 </html>
-'''
-        posource = '''#: None:1
+"""
+        posource = """#: None:1
 msgid ""
 "A paragraph is a section in a piece of writing, usually highlighting a "
 "particular point or topic. It always begins on a new line and usually with "
@@ -44,66 +44,66 @@ msgstr ""
 "'n Paragraaf is 'n afdeling in 'n geskrewe stuk wat gewoonlik 'n spesifieke "
 "punt uitlig. Dit begin altyd op 'n nuwe lyn (gewoonlik met indentasie) en "
 "dit bestaan uit ten minste een sin."
-'''
-        htmlexpected = '''<body>
+"""
+        htmlexpected = """<body>
 <div>
 'n Paragraaf is 'n afdeling in 'n geskrewe stuk wat gewoonlik
 'n spesifieke punt uitlig. Dit begin altyd op 'n nuwe lyn
 (gewoonlik met indentasie) en dit bestaan uit ten minste een
 sin.
 </div>
-</body>'''
+</body>"""
         assert htmlexpected.replace("\n", " ") in self.converthtml(
             posource, htmlsource
         ).replace("\n", " ")
 
     def test_replace_substrings(self):
         """Should replace substrings correctly, issue #3416"""
-        htmlsource = '''<!DOCTYPE html><html><head><title>sub-strings substitution</title></head><body>
+        htmlsource = """<!DOCTYPE html><html><head><title>sub-strings substitution</title></head><body>
 <h2>This is heading 2</h2>
 <p>The heading says: <b>This is heading 2</b></p>
-</body></html>'''
+</body></html>"""
         posource = '#:html.body.h2:2-1\nmsgid "This is heading 2"\nmsgstr "Αυτή είναι μία Ετικέτα 2"\n\n#html.body.p:3-1\nmsgid "The heading says: <b>This is heading 2</b>"\nmsgstr "Η ετικέτα λέει: <b>Αυτή είναι μία Ετικέτα 2</b>"\n'
-        htmlexpected = '''<!DOCTYPE html><html><head><title>sub-strings substitution</title></head><body>
+        htmlexpected = """<!DOCTYPE html><html><head><title>sub-strings substitution</title></head><body>
 <h2>Αυτή είναι μία Ετικέτα 2</h2>
 <p>Η ετικέτα λέει: <b>Αυτή είναι μία Ετικέτα 2</b></p>
-</body></html>'''
+</body></html>"""
         assert htmlexpected in self.converthtml(posource, htmlsource)
 
     def test_attribute_outside_translatable_content(self):
         htmlsource = '<img alt="a picture"><p>A sentence.</p>'
-        posource = '''#: html:3\nmsgid "A sentence."\nmsgstr "'n Sin."\n#: html:1\nmsgid "a picture"\nmsgstr "n prentjie"\n'''
-        htmlexpected = '''<img alt="n prentjie"><p>'n Sin.</p>'''
+        posource = """#: html:3\nmsgid "A sentence."\nmsgstr "'n Sin."\n#: html:1\nmsgid "a picture"\nmsgstr "n prentjie"\n"""
+        htmlexpected = """<img alt="n prentjie"><p>'n Sin.</p>"""
         assert htmlexpected in self.converthtml(posource, htmlsource)
 
     def test_attribute_within_translatable_content_not_embedded(self):
         htmlsource = '<p><img alt="a picture">A sentence.</p>'
-        posource = '''#: html:3\nmsgid "A sentence."\nmsgstr "'n Sin."\n#: html:1\nmsgid "a picture"\nmsgstr "n prentjie"\n'''
-        htmlexpected = '''<p><img alt="n prentjie">'n Sin.</p>'''
+        posource = """#: html:3\nmsgid "A sentence."\nmsgstr "'n Sin."\n#: html:1\nmsgid "a picture"\nmsgstr "n prentjie"\n"""
+        htmlexpected = """<p><img alt="n prentjie">'n Sin.</p>"""
         assert htmlexpected in self.converthtml(posource, htmlsource)
 
     def test_attribute_embedded_within_translatable_content(self):
         htmlsource = '<p>A sentence<img alt="a picture">.</p>'
-        posource = '''#: html:3\nmsgid "A sentence<img alt="a picture">."\nmsgstr "'n Sin<img alt="n prentjie">."\n'''
-        htmlexpected = '''<p>'n Sin<img alt="n prentjie">.</p>'''
+        posource = """#: html:3\nmsgid "A sentence<img alt="a picture">."\nmsgstr "'n Sin<img alt="n prentjie">."\n"""
+        htmlexpected = """<p>'n Sin<img alt="n prentjie">.</p>"""
         assert htmlexpected in self.converthtml(posource, htmlsource)
 
     def test_attribute_without_value(self):
         htmlsource = '<ul><li><a href="logoColor.eps" download>EPS färg</a></li></ul>'
-        posource = '''#: html:3\nmsgid "EPS färg"\nmsgstr "EPS color"\n'''
-        htmlexpected = '''<li><a href="logoColor.eps" download>EPS color</a></li>'''
+        posource = """#: html:3\nmsgid "EPS färg"\nmsgstr "EPS color"\n"""
+        htmlexpected = """<li><a href="logoColor.eps" download>EPS color</a></li>"""
         assert htmlexpected in self.converthtml(posource, htmlsource)
 
     def test_entities(self):
         """Tests that entities are handled correctly"""
-        htmlsource = '<p>5 less than 6</p>'
+        htmlsource = "<p>5 less than 6</p>"
         posource = '#:html:3\nmsgid "5 less than 6"\nmsgstr "5 &lt; 6"\n'
-        htmlexpected = '<p>5 &lt; 6</p>'
+        htmlexpected = "<p>5 &lt; 6</p>"
         assert htmlexpected in self.converthtml(posource, htmlsource)
 
-        htmlsource = '<p>Fish &amp; chips</p>'
+        htmlsource = "<p>Fish &amp; chips</p>"
         posource = '#: html:3\nmsgid "Fish &amp; chips"\nmsgstr "Vis &amp; skyfies"\n'
-        htmlexpected = '<p>Vis &amp; skyfies</p>'
+        htmlexpected = "<p>Vis &amp; skyfies</p>"
         assert htmlexpected in self.converthtml(posource, htmlsource)
 
     def test_escapes(self):
@@ -115,15 +115,15 @@ sin.
 
     def test_states_translated(self):
         """Test that we use target when translated"""
-        htmlsource = '<div>aaa</div>'
+        htmlsource = "<div>aaa</div>"
         posource = 'msgid "aaa"\nmsgstr "bbb"\n'
-        htmltarget = '<div>bbb</div>'
+        htmltarget = "<div>bbb</div>"
         assert htmltarget in self.converthtml(posource, htmlsource)
         assert htmlsource not in self.converthtml(posource, htmlsource)
 
     def test_states_untranslated(self):
         """Test that we use source when a string is untranslated"""
-        htmlsource = '<div>aaa</div>'
+        htmlsource = "<div>aaa</div>"
         posource = 'msgid "aaa"\nmsgstr ""\n'
         htmltarget = htmlsource
         assert htmltarget in self.converthtml(posource, htmlsource)
@@ -133,9 +133,9 @@ sin.
 
         This fixes :issue:`3145`
         """
-        htmlsource = '<div>aaa</div>'
+        htmlsource = "<div>aaa</div>"
         posource = '#: html:3\n#, fuzzy\nmsgid "aaa"\nmsgstr "bbb"\n'
-        htmltarget = '<div>bbb</div>'
+        htmltarget = "<div>bbb</div>"
         # Don't use fuzzies
         assert htmltarget not in self.converthtml(
             posource, htmlsource, includefuzzy=False

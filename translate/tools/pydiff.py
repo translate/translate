@@ -40,7 +40,7 @@ def main():
         "--ignore-case",
         default=False,
         action="store_true",
-        help='Ignore case differences in file contents.',
+        help="Ignore case differences in file contents.",
     )
     parser.add_argument(
         "-U",
@@ -49,34 +49,34 @@ def main():
         metavar="NUM",
         default=3,
         dest="unified_lines",
-        help='Output NUM (default %(default)s) lines of unified context',
+        help="Output NUM (default %(default)s) lines of unified context",
     )
     parser.add_argument(
         "-r",
         "--recursive",
         default=False,
         action="store_true",
-        help='Recursively compare any subdirectories found.',
+        help="Recursively compare any subdirectories found.",
     )
     parser.add_argument(
         "-N",
         "--new-file",
         default=False,
         action="store_true",
-        help='Treat absent files as empty.',
+        help="Treat absent files as empty.",
     )
     parser.add_argument(
         "--unidirectional-new-file",
         default=False,
         action="store_true",
-        help='Treat absent first files as empty.',
+        help="Treat absent first files as empty.",
     )
     parser.add_argument(
         "-s",
         "--report-identical-files",
         default=False,
         action="store_true",
-        help='Report when two files are the same.',
+        help="Report when two files are the same.",
     )
     parser.add_argument(
         "-x",
@@ -84,7 +84,7 @@ def main():
         default=["CVS", "*.po~"],
         action="append",
         metavar="PAT",
-        help='Exclude files that match PAT.',
+        help="Exclude files that match PAT.",
     )
     # our own options
     parser.add_argument(
@@ -92,28 +92,28 @@ def main():
         type=str,
         default=None,
         metavar="TEXT",
-        help='Only show changes where fromfile contains TEXT',
+        help="Only show changes where fromfile contains TEXT",
     )
     parser.add_argument(
         "--tocontains",
         type=str,
         default=None,
         metavar="TEXT",
-        help='Only show changes where tofile contains TEXT',
+        help="Only show changes where tofile contains TEXT",
     )
     parser.add_argument(
         "--contains",
         type=str,
         default=None,
         metavar="TEXT",
-        help='Only show changes where fromfile or tofile contains TEXT',
+        help="Only show changes where fromfile or tofile contains TEXT",
     )
     parser.add_argument(
         "-I",
         "--ignore-case-contains",
         default=False,
         action="store_true",
-        help='Ignore case differences when matching any of the changes',
+        help="Ignore case differences when matching any of the changes",
     )
     parser.add_argument(
         "--accelerator",
@@ -230,7 +230,7 @@ class FileDiffer:
         """writes the actual diff to the given file"""
         validfiles = True
         if os.path.exists(self.fromfile):
-            with open(self.fromfile, 'U') as fh:
+            with open(self.fromfile, "U") as fh:
                 self.from_lines = fh.readlines()
             fromfiledate = os.stat(self.fromfile).st_mtime
         elif self.fromfile == "-":
@@ -243,7 +243,7 @@ class FileDiffer:
             outfile.write("%s: No such file or directory\n" % self.fromfile)
             validfiles = False
         if os.path.exists(self.tofile):
-            with open(self.tofile, 'U') as fh:
+            with open(self.tofile, "U") as fh:
                 self.to_lines = fh.readlines()
             tofiledate = os.stat(self.tofile).st_mtime
         elif self.tofile == "-":
@@ -267,8 +267,8 @@ class FileDiffer:
         matcher = difflib.SequenceMatcher(None, compare_from_lines, compare_to_lines)
         groups = matcher.get_grouped_opcodes(self.options.unified_lines)
         started = False
-        fromstring = '--- %s\t%s%s' % (self.fromfile, fromfiledate, lineterm)
-        tostring = '+++ %s\t%s%s' % (self.tofile, tofiledate, lineterm)
+        fromstring = "--- %s\t%s%s" % (self.fromfile, fromfiledate, lineterm)
+        tostring = "+++ %s\t%s%s" % (self.tofile, tofiledate, lineterm)
 
         for group in groups:
             hunk = "".join([line for line in self.unified_diff(group)])
@@ -342,16 +342,16 @@ class FileDiffer:
         i1, i2, j1, j2 = group[0][1], group[-1][2], group[0][3], group[-1][4]
         yield "@@ -%d,%d +%d,%d @@%s" % (i1 + 1, i2 - i1, j1 + 1, j2 - j1, lineterm)
         for tag, i1, i2, j1, j2 in group:
-            if tag == 'equal':
+            if tag == "equal":
                 for line in self.from_lines[i1:i2]:
-                    yield ' ' + line
+                    yield " " + line
                 continue
-            if tag == 'replace' or tag == 'delete':
+            if tag == "replace" or tag == "delete":
                 for line in self.from_lines[i1:i2]:
-                    yield '-' + line
-            if tag == 'replace' or tag == 'insert':
+                    yield "-" + line
+            if tag == "replace" or tag == "insert":
                 for line in self.to_lines[j1:j2]:
-                    yield '+' + line
+                    yield "+" + line
 
 
 if __name__ == "__main__":

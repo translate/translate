@@ -42,71 +42,71 @@ class TestFlatXML2PO:
 
     def test_defaults(self):
         """Test a conversion with default values."""
-        xmlstring = '''<root>
+        xmlstring = """<root>
             <str key="one">One</str>
             <str key="two">Two</str>
         </root>
-        '''
+        """
         actual = self._convert_to_store(xmlstring)
         self._do_assert_store(actual)
 
     def test_root_name(self):
         """Test a conversion with different root name."""
-        xmlstring = '''<strings>
+        xmlstring = """<strings>
             <str key="one">One</str>
             <str key="two">Two</str>
         </strings>
-        '''
+        """
         actual = self._convert_to_store(xmlstring, root="strings")
         self._do_assert_store(actual)
 
     def test_value_name(self):
         """Test a conversion with different value name."""
-        xmlstring = '''<root>
+        xmlstring = """<root>
             <entry key="one">One</entry>
             <entry key="two">Two</entry>
         </root>
-        '''
+        """
         actual = self._convert_to_store(xmlstring, value="entry")
         self._do_assert_store(actual)
 
     def test_key(self):
         """Test a conversion with different key name."""
-        xmlstring = '''<root>
+        xmlstring = """<root>
             <str name="one">One</str>
             <str name="two">Two</str>
         </root>
-        '''
+        """
         actual = self._convert_to_store(xmlstring, key="name")
         self._do_assert_store(actual)
 
     def test_default_namespace(self):
         """Test a conversion with a default namespace."""
-        xmlstring = '''<root xmlns="urn:tt:test">
+        xmlstring = """<root xmlns="urn:tt:test">
             <str key="one">One</str>
             <str key="two">Two</str>
         </root>
-        '''
+        """
         actual = self._convert_to_store(xmlstring, ns="urn:tt:test")
         self._do_assert_store(actual)
 
     def test_namespace_prefix(self):
         """Test a conversion with a namespace prefix."""
-        xmlstring = '''<t:root xmlns:t="urn:tt:test">
+        xmlstring = """<t:root xmlns:t="urn:tt:test">
             <t:str key="one">One</t:str>
             <t:str key="two">Two</t:str>
         </t:root>
-        '''
+        """
         actual = self._convert_to_store(xmlstring, ns="urn:tt:test")
         self._do_assert_store(actual)
 
     def test_all_parameters(self):
         """Test a conversion with all parameters."""
-        xmlstring = '''<fancy xmlns="urn:tt:test">
+        xmlstring = """<fancy xmlns="urn:tt:test">
             <stuff dude="one">One</stuff>
             <stuff dude="two">Two</stuff>
         </fancy>
-        '''
+        """
         actual = self._convert_to_store(
             xmlstring, root="fancy", value="stuff", key="dude", ns="urn:tt:test"
         )
@@ -118,7 +118,7 @@ class TestFlatXML2PO:
         This must not trigger the element name validation
         or cause other issues. An empty store is expected.
         """
-        xmlstring = '<root/>'
+        xmlstring = "<root/>"
         actual = self._convert_to_store(xmlstring)
         assert actual
         assert actual.units[0].isheader()

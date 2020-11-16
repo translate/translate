@@ -71,14 +71,14 @@ class TestConvertCommand:
     def create_testfile(self, filename, contents):
         """creates the given file in the testdirectory with the given contents"""
         if isinstance(contents, str):
-            contents = contents.encode('utf-8')
+            contents = contents.encode("utf-8")
         testfile = self.open_testfile(filename, "wb")
         testfile.write(contents)
         testfile.close()
 
     def read_testfile(self, filename):
         """reads the given file in the testdirectory and returns the contents"""
-        with open(self.get_testfilename(filename), 'rb') as testfile:
+        with open(self.get_testfilename(filename), "rb") as testfile:
             content = testfile.read()
         return content
 
@@ -100,7 +100,7 @@ class TestConvertCommand:
             self.run_command(help=True)
         help_string, err = capsys.readouterr()
         # normalize newlines
-        help_string = help_string.replace('\r\n', '\n').replace('\r', '\n')
+        help_string = help_string.replace("\r\n", "\n").replace("\r", "\n")
         convertsummary = self.convertmodule.__doc__.split("\n")[0]
         # the convertsummary might be wrapped. this will probably unwrap it
         assert convertsummary in help_string.replace("\n", " ")

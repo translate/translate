@@ -30,30 +30,30 @@ from translate import __doc__, __version__
 try:
     from sphinx.setup_command import BuildDoc
 
-    cmdclass = {'build_sphinx': BuildDoc}
+    cmdclass = {"build_sphinx": BuildDoc}
 except ImportError:
     cmdclass = {}
 
 
-PRETTY_NAME = 'Translate Toolkit'
+PRETTY_NAME = "Translate Toolkit"
 translateversion = __version__.sver
 
 packagesdir = get_python_lib()
-sitepackages = packagesdir.replace(sys.prefix + os.sep, '')
+sitepackages = packagesdir.replace(sys.prefix + os.sep, "")
 
 infofiles = [
     (
-        join(sitepackages, 'translate'),
-        [filename for filename in ('COPYING', 'README.rst')],
+        join(sitepackages, "translate"),
+        [filename for filename in ("COPYING", "README.rst")],
     )
 ]
-initfiles = [(join(sitepackages, 'translate'), [join('translate', '__init__.py')])]
+initfiles = [(join(sitepackages, "translate"), [join("translate", "__init__.py")])]
 testfiles = [
     (
-        join(sitepackages, 'translate', 'convert'),
+        join(sitepackages, "translate", "convert"),
         [
-            join('translate', 'convert', 'test.odt'),
-            join('translate', 'convert', 'test.idml'),
+            join("translate", "convert", "test.odt"),
+            join("translate", "convert", "test.idml"),
         ],
     )
 ]
@@ -76,95 +76,95 @@ packages = ["translate"]
 # This builds console scripts list. More detail please see:
 # http://python-packaging.readthedocs.org/en/latest/command-line-scripts.html#the-console-scripts-entry-point
 translatescripts = [
-    '{name}={entry}'.format(name=name, entry=entry)
+    "{name}={entry}".format(name=name, entry=entry)
     for name, entry in [
-        ('csv2po', 'translate.convert.csv2po:main'),
-        ('csv2tbx', 'translate.convert.csv2tbx:main'),
-        ('tbx2po', 'translate.convert.tbx2po:main'),
-        ('flatxml2po', 'translate.convert.flatxml2po:main'),
-        ('html2po', 'translate.convert.html2po:main'),
-        ('ical2po', 'translate.convert.ical2po:main'),
-        ('idml2po', 'translate.convert.idml2po:main'),
-        ('ini2po', 'translate.convert.ini2po:main'),
-        ('json2po', 'translate.convert.json2po:main'),
-        ('moz2po', 'translate.convert.moz2po:main'),
-        ('mozlang2po', 'translate.convert.mozlang2po:main'),
-        ('odf2xliff', 'translate.convert.odf2xliff:main'),
-        ('oo2po', 'translate.convert.oo2po:main'),
-        ('oo2xliff', 'translate.convert.oo2xliff:main'),
-        ('php2po', 'translate.convert.php2po:main'),
-        ('po2csv', 'translate.convert.po2csv:main'),
-        ('po2flatxml', 'translate.convert.po2flatxml:main'),
-        ('po2html', 'translate.convert.po2html:main'),
-        ('po2ical', 'translate.convert.po2ical:main'),
-        ('po2idml', 'translate.convert.po2idml:main'),
-        ('po2ini', 'translate.convert.po2ini:main'),
-        ('po2json', 'translate.convert.po2json:main'),
-        ('po2moz', 'translate.convert.po2moz:main'),
-        ('po2mozlang', 'translate.convert.po2mozlang:main'),
-        ('po2oo', 'translate.convert.po2oo:main'),
-        ('po2php', 'translate.convert.po2php:main'),
-        ('po2prop', 'translate.convert.po2prop:main'),
-        ('po2rc', 'translate.convert.po2rc:main'),
-        ('po2resx', 'translate.convert.po2resx:main'),
-        ('po2sub', 'translate.convert.po2sub:main'),
-        ('po2symb', 'translate.convert.po2symb:main'),
-        ('po2tiki', 'translate.convert.po2tiki:main'),
-        ('po2tmx', 'translate.convert.po2tmx:main'),
-        ('po2ts', 'translate.convert.po2ts:main'),
-        ('po2txt', 'translate.convert.po2txt:main'),
-        ('po2web2py', 'translate.convert.po2web2py:main'),
-        ('po2wordfast', 'translate.convert.po2wordfast:main'),
-        ('po2xliff', 'translate.convert.po2xliff:main'),
-        ('po2yaml', 'translate.convert.po2yaml:main'),
-        ('pot2po', 'translate.convert.pot2po:main'),
-        ('prop2po', 'translate.convert.prop2po:main'),
-        ('rc2po', 'translate.convert.rc2po:main'),
-        ('resx2po', 'translate.convert.resx2po:main'),
-        ('sub2po', 'translate.convert.sub2po:main'),
-        ('symb2po', 'translate.convert.symb2po:main'),
-        ('tiki2po', 'translate.convert.tiki2po:main'),
-        ('ts2po', 'translate.convert.ts2po:main'),
-        ('txt2po', 'translate.convert.txt2po:main'),
-        ('web2py2po', 'translate.convert.web2py2po:main'),
-        ('xliff2odf', 'translate.convert.xliff2odf:main'),
-        ('xliff2oo', 'translate.convert.xliff2oo:main'),
-        ('xliff2po', 'translate.convert.xliff2po:main'),
-        ('yaml2po', 'translate.convert.yaml2po:main'),
-        ('pofilter', 'translate.filters.pofilter:main'),
-        ('tmserver', 'translate.services.tmserver:main'),
-        ('build_tmdb', 'translate.tools.build_tmdb:main'),
-        ('phppo2pypo', 'translate.tools.phppo2pypo:main'),
-        ('poclean', 'translate.tools.poclean:main'),
-        ('pocompile', 'translate.tools.pocompile:main'),
-        ('poconflicts', 'translate.tools.poconflicts:main'),
-        ('pocount', 'translate.tools.pocount:main'),
-        ('podebug', 'translate.tools.podebug:main'),
-        ('pogrep', 'translate.tools.pogrep:main'),
-        ('pomerge', 'translate.tools.pomerge:main'),
-        ('porestructure', 'translate.tools.porestructure:main'),
-        ('posegment', 'translate.tools.posegment:main'),
-        ('poswap', 'translate.tools.poswap:main'),
-        ('poterminology', 'translate.tools.poterminology:main'),
-        ('pretranslate', 'translate.tools.pretranslate:main'),
-        ('pydiff', 'translate.tools.pydiff:main'),
-        ('pypo2phppo', 'translate.tools.pypo2phppo:main'),
+        ("csv2po", "translate.convert.csv2po:main"),
+        ("csv2tbx", "translate.convert.csv2tbx:main"),
+        ("tbx2po", "translate.convert.tbx2po:main"),
+        ("flatxml2po", "translate.convert.flatxml2po:main"),
+        ("html2po", "translate.convert.html2po:main"),
+        ("ical2po", "translate.convert.ical2po:main"),
+        ("idml2po", "translate.convert.idml2po:main"),
+        ("ini2po", "translate.convert.ini2po:main"),
+        ("json2po", "translate.convert.json2po:main"),
+        ("moz2po", "translate.convert.moz2po:main"),
+        ("mozlang2po", "translate.convert.mozlang2po:main"),
+        ("odf2xliff", "translate.convert.odf2xliff:main"),
+        ("oo2po", "translate.convert.oo2po:main"),
+        ("oo2xliff", "translate.convert.oo2xliff:main"),
+        ("php2po", "translate.convert.php2po:main"),
+        ("po2csv", "translate.convert.po2csv:main"),
+        ("po2flatxml", "translate.convert.po2flatxml:main"),
+        ("po2html", "translate.convert.po2html:main"),
+        ("po2ical", "translate.convert.po2ical:main"),
+        ("po2idml", "translate.convert.po2idml:main"),
+        ("po2ini", "translate.convert.po2ini:main"),
+        ("po2json", "translate.convert.po2json:main"),
+        ("po2moz", "translate.convert.po2moz:main"),
+        ("po2mozlang", "translate.convert.po2mozlang:main"),
+        ("po2oo", "translate.convert.po2oo:main"),
+        ("po2php", "translate.convert.po2php:main"),
+        ("po2prop", "translate.convert.po2prop:main"),
+        ("po2rc", "translate.convert.po2rc:main"),
+        ("po2resx", "translate.convert.po2resx:main"),
+        ("po2sub", "translate.convert.po2sub:main"),
+        ("po2symb", "translate.convert.po2symb:main"),
+        ("po2tiki", "translate.convert.po2tiki:main"),
+        ("po2tmx", "translate.convert.po2tmx:main"),
+        ("po2ts", "translate.convert.po2ts:main"),
+        ("po2txt", "translate.convert.po2txt:main"),
+        ("po2web2py", "translate.convert.po2web2py:main"),
+        ("po2wordfast", "translate.convert.po2wordfast:main"),
+        ("po2xliff", "translate.convert.po2xliff:main"),
+        ("po2yaml", "translate.convert.po2yaml:main"),
+        ("pot2po", "translate.convert.pot2po:main"),
+        ("prop2po", "translate.convert.prop2po:main"),
+        ("rc2po", "translate.convert.rc2po:main"),
+        ("resx2po", "translate.convert.resx2po:main"),
+        ("sub2po", "translate.convert.sub2po:main"),
+        ("symb2po", "translate.convert.symb2po:main"),
+        ("tiki2po", "translate.convert.tiki2po:main"),
+        ("ts2po", "translate.convert.ts2po:main"),
+        ("txt2po", "translate.convert.txt2po:main"),
+        ("web2py2po", "translate.convert.web2py2po:main"),
+        ("xliff2odf", "translate.convert.xliff2odf:main"),
+        ("xliff2oo", "translate.convert.xliff2oo:main"),
+        ("xliff2po", "translate.convert.xliff2po:main"),
+        ("yaml2po", "translate.convert.yaml2po:main"),
+        ("pofilter", "translate.filters.pofilter:main"),
+        ("tmserver", "translate.services.tmserver:main"),
+        ("build_tmdb", "translate.tools.build_tmdb:main"),
+        ("phppo2pypo", "translate.tools.phppo2pypo:main"),
+        ("poclean", "translate.tools.poclean:main"),
+        ("pocompile", "translate.tools.pocompile:main"),
+        ("poconflicts", "translate.tools.poconflicts:main"),
+        ("pocount", "translate.tools.pocount:main"),
+        ("podebug", "translate.tools.podebug:main"),
+        ("pogrep", "translate.tools.pogrep:main"),
+        ("pomerge", "translate.tools.pomerge:main"),
+        ("porestructure", "translate.tools.porestructure:main"),
+        ("posegment", "translate.tools.posegment:main"),
+        ("poswap", "translate.tools.poswap:main"),
+        ("poterminology", "translate.tools.poterminology:main"),
+        ("pretranslate", "translate.tools.pretranslate:main"),
+        ("pydiff", "translate.tools.pydiff:main"),
+        ("pypo2phppo", "translate.tools.pypo2phppo:main"),
     ]
 ]
 
 translatebashscripts = [
-    join(*('tools',) + script)
+    join(*("tools",) + script)
     for script in [
-        ('junitmsgfmt',),
-        ('mozilla', 'build_firefox.sh'),
-        ('mozilla', 'buildxpi.py'),
-        ('mozilla', 'get_moz_enUS.py'),
-        ('pocommentclean',),
-        ('pocompendium',),
-        ('pomigrate2',),
-        ('popuretext',),
-        ('poreencode',),
-        ('posplit',),
+        ("junitmsgfmt",),
+        ("mozilla", "build_firefox.sh"),
+        ("mozilla", "buildxpi.py"),
+        ("mozilla", "get_moz_enUS.py"),
+        ("pocommentclean",),
+        ("pocompendium",),
+        ("pomigrate2",),
+        ("popuretext",),
+        ("poreencode",),
+        ("posplit",),
     ]
 ]
 
@@ -374,9 +374,9 @@ else:
         description = (
             "create an executable installer for MS Windows using InnoSetup and py2exe"
         )
-        user_options = getattr(BuildCommand, 'user_options', []) + [
+        user_options = getattr(BuildCommand, "user_options", []) + [
             (
-                'install-script=',
+                "install-script=",
                 None,
                 "basename of installation script to be run after installation or before deinstallation",
             )
@@ -440,17 +440,17 @@ else:
             py2exeoptions["dist_dir"] = "translate-toolkit-%s" % version
             py2exeoptions["includes"] = ["lxml", "lxml._elementpath"]
             options = {"py2exe": py2exeoptions}
-            baseattrs['options'] = options
+            baseattrs["options"] = options
             if py2exe:
                 # http://www.py2exe.org/index.cgi/ListOfOptions
                 consolescripts = []
                 for entry_point in translatescripts:
-                    module = entry_point.partition('=')[2].rpartition(':')[0]
-                    script_path = module.replace('.', os.sep) + '.py'
+                    module = entry_point.partition("=")[2].rpartition(":")[0]
+                    script_path = module.replace(".", os.sep) + ".py"
                     consolescripts.append(script_path)
-                baseattrs['console'] = consolescripts
-                baseattrs['zipfile'] = "translate.zip"
-                baseattrs['cmdclass'] = cmdclass.update(
+                baseattrs["console"] = consolescripts
+                baseattrs["zipfile"] = "translate.zip"
+                baseattrs["cmdclass"] = cmdclass.update(
                     {
                         "py2exe": build_exe_map,
                         "innosetup": BuildInstaller,
@@ -488,16 +488,16 @@ def parse_requirements(file_name):
     Copied from cburgmer/pdfserver.
     """
     requirements = []
-    with open(file_name, 'r') as fh:
+    with open(file_name, "r") as fh:
         for line in fh:
             # Ignore comments, blank lines and included requirements files
-            if re.match(r'(\s*#)|(\s*$)|(-r .*$)', line):
+            if re.match(r"(\s*#)|(\s*$)|(-r .*$)", line):
                 continue
 
-            if re.match(r'\s*-e\s+', line):
-                requirements.append(re.sub(r'\s*-e\s+.*#egg=(.*)$', r'\1', line))
-            elif not re.match(r'\s*-f\s+', line):
-                requirements.append(line.rstrip('\n'))
+            if re.match(r"\s*-e\s+", line):
+                requirements.append(re.sub(r"\s*-e\s+.*#egg=(.*)$", r"\1", line))
+            elif not re.match(r"\s*-f\s+", line):
+                requirements.append(line.rstrip("\n"))
 
     return requirements
 
@@ -507,12 +507,12 @@ def getdatafiles():
 
     def listfiles(srcdir):
         return (
-            join(sitepackages, 'translate', srcdir),
+            join(sitepackages, "translate", srcdir),
             [join(srcdir, f) for f in os.listdir(srcdir) if isfile(join(srcdir, f))],
         )
 
     docfiles = []
-    for subdir in ['docs', 'share']:
+    for subdir in ["docs", "share"]:
         docwalk = os.walk(subdir)
         for docs in docwalk:
             files = listfiles(docs[0])
@@ -604,12 +604,12 @@ def dosetup(name, version, packages, datafiles, scripts, ext_modules=[]):
         packages=packages,
         data_files=datafiles,
         entry_points={
-            'console_scripts': translatescripts,
+            "console_scripts": translatescripts,
         },
         scripts=scripts,
         ext_modules=ext_modules,
         cmdclass=cmdclass,
-        install_requires=parse_requirements('requirements/required.txt'),
+        install_requires=parse_requirements("requirements/required.txt"),
         **kwargs
     )
 

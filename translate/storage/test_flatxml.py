@@ -45,10 +45,10 @@ class TestFlatXMLFile(test_monolingual.TestMonolingualStore):
 
     def test_value_config_mixed_ok(self):
         """Test that parser leaves non-value entries alone"""
-        xmlsource = '''<root>
+        xmlsource = """<root>
             <str key="test">Test</str>
             <not-a-value key="ignored">this entry does not matter</not-a-value>
-        </root>'''
+        </root>"""
 
         store = self.StoreClass(xmlsource)
         assert store.findid("ignored") is None
@@ -71,11 +71,11 @@ class TestFlatXMLFile(test_monolingual.TestMonolingualStore):
         xmlsource = self._encoded_file('<root><str key="test">Test</str></root>')
         store = self.StoreClass(xmlsource, indent_chars="    ")
         actual = self._store_to_string(store)
-        expected = '''<?xml version='1.0' encoding='UTF-8'?>
+        expected = """<?xml version='1.0' encoding='UTF-8'?>
 <root>
     <str key="test">Test</str>
 </root>
-'''
+"""
         assert actual == expected
 
     def test_indent_tab(self):
@@ -83,11 +83,11 @@ class TestFlatXMLFile(test_monolingual.TestMonolingualStore):
         xmlsource = self._encoded_file('<root><str key="test">Test</str></root>')
         store = self.StoreClass(xmlsource, indent_chars="\t")
         actual = self._store_to_string(store)
-        expected = '''<?xml version='1.0' encoding='UTF-8'?>
+        expected = """<?xml version='1.0' encoding='UTF-8'?>
 <root>
 \t<str key="test">Test</str>
 </root>
-'''
+"""
         assert actual == expected
 
     def test_indent_none_linearizes(self):
@@ -97,7 +97,7 @@ class TestFlatXMLFile(test_monolingual.TestMonolingualStore):
         actual = self._store_to_string(store)
         # no newlines or indent for the elements...
         # ...but trailing EOL to satisfy VCS
-        expected = '''<?xml version='1.0' encoding='UTF-8'?>
+        expected = """<?xml version='1.0' encoding='UTF-8'?>
 <root><str key="test">Test</str></root>
-'''
+"""
         assert actual == expected

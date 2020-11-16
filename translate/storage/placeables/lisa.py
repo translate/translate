@@ -23,7 +23,7 @@ from translate.storage.placeables import StringElem, base, xliff
 from translate.storage.xml_extract import misc
 
 
-__all__ = ('xml_to_strelem', 'strelem_to_xml')
+__all__ = ("xml_to_strelem", "strelem_to_xml")
 # Use the above functions as entry points into this module. The rest are
 # used by these functions.
 
@@ -31,9 +31,9 @@ __all__ = ('xml_to_strelem', 'strelem_to_xml')
 def make_empty_replacement_placeable(klass, node, xml_space="preserve"):
     try:
         return klass(
-            id=node.attrib['id'],
-            rid=node.attrib.get('rid', None),
-            xid=node.attrib.get('xid', None),
+            id=node.attrib["id"],
+            rid=node.attrib.get("rid", None),
+            xid=node.attrib.get("xid", None),
             xml_attrib=node.attrib,
         )
     except KeyError:
@@ -43,7 +43,7 @@ def make_empty_replacement_placeable(klass, node, xml_space="preserve"):
 
 def make_g_placeable(klass, node, xml_space="default"):
     return klass(
-        id=node.attrib['id'],
+        id=node.attrib["id"],
         sub=xml_to_strelem(node, xml_space).sub,
         xml_attrib=node.attrib,
     )
@@ -57,23 +57,23 @@ def make_unknown(klass, node, xml_space="preserve"):
     assert klass is xliff.UnknownXML
 
     sub = xml_to_strelem(node, xml_space).sub
-    id = node.get('id', None)
-    rid = node.get('rid', None)
-    xid = node.get('xid', None)
+    id = node.get("id", None)
+    rid = node.get("rid", None)
+    xid = node.get("xid", None)
 
     return klass(sub=sub, id=id, rid=rid, xid=xid, xml_node=node)
 
 
 _class_dictionary = {
     #'bpt': (xliff.Bpt, not_yet_implemented),
-    'bx': (xliff.Bx, make_empty_replacement_placeable),
+    "bx": (xliff.Bx, make_empty_replacement_placeable),
     #'ept': (xliff.Ept, not_yet_implemented),
-    'ex': (xliff.Ex, make_empty_replacement_placeable),
-    'g': (xliff.G, make_g_placeable),
+    "ex": (xliff.Ex, make_empty_replacement_placeable),
+    "g": (xliff.G, make_g_placeable),
     #'it': (xliff.It, not_yet_implemented),
     #'ph': (xliff.Ph, not_yet_implemented),
     #'sub': (xliff.Sub, not_yet_implemented),
-    'x': (xliff.X, make_empty_replacement_placeable),
+    "x": (xliff.X, make_empty_replacement_placeable),
 }
 
 
@@ -92,7 +92,7 @@ def as_unicode(string):
     elif isinstance(string, StringElem):
         return str(string)
     else:
-        return string.decode('utf-8')
+        return string.decode("utf-8")
 
 
 def xml_to_strelem(dom_node, xml_space="preserve"):
@@ -127,13 +127,13 @@ def xml_to_strelem(dom_node, xml_space="preserve"):
 def placeable_as_dom_node(placeable, tagname):
     dom_node = etree.Element(tagname)
     if placeable.id is not None:
-        dom_node.attrib['id'] = placeable.id
+        dom_node.attrib["id"] = placeable.id
     if placeable.xid is not None:
-        dom_node.attrib['xid'] = placeable.xid
+        dom_node.attrib["xid"] = placeable.xid
     if placeable.rid is not None:
-        dom_node.attrib['rid'] = placeable.rid
+        dom_node.attrib["rid"] = placeable.rid
 
-    if hasattr(placeable, 'xml_attrib'):
+    if hasattr(placeable, "xml_attrib"):
         for attrib, value in placeable.xml_attrib.items():
             dom_node.set(attrib, value)
 
@@ -155,25 +155,25 @@ def unknown_placeable_as_dom_node(placeable):
 
 
 _placeable_dictionary = {
-    xliff.Bpt: lambda placeable: placeable_as_dom_node(placeable, 'bpt'),
-    xliff.Bx: lambda placeable: placeable_as_dom_node(placeable, 'bx'),
-    xliff.Ept: lambda placeable: placeable_as_dom_node(placeable, 'ept'),
-    xliff.Ex: lambda placeable: placeable_as_dom_node(placeable, 'ex'),
-    xliff.G: lambda placeable: placeable_as_dom_node(placeable, 'g'),
-    xliff.It: lambda placeable: placeable_as_dom_node(placeable, 'it'),
-    xliff.Ph: lambda placeable: placeable_as_dom_node(placeable, 'ph'),
-    xliff.Sub: lambda placeable: placeable_as_dom_node(placeable, 'sub'),
-    xliff.X: lambda placeable: placeable_as_dom_node(placeable, 'x'),
+    xliff.Bpt: lambda placeable: placeable_as_dom_node(placeable, "bpt"),
+    xliff.Bx: lambda placeable: placeable_as_dom_node(placeable, "bx"),
+    xliff.Ept: lambda placeable: placeable_as_dom_node(placeable, "ept"),
+    xliff.Ex: lambda placeable: placeable_as_dom_node(placeable, "ex"),
+    xliff.G: lambda placeable: placeable_as_dom_node(placeable, "g"),
+    xliff.It: lambda placeable: placeable_as_dom_node(placeable, "it"),
+    xliff.Ph: lambda placeable: placeable_as_dom_node(placeable, "ph"),
+    xliff.Sub: lambda placeable: placeable_as_dom_node(placeable, "sub"),
+    xliff.X: lambda placeable: placeable_as_dom_node(placeable, "x"),
     xliff.UnknownXML: unknown_placeable_as_dom_node,
-    base.Bpt: lambda placeable: placeable_as_dom_node(placeable, 'bpt'),
-    base.Bx: lambda placeable: placeable_as_dom_node(placeable, 'bx'),
-    base.Ept: lambda placeable: placeable_as_dom_node(placeable, 'ept'),
-    base.Ex: lambda placeable: placeable_as_dom_node(placeable, 'ex'),
-    base.G: lambda placeable: placeable_as_dom_node(placeable, 'g'),
-    base.It: lambda placeable: placeable_as_dom_node(placeable, 'it'),
-    base.Ph: lambda placeable: placeable_as_dom_node(placeable, 'ph'),
-    base.Sub: lambda placeable: placeable_as_dom_node(placeable, 'sub'),
-    base.X: lambda placeable: placeable_as_dom_node(placeable, 'x'),
+    base.Bpt: lambda placeable: placeable_as_dom_node(placeable, "bpt"),
+    base.Bx: lambda placeable: placeable_as_dom_node(placeable, "bx"),
+    base.Ept: lambda placeable: placeable_as_dom_node(placeable, "ept"),
+    base.Ex: lambda placeable: placeable_as_dom_node(placeable, "ex"),
+    base.G: lambda placeable: placeable_as_dom_node(placeable, "g"),
+    base.It: lambda placeable: placeable_as_dom_node(placeable, "it"),
+    base.Ph: lambda placeable: placeable_as_dom_node(placeable, "ph"),
+    base.Sub: lambda placeable: placeable_as_dom_node(placeable, "sub"),
+    base.X: lambda placeable: placeable_as_dom_node(placeable, "x"),
 }
 
 
@@ -186,7 +186,7 @@ def xml_append_string(node, string):
     else:
         lastchild = node.getchildren()[-1]
         if lastchild.tail is None:
-            lastchild.tail = ''
+            lastchild.tail = ""
         lastchild.tail += str(string)
     return node
 
@@ -214,7 +214,7 @@ def strelem_to_xml(parent_node, elem):
 
 def parse_xliff(pstr):
     parser = etree.XMLParser(resolve_entities=False)
-    return xml_to_strelem(etree.fromstring('<source>%s</source>' % (pstr), parser))
+    return xml_to_strelem(etree.fromstring("<source>%s</source>" % (pstr), parser))
 
 
 xliff.parsers = [parse_xliff]

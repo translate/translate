@@ -73,7 +73,7 @@ def convertmo(inputfile, outputfile, templatefile, includefuzzy=False):
     # We have to make sure that we write the files in binary mode, therefore we
     # reopen the file accordingly
     outputfile.close()
-    with open(outputfile.name, 'wb') as fh:
+    with open(outputfile.name, "wb") as fh:
         fh.write(outputmo)
     return 1
 
@@ -91,5 +91,5 @@ def main():
     parser.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

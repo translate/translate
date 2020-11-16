@@ -71,5 +71,5 @@ class zh(common.Common):
         return 10 - length / 2
 
     ignoretests = {
-        'all': ["simplecaps", "startcaps"],
+        "all": ["simplecaps", "startcaps"],
     }

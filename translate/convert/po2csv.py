@@ -61,7 +61,7 @@ class po2csv:
 
     def convertstore(self, inputstore, columnorder=None):
         if columnorder is None:
-            columnorder = ['location', 'source', 'target']
+            columnorder = ["location", "source", "target"]
         outputstore = csvl10n.csvfile(fieldnames=columnorder)
         for inputunit in inputstore.units:
             outputunit = self.convertunit(inputunit)
@@ -102,5 +102,5 @@ def main(argv=None):
     parser.run(argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

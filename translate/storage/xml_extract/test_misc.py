@@ -23,8 +23,8 @@ from translate.storage.xml_extract import misc
 # reduce_tree
 
 test_tree_1 = (
-    'a',
-    [('b', []), ('c', [('d', []), ('e', [])]), ('f', [('g', [('h', [])])])],
+    "a",
+    [("b", []), ("c", [("d", []), ("e", [])]), ("f", [("g", [("h", [])])])],
 )
 
 test_tree_2 = (1, [(2, []), (3, [(4, []), (5, [])]), (6, [(7, [(8, [])])])])
@@ -38,8 +38,8 @@ def test_reduce_tree():
     def concatenate(parent_node, node, string):
         return string + node[0]
 
-    assert 'abcdefgh' == misc.reduce_tree(
-        concatenate, test_tree_1, test_tree_1, get_children, ''
+    assert "abcdefgh" == misc.reduce_tree(
+        concatenate, test_tree_1, test_tree_1, get_children, ""
     )
 
     def get_even_and_total(parent_node, node, even_lst, total):
@@ -54,8 +54,8 @@ def test_reduce_tree():
 
 
 # compose_mappings
-left_mapping = {1: 'a', 2: 'b', 3: 'c', 4: 'd', 5: 'e'}
-right_mapping = {'a': -1, 'b': -2, 'd': -4, 'e': -5, 'f': -6}
+left_mapping = {1: "a", 2: "b", 3: "c", 4: "d", 5: "e"}
+right_mapping = {"a": -1, "b": -2, "d": -4, "e": -5, "f": -6}
 
 composed_mapping = {1: -1, 2: -2, 4: -4, 5: -5}
 
@@ -68,11 +68,11 @@ def test_compose_mappings():
 
 
 def test_parse_tag():
-    assert ('some-urn', 'some-tag') == misc.parse_tag('{some-urn}some-tag')
+    assert ("some-urn", "some-tag") == misc.parse_tag("{some-urn}some-tag")
 
     assert (
-        'urn:oasis:names:tc:opendocument:xmlns:office:1.0',
-        'document-content',
+        "urn:oasis:names:tc:opendocument:xmlns:office:1.0",
+        "document-content",
     ) == misc.parse_tag(
-        '{urn:oasis:names:tc:opendocument:xmlns:office:1.0}document-content'
+        "{urn:oasis:names:tc:opendocument:xmlns:office:1.0}document-content"
     )

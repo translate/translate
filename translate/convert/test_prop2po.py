@@ -41,7 +41,7 @@ class TestProp2PO:
 
     def test_simpleentry(self):
         """checks that a simple properties entry converts properly to a po entry"""
-        propsource = 'SAVEENTRY=Save file\n'
+        propsource = "SAVEENTRY=Save file\n"
         pofile = self.prop2po(propsource)
         pounit = self.singleelement(pofile)
         assert pounit.source == "Save file"
@@ -49,7 +49,7 @@ class TestProp2PO:
 
     def test_convertprop(self):
         """checks that the convertprop function is working"""
-        propsource = 'SAVEENTRY=Save file\n'
+        propsource = "SAVEENTRY=Save file\n"
         posource = self.convertprop(propsource)
         pofile = po.pofile(BytesIO(posource))
         pounit = self.singleelement(pofile)
@@ -58,7 +58,7 @@ class TestProp2PO:
 
     def test_no_value_entry(self):
         """checks that a properties entry without value is converted"""
-        propsource = 'KEY = \n'
+        propsource = "KEY = \n"
         pofile = self.prop2po(propsource)
         pounit = self.singleelement(pofile)
         assert pounit.getcontext() == "KEY"
@@ -67,7 +67,7 @@ class TestProp2PO:
 
     def test_no_separator_entry(self):
         """checks that a properties entry without separator is converted"""
-        propsource = 'KEY\n'
+        propsource = "KEY\n"
         pofile = self.prop2po(propsource)
         pounit = self.singleelement(pofile)
         assert pounit.getcontext() == "KEY"
@@ -115,13 +115,13 @@ class TestProp2PO:
 
     def test_unicode(self):
         """checks that unicode entries convert properly"""
-        unistring = r'Norsk bokm\u00E5l'
-        propsource = 'nb = %s\n' % unistring
+        unistring = r"Norsk bokm\u00E5l"
+        propsource = "nb = %s\n" % unistring
         pofile = self.prop2po(propsource)
         pounit = self.singleelement(pofile)
         print(repr(pofile.units[0].target))
         print(repr(pounit.source))
-        assert pounit.source == 'Norsk bokm\u00E5l'
+        assert pounit.source == "Norsk bokm\u00E5l"
 
     def test_multiline_escaping(self):
         """checks that multiline enties can be parsed"""
@@ -134,21 +134,21 @@ reduce the number of cached connections."""
 
     def test_comments(self):
         """test to ensure that we take comments from .properties and place them in .po"""
-        propsource = '''# Comment
-prefPanel-smime=Security'''
+        propsource = """# Comment
+prefPanel-smime=Security"""
         pofile = self.prop2po(propsource)
         pounit = self.singleelement(pofile)
         assert pounit.getnotes("developer") == "# Comment"
 
     def test_multiline_comments(self):
         """test to ensure that we handle multiline comments well"""
-        propsource = '''# Comment
+        propsource = """# Comment
 # commenty 2
 
 ## @name GENERIC_ERROR
 ## @loc none
 prefPanel-smime=
-'''
+"""
         pofile = self.prop2po(propsource)
         print(bytes(pofile))
         # header comments:
@@ -158,25 +158,25 @@ prefPanel-smime=
 
     def test_folding_accesskeys(self):
         """check that we can fold various accesskeys into their associated label (bug #115)"""
-        propsource = r'''cmd_addEngine.label = Add Engines...
-cmd_addEngine.accesskey = A'''
+        propsource = r"""cmd_addEngine.label = Add Engines...
+cmd_addEngine.accesskey = A"""
         pofile = self.prop2po(propsource, personality="mozilla")
         pounit = self.singleelement(pofile)
         assert pounit.source == "&Add Engines..."
 
     def test_dont_translate(self):
         """check that we know how to ignore don't translate instructions in properties files (bug #116)"""
-        propsource = '''# LOCALIZATION NOTE (dont): DONT_TRANSLATE.
+        propsource = """# LOCALIZATION NOTE (dont): DONT_TRANSLATE.
 dont=don't translate me
 do=translate me
-'''
+"""
         pofile = self.prop2po(propsource)
         assert self.countelements(pofile) == 1
 
     def test_emptyproperty(self):
         """checks that empty property definitions survive into po file, bug 15"""
         for delimiter in ["=", ""]:
-            propsource = '# comment\ncredit%s' % delimiter
+            propsource = "# comment\ncredit%s" % delimiter
             pofile = self.prop2po(propsource)
             pounit = self.singleelement(pofile)
             assert pounit.getlocations() == ["credit"]
@@ -188,8 +188,8 @@ do=translate me
     def test_emptyproperty_translated(self):
         """checks that if we translate an empty property it makes it into the PO"""
         for delimiter in ["=", ""]:
-            proptemplate = 'credit%s' % delimiter
-            propsource = 'credit=Translators Names'
+            proptemplate = "credit%s" % delimiter
+            propsource = "credit=Translators Names"
             pofile = self.prop2po(propsource, proptemplate)
             pounit = self.singleelement(pofile)
             assert pounit.getlocations() == ["credit"]
@@ -200,14 +200,14 @@ do=translate me
 
     def test_newlines_in_value(self):
         """check that we can carry newlines that appear in the property value into the PO"""
-        propsource = '''prop=\\nvalue\\n\n'''
+        propsource = """prop=\\nvalue\\n\n"""
         pofile = self.prop2po(propsource)
         unit = self.singleelement(pofile)
         assert unit.source == "\nvalue\n"
 
     def test_header_comments(self):
         """check that we can handle comments not directly associated with a property"""
-        propsource = '''# Header comment\n\n# Comment\n\nprop=value\n'''
+        propsource = """# Header comment\n\n# Comment\n\nprop=value\n"""
         pofile = self.prop2po(propsource)
         unit = self.singleelement(pofile)
         assert unit.source == "value"
@@ -215,7 +215,7 @@ do=translate me
 
     def test_unassociated_comment_order(self):
         """check that we can handle the order of unassociated comments"""
-        propsource = '''# Header comment\n\n# 1st Unassociated comment\n\n# 2nd Connected comment\nprop=value\n'''
+        propsource = """# Header comment\n\n# 1st Unassociated comment\n\n# 2nd Connected comment\nprop=value\n"""
         pofile = self.prop2po(propsource)
         unit = self.singleelement(pofile)
         assert unit.source == "value"
@@ -228,7 +228,7 @@ do=translate me
         """Test that we correctly create the custom header entries
         (accelerators, merge criterion).
         """
-        propsource = '''prop=value\n'''
+        propsource = """prop=value\n"""
 
         outputpo = self.prop2po(propsource, personality="mozilla")
         assert b"X-Accelerator-Marker" in bytes(outputpo)
@@ -242,7 +242,7 @@ do=translate me
 
     def test_gaia_plurals(self):
         """Test conversion of gaia plural units."""
-        propsource = '''
+        propsource = """
 message-multiedit-header={[ plural(n) ]}
 message-multiedit-header[zero]=Edit
 message-multiedit-header[one]={{ n }} selected
@@ -250,11 +250,11 @@ message-multiedit-header[two]={{ n }} selected
 message-multiedit-header[few]={{ n }} selected
 message-multiedit-header[many]={{ n }} selected
 message-multiedit-header[other]={{ n }} selected
-'''
+"""
         outputpo = self.prop2po(propsource, personality="gaia")
         pounit = outputpo.units[-1]
         assert pounit.hasplural()
-        assert pounit.getlocations() == ['message-multiedit-header']
+        assert pounit.getlocations() == ["message-multiedit-header"]
 
         print(outputpo)
         zero_unit = outputpo.units[-2]
@@ -263,7 +263,7 @@ message-multiedit-header[other]={{ n }} selected
 
     def test_successive_gaia_plurals(self):
         """Test conversion of two successive gaia plural units."""
-        propsource = '''
+        propsource = """
 message-multiedit-header={[ plural(n) ]}
 message-multiedit-header[zero]=Edit
 message-multiedit-header[one]={{ n }} selected
@@ -279,15 +279,15 @@ message-multiedit-header2[two]={{ n }} selected 2
 message-multiedit-header2[few]={{ n }} selected 2
 message-multiedit-header2[many]={{ n }} selected 2
 message-multiedit-header2[other]={{ n }} selected 2
-'''
+"""
         outputpo = self.prop2po(propsource, personality="gaia")
         pounit = outputpo.units[-1]
         assert pounit.hasplural()
-        assert pounit.getlocations() == ['message-multiedit-header2']
+        assert pounit.getlocations() == ["message-multiedit-header2"]
 
         pounit = outputpo.units[-3]
         assert pounit.hasplural()
-        assert pounit.getlocations() == ['message-multiedit-header']
+        assert pounit.getlocations() == ["message-multiedit-header"]
 
         print(outputpo)
         zero_unit = outputpo.units[-2]
@@ -300,54 +300,54 @@ message-multiedit-header2[other]={{ n }} selected 2
 
     def test_duplicate_keys(self):
         """Check that we correctly handle duplicate keys."""
-        source = '''
+        source = """
 key=value
 key=value
-'''
+"""
         po_file = self.prop2po(source)
         assert self.countelements(po_file) == 1
         po_unit = self.singleelement(po_file)
         assert po_unit.source == "value"
 
-        source = '''
+        source = """
 key=value
 key=another value
-'''
+"""
         po_file = self.prop2po(source)
         assert self.countelements(po_file) == 2
         po_unit = po_file.units[1]
         assert po_unit.source == "value"
-        assert po_unit.getlocations() == ['key']
+        assert po_unit.getlocations() == ["key"]
         po_unit = po_file.units[2]
         assert po_unit.source == "another value"
-        assert po_unit.getlocations() == ['key']
+        assert po_unit.getlocations() == ["key"]
 
-        source = '''
+        source = """
 key1=value
 key2=value
-'''
+"""
         po_file = self.prop2po(source)
         assert self.countelements(po_file) == 2
         po_unit = po_file.units[1]
         assert po_unit.source == "value"
-        assert po_unit.getlocations() == ['key1']
+        assert po_unit.getlocations() == ["key1"]
         po_unit = po_file.units[2]
         assert po_unit.source == "value"
-        assert po_unit.getlocations() == ['key2']
+        assert po_unit.getlocations() == ["key2"]
 
     def test_gwt_plurals(self):
         """Test conversion of gwt plural units."""
-        propsource = '''
+        propsource = """
 message-multiedit-header={0,number} selected
 message-multiedit-header[none]=Edit
 message-multiedit-header[one]={0,number} selected
 message-multiedit-header[two]={0,number} selected
 message-multiedit-header[few]={0,number} selected
 message-multiedit-header[many]={0,number} selected
-'''
+"""
         outputpo = self.prop2po(propsource, personality="gwt")
         pounit = outputpo.units[-1]
-        assert pounit.getlocations() == ['message-multiedit-header']
+        assert pounit.getlocations() == ["message-multiedit-header"]
 
 
 class TestProp2POCommand(test_convert.TestConvertCommand, TestProp2PO):

@@ -286,7 +286,7 @@ class WordfastHeader:
         time
         """
         defaultheader = WF_FIELDNAMES_HEADER_DEFAULTS
-        defaultheader['date'] = '%%%s' % WordfastTime(time.localtime()).timestring
+        defaultheader["date"] = "%%%s" % WordfastTime(time.localtime()).timestring
         return defaultheader
 
     def getheader(self):
@@ -299,12 +299,12 @@ class WordfastHeader:
     header = property(getheader, setheader)
 
     def settargetlang(self, newlang):
-        self._header_dict['target-lang'] = '%%%s' % newlang
+        self._header_dict["target-lang"] = "%%%s" % newlang
 
     targetlang = property(None, settargetlang)
 
     def settucount(self, count):
-        self._header_dict['tucount'] = '%%TU=%08d' % count
+        self._header_dict["tucount"] = "%%TU=%08d" % count
 
     tucount = property(None, settucount)
 
@@ -320,7 +320,7 @@ class WordfastUnit(base.TranslationUnit):
 
     def _update_timestamp(self):
         """Refresh the timestamp for the unit"""
-        self._dict['date'] = WordfastTime(time.localtime()).timestring
+        self._dict["date"] = WordfastTime(time.localtime()).timestring
 
     def getdict(self):
         """Get the dictionary of values for a Wordfast line"""
@@ -355,24 +355,24 @@ class WordfastUnit(base.TranslationUnit):
 
     @property
     def source(self):
-        return self._get_source_or_target('source')
+        return self._get_source_or_target("source")
 
     @source.setter
     def source(self, source):
         self._rich_source = None
-        self._set_source_or_target('source', source)
+        self._set_source_or_target("source", source)
 
     @property
     def target(self):
-        return self._get_source_or_target('target')
+        return self._get_source_or_target("target")
 
     @target.setter
     def target(self, target):
         self._rich_target = None
-        self._set_source_or_target('target', target)
+        self._set_source_or_target("target", target)
 
     def settargetlang(self, newlang):
-        self._dict['target-lang'] = newlang
+        self._dict["target-lang"] = newlang
 
     targetlang = property(None, settargetlang)
 
@@ -380,9 +380,9 @@ class WordfastUnit(base.TranslationUnit):
         return str(self._dict)
 
     def istranslated(self):
-        if not self._dict.get('source', None):
+        if not self._dict.get("source", None):
             return False
-        return bool(self._dict.get('target', None))
+        return bool(self._dict.get("target", None))
 
 
 class WordfastTMFile(base.TranslationStore):
@@ -392,30 +392,30 @@ class WordfastTMFile(base.TranslationStore):
     Mimetypes = ["application/x-wordfast"]
     Extensions = ["txt"]
     UnitClass = WordfastUnit
-    default_encoding = 'iso-8859-1'
+    default_encoding = "iso-8859-1"
 
     def __init__(self, inputfile=None, **kwargs):
         """construct a Wordfast TM, optionally reading in from inputfile."""
         super().__init__(**kwargs)
-        self.filename = ''
+        self.filename = ""
         self.header = WordfastHeader()
         if inputfile is not None:
             self.parse(inputfile)
 
     def parse(self, input):
         """parsese the given file or file source string"""
-        if hasattr(input, 'name'):
+        if hasattr(input, "name"):
             self.filename = input.name
-        elif not getattr(self, 'filename', ''):
-            self.filename = ''
+        elif not getattr(self, "filename", ""):
+            self.filename = ""
         if hasattr(input, "read"):
             tmsrc = input.read()
             input.close()
             input = tmsrc
         if TAB_UTF16 in input.split(b"\n")[0]:
-            self.encoding = 'utf-16'
+            self.encoding = "utf-16"
         else:
-            self.encoding = 'iso-8859-1'
+            self.encoding = "iso-8859-1"
         try:
             input = input.decode(self.encoding)
         except Exception:

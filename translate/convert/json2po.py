@@ -108,7 +108,7 @@ def convertjson(
     from translate.storage import jsonl10n
 
     if filter is not None:
-        filter = filter.split(',')
+        filter = filter.split(",")
     input_store = jsonl10n.JsonFile(input_file, filter=filter)
     convertor = json2po()
     if template_file is None:
@@ -150,5 +150,5 @@ def main(argv=None):
     parser.run(argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

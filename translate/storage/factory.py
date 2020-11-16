@@ -29,8 +29,8 @@ from translate.storage.directory import Directory
 # TODO: Monolingual formats (with template?)
 
 decompressclass = {
-    'gz': ("gzip", "GzipFile"),
-    'bz2': ("bz2", "BZ2File"),
+    "gz": ("gzip", "GzipFile"),
+    "bz2": ("bz2", "BZ2File"),
 }
 
 
@@ -68,7 +68,7 @@ _ext is a pseudo extension, that is their is no real extension by that name.
 def _examine_txt(storefile):
     """Determine the true filetype for a .txt file"""
     if isinstance(storefile, str) and os.path.exists(storefile):
-        storefile = open(storefile, 'rb')
+        storefile = open(storefile, "rb")
     try:
         start = storefile.read(600).strip()
     except AttributeError:
@@ -77,14 +77,14 @@ def _examine_txt(storefile):
     from translate.storage import wordfast
 
     if wordfast.TAB_UTF16 in start.split(b"\n")[0]:
-        encoding = 'utf-16'
+        encoding = "utf-16"
     else:
-        encoding = 'iso-8859-1'
+        encoding = "iso-8859-1"
     start = start.decode(encoding)
-    if '%Wordfast TM' in start:
-        pseudo_extension = '_wftm'
-    elif '<RTF Preamble>' in start:
-        pseudo_extension = '_trados_txt_tm'
+    if "%Wordfast TM" in start:
+        pseudo_extension = "_wftm"
+    elif "<RTF Preamble>" in start:
+        pseudo_extension = "_trados_txt_tm"
     else:
         raise ValueError("Failed to guess file type.")
     storefile.seek(0)
@@ -99,18 +99,18 @@ def _guessextention(storefile):
     characters.  The return value is a file extention.
     """
     start = storefile.read(300).strip()
-    if b'<xliff ' in start:
-        extention = 'xlf'
+    if b"<xliff " in start:
+        extention = "xlf"
     elif b'msgid "' in start:
-        extention = 'po'
-    elif b'%Wordfast TM' in start:
-        extention = 'txt'
-    elif b'<!DOCTYPE TS>' in start:
-        extention = 'ts'
-    elif b'<tmx ' in start:
-        extention = 'tmx'
-    elif b'#UTX' in start:
-        extention = 'utx'
+        extention = "po"
+    elif b"%Wordfast TM" in start:
+        extention = "txt"
+    elif b"<!DOCTYPE TS>" in start:
+        extention = "ts"
+    elif b"<tmx " in start:
+        extention = "tmx"
+    elif b"#UTX" in start:
+        extention = "utx"
     else:
         raise ValueError("Failed to guess file type.")
     storefile.seek(0)
@@ -121,7 +121,7 @@ def _getdummyname(storefile):
     """Provides a dummy name for a file object without a name attribute, by
     guessing the file type.
     """
-    return 'dummy.' + _guessextention(storefile)
+    return "dummy." + _guessextention(storefile)
 
 
 def _getname(storefile):
@@ -242,8 +242,8 @@ def getobject(
 
 supported = [
     (
-        'Gettext PO file',
-        ['po', 'pot'],
+        "Gettext PO file",
+        ["po", "pot"],
         [
             "text/x-gettext-catalog",
             "text/x-gettext-translation",
@@ -252,23 +252,23 @@ supported = [
         ],
     ),
     (
-        'XLIFF Translation File',
-        ['xlf', 'xliff', 'sdlxliff'],
+        "XLIFF Translation File",
+        ["xlf", "xliff", "sdlxliff"],
         ["application/x-xliff", "application/x-xliff+xml"],
     ),
     (
-        'Gettext MO file',
-        ['mo', 'gmo'],
+        "Gettext MO file",
+        ["mo", "gmo"],
         ["application/x-gettext-catalog", "application/x-mo"],
     ),
-    ('Qt .qm file', ['qm'], ["application/x-qm"]),
-    ('TBX Glossary', ['tbx'], ['application/x-tbx']),
-    ('TMX Translation Memory', ['tmx'], ["application/x-tmx"]),
-    ('Qt Linguist Translation File', ['ts'], ["application/x-linguist"]),
-    ('Qt Phrase Book', ['qph'], ["application/x-qph"]),
-    ('OmegaT Glossary', ['utf8', 'tab'], ["application/x-omegat-glossary"]),
-    ('UTX Dictionary', ['utx'], ["text/x-utx"]),
-    ('Haiku catkeys file', ['catkeys'], ["application/x-catkeys"]),
+    ("Qt .qm file", ["qm"], ["application/x-qm"]),
+    ("TBX Glossary", ["tbx"], ["application/x-tbx"]),
+    ("TMX Translation Memory", ["tmx"], ["application/x-tmx"]),
+    ("Qt Linguist Translation File", ["ts"], ["application/x-linguist"]),
+    ("Qt Phrase Book", ["qph"], ["application/x-qph"]),
+    ("OmegaT Glossary", ["utf8", "tab"], ["application/x-omegat-glossary"]),
+    ("UTX Dictionary", ["utx"], ["text/x-utx"]),
+    ("Haiku catkeys file", ["catkeys"], ["application/x-catkeys"]),
 ]
 
 

@@ -36,11 +36,11 @@ class TestPO2Lang:
 
     def _convert_to_string(self, *args, **kwargs):
         """Helper that converts to target format string without using files."""
-        return self._convert(*args, **kwargs)[1].getvalue().decode('utf-8')
+        return self._convert(*args, **kwargs)[1].getvalue().decode("utf-8")
 
     def test_convert_empty(self):
         """Check converting empty file returns no output."""
-        assert self._convert_to_string('', success_expected=False) == ''
+        assert self._convert_to_string("", success_expected=False) == ""
 
     def test_simple(self):
         """Check the simplest conversion case."""

@@ -43,41 +43,41 @@ ID_SEPARATOR_SAFE = "__%04__"
 
 # List of ASCII control codes which are unaccepted in XML.
 ASCII_CONTROL_CODES = [
-    '0000',  # Unicode Character 'NULL' (U+0000)
-    '0001',  # Unicode Character 'START OF HEADING' (U+0001)
-    '0002',  # Unicode Character 'START OF TEXT' (U+0002)
-    '0003',  # Unicode Character 'END OF TEXT' (U+0003)
-    '0004',  # Unicode Character 'END OF TRANSMISSION' (U+0004)
-    '0005',  # Unicode Character 'ENQUIRY' (U+0005)
-    '0006',  # Unicode Character 'ACKNOWLEDGE' (U+0006)
-    '0007',  # Unicode Character 'BELL' (U+0007), "\a" in Python
-    '0008',  # Unicode Character 'BACKSPACE' (U+0008), "\b" in Python
-    '000b',  # Unicode Character 'LINE TABULATION' (U+000B), "\v" in Python
-    '000c',  # Unicode Character 'FORM FEED (FF)' (U+000C), "\f" in Python
-    '000e',  # Unicode Character 'SHIFT OUT' (U+000E)
-    '000f',  # Unicode Character 'SHIFT IN' (U+000F)
-    '0010',  # Unicode Character 'DATA LINK ESCAPE' (U+0010)
-    '0011',  # Unicode Character 'DEVICE CONTROL ONE' (U+0011)
-    '0012',  # Unicode Character 'DEVICE CONTROL TWO' (U+0012)
-    '0013',  # Unicode Character 'DEVICE CONTROL THREE' (U+0013)
-    '0014',  # Unicode Character 'DEVICE CONTROL FOUR' (U+0014)
-    '0015',  # Unicode Character 'NEGATIVE ACKNOWLEDGE' (U+0015)
-    '0016',  # Unicode Character 'SYNCHRONOUS IDLE' (U+0016)
-    '0017',  # Unicode Character 'END OF TRANSMISSION BLOCK' (U+0017)
-    '0018',  # Unicode Character 'CANCEL' (U+0018)
-    '0019',  # Unicode Character 'END OF MEDIUM' (U+0019)
-    '001a',  # Unicode Character 'SUBSTITUTE' (U+001A)
-    '001b',  # Unicode Character 'ESCAPE' (U+001B)
-    '001c',  # Unicode Character 'INFORMATION SEPARATOR FOUR' (U+001C)
-    '001d',  # Unicode Character 'INFORMATION SEPARATOR THREE' (U+001D)
-    '001e',  # Unicode Character 'INFORMATION SEPARATOR TWO' (U+001E)
-    '001f',  # Unicode Character 'INFORMATION SEPARATOR ONE' (U+001F)
+    "0000",  # Unicode Character 'NULL' (U+0000)
+    "0001",  # Unicode Character 'START OF HEADING' (U+0001)
+    "0002",  # Unicode Character 'START OF TEXT' (U+0002)
+    "0003",  # Unicode Character 'END OF TEXT' (U+0003)
+    "0004",  # Unicode Character 'END OF TRANSMISSION' (U+0004)
+    "0005",  # Unicode Character 'ENQUIRY' (U+0005)
+    "0006",  # Unicode Character 'ACKNOWLEDGE' (U+0006)
+    "0007",  # Unicode Character 'BELL' (U+0007), "\a" in Python
+    "0008",  # Unicode Character 'BACKSPACE' (U+0008), "\b" in Python
+    "000b",  # Unicode Character 'LINE TABULATION' (U+000B), "\v" in Python
+    "000c",  # Unicode Character 'FORM FEED (FF)' (U+000C), "\f" in Python
+    "000e",  # Unicode Character 'SHIFT OUT' (U+000E)
+    "000f",  # Unicode Character 'SHIFT IN' (U+000F)
+    "0010",  # Unicode Character 'DATA LINK ESCAPE' (U+0010)
+    "0011",  # Unicode Character 'DEVICE CONTROL ONE' (U+0011)
+    "0012",  # Unicode Character 'DEVICE CONTROL TWO' (U+0012)
+    "0013",  # Unicode Character 'DEVICE CONTROL THREE' (U+0013)
+    "0014",  # Unicode Character 'DEVICE CONTROL FOUR' (U+0014)
+    "0015",  # Unicode Character 'NEGATIVE ACKNOWLEDGE' (U+0015)
+    "0016",  # Unicode Character 'SYNCHRONOUS IDLE' (U+0016)
+    "0017",  # Unicode Character 'END OF TRANSMISSION BLOCK' (U+0017)
+    "0018",  # Unicode Character 'CANCEL' (U+0018)
+    "0019",  # Unicode Character 'END OF MEDIUM' (U+0019)
+    "001a",  # Unicode Character 'SUBSTITUTE' (U+001A)
+    "001b",  # Unicode Character 'ESCAPE' (U+001B)
+    "001c",  # Unicode Character 'INFORMATION SEPARATOR FOUR' (U+001C)
+    "001d",  # Unicode Character 'INFORMATION SEPARATOR THREE' (U+001D)
+    "001e",  # Unicode Character 'INFORMATION SEPARATOR TWO' (U+001E)
+    "001f",  # Unicode Character 'INFORMATION SEPARATOR ONE' (U+001F)
 ]
 
 ASCII_CONTROL_CHARACTERS = {code: chr(int(code, 16)) for code in ASCII_CONTROL_CODES}
 
 ASCII_CONTROL_CHARACTERS_ESCAPES = {
-    code: '&#x%s;' % code.lstrip('0') or '0' for code in ASCII_CONTROL_CODES
+    code: "&#x%s;" % code.lstrip("0") or "0" for code in ASCII_CONTROL_CODES
 }
 
 
@@ -87,7 +87,7 @@ class xliffunit(lisa.LISAunit):
     rootNode = "trans-unit"
     languageNode = "source"
     textNode = ""
-    namespace = 'urn:oasis:names:tc:xliff:document:1.1'
+    namespace = "urn:oasis:names:tc:xliff:document:1.1"
 
     _default_xml_space = "default"
 
@@ -152,7 +152,7 @@ class xliffunit(lisa.LISAunit):
 
         # Escape the unaccepted ASCII control characters.
         for code in ASCII_CONTROL_CODES:
-            text = text.replace(chr(int(code, 16)), '&#x%s;' % code.lstrip('0') or '0')
+            text = text.replace(chr(int(code, 16)), "&#x%s;" % code.lstrip("0") or "0")
 
         langset.text = text
         return langset
@@ -166,7 +166,7 @@ class xliffunit(lisa.LISAunit):
             source = next(
                 self.xmlelement.iterchildren(self.namespaced(self.languageNode))
             )
-            target = next(self.xmlelement.iterchildren(self.namespaced('target')))
+            target = next(self.xmlelement.iterchildren(self.namespaced("target")))
             nodes = [source, target]
         except StopIteration:
             if source is not None:
@@ -175,10 +175,10 @@ class xliffunit(lisa.LISAunit):
                 nodes.append(target)
         return nodes
 
-    def set_rich_source(self, value, sourcelang='en'):
+    def set_rich_source(self, value, sourcelang="en"):
         sourcelanguageNode = self.get_source_dom()
         if sourcelanguageNode is None:
-            sourcelanguageNode = self.createlanguageNode(sourcelang, '', "source")
+            sourcelanguageNode = self.createlanguageNode(sourcelang, "", "source")
             self.set_source_dom(sourcelanguageNode)
 
         # Clear sourcelanguageNode first
@@ -204,15 +204,15 @@ class xliffunit(lisa.LISAunit):
     def rich_source(self, value):
         self.set_rich_source(value)
 
-    def set_rich_target(self, value, lang='xx', append=False):
+    def set_rich_target(self, value, lang="xx", append=False):
         self._rich_target = None
         if value is None:
-            self.set_target_dom(self.createlanguageNode(lang, '', "target"))
+            self.set_target_dom(self.createlanguageNode(lang, "", "target"))
             return
 
         languageNode = self.get_target_dom()
         if languageNode is None:
-            languageNode = self.createlanguageNode(lang, '', "target")
+            languageNode = self.createlanguageNode(lang, "", "target")
             self.set_target_dom(languageNode, append)
 
         # Clear languageNode first
@@ -354,7 +354,7 @@ class xliffunit(lisa.LISAunit):
         return note_list
 
     def getnotes(self, origin=None):
-        return '\n'.join(self._getnotelist(origin=origin))
+        return "\n".join(self._getnotelist(origin=origin))
 
     def removenotes(self, origin=None):
         """Remove all the translator notes."""
@@ -368,7 +368,7 @@ class xliffunit(lisa.LISAunit):
         # TODO: consider factoring out: some duplication between XLIFF and TMX
         text = errorname
         if errortext:
-            text += ': ' + errortext
+            text += ": " + errortext
         self.addnote(text, origin="pofilter")
 
     def geterrors(self):
@@ -377,7 +377,7 @@ class xliffunit(lisa.LISAunit):
         notelist = self._getnotelist(origin="pofilter")
         errordict = {}
         for note in notelist:
-            errorname, errortext = note.split(': ')
+            errorname, errortext = note.split(": ")
             errordict[errorname] = errortext
         return errordict
 
@@ -466,7 +466,7 @@ class xliffunit(lisa.LISAunit):
             if state_id < self.S_UNREVIEWED:
                 self.set_state_n(self.S_UNREVIEWED)
 
-    def settarget(self, target, lang='xx', append=False):
+    def settarget(self, target, lang="xx", append=False):
         """Sets the target string to the given value."""
         super().settarget(target, lang, append)
         if target:
@@ -481,7 +481,7 @@ class xliffunit(lisa.LISAunit):
 
     def istranslatable(self):
         value = self.xmlelement.get("translate")
-        if value and value.lower() == 'no':
+        if value and value.lower() == "no":
             return False
         return True
 
@@ -497,8 +497,8 @@ class xliffunit(lisa.LISAunit):
     def getid(self):
         uid = ""
         try:
-            filename = next(self.xmlelement.iterancestors(self.namespaced('file'))).get(
-                'original'
+            filename = next(self.xmlelement.iterancestors(self.namespaced("file"))).get(
+                "original"
             )
             if filename:
                 uid = filename + ID_SEPARATOR
@@ -627,15 +627,15 @@ class xlifffile(lisa.LISAfile):
     Extensions = ["xlf", "xliff", "sdlxliff"]
     rootNode = "xliff"
     bodyNode = "body"
-    XMLskeleton = '''<?xml version="1.0" ?>
+    XMLskeleton = """<?xml version="1.0" ?>
 <xliff version='1.1' xmlns='urn:oasis:names:tc:xliff:document:1.1'>
 <file original='NoName' source-language='en' datatype='plaintext'>
 <body>
 </body>
 </file>
-</xliff>'''
-    namespace = 'urn:oasis:names:tc:xliff:document:1.1'
-    unversioned_namespace = 'urn:oasis:names:tc:xliff:document:'
+</xliff>"""
+    namespace = "urn:oasis:names:tc:xliff:document:1.1"
+    unversioned_namespace = "urn:oasis:names:tc:xliff:document:"
 
     suggestions_in_format = True
     """xliff units have alttrans tags which can be used to store suggestions"""
@@ -660,7 +660,7 @@ class xlifffile(lisa.LISAfile):
             filenode = self.getfilenode(self._filename, createifmissing=True)
         else:
             filenode = next(
-                self.document.getroot().iterchildren(self.namespaced('file'))
+                self.document.getroot().iterchildren(self.namespaced("file"))
             )
         self.body = self.getbodynode(filenode, createifmissing=True)
 
@@ -669,7 +669,7 @@ class xlifffile(lisa.LISAfile):
         pass
 
     def createfilenode(
-        self, filename, sourcelanguage=None, targetlanguage=None, datatype='plaintext'
+        self, filename, sourcelanguage=None, targetlanguage=None, datatype="plaintext"
     ):
         """creates a filenode with the given filename. All parameters are
         needed for XLIFF compliance.
@@ -710,7 +710,7 @@ class xlifffile(lisa.LISAfile):
         filenodes = self.document.getroot().iterchildren(self.namespaced("file"))
         filenames = [self.getfilename(filenode) for filenode in filenodes]
         filenames = list(filter(None, filenames))
-        if len(filenames) == 1 and filenames[0] == '':
+        if len(filenames) == 1 and filenames[0] == "":
             filenames = []
         return filenames
 
@@ -739,11 +739,11 @@ class xlifffile(lisa.LISAfile):
     def setsourcelanguage(self, language):
         if not language:
             return
-        filenode = next(self.document.getroot().iterchildren(self.namespaced('file')))
+        filenode = next(self.document.getroot().iterchildren(self.namespaced("file")))
         filenode.set("source-language", language)
 
     def getsourcelanguage(self):
-        filenode = next(self.document.getroot().iterchildren(self.namespaced('file')))
+        filenode = next(self.document.getroot().iterchildren(self.namespaced("file")))
         return filenode.get("source-language")
 
     sourcelanguage = property(getsourcelanguage, setsourcelanguage)
@@ -751,11 +751,11 @@ class xlifffile(lisa.LISAfile):
     def settargetlanguage(self, language):
         if not language:
             return
-        filenode = next(self.document.getroot().iterchildren(self.namespaced('file')))
+        filenode = next(self.document.getroot().iterchildren(self.namespaced("file")))
         filenode.set("target-language", language)
 
     def gettargetlanguage(self):
-        filenode = next(self.document.getroot().iterchildren(self.namespaced('file')))
+        filenode = next(self.document.getroot().iterchildren(self.namespaced("file")))
         return filenode.get("target-language")
 
     targetlanguage = property(gettargetlanguage, settargetlanguage)

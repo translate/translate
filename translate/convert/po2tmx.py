@@ -40,10 +40,10 @@ class po2tmx:
                 else:
                     comments[index] = comment[2:].strip()
 
-        return ''.join(comments)
+        return "".join(comments)
 
     def convertfiles(
-        self, inputfile, tmxfile, sourcelanguage='en', targetlanguage=None, comment=None
+        self, inputfile, tmxfile, sourcelanguage="en", targetlanguage=None, comment=None
     ):
         """converts a .po file (possibly many) to TMX file"""
         inputstore = po.pofile(inputfile)
@@ -59,9 +59,9 @@ class po2tmx:
             translation = inunit.target
 
             commenttext = {
-                'source': self.cleancomments(inunit.sourcecomments, "source"),
-                'type': self.cleancomments(inunit.typecomments, "type"),
-                'others': self.cleancomments(inunit.othercomments),
+                "source": self.cleancomments(inunit.sourcecomments, "source"),
+                "type": self.cleancomments(inunit.typecomments, "type"),
+                "others": self.cleancomments(inunit.othercomments),
             }.get(comment, None)
 
             tmxfile.addtranslation(
@@ -73,7 +73,7 @@ def convertpo(
     inputfile,
     outputfile,
     templatefile,
-    sourcelanguage='en',
+    sourcelanguage="en",
     targetlanguage=None,
     comment=None,
 ):
@@ -91,9 +91,9 @@ class tmxmultifile:
         self.filename = filename
         if mode is None:
             if os.path.exists(filename):
-                mode = 'r'
+                mode = "r"
             else:
-                mode = 'w'
+                mode = "w"
         self.mode = mode
         #        self.multifilestyle = multifilestyle
         self.multifilename = os.path.splitext(filename)[0]
@@ -117,7 +117,7 @@ class TmxOptionParser(convert.ArchiveConvertOptionParser):
         if not options.targetlanguage:
             raise ValueError("You must specify the target language")
         super().recursiveprocess(options)
-        with open(options.output, 'wb') as self.output:
+        with open(options.output, "wb") as self.output:
             self.outputarchive.tmxfile.setsourcelanguage(options.sourcelanguage)
             self.outputarchive.tmxfile.serialize(self.output)
 
@@ -144,11 +144,11 @@ def main(argv=None):
         "",
         "--source-language",
         dest="sourcelanguage",
-        default='en',
+        default="en",
         help="set source language code (default: en)",
         metavar="LANG",
     )
-    comments = ['source', 'type', 'others', 'none']
+    comments = ["source", "type", "others", "none"]
     comments_help = (
         "set default comment import: none, source, type or " "others (default: none)"
     )
@@ -167,5 +167,5 @@ def main(argv=None):
     parser.run(argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

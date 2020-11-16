@@ -63,7 +63,7 @@ class hy(common.Common):
     }
 
     ignoretests = {
-        'all': ["simplecaps", "startcaps"],
+        "all": ["simplecaps", "startcaps"],
     }
 
     mozilla_nplurals = 2

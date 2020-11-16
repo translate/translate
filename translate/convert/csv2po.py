@@ -49,14 +49,14 @@ def quotecsvstr(source):
     return (
         '"'
         + replacestrings(
-            source, ('\\"', '"'), ('"', '\\"'), ("\\\\'", "\\'"), ('\\\\n', '\\n')
+            source, ('\\"', '"'), ('"', '\\"'), ("\\\\'", "\\'"), ("\\\\n", "\\n")
         )
         + '"'
     )
 
 
 def simplify(string):
-    return ''.join(filter(type(string).isalnum, string))
+    return "".join(filter(type(string).isalnum, string))
 
 
 class csv2po:
@@ -280,5 +280,5 @@ def main(argv=None):
     parser.run(argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

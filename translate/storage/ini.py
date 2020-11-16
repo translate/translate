@@ -57,7 +57,7 @@ class Dialect:
 
 @register_dialect
 class DialectDefault(Dialect):
-    name = 'default'
+    name = "default"
 
     def unescape(self, text):
         return text
@@ -68,7 +68,7 @@ class DialectDefault(Dialect):
 
 @register_dialect
 class DialectInno(DialectDefault):
-    name = 'inno'
+    name = "inno"
 
     def unescape(self, text):
         return text.replace("%n", "\n").replace("%t", "\t")
@@ -104,7 +104,7 @@ class inifile(base.TranslationStore):
             dialect, DialectDefault
         )()  # fail correctly/use getattr/
         super().__init__(**kwargs)
-        self.filename = ''
+        self.filename = ""
         self._inifile = None
         if inputfile is not None:
             self.parse(inputfile)
@@ -113,27 +113,27 @@ class inifile(base.TranslationStore):
         _outinifile = self._inifile
         for unit in self.units:
             for location in unit.getlocations():
-                match = re.match('\\[(?P<section>.+)\\](?P<entry>.+)', location)
+                match = re.match("\\[(?P<section>.+)\\](?P<entry>.+)", location)
                 value = self._dialect.escape(unit.target)
-                _outinifile[match.groupdict()['section']][
-                    match.groupdict()['entry']
+                _outinifile[match.groupdict()["section"]][
+                    match.groupdict()["entry"]
                 ] = value
         if _outinifile:
-            out.write(str(_outinifile).encode('utf-8'))
+            out.write(str(_outinifile).encode("utf-8"))
 
     def parse(self, input):
         """Parse the given file or file source string."""
-        if hasattr(input, 'name'):
+        if hasattr(input, "name"):
             self.filename = input.name
-        elif not getattr(self, 'filename', ''):
-            self.filename = ''
+        elif not getattr(self, "filename", ""):
+            self.filename = ""
         if hasattr(input, "read"):
             inisrc = input.read()
             input.close()
             input = inisrc
 
         if isinstance(input, bytes):
-            input = StringIO(input.decode('utf-8'))
+            input = StringIO(input.decode("utf-8"))
             self._inifile = INIConfig(input, optionxformvalue=None)
         else:
             self._inifile = INIConfig(open(input), optionxformvalue=None)

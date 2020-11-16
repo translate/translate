@@ -29,5 +29,5 @@ class gu(common.Common):
     """This class represents Gujarati."""
 
     ignoretests = {
-        'all': ["simplecaps", "startcaps"],
+        "all": ["simplecaps", "startcaps"],
     }

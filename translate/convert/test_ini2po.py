@@ -41,16 +41,16 @@ class TestIni2PO:
 
     def _convert_to_string(self, *args, **kwargs):
         """Helper that converts to target format string without using files."""
-        return self._convert(*args, **kwargs)[1].getvalue().decode('utf-8')
+        return self._convert(*args, **kwargs)[1].getvalue().decode("utf-8")
 
     def test_convert_empty_file(self):
         """Check converting empty INI returns no output."""
-        assert self._convert_to_string('', success_expected=False) == ''
+        assert self._convert_to_string("", success_expected=False) == ""
 
     def test_convert_no_translation(self):
         """Check converting INI with no translatable text returns no output."""
-        output = self._convert_to_string('[section]', success_expected=False)
-        assert output == ''
+        output = self._convert_to_string("[section]", success_expected=False)
+        assert output == ""
 
     def test_convert_simple(self):
         """Check the simplest case of converting a translation."""

@@ -42,11 +42,11 @@ def guillemets(text):
         text = re.sub('(.|^)"([^"]+)"', convertquotation, text)
     singlecount = text.count("'")
     if singlecount:
-        if singlecount == text.count('`'):
+        if singlecount == text.count("`"):
             text = re.sub("(.|^)`([^']+)'", convertquotation, text)
         elif singlecount % 2 == 0:
             text = re.sub("(.|^)'([^']+)'", convertquotation, text)
-    text = re.sub('(.|^)“([^”]+)”', convertquotation, text)
+    text = re.sub("(.|^)“([^”]+)”", convertquotation, text)
     return text
 
 
@@ -89,7 +89,7 @@ class fa(common.Common):
     )
 
     ignoretests = {
-        'all': ["simplecaps", "startcaps"],
+        "all": ["simplecaps", "startcaps"],
     }
     # TODO: check persian numerics
     # TODO: zwj and zwnj?

@@ -43,7 +43,7 @@ class ProgressBar:
 
     def __init__(self, progress_type, allfiles):
         """Set up a progress bar appropriate to the progress_type and files."""
-        if progress_type in ('bar', 'verbose'):
+        if progress_type in ("bar", "verbose"):
             file_count = len(allfiles)
             self._progressbar = self.progress_types[progress_type](0, file_count)
             logger = logging.getLogger(os.path.basename(sys.argv[0])).getChild(
@@ -86,7 +86,7 @@ class ManHelpFormatter(optparse.HelpFormatter):
         """Return a comma-separated list of option strings & metavariables."""
         if option.takes_value():
             metavar = option.metavar or option.dest.upper()
-            metavar = '\\fI%s\\fP' % metavar
+            metavar = "\\fI%s\\fP" % metavar
             short_opts = [sopt + metavar for sopt in option._short_opts]
             long_opts = [lopt + "\\fR=\\fP" + metavar for lopt in option._long_opts]
         else:
@@ -98,7 +98,7 @@ class ManHelpFormatter(optparse.HelpFormatter):
         else:
             opts = long_opts + short_opts
 
-        return '\\fB%s\\fP' % ("\\fR, \\fP".join(opts))
+        return "\\fB%s\\fP" % ("\\fR, \\fP".join(opts))
 
 
 class StdoutWrapper:
@@ -110,7 +110,7 @@ class StdoutWrapper:
     def write(self, content):
         if isinstance(content, bytes):
             try:
-                self.out.write(content.decode('utf-8'))
+                self.out.write(content.decode("utf-8"))
             except UnicodeDecodeError:
                 self.out.write("Unable to write binary content to the terminal")
         else:
@@ -167,31 +167,31 @@ class RecursiveOptionParser(optparse.OptionParser):
             '.TH %s 1 "%s" "" "%s"\n'
             % (prog, formatToolkit(self.version), formatToolkit(self.version))
         )
-        result.append('.SH NAME\n')
+        result.append(".SH NAME\n")
         result.append(
-            '%s \\- %s\n' % (self.get_prog_name(), self.description.split('\n\n')[0])
+            "%s \\- %s\n" % (self.get_prog_name(), self.description.split("\n\n")[0])
         )
-        result.append('.SH SYNOPSIS\n')
-        result.append('.PP\n')
+        result.append(".SH SYNOPSIS\n")
+        result.append(".PP\n")
         usage = "\\fB%prog "
         usage += " ".join([self.getusageman(option) for option in self.option_list])
         usage += "\\fP"
-        result.append('%s\n' % formatprog(usage))
-        description_lines = self.description.split('\n\n')[1:]
+        result.append("%s\n" % formatprog(usage))
+        description_lines = self.description.split("\n\n")[1:]
         if description_lines:
-            result.append('.SH DESCRIPTION\n')
+            result.append(".SH DESCRIPTION\n")
             result.append(
-                '\n\n'.join(
-                    [re.sub(r'\.\. note::', 'Note:', l) for l in description_lines]
+                "\n\n".join(
+                    [re.sub(r"\.\. note::", "Note:", l) for l in description_lines]
                 )
             )
-        result.append('.SH OPTIONS\n')
+        result.append(".SH OPTIONS\n")
         ManHelpFormatter().store_option_strings(self)
-        result.append('.PP\n')
+        result.append(".PP\n")
         for option in self.option_list:
-            result.append('.TP\n')
-            result.append('%s\n' % str(option).replace('-', r'\-'))
-            result.append('%s\n' % option.help.replace('-', r'\-'))
+            result.append(".TP\n")
+            result.append("%s\n" % str(option).replace("-", r"\-"))
+            result.append("%s\n" % option.help.replace("-", r"\-"))
         return "".join(result)
 
     def print_manpage(self, file=None):
@@ -398,7 +398,7 @@ class RecursiveOptionParser(optparse.OptionParser):
         else:
             return "%s formats" % (", ".join(formats))
 
-    def isrecursive(self, fileoption, filepurpose='input'):
+    def isrecursive(self, fileoption, filepurpose="input"):
         """Checks if fileoption is a recursive file."""
         if fileoption is None:
             return False
@@ -434,7 +434,7 @@ class RecursiveOptionParser(optparse.OptionParser):
             self.error(
                 "You need to give an inputfile or use - for stdin ; use --help for full usage instructions"
             )
-        elif options.input == '-':
+        elif options.input == "-":
             options.input = None
         return (options, args)
 
@@ -543,10 +543,10 @@ class RecursiveOptionParser(optparse.OptionParser):
 
     def recursiveprocess(self, options):
         """Recurse through directories and process files."""
-        if self.isrecursive(options.input, 'input') and getattr(
+        if self.isrecursive(options.input, "input") and getattr(
             options, "allowrecursiveinput", True
         ):
-            if not self.isrecursive(options.output, 'output'):
+            if not self.isrecursive(options.output, "output"):
                 if not options.output:
                     self.error(optparse.OptionValueError("No output directory given"))
                 try:
@@ -571,11 +571,11 @@ class RecursiveOptionParser(optparse.OptionParser):
             else:
                 inputfiles = [options.input]
         options.recursiveoutput = self.isrecursive(
-            options.output, 'output'
+            options.output, "output"
         ) and getattr(options, "allowrecursiveoutput", True)
         options.recursivetemplate = (
             self.usetemplates
-            and self.isrecursive(options.template, 'template')
+            and self.isrecursive(options.template, "template")
             and getattr(options, "allowrecursivetemplate", True)
         )
         progress_bar = ProgressBar(options.progress, inputfiles)
@@ -630,13 +630,13 @@ class RecursiveOptionParser(optparse.OptionParser):
         """Opens the input file."""
         if fullinputpath is None:
             return sys.stdin
-        return open(fullinputpath, 'rb')
+        return open(fullinputpath, "rb")
 
     def openoutputfile(self, options, fulloutputpath):
         """Opens the output file."""
         if fulloutputpath is None:
             return StdoutWrapper()
-        return open(fulloutputpath, 'wb')
+        return open(fulloutputpath, "wb")
 
     def opentempoutputfile(self, options, fulloutputpath):
         """Opens a temporary output file."""
@@ -654,7 +654,7 @@ class RecursiveOptionParser(optparse.OptionParser):
         """Opens the template file (if required)."""
         if fulltemplatepath is not None:
             if os.path.isfile(fulltemplatepath):
-                return open(fulltemplatepath, 'rb')
+                return open(fulltemplatepath, "rb")
             else:
                 self.warning("missing template file %s" % fulltemplatepath)
         return None
@@ -732,7 +732,7 @@ class RecursiveOptionParser(optparse.OptionParser):
 
     def recurseinputfiles(self, options):
         """Recurse through directories and return files to be processed."""
-        dirstack = ['']
+        dirstack = [""]
         join = os.path.join
         inputfiles = []
         while dirstack:

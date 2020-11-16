@@ -69,9 +69,9 @@ logger = logging.getLogger(__name__)
 QM_MAGIC_NUMBER = (0x3CB86418, 0xCAEF9C95, 0xCD211CBF, 0x60A1BDDD)
 
 
-def qmunpack(file_='messages.qm'):
+def qmunpack(file_="messages.qm"):
     """Helper to unpack Qt .qm files into a Python string"""
-    with open(file_, 'rb') as fh:
+    with open(file_, "rb") as fh:
         s = fh.read()
         print("\\x%02x" * len(s) % tuple(map(ord, s)))
 
@@ -94,7 +94,7 @@ class qmfile(base.TranslationStore):
 
     def __init__(self, inputfile=None, **kwargs):
         super().__init__(**kwargs)
-        self.filename = ''
+        self.filename = ""
         if inputfile is not None:
             self.parsestring(inputfile)
 
@@ -104,10 +104,10 @@ class qmfile(base.TranslationStore):
 
     def parse(self, input):
         """Parses the given file or file source string."""
-        if hasattr(input, 'name'):
+        if hasattr(input, "name"):
             self.filename = input.name
-        elif not getattr(self, 'filename', ''):
-            self.filename = ''
+        elif not getattr(self, "filename", ""):
+            self.filename = ""
         if hasattr(input, "read"):
             qmsrc = input.read()
             input.close()
@@ -191,7 +191,7 @@ class qmfile(base.TranslationStore):
                     target = ""
                     pos = pos + 4
             elif subsection == 0x06:  # SourceText
-                source = input[pos + 4 : pos + 4 + length].decode('iso-8859-1')
+                source = input[pos + 4 : pos + 4 + length].decode("iso-8859-1")
                 pos = pos + 4 + length
             elif subsection == 0x07:  # Context
                 # context = input[pos + 4:pos + 4 + length].decode('iso-8859-1')

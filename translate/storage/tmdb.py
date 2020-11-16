@@ -276,12 +276,12 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
             unit_source = unit_source.decode("utf-8")
         if isinstance(source_langs, list):
             source_langs = [data.normalize_code(lang) for lang in source_langs]
-            source_langs = ','.join(source_langs)
+            source_langs = ",".join(source_langs)
         else:
             source_langs = data.normalize_code(source_langs)
         if isinstance(target_langs, list):
             target_langs = [data.normalize_code(lang) for lang in target_langs]
-            target_langs = ','.join(target_langs)
+            target_langs = ",".join(target_langs)
         else:
             target_langs = data.normalize_code(target_langs)
 
@@ -292,7 +292,7 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
 
         # split source into words, remove punctuation and special
         # chars, keep words that are at least 3 chars long
-        unit_words = STRIP_REGEXP.sub(' ', unit_source).split()
+        unit_words = STRIP_REGEXP.sub(" ", unit_source).split()
         unit_words = list(filter(lambda word: len(word) > 2, unit_words))
 
         if self.fulltext and len(unit_words) > 3:
@@ -317,13 +317,13 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
             if quality >= self.min_similarity:
                 results.append(
                     {
-                        'source': row[0],
-                        'target': row[1],
-                        'context': row[2],
-                        'quality': quality,
+                        "source": row[0],
+                        "target": row[1],
+                        "context": row[2],
+                        "quality": quality,
                     }
                 )
-        results.sort(key=lambda match: match['quality'], reverse=True)
+        results.sort(key=lambda match: match["quality"], reverse=True)
         results = results[: self.max_candidates]
         logging.debug("results: %s", str(results))
         return results

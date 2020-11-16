@@ -129,7 +129,7 @@ def main(argv=None):
         "",
         "--encoding",
         dest="encoding",
-        default='utf-8',
+        default="utf-8",
         type="string",
         help="The encoding of the input file (default: UTF-8)",
     )
@@ -158,5 +158,5 @@ def main(argv=None):
     parser.run(argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

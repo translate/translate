@@ -60,7 +60,7 @@ def getText(node, xml_space="preserve"):
     #    return unicode(string_xpath_normalized(node)) # specific to lxml.etree
 
 
-XML_NS = 'http://www.w3.org/XML/1998/namespace'
+XML_NS = "http://www.w3.org/XML/1998/namespace"
 
 
 def getXMLlang(node):
@@ -116,7 +116,7 @@ def normalize_xml_space(node, xml_space, remove_start=False):
     given xml_space parameter.
     """
     xml_space = getXMLspace(node) or xml_space
-    if xml_space == 'preserve':
+    if xml_space == "preserve":
         return
     if node.text:
         node.text = normalize_space(node.text)
@@ -155,7 +155,7 @@ def reindent(
         is_leave = leaves and elem.tag in leaves
         if (
             (not elem.text or not elem.text.strip())
-            and getXMLspace(elem) != 'preserve'
+            and getXMLspace(elem) != "preserve"
             and elem[0].tag is not etree.Entity
             and not is_leave
         ):
@@ -171,7 +171,7 @@ def reindent(
                 child.tail = i
     if toplevel:
         if not elem.tail or not elem.tail.strip():
-            elem.tail = ''
+            elem.tail = ""
     else:
         if not elem.tail or not elem.tail.strip():
             elem.tail = i

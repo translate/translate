@@ -9,19 +9,19 @@ from translate.storage import tiki
 class TestTikiUnit:
     def test_locations(self):
         unit = tiki.TikiUnit("one")
-        unit.addlocation('blah')
+        unit.addlocation("blah")
         assert unit.getlocations() == []
-        unit.addlocation('unused')
-        assert unit.getlocations() == ['unused']
+        unit.addlocation("unused")
+        assert unit.getlocations() == ["unused"]
 
     def test_to_unicode(self):
         unit = tiki.TikiUnit("one")
-        unit.target = 'two'
+        unit.target = "two"
         assert str(unit) == '"one" => "two",\n'
 
         unit2 = tiki.TikiUnit("one")
-        unit2.target = 'two'
-        unit2.addlocation('untranslated')
+        unit2.target = "two"
+        unit2.addlocation("untranslated")
         assert str(unit2) == '// "one" => "two",\n'
 
 

@@ -104,22 +104,22 @@ class TestStatsDb:
         f, cache = self.setup_file_and_db()
         cache.filestats(f.filename, checker)
         state = cache.recacheunit(f.filename, checker, f.units[1])
-        assert state == ['translated', 'total']
+        assert state == ["translated", "total"]
         cache.close()
 
     def test_unitstats(self):
         f, cache = self.setup_file_and_db(jtoolkit_extract)
         u = cache.unitstats(f.filename)
-        assert u['sourcewordcount'] == [3, 8, 11, 2, 9, 3]
+        assert u["sourcewordcount"] == [3, 8, 11, 2, 9, 3]
         cache.close()
 
     def test_filestats(self):
         f, cache = self.setup_file_and_db(jtoolkit_extract)
         s = cache.filestats(f.filename, checks.UnitChecker())
-        assert s['translated'] == [2, 3, 5]
-        assert s['fuzzy'] == [1, 4]
-        assert s['untranslated'] == [6]
-        assert s['total'] == [1, 2, 3, 4, 5, 6]
+        assert s["translated"] == [2, 3, 5]
+        assert s["fuzzy"] == [1, 4]
+        assert s["untranslated"] == [6]
+        assert s["total"] == [1, 2, 3, 4, 5, 6]
         cache.close()
 
     def make_file_and_return_id(self, cache, filename):

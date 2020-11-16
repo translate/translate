@@ -41,27 +41,27 @@ try:
     from translate.convert import moz2po, po2moz, po2prop, txt2po  # noqa: F401
 except ImportError:
     raise Exception(
-        'Could not find the Translate Toolkit convertion tools. Please check your installation.'
+        "Could not find the Translate Toolkit convertion tools. Please check your installation."
     )
 
-DEFAULT_TARGET_APP = 'browser'
-langpack_release = '1'
-targetapp = 'browser'
-mozversion = '3'
-l10ndir = 'l10n'
+DEFAULT_TARGET_APP = "browser"
+langpack_release = "1"
+targetapp = "browser"
+mozversion = "3"
+l10ndir = "l10n"
 mozilladir = "mozilla"
 podir = "po"
-podir_recover = podir + '-recover'
-podir_updated = podir + '-updated'
+podir_recover = podir + "-recover"
+podir_updated = podir + "-updated"
 potpacks = "potpacks"
-popacks = 'popacks'
+popacks = "popacks"
 #: Mapping of possible "targetapp"s to product names.
-products = {'browser': 'firefox'}
+products = {"browser": "firefox"}
 
-devnull = open(os.devnull, 'wb')
+devnull = open(os.devnull, "wb")
 #: Global program options
-options = {'verbose': True}
-USAGE = 'Usage: %prog [options] <langs...|ALL>'
+options = {"verbose": True}
+USAGE = "Usage: %prog [options] <langs...|ALL>"
 
 
 class CommandError(Exception):
@@ -92,8 +92,8 @@ def delfiles(pattern, path, files):
 
 
 def run(cmd, expected_status=0, stdout=None, stderr=None, shell=False):
-    if options['verbose']:
-        print('>>> %s $ %s' % (os.getcwd(), ' '.join(cmd)))
+    if options["verbose"]:
+        print(">>> %s $ %s" % (os.getcwd(), " ".join(cmd)))
     p = Popen(cmd, stdout=stdout, stderr=stderr, shell=shell)
     cmd_status = p.wait()
 
@@ -103,7 +103,7 @@ def run(cmd, expected_status=0, stdout=None, stderr=None, shell=False):
         print(p.stderr.read())
 
     if cmd_status != expected_status:
-        print('!!! "%s" returned unexpected status %d' % (' '.join(cmd), cmd_status))
+        print('!!! "%s" returned unexpected status %d' % (" ".join(cmd), cmd_status))
         # raise CommandError(cmd, cmd_status)
 
 
@@ -119,10 +119,10 @@ def get_langs(lang_args):
     langs = []
 
     if isinstance(lang_args, str):
-        if lang_args == 'ALL':
-            lang_args = ['ALL']
-        elif lang_args == 'ZA':
-            lang_args = ['ZA']
+        if lang_args == "ALL":
+            lang_args = ["ALL"]
+        elif lang_args == "ZA":
+            lang_args = ["ZA"]
         else:
             lang_args = []
 
@@ -131,16 +131,16 @@ def get_langs(lang_args):
         exit(1)
 
     for lang in lang_args:
-        if lang == 'ALL':
+        if lang == "ALL":
             # Get all available languages from the locales file
-            locales_filename = join(mozilladir, targetapp, 'locales', 'shipped-locales')
-            with open(locales_filename, 'r') as fh:
+            locales_filename = join(mozilladir, targetapp, "locales", "shipped-locales")
+            with open(locales_filename, "r") as fh:
                 for line in fh:
                     langcode = line.split()[0]
-                    if langcode != 'en-US':
+                    if langcode != "en-US":
                         langs.append(langcode)
 
-        elif lang == 'ZA':
+        elif lang == "ZA":
             # South African languages
             langs = langs + [
                 "af",
@@ -155,12 +155,12 @@ def get_langs(lang_args):
                 "xh",
                 "zu",
             ]
-        elif lang != 'en-US':
+        elif lang != "en-US":
             langs.append(lang)
 
     langs = list(set(langs))  # Remove duplicates from langs
 
-    print('Selected languages: %s' % (' '.join(langs)))
+    print("Selected languages: %s" % (" ".join(langs)))
 
     return langs
 
@@ -172,67 +172,67 @@ def checkout(cvstag, langs):
     """Check-out needed files from Mozilla's CVS."""
 
     olddir = os.getcwd()
-    if cvstag != '-A':
+    if cvstag != "-A":
         cvstag = "-r %s" % (cvstag)
 
     if not os.path.exists(mozilladir):
         run(
             [
-                'cvs',
-                '-d:pserver:anonymous@cvs-mirror.mozilla.org:/cvsroot',
-                'co',
+                "cvs",
+                "-d:pserver:anonymous@cvs-mirror.mozilla.org:/cvsroot",
+                "co",
                 cvstag,
-                join(mozilladir, 'client.mk'),
+                join(mozilladir, "client.mk"),
             ]
         )
         run(
             [
-                'cvs',
-                '-d:pserver:anonymous@cvs-mirror.mozilla.org:/cvsroot',
-                'co',
-                join(mozilladir, 'tools', 'l10n'),
+                "cvs",
+                "-d:pserver:anonymous@cvs-mirror.mozilla.org:/cvsroot",
+                "co",
+                join(mozilladir, "tools", "l10n"),
             ]
         )
 
     os.chdir(mozilladir)
-    run(['cvs', 'up', cvstag, 'client.mk'])
-    run(['make', '-f', 'client.mk', 'l10n-checkout', 'MOZ_CO_PROJECT=%s' % (targetapp)])
+    run(["cvs", "up", cvstag, "client.mk"])
+    run(["make", "-f", "client.mk", "l10n-checkout", "MOZ_CO_PROJECT=%s" % (targetapp)])
     os.chdir(olddir)
 
     if not os.path.exists(l10ndir):
         run(
             [
-                'cvs',
-                '-d:pserver:anonymous@cvs-mirror.mozilla.org:/l10n',
-                'co',
-                '-d',
+                "cvs",
+                "-d:pserver:anonymous@cvs-mirror.mozilla.org:/l10n",
+                "co",
+                "-d",
                 l10ndir,
-                '-l',
-                'l10n',
+                "-l",
+                "l10n",
             ]
         )
 
     os.chdir(l10ndir)
     for lang in langs:
-        print('    %s' % (lang))
-        buildlang = lang.replace('_', '-')
+        print("    %s" % (lang))
+        buildlang = lang.replace("_", "-")
         if os.path.isdir(buildlang):
-            run(['cvs', 'up', buildlang])
+            run(["cvs", "up", buildlang])
         else:
             run(
                 [
-                    'cvs',
-                    '-d:pserver:anonymous@cvs-mirror.mozilla.org:/l10n',
-                    'co',
-                    '-d',
+                    "cvs",
+                    "-d:pserver:anonymous@cvs-mirror.mozilla.org:/l10n",
+                    "co",
+                    "-d",
                     buildlang,
-                    join('l10n', buildlang),
+                    join("l10n", buildlang),
                 ]
             )
     os.chdir(olddir)
 
     # Make latest POT file
-    for rmdir in ('en-US', 'pot'):
+    for rmdir in ("en-US", "pot"):
         try:
             shutil.rmtree(join(l10ndir, rmdir))
         except OSError as oe:
@@ -242,54 +242,54 @@ def checkout(cvstag, langs):
                 raise oe
 
     os.chdir(mozilladir)
-    run(['cvs', 'up', join('tools', 'l10n')])
+    run(["cvs", "up", join("tools", "l10n")])
     run(
         [
-            'python',
-            'tools/l10n/l10n.py',
-            '--dest=' + join(os.pardir, l10ndir),
-            '--app=' + targetapp,
-            'en-US',
+            "python",
+            "tools/l10n/l10n.py",
+            "--dest=" + join(os.pardir, l10ndir),
+            "--app=" + targetapp,
+            "en-US",
         ]
     )
     os.chdir(olddir)
 
     os.chdir(l10ndir)
-    run(['moz2po', '--progress=none', '-P', '--duplicates=msgctxt', 'en-US', 'pot'])
+    run(["moz2po", "--progress=none", "-P", "--duplicates=msgctxt", "en-US", "pot"])
 
     # Delete the help-related POT-files, seeing as Firefox help is now on-line.
     try:
-        shutil.rmtree(join('pot', 'browser', 'chrome', 'help'))
+        shutil.rmtree(join("pot", "browser", "chrome", "help"))
     except OSError as oe:
         # "No such file or directory" errors are fine. The rest we raise again.
         if oe.errno != 2:
             raise oe
 
-    if mozversion < '3':
+    if mozversion < "3":
         for f in [
-            'en-US/browser/README.txt pot/browser/README.txt.pot',
-            'en-US/browser/os2/README.txt pot/browser/os2/README.txt.pot',
-            'en-US/mail/README.txt pot/mail/README.txt.pot',
-            'en-US/mail/os2/README.txt pot/mail/os2/README.txt.pot',
+            "en-US/browser/README.txt pot/browser/README.txt.pot",
+            "en-US/browser/os2/README.txt pot/browser/os2/README.txt.pot",
+            "en-US/mail/README.txt pot/mail/README.txt.pot",
+            "en-US/mail/os2/README.txt pot/mail/os2/README.txt.pot",
         ]:
-            run(['txt2po', '--progress=none', '-P', f])
+            run(["txt2po", "--progress=none", "-P", f])
     os.chdir(olddir)
 
 
 def recover_lang(lang, buildlang):
-    print('    %s' % (lang))
+    print("    %s" % (lang))
     if not os.path.isdir(join(podir_recover, buildlang)):
         os.makedirs(join(podir_recover, buildlang))
 
     run(
         [
-            'moz2po',
-            '--progress=none',
-            '--errorlevel=traceback',
-            '--duplicates=msgctxt',
+            "moz2po",
+            "--progress=none",
+            "--errorlevel=traceback",
+            "--duplicates=msgctxt",
             '--exclude=".#*"',
-            '-t',
-            join(l10ndir, 'en-US'),
+            "-t",
+            join(l10ndir, "en-US"),
             join(l10ndir, buildlang),
             join(podir_recover, buildlang),
         ]
@@ -297,7 +297,7 @@ def recover_lang(lang, buildlang):
 
 
 def pack_pot(includes):
-    timestamp = time.strftime('%Y%m%d')
+    timestamp = time.strftime("%Y%m%d")
 
     inc = []
     for fn in includes:
@@ -311,56 +311,56 @@ def pack_pot(includes):
     except OSError:
         pass
 
-    packname = join(potpacks, '%s-%s-%s' % (products[targetapp], mozversion, timestamp))
+    packname = join(potpacks, "%s-%s-%s" % (products[targetapp], mozversion, timestamp))
     run(
         [
-            'tar',
-            'cjf',
-            packname + '.tar.bz2',
-            join(l10ndir, 'en-US'),
-            join(l10ndir, 'pot'),
+            "tar",
+            "cjf",
+            packname + ".tar.bz2",
+            join(l10ndir, "en-US"),
+            join(l10ndir, "pot"),
         ]
         + inc
     )
     run(
-        ['zip', '-qr9', packname + '.zip', join(l10ndir, 'en-US'), join(l10ndir, 'pot')]
+        ["zip", "-qr9", packname + ".zip", join(l10ndir, "en-US"), join(l10ndir, "pot")]
         + inc
     )
 
 
 def pack_po(lang, buildlang):
-    timestamp = time.strftime('%Y%m%d')
+    timestamp = time.strftime("%Y%m%d")
 
     try:
         os.makedirs(popacks)
     except OSError:
         pass
 
-    print('    %s' % (lang))
+    print("    %s" % (lang))
     packname = join(
-        popacks, '%s-%s-%s-%s' % (products[targetapp], mozversion, buildlang, timestamp)
+        popacks, "%s-%s-%s-%s" % (products[targetapp], mozversion, buildlang, timestamp)
     )
     run(
         [
-            'tar',
-            'cjf',
-            packname + '.tar.bz2',
-            '--exclude',
-            '.svn',
+            "tar",
+            "cjf",
+            packname + ".tar.bz2",
+            "--exclude",
+            ".svn",
             join(l10ndir, buildlang),
             join(podir, buildlang),
         ]
     )
     run(
         [
-            'zip',
-            '-qr9',
-            packname + '.zip',
+            "zip",
+            "-qr9",
+            packname + ".zip",
             join(l10ndir, buildlang),
             join(podir, buildlang),
         ],
-        '-x',
-        '*.svn*',
+        "-x",
+        "*.svn*",
     )
 
 
@@ -372,17 +372,17 @@ def pre_po2moz_hacks(lang, buildlang, debug):
     shutil.copytree(join(podir, buildlang), join(temp_po, buildlang))
 
     # Fix for languages that have no Windows codepage
-    if lang == 've':
-        srcs = glob.glob(join(podir, 'en_ZA', 'browser', 'installer', '*.properties'))
-        dest = join(temp_po, buildlang, 'browser', 'installer')
+    if lang == "ve":
+        srcs = glob.glob(join(podir, "en_ZA", "browser", "installer", "*.properties"))
+        dest = join(temp_po, buildlang, "browser", "installer")
 
         for src in srcs:
             shutil.copy2(src, dest)
 
     old = join(temp_po, buildlang)
     new = join(podir_updated, buildlang)
-    templates = join(l10ndir, 'pot')
-    run(['pomigrate2', '--use-compendium', '--quiet', '--pot2po', old, new, templates])
+    templates = join(l10ndir, "pot")
+    run(["pomigrate2", "--use-compendium", "--quiet", "--pot2po", old, new, templates])
 
     for dirpath, dirnames, filenames in os.walk(join(podir_updated, buildlang)):
         delfiles("*.html.po", dirpath, dirnames + filenames)
@@ -393,12 +393,12 @@ def pre_po2moz_hacks(lang, buildlang, debug):
         os.chdir(join("%s" % (podir_updated), buildlang))
         run(
             [
-                'podebug',
-                '--progress=none',
-                '--errorlevel=traceback',
-                '--ignore=mozilla',
-                '.',
-                '.',
+                "podebug",
+                "--progress=none",
+                "--errorlevel=traceback",
+                "--ignore=mozilla",
+                ".",
+                ".",
             ]
         )
         os.chdir(olddir)
@@ -416,22 +416,22 @@ def post_po2moz_hacks(lang, buildlang):
     """Hacks that should be run after running C{po2moz}."""
 
     # Hack to fix creating Thunderber installer
-    inst_inc_po = join(podir_updated, lang, 'mail', 'installer', 'installer.inc.po')
+    inst_inc_po = join(podir_updated, lang, "mail", "installer", "installer.inc.po")
     if os.path.isfile(inst_inc_po):
         tempdir = tempfile.mkdtemp()
-        tmp_po = join(tempdir, 'installer.%s.properties.po' % (lang))
+        tmp_po = join(tempdir, "installer.%s.properties.po" % (lang))
         shutil.copy2(inst_inc_po, tmp_po)
 
-        inst_inc = join(l10ndir, 'en-US', 'mail', 'installer', 'installer.inc')
-        tmp_properties = join(tempdir, 'installer.properties')
+        inst_inc = join(l10ndir, "en-US", "mail", "installer", "installer.inc")
+        tmp_properties = join(tempdir, "installer.properties")
         shutil.copy2(inst_inc, tmp_properties)
 
         run(
             [
-                'po2prop',
-                '--progress=none',
-                '--errorlevel=traceback',
-                '-t',
+                "po2prop",
+                "--progress=none",
+                "--errorlevel=traceback",
+                "-t",
                 tmp_properties,  # -t /tmp/installer.properties
                 tmp_po,  # /tmp/installer.$lang.properties.po
                 tmp_po[:-3],
@@ -441,13 +441,13 @@ def post_po2moz_hacks(lang, buildlang):
         # mv /tmp/installer.$lang.properties \
         #    $l10ndir/$buildlang/mail/installer/installer.inc
         shutil.move(
-            tmp_po[:-3], join(l10ndir, buildlang, 'mail', 'installer', 'installer.inc')
+            tmp_po[:-3], join(l10ndir, buildlang, "mail", "installer", "installer.inc")
         )
 
         shutil.rmtree(tempdir)
 
     def copyfile(filename, language):
-        enUS = join(l10ndir, 'en-US')
+        enUS = join(l10ndir, "en-US")
         dir, filename = os.path.split(filename)
 
         if dir.startswith(enUS):
@@ -467,27 +467,27 @@ def post_po2moz_hacks(lang, buildlang):
                     copyfile(join(dirpath, f), language)
 
     # Copy and update non-translatable files
-    for ft in ('.xhtml', '.html', '.rdf'):
+    for ft in (".xhtml", ".html", ".rdf"):
         copyfiletype(ft, buildlang)
 
     for f in (
-        join('browser', 'extra-jar.mn'),
-        join('browser', 'firefox-l10n.js'),
-        join('browser', 'README.txt'),
-        join('browser', 'microsummary-generators', 'list.txt'),
-        join('browser', 'profile', 'chrome', 'userChrome-example.css'),
-        join('browser', 'profile', 'chrome', 'userContent-example.css'),
-        join('browser', 'searchplugins', 'list.txt'),
-        join('extensions', 'reporter', 'chrome', 'reporterOverlay.properties'),
-        join('mail', 'all-l10n.js'),
-        join('toolkit', 'chrome', 'global', 'intl.css'),
-        join('toolkit', 'installer', 'windows', 'charset.mk'),
+        join("browser", "extra-jar.mn"),
+        join("browser", "firefox-l10n.js"),
+        join("browser", "README.txt"),
+        join("browser", "microsummary-generators", "list.txt"),
+        join("browser", "profile", "chrome", "userChrome-example.css"),
+        join("browser", "profile", "chrome", "userContent-example.css"),
+        join("browser", "searchplugins", "list.txt"),
+        join("extensions", "reporter", "chrome", "reporterOverlay.properties"),
+        join("mail", "all-l10n.js"),
+        join("toolkit", "chrome", "global", "intl.css"),
+        join("toolkit", "installer", "windows", "charset.mk"),
     ):
         copyfile(f, buildlang)
 
 
 def migrate_lang(lang, buildlang, recover, update_transl, debug):
-    print('    %s' % (lang))
+    print("    %s" % (lang))
 
     if recover and not os.path.isdir(join(podir, buildlang)):
         # If we recovered the .po files for lang, but there is no other po
@@ -504,17 +504,17 @@ def migrate_lang(lang, buildlang, recover, update_transl, debug):
     if update_transl:
         olddir = os.getcwd()
         os.chdir(podir)
-        run(['svn', 'up', buildlang])
+        run(["svn", "up", buildlang])
         os.chdir(olddir)
 
         os.chdir(l10ndir)
-        run(['cvs', 'up', buildlang])
+        run(["cvs", "up", buildlang])
         os.chdir(olddir)
 
     # Migrate language from current PO to latest POT
-    if os.path.isdir(join(podir, '.svn')):
-        shutil.rmtree(join(podir_updated, '.svn'))
-        shutil.copytree(join(podir, '.svn'), podir_updated)
+    if os.path.isdir(join(podir, ".svn")):
+        shutil.rmtree(join(podir_updated, ".svn"))
+        shutil.copytree(join(podir, ".svn"), podir_updated)
     if os.path.isdir(join(podir_updated, buildlang)):
         shutil.rmtree(join(podir_updated, buildlang))
     shutil.copytree(join(podir, buildlang), join(podir_updated, buildlang))
@@ -526,41 +526,41 @@ def migrate_lang(lang, buildlang, recover, update_transl, debug):
 
     ###################################################
     args = [
-        '--progress=none',
-        '--errorlevel=traceback',
+        "--progress=none",
+        "--errorlevel=traceback",
         '--exclude=".svn"',
-        '-t',
-        join(l10ndir, 'en-US'),
-        '-i',
+        "-t",
+        join(l10ndir, "en-US"),
+        "-i",
         join(podir_updated, buildlang),
-        '-o',
+        "-o",
         join(l10ndir, buildlang),
     ]
 
     if debug:
-        args.append('--fuzzy')
+        args.append("--fuzzy")
 
-    run(['po2moz'] + args)
+    run(["po2moz"] + args)
     ###################################################
 
     post_po2moz_hacks(lang, buildlang)
 
     # Clean up where we made real tabs \t
-    if mozversion < '3':
+    if mozversion < "3":
         run(
             [
-                'sed',
-                '-i',
+                "sed",
+                "-i",
                 '"/^USAGE_MSG/s/\\\t/\t/g"',
-                join(l10ndir, buildlang, 'toolkit', 'installer', 'unix', 'install.it'),
+                join(l10ndir, buildlang, "toolkit", "installer", "unix", "install.it"),
             ]
         )
         run(
             [
-                'sed',
-                '-i',
+                "sed",
+                "-i",
                 '"/^#define MSG_USAGE/s/\\\t/\t/g"',
-                join(l10ndir, buildlang, 'browser', 'installer', 'installer.inc'),
+                join(l10ndir, buildlang, "browser", "installer", "installer.inc"),
             ]
         )
 
@@ -569,10 +569,10 @@ def migrate_lang(lang, buildlang, recover, update_transl, debug):
     # already
     run(
         [
-            'sed',
-            '-i',
-            's/en-US/%s/g' % (buildlang),
-            join(l10ndir, buildlang, 'browser', 'profile', 'bookmarks.html'),
+            "sed",
+            "-i",
+            "s/en-US/%s/g" % (buildlang),
+            join(l10ndir, buildlang, "browser", "profile", "bookmarks.html"),
         ]
     )
 
@@ -580,26 +580,26 @@ def migrate_lang(lang, buildlang, recover, update_transl, debug):
 def create_diff(lang, buildlang):
     """Create CVS-diffs for all languages."""
 
-    if not os.path.isdir('diff'):
-        os.mkdir('diff')
+    if not os.path.isdir("diff"):
+        os.mkdir("diff")
 
-    print('    %s' % (lang))
+    print("    %s" % (lang))
     olddir = os.getcwd()
 
     os.chdir(l10ndir)
-    outfile = join(os.pardir, 'diff', buildlang + '-l10n.diff')
-    with open(outfile, 'w') as fh:
-        run(['cvs', 'diff', '--newfile', buildlang], stdout=fh)
+    outfile = join(os.pardir, "diff", buildlang + "-l10n.diff")
+    with open(outfile, "w") as fh:
+        run(["cvs", "diff", "--newfile", buildlang], stdout=fh)
     os.chdir(olddir)
 
     os.chdir(join(podir_updated, buildlang))
-    outfile = join(os.pardir, os.pardir, 'diff', buildlang + '-po.diff')
-    with open(outfile, 'w') as fh:
+    outfile = join(os.pardir, os.pardir, "diff", buildlang + "-po.diff")
+    with open(outfile, "w") as fh:
         run(
             [
-                'svn',
-                'diff',
-                '--diff-cmd',
+                "svn",
+                "diff",
+                "--diff-cmd",
                 r'diff -x "-u --ignore-matching-lines=^\"POT\|^\"X-Gene"',
             ],
             stdout=fh,
@@ -610,36 +610,36 @@ def create_diff(lang, buildlang):
 def create_langpack(lang, buildlang):
     """Builds a XPI and installers for languages."""
 
-    print('    %s' % (lang))
+    print("    %s" % (lang))
 
     olddir = os.getcwd()
 
     os.chdir(mozilladir)
     run(
         [
-            './configure',
-            '--disable-compile-environment',
-            '--disable-xft',
-            '--enable-application=%s' % (targetapp),
+            "./configure",
+            "--disable-compile-environment",
+            "--disable-xft",
+            "--enable-application=%s" % (targetapp),
         ]
     )
     os.chdir(olddir)
 
-    os.chdir(join(mozilladir, targetapp, 'locales'))
-    langpack_name = 'langpack-' + buildlang
-    moz_brand_dir = join('other-licenses', 'branding', 'firefox')
+    os.chdir(join(mozilladir, targetapp, "locales"))
+    langpack_name = "langpack-" + buildlang
+    moz_brand_dir = join("other-licenses", "branding", "firefox")
     langpack_file = join(
         "'$(_ABS_DIST)'",
-        'install',
+        "install",
         "Firefox-Languagepack-'$(MOZ_APP_VERSION)'-%s.'$(AB_CD)'.xpi"
         % langpack_release,
     )
     run(
         [
-            'make',
+            "make",
             langpack_name,
-            'MOZ_BRANDING_DIRECTORY=' + moz_brand_dir,
-            'LANGPACK_FILE=' + langpack_file,
+            "MOZ_BRANDING_DIRECTORY=" + moz_brand_dir,
+            "LANGPACK_FILE=" + langpack_file,
         ]
     )
     # The commented out (and very long) line below was found commented
@@ -656,92 +656,92 @@ def create_option_parser():
     parser = ArgumentParser(usage=USAGE)
 
     parser.add_argument(
-        '-q',
-        '--quiet',
-        dest='verbose',
-        action='store_false',
+        "-q",
+        "--quiet",
+        dest="verbose",
+        action="store_false",
         default=True,
-        help='Print as little as possible output.',
+        help="Print as little as possible output.",
     )
     parser.add_argument(
-        '--mozilla-product',
-        dest='mozproduct',
+        "--mozilla-product",
+        dest="mozproduct",
         default=DEFAULT_TARGET_APP,
-        help='Which product to build',
+        help="Which product to build",
     )
     parser.add_argument(
-        '--mozilla-checkout',
-        dest='mozcheckout',
-        action='store_true',
+        "--mozilla-checkout",
+        dest="mozcheckout",
+        action="store_true",
         default=False,
         help="Update of the Mozilla l10n files and POT files",
     )
     parser.add_argument(
-        '--recover',
-        dest='recover',
-        action='store_true',
+        "--recover",
+        dest="recover",
+        action="store_true",
         default=False,
         help="build PO files from Mozilla's l10n files",
     )
     parser.add_argument(
-        '--mozilla-tag',
-        dest='moztag',
-        default='-A',
-        help='The tag to check out of CVS (implies --mozilla-checkout)',
+        "--mozilla-tag",
+        dest="moztag",
+        default="-A",
+        help="The tag to check out of CVS (implies --mozilla-checkout)",
     )
     parser.add_argument(
-        '--update-translations',
-        dest='update_translations',
-        action='store_true',
+        "--update-translations",
+        dest="update_translations",
+        action="store_true",
         default=False,
         help="Update translations",
     )
     parser.add_argument(
-        '--diff',
-        dest='diff',
-        action='store_true',
+        "--diff",
+        dest="diff",
+        action="store_true",
         default=False,
-        help='Create diffs for migrated translations and localized Mozilla files',
+        help="Create diffs for migrated translations and localized Mozilla files",
     )
     parser.add_argument(
-        '--potpack',
-        dest='potpack',
-        action='store_true',
+        "--potpack",
+        dest="potpack",
+        action="store_true",
         default=False,
         help="Create packages of the en-US and POT directories with today's timestamp",
     )
     parser.add_argument(
-        '--pot-include',
-        dest='potincl',
-        action='append',
+        "--pot-include",
+        dest="potincl",
+        action="append",
         default=[],
-        help='Files to include in the POT pack (only used with --potpack)',
+        help="Files to include in the POT pack (only used with --potpack)",
     )
     parser.add_argument(
-        '--nomigrate',
-        dest='migrate',
-        action='store_false',
+        "--nomigrate",
+        dest="migrate",
+        action="store_false",
         default=True,
         help="Don't migrate",
     )
     parser.add_argument(
-        '--popack',
-        dest='popack',
-        action='store_true',
+        "--popack",
+        dest="popack",
+        action="store_true",
         default=False,
         help="Create packages of all specified languages' PO-files with today's timestamp",
     )
     parser.add_argument(
-        '--langpack',
-        dest='langpack',
-        action='store_true',
+        "--langpack",
+        dest="langpack",
+        action="store_true",
         default=False,
         help="Build a langpack",
     )
     parser.add_argument(
-        '--debug',
-        dest='debug',
-        action='store_true',
+        "--debug",
+        dest="debug",
+        action="store_true",
         default=False,
         help="Add podebug debug markers",
     )
@@ -750,10 +750,10 @@ def create_option_parser():
 
 
 def main(
-    langs=['ALL'],
-    mozproduct='browser',
+    langs=["ALL"],
+    mozproduct="browser",
     mozcheckout=False,
-    moztag='-A',
+    moztag="-A",
     recover=False,
     potpack=False,
     potincl=[],
@@ -766,42 +766,42 @@ def main(
     verbose=True,
 ):
     global options, targetapp
-    options['verbose'] = verbose
+    options["verbose"] = verbose
     targetapp = mozproduct
     langs = get_langs(langs)
 
     if mozcheckout:
-        print('Checking out')
+        print("Checking out")
         checkout(moztag, langs)
 
     if potpack:
-        print('Packing POT files')
+        print("Packing POT files")
         pack_pot(potincl)
 
     for lang in langs:
-        buildlang = lang.replace('_', '-')
+        buildlang = lang.replace("_", "-")
 
         if recover:
-            print('Recovering')
+            print("Recovering")
             recover_lang(lang, buildlang)
 
         if migrate:
-            print('Migrating')
+            print("Migrating")
             migrate_lang(lang, buildlang, recover, update_trans, debug)
 
         if popack:
-            print('Creating PO-packs')
+            print("Creating PO-packs")
             pack_po(lang, buildlang)
 
         if diff:
-            print('Creating diffs')
+            print("Creating diffs")
             create_diff(lang, buildlang)
 
         if langpack:
-            print('Creating langpacks')
+            print("Creating langpacks")
             create_langpack(lang, buildlang)
 
-    print('FIN')
+    print("FIN")
     devnull.close()
 
 
@@ -826,5 +826,5 @@ def main_cmd_line():
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main_cmd_line()

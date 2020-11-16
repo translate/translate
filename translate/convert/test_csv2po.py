@@ -35,41 +35,41 @@ class TestCSV2PO:
 
     def test_simpleentity(self):
         """checks that a simple csv entry definition converts properly to a po entry"""
-        csvheader = 'location,source,target\n'
-        csvsource = 'intl.charset.default,ISO-8859-1,UTF-16'
+        csvheader = "location,source,target\n"
+        csvsource = "intl.charset.default,ISO-8859-1,UTF-16"
         # Headerless
         pofile = self.csv2po(csvsource)
         pounit = self.singleelement(pofile)
         # With header
         pofile = self.csv2po(csvheader + csvsource)
         pounit = self.singleelement(pofile)
-        assert pounit.getlocations() == ['intl.charset.default']
+        assert pounit.getlocations() == ["intl.charset.default"]
         assert pounit.source == "ISO-8859-1"
         assert pounit.target == "UTF-16"
 
     def test_simpleentity_with_template(self):
         """checks that a simple csv entry definition converts properly to a po entry"""
-        csvsource = '''location,original,translation
-intl.charset.default,ISO-8859-1,UTF-16'''
-        potsource = '''#: intl.charset.default
+        csvsource = """location,original,translation
+intl.charset.default,ISO-8859-1,UTF-16"""
+        potsource = """#: intl.charset.default
 msgid "ISO-8859-1"
 msgstr ""
-'''
+"""
         pofile = self.csv2po(csvsource, potsource)
         pounit = self.singleelement(pofile)
-        assert pounit.getlocations() == ['intl.charset.default']
+        assert pounit.getlocations() == ["intl.charset.default"]
         assert pounit.source == "ISO-8859-1"
         assert pounit.target == "UTF-16"
 
     def test_newlines(self):
         """tests multiline po entries"""
-        minicsv = r'''"Random comment
+        minicsv = r""""Random comment
 with continuation","Original text","Langdradige teks
 wat lank aanhou"
-'''
+"""
         pofile = self.csv2po(minicsv)
         unit = self.singleelement(pofile)
-        assert unit.getlocations() == ['Random comment\nwith continuation']
+        assert unit.getlocations() == ["Random comment\nwith continuation"]
         assert unit.source == "Original text"
         print(unit.target)
         assert unit.target == "Langdradige teks\nwat lank aanhou"
@@ -107,7 +107,7 @@ wat lank aanhou"
 
     def test_empties(self):
         """Tests that things keep working with empty entries"""
-        minicsv = ',SomeSource,'
+        minicsv = ",SomeSource,"
         pofile = self.csv2po(minicsv)
         assert pofile.findunit("SomeSource") is not None
         assert pofile.findunit("SomeSource").target == ""
@@ -115,16 +115,16 @@ wat lank aanhou"
 
     def test_kdecomment(self):
         """checks that we can merge into KDE comment entries"""
-        csvsource = '''location,source,target
-simple.c,Source,Target'''
-        potsource = r'''#: simple.c
+        csvsource = """location,source,target
+simple.c,Source,Target"""
+        potsource = r"""#: simple.c
 msgid "_: KDE comment\n"
 "Source"
 msgstr ""
-'''
+"""
         pofile = self.csv2po(csvsource, potsource)
         pounit = self.singleelement(pofile)
-        assert pounit._extract_msgidcomments() == 'KDE comment'
+        assert pounit._extract_msgidcomments() == "KDE comment"
         assert pounit.source == "Source"
         assert pounit.target == "Target"
 

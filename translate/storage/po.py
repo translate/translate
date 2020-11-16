@@ -30,7 +30,7 @@ import os
 import platform
 
 
-usecpo = os.getenv('USECPO')
+usecpo = os.getenv("USECPO")
 
 if platform.python_implementation() == "CPython":
     if usecpo == "1":

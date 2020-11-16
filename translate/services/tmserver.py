@@ -85,13 +85,13 @@ class TMServer:
 
     @selector.opliant
     def translate_unit(self, environ, start_response, uid, slang, tlang):
-        start_response("200 OK", [('Content-type', 'text/plain')])
+        start_response("200 OK", [("Content-type", "text/plain")])
         candidates = self.tmdb.translate_unit(uid, slang, tlang)
         logging.debug("candidates: %s", str(candidates))
-        response = json.dumps(candidates, indent=4).encode('utf-8')
-        params = parse.parse_qs(environ.get('QUERY_STRING', ''))
+        response = json.dumps(candidates, indent=4).encode("utf-8")
+        params = parse.parse_qs(environ.get("QUERY_STRING", ""))
         try:
-            callback = params.get('callback', [])[0]
+            callback = params.get("callback", [])[0]
             response = "%s(%s)" % (callback, response)
         except IndexError:
             pass
@@ -99,28 +99,28 @@ class TMServer:
 
     @selector.opliant
     def add_unit(self, environ, start_response, uid, slang, tlang):
-        start_response("200 OK", [('Content-type', 'text/plain')])
+        start_response("200 OK", [("Content-type", "text/plain")])
         # uid = unicode(urllib.unquote_plus(uid), "utf-8")
-        data = json.loads(environ['wsgi.input'].read(int(environ['CONTENT_LENGTH'])))
-        unit = base.TranslationUnit(data['source'])
-        unit.target = data['target']
+        data = json.loads(environ["wsgi.input"].read(int(environ["CONTENT_LENGTH"])))
+        unit = base.TranslationUnit(data["source"])
+        unit.target = data["target"]
         self.tmdb.add_unit(unit, slang, tlang)
         return [""]
 
     @selector.opliant
     def update_unit(self, environ, start_response, uid, slang, tlang):
-        start_response("200 OK", [('Content-type', 'text/plain')])
+        start_response("200 OK", [("Content-type", "text/plain")])
         # uid = unicode(urllib.unquote_plus(uid), "utf-8")
-        data = json.loads(environ['wsgi.input'].read(int(environ['CONTENT_LENGTH'])))
-        unit = base.TranslationUnit(data['source'])
-        unit.target = data['target']
+        data = json.loads(environ["wsgi.input"].read(int(environ["CONTENT_LENGTH"])))
+        unit = base.TranslationUnit(data["source"])
+        unit.target = data["target"]
         self.tmdb.add_unit(unit, slang, tlang)
         return [""]
 
     @selector.opliant
     def forget_unit(self, environ, start_response, uid):
         # FIXME: implement me
-        start_response("200 OK", [('Content-type', 'text/plain')])
+        start_response("200 OK", [("Content-type", "text/plain")])
         # uid = unicode(urllib.unquote_plus(uid), "utf-8")
 
         return ["FIXME"]
@@ -128,7 +128,7 @@ class TMServer:
     @selector.opliant
     def get_store_stats(self, environ, start_response, sid):
         # FIXME: implement me
-        start_response("200 OK", [('Content-type', 'text/plain')])
+        start_response("200 OK", [("Content-type", "text/plain")])
         # sid = unicode(urllib.unquote_plus(sid), "utf-8")
 
         return ["FIXME"]
@@ -138,8 +138,8 @@ class TMServer:
         """add units from uploaded file to tmdb"""
         from translate.storage import factory
 
-        start_response("200 OK", [('Content-type', 'text/plain')])
-        data = BytesIO(environ['wsgi.input'].read(int(environ['CONTENT_LENGTH'])))
+        start_response("200 OK", [("Content-type", "text/plain")])
+        data = BytesIO(environ["wsgi.input"].read(int(environ["CONTENT_LENGTH"])))
         data.name = sid
         store = factory.getobject(data)
         count = self.tmdb.add_store(store, slang, tlang)
@@ -149,8 +149,8 @@ class TMServer:
     @selector.opliant
     def add_store(self, environ, start_response, sid, slang, tlang):
         """Add unit from POST data to tmdb."""
-        start_response("200 OK", [('Content-type', 'text/plain')])
-        units = json.loads(environ['wsgi.input'].read(int(environ['CONTENT_LENGTH'])))
+        start_response("200 OK", [("Content-type", "text/plain")])
+        units = json.loads(environ["wsgi.input"].read(int(environ["CONTENT_LENGTH"])))
         count = self.tmdb.add_list(units, slang, tlang)
         response = "added %d units from %s" % (count, sid)
         return [response]
@@ -158,7 +158,7 @@ class TMServer:
     @selector.opliant
     def forget_store(self, environ, start_response, sid):
         # FIXME: implement me
-        start_response("200 OK", [('Content-type', 'text/plain')])
+        start_response("200 OK", [("Content-type", "text/plain")])
         # sid = unicode(urllib.unquote_plus(sid), "utf-8")
 
         return ["FIXME"]
@@ -239,10 +239,10 @@ def main():
     args = parser.parse_args()
 
     # setup debugging
-    format = '%(asctime)s %(levelname)s %(message)s'
+    format = "%(asctime)s %(levelname)s %(message)s"
     level = args.debug and logging.DEBUG or logging.WARNING
     if args.debug:
-        format = '%(levelname)7s %(module)s.%(funcName)s:%(lineno)d: %(message)s'
+        format = "%(levelname)7s %(module)s.%(funcName)s:%(lineno)d: %(message)s"
 
     logging.basicConfig(level=level, format=format)
 
@@ -259,5 +259,5 @@ def main():
     wsgi.launch_server(args.bind, args.port, application.rest)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

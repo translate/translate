@@ -42,7 +42,7 @@ class TestLang2PO:
 
     def _convert_to_string(self, *args, **kwargs):
         """Helper that converts to target format string without using files."""
-        return self._convert(*args, **kwargs)[1].getvalue().decode('utf-8')
+        return self._convert(*args, **kwargs)[1].getvalue().decode("utf-8")
 
     def _single_element(self, po_store):
         """Helper to check store has one non-header unit, and return it."""
@@ -57,7 +57,7 @@ class TestLang2PO:
 
     def test_convert_empty(self):
         """Check converting empty file returns no output."""
-        assert self._convert_to_string('', success_expected=False) == ''
+        assert self._convert_to_string("", success_expected=False) == ""
 
     def test_simple_string(self):
         """Check that a simple lang string converts correctly."""
@@ -110,13 +110,13 @@ Een
 
     def test_keep_duplicates(self):
         """Check converting keeps duplicates."""
-        input_string = '''
+        input_string = """
 ;One
 Un
 
 ;One
 Dous
-'''
+"""
         target_store = self._convert_to_store(input_string, duplicate_style="msgctxt")
         assert self._count_elements(target_store) == 2
         assert target_store.units[1].source == "One"
@@ -126,13 +126,13 @@ Dous
 
     def test_drop_duplicates(self):
         """Check converting drops duplicates."""
-        input_string = '''
+        input_string = """
 ;One
 Un
 
 ;One
 Dous
-'''
+"""
         target_store = self._convert_to_store(input_string, duplicate_style="merge")
         assert self._count_elements(target_store) == 1
         assert target_store.units[1].source == "One"

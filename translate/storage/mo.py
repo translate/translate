@@ -49,9 +49,9 @@ from translate.storage import base, poheader
 MO_MAGIC_NUMBER = 0x950412DE
 
 
-def mounpack(filename='messages.mo'):
+def mounpack(filename="messages.mo"):
     """Helper to unpack Gettext MO files into a Python string"""
-    with open(filename, 'rb') as fh:
+    with open(filename, "rb") as fh:
         s = fh.read()
         print("\\x%02x" * len(s) % tuple(map(ord, s)))
 
@@ -139,7 +139,7 @@ class mofile(poheader.poheader, base.TranslationStore):
 
     def __init__(self, inputfile=None, **kwargs):
         super().__init__(**kwargs)
-        self.filename = ''
+        self.filename = ""
         if inputfile is not None:
             self.parsestring(inputfile)
 
@@ -163,8 +163,8 @@ class mofile(poheader.poheader, base.TranslationStore):
                 hash_cursor = hash_cursor % S
                 assert hash_cursor != orig_hash_cursor
 
-        def lst_encode(lst, join_char=b''):
-            return join_char.join([i.encode('utf-8') for i in lst])
+        def lst_encode(lst, join_char=b""):
+            return join_char.join([i.encode("utf-8") for i in lst])
 
         # hash_size should be the smallest prime number that is greater
         # or equal (4 / 3 * N) - where N is the number of keys/units.
@@ -182,13 +182,13 @@ class mofile(poheader.poheader, base.TranslationStore):
                     unit.source.strings, b"\0"
                 )
             else:
-                source = lst_encode(unit.msgidcomments) + unit.source.encode('utf-8')
+                source = lst_encode(unit.msgidcomments) + unit.source.encode("utf-8")
             if unit.msgctxt:
                 source = lst_encode(unit.msgctxt) + b"\x04" + source
             if isinstance(unit.target, multistring):
                 target = lst_encode(unit.target.strings, b"\0")
             else:
-                target = unit.target.encode('utf-8')
+                target = unit.target.encode("utf-8")
             if unit.target:
                 MESSAGES[source] = target
         # using "I" works for 32- and 64-bit systems, but not for 16-bit!
@@ -196,7 +196,7 @@ class mofile(poheader.poheader, base.TranslationStore):
         # the keys are sorted in the .mo file
         keys = sorted(MESSAGES.keys())
         offsets = []
-        ids = strs = b''
+        ids = strs = b""
         for i, id in enumerate(keys):
             # For each string, we need size and file offset.  Each string is
             # NUL terminated; the NUL does not count into the size.
@@ -204,9 +204,9 @@ class mofile(poheader.poheader, base.TranslationStore):
             add_to_hash_table(id, i)
             string = MESSAGES[id]  # id already encoded for use as dictionary key
             offsets.append((len(ids), len(id), len(strs), len(string)))
-            ids = ids + id + b'\0'
-            strs = strs + string + b'\0'
-        output = ''
+            ids = ids + id + b"\0"
+            strs = strs + string + b"\0"
+        output = ""
         # The header is 7 32-bit unsigned integers
         keystart = 7 * 4 + 16 * len(keys) + hash_size * 4
         # and the values start after the keys
@@ -239,10 +239,10 @@ class mofile(poheader.poheader, base.TranslationStore):
 
     def parse(self, input):
         """parses the given file or file source string"""
-        if hasattr(input, 'name'):
+        if hasattr(input, "name"):
             self.filename = input.name
-        elif not getattr(self, 'filename', ''):
-            self.filename = ''
+        elif not getattr(self, "filename", ""):
+            self.filename = ""
         if hasattr(input, "read"):
             mosrc = input.read()
             input.close()

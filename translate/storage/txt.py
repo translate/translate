@@ -113,7 +113,7 @@ class TxtFile(base.TranslationStore):
 
     def __init__(self, inputfile=None, flavour=None, no_segmentation=False, **kwargs):
         super().__init__(**kwargs)
-        self.filename = getattr(inputfile, 'name', '')
+        self.filename = getattr(inputfile, "name", "")
         self.flavour = flavours.get(flavour, [])
         self.no_segmentation = no_segmentation
         if inputfile is not None:
@@ -164,5 +164,5 @@ class TxtFile(base.TranslationStore):
     def serialize(self, out):
         for idx, unit in enumerate(self.units):
             if idx > 0:
-                out.write(b'\n\n')
+                out.write(b"\n\n")
             out.write(str(unit).encode(self.encoding))

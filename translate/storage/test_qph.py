@@ -27,8 +27,8 @@ for attrname in dir(xliff):
     attr = getattr(xliff, attrname)
     if (
         type(attr) is type
-        and attrname not in ('XLIFFPlaceable')
-        and hasattr(attr, 'parse')
+        and attrname not in ("XLIFFPlaceable")
+        and hasattr(attr, "parse")
         and attr.parse is not None
     ):
         xliffparsers.append(attr.parse)
@@ -76,20 +76,20 @@ class TestQphFile(test_base.TestTranslationStore):
 
     def test_language(self):
         """Check that we can get and set language and sourcelanguage in the header"""
-        qphstr = '''<!DOCTYPE QPH>
+        qphstr = """<!DOCTYPE QPH>
 <QPH language="fr" sourcelanguage="de">
 </QPH>
-'''
+"""
         qphfile = qph.QphFile.parsestring(qphstr)
-        assert qphfile.gettargetlanguage() == 'fr'
-        assert qphfile.getsourcelanguage() == 'de'
-        qphfile.settargetlanguage('pt_BR')
-        assert 'pt_BR' in bytes(qphfile).decode('utf-8')
-        assert qphfile.gettargetlanguage() == 'pt-br'
+        assert qphfile.gettargetlanguage() == "fr"
+        assert qphfile.getsourcelanguage() == "de"
+        qphfile.settargetlanguage("pt_BR")
+        assert "pt_BR" in bytes(qphfile).decode("utf-8")
+        assert qphfile.gettargetlanguage() == "pt-br"
         # We convert en_US to en
-        qphstr = '''<!DOCTYPE QPH>
+        qphstr = """<!DOCTYPE QPH>
 <QPH language="fr" sourcelanguage="en_US">
 </QPH>
-'''
+"""
         qphfile = qph.QphFile.parsestring(qphstr)
-        assert qphfile.getsourcelanguage() == 'en'
+        assert qphfile.getsourcelanguage() == "en"

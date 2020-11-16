@@ -132,7 +132,7 @@ class rcunit(base.TranslationUnit):
         self.comments.append(text)
 
     def getnotes(self, origin=None):
-        return '\n'.join(self.comments)
+        return "\n".join(self.comments)
 
     def removenotes(self, origin=None):
         self.comments = []
@@ -149,36 +149,36 @@ def rc_statement():
     :rtype: pyparsing.ParserElement
     """
 
-    one_line_comment = '//' + restOfLine
+    one_line_comment = "//" + restOfLine
 
     comments = cStyleComment ^ one_line_comment
 
-    precompiler = Word('#', alphanums) + restOfLine
+    precompiler = Word("#", alphanums) + restOfLine
 
     language_definition = (
         "LANGUAGE"
-        + Word(alphas + '_').setResultsName("language")
-        + Optional(',' + Word(alphas + '_').setResultsName("sublanguage"))
+        + Word(alphas + "_").setResultsName("language")
+        + Optional("," + Word(alphas + "_").setResultsName("sublanguage"))
     )
 
-    block_start = (Keyword('{') | Keyword("BEGIN")).setName("block_start")
-    block_end = (Keyword('}') | Keyword("END")).setName("block_end")
+    block_start = (Keyword("{") | Keyword("BEGIN")).setName("block_start")
+    block_end = (Keyword("}") | Keyword("END")).setName("block_end")
 
     reserved_words = block_start | block_end
 
-    name_id = ~reserved_words + Word(alphas, alphanums + '_').setName("name_id")
+    name_id = ~reserved_words + Word(alphas, alphanums + "_").setName("name_id")
 
     numbers = Word(nums)
 
-    integerconstant = numbers ^ Combine('0x' + numbers)
+    integerconstant = numbers ^ Combine("0x" + numbers)
 
     constant = Combine(
         Optional(Keyword("NOT")) + (name_id | integerconstant),
         adjacent=False,
-        joinString=' ',
+        joinString=" ",
     )
 
-    combined_constants = delimitedList(constant, '|')
+    combined_constants = delimitedList(constant, "|")
 
     concatenated_string = OneOrMore(quotedString)
 
@@ -285,7 +285,7 @@ class rcfile(base.TranslationStore):
     def __init__(self, inputfile=None, lang=None, sublang=None, **kwargs):
         """Construct an rcfile, optionally reading in from inputfile."""
         super().__init__(**kwargs)
-        self.filename = getattr(inputfile, 'name', '')
+        self.filename = getattr(inputfile, "name", "")
         self.lang = lang
         self.sublang = sublang
         if inputfile is not None:
@@ -330,7 +330,7 @@ class rcfile(base.TranslationStore):
             rcsrc, default_encodings=[self.default_encoding]
         )
 
-        rcsrc = rcsrc.replace('\r', '')
+        rcsrc = rcsrc.replace("\r", "")
 
         # Parse the strings into a structure.
         results = rc_statement().searchString(rcsrc)

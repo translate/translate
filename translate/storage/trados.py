@@ -55,13 +55,13 @@ except ImportError:
 
 
 __all__ = (
-    'TRADOS_TIMEFORMAT',
-    'RTF_ESCAPES',
-    'escape',
-    'unescape',
-    'TradosTxtDate',
-    'TradosUnit',
-    'TradosTxtTmFile',
+    "TRADOS_TIMEFORMAT",
+    "RTF_ESCAPES",
+    "escape",
+    "unescape",
+    "TradosTxtDate",
+    "TradosUnit",
+    "TradosTxtTmFile",
 )
 
 
@@ -166,14 +166,14 @@ class TradosUnit(base.TranslationUnit):
 
     @property
     def source(self):
-        return unescape(self._soup.findAll('seg')[0].contents[0])
+        return unescape(self._soup.findAll("seg")[0].contents[0])
 
     @source.setter
     def source(self, source):
         pass
 
     def gettarget(self):
-        return unescape(self._soup.findAll('seg')[1].contents[0])
+        return unescape(self._soup.findAll("seg")[1].contents[0])
 
     target = property(gettarget, None)
 
@@ -182,8 +182,8 @@ class TradosSoup(BeautifulSoup):
 
     MARKUP_MASSAGE = [
         (
-            re.compile('<(?P<fulltag>(?P<tag>[^\\s\\/]+).*?)>(?P<content>.+)\r'),
-            lambda x: '<%(fulltag)s>%(content)s</%(tag)s>' % x.groupdict(),
+            re.compile("<(?P<fulltag>(?P<tag>[^\\s\\/]+).*?)>(?P<content>.+)\r"),
+            lambda x: "<%(fulltag)s>%(content)s</%(tag)s>" % x.groupdict(),
         ),
     ]
 
@@ -195,26 +195,26 @@ class TradosTxtTmFile(base.TranslationStore):
     Mimetypes = ["application/x-trados-tm"]
     Extensions = ["txt"]
     UnitClass = TradosUnit
-    default_encoding = 'iso-8859-1'
+    default_encoding = "iso-8859-1"
 
     def __init__(self, inputfile=None, **kwargs):
         """construct a Wordfast TM, optionally reading in from inputfile."""
         super().__init__(**kwargs)
-        self.filename = ''
+        self.filename = ""
         if inputfile is not None:
             self.parse(inputfile)
 
     def parse(self, input):
-        if hasattr(input, 'name'):
+        if hasattr(input, "name"):
             self.filename = input.name
-        elif not getattr(self, 'filename', ''):
-            self.filename = ''
+        elif not getattr(self, "filename", ""):
+            self.filename = ""
         if hasattr(input, "read"):
             tmsrc = input.read()
             input.close()
             input = tmsrc
         self._soup = TradosSoup(input)
-        for tu in self._soup.findAll('tru'):
+        for tu in self._soup.findAll("tru"):
             unit = TradosUnit()
             unit._soup = TradosSoup(str(tu))
             self.addunit(unit)

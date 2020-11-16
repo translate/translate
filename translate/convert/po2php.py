@@ -56,7 +56,7 @@ class rephp:
         return outputlines
 
     def convertline(self, line):
-        line = str(line, 'utf-8')
+        line = str(line, "utf-8")
         returnline = ""
 
         # handle multiline msgid if we're in one
@@ -64,16 +64,16 @@ class rephp:
             # see if there's more
             endpos = line.rfind("%s%s" % (self.quotechar, self.enddel))
             # if there was no '; or the quote is escaped, we have to continue
-            if endpos >= 0 and line[endpos - 1] != '\\':
+            if endpos >= 0 and line[endpos - 1] != "\\":
                 self.inmultilinemsgid = False
             # if we're echoing...
             if self.inecho:
                 returnline = line
         # otherwise, this could be a comment
-        elif line.strip()[:2] == '//' or line.strip()[:2] == '/*':
+        elif line.strip()[:2] == "//" or line.strip()[:2] == "/*":
             returnline = quote.rstripeol(line) + eol
-        elif line.lower().replace(" ", "").find('array(') != -1:
-            eqpos = line.find('=')
+        elif line.lower().replace(" ", "").find("array(") != -1:
+            eqpos = line.find("=")
             # If this is a nested array.
             if self.inarray:
                 self.prename += line[:eqpos].strip() + "->"
@@ -84,14 +84,14 @@ class rephp:
                 self.equaldel = "=>"
                 self.enddel = ","
             returnline = quote.rstripeol(line) + eol
-        elif self.inarray and line.find(');') != -1:
+        elif self.inarray and line.find(");") != -1:
             self.inarray = False
             self.equaldel = "="
             self.enddel = ";"
             self.prename = ""
             returnline = quote.rstripeol(line) + eol
-        elif self.inarray and line.find('),') != -1:
-            self.prename = re.sub(r'[^>]+->$', '', self.prename)
+        elif self.inarray and line.find("),") != -1:
+            self.prename = re.sub(r"[^>]+->$", "", self.prename)
             returnline = quote.rstripeol(line) + eol
         else:
             line = quote.rstripeol(line)
@@ -164,11 +164,11 @@ class rephp:
                 endpos = line.rfind("%s%s" % (self.quotechar, self.enddel))
                 # if there was no '; or the quote is escaped, we have to
                 # continue
-                if endpos == -1 or line[endpos - 1] == '\\':
+                if endpos == -1 or line[endpos - 1] == "\\":
                     self.inmultilinemsgid = True
 
         if isinstance(returnline, str):
-            returnline = returnline.encode('utf-8')
+            returnline = returnline.encode("utf-8")
 
         return returnline
 
@@ -204,5 +204,5 @@ def main(argv=None):
     parser.run(argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

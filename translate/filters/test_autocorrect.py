@@ -7,9 +7,9 @@ class TestAutocorrect:
         corrected = autocorrect.correct(msgid, msgstr)
         print(repr(msgid))
         print(repr(msgstr))
-        print(msgid.encode('utf-8'))
-        print(msgstr.encode('utf-8'))
-        print((corrected or "").encode('utf-8'))
+        print(msgid.encode("utf-8"))
+        print(msgstr.encode("utf-8"))
+        print((corrected or "").encode("utf-8"))
         assert corrected == expected
 
     def test_empty_target(self):

@@ -23,18 +23,18 @@ from translate.storage.placeables.strelem import StringElem
 
 
 __all__ = (
-    'Bpt',
-    'Ept',
-    'X',
-    'Bx',
-    'Ex',
-    'G',
-    'It',
-    'Sub',
-    'Ph',
-    'UnknownXML',
-    'parsers',
-    'to_xliff_placeables',
+    "Bpt",
+    "Ept",
+    "X",
+    "Bx",
+    "Ex",
+    "G",
+    "It",
+    "Sub",
+    "Ph",
+    "UnknownXML",
+    "parsers",
+    "to_xliff_placeables",
 )
 
 
@@ -85,7 +85,7 @@ class UnknownXML(StringElem):
     def __init__(self, sub=None, id=None, rid=None, xid=None, xml_node=None, **kwargs):
         super().__init__(sub=sub, id=id, rid=rid, xid=xid, **kwargs)
         if xml_node is None:
-            raise ValueError('xml_node must be a lxml node')
+            raise ValueError("xml_node must be a lxml node")
         self.xml_node = xml_node
 
         if sub:
@@ -100,18 +100,18 @@ class UnknownXML(StringElem):
         ``self.xml_node.tag``.
         """
         tag = self.xml_node.tag
-        if tag.startswith('{'):
-            tag = tag[tag.index('}') + 1 :]
+        if tag.startswith("{"):
+            tag = tag[tag.index("}") + 1 :]
 
-        elemstr = ', '.join([repr(elem) for elem in self.sub])
+        elemstr = ", ".join([repr(elem) for elem in self.sub])
 
-        return '<%(class)s{%(tag)s}(%(id)s%(rid)s%(xid)s[%(subs)s])>' % {
-            'class': self.__class__.__name__,
-            'tag': tag,
-            'id': self.id is not None and 'id="%s" ' % (self.id) or '',
-            'rid': self.rid is not None and 'rid="%s" ' % (self.rid) or '',
-            'xid': self.xid is not None and 'xid="%s" ' % (self.xid) or '',
-            'subs': elemstr,
+        return "<%(class)s{%(tag)s}(%(id)s%(rid)s%(xid)s[%(subs)s])>" % {
+            "class": self.__class__.__name__,
+            "tag": tag,
+            "id": self.id is not None and 'id="%s" ' % (self.id) or "",
+            "rid": self.rid is not None and 'rid="%s" ' % (self.rid) or "",
+            "xid": self.xid is not None and 'xid="%s" ' % (self.xid) or "",
+            "subs": elemstr,
         }
 
     # METHODS #

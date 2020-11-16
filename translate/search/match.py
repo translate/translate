@@ -41,7 +41,7 @@ def _sort_matches(matches, match_info):
     same.
     """
     matches.sort(key=lambda x: len(x.source), reverse=True)
-    matches.sort(key=lambda x: match_info[x.source]['pos'])
+    matches.sort(key=lambda x: match_info[x.source]["pos"])
 
 
 class matcher:
@@ -318,7 +318,7 @@ class terminologymatcher(matcher):
         with the original unit to retain comments, etc.
         """
         text_l = len(text)
-        if text_l < self.getstartlength(0, ''):  # parameters unused
+        if text_l < self.getstartlength(0, ""):  # parameters unused
             # impossible to return anything
             return []
         text = text.lower()
@@ -348,7 +348,7 @@ class terminologymatcher(matcher):
             if (source, cand.target) in known:
                 continue
             if comparer.similarity(text, source, self.MIN_SIMILARITY):
-                match_info[source] = {'pos': comparer.match_info[source]['pos']}
+                match_info[source] = {"pos": comparer.match_info[source]["pos"]}
                 matches.append(cand)
                 known.add((source, cand.target))
 
@@ -356,7 +356,7 @@ class terminologymatcher(matcher):
         lastend = 0
         _sort_matches(matches, match_info)
         for match in matches:
-            start_pos = match_info[match.source]['pos']
+            start_pos = match_info[match.source]["pos"]
             if start_pos < lastend:
                 continue
             end = start_pos + len(match.source)
@@ -368,12 +368,12 @@ class terminologymatcher(matcher):
                 if m is match:
                     continue
                 m_info = match_info[m.source]
-                m_end = m_info['pos']
+                m_end = m_info["pos"]
                 if m_end > start_pos:
                     # we past valid possibilities in the list
                     break
                 m_end += len(m.source)
-                if start_pos == m_info['pos'] and end == m_end:
+                if start_pos == m_info["pos"] and end == m_end:
                     # another match for the same term
                     final_matches.append(m)
 
@@ -396,6 +396,6 @@ def unit2dict(unit):
 
 def _parse_quality(comment):
     """Extracts match quality from po comments."""
-    quality = re.search('([0-9]+)%', comment)
+    quality = re.search("([0-9]+)%", comment)
     if quality:
         return quality.group(1)

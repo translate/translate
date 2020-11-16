@@ -74,7 +74,7 @@ class StringElem:
 
         for key, value in kwargs.items():
             if hasattr(self, key):
-                raise ValueError('attribute already exists: %s' % (key))
+                raise ValueError("attribute already exists: %s" % (key))
             setattr(self, key, value)
 
     # SPECIAL METHODS #
@@ -153,21 +153,21 @@ class StringElem:
         return self * lhs
 
     def __repr__(self):
-        elemstr = ', '.join([repr(elem) for elem in self.sub])
-        return '<%(class)s(%(id)s%(rid)s%(xid)s[%(subs)s])>' % {
-            'class': self.__class__.__name__,
-            'id': self.id is not None and 'id="%s" ' % (self.id) or '',
-            'rid': self.rid is not None and 'rid="%s" ' % (self.rid) or '',
-            'xid': self.xid is not None and 'xid="%s" ' % (self.xid) or '',
-            'subs': elemstr,
+        elemstr = ", ".join([repr(elem) for elem in self.sub])
+        return "<%(class)s(%(id)s%(rid)s%(xid)s[%(subs)s])>" % {
+            "class": self.__class__.__name__,
+            "id": self.id is not None and 'id="%s" ' % (self.id) or "",
+            "rid": self.rid is not None and 'rid="%s" ' % (self.rid) or "",
+            "xid": self.xid is not None and 'xid="%s" ' % (self.xid) or "",
+            "subs": elemstr,
         }
 
     def __str__(self):
         if callable(self.renderer):
             return self.renderer(self)
         if not self.isvisible:
-            return ''
-        return ''.join([str(elem) for elem in self.sub])
+            return ""
+        return "".join([str(elem) for elem in self.sub])
 
     # METHODS #
     def apply_to_strings(self, f):
@@ -229,24 +229,24 @@ class StringElem:
             return StringElem(), self, 0
         if start_index > end_index:
             raise IndexError(
-                'start_index > end_index: %d > %d' % (start_index, end_index)
+                "start_index > end_index: %d > %d" % (start_index, end_index)
             )
         if start_index < 0 or start_index > len(self):
-            raise IndexError('start_index: %d' % (start_index))
+            raise IndexError("start_index: %d" % (start_index))
         if end_index < 1 or end_index > len(self) + 1:
-            raise IndexError('end_index: %d' % (end_index))
+            raise IndexError("end_index: %d" % (end_index))
 
         start = self.get_index_data(start_index)
-        if isinstance(start['elem'], tuple):
+        if isinstance(start["elem"], tuple):
             # If {start} is "between" elements, we use the one on the "right"
-            start['elem'] = start['elem'][-1]
-            start['offset'] = start['offset'][-1]
+            start["elem"] = start["elem"][-1]
+            start["offset"] = start["offset"][-1]
         end = self.get_index_data(end_index)
-        if isinstance(end['elem'], tuple):
+        if isinstance(end["elem"], tuple):
             # If {end} is "between" elements, we use the one on the "left"
-            end['elem'] = end['elem'][0]
-            end['offset'] = end['offset'][0]
-        assert start['elem'].isleaf() and end['elem'].isleaf()
+            end["elem"] = end["elem"][0]
+            end["offset"] = end["offset"][0]
+        assert start["elem"].isleaf() and end["elem"].isleaf()
 
         # logging.debug('FROM %s TO %s' % (start, end))
 
@@ -266,10 +266,10 @@ class StringElem:
 
         # Case 2: An entire element #
         if (
-            start['elem'] is end['elem']
-            and start['offset'] == 0
-            and end['offset'] == len(start['elem'])
-            or (not start['elem'].iseditable and start['elem'].isfragile)
+            start["elem"] is end["elem"]
+            and start["offset"] == 0
+            and end["offset"] == len(start["elem"])
+            or (not start["elem"].iseditable and start["elem"].isfragile)
         ):
             ##### FOR DEBUGGING #####
             # s = ''
@@ -281,23 +281,23 @@ class StringElem:
             # logging.debug('Case 2: %s' % (s))
             #########################
 
-            if start['elem'] is self and self.__class__ is StringElem:
+            if start["elem"] is self and self.__class__ is StringElem:
                 removed = self.copy()
                 self.sub = []
                 return removed, None, None
-            removed = start['elem'].copy()
-            parent = self.get_parent_elem(start['elem'])
-            offset = parent.elem_offset(start['elem'])
+            removed = start["elem"].copy()
+            parent = self.get_parent_elem(start["elem"])
+            offset = parent.elem_offset(start["elem"])
             # Filter out start['elem'] below with a list comprehension in stead
             # of using parent.sub.remove(), becase list.remove() tests value
             # and not identity, which is what we want here. This ensures that
             # start['elem'] is removed and not the first element that is equal
             # to it.
-            parent.sub = [i for i in parent.sub if i is not start['elem']]
+            parent.sub = [i for i in parent.sub if i is not start["elem"]]
             return removed, parent, offset
 
         # Case 3: Within a single element #
-        if start['elem'] is end['elem'] and start['elem'].iseditable:
+        if start["elem"] is end["elem"] and start["elem"].iseditable:
             ##### FOR DEBUGGING #####
             # s = ''
             # for e in self.flatten():
@@ -314,24 +314,24 @@ class StringElem:
 
             # XXX: This might not have the expected result if start['elem']
             # is a StringElem sub-class instance.
-            newstr = ''.join(start['elem'].sub)
-            removed = StringElem(newstr[start['offset'] : end['offset']])
-            newstr = newstr[: start['offset']] + newstr[end['offset'] :]
-            parent = self.get_parent_elem(start['elem'])
-            if parent is None and start['elem'] is self:
+            newstr = "".join(start["elem"].sub)
+            removed = StringElem(newstr[start["offset"] : end["offset"]])
+            newstr = newstr[: start["offset"]] + newstr[end["offset"] :]
+            parent = self.get_parent_elem(start["elem"])
+            if parent is None and start["elem"] is self:
                 parent = self
-            start['elem'].sub = [newstr]
+            start["elem"].sub = [newstr]
             self.prune()
-            return removed, start['elem'], start['offset']
+            return removed, start["elem"], start["offset"]
 
         # Case 4: Across multiple elements #
         range_nodes = self.depth_first()
         startidx = 0
         endidx = -1
         for i in range(len(range_nodes)):
-            if range_nodes[i] is start['elem']:
+            if range_nodes[i] is start["elem"]:
                 startidx = i
-            elif range_nodes[i] is end['elem']:
+            elif range_nodes[i] is end["elem"]:
                 endidx = i
                 break
         range_nodes = range_nodes[startidx : endidx + 1]
@@ -346,7 +346,7 @@ class StringElem:
             if [n for n in marked_nodes if n is node]:
                 continue
             subtree = node.depth_first()
-            if not [e for e in subtree if e is end['elem']]:
+            if not [e for e in subtree if e is end["elem"]]:
                 # logging.debug("Marking node: %s" % (subtree))
                 marked_nodes.extend(subtree)  # "subtree" does not include "node"
 
@@ -365,8 +365,8 @@ class StringElem:
         removed = self.copy()
 
         # Save offsets before we start changing the tree
-        start_offset = self.elem_offset(start['elem'])
-        end_offset = self.elem_offset(end['elem'])
+        start_offset = self.elem_offset(start["elem"])
+        end_offset = self.elem_offset(end["elem"])
 
         for node in marked_nodes:
             try:
@@ -374,20 +374,20 @@ class StringElem:
             except ElementNotFoundError:
                 pass
 
-        if start['elem'] is not end['elem']:
-            if start_offset == start['index'] or (
-                not start['elem'].iseditable and start['elem'].isfragile
+        if start["elem"] is not end["elem"]:
+            if start_offset == start["index"] or (
+                not start["elem"].iseditable and start["elem"].isfragile
             ):
-                self.delete_elem(start['elem'])
-            elif start['elem'].iseditable:
-                start['elem'].sub = [''.join(start['elem'].sub)[: start['offset']]]
+                self.delete_elem(start["elem"])
+            elif start["elem"].iseditable:
+                start["elem"].sub = ["".join(start["elem"].sub)[: start["offset"]]]
 
-            if end_offset + len(end['elem']) == end['index'] or (
-                not end['elem'].iseditable and end['elem'].isfragile
+            if end_offset + len(end["elem"]) == end["index"] or (
+                not end["elem"].iseditable and end["elem"].isfragile
             ):
-                self.delete_elem(end['elem'])
-            elif end['elem'].iseditable:
-                end['elem'].sub = [''.join(end['elem'].sub)[end['offset'] :]]
+                self.delete_elem(end["elem"])
+            elif end["elem"].iseditable:
+                end["elem"].sub = ["".join(end["elem"].sub)[end["offset"] :]]
 
         self.prune()
         return removed, None, None
@@ -501,16 +501,16 @@ class StringElem:
            - *offset*: The offset of ``index`` into ``'elem'``.
         """
         info = {
-            'elem': self.elem_at_offset(index),
-            'index': index,
+            "elem": self.elem_at_offset(index),
+            "index": index,
         }
-        info['offset'] = info['index'] - self.elem_offset(info['elem'])
+        info["offset"] = info["index"] - self.elem_offset(info["elem"])
 
         # Check if there "index" is actually between elements
         leftelem = self.elem_at_offset(index - 1)
-        if leftelem is not None and leftelem is not info['elem']:
-            info['elem'] = (leftelem, info['elem'])
-            info['offset'] = (len(leftelem), 0)
+        if leftelem is not None and leftelem is not info["elem"]:
+            info["elem"] = (leftelem, info["elem"])
+            info["offset"] = (len(leftelem), 0)
 
         return info
 
@@ -531,11 +531,11 @@ class StringElem:
         string (Unicode) representation.
         """
         if offset < 0 or offset > len(self):
-            raise IndexError('Index out of range: %d' % (offset))
+            raise IndexError("Index out of range: %d" % (offset))
         if isinstance(text, str):
             text = StringElem(text)
         if not isinstance(text, StringElem):
-            raise ValueError('text must be of type StringElem')
+            raise ValueError("text must be of type StringElem")
 
         def checkleaf(elem, text):
             if elem.isleaf() and type(text) is StringElem and text.isleaf():
@@ -786,7 +786,7 @@ class StringElem:
             return True
 
         logging.debug(
-            'Could not insert between %s and %s... odd.' % (repr(left), repr(right))
+            "Could not insert between %s and %s... odd." % (repr(left), repr(right))
         )
         return False
 
@@ -824,7 +824,7 @@ class StringElem:
         (optional).
         """
         if filter is not None and not callable(filter):
-            raise ValueError('filter is not callable or None')
+            raise ValueError("filter is not callable or None")
         if filter is None:
             filter = lambda e: True
 
@@ -852,9 +852,9 @@ class StringElem:
         indent_prefix = " " * indent * 2
         out = (
             "%s%s [%s]" % (indent_prefix, self.__class__.__name__, str(self))
-        ).encode('utf-8')
+        ).encode("utf-8")
         if verbose:
-            out += ' ' + repr(self)
+            out += " " + repr(self)
 
         print(out)
 
@@ -863,7 +863,7 @@ class StringElem:
                 elem.print_tree(indent + 1, verbose=verbose)
             else:
                 print(
-                    ('%s%s[%s]' % (indent_prefix, indent_prefix, elem)).encode('utf-8')
+                    ("%s%s[%s]" % (indent_prefix, indent_prefix, elem)).encode("utf-8")
                 )
 
     def prune(self):
@@ -899,7 +899,7 @@ class StringElem:
 
             if type(elem) is StringElem and elem.isleaf():
                 # Collapse all strings in this leaf into one string.
-                elem.sub = [''.join(elem.sub)]
+                elem.sub = ["".join(elem.sub)]
 
             for i in reversed(range(len(elem.sub))):
                 # Remove empty strings or StringElem nodes

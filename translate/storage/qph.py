@@ -42,7 +42,7 @@ class QphUnit(lisa.LISAunit):
     rootNode = "phrase"
     languageNode = "source"
     textNode = ""
-    namespace = ''
+    namespace = ""
 
     def createlanguageNode(self, lang, text, purpose):
         """Returns an xml Element setup with given parameters."""
@@ -73,7 +73,7 @@ class QphUnit(lisa.LISAunit):
     def getnotes(self, origin=None):
         # TODO: consider only responding when origin has certain values
         notenode = self.xmlelement.find(self.namespaced("definition"))
-        comment = ''
+        comment = ""
         if notenode is not None:
             comment = notenode.text
         return comment
@@ -94,11 +94,11 @@ class QphFile(lisa.LISAfile):
     Extensions = ["qph"]
     rootNode = "QPH"
     bodyNode = "QPH"
-    XMLskeleton = '''<!DOCTYPE QPH>
+    XMLskeleton = """<!DOCTYPE QPH>
 <QPH>
 </QPH>
-'''
-    namespace = ''
+"""
+    namespace = ""
 
     def initbody(self):
         """Initialises self.body so it never needs to be retrieved from the XML
@@ -118,9 +118,9 @@ class QphFile(lisa.LISAfile):
         :return: ISO code e.g. af, fr, pt_BR
         :rtype: String
         """
-        lang = data.normalize_code(self.header.get('sourcelanguage', "en"))
-        if lang == 'en-us':
-            return 'en'
+        lang = data.normalize_code(self.header.get("sourcelanguage", "en"))
+        if lang == "en-us":
+            return "en"
         return lang
 
     def gettargetlanguage(self):
@@ -129,7 +129,7 @@ class QphFile(lisa.LISAfile):
         :return: ISO code e.g. af, fr, pt_BR
         :rtype: String
         """
-        return data.normalize_code(self.header.get('language'))
+        return data.normalize_code(self.header.get("language"))
 
     def settargetlanguage(self, targetlanguage):
         """Set the target language for this .qph file to *targetlanguage*.
@@ -138,7 +138,7 @@ class QphFile(lisa.LISAfile):
         :type targetlanguage: String
         """
         if targetlanguage:
-            self.header.set('language', targetlanguage)
+            self.header.set("language", targetlanguage)
 
     def serialize(self, out):
         """Write the XML document to the file `out`.
@@ -147,5 +147,5 @@ class QphFile(lisa.LISAfile):
             - no XML declaration
         """
         self.document.write(
-            out, pretty_print=True, xml_declaration=False, encoding='utf-8'
+            out, pretty_print=True, xml_declaration=False, encoding="utf-8"
         )

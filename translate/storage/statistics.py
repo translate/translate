@@ -39,7 +39,7 @@ from translate.lang import factory
 class Statistics:
     """Manages statistics for storage objects."""
 
-    def __init__(self, sourcelanguage='en', targetlanguage='en', checkerstyle=None):
+    def __init__(self, sourcelanguage="en", targetlanguage="en", checkerstyle=None):
         self.sourcelanguage = sourcelanguage
         self.targetlanguage = targetlanguage
         self.language = factory.getlanguage(self.sourcelanguage)

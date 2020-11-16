@@ -31,33 +31,33 @@ class TestCSV(test_base.TestTranslationStore):
         assert bytes(store) == bytes(newstore)
 
     def test_utf_8(self):
-        store = self.parse_store('foo.c:1;test;zkouška sirén'.encode('utf-8'))
+        store = self.parse_store("foo.c:1;test;zkouška sirén".encode("utf-8"))
         assert len(store.units) == 1
-        assert store.units[0].source == 'test'
-        assert store.units[0].target == 'zkouška sirén'
+        assert store.units[0].source == "test"
+        assert store.units[0].target == "zkouška sirén"
 
     def test_utf_8_sig(self):
         content = '"location";"source";"target"\r\n"foo.c:1";"test";"zkouška sirén"\r\n'.encode(
-            'utf-8-sig'
+            "utf-8-sig"
         )
         store = self.parse_store(content)
         assert len(store.units) == 1
-        assert store.units[0].source == 'test'
-        assert store.units[0].target == 'zkouška sirén'
+        assert store.units[0].source == "test"
+        assert store.units[0].target == "zkouška sirén"
         assert bytes(store) == content
 
     def test_default(self):
-        content = b'''ID,English
+        content = b"""ID,English
 GENERAL@2|Notes,"cable, motor, switch"
-*****END CALL*****|Ask,-'''
+*****END CALL*****|Ask,-"""
         store = self.parse_store(content)
         assert len(store.units) == 3
-        assert store.units[0].location == 'ID'
-        assert store.units[0].source == 'English'
-        assert store.units[1].location == 'GENERAL@2|Notes'
-        assert store.units[1].source == 'cable, motor, switch'
-        assert store.units[2].location == '*****END CALL*****|Ask'
-        assert store.units[2].source == '-'
+        assert store.units[0].location == "ID"
+        assert store.units[0].source == "English"
+        assert store.units[1].location == "GENERAL@2|Notes"
+        assert store.units[1].source == "cable, motor, switch"
+        assert store.units[2].location == "*****END CALL*****|Ask"
+        assert store.units[2].source == "-"
 
     @mark.xfail(reason="Bug #3356")
     def test_context_is_parsed(self):
@@ -79,8 +79,8 @@ GENERAL@2|Notes,"cable, motor, switch"
         content = b'"location";"source";"target"\r\n"foo.c:1";"te\\nst";"ot\\nher"\r\n'
         store = self.parse_store(content)
         assert len(store.units) == 1
-        assert store.units[0].source == 'te\\nst'
-        assert store.units[0].target == 'ot\\nher'
+        assert store.units[0].source == "te\\nst"
+        assert store.units[0].target == "ot\\nher"
         assert bytes(store) == content
 
     def test_parse_sample(self):
@@ -88,6 +88,6 @@ GENERAL@2|Notes,"cable, motor, switch"
         store = self.StoreClass()
         store.parse(content, sample_length=None)
         assert len(store.units) == 1
-        assert store.units[0].source == 'te\\nst'
-        assert store.units[0].target == 'ot\\nher'
+        assert store.units[0].source == "te\\nst"
+        assert store.units[0].target == "ot\\nher"
         assert bytes(store) == content

@@ -37,5 +37,5 @@ class ug(common.Common):
     }
 
     ignoretests = {
-        'all': ["acronyms", "simplecaps", "startcaps"],
+        "all": ["acronyms", "simplecaps", "startcaps"],
     }

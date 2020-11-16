@@ -98,7 +98,7 @@ class resx2po:
     def split_comments(self, origpo, translatedpo):
         autocomments = translatedpo.getnotes("developer")
         if autocomments:
-            devcomment, transcomment = autocomments.partition('[Translator Comment: ')[
+            devcomment, transcomment = autocomments.partition("[Translator Comment: ")[
                 ::2
             ]
             if transcomment:
@@ -174,5 +174,5 @@ def main(argv=None):
     parser.run(argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

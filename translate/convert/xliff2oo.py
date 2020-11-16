@@ -79,13 +79,13 @@ class reoo:
         # technically our formats should just have one location for each entry...
         # but we handle multiple ones just to be safe...
         for location in locations:
-            subkeypos = location.rfind('.')
+            subkeypos = location.rfind(".")
             subkey = location[subkeypos + 1 :]
             key = location[:subkeypos]
             # this is just to handle our old system of using %s/%s:%s instead of %s/%s#%s
-            key = key.replace(':', '#')
+            key = key.replace(":", "#")
             # this is to handle using / instead of \ in the sourcefile...
-            key = key.replace('\\', '/')
+            key = key.replace("\\", "/")
             key = oo.normalizefilename(key)
             if key in self.index:
                 # now we need to replace the definition of entity with msgstr
@@ -181,8 +181,8 @@ class oocheckfilter(pofilter.pocheckfilter):
 
 
 class oofilteroptions:
-    error = ['variables', 'xmltags', 'escapes']
-    warning = ['blank']
+    error = ["variables", "xmltags", "escapes"]
+    warning = ["blank"]
     # To only issue warnings for tests listed in warning, change the following to False:
     alwayswarn = True
     limitfilters = error + warning
@@ -216,7 +216,7 @@ def convertoo(
     filteraction=None,
 ):
     inputstore = factory.getobject(inputfile)
-    inputstore.filename = getattr(inputfile, 'name', '')
+    inputstore.filename = getattr(inputfile, "name", "")
     if not targetlanguage:
         raise ValueError("You must specify the target language")
     if not sourcelanguage:
@@ -327,5 +327,5 @@ def main(argv=None):
     parser.run(argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

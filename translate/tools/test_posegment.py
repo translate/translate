@@ -26,7 +26,7 @@ class TestPOSegment:
         return outputpo
 
     def test_en_ja_simple(self):
-        posource = '''
+        posource = """
 #: test/test.py:112
 msgid ""
 "Please let us know if you have any specific needs (A/V requirements, "
@@ -36,7 +36,7 @@ msgstr ""
 "特に必要な物(A/V機器、複数のマイク、テーブルetc)があれば教えて下さい。例とし"
 "て、コンピュータからの「音声出力」は事前にお知らせ頂いていない場合は提供でき"
 "ないことに注意して下さい。"
-'''
+"""
         poresult = self.posegment(posource, "en", "ja")
         out_unit = poresult.units[1]
         assert (
@@ -55,7 +55,7 @@ msgstr ""
 
     def test_en_ja_punctuation(self):
         """checks that a half-width punctuation"""
-        posource = '''
+        posource = """
 #: docs/intro/contributing.txt:184
 msgid ""
 "Note that the latest Django trunk may not always be stable. When developing "
@@ -63,7 +63,7 @@ msgid ""
 msgstr ""
 "開発中の､最新の Django ではステーブルとは限りません｡トランクバージョンで開発"
 "を行う場合､ Django の継続インテグレーションビルドをチェックしてください｡"
-'''
+"""
         poresult = self.posegment(posource, "en", "ja")
         out_unit = poresult.units[1]
         assert (

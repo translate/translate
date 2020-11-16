@@ -96,7 +96,7 @@ class RESXUnit(lisa.LISAunit):
         notenode = self.xmlelement.find(self.namespaced("comment"))
         if notenode is not None and notenode.text is not None:
             comments.append(notenode.text)
-        return '\n'.join(comments)
+        return "\n".join(comments)
 
     def removenotes(self, origin=None):
         note = self.xmlelement.find(self.namespaced("comment"))
@@ -131,7 +131,7 @@ class RESXFile(lisa.LISAfile):
     rootNode = "root"
     # We will switch out .body to fit with the context we are working on
     bodyNode = ""
-    XMLskeleton = '''<?xml version="1.0" encoding="utf-8"?>
+    XMLskeleton = """<?xml version="1.0" encoding="utf-8"?>
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
@@ -192,8 +192,8 @@ class RESXFile(lisa.LISAfile):
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
 </root>
-'''
-    namespace = ''
+"""
+    namespace = ""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -211,7 +211,7 @@ class RESXFile(lisa.LISAfile):
         setXMLspace(unit.xmlelement, "preserve")
         if unit.getid() is None:
             self._messagenum += 1
-            unit.setid("%s" % unit.source.strip(' '))
+            unit.setid("%s" % unit.source.strip(" "))
         # adjust the current and previous elements for new ones;
         # otherwise they will not be indented correctly.
         if new:
@@ -231,7 +231,7 @@ class RESXFile(lisa.LISAfile):
         # Use same header as Visual Studio
         out.write(b'<?xml version="1.0" encoding="utf-8"?>\n')
         content = etree.tostring(
-            root, pretty_print=False, xml_declaration=False, encoding='utf-8'
+            root, pretty_print=False, xml_declaration=False, encoding="utf-8"
         )
         # Additional space on empty tags same as Visual Studio
-        out.write(content.replace(b'/>', b' />'))
+        out.write(content.replace(b"/>", b" />"))

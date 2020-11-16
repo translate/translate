@@ -54,7 +54,7 @@ class multistring(str):
         elif isinstance(otherstring, str):
             return cmp_compat(str(self), otherstring)
         elif isinstance(otherstring, bytes):
-            return cmp_compat(self.encode('utf-8'), otherstring)
+            return cmp_compat(self.encode("utf-8"), otherstring)
         elif isinstance(otherstring, list) and otherstring:
             return cmp_compat(self, multistring(otherstring))
         else:

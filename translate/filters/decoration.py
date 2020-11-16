@@ -159,7 +159,7 @@ def findmarkedvariables(str1, startmarker, endmarker, ignorelist=[]):
                 # character as the end marker, var must be len > 1
                 endmatch = currentpos
                 for n in range(currentpos, len(str1)):
-                    if not (str1[n].isalnum() or str1[n] == '_'):
+                    if not (str1[n].isalnum() or str1[n] == "_"):
                         endmatch = n
                         break
                 if currentpos == endmatch:
@@ -231,14 +231,14 @@ def getnumbers(str1):
     assert isinstance(str1, str)
     numbers = []
     innumber = False
-    degreesign = '\xb0'
+    degreesign = "\xb0"
     lastnumber = ""
     carryperiod = ""
     for chr1 in str1:
         if chr1.isdigit():
             innumber = True
         elif innumber:
-            if not (chr1 == '.' or chr1 == degreesign):
+            if not (chr1 == "." or chr1 == degreesign):
                 innumber = False
                 if lastnumber:
                     numbers.append(lastnumber)
@@ -246,7 +246,7 @@ def getnumbers(str1):
         if innumber:
             if chr1 == degreesign:
                 lastnumber += chr1
-            elif chr1 == '.':
+            elif chr1 == ".":
                 carryperiod += chr1
             else:
                 lastnumber += carryperiod + chr1
@@ -260,12 +260,12 @@ def getnumbers(str1):
 
 
 _function_re = re.compile(
-    r'''((?:
+    r"""((?:
     [\w\.]+              # function or module name - any alpha-numeric character, _, or .
     (?:(?:::|->|\.)\w+)* # (optional) C++ style Class::Method() syntax or pointer->Method() or module.function()
     \(\)                 # Must close with ()
 )+)
-''',
+""",
     re.VERBOSE,
 )  # shouldn't be locale aware
 # Reference functions:
@@ -286,16 +286,16 @@ def getfunctions(str1):
 
 def getemails(str1):
     """returns the email addresses that are in a string"""
-    return re.findall(r'[\w\.\-]+@[\w\.\-]+', str1)
+    return re.findall(r"[\w\.\-]+@[\w\.\-]+", str1)
 
 
 def geturls(str1):
     """returns the URIs in a string"""
     # TODO turn this into a verbose and compiled regex
     URLPAT = (
-        r'https?:[\w/\.:;+\-~\%#\$?=&,()]+|'
-        + r'www\.[\w/\.:;+\-~\%#\$?=&,()]+|'
-        + r'ftp:[\w/\.:;+\-~\%#?=&,]+'
+        r"https?:[\w/\.:;+\-~\%#\$?=&,()]+|"
+        + r"www\.[\w/\.:;+\-~\%#\$?=&,()]+|"
+        + r"ftp:[\w/\.:;+\-~\%#?=&,]+"
     )
     return re.findall(URLPAT, str1)
 

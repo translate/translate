@@ -30,7 +30,7 @@ from translate.storage import po, wordfast
 
 
 class po2wordfast:
-    def convertfiles(self, inputfile, wffile, sourcelanguage='en', targetlanguage=None):
+    def convertfiles(self, inputfile, wffile, sourcelanguage="en", targetlanguage=None):
         """converts a .po file (possibly many) to a Wordfast TM file"""
         inputstore = po.pofile(inputfile)
         for inunit in inputstore.units:
@@ -44,7 +44,7 @@ class po2wordfast:
 
 
 def convertpo(
-    inputfile, outputfile, templatefile, sourcelanguage='en', targetlanguage=None
+    inputfile, outputfile, templatefile, sourcelanguage="en", targetlanguage=None
 ):
     """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
     convertor = po2wordfast()
@@ -59,9 +59,9 @@ class wfmultifile:
         self.filename = filename
         if mode is None:
             if os.path.exists(filename):
-                mode = 'r'
+                mode = "r"
             else:
-                mode = 'w'
+                mode = "w"
         self.mode = mode
         self.multifilename = os.path.splitext(filename)[0]
         self.wffile = wordfast.WordfastTMFile()
@@ -83,7 +83,7 @@ class WfOptionParser(convert.ArchiveConvertOptionParser):
         if not options.targetlanguage:
             raise ValueError("You must specify the target language")
         super().recursiveprocess(options)
-        with open(options.output, 'wb') as self.output:
+        with open(options.output, "wb") as self.output:
             # self.outputarchive.wffile.setsourcelanguage(options.sourcelanguage)
             self.outputarchive.wffile.serialize(self.output)
 
@@ -110,7 +110,7 @@ def main(argv=None):
         "",
         "--source-language",
         dest="sourcelanguage",
-        default='en',
+        default="en",
         help="set source language code (default: en)",
         metavar="LANG",
     )
@@ -119,5 +119,5 @@ def main(argv=None):
     parser.run(argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

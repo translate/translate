@@ -104,5 +104,5 @@ def main():
     Builder(args.tmdb_file, args.source_lang, args.target_lang, args.files)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

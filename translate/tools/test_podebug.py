@@ -26,8 +26,8 @@ class TestPODebug:
     debug = podebug.podebug()
 
     def setup_method(self, method):
-        self.postore = po.pofile(PO_DOC.encode('utf-8'))
-        self.xliffstore = xliff.xlifffile(XLIFF_DOC.encode('utf-8'))
+        self.postore = po.pofile(PO_DOC.encode("utf-8"))
+        self.xliffstore = xliff.xlifffile(XLIFF_DOC.encode("utf-8"))
 
     def test_ignore_gtk(self):
         """Test operation of GTK message ignoring"""
@@ -157,7 +157,7 @@ class TestPODebug:
         )
 
     def test_po_variables(self):
-        debug = podebug.podebug(rewritestyle='unicode')
+        debug = podebug.podebug(rewritestyle="unicode")
         po_out = debug.convertstore(self.postore)
 
         in_unit = self.postore.units[0]
@@ -168,12 +168,12 @@ class TestPODebug:
         print(bytes(po_out))
         rewrite_func = self.debug.rewrite_unicode
         assert out_unit.target == "%s%%s%s" % (
-            rewrite_func('This is a '),
-            rewrite_func(' test, hooray.'),
+            rewrite_func("This is a "),
+            rewrite_func(" test, hooray."),
         )
 
     def test_xliff_rewrite(self):
-        debug = podebug.podebug(rewritestyle='xxx')
+        debug = podebug.podebug(rewritestyle="xxx")
         xliff_out = debug.convertstore(self.xliffstore)
 
         in_unit = self.xliffstore.units[0]
@@ -182,7 +182,7 @@ class TestPODebug:
         assert in_unit.source == out_unit.source
         print(out_unit.target)
         print(bytes(xliff_out))
-        assert out_unit.target == 'xxx%sxxx' % (in_unit.source)
+        assert out_unit.target == "xxx%sxxx" % (in_unit.source)
 
     def test_hash(self):
         po_docs = (
@@ -237,10 +237,10 @@ msgstr "Test msgstr 3"
 
         for debug in debugs:
             for po_doc in po_docs:
-                postore = po.pofile(po_doc.encode('utf-8'))
-                postore.filename = os.path.join('fullpath', 'to', 'fakefile.po')
+                postore = po.pofile(po_doc.encode("utf-8"))
+                postore.filename = os.path.join("fullpath", "to", "fakefile.po")
                 po_out = debug.convertstore(postore)
                 in_unit = postore.units[0]
                 out_unit = po_out.units[0]
                 assert in_unit.source == out_unit.source
-                assert out_unit.target == results.pop(0).replace('/', os.sep)
+                assert out_unit.target == results.pop(0).replace("/", os.sep)

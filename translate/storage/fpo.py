@@ -42,11 +42,11 @@ logger = logging.getLogger(__name__)
 lsep = " "
 """Separator for #: entries"""
 
-basic_header = r'''msgid ""
+basic_header = r"""msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-'''
+"""
 
 
 class pounit(pocommon.pounit):
@@ -64,7 +64,7 @@ class pounit(pocommon.pounit):
 
     # Our homegrown way to indicate what must be copied in a shallow
     # fashion
-    __shallow__ = ['_store']
+    __shallow__ = ["_store"]
 
     def __init__(self, source=None, **kwargs):
         super().__init__(source)
@@ -147,7 +147,7 @@ class pounit(pocommon.pounit):
         if origin in ["programmer", "developer", "source code"]:
             autocomments = True
             commentlist = self.automaticcomments
-        if text.endswith('\n'):
+        if text.endswith("\n"):
             text = text[:-1]
         newcomments = text.split("\n")
         if position == "append":
@@ -258,7 +258,7 @@ class pounit(pocommon.pounit):
             # Remove kde-style comments from the translation (if any). XXX - remove
             if pocommon.extract_msgid_comment(otherpo.target):
                 otherpo.target = otherpo.target.replace(
-                    '_: ' + otherpo._extract_msgidcomments() + '\n', ''
+                    "_: " + otherpo._extract_msgidcomments() + "\n", ""
                 )
             self.target = otherpo.target
             if (
@@ -433,7 +433,7 @@ class pounit(pocommon.pounit):
             newunit.markfuzzy(unit.isfuzzy())
             if unit.isobsolete():
                 newunit.makeobsolete()
-            for tc in ['python-format', 'c-format', 'php-format']:
+            for tc in ["python-format", "c-format", "php-format"]:
                 if unit.hastypecomment(tc):
                     newunit.settypecomment(tc)
                     break
@@ -476,10 +476,10 @@ class pofile(pocommon.pofile):
     def parse(self, input):
         """Parses the given file or file source string."""
         try:
-            if hasattr(input, 'name'):
+            if hasattr(input, "name"):
                 self.filename = input.name
-            elif not getattr(self, 'filename', ''):
-                self.filename = ''
+            elif not getattr(self, "filename", ""):
+                self.filename = ""
             self.units = []
             self._cpo_store = cpo.pofile(input, noheader=True)
             self._build_self_from_cpo()

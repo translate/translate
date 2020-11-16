@@ -22,7 +22,7 @@ from translate.convert import factory as convert_factory
 from translate.storage.projstore import ProjectStore
 
 
-__all__ = ('Project',)
+__all__ = ("Project",)
 
 
 def split_extensions(filename):
@@ -39,11 +39,11 @@ def split_extensions(filename):
     filename_parts = filename.split(os.extsep)
     extensions = []
     for part in reversed(filename_parts):
-        if len(part) != 3 and part not in ('po', 'properties'):
+        if len(part) != 3 and part not in ("po", "properties"):
             break
         extensions.append(part)
     if not extensions:
-        return filename, ''
+        return filename, ""
     extensions = [x for x in reversed(extensions)]
 
     if len(extensions) == len(filename_parts):
@@ -105,9 +105,9 @@ class Project:
         inputfile = self.get_file(input_fname)
         input_type = self.store.get_filename_type(input_fname)
 
-        if input_type == 'tgt':
+        if input_type == "tgt":
             raise ValueError(
-                'Cannot convert a target document further: %s' % (input_fname)
+                "Cannot convert a target document further: %s" % (input_fname)
             )
 
         templ_fname = None
@@ -123,7 +123,7 @@ class Project:
             if input_fname in convert_map:
                 templ_fname = convert_map[input_fname][1]
                 template = self.get_file(templ_fname)
-            elif input_type == 'trans':
+            elif input_type == "trans":
                 # inputfile is a translatable file, so it needed to be converted
                 # from some input document. Let's try and use that document as a
                 # template for this conversion.
@@ -137,21 +137,21 @@ class Project:
 
         if input_fname in self.store.convert_map:
             out_name, tmpl_name = self.store.convert_map[input_fname]
-            if out_name in self.store._files and options.get('overwrite_output', True):
+            if out_name in self.store._files and options.get("overwrite_output", True):
                 self.remove_file(out_name)
 
         converted_file, converted_ext = convert_factory.convert(
             inputfile,
             template=template,
             options=conv_options,
-            convert_options=options.get('convert_options', None),
+            convert_options=options.get("convert_options", None),
         )
 
         # Determine the file name and path where the output should be moved.
         if not output_fname:
             _dir, fname = os.path.split(input_fname)
-            directory = ''
-            if hasattr(inputfile, 'name'):
+            directory = ""
+            if hasattr(inputfile, "name"):
                 # Prefer to put it in the same directory as the input file
                 directory, _fn = os.path.split(inputfile.name)
             else:
@@ -162,8 +162,8 @@ class Project:
         output_ext_parts = output_ext.split(os.extsep)
 
         # Add the output suffix, if supplied
-        if 'output_suffix' in options:
-            output_fname += options['output_suffix']
+        if "output_suffix" in options:
+            output_fname += options["output_suffix"]
 
         # Check if we are in the situation where the output has an extension
         # of, for example, .odt.xlf.odt. If so, we want to change that to only
@@ -172,7 +172,7 @@ class Project:
             output_ext_parts = output_ext_parts[:-1]
         else:
             output_ext_parts.append(converted_ext)
-        output_fname += os.extsep.join([''] + output_ext_parts)
+        output_fname += os.extsep.join([""] + output_ext_parts)
 
         if os.path.isfile(output_fname):
             # If the output file already exist, we can't assume that it's safe
@@ -182,7 +182,7 @@ class Project:
 
         os.rename(converted_file.name, output_fname)
 
-        output_type = self.store.TYPE_INFO['next_type'][input_type]
+        output_type = self.store.TYPE_INFO["next_type"][input_type]
         outputfile, output_fname = self.store.append_file(
             output_fname, None, ftype=output_type, delete_orig=True
         )
@@ -197,7 +197,7 @@ class Project:
         to :meth:`~translate.storage.projstore.ProjectStore.get_file` if
         *fname* is not found in the project.
         """
-        with open(destfname, 'wb') as fp:
+        with open(destfname, "wb") as fp:
             fp.write(self.store.get_file(fname).read())
 
     def get_file(self, fname):
@@ -211,9 +211,9 @@ class Project:
     def get_real_filename(self, projfname):
         """Try and find a real file name for the given project file name."""
         projfile = self.get_file(projfname)
-        rfname = getattr(projfile, 'name', getattr(projfile, 'filename', None))
+        rfname = getattr(projfile, "name", getattr(projfile, "filename", None))
         if rfname is None:
-            raise ValueError('Project file has no real file: %s' % (projfname))
+            raise ValueError("Project file has no real file: %s" % (projfname))
         return rfname
 
     def remove_file(self, projfname, ftype=None):

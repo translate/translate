@@ -67,7 +67,7 @@ class po2resx:
 
         # Join automatic and translator comments with a newline as per
         # convention.
-        combocomment = '\n'.join(comments)
+        combocomment = "\n".join(comments)
 
         if combocomment:
             unit.addnote(combocomment)
@@ -100,5 +100,5 @@ def main(argv=None):
     parser.run(argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

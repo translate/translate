@@ -5,7 +5,7 @@ from translate.tools import poterminology
 
 
 base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-sample_po_file = os.path.join(base_dir, 'tests', 'xliff_conformance', 'af-pootle.po')
+sample_po_file = os.path.join(base_dir, "tests", "xliff_conformance", "af-pootle.po")
 
 
 class TestPOTerminology:
@@ -15,12 +15,12 @@ class TestPOTerminology:
         # When no content has been provided, returns a simple dict
         assert extractor.extract_terms() == {}
 
-        with open(sample_po_file, 'rb') as fh:
+        with open(sample_po_file, "rb") as fh:
             inputfile = factory.getobject(fh)
         extractor.processunits(inputfile.units, sample_po_file)
         terms = extractor.extract_terms()
         assert len(terms) > 50
-        assert 'default' in terms.keys()
+        assert "default" in terms.keys()
 
         filtered_terms = extractor.filter_terms(terms)
         assert filtered_terms[0][0] > filtered_terms[-1][0]

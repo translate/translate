@@ -43,13 +43,13 @@ class po2pydict:
             if unit.istranslated() or (includefuzzy and unit.isfuzzy()):
                 mydict[unit.source] = unit.target
             else:
-                mydict[unit.source] = unit.source.replace('@markmin\x01', '')
+                mydict[unit.source] = unit.source.replace("@markmin\x01", "")
 
-        str_obj.write('# -*- coding: utf-8 -*-\n')
-        str_obj.write('{\n')
+        str_obj.write("# -*- coding: utf-8 -*-\n")
+        str_obj.write("{\n")
         for source_str, trans_str in sorted(mydict.items()):
             str_obj.write("%s: %s,\n" % (repr(source_str), repr(trans_str)))
-        str_obj.write('}\n')
+        str_obj.write("}\n")
         str_obj.seek(0)
         return str_obj
 
@@ -65,7 +65,7 @@ def convertpy(
     convertor = po2pydict()
     outputstring = convertor.convertstore(inputstore, includefuzzy)
 
-    outputfile.write(bytes(outputstring.read(), 'utf-8'))
+    outputfile.write(bytes(outputstring.read(), "utf-8"))
     return 1
 
 
@@ -79,5 +79,5 @@ def main(argv=None):
     parser.run(argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

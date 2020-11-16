@@ -39,8 +39,8 @@ def _split_xpath_component(xpath_component):
     >>> split_xpath_component('{urn:oasis:names:tc:opendocument:xmlns:office:1.0}document-content[0]')
     ('{urn:oasis:names:tc:opendocument:xmlns:office:1.0}document-content', 0).
     """
-    lbrac = xpath_component.rfind('[')
-    rbrac = xpath_component.rfind(']')
+    lbrac = xpath_component.rfind("[")
+    rbrac = xpath_component.rfind("]")
     tag = xpath_component[:lbrac]
     index = int(xpath_component[lbrac + 1 : rbrac])
     return tag, index
@@ -57,7 +57,7 @@ def _split_xpath(xpath):
     """
     if xliff.ID_SEPARATOR in xpath:
         xpath = xpath.split(xliff.ID_SEPARATOR)[-1]
-    components = xpath.split('/')
+    components = xpath.split("/")
     components = [_split_xpath_component(component) for component in components]
     return list(reversed(components))
 

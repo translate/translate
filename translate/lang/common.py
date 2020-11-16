@@ -330,7 +330,7 @@ class Common:
             if l > 9:
                 extra = cls.length_difference(l)
                 if extra > 0:
-                    text = text[:extra].replace('\n', '') + text
+                    text = text[:extra].replace("\n", "") + text
                 else:
                     text = text[-extra:]
             return text
@@ -345,7 +345,7 @@ class Common:
     def character_iter(cls, text):
         """Returns an iterator over the characters in text."""
         # We don't return more than one consecutive whitespace character
-        prev = 'A'
+        prev = "A"
         for c in text:
             if c.isspace() and prev.isspace():
                 continue

@@ -67,7 +67,7 @@ def converthtml(
         raise ValueError("must have template file for HTML files")
     else:
         outputstring = convertor.mergestore(inputstore, templatefile, includefuzzy)
-    outputfile.write(outputstring.encode('utf-8'))
+    outputfile.write(outputstring.encode("utf-8"))
     return 1
 
 
@@ -86,5 +86,5 @@ def main(argv=None):
     parser.run(argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

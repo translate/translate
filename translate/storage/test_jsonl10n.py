@@ -142,46 +142,46 @@ class TestJSONResourceStore(test_monolingual.TestMonolingualStore):
             store.parse('{"key": "value"')
 
     def test_filter(self):
-        store = self.StoreClass(filter=['key'])
+        store = self.StoreClass(filter=["key"])
         store.parse('{"key": "value", "other": "second"}')
         assert len(store.units) == 1
-        assert store.units[0].source == 'value'
+        assert store.units[0].source == "value"
 
     def test_ordering(self):
         store = self.StoreClass()
         store.parse(
-            '''{
+            """{
     "foo": "foo",
     "bar": "bar",
     "baz": "baz"
-}'''
+}"""
         )
 
-        assert store.units[0].source == 'foo'
-        assert store.units[2].source == 'baz'
+        assert store.units[0].source == "foo"
+        assert store.units[2].source == "baz"
 
     def test_args(self):
         store = self.StoreClass()
         store.parse(
-            '''{
+            """{
     "foo": "foo",
     "bar": "bar",
     "baz": "baz"
-}'''
+}"""
         )
-        store.dump_args['sort_keys'] = True
+        store.dump_args["sort_keys"] = True
 
         out = BytesIO()
         store.serialize(out)
 
         assert (
             out.getvalue()
-            == b'''{
+            == b"""{
     "bar": "bar",
     "baz": "baz",
     "foo": "foo"
 }
-'''
+"""
         )
 
     def test_bom(self):
@@ -217,7 +217,7 @@ class TestJSONResourceStore(test_monolingual.TestMonolingualStore):
         unit = self.StoreClass.UnitClass(
             "source",
         )
-        unit.setid('simple.key')
+        unit.setid("simple.key")
         store.addunit(unit)
 
         assert (
@@ -243,7 +243,7 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
         )
 
     def test_ordering(self):
-        data = b'''{
+        data = b"""{
     "foo": "foo",
     "bar": {
         "ba1": "bag",
@@ -252,15 +252,15 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
         "ba4": "baz"
     }
 }
-'''
+"""
         store = self.StoreClass()
         store.parse(data)
 
-        assert store.units[0].source == 'foo'
-        assert store.units[1].getid() == '.bar.ba1'
-        assert store.units[2].getid() == '.bar.ba2'
-        assert store.units[3].getid() == '.bar.ba3'
-        assert store.units[4].getid() == '.bar.ba4'
+        assert store.units[0].source == "foo"
+        assert store.units[1].getid() == ".bar.ba1"
+        assert store.units[2].getid() == ".bar.ba2"
+        assert store.units[3].getid() == ".bar.ba3"
+        assert store.units[4].getid() == ".bar.ba4"
 
         out = BytesIO()
         store.serialize(out)
@@ -282,7 +282,7 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
         unit = self.StoreClass.UnitClass(
             "source",
         )
-        unit.setid('simple.key')
+        unit.setid("simple.key")
         store.addunit(unit)
 
         assert (
@@ -327,7 +327,7 @@ class TestWebExtensionStore(test_monolingual.TestMonolingualStore):
     def test_set_target(self):
         store = self.StoreClass()
         store.parse('{"key": {"message": "value", "description": "note"}}')
-        store.units[0].target = 'another'
+        store.units[0].target = "another"
         out = BytesIO()
         store.serialize(out)
 
@@ -349,7 +349,7 @@ class TestWebExtensionStore(test_monolingual.TestMonolingualStore):
     }
 }
 """.encode(
-            'utf-8'
+            "utf-8"
         )
 
         store = self.StoreClass()
@@ -382,8 +382,8 @@ class TestI18NextStore(test_monolingual.TestMonolingualStore):
         store.parse(JSON_I18NEXT)
 
         # Remove plurals
-        store.units[2].target = 'Ahoj'
-        store.units[3].target = 'Nazdar'
+        store.units[2].target = "Ahoj"
+        store.units[3].target = "Nazdar"
         out = BytesIO()
         store.serialize(out)
 
@@ -424,7 +424,7 @@ class TestI18NextStore(test_monolingual.TestMonolingualStore):
         assert bytes(store).decode() == JSON_I18NEXT_NESTED_ARRAY
 
     def test_new_plural(self):
-        EXPECTED = b'''{
+        EXPECTED = b"""{
     "simple": "the singular",
     "simple_plural": "the plural",
     "complex_0": "the plural form 0",
@@ -434,7 +434,7 @@ class TestI18NextStore(test_monolingual.TestMonolingualStore):
     "complex_4": "the plural form 4",
     "complex_5": "the plural form 5"
 }
-'''
+"""
         store = self.StoreClass()
 
         unit = self.StoreClass.UnitClass(
@@ -444,7 +444,7 @@ class TestI18NextStore(test_monolingual.TestMonolingualStore):
                     "the plural",
                 ]
             ),
-            'simple',
+            "simple",
         )
         store.addunit(unit)
 
@@ -459,7 +459,7 @@ class TestI18NextStore(test_monolingual.TestMonolingualStore):
                     "the plural form 5",
                 ]
             ),
-            'complex',
+            "complex",
         )
         store.addunit(unit)
 

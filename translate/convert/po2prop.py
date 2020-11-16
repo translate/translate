@@ -132,11 +132,11 @@ class reprop:
             for category, text in zip(names, unit.target.strings):
                 # TODO: for now we assume all forms are present. We need to
                 # fill in the rest after mapping things to the proper CLDR names.
-                if category == 'zero':
+                if category == "zero":
                     # [zero] cases are translated as separate units
                     continue
                 new_unit = self.inputstore.addsourceunit("fish")  # not used
-                new_location = '%s[%s]' % (location, category)
+                new_location = "%s[%s]" % (location, category)
                 new_unit.addlocation(new_location)
                 new_unit.target = text
                 self.inputstore.locationindex[new_location] = new_unit
@@ -148,12 +148,12 @@ class reprop:
         """Explode the gwt plurals."""
         # cldr names to GWT variants
         cldr2gwt = {
-            'zero': 'none',
-            'one': 'one',
-            'two': 'two',
-            'few': 'few',
-            'many': 'many',
-            'other': '',
+            "zero": "none",
+            "one": "one",
+            "two": "two",
+            "few": "few",
+            "many": "many",
+            "other": "",
         }
         from translate.lang import data
 
@@ -168,10 +168,10 @@ class reprop:
             location = unit.getlocations()[0]
             for category, text in zip(names, unit.target.strings):
                 new_unit = self.inputstore.addsourceunit("fish")  # not used
-                if category != '':
-                    new_location = '%s[%s]' % (location, category)
+                if category != "":
+                    new_location = "%s[%s]" % (location, category)
                 else:
-                    new_location = '%s' % (location)
+                    new_location = "%s" % (location)
                 new_unit.addlocation(new_location)
                 new_unit.target = text
                 self.inputstore.locationindex[new_location] = new_unit
@@ -182,17 +182,17 @@ class reprop:
         if self.inmultilinemsgid:
             msgid = quote.rstripeol(line).strip()
             # see if there's more
-            self.inmultilinemsgid = msgid[-1:] == '\\'
+            self.inmultilinemsgid = msgid[-1:] == "\\"
             # if we're echoing...
             if self.inecho:
                 returnline = line
         # otherwise, this could be a comment
-        elif line.strip()[:1] == '#':
+        elif line.strip()[:1] == "#":
             returnline = quote.rstripeol(line) + eol
         else:
             line = quote.rstripeol(line)
             delimiter_char, delimiter_pos = self.personality.find_delimiter(line)
-            if quote.rstripeol(line)[-1:] == '\\':
+            if quote.rstripeol(line)[-1:] == "\\":
                 self.inmultilinemsgid = True
             if delimiter_pos == -1:
                 key = self.personality.key_strip(line)
@@ -200,7 +200,7 @@ class reprop:
             else:
                 key = self.personality.key_strip(line[:delimiter_pos])
                 # Calculate space around the equal sign
-                prespace = line[line.find(' ', len(key)) : delimiter_pos]
+                prespace = line[line.find(" ", len(key)) : delimiter_pos]
                 postspacestart = len(line[delimiter_pos + 1 :])
                 postspaceend = len(line[delimiter_pos + 1 :].lstrip())
                 postspace = line[
@@ -364,5 +364,5 @@ def main(argv=None):
     parser.run(argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

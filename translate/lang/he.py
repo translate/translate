@@ -29,5 +29,5 @@ class he(common.Common):
     """This class represents Hebrew."""
 
     ignoretests = {
-        'all': ["acronyms", "simplecaps", "startcaps"],
+        "all": ["acronyms", "simplecaps", "startcaps"],
     }

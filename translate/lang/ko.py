@@ -29,5 +29,5 @@ class ko(common.Common):
     """This class represents Korean."""
 
     ignoretests = {
-        'all': ["simplecaps", "startcaps"],
+        "all": ["simplecaps", "startcaps"],
     }

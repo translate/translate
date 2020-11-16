@@ -41,7 +41,7 @@ class po2txt:
         template_file=None,
         include_fuzzy=False,
         output_threshold=None,
-        encoding='utf-8',
+        encoding="utf-8",
         wrap=None,
     ):
         """Initialize the converter."""
@@ -110,7 +110,7 @@ class po2txt:
         else:
             outputstring = self.merge_stores()
 
-        self.output_file.write(outputstring.encode('utf-8'))
+        self.output_file.write(outputstring.encode("utf-8"))
         return True
 
 
@@ -120,7 +120,7 @@ def run_converter(
     templatefile=None,
     wrap=None,
     includefuzzy=False,
-    encoding='utf-8',
+    encoding="utf-8",
     outputthreshold=None,
 ):
     """Wrapper around converter."""
@@ -153,7 +153,7 @@ def main(argv=None):
         "",
         "--encoding",
         dest="encoding",
-        default='utf-8',
+        default="utf-8",
         type="string",
         help="The encoding of the template file (default: UTF-8)",
     )
@@ -173,5 +173,5 @@ def main(argv=None):
     parser.run(argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

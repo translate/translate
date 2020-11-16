@@ -44,15 +44,15 @@ def process_l10n_ini(inifile):
     """
 
     l10n = ConfigParser()
-    with open(path_neutral(inifile), 'r') as fh:
+    with open(path_neutral(inifile), "r") as fh:
         l10n.readfp(fh)
     l10n_ini_path = os.path.dirname(inifile)
 
-    for dir in l10n.get('compare', 'dirs').split():
+    for dir in l10n.get("compare", "dirs").split():
         frompath = os.path.join(
-            l10n_ini_path, l10n.get('general', 'depth'), dir, 'locales', 'en-US'
+            l10n_ini_path, l10n.get("general", "depth"), dir, "locales", "en-US"
         )
-        topath = os.path.join(l10ncheckout, 'en-US', dir)
+        topath = os.path.join(l10ncheckout, "en-US", dir)
         if not os.path.exists(frompath):
             if verbose:
                 print("[Missing source]: %s" % frompath)
@@ -62,18 +62,18 @@ def process_l10n_ini(inifile):
                 print("[Existing target]: %s" % topath)
             continue
         if verbose:
-            print('%s -> %s' % (frompath, topath))
+            print("%s -> %s" % (frompath, topath))
         try:
             shutil.copytree(frompath, topath)
         except OSError as e:
             print(e)
 
     try:
-        for include in l10n.options('includes'):
+        for include in l10n.options("includes"):
             include_ini = os.path.join(
                 l10n_ini_path,
-                l10n.get('general', 'depth'),
-                l10n.get('includes', include),
+                l10n.get("general", "depth"),
+                l10n.get("includes", include),
             )
             if os.path.isfile(include_ini):
                 process_l10n_ini(include_ini)
@@ -89,56 +89,56 @@ def create_option_parser():
     p = ArgumentParser()
 
     p.add_argument(
-        '-s',
-        '--src',
+        "-s",
+        "--src",
         type=str,
-        dest='srcdir',
-        default='mozilla',
-        help='The directory containing the Mozilla l10n sources.',
+        dest="srcdir",
+        default="mozilla",
+        help="The directory containing the Mozilla l10n sources.",
     )
     p.add_argument(
-        '-d',
-        '--dest',
+        "-d",
+        "--dest",
         type=str,
-        dest='destdir',
-        default='l10n',
-        help='The destination directory to copy the en-US locale files to.',
+        dest="destdir",
+        default="l10n",
+        help="The destination directory to copy the en-US locale files to.",
     )
     p.add_argument(
-        '-p',
-        '--mozproduct',
+        "-p",
+        "--mozproduct",
         type=str,
-        dest='mozproduct',
-        default='browser',
-        help='The Mozilla product name.',
+        dest="mozproduct",
+        default="browser",
+        help="The Mozilla product name.",
     )
     p.add_argument(
-        '--delete-dest',
-        dest='deletedest',
+        "--delete-dest",
+        dest="deletedest",
         default=False,
-        action='store_true',
-        help='Delete the destination directory (if it exists).',
+        action="store_true",
+        help="Delete the destination directory (if it exists).",
     )
 
     p.add_argument(
-        '-v',
-        '--verbose',
-        dest='verbose',
-        action='store_true',
+        "-v",
+        "--verbose",
+        dest="verbose",
+        action="store_true",
         default=False,
-        help='Be more noisy',
+        help="Be more noisy",
     )
 
     return p
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     args = create_option_parser().parse_args()
     srccheckout = args.srcdir
     l10ncheckout = args.destdir
     product = args.mozproduct
 
-    enUS_dir = os.path.join(l10ncheckout, 'en-US')
+    enUS_dir = os.path.join(l10ncheckout, "en-US")
     if args.deletedest and os.path.exists(enUS_dir):
         shutil.rmtree(enUS_dir)
     if not os.path.exists(enUS_dir):
@@ -152,11 +152,11 @@ if __name__ == '__main__':
                 srccheckout,
                 l10ncheckout,
                 product,
-                args.deletedest and '--delete-dest' or '',
+                args.deletedest and "--delete-dest" or "",
             )
         )
-    product_ini = os.path.join(srccheckout, product, 'locales', 'l10n.ini')
+    product_ini = os.path.join(srccheckout, product, "locales", "l10n.ini")
     if not os.path.isfile(product_ini):
         # Done for Fennec
-        product_ini = os.path.join(srccheckout, 'locales', 'l10n.ini')
+        product_ini = os.path.join(srccheckout, "locales", "l10n.ini")
     process_l10n_ini(product_ini)

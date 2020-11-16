@@ -81,9 +81,9 @@ class tbxunit(lisa.LISAunit):
         :rtype: List
         """
         note_nodes = []
-        if origin == 'pos':
+        if origin == "pos":
             note_nodes = self.xmlelement.iterdescendants(self.namespaced("termNote"))
-        elif origin == 'definition':
+        elif origin == "definition":
             note_nodes = self.xmlelement.iterdescendants(self.namespaced("descrip"))
         else:
             note_nodes = self.xmlelement.iterdescendants(self.namespaced("note"))
@@ -106,7 +106,7 @@ class tbxunit(lisa.LISAunit):
         return note_list
 
     def getnotes(self, origin=None):
-        return '\n'.join(self._getnotelist(origin=origin))
+        return "\n".join(self._getnotelist(origin=origin))
 
 
 class tbxfile(lisa.LISAfile):
@@ -118,7 +118,7 @@ class tbxfile(lisa.LISAfile):
     Extensions = ["tbx"]
     rootNode = "martif"
     bodyNode = "body"
-    XMLskeleton = '''<?xml version="1.0"?>
+    XMLskeleton = """<?xml version="1.0"?>
 <!DOCTYPE martif PUBLIC "ISO 12200:1999A//DTD MARTIF core (DXFcdV04)//EN" "TBXcdv04.dtd">
 <martif type="TBX">
 <martifHeader>
@@ -127,7 +127,7 @@ class tbxfile(lisa.LISAfile):
 </fileDesc>
 </martifHeader>
 <text><body></body></text>
-</martif>'''
+</martif>"""
 
     def addheader(self):
         """Initialise headers with TBX specific things."""
