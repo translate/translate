@@ -71,6 +71,19 @@ JSON_COMPLEX = b"""{
     ]
 }
 """
+JSON_COMPLEX_ARRAY = r"""[
+    {
+        "url": "massivholztische",
+        "heading": "Welche Tischgröße ist für mich die richtige?",
+        "content": "Überlege zunächst wie viele Personen regelmäßig\r\n"
+    },
+    {
+        "url": "massivholztische",
+        "heading": "Bietet Öl genügend Schutz für meinen Massivholztisch?",
+        "content": "<p>Holzöl bietet bei normaler Nutzung"
+    }
+]
+""".encode()
 JSON_GOI18N = b"""[
     {
         "id": "tag",
@@ -182,6 +195,15 @@ class TestJSONResourceStore(test_monolingual.TestMonolingualStore):
         store.serialize(out)
 
         assert out.getvalue() == JSON_COMPLEX
+
+    def test_complex_array(self):
+        store = self.StoreClass()
+        store.parse(JSON_COMPLEX_ARRAY)
+
+        out = BytesIO()
+        store.serialize(out)
+
+        assert out.getvalue() == JSON_COMPLEX_ARRAY
 
     def test_add(self):
         store = self.StoreClass()

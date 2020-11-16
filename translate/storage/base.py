@@ -992,6 +992,11 @@ class DictUnit(TranslationUnit):
 
 class DictStore(TranslationStore):
 
+    def get_root_node(self):
+        if self.units and self.units[0].getid().startswith('['):
+            return []
+        return OrderedDict()
+
     def serialize_units(self, output):
         for unit in self.unit_iter():
             unit.storevalues(output)

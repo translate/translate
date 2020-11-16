@@ -166,7 +166,7 @@ class JsonFile(base.DictStore):
             self.parse(inputfile)
 
     def serialize(self, out):
-        units = OrderedDict()
+        units = self.get_root_node()
         self.serialize_units(units)
         out.write(json.dumps(units, **self.dump_args).encode(self.encoding))
         out.write(b'\n')
