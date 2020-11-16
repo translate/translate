@@ -194,7 +194,7 @@ coverage_write_headline = False
 # -- Options for intersphinx extension ---------------------------------------
 
 intersphinx_mapping = {
-    "python": ("https://docs.python.org/3.8", None),
+    "python": ("https://docs.python.org/3.9", None),
     "pytest": ("https://docs.pytest.org/en/latest/", None),
     "django": ("http://django.readthedocs.org/en/latest/", None),
     "pootle": ("http://docs.translatehouse.org/projects/pootle/en/latest/", None),

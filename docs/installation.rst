@@ -98,11 +98,11 @@ Installing on Windows
 On Windows we recommend that you install Translate Toolkit using a virtual
 environment. This makes installation clean and isolated.
 
-Use the latest Python 3.8.  Install `virtualenvwrapper-win
+Use the latest Python 3.9.  Install `virtualenvwrapper-win
 <https://pypi.python.org/pypi/virtualenvwrapper-win>`_ to simplify handling of
 virtualenvs.
 
-1. Install latest `Python 3.8 <https://www.python.org/downloads/windows/>`_
+1. Install latest `Python 3.9 <https://www.python.org/downloads/windows/>`_
 2. Open cmd.exe or similar
 3. `pip install virtualenvwrapper-win`
 4. `mkvirtualenv ttk` where "ttk" is the name for the new virtualenv
@@ -184,4 +184,4 @@ The following advice only applies to manual installation from a tarball.
 
    .. code-block:: console
 
-      $ rm -R /usr/local/lib/python3.8/dist-packages/translate
+      $ rm -R /usr/local/lib/python3.9/dist-packages/translate
