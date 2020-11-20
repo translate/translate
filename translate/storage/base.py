@@ -928,7 +928,7 @@ class UnitId:
         for item in text.split(cls.KEY_SEPARATOR):
             if "[" in item and item[-1] == "]":
                 item, pos = item[:-1].split("[")
-                if cls.INDEX_SEPARATOR and item:
+                if item:
                     result.append(("key", item))
                 result.append(("index", int(pos)))
             else:
@@ -953,8 +953,8 @@ class DictUnit(TranslationUnit):
             element, key = part
             default = [] if parts[pos + 1][0] == "index" else self.DefaultDict()
             if element == "index":
-                if len(target) <= key and not unset:
-                    target.append(default)
+                while len(target) <= key and not unset:
+                    target.append(default.copy())
             elif element == "key":
                 if key not in target or isinstance(target[key], str):
                     target[key] = default

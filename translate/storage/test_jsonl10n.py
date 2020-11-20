@@ -279,21 +279,38 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
     def test_add(self):
         store = self.StoreClass()
 
-        unit = self.StoreClass.UnitClass(
-            "source",
-        )
+        unit = self.StoreClass.UnitClass("source")
         unit.setid("simple.key")
         store.addunit(unit)
 
-        assert (
-            bytes(store).decode()
-            == """{
+        expected = """{
     "simple": {
         "key": "source"
     }
 }
 """
-        )
+        assert bytes(store).decode() == expected
+
+    def test_add_index(self):
+        store = self.StoreClass()
+
+        unit = self.StoreClass.UnitClass("source")
+        unit.setid("simple.list[2].key")
+        store.addunit(unit)
+
+        expected = """{
+    "simple": {
+        "list": [
+            {},
+            {},
+            {
+                "key": "source"
+            }
+        ]
+    }
+}
+"""
+        assert bytes(store).decode() == expected
 
 
 class TestWebExtensionUnit(test_monolingual.TestMonolingualUnit):
