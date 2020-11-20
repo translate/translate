@@ -65,8 +65,8 @@ class LangUnit(base.TranslationUnit):
                     for note in self.getnotes("developer").split("\n")
                 ]
             )
-            return "%s%s;%s%s%s" % (notes, self.eol, self.source, self.eol, target)
-        return ";%s%s%s" % (self.source, self.eol, target)
+            return f"{notes}{self.eol};{self.source}{self.eol}{target}"
+        return f";{self.source}{self.eol}{target}"
 
     def getlocations(self):
         return self.locations

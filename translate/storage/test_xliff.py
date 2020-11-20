@@ -201,7 +201,9 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert target_dom_node.text == "foobaz"
 
         assert g_placeable.tag == "g"
-        print("g_placeable.text: %s (%s)" % (g_placeable.text, type(g_placeable.text)))
+        print(
+            "g_placeable.text: {} ({})".format(g_placeable.text, type(g_placeable.text))
+        )
         assert g_placeable.text is None
         assert g_placeable.attrib["id"] == "oof"
         assert g_placeable.tail is None

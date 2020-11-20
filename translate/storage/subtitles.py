@@ -76,7 +76,7 @@ class SubtitleUnit(base.TranslationUnit):
             return ""
 
     def getlocations(self):
-        return ["%s-->%s" % (self._start, self._end)]
+        return [f"{self._start}-->{self._end}"]
 
     def getid(self):
         return self.getlocations()[0]

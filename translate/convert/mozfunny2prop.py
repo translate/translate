@@ -49,7 +49,7 @@ def inc2prop(lines):
                 commented = False
             if commented:
                 yield "# "
-            yield "%s = %s\n" % (key, value)
+            yield f"{key} = {value}\n"
         else:
             if commented:
                 yield "# "
@@ -76,11 +76,9 @@ def it2prop(lines, encoding="cp1252"):
 def funny2prop(lines, itencoding="cp1252"):
     hashstarts = len([line for line in lines if line.startswith("#")])
     if hashstarts:
-        for line in inc2prop(lines):
-            yield line
+        yield from inc2prop(lines)
     else:
-        for line in it2prop(lines, encoding=itencoding):
-            yield line
+        yield from it2prop(lines, encoding=itencoding)
 
 
 def inc2po(

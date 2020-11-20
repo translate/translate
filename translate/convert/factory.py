@@ -52,7 +52,7 @@ class UnsupportedConversionError(Exception):
         self.templ_ext = templ_ext
 
     def __str__(self):
-        msg = "Unsupported conversion from %s to %s" % (self.in_ext, self.out_ext)
+        msg = f"Unsupported conversion from {self.in_ext} to {self.out_ext}"
         if self.templ_ext:
             msg += " with template %s" % (self.templ_ext)
         return msg

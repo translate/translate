@@ -21,7 +21,6 @@ This module contains functions for identifying languages based on language
 models.
 """
 
-import io
 from os import extsep, path
 
 from translate.lang.ngram import NGram
@@ -58,7 +57,7 @@ class LanguageIdentifier:
         """Load the mapping of language names to language codes as given in the
         configuration file.
         """
-        with open(conf_file, "r") as fp:
+        with open(conf_file) as fp:
             for line in fp:
                 parts = line.split()
                 if not parts or line.startswith("#"):
@@ -137,6 +136,6 @@ if __name__ == "__main__":
 
     script_dir = path.abspath(path.dirname(argv[0]))
     identifier = LanguageIdentifier()
-    with io.open(argv[1], "r") as fh:
+    with open(argv[1]) as fh:
         text = fh.read()
     print("Language detected:", identifier.identify_lang(text))

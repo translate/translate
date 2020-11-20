@@ -93,7 +93,7 @@ def delfiles(pattern, path, files):
 
 def run(cmd, expected_status=0, stdout=None, stderr=None, shell=False):
     if options["verbose"]:
-        print(">>> %s $ %s" % (os.getcwd(), " ".join(cmd)))
+        print(">>> {} $ {}".format(os.getcwd(), " ".join(cmd)))
     p = Popen(cmd, stdout=stdout, stderr=stderr, shell=shell)
     cmd_status = p.wait()
 
@@ -134,7 +134,7 @@ def get_langs(lang_args):
         if lang == "ALL":
             # Get all available languages from the locales file
             locales_filename = join(mozilladir, targetapp, "locales", "shipped-locales")
-            with open(locales_filename, "r") as fh:
+            with open(locales_filename) as fh:
                 for line in fh:
                     langcode = line.split()[0]
                     if langcode != "en-US":
@@ -311,7 +311,9 @@ def pack_pot(includes):
     except OSError:
         pass
 
-    packname = join(potpacks, "%s-%s-%s" % (products[targetapp], mozversion, timestamp))
+    packname = join(
+        potpacks, "{}-{}-{}".format(products[targetapp], mozversion, timestamp)
+    )
     run(
         [
             "tar",
@@ -338,7 +340,8 @@ def pack_po(lang, buildlang):
 
     print("    %s" % (lang))
     packname = join(
-        popacks, "%s-%s-%s-%s" % (products[targetapp], mozversion, buildlang, timestamp)
+        popacks,
+        "{}-{}-{}-{}".format(products[targetapp], mozversion, buildlang, timestamp),
     )
     run(
         [

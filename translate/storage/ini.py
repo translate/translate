@@ -142,4 +142,4 @@ class inifile(base.TranslationStore):
             for entry in self._inifile[section]:
                 source = self._dialect.unescape(self._inifile[section][entry])
                 newunit = self.addsourceunit(source)
-                newunit.addlocation("[%s]%s" % (section, entry))
+                newunit.addlocation(f"[{section}]{entry}")

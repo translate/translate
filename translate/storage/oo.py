@@ -97,7 +97,7 @@ def makekey(ookey, long_keys):
         fullid = groupid + "." + localid
     if resourcetype:
         fullid = fullid + "." + resourcetype
-    key = "%s#%s" % (sourcebase, fullid)
+    key = f"{sourcebase}#{fullid}"
     return normalizefilename(key)
 
 
@@ -460,8 +460,7 @@ class oomultifile:
 
     def __iter__(self):
         """iterates through the subfile names"""
-        for subfile in self.listsubfiles():
-            yield subfile
+        yield from self.listsubfiles()
 
     def __contains__(self, pathname):
         """checks if this pathname is a valid subfile"""

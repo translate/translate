@@ -145,7 +145,7 @@ class poheader:
         mime_version=None,
         plural_forms=None,
         report_msgid_bugs_to=None,
-        **kwargs
+        **kwargs,
     ):
         """Create a header dictionary with useful defaults.
 
@@ -247,7 +247,7 @@ class poheader:
             headerString = ""
             for key, value in headeritems.items():
                 if value is not None:
-                    headerString += "%s: %s\n" % (key, value)
+                    headerString += f"{key}: {value}\n"
             header.target = headerString
             header.markfuzzy(False)  # TODO: check why we do this?
         return header
@@ -387,12 +387,12 @@ class poheader:
             "Language-Team",
             "Plural-Forms",
         )
-        retain = dict(
-            (key, newvalues[key])
+        retain = {
+            key: newvalues[key]
             for key in retain_list
             if newvalues.get(key, None)
             and newvalues[key] != default_header.get(key, None)
-        )
+        }
         self.updateheader(**retain)
 
     def updatecontributor(self, name, email=None):
@@ -437,14 +437,14 @@ class poheader:
                     # The contributor is there, but not for this year
                     if line[-1] == ".":
                         line = line[:-1]
-                    contriblines[i] = "%s, %s." % (line, year)
+                    contriblines[i] = f"{line}, {year}."
 
         if not contribexists:
             # Add a new contributor
             if email:
-                contriblines.append("%s <%s>, %s." % (name, email, year))
+                contriblines.append(f"{name} <{email}>, {year}.")
             else:
-                contriblines.append("%s, %s." % (name, year))
+                contriblines.append(f"{name}, {year}.")
 
         header.removenotes()
         header.addnote("\n".join(prelines))
@@ -463,6 +463,6 @@ class poheader:
         for (key, value) in headeritems.items():
             if value is None:
                 continue
-            headervalue += "%s: %s\n" % (key, value)
+            headervalue += f"{key}: {value}\n"
         headerpo.target = headervalue
         return headerpo

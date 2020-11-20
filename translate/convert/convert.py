@@ -30,7 +30,7 @@ from translate.misc import optrecurse
 optparse = optrecurse.optparse
 
 
-class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
+class ConvertOptionParser(optrecurse.RecursiveOptionParser):
     """A specialized Option Parser for convertor tools..."""
 
     def __init__(

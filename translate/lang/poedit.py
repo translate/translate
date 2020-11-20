@@ -195,7 +195,7 @@ lang_codes = {
 """ISO369 codes and names as used by Poedit.
 Mostly these are identical to ISO 639, but there are some differences."""
 
-lang_names = dict([(value, key) for (key, value) in lang_codes.items()])
+lang_names = {value: key for (key, value) in lang_codes.items()}
 """Reversed :data:`lang_codes`"""
 
 dialects = {

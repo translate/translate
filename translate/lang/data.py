@@ -687,7 +687,7 @@ def get_language_iso_fullname(language_code):
         country_name = get_country_iso_name(country_code)
         if not country_name:
             return ""
-        return "%s (%s)" % (language_name, country_name)
+        return f"{language_name} ({country_name})"
     return get_language_iso_name(language_code)
 
 
@@ -709,7 +709,7 @@ def tr_lang(langcode=None):
         if match:
             language, country = match.groups()
             if country != "macrolanguage":
-                return "%s (%s)" % (
+                return "{} ({})".format(
                     _fix_language_name(langfunc(language)),
                     countryfunc(country),
                 )
@@ -813,7 +813,7 @@ def normalize_code(code):
     return code.replace("_", "-").replace("@", "-").lower()
 
 
-__normalised_languages = set(normalize_code(key) for key in languages.keys())
+__normalised_languages = {normalize_code(key) for key in languages.keys()}
 
 
 def simplify_to_common(language_code):
@@ -835,5 +835,5 @@ def get_language(code):
     code = code.replace("-", "_").replace("@", "_").lower()
     if "_" in code:
         # convert ab_cd → ab_CD
-        code = "%s_%s" % (code.split("_")[0], code.split("_", 1)[1].upper())
+        code = "{}_{}".format(code.split("_")[0], code.split("_", 1)[1].upper())
     return languages.get(code, None)

@@ -42,7 +42,7 @@ lsep = "\n#: "
 # general functions for quoting / unquoting po strings
 
 po_unescape_map = {"\\r": "\r", "\\t": "\t", '\\"': '"', "\\n": "\n", "\\\\": "\\"}
-po_escape_map = dict([(value, key) for (key, value) in po_unescape_map.items()])
+po_escape_map = {value: key for (key, value) in po_unescape_map.items()}
 
 
 def splitlines(text):
@@ -347,11 +347,11 @@ class pounit(pocommon.pounit):
         if isinstance(templates, list):
             templates = {0: templates}
         if isinstance(target, list):
-            self.msgstr = dict([(i, self.quote(target[i])) for i in range(len(target))])
+            self.msgstr = {i: self.quote(target[i]) for i in range(len(target))}
         elif isinstance(target, dict):
-            self.msgstr = dict(
-                [(i, self.quote(targetstring)) for i, targetstring in target.items()]
-            )
+            self.msgstr = {
+                i: self.quote(targetstring) for i, targetstring in target.items()
+            }
         else:
             self.msgstr = self.quote(target)
 
@@ -505,7 +505,7 @@ class pounit(pocommon.pounit):
                     prefix = item.split()[0]
                 list1.extend(
                     [
-                        "%s %s%s" % (prefix, item, lineend)
+                        f"{prefix} {item}{lineend}"
                         for item in splitlist2
                         if item not in splitlist1
                     ]
@@ -729,8 +729,8 @@ class pounit(pocommon.pounit):
 
         def add_prev_msgid_lines(lines, prefix, header, var):
             if var:
-                lines.append("%s %s %s\n" % (prefix, header, var[0]))
-                lines.extend("%s %s\n" % (prefix, line) for line in var[1:])
+                lines.append("{} {} {}\n".format(prefix, header, var[0]))
+                lines.extend(f"{prefix} {line}\n" for line in var[1:])
 
         def add_prev_msgid_info(lines, prefix):
             add_prev_msgid_lines(lines, prefix, "msgctxt", self.prev_msgctxt)
@@ -846,9 +846,9 @@ class pounit(pocommon.pounit):
         #        id = '\0'.join(self.source.strings)
         id = self.source
         if self.msgidcomments:
-            id = "_: %s\n%s" % (context, id)
+            id = f"_: {context}\n{id}"
         elif context:
-            id = "%s\04%s" % (context, id)
+            id = f"{context}\04{id}"
         return id
 
 

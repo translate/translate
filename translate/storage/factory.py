@@ -143,7 +143,7 @@ def _getname(storefile):
 @lru_cache(maxsize=128)
 def import_class(module_name, class_name, prefix=None):
     if prefix:
-        module_name = "{}.{}".format(prefix, module_name)
+        module_name = f"{prefix}.{module_name}"
     module = import_module(module_name)
     return getattr(module, class_name)
 

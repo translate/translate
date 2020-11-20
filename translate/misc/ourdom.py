@@ -65,14 +65,14 @@ def writexml_helper(self, writer, indent="", addindent="", newl=""):
             writer.write(">")
             for node in self.childNodes:
                 node.writexml(writer, "", "", "")
-            writer.write("</%s>%s" % (self.tagName, newl))
+            writer.write(f"</{self.tagName}>{newl}")
         else:
             # This is the normal case that we do with pretty layout
             writer.write(">%s" % (newl))
             for node in self.childNodes:
                 if node.nodeType != self.TEXT_NODE:
                     node.writexml(writer, (indent + addindent), addindent, newl)
-            writer.write("%s</%s>%s" % (indent, self.tagName, newl))
+            writer.write(f"{indent}</{self.tagName}>{newl}")
     else:
         writer.write("/>%s" % (newl))
 
@@ -90,8 +90,7 @@ def getElementsByTagName_helper(parent, name, dummy=None):
         ):
             yield node
         if node.hasChildNodes():
-            for othernode in node.getElementsByTagName(name):
-                yield othernode
+            yield from node.getElementsByTagName(name)
 
 
 def searchElementsByTagName_helper(parent, name, onlysearch):

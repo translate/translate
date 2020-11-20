@@ -282,12 +282,9 @@ class CheckerConfig:
         if validchars is None:
             return True
 
-        validcharsmap = dict(
-            [
-                (ord(validchar), None)
-                for validchar in data.normalized_unicode(validchars)
-            ]
-        )
+        validcharsmap = {
+            ord(validchar): None for validchar in data.normalized_unicode(validchars)
+        }
         self.validcharsmap.update(validcharsmap)
 
     def updatetargetlanguage(self, langcode):
@@ -1858,7 +1855,7 @@ class StandardChecker(TranslationChecker):
         invalid1 = str1.translate(self.config.validcharsmap)
         invalid2 = str2.translate(self.config.validcharsmap)
         invalidchars = [
-            "'%s' (\\u%04x)" % (invalidchar, ord(invalidchar))
+            "'{}' (\\u{:04x})".format(invalidchar, ord(invalidchar))
             for invalidchar in invalid2
             if invalidchar not in invalid1
         ]

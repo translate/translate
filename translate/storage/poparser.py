@@ -361,12 +361,7 @@ def decode_header(unit, decode):
             setattr(
                 unit,
                 attr,
-                dict(
-                    [
-                        (key, decode_list(value, decode))
-                        for key, value in element.items()
-                    ]
-                ),
+                {key: decode_list(value, decode) for key, value in element.items()},
             )
 
 
@@ -392,4 +387,4 @@ def parse_units(parse_state, store):
         store.addunit(unit)
         unit = parse_unit(parse_state)
     if not parse_state.eof:
-        raise ValueError("Syntax error on line {}".format(parse_state.lineno))
+        raise ValueError(f"Syntax error on line {parse_state.lineno}")

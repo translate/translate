@@ -210,9 +210,9 @@ class DirDiffer:
                         filediffer = FileDiffer(fromfile, tofile, self.options)
                         filediffer.writediff(outfile)
             elif from_ok:
-                outfile.write("Only in %s: %s\n" % (self.fromdir, difffile))
+                outfile.write(f"Only in {self.fromdir}: {difffile}\n")
             elif to_ok:
-                outfile.write("Only in %s: %s\n" % (self.todir, difffile))
+                outfile.write(f"Only in {self.todir}: {difffile}\n")
 
 
 class FileDiffer:
@@ -230,7 +230,7 @@ class FileDiffer:
         """writes the actual diff to the given file"""
         validfiles = True
         if os.path.exists(self.fromfile):
-            with open(self.fromfile, "U") as fh:
+            with open(self.fromfile) as fh:
                 self.from_lines = fh.readlines()
             fromfiledate = os.stat(self.fromfile).st_mtime
         elif self.fromfile == "-":
@@ -243,7 +243,7 @@ class FileDiffer:
             outfile.write("%s: No such file or directory\n" % self.fromfile)
             validfiles = False
         if os.path.exists(self.tofile):
-            with open(self.tofile, "U") as fh:
+            with open(self.tofile) as fh:
                 self.to_lines = fh.readlines()
             tofiledate = os.stat(self.tofile).st_mtime
         elif self.tofile == "-":
@@ -267,8 +267,8 @@ class FileDiffer:
         matcher = difflib.SequenceMatcher(None, compare_from_lines, compare_to_lines)
         groups = matcher.get_grouped_opcodes(self.options.unified_lines)
         started = False
-        fromstring = "--- %s\t%s%s" % (self.fromfile, fromfiledate, lineterm)
-        tostring = "+++ %s\t%s%s" % (self.tofile, tofiledate, lineterm)
+        fromstring = f"--- {self.fromfile}\t{fromfiledate}{lineterm}"
+        tostring = f"+++ {self.tofile}\t{tofiledate}{lineterm}"
 
         for group in groups:
             hunk = "".join([line for line in self.unified_diff(group)])
@@ -317,9 +317,7 @@ class FileDiffer:
                 started = True
             outfile.write(hunk)
         if not started and self.options.report_identical_files:
-            outfile.write(
-                "Files %s and %s are identical\n" % (self.fromfile, self.tofile)
-            )
+            outfile.write(f"Files {self.fromfile} and {self.tofile} are identical\n")
 
     def get_from_lines(self, group):
         """returns the lines referred to by group, from the fromfile"""

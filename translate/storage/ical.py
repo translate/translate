@@ -134,6 +134,4 @@ class icalfile(base.TranslationStore):
                     ):
                         newunit = self.addsourceunit(property.value)
                         newunit.addnote("Start date: %s" % component.dtstart.value)
-                        newunit.addlocation(
-                            "[%s]%s" % (component.uid.value, property.name)
-                        )
+                        newunit.addlocation(f"[{component.uid.value}]{property.name}")

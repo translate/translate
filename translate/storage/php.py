@@ -378,7 +378,7 @@ class phpfile(base.TranslationStore):
             # Write array start
             write("{}{}{} {}\n".format(" " * indent, name, separator, init))
             indent += 4
-            prefix = "{}->".format(arrname)
+            prefix = f"{arrname}->"
             pref_len = len(prefix)
             for item in self.units:
                 if not item.name.startswith(prefix):
@@ -428,13 +428,13 @@ class phpfile(base.TranslationStore):
                     # To update lexer current position
                     lexer.extract_name("DOUBLE_ARROW", *item.lexpositions)
                     if isinstance(item.key, BinaryOp):
-                        name = "'{0}'".format(concatenate(item.key))
+                        name = "'{}'".format(concatenate(item.key))
                     elif isinstance(item.key, (int, float)):
-                        name = "{0}".format(item.key)
+                        name = f"{item.key}"
                     else:
-                        name = "'{0}'".format(item.key)
+                        name = f"'{item.key}'"
                 if prefix:
-                    name = "{0}->{1}".format(prefix, name)
+                    name = f"{prefix}->{name}"
                 if isinstance(item.value, Array):
                     handle_array(name, item.value.nodes, lexer)
                 elif isinstance(item.value, str):

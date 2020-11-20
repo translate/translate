@@ -73,7 +73,7 @@ class tsunit(lisa.LISAunit):
         S_TRANSLATED: (state.UNREVIEWED, state.MAX),
     }
 
-    statemap_r = dict((i[1], i[0]) for i in statemap.items())
+    statemap_r = {i[1]: i[0] for i in statemap.items()}
     _context = None
 
     def createlanguageNode(self, lang, text, purpose):
@@ -494,7 +494,7 @@ class tsfile(lisa.LISAfile):
         ):
             e.text = ""
         # For conformance with Qt output, write XML declaration with double quotes
-        out.write(str('<?xml version="1.0" encoding="utf-8"?>\n').encode("utf-8"))
+        out.write(b'<?xml version="1.0" encoding="utf-8"?>\n')
         # For conformance with Qt output, post-process etree.tostring output,
         # replacing ' with &apos; and " with &quot; in text elements
         treestring = etree.tostring(

@@ -48,10 +48,10 @@ def translate_idml(template, input_file, translatable_files):
         """
         idml_data = open_idml(template)
         parser = etree.XMLParser(strip_cdata=False, resolve_entities=False)
-        return dict(
-            (filename, etree.fromstring(data, parser).getroottree())
+        return {
+            filename: etree.fromstring(data, parser).getroottree()
             for filename, data in idml_data.items()
-        )
+        }
 
     def load_unit_tree(input_file):
         """Return a dict with the translations grouped by files IDML package.

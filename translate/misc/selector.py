@@ -355,7 +355,7 @@ class SimpleParser:
         if name == "":
             name = "__pos%s" % self._pos
             self._pos += 1
-        return "(?P<%s>%s)" % (name, pattern)
+        return f"(?P<{name}>{pattern})"
 
     def lastly(self, regex):
         """Process the result of __call__ right before it returns.

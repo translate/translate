@@ -13,7 +13,7 @@ class TestConvertCommand:
 
     def setup_method(self, method):
         """creates a clean test directory for the given method"""
-        self.testdir = "%s_%s" % (self.__class__.__name__, method.__name__)
+        self.testdir = f"{self.__class__.__name__}_{method.__name__}"
         self.cleardir()
         os.mkdir(self.testdir)
         self.rundir = os.path.abspath(os.getcwd())
@@ -45,7 +45,7 @@ class TestConvertCommand:
             if value is True:
                 argv.append("--%s" % key)
             else:
-                argv.append("--%s=%s" % (key, value))
+                argv.append(f"--{key}={value}")
         try:
             self.convertmodule.main(argv)
         finally:

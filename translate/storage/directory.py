@@ -39,8 +39,7 @@ class Directory:
         """Iterator over (dir, filename) for all files in this directory."""
         if not self.filedata:
             self.scanfiles()
-        for filetuple in self.filedata:
-            yield filetuple
+        yield from self.filedata
 
     def getfiles(self):
         """Returns a list of (dir, filename) tuples for all the file names in
@@ -53,8 +52,7 @@ class Directory:
         for dirname, filename in self.file_iter():
             store = factory.getobject(os.path.join(dirname, filename))
             # TODO: don't regenerate all the storage objects
-            for unit in store.unit_iter():
-                yield unit
+            yield from store.unit_iter()
 
     def getunits(self):
         """List of all the units in all the files in this directory."""

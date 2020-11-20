@@ -36,7 +36,7 @@ class TestYAMLResourceStore(test_monolingual.TestMonolingualStore):
         store = self.StoreClass()
         store.parse("key: value")
         store.units[0].target = "zkouška"
-        assert bytes(store) == "key: zkouška\n".encode("utf-8")
+        assert bytes(store) == "key: zkouška\n".encode()
 
     def test_parse_unicode_list(self):
         data = """list:

@@ -44,10 +44,9 @@ def translate_odf(template, input_file):
         the etrees for each of those translatable files.
         """
         odf_data = open_odf(template)
-        return dict(
-            (filename, etree.parse(BytesIO(data)))
-            for filename, data in odf_data.items()
-        )
+        return {
+            filename: etree.parse(BytesIO(data)) for filename, data in odf_data.items()
+        }
 
     def load_unit_tree(input_file):
         """Return a dict with the translations grouped by files ODF package.

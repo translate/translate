@@ -34,7 +34,7 @@ def guillemets(text):
         # <a href="something">
         if prefix == "=":
             return match.group(0)
-        return "%s«%s»" % (prefix, match.group(2))
+        return "{}«{}»".format(prefix, match.group(2))
 
     # Check that there is an even number of double quotes, otherwise it is
     # probably not safe to convert them.

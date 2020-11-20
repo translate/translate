@@ -401,9 +401,9 @@ class pounit(pocommon.pounit):
         #        id = '\0'.join(self.source.strings)
         id = self.source
         if self.msgidcomment:
-            id = "_: %s\n%s" % (context, id)
+            id = f"_: {context}\n{id}"
         elif context:
-            id = "%s\04%s" % (context, id)
+            id = f"{context}\04{id}"
         return id
 
     @classmethod

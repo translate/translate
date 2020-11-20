@@ -96,7 +96,7 @@ def namespaced(namespace, name):
     This is needed throughout lxml.
     """
     if namespace:
-        return "{%s}%s" % (namespace, name)
+        return f"{{{namespace}}}{name}"
     else:
         return name
 

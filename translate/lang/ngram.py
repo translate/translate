@@ -24,9 +24,7 @@
 .. note:: Orignal code from http://thomas.mangin.me.uk/data/source/ngram.py
 """
 
-
 import glob
-import io
 import re
 import sys
 from os import path
@@ -110,7 +108,7 @@ class NGram:
             lang = path.split(fname)[-1][:-size]
             ngrams = {}
             try:
-                with io.open(fname, encoding="utf-8") as fp:
+                with open(fname, encoding="utf-8") as fp:
                     for i, line in enumerate(fp):
                         ngram, _t, _f = line.partition("\t")
                         ngrams[ngram] = i
@@ -150,7 +148,7 @@ class Generate:
             lang = path.split(fname)[-1][:-size]
             n = _NGram()
 
-            with io.open(fname, encoding="utf-8") as fp:
+            with open(fname, encoding="utf-8") as fp:
                 for line in fp:
                     n.addText(line)
 
@@ -160,7 +158,7 @@ class Generate:
     def save(self, folder, ext=".lm"):
         for lang in self.ngrams.keys():
             fname = path.join(folder, lang + ext)
-            with io.open(fname, mode="w", encoding="utf-8") as fp:
+            with open(fname, mode="w", encoding="utf-8") as fp:
                 for v, k in self.ngrams[lang].sorted_by_score():
                     fp.write("%s\t %d\n" % (k, v))
 

@@ -71,7 +71,7 @@ class pounit(base.TranslationUnit):
 
     def adderror(self, errorname, errortext):
         """Adds an error message to this unit."""
-        text = "(pofilter) %s: %s" % (errorname, errortext)
+        text = f"(pofilter) {errorname}: {errortext}"
         # Don't add the same error twice:
         if text not in self.getnotes(origin="translator"):
             self.addnote(text, origin="translator")

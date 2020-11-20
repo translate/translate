@@ -195,16 +195,14 @@ class JsonFile(base.DictStore):
             prev = self.UnitClass.IdClass([])
         if isinstance(data, dict):
             for k, v in data.items():
-                for x in self._extract_units(
+                yield from self._extract_units(
                     v, stop, prev + [("key", k)], k, None, data
-                ):
-                    yield x
+                )
         elif isinstance(data, list):
             for i, item in enumerate(data):
-                for x in self._extract_units(
+                yield from self._extract_units(
                     item, stop, prev + [("index", i)], i, name_node, data
-                ):
-                    yield x
+                )
         # apply filter
         elif (
             stop is None
@@ -314,7 +312,7 @@ class I18NextUnit(JsonNestedUnit):
         def get_plurals(count, base):
             if count <= 2:
                 return [base, base + "_plural"][:count]
-            return ["{0}_{1}".format(base, i) for i in range(count)]
+            return [f"{base}_{i}" for i in range(count)]
 
         if isinstance(target, multistring):
             count = len(target.strings)
@@ -383,9 +381,7 @@ class I18NextFile(JsonNestedFile):
                     plural_base, digit = k.rsplit("_", 1)
                     if plural_base in plurals_multiple and digit.isdigit():
                         plurals_multiple.remove(plural_base)
-                        plurals = [
-                            "{0}_{1}".format(plural_base, order) for order in range(10)
-                        ]
+                        plurals = [f"{plural_base}_{order}" for order in range(10)]
                 if plurals:
                     sources = []
                     items = []
@@ -401,16 +397,14 @@ class I18NextFile(JsonNestedFile):
                     yield unit
                     continue
 
-                for x in self._extract_units(
+                yield from self._extract_units(
                     v, stop, prev + [("key", k)], k, None, data
-                ):
-                    yield x
+                )
         else:
             parent = super()._extract_units(
                 data, stop, prev, name_node, name_last_node, last_node
             )
-            for x in parent:
-                yield x
+            yield from parent
 
 
 class GoI18NJsonUnit(BaseJsonUnit):
@@ -499,7 +493,7 @@ class ARBJsonUnit(BaseJsonUnit):
         notes=None,
         placeholders=None,
         metadata=None,
-        **kwargs
+        **kwargs,
     ):
         super().__init__(source, item, notes, placeholders, **kwargs)
         self.metadata = metadata or {}
@@ -513,9 +507,7 @@ class ARBJsonUnit(BaseJsonUnit):
                 self.storevalue(output, value, override_key=key)
         else:
             self.storevalue(output, self.target, override_key=identifier)
-            self.storevalue(
-                output, self.metadata, override_key="@{}".format(identifier)
-            )
+            self.storevalue(output, self.metadata, override_key=f"@{identifier}")
 
     def isheader(self):
         return self._id == "@"
@@ -561,7 +553,7 @@ class ARBJsonFile(JsonFile):
         for item, value in data.items():
             if item.startswith("@"):
                 continue
-            metadata = data.get("@{}".format(item), {})
+            metadata = data.get(f"@{item}", {})
             unit = self.UnitClass(
                 value,
                 item,

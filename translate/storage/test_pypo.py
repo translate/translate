@@ -330,9 +330,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
 "Zkouška: něco\n"
-""".encode(
-            "utf-8"
-        )
+""".encode()
         pofile = self.poparse(posource)
         assert pofile.parseheader() == {
             "Content-Transfer-Encoding": "8-bit",

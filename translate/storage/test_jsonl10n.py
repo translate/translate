@@ -365,9 +365,7 @@ class TestWebExtensionStore(test_monolingual.TestMonolingualStore):
         }
     }
 }
-""".encode(
-            "utf-8"
-        )
+""".encode()
 
         store = self.StoreClass()
         store.parse(DATA)

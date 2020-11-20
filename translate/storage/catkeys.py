@@ -69,7 +69,7 @@ FIELDNAMES_HEADER_DEFAULTS = {
 """Default or minimum header entries for a catkeys file"""
 
 _unescape_map = {"\\r": "\r", "\\t": "\t", "\\n": "\n", "\\\\": "\\"}
-_escape_map = dict([(value, key) for (key, value) in _unescape_map.items()])
+_escape_map = {value: key for (key, value) in _unescape_map.items()}
 # We don't yet do escaping correctly, just for lack of time to do it.  The
 # current implementation is just based on something simple that will work with
 # investaged files.  The only escapes found were "\n", "\t", "\\n"
@@ -211,9 +211,9 @@ class CatkeysUnit(base.TranslationUnit):
         notes = self.getnotes()
         id = self.source
         if notes:
-            id = "%s\04%s" % (notes, id)
+            id = f"{notes}\04{id}"
         if context:
-            id = "%s\04%s" % (context, id)
+            id = f"{context}\04{id}"
         return id
 
     def markfuzzy(self, present=True):

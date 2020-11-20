@@ -190,7 +190,7 @@ class prop2po:
             "": "other",
         }
 
-        class Variants(object):
+        class Variants:
             def __init__(self, unit):
                 self.unit = unit
                 self.variants = {}

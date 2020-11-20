@@ -270,7 +270,7 @@ msgstr "blabla"
         mergepo = """msgid "Simple string\\n"\nmsgstr "Dimpled ring\\n"\n"""
         expectedpo = """msgid "Simple string\\n"\nmsgstr "Dimpled ring\\n"\n"""
         pofile = self.mergestore(templatepo, mergepo)
-        print("Expected:\n%s\n\nMerged:\n%s" % (expectedpo, bytes(pofile)))
+        print("Expected:\n{}\n\nMerged:\n{}".format(expectedpo, bytes(pofile)))
         assert bytes(pofile).decode("utf-8") == expectedpo
 
         templatepo = """msgid ""\n"Simple string\\n"\nmsgstr ""\n"""
@@ -278,7 +278,7 @@ msgstr "blabla"
         expectedpo = """msgid ""\n"Simple string\\n"\nmsgstr "Dimpled ring\\n"\n"""
         expectedpo2 = """msgid "Simple string\\n"\nmsgstr "Dimpled ring\\n"\n"""
         pofile = self.mergestore(templatepo, mergepo)
-        print("Expected:\n%s\n\nMerged:\n%s" % (expectedpo, bytes(pofile)))
+        print("Expected:\n{}\n\nMerged:\n{}".format(expectedpo, bytes(pofile)))
         assert (
             bytes(pofile).decode("utf-8") == expectedpo or bytes(pofile) == expectedpo2
         )
@@ -292,21 +292,21 @@ msgstr "blabla"
         mergepo = """msgid "Target type:"\nmsgstr "Doelsoort:"\n"""
         expectedpo = mergepo
         pofile = self.mergestore(templatepo, mergepo)
-        print("Expected:\n%s\n\nMerged:\n%s" % (expectedpo, bytes(pofile)))
+        print("Expected:\n{}\n\nMerged:\n{}".format(expectedpo, bytes(pofile)))
         assert bytes(pofile).decode("utf-8") == expectedpo
 
         templatepo = """msgid "&Select"\nmsgstr "Kies"\n\n"""
         mergepo = """msgid "&Select"\nmsgstr "&Kies"\n"""
         expectedpo = mergepo
         pofile = self.mergestore(templatepo, mergepo)
-        print("Expected:\n%s\n\nMerged:\n%s" % (expectedpo, bytes(pofile)))
+        print("Expected:\n{}\n\nMerged:\n{}".format(expectedpo, bytes(pofile)))
         assert bytes(pofile).decode("utf-8") == expectedpo
 
         templatepo = """msgid "en-us, en"\nmsgstr "en-us, en"\n"""
         mergepo = """msgid "en-us, en"\nmsgstr "af-za, af, en-za, en-gb, en-us, en"\n"""
         expectedpo = mergepo
         pofile = self.mergestore(templatepo, mergepo)
-        print("Expected:\n%s\n\nMerged:\n%s" % (expectedpo, bytes(pofile)))
+        print("Expected:\n{}\n\nMerged:\n{}".format(expectedpo, bytes(pofile)))
         assert bytes(pofile).decode("utf-8") == expectedpo
 
     def test_preserve_format_last_entry_in_a_file(self):
@@ -322,7 +322,7 @@ msgstr "blabla"
             """msgid "First"\nmsgstr "Eerste"\n\nmsgid "Second"\nmsgstr "Tweede"\n"""
         )
         pofile = self.mergestore(templatepo, mergepo)
-        print("Expected:\n%s\n\nMerged:\n%s" % (expectedpo, bytes(pofile)))
+        print("Expected:\n{}\n\nMerged:\n{}".format(expectedpo, bytes(pofile)))
         assert bytes(pofile).decode("utf-8") == expectedpo
 
         templatepo = """msgid "First"\nmsgstr ""\n\nmsgid "Second"\nmsgstr ""\n\n"""
@@ -333,7 +333,7 @@ msgstr "blabla"
             """msgid "First"\nmsgstr "Eerste"\n\nmsgid "Second"\nmsgstr "Tweede"\n"""
         )
         pofile = self.mergestore(templatepo, mergepo)
-        print("Expected:\n%s\n\nMerged:\n%s" % (expectedpo, bytes(pofile)))
+        print("Expected:\n{}\n\nMerged:\n{}".format(expectedpo, bytes(pofile)))
         assert bytes(pofile).decode("utf-8") == expectedpo
 
     @mark.xfail(reason="Not Implemented")
@@ -347,7 +347,7 @@ msgstr "blabla"
 msgstr "Eerste\tTweede"
 """
         pofile = self.mergestore(templatepo, mergepo)
-        print("Expected:\n%s\n\nMerged:\n%s" % (expectedpo, bytes(pofile)))
+        print("Expected:\n{}\n\nMerged:\n{}".format(expectedpo, bytes(pofile)))
         assert bytes(pofile).decode("utf-8") == expectedpo
 
     def test_preserve_comments_layout(self):
@@ -359,7 +359,7 @@ msgstr "Eerste\tTweede"
         mergepo = """# (pofilter) unchanged: please translate\n#: filename\nmsgid "Desktop Background.bmp"\nmsgstr "Desktop Background.bmp"\n"""
         expectedpo = mergepo
         pofile = self.mergestore(templatepo, mergepo)
-        print("Expected:\n%s\n\nMerged:\n%s" % (expectedpo, bytes(pofile)))
+        print("Expected:\n{}\n\nMerged:\n{}".format(expectedpo, bytes(pofile)))
         assert bytes(pofile).decode("utf-8") == expectedpo
 
     def test_merge_dos2unix(self):
@@ -440,12 +440,12 @@ msgstr "Eerste\tTweede"
         mergepo = """msgid "_: KDE comment\\n"\n"File"\nmsgstr "_: KDE comment\\n"\n"Ifayile"\n\n"""
         expectedpo = """msgid ""\n"_: KDE comment\\n"\n"File"\nmsgstr "Ifayile"\n"""
         pofile = self.mergestore(templatepo, mergepo)
-        print("Expected:\n%s\n\nMerged:\n%s" % (expectedpo, bytes(pofile)))
+        print("Expected:\n{}\n\nMerged:\n{}".format(expectedpo, bytes(pofile)))
         assert bytes(pofile).decode("utf-8") == expectedpo
 
         # Translated kde comment.
         mergepo = """msgid "_: KDE comment\\n"\n"File"\nmsgstr "_: KDE kommentaar\\n"\n"Ifayile"\n\n"""
-        print("Expected:\n%s\n\nMerged:\n%s" % (expectedpo, bytes(pofile)))
+        print("Expected:\n{}\n\nMerged:\n{}".format(expectedpo, bytes(pofile)))
         assert bytes(pofile).decode("utf-8") == expectedpo
 
         # multiline KDE comment
@@ -453,7 +453,7 @@ msgstr "Eerste\tTweede"
         mergepo = """msgid "_: KDE "\n"comment\\n"\n"File"\nmsgstr "_: KDE "\n"comment\\n"\n"Ifayile"\n\n"""
         expectedpo = """msgid ""\n"_: KDE comment\\n"\n"File"\nmsgstr "Ifayile"\n"""
         pofile = self.mergestore(templatepo, mergepo)
-        print("Expected:\n%s\n\nMerged:\n%s" % (expectedpo, bytes(pofile)))
+        print("Expected:\n{}\n\nMerged:\n{}".format(expectedpo, bytes(pofile)))
         assert bytes(pofile).decode("utf-8") == expectedpo
 
     def test_merging_untranslated_with_kde_disambiguation(self):
@@ -470,24 +470,24 @@ msgid "_: sendMessageCheckWindowTitle sendMessageCheckWindowTitle.accesskey\n"
 "Send Message"
 msgstr ""
 """
-        mergepo = r"""#: sendMsgTitle%ssendMsgTitle.accesskey
+        mergepo = r"""#: sendMsgTitle{}sendMsgTitle.accesskey
 msgid ""
 "_: sendMsgTitle sendMsgTitle.accesskey\n"
 "Send Message"
 msgstr "Stuur"
 
-#: sendMessageCheckWindowTitle%ssendMessageCheckWindowTitle.accesskey
+#: sendMessageCheckWindowTitle{}sendMessageCheckWindowTitle.accesskey
 msgid ""
 "_: sendMessageCheckWindowTitle sendMessageCheckWindowTitle.accesskey\n"
 "Send Message"
 msgstr "Stuur"
-""" % (
+""".format(
             po.lsep,
             po.lsep,
         )
         expectedpo = mergepo
         pofile = self.mergestore(templatepo, mergepo)
-        print("Expected:\n%s\n---\nMerged:\n%s\n---" % (expectedpo, bytes(pofile)))
+        print("Expected:\n{}\n---\nMerged:\n{}\n---".format(expectedpo, bytes(pofile)))
         assert bytes(pofile).decode("utf-8") == expectedpo
 
     def test_merging_header_entries(self):
@@ -549,7 +549,7 @@ msgid "Simple String"
 msgstr "Dimpled Ring"
 """
         pofile = self.mergestore(templatepo, mergepo)
-        print("Expected:\n%s\n---\nMerged:\n%s\n---" % (expectedpo, bytes(pofile)))
+        print("Expected:\n{}\n---\nMerged:\n{}\n---".format(expectedpo, bytes(pofile)))
         assert bytes(pofile).decode("utf-8") == expectedpo
 
     def test_merging_different_locations(self):
@@ -609,5 +609,5 @@ msgstr "ZERSTÖRE WACHPOSTEN"
         expectedpo = mergepo
         pofile = self.mergestore(templatepo, mergepo)
         output = bytes(pofile).decode("utf-8")
-        print("Expected:\n%s\n---\nMerged:\n%s\n---" % (expectedpo, output))
+        print(f"Expected:\n{expectedpo}\n---\nMerged:\n{output}\n---")
         assert output == expectedpo or output == expectedpo2

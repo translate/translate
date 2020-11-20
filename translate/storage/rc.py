@@ -123,7 +123,7 @@ class rcunit(base.TranslationUnit):
         if self.isblank():
             return "".join(self.comments + ["\n"])
         else:
-            return "".join(self.comments + ["%s=%s\n" % (self.name, self._value)])
+            return "".join(self.comments + [f"{self.name}={self._value}\n"])
 
     def getlocations(self):
         return [self.name]
@@ -241,7 +241,7 @@ def generate_stringtable_name(identifier):
 
 def generate_menu_pre_name(block_type, block_id):
     """Return the pre-name generated for elements of a menu."""
-    return "%s.%s" % (block_type, block_id)
+    return f"{block_type}.{block_id}"
 
 
 def generate_popup_pre_name(pre_name, caption):
@@ -253,7 +253,7 @@ def generate_popup_pre_name(pre_name, caption):
     :return: The subelements pre-name based in the pre-name of the popup and
              its caption.
     """
-    return "%s.%s" % (pre_name, caption.replace(" ", "_"))
+    return "{}.{}".format(pre_name, caption.replace(" ", "_"))
 
 
 def generate_popup_caption_name(pre_name):
@@ -263,17 +263,17 @@ def generate_popup_caption_name(pre_name):
 
 def generate_menuitem_name(pre_name, block_type, identifier):
     """Return the name generated for a menuitem of a popup."""
-    return "%s.%s.%s" % (pre_name, block_type, identifier)
+    return f"{pre_name}.{block_type}.{identifier}"
 
 
 def generate_dialog_caption_name(block_type, identifier):
     """Return the name generated for a caption of a dialog."""
-    return "%s.%s.%s" % (block_type, identifier, "CAPTION")
+    return "{}.{}.{}".format(block_type, identifier, "CAPTION")
 
 
 def generate_dialog_control_name(block_type, block_id, control_type, identifier):
     """Return the name generated for a control of a dialog."""
-    return "%s.%s.%s.%s" % (block_type, block_id, control_type, identifier)
+    return f"{block_type}.{block_id}.{control_type}.{identifier}"
 
 
 class rcfile(base.TranslationStore):

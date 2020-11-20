@@ -44,8 +44,7 @@ class ZIPFile(directory.Directory):
             strfile.filename = filename
             store = factory.getobject(strfile)
             # TODO: don't regenerate all the storage objects
-            for unit in store.unit_iter():
-                yield unit
+            yield from store.unit_iter()
 
     def scanfiles(self):
         """Populate the internal file data."""

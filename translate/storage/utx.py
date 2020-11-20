@@ -217,17 +217,17 @@ class UtxFile(base.TranslationStore):
 
     def _write_header(self):
         """Create a UTX header"""
-        header = "#UTX-S %(version)s; %(src)s/%(tgt)s; %(date)s" % {
-            "version": self._header["version"],
-            "src": self._header["source_language"],
-            "tgt": self._header.get("target_language", ""),
-            "date": self._header["date_created"],
-        }
+        header = "#UTX-S {version}; {src}/{tgt}; {date}".format(
+            version=self._header["version"],
+            src=self._header["source_language"],
+            tgt=self._header.get("target_language", ""),
+            date=self._header["date_created"],
+        )
         items = []
         for key, value in self._header.items():
             if key in ["version", "source_language", "target_language", "date_created"]:
                 continue
-            items.append("%s: %s" % (key, value))
+            items.append(f"{key}: {value}")
         if len(items):
             items = "; ".join(items)
             header += "; " + items

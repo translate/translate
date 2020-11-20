@@ -464,7 +464,7 @@ class DialectGwt(DialectJava):
         variant = cls.gwt2cldr.get(variant)
         # Some sanity checks
         if not variant:
-            raise Exception('Key "%s" variant "%s" is invalid' % (key, variant))
+            raise Exception(f'Key "{key}" variant "{variant}" is invalid')
         return (key, variant)
 
     @classmethod
@@ -477,8 +477,8 @@ class DialectGwt(DialectJava):
 
         # Some sanity checks
         if not variant:
-            raise Exception('Key "%s" variant "%s" is invalid' % (key, variant))
-        return "%s[%s]" % (key, variant)
+            raise Exception(f'Key "{key}" variant "{variant}" is invalid')
+        return f"{key}[{variant}]"
 
     @classmethod
     def encode(cls, string, encoding=None):
@@ -556,7 +556,7 @@ class proppluralunit(base.TranslationUnit):
     def __init__(self, source="", personality="java"):
         """Construct a blank propunit."""
         self.personality = get_dialect(personality)
-        super(proppluralunit, self).__init__(source)
+        super().__init__(source)
         self.units = collections.OrderedDict()
         self.name = ""
 
@@ -901,15 +901,15 @@ class propunit(base.TranslationUnit):
             kwc = self.personality.key_wrap_char
             if kwc:
                 key = key.replace(kwc, "\\%s" % kwc)
-                key = "%s%s%s" % (kwc, key, kwc)
+                key = f"{kwc}{key}{kwc}"
             # encode value, if needed
             value = self.translation or self.value
             vwc = self.personality.value_wrap_char
             if vwc:
                 value = value.replace(vwc, "\\%s" % vwc)
-                value = "%s%s%s" % (vwc, value, vwc)
+                value = f"{vwc}{value}{vwc}"
             wrappers = self.out_delimiter_wrappers
-            delimiter = "%s%s%s" % (wrappers, self.delimiter, wrappers)
+            delimiter = f"{wrappers}{self.delimiter}{wrappers}"
             ending = self.out_ending
             missing_prefix = ""
             if self.missing and self.output_missing:
@@ -1011,7 +1011,7 @@ class propfile(base.TranslationStore):
             default_encodings=[self.personality.default_encoding, "utf-8", "utf-16"],
         )
         if not text and propsrc:
-            raise IOError(
+            raise OSError(
                 "Cannot detect encoding for %s." % (self.filename or "given string")
             )
         self.encoding = encoding
@@ -1182,7 +1182,7 @@ class gwtfile(propfile):
     def __init__(self, *args, **kwargs):
         kwargs["personality"] = "gwt"
         kwargs["encoding"] = "utf-8"
-        super(gwtfile, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
 class stringsfile(propfile):
@@ -1331,9 +1331,9 @@ class XWikiFullPage(XWikiPageProperties):
             title = "".join(self.root.find("title").itertext())
             forparsing = ""
             if content != "":
-                forparsing += "content={}\n".format(content)
+                forparsing += f"content={content}\n"
             if title != "":
-                forparsing += "title={}\n".format(title)
+                forparsing += f"title={title}\n"
             self.extract_language()
             super(XWikiPageProperties, self).parse(forparsing.encode(self.encoding))
 

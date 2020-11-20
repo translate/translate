@@ -102,7 +102,7 @@ class TranslateBenchmarker:
         for dirpath, subdirs, filenames in os.walk(file_dir, topdown=False):
             for name in filenames:
                 pofilename = os.path.join(dirpath, name)
-                parsedfile = self.StoreClass(open(pofilename, "r"))
+                parsedfile = self.StoreClass(open(pofilename))
                 count += len(parsedfile.units)
                 self.parsedfiles.append(parsedfile)
         print("counted %d units" % count)
@@ -199,10 +199,10 @@ if __name__ == "__main__":
         for methodname, methodparam in methods:
             print("_______________________________________________________")
             statsfile = (
-                "%s_%s" % (methodname, storetype)
+                f"{methodname}_{storetype}"
                 + "_%d_%d_%d_%d_%d.stats" % sample_file_sizes
             )
-            cProfile.run("benchmarker.%s(%s)" % (methodname, methodparam), statsfile)
+            cProfile.run(f"benchmarker.{methodname}({methodparam})", statsfile)
             stats = pstats.Stats(statsfile)
             stats.sort_stats("time").print_stats(20)
             print("_______________________________________________________")
