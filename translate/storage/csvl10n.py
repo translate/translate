@@ -56,7 +56,7 @@ class csvunit(base.TranslationUnit):
         result = self.source
         context = self.context
         if context:
-            result = "%s\04%s" % (context, result)
+            result = f"{context}\04{result}"
 
         return result
 

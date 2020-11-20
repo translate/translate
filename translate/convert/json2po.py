@@ -52,7 +52,7 @@ class json2po:
         output_store = po.pofile()
         output_header = output_store.header()
         output_header.addnote(
-            "extracted from %s, %s" % (template_store.filename, input_store.filename),
+            f"extracted from {template_store.filename}, {input_store.filename}",
             "developer",
         )
 

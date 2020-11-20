@@ -89,7 +89,7 @@ def calcstats_old(filename):
     fuzzy = fuzzymessages(units)
     review = [unit for unit in units if unit.isreview()]
     untranslated = untranslatedmessages(units)
-    wordcounts = dict((id(unit), statsdb.wordsinunit(unit)) for unit in units)
+    wordcounts = {id(unit): statsdb.wordsinunit(unit) for unit in units}
     sourcewords = lambda elementlist: sum(
         wordcounts[id(unit)][0] for unit in elementlist
     )

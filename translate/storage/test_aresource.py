@@ -604,24 +604,20 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
 ]>
 <resources>
     <string name="privacy_policy"><u><a href="&url_privacy_policy;">Datenschutzerklärung</a></u></string>
-</resources>""".encode(
-            "utf-8"
-        )
+</resources>""".encode()
         store = self.StoreClass()
         store.parse(content)
         assert bytes(store) == content
 
     def test_edit_plural_markup(self):
-        content = """<?xml version="1.0" encoding="utf-8"?>
+        content = b"""<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="teststring">
         <item quantity="one"><xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" id="count">%d</xliff:g> den</item>
         <item quantity="few"><xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" id="count">%d</xliff:g> dny</item>
         <item quantity="other"><xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" id="count">%d</xliff:g> dnu</item>
     </plurals>
-</resources>""".encode(
-            "utf-8"
-        )
+</resources>"""
         store = self.StoreClass()
         store.targetlanguage = "cs"
         store.parse(content)
@@ -692,7 +688,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         assert bytes(store) == newcontent
 
     def test_edit_plural_others(self):
-        content = """<?xml version="1.0" encoding="utf-8"?>
+        content = b"""<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="teststring">
         <item quantity="one"><xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" id="count">%d</xliff:g> den</item>
@@ -700,9 +696,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         <item quantity="many"><xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" id="count">%d</xliff:g> dnu</item>
         <item quantity="other"><xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" id="count">%d</xliff:g> dnu</item>
     </plurals>
-</resources>""".encode(
-            "utf-8"
-        )
+</resources>"""
         store = self.StoreClass()
         store.targetlanguage = "ru"
         store.parse(content)

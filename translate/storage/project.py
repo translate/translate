@@ -178,7 +178,7 @@ class Project:
             # If the output file already exist, we can't assume that it's safe
             # to overwrite it.
             os.unlink(converted_file.name)
-            raise IOError("Output file already exists: %s" % (output_fname))
+            raise OSError("Output file already exists: %s" % (output_fname))
 
         os.rename(converted_file.name, output_fname)
 

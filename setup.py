@@ -76,7 +76,7 @@ packages = ["translate"]
 # This builds console scripts list. More detail please see:
 # http://python-packaging.readthedocs.org/en/latest/command-line-scripts.html#the-console-scripts-entry-point
 translatescripts = [
-    "{name}={entry}".format(name=name, entry=entry)
+    f"{name}={entry}"
     for name, entry in [
         ("csv2po", "translate.convert.csv2po:main"),
         ("csv2tbx", "translate.convert.csv2tbx:main"),
@@ -274,10 +274,10 @@ else:
             ofi.write("; will be overwritten the next time py2exe is run!\n")
             ofi.write("[Setup]\n")
             ofi.write("AppName=%s\n" % self.name)
-            ofi.write("AppVerName=%s %s\n" % (self.name, self.version))
+            ofi.write(f"AppVerName={self.name} {self.version}\n")
             ofi.write("DefaultDirName={pf}\\%s\n" % self.name)
             ofi.write("DefaultGroupName=%s\n" % self.name)
-            ofi.write("OutputBaseFilename=%s-%s-setup\n" % (self.name, self.version))
+            ofi.write(f"OutputBaseFilename={self.name}-{self.version}-setup\n")
             ofi.write("ChangesEnvironment=yes\n")
             ofi.write("\n")
             ofi.write("[Files]\n")
@@ -489,7 +489,7 @@ def parse_requirements(file_name):
     Copied from cburgmer/pdfserver.
     """
     requirements = []
-    with open(file_name, "r") as fh:
+    with open(file_name) as fh:
         for line in fh:
             # Ignore comments, blank lines and included requirements files
             if re.match(r"(\s*#)|(\s*$)|(-r .*$)", line):
@@ -554,7 +554,7 @@ def standardsetup(name, version, custompackages=[], customdatafiles=[]):
     try:
         with open("MANIFEST.in", "w") as manifest_in:
             buildmanifest_in(manifest_in, translatebashscripts)
-    except IOError as e:
+    except OSError as e:
         sys.stderr.write(
             "warning: could not recreate MANIFEST.in, continuing anyway. (%s)\n" % e
         )
@@ -611,7 +611,7 @@ def dosetup(name, version, packages, datafiles, scripts, ext_modules=[]):
         ext_modules=ext_modules,
         cmdclass=cmdclass,
         install_requires=parse_requirements("requirements/required.txt"),
-        **kwargs
+        **kwargs,
     )
 
 

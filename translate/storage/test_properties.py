@@ -272,7 +272,7 @@ class TestProp(test_monolingual.TestMonolingualStore):
     def test_unicode_escaping(self):
         """check that escaped unicode is converted properly"""
         propsource = "unicode=\u0411\u0416\u0419\u0428"
-        messagevalue = "\u0411\u0416\u0419\u0428".encode("UTF-8")
+        messagevalue = "\u0411\u0416\u0419\u0428".encode()
         propfile = self.propparse(propsource, personality="mozilla")
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
@@ -324,7 +324,7 @@ class TestProp(test_monolingual.TestMonolingualStore):
         delimiters = [":", "=", " "]
         for delimiter in delimiters:
             propsource = "key%svalue" % delimiter
-            print("source: '%s'\ndelimiter: '%s'" % (propsource, delimiter))
+            print(f"source: '{propsource}'\ndelimiter: '{delimiter}'")
             propfile = self.propparse(propsource)
             assert len(propfile.units) == 1
             propunit = propfile.units[0]
@@ -447,7 +447,7 @@ key=value
 
     def test_mac_strings_utf8(self):
         """Ensure we can handle Unicode"""
-        propsource = """"I am a “key”" = "I am a “value”";""".encode("utf-8")
+        propsource = """"I am a “key”" = "I am a “value”";""".encode()
         propfile = self.propparse(propsource, personality="strings-utf8")
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
@@ -579,8 +579,8 @@ key=value
 
     def test_joomla_set_target(self):
         """test various items used in Joomla files"""
-        propsource = """COM_EXAMPLE_FOO="This is a test"\n""".encode("utf-8")
-        proptarget = """COM_EXAMPLE_FOO="This is another test"\n""".encode("utf-8")
+        propsource = b"""COM_EXAMPLE_FOO="This is a test"\n"""
+        proptarget = b"""COM_EXAMPLE_FOO="This is another test"\n"""
         propfile = self.propparse(propsource, personality="joomla")
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
@@ -592,7 +592,7 @@ key=value
 
     def test_joomla(self):
         """test various items used in Joomla files"""
-        propsource = """; comment\nVALUE="I am a "_QQ_"value"_QQ_""\n""".encode("utf-8")
+        propsource = b"""; comment\nVALUE="I am a "_QQ_"value"_QQ_""\n"""
         propfile = self.propparse(propsource, personality="joomla")
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
@@ -601,7 +601,7 @@ key=value
         assert bytes(propfile) == propsource
 
     def test_serialize_missing_delimiter(self):
-        propsource = "key\n".encode("utf-8")
+        propsource = b"key\n"
         propfile = self.propparse(propsource, personality="java-utf8")
         propunit = propfile.units[0]
         assert propunit.name == "key"
@@ -610,7 +610,7 @@ key=value
         assert bytes(propfile) == propsource
 
     def test_serialize_missing_value(self):
-        propsource = "key=\n".encode("utf-8")
+        propsource = b"key=\n"
         propfile = self.propparse(propsource, personality="java-utf8")
         propunit = propfile.units[0]
         assert propunit.name == "key"
@@ -618,7 +618,7 @@ key=value
         assert bytes(propfile) == propsource
 
     def test_multi_comments(self):
-        propsource = """# This is free software; you can redistribute it and/or modify it
+        propsource = b"""# This is free software; you can redistribute it and/or modify it
 # under the terms of the GNU Lesser General Public License as
 # published by the Free Software Foundation; either version 2.1 of
 # the License, or (at your option) any later version.
@@ -627,9 +627,7 @@ key=value
 # (generally English).
 
 job.log.begin=Starting job of type [{0}]
-""".encode(
-            "utf-8"
-        )
+"""
         propfile = self.propparse(propsource, personality="java-utf8")
         assert len(propfile.units) == 2
         propunit = propfile.units[0]

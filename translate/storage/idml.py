@@ -76,11 +76,11 @@ def open_idml(filename):
     # Return a dictionary containing all the files inside the Stories
     # subdirectory, being the keys the filenames (for example
     # 'Stories/Story_u49f.xml' and the values the strings for those files.
-    return dict(
-        (filename, z.read(filename))
+    return {
+        filename: z.read(filename)
         for filename in z.namelist()
         if filename.startswith("Stories/")
-    )
+    }
 
 
 def copy_idml(input_zip, output_zip, exclusion_list):

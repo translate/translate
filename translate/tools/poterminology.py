@@ -42,7 +42,7 @@ def create_termunit(
     if len(targets.keys()) > 1:
         txt = "; ".join(
             [
-                "%s {%s}" % (target, ", ".join(files))
+                "{} {{{}}}".format(target, ", ".join(files))
                 for target, files in targets.items()
             ]
         )
@@ -123,7 +123,7 @@ class TerminologyExtractor:
             "@": frozenset(["word", "phrase"]),
         }
 
-        with open(self.stopfile, "r") as stopfile:
+        with open(self.stopfile) as stopfile:
             line = 0
             try:
                 for stopline in stopfile:

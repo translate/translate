@@ -65,7 +65,7 @@ class ProgressBar:
         self._progressbar.show(filename)
 
 
-class ManPageOption(optparse.Option, object):
+class ManPageOption(optparse.Option):
     ACTIONS = optparse.Option.ACTIONS + ("manpage",)
 
     def take_action(self, action, dest, opt, value, values, parser):
@@ -169,7 +169,9 @@ class RecursiveOptionParser(optparse.OptionParser):
         )
         result.append(".SH NAME\n")
         result.append(
-            "%s \\- %s\n" % (self.get_prog_name(), self.description.split("\n\n")[0])
+            "{} \\- {}\n".format(
+                self.get_prog_name(), self.description.split("\n\n")[0]
+            )
         )
         result.append(".SH SYNOPSIS\n")
         result.append(".PP\n")
@@ -554,7 +556,7 @@ class RecursiveOptionParser(optparse.OptionParser):
                         "Output directory does not exist. Attempting to create"
                     )
                     os.mkdir(options.output)
-                except IOError:
+                except OSError:
                     self.error(
                         optparse.OptionValueError(
                             "Output directory does not exist, attempt to create failed"
@@ -590,7 +592,7 @@ class RecursiveOptionParser(optparse.OptionParser):
                     and not self.allowmissingtemplate
                 ):
                     self.warning(
-                        "No template at %s. Skipping %s." % (templatepath, inputpath)
+                        f"No template at {templatepath}. Skipping {inputpath}."
                     )
                     continue
                 outputformat, fileprocessor = self.getoutputoptions(

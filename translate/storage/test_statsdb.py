@@ -78,7 +78,7 @@ class TestStatsDb:
             shutil.rmtree(path)
 
     def get_test_path(self, method):
-        return os.path.realpath("%s_%s" % (self.__class__.__name__, method.__name__))
+        return os.path.realpath(f"{self.__class__.__name__}_{method.__name__}")
 
     def setup_method(self, method):
         """Allocates a unique self.filename for the method, making sure it doesn't exist"""

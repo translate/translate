@@ -92,7 +92,7 @@ class TMServer:
         params = parse.parse_qs(environ.get("QUERY_STRING", ""))
         try:
             callback = params.get("callback", [])[0]
-            response = "%s(%s)" % (callback, response)
+            response = f"{callback}({response})"
         except IndexError:
             pass
         return [response]

@@ -62,7 +62,7 @@ class rephp:
         # handle multiline msgid if we're in one
         if self.inmultilinemsgid:
             # see if there's more
-            endpos = line.rfind("%s%s" % (self.quotechar, self.enddel))
+            endpos = line.rfind(f"{self.quotechar}{self.enddel}")
             # if there was no '; or the quote is escaped, we have to continue
             if endpos >= 0 and line[endpos - 1] != "\\":
                 self.inmultilinemsgid = False
@@ -122,7 +122,7 @@ class rephp:
                 self.quotechar = line[
                     equalspos + (postspacestart - postspaceend) + len(self.equaldel)
                 ]
-                inlinecomment_pos = line.rfind("%s%s" % (self.quotechar, self.enddel))
+                inlinecomment_pos = line.rfind(f"{self.quotechar}{self.enddel}")
                 if inlinecomment_pos > -1:
                     inlinecomment = line[inlinecomment_pos + 2 :]
                 else:
@@ -161,7 +161,7 @@ class rephp:
                     returnline = line + eol
 
                 # no string termination means carry string on to next line
-                endpos = line.rfind("%s%s" % (self.quotechar, self.enddel))
+                endpos = line.rfind(f"{self.quotechar}{self.enddel}")
                 # if there was no '; or the quote is escaped, we have to
                 # continue
                 if endpos == -1 or line[endpos - 1] == "\\":

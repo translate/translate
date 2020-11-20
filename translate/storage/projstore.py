@@ -231,7 +231,7 @@ class ProjectStore:
             if not rfile or not os.path.isfile(rfname):
                 rfname = getattr(rfile, "filename", None)
             if not rfile or not os.path.isfile(rfname):
-                raise IOError("Could not locate file: %s (%s)" % (rfile, fname))
+                raise OSError(f"Could not locate file: {rfile} ({fname})")
             rfile = open(rfname, mode)
             self._files[fname] = rfile
 

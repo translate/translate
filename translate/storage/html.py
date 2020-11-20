@@ -372,8 +372,8 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             if attrvalue is None:
                 attr_strings.append(" " + attrname)
             else:
-                attr_strings.append(' %s="%s"' % (attrname, attrvalue))
-        return "<%s%s%s>" % (tag, "".join(attr_strings), " /" if startend else "")
+                attr_strings.append(f' {attrname}="{attrvalue}"')
+        return "<{}{}{}>".format(tag, "".join(attr_strings), " /" if startend else "")
 
     def auto_close_empty_element(self):
         if self.tag_path and self.tag_path[-1] in self.EMPTY_HTML_ELEMENTS:

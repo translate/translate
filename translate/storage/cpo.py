@@ -510,7 +510,7 @@ class pounit(pocommon.pounit):
         #            id = '%s\0%s' % (id, plural)
         context = gpo.po_message_msgctxt(self._gpo_message)
         if context:
-            id = "%s\04%s" % (gpo_decode(context), id)
+            id = "{}\04{}".format(gpo_decode(context), id)
         return id
 
     def getnotes(self, origin=None):
@@ -674,7 +674,7 @@ class pounit(pocommon.pounit):
 
     def setmsgidcomment(self, msgidcomment):
         if msgidcomment:
-            self.source = "_: %s\n%s" % (msgidcomment, self.source)
+            self.source = f"_: {msgidcomment}\n{self.source}"
 
     msgidcomment = property(_extract_msgidcomments, setmsgidcomment)
 

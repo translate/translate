@@ -78,7 +78,7 @@ class ini2po:
 
     def merge_stores(self):
         """Convert two source format files to a target format file."""
-        self.extraction_msg = "extracted from %s, %s" % (
+        self.extraction_msg = "extracted from {}, {}".format(
             self.template_store.filename,
             self.source_store.filename,
         )

@@ -31,7 +31,7 @@ class TestCSV(test_base.TestTranslationStore):
         assert bytes(store) == bytes(newstore)
 
     def test_utf_8(self):
-        store = self.parse_store("foo.c:1;test;zkouška sirén".encode("utf-8"))
+        store = self.parse_store("foo.c:1;test;zkouška sirén".encode())
         assert len(store.units) == 1
         assert store.units[0].source == "test"
         assert store.units[0].target == "zkouška sirén"

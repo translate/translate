@@ -34,7 +34,7 @@ def deprecated(message=""):
                 msg = "\n" + msg
             func_code = func.__code__
             warnings.warn_explicit(
-                "Call to deprecated function {0}.{1}".format(func.__name__, msg),
+                f"Call to deprecated function {func.__name__}.{msg}",
                 category=DeprecationWarning,
                 filename=func_code.co_filename,
                 lineno=func_code.co_firstlineno + 1,

@@ -122,8 +122,7 @@ class StringElem:
 
     def __iter__(self):
         """Create an iterator of this element's sub-elements."""
-        for elem in self.sub:
-            yield elem
+        yield from self.sub
 
     def __le__(self, rhs):
         """Emulate the ``unicode`` class."""
@@ -786,7 +785,7 @@ class StringElem:
             return True
 
         logging.debug(
-            "Could not insert between %s and %s... odd." % (repr(left), repr(right))
+            "Could not insert between {} and {}... odd.".format(repr(left), repr(right))
         )
         return False
 
@@ -816,8 +815,7 @@ class StringElem:
             if sub.isleaf() and filter(sub):
                 yield sub
             else:
-                for node in sub.iter_depth_first(filter):
-                    yield node
+                yield from sub.iter_depth_first(filter)
 
     def map(self, f, filter=None):
         """Apply ``f`` to all nodes for which ``filter`` returned ``True``
@@ -851,7 +849,7 @@ class StringElem:
         """
         indent_prefix = " " * indent * 2
         out = (
-            "%s%s [%s]" % (indent_prefix, self.__class__.__name__, str(self))
+            "{}{} [{}]".format(indent_prefix, self.__class__.__name__, str(self))
         ).encode("utf-8")
         if verbose:
             out += " " + repr(self)
@@ -862,9 +860,7 @@ class StringElem:
             if isinstance(elem, StringElem):
                 elem.print_tree(indent + 1, verbose=verbose)
             else:
-                print(
-                    ("%s%s[%s]" % (indent_prefix, indent_prefix, elem)).encode("utf-8")
-                )
+                print((f"{indent_prefix}{indent_prefix}[{elem}]").encode("utf-8"))
 
     def prune(self):
         """Remove unnecessary nodes to make the tree optimal."""

@@ -136,7 +136,7 @@ class reprop:
                     # [zero] cases are translated as separate units
                     continue
                 new_unit = self.inputstore.addsourceunit("fish")  # not used
-                new_location = "%s[%s]" % (location, category)
+                new_location = f"{location}[{category}]"
                 new_unit.addlocation(new_location)
                 new_unit.target = text
                 self.inputstore.locationindex[new_location] = new_unit
@@ -169,7 +169,7 @@ class reprop:
             for category, text in zip(names, unit.target.strings):
                 new_unit = self.inputstore.addsourceunit("fish")  # not used
                 if category != "":
-                    new_location = "%s[%s]" % (location, category)
+                    new_location = f"{location}[{category}]"
                 else:
                     new_location = "%s" % (location)
                 new_unit.addlocation(new_location)

@@ -149,7 +149,7 @@ class TranslationUnit:
         # no point in showing store object.
         return ", ".join(
             [
-                "%s: %s" % (k, self.__dict__[k])
+                "{}: {}".format(k, self.__dict__[k])
                 for k in sorted(self.__dict__.keys())
                 if k != "_store"
             ]
@@ -573,8 +573,7 @@ class TranslationStore:
 
     def unit_iter(self):
         """Iterator over all the units in this store."""
-        for unit in self.units:
-            yield unit
+        yield from self.units
 
     def getunits(self):
         """Return a list of all units in this store."""
@@ -906,11 +905,11 @@ class UnitId:
     def __str__(self):
         def fmt(element, key):
             if element == "key":
-                return "{}{}".format(self.KEY_SEPARATOR, key)
+                return f"{self.KEY_SEPARATOR}{key}"
             elif element == "index":
-                return "{}[{}]".format(self.INDEX_SEPARATOR, key)
+                return f"{self.INDEX_SEPARATOR}[{key}]"
             else:
-                raise ValueError("Unsupported element: {}".format(element))
+                raise ValueError(f"Unsupported element: {element}")
 
         return "".join([fmt(*part) for part in self.parts])
 
@@ -959,7 +958,7 @@ class DictUnit(TranslationUnit):
                 if key not in target or isinstance(target[key], str):
                     target[key] = default
             else:
-                raise ValueError("Unsupported element: {}".format(element))
+                raise ValueError(f"Unsupported element: {element}")
             target = target[key]
         if override_key:
             element, key = "key", override_key
@@ -980,7 +979,7 @@ class DictUnit(TranslationUnit):
                 else:
                     target[key] = value
         else:
-            raise ValueError("Unsupported element: {}".format(element))
+            raise ValueError(f"Unsupported element: {element}")
 
     def storevalues(self, output):
         self.storevalue(output, self.value)

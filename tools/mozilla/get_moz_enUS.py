@@ -44,7 +44,7 @@ def process_l10n_ini(inifile):
     """
 
     l10n = ConfigParser()
-    with open(path_neutral(inifile), "r") as fh:
+    with open(path_neutral(inifile)) as fh:
         l10n.readfp(fh)
     l10n_ini_path = os.path.dirname(inifile)
 
@@ -62,7 +62,7 @@ def process_l10n_ini(inifile):
                 print("[Existing target]: %s" % topath)
             continue
         if verbose:
-            print("%s -> %s" % (frompath, topath))
+            print(f"{frompath} -> {topath}")
         try:
             shutil.copytree(frompath, topath)
         except OSError as e:

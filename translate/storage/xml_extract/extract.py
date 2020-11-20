@@ -240,9 +240,9 @@ def _process_children(dom_node, state, process_func):
 
 def compact_tag(nsmap, namespace, tag):
     if namespace in nsmap:
-        return "%s:%s" % (nsmap[namespace], tag)
+        return "{}:{}".format(nsmap[namespace], tag)
     else:
-        return "{%s}%s" % (namespace, tag)
+        return f"{{{namespace}}}{tag}"
 
 
 @contextmanager
@@ -409,7 +409,7 @@ def _walk_translatable_tree(
 
 
 def reverse_map(a_map):
-    return dict((value, key) for key, value in a_map.items())
+    return {value: key for key, value in a_map.items()}
 
 
 def build_idml_store(odf_file, store, parse_state, store_adder=None):

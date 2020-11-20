@@ -8,7 +8,7 @@ def test_punctranslate():
     assert language.punctranslate("abc efg") == "abc efg"
     assert language.punctranslate("abc efg.") == "abc efg\u00a0។"
     print(language.punctranslate("abc efg. hij.").encode("utf-8"))
-    print("abc efg\u00a0។ hij\u00a0។".encode("utf-8"))
+    print("abc efg\u00a0។ hij\u00a0។".encode())
     assert language.punctranslate("abc efg. hij.") == "abc efg\u00a0។ hij\u00a0។"
     assert language.punctranslate("abc efg!") == "abc efg\u00a0!"
     assert language.punctranslate("abc efg? hij!") == "abc efg\u00a0? hij\u00a0!"

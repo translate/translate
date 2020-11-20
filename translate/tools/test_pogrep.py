@@ -88,7 +88,7 @@ class TestPOGrep:
             (pounicode, queryascii, ""),
             (pounicode, queryunicode, pounicode),
         ]:
-            print("Source:\n%s\nSearch: %s\n" % (source, search))
+            print(f"Source:\n{source}\nSearch: {search}\n")
             poresult = self.pogrep(source, search).decode("utf-8")
             assert poresult.index(expected) >= 0
 
@@ -104,7 +104,7 @@ class TestPOGrep:
             (pounicode, queryascii, ""),
             (pounicode, queryunicode, pounicode),
         ]:
-            print("Source:\n%s\nSearch: %s\n" % (source, search))
+            print(f"Source:\n{source}\nSearch: {search}\n")
             poresult = self.pogrep(source, search, ["--regexp"]).decode("utf-8")
             assert poresult.index(expected) >= 0
 

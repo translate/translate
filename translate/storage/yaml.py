@@ -122,19 +122,17 @@ class YAMLFile(base.DictStore):
         for k, v in data.non_merged_items():
             if not isinstance(k, str):
                 raise base.ParseError(
-                    "Key not string: {0}/{1} ({2})".format(prev, k, type(k))
+                    "Key not string: {}/{} ({})".format(prev, k, type(k))
                 )
 
-            for x in self._flatten(v, prev + [("key", k)]):
-                yield x
+            yield from self._flatten(v, prev + [("key", k)])
 
     def _flatten(self, data, prev=None):
         """Flatten YAML dictionary."""
         if prev is None:
             prev = self.UnitClass.IdClass([])
         if isinstance(data, dict):
-            for x in self._parse_dict(data, prev):
-                yield x
+            yield from self._parse_dict(data, prev)
         else:
             if isinstance(data, str):
                 yield (prev, data)
@@ -142,8 +140,7 @@ class YAMLFile(base.DictStore):
                 yield (prev, str(data))
             elif isinstance(data, list):
                 for k, v in enumerate(data):
-                    for value in self._flatten(v, prev + [("index", k)]):
-                        yield value
+                    yield from self._flatten(v, prev + [("index", k)])
             elif isinstance(data, TaggedScalar):
                 yield (prev, data.value)
             elif data is None:
@@ -177,7 +174,7 @@ class YAMLFile(base.DictStore):
         except YAMLError as e:
             message = e.problem if hasattr(e, "problem") else e.message
             if hasattr(e, "problem_mark"):
-                message += " {0}".format(e.problem_mark)
+                message += f" {e.problem_mark}"
             raise base.ParseError(message)
 
         content = self.preprocess(self._original)
@@ -231,12 +228,11 @@ class RubyYAMLFile(YAMLFile):
 
     def _parse_dict(self, data, prev):
         # Does this look like a plural?
-        if data and all((x in cldr_plural_categories for x in data.keys())):
+        if data and all(x in cldr_plural_categories for x in data.keys()):
             # Ensure we have correct plurals ordering.
             values = [data[item] for item in cldr_plural_categories if item in data]
             yield (prev, multistring(values))
             return
 
         # Handle normal dict
-        for x in super()._parse_dict(data, prev):
-            yield x
+        yield from super()._parse_dict(data, prev)

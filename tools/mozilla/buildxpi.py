@@ -128,7 +128,7 @@ def build_xpi(
 
     try:
         # Create new .mozconfig
-        content = """
+        content = f"""
 ac_add_options --disable-compile-environment
 #ac_add_options --disable-gstreamer
 #ac_add_options --disable-ogg
@@ -139,14 +139,10 @@ ac_add_options --disable-compile-environment
 #ac_add_options --disable-alsa
 #ac_add_options --disable-pulseaudio
 #ac_add_options --disable-libjpeg-turbo
-mk_add_options MOZ_OBJDIR=%(builddir)s
-ac_add_options --with-l10n-base=%(l10nbase)s
-ac_add_options --enable-application=%(product)s
-""" % {
-            "builddir": builddir,
-            "l10nbase": l10nbase,
-            "product": product,
-        }
+mk_add_options MOZ_OBJDIR={builddir}
+ac_add_options --with-l10n-base={l10nbase}
+ac_add_options --enable-application={product}
+"""
 
         with open(MOZCONFIG, "w") as mozconf:
             mozconf.write(content)
@@ -176,9 +172,7 @@ ac_add_options --enable-application=%(product)s
 
         moz_app_version = []
         if soft_max_version:
-            with open(
-                os.path.join(srcdir, product, "config", "version.txt"), "r"
-            ) as fh:
+            with open(os.path.join(srcdir, product, "config", "version.txt")) as fh:
                 version = fh.read().strip()
             version = re.sub(r"(^[0-9]*\.[0-9]*).*", r"\1.*", version)
             moz_app_version = ["MOZ_APP_MAXVERSION=%s" % version]
@@ -188,14 +182,14 @@ ac_add_options --enable-application=%(product)s
             run(
                 ["make", "-C", os.path.join(product, "locales")]
                 + ["merge-%s" % lang]
-                + ["LOCALE_MERGEDIR=%s/merge-%s" % (mergedir, lang)]
+                + [f"LOCALE_MERGEDIR={mergedir}/merge-{lang}"]
                 + moz_app_version,
                 fail_msg="Unable to merge XPI!",
             )
             run(
                 ["make", "-C", os.path.join(product, "locales")]
                 + ["langpack-%s" % lang]
-                + ["LOCALE_MERGEDIR=%s/merge-%s" % (mergedir, lang)]
+                + [f"LOCALE_MERGEDIR={mergedir}/merge-{lang}"]
                 + moz_app_version,
                 fail_msg="Unable to successfully build XPI!",
             )

@@ -35,19 +35,17 @@ def prop2inc(pf):
             if comment.startswith("# converted from") and "#defines" in comment:
                 pass
             else:
-                for blank in pendingblanks:
-                    yield blank
+                yield from pendingblanks
                 # TODO: could convert commented # x=y back to # #define x y
                 yield comment + "\n"
         if unit.isblank():
             pendingblanks.append("\n")
         else:
-            definition = "#define %s %s\n" % (
+            definition = "#define {} {}\n".format(
                 unit.name,
                 unit.value.replace("\n", "\\n"),
             )
-            for blank in pendingblanks:
-                yield blank
+            yield from pendingblanks
             yield definition
 
 
@@ -67,7 +65,7 @@ def prop2it(pf):
         if unit.isblank():
             yield ""
         else:
-            definition = "%s=%s\n" % (unit.name, unit.value)
+            definition = f"{unit.name}={unit.value}\n"
             yield definition
 
 

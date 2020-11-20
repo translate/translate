@@ -192,7 +192,9 @@ class FlatXMLFile(base.TranslationStore):
         self.encoding = self.document.docinfo.encoding
 
         root_name = self.namespaced(self.root_name)
-        assert self.root.tag == root_name, "expected root name to be %s but got %s" % (
+        assert (
+            self.root.tag == root_name
+        ), "expected root name to be {} but got {}".format(
             root_name,
             self.root.tag,
         )
@@ -205,14 +207,14 @@ class FlatXMLFile(base.TranslationStore):
             matching_nodes = list(self.root.iterchildren(value_name))
             assert len(
                 matching_nodes
-            ), "expected value name to be %s but first node is %s" % (
+            ), "expected value name to be {} but first node is {}".format(
                 value_name,
                 self.root[0].tag,
             )
 
             assert matching_nodes[0].get(
                 self.key_name
-            ), "expected key attribute to be %s, found attribute(s): %s" % (
+            ), "expected key attribute to be {}, found attribute(s): {}".format(
                 self.key_name,
                 ",".join(matching_nodes[0].attrib),
             )
