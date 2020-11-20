@@ -33,7 +33,7 @@ jobs:
     - name: Install brew dependencies
       run: |
         brew install gettext
-        echo "::add-path::/usr/local/opt/gettext/bin"
+        echo "/usr/local/opt/gettext/bin" >> $GITHUB_PATH
     - name: Update pip
       run: pip install --upgrade pip wheel
     - name: Install pip dependencies
