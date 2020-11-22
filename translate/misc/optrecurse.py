@@ -98,7 +98,8 @@ class ManHelpFormatter(optparse.HelpFormatter):
 
 
 class StdoutWrapper:
-    out = sys.stdout
+    def __init__(self):
+        self.out = sys.stdout
 
     def __getattr__(self, name):
         return getattr(self.out, name)
@@ -505,6 +506,9 @@ class RecursiveOptionParser(optparse.OptionParser):
                                      self.isrecursive(options.template, 'template') and
                                      getattr(options, "allowrecursivetemplate", True))
         progress_bar = ProgressBar(options.progress, inputfiles)
+        # sort the input files to preserve the order between runs as much as possible.
+        # this makes for more merge-friendly content in single-output-file mode.
+        inputfiles.sort()
         for inputpath in inputfiles:
             try:
                 templatepath = self.gettemplatename(options, inputpath)
