@@ -14,16 +14,18 @@ Usage
 
 ::
 
-  html2po [options] <html> <po>
-  po2html [options] <po> <html>
+  html2po [options] <html-src> <po>
+  po2html [options] -i <po> -t <html-src> -o <html-dest>
 
 Where:
 
-+---------+-----------------------------------------------+
-| <html>  | is an HTML file or a directory of HTML files  |
-+---------+-----------------------------------------------+
-| <po>    | is a PO file or directory of PO files         |
-+---------+-----------------------------------------------+
++-------------+---------------------------------------------------------------+
+| <html-src>  | is an HTML file or a directory of HTML files, source language |
++-------------+---------------------------------------------------------------+
+| <html-dest> | is an HTML file or a directory of HTML files, translated      |
++-------------+---------------------------------------------------------------+
+| <po>        | is a PO file or directory of PO files                         |
++-------------+---------------------------------------------------------------+
 
 Options (html2po):
 
@@ -45,6 +47,11 @@ Options (html2po):
                       what to do with duplicate strings (identical source
                       text): :doc:`merge, msgctxt <option_duplicates>`
                       (default: 'msgctxt')
+--multifile=MULTIFILESTYLE
+                      how to split po/pot files (:doc:`single, toplevel or
+                      onefile <option_multifile>`)
+                      (default: 'single'; if set to 'onefile', a single po/pot
+                      file will be written. 'toplevel' not used.)
 
 
 Options (po2html):
@@ -83,7 +90,14 @@ You can create and update PO files for different languages using the
 
 ::
 
-  po2html -t site -i xh -o site-xh
+  html2po -P --multifile=onefile site file.pot
+
+This will find all HTML files in *site* and write a single pot file with all
+translatable content.
+
+::
+
+  po2html -i xh -t site -o site-xh
 
 All the PO translations in *xh* will be converted to HTML using HTML files in
 *site* as templates and outputting new translated HTML files in *site-xh*.
