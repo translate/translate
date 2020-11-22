@@ -523,7 +523,7 @@ class TestHTML2POCommand(test_convert.TestConvertCommand, TestHTML2PO):
         assert os.path.isfile(self.get_testfilename("pots/file2.pot"))
         content = str(self.read_testfile("pots/file1.pot"))
         assert 'coming through' in content
-        assert not 'cannot hear' in content
+        assert 'cannot hear' not in content
 
     def test_multifile_onefile(self):
         """Test the --multifile=onefile option and make sure it produces a file, not a directory."""

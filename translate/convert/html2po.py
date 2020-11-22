@@ -74,7 +74,7 @@ class Html2POOptionParser(convert.ConvertOptionParser):
             convertor.convertfile_inner(inputfile, self.outputstore, keepcomments)
         else:
             outputstore = convertor.convertfile(inputfile, getattr(inputfile, "name",
-                                                                "unknown"),
+                                                                   "unknown"),
                                                 duplicatestyle=duplicatestyle,
                                                 keepcomments=keepcomments)
             outputstore.serialize(outputfile)
