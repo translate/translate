@@ -31,15 +31,12 @@ class html2po:
         self,
         inputfile,
         filename,
-        includeuntagged=False,
         duplicatestyle="msgctxt",
         keepcomments=False,
     ):
         """converts a html file to .po format"""
         thetargetfile = po.pofile()
-        htmlparser = html.htmlfile(
-            includeuntaggeddata=includeuntagged, inputfile=inputfile
-        )
+        htmlparser = html.htmlfile(inputfile=inputfile)
         for htmlunit in htmlparser.units:
             thepo = thetargetfile.addsourceunit(htmlunit.source)
             thepo.addlocations(htmlunit.getlocations())
@@ -53,7 +50,6 @@ def converthtml(
     inputfile,
     outputfile,
     templates,
-    includeuntagged=False,
     pot=False,
     duplicatestyle="msgctxt",
     keepcomments=False,
@@ -65,7 +61,6 @@ def converthtml(
     outputstore = convertor.convertfile(
         inputfile,
         getattr(inputfile, "name", "unknown"),
-        includeuntagged,
         duplicatestyle=duplicatestyle,
         keepcomments=keepcomments,
     )
@@ -83,15 +78,6 @@ def main(argv=None):
         None: ("po", converthtml),
     }
     parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
-    parser.add_option(
-        "-u",
-        "--untagged",
-        dest="includeuntagged",
-        default=False,
-        action="store_true",
-        help="include untagged sections",
-    )
-    parser.passthrough.append("includeuntagged")
     parser.add_option(
         "--keepcomments",
         dest="keepcomments",

@@ -134,7 +134,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         re.VERBOSE | re.IGNORECASE,
     )
 
-    def __init__(self, includeuntaggeddata=None, inputfile=None, callback=None):
+    def __init__(self, inputfile=None, callback=None):
         html.parser.HTMLParser.__init__(self, convert_charrefs=False)
         base.TranslationStore.__init__(self)
 
@@ -144,7 +144,6 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             self.callback = self._simple_callback
         else:
             self.callback = callback
-        self.includeuntaggeddata = includeuntaggeddata
 
         # initialize state
         self.filesrc = ""

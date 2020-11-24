@@ -7,7 +7,6 @@ class TestHTML2PO:
     def html2po(
         self,
         markup,
-        includeuntagged=False,
         duplicatestyle="msgctxt",
         keepcomments=False,
     ):
@@ -15,7 +14,7 @@ class TestHTML2PO:
         inputfile = BytesIO(markup.encode() if isinstance(markup, str) else markup)
         convertor = html2po.html2po()
         outputpo = convertor.convertfile(
-            inputfile, "test", includeuntagged, duplicatestyle, keepcomments
+            inputfile, "test", duplicatestyle, keepcomments
         )
         return outputpo
 
@@ -652,5 +651,4 @@ class TestHTML2POCommand(test_convert.TestConvertCommand, TestHTML2PO):
         options = test_convert.TestConvertCommand.test_help(self, capsys)
         options = self.help_check(options, "-P, --pot")
         options = self.help_check(options, "--duplicates=DUPLICATESTYLE")
-        options = self.help_check(options, "--keepcomments")
-        options = self.help_check(options, "-u, --untagged", last=True)
+        options = self.help_check(options, "--keepcomments", last=True)
