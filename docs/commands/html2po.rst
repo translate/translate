@@ -14,16 +14,18 @@ Usage
 
 ::
 
-  html2po [options] <html> <po>
-  po2html [options] <po> <html>
+  html2po [options] <html-src> <po>
+  po2html [options] -i <po> -t <html-src> -o <html-dest>
 
 Where:
 
-+---------+-----------------------------------------------+
-| <html>  | is an HTML file or a directory of HTML files  |
-+---------+-----------------------------------------------+
-| <po>    | is a PO file or directory of PO files         |
-+---------+-----------------------------------------------+
++-------------+---------------------------------------------------------------+
+| <html-src>  | is an HTML file or a directory of HTML files, source language |
++-------------+---------------------------------------------------------------+
+| <html-dest> | is an HTML file or a directory of HTML files, translated      |
++-------------+---------------------------------------------------------------+
+| <po>        | is a PO file or directory of PO files                         |
++-------------+---------------------------------------------------------------+
 
 Options (html2po):
 
@@ -45,6 +47,11 @@ Options (html2po):
                       what to do with duplicate strings (identical source
                       text): :doc:`merge, msgctxt <option_duplicates>`
                       (default: 'msgctxt')
+--multifile=MULTIFILESTYLE
+                      how to split po/pot files (:doc:`single, toplevel or
+                      onefile <option_multifile>`)
+                      (default: 'single'; if set to 'onefile', a single po/pot
+                      file will be written. 'toplevel' not used.)
 
 
 Options (po2html):
@@ -79,14 +86,34 @@ This will find all HTML files (.htm, .html, .xhtml) in *site*, convert them to
 POT files and place them in *pot*.
 
 You can create and update PO files for different languages using the
-:doc:`pot2po` command.
+:doc:`pot2po` command. For example, you can create po files for a translation to
+Xhosa like this:
 
 ::
 
-  po2html -t site -i xh -o site-xh
+  pot2po -i pot -t site -o xh
+
+This will merge the pot files in *pot* into the po files in *xh* (if any).
+
+And then, after editing the PO files in *xh*, you can generate the translated
+version of the web site like so:
+
+::
+
+  po2html -i xh -t site -o site-xh
 
 All the PO translations in *xh* will be converted to HTML using HTML files in
 *site* as templates and outputting new translated HTML files in *site-xh*.
+
+Should you prefer a single po/pot file for your web site, you can create one
+like so:
+
+::
+
+  html2po -P --multifile=onefile site file.pot
+
+Be aware that po2html does not have a corresponding flag, so you will have to
+call it once for every html file to be translated.
 
 
 .. _html2po#notes:
