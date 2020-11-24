@@ -23,8 +23,8 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
-from translate.storage import html, po
 from translate.convert import convert
+from translate.storage import html, po
 
 
 class html2po:
