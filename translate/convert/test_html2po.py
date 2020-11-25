@@ -1,3 +1,4 @@
+import os
 from io import BytesIO
 
 from translate.convert import html2po, po2html, test_convert
@@ -7,7 +8,6 @@ class TestHTML2PO:
     def html2po(
         self,
         markup,
-        includeuntagged=False,
         duplicatestyle="msgctxt",
         keepcomments=False,
     ):
@@ -15,7 +15,7 @@ class TestHTML2PO:
         inputfile = BytesIO(markup.encode() if isinstance(markup, str) else markup)
         convertor = html2po.html2po()
         outputpo = convertor.convertfile(
-            inputfile, "test", includeuntagged, duplicatestyle, keepcomments
+            inputfile, "test", duplicatestyle, keepcomments
         )
         return outputpo
 
@@ -647,10 +647,53 @@ class TestHTML2POCommand(test_convert.TestConvertCommand, TestHTML2PO):
     convertmodule = html2po
     defaultoptions = {"progress": "none"}
 
+    def test_multifile_single(self):
+        """Test the --multifile=single option and make sure it produces one pot file per input file."""
+        self.create_testfile(
+            "file1.html", "<div>You are only coming through in waves</div>"
+        )
+        self.create_testfile(
+            "file2.html", "<div>Your lips move but I cannot hear what you say</div>"
+        )
+        self.run_command("./", "pots", pot=True, multifile="single")
+        assert os.path.isfile(self.get_testfilename("pots/file1.pot"))
+        assert os.path.isfile(self.get_testfilename("pots/file2.pot"))
+        content = str(self.read_testfile("pots/file1.pot"))
+        assert "coming through" in content
+        assert "cannot hear" not in content
+
+    def test_multifile_onefile(self):
+        """Test the --multifile=onefile option and make sure it produces a file, not a directory."""
+        self.create_testfile(
+            "file1.html", "<div>You are only coming through in waves</div>"
+        )
+        self.create_testfile(
+            "file2.html", "<div>Your lips move but I cannot hear what you say</div>"
+        )
+        self.run_command("./", "one.pot", pot=True, multifile="onefile")
+        assert os.path.isfile(self.get_testfilename("one.pot"))
+        content = str(self.read_testfile("one.pot"))
+        assert "coming through" in content
+        assert "cannot hear" in content
+
+    def test_multifile_onefile_to_stdout(self, capsys):
+        """Test the --multifile=onefile option without specifying an output file. Default is stdout."""
+        self.create_testfile(
+            "file1.html", "<div>You are only coming through in waves</div>"
+        )
+        self.create_testfile(
+            "file2.html", "<div>Your lips move but I cannot hear what you say</div>"
+        )
+        self.run_command("./", pot=True, multifile="onefile")
+        content, err = capsys.readouterr()
+        assert "coming through" in content
+        assert "cannot hear" in content
+        assert err == ""
+
     def test_help(self, capsys):
-        """tests getting help"""
+        """Test getting help."""
         options = test_convert.TestConvertCommand.test_help(self, capsys)
         options = self.help_check(options, "-P, --pot")
         options = self.help_check(options, "--duplicates=DUPLICATESTYLE")
         options = self.help_check(options, "--keepcomments")
-        options = self.help_check(options, "-u, --untagged", last=True)
+        options = self.help_check(options, "--multifile=MULTIFILESTYLE", last=True)
