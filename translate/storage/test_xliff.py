@@ -249,6 +249,23 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert xmltext.find('source-language="zu"') > 0
         assert xmltext.find('target-language="af"') > 0
 
+    def test_targetlanguage_multi(self):
+        xlfsource = """<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE foo [ <!ELEMENT foo ANY > <!ENTITY xxe SYSTEM "file:///etc/passwd" >]>
+<xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
+        <file original="doc.txt" source-language="en-US">
+        </file>
+        <file original="doc.txt" source-language="en-US">
+        </file>
+</xliff>"""
+        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        xlifffile.settargetlanguage("cs")
+        xlifffile.setsourcelanguage("de")
+        xmltext = bytes(xlifffile).decode()
+        print(xmltext)
+        assert xmltext.count('source-language="de"') == 2
+        assert xmltext.count('target-language="cs"') == 2
+
     def test_notes(self):
         xlifffile = xliff.xlifffile()
         unit = xlifffile.addsourceunit("Concept")

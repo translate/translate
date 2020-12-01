@@ -739,8 +739,8 @@ class xlifffile(lisa.LISAfile):
     def setsourcelanguage(self, language):
         if not language:
             return
-        filenode = next(self.document.getroot().iterchildren(self.namespaced("file")))
-        filenode.set("source-language", language)
+        for filenode in self.document.getroot().iterchildren(self.namespaced("file")):
+            filenode.set("source-language", language)
 
     def getsourcelanguage(self):
         filenode = next(self.document.getroot().iterchildren(self.namespaced("file")))
@@ -751,8 +751,8 @@ class xlifffile(lisa.LISAfile):
     def settargetlanguage(self, language):
         if not language:
             return
-        filenode = next(self.document.getroot().iterchildren(self.namespaced("file")))
-        filenode.set("target-language", language)
+        for filenode in self.document.getroot().iterchildren(self.namespaced("file")):
+            filenode.set("target-language", language)
 
     def gettargetlanguage(self):
         filenode = next(self.document.getroot().iterchildren(self.namespaced("file")))
