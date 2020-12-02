@@ -364,14 +364,6 @@ statistics
    :inherited-members:
 
 
-statsdb
--------
-
-.. automodule:: translate.storage.statsdb
-   :members:
-   :inherited-members:
-
-
 subtitles
 ---------
 

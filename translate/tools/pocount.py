@@ -24,14 +24,37 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
-
 import logging
 import os
+import re
 import sys
 from argparse import ArgumentParser
+from collections import defaultdict
 
-from translate.storage import factory, statsdb
+from translate.lang.common import Common
+from translate.misc.multistring import multistring
+from translate.storage import factory
+from translate.storage.workflow import StateEnum
 
+
+extended_state_strings = {
+    StateEnum.EMPTY: "empty",
+    StateEnum.NEEDS_WORK: "needs-work",
+    StateEnum.REJECTED: "rejected",
+    StateEnum.NEEDS_REVIEW: "needs-review",
+    StateEnum.UNREVIEWED: "unreviewed",
+    StateEnum.FINAL: "final",
+}
+
+UNTRANSLATED = StateEnum.EMPTY
+FUZZY = StateEnum.NEEDS_WORK
+TRANSLATED = StateEnum.UNREVIEWED
+
+state_strings = {
+    UNTRANSLATED: "untranslated",
+    FUZZY: "fuzzy",
+    TRANSLATED: "translated",
+}
 
 logger = logging.getLogger(__name__)
 
@@ -40,6 +63,22 @@ style_full, style_csv, style_short_strings, style_short_words = range(4)
 
 # default output style
 default_style = style_full
+
+# kdepluralre = re.compile("^_n: ") #Restore this if you really need support for old kdeplurals
+brtagre = re.compile(r"<br\s*?/?>")
+# xmltagre is a direct copy of the from placeables/general.py
+xmltagre = re.compile(
+    r"""
+        <                         # start of opening tag
+        ([\w.:]+)                 # tag name, possibly namespaced
+        (\s([\w.:]+=              # space and attribute name followed by =
+            ((".*?")|('.*?'))     # attribute value, single or double quoted
+        )?)*/?>                   # end of opening tag, possibly self closing
+        |</([\w.]+)>              # or a closing tag
+        """,
+    re.VERBOSE,
+)
+numberre = re.compile("\\D\\.\\D")
 
 
 class ConsoleColor:
@@ -74,7 +113,40 @@ class ConsoleColor:
         return cls.COLOR_DEFAULT if ConsoleColor.color_mode else ""
 
 
-def calcstats_old(filename):
+def wordcount(string):
+    # TODO: po class should understand KDE style plurals ##
+    # string = kdepluralre.sub("", string) #Restore this if you really need support for old kdeplurals
+    string = brtagre.sub("\n", string)
+    string = xmltagre.sub("", string)
+    string = numberre.sub(" ", string)
+    # TODO: This should still use the correct language to count in the target
+    # language
+    return len(Common.words(string))
+
+
+def wordsinunit(unit):
+    """Counts the words in the unit's source and target, taking plurals into
+    account. The target words are only counted if the unit is translated.
+    """
+    (sourcewords, targetwords) = (0, 0)
+    if isinstance(unit.source, multistring):
+        sourcestrings = unit.source.strings
+    else:
+        sourcestrings = [unit.source or ""]
+    for s in sourcestrings:
+        sourcewords += wordcount(s)
+    if not unit.istranslated():
+        return sourcewords, targetwords
+    if isinstance(unit.target, multistring):
+        targetstrings = unit.target.strings
+    else:
+        targetstrings = [unit.target or ""]
+    for s in targetstrings:
+        targetwords += wordcount(s)
+    return sourcewords, targetwords
+
+
+def calcstats(filename):
     """This is the previous implementation of calcstats() and is left for
     comparison and debuging purposes.
     """
@@ -84,12 +156,13 @@ def calcstats_old(filename):
     except ValueError as e:
         logger.warning(e)
         return {}
+
     units = [unit for unit in store.units if unit.istranslatable()]
     translated = translatedmessages(units)
     fuzzy = fuzzymessages(units)
     review = [unit for unit in units if unit.isreview()]
     untranslated = untranslatedmessages(units)
-    wordcounts = {id(unit): statsdb.wordsinunit(unit) for unit in units}
+    wordcounts = {id(unit): wordsinunit(unit) for unit in units}
     sourcewords = lambda elementlist: sum(
         wordcounts[id(unit)][0] for unit in elementlist
     )
@@ -116,12 +189,41 @@ def calcstats_old(filename):
         + stats["fuzzysourcewords"]
         + stats["untranslatedsourcewords"]
     )
+
+    stats["extended"] = file_extended_totals(units, wordcounts)
+
     return stats
 
 
-def calcstats(filename):
-    statscache = statsdb.StatsCache()
-    return statscache.filetotals(filename, extended=True)
+def file_extended_totals(units, wordcounts):
+    """
+    Provide extended statuses (used by XLIFF)
+    """
+
+    stats = dict()
+
+    for unit in units:
+        state = unit.get_state_n()
+
+        # if state is not standard (xliff)
+        # search for the default one to use
+        # each unit defines its own states
+        if state not in extended_state_strings.keys():
+            for k in unit.STATE.keys():
+                val = unit.STATE[k]
+                if val[0] <= int(state.__str__()) <= val[1]:
+                    state = k
+
+        extended_state = extended_state_strings[state]
+
+        state_stats = stats.get(extended_state, defaultdict(int))
+        state_stats["units"] += 1
+        state_stats["sourcewords"] += wordcounts[id(unit)][0]
+        state_stats["targetwords"] += wordcounts[id(unit)][1]
+
+        stats[extended_state] = state_stats
+
+    return stats
 
 
 def summarize(title, stats, style=style_full, indent=8, incomplete_only=False):
