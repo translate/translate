@@ -844,9 +844,8 @@ class xlifffile(lisa.LISAfile):
         has changed it uses the slow method instead (will create the nodes
         required if asked). Returns success
         """
-        if self._filename != filename:
-            if not self.switchfile(filename, createifmissing):
-                return None
+        if not self.switchfile(filename, createifmissing):
+            return None
         unit = super().addsourceunit(source)
         self._messagenum += 1
         unit.setid("%d" % self._messagenum)
@@ -858,6 +857,8 @@ class xlifffile(lisa.LISAfile):
         :returns: Success
         :rtype: Boolean
         """
+        if self._filename == filename:
+            return True
         self._filename = filename
         filenode = self.getfilenode(filename)
         if filenode is None:
@@ -881,9 +882,8 @@ class xlifffile(lisa.LISAfile):
 
     def creategroup(self, filename="NoName", createifmissing=False, restype=None):
         """adds a group tag into the specified file"""
-        if self._filename != filename:
-            if not self.switchfile(filename, createifmissing):
-                return None
+        if not self.switchfile(filename, createifmissing):
+            return None
         group = etree.SubElement(self.body, self.namespaced("group"))
         if restype:
             group.set("restype", restype)
