@@ -437,3 +437,15 @@ END
 """
         rc_file = self.source_parse(rc_source)
         assert len(rc_file.units) == 1
+
+    def test_utf_8(self):
+        rc_source = """#pragma code_page(65001)
+
+STRINGTABLE
+BEGIN
+    IDS_COPIED              "✔ Copied"
+END
+"""
+        rc_file = self.source_parse(rc_source)
+        assert len(rc_file.units) == 1
+        assert rc_file.units[0].source == "✔ Copied"
