@@ -846,14 +846,10 @@ class xlifffile(lisa.LISAfile):
         if not self.switchfile(filename, createifmissing):
             return None
         unit = super().addsourceunit(source)
-        # TODO: was 0 based before - consider
-        #    messagenum = len(self.units)
-        # TODO: we want to number them consecutively inside a body/file tag
-        # instead of globally in the whole XLIFF file, but using
-        # len(self.units) will be much faster
-        messagenum = (
-            len(list(self.body.iterdescendants(self.namespaced("trans-unit")))) + 1
-        )
+        # Add unique ID based on number of units. Doing this inside a body/file
+        # tag would be better, but performs way worse as we have to query the
+        # XML tree for that.
+        messagenum = len(self.units) + 1
         unit.setid(f"{messagenum}")
         return unit
 
