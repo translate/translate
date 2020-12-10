@@ -643,7 +643,6 @@ class xlifffile(lisa.LISAfile):
     def __init__(self, *args, **kwargs):
         self._filename = None
         super().__init__(*args, **kwargs)
-        self._messagenum = 0
 
     def initbody(self):
         # detect the xliff namespace, handle both 1.1 and 1.2
@@ -847,8 +846,15 @@ class xlifffile(lisa.LISAfile):
         if not self.switchfile(filename, createifmissing):
             return None
         unit = super().addsourceunit(source)
-        self._messagenum += 1
-        unit.setid("%d" % self._messagenum)
+        # TODO: was 0 based before - consider
+        #    messagenum = len(self.units)
+        # TODO: we want to number them consecutively inside a body/file tag
+        # instead of globally in the whole XLIFF file, but using
+        # len(self.units) will be much faster
+        messagenum = (
+            len(list(self.body.iterdescendants(self.namespaced("trans-unit")))) + 1
+        )
+        unit.setid(f"{messagenum}")
         return unit
 
     def switchfile(self, filename, createifmissing=False):
@@ -868,17 +874,7 @@ class xlifffile(lisa.LISAfile):
             self.document.getroot().append(filenode)
 
         self.body = self.getbodynode(filenode, createifmissing=createifmissing)
-        if self.body is None:
-            return False
-        self._messagenum = len(
-            list(self.body.iterdescendants(self.namespaced("trans-unit")))
-        )
-        # TODO: was 0 based before - consider
-        #    messagenum = len(self.units)
-        # TODO: we want to number them consecutively inside a body/file tag
-        # instead of globally in the whole XLIFF file, but using
-        # len(self.units) will be much faster
-        return True
+        return self.body is not None
 
     def creategroup(self, filename="NoName", createifmissing=False, restype=None):
         """adds a group tag into the specified file"""
