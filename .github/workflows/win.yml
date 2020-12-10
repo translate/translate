@@ -36,8 +36,8 @@ jobs:
       run: pip install -r requirements/dev.txt
     - name: Install
       run: pip install .
-    - name: py.test
-      run: py.test --cov=. -r EfsxX -W error::DeprecationWarning
+    - name: pytest
+      run: make test
     - name: Coverage
       run: |
         coverage xml
