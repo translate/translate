@@ -137,13 +137,8 @@ class Statistics:
             classes.append("blank")
         if unit.istranslated():
             classes.append("translated")
-        # TODO: we don't handle checking plurals at all yet, as this is tricky...
-        source = unit.source
-        target = unit.target
-        if isinstance(source, bytes) and isinstance(target, str):
-            source = source.decode(getattr(unit, "encoding", "utf-8"))
         # TODO: decoding should not be done here
-        #        checkresult = self.checker.run_filters(unit, source, target)
+        #        checkresult = self.checker.run_filters(unit, unit.source, unit.target)
         checkresult = {}
         for checkname, checkmessage in checkresult.items():
             classes.append("check-" + checkname)

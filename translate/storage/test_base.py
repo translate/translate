@@ -370,8 +370,6 @@ class TestTranslationStore:
         unit = store.addsourceunit("Beziér curve")
         unit.target = "Beziér-kurwe"
         answer = store.translate("Beziér curve")
-        if isinstance(answer, bytes):
-            answer = answer.decode("utf-8")
         assert answer == "Beziér-kurwe"
         # Just test that __str__ doesn't raise exception:
         store.serialize(BytesIO())

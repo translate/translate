@@ -168,8 +168,6 @@ def unquotefromdtd(source):
     extracted, quotefinished = quote.extractwithoutquotes(
         source, quotechar, quotechar, allowreentry=False
     )
-    if isinstance(extracted, bytes):
-        extracted = extracted.decode("utf-8")
     if quotechar == "'":
         extracted = extracted.replace("&apos;", "'")
     extracted = quote.entitydecode(extracted, _DTD_NAME2CODEPOINT)

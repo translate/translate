@@ -31,7 +31,6 @@ import copy
 import logging
 import re
 
-from translate.lang import data
 from translate.misc.multistring import multistring
 from translate.storage import base, cpo, pocommon
 
@@ -89,7 +88,6 @@ class pounit(pocommon.pounit):
     @source.setter
     def source(self, source):
         self._rich_source = None
-        source = data.forceunicode(source or "")
         source = source or ""
         if isinstance(source, multistring):
             self._source = source
@@ -141,7 +139,6 @@ class pounit(pocommon.pounit):
         # ignore empty strings and strings without non-space characters
         if not (text and text.strip()):
             return
-        text = data.forceunicode(text)
         commentlist = self.othercomments
         autocomments = False
         if origin in ["programmer", "developer", "source code"]:
@@ -206,15 +203,6 @@ class pounit(pocommon.pounit):
         """
 
         def mergelists(list1, list2, split=False):
-            # Decode where necessary (either all bytestrings or all unicode)
-            if str in [type(item) for item in list2] + [type(item) for item in list1]:
-                for position, item in enumerate(list1):
-                    if isinstance(item, bytes):
-                        list1[position] = item.decode("utf-8")
-                for position, item in enumerate(list2):
-                    if isinstance(item, bytes):
-                        list2[position] = item.decode("utf-8")
-
             # Determine the newline style of list2
             lineend = ""
             if list2 and list2[0]:
@@ -388,8 +376,7 @@ class pounit(pocommon.pounit):
         return self._msgctxt + self.msgidcomment
 
     def setcontext(self, context):
-        context = data.forceunicode(context or "")
-        self._msgctxt = context
+        self._msgctxt = context or ""
 
     def getid(self):
         """Returns a unique identifier for this unit."""

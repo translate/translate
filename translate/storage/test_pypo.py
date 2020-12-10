@@ -280,7 +280,6 @@ class TestPYPOFile(test_po.TestPOFile):
         halfstr = b"\xbd ...".decode("latin-1")
         thepo.target = halfstr
         assert halfstr in str(thepo)
-        thepo.target = halfstr.encode("UTF-8")
 
     def test_posections(self):
         """checks the content of all the expected sections of a PO message"""

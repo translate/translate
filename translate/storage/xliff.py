@@ -255,13 +255,9 @@ class xliffunit(lisa.LISAunit):
 
         # TODO: support adding a source tag ad match quality attribute.  At the
         # source tag is needed to inject fuzzy matches from a TM.
-        if isinstance(txt, bytes):
-            txt = txt.decode("utf-8")
         alttrans = etree.SubElement(self.xmlelement, self.namespaced("alt-trans"))
         setXMLspace(alttrans, "preserve")
         if sourcetxt:
-            if isinstance(sourcetxt, bytes):
-                sourcetxt = sourcetxt.decode("utf-8")
             altsource = etree.SubElement(alttrans, self.namespaced("source"))
             altsource.text = sourcetxt
         alttarget = etree.SubElement(alttrans, self.namespaced("target"))
@@ -318,8 +314,6 @@ class xliffunit(lisa.LISAunit):
             text = text.strip()
         if not text:
             return
-        if isinstance(text, bytes):
-            text = text.decode("utf-8")
         note = etree.SubElement(self.xmlelement, self.namespaced("note"))
         note.text = text
         if origin:
@@ -540,8 +534,6 @@ class xliffunit(lisa.LISAunit):
         if purpose:
             group.set("purpose", purpose)
         for type, text in contexts:
-            if isinstance(text, bytes):
-                text = text.decode("utf-8")
             context = etree.SubElement(group, self.namespaced("context"))
             context.text = text
             context.set("context-type", type)

@@ -23,6 +23,7 @@ import gettext
 import locale
 import os
 import re
+import unicodedata
 
 
 try:
@@ -776,35 +777,7 @@ def normalize(string, normal_form="NFC"):
     """
     if string is None:
         return None
-    else:
-        import unicodedata
-
-        return unicodedata.normalize(normal_form, string)
-
-
-def forceunicode(string):
-    """Ensures that the string is in unicode.
-
-    :param string: A text string
-    :type string: Unicode, String
-    :return: String converted to Unicode and normalized as needed.
-    :rtype: Unicode
-    """
-    if string is None:
-        return None
-    from translate.storage.placeables import StringElem
-
-    if isinstance(string, bytes):
-        encoding = getattr(string, "encoding", "utf-8")
-        string = string.decode(encoding)
-    elif isinstance(string, StringElem):
-        string = str(string)
-    return string
-
-
-def normalized_unicode(string):
-    """Forces the string to unicode and does normalization."""
-    return normalize(forceunicode(string))
+    return unicodedata.normalize(normal_form, string)
 
 
 def normalize_code(code):

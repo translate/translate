@@ -26,7 +26,6 @@ import re
 
 from lxml import etree
 
-from translate.lang import data
 from translate.misc.multistring import multistring
 from translate.misc.xml_helpers import setXMLspace
 from translate.storage import base, lisa, poheader, xliff
@@ -124,7 +123,7 @@ class PoXliffUnit(xliff.xliffunit):
 
     def gettarget(self, lang=None):
         if self.hasplural():
-            strings = [data.forceunicode(unit.target) for unit in self.units]
+            strings = [unit.target for unit in self.units]
             if strings:
                 return multistring(strings)
             else:
@@ -160,8 +159,6 @@ class PoXliffUnit(xliff.xliffunit):
 
     def addnote(self, text, origin=None, position="append"):
         """Add a note specifically in a "note" tag"""
-        if isinstance(text, bytes):
-            text = text.decode("utf-8")
         note = etree.SubElement(self.xmlelement, self.namespaced("note"))
         note.text = text
         if origin:

@@ -211,10 +211,10 @@ class CheckerConfig:
 
         # Inits with default values
         self.punctuation = self._init_default(
-            data.normalized_unicode(punctuation), self.lang.punctuation
+            data.normalize(punctuation), self.lang.punctuation
         )
         self.endpunctuation = self._init_default(
-            data.normalized_unicode(endpunctuation), self.lang.sentenceend
+            data.normalize(endpunctuation), self.lang.sentenceend
         )
         self.ignoretags = self._init_default(ignoretags, common_ignoretags)
         self.canchangetags = self._init_default(canchangetags, common_canchangetags)
@@ -222,15 +222,12 @@ class CheckerConfig:
         # Other data
         # TODO: allow user configuration of untranslatable words
         self.notranslatewords = dict.fromkeys(
-            [data.normalized_unicode(key) for key in self._init_list(notranslatewords)]
+            [data.normalize(key) for key in self._init_list(notranslatewords)]
         )
         self.musttranslatewords = dict.fromkeys(
-            [
-                data.normalized_unicode(key)
-                for key in self._init_list(musttranslatewords)
-            ]
+            [data.normalize(key) for key in self._init_list(musttranslatewords)]
         )
-        validchars = data.normalized_unicode(validchars)
+        validchars = data.normalize(validchars)
         self.validcharsmap = {}
         self.updatevalidchars(validchars)
 
@@ -283,7 +280,7 @@ class CheckerConfig:
             return True
 
         validcharsmap = {
-            ord(validchar): None for validchar in data.normalized_unicode(validchars)
+            ord(validchar): None for validchar in data.normalize(validchars)
         }
         self.validcharsmap.update(validcharsmap)
 
@@ -586,8 +583,8 @@ class TranslationChecker(UnitChecker):
         """Do some optimisation by caching some data of the unit for the
         benefit of :meth:`~TranslationChecker.run_test`.
         """
-        self.str1 = data.normalized_unicode(unit.source) or ""
-        self.str2 = data.normalized_unicode(unit.target) or ""
+        self.str1 = data.normalize(unit.source) or ""
+        self.str2 = data.normalize(unit.target) or ""
         self.hasplural = unit.hasplural()
         self.locations = unit.getlocations()
 
@@ -2846,8 +2843,8 @@ def runtests(str1, str2, ignorelist=()):
     """Verifies that the tests pass for a pair of strings."""
     from translate.storage import base
 
-    str1 = data.normalized_unicode(str1)
-    str2 = data.normalized_unicode(str2)
+    str1 = data.normalize(str1)
+    str2 = data.normalize(str2)
     unit = base.TranslationUnit(str1)
     unit.target = str2
     checker = StandardChecker(excludefilters=ignorelist)

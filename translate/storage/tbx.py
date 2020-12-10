@@ -35,8 +35,6 @@ class tbxunit(lisa.LISAunit):
 
     def createlanguageNode(self, lang, text, purpose):
         """returns a langset xml Element setup with given parameters"""
-        if isinstance(text, bytes):
-            text = text.decode("utf-8")
         langset = etree.Element(self.languageNode)
         setXMLlang(langset, lang)
         tig = etree.SubElement(langset, "tig")  # or ntig with termGrp inside
@@ -65,8 +63,6 @@ class tbxunit(lisa.LISAunit):
             text = text.strip()
         if not text:
             return
-        if isinstance(text, bytes):
-            text = text.decode("utf-8")
         note = etree.SubElement(self.xmlelement, self.namespaced("note"))
         note.text = text
         if origin:

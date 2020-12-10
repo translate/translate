@@ -20,7 +20,6 @@
 
 from lxml import etree
 
-from translate.lang import data
 from translate.misc.xml_helpers import getText, getXMLlang, getXMLspace, namespaced
 from translate.storage import base
 
@@ -114,7 +113,6 @@ class LISAunit(base.TranslationUnit):
 
     def setsource(self, text, sourcelang="en"):
         self._rich_source = None
-        text = data.forceunicode(text)
         self.source_dom = self.createlanguageNode(sourcelang, text, "source")
 
     def set_target_dom(self, dom_node, append=False):
@@ -152,7 +150,6 @@ class LISAunit(base.TranslationUnit):
         # need to propagate it
         if self._rich_target is not None:
             self._rich_target = None
-        target = data.forceunicode(target)
         # Firstly deal with reinitialising to None or setting to identical
         # string
         if self.target == target:

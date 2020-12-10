@@ -860,9 +860,7 @@ class propunit(base.TranslationUnit):
     @source.setter
     def source(self, source):
         self._rich_source = None
-        self.value = self.personality.encode(
-            data.forceunicode(source) or "", self.encoding
-        )
+        self.value = self.personality.encode(source or "", self.encoding)
 
     @property
     def target(self):
@@ -871,7 +869,6 @@ class propunit(base.TranslationUnit):
     @target.setter
     def target(self, target):
         self._rich_target = None
-        target = data.forceunicode(target)
         self.translation = self.personality.encode(target or "", self.encoding)
         self.explicitely_missing = not bool(target)
 
@@ -932,7 +929,6 @@ class propunit(base.TranslationUnit):
 
     def addnote(self, text, origin=None, position="append"):
         if origin in ["programmer", "developer", "source code", None]:
-            text = data.forceunicode(text)
             self.comments.append(text)
         else:
             return super().addnote(text, origin=origin, position=position)

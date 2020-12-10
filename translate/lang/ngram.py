@@ -46,9 +46,6 @@ class _NGram:
             self.ngrams = dict()
 
     def addText(self, text):
-        if isinstance(text, bytes):
-            text = text.decode("utf-8")
-
         ngrams = dict()
 
         for word in white_space_re.split(text):
