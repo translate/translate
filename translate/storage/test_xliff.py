@@ -343,7 +343,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         unit.addalttrans("targetx", sourcetxt="sourcex")
         # test that the source node is before the target node:
         alt = unit.getalttrans()[0]
-        altformat = etree.tostring(alt.xmlelement).decode("utf-8")
+        altformat = etree.tostring(alt.xmlelement, encoding="unicode")
         print(altformat)
         assert altformat.find("<source") < altformat.find("<target")
 

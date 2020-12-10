@@ -20,7 +20,6 @@
 
 from lxml import etree
 
-from translate.lang import data
 from translate.misc.xml_helpers import getText, namespaced, reindent
 from translate.storage import base
 
@@ -64,7 +63,6 @@ class FlatXMLUnit(base.TranslationUnit):
     @target.setter
     def target(self, target):
         """Updates the translated string of this unit."""
-        target = data.forceunicode(target)
         if self.target == target:
             return
         self.xmlelement.text = target

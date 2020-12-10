@@ -32,7 +32,6 @@ comments.
 
 import os
 import re
-import struct
 import warnings
 from io import BytesIO
 
@@ -44,16 +43,9 @@ from translate.misc import quote, wStringIO
 normalfilenamechars = (
     b"/#.0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 )
-normalizetable = b""
-int2byte = struct.Struct(">B").pack
-for i in map(int2byte, range(256)):
-    if i in normalfilenamechars:
-        normalizetable += i
-    else:
-        normalizetable += b"_"
 
 
-class unormalizechar(dict):
+class normalizechar(dict):
     def __init__(self, normalchars):
         self.normalchars = {}
         for char in normalchars:
@@ -63,15 +55,12 @@ class unormalizechar(dict):
         return self.normalchars.get(key, "_")
 
 
-unormalizetable = unormalizechar(normalfilenamechars.decode("ascii"))
+normalizetable = normalizechar(normalfilenamechars.decode("ascii"))
 
 
 def normalizefilename(filename):
     """converts any non-alphanumeric (standard roman) characters to _"""
-    if isinstance(filename, bytes):
-        return filename.translate(normalizetable)
-    else:
-        return filename.translate(unormalizetable)
+    return filename.translate(normalizetable)
 
 
 def makekey(ookey, long_keys):
