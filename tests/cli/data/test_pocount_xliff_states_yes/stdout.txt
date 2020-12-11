@@ -1,0 +1,10 @@
+Processing file : ./data/test_pocount_xliff_states_yes/states.xlf
+Type               Strings      Words (source)    Words (translation)
+Translated:       8 (100%)          8 (100%)               8
+Fuzzy:            0 (  0%)          0 (  0%)             n/a
+Untranslated:     0 (  0%)          0 (  0%)             n/a
+Total:            8                 8                      8
+
+Unreviewed:       7 ( 87%)          7 ( 87%)               7
+Final:            1 ( 12%)          1 ( 12%)               1
+

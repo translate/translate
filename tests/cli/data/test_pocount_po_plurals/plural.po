@@ -1,0 +1,5 @@
+msgid "%d One"
+msgid_plural "%d Many"
+msgstr[0] "%d One"
+msgstr[1] "%d Many"
+msgstr[2] "%d Many many"

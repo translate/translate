@@ -1,0 +1,6 @@
+msgid "Translated string"
+msgstr "Une chaîne traduite"
+
+#, fuzzy
+msgid "Fuzzy string"
+msgstr "Une chaîne approximative"
