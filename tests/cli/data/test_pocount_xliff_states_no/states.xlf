@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.1" version="1.1">
+  <file original="file.txt" source-language="en-US" datatype="plaintext">
+    <body>
+      <trans-unit xml:space="preserve" id="1" approved="no">
+          <source>One</source>
+          <target>Un</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="2" approved="no">
+          <source>Two</source>
+          <target state="needs-work">Deux</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="3" approved="no">
+          <source>Three</source>
+          <target state="rejected">Trois</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="4" approved="no">
+          <source>Four</source>
+          <target state="needs-review">Quatre</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="5" approved="no">
+          <source>Five</source>
+          <target state="unreviewed">Cinq</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="6" approved="no">
+          <source>Six</source>
+          <target state="final">Six</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="7" approved="no">
+          <source>Seven</source>
+          <target state="translated">Sept</target>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="8" approved="no">
+          <source>Eight</source>
+          <target state="fake">Huit</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
