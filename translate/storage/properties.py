@@ -887,7 +887,7 @@ class propunit(base.TranslationUnit):
         """Convert the element back into formatted lines for a .properties file"""
         notes = self.getnotes()
         if self.isblank():
-            return notes + '\n'
+            return notes + "\n"
         else:
             if notes:
                 notes = notes + '\n'
