@@ -742,7 +742,7 @@ class TestXWiki(test_monolingual.TestMonolingualStore):
     def test_deprecated_comments_preserved(self):
         propsource = """# Deprecated keys starts here.
 #@deprecatedstart
-        
+
 job.log.label=Job log
 
 #@deprecatedend"""
@@ -759,10 +759,10 @@ job.log.label=Job log
 
 ### Missing: job.log.label=Job log
 
-#@deprecatedend"""
-        propgen = bytes(propfile).decode('utf-8')
-        assert propgen == expected_output + '\n'
-
+#@deprecatedend
+"""
+        propgen = bytes(propfile).decode("utf-8")
+        assert propgen == expected_output
 
 
 class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
