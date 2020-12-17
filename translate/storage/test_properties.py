@@ -638,7 +638,8 @@ job.log.begin=Starting job of type [{0}]
             == """# This is free software; you can redistribute it and/or modify it
 # under the terms of the GNU Lesser General Public License as
 # published by the Free Software Foundation; either version 2.1 of
-# the License, or (at your option) any later version."""
+# the License, or (at your option) any later version.
+"""
         )
         propunit = propfile.units[1]
         assert propunit.name == "job.log.begin"
@@ -684,6 +685,8 @@ class TestXWiki(test_monolingual.TestMonolingualStore):
         assert propunit.missing
         propunit.target = ""
         assert propunit.missing
+        propunit.target = "I can code!"
+        assert not propunit.missing
         propunit.target = "Je peux coder"
         assert not propunit.missing
         # Check encoding
@@ -735,6 +738,31 @@ class TestXWiki(test_monolingual.TestMonolingualStore):
         propsource = """\n# My comment\ntest_me=I can code"""
         propgen = self.propregen(propsource)
         assert propgen == propsource + "\n"
+
+    def test_deprecated_comments_preserved(self):
+        propsource = """# Deprecated keys starts here.
+#@deprecatedstart
+
+job.log.label=Job log
+
+#@deprecatedend"""
+
+        propfile = self.propparse(propsource)
+        assert len(propfile.units) == 3
+        propunit = propfile.units[1]
+        assert propunit.name == "job.log.label"
+        assert propunit.source == "Job log"
+        assert not propunit.missing
+        propunit.missing = True
+        expected_output = """# Deprecated keys starts here.
+#@deprecatedstart
+
+### Missing: job.log.label=Job log
+
+#@deprecatedend
+"""
+        propgen = bytes(propfile).decode("utf-8")
+        assert propgen == expected_output
 
 
 class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):

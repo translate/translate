@@ -886,11 +886,11 @@ class propunit(base.TranslationUnit):
     def getoutput(self):
         """Convert the element back into formatted lines for a .properties file"""
         notes = self.getnotes()
-        if notes:
-            notes += "\n"
         if self.isblank():
             return notes + "\n"
         else:
+            if notes:
+                notes = notes + "\n"
             self.value = self.personality.encode(self.source, self.encoding)
             self.translation = self.personality.encode(self.target, self.encoding)
             # encode key, if needed
@@ -1056,12 +1056,14 @@ class propfile(base.TranslationStore):
                 if newunit.name:
                     self.addunit(newunit)
                     newunit = self.UnitClass("", self.personality.name)
-                elif not was_header and str(newunit).strip():
+                else:
+                    newunit.comments.append("")
+
+                if not was_header and str(newunit).strip():
                     self.addunit(newunit)
                     newunit = self.UnitClass("", self.personality.name)
                     was_header = True
-                else:
-                    newunit.comments.append("")
+
             else:
                 ismissing = False
                 if self.UnitClass.represents_missing(line):
