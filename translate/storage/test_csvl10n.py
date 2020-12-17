@@ -1,7 +1,5 @@
 from io import BytesIO
 
-from pytest import mark
-
 from translate.storage import csvl10n, test_base
 
 
@@ -59,10 +57,24 @@ GENERAL@2|Notes,"cable, motor, switch"
         assert store.units[2].location == "*****END CALL*****|Ask"
         assert store.units[2].source == "-"
 
-    @mark.xfail(reason="Bug #3356")
+    def test_location_is_parsed(self):
+        """Tests that units with location are correctly parsed."""
+        source = b'"65066","Ogre","Ogro"\n"65067","Ogra","Ogros"'
+        store = self.parse_store(source)
+        assert len(store.units) == 2
+        unit1 = store.units[0]
+        assert unit1.location == "65066"
+        assert unit1.source == "Ogre"
+        assert unit1.target == "Ogro"
+        unit2 = store.units[1]
+        assert unit2.location == "65067"
+        assert unit2.source == "Ogra"
+        assert unit2.target == "Ogros"
+        assert unit1.getid() != unit2.getid()
+
     def test_context_is_parsed(self):
         """Tests that units with the same source are different based on context."""
-        source = b'"65066","Ogre","Ogro"\n"65067","Ogre","Ogros"'
+        source = b'"context","source","target"\n"65066","Ogre","Ogro"\n"65067","Ogre","Ogros"'
         store = self.parse_store(source)
         assert len(store.units) == 2
         unit1 = store.units[0]
