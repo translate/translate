@@ -2,5 +2,5 @@
 
 source $(dirname $0)/test.inc.sh
 
-flatxml2po --progress=none $one $out
+python $PYTHON_ARGS $(which flatxml2po) --progress=none $one $out
 check_results

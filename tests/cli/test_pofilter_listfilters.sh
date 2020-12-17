@@ -2,5 +2,5 @@
 
 source $(dirname $0)/test.inc.sh
 
-pofilter --listfilters
+python $PYTHON_ARGS $(which pofilter) --listfilters
 check_results

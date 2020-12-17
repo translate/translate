@@ -2,5 +2,5 @@
 
 source $(dirname $0)/test.inc.sh
 
-po2html --progress=none -t $template $one $out
+python $PYTHON_ARGS $(which po2html) --progress=none -t $template $one $out
 check_results

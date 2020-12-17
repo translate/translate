@@ -2,5 +2,5 @@
 
 source $(dirname $0)/test.inc.sh
 
-pofilter --manpage
+python $PYTHON_ARGS $(which pofilter) --manpage
 check_results

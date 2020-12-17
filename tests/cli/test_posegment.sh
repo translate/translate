@@ -2,5 +2,5 @@
 
 source $(dirname $0)/test.inc.sh
 
-posegment --progress=none $one $out
+python $PYTHON_ARGS $(which posegment) --progress=none $one $out
 check_results

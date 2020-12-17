@@ -2,5 +2,5 @@
 
 source $(dirname $0)/test.inc.sh
 
-pocount --short --csv .
+python $PYTHON_ARGS $(which pocount) --short --csv .
 check_results

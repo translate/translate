@@ -2,5 +2,5 @@
 
 source $(dirname $0)/test.inc.sh
 
-pocount $one --no-color
+python $PYTHON_ARGS $(which pocount) $one --no-color
 check_results
