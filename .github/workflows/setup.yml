@@ -43,8 +43,10 @@ jobs:
         . ./test-ttk-release/bin/activate
         pip install dist/translate-toolkit-*.tar.gz
         moz2po --help
+    - name: Run build
+      run: coverage run ./setup.py build
     - name: Run setup
-      run: coverage run ./setup.py sdist
+      run: coverage run --append ./setup.py sdist
     - name: Coverage
       run: coverage xml
     - uses: codecov/codecov-action@v1
