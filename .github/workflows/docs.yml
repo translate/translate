@@ -32,7 +32,7 @@ jobs:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-lint-${{ hashFiles('requirements/*.txt') }}
       - name: Setup Python
-        uses: actions/setup-python@v2.2.0
+        uses: actions/setup-python@v2.2.1
         with:
           python-version: 3.9
       - name: Install apt dependencies
