@@ -18,11 +18,17 @@
 
 """module for parsing TMX translation memeory files"""
 
+import unicodedata
+
 from lxml import etree
 
 from translate import __version__
 from translate.misc.xml_helpers import setXMLlang
 from translate.storage import lisa
+
+
+def remove_control_characters(s):
+    return "".join(ch for ch in s if unicodedata.category(ch)[0] != "C")
 
 
 class tmxunit(lisa.LISAunit):
@@ -36,12 +42,19 @@ class tmxunit(lisa.LISAunit):
         """returns a langset xml Element setup with given parameters"""
         if isinstance(text, bytes):
             text = text.decode("utf-8")
+
         langset = etree.Element(self.languageNode)
         setXMLlang(langset, lang)
         seg = etree.SubElement(langset, self.textNode)
         # implied by the standard:
         # setXMLspace(seg, "preserve")
-        seg.text = text
+
+        try:
+            seg.text = text
+        except ValueError:
+            # Prevents "All strings must be XML compatible" when string contains a control characters
+            seg.text = remove_control_characters(text)
+
         return langset
 
     def getid(self):
@@ -68,7 +81,6 @@ class tmxunit(lisa.LISAunit):
     def _getnotelist(self, origin=None):
         """Returns the text from notes.
 
-        :param origin: Ignored
         :return: The text from notes
         :rtype: List
         """
