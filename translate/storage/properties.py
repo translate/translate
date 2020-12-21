@@ -860,9 +860,7 @@ class propunit(base.TranslationUnit):
     @source.setter
     def source(self, source):
         self._rich_source = None
-        self.value = self.personality.encode(
-            data.forceunicode(source) or "", self.encoding
-        )
+        self.value = self.personality.encode(source or "", self.encoding)
 
     @property
     def target(self):
@@ -871,7 +869,6 @@ class propunit(base.TranslationUnit):
     @target.setter
     def target(self, target):
         self._rich_target = None
-        target = data.forceunicode(target)
         self.translation = self.personality.encode(target or "", self.encoding)
         self.explicitely_missing = not bool(target)
 
@@ -889,11 +886,11 @@ class propunit(base.TranslationUnit):
     def getoutput(self):
         """Convert the element back into formatted lines for a .properties file"""
         notes = self.getnotes()
-        if notes:
-            notes += "\n"
         if self.isblank():
             return notes + "\n"
         else:
+            if notes:
+                notes = notes + "\n"
             self.value = self.personality.encode(self.source, self.encoding)
             self.translation = self.personality.encode(self.target, self.encoding)
             # encode key, if needed
@@ -932,7 +929,6 @@ class propunit(base.TranslationUnit):
 
     def addnote(self, text, origin=None, position="append"):
         if origin in ["programmer", "developer", "source code", None]:
-            text = data.forceunicode(text)
             self.comments.append(text)
         else:
             return super().addnote(text, origin=origin, position=position)
@@ -1060,12 +1056,14 @@ class propfile(base.TranslationStore):
                 if newunit.name:
                     self.addunit(newunit)
                     newunit = self.UnitClass("", self.personality.name)
-                elif not was_header and str(newunit).strip():
+                else:
+                    newunit.comments.append("")
+
+                if not was_header and str(newunit).strip():
                     self.addunit(newunit)
                     newunit = self.UnitClass("", self.personality.name)
                     was_header = True
-                else:
-                    newunit.comments.append("")
+
             else:
                 ismissing = False
                 if self.UnitClass.represents_missing(line):

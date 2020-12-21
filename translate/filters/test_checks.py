@@ -7,9 +7,9 @@ from translate.storage import po, xliff
 
 def strprep(str1, str2, message=None):
     return (
-        data.normalized_unicode(str1),
-        data.normalized_unicode(str2),
-        data.normalized_unicode(message),
+        data.normalize(str1),
+        data.normalize(str2),
+        data.normalize(message),
     )
 
 

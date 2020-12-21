@@ -30,7 +30,7 @@ jobs:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('requirements/*.txt') }}
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2.1.4
+      uses: actions/setup-python@v2.2.1
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install apt dependencies
@@ -50,9 +50,12 @@ jobs:
         pip install -r requirements/min-versions.txt
     - name: Install
       run: pip install .
-    - name: py.test
-      run: py.test --cov=. -r EfsxX -W error::DeprecationWarning
+    - name: pytest
+      run: make test
     - name: test-functional
+      env:
+        PYTHON_ARGS: -m coverage run --append --source ${{ github.workspace }}/translate
+        COVERAGE_FILE: ${{ github.workspace }}/.coverage
       run: make test-functional
     - name: Coverage
       run: |

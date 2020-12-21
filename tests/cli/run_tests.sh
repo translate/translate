@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cd $(dirname $0)
-for test in $(ls test_*.sh) 
+for test in $(ls test_*.sh)
 do
 	echo -n "$test ... "
 	eval ./$test

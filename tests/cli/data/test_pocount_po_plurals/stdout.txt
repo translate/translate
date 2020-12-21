@@ -1,0 +1,9 @@
+Processing file : ./data/test_pocount_po_plurals/plural.po
+Type               Strings      Words (source)    Words (translation)
+Translated:       1 (100%)          4 (100%)               7
+Fuzzy:            0 (  0%)          0 (  0%)             n/a
+Untranslated:     0 (  0%)          0 (  0%)             n/a
+Total:            1                 4                      7
+
+Unreviewed:       1 (100%)          4 (100%)
+

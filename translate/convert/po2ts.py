@@ -38,10 +38,6 @@ class po2ts:
             source = inputunit.source
             translation = inputunit.target
             comment = inputunit.getnotes("translator")
-            if isinstance(source, bytes):
-                source = source.decode("utf-8")
-            if isinstance(translation, bytes):
-                translation = translation.decode("utf-8")
             for sourcelocation in inputunit.getlocations():
                 if context is None:
                     if "#" in sourcelocation:

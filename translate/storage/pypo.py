@@ -25,9 +25,7 @@ import copy
 import logging
 import re
 import textwrap
-from itertools import chain
 
-from translate.lang import data
 from translate.misc import quote
 from translate.misc.multistring import multistring
 from translate.storage import pocommon, poparser
@@ -273,9 +271,6 @@ class pounit(pocommon.pounit):
     def _set_source_vars(self, source):
         msgid = None
         msgid_plural = None
-        if isinstance(source, bytes):
-            # Guessing utf-8, non-ascii encoded content should not reach this point
-            source = source.decode("utf-8")
         if isinstance(source, multistring):
             source = source.strings
         if isinstance(source, list):
@@ -327,9 +322,6 @@ class pounit(pocommon.pounit):
     def target(self, target):
         """Sets the msgstr to the given (unescaped) value"""
         self._rich_target = None
-        if isinstance(target, bytes):
-            # Guessing utf-8, non-ascii encoded content should not reach this point
-            target = target.decode("utf-8")
         if self.hasplural():
             if isinstance(target, multistring):
                 target = target.strings
@@ -401,7 +393,6 @@ class pounit(pocommon.pounit):
         # ignore empty strings and strings without non-space characters
         if not (text and text.strip()):
             return
-        text = data.forceunicode(text)
         commentlist = self.othercomments
         linestart = "#"
         autocomments = False
@@ -472,15 +463,6 @@ class pounit(pocommon.pounit):
         """
 
         def mergelists(list1, list2, split=False):
-            # Decode where necessary (either all bytestrings or all unicode)
-            if any(isinstance(item, str) for item in chain(list1, list2)):
-                for position, item in enumerate(list1):
-                    if isinstance(item, bytes):
-                        list1[position] = item.decode("utf-8")
-                for position, item in enumerate(list2):
-                    if isinstance(item, bytes):
-                        list2[position] = item.decode("utf-8")
-
             # Determine the newline style of list1
             lineend = ""
             if list1 and list1[0]:
@@ -804,7 +786,6 @@ class pounit(pocommon.pounit):
         :type location: String
 
         """
-        location = data.forceunicode(location)
         location = pocommon.quote_plus(location)
         self.sourcecomments.append("#: %s\n" % location)
 
@@ -833,7 +814,6 @@ class pounit(pocommon.pounit):
         return unquotefrompo(self.msgctxt) + self._extract_msgidcomments()
 
     def setcontext(self, context):
-        context = data.forceunicode(context)
         self.msgctxt = self.quote(context)
 
     def getid(self):
@@ -956,30 +936,6 @@ class pofile(pocommon.pofile):
             self.encoding = "utf-8"
             out.seek(0)
             self.serialize(out)
-
-    def encode(self, lines):
-        """encode any unicode strings in lines in self.encoding"""
-        newlines = []
-        for line in lines:
-            if isinstance(line, str):
-                line = line.encode(self.encoding)
-            newlines.append(line)
-        return newlines
-
-    def decode(self, lines):
-        """decode any non-unicode strings in lines with self.encoding"""
-        newlines = []
-        for line in lines:
-            if isinstance(line, bytes):
-                try:
-                    line = line.decode(self.encoding)
-                except UnicodeDecodeError as e:
-                    raise UnicodeDecodeError(
-                        "Error decoding line with encoding %r: %s. Line is %r"
-                        % (self.encoding, e, line)
-                    )
-            newlines.append(line)
-        return newlines
 
     def unit_iter(self):
         for unit in self.units:

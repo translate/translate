@@ -107,7 +107,7 @@ class tsunit(lisa.LISAunit):
     @lisa.LISAunit.source.getter
     def source(self):
         # TODO: support <byte>. See bug 528.
-        text = data.forceunicode(self._getsourcenode().text)
+        text = self._getsourcenode().text
         if self.hasplural():
             return multistring([text])
         return text
@@ -117,11 +117,9 @@ class tsunit(lisa.LISAunit):
         targetnode = self._gettargetnode()
         if self.hasplural():
             numerus_nodes = targetnode.findall(self.namespaced("numerusform"))
-            return multistring(
-                [data.forceunicode(node.text) or "" for node in numerus_nodes]
-            )
+            return multistring([node.text or "" for node in numerus_nodes])
         else:
-            return data.forceunicode(targetnode.text) or ""
+            return targetnode.text or ""
 
     @target.setter
     def target(self, target):
@@ -150,17 +148,15 @@ class tsunit(lisa.LISAunit):
             self.xmlelement.set("numerus", "yes")
             for string in strings:
                 numerus = etree.SubElement(targetnode, self.namespaced("numerusform"))
-                numerus.text = data.forceunicode(string) or ""
+                numerus.text = string or ""
         else:
-            targetnode.text = data.forceunicode(target) or ""
+            targetnode.text = target or ""
 
     def hasplural(self):
         return self.xmlelement.get("numerus") == "yes"
 
     def addnote(self, text, origin=None, position="append"):
         """Add a note specifically in the appropriate *comment* tag"""
-        if isinstance(text, bytes):
-            text = text.decode("utf-8")
         current_notes = self.getnotes(origin)
         self.removenotes(origin)
         if origin in ["programmer", "developer", "source code"]:
@@ -283,8 +279,6 @@ class tsunit(lisa.LISAunit):
         return "\n".join(contexts)
 
     def addlocation(self, location):
-        if isinstance(location, bytes):
-            location = location.decode("utf-8")
         newlocation = etree.SubElement(self.xmlelement, self.namespaced("location"))
         try:
             filename, line = location.split(":", 1)

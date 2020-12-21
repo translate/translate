@@ -45,7 +45,6 @@ from ctypes import (
     cdll,
 )
 
-from translate.lang import data
 from translate.misc.multistring import multistring
 from translate.storage import base, pocommon, pypo
 
@@ -534,7 +533,6 @@ class pounit(pocommon.pounit):
         # ignore empty strings and strings without non-space characters
         if not (text and text.strip()):
             return
-        text = data.forceunicode(text)
         oldnotes = self.getnotes(origin)
         newnotes = None
         if oldnotes:
@@ -720,7 +718,6 @@ class pounit(pocommon.pounit):
             return msgidcomment
 
     def setcontext(self, context):
-        context = data.forceunicode(context)
         gpo.po_message_set_msgctxt(self._gpo_message, gpo_encode(context))
 
     @classmethod

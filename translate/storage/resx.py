@@ -21,7 +21,6 @@
 
 from lxml import etree
 
-from translate.lang import data
 from translate.misc.xml_helpers import reindent, setXMLspace
 from translate.storage import lisa
 from translate.storage.placeables import general
@@ -57,7 +56,7 @@ class RESXUnit(lisa.LISAunit):
         if targetnode is None:
             etree.SubElement(self.xmlelement, self.namespaced("value"))
             return None
-        return data.forceunicode(targetnode.text) or ""
+        return targetnode.text or ""
 
     @target.setter
     def target(self, target):
@@ -68,12 +67,10 @@ class RESXUnit(lisa.LISAunit):
             return
         targetnode = self._gettargetnode()
         targetnode.clear()
-        targetnode.text = data.forceunicode(target) or ""
+        targetnode.text = target or ""
 
     def addnote(self, text, origin=None, position="append"):
         """Add a note specifically in the appropriate "comment" tag"""
-        if isinstance(text, bytes):
-            text = text.decode("utf-8")
         current_notes = self.getnotes(origin)
         self.removenotes(origin)
         note = etree.SubElement(self.xmlelement, self.namespaced("comment"))

@@ -286,16 +286,14 @@ class AndroidResourceUnit(base.TranslationUnit):
             if cloned_target.text is not None:
                 tmp_element = etree.Element("t")
                 tmp_element.text = cloned_target.text
-                target = data.forceunicode(
-                    etree.tostring(tmp_element, encoding="utf-8")[3:-4]
-                )
+                target = etree.tostring(tmp_element, encoding="unicode")[3:-4]
             else:
                 target = ""
 
             # Include markup as well
             target += "".join(
                 [
-                    data.forceunicode(etree.tostring(child, encoding="utf-8"))
+                    etree.tostring(child, encoding="unicode")
                     for child in cloned_target.iterchildren()
                 ]
             )
@@ -364,7 +362,7 @@ class AndroidResourceUnit(base.TranslationUnit):
             return self.get_xml_text_value(self.xmlelement)
         return multistring(
             [
-                data.forceunicode(self.get_xml_text_value(entry))
+                self.get_xml_text_value(entry)
                 for entry in self.xmlelement.iterchildren("item")
             ]
         )

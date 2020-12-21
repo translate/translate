@@ -2,5 +2,5 @@
 
 source $(dirname $0)/test.inc.sh
 
-po2csv --progress=none $one $out
+python $PYTHON_ARGS $(which po2csv) --progress=none $one $out
 check_results

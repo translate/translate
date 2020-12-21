@@ -276,6 +276,16 @@ def generate_dialog_control_name(block_type, block_id, control_type, identifier)
     return f"{block_type}.{block_id}.{control_type}.{identifier}"
 
 
+def parse_encoding_pragma(pragma):
+    pragma = pragma.strip()
+    codepage = pragma.split("(")[1].split(")")[0].strip()
+    if codepage == "65001":
+        return "utf-8"
+    if len(codepage) == 4:
+        return f"cp{codepage}"
+    return None
+
+
 class rcfile(base.TranslationStore):
     """This class represents a .rc file, made up of rcunits."""
 
@@ -323,21 +333,29 @@ class rcfile(base.TranslationStore):
                         sub_popup,
                     )
 
-    def parse(self, rcsrc):
+    def parse(self, rcsrc, encoding="auto"):
         """Read the source of a .rc file in and include them as units."""
-        self.encoding = "auto"
-        rcsrc, self.encoding = self.detect_encoding(
-            rcsrc, default_encodings=[self.default_encoding]
-        )
+        self.encoding = encoding
+        if encoding != "auto":
+            decoded = rcsrc.decode(encoding)
+        else:
+            decoded, self.encoding = self.detect_encoding(
+                rcsrc, default_encodings=[self.default_encoding]
+            )
 
-        rcsrc = rcsrc.replace("\r", "")
+        decoded = decoded.replace("\r", "")
 
         # Parse the strings into a structure.
-        results = rc_statement().searchString(rcsrc)
+        results = rc_statement().searchString(decoded)
 
         processblocks = True
 
         for statement in results:
+            # Parse pragma
+            if statement[0] == "#pragma" and "code_page" in statement[1]:
+                expected_encoding = parse_encoding_pragma(statement[1])
+                if expected_encoding and expected_encoding != self.encoding:
+                    return self.parse(rcsrc, expected_encoding)
             if statement.language:
 
                 if self.lang is None or statement.language == self.lang:

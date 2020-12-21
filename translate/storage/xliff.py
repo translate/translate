@@ -255,13 +255,9 @@ class xliffunit(lisa.LISAunit):
 
         # TODO: support adding a source tag ad match quality attribute.  At the
         # source tag is needed to inject fuzzy matches from a TM.
-        if isinstance(txt, bytes):
-            txt = txt.decode("utf-8")
         alttrans = etree.SubElement(self.xmlelement, self.namespaced("alt-trans"))
         setXMLspace(alttrans, "preserve")
         if sourcetxt:
-            if isinstance(sourcetxt, bytes):
-                sourcetxt = sourcetxt.decode("utf-8")
             altsource = etree.SubElement(alttrans, self.namespaced("source"))
             altsource.text = sourcetxt
         alttarget = etree.SubElement(alttrans, self.namespaced("target"))
@@ -318,8 +314,6 @@ class xliffunit(lisa.LISAunit):
             text = text.strip()
         if not text:
             return
-        if isinstance(text, bytes):
-            text = text.decode("utf-8")
         note = etree.SubElement(self.xmlelement, self.namespaced("note"))
         note.text = text
         if origin:
@@ -540,8 +534,6 @@ class xliffunit(lisa.LISAunit):
         if purpose:
             group.set("purpose", purpose)
         for type, text in contexts:
-            if isinstance(text, bytes):
-                text = text.decode("utf-8")
             context = etree.SubElement(group, self.namespaced("context"))
             context.text = text
             context.set("context-type", type)
@@ -643,7 +635,6 @@ class xlifffile(lisa.LISAfile):
     def __init__(self, *args, **kwargs):
         self._filename = None
         super().__init__(*args, **kwargs)
-        self._messagenum = 0
 
     def initbody(self):
         # detect the xliff namespace, handle both 1.1 and 1.2
@@ -844,12 +835,14 @@ class xlifffile(lisa.LISAfile):
         has changed it uses the slow method instead (will create the nodes
         required if asked). Returns success
         """
-        if self._filename != filename:
-            if not self.switchfile(filename, createifmissing):
-                return None
+        if not self.switchfile(filename, createifmissing):
+            return None
         unit = super().addsourceunit(source)
-        self._messagenum += 1
-        unit.setid("%d" % self._messagenum)
+        # Add unique ID based on number of units. Doing this inside a body/file
+        # tag would be better, but performs way worse as we have to query the
+        # XML tree for that.
+        messagenum = len(self.units) + 1
+        unit.setid(f"{messagenum}")
         return unit
 
     def switchfile(self, filename, createifmissing=False):
@@ -858,6 +851,8 @@ class xlifffile(lisa.LISAfile):
         :returns: Success
         :rtype: Boolean
         """
+        if self._filename == filename:
+            return True
         self._filename = filename
         filenode = self.getfilenode(filename)
         if filenode is None:
@@ -867,23 +862,12 @@ class xlifffile(lisa.LISAfile):
             self.document.getroot().append(filenode)
 
         self.body = self.getbodynode(filenode, createifmissing=createifmissing)
-        if self.body is None:
-            return False
-        self._messagenum = len(
-            list(self.body.iterdescendants(self.namespaced("trans-unit")))
-        )
-        # TODO: was 0 based before - consider
-        #    messagenum = len(self.units)
-        # TODO: we want to number them consecutively inside a body/file tag
-        # instead of globally in the whole XLIFF file, but using
-        # len(self.units) will be much faster
-        return True
+        return self.body is not None
 
     def creategroup(self, filename="NoName", createifmissing=False, restype=None):
         """adds a group tag into the specified file"""
-        if self._filename != filename:
-            if not self.switchfile(filename, createifmissing):
-                return None
+        if not self.switchfile(filename, createifmissing):
+            return None
         group = etree.SubElement(self.body, self.namespaced("group"))
         if restype:
             group.set("restype", restype)

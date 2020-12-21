@@ -2,5 +2,5 @@
 
 source $(dirname $0)/test.inc.sh
 
-prop2po
+python $PYTHON_ARGS $(which prop2po)
 check_results

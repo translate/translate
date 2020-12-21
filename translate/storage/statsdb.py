@@ -25,7 +25,6 @@ import logging
 import os.path
 import re
 import stat
-import sys
 from collections import UserDict
 from sqlite3 import dbapi2
 from threading import current_thread
@@ -355,8 +354,6 @@ class StatsCache:
                     cachedir = os.path.join(userdir, ".translate_toolkit")
                 if not os.path.exists(cachedir):
                     os.mkdir(cachedir)
-                if isinstance(cachedir, bytes):
-                    cachedir = str(cachedir, sys.getfilesystemencoding())
                 cls.defaultfile = os.path.realpath(os.path.join(cachedir, "stats.db"))
             statsfile = cls.defaultfile
         else:
@@ -446,8 +443,6 @@ class StatsCache:
 
         store can be a TranslationFile object or a callback that returns one.
         """
-        if isinstance(filename, bytes):
-            filename = str(filename, sys.getfilesystemencoding())
         realpath = os.path.realpath(filename)
         self.cur.execute(
             """SELECT fileid, st_mtime, st_size FROM files

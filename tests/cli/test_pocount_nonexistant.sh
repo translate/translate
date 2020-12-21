@@ -2,5 +2,5 @@
 
 source $(dirname $0)/test.inc.sh
 
-pocount missing.po
+python $PYTHON_ARGS $(which pocount) missing.po
 check_results
