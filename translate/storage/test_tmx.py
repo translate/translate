@@ -93,12 +93,8 @@ class TestTMXfile(test_base.TestTranslationStore):
     def test_controls_cleaning(self):
         """test addtranslation() with control chars"""
         tmxfile = tmx.tmxfile()
-        tmxfile.addtranslation(
-            "Client Version:\x0314 %s", "en", "test one", "ar"
-        )
-        tmxfile.addtranslation(
-            "Client Version:\n%s", "en", "test two", "ar"
-        )
+        tmxfile.addtranslation("Client Version:\x0314 %s", "en", "test one", "ar")
+        tmxfile.addtranslation("Client Version:\n%s", "en", "test two", "ar")
         newfile = self.tmxparse(bytes(tmxfile))
         print(bytes(tmxfile))
         assert newfile.translate("Client Version:14 %s") == "test one"
