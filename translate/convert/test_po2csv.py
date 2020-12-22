@@ -11,8 +11,7 @@ class TestPO2CSV:
         inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
         convertor = po2csv.po2csv()
-        outputcsv = convertor.convertstore(inputpo)
-        return outputcsv
+        return convertor.convertstore(inputpo)
 
     def csv2po(self, csvsource, template=None):
         """helper that converts csv source to po source without requiring files"""
@@ -24,8 +23,7 @@ class TestPO2CSV:
         else:
             inputpot = None
         convertor = csv2po.csv2po(templatepo=inputpot)
-        outputpo = convertor.convertstore(inputcsv)
-        return outputpo
+        return convertor.convertstore(inputcsv)
 
     def singleelement(self, storage):
         """checks that the pofile contains a single non-header element, and returns it"""

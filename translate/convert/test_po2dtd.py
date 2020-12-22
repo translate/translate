@@ -19,8 +19,7 @@ class TestPO2DTD:
         inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
         convertor = po2dtd.po2dtd(remove_untranslated=remove_untranslated)
-        outputdtd = convertor.convertstore(inputpo)
-        return outputdtd
+        return convertor.convertstore(inputpo)
 
     def merge2dtd(self, dtdsource, posource):
         """helper that merges po translations to dtd source without requiring files"""
@@ -29,8 +28,7 @@ class TestPO2DTD:
         templatefile = BytesIO(dtdsource.encode())
         templatedtd = dtd.dtdfile(templatefile)
         convertor = po2dtd.redtd(templatedtd)
-        outputdtd = convertor.convertstore(inputpo)
-        return outputdtd
+        return convertor.convertstore(inputpo)
 
     def convertdtd(self, posource, dtdtemplate, remove_untranslated=False):
         """helper to exercise the command line function"""

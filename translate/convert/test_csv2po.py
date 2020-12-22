@@ -24,8 +24,7 @@ class TestCSV2PO:
         else:
             inputpot = None
         convertor = csv2po.csv2po(templatepo=inputpot)
-        outputpo = convertor.convertstore(inputcsv)
-        return outputpo
+        return convertor.convertstore(inputcsv)
 
     def singleelement(self, storage):
         """checks that the pofile contains a single non-header element, and returns it"""

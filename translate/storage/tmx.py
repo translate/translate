@@ -69,9 +69,7 @@ class tmxunit(lisa.LISAunit):
         :rtype: List
         """
         note_nodes = self.xmlelement.iterdescendants(self.namespaced("note"))
-        note_list = [lisa.getText(note) for note in note_nodes]
-
-        return note_list
+        return [lisa.getText(note) for note in note_nodes]
 
     def getnotes(self, origin=None):
         return "\n".join(self._getnotelist(origin=origin))

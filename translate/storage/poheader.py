@@ -64,8 +64,7 @@ def tzstring():
     hours, minutes = time.gmtime(abs(tzoffset))[3:5]
     if tzoffset > 0:
         hours *= -1
-    tz = str("%+d" % hours).zfill(3) + str(minutes).zfill(2)
-    return tz
+    return str("%+d" % hours).zfill(3) + str(minutes).zfill(2)
 
 
 def update(existing, add=False, **kwargs):

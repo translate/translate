@@ -339,13 +339,11 @@ class xliffunit(lisa.LISAunit):
 
         # Remove duplicate entries from list:
         dictset = {}
-        note_list = [
+        return [
             dictset.setdefault(note, note)
             for note in initial_list
             if note not in dictset
         ]
-
-        return note_list
 
     def getnotes(self, origin=None):
         return "\n".join(self._getnotelist(origin=origin))
@@ -714,8 +712,7 @@ class xlifffile(lisa.LISAfile):
             if self.getfilename(filenode) == filename:
                 return filenode
         if createifmissing:
-            filenode = self.createfilenode(filename)
-            return filenode
+            return self.createfilenode(filename)
         return None
 
     def getids(self, filename=None):
@@ -821,8 +818,7 @@ class xlifffile(lisa.LISAfile):
             pass
         if not createifmissing:
             return None
-        bodynode = etree.SubElement(filenode, self.namespaced("body"))
-        return bodynode
+        return etree.SubElement(filenode, self.namespaced("body"))
 
     def addunit(self, unit, new=True):
         parts = unit.getid().split("\x04")

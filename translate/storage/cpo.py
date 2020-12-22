@@ -713,9 +713,7 @@ class pounit(pocommon.pounit):
         msgctxt = gpo.po_message_msgctxt(self._gpo_message)
         if msgctxt:
             return gpo_decode(msgctxt)
-        else:
-            msgidcomment = self._extract_msgidcomments()
-            return msgidcomment
+        return self._extract_msgidcomments()
 
     def setcontext(self, context):
         gpo.po_message_set_msgctxt(self._gpo_message, gpo_encode(context))
@@ -872,8 +870,7 @@ class pofile(pocommon.pofile):
                 self._gpo_memory_file, gpo_encode(filename), xerror_handler
             )
             with open(filename, "rb") as tfile:
-                content = tfile.read()
-            return content
+                return tfile.read()
 
         outputstring = ""
         if self._gpo_memory_file:

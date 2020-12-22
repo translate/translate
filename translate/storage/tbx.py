@@ -93,13 +93,11 @@ class tbxunit(lisa.LISAunit):
 
         # Remove duplicate entries from list:
         dictset = {}
-        note_list = [
+        return [
             dictset.setdefault(note, note)
             for note in initial_list
             if note not in dictset
         ]
-
-        return note_list
 
     def getnotes(self, origin=None):
         return "\n".join(self._getnotelist(origin=origin))

@@ -422,10 +422,7 @@ class tsfile(lisa.LISAfile):
     def _getcontextnames(self):
         """Returns all contextnames in this TS file."""
         contextnodes = self.document.findall(self.namespaced("context"))
-        contextnames = [
-            self.getcontextname(contextnode) for contextnode in contextnodes
-        ]
-        return contextnames
+        return [self.getcontextname(contextnode) for contextnode in contextnodes]
 
     def _getcontextnode(self, contextname):
         """Returns the context node with the given name."""

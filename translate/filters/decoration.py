@@ -219,8 +219,7 @@ def getvariables(startmarker, endmarker):
     def getmarkedvariables(str1):
         """returns all the variables in str1 marked with a given marker"""
         varlocs = findmarkedvariables(str1, startmarker, endmarker)
-        variables = [variable for accelstart, variable in varlocs]
-        return variables
+        return [variable for accelstart, variable in varlocs]
 
     return getmarkedvariables
 

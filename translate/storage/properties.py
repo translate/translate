@@ -931,7 +931,7 @@ class propunit(base.TranslationUnit):
         if origin in ["programmer", "developer", "source code", None]:
             self.comments.append(text)
         else:
-            return super().addnote(text, origin=origin, position=position)
+            super().addnote(text, origin=origin, position=position)
 
     def getnotes(self, origin=None):
         if origin in ["programmer", "developer", "source code", None]:
