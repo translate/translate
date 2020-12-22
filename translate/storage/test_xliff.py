@@ -589,3 +589,22 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert bytes(xfile) == xlfsource
         xfile.units[0].rich_target = ["Soubor"]
         assert bytes(xfile).decode("ascii") == xlftarget
+
+    def test_preserve(self):
+        xlfsource = """<?xml version='1.0' encoding='UTF-8'?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.1" version="1.1">
+  <file original="doc.txt" source-language="en-US">
+    <body>
+      <trans-unit id="1" translate="yes">
+        <source>Hello</source>
+        <target/>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
+"""
+        xfile = xliff.xlifffile.parsestring(xlfsource)
+        assert bytes(xfile).decode() == xlfsource
+        xfile.units[0].target = "H  E"
+        newfile = xliff.xlifffile.parsestring(bytes(xfile))
+        assert newfile.units[0].target == "H  E"

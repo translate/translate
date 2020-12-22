@@ -464,6 +464,8 @@ class xliffunit(lisa.LISAunit):
         """Sets the target string to the given value."""
         super().settarget(target, lang, append)
         if target:
+            if getXMLspace(self.xmlelement) != "preserve":
+                setXMLspace(self.xmlelement, "preserve")
             self.marktranslated()
 
     # This code is commented while this will almost always return false.
