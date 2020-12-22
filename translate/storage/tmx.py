@@ -18,8 +18,6 @@
 
 """module for parsing TMX translation memeory files"""
 
-import unicodedata
-
 from lxml import etree
 
 from translate import __version__
@@ -27,8 +25,12 @@ from translate.misc.xml_helpers import setXMLlang
 from translate.storage import lisa
 
 
+def validate_char(c):
+    return (0x9 <= ord(c) <= 0xa) or (ord(c) == 0xd) or (0x20 <= ord(c))
+
 def remove_control_characters(s):
-    return "".join(ch for ch in s if unicodedata.category(ch)[0] != "C")
+
+    return "".join(ch for ch in s if validate_char(ch))
 
 
 class tmxunit(lisa.LISAunit):
