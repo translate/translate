@@ -12,8 +12,7 @@ class TestPO2Php:
         inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
         convertor = po2php.po2php()
-        outputphp = convertor.convertstore(inputpo)
-        return outputphp
+        return convertor.convertstore(inputpo)
 
     def merge2php(self, phpsource, posource):
         """helper that merges po translations to .php source without requiring files"""

@@ -177,20 +177,16 @@ class csvunit(base.TranslationUnit):
     def todict(self, **kwargs):
         # FIXME: use apis?
         # source, target = self.add_spreadsheet_escapes(self.source, self.target)
-        source = self.source
-        target = self.target
-        output = {
+        return {
             "location": self.location,
-            "source": source,
-            "target": target,
+            "source": self.source,
+            "target": self.target,
             "id": self.id,
             "fuzzy": str(self.fuzzy),
             "context": self.context,
             "translator_comments": self.translator_comments,
             "developer_comments": self.developer_comments,
         }
-
-        return output
 
     def __str__(self):
         return str(self.todict())
@@ -218,21 +214,20 @@ def try_dialects(inputfile, fieldnames, dialect):
     # FIXME: does it verify at all if we don't actually step through the file?
     try:
         inputfile.seek(0)
-        reader = csv.DictReader(
+        return csv.DictReader(
             inputfile, fieldnames=fieldnames, dialect=dialect, restkey=EXTRA_KEY
         )
     except csv.Error:
         try:
             inputfile.seek(0)
-            reader = csv.DictReader(
+            return csv.DictReader(
                 inputfile, fieldnames=fieldnames, dialect="default", restkey=EXTRA_KEY
             )
         except csv.Error:
             inputfile.seek(0)
-            reader = csv.DictReader(
+            return csv.DictReader(
                 inputfile, fieldnames=fieldnames, dialect="excel", restkey=EXTRA_KEY
             )
-    return reader
 
 
 def valid_fieldnames(fieldnames):

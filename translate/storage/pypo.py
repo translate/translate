@@ -762,8 +762,7 @@ class pounit(pocommon.pounit):
                 )
             )
         lines.append(self._getmsgpartstr("msgstr", self.msgstr))
-        postr = "".join(lines)
-        return postr
+        return "".join(lines)
 
     def getlocations(self):
         """Get a list of locations from sourcecomments in the PO unit

@@ -9,8 +9,7 @@ class TestWEB2PY2PO:
         input_web2py = eval(web2py_source)
         new_pofile = po.pofile()
         convertor = web2py2po.web2py2po(new_pofile)
-        output_po = convertor.convertstore(input_web2py)
-        return output_po
+        return convertor.convertstore(input_web2py)
 
     def singleelement(self, storage):
         """checks that the pofile contains a single non-header element, and returns it"""

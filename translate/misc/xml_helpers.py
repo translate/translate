@@ -77,7 +77,7 @@ def getXMLspace(node, default=None):
     """Gets the xml:space attribute on node"""
     value = node.get("{%s}space" % XML_NS)
     if value is None:
-        value = default
+        return default
     return value
 
 
@@ -97,8 +97,7 @@ def namespaced(namespace, name):
     """
     if namespace:
         return f"{{{namespace}}}{name}"
-    else:
-        return name
+    return name
 
 
 MULTIWHITESPACE_PATTERN = r"[\n\r\t ]+"
@@ -107,8 +106,7 @@ MULTIWHITESPACE_RE = re.compile(MULTIWHITESPACE_PATTERN, re.MULTILINE)
 
 def normalize_space(text):
     """Normalize the given text for implementation of ``xml:space="default"``."""
-    text = MULTIWHITESPACE_RE.sub(" ", text)
-    return text
+    return MULTIWHITESPACE_RE.sub(" ", text)
 
 
 def normalize_xml_space(node, xml_space, remove_start=False):

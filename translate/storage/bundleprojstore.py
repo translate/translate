@@ -206,7 +206,8 @@ class BundleProjectStore(ProjectStore):
             raise FileNotInProjectError(pfname)
 
         if pfname not in self.zip.namelist():
-            return super().update_file(pfname, infile)
+            super().update_file(pfname, infile)
+            return
 
         self._zip_delete([pfname])
         self._zip_add(pfname, infile)

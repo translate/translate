@@ -117,8 +117,7 @@ class TestOO:
     def ooparse(self, oosource):
         """helper that parses oo source without requiring files"""
         dummyfile = BytesIO(oosource.encode())
-        oofile = oo.oofile(dummyfile)
-        return oofile
+        return oo.oofile(dummyfile)
 
     def ooregen(self, oosource):
         """helper that converts oo source to oofile object and back"""

@@ -101,9 +101,7 @@ class RESXUnit(lisa.LISAunit):
             self.xmlelement.remove(note)
 
     def setid(self, value):
-        if id is None:
-            return False
-        else:
+        if id is not None:
             self.xmlelement.set("name", value)
 
     def getid(self):

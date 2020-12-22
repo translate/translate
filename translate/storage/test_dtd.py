@@ -194,8 +194,7 @@ class TestDTD(test_monolingual.TestMonolingualStore):
         if not isinstance(dtdsource, bytes):
             dtdsource = dtdsource.encode("utf-8")
         dummyfile = BytesIO(dtdsource)
-        dtdfile = dtd.dtdfile(dummyfile)
-        return dtdfile
+        return dtd.dtdfile(dummyfile)
 
     def dtdregen(self, dtdsource):
         """helper that converts dtd source to dtdfile object and back"""
@@ -445,8 +444,7 @@ class TestAndroidDTD(test_monolingual.TestMonolingualStore):
         if not isinstance(dtdsource, bytes):
             dtdsource = dtdsource.encode("utf-8")
         dummyfile = BytesIO(dtdsource)
-        dtdfile = dtd.dtdfile(dummyfile, android=True)
-        return dtdfile
+        return dtd.dtdfile(dummyfile, android=True)
 
     def dtdregen(self, dtdsource):
         """Parses an Android DTD string to DTD store and then converts it back.

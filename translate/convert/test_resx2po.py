@@ -92,8 +92,7 @@ class TestRESX2PO:
         inputfile = BytesIO(resxsource.encode())
         inputresx = resx.RESXFile(inputfile)
         convertor = resx2po.resx2po()
-        outputpo = convertor.convert_store(inputresx)
-        return outputpo
+        return convertor.convert_store(inputresx)
 
     def test_simple(self):
         """Test the most basic resx conversion"""

@@ -170,8 +170,7 @@ def unquotefromdtd(source):
     )
     if quotechar == "'":
         extracted = extracted.replace("&apos;", "'")
-    extracted = quote.entitydecode(extracted, _DTD_NAME2CODEPOINT)
-    return extracted
+    return quote.entitydecode(extracted, _DTD_NAME2CODEPOINT)
 
 
 def removeinvalidamps(name, value):

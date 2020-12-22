@@ -302,8 +302,7 @@ class TestTranslationStore:
     def reparse(self, store):
         """converts the store to a string and back to a store again"""
         storestring = bytes(store)
-        newstore = self.StoreClass.parsestring(storestring)
-        return newstore
+        return self.StoreClass.parsestring(storestring)
 
     def check_equality(self, store1, store2):
         """asserts that store1 and store2 are the same"""

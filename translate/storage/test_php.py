@@ -169,8 +169,7 @@ class TestPhpFile(test_monolingual.TestMonolingualStore):
     def phpparse(self, phpsource):
         """helper that parses php source without requiring files"""
         dummyfile = BytesIO(phpsource.encode())
-        phpfile = php.phpfile(dummyfile)
-        return phpfile
+        return php.phpfile(dummyfile)
 
     def phpregen(self, phpsource):
         """helper that converts php source to phpfile object and back"""
@@ -1164,8 +1163,7 @@ class TestLaravelPhpFile(test_monolingual.TestMonolingualStore):
     def phpparse(self, phpsource):
         """helper that parses php source without requiring files"""
         dummyfile = BytesIO(phpsource.encode())
-        phpfile = self.StoreClass(dummyfile)
-        return phpfile
+        return self.StoreClass(dummyfile)
 
     def test_plurals(self):
         phpsource = r"""<?php

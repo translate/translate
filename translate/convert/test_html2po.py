@@ -14,10 +14,7 @@ class TestHTML2PO:
         """Helper to convert html to po without a file."""
         inputfile = BytesIO(markup.encode() if isinstance(markup, str) else markup)
         convertor = html2po.html2po()
-        outputpo = convertor.convertfile(
-            inputfile, "test", duplicatestyle, keepcomments
-        )
-        return outputpo
+        return convertor.convertfile(inputfile, "test", duplicatestyle, keepcomments)
 
     def po2html(self, posource, htmltemplate):
         """Helper to convert po to html without a file."""
