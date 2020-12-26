@@ -124,6 +124,22 @@ msgctxt "No known user"
 msgid "None"
 msgstr "Žádný"
 """,
+    r"""
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2020-12-23 22:11+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#, python-format
+msgid "%(count)s screenshot"
+msgid_plural "%(count)s screenshots"
+msgstr[0] "%(count)s obrázek"
+msgstr[1] "%(count)s obrázky"
+msgstr[2] "%(count)s obrázků"
+""",
 ]
 
 

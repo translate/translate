@@ -70,6 +70,8 @@ def hashpjw(str_param):
     HASHWORDBITS = 32
     hval = 0
     for s in str_param:
+        if not s:
+            break
         hval = hval << 4
         hval += s
         g = hval & 0xF << (HASHWORDBITS - 4)
