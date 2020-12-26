@@ -82,22 +82,26 @@ def hashpjw(str_param):
 
 def get_next_prime_number(start):
     # find the smallest prime number that is greater or equal "start"
+    # this is based on hash lib implementation in gettext
 
     def is_prime(num):
-        # special small numbers
-        if (num < 2) or (num == 4):
-            return False
-        if (num == 2) or (num == 3):
-            return True
-        # check for numbers > 4
-        for divider in range(2, num // 2):
-            if num % divider == 0:
-                return False
-        return True
+        # No even number and none less than 10 will be passed here
+        divn = 3
+        sq = divn * divn
 
-    candidate = start
+        while sq < num and num % divn != 0:
+            divn += 1
+            sq += 4 * divn
+            divn += 1
+
+        return num % divn != 0
+
+    # Make it definitely odd
+    candidate = start | 1
+
     while not is_prime(candidate):
-        candidate += 1
+        candidate += 2
+
     return candidate
 
 
@@ -169,7 +173,7 @@ class mofile(poheader.poheader, base.TranslationStore):
         # hash_size should be the smallest prime number that is greater
         # or equal (4 / 3 * N) - where N is the number of keys/units.
         # see gettext-0.17:gettext-tools/src/write-mo.c:406
-        hash_size = get_next_prime_number(int((len(self.units) * 4) / 3))
+        hash_size = get_next_prime_number((len(self.units) * 4) // 3)
         if hash_size <= 2:
             hash_size = 3
         MESSAGES = {}
