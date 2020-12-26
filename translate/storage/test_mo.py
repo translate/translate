@@ -110,6 +110,20 @@ msgstr ""
 msgid "Contains %d project"
 msgstr "Obsahuje %d projekt"
 """,
+    r"""
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2020-12-25 09:38+0000\n"
+"PO-Revision-Date: 2020-12-23 22:11+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: weblate/accounts/avatar.py:103
+msgctxt "No known user"
+msgid "None"
+msgstr "Žádný"
+""",
 ]
 
 
@@ -158,6 +172,9 @@ class TestMOFile(test_base.TestTranslationStore):
         for posource in posources:
             print("PO source file")
             print(posource)
+            if "POT-Creation-Date" in posource and os.name == "nt":
+                # There is no Gettext 0.20 on Windows, so the output is different
+                continue
             PO_FILE, MO_MSGFMT, MO_POCOMPILE = self.get_mo_and_po()
             posource = posource.encode("utf-8")
 
