@@ -47,6 +47,7 @@ from translate.storage import base, poheader
 
 
 MO_MAGIC_NUMBER = 0x950412DE
+POT_HEADER = re.compile(r"^POT-Creation-Date:.*(\n|$)", re.IGNORECASE | re.MULTILINE)
 
 
 def mounpack(filename="messages.mo"):
@@ -182,6 +183,10 @@ class mofile(poheader.poheader, base.TranslationStore):
                 source = lst_encode(unit.msgctxt) + b"\x04" + source
             if isinstance(unit.target, multistring):
                 target = lst_encode(unit.target.strings, b"\0")
+            elif unit.isheader():
+                # Support for "reproducible builds": Delete information that
+                # may vary between builds in the same conditions.
+                target = POT_HEADER.sub("", unit.target).encode("utf-8")
             else:
                 target = unit.target.encode("utf-8")
             if unit.target:
