@@ -99,6 +99,17 @@ msgid "tree"
 msgid_plural "trees"
 msgstr[0] ""
 """,
+    r"""
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2020-12-23 22:11+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Contains %d project"
+msgstr "Obsahuje %d projekt"
+""",
 ]
 
 
