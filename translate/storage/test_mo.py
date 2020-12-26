@@ -4,6 +4,7 @@ import sys
 from io import BytesIO
 
 from translate.storage import factory, mo, test_base
+from translate.tools import pocompile
 
 
 class TestMOUnit(test_base.TestTranslationUnit):
@@ -200,9 +201,17 @@ class TestMOFile(test_base.TestTranslationStore):
             subprocess.check_call(
                 ["msgfmt", PO_FILE, "-o", MO_MSGFMT, "--endianness", sys.byteorder]
             )
-            subprocess.check_call(
-                ["pocompile", "--errorlevel=traceback", PO_FILE, MO_POCOMPILE]
-            )
+            argv = sys.argv
+            try:
+                sys.argv = [
+                    "pocompile",
+                    "--errorlevel=traceback",
+                    PO_FILE,
+                    MO_POCOMPILE,
+                ]
+                pocompile.main()
+            finally:
+                sys.argv = argv
 
             store = factory.getobject(BytesIO(posource))
             if store.isempty() and not os.path.exists(MO_POCOMPILE):
