@@ -208,7 +208,6 @@ class mofile(poheader.poheader, base.TranslationStore):
             offsets.append((len(ids), len(id), len(strs), len(string)))
             ids = ids + id + b"\0"
             strs = strs + string + b"\0"
-        output = ""
         # The header is 7 32-bit unsigned integers
         keystart = 7 * 4 + 16 * len(keys) + hash_size * 4
         # and the values start after the keys
@@ -221,23 +220,24 @@ class mofile(poheader.poheader, base.TranslationStore):
             koffsets = koffsets + [l1, o1 + keystart]
             voffsets = voffsets + [l2, o2 + valuestart]
         offsets = koffsets + voffsets
-        output = struct.pack(
-            "Iiiiiii",
-            MO_MAGIC_NUMBER,  # Magic
-            0,  # Version
-            len(keys),  # # of entries
-            7 * 4,  # start of key index
-            7 * 4 + len(keys) * 8,  # start of value index
-            hash_size,  # size of hash table
-            7 * 4 + 2 * (len(keys) * 8),
-        )  # offset of hash table
+        out.write(
+            struct.pack(
+                "Iiiiiii",
+                MO_MAGIC_NUMBER,  # Magic
+                0,  # Version
+                len(keys),  # # of entries
+                7 * 4,  # start of key index
+                7 * 4 + len(keys) * 8,  # start of value index
+                hash_size,  # size of hash table
+                7 * 4 + 2 * (len(keys) * 8),  # offset of hash table
+            )
+        )
         # additional data is not necessary for empty mo files
         if len(keys) > 0:
-            output = output + array.array("i", offsets).tobytes()
-            output = output + hash_table.tobytes()
-            output = output + ids
-            output = output + strs
-        return out.write(output)
+            out.write(array.array("i", offsets).tobytes())
+            out.write(hash_table.tobytes())
+            out.write(ids)
+            out.write(strs)
 
     def parse(self, input):
         """parses the given file or file source string"""
