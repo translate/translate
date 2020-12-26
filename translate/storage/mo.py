@@ -68,14 +68,12 @@ def my_swap4(result):
 def hashpjw(str_param):
     HASHWORDBITS = 32
     hval = 0
-    g = None
-    s = str_param
     for s in str_param:
         hval = hval << 4
         hval += s
         g = hval & 0xF << (HASHWORDBITS - 4)
         if g != 0:
-            hval = hval ^ g >> (HASHWORDBITS - 8)
+            hval = hval ^ (g >> (HASHWORDBITS - 8))
             hval = hval ^ g
     return hval
 
@@ -152,20 +150,13 @@ class mofile(poheader.poheader, base.TranslationStore):
         # check the header of this file for the copyright note of this function
 
         def add_to_hash_table(string, i):
-            V = hashpjw(string)
-            # Taken from gettext-0.17:gettext-tools/src/write-mo.c:408-409
-            S = hash_size <= 2 and 3 or hash_size
-            hash_cursor = V % S
-            orig_hash_cursor = hash_cursor
-            increment = 1 + (V % (S - 2))
-            while True:
-                index = hash_table[hash_cursor]
-                if index == 0:
-                    hash_table[hash_cursor] = i + 1
-                    break
+            hash_value = hashpjw(string)
+            hash_cursor = hash_value % hash_size
+            increment = 1 + (hash_value % (hash_size - 2))
+            while hash_table[hash_cursor] != 0:
                 hash_cursor += increment
-                hash_cursor = hash_cursor % S
-                assert hash_cursor != orig_hash_cursor
+                hash_cursor = hash_cursor % hash_size
+            hash_table[hash_cursor] = i + 1
 
         def lst_encode(lst, join_char=b""):
             return join_char.join([i.encode("utf-8") for i in lst])
