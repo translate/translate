@@ -180,7 +180,7 @@ def validate_char(c):
     identify valid chars for XML, based on xmlIsChar_ch from
     https://github.com/GNOME/libxml2/blob/master/include/libxml/chvalid.h
     """
-    return (0x9 <= ord(c) <= 0xa) or (ord(c) == 0xd) or (0x20 <= ord(c))
+    return (0x9 <= ord(c) <= 0xA) or (ord(c) == 0xD) or (0x20 <= ord(c))
 
 
 def valid_chars_only(s):
