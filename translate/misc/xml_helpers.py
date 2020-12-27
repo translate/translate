@@ -173,3 +173,18 @@ def reindent(
     else:
         if not elem.tail or not elem.tail.strip():
             elem.tail = i
+
+
+def validate_char(c):
+    """
+    identify valid chars for XML, based on xmlIsChar_ch from
+    https://github.com/GNOME/libxml2/blob/master/include/libxml/chvalid.h
+    """
+    return (0x9 <= ord(c) <= 0xa) or (ord(c) == 0xd) or (0x20 <= ord(c))
+
+
+def valid_chars_only(s):
+    """
+    prevent to crash libxml with unexpected chars
+    """
+    return "".join(ch for ch in s if validate_char(ch))

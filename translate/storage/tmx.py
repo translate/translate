@@ -21,7 +21,7 @@
 from lxml import etree
 
 from translate import __version__
-from translate.misc.xml_helpers import setXMLlang
+from translate.misc.xml_helpers import setXMLlang, valid_chars_only
 from translate.storage import lisa
 
 
@@ -39,7 +39,12 @@ class tmxunit(lisa.LISAunit):
         seg = etree.SubElement(langset, self.textNode)
         # implied by the standard:
         # setXMLspace(seg, "preserve")
-        seg.text = text
+        try:
+            seg.text = text
+        except ValueError:
+            # Prevents "All strings must be XML compatible" when string contains a control characters
+            seg.text = valid_chars_only(text)
+
         return langset
 
     def getid(self):

@@ -89,3 +89,13 @@ class TestTMXfile(test_base.TestTranslationStore):
         assert tmxfile.translate("Five < ten") == "Vyf < tien"
         assert xmltext.index("Five &lt; ten")
         assert xmltext.find("Five < ten") == -1
+
+    def test_controls_cleaning(self):
+        """test addtranslation() with control chars"""
+        tmxfile = tmx.tmxfile()
+        tmxfile.addtranslation("Client Version:\x0314 %s", "en", "test one", "ar")
+        tmxfile.addtranslation("Client Version:\n%s", "en", "test two", "ar")
+        newfile = self.tmxparse(bytes(tmxfile))
+        print(bytes(tmxfile))
+        assert newfile.translate("Client Version:14 %s") == "test one"
+        assert newfile.translate("Client Version:\n%s") == "test two"
