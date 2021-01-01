@@ -115,6 +115,7 @@ WF_FIELDNAMES = [
     "attr2",
     "attr3",
     "attr4",
+    "attr5",
 ]
 """Field names for a Wordfast TU"""
 
@@ -285,7 +286,8 @@ class WordfastHeader:
         """Create a default Wordfast header with the date set to the current
         time
         """
-        defaultheader = WF_FIELDNAMES_HEADER_DEFAULTS
+        defaultheader = {}
+        defaultheader.update(WF_FIELDNAMES_HEADER_DEFAULTS)
         defaultheader["date"] = "%%%s" % WordfastTime(time.localtime()).timestring
         return defaultheader
 
