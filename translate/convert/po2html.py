@@ -22,7 +22,11 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+import os
+import sys
+
 from translate.convert import convert
+from translate.misc.optrecurse import ProgressBar
 from translate.storage import html, po
 
 
@@ -67,18 +71,115 @@ def converthtml(
     return 1
 
 
+class PO2HtmlOptionParser(convert.ConvertOptionParser):
+    def __init__(self):
+        formats = {
+            ("po", "htm"): ("htm", converthtml),
+            ("po", "html"): ("html", converthtml),
+            ("po", "xhtml"): ("xhtml", converthtml),
+            ("po"): ("html", converthtml),
+        }
+        super().__init__(formats, usetemplates=True, description=__doc__)
+        self.add_threshold_option()
+        self.add_fuzzy_option()
+
+    def recursiveprocess(self, options):
+        if (
+            self.isrecursive(options.template, "template")
+            and not self.isrecursive(options.input, "input")
+            and self.can_be_recursive(options.output, "output")
+        ):
+            self.recursiveprocess_by_templates(options)
+        else:
+            super().recursiveprocess(options)
+
+    def can_be_recursive(self, fileoption, filepurpose):
+        return fileoption is not None and not os.path.isfile(fileoption)
+
+    def recursiveprocess_by_templates(self, options):
+        """Recurse through directories and process files, by templates (html) not input files (po)."""
+        inputfile = self.openinputfile(options, options.input)
+        self.inputstore = po.pofile(inputfile)
+        templatefiles = self.recurse_template_files(options)
+        self.ensurerecursiveoutputdirexists(options)
+        progress_bar = ProgressBar(options.progress, templatefiles)
+        for templatepath in templatefiles:
+            fulltemplatepath = os.path.join(options.template, templatepath)
+            outputpath = templatepath
+            fulloutputpath = os.path.join(options.output, outputpath)
+            self.checkoutputsubdir(options, os.path.dirname(outputpath))
+            try:
+                success = self.processfile(
+                    self.processfile_with_fixed_inputstore,
+                    options,
+                    None,
+                    fulloutputpath,
+                    fulltemplatepath,
+                )
+            except Exception:
+                self.warning(
+                    "Error processing: input %s, output %s, template %s"
+                    % (options.input, fulloutputpath, fulltemplatepath),
+                    options,
+                    sys.exc_info(),
+                )
+                success = False
+            progress_bar.report_progress(templatepath, success)
+        del progress_bar
+
+    def processfile_with_fixed_inputstore(
+        self,
+        inputfile,
+        outputfile,
+        templatefile,
+        includefuzzy=False,
+        outputthreshold=None,
+    ):
+        if not convert.should_output_store(self.inputstore, outputthreshold):
+            return False
+
+        convertor = po2html()
+        outputstring = convertor.mergestore(self.inputstore, templatefile, includefuzzy)
+        outputfile.write(outputstring.encode("utf-8"))
+        return 1
+
+    def recurse_template_files(self, options):
+        """Recurse through directories and return files to be processed."""
+        dirstack = [""]
+        join = os.path.join
+        templatefiles = []
+        while dirstack:
+            top = dirstack.pop(-1)
+            names = os.listdir(join(options.template, top))
+            dirs = []
+            for name in names:
+                filepath = join(top, name)
+                fullfilepath = join(options.template, filepath)
+                # handle directories...
+                if os.path.isdir(fullfilepath):
+                    dirs.append(filepath)
+                elif os.path.isfile(fullfilepath):
+                    if not self.isvalidtemplatename(name):
+                        # only handle names that match recognized output
+                        # file extensions
+                        continue
+                    templatefiles.append(filepath)
+            # make sure the directories are processed next time round.
+            dirs.reverse()
+            dirstack.extend(dirs)
+        return templatefiles
+
+    def isvalidtemplatename(self, filename):
+        """Checks if this is a valid template/output filename."""
+        _, ext = self.splitext(filename)
+        for (_, templateformat), _ in self.outputoptions.items():
+            if ext == templateformat:
+                return True
+        return False
+
+
 def main(argv=None):
-    formats = {
-        ("po", "htm"): ("htm", converthtml),
-        ("po", "html"): ("html", converthtml),
-        ("po", "xhtml"): ("xhtml", converthtml),
-        ("po"): ("html", converthtml),
-    }
-    parser = convert.ConvertOptionParser(
-        formats, usetemplates=True, description=__doc__
-    )
-    parser.add_threshold_option()
-    parser.add_fuzzy_option()
+    parser = PO2HtmlOptionParser()
     parser.run(argv)
 
 
