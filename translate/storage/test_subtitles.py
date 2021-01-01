@@ -15,16 +15,13 @@ class TestSubRipFile(test_monolingual.TestMonolingualStore):
     StoreClass = subtitles.SubRipFile
 
 
-@pytest.mark.xfail(reason="Broken, #4155")
 class TestMicroDVDFile(test_monolingual.TestMonolingualStore):
     StoreClass = subtitles.MicroDVDFile
 
 
-@pytest.mark.xfail(reason="Broken, #4155")
 class TestAdvSubStationAlphaFile(test_monolingual.TestMonolingualStore):
     StoreClass = subtitles.AdvSubStationAlphaFile
 
 
-@pytest.mark.xfail(reason="Broken, #4155")
 class TestSubStationAlphaFile(test_monolingual.TestMonolingualStore):
     StoreClass = subtitles.SubStationAlphaFile
