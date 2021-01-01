@@ -215,7 +215,7 @@ class RecursiveOptionParser(optparse.OptionParser):
             super().set_usage(usage)
 
     def warning(self, msg, options=None, exc_info=None):
-        """Print a warning message incorporating 'msg' to stderr and exit."""
+        """Print a warning message incorporating 'msg' to stderr."""
         if options:
             if options.errorlevel == "traceback":
                 errorinfo = "\n".join(
@@ -515,21 +515,21 @@ class RecursiveOptionParser(optparse.OptionParser):
         return outputformat, fileprocessor
 
     def getfullinputpath(self, options, inputpath):
-        """Gets the absolute path to an input file."""
+        """Gets the full path to an input file."""
         if options.input:
             return os.path.join(options.input, inputpath)
         else:
             return inputpath
 
     def getfulloutputpath(self, options, outputpath):
-        """Gets the absolute path to an output file."""
+        """Gets the full path to an output file."""
         if options.recursiveoutput and options.output:
             return os.path.join(options.output, outputpath)
         else:
             return outputpath
 
     def getfulltemplatepath(self, options, templatepath):
-        """Gets the absolute path to a template file."""
+        """Gets the full path to a template file."""
         if not options.recursivetemplate:
             return templatepath
         elif templatepath is not None and self.usetemplates and options.template:
@@ -549,20 +549,7 @@ class RecursiveOptionParser(optparse.OptionParser):
         if self.isrecursive(options.input, "input") and getattr(
             options, "allowrecursiveinput", True
         ):
-            if not self.isrecursive(options.output, "output"):
-                if not options.output:
-                    self.error(optparse.OptionValueError("No output directory given"))
-                try:
-                    self.warning(
-                        "Output directory does not exist. Attempting to create"
-                    )
-                    os.mkdir(options.output)
-                except OSError:
-                    self.error(
-                        optparse.OptionValueError(
-                            "Output directory does not exist, attempt to create failed"
-                        )
-                    )
+            self.ensurerecursiveoutputdirexists(options)
             if isinstance(options.input, list):
                 inputfiles = self.recurseinputfilelist(options)
             else:
@@ -581,10 +568,10 @@ class RecursiveOptionParser(optparse.OptionParser):
             and self.isrecursive(options.template, "template")
             and getattr(options, "allowrecursivetemplate", True)
         )
-        progress_bar = ProgressBar(options.progress, inputfiles)
         # sort the input files to preserve the order between runs as much as possible.
         # this makes for more merge-friendly content in single-output-file mode.
         inputfiles.sort()
+        progress_bar = ProgressBar(options.progress, inputfiles)
         for inputpath in inputfiles:
             try:
                 templatepath = self.gettemplatename(options, inputpath)
@@ -631,6 +618,20 @@ class RecursiveOptionParser(optparse.OptionParser):
                 success = False
             progress_bar.report_progress(inputpath, success)
         del progress_bar
+
+    def ensurerecursiveoutputdirexists(self, options):
+        if not self.isrecursive(options.output, "output"):
+            if not options.output:
+                self.error(optparse.OptionValueError("No output directory given"))
+            try:
+                self.warning("Output directory does not exist. Attempting to create")
+                os.mkdir(options.output)
+            except OSError:
+                self.error(
+                    optparse.OptionValueError(
+                        "Output directory does not exist, attempt to create failed"
+                    )
+                )
 
     def openinputfile(self, options, fullinputpath):
         """Opens the input file."""
