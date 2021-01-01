@@ -1,4 +1,7 @@
+import os
 from io import BytesIO
+
+import pytest
 
 from translate.convert import po2html, test_convert
 
@@ -160,6 +163,51 @@ class TestPO2HtmlCommand(test_convert.TestConvertCommand, TestPO2Html):
 
     convertmodule = po2html
 
+    def test_individual_files(self):
+        """Test the fully non-recursive case where all inputs and outputs (input po, template html, output html) are
+        specified as individual files."""
+        self.given_html_test_file("file1.html")
+        self.given_po_test_file("file1.po")
+
+        self.run_command("file1.po", "out.html", template="file1.html")
+
+        self.then_html_file_is_translated("out.html")
+
+    def test_fully_recursive(self):
+        """Test the fully recursive case where all inputs and outputs (input, template, output) are
+        specified as directories."""
+        self.given_html_test_file("template/file1.html")
+        self.given_html_test_file("template/file2.html")
+        self.given_po_test_file("translation/file1.po")
+
+        self.run_command("translation", "translated", template="template")
+
+        self.then_html_file_is_translated("translated/file1.html")
+        # then: file2.html is not translated because there is no matching po file.
+        assert not os.path.isfile(self.get_testfilename("translated/file2.html"))
+
+    def test_no_input_specified(self):
+        """Test the case where no input file or directory is specified. Expect failure with exit."""
+        self.given_html_test_file("template/file1.html")
+        with pytest.raises(SystemExit):
+            self.run_command(output="translated", template="template")
+
+    def test_no_template_specified(self, caplog):
+        """Test the case where no template file or directory is specified. Expect failure with log message."""
+        self.given_po_test_file("translation/file1.po")
+        self.run_command("translation", "translated")
+        assert "Error processing:" in caplog.text
+
+    def test_no_output_specified(self, capsys):
+        """Test the case where there is a single input file and no output file or directory is specified. Defaults to stdout."""
+        self.given_html_test_file("file1.html")
+        self.given_po_test_file("file1.po")
+
+        self.run_command("file1.po", template="file1.html")
+
+        content, err = capsys.readouterr()
+        assert "<div>target1</div>" in content
+        assert err == ""
 
     def test_help(self, capsys):
         """Test getting help."""
@@ -168,3 +216,23 @@ class TestPO2HtmlCommand(test_convert.TestConvertCommand, TestPO2Html):
         options = self.help_check(options, "--threshold=PERCENT")
         options = self.help_check(options, "--fuzzy")
         options = self.help_check(options, "--nofuzzy", last=True)
+
+    def given_html_test_file(self, filename):
+        self.create_testfile(
+            filename, "<div>You are only coming through in waves</div>"
+        )
+
+    def given_po_test_file(self, filename):
+        self.create_testfile(
+            filename,
+            """
+#: 'ref'
+msgid "You are only coming through in waves"
+msgstr "target1"
+""",
+        )
+
+    def then_html_file_is_translated(self, filename):
+        assert os.path.isfile(self.get_testfilename(filename))
+        content = str(self.read_testfile(filename))
+        assert "<div>target1</div>" in content
