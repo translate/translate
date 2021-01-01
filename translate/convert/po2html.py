@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Convert Gettext PO localization files to HTML files.
+"""Translate HTML files using Gettext PO localization files.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/html2po.html
 for examples and usage instructions.
@@ -27,9 +27,7 @@ from translate.storage import html, po
 
 
 class po2html:
-    """po2html can take a po file and generate html. best to give it a template
-    file otherwise will just concat msgstrs
-    """
+    """Read inputfile (po) and templatefile (html), write to outputfile (html)."""
 
     def lookup(self, string):
         unit = self.inputstore.sourceindex.get(string, None)
@@ -43,9 +41,9 @@ class po2html:
         return unit.source
 
     def mergestore(self, inputstore, templatetext, includefuzzy):
-        """converts a file to .po format"""
+        """Convert a file to html format"""
         self.inputstore = inputstore
-        self.inputstore.makeindex()
+        self.inputstore.require_index()
         self.includefuzzy = includefuzzy
         output_store = html.htmlfile(inputfile=templatetext, callback=self.lookup)
         return output_store.filesrc
@@ -54,9 +52,7 @@ class po2html:
 def converthtml(
     inputfile, outputfile, templatefile, includefuzzy=False, outputthreshold=None
 ):
-    """reads in stdin using fromfileclass, converts using convertorclass,
-    writes to stdout
-    """
+    """Read inputfile (po) and templatefile (html), write to outputfile (html)."""
     inputstore = po.pofile(inputfile)
 
     if not convert.should_output_store(inputstore, outputthreshold):
