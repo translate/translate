@@ -60,9 +60,11 @@ except ImportError:
 class SubtitleUnit(base.TranslationUnit):
     """A subtitle entry that is translatable"""
 
+    init_time = "00:00:00.000"
+
     def __init__(self, source=None, **kwargs):
-        self._start = "00:00:00.000"
-        self._end = "00:00:00.000"
+        self._start = self.init_time
+        self._end = self.init_time
         self._duration = 0.0
         if source:
             self.source = source
@@ -80,6 +82,12 @@ class SubtitleUnit(base.TranslationUnit):
 
     def getid(self):
         return self.getlocations()[0]
+
+
+class MicroDVDUnit(SubtitleUnit):
+    """MicroDVD unit, it uses frames instead of time as start/end."""
+
+    init_time = 0
 
 
 class SubtitleFile(base.TranslationStore):
@@ -189,6 +197,7 @@ class MicroDVDFile(SubtitleFile):
 
     Name = "MicroDVD subtitles file"
     Extensions = ["sub"]
+    UnitClass = MicroDVDUnit
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
