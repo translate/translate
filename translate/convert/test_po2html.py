@@ -209,6 +209,30 @@ class TestPO2HtmlCommand(test_convert.TestConvertCommand, TestPO2Html):
         assert "<div>target1</div>" in content
         assert err == ""
 
+    def test_recursive_templates_with_single_po_file(self):
+        """Test the case where templates and outputs are directories, and the input is specified as an
+        individual po file. This indicates that the po file should be applied to all template files."""
+        self.given_html_test_file("template/file1.html")
+        self.given_html_test_file("template/subdir/file2.html")
+        self.given_po_test_file("translation/file1.po")
+
+        self.run_command("translation/file1.po", "translated", template="template")
+
+        self.then_html_file_is_translated("translated/file1.html")
+        self.then_html_file_is_translated("translated/subdir/file2.html")
+
+    def test_recursive_templates_with_single_po_file_and_templates_overwritten(self):
+        """Test the case where templates and outputs are in the same directory, and the input is specified as an
+        individual po file. This indicates that the po file should be applied to all template files."""
+        self.given_html_test_file("html/file1.html")
+        self.given_html_test_file("html/subdir/file2.html")
+        self.given_po_test_file("translation/file1.po")
+
+        self.run_command("translation/file1.po", "html", template="html")
+
+        self.then_html_file_is_translated("html/file1.html")
+        self.then_html_file_is_translated("html/subdir/file2.html")
+
     def test_help(self, capsys):
         """Test getting help."""
         options = test_convert.TestConvertCommand.test_help(self, capsys)
