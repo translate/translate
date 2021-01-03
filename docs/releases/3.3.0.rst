@@ -1,0 +1,87 @@
+Translate Toolkit 3.3.0
+***********************
+
+*Released on 4 January 2021*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- HTML
+
+  - Add support for single PO file in po2html and html2po
+
+- MO
+
+  - Fixed writing out plurals
+  - Performance improvements
+  - Strip POT-Creation-Date for reproducible builds
+
+- XLIFF
+
+  - Ensure xml:space="preserve" is set when updating target
+  - Improved parsing performance
+  - Set language on all file nodes
+
+- CSV
+
+  - Complete test for location/context parsing
+
+- JSON
+
+  - Improved handling of newly added keys to list
+  - Fix serializing files with list as root element
+
+- Properties
+
+  - Fix redundant new lines
+
+- Subtitles
+
+  - Added support for aeidon 1.9
+
+- RC
+
+  - Use code_page #pragma to detect encoding
+
+- TMX
+
+  - Gracefully handle invalid chars
+
+- Wordfast
+
+  - Fixed processing multiple files in single process
+
+General
+-------
+
+- Major cleanups
+
+  - Removed statsdb
+
+- Cleanup and coding style
+
+  - Remove not necessary conversion from bytes
+  - Apply pyupgrade hints
+  - Remove not needed variables for return
+  - Use black for code formatting
+
+- Tests
+
+  - Improve tests coverage
+  - Collect coverage reports from functional tests
+
+- Python versions
+
+  - Add support for Python 3.9 (no code changes were needed)
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař, Anders Kaplan, Jean-Baptiste Holcroft, Simon Urli
