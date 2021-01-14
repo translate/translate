@@ -18,4 +18,4 @@ pytest-xdist==2.2.0
 pyupgrade==2.7.4
 Sphinx==3.4.3
 twine==3.3.0
-virtualenv==20.3.0
+virtualenv==20.3.1
