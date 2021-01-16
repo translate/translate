@@ -195,9 +195,7 @@ def parse_quoted(parse_state, start_pos=0):
         right = rfind(line, '"')
         if left != right:
             return parse_state.read_line()[left : right + 1]
-        # There is no terminating quote, so we append an extra quote, but
-        # we also ignore the newline at the end (therefore the -1)
-        return parse_state.read_line()[left:-1] + '"'
+        raise ValueError("end-of-line within string")
     return None
 
 

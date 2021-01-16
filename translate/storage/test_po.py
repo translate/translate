@@ -460,14 +460,12 @@ msgstr "POT-Creation-Date: 2006-03-08 17:30+0200\n"
         posource = (
             'msgid "thing\nmsgstr "ding"\nmsgid "Second thing"\nmsgstr "Tweede ding"\n'
         )
-        pofile = self.poparse(posource)
-        assert len(pofile.units) == 2
-        print(repr(pofile.units[0].source))
-        assert pofile.units[0].source == "thing"
+        with raises(ValueError):
+            self.poparse(posource)
 
     def test_malformed_obsolete_units(self):
         """Test that we handle malformed obsolete units reasonably."""
-        posource = """msgid "thing
+        posource = """msgid "thing"
 msgstr "ding"
 
 #~ msgid "Second thing"
@@ -545,7 +543,7 @@ msgstr "een"
 #~ msgstr ""
 #~ "Mit diesem Modul können leider ausschließlich Webseiten vorgelesen werden."
 """
-        pofile = self.poparse(posource)
+        pofile = self.poparse(posource.encode())
         assert len(pofile.units) == 3
         unit = pofile.units[2]
         print(str(unit))
@@ -908,13 +906,8 @@ msgstr "start thing dingis fish"
 "
 "
 """
-        pofile1 = self.poparse(posource)
-        print(repr(pofile1.units[1].target))
-        assert pofile1.units[1].target == "start thing dingis fish"
-        pofile2 = self.poparse(bytes(pofile1))
-        assert pofile2.units[1].target == "start thing dingis fish"
-        print(bytes(pofile2))
-        assert bytes(pofile1) == bytes(pofile2)
+        with raises(ValueError):
+            self.poparse(posource)
 
     def test_encoding_change(self):
         posource = r"""
@@ -1123,6 +1116,13 @@ msgstr ""
 #|raise an infinite loop bug!
 msgid "text"
 msgstr "texte"
+"""
+        with raises(ValueError):
+            self.poparse(posource)
+
+    def test_invalid(self):
+        posource = b"""
+msg
 """
         with raises(ValueError):
             self.poparse(posource)
