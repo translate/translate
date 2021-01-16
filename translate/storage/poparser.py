@@ -121,16 +121,20 @@ def parse_comment(parse_state, unit):
         if next_char == ".":
             append(unit.automaticcomments, next_line)
         elif next_line[0] == "|" or next_char == "|":
+            parsed = False
             # Read all the lines starting with #|
             prevmsgid_lines = read_prevmsgid_lines(parse_state)
             # Create a parse state object that holds these lines
             ps = parse_state.new_input(iter(prevmsgid_lines))
             # Parse the msgctxt if any
-            parse_prev_msgctxt(ps, unit)
+            parsed |= parse_prev_msgctxt(ps, unit)
             # Parse the msgid if any
-            parse_prev_msgid(ps, unit)
+            parsed |= parse_prev_msgid(ps, unit)
             # Parse the msgid_plural if any
-            parse_prev_msgid_plural(ps, unit)
+            parsed |= parse_prev_msgid_plural(ps, unit)
+            # Fail with error in csae nothing was parsed
+            if not parsed:
+                raise ValueError(f"Syntax error on line {parse_state.lineno}")
             return parse_state.next_line
         elif next_char == ":":
             append(unit.sourcecomments, next_line)
