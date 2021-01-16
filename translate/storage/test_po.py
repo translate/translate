@@ -1116,3 +1116,13 @@ msgstr ""
         assert unit.source == "Raphaël2"
         unit = pofile.units[1]
         assert unit.source == "Raphaël"
+
+    def test_syntax_error(self):
+        posource = b"""
+#| identified as a comment
+#|raise an infinite loop bug!
+msgid "text"
+msgstr "texte"
+"""
+        with raises(ValueError):
+            self.poparse(posource)

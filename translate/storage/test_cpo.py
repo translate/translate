@@ -207,3 +207,7 @@ class TestCPOFile(test_po.TestPOFile):
     @mark.xfail(reason="removal not working in cPO")
     def test_remove(self):
         super().test_remove()
+
+    @mark.xfail(reason="exception raising not working in cPO")
+    def test_syntax_error(self):
+        super().test_syntax_error()
