@@ -33,6 +33,7 @@ import os
 import re
 import sys
 import tempfile
+import threading
 from ctypes import (
     CFUNCTYPE,
     POINTER,
@@ -123,14 +124,44 @@ class po_error_handler(Structure):
     ]
 
 
+xerror_storage = threading.local()
+
+ignored_erorrs = {
+    # TODO: this is probably bug somewhere in cpo, but
+    # it used to be silently ignored before the exceptions
+    # were raised, so it is left to fixing separately
+    "invalid multibyte sequence",
+    # Duplicate messages are allowed
+    "duplicate message definition",
+}
+
+
+def trigger_exception(severity, filename, lineno, column, message_text):
+    # Severity 0 is warning, severity 1 error, severity 2 critical
+    if severity >= 1 and message_text not in ignored_erorrs:
+        if filename:
+            detail = f"{filename}:{lineno}:{column}: {message_text}"
+        else:
+            detail = message_text
+        xerror_storage.exception = ValueError(detail)
+
+
 # Callback functions for po_xerror_handler
 def xerror_cb(severity, message, filename, lineno, column, multiline_p, message_text):
+    message_text = message_text.decode()
+    if filename:
+        filename = filename.decode()
     logger.error(
-        "xerror_cb %s %s %s %s %s %s %s"
-        % (severity, message, filename, lineno, column, multiline_p, message_text)
+        "xerror_cb %s %s %s %s %s %s %s",
+        severity,
+        message,
+        filename,
+        lineno,
+        column,
+        multiline_p,
+        message_text,
     )
-    if severity >= 1:
-        raise ValueError(message_text)
+    trigger_exception(severity, filename, lineno, column, message_text)
 
 
 def xerror2_cb(
@@ -148,25 +179,28 @@ def xerror2_cb(
     multiline_p2,
     message_text2,
 ):
+    message_text1 = message_text1.decode()
+    message_text2 = message_text2.decode()
+    if filename1:
+        filename1 = filename1.decode()
+    if filename2:
+        filename2 = filename2.decode()
     logger.error(
-        "xerror2_cb %s %s %s %s %s %s %s %s %s %s %s %s"
-        % (
-            severity,
-            message1,
-            filename1,
-            lineno1,
-            column1,
-            multiline_p1,
-            message_text1,
-            filename2,
-            lineno2,
-            column2,
-            multiline_p2,
-            message_text2,
-        )
+        "xerror2_cb %s %s %s %s %s %s %s %s %s %s %s %s",
+        severity,
+        message1,
+        filename1,
+        lineno1,
+        column1,
+        multiline_p1,
+        message_text1,
+        filename2,
+        lineno2,
+        column2,
+        multiline_p2,
+        message_text2,
     )
-    if severity >= 1:
-        raise ValueError(message_text1)
+    trigger_exception(severity, filename1, lineno1, column1, message_text1)
 
 
 # Setup return and parameter types
@@ -866,9 +900,12 @@ class pofile(pocommon.pofile):
                         location = gpo.po_message_filepos(unit._gpo_message, 0)
 
         def writefile(filename):
+            xerror_storage.exception = None
             self._gpo_memory_file = gpo.po_file_write_v2(
                 self._gpo_memory_file, gpo_encode(filename), xerror_handler
             )
+            if xerror_storage.exception is not None:
+                raise xerror_storage.exception
             with open(filename, "rb") as tfile:
                 return tfile.read()
 
@@ -927,7 +964,10 @@ class pofile(pocommon.pofile):
             input = fname
             os.close(fd)
 
+        xerror_storage.exception = None
         self._gpo_memory_file = gpo.po_file_read_v3(gpo_encode(input), xerror_handler)
+        if xerror_storage.exception is not None:
+            raise xerror_storage.exception
         if self._gpo_memory_file is None:
             logger.error("Error:")
 

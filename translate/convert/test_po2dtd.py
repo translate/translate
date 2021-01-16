@@ -518,7 +518,7 @@ msgid "&Bookmarks"
 msgstr "Dipu&kutshwayo1"
 
 #: bookmarksItem.title
-msgctxt "bookmarksItem.title
+msgctxt "bookmarksItem.title"
 msgid "Bookmarks"
 msgstr "Dipukutshwayo2"
 
