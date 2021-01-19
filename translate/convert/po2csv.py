@@ -86,6 +86,10 @@ def convertcsv(inputfile, outputfile, templatefile, columnorder=None):
     return 1
 
 
+def columnorder_callback(option, opt, value, parser):
+    setattr(parser.values, option.dest, value.split(','))
+
+
 def main(argv=None):
     from translate.convert import convert
 
@@ -95,6 +99,9 @@ def main(argv=None):
         "",
         "--columnorder",
         dest="columnorder",
+        action="callback",
+        callback=columnorder_callback,
+        type='str',
         default=None,
         help="specify the order and position of columns (location,source,target)",
     )
