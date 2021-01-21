@@ -13,7 +13,7 @@ pre-commit==2.9.3
 pycodestyle==2.6.0
 pydocstyle==5.1.1
 pytest==6.2.1
-pytest-cov==2.11.0
+pytest-cov==2.11.1
 pytest-xdist==2.2.0
 pyupgrade==2.7.4
 Sphinx==3.4.3
