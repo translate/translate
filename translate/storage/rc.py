@@ -336,6 +336,9 @@ class rcfile(base.TranslationStore):
         self.encoding = encoding
         if encoding != "auto":
             decoded = rcsrc.decode(encoding)
+        elif b"\000" in rcsrc[:2]:
+            self.encoding = "utf-16-le"
+            decoded = rcsrc.decode(self.encoding)
         else:
             decoded, self.encoding = self.detect_encoding(
                 rcsrc, default_encodings=[self.default_encoding]
