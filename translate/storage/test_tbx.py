@@ -36,3 +36,11 @@ class TestTBXfile(test_base.TestTranslationStore):
         newfile = tbx.tbxfile.parsestring(bytes(tbxfile))
         print(bytes(tbxfile))
         assert newfile.findunit("Concept").target == "Konsep"
+
+    def test_setid(self):
+        tbxfile = tbx.tbxfile()
+        tbxunit = tbxfile.addsourceunit("Concept")
+        tbxunit.setid("testid")
+        newfile = tbx.tbxfile.parsestring(bytes(tbxfile))
+        print(bytes(tbxfile))
+        assert newfile.findunit("Concept").getid() == "testid"
