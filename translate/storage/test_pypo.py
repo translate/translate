@@ -269,7 +269,7 @@ class TestPYPOFile(test_po.TestPOFile):
 
     def test_output_str_unicode(self):
         """checks that we can str(element) which is in unicode"""
-        posource = """#: nb\nmsgid "Norwegian Bokm\xe5l"\nmsgstr ""\n"""
+        posource = """#: nb\nmsgid "Norwegian Bokmål"\nmsgstr ""\n"""
         pofile = self.StoreClass(BytesIO(posource.encode("UTF-8")), encoding="UTF-8")
         assert len(pofile.units) == 1
         print(bytes(pofile))
