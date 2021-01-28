@@ -212,21 +212,21 @@ class TestJSONResourceStore(test_monolingual.TestMonolingualStore):
         assert out.getvalue() == JSON_COMPLEX_ARRAY
 
     def test_add(self):
+        expected = """{
+    "simple.key": "source"
+}
+"""
         store = self.StoreClass()
 
         unit = self.StoreClass.UnitClass(
             "source",
         )
+        assert str(unit) != expected.strip()
         unit.setid("simple.key")
         store.addunit(unit)
 
-        assert (
-            bytes(store).decode()
-            == """{
-    "simple.key": "source"
-}
-"""
-        )
+        assert str(unit) == expected.strip()
+        assert bytes(store).decode() == expected
 
 
 class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):

@@ -66,6 +66,7 @@ class YAMLUnit(base.DictUnit):
 
     def setid(self, value):
         self._id = value
+        self._unitid = None
 
     def getid(self):
         return self._id
