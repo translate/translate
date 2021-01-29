@@ -1,0 +1,36 @@
+Translate Toolkit 3.3.1
+***********************
+
+*Released on 29 January 2021*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- PO
+
+  - Improve error handling in CPO parser
+  - Raise syntax errors from PYPO parser
+
+- TBX
+
+  - Implement setid
+
+- JSON
+
+  - Fixed serializing after changing id
+
+- RC
+
+  - Fixed parsing of UCS-2 RC files
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař
