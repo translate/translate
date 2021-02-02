@@ -39,8 +39,14 @@ class rejson:
         self.inputstore.makeindex()
         for unit in self.templatestore.units:
             inputunit = self.inputstore.locationindex.get(unit.getid())
-            skip_unit = (self.remove_untranslated and (inputunit is None or not inputunit.istranslated())) or (
-                        not self.includefuzzy and inputunit.isfuzzy())
+
+            # inputunit.istranslated() always returns false when inputunit.isfuzzy() is True.
+            # So a specific check is needed.
+            if self.includefuzzy:
+                skip_unit = self.remove_untranslated and inputunit is None or not bool(inputunit.target)
+            else:
+                skip_unit = self.remove_untranslated and inputunit is None or not inputunit.istranslated()
+
             if skip_unit:
                 continue
             if inputunit is not None:
