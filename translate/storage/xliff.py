@@ -24,7 +24,7 @@ The official recommendation is to use the extention .xlf for XLIFF files.
 from lxml import etree
 
 from translate.misc.multistring import multistring
-from translate.misc.xml_helpers import getXMLspace, reindent, setXMLlang, setXMLspace
+from translate.misc.xml_helpers import getXMLspace, setXMLlang, setXMLspace
 from translate.storage import base, lisa
 from translate.storage.placeables.lisa import strelem_to_xml, xml_to_strelem
 from translate.storage.workflow import StateEnum as state
@@ -626,6 +626,7 @@ class xlifffile(lisa.LISAfile):
 </body>
 </file>
 </xliff>"""
+    XMLindent = {"indent": "  ", "max_level": 4, "toplevel": False}
     namespace = "urn:oasis:names:tc:xliff:document:1.1"
     unversioned_namespace = "urn:oasis:names:tc:xliff:document:"
 
@@ -873,7 +874,6 @@ class xlifffile(lisa.LISAfile):
 
     def serialize(self, out):
         self.removedefaultfile()
-        reindent(self.document.getroot(), indent="  ", max_level=4)
         super().serialize(out)
 
     @classmethod
