@@ -312,6 +312,32 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
 """
         assert bytes(store).decode() == expected
 
+    def test_list_to_dict(self):
+        data = """{
+    "userInfoPage": [
+        "Name"
+    ]
+}
+"""
+        store = self.StoreClass()
+        store.parse(data)
+        assert len(store.units) == 1
+        assert bytes(store).decode() == data
+
+        unit = self.StoreClass.UnitClass("Test")
+        unit.setid("userInfoPage.nesting")
+        store.addunit(unit)
+        assert (
+            bytes(store).decode()
+            == """{
+    "userInfoPage": {
+        "0": "Name",
+        "nesting": "Test"
+    }
+}
+"""
+        )
+
 
 class TestWebExtensionUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = jsonl10n.WebExtensionJsonUnit
