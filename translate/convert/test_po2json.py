@@ -107,8 +107,6 @@ msgstr ""
 
         expected_json = """{
     "foo": "oof",
-    "bar": "bar",
-    "baz": "baz",
     "qux": "qux"
 }
 """
@@ -157,7 +155,8 @@ msgstr ""
         """When includefuzzy is True and remove_untranslated is True"""
 
         expected_json = """{
-    "foo": "oof"
+    "foo": "oof",
+    "bar": "rab"
 }
 """
         json_out = self.po2json(
