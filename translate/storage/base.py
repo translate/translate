@@ -950,7 +950,8 @@ class DictUnit(TranslationUnit):
         parts = self._unitid.parts
         for pos, part in enumerate(parts[:-1]):
             element, key = part
-            default = [] if parts[pos + 1][0] == "index" else self.DefaultDict()
+            use_list = parts[pos + 1][0] == "index"
+            default = [] if use_list else self.DefaultDict()
             if element == "index":
                 while len(target) <= key and not unset:
                     target.append(default.copy())
@@ -959,6 +960,9 @@ class DictUnit(TranslationUnit):
                     target[key] = default
             else:
                 raise ValueError(f"Unsupported element: {element}")
+            if not use_list and isinstance(target[key], list):
+                # Convert list to dict if needed
+                target[key] = dict(enumerate(target[key]))
             target = target[key]
         if override_key:
             element, key = "key", override_key
