@@ -125,6 +125,8 @@ class tbxfile(lisa.LISAfile):
 </martifHeader>
 <text><body></body></text>
 </martif>"""
+    XMLindent = {"indent": "    ", "toplevel": False}
+    XMLdoublequotes = True
 
     def addheader(self):
         """Initialise headers with TBX specific things."""
