@@ -44,3 +44,30 @@ class TestTBXfile(test_base.TestTranslationStore):
         newfile = tbx.tbxfile.parsestring(bytes(tbxfile))
         print(bytes(tbxfile))
         assert newfile.findunit("Concept").getid() == "testid"
+
+    def test_indent(self):
+        tbxfile = tbx.tbxfile()
+        tbxunit = tbxfile.addsourceunit("Concept")
+        tbxunit.setid("testid")
+        assert (
+            bytes(tbxfile).decode()
+            == """<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE martif PUBLIC "ISO 12200:1999A//DTD MARTIF core (DXFcdV04)//EN" "TBXcdv04.dtd">
+<martif type="TBX" xml:lang="en">
+    <martifHeader>
+        <fileDesc>
+            <sourceDesc>
+                <p>Translate Toolkit</p>
+            </sourceDesc>
+        </fileDesc>
+    </martifHeader>
+    <text>
+        <body>
+            <termEntry id="testid">
+                <langSet xml:lang="en"><tig><term>Concept</term></tig></langSet>
+            </termEntry>
+        </body>
+    </text>
+</martif>
+"""
+        )
