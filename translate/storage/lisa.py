@@ -20,7 +20,13 @@
 
 from lxml import etree
 
-from translate.misc.xml_helpers import getText, getXMLlang, getXMLspace, namespaced
+from translate.misc.xml_helpers import (
+    getText,
+    getXMLlang,
+    getXMLspace,
+    namespaced,
+    reindent,
+)
 from translate.storage import base
 
 
@@ -254,6 +260,9 @@ class LISAfile(base.TranslationStore):
     bodyNode = ""
     # The XML skeleton to use for empty construction:
     XMLskeleton = ""
+    XMLindent = {}
+    XMLdoublequotes = False
+    XMLdoctype = None
 
     namespace = None
 
@@ -311,10 +320,33 @@ class LISAfile(base.TranslationStore):
         super().removeunit(unit)
         unit.xmlelement.getparent().remove(unit.xmlelement)
 
+    def serialize_hook(self, treestring):
+        return treestring
+
     def serialize(self, out=None):
         """Converts to a string containing the file's XML"""
+        root = self.document.getroot()
+        if self.XMLdoublequotes:
+            out.write(b'<?xml version="1.0" encoding="utf-8"?>\n')
+        if self.XMLindent:
+            reindent(root, **self.XMLindent)
+        if 1:
+            treestring = etree.tostring(
+                self.document,
+                pretty_print=not self.XMLindent,
+                xml_declaration=not self.XMLdoublequotes,
+                encoding=self.encoding,
+                doctype=self.XMLdoctype,
+            )
+            treestring = self.serialize_hook(treestring)
+            out.write(treestring)
+            return
         self.document.write(
-            out, pretty_print=True, xml_declaration=True, encoding="utf-8"
+            out,
+            pretty_print=not self.XMLindent,
+            xml_declaration=not self.XMLdoublequotes,
+            encoding="utf-8",
+            doctype=self.XMLdoctype,
         )
 
     def parse(self, xml):

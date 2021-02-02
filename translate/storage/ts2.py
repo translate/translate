@@ -35,7 +35,6 @@ from lxml import etree
 
 from translate.lang import data
 from translate.misc.multistring import multistring
-from translate.misc.xml_helpers import reindent
 from translate.storage import lisa
 from translate.storage.placeables import general
 from translate.storage.workflow import StateEnum as state
@@ -353,6 +352,9 @@ class tsfile(lisa.LISAfile):
 <TS>
 </TS>
 """
+    XMLindent = {"indent": "    ", "skip": ["TS"], "toplevel": False}
+    # For conformance with Qt output, write XML declaration with double quotes
+    XMLdoublequotes = True
     namespace = ""
 
     def __init__(self, *args, **kwargs):
@@ -472,39 +474,28 @@ class tsfile(lisa.LISAfile):
             return 1
         return lang[1]
 
-    def serialize(self, out):
-        """Write the XML document to a file."""
-        root = self.document.getroot()
-        reindent(root, indent="    ", skip=["TS"])
-        doctype = self.document.docinfo.doctype
-        # Iterate over empty tags without children and force empty text
-        # This will prevent self-closing tags in pretty_print mode
-        # Qt Linguist does self-close the "location" elements though
-        for e in root.xpath(
-            "//*[not(./node()) and not(text()) and not(name() = 'location')]"
-        ):
-            e.text = ""
-        # For conformance with Qt output, write XML declaration with double quotes
-        out.write(b'<?xml version="1.0" encoding="utf-8"?>\n')
-        # For conformance with Qt output, post-process etree.tostring output,
-        # replacing ' with &apos; and " with &quot; in text elements
-        treestring = etree.tostring(
-            root,
-            doctype=doctype,
-            pretty_print=True,
-            xml_declaration=False,
-            encoding="utf-8",
-        )
+    def serialize_hook(self, treestring):
         pos = 0
+        out = []
         while pos >= 0:
             nextpos = treestring.find(b"<", pos)
-            out.write(
+            out.append(
                 treestring[pos:nextpos]
                 .replace(b"'", b"&apos;")
                 .replace(b'"', b"&quot;")
             )
             pos = nextpos
             nextpos = treestring.find(b">", pos)
-            out.write(treestring[pos:nextpos])
+            out.append(treestring[pos:nextpos])
             pos = nextpos
-        out.write(treestring[pos:])
+        out.append(treestring[pos:])
+        return b"".join(out)
+
+    def serialize(self, out):
+        """Write the XML document to a file."""
+        root = self.document.getroot()
+        for e in root.xpath(
+            "//*[not(./node()) and not(text()) and not(name() = 'location')]"
+        ):
+            e.text = ""
+        super().serialize(out)

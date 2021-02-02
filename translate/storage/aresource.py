@@ -27,7 +27,6 @@ from lxml import etree
 
 from translate.lang import data
 from translate.misc.multistring import multistring
-from translate.misc.xml_helpers import reindent
 from translate.storage import base, lisa
 
 
@@ -317,7 +316,7 @@ class AndroidResourceUnit(base.TranslationUnit):
                 template = etree.tostring(
                     cloned_doc,
                     encoding="unicode",
-                    doctype=copy.copy(self._store._doctype),
+                    doctype=copy.copy(self._store.XMLdoctype),
                 )
             else:
                 template = "<resources></resources>"
@@ -479,7 +478,8 @@ class AndroidResourceFile(lisa.LISAfile):
     bodyNode = "resources"
     XMLskeleton = """<?xml version="1.0" encoding="utf-8"?>
 <resources></resources>"""
-    _doctype = None
+    XMLindent = {"indent": "    ", "leaves": {"string", "item"}}
+    XMLdoublequotes = True
 
     def initbody(self):
         """Initialises self.body so it never needs to be retrieved from the XML
@@ -487,18 +487,6 @@ class AndroidResourceFile(lisa.LISAfile):
         """
         self.namespace = self.document.getroot().nsmap.get(None, None)
         self.body = self.document.getroot()
-
-    def serialize(self, out=None):
-        """Converts to a string containing the file's XML"""
-        out.write(b'<?xml version="1.0" encoding="utf-8"?>\n')
-        reindent(self.document.getroot(), indent="    ", leaves=("string", "item"))
-        self.document.write(
-            out,
-            pretty_print=False,
-            xml_declaration=False,
-            encoding="utf-8",
-            doctype=self._doctype,
-        )
 
     def parse(self, xml):
         """Populates this object from the given xml string"""
@@ -565,7 +553,7 @@ class AndroidResourceFile(lisa.LISAfile):
             if hasentity:
                 cloned_doc = copy.deepcopy(unit._store.document)
                 cloned_doc.getroot().clear()
-                self._doctype = etree.tostring(
+                self.XMLdoctype = etree.tostring(
                     cloned_doc, xml_declaration=False, encoding="unicode"
                 ).rsplit("\n", 1)[0]
 
