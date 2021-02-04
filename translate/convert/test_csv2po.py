@@ -149,3 +149,27 @@ class TestCSV2POCommand(test_convert.TestConvertCommand, TestCSV2PO):
         options = self.help_check(options, "--charset=CHARSET")
         options = self.help_check(options, "--columnorder=COLUMNORDER")
         options = self.help_check(options, "--duplicates=DUPLICATESTYLE", last=True)
+
+    def test_columnorder(self):
+        csvcontent = '"Target","Same"\n'
+        self.create_testfile("test.csv", csvcontent)
+
+        self.run_command("test.csv", "test.po")
+        # Strip PO file header
+        content = self.open_testfile("test.po", "r").read().split("\n\n")[1]
+        assert (
+            content
+            == """#: Target
+msgid "Same"
+msgstr ""
+"""
+        )
+
+        self.run_command("test.csv", "test.po", columnorder="target,source")
+        content = self.open_testfile("test.po", "r").read().split("\n\n")[1]
+        assert (
+            content
+            == """msgid "Same"
+msgstr "Target"
+"""
+        )

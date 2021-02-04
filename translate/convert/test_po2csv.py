@@ -141,3 +141,25 @@ class TestPO2CSVCommand(test_convert.TestConvertCommand, TestPO2CSV):
         """tests getting help"""
         options = super().test_help(capsys)
         options = self.help_check(options, "--columnorder=COLUMNORDER", last=True)
+
+    def test_columnorder(self):
+        pocontent = '#: simple.c\nmsgid "Same"\nmsgstr "Target"\n'
+        self.create_testfile("test.po", pocontent)
+
+        self.run_command("test.po", "test.csv")
+        content = self.open_testfile("test.csv", "r").read()
+        assert (
+            content
+            == """"location","source","target"
+"simple.c","Same","Target"
+"""
+        )
+
+        self.run_command("test.po", "test.csv", columnorder="target,source")
+        content = self.open_testfile("test.csv", "r").read()
+        assert (
+            content
+            == """"target","source"
+"Target","Same"
+"""
+        )
