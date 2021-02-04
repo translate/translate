@@ -1152,6 +1152,21 @@ return [
         phpunit.source = 'foo "pesca"'
         assert bytes(phpfile).decode() == phpsource
 
+    def test_addunit(self):
+        expected = """<?php
+$key = 'first';
+$sec = 'second';
+"""
+        store = self.StoreClass()
+
+        unit = self.StoreClass.UnitClass("first")
+        unit.setid("key")
+        store.addunit(unit)
+        unit = self.StoreClass.UnitClass("second")
+        unit.setid("$sec")
+        store.addunit(unit)
+        assert bytes(store).decode() == expected
+
 
 class TestLaravelPhpUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = php.LaravelPHPUnit

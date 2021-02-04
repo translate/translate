@@ -4,6 +4,7 @@ from pytest import mark, raises
 
 from translate.misc.multistring import multistring
 from translate.storage import po, pypo, test_base
+from translate.storage.php import phpunit
 
 
 def test_roundtrip_quoting():
@@ -181,11 +182,10 @@ class TestPOUnit(test_base.TestTranslationUnit):
         assert unit == unit_copy
 
         # Test with a unit without copy() method (will call base.buildfromunit)
-        from translate.storage.php import phpunit
-
-        unit = phpunit("test source")
+        unit = phpunit("$test_source")
         unit_copy = self.UnitClass.buildfromunit(unit)
         unit.setid(unit_copy.getid())
+        assert unit.getid() == unit_copy.getid()
         assert unit is not unit_copy
         assert unit == unit_copy
 
