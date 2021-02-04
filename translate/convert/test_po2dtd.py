@@ -552,17 +552,17 @@ class TestPO2DTDCommand(test_convert.TestConvertCommand, TestPO2DTD):
 
     def setup_method(self, method):
         """call both base classes setup_methods"""
-        test_convert.TestConvertCommand.setup_method(self, method)
+        super().setup_method(method)
         TestPO2DTD.setup_method(self, method)
 
     def teardown_method(self, method):
         """call both base classes teardown_methods"""
-        test_convert.TestConvertCommand.teardown_method(self, method)
+        super().teardown_method(method)
         TestPO2DTD.teardown_method(self, method)
 
     def test_help(self, capsys):
         """tests getting help"""
-        options = test_convert.TestConvertCommand.test_help(self, capsys)
+        options = super().test_help(capsys)
         options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
         options = self.help_check(options, "--fuzzy")
         options = self.help_check(options, "--threshold=PERCENT")

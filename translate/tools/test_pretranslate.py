@@ -369,7 +369,7 @@ class TestPretranslateCommand(test_convert.TestConvertCommand, TestPretranslate)
 
     def test_help(self, capsys):
         """tests getting help"""
-        options = test_convert.TestConvertCommand.test_help(self, capsys)
+        options = super().test_help(capsys)
         options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
         options = self.help_check(options, "--tm")
         options = self.help_check(

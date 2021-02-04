@@ -135,7 +135,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
     )
 
     def __init__(self, inputfile=None, callback=None):
-        html.parser.HTMLParser.__init__(self, convert_charrefs=False)
+        super().__init__(convert_charrefs=False)
         base.TranslationStore.__init__(self)
 
         # store parameters
