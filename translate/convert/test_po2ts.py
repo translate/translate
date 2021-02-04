@@ -147,7 +147,7 @@ class TestPO2TSCommand(test_convert.TestConvertCommand, TestPO2TS):
 
     def test_help(self, capsys):
         """tests getting help"""
-        options = test_convert.TestConvertCommand.test_help(self, capsys)
+        options = super().test_help(capsys)
         options = self.help_check(options, "-c CONTEXT, --context=CONTEXT")
         options = self.help_check(
             options, "-t TEMPLATE, --template=TEMPLATE", last=True

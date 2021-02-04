@@ -205,7 +205,7 @@ class TestPO2YAMLCommand(test_convert.TestConvertCommand, TestPO2YAML):
 
     def test_help(self, capsys):
         """tests getting help"""
-        options = test_convert.TestConvertCommand.test_help(self, capsys)
+        options = super().test_help(capsys)
         options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
         options = self.help_check(options, "--threshold=PERCENT")
         options = self.help_check(options, "--fuzzy")

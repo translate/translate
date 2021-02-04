@@ -467,11 +467,11 @@ class TestMOFile(test_base.TestTranslationStore):
                 os.remove(file)
 
     def setup_method(self, method):
-        test_base.TestTranslationStore.setup_method(self, method)
+        super().setup_method(method)
         self.remove_po_and_mo()
 
     def teardown_method(self, method):
-        test_base.TestTranslationStore.teardown_method(self, method)
+        super().teardown_method(method)
         self.remove_po_and_mo()
 
     def test_language(self):

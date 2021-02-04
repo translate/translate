@@ -132,7 +132,7 @@ class TestFlatXML2POCommand(test_convert.TestConvertCommand):
 
     def test_help(self, capsys):
         """tests getting help"""
-        options = test_convert.TestConvertCommand.test_help(self, capsys)
+        options = super().test_help(capsys)
         options = self.help_check(options, "-r ROOT, --root=ROOT")
         options = self.help_check(options, "-v VALUE, --value=VALUE")
         options = self.help_check(options, "-k KEY, --key=KEY")

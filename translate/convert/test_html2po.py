@@ -689,7 +689,7 @@ class TestHTML2POCommand(test_convert.TestConvertCommand, TestHTML2PO):
 
     def test_help(self, capsys):
         """Test getting help."""
-        options = test_convert.TestConvertCommand.test_help(self, capsys)
+        options = super().test_help(capsys)
         options = self.help_check(options, "-P, --pot")
         options = self.help_check(options, "--duplicates=DUPLICATESTYLE")
         options = self.help_check(options, "--keepcomments")

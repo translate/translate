@@ -149,6 +149,6 @@ class TestTS2POCommand(test_convert.TestConvertCommand, TestTS2PO):
 
     def test_help(self, capsys):
         """tests getting help"""
-        options = test_convert.TestConvertCommand.test_help(self, capsys)
+        options = super().test_help(capsys)
         options = self.help_check(options, "--duplicates=DUPLICATESTYLE")
         options = self.help_check(options, "-P, --pot", last=True)
