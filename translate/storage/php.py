@@ -331,7 +331,11 @@ class phpunit(base.TranslationUnit):
         return self.name
 
     def setid(self, value):
-        self.name = value
+        # Sanitize name to produce valid syntax
+        if not value.startswith(("$", "define(", "return")):
+            self.name = "${}".format(value.replace(" ", "_"))
+        else:
+            self.name = value
 
 
 class phpfile(base.TranslationStore):
