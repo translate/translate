@@ -1257,6 +1257,9 @@ class XWikiPageProperties(xwikifile):
         self.root = None
         super(xwikifile, self).__init__(*args, **kwargs)
 
+    def is_source_file(self):
+        return self.getsourcelanguage() == self.gettargetlanguage()
+
     def get_parser(self):
         return etree.XMLParser(strip_cdata=False, resolve_entities=False)
 
@@ -1308,7 +1311,10 @@ class XWikiPageProperties(xwikifile):
         newroot.find("content").text = (
             "".join(unit.getoutput() for unit in self.units).strip() + "\n"
         )
-        self.set_xwiki_xml_attributes(newroot)
+        # We only modify the XML attributes if we are editing a translation file
+        # if we are editing the source file we should not modify it.
+        if not self.is_source_file():
+            self.set_xwiki_xml_attributes(newroot)
         self.write_xwiki_xml(newroot, out)
 
 
@@ -1352,5 +1358,8 @@ class XWikiFullPage(XWikiPageProperties):
             newroot.find("content").text = self.output_unit(unit_content).replace(
                 "\\n", "\n"
             )
-        self.set_xwiki_xml_attributes(newroot)
+        # We only modify the XML attributes if we are editing a translation file
+        # if we are editing the source file we should not modify it.
+        if not self.is_source_file():
+            self.set_xwiki_xml_attributes(newroot)
         self.write_xwiki_xml(newroot, out)
