@@ -914,20 +914,22 @@ class pofile(pocommon.pofile):
             obsolete_workaround()
             f, fname = tempfile.mkstemp(prefix="translate", suffix=".po")
             os.close(f)
-            outputstring = writefile(fname)
-            if self.encoding != pounit.CPO_ENC:
-                try:
-                    outputstring = outputstring.decode(pounit.CPO_ENC).encode(
-                        self.encoding
-                    )
-                except UnicodeEncodeError:
-                    self.encoding = pounit.CPO_ENC
-                    self.updateheader(
-                        content_type="text/plain; charset=UTF-8",
-                        content_transfer_encoding="8bit",
-                    )
-                    outputstring = writefile(fname)
-            os.remove(fname)
+            try:
+                outputstring = writefile(fname)
+                if self.encoding != pounit.CPO_ENC:
+                    try:
+                        outputstring = outputstring.decode(pounit.CPO_ENC).encode(
+                            self.encoding
+                        )
+                    except UnicodeEncodeError:
+                        self.encoding = pounit.CPO_ENC
+                        self.updateheader(
+                            content_type="text/plain; charset=UTF-8",
+                            content_transfer_encoding="8bit",
+                        )
+                        outputstring = writefile(fname)
+            finally:
+                os.remove(fname)
         out.write(outputstring)
 
     def isempty(self):
@@ -964,15 +966,18 @@ class pofile(pocommon.pofile):
             input = fname
             os.close(fd)
 
-        xerror_storage.exception = None
-        self._gpo_memory_file = gpo.po_file_read_v3(gpo_encode(input), xerror_handler)
-        if xerror_storage.exception is not None:
-            raise xerror_storage.exception
-        if self._gpo_memory_file is None:
-            logger.error("Error:")
-
-        if needtmpfile:
-            os.remove(input)
+        try:
+            xerror_storage.exception = None
+            self._gpo_memory_file = gpo.po_file_read_v3(
+                gpo_encode(input), xerror_handler
+            )
+            if xerror_storage.exception is not None:
+                raise xerror_storage.exception
+            if self._gpo_memory_file is None:
+                logger.error("Error:")
+        finally:
+            if needtmpfile:
+                os.remove(input)
 
         self.units = []
         # Handle xerrors here
