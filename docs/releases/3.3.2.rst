@@ -1,0 +1,42 @@
+Translate Toolkit 3.3.2
+***********************
+
+*Released on 5 February 2021*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- JSON
+
+  - Improved handling of changes in a nested structure
+
+- TBX
+
+  - Nicely format generated files
+
+- PHP
+
+  - Sanitize new unit key to produce valid PHP syntax
+
+- po2csv/csv2po
+
+  - Fixed --columnorder parameter handling
+
+
+General
+-------
+
+- Fixed installation of some converters
+
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař, Markus Buettgenbach
