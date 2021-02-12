@@ -22,10 +22,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
-import re
-
 from translate.convert import convert
-from translate.misc import quote
 from translate.storage import php, po
 
 
@@ -34,7 +31,7 @@ eol = "\n"
 
 class rephp:
     def __init__(self, templatefile, inputstore):
-        self.templatefile = templatefile
+        self.outputstore = php.phpfile(templatefile)
         self.inputstore = inputstore
         self.inmultilinemsgid = False
         self.inecho = False
@@ -47,130 +44,30 @@ class rephp:
     def convertstore(self, includefuzzy=False):
         self.includefuzzy = includefuzzy
         self.inputstore.makeindex()
-        outputlines = []
 
-        for line in self.templatefile.readlines():
-            outputstr = self.convertline(line)
-            outputlines.append(outputstr)
+        for unit in self.outputstore.units:
+            inputunit = self.inputstore.locationindex.get(unit.getid())
 
-        return outputlines
-
-    def convertline(self, line):
-        line = str(line, "utf-8")
-        returnline = ""
-
-        # handle multiline msgid if we're in one
-        if self.inmultilinemsgid:
-            # see if there's more
-            endpos = line.rfind(f"{self.quotechar}{self.enddel}")
-            # if there was no '; or the quote is escaped, we have to continue
-            if endpos >= 0 and line[endpos - 1] != "\\":
-                self.inmultilinemsgid = False
-            # if we're echoing...
-            if self.inecho:
-                returnline = line
-        # otherwise, this could be a comment
-        elif line.strip()[:2] == "//" or line.strip()[:2] == "/*":
-            returnline = quote.rstripeol(line) + eol
-        elif line.lower().replace(" ", "").find("array(") != -1:
-            eqpos = line.find("=")
-            # If this is a nested array.
-            if self.inarray:
-                self.prename += line[:eqpos].strip() + "->"
-            else:
-                self.inarray = True
-                if eqpos != -1:
-                    self.prename += line[:eqpos].strip() + "->"
-                self.equaldel = "=>"
-                self.enddel = ","
-            returnline = quote.rstripeol(line) + eol
-        elif self.inarray and line.find(");") != -1:
-            self.inarray = False
-            self.equaldel = "="
-            self.enddel = ";"
-            self.prename = ""
-            returnline = quote.rstripeol(line) + eol
-        elif self.inarray and line.find("),") != -1:
-            self.prename = re.sub(r"[^>]+->$", "", self.prename)
-            returnline = quote.rstripeol(line) + eol
-        else:
-            line = quote.rstripeol(line)
-            equalspos = line.find(self.equaldel)
-            hashpos = line.find("#")
-            # if no equals, just repeat it
-            if equalspos == -1:
-                returnline = quote.rstripeol(line) + eol
-            elif 0 <= hashpos < equalspos:
-                # Assume that this is a '#' comment line
-                returnline = quote.rstripeol(line) + eol
-
-            # otherwise, this is a definition
-            else:
-                # now deal with the current string...
-                key = line[:equalspos].rstrip()
-                lookupkey = self.prename + key.lstrip()
-                # Calculate space around the equal sign
-                prespace = line[len(line[:equalspos].rstrip()) : equalspos]
-                postspacestart = len(line[equalspos + len(self.equaldel) :])
-                postspaceend = len(line[equalspos + len(self.equaldel) :].lstrip())
-                postspace = line[
-                    equalspos
-                    + len(self.equaldel) : equalspos
-                    + (postspacestart - postspaceend)
-                    + len(self.equaldel)
-                ]
-                self.quotechar = line[
-                    equalspos + (postspacestart - postspaceend) + len(self.equaldel)
-                ]
-                inlinecomment_pos = line.rfind(f"{self.quotechar}{self.enddel}")
-                if inlinecomment_pos > -1:
-                    inlinecomment = line[inlinecomment_pos + 2 :]
-                else:
-                    inlinecomment = ""
-
-                if lookupkey in self.inputstore.locationindex:
-                    unit = self.inputstore.locationindex[lookupkey]
-                    if (unit.isfuzzy() and not self.includefuzzy) or len(
-                        unit.target
-                    ) == 0:
-                        value = unit.source
+            if inputunit is not None:
+                if inputunit.isfuzzy():
+                    if self.includefuzzy:
+                        # inputunit.istranslated() is always False now,
+                        # because inputunit.isfuzzy() is True.
+                        # So we need to check if inputunit.target is truthy.
+                        if inputunit.target:
+                            unit.target = inputunit.target
+                        else:
+                            unit.target = unit.source
                     else:
-                        value = unit.target
-
-                    value = php.phpencode(value, self.quotechar)
-                    self.inecho = False
-
-                    params = {
-                        "key": key,
-                        "pre": prespace,
-                        "del": self.equaldel,
-                        "post": postspace,
-                        "quote": self.quotechar,
-                        "value": value,
-                        "enddel": self.enddel,
-                        "comment": inlinecomment,
-                        "eol": eol,
-                    }
-                    returnline = (
-                        "%(key)s%(pre)s%(del)s%(post)s%(quote)s"
-                        "%(value)s%(quote)s%(enddel)s%(comment)s"
-                        "%(eol)s" % params
-                    )
+                        unit.target = unit.source
                 else:
-                    self.inecho = True
-                    returnline = line + eol
-
-                # no string termination means carry string on to next line
-                endpos = line.rfind(f"{self.quotechar}{self.enddel}")
-                # if there was no '; or the quote is escaped, we have to
-                # continue
-                if endpos == -1 or line[endpos - 1] == "\\":
-                    self.inmultilinemsgid = True
-
-        if isinstance(returnline, str):
-            returnline = returnline.encode("utf-8")
-
-        return returnline
+                    if inputunit.istranslated():
+                        unit.target = inputunit.target
+                    else:
+                        unit.target = unit.source
+            else:
+                unit.target = unit.source
+        return bytes(self.outputstore)
 
 
 def convertphp(
@@ -185,8 +82,8 @@ def convertphp(
         raise ValueError("must have template file for php files")
 
     convertor = rephp(templatefile, inputstore)
-    outputphplines = convertor.convertstore(includefuzzy)
-    outputfile.writelines(outputphplines)
+    output = convertor.convertstore(includefuzzy)
+    outputfile.write(output)
     return 1
 
 
