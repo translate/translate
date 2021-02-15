@@ -16,6 +16,6 @@ pytest==6.2.2
 pytest-cov==2.11.1
 pytest-xdist==2.2.1
 pyupgrade==2.10.0
-Sphinx==3.4.3
+Sphinx==3.5.0
 twine==3.3.0
 virtualenv==20.4.2
