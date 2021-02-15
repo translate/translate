@@ -435,10 +435,9 @@ class DialectGaia(DialectMozilla):
 
 
 @register_dialect
-class DialectGwt(DialectJava):
+class DialectGwt(DialectJavaUtf8):
     plural_regex = re.compile(r"([^\[\]]*)(?:\[(.*)\])?")
     name = "gwt"
-    default_encoding = "utf-8"
     delimiters = ["="]
 
     gwt_plural_categories = [
@@ -482,7 +481,13 @@ class DialectGwt(DialectJava):
 
     @classmethod
     def encode(cls, string, encoding=None):
-        return quote.java_utf8_properties_encode(string or "")
+        result = super().encode(string, encoding)
+        return result.replace("'", "''")
+
+    @classmethod
+    def decode(cls, string):
+        result = super().decode(string)
+        return result.replace("''", "'")
 
 
 @register_dialect

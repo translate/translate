@@ -129,6 +129,17 @@ class TestGwtProp(test_monolingual.TestMonolingualStore):
         """helper that converts properties source to propfile object and back"""
         return self.propparse(propsource).__bytes__()
 
+    def test_quotes(self):
+        """checks that quotes are parsed and saved correctly"""
+        propsource = "test_me=I can ''code''!"
+        propfile = self.propparse(propsource)
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == "test_me"
+        assert propunit.source == "I can 'code'!"
+        propunit.value = "I 'can' code!"
+        assert bytes(propfile).decode() == "test_me=I ''can'' code!\n"
+
     def test_simpledefinition(self):
         """checks that a simple properties definition is parsed correctly"""
         propsource = "test_me=I can code!"
