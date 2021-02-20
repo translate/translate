@@ -404,6 +404,24 @@ location_batch:
         store.units[0].target = "second"
         assert bytes(store) == b"key: second\n"
 
+    def test_numeric(self):
+        data = """error:
+  404: Not found
+  server: Server error
+"""
+        store = self.StoreClass()
+        store.parse(data)
+        assert len(store.units) == 2
+        assert bytes(store).decode() == data
+        store.units[0].target = "Missing"
+        assert (
+            bytes(store).decode()
+            == """error:
+  404: Missing
+  server: Server error
+"""
+        )
+
 
 class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
     StoreClass = yaml.RubyYAMLFile
@@ -439,11 +457,6 @@ class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
         store = self.StoreClass()
         store.parse(data)
         assert bytes(store) == data.encode("ascii")
-
-    def test_invalid_key(self):
-        store = yaml.YAMLFile()
-        with pytest.raises(base.ParseError):
-            store.parse("1: string")
 
     def test_invalid_value(self):
         store = yaml.YAMLFile()
