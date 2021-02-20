@@ -121,11 +121,6 @@ class YAMLFile(base.DictStore):
     def _parse_dict(self, data, prev):
         # Avoid using merged items, it is enough to have them once
         for k, v in data.non_merged_items():
-            if not isinstance(k, str):
-                raise base.ParseError(
-                    "Key not string: {}/{} ({})".format(prev, k, type(k))
-                )
-
             yield from self._flatten(v, prev + [("key", k)])
 
     def _flatten(self, data, prev=None):
