@@ -90,10 +90,12 @@ def read_prevmsgid_lines(parse_state):
     """
     prevmsgid_lines = []
     next_line = parse_state.next_line
-    while startswith(next_line, "#| ") or startswith(next_line, "| "):
+    while startswith(next_line, "#|") or startswith(next_line, "|"):
         content = parse_state.read_line()
-        prefix_len = content.index("| ")
-        content = content[prefix_len + 2 :]
+        prefix_len = content.index("|") + 1
+        while content[prefix_len] == " ":
+            prefix_len += 1
+        content = content[prefix_len:]
         append(prevmsgid_lines, content)
         next_line = parse_state.next_line
     return prevmsgid_lines
