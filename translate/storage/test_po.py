@@ -1126,3 +1126,17 @@ msg
 """
         with raises(ValueError):
             self.poparse(posource)
+
+    def test_wrapped_msgid(self):
+        posource = b"""
+#| msgid "some"
+#|"old text"
+msgid "text"
+msgstr "texte"
+"""
+        pofile = self.poparse(posource)
+        assert len(pofile.units) == 1
+        unit = pofile.units[0]
+        if not hasattr(pofile, "_gpo_memory_file"):
+            assert unit.prev_source == "someold text"
+        assert unit.source == "text"
