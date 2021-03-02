@@ -102,7 +102,7 @@ class TerminologyExtractor:
             r"%(?:\([^)]+\)|[0-9]+\$)?[-+#0]*[0-9.*]*(?:[hlLzjt][hl])?[EFGXc-ginoprsux]"
         )
         # handles XML/HTML elements (<foo>text</foo> => text)
-        self.xmlelpat = re.compile(r"<(?:![[-]|[/?]?[A-Za-z_:])[^>]*>")
+        self.xmlelpat = re.compile(r"<(?:![\[-]|[/?]?[A-Za-z_:])[^>]*>")
         # handles XML/HTML entities (&#32; &#x20; &amp; &my_entity;)
         self.xmlentpat = re.compile(
             r"&(?:#(?:[0-9]+|x[0-9a-f]+)|[a-z_:][\w.-:]*);",
