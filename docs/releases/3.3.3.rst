@@ -1,0 +1,42 @@
+Translate Toolkit 3.3.3
+***********************
+
+*Released on 2 March 2021*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- PO
+
+  - Improve previous msgid parsing
+  - Improve newline detection
+  - Cleanup temporary files in case of exception
+    
+- YAML
+
+  - Do not fail on numeric keys
+    
+- Properties
+
+  - Handle single quote escaping in GWT
+  - Do not modify XWikiPageProperties source file
+
+- po2php
+ 
+  - Use phpfile as a serializer
+
+- poterminology
+
+  - Fix regex escaping to remove FutureWarning.
+    
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař, Simon Urli
