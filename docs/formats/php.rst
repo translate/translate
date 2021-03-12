@@ -22,7 +22,7 @@ Our format support allows:
   <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.double>`_
   quoted strings (both for keys and values)
 
-  .. code-block:: php
+  .. code-block:: html+php
 
       <?php
       $variable = 'string';
@@ -32,7 +32,7 @@ Our format support allows:
 
 * PHP simple variable syntax
 
-  .. code-block:: php
+  .. code-block:: html+php
 
       <?php
       $variable = 'string';
@@ -41,7 +41,7 @@ Our format support allows:
 
 * PHP square bracket array syntax
 
-  .. code-block:: php
+  .. code-block:: html+php
 
       <?php
       $messages['language'] = 'Language';
@@ -54,7 +54,7 @@ Our format support allows:
 
   .. versionadded:: 1.7.0
 
-  .. code-block:: php
+  .. code-block:: html+php
 
       <?php
       // Can be 'array', 'Array' or 'ARRAY'.
@@ -70,7 +70,7 @@ Our format support allows:
 
   .. versionadded:: 1.10.0
 
-  .. code-block:: php
+  .. code-block:: html+php
 
       <?php
       define('item', 'string');
@@ -83,7 +83,7 @@ Our format support allows:
 
   .. versionadded:: 2.3.0
 
-  .. code-block:: php
+  .. code-block:: html+php
 
       <?php
       $variable = [
@@ -97,7 +97,7 @@ Our format support allows:
 
   .. versionadded:: 2.3.0
 
-  .. code-block:: php
+  .. code-block:: html+php
 
       <?php
       $variable = <<<EOT
@@ -110,7 +110,7 @@ Our format support allows:
 
   .. versionadded:: 2.3.0
 
-  .. code-block:: php
+  .. code-block:: html+php
 
       <?php
       $variable = <<<'EOD'
@@ -126,7 +126,7 @@ Our format support allows:
   <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.double>`_
   quoted strings)
 
-  .. code-block:: php
+  .. code-block:: html+php
 
       <?php
       $variable = 'He said: "I\'ll be back"';
@@ -136,7 +136,7 @@ Our format support allows:
 
 * Multiline entries
 
-  .. code-block:: php
+  .. code-block:: html+php
 
       <?php
       $lang = array(
@@ -150,7 +150,7 @@ Our format support allows:
 
 * Various layouts of the id
 
-  .. code-block:: php
+  .. code-block:: html+php
 
       <?php
       $string['name'] = 'string';
@@ -162,7 +162,7 @@ Our format support allows:
 
   .. versionchanged:: 1.10.0
 
-  .. code-block:: php
+  .. code-block:: html+php
 
       <?php
       # Hash one-line comment
@@ -182,7 +182,7 @@ Our format support allows:
 
   .. versionadded:: 1.10.0
 
-  .. code-block:: php
+  .. code-block:: html+php
 
       <?php
       $variable = 'string'     ;
@@ -200,7 +200,7 @@ Our format support allows:
 
   .. versionadded:: 1.11.0
 
-  .. code-block:: php
+  .. code-block:: html+php
 
       <?php
       $lang = array(
@@ -222,7 +222,7 @@ Our format support allows:
 
   .. versionadded:: 1.11.0
 
-  .. code-block:: php
+  .. code-block:: html+php
 
       <?php
       $variable = array    (
@@ -234,7 +234,7 @@ Our format support allows:
 
   .. versionadded:: 1.12.0
 
-  .. code-block:: php
+  .. code-block:: html+php
 
       <?php
       global $messages;
@@ -248,7 +248,7 @@ Our format support allows:
 
   .. versionadded:: 2.2.0
 
-  .. code-block:: php
+  .. code-block:: html+php
 
       <?php
       return array(
@@ -260,7 +260,7 @@ Our format support allows:
 
   .. versionadded:: 2.3.0
 
-  .. code-block:: php
+  .. code-block:: html+php
 
       <?php
       $variable = array(
@@ -273,7 +273,7 @@ Our format support allows:
 
   .. versionadded:: 2.3.0
 
-  .. code-block:: php
+  .. code-block:: html+php
 
       <?php
       $variable = array(
@@ -286,7 +286,7 @@ Our format support allows:
 
   .. versionadded:: 2.3.0
 
-  .. code-block:: php
+  .. code-block:: html+php
 
       <?php
       $variable = array(
@@ -301,7 +301,7 @@ Our format support allows:
 
   .. versionadded:: 2.3.0
 
-  .. code-block:: php
+  .. code-block:: html+php
 
       <?php
       $variable = array(
@@ -316,7 +316,7 @@ Our format support allows:
 
   .. versionadded:: 2.3.0
 
-  .. code-block:: php
+  .. code-block:: html+php
 
       <?php
       $variable = array(
@@ -328,7 +328,7 @@ Our format support allows:
 
   .. versionadded:: 2.3.0
 
-  .. code-block:: php
+  .. code-block:: html+php
 
       <?php
       $variable = array(
@@ -341,7 +341,7 @@ Our format support allows:
 
   .. versionadded:: 2.3.0
 
-  .. code-block:: php
+  .. code-block:: html+php
 
       <?php
       $variable = array( 'item1' => 'value1', 'item2' => 'value2', 'item3' => 'value3' );
@@ -351,7 +351,7 @@ Our format support allows:
 
   .. versionadded:: 2.3.0
 
-  .. code-block:: php
+  .. code-block:: html+php
 
       <?php
       $days = array('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday');
@@ -361,7 +361,7 @@ Our format support allows:
 
   .. versionadded:: 2.3.0
 
-  .. code-block:: php
+  .. code-block:: html+php
 
       <?php
       $lang = array(array("key" => "value"));
@@ -371,7 +371,7 @@ Our format support allows:
 
   .. versionadded:: 2.3.0
 
-  .. code-block:: php
+  .. code-block:: html+php
 
       <?php
       $messages['welcome'] = 'Welcome ' . $name . '!';
@@ -382,7 +382,7 @@ Our format support allows:
 
   .. versionadded:: 2.3.0
 
-  .. code-block:: php
+  .. code-block:: html+php
 
       <?php
       /*
@@ -393,7 +393,7 @@ Our format support allows:
 
 * Keyless arrays assigned to another array:
 
-  .. code-block:: php
+  .. code-block:: html+php
 
       <?php
       $messages['days_short'] = array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
@@ -401,7 +401,7 @@ Our format support allows:
 
 * Laravel plurals are supported in the ``LaravelPHPFile`` class:
 
-  .. code-block:: php
+  .. code-block:: html+php
 
         <?php
         return [
