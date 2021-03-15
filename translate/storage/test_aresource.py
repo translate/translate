@@ -723,3 +723,26 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         assert bytes(store) == content
         store.units[0].target = "Test <b>string</b> with  space"
         assert bytes(store).decode() == newcontent
+
+    def test_xliff_g(self):
+        template = """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+</resources>"""
+        original = """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="id">Test: <xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">%s</xliff:g></string>
+</resources>"""
+        expected = """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="id">Other: <xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">%s</xliff:g></string>
+</resources>"""
+        origstore = self.StoreClass()
+        origstore.parse(original.encode())
+        store = self.StoreClass()
+        store.parse(template.encode())
+        store.addunit(origstore.units[0], new=True)
+        assert bytes(store).decode() == original
+        store.units[
+            0
+        ].target = """Other: <xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">%s</xliff:g>"""
+        assert bytes(store).decode() == expected
