@@ -10,7 +10,7 @@ flake8-no-u-prefixed-strings==0.2
 flake8-polyfill==1.0.2
 isort==5.7.0
 pre-commit==2.11.1
-pycodestyle==2.6.0
+pycodestyle==2.7.0
 pydocstyle==5.1.1
 pytest==6.2.2
 pytest-cov==2.11.1
