@@ -72,7 +72,7 @@ def splitlines(text):
                 newline = b"\r"
             break
 
-    return [x + newline for x in text.split(newline)]
+    return [x + newline for x in text.split(newline)], newline.decode()
 
 
 def escapeforpo(line):
@@ -238,6 +238,12 @@ class pounit(pocommon.pounit):
         self.msgstr = []
         super().__init__(source)
 
+    @property
+    def newline(self):
+        if self._store is not None:
+            return self._store.newline
+        return "\n"
+
     def _initallcomments(self, blankall=False):
         """Initialises allcomments"""
         if blankall:
@@ -370,15 +376,19 @@ class pounit(pocommon.pounit):
         :param origin: programmer, developer, source code, translator or None
         """
         if origin is None:
-            comments = "".join([comment[2:] or "\n" for comment in self.othercomments])
+            comments = "".join(
+                [comment[2:] or self.newline for comment in self.othercomments]
+            )
             comments += "".join(
-                [comment[3:] or "\n" for comment in self.automaticcomments]
+                [comment[3:] or self.newline for comment in self.automaticcomments]
             )
         elif origin == "translator":
-            comments = "".join([comment[2:] or "\n" for comment in self.othercomments])
+            comments = "".join(
+                [comment[2:] or self.newline for comment in self.othercomments]
+            )
         elif origin in ["programmer", "developer", "source code"]:
             comments = "".join(
-                [comment[3:] or "\n" for comment in self.automaticcomments]
+                [comment[3:] or self.newline for comment in self.automaticcomments]
             )
         else:
             raise ValueError("Comment type not valid")
@@ -401,8 +411,8 @@ class pounit(pocommon.pounit):
             commentlist = self.automaticcomments
             linestart = "#."
         newcomments = [
-            "".join((linestart, " " if line else "", line, "\n"))
-            for line in text.split("\n")
+            "".join((linestart, " " if line else "", line, self.newline))
+            for line in text.split(self.newline)
         ]
         if position == "append":
             newcomments = commentlist + newcomments
@@ -449,7 +459,7 @@ class pounit(pocommon.pounit):
 
     def _msgstrlen(self):
         if isinstance(self.msgstr, dict):
-            combinedstr = "\n".join(
+            combinedstr = self.newline.join(
                 filter(None, [unquotefrompo(msgstr) for msgstr in self.msgstr.values()])
             )
             return len(combinedstr)
@@ -519,7 +529,7 @@ class pounit(pocommon.pounit):
             # Remove kde-style comments from the translation (if any).
             if self._extract_msgidcomments(otherpo.target):
                 otherpo.target = otherpo.target.replace(
-                    "_: " + otherpo._extract_msgidcomments() + "\n", ""
+                    "_: " + otherpo._extract_msgidcomments() + self.newline, ""
                 )
             self.target = otherpo.target
             if (
@@ -644,7 +654,9 @@ class pounit(pocommon.pounit):
         return len(self.msgid_plural) > 0
 
     def parse(self, src):
-        return poparser.parse_unit(poparser.ParseState(splitlines(src), pounit), self)
+        return poparser.parse_unit(
+            poparser.ParseState(splitlines(src)[0], pounit), self
+        )
 
     def _getmsgpartstr(self, partname, partlines, partcomments=""):
         if isinstance(partlines, dict):
@@ -665,7 +677,7 @@ class pounit(pocommon.pounit):
         elif partcomments:
             if partlines and not unquotefrompo(partlines[:1]):
                 # if there is a blank leader line, it must come before the comment
-                partstr.extend((partlines[0], "\n"))
+                partstr.extend((partlines[0], self.newline))
                 # but if the whole string is blank, leave it in
                 if len(partlines) > 1:
                     partstartline += 1
@@ -688,10 +700,10 @@ class pounit(pocommon.pounit):
                 if partcomments[0] == '""':
                     partcomments = partcomments[1:]
             # comments first, no blank leader line needed
-            partstr.append(quote.rstripeol("\n".join(partcomments)))
+            partstr.append(quote.rstripeol(self.newline.join(partcomments)))
         else:
             partstr.append('""')
-        partstr.append("\n")
+        partstr.append(self.newline)
         # add the rest
         previous = None
         for partline in partlines[partstartline:]:
@@ -699,7 +711,7 @@ class pounit(pocommon.pounit):
             if previous == '""' and partline == '""':
                 continue
             previous = partline
-            partstr.extend((partline, "\n"))
+            partstr.extend((partline, self.newline))
         return "".join(partstr)
 
     def __str__(self):
@@ -798,7 +810,7 @@ class pounit(pocommon.pounit):
 
         if not text:
             text = unquotefrompo(self.msgidcomments)
-        return text.split("\n")[0].replace("_: ", "", 1)
+        return text.split(self.newline)[0].replace("_: ", "", 1)
 
     def setmsgidcomment(self, msgidcomment):
         if msgidcomment:
@@ -841,6 +853,7 @@ class pofile(pocommon.pofile):
         if width is not None:
             wrapargs = {"width": width}
         self.wrapper = PoWrapper(**wrapargs)
+        self.newline = "\n"
         super().__init__(inputfile, **kwargs)
 
     def create_unit(self):
@@ -854,10 +867,10 @@ class pofile(pocommon.pofile):
             self.filename = ""
         if not isinstance(input, bytes):
             input = input.read()
-        input = iter(splitlines(input))
+        lines, self.newline = splitlines(input)
         # clear units to get rid of automatically generated headers before parsing
         self.units = []
-        poparser.parse_units(poparser.ParseState(input, self.create_unit), self)
+        poparser.parse_units(poparser.ParseState(iter(lines), self.create_unit), self)
 
     def removeduplicates(self, duplicatestyle="merge"):
         """Make sure each msgid is unique ; merge comments etc from
@@ -924,7 +937,7 @@ class pofile(pocommon.pofile):
         try:
             for unit in self.units:
                 if not at_start:
-                    out.write(b"\n")
+                    out.write(self.newline.encode())
                 else:
                     at_start = False
                 out.write(unit._getoutput().encode(self.encoding))
