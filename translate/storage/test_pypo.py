@@ -452,24 +452,28 @@ msgstr[1] "toetse"
 
     def test_unix_newlines(self):
         """checks that unix newlines are properly parsed"""
-        posource = b'\nmsgid "test me"\nmsgstr ""\n'
+        posource = b'msgid "test me"\nmsgstr ""\n'
         pofile = self.poparse(posource)
         assert len(pofile.units) == 1
         assert pofile.units[0].source == "test me"
+        assert bytes(pofile) == posource
 
     def test_dos_newlines(self):
         """checks that dos newlines are properly parsed"""
-        posource = b'\r\nmsgid "test me"\r\nmsgstr ""\r\n'
+        posource = b'#: File1\r\n#: File2\r\nmsgid "test me"\r\nmsgstr ""\r\n'
         pofile = self.poparse(posource)
         assert len(pofile.units) == 1
         assert pofile.units[0].source == "test me"
+        assert pofile.units[0].getlocations() == ["File1", "File2"]
+        assert bytes(pofile) == posource
 
     def test_mac_newlines(self):
         """checks that mac newlines are properly parsed"""
-        posource = b'\rmsgid "test me"\rmsgstr ""\r'
+        posource = b'msgid "test me"\rmsgstr ""\r'
         pofile = self.poparse(posource)
         assert len(pofile.units) == 1
         assert pofile.units[0].source == "test me"
+        assert bytes(pofile) == posource
 
     def test_mixed_newlines(self):
         """checks that mixed newlines are properly parsed"""
