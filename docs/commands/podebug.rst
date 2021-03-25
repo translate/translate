@@ -61,7 +61,11 @@ Options:
                        chef  (v1.2), unicode (v1.2) <option_rewrite>`
 --ignore=APPLICATION   apply tagging ignore rules for the given application:
                        kde, gtk, openoffice, libreoffice, mozilla
---preserveplaceholders keep variables such as {foo} intact
+--preserveplaceholders
+                       attempt to exclude characters that are part of
+                       placeholders when performing character-level rewrites
+                       so that consuming applications can still use the
+                       placeholders to generate final output
 
 
 .. _podebug#formats:
