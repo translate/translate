@@ -61,6 +61,11 @@ Options:
                        chef  (v1.2), unicode (v1.2) <option_rewrite>`
 --ignore=APPLICATION   apply tagging ignore rules for the given application:
                        kde, gtk, openoffice, libreoffice, mozilla
+--preserveplaceholders
+                       attempt to exclude characters that are part of
+                       placeholders when performing character-level rewrites
+                       so that consuming applications can still use the
+                       placeholders to generate final output
 
 
 .. _podebug#formats:
@@ -147,6 +152,18 @@ files we can produce a hash on the strings location and other data.  This
 produces unique alphanumeric sequences which are prepended to the target text.
 Thus now in your application you have your translated text and an alphanumeric
 value.  Its is then easy to search for that value and find your problem string.
+
+.. _podebug#preserveplaceholders:
+
+Preserving placeholders
+=======================
+
+Some translations include placeholders for variables, such as ``This is {foo}`` 
+where changing the ``{foo}``-part would mean the translation is invalid and would
+fail to compile.
+
+The ``--preserveplaceholders`` makes sure this kind of variable names are 
+left intact.
 
 .. _podebug#more_reading:
 
