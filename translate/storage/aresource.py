@@ -313,6 +313,8 @@ class AndroidResourceUnit(base.TranslationUnit):
                 cloned_doc = copy.deepcopy(self._store.document)
                 cloned_root = cloned_doc.getroot()
                 cloned_root.clear()
+                # Add content to the element so that we get a real closing tag
+                cloned_root.text = " "
                 template = etree.tostring(
                     cloned_doc,
                     encoding="unicode",
@@ -320,14 +322,8 @@ class AndroidResourceUnit(base.TranslationUnit):
                 )
             else:
                 template = "<resources></resources>"
-            if "</resources>" in template:
-                match = "</resources>"
-                prefix = ""
-            else:
-                match = "<resources/>"
-                prefix = "<resources>"
             newstring = template.replace(
-                match, f"{prefix}<string>{target}</string></resources>"
+                "</resources>", f"<string>{target}</string></resources>"
             )
             try:
                 newstring = etree.fromstring(newstring, parser)[0]
