@@ -746,3 +746,21 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
             0
         ].target = """Other: <xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">%s</xliff:g>"""
         assert bytes(store).decode() == expected
+
+    def test_xliff_namespace(self):
+        original = """<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="id">Test</string>
+</resources>"""
+        expected = """<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="id">Test: <xliff:g>%s</xliff:g></string>
+</resources>"""
+        store = self.StoreClass()
+        store.parse(original.encode())
+        assert bytes(store).decode() == original
+        store.units[
+            0
+        ].target = """Test: <xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">%s</xliff:g>"""
+        # The namespace should be flattened as it is defined in the toplevel element
+        assert bytes(store).decode() == expected
