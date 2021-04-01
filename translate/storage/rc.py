@@ -188,11 +188,14 @@ def rc_statement():
         + quotedString("caption")
     ) + SkipTo(block_start)("post_caption")
 
-    undefined_control = Group(
-        name_id.setResultsName("id_control")
-        + delimitedList(
-            concatenated_string ^ constant ^ numbers ^ Group(combined_constants)
-        ).setResultsName("values_")
+    undefined_control = (
+        Group(
+            name_id.setResultsName("id_control")
+            + delimitedList(
+                concatenated_string ^ constant ^ numbers ^ Group(combined_constants)
+            ).setResultsName("values_")
+        )
+        | one_line_comment
     )
 
     block = block_start + ZeroOrMore(undefined_control)("controls") + block_end
@@ -384,7 +387,9 @@ class rcfile(base.TranslationStore):
                         self.addunit(newunit)
 
                     for control in statement.controls:
-
+                        if isinstance(control, str):
+                            # This is a comment
+                            continue
                         if control.id_control[0] in (
                             "AUTOCHECKBOX AUTORADIOBUTTON CAPTION CHECKBOX CTEXT CONTROL DEFPUSHBUTTON GROUPBOX LTEXT PUSHBUTTON RADIOBUTTON RTEXT"
                         ) and (
@@ -422,6 +427,9 @@ class rcfile(base.TranslationStore):
                 if statement.block_type in ("STRINGTABLE"):
 
                     for text in statement.controls:
+                        if isinstance(text, str):
+                            # This is a comment
+                            continue
 
                         newtext = extract_text(text.values_)
                         if newtext:

@@ -80,3 +80,30 @@ class TestPO2RCCommand(test_convert.TestConvertCommand):
             rc_result = rcfile(handle)
         assert len(rc_result.units) == 14
         assert rc_result.units[0].target == "Licenční dialog"
+
+    def test_convert_comment(self):
+        self.create_testfile(
+            "simple.rc",
+            """
+STRINGTABLE
+BEGIN
+    // IDS_COMMENTED        "Comment"
+    IDS_COPIED              "Copied"
+END
+""",
+        )
+        self.create_testfile(
+            "simple.po",
+            """
+#: STRINGTABLE.IDS_COPIED
+msgid "Copied"
+msgstr "Zkopirovano"
+""",
+        )
+        self.run_command(
+            template="simple.rc", i="simple.po", o="output.rc", l="LANG_CZECH"
+        )
+        with self.open_testfile("output.rc") as handle:
+            rc_result = rcfile(handle)
+        assert len(rc_result.units) == 1
+        assert rc_result.units[0].target == "Zkopirovano"
