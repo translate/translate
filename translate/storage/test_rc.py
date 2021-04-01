@@ -459,3 +459,15 @@ END
         rc_file = self.source_parse(rc_source, "utf-16-le")
         assert len(rc_file.units) == 1
         assert rc_file.units[0].source == "✔ Copied"
+
+    def test_comment(self):
+        rc_source = """
+STRINGTABLE
+BEGIN
+    // IDS_COMMENTED        "Comment"
+    IDS_COPIED              "Copied"
+END
+"""
+        rc_file = self.source_parse(rc_source)
+        assert len(rc_file.units) == 1
+        assert rc_file.units[0].source == "Copied"

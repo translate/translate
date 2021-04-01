@@ -82,14 +82,24 @@ class rerc:
 
         out.append(BLOCK_START)
         out.append(NL)
+        addnl = False
 
         for c in toks.controls:
 
+            if isinstance(c, str):
+                if not addnl:
+                    out.append("    ")
+                out.append(c)
+                addnl = True
+                continue
+            if addnl:
+                out.append(NL)
+                addnl = False
             out.append("    ")
             if len(c[0]) >= 16:
                 out.append(c[0])
                 # If more than 16 char, put it on a new line to align it.
-                out.append("\n" + " " * (16 + 4))
+                out.append(NL + " " * (16 + 4))
             else:
                 out.append(c[0].ljust(16))
 
@@ -129,11 +139,21 @@ class rerc:
         out.append(BLOCK_START)
         out.append(NL)
 
+        addnl = False
         for c in toks.controls:
+            if isinstance(c, str):
+                if not addnl:
+                    out.append("    ")
+                out.append(c)
+                addnl = True
+                continue
+            if addnl:
+                out.append(NL)
+                addnl = False
             out.append("    ")
             if len(c[0]) >= 24:
                 out.append(c[0])
-                out.append("\n" + " " * (24 + 4))
+                out.append(NL + " " * (24 + 4))
             else:
                 out.append(c[0].ljust(24))
 
