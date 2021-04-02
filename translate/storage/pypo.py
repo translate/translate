@@ -60,7 +60,7 @@ def splitlines(text):
         text = text[3:]
     # Find first newline
     newline = b"\n"
-    msgid_pos = max(0, text.find(b"msgid "))
+    msgid_pos = max(0, text.find(b"\rmsgid ") + 1, text.find(b"\nmsgid ") + 1)
     for i, ch in enumerate(text[msgid_pos:]):
         # Iteration over bytes yields numbers in Python 3
         if ch == 10:

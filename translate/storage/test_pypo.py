@@ -507,6 +507,16 @@ msgstr "FcoeClient"
         print(repr(bytes(pofile)))
         assert bytes(pofile) == posource
 
+    def test_mixed_newlines_comment(self):
+        posource = b"""# scootergrisen: msgid "View your battery status and change power saving settings"\r
+msgid "test me"
+msgstr ""
+"""
+        pofile = self.poparse(posource)
+        assert len(pofile.units) == 1
+        assert pofile.units[0].source == "test me"
+        assert bytes(pofile) == posource
+
     def test_bom(self):
         """checks that BOM is parsed"""
         posource = """msgid ""
