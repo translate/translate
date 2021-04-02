@@ -1,0 +1,31 @@
+Translate Toolkit 3.3.4
+***********************
+
+*Released on 2 April 2021*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- PO
+    
+  - Fix newlines round-trip
+
+- Android
+
+  - Improve XML handling
+    
+- RC
+
+  - Fix parsing stringtable with a comment
+    
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař, Asmo Soinio
