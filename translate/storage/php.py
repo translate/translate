@@ -432,7 +432,7 @@ class phpfile(base.TranslationStore):
                     # To update lexer current position
                     lexer.extract_name("DOUBLE_ARROW", *item.lexpositions)
                     if isinstance(item.key, BinaryOp):
-                        name = "'{}'".format(concatenate(item.key))
+                        name = f"'{concatenate(item.key)}'"
                     elif isinstance(item.key, (int, float)):
                         name = f"{item.key}"
                     else:

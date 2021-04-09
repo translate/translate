@@ -311,9 +311,7 @@ def pack_pot(includes):
     except OSError:
         pass
 
-    packname = join(
-        potpacks, "{}-{}-{}".format(products[targetapp], mozversion, timestamp)
-    )
+    packname = join(potpacks, f"{products[targetapp]}-{mozversion}-{timestamp}")
     run(
         [
             "tar",
@@ -341,7 +339,7 @@ def pack_po(lang, buildlang):
     print("    %s" % (lang))
     packname = join(
         popacks,
-        "{}-{}-{}-{}".format(products[targetapp], mozversion, buildlang, timestamp),
+        f"{products[targetapp]}-{mozversion}-{buildlang}-{timestamp}",
     )
     run(
         [

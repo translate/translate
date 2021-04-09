@@ -240,7 +240,7 @@ def _process_children(dom_node, state, process_func):
 
 def compact_tag(nsmap, namespace, tag):
     if namespace in nsmap:
-        return "{}:{}".format(nsmap[namespace], tag)
+        return f"{nsmap[namespace]}:{tag}"
     else:
         return f"{{{namespace}}}{tag}"
 

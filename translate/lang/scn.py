@@ -88,7 +88,7 @@ class SicilianChecker(TranslationChecker):
         words1 = self.filteraccelerators(str1).split()
         words2 = self.filteraccelerators(str2).split()
         stopwords = [
-            "{} ({})".format(word, errors[word])
+            f"{word} ({errors[word]})"
             for word in words2
             if word.lower() in errors.keys() and word not in words1
         ]
@@ -143,7 +143,7 @@ class SicilianChecker(TranslationChecker):
         for word in self.config.lang.words(str2):
             for suffix in suffixes.keys():
                 if word not in str1 and word.lower().endswith(suffix):
-                    stopwords.append("{} (-{})".format(word, suffixes[suffix]))
+                    stopwords.append(f"{word} (-{suffixes[suffix]})")
 
         if stopwords:
             raise FilterFailure(

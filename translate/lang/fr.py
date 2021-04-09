@@ -34,7 +34,7 @@ def guillemets(text):
         # <a href="something">
         if prefix == "=":
             return match.group(0)
-        return "{}«\u00a0{}\u00a0»".format(prefix, match.group(2))  # \u00a0 is NBSP
+        return f"{prefix}«\u00a0{match.group(2)}\u00a0»"  # \u00a0 is NBSP
 
     # Check that there is an even number of double quotes, otherwise it is
     # probably not safe to convert them.

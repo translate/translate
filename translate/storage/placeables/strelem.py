@@ -785,7 +785,7 @@ class StringElem:
             return True
 
         logging.debug(
-            "Could not insert between {} and {}... odd.".format(repr(left), repr(right))
+            f"Could not insert between {repr(left)} and {repr(right)}... odd."
         )
         return False
 
@@ -848,9 +848,9 @@ class StringElem:
         manner.
         """
         indent_prefix = " " * indent * 2
-        out = (
-            "{}{} [{}]".format(indent_prefix, self.__class__.__name__, str(self))
-        ).encode("utf-8")
+        out = (f"{indent_prefix}{self.__class__.__name__} [{str(self)}]").encode(
+            "utf-8"
+        )
         if verbose:
             out += " " + repr(self)
 

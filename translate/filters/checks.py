@@ -1852,7 +1852,7 @@ class StandardChecker(TranslationChecker):
         invalid1 = str1.translate(self.config.validcharsmap)
         invalid2 = str2.translate(self.config.validcharsmap)
         invalidchars = [
-            "'{}' (\\u{:04x})".format(invalidchar, ord(invalidchar))
+            f"'{invalidchar}' (\\u{ord(invalidchar):04x})"
             for invalidchar in invalid2
             if invalidchar not in invalid1
         ]
