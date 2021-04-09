@@ -723,7 +723,7 @@ class pounit(pocommon.pounit):
 
         def add_prev_msgid_lines(lines, prefix, header, var):
             if var:
-                lines.append("{} {} {}\n".format(prefix, header, var[0]))
+                lines.append(f"{prefix} {header} {var[0]}\n")
                 lines.extend(f"{prefix} {line}\n" for line in var[1:])
 
         def add_prev_msgid_info(lines, prefix):

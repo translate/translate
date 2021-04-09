@@ -149,7 +149,7 @@ class TranslationUnit:
         # no point in showing store object.
         return ", ".join(
             [
-                "{}: {}".format(k, self.__dict__[k])
+                f"{k}: {self.__dict__[k]}"
                 for k in sorted(self.__dict__.keys())
                 if k != "_store"
             ]
@@ -915,7 +915,7 @@ class UnitId:
 
     def __add__(self, other):
         if not isinstance(other, list):
-            raise ValueError("Not supported type for add: {}".format(type(other)))
+            raise ValueError(f"Not supported type for add: {type(other)}")
         return self.__class__(self.parts + other)
 
     @classmethod

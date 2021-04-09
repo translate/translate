@@ -543,7 +543,7 @@ class pounit(pocommon.pounit):
         #            id = '%s\0%s' % (id, plural)
         context = gpo.po_message_msgctxt(self._gpo_message)
         if context:
-            id = "{}\04{}".format(gpo_decode(context), id)
+            id = f"{gpo_decode(context)}\04{id}"
         return id
 
     def getnotes(self, origin=None):
