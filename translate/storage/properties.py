@@ -645,10 +645,7 @@ class proppluralunit(base.TranslationUnit):
         strings = self._get_strings(strings, mapping)
         units = self._get_units(mapping)
         if len(strings) != len(units):
-            raise Exception(
-                'Not same plural counts between "%s" and "%s"'
-                % (str(strings), str(units))
-            )
+            raise Exception(f'Not same plural counts between "{strings}" and "{units}"')
 
         for a, b in zip(strings, units):
             b.target = a
@@ -684,10 +681,7 @@ class proppluralunit(base.TranslationUnit):
         strings = self._get_strings(strings, mapping)
         units = self._get_units(mapping)
         if len(strings) != len(units):
-            raise Exception(
-                'Not same plural counts between "%s" and "%s"'
-                % (str(strings), str(units))
-            )
+            raise Exception(f'Not same plural counts between "{strings}" and "{units}"')
 
         for a, b in zip(strings, units):
             b.source = a
@@ -902,13 +896,13 @@ class propunit(base.TranslationUnit):
             key = self.name
             kwc = self.personality.key_wrap_char
             if kwc:
-                key = key.replace(kwc, "\\%s" % kwc)
+                key = key.replace(kwc, f"\\{kwc}")
                 key = f"{kwc}{key}{kwc}"
             # encode value, if needed
             value = self.translation or self.value
             vwc = self.personality.value_wrap_char
             if vwc:
-                value = value.replace(vwc, "\\%s" % vwc)
+                value = value.replace(vwc, f"\\{vwc}")
                 value = f"{vwc}{value}{vwc}"
             wrappers = self.out_delimiter_wrappers
             delimiter = f"{wrappers}{self.delimiter}{wrappers}"
@@ -916,18 +910,7 @@ class propunit(base.TranslationUnit):
             missing_prefix = ""
             if self.output_missing and self.missing:
                 missing_prefix = self.get_missing_part()
-            out_dict = {
-                "notes": notes,
-                "missing_prefix": missing_prefix,
-                "key": key,
-                "del": delimiter,
-                "value": value,
-                "ending": ending,
-            }
-            return (
-                "%(notes)s%(missing_prefix)s%(key)s%(del)s%(value)s%(ending)s\n"
-                % out_dict
-            )
+            return f"{notes}{missing_prefix}{key}{delimiter}{value}{ending}\n"
 
     def getlocations(self):
         return [self.name]
