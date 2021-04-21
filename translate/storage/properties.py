@@ -914,7 +914,7 @@ class propunit(base.TranslationUnit):
             delimiter = f"{wrappers}{self.delimiter}{wrappers}"
             ending = self.out_ending
             missing_prefix = ""
-            if self.missing and self.output_missing:
+            if self.output_missing and self.missing:
                 missing_prefix = self.get_missing_part()
             out_dict = {
                 "notes": notes,
