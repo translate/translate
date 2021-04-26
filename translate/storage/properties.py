@@ -293,16 +293,15 @@ class Dialect:
         for delimiter in cls.delimiters:
             delimiter_dict[delimiter] = -1
         delimiters = delimiter_dict
+        # Figure out starting position
+        start_pos = len(line) - len(line.lstrip())  # Skip initial whitespace
+        if cls.key_wrap_char != "" and line[start_pos] == cls.key_wrap_char:
+            # Skip the key if it is delimited by some char
+            start_pos += 1
+            while line[start_pos] != cls.key_wrap_char or line[start_pos - 1] == "\\":
+                start_pos += 1
         # Find the position of each delimiter type
         for delimiter in delimiters:
-            start_pos = len(line) - len(line.lstrip())  # Skip initial whitespace
-            if cls.key_wrap_char != "" and line[start_pos] == cls.key_wrap_char:
-                # Skip the key if it is delimited by some char
-                start_pos += 1
-                while (
-                    line[start_pos] != cls.key_wrap_char or line[start_pos - 1] == "\\"
-                ):
-                    start_pos += 1
             pos = line.find(delimiter, start_pos)
             while pos != -1:
                 if delimiters[delimiter] == -1 and line[pos - 1] != "\\":
