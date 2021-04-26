@@ -137,7 +137,7 @@ class TestGwtProp(test_monolingual.TestMonolingualStore):
         propunit = propfile.units[0]
         assert propunit.name == "test_me"
         assert propunit.source == "I can 'code'!"
-        propunit.value = "I 'can' code!"
+        propunit.source = "I 'can' code!"
         assert bytes(propfile).decode() == "test_me=I ''can'' code!\n"
 
     def test_simpledefinition(self):
