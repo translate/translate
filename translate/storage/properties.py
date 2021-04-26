@@ -780,16 +780,13 @@ class DialectJoomla(Dialect):
     @classmethod
     def value_strip(cls, value):
         """Strip unneeded characters from the value"""
-        newvalue = value.strip()
-        if not newvalue:
-            return newvalue
-        if newvalue[0] == '"' and newvalue[-1] == '"':
-            newvalue = newvalue[1:-1]
-        return newvalue.replace('"_QQ_"', '"')
+        return value.strip()
 
     @classmethod
     def decode(cls, string):
-        return cls.value_strip(string)
+        if len(string) > 2 and string[0] == '"' and string[-1] == '"':
+            string = string[1:-1]
+        return string.replace('"_QQ_"', '"')
 
     @classmethod
     def encode(cls, string, encoding=None):
@@ -890,8 +887,6 @@ class propunit(base.TranslationUnit):
         else:
             if notes:
                 notes = notes + "\n"
-            self.value = self.personality.encode(self.source, self.encoding)
-            self.translation = self.personality.encode(self.target, self.encoding)
             # encode key, if needed
             key = self.name
             kwc = self.personality.key_wrap_char
