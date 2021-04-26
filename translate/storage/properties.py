@@ -259,6 +259,7 @@ class Dialect:
     key_wrap_char = ""
     value_wrap_char = ""
     drop_comments = []
+    has_plurals = False
 
     @classmethod
     def encode(cls, string, encoding=None):
@@ -399,6 +400,7 @@ class DialectXWiki(DialectJava):
     name = "xwiki"
     default_encoding = "iso-8859-1"
     delimiters = ["=", ":", " "]
+    has_plurals = True
 
     @classmethod
     def encode(cls, string, encoding=None):
@@ -439,6 +441,7 @@ class DialectGwt(DialectJavaUtf8):
     plural_regex = re.compile(r"([^\[\]]*)(?:\[(.*)\])?")
     name = "gwt"
     delimiters = ["="]
+    has_plurals = True
 
     gwt_plural_categories = [
         ("", "other"),
@@ -1085,7 +1088,8 @@ class propfile(base.TranslationStore):
         ):
             self.addunit(newunit)
 
-        self.fold()
+        if self.personality.has_plurals:
+            self.fold()
 
     def fold(self):
         old_units = self.units
