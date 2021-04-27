@@ -786,6 +786,7 @@ class DialectJoomla(Dialect):
 
     @classmethod
     def decode(cls, string):
+        string = super().decode(string)
         if len(string) > 2 and string[0] == '"' and string[-1] == '"':
             string = string[1:-1]
         return string.replace('"_QQ_"', '"')

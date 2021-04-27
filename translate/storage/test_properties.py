@@ -611,6 +611,16 @@ key=value
         assert propunit.source == 'I am a "value"'
         assert bytes(propfile) == propsource
 
+    def test_joomla_escape(self):
+        """test various items used in Joomla files"""
+        propsource = b"""; comment\nVALUE="I am a "_QQ_"value"_QQ_"\\n"\n"""
+        propfile = self.propparse(propsource, personality="joomla")
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == "VALUE"
+        assert propunit.source == 'I am a "value"\n'
+        assert bytes(propfile) == propsource
+
     def test_serialize_missing_delimiter(self):
         propsource = b"key\n"
         propfile = self.propparse(propsource, personality="java-utf8")
