@@ -483,6 +483,7 @@ class tsfile(lisa.LISAfile):
                 treestring[pos:nextpos]
                 .replace(b"'", b"&apos;")
                 .replace(b'"', b"&quot;")
+                .replace(b"\xc2\xa0", b"&#xa0;")
             )
             pos = nextpos
             nextpos = treestring.find(b">", pos)
