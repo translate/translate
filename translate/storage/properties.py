@@ -574,17 +574,21 @@ class proppluralunit(base.TranslationUnit):
             return data.plural_tags.get(locale, data.plural_tags["en"])
         return None
 
+    def _get_existing_mapping(self):
+        existing = self.units.keys()
+        return [key for key in data.cldr_plural_categories if key in existing]
+
     def _get_target_mapping(self):
         cldr_mapping = proppluralunit._get_language_mapping(self._store.targetlanguage)
         if cldr_mapping:
             return cldr_mapping
-        return self.units.keys()
+        return self._get_existing_mapping()
 
     def _get_source_mapping(self):
         cldr_mapping = proppluralunit._get_language_mapping(self._store.sourcelanguage)
         if cldr_mapping:
             return cldr_mapping
-        return self.units.keys()
+        return self._get_existing_mapping()
 
     def _get_units(self, mapping):
         ret = []
