@@ -156,10 +156,13 @@ class TestGwtProp(test_monolingual.TestMonolingualStore):
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
         assert propunit.name == "test_me"
-        assert propunit.source.strings == ["I can code!", "I can code single!"]
+        assert propunit.source.strings == ["I can code single!", "I can code!"]
         assert propunit.value == ["I can code!", "I can code single!"]
-        propunit.value = ["I can code!", "I can code single!"]
-        assert propunit.value == ["I can code!", "I can code single!"]
+        propunit.value = ["I can code double!", "I can code single!"]
+        assert propunit.value == ["I can code double!", "I can code single!"]
+        assert propunit.source.strings == ["I can code single!", "I can code double!"]
+        # propunit.value = ["I can code single!", "I can code!" ]
+        # assert propunit.value == ["I can code single!", "I can code!"]
 
     def test_doubledefinition_source(self):
         """checks that a double properties definition can be regenerated as source"""
