@@ -451,8 +451,8 @@ class DialectGwt(DialectJavaUtf8):
         ("many", "many"),
     ]
 
-    gwt2cldr = collections.OrderedDict(gwt_plural_categories)
-    cldr2gwt = collections.OrderedDict([(b, a) for a, b in gwt_plural_categories])
+    gwt2cldr = dict(gwt_plural_categories)
+    cldr2gwt = {b: a for a, b in gwt_plural_categories}
 
     @classmethod
     def get_key_cldr_name(cls, key):
