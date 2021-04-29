@@ -571,9 +571,7 @@ class proppluralunit(base.TranslationUnit):
     def _get_language_mapping(lang):
         if lang:
             locale = lang.replace("_", "-").split("-")[0]
-            cldr_mapping = data.plural_tags.get(locale, data.plural_tags["en"])
-            if cldr_mapping:
-                return cldr_mapping
+            return data.plural_tags.get(locale, data.plural_tags["en"])
         return None
 
     def _get_target_mapping(self):
