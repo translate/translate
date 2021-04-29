@@ -1,0 +1,28 @@
+Translate Toolkit 3.3.5
+***********************
+
+*Released on 27 April 2021*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- Properties
+
+  - fixed handling of plurals in GWT properties
+
+Dependencies
+------------
+
+- ``lxml`` requirement was raised to 4.6.3 to address CVE-2021-28957
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař
