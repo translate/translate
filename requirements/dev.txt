@@ -12,7 +12,7 @@ isort==5.8.0
 pre-commit==2.12.1
 pycodestyle==2.7.0
 pydocstyle==6.0.0
-pytest==6.2.3
+pytest==6.2.4
 pytest-cov==2.11.1
 pytest-xdist==2.2.1
 pyupgrade==2.14.0
