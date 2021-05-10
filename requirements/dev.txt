@@ -15,7 +15,7 @@ pydocstyle==6.0.0
 pytest==6.2.4
 pytest-cov==2.11.1
 pytest-xdist==2.2.1
-pyupgrade==2.14.0
+pyupgrade==2.15.0
 Sphinx==3.5.4
 twine==3.4.1
 virtualenv==20.4.6
