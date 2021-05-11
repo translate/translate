@@ -1,6 +1,6 @@
 -r optional.txt
 
-black==21.5b0
+black==21.5b1
 flake8==3.9.2
 flake8-black==0.2.1
 flake8-breakpoint==1.1.0
