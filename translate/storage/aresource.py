@@ -291,10 +291,8 @@ class AndroidResourceUnit(base.TranslationUnit):
 
             # Include markup as well
             target += "".join(
-                [
-                    etree.tostring(child, encoding="unicode")
-                    for child in cloned_target.iterchildren()
-                ]
+                etree.tostring(child, encoding="unicode")
+                for child in cloned_target.iterchildren()
             )
             return target
 

@@ -48,7 +48,7 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
         if usage is None:
             self.usage = (
                 "%prog "
-                + " ".join([self.getusagestring(option) for option in self.option_list])
+                + " ".join(self.getusagestring(option) for option in self.option_list)
                 + "\n  "
                 + "input directory is searched for PO files with (poconflicts) comments, all entries are written to files in a directory structure for pomerge"
             )

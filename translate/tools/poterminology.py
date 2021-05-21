@@ -41,10 +41,8 @@ def create_termunit(
         termunit.merge(unit, overwrite=False, comments=False)
     if len(targets.keys()) > 1:
         txt = "; ".join(
-            [
-                "{} {{{}}}".format(target, ", ".join(files))
-                for target, files in targets.items()
-            ]
+            "{} {{{}}}".format(target, ", ".join(files))
+            for target, files in targets.items()
         )
         if termunit.target.find("};") < 0:
             termunit.target = txt
@@ -444,7 +442,7 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
         if usage is None:
             self.usage = (
                 "%prog "
-                + " ".join([self.getusagestring(option) for option in self.option_list])
+                + " ".join(self.getusagestring(option) for option in self.option_list)
                 + "\n  input directory is searched for PO files, terminology PO file is output file"
             )
         else:

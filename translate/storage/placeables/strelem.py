@@ -152,7 +152,7 @@ class StringElem:
         return self * lhs
 
     def __repr__(self):
-        elemstr = ", ".join([repr(elem) for elem in self.sub])
+        elemstr = ", ".join(repr(elem) for elem in self.sub)
         return "<%(class)s(%(id)s%(rid)s%(xid)s[%(subs)s])>" % {
             "class": self.__class__.__name__,
             "id": self.id is not None and 'id="%s" ' % (self.id) or "",
@@ -166,7 +166,7 @@ class StringElem:
             return self.renderer(self)
         if not self.isvisible:
             return ""
-        return "".join([str(elem) for elem in self.sub])
+        return "".join(str(elem) for elem in self.sub)
 
     # METHODS #
     def apply_to_strings(self, f):

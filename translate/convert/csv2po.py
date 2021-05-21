@@ -123,7 +123,7 @@ class csv2po:
             if len(thepolist) > 1:
                 csvfilename = getattr(self.csvfile, "filename", "(unknown)")
                 matches = "\n  ".join(
-                    ["possible match: " + pounit.source for pounit in thepolist]
+                    "possible match: " + pounit.source for pounit in thepolist
                 )
                 logger.warning(
                     "%s - csv entry not unique in pofile, "

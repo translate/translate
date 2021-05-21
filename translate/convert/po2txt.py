@@ -63,10 +63,8 @@ class po2txt:
         if self.wrap is None:
             return message
         return "\n".join(
-            [
-                textwrap.fill(line, self.wrap, replace_whitespace=False)
-                for line in message.split("\n")
-            ]
+            textwrap.fill(line, self.wrap, replace_whitespace=False)
+            for line in message.split("\n")
         )
 
     def convert_store(self):

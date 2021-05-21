@@ -83,7 +83,7 @@ class TestHTMLExtraction:
     def strip_html(self, str):
         h = html.htmlfile()
         store = h.parsestring(str)
-        return "\n".join([u.source for u in store.units])
+        return "\n".join(u.source for u in store.units)
 
     def test_strip_html(self):
         assert self.strip_html("<p><a>Something</a></p>") == "Something"

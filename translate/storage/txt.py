@@ -123,7 +123,7 @@ class TxtFile(base.TranslationStore):
     def parse(self, lines):
         """Read in text lines and create txtunits from the blocks of text"""
         if self.no_segmentation:
-            self.addsourceunit("".join([line.decode(self.encoding) for line in lines]))
+            self.addsourceunit("".join(line.decode(self.encoding) for line in lines))
             return
         block = []
         current_line = 0

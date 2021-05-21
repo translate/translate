@@ -103,7 +103,7 @@ class UnknownXML(StringElem):
         if tag.startswith("{"):
             tag = tag[tag.index("}") + 1 :]
 
-        elemstr = ", ".join([repr(elem) for elem in self.sub])
+        elemstr = ", ".join(repr(elem) for elem in self.sub)
 
         return "<%(class)s{%(tag)s}(%(id)s%(rid)s%(xid)s[%(subs)s])>" % {
             "class": self.__class__.__name__,

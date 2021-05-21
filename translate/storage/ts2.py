@@ -166,7 +166,7 @@ class tsunit(lisa.LISAunit):
             )
         if position == "append":
             note.text = "\n".join(
-                [item for item in [current_notes, text.strip()] if item]
+                item for item in [current_notes, text.strip()] if item
             )
         else:
             note.text = text.strip()

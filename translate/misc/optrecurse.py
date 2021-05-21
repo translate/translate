@@ -177,7 +177,7 @@ class RecursiveOptionParser(optparse.OptionParser):
         result.append(".SH SYNOPSIS\n")
         result.append(".PP\n")
         usage = "\\fB%prog "
-        usage += " ".join([self.getusageman(option) for option in self.option_list])
+        usage += " ".join(self.getusageman(option) for option in self.option_list)
         usage += "\\fP"
         result.append("%s\n" % formatprog(usage))
         description_lines = self.description.split("\n\n")[1:]
@@ -185,7 +185,7 @@ class RecursiveOptionParser(optparse.OptionParser):
             result.append(".SH DESCRIPTION\n")
             result.append(
                 "\n\n".join(
-                    [re.sub(r"\.\. note::", "Note:", l) for l in description_lines]
+                    re.sub(r"\.\. note::", "Note:", l) for l in description_lines
                 )
             )
         result.append(".SH OPTIONS\n")
@@ -209,7 +209,7 @@ class RecursiveOptionParser(optparse.OptionParser):
         """
         if usage is None:
             self.usage = "%prog " + " ".join(
-                [self.getusagestring(option) for option in self.option_list]
+                self.getusagestring(option) for option in self.option_list
             )
         else:
             super().set_usage(usage)
@@ -393,7 +393,7 @@ class RecursiveOptionParser(optparse.OptionParser):
 
     def getformathelp(self, formats):
         """Make a nice help string for describing formats..."""
-        formats = sorted([f for f in formats if f is not None])
+        formats = sorted(f for f in formats if f is not None)
         if len(formats) == 0:
             return ""
         elif len(formats) == 1:

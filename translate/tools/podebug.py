@@ -193,7 +193,7 @@ class podebug:
             if self.preserveplaceholders:
                 return self.transform_characters_preserving_placeholders(s, transpose)
             else:
-                return "".join([transpose(c) for c in s])
+                return "".join(transpose(c) for c in s)
 
         self.apply_to_translatables(string, transformer)
         return string
@@ -231,7 +231,7 @@ class podebug:
                     s, transpose
                 )
             else:
-                return "\u202e" + "".join([transpose(c) for c in s])
+                return "\u202e" + "".join(transpose(c) for c in s)
             # To reverse instead of using the RTL override:
             # return ''.join(reversed([transpose(c) for c in s]))
 
@@ -330,7 +330,7 @@ class podebug:
             elif formatstr.endswith("h"):
                 try:
                     self.hash_len = int(
-                        "".join([c for c in formatstr[1:-1] if c.isdigit()])
+                        "".join(c for c in formatstr[1:-1] if c.isdigit())
                     )
                 except ValueError:
                     self.hash_len = 4
@@ -341,9 +341,9 @@ class podebug:
             if formatoptions and not formatstr.endswith("h"):
                 if "c" in formatoptions and formatted:
                     formatted = formatted[0] + "".join(
-                        [c for c in formatted[1:] if c.lower() not in "aeiou"]
+                        c for c in formatted[1:] if c.lower() not in "aeiou"
                     )
-                length = "".join([c for c in formatoptions if c.isdigit()])
+                length = "".join(c for c in formatoptions if c.isdigit())
                 if length:
                     formatted = formatted[: int(length)]
             prefix = prefix.replace(formatstr, formatted)
@@ -363,7 +363,7 @@ class podebug:
         else:
             dirshrunk = dirparts[0][:4] + "-"
             if len(dirparts) > 1:
-                dirshrunk += "".join([dirpart[0] for dirpart in dirparts[1:]]) + "-"
+                dirshrunk += "".join(dirpart[0] for dirpart in dirparts[1:]) + "-"
         baseshrunk = os.path.basename(filename)[:4]
         if "." in baseshrunk:
             baseshrunk = baseshrunk[: baseshrunk.find(".")]
