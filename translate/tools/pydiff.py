@@ -271,11 +271,11 @@ class FileDiffer:
         tostring = f"+++ {self.tofile}\t{tofiledate}{lineterm}"
 
         for group in groups:
-            hunk = "".join([line for line in self.unified_diff(group)])
+            hunk = "".join(line for line in self.unified_diff(group))
             if self.options.fromcontains:
                 if self.options.ignore_case_contains:
                     hunk_from_lines = "".join(
-                        [line.lower() for line in self.get_from_lines(group)]
+                        line.lower() for line in self.get_from_lines(group)
                     )
                 else:
                     hunk_from_lines = "".join(self.get_from_lines(group))
@@ -286,7 +286,7 @@ class FileDiffer:
             if self.options.tocontains:
                 if self.options.ignore_case_contains:
                     hunk_to_lines = "".join(
-                        [line.lower() for line in self.get_to_lines(group)]
+                        line.lower() for line in self.get_to_lines(group)
                     )
                 else:
                     hunk_to_lines = "".join(self.get_to_lines(group))
@@ -297,11 +297,9 @@ class FileDiffer:
             if self.options.contains:
                 if self.options.ignore_case_contains:
                     hunk_lines = "".join(
-                        [
-                            line.lower()
-                            for line in self.get_from_lines(group)
-                            + self.get_to_lines(group)
-                        ]
+                        line.lower()
+                        for line in self.get_from_lines(group)
+                        + self.get_to_lines(group)
                     )
                 else:
                     hunk_lines = "".join(

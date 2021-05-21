@@ -80,12 +80,12 @@ def wrap_production(func):
     def prod(n):
         func(n)
         if isinstance(n[0], Node):
-            startpos = min([getattr(i, "lexpos", 0) for i in n.slice[1:]])
-            endpos = max([getattr(i, "endlexpos", 0) for i in n.slice[1:]])
+            startpos = min(getattr(i, "lexpos", 0) for i in n.slice[1:])
+            endpos = max(getattr(i, "endlexpos", 0) for i in n.slice[1:])
             n[0].lexpositions = startpos, endpos
         elif isinstance(n[0], list) and n[0] and isinstance(n[0][-1], ArrayElement):
-            startpos = min([getattr(i, "lexpos", 0) for i in n.slice[1:]])
-            endpos = max([getattr(i, "endlexpos", 0) for i in n.slice[1:]])
+            startpos = min(getattr(i, "lexpos", 0) for i in n.slice[1:])
+            endpos = max(getattr(i, "endlexpos", 0) for i in n.slice[1:])
             n[0][-1].lexpositions = startpos, endpos
 
     return prod

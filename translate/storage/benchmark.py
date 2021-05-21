@@ -77,17 +77,13 @@ class TranslateBenchmarker:
                 sample_file = self.StoreClass()
                 for stringnum in range(strings_per_file):
                     source_string = " ".join(
-                        [
-                            "word%d" % (random.randint(0, strings_per_file) * i)
-                            for i in range(source_words_per_string)
-                        ]
+                        "word%d" % (random.randint(0, strings_per_file) * i)
+                        for i in range(source_words_per_string)
                     )
                     sample_unit = sample_file.addsourceunit(source_string)
                     sample_unit.target = " ".join(
-                        [
-                            "drow%d" % (random.randint(0, strings_per_file) * i)
-                            for i in range(target_words_per_string)
-                        ]
+                        "drow%d" % (random.randint(0, strings_per_file) * i)
+                        for i in range(target_words_per_string)
                     )
                 sample_file.savefile(
                     os.path.join(dirname, "file_%d.%s" % (filenum, self.extension))

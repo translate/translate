@@ -192,7 +192,7 @@ def unescape(line):
 
 
 def unquotefrompo(postr):
-    return "".join([unescape(line[1:-1]) for line in postr])
+    return "".join(unescape(line[1:-1]) for line in postr)
 
 
 def is_null(lst):
@@ -377,18 +377,18 @@ class pounit(pocommon.pounit):
         """
         if origin is None:
             comments = "".join(
-                [comment[2:] or self.newline for comment in self.othercomments]
+                comment[2:] or self.newline for comment in self.othercomments
             )
             comments += "".join(
-                [comment[3:] or self.newline for comment in self.automaticcomments]
+                comment[3:] or self.newline for comment in self.automaticcomments
             )
         elif origin == "translator":
             comments = "".join(
-                [comment[2:] or self.newline for comment in self.othercomments]
+                comment[2:] or self.newline for comment in self.othercomments
             )
         elif origin in ["programmer", "developer", "source code"]:
             comments = "".join(
-                [comment[3:] or self.newline for comment in self.automaticcomments]
+                comment[3:] or self.newline for comment in self.automaticcomments
             )
         else:
             raise ValueError("Comment type not valid")
@@ -662,12 +662,10 @@ class pounit(pocommon.pounit):
         if isinstance(partlines, dict):
             partkeys = sorted(partlines.keys())
             return "".join(
-                [
-                    self._getmsgpartstr(
-                        "%s[%d]" % (partname, partkey), partlines[partkey], partcomments
-                    )
-                    for partkey in partkeys
-                ]
+                self._getmsgpartstr(
+                    "%s[%d]" % (partname, partkey), partlines[partkey], partcomments
+                )
+                for partkey in partkeys
             )
         partstr = [partname, " "]
         partstartline = 0

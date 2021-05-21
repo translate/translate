@@ -559,7 +559,7 @@ class pounit(pocommon.pounit):
             raise ValueError("Comment type not valid")
 
         if comments and get_libgettextpo_version() < (0, 17, 0):
-            comments = "\n".join([line for line in comments.split("\n")])
+            comments = "\n".join(line for line in comments.split("\n"))
         # Let's drop the last newline
         return gpo_decode(comments[:-1])
 
@@ -584,7 +584,7 @@ class pounit(pocommon.pounit):
             else:
                 newnotes = text + "\n" + oldnotes
         else:
-            newnotes = "\n".join([line.rstrip("\r") for line in text.split("\n")])
+            newnotes = "\n".join(line.rstrip("\r") for line in text.split("\n"))
 
         if newnotes:
             newlines = []

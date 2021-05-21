@@ -185,13 +185,13 @@ class pounit(pocommon.pounit):
 
     def _msgidlen(self):
         if self.hasplural():
-            len("".join([string for string in self.source.strings]))
+            len("".join(string for string in self.source.strings))
         else:
             return len(self.source)
 
     def _msgstrlen(self):
         if self.hasplural():
-            len("".join([string for string in self.target.strings]))
+            len("".join(string for string in self.target.strings))
         else:
             return len(self.target)
 

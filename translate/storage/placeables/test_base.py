@@ -99,7 +99,7 @@ class TestStringElem:
         assert len(self.elem.find_elems_with("a")) == 3
 
     def test_flatten(self):
-        assert "".join([str(i) for i in self.elem.flatten()]) == self.ORIGSTR
+        assert "".join(str(i) for i in self.elem.flatten()) == self.ORIGSTR
 
     def test_delete_range_case1(self):
         # Case 1: Entire string #
