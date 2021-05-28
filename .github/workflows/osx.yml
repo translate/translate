@@ -22,7 +22,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2.3.4
     - name: Cache pip
-      uses: actions/cache@v2.1.5
+      uses: actions/cache@v2.1.6
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('requirements/*.txt') }}
