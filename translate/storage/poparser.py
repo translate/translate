@@ -292,8 +292,7 @@ def parse_msgstr_array(parse_state, unit):
 
 def parse_plural(parse_state, unit):
     return bool(
-        parse_msgid_plural(parse_state, unit)
-        and (parse_msgstr_array(parse_state, unit) or parse_msgstr(parse_state, unit))
+        parse_msgid_plural(parse_state, unit) and parse_msgstr_array(parse_state, unit)
     )
 
 

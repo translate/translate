@@ -1140,3 +1140,12 @@ msgstr "texte"
         if not hasattr(pofile, "_gpo_memory_file"):
             assert unit.prev_source == "someold text"
         assert unit.source == "text"
+
+    def test_missing_plural(self):
+        posource = b"""
+msgid "text"
+msgid_plural "texts"
+msgstr "texte"
+"""
+        with raises(ValueError):
+            self.poparse(posource)
