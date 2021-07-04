@@ -104,3 +104,31 @@ key = value
         assert fluent_invalid_unit.geterrors() == {
             "E0002": "Expected an entry start",
         }
+
+    def test_attributes(self):
+        """Checks that we handle attributes."""
+        fluent_source = '''login-input = Predefined value
+    .placeholder = email@example.com
+    .aria-label = Login input value
+    .title = Type your login email
+'''
+        fluent_file = self.fluent_parse(fluent_source)
+        assert len(fluent_file.units) == 1
+        fluent_unit = fluent_file.units[0]
+        assert fluent_unit.getid() == "login-input"
+        assert fluent_unit.source == "Predefined value"
+        assert fluent_unit.getattributes() == {
+            "placeholder": "email@example.com",
+            "aria-label": "Login input value",
+            "title": "Type your login email",
+        }
+
+    def test_attributes_source(self):
+        """Checks that attributes can be regenerated as source."""
+        fluent_source = '''login-input = Predefined value
+    .placeholder = email@example.com
+    .aria-label = Login input value
+    .title = Type your login email
+'''
+        fluent_regen = self.fluent_regen(fluent_source)
+        assert fluent_source == fluent_regen
