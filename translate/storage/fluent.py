@@ -62,6 +62,7 @@ class FluentUnit(base.TranslationUnit):
         super().__init__(source)
         self._id = None
         self._errors = {}
+        self._attributes = {}
         # The source and target are equivalent for monolingual units.
         self.target = source
         if source is not None:
@@ -82,6 +83,9 @@ class FluentUnit(base.TranslationUnit):
     def geterrors(self):
         return self._errors
 
+    def getattributes(self):
+        return self._attributes
+
     def parse(self, entry):
         # Handle this unit separately if it is invalid.
         if isinstance(entry, ast.Junk):
@@ -96,6 +100,9 @@ class FluentUnit(base.TranslationUnit):
 
         class Parser(visitor.Visitor):
             _found_id = False
+
+            def visit_Attribute(self, node):
+                this._attributes[node.id.name] = source_from_entry(node)
 
             def visit_Comment(self, node):
                 this.addnote(node.content)
@@ -113,8 +120,14 @@ class FluentUnit(base.TranslationUnit):
         self.target = self.source
 
     def to_entry(self):
-        value = FluentParser(False).maybe_get_pattern(
-            FluentParserStream(self.source))
+        fp = FluentParser(False)
+
+        value = fp.maybe_get_pattern(FluentParserStream(self.source))
+
+        attributes = [ast.Attribute(
+            ast.Identifier(id),
+            fp.maybe_get_pattern(FluentParserStream(value)),
+        ) for (id, value) in self._attributes.items()]
 
         comment = None
         if self.getnotes():
@@ -123,6 +136,7 @@ class FluentUnit(base.TranslationUnit):
         return ast.Message(
             ast.Identifier(self.getid()),
             value=value,
+            attributes=attributes,
             comment=comment)
 
 
