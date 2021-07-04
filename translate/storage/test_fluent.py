@@ -84,3 +84,23 @@ key = value
 '''
         fluent_regen = self.fluent_regen(fluent_source)
         assert fluent_source == fluent_regen
+
+    def test_errors(self):
+        """Checks that errors are extracted."""
+        fluent_source = '''valid-unit = I'm great!
+= I'm not.
+'''
+        fluent_file = self.fluent_parse(fluent_source)
+        assert len(fluent_file.units) == 2
+
+        fluent_valid_unit = fluent_file.units[0]
+        assert fluent_valid_unit.getid() == "valid-unit"
+        assert fluent_valid_unit.source == "I'm great!"
+        assert fluent_valid_unit.geterrors() == {}
+
+        fluent_invalid_unit = fluent_file.units[1]
+        assert fluent_invalid_unit.getid() == None
+        assert fluent_invalid_unit.source == "= I'm not.\n"
+        assert fluent_invalid_unit.geterrors() == {
+            "E0002": "Expected an entry start",
+        }
