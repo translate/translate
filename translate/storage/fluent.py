@@ -63,13 +63,17 @@ class FluentUnit(base.TranslationUnit):
         self._id = None
         self._errors = {}
         self._attributes = {}
-        # The source and target are equivalent for monolingual units.
-        self.target = source
         if source is not None:
+            self._set_value(source)
             # Default to source string
             self._id = id_from_source(self.source)
         if entry is not None:
             self.parse(entry)
+
+    def _set_value(self, value):
+        self.source = value
+        # The source and target are equivalent for monolingual units.
+        self.target = self.source
 
     def getid(self):
         return self._id
@@ -91,9 +95,7 @@ class FluentUnit(base.TranslationUnit):
         if isinstance(entry, ast.Junk):
             for annotation in entry.annotations:
                 self.adderror(annotation.code, annotation.message)
-            self.source = entry.content
-            # The source and target are equivalent for monolingual units.
-            self.target = self.source
+            self._set_value(entry.content)
             return
 
         this = self
@@ -115,9 +117,7 @@ class FluentUnit(base.TranslationUnit):
                     self._found_id = True
         Parser().visit(entry)
 
-        self.source = source_from_entry(entry)
-        # The source and target are equivalent for monolingual units.
-        self.target = self.source
+        self._set_value(source_from_entry(entry))
 
     def to_entry(self):
         fp = FluentParser(False)
