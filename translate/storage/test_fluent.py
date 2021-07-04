@@ -53,6 +53,30 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
         fluent_regen = self.fluent_regen(fluent_source)
         assert fluent_source + '\n' == fluent_regen
 
+    def test_term(self):
+        """Checks that a Fluent definition with a term is parsed correctly."""
+        fluent_source = '''-some-term = Fizz Buzz
+term-usage = I can code { -some-term }!
+'''
+        fluent_file = self.fluent_parse(fluent_source)
+        assert len(fluent_file.units) == 2
+
+        term_unit = fluent_file.units[0]
+        assert term_unit.getid() == "some-term"
+        assert term_unit.source == "Fizz Buzz"
+
+        term_unit = fluent_file.units[1]
+        assert term_unit.getid() == "term-usage"
+        assert term_unit.source == "I can code { -some-term }!"
+
+    def test_term_source(self):
+        """Checks that a Fluent definition with a term can be regenerated as source."""
+        fluent_source = '''-some-term = Fizz Buzz
+term-usage = I can code { -some-term }!
+'''
+        fluent_regen = self.fluent_regen(fluent_source)
+        assert fluent_source == fluent_regen
+
     def test_comments(self):
         """Checks that we handle # comments."""
         fluent_source = '''# A comment
