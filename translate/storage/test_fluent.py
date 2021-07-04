@@ -74,6 +74,56 @@ key = value
         fluent_unit = fluent_file.units[0]
         assert fluent_unit.getnotes() == 'A comment\nwith a second line!'
 
+    def test_standalone_comments(self):
+        """Checks that we handle standalone comments."""
+        # Example from https://projectfluent.org/fluent/guide/comments.html
+        fluent_source = '''# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+### Localization for Server-side strings of Firefox Screenshots
+
+## Global phrases shared across pages
+
+my-shots = My Shots
+home-link = Home
+screenshots-description =
+    Screenshots made simple. Take, save, and
+    share screenshots without leaving Firefox.
+
+## Creating page
+
+# Note: { $title } is a placeholder for the title of the web page
+# captured in the screenshot. The default, for pages without titles, is
+# creating-page-title-default.
+creating-page-title = Creating { $title }
+creating-page-title-default = page
+creating-page-wait-message = Saving your shot…
+'''
+        fluent_file = self.fluent_parse(fluent_source)
+
+        # ((istranslatable, isheader), comment.startswith)
+        expected_units = [
+            ((False, False), 'This Source Code'),
+            ((False, True), 'Localization for Server-side'),
+            ((False, True), 'Global phrases shared across pages'),
+            ((True, False), ''),
+            ((True, False), ''),
+            ((True, False), ''),
+            ((False, True), 'Creating page'),
+            ((True, False), 'Note: { $title } is a placeholder'),
+            ((True, False), ''),
+            ((True, False), ''),
+        ]
+        assert len(fluent_file.units) == len(expected_units)
+
+        for (expected, actual) in zip(expected_units, fluent_file.units):
+            assert (
+                actual.istranslatable(),
+                actual.isheader(),
+            ) == expected[0]
+            assert actual.getnotes().startswith(expected[1])
+
     def test_source_with_selectors(self):
         """Checks that we handle selectors."""
         fluent_source = '''emails =
