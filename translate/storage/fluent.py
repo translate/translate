@@ -61,6 +61,7 @@ class FluentUnit(base.TranslationUnit):
     def __init__(self, source=None, entry=None):
         super().__init__(source)
         self._id = None
+        self._errors = {}
         # The source and target are equivalent for monolingual units.
         self.target = source
         if source is not None:
@@ -75,7 +76,22 @@ class FluentUnit(base.TranslationUnit):
     def setid(self, value):
         self._id = value
 
+    def adderror(self, errorname, errortext):
+        self._errors[errorname] = errortext
+
+    def geterrors(self):
+        return self._errors
+
     def parse(self, entry):
+        # Handle this unit separately if it is invalid.
+        if isinstance(entry, ast.Junk):
+            for annotation in entry.annotations:
+                self.adderror(annotation.code, annotation.message)
+            self.source = entry.content
+            # The source and target are equivalent for monolingual units.
+            self.target = self.source
+            return
+
         this = self
 
         class Parser(visitor.Visitor):
