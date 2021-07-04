@@ -138,6 +138,11 @@ class FluentUnit(base.TranslationUnit):
                 this._type = ast.Message
                 this._set_value(source_from_entry(node))
                 self.generic_visit(node)
+
+            def visit_Term(self, node):
+                this._type = ast.Term
+                this._set_value(source_from_entry(node))
+                self.generic_visit(node)
         Parser().visit(entry)
 
     def to_entry(self):
