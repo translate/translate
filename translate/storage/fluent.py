@@ -60,10 +60,12 @@ class FluentUnit(base.TranslationUnit):
 
     def __init__(self, source=None, entry=None):
         super().__init__(source)
+        self._type = None
         self._id = None
         self._errors = {}
         self._attributes = {}
         if source is not None:
+            self._type = ast.Message
             self._set_value(source)
             # Default to source string
             self._id = id_from_source(self.source)
@@ -87,6 +89,12 @@ class FluentUnit(base.TranslationUnit):
     def geterrors(self):
         return self._errors
 
+    def isheader(self):
+        return self._type in [
+            ast.GroupComment,
+            ast.ResourceComment,
+        ]
+
     def getattributes(self):
         return self._attributes
 
@@ -107,6 +115,16 @@ class FluentUnit(base.TranslationUnit):
                 this._attributes[node.id.name] = source_from_entry(node)
 
             def visit_Comment(self, node):
+                if this._type not in [ast.Message, ast.Term]:
+                    this._type = ast.Comment
+                this.addnote(node.content)
+
+            def visit_GroupComment(self, node):
+                this._type = ast.GroupComment
+                this.addnote(node.content)
+
+            def visit_ResourceComment(self, node):
+                this._type = ast.ResourceComment
                 this.addnote(node.content)
 
             def visit_Identifier(self, node):
@@ -115,9 +133,12 @@ class FluentUnit(base.TranslationUnit):
                     # value will also contain identifiers if it has selectors).
                     this._id = node.name
                     self._found_id = True
-        Parser().visit(entry)
 
-        self._set_value(source_from_entry(entry))
+            def visit_Message(self, node):
+                this._type = ast.Message
+                this._set_value(source_from_entry(node))
+                self.generic_visit(node)
+        Parser().visit(entry)
 
     def to_entry(self):
         fp = FluentParser(False)
@@ -133,7 +154,7 @@ class FluentUnit(base.TranslationUnit):
         if self.getnotes():
             comment = ast.Comment(self.getnotes())
 
-        return ast.Message(
+        return (self._type if self._type is not None else ast.Message)(
             ast.Identifier(self.getid()),
             value=value,
             attributes=attributes,
