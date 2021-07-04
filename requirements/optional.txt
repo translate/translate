@@ -9,6 +9,8 @@ chardet==4.0.0              # chardet
 # Tmserver backend
 cheroot==8.5.2       # tmserver
 # Format support
+fluent.syntax==0.18.1 # Fluent
+# Format support
 iniparse==0.5        # INI
 # Format support
 phply==1.2.5         # PHP

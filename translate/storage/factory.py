@@ -55,6 +55,7 @@ _classes_str = {
     "xliff": ("xliff", "xlifffile"),
     "xlf": ("xliff", "xlifffile"),
     "sdlxliff": ("xliff", "xlifffile"),
+    "ftl": ("fluent", "FluentFile"),
 }
 ###  XXX:  if you add anything here, you must also add it to translate.storage.
 
@@ -269,6 +270,7 @@ supported = [
     ("OmegaT Glossary", ["utf8", "tab"], ["application/x-omegat-glossary"]),
     ("UTX Dictionary", ["utx"], ["text/x-utx"]),
     ("Haiku catkeys file", ["catkeys"], ["application/x-catkeys"]),
+    ("Fluent file", ["ftl"], []),
 ]
 
 
