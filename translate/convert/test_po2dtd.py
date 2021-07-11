@@ -478,7 +478,7 @@ msgstr "Simple string 3"
         assert bytes(dtdfile).decode("utf-8") == dtdexpected
 
     def test_preserving_spaces(self):
-        """ensure that we preseve spaces between entity and value. Bug 1662"""
+        """ensure that we preserve spaces between entity and value. Bug 1662"""
         posource = """#: simple.label\nmsgid "One"\nmsgstr "Een"\n"""
         dtdtemplate = '<!ENTITY     simple.label         "One">\n'
         dtdexpected = '<!ENTITY     simple.label         "Een">\n'
@@ -487,7 +487,7 @@ msgstr "Simple string 3"
         assert bytes(dtdfile).decode("utf-8") == dtdexpected
 
     def test_preserving_spaces_after_value(self):
-        """Preseve spaces after value. Bug 1662"""
+        """Preserve spaces after value. Bug 1662"""
         # Space between value and >
         posource = """#: simple.label\nmsgid "One"\nmsgstr "Een"\n"""
         dtdtemplate = '<!ENTITY simple.label "One" >\n'

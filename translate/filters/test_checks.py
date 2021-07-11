@@ -1071,7 +1071,7 @@ def test_printf():
 
 
 def test_pythonbraceformat():
-    """Tests python brace format placeholds"""
+    """Tests python brace format placeholder"""
     stdchecker = checks.StandardChecker()
     # anonymous formats
     assert passes(

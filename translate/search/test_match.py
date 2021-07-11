@@ -94,7 +94,7 @@ class TestMatch:
         candidates = self.candidatestrings(matcher.matches("Open File"))
         assert candidates == ["file"]
         candidates = self.candidatestrings(matcher.matches("Contact your ISP"))
-        # we lowercase everything - that is why we get it back differerntly.
+        # we lowercase everything - that is why we get it back differently.
         # we don't change the target text, though
         assert candidates == ["isp"]
 

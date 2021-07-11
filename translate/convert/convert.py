@@ -489,7 +489,7 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
     def processfile(
         self, fileprocessor, options, fullinputpath, fulloutputpath, fulltemplatepath
     ):
-        """Run an invidividual conversion."""
+        """Run an individual conversion."""
         if options.timestamp and _output_is_newer(fullinputpath, fulloutputpath):
             return False
 
