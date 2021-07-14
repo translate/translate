@@ -848,9 +848,7 @@ class StringElem:
         manner.
         """
         indent_prefix = " " * indent * 2
-        out = (f"{indent_prefix}{self.__class__.__name__} [{str(self)}]").encode(
-            "utf-8"
-        )
+        out = f"{indent_prefix}{self.__class__.__name__} [{str(self)}]"
         if verbose:
             out += " " + repr(self)
 
@@ -860,7 +858,7 @@ class StringElem:
             if isinstance(elem, StringElem):
                 elem.print_tree(indent + 1, verbose=verbose)
             else:
-                print((f"{indent_prefix}{indent_prefix}[{elem}]").encode("utf-8"))
+                print(f"{indent_prefix}{indent_prefix}[{elem}]")
 
     def prune(self):
         """Remove unnecessary nodes to make the tree optimal."""
