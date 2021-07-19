@@ -48,6 +48,6 @@ jobs:
     - name: Coverage
       run: |
         coverage xml
-    - uses: codecov/codecov-action@v1.5.2
+    - uses: codecov/codecov-action@v2.0.1
       with:
         name: ${{ runner.os }}, Python ${{ matrix.python-version }}, ${{ matrix.requirements }}
