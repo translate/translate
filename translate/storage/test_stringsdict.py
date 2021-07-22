@@ -65,12 +65,21 @@ class TestStringsDictFile(test_monolingual.TestMonolingualStore):
     </dict>
 </plist>"""
         store = self.StoreClass()
+        store.settargetlanguage("en")
         store.parse(content)
 
         assert store.units[0].source == "shopping-list"
+        assert store.units[0].target == "%1$#@apple@ and %2$#@orange@."
         assert store.units[1].source == "shopping-list[apple]"
+        assert store.units[1].target.strings == ["", "One apple", "%d apples"]
         assert store.units[2].source == "shopping-list[orange]"
+        assert store.units[2].target.strings == [
+            "no oranges",
+            "one orange",
+            "%d oranges",
+        ]
         assert store.units[3].source == "other-string"
+        assert store.units[3].target == "Other string"
 
         newstore = self.reparse(store)
         self.check_equality(store, newstore)
