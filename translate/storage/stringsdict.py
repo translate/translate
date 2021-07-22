@@ -68,7 +68,7 @@ class StringsDictFile(base.TranslationStore):
             return data.cldr_plural_categories
 
         locale = target_lang.replace("_", "-").split("-")[0]
-        tags = data.plural_tags.get(locale, data.cldr_plural_categories)
+        tags = data.plural_tags.get(locale, data.cldr_plural_categories).copy()
         if "zero" not in tags:
             tags.insert(0, "zero")
         return tags
