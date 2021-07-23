@@ -8,7 +8,19 @@ from translate.misc.multistring import multistring
 from translate.storage import base
 
 
-class StringsDictUnit(base.TranslationUnit):
+class StringsDictId(base.UnitId):
+    KEY_SEPARATOR = ":"
+
+    def __str__(self):
+        s = super().__str__()
+        if s[0] == ":":
+            return s[1:]
+        return s
+
+
+class StringsDictUnit(base.DictUnit):
+    IdClass = StringsDictId
+
     """A single entry in a .stringsdict file.
     One entry represents either a localized format string, or a variable used
     within another string.
@@ -16,13 +28,49 @@ class StringsDictUnit(base.TranslationUnit):
 
     format_value_type = ""
 
+    def __init__(self, source=None):
+        super().__init__(source=source)
+
+        loc = source or ""
+        if len(loc) > 0 and loc[0] == ":":
+            loc = loc[1:]
+
+        # Check if this unit is a format string or a variable
+        split = loc.rfind(":")
+        if split > 0:
+            subkey = loc[(split + 1) :]
+            loc = loc[:split]
+            self.set_unitid(self.IdClass([("key", loc), ("key", subkey)]))
+        else:
+            self.set_unitid(self.IdClass([("key", loc)]))
+
     def __eq__(self, other):
         return (
             super().__eq__(other) and self.format_value_type == other.format_value_type
         )
 
+    @property
+    def outerkey(self):
+        if self._unitid is None or len(self._unitid.parts) < 1:
+            return None
 
-class StringsDictFile(base.TranslationStore):
+        return self._unitid.parts[0][1]
+
+    @property
+    def innerkey(self):
+        if self._unitid is None or len(self._unitid.parts) < 2:
+            return None
+
+        return self._unitid.parts[1][1]
+
+    def getid(self):
+        return self.source
+
+    def setid(self, newid):
+        self.source = newid
+
+
+class StringsDictFile(base.DictStore):
     """Class representing a .stringsdict file.
 
     One entry in a .stringsdict file consists of a format string, and any
@@ -88,7 +136,8 @@ class StringsDictFile(base.TranslationStore):
                 raise ValueError(f"{key} is not a dict")
             for innerkey, value in outer.items():
                 if innerkey == "NSStringLocalizedFormatKey":
-                    u = self.UnitClass(key)
+                    u = self.UnitClass()
+                    u.set_unitid(u.IdClass([("key", key)]))
                     u.target = str(value)
                     self.addunit(u)
                 elif isinstance(value, dict):
@@ -101,7 +150,8 @@ class StringsDictFile(base.TranslationStore):
                     plural_tags = self.target_plural_tags
                     plural_strings = [value.get(tag, "") for tag in plural_tags]
 
-                    u = self.UnitClass(f"{key}[{innerkey}]")
+                    u = self.UnitClass()
+                    u.set_unitid(u.IdClass([("key", key), ("key", innerkey)]))
                     u.target = multistring(plural_strings)
                     u.format_value_type = value.get("NSStringFormatValueTypeKey", "")
                     self.addunit(u)
@@ -112,14 +162,8 @@ class StringsDictFile(base.TranslationStore):
         plist = OrderedDict()
 
         for u in self.units:
-            loc = str(u.getid()) or ""
-            subkey = None
-
-            # Check if this unit is a format string or a variable
-            opener = loc.rfind("[")
-            if opener > 0 and loc[-1] == "]":
-                subkey = loc[(opener + 1) : (len(loc) - 1)]
-                loc = loc[:opener]
+            loc = u.outerkey
+            subkey = u.innerkey
 
             if loc not in plist:
                 plist[loc] = OrderedDict()

@@ -9,15 +9,32 @@ from translate.storage import stringsdict, test_monolingual
 class TestStringsDictUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = stringsdict.StringsDictUnit
 
+    def test_source(self):
+        unit = self.UnitClass()
+        unit.set_unitid(unit.IdClass([("key", "Test String"), ("key", "p")]))
+        unit2 = self.UnitClass("Test String:p")
+        unit3 = self.UnitClass("Test String 2:p")
+        unit4 = self.UnitClass("Test String:q")
+
+        assert unit == unit2
+        assert unit != unit3
+        assert unit != unit4
+
     def test_eq_formatvaluetype(self):
-        unit = self.UnitClass("Test String[p]")
-        unit2 = self.UnitClass("Test String[p]")
+        unit = self.UnitClass("Test String:p")
+        unit2 = self.UnitClass("Test String:p")
 
         assert unit == unit2
         unit2.format_value_type = "d"
         assert unit != unit2
         unit.format_value_type = "d"
         assert unit == unit2
+
+    def test_innerkey(self):
+        unit = self.UnitClass()
+        unit.set_unitid(unit.IdClass([("key", "Test String"), ("key", "p")]))
+        assert unit.outerkey == "Test String"
+        assert unit.innerkey == "p"
 
 
 class TestStringsDictFile(test_monolingual.TestMonolingualStore):
@@ -70,9 +87,9 @@ class TestStringsDictFile(test_monolingual.TestMonolingualStore):
 
         assert store.units[0].source == "shopping-list"
         assert store.units[0].target == "%1$#@apple@ and %2$#@orange@."
-        assert store.units[1].source == "shopping-list[apple]"
+        assert store.units[1].source == "shopping-list:apple"
         assert store.units[1].target.strings == ["", "One apple", "%d apples"]
-        assert store.units[2].source == "shopping-list[orange]"
+        assert store.units[2].source == "shopping-list:orange"
         assert store.units[2].target.strings == [
             "no oranges",
             "one orange",
@@ -135,7 +152,7 @@ class TestStringsDictFile(test_monolingual.TestMonolingualStore):
 
         store.addsourceunit("item")
 
-        unit = store.UnitClass("item[p]")
+        unit = store.UnitClass("item:p")
         unit.target = multistring(lang[1])
         store.addunit(unit)
 
