@@ -49,6 +49,6 @@ jobs:
       run: coverage run --append ./setup.py sdist
     - name: Coverage
       run: coverage xml
-    - uses: codecov/codecov-action@v2.0.1
+    - uses: codecov/codecov-action@v2.0.2
       with:
         name: setup
