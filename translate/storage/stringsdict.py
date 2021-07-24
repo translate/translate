@@ -13,19 +13,18 @@ class StringsDictId(base.UnitId):
 
     def __str__(self):
         s = super().__str__()
-        if s[0] == ":":
+        if s.startswith(":"):
             return s[1:]
         return s
 
 
 class StringsDictUnit(base.DictUnit):
-    IdClass = StringsDictId
-
     """A single entry in a .stringsdict file.
     One entry represents either a localized format string, or a variable used
     within another string.
     """
 
+    IdClass = StringsDictId
     format_value_type = ""
 
     def __init__(self, source=None):
