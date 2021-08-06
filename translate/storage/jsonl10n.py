@@ -230,6 +230,8 @@ class JsonFile(base.DictStore):
             # that parse JSON texts MAY ignore the presence of a byte order mark
             # rather than treating it as an error, see RFC7159
             input, self.encoding = self.detect_encoding(input)
+            if input is None:
+                raise base.ParseError(ValueError("Failed to decode JSON string."))
         try:
             self._file = json.loads(input, object_pairs_hook=OrderedDict)
         except ValueError as e:
