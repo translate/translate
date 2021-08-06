@@ -136,6 +136,13 @@ class TestJSONResourceStore(test_monolingual.TestMonolingualStore):
 
         assert out.getvalue() == b'{\n    "key": "value"\n}\n'
 
+    def test_can_not_detect(self):
+        store = self.StoreClass()
+        with raises(base.ParseError):
+            store.parse(
+                b"PK\x03\x04\x14\x00\x06\x00\x08\x00\x00\x00!\x00b\xee\x9dh^\x01\x00\x00\x90\x04\x00\x00\x13\x00\x08\x02"
+            )
+
     def test_error(self):
         store = self.StoreClass()
         with raises(base.ParseError):
