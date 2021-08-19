@@ -36,11 +36,11 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
 
     def fluent_regen(self, fluent_source):
         """Helper that converts Fluent source to a FluentFile object and back."""
-        return bytes(self.fluent_parse(fluent_source)).decode('utf-8')
+        return bytes(self.fluent_parse(fluent_source)).decode("utf-8")
 
     def test_simpledefinition(self):
         """Checks that a simple Fluent definition is parsed correctly."""
-        fluent_source = 'test_me = I can code!'
+        fluent_source = "test_me = I can code!"
         fluent_file = self.fluent_parse(fluent_source)
         assert len(fluent_file.units) == 1
         fluent_unit = fluent_file.units[0]
@@ -49,15 +49,15 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
 
     def test_simpledefinition_source(self):
         """Checks that a simple Fluent definition can be regenerated as source."""
-        fluent_source = 'test_me = I can code!'
+        fluent_source = "test_me = I can code!"
         fluent_regen = self.fluent_regen(fluent_source)
-        assert fluent_source + '\n' == fluent_regen
+        assert fluent_source + "\n" == fluent_regen
 
     def test_term(self):
         """Checks that a Fluent definition with a term is parsed correctly."""
-        fluent_source = '''-some-term = Fizz Buzz
+        fluent_source = """-some-term = Fizz Buzz
 term-usage = I can code { -some-term }!
-'''
+"""
         fluent_file = self.fluent_parse(fluent_source)
         assert len(fluent_file.units) == 2
 
@@ -71,37 +71,37 @@ term-usage = I can code { -some-term }!
 
     def test_term_source(self):
         """Checks that a Fluent definition with a term can be regenerated as source."""
-        fluent_source = '''-some-term = Fizz Buzz
+        fluent_source = """-some-term = Fizz Buzz
 term-usage = I can code { -some-term }!
-'''
+"""
         fluent_regen = self.fluent_regen(fluent_source)
         assert fluent_source == fluent_regen
 
     def test_comments(self):
         """Checks that we handle # comments."""
-        fluent_source = '''# A comment
+        fluent_source = """# A comment
 key = value
-'''
+"""
         fluent_file = self.fluent_parse(fluent_source)
         assert len(fluent_file.units) == 1
         fluent_unit = fluent_file.units[0]
-        assert fluent_unit.getnotes() == 'A comment'
+        assert fluent_unit.getnotes() == "A comment"
 
     def test_multiline_comments(self):
         """Checks that we handle # comments across several lines."""
-        fluent_source = '''# A comment
+        fluent_source = """# A comment
 # with a second line!
 key = value
-'''
+"""
         fluent_file = self.fluent_parse(fluent_source)
         assert len(fluent_file.units) == 1
         fluent_unit = fluent_file.units[0]
-        assert fluent_unit.getnotes() == 'A comment\nwith a second line!'
+        assert fluent_unit.getnotes() == "A comment\nwith a second line!"
 
     def test_standalone_comments(self):
         """Checks that we handle standalone comments."""
         # Example from https://projectfluent.org/fluent/guide/comments.html
-        fluent_source = '''# This Source Code Form is subject to the terms of the Mozilla Public
+        fluent_source = """# This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
@@ -123,21 +123,21 @@ screenshots-description =
 creating-page-title = Creating { $title }
 creating-page-title-default = page
 creating-page-wait-message = Saving your shot…
-'''
+"""
         fluent_file = self.fluent_parse(fluent_source)
 
         # ((istranslatable, isheader), comment.startswith)
         expected_units = [
-            ((False, False), 'This Source Code'),
-            ((False, True), 'Localization for Server-side'),
-            ((False, True), 'Global phrases shared across pages'),
-            ((True, False), ''),
-            ((True, False), ''),
-            ((True, False), ''),
-            ((False, True), 'Creating page'),
-            ((True, False), 'Note: { $title } is a placeholder'),
-            ((True, False), ''),
-            ((True, False), ''),
+            ((False, False), "This Source Code"),
+            ((False, True), "Localization for Server-side"),
+            ((False, True), "Global phrases shared across pages"),
+            ((True, False), ""),
+            ((True, False), ""),
+            ((True, False), ""),
+            ((False, True), "Creating page"),
+            ((True, False), "Note: { $title } is a placeholder"),
+            ((True, False), ""),
+            ((True, False), ""),
         ]
         assert len(fluent_file.units) == len(expected_units)
 
@@ -150,20 +150,20 @@ creating-page-wait-message = Saving your shot…
 
     def test_source_with_selectors(self):
         """Checks that we handle selectors."""
-        fluent_source = '''emails =
+        fluent_source = """emails =
     { $unreadEmails ->
         [one] You have one unread email.
        *[other] You have { $unreadEmails } unread emails.
     }
-'''
+"""
         fluent_regen = self.fluent_regen(fluent_source)
         assert fluent_source == fluent_regen
 
     def test_errors(self):
         """Checks that errors are extracted."""
-        fluent_source = '''valid-unit = I'm great!
+        fluent_source = """valid-unit = I'm great!
 = I'm not.
-'''
+"""
         fluent_file = self.fluent_parse(fluent_source)
         assert len(fluent_file.units) == 2
 
@@ -173,7 +173,7 @@ creating-page-wait-message = Saving your shot…
         assert fluent_valid_unit.geterrors() == {}
 
         fluent_invalid_unit = fluent_file.units[1]
-        assert fluent_invalid_unit.getid() == None
+        assert fluent_invalid_unit.getid() is None
         assert fluent_invalid_unit.source == "= I'm not.\n"
         assert fluent_invalid_unit.geterrors() == {
             "E0002": "Expected an entry start",
@@ -181,11 +181,11 @@ creating-page-wait-message = Saving your shot…
 
     def test_attributes(self):
         """Checks that we handle attributes."""
-        fluent_source = '''login-input = Predefined value
+        fluent_source = """login-input = Predefined value
     .placeholder = email@example.com
     .aria-label = Login input value
     .title = Type your login email
-'''
+"""
         fluent_file = self.fluent_parse(fluent_source)
         assert len(fluent_file.units) == 1
         fluent_unit = fluent_file.units[0]
@@ -199,10 +199,10 @@ creating-page-wait-message = Saving your shot…
 
     def test_attributes_source(self):
         """Checks that attributes can be regenerated as source."""
-        fluent_source = '''login-input = Predefined value
+        fluent_source = """login-input = Predefined value
     .placeholder = email@example.com
     .aria-label = Login input value
     .title = Type your login email
-'''
+"""
         fluent_regen = self.fluent_regen(fluent_source)
         assert fluent_source == fluent_regen

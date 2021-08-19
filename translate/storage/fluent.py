@@ -22,16 +22,9 @@ It is a monolingual base class derived format with :class:`FluentFile`
 and :class:`FluentUnit` providing file and unit level access.
 """
 
-from fluent.syntax import (
-    FluentParser,
-    ast,
-    parse,
-    serialize,
-    visitor,
-)
-from fluent.syntax.stream import FluentParserStream
+from fluent.syntax import FluentParser, ast, parse, serialize, visitor
 from fluent.syntax.serializer import serialize_pattern
-
+from fluent.syntax.stream import FluentParserStream
 from translate.storage import base
 
 
@@ -44,7 +37,8 @@ def id_from_source(source):
     # (as e.g. PO files do). Instead, we hash the source string with a
     # collision-resistant hash function.
     import hashlib
-    return 'gen-' + hashlib.sha256(source.encode()).hexdigest()
+
+    return "gen-" + hashlib.sha256(source.encode()).hexdigest()
 
 
 def source_from_entry(entry):
@@ -52,7 +46,7 @@ def source_from_entry(entry):
     # - Single-line patterns, which have a leading space we need to strip (for
     #   consistency with the expectations of what callers will set).
     # - Multiline patterns, which have a leading newline we need to preserve.
-    return serialize_pattern(entry.value).lstrip(' ')
+    return serialize_pattern(entry.value).lstrip(" ")
 
 
 class FluentUnit(base.TranslationUnit):
@@ -143,6 +137,7 @@ class FluentUnit(base.TranslationUnit):
                 this._type = ast.Term
                 this._set_value(source_from_entry(node))
                 self.generic_visit(node)
+
         Parser().visit(entry)
 
     def to_entry(self):
@@ -150,10 +145,13 @@ class FluentUnit(base.TranslationUnit):
 
         value = fp.maybe_get_pattern(FluentParserStream(self.source))
 
-        attributes = [ast.Attribute(
-            ast.Identifier(id),
-            fp.maybe_get_pattern(FluentParserStream(value)),
-        ) for (id, value) in self._attributes.items()]
+        attributes = [
+            ast.Attribute(
+                ast.Identifier(id),
+                fp.maybe_get_pattern(FluentParserStream(value)),
+            )
+            for (id, value) in self._attributes.items()
+        ]
 
         comment = None
         if self.getnotes():
@@ -163,7 +161,8 @@ class FluentUnit(base.TranslationUnit):
             ast.Identifier(self.getid()),
             value=value,
             attributes=attributes,
-            comment=comment)
+            comment=comment,
+        )
 
 
 class FluentFile(base.TranslationStore):
@@ -182,7 +181,7 @@ class FluentFile(base.TranslationStore):
             self.parse(fluentsrc)
 
     def parse(self, fluentsrc):
-        resource = parse(fluentsrc.decode('utf-8'))
+        resource = parse(fluentsrc.decode("utf-8"))
         for entry in resource.body:
             self.addunit(FluentUnit(entry=entry))
 
