@@ -87,6 +87,11 @@ key = value
         fluent_unit = fluent_file.units[0]
         assert fluent_unit.getnotes() == "A comment"
 
+        fluent_unit.addnote("Another comment", position="replace")
+        assert bytes(fluent_file).decode() == fluent_source.replace(
+            "A comment", "Another comment"
+        )
+
     def test_multiline_comments(self):
         """Checks that we handle # comments across several lines."""
         fluent_source = """# A comment
