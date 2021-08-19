@@ -97,6 +97,8 @@ class StringsDictFile(base.DictStore):
             match = re.search(r"^(\w*).lproj", parent_dir)
             if match is not None:
                 target_lang = match.group(1)
+                if target_lang.lower() == "base":
+                    target_lang = "en"
             else:
                 target_lang = self.sourcelanguage
 

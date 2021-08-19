@@ -126,6 +126,13 @@ class TestStringsDictFile(test_monolingual.TestMonolingualStore):
         store.filename = "Project/it.lproj/Localizable.stringsdict"
         assert store.gettargetlanguage() == "it"
 
+    def test_targetlanguage_auto_detection_base_filename(self):
+        store = self.StoreClass()
+
+        # Check language auto_detection
+        store.filename = "Project/Base.lproj/Localizable.stringsdict"
+        assert store.gettargetlanguage() == "en"
+
     def test_targetlanguage_auto_detection_filename_default_language(self):
         store = self.StoreClass()
 
