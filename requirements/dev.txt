@@ -1,7 +1,7 @@
 -r optional.txt
 
 pre-commit==2.14.1
-pytest==6.2.4
+pytest==6.2.5
 pytest-cov==2.12.1
 pytest-xdist==2.3.0
 Sphinx==4.1.2
