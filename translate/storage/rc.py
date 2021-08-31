@@ -391,7 +391,18 @@ class rcfile(base.TranslationStore):
                             # This is a comment
                             continue
                         if control.id_control[0] in (
-                            "AUTOCHECKBOX AUTORADIOBUTTON CAPTION CHECKBOX CTEXT CONTROL DEFPUSHBUTTON GROUPBOX LTEXT PUSHBUTTON RADIOBUTTON RTEXT"
+                            "AUTOCHECKBOX",
+                            "AUTORADIOBUTTON",
+                            "CAPTION",
+                            "CHECKBOX",
+                            "CTEXT",
+                            "CONTROL",
+                            "DEFPUSHBUTTON",
+                            "GROUPBOX",
+                            "LTEXT",
+                            "PUSHBUTTON",
+                            "RADIOBUTTON",
+                            "RTEXT",
                         ) and (
                             control.values_[0].startswith('"')
                             or control.values_[0].startswith("'")
