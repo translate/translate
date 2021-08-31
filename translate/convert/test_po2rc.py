@@ -107,3 +107,30 @@ msgstr "Zkopirovano"
             rc_result = rcfile(handle)
         assert len(rc_result.units) == 1
         assert rc_result.units[0].target == "Zkopirovano"
+
+    def test_convert_comment_dos_eol(self):
+        self.create_testfile(
+            "simple.rc",
+            b"""\r\nSTRINGTABLE\r\nBEGIN\r\n// Comment\r\nIDS_1 "Copied"\r\nEND\r\n""",
+        )
+        self.create_testfile(
+            "simple.po",
+            """
+#: STRINGTABLE.IDS_1
+msgid "Copied"
+msgstr "Zkopirovano"
+""",
+        )
+        self.run_command(
+            template="simple.rc", i="simple.po", o="output.rc", l="LANG_CZECH"
+        )
+        with self.open_testfile("output.rc", "rb") as handle:
+            content = handle.read()
+            assert (
+                content
+                == b"""\r\nSTRINGTABLE\r\nBEGIN\r\n    // Comment\r\n    IDS_1                   "Zkopirovano"\r\nEND\r\n"""
+            )
+        with self.open_testfile("output.rc") as handle:
+            rc_result = rcfile(handle)
+        assert len(rc_result.units) == 1
+        assert rc_result.units[0].target == "Zkopirovano"

@@ -53,6 +53,14 @@ class rerc:
         self.lang = lang
         self.sublang = sublang
 
+    def convert_comment(self, out, addnl, comment):
+        if not addnl:
+            out.append("    ")
+        # Strip extra \r from \r\n which is left in the comment by the parser
+        if comment.endswith("\r"):
+            comment = comment[:-1]
+        out.append(comment)
+
     def convert_dialog(self, s, loc, toks):
         out = []
         out.append(toks.block_id)
@@ -87,9 +95,7 @@ class rerc:
         for c in toks.controls:
 
             if isinstance(c, str):
-                if not addnl:
-                    out.append("    ")
-                out.append(c)
+                self.convert_comment(out, addnl, c)
                 addnl = True
                 continue
             if addnl:
@@ -142,9 +148,7 @@ class rerc:
         addnl = False
         for c in toks.controls:
             if isinstance(c, str):
-                if not addnl:
-                    out.append("    ")
-                out.append(c)
+                self.convert_comment(out, addnl, c)
                 addnl = True
                 continue
             if addnl:
@@ -212,6 +216,9 @@ class rerc:
         out.append(NL)
 
         for element in popup.elements:
+            if isinstance(element, str):
+                self.convert_comment(out, True, element)
+                continue
 
             if element.block_type and element.block_type == "MENUITEM":
                 out.append(identation)
