@@ -195,7 +195,7 @@ def rc_statement():
                 concatenated_string ^ constant ^ numbers ^ Group(combined_constants)
             ).setResultsName("values_")
         )
-        | one_line_comment
+        | comments
     )
 
     block = block_start + ZeroOrMore(undefined_control)("controls") + block_end

@@ -471,3 +471,30 @@ END
         rc_file = self.source_parse(rc_source)
         assert len(rc_file.units) == 1
         assert rc_file.units[0].source == "Copied"
+
+    def test_stringtables(self):
+        rc_source = """
+STRINGTABLE
+BEGIN
+    IDS_COPIED              "Copied"
+END
+
+STRINGTABLE
+BEGIN
+    /* Comment */
+    IDS_OTHER               "Other"
+END
+
+    //63
+STRINGTABLE
+BEGIN
+
+    IDS_NEXT                "Next"
+
+END
+"""
+        rc_file = self.source_parse(rc_source)
+        assert len(rc_file.units) == 3
+        assert rc_file.units[0].source == "Copied"
+        assert rc_file.units[1].source == "Other"
+        assert rc_file.units[2].source == "Next"
