@@ -264,13 +264,14 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
         # emit captured markup elements
         if start < end:
-            html_content = ""
+            html_content = []
             for markup in self.tu_content[start:end]:
                 if markup["type"] != "comment":
                     if "untranslated_html" in markup:
-                        html_content += markup["untranslated_html"]
+                        html_content.append(markup["untranslated_html"])
                     else:
-                        html_content += markup["html_content"]
+                        html_content.append(markup["html_content"])
+            html_content = "".join(html_content)
             normalized_content = self.WHITESPACE_RE.sub(" ", html_content.strip())
             assert normalized_content  # shouldn't be here otherwise
 
