@@ -218,22 +218,19 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         tagstack = []
         tagmap = {}
         tag = None
-        for pos in range(len(self.tu_content)):
-            if (
-                self.tu_content[pos]["type"] != "endtag"
-                and tag in self.EMPTY_HTML_ELEMENTS
-            ):
+        for pos, content in enumerate(self.tu_content):
+            if content["type"] != "endtag" and tag in self.EMPTY_HTML_ELEMENTS:
                 match = tagstack.pop()
                 tag = None
 
-            if self.has_translatable_content(self.tu_content[pos]):
+            if self.has_translatable_content(content):
                 if end == 0:
                     start = pos
                 end = pos + 1
-            elif self.tu_content[pos]["type"] == "starttag":
+            elif content["type"] == "starttag":
                 tagstack.append(pos)
-                tag = self.tu_content[pos]["tag"]
-            elif self.tu_content[pos]["type"] == "endtag":
+                tag = content["tag"]
+            elif content["type"] == "endtag":
                 if tagstack:
                     match = tagstack.pop()
                     tagmap[match] = pos
