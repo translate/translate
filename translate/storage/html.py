@@ -218,6 +218,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         tagstack = []
         tagmap = {}
         tag = None
+        do_normalize = True
         for pos, content in enumerate(self.tu_content):
             if content["type"] != "endtag" and tag in self.EMPTY_HTML_ELEMENTS:
                 match = tagstack.pop()
@@ -230,6 +231,8 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             elif content["type"] == "starttag":
                 tagstack.append(pos)
                 tag = content["tag"]
+                if tag == "pre":
+                    do_normalize = False
             elif content["type"] == "endtag":
                 if tagstack:
                     match = tagstack.pop()
@@ -272,7 +275,10 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                     else:
                         html_content.append(markup["html_content"])
             html_content = "".join(html_content)
-            normalized_content = self.WHITESPACE_RE.sub(" ", html_content.strip())
+            if do_normalize:
+                normalized_content = self.WHITESPACE_RE.sub(" ", html_content.strip())
+            else:
+                normalized_content = html_content.strip()
             assert normalized_content  # shouldn't be here otherwise
 
             unit = self.addsourceunit(normalized_content)

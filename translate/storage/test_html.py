@@ -222,3 +222,33 @@ class TestHTMLExtraction:
         )
         assert len(store.units) == 1
         assert store.units[0].source == "Henry Jacobs camper application"
+
+    def test_extraction_pre(self):
+        """Check that we can preserve lines in the <pre> tag"""
+        h = html.htmlfile()
+        store = h.parsestring(
+            """
+<pre>
+this is
+a multiline
+pre tag
+</pre>
+        """
+        )
+        assert len(store.units) == 1
+        assert store.units[0].source == "this is\na multiline\npre tag"
+
+    def test_extraction_pre_code(self):
+        """Check that we can preserve lines in the <pre> tag"""
+        h = html.htmlfile()
+        store = h.parsestring(
+            """
+<pre><code>
+this is
+a multiline
+pre tag
+</code></pre>
+        """
+        )
+        assert len(store.units) == 1
+        assert store.units[0].source == "this is\na multiline\npre tag"
