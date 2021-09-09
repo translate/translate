@@ -143,6 +143,12 @@ class FluentUnit(base.TranslationUnit):
     def to_entry(self):
         fp = FluentParser(False)
 
+        # Handle standalone comments separately; they don't have any values or
+        # attributes, just comment text.
+        if self._type in [ast.ResourceComment, ast.GroupComment, ast.Comment]:
+            return (self._type)(self.getnotes())
+
+        assert self.source is not None
         value = fp.maybe_get_pattern(FluentParserStream(self.source))
 
         attributes = [
