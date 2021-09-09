@@ -103,10 +103,8 @@ key = value
         fluent_unit = fluent_file.units[0]
         assert fluent_unit.getnotes() == "A comment\nwith a second line!"
 
-    def test_standalone_comments(self):
-        """Checks that we handle standalone comments."""
-        # Example from https://projectfluent.org/fluent/guide/comments.html
-        fluent_source = """# This Source Code Form is subject to the terms of the Mozilla Public
+    # Example from https://projectfluent.org/fluent/guide/comments.html
+    COMMENTS_EXAMPLE = """# This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
@@ -129,6 +127,10 @@ creating-page-title = Creating { $title }
 creating-page-title-default = page
 creating-page-wait-message = Saving your shot…
 """
+
+    def test_standalone_comments(self):
+        """Checks that we handle standalone comments."""
+        fluent_source = self.COMMENTS_EXAMPLE
         fluent_file = self.fluent_parse(fluent_source)
 
         # ((istranslatable, isheader), comment.startswith)
@@ -152,6 +154,12 @@ creating-page-wait-message = Saving your shot…
                 actual.isheader(),
             ) == expected[0]
             assert actual.getnotes().startswith(expected[1])
+
+    def test_standalone_comments_source(self):
+        """Checks that a Fluent definition with comments can be regenerated as source."""
+        fluent_source = self.COMMENTS_EXAMPLE
+        fluent_regen = self.fluent_regen(fluent_source)
+        assert fluent_source == fluent_regen
 
     def test_source_with_selectors(self):
         """Checks that we handle selectors."""
