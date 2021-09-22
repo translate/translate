@@ -35,7 +35,7 @@ msgstr "Two"
     def test_defaults(self):
         """Test a conversion with default values."""
         actual = self._convert_to_string(self.postring)
-        expected = """<?xml version='1.0' encoding='UTF-8'?>
+        expected = """<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <str key="one">One</str>
   <str key="two">Two</str>
@@ -46,7 +46,7 @@ msgstr "Two"
     def test_root_name(self):
         """Test a conversion with different root name."""
         actual = self._convert_to_string(self.postring, root="strings")
-        expected = """<?xml version='1.0' encoding='UTF-8'?>
+        expected = """<?xml version="1.0" encoding="UTF-8"?>
 <strings>
   <str key="one">One</str>
   <str key="two">Two</str>
@@ -57,7 +57,7 @@ msgstr "Two"
     def test_value_name(self):
         """Test a conversion with different value name."""
         actual = self._convert_to_string(self.postring, value="entry")
-        expected = """<?xml version='1.0' encoding='UTF-8'?>
+        expected = """<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <entry key="one">One</entry>
   <entry key="two">Two</entry>
@@ -68,7 +68,7 @@ msgstr "Two"
     def test_key(self):
         """Test a conversion with different key name."""
         actual = self._convert_to_string(self.postring, key="name")
-        expected = """<?xml version='1.0' encoding='UTF-8'?>
+        expected = """<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <str name="one">One</str>
   <str name="two">Two</str>
@@ -87,7 +87,7 @@ msgstr "Two"
         actual = self._convert_to_string(
             self.postring, templatestring=templatestring, ns="urn:tt:test"
         )
-        expected = """<?xml version='1.0' encoding='UTF-8'?>
+        expected = """<?xml version="1.0" encoding="UTF-8"?>
 <root xmlns="urn:tt:test">
   <str key="one">One</str>
   <str key="two">Two</str>
@@ -98,7 +98,7 @@ msgstr "Two"
     def test_namespace_prefix(self):
         """Test a conversion with a namespace prefix."""
         actual = self._convert_to_string(self.postring, ns="urn:tt:test")
-        expected = """<?xml version='1.0' encoding='UTF-8'?>
+        expected = """<?xml version="1.0" encoding="UTF-8"?>
 <ns0:root xmlns:ns0="urn:tt:test">
   <ns0:str key="one">One</ns0:str>
   <ns0:str key="two">Two</ns0:str>
@@ -109,7 +109,7 @@ msgstr "Two"
     def test_indent_eight(self):
         """Test a conversion with an indent width of 8."""
         actual = self._convert_to_string(self.postring, indent=8)
-        expected = """<?xml version='1.0' encoding='UTF-8'?>
+        expected = """<?xml version="1.0" encoding="UTF-8"?>
 <root>
         <str key="one">One</str>
         <str key="two">Two</str>
@@ -122,7 +122,7 @@ msgstr "Two"
         actual = self._convert_to_string(self.postring, indent=0)
         # no indent here...
         # ...except for a trailing EOL for VCS
-        expected = """<?xml version='1.0' encoding='UTF-8'?>
+        expected = """<?xml version="1.0" encoding="UTF-8"?>
 <root><str key="one">One</str><str key="two">Two</str></root>
 """
         assert actual == expected

@@ -473,7 +473,6 @@ class AndroidResourceFile(lisa.LISAfile):
     XMLskeleton = """<?xml version="1.0" encoding="utf-8"?>
 <resources></resources>"""
     XMLindent = {"indent": "    ", "leaves": {"string", "item"}}
-    XMLdoublequotes = True
 
     def initbody(self):
         """Initialises self.body so it never needs to be retrieved from the XML

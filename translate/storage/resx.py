@@ -190,7 +190,6 @@ class RESXFile(lisa.LISAfile):
 """
     XMLindent = {"indent": "  ", "max_level": 4}
     # Use same header as Visual Studio
-    XMLdoublequotes = True
     namespace = ""
 
     def __init__(self, *args, **kwargs):

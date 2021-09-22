@@ -71,7 +71,7 @@ class TestFlatXMLFile(test_monolingual.TestMonolingualStore):
         xmlsource = self._encoded_file('<root><str key="test">Test</str></root>')
         store = self.StoreClass(xmlsource, indent_chars="    ")
         actual = self._store_to_string(store)
-        expected = """<?xml version='1.0' encoding='UTF-8'?>
+        expected = """<?xml version="1.0" encoding="UTF-8"?>
 <root>
     <str key="test">Test</str>
 </root>
@@ -83,7 +83,7 @@ class TestFlatXMLFile(test_monolingual.TestMonolingualStore):
         xmlsource = self._encoded_file('<root><str key="test">Test</str></root>')
         store = self.StoreClass(xmlsource, indent_chars="\t")
         actual = self._store_to_string(store)
-        expected = """<?xml version='1.0' encoding='UTF-8'?>
+        expected = """<?xml version="1.0" encoding="UTF-8"?>
 <root>
 \t<str key="test">Test</str>
 </root>
@@ -97,7 +97,7 @@ class TestFlatXMLFile(test_monolingual.TestMonolingualStore):
         actual = self._store_to_string(store)
         # no newlines or indent for the elements...
         # ...but trailing EOL to satisfy VCS
-        expected = """<?xml version='1.0' encoding='UTF-8'?>
+        expected = """<?xml version="1.0" encoding="UTF-8"?>
 <root><str key="test">Test</str></root>
 """
         assert actual == expected
