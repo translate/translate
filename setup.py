@@ -347,12 +347,10 @@ else:
 
         def reinitialize_command(self, command, reinit_subcommands=0):
             if command == "install_data":
-                install_data = BuildCommand.reinitialize_command(
-                    self, command, reinit_subcommands
-                )
+                install_data = super().reinitialize_command(command, reinit_subcommands)
                 install_data.data_files = self.remap_data_files(install_data.data_files)
                 return install_data
-            return BuildCommand.reinitialize_command(self, command, reinit_subcommands)
+            return super().reinitialize_command(command, reinit_subcommands)
 
         def remap_data_files(self, data_files):
             """maps the given data files to different locations using external
