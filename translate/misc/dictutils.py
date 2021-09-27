@@ -33,7 +33,7 @@ class cidict(dict):
             )
         for akey in self.keys():
             if akey.lower() == key.lower():
-                return dict.__getitem__(self, akey)
+                return super().__getitem__(akey)
         raise IndexError
 
     def __setitem__(self, key, value):
@@ -43,8 +43,8 @@ class cidict(dict):
             )
         for akey in self.keys():
             if akey.lower() == key.lower():
-                return dict.__setitem__(self, akey, value)
-        return dict.__setitem__(self, key, value)
+                return super().__setitem__(akey, value)
+        return super().__setitem__(key, value)
 
     def update(self, updatedict):
         """D.update(E) -> None.
@@ -60,7 +60,7 @@ class cidict(dict):
             )
         for akey in self.keys():
             if akey.lower() == key.lower():
-                return dict.__delitem__(self, akey)
+                return super().__delitem__(akey)
         raise IndexError
 
     def __contains__(self, key):

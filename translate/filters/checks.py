@@ -2722,7 +2722,7 @@ class L20nChecker(MozillaChecker):
                 if key not in self.excluded_filters_for_complex_units
             }
 
-        result = MozillaChecker.run_filters(self, unit, categorised=categorised)
+        result = super().run_filters(unit, categorised=categorised)
 
         if is_unit_complex:
             self.defaultfilters = saved_default_filters

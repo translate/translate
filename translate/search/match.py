@@ -276,7 +276,7 @@ class terminologymatcher(matcher):
 
     def inittm(self, store):
         """Normal initialisation, but convert all source strings to lower case"""
-        matcher.inittm(self, store)
+        super().inittm(store)
         extras = []
         for unit in self.candidates.units:
             source = unit.source = context_re.sub("", unit.source).lower()
