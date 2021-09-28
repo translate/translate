@@ -17,7 +17,7 @@ class TestReindent:
         xmlsource = self._xmlfromstring('<root><str key="test">Test</str></root>')
         reindent(xmlsource, indent="    ")
         actual = self._xmltostring(xmlsource)
-        expected = b"""<?xml version='1.0' encoding='UTF-8'?>
+        expected = b"""<?xml version='1.0' encoding='utf-8'?>
 <root>
     <str key="test">Test</str>
 </root>
@@ -29,7 +29,7 @@ class TestReindent:
         xmlsource = self._xmlfromstring('<root><str key="test">Test</str></root>')
         reindent(xmlsource, indent="\t")
         actual = self._xmltostring(xmlsource)
-        expected = b"""<?xml version='1.0' encoding='UTF-8'?>
+        expected = b"""<?xml version='1.0' encoding='utf-8'?>
 <root>
 \t<str key="test">Test</str>
 </root>
