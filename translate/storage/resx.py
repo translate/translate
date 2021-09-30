@@ -34,6 +34,7 @@ class RESXUnit(lisa.LISAunit):
     textNode = ""
     namespace = ""
     rich_parsers = general.parsers
+    XMLuppercaseEncoding = False
 
     def createlanguageNode(self, lang, text, purpose):
         """Returns an xml Element setup with given parameters."""
