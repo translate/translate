@@ -339,7 +339,11 @@ class LISAfile(base.TranslationStore):
                 self.document,
                 pretty_print=not self.XMLindent,
                 xml_declaration=not self.XMLdoublequotes,
-                encoding=(self.encoding.upper() if self.XMLuppercaseEncoding else self.encoding),
+                encoding=(
+                    self.encoding.upper()
+                    if self.XMLuppercaseEncoding
+                    else self.encoding
+                ),
                 doctype=self.XMLdoctype,
             )
             treestring = self.serialize_hook(treestring)
