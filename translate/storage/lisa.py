@@ -263,6 +263,7 @@ class LISAfile(base.TranslationStore):
     XMLindent = {}
     XMLdoublequotes = True
     XMLdoctype = None
+    XMLuppercaseEncoding = True
 
     namespace = None
 
@@ -327,7 +328,10 @@ class LISAfile(base.TranslationStore):
         """Converts to a string containing the file's XML"""
         root = self.document.getroot()
         if self.XMLdoublequotes:
-            out.write(b'<?xml version="1.0" encoding="UTF-8"?>\n')
+            if self.XMLuppercaseEncoding:
+                out.write(b'<?xml version="1.0" encoding="UTF-8"?>\n')
+            else:
+                out.write(b'<?xml version="1.0" encoding="utf-8"?>\n')
         if self.XMLindent:
             reindent(root, **self.XMLindent)
         if 1:
@@ -335,7 +339,7 @@ class LISAfile(base.TranslationStore):
                 self.document,
                 pretty_print=not self.XMLindent,
                 xml_declaration=not self.XMLdoublequotes,
-                encoding=self.encoding,
+                encoding=(self.encoding.upper() if self.XMLuppercaseEncoding else self.encoding),
                 doctype=self.XMLdoctype,
             )
             treestring = self.serialize_hook(treestring)
@@ -345,7 +349,7 @@ class LISAfile(base.TranslationStore):
             out,
             pretty_print=not self.XMLindent,
             xml_declaration=not self.XMLdoublequotes,
-            encoding="utf-8",
+            encoding=("UTF-8" if self.XMLuppercaseEncoding else "utf-8"),
             doctype=self.XMLdoctype,
         )
 
