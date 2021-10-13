@@ -26,7 +26,7 @@ from translate.storage import test_base, ts2 as ts
 from translate.storage.placeables import parse, xliff
 
 
-TS_NUMERUS = """<?xml version="1.0" encoding="UTF-8"?>
+TS_NUMERUS = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.1">
 <context>
@@ -69,7 +69,7 @@ Line 3</source>
 </TS>
 """
 
-TS_CONTEXT_QT4 = """<?xml version="1.0" encoding="UTF-8"?>
+TS_CONTEXT_QT4 = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.0" language="cs">
 <defaultcodec>UTF-8</defaultcodec>
@@ -90,7 +90,7 @@ TS_CONTEXT_QT4 = """<?xml version="1.0" encoding="UTF-8"?>
 </TS>
 """
 
-TS_CONTEXT_QT5 = """<?xml version="1.0" encoding="UTF-8"?>
+TS_CONTEXT_QT5 = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.1" language="cs" sourcelanguage="en">
 <context>
@@ -209,7 +209,7 @@ class TestTSfile(test_base.TestTranslationStore):
 
     def test_edit(self):
         """test editing works well"""
-        tsstr = """<?xml version="1.0" encoding="UTF-8"?>
+        tsstr = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.0" language="hu">
 <context>
@@ -247,7 +247,7 @@ class TestTSfile(test_base.TestTranslationStore):
 
     def test_locations(self):
         """test that locations work well"""
-        tsstr = """<?xml version="1.0" encoding="UTF-8"?>
+        tsstr = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.0" language="hu">
 <context>
@@ -285,7 +285,7 @@ class TestTSfile(test_base.TestTranslationStore):
 
     def test_merge_with_fuzzies(self):
         """test that merge with fuzzy works well"""
-        tsstr1 = """<?xml version="1.0" encoding="UTF-8"?>
+        tsstr1 = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.0" language="hu">
 <context>
@@ -304,7 +304,7 @@ class TestTSfile(test_base.TestTranslationStore):
 </TS>
 """
 
-        tsstr2 = """<?xml version="1.0" encoding="UTF-8"?>
+        tsstr2 = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.0" language="hu">
 <context>
@@ -377,7 +377,7 @@ class TestTSfile(test_base.TestTranslationStore):
 
     def test_edit_missing_translation(self):
         """test editing with missing translation element works well"""
-        tsstr = """<?xml version="1.0" encoding="UTF-8"?>
+        tsstr = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.0" language="hu">
 <context>
