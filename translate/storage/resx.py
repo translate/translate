@@ -34,7 +34,6 @@ class RESXUnit(lisa.LISAunit):
     textNode = ""
     namespace = ""
     rich_parsers = general.parsers
-    XMLuppercaseEncoding = False
 
     def createlanguageNode(self, lang, text, purpose):
         """Returns an xml Element setup with given parameters."""
@@ -191,6 +190,7 @@ class RESXFile(lisa.LISAfile):
 """
     XMLindent = {"indent": "  ", "max_level": 4}
     # Use same header as Visual Studio
+    XMLuppercaseEncoding = False
     namespace = ""
 
     def __init__(self, *args, **kwargs):
