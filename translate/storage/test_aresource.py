@@ -533,7 +533,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         )
 
     def test_serialize(self):
-        content = b"""<?xml version="1.0" encoding="UTF-8"?>
+        content = b"""<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="test">Test</string>
 </resources>"""
@@ -542,16 +542,16 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         assert bytes(store) == content
 
     def test_add_formatting(self):
-        content = b"""<?xml version="1.0" encoding="UTF-8"?>
+        content = b"""<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="test">Test</string>
 </resources>"""
-        other = b"""<?xml version="1.0" encoding="UTF-8"?>
+        other = b"""<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="other">Test</string>
     <string name="other2">Test</string>
 </resources>"""
-        expected = b"""<?xml version="1.0" encoding="UTF-8"?>
+        expected = b"""<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="test">Test</string>
     <string name="other">Test</string>
@@ -564,7 +564,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         assert bytes(store) == expected
 
     def test_entity(self):
-        content = b"""<?xml version="1.0" encoding="UTF-8"?>
+        content = b"""<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE resources [
 <!ENTITY appName "Linphone">
 ]>
@@ -581,7 +581,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         assert bytes(store) == content
 
     def test_invalid_entity(self):
-        content = """<?xml version="1.0" encoding="UTF-8"?>
+        content = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE resources [
 <!ENTITY appName "Linphone">
 ]>
@@ -598,7 +598,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         )
 
     def test_indent(self):
-        content = """<?xml version="1.0" encoding="UTF-8"?>
+        content = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE resources [
 <!ENTITY url_privacy_policy "http://example.com/">
 ]>
@@ -610,7 +610,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         assert bytes(store) == content
 
     def test_edit_plural_markup(self):
-        content = b"""<?xml version="1.0" encoding="UTF-8"?>
+        content = b"""<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="teststring">
         <item quantity="one"><xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" id="count">%d</xliff:g> den</item>
@@ -631,7 +631,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         assert bytes(store) == content
 
     def test_entity_add(self, edit=True):
-        content = """<?xml version="1.0" encoding="UTF-8"?>
+        content = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE resources [
 <!ENTITY appName "Zkouška">
 ]>
@@ -659,7 +659,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         self.test_entity_add(edit=False)
 
     def test_markup_remove(self):
-        template = """<?xml version="1.0" encoding="UTF-8"?>
+        template = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="privacy_policy"><u>Datenschutzerklärung</u></string>
 </resources>"""
@@ -672,7 +672,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         assert bytes(store) == newcontent
 
     def test_markup_set(self):
-        template = """<?xml version="1.0" encoding="UTF-8"?>
+        template = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--Multimedia tab-->
     <string name="id">Multimedia tab</string>
@@ -688,7 +688,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         assert bytes(store) == newcontent
 
     def test_edit_plural_others(self):
-        content = b"""<?xml version="1.0" encoding="UTF-8"?>
+        content = b"""<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="teststring">
         <item quantity="one"><xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" id="count">%d</xliff:g> den</item>
@@ -710,7 +710,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         assert bytes(store) == content
 
     def test_markup_quotes_set(self):
-        template = """<?xml version="1.0" encoding="UTF-8"?>
+        template = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="id">Test</string>
 </resources>"""
@@ -725,14 +725,14 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         assert bytes(store).decode() == newcontent
 
     def test_xliff_g(self):
-        template = """<?xml version="1.0" encoding="UTF-8"?>
+        template = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
 </resources>"""
-        original = """<?xml version="1.0" encoding="UTF-8"?>
+        original = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="id">Test: <xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">%s</xliff:g></string>
 </resources>"""
-        expected = """<?xml version="1.0" encoding="UTF-8"?>
+        expected = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="id">Other: <xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">%s</xliff:g></string>
 </resources>"""
@@ -748,11 +748,11 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         assert bytes(store).decode() == expected
 
     def test_xliff_namespace(self):
-        original = """<?xml version="1.0" encoding="UTF-8"?>
+        original = """<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="id">Test</string>
 </resources>"""
-        expected = """<?xml version="1.0" encoding="UTF-8"?>
+        expected = """<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="id">Test: <xliff:g>%s</xliff:g></string>
 </resources>"""
