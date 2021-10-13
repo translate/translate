@@ -9,7 +9,7 @@ msgid "This is a %s test, hooray."
 msgstr ""
 """
 
-XLIFF_DOC = """<?xml version='1.0' encoding='utf-8'?>
+XLIFF_DOC = """<?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.1" version="1.1">
   <file original="NoName" source-language="en" datatype="plaintext">
     <body>

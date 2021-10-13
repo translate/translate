@@ -531,7 +531,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert not newxfile.getfilenode("foo")
 
     def test_indent(self):
-        xlfsource = b"""<?xml version='1.0' encoding='UTF-8'?>
+        xlfsource = b"""<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.1" version="1.1">
   <file original="doc.txt" source-language="en-US">
     <body>
@@ -543,7 +543,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
   </file>
 </xliff>
 """
-        xlfsourcenote = b"""<?xml version='1.0' encoding='UTF-8'?>
+        xlfsourcenote = b"""<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.1" version="1.1">
   <file original="doc.txt" source-language="en-US">
     <body>
@@ -562,7 +562,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert bytes(xfile) == xlfsourcenote
 
     def test_add_target(self):
-        xlfsource = b"""<?xml version='1.0' encoding='UTF-8'?>
+        xlfsource = b"""<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.1" version="1.1">
   <file original="doc.txt" source-language="en-US">
     <body>
@@ -572,7 +572,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
   </file>
 </xliff>
 """
-        xlftarget = """<?xml version='1.0' encoding='UTF-8'?>
+        xlftarget = """<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.1" version="1.1">
   <file original="doc.txt" source-language="en-US">
     <body>
@@ -589,7 +589,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert bytes(xfile).decode("ascii") == xlftarget
 
     def test_preserve(self):
-        xlfsource = """<?xml version='1.0' encoding='UTF-8'?>
+        xlfsource = """<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.1" version="1.1">
   <file original="doc.txt" source-language="en-US">
     <body>

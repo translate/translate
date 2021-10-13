@@ -354,7 +354,7 @@ class tsfile(lisa.LISAfile):
 """
     XMLindent = {"indent": "    ", "skip": ["TS"], "toplevel": False}
     # For conformance with Qt output, write XML declaration with double quotes
-    XMLdoublequotes = True
+    XMLuppercaseEncoding = False
     namespace = ""
 
     def __init__(self, *args, **kwargs):
