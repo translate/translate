@@ -39,13 +39,13 @@ from pyparsing import (
     ZeroOrMore,
     alphanums,
     alphas,
-    commaSeparatedList,
-    cStyleComment,
-    delimitedList,
+    c_style_comment,
+    delimited_list,
     nums,
-    quotedString,
-    restOfLine,
+    quoted_string,
+    rest_of_line,
 )
+from pyparsing.common import pyparsing_common
 
 from translate.storage import base
 
@@ -149,24 +149,24 @@ def rc_statement():
     :rtype: pyparsing.ParserElement
     """
 
-    one_line_comment = "//" + restOfLine
+    one_line_comment = "//" + rest_of_line
 
-    comments = cStyleComment ^ one_line_comment
+    comments = c_style_comment ^ one_line_comment
 
-    precompiler = Word("#", alphanums) + restOfLine
+    precompiler = Word("#", alphanums) + rest_of_line
 
     language_definition = (
         "LANGUAGE"
-        + Word(alphas + "_").setResultsName("language")
-        + Optional("," + Word(alphas + "_").setResultsName("sublanguage"))
+        + Word(alphas + "_").set_results_name("language")
+        + Optional("," + Word(alphas + "_").set_results_name("sublanguage"))
     )
 
-    block_start = (Keyword("{") | Keyword("BEGIN")).setName("block_start")
-    block_end = (Keyword("}") | Keyword("END")).setName("block_end")
+    block_start = (Keyword("{") | Keyword("BEGIN")).set_name("block_start")
+    block_end = (Keyword("}") | Keyword("END")).set_name("block_end")
 
     reserved_words = block_start | block_end
 
-    name_id = ~reserved_words + Word(alphas, alphanums + "_").setName("name_id")
+    name_id = ~reserved_words + Word(alphas, alphanums + "_").set_name("name_id")
 
     numbers = Word(nums)
 
@@ -175,25 +175,25 @@ def rc_statement():
     constant = Combine(
         Optional(Keyword("NOT")) + (name_id | integerconstant),
         adjacent=False,
-        joinString=" ",
+        join_string=" ",
     )
 
-    combined_constants = delimitedList(constant, "|")
+    combined_constants = delimited_list(constant, "|")
 
-    concatenated_string = OneOrMore(quotedString)
+    concatenated_string = OneOrMore(quoted_string)
 
     block_options = Optional(
-        SkipTo(Keyword("CAPTION"), failOn=block_start)("pre_caption")
+        SkipTo(Keyword("CAPTION"), fail_on=block_start)("pre_caption")
         + Keyword("CAPTION")
-        + quotedString("caption")
+        + quoted_string("caption")
     ) + SkipTo(block_start)("post_caption")
 
     undefined_control = (
         Group(
-            name_id.setResultsName("id_control")
-            + delimitedList(
+            name_id.set_results_name("id_control")
+            + delimited_list(
                 concatenated_string ^ constant ^ numbers ^ Group(combined_constants)
-            ).setResultsName("values_")
+            ).set_results_name("values_")
         )
         | comments
     )
@@ -210,14 +210,14 @@ def rc_statement():
     string_table = Keyword("STRINGTABLE")("block_type") + block_options + block
 
     menu_item = Keyword("MENUITEM")("block_type") + (
-        commaSeparatedList("values_") | Keyword("SEPARATOR")
+        pyparsing_common.comma_separated_list("values_") | Keyword("SEPARATOR")
     )
 
     popup_block = Forward()
 
     popup_block <<= Group(
         Keyword("POPUP")("block_type")
-        + Optional(quotedString("caption"))
+        + Optional(quoted_string("caption"))
         + block_start
         + ZeroOrMore(Group(menu_item | popup_block))("elements")
         + block_end
@@ -350,7 +350,7 @@ class rcfile(base.TranslationStore):
         decoded = decoded.replace("\r", "")
 
         # Parse the strings into a structure.
-        results = rc_statement().searchString(decoded)
+        results = rc_statement().search_string(decoded)
 
         processblocks = True
 
