@@ -1,4 +1,4 @@
-Translate Toolkit 3.4.0
+Translate Toolkit 3.4.1
 ***********************
 
 *Released on 10 September 2021*
