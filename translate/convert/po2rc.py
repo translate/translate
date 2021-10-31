@@ -308,8 +308,8 @@ class rerc:
     def convertstore(self, inputstore, includefuzzy=False):
         self.makestoredict(inputstore, includefuzzy)
         statement = rc.rc_statement()
-        statement.addParseAction(self.translate_strings)
-        return statement.transformString(self.templatefile.read().decode(self.charset))
+        statement.add_parse_action(self.translate_strings)
+        return statement.transform_string(self.templatefile.read().decode(self.charset))
 
     def makestoredict(self, store, includefuzzy=False):
         """make a dictionary of the translations"""
