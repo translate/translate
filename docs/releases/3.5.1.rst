@@ -1,0 +1,24 @@
+Translate Toolkit 3.5.1
+***********************
+
+*Released on 8 November 2021*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- RC
+   
+  - Fixed compatibility with recent pyparsing releases
+
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař, ptmcg
