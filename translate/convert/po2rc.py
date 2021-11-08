@@ -63,7 +63,7 @@ class rerc:
 
     def convert_dialog(self, s, loc, toks):
         out = []
-        out.append(toks.block_id)
+        out.append(toks.block_id[0])
         out.append(" ")
         out.append(toks.block_type)
         if toks.caption:
@@ -102,12 +102,13 @@ class rerc:
                 out.append(NL)
                 addnl = False
             out.append("    ")
-            if len(c[0]) >= 16:
-                out.append(c[0])
+            c0 = c[0]
+            if len(c0[0]) >= 16:
+                out.append(c0[0])
                 # If more than 16 char, put it on a new line to align it.
                 out.append(NL + " " * (16 + 4))
             else:
-                out.append(c[0].ljust(16))
+                out.append(c0[0].ljust(16))
 
             tmp = []
 
@@ -155,13 +156,14 @@ class rerc:
                 out.append(NL)
                 addnl = False
             out.append("    ")
-            if len(c[0]) >= 24:
-                out.append(c[0])
+            c0 = c[0]
+            if len(c0[0]) >= 24:
+                out.append(c0[0])
                 out.append(NL + " " * (24 + 4))
             else:
-                out.append(c[0].ljust(24))
+                out.append(c0[0].ljust(24))
 
-            name = rc.generate_stringtable_name(c[0])
+            name = rc.generate_stringtable_name(c0[0])
             msgid = c[1][1:-1]
             if msgid in self.inputdict:
                 if name in self.inputdict[msgid]:
@@ -265,7 +267,7 @@ class rerc:
     def convert_menu(self, s, loc, toks):
         out = []
 
-        out.append(toks.block_id)
+        out.append(toks.block_id[0])
         out.append(" ")
         out.append(toks.block_type)
 
