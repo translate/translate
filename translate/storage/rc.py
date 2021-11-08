@@ -164,9 +164,7 @@ def rc_statement():
     block_start = (Keyword("{") | Keyword("BEGIN")).set_name("block_start")
     block_end = (Keyword("}") | Keyword("END")).set_name("block_end")
 
-    reserved_words = block_start | block_end
-
-    name_id = ~reserved_words + Word(alphas, alphanums + "_").set_name("name_id")
+    name_id = Group(Word(alphas, alphanums + "_")).set_name("name_id")
 
     numbers = Word(nums)
 
@@ -198,7 +196,11 @@ def rc_statement():
         | comments
     )
 
-    block = block_start + ZeroOrMore(undefined_control)("controls") + block_end
+    block = (
+        block_start
+        + ZeroOrMore(undefined_control, stop_on=block_end)("controls")
+        + block_end
+    )
 
     dialog = (
         name_id("block_id")
@@ -219,7 +221,7 @@ def rc_statement():
         Keyword("POPUP")("block_type")
         + Optional(quoted_string("caption"))
         + block_start
-        + ZeroOrMore(Group(menu_item | popup_block))("elements")
+        + ZeroOrMore(Group(menu_item | popup_block), stop_on=block_end)("elements")
         + block_end
     )("popups*")
 
@@ -228,7 +230,7 @@ def rc_statement():
         + Keyword("MENU")("block_type")
         + block_options
         + block_start
-        + ZeroOrMore(popup_block)
+        + ZeroOrMore(popup_block, stop_on=block_end)
         + block_end
     )
 
