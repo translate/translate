@@ -21,15 +21,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2.4.0
-    - name: Cache pip
-      uses: actions/cache@v2.1.6
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('requirements/*.txt') }}
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2.3.0
       with:
         python-version: ${{ matrix.python-version }}
+        cache: pip
+        cache-dependency-path: 'requirements/*.txt'
     - name: Update pip
       run: pip install --user --upgrade pip wheel
     - name: Install pip dependencies
