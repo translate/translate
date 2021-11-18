@@ -12,16 +12,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2.4.0
-      - uses: actions/cache@v2.1.6
-        with:
-          path: |
-            ~/.cache/pip
-            ~/.cache/pre-commit
-          key: ${{ runner.os }}-pre-commit-${{ hashFiles('requirements/*.txt') }}-${{ hashFiles('.pre-commit-config.yaml') }}
       - name: Setup Python
         uses: actions/setup-python@v2.3.0
         with:
           python-version: 3.9
+          cache: pip
+          cache-dependency-path: 'requirements/*.txt'
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip wheel
@@ -34,16 +30,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2.4.0
-      - uses: actions/cache@v2.1.6
-        with:
-          path: |
-            ~/.cache/pip
-            ~/.cache/pre-commit
-          key: ${{ runner.os }}-pre-commit-${{ hashFiles('requirements/*.txt') }}-${{ hashFiles('.pre-commit-config.yaml') }}
       - name: Setup Python
         uses: actions/setup-python@v2.3.0
         with:
           python-version: 3.9
+          cache: pip
+          cache-dependency-path: 'requirements/*.txt'
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip wheel
@@ -59,16 +51,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2.4.0
-      - uses: actions/cache@v2.1.6
-        with:
-          path: |
-            ~/.cache/pip
-            ~/.cache/pre-commit
-          key: ${{ runner.os }}-pre-commit-${{ hashFiles('requirements/*.txt') }}-${{ hashFiles('.pre-commit-config.yaml') }}
       - name: Setup Python
         uses: actions/setup-python@v2.3.0
         with:
           python-version: 3.9
+          cache: pip
+          cache-dependency-path: 'requirements/*.txt'
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip wheel
