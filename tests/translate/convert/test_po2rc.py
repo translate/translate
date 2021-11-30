@@ -77,6 +77,7 @@ class TestPO2RCCommand(test_convert.TestConvertCommand):
         "-t TEMPLATE, --template=TEMPLATE",
         "-l LANG, --lang=LANG",
         "--charset=CHARSET",
+        "--charset-output=CHARSET",
         "--sublang=SUBLANG",
         "--threshold=PERCENT",
         "--fuzzy",

@@ -355,6 +355,7 @@ def convertrc(
     lang=None,
     sublang=None,
     outputthreshold=None,
+    output_charset=None,
 ):
     inputstore = po.pofile(inputfile)
 
@@ -367,11 +368,14 @@ def convertrc(
         raise ValueError("must have template file for rc files")
     convertor = rerc(templatefile, charset, lang, sublang)
     outputrclines = convertor.convertstore(inputstore, includefuzzy)
-    try:
-        outputfile.write(outputrclines.encode("cp1252"))
-    except UnicodeEncodeError:
-        outputfile.write(codecs.BOM_UTF16_LE)
-        outputfile.write(outputrclines.encode("utf-16-le"))
+    if output_charset == "auto":
+        try:
+            outputfile.write(outputrclines.encode("cp1252"))
+        except UnicodeEncodeError:
+            outputfile.write(codecs.BOM_UTF16_LE)
+            outputfile.write(outputrclines.encode("utf-16-le"))
+    else:
+        outputfile.write(outputrclines.encode(output_charset))
     outputfile.close()
     templatefile.close()
     return 1
@@ -389,7 +393,15 @@ def main(argv=None):
         "--charset",
         dest="charset",
         default=defaultcharset,
-        help=f"charset to use to decode the RC files (default: {defaultcharset})",
+        help=f"charset to use to decode the template RC files (default: {defaultcharset})",
+        metavar="CHARSET",
+    )
+    parser.add_option(
+        "",
+        "--charset-output",
+        dest="output_charset",
+        default="auto",
+        help="charset to use to encode the RC file (default: auto)",
         metavar="CHARSET",
     )
     parser.add_option(
@@ -405,6 +417,7 @@ def main(argv=None):
         metavar="SUBLANG",
     )
     parser.passthrough.append("charset")
+    parser.passthrough.append("output_charset")
     parser.passthrough.append("lang")
     parser.passthrough.append("sublang")
     parser.add_threshold_option()
