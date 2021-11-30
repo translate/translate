@@ -89,6 +89,10 @@ STRINGTABLE
 BEGIN
     // IDS_COMMENTED        "Comment"
     IDS_COPIED              "Copied"
+    IDS_ADJACENT_STRINGS    "Line1 "
+                            "Line2"
+    IDS_UNTRANSLATED_STRING "This string has no translation. "
+                            "It will appear verbatim in the output"
 END
 """,
         )
@@ -98,6 +102,13 @@ END
 #: STRINGTABLE.IDS_COPIED
 msgid "Copied"
 msgstr "Zkopirovano"
+#: STRINGTABLE.IDS_ADJACENT_STRINGS
+msgid ""
+"Line1 "
+"Line2"
+msgstr ""
+"Čára1 "
+"Čára2"
 """,
         )
         self.run_command(
@@ -105,8 +116,13 @@ msgstr "Zkopirovano"
         )
         with self.open_testfile("output.rc") as handle:
             rc_result = rcfile(handle)
-        assert len(rc_result.units) == 1
+        assert len(rc_result.units) == 3
         assert rc_result.units[0].target == "Zkopirovano"
+        assert rc_result.units[1].target == "Čára1 Čára2"
+        assert (
+            rc_result.units[2].target
+            == "This string has no translation. It will appear verbatim in the output"
+        )
 
     def test_convert_comment_dos_eol(self):
         self.create_testfile(
