@@ -63,7 +63,6 @@ try:
         spellchecker.set_text(str(text))
         return [err.word for err in spellchecker]
 
-
 except ImportError:
 
     def check(text, lang):
