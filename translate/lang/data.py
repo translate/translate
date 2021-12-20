@@ -379,7 +379,7 @@ cldr_plural_categories = [
     "other",
 ]
 
-"""List of plural tags generated from CLDR 32.0.1 using
+"""List of plural tags generated from CLDR 37.0.0 using
 https://github.com/WeblateOrg/language-data
 """
 plural_tags = {
@@ -521,6 +521,7 @@ plural_tags = {
     "osa": ["other"],
     "pa": ["one", "other"],
     "pap": ["one", "other"],
+    "pcm": ["one", "other"],
     "pl": ["one", "few", "many"],
     "prg": ["zero", "one", "other"],
     "ps": ["one", "other"],
@@ -534,6 +535,7 @@ plural_tags = {
     "rwk": ["one", "other"],
     "sah": ["other"],
     "saq": ["one", "other"],
+    "sat": ["one", "two", "other"],
     "sc": ["one", "other"],
     "scn": ["one", "other"],
     "sd": ["one", "other"],
