@@ -213,6 +213,8 @@ class RubyYAMLFile(YAMLFile):
         if isinstance(data, CommentedMap) and len(data) == 1:
             lang = list(data.keys())[0]
             self.settargetlanguage(lang)
+            if data[lang] is None:
+                data[lang] = CommentedMap()
             return data[lang]
         return data
 

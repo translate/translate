@@ -511,3 +511,21 @@ class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
         for unit in update.units:
             store.addunit(unit)
         assert bytes(store).decode("ascii") == changed
+
+    def test_add(self):
+        original = """en:
+"""
+        changed = """en:
+  days_on:
+  - Sunday
+  - Monday
+"""
+        store = self.StoreClass()
+        store.parse(original)
+        unit = self.StoreClass.UnitClass("Sunday")
+        unit.setid("days_on[0]")
+        store.addunit(unit)
+        unit = self.StoreClass.UnitClass("Monday")
+        unit.setid("days_on[1]")
+        store.addunit(unit)
+        assert bytes(store).decode("ascii") == changed
