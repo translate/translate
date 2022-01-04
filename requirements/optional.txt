@@ -7,7 +7,7 @@ BeautifulSoup4>=4.3  # Trados
 # Encoding detection
 chardet==4.0.0              # chardet
 # Tmserver backend
-cheroot==8.5.2       # tmserver
+cheroot==8.6.0       # tmserver
 # Format support
 fluent.syntax==0.18.1 # Fluent
 # Format support
