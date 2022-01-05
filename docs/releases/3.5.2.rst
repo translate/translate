@@ -1,0 +1,31 @@
+Translate Toolkit 3.5.2
+***********************
+
+*Released on 5 January 2022*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- YAML
+
+  - Fixed adding strings to empty Ruby YAML file
+   
+- RC
+  
+  - Better handling of multiline stringtable translations in po2rc
+
+- Misc
+
+  - Update CLDR data to 37.0.0
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař, Jon Turney
