@@ -42,6 +42,16 @@ append = list.append
 decode = bytes.decode
 
 
+class PoParseError(ValueError):
+    def __init__(self, parse_state, message=None):
+        self.parse_state = parse_state
+        if message is None:
+            message = "Syntax error"
+        super().__init__(
+            f"{message} on line {parse_state.lineno}: {parse_state.last_line!r}"
+        )
+
+
 class ParseState:
     def __init__(self, input_iterator, UnitClass, encoding=SINGLE_BYTE_ENCODING):
         # A single-byte encoding is first defined to be able to read the header
@@ -50,6 +60,7 @@ class ParseState:
         # and for decoding all further strings.
         self._input_iterator = input_iterator
         self.next_line = ""
+        self.last_line = ""
         self.lineno = 0
         self.eof = False
         self.encoding = encoding
@@ -62,7 +73,7 @@ class ParseState:
         return string
 
     def read_line(self):
-        current = self.next_line
+        self.last_line = current = self.next_line
         if self.eof:
             return current
         try:
@@ -136,7 +147,7 @@ def parse_comment(parse_state, unit):
             parsed |= parse_prev_msgid_plural(ps, unit)
             # Fail with error in csae nothing was parsed
             if not parsed:
-                raise ValueError(f"Syntax error on line {parse_state.lineno}")
+                raise PoParseError(parse_state)
             return parse_state.next_line
         elif next_char == ":":
             append(unit.sourcecomments, next_line)
@@ -197,7 +208,7 @@ def parse_quoted(parse_state, start_pos=0):
         right = rfind(line, '"')
         if left != right:
             return parse_state.read_line()[left : right + 1]
-        raise ValueError("end-of-line within string")
+        raise PoParseError(parse_state, "end-of-line within string")
     return None
 
 
@@ -390,4 +401,4 @@ def parse_units(parse_state, store):
         store.addunit(unit)
         unit = parse_unit(parse_state)
     if not parse_state.eof:
-        raise ValueError(f"Syntax error on line {parse_state.lineno}")
+        raise PoParseError(parse_state)
