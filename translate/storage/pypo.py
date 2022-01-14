@@ -653,11 +653,6 @@ class pounit(pocommon.pounit):
         """returns whether this pounit contains plural strings..."""
         return len(self.msgid_plural) > 0
 
-    def parse(self, src):
-        return poparser.parse_unit(
-            poparser.ParseState(splitlines(src)[0], pounit), self
-        )
-
     def _getmsgpartstr(self, partname, partlines, partcomments=""):
         if isinstance(partlines, dict):
             partkeys = sorted(partlines.keys())
