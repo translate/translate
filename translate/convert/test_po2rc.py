@@ -21,7 +21,7 @@ BEGIN
     PUSHBUTTON      "Help",ID_HELP,99,162,48,15
     PUSHBUTTON      "Close",IDCANCEL,151,162,48,15
     PUSHBUTTON      "Activate instalation",IDC_BUTTON1,74,76,76,18
-    CTEXT           "My very good program",IDC_STATIC1,56,21,109,19,SS_SUNKEN
+    CTEXT           "My very" " good program",IDC_STATIC1,56,21,109,19,SS_SUNKEN
     CTEXT           "You can use it without registering it",IDC_STATIC,35,131,128,19,SS_SUNKEN
     PUSHBUTTON      "Offline",IDC_OFFLINE,149,108,42,13
     PUSHBUTTON      "See license",IDC_LICENCIA,10,162,85,15
@@ -54,6 +54,10 @@ POFILE = """
 #: DIALOGEX.IDD_REGGHC_DIALOG.CAPTION
 msgid "License dialog"
 msgstr "Licenční dialog"
+
+#: DIALOGEX.IDD_REGGHC_DIALOG.CTEXT.IDC_STATIC1
+msgid "My very good program"
+msgstr "Mój bardzo dobry program"
 """
 
 
@@ -80,6 +84,7 @@ class TestPO2RCCommand(test_convert.TestConvertCommand):
             rc_result = rcfile(handle)
         assert len(rc_result.units) == 14
         assert rc_result.units[0].target == "Licenční dialog"
+        assert rc_result.units[4].target == "Mój bardzo dobry program"
 
     def test_convert_comment(self):
         self.create_testfile(

@@ -112,21 +112,28 @@ class rerc:
 
             tmp = []
 
+            # collect initial quoted items to form msgid
+            i = 1
+            while isinstance(c[i], str) and c[i].startswith(("'", '"')):
+                i = i + 1
+            msgid = "".join(cn[1:-1] for cn in c[1:i])
+
             name = rc.generate_dialog_control_name(
-                toks.block_type, toks.block_id[0], c.id_control[0], c.values_[1]
+                toks.block_type, toks.block_id[0], c.id_control[0], c[i]
             )
-            msgid = c[1][1:-1]
-            if c[1].startswith(("'", '"')) and msgid in self.inputdict:
+
+            # append translation if available, otherwise use as is
+            if msgid in self.inputdict:
                 if name in self.inputdict[msgid]:
                     tmp.append('"' + self.inputdict[msgid][name] + '"')
                 elif EMPTY_LOCATION in self.inputdict[msgid]:
                     tmp.append('"' + self.inputdict[msgid][EMPTY_LOCATION] + '"')
-            elif is_iterable_but_not_string(c[1]):
-                tmp.append(" | ".join(c[1]))
             else:
-                tmp.append(c[1])
+                if i > 1:
+                    tmp.append(" ".join(c[1:i]))
 
-            for a in c[2:]:
+            # and the remaining items, comma separated
+            for a in c[i:]:
                 if is_iterable_but_not_string(a):
                     tmp.append(" | ".join(a))
                 else:
