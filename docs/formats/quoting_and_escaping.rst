@@ -22,7 +22,7 @@ Escaping is done with a backslash. An escaped double quote (``\"``) corresponds
 to a double quote in the original string. ``\n`` for newline, ``\t`` for tabs
 etc are used. Backslashes can be escaped to give a native backslash.
 
-See also :wiki:`escaping <guide/translation/escaping>` in the translation
+See also :doc:`escaping <guide:guide/translation/escaping>` in the translation
 guide.
 
 Example:

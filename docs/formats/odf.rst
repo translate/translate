@@ -22,5 +22,11 @@ released versions of the Translate Toolkit are not aware of their existence.
   <https://github.com/translate/translate/blob/master/translate/storage/odf_shared.py#L23>`_
 
 More complex tag uses are still needed to extract 100% correctly in some
-complex cases. For more information, see the list of :wiki:`issues from testing
-<odf/testing>`.
+complex cases. Following issues are known:
+
+* in spreadsheets you need to put the translation in both the value attribute and the ``p`` tag
+* in spreadsheets only extract strings from cells with ``type="string"``
+* we don't seem to be extracting user defined metadata
+* we don't seem to be extracting strings embedded in charts (axis, caption etc.)
+* odf2xliff barfs on TextContents/textFormatting/alignment/testDoc.odt
+* ``<g>`` isn't clonable (see http://docs.oasis-open.org/xliff/v1.2/os/xliff-core.html#clone|xliff-spec#clone)

@@ -211,7 +211,6 @@ extlinks = {
     # :role: (URL, prefix)
     "issue": ("https://github.com/translate/translate/issues/%s", "issue "),
     "man": ("http://linux.die.net/man/1/%s", ""),
-    "wiki": ("http://translate.sourceforge.net/wiki/%s", ""),
     "wp": ("http://en.wikipedia.org/wiki/%s", ""),
 }
 

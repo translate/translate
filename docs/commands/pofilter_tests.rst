@@ -753,7 +753,7 @@ files.
 xmltags
 -------
 
-Checks that :wiki:`XML/HTML <guide/translation/html>` tags have not been
+Checks that :doc:`XML/HTML <guide:guide/translation/html>` tags have not been
 translated.
 
 This check finds the number of tags in the source string and checks that the
