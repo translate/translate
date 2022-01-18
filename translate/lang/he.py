@@ -18,7 +18,7 @@
 
 """This module represents the Hebrew language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Hebrew_language
+.. seealso:: :wp:`Hebrew_language`
 """
 
 

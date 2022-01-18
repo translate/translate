@@ -18,7 +18,7 @@
 
 """This module represents the N'Ko language.
 
-.. seealso:: http://en.wikipedia.org/wiki/N'Ko_language
+.. seealso:: :wp:`N'Ko_language`
 """
 
 

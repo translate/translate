@@ -46,7 +46,7 @@ LANGUAGE Attribute
 Future Format Support
     As this format used `vobject <http://eventable.github.io/vobject/>`_
     which supports various formats including
-    `vCard <http://en.wikipedia.org/wiki/VCard>`_ it is possible to expand
+    :wp:`vCard` it is possible to expand
     this format to understand those if needed.
 """
 

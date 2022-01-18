@@ -18,7 +18,7 @@
 
 """This module represents the Bengali language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Bengali_language
+.. seealso:: :wp:`Bengali_language`
 """
 
 

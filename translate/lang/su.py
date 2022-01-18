@@ -18,7 +18,7 @@
 
 """This module represents the Sundanese language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Sundanese_language
+.. seealso:: :wp:`Sundanese_language`
 """
 
 

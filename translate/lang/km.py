@@ -18,7 +18,7 @@
 
 """This module represents the Khmer language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Khmer_language
+.. seealso:: :wp:`Khmer_language`
 """
 
 

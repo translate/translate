@@ -18,7 +18,7 @@
 
 """This module represents the Thai language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Thai_language
+.. seealso:: :wp:`Thai_language`
 """
 
 

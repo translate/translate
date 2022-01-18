@@ -18,7 +18,7 @@
 
 """This module represents the Odia language.
 
-.. seealso:: https://en.wikipedia.org/wiki/Odia_language
+.. seealso:: :wp:`Odia_language`
 """
 
 

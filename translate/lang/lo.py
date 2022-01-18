@@ -18,7 +18,7 @@
 
 """This module represents the Lao language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Lao_language
+.. seealso:: :wp:`Lao_language`
 """
 
 

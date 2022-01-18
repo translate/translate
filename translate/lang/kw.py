@@ -18,7 +18,7 @@
 
 """This module represents the Cornish language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Cornish_language
+.. seealso:: :wp:`Cornish_language`
 """
 
 

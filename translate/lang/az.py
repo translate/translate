@@ -18,7 +18,7 @@
 
 """This module represents the Azerbaijani language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Azerbaijani_language
+.. seealso:: :wp:`Azerbaijani_language`
 """
 
 

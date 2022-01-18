@@ -18,7 +18,7 @@
 
 """This module represents the Gaelic language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Gaelic_language
+.. seealso:: :wp:`Gaelic_language`
 """
 
 

@@ -47,10 +47,10 @@ Additional notes on MediaWiki
 =============================
 
 Media wiki can also export in XML format, see
-http://en.wikipedia.org/wiki/Special:Export and
+:wp:`Special:Export` and
 http://www.mediawiki.org/wiki/Manual:Parameters_to_Special:Export this however
 exports in XML so not directly usable by txt2po.
 
-For importing please see http://en.wikipedia.org/wiki/Help:Import this is
+For importing please see :wp:`Help:Import` this is
 disabled on most wikis so not directly usable currently.
 

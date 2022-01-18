@@ -18,7 +18,7 @@
 
 """This module represents the Tibetan language.
 
-.. seealso:: https://en.wikipedia.org/wiki/Standard_Tibetan
+.. seealso:: :wp:`Standard_Tibetan`
 """
 
 

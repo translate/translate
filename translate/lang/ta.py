@@ -18,7 +18,7 @@
 
 """This module represents the Tamil language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Tamil_language
+.. seealso:: :wp:`Tamil_language`
 """
 
 

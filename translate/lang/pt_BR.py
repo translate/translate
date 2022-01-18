@@ -18,7 +18,7 @@
 
 """This module represents the Brazilian Portuguese language.
 
-.. seealso:: https://en.wikipedia.org/wiki/Brazilian_Portuguese
+.. seealso:: :wp:`Brazilian_Portuguese`
 """
 
 

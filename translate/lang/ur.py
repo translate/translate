@@ -18,7 +18,7 @@
 
 """This module represents the Urdu language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Urdu_language
+.. seealso:: :wp:`Urdu_language`
 """
 
 

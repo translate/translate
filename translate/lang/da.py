@@ -18,7 +18,7 @@
 
 """This module represents the the Danish language.
 
-.. seealso:: https://en.wikipedia.org/wiki/Danish_language
+.. seealso:: :wp:`Danish_language`
 """
 
 

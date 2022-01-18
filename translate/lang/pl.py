@@ -18,7 +18,7 @@
 
 """This module represents the Polish language.
 
-.. seealso:: https://en.wikipedia.org/wiki/Polish_language
+.. seealso:: :wp:`Polish_language`
 """
 
 

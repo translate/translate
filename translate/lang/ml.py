@@ -18,7 +18,7 @@
 
 """This module represents the Malayalam language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Malayalam_language
+.. seealso:: :wp:`Malayalam_language`
 """
 
 

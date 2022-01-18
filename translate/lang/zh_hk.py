@@ -18,7 +18,7 @@
 
 """This module represents the Chinese language (traditional).
 
-.. seealso:: http://en.wikipedia.org/wiki/Chinese_language
+.. seealso:: :wp:`Chinese_language`
 """
 
 

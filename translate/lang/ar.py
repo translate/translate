@@ -18,7 +18,7 @@
 
 """This module represents the Arabic language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Arabic_language
+.. seealso:: :wp:`Arabic_language`
 """
 
 

@@ -18,7 +18,7 @@
 
 """This module represents the Vietnamese language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Vietnamese_language
+.. seealso:: :wp:`Vietnamese_language`
 """
 
 

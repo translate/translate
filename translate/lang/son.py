@@ -18,7 +18,7 @@
 
 """This module represents the Songhai languages.
 
-.. seealso:: http://en.wikipedia.org/wiki/Songhai_languages
+.. seealso:: :wp:`Songhai_languages`
 """
 
 

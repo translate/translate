@@ -18,7 +18,7 @@
 
 """This module represents the Venda language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Venda_language
+.. seealso:: :wp:`Venda_language`
 """
 
 

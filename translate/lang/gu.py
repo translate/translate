@@ -18,7 +18,7 @@
 
 """This module represents the Gujarati language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Gujarati_language
+.. seealso:: :wp:`Gujarati_language`
 """
 
 

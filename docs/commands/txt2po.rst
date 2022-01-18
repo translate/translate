@@ -179,8 +179,7 @@ MediaWiki
 
 To retrieve the raw media wiki syntax add '?action=raw' to you wiki URL.  The
 following retrieves the Translate Toolkit page from Wikipedia in raw MediaWiki
-format http://en.wikipedia.org/wiki/Translate_Toolkit?action=raw or
-http://en.wikipedia.org/w/index.php?title=Pootle&action=raw.
+format :wp:`Translate_Toolkit?action=raw`.
 
 To process follow the instructions above but substituting the MediaWiki
 retrieval method.
