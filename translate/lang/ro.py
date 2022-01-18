@@ -18,7 +18,7 @@
 
 """This module represents the Romanian language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Romanian_language
+.. seealso:: :wp:`Romanian_language`
 """
 
 

@@ -18,7 +18,7 @@
 
 """This module represents the Akan language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Akan_language
+.. seealso:: :wp:`Akan_language`
 """
 
 

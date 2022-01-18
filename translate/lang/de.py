@@ -18,7 +18,7 @@
 
 """This module represents the German language.
 
-.. seealso:: http://en.wikipedia.org/wiki/German_language
+.. seealso:: :wp:`German_language`
 """
 
 

@@ -18,7 +18,7 @@
 
 """This module represents the French language.
 
-.. seealso:: http://en.wikipedia.org/wiki/French_language
+.. seealso:: :wp:`French_language`
 """
 
 

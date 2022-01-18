@@ -18,7 +18,7 @@
 
 """This module represents the Northern Sotho language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Northern_Sotho_language
+.. seealso:: :wp:`Northern_Sotho_language`
 """
 
 

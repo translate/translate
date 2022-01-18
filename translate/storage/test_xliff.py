@@ -50,7 +50,7 @@ class TestXLIFFUnit(test_base.TestTranslationUnit):
     def test_accepted_control_chars(self):
         """Tests we can assign the accepted control chars.
 
-        Source: https://en.wikipedia.org/wiki/Valid_characters_in_XML#XML_1.0
+        Source: :wp:`Valid_characters_in_XML#XML_1.0`
         """
         # Unicode Character 'CHARACTER TABULATION' (U+0009)
         self.unit.target = "Een\t"
@@ -65,7 +65,7 @@ class TestXLIFFUnit(test_base.TestTranslationUnit):
     def test_unaccepted_control_chars(self):
         """Tests we cannot assign the unaccepted control chars without escaping.
 
-        Source: https://en.wikipedia.org/wiki/Valid_characters_in_XML#XML_1.0
+        Source: :wp:`Valid_characters_in_XML#XML_1.0`
         """
         for code in xliff.ASCII_CONTROL_CODES:
             self.unit.target = "Een&#x%s;" % code.lstrip("0") or "0"

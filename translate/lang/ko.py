@@ -18,7 +18,7 @@
 
 """This module represents the Korean language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Korean_language
+.. seealso:: :wp:`Korean_language`
 """
 
 

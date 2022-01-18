@@ -18,7 +18,7 @@
 
 """This module represents the Dzongkha language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Dzongkha_language
+.. seealso:: :wp:`Dzongkha_language`
 """
 
 

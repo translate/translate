@@ -18,7 +18,7 @@
 
 """This module represents the Sinhala language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Sinhala_language
+.. seealso:: :wp:`Sinhala_language`
 """
 
 

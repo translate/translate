@@ -18,7 +18,7 @@
 
 """This module represents the Marathi language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Marathi_language
+.. seealso:: :wp:`Marathi_language`
 """
 
 

@@ -18,7 +18,7 @@
 
 """This module represents the Kannada language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Kannada_language
+.. seealso:: :wp:`Kannada_language`
 """
 
 

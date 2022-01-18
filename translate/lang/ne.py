@@ -18,7 +18,7 @@
 
 """This module represents the Nepali language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Nepali_language
+.. seealso:: :wp:`Nepali_language`
 """
 
 

@@ -18,7 +18,7 @@
 
 """This module represents the Hindi language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Hindi_language
+.. seealso:: :wp:`Hindi_language`
 """
 
 

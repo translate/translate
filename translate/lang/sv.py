@@ -18,7 +18,7 @@
 
 """This module represents the the Swedish language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Swedish_language
+.. seealso:: :wp:`Swedish_language`
 """
 
 

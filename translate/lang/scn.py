@@ -18,7 +18,7 @@
 
 """This module represents the Sicilian language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Sicilian_language
+.. seealso:: :wp:`Sicilian_language`
 """
 
 

@@ -984,8 +984,7 @@ class StandardChecker(TranslationChecker):
         details following data are tested to ensure that they are strictly
         identical, but they may be reordered.
 
-        See also `printf Format String
-        <http://en.wikipedia.org/wiki/Printf_format_string>`_.
+        .. seealso:: :wp:`printf Format String <Printf_format_string>`
         """
         count1 = count2 = plural = None
 

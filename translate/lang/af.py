@@ -18,7 +18,7 @@
 
 """This module represents the Afrikaans language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Afrikaans_language
+.. seealso:: :wp:`Afrikaans_language`
 """
 
 

@@ -18,7 +18,7 @@
 
 """This module represents the Uyghur language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Uyghur_language
+.. seealso:: :wp:`Uyghur_language`
 """
 
 

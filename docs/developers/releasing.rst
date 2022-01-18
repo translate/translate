@@ -318,8 +318,7 @@ Let people know that there is a new version:
 
 #. Post link to release Tweet to the `Translate gitter channel <https://gitter.im/translate/dev>`_.
 
-#. Update `Translate Toolkit's Wikipedia page
-   <http://en.wikipedia.org/wiki/Translate_Toolkit>`_
+#. Update :wp:`Translate Toolkit's Wikipedia page <Translate_Toolkit>`
 
 
 Post-Releasing Tasks

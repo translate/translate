@@ -18,7 +18,7 @@
 
 """This module represents the Armenian language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Armenian_language
+.. seealso:: :wp:`Armenian_language`
 """
 
 

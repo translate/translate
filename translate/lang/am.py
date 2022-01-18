@@ -18,7 +18,7 @@
 
 """This module represents the Amharic language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Amharic_language
+.. seealso:: :wp:`Amharic_language`
 """
 
 

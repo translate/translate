@@ -18,7 +18,7 @@
 
 """This module represents the Greek language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Greek_language
+.. seealso:: :wp:`Greek_language`
 """
 
 

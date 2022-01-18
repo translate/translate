@@ -18,7 +18,7 @@
 
 """This module represents the Persian language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Persian_language
+.. seealso:: :wp:`Persian_language`
 """
 
 

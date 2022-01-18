@@ -18,7 +18,7 @@
 
 """This module represents the Telugu language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Telugu_language
+.. seealso:: :wp:`Telugu_language`
 """
 
 

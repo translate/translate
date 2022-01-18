@@ -18,7 +18,7 @@
 
 """This module represents the Punjabi language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Punjabi_language
+.. seealso:: :wp:`Punjabi_language`
 """
 
 

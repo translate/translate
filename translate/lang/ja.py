@@ -18,7 +18,7 @@
 
 """This module represents the Japanese language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Japanese_language
+.. seealso:: :wp:`Japanese_language`
 """
 
 

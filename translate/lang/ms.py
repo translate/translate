@@ -18,7 +18,7 @@
 
 """This module represents the Malay language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Malay_language
+.. seealso:: :wp:`Malay_language`
 """
 
 

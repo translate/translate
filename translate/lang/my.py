@@ -18,7 +18,7 @@
 
 """This module represents the Burmese language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Burmese_language
+.. seealso:: :wp:`Burmese_language`
 """
 
 

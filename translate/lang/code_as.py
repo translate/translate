@@ -18,7 +18,7 @@
 
 """This module represents the Assamese language.
 
-.. seealso:: https://en.wikipedia.org/wiki/Assamese_language
+.. seealso:: :wp:`Assamese_language`
 """
 
 
