@@ -27,8 +27,7 @@ Python 3 support
 
 - Translate Toolkit went through a massive code cleanup looking forward Python
   3 compatibility. There might be quirks that need to be fixed, so please test
-  and `report any issue <https://github.com/translate/translate/issues/new>`_
-  you might find.
+  and :issue:`report any issue </new>` you might find.
 - Python 3.3-3.5 is now supported.
 
 
