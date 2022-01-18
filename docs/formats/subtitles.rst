@@ -15,7 +15,7 @@ The following formats are supported for subtitles:
 * MPL2
 * MPsub
 * :wp:`SubRip` (.srt)
-* :wp:`SubViewer` 2.0 (.sub)
+* SubViewer 2.0 (.sub)
 * TMPlayer
 * Sub Station Alpha
 * Advanced Sub Station Alpha
