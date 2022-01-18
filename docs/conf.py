@@ -196,10 +196,13 @@ coverage_write_headline = False
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3.9", None),
     "pytest": ("https://docs.pytest.org/en/latest/", None),
-    "django": ("http://django.readthedocs.org/en/latest/", None),
-    "pootle": ("http://docs.translatehouse.org/projects/pootle/en/latest/", None),
+    "django": (
+        "https://docs.djangoproject.com/en/stable/",
+        "https://docs.djangoproject.com/en/stable/_objects/",
+    ),
+    "pootle": ("https://docs.translatehouse.org/projects/pootle/en/latest/", None),
     "guide": (
-        "http://docs.translatehouse.org/projects/localization-guide/en/latest/",
+        "https://docs.translatehouse.org/projects/localization-guide/en/latest/",
         None,
     ),
 }
