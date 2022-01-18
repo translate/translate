@@ -522,7 +522,7 @@ class ARBJsonFile(JsonFile):
     See following URLs for doc:
 
     https://github.com/google/app-resource-bundle/wiki/ApplicationResourceBundleSpecification
-    https://flutter.dev/docs/development/accessibility-and-localization/internationalization#appendix-using-the-dart-intl-tools
+    https://docs.flutter.dev/development/accessibility-and-localization/internationalization#dart-tools
     """
 
     UnitClass = ARBJsonUnit
