@@ -4,6 +4,6 @@ pre-commit==2.16.0
 pytest==6.2.5
 pytest-cov==3.0.0
 pytest-xdist==2.5.0
-Sphinx==4.3.2
+Sphinx==4.4.0
 twine==3.7.1
 virtualenv==20.13.0
