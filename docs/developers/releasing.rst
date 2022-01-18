@@ -251,7 +251,7 @@ Publish on PyPI
 
    These can be stored in :file:`$HOME/.pypirc` and will contain your username
    and password. Check `Create a PyPI account
-   <https://packaging.python.org/tutorials/distributing-packages/#create-an-account>`_
+   <https://packaging.python.org/en/latest/tutorials/packaging-projects/#next-steps>`_
    for more details.
 
 

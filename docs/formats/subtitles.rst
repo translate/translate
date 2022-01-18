@@ -28,7 +28,7 @@ YouTube supports `a number of formats
 Implementation details
 ======================
 
-Format support is provided by `Gaupol <http://home.gna.org/gaupol/>`_ a
+Format support is provided by `Gaupol <https://otsaloma.io/gaupol/>`_ a
 subtitling tool.  Further enhancement of format support in Gaupol will directly
 benefit our conversion ability.
 
