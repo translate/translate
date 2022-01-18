@@ -71,5 +71,5 @@ Done
 XLIFF and other tools
 =====================
 
-Here is a small report on :wiki:`XLIFF support by Windows programs
-<guide/tools/xliff_support_by_ms_windows_programs>`.
+Here is a small report on :doc:`XLIFF support by Windows programs
+<guide:guide/tools/xliff_support_by_ms_windows_programs>`.

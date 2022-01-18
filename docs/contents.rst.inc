@@ -27,6 +27,7 @@ building new tools, make sure to read through this part.
    developers/building
    developers/testing
    developers/contributing
+   developers/reporting_bugs
    developers/developers
    developers/releasing
    developers/deprecation

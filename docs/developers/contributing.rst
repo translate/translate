@@ -37,7 +37,7 @@ Compile and install the software to see if we have any platform issues::
 
 Check for any files that are missing, tools that were not installed, etc.
 
-:wiki:`Run unit tests <developers/testing_guidelines#running_tests>` to see if
+:doc:`Run unit tests </developers/testing>` to see if
 there are any issues.  Please report any failures.
 
 Finally, simply work with the software.  Checking all your current usage
@@ -48,8 +48,8 @@ patterns and report problems.
 Debugging
 =========
 
-- Make sure your familiar with the :wiki:`bug reporting guidelines
-  <developers/reporting_bugs>`.
+- Make sure your familiar with the :doc:`bug reporting guidelines
+  </developers/reporting_bugs>`.
 - Create a login for yourself at https://github.com
 - Then choose an `issue <https://github.com/translate/translate/issues>`_
 
