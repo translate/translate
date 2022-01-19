@@ -25,6 +25,8 @@ import copy
 import logging
 import re
 import textwrap
+import unicodedata
+from typing import List, Tuple
 
 from translate.misc import quote
 from translate.misc.multistring import multistring
@@ -98,7 +100,42 @@ def unescapehandler(escape):
     return po_unescape_map.get(escape, escape)
 
 
+WIDE_CHARS = {"F", "W"}
+
+
+def cjklen(text: str) -> int:
+    """
+    Return the real width of an unicode text, the len of any other type.
+
+    Fullwidth and Wide CJK chars are double-width.
+    """
+    return sum(
+        2 if unicodedata.east_asian_width(char) in WIDE_CHARS else 1 for char in text
+    )
+
+
+def cjkslices(text: str, index: int) -> Tuple[str, str]:
+    """Return the two slices of a text cut to the index."""
+    if cjklen(text) <= index:
+        return text, ""
+    length = 0
+    i = 0
+    for i in range(len(text)):
+        length += cjklen(text[i])
+        if length > index:
+            break
+    return text[:i], text[i:]
+
+
 class PoWrapper(textwrap.TextWrapper):
+    """
+    Customized TextWrapper
+
+    - custom word separator regexp
+    - full width chars accounting, based on https://bugs.python.org/issue24665
+    - dropped support for unused features (for example max_lines or drop_whitespace)
+    """
+
     wordsep_re = re.compile(
         r"""
             (
@@ -115,19 +152,82 @@ class PoWrapper(textwrap.TextWrapper):
         re.VERBOSE,
     )
 
-    def __init__(
-        self,
-        width=77,
-        replace_whitespace=False,
-        expand_tabs=False,
-        drop_whitespace=False,
-    ):
+    def __init__(self, width=77):
         super().__init__(
             width=width,
-            replace_whitespace=replace_whitespace,
-            expand_tabs=expand_tabs,
-            drop_whitespace=drop_whitespace,
+            replace_whitespace=False,
+            expand_tabs=False,
+            drop_whitespace=False,
+            break_long_words=True,
         )
+
+    def _handle_long_word(
+        self, reversed_chunks: List[str], cur_line: List[str], cur_len: int, width: int
+    ):
+        """
+        Handle a chunk of text (most likely a word, not whitespace) that
+        is too long to fit in any line.
+        """
+        # Figure out when indent is larger than the specified width, and make
+        # sure at least one character is stripped off on every pass
+        if width < 1:
+            space_left = 1
+        else:
+            space_left = width - cur_len
+
+        # We're allowed to break long words, then do so: put as much
+        # of the next chunk onto the current line as will fit.
+        chunk_start, chunk_end = cjkslices(reversed_chunks[-1], space_left)
+        cur_line.append(chunk_start)
+        reversed_chunks[-1] = chunk_end
+
+    def _wrap_chunks(self, chunks: List[str]) -> List[str]:
+        lines = []
+        if self.width <= 1:
+            raise ValueError("invalid width %r (must be > 1)" % self.width)
+
+        # Arrange in reverse order so items can be efficiently popped
+        # from a stack of chucks.
+        chunks.reverse()
+
+        while chunks:
+
+            # Start the list of chunks that will make up the current line.
+            # cur_len is just the length of all the chunks in cur_line.
+            cur_line = []
+            cur_len = 0
+
+            # Figure out which static string will prefix this line.
+            if lines:
+                indent = self.subsequent_indent
+            else:
+                indent = self.initial_indent
+
+            # Maximum width for this line.
+            width = self.width - len(indent)
+
+            while chunks:
+                l = cjklen(chunks[-1])
+
+                # Can at least squeeze this chunk onto the current line.
+                if cur_len + l <= width:
+                    cur_line.append(chunks.pop())
+                    cur_len += l
+
+                # Nope, this line is full.
+                else:
+                    break
+
+            # The current line is full, and the next chunk is too big to
+            # fit on *any* line (not just this one).
+            if chunks and cjklen(chunks[-1]) > width:
+                self._handle_long_word(chunks, cur_line, cur_len, width)
+
+            if cur_line:
+                # Convert current line back to a string and store it in
+                # list of all lines (return value).
+                lines.append(indent + "".join(cur_line))
+        return lines
 
 
 def quoteforpo(text, wrapper_obj=None):
