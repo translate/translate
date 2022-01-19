@@ -1037,6 +1037,18 @@ msgstr ""
 "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"
 "\\"
 """
+        assert self.poreflow(posource) == posource_wanted
+
+    def test_wrapping_cjk(self):
+        posource = r"""msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+msgid "test"
+msgstr ""
+"効率的なバグの報告はPostGISの開発を助ける本質的な方法です。最も効率的なバグ報"
+"告は、PostGIS開発者がそれを再現できるようにすることで、それの引き金となったス"
+"""
+        assert self.poreflow(posource) == posource
 
     def test_wrap_gettext(self):
         posource = r"""# Test
