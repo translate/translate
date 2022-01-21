@@ -50,10 +50,7 @@ class Translatable:
 
         If not, then there's nothing to translate.
         """
-        for chunk in self.source:
-            if isinstance(chunk, str) and chunk.strip() != "":
-                return True
-        return False
+        return any(isinstance(chunk, str) and chunk.strip() != "" for chunk in self.source)
 
 
 def reduce_unit_tree(f, unit_node, *state):
