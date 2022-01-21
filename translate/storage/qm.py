@@ -125,7 +125,6 @@ class qmfile(base.TranslationStore):
                 "Section: %s (type: %#x, offset: %#x, length: %d)"
                 % (name, section_type, startsection, length)
             )
-            return
 
         while startsection < len(input):
             section_type, length = struct.unpack(
