@@ -167,7 +167,7 @@ def findmarkedvariables(str1, startmarker, endmarker, ignorelist=[]):
                 if currentpos < endmatch:
                     variable = str1[currentpos:endmatch]
                 currentpos = endmatch
-            elif type(endmarker) == int:
+            elif type(endmarker) is int:
                 # setting endmarker to an int means it is a fixed-length
                 # variable string (usually endmarker==1)
                 endmatch = currentpos + endmarker
