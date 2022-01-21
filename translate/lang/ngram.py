@@ -43,10 +43,10 @@ class _NGram:
             # This must already be normalised!
             self.ngrams = arg
         else:
-            self.ngrams = dict()
+            self.ngrams = {}
 
     def addText(self, text):
-        ngrams = dict()
+        ngrams = {}
 
         for word in white_space_re.split(text):
             word = "_%s_" % word
@@ -137,7 +137,7 @@ class NGram:
 
 class Generate:
     def __init__(self, folder, ext=".txt"):
-        self.ngrams = dict()
+        self.ngrams = {}
         folder = path.join(folder, "*" + ext)
         size = len(ext)
 

@@ -466,7 +466,7 @@ class pounit(pocommon.pounit):
             # Already released versions of Virtaal (0.6.x) only supported XLIFF
             # alternatives, and expect .xmlelement.get().
             # This can be removed soon:
-            unit.xmlelement = dict()
+            unit.xmlelement = {}
             return [unit]
         return []
 

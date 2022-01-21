@@ -36,7 +36,7 @@ class po2pydict:
     def convertstore(self, inputstore, includefuzzy):
         str_obj = StringIO()
 
-        mydict = dict()
+        mydict = {}
         for unit in inputstore.units:
             if unit.isheader():
                 continue

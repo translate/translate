@@ -200,7 +200,7 @@ def file_extended_totals(units, wordcounts):
     Provide extended statuses (used by XLIFF)
     """
 
-    stats = dict()
+    stats = {}
 
     for unit in units:
         state = unit.get_state_n()
