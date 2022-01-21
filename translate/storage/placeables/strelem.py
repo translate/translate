@@ -900,7 +900,7 @@ class StringElem:
                 # (but not StringElem sub-class instances, because they
                 # might contain important (non-rendered) data.
                 if (
-                    type(elem.sub[i]) == StringElem or isinstance(elem.sub[i], str)
+                    type(elem.sub[i]) is StringElem or isinstance(elem.sub[i], str)
                 ) and len(elem.sub[i]) == 0:
                     del elem.sub[i]
                     continue

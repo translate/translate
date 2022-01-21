@@ -757,7 +757,7 @@ class pounit(pocommon.pounit):
         """Build a native unit from a foreign unit, preserving as much
         information as possible.
         """
-        if type(unit) == cls and hasattr(unit, "copy") and callable(unit.copy):
+        if type(unit) is cls and hasattr(unit, "copy") and callable(unit.copy):
             return unit.copy()
         elif isinstance(unit, pocommon.pounit):
             newunit = cls(unit.source, encoding)
