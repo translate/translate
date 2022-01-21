@@ -125,7 +125,7 @@ class StringsDictFile(base.DictStore):
     def parse(self, input):
         """Read a .stringsdict file into a dictionary, and convert it to translation units."""
 
-        if isinstance(input, bytes) or isinstance(input, str):
+        if isinstance(input, (bytes, str)):
             plist = plistlib.loads(input, dict_type=OrderedDict)
         elif input is not None:
             plist = plistlib.load(input, dict_type=OrderedDict)
