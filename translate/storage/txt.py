@@ -30,21 +30,29 @@ import re
 from translate.storage import base
 
 
-dokuwiki = [(
+dokuwiki = [
+    (
         "Dokuwiki heading",
         re.compile(r"( ?={2,6}[\s]*)(.+)"),
         re.compile(r"([\s]*={2,6}[\s]*)$"),
-    ), ("Dokuwiki bullet", re.compile(r"([\s]{2,}\*[\s]*)(.+)"), re.compile(r"[\s]+$")), (
+    ),
+    ("Dokuwiki bullet", re.compile(r"([\s]{2,}\*[\s]*)(.+)"), re.compile(r"[\s]+$")),
+    (
         "Dokuwiki numbered item",
         re.compile(r"([\s]{2,}-[\s]*)(.+)"),
         re.compile(r"[\s]+$"),
-    )]
+    ),
+]
 
-mediawiki = [(
+mediawiki = [
+    (
         "MediaWiki heading",
         re.compile(r"(={1,5}[\s]*)(.+)"),
         re.compile(r"([\s]*={1,5}[\s]*)$"),
-    ), ("MediaWiki bullet", re.compile(r"(\*+[\s]*)(.+)"), re.compile(r"[\s]+$")), ("MediaWiki numbered item", re.compile(r"(#+[\s]*)(.+)"), re.compile(r"[\s]+$"))]
+    ),
+    ("MediaWiki bullet", re.compile(r"(\*+[\s]*)(.+)"), re.compile(r"[\s]+$")),
+    ("MediaWiki numbered item", re.compile(r"(#+[\s]*)(.+)"), re.compile(r"[\s]+$")),
+]
 
 flavours = {
     "dokuwiki": dokuwiki,
