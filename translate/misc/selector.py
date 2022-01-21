@@ -162,7 +162,7 @@ class Selector:
                 k = k[5:]
             named[k] = v
         environ["selector.vars"] = dict(named)
-        for k in named.keys():
+        for k in named:
             if k.isdigit():
                 unnamed.append((k, named.pop(k)))
         unnamed.sort()

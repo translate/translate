@@ -1677,14 +1677,14 @@ def test_minimalchecker():
     unit = base.TranslationUnit(src)
     unit.target = tgt
 
-    assert "doublewords" not in minimalchecker.run_filters(unit).keys()
+    assert "doublewords" not in minimalchecker.run_filters(unit)
 
     # Printf check is disabled.
     src, tgt, __ = strprep("Non-matching printf variables", "Ek is %s")
     unit = base.TranslationUnit(src)
     unit.target = tgt
 
-    assert "printf" not in minimalchecker.run_filters(unit).keys()
+    assert "printf" not in minimalchecker.run_filters(unit)
 
 
 def test_reducedchecker():
@@ -1718,14 +1718,14 @@ def test_reducedchecker():
     unit = base.TranslationUnit(src)
     unit.target = tgt
 
-    assert "printf" not in reducedchecker.run_filters(unit).keys()
+    assert "printf" not in reducedchecker.run_filters(unit)
 
     # Escapes check is disabled.
     src, tgt, __ = strprep("A file", "'n Leer\n")
     unit = base.TranslationUnit(src)
     unit.target = tgt
 
-    assert "escapes" not in reducedchecker.run_filters(unit).keys()
+    assert "escapes" not in reducedchecker.run_filters(unit)
 
 
 def test_variables_kde():
@@ -2412,10 +2412,10 @@ def test_skip_checks_per_language_in_some_checkers():
     unit.target = str2
 
     # Accelerators check is disabled for this language in MozillaChecker.
-    assert "accelerators" not in mozillachecker.run_filters(unit).keys()
+    assert "accelerators" not in mozillachecker.run_filters(unit)
 
     # But it is not in StandardChecker.
-    assert "accelerators" in stdchecker.run_filters(unit).keys()
+    assert "accelerators" in stdchecker.run_filters(unit)
 
     # Undo hijack.
     checker_config.lang.ignoretests = previous_ignoretests
@@ -2577,18 +2577,18 @@ def test_category():
     assert standard_checker.categories == {}
     standard_checker.run_filters(unit)
     assert standard_checker.categories != {}
-    assert "validxml" not in standard_checker.categories.keys()
+    assert "validxml" not in standard_checker.categories
     standard_categories_count = len(standard_checker.categories.values())
 
     libo_checker = checks.LibreOfficeChecker()
     assert libo_checker.categories == {}
     libo_checker.run_filters(unit)
     assert libo_checker.categories != {}
-    assert "validxml" in libo_checker.categories.keys()
+    assert "validxml" in libo_checker.categories
 
     standard_checker = checks.StandardChecker()
     assert standard_checker.categories == {}
     standard_checker.run_filters(unit)
     assert standard_checker.categories != {}
     assert len(standard_checker.categories.values()) == standard_categories_count
-    assert "validxml" not in standard_checker.categories.keys()
+    assert "validxml" not in standard_checker.categories

@@ -208,7 +208,7 @@ def file_extended_totals(units, wordcounts):
         # if state is not standard (xliff)
         # search for the default one to use
         # each unit defines its own states
-        if state not in extended_state_strings.keys():
+        if state not in extended_state_strings:
             for k in unit.STATE.keys():
                 val = unit.STATE[k]
                 if val[0] <= int(state.__str__()) <= val[1]:

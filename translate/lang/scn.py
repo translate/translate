@@ -90,7 +90,7 @@ class SicilianChecker(TranslationChecker):
         stopwords = [
             f"{word} ({errors[word]})"
             for word in words2
-            if word.lower() in errors.keys() and word not in words1
+            if word.lower() in errors and word not in words1
         ]
 
         if stopwords:
@@ -141,7 +141,7 @@ class SicilianChecker(TranslationChecker):
         stopwords = []
 
         for word in self.config.lang.words(str2):
-            for suffix in suffixes.keys():
+            for suffix in suffixes:
                 if word not in str1 and word.lower().endswith(suffix):
                     stopwords.append(f"{word} (-{suffixes[suffix]})")
 

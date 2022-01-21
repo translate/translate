@@ -153,7 +153,7 @@ class Generate:
             self.ngrams[lang] = n
 
     def save(self, folder, ext=".lm"):
-        for lang in self.ngrams.keys():
+        for lang in self.ngrams:
             fname = path.join(folder, lang + ext)
             with open(fname, mode="w", encoding="utf-8") as fp:
                 for v, k in self.ngrams[lang].sorted_by_score():

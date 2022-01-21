@@ -788,7 +788,7 @@ def normalize_code(code):
     return code.replace("_", "-").replace("@", "-").lower()
 
 
-__normalised_languages = {normalize_code(key) for key in languages.keys()}
+__normalised_languages = {normalize_code(key) for key in languages}
 
 
 def simplify_to_common(language_code):
