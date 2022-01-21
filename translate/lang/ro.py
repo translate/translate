@@ -34,10 +34,7 @@ def contains_illegal(illegal_substrings, string):
     :param string: the string to check against occurences of illegal substrings
     :return: True if string contains any of the illegal substrings
     """
-    for s in illegal_substrings:
-        if s in string:
-            return True
-    return False
+    return any(s in string for s in illegal_substrings)
 
 
 class RomanianChecker(TranslationChecker):
