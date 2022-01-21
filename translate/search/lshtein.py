@@ -69,7 +69,7 @@ def native_distance(a, b, stopvalue=0):
 
 
 try:
-    import Levenshtein as Levenshtein
+    import Levenshtein
 
     distance = native_distance
 except ImportError:
