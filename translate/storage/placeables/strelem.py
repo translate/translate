@@ -798,10 +798,7 @@ class StringElem:
 
         :rtype: bool
         """
-        for e in self.sub:
-            if not isinstance(e, str):
-                return False
-        return True
+        return all(isinstance(e, str) for e in self.sub)
 
     def iter_depth_first(self, filter=None):
         """Iterate through the nodes in the tree in dept-first order."""
