@@ -167,7 +167,7 @@ class Workflow:
         for s in self.states:
             if s.name == state_name:
                 return s
-            
+
         raise StateNotInWorkflowError(state_name)
 
     def set_current_state(self, state):
