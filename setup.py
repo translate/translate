@@ -422,10 +422,7 @@ else:
 
         def __init__(self, attrs):
             baseattrs = {}
-            py2exeoptions = {}
-            py2exeoptions["packages"] = ["translate", "encodings"]
-            py2exeoptions["compressed"] = True
-            py2exeoptions["excludes"] = [
+            py2exeoptions = {"packages": ["translate", "encodings"], "compressed": True, "excludes": [
                 "Tkconstants",
                 "Tkinter",
                 "tcl",
@@ -440,7 +437,7 @@ else:
                 "isapi",
                 "_tkinter",
                 "win32api",
-            ]
+            ]}
             version = attrs.get("version", translateversion)
             py2exeoptions["dist_dir"] = "translate-toolkit-%s" % version
             py2exeoptions["includes"] = ["lxml", "lxml._elementpath"]

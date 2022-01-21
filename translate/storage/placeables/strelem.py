@@ -501,9 +501,8 @@ class StringElem:
         """
         info = {
             "elem": self.elem_at_offset(index),
-            "index": index,
+            "index": index,"offset": info["index"] - self.elem_offset(info["elem"])
         }
-        info["offset"] = info["index"] - self.elem_offset(info["elem"])
 
         # Check if there "index" is actually between elements
         leftelem = self.elem_at_offset(index - 1)
