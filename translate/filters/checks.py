@@ -1089,7 +1089,7 @@ class StandardChecker(TranslationChecker):
                         )
 
         if count2 is None:
-            str1_variables = list(m.group() for m in printf_pat.finditer(str1))
+            str1_variables = [m.group() for m in printf_pat.finditer(str1)]
 
             if str1_variables:
                 raise FilterFailure(
