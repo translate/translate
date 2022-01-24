@@ -145,7 +145,9 @@ def po2it(
     outputpropfile = BytesIO()
     if templatefile is not None:
         templatelines = templatefile.readlines()
-        templateproplines = list(mozfunny2prop.it2prop(templatelines, encoding=encoding))
+        templateproplines = list(
+            mozfunny2prop.it2prop(templatelines, encoding=encoding)
+        )
         templatepropfile = BytesIO("".join(templateproplines).encode())
     else:
         templatepropfile = None
