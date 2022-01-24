@@ -1,4 +1,3 @@
-import warnings
 from io import BytesIO
 
 from pytest import mark
@@ -17,12 +16,6 @@ class TestPretranslate:
                 </body>
         </file>
 </xliff>"""
-
-    def setup_method(self, method):
-        warnings.resetwarnings()
-
-    def teardown_method(self, method):
-        warnings.resetwarnings()
 
     def pretranslatepo(self, input_source, template_source=None):
         """helper that converts strings to po source without requiring files"""

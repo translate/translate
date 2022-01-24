@@ -1,4 +1,3 @@
-import warnings
 from io import BytesIO
 
 from pytest import mark
@@ -8,12 +7,6 @@ from translate.storage import po
 
 
 class TestPOT2PO:
-    def setup_method(self, method):
-        warnings.resetwarnings()
-
-    def teardown_method(self, method):
-        warnings.resetwarnings()
-
     def convertpot(self, potsource, posource=None):
         """helper that converts pot source to po source without requiring files"""
         potfile = BytesIO(potsource.encode())

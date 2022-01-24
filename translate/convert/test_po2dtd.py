@@ -8,12 +8,6 @@ from translate.storage import dtd, po
 
 
 class TestPO2DTD:
-    def setup_method(self, method):
-        warnings.resetwarnings()
-
-    def teardown_method(self, method):
-        warnings.resetwarnings()
-
     def po2dtd(self, posource, remove_untranslated=False):
         """helper that converts po source to dtd source without requiring files"""
         inputfile = BytesIO(posource.encode())
@@ -547,18 +541,6 @@ class TestPO2DTDCommand(test_convert.TestConvertCommand, TestPO2DTD):
 
     convertmodule = po2dtd
     defaultoptions = {"progress": "none"}
-    # TODO: because of having 2 base classes, we need to call all their setup and teardown methods
-    # (otherwise we won't reset the warnings etc)
-
-    def setup_method(self, method):
-        """call both base classes setup_methods"""
-        super().setup_method(method)
-        TestPO2DTD.setup_method(self, method)
-
-    def teardown_method(self, method):
-        """call both base classes teardown_methods"""
-        super().teardown_method(method)
-        TestPO2DTD.teardown_method(self, method)
 
     def test_help(self, capsys):
         """tests getting help"""

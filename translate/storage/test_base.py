@@ -20,7 +20,6 @@
 
 
 import os
-import warnings
 from io import BytesIO
 
 from translate.misc.multistring import multistring
@@ -243,13 +242,11 @@ class TestTranslationStore:
         self.filename = f"{self.__class__.__name__}_{method.__name__}.test"
         if os.path.exists(self.filename):
             os.remove(self.filename)
-        warnings.resetwarnings()
 
     def teardown_method(self, method):
         """Makes sure that if self.filename was created by the method, it is cleaned up"""
         if os.path.exists(self.filename):
             os.remove(self.filename)
-        warnings.resetwarnings()
 
     def test_create_blank(self):
         """Tests creating a new blank store"""

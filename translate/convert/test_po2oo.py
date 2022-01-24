@@ -1,5 +1,4 @@
 import os
-import warnings
 from io import BytesIO
 
 from pytest import mark
@@ -9,12 +8,6 @@ from translate.storage import po
 
 
 class TestPO2OO:
-    def setup_method(self, method):
-        warnings.resetwarnings()
-
-    def teardown_method(self, method):
-        warnings.resetwarnings()
-
     def convertoo(self, posource, ootemplate, language="en-US"):
         """helper to exercise the command line function"""
         inputfile = BytesIO(posource.encode())
