@@ -4,10 +4,12 @@ from translate.misc.xml_helpers import reindent
 
 
 class TestReindent:
-    def _xmlfromstring(self, xmlstring):
+    @staticmethod
+    def _xmlfromstring(xmlstring):
         return etree.fromstring(xmlstring)
 
-    def _xmltostring(self, xml):
+    @staticmethod
+    def _xmltostring(xml):
         return etree.tostring(
             xml, pretty_print=True, xml_declaration=True, encoding="utf-8"
         )

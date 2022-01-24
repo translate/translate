@@ -82,7 +82,8 @@ class TestConvertCommand:
             content = testfile.read()
         return content
 
-    def help_check(self, options, option, last=False):
+    @staticmethod
+    def help_check(options, option, last=False):
         """check that a help string occurs and remove it"""
         assert option in options
         newoptions = []

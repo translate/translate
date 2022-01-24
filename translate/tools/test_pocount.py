@@ -7,7 +7,8 @@ from translate.tools import pocount
 
 
 class TestCount:
-    def count(self, source, expectedsource, target=None, expectedtarget=None):
+    @staticmethod
+    def count(source, expectedsource, target=None, expectedtarget=None):
         """simple helper to check the respective word counts"""
         poelement = po.pounit(source)
         if target is not None:

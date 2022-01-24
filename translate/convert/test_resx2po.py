@@ -87,7 +87,8 @@ class TestRESX2PO:
     </root>
     """
 
-    def resx2po(self, resxsource, template=None, filter=None):
+    @staticmethod
+    def resx2po(resxsource, template=None, filter=None):
         """Helper that converts resx source to po source without requiring files"""
         inputfile = BytesIO(resxsource.encode())
         inputresx = resx.RESXFile(inputfile)
@@ -202,7 +203,8 @@ class TestRESX2POCommand(test_convert.TestConvertCommand, TestRESX2PO):
         options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
         options = self.help_check(options, "--filter", last=True)
 
-    def single_element(self, pofile):
+    @staticmethod
+    def single_element(pofile):
         """Checks that the pofile contains a single non-header element, and returns it"""
         if isinstance(pofile, poheader):
             assert len(pofile.units) == 2

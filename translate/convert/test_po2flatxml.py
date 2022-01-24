@@ -13,7 +13,8 @@ msgid "two"
 msgstr "Two"
 """
 
-    def _convert(self, postring, templatestring=None, **kwargs):
+    @staticmethod
+    def _convert(postring, templatestring=None, **kwargs):
         """Helper that converts po source to xml target without requiring files"""
         inputfile = BytesIO(postring.encode())
         templatefile = None

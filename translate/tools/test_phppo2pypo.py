@@ -9,7 +9,8 @@ from translate.tools import phppo2pypo
 
 
 class TestPhpPo2PyPo:
-    def test_single_po(self):
+    @staticmethod
+    def test_single_po():
         inputfile = b"""
 # This user comment refers to: %1$s
 #. This developer comment does too: %1$s
@@ -28,7 +29,8 @@ msgstr "I have %2$s apples and %1$s oranges"
         assert 'msgid "I have {1} apples and {0} oranges"' in output
         assert 'msgstr "I have {1} apples and {0} oranges"' in output
 
-    def test_plural_po(self):
+    @staticmethod
+    def test_plural_po():
         inputfile = b"""
 #. This developer comment refers to %1$s
 #: some/path.php:111

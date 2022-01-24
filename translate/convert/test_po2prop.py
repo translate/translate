@@ -5,7 +5,8 @@ from translate.storage import po
 
 
 class TestPO2Prop:
-    def po2prop(self, posource):
+    @staticmethod
+    def po2prop(posource):
         """helper that converts po source to .properties source without requiring files"""
         inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
@@ -13,8 +14,8 @@ class TestPO2Prop:
         outputprop = convertor.convertstore(inputpo)
         return outputprop
 
+    @staticmethod
     def merge2prop(
-        self,
         propsource,
         posource,
         personality="java",

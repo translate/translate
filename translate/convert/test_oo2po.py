@@ -21,7 +21,8 @@ class TestOO2PO:
         outputpo = convertor.convertstore(inputoo)
         return outputpo
 
-    def singleelement(self, pofile):
+    @staticmethod
+    def singleelement(pofile):
         """checks that the pofile contains a single non-header element, and returns it"""
         if isinstance(pofile, poheader):
             assert len(pofile.units) == 2

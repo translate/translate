@@ -29,8 +29,8 @@ class TestPOMerge:
   </file>
 </xliff>"""
 
+    @staticmethod
     def mergestore(
-        self,
         templatesource,
         inputsource,
         mergeblanks="yes",
@@ -53,8 +53,8 @@ class TestPOMerge:
         outputpofile = po.pofile(outputpostring)
         return outputpofile
 
+    @staticmethod
     def mergexliff(
-        self,
         templatesource,
         inputsource,
         mergeblanks="yes",
@@ -79,7 +79,8 @@ class TestPOMerge:
         outputxlifffile = xliff.xlifffile(outputxliffstring)
         return outputxlifffile
 
-    def countunits(self, pofile):
+    @staticmethod
+    def countunits(pofile):
         """returns the number of non-header items"""
         if pofile.units[0].isheader():
             return len(pofile.units) - 1
@@ -91,7 +92,8 @@ class TestPOMerge:
         assert self.countunits(pofile) == 1
         return pofile.units[-1]
 
-    def test_mergesore_bad_data(self):
+    @staticmethod
+    def test_mergesore_bad_data():
         """Test that we catch bad options sent to mergestore"""
         templatefile = BytesIO(b"")
         inputfile = BytesIO(b"")

@@ -6,7 +6,8 @@ from translate.storage import tmx
 
 
 class TestPO2TMX:
-    def po2tmx(self, posource, sourcelanguage="en", targetlanguage="af", comment=None):
+    @staticmethod
+    def po2tmx(posource, sourcelanguage="en", targetlanguage="af", comment=None):
         """helper that converts po source to tmx source without requiring files"""
         inputfile = BytesIO(posource.encode("utf-8"))
         outputfile = BytesIO()

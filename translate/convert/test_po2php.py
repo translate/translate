@@ -7,14 +7,16 @@ from translate.storage import po
 
 
 class TestPO2Php:
-    def po2php(self, posource):
+    @staticmethod
+    def po2php(posource):
         """helper that converts po source to .php source without requiring files"""
         inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
         convertor = po2php.po2php()
         return convertor.convertstore(inputpo)
 
-    def merge2php(self, phpsource, posource):
+    @staticmethod
+    def merge2php(phpsource, posource):
         """helper that merges po translations to .php source without requiring files"""
         inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
@@ -25,7 +27,8 @@ class TestPO2Php:
         print(outputphp)
         return outputphp
 
-    def test_convertphp(self):
+    @staticmethod
+    def test_convertphp():
         """test convertphp helper"""
         posource = """#: $lang['name']
 msgid "value"
@@ -42,7 +45,8 @@ $lang['name'] = 'waarde';
         assert po2php.convertphp(inputfile, outputfile, templatefile) == 1
         assert outputfile.getvalue() == phpexpected
 
-    def test_convertphp_notemplate(self):
+    @staticmethod
+    def test_convertphp_notemplate():
         """test convertphp helper without template"""
         posource = """#: $lang['name']
 msgid "value"
@@ -53,7 +57,8 @@ msgstr "waarde"
         with raises(ValueError):
             po2php.convertphp(inputfile, outputfile, None)
 
-    def test_convertphp_empty_template(self):
+    @staticmethod
+    def test_convertphp_empty_template():
         """test convertphp helper with empty translation"""
         posource = """#: $lang['name']
 msgid "value"

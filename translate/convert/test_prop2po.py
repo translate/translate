@@ -5,7 +5,8 @@ from translate.storage import po, properties
 
 
 class TestProp2PO:
-    def prop2po(self, propsource, proptemplate=None, personality="java"):
+    @staticmethod
+    def prop2po(propsource, proptemplate=None, personality="java"):
         """helper that converts .properties source to po source without requiring files"""
         inputfile = BytesIO(propsource.encode())
         inputprop = properties.propfile(inputfile, personality=personality)
@@ -18,7 +19,8 @@ class TestProp2PO:
             outputpo = convertor.convertstore(inputprop)
         return outputpo
 
-    def convertprop(self, propsource):
+    @staticmethod
+    def convertprop(propsource):
         """call the convertprop, return the outputfile"""
         inputfile = BytesIO(propsource.encode())
         outputfile = BytesIO()
@@ -26,14 +28,16 @@ class TestProp2PO:
         assert prop2po.convertprop(inputfile, outputfile, templatefile)
         return outputfile.getvalue()
 
-    def singleelement(self, pofile):
+    @staticmethod
+    def singleelement(pofile):
         """checks that the pofile contains a single non-header element, and returns it"""
         assert len(pofile.units) == 2
         assert pofile.units[0].isheader()
         print(pofile)
         return pofile.units[1]
 
-    def countelements(self, pofile):
+    @staticmethod
+    def countelements(pofile):
         """counts the number of non-header entries"""
         assert pofile.units[0].isheader()
         print(pofile)
