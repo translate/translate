@@ -238,7 +238,7 @@ def main():
 
     # setup debugging
     format = "%(asctime)s %(levelname)s %(message)s"
-    level = args.debug and logging.DEBUG or logging.WARNING
+    level = logging.DEBUG if args.debug else logging.WARNING
     if args.debug:
         format = "%(levelname)7s %(module)s.%(funcName)s:%(lineno)d: %(message)s"
 

@@ -495,7 +495,7 @@ class TranslationUnit:
         if self.STATE:
             return self._state_n
         else:
-            return self.istranslated() and self.S_UNREVIEWED or self.S_EMPTY
+            return self.S_UNREVIEWED if self.istranslated() else self.S_EMPTY
 
     def set_state_n(self, value):
         self._state_n = value
