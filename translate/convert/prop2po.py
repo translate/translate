@@ -355,7 +355,7 @@ class prop2po:
         ``mixbucket`` can be specified to indicate if the given unit is part of
         the template or the translated file.
         """
-        if self.personality != "mozilla" and self.personality != "gwt":
+        if self.personality not in ("mozilla", "gwt"):
             # XXX should we enable unit mixing for other personalities?
             return self.convertunit(unit, commenttype)
 

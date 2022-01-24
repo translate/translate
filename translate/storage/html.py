@@ -252,10 +252,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         # scan the start and end tags captured between translatable content;
         # extend the captured interval to include the matching tags
         for pos in range(start + 1, end - 1):
-            if (
-                self.tu_content[pos]["type"] == "starttag"
-                or self.tu_content[pos]["type"] == "endtag"
-            ) and pos in tagmap:
+            if self.tu_content[pos]["type"] in ("starttag", "endtag") and pos in tagmap:
                 match = tagmap[pos]
                 start = min(start, match)
                 end = max(end, match + 1)

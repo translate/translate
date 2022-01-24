@@ -431,7 +431,7 @@ Translated Target Words, Fuzzy Messages, Fuzzy Source Words, Untranslated Messag
 Untranslated Source Words, Total Message, Total Source Words, \
 Review Messages, Review Source Words"""
             )
-        if self.style == style_short_strings or self.style == style_short_words:
+        if self.style in (style_short_strings, style_short_words):
             for filename in filenames:  # find longest filename
                 if len(filename) > self.longestfilename:
                     self.longestfilename = len(filename)

@@ -186,7 +186,7 @@ def combine(label, accesskey, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
         searchchar = label[searchpos]
         if searchchar == "&":
             in_entity = True
-        elif searchchar == ";" or searchchar == " ":
+        elif searchchar in (";", " "):
             in_entity = False
         if not in_entity:
             if searchchar == accesskey:  # Prefer supplied case

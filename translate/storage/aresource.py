@@ -42,7 +42,7 @@ class AndroidResourceUnit(base.TranslationUnit):
     def createfromxmlElement(cls, element):
         term = None
         # Actually this class supports only plurals and string tags
-        if element.tag == "plurals" or element.tag == "string":
+        if element.tag in ("plurals", "string"):
             term = cls(None, xmlelement=element)
         return term
 
@@ -162,7 +162,7 @@ class AndroidResourceUnit(base.TranslationUnit):
                         # this first so we can use the ``in`` operator
                         # in the clauses below without issue.
                         pass
-                    elif c == "n" or c == "N":
+                    elif c in ("n", "N"):
                         # Remove whitespace just before newline. Most likely this is result of
                         # having real newline in the XML in front of \n.
                         if i >= 2 and text[i - 2] == " ":
@@ -171,7 +171,7 @@ class AndroidResourceUnit(base.TranslationUnit):
                             offset = 1
                         text[i - offset : i + 1] = "\n"  # an actual newline
                         i -= offset
-                    elif c == "t" or c == "T":
+                    elif c in ("t", "T"):
                         text[i - 1 : i + 1] = "\t"  # an actual tab
                         i -= 1
                     elif c == " ":
