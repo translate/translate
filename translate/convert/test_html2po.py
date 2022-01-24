@@ -430,8 +430,11 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
         )
 
     def test_encoding_latin1(self):
-        """Convert HTML input in iso-8859-1 correctly to unicode."""
-        """Also verifies that the charset declaration isn't extracted as a translation unit."""
+        """
+        Convert HTML input in iso-8859-1 correctly to unicode.
+
+        Also verifies that the charset declaration isn't extracted as a translation unit.
+        """
         htmlsource = b"""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html><!-- InstanceBegin template="/Templates/masterpage.dwt" codeOutsideHTMLIsLocked="false" -->
 <head>
@@ -519,8 +522,11 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
         assert snippet in htmlresult
 
     def test_entityrefs_in_text(self):
-        """Should extract html entityrefs, preserving the ones representing reserved characters"""
-        """`See <https://developer.mozilla.org/en-US/docs/Glossary/Entity>`."""
+        """
+        Should extract html entityrefs, preserving the ones representing reserved characters.
+
+        `See <https://developer.mozilla.org/en-US/docs/Glossary/Entity>`.
+        """
         self.check_single(
             "<html><head></head><body><p>&lt;not an element&gt; &amp; &quot; &apos; &rsquo;</p></body></html>",
             "&lt;not an element&gt; &amp; \" ' \u2019",

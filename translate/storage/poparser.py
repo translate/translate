@@ -17,8 +17,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-import re
-
 
 """
 From the GNU gettext manual:
@@ -32,6 +30,9 @@ From the GNU gettext manual:
      msgid UNTRANSLATED-STRING
      msgstr TRANSLATED-STRING
 """
+
+import re
+
 
 SINGLE_BYTE_ENCODING = "iso-8859-1"
 isspace = str.isspace
