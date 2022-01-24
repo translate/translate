@@ -5,7 +5,8 @@ from translate.storage import po
 
 
 class TestPO2WEB2PY:
-    def po2web2py(self, po_source):
+    @staticmethod
+    def po2web2py(po_source):
         """helper that converts po source to web2py source without requiring files"""
         input_file = BytesIO(po_source.encode())
         input_po = po.pofile(input_file)

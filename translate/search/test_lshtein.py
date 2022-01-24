@@ -4,7 +4,8 @@ from translate.search import lshtein
 class TestLevenshtein:
     """Test whether Levenshtein distance calculations are correct"""
 
-    def test_basic_distance(self):
+    @staticmethod
+    def test_basic_distance():
         """Tests distance correctness with a few basic values"""
         assert lshtein.distance("word", "word") == 0
         assert lshtein.distance("word", "") == 4
@@ -13,7 +14,8 @@ class TestLevenshtein:
         assert lshtein.distance("words", "word") == 1
         assert lshtein.distance("word", "woord") == 1
 
-    def test_basic_similarity(self):
+    @staticmethod
+    def test_basic_similarity():
         """Tests similarity correctness with a few basic values"""
         levenshtein = lshtein.LevenshteinComparer()
         assert levenshtein.similarity("word", "word") == 100
@@ -21,7 +23,8 @@ class TestLevenshtein:
         assert levenshtein.similarity("word", "wood") == 75
         assert levenshtein.similarity("aaa", "bbb", 0) == 0
 
-    def test_long_similarity(self):
+    @staticmethod
+    def test_long_similarity():
         """Tests that very long strings are handled well."""
         # A sentence with 240 characters:
         sentence = "A long, dreary sentence about a cow that never new his mother. Actually it didn't known its father either. One day he decided that enough is enough, and that he would stop making long, dreary sentences just for the sake of making sentences."

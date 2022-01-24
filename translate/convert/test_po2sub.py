@@ -11,7 +11,8 @@ importorskip("aeidon")
 
 
 class TestPO2Sub:
-    def po2sub(self, posource):
+    @staticmethod
+    def po2sub(posource):
         """helper that converts po source to subtitle source without requiring files"""
         inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
@@ -19,7 +20,8 @@ class TestPO2Sub:
         outputsub = convertor.convert_store(inputpo)
         return outputsub.decode("utf-8")
 
-    def merge2sub(self, subsource, posource):
+    @staticmethod
+    def merge2sub(subsource, posource):
         """helper that merges po translations to subtitle source without requiring files"""
         inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)

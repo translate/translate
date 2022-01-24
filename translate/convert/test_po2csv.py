@@ -6,14 +6,16 @@ from translate.storage.test_base import first_translatable, headerless_len
 
 
 class TestPO2CSV:
-    def po2csv(self, posource):
+    @staticmethod
+    def po2csv(posource):
         """helper that converts po source to csv source without requiring files"""
         inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
         convertor = po2csv.po2csv()
         return convertor.convertstore(inputpo)
 
-    def csv2po(self, csvsource, template=None):
+    @staticmethod
+    def csv2po(csvsource, template=None):
         """helper that converts csv source to po source without requiring files"""
         inputfile = BytesIO(csvsource)
         inputcsv = csvl10n.csvfile(inputfile)
@@ -25,7 +27,8 @@ class TestPO2CSV:
         convertor = csv2po.csv2po(templatepo=inputpot)
         return convertor.convertstore(inputcsv)
 
-    def singleelement(self, storage):
+    @staticmethod
+    def singleelement(storage):
         """checks that the pofile contains a single non-header element, and returns it"""
         assert headerless_len(storage.units) == 1
         return first_translatable(storage)

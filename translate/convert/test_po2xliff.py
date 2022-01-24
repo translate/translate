@@ -4,7 +4,8 @@ from translate.storage import po, poxliff
 
 
 class TestPO2XLIFF:
-    def po2xliff(self, posource, sourcelanguage="en", targetlanguage=None):
+    @staticmethod
+    def po2xliff(posource, sourcelanguage="en", targetlanguage=None):
         """helper that converts po source to xliff source without requiring files"""
         postore = po.pofile(posource.encode("utf-8"))
         convertor = po2xliff.po2xliff()
@@ -13,7 +14,8 @@ class TestPO2XLIFF:
         )
         return poxliff.PoXliffFile(outputxliff)
 
-    def getnode(self, xliff):
+    @staticmethod
+    def getnode(xliff):
         """Retrieves the trans-unit node from the dom"""
         assert len(xliff.units) == 1
         unit = xliff.units[0]
@@ -123,7 +125,8 @@ msgstr "Gebruik \\\"."
         assert xmltext.find(r"\&quot;") > 0 or xmltext.find(r"\"") > 0
         assert xmltext.find(r"\\") == -1
 
-    def getcontexttuples(self, node, namespace):
+    @staticmethod
+    def getcontexttuples(node, namespace):
         """
         Returns all the information in the context nodes as a list of tuples
         of (type, text)

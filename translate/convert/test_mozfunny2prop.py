@@ -5,7 +5,8 @@ from translate.storage import po
 
 
 class TestInc2PO:
-    def inc2po(self, incsource, inctemplate=None):
+    @staticmethod
+    def inc2po(incsource, inctemplate=None):
         """helper that converts .inc source to po source without requiring files"""
         inputfile = BytesIO(incsource.encode())
         if inctemplate:
@@ -19,14 +20,16 @@ class TestInc2PO:
         outputpofile = po.pofile(BytesIO(outputpo))
         return outputpofile
 
-    def singleelement(self, pofile):
+    @staticmethod
+    def singleelement(pofile):
         """checks that the pofile contains a single non-header element, and returns it"""
         assert len(pofile.units) == 2
         assert pofile.units[0].isheader()
         print(pofile)
         return pofile.units[1]
 
-    def countelements(self, pofile):
+    @staticmethod
+    def countelements(pofile):
         """counts the number of non-header entries"""
         assert pofile.units[0].isheader()
         print(pofile)

@@ -34,7 +34,8 @@ class TestPODebug:
         unit = base.TranslationUnit("default:LTR")
         assert self.debug.ignore_gtk(unit)
 
-    def test_keep_target(self):
+    @staticmethod
+    def test_keep_target():
         """Test that we use the target for rewriting if it exists."""
         unit = base.TranslationUnit("blie")
 
@@ -70,22 +71,26 @@ class TestPODebug:
         """Test the unicode rewrite function"""
         assert str(self.debug.rewrite_unicode("Test")) == "Ŧḗşŧ"
 
-    def test_rewrite_unicode_preserves_at_placeholders(self):
+    @staticmethod
+    def test_rewrite_unicode_preserves_at_placeholders():
         """Test the unicode rewrite function"""
         debug = podebug.podebug(preserveplaceholders=True)
         assert str(debug.rewrite_unicode("@@ph@@Test @@ph@@")) == "@@ph@@Ŧḗşŧ @@ph@@"
 
-    def test_rewrite_unicode_preserves_single_brace_placeholders(self):
+    @staticmethod
+    def test_rewrite_unicode_preserves_single_brace_placeholders():
         """Test the unicode rewrite function"""
         debug = podebug.podebug(preserveplaceholders=True)
         assert str(debug.rewrite_unicode("{ph}Test {ph}")) == "{ph}Ŧḗşŧ {ph}"
 
-    def test_rewrite_unicode_preserves_double_brace_placeholders(self):
+    @staticmethod
+    def test_rewrite_unicode_preserves_double_brace_placeholders():
         """Test the unicode rewrite function"""
         debug = podebug.podebug(preserveplaceholders=True)
         assert str(debug.rewrite_unicode("{{ph}}Test {{ph}}")) == "{{ph}}Ŧḗşŧ {{ph}}"
 
-    def test_rewrite_unicode_preserves_html(self):
+    @staticmethod
+    def test_rewrite_unicode_preserves_html():
         """Test the unicode rewrite function"""
         debug = podebug.podebug(preserveplaceholders=True)
         assert (
@@ -93,7 +98,8 @@ class TestPODebug:
             == "<style0>Ŧḗşŧ</style0>"
         )
 
-    def test_rewrite_unicode_preserves_multiple_styles_of_placeholder(self):
+    @staticmethod
+    def test_rewrite_unicode_preserves_multiple_styles_of_placeholder():
         """Test the unicode rewrite function"""
         debug = podebug.podebug(preserveplaceholders=True)
         assert (
@@ -110,26 +116,30 @@ class TestPODebug:
         assert str(self.debug.rewrite_flipped(" ")) == "\u202e "
         assert str(self.debug.rewrite_flipped("©")) == "\u202e©"
 
-    def test_rewrite_flipped_preserves_at_placeholders(self):
+    @staticmethod
+    def test_rewrite_flipped_preserves_at_placeholders():
         """Test the unicode rewrite function"""
         debug = podebug.podebug(preserveplaceholders=True)
         assert (
             str(debug.rewrite_flipped("@@ph@@Test @@ph@@")) == "\u202e@@ph@@⊥ǝsʇ @@ph@@"
         )
 
-    def test_rewrite_flipped_preserves_single_brace_placeholders(self):
+    @staticmethod
+    def test_rewrite_flipped_preserves_single_brace_placeholders():
         """Test the unicode rewrite function"""
         debug = podebug.podebug(preserveplaceholders=True)
         assert str(debug.rewrite_flipped("{ph}Test {ph}")) == "\u202e{ph}⊥ǝsʇ {ph}"
 
-    def test_rewrite_flipped_preserves_double_brace_placeholders(self):
+    @staticmethod
+    def test_rewrite_flipped_preserves_double_brace_placeholders():
         """Test the unicode rewrite function"""
         debug = podebug.podebug(preserveplaceholders=True)
         assert (
             str(debug.rewrite_flipped("{{ph}}Test {{ph}}")) == "\u202e{{ph}}⊥ǝsʇ {{ph}}"
         )
 
-    def test_rewrite_flipped_preserves_html(self):
+    @staticmethod
+    def test_rewrite_flipped_preserves_html():
         """Test the unicode rewrite function"""
         debug = podebug.podebug(preserveplaceholders=True)
         assert (
@@ -137,7 +147,8 @@ class TestPODebug:
             == "\u202e<style0>⊥ǝsʇ </style0>"
         )
 
-    def test_rewrite_flipped_multiple_styles_of_placeholder(self):
+    @staticmethod
+    def test_rewrite_flipped_multiple_styles_of_placeholder():
         """Test the unicode rewrite function"""
         debug = podebug.podebug(preserveplaceholders=True)
         assert (
@@ -184,7 +195,8 @@ class TestPODebug:
         print(bytes(xliff_out))
         assert out_unit.target == "xxx%sxxx" % (in_unit.source)
 
-    def test_hash(self):
+    @staticmethod
+    def test_hash():
         po_docs = (
             """
 msgid "Test msgid 1"

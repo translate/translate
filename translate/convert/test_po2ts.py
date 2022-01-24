@@ -5,7 +5,8 @@ from translate.storage import po
 
 
 class TestPO2TS:
-    def po2ts(self, posource):
+    @staticmethod
+    def po2ts(posource):
         """helper that converts po source to ts source without requiring files"""
         inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
@@ -14,7 +15,8 @@ class TestPO2TS:
         convertor.convertstore(inputpo, output)
         return output.getvalue().decode("utf-8")
 
-    def singleelement(self, storage):
+    @staticmethod
+    def singleelement(storage):
         """checks that the pofile contains a single non-header element, and returns it"""
         assert len(storage.units) == 1
         return storage.units[0]

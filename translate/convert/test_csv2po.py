@@ -14,7 +14,8 @@ def test_replacestrings():
 
 
 class TestCSV2PO:
-    def csv2po(self, csvsource, template=None):
+    @staticmethod
+    def csv2po(csvsource, template=None):
         """helper that converts csv source to po source without requiring files"""
         inputfile = BytesIO(csvsource.encode())
         inputcsv = csvl10n.csvfile(inputfile)
@@ -26,7 +27,8 @@ class TestCSV2PO:
         convertor = csv2po.csv2po(templatepo=inputpot)
         return convertor.convertstore(inputcsv)
 
-    def singleelement(self, storage):
+    @staticmethod
+    def singleelement(storage):
         """checks that the pofile contains a single non-header element, and returns it"""
         print(bytes(storage))
         assert headerless_len(storage.units) == 1

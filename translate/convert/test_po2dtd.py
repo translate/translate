@@ -8,20 +8,24 @@ from translate.storage import dtd, po
 
 
 class TestPO2DTD:
-    def setup_method(self, method):
+    @staticmethod
+    def setup_method(method):
         warnings.resetwarnings()
 
-    def teardown_method(self, method):
+    @staticmethod
+    def teardown_method(method):
         warnings.resetwarnings()
 
-    def po2dtd(self, posource, remove_untranslated=False):
+    @staticmethod
+    def po2dtd(posource, remove_untranslated=False):
         """helper that converts po source to dtd source without requiring files"""
         inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
         convertor = po2dtd.po2dtd(remove_untranslated=remove_untranslated)
         return convertor.convertstore(inputpo)
 
-    def merge2dtd(self, dtdsource, posource):
+    @staticmethod
+    def merge2dtd(dtdsource, posource):
         """helper that merges po translations to dtd source without requiring files"""
         inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
@@ -30,7 +34,8 @@ class TestPO2DTD:
         convertor = po2dtd.redtd(templatedtd)
         return convertor.convertstore(inputpo)
 
-    def convertdtd(self, posource, dtdtemplate, remove_untranslated=False):
+    @staticmethod
+    def convertdtd(posource, dtdtemplate, remove_untranslated=False):
         """helper to exercise the command line function"""
         inputfile = BytesIO(posource.encode())
         outputfile = BytesIO()
@@ -40,7 +45,8 @@ class TestPO2DTD:
         )
         return outputfile.getvalue().decode("utf-8")
 
-    def roundtripsource(self, dtdsource):
+    @staticmethod
+    def roundtripsource(dtdsource):
         """converts dtd source to po and back again, returning the resulting source"""
         dtdinputfile = BytesIO(dtdsource.encode())
         dtdinputfile2 = BytesIO(dtdsource.encode())

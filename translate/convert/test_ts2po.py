@@ -4,7 +4,8 @@ from translate.convert import test_convert, ts2po
 
 
 class TestTS2PO:
-    def ts2po(self, tssource):
+    @staticmethod
+    def ts2po(tssource):
         converter = ts2po.ts2po()
         tsfile = BytesIO(tssource.encode())
         outputpo = converter.convertfile(tsfile)

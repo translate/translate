@@ -6,8 +6,8 @@ from translate.tools import posegment
 
 
 class TestPOSegment:
+    @staticmethod
     def posegment(
-        self,
         posource,
         sourcelanguage,
         targetlanguage,

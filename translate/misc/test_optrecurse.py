@@ -17,7 +17,8 @@ class TestRecursiveOptionParser:
         print(fullpath)
         assert self.parser.splitext(fullpath) == (root, extension)
 
-    def test_outputfile_receives_bytes(self, capsys):
+    @staticmethod
+    def test_outputfile_receives_bytes(capsys):
         parser = optrecurse.RecursiveOptionParser({"txt": ("po", None)})
 
         temp_file = NamedTemporaryFile(delete=False)

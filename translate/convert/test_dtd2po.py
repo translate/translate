@@ -7,7 +7,8 @@ from translate.storage import dtd, po
 
 
 class TestDTD2PO:
-    def dtd2po(self, dtdsource, dtdtemplate=None):
+    @staticmethod
+    def dtd2po(dtdsource, dtdtemplate=None):
         """helper that converts dtd source to po source without requiring files"""
         inputfile = BytesIO(dtdsource.encode())
         inputdtd = dtd.dtdfile(inputfile)
@@ -20,7 +21,8 @@ class TestDTD2PO:
             outputpo = convertor.mergestore(templatedtd, inputdtd)
         return outputpo
 
-    def convertdtd(self, dtdsource):
+    @staticmethod
+    def convertdtd(dtdsource):
         """call the convertdtd, return the outputfile"""
         inputfile = BytesIO(dtdsource.encode())
         outputfile = BytesIO()
@@ -28,14 +30,16 @@ class TestDTD2PO:
         assert dtd2po.convertdtd(inputfile, outputfile, templatefile)
         return outputfile.getvalue()
 
-    def singleelement(self, pofile):
+    @staticmethod
+    def singleelement(pofile):
         """checks that the pofile contains a single non-header element, and returns it"""
         assert len(pofile.units) == 2
         assert pofile.units[0].isheader()
         print(pofile.units[1])
         return pofile.units[1]
 
-    def countelements(self, pofile):
+    @staticmethod
+    def countelements(pofile):
         """returns the number of non-header items"""
         if pofile.units[0].isheader():
             return len(pofile.units) - 1
@@ -281,7 +285,8 @@ Some other text
         print(repr(unit.source))
         assert unit.source == " - with a newline and more text"
 
-    def test_escaping_newline_tabs(self):
+    @staticmethod
+    def test_escaping_newline_tabs():
         """test that we handle all kinds of newline permutations"""
         dtdsource = '<!ENTITY  noupdatesfound.intro "A hard coded newline.\\nAnd tab\\t and a \\r carriage return.">\n'
         converter = dtd2po.dtd2po()
