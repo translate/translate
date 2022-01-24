@@ -125,7 +125,6 @@ class PO2HtmlOptionParser(convert.ConvertOptionParser):
                 )
                 success = False
             progress_bar.report_progress(templatepath, success)
-        del progress_bar
 
     def processfile_with_fixed_inputstore(
         self,

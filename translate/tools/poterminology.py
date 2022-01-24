@@ -496,7 +496,6 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
                 )
                 success = False
             progress_bar.report_progress(inputpath, success)
-        del progress_bar
         self.outputterminology(options)
 
     def processfile(self, fileprocessor, options, fullinputpath):
