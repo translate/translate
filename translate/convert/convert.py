@@ -142,12 +142,11 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser):
         """Converts a .po to a .pot where required."""
         if fileformat is None:
             return fileformat
-        elif fileformat == "po":
+        if fileformat == "po":
             return "pot"
-        elif fileformat.endswith(os.extsep + "po"):
+        if fileformat.endswith(os.extsep + "po"):
             return fileformat + "t"
-        else:
-            return fileformat
+        return fileformat
 
     def getformathelp(self, formats):
         """Make a nice help string for describing formats..."""
@@ -164,8 +163,7 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser):
         """Filters input formats, processing relevant switches in options."""
         if self.usepots and options.pot:
             return [self.potifyformat(inputformat) for inputformat in self.inputformats]
-        else:
-            return self.inputformats
+        return self.inputformats
 
     def filteroutputoptions(self, options):
         """Filters output options, processing relevant switches in options."""
@@ -180,8 +178,7 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser):
                 outputformat = self.potifyformat(outputformat)
                 outputoptions[(inputformat, templateformat)] = (outputformat, convertor)
             return outputoptions
-        else:
-            return self.outputoptions
+        return self.outputoptions
 
     def setpotoption(self):
         """Sets the ``-P``/``--pot`` option depending on input/output formats
@@ -261,8 +258,7 @@ class Replacer:
         """actually replace the text"""
         if self.searchstring is not None and self.replacestring is not None:
             return text.replace(self.searchstring, self.replacestring)
-        else:
-            return text
+        return text
 
     def searchreplaceinput(self, inputfile, outputfile, templatefile, **kwargs):
         """copies the input file to the output file, searching and replacing"""
@@ -373,8 +369,7 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
         if self.isarchive(options.input, "input"):
             options.inputarchive = self.openarchive(options.input, "input")
             return self.recursearchivefiles(options)
-        else:
-            return super().recurseinputfiles(options)
+        return super().recurseinputfiles(options)
 
     def recursearchivefiles(self, options):
         """Recurse through archive files and convert files."""
@@ -399,8 +394,7 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
         """Gets the absolute path to an input file."""
         if self.isarchive(options.input, "input"):
             return inputpath
-        else:
-            return os.path.join(options.input, inputpath)
+        return os.path.join(options.input, inputpath)
 
     def opentemplatefile(self, options, fulltemplatepath):
         """Opens the template file (if required)."""
@@ -420,29 +414,25 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
         if templatepath is not None and self.usetemplates and options.template:
             if self.isarchive(options.template, "template"):
                 return templatepath
-            elif not options.recursivetemplate:
+            if not options.recursivetemplate:
                 return templatepath
-            else:
-                return os.path.join(options.template, templatepath)
-        else:
-            return None
+            return os.path.join(options.template, templatepath)
+        return None
 
     def templateexists(self, options, templatepath):
         """Returns whether the given template exists..."""
-        if templatepath is not None:
-            if self.isarchive(options.template, "template"):
-                # TODO: deal with different names in input/template archives
-                return templatepath in self.templatearchive
+        if templatepath is not None and self.isarchive(options.template, "template"):
+            # TODO: deal with different names in input/template archives
+            return templatepath in self.templatearchive
         return super().templateexists(options, templatepath)
 
     def getfulloutputpath(self, options, outputpath):
         """Gets the absolute path to an output file."""
         if self.isarchive(options.output, "output"):
             return outputpath
-        elif options.recursiveoutput and options.output:
+        if options.recursiveoutput and options.output:
             return os.path.join(options.output, outputpath)
-        else:
-            return outputpath
+        return outputpath
 
     def checkoutputsubdir(self, options, subdir):
         """Checks to see if subdir under ``options.output`` needs to be

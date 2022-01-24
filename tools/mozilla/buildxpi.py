@@ -209,9 +209,8 @@ ac_add_options --enable-application={product}
             filename = os.path.split(xpiglob)[1]
             destfile = os.path.join(outputdir, filename)
             destfiles.append(destfile)
-            if delete_dest:
-                if os.path.isfile(destfile):
-                    os.unlink(destfile)
+            if delete_dest and os.path.isfile(destfile):
+                os.unlink(destfile)
             move(xpiglob, outputdir)
 
     finally:

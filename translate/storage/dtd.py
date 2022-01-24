@@ -206,9 +206,8 @@ def removeinvalidamps(name, value):
         if amppos != -1:
             amppos += 1
             semipos = value.find(";", amppos)
-            if semipos != -1:
-                if is_valid_entity_name(value[amppos:semipos]):
-                    continue
+            if semipos != -1 and is_valid_entity_name(value[amppos:semipos]):
+                continue
             invalid_amps.append(amppos - 1)
     if len(invalid_amps) > 0:
         warnings.warn("invalid ampersands in dtd entity %s" % (name))
@@ -260,8 +259,7 @@ class dtdunit(base.TranslationUnit):
         """gets the unquoted target string"""
         if self.android:
             return unquotefromandroid(self.definition)
-        else:
-            return unquotefromdtd(self.definition)
+        return unquotefromdtd(self.definition)
 
     @target.setter
     def target(self, target):

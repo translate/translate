@@ -356,9 +356,8 @@ class poheader:
             elif accelerator == "&":
                 return "mozilla"
         project_id = header.get("Project-Id-Version")
-        if project_id is not None:
-            if "gnome" in project_id.lower():
-                return "gnome"
+        if project_id is not None and "gnome" in project_id.lower():
+            return "gnome"
         # TODO Call some project guessing code and probably move all of the above there also
         return None
 

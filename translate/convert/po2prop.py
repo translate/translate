@@ -38,32 +38,27 @@ def applytranslation(key, propunit, inunit, mixedkeys):
     value = inunit.target
     # handle mixed keys
     for labelsuffix in properties.labelsuffixes:
-        if key.endswith(labelsuffix):
-            if key in mixedkeys:
-                value, akey = accesskey.extract(value)
-                break
+        if key.endswith(labelsuffix) and key in mixedkeys:
+            value, akey = accesskey.extract(value)
+            break
     else:
         for akeysuffix in properties.accesskeysuffixes:
-            if key.endswith(akeysuffix):
-                if key in mixedkeys:
-                    label, value = accesskey.extract(value)
-                    if not value:
-                        warnings.warn("Could not find accesskey for %s" % key)
-                        # Use the source language accesskey
-                        label, value = accesskey.extract(inunit.source)
-                    else:
-                        original = propunit.source
-                        # For the sake of diffs we keep the case of the
-                        # accesskey the same if we know the translation didn't
-                        # change. Casing matters in XUL.
-                        if (
-                            value == propunit.source
-                            and original.lower() == value.lower()
-                        ):
-                            if original.isupper():
-                                value = value.upper()
-                            elif original.islower():
-                                value = value.lower()
+            if key.endswith(akeysuffix) and key in mixedkeys:
+                label, value = accesskey.extract(value)
+                if not value:
+                    warnings.warn("Could not find accesskey for %s" % key)
+                    # Use the source language accesskey
+                    label, value = accesskey.extract(inunit.source)
+                else:
+                    original = propunit.source
+                    # For the sake of diffs we keep the case of the
+                    # accesskey the same if we know the translation didn't
+                    # change. Casing matters in XUL.
+                    if value == propunit.source and original.lower() == value.lower():
+                        if original.isupper():
+                            value = value.upper()
+                        elif original.islower():
+                            value = value.lower()
     return value
 
 
