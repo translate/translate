@@ -409,41 +409,36 @@ class UnitChecker:
         if self.suggestion_store:
             self.suggestion_store.require_index()
 
+    @cache_results
     def filtervariables(self, str1):
         """Filter out variables from ``str1``."""
         return helpers.multifilter(str1, self.varfilters)
 
-    filtervariables = cache_results(filtervariables)
-
+    @cache_results
     def removevariables(self, str1):
         """Remove variables from ``str1``."""
         return helpers.multifilter(str1, self.removevarfilter)
 
-    removevariables = cache_results(removevariables)
-
+    @cache_results
     def filteraccelerators(self, str1):
         """Filter out accelerators from ``str1``."""
         return helpers.multifilter(str1, self.accfilters, None)
-
-    filteraccelerators = cache_results(filteraccelerators)
 
     def filteraccelerators_by_list(self, str1, acceptlist=None):
         """Filter out accelerators from ``str1``."""
         return helpers.multifilter(str1, self.accfilters, acceptlist)
 
+    @cache_results
     def filterwordswithpunctuation(self, str1):
         """Replaces words with punctuation with their unpunctuated
         equivalents.
         """
         return prefilters.filterwordswithpunctuation(str1)
 
-    filterwordswithpunctuation = cache_results(filterwordswithpunctuation)
-
+    @cache_results
     def filterxml(self, str1):
         """Filter out XML from the string so only text remains."""
         return tag_re.sub("", str1)
-
-    filterxml = cache_results(filterxml)
 
     @staticmethod
     def run_test(test, unit):
