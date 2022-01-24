@@ -607,7 +607,7 @@ class proppluralunit(base.TranslationUnit):
     def _get_strings(strings, mapping):
         ret = []
         if len(strings) > 1:
-            for i, name in enumerate(mapping):
+            for i in range(len(mapping)):
                 if i < len(strings):
                     ret.append(strings[i])
                 else:

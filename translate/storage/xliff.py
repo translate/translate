@@ -640,7 +640,7 @@ class xlifffile(lisa.LISAfile):
 
     def initbody(self):
         # detect the xliff namespace, handle both 1.1 and 1.2
-        for prefix, ns in self.document.getroot().nsmap.items():
+        for ns in self.document.getroot().nsmap.values():
             if ns and ns.startswith(self.unversioned_namespace):
                 self.namespace = ns
                 break
