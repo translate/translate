@@ -617,7 +617,6 @@ class RecursiveOptionParser(optparse.OptionParser):
                 )
                 success = False
             progress_bar.report_progress(inputpath, success)
-        del progress_bar
 
     def ensurerecursiveoutputdirexists(self, options):
         if not self.isrecursive(options.output, "output"):

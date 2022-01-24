@@ -108,7 +108,6 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
                 )
                 success = False
             progress_bar.report_progress(inputpath, success)
-        del progress_bar
         self.buildconflictmap()
         self.outputconflicts(options)
 
