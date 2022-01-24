@@ -234,12 +234,10 @@ def valid_fieldnames(fieldnames):
     """Check if fieldnames are valid, that is at least one field is identified
     as the source.
     """
-    for fieldname in fieldnames:
-        if fieldname == "source":
-            return True
-        elif fieldname in fieldname_map and fieldname_map[fieldname] == "source":
-            return True
-    return False
+    return any(
+        fieldname == "source" or fieldname_map.get(fieldname) == "source"
+        for fieldname in fieldnames
+    )
 
 
 def detect_header(inputfile, dialect, fieldnames):
