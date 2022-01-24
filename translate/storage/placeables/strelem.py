@@ -480,9 +480,7 @@ class StringElem:
         """
         if filter is None or not callable(filter):
             filter = lambda e: True
-        return [
-            elem for elem in self.iter_depth_first(lambda e: e.isleaf() and filter(e))
-        ]
+        return list(self.iter_depth_first(lambda e: e.isleaf() and filter(e)))
 
     def get_ancestor_where(self, child, criteria):
         parent = self.get_parent_elem(child)

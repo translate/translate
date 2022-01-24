@@ -53,62 +53,61 @@ class rerc:
         self.lang = lang
         self.sublang = sublang
 
-    def convert_comment(self, out, addnl, comment):
+    def convert_comment(self, addnl, comment):
         if not addnl:
-            out.append("    ")
+            yield "    "
         # Strip extra \r from \r\n which is left in the comment by the parser
         if comment.endswith("\r"):
             comment = comment[:-1]
-        out.append(comment)
+        yield comment
 
     def convert_dialog(self, s, loc, toks):
-        out = []
-        out.append(toks.block_id[0])
-        out.append(" ")
-        out.append(toks.block_type)
+        yield toks.block_id[0]
+        yield " "
+        yield toks.block_type
         if toks.caption:
-            out.append(" ")
-            out.append(toks.pre_caption)
-            out.append("CAPTION ")  # The string caption
+            yield " "
+            yield toks.pre_caption
+            yield "CAPTION "  # The string caption
 
             name = rc.generate_dialog_caption_name(toks.block_type, toks.block_id[0])
             msgid = toks.caption[1:-1]
             if msgid in self.inputdict:
                 if name in self.inputdict[msgid]:
-                    out.append('"' + self.inputdict[msgid][name] + '"')
+                    yield '"' + self.inputdict[msgid][name] + '"'
                 elif EMPTY_LOCATION in self.inputdict[msgid]:
-                    out.append('"' + self.inputdict[msgid][EMPTY_LOCATION] + '"')
+                    yield '"' + self.inputdict[msgid][EMPTY_LOCATION] + '"'
             else:
-                out.append(toks.caption)
+                yield toks.caption
 
-            out.extend(toks.post_caption)  # The rest of the options
-            out.append(NL)
+            yield from toks.post_caption  # The rest of the options
+            yield NL
         else:
-            out.append(" ")
-            out.extend(toks.post_caption)  # The rest of the options
-            out.append(NL)
+            yield " "
+            yield from toks.post_caption  # The rest of the options
+            yield NL
 
-        out.append(BLOCK_START)
-        out.append(NL)
+        yield BLOCK_START
+        yield NL
         addnl = False
 
         for c in toks.controls:
 
             if isinstance(c, str):
-                self.convert_comment(out, addnl, c)
+                yield from self.convert_comment(addnl, c)
                 addnl = True
                 continue
             if addnl:
-                out.append(NL)
+                yield NL
                 addnl = False
-            out.append("    ")
+            yield "    "
             c0 = c[0]
             if len(c0[0]) >= 16:
-                out.append(c0[0])
+                yield c0[0]
                 # If more than 16 char, put it on a new line to align it.
-                out.append(NL + " " * (16 + 4))
+                yield NL + " " * (16 + 4)
             else:
-                out.append(c0[0].ljust(16))
+                yield c0[0].ljust(16)
 
             tmp = []
 
@@ -132,36 +131,33 @@ class rerc:
                 else:
                     tmp.append(a)
 
-            out.append(",".join(tmp))
-            out.append(NL)
+            yield ",".join(tmp)
+            yield NL
 
-        out.append(BLOCK_END)
-
-        return out
+        yield BLOCK_END
 
     def convert_string_table(self, s, loc, toks):
-        out = []
-        out.extend(toks[0:2])
-        out.append(NL)
-        out.append(BLOCK_START)
-        out.append(NL)
+        yield from toks[0:2]
+        yield NL
+        yield BLOCK_START
+        yield NL
 
         addnl = False
         for c in toks.controls:
             if isinstance(c, str):
-                self.convert_comment(out, addnl, c)
+                yield from self.convert_comment(addnl, c)
                 addnl = True
                 continue
             if addnl:
-                out.append(NL)
+                yield NL
                 addnl = False
-            out.append("    ")
+            yield "    "
             c0 = c[0]
             if len(c0[0]) >= 24:
-                out.append(c0[0])
-                out.append(NL + " " * (24 + 4))
+                yield c0[0]
+                yield NL + " " * (24 + 4)
             else:
-                out.append(c0[0].ljust(24))
+                yield c0[0].ljust(24)
 
             name = rc.generate_stringtable_name(c0[0])
             msgid = "".join(cn[1:-1] for cn in c[1:])
@@ -175,64 +171,58 @@ class rerc:
                 tmp = c[1:]
 
             for part in tmp[:-1]:
-                out.append(part)
-                out.append(NL + " " * (24 + 4))
-            out.append(tmp[-1])
+                yield part
+                yield NL + " " * (24 + 4)
+            yield tmp[-1]
 
-            out.append(NL)
+            yield NL
 
-        out.append(BLOCK_END)
-
-        return out
+        yield BLOCK_END
 
     def convert_language(self, s, loc, toks):
-        out = []
-        out.append("LANGUAGE ")
-        out.append(self.lang)
+        yield "LANGUAGE "
+        yield self.lang
         if self.sublang:
-            out.append(", ")
-            out.append(self.sublang)
-        return out
+            yield ", "
+            yield self.sublang
 
     def convert_popup(self, popup, pre_name, ident=1):
-        out = []
-
         identation = " " * (4 * ident)
 
-        out.append(identation)
-        out.append(popup.block_type)
+        yield identation
+        yield popup.block_type
         if popup.caption:
-            out.append(" ")
-            out.append(popup.pre_caption)
+            yield " "
+            yield popup.pre_caption
             name = generate_popup_caption_name(pre_name)
             msgid = popup.caption[1:-1]
             if msgid in self.inputdict:
                 if name in self.inputdict[msgid]:
-                    out.append('"' + self.inputdict[msgid][name] + '"')
+                    yield '"' + self.inputdict[msgid][name] + '"'
                 elif EMPTY_LOCATION in self.inputdict[msgid]:
-                    out.append('"' + self.inputdict[msgid][EMPTY_LOCATION] + '"')
+                    yield '"' + self.inputdict[msgid][EMPTY_LOCATION] + '"'
             else:
-                out.append(popup.caption)
-            out.extend(popup.post_caption)  # The rest of the options
-            out.append(NL)
+                yield popup.caption
+            yield from popup.post_caption  # The rest of the options
+            yield NL
         else:
-            out.append(" ")
-            out.extend(popup.post_caption)  # The rest of the options
-            out.append(NL)
+            yield " "
+            yield from popup.post_caption  # The rest of the options
+            yield NL
 
-        out.append(identation)
-        out.append(BLOCK_START)
-        out.append(NL)
+        yield identation
+        yield BLOCK_START
+        yield NL
 
         for element in popup.elements:
             if isinstance(element, str):
-                self.convert_comment(out, True, element)
+                yield from self.convert_comment(True, element)
                 continue
 
             if element.block_type and element.block_type == "MENUITEM":
-                out.append(identation)
-                out.append("    MENUITEM")
-                out.append(" ")
+                yield identation
+                yield "    MENUITEM"
+                yield " "
 
                 if element.values_ and len(element.values_) >= 2:
 
@@ -248,69 +238,61 @@ class rerc:
                                 '"' + self.inputdict[msgid][EMPTY_LOCATION] + '"'
                             )
 
-                    out.append(", ".join(element.values_))
+                    yield ", ".join(element.values_)
                 elif element.values_[0] == "SEPARATOR":
-                    out.append("SEPARATOR")
+                    yield "SEPARATOR"
                 else:
                     raise NotImplementedError()
 
-                out.append(NL)
+                yield NL
 
             elif element.popups:
                 for sub_popup in element.popups:
-                    out.extend(
-                        self.convert_popup(
-                            sub_popup,
-                            generate_popup_pre_name(pre_name, popup.caption[1:-1]),
-                            ident + 1,
-                        )
+                    yield from self.convert_popup(
+                        sub_popup,
+                        generate_popup_pre_name(pre_name, popup.caption[1:-1]),
+                        ident + 1,
                     )
-        out.append(identation)
-        out.append(BLOCK_END)
-        out.append(NL)
-
-        return out
+        yield identation
+        yield BLOCK_END
+        yield NL
 
     def convert_menu(self, s, loc, toks):
-        out = []
-
-        out.append(toks.block_id[0])
-        out.append(" ")
-        out.append(toks.block_type)
+        yield toks.block_id[0]
+        yield " "
+        yield toks.block_type
 
         # A menu can't have CAPTION, so don't try to translate it.
-        out.append(" ")
-        out.extend(toks.post_caption)  # The rest of the options
-        out.append(NL)
+        yield " "
+        yield from toks.post_caption  # The rest of the options
+        yield NL
 
-        out.append(BLOCK_START)
-        out.append(NL)
+        yield BLOCK_START
+        yield NL
 
         pre_name = generate_menu_pre_name(toks.block_type, toks.block_id[0])
 
         for p in toks.popups:
-            out.extend(self.convert_popup(p, pre_name))
+            yield from self.convert_popup(p, pre_name)
 
-        out.append(BLOCK_END)
-
-        return out
+        yield BLOCK_END
 
     def translate_strings(self, s, loc, toks):
         """Change the strings in the toks by the ones in the translation."""
 
         if toks.language:
             # Recreate the language, but using the settings.
-            return self.convert_language(s, loc, toks)
+            return list(self.convert_language(s, loc, toks))
 
         if toks.block_type:
             if toks.block_type in ("DIALOGEX", "DIALOG"):
-                return self.convert_dialog(s, loc, toks)
+                return list(self.convert_dialog(s, loc, toks))
 
             if toks.block_type == "STRINGTABLE":
-                return self.convert_string_table(s, loc, toks)
+                return list(self.convert_string_table(s, loc, toks))
 
             if toks.block_type == "MENU":
-                return self.convert_menu(s, loc, toks)
+                return list(self.convert_menu(s, loc, toks))
 
         return toks
 

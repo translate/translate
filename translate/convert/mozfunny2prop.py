@@ -91,11 +91,11 @@ def inc2po(
 ):
     """wraps prop2po but converts input/template files to properties first"""
     inputlines = inputfile.readlines()
-    inputproplines = [line for line in inc2prop(inputlines)]
+    inputproplines = list(inc2prop(inputlines))
     inputpropfile = BytesIO("".join(inputproplines).encode())
     if templatefile is not None:
         templatelines = templatefile.readlines()
-        templateproplines = [line for line in inc2prop(templatelines)]
+        templateproplines = list(inc2prop(templatelines))
         templatepropfile = BytesIO("".join(templateproplines).encode())
     else:
         templatepropfile = None
@@ -119,11 +119,11 @@ def it2po(
 ):
     """wraps prop2po but converts input/template files to properties first"""
     inputlines = inputfile.readlines()
-    inputproplines = [line for line in it2prop(inputlines, encoding=encoding)]
+    inputproplines = list(it2prop(inputlines, encoding=encoding))
     inputpropfile = BytesIO("".join(inputproplines).encode())
     if templatefile is not None:
         templatelines = templatefile.readlines()
-        templateproplines = [line for line in it2prop(templatelines, encoding=encoding)]
+        templateproplines = list(it2prop(templatelines, encoding=encoding))
         templatepropfile = BytesIO("".join(templateproplines).encode())
     else:
         templatepropfile = None

@@ -112,7 +112,7 @@ def po2inc(
     outputpropfile = BytesIO()
     if templatefile is not None:
         templatelines = templatefile.readlines()
-        templateproplines = [line for line in mozfunny2prop.inc2prop(templatelines)]
+        templateproplines = list(mozfunny2prop.inc2prop(templatelines))
         templatepropfile = BytesIO("".join(templateproplines).encode())
     else:
         templatepropfile = None
@@ -145,9 +145,9 @@ def po2it(
     outputpropfile = BytesIO()
     if templatefile is not None:
         templatelines = templatefile.readlines()
-        templateproplines = [
-            line for line in mozfunny2prop.it2prop(templatelines, encoding=encoding)
-        ]
+        templateproplines = list(
+            mozfunny2prop.it2prop(templatelines, encoding=encoding)
+        )
         templatepropfile = BytesIO("".join(templateproplines).encode())
     else:
         templatepropfile = None

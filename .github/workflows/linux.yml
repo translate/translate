@@ -6,6 +6,7 @@ on:
     - "docs/**"
     branches-ignore:
       - "dependabot/**"
+      - "deepsource**"
   pull_request:
     paths-ignore:
     - "docs/**"
