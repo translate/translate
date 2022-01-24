@@ -108,12 +108,6 @@ def test_escape_help_text():
 
 
 class TestOO:
-    def setup_method(self, method):
-        warnings.resetwarnings()
-
-    def teardown_method(self, method):
-        warnings.resetwarnings()
-
     def ooparse(self, oosource):
         """helper that parses oo source without requiring files"""
         dummyfile = BytesIO(oosource.encode())

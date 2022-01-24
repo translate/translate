@@ -1,4 +1,3 @@
-import warnings
 from io import BytesIO
 
 from pytest import mark
@@ -17,14 +16,6 @@ class TestPretranslate:
                 </body>
         </file>
 </xliff>"""
-
-    @staticmethod
-    def setup_method(method):
-        warnings.resetwarnings()
-
-    @staticmethod
-    def teardown_method(method):
-        warnings.resetwarnings()
 
     @staticmethod
     def pretranslatepo(input_source, template_source=None):
