@@ -218,7 +218,8 @@ class BundleProjectStore(ProjectStore):
             raise InvalidBundleError("Not a translate project bundle")
         super()._load_settings(self.zip.open("project.xtp").read())
 
-    def _create_temp_zipfile(self):
+    @staticmethod
+    def _create_temp_zipfile():
         """Create a new zip file with a temporary file name (with mode 'w')."""
         newzipfd, newzipfname = tempfile.mkstemp(
             prefix="translate_bundle", suffix=".zip"

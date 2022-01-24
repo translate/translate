@@ -282,7 +282,8 @@ class WordfastHeader:
         elif isinstance(header, dict):
             self.header = header
 
-    def _create_default_header(self):
+    @staticmethod
+    def _create_default_header():
         """Create a default Wordfast header with the date set to the current
         time
         """

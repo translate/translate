@@ -59,10 +59,12 @@ class Dialect:
 class DialectDefault(Dialect):
     name = "default"
 
-    def unescape(self, text):
+    @staticmethod
+    def unescape(text):
         return text
 
-    def escape(self, text):
+    @staticmethod
+    def escape(text):
         return text
 
 

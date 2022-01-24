@@ -273,7 +273,8 @@ class TranslationUnit:
         """
         pass
 
-    def getlocations(self):
+    @staticmethod
+    def getlocations():
         """A list of source code locations.
 
         :rtype: List
@@ -311,7 +312,8 @@ class TranslationUnit:
         else:
             self.addlocation(location)
 
-    def getcontext(self):
+    @staticmethod
+    def getcontext():
         """Get the message context."""
         return ""
 
@@ -359,7 +361,8 @@ class TranslationUnit:
         """
         pass
 
-    def geterrors(self):
+    @staticmethod
+    def geterrors():
         """Get all error messages.
 
         :rtype: Dictionary
@@ -391,7 +394,8 @@ class TranslationUnit:
         """
         return bool(self.source)
 
-    def isfuzzy(self):
+    @staticmethod
+    def isfuzzy():
         """Indicates whether this unit is fuzzy."""
         return False
 
@@ -399,7 +403,8 @@ class TranslationUnit:
         """Marks the unit as fuzzy or not."""
         pass
 
-    def isobsolete(self):
+    @staticmethod
+    def isobsolete():
         """indicate whether a unit is obsolete"""
         return False
 
@@ -407,11 +412,13 @@ class TranslationUnit:
         """Make a unit obsolete"""
         pass
 
-    def isheader(self):
+    @staticmethod
+    def isheader():
         """Indicates whether this unit is a header."""
         return False
 
-    def isreview(self):
+    @staticmethod
+    def isreview():
         """Indicates whether this unit needs review."""
         return False
 
@@ -426,7 +433,8 @@ class TranslationUnit:
         """
         return not (self.source or self.target)
 
-    def hasplural(self):
+    @staticmethod
+    def hasplural():
         """Tells whether or not this specific unit has plural strings."""
         # TODO: Reconsider
         return False
@@ -763,7 +771,8 @@ class TranslationStore:
         newstore.parse(storestring)
         return newstore
 
-    def fallback_detection(self, text):
+    @staticmethod
+    def fallback_detection(text):
         """
         Simple detection based on BOM in case chardet is not available.
         """

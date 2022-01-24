@@ -105,19 +105,23 @@ class FluentUnit(base.TranslationUnit):
         class Parser(visitor.Visitor):
             _found_id = False
 
-            def visit_Attribute(self, node):
+            @staticmethod
+            def visit_Attribute(node):
                 this._attributes[node.id.name] = source_from_entry(node)
 
-            def visit_Comment(self, node):
+            @staticmethod
+            def visit_Comment(node):
                 if this._type not in [ast.Message, ast.Term]:
                     this._type = ast.Comment
                 this.addnote(node.content)
 
-            def visit_GroupComment(self, node):
+            @staticmethod
+            def visit_GroupComment(node):
                 this._type = ast.GroupComment
                 this.addnote(node.content)
 
-            def visit_ResourceComment(self, node):
+            @staticmethod
+            def visit_ResourceComment(node):
                 this._type = ast.ResourceComment
                 this.addnote(node.content)
 

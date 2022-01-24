@@ -149,7 +149,8 @@ class YAMLFile(base.DictStore):
                     "Previous: %s" % (type(data), data, prev)
                 )
 
-    def preprocess(self, data):
+    @staticmethod
+    def preprocess(data):
         """Preprocess hook for child formats"""
         return data
 

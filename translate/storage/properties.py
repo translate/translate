@@ -603,7 +603,8 @@ class proppluralunit(base.TranslationUnit):
             ret.append(self.units[proppluralunit.KEY])
         return ret
 
-    def _get_strings(self, strings, mapping):
+    @staticmethod
+    def _get_strings(strings, mapping):
         ret = []
         if len(strings) > 1:
             for i, name in enumerate(mapping):
@@ -1249,7 +1250,8 @@ class XWikiPageProperties(xwikifile):
     def is_source_file(self):
         return self.getsourcelanguage() == self.gettargetlanguage()
 
-    def get_parser(self):
+    @staticmethod
+    def get_parser():
         return etree.XMLParser(strip_cdata=False, resolve_entities=False)
 
     def extract_language(self):
@@ -1330,7 +1332,8 @@ class XWikiFullPage(XWikiPageProperties):
             self.extract_language()
             super(XWikiPageProperties, self).parse(forparsing.encode(self.encoding))
 
-    def output_unit(self, unit):
+    @staticmethod
+    def output_unit(unit):
         value = unit.personality.encode(unit.source, unit.encoding)
         translation = unit.personality.encode(unit.target, unit.encoding)
         return translation or value

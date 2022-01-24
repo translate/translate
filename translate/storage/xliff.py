@@ -578,7 +578,8 @@ class xliffunit(lisa.LISAunit):
         if comments:
             self.addnote(otherunit.getnotes())
 
-    def correctorigin(self, node, origin):
+    @staticmethod
+    def correctorigin(node, origin):
         """Check against node tag's origin (e.g note or alt-trans)"""
         if origin is None:
             return True
@@ -689,11 +690,13 @@ class xlifffile(lisa.LISAfile):
         etree.SubElement(filenode, self.namespaced(self.bodyNode))
         return filenode
 
-    def getfilename(self, filenode):
+    @staticmethod
+    def getfilename(filenode):
         """returns the name of the given file"""
         return filenode.get("original")
 
-    def setfilename(self, filenode, filename):
+    @staticmethod
+    def setfilename(filenode, filename):
         """set the name of the given file"""
         return filenode.set("original", filename)
 

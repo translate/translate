@@ -184,7 +184,8 @@ class LISAunit(base.TranslationUnit):
     def target(self, target):
         self.settarget(target)
 
-    def createlanguageNode(self, lang, text, purpose=None):
+    @staticmethod
+    def createlanguageNode(lang, text, purpose=None):
         """Returns a xml Element setup with given parameters to represent a
         single language entry. Has to be overridden.
         """
@@ -321,7 +322,8 @@ class LISAfile(base.TranslationStore):
         super().removeunit(unit)
         unit.xmlelement.getparent().remove(unit.xmlelement)
 
-    def serialize_hook(self, treestring):
+    @staticmethod
+    def serialize_hook(treestring):
         return treestring
 
     def serialize(self, out=None):

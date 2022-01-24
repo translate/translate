@@ -180,7 +180,8 @@ class TestStringElem:
         for child in self.elem.sub:
             assert child.isleaf()
 
-    def test_prune(self):
+    @staticmethod
+    def test_prune():
         elem = StringElem("foo")
         child = StringElem("bar")
         elem.sub.append(child)

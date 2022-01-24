@@ -90,11 +90,13 @@ class Statistics:
 
         return len(self.untranslated_units())
 
-    def getunits(self):
+    @staticmethod
+    def getunits():
         """Returns a list of all units in this object."""
         return []
 
-    def get_source_text(self, units):
+    @staticmethod
+    def get_source_text(units):
         """Joins the unit source strings in a single string of text."""
         source_text = ""
         for unit in units:
@@ -125,7 +127,8 @@ class Statistics:
         text = self.get_source_text(self.untranslated_units())
         return self.wordcount(text)
 
-    def classifyunit(self, unit):
+    @staticmethod
+    def classifyunit(unit):
         """Returns a list of the classes that the unit belongs to.
 
         :param unit: the unit to classify
