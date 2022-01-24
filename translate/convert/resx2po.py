@@ -90,7 +90,7 @@ class resx2po:
                 output_store.addunit(origpo)
 
             elif translatedpo is not None:
-                logger.error("Error converting original RESX definition %s" % origpo)
+                logger.error("Error converting original RESX definition %s", origpo)
 
         output_store.removeduplicates(duplicatestyle)
         return output_store

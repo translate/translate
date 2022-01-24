@@ -210,7 +210,7 @@ class prop2po:
             string = unit.getlocations()[0]
             match = regex.match(string)
             if not match:
-                logger.warn("Invalid key: %s" % (string))
+                logger.warn("Invalid key: %s", (string))
                 continue
             key = match.group(1)
             variant = match.group(2)
@@ -232,9 +232,7 @@ class prop2po:
                 raise Exception("Variant invalid: %s" % (old_variant))
             if variant in plurals[key].variants:
                 logger.warn(
-                    "Override %s[%s]: %s by %s"
-                    % (key, variant, str(plurals[key].variants[variant]), str(unit))
-                )
+                    "Override %s[%s]: %s by %s", key, variant, str(plurals[key].variants[variant]), str(unit))
 
             # Put the unit
             plurals[key].variants[variant] = unit
