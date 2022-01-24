@@ -12,7 +12,7 @@ on:
       - docs/**
 
 jobs:
-  test:
+  test-win:
 
     runs-on: windows-latest
     strategy:

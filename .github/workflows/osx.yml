@@ -12,7 +12,7 @@ on:
       - docs/**
 
 jobs:
-  test:
+  test-osx:
 
     runs-on: macos-latest
     strategy:
