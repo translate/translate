@@ -29,6 +29,7 @@
 import glob
 import os
 import shutil
+import sys
 import tempfile
 import time
 from subprocess import PIPE, Popen
@@ -128,7 +129,7 @@ def get_langs(lang_args):
 
     if not lang_args:
         print(USAGE)
-        exit(1)
+        sys.exit(1)
 
     for lang in lang_args:
         if lang == "ALL":
