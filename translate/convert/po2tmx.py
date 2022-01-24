@@ -62,7 +62,7 @@ class po2tmx:
                 "source": self.cleancomments(inunit.sourcecomments, "source"),
                 "type": self.cleancomments(inunit.typecomments, "type"),
                 "others": self.cleancomments(inunit.othercomments),
-            }.get(comment, None)
+            }.get(comment)
 
             tmxfile.addtranslation(
                 source, sourcelanguage, translation, targetlanguage, commenttext

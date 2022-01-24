@@ -613,7 +613,7 @@ class TranslationStore:
     def findid(self, id):
         """find unit with matching id by checking id_index"""
         self.require_index()
-        return self.id_index.get(id, None)
+        return self.id_index.get(id)
 
     def findunit(self, source):
         """Find the unit with the given source string.

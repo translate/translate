@@ -163,7 +163,7 @@ class CatkeysUnit(base.TranslationUnit):
     dict = property(getdict, setdict)
 
     def _get_source_or_target(self, key):
-        if self._dict.get(key, None) is None:
+        if self._dict.get(key) is None:
             return None
         elif self._dict[key]:
             return _unescape(self._dict[key])
@@ -229,9 +229,9 @@ class CatkeysUnit(base.TranslationUnit):
         return str(self._dict)
 
     def istranslated(self):
-        if not self._dict.get("source", None):
+        if not self._dict.get("source"):
             return False
-        return bool(self._dict.get("target", None))
+        return bool(self._dict.get("target"))
 
     def merge(self, otherunit, overwrite=False, comments=True, authoritative=False):
         """Do basic format agnostic merging."""

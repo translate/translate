@@ -236,13 +236,13 @@ class UtxFile(base.TranslationStore):
         return header
 
     def getsourcelanguage(self):
-        return self._header.get("source_language", None)
+        return self._header.get("source_language")
 
     def setsourcelanguage(self, sourcelanguage):
         self._header["source_language"] = sourcelanguage
 
     def gettargetlanguage(self):
-        return self._header.get("target_language", None)
+        return self._header.get("target_language")
 
     def settargetlanguage(self, targetlanguage):
         self._header["target_language"] = targetlanguage

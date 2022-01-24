@@ -62,7 +62,7 @@ def convertpo(inputpofile, outputpotfile, template, reverse=False):
 
     for i, unit in enumerate(inputpo.units):
         for location in unit.getlocations():
-            templateunit = templatepo.locationindex.get(location, None)
+            templateunit = templatepo.locationindex.get(location)
             if templateunit and templateunit.source == unit.source:
                 break
         else:
