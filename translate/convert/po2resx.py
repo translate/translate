@@ -53,7 +53,8 @@ class po2resx:
 
         return bytes(self.templatestore)
 
-    def addcomments(self, inputunit, unit):
+    @staticmethod
+    def addcomments(inputunit, unit):
         comments = []
 
         # Handle #. automatic comments

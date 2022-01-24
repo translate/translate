@@ -78,7 +78,8 @@ class json2po:
         output_store.removeduplicates(duplicatestyle)
         return output_store
 
-    def convert_unit(self, input_unit, commenttype):
+    @staticmethod
+    def convert_unit(input_unit, commenttype):
         """Converts a JSON unit to a PO unit
 
         :return: None if empty or not for translation

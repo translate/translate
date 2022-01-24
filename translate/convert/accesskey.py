@@ -51,7 +51,8 @@ class UnitMixer:
                     # ".accesskey")
         return mixedentities
 
-    def mix_units(self, label_unit, accesskey_unit, target_unit):
+    @staticmethod
+    def mix_units(label_unit, accesskey_unit, target_unit):
         """Mix the given units into the given target_unit if possible.
 
         Might return None if no match is possible.

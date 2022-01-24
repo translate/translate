@@ -33,7 +33,8 @@ class po2pydict:
     def __init__(self):
         return
 
-    def convertstore(self, inputstore, includefuzzy):
+    @staticmethod
+    def convertstore(inputstore, includefuzzy):
         str_obj = StringIO()
 
         mydict = {}

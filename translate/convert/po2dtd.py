@@ -113,7 +113,8 @@ class po2dtd:
         self.android = android
         self.remove_untranslated = remove_untranslated
 
-    def convertcomments(self, inputunit, dtdunit):
+    @staticmethod
+    def convertcomments(inputunit, dtdunit):
         entities = inputunit.getlocations()
         if len(entities) > 1:
             # don't yet handle multiple entities

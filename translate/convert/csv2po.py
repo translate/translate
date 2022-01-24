@@ -103,7 +103,8 @@ class csv2po:
             if comment in self.commentindex:
                 del self.commentindex[comment]
 
-    def convertunit(self, csvunit):
+    @staticmethod
+    def convertunit(csvunit):
         """converts csv unit to po unit"""
         pounit = po.pounit(encoding="UTF-8")
         if csvunit.location:

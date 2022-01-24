@@ -44,7 +44,8 @@ class oo2po:
         self.blankmsgstr = blankmsgstr
         self.long_keys = long_keys
 
-    def maketargetunit(self, part1, part2, translators_comment, key, subkey):
+    @staticmethod
+    def maketargetunit(part1, part2, translators_comment, key, subkey):
         """makes a base unit (.po or XLIFF) out of a subkey of two parts"""
         # TODO: Do better
         text1 = getattr(part1, subkey)

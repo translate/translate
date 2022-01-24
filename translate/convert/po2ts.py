@@ -26,7 +26,8 @@ from translate.storage import po, ts2
 
 
 class po2ts:
-    def convertstore(self, inputstore, outputfile, templatefile=None, context=None):
+    @staticmethod
+    def convertstore(inputstore, outputfile, templatefile=None, context=None):
         """converts a .po file to .ts format (using a template .ts file if given)"""
         if templatefile is None:
             tsfile = ts2.tsfile()

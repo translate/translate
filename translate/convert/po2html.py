@@ -93,7 +93,8 @@ class PO2HtmlOptionParser(convert.ConvertOptionParser):
         else:
             super().recursiveprocess(options)
 
-    def can_be_recursive(self, fileoption, filepurpose):
+    @staticmethod
+    def can_be_recursive(fileoption, filepurpose):
         return fileoption is not None and not os.path.isfile(fileoption)
 
     def recursiveprocess_by_templates(self, options):

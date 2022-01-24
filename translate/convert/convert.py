@@ -137,7 +137,8 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser):
         )
         self.passthrough.append("multifilestyle")
 
-    def potifyformat(self, fileformat):
+    @staticmethod
+    def potifyformat(fileformat):
         """Converts a .po to a .pot where required."""
         if fileformat is None:
             return fileformat

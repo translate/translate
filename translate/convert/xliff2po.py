@@ -26,7 +26,8 @@ from translate.storage import po, xliff
 
 
 class xliff2po:
-    def converttransunit(self, transunit):
+    @staticmethod
+    def converttransunit(transunit):
         """makes a pounit from the given transunit"""
         thepo = po.pounit()
 
