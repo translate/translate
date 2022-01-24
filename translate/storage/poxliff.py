@@ -227,10 +227,6 @@ class PoXliffUnit(xliff.xliffunit):
         """Returns the automatic comments (x-po-autocomment), which corresponds
         to the #. style po comments.
         """
-
-        def hasautocomment(grp):
-            return grp[0] == "x-po-autocomment"
-
         groups = self.getcontextgroups("po-entry")
         comments = [
             text
