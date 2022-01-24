@@ -389,8 +389,7 @@ class poheader:
         retain = {
             key: newvalues[key]
             for key in retain_list
-            if newvalues.get(key, None)
-            and newvalues[key] != default_header.get(key)
+            if newvalues.get(key, None) and newvalues[key] != default_header.get(key)
         }
         self.updateheader(**retain)
 
