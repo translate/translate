@@ -144,7 +144,7 @@ class Project:
             inputfile,
             template=template,
             options=conv_options,
-            convert_options=options.get("convert_options", None),
+            convert_options=options.get("convert_options"),
         )
 
         # Determine the file name and path where the output should be moved.

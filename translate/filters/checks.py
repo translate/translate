@@ -2236,7 +2236,7 @@ openofficeconfig = CheckerConfig(
 
 class OpenOfficeChecker(StandardChecker):
     def __init__(self, **kwargs):
-        checkerconfig = kwargs.get("checkerconfig", None)
+        checkerconfig = kwargs.get("checkerconfig")
 
         if checkerconfig is None:
             checkerconfig = CheckerConfig()
@@ -2277,7 +2277,7 @@ libreofficeconfig = CheckerConfig(
 
 class LibreOfficeChecker(StandardChecker):
     def __init__(self, **kwargs):
-        checkerconfig = kwargs.get("checkerconfig", None)
+        checkerconfig = kwargs.get("checkerconfig")
 
         if checkerconfig is None:
             checkerconfig = CheckerConfig()
@@ -2372,7 +2372,7 @@ class MozillaChecker(StandardChecker):
     ]
 
     def __init__(self, **kwargs):
-        checkerconfig = kwargs.get("checkerconfig", None)
+        checkerconfig = kwargs.get("checkerconfig")
 
         if checkerconfig is None:
             checkerconfig = CheckerConfig()
@@ -2524,7 +2524,7 @@ drupalconfig = CheckerConfig(
 
 class DrupalChecker(StandardChecker):
     def __init__(self, **kwargs):
-        checkerconfig = kwargs.get("checkerconfig", None)
+        checkerconfig = kwargs.get("checkerconfig")
 
         if checkerconfig is None:
             checkerconfig = CheckerConfig()
@@ -2543,7 +2543,7 @@ gnomeconfig = CheckerConfig(
 
 class GnomeChecker(StandardChecker):
     def __init__(self, **kwargs):
-        checkerconfig = kwargs.get("checkerconfig", None)
+        checkerconfig = kwargs.get("checkerconfig")
 
         if checkerconfig is None:
             checkerconfig = CheckerConfig()
@@ -2593,7 +2593,7 @@ class KdeChecker(StandardChecker):
     def __init__(self, **kwargs):
         # TODO allow setup of KDE plural and translator comments so that they do
         # not create false postives
-        checkerconfig = kwargs.get("checkerconfig", None)
+        checkerconfig = kwargs.get("checkerconfig")
 
         if checkerconfig is None:
             checkerconfig = CheckerConfig()
@@ -2608,7 +2608,7 @@ cclicenseconfig = CheckerConfig(varmatches=[("@", "@")])
 
 class CCLicenseChecker(StandardChecker):
     def __init__(self, **kwargs):
-        checkerconfig = kwargs.get("checkerconfig", None)
+        checkerconfig = kwargs.get("checkerconfig")
 
         if checkerconfig is None:
             checkerconfig = CheckerConfig()
@@ -2623,13 +2623,13 @@ minimalconfig = CheckerConfig()
 
 class MinimalChecker(StandardChecker):
     def __init__(self, **kwargs):
-        checkerconfig = kwargs.get("checkerconfig", None)
+        checkerconfig = kwargs.get("checkerconfig")
 
         if checkerconfig is None:
             checkerconfig = CheckerConfig()
             kwargs["checkerconfig"] = checkerconfig
 
-        limitfilters = kwargs.get("limitfilters", None)
+        limitfilters = kwargs.get("limitfilters")
 
         if limitfilters is None:
             limitfilters = ["untranslated", "unchanged", "blank"]
@@ -2644,13 +2644,13 @@ reducedconfig = CheckerConfig()
 
 class ReducedChecker(StandardChecker):
     def __init__(self, **kwargs):
-        checkerconfig = kwargs.get("checkerconfig", None)
+        checkerconfig = kwargs.get("checkerconfig")
 
         if checkerconfig is None:
             checkerconfig = CheckerConfig()
             kwargs["checkerconfig"] = checkerconfig
 
-        limitfilters = kwargs.get("limitfilters", None)
+        limitfilters = kwargs.get("limitfilters")
 
         if limitfilters is None:
             limitfilters = [
@@ -2672,7 +2672,7 @@ termconfig = CheckerConfig()
 
 class TermChecker(StandardChecker):
     def __init__(self, **kwargs):
-        checkerconfig = kwargs.get("checkerconfig", None)
+        checkerconfig = kwargs.get("checkerconfig")
 
         if checkerconfig is None:
             checkerconfig = CheckerConfig()
@@ -2698,7 +2698,7 @@ class L20nChecker(MozillaChecker):
     complex_unit_pattern = "->"
 
     def __init__(self, **kwargs):
-        checkerconfig = kwargs.get("checkerconfig", None)
+        checkerconfig = kwargs.get("checkerconfig")
 
         if checkerconfig is None:
             checkerconfig = CheckerConfig()
@@ -2736,7 +2736,7 @@ iosconfig = CheckerConfig(
 
 class IOSChecker(StandardChecker):
     def __init__(self, **kwargs):
-        checkerconfig = kwargs.get("checkerconfig", None)
+        checkerconfig = kwargs.get("checkerconfig")
 
         if checkerconfig is None:
             checkerconfig = CheckerConfig()

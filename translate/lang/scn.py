@@ -46,7 +46,7 @@ class SicilianChecker(TranslationChecker):
     """A Checker class for Sicilian"""
 
     def __init__(self, **kwargs):
-        checkerconfig = kwargs.get("checkerconfig", None)
+        checkerconfig = kwargs.get("checkerconfig")
 
         if checkerconfig is None:
             checkerconfig = CheckerConfig()

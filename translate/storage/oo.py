@@ -338,7 +338,7 @@ class oofile:
     def addline(self, thisline):
         """adds a parsed line to the file"""
         key = thisline.getkey()
-        element = self.ookeys.get(key, None)
+        element = self.ookeys.get(key)
         if element is None:
             element = self.UnitClass()
             self.units.append(element)

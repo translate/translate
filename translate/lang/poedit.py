@@ -232,7 +232,7 @@ def isocode(language, country=None):
     :return: ISO 639 language code
     :rtype: String
     """
-    dialect = dialects.get(language, None)
+    dialect = dialects.get(language)
     if dialect:
         return dialect.get(country, dialect["None"])
     return lang_names.get(language, None)

@@ -811,4 +811,4 @@ def get_language(code):
     if "_" in code:
         # convert ab_cd → ab_CD
         code = "{}_{}".format(code.split("_")[0], code.split("_", 1)[1].upper())
-    return languages.get(code, None)
+    return languages.get(code)

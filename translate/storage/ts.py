@@ -104,7 +104,7 @@ class QtTsParser:
 
     def getcontextnode(self, contextname):
         """finds the contextnode with the given name"""
-        contextnode = self.knowncontextnodes.get(contextname, None)
+        contextnode = self.knowncontextnodes.get(contextname)
         if contextnode is not None:
             return contextnode
         contextnodes = self.document.searchElementsByTagName(

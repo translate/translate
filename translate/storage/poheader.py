@@ -262,7 +262,7 @@ class poheader:
     def getheaderplural(self):
         """Returns the nplural and plural values from the header."""
         header = self.parseheader()
-        pluralformvalue = header.get("Plural-Forms", None)
+        pluralformvalue = header.get("Plural-Forms")
         if pluralformvalue is None:
             return None, None
         nplural = re.findall("nplurals=(.+?);", pluralformvalue)
@@ -294,7 +294,7 @@ class poheader:
           3. Analysing the 'Language-Team' entry.
         """
         header = self.parseheader()
-        lang = header.get("Language", None)
+        lang = header.get("Language")
         if lang is not None:
             from translate.lang.data import langcode_ire
 
@@ -340,22 +340,22 @@ class poheader:
           5. Analyse the file itself (not yet implemented)
         """
         header = self.parseheader()
-        project = header.get("X-Project-Style", None)
+        project = header.get("X-Project-Style")
         if project is not None:
             return project
-        bug_address = header.get("Report-Msgid-Bugs-To", None)
+        bug_address = header.get("Report-Msgid-Bugs-To")
         if bug_address is not None:
             if "bugzilla.gnome.org" in bug_address:
                 return "gnome"
             if "bugs.kde.org" in bug_address:
                 return "kde"
-        accelerator = header.get("X-Accelerator-Marker", None)
+        accelerator = header.get("X-Accelerator-Marker")
         if accelerator is not None:
             if accelerator == "~":
                 return "openoffice"
             elif accelerator == "&":
                 return "mozilla"
-        project_id = header.get("Project-Id-Version", None)
+        project_id = header.get("Project-Id-Version")
         if project_id is not None:
             if "gnome" in project_id.lower():
                 return "gnome"
@@ -389,8 +389,7 @@ class poheader:
         retain = {
             key: newvalues[key]
             for key in retain_list
-            if newvalues.get(key, None)
-            and newvalues[key] != default_header.get(key, None)
+            if newvalues.get(key, None) and newvalues[key] != default_header.get(key)
         }
         self.updateheader(**retain)
 

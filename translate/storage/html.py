@@ -467,7 +467,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
     def handle_entityref(self, name):
         """Handle named entities of the form &aaaa; e.g. &rsquo;"""
-        converted = html5.get(name + ";", None)
+        converted = html5.get(name + ";")
         if name in ["gt", "lt", "amp"] or not converted:
             self.handle_data("&%s;" % name)
         else:
