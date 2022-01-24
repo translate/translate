@@ -115,9 +115,14 @@ class SicilianChecker(TranslationChecker):
         stopwords = []
 
         for word in self.config.lang.words(str2):
-            if word not in str1 and word.lower() not in exceptions:
-                if word.lower().endswith(("e", "o")) and word.lower() not in stopwords:
-                    stopwords.append(word.lower())
+            lower_word = word.lower()
+            if (
+                word not in str1
+                and lower_word not in exceptions
+                and lower_word.endswith(("e", "o"))
+                and lower_word not in stopwords
+            ):
+                stopwords.append(lower_word)
 
         if stopwords:
             raise FilterFailure("Please respect vocalism: %s" % (", ".join(stopwords)))

@@ -47,12 +47,10 @@ def mergestores(store1, store2, mergeblanks, mergefuzzy, mergecomments):
                 "The template does not contain the following unit:\n%s", str(unit2)
             )
         else:
-            if not mergeblanks:
-                if len(unit2.target.strip()) == 0:
-                    continue
-            if not mergefuzzy:
-                if unit2.isfuzzy():
-                    continue
+            if not mergeblanks and len(unit2.target.strip()) == 0:
+                continue
+            if not mergefuzzy and unit2.isfuzzy():
+                continue
             unit1.merge(unit2, overwrite=True, comments=mergecomments)
     return store1
 
@@ -70,8 +68,7 @@ def str2bool(option):
         return True
     elif option in ("no", "false", "0"):
         return False
-    else:
-        raise ValueError("invalid boolean value: %r" % option)
+    raise ValueError("invalid boolean value: %r" % option)
 
 
 def mergestore(

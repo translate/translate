@@ -163,20 +163,19 @@ class oocheckfilter(pofilter.pocheckfilter):
         if filteraction == "none":
             return True
         filterresult = self.filterunit(unit)
-        if filterresult:
-            if filterresult != autocorrect:
-                for filtername, filtermessage in filterresult.items():
-                    location = unit.getlocations()[0]
-                    if filtername in self.options.error:
-                        logger.error(
-                            "Error at %s::%s: %s", filename, location, filtermessage
-                        )
-                        return filteraction not in ["exclude-all", "exclude-serious"]
-                    if filtername in self.options.warning or self.options.alwayswarn:
-                        logger.warning(
-                            "Warning at %s::%s: %s", filename, location, filtermessage
-                        )
-                        return filteraction not in ["exclude-all"]
+        if filterresult and filterresult != autocorrect:
+            for filtername, filtermessage in filterresult.items():
+                location = unit.getlocations()[0]
+                if filtername in self.options.error:
+                    logger.error(
+                        "Error at %s::%s: %s", filename, location, filtermessage
+                    )
+                    return filteraction not in ["exclude-all", "exclude-serious"]
+                if filtername in self.options.warning or self.options.alwayswarn:
+                    logger.warning(
+                        "Warning at %s::%s: %s", filename, location, filtermessage
+                    )
+                    return filteraction not in ["exclude-all"]
         return True
 
 
@@ -227,15 +226,14 @@ def convertoo(
     languages = (sourcelanguage, targetlanguage)
     if templatefile is None:
         raise ValueError("must have template file for oo files")
-    else:
-        convertor = reoo(
-            templatefile,
-            languages=languages,
-            timestamp=timestamp,
-            includefuzzy=includefuzzy,
-            long_keys=multifilestyle != "single",
-            filteraction=filteraction,
-        )
+    convertor = reoo(
+        templatefile,
+        languages=languages,
+        timestamp=timestamp,
+        includefuzzy=includefuzzy,
+        long_keys=multifilestyle != "single",
+        filteraction=filteraction,
+    )
     outputstore = convertor.convertstore(inputstore)
     # TODO: check if we need to manually delete missing items
     outputfile.write(outputstore.__str__(skip_source, targetlanguage))

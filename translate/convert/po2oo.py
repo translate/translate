@@ -160,20 +160,19 @@ class oocheckfilter(pofilter.pocheckfilter):
         if filteraction == "none":
             return True
         filterresult = self.filterunit(unit)
-        if filterresult:
-            if filterresult != autocorrect:
-                for filtername, filtermessage in filterresult.items():
-                    location = unit.getlocations()[0].encode("utf-8")
-                    if filtername in self.options.error:
-                        logger.error(
-                            "Error at %s::%s: %s", filename, location, filtermessage
-                        )
-                        return filteraction not in ["exclude-all", "exclude-serious"]
-                    if filtername in self.options.warning or self.options.alwayswarn:
-                        logger.warning(
-                            "Warning at %s::%s: %s", filename, location, filtermessage
-                        )
-                        return filteraction not in ["exclude-all"]
+        if filterresult and filterresult != autocorrect:
+            for filtername, filtermessage in filterresult.items():
+                location = unit.getlocations()[0].encode("utf-8")
+                if filtername in self.options.error:
+                    logger.error(
+                        "Error at %s::%s: %s", filename, location, filtermessage
+                    )
+                    return filteraction not in ["exclude-all", "exclude-serious"]
+                if filtername in self.options.warning or self.options.alwayswarn:
+                    logger.warning(
+                        "Warning at %s::%s: %s", filename, location, filtermessage
+                    )
+                    return filteraction not in ["exclude-all"]
         return True
 
 

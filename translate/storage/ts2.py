@@ -445,9 +445,10 @@ class tsfile(lisa.LISAfile):
         if contextname is None:
             contextname = unit.getcontextname()
 
-        if self._contextname != contextname:
-            if not self._switchcontext(contextname, comment, createifmissing):
-                return None
+        if self._contextname != contextname and not self._switchcontext(
+            contextname, comment, createifmissing
+        ):
+            return None
         super().addunit(unit, new)
         #        lisa.setXMLspace(unit.xmlelement, "preserve")
         return unit

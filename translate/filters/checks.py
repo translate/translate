@@ -100,9 +100,8 @@ def intuplelist(pair, list):
     for pattern in list:
         x, y, z = pattern
 
-        if (x, y) in [(a, b), (None, b)]:
-            if z in [None, c]:
-                return pattern
+        if (x, y) in [(a, b), (None, b)] and z in [None, c]:
+            return pattern
 
     return pair
 
@@ -307,10 +306,9 @@ def cache_results(f):
 
         if key in res_cache:
             return res_cache[key]
-        else:
-            value = f(self, param1)
-            res_cache[key] = value
-            return value
+        value = f(self, param1)
+        res_cache[key] = value
+        return value
 
     return cached_f
 
@@ -572,8 +570,7 @@ class TranslationChecker(UnitChecker):
 
             if not filterresult and filtermessages:
                 raise FilterFailure(filtermessages)
-            else:
-                return filterresult
+            return filterresult
         else:
             return test(self.str1, self.str2)
 
@@ -743,8 +740,7 @@ class StandardChecker(TranslationChecker):
 
         if len1 > 0 and len(str2) != 0 and len2 == 0:
             raise FilterFailure("Translation is empty")
-        else:
-            return True
+        return True
 
     @functional
     def short(self, str1, str2):
@@ -761,8 +757,7 @@ class StandardChecker(TranslationChecker):
 
         if (len1 > 0) and (0 < len2 < (len1 * 0.1)) or ((len1 > 1) and (len2 == 1)):
             raise FilterFailure("The translation is much shorter than the original")
-        else:
-            return True
+        return True
 
     @functional
     def long(self, str1, str2):
@@ -780,8 +775,7 @@ class StandardChecker(TranslationChecker):
 
         if (len1 > 0) and (0 < len1 < (len2 * 0.1)) or ((len1 == 1) and (len2 > 1)):
             raise FilterFailure("The translation is much longer than the original")
-        else:
-            return True
+        return True
 
     @critical
     def escapes(self, str1, str2):
@@ -798,8 +792,7 @@ class StandardChecker(TranslationChecker):
                 "Escapes in original (%s) don't match "
                 "escapes in translation (%s)" % (escapes1, escapes2)
             )
-        else:
-            return True
+        return True
 
     @critical
     def newlines(self, str1, str2):
@@ -828,8 +821,7 @@ class StandardChecker(TranslationChecker):
         """
         if not helpers.countmatch(str1, str2, "\t"):
             raise SeriousFilterFailure("Different tabs")
-        else:
-            return True
+        return True
 
     @cosmetic
     def singlequoting(self, str1, str2):
@@ -853,8 +845,7 @@ class StandardChecker(TranslationChecker):
 
         if helpers.countsmatch(str1, str2, ("'", "''", "\\'")):
             return True
-        else:
-            raise FilterFailure("Different quotation marks")
+        raise FilterFailure("Different quotation marks")
 
     @cosmetic
     def doublequoting(self, str1, str2):
@@ -874,8 +865,7 @@ class StandardChecker(TranslationChecker):
 
         if helpers.countsmatch(str1, str2, ('"', '""', '\\"', "«", "»", "“", "”")):
             return True
-        else:
-            raise FilterFailure("Different quotation marks")
+        raise FilterFailure("Different quotation marks")
 
     @cosmetic
     def doublespacing(self, str1, str2):
@@ -891,8 +881,7 @@ class StandardChecker(TranslationChecker):
 
         if helpers.countmatch(str1, str2, "  "):
             return True
-        else:
-            raise FilterFailure("Different use of double spaces")
+        raise FilterFailure("Different use of double spaces")
 
     @cosmetic
     def puncspacing(self, str1, str2):
@@ -1196,10 +1185,9 @@ class StandardChecker(TranslationChecker):
             raise FilterFailure(messages)
         elif failure_state == STATE_SERIOUS:
             raise SeriousFilterFailure(messages)
-        else:
-            raise ValueError(
-                "Something wrong in python brace checks: unreachable state reached"
-            )
+        raise ValueError(
+            "Something wrong in python brace checks: unreachable state reached"
+        )
 
     @functional
     def accelerators(self, str1, str2):
@@ -1257,8 +1245,7 @@ class StandardChecker(TranslationChecker):
         if messages:
             if "accelerators" in self.config.criticaltests:
                 raise SeriousFilterFailure(messages)
-            else:
-                raise FilterFailure(messages)
+            raise FilterFailure(messages)
 
         return True
 
@@ -1347,8 +1334,7 @@ class StandardChecker(TranslationChecker):
             set(decoration.getfunctions(str2))
         ):
             return True
-        else:
-            raise FilterFailure("Different functions")
+        raise FilterFailure("Different functions")
 
     @functional
     def emails(self, str1, str2):
@@ -1361,8 +1347,7 @@ class StandardChecker(TranslationChecker):
         """
         if helpers.funcmatch(str1, str2, decoration.getemails):
             return True
-        else:
-            raise FilterFailure("Different e-mails")
+        raise FilterFailure("Different e-mails")
 
     @functional
     def urls(self, str1, str2):
@@ -1378,8 +1363,7 @@ class StandardChecker(TranslationChecker):
         """
         if helpers.funcmatch(str1, str2, decoration.geturls):
             return True
-        else:
-            raise FilterFailure("Different URLs")
+        raise FilterFailure("Different URLs")
 
     @functional
     def numbers(self, str1, str2):
@@ -1394,8 +1378,7 @@ class StandardChecker(TranslationChecker):
 
         if helpers.countsmatch(str1, str2, decoration.getnumbers(str1)):
             return True
-        else:
-            raise FilterFailure("Different numbers")
+        raise FilterFailure("Different numbers")
 
     @cosmetic
     def startwhitespace(self, str1, str2):
@@ -1405,8 +1388,7 @@ class StandardChecker(TranslationChecker):
         """
         if helpers.funcmatch(str1, str2, decoration.spacestart):
             return True
-        else:
-            raise FilterFailure("Different whitespace at the start")
+        raise FilterFailure("Different whitespace at the start")
 
     @cosmetic
     def endwhitespace(self, str1, str2):
@@ -1426,8 +1408,7 @@ class StandardChecker(TranslationChecker):
 
         if helpers.funcmatch(str1, str2, decoration.spaceend):
             return True
-        else:
-            raise FilterFailure("Different whitespace at the end")
+        raise FilterFailure("Different whitespace at the end")
 
     @cosmetic
     def startpunc(self, str1, str2):
@@ -1449,8 +1430,7 @@ class StandardChecker(TranslationChecker):
 
         if helpers.funcmatch(str1, str2, decoration.puncstart, self.config.punctuation):
             return True
-        else:
-            raise FilterFailure("Different punctuation at the start")
+        raise FilterFailure("Different punctuation at the start")
 
     @cosmetic
     def endpunc(self, str1, str2):
@@ -1489,8 +1469,7 @@ class StandardChecker(TranslationChecker):
             str1, str2, decoration.puncend, self.config.endpunctuation + ":"
         ):
             return True
-        else:
-            raise FilterFailure("Different punctuation at the end")
+        raise FilterFailure("Different punctuation at the end")
 
     @functional
     def purepunc(self, str1, str2):
@@ -1507,8 +1486,7 @@ class StandardChecker(TranslationChecker):
 
         if success:
             return True
-        else:
-            raise FilterFailure("Consider not translating punctuation")
+        raise FilterFailure("Consider not translating punctuation")
 
     @cosmetic
     def brackets(self, str1, str2):
@@ -1680,8 +1658,7 @@ class StandardChecker(TranslationChecker):
 
         if success:
             return True
-        else:
-            raise FilterFailure("Different capitalization")
+        raise FilterFailure("Different capitalization")
 
     @functional
     def acronyms(self, str1, str2):
@@ -1972,13 +1949,11 @@ class StandardChecker(TranslationChecker):
         if self.config.lang.nplurals == 1:
             if targetcount:
                 raise FilterFailure("Plural(s) were kept in translation")
-            else:
-                return True
+            return True
 
         if sourcecount == targetcount:
             return True
-        else:
-            raise FilterFailure("The original uses plural(s)")
+        raise FilterFailure("The original uses plural(s)")
 
     @functional
     def spellcheck(self, str1, str2):
