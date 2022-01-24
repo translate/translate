@@ -8,7 +8,8 @@ class TestTBXUnit(test_base.TestTranslationUnit):
 class TestTBXfile(test_base.TestTranslationStore):
     StoreClass = tbx.tbxfile
 
-    def test_basic(self):
+    @staticmethod
+    def test_basic():
         tbxfile = tbx.tbxfile()
         assert tbxfile.units == []
         tbxfile.addsourceunit("Bla")
@@ -20,7 +21,8 @@ class TestTBXfile(test_base.TestTranslationStore):
         assert newfile.findunit("Bla").source == "Bla"
         assert newfile.findunit("dit") is None
 
-    def test_source(self):
+    @staticmethod
+    def test_source():
         tbxfile = tbx.tbxfile()
         tbxunit = tbxfile.addsourceunit("Concept")
         tbxunit.source = "Term"
@@ -29,7 +31,8 @@ class TestTBXfile(test_base.TestTranslationStore):
         assert newfile.findunit("Concept") is None
         assert newfile.findunit("Term") is not None
 
-    def test_target(self):
+    @staticmethod
+    def test_target():
         tbxfile = tbx.tbxfile()
         tbxunit = tbxfile.addsourceunit("Concept")
         tbxunit.target = "Konsep"
@@ -37,7 +40,8 @@ class TestTBXfile(test_base.TestTranslationStore):
         print(bytes(tbxfile))
         assert newfile.findunit("Concept").target == "Konsep"
 
-    def test_setid(self):
+    @staticmethod
+    def test_setid():
         tbxfile = tbx.tbxfile()
         tbxunit = tbxfile.addsourceunit("Concept")
         tbxunit.setid("testid")
@@ -45,7 +49,8 @@ class TestTBXfile(test_base.TestTranslationStore):
         print(bytes(tbxfile))
         assert newfile.findunit("Concept").getid() == "testid"
 
-    def test_indent(self):
+    @staticmethod
+    def test_indent():
         tbxfile = tbx.tbxfile()
         tbxunit = tbxfile.addsourceunit("Concept")
         tbxunit.setid("testid")

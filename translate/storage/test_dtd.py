@@ -189,7 +189,8 @@ class TestDTDUnit(test_monolingual.TestMonolingualUnit):
 class TestDTD(test_monolingual.TestMonolingualStore):
     StoreClass = dtd.dtdfile
 
-    def dtdparse(self, dtdsource):
+    @staticmethod
+    def dtdparse(dtdsource):
         """helper that parses dtd source without requiring files"""
         if not isinstance(dtdsource, bytes):
             dtdsource = dtdsource.encode("utf-8")
@@ -435,7 +436,8 @@ certificate.">
 class TestAndroidDTD(test_monolingual.TestMonolingualStore):
     StoreClass = dtd.dtdfile
 
-    def dtdparse(self, dtdsource):
+    @staticmethod
+    def dtdparse(dtdsource):
         """Parses an Android DTD source string and returns a DTD store.
 
         This allows to simulate reading from Android DTD files without really

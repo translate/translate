@@ -58,12 +58,14 @@ class TestHTMLParsing:
                 """<table summary="This is the summary"><caption>A caption</caption><thead><tr><th abbr="Head 1">Heading One</th><th>Heading Two</th></thead><tfoot><tr><td>Foot One</td><td>Foot Two</td></tr></tfoot><tbody><tr><td>One</td><td>Two</td></tr></tbody></table>"""
             )
 
-    def test_self_closing_tags(self):
+    @staticmethod
+    def test_self_closing_tags():
         h = html.htmlfile()
         store = h.parsestring("<h3>Some text <img><br><img></h3>")
         assert len(store.units) == 1
 
-    def test_escaping_script_and_pre(self):
+    @staticmethod
+    def test_escaping_script_and_pre():
         """
         <script> and <pre> can contain < and > and these should not be
         interpretted as tags
@@ -80,7 +82,8 @@ class TestHTMLExtraction:
 
     h = html.htmlfile
 
-    def strip_html(self, str):
+    @staticmethod
+    def strip_html(str):
         h = html.htmlfile()
         store = h.parsestring(str)
         return "\n".join(u.source for u in store.units)
@@ -122,7 +125,8 @@ class TestHTMLExtraction:
             == "Firefox for Desktop"
         )
 
-    def test_extraction_tag_figcaption(self):
+    @staticmethod
+    def test_extraction_tag_figcaption():
         """Check that we can extract figcaption"""
         h = html.htmlfile()
         # Example form http://www.w3schools.com/tags/tag_figcaption.asp
@@ -138,7 +142,8 @@ class TestHTMLExtraction:
         assert store.units[0].source == "The Pulpit Rock"
         assert store.units[1].source == "Fig1. - A view of the pulpit rock in Norway."
 
-    def test_extraction_tag_caption_td_th(self):
+    @staticmethod
+    def test_extraction_tag_caption_td_th():
         """Check that we can extract table related translatable: th, td and caption"""
         h = html.htmlfile()
         # Example form http://www.w3schools.com/tags/tag_caption.asp
@@ -164,7 +169,8 @@ class TestHTMLExtraction:
         assert store.units[3].source == "January"
         assert store.units[4].source == "$100"
 
-    def test_extraction_attr_alt(self):
+    @staticmethod
+    def test_extraction_attr_alt():
         """Check that we can extract title attribute"""
         h = html.htmlfile()
         # Example from http://www.netmechanic.com/news/vol6/html_no1.htm
@@ -178,7 +184,8 @@ class TestHTMLExtraction:
             store.units[0].source == "UAHC campers enjoy a meal in the camp cafeteria"
         )
 
-    def test_extraction_attr_title(self):
+    @staticmethod
+    def test_extraction_attr_title():
         """Check that we can extract title attribute"""
         h = html.htmlfile()
 
@@ -223,7 +230,8 @@ class TestHTMLExtraction:
         assert len(store.units) == 1
         assert store.units[0].source == "Henry Jacobs camper application"
 
-    def test_extraction_pre(self):
+    @staticmethod
+    def test_extraction_pre():
         """Check that we can preserve lines in the <pre> tag"""
         h = html.htmlfile()
         store = h.parsestring(
@@ -238,7 +246,8 @@ pre tag
         assert len(store.units) == 1
         assert store.units[0].source == "this is\na multiline\npre tag"
 
-    def test_extraction_pre_code(self):
+    @staticmethod
+    def test_extraction_pre_code():
         """Check that we can preserve lines in the <pre> tag"""
         h = html.htmlfile()
         store = h.parsestring(

@@ -104,8 +104,8 @@ class TestPropUnit(test_monolingual.TestMonolingualUnit):
 class TestGwtProp(test_monolingual.TestMonolingualStore):
     StoreClass = properties.gwtfile
 
+    @staticmethod
     def propparse(
-        self,
         propsource,
         personality="gwt",
         encoding=None,
@@ -244,7 +244,8 @@ class TestGwtProp(test_monolingual.TestMonolingualStore):
 class TestProp(test_monolingual.TestMonolingualStore):
     StoreClass = properties.propfile
 
-    def propparse(self, propsource, personality="java", encoding=None):
+    @staticmethod
+    def propparse(propsource, personality="java", encoding=None):
         """helper that parses properties source without requiring files"""
         dummyfile = BytesIO(
             propsource.encode() if isinstance(propsource, str) else propsource
@@ -676,7 +677,8 @@ job.log.begin=Starting job of type [{0}]
 class TestXWiki(test_monolingual.TestMonolingualStore):
     StoreClass = properties.xwikifile
 
-    def propparse(self, propsource):
+    @staticmethod
+    def propparse(propsource):
         """helper that parses properties source without requiring files"""
         dummyfile = BytesIO(
             propsource.encode() if isinstance(propsource, str) else propsource
@@ -804,7 +806,8 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
     def getcontent(self, content, language="en"):
         return self.FILE_SCHEME % {"content": content + "\n", "language": language}
 
-    def propparse(self, propsource):
+    @staticmethod
+    def propparse(propsource):
         """helper that parses properties source without requiring files"""
         dummyfile = BytesIO(
             propsource.encode() if isinstance(propsource, str) else propsource
@@ -1209,7 +1212,8 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
             "language": language,
         }
 
-    def propparse(self, propsource):
+    @staticmethod
+    def propparse(propsource):
         """helper that parses properties source without requiring files"""
         dummyfile = BytesIO(
             propsource.encode() if isinstance(propsource, str) else propsource

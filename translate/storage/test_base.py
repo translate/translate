@@ -301,7 +301,8 @@ class TestTranslationStore:
         storestring = bytes(store)
         return self.StoreClass.parsestring(storestring)
 
-    def check_equality(self, store1, store2):
+    @staticmethod
+    def check_equality(store1, store2):
         """asserts that store1 and store2 are the same"""
         assert headerless_len(store1.units) == headerless_len(store2.units)
         for n, store1unit in enumerate(store1.units):

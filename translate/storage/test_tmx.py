@@ -30,7 +30,8 @@ class TestTMXUnitFromParsedString(TestTMXUnit):
 class TestTMXfile(test_base.TestTranslationStore):
     StoreClass = tmx.tmxfile
 
-    def tmxparse(self, tmxsource):
+    @staticmethod
+    def tmxparse(tmxsource):
         """helper that parses tmx source without requiring files"""
         dummyfile = BytesIO(tmxsource)
         print(tmxsource)
@@ -75,7 +76,8 @@ class TestTMXfile(test_base.TestTranslationStore):
         print(bytes(tmxfile))
         assert newfile.translate("First line\nSecond line") == "Eerste lyn\nTweede lyn"
 
-    def test_xmlentities(self):
+    @staticmethod
+    def test_xmlentities():
         """Test that the xml entities '&' and '<'  are escaped correctly"""
         tmxfile = tmx.tmxfile()
         tmxfile.addtranslation("Mail & News", "en", "Nuus & pos", "af")

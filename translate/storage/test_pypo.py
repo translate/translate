@@ -7,7 +7,8 @@ from translate.storage import pypo, test_po
 
 
 class TestHelpers:
-    def test_unescape(self):
+    @staticmethod
+    def test_unescape():
         assert pypo.unescape(r"koei") == "koei"
         assert pypo.unescape(r"koei\n") == "koei\n"
         assert pypo.unescape(r"koei\\") == "koei\\"
@@ -24,7 +25,8 @@ class TestHelpers:
         assert pypo.unescape(r"\"\\koei\"\\") == '"\\koei"\\'
         assert pypo.unescape(r"\\\rkoei\r\\") == "\\\rkoei\r\\"
 
-    def test_quoteforpo(self):
+    @staticmethod
+    def test_quoteforpo():
         """Special escaping routine to manage newlines and linewrap in PO"""
         # Simple case
         assert pypo.quoteforpo("Some test") == ['"Some test"']
@@ -70,7 +72,8 @@ class TestHelpers:
             '"obhucabhuca ukudibanisa kwakho.</b>"',
         ]
 
-    def test_quoteforpo_escaped_quotes(self):
+    @staticmethod
+    def test_quoteforpo_escaped_quotes():
         """Ensure that we don't break \" in two when wrapping
 
         See :issue:`3140`

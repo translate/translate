@@ -12,7 +12,8 @@ from translate.services.tmserver import TMServer
 
 
 class TestTMServer:
-    def create_server(self, *args, **kwargs):
+    @staticmethod
+    def create_server(*args, **kwargs):
         test_dir = tempfile.mkdtemp()
         po_file = os.path.join(test_dir, "test.po")
         with open(po_file, "w") as handle:
@@ -28,7 +29,8 @@ msgstr "Ahoj"
         )
         return test_dir, application
 
-    def cleanup(self, test_dir, application):
+    @staticmethod
+    def cleanup(test_dir, application):
         application.tmdb.connection.close()
         shutil.rmtree(test_dir)
 

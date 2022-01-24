@@ -2,14 +2,16 @@ from translate.storage import test_base, wordfast as wf
 
 
 class TestWFTime:
-    def test_timestring(self):
+    @staticmethod
+    def test_timestring():
         """Setting and getting times set using a timestring"""
         wftime = wf.WordfastTime()
         assert wftime.timestring is None
         wftime.timestring = "19710820~050000"
         assert wftime.time[:6] == (1971, 8, 20, 5, 0, 0)
 
-    def test_time(self):
+    @staticmethod
+    def test_time():
         """Setting and getting times set using time tuple"""
         wftime = wf.WordfastTime()
         assert wftime.time is None

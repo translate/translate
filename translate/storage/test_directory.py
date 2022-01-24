@@ -19,7 +19,8 @@ class TestDirectory:
         """removes the attributes set up by setup_method"""
         self.cleardir(self.testdir)
 
-    def cleardir(self, dirname):
+    @staticmethod
+    def cleardir(dirname):
         """removes the given directory"""
         if os.path.exists(dirname):
             for dirpath, subdirs, filenames in os.walk(dirname, topdown=False):
@@ -31,7 +32,8 @@ class TestDirectory:
             os.rmdir(dirname)
         assert not os.path.exists(dirname)
 
-    def touchfiles(self, dir, filenames, content=None):
+    @staticmethod
+    def touchfiles(dir, filenames, content=None):
         for filename in filenames:
             with open(os.path.join(dir, filename), "w") as fh:
                 if content:

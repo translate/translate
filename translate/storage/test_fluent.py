@@ -28,7 +28,8 @@ class TestFluentUnit(test_monolingual.TestMonolingualUnit):
 class TestFluentFile(test_monolingual.TestMonolingualStore):
     StoreClass = fluent.FluentFile
 
-    def fluent_parse(self, fluent_source):
+    @staticmethod
+    def fluent_parse(fluent_source):
         """Helper that parses Fluent source without requiring files."""
         dummyfile = BytesIO(fluent_source.encode())
         fluent_file = fluent.FluentFile(dummyfile)
