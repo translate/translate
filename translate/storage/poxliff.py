@@ -232,27 +232,25 @@ class PoXliffUnit(xliff.xliffunit):
             return grp[0] == "x-po-autocomment"
 
         groups = self.getcontextgroups("po-entry")
-        comments = []
-        for group in groups:
-            commentpairs = filter(hasautocomment, group)
-            for (type, text) in commentpairs:
-                comments.append(text)
+        comments = [
+            text
+            for group in groups
+            for ctype, text in group
+            if ctype == "x-po-autocomment"
+        ]
         return "\n".join(comments)
 
     def gettranslatorcomments(self):
         """Returns the translator comments (x-po-trancomment), which
         corresponds to the # style po comments.
         """
-
-        def hastrancomment(grp):
-            return grp[0] == "x-po-trancomment"
-
         groups = self.getcontextgroups("po-entry")
-        comments = []
-        for group in groups:
-            commentpairs = filter(hastrancomment, group)
-            for (type, text) in commentpairs:
-                comments.append(text)
+        comments = [
+            text
+            for group in groups
+            for ctype, text in group
+            if ctype == "x-po-trancomment"
+        ]
         return "\n".join(comments)
 
     def isheader(self):
