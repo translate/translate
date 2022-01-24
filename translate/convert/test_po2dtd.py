@@ -8,12 +8,10 @@ from translate.storage import dtd, po
 
 
 class TestPO2DTD:
-    @staticmethod
-    def setup_method(method):
+    def setup_method(self, method):
         warnings.resetwarnings()
 
-    @staticmethod
-    def teardown_method(method):
+    def teardown_method(self, method):
         warnings.resetwarnings()
 
     @staticmethod
