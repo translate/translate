@@ -73,7 +73,8 @@ class AndroidResourceUnit(base.TranslationUnit):
     def getcontext(self):
         return self.xmlelement.get("name")
 
-    def unescape(self, text, strip=True):
+    @staticmethod
+    def unescape(text, strip=True):
         """
         Remove escaping from Android resource.
 
@@ -218,7 +219,8 @@ class AndroidResourceUnit(base.TranslationUnit):
         # Join the string together again, but w/o EOF marker
         return "".join(text[:-1])
 
-    def xml_escape_space(self, matchobj):
+    @staticmethod
+    def xml_escape_space(matchobj):
         return matchobj.group(0).replace("  ", r" \u0020")
 
     def escape(self, text, quote_wrapping_whitespaces=True):
@@ -453,7 +455,8 @@ class AndroidResourceUnit(base.TranslationUnit):
     def __eq__(self, other):
         return str(self) == str(other)
 
-    def hasplurals(self, thing):
+    @staticmethod
+    def hasplurals(thing):
         if isinstance(thing, multistring):
             return True
         elif isinstance(thing, list):

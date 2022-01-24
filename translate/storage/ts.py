@@ -96,7 +96,8 @@ class QtTsParser:
         # (when there are two newlines)
         return "\n".join(line for line in xml.split("\n") if line.strip())
 
-    def getcontextname(self, contextnode):
+    @staticmethod
+    def getcontextname(contextnode):
         """returns the name of the given context"""
         namenode = ourdom.getFirstElementByTagName(contextnode, "name")
         return ourdom.getnodetext(namenode)
@@ -129,22 +130,26 @@ class QtTsParser:
                     return []
             return context.searchElementsByTagName("message", self.messageancestors)
 
-    def getmessagesource(self, message):
+    @staticmethod
+    def getmessagesource(message):
         """returns the message source for a given node"""
         sourcenode = ourdom.getFirstElementByTagName(message, "source")
         return ourdom.getnodetext(sourcenode)
 
-    def getmessagetranslation(self, message):
+    @staticmethod
+    def getmessagetranslation(message):
         """returns the message translation for a given node"""
         translationnode = ourdom.getFirstElementByTagName(message, "translation")
         return ourdom.getnodetext(translationnode)
 
-    def getmessagetype(self, message):
+    @staticmethod
+    def getmessagetype(message):
         """returns the message translation attributes for a given node"""
         translationnode = ourdom.getFirstElementByTagName(message, "translation")
         return translationnode.getAttribute("type")
 
-    def getmessagecomment(self, message):
+    @staticmethod
+    def getmessagecomment(message):
         """returns the message comment for a given node"""
         commentnode = ourdom.getFirstElementByTagName(message, "comment")
         # NOTE: handles only one comment per msgid (OK)

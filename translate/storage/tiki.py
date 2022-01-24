@@ -140,14 +140,16 @@ class TikiStore(base.TranslationStore):
 
         out.write(self._tiki_footer().encode(self.encoding))
 
-    def _tiki_header(self):
+    @staticmethod
+    def _tiki_header():
         """Returns a tiki-file header string."""
         return (
             "<?php // -*- coding:utf-8 -*-\n// Generated from po2tiki on %s\n\n$lang=Array(\n"
             % datetime.datetime.now()
         )
 
-    def _tiki_footer(self):
+    @staticmethod
+    def _tiki_footer():
         """Returns a tiki-file footer string."""
         return '"###end###"=>"###end###");\n?>'
 

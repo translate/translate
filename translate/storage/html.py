@@ -157,7 +157,8 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             inputfile.close()
             self.parse(htmlsrc)
 
-    def _simple_callback(self, string):
+    @staticmethod
+    def _simple_callback(string):
         return string
 
     def guess_encoding(self, htmlsrc):
@@ -332,7 +333,8 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         if name in self.TRANSLATABLE_METADATA and "content" in attrs_dict:
             return self.create_attribute_tu("content", attrs_dict["content"])
 
-    def translatable_attribute_matches_tag(self, attrname, tag):
+    @staticmethod
+    def translatable_attribute_matches_tag(attrname, tag):
         if attrname == "lang":
             return tag == "html"
         return True
@@ -369,7 +371,8 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             result.append((attrname, attrvalue))
         return result
 
-    def create_start_tag(self, tag, attrs=None, startend=False):
+    @staticmethod
+    def create_start_tag(tag, attrs=None, startend=False):
         attr_strings = []
         for attrname, attrvalue in attrs:
             if attrvalue is None:

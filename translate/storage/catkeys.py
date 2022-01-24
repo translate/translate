@@ -112,7 +112,8 @@ class CatkeysHeader:
                     value = ""
                 self._header_dict[key] = value
 
-    def _create_default_header(self):
+    @staticmethod
+    def _create_default_header():
         """Create a default catkeys header"""
         defaultheader = FIELDNAMES_HEADER_DEFAULTS.copy()
         return defaultheader
