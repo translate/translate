@@ -59,7 +59,8 @@ class pypo2phppo:
         unit.target = self.convertstrings(unit.target)
         return unit
 
-    def convertstring(self, string):
+    @staticmethod
+    def convertstring(string):
         return re.sub(r"\{(\d)\}", lambda x: "%%%d$s" % (int(x.group(1)) + 1), string)
 
     def convertstrings(self, input):

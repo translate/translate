@@ -357,14 +357,16 @@ class SimpleParser:
             self._pos += 1
         return f"(?P<{name}>{pattern})"
 
-    def lastly(self, regex):
+    @staticmethod
+    def lastly(regex):
         """Process the result of __call__ right before it returns.
 
         Adds the ^ and the $ to the beginning and the end, respectively.
         """
         return "^%s$" % regex
 
-    def openended(self, regex):
+    @staticmethod
+    def openended(regex):
         """Process the result of ``__call__`` right before it returns.
 
         Adds the ^ to the beginning but no $ to the end.

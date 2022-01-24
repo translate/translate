@@ -231,7 +231,8 @@ class CheckerConfig:
         self.validcharsmap = {}
         self.updatevalidchars(validchars)
 
-    def _init_list(self, list):
+    @staticmethod
+    def _init_list(list):
         """initialise configuration paramaters that are lists
 
         :type list: List
@@ -243,7 +244,8 @@ class CheckerConfig:
 
         return list
 
-    def _init_default(self, param, default):
+    @staticmethod
+    def _init_default(param, default):
         """Initialise parameters that can have default options.
 
         :param param: the user supplied paramater value
@@ -443,7 +445,8 @@ class UnitChecker:
 
     filterxml = cache_results(filterxml)
 
-    def run_test(self, test, unit):
+    @staticmethod
+    def run_test(test, unit):
         """Runs the given test on the given unit.
 
         Note that this can raise a :exc:`FilterFailure` as part of normal operation.
