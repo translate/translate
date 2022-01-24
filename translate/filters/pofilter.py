@@ -186,7 +186,7 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
 
             with open(options.notranslatefile) as fp:
                 notranslatewords = [line.strip() for line in fp.readlines()]
-            notranslatewords = dict.fromkeys([key for key in notranslatewords])
+            notranslatewords = dict.fromkeys(list(notranslatewords))
 
             checkerconfig.notranslatewords.update(notranslatewords)
 
@@ -200,7 +200,7 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
 
             with open(options.musttranslatefile) as fp:
                 musttranslatewords = [line.strip() for line in fp.readlines()]
-            musttranslatewords = dict.fromkeys([key for key in musttranslatewords])
+            musttranslatewords = dict.fromkeys(list(musttranslatewords))
 
             checkerconfig.musttranslatewords.update(musttranslatewords)
 
