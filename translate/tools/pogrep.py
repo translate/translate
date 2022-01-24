@@ -93,8 +93,7 @@ class GrepMatch:
     # SPECIAL METHODS #
     def __str__(self):
         start, end = self.start, self.end
-        if start < 3:
-            start = 3
+        start = max(start, 3)
         if end > len(self.get_getter()()) - 3:
             end = len(self.get_getter()()) - 3
         matchpart = self.get_getter()()[start - 2 : end + 2]
