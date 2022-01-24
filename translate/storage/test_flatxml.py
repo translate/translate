@@ -12,12 +12,14 @@ class TestFlatXMLUnit(test_monolingual.TestMonolingualUnit):
 class TestFlatXMLFile(test_monolingual.TestMonolingualStore):
     StoreClass = flatxml.FlatXMLFile
 
-    def _store_to_string(self, store):
+    @staticmethod
+    def _store_to_string(store):
         outputfile = BytesIO()
         store.serialize(outputfile)
         return outputfile.getvalue().decode("utf-8")
 
-    def _encoded_file(self, string, encoding="utf-8"):
+    @staticmethod
+    def _encoded_file(string, encoding="utf-8"):
         xmldecl = '<?xml version="1.0" encoding="%s"?>' % encoding
         stringfile = BytesIO((xmldecl + string).encode())
         return stringfile

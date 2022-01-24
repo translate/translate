@@ -166,7 +166,8 @@ class TestPhpUnit(test_monolingual.TestMonolingualUnit):
 class TestPhpFile(test_monolingual.TestMonolingualStore):
     StoreClass = php.phpfile
 
-    def phpparse(self, phpsource):
+    @staticmethod
+    def phpparse(phpsource):
         """helper that parses php source without requiring files"""
         dummyfile = BytesIO(phpsource.encode())
         return php.phpfile(dummyfile)

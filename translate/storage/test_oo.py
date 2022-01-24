@@ -108,7 +108,8 @@ def test_escape_help_text():
 
 
 class TestOO:
-    def ooparse(self, oosource):
+    @staticmethod
+    def ooparse(oosource):
         """helper that parses oo source without requiring files"""
         dummyfile = BytesIO(oosource.encode())
         return oo.oofile(dummyfile)
