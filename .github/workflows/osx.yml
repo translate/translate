@@ -3,13 +3,13 @@ name: Test on MacOS
 on:
   push:
     paths-ignore:
-    - "docs/**"
+      - docs/**
     branches-ignore:
-      - "dependabot/**"
-      - "deepsource**"
+      - dependabot/**
+      - deepsource**
   pull_request:
     paths-ignore:
-    - "docs/**"
+      - docs/**
 
 jobs:
   test:
@@ -21,31 +21,31 @@ jobs:
         python-version: [3.6, 3.7, 3.8, 3.9]
 
     steps:
-    - uses: actions/checkout@v2.4.0
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2.3.1
-      with:
-        python-version: ${{ matrix.python-version }}
-        cache: pip
-        cache-dependency-path: 'requirements/*.txt'
-    - name: Install brew dependencies
-      run: |
-        brew install gettext
-        echo "/usr/local/opt/gettext/bin" >> $GITHUB_PATH
-    - name: Update pip
-      run: pip install --upgrade pip wheel
-    - name: Install pip dependencies
-      if: matrix.requirements == 'latest'
-      run: pip install -r requirements/dev.txt
-    - name: Install
-      run: pip install .
-    - name: pytest
-      run: make test
-    - name: test-functional
-      run: make test-functional
-    - name: Coverage
-      run: |
-        coverage xml
-    - uses: codecov/codecov-action@v2.1.0
-      with:
-        name: ${{ runner.os }}, Python ${{ matrix.python-version }}, ${{ matrix.requirements }}
+      - uses: actions/checkout@v2.4.0
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2.3.1
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: requirements/*.txt
+      - name: Install brew dependencies
+        run: |
+          brew install gettext
+          echo "/usr/local/opt/gettext/bin" >> $GITHUB_PATH
+      - name: Update pip
+        run: pip install --upgrade pip wheel
+      - name: Install pip dependencies
+        if: matrix.requirements == 'latest'
+        run: pip install -r requirements/dev.txt
+      - name: Install
+        run: pip install .
+      - name: pytest
+        run: make test
+      - name: test-functional
+        run: make test-functional
+      - name: Coverage
+        run: |
+          coverage xml
+      - uses: codecov/codecov-action@v2.1.0
+        with:
+          name: ${{ runner.os }}, Python ${{ matrix.python-version }}, ${{ matrix.requirements }}

@@ -3,8 +3,8 @@ name: Pre-commit check
 on:
   push:
     branches-ignore:
-      - "dependabot/**"
-      - "deepsource**"
+      - dependabot/**
+      - deepsource**
   pull_request:
 
 jobs:
@@ -18,7 +18,7 @@ jobs:
         with:
           python-version: 3.9
           cache: pip
-          cache-dependency-path: 'requirements/*.txt'
+          cache-dependency-path: requirements/*.txt
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip wheel
@@ -36,7 +36,7 @@ jobs:
         with:
           python-version: 3.9
           cache: pip
-          cache-dependency-path: 'requirements/*.txt'
+          cache-dependency-path: requirements/*.txt
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip wheel
@@ -57,7 +57,7 @@ jobs:
         with:
           python-version: 3.9
           cache: pip
-          cache-dependency-path: 'requirements/*.txt'
+          cache-dependency-path: requirements/*.txt
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip wheel

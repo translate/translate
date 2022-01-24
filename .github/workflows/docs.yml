@@ -3,8 +3,8 @@ name: Docs
 on:
   push:
     branches-ignore:
-      - "dependabot/**"
-      - "deepsource**"
+      - dependabot/**
+      - deepsource**
   pull_request:
 
 jobs:
@@ -21,7 +21,7 @@ jobs:
         with:
           python-version: 3.9
           cache: pip
-          cache-dependency-path: 'requirements/*.txt'
+          cache-dependency-path: requirements/*.txt
       - name: Install apt dependencies
         run: |
           sudo apt-get update
