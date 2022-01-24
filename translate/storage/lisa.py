@@ -336,24 +336,15 @@ class LISAfile(base.TranslationStore):
                 out.write(b'<?xml version="1.0" encoding="utf-8"?>\n')
         if self.XMLindent:
             reindent(root, **self.XMLindent)
-        if 1:
-            treestring = etree.tostring(
-                self.document,
-                pretty_print=not self.XMLindent,
-                xml_declaration=not self.XMLdoublequotes,
-                encoding=self.encoding,
-                doctype=self.XMLdoctype,
-            )
-            treestring = self.serialize_hook(treestring)
-            out.write(treestring)
-            return
-        self.document.write(
-            out,
+        treestring = etree.tostring(
+            self.document,
             pretty_print=not self.XMLindent,
             xml_declaration=not self.XMLdoublequotes,
-            encoding=("UTF-8" if self.XMLuppercaseEncoding else "utf-8"),
+            encoding=self.encoding,
             doctype=self.XMLdoctype,
         )
+        treestring = self.serialize_hook(treestring)
+        out.write(treestring)
 
     def parse(self, xml):
         """Populates this object from the given xml string"""
