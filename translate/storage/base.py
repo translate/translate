@@ -575,7 +575,7 @@ class TranslationStore:
 
     def getunits(self):
         """Return a list of all units in this store."""
-        return [unit for unit in self.unit_iter()]
+        return list(self.unit_iter())
 
     def addunit(self, unit):
         """Append the given unit to the object's list of units.

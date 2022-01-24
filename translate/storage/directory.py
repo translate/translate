@@ -45,7 +45,7 @@ class Directory:
         """Returns a list of (dir, filename) tuples for all the file names in
         this directory.
         """
-        return [filetuple for filetuple in self.file_iter()]
+        return list(self.file_iter())
 
     def unit_iter(self):
         """Iterator over all the units in all the files in this directory."""
@@ -56,7 +56,7 @@ class Directory:
 
     def getunits(self):
         """List of all the units in all the files in this directory."""
-        return [unit for unit in self.unit_iter()]
+        return list(self.unit_iter())
 
     def scanfiles(self):
         """Populate the internal file data."""

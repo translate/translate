@@ -356,7 +356,7 @@ class Common:
     @classmethod
     def characters(cls, text):
         """Returns a list of characters in text."""
-        return [c for c in cls.character_iter(text)]
+        return list(cls.character_iter(text))
 
     @classmethod
     def word_iter(cls, text):
@@ -370,7 +370,7 @@ class Common:
     @classmethod
     def words(cls, text):
         """Returns a list of words in text."""
-        return [w for w in cls.word_iter(text)]
+        return list(cls.word_iter(text))
 
     @classmethod
     def sentence_iter(cls, text, strip=True):
@@ -393,7 +393,7 @@ class Common:
     @classmethod
     def sentences(cls, text, strip=True):
         """Returns a list of sentences in text."""
-        return [s for s in cls.sentence_iter(text, strip=strip)]
+        return list(cls.sentence_iter(text, strip=strip))
 
     @classmethod
     def capsstart(cls, text):
