@@ -44,7 +44,7 @@ sitepackages = packagesdir.replace(sys.prefix + os.sep, "")
 infofiles = [
     (
         join(sitepackages, "translate"),
-        list(("COPYING", "README.rst")),
+        ["COPYING", "README.rst"],
     )
 ]
 initfiles = [(join(sitepackages, "translate"), [join("translate", "__init__.py")])]
