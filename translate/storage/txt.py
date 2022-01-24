@@ -124,7 +124,7 @@ class TxtFile(base.TranslationStore):
         for linenum, line in enumerate(lines):
             current_line = linenum + 1
             line = line.decode(self.encoding).rstrip("\r\n")
-            for rule, prere, postre in self.flavour:
+            for _rule, prere, postre in self.flavour:
                 match = prere.match(line)
                 if match:
                     pretext, source = match.groups()
