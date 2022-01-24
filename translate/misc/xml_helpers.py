@@ -19,6 +19,7 @@
 """Helper functions for working with XML."""
 
 import re
+from typing import List, Optional
 
 from lxml import etree
 
@@ -48,8 +49,7 @@ def getText(node, xml_space="preserve"):
     xml_space = getXMLspace(node, xml_space)
     if xml_space == "default":
         return str(string_xpath_normalized(node))  # specific to lxml.etree
-    else:
-        return str(string_xpath(node))  # specific to lxml.etree
+    return str(string_xpath(node))  # specific to lxml.etree
 
     # If we want to normalise space and only preserve it when the directive
     # xml:space="preserve" is given in node or in parents, consider this code:
@@ -65,17 +65,17 @@ XML_NS = "http://www.w3.org/XML/1998/namespace"
 
 def getXMLlang(node):
     """Gets the xml:lang attribute on node"""
-    return node.get("{%s}lang" % XML_NS)
+    return node.get(f"{{{XML_NS}}}lang")
 
 
 def setXMLlang(node, lang):
     """Sets the xml:lang attribute on node"""
-    node.set("{%s}lang" % XML_NS, lang)
+    node.set(f"{{{XML_NS}}}lang", lang)
 
 
 def getXMLspace(node, default=None):
     """Gets the xml:space attribute on node"""
-    value = node.get("{%s}space" % XML_NS)
+    value = node.get(f"{{{XML_NS}}}space")
     if value is None:
         return default
     return value
@@ -83,7 +83,7 @@ def getXMLspace(node, default=None):
 
 def setXMLspace(node, value):
     """Sets the xml:space attribute on node"""
-    node.set("{%s}space" % XML_NS, value)
+    node.set(f"{{{XML_NS}}}space", value)
 
 
 def namespaced(namespace, name):
@@ -104,12 +104,12 @@ MULTIWHITESPACE_PATTERN = r"[\n\r\t ]+"
 MULTIWHITESPACE_RE = re.compile(MULTIWHITESPACE_PATTERN, re.MULTILINE)
 
 
-def normalize_space(text):
+def normalize_space(text: str):
     """Normalize the given text for implementation of ``xml:space="default"``."""
     return MULTIWHITESPACE_RE.sub(" ", text)
 
 
-def normalize_xml_space(node, xml_space, remove_start=False):
+def normalize_xml_space(node, xml_space: str, remove_start: bool = False):
     """normalize spaces following the nodes xml:space, or alternatively the
     given xml_space parameter.
     """
@@ -133,7 +133,13 @@ def normalize_xml_space(node, xml_space, remove_start=False):
 
 
 def reindent(
-    elem, level=0, indent="  ", max_level=4, skip=None, toplevel=True, leaves=None
+    elem,
+    level: int = 0,
+    indent: str = "  ",
+    max_level: int = 4,
+    skip: Optional[List[str]] = None,
+    toplevel=True,
+    leaves: Optional[List[str]] = None,
 ):
     """Adjust indentation to match specification.
 
@@ -163,6 +169,9 @@ def reindent(
         if not is_leave:
             for child in elem:
                 reindent(child, next_level, indent, max_level, skip, False, leaves)
+
+            # Adjust last element
+            child = elem[-1]
             if (
                 not child.tail or not child.tail.strip()
             ) and child.tag is not etree.Entity:
@@ -175,16 +184,17 @@ def reindent(
             elem.tail = i
 
 
-def validate_char(c):
+def validate_char(char: str) -> bool:
     """
     identify valid chars for XML, based on xmlIsChar_ch from
     https://github.com/GNOME/libxml2/blob/master/include/libxml/chvalid.h
     """
-    return (0x9 <= ord(c) <= 0xA) or (ord(c) == 0xD) or (0x20 <= ord(c))
+    ord_ch = ord(char)
+    return (0x9 <= ord_ch <= 0xA) or (ord_ch == 0xD) or (0x20 <= ord_ch)
 
 
-def valid_chars_only(s):
+def valid_chars_only(text: str) -> str:
     """
     prevent to crash libxml with unexpected chars
     """
-    return "".join(ch for ch in s if validate_char(ch))
+    return "".join(char for char in text if validate_char(char))
