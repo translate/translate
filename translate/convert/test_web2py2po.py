@@ -4,14 +4,16 @@ from translate.storage.test_base import first_translatable, headerless_len
 
 
 class TestWEB2PY2PO:
-    def web2py2po(self, web2py_source):
+    @staticmethod
+    def web2py2po(web2py_source):
         """helper that converts po source to web2py source without requiring files"""
         input_web2py = eval(web2py_source)
         new_pofile = po.pofile()
         convertor = web2py2po.web2py2po(new_pofile)
         return convertor.convertstore(input_web2py)
 
-    def singleelement(self, storage):
+    @staticmethod
+    def singleelement(storage):
         """checks that the pofile contains a single non-header element, and returns it"""
         assert headerless_len(storage.units) == 1
         return first_translatable(storage)

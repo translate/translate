@@ -6,7 +6,8 @@ from translate.convert import flatxml2po, test_convert
 
 
 class TestFlatXML2PO:
-    def _convert(self, xmlstring, templatestring=None, **kwargs):
+    @staticmethod
+    def _convert(xmlstring, templatestring=None, **kwargs):
         """Helper that converts xml source to po target without requiring files"""
         inputfile = BytesIO(xmlstring.encode())
         templatefile = None
@@ -25,7 +26,8 @@ class TestFlatXML2PO:
         """Helper that converts to target format string without using files."""
         return self._convert(*args, **kwargs)[1].getvalue().decode("utf-8")
 
-    def _do_assert_store(self, actual):
+    @staticmethod
+    def _do_assert_store(actual):
         """Asserts whether the passed actual store contains two assumed units:
         'one' => 'One'
         'two' => 'Two'

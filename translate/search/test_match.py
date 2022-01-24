@@ -5,11 +5,13 @@ from translate.storage import csvl10n
 class TestMatch:
     """Test the matching class"""
 
-    def candidatestrings(self, units):
+    @staticmethod
+    def candidatestrings(units):
         """returns only the candidate strings out of the list with (score, string) tuples"""
         return [unit.source for unit in units]
 
-    def buildcsv(self, sources, targets=None):
+    @staticmethod
+    def buildcsv(sources, targets=None):
         """Build a csvfile store with the given source and target strings"""
         if targets is None:
             targets = sources

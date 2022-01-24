@@ -46,7 +46,8 @@ class BaseTxt2POTester:
         """Helper that converts to target format string without using files."""
         return self._convert(*args, **kwargs)[1].getvalue().decode("utf-8")
 
-    def _count_elements(self, po_store):
+    @staticmethod
+    def _count_elements(po_store):
         """Helper that counts the number of non-header units."""
         assert po_store.units[0].isheader()
         return len(po_store.units) - 1

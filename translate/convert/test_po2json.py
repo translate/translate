@@ -33,8 +33,9 @@ msgid "qux"
 msgstr ""
 """
 
+    @staticmethod
     def po2json(
-        self, po_source, json_template, includefuzzy=False, remove_untranslated=False
+        po_source, json_template, includefuzzy=False, remove_untranslated=False
     ):
         """helper that converts po source to json source without requiring files"""
         input_file = BytesIO(po_source.encode())

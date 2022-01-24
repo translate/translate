@@ -17,7 +17,8 @@ class TestXLIFF2PO:
   </file>
 </xliff>"""
 
-    def xliff2po(self, xliffsource):
+    @staticmethod
+    def xliff2po(xliffsource):
         """helper that converts xliff source to po source without requiring files"""
         inputfile = BytesIO(xliffsource.encode())
         convertor = xliff2po.xliff2po()
@@ -275,7 +276,8 @@ class TestXLIFF2POCommand(test_convert.TestConvertCommand, TestXLIFF2PO):
 
     convertmodule = xliff2po
 
-    def singleelement(self, pofile):
+    @staticmethod
+    def singleelement(pofile):
         """checks that the pofile contains a single non-header element, and returns it"""
         if isinstance(pofile, poheader):
             assert len(pofile.units) == 2

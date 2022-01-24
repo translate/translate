@@ -7,7 +7,8 @@ from translate.storage import po
 
 
 class TestPOT2PO:
-    def convertpot(self, potsource, posource=None):
+    @staticmethod
+    def convertpot(potsource, posource=None):
         """helper that converts pot source to po source without requiring files"""
         potfile = BytesIO(potsource.encode())
         if posource:
@@ -19,7 +20,8 @@ class TestPOT2PO:
         pooutfile.seek(0)
         return po.pofile(pooutfile.read())
 
-    def singleunit(self, pofile):
+    @staticmethod
+    def singleunit(pofile):
         """checks that the pofile contains a single non-header unit, and returns it"""
         assert len(pofile.units) == 2
         assert pofile.units[0].isheader()

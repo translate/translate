@@ -5,7 +5,8 @@ from translate.storage import jsonl10n
 
 
 class TestJson2PO:
-    def json2po(self, jsonsource, template=None, filter=None):
+    @staticmethod
+    def json2po(jsonsource, template=None, filter=None):
         """helper that converts json source to po source without requiring files"""
         inputfile = BytesIO(jsonsource.encode())
         inputjson = jsonl10n.JsonFile(inputfile, filter=filter)
@@ -13,7 +14,8 @@ class TestJson2PO:
         outputpo = convertor.convert_store(inputjson)
         return outputpo
 
-    def singleelement(self, storage):
+    @staticmethod
+    def singleelement(storage):
         """checks that the pofile contains a single non-header element, and returns it"""
         print(bytes(storage))
         assert len(storage.units) == 1

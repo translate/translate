@@ -5,7 +5,8 @@ from translate.storage import po
 
 
 class TestPhp2PO:
-    def php2po(self, phpsource, phptemplate=None):
+    @staticmethod
+    def php2po(phpsource, phptemplate=None):
         """helper that converts .php source to po source without requiring files"""
         inputfile = BytesIO(phpsource.encode())
         output_file = BytesIO()
@@ -16,7 +17,8 @@ class TestPhp2PO:
         convertor.run()
         return convertor.target_store
 
-    def convertphp(self, phpsource, template=None, expected=1):
+    @staticmethod
+    def convertphp(phpsource, template=None, expected=1):
         """call run_converter, return the outputfile"""
         inputfile = BytesIO(phpsource.encode())
         outputfile = BytesIO()
@@ -26,14 +28,16 @@ class TestPhp2PO:
         assert php2po.run_converter(inputfile, outputfile, templatefile) == expected
         return outputfile.getvalue()
 
-    def singleelement(self, pofile):
+    @staticmethod
+    def singleelement(pofile):
         """checks that the pofile contains a single non-header element, and returns it"""
         assert len(pofile.units) == 2
         assert pofile.units[0].isheader()
         print(pofile)
         return pofile.units[1]
 
-    def countelements(self, pofile):
+    @staticmethod
+    def countelements(pofile):
         """counts the number of non-header entries"""
         assert pofile.units[0].isheader()
         print(pofile)

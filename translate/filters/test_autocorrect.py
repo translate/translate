@@ -2,7 +2,8 @@ from translate.filters import autocorrect
 
 
 class TestAutocorrect:
-    def correct(self, msgid, msgstr, expected):
+    @staticmethod
+    def correct(msgid, msgstr, expected):
         """helper to run correct function from autocorrect module"""
         corrected = autocorrect.correct(msgid, msgstr)
         print(repr(msgid))

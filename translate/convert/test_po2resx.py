@@ -83,7 +83,8 @@ class TestPO2RESX:
   %s
 </root>"""
 
-    def po2resx(self, resxsource, po_source):
+    @staticmethod
+    def po2resx(resxsource, po_source):
         """Helper that merges po translations to .resx source without requiring files"""
         po_store = po.pofile(po_source.encode("utf-8"))
         template_file = BytesIO(resxsource.encode())

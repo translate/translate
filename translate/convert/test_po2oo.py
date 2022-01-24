@@ -8,7 +8,8 @@ from translate.storage import po
 
 
 class TestPO2OO:
-    def convertoo(self, posource, ootemplate, language="en-US"):
+    @staticmethod
+    def convertoo(posource, ootemplate, language="en-US"):
         """helper to exercise the command line function"""
         inputfile = BytesIO(posource.encode())
         outputfile = BytesIO()
@@ -18,7 +19,8 @@ class TestPO2OO:
         )
         return outputfile.getvalue()
 
-    def roundtripstring(self, entitystring):
+    @staticmethod
+    def roundtripstring(entitystring):
         oointro, oooutro = (
             r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	",
             "				2002-02-02 02:02:02" + "\r\n",
@@ -64,7 +66,8 @@ class TestPO2OO:
         newoo = self.convertoo(posource, ootemplate, language="zu")
         assert newoo.decode("utf-8") == ootemplate + ooexpected
 
-    def test_pofilter(self):
+    @staticmethod
+    def test_pofilter():
         """Tests integration with pofilter"""
         # Some bad po with a few errors:
         posource = b'#: sourcefile.bla#ID_NUMBER.txet.gnirts\nmsgid "<tag cow=\\"3\\">Mistake."\nmsgstr "  <etiket koei=\\"3\\">(fout) "'
@@ -108,7 +111,8 @@ class TestPO2OO:
         self.check_roundtrip(" ")
         self.check_roundtrip("\u00a0")
 
-    def test_default_timestamp(self):
+    @staticmethod
+    def test_default_timestamp():
         """test to ensure that we revert to the default timestamp"""
         oointro, oooutro = (
             r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Text				",
@@ -126,7 +130,8 @@ class TestPO2OO:
             == oointro + "2002-02-02 02:02:02" + oooutro
         )
 
-    def test_escape_conversion(self):
+    @staticmethod
+    def test_escape_conversion():
         """test to ensure that we convert escapes correctly"""
         oosource = (
             r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Column1\tColumn2\r\n				2002-02-02 02:02:02"
@@ -141,7 +146,8 @@ class TestPO2OO:
         )
         assert b"\tKolom1\\tKolom2\\r\\n\t" in outputfile.getvalue()
 
-    def test_helpcontent_escapes(self):
+    @staticmethod
+    def test_helpcontent_escapes():
         """test to ensure that we convert helpcontent escapes correctly"""
         # Note how this test specifically uses incorrect spacing in the
         # translation. The extra space before 'hid' and an extra space before
@@ -169,7 +175,8 @@ msgstr ""
             in outputfile.getvalue()
         )
 
-    def test_helpcontent_escapes2(self):
+    @staticmethod
+    def test_helpcontent_escapes2():
         """test to ensure that we convert helpcontent escapes correctly"""
         oosource = (
             r"helpcontent2	source\text\scalc\05\empty_cells.xhp	0	help	par_id2629474				0	en-US	A1: <empty>				2002-02-02 02:02:02"

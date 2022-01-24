@@ -38,13 +38,15 @@ class TestYAML2PO:
         """Helper that converts to target format string without using files."""
         return self._convert(*args, **kwargs)[1].getvalue().decode("utf-8")
 
-    def _single_element(self, po_store):
+    @staticmethod
+    def _single_element(po_store):
         """Helper to check PO file has one non-header unit, and return it."""
         assert len(po_store.units) == 2
         assert po_store.units[0].isheader()
         return po_store.units[1]
 
-    def _count_elements(self, po_store):
+    @staticmethod
+    def _count_elements(po_store):
         """Helper that counts the number of non-header units."""
         assert po_store.units[0].isheader()
         return len(po_store.units) - 1

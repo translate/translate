@@ -6,7 +6,8 @@ from translate.tools import pogrep
 
 
 class TestPOGrep:
-    def poparse(self, posource):
+    @staticmethod
+    def poparse(posource):
         """helper that parses po source without requiring files"""
         dummyfile = BytesIO(posource.encode())
         pofile = po.pofile(dummyfile)
@@ -160,7 +161,8 @@ class TestXLiffGrep:
 </trans-unit>"""
     )
 
-    def xliff_parse(self, xliff_text):
+    @staticmethod
+    def xliff_parse(xliff_text):
         """helper that parses po source without requiring files"""
         dummyfile = BytesIO(xliff_text)
         xliff_file = xliff.xlifffile(dummyfile)

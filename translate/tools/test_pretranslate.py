@@ -17,7 +17,8 @@ class TestPretranslate:
         </file>
 </xliff>"""
 
-    def pretranslatepo(self, input_source, template_source=None):
+    @staticmethod
+    def pretranslatepo(input_source, template_source=None):
         """helper that converts strings to po source without requiring files"""
         input_file = BytesIO(input_source.encode())
         if template_source:
@@ -30,7 +31,8 @@ class TestPretranslate:
         output_file.seek(0)
         return po.pofile(output_file.read())
 
-    def pretranslatexliff(self, input_source, template_source=None):
+    @staticmethod
+    def pretranslatexliff(input_source, template_source=None):
         """helper that converts strings to po source without requiring files"""
         input_file = BytesIO(input_source)
         if template_source:
@@ -43,7 +45,8 @@ class TestPretranslate:
         output_file.seek(0)
         return xliff.xlifffile(output_file.read())
 
-    def singleunit(self, pofile):
+    @staticmethod
+    def singleunit(pofile):
         """
         checks that the pofile contains a single non-header unit, and
         returns it
