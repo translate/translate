@@ -130,6 +130,7 @@ import collections
 import re
 from codecs import iterencode
 from copy import deepcopy
+from typing import List
 
 from lxml import etree
 
@@ -254,15 +255,15 @@ class Dialect:
 
     name = None
     default_encoding = "iso-8859-1"
-    delimiters = None
+    delimiters: List[str] = []
     pair_terminator = ""
     key_wrap_char = ""
     value_wrap_char = ""
     drop_comments = []
     has_plurals = False
 
-    @classmethod
-    def encode(cls, string, encoding=None):
+    @staticmethod
+    def encode(string, encoding=None):
         """Encode the string"""
         # FIXME: dialects are a bad idea, not possible for subclasses
         # to override key methods
@@ -270,8 +271,8 @@ class Dialect:
             return quote.javapropertiesencode(string or "")
         return quote.java_utf8_properties_encode(string or "")
 
-    @classmethod
-    def decode(cls, string):
+    @staticmethod
+    def decode(string):
         return quote.propertiesdecode(string)
 
     @classmethod
@@ -332,30 +333,30 @@ class Dialect:
                 return (" ", delimiters[" "])
         return (mindelimiter, minpos)
 
-    @classmethod
-    def key_strip(cls, key):
+    @staticmethod
+    def key_strip(key):
         """Strip unneeded characters from the key"""
         return _key_strip(key)
 
-    @classmethod
-    def value_strip(cls, value):
+    @staticmethod
+    def value_strip(value):
         """Strip unneeded characters from the value"""
         return value.lstrip()
 
-    @classmethod
-    def is_line_continuation(cls, line):
+    @staticmethod
+    def is_line_continuation(line):
         return is_line_continuation(line)
 
-    @classmethod
-    def strip_line_continuation(cls, value):
+    @staticmethod
+    def strip_line_continuation(value):
         return value[:-1]
 
-    @classmethod
-    def get_key_cldr_name(cls, key):
+    @staticmethod
+    def get_key_cldr_name(key):
         return (key, "other")
 
-    @classmethod
-    def get_cldr_names_order(cls):
+    @staticmethod
+    def get_cldr_names_order():
         return ["other"]
 
 
@@ -372,8 +373,8 @@ class DialectJavaUtf8(DialectJava):
     default_encoding = "utf-8"
     delimiters = ["=", ":", " "]
 
-    @classmethod
-    def encode(cls, string, encoding=None):
+    @staticmethod
+    def encode(string, encoding=None):
         return quote.java_utf8_properties_encode(string or "")
 
 
@@ -383,8 +384,8 @@ class DialectJavaUtf16(DialectJava):
     default_encoding = "utf-16"
     delimiters = ["=", ":", " "]
 
-    @classmethod
-    def encode(cls, string, encoding=None):
+    @staticmethod
+    def encode(string, encoding=None):
         return quote.java_utf8_properties_encode(string or "")
 
 
@@ -401,12 +402,12 @@ class DialectXWiki(DialectJava):
     delimiters = ["=", ":", " "]
     has_plurals = True
 
-    @classmethod
-    def encode(cls, string, encoding=None):
+    @staticmethod
+    def encode(string, encoding=None):
         return quote.xwiki_properties_encode(string or "", encoding)
 
-    @classmethod
-    def decode(cls, string):
+    @staticmethod
+    def decode(string):
         return quote.xwiki_properties_decode(string)
 
 
@@ -421,8 +422,8 @@ class DialectMozilla(DialectJavaUtf8):
     name = "mozilla"
     delimiters = ["="]
 
-    @classmethod
-    def encode(cls, string, encoding=None):
+    @staticmethod
+    def encode(string, encoding=None):
         """Encode the string"""
         string = quote.java_utf8_properties_encode(string or "")
         string = quote.mozillaescapemarginspaces(string or "")
@@ -498,8 +499,8 @@ class DialectSkype(Dialect):
     default_encoding = "utf-16"
     delimiters = ["="]
 
-    @classmethod
-    def encode(cls, string, encoding=None):
+    @staticmethod
+    def encode(string, encoding=None):
         return quote.java_utf8_properties_encode(string or "")
 
 
@@ -515,8 +516,8 @@ class DialectStrings(Dialect):
     out_delimiter_wrappers = " "
     drop_comments = ["/* No comment provided by engineer. */"]
 
-    @classmethod
-    def key_strip(cls, key):
+    @staticmethod
+    def key_strip(key):
         """Strip unneeded characters from the key"""
         newkey = key.rstrip().rstrip('"')
         # If string now ends in \ we put back the char that was escaped
@@ -525,8 +526,8 @@ class DialectStrings(Dialect):
         ret = newkey.lstrip().lstrip('"')
         return ret.replace('\\"', '"')
 
-    @classmethod
-    def value_strip(cls, value):
+    @staticmethod
+    def value_strip(value):
         """Strip unneeded characters from the value"""
         newvalue = value.rstrip().rstrip(";").rstrip('"')
         # If string now ends in \ we put back the char that was escaped
@@ -535,19 +536,19 @@ class DialectStrings(Dialect):
         ret = newvalue.lstrip().lstrip('"')
         return ret.replace('\\"', '"')
 
-    @classmethod
-    def encode(cls, string, encoding=None):
+    @staticmethod
+    def encode(string, encoding=None):
         return string.replace("\n", r"\n").replace("\t", r"\t")
 
-    @classmethod
-    def is_line_continuation(self, line):
+    @staticmethod
+    def is_line_continuation(line):
         l = line.rstrip()
         if l and l[-1] == ";":
             return False
         return True
 
-    @classmethod
-    def strip_line_continuation(cls, value):
+    @staticmethod
+    def strip_line_continuation(value):
         return value
 
 
@@ -667,8 +668,7 @@ class proppluralunit(base.TranslationUnit):
         ll = [x.source for x in self._get_units(self._get_source_mapping())]
         if len(ll) > 1:
             return multistring(ll)
-        else:
-            return ll[0]
+        return ll[0]
 
     def setsource(self, text):
         mapping = None
@@ -763,10 +763,7 @@ class proppluralunit(base.TranslationUnit):
         return self.getoutput()
 
     def getoutput(self):
-        ret = ""
-        for x in self._get_ordered_units():
-            ret += x.getoutput()
-        return ret
+        return "".join(unit.getoutput() for unit in self._get_ordered_units())
 
     @property
     def encoding(self):
@@ -782,8 +779,8 @@ class DialectJoomla(Dialect):
     delimiters = ["="]
     out_delimiter_wrappers = ""
 
-    @classmethod
-    def value_strip(cls, value):
+    @staticmethod
+    def value_strip(value):
         """Strip unneeded characters from the value"""
         return value.strip()
 
@@ -794,8 +791,8 @@ class DialectJoomla(Dialect):
             string = string[1:-1]
         return string.replace('"_QQ_"', '"')
 
-    @classmethod
-    def encode(cls, string, encoding=None):
+    @staticmethod
+    def encode(string, encoding=None):
         """Encode the string"""
         if not string:
             return string
@@ -840,18 +837,18 @@ class propunit(base.TranslationUnit):
     def missing(self, missing):
         self.explicitely_missing = missing
 
-    @classmethod
-    def get_missing_part(cls):
+    @staticmethod
+    def get_missing_part():
         """Return the string representing a missing translation."""
         return ""
 
-    @classmethod
-    def strip_missing_part(cls, line):
+    @staticmethod
+    def strip_missing_part(line):
         """Remove the missing prefix from the line."""
         return line
 
-    @classmethod
-    def represents_missing(cls, line):
+    @staticmethod
+    def represents_missing(line):
         """The line represents a missing translation"""
         return False
 
@@ -878,8 +875,7 @@ class propunit(base.TranslationUnit):
     def encoding(self):
         if self._store:
             return self._store.encoding
-        else:
-            return self.personality.default_encoding
+        return self.personality.default_encoding
 
     def __str__(self):
         """Convert to a string."""
@@ -890,28 +886,27 @@ class propunit(base.TranslationUnit):
         notes = self.getnotes()
         if self.isblank():
             return notes + "\n"
-        else:
-            if notes:
-                notes = notes + "\n"
-            # encode key, if needed
-            key = self.name
-            kwc = self.personality.key_wrap_char
-            if kwc:
-                key = key.replace(kwc, f"\\{kwc}")
-                key = f"{kwc}{key}{kwc}"
-            # encode value, if needed
-            value = self.translation or self.value
-            vwc = self.personality.value_wrap_char
-            if vwc:
-                value = value.replace(vwc, f"\\{vwc}")
-                value = f"{vwc}{value}{vwc}"
-            wrappers = self.out_delimiter_wrappers
-            delimiter = f"{wrappers}{self.delimiter}{wrappers}"
-            ending = self.out_ending
-            missing_prefix = ""
-            if self.output_missing and self.missing:
-                missing_prefix = self.get_missing_part()
-            return f"{notes}{missing_prefix}{key}{delimiter}{value}{ending}\n"
+        if notes:
+            notes = notes + "\n"
+        # encode key, if needed
+        key = self.name
+        kwc = self.personality.key_wrap_char
+        if kwc:
+            key = key.replace(kwc, f"\\{kwc}")
+            key = f"{kwc}{key}{kwc}"
+        # encode value, if needed
+        value = self.translation or self.value
+        vwc = self.personality.value_wrap_char
+        if vwc:
+            value = value.replace(vwc, f"\\{vwc}")
+            value = f"{vwc}{value}{vwc}"
+        wrappers = self.out_delimiter_wrappers
+        delimiter = f"{wrappers}{self.delimiter}{wrappers}"
+        ending = self.out_ending
+        missing_prefix = ""
+        if self.output_missing and self.missing:
+            missing_prefix = self.get_missing_part()
+        return f"{notes}{missing_prefix}{key}{delimiter}{value}{ending}\n"
 
     def getlocations(self):
         return [self.name]
@@ -925,8 +920,7 @@ class propunit(base.TranslationUnit):
     def getnotes(self, origin=None):
         if origin in ["programmer", "developer", "source code", None]:
             return "\n".join(self.comments)
-        else:
-            return super().getnotes(origin)
+        return super().getnotes(origin)
 
     def removenotes(self, origin=None):
         self.comments = []
@@ -956,8 +950,8 @@ class xwikiunit(propunit):
         super().__init__(source, personality)
         self.output_missing = True
 
-    @classmethod
-    def get_missing_part(cls):
+    @staticmethod
+    def get_missing_part():
         """Return the string representing a missing translation."""
         return "### Missing: "
 
@@ -1272,10 +1266,10 @@ class XWikiPageProperties(xwikifile):
             super().parse(content)
 
     def set_xwiki_xml_attributes(self, newroot):
-        for e in newroot.findall("object"):
-            newroot.remove(e)
-        for e in newroot.findall("attachment"):
-            newroot.remove(e)
+        for child in newroot.findall("object"):
+            newroot.remove(child)
+        for child in newroot.findall("attachment"):
+            newroot.remove(child)
         newroot.find("translation").text = "1"
         language_node = newroot.find("language")
 
