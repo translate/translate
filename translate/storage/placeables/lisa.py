@@ -178,7 +178,7 @@ _placeable_dictionary = {
 
 
 def xml_append_string(node, string):
-    if not len(node):
+    if not node:
         if not node.text:
             node.text = str(string)
         else:
