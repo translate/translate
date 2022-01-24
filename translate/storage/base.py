@@ -717,7 +717,7 @@ class TranslationStore:
         if not self.id_index:
             self.makeindex()
 
-    def getids(self, filename=None):
+    def getids(self):
         """return a list of unit ids"""
         self.require_index()
         return self.id_index.keys()
