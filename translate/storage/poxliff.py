@@ -308,41 +308,6 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
         setXMLspace(unit.xmlelement, "preserve")
         return unit
 
-    def addplural(self, source, target, filename, createifmissing=False):
-        """This method should now be unnecessary, but is left for reference"""
-        assert isinstance(source, multistring)
-        if not isinstance(target, multistring):
-            target = multistring(target)
-        sourcel = len(source.strings)
-        targetl = len(target.strings)
-        if sourcel < targetl:
-            sources = source.strings + [source.strings[-1]] * targetl - sourcel
-            targets = target.strings
-        else:
-            sources = source.strings
-            targets = target.strings
-        self._messagenum += 1
-        pluralnum = 0
-        group = self.creategroup(filename, True, restype="x-gettext-plural")
-        for (src, tgt) in zip(sources, targets):
-            unit = self.UnitClass(src)
-            unit.target = tgt
-            unit.setid("%d[%d]" % (self._messagenum, pluralnum))
-            pluralnum += 1
-            group.append(unit.xmlelement)
-            self.units.append(unit)
-
-        if pluralnum < sourcel:
-            for string in sources[pluralnum:]:
-                unit = self.UnitClass(src)
-                unit.xmlelement.set("translate", "no")
-                unit.setid("%d[%d]" % (self._messagenum, pluralnum))
-                pluralnum += 1
-                group.append(unit.xmlelement)
-                self.units.append(unit)
-
-        return self.units[-pluralnum]
-
     def parse(self, xml):
         """Populates this object from the given xml string"""
         # TODO: Make more robust
