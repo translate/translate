@@ -312,7 +312,7 @@ class tsunit(lisa.LISAunit):
             self.markfuzzy(False)
 
     def isobsolete(self):
-        return self._gettype() == "obsolete" or self._gettype() == "vanished"
+        return self._gettype() in ("obsolete", "vanished")
 
     def get_state_n(self):
         type = self._gettype()

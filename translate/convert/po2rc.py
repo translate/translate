@@ -303,7 +303,7 @@ class rerc:
             return self.convert_language(s, loc, toks)
 
         if toks.block_type:
-            if toks.block_type == "DIALOGEX" or toks.block_type == "DIALOG":
+            if toks.block_type in ("DIALOGEX", "DIALOG"):
                 return self.convert_dialog(s, loc, toks)
 
             if toks.block_type == "STRINGTABLE":

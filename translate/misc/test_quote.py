@@ -91,7 +91,7 @@ def test_extractwithoutquotes():
 
 
 def isnewlineortabescape(escape):
-    if escape == "\\n" or escape == "\\t":
+    if escape in ("\\n", "\\t"):
         return escape
     return escape[-1]
 

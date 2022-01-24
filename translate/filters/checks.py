@@ -1669,7 +1669,7 @@ class StandardChecker(TranslationChecker):
 
         # some heuristic tests to try and see that the style of capitals is
         # vaguely the same
-        if capitals1 == 0 or capitals1 == 1:
+        if capitals1 in (0, 1):
             success = capitals2 == capitals1
         elif capitals1 < len(str1) / 10:
             success = capitals2 <= len(str2) / 8
