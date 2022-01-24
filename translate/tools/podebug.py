@@ -61,7 +61,8 @@ class podebug:
         self.ignorefunc = getattr(self, "ignore_%s" % ignoreoption, None)
         self.preserveplaceholders = preserveplaceholders
 
-    def apply_to_translatables(self, string, func):
+    @staticmethod
+    def apply_to_translatables(string, func):
         """Applies func to all translatable strings in string."""
         string.map(
             lambda e: e.apply_to_strings(func),
@@ -76,7 +77,8 @@ class podebug:
             if rewrite.startswith("rewrite_")
         ]
 
-    def _rewrite_prepend_append(self, string, prepend, append=None):
+    @staticmethod
+    def _rewrite_prepend_append(string, prepend, append=None):
         if append is None:
             append = prepend
         if not isinstance(string, StringElem):
@@ -101,12 +103,14 @@ class podebug:
     def rewrite_bracket(self, string):
         return self._rewrite_prepend_append(string, "[", "]")
 
-    def rewrite_en(self, string):
+    @staticmethod
+    def rewrite_en(string):
         if not isinstance(string, StringElem):
             string = StringElem(string)
         return string
 
-    def rewrite_blank(self, string):
+    @staticmethod
+    def rewrite_blank(string):
         return StringElem("")
 
     def rewrite_chef(self, string):
@@ -246,7 +250,8 @@ class podebug:
             if ignore.startswith("ignore_")
         ]
 
-    def ignore_openoffice(self, unit):
+    @staticmethod
+    def ignore_openoffice(unit):
         for location in unit.getlocations():
             if location.startswith("Common.xcu#..Common.View.Localisation"):
                 return True
@@ -259,7 +264,8 @@ class podebug:
     def ignore_libreoffice(self, unit):
         return self.ignore_openoffice(unit)
 
-    def ignore_mozilla(self, unit):
+    @staticmethod
+    def ignore_mozilla(unit):
         locations = unit.getlocations()
         if len(locations) == 1 and locations[0].lower().endswith(".accesskey"):
             return True
@@ -272,12 +278,14 @@ class podebug:
                 return True
         return False
 
-    def ignore_gtk(self, unit):
+    @staticmethod
+    def ignore_gtk(unit):
         if unit.source == "default:LTR":
             return True
         return False
 
-    def ignore_kde(self, unit):
+    @staticmethod
+    def ignore_kde(unit):
         if unit.source == "LTR":
             return True
         return False
@@ -353,7 +361,8 @@ class podebug:
             unit = self.convertunit(unit, prefix)
         return store
 
-    def shrinkfilename(self, filename):
+    @staticmethod
+    def shrinkfilename(filename):
         if filename.startswith("." + os.sep):
             filename = filename.replace("." + os.sep, "", 1)
         dirname = os.path.dirname(filename)

@@ -245,7 +245,8 @@ else:
             self.other_files = [self.chop(p) for p in other_files]
             self.install_scripts = install_scripts
 
-        def getcompilecommand(self):
+        @staticmethod
+        def getcompilecommand():
             try:
                 import _winreg
 
@@ -352,7 +353,8 @@ else:
                 return install_data
             return super().reinitialize_command(command, reinit_subcommands)
 
-        def remap_data_files(self, data_files):
+        @staticmethod
+        def remap_data_files(data_files):
             """maps the given data files to different locations using external
             map_data_file function
             """

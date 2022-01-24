@@ -233,7 +233,8 @@ class RecursiveOptionParser(optparse.OptionParser):
                 msg += ": " + errorinfo
         logging.getLogger(self.get_prog_name()).warning(msg)
 
-    def getusagestring(self, option):
+    @staticmethod
+    def getusagestring(option):
         """returns the usage string for the given option"""
         optionstring = "|".join(option._short_opts + option._long_opts)
         if getattr(option, "optionalswitch", False):
@@ -245,7 +246,8 @@ class RecursiveOptionParser(optparse.OptionParser):
         else:
             return "[%s]" % optionstring
 
-    def getusageman(self, option):
+    @staticmethod
+    def getusageman(option):
         """returns the usage string for the given option"""
         optionstring = "\\fR|\\fP".join(option._short_opts + option._long_opts)
         if getattr(option, "optionalswitch", False):
@@ -391,7 +393,8 @@ class RecursiveOptionParser(optparse.OptionParser):
         )
         self.define_option(errorleveloption)
 
-    def getformathelp(self, formats):
+    @staticmethod
+    def getformathelp(formats):
         """Make a nice help string for describing formats..."""
         formats = sorted(f for f in formats if f is not None)
         if len(formats) == 0:
@@ -401,7 +404,8 @@ class RecursiveOptionParser(optparse.OptionParser):
         else:
             return "%s formats" % (", ".join(formats))
 
-    def isrecursive(self, fileoption, filepurpose="input"):
+    @staticmethod
+    def isrecursive(fileoption, filepurpose="input"):
         """Checks if fileoption is a recursive file."""
         if fileoption is None:
             return False
@@ -514,14 +518,16 @@ class RecursiveOptionParser(optparse.OptionParser):
                     )
         return outputformat, fileprocessor
 
-    def getfullinputpath(self, options, inputpath):
+    @staticmethod
+    def getfullinputpath(options, inputpath):
         """Gets the full path to an input file."""
         if options.input:
             return os.path.join(options.input, inputpath)
         else:
             return inputpath
 
-    def getfulloutputpath(self, options, outputpath):
+    @staticmethod
+    def getfulloutputpath(options, outputpath):
         """Gets the full path to an output file."""
         if options.recursiveoutput and options.output:
             return os.path.join(options.output, outputpath)
@@ -632,19 +638,22 @@ class RecursiveOptionParser(optparse.OptionParser):
                     )
                 )
 
-    def openinputfile(self, options, fullinputpath):
+    @staticmethod
+    def openinputfile(options, fullinputpath):
         """Opens the input file."""
         if fullinputpath is None:
             return sys.stdin
         return open(fullinputpath, "rb")
 
-    def openoutputfile(self, options, fulloutputpath):
+    @staticmethod
+    def openoutputfile(options, fulloutputpath):
         """Opens the output file."""
         if fulloutputpath is None:
             return StdoutWrapper()
         return open(fulloutputpath, "wb")
 
-    def opentempoutputfile(self, options, fulloutputpath):
+    @staticmethod
+    def opentempoutputfile(options, fulloutputpath):
         """Opens a temporary output file."""
         return BytesIO()
 
@@ -690,7 +699,8 @@ class RecursiveOptionParser(optparse.OptionParser):
                 os.unlink(fulloutputpath)
             return False
 
-    def mkdir(self, parent, subdir):
+    @staticmethod
+    def mkdir(parent, subdir):
         """Makes a subdirectory (recursively if neccessary)."""
         if not os.path.isdir(parent):
             raise ValueError(
@@ -712,7 +722,8 @@ class RecursiveOptionParser(optparse.OptionParser):
         if not os.path.isdir(fullpath):
             self.mkdir(options.output, subdir)
 
-    def isexcluded(self, options, inputpath):
+    @staticmethod
+    def isexcluded(options, inputpath):
         """Checks if this path has been excluded."""
         basename = os.path.basename(inputpath)
         for excludename in options.exclude:
@@ -764,7 +775,8 @@ class RecursiveOptionParser(optparse.OptionParser):
             dirstack.extend(dirs)
         return inputfiles
 
-    def splitext(self, pathname):
+    @staticmethod
+    def splitext(pathname):
         """Splits *pathname* into name and ext, and removes the extsep.
 
         :param pathname: A file path

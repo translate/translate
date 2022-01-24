@@ -151,7 +151,8 @@ class matcher:
         """
         return min(len(text) / (min_similarity / 100.0), self.MAX_LENGTH)
 
-    def getstartlength(self, min_similarity, text):
+    @staticmethod
+    def getstartlength(min_similarity, text):
         """Calculates the minimum length we are interested in.  The extra fat
         is because we don't use plain character distance only.
         """

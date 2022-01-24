@@ -31,7 +31,8 @@ def _do_msgidcomment(string):
 
 
 class POCompile:
-    def convertstore(self, inputfile, includefuzzy=False):
+    @staticmethod
+    def convertstore(inputfile, includefuzzy=False):
         outputfile = mo.mofile()
         for unit in inputfile.units:
             if (

@@ -141,7 +141,8 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
             help="list filters available",
         )
 
-    def parse_noinput(self, option, opt, value, parser, *args, **kwargs):
+    @staticmethod
+    def parse_noinput(option, opt, value, parser, *args, **kwargs):
         """This sets an option to *True*, but also sets input to *-* to prevent
         an error.
         """
