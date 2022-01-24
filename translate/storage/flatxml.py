@@ -204,7 +204,7 @@ class FlatXMLFile(base.TranslationStore):
             value_name = self.namespaced(self.value_name)
             matching_nodes = list(self.root.iterchildren(value_name))
             assert (
-                matching_nodes
+                len(matching_nodes)
             ), "expected value name to be {} but first node is {}".format(
                 value_name,
                 self.root[0].tag,
