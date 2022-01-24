@@ -185,7 +185,7 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
             query = """SELECT COUNT(*) FROM sources s JOIN targets t on s.sid = t.sid"""
         self.cursor.execute(query)
         (numrows,) = self.cursor.fetchone()
-        logging.debug("tmdb has %d records" % numrows)
+        logging.debug("tmdb has %d records", numrows)
         return numrows
 
     def add_unit(self, unit, source_lang=None, target_lang=None, commit=True):

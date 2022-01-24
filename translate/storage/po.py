@@ -42,7 +42,7 @@ if platform.python_implementation() == "CPython":
 else:
     if usecpo:
         logging.error(
-            "cPO and fPO do not work on %s defaulting to PyPO"
-            % platform.python_implementation()
+            "cPO and fPO do not work on %s defaulting to PyPO",
+            platform.python_implementation(),
         )
     from translate.storage.pypo import *  # pylint: disable=W0401
