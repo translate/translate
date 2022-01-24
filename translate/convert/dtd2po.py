@@ -76,7 +76,8 @@ class dtd2po:
                 origin="developer",
             )
 
-    def convertstrings(self, dtd_unit, po_unit):
+    @staticmethod
+    def convertstrings(dtd_unit, po_unit):
         # extract the string, get rid of quoting
         unquoted = dtd_unit.source.replace("\r", "")
         # escape backslashes... but not if they're for a newline

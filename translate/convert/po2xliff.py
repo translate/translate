@@ -68,7 +68,8 @@ class po2xliff:
 
         return unit
 
-    def contextlist(self, location):
+    @staticmethod
+    def contextlist(location):
         contexts = []
         if ":" in location:
             sourcefile, linenumber = location.split(":", 1)

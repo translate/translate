@@ -53,7 +53,8 @@ class rerc:
         self.lang = lang
         self.sublang = sublang
 
-    def convert_comment(self, addnl, comment):
+    @staticmethod
+    def convert_comment(addnl, comment):
         if not addnl:
             yield "    "
         # Strip extra \r from \r\n which is left in the comment by the parser

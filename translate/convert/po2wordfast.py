@@ -30,7 +30,8 @@ from translate.storage import po, wordfast
 
 
 class po2wordfast:
-    def convertfiles(self, inputfile, wffile, sourcelanguage="en", targetlanguage=None):
+    @staticmethod
+    def convertfiles(inputfile, wffile, sourcelanguage="en", targetlanguage=None):
         """converts a .po file (possibly many) to a Wordfast TM file"""
         inputstore = po.pofile(inputfile)
         for inunit in inputstore.units:

@@ -41,7 +41,8 @@ class html2po:
         thetargetfile.removeduplicates(duplicatestyle)
         return thetargetfile
 
-    def convertfile_inner(self, inputfile, outputstore, keepcomments):
+    @staticmethod
+    def convertfile_inner(inputfile, outputstore, keepcomments):
         """Extract translation units from an html file and add to a pofile object."""
         htmlparser = html.htmlfile(inputfile=inputfile)
         for htmlunit in htmlparser.units:

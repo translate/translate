@@ -260,7 +260,8 @@ class prop2po:
             _append_plural_unit(plural.unit, units)
         return new_store
 
-    def fold_gaia_plurals(self, postore):
+    @staticmethod
+    def fold_gaia_plurals(postore):
         """Fold the multiple plural units of a gaia file into a gettext plural."""
 
         def _append_plural_unit(store, plurals, plural):
@@ -317,7 +318,8 @@ class prop2po:
             )
         return new_store
 
-    def convertunit(self, propunit, commenttype):
+    @staticmethod
+    def convertunit(propunit, commenttype):
         """Converts a .properties unit to a .po unit. Returns None if empty or
         not for translation.
         """

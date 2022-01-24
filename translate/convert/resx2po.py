@@ -95,7 +95,8 @@ class resx2po:
         output_store.removeduplicates(duplicatestyle)
         return output_store
 
-    def split_comments(self, origpo, translatedpo):
+    @staticmethod
+    def split_comments(origpo, translatedpo):
         autocomments = translatedpo.getnotes("developer")
         if autocomments:
             devcomment, transcomment = autocomments.partition("[Translator Comment: ")[
@@ -106,7 +107,8 @@ class resx2po:
             if devcomment:
                 origpo.addnote(devcomment.strip(), origin="developer", position="merge")
 
-    def convert_unit(self, input_unit, commenttype):
+    @staticmethod
+    def convert_unit(input_unit, commenttype):
         """Converts a RESX unit to a PO unit
         @return: None if empty or not for translation
         """

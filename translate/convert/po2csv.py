@@ -26,7 +26,8 @@ from translate.storage import csvl10n, po
 
 
 class po2csv:
-    def convertcomments(self, inputunit):
+    @staticmethod
+    def convertcomments(inputunit):
         return " ".join(inputunit.getlocations())
 
     def convertunit(self, inputunit):
