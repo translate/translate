@@ -182,8 +182,7 @@ class xliffunit(lisa.LISAunit):
             self.set_source_dom(sourcelanguageNode)
 
         # Clear sourcelanguageNode first
-        for i in range(len(sourcelanguageNode)):
-            del sourcelanguageNode[0]
+        sourcelanguageNode.clear()
         sourcelanguageNode.text = None
 
         strelem_to_xml(sourcelanguageNode, value[0])
@@ -216,8 +215,7 @@ class xliffunit(lisa.LISAunit):
             self.set_target_dom(languageNode, append)
 
         # Clear languageNode first
-        for i in range(len(languageNode)):
-            del languageNode[0]
+        languageNode.clear()
         languageNode.text = None
 
         strelem_to_xml(languageNode, value[0])
