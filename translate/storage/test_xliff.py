@@ -190,6 +190,11 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert x_placeable.tail == "baz"
 
         # Test 2
+        xliffunit.target = "test plain target"
+        xliffunit.set_rich_target(
+            [StringElem(["foo", G(id="eek", sub=[G(id="ook", sub=["bar", "rab"])])])],
+            "fr",
+        )
         xliffunit.set_rich_target(
             [
                 StringElem(
@@ -219,6 +224,21 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert xliffunit.rich_target == [
             StringElem(["foobaz", G(id="oof", sub=[G(id="zab", sub=["barrab"])])])
         ]
+        print(bytes(xlifffile).decode())
+        assert (
+            bytes(xlifffile).decode()
+            == """<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.1" version="1.1">
+  <file original="NoName" source-language="en" datatype="plaintext">
+    <body>
+      <trans-unit xml:space="preserve" id="2" approved="yes"><source></source>
+        <target state="translated">foobaz<g id="oof"><g id="zab">barrab</g></g></target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
+"""
+        )
 
     @staticmethod
     def test_source():

@@ -198,3 +198,14 @@ def valid_chars_only(text: str) -> str:
     prevent to crash libxml with unexpected chars
     """
     return "".join(char for char in text if validate_char(char))
+
+
+def clear_content(node):
+    """
+    Removes XML node content.
+
+    Unlike clear() this is not removing attributes.
+    """
+    for child in node:
+        node.remove(child)
+    node.text = None

@@ -24,7 +24,12 @@ The official recommendation is to use the extention .xlf for XLIFF files.
 from lxml import etree
 
 from translate.misc.multistring import multistring
-from translate.misc.xml_helpers import getXMLspace, setXMLlang, setXMLspace
+from translate.misc.xml_helpers import (
+    clear_content,
+    getXMLspace,
+    setXMLlang,
+    setXMLspace,
+)
 from translate.storage import base, lisa
 from translate.storage.placeables.lisa import strelem_to_xml, xml_to_strelem
 from translate.storage.workflow import StateEnum as state
@@ -182,8 +187,7 @@ class xliffunit(lisa.LISAunit):
             self.set_source_dom(sourcelanguageNode)
 
         # Clear sourcelanguageNode first
-        sourcelanguageNode.clear()
-        sourcelanguageNode.text = None
+        clear_content(sourcelanguageNode)
 
         strelem_to_xml(sourcelanguageNode, value[0])
 
@@ -215,8 +219,7 @@ class xliffunit(lisa.LISAunit):
             self.set_target_dom(languageNode, append)
 
         # Clear languageNode first
-        languageNode.clear()
-        languageNode.text = None
+        clear_content(languageNode)
 
         strelem_to_xml(languageNode, value[0])
         ### currently giving some issues in Virtaal: self._rich_target = value
