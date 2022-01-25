@@ -3,13 +3,13 @@ name: Test on Linux
 on:
   push:
     paths-ignore:
-      - docs/**
+    - docs/**
     branches-ignore:
-      - dependabot/**
-      - deepsource**
+    - dependabot/**
+    - deepsource**
   pull_request:
     paths-ignore:
-      - docs/**
+    - docs/**
 
 jobs:
   test:
@@ -19,50 +19,50 @@ jobs:
       matrix:
         requirements: [latest]
         python-version:
-          - '3.6'
-          - '3.7'
-          - '3.8'
-          - '3.9'
-          - '3.10'
+        - '3.6'
+        - '3.7'
+        - '3.8'
+        - '3.9'
+        - '3.10'
         include:
-          - requirements: minimal
-            python-version: '3.6'
+        - requirements: minimal
+          python-version: '3.6'
 
     steps:
-      - uses: actions/checkout@v2.4.0
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2.3.1
-        with:
-          python-version: ${{ matrix.python-version }}
-          cache: pip
-          cache-dependency-path: requirements/*.txt
-      - name: Install apt dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libgettextpo-dev libxml2-dev libxmlsec1-dev gettext hunspell-af
-      - name: Update pip
-        run: pip install --upgrade pip wheel
-      - name: Install pip dependencies
-        if: matrix.requirements == 'latest'
-        run: pip install -r requirements/dev.txt
-      - name: Install pip dependencies
-        if: matrix.requirements == 'minimal'
-        run: |
-          make requirements/min-versions.txt
-          cat requirements/min-versions.txt
-          pip install -r requirements/min-versions.txt
-      - name: Install
-        run: pip install -e .
-      - name: pytest
-        run: make test
-      - name: test-functional
-        env:
-          PYTHON_ARGS: -m coverage run --append --source ${{ github.workspace }}/translate
-          COVERAGE_FILE: ${{ github.workspace }}/.coverage
-        run: make test-functional
-      - name: Coverage
-        run: |
-          coverage xml
-      - uses: codecov/codecov-action@v2.1.0
-        with:
-          name: ${{ runner.os }}, Python ${{ matrix.python-version }}, ${{ matrix.requirements }}
+    - uses: actions/checkout@v2.4.0
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2.3.1
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: pip
+        cache-dependency-path: requirements/*.txt
+    - name: Install apt dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libgettextpo-dev libxml2-dev libxmlsec1-dev gettext hunspell-af
+    - name: Update pip
+      run: pip install --upgrade pip wheel
+    - name: Install pip dependencies
+      if: matrix.requirements == 'latest'
+      run: pip install -r requirements/dev.txt
+    - name: Install pip dependencies
+      if: matrix.requirements == 'minimal'
+      run: |
+        make requirements/min-versions.txt
+        cat requirements/min-versions.txt
+        pip install -r requirements/min-versions.txt
+    - name: Install
+      run: pip install -e .
+    - name: pytest
+      run: make test
+    - name: test-functional
+      env:
+        PYTHON_ARGS: -m coverage run --append --source ${{ github.workspace }}/translate
+        COVERAGE_FILE: ${{ github.workspace }}/.coverage
+      run: make test-functional
+    - name: Coverage
+      run: |
+        coverage xml
+    - uses: codecov/codecov-action@v2.1.0
+      with:
+        name: ${{ runner.os }}, Python ${{ matrix.python-version }}, ${{ matrix.requirements }}
