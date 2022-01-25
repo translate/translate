@@ -819,7 +819,7 @@ class pofile(pocommon.pofile):
     def _insert_header(self, header):
         header._store = self
         self.units.insert(0, header)
-        gpo.po_message_iterator_free(self._gpo_message_iterator)
+        self._free_iterator()
         self._gpo_message_iterator = gpo.po_message_iterator(
             self._gpo_memory_file, None
         )
@@ -881,8 +881,9 @@ class pofile(pocommon.pofile):
         new_gpo_message_iterator = gpo.po_message_iterator(new_gpo_memory_file, None)
         for unit in uniqueunits:
             gpo.po_message_insert(new_gpo_message_iterator, unit._gpo_message)
-        gpo.po_message_iterator_free(self._gpo_message_iterator)
+        self._free_iterator()
         self._gpo_message_iterator = new_gpo_message_iterator
+        self._free_memory_file()
         self._gpo_memory_file = new_gpo_memory_file
         self.units = uniqueunits
 
@@ -901,11 +902,13 @@ class pofile(pocommon.pofile):
 
         def writefile(filename):
             xerror_storage.exception = None
-            self._gpo_memory_file = gpo.po_file_write_v2(
+            result = gpo.po_file_write_v2(
                 self._gpo_memory_file, gpo_encode(filename), xerror_handler
             )
             if xerror_storage.exception is not None:
                 raise xerror_storage.exception
+            if result is None:
+                raise ValueError("Unknown error while saving file")
             with open(filename, "rb") as tfile:
                 return tfile.read()
 
@@ -968,6 +971,7 @@ class pofile(pocommon.pofile):
 
         try:
             xerror_storage.exception = None
+            self._free_memory_file()
             self._gpo_memory_file = gpo.po_file_read_v3(
                 gpo_encode(input), xerror_handler
             )
@@ -989,6 +993,7 @@ class pofile(pocommon.pofile):
             if charset:
                 charset = re.search("charset=([^\\s]+)", charset).group(1)
             self.encoding = charset
+        self._free_iterator()
         self._gpo_message_iterator = gpo.po_message_iterator(
             self._gpo_memory_file, None
         )
@@ -1000,18 +1005,16 @@ class pofile(pocommon.pofile):
         self._free_iterator()
 
     def __del__(self):
-        # We currently disable this while we still get segmentation faults.
-        # Note that this is definitely leaking memory because of this.
-        return
         self._free_iterator()
+        self._free_memory_file()
+
+    def _free_memory_file(self):
+        return
         if self._gpo_memory_file is not None:
             gpo.po_file_free(self._gpo_memory_file)
             self._gpo_memory_file = None
 
     def _free_iterator(self):
-        # We currently disable this while we still get segmentation faults.
-        # Note that this is definitely leaking memory because of this.
-        return
         if self._gpo_message_iterator is not None:
             gpo.po_message_iterator_free(self._gpo_message_iterator)
             self._gpo_message_iterator = None
