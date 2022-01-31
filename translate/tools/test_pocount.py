@@ -98,7 +98,7 @@ class TestPOCount:
     This only tests the old (memory-based) pocount method.
     """
 
-    inputdata = br"""
+    inputdata = rb"""
 msgid "translated unit"
 msgstr "translated unit"
 

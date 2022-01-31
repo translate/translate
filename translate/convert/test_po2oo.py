@@ -171,7 +171,7 @@ msgstr ""
             inputfile, outputfile, templatefile, targetlanguage="af-ZA"
         )
         assert (
-            br"\<ahelp  hid=\".\" \>Zeee 3DDDD-Settings toolbar controls properties of selected 3D objects.\</ahelp\>"
+            rb"\<ahelp  hid=\".\" \>Zeee 3DDDD-Settings toolbar controls properties of selected 3D objects.\</ahelp\>"
             in outputfile.getvalue()
         )
 

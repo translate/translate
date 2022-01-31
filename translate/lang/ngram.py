@@ -130,7 +130,7 @@ class NGram:
                 min = d
                 r = lang
 
-        if min > 0.8 * (nb_ngrams ** 2):
+        if min > 0.8 * (nb_ngrams**2):
             r = ""
         return r
 

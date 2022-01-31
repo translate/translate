@@ -126,7 +126,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
     TRAILING_WHITESPACE_RE = re.compile(r"(\s+)$")
 
     ENCODING_RE = re.compile(
-        br"""<meta.*
+        rb"""<meta.*
                                 content.*=.*?charset.*?=\s*?
                                 ([^\s]*)
                                 \s*?["']\s*?>

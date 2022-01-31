@@ -255,7 +255,7 @@ foo: "Hello \"World\"."
         assert store.units[0].source == 'Hello "World".'
         assert (
             bytes(store)
-            == br"""foo: "Hello \"World\"."
+            == rb"""foo: "Hello \"World\"."
 """
         )
 
@@ -272,7 +272,7 @@ foo: "Hello \n World."
         assert store.units[0].source == "Hello \n World."
         assert (
             bytes(store)
-            == br"""foo: "Hello \n World."
+            == rb"""foo: "Hello \n World."
 """
         )
 

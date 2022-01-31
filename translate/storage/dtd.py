@@ -565,7 +565,7 @@ class dtdfile(base.TranslationStore):
                     break
                 if lines[end].find(b"<!ENTITY") > -1:
                     foundentity = True
-                if foundentity and re.match(br"[\"']\s*>", lines[end]):
+                if foundentity and re.match(rb"[\"']\s*>", lines[end]):
                     end += 1
                     break
                 end += 1

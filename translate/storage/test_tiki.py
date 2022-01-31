@@ -30,7 +30,7 @@ class TestTikiUnit:
 class TestTikiStore:
     @staticmethod
     def test_parse_simple():
-        tikisource = br'"Top authors" => "Top autoren",'
+        tikisource = rb'"Top authors" => "Top autoren",'
         tikifile = tiki.TikiStore(tikisource)
         assert len(tikifile.units) == 1
         assert tikifile.units[0].source == "Top authors"
@@ -39,7 +39,7 @@ class TestTikiStore:
     @staticmethod
     def test_parse_encode():
         """Make sure these tiki special symbols come through correctly"""
-        tikisource = br'"test: |\n \r \t \\ \$ \"|" => "test: |\n \r \t \\ \$ \"|",'
+        tikisource = rb'"test: |\n \r \t \\ \$ \"|" => "test: |\n \r \t \\ \$ \"|",'
         tikifile = tiki.TikiStore(tikisource)
         assert tikifile.units[0].source == r"test: |\n \r \t \\ \$ \"|"
         assert tikifile.units[0].target == r"test: |\n \r \t \\ \$ \"|"
