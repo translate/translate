@@ -5,5 +5,5 @@ pytest==6.2.5
 pytest-cov==3.0.0
 pytest-xdist==2.5.0
 Sphinx==4.4.0
-twine==3.7.1
+twine==3.8.0
 virtualenv==20.13.0
