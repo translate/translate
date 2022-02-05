@@ -19,14 +19,13 @@ jobs:
       matrix:
         requirements: [latest]
         python-version:
-        - '3.6'
         - '3.7'
         - '3.8'
         - '3.9'
         - '3.10'
         include:
         - requirements: minimal
-          python-version: '3.6'
+          python-version: '3.7'
 
     steps:
     - uses: actions/checkout@v2.4.0

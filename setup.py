@@ -185,7 +185,6 @@ classifiers = [
     "Operating System :: Unix",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
@@ -596,7 +595,7 @@ def dosetup(name, version, packages, datafiles, scripts, ext_modules=[]):
     setup(
         name=name,
         version=version,
-        python_requires=">=3.6",
+        python_requires=">=3.7",
         license="GNU General Public License (GPL)",
         description=description,
         long_description=long_description,
