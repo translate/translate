@@ -103,3 +103,15 @@ GENERAL@2|Notes,"cable, motor, switch"
         assert store.units[0].source == "te\\nst"
         assert store.units[0].target == "ot\\nher"
         assert bytes(store) == content
+
+    def test_utf_8_detection(self):
+        content = (
+            """"location","source","target","id","fuzzy","context","translator_comments","developer_comments"\r\n"""
+            """"","Second","秒","","False","00029.00002","","# Filter Order|IDE_2ND_ORDER_FILTER"\r\n"""
+        )
+        store = self.StoreClass()
+        store.parse(content.encode())
+        assert len(store.units) == 1
+        assert store.units[0].source == "Second"
+        assert store.units[0].target == "秒"
+        assert bytes(store).decode() == content
