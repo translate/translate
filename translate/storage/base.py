@@ -23,6 +23,7 @@ import logging
 import pickle
 from collections import OrderedDict
 from io import BytesIO
+from typing import List, Optional, Tuple
 
 from translate.misc.multistring import multistring
 from translate.storage.placeables import StringElem, parse as rich_parse
@@ -781,7 +782,9 @@ class TranslationStore:
                 return {"encoding": encoding, "confidence": 1.0}
         return None
 
-    def detect_encoding(self, text, default_encodings=None):
+    def detect_encoding(
+        self, text: bytes, default_encodings: Optional[List[str]] = None
+    ) -> Tuple[str, str]:
         """
         Try to detect a file encoding from `text`, using either the chardet lib
         or by trying to decode the file.
@@ -789,13 +792,15 @@ class TranslationStore:
         if not default_encodings:
             default_encodings = ["utf-8"]
         try:
-            import chardet
+            from charset_normalizer import detect
         except ImportError:
             detected_encoding = self.fallback_detection(text)
         else:
-            # many false complaints with ellipse (…) (see bug 1825)
-            detected_encoding = chardet.detect(text.replace(b"\xe2\x80\xa6", b""))
-            if detected_encoding["confidence"] < 0.48:
+            detected_encoding = detect(text)
+            if (
+                detected_encoding["confidence"] is None
+                or detected_encoding["confidence"] < 0.48
+            ):
                 detected_encoding = None
             elif detected_encoding["encoding"] == "ascii":
                 detected_encoding["encoding"] = self.encoding
