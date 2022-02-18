@@ -457,17 +457,17 @@ class DialectGwt(DialectJavaUtf8):
 
     @classmethod
     def get_key_cldr_name(cls, key):
-        match = cls.plural_regex.match(key)
-        key = match.group(1)
+        match = cls.plural_regex.fullmatch(key)
+        basekey = match.group(1)
         variant = match.group(2)
-        if not variant:
+        if variant is None:
             variant = ""
 
-        variant = cls.gwt2cldr.get(variant)
-        # Some sanity checks
-        if not variant:
-            raise Exception(f'Key "{key}" variant "{variant}" is invalid')
-        return (key, variant)
+        try:
+            variant = cls.gwt2cldr[variant]
+        except KeyError:
+            return (key, "other")
+        return (basekey, variant)
 
     @classmethod
     def get_cldr_names_order(cls):
@@ -1097,7 +1097,9 @@ class propfile(base.TranslationStore):
                 self.addunit(unit)
                 continue
             (key, variant) = self.personality.get_key_cldr_name(unit.name)
+            print(f"fold: {key!r} {variant!r} < {unit.name!r}")
             if key not in plurals or plurals[key].hasplural(variant):
+                print(f"generate {key!r}")
                 # Generate fake unit for each keys (MUST use None as source)
                 new_unit = proppluralunit(None, self.personality.name)
                 new_unit.name = key
