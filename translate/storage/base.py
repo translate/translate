@@ -937,11 +937,16 @@ class UnitId:
         if text.startswith(cls.KEY_SEPARATOR):
             text = text[len(cls.KEY_SEPARATOR) :]
         for item in text.split(cls.KEY_SEPARATOR):
-            if "[" in item and item[-1] == "]":
-                item, pos = item[:-1].split("[")
-                if item:
-                    result.append(("key", item))
-                result.append(("index", int(pos)))
+            bracepos = item.find("[")
+            endbracepos = item.find("]")
+            if bracepos != -1 and endbracepos != -1:
+                if bracepos > 0:
+                    result.append(("key", item[:bracepos]))
+                    item = item[bracepos:]
+                result.extend(
+                    ("index", int(pos))
+                    for pos in item.replace("[", " ").replace("]", " ").split()
+                )
             else:
                 result.append(("key", item))
         return cls(result)

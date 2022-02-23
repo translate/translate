@@ -319,6 +319,36 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
 """
         assert bytes(store).decode() == expected
 
+    def test_add_index_nested(self):
+        store = self.StoreClass()
+        store.parse('{"foo":[["x", "y"]]}')
+
+        assert len(store.units) == 2
+        assert store.units[0].getid() == ".foo[0][0]"
+        assert store.units[1].getid() == ".foo[0][1]"
+
+        unit = self.StoreClass.UnitClass("source")
+        unit.setid("values[2][0]")
+        store.addunit(unit)
+
+        expected = """{
+    "foo": [
+        [
+            "x",
+            "y"
+        ]
+    ],
+    "values": [
+        [],
+        [],
+        [
+            "source"
+        ]
+    ]
+}
+"""
+        assert bytes(store).decode() == expected
+
     def test_list_to_dict(self):
         data = """{
     "userInfoPage": [
