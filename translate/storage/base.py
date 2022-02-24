@@ -980,6 +980,9 @@ class DictUnit(TranslationUnit):
             if not use_list and isinstance(target[key], list):
                 # Convert list to dict if needed
                 target[key] = dict(enumerate(target[key]))
+            # Handle placeholders
+            if target[key] is None:
+                target[key] = default.copy()
             target = target[key]
         if override_key:
             element, key = "key", override_key
@@ -993,6 +996,9 @@ class DictUnit(TranslationUnit):
         elif element == "index":
             if len(target) <= key:
                 if not unset:
+                    # Add placeholders to the list
+                    while len(target) < key:
+                        target.append(None)
                     target.append(value)
             else:
                 if unset:
