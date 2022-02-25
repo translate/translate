@@ -52,14 +52,14 @@ done generically like this:
 
 .. code-block:: console
 
-    $ git log $previous_version..HEAD > docs/releases/$version.rst
+    $ git log $(git describe --tags --abbrev=0)..HEAD > docs/releases/$version.rst
 
 
 Or a more specific example:
 
 .. code-block:: console
 
-    $ git log 1.10.0..HEAD > docs/releases/1.11.0-rc1.rst
+    $ git log $(git describe --tags --abbrev=0)..HEAD > docs/releases/3.6.0.rst
 
 
 Edit this file.  You can use the commits as a guide to build up the release
@@ -86,7 +86,7 @@ We create a list of contributors using this command:
 
 .. code-block:: console
 
-    $ git log 1.10.0..HEAD --format='%aN, ' | awk '{arr[$0]++} END{for (i in arr){print arr[i], i;}}' | sort -rn | cut -d\  -f2-
+    $ git log $(git describe --tags --abbrev=0)..HEAD --format='%aN, ' | awk '{arr[$0]++} END{for (i in arr){print arr[i], i;}}' | sort -rn | cut -d\  -f2-
 
 
 .. _releasing#up-version-numbers:

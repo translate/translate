@@ -1,0 +1,48 @@
+Translate Toolkit 3.6.0
+***********************
+
+*Released on 25 February 2022*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- PO
+
+  - Fixed line wrapping with full width characters
+
+- JSON
+
+  - Improved nested files serialization and parsing
+
+- Properties
+
+  - Improved handling of [] in gwt
+
+- XLIFF
+
+  - Improved element cleanup on update
+
+- Base
+    
+  - Switch to charset-normalizer from chardet for more reliable detection
+
+General
+-------
+
+- Code cleanups
+- Dropped support for Python 3.6
+- Added support for Python 3.10
+- Cleanup of external links in the documentation
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař, Nick Schonning
+
