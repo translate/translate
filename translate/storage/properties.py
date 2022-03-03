@@ -1097,9 +1097,7 @@ class propfile(base.TranslationStore):
                 self.addunit(unit)
                 continue
             (key, variant) = self.personality.get_key_cldr_name(unit.name)
-            print(f"fold: {key!r} {variant!r} < {unit.name!r}")
             if key not in plurals or plurals[key].hasplural(variant):
-                print(f"generate {key!r}")
                 # Generate fake unit for each keys (MUST use None as source)
                 new_unit = proppluralunit(None, self.personality.name)
                 new_unit.name = key
