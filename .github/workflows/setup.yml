@@ -41,6 +41,7 @@ jobs:
         . ./test-ttk-release/bin/activate
         pip install dist/translate-toolkit-*.tar.gz
         moz2po --help
+        python ./test-ttk-release/lib/python*/site-packages/translate/lang/identify.py README.rst
     - name: Run build
       run: coverage run ./setup.py build
     - name: Run setup
