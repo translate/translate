@@ -150,3 +150,31 @@ msgstr "Zkopirovano"
             rc_result = rcfile(handle)
         assert len(rc_result.units) == 1
         assert rc_result.units[0].target == "Zkopirovano"
+
+    def test_convert_double_string(self):
+        self.create_testfile(
+            "simple.rc",
+            """
+STRINGTABLE
+BEGIN
+    IDS_COPIED              "Copied"
+    IDS_XCOPIED             "Copied"
+END
+""",
+        )
+        self.create_testfile(
+            "simple.po",
+            """
+#: STRINGTABLE.IDS_COPIED
+msgid "Copied"
+msgstr "Zkopirovano"
+""",
+        )
+        self.run_command(
+            template="simple.rc", i="simple.po", o="output.rc", l="LANG_CZECH"
+        )
+        with self.open_testfile("output.rc") as handle:
+            rc_result = rcfile(handle)
+        assert len(rc_result.units) == 2
+        assert rc_result.units[0].target == "Zkopirovano"
+        assert rc_result.units[1].target == "Copied"
