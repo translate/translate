@@ -163,13 +163,12 @@ class rerc:
             name = rc.generate_stringtable_name(c0[0])
             msgid = "".join(cn[1:-1] for cn in c[1:])
 
+            tmp = c[1:]
             if msgid in self.inputdict:
                 if name in self.inputdict[msgid]:
                     tmp = ['"' + self.inputdict[msgid][name] + '"']
                 elif EMPTY_LOCATION in self.inputdict[msgid]:
                     tmp = ['"' + self.inputdict[msgid][EMPTY_LOCATION] + '"']
-            else:
-                tmp = c[1:]
 
             for part in tmp[:-1]:
                 yield part
