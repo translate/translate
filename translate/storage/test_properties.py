@@ -327,23 +327,39 @@ class TestProp(test_monolingual.TestMonolingualStore):
     def test_whitespace_handling(self):
         """check that we remove extra whitespace around property"""
         whitespaces = (
-            ("key = value", "key", "value"),  # Standard for baseline
-            (" key =  value", "key", "value"),  # Extra \s before key and value
             (
+                # Standard for baseline
+                "key = value",
+                "key",
+                "value",
+                "key=value\n",
+            ),
+            (
+                # Extra \s before key and value
+                " key =  value",
+                "key",
+                "value",
+                "key=value\n",
+            ),
+            (
+                # extra space at start and end of key
                 "\\ key\\ = value",
                 "\\ key\\ ",
                 "value",
-            ),  # extra space at start and end of key
+                "\\ key\\ =value\n",
+            ),
             (
+                # extra space at start end end of value
                 "key = \\ value ",
                 "key",
                 " value ",
-            ),  # extra space at start end end of value
+                "key=\\ value \n",
+            ),
         )
-        for propsource, key, value in whitespaces:
+        for propsource, key, value, expected in whitespaces:
             propfile = self.propparse(propsource)
             propunit = propfile.units[0]
-            print(repr(propsource), repr(propunit.name), repr(propunit.source))
+            print(f"{propsource!r}, {propunit.name!r}, {propunit.source!r}")
             assert propunit.name == key
             assert propunit.source == value
             # let's reparse the output to ensure good serialisation->parsing roundtrip:
@@ -351,6 +367,8 @@ class TestProp(test_monolingual.TestMonolingualStore):
             propunit = propfile.units[0]
             assert propunit.name == key
             assert propunit.source == value
+            propunit.target = value
+            assert bytes(propfile).decode() == expected
 
     def test_key_value_delimiters_simple(self):
         """
