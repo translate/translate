@@ -6,4 +6,4 @@ pytest-cov==3.0.0
 pytest-xdist==2.5.0
 Sphinx==4.5.0
 twine==4.0.0
-virtualenv==20.14.0
+virtualenv==20.14.1
