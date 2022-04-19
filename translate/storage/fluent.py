@@ -85,6 +85,7 @@ class FluentUnit(base.TranslationUnit):
 
     def isheader(self):
         return self._type in [
+            ast.Comment,
             ast.GroupComment,
             ast.ResourceComment,
         ]
