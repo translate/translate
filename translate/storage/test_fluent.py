@@ -138,7 +138,7 @@ creating-page-wait-message = Saving your shot…
 
         # ((istranslatable, isheader), comment.startswith)
         expected_units = [
-            ((False, False), "This Source Code"),
+            ((False, True), "This Source Code"),
             ((False, True), "Localization for Server-side"),
             ((False, True), "Global phrases shared across pages"),
             ((True, False), ""),
