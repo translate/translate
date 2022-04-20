@@ -422,6 +422,48 @@ location_batch:
 """
         )
 
+    def test_remove(self):
+        data = """test:
+  1:
+    one: one
+    two: two
+  2:
+    three: three
+    four: four
+"""
+        store = self.StoreClass()
+        store.parse(data)
+        assert len(store.units) == 4
+        assert bytes(store).decode() == data
+        store.removeunit(store.units[0])
+        assert (
+            bytes(store).decode()
+            == """test:
+  1:
+    two: two
+  2:
+    three: three
+    four: four
+"""
+        )
+        store.removeunit(store.units[0])
+        assert (
+            bytes(store).decode()
+            == """test:
+  2:
+    three: three
+    four: four
+"""
+        )
+        store.removeunit(store.units[-1])
+        assert (
+            bytes(store).decode()
+            == """test:
+  2:
+    three: three
+"""
+        )
+
 
 class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
     StoreClass = yaml.RubyYAMLFile
