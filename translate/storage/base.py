@@ -961,10 +961,11 @@ class DictUnit(TranslationUnit):
         self._unitid = None
 
     def storevalue(self, output, value, override_key=None, unset=False):
-        target = output
+        parent = target = output
         if self._unitid is None:
             self._unitid = self.IdClass.from_string(self._id)
         parts = self._unitid.parts
+        key = None
         for pos, part in enumerate(parts[:-1]):
             element, key = part
             use_list = parts[pos + 1][0] == "index"
@@ -983,30 +984,34 @@ class DictUnit(TranslationUnit):
             # Handle placeholders
             if target[key] is None:
                 target[key] = default.copy()
+            parent = target
             target = target[key]
         if override_key:
-            element, key = "key", override_key
+            child_element, child_key = "key", override_key
         else:
-            element, key = parts[-1]
-        if element == "key":
+            child_element, child_key = parts[-1]
+        if child_element == "key":
             if unset:
-                del target[key]
+                del target[child_key]
+                # Remove empty dict from parent
+                if not target and key:
+                    del parent[key]
             else:
-                target[key] = value
-        elif element == "index":
-            if len(target) <= key:
+                target[child_key] = value
+        elif child_element == "index":
+            if len(target) <= child_key:
                 if not unset:
                     # Add placeholders to the list
-                    while len(target) < key:
+                    while len(target) < child_key:
                         target.append(None)
                     target.append(value)
             else:
                 if unset:
-                    del target[key]
+                    del target[child_key]
                 else:
-                    target[key] = value
+                    target[child_key] = value
         else:
-            raise ValueError(f"Unsupported element: {element}")
+            raise ValueError(f"Unsupported element: {child_element}")
 
     def storevalues(self, output):
         self.storevalue(output, self.value)
