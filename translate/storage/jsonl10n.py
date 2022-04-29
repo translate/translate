@@ -205,12 +205,11 @@ class JsonFile(base.DictStore):
                     item, stop, prev + [("index", i)], i, name_node, data
                 )
         # apply filter
-        elif (
+        elif prev.parts and (
             stop is None
             or (isinstance(last_node, dict) and name_node in stop)
             or (isinstance(last_node, list) and name_last_node in stop)
         ):
-
             unit = self.UnitClass(data, name_node)
             unit.set_unitid(prev)
             yield unit

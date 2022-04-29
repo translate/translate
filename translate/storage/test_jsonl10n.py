@@ -235,6 +235,24 @@ class TestJSONResourceStore(test_monolingual.TestMonolingualStore):
         assert str(unit) == expected.strip()
         assert bytes(store).decode() == expected
 
+    def test_add_blank(self):
+        expected = """{
+    "simple.key": "source"
+}
+"""
+        store = self.StoreClass()
+        store.parse("true")
+
+        unit = self.StoreClass.UnitClass(
+            "source",
+        )
+        assert str(unit) != expected.strip()
+        unit.setid("simple.key")
+        store.addunit(unit)
+
+        assert str(unit) == expected.strip()
+        assert bytes(store).decode() == expected
+
 
 class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
     StoreClass = jsonl10n.JsonNestedFile
