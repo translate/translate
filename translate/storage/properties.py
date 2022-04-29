@@ -538,7 +538,7 @@ class DialectStrings(Dialect):
 
     @staticmethod
     def encode(string, encoding=None):
-        return string.replace("\n", r"\n").replace("\t", r"\t")
+        return string.replace("\\", "\\\\").replace("\n", r"\n").replace("\t", r"\t")
 
     @staticmethod
     def is_line_continuation(line):
