@@ -587,6 +587,14 @@ key=value
         # - every line ends with ";"
         assert bytes(propfile).strip(b"\n\x00") == propsource.strip(b"\n\x00")
 
+    def test_mac_strings_double_backslashes(self):
+        """test that double backslashes are encoded correctly"""
+        propsource = '"somekey" = "value with \\\\ sign";'.encode("utf-16")
+        propfile = self.propparse(propsource, personality="strings")
+        propunit = propfile.units[0]
+        assert propunit.name == "somekey"
+        assert propunit.value == "value with \\\\ sign"
+
     def test_override_encoding(self):
         """test that we can override the encoding of a properties file"""
         propsource = "key = value".encode("cp1252")
