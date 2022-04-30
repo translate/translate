@@ -589,12 +589,12 @@ key=value
 
     def test_mac_strings_double_backslashes(self):
         """test that double backslashes are encoded correctly"""
-        propsource = '"somekey" = "value with \\\\ sign";'.encode("utf-16")
+        propsource = r""""key" = "value with \\ signs but also a \n line break";""".encode("utf-16")
         propfile = self.propparse(propsource, personality="strings")
         propunit = propfile.units[0]
-        assert propunit.name == "somekey"
-        assert propunit.value == "value with \\\\ sign"
-        assert bytes(propfile).strip(b"\n\x00") == propsource.strip(b"\n\x00")
+        assert propunit.name == "key"
+        assert propunit.source == "value with \\ signs but also a \n line break"
+        assert propfile.personality.encode(propunit.source) == r"value with \\ signs but also a \n line break"
 
     def test_override_encoding(self):
         """test that we can override the encoding of a properties file"""
