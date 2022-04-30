@@ -594,6 +594,7 @@ key=value
         propunit = propfile.units[0]
         assert propunit.name == "somekey"
         assert propunit.value == "value with \\\\ sign"
+        assert bytes(propfile).strip(b"\n\x00") == propsource.strip(b"\n\x00")
 
     def test_override_encoding(self):
         """test that we can override the encoding of a properties file"""
