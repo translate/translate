@@ -48,6 +48,24 @@ STRINGTABLE
 BEGIN
 ID_T_1 "Hello"
 END
+
+IDR_MAINFRAME MENU
+BEGIN
+   POPUP "&File"
+   BEGIN
+       MENUITEM "&New\tCrtl+N",                ID_FILE_NEW
+       MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
+       MENUITEM "&Exit",                       ID_FILE_CLOSE
+   END
+   POPUP "&View"
+   BEGIN
+       MENUITEM "&Toolbar",                    ID_VIEW_STATUS_BAR
+   END
+   POPUP "&Help"
+   BEGIN
+       MENUITEM "&About...",                   ID_APP_ABOUT
+   END
+END
 """
 
 
@@ -68,10 +86,14 @@ class TestRC2POCommand(test_convert.TestConvertCommand):
         self.create_testfile("simple.rc", RC_SOURCE)
         self.run_command(i="simple.rc", o="simple.po")
         po_result = pofile(self.open_testfile("simple.po"))
-        assert len(po_result.units) == 15
+        assert len(po_result.units) == 23
         # first unit is PO file header
         assert po_result.units[1].source == "License dialog"
         assert po_result.units[11].source == "&Debug"
         assert po_result.units[12].source == "&Memory usage"
         assert po_result.units[13].source == "&Walk data heap"
         assert po_result.units[14].source == "Hello"
+        assert po_result.units[15].source == "&File"
+        assert po_result.units[15].getlocations() == [
+            "MENU.IDR_MAINFRAME.POPUP.CAPTION"
+        ]
