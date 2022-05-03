@@ -178,3 +178,43 @@ msgstr "Zkopirovano"
         assert len(rc_result.units) == 2
         assert rc_result.units[0].target == "Zkopirovano"
         assert rc_result.units[1].target == "Copied"
+
+    def test_convert_popup(self):
+        self.create_testfile(
+            "simple.rc",
+            """
+IDR_MAINFRAME MENU
+BEGIN
+   POPUP "&File"
+   BEGIN
+       MENUITEM "&New\tCrtl+N",                ID_FILE_NEW
+       MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
+       MENUITEM "&Exit",                       ID_FILE_CLOSE
+   END
+   POPUP "&View"
+   BEGIN
+       MENUITEM "&Toolbar",                    ID_VIEW_STATUS_BAR
+   END
+   POPUP "&Help"
+   BEGIN
+       MENUITEM "&About...",                   ID_APP_ABOUT
+   END
+END
+""",
+        )
+        self.create_testfile(
+            "simple.po",
+            """
+#: MENU.IDR_MAINFRAME.POPUP.CAPTION
+msgid "&Help"
+msgstr "&Pomoc"
+""",
+        )
+        self.run_command(
+            template="simple.rc", i="simple.po", o="output.rc", l="LANG_CZECH"
+        )
+        with self.open_testfile("output.rc") as handle:
+            rc_result = rcfile(handle)
+        assert len(rc_result.units) == 8
+        assert rc_result.units[0].target == "&File"
+        assert rc_result.units[6].target == "&Pomoc"
