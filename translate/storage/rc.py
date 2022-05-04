@@ -28,6 +28,7 @@
 import re
 
 from pyparsing import (
+    AtLineStart,
     Combine,
     Forward,
     Group,
@@ -153,7 +154,7 @@ def rc_statement():
 
     comments = c_style_comment ^ one_line_comment
 
-    precompiler = Word("#", alphanums) + rest_of_line
+    precompiler = AtLineStart(Word("#", alphanums) + rest_of_line)
 
     language_definition = (
         "LANGUAGE"
@@ -361,6 +362,7 @@ class rcfile(base.TranslationStore):
             if statement[0] == "#pragma" and "code_page" in statement[1]:
                 expected_encoding = parse_encoding_pragma(statement[1])
                 if expected_encoding and expected_encoding != self.encoding:
+                    self.units = []
                     self.parse(rcsrc, expected_encoding)
                     return
             if statement.language:
