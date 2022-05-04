@@ -498,3 +498,28 @@ END
         assert rc_file.units[0].source == "Copied"
         assert rc_file.units[1].source == "Other"
         assert rc_file.units[2].source == "Next"
+
+    def test_textinclude_appstudio(self):
+
+        rc_source = """
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+
+STRINGTABLE
+BEGIN
+    IDS_COPIED              "Copied"
+END
+
+1 TEXTINCLUDE
+BEGIN
+    "#pragma code_page(1252)\r\n"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_OTHER               "Other"
+END
+"""
+        rc_file = self.source_parse(rc_source, encoding="utf-16")
+        assert len(rc_file.units) == 2
+        assert rc_file.units[0].source == "Copied"
+        assert rc_file.units[1].source == "Other"
