@@ -1,7 +1,7 @@
 Translate Toolkit 3.6.1
 ***********************
 
-*Released on 20 April 2022*
+*Released on 10 May 2022*
 
 This release contains improvements and bug fixes.
 
@@ -11,27 +11,26 @@ Changes
 Formats and Converters
 ----------------------
 
-- Fluent
+- JSON
 
-  - Fixed comments parsing
+  - Avoid parsing root node
+   
+- YAML
+
+  - Improve strings removal
 
 - Properties
 
-  - Improved whitespace handling
-  - Removed debugging code
+  - Fixing backslash problems for iOS strings
 
 - RC
 
-  - Fixed handling of identical source strings with different ID
+  - Avoid parsing #pragma statements from inside strings
 
-General
--------
-
-- GitHub actions cleanups
 
 Contributors
 ============
 
 This release was made possible by the following people:
 
-Michal Čihař, neilnaveen
+Michal Čihař, Nathan Fallet
