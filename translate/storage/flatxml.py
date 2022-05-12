@@ -27,17 +27,21 @@ from translate.storage import base
 class FlatXMLUnit(base.TranslationUnit):
     """A single term in the XML file."""
 
+    DEFAULT_NAMESPACE = None
+    DEFAULT_ELEMENT_NAME = "str"
+    DEFAULT_ATTRIBUTE_NAME = "key"
+
     def __init__(
         self,
         source=None,
         namespace=None,
-        element_name="str",
-        attribute_name="key",
+        element_name=None,
+        attribute_name=None,
         **kwargs
     ):
-        self.namespace = namespace
-        self.element_name = element_name
-        self.attribute_name = attribute_name
+        self.namespace = namespace or self.DEFAULT_NAMESPACE
+        self.element_name = element_name or self.DEFAULT_ELEMENT_NAME
+        self.attribute_name = attribute_name or self.DEFAULT_ATTRIBUTE_NAME
         self.xmlelement = etree.Element(self.namespaced(self.element_name))
         super().__init__(source, **kwargs)
 
@@ -102,6 +106,10 @@ class FlatXMLUnit(base.TranslationUnit):
         return unit
 
 
+class NOTPROVIDED:
+    pass
+
+
 class FlatXMLFile(base.TranslationStore):
     """Class representing a flat XML file store"""
 
@@ -110,25 +118,37 @@ class FlatXMLFile(base.TranslationStore):
     Mimetypes = ["text/xml"]
     Extensions = ["xml"]
 
+    DEFAULT_ROOT_NAME = "root"
+    DEFAULT_VALUE_NAME = "str"
+    DEFAULT_KEY_NAME = "key"
+    DEFAULT_NAMESPACE = None
+    DEFAULT_INDENT_CHARS = "  "
+    DEFAULT_TRAILING_EOL = True
+    XML_DECLARATION = True
+
     def __init__(
         self,
         inputfile=None,
         sourcelanguage="en",
         targetlanguage=None,
-        root_name="root",
-        value_name="str",
-        key_name="key",
+        root_name=None,
+        value_name=None,
+        key_name=None,
         namespace=None,
-        indent_chars="  ",
-        trailing_eol=True,
+        indent_chars=NOTPROVIDED,
+        trailing_eol=None,
         **kwargs
     ):
-        self.root_name = root_name
-        self.value_name = value_name
-        self.key_name = key_name
-        self.namespace = namespace
-        self.indent_chars = indent_chars
-        self.trailing_eol = trailing_eol
+        self.root_name = root_name or self.DEFAULT_ROOT_NAME
+        self.value_name = value_name or self.DEFAULT_VALUE_NAME
+        self.key_name = key_name or self.DEFAULT_KEY_NAME
+        self.namespace = namespace or self.DEFAULT_NAMESPACE
+        self.indent_chars = (
+            self.DEFAULT_INDENT_CHARS if indent_chars is NOTPROVIDED else indent_chars
+        )
+        self.trailing_eol = (
+            self.DEFAULT_TRAILING_EOL if trailing_eol is None else trailing_eol
+        )
 
         super().__init__(**kwargs)
         if inputfile is not None:
@@ -168,7 +188,9 @@ class FlatXMLFile(base.TranslationStore):
 
     def serialize(self, out=None):
         self.reindent()
-        self.document.write(out, xml_declaration=True, encoding=self.encoding)
+        self.document.write(
+            out, xml_declaration=self.XML_DECLARATION, encoding=self.encoding
+        )
 
     def make_empty_file(self):
         """Initializes the backing document to be an empty root element."""
