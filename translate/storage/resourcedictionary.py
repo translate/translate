@@ -33,7 +33,7 @@ class ResourceDictionaryFile(flatxml.FlatXMLFile):
 
     UnitClass = ResourceDictionaryUnit
     Name = "ResourceDictionary File"
-    Mimetypes = ["text/microsoft-resourcedictionary"]
+    Mimetypes = ["application/xaml+xml"]
     Extensions = ["xaml"]
 
     DEFAULT_ROOT_NAME = (
