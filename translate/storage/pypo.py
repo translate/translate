@@ -559,10 +559,7 @@ class pounit(pocommon.pounit):
 
     def _msgstrlen(self):
         if isinstance(self.msgstr, dict):
-            combinedstr = self.newline.join(
-                filter(None, [unquotefrompo(msgstr) for msgstr in self.msgstr.values()])
-            )
-            return len(combinedstr)
+            return sum(len(unquotefrompo(msgstr)) for msgstr in self.msgstr.values())
         return len(unquotefrompo(self.msgstr))
 
     def merge(self, otherpo, overwrite=False, comments=True, authoritative=False):
