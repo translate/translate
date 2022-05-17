@@ -292,11 +292,14 @@ class csvfile(base.TranslationStore):
             self.parse(csvsrc)
 
     def parse(self, csvsrc, sample_length=1024):
-        text, encoding = self.detect_encoding(
-            csvsrc, default_encodings=["utf-8", "utf-16"]
-        )
-        # FIXME: raise parse error if encoding detection fails?
-        self.encoding = encoding or "utf-8"
+        if self._encoding == "auto":
+            text, encoding = self.detect_encoding(
+                csvsrc, default_encodings=["utf-8", "utf-16"]
+            )
+            # FIXME: raise parse error if encoding detection fails?
+            self.encoding = encoding or "utf-8"
+        else:
+            text = csvsrc.decode(self.encoding)
 
         sniffer = csv.Sniffer()
         if sample_length:

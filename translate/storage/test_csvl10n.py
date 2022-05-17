@@ -1,5 +1,7 @@
 from io import BytesIO
 
+import pytest
+
 from translate.storage import csvl10n, test_base
 
 
@@ -10,9 +12,9 @@ class TestCSVUnit(test_base.TestTranslationUnit):
 class TestCSV(test_base.TestTranslationStore):
     StoreClass = csvl10n.csvfile
 
-    def parse_store(self, source):
+    def parse_store(self, source, **kwargs):
         """Helper that parses source without requiring files."""
-        return self.StoreClass(BytesIO(source))
+        return self.StoreClass(BytesIO(source), **kwargs)
 
     def test_singlequoting(self):
         """Tests round trip on single quoting at start of string"""
@@ -115,3 +117,20 @@ GENERAL@2|Notes,"cable, motor, switch"
         assert store.units[0].source == "Second"
         assert store.units[0].target == "秒"
         assert bytes(store).decode() == content
+
+    def test_encoding(self):
+        content = "foo.c:1;test;zkouška sirén"
+        store = self.parse_store(content.encode("utf-8"))
+        assert len(store.units) == 1
+        assert store.units[0].source == "test"
+        assert store.units[0].target == "zkouška sirén"
+        store = self.parse_store(content.encode("utf-8"), encoding="utf-8")
+        assert len(store.units) == 1
+        assert store.units[0].source == "test"
+        assert store.units[0].target == "zkouška sirén"
+        store = self.parse_store(content.encode("iso-8859-2"), encoding="iso-8859-2")
+        assert len(store.units) == 1
+        assert store.units[0].source == "test"
+        assert store.units[0].target == "zkouška sirén"
+        with pytest.raises(UnicodeDecodeError):
+            store = self.parse_store(content.encode("iso-8859-2"), encoding="utf-8")
