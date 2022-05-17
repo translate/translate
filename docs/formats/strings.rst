@@ -11,6 +11,8 @@ localization, such as for the iPhone, iPod, and OSX. They are somewhat similar
 to Java properties, and therefore :doc:`prop2po </commands/prop2po>` and
 po2prop are used for conversion.
 
+This format is standardized as PWG 5100.13 and used on NeXTSTEP/OpenSTEP as well.
+
 .. _strings#references:
 
 References
