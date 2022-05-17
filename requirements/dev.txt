@@ -1,5 +1,6 @@
 -r optional.txt
 
+build==0.7.0
 pip==22.1
 pre-commit==2.19.0
 pytest==7.1.2
