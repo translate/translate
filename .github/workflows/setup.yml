@@ -38,13 +38,20 @@ jobs:
       run: make build
     - name: Twine check
       run: twine check dist/*
-    - name: Install test
+    - name: Install test (source)
       run: |
-        virtualenv test-ttk-release
-        . ./test-ttk-release/bin/activate
+        virtualenv test-ttk-release-src
+        . ./test-ttk-release-src/bin/activate
         pip install dist/translate-toolkit-*.tar.gz
         moz2po --help
-        python ./test-ttk-release/lib/python*/site-packages/translate/lang/identify.py README.rst
+        python ./test-ttk-release-src/lib/python*/site-packages/translate/lang/identify.py README.rst
+    - name: Install test (wheel)
+      run: |
+        virtualenv test-ttk-release-whl
+        . ./test-ttk-release-whl/bin/activate
+        pip install dist/translate_toolkit*.whl
+        moz2po --help
+        python ./test-ttk-release-whl/lib/python*/site-packages/translate/lang/identify.py README.rst
     - name: Run build
       run: coverage run ./setup.py build
     - name: Run setup

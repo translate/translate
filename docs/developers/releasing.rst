@@ -260,7 +260,7 @@ Run the following to publish the package on PyPI:
 .. code-block:: console
 
     $ workon build-ttk-release
-    (build-ttk-release)$ twine upload dist/translate-toolkit-*
+    (build-ttk-release)$ twine upload dist/translate*
     (build-ttk-release)$ deactivate
     $ rmvirtualenv build-ttk-release
 
