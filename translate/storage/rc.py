@@ -308,7 +308,7 @@ class rcfile(base.TranslationStore):
     """This class represents a .rc file, made up of rcunits."""
 
     UnitClass = rcunit
-    default_encoding = "cp1252"
+    default_encoding = "auto"
 
     def __init__(self, inputfile=None, lang=None, sublang=None, **kwargs):
         """Construct an rcfile, optionally reading in from inputfile."""
@@ -319,7 +319,7 @@ class rcfile(base.TranslationStore):
         if inputfile is not None:
             rcsrc = inputfile.read()
             inputfile.close()
-            self.parse(rcsrc)
+            self.parse(rcsrc, self.encoding)
 
     def add_popup_units(self, pre_name, popup):
         """Transverses the popup tree making new units as needed."""
@@ -361,7 +361,7 @@ class rcfile(base.TranslationStore):
             decoded = rcsrc.decode(self.encoding)
         else:
             decoded, self.encoding = self.detect_encoding(
-                rcsrc, default_encodings=[self.default_encoding]
+                rcsrc, default_encodings=["cp1252"]
             )
 
         decoded = decoded.replace("\r", "")
