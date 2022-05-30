@@ -75,6 +75,18 @@ def extract_text(values):
     return "".join(result)
 
 
+def extract_id(values):
+    for value in values:
+        if isinstance(value, str) and value.startswith('"'):
+            continue
+        else:
+            if isinstance(value, str):
+                return value
+            break
+
+    return "UNKNOWN_ID"
+
+
 def escape_to_rc(string):
     """Escape a given Python string into a valid .rc string."""
     rcstring = re.sub("\\\\", "\\\\\\\\", string)
@@ -325,7 +337,7 @@ class rcfile(base.TranslationStore):
                     if newtext:
                         newunit = rcunit(newtext)
                         newunit.name = generate_menuitem_name(
-                            pre_name, element.block_type, element.values_[1]
+                            pre_name, element.block_type, extract_id(element.values_)
                         )
                         newunit.match = element
                         self.addunit(newunit)
@@ -420,7 +432,7 @@ class rcfile(base.TranslationStore):
                                     statement.block_type,
                                     statement.block_id[0],
                                     control.id_control[0],
-                                    control.values_[1],
+                                    extract_id(control.values_),
                                 )
                                 newunit.match = control
                                 self.addunit(newunit)

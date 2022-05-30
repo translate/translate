@@ -170,7 +170,7 @@ BEGIN
     PUSHBUTTON      "See license",IDC_LICENCIA,10,162,85,15
     RTEXT           "If you don't have internet, please use magic.",IDC_STATIC,23,105,120,18
     ICON            IDR_MAINFRAME,IDC_STATIC,44,74,20,20
-    CTEXT           "Use your finger to activate the program.",IDC_ACTIVADA,17,50,175,17
+    CTEXT           "Use your finger to" " activate the program.",IDC_ACTIVADA,17,50,175,17
     ICON            IDR_MAINFRAME1,IDC_STATIC6,18,19,20,20
 END
 """
