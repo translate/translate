@@ -58,6 +58,9 @@ def escape_to_python(string):
     pystring = re.sub(
         "\\\\n", "\n", pystring
     )  # Convert escaped newline to a real newline
+    pystring = re.sub(
+        "\\\\r", "\r", pystring
+    )  # Convert escaped carriage-return to a real carriage-return
     pystring = re.sub("\\\\t", "\t", pystring)  # Convert escape tab to a real tab
     pystring = re.sub(
         "\\\\\\\\", "\\\\", pystring
@@ -92,6 +95,7 @@ def escape_to_rc(string):
     rcstring = re.sub("\\\\", "\\\\\\\\", string)
     rcstring = re.sub("\t", "\\\\t", rcstring)
     rcstring = re.sub("\n", "\\\\n", rcstring)
+    rcstring = re.sub("\r", "\\\\r", rcstring)
     return rcstring
 
 
