@@ -9,5 +9,5 @@ pytest-xdist==2.5.0
 setuptools==62.3.2
 setuptools-scm==6.4.2
 Sphinx==5.0.0
-twine==4.0.0
+twine==4.0.1
 virtualenv==20.14.1
