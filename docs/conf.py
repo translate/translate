@@ -212,9 +212,9 @@ intersphinx_mapping = {
 
 extlinks = {
     # :role: (URL, prefix)
-    "issue": ("https://github.com/translate/translate/issues/%s", "issue "),
-    "man": ("https://linux.die.net/man/1/%s", ""),
-    "wp": ("https://en.wikipedia.org/wiki/%s", ""),
+    "issue": ("https://github.com/translate/translate/issues/%s", "issue %s"),
+    "man": ("https://linux.die.net/man/1/%s", "%s"),
+    "wp": ("https://en.wikipedia.org/wiki/%s", "%s"),
 }
 
 # -- Options for Linkcheck -------------------------------------------------
