@@ -189,7 +189,7 @@ def rc_statement():
         join_string=" ",
     )
 
-    combined_constants = delimited_list(constant, "|")
+    combined_constants = delimited_list(constant, "|", min=2)
 
     concatenated_string = OneOrMore(quoted_string)
 
