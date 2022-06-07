@@ -523,3 +523,22 @@ END
         assert len(rc_file.units) == 2
         assert rc_file.units[0].source == "Copied"
         assert rc_file.units[1].source == "Other"
+
+    def test_id_whitespace(self):
+        rc_source = """
+IDD_DIALOG DIALOG 0, 0, 340, 180
+CAPTION "Caption"
+BEGIN
+    LTEXT           "Right",IDC_STATIC_HEADER,7,0,258,8,NOT WS_GROUP
+    LTEXT           "Wrong",IDC_STATIC_HEADER2
+                    ,7,0,258,8,NOT WS_GROUP
+END
+"""
+        rc_file = self.source_parse(rc_source, encoding="utf-16")
+        assert len(rc_file.units) == 3
+        assert rc_file.units[0].source == "Caption"
+        assert rc_file.units[0].name == "DIALOG.IDD_DIALOG.CAPTION"
+        assert rc_file.units[1].source == "Right"
+        assert rc_file.units[1].name == "DIALOG.IDD_DIALOG.LTEXT.IDC_STATIC_HEADER"
+        assert rc_file.units[2].source == "Wrong"
+        assert rc_file.units[2].name == "DIALOG.IDD_DIALOG.LTEXT.IDC_STATIC_HEADER2"
