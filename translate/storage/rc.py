@@ -234,7 +234,9 @@ def rc_statement():
         Keyword("POPUP")("block_type")
         + Optional(quoted_string("caption"))
         + block_start
-        + ZeroOrMore(Group(menu_item | popup_block), stop_on=block_end)("elements")
+        + ZeroOrMore(Group(menu_item | popup_block | comments), stop_on=block_end)(
+            "elements"
+        )
         + block_end
     )("popups*")
 
@@ -243,7 +245,7 @@ def rc_statement():
         + Keyword("MENU")("block_type")
         + block_options
         + block_start
-        + ZeroOrMore(popup_block, stop_on=block_end)
+        + ZeroOrMore(popup_block | comments, stop_on=block_end)
         + block_end
     )
 

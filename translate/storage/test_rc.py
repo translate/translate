@@ -542,3 +542,25 @@ END
         assert rc_file.units[1].name == "DIALOG.IDD_DIALOG.LTEXT.IDC_STATIC_HEADER"
         assert rc_file.units[2].source == "Wrong"
         assert rc_file.units[2].name == "DIALOG.IDD_DIALOG.LTEXT.IDC_STATIC_HEADER2"
+
+    def test_menu_comment(self):
+        rc_source = """
+IDR_MAINFRAME MENU
+BEGIN
+  POPUP "&File"
+  BEGIN
+    //MENUITEM "Commented.", ID_COMMENTED
+    MENUITEM "Copied", ID_COPIED
+    // This comment will also break rc2po
+    MENUITEM "Delete", ID_DELETE
+  END
+END
+"""
+        rc_file = self.source_parse(rc_source, encoding="utf-16")
+        assert len(rc_file.units) == 3
+        assert rc_file.units[0].source == "&File"
+        assert rc_file.units[0].name == "MENU.IDR_MAINFRAME.POPUP.CAPTION"
+        assert rc_file.units[1].source == "Copied"
+        assert rc_file.units[1].name == "MENU.IDR_MAINFRAME.MENUITEM.ID_COPIED"
+        assert rc_file.units[2].source == "Delete"
+        assert rc_file.units[2].name == "MENU.IDR_MAINFRAME.MENUITEM.ID_DELETE"
