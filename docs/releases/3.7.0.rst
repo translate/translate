@@ -1,0 +1,45 @@
+Translate Toolkit 3.7.0
+***********************
+
+*Released on 13 June 2022*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+General
+-------
+
+- Rewritten setup to use modern setuptools features
+- The share folder is now shipped inside the translate package
+- The release process now includes publishing Wheel packages
+- Documentation was updated to work with Sphinx 5.0
+
+Formats and Converters
+----------------------
+   
+- PO
+
+  - Improved performance on huge plural strings
+
+- CSV
+
+  - Allow to override encoding detection
+
+- RC
+
+  - Fixed parsing comment in MENU
+  - Fixed parsing of combined constants
+  - Fixed handling of concatenated strings
+
+- Resource Dictionary
+
+  - Added support for Resource Dictionary format
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař, Jon Turney, Michał Górny
