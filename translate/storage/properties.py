@@ -438,7 +438,7 @@ class DialectGaia(DialectMozilla):
 
 @register_dialect
 class DialectGwt(DialectJavaUtf8):
-    plural_regex = re.compile(r"([^\[\]]*)(?:\[(.*)\])?")
+    plural_regex = re.compile(r"(.*?)(?:\[(.*)\])?")
     name = "gwt"
     delimiters = ["="]
     has_plurals = True
