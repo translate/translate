@@ -97,3 +97,24 @@ class TestRC2POCommand(test_convert.TestConvertCommand):
         assert po_result.units[15].getlocations() == [
             "MENU.IDR_MAINFRAME.POPUP.CAPTION"
         ]
+
+    def test_convert_encoding_utf16(self):
+        self.create_testfile("simple.rc", RC_SOURCE.encode("utf-16"))
+        self.run_command(i="simple.rc", o="simple.po", charset="utf-16")
+        po_result = pofile(self.open_testfile("simple.po"))
+        assert len(po_result.units) == 23
+
+    def test_convert_encoding_wrong(self):
+        self.create_testfile("simple.rc", RC_SOURCE.encode("utf-8"))
+        self.run_command(i="simple.rc", o="simple.po", charset="utf-16x")
+        po_result = pofile(self.open_testfile("simple.po"))
+        assert len(po_result.units) == 0
+        self.run_command(i="simple.rc", o="simple.po", charset="utf-16")
+        po_result = pofile(self.open_testfile("simple.po"))
+        assert len(po_result.units) == 0
+
+    def test_convert_encoding_utf8(self):
+        self.create_testfile("simple.rc", RC_SOURCE.encode("utf-8"))
+        self.run_command(i="simple.rc", o="simple.po", charset="utf-8")
+        po_result = pofile(self.open_testfile("simple.po"))
+        assert len(po_result.units) == 23

@@ -138,13 +138,12 @@ def main(argv=None):
     parser = convert.ConvertOptionParser(
         formats, usetemplates=True, usepots=True, description=__doc__
     )
-    DEFAULTCHARSET = "cp1252"
     parser.add_option(
         "",
         "--charset",
         dest="charset",
-        default=DEFAULTCHARSET,
-        help="charset to use to decode the RC files (default: %s)" % DEFAULTCHARSET,
+        default="auto",
+        help="charset to use to decode the RC files (autodetection is used by default)",
         metavar="CHARSET",
     )
     DEFAULTLANG = None
