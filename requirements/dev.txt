@@ -10,4 +10,4 @@ setuptools==62.6.0
 setuptools-scm==7.0.2
 Sphinx==5.0.2
 twine==4.0.1
-virtualenv==20.15.0
+virtualenv==20.15.1
