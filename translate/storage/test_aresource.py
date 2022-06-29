@@ -786,3 +786,25 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
     </plurals>
 </resources>"""
         )
+
+    def test_edit_plural_b_zh_hk(self):
+        content = """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="vms_num_visitors">
+        <item quantity="one">%d visitor</item>
+        <item quantity="other">%d visitors</item>
+    </plurals>
+</resources>"""
+        store = self.StoreClass()
+        store.targetlanguage = "b+zh+Hant+HK"
+        store.parse(content.encode())
+        store.units[0].target = "%d 訪客"
+        assert (
+            bytes(store).decode()
+            == """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="vms_num_visitors">
+        <item quantity="other">%d 訪客</item>
+    </plurals>
+</resources>"""
+        )
