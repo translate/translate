@@ -371,7 +371,11 @@ class AndroidResourceUnit(base.TranslationUnit):
                 self.xmlelement = etree.Element("plurals")
                 self.setid(old_id)
 
-            locale = self.gettargetlanguage().replace("_", "-").split("-")[0]
+            locale = self.gettargetlanguage()
+            # Handle b+ style language codes
+            if locale.startswith("b+"):
+                locale = locale[2:]
+            locale = locale.replace("_", "-").replace("+", "-").split("-")[0]
             plural_tags = data.plural_tags.get(locale, data.plural_tags["en"])
 
             # Get string list to handle, wrapping non multistring/list targets into a list.
