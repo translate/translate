@@ -52,7 +52,7 @@ done generically like this:
 
 .. code-block:: console
 
-    $ git log $(git describe --tags --abbrev=0)..HEAD > docs/releases/$version.rst
+    $ git log $(git describe --tags --abbrev=0)..HEAD >> docs/releases/$version.rst
 
 
 Or a more specific example:
@@ -86,7 +86,7 @@ We create a list of contributors using this command:
 
 .. code-block:: console
 
-    $ git log $(git describe --tags --abbrev=0)..HEAD --format='%aN, ' | awk '{arr[$0]++} END{for (i in arr){print arr[i], i;}}' | sort -rn | cut -d\  -f2-
+    $ git log $(git describe --tags --abbrev=0)..HEAD --format='%aN, ' | awk '{arr[$0]++} END{for (i in arr){print arr[i], i;}}' | sort -rn | cut -d\  -f2- >> docs/releases/$version.rst
 
 
 .. _releasing#up-version-numbers:

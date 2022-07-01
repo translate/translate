@@ -1,0 +1,31 @@
+Translate Toolkit 3.7.1
+***********************
+
+*Released on 1 July 2022*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+   
+- Android
+
+  - Fixed handling complex language codes
+
+- rc2po
+
+  - Honor charset passed on the command-line
+
+- GWT
+
+  - Fixed parsing of non-plural strings with [] in key
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař, Jon Turney
