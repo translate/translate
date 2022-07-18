@@ -351,16 +351,31 @@ class AndroidResourceUnit(base.TranslationUnit):
         else:
             self.set_xml_text_plain(target, xmltarget)
 
+    def gettargetlanguage(self):
+        if self._store is None:
+            return "en"
+        return super().gettargetlanguage()
+
+    def get_plural_tags(self):
+        locale = self.gettargetlanguage()
+        # Handle b+ style language codes
+        if locale.startswith("b+"):
+            locale = locale[2:]
+        locale = locale.replace("_", "-").replace("+", "-").split("-")[0]
+        return data.plural_tags.get(locale, data.plural_tags["en"])
+
     @property
     def target(self):
         if self.xmlelement.tag != "plurals":
             return self.get_xml_text_value(self.xmlelement)
-        return multistring(
-            [
-                self.get_xml_text_value(entry)
-                for entry in self.xmlelement.iterchildren("item")
-            ]
-        )
+        plurals = {
+            entry.get("quantity"): self.get_xml_text_value(entry)
+            for entry in self.xmlelement.iterchildren("item")
+        }
+        plural_tags = self.get_plural_tags()
+        print(plurals, plural_tags)
+        print([plurals.get(tag, "") for tag in plural_tags])
+        return multistring([plurals.get(tag, "") for tag in plural_tags])
 
     @target.setter
     def target(self, target):
@@ -371,12 +386,7 @@ class AndroidResourceUnit(base.TranslationUnit):
                 self.xmlelement = etree.Element("plurals")
                 self.setid(old_id)
 
-            locale = self.gettargetlanguage()
-            # Handle b+ style language codes
-            if locale.startswith("b+"):
-                locale = locale[2:]
-            locale = locale.replace("_", "-").replace("+", "-").split("-")[0]
-            plural_tags = data.plural_tags.get(locale, data.plural_tags["en"])
+            plural_tags = self.get_plural_tags()
 
             # Get string list to handle, wrapping non multistring/list targets into a list.
             if isinstance(target, multistring):

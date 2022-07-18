@@ -808,3 +808,16 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
     </plurals>
 </resources>"""
         )
+
+    def test_missing_plural(self):
+        content = """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="vms_num_visitors">
+        <item quantity="one">%d visitor</item>
+        <item quantity="other">%d visitors</item>
+    </plurals>
+</resources>"""
+        store = self.StoreClass()
+        store.targetlanguage = "fr"
+        store.parse(content.encode())
+        assert store.units[0].target == multistring(["%d visitor", "", "%d visitors"])
