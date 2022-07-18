@@ -1,0 +1,27 @@
+Translate Toolkit 3.7.2
+***********************
+
+*Released on 18 July 2022*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+   
+- Android
+
+  - Improved handling of plurals
+
+- General
+
+  - Updated CLDR data to version 41
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař
