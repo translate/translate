@@ -262,15 +262,19 @@ userItems.limit[\=0] = No items can be added.
         assert propunit.source == "No items can be added."
 
     def test_non_plurals(self):
-        propsource = r"""
-Ps[Pd]_unexpected = Test string
+        propsource = r"""Ps[Pd]_unexpected=Test string
+PP[]=Other
 """
         propfile = self.propparse(propsource)
 
-        assert len(propfile.units) == 1
+        assert len(propfile.units) == 2
         propunit = propfile.units[0]
         assert propunit.name == "Ps[Pd]_unexpected"
         assert propunit.source == "Test string"
+        propunit = propfile.units[1]
+        assert propunit.name == "PP[]"
+        assert propunit.source == "Other"
+        assert bytes(propfile).decode() == propsource
 
 
 class TestProp(test_monolingual.TestMonolingualStore):
