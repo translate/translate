@@ -181,14 +181,14 @@ def rc_statement():
     block_start = (Keyword("{") | Keyword("BEGIN")).set_name("block_start")
     block_end = (Keyword("}") | Keyword("END")).set_name("block_end")
 
-    name_id = Group(Word(alphas, alphanums + "_")).set_name("name_id")
-
     numbers = Word(nums)
 
     integerconstant = numbers ^ Combine("0x" + numbers)
 
+    name_id = Group(Word(alphas, alphanums + "_") | integerconstant)
+
     constant = Combine(
-        Optional(Keyword("NOT")) + (name_id | integerconstant),
+        Optional(Keyword("NOT")) + Group(name_id),
         adjacent=False,
         join_string=" ",
     )
