@@ -584,9 +584,14 @@ CAPTION "This is a dialog."
 {
    CONTROL "This is a button.", 4, BUTTON, BS_DEFPUSHBUTTON | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 99, 7, 50, 14
 }
+
+STRINGTABLE
+{
+  5 	"This is a string."
+}
 """
         rc_file = self.source_parse(rc_source)
-        assert len(rc_file.units) == 4
+        assert len(rc_file.units) == 5
         assert rc_file.units[0].source == "This is a menu."
         assert rc_file.units[0].name == "MENU.1.POPUP.CAPTION"
         assert rc_file.units[1].source == "This is a menu item."
@@ -595,3 +600,5 @@ CAPTION "This is a dialog."
         assert rc_file.units[2].name == "DIALOGEX.3.CAPTION"
         assert rc_file.units[3].source == "This is a button."
         assert rc_file.units[3].name == "DIALOGEX.3.CONTROL.4"
+        assert rc_file.units[4].source == "This is a string."
+        assert rc_file.units[4].name == "STRINGTABLE.5"

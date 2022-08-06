@@ -206,6 +206,7 @@ def rc_statement():
     undefined_control = (
         Group(
             name_id.set_results_name("id_control")
+            + Optional(",")
             + delimited_list(
                 concatenated_string ^ constant ^ numbers ^ Group(combined_constants)
             ).set_results_name("values_")
