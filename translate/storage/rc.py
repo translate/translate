@@ -259,7 +259,7 @@ def rc_statement():
 
 def generate_stringtable_name(identifier):
     """Return the name generated for a stringtable element."""
-    return "STRINGTABLE." + identifier
+    return f"STRINGTABLE.{identifier}"
 
 
 def generate_menu_pre_name(block_type, block_id):
@@ -281,7 +281,7 @@ def generate_popup_pre_name(pre_name, caption):
 
 def generate_popup_caption_name(pre_name):
     """Return the name generated for a caption of a popup."""
-    return "%s.POPUP.CAPTION" % (pre_name)
+    return f"{pre_name}.POPUP.CAPTION"
 
 
 def generate_menuitem_name(pre_name, block_type, identifier):
@@ -291,7 +291,7 @@ def generate_menuitem_name(pre_name, block_type, identifier):
 
 def generate_dialog_caption_name(block_type, identifier):
     """Return the name generated for a caption of a dialog."""
-    return "{}.{}.{}".format(block_type, identifier, "CAPTION")
+    return f"{block_type}.{identifier}.CAPTION"
 
 
 def generate_dialog_control_name(block_type, block_id, control_type, identifier):
