@@ -358,8 +358,10 @@ class AndroidResourceUnit(base.TranslationUnit):
 
     def get_plural_tags(self):
         locale = self.gettargetlanguage()
+        if not locale:
+            return data.plural_tags["en"]
         # Handle b+ style language codes
-        if locale and locale.startswith("b+"):
+        if locale.startswith("b+"):
             locale = locale[2:]
         locale = locale.replace("_", "-").replace("+", "-").split("-")[0]
         return data.plural_tags.get(locale, data.plural_tags["en"])
