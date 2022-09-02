@@ -143,3 +143,19 @@ messages are still readable.
    Run :doc:`pofilter` as a quick method to fix up incorrect changes, or
    upgrade to version 1.4.
 
+.. _option_rewrite#nsa:
+
+nsa
+=======
+
+.. versionadded:: dev
+
+Rewrites the source text with black square that looks like NSA folder.
+
+.. code-block:: po
+
+  msgid "English"
+  msgstr "▮▮▮▮▮▮▮"
+
+This allows a translator or programmer to check what is not part of the translation. 
+This way it's easy to spot what is not translated yet.

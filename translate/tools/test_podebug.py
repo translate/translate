@@ -156,6 +156,50 @@ class TestPODebug:
             == "\u202e<b>{{ph}}⊥ǝsʇ{ph}@@ph@@⊥ǝsʇ</b>"
         )
 
+    def test_rewrite_nsa(self):
+        """Test the unicode rewrite function"""
+        assert str(self.debug.rewrite_nsa("Test")) == "▮▮▮▮"
+        # alternative with reversed string and no RTL override:
+        # assert unicode(self.debug.rewrite_nsa("Test")) == "ʇsǝ⊥"
+        # Chars < ! and > z are returned as is
+        assert str(self.debug.rewrite_nsa(" ")) == " "
+        assert str(self.debug.rewrite_nsa("©")) == "©"
+
+    @staticmethod
+    def test_rewrite_nsa_preserves_at_placeholders():
+        """Test the unicode rewrite function"""
+        debug = podebug.podebug(preserveplaceholders=True)
+        assert str(debug.rewrite_nsa("@@ph@@Test @@ph@@")) == "@@ph@@▮▮▮▮ @@ph@@"
+
+    @staticmethod
+    def test_rewrite_nsa_preserves_single_brace_placeholders():
+        """Test the unicode rewrite function"""
+        debug = podebug.podebug(preserveplaceholders=True)
+        assert str(debug.rewrite_nsa("{ph}Test {ph}")) == "{ph}▮▮▮▮ {ph}"
+
+    @staticmethod
+    def test_rewrite_nsa_preserves_double_brace_placeholders():
+        """Test the unicode rewrite function"""
+        debug = podebug.podebug(preserveplaceholders=True)
+        assert str(debug.rewrite_nsa("{{ph}}Test {{ph}}")) == "{{ph}}▮▮▮▮ {{ph}}"
+
+    @staticmethod
+    def test_rewrite_nsa_preserves_html():
+        """Test the unicode rewrite function"""
+        debug = podebug.podebug(preserveplaceholders=True)
+        assert (
+            str(debug.rewrite_nsa("<style0>Test </style0>")) == "<style0>▮▮▮▮ </style0>"
+        )
+
+    @staticmethod
+    def test_rewrite_nsa_multiple_styles_of_placeholder():
+        """Test the unicode rewrite function"""
+        debug = podebug.podebug(preserveplaceholders=True)
+        assert (
+            str(debug.rewrite_nsa("<b>{{ph}}Test{ph}@@ph@@Test</b>"))
+            == "<b>{{ph}}▮▮▮▮{ph}@@ph@@▮▮▮▮</b>"
+        )
+
     def test_rewrite_chef(self):
         """Test the chef rewrite function
 

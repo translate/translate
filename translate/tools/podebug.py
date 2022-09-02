@@ -242,6 +242,24 @@ class podebug:
         self.apply_to_translatables(string, transformer)
         return string
 
+    def rewrite_nsa(self, string):
+        if not isinstance(string, StringElem):
+            string = StringElem(string)
+
+        def transpose(char):
+            if char.isalnum():
+                return "▮"
+            return char
+
+        def transformer(s):
+            if self.preserveplaceholders:
+                return self.transform_characters_preserving_placeholders(s, transpose)
+            else:
+                return "".join(transpose(c) for c in s)
+
+        self.apply_to_translatables(string, transformer)
+        return string
+
     @classmethod
     def ignorelist(cls):
         return [
