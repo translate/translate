@@ -242,7 +242,7 @@ class podebug:
         self.apply_to_translatables(string, transformer)
         return string
 
-    def rewrite_nsa(self, string):
+    def rewrite_classified(self, string):
         if not isinstance(string, StringElem):
             string = StringElem(string)
 
