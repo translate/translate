@@ -58,7 +58,7 @@ Options:
 -S, --timestamp       skip conversion if the output file has newer timestamp
 -f FORMAT, --format=FORMAT     specify format string
 --rewrite=STYLE        the translation rewrite style: :doc:`xxx, en, blank,
-                       chef  (v1.2), unicode (v1.2) <option_rewrite>`
+                       chef  (v1.2), unicode (v1.2), classified (dev) <option_rewrite>`
 --ignore=APPLICATION   apply tagging ignore rules for the given application:
                        kde, gtk, openoffice, libreoffice, mozilla
 --preserveplaceholders

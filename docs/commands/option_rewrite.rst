@@ -143,3 +143,21 @@ messages are still readable.
    Run :doc:`pofilter` as a quick method to fix up incorrect changes, or
    upgrade to version 1.4.
 
+.. _option_rewrite#classified:
+
+classified
+==========
+
+.. versionadded:: 3.7.3
+
+Rewrites the source text with black square (▮) that looks like NSA classified 
+files.
+
+.. code-block:: po
+
+  msgid "English"
+  msgstr "▮▮▮▮▮▮▮"
+
+This allows a translator or programmer to visually distinguish what is not
+part of the translation yet.
+This way it's really easy to spot what strings are missing.
