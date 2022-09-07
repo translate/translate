@@ -1,0 +1,37 @@
+Translate Toolkit 3.7.3
+***********************
+
+*Released on 7 September 2022*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+   
+- Converters
+
+  - Add classified rewriter to spot easily what is not part of the translation file 
+
+- Android
+
+  - Gracefully handle getting plurals for source language
+
+- RC
+
+  - Improved resource ID handling
+    
+
+- Properties
+
+  - Avoid parsing empty plural tags as plurals in GWT
+
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař, derula, Pascal F
