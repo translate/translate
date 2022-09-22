@@ -345,6 +345,7 @@ class I18NextUnit(JsonNestedUnit):
                 self.storevalue(output, value, override_key=self._item[i])
 
 
+
 class I18NextFile(JsonNestedFile):
     """A i18next v3 format, this is nested JSON with several additions.
 
@@ -400,6 +401,119 @@ class I18NextFile(JsonNestedFile):
                         processed.add(key)
                         sources.append(data[key])
                         items.append(key)
+                    unit = self.UnitClass(multistring(sources), items)
+                    newid = prev + [("key", plural_base)]
+                    unit.set_unitid(newid)
+                    yield unit
+                    continue
+
+                yield from self._extract_units(
+                    v, stop, prev + [("key", k)], k, None, data
+                )
+        else:
+            parent = super()._extract_units(
+                data, stop, prev, name_node, name_last_node, last_node
+            )
+            yield from parent
+
+
+I18NextV4Suffixes = [ "zero", "one", "two", "few", "many", "other" ]
+
+class I18NextV4Unit(JsonNestedUnit):
+    """A i18next v4 format, JSON with plurals.
+
+    See https://www.i18next.com/
+    """
+
+    @property
+    def target(self):
+        return self._target
+
+    @target.setter
+    def target(self, target):
+        def get_base(item):
+            """Return base name for plurals"""
+            if "_" in item[0]:
+                plural_base, suffix = item[0].rsplit("_", 1)
+
+                if suffix in I18NextV4Suffixes:
+                    return plural_base
+            return item[0]
+
+        def get_plurals(count, base):
+            if count <= 2:
+                return [base + "_one", base + "_other"][:count]
+            return [f"{base}_{I18NextV4Suffixes[i]}" for i in range(count)]
+
+        if isinstance(target, multistring):
+            count = len(target.strings)
+            if not isinstance(self._item, list):
+                self._item = [self._item]
+            if count != len(self._item):
+                # Generate new plural labels
+                self._item = get_plurals(count, get_base(self._item))
+        elif isinstance(self._item, list):
+            # Changing plural to singular
+            self._item = get_base(self._item)
+
+        self._rich_target = None
+        self._target = target
+
+    def storevalues(self, output):
+        if not isinstance(self.target, multistring):
+            super().storevalues(output)
+        else:
+            for i, value in enumerate(self.target.strings):
+                self.storevalue(output, value, override_key=self._item[i])
+
+
+class I18NextV4File(JsonNestedFile):
+    """A i18next v4 format, this is nested JSON with several additions.
+
+    See https://www.i18next.com/
+    """
+
+    UnitClass = I18NextV4Unit
+
+    def _extract_units(
+        self,
+        data,
+        stop=None,
+        prev=None,
+        name_node=None,
+        name_last_node=None,
+        last_node=None,
+    ):
+        if prev is None:
+            prev = self.UnitClass.IdClass([])
+        if isinstance(data, dict):
+            processed = set()
+
+            for k, v in data.items():
+                # Check already processed items
+                if k in processed:
+                    continue
+
+                plurals = []
+                suffix = ""
+                plural_base = ""
+
+                if "_" in k:
+                    plural_base, suffix = k.rsplit("_", 1)
+
+                if suffix in I18NextV4Suffixes:
+                    plurals = [f"{plural_base}_{suffix}" for suffix in I18NextV4Suffixes]
+
+                if plurals:
+                    sources = []
+                    items = []
+                    for key in plurals:
+                        if key not in data:
+                            continue
+                        processed.add(key)
+                        sources.append(data[key])
+                        items.append(key)
+
                     unit = self.UnitClass(multistring(sources), items)
                     newid = prev + [("key", plural_base)]
                     unit.set_unitid(newid)
