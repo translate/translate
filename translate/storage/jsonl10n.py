@@ -338,7 +338,6 @@ class I18NextUnit(JsonNestedUnit):
                 self.storevalue(output, value, override_key=self._item[i])
 
 
-
 class I18NextFile(JsonNestedFile):
     """A i18next v3 format, this is nested JSON with several additions.
 
@@ -410,7 +409,8 @@ class I18NextFile(JsonNestedFile):
             yield from parent
 
 
-I18NextV4Suffixes = [ "zero", "one", "two", "few", "many", "other" ]
+I18NextV4Suffixes = ["zero", "one", "two", "few", "many", "other"]
+
 
 class I18NextV4Unit(JsonNestedUnit):
     """A i18next v4 format, JSON with plurals.
@@ -495,7 +495,9 @@ class I18NextV4File(JsonNestedFile):
                     plural_base, suffix = k.rsplit("_", 1)
 
                 if suffix in I18NextV4Suffixes:
-                    plurals = [f"{plural_base}_{suffix}" for suffix in I18NextV4Suffixes]
+                    plurals = [
+                        f"{plural_base}_{suffix}" for suffix in I18NextV4Suffixes
+                    ]
 
                 if plurals:
                     sources = []
