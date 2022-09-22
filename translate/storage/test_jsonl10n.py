@@ -21,6 +21,24 @@ JSON_I18NEXT = b"""{
     "keyPluralMultipleEgArabic_5": "the plural form 5"
 }
 """
+
+JSON_I18NEXT_V4 = b"""{
+    "key": "value",
+    "keyDeep": {
+        "inner": "value"
+    },
+    "keyPluralSimple_one": "the singular",
+    "keyPluralSimple_other": "the plural",
+    "keyPluralMultipleEgArabic_zero": "the plural form 0",
+    "keyPluralMultipleEgArabic_one": "the plural form 1",
+    "keyPluralMultipleEgArabic_two": "the plural form 2",
+    "keyPluralMultipleEgArabic_few": "the plural form 3",
+    "keyPluralMultipleEgArabic_many": "the plural form 4",
+    "keyPluralMultipleEgArabic_other": "the plural form 5"
+}
+"""
+
+
 JSON_I18NEXT_PLURAL = b"""{
     "key": "value",
     "keyDeep": {
@@ -30,6 +48,7 @@ JSON_I18NEXT_PLURAL = b"""{
     "keyPluralMultipleEgArabic": "Nazdar"
 }
 """
+
 JSON_I18NEXT_NESTED_ARRAY = """{
     "apps": [
         {
@@ -564,6 +583,114 @@ class TestI18NextStore(test_monolingual.TestMonolingualStore):
     "complex_3": "the plural form 3",
     "complex_4": "the plural form 4",
     "complex_5": "the plural form 5"
+}
+"""
+        store = self.StoreClass()
+
+        unit = self.StoreClass.UnitClass(
+            multistring(
+                [
+                    "the singular",
+                    "the plural",
+                ]
+            ),
+            "simple",
+        )
+        store.addunit(unit)
+
+        unit = self.StoreClass.UnitClass(
+            multistring(
+                [
+                    "the plural form 0",
+                    "the plural form 1",
+                    "the plural form 2",
+                    "the plural form 3",
+                    "the plural form 4",
+                    "the plural form 5",
+                ]
+            ),
+            "complex",
+        )
+        store.addunit(unit)
+
+        out = BytesIO()
+        store.serialize(out)
+
+        assert out.getvalue() == EXPECTED
+
+
+class TestI18NextV4Store(test_monolingual.TestMonolingualStore):
+    StoreClass = jsonl10n.I18NextV4File
+
+    def test_serialize(self):
+        store = self.StoreClass()
+        store.parse(JSON_I18NEXT_V4)
+        out = BytesIO()
+        store.serialize(out)
+
+        assert out.getvalue() == JSON_I18NEXT_V4
+
+    def test_units(self):
+        store = self.StoreClass()
+        store.parse(JSON_I18NEXT_V4)
+        assert len(store.units) == 4
+
+    def test_plurals(self):
+        store = self.StoreClass()
+        store.parse(JSON_I18NEXT_V4)
+
+        # Remove plurals
+        store.units[2].target = "Ahoj"
+        store.units[3].target = "Nazdar"
+        out = BytesIO()
+        store.serialize(out)
+
+        assert out.getvalue() == JSON_I18NEXT_PLURAL
+
+        # Bring back plurals
+        store.units[2].target = multistring(
+            [
+                "the singular",
+                "the plural",
+            ]
+        )
+        store.units[3].target = multistring(
+            [
+                "the plural form 0",
+                "the plural form 1",
+                "the plural form 2",
+                "the plural form 3",
+                "the plural form 4",
+                "the plural form 5",
+            ]
+        )
+        out = BytesIO()
+        store.serialize(out)
+
+        assert out.getvalue() == JSON_I18NEXT_V4
+
+    def test_nested_array(self):
+        store = self.StoreClass()
+        store.parse(JSON_I18NEXT_NESTED_ARRAY)
+
+        assert len(store.units) == 4
+        assert store.units[0].getid() == ".apps[0].title"
+        assert store.units[1].getid() == ".apps[0].description"
+        assert store.units[2].getid() == ".apps[1].title"
+        assert store.units[3].getid() == ".apps[1].description"
+
+        assert bytes(store).decode() == JSON_I18NEXT_NESTED_ARRAY
+
+    def test_new_plural(self):
+        EXPECTED = b"""{
+    "simple_one": "the singular",
+    "simple_other": "the plural",
+    "complex_zero": "the plural form 0",
+    "complex_one": "the plural form 1",
+    "complex_two": "the plural form 2",
+    "complex_few": "the plural form 3",
+    "complex_many": "the plural form 4",
+    "complex_other": "the plural form 5"
 }
 """
         store = self.StoreClass()
