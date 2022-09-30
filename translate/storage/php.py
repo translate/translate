@@ -331,6 +331,7 @@ class phpunit(base.TranslationUnit):
         return self.name
 
     def setid(self, value):
+        print('setid: ', value)
         # Sanitize name to produce valid syntax
         if not value.startswith(("$", "define(", "return")):
             self.name = "${}".format(value.replace(" ", "_"))
@@ -526,11 +527,153 @@ class LaravelPHPUnit(phpunit):
             return "|".join(result.strings)
         return result
 
+    def getoutput(self, indent="", name=None):
+        print('getoutput-indent: ', indent)
+        """Convert the unit back into formatted lines for a php file."""
+        fmt = "'{0}' => {1}{2}{1},\n"
+        out = fmt.format(
+            name if name else self.name,
+            self.escape_type,
+            phpencode(self.get_raw_value(), self.escape_type),
+        )
+        joiner = "\n" + indent
+        return indent + joiner.join(self._comments + [out])
+
 
 class LaravelPHPFile(phpfile):
     UnitClass = LaravelPHPUnit
 
+    def serialize(self, out):
+        """Convert the units back to lines."""
+
+        def write(text):
+            out.write(text.encode(self.encoding))
+
+        def handle_array(unit, arrname, handled, indent=0):
+            if arrname in handled:
+                return
+            childs = set()
+            # Handle default laravel [] style array
+            init = "["
+            close = "]"
+            name = arrname[:-2]
+            print('handle_array-name: ', name)
+            separator = ""
+            # Write array start
+            write("{}{}{} {}\n".format(" " * indent, name, separator, init))
+            indent += 4
+            for item in self.units:
+                handle_array(item, name, childs, indent)
+
+            handled.add(arrname)
+
+        write("<?php\n")
+        write('return [\n')
+        # List of handled arrays
+        for unit in self.units:
+            write(unit.getoutput(indent="    "))
+
+        # Write array end
+        write("];\n")
+
+
+    def parse(self, phpsrc):
+        """Read the source of a PHP file in and include them as units."""
+
+        def handle_array(prefix, nodes, lexer):
+            prefix += lexer.extract_array()
+            for item in nodes:
+                assert isinstance(item, ArrayElement)
+                if item.key is None:
+                    name = []
+                else:
+                    # To update lexer current position
+                    lexer.extract_name("DOUBLE_ARROW", *item.lexpositions)
+                    if isinstance(item.key, BinaryOp):
+                        name = f"'{concatenate(item.key)}'"
+                    else:
+                        name = f"{item.key}"
+                if isinstance(item.value, Array):
+                    handle_array(name, item.value.nodes, lexer)
+                elif isinstance(item.value, str):
+                    self.create_and_add_unit(
+                        name,
+                        item.value,
+                        lexer.extract_quote(),
+                        lexer.extract_comments(item.lexpositions[1]),
+                    )
+
+        def concatenate(item):
+            if isinstance(item, str):
+                return item
+            elif isinstance(item, Variable):
+                return item.name
+            assert isinstance(item, BinaryOp)
+            return concatenate(item.left) + concatenate(item.right)
+
+        parser = make_parser()
+        for item in parser.productions:
+            item.callable = wrap_production(item.callable)
+        lexer = PHPLexer()
+        tree = parser.parse(phpsrc.decode(self.encoding), lexer=lexer, tracking=True)
+        # Handle text without PHP start
+        if len(tree) == 1 and isinstance(tree[0], InlineHTML):
+            self.parse(b"<?php\n" + phpsrc)
+            return
+        for item in tree:
+            if isinstance(item, FunctionCall):
+                if item.name == "define":
+                    self.create_and_add_unit(
+                        lexer.extract_name("COMMA", *item.lexpositions),
+                        item.params[1].node,
+                        lexer.extract_quote(),
+                        lexer.extract_comments(item.lexpositions[1]),
+                    )
+            elif isinstance(item, Assignment):
+                if isinstance(item.node, ArrayOffset):
+                    name = lexer.extract_name("EQUALS", *item.lexpositions)
+                    if isinstance(item.expr, Array):
+                        handle_array(name, item.expr.nodes, lexer)
+                    elif isinstance(item.expr, str):
+                        self.create_and_add_unit(
+                            name,
+                            item.expr,
+                            lexer.extract_quote(),
+                            lexer.extract_comments(item.lexpositions[1]),
+                        )
+                    elif isinstance(item.expr, BinaryOp) and item.expr.op == ".":
+                        self.create_and_add_unit(
+                            name,
+                            concatenate(item.expr),
+                            lexer.extract_quote(),
+                            lexer.extract_comments(item.lexpositions[1]),
+                        )
+                elif isinstance(item.node, Variable):
+                    name = lexer.extract_name("EQUALS", *item.lexpositions)
+                    if isinstance(item.expr, Array):
+                        handle_array(name, item.expr.nodes, lexer)
+                    elif isinstance(item.expr, str):
+                        self.create_and_add_unit(
+                            name,
+                            item.expr,
+                            lexer.extract_quote(),
+                            lexer.extract_comments(item.lexpositions[1]),
+                        )
+                    elif isinstance(item.expr, BinaryOp) and item.expr.op == ".":
+                        self.create_and_add_unit(
+                            name,
+                            concatenate(item.expr),
+                            lexer.extract_quote(),
+                            lexer.extract_comments(item.lexpositions[1]),
+                        )
+            elif isinstance(item, Return):
+                if isinstance(item.node, Array):
+                    # Adjustextractor position
+                    lexer.extract_name("RETURN", *item.lexpositions)
+                    handle_array("return", item.node.nodes, lexer)
+
     def create_and_add_unit(self, name, value, escape_type, comments):
+        print('\nname: ', name)
         if "|" in value:
             value = multistring(value.split("|"))
         super().create_and_add_unit(name, value, escape_type, comments)
