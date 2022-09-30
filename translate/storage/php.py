@@ -557,7 +557,6 @@ class LaravelPHPFile(phpfile):
         # Write array end
         write("];\n")
 
-
     def parse(self, phpsrc):
         """Read the source of a PHP file in and include them as units."""
 
