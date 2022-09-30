@@ -1191,10 +1191,10 @@ return [
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 2
         phpunit = phpfile.units[0]
-        assert phpunit.name == "return[]->'welcome'"
+        assert phpunit.name == "welcome"
         assert phpunit.source == "Welcome to our application"
         phpunit = phpfile.units[1]
-        assert phpunit.name == "return[]->'apples'"
+        assert phpunit.name == "apples"
         assert phpunit.source == multistring(
             ["There is one apple", "There are many apples"]
         )
