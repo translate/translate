@@ -1251,7 +1251,12 @@ return [
                 'symbols' => 'The :attribute must contain at least one symbol.',
                 'uncompromised' => 'The given :attribute has appeared in a data leak. Please choose a different :attribute.',
             ],
+            'custom' => [
+                'attribute-name' => [
+                    'rule-name' => 'custom-message',
+                ],
+            ],
         ];
             """
         phpfile = self.phpparse(phpsource)
-        assert len(phpfile.units) == 6
+        assert len(phpfile.units) == 7
