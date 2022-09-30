@@ -1201,3 +1201,39 @@ return [
         assert bytes(phpfile).decode() == phpsource
         phpunit.source = multistring(["There is an apple", "There are many apples"])
         assert bytes(phpfile).decode() == phpsource.replace("one apple", "an apple")
+
+    def test_comments(self):
+        # https://github.com/laravel/laravel/blob/e87bfd60ed4ca30109aa73c4d23250c113fe75ff/lang/en/auth.php
+        phpsource = r"""<?php
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Authentication Language Lines
+    |--------------------------------------------------------------------------
+    |
+    | The following language lines are used during authentication for various
+    | messages that we need to display to the user. You are free to modify
+    | these language lines according to your application's requirements.
+    |
+    */
+
+    'failed' => 'These credentials do not match our records.',
+    'password' => 'The provided password is incorrect.',
+    'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
+
+];
+    """
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 3
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "failed"
+        assert phpunit.source == "These credentials do not match our records."
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "password"
+        assert phpunit.source == "The provided password is incorrect."
+        phpunit = phpfile.units[2]
+        assert phpunit.name == "throttle"
+        assert phpunit.source == "Too many login attempts. Please try again in :seconds seconds."
+
