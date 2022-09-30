@@ -1205,7 +1205,7 @@ return [
     def test_comments(self):
         # https://github.com/laravel/laravel/blob/e87bfd60ed4ca30109aa73c4d23250c113fe75ff/lang/en/auth.php
         phpsource = r"""<?php
-
+        
 return [
 
     /*
@@ -1224,7 +1224,7 @@ return [
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
 
 ];
-    """
+"""
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 3
         phpunit = phpfile.units[0]
@@ -1239,27 +1239,27 @@ return [
             phpunit.source
             == "Too many login attempts. Please try again in :seconds seconds."
         )
+        assert bytes(phpfile).decode() == phpsource
 
     def test_array_inside_array(self):
         # https://github.com/laravel/laravel/blob/e87bfd60ed4ca30109aa73c4d23250c113fe75ff/lang/en/validation.php
 
         phpsource = r"""<?php
-
-        return [
-            'failed' => 'These credentials do not match our records.',
-            'password' => [
-                'letters' => 'The :attribute must contain at least one letter.',
-                'mixed' => 'The :attribute must contain at least one uppercase and one lowercase letter.',
-                'numbers' => 'The :attribute must contain at least one number.',
-                'symbols' => 'The :attribute must contain at least one symbol.',
-                'uncompromised' => 'The given :attribute has appeared in a data leak. Please choose a different :attribute.',
-            ],
-            'custom' => [
-                'attribute-name' => [
-                    'rule-name' => 'custom-message',
-                ],
-            ],
-        ];
-            """
+return [
+    'password' => [
+        'letters' => 'The :attribute must contain at least one letter.',
+        'mixed' => 'The :attribute must contain at least one uppercase and one lowercase letter.',
+        'numbers' => 'The :attribute must contain at least one number.',
+        'symbols' => 'The :attribute must contain at least one symbol.',
+        'uncompromised' => 'The given :attribute has appeared in a data leak. Please choose a different :attribute.',
+    ],
+    'custom' => [
+        'attribute-name' => [
+            'rule-name' => 'custom-message',
+        ],
+    ],
+];
+"""
         phpfile = self.phpparse(phpsource)
-        assert len(phpfile.units) == 7
+        assert len(phpfile.units) == 6
+        assert bytes(phpfile).decode() == phpsource
