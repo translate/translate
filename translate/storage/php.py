@@ -545,28 +545,8 @@ class LaravelPHPFile(phpfile):
 
     def serialize(self, out):
         """Convert the units back to lines."""
-
         def write(text):
             out.write(text.encode(self.encoding))
-
-        def handle_array(unit, arrname, handled, indent=0):
-            if arrname in handled:
-                return
-            childs = set()
-            # Handle default laravel [] style array
-            init = "["
-            close = "]"
-            name = arrname[:-2]
-            print('handle_array-name: ', name)
-            separator = ""
-            # Write array start
-            write("{}{}{} {}\n".format(" " * indent, name, separator, init))
-            indent += 4
-            for item in self.units:
-                handle_array(item, name, childs, indent)
-
-            handled.add(arrname)
-
         write("<?php\n")
         write('return [\n')
         # List of handled arrays
