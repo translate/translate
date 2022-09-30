@@ -331,7 +331,6 @@ class phpunit(base.TranslationUnit):
         return self.name
 
     def setid(self, value):
-        print('setid: ', value)
         # Sanitize name to produce valid syntax
         if not value.startswith(("$", "define(", "return")):
             self.name = "${}".format(value.replace(" ", "_"))
@@ -528,7 +527,6 @@ class LaravelPHPUnit(phpunit):
         return result
 
     def getoutput(self, indent="", name=None):
-        print('getoutput-indent: ', indent)
         """Convert the unit back into formatted lines for a php file."""
         fmt = "'{0}' => {1}{2}{1},\n"
         out = fmt.format(
@@ -547,8 +545,11 @@ class LaravelPHPFile(phpfile):
         """Convert the units back to lines."""
         def write(text):
             out.write(text.encode(self.encoding))
+
+        # Write array start
         write("<?php\n")
         write('return [\n')
+
         # List of handled arrays
         for unit in self.units:
             write(unit.getoutput(indent="    "))
@@ -601,15 +602,7 @@ class LaravelPHPFile(phpfile):
             self.parse(b"<?php\n" + phpsrc)
             return
         for item in tree:
-            if isinstance(item, FunctionCall):
-                if item.name == "define":
-                    self.create_and_add_unit(
-                        lexer.extract_name("COMMA", *item.lexpositions),
-                        item.params[1].node,
-                        lexer.extract_quote(),
-                        lexer.extract_comments(item.lexpositions[1]),
-                    )
-            elif isinstance(item, Assignment):
+            if isinstance(item, Assignment):
                 if isinstance(item.node, ArrayOffset):
                     name = lexer.extract_name("EQUALS", *item.lexpositions)
                     if isinstance(item.expr, Array):
@@ -653,7 +646,6 @@ class LaravelPHPFile(phpfile):
                     handle_array("return", item.node.nodes, lexer)
 
     def create_and_add_unit(self, name, value, escape_type, comments):
-        print('\nname: ', name)
         if "|" in value:
             value = multistring(value.split("|"))
         super().create_and_add_unit(name, value, escape_type, comments)
