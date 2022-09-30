@@ -543,12 +543,13 @@ class LaravelPHPFile(phpfile):
 
     def serialize(self, out):
         """Convert the units back to lines."""
+
         def write(text):
             out.write(text.encode(self.encoding))
 
         # Write array start
         write("<?php\n")
-        write('return [\n')
+        write("return [\n")
 
         # List of handled arrays
         for unit in self.units:
