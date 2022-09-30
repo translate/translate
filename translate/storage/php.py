@@ -331,7 +331,7 @@ class phpunit(base.TranslationUnit):
         return self.name
 
     def setid(self, value):
-        print('setid: ', value)
+        print("setid: ", value)
         # Sanitize name to produce valid syntax
         if not value.startswith(("$", "define(", "return")):
             self.name = "${}".format(value.replace(" ", "_"))
@@ -528,7 +528,7 @@ class LaravelPHPUnit(phpunit):
         return result
 
     def getoutput(self, indent="", name=None):
-        print('getoutput-indent: ', indent)
+        print("getoutput-indent: ", indent)
         """Convert the unit back into formatted lines for a php file."""
         fmt = "'{0}' => {1}{2}{1},\n"
         out = fmt.format(
@@ -557,7 +557,7 @@ class LaravelPHPFile(phpfile):
             init = "["
             close = "]"
             name = arrname[:-2]
-            print('handle_array-name: ', name)
+            print("handle_array-name: ", name)
             separator = ""
             # Write array start
             write("{}{}{} {}\n".format(" " * indent, name, separator, init))
@@ -568,14 +568,13 @@ class LaravelPHPFile(phpfile):
             handled.add(arrname)
 
         write("<?php\n")
-        write('return [\n')
+        write("return [\n")
         # List of handled arrays
         for unit in self.units:
             write(unit.getoutput(indent="    "))
 
         # Write array end
         write("];\n")
-
 
     def parse(self, phpsrc):
         """Read the source of a PHP file in and include them as units."""
@@ -673,7 +672,7 @@ class LaravelPHPFile(phpfile):
                     handle_array("return", item.node.nodes, lexer)
 
     def create_and_add_unit(self, name, value, escape_type, comments):
-        print('\nname: ', name)
+        print("\nname: ", name)
         if "|" in value:
             value = multistring(value.split("|"))
         super().create_and_add_unit(name, value, escape_type, comments)
