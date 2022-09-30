@@ -1237,3 +1237,21 @@ return [
         assert phpunit.name == "throttle"
         assert phpunit.source == "Too many login attempts. Please try again in :seconds seconds."
 
+    def test_array_inside_array(self):
+        # https://github.com/laravel/laravel/blob/e87bfd60ed4ca30109aa73c4d23250c113fe75ff/lang/en/validation.php
+
+        phpsource = r"""<?php
+
+        return [
+            'failed' => 'These credentials do not match our records.',
+            'password' => [
+                'letters' => 'The :attribute must contain at least one letter.',
+                'mixed' => 'The :attribute must contain at least one uppercase and one lowercase letter.',
+                'numbers' => 'The :attribute must contain at least one number.',
+                'symbols' => 'The :attribute must contain at least one symbol.',
+                'uncompromised' => 'The given :attribute has appeared in a data leak. Please choose a different :attribute.',
+            ],
+        ];
+            """
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 6
