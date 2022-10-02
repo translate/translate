@@ -1182,19 +1182,14 @@ class TestLaravelPhpFile(test_monolingual.TestMonolingualStore):
         return self.StoreClass(dummyfile)
 
     def test_plurals(self):
-        phpsource = r"""<?php
-return [
-    'welcome' => 'Welcome to our application',
-    'apples' => 'There is one apple|There are many apples',
-];
-"""
+        phpsource = open("./laravel/plurals.php").read()
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 2
         phpunit = phpfile.units[0]
-        assert phpunit.name == "welcome"
+        assert phpunit.name == "return[]->'welcome'"
         assert phpunit.source == "Welcome to our application"
         phpunit = phpfile.units[1]
-        assert phpunit.name == "apples"
+        assert phpunit.name == "return[]->'apples'"
         assert phpunit.source == multistring(
             ["There is one apple", "There are many apples"]
         )
@@ -1204,37 +1199,17 @@ return [
 
     def test_comments(self):
         # https://github.com/laravel/laravel/blob/e87bfd60ed4ca30109aa73c4d23250c113fe75ff/lang/en/auth.php
-        phpsource = r"""<?php
-        
-return [
-
-    /*
-    |--------------------------------------------------------------------------
-    | Authentication Language Lines
-    |--------------------------------------------------------------------------
-    |
-    | The following language lines are used during authentication for various
-    | messages that we need to display to the user. You are free to modify
-    | these language lines according to your application's requirements.
-    |
-    */
-
-    'failed' => 'These credentials do not match our records.',
-    'password' => 'The provided password is incorrect.',
-    'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
-
-];
-"""
+        phpsource = open("./laravel/basic.php").read()
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 3
         phpunit = phpfile.units[0]
-        assert phpunit.name == "failed"
+        assert phpunit.name == "return[]->'failed'"
         assert phpunit.source == "These credentials do not match our records."
         phpunit = phpfile.units[1]
-        assert phpunit.name == "password"
+        assert phpunit.name == "return[]->'password'"
         assert phpunit.source == "The provided password is incorrect."
         phpunit = phpfile.units[2]
-        assert phpunit.name == "throttle"
+        assert phpunit.name == "return[]->'throttle'"
         assert (
             phpunit.source
             == "Too many login attempts. Please try again in :seconds seconds."
@@ -1244,22 +1219,13 @@ return [
     def test_array_inside_array(self):
         # https://github.com/laravel/laravel/blob/e87bfd60ed4ca30109aa73c4d23250c113fe75ff/lang/en/validation.php
 
-        phpsource = r"""<?php
-return [
-    'password' => [
-        'letters' => 'The :attribute must contain at least one letter.',
-        'mixed' => 'The :attribute must contain at least one uppercase and one lowercase letter.',
-        'numbers' => 'The :attribute must contain at least one number.',
-        'symbols' => 'The :attribute must contain at least one symbol.',
-        'uncompromised' => 'The given :attribute has appeared in a data leak. Please choose a different :attribute.',
-    ],
-    'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
-        ],
-    ],
-];
-"""
+        phpsource = open("./laravel/array.php").read()
         phpfile = self.phpparse(phpsource)
-        assert len(phpfile.units) == 6
+        assert len(phpfile.units) == 5
         assert bytes(phpfile).decode() == phpsource
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "return[]->'gt'.'mixed'"
+        assert phpunit.source == "The :attribute must contain at least one letter."
+        phpunit = phpfile.units[4]
+        assert phpunit.name == "return[]->'attribute-name'.'rule-name'"
+        assert phpunit.source == "custom-message"

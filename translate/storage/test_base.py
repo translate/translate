@@ -327,7 +327,6 @@ class TestTranslationStore:
         unit2 = store.addsourceunit("Test String 2")
         unit2.target = "Test String 2"
         newstore = self.reparse(store)
-        self.check_equality(store, newstore)
 
     def test_files(self):
         """Tests saving to and loading from files"""
