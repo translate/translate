@@ -526,8 +526,10 @@ class LaravelPHPUnit(phpunit):
             return "|".join(result.strings)
         return result
 
+
 class LaravelPHPFile(phpfile):
     UnitClass = LaravelPHPUnit
+
     def create_and_add_unit(self, name, value, escape_type, comments, spaces=0):
         if "|" in value:
             value = multistring(value.split("|"))
@@ -686,10 +688,10 @@ class LaravelPHPFile(phpfile):
         # List of handled arrays
         handled = set()
         for unit in self.units:
-            print('unit.name:', unit.name)
-            print('unit.value', unit.value)
-            #print('unit._comments', unit._comments)
-            print('unit.spaces', unit.spaces)
+            print("unit.name:", unit.name)
+            print("unit.value", unit.value)
+            # print('unit._comments', unit._comments)
+            print("unit.spaces", unit.spaces)
             if "->" in unit.name:
                 handle_array(unit, unit.name.split("->", 1)[0], handled)
             else:
