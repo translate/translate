@@ -541,7 +541,7 @@ class LaravelPHPUnit(phpunit):
 class LaravelPHPFile(phpfile):
     UnitClass = LaravelPHPUnit
 
-    def create_and_add_unit(self, name, value, escape_type, comments, spaces=0):
+    def create_and_add_unit(self, name, value, escape_type, comments):
         if "|" in value:
             value = multistring(value.split("|"))
         super().create_and_add_unit(name, value, escape_type, comments)
@@ -551,16 +551,14 @@ class LaravelPHPFile(phpfile):
 
         def handle_array(prefix, nodes, lexer):
             for item in nodes:
-                assert isinstance(item, ArrayElement)
+                if not isinstance(item, ArrayElement):
+                    raise AssertionError("The item must be an array element")
                 if item.key is None:
                     name = []
                 else:
                     # To update lexer current position
                     lexer.extract_name("DOUBLE_ARROW", *item.lexpositions)
-                    if isinstance(item.key, BinaryOp):
-                        name = f"'{concatenate(item.key)}'"
-                    else:
-                        name = f"{item.key}"
+                    name = f"{item.key}"
                 if prefix:
                     name = f"{prefix}.{name}"  # Laravel uses dot notation https://laravel.com/docs/9.x/localization#retrieving-translation-strings
                 if isinstance(item.value, Array):
@@ -573,14 +571,6 @@ class LaravelPHPFile(phpfile):
                         lexer.extract_comments(item.lexpositions[1]),
                     )
 
-        def concatenate(item):
-            if isinstance(item, str):
-                return item
-            elif isinstance(item, Variable):
-                return item.name
-            assert isinstance(item, BinaryOp)
-            return concatenate(item.left) + concatenate(item.right)
-
         parser = make_parser()
         for item in parser.productions:
             item.callable = wrap_production(item.callable)
@@ -591,44 +581,7 @@ class LaravelPHPFile(phpfile):
             self.parse(b"<?php\n" + phpsrc)
             return
         for item in tree:
-            if isinstance(item, Assignment):
-                if isinstance(item.node, ArrayOffset):
-                    name = lexer.extract_name("EQUALS", *item.lexpositions)
-                    if isinstance(item.expr, Array):
-                        handle_array(name, item.expr.nodes, lexer)
-                    elif isinstance(item.expr, str):
-                        self.create_and_add_unit(
-                            name,
-                            item.expr,
-                            lexer.extract_quote(),
-                            lexer.extract_comments(item.lexpositions[1]),
-                        )
-                    elif isinstance(item.expr, BinaryOp) and item.expr.op == ".":
-                        self.create_and_add_unit(
-                            name,
-                            concatenate(item.expr),
-                            lexer.extract_quote(),
-                            lexer.extract_comments(item.lexpositions[1]),
-                        )
-                elif isinstance(item.node, Variable):
-                    name = lexer.extract_name("EQUALS", *item.lexpositions)
-                    if isinstance(item.expr, Array):
-                        handle_array(name, item.expr.nodes, lexer)
-                    elif isinstance(item.expr, str):
-                        self.create_and_add_unit(
-                            name,
-                            item.expr,
-                            lexer.extract_quote(),
-                            lexer.extract_comments(item.lexpositions[1]),
-                        )
-                    elif isinstance(item.expr, BinaryOp) and item.expr.op == ".":
-                        self.create_and_add_unit(
-                            name,
-                            concatenate(item.expr),
-                            lexer.extract_quote(),
-                            lexer.extract_comments(item.lexpositions[1]),
-                        )
-            elif isinstance(item, Return):
+            if isinstance(item, Return):
                 if isinstance(item.node, Array):
                     # Adjustextractor position
                     lexer.extract_name("RETURN", *item.lexpositions)
