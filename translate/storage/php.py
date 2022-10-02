@@ -537,8 +537,10 @@ class LaravelPHPUnit(phpunit):
         joiner = "\n" + indent
         return indent + joiner.join(self._comments + [out])
 
+
 class LaravelPHPFile(phpfile):
     UnitClass = LaravelPHPUnit
+
     def create_and_add_unit(self, name, value, escape_type, comments, spaces=0):
         if "|" in value:
             value = multistring(value.split("|"))
