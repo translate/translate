@@ -562,7 +562,7 @@ class LaravelPHPFile(phpfile):
                     else:
                         name = f"{item.key}"
                 if prefix:
-                    name = f"{prefix}.{name}" #Laravel uses dot notation https://laravel.com/docs/9.x/localization#retrieving-translation-strings
+                    name = f"{prefix}.{name}"  # Laravel uses dot notation https://laravel.com/docs/9.x/localization#retrieving-translation-strings
                 if isinstance(item.value, Array):
                     handle_array(name, item.value.nodes, lexer)
                 elif isinstance(item.value, str):

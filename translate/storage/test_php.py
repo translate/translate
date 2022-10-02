@@ -1233,9 +1233,11 @@ class TestLaravelPhpFile(test_monolingual.TestMonolingualStore):
         assert phpunit.source == "The :attribute must be greater than :value."
         phpunit = phpfile.units[3]
         assert phpunit.name == "gt.string"
-        assert phpunit.source == "The :attribute must be greater than :value characters."
+        assert (
+            phpunit.source == "The :attribute must be greater than :value characters."
+        )
         phpunit = phpfile.units[4]
         assert phpunit.name == "custom.attribute-name.rule-name"
         assert phpunit.source == "custom-message"
-        #assert bytes(phpfile).decode() == phpsource
+        # assert bytes(phpfile).decode() == phpsource
         # Not working yet for a bug in extract_comments
