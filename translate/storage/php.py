@@ -526,6 +526,17 @@ class LaravelPHPUnit(phpunit):
             return "|".join(result.strings)
         return result
 
+    def getoutput(self, indent="", name=None):
+        """Convert the unit back into formatted lines for a php file."""
+        fmt = "'{0}' => {1}{2}{1},\n"
+        out = fmt.format(
+            name if name else self.name,
+            self.escape_type,
+            phpencode(self.get_raw_value(), self.escape_type),
+        )
+        joiner = "\n" + indent
+        return indent + joiner.join(self._comments + [out])
+
 class LaravelPHPFile(phpfile):
     UnitClass = LaravelPHPUnit
     def create_and_add_unit(self, name, value, escape_type, comments, spaces=0):
@@ -537,7 +548,6 @@ class LaravelPHPFile(phpfile):
         """Read the source of a PHP file in and include them as units."""
 
         def handle_array(prefix, nodes, lexer):
-            prefix += lexer.extract_array()
             for item in nodes:
                 assert isinstance(item, ArrayElement)
                 if item.key is None:
@@ -547,12 +557,10 @@ class LaravelPHPFile(phpfile):
                     lexer.extract_name("DOUBLE_ARROW", *item.lexpositions)
                     if isinstance(item.key, BinaryOp):
                         name = f"'{concatenate(item.key)}'"
-                    elif isinstance(item.key, (int, float)):
-                        name = f"{item.key}"
                     else:
-                        name = f"'{item.key}'"
+                        name = f"{item.key}"
                 if prefix:
-                    name = f"{prefix}->{name}"
+                    name = f"{prefix}.{name}" #Laravel uses dot notation https://laravel.com/docs/9.x/localization#retrieving-translation-strings
                 if isinstance(item.value, Array):
                     handle_array(name, item.value.nodes, lexer)
                 elif isinstance(item.value, str):
@@ -581,15 +589,7 @@ class LaravelPHPFile(phpfile):
             self.parse(b"<?php\n" + phpsrc)
             return
         for item in tree:
-            if isinstance(item, FunctionCall):
-                if item.name == "define":
-                    self.create_and_add_unit(
-                        lexer.extract_name("COMMA", *item.lexpositions),
-                        item.params[1].node,
-                        lexer.extract_quote(),
-                        lexer.extract_comments(item.lexpositions[1]),
-                    )
-            elif isinstance(item, Assignment):
+            if isinstance(item, Assignment):
                 if isinstance(item.node, ArrayOffset):
                     name = lexer.extract_name("EQUALS", *item.lexpositions)
                     if isinstance(item.expr, Array):
@@ -630,7 +630,7 @@ class LaravelPHPFile(phpfile):
                 if isinstance(item.node, Array):
                     # Adjustextractor position
                     lexer.extract_name("RETURN", *item.lexpositions)
-                    handle_array("return", item.node.nodes, lexer)
+                    handle_array("", item.node.nodes, lexer)
 
     def serialize(self, out):
         """Convert the units back to lines."""
@@ -638,59 +638,14 @@ class LaravelPHPFile(phpfile):
         def write(text):
             out.write(text.encode(self.encoding))
 
-        def handle_array(unit, arrname, handled, indent=0):
-            if arrname in handled:
-                return
-            childs = set()
-            # Default to classic array
-            init = "array("
-            close = ")"
-            name = arrname
-            # Handle [] style array
-            if name.endswith("[]"):
-                init = "["
-                close = "]"
-                name = name[:-2]
-            # Handle return, assignment or sub array
-            if "->" in arrname:
-                separator = " =>"
-                name = name.rsplit("->", 1)[-1]
-            elif name == "return":
-                separator = ""
-            else:
-                separator = " ="
-            # Write array start
-            write("{}{}{} {}\n".format(" " * indent, name, separator, init))
-            indent += 4
-            prefix = f"{arrname}->"
-            pref_len = len(prefix)
-            for item in self.units:
-                if not item.name.startswith(prefix):
-                    continue
-                name = item.name[pref_len:]
-                if "->" in name:
-                    handle_array(item, prefix + name.split("->", 1)[0], childs, indent)
-                else:
-                    write(item.getoutput(" " * indent, name))
-            # Write array end
-            write(
-                "{}{}{}\n".format(
-                    " " * (indent - 4), close, "," if "->" in arrname else ";"
-                )
-            )
-            handled.add(arrname)
-
+        # Write array start
         write("<?php\n")
         write("\n")
+        write("return [\n")
 
         # List of handled arrays
-        handled = set()
         for unit in self.units:
-            print('unit.name:', unit.name)
-            print('unit.value', unit.value)
-            #print('unit._comments', unit._comments)
-            print('unit.spaces', unit.spaces)
-            if "->" in unit.name:
-                handle_array(unit, unit.name.split("->", 1)[0], handled)
-            else:
-                write(unit.getoutput())
+            write(unit.getoutput(indent="    "))
+
+        # Write array end
+        write("];\n")
