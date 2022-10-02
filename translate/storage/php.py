@@ -581,11 +581,10 @@ class LaravelPHPFile(phpfile):
             self.parse(b"<?php\n" + phpsrc)
             return
         for item in tree:
-            if isinstance(item, Return):
-                if isinstance(item.node, Array):
-                    # Adjustextractor position
-                    lexer.extract_name("RETURN", *item.lexpositions)
-                    handle_array("", item.node.nodes, lexer)
+            if isinstance(item, Return) and isinstance(item.node, Array):
+                # Adjustextractor position
+                lexer.extract_name("RETURN", *item.lexpositions)
+                handle_array("", item.node.nodes, lexer)
 
     def serialize(self, out):
         """Convert the units back to lines."""
