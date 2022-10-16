@@ -6,5 +6,5 @@ License
 *******
 
 The Translate Toolkit documentation is released under the `GNU General Public
-License (GPL) <http://www.gnu.org/licenses/gpl.html>`_.
+License (GPL) <https://www.gnu.org/licenses/old-licenses/gpl-2.0.html>`_.
 
