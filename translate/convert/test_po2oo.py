@@ -199,22 +199,20 @@ class TestPO2OOCommand(test_convert.TestConvertCommand, TestPO2OO):
     """Tests running actual po2oo commands on files"""
 
     convertmodule = po2oo
-
-    def test_help(self, capsys):
-        """tests getting help"""
-        options = super().test_help(capsys)
-        options = self.help_check(options, "--source-language=LANG")
-        options = self.help_check(options, "--language=LANG")
-        options = self.help_check(options, "-T, --keeptimestamp")
-        options = self.help_check(options, "--nonrecursiveoutput")
-        options = self.help_check(options, "--nonrecursivetemplate")
-        options = self.help_check(options, "--filteraction")
-        options = self.help_check(options, "--skipsource")
-        options = self.help_check(options, "--threshold=PERCENT")
-        options = self.help_check(options, "--fuzzy")
-        options = self.help_check(options, "--nofuzzy")
-        options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
-        options = self.help_check(options, "--multifile=MULTIFILESTYLE", last=True)
+    expected_options = [
+        "--source-language=LANG",
+        "-l LANG, --language=LANG",
+        "-T, --keeptimestamp",
+        "--nonrecursiveoutput",
+        "--nonrecursivetemplate",
+        "--filteraction",
+        "--skipsource",
+        "--threshold=PERCENT",
+        "--fuzzy",
+        "--nofuzzy",
+        "-t TEMPLATE, --template=TEMPLATE",
+        "--multifile=MULTIFILESTYLE",
+    ]
 
     def convertoo(self, posource, ootemplate, language="en-US"):
         """helper to exercise the command line function"""

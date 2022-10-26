@@ -194,14 +194,12 @@ class TestRESX2POCommand(test_convert.TestConvertCommand, TestRESX2PO):
 
     convertmodule = resx2po
     defaultoptions = {"progress": "none"}
-
-    def test_help(self, capsys):
-        """Tests getting help"""
-        options = super().test_help(capsys)
-        options = self.help_check(options, "-P, --pot")
-        options = self.help_check(options, "--duplicates")
-        options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
-        options = self.help_check(options, "--filter", last=True)
+    expected_options = [
+        "-P, --pot",
+        "--duplicates",
+        "-t TEMPLATE, --template=TEMPLATE",
+        "--filter",
+    ]
 
     @staticmethod
     def single_element(pofile):

@@ -564,8 +564,8 @@ class TestPO2RESXCommand(test_convert.TestConvertCommand, TestPO2RESX):
     """Tests running actual po2resx commands on files"""
 
     convertmodule = po2resx
-
-    def test_help(self, capsys):
-        """Tests getting help"""
-        options = super().test_help(capsys)
-        options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
+    expected_options = [
+        "-t TEMPLATE, --template=TEMPLATE",
+        "--fuzzy",
+        "--nofuzzy",
+    ]

@@ -207,15 +207,14 @@ class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2PO):
 
     convertmodule = oo2po
 
-    def test_help(self, capsys):
-        """tests getting help"""
-        options = super().test_help(capsys)
-        options = self.help_check(options, "--source-language=LANG")
-        options = self.help_check(options, "--language=LANG")
-        options = self.help_check(options, "-P, --pot")
-        options = self.help_check(options, "--duplicates=DUPLICATESTYLE")
-        options = self.help_check(options, "--multifile=MULTIFILESTYLE")
-        options = self.help_check(options, "--nonrecursiveinput", last=True)
+    expected_options = [
+        "--source-language=LANG",
+        "-l LANG, --language=LANG",
+        "-P, --pot",
+        "--duplicates=DUPLICATESTYLE",
+        "--multifile=MULTIFILESTYLE",
+        "--nonrecursiveinput",
+    ]
 
     def test_preserve_filename(self):
         """Ensures that the filename is preserved."""

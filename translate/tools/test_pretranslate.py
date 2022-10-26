@@ -362,13 +362,9 @@ class TestPretranslateCommand(test_convert.TestConvertCommand, TestPretranslate)
     """Tests running actual pretranslate commands on files"""
 
     convertmodule = pretranslate
-
-    def test_help(self, capsys):
-        """tests getting help"""
-        options = super().test_help(capsys)
-        options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
-        options = self.help_check(options, "--tm")
-        options = self.help_check(
-            options, "-s MIN_SIMILARITY, --similarity=MIN_SIMILARITY"
-        )
-        options = self.help_check(options, "--nofuzzymatching", last=True)
+    expected_options = [
+        "-t TEMPLATE, --template=TEMPLATE",
+        "--tm",
+        "-s MIN_SIMILARITY, --similarity=MIN_SIMILARITY",
+        "--nofuzzymatching",
+    ]

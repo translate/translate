@@ -246,6 +246,10 @@ class TestBasicXLIFF2PO(test_convert.TestConvertCommand, TestXLIFF2PO):
     """This tests a basic XLIFF file without xmlns attribute"""
 
     convertmodule = xliff2po
+    expected_options = [
+        "-P, --pot",
+        "--duplicates=DUPLICATESTYLE",
+    ]
 
     xliffskeleton = """<?xml version="1.0" ?>
 <xliff version="1.1">
@@ -275,6 +279,10 @@ class TestXLIFF2POCommand(test_convert.TestConvertCommand, TestXLIFF2PO):
     """Tests running actual xliff2po commands on files"""
 
     convertmodule = xliff2po
+    expected_options = [
+        "-P, --pot",
+        "--duplicates=DUPLICATESTYLE",
+    ]
 
     @staticmethod
     def singleelement(pofile):
@@ -286,12 +294,6 @@ class TestXLIFF2POCommand(test_convert.TestConvertCommand, TestXLIFF2PO):
         else:
             assert len(pofile.units) == 1
             return pofile.units[0]
-
-    def test_help(self, capsys):
-        """tests getting help"""
-        options = super().test_help(capsys)
-        options = self.help_check(options, "-P, --pot")
-        options = self.help_check(options, "--duplicates=DUPLICATESTYLE")
 
     def test_preserve_filename(self):
         """Ensures that the filename is preserved."""

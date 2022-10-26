@@ -147,10 +147,7 @@ class TestPO2TSCommand(test_convert.TestConvertCommand, TestPO2TS):
 
     convertmodule = po2ts
 
-    def test_help(self, capsys):
-        """tests getting help"""
-        options = super().test_help(capsys)
-        options = self.help_check(options, "-c CONTEXT, --context=CONTEXT")
-        options = self.help_check(
-            options, "-t TEMPLATE, --template=TEMPLATE", last=True
-        )
+    expected_options = [
+        "-c CONTEXT, --context=CONTEXT",
+        "-t TEMPLATE, --template=TEMPLATE",
+    ]

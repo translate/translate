@@ -135,9 +135,8 @@ class TestYAML2POCommand(test_convert.TestConvertCommand, TestYAML2PO):
 
     convertmodule = yaml2po
     defaultoptions = {"progress": "none"}
-
-    def test_help(self, capsys):
-        """tests getting help"""
-        options = super().test_help(capsys)
-        options = self.help_check(options, "-P, --pot")
-        options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
+    expected_options = [
+        "-P, --pot",
+        "-t TEMPLATE, --template=TEMPLATE",
+        "--duplicates=DUPLICATESTYLE",
+    ]

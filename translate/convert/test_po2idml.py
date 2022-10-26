@@ -7,6 +7,9 @@ class TestPo2IDMLCommand(test_convert.TestConvertCommand):
     """Tests running actual po2idml commands on files"""
 
     convertmodule = po2idml
+    expected_options = [
+        "-t TEMPLATE, --template=TEMPLATE",
+    ]
 
     def test_convert(self):
         posource = """

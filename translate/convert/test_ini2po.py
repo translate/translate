@@ -148,9 +148,8 @@ class TestIni2POCommand(test_convert.TestConvertCommand, TestIni2PO):
     convertmodule = ini2po
     defaultoptions = {"progress": "none"}
 
-    def test_help(self, capsys):
-        """tests getting help"""
-        options = super().test_help(capsys)
-        options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
-        options = self.help_check(options, "-P, --pot")
-        options = self.help_check(options, "--duplicates=DUPLICATESTYLE")
+    expected_options = [
+        "-t TEMPLATE, --template=TEMPLATE",
+        "-P, --pot",
+        "--duplicates=DUPLICATESTYLE",
+    ]

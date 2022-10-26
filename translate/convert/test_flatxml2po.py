@@ -132,10 +132,9 @@ class TestFlatXML2POCommand(test_convert.TestConvertCommand):
 
     convertmodule = flatxml2po
 
-    def test_help(self, capsys):
-        """tests getting help"""
-        options = super().test_help(capsys)
-        options = self.help_check(options, "-r ROOT, --root=ROOT")
-        options = self.help_check(options, "-v VALUE, --value=VALUE")
-        options = self.help_check(options, "-k KEY, --key=KEY")
-        options = self.help_check(options, "-n NS, --namespace=NS", last=True)
+    expected_options = [
+        "-r ROOT, --root=ROOT",
+        "-v VALUE, --value=VALUE",
+        "-k KEY, --key=KEY",
+        "-n NS, --namespace=NS",
+    ]

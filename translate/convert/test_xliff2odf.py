@@ -7,6 +7,9 @@ class TestXLIFF2ODFommand(test_convert.TestConvertCommand):
     """Tests running actual xliff2odf commands on files"""
 
     convertmodule = xliff2odf
+    expected_options = [
+        "-t TEMPLATE, --template=TEMPLATE",
+    ]
 
     def test_convert(self):
         xliffsource = """<?xml version="1.0" ?>

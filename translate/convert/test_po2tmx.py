@@ -197,9 +197,8 @@ class TestPO2TMXCommand(test_convert.TestConvertCommand, TestPO2TMX):
 
     convertmodule = po2tmx
 
-    def test_help(self, capsys):
-        """tests getting help"""
-        options = super().test_help(capsys)
-        options = self.help_check(options, "-l LANG, --language=LANG")
-        options = self.help_check(options, "--source-language=LANG")
-        options = self.help_check(options, "--comments", last=True)
+    expected_options = [
+        "-l LANG, --language=LANG",
+        "--source-language=LANG",
+        "--comments",
+    ]

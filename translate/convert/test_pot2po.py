@@ -828,13 +828,10 @@ class TestPOT2POCommand(test_convert.TestConvertCommand, TestPOT2PO):
 
     convertmodule = pot2po
 
-    def test_help(self, capsys):
-        """tests getting help"""
-        options = super().test_help(capsys)
-        options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
-        options = self.help_check(options, "-P, --pot")
-        options = self.help_check(options, "--tm")
-        options = self.help_check(
-            options, "-s MIN_SIMILARITY, --similarity=MIN_SIMILARITY"
-        )
-        options = self.help_check(options, "--nofuzzymatching", last=True)
+    expected_options = [
+        "-t TEMPLATE, --template=TEMPLATE",
+        "-P, --pot",
+        "--tm",
+        "-s MIN_SIMILARITY, --similarity=MIN_SIMILARITY",
+        "--nofuzzymatching",
+    ]
