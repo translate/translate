@@ -1,8 +1,13 @@
 import os
+import re
+from itertools import chain
 
 import pytest
 
 from translate.convert import convert
+
+
+OPTION_RE = re.compile(r"^\s*-")
 
 
 class TestConvertCommand:
@@ -10,6 +15,7 @@ class TestConvertCommand:
 
     convertmodule = convert
     defaultoptions = {"progress": "none"}
+    expected_options = []
 
     def setup_method(self, method):
         """creates a clean test directory for the given method"""
@@ -101,26 +107,44 @@ class TestConvertCommand:
             self.run_command(help=True)
         help_string, err = capsys.readouterr()
         # normalize newlines
-        help_string = help_string.replace("\r\n", "\n").replace("\r", "\n")
+        help_lines = help_string.splitlines()
+        print(help_lines)
+
+        # summary documentation
         convertsummary = self.convertmodule.__doc__.split("\n")[0]
         # the convertsummary might be wrapped. this will probably unwrap it
-        assert convertsummary in help_string.replace("\n", " ")
-        usageline = help_string[: help_string.find("\n")]
-        # Different versions of optparse might contain either upper or
-        # lowercase versions of 'Usage:' and 'Options:', so we need to take
-        # that into account
-        assert (
-            usageline.startswith("Usage: ") or usageline.startswith("usage: ")
-        ) and "[--version] [-h|--help]" in usageline
-        options = help_string[help_string.find("ptions:\n") :]
-        options = options[options.find("\n") + 1 :]
-        options = self.help_check(options, "--progress=PROGRESS")
-        options = self.help_check(options, "--version")
-        options = self.help_check(options, "-h, --help")
-        options = self.help_check(options, "--manpage")
-        options = self.help_check(options, "--errorlevel=ERRORLEVEL")
-        options = self.help_check(options, "-i INPUT, --input=INPUT")
-        options = self.help_check(options, "-x EXCLUDE, --exclude=EXCLUDE")
-        options = self.help_check(options, "-o OUTPUT, --output=OUTPUT")
-        options = self.help_check(options, "-S, --timestamp")
-        return options
+        assert convertsummary in " ".join(help_lines)
+
+        # usage line
+        usageline = help_lines[0]
+        assert usageline.startswith("Usage: ")
+        assert "[--version] [-h|--help]" in usageline
+        for line in help_lines:
+            print(line)
+
+        # extract options
+        options = [
+            line.lstrip()
+            for line in help_lines[help_lines.index("Options:") + 1 :]
+            if OPTION_RE.match(line)
+        ]
+
+        # Verify all expected options are present
+        base_options = [
+            "--progress=PROGRESS",
+            "--version",
+            "-h, --help",
+            "--manpage",
+            "--errorlevel=ERRORLEVEL",
+            "-i INPUT, --input=INPUT",
+            "-x EXCLUDE, --exclude=EXCLUDE",
+            "-o OUTPUT, --output=OUTPUT",
+            "-S, --timestamp",
+        ]
+        for expected in chain(base_options, self.expected_options):
+            start = len(options)
+            options = [option for option in options if not option.startswith(expected)]
+            assert start - 1 == len(options), f"{expected} not found in {options}"
+
+        # We should parse all the options
+        assert options == []

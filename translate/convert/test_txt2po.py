@@ -233,12 +233,10 @@ class TestTxt2POCommand(test_convert.TestConvertCommand, TestTxt2PO):
 
     convertmodule = txt2po
     defaultoptions = {"progress": "none"}
-
-    def test_help(self, capsys):
-        """tests getting help"""
-        options = super().test_help(capsys)
-        options = self.help_check(options, "-P, --pot")
-        options = self.help_check(options, "--duplicates")
-        options = self.help_check(options, "--encoding")
-        options = self.help_check(options, "--flavour")
-        options = self.help_check(options, "--no-segmentation", last=True)
+    expected_options = [
+        "-P, --pot",
+        "--duplicates",
+        "--encoding",
+        "--flavour",
+        "--no-segmentation",
+    ]

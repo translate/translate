@@ -277,9 +277,8 @@ class TestPhp2POCommand(test_convert.TestConvertCommand, TestPhp2PO):
     convertmodule = php2po
     defaultoptions = {"progress": "none"}
 
-    def test_help(self, capsys):
-        """tests getting help"""
-        options = super().test_help(capsys)
-        options = self.help_check(options, "-P, --pot")
-        options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
-        options = self.help_check(options, "--duplicates=DUPLICATESTYLE", last=True)
+    expected_options = [
+        "-P, --pot",
+        "-t TEMPLATE, --template=TEMPLATE",
+        "--duplicates=DUPLICATESTYLE",
+    ]

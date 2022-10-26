@@ -66,12 +66,15 @@ class TestPO2RCCommand(test_convert.TestConvertCommand):
 
     convertmodule = po2rc
     defaultoptions = {"progress": "none"}
-
-    def test_help(self, capsys):
-        """tests getting help"""
-        options = super().test_help(capsys)
-        options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
-        options = self.help_check(options, "-l LANG, --lang=LANG")
+    expected_options = [
+        "-t TEMPLATE, --template=TEMPLATE",
+        "-l LANG, --lang=LANG",
+        "--charset=CHARSET",
+        "--sublang=SUBLANG",
+        "--threshold=PERCENT",
+        "--fuzzy",
+        "--nofuzzy",
+    ]
 
     def test_convert(self):
         """Tests the conversion to a po file"""

@@ -140,10 +140,9 @@ class TestPO2CSVCommand(test_convert.TestConvertCommand, TestPO2CSV):
 
     convertmodule = po2csv
 
-    def test_help(self, capsys):
-        """tests getting help"""
-        options = super().test_help(capsys)
-        options = self.help_check(options, "--columnorder=COLUMNORDER", last=True)
+    expected_options = [
+        "--columnorder=COLUMNORDER",
+    ]
 
     def test_columnorder(self):
         pocontent = '#: simple.c\nmsgid "Same"\nmsgstr "Target"\n'

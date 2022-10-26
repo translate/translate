@@ -168,6 +168,13 @@ class TestPO2HtmlCommand(test_convert.TestConvertCommand, TestPO2Html):
 
     convertmodule = po2html
 
+    expected_options = [
+        "-t TEMPLATE, --template=TEMPLATE",
+        "--threshold=PERCENT",
+        "--fuzzy",
+        "--nofuzzy",
+    ]
+
     def test_individual_files(self):
         """Test the fully non-recursive case where all inputs and outputs
         (input po, template html, output html) are specified as individual
@@ -254,14 +261,6 @@ class TestPO2HtmlCommand(test_convert.TestConvertCommand, TestPO2Html):
 
         self.then_html_file_is_translated("html/file1.html")
         self.then_html_file_is_translated("html/subdir/file2.html")
-
-    def test_help(self, capsys):
-        """Test getting help."""
-        options = super().test_help(capsys)
-        options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
-        options = self.help_check(options, "--threshold=PERCENT")
-        options = self.help_check(options, "--fuzzy")
-        options = self.help_check(options, "--nofuzzy", last=True)
 
     def given_html_test_file(self, filename):
         self.create_testfile(

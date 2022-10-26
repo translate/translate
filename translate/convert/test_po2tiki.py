@@ -61,8 +61,3 @@ class TestPo2TikiCommand(test_convert.TestConvertCommand, TestPo2Tiki):
 
     convertmodule = po2tiki
     defaultoptions = {}
-
-    def test_help(self, capsys):
-        """tests getting help"""
-        options = super().test_help(capsys)
-        self.help_check(options, "", last=True)

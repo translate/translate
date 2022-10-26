@@ -143,14 +143,13 @@ class TestCSV2POCommand(test_convert.TestConvertCommand, TestCSV2PO):
 
     convertmodule = csv2po
 
-    def test_help(self, capsys):
-        """tests getting help"""
-        options = super().test_help(capsys)
-        options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
-        options = self.help_check(options, "-P, --pot")
-        options = self.help_check(options, "--charset=CHARSET")
-        options = self.help_check(options, "--columnorder=COLUMNORDER")
-        options = self.help_check(options, "--duplicates=DUPLICATESTYLE", last=True)
+    expected_options = [
+        "-t TEMPLATE, --template=TEMPLATE",
+        "-P, --pot",
+        "--charset=CHARSET",
+        "--columnorder=COLUMNORDER",
+        "--duplicates=DUPLICATESTYLE",
+    ]
 
     def test_columnorder(self):
         csvcontent = '"Target","Same"\n'

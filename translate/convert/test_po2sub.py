@@ -68,10 +68,9 @@ class TestPO2SubCommand(test_convert.TestConvertCommand, TestPO2Sub):
     convertmodule = po2sub
     defaultoptions = {"progress": "none"}
 
-    def test_help(self, capsys):
-        """tests getting help"""
-        options = super().test_help(capsys)
-        options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
-        options = self.help_check(options, "--threshold=PERCENT")
-        options = self.help_check(options, "--fuzzy")
-        options = self.help_check(options, "--nofuzzy", last=True)
+    expected_options = [
+        "-t TEMPLATE, --template=TEMPLATE",
+        "--threshold=PERCENT",
+        "--fuzzy",
+        "--nofuzzy",
+    ]

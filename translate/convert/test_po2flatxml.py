@@ -133,13 +133,11 @@ class TestPO2FlatXMLCommand(test_convert.TestConvertCommand):
     """Tests running actual po2flatxml commands on files"""
 
     convertmodule = po2flatxml
-
-    def test_help(self, capsys):
-        """tests getting help"""
-        options = super().test_help(capsys)
-        options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
-        options = self.help_check(options, "-r ROOT, --root=ROOT")
-        options = self.help_check(options, "-v VALUE, --value=VALUE")
-        options = self.help_check(options, "-k KEY, --key=KEY")
-        options = self.help_check(options, "-n NS, --namespace=NS")
-        options = self.help_check(options, "-w INDENT, --indent=INDENT", last=True)
+    expected_options = [
+        "-t TEMPLATE, --template=TEMPLATE",
+        "-r ROOT, --root=ROOT",
+        "-v VALUE, --value=VALUE",
+        "-k KEY, --key=KEY",
+        "-n NS, --namespace=NS",
+        "-w INDENT, --indent=INDENT",
+    ]
