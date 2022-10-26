@@ -226,3 +226,43 @@ msgstr "&Pomoc"
         assert len(rc_result.units) == 8
         assert rc_result.units[0].target == "&File"
         assert rc_result.units[6].target == "&Pomoc"
+
+    def test_convert_discardable(self):
+        self.create_testfile(
+            "simple.rc",
+            """
+STRINGTABLE DISCARDABLE
+BEGIN
+
+IDS_MSG1 "Hello, world!\\n"
+IDS_MSG2 "Orangutan has %d banana.\\n"
+IDS_MSG3 "Try Weblate at https://demo.weblate.org/!\\n"
+IDS_MSG4 "Thank you for using Weblate."
+END
+""",
+        )
+        with self.open_testfile("simple.rc") as handle:
+            rc_result = rcfile(handle)
+            print(rc_result.units)
+        self.create_testfile(
+            "simple.po",
+            """
+msgid "Hello, world!\\n"
+msgstr "Nazdar, světe!\\n"
+""",
+        )
+        self.run_command(
+            template="simple.rc",
+            i="simple.po",
+            o="output.rc",
+            l="LANG_CZECH",
+            errorlevel="exception",
+        )
+        with self.open_testfile("output.rc") as handle:
+            print(handle.read().decode("utf-16"))
+        with self.open_testfile("output.rc") as handle:
+            rc_result = rcfile(handle)
+        assert len(rc_result.units) == 4
+        assert rc_result.units[0].target == "Nazdar, světe!\n"
+
+        "Closes the active window and asks for saving the document."

@@ -145,7 +145,9 @@ class rerc:
         yield BLOCK_END
 
     def convert_string_table(self, s, loc, toks):
-        yield from toks[0:2]
+        yield toks[0]
+        if toks[1]:
+            yield f" {toks[1]}"
         yield NL
         yield BLOCK_START
         yield NL
