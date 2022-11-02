@@ -1,0 +1,6 @@
+# Needs manual listing until setuptools_scm support submodules
+# See https://github.com/pypa/setuptools_scm/issues/206
+include docs/_themes/README.rst
+include docs/_themes/sphinx-bootstrap/*.html
+include docs/_themes/sphinx-bootstrap/theme.conf
+recursive-include docs/_themes/sphinx-bootstrap/static/ *.*

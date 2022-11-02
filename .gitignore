@@ -23,7 +23,6 @@
 /build/
 /dist/
 MANIFEST
-MANIFEST.in
 
 
 # Requirements generation
