@@ -29,6 +29,7 @@ b : a string
 """
 
 import re
+import uuid
 from io import StringIO
 
 from translate.storage import base
@@ -83,9 +84,11 @@ class iniunit(base.TranslationUnit):
     """A INI file entry"""
 
     def __init__(self, source=None, **kwargs):
-        self.location = ""
         if source:
             self.source = source
+            self.location = f"[default]{hex(hash(source))}"
+        else:
+            self.location = f"[default]{str(uuid.uuid4())}"
         super().__init__(source)
 
     def addlocation(self, location):
@@ -93,6 +96,14 @@ class iniunit(base.TranslationUnit):
 
     def getlocations(self):
         return [self.location]
+
+    @property
+    def target(self):
+        return self.source
+
+    @target.setter
+    def target(self, target):
+        self.source = target
 
 
 class inifile(base.TranslationStore):
@@ -112,14 +123,18 @@ class inifile(base.TranslationStore):
             self.parse(inputfile)
 
     def serialize(self, out):
-        _outinifile = self._inifile
+        _outinifile = self._inifile or INIConfig(optionxformvalue=None)
         for unit in self.units:
             for location in unit.getlocations():
                 match = re.match("\\[(?P<section>.+)\\](?P<entry>.+)", location)
+                if match is None:
+                    section = "default"
+                    entry = location
+                else:
+                    section = match.groupdict()["section"]
+                    entry = match.groupdict()["entry"]
                 value = self._dialect.escape(unit.target)
-                _outinifile[match.groupdict()["section"]][
-                    match.groupdict()["entry"]
-                ] = value
+                _outinifile[section][entry] = value
         if _outinifile:
             out.write(str(_outinifile).encode("utf-8"))
 
