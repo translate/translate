@@ -82,13 +82,13 @@ class TestTranslationUnit:
         assert unit1 == unit2
         assert unit1 != unit3
         assert unit4 != unit5
-        if unit1.__class__.__name__ in ("RESXUnit", "dtdunit", "TxtUnit"):
+        if unit1.__class__.__name__ in ("RESXUnit", "dtdunit", "TxtUnit", "iniunit"):
             # unit1 will generally equal unit6 for monolingual formats (resx, dtd, txt)
             # with the default comparison method which compare units by their
             # target and source properties only.
             # For other monolingual formats:
             # - AndroidResourceUnit is comparing units by their full xml serialization (overriden __eq__)
-            # - phpunit and propunit (properties) can have different source/target
+            # - iniunit, phpunit and propunit (properties) can have different source/target
             #   and are reunited when serializing through `self.translation or self.value`
             assert unit1 == unit6
             assert not (unit1 != unit6)
