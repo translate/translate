@@ -333,11 +333,29 @@ class LISAfile(base.TranslationStore):
     def serialize(self, out=None):
         """Converts to a string containing the file's XML"""
         root = self.document.getroot()
+        xml_declaration = ""
+
         if self.XMLdoublequotes:
             if self.XMLuppercaseEncoding:
-                out.write(b'<?xml version="1.0" encoding="UTF-8"?>\n')
+                xml_declaration = (
+                    '<?xml version="1.0" encoding="' + self.encoding.upper() + '"?>\n'
+                )
             else:
-                out.write(b'<?xml version="1.0" encoding="utf-8"?>\n')
+                xml_declaration = (
+                    '<?xml version="1.0" encoding="' + self.encoding.lower() + '"?>\n'
+                )
+        else:
+            if self.XMLuppercaseEncoding:
+                xml_declaration = (
+                    "<?xml version='1.0' encoding='" + self.encoding.upper() + "'?>\n"
+                )
+            else:
+                xml_declaration = (
+                    "<?xml version='1.0' encoding='" + self.encoding.lower() + "'?>\n"
+                )
+
+        out.write(xml_declaration.encode(self.encoding))
+
         if self.XMLindent:
             reindent(root, **self.XMLindent)
         # When XMLSelfClosingTags flag is active, relay
@@ -347,18 +365,16 @@ class LISAfile(base.TranslationStore):
             treestring = etree.tostring(
                 self.document,
                 pretty_print=not self.XMLindent,
-                xml_declaration=not self.XMLdoublequotes,
                 encoding=self.encoding,
                 doctype=self.XMLdoctype,
             )
         else:
             if self.XMLdoctype:
-                out.write(b'' + self.XMLdoctype + '\n')
+                out.write(b"" + self.XMLdoctype + "\n")
             ElementTree.register_namespace("", self.namespace)
             treestring = ElementTree.tostring(
                 root,
                 encoding=self.encoding,
-                xml_declaration=not self.XMLdoublequotes,
                 short_empty_elements=False,
             )
         treestring = self.serialize_hook(treestring)
