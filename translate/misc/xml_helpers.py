@@ -184,6 +184,23 @@ def reindent(
             elem.tail = i
 
 
+def expand_closing_tags(elem):
+    """
+    Changes value of empty XML tags to empty string.
+
+    This changes lxml behavior to render these tags as
+    <tag></tag> instead of <tag />
+    """
+    elements = [elem]
+    while elements:
+        elem = elements.pop()
+        if elem.tag is etree.Entity:
+            continue
+        if elem.text is None:
+            elem.text = ""
+        elements.extend(elem)
+
+
 def validate_char(char: str) -> bool:
     """
     identify valid chars for XML, based on xmlIsChar_ch from

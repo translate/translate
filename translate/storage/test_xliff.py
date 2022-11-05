@@ -643,3 +643,27 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         xfile.units[0].target = "H  E"
         newfile = xliff.xlifffile.parsestring(bytes(xfile))
         assert newfile.units[0].target == "H  E"
+
+    @staticmethod
+    def test_closing_tags():
+        xlfsource = """<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+  <file datatype="xml" source-language="en-US" target-language="en-US" original="Email - SMTP API">
+    <body>
+      <group id="body">
+        <trans-unit id="Codeunit 270637162 - NamedType 3430817766" maxwidth="0" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Please connect to a server first.</source>
+          <target state="translated">Please connect to a server first.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit MailKit Client - NamedType ServerNotConnectedErr</note>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>
+"""
+        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        xlifffile.XMLSelfClosingTags = False
+        xlifffile.XMLuppercaseEncoding = False
+
+        assert bytes(xlifffile).decode("utf-8") == xlfsource

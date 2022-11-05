@@ -21,6 +21,7 @@
 from lxml import etree
 
 from translate.misc.xml_helpers import (
+    expand_closing_tags,
     getText,
     getXMLlang,
     getXMLspace,
@@ -265,6 +266,8 @@ class LISAfile(base.TranslationStore):
     XMLdoublequotes = True
     XMLdoctype = None
     XMLuppercaseEncoding = True
+    # Determine how empty tags should be serialized (<note></note> or <note />)
+    XMLSelfClosingTags = True
 
     namespace = None
 
@@ -329,20 +332,32 @@ class LISAfile(base.TranslationStore):
     def serialize(self, out=None):
         """Converts to a string containing the file's XML"""
         root = self.document.getroot()
+        xml_quote_format = "'"
+        xml_encoding = self.encoding.lower()
+
         if self.XMLdoublequotes:
-            if self.XMLuppercaseEncoding:
-                out.write(b'<?xml version="1.0" encoding="UTF-8"?>\n')
-            else:
-                out.write(b'<?xml version="1.0" encoding="utf-8"?>\n')
+            xml_quote_format = '"'
+
+        if self.XMLuppercaseEncoding:
+            xml_encoding = self.encoding.upper()
+
+        xml_declaration = f"<?xml version={xml_quote_format}1.0{xml_quote_format} encoding={xml_quote_format}{xml_encoding}{xml_quote_format}?>\n"
+
+        out.write(xml_declaration.encode(self.encoding))
+
         if self.XMLindent:
             reindent(root, **self.XMLindent)
+
+        if not self.XMLSelfClosingTags:
+            expand_closing_tags(root)
         treestring = etree.tostring(
             self.document,
             pretty_print=not self.XMLindent,
-            xml_declaration=not self.XMLdoublequotes,
+            xml_declaration=False,
             encoding=self.encoding,
             doctype=self.XMLdoctype,
         )
+
         treestring = self.serialize_hook(treestring)
         out.write(treestring)
 
