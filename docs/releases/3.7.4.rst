@@ -1,0 +1,30 @@
+Translate Toolkit 3.7.4
+***********************
+
+*Released on 5 November 2022*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- INI
+
+  - Make location handling consistent with other monolingual formats.
+
+Other
+-----
+
+- Include doc theme in source distribution.
+- Fixed testsuite compatibility with pytest 7.2.0.
+- Fixed license link in the README.
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař, Rafael Fontenelle
