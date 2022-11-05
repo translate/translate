@@ -18,6 +18,8 @@
 
 """Parent class for LISA standards (TMX, TBX, XLIFF)"""
 
+from xml.etree import ElementTree
+
 from lxml import etree
 
 from translate.misc.xml_helpers import (
@@ -265,6 +267,8 @@ class LISAfile(base.TranslationStore):
     XMLdoublequotes = True
     XMLdoctype = None
     XMLuppercaseEncoding = True
+    # Determine how empty tags should be serialized (<note></note> or <note />)
+    XMLSelfClosingTags = True
 
     namespace = None
 
@@ -336,13 +340,27 @@ class LISAfile(base.TranslationStore):
                 out.write(b'<?xml version="1.0" encoding="utf-8"?>\n')
         if self.XMLindent:
             reindent(root, **self.XMLindent)
-        treestring = etree.tostring(
-            self.document,
-            pretty_print=not self.XMLindent,
-            xml_declaration=not self.XMLdoublequotes,
-            encoding=self.encoding,
-            doctype=self.XMLdoctype,
-        )
+        # When XMLSelfClosingTags flag is active, relay
+        # against LXML library - otherwise we're using
+        # standard xml library.
+        if self.XMLSelfClosingTags:
+            treestring = etree.tostring(
+                self.document,
+                pretty_print=not self.XMLindent,
+                xml_declaration=not self.XMLdoublequotes,
+                encoding=self.encoding,
+                doctype=self.XMLdoctype,
+            )
+        else:
+            if self.XMLdoctype:
+                out.write(b'' + self.XMLdoctype + '\n')
+            ElementTree.register_namespace("", self.namespace)
+            treestring = ElementTree.tostring(
+                root,
+                encoding=self.encoding,
+                xml_declaration=not self.XMLdoublequotes,
+                short_empty_elements=False,
+            )
         treestring = self.serialize_hook(treestring)
         out.write(treestring)
 
