@@ -69,6 +69,7 @@ term-usage = I can code { -some-term }!
         term_unit = fluent_file.units[1]
         assert term_unit.getid() == "term-usage"
         assert term_unit.source == "I can code { -some-term }!"
+        assert term_unit.getplaceables() == ["{ -some-term }"]
 
     def test_term_source(self):
         """Checks that a Fluent definition with a term can be regenerated as source."""
