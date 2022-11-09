@@ -23,7 +23,7 @@ and :class:`FluentUnit` providing file and unit level access.
 """
 
 from fluent.syntax import FluentParser, ast, parse, serialize, visitor
-from fluent.syntax.serializer import serialize_pattern
+from fluent.syntax.serializer import serialize_pattern, serialize_placeable
 from fluent.syntax.stream import FluentParserStream
 from translate.storage import base
 
@@ -58,6 +58,7 @@ class FluentUnit(base.TranslationUnit):
         self._id = None
         self._errors = {}
         self._attributes = {}
+        self._placeables = []
         if source is not None:
             self._type = ast.Message
             self._set_value(source)
@@ -93,6 +94,9 @@ class FluentUnit(base.TranslationUnit):
     def getattributes(self):
         return self._attributes
 
+    def getplaceables(self):
+        return self._placeables
+
     def parse(self, entry):
         # Handle this unit separately if it is invalid.
         if isinstance(entry, ast.Junk):
@@ -109,6 +113,10 @@ class FluentUnit(base.TranslationUnit):
             @staticmethod
             def visit_Attribute(node):
                 this._attributes[node.id.name] = source_from_entry(node)
+
+            @staticmethod
+            def visit_Placeable(node):
+                this._placeables.append(serialize_placeable(node))
 
             @staticmethod
             def visit_Comment(node):
