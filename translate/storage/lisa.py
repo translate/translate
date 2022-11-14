@@ -333,26 +333,16 @@ class LISAfile(base.TranslationStore):
     def serialize(self, out=None):
         """Converts to a string containing the file's XML"""
         root = self.document.getroot()
-        xml_declaration = ""
+        xml_quote_format = "'"
+        xml_encoding = self.encoding.lower()
 
         if self.XMLdoublequotes:
-            if self.XMLuppercaseEncoding:
-                xml_declaration = (
-                    '<?xml version="1.0" encoding="' + self.encoding.upper() + '"?>\n'
-                )
-            else:
-                xml_declaration = (
-                    '<?xml version="1.0" encoding="' + self.encoding.lower() + '"?>\n'
-                )
-        else:
-            if self.XMLuppercaseEncoding:
-                xml_declaration = (
-                    "<?xml version='1.0' encoding='" + self.encoding.upper() + "'?>\n"
-                )
-            else:
-                xml_declaration = (
-                    "<?xml version='1.0' encoding='" + self.encoding.lower() + "'?>\n"
-                )
+            xml_quote_format = '"'
+
+        if self.XMLuppercaseEncoding:
+            xml_encoding = self.encoding.upper()
+
+        xml_declaration = f"<?xml version={xml_quote_format}1.0{xml_quote_format} encoding={xml_quote_format}{xml_encoding}{xml_quote_format}?>\n"
 
         out.write(xml_declaration.encode(self.encoding))
 
