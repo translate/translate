@@ -20,7 +20,6 @@
 
 import re
 import time
-from collections import OrderedDict
 
 from translate import __version__
 from translate.misc.dictutils import cidict
@@ -41,7 +40,7 @@ def parseheaderstring(input):
     """Parses an input string with the definition of a PO header and returns
     the interpreted values as a dictionary.
     """
-    headervalues = OrderedDict()
+    headervalues = {}
     for line in input.split("\n"):
         if not line or ":" not in line:
             continue
@@ -74,7 +73,7 @@ def update(existing, add=False, **kwargs):
     :return: Updated dictionary of header entries
     :rtype: dict of strings
     """
-    headerargs = OrderedDict()
+    headerargs = {}
     fixedargs = cidict()
     for key, value in kwargs.items():
         key = key.replace("_", "-")
@@ -182,7 +181,7 @@ class poheader:
         if report_msgid_bugs_to is None:
             report_msgid_bugs_to = ""
 
-        defaultargs = OrderedDict()
+        defaultargs = {}
         defaultargs["Project-Id-Version"] = project_id_version
         defaultargs["Report-Msgid-Bugs-To"] = report_msgid_bugs_to
         defaultargs["POT-Creation-Date"] = pot_creation_date

@@ -1,6 +1,5 @@
 import os
 import time
-from collections import OrderedDict
 from io import BytesIO
 
 from translate.storage import po, poheader, poxliff
@@ -38,7 +37,7 @@ def test_update():
     d = poheader.update({}, add=True, test_me="hello")
     assert d["Test-Me"] == "hello"
     # is the order correct ?
-    d = OrderedDict()
+    d = {}
     d["Project-Id-Version"] = "abc"
     d["POT-Creation-Date"] = "now"
     d = poheader.update(d, add=True, Test="hello", Report_Msgid_Bugs_To="bugs@list.org")

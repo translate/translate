@@ -126,7 +126,6 @@ Name and Value pairs:
 
 """
 
-import collections
 import re
 from codecs import iterencode
 from copy import deepcopy
@@ -565,7 +564,7 @@ class proppluralunit(base.TranslationUnit):
         """Construct a blank propunit."""
         self.personality = get_dialect(personality)
         super().__init__(source)
-        self.units = collections.OrderedDict()
+        self.units = {}
         self.name = ""
 
     @staticmethod
