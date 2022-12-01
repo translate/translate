@@ -1,7 +1,6 @@
 import os
 import plistlib
 import re
-from collections import OrderedDict
 
 from translate.lang import data
 from translate.misc.multistring import multistring
@@ -126,9 +125,9 @@ class StringsDictFile(base.DictStore):
         """Read a .stringsdict file into a dictionary, and convert it to translation units."""
 
         if isinstance(input, (bytes, str)):
-            plist = plistlib.loads(input, dict_type=OrderedDict)
+            plist = plistlib.loads(input)
         elif input is not None:
-            plist = plistlib.load(input, dict_type=OrderedDict)
+            plist = plistlib.load(input)
         else:
             plist = {}
 
@@ -160,17 +159,17 @@ class StringsDictFile(base.DictStore):
                     raise ValueError(f"Unexpected key {innerkey} in {key}")
 
     def serialize(self, out):
-        plist = OrderedDict()
+        plist = {}
 
         for u in self.units:
             loc = u.outerkey
             subkey = u.innerkey
 
             if loc not in plist:
-                plist[loc] = OrderedDict()
+                plist[loc] = {}
 
             if subkey is not None:
-                plurals = OrderedDict()
+                plurals = {}
                 plurals["NSStringFormatSpecTypeKey"] = "NSStringPluralRuleType"
                 plurals["NSStringFormatValueTypeKey"] = u.format_value_type
 

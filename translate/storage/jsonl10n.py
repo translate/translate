@@ -68,7 +68,6 @@ TODO:
 
 import json
 import uuid
-from collections import OrderedDict
 
 from translate.lang.data import cldr_plural_categories, plural_tags
 from translate.misc.multistring import multistring
@@ -232,7 +231,7 @@ class JsonFile(base.DictStore):
             if input is None:
                 raise base.ParseError(ValueError("Failed to decode JSON string."))
         try:
-            self._file = json.loads(input, object_pairs_hook=OrderedDict)
+            self._file = json.loads(input)
         except ValueError as e:
             raise base.ParseError(e)
 
@@ -253,7 +252,7 @@ class JsonNestedFile(JsonFile):
 
 class WebExtensionJsonUnit(BaseJsonUnit):
     def storevalues(self, output):
-        value = OrderedDict((("message", self.target),))
+        value = {"message": self.target}
         if self.notes:
             value["description"] = self.notes
         if self.placeholders:
@@ -418,13 +417,11 @@ class GoI18NJsonUnit(BaseJsonUnit):
             strings = list(target.strings)
             if len(self._store.plural_tags) > len(target.strings):
                 strings += [""] * (len(self._store.plural_tags) - len(target.strings))
-            target = OrderedDict(
-                [
-                    (plural, strings[offset])
-                    for offset, plural in enumerate(self._store.plural_tags)
-                ]
-            )
-        value = OrderedDict((("id", self.getid()),))
+            target = {
+                plural: strings[offset]
+                for offset, plural in enumerate(self._store.plural_tags)
+            }
+        value = {"id": self.getid()}
         if self.notes:
             value["description"] = self.notes
         value["translation"] = target
@@ -544,9 +541,7 @@ class ARBJsonFile(JsonFile):
         last_node=None,
     ):
         # Extract metadata as header
-        metadata = OrderedDict(
-            [(key, value) for key, value in data.items() if key.startswith("@@")]
-        )
+        metadata = {key: value for key, value in data.items() if key.startswith("@@")}
         if metadata:
             unit = self.UnitClass(metadata=metadata)
             unit.setid("@")

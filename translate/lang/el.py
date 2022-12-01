@@ -23,7 +23,6 @@
 
 
 import re
-from collections import OrderedDict
 
 from translate.lang import common
 
@@ -46,12 +45,10 @@ class el(common.Common):
         re.VERBOSE | re.UNICODE,
     )
 
-    puncdict = OrderedDict(
-        [
-            (";", "·"),
-            ("?", ";"),
-        ]
-    )
+    puncdict = {
+        ";": "·",
+        "?": ";",
+    }
 
     # Valid latin characters for use as accelerators
     valid_latin_accel = (

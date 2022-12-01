@@ -23,7 +23,6 @@ import os.path
 import re
 import sys
 import traceback
-from collections import OrderedDict
 from io import BytesIO
 
 from translate import __version__
@@ -31,15 +30,13 @@ from translate.misc import progressbar
 
 
 class ProgressBar:
-    progress_types = OrderedDict(
-        [
-            ("dots", progressbar.DotsProgressBar),
-            ("none", progressbar.NoProgressBar),
-            ("bar", progressbar.HashProgressBar),
-            ("names", progressbar.MessageProgressBar),
-            ("verbose", progressbar.VerboseProgressBar),
-        ]
-    )
+    progress_types = {
+        "dots": progressbar.DotsProgressBar,
+        "none": progressbar.NoProgressBar,
+        "bar": progressbar.HashProgressBar,
+        "names": progressbar.MessageProgressBar,
+        "verbose": progressbar.VerboseProgressBar,
+    }
 
     def __init__(self, progress_type, allfiles):
         """Set up a progress bar appropriate to the progress_type and files."""

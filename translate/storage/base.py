@@ -21,7 +21,6 @@
 import codecs
 import logging
 import pickle
-from collections import OrderedDict
 from io import BytesIO
 from typing import List, Optional, Tuple
 
@@ -954,7 +953,6 @@ class UnitId:
 
 class DictUnit(TranslationUnit):
     IdClass = UnitId
-    DefaultDict = OrderedDict
 
     def __init__(self, source=None):
         super().__init__(source)
@@ -972,7 +970,7 @@ class DictUnit(TranslationUnit):
         for pos, part in enumerate(parts[:-1]):
             element, key = part
             use_list = parts[pos + 1][0] == "index"
-            default = [] if use_list else self.DefaultDict()
+            default = [] if use_list else {}
             if element == "index":
                 while len(target) <= key and not unset:
                     target.append(default.copy())
@@ -1036,7 +1034,7 @@ class DictStore(TranslationStore):
             unit.get_unitid().parts[0][0] == "index" for unit in self.units
         ):
             return []
-        return OrderedDict()
+        return {}
 
     def serialize_units(self, output):
         for unit in self.unit_iter():

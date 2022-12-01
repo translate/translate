@@ -45,7 +45,6 @@ class YAMLUnit(base.DictUnit):
     """A YAML entry"""
 
     IdClass = YAMLUnitId
-    DefaultDict = dict
 
     def __init__(self, source=None, **kwargs):
         # Ensure we have ID (for serialization)
