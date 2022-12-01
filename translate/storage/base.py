@@ -960,11 +960,14 @@ class DictUnit(TranslationUnit):
         super().__init__(source)
         self._unitid = None
 
-    def storevalue(self, output, value, override_key=None, unset=False):
-        parent = target = output
+    def get_unitid(self):
         if self._unitid is None:
             self._unitid = self.IdClass.from_string(self._id)
-        parts = self._unitid.parts
+        return self._unitid
+
+    def storevalue(self, output, value, override_key=None, unset=False):
+        parent = target = output
+        parts = self.get_unitid().parts
         key = None
         for pos, part in enumerate(parts[:-1]):
             element, key = part
@@ -1029,7 +1032,9 @@ class DictUnit(TranslationUnit):
 
 class DictStore(TranslationStore):
     def get_root_node(self):
-        if self.units and self.units[0].getid().startswith("["):
+        if self.units and all(
+            unit.get_unitid().parts[0][0] == "index" for unit in self.units
+        ):
             return []
         return OrderedDict()
 
