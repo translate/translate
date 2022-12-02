@@ -18,6 +18,7 @@
 
 """Parent class for LISA standards (TMX, TBX, XLIFF)"""
 
+import io
 from xml.etree import ElementTree
 
 from lxml import etree
@@ -362,12 +363,9 @@ class LISAfile(base.TranslationStore):
         else:
             if self.XMLdoctype:
                 out.write(b"" + self.XMLdoctype + "\n")
-            ElementTree.register_namespace("", self.namespace)
-            treestring = ElementTree.tostring(
-                root,
-                encoding=self.encoding,
-                short_empty_elements=False,
-            )
+            stream = io.BytesIO()
+            ElementTree(root).write(stream, self.encoding, short_empty_elements=False)
+            treestring = stream.getvalue()
         treestring = self.serialize_hook(treestring)
         out.write(treestring)
 
