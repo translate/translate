@@ -364,7 +364,12 @@ class LISAfile(base.TranslationStore):
             if self.XMLdoctype:
                 out.write(b"" + self.XMLdoctype + "\n")
             stream = io.BytesIO()
-            ElementTree(root).write(stream, self.encoding, short_empty_elements=False)
+            ElementTree(root).write(
+                stream,
+                self.encoding,
+                short_empty_elements=False,
+                default_namespace=self.namespace,
+            )
             treestring = stream.getvalue()
         treestring = self.serialize_hook(treestring)
         out.write(treestring)
