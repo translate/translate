@@ -142,7 +142,6 @@ class PoWrapper(textwrap.TextWrapper):
             \s+|                                  # any whitespace
             [a-z0-9A-Z_-]+/|                      # nicely split long URLs
             \w*\\.\w*|                            # any escape should not be split
-            n(?=%)|                               # wrap insidide plural equation
             \.(?=\w)|                             # full stop inside word
             [\w\!\'\&\.\,\?=<>%]+\s+|             # space should go with a word
             [^\s\w]*\w+[a-zA-Z]-(?=\w+[a-zA-Z])|  # hyphenated words

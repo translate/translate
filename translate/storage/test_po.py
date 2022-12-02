@@ -1064,8 +1064,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.0.4\n"
 
 #: configuredialog.cpp:4580
@@ -1081,7 +1081,13 @@ msgid ""
 "under \"Manage Account\"."
 msgstr ""
 """
-        assert self.poreflow(posource) == posource
+        reflowed = self.poreflow(posource)
+        if reflowed == posource:
+            # Gettext 0.21.1 and newer
+            assert self.poreflow(posource) == posource
+        else:
+            # Gettext 0.21 and older
+            assert self.poreflow(posource) == posource.replace('"\n"n%10', 'n"\n"%10')
 
     def test_msgidcomments(self):
         posource = r"""
