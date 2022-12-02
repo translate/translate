@@ -670,4 +670,4 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 
         a = BytesIO()
         xlifffile.serialize(a)
-        assert a.getvalue().decode('utf-8') == f"{xlfsource}"
+        assert a.getvalue().decode("utf-8") == f"{xlfsource}"
