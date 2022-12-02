@@ -125,10 +125,10 @@ class BaseJsonUnit(base.DictUnit):
         )
 
     def converttarget(self):
-        if issubclass(self._type, str):
-            return self.target
-        else:
+        try:
             return self._type(self.target)
+        except ValueError:
+            return str(self.target)
 
     def storevalues(self, output):
         self.storevalue(output, self.converttarget())

@@ -282,6 +282,29 @@ class TestJSONResourceStore(test_monolingual.TestMonolingualStore):
         assert str(unit) == expected.strip()
         assert bytes(store).decode() == expected
 
+    def test_types(self):
+        store = self.StoreClass()
+        store.parse('{"key": 1}')
+        assert store.units[0].target == 1
+        store.units[0].target = 2
+
+        assert (
+            bytes(store).decode()
+            == """{
+    "key": 2
+}
+"""
+        )
+        store.units[0].target = "two"
+
+        assert (
+            bytes(store).decode()
+            == """{
+    "key": "two"
+}
+"""
+        )
+
 
 class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
     StoreClass = jsonl10n.JsonNestedFile
