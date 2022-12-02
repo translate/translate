@@ -362,7 +362,7 @@ class LISAfile(base.TranslationStore):
             )
         else:
             if self.XMLdoctype:
-                out.write(b"" + self.XMLdoctype + "\n")
+                out.write(f"{self.XMLdoctype}\n".encode(self.encoding))
             stream = io.BytesIO()
             ElementTree(root).write(
                 stream,
