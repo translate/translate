@@ -355,6 +355,7 @@ class LISAfile(base.TranslationStore):
             treestring = etree.tostring(
                 self.document,
                 pretty_print=not self.XMLindent,
+                xml_declaration=False,
                 encoding=self.encoding,
                 doctype=self.XMLdoctype,
             )
