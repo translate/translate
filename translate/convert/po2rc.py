@@ -197,7 +197,6 @@ class rerc:
 
     def convert_popup(self, popup, pre_name, ident=1):
         identation = " " * (4 * ident)
-
         yield identation
         yield popup.block_type
         if popup.caption:
@@ -212,12 +211,14 @@ class rerc:
                     yield '"' + self.inputdict[msgid][EMPTY_LOCATION] + '"'
             else:
                 yield popup.caption
-            yield from popup.post_caption  # The rest of the options
-            yield NL
         else:
             yield " "
-            yield from popup.post_caption  # The rest of the options
-            yield NL
+
+        for value in popup.values_:
+            yield ", "
+            yield value
+        yield from popup.post_caption  # The rest of the options
+        yield NL
 
         yield identation
         yield BLOCK_START
@@ -300,7 +301,7 @@ class rerc:
             if toks.block_type == "STRINGTABLE":
                 return list(self.convert_string_table(s, loc, toks))
 
-            if toks.block_type == "MENU":
+            if toks.block_type in ("MENU", "MENUEX"):
                 return list(self.convert_menu(s, loc, toks))
 
         return toks

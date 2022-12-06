@@ -238,6 +238,12 @@ def rc_statement():
     popup_block <<= Group(
         Keyword("POPUP")("block_type")
         + Optional(quoted_string("caption"))
+        + Optional(
+            ","
+            + delimited_list(
+                concatenated_string ^ constant ^ numbers ^ Group(combined_constants)
+            ).set_results_name("values_")
+        )
         + block_start
         + ZeroOrMore(Group(menu_item | popup_block | comments), stop_on=block_end)(
             "elements"
@@ -247,7 +253,7 @@ def rc_statement():
 
     menu = (
         name_id("block_id")
-        + Keyword("MENU")("block_type")
+        + (Keyword("MENU") | Keyword("MENUEX"))("block_type")
         + block_options
         + block_start
         + ZeroOrMore(popup_block | comments, stop_on=block_end)
@@ -451,7 +457,7 @@ class rcfile(base.TranslationStore):
 
                     continue
 
-                if statement.block_type in ("MENU"):
+                if statement.block_type in ("MENU", "MENUEX"):
 
                     pre_name = generate_menu_pre_name(
                         statement.block_type, statement.block_id[0]

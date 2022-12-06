@@ -241,9 +241,6 @@ IDS_MSG4 "Thank you for using Weblate."
 END
 """,
         )
-        with self.open_testfile("simple.rc") as handle:
-            rc_result = rcfile(handle)
-            print(rc_result.units)
         self.create_testfile(
             "simple.po",
             """
@@ -259,10 +256,58 @@ msgstr "Nazdar, světe!\\n"
             errorlevel="exception",
         )
         with self.open_testfile("output.rc") as handle:
-            print(handle.read().decode("utf-16"))
-        with self.open_testfile("output.rc") as handle:
             rc_result = rcfile(handle)
         assert len(rc_result.units) == 4
         assert rc_result.units[0].target == "Nazdar, světe!\n"
 
-        "Closes the active window and asks for saving the document."
+    def test_convert_menuex(self):
+        rc_source = """
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+
+IDM_STARTMENU MENUEX
+BEGIN
+    POPUP ""
+    BEGIN
+        MENUITEM "", -1, MFT_SEPARATOR
+        POPUP "&Programs", IDM_PROGRAMS
+        BEGIN
+            MENUITEM "(Empty)", -1, MFT_STRING, MFS_GRAYED
+        END
+        MENUITEM "Sh&ut Down...", IDM_SHUTDOWN, MFT_STRING, MFS_ENABLED
+    END
+END
+"""
+        self.create_testfile("simple.rc", rc_source)
+        self.create_testfile(
+            "simple.po",
+            """
+#: MENUEX.IDM_STARTMENU..MENUITEM.-1
+msgid "(Empty)"
+msgstr ""
+
+#: MENUEX.IDM_STARTMENU.MENUITEM.IDM_SHUTDOWN
+msgid "Sh&ut Down..."
+msgstr "Vypnout..."
+""",
+        )
+        self.run_command(
+            template="simple.rc",
+            i="simple.po",
+            o="output.rc",
+            l="LANG_CZECH",
+            errorlevel="exception",
+        )
+        with self.open_testfile("output.rc") as handle:
+            # Ignore whitespace changes (newlines are platform dependant)
+            assert [line.strip() for line in handle.read().decode().splitlines()] == [
+                line.strip()
+                for line in rc_source.replace("Sh&ut Down...", "Vypnout...")
+                .replace(
+                    "LANG_ENGLISH, SUBLANG_ENGLISH_US", "LANG_CZECH, SUBLANG_DEFAULT"
+                )
+                .splitlines()
+            ]
+        with self.open_testfile("output.rc") as handle:
+            rc_result = rcfile(handle)
+        assert len(rc_result.units) == 4
+        assert rc_result.units[3].target == "Vypnout..."
