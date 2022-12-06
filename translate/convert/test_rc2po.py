@@ -120,3 +120,25 @@ class TestRC2POCommand(test_convert.TestConvertCommand):
         self.run_command(i="simple.rc", o="simple.po", charset="utf-8")
         po_result = pofile(self.open_testfile("simple.po"))
         assert len(po_result.units) == 23
+
+    def test_menuex(self):
+        source = """
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+
+IDM_STARTMENU MENUEX
+BEGIN
+    POPUP ""
+    BEGIN
+        MENUITEM "", -1, MFT_SEPARATOR
+        POPUP "&Programs", IDM_PROGRAMS
+        BEGIN
+            MENUITEM "(Empty)", -1, MFT_STRING, MFS_GRAYED
+        END
+        MENUITEM "Sh&ut Down...", IDM_SHUTDOWN, MFT_STRING, MFS_ENABLED
+    END
+END
+"""
+        self.create_testfile("simple.rc", source.encode("utf-8"))
+        self.run_command(i="simple.rc", o="simple.po", charset="utf-8")
+        po_result = pofile(self.open_testfile("simple.po"))
+        assert len(po_result.units) == 5
