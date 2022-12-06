@@ -668,6 +668,4 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         xlifffile.XMLSelfClosingTags = False
         xlifffile.XMLuppercaseEncoding = False
 
-        a = BytesIO()
-        xlifffile.serialize(a)
-        assert a.getvalue().decode("utf-8") == f"{xlfsource}"
+        assert bytes(xlifffile).decode("utf-8") == xlfsource
