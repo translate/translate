@@ -18,6 +18,8 @@
 
 from io import BytesIO
 
+from pytest import raises
+
 from translate.storage import fluent, test_monolingual
 
 
@@ -181,20 +183,8 @@ creating-page-wait-message = Saving your shot…
         fluent_source = """valid-unit = I'm great!
 = I'm not.
 """
-        fluent_file = self.fluent_parse(fluent_source)
-        assert len(fluent_file.units) == 2
-
-        fluent_valid_unit = fluent_file.units[0]
-        assert fluent_valid_unit.getid() == "valid-unit"
-        assert fluent_valid_unit.source == "I'm great!"
-        assert fluent_valid_unit.geterrors() == {}
-
-        fluent_invalid_unit = fluent_file.units[1]
-        assert fluent_invalid_unit.getid() is None
-        assert fluent_invalid_unit.source == "= I'm not.\n"
-        assert fluent_invalid_unit.geterrors() == {
-            "E0002": "Expected an entry start",
-        }
+        with raises(ValueError):
+            self.fluent_parse(fluent_source)
 
     def test_attributes(self):
         """Checks that we handle attributes."""
