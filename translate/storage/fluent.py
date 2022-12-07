@@ -98,13 +98,6 @@ class FluentUnit(base.TranslationUnit):
         return self._placeables
 
     def parse(self, entry):
-        # Handle this unit separately if it is invalid.
-        if isinstance(entry, ast.Junk):
-            for annotation in entry.annotations:
-                self.adderror(annotation.code, annotation.message)
-            self._set_value(entry.content)
-            return
-
         this = self
 
         class Parser(visitor.Visitor):
@@ -202,6 +195,13 @@ class FluentFile(base.TranslationStore):
     def parse(self, fluentsrc):
         resource = parse(fluentsrc.decode("utf-8"))
         for entry in resource.body:
+            # Handle this unit separately if it is invalid.
+            if isinstance(entry, ast.Junk):
+                for annotation in entry.annotations:
+                    raise ValueError(
+                        f"{annotation.code}: {annotation.message} [offset {annotation.span.start}]"
+                    )
+
             self.addunit(FluentUnit(entry=entry))
 
     def serialize(self, out):
