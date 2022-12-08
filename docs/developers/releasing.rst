@@ -98,7 +98,6 @@ Update the version number in:
 
 - :file:`translate/__version__.py`
 - :file:`docs/conf.py`
-- :file:`tests/cli/data/test_pofilter_manpage/stdout.txt`
 
 In :file:`translate/__version__.py`, bump the build number if anybody used the
 Translate Toolkit with the previous number, and there have been any changes to
