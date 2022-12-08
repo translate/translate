@@ -1,0 +1,40 @@
+Translate Toolkit 3.8.1
+***********************
+
+*Released on 8 December 2022*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- JSON
+
+  - Fixed serialization for some corner case keys
+
+- PO
+
+  - Wrapping is now compatible with GNU gettext 0.21.1
+
+- Fluent
+
+  - Consolidate error handling to be similar as with other formats
+  - Add support for extracting placeables
+
+- LISA (XLIFF, Android, ...)
+
+  - Allow to customize behavior of empty XML tags
+
+- RC
+
+  - Added support for MENUEX block and DISCARDABLE attribute
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař, Loïc Leuilliot
