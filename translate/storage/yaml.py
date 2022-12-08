@@ -168,7 +168,7 @@ class YAMLFile(base.DictStore):
         try:
             self._original = self.yaml.load(input)
         except YAMLError as e:
-            message = e.problem if hasattr(e, "problem") else e.message
+            message = getattr(e, "problem", getattr(e, "message", str(e)))
             if hasattr(e, "problem_mark"):
                 message += f" {e.problem_mark}"
             raise base.ParseError(message)

@@ -464,6 +464,11 @@ location_batch:
 """
         )
 
+    def test_special(self):
+        store = self.StoreClass()
+        with pytest.raises(base.ParseError):
+            store.parse("key: other\x08string")
+
 
 class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
     StoreClass = yaml.RubyYAMLFile
