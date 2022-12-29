@@ -8,6 +8,6 @@ pytest-cov==4.0.0
 pytest-xdist==3.1.0
 setuptools==65.6.3
 setuptools-scm==7.1.0
-Sphinx==5.3.0
+Sphinx==6.0.0
 twine==4.0.2
 virtualenv==20.17.1
