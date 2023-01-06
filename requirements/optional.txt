@@ -13,7 +13,7 @@ fluent.syntax==0.18.1 # Fluent
 # Format support
 iniparse==0.5        # INI
 # Format support
-phply==1.2.5         # PHP
+phply==1.2.6         # PHP
 # To provide translations for language names without need for OS package.
 pycountry==22.3.5          # Languages
 pyenchant==3.2.2     # spellcheck
