@@ -36,7 +36,7 @@ repos:
     - flake8-mutable
     - flake8-polyfill
 - repo: https://github.com/PyCQA/pydocstyle
-  rev: 6.1.1
+  rev: 6.2.3
   hooks:
   - id: pydocstyle
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
