@@ -111,6 +111,8 @@ class BaseJsonUnit(base.DictUnit):
     def setid(self, value):
         self._id = value
         self._unitid = None
+        self.get_unitid()
+        self._item = self._unitid.parts[-1][1]
 
     def getid(self):
         return self._id
@@ -297,12 +299,7 @@ class I18NextUnit(JsonNestedUnit):
     See https://www.i18next.com/
     """
 
-    @property
-    def target(self):
-        return self._target
-
-    @target.setter
-    def target(self, target):
+    def _fixup_item(self):
         def get_base(item):
             """Return base name for plurals"""
             if "_0" in item[0]:
@@ -315,8 +312,8 @@ class I18NextUnit(JsonNestedUnit):
                 return [base, base + "_plural"][:count]
             return [f"{base}_{i}" for i in range(count)]
 
-        if isinstance(target, multistring):
-            count = len(target.strings)
+        if isinstance(self._target, multistring):
+            count = len(self._target.strings)
             if not isinstance(self._item, list):
                 self._item = [self._item]
             if count != len(self._item):
@@ -326,8 +323,19 @@ class I18NextUnit(JsonNestedUnit):
             # Changing plural to singular
             self._item = get_base(self._item)
 
+    def setid(self, value):
+        super().setid(value)
+        self._fixup_item()
+
+    @property
+    def target(self):
+        return self._target
+
+    @target.setter
+    def target(self, target):
         self._rich_target = None
         self._target = target
+        self._fixup_item()
 
     def storevalues(self, output):
         if not isinstance(self.target, multistring):

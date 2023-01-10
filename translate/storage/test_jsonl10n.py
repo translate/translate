@@ -6,7 +6,7 @@ from translate.misc.multistring import multistring
 from translate.storage import base, jsonl10n, test_monolingual
 
 
-JSON_I18NEXT = b"""{
+JSON_I18NEXT = """{
     "key": "value",
     "keyDeep": {
         "inner": "value"
@@ -557,7 +557,7 @@ class TestI18NextStore(test_monolingual.TestMonolingualStore):
         out = BytesIO()
         store.serialize(out)
 
-        assert out.getvalue() == JSON_I18NEXT
+        assert out.getvalue().decode() == JSON_I18NEXT
 
     def test_units(self):
         store = self.StoreClass()
@@ -596,7 +596,7 @@ class TestI18NextStore(test_monolingual.TestMonolingualStore):
         out = BytesIO()
         store.serialize(out)
 
-        assert out.getvalue() == JSON_I18NEXT
+        assert out.getvalue().decode() == JSON_I18NEXT
 
     def test_nested_array(self):
         store = self.StoreClass()
@@ -611,9 +611,11 @@ class TestI18NextStore(test_monolingual.TestMonolingualStore):
         assert bytes(store).decode() == JSON_I18NEXT_NESTED_ARRAY
 
     def test_new_plural(self):
-        EXPECTED = b"""{
+        EXPECTED = """{
     "simple": "the singular",
     "simple_plural": "the plural",
+    "simple2": "the singular",
+    "simple2_plural": "the plural",
     "complex_0": "the plural form 0",
     "complex_1": "the plural form 1",
     "complex_2": "the plural form 2",
@@ -638,6 +640,17 @@ class TestI18NextStore(test_monolingual.TestMonolingualStore):
         unit = self.StoreClass.UnitClass(
             multistring(
                 [
+                    "the singular",
+                    "the plural",
+                ]
+            ),
+        )
+        unit.setid("simple2")
+        store.addunit(unit)
+
+        unit = self.StoreClass.UnitClass(
+            multistring(
+                [
                     "the plural form 0",
                     "the plural form 1",
                     "the plural form 2",
@@ -653,7 +666,7 @@ class TestI18NextStore(test_monolingual.TestMonolingualStore):
         out = BytesIO()
         store.serialize(out)
 
-        assert out.getvalue() == EXPECTED
+        assert out.getvalue().decode() == EXPECTED
 
 
 class TestGoI18NJsonFile(test_monolingual.TestMonolingualStore):
