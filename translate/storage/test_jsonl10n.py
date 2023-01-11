@@ -83,6 +83,47 @@ JSON_COMPLEX_ARRAY = r"""[
     }
 ]
 """.encode()
+JSON_GOTEXT = b"""{
+    "language": "en-US",
+    "messages": [
+        {
+            "id": "tag",
+            "message": "{N} tags",
+            "translatorComment": "a piece or strip of strong paper, plastic, metal, leather, etc., for attaching by one end to something as a mark or label",
+            "translation": {
+                "select": {
+                    "feature": "plural",
+                    "arg": "N",
+                    "cases": {
+                        "one": {
+                            "msg": "{N} tag"
+                        },
+                        "other": {
+                            "msg": "{N} tags"
+                        }
+                    }
+                }
+            },
+            "placeholders": [
+                {
+                    "id": "N",
+                    "string": "%[1]d",
+                    "type": "int",
+                    "underlyingType": "int",
+                    "argNum": 1,
+                    "expr": "n"
+                }
+            ]
+        },
+        {
+            "id": "table",
+            "message": "Table",
+            "translatorComment": "an article of furniture consisting of a flat, slablike top supported on one or more legs or other supports",
+            "translation": "Table"
+        }
+    ]
+}
+"""
 JSON_GOI18N = b"""[
     {
         "id": "tag",
@@ -667,6 +708,30 @@ class TestI18NextStore(test_monolingual.TestMonolingualStore):
         store.serialize(out)
 
         assert out.getvalue().decode() == EXPECTED
+
+
+class TestGoTextJsonFile(test_monolingual.TestMonolingualStore):
+    StoreClass = jsonl10n.GoTextJsonFile
+
+    def test_plurals(self):
+        store = self.StoreClass()
+        store.parse(JSON_GOTEXT)
+
+        assert len(store.units) == 2
+        assert store.units[0].target == multistring(["{N} tag", "{N} tags"])
+        assert store.units[1].target == "Table"
+
+        assert bytes(store).decode() == JSON_GOTEXT.decode()
+
+    def test_plurals_missing(self):
+        store = self.StoreClass()
+        store.parse(JSON_GOTEXT)
+
+        store.units[0].target = multistring(["{N} tag"])
+
+        assert (
+            '"other": {\n                            "msg": ""' in bytes(store).decode()
+        )
 
 
 class TestGoI18NJsonFile(test_monolingual.TestMonolingualStore):
