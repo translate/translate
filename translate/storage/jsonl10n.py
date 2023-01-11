@@ -416,6 +416,132 @@ class I18NextFile(JsonNestedFile):
             yield from parent
 
 
+class GoTextJsonUnit(BaseJsonUnit):
+    ID_FORMAT = "{}"
+
+    def __init__(
+        self,
+        source=None,
+        item=None,
+        notes=None,
+        placeholders=None,
+        comment=None,
+        message=None,
+        meaning=None,
+        key=None,
+        fuzzy=None,
+        position=None,
+        **kwargs,
+    ):
+        super().__init__(source, item, notes, placeholders)
+        self.comment = comment
+        self.message = message
+        self.meaning = meaning
+        self.key = key
+        self.fuzzy = fuzzy
+        self.position = position
+
+    def getvalue(self):
+        target = self.target
+        if isinstance(target, multistring):
+            strings = list(target.strings)
+            if len(self._store.plural_tags) > len(target.strings):
+                strings += [""] * (len(self._store.plural_tags) - len(target.strings))
+            target = {
+                "select": {
+                    "feature": "plural",
+                }
+            }
+            if self.placeholders:
+                target["select"]["arg"] = self.placeholders[0]["id"]
+            target["select"]["cases"] = {
+                plural: {"msg": strings[offset]}
+                for offset, plural in enumerate(self._store.plural_tags)
+            }
+        value = {"id": self.getid()}
+        if self.message:
+            value["message"] = self.message
+        if self.notes:
+            value["translatorComment"] = self.notes
+        if self.comment:
+            value["comment"] = self.comment
+        if self.key:
+            value["key"] = self.key
+        if self.fuzzy:
+            value["fuzzy"] = self.fuzzy
+        if self.position:
+            value["position"] = self.position
+        value["translation"] = target
+        if self.placeholders:
+            value["placeholders"] = self.placeholders
+        return value
+
+
+class GoTextJsonFile(JsonFile):
+    """gotext JSON file
+
+    See following URLs for doc:
+
+    https://pkg.go.dev/golang.org/x/text/cmd/gotext
+    https://github.com/golang/text/tree/master/cmd/gotext/examples/extract/locales/en-US
+    """
+
+    UnitClass = GoTextJsonUnit
+
+    @property
+    def plural_tags(self):
+        return plural_tags.get(self.gettargetlanguage(), plural_tags["en"])
+
+    def _extract_units(
+        self,
+        data,
+        stop=None,
+        prev=None,
+        name_node=None,
+        name_last_node=None,
+        last_node=None,
+    ):
+        if prev is None:
+            lang = data.get("language")
+            if lang is not None:
+                self.settargetlanguage(lang)
+        for value in data["messages"]:
+            translation = value.get("translation", "")
+            if isinstance(translation, dict):
+                cases = translation.get("select", {}).get("cases", {})
+                # Ordered list of plurals
+                translation = multistring(
+                    [
+                        cases.get(key, {}).get("msg")
+                        for key in cldr_plural_categories
+                        if key in cases
+                    ]
+                )
+            unit = self.UnitClass(
+                source=translation,
+                item=value.get("id", ""),
+                notes=value.get("translatorComment", ""),
+                placeholders=value.get("placeholders", []),
+                comment=value.get("comment", None),
+                message=value.get("message", None),
+                meaning=value.get("meaning", None),
+                key=value.get("key", None),
+                fuzzy=value.get("fuzzy", None),
+                position=value.get("position", None),
+            )
+            unit.setid(value.get("id", ""))
+            yield unit
+
+    def serialize(self, out):
+        units = [unit.getvalue() for unit in self.units]
+        file = {
+            "language": self.gettargetlanguage(),
+            "messages": units,
+        }
+        out.write(json.dumps(file, **self.dump_args).encode(self.encoding))
+        out.write(b"\n")
+
+
 class GoI18NJsonUnit(BaseJsonUnit):
     ID_FORMAT = "{}"
 
