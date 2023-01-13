@@ -1,0 +1,35 @@
+Translate Toolkit 3.8.1
+***********************
+
+*Released on 8 December 2022*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- JSON
+
+  - Added support for gotext
+  - Added support for i18next v4
+  - Varios cleanups and refactorings
+
+- YAML
+
+  - Gracefully handle different parse errors
+
+Other
+-----
+
+- Mark Python 3.11 as supported
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař, Sam Whited, Erik Gävert
+
