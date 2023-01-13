@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.abspath(".."))
 # -- Project information -----------------------------------------------------
 
 project = "Translate Toolkit"
-copyright = "2002-2022, Translate"
+copyright = "2002-2023, Translate"
 
 # The short X.Y version.
 version = "3.8.1"
