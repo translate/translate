@@ -22,7 +22,7 @@ JSON_I18NEXT = """{
 }
 """
 
-JSON_I18NEXT_V4 = b"""{
+JSON_I18NEXT_V4 = """{
     "key": "value",
     "keyDeep": {
         "inner": "value"
@@ -613,6 +613,7 @@ class TestI18NextStore(test_monolingual.TestMonolingualStore):
 
     def test_serialize(self):
         store = self.StoreClass()
+        store.settargetlanguage("ar")
         store.parse(JSON_I18NEXT)
         out = BytesIO()
         store.serialize(out)
@@ -621,11 +622,13 @@ class TestI18NextStore(test_monolingual.TestMonolingualStore):
 
     def test_units(self):
         store = self.StoreClass()
+        store.settargetlanguage("ar")
         store.parse(JSON_I18NEXT)
         assert len(store.units) == 4
 
     def test_plurals(self):
         store = self.StoreClass()
+        store.settargetlanguage("ar")
         store.parse(JSON_I18NEXT)
 
         # Remove plurals
@@ -685,6 +688,7 @@ class TestI18NextStore(test_monolingual.TestMonolingualStore):
 }
 """
         store = self.StoreClass()
+        store.settargetlanguage("ar")
 
         unit = self.StoreClass.UnitClass(
             multistring(
@@ -709,17 +713,19 @@ class TestI18NextStore(test_monolingual.TestMonolingualStore):
         store.addunit(unit)
 
         unit = self.StoreClass.UnitClass(
-            multistring(
-                [
-                    "the plural form 0",
-                    "the plural form 1",
-                    "the plural form 2",
-                    "the plural form 3",
-                    "the plural form 4",
-                    "the plural form 5",
-                ]
-            ),
             "complex",
+            "complex",
+        )
+        unit.target = multistring(
+            [
+                "the plural form 0",
+                "the plural form 1",
+                "the plural form 2",
+                "the plural form 3",
+                "the plural form 4",
+                "the plural form 5",
+                "the plural form 6",
+            ]
         )
         store.addunit(unit)
 
@@ -758,19 +764,22 @@ class TestI18NextV4Store(test_monolingual.TestMonolingualStore):
 
     def test_serialize(self):
         store = self.StoreClass()
+        store.targetlanguage = "ar"
         store.parse(JSON_I18NEXT_V4)
         out = BytesIO()
         store.serialize(out)
 
-        assert out.getvalue() == JSON_I18NEXT_V4
+        assert out.getvalue().decode() == JSON_I18NEXT_V4
 
     def test_units(self):
         store = self.StoreClass()
+        store.targetlanguage = "ar"
         store.parse(JSON_I18NEXT_V4)
         assert len(store.units) == 4
 
     def test_plurals(self):
         store = self.StoreClass()
+        store.targetlanguage = "ar"
         store.parse(JSON_I18NEXT_V4)
 
         # Remove plurals
@@ -782,6 +791,7 @@ class TestI18NextV4Store(test_monolingual.TestMonolingualStore):
         assert out.getvalue() == JSON_I18NEXT_PLURAL
 
         # Bring back plurals
+        store.settargetlanguage("ar")
         store.units[2].target = multistring(
             [
                 "the singular",
@@ -796,12 +806,13 @@ class TestI18NextV4Store(test_monolingual.TestMonolingualStore):
                 "the plural form 3",
                 "the plural form 4",
                 "the plural form 5",
+                "the plural form 6",
             ]
         )
         out = BytesIO()
         store.serialize(out)
 
-        assert out.getvalue() == JSON_I18NEXT_V4
+        assert out.getvalue().decode() == JSON_I18NEXT_V4
 
     def test_nested_array(self):
         store = self.StoreClass()
@@ -816,7 +827,7 @@ class TestI18NextV4Store(test_monolingual.TestMonolingualStore):
         assert bytes(store).decode() == JSON_I18NEXT_NESTED_ARRAY
 
     def test_new_plural(self):
-        EXPECTED = b"""{
+        EXPECTED = """{
     "simple_one": "the singular",
     "simple_other": "the plural",
     "complex_zero": "the plural form 0",
@@ -828,6 +839,7 @@ class TestI18NextV4Store(test_monolingual.TestMonolingualStore):
 }
 """
         store = self.StoreClass()
+        store.settargetlanguage("ar")
 
         unit = self.StoreClass.UnitClass(
             multistring(
@@ -841,24 +853,22 @@ class TestI18NextV4Store(test_monolingual.TestMonolingualStore):
         store.addunit(unit)
 
         unit = self.StoreClass.UnitClass(
-            multistring(
-                [
-                    "the plural form 0",
-                    "the plural form 1",
-                    "the plural form 2",
-                    "the plural form 3",
-                    "the plural form 4",
-                    "the plural form 5",
-                ]
-            ),
+            "complex",
             "complex",
         )
         store.addunit(unit)
+        unit.target = multistring(
+            [
+                "the plural form 0",
+                "the plural form 1",
+                "the plural form 2",
+                "the plural form 3",
+                "the plural form 4",
+                "the plural form 5",
+            ]
+        )
 
-        out = BytesIO()
-        store.serialize(out)
-
-        assert out.getvalue() == EXPECTED
+        assert bytes(store).decode() == EXPECTED
 
 
 class TestGoI18NJsonFile(test_monolingual.TestMonolingualStore):
