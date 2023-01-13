@@ -1,7 +1,7 @@
 Translate Toolkit 3.8.1
 ***********************
 
-*Released on 8 December 2022*
+*Released on 13 January 2023*
 
 This release contains improvements and bug fixes.
 
