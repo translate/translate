@@ -169,6 +169,15 @@ class JsonFile(base.DictStore):
         if inputfile is not None:
             self.parse(inputfile)
 
+    @property
+    def plural_tags(self):
+        locale = self.gettargetlanguage()
+        if locale:
+            locale = locale.replace("_", "-").split("-")[0]
+        else:
+            locale = "en"
+        return plural_tags.get(locale, plural_tags["en"])
+
     def serialize(self, out):
         units = self.get_root_node()
         self.serialize_units(units)
@@ -299,33 +308,36 @@ class I18NextUnit(JsonNestedUnit):
     See https://www.i18next.com/
     """
 
+    @staticmethod
+    def _is_valid_suffix(suffix: str) -> bool:
+        return suffix == "0"
+
+    def _get_base_name(self):
+        """Return base name for plurals"""
+        item = self._item[0]
+        if "_" in item:
+            plural_base, _sep, suffix = item.rpartition("_")
+            if self._is_valid_suffix(suffix):
+                return plural_base
+        return item
+
+    def _get_plural_labels(self, count):
+        base_name = self._get_base_name()
+        if count <= 2:
+            return [base_name, base_name + "_plural"][:count]
+        return [f"{base_name}_{i}" for i in range(count)]
+
     def _fixup_item(self):
-        def get_base(item):
-            """Return base name for plurals"""
-            if "_0" in item[0]:
-                return item[0][:-2]
-            else:
-                return item[0]
-
-        def get_plurals(count, base):
-            if count <= 2:
-                return [base, base + "_plural"][:count]
-            return [f"{base}_{i}" for i in range(count)]
-
         if isinstance(self._target, multistring):
             count = len(self._target.strings)
             if not isinstance(self._item, list):
                 self._item = [self._item]
             if count != len(self._item):
                 # Generate new plural labels
-                self._item = get_plurals(count, get_base(self._item))
+                self._item = self._get_plural_labels(count)
         elif isinstance(self._item, list):
             # Changing plural to singular
-            self._item = get_base(self._item)
-
-    def setid(self, value):
-        super().setid(value)
-        self._fixup_item()
+            self._item = self._get_base_name()
 
     @property
     def target(self):
@@ -335,15 +347,18 @@ class I18NextUnit(JsonNestedUnit):
     def target(self, target):
         self._rich_target = None
         self._target = target
-        self._fixup_item()
 
     def storevalues(self, output):
         if not isinstance(self.target, multistring):
             super().storevalues(output)
         else:
+            if len(self.target.strings) > len(self._store.plural_tags):
+                self.target.strings = self.target.strings[
+                    : len(self._store.plural_tags)
+                ]
+            self._fixup_item()
             for i, value in enumerate(self.target.strings):
                 self.storevalue(output, value, override_key=self._item[i])
-
 
 
 class I18NextFile(JsonNestedFile):
@@ -411,60 +426,26 @@ class I18NextFile(JsonNestedFile):
                     v, stop, prev + [("key", k)], k, None, data
                 )
         else:
-            parent = super()._extract_units(
+            yield from super()._extract_units(
                 data, stop, prev, name_node, name_last_node, last_node
             )
-            yield from parent
 
 
-I18NextV4Suffixes = [ "zero", "one", "two", "few", "many", "other" ]
-
-class I18NextV4Unit(JsonNestedUnit):
+class I18NextV4Unit(I18NextUnit):
     """A i18next v4 format, JSON with plurals.
 
     See https://www.i18next.com/
     """
 
-    @property
-    def target(self):
-        return self._target
+    @staticmethod
+    def _is_valid_suffix(suffix: str) -> bool:
+        return suffix in cldr_plural_categories
 
-    @target.setter
-    def target(self, target):
-        def get_base(item):
-            """Return base name for plurals"""
-            if "_" in item[0]:
-                plural_base, suffix = item[0].rsplit("_", 1)
-
-                if suffix in I18NextV4Suffixes:
-                    return plural_base
-            return item[0]
-
-        def get_plurals(count, base):
-            if count <= 2:
-                return [base + "_one", base + "_other"][:count]
-            return [f"{base}_{I18NextV4Suffixes[i]}" for i in range(count)]
-
-        if isinstance(target, multistring):
-            count = len(target.strings)
-            if not isinstance(self._item, list):
-                self._item = [self._item]
-            if count != len(self._item):
-                # Generate new plural labels
-                self._item = get_plurals(count, get_base(self._item))
-        elif isinstance(self._item, list):
-            # Changing plural to singular
-            self._item = get_base(self._item)
-
-        self._rich_target = None
-        self._target = target
-
-    def storevalues(self, output):
-        if not isinstance(self.target, multistring):
-            super().storevalues(output)
-        else:
-            for i, value in enumerate(self.target.strings):
-                self.storevalue(output, value, override_key=self._item[i])
+    def _get_plural_labels(self, count):
+        base_name = self._get_base_name()
+        if count <= 2:
+            return [base_name + "_one", base_name + "_other"][:count]
+        return [f"{base_name}_{self._store.plural_tags[i]}" for i in range(count)]
 
 
 class I18NextV4File(JsonNestedFile):
@@ -501,8 +482,10 @@ class I18NextV4File(JsonNestedFile):
                 if "_" in k:
                     plural_base, suffix = k.rsplit("_", 1)
 
-                if suffix in I18NextV4Suffixes:
-                    plurals = [f"{plural_base}_{suffix}" for suffix in I18NextV4Suffixes]
+                if suffix in cldr_plural_categories:
+                    plurals = [
+                        f"{plural_base}_{suffix}" for suffix in cldr_plural_categories
+                    ]
 
                 if plurals:
                     sources = []
@@ -524,10 +507,9 @@ class I18NextV4File(JsonNestedFile):
                     v, stop, prev + [("key", k)], k, None, data
                 )
         else:
-            parent = super()._extract_units(
+            yield from super()._extract_units(
                 data, stop, prev, name_node, name_last_node, last_node
             )
-            yield from parent
 
 
 class GoTextJsonUnit(BaseJsonUnit):
@@ -601,10 +583,6 @@ class GoTextJsonFile(JsonFile):
     """
 
     UnitClass = GoTextJsonUnit
-
-    @property
-    def plural_tags(self):
-        return plural_tags.get(self.gettargetlanguage(), plural_tags["en"])
 
     def _extract_units(
         self,
@@ -686,15 +664,6 @@ class GoI18NJsonFile(JsonFile):
     """
 
     UnitClass = GoI18NJsonUnit
-
-    @property
-    def plural_tags(self):
-        locale = self.gettargetlanguage()
-        if locale:
-            locale = locale.replace("_", "-").split("-")[0]
-        else:
-            locale = "en"
-        return plural_tags.get(locale, plural_tags["en"])
 
     def _extract_units(
         self,
