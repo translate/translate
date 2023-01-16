@@ -544,6 +544,19 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
 """
         )
 
+    def test_complex_keys(self):
+        data = """{
+    "view": {
+        "([^.,0-9]|^)1([^.,0-9]|$)": "View `x` comment",
+        "": "View `x` comments"
+    }
+}
+"""
+        store = self.StoreClass()
+        store.parse(data)
+        assert len(store.units) == 2
+        assert bytes(store).decode() == data
+
 
 class TestWebExtensionUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = jsonl10n.WebExtensionJsonUnit
