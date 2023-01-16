@@ -1023,9 +1023,13 @@ class DictUnit(TranslationUnit):
         self.storevalues(result)
         return result
 
-    def set_unitid(self, unitid):
-        self.setid(str(unitid))
+    def setid(self, value, unitid=None):
+        self._id = value
         self._unitid = unitid
+
+    def set_unitid(self, unitid):
+        # Set _unitid first to avoid need to re-construct it from id
+        self.setid(str(unitid), unitid)
 
 
 class DictStore(TranslationStore):

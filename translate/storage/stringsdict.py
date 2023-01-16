@@ -64,8 +64,9 @@ class StringsDictUnit(base.DictUnit):
     def getid(self):
         return self.source
 
-    def setid(self, newid):
-        self.source = newid
+    def setid(self, value, unitid=None):
+        self.source = value
+        super().setid(value, unitid)
 
 
 class StringsDictFile(base.DictStore):

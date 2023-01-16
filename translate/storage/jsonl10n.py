@@ -108,9 +108,8 @@ class BaseJsonUnit(base.DictUnit):
     def source(self, source):
         self.target = source
 
-    def setid(self, value):
-        self._id = value
-        self._unitid = None
+    def setid(self, value, unitid=None):
+        super().setid(value, unitid)
         self.get_unitid()
         self._item = self._unitid.parts[-1][1]
 

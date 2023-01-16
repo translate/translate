@@ -63,10 +63,6 @@ class YAMLUnit(base.DictUnit):
     def source(self, source):
         self.target = source
 
-    def setid(self, value):
-        self._id = value
-        self._unitid = None
-
     def getid(self):
         return self._id
 
