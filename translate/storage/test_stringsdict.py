@@ -163,9 +163,23 @@ class TestStringsDictFile(test_monolingual.TestMonolingualStore):
         unit.target = multistring(lang[1])
         store.addunit(unit)
 
-        bytes = BytesIO()
-        store.serialize(bytes)
-        bytes.seek(0)
+        bytes_io = BytesIO()
+        store.serialize(bytes_io)
+        bytes_io.seek(0)
 
-        plist = plistlib.load(bytes)
+        plist = plistlib.load(bytes_io)
         assert plist["item"]["p"]["zero"]
+
+    def test_add_unit(self):
+        store = self.StoreClass()
+
+        unit = store.UnitClass("item")
+        unit.setid("item")
+        unit.target = "test target"
+        store.addunit(unit)
+
+        content = bytes(store)
+
+        store2 = self.StoreClass()
+        store2.parse(content)
+        assert store2.units[0].target == "test target"

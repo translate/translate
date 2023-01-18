@@ -49,14 +49,18 @@ class StringsDictUnit(base.DictUnit):
 
     @property
     def outerkey(self):
-        if self._unitid is None or len(self._unitid.parts) < 1:
+        self.get_unitid()
+
+        if len(self._unitid.parts) < 1:
             return None
 
         return self._unitid.parts[0][1]
 
     @property
     def innerkey(self):
-        if self._unitid is None or len(self._unitid.parts) < 2:
+        self.get_unitid()
+
+        if len(self._unitid.parts) < 2:
             return None
 
         return self._unitid.parts[1][1]
