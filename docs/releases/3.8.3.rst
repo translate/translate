@@ -1,0 +1,29 @@
+Translate Toolkit 3.8.3
+***********************
+
+*Released on 18 January 2023*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- JSON
+
+  - Improved plural handling in i18next
+
+
+- stringsdict
+
+  - Fixed crash on adding new string
+
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař
