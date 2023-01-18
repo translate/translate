@@ -322,16 +322,17 @@ class I18NextUnit(JsonNestedUnit):
 
     def _get_plural_labels(self, count):
         base_name = self._get_base_name()
-        if count <= 2:
+        if count == 2:
             return [base_name, base_name + "_plural"][:count]
         return [f"{base_name}_{i}" for i in range(count)]
 
     def _fixup_item(self):
         if isinstance(self._target, multistring):
             count = len(self._target.strings)
-            if not isinstance(self._item, list):
-                self._item = [self._item]
-            if count != len(self._item):
+            is_list = isinstance(self._item, list)
+            if not is_list or count != len(self._item):
+                if not is_list:
+                    self._item = [self._item]
                 # Generate new plural labels
                 self._item = self._get_plural_labels(count)
         elif isinstance(self._item, list):
@@ -442,8 +443,6 @@ class I18NextV4Unit(I18NextUnit):
 
     def _get_plural_labels(self, count):
         base_name = self._get_base_name()
-        if count <= 2:
-            return [base_name + "_one", base_name + "_other"][:count]
         return [f"{base_name}_{self._store.plural_tags[i]}" for i in range(count)]
 
 
@@ -490,10 +489,8 @@ class I18NextV4File(JsonNestedFile):
                     sources = []
                     items = []
                     for key in plurals:
-                        if key not in data:
-                            continue
                         processed.add(key)
-                        sources.append(data[key])
+                        sources.append(data.get(key, ""))
                         items.append(key)
 
                     unit = self.UnitClass(multistring(sources), items)
