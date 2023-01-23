@@ -197,12 +197,12 @@ creating-page-wait-message = Saving your shot…
         assert len(fluent_file.units) == 1
         fluent_unit = fluent_file.units[0]
         assert fluent_unit.getid() == "login-input"
-        assert fluent_unit.source == "Predefined value"
-        assert fluent_unit.getattributes() == {
-            "placeholder": "email@example.com",
-            "aria-label": "Login input value",
-            "title": "Type your login email",
-        }
+        assert (
+            fluent_unit.source == "Predefined value\n"
+            ".placeholder = email@example.com\n"
+            ".aria-label = Login input value\n"
+            ".title = Type your login email"
+        )
 
     def test_attributes_source(self):
         """Checks that attributes can be regenerated as source."""
