@@ -57,7 +57,6 @@ class FluentUnit(base.TranslationUnit):
         super().__init__(source)
         self._type = None
         self._id = None
-        self._errors = {}
         self._attributes = {}
         self._placeables = []
         if source is not None:
@@ -78,12 +77,6 @@ class FluentUnit(base.TranslationUnit):
 
     def setid(self, value):
         self._id = value
-
-    def adderror(self, errorname, errortext):
-        self._errors[errorname] = errortext
-
-    def geterrors(self):
-        return self._errors
 
     def isheader(self):
         return self._type in [
