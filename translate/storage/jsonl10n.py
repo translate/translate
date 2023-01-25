@@ -481,9 +481,7 @@ class I18NextV4File(JsonNestedFile):
                     plural_base, suffix = k.rsplit("_", 1)
 
                 if suffix in cldr_plural_categories:
-                    plurals = [
-                        f"{plural_base}_{suffix}" for suffix in cldr_plural_categories
-                    ]
+                    plurals = [f"{plural_base}_{suffix}" for suffix in self.plural_tags]
 
                 if plurals:
                     sources = []

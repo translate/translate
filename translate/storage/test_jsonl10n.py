@@ -927,6 +927,24 @@ class TestI18NextV4Store(test_monolingual.TestMonolingualStore):
 
         assert bytes(store).decode() == EXPECTED
 
+    def test_ru(self):
+        data = """{
+"bet_one": "еще +{{count}} ставка",
+"bet_few": "еще +{{count}} ставки",
+"bet_many": "еще +{{count}} ставок"
+}
+"""
+        store = self.StoreClass()
+        store.settargetlanguage("ru")
+        store.parse(data)
+
+        assert len(store.units) == 1
+        assert store.units[0].source.strings == [
+            "еще +{{count}} ставка",
+            "еще +{{count}} ставки",
+            "еще +{{count}} ставок",
+        ]
+
 
 class TestGoI18NJsonFile(test_monolingual.TestMonolingualStore):
     StoreClass = jsonl10n.GoI18NJsonFile
