@@ -1320,7 +1320,8 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
 
             """,
         )
-        # Does not enter the message's comment.
+        # Gets added to a message comment, but does not remain there on
+        # re-serializing.
         self.basic_test(
             """\
             ### My resource
@@ -1329,7 +1330,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             """,
             [
                 {"type": "ResourceComment", "comment": "My resource\ncomment"},
-                {"id": "message", "source": "value"},
+                {"id": "message", "source": "value", "comment": "My resource\ncomment"},
             ],
             """\
             ### My resource
@@ -1349,6 +1350,42 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
 
             """,
         )
+        # ResourceComments apply to all non-header units in the file, even if
+        # they appear later in the file (although this would be unusual).
+        comment_prefix = "Comment 1\nComment 2\n\nComment 3"
+        self.basic_test(
+            """\
+            ### Comment 1
+
+
+            ### Comment 2
+
+            message = ok
+            # Term comment.
+            -term = val
+
+            ###
+
+
+            ### Comment 3
+
+            m2 =
+                .a = later
+            """,
+            [
+                {"type": "ResourceComment", "comment": "Comment 1"},
+                {"type": "ResourceComment", "comment": "Comment 2"},
+                {"id": "message", "source": "ok", "comment": comment_prefix},
+                {
+                    "id": "-term",
+                    "source": "val",
+                    "comment": f"{comment_prefix}\nTerm comment.",
+                },
+                {"type": "ResourceComment", "comment": ""},
+                {"type": "ResourceComment", "comment": "Comment 3"},
+                {"id": "m2", "source": ".a = later", "comment": comment_prefix},
+            ],
+        )
 
     def test_group_comments(self):
         """Test fluent GroupComments."""
@@ -1362,7 +1399,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
 
             """,
         )
-        # Does not enter the term's comment.
+        # Does not enter the term's comment on re-serialization.
         self.basic_test(
             """\
             ## My group
@@ -1371,7 +1408,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             """,
             [
                 {"type": "GroupComment", "comment": "My group\ncomment"},
-                {"id": "-term", "source": "value"},
+                {"id": "-term", "source": "value", "comment": "My group\ncomment"},
             ],
             """\
             ## My group
@@ -1390,6 +1427,59 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             ##
 
             """,
+        )
+
+        # GroupComments apply to all non-header units until the next
+        # GroupComment is reached.
+        self.basic_test(
+            """\
+            before = none
+
+            ## Comment 1
+
+
+            ## Comment 2
+
+            -term = val
+            # Message comment.
+            m1 = ok
+
+            ## Comment 3
+
+            m2 = new group comment
+            m3 = same
+
+            ##
+
+            # No group comment here
+            after-group = none
+                .a = none
+            -term2 = none
+
+            ## Comment 4
+
+            m2 =
+                .a = later
+            """,
+            [
+                {"id": "before", "source": "none", "comment": ""},
+                {"type": "GroupComment", "comment": "Comment 1"},
+                {"type": "GroupComment", "comment": "Comment 2"},
+                {"id": "-term", "source": "val", "comment": "Comment 2"},
+                {"id": "m1", "source": "ok", "comment": "Comment 2\nMessage comment."},
+                {"type": "GroupComment", "comment": "Comment 3"},
+                {"id": "m2", "source": "new group comment", "comment": "Comment 3"},
+                {"id": "m3", "source": "same", "comment": "Comment 3"},
+                {"type": "GroupComment", "comment": ""},
+                {
+                    "id": "after-group",
+                    "source": "none\n.a = none",
+                    "comment": "No group comment here",
+                },
+                {"id": "-term2", "source": "none", "comment": ""},
+                {"type": "GroupComment", "comment": "Comment 4"},
+                {"id": "m2", "source": ".a = later", "comment": "Comment 4"},
+            ],
         )
 
     def test_detached_comment(self):
@@ -1453,6 +1543,159 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             """\
             #
 
+            """,
+        )
+
+    def test_resource_and_group_comment_prefixes(self):
+        """Test that ResourceComment and GroupComment prefixes on Messages and
+        Terms."""
+        # With both ResourceComments and GroupComments, we gain both on
+        # Messages or Terms, and they appear before their Comments.
+        self.basic_test(
+            """\
+            m0 = ok
+
+            ## Group 1
+
+            m1 = ok
+            # m2 comment
+            m2 = ok
+
+            ### Resource
+            ### over two lines.
+
+
+            # Detached comment does nothing.
+
+            # Term comment
+            # over two lines.
+            -term = Term
+                .a = val
+
+            ## Group 2
+            ## over two lines.
+
+            # m3 comment
+            m3 = ok
+                .a = ok
+
+            ##
+
+            m4 = ok
+            """,
+            [
+                {"id": "m0", "source": "ok", "comment": "Resource\nover two lines."},
+                {"type": "GroupComment", "comment": "Group 1"},
+                {
+                    "id": "m1",
+                    "source": "ok",
+                    "comment": "Resource\nover two lines.\nGroup 1",
+                },
+                {
+                    "id": "m2",
+                    "source": "ok",
+                    "comment": "Resource\nover two lines.\nGroup 1\nm2 comment",
+                },
+                {"type": "ResourceComment", "comment": "Resource\nover two lines."},
+                {
+                    "type": "DetachedComment",
+                    "comment": "Detached comment does nothing.",
+                },
+                {
+                    "id": "-term",
+                    "source": "Term\n.a = val",
+                    "comment": "Resource\nover two lines.\nGroup 1\nTerm comment\nover two lines.",
+                },
+                {"type": "GroupComment", "comment": "Group 2\nover two lines."},
+                {
+                    "id": "m3",
+                    "source": "ok\n.a = ok",
+                    "comment": "Resource\nover two lines.\nGroup 2\nover two lines.\nm3 comment",
+                },
+                {"type": "GroupComment", "comment": ""},
+                {"id": "m4", "source": "ok", "comment": "Resource\nover two lines."},
+            ],
+        )
+
+        # If we the comment does not have all the prefixes, we remove the parts
+        # we can.
+        fluent_file = self.quick_fluent_file(
+            [
+                {"type": "ResourceComment", "comment": "Resource\nComment"},
+                {"type": "GroupComment", "comment": "Group\nComment"},
+                {
+                    "type": "Message",
+                    "source": "ok",
+                    "id": "m1",
+                    "comment": "m1\nComment",
+                },
+                {
+                    "type": "Message",
+                    "source": "ok",
+                    "id": "m2",
+                    "comment": "Group\nComment",
+                },
+                {
+                    "type": "Message",
+                    "source": "ok",
+                    "id": "m3",
+                    "comment": "Group\nComment ... not!",
+                },
+                {
+                    "type": "Message",
+                    "source": "ok",
+                    "id": "m4",
+                    "comment": "Resource\nComment",
+                },
+                {"type": "Message", "source": "ok", "id": "m5", "comment": "Group 2"},
+                {"type": "GroupComment", "comment": "Group 2"},
+                {
+                    "type": "Term",
+                    "source": "ok",
+                    "id": "-term",
+                    "comment": "Resource 2\nGroup 2",
+                },
+                {"type": "ResourceComment", "comment": "Resource 2"},
+                {
+                    "type": "Message",
+                    "source": ".a1 = ok\n.a2 = ok\n.a3 = ok",
+                    "id": "m6",
+                    "comment": "Group 2\ncomment 1",
+                },
+            ]
+        )
+        self.assert_serialize(
+            fluent_file,
+            """\
+            ### Resource
+            ### Comment
+
+
+            ## Group
+            ## Comment
+
+            # m1
+            # Comment
+            m1 = ok
+            m2 = ok
+            # Group
+            # Comment ... not!
+            m3 = ok
+            m4 = ok
+            # Group 2
+            m5 = ok
+
+            ## Group 2
+
+            -term = ok
+
+            ### Resource 2
+
+            # comment 1
+            m6 =
+                .a1 = ok
+                .a2 = ok
+                .a3 = ok
             """,
         )
 
@@ -1584,7 +1827,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                 },
                 {
                     "id": "message",
-                    "source": '{ " " } space literal\n' + ".attr = number { 79 }",
+                    "source": '{ " " } space literal\n' ".attr = number { 79 }",
                 },
             ],
         )
@@ -1899,6 +2142,8 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
 
     def test_several_entries(self):
         """Test when we have several fluent Entries."""
+        resource_comment = "NOTE: Please be careful!"
+        group1_comment = "This group is special 🍄."
         self.basic_test(
             """\
             # My license
@@ -1952,12 +2197,13 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                     "    [yes] Elephant's\n"
                     "}\n"
                     ".vowel-start = yes",
-                    "comment": "Term to use",
+                    "comment": f"{resource_comment}\n{group1_comment}\nTerm to use",
                 },
                 {
                     "id": "message-1",
                     "source": "Please select { $var } to continue.\n\nThanks.",
-                    "comment": "Variables:\n  $var (string) - Some variable",
+                    "comment": f"{resource_comment}\n{group1_comment}\n"
+                    "Variables:\n  $var (string) - Some variable",
                     "refs": ["$var"],
                 },
                 {
@@ -1965,6 +2211,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                     "source": "New Window 🙂\n"
                     ".title = Opens a new window\n"
                     ".accesskey = N",
+                    "comment": f"{resource_comment}\n{group1_comment}",
                 },
                 {
                     "id": "message-3",
@@ -1974,13 +2221,13 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                     '    [yes] An { -term-1(possessive: "yes") } tail.\n'
                     '   *[no] A { -term-1(possessive: "yes") } tail.\n'
                     "}",
-                    "comment": "Watch out for this one.",
+                    "comment": f"{resource_comment}\n{group1_comment}\nWatch out for this one.",
                 },
                 {"type": "GroupComment", "comment": ""},
                 {
                     "id": "final-message",
                     "source": "done!",
-                    "comment": "Another message",
+                    "comment": f"{resource_comment}\nAnother message",
                 },
             ],
         )
