@@ -464,14 +464,25 @@ class FluentFile(base.TranslationStore):
             if isinstance(entry, ast.Junk):
                 raise self._fluent_junk_to_error(entry)
 
+        resource_comments = []
+        for entry in resource.body:
+            if isinstance(entry, ast.ResourceComment):
+                # We add another line to the comments, even if it is blank.
+                resource_comments.append(entry.content)
+
+        resource_comments = "\n".join(resource_comments)
+        comment_prefix = resource_comments
         for entry in resource.body:
             if isinstance(entry, ast.BaseComment):
                 self.addunit(FluentUnit.new_from_entry(entry))
+                if isinstance(entry, ast.GroupComment):
+                    # A GroupComment replaces the previous GroupComment.
+                    comment_prefix = self._combine_comments(resource_comments, entry)
             elif isinstance(entry, (ast.Term, ast.Message)):
                 self.addunit(
                     FluentUnit.new_from_entry(
                         entry,
-                        getattr(entry.comment, "content", ""),
+                        self._combine_comments(comment_prefix, entry.comment),
                     )
                 )
             else:
@@ -493,14 +504,43 @@ class FluentFile(base.TranslationStore):
             )
         return ValueError("\n".join(error_message))
 
+    @staticmethod
+    def _combine_comments(*comments):
+        """Combine the given string or fluent BaseComment objects into a single
+        string.
+        """
+        comment_text = []
+        for part in comments:
+            if isinstance(part, ast.BaseComment):
+                comment_text.append(part.content)
+            else:
+                comment_text.append(part)
+        return "\n".join(text for text in comment_text if text)
+
     def serialize(self, out):
+        prefix_comments = []
+        for unit in self.units:
+            if unit.fluent_type == "ResourceComment":
+                prefix_comments.append(unit.getnotes() or "")
+        prev_group_comment = ""
+
         body = []
         for unit in self.units:
             entry = unit.to_entry()
             if not entry:
                 continue
-            if unit.fluent_type in ("Term", "Message"):
-                comment = unit.getnotes()
+            if unit.fluent_type == "GroupComment":
+                group_comment = entry.content
+                if group_comment != prev_group_comment:
+                    if not prev_group_comment:
+                        prefix_comments.append(group_comment)
+                    elif not group_comment:
+                        prefix_comments = prefix_comments[:-1]
+                    else:
+                        prefix_comments[-1] = group_comment
+                    prev_group_comment = group_comment
+            elif unit.fluent_type in ("Term", "Message"):
+                comment = self._strip_prefix_from_comment(unit, prefix_comments)
                 if comment:
                     entry.comment = ast.Comment(comment)
             body.append(entry)
@@ -510,3 +550,19 @@ class FluentFile(base.TranslationStore):
         # value that has a gap. We tidy those up here.
         serialized = re.sub(r"\n +\n", "\n\n", serialized)
         out.write(serialized.encode(self.encoding))
+
+    @staticmethod
+    def _strip_prefix_from_comment(unit, prefix_comments):
+        """Try to remove each prefix in `prefix_comments` in turn from the start
+        of `unit`'s comment.
+        """
+        unit_comment = unit.getnotes() or ""
+        for prefix in prefix_comments:
+            if unit_comment == prefix:
+                return ""
+            # Remove the prefix as a block.
+            # NOTE: removeprefix only available in python 3.9+.
+            block = prefix + "\n"
+            if unit_comment.startswith(block):
+                unit_comment = unit_comment[len(block) :]
+        return unit_comment
