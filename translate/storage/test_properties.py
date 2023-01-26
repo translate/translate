@@ -276,6 +276,23 @@ PP[]=Other
         assert propunit.source == "Other"
         assert bytes(propfile).decode() == propsource
 
+    def test_encoding(self):
+        propsource = """test=Zkouška
+"""
+        propfile = self.propparse(propsource)
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == "test"
+        assert propunit.source == "Zkouška"
+        assert bytes(propfile).decode() == propsource
+
+        propfile = self.propparse(propsource, encoding="iso-8859-1")
+        propfile.encoding = "iso-8859-1"
+        propunit = propfile.units[0]
+        assert bytes(propfile).decode() == propsource
+        propunit.source = "xZkouška"
+        assert bytes(propfile).decode() == "test=xZkou\\u0161ka\n"
+
 
 class TestProp(test_monolingual.TestMonolingualStore):
     StoreClass = properties.propfile
