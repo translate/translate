@@ -483,7 +483,10 @@ class DialectGwt(DialectJavaUtf8):
 
     @classmethod
     def encode(cls, string, encoding=None):
-        result = super().encode(string, encoding)
+        if encoding not in ("utf-8", "utf-16"):
+            result = quote.javapropertiesencode(string or "")
+        else:
+            result = quote.java_utf8_properties_encode(string or "")
         return result.replace("'", "''")
 
     @classmethod
