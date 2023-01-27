@@ -44,7 +44,7 @@ jobs:
       run: pip install --upgrade pip wheel
     - name: Install pip dependencies
       if: matrix.requirements == 'latest'
-      run: pip install -r requirements/dev.txt
+      run: pip install -r requirements/test.txt
     - name: Install
       run: pip install .
     - name: pytest

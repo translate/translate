@@ -61,7 +61,7 @@ requirements.txt: $(REQFILE)
 	      sed -e 's/-\([0-9]\)/==\1/' -e 's/\.tar.*$$//') > $@;	\
 	 esac; 
 
-requirements/min-versions.txt: requirements/*.txt
+requirements/min-versions.txt: requirements/optional.txt requirements/required.txt
 	@if grep -q '>[0-9]' $^; then				\
 	   echo "Use '>=' not '>' for requirements"; exit 1;	\
 	 fi
