@@ -122,10 +122,15 @@ class FluentUnit(base.TranslationUnit):
                 this.addnote(node.content)
 
             def visit_Identifier(self, node):
-                if not self._found_id:
+                if self._found_id:
+                    return
+                if this._type == ast.Message:
                     # Only save the first identifier we encounter (the entry's
                     # value will also contain identifiers if it has selectors).
                     this._id = node.name
+                    self._found_id = True
+                elif this._type == ast.Term:
+                    this._id = "-" + node.name
                     self._found_id = True
 
             def visit_Message(self, node):
@@ -163,8 +168,13 @@ class FluentUnit(base.TranslationUnit):
         if self.getnotes():
             comment = ast.Comment(self.getnotes())
 
+        fluent_id = self.getid()
+        if self._type == ast.Term:
+            # Remove the prefix "-".
+            fluent_id = fluent_id[1:]
+
         return (self._type if self._type is not None else ast.Message)(
-            ast.Identifier(self.getid()),
+            ast.Identifier(fluent_id),
             value=value,
             attributes=attributes,
             comment=comment,
