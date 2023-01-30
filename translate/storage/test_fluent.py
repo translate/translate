@@ -65,7 +65,7 @@ term-usage = I can code { -some-term }!
         assert len(fluent_file.units) == 2
 
         term_unit = fluent_file.units[0]
-        assert term_unit.getid() == "some-term"
+        assert term_unit.getid() == "-some-term"
         assert term_unit.source == "Fizz Buzz"
 
         term_unit = fluent_file.units[1]
