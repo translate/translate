@@ -583,7 +583,6 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
         self.check_single(htmlsource, innertext)
 
     def test_php_multiline(self):
-
         # A multi-line php string to test
         php1 = """<? abc
 def

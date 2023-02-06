@@ -4,7 +4,6 @@ from translate.convert import po2mozlang, test_convert
 
 
 class TestPO2Lang:
-
     ConverterClass = po2mozlang.po2lang
 
     def _convert(

@@ -102,7 +102,6 @@ def is_content_file(filename):
 
 
 class ODF:
-
     encoding = "utf-8"
 
     def __init__(self, filename):
@@ -147,7 +146,6 @@ class ODF:
 
 
 def test_roundtrip():
-
     odf2xliff.main(args(SOURCE_ODF, TARGET_XLF))
     xliff2odf.main(args(TARGET_XLF, GENERATED_ODF, t=SOURCE_ODF))
 

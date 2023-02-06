@@ -6,7 +6,6 @@ from translate.convert import test_convert, txt2po
 
 
 class BaseTxt2POTester:
-
     ConverterClass = txt2po.txt2po
     Flavour = None
 
@@ -140,7 +139,6 @@ Second paragraph
 
 
 class TestDoku2po(BaseTxt2POTester):
-
     Flavour = "dokuwiki"
 
     def test_convert_empty(self):

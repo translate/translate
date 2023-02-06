@@ -4,7 +4,6 @@ from translate.misc.deprecation import deprecated
 
 
 class TestDeprecation:
-
     # Deprecated on 2.x.x
     @deprecated("Use XXX instead")
     def deprecated_helper(self):

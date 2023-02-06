@@ -7,7 +7,6 @@ from translate.convert import po2tiki, test_convert
 
 
 class TestPo2Tiki:
-
     ConverterClass = po2tiki.po2tiki
 
     def _convert(self, input_string, template_string=None, success_expected=True):

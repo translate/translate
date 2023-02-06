@@ -58,7 +58,6 @@ class web2py2po:
 
 
 def convertpy(inputfile, outputfile, encoding="UTF-8", duplicatestyle="msgctxt"):
-
     new_pofile = po.pofile()
     convertor = web2py2po(new_pofile)
 

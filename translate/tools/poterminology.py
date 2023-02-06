@@ -111,7 +111,6 @@ class TerminologyExtractor:
         self.glossary = {}
 
     def parse_stopword_file(self):
-
         actions = {
             "+": frozenset(),
             ":": frozenset(["skip"]),
@@ -268,7 +267,6 @@ class TerminologyExtractor:
                 if self.termlength > 1:
                     # add trailing phrases in sentence after reaching end
                     while self.termlength > 1 and len(words) > 2:
-
                         if "skip" in self.stopword(words.pop(0)):
                             skips -= 1
                         self.addphrases(words, skips, translation)

@@ -8,7 +8,6 @@ from translate.convert import test_convert, tiki2po
 
 
 class TestTiki2Po:
-
     ConverterClass = tiki2po.tiki2po
 
     def _convert(

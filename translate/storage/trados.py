@@ -179,7 +179,6 @@ class TradosUnit(base.TranslationUnit):
 
 
 class TradosSoup(BeautifulSoup):
-
     MARKUP_MASSAGE = [
         (
             re.compile("<(?P<fulltag>(?P<tag>[^\\s\\/]+).*?)>(?P<content>.+)\r"),

@@ -504,7 +504,6 @@ END
         assert rc_file.units[2].source == "Next"
 
     def test_textinclude_appstudio(self):
-
         rc_source = """
 LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 
