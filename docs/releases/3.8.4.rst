@@ -1,0 +1,28 @@
+Translate Toolkit 3.8.4
+***********************
+
+*Released on 6 February 2023*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- JSON
+
+  - Fixed plural handling in i18next v4
+
+- properties
+
+  - Add support for overriding GWT encoding
+
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař
