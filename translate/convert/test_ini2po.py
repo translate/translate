@@ -9,7 +9,6 @@ importorskip("iniparse")
 
 
 class TestIni2PO:
-
     ConverterClass = ini2po.ini2po
 
     def _convert(

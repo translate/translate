@@ -154,7 +154,7 @@ creating-page-wait-message = Saving your shot…
         ]
         assert len(fluent_file.units) == len(expected_units)
 
-        for (expected, actual) in zip(expected_units, fluent_file.units):
+        for expected, actual in zip(expected_units, fluent_file.units):
             assert (
                 actual.istranslatable(),
                 actual.isheader(),

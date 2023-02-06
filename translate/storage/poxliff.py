@@ -212,7 +212,7 @@ class PoXliffUnit(xliff.xliffunit):
         for group in groups:
             sourcefile = ""
             linenumber = ""
-            for (type, text) in group:
+            for type, text in group:
                 if type == "sourcefile":
                     sourcefile = text
                 elif type == "linenumber":

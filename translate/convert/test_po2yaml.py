@@ -6,7 +6,6 @@ from translate.convert import po2yaml, test_convert
 
 
 class TestPO2YAML:
-
     ConverterClass = po2yaml.po2yaml
 
     def _convert(

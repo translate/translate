@@ -45,7 +45,6 @@ class TMDB:
     _tm_dbs = {}
 
     def __init__(self, db_file, max_candidates=3, min_similarity=75, max_length=1000):
-
         self.max_candidates = max_candidates
         self.min_similarity = min_similarity
         self.max_length = max_length

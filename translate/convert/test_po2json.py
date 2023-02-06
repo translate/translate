@@ -5,7 +5,6 @@ from translate.storage import po
 
 
 class TestPO2JSON:
-
     example_json_template = """{
     "foo": "foo",
     "bar": "bar",

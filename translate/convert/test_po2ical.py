@@ -6,7 +6,6 @@ from translate.convert import po2ical, test_convert
 
 
 class TestPO2Ical:
-
     ConverterClass = po2ical.po2ical
 
     def _convert(

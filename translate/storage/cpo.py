@@ -303,7 +303,6 @@ else:
     # in docs/conf.py would work as well, but xml is likely always to be there.
     gpo = None
     if "xml" not in sys.modules or sys.modules["xml"].__path__ != "/dev/null":
-
         # Now we are getting desperate, so let's guess a unix type DLL that
         # might be in LD_LIBRARY_PATH or loaded with LD_PRELOAD
         try:
@@ -359,7 +358,6 @@ def gpo_decode(value):
 
 
 class pounit(pocommon.pounit):
-
     #: fixed encoding that is always used for cPO structure (self._gpo_message)
     CPO_ENC = "utf-8"
 

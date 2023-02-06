@@ -6,7 +6,6 @@ from translate.convert import test_convert, yaml2po
 
 
 class TestYAML2PO:
-
     ConverterClass = yaml2po.yaml2po
 
     def _convert(

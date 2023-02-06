@@ -45,7 +45,6 @@ class resx2po:
             if input_unit.istranslatable():
                 output_unit = self.convert_unit(input_unit, "developer")
                 if output_unit is not None:
-
                     # Split out translator & dev comments before adding them
                     self.split_comments(output_unit, output_unit)
 
@@ -132,7 +131,6 @@ def convert_resx(
     duplicatestyle="msgctxt",
     filter=None,
 ):
-
     from translate.storage import resx
 
     input_store = resx.RESXFile(input_file)

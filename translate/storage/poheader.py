@@ -456,7 +456,7 @@ class poheader:
         headerpo.markfuzzy()
         headeritems = self.makeheaderdict(**kwargs)
         headervalue = ""
-        for (key, value) in headeritems.items():
+        for key, value in headeritems.items():
             if value is None:
                 continue
             headervalue += f"{key}: {value}\n"

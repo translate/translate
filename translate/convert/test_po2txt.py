@@ -4,7 +4,6 @@ from translate.convert import po2txt, test_convert
 
 
 class TestPO2Txt:
-
     ConverterClass = po2txt.po2txt
 
     def _convert(

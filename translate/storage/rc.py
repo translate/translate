@@ -347,9 +347,7 @@ class rcfile(base.TranslationStore):
             self.addunit(newunit)
 
         for element in popup.elements:
-
             if element.block_type and element.block_type == "MENUITEM":
-
                 if element.values_ and len(element.values_) >= 2:
                     newtext = extract_text(element.values_)
                     if newtext:
@@ -396,7 +394,6 @@ class rcfile(base.TranslationStore):
                     self.parse(rcsrc, expected_encoding)
                     return
             if statement.language:
-
                 if self.lang is None or statement.language == self.lang:
                     if self.sublang is None or statement.sublanguage == self.sublang:
                         self.lang = statement.language
@@ -409,9 +406,7 @@ class rcfile(base.TranslationStore):
                 continue
 
             if processblocks and statement.block_type:
-
                 if statement.block_type in ("DIALOG", "DIALOGEX"):
-
                     if statement.caption:
                         newunit = rcunit(escape_to_python(statement.caption[1:-1]))
                         newunit.name = generate_dialog_caption_name(
@@ -441,7 +436,6 @@ class rcfile(base.TranslationStore):
                             control.values_[0].startswith('"')
                             or control.values_[0].startswith("'")
                         ):
-
                             # The first value without quoted chars.
                             newtext = extract_text(control.values_)
                             if newtext:
@@ -458,19 +452,16 @@ class rcfile(base.TranslationStore):
                     continue
 
                 if statement.block_type in ("MENU", "MENUEX"):
-
                     pre_name = generate_menu_pre_name(
                         statement.block_type, statement.block_id[0]
                     )
 
                     for popup in statement.popups:
-
                         self.add_popup_units(pre_name, popup)
 
                     continue
 
                 if statement.block_type in ("STRINGTABLE"):
-
                     for text in statement.controls:
                         if isinstance(text, str):
                             # This is a comment

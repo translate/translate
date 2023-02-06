@@ -93,7 +93,6 @@ class rerc:
         addnl = False
 
         for c in toks.controls:
-
             if isinstance(c, str):
                 yield from self.convert_comment(addnl, c)
                 addnl = True
@@ -235,7 +234,6 @@ class rerc:
                 yield " "
 
                 if element.values_ and len(element.values_) >= 2:
-
                     name = rc.generate_menuitem_name(
                         pre_name, element.block_type, element.values_[1]
                     )
@@ -316,7 +314,6 @@ class rerc:
         """make a dictionary of the translations"""
         for unit in store.units:
             if includefuzzy or not unit.isfuzzy():
-
                 rcstring = unit.target
                 if len(rcstring.strip()) == 0:
                     rcstring = unit.source

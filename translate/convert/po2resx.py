@@ -77,7 +77,6 @@ class po2resx:
 def convertresx(
     inputfile, outputfile, templatefile, includefuzzy=False, outputthreshold=None
 ):
-
     inputstore = factory.getobject(inputfile)
 
     if templatefile is None:

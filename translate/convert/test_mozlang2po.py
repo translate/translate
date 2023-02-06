@@ -6,7 +6,6 @@ from translate.convert import mozlang2po, test_convert
 
 
 class TestLang2PO:
-
     ConverterClass = mozlang2po.lang2po
 
     def _convert(

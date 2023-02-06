@@ -364,7 +364,6 @@ class UnitChecker:
             excludefilters = {}
 
         for functionname in limitfilters:
-
             if functionname in excludefilters:
                 continue
 
@@ -649,9 +648,7 @@ class TeeChecker:
 
         # TODO: move this somewhere more sensible (a checkfilters method?)
         if limitfilters is not None:
-
             for filtername in limitfilters:
-
                 if filtername not in self.combinedfilters:
                     logger.warning("could not find filter %s", filtername)
 

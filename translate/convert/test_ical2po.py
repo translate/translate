@@ -6,7 +6,6 @@ from translate.convert import ical2po, test_convert
 
 
 class TestIcal2PO:
-
     ConverterClass = ical2po.ical2po
 
     def _convert(

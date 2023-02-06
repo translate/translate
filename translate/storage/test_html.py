@@ -41,7 +41,6 @@ def test_guess_encoding():
 
 
 class TestHTMLParsing:
-
     h = html.htmlfile
 
     def test_mismatched_tags(self):
@@ -79,7 +78,6 @@ class TestHTMLParsing:
 
 
 class TestHTMLExtraction:
-
     h = html.htmlfile
 
     @staticmethod
