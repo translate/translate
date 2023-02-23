@@ -298,6 +298,40 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             r"\.first = First",
         )
 
+        # Duplicate attribute names is not allowed.
+        with raises(
+            ValueError,
+            match=(
+                r'^Entry "message" assigns to the same "attr" attribute more '
+                r"than once \[offset 47\]$"
+            ),
+        ):
+            self.fluent_parse(
+                # Make each line 15 chars to make counting the offset simple.
+                "message =  ok \n"
+                "  .attr =first\n"
+                "  .other=other\n"
+                "  .attr =  2nd\n"
+            )
+
+        fluent_file = self.quick_fluent_file(
+            [
+                {
+                    "type": "Message",
+                    "source": "val\n"
+                    ".attr = first\n"
+                    ".other = other\n"
+                    "  .attr = second",
+                    "id": "message",
+                }
+            ]
+        )
+        self.assert_serialize_failure(
+            fluent_file,
+            r'^Error in source of FluentUnit "message":\n'
+            r'The "attr" attribute is assigned to more than once$',
+        )
+
     def test_term_with_attributes(self):
         """Test a fluent Term with Attributes."""
         self.basic_test(
@@ -334,6 +368,40 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             fluent_file,
             r'^Error in source of FluentUnit "-term":\n'
             r'.*Expected term "-term" to have a value \[line 1, column 1\]$',
+        )
+
+        # Duplicate attribute names is not allowed.
+        with raises(
+            ValueError,
+            match=(
+                r'^Entry "-term" assigns to the same "attr" attribute more '
+                r"than once \[offset 47\]$"
+            ),
+        ):
+            self.fluent_parse(
+                # Make each line 15 chars to make counting the offset simple.
+                "-term =   ok  \n"
+                "  .other=other\n"
+                "  .attr =first\n"
+                "  .attr =  2nd\n"
+            )
+
+        fluent_file = self.quick_fluent_file(
+            [
+                {
+                    "type": "Term",
+                    "source": "val\n"
+                    ".other = other\n"
+                    ".attr = first\n"
+                    ".attr = second",
+                    "id": "-term",
+                }
+            ]
+        )
+        self.assert_serialize_failure(
+            fluent_file,
+            r'^Error in source of FluentUnit "-term":\n'
+            r'The "attr" attribute is assigned to more than once$',
         )
 
     def test_whitespace(self):
@@ -1472,7 +1540,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
 
             ## Comment 4
 
-            m2 =
+            m4 =
                 .a = later
             """,
             [
@@ -1492,7 +1560,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                 },
                 {"id": "-term2", "source": "none", "comment": ""},
                 {"type": "GroupComment", "comment": "Comment 4"},
-                {"id": "m2", "source": ".a = later", "comment": "Comment 4"},
+                {"id": "m4", "source": ".a = later", "comment": "Comment 4"},
             ],
         )
 
@@ -2127,6 +2195,52 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             with raises(ValueError, match=r"^Invalid id "):
                 unit.setid(unit_id)
             assert unit.getid() == ok_id
+
+    def test_duplicate_ids(self):
+        """Test that we get a parsing error if an id is duplicated in the
+        source.
+        """
+        with raises(
+            ValueError,
+            match=r'^Entry "dup" has the same id as a previous entry \[offset 75\]',
+        ):
+            self.fluent_parse(
+                # Each line is 15 char to make counting the offset easy.
+                "# Comment     \n"
+                "dup = first   \n"
+                "other = ok    \n"
+                "    .attr = ok\n"
+                "              \n"
+                "dup = again   \n"
+                "    .attr = ok\n"
+                "more = ok     \n"
+            )
+
+        # With a Term
+        with raises(
+            ValueError,
+            match=r'^Entry "-dup" has the same id as a previous entry \[offset 45\]',
+        ):
+            self.fluent_parse(
+                # Each line is 15 char to make counting the offset easy.
+                "more = ok     \n"
+                "-dup = first  \n"
+                "other = ok    \n"
+                "-dup = again  \n"
+                "    .attr = ok\n"
+            )
+
+        # Term and Message with the same identifier is ok.
+        self.basic_test(
+            """\
+            dup = message
+            -dup = term
+            """,
+            [
+                {"id": "dup", "source": "message"},
+                {"id": "-dup", "source": "term"},
+            ],
+        )
 
     def test_serialize_errors(self):
         """Test that errors are extracted when serializing."""

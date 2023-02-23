@@ -33,6 +33,19 @@ from fluent.syntax import FluentSerializer, ast, parse, serialize, visitor
 from translate.storage import base
 
 
+def _duplicate_attribute(entry: ast.Term | ast.Message) -> ast.Attribute | None:
+    """Return the first attribute in the given Term or Message entry that
+    has the same id as a previous attribute, or None if none of the attributes
+    clash.
+    """
+    for index, attr in enumerate(entry.attributes):
+        for other_index in range(index + 1, len(entry.attributes)):
+            other_attr = entry.attributes[other_index]
+            if attr.id.name == other_attr.id.name:
+                return other_attr
+    return None
+
+
 class FluentUnit(base.TranslationUnit):
     """Represents a single fluent Message, Term, a ResourceComment, a
     GroupComment or a stand-alone Comment.
@@ -367,6 +380,10 @@ class FluentUnit(base.TranslationUnit):
                 "Entry rather than a Message"
             )
 
+        dup_attr = _duplicate_attribute(entry)
+        if dup_attr:
+            return f'The "{dup_attr.id.name}" attribute is assigned to more than once'
+
         return entry
 
 
@@ -465,6 +482,7 @@ class FluentFile(base.TranslationStore):
             self.parse(inputfile.read())
 
     def parse(self, fluentsrc: bytes) -> None:
+        found_ids = []
         resource = parse(fluentsrc.decode("utf-8"))
         for entry in resource.body:
             # Handle this unit separately if it is invalid.
@@ -486,12 +504,26 @@ class FluentFile(base.TranslationStore):
                     # A GroupComment replaces the previous GroupComment.
                     comment_prefix = self._combine_comments(resource_comments, entry)
             elif isinstance(entry, (ast.Term, ast.Message)):
-                self.addunit(
-                    FluentUnit.new_from_entry(
-                        entry,
-                        self._combine_comments(comment_prefix, entry.comment),
-                    )
+                unit = FluentUnit.new_from_entry(
+                    entry,
+                    self._combine_comments(comment_prefix, entry.comment),
                 )
+                unit_id = unit.getid()
+                if unit_id in found_ids:
+                    raise ValueError(
+                        f'Entry "{unit_id}" has the same id as a previous entry'
+                        f" [offset {entry.span.start}]"
+                    )
+                found_ids.append(unit_id)
+
+                dup_attr = _duplicate_attribute(entry)
+                if dup_attr:
+                    raise ValueError(
+                        f'Entry "{unit_id}" assigns to the same '
+                        f'"{dup_attr.id.name}" attribute more than once '
+                        f"[offset {dup_attr.span.start}]"
+                    )
+                self.addunit(unit)
             else:
                 raise ValueError(
                     f"Unhandled fluent Entry type: {entry.__class__.__name__}"
