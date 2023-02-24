@@ -1267,6 +1267,38 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                             {middle_value}
                     """,
                 )
+                self.basic_test(
+                    f"""\
+                    message =
+                        .a = {{ $var ->
+                            [one] ok
+                            *[other] {value}
+                        {middle_value}
+                        }}
+                    """,
+                    [
+                        {
+                            "id": "message",
+                            "source": ".a =\n"
+                            "{ $var ->\n"
+                            "    [one] ok\n"
+                            "   *[other]\n"
+                            f"        {escaped_value}\n"
+                            f"        {middle_value}\n"
+                            "}",
+                        }
+                    ],
+                    f"""\
+                    message =
+                        .a =
+                            {{ $var ->
+                                [one] ok
+                               *[other]
+                                    {escaped_value}
+                                    {middle_value}
+                            }}
+                    """,
+                )
 
                 if ok_at_start:
                     continue
@@ -1299,6 +1331,15 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                     -term = ok
                       .attr =
                         {value}
+                    """,
+                    r".*" + re.escape(value),
+                )
+                self.assert_parse_failure(
+                    f"""\
+                    message = {{ $var ->
+                      *[other]
+                        {value}
+                    }}
                     """,
                     r".*" + re.escape(value),
                 )

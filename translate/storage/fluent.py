@@ -33,6 +33,58 @@ from fluent.syntax import FluentSerializer, ast, parse, serialize, visitor
 from translate.storage import base
 
 
+class _SanitizeVisitor(visitor.Visitor):
+    """Private class used to replace special characters at the start of Fluent
+    Patterns.
+    """
+
+    def visit_Pattern(self, pattern: ast.Pattern) -> None:
+        if not pattern.elements:
+            # Unexpected since a Pattern wouldn't be created if it had no
+            # content.
+            # No children to descend into either, so we just return.
+            return
+
+        first_element = pattern.elements[0]
+        if isinstance(first_element, ast.TextElement):
+            # Replace the special characters "*", "[" and "." with a
+            # StringLiteral if they appear at the start of a line.
+            # NOTE: These are specified in the fluent EBNF's "indented_char".
+            # Normally, these characters cannot appear at the start of a line
+            # for a value because they are part of the syntax, so they must be
+            # escaped. However, as an exception, these characters may appear at
+            # the very start of a Pattern, on the same line as the "=" sign or
+            # a Selection Variant key "[other]".
+            # For example:
+            #     m = .start
+            # or
+            #     m = *start
+            #         another line
+            #
+            # We want to escape these special characters for two reasons:
+            #   1. For consistency with other lines not being able to start with
+            #      such a character in multiline values. For a Message or Term's
+            #      value, there is no "=" sign in the derived source to indicate
+            #      the exception.
+            #   2. To make re-serialization easier. In particular, when we
+            #      serialize the FluentUnit's source, we place the source on a
+            #      newline for consistent behaviour and to preserve common
+            #      indents.
+            #   3. For better presentation of multiline Attribute or Variant
+            #      values. These will consistently be printed on newlines, where
+            #      the common-indent rule is clearer.
+            #   4. To make sure that serializing a sub-pattern produces the same
+            #      sub-string as it appears in the parent (modulo indents).
+            first_char = first_element.value[0]
+            if first_char in ("[", ".", "*"):
+                # Replace with literals.
+                # NOTE: An empty TextElement is ok for the FluentSerializer.
+                first_element.value = first_element.value[1:]
+                pattern.elements.insert(0, ast.Placeable(ast.StringLiteral(first_char)))
+
+        self.generic_visit(pattern)
+
+
 def _duplicate_attribute(entry: ast.Term | ast.Message) -> ast.Attribute | None:
     """Return the first attribute in the given Term or Message entry that
     has the same id as a previous attribute, or None if none of the attributes
@@ -206,34 +258,8 @@ class FluentUnit(base.TranslationUnit):
         if not pattern.elements:
             raise ValueError("Unexpected fluent Pattern without any elements")
 
-        first_element = pattern.elements[0]
-        if isinstance(first_element, ast.TextElement):
-            # Replace the special characters "*", "[" and "." with a
-            # StringLiteral if they appear at the start of a line.
-            # NOTE: These are specified in the fluent EBNF's "indented_char".
-            # Normally, these characters cannot appear at the start of a line
-            # for a value because they are part of the syntax, so they must be
-            # escaped. However, as an exception, these characters may appear at
-            # the very start of a Pattern, on the same line as the "=" sign.
-            # For example:
-            #     m = .start
-            # or
-            #     m = *start
-            #         another line
-            #
-            # We want to escape these special characters for two reasons:
-            #   1. For consistency with other lines not being able to start with
-            #      such a character in multiline values. There is no "=" sign in
-            #      the derived source to indicate the exception.
-            #   2. To make re-serialization easier. In particular, when we
-            #      serialize the FluentUnit's source, we place the source on a
-            #      newline for consistent behaviour.
-            first_char = first_element.value[0]
-            if first_char in ("[", ".", "*"):
-                # Replace with literals.
-                # NOTE: An empty TextElement is ok for the FluentSerializer.
-                first_element.value = first_element.value[1:]
-                pattern.elements.insert(0, ast.Placeable(ast.StringLiteral(first_char)))
+        sanitizer = _SanitizeVisitor()
+        sanitizer.visit(pattern)
 
         # Create a fluent Message with the given pattern and serialize it.
         # We use serialize_entry which is part of python-fluent's public API.
