@@ -179,6 +179,36 @@ JSON_GOI18N = b"""[
 ]
 """
 
+JSON_GOI18N_V2 = b"""{
+    "key": "value",
+    "table": {
+        "description": "an article of furniture consisting of a flat, slablike top supported on one or more legs or other supports",
+        "other": "Table"
+    },
+    "tag": {
+        "description": "a piece or strip of strong paper, plastic, metal, leather, etc., for attaching by one end to something as a mark or label",
+        "one": "{{.count}} tag",
+        "other": "{{.count}} tags"
+    }
+}
+"""
+
+JSON_GOI18N_V2_COMPLEXE = b"""{
+    "key": {
+        "other": "value"
+    },
+    "table": {
+        "description": "an article of furniture consisting of a flat, slablike top supported on one or more legs or other supports",
+        "other": "Table"
+    },
+    "tag": {
+        "description": "a piece or strip of strong paper, plastic, metal, leather, etc., for attaching by one end to something as a mark or label",
+        "one": "{{.count}} tag",
+        "other": "{{.count}} tags"
+    }
+}
+"""
+
 JSON_ARB = b"""{
   "@@last_modified": "2019-11-06T22:41:37.002648",
   "Back": "Back",
@@ -968,6 +998,44 @@ class TestGoI18NJsonFile(test_monolingual.TestMonolingualStore):
         store.units[0].target = multistring(["{{.count}} tag"])
 
         assert '"other": ""' in bytes(store).decode()
+
+
+class TestGoI18NV2JsonFile(test_monolingual.TestMonolingualStore):
+    StoreClass = jsonl10n.GoI18NV2JsonFile
+
+    def test_plurals(self):
+        store = self.StoreClass()
+        store.parse(JSON_GOI18N_V2)
+
+        assert len(store.units) == 3
+        assert store.units[0].target == "value"
+        assert store.units[1].target == "Table"
+        assert store.units[2].target == multistring(
+            ["{{.count}} tag", "{{.count}} tags"]
+        )
+
+        assert bytes(store).decode() == JSON_GOI18N_V2.decode()
+
+    def test_plurals_missing(self):
+        store = self.StoreClass()
+        store.parse(JSON_GOI18N_V2)
+
+        store.units[2].target = multistring(["{{.count}} tag"])
+
+        assert '"other": "{{.count}} tag"' in bytes(store).decode()
+
+    def test_simplification(self):
+        store = self.StoreClass()
+        store.parse(JSON_GOI18N_V2_COMPLEXE)
+
+        assert len(store.units) == 3
+        assert store.units[0].target == "value"
+        assert store.units[1].target == "Table"
+        assert store.units[2].target == multistring(
+            ["{{.count}} tag", "{{.count}} tags"]
+        )
+
+        assert bytes(store).decode() == JSON_GOI18N_V2.decode()
 
 
 class TestARBJsonFile(test_monolingual.TestMonolingualStore):
