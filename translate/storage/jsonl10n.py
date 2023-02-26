@@ -653,8 +653,8 @@ class GoI18NJsonFile(JsonFile):
 
     See following URLs for doc:
 
-    https://github.com/nicksnyder/go-i18n
-    https://godoc.org/github.com/nicksnyder/go-i18n/v2
+    https://github.com/nicksnyder/go-i18n/tree/v1
+    https://pkg.go.dev/github.com/nicksnyder/go-i18n
     """
 
     UnitClass = GoI18NJsonUnit
@@ -689,6 +689,82 @@ class GoI18NJsonFile(JsonFile):
 
     def serialize(self, out):
         units = [unit.getvalue() for unit in self.units]
+        out.write(json.dumps(units, **self.dump_args).encode(self.encoding))
+        out.write(b"\n")
+
+
+class GoI18NV2JsonUnit(BaseJsonUnit):
+    ID_FORMAT = "{}"
+
+    def getvalue(self):
+        target = self.target
+
+        if isinstance(target, multistring) and len(target.strings) == 1:
+            target = str(target.strings[0])
+
+        if isinstance(target, str) and not self.notes:
+            return target
+
+        if isinstance(target, multistring):
+            strings = list(target.strings)
+            if len(self._store.plural_tags) > len(target.strings):
+                strings += [""] * (len(self._store.plural_tags) - len(target.strings))
+            target = {
+                plural: strings[offset]
+                for offset, plural in enumerate(self._store.plural_tags)
+            }
+        else:
+            target = {"other": target}
+
+        value = {}
+        if self.notes:
+            value["description"] = self.notes
+        for plural_tag, plural_target in target.items():
+            value[plural_tag] = plural_target
+        return value
+
+
+class GoI18NV2JsonFile(JsonFile):
+    """go-i18n v2 JSON file
+
+    See following URLs for doc:
+
+    https://github.com/nicksnyder/go-i18n
+    https://pkg.go.dev/github.com/nicksnyder/go-i18n/v2
+    """
+
+    UnitClass = GoI18NV2JsonUnit
+
+    def _extract_units(
+        self,
+        data,
+        stop=None,
+        prev=None,
+        name_node=None,
+        name_last_node=None,
+        last_node=None,
+    ):
+        for id, value in data.items():
+            if isinstance(value, str):
+                unit = self.UnitClass(value, id)
+            else:
+                translation = multistring(
+                    [value.get(key) for key in cldr_plural_categories if key in value]
+                )
+                # Default to str in case of a unique translation
+                if len(translation.strings) == 1:
+                    translation = str(translation.strings[0])
+
+                unit = self.UnitClass(
+                    translation,
+                    id,
+                    value.get("description", ""),
+                )
+            unit.setid(id)
+            yield unit
+
+    def serialize(self, out):
+        units = {unit.getid(): unit.getvalue() for unit in self.units}
         out.write(json.dumps(units, **self.dump_args).encode(self.encoding))
         out.write(b"\n")
 
