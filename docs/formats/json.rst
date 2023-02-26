@@ -34,7 +34,8 @@ Example:
 Following JSON dialects are supported
 
 * Plain JSON files.
-* i18next
+* i18next v3 & v4
 * Web Extension i18n
-* `go-i18n <https://github.com/nicksnyder/go-i18n>`_
+* `go-i18n v1 & v2 <https://github.com/nicksnyder/go-i18n>`_
+* `gotext <https://pkg.go.dev/golang.org/x/text/cmd/gotext>`_
 * `ARB <https://github.com/google/app-resource-bundle/wiki/ApplicationResourceBundleSpecification>`_
