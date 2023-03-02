@@ -1,0 +1,10 @@
+---
+title: Translate Toolkit 3.8.5 released
+category: releases
+---
+
+The major changes in this release are:
+
+- Add support for go-i18n v2
+
+Read the full [Release notes](http://docs.translatehouse.org/projects/translate-toolkit/en/latest/releases/3.8.5.html) for more details.
