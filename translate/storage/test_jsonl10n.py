@@ -179,7 +179,27 @@ JSON_GOI18N = b"""[
 ]
 """
 
-JSON_GOI18N_V2 = b"""{
+JSON_GOI18N_V2 = """{
+    "simple": "value",
+    "plural": {
+        "zero": "the plural form 0",
+        "one": "the plural form 1",
+        "two": "the plural form 2",
+        "few": "the plural form 3",
+        "many": "the plural form 4",
+        "other": "the plural form 5"
+    }
+}
+"""
+
+JSON_GOI18N_V2_PLURAL = """{
+    "simple": "value",
+    "plural": "plural"
+}
+"""
+
+
+JSON_GOI18N_V2_SIMPLE = """{
     "key": "value",
     "table": {
         "description": "an article of furniture consisting of a flat, slablike top supported on one or more legs or other supports",
@@ -193,7 +213,7 @@ JSON_GOI18N_V2 = b"""{
 }
 """
 
-JSON_GOI18N_V2_COMPLEXE = b"""{
+JSON_GOI18N_V2_COMPLEXE = """{
     "key": {
         "other": "value"
     },
@@ -1003,9 +1023,9 @@ class TestGoI18NJsonFile(test_monolingual.TestMonolingualStore):
 class TestGoI18NV2JsonFile(test_monolingual.TestMonolingualStore):
     StoreClass = jsonl10n.GoI18NV2JsonFile
 
-    def test_plurals(self):
+    def test_plurals_1(self):
         store = self.StoreClass()
-        store.parse(JSON_GOI18N_V2)
+        store.parse(JSON_GOI18N_V2_SIMPLE)
 
         assert len(store.units) == 3
         assert store.units[0].target == "value"
@@ -1014,11 +1034,35 @@ class TestGoI18NV2JsonFile(test_monolingual.TestMonolingualStore):
             ["{{.count}} tag", "{{.count}} tags"]
         )
 
-        assert bytes(store).decode() == JSON_GOI18N_V2.decode()
+        assert bytes(store).decode() == JSON_GOI18N_V2_SIMPLE
+
+    def test_plurals_2(self):
+        store = self.StoreClass()
+        store.settargetlanguage("ar")
+        store.parse(JSON_GOI18N_V2)
+
+        # Remove plurals
+        store.units[1].target = "plural"
+
+        assert bytes(store).decode() == JSON_GOI18N_V2_PLURAL
+
+        # Bring back plurals
+        store.units[1].target = multistring(
+            [
+                "the plural form 0",
+                "the plural form 1",
+                "the plural form 2",
+                "the plural form 3",
+                "the plural form 4",
+                "the plural form 5",
+            ]
+        )
+
+        assert bytes(store).decode() == JSON_GOI18N_V2
 
     def test_plurals_missing(self):
         store = self.StoreClass()
-        store.parse(JSON_GOI18N_V2)
+        store.parse(JSON_GOI18N_V2_SIMPLE)
 
         store.units[2].target = multistring(["{{.count}} tag"])
 
@@ -1035,7 +1079,7 @@ class TestGoI18NV2JsonFile(test_monolingual.TestMonolingualStore):
             ["{{.count}} tag", "{{.count}} tags"]
         )
 
-        assert bytes(store).decode() == JSON_GOI18N_V2.decode()
+        assert bytes(store).decode() == JSON_GOI18N_V2_SIMPLE
 
 
 class TestARBJsonFile(test_monolingual.TestMonolingualStore):
