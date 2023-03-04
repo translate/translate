@@ -250,8 +250,7 @@ class JsonFile(base.DictStore):
 
 
 class JsonNestedUnit(BaseJsonUnit):
-    def storevalues(self, output):
-        self.storevalue(output, self.converttarget())
+    """A nested JSON entry"""
 
 
 class JsonNestedFile(JsonFile):
