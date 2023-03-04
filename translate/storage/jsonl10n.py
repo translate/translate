@@ -701,7 +701,7 @@ class GoI18NV2JsonUnit(BaseJsonUnit):
         if isinstance(target, multistring) and len(target.strings) == 1:
             target = str(target.strings[0])
 
-        if isinstance(target, str) and not self.notes:
+        if not isinstance(target, multistring) and not self.notes:
             return target
 
         if isinstance(target, multistring):
