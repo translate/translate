@@ -695,32 +695,25 @@ class GoI18NJsonFile(JsonFile):
 class GoI18NV2JsonUnit(BaseJsonUnit):
     ID_FORMAT = "{}"
 
-    def getvalue(self):
-        target = self.target
+    def converttarget(self):
+        # Special handling of single translations
+        if not isinstance(self.target, multistring) or len(self.target.strings) == 1:
+            if self.notes:
+                return {"description": self.notes, "other": self.target}
+            else:
+                return self.target
 
-        if isinstance(target, multistring) and len(target.strings) == 1:
-            target = str(target.strings[0])
-
-        if not isinstance(target, multistring) and not self.notes:
-            return target
-
-        if isinstance(target, multistring):
-            strings = list(target.strings)
-            if len(self._store.plural_tags) > len(target.strings):
-                strings += [""] * (len(self._store.plural_tags) - len(target.strings))
-            target = {
-                plural: strings[offset]
-                for offset, plural in enumerate(self._store.plural_tags)
-            }
-        else:
-            target = {"other": target}
-
-        value = {}
+        target = {}
         if self.notes:
-            value["description"] = self.notes
-        for plural_tag, plural_target in target.items():
-            value[plural_tag] = plural_target
-        return value
+            target["description"] = self.notes
+
+        strings = self.target.strings
+        if len(self._store.plural_tags) > len(strings):
+            strings += [""] * (len(self._store.plural_tags) - len(target.strings))
+        for offset, plural in enumerate(self._store.plural_tags):
+            target[plural] = strings[offset]
+
+        return target
 
 
 class GoI18NV2JsonFile(JsonFile):
@@ -750,10 +743,6 @@ class GoI18NV2JsonFile(JsonFile):
                 translation = multistring(
                     [value.get(key) for key in cldr_plural_categories if key in value]
                 )
-                # Default to str in case of a unique translation
-                if len(translation.strings) == 1:
-                    translation = str(translation.strings[0])
-
                 unit = self.UnitClass(
                     translation,
                     id,
@@ -761,11 +750,6 @@ class GoI18NV2JsonFile(JsonFile):
                 )
             unit.setid(id)
             yield unit
-
-    def serialize(self, out):
-        units = {unit.getid(): unit.getvalue() for unit in self.units}
-        out.write(json.dumps(units, **self.dump_args).encode(self.encoding))
-        out.write(b"\n")
 
 
 class ARBJsonUnit(BaseJsonUnit):
