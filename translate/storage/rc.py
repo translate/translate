@@ -387,7 +387,11 @@ class rcfile(base.TranslationStore):
 
         for statement in results:
             # Parse pragma
-            if statement[0] == "#pragma" and "code_page" in statement[1]:
+            if (
+                statement[0] == "#pragma"
+                and "code_page" in statement[1]
+                and self.encoding not in ("utf-8", "utf-16")
+            ):
                 expected_encoding = parse_encoding_pragma(statement[1])
                 if expected_encoding and expected_encoding != self.encoding:
                     self.units = []
