@@ -1,0 +1,28 @@
+Translate Toolkit 3.8.6
+***********************
+
+*Released on 7 March 2023*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- JSON
+
+  - Fix go-i18n v2 unit format on plurals without description
+  - Code cleanups
+
+- RC
+
+  - Ignore pragma encoding on unicode files
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Nicolas Le Cam, Michal Čihař
