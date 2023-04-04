@@ -123,7 +123,7 @@ class PoXliffUnit(xliff.xliffunit):
 
     def gettarget(self, lang=None):
         if self.hasplural():
-            strings = [unit.target for unit in self.units]
+            strings = [unit.target or "" for unit in self.units]
             if strings:
                 return multistring(strings)
             else:
