@@ -122,3 +122,26 @@ class TestPOXLIFFfile(test_xliff.TestXLIFFfile):
             xlifffile.units[0].getnotes("po-translator")
             == "Zulu translation of program ABC"
         )
+
+    def test_plural(self):
+        minixlf = (
+            self.xliffskeleton
+            % """
+        <group id="1238108068" restype="x-gettext-plurals">
+                <trans-unit id="1238108068[0]" xml:space="preserve">
+                        <source>This field must contain at least {0,number} character</source>
+                </trans-unit>
+                <trans-unit id="1238108068[1]" xml:space="preserve">
+                        <source>This field must contain at least {0,number} characters</source>
+                </trans-unit>
+        </group>
+            """
+        )
+        xlifffile = self.StoreClass.parsestring(minixlf)
+        assert len(xlifffile.units) == 1
+        unit = xlifffile.units[0]
+        assert unit.source.strings == [
+            "This field must contain at least {0,number} character",
+            "This field must contain at least {0,number} characters",
+        ]
+        assert unit.target == ["", ""]
