@@ -267,7 +267,6 @@ Review Messages, Review Source Words"""
 
 
 class FullRenderer(Renderer):
-
     def entry(self, title, stats):
         print(
             "Processing file : " + ConsoleColor.HEADER() + title + ConsoleColor.ENDC()
@@ -354,6 +353,7 @@ class ShortStringsRenderer(Renderer):
     """
     :param indent: indentation of the 2nd column (length of longest filename)
     """
+
     indent: int = 8
 
     def entry(self, title, stats):
@@ -388,6 +388,7 @@ class ShortWordsRenderer(Renderer):
     """
     :param indent: indentation of the 2nd column (length of longest filename)
     """
+
     indent: int = 8
 
     def entry(self, title, stats):
