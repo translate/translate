@@ -26,7 +26,6 @@ class MsgfmtTester:
             text=True,
         )
         stdout, stderr = process.communicate()
-        assert not stdout, "Unexpected stdout received."
         stderr = stderr.replace(pofile, basename(pofile))
 
         failures: list[CheckFailure] = []
