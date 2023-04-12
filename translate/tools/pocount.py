@@ -15,6 +15,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
+#
+# pyright: strictDictionaryInference=true
 
 """Count strings and words for supported localization files.
 
@@ -25,8 +27,10 @@ for examples and usage instructions.
 """
 from __future__ import annotations
 import enum
+from functools import cached_property
 
 import logging
+from operator import itemgetter
 import os
 import re
 import sys
@@ -75,6 +79,7 @@ xmltagre = re.compile(
     re.VERBOSE,
 )
 numberre = re.compile("\\D\\.\\D")
+
 
 class Style(enum.Enum):
     FULL = enum.auto()
@@ -156,7 +161,7 @@ def calcstats(filename):
         logger.warning(e)
         return {}
 
-    units = [unit for unit in store.units if unit.istranslatable()]
+    units = [unit for unit in store.units if unit.istranslatable()]  # type: ignore
     translated = translatedmessages(units)
     fuzzy = fuzzymessages(units)
     review = [unit for unit in units if unit.isreview()]
@@ -168,7 +173,7 @@ def calcstats(filename):
     targetwords = lambda elementlist: sum(
         wordcounts[id(unit)][1] for unit in elementlist
     )
-    stats = {}
+    stats = {"filename": filename}
 
     # units
     stats["translated"] = len(translated)
@@ -225,29 +230,30 @@ def file_extended_totals(units, wordcounts):
     return stats
 
 
-def summarize(title, stats, style=Style.FULL, indent=8, incomplete_only=False):
-    """Print summary for a .po file in specified format.
+@dataclass
+class Renderer:
+    stats: StatCollector
 
-    :param title: name of .po file
-    :param stats: array with translation statistics for the file specified
-    :param indent: indentation of the 2nd column (length of longest filename)
-    :param incomplete_only: omit fully translated files
-    :type incomplete_only: Boolean
-    :rtype: Boolean
-    :return: 1 if counting incomplete files (incomplete_only=True) and the
-             file is completely translated, 0 otherwise
-    """
+    def header(self):
+        pass
 
-    def percent(denominator, devisor):
-        if devisor == 0:
-            return 0
-        else:
-            return denominator * 100 / devisor
+    def entry(self, title: str, stats: dict):
+        pass
 
-    if incomplete_only and (stats["total"] == stats["translated"]):
-        return 1
+    def footer(self):
+        pass
 
-    if style == Style.CSV:
+
+class CsvRenderer(Renderer):
+    def header(self):
+        print(
+            """Filename, Translated Messages, Translated Source Words, \
+Translated Target Words, Fuzzy Messages, Fuzzy Source Words, Untranslated Messages, \
+Untranslated Source Words, Total Message, Total Source Words, \
+Review Messages, Review Source Words"""
+        )
+
+    def entry(self, title, stats):
         print("%s, " % title, end=" ")
         print(
             "%d, %d, %d,"
@@ -267,67 +273,11 @@ def summarize(title, stats, style=Style.FULL, indent=8, incomplete_only=False):
         if stats["review"] > 0:
             print(", %d, %d" % (stats["review"], stats["reviewsourdcewords"]), end=" ")
         print()
-    elif style == Style.SHORT_STRINGS:
-        spaces = " " * (indent - len(title))
-        print(
-            "%s%s strings: total: %d\t| %st\t%sf\t%su\t| %st\t%sf\t%su"
-            % (
-                ConsoleColor.HEADER() + title + ConsoleColor.ENDC(),
-                spaces,
-                stats["total"],
-                ConsoleColor.OKGREEN() + str(stats["translated"]) + ConsoleColor.ENDC(),
-                ConsoleColor.WARNING() + str(stats["fuzzy"]) + ConsoleColor.ENDC(),
-                ConsoleColor.FAIL() + str(stats["untranslated"]) + ConsoleColor.ENDC(),
-                ConsoleColor.OKGREEN()
-                + str(percent(stats["translated"], stats["total"]))
-                + "%"
-                + ConsoleColor.ENDC(),
-                ConsoleColor.WARNING()
-                + str(percent(stats["fuzzy"], stats["total"]))
-                + "%"
-                + ConsoleColor.ENDC(),
-                ConsoleColor.FAIL()
-                + str(percent(stats["untranslated"], stats["total"]))
-                + "%"
-                + ConsoleColor.ENDC(),
-            )
-        )
-    elif style == Style.SHORT_WORDS:
-        spaces = " " * (indent - len(title))
-        print(
-            "%s%s source words: total: %d\t| %st\t%sf\t%su\t| %st\t%sf\t%su"
-            % (
-                ConsoleColor.HEADER() + title + ConsoleColor.ENDC(),
-                spaces,
-                stats["totalsourcewords"],
-                ConsoleColor.OKGREEN()
-                + str(stats["translatedsourcewords"])
-                + ConsoleColor.ENDC(),
-                ConsoleColor.WARNING()
-                + str(stats["fuzzysourcewords"])
-                + ConsoleColor.ENDC(),
-                ConsoleColor.FAIL()
-                + str(stats["untranslatedsourcewords"])
-                + ConsoleColor.ENDC(),
-                ConsoleColor.OKGREEN()
-                + str(
-                    percent(stats["translatedsourcewords"], stats["totalsourcewords"])
-                )
-                + "%"
-                + ConsoleColor.ENDC(),
-                ConsoleColor.WARNING()
-                + str(percent(stats["fuzzysourcewords"], stats["totalsourcewords"]))
-                + "%"
-                + ConsoleColor.ENDC(),
-                ConsoleColor.FAIL()
-                + str(
-                    percent(stats["untranslatedsourcewords"], stats["totalsourcewords"])
-                )
-                + "%"
-                + ConsoleColor.ENDC(),
-            )
-        )
-    else:  # style == Style.FULL
+
+
+class FullRenderer(Renderer):
+
+    def entry(self, title, stats):
         print(
             "Processing file : " + ConsoleColor.HEADER() + title + ConsoleColor.ENDC()
         )
@@ -395,7 +345,102 @@ def summarize(title, stats, style=Style.FULL, indent=8, incomplete_only=False):
                 % (stats["review"], stats["reviewsourcewords"])
             )
         print()
-    return 0
+
+    def footer(self):
+        stats = self.stats
+        if stats.file_count > 1:
+            if stats.incomplete_only:
+                self.entry("TOTAL (incomplete only):", stats.totals)
+                print("File count (incomplete):   %5d" % stats.file_count)
+            else:
+                self.entry("TOTAL:", stats.totals)
+            print("File count:   %5d" % (stats.file_count))
+            print()
+
+
+@dataclass
+class ShortStringsRenderer(Renderer):
+    """
+    :param indent: indentation of the 2nd column (length of longest filename)
+    """
+    indent: int = 8
+
+    def entry(self, title, stats):
+        spaces = " " * (self.indent - len(title))
+        print(
+            "%s%s strings: total: %d\t| %st\t%sf\t%su\t| %st\t%sf\t%su"
+            % (
+                ConsoleColor.HEADER() + title + ConsoleColor.ENDC(),
+                spaces,
+                stats["total"],
+                ConsoleColor.OKGREEN() + str(stats["translated"]) + ConsoleColor.ENDC(),
+                ConsoleColor.WARNING() + str(stats["fuzzy"]) + ConsoleColor.ENDC(),
+                ConsoleColor.FAIL() + str(stats["untranslated"]) + ConsoleColor.ENDC(),
+                ConsoleColor.OKGREEN()
+                + str(percent(stats["translated"], stats["total"]))
+                + "%"
+                + ConsoleColor.ENDC(),
+                ConsoleColor.WARNING()
+                + str(percent(stats["fuzzy"], stats["total"]))
+                + "%"
+                + ConsoleColor.ENDC(),
+                ConsoleColor.FAIL()
+                + str(percent(stats["untranslated"], stats["total"]))
+                + "%"
+                + ConsoleColor.ENDC(),
+            )
+        )
+
+
+@dataclass
+class ShortWordsRenderer(Renderer):
+    """
+    :param indent: indentation of the 2nd column (length of longest filename)
+    """
+    indent: int = 8
+
+    def entry(self, title, stats):
+        spaces = " " * (self.indent - len(title))
+        print(
+            "%s%s source words: total: %d\t| %st\t%sf\t%su\t| %st\t%sf\t%su"
+            % (
+                ConsoleColor.HEADER() + title + ConsoleColor.ENDC(),
+                spaces,
+                stats["totalsourcewords"],
+                ConsoleColor.OKGREEN()
+                + str(stats["translatedsourcewords"])
+                + ConsoleColor.ENDC(),
+                ConsoleColor.WARNING()
+                + str(stats["fuzzysourcewords"])
+                + ConsoleColor.ENDC(),
+                ConsoleColor.FAIL()
+                + str(stats["untranslatedsourcewords"])
+                + ConsoleColor.ENDC(),
+                ConsoleColor.OKGREEN()
+                + str(
+                    percent(stats["translatedsourcewords"], stats["totalsourcewords"])
+                )
+                + "%"
+                + ConsoleColor.ENDC(),
+                ConsoleColor.WARNING()
+                + str(percent(stats["fuzzysourcewords"], stats["totalsourcewords"]))
+                + "%"
+                + ConsoleColor.ENDC(),
+                ConsoleColor.FAIL()
+                + str(
+                    percent(stats["untranslatedsourcewords"], stats["totalsourcewords"])
+                )
+                + "%"
+                + ConsoleColor.ENDC(),
+            )
+        )
+
+
+def percent(denominator, devisor):
+    if devisor == 0:
+        return 0
+    else:
+        return denominator * 100 / devisor
 
 
 def fuzzymessages(units):
@@ -414,81 +459,83 @@ def untranslatedmessages(units):
     ]
 
 
-class summarizer:
-    def __init__(self, filenames: list[str], style=Style.FULL, incomplete_only=False):
-        self.totals = {}
-        self.filecount = 0
-        self.longestfilename = 0
-        self.style = style
+class StatCollector:
+    def __init__(self, items: list[str], incomplete_only=False):
         self.incomplete_only = incomplete_only
-        self.complete_count = 0
+        self.results: list[dict] = []
+        self._handle_items(items)
 
-        if self.style == Style.CSV:
-            print(
-                """Filename, Translated Messages, Translated Source Words, \
-Translated Target Words, Fuzzy Messages, Fuzzy Source Words, Untranslated Messages, \
-Untranslated Source Words, Total Message, Total Source Words, \
-Review Messages, Review Source Words"""
-            )
-        if self.style in (Style.SHORT_STRINGS, Style.SHORT_WORDS):
-            for filename in filenames:  # find longest filename
-                if len(filename) > self.longestfilename:
-                    self.longestfilename = len(filename)
-        for filename in filenames:
-            if not os.path.exists(filename):
-                logger.error("cannot process %s: does not exist", filename)
+    def render(self, style: Style):
+        renderer_class = {
+            Style.FULL: FullRenderer,
+            Style.CSV: CsvRenderer,
+            Style.SHORT_WORDS: ShortWordsRenderer,
+            Style.SHORT_STRINGS: ShortStringsRenderer,
+        }[style]
+        if renderer_class in (ShortWordsRenderer, ShortStringsRenderer):
+            renderer = renderer_class(self, indent=self.longest_filename)
+        else:
+            renderer = renderer_class(self)
+
+        renderer.header()
+        for entry in self.results:
+            renderer.entry(entry["filename"], entry)
+        renderer.footer()
+
+    def _handle_items(self, items: list[str]):
+        for item in items:
+            if not os.path.exists(item):
+                logger.error("cannot process %s: does not exist", item)
                 continue
-            elif os.path.isdir(filename):
-                self.handledir(filename)
+            elif os.path.isdir(item):
+                self._handle_dir(item)
             else:
-                self.handlefile(filename)
-        if self.filecount > 1 and (self.style == Style.FULL):
-            if self.incomplete_only:
-                summarize("TOTAL (incomplete only):", self.totals, incomplete_only=True)
-                print(
-                    "File count (incomplete):   %5d"
-                    % (self.filecount - self.complete_count)
-                )
-            else:
-                summarize("TOTAL:", self.totals, incomplete_only=False)
-            print("File count:   %5d" % (self.filecount))
-            print()
+                self._handle_single_file(item)
 
-    def updatetotals(self, stats):
-        """Update self.totals with the statistics in stats."""
-        for key in stats.keys():
-            if key == "extended":
-                # FIXME: calculate extended totals
-                continue
-            if key not in self.totals:
-                self.totals[key] = 0
-            self.totals[key] += stats[key]
-
-    def handlefile(self, filename):
-        try:
-            stats = calcstats(filename)
-            self.updatetotals(stats)
-            self.complete_count += summarize(
-                filename, stats, self.style, self.longestfilename, self.incomplete_only
-            )
-            self.filecount += 1
-        except Exception:  # This happens if we have a broken file.
-            logger.error(sys.exc_info()[1])
-
-    def handlefiles(self, dirname, filenames):
-        for filename in filenames:
-            pathname = os.path.join(dirname, filename)
-            if os.path.isdir(pathname):
-                self.handledir(pathname)
-            else:
-                self.handlefile(pathname)
-
-    def handledir(self, dirname):
+    def _handle_dir(self, dirname):
         path, name = os.path.split(dirname)
         if name in ["CVS", ".svn", "_darcs", ".git", ".hg", ".bzr"]:
             return
         entries = os.listdir(dirname)
-        self.handlefiles(dirname, entries)
+        self._handle_multiple_files(dirname, entries)
+
+    def _handle_multiple_files(self, dirname, filenames):
+        for filename in filenames:
+            pathname = os.path.join(dirname, filename)
+            if os.path.isdir(pathname):
+                self._handle_dir(pathname)
+            else:
+                self._handle_single_file(pathname)
+
+    def _handle_single_file(self, filename):
+        try:
+            stats = calcstats(filename)
+            if self.incomplete_only and stats["total"] == stats["translated"]:
+                return
+            self.results.append(stats)
+        except Exception:  # This happens if we have a broken file.
+            logger.error(sys.exc_info()[1])
+
+    @property
+    def longest_filename(self):
+        filenames = list(map(itemgetter("filename"), self.results)) or [""]
+        return max(len(f) for f in filenames)
+
+    @property
+    def file_count(self):
+        return len(self.results)
+
+    @cached_property
+    def totals(self) -> dict:
+        """Total stats"""
+        totals = defaultdict(int)
+        for stats in self.results:
+            for key, value in stats.items():
+                if key in ["extended", "filename"]:
+                    # FIXME: calculate extended totals
+                    continue
+                totals[key] += value
+        return totals
 
 
 def main(arguments=None):
@@ -549,7 +596,7 @@ def main(arguments=None):
     logging.basicConfig(format="%(name)s: %(levelname)s: %(message)s")
     ConsoleColor.color_mode = not args.no_color
 
-    summarizer(args.files, args.style, args.incomplete_only)
+    StatCollector(args.files, args.incomplete_only).render(args.style)
 
 
 if __name__ == "__main__":
