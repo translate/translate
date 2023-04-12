@@ -1,3 +1,4 @@
+# pyright: strictDictionaryInference=true
 #
 # Copyright 2003-2009 Zuza Software Foundation
 #
@@ -15,8 +16,6 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
-#
-# pyright: strictDictionaryInference=true
 
 """Count strings and words for supported localization files.
 
@@ -26,17 +25,16 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 from __future__ import annotations
-import enum
-from functools import cached_property
 
 import logging
-from operator import itemgetter
 import os
 import re
 import sys
 from argparse import ArgumentParser
 from collections import defaultdict
 from dataclasses import dataclass
+from functools import cached_property
+from operator import itemgetter
 
 from translate.lang.common import Common
 from translate.misc.multistring import multistring
