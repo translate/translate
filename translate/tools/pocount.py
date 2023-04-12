@@ -81,13 +81,6 @@ xmltagre = re.compile(
 numberre = re.compile("\\D\\.\\D")
 
 
-class Style(enum.Enum):
-    FULL = enum.auto()
-    CSV = enum.auto()
-    SHORT_STRINGS = enum.auto()
-    SHORT_WORDS = enum.auto()
-
-
 class ConsoleColor:
     """Class to implement color mode."""
 
@@ -465,13 +458,7 @@ class StatCollector:
         self.results: list[dict] = []
         self._handle_items(items)
 
-    def render(self, style: Style):
-        renderer_class = {
-            Style.FULL: FullRenderer,
-            Style.CSV: CsvRenderer,
-            Style.SHORT_WORDS: ShortWordsRenderer,
-            Style.SHORT_STRINGS: ShortStringsRenderer,
-        }[style]
+    def render(self, renderer_class: type[Renderer]):
         if renderer_class in (ShortWordsRenderer, ShortStringsRenderer):
             renderer = renderer_class(self, indent=self.longest_filename)
         else:
@@ -552,36 +539,36 @@ def main(arguments=None):
     megroup.add_argument(
         "--full",
         action="store_const",
-        const=Style.FULL,
+        const=FullRenderer,
         dest="style",
-        default=Style.FULL,
+        default=FullRenderer,
         help="(default) statistics in full, verbose format",
     )
     megroup.add_argument(
         "--csv",
         action="store_const",
-        const=Style.CSV,
+        const=CsvRenderer,
         dest="style",
         help="statistics in CSV format",
     )
     megroup.add_argument(
         "--short",
         action="store_const",
-        const=Style.SHORT_STRINGS,
+        const=ShortStringsRenderer,
         dest="style",
         help="same as --short-strings",
     )
     megroup.add_argument(
         "--short-strings",
         action="store_const",
-        const=Style.SHORT_STRINGS,
+        const=ShortStringsRenderer,
         dest="style",
         help="statistics of strings in short format - one line per file",
     )
     megroup.add_argument(
         "--short-words",
         action="store_const",
-        const=Style.SHORT_WORDS,
+        const=ShortWordsRenderer,
         dest="style",
         help="statistics of words in short format - one line per file",
     )
