@@ -4,6 +4,10 @@
 junitmsgfmt
 ***********
 
+.. versionadded:: 3.9
+
+Added --untranslated flag, to enable reporting of untranslated messages.
+
 .. versionadded:: 1.7
 
 Run msgfmt and provide JUnit type output for use in continuous integration
