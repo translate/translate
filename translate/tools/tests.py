@@ -10,11 +10,11 @@ pytestmark = [
     pytest.mark.skipif(sys.version_info < (3, 8), reason="Requires python 3.8")
 ]
 
-po_files = """
-tests/cli/data/test_pocount_po_csv/one.po
-tests/cli/data/test_pocount_po_file/one.po
-tests/cli/data/test_pocount_po_fuzzy/one.po
-""".split()
+po_files = [
+    "tests/cli/data/test_pocount_po_csv/one.po",
+    "tests/cli/data/test_pocount_po_file/one.po",
+    "tests/cli/data/test_pocount_po_fuzzy/one.po",
+]
 
 
 @pytest.mark.parametrize("format", ["csv", "full", "short-strings", "short-words"])
