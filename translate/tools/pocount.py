@@ -23,6 +23,8 @@ These include: XLIFF, TMX, Gettex PO and MO, Qt .ts and .qm, Wordfast TM, etc
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pocount.html
 for examples and usage instructions.
 """
+from __future__ import annotations
+import enum
 
 import logging
 import os
@@ -30,6 +32,7 @@ import re
 import sys
 from argparse import ArgumentParser
 from collections import defaultdict
+from dataclasses import dataclass
 
 from translate.lang.common import Common
 from translate.misc.multistring import multistring
@@ -57,12 +60,6 @@ state_strings = {
 
 logger = logging.getLogger(__name__)
 
-# define style constants
-style_full, style_csv, style_short_strings, style_short_words = range(4)
-
-# default output style
-default_style = style_full
-
 # kdepluralre = re.compile("^_n: ") #Restore this if you really need support for old kdeplurals
 brtagre = re.compile(r"<br\s*?/?>")
 # xmltagre is a direct copy of the from placeables/general.py
@@ -78,6 +75,12 @@ xmltagre = re.compile(
     re.VERBOSE,
 )
 numberre = re.compile("\\D\\.\\D")
+
+class Style(enum.Enum):
+    FULL = enum.auto()
+    CSV = enum.auto()
+    SHORT_STRINGS = enum.auto()
+    SHORT_WORDS = enum.auto()
 
 
 class ConsoleColor:
@@ -222,7 +225,7 @@ def file_extended_totals(units, wordcounts):
     return stats
 
 
-def summarize(title, stats, style=style_full, indent=8, incomplete_only=False):
+def summarize(title, stats, style=Style.FULL, indent=8, incomplete_only=False):
     """Print summary for a .po file in specified format.
 
     :param title: name of .po file
@@ -244,7 +247,7 @@ def summarize(title, stats, style=style_full, indent=8, incomplete_only=False):
     if incomplete_only and (stats["total"] == stats["translated"]):
         return 1
 
-    if style == style_csv:
+    if style == Style.CSV:
         print("%s, " % title, end=" ")
         print(
             "%d, %d, %d,"
@@ -264,7 +267,7 @@ def summarize(title, stats, style=style_full, indent=8, incomplete_only=False):
         if stats["review"] > 0:
             print(", %d, %d" % (stats["review"], stats["reviewsourdcewords"]), end=" ")
         print()
-    elif style == style_short_strings:
+    elif style == Style.SHORT_STRINGS:
         spaces = " " * (indent - len(title))
         print(
             "%s%s strings: total: %d\t| %st\t%sf\t%su\t| %st\t%sf\t%su"
@@ -289,7 +292,7 @@ def summarize(title, stats, style=style_full, indent=8, incomplete_only=False):
                 + ConsoleColor.ENDC(),
             )
         )
-    elif style == style_short_words:
+    elif style == Style.SHORT_WORDS:
         spaces = " " * (indent - len(title))
         print(
             "%s%s source words: total: %d\t| %st\t%sf\t%su\t| %st\t%sf\t%su"
@@ -324,7 +327,7 @@ def summarize(title, stats, style=style_full, indent=8, incomplete_only=False):
                 + ConsoleColor.ENDC(),
             )
         )
-    else:  # style == style_full
+    else:  # style == Style.FULL
         print(
             "Processing file : " + ConsoleColor.HEADER() + title + ConsoleColor.ENDC()
         )
@@ -412,7 +415,7 @@ def untranslatedmessages(units):
 
 
 class summarizer:
-    def __init__(self, filenames, style=default_style, incomplete_only=False):
+    def __init__(self, filenames: list[str], style=Style.FULL, incomplete_only=False):
         self.totals = {}
         self.filecount = 0
         self.longestfilename = 0
@@ -420,14 +423,14 @@ class summarizer:
         self.incomplete_only = incomplete_only
         self.complete_count = 0
 
-        if self.style == style_csv:
+        if self.style == Style.CSV:
             print(
                 """Filename, Translated Messages, Translated Source Words, \
 Translated Target Words, Fuzzy Messages, Fuzzy Source Words, Untranslated Messages, \
 Untranslated Source Words, Total Message, Total Source Words, \
 Review Messages, Review Source Words"""
             )
-        if self.style in (style_short_strings, style_short_words):
+        if self.style in (Style.SHORT_STRINGS, Style.SHORT_WORDS):
             for filename in filenames:  # find longest filename
                 if len(filename) > self.longestfilename:
                     self.longestfilename = len(filename)
@@ -439,7 +442,7 @@ Review Messages, Review Source Words"""
                 self.handledir(filename)
             else:
                 self.handlefile(filename)
-        if self.filecount > 1 and (self.style == style_full):
+        if self.filecount > 1 and (self.style == Style.FULL):
             if self.incomplete_only:
                 summarize("TOTAL (incomplete only):", self.totals, incomplete_only=True)
                 print(
@@ -502,36 +505,36 @@ def main(arguments=None):
     megroup.add_argument(
         "--full",
         action="store_const",
-        const=style_full,
+        const=Style.FULL,
         dest="style",
-        default=style_full,
+        default=Style.FULL,
         help="(default) statistics in full, verbose format",
     )
     megroup.add_argument(
         "--csv",
         action="store_const",
-        const=style_csv,
+        const=Style.CSV,
         dest="style",
         help="statistics in CSV format",
     )
     megroup.add_argument(
         "--short",
         action="store_const",
-        const=style_short_strings,
+        const=Style.SHORT_STRINGS,
         dest="style",
         help="same as --short-strings",
     )
     megroup.add_argument(
         "--short-strings",
         action="store_const",
-        const=style_short_strings,
+        const=Style.SHORT_STRINGS,
         dest="style",
         help="statistics of strings in short format - one line per file",
     )
     megroup.add_argument(
         "--short-words",
         action="store_const",
-        const=style_short_words,
+        const=Style.SHORT_WORDS,
         dest="style",
         help="statistics of words in short format - one line per file",
     )
