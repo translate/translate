@@ -39,7 +39,8 @@ class MsgfmtTester:
             failures,
         )
 
-    def _print_results(self, results: list[CheckResult]):
+    @staticmethod
+    def _print_results(results: list[CheckResult]):
         failures = len([r for r in results if len(r.failures)])
         total_time = sum([r.time for r in results], 0)
         root = etree.Element(
