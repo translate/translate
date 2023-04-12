@@ -57,7 +57,7 @@ class MsgfmtTester:
                 root,
                 "testcase",
                 classname="msgfmt",
-                name="check",
+                name=f"check[{result.file}]",
                 file=result.file,
                 time=f"{result.time:.4f}",
             )
