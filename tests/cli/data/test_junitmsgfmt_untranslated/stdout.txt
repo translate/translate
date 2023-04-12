@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <testsuite name="msgfmt" errors="0" skips="0" failures="1" tests="1" time="0.0000">
-  <testcase classname="msgfmt" name="check[./tests/cli/data/test_junitmsgfmt_untranslated/one.po]" file="./tests/cli/data/test_junitmsgfmt_untranslated/one.po" time="0.0000">
+  <testcase classname="msgfmt" name="check[./data/test_junitmsgfmt_untranslated/one.po]" file="./data/test_junitmsgfmt_untranslated/one.po" time="0.0000">
     <failure message="Untranslated messages">one.po:2: warning: header field 'Project-Id-Version' missing in header
 one.po:2: warning: header field 'PO-Revision-Date' missing in header
 one.po:2: warning: header field 'Last-Translator' missing in header
