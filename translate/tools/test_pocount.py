@@ -1,9 +1,12 @@
 from io import BytesIO
+import subprocess
 
 from pytest import mark
 
 from translate.storage import po
 from translate.tools import pocount
+
+from ._test_utils import requires_py38_mark, test_po_files
 
 
 class TestCount:
@@ -162,3 +165,20 @@ msgstr ""
         pofile = BytesIO(self.inputdata)
         stats = pocount.calcstats(pofile)
         assert stats["totalsourcewords"] == 6
+
+
+@requires_py38_mark
+@mark.parametrize("style", ["csv", "full", "short-strings", "short-words"])
+@mark.parametrize("incomplete", [True, False], ids=lambda v: f"incomplete={v}")
+@mark.parametrize("no_color", [True, False], ids=lambda v: f"no-color={v}")
+def test_output(style, incomplete, no_color, snapshot):
+    opts = [f"--{style}"]
+    if incomplete:
+        opts.append("--incomplete")
+    if no_color:
+        opts.append("--no-color")
+
+    stdout = subprocess.check_output(["pocount", *opts, *test_po_files], text=True)
+
+    assert stdout == snapshot
+
