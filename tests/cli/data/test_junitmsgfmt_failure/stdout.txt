@@ -1,4 +1,3 @@
-<?xml version='1.0' encoding='utf-8'?>
 <testsuite name="msgfmt" errors="0" skips="0" failures="1" tests="1" time="0.0000">
   <testcase classname="msgfmt" name="check[./data/test_junitmsgfmt_failure/one.po]" file="./data/test_junitmsgfmt_failure/one.po" time="0.0000">
     <failure message="Failure">one.po:2: warning: header field 'Project-Id-Version' missing in header
@@ -13,3 +12,4 @@ msgfmt: found 1 fatal error
 </failure>
   </testcase>
 </testsuite>
+
