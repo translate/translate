@@ -1,6 +1,6 @@
-from io import BytesIO
 import subprocess
 import sys
+from io import BytesIO
 
 from pytest import mark
 
@@ -179,7 +179,8 @@ def test_output(style, incomplete, no_color, snapshot):
     if no_color:
         opts.append("--no-color")
 
-    stdout = subprocess.check_output([sys.executable, pocount.__file__, *opts, *test_po_files], text=True)
+    stdout = subprocess.check_output(
+        [sys.executable, pocount.__file__, *opts, *test_po_files], text=True
+    )
 
     assert stdout == snapshot
-
