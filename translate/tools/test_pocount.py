@@ -1,5 +1,6 @@
 import subprocess
 import sys
+import os
 from io import BytesIO
 
 from pytest import mark
@@ -172,15 +173,14 @@ msgstr ""
 @mark.parametrize("style", ["csv", "full", "short-strings", "short-words"])
 @mark.parametrize("incomplete", [True, False], ids=lambda v: f"incomplete={v}")
 @mark.parametrize("no_color", [True, False], ids=lambda v: f"no-color={v}")
-def test_output(style, incomplete, no_color, snapshot):
+def test_output(style, incomplete, no_color, capsys, snapshot):
     opts = [f"--{style}"]
     if incomplete:
         opts.append("--incomplete")
     if no_color:
         opts.append("--no-color")
 
-    stdout = subprocess.check_output(
-        [sys.executable, pocount.__file__, *opts, *test_po_files], text=True
-    )
+    pocount.main([*opts, *test_po_files])
+    stdout = capsys.readouterr()[0]
 
     assert stdout == snapshot
