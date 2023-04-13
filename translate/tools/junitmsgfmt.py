@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import subprocess
-import xml.etree.ElementTree as etree
 from argparse import ArgumentParser
 from os.path import basename
 from time import time
 from typing import Iterable, NamedTuple
+
+import lxml.etree as etree
 
 
 class MsgfmtTester:
@@ -65,8 +66,11 @@ class MsgfmtTester:
                 etree.SubElement(
                     case, "failure", message=failure.message
                 ).text = failure.text
-        etree.indent(root)
-        print(etree.tostring(root, encoding="unicode", xml_declaration=True))
+        print(
+            etree.tostring(
+                root, encoding="unicode", pretty_print=True, xml_declaration=True
+            )
+        )
 
 
 class CheckResult(NamedTuple):
