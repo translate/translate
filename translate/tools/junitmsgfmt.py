@@ -80,7 +80,7 @@ class CheckFailure(NamedTuple):
     message: str
 
 
-def main():
+def main(arguments=None):
     parser = ArgumentParser()
     parser.add_argument(
         "--untranslated",
@@ -90,7 +90,7 @@ def main():
     )
     parser.add_argument("files", nargs="+")
 
-    args = parser.parse_args()
+    args = parser.parse_args(arguments)
 
     MsgfmtTester(args.files, untranslated=args.untranslated).run()
 
