@@ -67,7 +67,9 @@ class MsgfmtTester:
                     case, "failure", message=failure.message
                 ).text = failure.text
         print(
-            etree.tostring(root, pretty_print=True, xml_declaration=True).decode("utf-8")
+            etree.tostring(root, pretty_print=True, xml_declaration=True).decode(
+                "utf-8"
+            )
         )
 
 
