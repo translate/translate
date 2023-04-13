@@ -25,7 +25,6 @@ from lxml import etree
 
 @pytest.fixture(autouse=True, scope="module")
 def change_test_dir(request):
-    print("Changed test dir")
     os.chdir(request.fspath.dirname)
     yield
     os.chdir(request.config.invocation_params.dir)
