@@ -1,13 +1,12 @@
 # serializer version: 1
 # name: test_help[build_tmdb]
   '''
-  usage: build_tmdb [-h] [-d TMDB_FILE] [-s SOURCE_LANG] -t TARGET_LANG
-                    input files [input files ...]
+  usage: build_tmdb.py [-h] [-d TMDB_FILE] [-s SOURCE_LANG] -t TARGET_LANG input files [input files ...]
   
   positional arguments:
     input files
   
-  options:
+  optional arguments:
     -h, --help            show this help message and exit
     -d TMDB_FILE, --tmdb TMDB_FILE
                           translation memory database file (default: tm.db)
@@ -20,7 +19,7 @@
 # ---
 # name: test_help[phppo2pypo]
   '''
-  Usage: phppo2pypo [--version] [-h|--help] [--manpage] [--progress PROGRESS] [--errorlevel ERRORLEVEL] [-i|--input] INPUT [-x|--exclude EXCLUDE] [-o|--output] OUTPUT [-S|--timestamp]
+  Usage: phppo2pypo.py [--version] [-h|--help] [--manpage] [--progress PROGRESS] [--errorlevel ERRORLEVEL] [-i|--input] INPUT [-x|--exclude EXCLUDE] [-o|--output] OUTPUT [-S|--timestamp]
   
   Convert PHP format .po files to Python format .po files.
   
@@ -30,8 +29,7 @@
     --manpage             output a manpage based on the help
     --progress=PROGRESS   show progress as: dots, none, bar, names, verbose
     --errorlevel=ERRORLEVEL
-                          show errorlevel as: none, message, exception,
-                          traceback
+                          show errorlevel as: none, message, exception, traceback
     -i INPUT, --input=INPUT
                           read from INPUT in po, pot formats
     -x EXCLUDE, --exclude=EXCLUDE
@@ -44,12 +42,11 @@
 # ---
 # name: test_help[poclean]
   '''
-  Usage: poclean [--version] [-h|--help] [--manpage] [--progress PROGRESS] [--errorlevel ERRORLEVEL] [-i|--input] INPUT [-x|--exclude EXCLUDE] [-o|--output] OUTPUT [-S|--timestamp]
+  Usage: poclean.py [--version] [-h|--help] [--manpage] [--progress PROGRESS] [--errorlevel ERRORLEVEL] [-i|--input] INPUT [-x|--exclude EXCLUDE] [-o|--output] OUTPUT [-S|--timestamp]
   
-  Produces a clean file from an unclean file (Trados/Wordfast) by stripping out
-  the tw4win indicators.  This does not convert an RTF file to PO/XLIFF, but
-  produces the target file with only the target text in from a text version of
-  the RTF.
+  Produces a clean file from an unclean file (Trados/Wordfast) by stripping out the tw4win indicators.  This does not
+  convert an RTF file to PO/XLIFF, but produces the target file with only the target text in from a text version of the
+  RTF.
   
   Options:
     --version             show program's version number and exit
@@ -57,8 +54,7 @@
     --manpage             output a manpage based on the help
     --progress=PROGRESS   show progress as: dots, none, bar, names, verbose
     --errorlevel=ERRORLEVEL
-                          show errorlevel as: none, message, exception,
-                          traceback
+                          show errorlevel as: none, message, exception, traceback
     -i INPUT, --input=INPUT
                           read from INPUT in po, pot, xlf, xliff formats
     -x EXCLUDE, --exclude=EXCLUDE
@@ -71,11 +67,11 @@
 # ---
 # name: test_help[pocompile]
   '''
-  Usage: pocompile [--version] [-h|--help] [--manpage] [--progress PROGRESS] [--errorlevel ERRORLEVEL] [-i|--input] INPUT [-x|--exclude EXCLUDE] [-o|--output] OUTPUT [-S|--timestamp]
+  Usage: pocompile.py [--version] [-h|--help] [--manpage] [--progress PROGRESS] [--errorlevel ERRORLEVEL] [-i|--input] INPUT [-x|--exclude EXCLUDE] [-o|--output] OUTPUT [-S|--timestamp]
   
-  Compile XLIFF and Gettext PO localization files into Gettext MO (Machine
-  Object) files.  See: http://docs.translatehouse.org/projects/translate-
-  toolkit/en/latest/commands/pocompile.html for examples and usage instructions.
+  Compile XLIFF and Gettext PO localization files into Gettext MO (Machine Object) files.  See:
+  http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pocompile.html for examples and usage
+  instructions.
   
   Options:
     --version             show program's version number and exit
@@ -83,8 +79,7 @@
     --manpage             output a manpage based on the help
     --progress=PROGRESS   show progress as: dots, none, bar, names, verbose
     --errorlevel=ERRORLEVEL
-                          show errorlevel as: none, message, exception,
-                          traceback
+                          show errorlevel as: none, message, exception, traceback
     -i INPUT, --input=INPUT
                           read from INPUT in po, pot, xlf, xliff formats
     -x EXCLUDE, --exclude=EXCLUDE
@@ -99,13 +94,11 @@
 # ---
 # name: test_help[poconflicts]
   '''
-  Usage: poconflicts [--version] [-h|--help] [--manpage] [--progress PROGRESS] [--errorlevel ERRORLEVEL] [-i|--input] INPUT [-x|--exclude EXCLUDE] [-o|--output] OUTPUT [-I|--ignore-case] [-v|--invert] [--accelerator ACCELERATORS]
+  Usage: poconflicts.py [--version] [-h|--help] [--manpage] [--progress PROGRESS] [--errorlevel ERRORLEVEL] [-i|--input] INPUT [-x|--exclude EXCLUDE] [-o|--output] OUTPUT [-I|--ignore-case] [-v|--invert] [--accelerator ACCELERATORS]
     input directory is searched for PO files, PO files with name of conflicting string are output in output directory
   
-  Conflict finder for Gettext PO localization files.  See:
-  http://docs.translatehouse.org/projects/translate-
-  toolkit/en/latest/commands/poconflicts.html for examples and usage
-  instructions.
+  Conflict finder for Gettext PO localization files.  See: http://docs.translatehouse.org/projects/translate-
+  toolkit/en/latest/commands/poconflicts.html for examples and usage instructions.
   
   Options:
     --version             show program's version number and exit
@@ -113,8 +106,7 @@
     --manpage             output a manpage based on the help
     --progress=PROGRESS   show progress as: dots, none, bar, names, verbose
     --errorlevel=ERRORLEVEL
-                          show errorlevel as: none, message, exception,
-                          traceback
+                          show errorlevel as: none, message, exception, traceback
     -i INPUT, --input=INPUT
                           read from INPUT in po format
     -x EXCLUDE, --exclude=EXCLUDE
@@ -122,8 +114,7 @@
     -o OUTPUT, --output=OUTPUT
                           write to OUTPUT in po format
     -I, --ignore-case     ignore case distinctions
-    -v, --invert          invert the conflicts thus extracting conflicting
-                          destination words
+    -v, --invert          invert the conflicts thus extracting conflicting destination words
     --accelerator=ACCELERATORS
                           ignores the given accelerator characters when matching
   
@@ -131,15 +122,13 @@
 # ---
 # name: test_help[pocount]
   '''
-  usage: pocount [-h] [--incomplete]
-                 [--full | --csv | --short | --short-strings | --short-words]
-                 [--no-color]
-                 files [files ...]
+  usage: pocount.py [-h] [--incomplete] [--full | --csv | --short | --short-strings | --short-words] [--no-color]
+                    files [files ...]
   
   positional arguments:
     files
   
-  options:
+  optional arguments:
     -h, --help       show this help message and exit
     --incomplete     skip 100% translated files.
   
@@ -155,11 +144,11 @@
 # ---
 # name: test_help[podebug]
   '''
-  Usage: podebug [--version] [-h|--help] [--manpage] [--progress PROGRESS] [--errorlevel ERRORLEVEL] [-i|--input] INPUT [-x|--exclude EXCLUDE] [-o|--output] OUTPUT [-S|--timestamp]
+  Usage: podebug.py [--version] [-h|--help] [--manpage] [--progress PROGRESS] [--errorlevel ERRORLEVEL] [-i|--input] INPUT [-x|--exclude EXCLUDE] [-o|--output] OUTPUT [-S|--timestamp]
   
   Insert debug messages into XLIFF and Gettext PO localization files.  See:
-  http://docs.translatehouse.org/projects/translate-
-  toolkit/en/latest/commands/podebug.html for examples and usage instructions.
+  http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/podebug.html for examples and usage
+  instructions.
   
   Options:
     --version             show program's version number and exit
@@ -167,11 +156,9 @@
     --manpage             output a manpage based on the help
     --progress=PROGRESS   show progress as: dots, none, bar, names, verbose
     --errorlevel=ERRORLEVEL
-                          show errorlevel as: none, message, exception,
-                          traceback
+                          show errorlevel as: none, message, exception, traceback
     -i INPUT, --input=INPUT
-                          read from INPUT in po, pot, pot, tmx, xlf, xliff
-                          formats
+                          read from INPUT in po, pot, pot, tmx, xlf, xliff formats
     -x EXCLUDE, --exclude=EXCLUDE
                           exclude names matching EXCLUDE from input paths
     -o OUTPUT, --output=OUTPUT
@@ -179,27 +166,24 @@
     -S, --timestamp       skip conversion if the output file has newer timestamp
     -f FORMAT, --format=FORMAT
                           specify format string
-    --rewrite=STYLE       the translation rewrite style: blank, bracket, chef,
-                          classified, en, flipped, unicode, xxx
-    --ignore=APPLICATION  apply tagging ignore rules for the given application:
-                          gtk, kde, libreoffice, mozilla, openoffice
+    --rewrite=STYLE       the translation rewrite style: blank, bracket, chef, classified, en, flipped, unicode, xxx
+    --ignore=APPLICATION  apply tagging ignore rules for the given application: gtk, kde, libreoffice, mozilla,
+                          openoffice
     --preserveplaceholders
-                          attempt to exclude characters that are part of
-                          placeholders when performing character-level rewrites
-                          so that consuming applications can still use the
-                          placeholders to generate final output
+                          attempt to exclude characters that are part of placeholders when performing character-level
+                          rewrites so that consuming applications can still use the placeholders to generate final
+                          output
   
   '''
 # ---
 # name: test_help[pogrep]
   '''
-  Usage: pogrep searchstring [--version] [-h|--help] [--manpage] [--progress PROGRESS] [--errorlevel ERRORLEVEL] [-i|--input] INPUT [-x|--exclude EXCLUDE] [-o|--output] OUTPUT [--search SEARCHPARTS] [-I|--ignore-case] [-e|--regexp] [-v|--invert-match] [--accelerator ACCELERATOR] [-k|--keep-translations]
+  Usage: pogrep.py searchstring [--version] [-h|--help] [--manpage] [--progress PROGRESS] [--errorlevel ERRORLEVEL] [-i|--input] INPUT [-x|--exclude EXCLUDE] [-o|--output] OUTPUT [--search SEARCHPARTS] [-I|--ignore-case] [-e|--regexp] [-v|--invert-match] [--accelerator ACCELERATOR] [-k|--keep-translations]
   
-  Grep XLIFF, Gettext PO and TMX localization files.  Matches are output to
-  snippet files of the same type which can then be reviewed and later merged
-  using :doc:`pomerge </commands/pomerge>`.  See:
-  http://docs.translatehouse.org/projects/translate-
-  toolkit/en/latest/commands/pogrep.html for examples and usage instructions.
+  Grep XLIFF, Gettext PO and TMX localization files.  Matches are output to snippet files of the same type which can
+  then be reviewed and later merged using :doc:`pomerge </commands/pomerge>`.  See:
+  http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pogrep.html for examples and usage
+  instructions.
   
   Options:
     --version             show program's version number and exit
@@ -207,18 +191,14 @@
     --manpage             output a manpage based on the help
     --progress=PROGRESS   show progress as: dots, none, bar, names, verbose
     --errorlevel=ERRORLEVEL
-                          show errorlevel as: none, message, exception,
-                          traceback
+                          show errorlevel as: none, message, exception, traceback
     -i INPUT, --input=INPUT
-                          read from INPUT in gmo, mo, po, pot, tmx, xlf, xlff,
-                          xliff formats
+                          read from INPUT in gmo, mo, po, pot, tmx, xlf, xlff, xliff formats
     -x EXCLUDE, --exclude=EXCLUDE
                           exclude names matching EXCLUDE from input paths
     -o OUTPUT, --output=OUTPUT
-                          write to OUTPUT in gmo, mo, po, pot, tmx, xlf, xlff,
-                          xliff formats
-    --search=SEARCHPARTS  searches the given parts (source, target, notes and
-                          locations)
+                          write to OUTPUT in gmo, mo, po, pot, tmx, xlf, xlff, xliff formats
+    --search=SEARCHPARTS  searches the given parts (source, target, notes and locations)
     -I, --ignore-case     ignore case distinctions
     -e, --regexp          use regular expression matching
     -v, --invert-match    select non-matching lines
@@ -231,13 +211,12 @@
 # ---
 # name: test_help[pomerge]
   '''
-  Usage: pomerge [--version] [-h|--help] [--manpage] [--progress PROGRESS] [--errorlevel ERRORLEVEL] [-i|--input] INPUT [-x|--exclude EXCLUDE] [-o|--output] OUTPUT [-t|--template TEMPLATE] [-S|--timestamp]
+  Usage: pomerge.py [--version] [-h|--help] [--manpage] [--progress PROGRESS] [--errorlevel ERRORLEVEL] [-i|--input] INPUT [-x|--exclude EXCLUDE] [-o|--output] OUTPUT [-t|--template TEMPLATE] [-S|--timestamp]
   
-  Merges XLIFF and Gettext PO localization files.  Snippet file produced by e.g.
-  :doc:`pogrep </commands/pogrep>` and updated by a translator can be merged
-  back into the original files.  See:
-  http://docs.translatehouse.org/projects/translate-
-  toolkit/en/latest/commands/pomerge.html for examples and usage instructions.
+  Merges XLIFF and Gettext PO localization files.  Snippet file produced by e.g. :doc:`pogrep </commands/pogrep>` and
+  updated by a translator can be merged back into the original files.  See:
+  http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pomerge.html for examples and usage
+  instructions.
   
   Options:
     --version             show program's version number and exit
@@ -245,8 +224,7 @@
     --manpage             output a manpage based on the help
     --progress=PROGRESS   show progress as: dots, none, bar, names, verbose
     --errorlevel=ERRORLEVEL
-                          show errorlevel as: none, message, exception,
-                          traceback
+                          show errorlevel as: none, message, exception, traceback
     -i INPUT, --input=INPUT
                           read from INPUT in po, pot, pot, xlf, xliff formats
     -x EXCLUDE, --exclude=EXCLUDE
@@ -257,26 +235,21 @@
                           read from TEMPLATE in po, pot, pot, xlf, xliff formats
     -S, --timestamp       skip conversion if the output file has newer timestamp
     --mergeblanks=MERGEBLANKS
-                          whether to overwrite existing translations with blank
-                          translations (yes/no). Default is yes.
+                          whether to overwrite existing translations with blank translations (yes/no). Default is yes.
     --mergefuzzy=MERGEFUZZY
-                          whether to consider fuzzy translations from input
-                          (yes/no). Default is yes.
+                          whether to consider fuzzy translations from input (yes/no). Default is yes.
     --mergecomments=MERGECOMMENTS
-                          whether to merge comments as well as translations
-                          (yes/no). Default is yes.
+                          whether to merge comments as well as translations (yes/no). Default is yes.
   
   '''
 # ---
 # name: test_help[porestructure]
   '''
-  Usage: porestructure [--version] [-h|--help] [--manpage] [--progress PROGRESS] [--errorlevel ERRORLEVEL] [-i|--input] INPUT [-x|--exclude EXCLUDE] [-o|--output] OUTPUT
+  Usage: porestructure.py [--version] [-h|--help] [--manpage] [--progress PROGRESS] [--errorlevel ERRORLEVEL] [-i|--input] INPUT [-x|--exclude EXCLUDE] [-o|--output] OUTPUT
     input directory is searched for PO files with (poconflicts) comments, all entries are written to files in a directory structure for pomerge
   
-  Restructure Gettxt PO files produced by :doc:`poconflicts
-  </commands/poconflicts>` into the original directory tree for merging using
-  :doc:`pomerge </commands/pomerge>`.  See:
-  http://docs.translatehouse.org/projects/translate-
+  Restructure Gettxt PO files produced by :doc:`poconflicts </commands/poconflicts>` into the original directory tree
+  for merging using :doc:`pomerge </commands/pomerge>`.  See: http://docs.translatehouse.org/projects/translate-
   toolkit/en/latest/commands/pomerge.html for examples and usage instructions.
   
   Options:
@@ -285,8 +258,7 @@
     --manpage             output a manpage based on the help
     --progress=PROGRESS   show progress as: dots, none, bar, names, verbose
     --errorlevel=ERRORLEVEL
-                          show errorlevel as: none, message, exception,
-                          traceback
+                          show errorlevel as: none, message, exception, traceback
     -i INPUT, --input=INPUT
                           read from INPUT in po format
     -x EXCLUDE, --exclude=EXCLUDE
@@ -298,11 +270,11 @@
 # ---
 # name: test_help[posegment]
   '''
-  Usage: posegment [--version] [-h|--help] [--manpage] [--progress PROGRESS] [--errorlevel ERRORLEVEL] [-i|--input] INPUT [-x|--exclude EXCLUDE] [-o|--output] OUTPUT [-S|--timestamp] [-P|--pot]
+  Usage: posegment.py [--version] [-h|--help] [--manpage] [--progress PROGRESS] [--errorlevel ERRORLEVEL] [-i|--input] INPUT [-x|--exclude EXCLUDE] [-o|--output] OUTPUT [-S|--timestamp] [-P|--pot]
   
-  Segment Gettext PO, XLIFF and TMX localization files at the sentence level.
-  See: http://docs.translatehouse.org/projects/translate-
-  toolkit/en/latest/commands/posegment.html for examples and usage instructions.
+  Segment Gettext PO, XLIFF and TMX localization files at the sentence level.  See:
+  http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/posegment.html for examples and usage
+  instructions.
   
   Options:
     --version             show program's version number and exit
@@ -310,8 +282,7 @@
     --manpage             output a manpage based on the help
     --progress=PROGRESS   show progress as: dots, none, bar, names, verbose
     --errorlevel=ERRORLEVEL
-                          show errorlevel as: none, message, exception,
-                          traceback
+                          show errorlevel as: none, message, exception, traceback
     -i INPUT, --input=INPUT
                           read from INPUT in po, pot, tmx, xlf, xliff formats
     -x EXCLUDE, --exclude=EXCLUDE
@@ -325,22 +296,19 @@
     --source-language=LANG
                           the source language code (default 'en')
     --keepspaces          Disable automatic stripping of whitespace
-    --only-aligned        Removes units where sentence number does not
-                          correspond
+    --only-aligned        Removes units where sentence number does not correspond
   
   '''
 # ---
 # name: test_help[poswap]
   '''
-  Usage: poswap [--version] [-h|--help] [--manpage] [--progress PROGRESS] [--errorlevel ERRORLEVEL] [-i|--input] INPUT [-x|--exclude EXCLUDE] [-o|--output] OUTPUT [-t|--template TEMPLATE] [-S|--timestamp]
+  Usage: poswap.py [--version] [-h|--help] [--manpage] [--progress PROGRESS] [--errorlevel ERRORLEVEL] [-i|--input] INPUT [-x|--exclude EXCLUDE] [-o|--output] OUTPUT [-t|--template TEMPLATE] [-S|--timestamp]
   
-  Builds a new translation file with the target of the input language as source
-  language.  .. note:: Ensure that the two po files correspond 100% to the same
-  pot file before using    this.  To translate Kurdish (ku) through French::
-  poswap -i fr/ -t ku -o fr-ku  To convert the fr-ku files back to en-ku::
-  poswap --reverse -i fr/ -t fr-ku -o en-ku  See:
-  http://docs.translatehouse.org/projects/translate-
-  toolkit/en/latest/commands/poswap.html for examples and usage instructions.
+  Builds a new translation file with the target of the input language as source language.  .. note:: Ensure that the two
+  po files correspond 100% to the same pot file before using    this.  To translate Kurdish (ku) through French::
+  poswap -i fr/ -t ku -o fr-ku  To convert the fr-ku files back to en-ku::      poswap --reverse -i fr/ -t fr-ku -o en-
+  ku  See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/poswap.html for examples and
+  usage instructions.
   
   Options:
     --version             show program's version number and exit
@@ -348,8 +316,7 @@
     --manpage             output a manpage based on the help
     --progress=PROGRESS   show progress as: dots, none, bar, names, verbose
     --errorlevel=ERRORLEVEL
-                          show errorlevel as: none, message, exception,
-                          traceback
+                          show errorlevel as: none, message, exception, traceback
     -i INPUT, --input=INPUT
                           read from INPUT in po, pot formats
     -x EXCLUDE, --exclude=EXCLUDE
@@ -359,20 +326,17 @@
     -t TEMPLATE, --template=TEMPLATE
                           read from TEMPLATE in po, pot, pot formats
     -S, --timestamp       skip conversion if the output file has newer timestamp
-    --reverse             reverse the process of intermediate language
-                          conversion
+    --reverse             reverse the process of intermediate language conversion
   
   '''
 # ---
 # name: test_help[poterminology]
   '''
-  Usage: poterminology [--version] [-h|--help] [--manpage] [--progress PROGRESS] [--errorlevel ERRORLEVEL] [-i|--input] INPUT [-x|--exclude EXCLUDE] [-o|--output] OUTPUT [-u|--update UPDATEFILE] [-S|--stopword-list STOPFILE] [-F|--fold-titlecase] [-C|--preserve-case] [-I|--ignore-case] [--accelerator ACCELERATORS] [-t|--term-words LENGTH] [--nonstop-needed MIN] [--inputs-needed MIN] [--fullmsg-needed MIN] [--substr-needed MIN] [--locs-needed MIN] [--sort ORDER] [--source-language LANG] [-v|--invert]
+  Usage: poterminology.py [--version] [-h|--help] [--manpage] [--progress PROGRESS] [--errorlevel ERRORLEVEL] [-i|--input] INPUT [-x|--exclude EXCLUDE] [-o|--output] OUTPUT [-u|--update UPDATEFILE] [-S|--stopword-list STOPFILE] [-F|--fold-titlecase] [-C|--preserve-case] [-I|--ignore-case] [--accelerator ACCELERATORS] [-t|--term-words LENGTH] [--nonstop-needed MIN] [--inputs-needed MIN] [--fullmsg-needed MIN] [--substr-needed MIN] [--locs-needed MIN] [--sort ORDER] [--source-language LANG] [-v|--invert]
     input directory is searched for PO files, terminology PO file is output file
   
-  Create a terminology file by reading a set of .po or .pot files to produce a
-  pootle-terminology.pot.  See:
-  http://docs.translatehouse.org/projects/translate-
-  toolkit/en/latest/commands/poterminology.html for examples and usage
+  Create a terminology file by reading a set of .po or .pot files to produce a pootle-terminology.pot.  See:
+  http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/poterminology.html for examples and usage
   instructions.
   
   Options:
@@ -381,8 +345,7 @@
     --manpage             output a manpage based on the help
     --progress=PROGRESS   show progress as: dots, none, bar, names, verbose
     --errorlevel=ERRORLEVEL
-                          show errorlevel as: none, message, exception,
-                          traceback
+                          show errorlevel as: none, message, exception, traceback
     -i INPUT, --input=INPUT
                           read from INPUT in po, pot formats
     -x EXCLUDE, --exclude=EXCLUDE
@@ -392,10 +355,8 @@
     -u UPDATEFILE, --update=UPDATEFILE
                           update terminology in UPDATEFILE
     -S STOPFILE, --stopword-list=STOPFILE
-                          read stopword (term exclusion) list from STOPFILE
-                          (default
-                          /home/serg/src/translate/.venv/lib/python3.10/site-
-                          packages/translate/misc/../share/stoplist-en)
+                          read stopword (term exclusion) list from STOPFILE (default
+                          /home/serg/src/translate/translate/misc/../share/stoplist-en)
     -F, --fold-titlecase  fold "Title Case" to lowercase (default)
     -C, --preserve-case   preserve all uppercase/lowercase
     -I, --ignore-case     make all terms lowercase
@@ -403,18 +364,13 @@
                           ignore the given accelerator characters when matching
     -t LENGTH, --term-words=LENGTH
                           generate terms of up to LENGTH words (default 3)
-    --nonstop-needed=MIN  omit terms with less than MIN nonstop words (default
-                          1)
-    --inputs-needed=MIN   omit terms appearing in less than MIN input files
-                          (default 2, or 1 if only one input file)
-    --fullmsg-needed=MIN  omit full message terms appearing in less than MIN
-                          different messages (default 1)
-    --substr-needed=MIN   omit substring-only terms appearing in less than MIN
-                          different messages (default 2)
-    --locs-needed=MIN     omit terms appearing in less than MIN different
-                          original source files (default 2)
-    --sort=ORDER          output sort order(s): frequency, dictionary, length
-                          (may repeat option, default is all in above order)
+    --nonstop-needed=MIN  omit terms with less than MIN nonstop words (default 1)
+    --inputs-needed=MIN   omit terms appearing in less than MIN input files (default 2, or 1 if only one input file)
+    --fullmsg-needed=MIN  omit full message terms appearing in less than MIN different messages (default 1)
+    --substr-needed=MIN   omit substring-only terms appearing in less than MIN different messages (default 2)
+    --locs-needed=MIN     omit terms appearing in less than MIN different original source files (default 2)
+    --sort=ORDER          output sort order(s): frequency, dictionary, length (may repeat option, default is all in
+                          above order)
     --source-language=LANG
                           the source language code (default 'en')
     -v, --invert          invert the source and target languages for terminology
@@ -423,12 +379,10 @@
 # ---
 # name: test_help[pretranslate]
   '''
-  Usage: pretranslate [--version] [-h|--help] [--manpage] [--progress PROGRESS] [--errorlevel ERRORLEVEL] [-i|--input] INPUT [-x|--exclude EXCLUDE] [-o|--output] OUTPUT [-t|--template TEMPLATE] [-S|--timestamp]
+  Usage: pretranslate.py [--version] [-h|--help] [--manpage] [--progress PROGRESS] [--errorlevel ERRORLEVEL] [-i|--input] INPUT [-x|--exclude EXCLUDE] [-o|--output] OUTPUT [-t|--template TEMPLATE] [-S|--timestamp]
   
-  Fill localization files with suggested translations based on translation
-  memory and existing translations.  See:
-  http://docs.translatehouse.org/projects/translate-
-  toolkit/en/latest/commands/pretranslate.html for examples and usage
+  Fill localization files with suggested translations based on translation memory and existing translations.  See:
+  http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pretranslate.html for examples and usage
   instructions.
   
   Options:
@@ -437,8 +391,7 @@
     --manpage             output a manpage based on the help
     --progress=PROGRESS   show progress as: dots, none, bar, names, verbose
     --errorlevel=ERRORLEVEL
-                          show errorlevel as: none, message, exception,
-                          traceback
+                          show errorlevel as: none, message, exception, traceback
     -i INPUT, --input=INPUT
                           read from INPUT in po, pot, pot, xlf, xliff formats
     -x EXCLUDE, --exclude=EXCLUDE
@@ -448,8 +401,7 @@
     -t TEMPLATE, --template=TEMPLATE
                           read from TEMPLATE in po, pot, xlf, xliff formats
     -S, --timestamp       skip conversion if the output file has newer timestamp
-    --tm=TM               The file to use as translation memory when fuzzy
-                          matching
+    --tm=TM               The file to use as translation memory when fuzzy matching
     -s MIN_SIMILARITY, --similarity=MIN_SIMILARITY
                           The minimum similarity for inclusion (default: 75%)
     --nofuzzymatching     Disable fuzzy matching
@@ -458,16 +410,15 @@
 # ---
 # name: test_help[pydiff]
   '''
-  usage: pydiff [-h] [-i] [-U NUM] [-r] [-N] [--unidirectional-new-file] [-s]
-                [-x PAT] [--fromcontains TEXT] [--tocontains TEXT]
-                [--contains TEXT] [-I] [--accelerator ACCELERATORS]
-                fromfile tofile
+  usage: pydiff.py [-h] [-i] [-U NUM] [-r] [-N] [--unidirectional-new-file] [-s] [-x PAT] [--fromcontains TEXT]
+                   [--tocontains TEXT] [--contains TEXT] [-I] [--accelerator ACCELERATORS]
+                   fromfile tofile
   
   positional arguments:
     fromfile
     tofile
   
-  options:
+  optional arguments:
     -h, --help            show this help message and exit
     -i, --ignore-case     Ignore case differences in file contents.
     -U NUM, --unified NUM
@@ -482,11 +433,9 @@
                           Exclude files that match PAT.
     --fromcontains TEXT   Only show changes where fromfile contains TEXT
     --tocontains TEXT     Only show changes where tofile contains TEXT
-    --contains TEXT       Only show changes where fromfile or tofile contains
-                          TEXT
+    --contains TEXT       Only show changes where fromfile or tofile contains TEXT
     -I, --ignore-case-contains
-                          Ignore case differences when matching any of the
-                          changes
+                          Ignore case differences when matching any of the changes
     --accelerator ACCELERATORS
                           ignores the given accelerator characters when matching
   
@@ -494,7 +443,7 @@
 # ---
 # name: test_help[pypo2phppo]
   '''
-  Usage: pypo2phppo [--version] [-h|--help] [--manpage] [--progress PROGRESS] [--errorlevel ERRORLEVEL] [-i|--input] INPUT [-x|--exclude EXCLUDE] [-o|--output] OUTPUT [-S|--timestamp]
+  Usage: pypo2phppo.py [--version] [-h|--help] [--manpage] [--progress PROGRESS] [--errorlevel ERRORLEVEL] [-i|--input] INPUT [-x|--exclude EXCLUDE] [-o|--output] OUTPUT [-S|--timestamp]
   
   Convert Python format .po files to PHP format .po files.
   
@@ -504,8 +453,7 @@
     --manpage             output a manpage based on the help
     --progress=PROGRESS   show progress as: dots, none, bar, names, verbose
     --errorlevel=ERRORLEVEL
-                          show errorlevel as: none, message, exception,
-                          traceback
+                          show errorlevel as: none, message, exception, traceback
     -i INPUT, --input=INPUT
                           read from INPUT in po, pot formats
     -x EXCLUDE, --exclude=EXCLUDE

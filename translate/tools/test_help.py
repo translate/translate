@@ -1,4 +1,6 @@
 import subprocess
+import sys
+from pathlib import Path
 
 import pytest
 
@@ -28,6 +30,9 @@ from ._test_utils import requires_py38_mark
     ],
 )
 def test_help(command: str, snapshot):
-    stdout = subprocess.check_output([command, "--help"], text=True)
+    stdout = subprocess.check_output(
+        [sys.executable, Path(__file__).parent / f"{command}.py", "--help"],
+        text=True,
+    )
 
     assert stdout == snapshot
