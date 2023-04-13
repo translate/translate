@@ -1,6 +1,3 @@
-import os
-import subprocess
-import sys
 from io import BytesIO
 
 from pytest import mark
