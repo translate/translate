@@ -1,0 +1,15 @@
+<testsuite name="msgfmt" errors="0" skips="0" failures="1" tests="1" time="0.0000">
+  <testcase classname="msgfmt" name="check[./data/test_junitmsgfmt_failure/one.po]" file="./data/test_junitmsgfmt_failure/one.po" time="0.0000">
+    <failure message="Failure">one.po:2: warning: header field 'Project-Id-Version' missing in header
+one.po:2: warning: header field 'PO-Revision-Date' missing in header
+one.po:2: warning: header field 'Last-Translator' missing in header
+one.po:2: warning: header field 'Language-Team' missing in header
+one.po:2: warning: header field 'MIME-Version' missing in header
+one.po:2: warning: header field 'Content-Transfer-Encoding' missing in header
+one.po:9: a format specification for argument 'input' doesn't exist in 'msgstr'
+msgfmt: found 1 fatal error
+1 translated message.
+</failure>
+  </testcase>
+</testsuite>
+
