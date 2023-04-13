@@ -66,9 +66,7 @@ class MsgfmtTester:
                 etree.SubElement(
                     case, "failure", message=failure.message
                 ).text = failure.text
-        print(
-            etree.tostring(root, encoding="unicode", pretty_print=True)
-        )
+        print(etree.tostring(root, encoding="unicode", pretty_print=True))
 
 
 class CheckResult(NamedTuple):
