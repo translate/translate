@@ -7,9 +7,15 @@ repos:
   - id: check-yaml
   - id: check-merge-conflict
   - id: check-json
+  - id: check-toml
   - id: requirements-txt-fixer
   - id: fix-encoding-pragma
     args: [--remove]
+- repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
+  rev: v2.8.0
+  hooks:
+  - id: pretty-format-toml
+    args: [--autofix]
 - repo: meta
   hooks:
   - id: check-hooks-apply
