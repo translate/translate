@@ -22,9 +22,9 @@ Reference implementation & tests:
 http://code.qt.io/cgit/qt/qttools.git/tree/tests/auto/linguist/lconvert/data
 """
 
-from translate.storage import test_base, ts2 as ts
+from translate.storage import test_base
+from translate.storage import ts2 as ts
 from translate.storage.placeables import parse, xliff
-
 
 TS_NUMERUS = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>

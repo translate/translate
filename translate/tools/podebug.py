@@ -28,7 +28,8 @@ from hashlib import md5
 
 from translate.convert import dtd2po
 from translate.storage import factory
-from translate.storage.placeables import StringElem, general, parse as rich_parse
+from translate.storage.placeables import StringElem, general
+from translate.storage.placeables import parse as rich_parse
 
 
 def add_prefix(prefix, stringelems):

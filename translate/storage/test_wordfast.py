@@ -1,4 +1,5 @@
-from translate.storage import test_base, wordfast as wf
+from translate.storage import test_base
+from translate.storage import wordfast as wf
 
 
 class TestWFTime:

@@ -32,7 +32,6 @@ from translate.storage.rc import (
     generate_popup_pre_name,
 )
 
-
 NL = "\r\n"
 BLOCK_START = "BEGIN"
 BLOCK_END = "END"

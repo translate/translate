@@ -31,7 +31,6 @@ from tempfile import NamedTemporaryFile
 
 from translate.storage import base
 
-
 try:
     from aeidon import Subtitle, documents, newlines
     from aeidon.encodings import detect

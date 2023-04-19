@@ -20,7 +20,6 @@ import os
 
 from lxml import etree
 
-
 __all__ = ("FileExistsInProjectError", "FileNotInProjectError", "ProjectStore")
 
 

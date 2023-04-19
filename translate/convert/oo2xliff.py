@@ -27,7 +27,6 @@ import logging
 
 from translate.storage import oo, xliff
 
-
 # TODO: support using one GSI file as template, another as input (for when English is in one and translation in another)
 
 logger = logging.getLogger(__name__)

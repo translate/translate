@@ -19,7 +19,6 @@
 
 from translate.storage.xml_extract import misc
 
-
 # reduce_tree
 
 test_tree_1 = (

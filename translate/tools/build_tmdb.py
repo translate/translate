@@ -24,7 +24,6 @@ from argparse import ArgumentParser
 
 from translate.storage import factory, tmdb
 
-
 logger = logging.getLogger(__name__)
 
 

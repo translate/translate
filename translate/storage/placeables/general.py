@@ -25,7 +25,6 @@ import re
 
 from translate.storage.placeables.base import G, Ph, StringElem
 
-
 __all__ = (
     "AltAttrPlaceable",
     "XMLEntityPlaceable",

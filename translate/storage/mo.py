@@ -45,7 +45,6 @@ import struct
 from translate.misc.multistring import multistring
 from translate.storage import base, poheader
 
-
 MO_MAGIC_NUMBER = 0x950412DE
 POT_HEADER = re.compile(r"^POT-Creation-Date:.*(\n|$)", re.IGNORECASE | re.MULTILINE)
 

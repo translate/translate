@@ -20,10 +20,8 @@ from io import BytesIO
 
 from translate.search.match import terminologymatcher
 from translate.storage.placeables import general, parse
-from translate.storage.placeables.terminology import (
-    TerminologyPlaceable,
-    parsers as term_parsers,
-)
+from translate.storage.placeables.terminology import TerminologyPlaceable
+from translate.storage.placeables.terminology import parsers as term_parsers
 from translate.storage.pypo import pofile
 
 

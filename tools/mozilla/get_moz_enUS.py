@@ -21,7 +21,6 @@ import os
 import shutil
 from configparser import ConfigParser, NoSectionError
 
-
 srccheckout = "mozilla"
 l10ncheckout = "l10n"
 product = "browser"

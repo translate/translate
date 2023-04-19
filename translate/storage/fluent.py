@@ -25,6 +25,7 @@ and :class:`FluentUnit` providing file and unit level access.
 from fluent.syntax import FluentParser, ast, parse, serialize, visitor
 from fluent.syntax.serializer import serialize_pattern, serialize_placeable
 from fluent.syntax.stream import FluentParserStream
+
 from translate.storage import base
 
 

@@ -37,7 +37,6 @@ from io import BytesIO
 
 from translate.misc import quote, wStringIO
 
-
 # File normalisation
 
 normalfilenamechars = (

@@ -34,7 +34,6 @@ from translate.storage import base, lisa
 from translate.storage.placeables.lisa import strelem_to_xml, xml_to_strelem
 from translate.storage.workflow import StateEnum as state
 
-
 # TODO: handle translation types
 
 ID_SEPARATOR = "\04"

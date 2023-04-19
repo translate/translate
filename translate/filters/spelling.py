@@ -22,14 +22,14 @@
 import logging
 from functools import lru_cache
 
-
 logger = logging.getLogger(__name__)
 
 available = False
 
 try:
     # Enchant
-    from enchant import Error as EnchantError, checker
+    from enchant import Error as EnchantError
+    from enchant import checker
 
     available = True
     checkers = {}

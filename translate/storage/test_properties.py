@@ -5,7 +5,6 @@ from pytest import mark, raises
 from translate.misc.multistring import multistring
 from translate.storage import properties, test_monolingual
 
-
 # Note that DialectJava delimitors are ["=", ":", " "]
 
 

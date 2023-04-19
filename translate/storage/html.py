@@ -26,7 +26,6 @@ from html.entities import html5
 from translate.storage import base
 from translate.storage.base import ParseError
 
-
 # Override the piclose tag from simple > to ?> otherwise we consume HTML
 # within the processing instructions
 html.parser.piclose = re.compile(r"\?>")

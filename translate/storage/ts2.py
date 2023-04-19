@@ -39,7 +39,6 @@ from translate.storage import lisa
 from translate.storage.placeables import general
 from translate.storage.workflow import StateEnum as state
 
-
 # TODO: handle translation types
 
 

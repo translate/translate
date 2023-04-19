@@ -22,7 +22,6 @@ the header of a Gettext PO file.
 
 import re
 
-
 __all__ = ("LANG_TEAM_CONTACT_SNIPPETS", "guess_language")
 
 LANG_TEAM_REGEX = (

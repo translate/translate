@@ -22,7 +22,6 @@ from subprocess import call
 
 from lxml import etree
 
-
 schema = None
 
 

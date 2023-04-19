@@ -29,7 +29,6 @@ from sqlite3 import dbapi2
 from translate.lang import data
 from translate.search.lshtein import LevenshteinComparer
 
-
 STRIP_REGEXP = re.compile(r"\W", re.UNICODE)
 
 

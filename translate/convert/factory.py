@@ -20,7 +20,6 @@
 
 import os
 
-
 # from translate.convert import prop2po, po2prop, odf2xliff, xliff2odf
 
 

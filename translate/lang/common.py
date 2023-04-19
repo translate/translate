@@ -64,7 +64,6 @@ import re
 
 from translate.lang import data
 
-
 logger = logging.getLogger(__name__)
 
 

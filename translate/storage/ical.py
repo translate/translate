@@ -57,7 +57,6 @@ import vobject
 
 from translate.storage import base
 
-
 ICAL_UNIT_LOCATION_RE = re.compile("\\[(?P<uid>.+)\\](?P<property>.+)")
 
 

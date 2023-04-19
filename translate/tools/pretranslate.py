@@ -26,7 +26,6 @@ for examples and usage instructions.
 from translate.search import match
 from translate.storage import factory
 
-
 # We don't want to reinitialise the TM each time, so let's store it here.
 tmmatcher = None
 

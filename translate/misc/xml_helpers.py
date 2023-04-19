@@ -23,7 +23,6 @@ from typing import List, Optional
 
 from lxml import etree
 
-
 # some useful xpath expressions
 xml_preserve_ancestors = etree.XPath(
     "ancestor-or-self::*[attribute::xml:space='preserve']"

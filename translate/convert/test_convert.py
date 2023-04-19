@@ -6,7 +6,6 @@ import pytest
 
 from translate.convert import convert
 
-
 OPTION_RE = re.compile(r"^\s*-")
 
 

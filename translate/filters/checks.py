@@ -35,7 +35,6 @@ from translate.filters import decoration, helpers, prefilters, spelling
 from translate.filters.decorators import cosmetic, critical, extraction, functional
 from translate.lang import data, factory
 
-
 logger = logging.getLogger(__name__)
 
 # These are some regular expressions that are compiled for use in some tests

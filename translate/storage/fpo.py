@@ -34,7 +34,6 @@ import re
 from translate.misc.multistring import multistring
 from translate.storage import base, cpo, pocommon
 
-
 logger = logging.getLogger(__name__)
 
 

@@ -18,7 +18,6 @@
 
 import zipfile
 
-
 # Tags to be extracted as placeables (tags that are within translatable texts).
 INLINE_ELEMENTS = [
     ("", "CharacterStyleRange"),

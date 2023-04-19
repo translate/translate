@@ -25,7 +25,6 @@ from importlib import import_module
 from translate.storage.base import TranslationStore
 from translate.storage.directory import Directory
 
-
 # TODO: Monolingual formats (with template?)
 
 decompressclass = {

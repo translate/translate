@@ -25,7 +25,6 @@ import zipfile
 
 from lxml import etree
 
-
 # get directory of this test
 dir = os.path.dirname(os.path.abspath(__file__))
 # get top-level directory (moral equivalent of ../..)

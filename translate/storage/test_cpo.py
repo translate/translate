@@ -6,7 +6,6 @@ from pytest import importorskip, mark, raises
 from translate.misc.multistring import multistring
 from translate.storage import test_po
 
-
 pytestmark = mark.skipif(
     not sys.platform.startswith("linux"), reason="cpo is only available on Linux"
 )

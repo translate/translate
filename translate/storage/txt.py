@@ -29,7 +29,6 @@ import re
 
 from translate.storage import base
 
-
 dokuwiki = [
     (
         "Dokuwiki heading",

@@ -29,7 +29,6 @@ import time
 from translate.filters import autocorrect, checks, pofilter
 from translate.storage import factory, oo
 
-
 logger = logging.getLogger(__name__)
 
 
