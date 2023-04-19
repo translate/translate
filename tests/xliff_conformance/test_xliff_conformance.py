@@ -15,24 +15,26 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
-
 import os
 import os.path as path
 from subprocess import call
 
+import pytest
 from lxml import etree
 
-schema = None
+
+@pytest.fixture(autouse=True, scope="module")
+def change_test_dir(request):
+    print("Changed test dir")
+    os.chdir(request.fspath.dirname)
+    yield
+    os.chdir(request.config.invocation_params.dir)
 
 
-def xmllint(fullpath):
-    return schema.validate(etree.parse(fullpath))
-
-
-def setup_module(module):
-    global schema
-    os.chdir(path.dirname(__file__))
+@pytest.fixture(scope="module")
+def xmllint():
     schema = etree.XMLSchema(etree.parse("xliff-core-1.1.xsd"))
+    return lambda fullpath: schema.validate(etree.parse(fullpath))
 
 
 def find_files(base, check_ext):
@@ -44,21 +46,17 @@ def find_files(base, check_ext):
                 yield fullpath
 
 
-def test_open_office_to_xliff():
+def test_open_office_to_xliff(xmllint):
     assert call(["oo2xliff", "en-US.sdf", "-l", "fr", "fr"]) == 0
     for filepath in find_files("fr", ".xlf"):
         assert xmllint(filepath)
     cleardir("fr")
 
 
-def test_po_to_xliff():
+def test_po_to_xliff(xmllint):
     OUTPUT = "af-pootle.xlf"
     assert call(["po2xliff", "af-pootle.po", OUTPUT]) == 0
     assert xmllint(OUTPUT)
-
-
-def teardown_module(module):
-    pass
 
 
 def cleardir(testdir):
