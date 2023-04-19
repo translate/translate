@@ -39,10 +39,12 @@ jobs:
         python-version: ${{ matrix.python-version }}
         cache: pip
         cache-dependency-path: requirements/*.txt
+    - name: Configure Fast APT Mirror
+      uses: vegardit/fast-apt-mirror.sh@v1
     - name: Install apt dependencies
       run: |
-        sudo apt-get --option="APT::Acquire::Retries=3" update
-        sudo apt-get --option="APT::Acquire::Retries=3" install -y libgettextpo-dev libxml2-dev libxmlsec1-dev gettext hunspell-af
+        sudo apt-get update
+        sudo apt-get install -y libgettextpo-dev libxml2-dev libxmlsec1-dev gettext hunspell-af
     - name: Update pip
       run: pip install --upgrade pip wheel
     - name: Install pip dependencies
