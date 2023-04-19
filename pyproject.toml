@@ -1,11 +1,22 @@
 [build-system]
-requires = [
-    "setuptools>=42",
-    "setuptools_scm>=6.2"
-]
 build-backend = "setuptools.build_meta"
+requires = [
+  "setuptools>=42",
+  "setuptools_scm>=6.2"
+]
 
 [tool.isort]
+known_third_party = [
+  "iniparse",
+  "lxml",
+  "vobject",
+  "sphinx",
+  "pytest",
+  "cheroot",
+  "phply",
+  "bs4",
+  "ruamel",
+  "pyparsing",
+  "setuptools"
+]
 profile = "black"
-known_third_party=[
-    "iniparse","lxml","vobject","sphinx","pytest","cheroot","phply","bs4","ruamel","pyparsing","setuptools"]
