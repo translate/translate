@@ -21,7 +21,6 @@
 from translate.storage import qph, test_base
 from translate.storage.placeables import parse, xliff
 
-
 xliffparsers = []
 for attrname in dir(xliff):
     attr = getattr(xliff, attrname)

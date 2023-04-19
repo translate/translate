@@ -25,7 +25,6 @@ from io import BytesIO
 
 from translate.misc import optrecurse
 
-
 # Don't import optparse ourselves, get the version from optrecurse.
 optparse = optrecurse.optparse
 

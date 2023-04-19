@@ -36,7 +36,6 @@ from translate.misc.multistring import multistring
 from translate.storage import factory
 from translate.storage.workflow import StateEnum
 
-
 extended_state_strings = {
     StateEnum.EMPTY: "empty",
     StateEnum.NEEDS_WORK: "needs-work",

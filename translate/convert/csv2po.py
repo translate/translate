@@ -26,7 +26,6 @@ import logging
 
 from translate.storage import csvl10n, po
 
-
 logger = logging.getLogger(__name__)
 
 

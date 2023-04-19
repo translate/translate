@@ -83,7 +83,6 @@ import time
 
 from translate.storage import base
 
-
 WF_TIMEFORMAT = "%Y%m%d~%H%M%S"
 """Time format used by Wordfast"""
 

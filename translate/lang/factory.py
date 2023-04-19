@@ -24,7 +24,6 @@ from importlib import import_module
 
 from translate.lang import common, data
 
-
 prefix = "code_"
 
 

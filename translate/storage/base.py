@@ -25,9 +25,9 @@ from io import BytesIO
 from typing import List, Optional, Tuple
 
 from translate.misc.multistring import multistring
-from translate.storage.placeables import StringElem, parse as rich_parse
+from translate.storage.placeables import StringElem
+from translate.storage.placeables import parse as rich_parse
 from translate.storage.workflow import StateEnum as states
-
 
 # Simple BOM based encoding detection
 ENCODING_BOMS = (

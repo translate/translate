@@ -50,7 +50,6 @@ from shutil import move, rmtree
 from subprocess import PIPE, CalledProcessError, Popen
 from tempfile import mkdtemp
 
-
 logger = logging.getLogger(__name__)
 
 

@@ -29,7 +29,6 @@ from translate.lang import data
 from translate.misc.multistring import multistring
 from translate.storage import base, lisa
 
-
 EOF = None
 WHITESPACE = " \n\t"  # Whitespace that we collapse.
 MULTIWHITESPACE = re.compile("[ \n\t]{2}(?!\\\\n)")

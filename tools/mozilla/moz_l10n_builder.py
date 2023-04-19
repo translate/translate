@@ -34,7 +34,6 @@ import tempfile
 import time
 from subprocess import PIPE, Popen
 
-
 join = os.path.join
 
 try:

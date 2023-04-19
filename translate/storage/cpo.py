@@ -49,7 +49,6 @@ from ctypes import (
 from translate.misc.multistring import multistring
 from translate.storage import base, pocommon, pypo
 
-
 logger = logging.getLogger(__name__)
 
 lsep = " "

@@ -44,7 +44,6 @@ import time
 
 from translate.storage import base
 
-
 try:
     # FIXME see if we can't use lxml
     from bs4 import BeautifulSoup

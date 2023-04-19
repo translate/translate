@@ -29,7 +29,6 @@ from translate.lang import factory as lang_factory
 from translate.misc import file_discovery, optrecurse
 from translate.storage import factory, po
 
-
 logger = logging.getLogger(__name__)
 
 

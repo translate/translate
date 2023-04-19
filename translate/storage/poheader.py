@@ -24,7 +24,6 @@ import time
 from translate import __version__
 from translate.misc.dictutils import cidict
 
-
 author_re = re.compile(r".*<\S+@\S+>.*\d{4,4}")
 
 default_header = {

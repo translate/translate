@@ -33,7 +33,6 @@ From the GNU gettext manual:
 
 import re
 
-
 SINGLE_BYTE_ENCODING = "iso-8859-1"
 isspace = str.isspace
 find = str.find

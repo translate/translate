@@ -42,7 +42,6 @@ import locale
 
 from translate.storage import base
 
-
 OMEGAT_FIELDNAMES = ["source", "target", "comment"]
 """Field names for an OmegaT glossary unit"""
 

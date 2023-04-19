@@ -29,7 +29,6 @@ import re
 import sys
 from os import path
 
-
 nb_ngrams = 400
 white_space_re = re.compile(r"\s+")
 

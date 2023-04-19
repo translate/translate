@@ -27,7 +27,6 @@ import logging
 from translate.convert.accesskey import UnitMixer
 from translate.storage import po, properties
 
-
 logger = logging.getLogger(__name__)
 
 

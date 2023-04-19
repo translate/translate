@@ -19,7 +19,6 @@
 
 from translate.storage.xml_extract import unit_tree
 
-
 # _split_xpath_component
 
 

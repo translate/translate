@@ -28,7 +28,6 @@ from urllib import parse
 
 from translate.storage import oo, po
 
-
 # TODO: support using one GSI file as template, another as input (for when English is in one and translation in another)
 
 logger = logging.getLogger(__name__)

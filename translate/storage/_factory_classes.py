@@ -37,7 +37,6 @@ from . import (
     xliff,
 )
 
-
 try:
     from . import trados
 except ImportError:

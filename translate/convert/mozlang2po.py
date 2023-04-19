@@ -23,7 +23,8 @@
 """
 
 from translate.convert import convert
-from translate.storage import mozilla_lang as lang, po
+from translate.storage import mozilla_lang as lang
+from translate.storage import po
 
 
 class lang2po:

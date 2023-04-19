@@ -24,7 +24,8 @@ from io import BytesIO
 
 from translate.misc.multistring import multistring
 from translate.storage import base, factory
-from translate.storage.placeables import general, parse as rich_parse
+from translate.storage.placeables import general
+from translate.storage.placeables import parse as rich_parse
 
 
 def headerless_len(units):

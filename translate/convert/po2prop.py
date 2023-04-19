@@ -28,7 +28,6 @@ from translate.convert import accesskey, convert
 from translate.misc import quote
 from translate.storage import po, properties
 
-
 eol = "\n"
 
 

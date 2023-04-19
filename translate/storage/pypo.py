@@ -32,7 +32,6 @@ from translate.misc import quote
 from translate.misc.multistring import multistring
 from translate.storage import pocommon, poparser
 
-
 logger = logging.getLogger(__name__)
 
 

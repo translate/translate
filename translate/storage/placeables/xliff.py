@@ -21,7 +21,6 @@
 from translate.storage.placeables import base
 from translate.storage.placeables.strelem import StringElem
 
-
 __all__ = (
     "Bpt",
     "Ept",

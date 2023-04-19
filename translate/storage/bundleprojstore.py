@@ -23,7 +23,6 @@ from zipfile import ZipFile
 
 from translate.storage.projstore import FileNotInProjectError, ProjectStore
 
-
 __all__ = ("BundleProjectStore", "InvalidBundleError")
 
 

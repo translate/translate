@@ -25,7 +25,6 @@ for examples and usage instructions.
 from translate.convert import convert
 from translate.storage import php, po
 
-
 eol = "\n"
 
 

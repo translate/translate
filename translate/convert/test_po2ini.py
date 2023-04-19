@@ -4,7 +4,6 @@ from pytest import importorskip, raises
 
 from translate.convert import po2ini, test_convert
 
-
 importorskip("iniparse")
 
 

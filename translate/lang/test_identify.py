@@ -3,7 +3,6 @@ from pytest import raises
 from translate.lang.identify import LanguageIdentifier
 from translate.storage.base import TranslationUnit
 
-
 TEXT = """
 Ästhetik des "Erhabenen" herangezogen.
 kostete (hinzu kommen über 6 630 tote

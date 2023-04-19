@@ -26,7 +26,6 @@ import logging
 
 from translate.storage import po, rc
 
-
 logger = logging.getLogger(__name__)
 
 

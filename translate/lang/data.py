@@ -25,7 +25,6 @@ import os
 import re
 import unicodedata
 
-
 try:
     import pycountry
 except ImportError:

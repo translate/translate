@@ -27,7 +27,6 @@ import sys
 import time
 from argparse import ArgumentParser
 
-
 lineterm = "\n"
 
 

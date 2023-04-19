@@ -138,7 +138,6 @@ from translate.misc import quote
 from translate.misc.multistring import multistring
 from translate.storage import base
 
-
 labelsuffixes = (".label", ".title")
 """Label suffixes: entries with this suffix are able to be comibed with accesskeys
 found in in entries ending with :attr:`.accesskeysuffixes`"""

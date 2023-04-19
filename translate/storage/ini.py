@@ -34,7 +34,6 @@ from io import StringIO
 
 from translate.storage import base
 
-
 try:
     from iniparse import INIConfig
 except ImportError:

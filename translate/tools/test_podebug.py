@@ -3,7 +3,6 @@ import os
 from translate.storage import base, po, xliff
 from translate.tools import podebug
 
-
 PO_DOC = """
 msgid "This is a %s test, hooray."
 msgstr ""
