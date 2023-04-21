@@ -470,17 +470,17 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         self.__check_parse("\u0230", r'<string name="test">\u0230</string>')
 
     def test_single_unescaped(self):
-        string = 'a b c d'
+        string = "a b c d"
         xml = '<string name="teststring">a\nb\tc d</string>'
         self.__check_parse(string, xml)
 
     def test_single_escaped_alone(self):
-        string = 'a\nb\tc d'
+        string = "a\nb\tc d"
         xml = '<string name="teststring">a"\n"b"\t"c" "d</string>'
         self.__check_parse(string, xml)
 
     def test_single_escaped_full(self):
-        string = 'a\nb\tc d'
+        string = "a\nb\tc d"
         xml = '<string name="teststring">"a\nb\tc d"</string>'
         self.__check_parse(string, xml)
 
