@@ -28,7 +28,7 @@ import pytest
 )
 def test_help(command: str):
     stdout = subprocess.check_output(
-        [sys.executable, Path(__file__).parent / f"{command}.py", "--help"],
+        [sys.executable, str(Path(__file__).parent / f"{command}.py"), "--help"],
         text=True,
     )
 
