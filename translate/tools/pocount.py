@@ -33,13 +33,18 @@ import sys
 from argparse import ArgumentParser
 from collections import defaultdict
 from dataclasses import dataclass
-from functools import cached_property
 from operator import itemgetter
 
 from translate.lang.common import Common
 from translate.misc.multistring import multistring
 from translate.storage import factory
 from translate.storage.workflow import StateEnum
+
+try:
+    from functools import cached_property
+except ImportError:
+    # Fix for python 3.7
+    cached_property = property
 
 extended_state_strings = {
     StateEnum.EMPTY: "empty",
