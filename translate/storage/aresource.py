@@ -99,8 +99,8 @@ class AndroidResourceUnit(base.TranslationUnit):
                 # Handle whitespace collapsing
                 if c is not EOF and c in WHITESPACE:
                     space_count += 1
-                elif space_count > 1:
-                    # Remove duplicate whitespace; Pay attention: We
+                elif space_count >= 1:
+                    # Remove sequential whitespace; Pay attention: We
                     # don't do this if we are currently inside a quote,
                     # except for one special case: If we have unbalanced
                     # quotes, e.g. we reach eof while a quote is still
@@ -113,17 +113,6 @@ class AndroidResourceUnit(base.TranslationUnit):
                         i -= space_count - 1
                         if strip and (i == 1 or c is EOF):
                             del text[i - 1]
-                    space_count = 0
-                elif space_count == 1:
-                    # At this point we have a single whitespace character,
-                    # but it might be a newline or tab. If we write this
-                    # kind of insignificant whitespace into the .po file,
-                    # it will be considered significant on import. So,
-                    # make sure that this kind of whitespace is always a
-                    # standard space.
-                    text[i - 1] = " "
-                    if strip and not active_quote and (i == 1 or c is EOF):
-                        del text[i - 1]
                     space_count = 0
                 else:
                     space_count = 0
