@@ -22,8 +22,11 @@ It is a monolingual base class derived format with :class:`FluentFile`
 and :class:`FluentUnit` providing file and unit level access.
 """
 
+from __future__ import annotations
+
 import re
 import textwrap
+from typing import BinaryIO
 
 from fluent.syntax import FluentSerializer, ast, parse, serialize, visitor
 
@@ -37,12 +40,12 @@ class FluentUnit(base.TranslationUnit):
 
     def __init__(
         self,
-        source=None,
-        unit_id=None,
-        comment="",
-        fluent_type="Message",
-        placeholders=None,
-    ):
+        source: str | None = None,
+        unit_id: str | None = None,
+        comment: str = "",
+        fluent_type: str = "Message",
+        placeholders: list[str] | None = None,
+    ) -> None:
         """
         :param source: The serialized fluent value, or None.
         :type source: str or None
@@ -75,7 +78,7 @@ class FluentUnit(base.TranslationUnit):
         self.addnote(comment)
 
     @staticmethod
-    def _id_from_source(source):
+    def _id_from_source(source: str) -> str:
         # If the caller does not provide a unit ID, we need to generate one
         # ourselves.
         # The set of valid ids is restricted, so we cannot use the source string
@@ -87,7 +90,7 @@ class FluentUnit(base.TranslationUnit):
 
         return "gen-" + hashlib.sha256(source.encode()).hexdigest()
 
-    def getid(self):
+    def getid(self) -> str | None:
         return self._id
 
     # From fluent EBNF.
@@ -97,7 +100,7 @@ class FluentUnit(base.TranslationUnit):
         "Term": r"-" + _FLUENT_ID_PATTERN,
     }
 
-    def setid(self, value):
+    def setid(self, value: str | None) -> None:
         """Set the id of the unit.
         A valid fluent identifier is [a-zA-Z][a-zA-Z0-9_-]*
         For a FluentUnit that represents a fluent Message, the id must be a
@@ -113,27 +116,27 @@ class FluentUnit(base.TranslationUnit):
             )
         self._id = value or None
 
-    def isheader(self):
+    def isheader(self) -> bool:
         return self._is_comment
 
     @property
-    def fluent_type(self):
+    def fluent_type(self) -> str:
         """The fluent type this unit corresponds to."""
         return self._fluent_type
 
-    def getplaceables(self):
+    def getplaceables(self) -> list[str]:
         """Still called in Weblate. Returns :attr:`~FluentUnit.placeholders`."""
         return self.placeholders
 
     @classmethod
-    def new_from_entry(cls, fluent_entry, comment=None):
+    def new_from_entry(cls, fluent_entry: ast.Entry, comment: str = "") -> FluentUnit:
         """Create a new unit corresponding to the given fluent AST entry.
 
         :param fluent_entry: A fluent Entry to convert.
         :type fluent_entry: Entry
         :param comment: A comment to set on the unit. For fluent Comments the
             comment is taken from the object instead.
-        :type comment: str or None
+        :type comment: str
 
         :return: A new FluentUnit.
         :rtype: FluentUnit
@@ -155,12 +158,17 @@ class FluentUnit(base.TranslationUnit):
         raise ValueError(f"Unhandled fluent type: {fluent_entry.__class__.__name__}")
 
     @classmethod
-    def _create_from_fluent_pattern(cls, fluent_entry, fluent_type, unit_id, comment):
+    def _create_from_fluent_pattern(
+        cls,
+        fluent_entry: ast.Message | ast.Term,
+        fluent_type: str,
+        unit_id: str,
+        comment: str,
+    ) -> FluentUnit:
         """Create a new unit from a fluent entry that has a Pattern value."""
         lines = []
-        source = cls._fluent_pattern_to_source(fluent_entry.value)
-        if source:
-            lines.append(source)
+        if fluent_entry.value:
+            lines.append(cls._fluent_pattern_to_source(fluent_entry.value))
         for attr in fluent_entry.attributes:
             attr_source = cls._fluent_pattern_to_source(attr.value)
             source = f".{attr.id.name} ="
@@ -180,11 +188,8 @@ class FluentUnit(base.TranslationUnit):
         )
 
     @staticmethod
-    def _fluent_pattern_to_source(pattern):
+    def _fluent_pattern_to_source(pattern: ast.Pattern) -> str:
         """Convert the fluent Pattern into a source string."""
-        if not pattern:
-            return None
-
         if not pattern.elements:
             raise ValueError("Unexpected fluent Pattern without any elements")
 
@@ -236,7 +241,9 @@ class FluentUnit(base.TranslationUnit):
         return textwrap.dedent(source)
 
     @staticmethod
-    def _fluent_pattern_placeholders(fluent_entry, fluent_type):
+    def _fluent_pattern_placeholders(
+        fluent_entry: ast.Message | ast.Term, fluent_type: str
+    ) -> list[str]:
         """Get the placeholders expected for the given fluent entry."""
         ref_visitor = _ReferenceVisitor(fluent_type)
         ref_visitor.visit(fluent_entry.value)
@@ -250,7 +257,7 @@ class FluentUnit(base.TranslationUnit):
         # attribute or not. So we do not include them.
         return list(ref_visitor.placeholders)
 
-    def to_entry(self):
+    def to_entry(self) -> ast.Entry | None:
         """Convert the unit into a corresponding fluent AST Entry.
 
         :return: A new fluent AST Entry, if one was created.
@@ -274,16 +281,16 @@ class FluentUnit(base.TranslationUnit):
             return self._source_to_fluent_entry()
         raise ValueError(f"Unhandled fluent_type: {self.fluent_type}")
 
-    def _source_to_fluent_entry(self):
+    def _source_to_fluent_entry(self) -> ast.Entry | None:
         """Convert a FluentUnit's source to a fluent Term or Message."""
-        entry = self._try_source_to_fluent_entry()
-        if isinstance(entry, str):
+        entry_or_error = self._try_source_to_fluent_entry()
+        if isinstance(entry_or_error, str):
             raise ValueError(
-                f'Error in source of FluentUnit "{self.getid()}":\n{entry}'
+                f'Error in source of FluentUnit "{self.getid()}":\n{entry_or_error}'
             )
-        return entry
+        return entry_or_error
 
-    def _try_source_to_fluent_entry(self):
+    def _try_source_to_fluent_entry(self) -> ast.Entry | str | None:
         """Convert a FluentUnit's source to a generic fluent Entry. Returns a
         string with an error message if this fails.
         """
@@ -387,11 +394,11 @@ class _ReferenceVisitor(visitor.Visitor):
     #     category of a variable) it isn't always necessary (e.g. one locale
     #     branches based on whether a Term starts with a vowel or not).
 
-    def __init__(self, fluent_type):
+    def __init__(self, fluent_type: str) -> None:
         self.fluent_type = fluent_type
-        self.placeholders = set()
+        self.placeholders: set[str] = set()
 
-    def visit_MessageReference(self, node):
+    def visit_MessageReference(self, node: ast.MessageReference) -> None:
         # If a MessageReference appears in a value, we expect that to also
         # appear in a translation's value as well.
         # TODO: Are there reasonable cases where one locale would use one of
@@ -407,7 +414,7 @@ class _ReferenceVisitor(visitor.Visitor):
         # NOTE: We do not call Visitor.generic_visit because there is no child
         # to descend into for this type.
 
-    def visit_TermReference(self, node):
+    def visit_TermReference(self, node: ast.TermReference) -> None:
         if node.attribute:
             # A TermReference with an attribute should only appear in a
             # SelectExpression as the selector. We only expect this to be a
@@ -427,7 +434,7 @@ class _ReferenceVisitor(visitor.Visitor):
         # would have no use, so we only match the regex with named arguments.
         self.placeholders.add("{ -" + node.id.name + " }")
 
-    def visit_VariableReference(self, node):
+    def visit_VariableReference(self, node: ast.VariableReference) -> None:
         if self.fluent_type == "Term":
             # Variables for terms are normally locale-specific (like some
             # grammatical context), so we do not include these.
@@ -437,7 +444,7 @@ class _ReferenceVisitor(visitor.Visitor):
         # in these cases.
         self.placeholders.add("{ $" + node.id.name + " }")
 
-    def visit_SelectExpression(self, node):
+    def visit_SelectExpression(self, node: ast.SelectExpression) -> None:
         # We only want to visit the variants, rather than the select expression.
         for variant in node.variants:
             self.generic_visit(variant)
@@ -451,26 +458,26 @@ class FluentFile(base.TranslationStore):
     Extensions = ["ftl"]
     UnitClass = FluentUnit
 
-    def __init__(self, inputfile=None, **kwargs):
+    def __init__(self, inputfile: BinaryIO | None = None, **kwargs) -> None:
         super().__init__(**kwargs)
         self.filename = getattr(inputfile, "name", "")
         if inputfile is not None:
             self.parse(inputfile.read())
 
-    def parse(self, fluentsrc):
+    def parse(self, fluentsrc: bytes) -> None:
         resource = parse(fluentsrc.decode("utf-8"))
         for entry in resource.body:
             # Handle this unit separately if it is invalid.
             if isinstance(entry, ast.Junk):
                 raise self._fluent_junk_to_error(entry)
 
-        resource_comments = []
+        resource_comment_list = []
         for entry in resource.body:
             if isinstance(entry, ast.ResourceComment):
                 # We add another line to the comments, even if it is blank.
-                resource_comments.append(entry.content)
+                resource_comment_list.append(entry.content)
 
-        resource_comments = "\n".join(resource_comments)
+        resource_comments = "\n".join(resource_comment_list)
         comment_prefix = resource_comments
         for entry in resource.body:
             if isinstance(entry, ast.BaseComment):
@@ -491,7 +498,7 @@ class FluentFile(base.TranslationStore):
                 )
 
     @staticmethod
-    def _fluent_junk_to_error(junk):
+    def _fluent_junk_to_error(junk: ast.Junk) -> ValueError:
         """Convert the given fluent Junk object into a ValueError."""
         error_message = [
             "Parsing error for fluent source: "
@@ -505,7 +512,7 @@ class FluentFile(base.TranslationStore):
         return ValueError("\n".join(error_message))
 
     @staticmethod
-    def _combine_comments(*comments):
+    def _combine_comments(*comments: ast.BaseComment | str) -> str:
         """Combine the given string or fluent BaseComment objects into a single
         string.
         """
@@ -552,7 +559,7 @@ class FluentFile(base.TranslationStore):
         out.write(serialized.encode(self.encoding))
 
     @staticmethod
-    def _strip_prefix_from_comment(unit, prefix_comments):
+    def _strip_prefix_from_comment(unit: FluentUnit, prefix_comments: list[str]) -> str:
         """Try to remove each prefix in `prefix_comments` in turn from the start
         of `unit`'s comment.
         """

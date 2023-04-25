@@ -16,9 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import annotations
+
 import re
 import textwrap
 from io import BytesIO
+from typing import Any
 
 from pytest import raises
 
@@ -33,23 +36,23 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
     StoreClass = fluent.FluentFile
 
     @staticmethod
-    def fluent_parse(fluent_source):
+    def fluent_parse(fluent_source: str) -> fluent.FluentFile:
         """Helper that parses Fluent source without requiring files."""
         dummyfile = BytesIO(fluent_source.encode())
         fluent_file = fluent.FluentFile(dummyfile)
         return fluent_file
 
     @staticmethod
-    def fluent_serialize(fluent_file):
+    def fluent_serialize(fluent_file: fluent.FluentFile) -> str:
         # The __bytes__ method on TranslationStore calls FluentFile.serialize.
         return bytes(fluent_file).decode("utf-8")
 
-    def fluent_regen(self, fluent_source):
+    def fluent_regen(self, fluent_source: str) -> str:
         """Helper that converts Fluent source to a FluentFile object and back."""
         return self.fluent_serialize(self.fluent_parse(fluent_source))
 
     @staticmethod
-    def quick_fluent_file(unit_specs):
+    def quick_fluent_file(unit_specs: list[dict[str, str]]) -> fluent.FluentFile:
         """Helper to create a FluentFile populated by the FluentUnits
         parametrised in `unit_specs`.
         """
@@ -59,14 +62,16 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                 fluent.FluentUnit(
                     source=spec.get("source", None),
                     unit_id=spec.get("id", None),
-                    comment=spec.get("comment", None),
-                    fluent_type=spec.get("type", None),
+                    comment=spec.get("comment", ""),
+                    fluent_type=spec.get("type", ""),
                 )
             )
         return fluent_file
 
     @staticmethod
-    def assert_units(fluent_file, expect_units):
+    def assert_units(
+        fluent_file: fluent.FluentFile, expect_units: list[dict[str, Any]]
+    ) -> None:
         """Assert that the given FluentFile has the expected FluentUnits.
 
         :param FluentFile fluent_file: The file to test.
@@ -101,7 +106,12 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             assert unit.target == unit.source
         assert len(fluent_file.units) == len(expect_units)
 
-    def basic_test(self, fluent_source, expect_units, expect_serialize=None):
+    def basic_test(
+        self,
+        fluent_source: str,
+        expect_units: list[dict[str, Any]],
+        expect_serialize: str | None = None,
+    ) -> None:
         """Assert that the given fluent source parses correctly to the expected
         FluentFile, and reserializes correctly.
 
@@ -129,7 +139,9 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             # exactly the same string.
             assert self.fluent_regen(expect_serialize) == expect_serialize
 
-    def assert_serialize(self, fluent_file, expect_serialize):
+    def assert_serialize(
+        self, fluent_file: fluent.FluentFile, expect_serialize: str
+    ) -> None:
         """Assert that the given FluentFile serializes to the given string.
 
         :param FluentFile fluent_file: The FluentFile to serialize.
@@ -139,7 +151,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
         expect_serialize = textwrap.dedent(expect_serialize)
         assert self.fluent_serialize(fluent_file) == expect_serialize
 
-    def assert_parse_failure(self, fluent_source, error_part):
+    def assert_parse_failure(self, fluent_source: str, error_part: str) -> None:
         """Assert that the given fluent source fails to parse into a
         FluentFile.
 
@@ -155,7 +167,9 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
         with raises(ValueError, match=error_regex):
             self.fluent_parse(fluent_source)
 
-    def assert_serialize_failure(self, fluent_file, error_regex):
+    def assert_serialize_failure(
+        self, fluent_file: fluent.FluentFile, error_regex: str
+    ) -> None:
         """Assert that the given FluentFile fails to serialize.
 
         :param FluentFile fluent_file: The FluentFile to try and serialize.
