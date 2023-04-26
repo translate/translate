@@ -68,19 +68,284 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             )
         return fluent_file
 
-    @staticmethod
+    @classmethod
+    def assert_references(
+        cls,
+        references: list[fluent.FluentReference],
+        expect_refs: list[dict[str, Any]],
+    ) -> None:
+        """Assert that the list of references matches the expected."""
+        for ref, expect in zip(references, expect_refs):
+            assert expect.get("type") == ref.type_name
+            assert expect.get("name") == ref.name
+        assert len(expect_refs) == len(references)
+
+    @classmethod
+    def assert_selector_branch(
+        cls,
+        selector_branch: fluent.FluentSelectorBranch,
+        expect_index: int,
+        found_selector_branches: list[dict[str, Any]],
+        found_selector_nodes: list[dict[str, Any]],
+    ) -> None:
+        """Assert that the given selector branch matches the expected entry in
+        found_selector_branches at the given expect_index.
+        """
+        assert expect_index >= 0
+        assert expect_index < len(found_selector_branches)
+        if found_selector_branches[expect_index]["instance"] is None:
+            # First time we have come across this selector, so add it to our
+            # list and make sure it matches the expected.
+            found_selector_branches[expect_index]["instance"] = selector_branch
+            assert found_selector_branches[expect_index]["key"] == selector_branch.key
+            assert (
+                found_selector_branches[expect_index]["default"]
+                == selector_branch.default
+            )
+            parent_node_index = found_selector_branches[expect_index]["parent-node"]
+            if parent_node_index is None:
+                assert selector_branch.parent_node is None
+            else:
+                cls.assert_selector_node(
+                    selector_branch.parent_node,
+                    parent_node_index,
+                    found_selector_branches,
+                    found_selector_nodes,
+                )
+            cls.assert_references(
+                selector_branch.top_references,
+                found_selector_branches[expect_index]["top-refs"],
+            )
+            expect_children = found_selector_branches[expect_index]["child-nodes"]
+            for child, expected_child in zip(
+                selector_branch.child_nodes, expect_children
+            ):
+                cls.assert_selector_node(
+                    child,
+                    expected_child,
+                    found_selector_branches,
+                    found_selector_nodes,
+                )
+            assert len(expect_children) == len(selector_branch.child_nodes)
+        else:
+            # We already have this selector index, make sure it matches the same
+            # instance that we already have.
+            assert found_selector_branches[expect_index]["instance"] == selector_branch
+
+    @classmethod
+    def assert_selector_node(
+        cls,
+        selector_node: fluent.FluentSelectorNode | None,
+        expect_index: int,
+        found_selector_branches: list[dict[str, Any]],
+        found_selector_nodes: list[dict[str, Any]],
+    ) -> None:
+        """Assert that the given selector node matches the expected entry in
+        found_selector_nodes at the given expect_index.
+        """
+        assert selector_node is not None
+        assert expect_index >= 0
+        assert expect_index < len(found_selector_nodes)
+        if found_selector_nodes[expect_index]["instance"] is None:
+            # First time we have come across this selector, so add it to our
+            # list and make sure it matches the expected serialization.
+            found_selector_nodes[expect_index]["instance"] = selector_node
+            assert (
+                found_selector_nodes[expect_index]["serialized"]
+                == selector_node.serialized_selector
+            )
+            cls.assert_selector_branch(
+                selector_node.parent_branch,
+                found_selector_nodes[expect_index]["parent-branch"],
+                found_selector_branches,
+                found_selector_nodes,
+            )
+            cls.assert_references(
+                selector_node.selector_references,
+                found_selector_nodes[expect_index]["selector-refs"],
+            )
+            expect_children = found_selector_nodes[expect_index]["child-branches"]
+            for child, expected_child in zip(
+                selector_node.child_branches, expect_children
+            ):
+                cls.assert_selector_branch(
+                    child,
+                    expected_child,
+                    found_selector_branches,
+                    found_selector_nodes,
+                )
+            assert len(expect_children) == len(selector_node.child_branches)
+        else:
+            # We already have this selector index, make sure it matches the same
+            # instance that we already have.
+            assert found_selector_nodes[expect_index]["instance"] == selector_node
+
+    @classmethod
+    def assert_parts(
+        cls,
+        fluent_unit: fluent.FluentUnit,
+        expect_parts: list[dict[str, Any]] | None,
+    ) -> None:
+        """Assert that the given fluent unit has the expected parts.
+
+        Each part should be a dictionary defining its "name", "selector-nodes",
+        "selector-branches" and "pattern-variants".
+
+        The "selector-nodes" and "selector-branches" should be a list of
+        expected nodes and branches in the part. Each should be a dictionary of
+        the expected properties. In particular, their "parent-branch",
+        "parent-node", "child-branches" and "child-nodes" entries should
+        reference the index of the expected branch or node in this list.
+
+        If the "selector-nodes" is not specified, this will assume there are no
+        expected nodes. If "selector-branches" is not specified, this will
+        assume that the only branch in this part is the default top-level
+        branch.
+
+        The "pattern-variants" should be a list of expected variants, each a
+        dictionary defining its expected "select-path", using the indices of the
+        corresponding entry in "selector-branches", and their expected "source".
+
+        If "pattern-variants" is not specified, this will assume we expect only
+        a single variant whose "select-path" is empty and whose "source" is just
+        extracted from the unit's source.
+
+        If `expect_parts` itself is None, then the parts will be extracted from
+        the unit's source, and only one variant will be assumed for each part.
+        """
+        build_expect_parts = False
+        if expect_parts is None:
+            expect_parts = []
+            build_expect_parts = True
+
+        # First we generate `auto_source` which is used when one of the parts
+        # does not include a "pattern-variants".
+        #
+        # We grab this by taking all the strings found between the attribute
+        # names.
+        #
+        # This won't work in general if the unit's source contains more than one
+        # variant, so the variant's "source" will need to be determined by the
+        # caller instead.
+        auto_source: dict[str, str] = {}
+        value, *attrs = re.split(
+            r"\n?^ *\.([a-zA-Z][a-zA-Z0-9_-]*) *= *\n?",
+            fluent_unit.source or "",
+            flags=re.MULTILINE,
+        )
+
+        if value:
+            auto_source[""] = value
+            if build_expect_parts:
+                # Expect only one variants with no refs and using the
+                # auto_source.
+                expect_parts.append({"name": ""})
+        assert len(attrs) % 2 == 0
+        for i in range(0, len(attrs), 2):
+            auto_source[attrs[i]] = attrs[i + 1]
+            if build_expect_parts:
+                expect_parts.append({"name": attrs[i]})
+
+        unit_parts = fluent_unit.get_parts()
+        assert unit_parts is not None
+        for part, expected_part in zip(unit_parts, expect_parts):
+            assert expected_part.get("name") == part.name
+
+            found_selector_nodes = [
+                {
+                    "instance": None,
+                    "serialized": node.get("serialized"),
+                    "parent-branch": node.get("parent-branch"),
+                    "child-branches": node.get("child-branches", []),
+                    "selector-refs": node.get("selector-refs", []),
+                }
+                for node in expected_part.get("selector-nodes", [])
+            ]
+
+            expect_branches = expected_part.get("selector-branches", None)
+            if expect_branches is None:
+                expect_branches = [
+                    {
+                        "key": "",
+                        "default": True,
+                    }
+                ]
+            found_selector_branches = [
+                {
+                    "instance": None,
+                    "key": branch.get("key"),
+                    "default": branch.get("default", False),
+                    "parent-node": branch.get("parent-node", None),
+                    "child-nodes": branch.get("child-nodes", []),
+                    "top-refs": branch.get("top-refs", []),
+                }
+                for branch in expect_branches
+            ]
+            cls.assert_selector_branch(
+                part.top_branch,
+                0,
+                found_selector_branches,
+                found_selector_nodes,
+            )
+            # Should have visited all selectors and branches at this point.
+            for selector_node in found_selector_nodes:
+                # Each one visited at least once.
+                assert selector_node["instance"] is not None
+            for selector_branch in found_selector_branches:
+                # Each one visited at least once.
+                assert selector_branch["instance"] is not None
+
+            expect_variants = expected_part.get("pattern-variants", None)
+            if expect_variants is None:
+                # Only expect one variant by default.
+                expect_variants = [
+                    {
+                        "select-path": (),
+                        "source": auto_source[part.name],
+                    }
+                ]
+            pattern_variants = [
+                (path, part.top_branch.to_flat_string(path))
+                for path in part.top_branch.branch_paths()
+            ]
+            for (path, source), expected_variant in zip(
+                pattern_variants,
+                expect_variants,
+            ):
+                assert expected_variant.get("source") == source
+                expect_path = expected_variant.get("select-path")
+                for branch, index in zip(path, expect_path):
+                    cls.assert_selector_branch(
+                        branch,
+                        index,
+                        found_selector_branches,
+                        found_selector_nodes,
+                    )
+                assert len(expect_path) == len(path)
+            # Same number of variants.
+            assert len(expect_variants) == len(pattern_variants)
+
+        assert len(expect_parts) == len(unit_parts)
+
+    @classmethod
     def assert_units(
-        fluent_file: fluent.FluentFile, expect_units: list[dict[str, Any]]
+        cls, fluent_file: fluent.FluentFile, expect_units: list[dict[str, Any]]
     ) -> None:
         """Assert that the given FluentFile has the expected FluentUnits.
 
         :param FluentFile fluent_file: The file to test.
         :param list[dict] expect_units: A list of the expected units, specified
-            by the dictionary values. The "id", "source", "type" and "comment"
-            values are matched with the corresponding property. If "type" is
-            missing, it will be chosen based on the "id". Otherwise, a falsey
-            value is used if a value is unspecified. In addition, the "refs"
-            value is matched against the placeholders property.
+            by the dictionary values.
+
+            The "id", "source", "type" and "comment" values are matched with the
+            corresponding property. If "type" is missing, it will be chosen
+            based on the "id". Otherwise, a falsey value is used if a value is
+            unspecified.
+
+            The "refs" value is matched against the placeholders property.
+
+            If given, the "parts" value is matches against the unit's
+            `get_parts`. See `assert_parts`.
         """
         for unit, expect in zip(fluent_file.units, expect_units):
             unit_id = expect.get("id", None)
@@ -104,6 +369,9 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             assert expect.get("comment", "") == unit.getnotes()
             assert expect.get("source", None) == unit.source
             assert unit.target == unit.source
+            assert unit.get_syntax_error() is None
+
+            cls.assert_parts(unit, expect.get("parts", None))
         assert len(fluent_file.units) == len(expect_units)
 
     def basic_test(
@@ -168,15 +436,27 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             self.fluent_parse(fluent_source)
 
     def assert_serialize_failure(
-        self, fluent_file: fluent.FluentFile, error_regex: str
+        self,
+        fluent_file: fluent.FluentFile,
+        error_unit: fluent.FluentUnit,
+        error_msg: str = r".+",
     ) -> None:
         """Assert that the given FluentFile fails to serialize.
 
         :param FluentFile fluent_file: The FluentFile to try and serialize.
-        :param str error_regex: The expected error expression.
+        :param FluentUnit error_unit: The FluentUnit that is expected to fail.
+        :param str error_msg: The expected syntax error for the unit.
         """
-        with raises(ValueError, match=error_regex):
+        with raises(
+            ValueError,
+            match=f'^Error in source of FluentUnit "{error_unit.getid()}":\\n',
+        ):
             self.fluent_serialize(fluent_file)
+
+        syntax_error = error_unit.get_syntax_error()
+        assert syntax_error is not None
+        assert re.match(error_msg, syntax_error)
+        assert error_unit.get_parts() is None
 
     def test_simple_values(self):
         """Test a simple fluent Message and Term."""
@@ -328,8 +608,8 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
         )
         self.assert_serialize_failure(
             fluent_file,
-            r'^Error in source of FluentUnit "message":\n'
-            r'The "attr" attribute is assigned to more than once$',
+            fluent_file.units[0],
+            '^The "attr" attribute is assigned to more than once$',
         )
 
     def test_term_with_attributes(self):
@@ -366,7 +646,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
         )
         self.assert_serialize_failure(
             fluent_file,
-            r'^Error in source of FluentUnit "-term":\n'
+            fluent_file.units[0],
             r'.*Expected term "-term" to have a value \[line 1, column 1\]$',
         )
 
@@ -400,7 +680,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
         )
         self.assert_serialize_failure(
             fluent_file,
-            r'^Error in source of FluentUnit "-term":\n'
+            fluent_file.units[0],
             r'The "attr" attribute is assigned to more than once$',
         )
 
@@ -539,16 +819,12 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                 fluent_file = self.quick_fluent_file(
                     [{"type": "Message", "source": source, "id": "message"}]
                 )
-                self.assert_serialize_failure(
-                    fluent_file, r'^Error in source of FluentUnit "message":'
-                )
+                self.assert_serialize_failure(fluent_file, fluent_file.units[0])
 
                 fluent_file = self.quick_fluent_file(
                     [{"type": "Term", "source": source, "id": "-term"}]
                 )
-                self.assert_serialize_failure(
-                    fluent_file, r'^Error in source of FluentUnit "-term":'
-                )
+                self.assert_serialize_failure(fluent_file, fluent_file.units[0])
 
             # A Term that has an empty value with attributes, or empty
             # attributes, simply throws because this is a syntax error within a
@@ -559,14 +835,10 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                     {"type": "Term", "source": f"{source}\n.attr = ok", "id": "-term"},
                 ]
             )
-            self.assert_serialize_failure(
-                fluent_file, r'^Error in source of FluentUnit "-term":'
-            )
+            self.assert_serialize_failure(fluent_file, fluent_file.units[1])
             # Empty Attribute for a Term
             fluent_file.units[1].source = f"ok\n.attr = {source}"
-            self.assert_serialize_failure(
-                fluent_file, r'^Error in source of FluentUnit "-term":'
-            )
+            self.assert_serialize_failure(fluent_file, fluent_file.units[1])
 
             # For a Message, an empty start is ok.
             fluent_file = self.quick_fluent_file(
@@ -587,7 +859,8 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             # Empty attribute is not ok.
             fluent_file.units[1].source = f"ok\n.attr = {source}"
             self.assert_serialize_failure(
-                fluent_file, r'^Error in source of FluentUnit "m":'
+                fluent_file,
+                fluent_file.units[1],
             )
 
         subtest_whitespace_unit_source("")
@@ -1306,6 +1579,50 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                             f"        {escaped_value}\n"
                             f"        {middle_value}\n"
                             "}",
+                            "parts": [
+                                {
+                                    "name": "a",
+                                    "selector-nodes": [
+                                        {
+                                            "serialized": "$var",
+                                            "parent-branch": 0,
+                                            "child-branches": [1, 2],
+                                            "selector-refs": [
+                                                {
+                                                    "type": "variable",
+                                                    "name": "var",
+                                                },
+                                            ],
+                                        }
+                                    ],
+                                    "selector-branches": [
+                                        {
+                                            "key": "",
+                                            "default": True,
+                                            "child-nodes": [0],
+                                        },
+                                        {
+                                            "key": "one",
+                                            "parent-node": 0,
+                                        },
+                                        {
+                                            "key": "other",
+                                            "parent-node": 0,
+                                            "default": True,
+                                        },
+                                    ],
+                                    "pattern-variants": [
+                                        {
+                                            "select-path": (1,),
+                                            "source": "ok",
+                                        },
+                                        {
+                                            "select-path": (2,),
+                                            "source": f"{escaped_value}\n{middle_value}",
+                                        },
+                                    ],
+                                },
+                            ],
                         }
                     ],
                     f"""\
@@ -1376,7 +1693,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                     )
                     self.assert_serialize_failure(
                         fluent_file,
-                        f'^Error in source of FluentUnit "{unit_id}":',
+                        fluent_file.units[0],
                     )
                 # As a special case, an Attribute can start with this and not
                 # throw an exception because it starts after an "=" sign.
@@ -1853,19 +2170,61 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                 .attribute = { -term2 } over { message }
             """,
             # The FluentUnit just uses the same text.
-            # The references in the value become refs.
-            # NOTE: attribute refs do not.
             [
                 {
                     "id": "-term1",
                     "source": "{ -term2 } and { message }!",
                     "refs": ["-term2", "message"],
+                    "parts": [
+                        {
+                            "name": "",
+                            "selector-branches": [
+                                {
+                                    "key": "",
+                                    "default": True,
+                                    "top-refs": [
+                                        {"type": "term", "name": "term2"},
+                                        {"type": "message", "name": "message"},
+                                    ],
+                                }
+                            ],
+                        },
+                    ],
                 },
                 {
                     "id": "ref-message",
                     "source": "{ -term1 } with { message } { -term2 }\n"
                     ".attribute = { -term2 } over { message }",
                     "refs": ["-term1", "message", "-term2"],
+                    "parts": [
+                        {
+                            "name": "",
+                            "selector-branches": [
+                                {
+                                    "key": "",
+                                    "default": True,
+                                    "top-refs": [
+                                        {"type": "term", "name": "term1"},
+                                        {"type": "message", "name": "message"},
+                                        {"type": "term", "name": "term2"},
+                                    ],
+                                }
+                            ],
+                        },
+                        {
+                            "name": "attribute",
+                            "selector-branches": [
+                                {
+                                    "key": "",
+                                    "default": True,
+                                    "top-refs": [
+                                        {"type": "term", "name": "term2"},
+                                        {"type": "message", "name": "message"},
+                                    ],
+                                }
+                            ],
+                        },
+                    ],
                 },
             ],
         )
@@ -1880,11 +2239,35 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                     "id": "message",
                     "source": 'I am { -term1(tense: "present") }',
                     "refs": ["-term1"],
+                    "parts": [
+                        {
+                            "name": "",
+                            "selector-branches": [
+                                {
+                                    "key": "",
+                                    "default": True,
+                                    "top-refs": [{"type": "term", "name": "term1"}],
+                                }
+                            ],
+                        }
+                    ],
                 },
                 {
                     "id": "-term",
                     "source": 'Going to { -term1(tense: "present", number: 7.5) } now',
                     "refs": ["-term1"],
+                    "parts": [
+                        {
+                            "name": "",
+                            "selector-branches": [
+                                {
+                                    "key": "",
+                                    "default": True,
+                                    "top-refs": [{"type": "term", "name": "term1"}],
+                                }
+                            ],
+                        }
+                    ],
                 },
             ],
         )
@@ -1901,6 +2284,36 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                     "source": "{ message.attribute }\n"
                     ".attribute = { i-9.attr } over { i-9 }",
                     "refs": ["message.attribute"],
+                    "parts": [
+                        {
+                            "name": "",
+                            "selector-branches": [
+                                {
+                                    "key": "",
+                                    "default": True,
+                                    "top-refs": [
+                                        {
+                                            "type": "message",
+                                            "name": "message.attribute",
+                                        }
+                                    ],
+                                }
+                            ],
+                        },
+                        {
+                            "name": "attribute",
+                            "selector-branches": [
+                                {
+                                    "key": "",
+                                    "default": True,
+                                    "top-refs": [
+                                        {"type": "message", "name": "i-9.attr"},
+                                        {"type": "message", "name": "i-9"},
+                                    ],
+                                }
+                            ],
+                        },
+                    ],
                 },
             ],
         )
@@ -1916,12 +2329,55 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             [
                 # Variables used in terms do not become a ref since they are
                 # locale-specific.
-                {"id": "-term1", "source": "Term with { $var }", "refs": []},
+                {
+                    "id": "-term1",
+                    "source": "Term with { $var }",
+                    "refs": [],
+                    "parts": [
+                        {
+                            "name": "",
+                            "selector-branches": [
+                                {
+                                    "key": "",
+                                    "default": True,
+                                    "top-refs": [{"type": "variable", "name": "var"}],
+                                }
+                            ],
+                        },
+                    ],
+                },
                 {
                     "id": "ref-message",
                     "source": "{ $num1 } is greater than { $num2 }\n"
                     ".attribute = { $other-var } used",
                     "refs": ["$num1", "$num2"],
+                    "parts": [
+                        {
+                            "name": "",
+                            "selector-branches": [
+                                {
+                                    "key": "",
+                                    "default": True,
+                                    "top-refs": [
+                                        {"type": "variable", "name": "num1"},
+                                        {"type": "variable", "name": "num2"},
+                                    ],
+                                }
+                            ],
+                        },
+                        {
+                            "name": "attribute",
+                            "selector-branches": [
+                                {
+                                    "key": "",
+                                    "default": True,
+                                    "top-refs": [
+                                        {"type": "variable", "name": "other-var"},
+                                    ],
+                                }
+                            ],
+                        },
+                    ],
                 },
             ],
         )
@@ -1936,12 +2392,27 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                     "id": "message",
                     "source": "{ $var } with { message.attr } and { -term }",
                     "refs": ["$var", "message.attr", "-term"],
+                    "parts": [
+                        {
+                            "name": "",
+                            "selector-branches": [
+                                {
+                                    "key": "",
+                                    "default": True,
+                                    "top-refs": [
+                                        {"type": "variable", "name": "var"},
+                                        {"type": "message", "name": "message.attr"},
+                                        {"type": "term", "name": "term"},
+                                    ],
+                                }
+                            ],
+                        }
+                    ],
                 }
             ],
         )
 
-        # Repeated references are included twice only appear once in
-        # refs.
+        # Repeated references are included twice.
         self.basic_test(
             """\
             message = { $var } with { -term0 } and { $var }
@@ -1951,6 +2422,22 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                     "id": "message",
                     "source": "{ $var } with { -term0 } and { $var }",
                     "refs": ["$var", "-term0"],
+                    "parts": [
+                        {
+                            "name": "",
+                            "selector-branches": [
+                                {
+                                    "key": "",
+                                    "default": True,
+                                    "top-refs": [
+                                        {"type": "variable", "name": "var"},
+                                        {"type": "term", "name": "term0"},
+                                        {"type": "variable", "name": "var"},
+                                    ],
+                                }
+                            ],
+                        },
+                    ],
                 }
             ],
         )
@@ -1995,6 +2482,56 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                     "}",
                     # Get ref from the second variant.
                     "refs": ["$num"],
+                    "parts": [
+                        {
+                            "name": "",
+                            "selector-nodes": [
+                                {
+                                    "serialized": "$num",
+                                    "parent-branch": 0,
+                                    "child-branches": [1, 2],
+                                    "selector-refs": [
+                                        {
+                                            "type": "variable",
+                                            "name": "num",
+                                        }
+                                    ],
+                                }
+                            ],
+                            "selector-branches": [
+                                {
+                                    "key": "",
+                                    "default": True,
+                                    "child-nodes": [0],
+                                },
+                                {
+                                    "key": "one",
+                                    "parent-node": 0,
+                                },
+                                {
+                                    "key": "other",
+                                    "parent-node": 0,
+                                    "default": True,
+                                    "top-refs": [
+                                        {
+                                            "type": "variable",
+                                            "name": "num",
+                                        },
+                                    ],
+                                },
+                            ],
+                            "pattern-variants": [
+                                {
+                                    "select-path": (1,),
+                                    "source": "One apple.",
+                                },
+                                {
+                                    "select-path": (2,),
+                                    "source": "{ $num } apples.",
+                                },
+                            ],
+                        }
+                    ],
                 }
             ],
         )
@@ -2018,6 +2555,50 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                     "}",
                     # Get no ref.
                     "refs": [],
+                    "parts": [
+                        {
+                            "name": "",
+                            "selector-nodes": [
+                                {
+                                    "serialized": "$num",
+                                    "parent-branch": 0,
+                                    "child-branches": [1, 2],
+                                    "selector-refs": [
+                                        {
+                                            "type": "variable",
+                                            "name": "num",
+                                        },
+                                    ],
+                                }
+                            ],
+                            "selector-branches": [
+                                {
+                                    "key": "",
+                                    "default": True,
+                                    "child-nodes": [0],
+                                },
+                                {
+                                    "key": "one",
+                                    "parent-node": 0,
+                                },
+                                {
+                                    "key": "other",
+                                    "parent-node": 0,
+                                    "default": True,
+                                },
+                            ],
+                            "pattern-variants": [
+                                {
+                                    "select-path": (1,),
+                                    "source": "One apple.",
+                                },
+                                {
+                                    "select-path": (2,),
+                                    "source": "Some apples.",
+                                },
+                            ],
+                        }
+                    ],
                 }
             ],
         )
@@ -2048,6 +2629,110 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                     "   *[no] Have a { -term-ref }.\n"
                     "}",
                     "refs": ["$num"],
+                    "parts": [
+                        {
+                            "name": "",
+                            "selector-nodes": [
+                                {
+                                    "serialized": "$num",
+                                    "parent-branch": 0,
+                                    "child-branches": [1, 2],
+                                    "selector-refs": [
+                                        {
+                                            "type": "variable",
+                                            "name": "num",
+                                        },
+                                    ],
+                                }
+                            ],
+                            "selector-branches": [
+                                {
+                                    "key": "",
+                                    "default": True,
+                                    "child-nodes": [0],
+                                },
+                                {
+                                    "key": "one",
+                                    "parent-node": 0,
+                                },
+                                {
+                                    "key": "other",
+                                    "parent-node": 0,
+                                    "default": True,
+                                    "top-refs": [
+                                        {
+                                            "type": "variable",
+                                            "name": "num",
+                                        },
+                                    ],
+                                },
+                            ],
+                            "pattern-variants": [
+                                {
+                                    "select-path": (1,),
+                                    "source": "One apple.",
+                                },
+                                {
+                                    "select-path": (2,),
+                                    "source": "{ $num } apples.",
+                                },
+                            ],
+                        },
+                        {
+                            "name": "attr",
+                            "selector-nodes": [
+                                {
+                                    "serialized": "-term-ref.vowel-start",
+                                    "parent-branch": 0,
+                                    "child-branches": [1, 2],
+                                    "selector-refs": [
+                                        {
+                                            "type": "term",
+                                            "name": "term-ref.vowel-start",
+                                        },
+                                    ],
+                                }
+                            ],
+                            "selector-branches": [
+                                {
+                                    "key": "",
+                                    "default": True,
+                                    "child-nodes": [0],
+                                },
+                                {
+                                    "key": "yes",
+                                    "parent-node": 0,
+                                    "top-refs": [
+                                        {
+                                            "type": "term",
+                                            "name": "term-ref",
+                                        },
+                                    ],
+                                },
+                                {
+                                    "key": "no",
+                                    "parent-node": 0,
+                                    "default": True,
+                                    "top-refs": [
+                                        {
+                                            "type": "term",
+                                            "name": "term-ref",
+                                        },
+                                    ],
+                                },
+                            ],
+                            "pattern-variants": [
+                                {
+                                    "select-path": (1,),
+                                    "source": "Have an { -term-ref }.",
+                                },
+                                {
+                                    "select-path": (2,),
+                                    "source": "Have a { -term-ref }.",
+                                },
+                            ],
+                        },
+                    ],
                 },
             ],
             """\
@@ -2082,6 +2767,56 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                     "   *[other] { $num } apples\n"
                     "} today.",
                     "refs": ["$num"],
+                    "parts": [
+                        {
+                            "name": "",
+                            "selector-nodes": [
+                                {
+                                    "serialized": "$num",
+                                    "parent-branch": 0,
+                                    "child-branches": [1, 2],
+                                    "selector-refs": [
+                                        {
+                                            "type": "variable",
+                                            "name": "num",
+                                        },
+                                    ],
+                                }
+                            ],
+                            "selector-branches": [
+                                {
+                                    "key": "",
+                                    "default": True,
+                                    "child-nodes": [0],
+                                },
+                                {
+                                    "key": "one",
+                                    "parent-node": 0,
+                                },
+                                {
+                                    "key": "other",
+                                    "parent-node": 0,
+                                    "default": True,
+                                    "top-refs": [
+                                        {
+                                            "type": "variable",
+                                            "name": "num",
+                                        },
+                                    ],
+                                },
+                            ],
+                            "pattern-variants": [
+                                {
+                                    "select-path": (1,),
+                                    "source": "Just eat an apple today.",
+                                },
+                                {
+                                    "select-path": (2,),
+                                    "source": "Just eat { $num } apples today.",
+                                },
+                            ],
+                        },
+                    ],
                 }
             ],
         )
@@ -2098,7 +2833,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                                 [one] { $num } apple
                                *[other] { $num } apples
                             } and { $num2 ->
-                                [one] { $num2 } oranges
+                                [one] { $num2 } orange
                                *[other] { $num2 } oranges
                             }
                     }
@@ -2114,11 +2849,420 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                     "            [one] { $num } apple\n"
                     "           *[other] { $num } apples\n"
                     "        } and { $num2 ->\n"
-                    "            [one] { $num2 } oranges\n"
+                    "            [one] { $num2 } orange\n"
                     "           *[other] { $num2 } oranges\n"
                     "        }\n"
                     "}",
-                    # No refs since this is an attribute only.
+                    "refs": [],
+                    "parts": [
+                        {
+                            "name": "a",
+                            "selector-nodes": [
+                                {
+                                    "serialized": "$num",
+                                    "parent-branch": 0,
+                                    "child-branches": [1, 2],
+                                    "selector-refs": [
+                                        {
+                                            "type": "variable",
+                                            "name": "num",
+                                        },
+                                    ],
+                                },
+                                {
+                                    "serialized": "$num",
+                                    "parent-branch": 2,
+                                    "child-branches": [3, 4],
+                                    "selector-refs": [
+                                        {
+                                            "type": "variable",
+                                            "name": "num",
+                                        },
+                                    ],
+                                },
+                                {
+                                    "serialized": "$num2",
+                                    "parent-branch": 2,
+                                    "child-branches": [5, 6],
+                                    "selector-refs": [
+                                        {
+                                            "type": "variable",
+                                            "name": "num2",
+                                        },
+                                    ],
+                                },
+                            ],
+                            "selector-branches": [
+                                {
+                                    "key": "",
+                                    "default": True,
+                                    "child-nodes": [0],
+                                },
+                                {
+                                    "key": "zero",
+                                    "parent-node": 0,
+                                    "child-nodes": [],
+                                },
+                                {
+                                    "key": "other",
+                                    "default": True,
+                                    "parent-node": 0,
+                                    "child-nodes": [1, 2],
+                                },
+                                {
+                                    "key": "one",
+                                    "parent-node": 1,
+                                    "child-nodes": [],
+                                    "top-refs": [
+                                        {
+                                            "type": "variable",
+                                            "name": "num",
+                                        },
+                                    ],
+                                },
+                                {
+                                    "key": "other",
+                                    "parent-node": 1,
+                                    "child-nodes": [],
+                                    "default": True,
+                                    "top-refs": [
+                                        {
+                                            "type": "variable",
+                                            "name": "num",
+                                        },
+                                    ],
+                                },
+                                {
+                                    "key": "one",
+                                    "parent-node": 2,
+                                    "child-nodes": [],
+                                    "top-refs": [
+                                        {
+                                            "type": "variable",
+                                            "name": "num2",
+                                        },
+                                    ],
+                                },
+                                {
+                                    "key": "other",
+                                    "default": True,
+                                    "parent-node": 2,
+                                    "child-nodes": [],
+                                    "top-refs": [
+                                        {
+                                            "type": "variable",
+                                            "name": "num2",
+                                        },
+                                    ],
+                                },
+                            ],
+                            "pattern-variants": [
+                                {
+                                    "select-path": (1,),
+                                    "source": "no apples",
+                                },
+                                {
+                                    "select-path": (2, 3, 5),
+                                    "source": "{ $num } apple and { $num2 } orange",
+                                },
+                                {
+                                    "select-path": (2, 4, 5),
+                                    "source": "{ $num } apples and { $num2 } orange",
+                                },
+                                {
+                                    "select-path": (2, 3, 6),
+                                    "source": "{ $num } apple and { $num2 } oranges",
+                                },
+                                {
+                                    "select-path": (2, 4, 6),
+                                    "source": "{ $num } apples and { $num2 } oranges",
+                                },
+                            ],
+                        },
+                    ],
+                }
+            ],
+        )
+
+        # Check matches_selector property of the references.
+        self.basic_test(
+            """\
+            m =
+                { $var ->
+                   *[other] { $var }
+                }
+            """,
+            [
+                {
+                    "id": "m",
+                    "source": "{ $var ->\n   *[other] { $var }\n}",
+                    "refs": ["$var"],
+                    "parts": [
+                        {
+                            "name": "",
+                            "selector-nodes": [
+                                {
+                                    "serialized": "$var",
+                                    "parent-branch": 0,
+                                    "child-branches": [1],
+                                    "selector-refs": [
+                                        {
+                                            "type": "variable",
+                                            "name": "var",
+                                        },
+                                    ],
+                                }
+                            ],
+                            "selector-branches": [
+                                {
+                                    "key": "",
+                                    "default": True,
+                                    "child-nodes": [0],
+                                },
+                                {
+                                    "key": "other",
+                                    "parent-node": 0,
+                                    "default": True,
+                                    "top-refs": [
+                                        {
+                                            "type": "variable",
+                                            "name": "var",
+                                        },
+                                    ],
+                                },
+                            ],
+                            "pattern-variants": [
+                                {
+                                    "select-path": (1,),
+                                    "source": "{ $var }",
+                                },
+                            ],
+                        }
+                    ],
+                }
+            ],
+        )
+
+        # Reference is inside a function in the selector.
+        self.basic_test(
+            """\
+            m =
+                { MYFUNCTION($other, $var, option: 6) ->
+                   *[other] { $var }
+                }
+            """,
+            [
+                {
+                    "id": "m",
+                    "source": "{ MYFUNCTION($other, $var, option: 6) ->\n"
+                    "   *[other] { $var }\n"
+                    "}",
+                    "refs": ["$var"],
+                    "parts": [
+                        {
+                            "name": "",
+                            "selector-nodes": [
+                                {
+                                    "serialized": "MYFUNCTION($other, $var, option: 6)",
+                                    "parent-branch": 0,
+                                    "child-branches": [1],
+                                    "selector-refs": [
+                                        {
+                                            "type": "variable",
+                                            "name": "other",
+                                        },
+                                        {
+                                            "type": "variable",
+                                            "name": "var",
+                                        },
+                                    ],
+                                }
+                            ],
+                            "selector-branches": [
+                                {
+                                    "key": "",
+                                    "default": True,
+                                    "child-nodes": [0],
+                                },
+                                {
+                                    "key": "other",
+                                    "parent-node": 0,
+                                    "default": True,
+                                    "top-refs": [
+                                        {
+                                            "type": "variable",
+                                            "name": "var",
+                                        },
+                                    ],
+                                },
+                            ],
+                            "pattern-variants": [
+                                {
+                                    "select-path": (1,),
+                                    "source": "{ $var }",
+                                },
+                            ],
+                        }
+                    ],
+                }
+            ],
+        )
+
+        # $var is outside the selector
+        self.basic_test(
+            """\
+            m =
+                { $var ->
+                   *[other] none
+                } { $var }
+            """,
+            [
+                {
+                    "id": "m",
+                    "source": "{ $var ->\n" "   *[other] none\n" "} { $var }",
+                    "refs": ["$var"],
+                    "parts": [
+                        {
+                            "name": "",
+                            "selector-nodes": [
+                                {
+                                    "serialized": "$var",
+                                    "parent-branch": 0,
+                                    "child-branches": [1],
+                                    "selector-refs": [
+                                        {
+                                            "type": "variable",
+                                            "name": "var",
+                                        },
+                                    ],
+                                }
+                            ],
+                            "selector-branches": [
+                                {
+                                    "key": "",
+                                    "default": True,
+                                    "child-nodes": [0],
+                                    "top-refs": [
+                                        {
+                                            "type": "variable",
+                                            "name": "var",
+                                        },
+                                    ],
+                                },
+                                {
+                                    "key": "other",
+                                    "parent-node": 0,
+                                    "default": True,
+                                },
+                            ],
+                            "pattern-variants": [
+                                {
+                                    "select-path": (1,),
+                                    "source": "none { $var }",
+                                },
+                            ],
+                        }
+                    ],
+                }
+            ],
+        )
+
+        # $var in sub-selector
+        self.basic_test(
+            """\
+            m =
+                { $var ->
+                   *[other]
+                        { -term.attr ->
+                            [a] { $var }
+                           *[b] { var }
+                        }
+                }
+            """,
+            [
+                {
+                    "id": "m",
+                    "source": "{ $var ->\n"
+                    "   *[other]\n"
+                    "        { -term.attr ->\n"
+                    "            [a] { $var }\n"
+                    "           *[b] { var }\n"
+                    "        }\n"
+                    "}",
+                    "refs": ["$var", "var"],
+                    "parts": [
+                        {
+                            "name": "",
+                            "selector-nodes": [
+                                {
+                                    "serialized": "$var",
+                                    "parent-branch": 0,
+                                    "child-branches": [1],
+                                    "selector-refs": [
+                                        {
+                                            "type": "variable",
+                                            "name": "var",
+                                        },
+                                    ],
+                                },
+                                {
+                                    "serialized": "-term.attr",
+                                    "parent-branch": 1,
+                                    "child-branches": [2, 3],
+                                    "selector-refs": [
+                                        {
+                                            "type": "term",
+                                            "name": "term.attr",
+                                        },
+                                    ],
+                                },
+                            ],
+                            "selector-branches": [
+                                {
+                                    "key": "",
+                                    "default": True,
+                                    "child-nodes": [0],
+                                },
+                                {
+                                    "key": "other",
+                                    "default": True,
+                                    "parent-node": 0,
+                                    "child-nodes": [1],
+                                },
+                                {
+                                    "key": "a",
+                                    "parent-node": 1,
+                                    "top-refs": [
+                                        {
+                                            "type": "variable",
+                                            "name": "var",
+                                        },
+                                    ],
+                                },
+                                {
+                                    "key": "b",
+                                    "default": True,
+                                    "parent-node": 1,
+                                    "top-refs": [
+                                        {
+                                            "type": "message",
+                                            "name": "var",
+                                        },
+                                    ],
+                                },
+                            ],
+                            "pattern-variants": [
+                                {
+                                    "select-path": (1, 2),
+                                    "source": "{ $var }",
+                                },
+                                {
+                                    "select-path": (1, 3),
+                                    "source": "{ var }",
+                                },
+                            ],
+                        }
+                    ],
                 }
             ],
         )
@@ -2145,7 +3289,8 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
         )
         self.assert_serialize_failure(
             fluent_file,
-            r'^Error in source of FluentUnit "bad":\n.* \[line 4, column 1\]$',
+            fluent_file.units[0],
+            r"^.* \[line 4, column 1\]$",
         )
 
     def test_functions(self):
@@ -2156,8 +3301,8 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             number = { NUMBER($var-num, minimumIntegerDigits: 4) } up
             -term =
                 { NUMBER($n) ->
-                    [0] -> Term0
-                   *[other] -> Term
+                    [0] Term0
+                   *[other] Term
                 }
             """,
             # The FluentUnit just uses the same text.
@@ -2166,20 +3311,90 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                     "id": "time",
                     "source": 'Time is { DATETIME($now, hour: "numeric") }',
                     "refs": ["$now"],
+                    "parts": [
+                        {
+                            "name": "",
+                            "selector-branches": [
+                                {
+                                    "key": "",
+                                    "default": True,
+                                    "top-refs": [{"type": "variable", "name": "now"}],
+                                },
+                            ],
+                        },
+                    ],
                 },
                 {
                     "id": "number",
                     "source": "{ NUMBER($var-num, minimumIntegerDigits: 4) } up",
                     "refs": ["$var-num"],
+                    "parts": [
+                        {
+                            "name": "",
+                            "selector-branches": [
+                                {
+                                    "key": "",
+                                    "default": True,
+                                    "top-refs": [
+                                        {"type": "variable", "name": "var-num"}
+                                    ],
+                                },
+                            ],
+                        },
+                    ],
                 },
                 {
                     "id": "-term",
                     "source": "{ NUMBER($n) ->\n"
-                    "    [0] -> Term0\n"
-                    "   *[other] -> Term\n"
+                    "    [0] Term0\n"
+                    "   *[other] Term\n"
                     "}",
                     # No variable refs for Term.
                     "refs": [],
+                    "parts": [
+                        {
+                            "name": "",
+                            "selector-nodes": [
+                                {
+                                    "serialized": "NUMBER($n)",
+                                    "parent-branch": 0,
+                                    "child-branches": [1, 2],
+                                    "selector-refs": [
+                                        {
+                                            "type": "variable",
+                                            "name": "n",
+                                        },
+                                    ],
+                                }
+                            ],
+                            "selector-branches": [
+                                {
+                                    "key": "",
+                                    "default": True,
+                                    "child-nodes": [0],
+                                },
+                                {
+                                    "key": "0",
+                                    "parent-node": 0,
+                                },
+                                {
+                                    "key": "other",
+                                    "parent-node": 0,
+                                    "default": True,
+                                },
+                            ],
+                            "pattern-variants": [
+                                {
+                                    "select-path": (1,),
+                                    "source": "Term0",
+                                },
+                                {
+                                    "select-path": (2,),
+                                    "source": "Term",
+                                },
+                            ],
+                        },
+                    ],
                 },
             ],
         )
@@ -2325,8 +3540,8 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             fluent_file.units[1].source = source
             self.assert_serialize_failure(
                 fluent_file,
-                r'^Error in source of FluentUnit "message-id":\n.* '
-                f"\\[line {line}, column {column}\\]$",
+                fluent_file.units[1],
+                f"^.+\\[line {line}, column {column}\\]$",
             )
 
     def test_several_entries(self):
@@ -2387,6 +3602,53 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                     "}\n"
                     ".vowel-start = yes",
                     "comment": f"{resource_comment}\n{group1_comment}\nTerm to use",
+                    "parts": [
+                        {
+                            "name": "",
+                            "selector-nodes": [
+                                {
+                                    "serialized": "$possessive",
+                                    "parent-branch": 0,
+                                    "child-branches": [1, 2],
+                                    "selector-refs": [
+                                        {
+                                            "type": "variable",
+                                            "name": "possessive",
+                                        }
+                                    ],
+                                }
+                            ],
+                            "selector-branches": [
+                                {
+                                    "key": "",
+                                    "default": True,
+                                    "child-nodes": [0],
+                                },
+                                {
+                                    "key": "no",
+                                    "parent-node": 0,
+                                    "default": True,
+                                },
+                                {
+                                    "key": "yes",
+                                    "parent-node": 0,
+                                },
+                            ],
+                            "pattern-variants": [
+                                {
+                                    "select-path": (1,),
+                                    "source": "Elephant",
+                                },
+                                {
+                                    "select-path": (2,),
+                                    "source": "Elephant's",
+                                },
+                            ],
+                        },
+                        {
+                            "name": "vowel-start",
+                        },
+                    ],
                 },
                 {
                     "id": "message-1",
@@ -2394,6 +3656,18 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                     "comment": f"{resource_comment}\n{group1_comment}\n"
                     "Variables:\n  $var (string) - Some variable",
                     "refs": ["$var"],
+                    "parts": [
+                        {
+                            "name": "",
+                            "selector-branches": [
+                                {
+                                    "key": "",
+                                    "default": True,
+                                    "top-refs": [{"type": "variable", "name": "var"}],
+                                },
+                            ],
+                        },
+                    ],
                 },
                 {
                     "id": "message-2",
@@ -2411,6 +3685,72 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                     '   *[no] A { -term-1(possessive: "yes") } tail.\n'
                     "}",
                     "comment": f"{resource_comment}\n{group1_comment}\nWatch out for this one.",
+                    "parts": [
+                        {
+                            "name": "title",
+                            "selector-branches": [
+                                {
+                                    "key": "",
+                                    "default": True,
+                                    "top-refs": [{"type": "term", "name": "term-1"}],
+                                },
+                            ],
+                        },
+                        {
+                            "name": "alt",
+                            "selector-nodes": [
+                                {
+                                    "serialized": "-term-1.vowel-start",
+                                    "parent-branch": 0,
+                                    "child-branches": [1, 2],
+                                    "selector-refs": [
+                                        {
+                                            "type": "term",
+                                            "name": "term-1.vowel-start",
+                                        },
+                                    ],
+                                }
+                            ],
+                            "selector-branches": [
+                                {
+                                    "key": "",
+                                    "default": True,
+                                    "child-nodes": [0],
+                                },
+                                {
+                                    "key": "yes",
+                                    "parent-node": 0,
+                                    "top-refs": [
+                                        {
+                                            "type": "term",
+                                            "name": "term-1",
+                                        },
+                                    ],
+                                },
+                                {
+                                    "key": "no",
+                                    "default": True,
+                                    "parent-node": 0,
+                                    "top-refs": [
+                                        {
+                                            "type": "term",
+                                            "name": "term-1",
+                                        },
+                                    ],
+                                },
+                            ],
+                            "pattern-variants": [
+                                {
+                                    "select-path": (1,),
+                                    "source": 'An { -term-1(possessive: "yes") } tail.',
+                                },
+                                {
+                                    "select-path": (2,),
+                                    "source": 'A { -term-1(possessive: "yes") } tail.',
+                                },
+                            ],
+                        },
+                    ],
                 },
                 {"type": "GroupComment", "comment": ""},
                 {
