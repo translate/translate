@@ -22,6 +22,6 @@ pyparsing==3.0.9     # RC
 # Faster matching in e.g. pot2po
 python-Levenshtein>=0.12    # Levenshtein
 # Format support
-ruamel.yaml==0.17.21 # YAML
+ruamel.yaml==0.17.22 # YAML
 # Format support
 vobject==0.9.6.1     # iCal
