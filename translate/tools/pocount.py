@@ -491,7 +491,7 @@ Review Messages, Review Source Words"""
         self.handlefiles(dirname, entries)
 
 
-def main():
+def main(arguments=None):
     parser = ArgumentParser()
     parser.add_argument(
         "--incomplete",
@@ -544,7 +544,7 @@ def main():
 
     parser.add_argument("files", nargs="+")
 
-    args = parser.parse_args()
+    args = parser.parse_args(arguments)
 
     logging.basicConfig(format="%(name)s: %(levelname)s: %(message)s")
     ConsoleColor.color_mode = not args.no_color

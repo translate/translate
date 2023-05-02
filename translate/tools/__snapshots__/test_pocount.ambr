@@ -1,0 +1,223 @@
+# serializer version: 1
+# name: test_output[no-color=False-incomplete=False-csv]
+  '''
+  Filename, Translated Messages, Translated Source Words, Translated Target Words, Fuzzy Messages, Fuzzy Source Words, Untranslated Messages, Untranslated Source Words, Total Message, Total Source Words, Review Messages, Review Source Words
+  tests/cli/data/test_pocount_po_csv/one.po,  1, 3, 3, 0, 0, 0, 0, 1, 3 
+  tests/cli/data/test_pocount_po_file/one.po,  1, 3, 3, 0, 0, 0, 0, 1, 3 
+  tests/cli/data/test_pocount_po_fuzzy/one.po,  1, 2, 3, 1, 2, 0, 0, 2, 4 
+  
+  '''
+# ---
+# name: test_output[no-color=False-incomplete=False-full]
+  '''
+  Processing file : [95mtests/cli/data/test_pocount_po_csv/one.po[0m
+  Type               Strings      Words (source)    Words (translation)
+  [92mTranslated:       1 (100%)          3 (100%)               3[0m
+  [93mFuzzy:            0 (  0%)          0 (  0%)             n/a[0m
+  [91mUntranslated:     0 (  0%)          0 (  0%)             n/a[0m
+  Total:            1                 3                      3
+  
+  Unreviewed:       1 (100%)          3 (100%)               3
+  
+  Processing file : [95mtests/cli/data/test_pocount_po_file/one.po[0m
+  Type               Strings      Words (source)    Words (translation)
+  [92mTranslated:       1 (100%)          3 (100%)               3[0m
+  [93mFuzzy:            0 (  0%)          0 (  0%)             n/a[0m
+  [91mUntranslated:     0 (  0%)          0 (  0%)             n/a[0m
+  Total:            1                 3                      3
+  
+  Unreviewed:       1 (100%)          3 (100%)               3
+  
+  Processing file : [95mtests/cli/data/test_pocount_po_fuzzy/one.po[0m
+  Type               Strings      Words (source)    Words (translation)
+  [92mTranslated:       1 ( 50%)          2 ( 50%)               3[0m
+  [93mFuzzy:            1 ( 50%)          2 ( 50%)             n/a[0m
+  [91mUntranslated:     0 (  0%)          0 (  0%)             n/a[0m
+  Total:            2                 4                      3
+  
+  Unreviewed:       1 ( 50%)          2 ( 50%)               3
+  Needs-Work:       1 ( 50%)          2 ( 50%)               0
+  
+  Processing file : [95mTOTAL:[0m
+  Type               Strings      Words (source)    Words (translation)
+  [92mTranslated:       3 ( 75%)          8 ( 80%)               9[0m
+  [93mFuzzy:            1 ( 25%)          2 ( 20%)             n/a[0m
+  [91mUntranslated:     0 (  0%)          0 (  0%)             n/a[0m
+  Total:            4                10                      9
+  
+  File count:       3
+  
+  
+  '''
+# ---
+# name: test_output[no-color=False-incomplete=False-short-strings]
+  '''
+  [95mtests/cli/data/test_pocount_po_csv/one.po[0m   strings: total: 1	| [92m1[0mt	[93m0[0mf	[91m0[0mu	| [92m100.0%[0mt	[93m0.0%[0mf	[91m0.0%[0mu
+  [95mtests/cli/data/test_pocount_po_file/one.po[0m  strings: total: 1	| [92m1[0mt	[93m0[0mf	[91m0[0mu	| [92m100.0%[0mt	[93m0.0%[0mf	[91m0.0%[0mu
+  [95mtests/cli/data/test_pocount_po_fuzzy/one.po[0m strings: total: 2	| [92m1[0mt	[93m1[0mf	[91m0[0mu	| [92m50.0%[0mt	[93m50.0%[0mf	[91m0.0%[0mu
+  
+  '''
+# ---
+# name: test_output[no-color=False-incomplete=False-short-words]
+  '''
+  [95mtests/cli/data/test_pocount_po_csv/one.po[0m   source words: total: 3	| [92m3[0mt	[93m0[0mf	[91m0[0mu	| [92m100.0%[0mt	[93m0.0%[0mf	[91m0.0%[0mu
+  [95mtests/cli/data/test_pocount_po_file/one.po[0m  source words: total: 3	| [92m3[0mt	[93m0[0mf	[91m0[0mu	| [92m100.0%[0mt	[93m0.0%[0mf	[91m0.0%[0mu
+  [95mtests/cli/data/test_pocount_po_fuzzy/one.po[0m source words: total: 4	| [92m2[0mt	[93m2[0mf	[91m0[0mu	| [92m50.0%[0mt	[93m50.0%[0mf	[91m0.0%[0mu
+  
+  '''
+# ---
+# name: test_output[no-color=False-incomplete=True-csv]
+  '''
+  Filename, Translated Messages, Translated Source Words, Translated Target Words, Fuzzy Messages, Fuzzy Source Words, Untranslated Messages, Untranslated Source Words, Total Message, Total Source Words, Review Messages, Review Source Words
+  tests/cli/data/test_pocount_po_fuzzy/one.po,  1, 2, 3, 1, 2, 0, 0, 2, 4 
+  
+  '''
+# ---
+# name: test_output[no-color=False-incomplete=True-full]
+  '''
+  Processing file : [95mtests/cli/data/test_pocount_po_fuzzy/one.po[0m
+  Type               Strings      Words (source)    Words (translation)
+  [92mTranslated:       1 ( 50%)          2 ( 50%)               3[0m
+  [93mFuzzy:            1 ( 50%)          2 ( 50%)             n/a[0m
+  [91mUntranslated:     0 (  0%)          0 (  0%)             n/a[0m
+  Total:            2                 4                      3
+  
+  Unreviewed:       1 ( 50%)          2 ( 50%)               3
+  Needs-Work:       1 ( 50%)          2 ( 50%)               0
+  
+  Processing file : [95mTOTAL (incomplete only):[0m
+  Type               Strings      Words (source)    Words (translation)
+  [92mTranslated:       3 ( 75%)          8 ( 80%)               9[0m
+  [93mFuzzy:            1 ( 25%)          2 ( 20%)             n/a[0m
+  [91mUntranslated:     0 (  0%)          0 (  0%)             n/a[0m
+  Total:            4                10                      9
+  
+  File count (incomplete):       1
+  File count:       3
+  
+  
+  '''
+# ---
+# name: test_output[no-color=False-incomplete=True-short-strings]
+  '''
+  [95mtests/cli/data/test_pocount_po_fuzzy/one.po[0m strings: total: 2	| [92m1[0mt	[93m1[0mf	[91m0[0mu	| [92m50.0%[0mt	[93m50.0%[0mf	[91m0.0%[0mu
+  
+  '''
+# ---
+# name: test_output[no-color=False-incomplete=True-short-words]
+  '''
+  [95mtests/cli/data/test_pocount_po_fuzzy/one.po[0m source words: total: 4	| [92m2[0mt	[93m2[0mf	[91m0[0mu	| [92m50.0%[0mt	[93m50.0%[0mf	[91m0.0%[0mu
+  
+  '''
+# ---
+# name: test_output[no-color=True-incomplete=False-csv]
+  '''
+  Filename, Translated Messages, Translated Source Words, Translated Target Words, Fuzzy Messages, Fuzzy Source Words, Untranslated Messages, Untranslated Source Words, Total Message, Total Source Words, Review Messages, Review Source Words
+  tests/cli/data/test_pocount_po_csv/one.po,  1, 3, 3, 0, 0, 0, 0, 1, 3 
+  tests/cli/data/test_pocount_po_file/one.po,  1, 3, 3, 0, 0, 0, 0, 1, 3 
+  tests/cli/data/test_pocount_po_fuzzy/one.po,  1, 2, 3, 1, 2, 0, 0, 2, 4 
+  
+  '''
+# ---
+# name: test_output[no-color=True-incomplete=False-full]
+  '''
+  Processing file : tests/cli/data/test_pocount_po_csv/one.po
+  Type               Strings      Words (source)    Words (translation)
+  Translated:       1 (100%)          3 (100%)               3
+  Fuzzy:            0 (  0%)          0 (  0%)             n/a
+  Untranslated:     0 (  0%)          0 (  0%)             n/a
+  Total:            1                 3                      3
+  
+  Unreviewed:       1 (100%)          3 (100%)               3
+  
+  Processing file : tests/cli/data/test_pocount_po_file/one.po
+  Type               Strings      Words (source)    Words (translation)
+  Translated:       1 (100%)          3 (100%)               3
+  Fuzzy:            0 (  0%)          0 (  0%)             n/a
+  Untranslated:     0 (  0%)          0 (  0%)             n/a
+  Total:            1                 3                      3
+  
+  Unreviewed:       1 (100%)          3 (100%)               3
+  
+  Processing file : tests/cli/data/test_pocount_po_fuzzy/one.po
+  Type               Strings      Words (source)    Words (translation)
+  Translated:       1 ( 50%)          2 ( 50%)               3
+  Fuzzy:            1 ( 50%)          2 ( 50%)             n/a
+  Untranslated:     0 (  0%)          0 (  0%)             n/a
+  Total:            2                 4                      3
+  
+  Unreviewed:       1 ( 50%)          2 ( 50%)               3
+  Needs-Work:       1 ( 50%)          2 ( 50%)               0
+  
+  Processing file : TOTAL:
+  Type               Strings      Words (source)    Words (translation)
+  Translated:       3 ( 75%)          8 ( 80%)               9
+  Fuzzy:            1 ( 25%)          2 ( 20%)             n/a
+  Untranslated:     0 (  0%)          0 (  0%)             n/a
+  Total:            4                10                      9
+  
+  File count:       3
+  
+  
+  '''
+# ---
+# name: test_output[no-color=True-incomplete=False-short-strings]
+  '''
+  tests/cli/data/test_pocount_po_csv/one.po   strings: total: 1	| 1t	0f	0u	| 100.0%t	0.0%f	0.0%u
+  tests/cli/data/test_pocount_po_file/one.po  strings: total: 1	| 1t	0f	0u	| 100.0%t	0.0%f	0.0%u
+  tests/cli/data/test_pocount_po_fuzzy/one.po strings: total: 2	| 1t	1f	0u	| 50.0%t	50.0%f	0.0%u
+  
+  '''
+# ---
+# name: test_output[no-color=True-incomplete=False-short-words]
+  '''
+  tests/cli/data/test_pocount_po_csv/one.po   source words: total: 3	| 3t	0f	0u	| 100.0%t	0.0%f	0.0%u
+  tests/cli/data/test_pocount_po_file/one.po  source words: total: 3	| 3t	0f	0u	| 100.0%t	0.0%f	0.0%u
+  tests/cli/data/test_pocount_po_fuzzy/one.po source words: total: 4	| 2t	2f	0u	| 50.0%t	50.0%f	0.0%u
+  
+  '''
+# ---
+# name: test_output[no-color=True-incomplete=True-csv]
+  '''
+  Filename, Translated Messages, Translated Source Words, Translated Target Words, Fuzzy Messages, Fuzzy Source Words, Untranslated Messages, Untranslated Source Words, Total Message, Total Source Words, Review Messages, Review Source Words
+  tests/cli/data/test_pocount_po_fuzzy/one.po,  1, 2, 3, 1, 2, 0, 0, 2, 4 
+  
+  '''
+# ---
+# name: test_output[no-color=True-incomplete=True-full]
+  '''
+  Processing file : tests/cli/data/test_pocount_po_fuzzy/one.po
+  Type               Strings      Words (source)    Words (translation)
+  Translated:       1 ( 50%)          2 ( 50%)               3
+  Fuzzy:            1 ( 50%)          2 ( 50%)             n/a
+  Untranslated:     0 (  0%)          0 (  0%)             n/a
+  Total:            2                 4                      3
+  
+  Unreviewed:       1 ( 50%)          2 ( 50%)               3
+  Needs-Work:       1 ( 50%)          2 ( 50%)               0
+  
+  Processing file : TOTAL (incomplete only):
+  Type               Strings      Words (source)    Words (translation)
+  Translated:       3 ( 75%)          8 ( 80%)               9
+  Fuzzy:            1 ( 25%)          2 ( 20%)             n/a
+  Untranslated:     0 (  0%)          0 (  0%)             n/a
+  Total:            4                10                      9
+  
+  File count (incomplete):       1
+  File count:       3
+  
+  
+  '''
+# ---
+# name: test_output[no-color=True-incomplete=True-short-strings]
+  '''
+  tests/cli/data/test_pocount_po_fuzzy/one.po strings: total: 2	| 1t	1f	0u	| 50.0%t	50.0%f	0.0%u
+  
+  '''
+# ---
+# name: test_output[no-color=True-incomplete=True-short-words]
+  '''
+  tests/cli/data/test_pocount_po_fuzzy/one.po source words: total: 4	| 2t	2f	0u	| 50.0%t	50.0%f	0.0%u
+  
+  '''
+# ---

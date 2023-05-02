@@ -1,8 +1,0 @@
-usage: junitmsgfmt [-h] [--untranslated] files [files ...]
-
-positional arguments:
-  files
-
-options:
-  -h, --help      show this help message and exit
-  --untranslated  fail on untranslated messages

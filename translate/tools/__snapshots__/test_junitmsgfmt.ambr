@@ -1,0 +1,39 @@
+# serializer version: 1
+# name: test_output[failure]
+  '''
+  <testsuite name="msgfmt" errors="0" skips="0" failures="1" tests="1" time="0.0000">
+    <testcase classname="msgfmt" name="check[tests/cli/data/test_junitmsgfmt_failure/one.po]" file="tests/cli/data/test_junitmsgfmt_failure/one.po" time="0.0000">
+      <failure message="Failure">one.po:2: warning: header field 'Project-Id-Version' missing in header
+  one.po:2: warning: header field 'PO-Revision-Date' missing in header
+  one.po:2: warning: header field 'Last-Translator' missing in header
+  one.po:2: warning: header field 'Language-Team' missing in header
+  one.po:2: warning: header field 'MIME-Version' missing in header
+  one.po:2: warning: header field 'Content-Transfer-Encoding' missing in header
+  one.po:9: a format specification for argument 'input' doesn't exist in 'msgstr'
+  msgfmt: found 1 fatal error
+  1 translated message.
+  </failure>
+    </testcase>
+  </testsuite>
+  
+  
+  '''
+# ---
+# name: test_output[untranslated]
+  '''
+  <testsuite name="msgfmt" errors="0" skips="0" failures="1" tests="1" time="0.0000">
+    <testcase classname="msgfmt" name="check[tests/cli/data/test_junitmsgfmt_untranslated/one.po]" file="tests/cli/data/test_junitmsgfmt_untranslated/one.po" time="0.0000">
+      <failure message="Untranslated messages">one.po:2: warning: header field 'Project-Id-Version' missing in header
+  one.po:2: warning: header field 'PO-Revision-Date' missing in header
+  one.po:2: warning: header field 'Last-Translator' missing in header
+  one.po:2: warning: header field 'Language-Team' missing in header
+  one.po:2: warning: header field 'MIME-Version' missing in header
+  one.po:2: warning: header field 'Content-Transfer-Encoding' missing in header
+  0 translated messages, 1 fuzzy translation, 1 untranslated message.
+  </failure>
+    </testcase>
+  </testsuite>
+  
+  
+  '''
+# ---
