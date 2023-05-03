@@ -1,10 +1,11 @@
 # serializer version: 1
 # name: test_output[no-color=False-incomplete=False-csv]
   '''
-  Filename, Translated Messages, Translated Source Words, Translated Target Words, Fuzzy Messages, Fuzzy Source Words, Untranslated Messages, Untranslated Source Words, Total Message, Total Source Words, Review Messages, Review Source Words
-  tests/cli/data/test_pocount_po_csv/one.po,  1, 3, 3, 0, 0, 0, 0, 1, 3 
-  tests/cli/data/test_pocount_po_file/one.po,  1, 3, 3, 0, 0, 0, 0, 1, 3 
-  tests/cli/data/test_pocount_po_fuzzy/one.po,  1, 2, 3, 1, 2, 0, 0, 2, 4 
+  Filename,Translated Messages,Translated Source Words,Translated Target Words,Fuzzy Messages,Fuzzy Source Words,Untranslated Messages,Untranslated Source Words,Total Message,Total Source Words,Review Messages,Review Source Words
+  tests/cli/data/test_pocount_po_csv/one.po,1,3,3,0,0,0,0,1,3,0,0
+  tests/cli/data/test_pocount_po_file/one.po,1,3,3,0,0,0,0,1,3,0,0
+  tests/cli/data/test_pocount_po_fuzzy/one.po,1,2,3,1,2,0,0,2,4,0,0
+  
   
   '''
 # ---
@@ -68,8 +69,9 @@
 # ---
 # name: test_output[no-color=False-incomplete=True-csv]
   '''
-  Filename, Translated Messages, Translated Source Words, Translated Target Words, Fuzzy Messages, Fuzzy Source Words, Untranslated Messages, Untranslated Source Words, Total Message, Total Source Words, Review Messages, Review Source Words
-  tests/cli/data/test_pocount_po_fuzzy/one.po,  1, 2, 3, 1, 2, 0, 0, 2, 4 
+  Filename,Translated Messages,Translated Source Words,Translated Target Words,Fuzzy Messages,Fuzzy Source Words,Untranslated Messages,Untranslated Source Words,Total Message,Total Source Words,Review Messages,Review Source Words
+  tests/cli/data/test_pocount_po_fuzzy/one.po,1,2,3,1,2,0,0,2,4,0,0
+  
   
   '''
 # ---
@@ -112,10 +114,11 @@
 # ---
 # name: test_output[no-color=True-incomplete=False-csv]
   '''
-  Filename, Translated Messages, Translated Source Words, Translated Target Words, Fuzzy Messages, Fuzzy Source Words, Untranslated Messages, Untranslated Source Words, Total Message, Total Source Words, Review Messages, Review Source Words
-  tests/cli/data/test_pocount_po_csv/one.po,  1, 3, 3, 0, 0, 0, 0, 1, 3 
-  tests/cli/data/test_pocount_po_file/one.po,  1, 3, 3, 0, 0, 0, 0, 1, 3 
-  tests/cli/data/test_pocount_po_fuzzy/one.po,  1, 2, 3, 1, 2, 0, 0, 2, 4 
+  Filename,Translated Messages,Translated Source Words,Translated Target Words,Fuzzy Messages,Fuzzy Source Words,Untranslated Messages,Untranslated Source Words,Total Message,Total Source Words,Review Messages,Review Source Words
+  tests/cli/data/test_pocount_po_csv/one.po,1,3,3,0,0,0,0,1,3,0,0
+  tests/cli/data/test_pocount_po_file/one.po,1,3,3,0,0,0,0,1,3,0,0
+  tests/cli/data/test_pocount_po_fuzzy/one.po,1,2,3,1,2,0,0,2,4,0,0
+  
   
   '''
 # ---
@@ -179,8 +182,9 @@
 # ---
 # name: test_output[no-color=True-incomplete=True-csv]
   '''
-  Filename, Translated Messages, Translated Source Words, Translated Target Words, Fuzzy Messages, Fuzzy Source Words, Untranslated Messages, Untranslated Source Words, Total Message, Total Source Words, Review Messages, Review Source Words
-  tests/cli/data/test_pocount_po_fuzzy/one.po,  1, 2, 3, 1, 2, 0, 0, 2, 4 
+  Filename,Translated Messages,Translated Source Words,Translated Target Words,Fuzzy Messages,Fuzzy Source Words,Untranslated Messages,Untranslated Source Words,Total Message,Total Source Words,Review Messages,Review Source Words
+  tests/cli/data/test_pocount_po_fuzzy/one.po,1,2,3,1,2,0,0,2,4,0,0
+  
   
   '''
 # ---
