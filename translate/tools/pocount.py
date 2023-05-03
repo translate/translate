@@ -346,7 +346,7 @@ class FullRenderer(Renderer):
         if stats.file_count > 1:
             if stats.incomplete_only:
                 self.entry("TOTAL (incomplete only):", stats.totals)
-                print("File count (incomplete):   %5d" % stats.file_count)
+                print("File count (incomplete):   %5d" % len(stats.results))
             else:
                 self.entry("TOTAL:", stats.totals)
             print("File count:   %5d" % (stats.file_count))
@@ -459,7 +459,7 @@ def untranslatedmessages(units):
 class StatCollector:
     def __init__(self, items: list[str], incomplete_only=False):
         self.incomplete_only = incomplete_only
-        self.results: list[dict] = []
+        self._results: list[dict] = []
         self._handle_items(items)
 
     def render(self, renderer_class: type[Renderer]):
@@ -472,6 +472,13 @@ class StatCollector:
         for entry in self.results:
             renderer.entry(entry["filename"], entry)
         renderer.footer()
+
+    @cached_property
+    def results(self):
+        if self.incomplete_only:
+            return [s for s in self._results if s["total"] != s["translated"]]
+        else:
+            return self._results
 
     def _handle_items(self, items: list[str]):
         for item in items:
@@ -501,9 +508,7 @@ class StatCollector:
     def _handle_single_file(self, filename):
         try:
             stats = calcstats(filename)
-            if self.incomplete_only and stats["total"] == stats["translated"]:
-                return
-            self.results.append(stats)
+            self._results.append(stats)
         except Exception:  # This happens if we have a broken file.
             logger.error(sys.exc_info()[1])
 
@@ -514,13 +519,13 @@ class StatCollector:
 
     @property
     def file_count(self):
-        return len(self.results)
+        return len(self._results)
 
     @cached_property
     def totals(self) -> dict:
         """Total stats"""
         totals = defaultdict(int)
-        for stats in self.results:
+        for stats in self._results:
             for key, value in stats.items():
                 if key in ["extended", "filename"]:
                     # FIXME: calculate extended totals
