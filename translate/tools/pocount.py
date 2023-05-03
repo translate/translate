@@ -491,7 +491,7 @@ class StatCollector:
                 self._handle_single_file(item)
 
     def _handle_dir(self, dirname):
-        path, name = os.path.split(dirname)
+        _, name = os.path.split(dirname)
         if name in ["CVS", ".svn", "_darcs", ".git", ".hg", ".bzr"]:
             return
         entries = os.listdir(dirname)
