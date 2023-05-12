@@ -268,10 +268,7 @@ class CsvRenderer(Renderer):
     def entry(self, title, stats):
         data = stats.copy()
         data.update(title=title)
-        row = {
-            v: data[k]
-            for k, v in self._fields.items()
-        }
+        row = {v: data[k] for k, v in self._fields.items()}
         self._writer.writerow(row)
 
     def footer(self):
