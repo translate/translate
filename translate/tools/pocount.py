@@ -27,7 +27,6 @@ for examples and usage instructions.
 from __future__ import annotations
 
 import csv
-import io
 import logging
 import os
 import re
@@ -259,8 +258,7 @@ class CsvRenderer(Renderer):
             "review": "Review Messages",
             "reviewsourcewords": "Review Source Words",
         }
-        self._file = io.StringIO()
-        self._writer = csv.DictWriter(self._file, self._fields.values())
+        self._writer = csv.DictWriter(sys.stdout, self._fields.values())
 
     def header(self):
         self._writer.writeheader()
@@ -270,10 +268,6 @@ class CsvRenderer(Renderer):
         data.update(title=title)
         row = {v: data[k] for k, v in self._fields.items()}
         self._writer.writerow(row)
-
-    def footer(self):
-        self._file.seek(0)
-        print(self._file.read())
 
 
 class FullRenderer(Renderer):
