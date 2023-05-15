@@ -1,0 +1,45 @@
+Translate Toolkit 3.9.0
+***********************
+
+*Released on 15 May 2023*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- Android
+
+  - Improved white space handling
+
+- Fluent
+
+  - Attributes are now exposed as translatable entities
+  - Terms are now prefixed with -
+  - Other cleanups and refactoring
+
+- POXLIFF
+
+  - Avoid using "None" as translation for untranslated pluralized units
+
+- TBX
+
+  - Improved notes handling
+
+Others
+------
+
+- improved CSV output of pocount
+- junitmsgfmt has been rewritten in Python
+- added snapshot testing
+
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Serg Tereshchenko, Michal Čihař, Henry Wilkes, Serhii Tereshchenko, TrianguloY
