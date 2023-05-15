@@ -26,6 +26,7 @@ for examples and usage instructions.
 """
 from __future__ import annotations
 
+import csv
 import logging
 import os
 import re
@@ -240,35 +241,33 @@ class Renderer:
         pass
 
 
+@dataclass
 class CsvRenderer(Renderer):
+    def __post_init__(self):
+        self._fields = {
+            "title": "Filename",
+            "translated": "Translated Messages",
+            "translatedsourcewords": "Translated Source Words",
+            "translatedtargetwords": "Translated Target Words",
+            "fuzzy": "Fuzzy Messages",
+            "fuzzysourcewords": "Fuzzy Source Words",
+            "untranslated": "Untranslated Messages",
+            "untranslatedsourcewords": "Untranslated Source Words",
+            "total": "Total Message",
+            "totalsourcewords": "Total Source Words",
+            "review": "Review Messages",
+            "reviewsourcewords": "Review Source Words",
+        }
+        self._writer = csv.DictWriter(sys.stdout, self._fields.values())
+
     def header(self):
-        print(
-            """Filename, Translated Messages, Translated Source Words, \
-Translated Target Words, Fuzzy Messages, Fuzzy Source Words, Untranslated Messages, \
-Untranslated Source Words, Total Message, Total Source Words, \
-Review Messages, Review Source Words"""
-        )
+        self._writer.writeheader()
 
     def entry(self, title, stats):
-        print("%s, " % title, end=" ")
-        print(
-            "%d, %d, %d,"
-            % (
-                stats["translated"],
-                stats["translatedsourcewords"],
-                stats["translatedtargetwords"],
-            ),
-            end=" ",
-        )
-        print("%d, %d," % (stats["fuzzy"], stats["fuzzysourcewords"]), end=" ")
-        print(
-            "%d, %d," % (stats["untranslated"], stats["untranslatedsourcewords"]),
-            end=" ",
-        )
-        print("%d, %d" % (stats["total"], stats["totalsourcewords"]), end=" ")
-        if stats["review"] > 0:
-            print(", %d, %d" % (stats["review"], stats["reviewsourdcewords"]), end=" ")
-        print()
+        data = stats.copy()
+        data.update(title=title)
+        row = {v: data[k] for k, v in self._fields.items()}
+        self._writer.writerow(row)
 
 
 class FullRenderer(Renderer):
