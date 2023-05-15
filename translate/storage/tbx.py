@@ -51,9 +51,16 @@ class tbxunit(lisa.LISAunit):
     def setid(self, value):
         return self.xmlelement.set("id", value)
 
+    def _get_origin_element(self, origin: str):
+        if origin == "pos":
+            return self.namespaced("termNote")
+        elif origin == "definition":
+            return self.namespaced("descrip")
+        return self.namespaced("note")
+
     def removenotes(self, origin=None):
         """Remove all the translator notes."""
-        notes = self.xmlelement.iterdescendants(self.namespaced("note"))
+        notes = self.xmlelement.iterdescendants(self._get_origin_element(origin))
         for note in notes:
             self.xmlelement.remove(note)
 
@@ -66,9 +73,9 @@ class tbxunit(lisa.LISAunit):
             text = text.strip()
         if not text:
             return
-        note = etree.SubElement(self.xmlelement, self.namespaced("note"))
+        note = etree.SubElement(self.xmlelement, self._get_origin_element(origin))
         note.text = text
-        if origin:
+        if origin and origin not in ("pos", "definition"):
             note.set("from", origin)
 
     def _getnotelist(self, origin=None):
@@ -79,13 +86,7 @@ class tbxunit(lisa.LISAunit):
         :return: The text from notes matching ``origin``
         :rtype: List
         """
-        note_nodes = []
-        if origin == "pos":
-            note_nodes = self.xmlelement.iterdescendants(self.namespaced("termNote"))
-        elif origin == "definition":
-            note_nodes = self.xmlelement.iterdescendants(self.namespaced("descrip"))
-        else:
-            note_nodes = self.xmlelement.iterdescendants(self.namespaced("note"))
+        note_nodes = self.xmlelement.iterdescendants(self._get_origin_element(origin))
         # TODO: consider using xpath to construct initial_list directly
         # or to simply get the correct text from the outset (just remember to
         # check for duplication.
