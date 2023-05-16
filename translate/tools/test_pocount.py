@@ -5,7 +5,7 @@ from pytest import mark
 from translate.storage import po
 from translate.tools import pocount
 
-from ._test_utils import requires_py38_mark, test_po_files
+from ._test_utils import test_po_files
 
 
 class TestCount:
@@ -166,7 +166,6 @@ msgstr ""
         assert stats["totalsourcewords"] == 6
 
 
-@requires_py38_mark
 @mark.parametrize("style", ["csv", "full", "short-strings", "short-words"])
 @mark.parametrize("incomplete", [True, False], ids=lambda v: f"incomplete={v}")
 @mark.parametrize("no_color", [True, False], ids=lambda v: f"no-color={v}")
