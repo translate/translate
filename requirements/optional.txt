@@ -7,7 +7,7 @@ BeautifulSoup4>=4.3  # Trados
 # Encoding detection
 charset-normalizer==3.1.0   # chardet
 # Tmserver backend
-cheroot==9.0.0       # tmserver
+cheroot==10.0.0       # tmserver
 # Format support
 fluent.syntax==0.19.0 # Fluent
 # Format support
