@@ -2,10 +2,7 @@ from pytest import mark, param
 
 from translate.tools import junitmsgfmt
 
-from ._test_utils import requires_py38_mark
 
-
-@requires_py38_mark
 @mark.parametrize(
     "opts",
     [

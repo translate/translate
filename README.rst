@@ -98,7 +98,7 @@ feature set. This cal be easily specified during pip installation::
    Will install all optional dependencies convering support for many other
    formats.
 
-The Toolkit requires Python 3.7 or newer.
+The Toolkit requires Python 3.8 or newer.
 
 The package lxml is required. You should install version 4.6.3 or later.
 <http://lxml.de/> Depending on your platform, the easiest way to install might
