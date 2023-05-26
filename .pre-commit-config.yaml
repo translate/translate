@@ -11,11 +11,6 @@ repos:
   - id: requirements-txt-fixer
   - id: fix-encoding-pragma
     args: [--remove]
-- repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-  rev: v2.8.0
-  hooks:
-  - id: pretty-format-toml
-    args: [--autofix]
 - repo: meta
   hooks:
   - id: check-hooks-apply
@@ -46,7 +41,9 @@ repos:
   hooks:
   - id: pydocstyle
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-  rev: v2.8.0
+  rev: v2.9.0
   hooks:
   - id: pretty-format-yaml
     args: [--autofix, --indent, '2']
+  - id: pretty-format-toml
+    args: [--autofix]
