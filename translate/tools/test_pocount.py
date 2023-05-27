@@ -1,11 +1,19 @@
 from io import BytesIO
 
-from pytest import mark
+from pytest import CaptureFixture, LogCaptureFixture, mark, param
 
 from translate.storage import po
 from translate.tools import pocount
 
-from ._test_utils import test_po_files
+# For now test files left in the old places, but it's better to move
+# them somwhere like tests/data.
+_po_csv, _po_file, _po_fuzzy = test_files = [
+    "tests/cli/data/test_pocount_po_csv/one.po",
+    "tests/cli/data/test_pocount_po_file/one.po",
+    "tests/cli/data/test_pocount_po_fuzzy/one.po",
+]
+_xliff_states_yes = "tests/cli/data/test_pocount_xliff_states_yes/states.xlf"
+_xliff_states_no = "tests/cli/data/test_pocount_xliff_states_no/states.xlf"
 
 
 class TestCount:
@@ -169,14 +177,45 @@ msgstr ""
 @mark.parametrize("style", ["csv", "full", "short-strings", "short-words"])
 @mark.parametrize("incomplete", [True, False], ids=lambda v: f"incomplete={v}")
 @mark.parametrize("no_color", [True, False], ids=lambda v: f"no-color={v}")
-def test_output(style, incomplete, no_color, capsys, snapshot):
+def test_output(style, incomplete, no_color, capsys: CaptureFixture[str], snapshot):
     opts = [f"--{style}"]
     if incomplete:
         opts.append("--incomplete")
     if no_color:
         opts.append("--no-color")
 
-    pocount.main([*opts, *test_po_files])
+    pocount.main([*opts, *test_files])
     stdout = capsys.readouterr()[0]
 
     assert stdout == snapshot
+
+
+@mark.parametrize("opts", [
+    param([], id="no-args"),
+    param(["--csv", "--short"], id="mutually-exclusive"),
+    param([_po_file, "--no-color"], id="po-file"),
+    param([_po_fuzzy, "--no-color"], id="po-file-fuzzy"),
+    param([_po_csv, "--no-color", "--csv"], id="po-file-csv"),
+    param([_xliff_states_yes, "--no-color"], id="xliff-states-yes"),
+    param([_xliff_states_no, "--no-color"], id="xliff-states-no"),
+])
+def test_cases(opts, capsys: CaptureFixture[str], snapshot):
+    try:
+        pocount.main(opts)
+    except SystemExit:
+        pass
+
+    actual = capsys.readouterr()
+
+    assert actual == snapshot
+
+
+def test_missing_case(capsys: CaptureFixture[str], caplog: LogCaptureFixture, snapshot):
+    # We're using special case for this, because pytest catches log messages,
+    # and we need to check caplog fixture.
+    pocount.main(["missing.po"])
+
+    actual = capsys.readouterr()
+
+    assert actual == snapshot
+    assert caplog.messages == snapshot(name="logging")

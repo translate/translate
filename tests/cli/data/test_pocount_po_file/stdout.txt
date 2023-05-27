@@ -1,9 +1,0 @@
-Processing file : ./data/test_pocount_po_file/one.po
-Type               Strings      Words (source)    Words (translation)
-Translated:       1 (100%)          3 (100%)               3
-Fuzzy:            0 (  0%)          0 (  0%)             n/a
-Untranslated:     0 (  0%)          0 (  0%)             n/a
-Total:            1                 3                      3
-
-Unreviewed:       1 (100%)          3 (100%)               3
-
