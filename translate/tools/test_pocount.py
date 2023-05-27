@@ -214,19 +214,29 @@ def test_cases(opts, capsys: CaptureFixture[str], snapshot):
 
 
 @mark.parametrize(
-    "opts",
+    "opts,expected",
     [
-        param(["--csv", "--short"], id="mutually-exclusive"),
-        param(["missing.po"], id="missing-file"),
-        param([], id="no-args"),
+        param(
+            ["--csv", "--short"],
+            "argument --short: not allowed with argument --csv",
+            id="mutually-exclusive",
+        ),
+        param(
+            ["missing.po"],
+            "cannot process missing.po: does not exist",
+            id="missing-file",
+        ),
+        param([], "the following arguments are required: files", id="no-args"),
     ],
 )
-def test_error_cases(opts, snapshot):
+def test_error_cases(opts, expected):
     # We're using special case for this, to produce correct output.
+    # Also, using partial matching instead of snapshots, becouse mac-os argparse
+    # output is slightly different.
     result = subprocess.run(
         [sys.executable, pocount.__file__, *opts],
         capture_output=True,
         text=True,
     )
 
-    assert result.stderr == snapshot
+    assert expected in result.stderr

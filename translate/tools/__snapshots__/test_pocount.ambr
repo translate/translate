@@ -80,28 +80,6 @@
     ''',
   )
 # ---
-# name: test_error_cases[missing-file]
-  '''
-  __main__: ERROR: cannot process missing.po: does not exist
-  
-  '''
-# ---
-# name: test_error_cases[mutually-exclusive]
-  '''
-  usage: pocount.py [-h] [--incomplete] [--full | --csv | --short | --short-strings | --short-words] [--no-color]
-                    files [files ...]
-  pocount.py: error: argument --short: not allowed with argument --csv
-  
-  '''
-# ---
-# name: test_error_cases[no-args]
-  '''
-  usage: pocount.py [-h] [--incomplete] [--full | --csv | --short | --short-strings | --short-words] [--no-color]
-                    files [files ...]
-  pocount.py: error: the following arguments are required: files
-  
-  '''
-# ---
 # name: test_output[no-color=False-incomplete=False-csv]
   '''
   Filename,Translated Messages,Translated Source Words,Translated Target Words,Fuzzy Messages,Fuzzy Source Words,Untranslated Messages,Untranslated Source Words,Total Message,Total Source Words,Review Messages,Review Source Words
