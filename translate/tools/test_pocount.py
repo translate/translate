@@ -1,6 +1,8 @@
+import subprocess
+import sys
 from io import BytesIO
 
-from pytest import CaptureFixture, LogCaptureFixture, mark, param
+from pytest import CaptureFixture, mark, param
 
 from translate.storage import po
 from translate.tools import pocount
@@ -193,8 +195,6 @@ def test_output(style, incomplete, no_color, capsys: CaptureFixture[str], snapsh
 @mark.parametrize(
     "opts",
     [
-        param([], id="no-args"),
-        param(["--csv", "--short"], id="mutually-exclusive"),
         param([_po_file, "--no-color"], id="po-file"),
         param([_po_fuzzy, "--no-color"], id="po-file-fuzzy"),
         param([_po_csv, "--no-color", "--csv"], id="po-file-csv"),
@@ -208,17 +208,25 @@ def test_cases(opts, capsys: CaptureFixture[str], snapshot):
     except SystemExit:
         pass
 
-    actual = capsys.readouterr()
+    result = capsys.readouterr()
 
-    assert actual == snapshot
+    assert result == snapshot
 
 
-def test_missing_case(capsys: CaptureFixture[str], caplog: LogCaptureFixture, snapshot):
-    # We're using special case for this, because pytest catches log messages,
-    # and we need to check caplog fixture.
-    pocount.main(["missing.po"])
+@mark.parametrize(
+    "opts",
+    [
+        param(["--csv", "--short"], id="mutually-exclusive"),
+        param(["missing.po"], id="missing-file"),
+        param([], id="no-args"),
+    ],
+)
+def test_error_cases(opts, snapshot):
+    # We're using special case for this, to produce correct output.
+    result = subprocess.run(
+        [sys.executable, pocount.__file__, *opts],
+        capture_output=True,
+        text=True,
+    )
 
-    actual = capsys.readouterr()
-
-    assert actual == snapshot
-    assert caplog.messages == snapshot(name="logging")
+    assert result.stderr == snapshot
