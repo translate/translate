@@ -190,15 +190,18 @@ def test_output(style, incomplete, no_color, capsys: CaptureFixture[str], snapsh
     assert stdout == snapshot
 
 
-@mark.parametrize("opts", [
-    param([], id="no-args"),
-    param(["--csv", "--short"], id="mutually-exclusive"),
-    param([_po_file, "--no-color"], id="po-file"),
-    param([_po_fuzzy, "--no-color"], id="po-file-fuzzy"),
-    param([_po_csv, "--no-color", "--csv"], id="po-file-csv"),
-    param([_xliff_states_yes, "--no-color"], id="xliff-states-yes"),
-    param([_xliff_states_no, "--no-color"], id="xliff-states-no"),
-])
+@mark.parametrize(
+    "opts",
+    [
+        param([], id="no-args"),
+        param(["--csv", "--short"], id="mutually-exclusive"),
+        param([_po_file, "--no-color"], id="po-file"),
+        param([_po_fuzzy, "--no-color"], id="po-file-fuzzy"),
+        param([_po_csv, "--no-color", "--csv"], id="po-file-csv"),
+        param([_xliff_states_yes, "--no-color"], id="xliff-states-yes"),
+        param([_xliff_states_no, "--no-color"], id="xliff-states-no"),
+    ],
+)
 def test_cases(opts, capsys: CaptureFixture[str], snapshot):
     try:
         pocount.main(opts)
