@@ -203,10 +203,7 @@ def test_output(style, incomplete, no_color, capsys: CaptureFixture[str], snapsh
     ],
 )
 def test_cases(opts, capsys: CaptureFixture[str], snapshot):
-    try:
-        pocount.main(opts)
-    except SystemExit:
-        pass
+    pocount.main(opts)
 
     result = capsys.readouterr()
 
