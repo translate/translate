@@ -1,5 +1,0 @@
-usage: pocount [-h] [--incomplete]
-               [--full | --csv | --short | --short-strings | --short-words]
-               [--no-color]
-               files [files ...]
-pocount: error: too few arguments
