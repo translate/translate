@@ -28,6 +28,8 @@ specifications on the format.
 
 from translate.storage import base, txt
 
+OK_STRING = " {ok}"
+
 
 def strip_ok(string):
     tmpstring = string.rstrip()
@@ -38,6 +40,8 @@ def strip_ok(string):
 
 class LangUnit(base.TranslationUnit):
     """This is just a normal unit with a weird string output"""
+
+    _unit_target = ""
 
     def __init__(self, source=None):
         self.locations = []
@@ -67,6 +71,24 @@ class LangUnit(base.TranslationUnit):
             )
             return f"{notes}{self.eol};{self.source}{self.eol}{target}"
         return f";{self.source}{self.eol}{target}"
+
+    def _target(self, v=None):
+        if v is None:
+            return self._unit_target
+        if v.endswith(OK_STRING):
+            self._is_ok = True
+            v = v[:-len(OK_STRING)]
+        else:
+            self._is_ok = False
+        self._unit_target = v
+    target = property(_target, _target)
+
+    def istranslated(self):
+        return (
+            (self.target
+             and self.source != self.target)
+            or (self.source == self.target
+                and self._is_ok))
 
     def getlocations(self):
         return self.locations
