@@ -143,6 +143,9 @@ class rerc:
             yield ",".join(tmp)
             yield self.templatestore.newline
 
+        if addnl:
+            yield self.templatestore.newline
+            addnl = False
         yield BLOCK_END
 
     def convert_string_table(self, s, loc, toks):
@@ -187,6 +190,9 @@ class rerc:
 
             yield self.templatestore.newline
 
+        if addnl:
+            yield self.templatestore.newline
+            addnl = False
         yield BLOCK_END
 
     def convert_language(self, s, loc, toks):

@@ -28,6 +28,7 @@ BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,44,74,20,20
     CTEXT           "Use your finger to activate the program.",IDC_ACTIVADA,17,50,175,17
     ICON            IDR_MAINFRAME1,IDC_STATIC6,18,19,20,20
+    // Comment
 END
 
 MainMenu MENU
