@@ -601,3 +601,17 @@ STRINGTABLE
         assert rc_file.units[3].name == "DIALOGEX.3.CONTROL.4"
         assert rc_file.units[4].source == "This is a string."
         assert rc_file.units[4].name == "STRINGTABLE.5"
+
+    def test_quotes(self):
+        rc_source = """
+STRINGTABLE
+BEGIN
+IDS_TEST_123     "The timestamp for ""ABCDEF"" could not be read."
+END
+"""
+        rc_file = self.source_parse(rc_source)
+        assert len(rc_file.units) == 1
+        assert rc_file.units[0].name == "STRINGTABLE.IDS_TEST_123"
+        assert (
+            rc_file.units[0].source == 'The timestamp for "ABCDEF" could not be read.'
+        )

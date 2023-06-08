@@ -65,6 +65,8 @@ def escape_to_python(string):
     pystring = re.sub(
         "\\\\\\\\", "\\\\", pystring
     )  # Convert escape backslash to a real escaped backslash
+    # Fix quotes
+    pystring = pystring.replace('""', '"')
     return pystring
 
 
@@ -96,6 +98,7 @@ def escape_to_rc(string):
     rcstring = re.sub("\t", "\\\\t", rcstring)
     rcstring = re.sub("\n", "\\\\n", rcstring)
     rcstring = re.sub("\r", "\\\\r", rcstring)
+    rcstring = rcstring.replace('"', '""')
     return rcstring
 
 

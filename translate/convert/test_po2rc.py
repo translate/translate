@@ -58,6 +58,11 @@ msgstr "Licenční dialog"
 msgid "My very good program"
 msgstr "Mój bardzo dobry program"
 """
+POFILE_QUOTES = r"""
+#: DIALOGEX.IDD_REGGHC_DIALOG.CTEXT.IDC_STATIC1
+msgid "My very good program"
+msgstr "My \"good\" program"
+"""
 
 
 class TestPO2RCCommand(test_convert.TestConvertCommand):
@@ -87,6 +92,20 @@ class TestPO2RCCommand(test_convert.TestConvertCommand):
         assert len(rc_result.units) == 14
         assert rc_result.units[0].target == "Licenční dialog"
         assert rc_result.units[4].target == "Mój bardzo dobry program"
+
+    def test_convert_quotes(self):
+        """Tests the conversion to a po file"""
+        self.create_testfile("simple.rc", RC_SOURCE)
+        self.create_testfile("simple.po", POFILE_QUOTES)
+        self.run_command(
+            template="simple.rc", i="simple.po", o="output.rc", l="LANG_CZECH"
+        )
+        with self.open_testfile("output.rc") as handle:
+            print(handle.read())
+        with self.open_testfile("output.rc") as handle:
+            rc_result = rcfile(handle)
+        assert len(rc_result.units) == 14
+        assert rc_result.units[4].target == 'My "good" program'
 
     def test_convert_comment(self):
         self.create_testfile(
