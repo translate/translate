@@ -327,6 +327,7 @@ class rcfile(base.TranslationStore):
         self.filename = getattr(inputfile, "name", "")
         self.lang = lang
         self.sublang = sublang
+        self.newline = "\r\n"
         if inputfile is not None:
             rcsrc = inputfile.read()
             inputfile.close()
@@ -375,6 +376,14 @@ class rcfile(base.TranslationStore):
             decoded, self.encoding = self.detect_encoding(
                 rcsrc, default_encodings=[self.default_encoding]
             )
+
+        # Extract first newline
+        for line in decoded.splitlines(True):
+            if len(line) >= 2 and line[-2] in ("\r", "\n"):
+                self.newline = line[-2:]
+            else:
+                self.newline = line[-1]
+            break
 
         decoded = decoded.replace("\r", "")
 

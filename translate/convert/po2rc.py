@@ -30,9 +30,9 @@ from translate.storage.rc import (
     generate_menu_pre_name,
     generate_popup_caption_name,
     generate_popup_pre_name,
+    rcfile,
 )
 
-NL = "\r\n"
 BLOCK_START = "BEGIN"
 BLOCK_END = "END"
 
@@ -46,7 +46,10 @@ def is_iterable_but_not_string(o):
 
 class rerc:
     def __init__(self, templatefile, charset="utf-8", lang=None, sublang=None):
-        self.templatefile = templatefile
+        self.templatecontent = templatefile.read()
+        self.templatestore = rcfile()
+        self.templatestore.charset = charset
+        self.templatestore.parse(self.templatecontent)
         self.inputdict = {}
         self.charset = charset
         self.lang = lang
@@ -81,14 +84,14 @@ class rerc:
                 yield toks.caption
 
             yield from toks.post_caption  # The rest of the options
-            yield NL
+            yield self.templatestore.newline
         else:
             yield " "
             yield from toks.post_caption  # The rest of the options
-            yield NL
+            yield self.templatestore.newline
 
         yield BLOCK_START
-        yield NL
+        yield self.templatestore.newline
         addnl = False
 
         for c in toks.controls:
@@ -97,14 +100,14 @@ class rerc:
                 addnl = True
                 continue
             if addnl:
-                yield NL
+                yield self.templatestore.newline
                 addnl = False
             yield "    "
             c0 = c[0]
             if len(c0[0]) >= 16:
                 yield c0[0]
                 # If more than 16 char, put it on a new line to align it.
-                yield NL + " " * (16 + 4)
+                yield self.templatestore.newline + " " * (16 + 4)
             else:
                 yield c0[0].ljust(16)
 
@@ -138,7 +141,7 @@ class rerc:
                     tmp.append(a)
 
             yield ",".join(tmp)
-            yield NL
+            yield self.templatestore.newline
 
         yield BLOCK_END
 
@@ -146,9 +149,9 @@ class rerc:
         yield toks[0]
         if toks[1]:
             yield f" {toks[1]}"
-        yield NL
+        yield self.templatestore.newline
         yield BLOCK_START
-        yield NL
+        yield self.templatestore.newline
 
         addnl = False
         for c in toks.controls:
@@ -157,13 +160,13 @@ class rerc:
                 addnl = True
                 continue
             if addnl:
-                yield NL
+                yield self.templatestore.newline
                 addnl = False
             yield "    "
             c0 = c[0]
             if len(c0[0]) >= 24:
                 yield c0[0]
-                yield NL + " " * (24 + 4)
+                yield self.templatestore.newline + " " * (24 + 4)
             else:
                 yield c0[0].ljust(24)
 
@@ -179,10 +182,10 @@ class rerc:
 
             for part in tmp[:-1]:
                 yield part
-                yield NL + " " * (24 + 4)
+                yield self.templatestore.newline + " " * (24 + 4)
             yield tmp[-1]
 
-            yield NL
+            yield self.templatestore.newline
 
         yield BLOCK_END
 
@@ -216,11 +219,11 @@ class rerc:
             yield ", "
             yield value
         yield from popup.post_caption  # The rest of the options
-        yield NL
+        yield self.templatestore.newline
 
         yield identation
         yield BLOCK_START
-        yield NL
+        yield self.templatestore.newline
 
         for element in popup.elements:
             if isinstance(element, str):
@@ -251,7 +254,7 @@ class rerc:
                 else:
                     raise NotImplementedError()
 
-                yield NL
+                yield self.templatestore.newline
 
             elif element.popups:
                 for sub_popup in element.popups:
@@ -262,7 +265,7 @@ class rerc:
                     )
         yield identation
         yield BLOCK_END
-        yield NL
+        yield self.templatestore.newline
 
     def convert_menu(self, s, loc, toks):
         yield toks.block_id[0]
@@ -272,10 +275,10 @@ class rerc:
         # A menu can't have CAPTION, so don't try to translate it.
         yield " "
         yield from toks.post_caption  # The rest of the options
-        yield NL
+        yield self.templatestore.newline
 
         yield BLOCK_START
-        yield NL
+        yield self.templatestore.newline
 
         pre_name = generate_menu_pre_name(toks.block_type, toks.block_id[0])
 
@@ -307,7 +310,7 @@ class rerc:
         self.makestoredict(inputstore, includefuzzy)
         statement = rc.rc_statement()
         statement.add_parse_action(self.translate_strings)
-        return statement.transform_string(self.templatefile.read().decode(self.charset))
+        return statement.transform_string(self.templatecontent.decode(self.charset))
 
     def makestoredict(self, store, includefuzzy=False):
         """make a dictionary of the translations"""

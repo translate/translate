@@ -329,3 +329,40 @@ msgstr "Vypnout..."
             rc_result = rcfile(handle)
         assert len(rc_result.units) == 4
         assert rc_result.units[3].target == "Vypnout..."
+
+    def test_convert_newlines(self):
+        """Tests the conversion to a po file"""
+        source = """
+STRINGTABLE
+BEGIN
+ID_T_1 "Hello"
+END
+"""
+        expected = """
+STRINGTABLE
+BEGIN
+    ID_T_1                  "Ahoj"
+END
+"""
+        pofile = """
+#: STRINGTABLE.ID_T_1
+msgid "Hello"
+msgstr "Ahoj"
+"""
+        self.create_testfile("simple.rc", "\r\n".join(source.splitlines()))
+        self.create_testfile("simple.po", pofile)
+        self.run_command(
+            template="simple.rc", i="simple.po", o="output.rc", l="LANG_CZECH"
+        )
+        with self.open_testfile("output.rc", "rb") as handle:
+            content = handle.read()
+            assert content == "\r\n".join(expected.splitlines()).encode()
+
+        self.create_testfile("simple.rc", "\n".join(source.splitlines()))
+        self.create_testfile("simple.po", pofile)
+        self.run_command(
+            template="simple.rc", i="simple.po", o="output.rc", l="LANG_CZECH"
+        )
+        with self.open_testfile("output.rc", "rb") as handle:
+            content = handle.read()
+            assert content == "\n".join(expected.splitlines()).encode()
