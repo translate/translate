@@ -110,6 +110,7 @@ class csv2po:
             pounit.addlocation(csvunit.location)
         pounit.source = csvunit.source
         pounit.target = csvunit.target
+        pounit.setcontext(csvunit.getcontext())
         return pounit
 
     def handlecsvunit(self, csvunit):

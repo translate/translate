@@ -90,6 +90,8 @@ The resultant CSV file has the following layout
 |  C     | Target Language | The msgstr or target language               |
 +--------+-----------------+---------------------------------------------+
 
+The layout can be customized by ``--columnorder``, you can add, or remove columns using that as well, for example ``--columnorder=context,source,target``.
+
 .. _csv2po#examples:
 
 Examples
