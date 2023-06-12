@@ -43,6 +43,7 @@ class po2csv:
             csvunit.location = self.convertcomments(inputunit)
             csvunit.source = inputunit.source
             csvunit.target = inputunit.target
+            csvunit.setcontext(inputunit.getcontext())
         return csvunit
 
     def convertplurals(self, inputunit):

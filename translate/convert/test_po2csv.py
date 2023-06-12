@@ -165,3 +165,16 @@ class TestPO2CSVCommand(test_convert.TestConvertCommand, TestPO2CSV):
 "Target","Same"
 """
         )
+
+    def test_context(self):
+        pocontent = '#: simple.c\nmsgctxt "Context"\nmsgid "Same"\nmsgstr "Target"\n'
+        self.create_testfile("test.po", pocontent)
+
+        self.run_command("test.po", "test.csv", columnorder="context,source,target")
+        content = self.open_testfile("test.csv", "r").read()
+        assert (
+            content
+            == """"context","source","target"
+"Context","Same","Target"
+"""
+        )
