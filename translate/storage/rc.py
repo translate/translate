@@ -164,7 +164,7 @@ def rc_statement():
     :rtype: pyparsing.ParserElement
     """
 
-    one_line_comment = "//" + rest_of_line
+    one_line_comment = Combine("//" + rest_of_line)
 
     comments = c_style_comment ^ one_line_comment
 
