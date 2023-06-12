@@ -367,3 +367,32 @@ msgstr "Ahoj"
         with self.open_testfile("output.rc", "rb") as handle:
             content = handle.read()
             assert content == "\n".join(expected.splitlines()).encode()
+
+    def test_convert_comment_after(self):
+        source = """
+STRINGTABLE
+BEGIN
+    ID_T_1 "Hello"
+    //   Comment
+END
+"""
+        expected = """
+STRINGTABLE
+BEGIN
+    ID_T_1                  "Ahoj"
+    //   Comment
+END
+"""
+        pofile = """
+#: STRINGTABLE.ID_T_1
+msgid "Hello"
+msgstr "Ahoj"
+"""
+        self.create_testfile("simple.rc", source)
+        self.create_testfile("simple.po", pofile)
+        self.run_command(
+            template="simple.rc", i="simple.po", o="output.rc", l="LANG_CZECH"
+        )
+        with self.open_testfile("output.rc", "rb") as handle:
+            content = handle.read()
+            assert content.decode() == expected
