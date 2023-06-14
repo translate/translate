@@ -1,0 +1,35 @@
+Translate Toolkit 3.9.1
+***********************
+
+*Released on 14 June 2023*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- RC 
+
+  - Improved comments handling
+  - Improved newlines handling
+  - Fixed quotes escaping
+
+- po2csv, csv2po
+
+  - Add support for preserving context
+
+Others
+------
+
+- refactored pocount
+- dropped support for Python 3.7
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař, Serhii Tereshchenko
