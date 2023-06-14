@@ -511,6 +511,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                 ("Message", "m2"),
                 ("Term", "-term-1"),
             ]:
+                # When the source is empty, the entry will be ignored.
                 fluent_file = self.quick_fluent_file(
                     [{"type": fluent_type, "source": source, "id": unit_id}]
                 )
@@ -528,8 +529,26 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                 )
                 self.assert_serialize(fluent_file, "m1 = a\nm3 = b\n")
 
-            if source is None:
-                return
+        subtest_empty_unit_source(None)
+        subtest_empty_unit_source("")
+
+        def subtest_whitespace_unit_source(source):
+            if source:
+                # If the source is non-empty but just whitespace, we expect a
+                # serializing error.
+                fluent_file = self.quick_fluent_file(
+                    [{"type": "Message", "source": source, "id": "message"}]
+                )
+                self.assert_serialize_failure(
+                    fluent_file, r'^Error in source of FluentUnit "message":'
+                )
+
+                fluent_file = self.quick_fluent_file(
+                    [{"type": "Term", "source": source, "id": "-term"}]
+                )
+                self.assert_serialize_failure(
+                    fluent_file, r'^Error in source of FluentUnit "-term":'
+                )
 
             # A Term that has an empty value with attributes, or empty
             # attributes, simply throws because this is a syntax error within a
@@ -553,7 +572,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             fluent_file = self.quick_fluent_file(
                 [
                     {"type": "Message", "source": "ok", "id": "message"},
-                    {"type": "Message", "source": f"{source}\n.attr = ok", "id": "m"},
+                    {"type": "Message", "source": f"{source}.attr = ok", "id": "m"},
                 ]
             )
             self.assert_serialize(
@@ -564,17 +583,18 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                     .attr = ok
                 """,
             )
+
             # Empty attribute is not ok.
             fluent_file.units[1].source = f"ok\n.attr = {source}"
             self.assert_serialize_failure(
                 fluent_file, r'^Error in source of FluentUnit "m":'
             )
 
-        subtest_empty_unit_source(None)
-        subtest_empty_unit_source("")
-        subtest_empty_unit_source(" ")
-        subtest_empty_unit_source("\n")
-        subtest_empty_unit_source("\n ")
+        subtest_whitespace_unit_source("")
+        subtest_whitespace_unit_source(" ")
+        subtest_whitespace_unit_source("\n")
+        subtest_whitespace_unit_source(" \n ")
+        subtest_whitespace_unit_source("\n \n ")
 
     def test_multiline_value(self):
         """Test multiline values for fluent Messages and Terms."""

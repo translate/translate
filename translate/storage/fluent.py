@@ -334,7 +334,7 @@ class FluentUnit(base.TranslationUnit):
         string with an error message if this fails.
         """
         source = self.source
-        if source is None or not source.strip():
+        if not source:
             return None
 
         # Create a fluent Message by prefixing the source with "unit-id = \n"
