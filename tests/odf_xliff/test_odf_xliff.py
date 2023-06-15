@@ -36,10 +36,6 @@ from translate.convert import odf2xliff, xliff2odf  # isort:skip
 from translate.storage import factory, xliff  # isort:skip
 
 
-def setup_module(module):
-    os.chdir(path.dirname(__file__))
-
-
 def args(src, tgt, **kwargs):
     arg_list = []
     arg_list.extend(["--errorlevel=traceback", src, tgt])
@@ -68,18 +64,24 @@ def print_diff(store1, store2):
         print(line)
 
 
-SOURCE_ODF = "test_2.odt"
-REFERENCE_XLF = "test_2-test_odf2xliff-reference.xlf"
-GENERATED_XLF_ITOOLS = "test_2-test_odf2xliff-itools.xlf"
-GENERATED_XLF_TOOLKIT = "test_2-test_odf2xliff-toolkit.xlf"
+BASE_PATH = path.dirname(__file__)
 
-TARGET_XLF = "test_2-test_roundtrip.xlf"
-REFERENCE_ODF = "test_2.odt"
-GENERATED_ODF = "test_2-test_roundtrip-generated.odt"
+SOURCE_ODF = os.path.join(BASE_PATH, "test_2.odt")
+REFERENCE_XLF = os.path.join(BASE_PATH, "test_2-test_odf2xliff-reference.xlf")
+GENERATED_XLF_ITOOLS = os.path.join(BASE_PATH, "test_2-test_odf2xliff-itools.xlf")
+GENERATED_XLF_TOOLKIT = os.path.join(BASE_PATH, "test_2-test_odf2xliff-toolkit.xlf")
 
-SOURCE_ODF_INLINE = "test_inline.odt"
-REFERENCE_XLF_INLINE = "test_inline-test_odf2xliff_inline-reference.xlf"
-GENERATED_XLF_TOOLKIT_INLINE = "test_inline-test_odf2xliff_inline-toolkit.xlf"
+TARGET_XLF = os.path.join(BASE_PATH, "test_2-test_roundtrip.xlf")
+REFERENCE_ODF = os.path.join(BASE_PATH, "test_2.odt")
+GENERATED_ODF = os.path.join(BASE_PATH, "test_2-test_roundtrip-generated.odt")
+
+SOURCE_ODF_INLINE = os.path.join(BASE_PATH, "test_inline.odt")
+REFERENCE_XLF_INLINE = os.path.join(
+    BASE_PATH, "test_inline-test_odf2xliff_inline-reference.xlf"
+)
+GENERATED_XLF_TOOLKIT_INLINE = os.path.join(
+    BASE_PATH, "test_inline-test_odf2xliff_inline-toolkit.xlf"
+)
 
 
 def test_odf2xliff():
