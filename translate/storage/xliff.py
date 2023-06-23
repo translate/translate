@@ -559,6 +559,27 @@ class xliffunit(lisa.LISAunit):
                     )
                 groups.append(pairs)  # not extend
         return groups
+    
+    def getcontextgroupsbyattribute(self, attributeName, attributeValue):
+        """Returns the contexts in the context groups with the specified attributeName and attributeValue"""
+        groups = []
+        grouptags = self.xmlelement.iterdescendants(self.namespaced("context-group"))
+        for group in grouptags:
+            if group.get(attributeName) == attributeValue:
+                contexts = group.iterdescendants(self.namespaced("context"))
+                pairs = []
+                for context in contexts:
+                    pairs.append(
+                        (
+                            context.get("context-type"),
+                            lisa.getText(
+                                context,
+                                getXMLspace(self.xmlelement, self._default_xml_space),
+                            ),
+                        )
+                    )
+                groups.append(pairs)  # not extend
+        return groups
 
     def getrestype(self):
         """returns the restype attribute in the trans-unit tag"""
