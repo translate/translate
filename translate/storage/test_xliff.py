@@ -689,7 +689,9 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 </xliff>
 """
         xlifffile = xliff.xlifffile.parsestring(xlfsource)
-        contextGroups = xlifffile.units[0].getcontextgroupsbyattribute("purpose", "location")
+        contextGroups = xlifffile.units[0].getcontextgroupsbyattribute(
+            "purpose", "location"
+        )
 
         assert contextGroups[0][0][0] == "sourcefile"
         assert contextGroups[0][0][1] == "some-directory/on-some-test/test.file"

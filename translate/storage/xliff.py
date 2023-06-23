@@ -559,7 +559,7 @@ class xliffunit(lisa.LISAunit):
                     )
                 groups.append(pairs)  # not extend
         return groups
-    
+
     def getcontextgroupsbyattribute(self, attributeName, attributeValue):
         """Returns the contexts in the context groups with the specified attributeName and attributeValue"""
         groups = []
