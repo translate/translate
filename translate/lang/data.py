@@ -18,18 +18,8 @@
 
 """This module stores information and functionality that relates to plurals."""
 
-
-import gettext
-import locale
-import os
 import re
 import unicodedata
-
-try:
-    import pycountry
-except ImportError:
-    pycountry = None
-
 
 languages = {
     "ach": ("Acholi", 2, "n > 1"),
@@ -636,141 +626,9 @@ langcode_ire = re.compile("^[a-z]{2,3}([_-][a-z]{2,3})?(@[a-z0-9]+)?$", re.IGNOR
 variant_re = re.compile("^[_-][A-Z]{2,3}(@[a-zA-Z0-9]+|)$")
 
 
-def languagematch(languagecode, otherlanguagecode):
-    """matches a languagecode to another, ignoring regions in the second"""
-    if languagecode is None:
-        return langcode_re.match(otherlanguagecode)
-    return languagecode == otherlanguagecode or (
-        otherlanguagecode.startswith(languagecode)
-        and variant_re.match(otherlanguagecode[len(languagecode) :])
-    )
-
-
-def get_country_iso_name(country_code):
-    """Return country ISO name."""
-    country_code = country_code.upper()
-    try:
-        if len(country_code) == 2:
-            country = pycountry.countries.get(alpha_2=country_code)
-        else:
-            country = pycountry.countries.get(alpha_3=country_code)
-        if hasattr(country, "common_name"):
-            return country.common_name
-        return country.name
-    except (KeyError, AttributeError):
-        return ""
-
-
-def get_language_iso_name(language_code):
-    """Return language ISO name."""
-    try:
-        if len(language_code) == 2:
-            language = pycountry.languages.get(alpha_2=language_code)
-        else:
-            language = pycountry.languages.get(alpha_3=language_code)
-        if hasattr(language, "common_name"):
-            return language.common_name
-        return language.name
-    except (KeyError, AttributeError):
-        return ""
-
-
-def get_language_iso_fullname(language_code):
-    """Return language ISO fullname.
-
-    If language code is not a simple ISO 639 code, then we try to split into a
-    two part language code (ISO 639 and ISO 3166).
-    """
-    if len(language_code) > 3:
-        language_code = language_code.replace("_", "-").replace("@", "-")
-        language_code = "-".join(language_code.split("-")[:2])
-        if "-" not in language_code:
-            return ""
-        language_code, country_code = language_code.split("-")
-        language_name = get_language_iso_name(language_code)
-        if not language_name:
-            return ""
-        country_name = get_country_iso_name(country_code)
-        if not country_name:
-            return ""
-        return f"{language_name} ({country_name})"
-    return get_language_iso_name(language_code)
-
-
 dialect_name_re = re.compile(r"(.+)\s\(([^)\d]{,25})\)$")
 # The limit of 25 characters on the country name is so that "Interlingua (...)"
 # (see above) is correctly interpreted.
-
-
-def tr_lang(langcode=None):
-    """Gives a function that can translate a language name, even in the form
-    ``"language (country)"``, into the language with iso code langcode, or the
-    system language if no language is specified.
-    """
-    langfunc = gettext_lang(langcode)
-    countryfunc = gettext_country(langcode)
-
-    def handlelanguage(name):
-        match = dialect_name_re.match(name)
-        if match:
-            language, country = match.groups()
-            if country != "macrolanguage":
-                return "{} ({})".format(
-                    _fix_language_name(langfunc(language)),
-                    countryfunc(country),
-                )
-        return _fix_language_name(langfunc(name))
-
-    return handlelanguage
-
-
-def _fix_language_name(name):
-    """Identify and replace some unsightly names present in iso-codes.
-
-    If the name is present in _fixed_names we assume it is untranslated and we
-    replace it with a more usable rendering.  If the remaining part is long and
-    includes a semi-colon, we only take the text up to the semi-colon to keep
-    things neat.
-    """
-    if name in _fixed_names:
-        return _fixed_names[name]
-    elif len(name) > 11:
-        # These constants are somewhat arbitrary, but testing with the Japanese
-        # translation of ISO codes suggests these as the upper bounds.
-        split_point = name[5:].find(";")
-        if split_point >= 0:
-            return name[: 5 + split_point]
-    return name
-
-
-def gettext_domain(langcode, domain, localedir=None):
-    """Returns a gettext function for given iso domain"""
-    kwargs = dict(domain=domain, localedir=localedir, fallback=True)
-    if langcode:
-        kwargs["languages"] = [langcode]
-    elif os.name == "nt":
-        # On Windows the default locale is not used for some reason
-        kwargs["languages"] = [locale.getdefaultlocale()[0]]
-    t = gettext.translation(**kwargs)
-    return t.gettext
-
-
-def gettext_lang(langcode=None):
-    """Returns a gettext function to translate language names into the given
-    language, or the system language if no language is specified.
-    """
-    if pycountry is None:
-        return gettext_domain(langcode, "iso_639")
-    return gettext_domain(langcode, "iso639-3", pycountry.LOCALES_DIR)
-
-
-def gettext_country(langcode=None):
-    """Returns a gettext function to translate country names into the given
-    language, or the system language if no language is specified.
-    """
-    if pycountry is None:
-        return gettext_domain(langcode, "iso_3166")
-    return gettext_domain(langcode, "iso3166", pycountry.LOCALES_DIR)
 
 
 def normalize(string, normal_form="NFC"):
