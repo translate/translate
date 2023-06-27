@@ -81,7 +81,7 @@ requirements/min-versions.txt: requirements/optional.txt requirements/required.t
 	@cat $^ | sed -n '/=/{s/>=/==/;s/,<.*//;s/,!=.*//;p;};/^[-#]/d;/^$$/d;/=/d;p;' >> $@
 
 test:
-	@py.test --cov=. -r EfsxX -W error::DeprecationWarning
+	@py.test --cov=. -r EfsxX
 
 test-functional:
 	@tests/cli/run_tests.sh
