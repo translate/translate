@@ -37,19 +37,19 @@ requirements/min-versions.txt
 venv
 
 ##############################
-# translate/ specific excludes
+# translate_toolkit/ specific excludes
 ##############################
 
-translate/storage/properties.class
+translate_toolkit/storage/properties.class
 
 # Testing
 # #######
 # Roundtrip testing noise
-translate/convert/diff_*.diff
-translate/convert/mozilla-l10n/
-translate/convert/mozilla-gaia/
-translate/convert/rewritten-po/
-translate/convert/templates-recreated/
+translate_toolkit/convert/diff_*.diff
+translate_toolkit/convert/mozilla-l10n/
+translate_toolkit/convert/mozilla-gaia/
+translate_toolkit/convert/rewritten-po/
+translate_toolkit/convert/templates-recreated/
 
 # other
 tests/xliff_conformance/af-pootle.xlf

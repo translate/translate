@@ -32,8 +32,8 @@ dir = os.path.dirname(os.path.dirname(dir))
 # load python modules from top-level
 sys.path.insert(0, dir)
 
-from translate.convert import odf2xliff, xliff2odf  # isort:skip
-from translate.storage import factory, xliff  # isort:skip
+from translate_toolkit.convert import odf2xliff, xliff2odf  # isort:skip
+from translate_toolkit.storage import factory, xliff  # isort:skip
 
 
 def args(src, tgt, **kwargs):
