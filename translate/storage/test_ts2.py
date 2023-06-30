@@ -411,3 +411,21 @@ class TestTSfile(test_base.TestTranslationStore):
             '/source>\n        <translation type="unfinished">TestTarget</translation>',
         )
         assert newtsstr == bytes(tsfile).decode("utf-8")
+
+    @staticmethod
+    def test_missing_source():
+        tsstr = """<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="en_EN">
+<context>
+    <name>About</name>
+    <message>
+        <location filename="../qml/app/views/AboutView.qml" line="26"/>
+        <translation>Versions</translation>
+    </message>
+</context>
+</TS>
+"""
+
+        tsfile = ts.tsfile.parsestring(tsstr)
+        assert tsfile.units[0].isblank() is False
