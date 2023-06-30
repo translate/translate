@@ -1,0 +1,32 @@
+Translate Toolkit 3.9.2
+***********************
+
+*Released on 30 June 2023*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- TS2
+
+  - Fixed handling of files without a source string
+
+- TBX
+
+  - Improved notes parsing
+
+Others
+------
+
+- fixed random testsuite failures
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař
