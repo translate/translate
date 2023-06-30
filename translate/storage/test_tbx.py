@@ -109,3 +109,35 @@ class TestTBXfile(test_base.TestTranslationStore):
         assert bytes(tbxfile).decode() == tbxdata.replace(
             "Explanation", "Another explanation"
         )
+
+    @staticmethod
+    def test_note_from():
+        tbxdata = """<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE martif PUBLIC "ISO 12200:1999A//DTD MARTIF core (DXFcdV04)//EN" "TBXcdv04.dtd">
+<martif type="TBX" xml:lang="en">
+    <martifHeader>
+        <fileDesc>
+            <sourceDesc>
+                <p>Translate Toolkit</p>
+            </sourceDesc>
+        </fileDesc>
+    </martifHeader>
+    <text>
+        <body>
+            <termEntry id="testid">
+                <langSet xml:lang="en"><tig><term>Concept</term></tig></langSet>
+                <note from="translator">Translator note</note>
+                <note>Other note</note>
+            </termEntry>
+        </body>
+    </text>
+</martif>
+"""
+        tbxfile = tbx.tbxfile.parsestring(tbxdata.encode())
+        assert bytes(tbxfile).decode() == tbxdata
+        assert len(tbxfile.units) == 1
+        unit = tbxfile.units[0]
+        assert unit.source == "Concept"
+        assert unit.getnotes(origin="translator") == "Translator note"
+        assert unit.getnotes(origin="dev") == ""
+        assert unit.getnotes() == "Translator note\nOther note"
