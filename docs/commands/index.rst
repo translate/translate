@@ -17,6 +17,7 @@ Converters
    ical2po
    ini2po
    json2po
+   md2po
    moz2po
    odf2xliff
    oo2po
@@ -63,6 +64,7 @@ understanding that will make the converters much easier to use and understand.
 * :doc:`ical2po <ical2po>` -- iCalendar file converter
 * :doc:`ini2po <ini2po>` -- Windows INI file converter
 * :doc:`json2po <json2po>` -- JSON file converter
+* :doc:`md2po <md2po>` -- Markdown file converter
 * :doc:`moz2po <moz2po>` -- Mozilla .properties and .dtd converter.  Works with
   Firefox and Thunderbird
 * :doc:`odf2xliff <odf2xliff>` -- Convert OpenDocument (ODF) documents to XLIFF

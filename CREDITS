@@ -11,7 +11,7 @@ Alphabetical Order of Contributors
 ----------------------------------
 
 Alexander Dupuy: poterminology, quality checks
-Anders Kaplan: improvements to html2po
+Anders Kaplan: improvements to html2po, translation support for Markdown
 Caio Begotti: documentation
 Clytie Siddall: testing and bugreporting
 Dan Schafer (Mozilla): improvements to html2po

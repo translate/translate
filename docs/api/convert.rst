@@ -85,6 +85,14 @@ json2po
    :inherited-members:
 
 
+md2po
+-------
+
+.. automodule:: translate.convert.md2po
+   :members:
+   :inherited-members:
+
+
 moz2po
 ------
 
