@@ -223,10 +223,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     def render_link_reference_definition(
         self, token: LinkReferenceDefinition
     ) -> Iterable[Fragment]:
-        if self.bypass:
-            yield from super().render_link_reference_definition(token)
-            return
-
+        # note: these tokens will never be encountered in bypass mode.
         translated_label = self.translate_callback(
             token.label, [*self.path, "link-label"]
         )
