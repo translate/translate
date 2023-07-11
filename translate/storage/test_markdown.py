@@ -264,7 +264,7 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
             tu.getlocations()[0] for tu in store.units if tu.source == "foo *bar*"
         ]
         assert len(locations) == 2 and all(
-            [loc.endswith("link-label") for loc in locations]
+            loc.endswith("link-label") for loc in locations
         )
 
     def test_link_reference_definition_and_shortcut_reference_link(self):
@@ -389,15 +389,18 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
             == "([*embedded image* ![moon](moon.jpg \"(the moon y'all)\")](/uri '(link title)'))\n"
         )
 
-    def parse(self, md):
+    @staticmethod
+    def parse(md):
         inputfile = BytesIO(md.encode())
         store = markdown.markdownfile(inputfile=inputfile, callback=lambda x: f"({x})")
         return store
 
-    def get_translation_unit_sources(self, store):
+    @staticmethod
+    def get_translation_unit_sources(store):
         return [tu.source for tu in store.units]
 
-    def get_translated_output(self, store):
+    @staticmethod
+    def get_translated_output(store):
         return store.filesrc
 
 

@@ -95,7 +95,7 @@ class markdownfile(base.TranslationStore):
             document = block_token.Document(lines)
             self.filesrc = renderer.render(document)
 
-    def _translate_callback(self, text: str, path: list[str]) -> str:
+    def _translate_callback(self, text: str, path: Iterable[str]) -> str:
         text = text.strip()
         if not text:
             return ""
@@ -175,7 +175,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
 
         yield from self.embed_span(Fragment("["), token.children, Fragment("]"))
 
-        if token.dest_type == "uri" or token.dest_type == "angle_uri":
+        if token.dest_type in ["uri", "angle_uri"]:
             # "[" description "](" dest_part [" " title] ")"
             dest_part = "<" + target + ">" if token.dest_type == "angle_uri" else target
             placeholder = Fragment(None, important=True)
