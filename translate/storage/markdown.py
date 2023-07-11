@@ -425,7 +425,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     @classmethod
     def insert_placeholder_markers(
         cls, fragments: Iterable[Fragment]
-    ) -> list[Fragment]:
+    ) -> Iterable[Fragment]:
         """
         Sets the text of the (top-level) placeholder fragments to "{n}".
         Returns an ordered list of placeholders.
@@ -440,7 +440,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         return placeholders
 
     def remove_placeholder_markers(
-        self, markdown: str, placeholders: list[Fragment]
+        self, markdown: str, placeholders: Iterable[Fragment]
     ) -> str:
         """Replaces placeholder markers in the given markdown with placeholder content."""
         for index, placeholder in enumerate(placeholders):
