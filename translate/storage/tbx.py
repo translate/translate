@@ -93,6 +93,7 @@ class tbxunit(lisa.LISAunit):
         initial_list = [
             lisa.getText(note, getXMLspace(self.xmlelement, self._default_xml_space))
             for note in note_nodes
+            if origin in ("pos", "definition", None) or note.get("from") == origin
         ]
 
         # Remove duplicate entries from list:

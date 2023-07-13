@@ -104,8 +104,11 @@ class tsunit(lisa.LISAunit):
 
     @lisa.LISAunit.source.getter
     def source(self):
+        sourcenode = self._getsourcenode()
+        if sourcenode is None:
+            return None
         # TODO: support <byte>. See bug 528.
-        text = self._getsourcenode().text
+        text = sourcenode.text
         if self.hasplural():
             return multistring([text])
         return text
