@@ -183,6 +183,86 @@ class _ReferenceVisitor(visitor.Visitor):
         self._add_ref(node)
 
 
+# NOTES to help understand FluentSelectorBranch and FluentSelectorNode:
+#
+# Given some fluent Pattern, we can break it down into a tree-like
+# structure using the SelectExpressions as splitting points.
+#
+# For example, consider:
+#
+# upload { $num ->
+#   [one] a photo
+#  *[other] { FUNC($num) ->
+#      [a] some
+#     *[b] { $num }
+#   } photos
+# } immediately to { -server.vowel ->
+#   [yes] an
+#  *[no] a
+# } { -sever } server.
+#
+# This would be broken down into
+#
+#                 [   top-branch  ]
+#                 /               \
+#                /                 \
+# "upload "($num)" immediately to "(-server.vowel)" { -server } server."
+#         /      \                     \        \
+#     [one]      [other]               [yes]    [no]
+#  "a photo"        |                   "an"     "a"
+#              (FUNC($num))" photos"
+#               /         \
+#             [a]         [b]
+#            "some"    "{ $num }"
+#
+#
+# The parts in square-brackets are the FluentSelectorBranches and the parts
+# in curved-brackets are the FluentSelectorNodes. The vertical lines
+# represent the parent-child relation between a branch and a node, or a node
+# and a branch. The parts in quotes are the text content that is filled in
+# between the nodes, which would be "owned" by the branch above, but we do
+# not show this relation.
+#
+# The top-branch just represents the top Pattern itself.
+#
+# Basically, each SelectExpression becomes a node, identified by the
+# SelectExpression's selector (the part before the "->"). And its Variants
+# become branches of that node, identified by the Variant's key (the part in
+# the square brackets). Any SelectExpression in the Variant's Pattern
+# becomes a node of that branch, and so on.
+#
+# This forms an overall tree-like structure which iterates between
+# FluentSelectorBranch and FluentSelectorNode at each level. In particular,
+# note that each FluentSelectorBranch may have any number of
+# FluentSelectorNode children.
+#
+# Put another way, each node represents a point in the string where some
+# variant/alternative sub-strings could be placed. Each branch represents
+# one of these options.
+#
+# The end user will only ever see one variant of this string where each node
+# is replaced with the text content of *one* of its branches. Although some
+# branches can be ignored if their parent was not selected, such as the [a]
+# and [b] branch if the [one] branch was selected.
+#
+# Each such variant can be expressed as the sequence of branches that are
+# selected. These are the "branch_paths" for this Pattern. For this example
+# there 6 different overall variants/branch_paths:
+#
+# [one]-[yes]
+#   "upload a photo immediately to an { -server } server."
+# [other]-[a]-[yes]
+#   "upload some photos immediately to an { -server } server."
+# [other]-[b]-[yes]
+#   "upload { $num } photos immediately to an { -server } server."
+# [one]-[no]
+#   "upload a photo immediately to a { -server } server."
+# [other]-[a]-[no]
+#   "upload some photos immediately to a { -server } server."
+# [other]-[b]-[no]
+#   "upload { $num } photos immediately to a { -server } server."
+
+
 class FluentSelectorNode:
     """Represents a single Fluent SelectExpression.
 
