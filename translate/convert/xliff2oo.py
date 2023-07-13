@@ -74,33 +74,31 @@ class reoo:
 
     def handleunit(self, unit):
         # TODO: make this work for multiple columns in oo...
-        locations = unit.getlocations()
+        location = unit.getid()
         # technically our formats should just have one location for each entry...
-        # but we handle multiple ones just to be safe...
-        for location in locations:
-            subkeypos = location.rfind(".")
-            subkey = location[subkeypos + 1 :]
-            key = location[:subkeypos]
-            # this is just to handle our old system of using %s/%s:%s instead of %s/%s#%s
-            key = key.replace(":", "#")
-            # this is to handle using / instead of \ in the sourcefile...
-            key = key.replace("\\", "/")
-            key = oo.normalizefilename(key)
-            if key in self.index:
-                # now we need to replace the definition of entity with msgstr
-                theoo = self.index[key]  # find the oo
-                self.applytranslation(key, subkey, theoo, unit)
-            else:
-                logger.warning(
-                    "couldn't find key %s from po in %d keys", key, len(self.index)
-                )
-                try:
-                    sourceunitlines = str(unit)
-                    if isinstance(sourceunitlines, str):
-                        sourceunitlines = sourceunitlines.encode("utf-8")
-                    logger.warning(sourceunitlines)
-                except Exception:
-                    logger.error("error outputting source unit %r", str(unit))
+        subkeypos = location.rfind(".")
+        subkey = location[subkeypos + 1 :]
+        key = location[:subkeypos]
+        # this is just to handle our old system of using %s/%s:%s instead of %s/%s#%s
+        key = key.replace(":", "#")
+        # this is to handle using / instead of \ in the sourcefile...
+        key = key.replace("\\", "/")
+        key = oo.normalizefilename(key)
+        if key in self.index:
+            # now we need to replace the definition of entity with msgstr
+            theoo = self.index[key]  # find the oo
+            self.applytranslation(key, subkey, theoo, unit)
+        else:
+            logger.warning(
+                "couldn't find key %s from po in %d keys", key, len(self.index)
+            )
+            try:
+                sourceunitlines = str(unit)
+                if isinstance(sourceunitlines, str):
+                    sourceunitlines = sourceunitlines.encode("utf-8")
+                logger.warning(sourceunitlines)
+            except Exception:
+                logger.error("error outputting source unit %r", str(unit))
 
     def applytranslation(self, key, subkey, theoo, unit):
         """applies the translation from the source unit to the oo unit"""
