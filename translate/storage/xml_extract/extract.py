@@ -324,6 +324,7 @@ def _make_store_adder(store):
     to 'placeable_quoter'.
     """
     id_maker = IdMaker()
+    from translate.storage.xliff import xliffunit
 
     def add_translatable_to_store(parent_translatable, translatable):
         """Construct a new translation unit, set its source and location
@@ -333,7 +334,10 @@ def _make_store_adder(store):
         unit.rich_source = [
             StringElem(_to_placeables(parent_translatable, translatable, id_maker))
         ]
-        unit.addlocation(translatable.xpath)
+        if isinstance(unit, xliffunit):
+            unit.setid(translatable.xpath)
+        else:
+            unit.addlocation(translatable.xpath)
         store.addunit(unit)
 
     return add_translatable_to_store
