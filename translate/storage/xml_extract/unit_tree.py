@@ -115,9 +115,13 @@ def build_unit_tree(store, filename=None):
                        `- <reference to a unit>
     """
     tree = XPathTree()
+    is_xliff = isinstance(store, xliff.xlifffile)
     for unit in store.units:
         if unit.source and not unit.isfuzzy():
-            locations = unit.getlocations()
+            if is_xliff:
+                locations = [unit.getid()]
+            else:
+                locations = unit.getlocations()
             if filename is not None and len(locations) > 1 and filename != locations[1]:
                 # Skip units that don't come from the filename we are currently
                 # trying to get units for.
