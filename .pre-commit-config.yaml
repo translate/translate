@@ -25,7 +25,7 @@ repos:
   - id: pyupgrade
     args: [--py38-plus]
 - repo: https://github.com/psf/black
-  rev: 23.3.0
+  rev: 23.7.0
   hooks:
   - id: black
 - repo: https://github.com/PyCQA/flake8
@@ -41,7 +41,7 @@ repos:
   hooks:
   - id: pydocstyle
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-  rev: v2.9.0
+  rev: v2.10.0
   hooks:
   - id: pretty-format-yaml
     args: [--autofix, --indent, '2']
