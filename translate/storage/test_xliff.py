@@ -749,4 +749,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 
         locations = xlifffile.units[0].getlocations()
 
-        assert locations == "some-directory/on-some-test/test.file:222, some-directory/on-some-test/test.file2:333"
+        assert (
+            locations
+            == "some-directory/on-some-test/test.file:222, some-directory/on-some-test/test.file2:333"
+        )

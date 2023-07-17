@@ -509,17 +509,21 @@ class xliffunit(lisa.LISAunit):
         split = location.split(":")
         file = split[0]
         lineNumber = split[1]
-        contexts=[("sourcefile", file),("linenumber", lineNumber)]
+        contexts = [("sourcefile", file), ("linenumber", lineNumber)]
         self.createcontextgroup("", contexts, "location")
 
     def getlocations(self):
         """Return comma separated list of locations."""
         locations = []
-        for contextGroup in self.getcontextgroupsbyattribute("purpose", "location"):                        
+        for contextGroup in self.getcontextgroupsbyattribute("purpose", "location"):
             if len(contextGroup) == 2:
-                sourceFile = next((x for x in contextGroup if x[0] == "sourcefile"), None)
-                lineNumber = next((x for x in contextGroup if x[0] == "linenumber"), None)
-                if (sourceFile is not None and lineNumber is not None):
+                sourceFile = next(
+                    (x for x in contextGroup if x[0] == "sourcefile"), None
+                )
+                lineNumber = next(
+                    (x for x in contextGroup if x[0] == "linenumber"), None
+                )
+                if sourceFile is not None and lineNumber is not None:
                     locations.append(sourceFile[1] + ":" + lineNumber[1])
 
         return ", ".join(x for x in locations if x is not None)
