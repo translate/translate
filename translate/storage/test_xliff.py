@@ -667,3 +667,89 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         xlifffile.XMLuppercaseEncoding = False
 
         assert bytes(xlifffile).decode("utf-8") == xlfsource
+
+    @staticmethod
+    def test_context_groups():
+        xlfsource = """<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+  <file datatype="xml" source-language="en-US" target-language="en-US" original="Email - SMTP API">
+    <body>
+      <group id="body">
+        <trans-unit id="Codeunit 270637162 - NamedType 3430817766" maxwidth="0" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Please connect to a server first.</source>
+          <target state="translated">Please connect to a server first.</target>
+          <context-group purpose="location">
+            <context context-type="sourcefile">some-directory/on-some-test/test.file</context>
+            <context context-type="linenumber">222</context>
+          </context-group>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>
+"""
+        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        contextGroups = xlifffile.units[0].getcontextgroupsbyattribute(
+            "purpose", "location"
+        )
+
+        assert contextGroups[0][0][0] == "sourcefile"
+        assert contextGroups[0][0][1] == "some-directory/on-some-test/test.file"
+
+        assert contextGroups[0][1][0] == "linenumber"
+        assert contextGroups[0][1][1] == "222"
+
+    @staticmethod
+    def test_getlocations():
+        xlfsource = """<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+  <file datatype="xml" source-language="en-US" target-language="en-US" original="Email - SMTP API">
+    <body>
+      <group id="body">
+        <trans-unit id="Codeunit 270637162 - NamedType 3430817766" maxwidth="0" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Please connect to a server first.</source>
+          <target state="translated">Please connect to a server first.</target>
+          <context-group purpose="location">
+            <context context-type="sourcefile">some-directory/on-some-test/test.file</context>
+            <context context-type="linenumber">222</context>
+          </context-group>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>
+"""
+        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        locations = xlifffile.units[0].getlocations()
+
+        assert locations == "some-directory/on-some-test/test.file:222"
+
+    @staticmethod
+    def test_addlocation():
+        xlfsource = """<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+  <file datatype="xml" source-language="en-US" target-language="en-US" original="Email - SMTP API">
+    <body>
+      <group id="body">
+        <trans-unit id="Codeunit 270637162 - NamedType 3430817766" maxwidth="0" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Please connect to a server first.</source>
+          <target state="translated">Please connect to a server first.</target>
+          <context-group purpose="location">
+            <context context-type="sourcefile">some-directory/on-some-test/test.file</context>
+            <context context-type="linenumber">222</context>
+          </context-group>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>
+"""
+        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        xlifffile.units[0].addlocation("some-directory/on-some-test/test.file2:333")
+
+        locations = xlifffile.units[0].getlocations()
+
+        assert (
+            locations
+            == "some-directory/on-some-test/test.file:222, some-directory/on-some-test/test.file2:333"
+        )
