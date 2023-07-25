@@ -389,6 +389,34 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
             == "([*embedded image* ![moon](moon.jpg \"(the moon y'all)\")](/uri '(link title)'))\n"
         )
 
+    def test_placeholder_trimming(self):
+        fragments = [
+            markdown.Fragment("a", placeholder_content=[markdown.Fragment("")]),
+            markdown.Fragment(" "),
+            markdown.Fragment("b"),
+            markdown.Fragment(" "),
+            markdown.Fragment("c", placeholder_content=[markdown.Fragment("")]),
+        ]
+        (
+            leader,
+            content,
+            trailer,
+        ) = markdown.TranslatingMarkdownRenderer.trim_flanking_placeholders(fragments)
+        assert leader == fragments[0:2]
+        assert content == fragments[2:3]
+        assert trailer == fragments[3:5]
+
+        fragments[0].important = True
+        fragments[4].important = True
+        (
+            leader,
+            content,
+            trailer,
+        ) = markdown.TranslatingMarkdownRenderer.trim_flanking_placeholders(fragments)
+        assert leader == []
+        assert content == fragments
+        assert trailer == []
+
     @staticmethod
     def parse(md):
         inputfile = BytesIO(md.encode())
