@@ -3,7 +3,7 @@
 .. _po2md:
 
 md2po, po2md
-****************
+************
 
 Convert translatable items in Markdown text to the PO format. Insert translated text into Markdown templates.
 
