@@ -27,58 +27,45 @@ from translate.convert import convert
 from translate.storage import markdown, po
 
 
-class md2po:
-    """Extract translatable content from a Markdown file to a PO file"""
-
-    def convertfile(self, inputfile, duplicatestyle="msgctxt"):
-        """Extract translation units from a markdown file and remove duplicates. Returns a message store (pofile object)."""
-        store = po.pofile()
-        self.convertfile_inner(inputfile, store)
-        store.removeduplicates(duplicatestyle)
-        return store
-
-    def convertfile_inner(self, inputfile, outputstore):
-        """Extract translation units from a markdown file and add them to an existing message store (pofile object) without any further processing."""
-        parser = markdown.MarkdownFile(inputfile=inputfile)
-        for tu in parser.units:
-            storeunit = outputstore.addsourceunit(tu.source)
-            storeunit.addlocations(tu.getlocations())
-
-
 class MD2POOptionParser(convert.ConvertOptionParser):
     def __init__(self):
         formats = {
-            "md": ("po", self.convert),
-            "markdown": ("po", self.convert),
-            "txt": ("po", self.convert),
-            "text": ("po", self.convert),
-            None: ("po", self.convert),
+            "md": ("po", self._extract_translation_units),
+            "markdown": ("po", self._extract_translation_units),
+            "txt": ("po", self._extract_translation_units),
+            "text": ("po", self._extract_translation_units),
+            None: ("po", self._extract_translation_units),
         }
         super().__init__(formats, usetemplates=False, usepots=True, description=__doc__)
         self.add_duplicates_option()
         self.add_multifile_option()
         self.passthrough.append("pot")
 
-    def convert(
+    def _extract_translation_units(
         self,
         inputfile,
         outputfile,
         templates,
-        pot=False,
-        duplicatestyle="msgctxt",
-        multifilestyle="single",
+        pot,
+        duplicatestyle,
+        multifilestyle,
     ):
-        """Extract translation units from one markdown file."""
-        convertor = md2po()
         if hasattr(self, "outputstore"):
-            convertor.convertfile_inner(inputfile, self.outputstore)
+            self._parse_and_extract(inputfile, self.outputstore)
         else:
-            outputstore = convertor.convertfile(
-                inputfile,
-                duplicatestyle=duplicatestyle,
-            )
-            outputstore.serialize(outputfile)
+            store = po.pofile()
+            self._parse_and_extract(inputfile, store)
+            store.removeduplicates(duplicatestyle)
+            store.serialize(outputfile)
         return 1
+
+    @staticmethod
+    def _parse_and_extract(inputfile, outputstore):
+        """Extract translation units from a markdown file and add them to an existing message store (pofile object) without any further processing."""
+        parser = markdown.MarkdownFile(inputfile=inputfile)
+        for tu in parser.units:
+            storeunit = outputstore.addsourceunit(tu.source)
+            storeunit.addlocations(tu.getlocations())
 
     def recursiveprocess(self, options):
         """Recurse through directories and process files. (override)"""
@@ -86,8 +73,8 @@ class MD2POOptionParser(convert.ConvertOptionParser):
             self.outputstore = po.pofile()
             super().recursiveprocess(options)
             if not self.outputstore.isempty():
-                self.outputstore.removeduplicates(options.duplicatestyle)
                 outputfile = super().openoutputfile(options, options.output)
+                self.outputstore.removeduplicates(options.duplicatestyle)
                 self.outputstore.serialize(outputfile)
                 if options.output:
                     outputfile.close()
