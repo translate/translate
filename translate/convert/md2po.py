@@ -39,7 +39,7 @@ class md2po:
 
     def convertfile_inner(self, inputfile, outputstore):
         """Extract translation units from a markdown file and add them to an existing message store (pofile object) without any further processing."""
-        parser = markdown.markdownfile(inputfile=inputfile)
+        parser = markdown.MarkdownFile(inputfile=inputfile)
         for tu in parser.units:
             storeunit = outputstore.addsourceunit(tu.source)
             storeunit.addlocations(tu.getlocations())

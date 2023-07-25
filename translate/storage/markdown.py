@@ -50,7 +50,7 @@ from mistletoe.markdown_renderer import (
 from translate.storage import base
 
 
-class mdunit(base.TranslationUnit):
+class MarkdownUnit(base.TranslationUnit):
     """A unit of translatable/localisable markdown content"""
 
     def __init__(self, source=None):
@@ -64,25 +64,29 @@ class mdunit(base.TranslationUnit):
         return self.locations
 
 
-class markdownfile(base.TranslationStore):
-    UnitClass = mdunit
+class MarkdownFile(base.TranslationStore):
+    UnitClass = MarkdownUnit
 
     def __init__(self, inputfile=None, callback=None, max_line_length=None):
+        """ Construct a new object instance.
+
+        Parameters:
+        - inputfile: if specified, the content of this file is read and parsed.
+        - callback: a function which takes a chunk of untranslated content as
+          input and returns the corresponding translated content. Defaults to
+          a no-op.
+        - max_line_length: if specified, the document is word wrapped to the
+          given line length when rendered.
+        """
         base.TranslationStore.__init__(self)
         self.filename = getattr(inputfile, "name", None)
-        if callback is None:
-            self.callback = self._simple_callback
-        else:
-            self.callback = callback
+        self.callback = callback or self._dummy_callback
         self.max_line_length = max_line_length
         self.filesrc = ""
         if inputfile is not None:
             md_src = inputfile.read()
             inputfile.close()
             self.parse(md_src)
-
-    def _simple_callback(self, string):
-        return string
 
     def parse(self, data):
         """Process the given source string (binary)"""
@@ -94,6 +98,10 @@ class markdownfile(base.TranslationStore):
         ) as renderer:
             document = block_token.Document(lines)
             self.filesrc = renderer.render(document)
+
+    @staticmethod
+    def _dummy_callback(text: str) -> str:
+        return text
 
     def _translate_callback(self, text: str, path: Iterable[str]) -> str:
         text = text.strip()
@@ -176,7 +184,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         yield from self.embed_span(Fragment("["), token.children, Fragment("]"))
 
         if token.dest_type in ["uri", "angle_uri"]:
-            # "[" description "](" dest_part [" " title] ")"
+            # Markdown link format: "[" description "](" dest_part [" " title] ")"
             dest_part = "<" + target + ">" if token.dest_type == "angle_uri" else target
             placeholder = Fragment(None, important=True)
             placeholder.placeholder_content = [
@@ -202,7 +210,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
             placeholder.placeholder_content.append(Fragment(")"))
             yield placeholder
         elif token.dest_type == "full":
-            # "[" description "][" label "]"
+            # Markdown link format: "[" description "][" label "]"
             translated_label = self.translate_callback(
                 token.label, [*self.path, "link-label"]
             )
@@ -214,10 +222,10 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
             ]
             yield placeholder
         elif token.dest_type == "collapsed":
-            # "[" description "][]"
+            # Markdown link format: "[" description "][]"
             yield Fragment("[]")
         else:
-            # "[" description "]"
+            # Markdown link format: "[" description "]"
             pass
 
     def render_link_reference_definition(

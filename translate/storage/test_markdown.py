@@ -392,7 +392,7 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
     @staticmethod
     def parse(md):
         inputfile = BytesIO(md.encode())
-        store = markdown.markdownfile(inputfile=inputfile, callback=lambda x: f"({x})")
+        store = markdown.MarkdownFile(inputfile=inputfile, callback=lambda x: f"({x})")
         return store
 
     @staticmethod
@@ -408,7 +408,7 @@ class TestMarkdownRendering:
     def test_hard_line_break_in_translation_unit(self):
         input = "yes box\n"
         inputfile = BytesIO(input.encode())
-        store = markdown.markdownfile(
+        store = markdown.MarkdownFile(
             inputfile=inputfile, callback=lambda x: x.replace(" ", "\n")
         )
         assert store.filesrc == "yes\\\nbox\n"
@@ -416,7 +416,7 @@ class TestMarkdownRendering:
     def test_missing_placeholder(self):
         input = "yes <http://autolink> box\n"
         inputfile = BytesIO(input.encode())
-        store = markdown.markdownfile(
+        store = markdown.MarkdownFile(
             inputfile=inputfile, callback=lambda x: x.replace("{1}", "??")
         )
         assert store.filesrc == "yes ?? box\n"
@@ -424,7 +424,7 @@ class TestMarkdownRendering:
     def test_duplicate_placeholder(self):
         input = "yes <http://autolink> box\n"
         inputfile = BytesIO(input.encode())
-        store = markdown.markdownfile(
+        store = markdown.MarkdownFile(
             inputfile=inputfile, callback=lambda x: x.replace("{1}", "{1}{1}")
         )
         assert store.filesrc == "yes <http://autolink><http://autolink> box\n"
@@ -432,7 +432,7 @@ class TestMarkdownRendering:
     def test_extraneous_placeholder(self):
         input = "yes <http://autolink> box\n"
         inputfile = BytesIO(input.encode())
-        store = markdown.markdownfile(
+        store = markdown.MarkdownFile(
             inputfile=inputfile, callback=lambda x: x.replace("{1}", "{1}{2}")
         )
         assert store.filesrc == "yes <http://autolink>{2} box\n"
@@ -440,7 +440,7 @@ class TestMarkdownRendering:
     def test_reordered_placeholders(self):
         input = "yes <http://autolink> box <hr> all right\n"
         inputfile = BytesIO(input.encode())
-        store = markdown.markdownfile(
+        store = markdown.MarkdownFile(
             inputfile=inputfile, callback=lambda x: "all {2} messed up {1}!"
         )
         assert store.filesrc == "all <hr> messed up <http://autolink>!\n"
@@ -453,7 +453,7 @@ class TestMarkdownRendering:
         # This is by design.
         input = "whatever\n"
         inputfile = BytesIO(input.encode())
-        store = markdown.markdownfile(
+        store = markdown.MarkdownFile(
             inputfile=inputfile,
             callback=lambda x: "\t1.  ---  \n|  yeah  |\n|  whatever |  ",
         )

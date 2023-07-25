@@ -51,7 +51,7 @@ class po2md:
         self.inputstore = inputstore
         self.inputstore.require_index()
         self.includefuzzy = includefuzzy
-        outputstore = markdown.markdownfile(
+        outputstore = markdown.MarkdownFile(
             inputfile=templatetext,
             callback=self.lookup,
             max_line_length=maxlength if maxlength > 0 else None,
