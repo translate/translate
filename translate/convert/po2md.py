@@ -41,9 +41,6 @@ class MarkdownTranslator:
         self.maxlength = maxlength
 
     def translate(self, templatefile, outputfile):
-        if templatefile is None:
-            raise ValueError("must specify template")
-
         if not convert.should_output_store(self.inputstore, self.outputthreshold):
             return False
 
@@ -88,8 +85,8 @@ class PO2MDOptionParser(convert.ConvertOptionParser):
         self.add_threshold_option()
         self.add_fuzzy_option()
 
+    @staticmethod
     def _translate_md_file(
-        self,
         inputfile,
         outputfile,
         templatefile,
