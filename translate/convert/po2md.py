@@ -32,10 +32,30 @@ from translate.storage import markdown, po
 DEFAULT_MAX_LINE_LENGTH = 80
 
 
-class po2md:
-    """Write translated content from a PO file to a Markdown file"""
+class MarkdownTranslator:
+    def __init__(self, inputstore, includefuzzy, outputthreshold, maxlength):
+        self.inputstore = inputstore
+        self.inputstore.require_index()
+        self.includefuzzy = includefuzzy
+        self.outputthreshold = outputthreshold
+        self.maxlength = maxlength
 
-    def lookup(self, string):
+    def translate(self, templatefile, outputfile):
+        if templatefile is None:
+            raise ValueError("must specify template")
+
+        if not convert.should_output_store(self.inputstore, self.outputthreshold):
+            return False
+
+        outputstore = markdown.MarkdownFile(
+            inputfile=templatefile,
+            callback=self._lookup,
+            max_line_length=self.maxlength if self.maxlength > 0 else None,
+        )
+        outputfile.write(outputstore.filesrc.encode("utf-8"))
+        return 1
+
+    def _lookup(self, string):
         unit = self.inputstore.sourceindex.get(string, None)
         if unit is None:
             return string
@@ -46,51 +66,14 @@ class po2md:
             return unit.target
         return unit.source
 
-    def mergestore(self, inputstore, templatetext, includefuzzy, maxlength):
-        """Convert a file to markdown format"""
-        self.inputstore = inputstore
-        self.inputstore.require_index()
-        self.includefuzzy = includefuzzy
-        outputstore = markdown.MarkdownFile(
-            inputfile=templatetext,
-            callback=self.lookup,
-            max_line_length=maxlength if maxlength > 0 else None,
-        )
-        return outputstore.filesrc
-
-
-def convertmd(
-    inputfile,
-    outputfile,
-    templatefile,
-    includefuzzy=False,
-    outputthreshold=None,
-    maxlength=DEFAULT_MAX_LINE_LENGTH,
-):
-    """Read inputfile (po) and templatefile (markdown), write to outputfile (markdown)."""
-    inputstore = po.pofile(inputfile)
-
-    if not convert.should_output_store(inputstore, outputthreshold):
-        return False
-
-    convertor = po2md()
-    if templatefile is None:
-        raise ValueError("must have template file for Markdown files")
-    else:
-        outputstring = convertor.mergestore(
-            inputstore, templatefile, includefuzzy, maxlength
-        )
-    outputfile.write(outputstring.encode("utf-8"))
-    return 1
-
 
 class PO2MDOptionParser(convert.ConvertOptionParser):
     def __init__(self):
         formats = {
-            ("po", "md"): ("md", convertmd),
-            ("po", "markdown"): ("markdown", convertmd),
-            ("po", "txt"): ("txt", convertmd),
-            ("po", "text"): ("text", convertmd),
+            ("po", "md"): ("md", self._translate_md_file),
+            ("po", "markdown"): ("markdown", self._translate_md_file),
+            ("po", "txt"): ("txt", self._translate_md_file),
+            ("po", "text"): ("text", self._translate_md_file),
         }
         super().__init__(formats, usetemplates=True, description=__doc__)
         self.add_option(
@@ -104,6 +87,19 @@ class PO2MDOptionParser(convert.ConvertOptionParser):
         self.passthrough.append("maxlength")
         self.add_threshold_option()
         self.add_fuzzy_option()
+
+    def _translate_md_file(
+        self,
+        inputfile,
+        outputfile,
+        templatefile,
+        includefuzzy,
+        outputthreshold,
+        maxlength,
+    ):
+        inputstore = po.pofile(inputfile)
+        translator = MarkdownTranslator(inputstore, includefuzzy, outputthreshold, maxlength)
+        return translator.translate(templatefile, outputfile)
 
     def recursiveprocess(self, options):
         if (
@@ -154,19 +150,12 @@ class PO2MDOptionParser(convert.ConvertOptionParser):
         inputfile,
         outputfile,
         templatefile,
-        includefuzzy=False,
-        outputthreshold=None,
-        maxlength=DEFAULT_MAX_LINE_LENGTH,
+        includefuzzy,
+        outputthreshold,
+        maxlength,
     ):
-        if not convert.should_output_store(self.inputstore, outputthreshold):
-            return False
-
-        convertor = po2md()
-        outputstring = convertor.mergestore(
-            self.inputstore, templatefile, includefuzzy, maxlength
-        )
-        outputfile.write(outputstring.encode("utf-8"))
-        return 1
+        translator = MarkdownTranslator(self.inputstore, includefuzzy, outputthreshold, maxlength)
+        return translator.translate(templatefile, outputfile)
 
     def recurse_template_files(self, options):
         """Recurse through directories and return files to be processed."""
