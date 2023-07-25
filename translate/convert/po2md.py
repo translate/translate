@@ -98,7 +98,9 @@ class PO2MDOptionParser(convert.ConvertOptionParser):
         maxlength,
     ):
         inputstore = po.pofile(inputfile)
-        translator = MarkdownTranslator(inputstore, includefuzzy, outputthreshold, maxlength)
+        translator = MarkdownTranslator(
+            inputstore, includefuzzy, outputthreshold, maxlength
+        )
         return translator.translate(templatefile, outputfile)
 
     def recursiveprocess(self, options):
@@ -154,7 +156,9 @@ class PO2MDOptionParser(convert.ConvertOptionParser):
         outputthreshold,
         maxlength,
     ):
-        translator = MarkdownTranslator(self.inputstore, includefuzzy, outputthreshold, maxlength)
+        translator = MarkdownTranslator(
+            self.inputstore, includefuzzy, outputthreshold, maxlength
+        )
         return translator.translate(templatefile, outputfile)
 
     def recurse_template_files(self, options):

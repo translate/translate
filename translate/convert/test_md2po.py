@@ -1,9 +1,9 @@
 import os
+
 from translate.convert import md2po, test_convert
 
 
 class TestMD2PO(test_convert.TestConvertCommand):
-
     convertmodule = md2po
     defaultoptions = {"progress": "none"}
 
@@ -31,7 +31,7 @@ class TestMD2PO(test_convert.TestConvertCommand):
         assert os.path.isfile(self.get_testfilename("podir/file2.po"))
         content = self.read_testfile("podir/file1.po").decode()
         assert "Content of file 1" in content
-        assert not "Content of file 2" in content
+        assert "Content of file 2" not in content
 
     def test_markdown_directory_with_multifile_onefile(self):
         self.given_directory_of_markdown_files()

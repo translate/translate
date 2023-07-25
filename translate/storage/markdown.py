@@ -68,7 +68,7 @@ class MarkdownFile(base.TranslationStore):
     UnitClass = MarkdownUnit
 
     def __init__(self, inputfile=None, callback=None, max_line_length=None):
-        """ Construct a new object instance.
+        """Construct a new object instance.
 
         Parameters:
         - inputfile: if specified, the content of this file is read and parsed.

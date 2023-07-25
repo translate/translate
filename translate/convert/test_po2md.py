@@ -1,19 +1,18 @@
 import os
+
 from translate.convert import po2md, test_convert
-from translate.storage import po
 
 
 class TestPO2MD(test_convert.TestConvertCommand):
-
     convertmodule = po2md
     defaultoptions = {"progress": "none"}
 
     expected_options = [
         "-t TEMPLATE, --template=TEMPLATE",
-        '--threshold=PERCENT',
+        "--threshold=PERCENT",
         "--fuzzy",
         "--nofuzzy",
-        '-m MAXLENGTH, --maxlinelength=MAXLENGTH',
+        "-m MAXLENGTH, --maxlinelength=MAXLENGTH",
     ]
 
     def test_single_markdown_file_with_single_po(self):
@@ -76,4 +75,4 @@ class TestPO2MD(test_convert.TestConvertCommand):
         assert os.path.isfile(self.get_testfilename("testout/file2.md"))
         content = self.read_testfile("testout/file1.md").decode()
         assert "Innehåll i fil 1" in content
-        assert not "Innehåll i fil 2" in content
+        assert "Innehåll i fil 2" not in content
