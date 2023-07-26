@@ -1,0 +1,36 @@
+Translate Toolkit 3.8.3
+***********************
+
+*Released on 18 January 2023*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- Markdown
+
+  - Added support with po2md and md2po converters
+
+- XLIFF
+
+  - The location API now parses location from the XLIFF file instead of returning ID
+
+- Fluent
+
+  - Refactored for improved error handling
+
+Others
+------
+
+- Dropped pycountry dependency
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Henry Wilkes, Michal Čihař, MartinTopfstedtSinc, Anders Kaplan
