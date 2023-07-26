@@ -107,25 +107,27 @@ Formats of translatable documents
    :maxdepth: 1
    :hidden:
 
-   html
    flatxml
+   html
    ical
    json
-   yaml
+   md
    odf
+   subtitles
    text
    wiki
-   subtitles
+   yaml
 
-* :doc:`html`
 * :doc:`flatxml` (single-level XML)
+* :doc:`html`
 * :doc:`ical`
 * :doc:`json`
-* :doc:`yaml`
+* :doc:`md`
 * :wp:`OpenDocument` -- all ODF file types
+* :doc:`subtitles` -- various formats (v1.4)
 * :doc:`Text <text>` -- plain text with blocks separated by whitespace
 * :doc:`Wiki <wiki>` -- :wp:`DokuWiki` and :wp:`MediaWiki` supported
-* :doc:`subtitles` -- various formats (v1.4)
+* :doc:`yaml`
 
 .. _formats#machine_readable_formats:
 

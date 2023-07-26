@@ -149,6 +149,8 @@ Gaupol might need the 'Universal Encoding Detector'
 Trados TXT TM support requires the BeautifulSoup parser
 <http://www.crummy.com/software/BeautifulSoup/>
 
+Markdown support requires the mistletoe parser
+<https://github.com/miyuchina/mistletoe>
 
 Program overview
 ----------------
@@ -165,6 +167,7 @@ Use ``--help`` to find the syntax and options for all programs.
         ts2po    - convert Qt Linguist (.ts) files to PO
         txt2po   - convert simple text files to PO
         html2po  - convert HTML to PO (beta)
+        md2po    - convert Markdown to PO
         xliff2po - XLIFF (XML Localisation Interchange File Format) converter
         prop2po  - convert Java .properties files to PO
         po2wordfast - Wordfast Translation Memory converter

@@ -133,6 +133,14 @@ lisa
    :inherited-members:
 
 
+markdown
+--------
+
+.. automodule:: translate.storage.markdown
+   :members:
+   :inherited-members:
+
+
 mo
 --
 

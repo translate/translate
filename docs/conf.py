@@ -63,6 +63,7 @@ autodoc_mock_imports = [
     "gtk",
     "iniparse",
     "vobject",
+    "mistletoe",
 ]
 
 # -- Options for HTML output -------------------------------------------------
