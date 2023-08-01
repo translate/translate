@@ -127,9 +127,7 @@ def convertandroid(
     writes to *output_file*.
     """
 
-    output_store = _convertandroid(
-        input_file, template_file, pot, duplicatestyle
-    )
+    output_store = _convertandroid(input_file, template_file, pot, duplicatestyle)
     output_store.serialize(output_file)
     return 1
 
