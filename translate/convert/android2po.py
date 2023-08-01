@@ -35,9 +35,9 @@ class android2po:
     def convert_store(self, input_store, duplicatestyle="msgctxt"):
         output_store = po.pofile()
         output_header = output_store.header()
-        output_header.addnote("extracted from %s" % input_store.filename, "developer")
+        output_header.addnote(f"extracted from {input_store.filename}", "developer")
         for input_unit in input_store.units:
-            output_unit = self.convert_unit(input_unit, "developer")
+            output_unit = self.convert_unit(input_unit)
             if output_unit is not None:
                 output_store.addunit(output_unit)
         output_store.removeduplicates(duplicatestyle)
@@ -56,12 +56,12 @@ class android2po:
 
         input_store.makeindex()
         for template_unit in template_store.units:
-            origpo = self.convert_unit(template_unit, "developer")
+            origpo = self.convert_unit(template_unit)
 
             template_unit_name = template_unit.getid()
             if template_unit_name in input_store.id_index:
                 translatedxml = input_store.id_index[template_unit_name]
-                translatedpo = self.convert_unit(translatedxml, "translator")
+                translatedpo = self.convert_unit(translatedxml)
             else:
                 translatedpo = None
             # if we have a valid po unit, get the translation and add it...
@@ -78,7 +78,7 @@ class android2po:
         return output_store
 
     @staticmethod
-    def convert_unit(input_unit, commenttype):
+    def convert_unit(input_unit):
         """Converts a Android resource unit to a PO unit
 
         :return: None if empty or not for translation
@@ -99,8 +99,6 @@ def convertandroid(
     template_file,
     pot=False,
     duplicatestyle="msgctxt",
-    dialect="default",
-    filter=None,
 ):
     """Reads in *input_file* using aresource, converts using :class:`android2po`,
     writes to *output_file*.
