@@ -93,16 +93,13 @@ class android2po:
         return output_unit
 
 
-def convertandroid(
+def _convertandroid(
     input_file,
     output_file,
     template_file,
     pot=False,
     duplicatestyle="msgctxt",
 ):
-    """Reads in *input_file* using aresource, converts using :class:`android2po`,
-    writes to *output_file*.
-    """
 
     from translate.storage import aresource
 
@@ -118,8 +115,21 @@ def convertandroid(
             template_store, input_store, blankmsgstr=pot, duplicatestyle=duplicatestyle
         )
 
-    if output_store.isempty():
-        return 0
+    return output_store
+
+
+def convertandroid(
+    input_file,
+    output_file,
+    template_file,
+    pot=False,
+    duplicatestyle="msgctxt",
+):
+    """Reads in *input_file* using aresource, converts using :class:`android2po`,
+    writes to *output_file*.
+    """
+
+    output_store = _convertandroid(input_file, output_file, template_file, pot, duplicatestyle)
     output_store.serialize(output_file)
     return 1
 

@@ -1,7 +1,6 @@
 from io import BytesIO
 
 from translate.convert import android2po, test_convert
-from translate.storage import aresource
 
 
 class TestAndroid2PO:
@@ -9,15 +8,8 @@ class TestAndroid2PO:
     def android2po(source, template=None):
         """helper that converts android source to po source without requiring files"""
         inputfile = BytesIO(source.encode())
-        inputandroid = aresource.AndroidResourceFile(inputfile)
-        convertor = android2po.android2po()
-
-        if template:
-            templatefile = BytesIO(template.encode())
-            templateandroid = aresource.AndroidResourceFile(templatefile)
-            outputpo = convertor.merge_store(templateandroid, inputandroid)
-        else:
-            outputpo = convertor.convert_store(inputandroid)
+        templatefile = BytesIO(template.encode()) if template else None
+        outputpo = android2po._convertandroid(inputfile, None, templatefile)
         return outputpo
 
     def test_no_template_units(self):
