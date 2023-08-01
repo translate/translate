@@ -95,7 +95,6 @@ class android2po:
 
 def _convertandroid(
     input_file,
-    output_file,
     template_file,
     pot=False,
     duplicatestyle="msgctxt",
@@ -129,7 +128,7 @@ def convertandroid(
     """
 
     output_store = _convertandroid(
-        input_file, output_file, template_file, pot, duplicatestyle
+        input_file, template_file, pot, duplicatestyle
     )
     output_store.serialize(output_file)
     return 1
