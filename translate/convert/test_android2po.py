@@ -5,7 +5,6 @@ from translate.storage import aresource
 
 
 class TestAndroid2PO:
-
     @staticmethod
     def android2po(source, template=None):
         """helper that converts android source to po source without requiring files"""

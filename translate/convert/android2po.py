@@ -71,7 +71,8 @@ class android2po:
                 output_store.addunit(origpo)
             elif translatedpo is not None:
                 logger.error(
-                    "error converting original Android resource definition %s", origpo.name
+                    "error converting original Android resource definition %s",
+                    origpo.name,
                 )
         output_store.removeduplicates(duplicatestyle)
         return output_store
