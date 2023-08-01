@@ -100,7 +100,6 @@ def _convertandroid(
     pot=False,
     duplicatestyle="msgctxt",
 ):
-
     from translate.storage import aresource
 
     input_store = aresource.AndroidResourceFile(input_file)
@@ -129,7 +128,9 @@ def convertandroid(
     writes to *output_file*.
     """
 
-    output_store = _convertandroid(input_file, output_file, template_file, pot, duplicatestyle)
+    output_store = _convertandroid(
+        input_file, output_file, template_file, pot, duplicatestyle
+    )
     output_store.serialize(output_file)
     return 1
 
