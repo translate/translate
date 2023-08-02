@@ -64,4 +64,4 @@ class TestAndroid2POCommand(test_convert.TestConvertCommand, TestAndroid2PO):
 
         self.run_command(strings_file, po_file)
         content = self.open_testfile(po_file, "r").read().split("\n\n")[1]
-        assert ("""msgid "Multimedia tab""" in content)
+        assert """msgid "Multimedia tab""" in content
