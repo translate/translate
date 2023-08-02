@@ -51,3 +51,17 @@ class TestAndroid2POCommand(test_convert.TestConvertCommand, TestAndroid2PO):
         "--duplicates",
         "-t TEMPLATE, --template=TEMPLATE",
     ]
+
+    def test_convertandroid(self):
+        content = """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name="id">Multimedia tab</string>
+</resources>"""
+
+        strings_file = "strings.xml"
+        po_file = "en.po"
+        self.create_testfile(strings_file, content)
+
+        self.run_command(strings_file, po_file)
+        content = self.open_testfile(po_file, "r").read().split("\n\n")[1]
+        assert ("""msgid "Multimedia tab""" in content)
