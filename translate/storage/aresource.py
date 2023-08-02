@@ -363,8 +363,6 @@ class AndroidResourceUnit(base.TranslationUnit):
             for entry in self.xmlelement.iterchildren("item")
         }
         plural_tags = self.get_plural_tags()
-        print(plurals, plural_tags)
-        print([plurals.get(tag, "") for tag in plural_tags])
         return multistring([plurals.get(tag, "") for tag in plural_tags])
 
     @target.setter
