@@ -1004,7 +1004,7 @@ class pofile(pocommon.pofile):
                         uniqueunits.append(thepo)
                     else:
                         logger.warning(
-                            "Duplicate unit found with msgctx of '%s' and source '%s'",
+                            "Duplicate unit found with msgctxt of '%s' and source '%s'",
                             thepo.msgctxt,
                             thepo.source,
                         )
