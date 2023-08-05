@@ -162,8 +162,15 @@ new line</translation>
 </TS>
 """
         pofile = self.ts2po(tssource)
-        assert pofile.units[1].source == "Since we come from abroad, we thought the best thing we could do was to learn the local language and integrate ourselves."
-        assert pofile.units[1].target == "Com que venim de fora vam pensar que el millor que podíem fer era aprendre la llengua d'aquí i integrar-nos."
+        assert (
+            pofile.units[1].source
+            == "Since we come from abroad, we thought the best thing we could do was to learn the local language and integrate ourselves."
+        )
+        assert (
+            pofile.units[1].target
+            == "Com que venim de fora vam pensar que el millor que podíem fer era aprendre la llengua d'aquí i integrar-nos."
+        )
+
 
 class TestTS2POCommand(test_convert.TestConvertCommand, TestTS2PO):
     """Tests running actual ts2po commands on files"""
