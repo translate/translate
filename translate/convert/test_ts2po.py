@@ -142,6 +142,28 @@ new line</translation>
             == "Appears in the Help menu (on Windows and Linux) or the app menu (on macOS)."
         )
 
+    def test_emptycontext(self):
+        """test conversion with a leading empty context"""
+        tssource = """<!DOCTYPE TS><TS>
+<context>
+    <name></name>
+    <message>
+        <source>Message to ignore</source>
+        <translation>Missatge a ignorar</translation>
+    </message>
+</context>
+<context>
+    <name>ValidContext</name>
+    <message>
+        <source>Since we come from abroad, we thought the best thing we could do was to learn the local language and integrate ourselves.</source>
+        <translation>Com que venim de fora vam pensar que el millor que podíem fer era aprendre la llengua d'aquí i integrar-nos.</translation>
+    </message>
+</context>
+</TS>
+"""
+        pofile = self.ts2po(tssource)
+        assert pofile.units[1].source == "Since we come from abroad, we thought the best thing we could do was to learn the local language and integrate ourselves."
+        assert pofile.units[1].target == "Com que venim de fora vam pensar que el millor que podíem fer era aprendre la llengua d'aquí i integrar-nos."
 
 class TestTS2POCommand(test_convert.TestConvertCommand, TestTS2PO):
     """Tests running actual ts2po commands on files"""
