@@ -67,7 +67,11 @@ class ts2po:
         for inputunit in tsfile.units:
             contexts = inputunit.getcontext().split("\n")
 
-            context = contexts[0]
+            context = contexts[0].strip()
+            # skip the unit if the context is empty
+            if not context:
+                continue
+
             if context != previouscontext:
                 previouscontext = context
                 messagenum = 0
