@@ -721,7 +721,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 """
         xlifffile = xliff.xlifffile.parsestring(xlfsource)
         locations = xlifffile.units[0].getlocations()
-        locations = ", ".join(x for x in locations if x is not None)
+        locations = ", ".join(locations)
 
         assert locations == "some-directory/on-some-test/test.file:222"
 
