@@ -526,7 +526,7 @@ class xliffunit(lisa.LISAunit):
                 if sourceFile is not None and lineNumber is not None:
                     locations.append(sourceFile[1] + ":" + lineNumber[1])
 
-        return [x for x in locations if x is not None]
+        return locations
 
     def createcontextgroup(self, name, contexts=None, purpose=None):
         """Add the context group to the trans-unit with contexts a list with
