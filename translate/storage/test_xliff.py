@@ -721,9 +721,8 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 """
         xlifffile = xliff.xlifffile.parsestring(xlfsource)
         locations = xlifffile.units[0].getlocations()
-        locations = ", ".join(locations)
 
-        assert locations == "some-directory/on-some-test/test.file:222"
+        assert locations == ["some-directory/on-some-test/test.file:222"]
 
     @staticmethod
     def test_addlocation():
@@ -747,9 +746,12 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 """
         xlifffile = xliff.xlifffile.parsestring(xlfsource)
         xlifffile.units[0].addlocation("some-directory/on-some-test/test.file2:333")
+        xlifffile.units[0].addlocation("docs/config.md:block 1 (header)")
+        xlifffile.units[0].addlocation("file.rst")
         locations = xlifffile.units[0].getlocations()
-        locations = ", ".join(locations)
-        assert (
-            locations
-            == "some-directory/on-some-test/test.file:222, some-directory/on-some-test/test.file2:333"
-        )
+        assert locations == [
+            "some-directory/on-some-test/test.file:222",
+            "some-directory/on-some-test/test.file2:333",
+            "docs/config.md:block 1 (header)",
+            "file.rst",
+        ]
