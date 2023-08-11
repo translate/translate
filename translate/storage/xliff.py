@@ -506,25 +506,23 @@ class xliffunit(lisa.LISAunit):
         return uid
 
     def addlocation(self, location):
-        split = location.split(":")
-        file = split[0]
-        lineNumber = split[1]
-        contexts = [("sourcefile", file), ("linenumber", lineNumber)]
+        if ":" in location:
+            sourcefile, linenumber = location.rsplit(":", 1)
+            contexts = [("sourcefile", sourcefile), ("linenumber", linenumber)]
+        else:
+            contexts = [("sourcefile", location)]
         self.createcontextgroup("", contexts, "location")
 
     def getlocations(self):
         """Returns a list of locations."""
         locations = []
-        for contextGroup in self.getcontextgroupsbyattribute("purpose", "location"):
-            if len(contextGroup) == 2:
-                sourceFile = next(
-                    (x for x in contextGroup if x[0] == "sourcefile"), None
-                )
-                lineNumber = next(
-                    (x for x in contextGroup if x[0] == "linenumber"), None
-                )
-                if sourceFile is not None and lineNumber is not None:
-                    locations.append(sourceFile[1] + ":" + lineNumber[1])
+        for contextgroup in self.getcontextgroupsbyattribute("purpose", "location"):
+            sourcefile = next((x for x in contextgroup if x[0] == "sourcefile"), None)
+            linenumber = next((x for x in contextgroup if x[0] == "linenumber"), None)
+            if sourcefile is not None and linenumber is not None:
+                locations.append(sourcefile[1] + ":" + linenumber[1])
+            elif sourcefile is not None:
+                locations.append(sourcefile[1])
 
         return locations
 
