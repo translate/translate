@@ -414,7 +414,7 @@ def convertstrings(
         inputfile,
         outputfile,
         templatefile,
-        personality,
+        personality=personality,
         pot=pot,
         duplicatestyle=duplicatestyle,
         encoding=encoding,
