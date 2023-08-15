@@ -353,6 +353,22 @@ message-multiedit-header[many]={0,number} selected
         pounit = outputpo.units[-1]
         assert pounit.getlocations() == ["message-multiedit-header"]
 
+    def test_convertstrings(self):
+        propsource = "SAVEENTRY=Save file\n"
+
+        inputfile = BytesIO(propsource.encode())
+        outputfile = BytesIO()
+        templatefile = None
+
+        prop2po.convertstrings(
+            inputfile, outputfile, templatefile, personality="strings-utf8"
+        )
+        posource = outputfile.getvalue()
+        pofile = po.pofile(BytesIO(posource))
+        pounit = self.singleelement(pofile)
+        assert pounit.source == "Save file"
+        assert pounit.target == ""
+
 
 class TestProp2POCommand(test_convert.TestConvertCommand, TestProp2PO):
     """Tests running actual prop2po commands on files"""
