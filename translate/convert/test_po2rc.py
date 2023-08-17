@@ -396,3 +396,37 @@ msgstr "Ahoj"
         with self.open_testfile("output.rc", "rb") as handle:
             content = handle.read()
             assert content.decode() == expected
+
+    def test_convert_block_language(self):
+        rc_source = """
+STRINGTABLE LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+BEGIN
+    IDS_COPIED              "Copied"
+END
+"""
+        self.create_testfile("simple.rc", rc_source)
+        self.create_testfile(
+            "simple.po",
+            """
+#: STRINGTABLE.IDS_COPIED
+msgid "Copied"
+msgstr "Zkopirovano"
+""",
+        )
+        self.run_command(
+            template="simple.rc", i="simple.po", o="output.rc", l="LANG_CZECH"
+        )
+        with self.open_testfile("output.rc") as handle:
+            # Ignore whitespace changes (newlines are platform dependant)
+            assert [line.strip() for line in handle.read().decode().splitlines()] == [
+                line.strip()
+                for line in rc_source.replace("Copied", "Zkopirovano")
+                .replace(
+                    "LANG_ENGLISH, SUBLANG_ENGLISH_US", "LANG_CZECH, SUBLANG_DEFAULT"
+                )
+                .splitlines()
+            ]
+        with self.open_testfile("output.rc") as handle:
+            rc_result = rcfile(handle)
+        assert len(rc_result.units) == 1
+        assert rc_result.units[0].target == "Zkopirovano"

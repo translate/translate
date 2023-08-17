@@ -35,7 +35,6 @@ from pyparsing import (
     Keyword,
     OneOrMore,
     Optional,
-    SkipTo,
     Word,
     ZeroOrMore,
     alphanums,
@@ -43,6 +42,7 @@ from pyparsing import (
     c_style_comment,
     delimited_list,
     nums,
+    printables,
     quoted_string,
     rest_of_line,
 )
@@ -195,11 +195,12 @@ def rc_statement():
 
     concatenated_string = OneOrMore(quoted_string)
 
-    block_options = Optional(
-        SkipTo(Keyword("CAPTION"), fail_on=block_start)("pre_caption")
-        + Keyword("CAPTION")
-        + quoted_string("caption")
-    ) + SkipTo(block_start)("post_caption")
+    caption = "CAPTION" + quoted_string("caption")
+
+    block_options = ZeroOrMore(
+        Group(caption ^ language_definition ^ quoted_string ^ Word(printables)),
+        stop_on=block_start,
+    )("block_options")
 
     undefined_control = (
         Group(
@@ -258,7 +259,7 @@ def rc_statement():
         + block_end
     )
 
-    return comments ^ precompiler ^ language_definition ^ dialog ^ string_table ^ menu
+    return comments ^ precompiler ^ dialog ^ string_table ^ menu ^ language_definition
 
 
 def generate_stringtable_name(identifier):
@@ -418,13 +419,14 @@ class rcfile(base.TranslationStore):
 
             if processblocks and statement.block_type:
                 if statement.block_type in ("DIALOG", "DIALOGEX"):
-                    if statement.caption:
-                        newunit = rcunit(escape_to_python(statement.caption[1:-1]))
-                        newunit.name = generate_dialog_caption_name(
-                            statement.block_type, statement.block_id[0]
-                        )
-                        newunit.match = statement
-                        self.addunit(newunit)
+                    for option in statement.block_options:
+                        if option.caption:
+                            newunit = rcunit(escape_to_python(option.caption[1:-1]))
+                            newunit.name = generate_dialog_caption_name(
+                                statement.block_type, statement.block_id[0]
+                            )
+                            newunit.match = option
+                            self.addunit(newunit)
 
                     for control in statement.controls:
                         if isinstance(control, str):
