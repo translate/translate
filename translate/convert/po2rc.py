@@ -64,7 +64,7 @@ class rerc:
             comment = comment[:-1]
         yield comment
 
-    def convert_caption(self, s, loc, toks, name=None):
+    def convert_caption(self, toks, name):
         yield "CAPTION "
 
         msgid = toks.caption[1:-1]
@@ -82,7 +82,7 @@ class rerc:
             if option.language:
                 yield from self.convert_language(s, loc, option)
             elif option.caption:
-                yield from self.convert_caption(s, loc, option, name)
+                yield from self.convert_caption(option, name)
             else:
                 yield " ".join(option)
 
