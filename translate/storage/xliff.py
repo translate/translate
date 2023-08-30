@@ -442,8 +442,9 @@ class xliffunit(lisa.LISAunit):
 
     def isfuzzy(self):
         targetnode = self.getlanguageNode(lang=None, index=1)
-        return not targetnode is None and \
-                (targetnode.get("state-qualifier") == "fuzzy-match")
+        return targetnode is not None and (
+            targetnode.get("state-qualifier") == "fuzzy-match"
+        )
 
     def markfuzzy(self, value=True):
         state_id = self.get_state_id()
