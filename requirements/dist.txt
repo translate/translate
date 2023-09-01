@@ -1,4 +1,4 @@
-build==0.10.0
+build==1.0.0
 pip==23.2.1
 setuptools==68.1.2
 setuptools-scm==7.1.0
