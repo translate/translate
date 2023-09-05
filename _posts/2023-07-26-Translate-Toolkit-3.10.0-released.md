@@ -1,5 +1,5 @@
 ---
-title: Translate Toolkit 3.9.2 released
+title: Translate Toolkit 3.10.0 released
 category: releases
 ---
 
