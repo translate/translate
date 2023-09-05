@@ -64,32 +64,37 @@ class rerc:
             comment = comment[:-1]
         yield comment
 
+    def convert_caption(self, toks, name):
+        yield "CAPTION "
+
+        msgid = toks.caption[1:-1]
+        if msgid in self.inputdict:
+            if name in self.inputdict[msgid]:
+                yield '"' + self.inputdict[msgid][name] + '"'
+            elif EMPTY_LOCATION in self.inputdict[msgid]:
+                yield '"' + self.inputdict[msgid][EMPTY_LOCATION] + '"'
+        else:
+            yield toks.caption
+
+    def convert_block_options(self, s, loc, toks, name=None):
+        for option in toks:
+            yield " "
+            if option.language:
+                yield from self.convert_language(s, loc, option)
+            elif option.caption:
+                yield from self.convert_caption(option, name)
+            else:
+                yield " ".join(option)
+
     def convert_dialog(self, s, loc, toks):
         yield toks.block_id[0]
         yield " "
         yield toks.block_type
-        if toks.caption:
-            yield " "
-            yield toks.pre_caption
-            yield "CAPTION "  # The string caption
-
+        if toks.block_options:
             name = rc.generate_dialog_caption_name(toks.block_type, toks.block_id[0])
-            msgid = toks.caption[1:-1]
-            if msgid in self.inputdict:
-                if name in self.inputdict[msgid]:
-                    yield '"' + self.inputdict[msgid][name] + '"'
-                elif EMPTY_LOCATION in self.inputdict[msgid]:
-                    yield '"' + self.inputdict[msgid][EMPTY_LOCATION] + '"'
-            else:
-                yield toks.caption
+            yield from self.convert_block_options(s, loc, toks.block_options, name)
 
-            yield from toks.post_caption  # The rest of the options
-            yield self.templatestore.newline
-        else:
-            yield " "
-            yield from toks.post_caption  # The rest of the options
-            yield self.templatestore.newline
-
+        yield self.templatestore.newline
         yield BLOCK_START
         yield self.templatestore.newline
         addnl = False
@@ -150,8 +155,8 @@ class rerc:
 
     def convert_string_table(self, s, loc, toks):
         yield toks[0]
-        if toks[1]:
-            yield f" {toks[1]}"
+        if toks.block_options:
+            yield from self.convert_block_options(s, loc, toks.block_options)
         yield self.templatestore.newline
         yield BLOCK_START
         yield self.templatestore.newline
@@ -278,9 +283,7 @@ class rerc:
         yield " "
         yield toks.block_type
 
-        # A menu can't have CAPTION, so don't try to translate it.
-        yield " "
-        yield from toks.post_caption  # The rest of the options
+        yield from self.convert_block_options(s, loc, toks.block_options)
         yield self.templatestore.newline
 
         yield BLOCK_START
