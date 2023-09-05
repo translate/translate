@@ -1,0 +1,35 @@
+Translate Toolkit 3.10.1
+************************
+
+*Released on 5 September 2023*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- XLIFF
+
+  - The location API is consistent with other classes
+
+- RC
+
+  - Support block-level language statements
+
+- ts2po
+
+  - Fix crash on empty context
+
+- android2po
+
+   - New converter
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Jordi Mas, Pere Orga, Michal Čihař, Jakob,
