@@ -5,6 +5,8 @@ from pathlib import Path
 import pytest
 
 
+location = Path(__file__).parent.parent.parent.parent / "translate" / "tools"
+
 @pytest.mark.parametrize(
     "command",
     [
@@ -28,7 +30,7 @@ import pytest
 )
 def test_help(command: str):
     stdout = subprocess.check_output(
-        [sys.executable, str(Path(__file__).parent / f"{command}.py"), "--help"],
+        [sys.executable, str(location / f"{command}.py"), "--help"],
         text=True,
     )
 
