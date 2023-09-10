@@ -1,6 +1,7 @@
 import os
 
-from translate.convert import md2po, test_convert
+from translate.convert import md2po
+from . import test_convert
 
 
 class TestMD2PO(test_convert.TestConvertCommand):

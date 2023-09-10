@@ -3,7 +3,8 @@
 # Date: 2008-12-01
 from io import BytesIO
 
-from translate.convert import po2tiki, test_convert
+from translate.convert import po2tiki
+from . import test_convert
 
 
 class TestPo2Tiki:

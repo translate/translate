@@ -1,4 +1,5 @@
-from translate.convert import moz2po, test_convert
+from translate.convert import moz2po
+from . import test_convert
 
 
 class TestMoz2PO:

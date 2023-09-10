@@ -21,7 +21,8 @@
 
 from io import BytesIO
 
-from translate.convert import po2resx, test_convert
+from translate.convert import po2resx
+from . import test_convert
 from translate.storage import po
 
 

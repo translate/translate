@@ -2,7 +2,8 @@ from io import BytesIO
 
 import pytest
 
-from translate.convert import po2ical, test_convert
+from translate.convert import po2ical
+from . import test_convert
 
 
 class TestPO2Ical:

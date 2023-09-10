@@ -1,6 +1,7 @@
 from io import BytesIO
 
-from translate.convert import po2ts, test_convert
+from translate.convert import po2ts
+from . import test_convert
 from translate.storage import po
 
 

@@ -2,7 +2,8 @@ from io import BytesIO
 
 from pytest import mark, raises
 
-from translate.convert import po2php, test_convert
+from translate.convert import po2php
+from . import test_convert
 from translate.storage import po
 
 

@@ -1,6 +1,7 @@
 import os
 
-from translate.convert import po2md, test_convert
+from translate.convert import po2md
+from . import test_convert
 
 
 class TestPO2MD(test_convert.TestConvertCommand):

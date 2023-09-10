@@ -1,6 +1,7 @@
 from io import BytesIO
 
-from translate.convert import php2po, test_convert
+from translate.convert import php2po
+from . import test_convert
 from translate.storage import po
 
 

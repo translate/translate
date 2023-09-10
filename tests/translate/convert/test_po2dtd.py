@@ -3,7 +3,8 @@ from io import BytesIO
 
 import pytest
 
-from translate.convert import dtd2po, po2dtd, test_convert
+from translate.convert import dtd2po, po2dtd
+from . import test_convert
 from translate.storage import dtd, po
 
 

@@ -1,6 +1,7 @@
 import os
 
-from translate.convert import po2idml, test_convert
+from translate.convert import po2idml
+from . import test_convert
 
 
 class TestPo2IDMLCommand(test_convert.TestConvertCommand):

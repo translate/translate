@@ -1,6 +1,7 @@
 import os
 
-from translate.convert import oo2xliff, test_convert, test_oo2po
+from translate.convert import oo2xliff
+from . import test_convert, test_oo2po
 from translate.storage import oo, xliff
 
 

@@ -1,4 +1,5 @@
-from translate.convert import rc2po, test_convert
+from translate.convert import rc2po
+from . import test_convert
 from translate.storage.po import pofile
 
 RC_SOURCE = r"""

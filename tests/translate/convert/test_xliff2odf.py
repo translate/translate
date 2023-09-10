@@ -1,6 +1,7 @@
 import os
 
-from translate.convert import test_convert, xliff2odf
+from translate.convert import xliff2odf
+from . import test_convert
 
 
 class TestXLIFF2ODFommand(test_convert.TestConvertCommand):

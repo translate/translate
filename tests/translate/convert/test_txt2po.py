@@ -2,7 +2,8 @@ from io import BytesIO
 
 import pytest
 
-from translate.convert import test_convert, txt2po
+from translate.convert import txt2po
+from . import test_convert
 
 
 class BaseTxt2POTester:

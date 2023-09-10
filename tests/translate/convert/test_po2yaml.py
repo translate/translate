@@ -2,7 +2,8 @@ from io import BytesIO
 
 import pytest
 
-from translate.convert import po2yaml, test_convert
+from translate.convert import po2yaml
+from . import test_convert
 
 
 class TestPO2YAML:

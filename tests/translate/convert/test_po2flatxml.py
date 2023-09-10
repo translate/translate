@@ -2,7 +2,8 @@
 
 from io import BytesIO
 
-from translate.convert import po2flatxml, test_convert
+from translate.convert import po2flatxml
+from . import test_convert
 
 
 class TestPO2FlatXML:

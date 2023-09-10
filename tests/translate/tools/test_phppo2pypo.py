@@ -4,7 +4,7 @@
 
 from io import BytesIO
 
-from translate.convert import test_convert
+from ..convert import test_convert
 from translate.tools import phppo2pypo
 
 

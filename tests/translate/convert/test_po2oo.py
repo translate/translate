@@ -3,7 +3,8 @@ from io import BytesIO
 
 from pytest import mark
 
-from translate.convert import oo2po, po2oo, test_convert
+from translate.convert import oo2po, po2oo
+from . import test_convert
 from translate.storage import po
 
 

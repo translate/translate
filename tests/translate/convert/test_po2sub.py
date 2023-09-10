@@ -2,7 +2,8 @@ from io import BytesIO
 
 from pytest import importorskip
 
-from translate.convert import po2sub, test_convert
+from translate.convert import po2sub
+from . import test_convert
 from translate.storage import po
 
 # Technically subtitles can also use an older gaupol

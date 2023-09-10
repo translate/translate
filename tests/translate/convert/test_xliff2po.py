@@ -1,6 +1,7 @@
 from io import BytesIO
 
-from translate.convert import test_convert, xliff2po
+from translate.convert import xliff2po
+from . import test_convert
 from translate.storage import po, xliff
 from translate.storage.poheader import poheader
 from translate.storage.test_base import first_translatable, headerless_len

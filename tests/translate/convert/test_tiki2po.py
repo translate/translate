@@ -4,7 +4,8 @@
 
 from io import BytesIO
 
-from translate.convert import test_convert, tiki2po
+from translate.convert import tiki2po
+from . import test_convert
 
 
 class TestTiki2Po:

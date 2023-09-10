@@ -1,6 +1,7 @@
 from io import BytesIO
 
-from translate.convert import android2po, test_convert
+from translate.convert import android2po
+from . import test_convert
 
 
 class TestAndroid2PO:

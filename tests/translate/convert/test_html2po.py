@@ -1,7 +1,8 @@
 import os
 from io import BytesIO
 
-from translate.convert import html2po, po2html, test_convert
+from translate.convert import html2po, po2html
+from . import test_convert
 
 
 class TestHTML2PO:
