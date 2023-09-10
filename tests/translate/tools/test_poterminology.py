@@ -1,8 +1,8 @@
-import os
 from pathlib import Path
 
 from translate.storage import factory
 from translate.tools import poterminology
+
 
 base_dir = Path(__file__).parent.parent.parent
 sample_po_file = base_dir / "xliff_conformance" / "af-pootle.po"
