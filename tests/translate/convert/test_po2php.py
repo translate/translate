@@ -3,8 +3,9 @@ from io import BytesIO
 from pytest import mark, raises
 
 from translate.convert import po2php
-from . import test_convert
 from translate.storage import po
+
+from . import test_convert
 
 
 class TestPO2Php:

@@ -1,6 +1,7 @@
 from io import BytesIO
 
 from translate.convert import ts2po
+
 from . import test_convert
 
 

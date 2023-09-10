@@ -3,8 +3,9 @@ from io import BytesIO
 from pytest import importorskip
 
 from translate.convert import po2sub
-from . import test_convert
 from translate.storage import po
+
+from . import test_convert
 
 # Technically subtitles can also use an older gaupol
 importorskip("aeidon")

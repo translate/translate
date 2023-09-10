@@ -1,9 +1,10 @@
 from io import BytesIO
 
 from translate.convert import po2tmx
-from . import test_convert
 from translate.misc.xml_helpers import XML_NS
 from translate.storage import tmx
+
+from . import test_convert
 
 
 class TestPO2TMX:

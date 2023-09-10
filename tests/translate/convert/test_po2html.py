@@ -4,6 +4,7 @@ from io import BytesIO
 import pytest
 
 from translate.convert import po2html
+
 from . import test_convert
 
 

@@ -5,8 +5,9 @@ from lxml import etree
 
 from translate.misc.multistring import multistring
 from translate.storage import aresource
-from . import test_monolingual
 from translate.storage.base import TranslationStore
+
+from . import test_monolingual
 
 
 class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):

@@ -1,5 +1,6 @@
-from ..filters.test_checks import fails, passes
 from translate.lang.scn import SicilianChecker
+
+from ..filters.test_checks import fails, passes
 
 
 def test_italianisms():

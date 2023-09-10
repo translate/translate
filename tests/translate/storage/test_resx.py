@@ -20,6 +20,7 @@
 from io import BytesIO
 
 from translate.storage import resx
+
 from . import test_monolingual
 
 

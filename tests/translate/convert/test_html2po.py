@@ -2,6 +2,7 @@ import os
 from io import BytesIO
 
 from translate.convert import html2po, po2html
+
 from . import test_convert
 
 

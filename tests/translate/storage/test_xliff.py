@@ -4,6 +4,7 @@ from translate.misc.xml_helpers import setXMLspace
 from translate.storage import xliff
 from translate.storage.placeables import StringElem
 from translate.storage.placeables.xliff import G, X
+
 from . import test_base
 
 

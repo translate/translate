@@ -19,8 +19,9 @@
 """Tests for Qt Linguist phase book storage class"""
 
 from translate.storage import qph
-from . import test_base
 from translate.storage.placeables import parse, xliff
+
+from . import test_base
 
 xliffparsers = []
 for attrname in dir(xliff):

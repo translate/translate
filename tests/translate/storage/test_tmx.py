@@ -1,6 +1,7 @@
 from io import BytesIO
 
 from translate.storage import tmx
+
 from . import test_base
 
 

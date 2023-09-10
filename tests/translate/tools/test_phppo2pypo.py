@@ -4,8 +4,9 @@
 
 from io import BytesIO
 
-from ..convert import test_convert
 from translate.tools import phppo2pypo
+
+from ..convert import test_convert
 
 
 class TestPhpPo2PyPo:

@@ -2,9 +2,10 @@ from io import BytesIO
 
 from pytest import mark
 
-from ..convert import test_convert
 from translate.storage import po, xliff
 from translate.tools import pretranslate
+
+from ..convert import test_convert
 
 
 class TestPretranslate:

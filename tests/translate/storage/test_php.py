@@ -2,6 +2,7 @@ from io import BytesIO
 
 from translate.misc.multistring import multistring
 from translate.storage import php
+
 from . import test_monolingual
 
 

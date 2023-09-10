@@ -3,9 +3,10 @@ from io import BytesIO
 from urllib import parse
 
 from translate.convert import oo2po, po2oo
-from . import test_convert
 from translate.storage import oo, po
 from translate.storage.poheader import poheader
+
+from . import test_convert
 
 
 class TestOO2PO:

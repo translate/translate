@@ -3,6 +3,7 @@
 # classes that doesn't support the target property
 
 from translate.storage import base
+
 from . import test_base
 
 

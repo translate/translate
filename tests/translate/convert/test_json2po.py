@@ -1,8 +1,9 @@
 from io import BytesIO
 
 from translate.convert import json2po
-from . import test_convert
 from translate.storage import jsonl10n
+
+from . import test_convert
 
 
 class TestJson2PO:

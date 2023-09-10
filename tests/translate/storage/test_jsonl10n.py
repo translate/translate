@@ -4,6 +4,7 @@ from pytest import raises
 
 from translate.misc.multistring import multistring
 from translate.storage import base, jsonl10n
+
 from . import test_monolingual
 
 JSON_I18NEXT = """{

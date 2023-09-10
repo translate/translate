@@ -1,8 +1,9 @@
 from io import BytesIO
 
 from translate.convert import prop2po
-from . import test_convert
 from translate.storage import po, properties
+
+from . import test_convert
 
 
 class TestProp2PO:

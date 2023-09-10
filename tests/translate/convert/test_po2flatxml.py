@@ -3,6 +3,7 @@
 from io import BytesIO
 
 from translate.convert import po2flatxml
+
 from . import test_convert
 
 

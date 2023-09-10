@@ -26,6 +26,7 @@ from typing import Any
 from pytest import raises
 
 from translate.storage import fluent
+
 from . import test_monolingual
 
 

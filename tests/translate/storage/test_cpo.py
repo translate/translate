@@ -4,6 +4,7 @@ from io import BytesIO
 from pytest import importorskip, mark, raises
 
 from translate.misc.multistring import multistring
+
 from . import test_po
 
 pytestmark = mark.skipif(

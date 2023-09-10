@@ -1,6 +1,7 @@
 import pytest
 
 from translate.storage import qm
+
 from . import test_base
 
 

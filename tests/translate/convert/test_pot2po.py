@@ -3,8 +3,9 @@ from io import BytesIO
 from pytest import mark
 
 from translate.convert import pot2po
-from . import test_convert
 from translate.storage import po
+
+from . import test_convert
 
 
 class TestPOT2PO:

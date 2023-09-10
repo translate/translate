@@ -3,6 +3,7 @@ import io
 import pytest
 
 from translate.storage import mozilla_lang
+
 from . import test_base
 
 

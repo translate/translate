@@ -1,6 +1,7 @@
 from translate.convert import rc2po
-from . import test_convert
 from translate.storage.po import pofile
+
+from . import test_convert
 
 RC_SOURCE = r"""
 #include "other_file.h" // This must be ignored

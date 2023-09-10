@@ -4,6 +4,7 @@ from io import BytesIO
 from translate.lang import data
 from translate.misc.multistring import multistring
 from translate.storage import stringsdict
+
 from . import test_monolingual
 
 

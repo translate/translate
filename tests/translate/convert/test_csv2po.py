@@ -1,9 +1,10 @@
 from io import BytesIO
 
 from translate.convert import csv2po
-from . import test_convert
 from translate.storage import csvl10n, po
+
 from ..storage.test_base import first_translatable, headerless_len
+from . import test_convert
 
 
 def test_replacestrings():

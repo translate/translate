@@ -1,6 +1,7 @@
 from pytest import mark
 
 from translate.storage import omegat as ot
+
 from . import test_base
 
 

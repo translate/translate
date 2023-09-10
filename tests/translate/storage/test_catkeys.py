@@ -1,4 +1,5 @@
 from translate.storage import catkeys
+
 from . import test_base
 
 

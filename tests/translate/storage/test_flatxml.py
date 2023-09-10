@@ -3,6 +3,7 @@ from io import BytesIO
 from pytest import raises
 
 from translate.storage import flatxml
+
 from . import test_monolingual
 
 

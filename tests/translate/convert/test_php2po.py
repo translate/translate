@@ -1,8 +1,9 @@
 from io import BytesIO
 
 from translate.convert import php2po
-from . import test_convert
 from translate.storage import po
+
+from . import test_convert
 
 
 class TestPhp2PO:

@@ -4,8 +4,9 @@ from pytest import mark, raises
 
 from translate.misc.multistring import multistring
 from translate.storage import po, pypo
-from . import test_base
 from translate.storage.php import phpunit
+
+from . import test_base
 
 
 def test_roundtrip_quoting():

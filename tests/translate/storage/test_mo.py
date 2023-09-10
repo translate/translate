@@ -4,8 +4,9 @@ import sys
 from io import BytesIO
 
 from translate.storage import factory, mo
-from . import test_base
 from translate.tools import pocompile
+
+from . import test_base
 
 
 class TestMOUnit(test_base.TestTranslationUnit):

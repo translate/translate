@@ -1,8 +1,9 @@
 from io import BytesIO
 
 from translate.storage import po, xliff
-from ..storage.test_base import first_translatable, headerless_len
 from translate.tools import pogrep
+
+from ..storage.test_base import first_translatable, headerless_len
 
 
 class TestPOGrep:

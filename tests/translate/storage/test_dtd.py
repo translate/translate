@@ -21,6 +21,7 @@ from io import BytesIO
 from pytest import mark
 
 from translate.storage import dtd
+
 from . import test_monolingual
 
 

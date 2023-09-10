@@ -4,7 +4,6 @@ from pathlib import Path
 
 import pytest
 
-
 location = Path(__file__).parent.parent.parent.parent / "translate" / "tools"
 
 

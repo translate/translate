@@ -1,5 +1,6 @@
 from translate.misc.multistring import multistring
 from translate.storage import poxliff
+
 from . import test_xliff
 
 

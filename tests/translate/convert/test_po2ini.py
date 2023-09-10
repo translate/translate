@@ -3,6 +3,7 @@ from io import BytesIO
 from pytest import importorskip, raises
 
 from translate.convert import po2ini
+
 from . import test_convert
 
 importorskip("iniparse")

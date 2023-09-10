@@ -4,6 +4,7 @@ from pytest import mark, raises
 
 from translate.misc.multistring import multistring
 from translate.storage import pypo
+
 from . import test_po
 
 

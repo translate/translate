@@ -5,6 +5,7 @@
 from io import BytesIO
 
 from translate.convert import tiki2po
+
 from . import test_convert
 
 

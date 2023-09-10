@@ -19,6 +19,7 @@
 """Module for testing ReosurceDictionary files."""
 
 from translate.storage import resourcedictionary
+
 from . import test_monolingual
 
 

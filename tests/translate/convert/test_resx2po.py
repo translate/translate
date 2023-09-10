@@ -22,10 +22,11 @@
 from io import BytesIO
 
 from translate.convert import resx2po
-from . import test_convert
 from translate.storage import po, resx
 from translate.storage.poheader import poheader
+
 from ..storage.test_base import headerless_len
+from . import test_convert
 
 
 class TestRESX2PO:
