@@ -1,6 +1,7 @@
 import pytest
 
-from translate.storage import qm, test_base
+from translate.storage import qm
+from . import test_base
 
 
 class TestQtUnit(test_base.TestTranslationUnit):

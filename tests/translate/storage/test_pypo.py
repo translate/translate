@@ -3,7 +3,8 @@ from io import BytesIO
 from pytest import mark, raises
 
 from translate.misc.multistring import multistring
-from translate.storage import pypo, test_po
+from translate.storage import pypo
+from . import test_po
 
 
 class TestHelpers:

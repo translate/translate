@@ -4,7 +4,8 @@ import pytest
 from lxml import etree
 
 from translate.misc.multistring import multistring
-from translate.storage import aresource, test_monolingual
+from translate.storage import aresource
+from . import test_monolingual
 from translate.storage.base import TranslationStore
 
 

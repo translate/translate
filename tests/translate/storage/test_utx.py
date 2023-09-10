@@ -1,4 +1,5 @@
-from translate.storage import test_base, utx
+from translate.storage import utx
+from . import test_base
 
 
 class TestUtxUnit(test_base.TestTranslationUnit):

@@ -1,6 +1,7 @@
 from io import BytesIO
 
-from translate.storage import ini, test_monolingual
+from translate.storage import ini
+from . import test_monolingual
 
 
 class TestINIUnit(test_monolingual.TestMonolingualUnit):

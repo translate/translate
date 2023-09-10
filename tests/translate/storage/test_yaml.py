@@ -1,7 +1,8 @@
 import pytest
 import ruamel.yaml
 
-from translate.storage import base, test_monolingual, yaml
+from translate.storage import base, yaml
+from . import test_monolingual
 
 
 class TestYAMLResourceUnit(test_monolingual.TestMonolingualUnit):

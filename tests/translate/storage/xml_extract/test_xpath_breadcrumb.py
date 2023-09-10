@@ -17,7 +17,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 
-from . import xpath_breadcrumb
+from translate.storage.xml_extract import xpath_breadcrumb
 
 
 def test_breadcrumb():

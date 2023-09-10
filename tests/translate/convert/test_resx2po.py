@@ -25,7 +25,7 @@ from translate.convert import resx2po
 from . import test_convert
 from translate.storage import po, resx
 from translate.storage.poheader import poheader
-from translate.storage.test_base import headerless_len
+from ..storage.test_base import headerless_len
 
 
 class TestRESX2PO:

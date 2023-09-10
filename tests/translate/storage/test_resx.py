@@ -19,7 +19,8 @@
 
 from io import BytesIO
 
-from translate.storage import resx, test_monolingual
+from translate.storage import resx
+from . import test_monolingual
 
 
 class TestRESXUnit(test_monolingual.TestMonolingualUnit):

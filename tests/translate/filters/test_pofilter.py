@@ -2,7 +2,7 @@ from io import BytesIO
 
 from translate.filters import checks, pofilter
 from translate.storage import factory, xliff
-from translate.storage.test_base import first_translatable, headerless_len
+from ..storage.test_base import first_translatable, headerless_len
 
 
 class BaseTestFilter:

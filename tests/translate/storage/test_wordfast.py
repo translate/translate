@@ -1,4 +1,4 @@
-from translate.storage import test_base
+from . import test_base
 from translate.storage import wordfast as wf
 
 

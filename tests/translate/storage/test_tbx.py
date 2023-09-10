@@ -1,4 +1,5 @@
-from translate.storage import tbx, test_base
+from translate.storage import tbx
+from . import test_base
 
 
 class TestTBXUnit(test_base.TestTranslationUnit):

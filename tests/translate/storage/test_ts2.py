@@ -22,7 +22,7 @@ Reference implementation & tests:
 http://code.qt.io/cgit/qt/qttools.git/tree/tests/auto/linguist/lconvert/data
 """
 
-from translate.storage import test_base
+from . import test_base
 from translate.storage import ts2 as ts
 from translate.storage.placeables import parse, xliff
 

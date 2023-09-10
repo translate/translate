@@ -1,7 +1,8 @@
 from io import BytesIO
 
 from translate.misc.multistring import multistring
-from translate.storage import php, test_monolingual
+from translate.storage import php
+from . import test_monolingual
 
 
 def test_php_escaping_single_quote():

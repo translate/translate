@@ -3,7 +3,8 @@ import subprocess
 import sys
 from io import BytesIO
 
-from translate.storage import factory, mo, test_base
+from translate.storage import factory, mo
+from . import test_base
 from translate.tools import pocompile
 
 

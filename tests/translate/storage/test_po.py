@@ -3,7 +3,8 @@ from io import BytesIO
 from pytest import mark, raises
 
 from translate.misc.multistring import multistring
-from translate.storage import po, pypo, test_base
+from translate.storage import po, pypo
+from . import test_base
 from translate.storage.php import phpunit
 
 

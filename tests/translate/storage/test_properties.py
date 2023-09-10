@@ -3,7 +3,9 @@ from io import BytesIO
 from pytest import mark, raises
 
 from translate.misc.multistring import multistring
-from translate.storage import properties, test_monolingual
+from translate.storage import properties
+from . import test_monolingual
+
 
 # Note that DialectJava delimitors are ["=", ":", " "]
 

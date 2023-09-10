@@ -1,4 +1,5 @@
-from translate.storage import catkeys, test_base
+from translate.storage import catkeys
+from . import test_base
 
 
 class TestCatkeysUnit(test_base.TestTranslationUnit):

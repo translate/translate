@@ -2,7 +2,8 @@ from io import BytesIO
 
 import pytest
 
-from translate.storage import csvl10n, test_base
+from translate.storage import csvl10n
+from . import test_base
 
 
 class TestCSVUnit(test_base.TestTranslationUnit):

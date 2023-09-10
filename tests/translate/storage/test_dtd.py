@@ -20,7 +20,8 @@ from io import BytesIO
 
 from pytest import mark
 
-from translate.storage import dtd, test_monolingual
+from translate.storage import dtd
+from . import test_monolingual
 
 
 def test_roundtrip_quoting():

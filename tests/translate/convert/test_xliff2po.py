@@ -4,7 +4,7 @@ from translate.convert import xliff2po
 from . import test_convert
 from translate.storage import po, xliff
 from translate.storage.poheader import poheader
-from translate.storage.test_base import first_translatable, headerless_len
+from ..storage.test_base import first_translatable, headerless_len
 
 
 class TestXLIFF2PO:

@@ -1,6 +1,7 @@
 from io import BytesIO
 
-from translate.storage import test_monolingual, txt
+from translate.storage import txt
+from . import test_monolingual
 
 
 class TestTxtUnit(test_monolingual.TestMonolingualUnit):

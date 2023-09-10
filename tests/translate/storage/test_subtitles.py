@@ -1,6 +1,7 @@
 import pytest
 
-from translate.storage import subtitles, test_monolingual
+from translate.storage import subtitles
+from . import test_monolingual
 
 
 class TestSubtitleUnit(test_monolingual.TestMonolingualUnit):

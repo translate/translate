@@ -25,7 +25,8 @@ from typing import Any
 
 from pytest import raises
 
-from translate.storage import fluent, test_monolingual
+from translate.storage import fluent
+from . import test_monolingual
 
 
 class TestFluentUnit(test_monolingual.TestMonolingualUnit):

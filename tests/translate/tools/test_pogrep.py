@@ -1,7 +1,7 @@
 from io import BytesIO
 
 from translate.storage import po, xliff
-from translate.storage.test_base import first_translatable, headerless_len
+from ..storage.test_base import first_translatable, headerless_len
 from translate.tools import pogrep
 
 
