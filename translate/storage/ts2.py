@@ -73,6 +73,7 @@ class tsunit(lisa.LISAunit):
 
     statemap_r = {i[1]: i[0] for i in statemap.items()}
     _context = None
+    _locations = None
 
     def createlanguageNode(self, lang, text, purpose):
         """Returns an xml Element setup with given parameters."""
@@ -280,6 +281,7 @@ class tsunit(lisa.LISAunit):
         return "\n".join(contexts)
 
     def addlocation(self, location):
+        self._locations = None
         newlocation = etree.SubElement(self.xmlelement, self.namespaced("location"))
         try:
             filename, line = location.split(":", 1)
@@ -290,20 +292,63 @@ class tsunit(lisa.LISAunit):
         if line is not None:
             newlocation.set("line", line)
 
-    def getlocations(self):
+    def parse_locations(self):
         location_tags = self.xmlelement.iterfind(self.namespaced("location"))
         locations = []
+        last_location = None
         for location_tag in location_tags:
             location = location_tag.get("filename")
             line = location_tag.get("line")
-            if line:
-                if location:
-                    location += ":" + line
-                else:
-                    location = line
-            if location:
-                locations.append(location)
-        return locations
+            if line is not None and line.startswith(("+", "-")):
+                # Relative locations
+                if last_location is None and (
+                    previous_unit := self.get_previous_unit()
+                ):
+                    last_location = previous_unit.get_last_location()
+
+                offset = 0
+                if last_location:
+                    if not location:
+                        location = last_location[0]
+                    offset = last_location[1]
+                line = offset + int(line)
+            if location or line:
+                last_location = (location, line)
+                locations.append(last_location)
+        self._locations = locations
+
+    def get_last_location(self):
+        if self._locations is None:
+            self.parse_locations()
+
+        if not self._locations:
+            previous = self.get_previous_unit()
+            if previous is None:
+                return None
+            return previous.get_last_location()
+
+        return self._locations[-1]
+
+    def get_previous_unit(self):
+        found = None
+        for pos, unit in enumerate(self._store.units):
+            # Use is here to compare objects as __eq__ implementation in
+            # LISAUnit might give unexpected results
+            if unit is self:
+                found = pos
+                break
+        if not found or found == 0:
+            return None
+        return self._store.units[found - 1]
+
+    def getlocations(self):
+        if self._locations is None:
+            self.parse_locations()
+
+        return [
+            f"{location}{':' if location else ''}{line}"
+            for location, line in self._locations
+        ]
 
     def merge(self, otherunit, overwrite=False, comments=True, authoritative=False):
         super().merge(otherunit, overwrite, comments)
@@ -361,6 +406,7 @@ class tsfile(lisa.LISAfile):
 
     def __init__(self, *args, **kwargs):
         self._contextname = None
+        self.last_location = None
         super().__init__(*args, **kwargs)
 
     def initbody(self):

@@ -286,9 +286,11 @@ class TestTSfile(test_base.TestTranslationStore):
         tsfile = ts.tsfile.parsestring(tsstr)
         assert len(tsfile.units) == 4
         assert tsfile.units[0].getlocations() == [
-            "../tools/qtconfig/mainwindow.cpp:+202"
+            "../tools/qtconfig/mainwindow.cpp:202"
         ]
-        assert tsfile.units[1].getlocations() == ["+5"]
+        assert tsfile.units[1].getlocations() == [
+            "../tools/qtconfig/mainwindow.cpp:207"
+        ]
         assert tsfile.units[2].getlocations() == []
         assert tsfile.units[3].getlocations() == []
 
