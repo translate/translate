@@ -58,6 +58,6 @@ jobs:
       run: coverage run --append ./setup.py sdist
     - name: Coverage
       run: coverage xml
-    - uses: codecov/codecov-action@v3
+    - uses: codecov/codecov-action@v4
       with:
         name: setup
