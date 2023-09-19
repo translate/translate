@@ -836,3 +836,29 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         store.targetlanguage = "fr"
         store.parse(content.encode())
         assert store.units[0].target == multistring(["%d visitor", "", "%d visitors"])
+
+    def test_removeunit(self):
+        content = """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- First -->
+    <string name="test1">Test</string>
+    <!-- Second -->
+    <string name="test2">Test</string>
+    <!-- Third -->
+    <string name="test3">Test2</string>
+</resources>"""
+        store = self.StoreClass()
+        store.parse(content.encode())
+        assert len(store.units) == 3
+        assert bytes(store).decode() == content
+        store.removeunit(store.units[1])
+        assert (
+            bytes(store).decode()
+            == """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- First -->
+    <string name="test1">Test</string>
+    <!-- Third -->
+    <string name="test3">Test2</string>
+</resources>"""
+        )

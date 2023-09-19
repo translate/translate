@@ -561,3 +561,7 @@ class AndroidResourceFile(lisa.LISAfile):
         # The top_nsmap was introduced in LXML 3.5.0
         if do_cleanup:
             etree.cleanup_namespaces(self.body, top_nsmap=newns)
+
+    def removeunit(self, unit):
+        unit.removenotes()
+        super().removeunit(unit)
