@@ -39,11 +39,7 @@ class rejson:
         self.inputstore.makeindex()
         for unit in self.templatestore.units:
             inputunit = self.inputstore.locationindex.get(unit.getid())
-            skip_unit = self.remove_untranslated and (
-                inputunit is None or inputunit.isfuzzy() or not inputunit.istranslated()
-            )
-            if skip_unit:
-                continue
+
             if inputunit is not None:
                 if inputunit.isfuzzy():
                     if self.includefuzzy:
@@ -53,12 +49,17 @@ class rejson:
                         if inputunit.target:
                             unit.target = inputunit.target
                         else:
-                            unit.target = unit.source
+                            if self.remove_untranslated:
+                                continue
+                            else:
+                                unit.target = unit.source
                     else:
-                        unit.target = unit.source
+                        continue
                 else:
                     if inputunit.istranslated():
                         unit.target = inputunit.target
+                    elif self.remove_untranslated:
+                        continue
                     else:
                         unit.target = unit.source
             else:
