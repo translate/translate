@@ -73,13 +73,17 @@ from translate.lang.data import cldr_plural_categories, plural_tags
 from translate.misc.multistring import multistring
 from translate.storage import base
 
+empty = object()
+
 
 class BaseJsonUnit(base.DictUnit):
     """A JSON entry"""
 
     ID_FORMAT = ".{}"
 
-    def __init__(self, source=None, item=None, notes=None, placeholders=None, **kwargs):
+    def __init__(
+        self, source=empty, item=None, notes=None, placeholders=None, **kwargs
+    ):
         if source:
             identifier = hex(hash(source))
         else:
@@ -89,14 +93,19 @@ class BaseJsonUnit(base.DictUnit):
         # Identifier at this level
         self._item = identifier if item is None else item
         # Type conversion for the unit
-        self._type = str if source is None else type(source)
+        if source is empty:
+            self._type = str
+        elif source is None:
+            self._type = None
+        else:
+            self._type = type(source)
         if notes:
             self.notes = notes
         self.placeholders = placeholders
         if source:
             if issubclass(self._type, str):
                 self.target = source
-            else:
+            elif source is not empty:
                 self.target = str(source)
         super().__init__(source)
 
@@ -126,6 +135,8 @@ class BaseJsonUnit(base.DictUnit):
         )
 
     def converttarget(self):
+        if self._type is None:
+            return None
         try:
             return self._type(self.target)
         except ValueError:
