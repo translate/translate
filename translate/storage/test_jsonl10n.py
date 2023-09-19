@@ -433,6 +433,28 @@ class TestJSONResourceStore(test_monolingual.TestMonolingualStore):
 """
         )
 
+    def test_null(self):
+        jsondata = """{
+    "foo": [
+        null,
+        null,
+        "Text"
+    ]
+}
+"""
+        store = self.StoreClass()
+        store.parse(jsondata)
+        assert len(store.units) == 3
+
+        assert store.units[0].target is None
+        assert store.units[1].target is None
+        assert store.units[2].target == "Text"
+
+        out = BytesIO()
+        store.serialize(out)
+
+        assert out.getvalue().decode() == jsondata
+
 
 class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
     StoreClass = jsonl10n.JsonNestedFile

@@ -126,6 +126,8 @@ class BaseJsonUnit(base.DictUnit):
         )
 
     def converttarget(self):
+        if self.target is None:
+            return None
         try:
             return self._type(self.target)
         except ValueError:
