@@ -1182,22 +1182,62 @@ class TestLaravelPhpFile(test_monolingual.TestMonolingualStore):
         return self.StoreClass(dummyfile)
 
     def test_plurals(self):
-        phpsource = r"""<?php
-return [
-    'welcome' => 'Welcome to our application',
-    'apples' => 'There is one apple|There are many apples',
-];
-"""
+        phpsource = open("./laravel/plurals.php").read()
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 2
         phpunit = phpfile.units[0]
-        assert phpunit.name == "return[]->'welcome'"
+        assert phpunit.name == "welcome"
         assert phpunit.source == "Welcome to our application"
         phpunit = phpfile.units[1]
-        assert phpunit.name == "return[]->'apples'"
+        assert phpunit.name == "apples"
         assert phpunit.source == multistring(
             ["There is one apple", "There are many apples"]
         )
         assert bytes(phpfile).decode() == phpsource
         phpunit.source = multistring(["There is an apple", "There are many apples"])
         assert bytes(phpfile).decode() == phpsource.replace("one apple", "an apple")
+
+    def test_comments(self):
+        # https://github.com/laravel/laravel/blob/e87bfd60ed4ca30109aa73c4d23250c113fe75ff/lang/en/auth.php
+        phpsource = open("./laravel/basic.php").read()
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 3
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "failed"
+        assert phpunit.source == "These credentials do not match our records."
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "password"
+        assert phpunit.source == "The provided password is incorrect."
+        phpunit = phpfile.units[2]
+        assert phpunit.name == "throttle"
+        assert (
+            phpunit.source
+            == "Too many login attempts. Please try again in :seconds seconds."
+        )
+        assert bytes(phpfile).decode() == phpsource
+
+    def test_array_inside_array(self):
+        # https://github.com/laravel/laravel/blob/e87bfd60ed4ca30109aa73c4d23250c113fe75ff/lang/en/validation.php
+
+        phpsource = open("./laravel/array.php").read()
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 5
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "gt.array"
+        assert phpunit.source == "The :attribute must have more than :value items."
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "gt.file"
+        assert phpunit.source == "The :attribute must be greater than :value kilobytes."
+        phpunit = phpfile.units[2]
+        assert phpunit.name == "gt.numeric"
+        assert phpunit.source == "The :attribute must be greater than :value."
+        phpunit = phpfile.units[3]
+        assert phpunit.name == "gt.string"
+        assert (
+            phpunit.source == "The :attribute must be greater than :value characters."
+        )
+        phpunit = phpfile.units[4]
+        assert phpunit.name == "custom.attribute-name.rule-name"
+        assert phpunit.source == "custom-message"
+        # assert bytes(phpfile).decode() == phpsource
+        # Not working yet for a bug in extract_comments

@@ -526,6 +526,17 @@ class LaravelPHPUnit(phpunit):
             return "|".join(result.strings)
         return result
 
+    def getoutput(self, indent="", name=None):
+        """Convert the unit back into formatted lines for a php file."""
+        fmt = "'{0}' => {1}{2}{1},\n"
+        out = fmt.format(
+            name if name else self.name,
+            self.escape_type,
+            phpencode(self.get_raw_value(), self.escape_type),
+        )
+        joiner = "\n" + indent
+        return indent + joiner.join(self._comments + [out])
+
 
 class LaravelPHPFile(phpfile):
     UnitClass = LaravelPHPUnit
@@ -534,3 +545,61 @@ class LaravelPHPFile(phpfile):
         if "|" in value:
             value = multistring(value.split("|"))
         super().create_and_add_unit(name, value, escape_type, comments)
+
+    def parse(self, phpsrc):
+        """Read the source of a PHP file in and include them as units."""
+
+        def handle_array(prefix, nodes, lexer):
+            for item in nodes:
+                if not isinstance(item, ArrayElement):
+                    raise AssertionError("The item must be an array element")
+                if item.key is None:
+                    name = []
+                else:
+                    # To update lexer current position
+                    lexer.extract_name("DOUBLE_ARROW", *item.lexpositions)
+                    name = f"{item.key}"
+                if prefix:
+                    name = f"{prefix}.{name}"  # Laravel uses dot notation https://laravel.com/docs/9.x/localization#retrieving-translation-strings
+                if isinstance(item.value, Array):
+                    handle_array(name, item.value.nodes, lexer)
+                elif isinstance(item.value, str):
+                    self.create_and_add_unit(
+                        name,
+                        item.value,
+                        lexer.extract_quote(),
+                        lexer.extract_comments(item.lexpositions[1]),
+                    )
+
+        parser = make_parser()
+        for item in parser.productions:
+            item.callable = wrap_production(item.callable)
+        lexer = PHPLexer()
+        tree = parser.parse(phpsrc.decode(self.encoding), lexer=lexer, tracking=True)
+        # Handle text without PHP start
+        if len(tree) == 1 and isinstance(tree[0], InlineHTML):
+            self.parse(b"<?php\n" + phpsrc)
+            return
+        for item in tree:
+            if isinstance(item, Return) and isinstance(item.node, Array):
+                # Adjustextractor position
+                lexer.extract_name("RETURN", *item.lexpositions)
+                handle_array("", item.node.nodes, lexer)
+
+    def serialize(self, out):
+        """Convert the units back to lines."""
+
+        def write(text):
+            out.write(text.encode(self.encoding))
+
+        # Write array start
+        write("<?php\n")
+        write("\n")
+        write("return [\n")
+
+        # List of handled arrays
+        for unit in self.units:
+            write(unit.getoutput(indent="    "))
+
+        # Write array end
+        write("];\n")
