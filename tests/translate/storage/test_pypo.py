@@ -622,3 +622,37 @@ msgstr ""\r
         assert len(pofile.units) == 1
         assert pofile.units[0].source == "test me"
         assert bytes(pofile) == posource
+
+    def test_dos_newlines_typecomment(self):
+        """checks that mixed newlines are properly parsed"""
+        posource = b"""msgid "test me"\r
+msgstr ""\r
+"""
+        poexpected = b"""#, fuzzy\r
+msgid ""\r
+msgstr ""\r
+"Project-Id-Version: PACKAGE VERSION\\n"\r
+"Report-Msgid-Bugs-To: \\n"\r
+"POT-Creation-Date: 2023-10-24 10:19+0200\\n"\r
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\\n"\r
+"Last-Translator: nobody <nobody@example.com>\\n"\r
+"Language-Team: LANGUAGE <LL@li.org>\\n"\r
+"MIME-Version: 1.0\\n"\r
+"Content-Type: text/plain; charset=CHARSET\\n"\r
+"Content-Transfer-Encoding: ENCODING\\n"\r
+"X-Generator: Translate Toolkit 3.10.1\\n"\r
+\r
+msgid "test me"\r
+msgstr ""\r
+"""
+        pofile = self.poparse(posource)
+        assert len(pofile.units) == 1
+        unit = pofile.units[0]
+        assert unit.source == "test me"
+        assert bytes(pofile) == posource
+        pofile.updateheader(
+            add=True,
+            last_translator="nobody <nobody@example.com>",
+            POT_Creation_Date="2023-10-24 10:19+0200",
+        )
+        assert bytes(pofile) == poexpected

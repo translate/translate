@@ -452,6 +452,9 @@ class poheader:
         Check .makeheaderdict() for information on parameters.
         """
         headerpo = self.UnitClass("", encoding=self._encoding)
+        # This is hack to make sure proper newlines are used
+        # in markfuzzy -> settypecomment calls.
+        headerpo._store = self
         headerpo.markfuzzy()
         headeritems = self.makeheaderdict(**kwargs)
         headervalue = ""
