@@ -19,6 +19,8 @@
 
 """Module for handling Android String and Plurals resource files."""
 
+from __future__ import annotations
+
 import copy
 import os
 import re
@@ -32,6 +34,18 @@ from translate.storage import base, lisa
 EOF = None
 WHITESPACE = " \n\t"  # Whitespace that we collapse.
 MULTIWHITESPACE = re.compile("[ \n\t]{2}(?!\\\\n)")
+
+ESCAPE_TRANSLATE = str.maketrans(
+    {
+        "\\": "\\\\",
+        # This will add non intrusive real newlines to
+        # ones in translation improving readability of result
+        "\n": "\n\\n",
+        "\t": "\\t",
+        "'": "\\'",
+        '"': '\\"',
+    }
+)
 
 
 class AndroidResourceUnit(base.TranslationUnit):
@@ -211,7 +225,9 @@ class AndroidResourceUnit(base.TranslationUnit):
     def xml_escape_space(matchobj):
         return matchobj.group(0).replace("  ", r" \u0020")
 
-    def escape(self, text, quote_wrapping_whitespaces=True):
+    def escape(
+        self, text: str | None, quote_wrapping_whitespaces: bool = True
+    ) -> str | None:
         """Escape all the characters which need to be escaped in an Android XML
         file.
 
@@ -224,20 +240,17 @@ class AndroidResourceUnit(base.TranslationUnit):
             return
         if len(text) == 0:
             return ""
-        text = text.replace("\\", "\\\\")
-        # This will add non intrusive real newlines to
-        # ones in translation improving readability of result
-        text = text.replace("\n", "\n\\n")
-        text = text.replace("\t", "\\t")
-        text = text.replace("'", "\\'")
-        text = text.replace("?", "\\?")
-        text = text.replace('"', '\\"')
 
-        # @ needs to be escaped at start
-        if text.startswith("@"):
-            text = "\\@" + text[1:]
+        # Escape XML chars and whitespace
+        text = text.translate(ESCAPE_TRANSLATE)
+
+        # @ and ? needs to be escaped at start as this would be interpreted
+        # as string/style references
+        if text.startswith(("@", "?")):
+            text = f"\\{text}"
+
         # Quote strings with more whitespace
-        multispace = MULTIWHITESPACE.findall(text)
+        multispace = MULTIWHITESPACE.search(text)
         if quote_wrapping_whitespaces and (
             text[0] in WHITESPACE or text[-1] in WHITESPACE or multispace
         ):
