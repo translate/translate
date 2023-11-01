@@ -5,7 +5,7 @@ aeidon==1.13        # Subtitles
 # Format support
 BeautifulSoup4>=4.3  # Trados
 # Encoding detection
-charset-normalizer==3.3.1   # chardet
+charset-normalizer==3.3.2   # chardet
 # Tmserver backend
 cheroot==10.0.0       # tmserver
 # Format support
