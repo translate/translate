@@ -19,6 +19,7 @@ jobs:
 
     runs-on: windows-latest
     strategy:
+      fail-fast: false
       matrix:
         requirements: [latest]
         python-version:
@@ -26,6 +27,7 @@ jobs:
         - '3.9'
         - '3.10'
         - '3.11'
+        - '3.12'
 
     steps:
     - uses: actions/checkout@v4
