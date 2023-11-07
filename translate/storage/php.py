@@ -473,25 +473,7 @@ class phpfile(base.TranslationStore):
                         lexer.extract_comments(item.lexpositions[1]),
                     )
             elif isinstance(item, Assignment):
-                if isinstance(item.node, ArrayOffset):
-                    name = lexer.extract_name("EQUALS", *item.lexpositions)
-                    if isinstance(item.expr, Array):
-                        handle_array(name, item.expr.nodes, lexer)
-                    elif isinstance(item.expr, str):
-                        self.create_and_add_unit(
-                            name,
-                            item.expr,
-                            lexer.extract_quote(),
-                            lexer.extract_comments(item.lexpositions[1]),
-                        )
-                    elif isinstance(item.expr, BinaryOp) and item.expr.op == ".":
-                        self.create_and_add_unit(
-                            name,
-                            concatenate(item.expr),
-                            lexer.extract_quote(),
-                            lexer.extract_comments(item.lexpositions[1]),
-                        )
-                elif isinstance(item.node, Variable):
+                if isinstance(item.node, (ArrayOffset, Variable)):
                     name = lexer.extract_name("EQUALS", *item.lexpositions)
                     if isinstance(item.expr, Array):
                         handle_array(name, item.expr.nodes, lexer)

@@ -181,11 +181,11 @@ class TikiStore(base.TranslationStore):
                     _location = "untranslated"
                 elif line.count("### start of possibly untranslated words"):
                     _location = "possiblyuntranslated"
-                elif line.count("### end of unused words"):
-                    _location = "translated"
-                elif line.count("### end of untranslated words"):
-                    _location = "translated"
-                elif line.count("### end of possibly untranslated words"):
+                elif (
+                    line.count("### end of unused words")
+                    or line.count("### end of untranslated words")
+                    or line.count("### end of possibly untranslated words")
+                ):
                     _location = "translated"
 
                 match = _split_regex.match(line)
