@@ -28,7 +28,6 @@ profile = "black"
 ignore = [
   "PT013",  # TODO: Found incorrect import of pytest, use simple `import pytest` instead
   "PT009",  # TODO: Use a regular `assert` instead of unittest-style `assertCountEqual`
-  "B017",  # TODO: `pytest.raises(Exception)` should be considered evil
   "PLE0604",  # TODO: Invalid object in `__all__`, must contain only strings
   "B008",  # TODO: Do not perform function call `sys.getdefaultencoding` in argument defaults
   "PLW1510",  # TODO: `subprocess.run` without explicit `check` argument
