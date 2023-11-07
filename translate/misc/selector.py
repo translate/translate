@@ -506,7 +506,7 @@ class Naked:
     def __call__(self, environ, start_response):
         """Dispatch to the method named by the next bit of PATH_INFO."""
         name = shift_path_info(
-            dict(SCRIPT_NAME=environ["SCRIPT_NAME"], PATH_INFO=environ["PATH_INFO"])
+            {"SCRIPT_NAME": environ["SCRIPT_NAME"], "PATH_INFO": environ["PATH_INFO"]}
         )
         callable = getattr(self, name or "index", None)
         if callable is not None and self._is_exposed(callable):

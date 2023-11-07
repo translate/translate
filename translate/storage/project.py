@@ -136,7 +136,7 @@ class Project:
                         break
 
         # Populate the conv_options dict with the options we can detect
-        conv_options = dict(in_fname=input_fname)
+        conv_options = {"in_fname": input_fname}
 
         if input_fname in self.store.convert_map:
             out_name, tmpl_name = self.store.convert_map[input_fname]

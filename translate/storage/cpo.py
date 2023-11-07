@@ -942,10 +942,7 @@ class pofile(pocommon.pofile):
         else:
             units = self.units
 
-        for unit in units:
-            if not unit.isblank() and not unit.isobsolete():
-                return False
-        return True
+        return all(not (not unit.isblank() and not unit.isobsolete()) for unit in units)
 
     def parse(self, input):
         if hasattr(input, "name"):

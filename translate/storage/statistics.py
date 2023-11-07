@@ -141,8 +141,7 @@ class Statistics:
         # TODO: decoding should not be done here
         #        checkresult = self.checker.run_filters(unit, unit.source, unit.target)
         checkresult = {}
-        for checkname, checkmessage in checkresult.items():
-            classes.append("check-" + checkname)
+        classes.extend("check-" + checkname for checkname in checkresult)
         return classes
 
     def classifyunits(self):

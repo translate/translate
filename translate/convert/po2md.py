@@ -188,10 +188,7 @@ class PO2MDOptionParser(convert.ConvertOptionParser):
     def isvalidtemplatename(self, filename):
         """Checks if this is a valid template/output filename."""
         _, ext = self.splitext(filename)
-        for (_, templateformat), _ in self.outputoptions.items():
-            if ext == templateformat:
-                return True
-        return False
+        return any(ext == templateformat for _, templateformat in self.outputoptions)
 
 
 def main(argv=None):
