@@ -129,9 +129,7 @@ def filtervariables(startmarker, endmarker, varfilter):
     :return: fn(str1)
     """
     startmarkerlen = 0 if startmarker is None else len(startmarker)
-    if endmarker is None:
-        endmarkerlen = 0
-    elif isinstance(endmarker, int):
+    if endmarker is None or isinstance(endmarker, int):
         endmarkerlen = 0
     else:
         endmarkerlen = len(endmarker)

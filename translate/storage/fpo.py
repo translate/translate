@@ -89,9 +89,7 @@ class pounit(pocommon.pounit):
     def source(self, source):
         self._rich_source = None
         source = source or ""
-        if isinstance(source, multistring):
-            self._source = source
-        elif isinstance(source, str):
+        if isinstance(source, (multistring, str)):
             self._source = source
         else:  # If it is unicode, list or dict.
             self._source = multistring(source)
