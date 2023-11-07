@@ -97,7 +97,7 @@ class UnitMixer:
                             labelentity[: labelentity.rfind(labelsuffix)] + akeytype
                         )
                         break
-        else:
+        if labelentity is None:
             for akeytype in self.accesskeysuffixes:
                 if entity.endswith(akeytype):
                     accesskeyentity = entity
