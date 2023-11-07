@@ -27,12 +27,14 @@ from __future__ import annotations
 
 import re
 import textwrap
-from collections.abc import Iterator
-from typing import BinaryIO
+from typing import TYPE_CHECKING, BinaryIO
 
 from fluent.syntax import FluentSerializer, ast, parse, serialize, visitor
 
 from translate.storage import base
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 
 class _SanitizeVisitor(visitor.Visitor):

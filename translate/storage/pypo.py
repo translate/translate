@@ -21,13 +21,13 @@
 Classes that hold units of Gettext .po files (pounit) or entire
 files (pofile).
 """
+from __future__ import annotations
 
 import copy
 import logging
 import re
 import textwrap
 import unicodedata
-from typing import List, Tuple
 
 from translate.misc import quote
 from translate.misc.multistring import multistring
@@ -116,7 +116,7 @@ def cjklen(text: str) -> int:
     )
 
 
-def cjkslices(text: str, index: int) -> Tuple[str, str]:
+def cjkslices(text: str, index: int) -> tuple[str, str]:
     """Return the two slices of a text cut to the index."""
     if cjklen(text) <= index:
         return text, ""
@@ -163,7 +163,7 @@ class PoWrapper(textwrap.TextWrapper):
         )
 
     def _handle_long_word(
-        self, reversed_chunks: List[str], cur_line: List[str], cur_len: int, width: int
+        self, reversed_chunks: list[str], cur_line: list[str], cur_len: int, width: int
     ):
         """
         Handle a chunk of text (most likely a word, not whitespace) that
@@ -182,7 +182,7 @@ class PoWrapper(textwrap.TextWrapper):
         cur_line.append(chunk_start)
         reversed_chunks[-1] = chunk_end
 
-    def _wrap_chunks(self, chunks: List[str]) -> List[str]:
+    def _wrap_chunks(self, chunks: list[str]) -> list[str]:
         lines = []
         if self.width <= 1:
             raise ValueError("invalid width %r (must be > 1)" % self.width)

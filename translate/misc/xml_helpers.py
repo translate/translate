@@ -18,8 +18,9 @@
 
 """Helper functions for working with XML."""
 
+from __future__ import annotations
+
 import re
-from typing import List, Optional
 
 from lxml import etree
 
@@ -139,9 +140,9 @@ def reindent(
     level: int = 0,
     indent: str = "  ",
     max_level: int = 4,
-    skip: Optional[List[str]] = None,
+    skip: list[str] | None = None,
     toplevel=True,
-    leaves: Optional[List[str]] = None,
+    leaves: list[str] | None = None,
 ):
     """
     Adjust indentation to match specification.

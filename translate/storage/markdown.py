@@ -34,9 +34,11 @@ White space within translation units is normalized, because the PO format does
 not preserve white space, and the translated Markdown content may have
 to be reflowed anyway.
 """
+from __future__ import annotations
+
 import re
 from itertools import chain
-from typing import Iterable, Tuple
+from typing import Iterable
 
 import mistletoe.token
 from mistletoe import block_token, span_token
@@ -401,7 +403,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     @classmethod
     def trim_flanking_placeholders(
         cls, fragments: Iterable[Fragment]
-    ) -> Tuple[Iterable[Fragment], Iterable[Fragment], Iterable[Fragment]]:
+    ) -> tuple[Iterable[Fragment], Iterable[Fragment], Iterable[Fragment]]:
         """
         Splits leading and trailing placeholders and whitespace, and the main
         content, into separate lists. Placeholders marked as important are kept
