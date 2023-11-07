@@ -18,7 +18,7 @@
 
 """
 String processing utilities for extracting strings with various kinds of
-delimiters
+delimiters.
 """
 
 import html.entities
@@ -29,7 +29,7 @@ import re
 def find_all(searchin, substr):
     """
     Returns a list of locations where substr occurs in searchin locations
-    are not allowed to overlap
+    are not allowed to overlap.
     """
     location = 0
     locations = []
@@ -334,7 +334,7 @@ def entitydecode(source, name2codepoint):
 
 def htmlentityencode(source):
     """
-    Encode ``source`` using HTML entities e.g. © -> ``&copy;``
+    Encode ``source`` using HTML entities e.g. © -> ``&copy;``.
 
     :param unicode source: Source string to encode
     """
@@ -353,7 +353,7 @@ def htmlentitydecode(source):
 def javapropertiesencode(source):
     """
     Encodes source in the escaped-unicode encoding used by Java
-    .properties files
+    .properties files.
     """
     output = ""
     if source and source[0] == " ":
@@ -437,7 +437,7 @@ controlchars = {
 
 
 def escapecontrols(source):
-    """Escape control characters in the given string"""
+    """Escape control characters in the given string."""
     for key, value in controlchars.items():
         source = source.replace(key, value)
     return source

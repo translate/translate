@@ -134,7 +134,7 @@ class TMServer:
 
     @selector.opliant
     def upload_store(self, environ, start_response, sid, slang, tlang):
-        """Add units from uploaded file to tmdb"""
+        """Add units from uploaded file to tmdb."""
         from translate.storage import factory
 
         start_response("200 OK", [("Content-type", "text/plain")])

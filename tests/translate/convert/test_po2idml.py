@@ -6,7 +6,7 @@ from . import test_convert
 
 
 class TestPo2IDMLCommand(test_convert.TestConvertCommand):
-    """Tests running actual po2idml commands on files"""
+    """Tests running actual po2idml commands on files."""
 
     convertmodule = po2idml
     expected_options = [

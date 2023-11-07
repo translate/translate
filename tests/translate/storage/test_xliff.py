@@ -342,7 +342,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 
     @staticmethod
     def test_alttrans():
-        """Test xliff <alt-trans> accessors"""
+        """Test xliff <alt-trans> accessors."""
         xlifffile = xliff.xlifffile()
         unit = xlifffile.addsourceunit("Testing")
 

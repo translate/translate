@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""module for handling TBX glossary files"""
+"""module for handling TBX glossary files."""
 
 from lxml import etree
 
@@ -35,7 +35,7 @@ class tbxunit(lisa.LISAunit):
     textNode = "term"
 
     def createlanguageNode(self, lang, text, purpose):
-        """Returns a langset xml Element setup with given parameters"""
+        """Returns a langset xml Element setup with given parameters."""
         langset = etree.Element(self.languageNode)
         setXMLlang(langset, lang)
         tig = etree.SubElement(langset, "tig")  # or ntig with termGrp inside
@@ -66,7 +66,7 @@ class tbxunit(lisa.LISAunit):
             self.xmlelement.remove(note)
 
     def addnote(self, text, origin=None, position="append"):
-        """Add a note specifically in a "note" tag"""
+        """Add a note specifically in a "note" tag."""
         if position != "append":
             self.removenotes(origin=origin)
 

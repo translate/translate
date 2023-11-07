@@ -69,7 +69,7 @@ msgstr "My \"good\" program"
 
 
 class TestPO2RCCommand(test_convert.TestConvertCommand):
-    """Tests running actual po2rc commands on files"""
+    """Tests running actual po2rc commands on files."""
 
     convertmodule = po2rc
     defaultoptions = {"progress": "none"}
@@ -84,7 +84,7 @@ class TestPO2RCCommand(test_convert.TestConvertCommand):
     ]
 
     def test_convert(self):
-        """Tests the conversion to a po file"""
+        """Tests the conversion to a po file."""
         self.create_testfile("simple.rc", RC_SOURCE)
         self.create_testfile("simple.po", POFILE)
         self.run_command(
@@ -97,7 +97,7 @@ class TestPO2RCCommand(test_convert.TestConvertCommand):
         assert rc_result.units[4].target == "Mój bardzo dobry program"
 
     def test_convert_quotes(self):
-        """Tests the conversion to a po file"""
+        """Tests the conversion to a po file."""
         self.create_testfile("simple.rc", RC_SOURCE)
         self.create_testfile("simple.po", POFILE_QUOTES)
         self.run_command(
@@ -334,7 +334,7 @@ msgstr "Vypnout..."
         assert rc_result.units[3].target == "Vypnout..."
 
     def test_convert_newlines(self):
-        """Tests the conversion to a po file"""
+        """Tests the conversion to a po file."""
         source = """
 STRINGTABLE
 BEGIN

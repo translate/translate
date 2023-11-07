@@ -14,7 +14,7 @@ class TestPOSegment:
         stripspaces=True,
         onlyaligned=True,
     ):
-        """Helper that convert po source without requiring files"""
+        """Helper that convert po source without requiring files."""
         inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
         sourcelang = lang_factory.getlanguage(sourcelanguage)
@@ -57,7 +57,7 @@ msgstr ""
         )
 
     def test_en_ja_punctuation(self):
-        """Checks that a half-width punctuation"""
+        """Checks that a half-width punctuation."""
         posource = """
 #: docs/intro/contributing.txt:184
 msgid ""

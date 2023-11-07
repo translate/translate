@@ -63,7 +63,7 @@ def converthtml(
 ):
     """
     reads in stdin using fromfileclass, converts using convertorclass,
-    writes to stdout
+    writes to stdout.
     """
     convertor = html2po()
     outputstore = convertor.convertfile(
@@ -122,7 +122,7 @@ class Html2POOptionParser(convert.ConvertOptionParser):
         return 1
 
     def recursiveprocess(self, options):
-        """Recurse through directories and process files. (override)"""
+        """Recurse through directories and process files. (override)."""
         if options.multifilestyle == "onefile":
             self.outputstore = po.pofile()
             super().recursiveprocess(options)
@@ -136,7 +136,7 @@ class Html2POOptionParser(convert.ConvertOptionParser):
             super().recursiveprocess(options)
 
     def isrecursive(self, fileoption, filepurpose="input"):
-        """Check if fileoption is a recursive file. (override)"""
+        """Check if fileoption is a recursive file. (override)."""
         if hasattr(self, "outputstore") and filepurpose == "output":
             return True
         return super().isrecursive(fileoption, filepurpose=filepurpose)
@@ -144,14 +144,14 @@ class Html2POOptionParser(convert.ConvertOptionParser):
     def checkoutputsubdir(self, options, subdir):
         """
         Check if subdir under options.output needs to be created,
-        creates if neccessary. Do nothing if in single-output-file mode. (override)
+        creates if neccessary. Do nothing if in single-output-file mode. (override).
         """
         if hasattr(self, "outputstore"):
             return
         super().checkoutputsubdir(options, subdir)
 
     def openoutputfile(self, options, fulloutputpath):
-        """Open the output file, or do nothing if in single-output-file mode. (override)"""
+        """Open the output file, or do nothing if in single-output-file mode. (override)."""
         if hasattr(self, "outputstore"):
             return None
         return super().openoutputfile(options, fulloutputpath)

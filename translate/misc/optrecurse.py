@@ -66,7 +66,7 @@ class ManPageOption(optparse.Option):
     ACTIONS = (*optparse.Option.ACTIONS, "manpage")
 
     def take_action(self, action, dest, opt, value, values, parser):
-        """take_action that can handle manpage as well as standard actions"""
+        """take_action that can handle manpage as well as standard actions."""
         if action == "manpage":
             parser.print_manpage()
             sys.exit(0)
@@ -140,7 +140,7 @@ class RecursiveOptionParser(optparse.OptionParser):
     def setmanpageoption(self):
         """
         creates a manpage option that allows the optionparser to generate a
-        manpage
+        manpage.
         """
         manpageoption = ManPageOption(
             None,
@@ -153,7 +153,7 @@ class RecursiveOptionParser(optparse.OptionParser):
         self.define_option(manpageoption)
 
     def format_manpage(self):
-        """Returns a formatted manpage"""
+        """Returns a formatted manpage."""
         result = []
         prog = self.get_prog_name()
 
@@ -197,7 +197,7 @@ class RecursiveOptionParser(optparse.OptionParser):
         return "".join(result)
 
     def print_manpage(self, file=None):
-        """Outputs a manpage for the program using the help information"""
+        """Outputs a manpage for the program using the help information."""
         if file is None:
             file = sys.stdout
         file.write(self.format_manpage())
@@ -205,7 +205,7 @@ class RecursiveOptionParser(optparse.OptionParser):
     def set_usage(self, usage=None):
         """
         sets the usage string - if usage not given, uses getusagestring for
-        each option
+        each option.
         """
         if usage is None:
             self.usage = "%prog " + " ".join(
@@ -235,7 +235,7 @@ class RecursiveOptionParser(optparse.OptionParser):
 
     @staticmethod
     def getusagestring(option):
-        """Returns the usage string for the given option"""
+        """Returns the usage string for the given option."""
         optionstring = "|".join(option._short_opts + option._long_opts)
         if getattr(option, "optionalswitch", False):
             optionstring = "[%s]" % optionstring
@@ -247,7 +247,7 @@ class RecursiveOptionParser(optparse.OptionParser):
 
     @staticmethod
     def getusageman(option):
-        """Returns the usage string for the given option"""
+        """Returns the usage string for the given option."""
         optionstring = "\\fR|\\fP".join(option._short_opts + option._long_opts)
         if getattr(option, "optionalswitch", False):
             optionstring = "\\fR[\\fP%s\\fR]\\fP" % optionstring

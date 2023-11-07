@@ -25,7 +25,7 @@ from translate.lang import data
 
 
 def spacestart(str1):
-    """Returns all the whitespace from the start of the string"""
+    """Returns all the whitespace from the start of the string."""
     newstring = ""
     for c in str1:
         if c.isspace():
@@ -36,7 +36,7 @@ def spacestart(str1):
 
 
 def spaceend(str1):
-    """Returns all the whitespace from the end of the string"""
+    """Returns all the whitespace from the end of the string."""
     newstring = ""
     for n in range(len(str1)):
         c = str1[-1 - n]
@@ -48,7 +48,7 @@ def spaceend(str1):
 
 
 def puncstart(str1, punctuation):
-    """Returns all the punctuation from the start of the string"""
+    """Returns all the punctuation from the start of the string."""
     newstring = ""
     for c in str1:
         if c in punctuation or c.isspace():
@@ -59,7 +59,7 @@ def puncstart(str1, punctuation):
 
 
 def puncend(str1, punctuation):
-    """Returns all the punctuation from the end of the string"""
+    """Returns all the punctuation from the end of the string."""
     # An implementation with regular expressions was slightly slower.
 
     newstring = ""
@@ -73,7 +73,7 @@ def puncend(str1, punctuation):
 
 
 def ispurepunctuation(str1):
-    """Checks whether the string is entirely punctuation"""
+    """Checks whether the string is entirely punctuation."""
     for c in str1:
         if c.isalnum():
             return False
@@ -82,7 +82,7 @@ def ispurepunctuation(str1):
 
 def isvalidaccelerator(accelerator, acceptlist=None):
     """
-    returns whether the given accelerator character is valid
+    returns whether the given accelerator character is valid.
 
     :type accelerator: character
     :param accelerator: A character to be checked for accelerator validity
@@ -120,7 +120,7 @@ def isvalidaccelerator(accelerator, acceptlist=None):
 def findaccelerators(str1, accelmarker, acceptlist=None):
     """
     returns all the accelerators and locations in str1 marked with a given
-    marker
+    marker.
     """
     accelerators = []
     badaccelerators = []
@@ -146,7 +146,7 @@ def findaccelerators(str1, accelmarker, acceptlist=None):
 def findmarkedvariables(str1, startmarker, endmarker, ignorelist=[]):
     """
     returns all the variables and locations in str1 marked with a given
-    marker
+    marker.
     """
     variables = []
     currentpos = 0
@@ -201,11 +201,11 @@ def findmarkedvariables(str1, startmarker, endmarker, ignorelist=[]):
 def getaccelerators(accelmarker, acceptlist=None):
     """
     returns a function that gets a list of accelerators marked using
-    accelmarker
+    accelmarker.
     """
 
     def getmarkedaccelerators(str1):
-        """Returns all the accelerators in str1 marked with a given marker"""
+        """Returns all the accelerators in str1 marked with a given marker."""
         acclocs, badlocs = findaccelerators(str1, accelmarker, acceptlist)
         accelerators = [accelerator for accelstart, accelerator in acclocs]
         badaccelerators = [accelerator for accelstart, accelerator in badlocs]
@@ -217,11 +217,11 @@ def getaccelerators(accelmarker, acceptlist=None):
 def getvariables(startmarker, endmarker):
     """
     returns a function that gets a list of variables marked using
-    startmarker and endmarker
+    startmarker and endmarker.
     """
 
     def getmarkedvariables(str1):
-        """Returns all the variables in str1 marked with a given marker"""
+        """Returns all the variables in str1 marked with a given marker."""
         varlocs = findmarkedvariables(str1, startmarker, endmarker)
         return [variable for accelstart, variable in varlocs]
 
@@ -229,7 +229,7 @@ def getvariables(startmarker, endmarker):
 
 
 def getnumbers(str1):
-    """Returns any numbers that are in the string"""
+    """Returns any numbers that are in the string."""
     # TODO: handle locale-based periods e.g. 2,5 for Afrikaans
     assert isinstance(str1, str)
     numbers = []
@@ -280,7 +280,7 @@ _function_re = re.compile(
 def getfunctions(str1):
     """
     returns the functions() that are in a string, while ignoring the
-    trailing punctuation in the given parameter
+    trailing punctuation in the given parameter.
     """
     if "()" in str1:
         return _function_re.findall(str1)
@@ -288,12 +288,12 @@ def getfunctions(str1):
 
 
 def getemails(str1):
-    """Returns the email addresses that are in a string"""
+    """Returns the email addresses that are in a string."""
     return re.findall(r"[\w\.\-]+@[\w\.\-]+", str1)
 
 
 def geturls(str1):
-    """Returns the URIs in a string"""
+    """Returns the URIs in a string."""
     # TODO turn this into a verbose and compiled regex
     URLPAT = (
         r"https?:[\w/\.:;+\-~\%#\$?=&,()]+|"
@@ -306,11 +306,11 @@ def geturls(str1):
 def countaccelerators(accelmarker, acceptlist=None):
     """
     returns a function that counts the number of accelerators marked with
-    the given marker
+    the given marker.
     """
 
     def countmarkedaccelerators(str1):
-        """Returns all the variables in str1 marked with a given marker"""
+        """Returns all the variables in str1 marked with a given marker."""
         acclocs, badlocs = findaccelerators(str1, accelmarker, acceptlist)
         return len(acclocs), len(badlocs)
 

@@ -17,9 +17,11 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 """
-Class that manages TikiWiki files for translation.  Tiki files are <strike>ugly and
-inconsistent</strike> formatted as a single large PHP array with several special
-sections identified by comments.  Example current as of 2008-12-01:
+Class that manages TikiWiki files for translation.
+
+Tiki files are <strike>ugly and inconsistent</strike> formatted as a single
+large PHP array with several special sections identified by comments.  Example
+current as of 2008-12-01:
 
 .. code-block:: php
 

@@ -59,7 +59,7 @@ Target
         )
 
     def test_comment(self):
-        """Simple # comments"""
+        """Simple # comments."""
         input_string = """#. Comment
 #: prop
 msgid "Source"
@@ -76,7 +76,7 @@ Target
         )
 
     def test_ok_marker(self):
-        """The {ok} marker"""
+        """The {ok} marker."""
         input_string = """#: prop
 msgid "Same"
 msgstr "Same"
@@ -192,7 +192,7 @@ Target
 
 
 class TestPO2LangCommand(test_convert.TestConvertCommand, TestPO2Lang):
-    """Tests running actual po2prop commands on files"""
+    """Tests running actual po2prop commands on files."""
 
     convertmodule = po2mozlang
     defaultoptions = {"progress": "none"}

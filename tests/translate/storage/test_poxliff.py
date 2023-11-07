@@ -28,7 +28,7 @@ class TestPOXLIFFUnit(test_xliff.TestXLIFFUnit):
         assert unit.target == "Sk\u00ear"
 
     def test_ids(self):
-        """Tests that ids are assigned correctly, especially for plurals"""
+        """Tests that ids are assigned correctly, especially for plurals."""
         unit = self.UnitClass("gras")
         assert not unit.getid()
         unit.setid("4")

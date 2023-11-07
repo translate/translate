@@ -1,4 +1,4 @@
-"""Tests for the zip storage module"""
+"""Tests for the zip storage module."""
 
 import os
 from zipfile import ZipFile
@@ -10,19 +10,19 @@ class TestZIPFile:
     """A test class to test the zip class that provides the directory interface."""
 
     def setup_method(self, method):
-        """Sets up a test directory"""
+        """Sets up a test directory."""
         print("setup_method called on", self.__class__.__name__)
         self.testzip = "%s_testzip.zip" % (self.__class__.__name__)
         self.cleardir(self.testzip)
         self.zip = ZipFile(self.testzip, mode="w")
 
     def teardown_method(self, method):
-        """Removes the attributes set up by setup_method"""
+        """Removes the attributes set up by setup_method."""
         self.zip.close()
         self.cleardir(self.testzip)
 
     def cleardir(self, dirname):
-        """Removes the given directory"""
+        """Removes the given directory."""
         if os.path.exists(self.testzip):
             os.remove(self.testzip)
         assert not os.path.exists(self.testzip)
@@ -40,7 +40,7 @@ class TestZIPFile:
         """Makes a directory inside self.testzip."""
 
     def test_created(self):
-        """Test that the directory actually exists"""
+        """Test that the directory actually exists."""
         print(self.testzip)
         assert os.path.isfile(self.testzip)
 

@@ -31,7 +31,7 @@ class TestResourceDictionaryFile(test_monolingual.TestMonolingualStore):
     StoreClass = resourcedictionary.ResourceDictionaryFile
 
     def test_roundtrip(self):
-        """Test that parser fails on inconsistent root name configuration"""
+        """Test that parser fails on inconsistent root name configuration."""
         xmlsource = """<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:system="clr-namespace:System;assembly=mscorlib">
     <system:String x:Key="ApplicationNameShort">Weblate</system:String>
 </ResourceDictionary>

@@ -21,17 +21,17 @@ from io import BytesIO
 
 
 class CatchStringOutput(BytesIO):
-    """catches the output before it is closed and sends it to an onclose method"""
+    """catches the output before it is closed and sends it to an onclose method."""
 
     def __init__(self, onclose):
-        """Set up the output stream, and remember a method to call on closing"""
+        """Set up the output stream, and remember a method to call on closing."""
         super().__init__()
         self.onclose = onclose
 
     def close(self):
         """
         wrap the underlying close method, to pass the value to onclose
-        before it goes
+        before it goes.
         """
         value = self.getvalue()
         self.onclose(value)
@@ -40,7 +40,7 @@ class CatchStringOutput(BytesIO):
     def slam(self):
         """
         use this method to force the closing of the stream if it isn't
-        closed yet
+        closed yet.
         """
         if not self.closed:
             self.close()

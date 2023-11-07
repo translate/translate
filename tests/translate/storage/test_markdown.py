@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Tests for the Markdown classes"""
+"""Tests for the Markdown classes."""
 
 from io import BytesIO
 from unittest import TestCase

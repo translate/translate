@@ -18,7 +18,7 @@
 
 """
 Convert Comma-Separated Value (.csv) files to a TermBase eXchange (.tbx)
-glossary file
+glossary file.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/csv2tbx.html
 for examples and usage instructions
@@ -30,7 +30,7 @@ from translate.storage import csvl10n, tbx
 class csv2tbx:
     """
     a class that takes translations from a .csv file and puts them in a .tbx
-    file
+    file.
     """
 
     def __init__(self, charset=None):
@@ -40,7 +40,7 @@ class csv2tbx:
     def convertfile(self, csvfile):
         """
         converts a csvfile to a tbxfile, and returns it. uses templatepo if
-        given at construction
+        given at construction.
         """
         mightbeheader = True
         self.tbxfile = tbx.tbxfile()
@@ -65,7 +65,7 @@ class csv2tbx:
 def convertcsv(inputfile, outputfile, templatefile, charset=None, columnorder=None):
     """
     reads in inputfile using csvl10n, converts using csv2tbx, writes to
-    outputfile
+    outputfile.
     """
     inputstore = csvl10n.csvfile(inputfile, fieldnames=columnorder)
     convertor = csv2tbx(charset=charset)

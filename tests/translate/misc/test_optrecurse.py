@@ -6,7 +6,7 @@ from translate.misc import optrecurse
 
 class TestRecursiveOptionParser:
     def test_splitext(self):
-        """Test the ``optrecurse.splitext`` function"""
+        """Test the ``optrecurse.splitext`` function."""
         self.parser = optrecurse.RecursiveOptionParser({"txt": ("po", None)})
         name = "name"
         extension = "ext"

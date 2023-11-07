@@ -29,7 +29,7 @@ from translate.storage import po, xliff
 class xliff2po:
     @staticmethod
     def converttransunit(transunit):
-        """Makes a pounit from the given transunit"""
+        """Makes a pounit from the given transunit."""
         thepo = po.pounit()
 
         # Header
@@ -64,7 +64,7 @@ class xliff2po:
         return thepo
 
     def convertstore(self, inputfile, duplicatestyle="msgctxt"):
-        """Converts a .xliff file to .po format"""
+        """Converts a .xliff file to .po format."""
         XliffFile = xliff.xlifffile.parsestring(inputfile)
         thetargetfile = po.pofile()
         targetheader = thetargetfile.header()
@@ -95,7 +95,7 @@ class xliff2po:
 def convertxliff(inputfile, outputfile, templates, duplicatestyle="msgctxt"):
     """
     reads in stdin using fromfileclass, converts using convertorclass,
-    writes to stdout
+    writes to stdout.
     """
     convertor = xliff2po()
     outputstore = convertor.convertstore(inputfile, duplicatestyle)

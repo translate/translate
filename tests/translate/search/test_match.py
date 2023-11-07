@@ -3,16 +3,16 @@ from translate.storage import csvl10n
 
 
 class TestMatch:
-    """Test the matching class"""
+    """Test the matching class."""
 
     @staticmethod
     def candidatestrings(units):
-        """Returns only the candidate strings out of the list with (score, string) tuples"""
+        """Returns only the candidate strings out of the list with (score, string) tuples."""
         return [unit.source for unit in units]
 
     @staticmethod
     def buildcsv(sources, targets=None):
-        """Build a csvfile store with the given source and target strings"""
+        """Build a csvfile store with the given source and target strings."""
         if targets is None:
             targets = sources
         else:
@@ -24,7 +24,7 @@ class TestMatch:
         return csvfile
 
     def test_matching(self):
-        """Test basic matching"""
+        """Test basic matching."""
         csvfile = self.buildcsv(["hand", "asdf", "fdas", "haas", "pond"])
         matcher = match.matcher(csvfile)
         candidates = self.candidatestrings(matcher.matches("hond"))
@@ -49,7 +49,7 @@ class TestMatch:
         assert candidates[1:] == ["Ek skop die balle", "Hy skop die bal"]
 
     def test_multiple_store(self):
-        """Test using multiple datastores"""
+        """Test using multiple datastores."""
         csvfile1 = self.buildcsv(["hand", "asdf", "fdas"])
         csvfile2 = self.buildcsv(["haas", "pond"])
         matcher = match.matcher([csvfile1, csvfile2])
@@ -90,7 +90,7 @@ class TestMatch:
         assert candidates == ["computer", "file"]
 
     def test_brackets(self):
-        """Tests that brackets at the end of a term are ignored"""
+        """Tests that brackets at the end of a term are ignored."""
         csvfile = self.buildcsv(["file (noun)", "ISP (Internet Service Provider)"])
         matcher = match.terminologymatcher(csvfile)
         candidates = self.candidatestrings(matcher.matches("Open File"))
@@ -101,7 +101,7 @@ class TestMatch:
         assert candidates == ["isp"]
 
     def test_past_tences(self):
-        """Tests matching of some past tenses"""
+        """Tests matching of some past tenses."""
         csvfile = self.buildcsv(["submit", "certify"])
         matcher = match.terminologymatcher(csvfile)
         candidates = self.candidatestrings(matcher.matches("The bug was submitted"))
@@ -109,14 +109,14 @@ class TestMatch:
         candidates = self.candidatestrings(matcher.matches("The site is certified"))
 
     def test_space_mismatch(self):
-        """Tests that we can match with some spacing mismatch"""
+        """Tests that we can match with some spacing mismatch."""
         csvfile = self.buildcsv(["down time"])
         matcher = match.terminologymatcher(csvfile)
         candidates = self.candidatestrings(matcher.matches("%d minutes downtime"))
         assert candidates == ["downtime"]
 
     def test_hyphen_mismatch(self):
-        """Tests that we can match with some spacing mismatch"""
+        """Tests that we can match with some spacing mismatch."""
         csvfile = self.buildcsv(["pre-order"])
         matcher = match.terminologymatcher(csvfile)
         candidates = self.candidatestrings(matcher.matches("You can preorder"))

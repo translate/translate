@@ -40,7 +40,7 @@ from translate.storage.poheader import poheader
 class pocheckfilter:
     def __init__(self, options, checkerclasses=None, checkerconfig=None):
         # excludefilters={}, limitfilters=None, includefuzzy=True, includereview=True, autocorrect=False):
-        """Builds a checkfilter using the given checker (a list is allowed too)"""
+        """Builds a checkfilter using the given checker (a list is allowed too)."""
         if checkerclasses is None:
             checkerclasses = [checks.StandardChecker, checks.StandardUnitChecker]
 

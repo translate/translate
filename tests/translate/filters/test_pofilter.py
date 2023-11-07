@@ -12,7 +12,7 @@ class BaseTestFilter:
     filename = ""
 
     def parse_text(self, filetext):
-        """Helper that parses xliff file content without requiring files"""
+        """Helper that parses xliff file content without requiring files."""
         dummyfile = BytesIO(filetext.encode())
         dummyfile.name = self.filename
         return factory.getobject(dummyfile)
@@ -35,12 +35,12 @@ class BaseTestFilter:
         return checkfilter.filterfile(translationstore)
 
     def test_simplepass(self):
-        """Checks that an obviously correct string passes"""
+        """Checks that an obviously correct string passes."""
         filter_result = self.filter(self.translationstore)
         assert headerless_len(filter_result.units) == 0
 
     def test_simplefail(self):
-        """Checks that an obviously wrong string fails"""
+        """Checks that an obviously wrong string fails."""
         self.unit.target = "REST"
         filter_result = self.filter(self.translationstore)
         print(filter_result)
@@ -48,7 +48,7 @@ class BaseTestFilter:
         assert "startcaps" in first_translatable(filter_result).geterrors()
 
     def test_variables_across_lines(self):
-        """Test that variables can span lines and still fail/pass"""
+        """Test that variables can span lines and still fail/pass."""
         self.unit.source = '"At &timeBombURL."\n"label;."'
         self.unit.target = '"Tydens &tydBombURL."\n"etiket;."'
         filter_result = self.filter(self.translationstore)
@@ -57,7 +57,7 @@ class BaseTestFilter:
     def test_ignore_if_already_marked(self):
         """
         check that we don't add another failing marker if the message is
-        already marked as failed
+        already marked as failed.
         """
         self.unit.target = ""
         filter_result = self.filter(
@@ -77,7 +77,7 @@ class BaseTestFilter:
         assert "untranslated" in errors
 
     def test_non_existant_check(self):
-        """Check that we report an error if a user tries to run a non-existant test"""
+        """Check that we report an error if a user tries to run a non-existant test."""
         filter_result = self.filter(
             self.translationstore, cmdlineoptions=["-t nonexistant"]
         )
@@ -86,13 +86,13 @@ class BaseTestFilter:
         assert headerless_len(filter_result.units) == 0
 
     def test_list_all_tests(self):
-        """Lists all available tests"""
+        """Lists all available tests."""
         filter_result = self.filter(self.translationstore, cmdlineoptions=["-l"])
         # TODO again not sure how to check the stderror output
         assert headerless_len(filter_result.units) == 0
 
     def test_test_against_fuzzy(self):
-        """Test whether to run tests against fuzzy translations"""
+        """Test whether to run tests against fuzzy translations."""
         self.unit.markfuzzy()
 
         filter_result = self.filter(self.translationstore, cmdlineoptions=["--fuzzy"])
@@ -112,7 +112,7 @@ class BaseTestFilter:
         assert headerless_len(filter_result.units) == 0
 
     def test_test_against_review(self):
-        """Test whether to run tests against translations marked for review"""
+        """Test whether to run tests against translations marked for review."""
         self.unit.markreviewneeded()
         filter_result = self.filter(self.translationstore, cmdlineoptions=["--review"])
         assert first_translatable(filter_result).isreview()
@@ -133,7 +133,7 @@ class BaseTestFilter:
         assert headerless_len(filter_result.units) == 0
 
     def test_isfuzzy(self):
-        """Tests the extraction of items marked fuzzy"""
+        """Tests the extraction of items marked fuzzy."""
         self.unit.markfuzzy()
 
         filter_result = self.filter(
@@ -148,7 +148,7 @@ class BaseTestFilter:
         assert headerless_len(filter_result.units) == 0
 
     def test_isreview(self):
-        """Tests the extraction of items marked review"""
+        """Tests the extraction of items marked review."""
         filter_result = self.filter(
             self.translationstore, cmdlineoptions=["--test=isreview"]
         )
@@ -161,7 +161,7 @@ class BaseTestFilter:
         assert first_translatable(filter_result).isreview()
 
     def test_notes(self):
-        """Tests the optional adding of notes"""
+        """Tests the optional adding of notes."""
         # let's make sure we trigger the 'long' and/or 'doubleword' test
         self.unit.target = "asdf asdf asdf asdf asdf asdf asdf"
         filter_result = self.filter(self.translationstore)
@@ -181,7 +181,7 @@ class BaseTestFilter:
     def test_unicode(self):
         """
         tests that we can handle UTF-8 encoded characters when there is no
-        known header specified encoding
+        known header specified encoding.
         """
         self.unit.source = "Bézier curve"
         self.unit.target = "Bézier-kurwe"
@@ -189,7 +189,7 @@ class BaseTestFilter:
         assert headerless_len(filter_result.units) == 0
 
     def test_preconditions(self):
-        """Tests that the preconditions work correctly"""
+        """Tests that the preconditions work correctly."""
         self.unit.source = "File"
         self.unit.target = ""
         filter_result = self.filter(self.translationstore)
@@ -286,23 +286,23 @@ class TestTMXFilter(BaseTestFilter):
         self.unit = first_translatable(self.translationstore)
 
     def test_test_against_fuzzy(self):
-        """TMX doesn't support fuzzy"""
+        """TMX doesn't support fuzzy."""
 
     def test_test_against_review(self):
-        """TMX doesn't support review"""
+        """TMX doesn't support review."""
 
     def test_isfuzzy(self):
-        """TMX doesn't support fuzzy"""
+        """TMX doesn't support fuzzy."""
 
     def test_isreview(self):
-        """TMX doesn't support review"""
+        """TMX doesn't support review."""
 
 
 class TestRomanianPOFilter(TestPOFilter):
     """Test class for po-specific Romanian tests."""
 
     def test_romanian_cedillas(self):
-        """Test the Romanian cedillas check"""
+        """Test the Romanian cedillas check."""
         posource = """
 msgid "cow"
 msgstr "blaŞbla"
@@ -328,7 +328,7 @@ msgstr "blaSbla"
         assert "cedillas" not in errors
 
     def test_romanian_niciun(self):
-        """Test the Romanian niciun check"""
+        """Test the Romanian niciun check."""
         posource = """
 msgid "cow"
 msgstr "bla nici un bla"
@@ -354,7 +354,7 @@ msgstr "bla niciun bla"
         assert "niciun_nicio" not in errors
 
     def test_romanian_nicio(self):
-        """Test the Romanian nicio check"""
+        """Test the Romanian nicio check."""
         posource = """
 msgid "cow"
 msgstr "bla nici o bla"

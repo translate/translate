@@ -29,7 +29,7 @@ class TestPODebug:
         self.xliffstore = xliff.xlifffile(XLIFF_DOC.encode("utf-8"))
 
     def test_ignore_gtk(self):
-        """Test operation of GTK message ignoring"""
+        """Test operation of GTK message ignoring."""
         unit = base.TranslationUnit("default:LTR")
         assert self.debug.ignore_gtk(unit)
 
@@ -49,48 +49,48 @@ class TestPODebug:
         assert unit.target == "\u202ep%d"
 
     def test_rewrite_blank(self):
-        """Test the blank rewrite function"""
+        """Test the blank rewrite function."""
         assert str(self.debug.rewrite_blank("Test")) == ""
 
     def test_rewrite_en(self):
-        """Test the en rewrite function"""
+        """Test the en rewrite function."""
         assert str(self.debug.rewrite_en("Test")) == "Test"
 
     def test_rewrite_xxx(self):
-        """Test the xxx rewrite function"""
+        """Test the xxx rewrite function."""
         assert str(self.debug.rewrite_xxx("Test")) == "xxxTestxxx"
         assert str(self.debug.rewrite_xxx("Newline\n")) == "xxxNewlinexxx\n"
 
     def test_rewrite_bracket(self):
-        """Test the bracket rewrite function"""
+        """Test the bracket rewrite function."""
         assert str(self.debug.rewrite_bracket("Test")) == "[Test]"
         assert str(self.debug.rewrite_bracket("Newline\n")) == "[Newline]\n"
 
     def test_rewrite_unicode(self):
-        """Test the unicode rewrite function"""
+        """Test the unicode rewrite function."""
         assert str(self.debug.rewrite_unicode("Test")) == "Ŧḗşŧ"
 
     @staticmethod
     def test_rewrite_unicode_preserves_at_placeholders():
-        """Test the unicode rewrite function"""
+        """Test the unicode rewrite function."""
         debug = podebug.podebug(preserveplaceholders=True)
         assert str(debug.rewrite_unicode("@@ph@@Test @@ph@@")) == "@@ph@@Ŧḗşŧ @@ph@@"
 
     @staticmethod
     def test_rewrite_unicode_preserves_single_brace_placeholders():
-        """Test the unicode rewrite function"""
+        """Test the unicode rewrite function."""
         debug = podebug.podebug(preserveplaceholders=True)
         assert str(debug.rewrite_unicode("{ph}Test {ph}")) == "{ph}Ŧḗşŧ {ph}"
 
     @staticmethod
     def test_rewrite_unicode_preserves_double_brace_placeholders():
-        """Test the unicode rewrite function"""
+        """Test the unicode rewrite function."""
         debug = podebug.podebug(preserveplaceholders=True)
         assert str(debug.rewrite_unicode("{{ph}}Test {{ph}}")) == "{{ph}}Ŧḗşŧ {{ph}}"
 
     @staticmethod
     def test_rewrite_unicode_preserves_html():
-        """Test the unicode rewrite function"""
+        """Test the unicode rewrite function."""
         debug = podebug.podebug(preserveplaceholders=True)
         assert (
             str(debug.rewrite_unicode("<style0>Test</style0>"))
@@ -99,7 +99,7 @@ class TestPODebug:
 
     @staticmethod
     def test_rewrite_unicode_preserves_multiple_styles_of_placeholder():
-        """Test the unicode rewrite function"""
+        """Test the unicode rewrite function."""
         debug = podebug.podebug(preserveplaceholders=True)
         assert (
             str(debug.rewrite_unicode("<b>{{ph}}Test{ph}@@ph@@Test</b>"))
@@ -107,7 +107,7 @@ class TestPODebug:
         )
 
     def test_rewrite_flipped(self):
-        """Test the unicode rewrite function"""
+        """Test the unicode rewrite function."""
         assert str(self.debug.rewrite_flipped("Test")) == "\u202e⊥ǝsʇ"
         # alternative with reversed string and no RTL override:
         # assert unicode(self.debug.rewrite_flipped("Test")) == "ʇsǝ⊥"
@@ -117,7 +117,7 @@ class TestPODebug:
 
     @staticmethod
     def test_rewrite_flipped_preserves_at_placeholders():
-        """Test the unicode rewrite function"""
+        """Test the unicode rewrite function."""
         debug = podebug.podebug(preserveplaceholders=True)
         assert (
             str(debug.rewrite_flipped("@@ph@@Test @@ph@@")) == "\u202e@@ph@@⊥ǝsʇ @@ph@@"
@@ -125,13 +125,13 @@ class TestPODebug:
 
     @staticmethod
     def test_rewrite_flipped_preserves_single_brace_placeholders():
-        """Test the unicode rewrite function"""
+        """Test the unicode rewrite function."""
         debug = podebug.podebug(preserveplaceholders=True)
         assert str(debug.rewrite_flipped("{ph}Test {ph}")) == "\u202e{ph}⊥ǝsʇ {ph}"
 
     @staticmethod
     def test_rewrite_flipped_preserves_double_brace_placeholders():
-        """Test the unicode rewrite function"""
+        """Test the unicode rewrite function."""
         debug = podebug.podebug(preserveplaceholders=True)
         assert (
             str(debug.rewrite_flipped("{{ph}}Test {{ph}}")) == "\u202e{{ph}}⊥ǝsʇ {{ph}}"
@@ -139,7 +139,7 @@ class TestPODebug:
 
     @staticmethod
     def test_rewrite_flipped_preserves_html():
-        """Test the unicode rewrite function"""
+        """Test the unicode rewrite function."""
         debug = podebug.podebug(preserveplaceholders=True)
         assert (
             str(debug.rewrite_flipped("<style0>Test </style0>"))
@@ -148,7 +148,7 @@ class TestPODebug:
 
     @staticmethod
     def test_rewrite_flipped_multiple_styles_of_placeholder():
-        """Test the unicode rewrite function"""
+        """Test the unicode rewrite function."""
         debug = podebug.podebug(preserveplaceholders=True)
         assert (
             str(debug.rewrite_flipped("<b>{{ph}}Test{ph}@@ph@@Test</b>"))
@@ -156,7 +156,7 @@ class TestPODebug:
         )
 
     def test_rewrite_classified(self):
-        """Test the unicode rewrite function"""
+        """Test the unicode rewrite function."""
         assert str(self.debug.rewrite_classified("Test")) == "▮▮▮▮"
         # alternative with reversed string and no RTL override:
         # assert unicode(self.debug.rewrite_classified("Test")) == "ʇsǝ⊥"
@@ -166,25 +166,25 @@ class TestPODebug:
 
     @staticmethod
     def test_rewrite_classified_preserves_at_placeholders():
-        """Test the unicode rewrite function"""
+        """Test the unicode rewrite function."""
         debug = podebug.podebug(preserveplaceholders=True)
         assert str(debug.rewrite_classified("@@ph@@Test @@ph@@")) == "@@ph@@▮▮▮▮ @@ph@@"
 
     @staticmethod
     def test_rewrite_classified_preserves_single_brace_placeholders():
-        """Test the unicode rewrite function"""
+        """Test the unicode rewrite function."""
         debug = podebug.podebug(preserveplaceholders=True)
         assert str(debug.rewrite_classified("{ph}Test {ph}")) == "{ph}▮▮▮▮ {ph}"
 
     @staticmethod
     def test_rewrite_classified_preserves_double_brace_placeholders():
-        """Test the unicode rewrite function"""
+        """Test the unicode rewrite function."""
         debug = podebug.podebug(preserveplaceholders=True)
         assert str(debug.rewrite_classified("{{ph}}Test {{ph}}")) == "{{ph}}▮▮▮▮ {{ph}}"
 
     @staticmethod
     def test_rewrite_classified_preserves_html():
-        """Test the unicode rewrite function"""
+        """Test the unicode rewrite function."""
         debug = podebug.podebug(preserveplaceholders=True)
         assert (
             str(debug.rewrite_classified("<style0>Test </style0>"))
@@ -193,7 +193,7 @@ class TestPODebug:
 
     @staticmethod
     def test_rewrite_classified_multiple_styles_of_placeholder():
-        """Test the unicode rewrite function"""
+        """Test the unicode rewrite function."""
         debug = podebug.podebug(preserveplaceholders=True)
         assert (
             str(debug.rewrite_classified("<b>{{ph}}Test{ph}@@ph@@Test</b>"))
@@ -202,7 +202,7 @@ class TestPODebug:
 
     def test_rewrite_chef(self):
         """
-        Test the chef rewrite function
+        Test the chef rewrite function.
 
         This is not realy critical to test but a simple tests ensures
         that it stays working.

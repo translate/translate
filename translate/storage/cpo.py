@@ -333,7 +333,7 @@ def unquotefrompo(postr):
 
 def get_libgettextpo_version():
     """
-    Returns the libgettextpo version
+    Returns the libgettextpo version.
 
     :rtype: three-value tuple
     :return: libgettextpo version in the following format::
@@ -817,7 +817,7 @@ class pofile(pocommon.pofile):
             pass
 
     def removeduplicates(self, duplicatestyle="merge"):
-        """Make sure each msgid is unique ; merge comments etc from duplicates into original"""
+        """Make sure each msgid is unique ; merge comments etc from duplicates into original."""
         # TODO: can we handle consecutive calls to removeduplicates()? What
         # about files already containing msgctxt? - test
         id_dict = {}

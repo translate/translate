@@ -18,7 +18,7 @@
 
 """
 diff tool like GNU diff, but lets you have special options that are useful
-in dealing with PO files
+in dealing with PO files.
 """
 
 import difflib
@@ -32,7 +32,7 @@ lineterm = "\n"
 
 
 def main():
-    """Main program for pydiff"""
+    """Main program for pydiff."""
     parser = ArgumentParser()
     # GNU diff like options
     parser.add_argument(
@@ -147,26 +147,26 @@ def main():
 
 
 class DirDiffer:
-    """generates diffs between directories"""
+    """generates diffs between directories."""
 
     def __init__(self, fromdir, todir, options):
         """
         Constructs a comparison between the two dirs using the
-        given options
+        given options.
         """
         self.fromdir = fromdir
         self.todir = todir
         self.options = options
 
     def isexcluded(self, difffile):
-        """Checks if the given filename has been excluded from the diff"""
+        """Checks if the given filename has been excluded from the diff."""
         return any(
             fnmatch.fnmatch(difffile, exclude_pat)
             for exclude_pat in self.options.exclude
         )
 
     def writediff(self, outfile):
-        """Writes the actual diff to the given file"""
+        """Writes the actual diff to the given file."""
         fromfiles = os.listdir(self.fromdir)
         tofiles = os.listdir(self.todir)
         difffiles = dict.fromkeys(fromfiles + tofiles).keys()
@@ -210,19 +210,19 @@ class DirDiffer:
 
 
 class FileDiffer:
-    """generates diffs between files"""
+    """generates diffs between files."""
 
     def __init__(self, fromfile, tofile, options):
         """
         Constructs a comparison between the two files using the given
-        options
+        options.
         """
         self.fromfile = fromfile
         self.tofile = tofile
         self.options = options
 
     def writediff(self, outfile):
-        """Writes the actual diff to the given file"""
+        """Writes the actual diff to the given file."""
         validfiles = True
         if os.path.exists(self.fromfile):
             with open(self.fromfile) as fh:
@@ -313,14 +313,14 @@ class FileDiffer:
             outfile.write(f"Files {self.fromfile} and {self.tofile} are identical\n")
 
     def get_from_lines(self, group):
-        """Returns the lines referred to by group, from the fromfile"""
+        """Returns the lines referred to by group, from the fromfile."""
         from_lines = []
         for tag, i1, i2, j1, j2 in group:
             from_lines.extend(self.from_lines[i1:i2])
         return from_lines
 
     def get_to_lines(self, group):
-        """Returns the lines referred to by group, from the tofile"""
+        """Returns the lines referred to by group, from the tofile."""
         to_lines = []
         for tag, i1, i2, j1, j2 in group:
             to_lines.extend(self.to_lines[j1:j2])
@@ -329,7 +329,7 @@ class FileDiffer:
     def unified_diff(self, group):
         """
         takes the group of opcodes and generates a unified diff line
-        by line
+        by line.
         """
         i1, i2, j1, j2 = group[0][1], group[-1][2], group[0][3], group[-1][4]
         yield "@@ -%d,%d +%d,%d @@%s" % (i1 + 1, i2 - i1, j1 + 1, j2 - j1, lineterm)

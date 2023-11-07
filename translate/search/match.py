@@ -66,7 +66,7 @@ class matcher:
         max_candidates is the maximum number of candidates that should be
         assembled, min_similarity is the minimum similarity that must be
         attained to be included in the result, comparer is an optional Comparer
-        with similarity() function
+        with similarity() function.
         """
         if comparer is None:
             comparer = lshtein.LevenshteinComparer(max_length)
@@ -77,7 +77,7 @@ class matcher:
         self.addpercentage = True
 
     def usable(self, unit):
-        """Returns whether this translation unit is usable for TM"""
+        """Returns whether this translation unit is usable for TM."""
         # TODO: We might want to consider more attributes, such as approved, reviewed, etc.
         source = unit.source
         target = unit.target
@@ -144,7 +144,7 @@ class matcher:
     def setparameters(self, max_candidates=10, min_similarity=75, max_length=70):
         """
         Sets the parameters without reinitialising the tm. If a parameter is
-        not specified, it is set to the default, not ignored
+        not specified, it is set to the default, not ignored.
         """
         self.MAX_CANDIDATES = max_candidates
         self.MIN_SIMILARITY = min_similarity
@@ -285,7 +285,7 @@ class terminologymatcher(matcher):
         self.match_info = {}
 
     def inittm(self, store):
-        """Normal initialisation, but convert all source strings to lower case"""
+        """Normal initialisation, but convert all source strings to lower case."""
         super().inittm(store)
         extras = []
         for unit in self.candidates.units:
@@ -396,7 +396,7 @@ class terminologymatcher(matcher):
 
 # utility functions used by virtaal and tmserver to convert matching units in easily marshallable dictionaries
 def unit2dict(unit):
-    """Converts a pounit to a simple dict structure for use over the web"""
+    """Converts a pounit to a simple dict structure for use over the web."""
     return {
         "source": unit.source,
         "target": unit.target,

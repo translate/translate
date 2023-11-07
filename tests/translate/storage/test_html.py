@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Tests for the HTML classes"""
+"""Tests for the HTML classes."""
 
 from pytest import raises
 
@@ -24,7 +24,7 @@ from translate.storage import base, html
 
 
 def test_guess_encoding():
-    """Read an encoding header to guess the encoding correctly"""
+    """Read an encoding header to guess the encoding correctly."""
     h = html.htmlfile()
     assert (
         h.guess_encoding(
@@ -67,7 +67,7 @@ class TestHTMLParsing:
     def test_escaping_script_and_pre():
         """
         <script> and <pre> can contain < and > and these should not be
-        interpretted as tags
+        interpretted as tags.
         """
         h = html.htmlfile()
         store = h.parsestring(
@@ -125,7 +125,7 @@ class TestHTMLExtraction:
 
     @staticmethod
     def test_extraction_tag_figcaption():
-        """Check that we can extract figcaption"""
+        """Check that we can extract figcaption."""
         h = html.htmlfile()
         # Example form http://www.w3schools.com/tags/tag_figcaption.asp
         store = h.parsestring(
@@ -142,7 +142,7 @@ class TestHTMLExtraction:
 
     @staticmethod
     def test_extraction_tag_caption_td_th():
-        """Check that we can extract table related translatable: th, td and caption"""
+        """Check that we can extract table related translatable: th, td and caption."""
         h = html.htmlfile()
         # Example form http://www.w3schools.com/tags/tag_caption.asp
         store = h.parsestring(
@@ -169,7 +169,7 @@ class TestHTMLExtraction:
 
     @staticmethod
     def test_extraction_attr_alt():
-        """Check that we can extract title attribute"""
+        """Check that we can extract title attribute."""
         h = html.htmlfile()
         # Example from http://www.netmechanic.com/news/vol6/html_no1.htm
         store = h.parsestring(
@@ -184,7 +184,7 @@ class TestHTMLExtraction:
 
     @staticmethod
     def test_extraction_attr_title():
-        """Check that we can extract title attribute"""
+        """Check that we can extract title attribute."""
         h = html.htmlfile()
 
         # Example form http://www.w3schools.com/tags/att_global_title.asp
@@ -230,7 +230,7 @@ class TestHTMLExtraction:
 
     @staticmethod
     def test_extraction_pre():
-        """Check that we can preserve lines in the <pre> tag"""
+        """Check that we can preserve lines in the <pre> tag."""
         h = html.htmlfile()
         store = h.parsestring(
             """
@@ -246,7 +246,7 @@ pre tag
 
     @staticmethod
     def test_extraction_pre_code():
-        """Check that we can preserve lines in the <pre> tag"""
+        """Check that we can preserve lines in the <pre> tag."""
         h = html.htmlfile()
         store = h.parsestring(
             """

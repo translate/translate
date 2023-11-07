@@ -63,7 +63,7 @@ def simplify(string):
 class csv2po:
     """
     a class that takes translations from a .csv file and puts them in a .po
-    file
+    file.
     """
 
     def __init__(self, templatepo=None, charset=None, duplicatestyle="keep"):
@@ -107,7 +107,7 @@ class csv2po:
 
     @staticmethod
     def convertunit(csvunit):
-        """Converts csv unit to po unit"""
+        """Converts csv unit to po unit."""
         pounit = po.pounit(encoding="UTF-8")
         if csvunit.location:
             pounit.addlocation(csvunit.location)
@@ -117,7 +117,7 @@ class csv2po:
         return pounit
 
     def handlecsvunit(self, csvunit):
-        """Handles reintegrating a csv unit into the .po file"""
+        """Handles reintegrating a csv unit into the .po file."""
         if len(csvunit.location.strip()) > 0 and csvunit.location in self.commentindex:
             pounit = self.commentindex[csvunit.location]
         elif csvunit.source in self.sourceindex:
@@ -186,7 +186,7 @@ class csv2po:
     def convertstore(self, thecsvfile):
         """
         converts a csvfile to a pofile, and returns it. uses templatepo if
-        given at construction
+        given at construction.
         """
         self.csvfile = thecsvfile
         if self.pofile is None:
@@ -237,7 +237,7 @@ def convertcsv(
 ):
     """
     reads in inputfile using csvl10n, converts using csv2po, writes to
-    outputfile
+    outputfile.
     """
     inputstore = csvl10n.csvfile(inputfile, fieldnames=columnorder)
     if templatefile is None:

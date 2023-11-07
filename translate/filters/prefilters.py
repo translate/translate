@@ -16,9 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""
-Filters that strings can be passed through before certain tests.
-"""
+"""Filters that strings can be passed through before certain tests."""
 
 import re
 

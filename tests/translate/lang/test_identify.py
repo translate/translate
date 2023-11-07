@@ -175,7 +175,7 @@ class TestLanguageIdentifier:
 
     @staticmethod
     def test_bad_init_data():
-        """Test __init__ with bad conf files and data dirs"""
+        """Test __init__ with bad conf files and data dirs."""
         with raises(ValueError):
             LanguageIdentifier(model_dir="missing")
         with raises(ValueError):

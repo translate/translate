@@ -128,7 +128,7 @@ def cjkslices(text: str, index: int) -> tuple[str, str]:
 
 class PoWrapper(textwrap.TextWrapper):
     """
-    Customized TextWrapper
+    Customized TextWrapper.
 
     - custom word separator regexp
     - full width chars accounting, based on https://bugs.python.org/issue24665
@@ -222,7 +222,7 @@ class PoWrapper(textwrap.TextWrapper):
 
 
 def quoteforpo(text, wrapper_obj=None):
-    """Quotes the given text for a PO file, returning quoted and escaped lines"""
+    """Quotes the given text for a PO file, returning quoted and escaped lines."""
     if text is None:
         return []
     if wrapper_obj is None:
@@ -333,7 +333,7 @@ class pounit(pocommon.pounit):
         return "\n"
 
     def _initallcomments(self, blankall=False):
-        """Initialises allcomments"""
+        """Initialises allcomments."""
         if blankall:
             self.othercomments = []
             self.automaticcomments = []
@@ -377,7 +377,7 @@ class pounit(pocommon.pounit):
 
     @property
     def source(self):
-        """Returns the unescaped msgid"""
+        """Returns the unescaped msgid."""
         return self._get_source_vars(self.msgid, self.msgid_plural)
 
     @source.setter
@@ -391,7 +391,7 @@ class pounit(pocommon.pounit):
         self.msgid, self.msgid_plural = self._set_source_vars(source)
 
     def _get_prev_source(self):
-        """Returns the unescaped msgid"""
+        """Returns the unescaped msgid."""
         return self._get_source_vars(self.prev_msgid, self.prev_msgid_plural)
 
     def _set_prev_source(self, source):
@@ -406,14 +406,14 @@ class pounit(pocommon.pounit):
 
     @property
     def target(self):
-        """Returns the unescaped msgstr"""
+        """Returns the unescaped msgstr."""
         if isinstance(self.msgstr, dict):
             return multistring(list(map(unquotefrompo, self.msgstr.values())))
         return unquotefrompo(self.msgstr)
 
     @target.setter
     def target(self, target):
-        """Sets the msgstr to the given (unescaped) value"""
+        """Sets the msgstr to the given (unescaped) value."""
         self._rich_target = None
         if self.hasplural():
             if isinstance(target, multistring):
@@ -515,7 +515,7 @@ class pounit(pocommon.pounit):
             self.othercomments = newcomments
 
     def removenotes(self, origin=None):
-        """Remove all the translator's notes (other comments)"""
+        """Remove all the translator's notes (other comments)."""
         self.othercomments = []
 
     def __deepcopy__(self, memo={}):
@@ -665,7 +665,7 @@ class pounit(pocommon.pounit):
                 yield value
 
     def hastypecomment(self, typecomment, parsed=None):
-        """Check whether the given type comment is present"""
+        """Check whether the given type comment is present."""
         if not self.typecomments:
             return False
         if not parsed:
@@ -687,7 +687,7 @@ class pounit(pocommon.pounit):
         return False
 
     def settypecomment(self, typecomment, present=True):
-        """Alters whether a given typecomment is present"""
+        """Alters whether a given typecomment is present."""
         typecomments = list(self._extracttypecomment())
         if self.hastypecomment(typecomment, typecomments) != present:
             if present:
@@ -726,14 +726,14 @@ class pounit(pocommon.pounit):
         return self.obsolete
 
     def makeobsolete(self):
-        """Makes this unit obsolete"""
+        """Makes this unit obsolete."""
         super().makeobsolete()
         self.obsolete = True
         self.sourcecomments = []
         self.automaticcomments = []
 
     def resurrect(self):
-        """Makes an obsolete unit normal"""
+        """Makes an obsolete unit normal."""
         super().resurrect()
         self.obsolete = False
 
@@ -800,7 +800,7 @@ class pounit(pocommon.pounit):
         return self._getoutput()
 
     def _getoutput(self):
-        """Return this po element as a string"""
+        """Return this po element as a string."""
 
         def add_prev_msgid_lines(lines, prefix, header, var):
             if var:
@@ -860,7 +860,7 @@ class pounit(pocommon.pounit):
 
     def getlocations(self):
         """
-        Get a list of locations from sourcecomments in the PO unit
+        Get a list of locations from sourcecomments in the PO unit.
 
         rtype: List
         return: A list of the locations with '#: ' stripped
@@ -875,7 +875,7 @@ class pounit(pocommon.pounit):
 
     def addlocation(self, location):
         """
-        Add a location to sourcecomments in the PO unit
+        Add a location to sourcecomments in the PO unit.
 
         :param location: Text location e.g. 'file.c:23' does not include #:
         :type location: String
@@ -928,7 +928,7 @@ class pounit(pocommon.pounit):
 
 
 class pofile(pocommon.pofile):
-    """A .po file containing various units"""
+    """A .po file containing various units."""
 
     UnitClass = pounit
 
@@ -959,7 +959,7 @@ class pofile(pocommon.pofile):
     def removeduplicates(self, duplicatestyle="merge"):
         """
         Make sure each msgid is unique ; merge comments etc from
-        duplicates into original
+        duplicates into original.
         """
         # TODO: can we handle consecutive calls to removeduplicates()? What
         # about files already containing msgctxt? - test
@@ -1017,7 +1017,7 @@ class pofile(pocommon.pofile):
         self.units = uniqueunits
 
     def serialize(self, out):
-        """Write to file"""
+        """Write to file."""
         at_start = True
         try:
             for unit in self.units:

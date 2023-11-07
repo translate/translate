@@ -39,12 +39,12 @@ def extract_msgid_comment(text):
 
 
 def quote_plus(text):
-    """Quote the query fragment of a URL; replacing ' ' with '+'"""
+    """Quote the query fragment of a URL; replacing ' ' with '+'."""
     return parse.quote_plus(text.encode("utf-8"), safe="[]()/:,@")
 
 
 def unquote_plus(text):
-    """unquote('%7e/abc+def') -> '~/abc def'"""
+    """unquote('%7e/abc+def') -> '~/abc def'."""
     try:
         # Enforce utf-8 validation
         return parse.unquote_plus(text, errors="strict")

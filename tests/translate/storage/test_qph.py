@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Tests for Qt Linguist phase book storage class"""
+"""Tests for Qt Linguist phase book storage class."""
 
 from translate.storage import qph
 from translate.storage.placeables import parse, xliff
@@ -79,7 +79,7 @@ class TestQphFile(test_base.TestTranslationStore):
 
     @staticmethod
     def test_language():
-        """Check that we can get and set language and sourcelanguage in the header"""
+        """Check that we can get and set language and sourcelanguage in the header."""
         qphstr = """<!DOCTYPE QPH>
 <QPH language="fr" sourcelanguage="de">
 </QPH>

@@ -65,7 +65,7 @@ class QphUnit(lisa.LISAunit):
         ]
 
     def addnote(self, text, origin=None, position="append"):
-        """Add a note specifically in a "definition" tag"""
+        """Add a note specifically in a "definition" tag."""
         current_notes = self.getnotes(origin)
         self.removenotes(origin)
         note = etree.SubElement(self.xmlelement, self.namespaced("definition"))

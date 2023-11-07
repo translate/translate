@@ -8,13 +8,13 @@ from translate.storage.directory import Directory
 
 
 def classname(filename):
-    """Returns the classname to ease testing"""
+    """Returns the classname to ease testing."""
     classinstance = factory.getclass(filename)
     return str(classinstance.__name__).lower()
 
 
 def givefile(filename, content):
-    """Returns a file dummy object with the given content"""
+    """Returns a file dummy object with the given content."""
     file = BytesIO(content)
     file.name = filename
     return file
@@ -22,18 +22,18 @@ def givefile(filename, content):
 
 class BaseTestFactory:
     def setup_method(self, method):
-        """Sets up a test directory"""
+        """Sets up a test directory."""
         self.testdir = "%s_testdir" % (self.__class__.__name__)
         self.cleardir(self.testdir)
         os.mkdir(self.testdir)
 
     def teardown_method(self, method):
-        """Removes the attributes set up by setup_method"""
+        """Removes the attributes set up by setup_method."""
         self.cleardir(self.testdir)
 
     @staticmethod
     def cleardir(dirname):
-        """Removes the given directory"""
+        """Removes the given directory."""
         if os.path.exists(dirname):
             for dirpath, subdirs, filenames in os.walk(dirname, topdown=False):
                 for name in filenames:

@@ -46,7 +46,7 @@ class po2html:
         return unit.source
 
     def mergestore(self, inputstore, templatetext, includefuzzy):
-        """Convert a file to html format"""
+        """Convert a file to html format."""
         self.inputstore = inputstore
         self.inputstore.require_index()
         self.includefuzzy = includefuzzy

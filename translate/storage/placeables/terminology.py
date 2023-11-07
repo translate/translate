@@ -16,9 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""
-Contains the placeable that represents a terminology term.
-"""
+"""Contains the placeable that represents a terminology term."""
 
 from translate.storage.placeables import StringElem, base
 

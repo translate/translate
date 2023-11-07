@@ -31,10 +31,10 @@ logger = logging.getLogger(__name__)
 
 
 class json2po:
-    """Convert a JSON file to a PO file"""
+    """Convert a JSON file to a PO file."""
 
     def convert_store(self, input_store, duplicatestyle="msgctxt"):
-        """Converts a JSON file to a PO file"""
+        """Converts a JSON file to a PO file."""
         output_store = po.pofile()
         output_header = output_store.header()
         output_header.addnote("extracted from %s" % input_store.filename, "developer")
@@ -48,7 +48,7 @@ class json2po:
     def merge_store(
         self, template_store, input_store, blankmsgstr=False, duplicatestyle="msgctxt"
     ):
-        """Converts two JSON files to a PO file"""
+        """Converts two JSON files to a PO file."""
         output_store = po.pofile()
         output_header = output_store.header()
         output_header.addnote(
@@ -81,7 +81,7 @@ class json2po:
     @staticmethod
     def convert_unit(input_unit, commenttype):
         """
-        Converts a JSON unit to a PO unit
+        Converts a JSON unit to a PO unit.
 
         :return: None if empty or not for translation
         """

@@ -1,4 +1,4 @@
-"""tests decoration handling functions that are used by checks"""
+"""tests decoration handling functions that are used by checks."""
 
 from translate.filters import prefilters
 

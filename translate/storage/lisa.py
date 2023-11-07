@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Parent class for LISA standards (TMX, TBX, XLIFF)"""
+"""Parent class for LISA standards (TMX, TBX, XLIFF)."""
 
 import contextlib
 
@@ -55,7 +55,7 @@ class LISAunit(base.TranslationUnit):
     This is mostly for correcting XLIFF behaviour."""
 
     def __init__(self, source, empty=False, **kwargs):
-        """Constructs a unit containing the given source string"""
+        """Constructs a unit containing the given source string."""
         self._rich_source = None
         self._rich_target = None
         if empty:
@@ -66,7 +66,7 @@ class LISAunit(base.TranslationUnit):
         super().__init__(source)
 
     def __eq__(self, other):
-        """Compares two units"""
+        """Compares two units."""
         if not isinstance(other, LISAunit):
             return super().__eq__(other)
         languageNodes = self.getlanguageNodes()
@@ -145,7 +145,7 @@ class LISAunit(base.TranslationUnit):
     def gettarget(self, lang=None):
         """
         retrieves the "target" text (second entry), or the entry in the
-        specified language, if it exists
+        specified language, if it exists.
         """
         return self.getNodeText(
             self.get_target_dom(lang),
@@ -155,7 +155,7 @@ class LISAunit(base.TranslationUnit):
     def settarget(self, target, lang="xx", append=False):
         """
         Sets the "target" string (second language), or alternatively appends
-        to the list
+        to the list.
         """
         # XXX: we really need the language - can't really be optional, and we
         # need to propagate it
@@ -332,7 +332,7 @@ class LISAfile(base.TranslationStore):
         return treestring
 
     def serialize(self, out=None):
-        """Converts to a string containing the file's XML"""
+        """Converts to a string containing the file's XML."""
         root = self.document.getroot()
         xml_quote_format = "'"
         xml_encoding = self.encoding.lower()
@@ -364,7 +364,7 @@ class LISAfile(base.TranslationStore):
         out.write(treestring)
 
     def parse(self, xml):
-        """Populates this object from the given xml string"""
+        """Populates this object from the given xml string."""
         if not hasattr(self, "filename"):
             self.filename = getattr(xml, "name", "")
         if hasattr(xml, "read"):

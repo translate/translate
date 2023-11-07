@@ -6,7 +6,7 @@ from . import test_base
 class TestWFTime:
     @staticmethod
     def test_timestring():
-        """Setting and getting times set using a timestring"""
+        """Setting and getting times set using a timestring."""
         wftime = wf.WordfastTime()
         assert wftime.timestring is None
         wftime.timestring = "19710820~050000"
@@ -14,7 +14,7 @@ class TestWFTime:
 
     @staticmethod
     def test_time():
-        """Setting and getting times set using time tuple"""
+        """Setting and getting times set using time tuple."""
         wftime = wf.WordfastTime()
         assert wftime.time is None
         wftime.time = (1999, 3, 27)
@@ -41,7 +41,7 @@ class TestWFUnit(test_base.TestTranslationUnit):
             assert unit.source == special
 
     def test_wordfast_escaping(self):
-        """Check handling of &'NN; style escaping"""
+        """Check handling of &'NN; style escaping."""
 
         def compare(real, escaped):
             unit = self.UnitClass(real)
@@ -61,12 +61,12 @@ class TestWFUnit(test_base.TestTranslationUnit):
         assert unit.dict["source"] == "Open &'26;File. &'92;n Probleem."
 
     def test_newlines(self):
-        """Wordfast does not like real newlines"""
+        """Wordfast does not like real newlines."""
         unit = self.UnitClass("One\nTwo")
         assert unit.dict["source"] == "One\\nTwo"
 
     def test_language_setting(self):
-        """Check that we can set the target language"""
+        """Check that we can set the target language."""
         unit = self.UnitClass("Test")
         unit.targetlang = "AF"
         assert unit.dict["target-lang"] == "AF"

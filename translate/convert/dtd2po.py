@@ -287,7 +287,7 @@ def convertdtd(
 ):
     """
     reads in inputfile and templatefile using dtd, converts using dtd2po,
-    writes to outputfile
+    writes to outputfile.
     """
     android_dtd = False
     if hasattr(inputfile, "name"):

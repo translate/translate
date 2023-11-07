@@ -633,7 +633,7 @@ dialect_name_re = re.compile(r"(.+)\s\(([^)\d]{,25})\)$")
 
 def normalize(string, normal_form="NFC"):
     """
-    Return a unicode string in its normalized form
+    Return a unicode string in its normalized form.
 
     :param string: The string to be normalized
     :param normal_form: NFC (default), NFD, NFKC, NFKD
@@ -657,7 +657,7 @@ def simplify_to_common(language_code):
     """
     Simplify language code to the most commonly used form for the language,
     stripping country information for languages that tend not to be localized
-    differently for different countries
+    differently for different countries.
     """
     simpler = simplercode(language_code)
     if simpler == "":

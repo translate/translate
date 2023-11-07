@@ -59,7 +59,7 @@ def test_po_to_xliff(xmllint):
 
 
 def cleardir(testdir):
-    """Removes the test directory"""
+    """Removes the test directory."""
     if os.path.exists(testdir):
         for dirpath, subdirs, filenames in os.walk(testdir, topdown=False):
             for name in filenames:

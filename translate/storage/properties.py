@@ -155,7 +155,7 @@ eol = "\n"
 
 
 def is_line_continuation(line):
-    """
+    r"""
     Determine whether *line* has a line continuation marker.
 
     .properties files can be terminated with a backslash (\\) indicating
@@ -227,7 +227,7 @@ def is_comment_end(line):
 
 def _key_strip(key):
     """
-    Cleanup whitespace found around a key
+    Cleanup whitespace found around a key.
 
     :param key: A properties key
     :type key: str
@@ -269,7 +269,7 @@ class Dialect:
 
     @staticmethod
     def encode(string, encoding=None):
-        """Encode the string"""
+        """Encode the string."""
         # FIXME: dialects are a bad idea, not possible for subclasses
         # to override key methods
         if encoding not in ("utf-8", "utf-16"):
@@ -341,12 +341,12 @@ class Dialect:
 
     @staticmethod
     def key_strip(key):
-        """Strip unneeded characters from the key"""
+        """Strip unneeded characters from the key."""
         return _key_strip(key)
 
     @staticmethod
     def value_strip(value):
-        """Strip unneeded characters from the value"""
+        """Strip unneeded characters from the value."""
         return value.lstrip()
 
     @staticmethod
@@ -430,7 +430,7 @@ class DialectMozilla(DialectJavaUtf8):
 
     @staticmethod
     def encode(string, encoding=None):
-        """Encode the string"""
+        """Encode the string."""
         string = quote.java_utf8_properties_encode(string or "")
         return quote.mozillaescapemarginspaces(string or "")
 
@@ -526,7 +526,7 @@ class DialectStrings(Dialect):
 
     @staticmethod
     def key_strip(key):
-        """Strip unneeded characters from the key"""
+        """Strip unneeded characters from the key."""
         newkey = key.rstrip().rstrip('"')
         # If string now ends in \ we put back the char that was escaped
         if newkey[-1:] == "\\":
@@ -536,7 +536,7 @@ class DialectStrings(Dialect):
 
     @staticmethod
     def value_strip(value):
-        """Strip unneeded characters from the value"""
+        """Strip unneeded characters from the value."""
         newvalue = value.rstrip().rstrip(";").rstrip('"')
         # If string now ends in \ we put back the char that was escaped
         if newvalue[-1:] == "\\":
@@ -794,7 +794,7 @@ class DialectJoomla(Dialect):
 
     @staticmethod
     def value_strip(value):
-        """Strip unneeded characters from the value"""
+        """Strip unneeded characters from the value."""
         return value.strip()
 
     @classmethod
@@ -806,7 +806,7 @@ class DialectJoomla(Dialect):
 
     @staticmethod
     def encode(string, encoding=None):
-        """Encode the string"""
+        """Encode the string."""
         if not string:
             return string
         return '"%s"' % string.replace("\n", r"\n").replace("\t", r"\t").replace(
@@ -863,7 +863,7 @@ class propunit(base.TranslationUnit):
 
     @staticmethod
     def represents_missing(line):
-        """The line represents a missing translation"""
+        """The line represents a missing translation."""
         return False
 
     @property
@@ -896,7 +896,7 @@ class propunit(base.TranslationUnit):
         return self.getoutput()
 
     def getoutput(self):
-        """Convert the element back into formatted lines for a .properties file"""
+        """Convert the element back into formatted lines for a .properties file."""
         notes = self.getnotes()
         if self.isblank():
             return notes + "\n"
@@ -957,7 +957,7 @@ class xwikiunit(propunit):
     """
     Represents an XWiki translation unit. The difference with a propunit is twofold:
             1. the dialect used is xwiki for simple quote escape handling
-            2. missing translations are output with a dedicated "### Missing: " prefix
+            2. missing translations are output with a dedicated "### Missing: " prefix.
     """
 
     def __init__(self, source="", personality="xwiki"):
@@ -976,17 +976,17 @@ class xwikiunit(propunit):
 
     @classmethod
     def represents_missing(cls, line):
-        """Return true if the line represents a missing translation"""
+        """Return true if the line represents a missing translation."""
         return line.startswith(cls.get_missing_part())
 
 
 class propfile(base.TranslationStore):
-    """this class represents a .properties file, made up of propunits"""
+    """this class represents a .properties file, made up of propunits."""
 
     UnitClass = propunit
 
     def __init__(self, inputfile=None, personality="java", encoding=None):
-        """Construct a propfile, optionally reading in from inputfile"""
+        """Construct a propfile, optionally reading in from inputfile."""
         super().__init__()
         self.personality = get_dialect(personality)
         self.encoding = encoding or self.personality.default_encoding
@@ -1212,7 +1212,7 @@ class joomlafile(propfile):
 class XWikiPageProperties(xwikifile):
     """
     Represents an XWiki Page containing translation properties as described in
-    https://dev.xwiki.org/xwiki/bin/view/Community/XWiki%20Translations%20Formats/#HXWikiPageProperties
+    https://dev.xwiki.org/xwiki/bin/view/Community/XWiki%20Translations%20Formats/#HXWikiPageProperties.
     """
 
     Name = "XWiki Page Properties"
@@ -1322,7 +1322,7 @@ class XWikiFullPage(XWikiPageProperties):
     Represents a full XWiki Page translation: this file does not contains properties
     but its whole content needs to be translated.
     More information on
-    https://dev.xwiki.org/xwiki/bin/view/Community/XWiki%20Translations%20Formats/#HXWikiFullContentTranslation
+    https://dev.xwiki.org/xwiki/bin/view/Community/XWiki%20Translations%20Formats/#HXWikiFullContentTranslation.
     """
 
     Name = "XWiki Full Page"

@@ -10,7 +10,7 @@ from . import test_convert
 class TestPO2TMX:
     @staticmethod
     def po2tmx(posource, sourcelanguage="en", targetlanguage="af", comment=None):
-        """Helper that converts po source to tmx source without requiring files"""
+        """Helper that converts po source to tmx source without requiring files."""
         inputfile = BytesIO(posource.encode("utf-8"))
         outputfile = BytesIO()
         outputfile.tmxfile = tmx.tmxfile(inputfile=None, sourcelanguage=sourcelanguage)
@@ -76,7 +76,7 @@ msgstr "Toepassings"
         assert tuv.get("{%s}lang" % XML_NS) == "xh"
 
     def test_multiline(self):
-        """Test multiline po entry"""
+        """Test multiline po entry."""
         minipo = r'''msgid "First part "
 "and extra"
 msgstr "Eerste deel "
@@ -87,7 +87,7 @@ msgstr "Eerste deel "
         assert tmx.translate("First part and extra") == "Eerste deel en ekstra"
 
     def test_escapednewlines(self):
-        """Test the escaping of newlines"""
+        """Test the escaping of newlines."""
         minipo = r"""msgid "First line\nSecond line"
 msgstr "Eerste lyn\nTweede lyn"
 """
@@ -97,7 +97,7 @@ msgstr "Eerste lyn\nTweede lyn"
         assert tmx.translate("First line\nSecond line") == "Eerste lyn\nTweede lyn"
 
     def test_escapedtabs(self):
-        """Test the escaping of tabs"""
+        """Test the escaping of tabs."""
         minipo = r"""msgid "First column\tSecond column"
 msgstr "Eerste kolom\tTweede kolom"
 """
@@ -109,7 +109,7 @@ msgstr "Eerste kolom\tTweede kolom"
         )
 
     def test_escapedquotes(self):
-        """Test the escaping of quotes (and slash)"""
+        """Test the escaping of quotes (and slash)."""
         minipo = r"""msgid "Hello \"Everyone\""
 msgstr "Good day \"All\""
 
@@ -123,7 +123,7 @@ msgstr "Gebruik \\\"."
         assert tmx.translate(r"Use \".") == r"Gebruik \"."
 
     def test_exclusions(self):
-        """Test that empty and fuzzy messages are excluded"""
+        """Test that empty and fuzzy messages are excluded."""
         minipo = r"""#, fuzzy
 msgid "One"
 msgstr "Een"
@@ -195,7 +195,7 @@ msgstr "Bézier-kurwe"
 
 
 class TestPO2TMXCommand(test_convert.TestConvertCommand, TestPO2TMX):
-    """Tests running actual po2tmx commands on files"""
+    """Tests running actual po2tmx commands on files."""
 
     convertmodule = po2tmx
 

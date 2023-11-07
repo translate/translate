@@ -347,7 +347,7 @@ class XMLTagPlaceable(Ph):
 
 
 class OptionPlaceable(Ph):
-    """Placeble handling command line options e.g. --help"""
+    """Placeble handling command line options e.g. --help."""
 
     istranslatable = False
     regex = re.compile(

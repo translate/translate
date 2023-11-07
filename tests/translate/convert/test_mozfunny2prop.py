@@ -7,7 +7,7 @@ from translate.storage import po
 class TestInc2PO:
     @staticmethod
     def inc2po(incsource, inctemplate=None):
-        """Helper that converts .inc source to po source without requiring files"""
+        """Helper that converts .inc source to po source without requiring files."""
         inputfile = BytesIO(incsource.encode())
         templatefile = BytesIO(inctemplate.encode()) if inctemplate else None
         outputfile = BytesIO()
@@ -18,7 +18,7 @@ class TestInc2PO:
 
     @staticmethod
     def singleelement(pofile):
-        """Checks that the pofile contains a single non-header element, and returns it"""
+        """Checks that the pofile contains a single non-header element, and returns it."""
         assert len(pofile.units) == 2
         assert pofile.units[0].isheader()
         print(pofile)
@@ -26,13 +26,13 @@ class TestInc2PO:
 
     @staticmethod
     def countelements(pofile):
-        """Counts the number of non-header entries"""
+        """Counts the number of non-header entries."""
         assert pofile.units[0].isheader()
         print(pofile)
         return len(pofile.units) - 1
 
     def test_simpleentry(self):
-        """Checks that a simple inc entry converts properly to a po entry"""
+        """Checks that a simple inc entry converts properly to a po entry."""
         incsource = "#define MOZ_LANGPACK_CREATOR mozilla.org\n"
         pofile = self.inc2po(incsource)
         pounit = self.singleelement(pofile)
@@ -41,7 +41,7 @@ class TestInc2PO:
         assert pounit.target == ""
 
     def test_uncomment_contributors(self):
-        """Checks that the contributors entry is automatically uncommented"""
+        """Checks that the contributors entry is automatically uncommented."""
         incsource = """# If non-English locales wish to credit multiple contributors, uncomment this
 # variable definition and use the format specified.
 # #define MOZ_LANGPACK_CONTRIBUTORS <em:contributor>Joe Solon</em:contributor> <em:contributor>Suzy Solon</em:contributor>"""

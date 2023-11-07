@@ -1,10 +1,10 @@
-"""tests decoration handling functions that are used by checks"""
+"""tests decoration handling functions that are used by checks."""
 
 from translate.filters import decoration
 
 
 def test_spacestart():
-    """Test operation of spacestart()"""
+    """Test operation of spacestart()."""
     assert decoration.spacestart("  Start") == "  "
     assert decoration.spacestart("\u0020\u00a0Start") == "\u0020\u00a0"
     # non-breaking space
@@ -19,7 +19,7 @@ def test_spacestart():
 
 
 def test_isvalidaccelerator():
-    """Test the isvalidaccelerator() function"""
+    """Test the isvalidaccelerator() function."""
     # Mostly this tests the old code path where acceptlist is None
     assert not decoration.isvalidaccelerator("")
     assert decoration.isvalidaccelerator("a")
@@ -35,7 +35,7 @@ def test_find_marked_variables():
     """
     check that we can identify variables correctly, the first returned
     value is the start location, the second returned value is the actual
-    variable sans decoations
+    variable sans decoations.
     """
     variables = decoration.findmarkedvariables("The <variable> string", "<", ">")
     assert variables == [(4, "variable")]
@@ -54,7 +54,7 @@ def test_find_marked_variables():
 
 
 def test_getnumbers():
-    """Test operation of getnumbers()"""
+    """Test operation of getnumbers()."""
     assert decoration.getnumbers("") == []
     assert decoration.getnumbers("No numbers") == []
     assert decoration.getnumbers("Nine 9 nine") == ["9"]
@@ -71,7 +71,7 @@ def test_getnumbers():
 
 
 def test_getfunctions():
-    """Test operation of getfunctions()"""
+    """Test operation of getfunctions()."""
     assert decoration.getfunctions("") == []
     assert decoration.getfunctions("There is no function") == []
     assert decoration.getfunctions("Use the getfunction() function.") == [

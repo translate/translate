@@ -25,7 +25,7 @@ application.
 class DotsProgressBar:
     """
     An ultra-simple progress indicator that just writes a dot for each
-    action
+    action.
     """
 
     def __init__(self):
@@ -35,7 +35,7 @@ class DotsProgressBar:
         self.amount = 0
 
     def show(self, verbosemessage):
-        """Show a dot for progress :-)"""
+        """Show a dot for progress :-)."""
         # pylint: disable=W0613
         self.stderr.write(".")
         self.stderr.flush()
@@ -55,7 +55,7 @@ class NoProgressBar:
         self.amount = 0
 
     def show(self, verbosemessage):
-        """Show nothing for progress :-)"""
+        """Show nothing for progress :-)."""
 
     def close(self):
         pass
@@ -99,7 +99,7 @@ class ProgressBar:
         return str(self.progBar)
 
     def show(self, verbosemessage):
-        """Displays the progress bar"""
+        """Displays the progress bar."""
         # pylint: disable=W0613
         print(self)
 
@@ -107,7 +107,7 @@ class ProgressBar:
 class MessageProgressBar(ProgressBar):
     """
     A ProgressBar that just writes out the messages without any progress
-    display
+    display.
     """
 
     def __init__(self, *args, **kwargs):

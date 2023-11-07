@@ -33,7 +33,7 @@ tw4winre = re.compile(r"\{0>.*?<\}\d{1,3}\{>(.*?)<0\}", re.M | re.S)
 
 
 def cleanunit(unit):
-    """Cleans the targets in the given unit"""
+    """Cleans the targets in the given unit."""
     if isinstance(unit.target, multistring):
         strings = unit.target.strings
     else:
@@ -47,14 +47,14 @@ def cleanunit(unit):
 
 
 def cleanfile(thefile):
-    """Cleans the given file"""
+    """Cleans the given file."""
     for unit in thefile.units:
         cleanunit(unit)
     return thefile
 
 
 def runclean(inputfile, outputfile, templatefile):
-    """Reads in inputfile, cleans, writes to outputfile"""
+    """Reads in inputfile, cleans, writes to outputfile."""
     fromfile = factory.getobject(inputfile)
 
     cleanfile(fromfile)

@@ -61,7 +61,7 @@ class po2txt:
             self.template_file = template_file
 
     def wrapmessage(self, message):
-        """Rewraps text as required"""
+        """Rewraps text as required."""
         if self.wrap is None:
             return message
         return "\n".join(

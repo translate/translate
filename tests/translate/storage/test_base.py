@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""tests for storage base classes"""
+"""tests for storage base classes."""
 
 
 import os
@@ -29,12 +29,12 @@ from translate.storage.placeables import parse as rich_parse
 
 
 def headerless_len(units):
-    """Return count of translatable (non header) units"""
+    """Return count of translatable (non header) units."""
     return len(list(filter(lambda x: not x.isheader(), units)))
 
 
 def first_translatable(store):
-    """Returns first translatable unit, skipping header if present"""
+    """Returns first translatable unit, skipping header if present."""
     if store.units[0].isheader() and len(store.units) > 1:
         return store.units[1]
     return store.units[0]
@@ -43,7 +43,7 @@ def first_translatable(store):
 class TestTranslationUnit:
     """
     Tests a TranslationUnit.
-    Derived classes can reuse these tests by pointing UnitClass to a derived Unit
+    Derived classes can reuse these tests by pointing UnitClass to a derived Unit.
     """
 
     UnitClass = base.TranslationUnit
@@ -60,13 +60,13 @@ class TestTranslationUnit:
         assert not self.unit.isfuzzy()
 
     def test_create(self):
-        """Tests a simple creation with a source string"""
+        """Tests a simple creation with a source string."""
         unit = self.unit
         print("unit.source:", unit.source)
         assert unit.source == "Test String"
 
     def test_eq(self):
-        """Tests equality comparison"""
+        """Tests equality comparison."""
         unit1 = self.unit
         unit2 = self.UnitClass("Test String")
         unit3 = self.UnitClass("Test String")
@@ -238,23 +238,23 @@ class TestTranslationStore:
     StoreClass = base.TranslationStore
 
     def setup_method(self, method):
-        """Allocates a unique self.filename for the method, making sure it doesn't exist"""
+        """Allocates a unique self.filename for the method, making sure it doesn't exist."""
         self.filename = f"{self.__class__.__name__}_{method.__name__}.test"
         if os.path.exists(self.filename):
             os.remove(self.filename)
 
     def teardown_method(self, method):
-        """Makes sure that if self.filename was created by the method, it is cleaned up"""
+        """Makes sure that if self.filename was created by the method, it is cleaned up."""
         if os.path.exists(self.filename):
             os.remove(self.filename)
 
     def test_create_blank(self):
-        """Tests creating a new blank store"""
+        """Tests creating a new blank store."""
         store = self.StoreClass()
         assert headerless_len(store.units) == 0
 
     def test_add(self):
-        """Tests adding a new unit with a source string"""
+        """Tests adding a new unit with a source string."""
         store = self.StoreClass()
         unit = store.addsourceunit("Test String")
         print(str(unit))
@@ -263,7 +263,7 @@ class TestTranslationStore:
         assert unit.source == "Test String"
 
     def test_remove(self):
-        """Tests removing a unit with a source string"""
+        """Tests removing a unit with a source string."""
         store = self.StoreClass()
         unit = store.addsourceunit("Test String")
         # Some storages (MO, OmegaT) serialize only translated units
@@ -278,7 +278,7 @@ class TestTranslationStore:
         assert withoutunit != withunit
 
     def test_find(self):
-        """Tests searching for a given source string"""
+        """Tests searching for a given source string."""
         store = self.StoreClass()
         unit1 = store.addsourceunit("Test String")
         unit2 = store.addsourceunit("Blessed String")
@@ -297,13 +297,13 @@ class TestTranslationStore:
         assert store.translate("Beziér curve") == "Beziér-kurwe"
 
     def reparse(self, store):
-        """Converts the store to a string and back to a store again"""
+        """Converts the store to a string and back to a store again."""
         storestring = bytes(store)
         return self.StoreClass.parsestring(storestring)
 
     @staticmethod
     def check_equality(store1, store2):
-        """Asserts that store1 and store2 are the same"""
+        """Asserts that store1 and store2 are the same."""
         assert headerless_len(store1.units) == headerless_len(store2.units)
         for n, store1unit in enumerate(store1.units):
             store2unit = store2.units[n]
@@ -320,7 +320,7 @@ class TestTranslationStore:
             assert store1unit == store2unit
 
     def test_parse(self):
-        """Tests converting to a string and parsing the resulting string"""
+        """Tests converting to a string and parsing the resulting string."""
         store = self.StoreClass()
         unit1 = store.addsourceunit("Test String")
         unit1.target = "Test String"
@@ -330,7 +330,7 @@ class TestTranslationStore:
         self.check_equality(store, newstore)
 
     def test_files(self):
-        """Tests saving to and loading from files"""
+        """Tests saving to and loading from files."""
         store = self.StoreClass()
         unit1 = store.addsourceunit("Test String")
         unit1.target = "Test String"

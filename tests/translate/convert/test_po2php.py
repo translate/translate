@@ -11,7 +11,7 @@ from . import test_convert
 class TestPO2Php:
     @staticmethod
     def po2php(posource):
-        """Helper that converts po source to .php source without requiring files"""
+        """Helper that converts po source to .php source without requiring files."""
         inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
         convertor = po2php.po2php()
@@ -19,7 +19,7 @@ class TestPO2Php:
 
     @staticmethod
     def merge2php(phpsource, posource):
-        """Helper that merges po translations to .php source without requiring files"""
+        """Helper that merges po translations to .php source without requiring files."""
         inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
         templatefile = BytesIO(phpsource.encode())
@@ -31,7 +31,7 @@ class TestPO2Php:
 
     @staticmethod
     def test_convertphp():
-        """Test convertphp helper"""
+        """Test convertphp helper."""
         posource = """#: $lang['name']
 msgid "value"
 msgstr "waarde"
@@ -49,7 +49,7 @@ $lang['name'] = 'waarde';
 
     @staticmethod
     def test_convertphp_notemplate():
-        """Test convertphp helper without template"""
+        """Test convertphp helper without template."""
         posource = """#: $lang['name']
 msgid "value"
 msgstr "waarde"
@@ -61,7 +61,7 @@ msgstr "waarde"
 
     @staticmethod
     def test_convertphp_empty_template():
-        """Test convertphp helper with empty translation"""
+        """Test convertphp helper with empty translation."""
         posource = """#: $lang['name']
 msgid "value"
 msgstr ""
@@ -75,7 +75,7 @@ msgstr ""
         assert outputfile.getvalue() == b""
 
     def test_merging_simple(self):
-        """Check the simplest case of merging a translation"""
+        """Check the simplest case of merging a translation."""
         posource = """#: $lang['name']
 msgid "value"
 msgstr "waarde"
@@ -91,7 +91,7 @@ $lang['name'] = 'waarde';
         assert phpfile == phpexpected
 
     def test_space_preservation(self):
-        """Check that we preserve any spacing in php files when merging"""
+        """Check that we preserve any spacing in php files when merging."""
         posource = """#: $lang['name']
 msgid "value"
 msgstr "waarde"
@@ -107,7 +107,7 @@ $lang['name'] = 'waarde';
         assert phpfile == phpexpected
 
     def test_preserve_unused_statement(self):
-        """Check that we preserve any unused statements in php files when merging"""
+        """Check that we preserve any unused statements in php files when merging."""
         posource = """#: $lang['name']
 msgid "value"
 msgstr "waarde"
@@ -123,7 +123,7 @@ $lang['name'] = 'waarde';
         assert phpfile == phpexpected
 
     def test_not_translated_multiline(self):
-        """Check that we preserve not translated multiline strings in php files when merging"""
+        """Check that we preserve not translated multiline strings in php files when merging."""
         posource = """#: $lang['name']
 msgid "value"
 msgstr "waarde"
@@ -142,7 +142,7 @@ value";
         assert phpfile == phpexpected
 
     def test_merging_blank_entries(self):
-        """Check that we can correctly merge entries that are blank in the template"""
+        """Check that we can correctly merge entries that are blank in the template."""
         posource = r'''#: accesskey-accept
 msgid ""
 "_: accesskey-accept\n"
@@ -159,7 +159,7 @@ $lang['accesskey-accept'] = '';
         assert phpfile == phpexpected
 
     def test_merging_fuzzy(self):
-        """Check merging a fuzzy translation"""
+        """Check merging a fuzzy translation."""
         posource = """#: %24lang%5B+%27name%27+%5D
 #, fuzzy
 msgid "value"
@@ -176,7 +176,7 @@ $lang['name'] = 'value';
         assert phpfile == phpexpected
 
     def test_locations_with_spaces(self):
-        """Check that a location with spaces in php but spaces removed in PO is used correctly"""
+        """Check that a location with spaces in php but spaces removed in PO is used correctly."""
         posource = """#: %24lang%5B+%27name%27+%5D
 msgid "value"
 msgstr "waarde"\n"""
@@ -191,7 +191,7 @@ $lang[ 'name' ] = 'waarde';
         assert phpfile == phpexpected
 
     def test_inline_comments(self):
-        """Check that we include inline comments from the template.  Bug 590"""
+        """Check that we include inline comments from the template.  Bug 590."""
         posource = """#: %24lang%5B+%27name%27+%5D
 msgid "value"
 msgstr "waarde"
@@ -208,7 +208,7 @@ $lang[ 'name' ] = 'waarde';
         assert phpfile == phpexpected
 
     def test_block_comments(self):
-        """Check that we include block comments from the template"""
+        """Check that we include block comments from the template."""
         posource = """#: %24lang%5B+%27name%27+%5D
 msgid "value"
 msgstr "waarde"
@@ -284,7 +284,7 @@ $variable = 'stringetjie';
         assert phpfile == phpexpected
 
     def test_arrays(self):
-        """Check that we can handle arrays"""
+        """Check that we can handle arrays."""
         posource = """#: $lang->'name'
 msgid "value"
 msgstr "waarde"
@@ -304,7 +304,7 @@ $lang = array(
         assert phpfile == phpexpected
 
     def test_named_nested_array(self):
-        """Check that we can handle nested arrays"""
+        """Check that we can handle nested arrays."""
         posource = """#: $lang->'codes'->'name'
 msgid "value"
 msgstr "waarde"
@@ -379,7 +379,7 @@ return array(
 
     @mark.xfail(reason="Need to review if we want this behaviour")
     def test_merging_propertyless_template(self):
-        """Check that when merging with a template with no property values that we copy the template"""
+        """Check that when merging with a template with no property values that we copy the template."""
         posource = ""
         proptemplate = "# A comment\n"
         propexpected = proptemplate
@@ -389,7 +389,7 @@ return array(
 
 
 class TestPO2PhpCommand(test_convert.TestConvertCommand, TestPO2Php):
-    """Tests running actual po2php commands on files"""
+    """Tests running actual po2php commands on files."""
 
     convertmodule = po2php
     defaultoptions = {"progress": "none"}

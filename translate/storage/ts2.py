@@ -157,7 +157,7 @@ class tsunit(lisa.LISAunit):
         return self.xmlelement.get("numerus") == "yes"
 
     def addnote(self, text, origin=None, position="append"):
-        """Add a note specifically in the appropriate *comment* tag"""
+        """Add a note specifically in the appropriate *comment* tag."""
         current_notes = self.getnotes(origin)
         self.removenotes(origin)
         if origin in ["programmer", "developer", "source code"]:
@@ -211,7 +211,7 @@ class tsunit(lisa.LISAunit):
             self._gettargetnode().attrib.pop("type")
 
     def isreview(self):
-        """States whether this unit needs to be reviewed"""
+        """States whether this unit needs to be reviewed."""
         return self._gettype() == "unfinished"
 
     def isfuzzy(self):
@@ -453,7 +453,7 @@ class tsfile(lisa.LISAfile):
             self.header.set("language", targetlanguage)
 
     def _createcontext(self, contextname, comment=None):
-        """Creates a context node with an optional comment"""
+        """Creates a context node with an optional comment."""
         context = etree.SubElement(
             self.document.getroot(), self.namespaced(self.bodyNode)
         )

@@ -16,9 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-r"""
-Class that manages YAML data files for translation
-"""
+r"""Class that manages YAML data files for translation."""
 
 import uuid
 
@@ -43,7 +41,7 @@ class YAMLUnitId(base.UnitId):
 
 
 class YAMLUnit(base.DictUnit):
-    """A YAML entry"""
+    """A YAML entry."""
 
     IdClass = YAMLUnitId
 
@@ -78,7 +76,7 @@ class YAMLUnit(base.DictUnit):
 
 
 class YAMLFile(base.DictStore):
-    """A YAML file"""
+    """A YAML file."""
 
     UnitClass = YAMLUnit
 
@@ -95,7 +93,7 @@ class YAMLFile(base.DictStore):
             self.parse(inputfile)
 
     def get_root_node(self):
-        """Returns root node for serialize"""
+        """Returns root node for serialize."""
         return CommentedMap()
 
     @property
@@ -146,11 +144,11 @@ class YAMLFile(base.DictStore):
 
     @staticmethod
     def preprocess(data):
-        """Preprocess hook for child formats"""
+        """Preprocess hook for child formats."""
         return data
 
     def parse(self, input):
-        """Parse the given file or file source string"""
+        """Parse the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name
         elif not getattr(self, "filename", ""):
@@ -215,7 +213,7 @@ class RubyYAMLFile(YAMLFile):
         return data
 
     def get_root_node(self):
-        """Returns root node for serialize"""
+        """Returns root node for serialize."""
         result = CommentedMap()
         result[self.targetlanguage or "en"] = CommentedMap()
         return result

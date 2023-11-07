@@ -10,7 +10,7 @@ from . import test_convert
 class TestPO2CSV:
     @staticmethod
     def po2csv(posource):
-        """Helper that converts po source to csv source without requiring files"""
+        """Helper that converts po source to csv source without requiring files."""
         inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
         convertor = po2csv.po2csv()
@@ -18,7 +18,7 @@ class TestPO2CSV:
 
     @staticmethod
     def csv2po(csvsource, template=None):
-        """Helper that converts csv source to po source without requiring files"""
+        """Helper that converts csv source to po source without requiring files."""
         inputfile = BytesIO(csvsource)
         inputcsv = csvl10n.csvfile(inputfile)
         if template:
@@ -31,12 +31,12 @@ class TestPO2CSV:
 
     @staticmethod
     def singleelement(storage):
-        """Checks that the pofile contains a single non-header element, and returns it"""
+        """Checks that the pofile contains a single non-header element, and returns it."""
         assert headerless_len(storage.units) == 1
         return first_translatable(storage)
 
     def test_simpleentity(self):
-        """Checks that a simple csv entry definition converts properly to a po entry"""
+        """Checks that a simple csv entry definition converts properly to a po entry."""
         minipo = r'''#: term.cpp
 msgid "Term"
 msgstr "asdf"'''
@@ -47,7 +47,7 @@ msgstr "asdf"'''
         assert unit.target == "asdf"
 
     def test_multiline(self):
-        """Tests multiline po entries"""
+        """Tests multiline po entries."""
         minipo = r'''msgid "First part "
 "and extra"
 msgstr "Eerste deel "
@@ -58,7 +58,7 @@ msgstr "Eerste deel "
         assert unit.target == "Eerste deel en ekstra"
 
     def test_escapednewlines(self):
-        """Test the escaping of newlines"""
+        """Test the escaping of newlines."""
         minipo = r"""msgid "First line\nSecond line"
 msgstr "Eerste lyn\nTweede lyn"
 """
@@ -72,7 +72,7 @@ msgstr "Eerste lyn\nTweede lyn"
         assert unit.target == "Eerste lyn\nTweede lyn"
 
     def test_escapedtabs(self):
-        """Test the escaping of tabs"""
+        """Test the escaping of tabs."""
         minipo = r"""msgid "First column\tSecond column"
 msgstr "Eerste kolom\tTweede kolom"
 """
@@ -86,7 +86,7 @@ msgstr "Eerste kolom\tTweede kolom"
         )
 
     def test_escapedquotes(self):
-        """Test the escaping of quotes (and slash)"""
+        """Test the escaping of quotes (and slash)."""
         minipo = r"""msgid "Hello \"Everyone\""
 msgstr "Good day \"All\""
 
@@ -98,7 +98,7 @@ msgstr "Gebruik \\\"."
         assert csvfile.findunit('Use \\".').target == 'Gebruik \\".'
 
     def test_escapedescape(self):
-        """Test the escaping of pure escapes is unaffected"""
+        """Test the escaping of pure escapes is unaffected."""
         minipo = r"""msgid "Find\\Options"
 msgstr "Vind\\Opsies"
 """
@@ -108,7 +108,7 @@ msgstr "Vind\\Opsies"
         assert csvfile.findunit(r"Find\Options").target == r"Vind\Opsies"
 
     def test_singlequotes(self):
-        """Tests that single quotes are preserved correctly"""
+        """Tests that single quotes are preserved correctly."""
         minipo = """msgid "source 'source'"\nmsgstr "target 'target'"\n"""
         csvfile = self.po2csv(minipo)
         print(bytes(csvfile))
@@ -121,7 +121,7 @@ msgstr "Vind\\Opsies"
         # TODO check that we escape on writing not in the internal representation
 
     def test_empties(self):
-        """Tests that things keep working with empty entries"""
+        """Tests that things keep working with empty entries."""
         minipo = 'msgid "Source"\nmsgstr ""\n\nmsgid ""\nmsgstr ""'
         csvfile = self.po2csv(minipo)
         assert csvfile.findunit("Source") is not None
@@ -129,7 +129,7 @@ msgstr "Vind\\Opsies"
         assert headerless_len(csvfile.units) == 1
 
     def test_kdecomments(self):
-        """Test that we don't carry KDE comments to CSV"""
+        """Test that we don't carry KDE comments to CSV."""
         minipo = '#: simple.c\nmsgid "_: KDE comment\\n"\n"Same"\nmsgstr "Same"\n'
         csvfile = self.po2csv(minipo)
         unit = self.singleelement(csvfile)
@@ -138,7 +138,7 @@ msgstr "Vind\\Opsies"
 
 
 class TestPO2CSVCommand(test_convert.TestConvertCommand, TestPO2CSV):
-    """Tests running actual po2csv commands on files"""
+    """Tests running actual po2csv commands on files."""
 
     convertmodule = po2csv
 

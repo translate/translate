@@ -49,7 +49,7 @@ class TestPO2Ini:
             self._convert_to_string("")
 
     def test_merging_simple(self):
-        """Check the simplest case of merging a translation"""
+        """Check the simplest case of merging a translation."""
         input_string = """#: [section]prop
 msgid "value"
 msgstr "waarde"
@@ -63,7 +63,7 @@ prop=waarde
         assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_space_preservation(self):
-        """Check that we preserve any spacing in ini files when merging"""
+        """Check that we preserve any spacing in ini files when merging."""
         input_string = """#: [section]prop
 msgid "value"
 msgstr "waarde"
@@ -77,7 +77,7 @@ prop  =  waarde
         assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_merging_blank_entries(self):
-        """Check that we can correctly merge entries that are blank in the template"""
+        """Check that we can correctly merge entries that are blank in the template."""
         input_string = r"""#: [section]accesskey-accept
 msgid ""
 "_: accesskey-accept\n"
@@ -93,7 +93,7 @@ accesskey-accept=
         assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_merging_fuzzy(self):
-        """Check merging a fuzzy translation"""
+        """Check merging a fuzzy translation."""
         input_string = """#: [section]prop
 #, fuzzy
 msgid "value"
@@ -108,7 +108,7 @@ prop=value
         assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_merging_propertyless_template(self):
-        """Check that when merging with a template with no ini values that we copy the template"""
+        """Check that when merging with a template with no ini values that we copy the template."""
         input_string = ""
         template_string = """# A comment
 """
@@ -116,7 +116,7 @@ prop=value
         assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_empty_value(self):
-        """Test that we handle an value in translation that is missing in the template"""
+        """Test that we handle an value in translation that is missing in the template."""
         input_string = """#: [section]key
 msgctxt "key"
 msgid ""
@@ -276,7 +276,7 @@ key=primeiro
 
 
 class TestPO2IniCommand(test_convert.TestConvertCommand, TestPO2Ini):
-    """Tests running actual po2ini commands on files"""
+    """Tests running actual po2ini commands on files."""
 
     convertmodule = po2ini
     defaultoptions = {"progress": "none"}

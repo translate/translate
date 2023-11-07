@@ -81,7 +81,7 @@ lo_emptytags = frozenset(["br", "embed", "embedvar", "object", "help-id-missing"
 
 
 def tagname(string):
-    """Returns the name of the XML/HTML tag in string"""
+    """Returns the name of the XML/HTML tag in string."""
     tagname_match = tagname_re.match(string)
     return tagname_match.groups(1)[0] + tagname_match.groups("")[1]
 
@@ -161,7 +161,7 @@ class SeriousFilterFailure(FilterFailure):
     """
     This exception signals that a Filter didn't pass, and the bad
     translation might break an application (so the string will be marked
-    fuzzy)
+    fuzzy).
     """
 
 
@@ -235,7 +235,7 @@ class CheckerConfig:
     @staticmethod
     def _init_list(list):
         """
-        initialise configuration paramaters that are lists
+        initialise configuration paramaters that are lists.
 
         :type list: List
         :param list: None (we'll initialise a blank list) or a list paramater
@@ -612,7 +612,7 @@ class TeeChecker:
         errorhandler=None,
         languagecode=None,
     ):
-        """Construct a TeeChecker from the given checkers"""
+        """Construct a TeeChecker from the given checkers."""
         self.limitfilters = limitfilters
 
         if checkerclasses is None:
@@ -794,7 +794,7 @@ class StandardChecker(TranslationChecker):
 
     @critical
     def escapes(self, str1, str2):
-        """
+        r"""
         Checks whether escaping is consistent between the two strings.
 
         Checks escapes such as ``\\n`` ``\u0000`` to ensure that if they exist
@@ -812,7 +812,7 @@ class StandardChecker(TranslationChecker):
 
     @critical
     def newlines(self, str1, str2):
-        """
+        r"""
         Checks whether newlines are consistent between the two strings.
 
         Counts the number of ``\\n`` newlines (and variants such as ``\\r\\n``)
@@ -831,7 +831,7 @@ class StandardChecker(TranslationChecker):
 
     @critical
     def tabs(self, str1, str2):
-        """
+        r"""
         Checks whether tabs are consistent between the two strings.
 
         Counts the number of ``\\t`` tab markers and reports an error if they
@@ -1934,7 +1934,7 @@ class StandardChecker(TranslationChecker):
 
     @functional
     def kdecomments(self, str1, str2):
-        """
+        r"""
         Checks to ensure that no KDE style comments appear in the
         translation.
 
@@ -2346,7 +2346,7 @@ class LibreOfficeChecker(StandardChecker):
 
     @critical
     def pythonbraceformat(self, str1, str2):
-        """Not used in LibreOffice"""
+        """Not used in LibreOffice."""
         return True
 
 

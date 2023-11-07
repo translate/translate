@@ -17,13 +17,13 @@
 
 """
 Implements a case-insensitive (on keys) dictionary and order-sensitive
-dictionary
+dictionary.
 """
 
 
 class cidict(dict):
     def __init__(self, fromdict=None):
-        """Constructs the cidict, optionally using another dict to do so"""
+        """Constructs the cidict, optionally using another dict to do so."""
         if fromdict is not None:
             self.update(fromdict)
 
@@ -47,10 +47,12 @@ class cidict(dict):
                 return super().__setitem__(akey, value)
         return super().__setitem__(key, value)
 
-    def update(self, updatedict):
+    def update(self, updatedict) -> None:
         """
+        Update from a dictionary.
+
         D.update(E) -> None.
-        Update D from E: for k in E.keys(): D[k] = E[k]
+        Update D from E: for k in E.keys(): D[k] = E[k].
         """
         for key, value in updatedict.items():
             self[key] = value

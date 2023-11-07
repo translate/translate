@@ -8,7 +8,7 @@ from . import test_convert
 
 
 def test_replacestrings():
-    """Test the _replacestring function"""
+    """Test the _replacestring function."""
     assert (
         csv2po.replacestrings("Test one two three", ("one", "een"), ("two", "twee"))
         == "Test een twee three"
@@ -18,7 +18,7 @@ def test_replacestrings():
 class TestCSV2PO:
     @staticmethod
     def csv2po(csvsource, template=None):
-        """Helper that converts csv source to po source without requiring files"""
+        """Helper that converts csv source to po source without requiring files."""
         inputfile = BytesIO(csvsource.encode())
         inputcsv = csvl10n.csvfile(inputfile)
         if template:
@@ -31,13 +31,13 @@ class TestCSV2PO:
 
     @staticmethod
     def singleelement(storage):
-        """Checks that the pofile contains a single non-header element, and returns it"""
+        """Checks that the pofile contains a single non-header element, and returns it."""
         print(bytes(storage))
         assert headerless_len(storage.units) == 1
         return first_translatable(storage)
 
     def test_simpleentity(self):
-        """Checks that a simple csv entry definition converts properly to a po entry"""
+        """Checks that a simple csv entry definition converts properly to a po entry."""
         csvheader = "location,source,target\n"
         csvsource = "intl.charset.default,ISO-8859-1,UTF-16"
         # Headerless
@@ -51,7 +51,7 @@ class TestCSV2PO:
         assert pounit.target == "UTF-16"
 
     def test_simpleentity_with_template(self):
-        """Checks that a simple csv entry definition converts properly to a po entry"""
+        """Checks that a simple csv entry definition converts properly to a po entry."""
         csvsource = """location,original,translation
 intl.charset.default,ISO-8859-1,UTF-16"""
         potsource = """#: intl.charset.default
@@ -65,7 +65,7 @@ msgstr ""
         assert pounit.target == "UTF-16"
 
     def test_newlines(self):
-        """Tests multiline po entries"""
+        """Tests multiline po entries."""
         minicsv = r""""Random comment
 with continuation","Original text","Langdradige teks
 wat lank aanhou"
@@ -78,7 +78,7 @@ wat lank aanhou"
         assert unit.target == "Langdradige teks\nwat lank aanhou"
 
     def test_tabs(self):
-        """Test the escaping of tabs"""
+        """Test the escaping of tabs."""
         minicsv = ',"First column\tSecond column","Twee kolomme gesky met \t"'
         pofile = self.csv2po(minicsv)
         unit = self.singleelement(pofile)
@@ -90,7 +90,7 @@ wat lank aanhou"
         )
 
     def test_quotes(self):
-        """Test the escaping of quotes (and slash)"""
+        """Test the escaping of quotes (and slash)."""
         minicsv = r''',"Hello ""Everyone""","Good day ""All"""
 ,"Use \"".","Gebruik \""."'''
         print(minicsv)
@@ -109,7 +109,7 @@ wat lank aanhou"
     #        assert pofile.findunit('Use \\".').target == 'Gebruik \\".'
 
     def test_empties(self):
-        """Tests that things keep working with empty entries"""
+        """Tests that things keep working with empty entries."""
         minicsv = ",SomeSource,"
         pofile = self.csv2po(minicsv)
         assert pofile.findunit("SomeSource") is not None
@@ -117,7 +117,7 @@ wat lank aanhou"
         assert headerless_len(pofile.units) == 1
 
     def test_kdecomment(self):
-        """Checks that we can merge into KDE comment entries"""
+        """Checks that we can merge into KDE comment entries."""
         csvsource = """location,source,target
 simple.c,Source,Target"""
         potsource = r"""#: simple.c
@@ -132,7 +132,7 @@ msgstr ""
         assert pounit.target == "Target"
 
     def test_escaped_newlines(self):
-        """Tests that things keep working with escaped newlines"""
+        """Tests that things keep working with escaped newlines."""
         minicsv = '"source","target"\r\n"yellow pencil","żółty\\nołówek"'
         pofile = self.csv2po(minicsv)
         assert pofile.findunit("yellow pencil") is not None
@@ -141,7 +141,7 @@ msgstr ""
 
 
 class TestCSV2POCommand(test_convert.TestConvertCommand, TestCSV2PO):
-    """Tests running actual csv2po commands on files"""
+    """Tests running actual csv2po commands on files."""
 
     convertmodule = csv2po
 

@@ -43,7 +43,7 @@ class reoo:
         long_keys=False,
         filteraction="exclude",
     ):
-        """Construct a reoo converter for the specified languages (timestamp=0 means leave unchanged)"""
+        """Construct a reoo converter for the specified languages (timestamp=0 means leave unchanged)."""
         # languages is a pair of language ids
         self.long_keys = long_keys
         self.readoo(templatefile)
@@ -60,14 +60,14 @@ class reoo:
         self.includefuzzy = includefuzzy
 
     def makeindex(self):
-        """Makes an index of the oo keys that are used in the source file"""
+        """Makes an index of the oo keys that are used in the source file."""
         self.index = {}
         for ookey, theoo in self.o.ookeys.items():
             sourcekey = oo.makekey(ookey, self.long_keys)
             self.index[sourcekey] = theoo
 
     def readoo(self, of):
-        """Read in the oo from the file"""
+        """Read in the oo from the file."""
         oosrc = of.read()
         self.o = oo.oofile()
         self.o.parse(oosrc)
@@ -102,7 +102,7 @@ class reoo:
                 logger.exception("error outputting source unit %r", str(unit))
 
     def applytranslation(self, key, subkey, theoo, unit):
-        """Applies the translation from the source unit to the oo unit"""
+        """Applies the translation from the source unit to the oo unit."""
         if not self.includefuzzy and unit.isfuzzy():
             return
         makecopy = False
@@ -157,7 +157,7 @@ def getmtime(filename):
 
 class oocheckfilter(pofilter.pocheckfilter):
     def validelement(self, unit, filename, filteraction):
-        """Returns whether or not to use unit in conversion. (filename is just for error reporting)"""
+        """Returns whether or not to use unit in conversion. (filename is just for error reporting)."""
         if filteraction == "none":
             return True
         filterresult = self.filterunit(unit)

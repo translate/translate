@@ -16,9 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""
-Convert Python format .po files to PHP format .po files.
-"""
+"""Convert Python format .po files to PHP format .po files."""
 
 import re
 
@@ -82,7 +80,7 @@ class pypo2phppo:
 
 def convertpy2php(inputfile, outputfile, template=None):
     """
-    Converts from Python .po to PHP .po
+    Converts from Python .po to PHP .po.
 
     :param inputfile: file handle of the source
     :param outputfile: file handle to write to
@@ -98,7 +96,7 @@ def convertpy2php(inputfile, outputfile, template=None):
 
 
 def main(argv=None):
-    """Converts from Python .po to PHP .po"""
+    """Converts from Python .po to PHP .po."""
     from translate.convert import convert
 
     formats = {"po": ("po", convertpy2php)}

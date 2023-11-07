@@ -16,10 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""
-Module to provide statistics and related functionality.
-
-"""
+"""Module to provide statistics and related functionality."""
 
 
 from translate.lang import factory

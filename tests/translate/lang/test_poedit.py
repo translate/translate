@@ -2,7 +2,7 @@ from translate.lang.poedit import isocode
 
 
 def test_isocode():
-    """Test the isocode function"""
+    """Test the isocode function."""
     # Standard lookup
     assert isocode("French") == "fr"
     # Dialect lookups: Portuguese

@@ -52,7 +52,7 @@ msgstr[1] "I have {0} apples"
 
 
 class TestPyPo2PhpPoCommand(test_convert.TestConvertCommand, TestPyPo2PhpPo):
-    """Tests running actual pypo2phppo commands on files"""
+    """Tests running actual pypo2phppo commands on files."""
 
     convertmodule = pypo2phppo
     defaultoptions = {}

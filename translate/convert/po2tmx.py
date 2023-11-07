@@ -47,7 +47,7 @@ class po2tmx:
     def convertfiles(
         self, inputfile, tmxfile, sourcelanguage="en", targetlanguage=None, comment=None
     ):
-        """Converts a .po file (possibly many) to TMX file"""
+        """Converts a .po file (possibly many) to TMX file."""
         inputstore = po.pofile(inputfile)
         for inunit in inputstore.units:
             if (
@@ -79,7 +79,7 @@ def convertpo(
     targetlanguage=None,
     comment=None,
 ):
-    """Reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
+    """Reads in stdin using fromfileclass, converts using convertorclass, writes to stdout."""
     convertor = po2tmx()
     convertor.convertfiles(
         inputfile, outputfile.tmxfile, sourcelanguage, targetlanguage, comment
@@ -89,7 +89,7 @@ def convertpo(
 
 class tmxmultifile:
     def __init__(self, filename, mode=None):
-        """Initialises tmxmultifile from a seekable inputfile or writable outputfile"""
+        """Initialises tmxmultifile from a seekable inputfile or writable outputfile."""
         self.filename = filename
         if mode is None:
             mode = "r" if os.path.exists(filename) else "w"
@@ -100,7 +100,7 @@ class tmxmultifile:
         self.tmxfile = tmx.tmxfile()
 
     def openoutputfile(self, subfile):
-        """Returns a pseudo-file object for the given subfile"""
+        """Returns a pseudo-file object for the given subfile."""
 
         def onclose(contents):
             pass

@@ -58,7 +58,7 @@ except ImportError:
 
 
 class SubtitleUnit(base.TranslationUnit):
-    """A subtitle entry that is translatable"""
+    """A subtitle entry that is translatable."""
 
     init_time = "00:00:00.000"
 
@@ -90,7 +90,7 @@ class MicroDVDUnit(SubtitleUnit):
 
 
 class SubtitleFile(base.TranslationStore):
-    """A subtitle file"""
+    """A subtitle file."""
 
     UnitClass = SubtitleUnit
 
@@ -146,7 +146,7 @@ class SubtitleFile(base.TranslationStore):
 
     @classmethod
     def parsefile(cls, storefile):
-        """Parse the given file"""
+        """Parse the given file."""
         newstore = cls()
         newstore._parsefile(storefile)
         return newstore
@@ -178,7 +178,7 @@ class SubtitleFile(base.TranslationStore):
 
 
 class SubRipFile(SubtitleFile):
-    """specialized class for SubRipFile's only"""
+    """specialized class for SubRipFile's only."""
 
     Name = "SubRip subtitles file"
     Extensions = ["srt"]
@@ -192,7 +192,7 @@ class SubRipFile(SubtitleFile):
 
 
 class MicroDVDFile(SubtitleFile):
-    """specialized class for SubRipFile's only"""
+    """specialized class for SubRipFile's only."""
 
     Name = "MicroDVD subtitles file"
     Extensions = ["sub"]
@@ -207,7 +207,7 @@ class MicroDVDFile(SubtitleFile):
 
 
 class AdvSubStationAlphaFile(SubtitleFile):
-    """specialized class for SubRipFile's only"""
+    """specialized class for SubRipFile's only."""
 
     Name = "Advanced Substation Alpha subtitles file"
     Extensions = ["ass"]
@@ -221,7 +221,7 @@ class AdvSubStationAlphaFile(SubtitleFile):
 
 
 class SubStationAlphaFile(SubtitleFile):
-    """specialized class for SubRipFile's only"""
+    """specialized class for SubRipFile's only."""
 
     Name = "Substation Alpha subtitles file"
     Extensions = ["ssa"]

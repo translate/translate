@@ -159,24 +159,28 @@ class TranslationUnit:
     @classmethod
     def rich_to_multistring(cls, elem_list):
         """
-        Convert a "rich" string tree to a ``multistring``:
+        Convert a "rich" string tree to a ``multistring``.
 
-        >>> from translate.storage.placeables.interfaces import X
-        >>> rich = [StringElem(['foo', X(id='xxx', sub=[' ']), 'bar'])]
-        >>> TranslationUnit.rich_to_multistring(rich)
-        multistring('foo bar')
+        .. code-block:: pycon
+
+            >>> from translate.storage.placeables.interfaces import X
+            >>> rich = [StringElem(['foo', X(id='xxx', sub=[' ']), 'bar'])]
+            >>> TranslationUnit.rich_to_multistring(rich)
+            multistring('foo bar')
         """
         return multistring([str(elem) for elem in elem_list])
 
     def multistring_to_rich(self, mulstring):
         """
-        Convert a multistring to a list of "rich" string trees:
+        Convert a multistring to a list of "rich" string trees.
 
-        >>> target = multistring(['foo', 'bar', 'baz'])
-        >>> TranslationUnit.multistring_to_rich(target)
-        [<StringElem([<StringElem(['foo'])>])>,
-         <StringElem([<StringElem(['bar'])>])>,
-         <StringElem([<StringElem(['baz'])>])>]
+        .. code-block:: pycon
+
+            >>> target = multistring(['foo', 'bar', 'baz'])
+            >>> TranslationUnit.multistring_to_rich(target)
+            [<StringElem([<StringElem(['foo'])>])>,
+             <StringElem([<StringElem(['bar'])>])>,
+             <StringElem([<StringElem(['baz'])>])>]
         """
         if isinstance(mulstring, multistring):
             return [rich_parse(s, self.rich_parsers) for s in mulstring.strings]
@@ -204,9 +208,7 @@ class TranslationUnit:
 
     @property
     def rich_source(self):
-        """
-        .. seealso:: :meth:`.rich_to_multistring`, :meth:`multistring_to_rich`
-        """
+        """.. seealso:: :meth:`.rich_to_multistring`, :meth:`multistring_to_rich`."""
         if self._rich_source is None:
             self._rich_source = self.multistring_to_rich(self.source)
         return self._rich_source
@@ -226,9 +228,7 @@ class TranslationUnit:
 
     @property
     def rich_target(self):
-        """
-        .. seealso:: :meth:`.rich_to_multistring`, :meth:`.multistring_to_rich`
-        """
+        """.. seealso:: :meth:`.rich_to_multistring`, :meth:`.multistring_to_rich`."""
         if self._rich_target is None:
             self._rich_target = self.multistring_to_rich(self.target)
         return self._rich_target
@@ -327,7 +327,7 @@ class TranslationUnit:
         return ""
 
     def setcontext(self, context):
-        """Set the message context"""
+        """Set the message context."""
 
     def getnotes(self, origin=None):
         """
@@ -417,11 +417,11 @@ class TranslationUnit:
 
     @staticmethod
     def isobsolete():
-        """Indicate whether a unit is obsolete"""
+        """Indicate whether a unit is obsolete."""
         return False
 
     def makeobsolete(self):
-        """Make a unit obsolete"""
+        """Make a unit obsolete."""
 
     @staticmethod
     def isheader():
@@ -473,8 +473,9 @@ class TranslationUnit:
     @classmethod
     def buildfromunit(cls, unit):
         """
-        Build a native unit from a foreign unit, preserving as much
-        information as possible.
+        Build a native unit from a foreign unit.
+
+        Preserving as much information as possible.
         """
         if type(unit) is cls and hasattr(unit, "copy") and callable(unit.copy):
             return unit.copy()
@@ -633,7 +634,7 @@ class TranslationStore:
         return unit
 
     def findid(self, id):
-        """Find unit with matching id by checking id_index"""
+        """Find unit with matching id by checking id_index."""
         self.require_index()
         return self.id_index.get(id)
 
@@ -671,7 +672,7 @@ class TranslationStore:
         return None
 
     def remove_unit_from_index(self, unit):
-        """Remove a unit from source and locaton indexes"""
+        """Remove a unit from source and locaton indexes."""
 
         def remove_source(source):
             if source in self.sourceindex:
@@ -694,7 +695,7 @@ class TranslationStore:
                 del self.locationindex[location]
 
     def add_unit_to_index(self, unit):
-        """Add a unit to source and location idexes"""
+        """Add a unit to source and location idexes."""
         self.id_index[unit.getid()] = unit
 
         def insert_unit(source):
@@ -730,12 +731,12 @@ class TranslationStore:
                 self.add_unit_to_index(unit)
 
     def require_index(self):
-        """Make sure source index exists"""
+        """Make sure source index exists."""
         if not self.id_index:
             self.makeindex()
 
     def getids(self):
-        """Return a list of unit ids"""
+        """Return a list of unit ids."""
         self.require_index()
         return self.id_index.keys()
 
@@ -789,9 +790,7 @@ class TranslationStore:
 
     @staticmethod
     def fallback_detection(text):
-        """
-        Simple detection based on BOM in case chardet is not available.
-        """
+        """Simple detection based on BOM in case chardet is not available."""
         for bom, encoding in ENCODING_BOMS:
             if text.startswith(bom):
                 return {"encoding": encoding, "confidence": 1.0}
@@ -866,7 +865,7 @@ class TranslationStore:
         return r_text, r_encoding
 
     def parse(self, data):
-        """Parser to process the given source string"""
+        """Parser to process the given source string."""
         self.units = pickle.loads(data).units
 
     def savefile(self, storefile):

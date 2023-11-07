@@ -212,7 +212,7 @@ def phpdecode(text, quotechar="'"):
     escape_encoding = "unicode_escape"
 
     def decode_octal_hex(match):
-        r"""Decode Octal \NNN and Hex values"""
+        r"""Decode Octal \NNN and Hex values."""
         if "octal" in match.groupdict():
             return match.groupdict()["octal"].encode("latin-1").decode(escape_encoding)
         if "hex" in match.groupdict():

@@ -41,7 +41,7 @@ class ts2po:
         msgcomments,
         transtype,
     ):
-        """Makes a pounit from the given message"""
+        """Makes a pounit from the given message."""
         thepo = po.pounit(encoding="UTF-8")
         thepo.addlocation("%s#%d" % (contextname, messagenum))
         thepo.source = source
@@ -60,7 +60,7 @@ class ts2po:
         return thepo
 
     def convertfile(self, inputfile):
-        """Converts a .ts file to .po format"""
+        """Converts a .ts file to .po format."""
         tsfile = ts2.tsfile(inputfile)
         thetargetfile = po.pofile()
 
@@ -97,7 +97,7 @@ class ts2po:
 
 
 def convertts(inputfile, outputfile, templates, pot=False, duplicatestyle="msgctxt"):
-    """Reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
+    """Reads in stdin using fromfileclass, converts using convertorclass, writes to stdout."""
     convertor = ts2po(duplicatestyle=duplicatestyle, pot=pot)
     outputstore = convertor.convertfile(inputfile)
     if outputstore.isempty():

@@ -45,7 +45,7 @@ class po2csv:
 
     def convertplurals(self, inputunit):
         """
-        Convert PO plural units
+        Convert PO plural units.
 
         We only convert the first plural form.  So languages with multiple
         plurals are not handled.  For single plural languages we simply
@@ -75,7 +75,7 @@ class po2csv:
 
 
 def convertcsv(inputfile, outputfile, templatefile, columnorder=None):
-    """Reads in inputfile using po, converts using po2csv, writes to outputfile"""
+    """Reads in inputfile using po, converts using po2csv, writes to outputfile."""
     # note that templatefile is not used, but it is required by the converter...
     inputstore = po.pofile(inputfile)
     if inputstore.isempty():

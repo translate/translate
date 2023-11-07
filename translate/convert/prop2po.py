@@ -410,7 +410,7 @@ def convertstrings(
     duplicatestyle="msgctxt",
     encoding=None,
 ):
-    """.strings specific convertor function"""
+    """.strings specific convertor function."""
     return convertprop(
         inputfile,
         outputfile,
@@ -425,7 +425,7 @@ def convertstrings(
 def convertmozillaprop(
     inputfile, outputfile, templatefile, pot=False, duplicatestyle="msgctxt"
 ):
-    """Mozilla specific convertor function"""
+    """Mozilla specific convertor function."""
     return convertprop(
         inputfile,
         outputfile,
@@ -447,7 +447,7 @@ def convertprop(
 ):
     """
     reads in inputfile using properties, converts using prop2po, writes to
-    outputfile
+    outputfile.
     """
     inputstore = properties.propfile(inputfile, personality, encoding)
     convertor = prop2po(

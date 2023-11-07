@@ -88,12 +88,16 @@ class Project:
         return srcfile, srcfname, transfile, transfname
 
     def close(self):
-        """Proxy for ``self.store.close()``."""
+        """
+        Close underlying store.
+
+        Proxy for ``self.store.close()``.
+        """
         self.store.close()
 
     def convert_forward(self, input_fname, template=None, output_fname=None, **options):
         """
-        Convert the given input file to the next type in the process:
+        Convert the given input file to the next type in the process.
 
         Source document (eg. ODT) -> Translation file (eg. XLIFF) ->
         Translated document (eg. ODT).
@@ -205,11 +209,19 @@ class Project:
             fp.write(self.store.get_file(fname).read())
 
     def get_file(self, fname):
-        """Proxy for ``self.store.get_file()``."""
+        """
+        Return store filename.
+
+        Proxy for ``self.store.get_file()``.
+        """
         return self.store.get_file(fname)
 
     def get_proj_filename(self, realfname):
-        """Proxy for ``self.store.get_proj_filename()``."""
+        """
+        Return project filename.
+
+        Proxy for ``self.store.get_proj_filename()``.
+        """
         return self.store.get_proj_filename(realfname)
 
     def get_real_filename(self, projfname):
@@ -221,13 +233,25 @@ class Project:
         return rfname
 
     def remove_file(self, projfname, ftype=None):
-        """Proxy for ``self.store.remove_file()``."""
+        """
+        Remove a file.
+
+        Proxy for ``self.store.remove_file()``.
+        """
         self.store.remove_file(projfname, ftype)
 
     def save(self, filename=None):
-        """Proxy for ``self.store.save()``."""
+        """
+        Save a store.
+
+        Proxy for ``self.store.save()``.
+        """
         self.store.save(filename)
 
     def update_file(self, proj_fname, infile):
-        """Proxy for ``self.store.update_file()``."""
+        """
+        Update a file.
+
+        Proxy for ``self.store.update_file()``.
+        """
         self.store.update_file(proj_fname, infile)

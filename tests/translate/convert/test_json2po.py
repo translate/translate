@@ -9,7 +9,7 @@ from . import test_convert
 class TestJson2PO:
     @staticmethod
     def json2po(jsonsource, template=None, filter=None):
-        """Helper that converts json source to po source without requiring files"""
+        """Helper that converts json source to po source without requiring files."""
         inputfile = BytesIO(jsonsource.encode())
         inputjson = jsonl10n.JsonFile(inputfile, filter=filter)
         convertor = json2po.json2po()
@@ -17,13 +17,13 @@ class TestJson2PO:
 
     @staticmethod
     def singleelement(storage):
-        """Checks that the pofile contains a single non-header element, and returns it"""
+        """Checks that the pofile contains a single non-header element, and returns it."""
         print(bytes(storage))
         assert len(storage.units) == 1
         return storage.units[0]
 
     def test_simple(self):
-        """Test the most basic json conversion"""
+        """Test the most basic json conversion."""
         jsonsource = """{ "text": "A simple string"}"""
         poexpected = """#: .text
 msgid "A simple string"
@@ -33,7 +33,7 @@ msgstr ""
         assert str(poresult.units[1]) == poexpected
 
     def test_filter(self):
-        """Test basic json conversion with filter option"""
+        """Test basic json conversion with filter option."""
         jsonsource = """{ "text": "A simple string", "number": 42 }"""
         poexpected = """#: .text
 msgid "A simple string"
@@ -43,7 +43,7 @@ msgstr ""
         assert str(poresult.units[1]) == poexpected
 
     def test_miltiple_units(self):
-        """Test that we can handle json with multiple units"""
+        """Test that we can handle json with multiple units."""
         jsonsource = """
 {
      "name": "John",
@@ -76,7 +76,7 @@ msgstr ""
 
 
 class TestJson2POCommand(test_convert.TestConvertCommand, TestJson2PO):
-    """Tests running actual json2po commands on files"""
+    """Tests running actual json2po commands on files."""
 
     convertmodule = json2po
     defaultoptions = {"progress": "none"}

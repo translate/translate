@@ -73,7 +73,7 @@ class pounit(pocommon.pounit):
         self.target = ""
 
     def _initallcomments(self, blankall=False):
-        """Initialises allcomments"""
+        """Initialises allcomments."""
         if blankall:
             self.othercomments = []
             self.automaticcomments = []
@@ -96,12 +96,12 @@ class pounit(pocommon.pounit):
 
     @property
     def target(self):
-        """Returns the unescaped msgstr"""
+        """Returns the unescaped msgstr."""
         return self._target
 
     @target.setter
     def target(self, target):
-        """Sets the msgstr to the given (unescaped) value"""
+        """Sets the msgstr to the given (unescaped) value."""
         self._rich_target = None
         if self.hasplural():
             if isinstance(target, multistring):
@@ -120,7 +120,7 @@ class pounit(pocommon.pounit):
             self._target = target
 
     def getnotes(self, origin=None):
-        """Return comments based on origin value (programmer, developer, source code and translator)"""
+        """Return comments based on origin value (programmer, developer, source code and translator)."""
         if origin is None:
             comments = "\n".join(self.othercomments)
             comments += "\n".join(self.automaticcomments)
@@ -133,7 +133,7 @@ class pounit(pocommon.pounit):
         return comments
 
     def addnote(self, text, origin=None, position="append"):
-        """This is modeled on the XLIFF method. See xliff.py::xliffunit.addnote"""
+        """This is modeled on the XLIFF method. See xliff.py::xliffunit.addnote."""
         # ignore empty strings and strings without non-space characters
         if not (text and text.strip()):
             return
@@ -156,7 +156,7 @@ class pounit(pocommon.pounit):
             self.othercomments = newcomments
 
     def removenotes(self, origin=None):
-        """Remove all the translator's notes (other comments)"""
+        """Remove all the translator's notes (other comments)."""
         self.othercomments = []
 
     def __deepcopy__(self, memo={}):
@@ -274,7 +274,7 @@ class pounit(pocommon.pounit):
         return False
 
     def hastypecomment(self, typecomment):
-        """Check whether the given type comment is present"""
+        """Check whether the given type comment is present."""
         # check for word boundaries properly by using a regular expression...
         return (
             sum(
@@ -290,7 +290,7 @@ class pounit(pocommon.pounit):
         return any(comment.startswith(commentmarker) for comment in self.othercomments)
 
     def settypecomment(self, typecomment, present=True):
-        """Alters whether a given typecomment is present"""
+        """Alters whether a given typecomment is present."""
         if self.hastypecomment(typecomment) != present:
             if present:
                 self.typecomments.append("#, %s\n" % typecomment)
@@ -317,7 +317,7 @@ class pounit(pocommon.pounit):
         self.settypecomment("fuzzy", present)
 
     def makeobsolete(self):
-        """Makes this unit obsolete"""
+        """Makes this unit obsolete."""
         self.sourcecomments = []
         self.automaticcomments = []
         super().makeobsolete()
@@ -328,7 +328,7 @@ class pounit(pocommon.pounit):
         return isinstance(source, multistring) and len(source.strings) > 1
 
     def __str__(self):
-        """Convert to a string. double check that unicode is handled somehow here"""
+        """Convert to a string. double check that unicode is handled somehow here."""
         _cpo_unit = cpo.pounit.buildfromunit(self)
         return str(_cpo_unit)
 
@@ -422,7 +422,7 @@ class pounit(pocommon.pounit):
 
 
 class pofile(pocommon.pofile):
-    """A .po file containing various units"""
+    """A .po file containing various units."""
 
     UnitClass = pounit
 
@@ -469,7 +469,7 @@ class pofile(pocommon.pofile):
             raise base.ParseError(e)
 
     def removeduplicates(self, duplicatestyle="merge"):
-        """Make sure each msgid is unique ; merge comments etc from duplicates into original"""
+        """Make sure each msgid is unique ; merge comments etc from duplicates into original."""
         # TODO: can we handle consecutive calls to removeduplicates()? What
         # about files already containing msgctxt? - test
         id_dict = {}
@@ -520,7 +520,7 @@ class pofile(pocommon.pofile):
         self.units = uniqueunits
 
     def serialize(self, out):
-        """Write content to file"""
+        """Write content to file."""
         self._cpo_store = cpo.pofile(encoding=self.encoding, noheader=True)
         try:
             self._build_cpo_from_self()
