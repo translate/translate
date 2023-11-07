@@ -39,7 +39,6 @@ ignore = [
   "G003",  # TODO: Logging statement uses `+`
   "PLR1714",  # TODO: Consider merging multiple comparisons
   "PLW1510",  # TODO: `subprocess.run` without explicit `check` argument
-  "N804",  # TODO: First argument of a class method should be named `cls`
   "SLOT000",  # TODO: Subclasses of `str` should define `__slots__`
   "N999",  # TODO: Invalid module name: 'pt_BR'
   "G004",  # TODO: Logging statement uses f-string

@@ -23,16 +23,16 @@ strings in the strings attribute
 
 
 class multistring(str):
-    def __new__(newtype, string=""):
+    def __new__(cls, string=""):
         if isinstance(string, list):
             if not string:
                 raise ValueError("multistring must contain at least one string")
-            newstring = str.__new__(newtype, string[0])
+            newstring = str.__new__(cls, string[0])
             newstring.strings = [newstring] + [
-                multistring.__new__(newtype, altstring) for altstring in string[1:]
+                multistring.__new__(cls, altstring) for altstring in string[1:]
             ]
         else:
-            newstring = str.__new__(newtype, string)
+            newstring = str.__new__(cls, string)
             newstring.strings = [newstring]
         return newstring
 

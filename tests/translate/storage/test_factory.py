@@ -31,8 +31,8 @@ class BaseTestFactory:
         """Removes the attributes set up by setup_method"""
         self.cleardir(self.testdir)
 
-    @classmethod
-    def cleardir(self, dirname):
+    @staticmethod
+    def cleardir(dirname):
         """Removes the given directory"""
         if os.path.exists(dirname):
             for dirpath, subdirs, filenames in os.walk(dirname, topdown=False):
