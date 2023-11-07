@@ -60,7 +60,8 @@ class TestFlatXMLFile(test_monolingual.TestMonolingualStore):
         assert len(list(store.root.iterchildren("not-a-value"))) == 1
 
     def test_namespace_config_detect(self):
-        """Test that parser fails on inconsistent root namespace configuration.
+        """
+        Test that parser fails on inconsistent root namespace configuration.
 
         This test triggers at root level, and yields a similar message as
         the test against the root element name.

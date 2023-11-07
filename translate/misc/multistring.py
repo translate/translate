@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Supports a hybrid Unicode string that can also have a list of alternate
+"""
+Supports a hybrid Unicode string that can also have a list of alternate
 strings in the strings attribute
 """
 

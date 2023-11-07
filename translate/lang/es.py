@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""This module represents the Spanish language.
+"""
+This module represents the Spanish language.
 
 .. note:: As it only has special case code for initial inverted punctuation,
    it could also be used for Asturian, Galician, or Catalan.

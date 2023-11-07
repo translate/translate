@@ -25,7 +25,8 @@ __all__ = ("Project",)
 
 
 def split_extensions(filename):
-    """Split the given filename into a name and extensions part.  The
+    """
+    Split the given filename into a name and extensions part.  The
     extensions part is defined by any sequence of extensions, where an
     extension is a 3-letter, .-separated string or one of "po" or "properties".
     If the file name consists entirely out of extensions, the first part is
@@ -53,7 +54,8 @@ def split_extensions(filename):
 
 
 class Project:
-    """Manages a project store as well as the processes involved in a project
+    """
+    Manages a project store as well as the processes involved in a project
     workflow.
     """
 
@@ -75,7 +77,8 @@ class Project:
     def add_source_convert(
         self, srcfile, src_fname=None, convert_options=None, extension=None
     ):
-        """Convenience method that calls :meth:`~Project.add_source` and
+        """
+        Convenience method that calls :meth:`~Project.add_source` and
         :meth:`~Project.convert_forward` and returns the results from both.
         """
         srcfile, srcfname = self.add_source(srcfile, src_fname)
@@ -89,7 +92,8 @@ class Project:
         self.store.close()
 
     def convert_forward(self, input_fname, template=None, output_fname=None, **options):
-        """Convert the given input file to the next type in the process:
+        """
+        Convert the given input file to the next type in the process:
 
         Source document (eg. ODT) -> Translation file (eg. XLIFF) ->
         Translated document (eg. ODT).
@@ -190,7 +194,8 @@ class Project:
         return outputfile, output_fname
 
     def export_file(self, fname, destfname):
-        """Export the file with the specified filename to the given
+        """
+        Export the file with the specified filename to the given
         destination.  This method will raise
         :exc:`~translate.storage.projstore.FileNotInProjectError` via the call
         to :meth:`~translate.storage.projstore.ProjectStore.get_file` if

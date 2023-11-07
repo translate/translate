@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Module for handling Qt linguist (.ts) files.
+"""
+Module for handling Qt linguist (.ts) files.
 
 This will eventually replace the older ts.py which only supports the older
 format. While converters haven't been updated to use this module, we retain
@@ -77,7 +78,6 @@ class tsunit(lisa.LISAunit):
 
     def createlanguageNode(self, lang, text, purpose):
         """Returns an xml Element setup with given parameters."""
-
         assert purpose
         if purpose == "target":
             purpose = "translation"
@@ -419,7 +419,8 @@ class tsfile(lisa.LISAfile):
             self.body = self.document.getroot()
 
     def getsourcelanguage(self):
-        """Get the source language for this .ts file.
+        """
+        Get the source language for this .ts file.
 
         The 'sourcelanguage' attribute was only added to the TS format in
         Qt v4.5. We return 'en' if there is no sourcelanguage set.
@@ -437,7 +438,8 @@ class tsfile(lisa.LISAfile):
         return lang
 
     def gettargetlanguage(self):
-        """Get the target language for this .ts file.
+        """
+        Get the target language for this .ts file.
 
         :return: ISO code e.g. af, fr, pt_BR
         :rtype: String
@@ -445,7 +447,8 @@ class tsfile(lisa.LISAfile):
         return data.normalize_code(self.header.get("language"))
 
     def settargetlanguage(self, targetlanguage):
-        """Set the target language for this .ts file to *targetlanguage*.
+        """
+        Set the target language for this .ts file to *targetlanguage*.
 
         :param targetlanguage: ISO code e.g. af, fr, pt_BR
         :type targetlanguage: String
@@ -485,7 +488,8 @@ class tsfile(lisa.LISAfile):
     def addunit(
         self, unit, new=True, contextname=None, comment=None, createifmissing=True
     ):
-        """Adds the given unit to the last used body node (current context).
+        """
+        Adds the given unit to the last used body node (current context).
 
         If the contextname is specified, switch to that context (creating it if
         allowed by createifmissing).
@@ -502,7 +506,8 @@ class tsfile(lisa.LISAfile):
         return unit
 
     def _switchcontext(self, contextname, comment, createifmissing=False):
-        """Switch the current context to the one named contextname, optionally
+        """
+        Switch the current context to the one named contextname, optionally
         creating it if it doesn't exist.
         """
         self._contextname = contextname

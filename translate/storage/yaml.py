@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-r"""Class that manages YAML data files for translation
+r"""
+Class that manages YAML data files for translation
 """
 
 import uuid
@@ -82,7 +83,7 @@ class YAMLFile(base.DictStore):
     UnitClass = YAMLUnit
 
     def __init__(self, inputfile=None, **kwargs):
-        """construct a YAML file, optionally reading in from inputfile."""
+        """Construct a YAML file, optionally reading in from inputfile."""
         super().__init__(**kwargs)
         self.filename = ""
         self._original = self.get_root_node()
@@ -150,7 +151,7 @@ class YAMLFile(base.DictStore):
         return data
 
     def parse(self, input):
-        """parse the given file or file source string"""
+        """Parse the given file or file source string"""
         if hasattr(input, "name"):
             self.filename = input.name
         elif not getattr(self, "filename", ""):

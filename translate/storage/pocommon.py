@@ -26,7 +26,8 @@ msgid_comment_re = re.compile("_: (.*?)\n")
 
 
 def extract_msgid_comment(text):
-    """The one definitive way to extract a msgid comment out of an unescaped
+    """
+    The one definitive way to extract a msgid comment out of an unescaped
     unicode string that might contain it.
 
     :rtype: unicode
@@ -126,7 +127,7 @@ class pounit(base.TranslationUnit):
 
     def isfuzzy(self):
         # implementation specific fuzzy detection, must not use get_state_n()
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def markfuzzy(self, present=True):
         if present:
@@ -147,7 +148,7 @@ class pounit(base.TranslationUnit):
             self.set_state_n(self.STATE[self.S_UNTRANSLATED][0])
 
     def _domarkfuzzy(self, present=True):
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def get_state_n(self):
         value = super().get_state_n()

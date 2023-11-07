@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Manage the Wordfast Translation Memory format
+"""
+Manage the Wordfast Translation Memory format
 
 Wordfast TM format is the Translation Memory format used by the
 `Wordfast <http://www.wordfast.net/>`_ computer aided translation tool.
@@ -184,7 +185,8 @@ TAB_UTF16 = b"\x00\x09"
 
 
 def _char_to_wf(string):
-    """Char -> Wordfast &'XX; escapes
+    """
+    Char -> Wordfast &'XX; escapes
 
     Full roundtripping is not possible because of the escaping of
     NEWLINE \\n and TAB \\t
@@ -238,7 +240,8 @@ class WordfastTime:
             return time.strftime(WF_TIMEFORMAT, self._time)
 
     def set_timestring(self, timestring):
-        """Set the time_sturct object using a Wordfast time formated string
+        """
+        Set the time_sturct object using a Wordfast time formated string
 
         :param timestring: A Wordfast time string (YYYMMDD~hhmmss)
         :type timestring: String
@@ -252,7 +255,8 @@ class WordfastTime:
         return self._time
 
     def set_time(self, newtime):
-        """Set the time_struct object
+        """
+        Set the time_struct object
 
         :param newtime: a new time object
         :type newtime: time.time_struct
@@ -283,7 +287,8 @@ class WordfastHeader:
 
     @staticmethod
     def _create_default_header():
-        """Create a default Wordfast header with the date set to the current
+        """
+        Create a default Wordfast header with the date set to the current
         time
         """
         defaultheader = {}
@@ -329,7 +334,8 @@ class WordfastUnit(base.TranslationUnit):
         return self._dict
 
     def setdict(self, newdict):
-        """Set the dictionary of values for a Wordfast line
+        """
+        Set the dictionary of values for a Wordfast line
 
         :param newdict: a new dictionary with Wordfast line elements
         :type newdict: Dict
@@ -397,7 +403,7 @@ class WordfastTMFile(base.TranslationStore):
     default_encoding = "iso-8859-1"
 
     def __init__(self, inputfile=None, **kwargs):
-        """construct a Wordfast TM, optionally reading in from inputfile."""
+        """Construct a Wordfast TM, optionally reading in from inputfile."""
         super().__init__(**kwargs)
         self.filename = ""
         self.header = WordfastHeader()
@@ -405,7 +411,7 @@ class WordfastTMFile(base.TranslationStore):
             self.parse(inputfile)
 
     def parse(self, input):
-        """parsese the given file or file source string"""
+        """Parsese the given file or file source string"""
         if hasattr(input, "name"):
             self.filename = input.name
         elif not getattr(self, "filename", ""):

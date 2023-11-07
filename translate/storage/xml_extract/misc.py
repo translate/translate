@@ -20,7 +20,8 @@ import re
 
 
 def reduce_tree(f, parent_unit_node, unit_node, get_children, *state):
-    """Enumerate a tree, applying f to in a pre-order fashion to each node.
+    """
+    Enumerate a tree, applying f to in a pre-order fashion to each node.
 
     parent_unit_node contains the parent of unit_node. For the root of the tree,
     parent_unit_node == unit_node.
@@ -47,7 +48,8 @@ def reduce_tree(f, parent_unit_node, unit_node, get_children, *state):
 
 
 def compose_mappings(left, right):
-    """Given two mappings left: A -> B and right: B -> C, create a hash
+    """
+    Given two mappings left: A -> B and right: B -> C, create a hash
     result_map: A -> C. Only values in left (i.e. things from B) which have
     corresponding keys in right will have their keys mapped to values in right.
     """

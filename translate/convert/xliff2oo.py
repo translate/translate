@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Convert XLIFF localization files to an OpenOffice.org (SDF) localization file.
+"""
+Convert XLIFF localization files to an OpenOffice.org (SDF) localization file.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/oo2po.html
 for examples and usage instructions.
@@ -42,7 +43,7 @@ class reoo:
         long_keys=False,
         filteraction="exclude",
     ):
-        """construct a reoo converter for the specified languages (timestamp=0 means leave unchanged)"""
+        """Construct a reoo converter for the specified languages (timestamp=0 means leave unchanged)"""
         # languages is a pair of language ids
         self.long_keys = long_keys
         self.readoo(templatefile)
@@ -59,14 +60,14 @@ class reoo:
         self.includefuzzy = includefuzzy
 
     def makeindex(self):
-        """makes an index of the oo keys that are used in the source file"""
+        """Makes an index of the oo keys that are used in the source file"""
         self.index = {}
         for ookey, theoo in self.o.ookeys.items():
             sourcekey = oo.makekey(ookey, self.long_keys)
             self.index[sourcekey] = theoo
 
     def readoo(self, of):
-        """read in the oo from the file"""
+        """Read in the oo from the file"""
         oosrc = of.read()
         self.o = oo.oofile()
         self.o.parse(oosrc)
@@ -101,7 +102,7 @@ class reoo:
                 logger.error("error outputting source unit %r", str(unit))
 
     def applytranslation(self, key, subkey, theoo, unit):
-        """applies the translation from the source unit to the oo unit"""
+        """Applies the translation from the source unit to the oo unit"""
         if not self.includefuzzy and unit.isfuzzy():
             return
         makecopy = False

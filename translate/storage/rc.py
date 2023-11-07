@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Classes that hold units of .rc files (:class:`rcunit`) or entire files
+"""
+Classes that hold units of .rc files (:class:`rcunit`) or entire files
 (:class:`rcfile`) used in translating Windows Resources.
 
 .. note:::
@@ -163,7 +164,6 @@ def rc_statement():
 
     :rtype: pyparsing.ParserElement
     """
-
     one_line_comment = Combine("//" + rest_of_line)
 
     comments = c_style_comment ^ one_line_comment
@@ -273,7 +273,8 @@ def generate_menu_pre_name(block_type, block_id):
 
 
 def generate_popup_pre_name(pre_name, caption):
-    """Return the pre-name generated for subelements of a popup.
+    """
+    Return the pre-name generated for subelements of a popup.
 
     :param pre_name: The pre_name that already have the popup.
     :param caption: The caption (whitout quotes) of the popup.
@@ -339,7 +340,6 @@ class rcfile(base.TranslationStore):
 
     def add_popup_units(self, pre_name, popup):
         """Transverses the popup tree making new units as needed."""
-
         if popup.caption:
             newunit = rcunit(escape_to_python(popup.caption[1:-1]))
             newunit.name = generate_popup_caption_name(pre_name)

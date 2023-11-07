@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Class that manages TikiWiki files for translation.  Tiki files are <strike>ugly and
+"""
+Class that manages TikiWiki files for translation.  Tiki files are <strike>ugly and
 inconsistent</strike> formatted as a single large PHP array with several special
 sections identified by comments.  Example current as of 2008-12-01:
 
@@ -72,7 +73,8 @@ class TikiUnit(base.TranslationUnit):
         return ret + "\n"
 
     def addlocation(self, location):
-        """Location is defined by the comments in the file. This function will only
+        """
+        Location is defined by the comments in the file. This function will only
         set valid locations.
 
         :param location: Where the string is located in the file.  Must be a valid location.
@@ -91,7 +93,8 @@ class TikiStore(base.TranslationStore):
     UnitClass = TikiUnit
 
     def __init__(self, inputfile=None):
-        """If an inputfile is specified it will be parsed.
+        """
+        If an inputfile is specified it will be parsed.
 
         :param inputfile: Either a string or a filehandle of the source file
         """
@@ -123,9 +126,7 @@ class TikiStore(base.TranslationStore):
         out.write(b"// ### Start of unused words\n")
         for unit in _unused:
             out.write(str(unit).encode(self.encoding))
-        out.write(
-            b"// ### end of unused words\n\n" b"// ### start of untranslated words\n"
-        )
+        out.write(b"// ### end of unused words\n\n// ### start of untranslated words\n")
         for unit in _untranslated:
             out.write(str(unit).encode(self.encoding))
         out.write(
@@ -154,7 +155,8 @@ class TikiStore(base.TranslationStore):
         return '"###end###"=>"###end###");\n?>'
 
     def parse(self, input):
-        """Parse the given input into source units.
+        """
+        Parse the given input into source units.
 
         :param input: the source, either a string or filehandle
         """
@@ -191,7 +193,7 @@ class TikiStore(base.TranslationStore):
                 if match:
                     unit = self.addsourceunit("".join(match.group(1)))
                     # Untranslated words get an empty msgstr
-                    if not _location == "untranslated":
+                    if _location != "untranslated":
                         unit.target = match.group(2)
                     unit.addlocation(_location)
         finally:

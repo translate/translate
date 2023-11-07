@@ -170,16 +170,16 @@ class TestPhpFile(test_monolingual.TestMonolingualStore):
 
     @staticmethod
     def phpparse(phpsource):
-        """helper that parses php source without requiring files"""
+        """Helper that parses php source without requiring files"""
         dummyfile = BytesIO(phpsource.encode())
         return php.phpfile(dummyfile)
 
     def phpregen(self, phpsource):
-        """helper that converts php source to phpfile object and back"""
+        """Helper that converts php source to phpfile object and back"""
         return bytes(self.phpparse(phpsource)).decode("utf-8")
 
     def test_simpledefinition(self):
-        """checks that a simple php definition is parsed correctly"""
+        """Checks that a simple php definition is parsed correctly"""
         phpsource = """$lang['mediaselect'] = 'Bestand selectie';"""
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 1
@@ -188,14 +188,14 @@ class TestPhpFile(test_monolingual.TestMonolingualStore):
         assert phpunit.source == "Bestand selectie"
 
     def test_simpledefinition_source(self):
-        """checks that a simple php definition can be regenerated as source"""
+        """Checks that a simple php definition can be regenerated as source"""
         phpsource = """<?php
 $lang['mediaselect'] = 'Bestand selectie';"""
         phpregen = self.phpregen(phpsource)
         assert phpsource + "\n" == phpregen
 
     def test_spaces_in_name(self):
-        """check that spaces in the array name doesn't throw us off"""
+        """Check that spaces in the array name doesn't throw us off"""
         phpsource = """$lang[ 'mediaselect' ] = 'Bestand selectie';"""
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 1
@@ -204,7 +204,7 @@ $lang['mediaselect'] = 'Bestand selectie';"""
         assert phpunit.source == "Bestand selectie"
 
     def test_comment_definition(self):
-        """check that comments are fully preserved"""
+        """Check that comments are fully preserved"""
         phpsource = """/*
  * Comment line 1
  * Comment line 2
@@ -224,7 +224,7 @@ $foo = "bar";
         ]
 
     def test_comment_blocks(self):
-        """check that we don't process name value pairs in comment blocks"""
+        """Check that we don't process name value pairs in comment blocks"""
         phpsource = """/*
  * $lang[0] = "Blah";
  * $lang[1] = "Bluh";
@@ -238,7 +238,7 @@ $lang[2] = "Yeah";
         assert phpunit.source == "Yeah"
 
     def test_comment_output(self):
-        """check that linebreaks and spacing is preserved when comments are output"""
+        """Check that linebreaks and spacing is preserved when comments are output"""
         phpsource = """/*
  * Comment line 1
  * Comment line 2
@@ -251,7 +251,7 @@ $foo = 'bar';
         assert str(phpunit) == phpsource
 
     def test_comment_add(self):
-        """check that comments are actually added"""
+        """Check that comments are actually added"""
         phpsource = """/* NOTE 1 */
 $foo = 'bar';
 """
@@ -269,7 +269,7 @@ $foo = 'bar';
         assert str(phpunit) == phpsource.replace("NOTE 1", "NOTE 2")
 
     def test_multiline(self):
-        """check that we preserve newlines in a multiline message"""
+        """Check that we preserve newlines in a multiline message"""
         phpsource = """$lang['multiline'] = "Line1%sLine2";"""
         # Try DOS and Unix and make sure the output has the same
         for lineending in ("\n", "\r\n"):
@@ -280,7 +280,7 @@ $foo = 'bar';
             assert phpunit.source == "Line1%sLine2" % lineending
 
     def test_parsing_arrays(self):
-        """parse the array syntax"""
+        """Parse the array syntax"""
         phpsource = """$lang = %s(
          'item1' => 'value1',
          'item2' => 'value2',
@@ -293,7 +293,7 @@ $foo = 'bar';
             assert phpunit.source == "value1"
 
     def test_parsing_array_no_array_syntax(self):
-        """parse the array syntax"""
+        """Parse the array syntax"""
         phpsource = """global $_LANGPDF;
         $_LANGPDF = array();
         $_LANGPDF['PDF065ab3a28ca4f16f55f103adc7d0226f'] = 'Delivery';
@@ -677,7 +677,7 @@ $messages['days_short'] = array(
         assert phpunit.source == "Help"
 
     def test_parsing_arrays_using_short_array_syntax(self):
-        """parse short array syntax.  Bug #3626"""
+        """Parse short array syntax.  Bug #3626"""
         phpsource = """<?php
 $lang = [
     'item1' => 'value1',
@@ -695,7 +695,7 @@ $lang = [
         assert bytes(phpfile).decode() == phpsource
 
     def test_parsing_nested_arrays(self):
-        """parse the nested array syntax. Bug #2240"""
+        """Parse the nested array syntax. Bug #2240"""
         phpsource = """$app_list_strings = array(
             'Mailbox' => 'Mailbox',
             'moduleList' => array(
@@ -724,7 +724,7 @@ $lang = [
         assert phpunit.source == "FAQ"
 
     def test_parsing_nested_arrays_with_space_before_array_declaration(self):
-        """parse the nested array syntax with whitespace before the array declaration."""
+        """Parse the nested array syntax with whitespace before the array declaration."""
         phpsource = """$app_list_strings = array  (
             'Mailbox' => 'Mailbox',
             'moduleList' => array  (
@@ -767,8 +767,7 @@ $lang = [
         assert phpunit.source == "FAQ"
 
     def test_parsing_unnamed_nested_arrays(self):
-        """parse the unnamed nested array."""
-
+        """Parse the unnamed nested array."""
         phpsource = """return array  (
             'name1' => 'target1',
             'list1' => array(
@@ -852,7 +851,7 @@ $lang = [
         assert phpunit.source == "value2"
 
     def test_parsing_nested_arrays_with_blank_entries(self):
-        """parse the nested array syntax with blank entries. Bug #2648"""
+        """Parse the nested array syntax with blank entries. Bug #2648"""
         phpsource = """<?php
 $lang = array(
     'item1' => 'value1',
@@ -880,7 +879,7 @@ $lang = array(
         assert bytes(phpfile).decode() == phpsource
 
     def test_slashstar_in_string(self):
-        """ignore the /* comment delimiter when it is part of a string.  Bug #3627"""
+        """Ignore the /* comment delimiter when it is part of a string.  Bug #3627"""
         phpsource = """$definition['key'] = 'Value /* value continued';
       $lang = array(
          'somekey' => 'Some value',
@@ -903,7 +902,7 @@ $lang = array(
         assert phpunit.source == "Third value"
 
     def test_parsing_simple_heredoc_syntax(self):
-        """parse the heredoc syntax. Bug #2611"""
+        """Parse the heredoc syntax. Bug #2611"""
         phpsource = """$month_jan = 'Jan';
 $lang_register_approve_email = <<<EOT
 A new user with the username "{USER_NAME}" has registered in your gallery.
@@ -1051,7 +1050,7 @@ $texts = array(
         assert phpfile.units[0].name == "$t->'key'"
 
     def test_nowdoc(self):
-        """check parsing nowdoc strings"""
+        """Check parsing nowdoc strings"""
         phpsource = """$str = <<<'EOD'
 Example of string
 spanning multiple lines
@@ -1069,7 +1068,7 @@ using nowdoc syntax."""
         assert phpfile.units[0].name == "$str"
 
     def test_plain_concatenation(self):
-        """check parsing concatenated strings"""
+        """Check parsing concatenated strings"""
         phpsource = """$str = 'Concatenated' . ' ' . 'string';
         $arr['x'] = 'Concatenated' . ' ' . 'string';
         """
@@ -1081,7 +1080,7 @@ using nowdoc syntax."""
         assert phpfile.units[1].name == "$arr['x']"
 
     def test_array_keys(self):
-        """check parsing different array keys"""
+        """Check parsing different array keys"""
         phpsource = """
         $arr = [
             '1234' => 'First',
@@ -1099,7 +1098,7 @@ using nowdoc syntax."""
         assert phpfile.units[2].name == "$arr[]->'1245'"
 
     def test_double_var(self):
-        """checks that a double $ is handled correctly"""
+        """Checks that a double $ is handled correctly"""
         phpsource = """$$lang['mediaselect'] = 'Bestand selectie';"""
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 1
@@ -1179,7 +1178,7 @@ class TestLaravelPhpFile(test_monolingual.TestMonolingualStore):
     StoreClass = php.LaravelPHPFile
 
     def phpparse(self, phpsource):
-        """helper that parses php source without requiring files"""
+        """Helper that parses php source without requiring files"""
         dummyfile = BytesIO(phpsource.encode())
         return self.StoreClass(dummyfile)
 

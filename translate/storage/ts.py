@@ -17,7 +17,8 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 
-"""Module for parsing Qt .ts files for translation.
+"""
+Module for parsing Qt .ts files for translation.
 
 Currently this module supports the old format of .ts files. Some applictaions
 use the newer .ts format which are documented here:
@@ -37,7 +38,7 @@ class QtTsParser:
     messageancestors = dict.fromkeys(["TS", "context"])
 
     def __init__(self, inputfile=None):
-        """make a new QtTsParser, reading from the given inputfile if required"""
+        """Make a new QtTsParser, reading from the given inputfile if required"""
         self.filename = getattr(inputfile, "filename", None)
         self.knowncontextnodes = {}
         self.indexcontextnodes = {}
@@ -56,7 +57,7 @@ class QtTsParser:
         transtype=None,
         createifmissing=False,
     ):
-        """adds the given translation (will create the nodes required if asked). Returns success"""
+        """Adds the given translation (will create the nodes required if asked). Returns success"""
         contextnode = self.getcontextnode(contextname)
         if contextnode is None:
             if not createifmissing:
@@ -90,7 +91,7 @@ class QtTsParser:
         return True
 
     def getxml(self):
-        """return the ts file as xml"""
+        """Return the ts file as xml"""
         xml = self.document.toprettyxml(indent="    ", encoding="utf-8").decode("utf-8")
         # This line causes empty lines in the translation text to be removed
         # (when there are two newlines)
@@ -98,12 +99,12 @@ class QtTsParser:
 
     @staticmethod
     def getcontextname(contextnode):
-        """returns the name of the given context"""
+        """Returns the name of the given context"""
         namenode = ourdom.getFirstElementByTagName(contextnode, "name")
         return ourdom.getnodetext(namenode)
 
     def getcontextnode(self, contextname):
-        """finds the contextnode with the given name"""
+        """Finds the contextnode with the given name"""
         contextnode = self.knowncontextnodes.get(contextname)
         if contextnode is not None:
             return contextnode
@@ -117,7 +118,7 @@ class QtTsParser:
         return None
 
     def getmessagenodes(self, context=None):
-        """returns all the messagenodes, limiting to the given context (name or node) if given"""
+        """Returns all the messagenodes, limiting to the given context (name or node) if given"""
         if context is None:
             return self.document.searchElementsByTagName(
                 "message", self.messageancestors
@@ -132,38 +133,38 @@ class QtTsParser:
 
     @staticmethod
     def getmessagesource(message):
-        """returns the message source for a given node"""
+        """Returns the message source for a given node"""
         sourcenode = ourdom.getFirstElementByTagName(message, "source")
         return ourdom.getnodetext(sourcenode)
 
     @staticmethod
     def getmessagetranslation(message):
-        """returns the message translation for a given node"""
+        """Returns the message translation for a given node"""
         translationnode = ourdom.getFirstElementByTagName(message, "translation")
         return ourdom.getnodetext(translationnode)
 
     @staticmethod
     def getmessagetype(message):
-        """returns the message translation attributes for a given node"""
+        """Returns the message translation attributes for a given node"""
         translationnode = ourdom.getFirstElementByTagName(message, "translation")
         return translationnode.getAttribute("type")
 
     @staticmethod
     def getmessagecomment(message):
-        """returns the message comment for a given node"""
+        """Returns the message comment for a given node"""
         commentnode = ourdom.getFirstElementByTagName(message, "comment")
         # NOTE: handles only one comment per msgid (OK)
         # and only one-line comments (can be VERY wrong) TODO!!!
         return ourdom.getnodetext(commentnode)
 
     def iteritems(self):
-        """iterates through (contextname, messages)"""
+        """Iterates through (contextname, messages)"""
         for contextnode in self.document.searchElementsByTagName(
             "context", self.contextancestors
         ):
             yield self.getcontextname(contextnode), self.getmessagenodes(contextnode)
 
     def __del__(self):
-        """clean up the document if required"""
+        """Clean up the document if required"""
         if hasattr(self, "document"):
             self.document.unlink()

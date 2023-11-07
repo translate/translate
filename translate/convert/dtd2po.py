@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Convert a Mozilla .dtd UTF-8 localization format to a
+"""
+Convert a Mozilla .dtd UTF-8 localization format to a
 Gettext PO localization file.
 
 Uses the po and dtd modules, and the
@@ -30,7 +31,8 @@ from translate.storage import dtd, po
 
 
 def is_css_entity(entity):
-    """Says if the given entity is likely to contain CSS that should not be
+    """
+    Says if the given entity is likely to contain CSS that should not be
     translated.
     """
     if "." in entity:
@@ -103,7 +105,8 @@ class dtd2po:
         po_unit.target = ""
 
     def convertunit(self, dtd_unit):
-        """Converts a simple (non-mixed) dtd unit into a po unit.
+        """
+        Converts a simple (non-mixed) dtd unit into a po unit.
 
         Returns None if empty or not for translation.
         """
@@ -161,7 +164,8 @@ class dtd2po:
         return self.mixer.mix_units(label_unit, accesskey_unit, target_unit)
 
     def convertdtdunit(self, store, unit, mixbucket="dtd"):
-        """Converts a unit from store to a po unit, keeping track of mixed
+        """
+        Converts a unit from store to a po unit, keeping track of mixed
         entities along the way.
 
         ``mixbucket`` can be specified to indicate if the given unit is part of
@@ -285,7 +289,8 @@ class dtd2po:
 def convertdtd(
     inputfile, outputfile, templatefile, pot=False, duplicatestyle="msgctxt"
 ):
-    """reads in inputfile and templatefile using dtd, converts using dtd2po,
+    """
+    reads in inputfile and templatefile using dtd, converts using dtd2po,
     writes to outputfile
     """
     android_dtd = False

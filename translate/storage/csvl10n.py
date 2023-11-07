@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""classes that hold units of comma-separated values (.csv) files (csvunit)
+"""
+classes that hold units of comma-separated values (.csv) files (csvunit)
 or entire files (csvfile) for use with localisation
 """
 
@@ -123,7 +124,7 @@ class csvunit(base.TranslationUnit):
             self.fuzzy = "False"
 
     def match_header(self):
-        """see if unit might be a header"""
+        """See if unit might be a header"""
         some_value = False
         for key, value in self.todict().items():
             if value:
@@ -133,7 +134,7 @@ class csvunit(base.TranslationUnit):
         return some_value
 
     def add_spreadsheet_escapes(self, source, target):
-        """add common spreadsheet escapes to two strings"""
+        """Add common spreadsheet escapes to two strings"""
         for unescaped, escaped in self.spreadsheetescapes:
             if source.startswith(unescaped):
                 source = source.replace(unescaped, escaped, 1)
@@ -142,7 +143,7 @@ class csvunit(base.TranslationUnit):
         return source, target
 
     def remove_spreadsheet_escapes(self, source, target):
-        """remove common spreadsheet escapes from two strings"""
+        """Remove common spreadsheet escapes from two strings"""
         for unescaped, escaped in self.spreadsheetescapes:
             if source.startswith(escaped):
                 source = source.replace(escaped, unescaped, 1)
@@ -231,7 +232,8 @@ def try_dialects(inputfile, fieldnames, dialect):
 
 
 def valid_fieldnames(fieldnames):
-    """Check if fieldnames are valid, that is at least one field is identified
+    """
+    Check if fieldnames are valid, that is at least one field is identified
     as the source.
     """
     return any(
@@ -260,7 +262,8 @@ def detect_header(inputfile, dialect, fieldnames):
 
 
 class csvfile(base.TranslationStore):
-    """This class represents a .csv file with various lines.  The default
+    """
+    This class represents a .csv file with various lines.  The default
     format contains three columns: location, source, target
     """
 

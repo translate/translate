@@ -50,7 +50,8 @@ class TestXLIFFUnit(test_base.TestTranslationUnit):
         assert unit.geterrors()["test1"] == "New error 1."
 
     def test_accepted_control_chars(self):
-        """Tests we can assign the accepted control chars.
+        """
+        Tests we can assign the accepted control chars.
 
         Source: :wp:`Valid_characters_in_XML#XML_1.0`
         """
@@ -65,7 +66,8 @@ class TestXLIFFUnit(test_base.TestTranslationUnit):
         assert self.unit.target == "Een\r"
 
     def test_unaccepted_control_chars(self):
-        """Tests we cannot assign the unaccepted control chars without escaping.
+        """
+        Tests we cannot assign the unaccepted control chars without escaping.
 
         Source: :wp:`Valid_characters_in_XML#XML_1.0`
         """
@@ -326,10 +328,10 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert unit.getnotes(origin="Dad") == "Don't forget the beer"
 
         assert (
-            not unit.getnotes(origin="Bob")
-            == "Please buy bread\nPlease buy milk\nDon't forget the beer"
+            unit.getnotes(origin="Bob")
+            != "Please buy bread\nPlease buy milk\nDon't forget the beer"
         )
-        assert not notenodes[2].get("from") == "Mom"
+        assert notenodes[2].get("from") != "Mom"
         assert "from" not in notenodes[0].attrib
         assert (
             unit.getnotes()

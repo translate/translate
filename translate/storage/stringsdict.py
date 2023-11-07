@@ -18,7 +18,8 @@ class StringsDictId(base.UnitId):
 
 
 class StringsDictUnit(base.DictUnit):
-    """A single entry in a .stringsdict file.
+    """
+    A single entry in a .stringsdict file.
     One entry represents either a localized format string, or a variable used
     within another string.
     """
@@ -74,7 +75,8 @@ class StringsDictUnit(base.DictUnit):
 
 
 class StringsDictFile(base.DictStore):
-    """Class representing a .stringsdict file.
+    """
+    Class representing a .stringsdict file.
 
     One entry in a .stringsdict file consists of a format string, and any
     number of variables with plural strings.
@@ -113,7 +115,8 @@ class StringsDictFile(base.DictStore):
 
     @property
     def target_plural_tags(self):
-        """Get all supported plural tags for the target language.
+        """
+        Get all supported plural tags for the target language.
         Note that 'zero' is always supported.
         """
         target_lang = self.gettargetlanguage()
@@ -128,7 +131,6 @@ class StringsDictFile(base.DictStore):
 
     def parse(self, input):
         """Read a .stringsdict file into a dictionary, and convert it to translation units."""
-
         if isinstance(input, (bytes, str)):
             plist = plistlib.loads(input)
         elif input is not None:

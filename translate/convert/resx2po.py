@@ -17,7 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Convert .Net Resource (.resx) to Gettext PO localisation files.
+"""
+Convert .Net Resource (.resx) to Gettext PO localisation files.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/resx2po.html
 for examples and usage instructions.
@@ -107,7 +108,8 @@ class resx2po:
 
     @staticmethod
     def convert_unit(input_unit, commenttype):
-        """Converts a RESX unit to a PO unit
+        """
+        Converts a RESX unit to a PO unit
         @return: None if empty or not for translation
         """
         if input_unit is None:

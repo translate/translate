@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Module for parsing Markdown files for translation.
+"""
+Module for parsing Markdown files for translation.
 
 The principles for extraction of translation units are as follows:
 
@@ -37,9 +38,8 @@ import re
 from itertools import chain
 from typing import Iterable, Tuple
 
-import mistletoe.block_token as block_token
-import mistletoe.span_token as span_token
 import mistletoe.token
+from mistletoe import block_token, span_token
 from mistletoe.markdown_renderer import (
     Fragment,
     LinkReferenceDefinition,
@@ -68,9 +68,11 @@ class MarkdownFile(base.TranslationStore):
     UnitClass = MarkdownUnit
 
     def __init__(self, inputfile=None, callback=None, max_line_length=None):
-        """Construct a new object instance.
+        """
+        Construct a new object instance.
 
-        Parameters:
+        Parameters
+        ----------
         - inputfile: if specified, the content of this file is read and parsed.
         - callback: a function which takes a chunk of untranslated content as
           input and returns the corresponding translated content. Defaults to

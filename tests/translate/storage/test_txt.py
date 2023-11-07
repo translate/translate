@@ -13,17 +13,17 @@ class TestTxtFile(test_monolingual.TestMonolingualStore):
     StoreClass = txt.TxtFile
 
     def txtparse(self, txtsource, no_segmentation=False):
-        """helper that parses txt source without requiring files"""
+        """Helper that parses txt source without requiring files"""
         dummyfile = BytesIO(txtsource.encode())
         txtfile = self.StoreClass(dummyfile, no_segmentation=no_segmentation)
         return txtfile
 
     def txtregen(self, txtsource, no_segmentation=False):
-        """helper that converts txt source to txtfile object and back"""
+        """Helper that converts txt source to txtfile object and back"""
         return bytes(self.txtparse(txtsource, no_segmentation)).decode("utf-8")
 
     def test_simpleblock(self):
-        """checks that a simple txt block is parsed correctly"""
+        """Checks that a simple txt block is parsed correctly"""
         txtsource = "bananas for sale"
         txtfile = self.txtparse(txtsource)
         assert len(txtfile.units) == 1
@@ -31,7 +31,7 @@ class TestTxtFile(test_monolingual.TestMonolingualStore):
         assert self.txtregen(txtsource) == txtsource
 
     def test_multipleblocks(self):
-        """check that multiple blocks are parsed correctly"""
+        """Check that multiple blocks are parsed correctly"""
         txtsource = """One\nOne\n\nTwo\n---\n\nThree"""
         txtfile = self.txtparse(txtsource)
         assert len(txtfile.units) == 3
@@ -42,7 +42,7 @@ class TestTxtFile(test_monolingual.TestMonolingualStore):
         assert self.txtregen(txtsource) == txtsource
 
     def test_no_segmentation(self):
-        """checks that a simple txt block is parsed correctly"""
+        """Checks that a simple txt block is parsed correctly"""
         input_string = """
 First paragraph
 

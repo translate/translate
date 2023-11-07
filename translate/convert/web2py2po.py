@@ -17,7 +17,8 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 
-"""Convert web2py translation dictionaries (.py) to GNU/gettext PO files.
+"""
+Convert web2py translation dictionaries (.py) to GNU/gettext PO files.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/web2py2po.html
 for examples and usage instructions.

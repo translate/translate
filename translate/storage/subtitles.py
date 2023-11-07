@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Class that manages subtitle files for translation.
+"""
+Class that manages subtitle files for translation.
 
 This class makes use of the subtitle functionality of ``gaupol``.
 
@@ -95,7 +96,7 @@ class SubtitleFile(base.TranslationStore):
     UnitClass = SubtitleUnit
 
     def __init__(self, inputfile=None, **kwargs):
-        """construct an Subtitle file, optionally reading in from inputfile."""
+        """Construct an Subtitle file, optionally reading in from inputfile."""
         super().__init__(**kwargs)
         self.filename = None
         self._subtitlefile = None
@@ -146,7 +147,7 @@ class SubtitleFile(base.TranslationStore):
 
     @classmethod
     def parsefile(cls, storefile):
-        """parse the given file"""
+        """Parse the given file"""
         newstore = cls()
         newstore._parsefile(storefile)
         return newstore

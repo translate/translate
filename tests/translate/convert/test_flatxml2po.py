@@ -30,7 +30,8 @@ class TestFlatXML2PO:
 
     @staticmethod
     def _do_assert_store(actual):
-        """Asserts whether the passed actual store contains two assumed units:
+        """
+        Asserts whether the passed actual store contains two assumed units:
         'one' => 'One'
         'two' => 'Two'
         (plus a header present by default)
@@ -117,7 +118,8 @@ class TestFlatXML2PO:
         self._do_assert_store(actual)
 
     def test_empty_file_is_empty_store(self):
-        """Test a conversion that starts with an empty file.
+        """
+        Test a conversion that starts with an empty file.
 
         This must not trigger the element name validation
         or cause other issues. An empty store is expected.

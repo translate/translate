@@ -17,7 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Grep XLIFF, Gettext PO and TMX localization files.
+"""
+Grep XLIFF, Gettext PO and TMX localization files.
 
 Matches are output to snippet files of the same type which can then be reviewed
 and later merged using :doc:`pomerge </commands/pomerge>`.
@@ -110,7 +111,8 @@ class GrepMatch:
 
 
 def real_index(string, nfc_index):
-    """Calculate the real index in the unnormalized string that corresponds to
+    """
+    Calculate the real index in the unnormalized string that corresponds to
     the index nfc_index in the normalized string.
     """
     length = nfc_index
@@ -153,7 +155,7 @@ class GrepFilter:
         encoding="utf-8",
         max_matches=0,
     ):
-        """builds a checkfilter using the given checker"""
+        """Builds a checkfilter using the given checker"""
         if isinstance(searchstring, str):
             self.searchstring = searchstring
         else:
@@ -200,7 +202,7 @@ class GrepFilter:
         return found
 
     def filterunit(self, unit):
-        """runs filters on an element"""
+        """Runs filters on an element"""
         if unit.isheader():
             return True
 
@@ -234,7 +236,7 @@ class GrepFilter:
         return False
 
     def filterfile(self, thefile):
-        """runs filters on a translation file object"""
+        """Runs filters on a translation file object"""
         thenewfile = type(thefile)()
         thenewfile.setsourcelanguage(thefile.sourcelanguage)
         thenewfile.settargetlanguage(thefile.targetlanguage)
@@ -304,7 +306,7 @@ class GrepOptionParser(optrecurse.RecursiveOptionParser):
     """a specialized Option Parser for the grep tool..."""
 
     def parse_args(self, args=None, values=None):
-        """parses the command line options, handling implicit input/output args"""
+        """Parses the command line options, handling implicit input/output args"""
         (options, args) = optrecurse.optparse.OptionParser.parse_args(
             self, args, values
         )
@@ -333,7 +335,7 @@ class GrepOptionParser(optrecurse.RecursiveOptionParser):
         return (options, args)
 
     def set_usage(self, usage=None):
-        """sets the usage string - if usage not given, uses getusagestring for each option"""
+        """Sets the usage string - if usage not given, uses getusagestring for each option"""
         if usage is None:
             self.usage = "%prog searchstring " + " ".join(
                 self.getusagestring(option) for option in self.option_list
@@ -342,7 +344,7 @@ class GrepOptionParser(optrecurse.RecursiveOptionParser):
             super().set_usage(usage)
 
     def run(self):
-        """parses the arguments, and runs recursiveprocess with the resulting options"""
+        """Parses the arguments, and runs recursiveprocess with the resulting options"""
         (options, args) = self.parse_args()
         options.checkfilter = GrepFilter(
             options.searchstring,
@@ -358,7 +360,7 @@ class GrepOptionParser(optrecurse.RecursiveOptionParser):
 
 
 def rungrep(inputfile, outputfile, templatefile, checkfilter):
-    """reads in inputfile, filters using checkfilter, writes to outputfile"""
+    """Reads in inputfile, filters using checkfilter, writes to outputfile"""
     fromfile = factory.getobject(inputfile)
     tofile = checkfilter.filterfile(fromfile)
     if tofile.isempty():

@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Convert subtitle files to Gettext PO localization files.
+"""
+Convert subtitle files to Gettext PO localization files.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/sub2po.html
 for examples and usage instructions.
@@ -30,7 +31,7 @@ logger = logging.getLogger(__name__)
 
 
 def convert_store(input_store, duplicatestyle="msgctxt"):
-    """converts a subtitle file to a .po file..."""
+    """Converts a subtitle file to a .po file..."""
     output_store = po.pofile()
     output_header = output_store.header()
     output_header.addnote("extracted from %s" % input_store.filename, "developer")
@@ -46,7 +47,7 @@ def convert_store(input_store, duplicatestyle="msgctxt"):
 def merge_store(
     template_store, input_store, blankmsgstr=False, duplicatestyle="msgctxt"
 ):
-    """converts two subtitle files to a .po file..."""
+    """Converts two subtitle files to a .po file..."""
     output_store = po.pofile()
     output_header = output_store.header()
     output_header.addnote(
@@ -78,7 +79,8 @@ def merge_store(
 
 
 def convert_unit(input_unit, commenttype):
-    """Converts a subtitle unit to a .po unit. Returns None if empty or not for
+    """
+    Converts a subtitle unit to a .po unit. Returns None if empty or not for
     translation.
     """
     if input_unit is None:
@@ -95,7 +97,8 @@ def convert_unit(input_unit, commenttype):
 def convertsub(
     input_file, output_file, template_file=None, pot=False, duplicatestyle="msgctxt"
 ):
-    """Reads in *input_file* using translate.subtitles, converts using
+    """
+    Reads in *input_file* using translate.subtitles, converts using
     :class:`sub2po`, writes to *output_file*.
     """
     from translate.storage import subtitles

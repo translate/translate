@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-r"""Manage the Fluent translation format.
+r"""
+Manage the Fluent translation format.
 
 It is a monolingual base class derived format with :class:`FluentFile`
 and :class:`FluentUnit` providing file and unit level access.
@@ -35,7 +36,8 @@ from translate.storage import base
 
 
 class _SanitizeVisitor(visitor.Visitor):
-    """Private class used to replace special characters at the start of Fluent
+    """
+    Private class used to replace special characters at the start of Fluent
     Patterns.
     """
 
@@ -142,7 +144,8 @@ class FluentReference:
 
     @property
     def type_name(self) -> str:
-        """The name for the type of reference.
+        """
+        The name for the type of reference.
 
         :type: str
         """
@@ -150,7 +153,8 @@ class FluentReference:
 
     @property
     def name(self) -> str:
-        """The the reference name.
+        """
+        The the reference name.
 
         :type: str
         """
@@ -158,7 +162,8 @@ class FluentReference:
 
 
 class _ReferenceVisitor(visitor.Visitor):
-    """Private class used to extract the Fluent references found below a fluent
+    """
+    Private class used to extract the Fluent references found below a fluent
     object.
     """
 
@@ -264,7 +269,8 @@ class _ReferenceVisitor(visitor.Visitor):
 
 
 class FluentSelectorNode:
-    """Represents a single Fluent SelectExpression.
+    """
+    Represents a single Fluent SelectExpression.
 
     Each instance will store details about the SelectExpression's selector, and
     will have a child FluentSelectorBranch for each Variant in the
@@ -300,7 +306,8 @@ class FluentSelectorNode:
 
     @property
     def parent_branch(self) -> FluentSelectorBranch:
-        """The branch this node is below.
+        """
+        The branch this node is below.
 
         The branch represents the Fluent Pattern the SelectExpression was found
         within.
@@ -311,7 +318,8 @@ class FluentSelectorNode:
 
     @property
     def child_branches(self) -> list[FluentSelectorBranch]:
-        """The child branches for this node.
+        """
+        The child branches for this node.
 
         The child branches represent the Variants found within the
         SelectExpression.
@@ -322,7 +330,8 @@ class FluentSelectorNode:
 
     @property
     def serialized_selector(self) -> str:
-        """A serialized form of the SelectExpression's selector Expression.
+        """
+        A serialized form of the SelectExpression's selector Expression.
 
         :type: str
         """
@@ -344,7 +353,8 @@ class FluentSelectorNode:
 
     @property
     def selector_references(self) -> list[FluentReference]:
-        """The references found in the SelectExpression's selector Expression.
+        """
+        The references found in the SelectExpression's selector Expression.
 
         These are in the order of appearance.
 
@@ -359,7 +369,8 @@ class FluentSelectorNode:
 
 
 class FluentSelectorBranch:
-    """Represents a Fluent Pattern.
+    """
+    Represents a Fluent Pattern.
 
     The Pattern can either be the Fluent value or Attribute for a Message or
     Term, or it can belong to a SelectExpression's Variant.
@@ -414,7 +425,8 @@ class FluentSelectorBranch:
     def _get_select_expression(
         fluent_node: ast.PatternElement,
     ) -> ast.SelectExpression | None:
-        """Get the SelectExpression found below the given PatternElement
+        """
+        Get the SelectExpression found below the given PatternElement
         fluent_node, or return None if the PatternElement does not contain one.
         """
         # A SelectExpression will be wrapped by at least on Placeable, but in
@@ -427,7 +439,8 @@ class FluentSelectorBranch:
 
     @property
     def parent_node(self) -> FluentSelectorNode | None:
-        """The parent this branch is below, if any.
+        """
+        The parent this branch is below, if any.
 
         The node represents the SelectExpression the Fluent Pattern was found
         within if it belonged to a Variant.
@@ -438,7 +451,8 @@ class FluentSelectorBranch:
 
     @property
     def child_nodes(self) -> list[FluentSelectorNode]:
-        """The child nodes for this branch.
+        """
+        The child nodes for this branch.
 
         The child nodes represent the SelectExpressions found within the
         Pattern.
@@ -449,7 +463,8 @@ class FluentSelectorBranch:
 
     @property
     def top_references(self) -> list[FluentReference]:
-        """The references found in the Pattern.
+        """
+        The references found in the Pattern.
 
         This excludes any references found within any child SelectExpression.
 
@@ -469,7 +484,8 @@ class FluentSelectorBranch:
 
     @property
     def key(self) -> str:
-        """The key value for the Variant this Pattern belonged to.
+        """
+        The key value for the Variant this Pattern belonged to.
 
         This will be an empty string if this Pattern did not belong to a
         Variant.
@@ -487,7 +503,8 @@ class FluentSelectorBranch:
 
     @property
     def default(self) -> bool:
-        """Whether the Variant this Pattern belonged to was the default.
+        """
+        Whether the Variant this Pattern belonged to was the default.
 
         This will default to True if this Pattern was top-level and did not
         belong to a Variant.
@@ -502,7 +519,8 @@ class FluentSelectorBranch:
         self,
         branches: list[FluentSelectorBranch],
     ) -> Iterator[ast.PatternElement]:
-        """Extract a stream of PatternElements using the given branches.
+        """
+        Extract a stream of PatternElements using the given branches.
 
         This will yield the PatternElements found in the original Pattern in
         the same order, except it will never yield a SelectExpression, and hence
@@ -540,7 +558,8 @@ class FluentSelectorBranch:
                 yield element.clone()
 
     def to_flat_string(self, branches: list[FluentSelectorBranch]) -> str:
-        """The Pattern in a flat string form using the given branches.
+        """
+        The Pattern in a flat string form using the given branches.
 
         This will extract a flat Pattern using the given branches as specified
         in :meth:`~FluentSelectorBranch.to_flat_pattern_elements`, and will
@@ -558,7 +577,8 @@ class FluentSelectorBranch:
         return _fluent_pattern_to_source(pattern)
 
     def branch_paths(self) -> Iterator[list[FluentSelectorBranch]]:
-        """Generates a list of unique branch paths.
+        """
+        Generates a list of unique branch paths.
 
         Each "path" is a list of branches, not including this instance itself,
         that selects one of the possible variants for the original Pattern.
@@ -610,7 +630,8 @@ class FluentSelectorBranch:
 
 
 class _SelectorBranchIterator:
-    """Private class to iterate over the nodes in a branch.
+    """
+    Private class to iterate over the nodes in a branch.
 
     At any given stage, this will track the selection state of all of its child
     branches.
@@ -627,7 +648,8 @@ class _SelectorBranchIterator:
         ]
 
     def next(self) -> bool:
-        """Iterate the selection state of this branch forward one step.
+        """
+        Iterate the selection state of this branch forward one step.
 
         :return: True if the node was able to iterate forward, otherwise resets
         itself and returns False.
@@ -644,7 +666,8 @@ class _SelectorBranchIterator:
         return False
 
     def selected_branches(self) -> Iterator[FluentSelectorBranch]:
-        """Return all the branches that are selected at this stage.
+        """
+        Return all the branches that are selected at this stage.
 
         This does not include this branch itself.
 
@@ -658,7 +681,8 @@ class _SelectorBranchIterator:
 
 
 class _SelectorNodeIterator:
-    """Private class to iterate over the branches in a node.
+    """
+    Private class to iterate over the branches in a node.
 
     At at any given stage, only one of the branches is selected.
     """
@@ -675,7 +699,8 @@ class _SelectorNodeIterator:
         ]
 
     def next(self) -> bool:
-        """Iterate the selection state of this branch forward one step.
+        """
+        Iterate the selection state of this branch forward one step.
 
         :return: True if the node was able to iterate forward, otherwise resets
         itself and returns False.
@@ -694,7 +719,8 @@ class _SelectorNodeIterator:
         return True
 
     def selected_branch_iterator(self) -> _SelectorBranchIterator:
-        """The iterator for the currently selected branch.
+        """
+        The iterator for the currently selected branch.
 
         :return: The selected branch.
         :rtype: _SelectorBranchIterator
@@ -703,7 +729,8 @@ class _SelectorNodeIterator:
 
 
 class FluentPart:
-    """Represents a "part" of a fluent Entry.
+    """
+    Represents a "part" of a fluent Entry.
 
     This can either represent its value or one of its Attributes.
     """
@@ -721,7 +748,8 @@ class FluentPart:
 
     @property
     def name(self) -> str:
-        """The name of the part.
+        """
+        The name of the part.
 
         This will be an empty string for Entry values, and the attribute name
         for Entry Attributes.
@@ -732,7 +760,8 @@ class FluentPart:
 
     @property
     def top_branch(self) -> FluentSelectorBranch:
-        """The top-level selector branch that represents this part's Pattern.
+        """
+        The top-level selector branch that represents this part's Pattern.
 
         :type: FluentSelectorBranch
         """
@@ -742,7 +771,8 @@ class FluentPart:
 
 
 def _duplicate_attribute(entry: ast.Term | ast.Message) -> ast.Attribute | None:
-    """Return the first attribute in the given Term or Message entry that
+    """
+    Return the first attribute in the given Term or Message entry that
     has the same id as a previous attribute, or None if none of the attributes
     clash.
     """
@@ -755,7 +785,8 @@ def _duplicate_attribute(entry: ast.Term | ast.Message) -> ast.Attribute | None:
 
 
 class FluentUnit(base.TranslationUnit):
-    """Represents a single fluent Message, Term, a ResourceComment, a
+    """
+    Represents a single fluent Message, Term, a ResourceComment, a
     GroupComment or a stand-alone Comment.
     """
 
@@ -822,7 +853,8 @@ class FluentUnit(base.TranslationUnit):
     }
 
     def setid(self, value: str | None) -> None:
-        """Set the id of the unit.
+        """
+        Set the id of the unit.
         A valid fluent identifier is [a-zA-Z][a-zA-Z0-9_-]*
         For a FluentUnit that represents a fluent Message, the id must be a
         valid fluent identifier.
@@ -851,7 +883,8 @@ class FluentUnit(base.TranslationUnit):
 
     @classmethod
     def new_from_entry(cls, fluent_entry: ast.Entry, comment: str = "") -> FluentUnit:
-        """Create a new unit corresponding to the given fluent AST entry.
+        """
+        Create a new unit corresponding to the given fluent AST entry.
 
         :param fluent_entry: A fluent Entry to convert.
         :type fluent_entry: Entry
@@ -944,7 +977,8 @@ class FluentUnit(base.TranslationUnit):
         return list(placeholders)
 
     def to_entry(self) -> ast.Entry | None:
-        """Convert the unit into a corresponding fluent AST Entry.
+        """
+        Convert the unit into a corresponding fluent AST Entry.
 
         :return: A new fluent AST Entry, if one was created.
         :rtype: Entry or None
@@ -977,7 +1011,8 @@ class FluentUnit(base.TranslationUnit):
         return entry_or_error
 
     def _try_source_to_fluent_entry(self) -> ast.Message | ast.Term | str | None:
-        """Convert a FluentUnit's source to a generic fluent Entry. Returns a
+        """
+        Convert a FluentUnit's source to a generic fluent Entry. Returns a
         string with an error message if this fails.
         """
         source = self.source
@@ -1062,7 +1097,8 @@ class FluentUnit(base.TranslationUnit):
     # API used in weblate.
 
     def get_syntax_error(self) -> str | None:
-        """Get the Fluent syntax error for this unit, if it has one.
+        """
+        Get the Fluent syntax error for this unit, if it has one.
 
         :return: The syntax error message, or None if it has no error.
         :rtype: str or None
@@ -1075,7 +1111,8 @@ class FluentUnit(base.TranslationUnit):
         return None
 
     def get_parts(self) -> list[FluentPart] | None:
-        """Get all the distinct parts that make up the fluent Pattern generated
+        """
+        Get all the distinct parts that make up the fluent Pattern generated
         by the unit's source.
 
         A Term and Message unit may have a value part, which is the entry's main
@@ -1182,7 +1219,8 @@ class FluentFile(base.TranslationStore):
 
     @staticmethod
     def _combine_comments(*comments: ast.BaseComment | str) -> str:
-        """Combine the given string or fluent BaseComment objects into a single
+        """
+        Combine the given string or fluent BaseComment objects into a single
         string.
         """
         comment_text = []
@@ -1229,7 +1267,8 @@ class FluentFile(base.TranslationStore):
 
     @staticmethod
     def _strip_prefix_from_comment(unit: FluentUnit, prefix_comments: list[str]) -> str:
-        """Try to remove each prefix in `prefix_comments` in turn from the start
+        """
+        Try to remove each prefix in `prefix_comments` in turn from the start
         of `unit`'s comment.
         """
         unit_comment = unit.getnotes() or ""

@@ -30,7 +30,7 @@ class TestHTML2PO:
 
     @staticmethod
     def countunits(pofile, expected):
-        """helper to check that we got the expected number of messages"""
+        """Helper to check that we got the expected number of messages"""
         actual = len(pofile.units)
         if actual > 0:
             if pofile.units[0].isheader():
@@ -40,7 +40,7 @@ class TestHTML2PO:
 
     @staticmethod
     def compareunit(pofile, unitnumber, expected):
-        """helper to validate a PO message"""
+        """Helper to validate a PO message"""
         if not pofile.units[0].isheader():
             unitnumber = unitnumber - 1
         print("unit source: " + pofile.units[unitnumber].source + "|")
@@ -48,13 +48,13 @@ class TestHTML2PO:
         assert str(pofile.units[unitnumber].source) == str(expected)
 
     def check_single(self, markup, itemtext):
-        """checks that converting this markup produces a single element with value itemtext"""
+        """Checks that converting this markup produces a single element with value itemtext"""
         pofile = self.html2po(markup)
         self.countunits(pofile, 1)
         self.compareunit(pofile, 1, itemtext)
 
     def check_null(self, markup):
-        """checks that converting this markup produces no elements"""
+        """Checks that converting this markup produces no elements"""
         pofile = self.html2po(markup)
         self.countunits(pofile, 0)
 
@@ -97,7 +97,7 @@ class TestHTML2PO:
         self.check_single('<p><span lang="fr">Français</span></p>', "Français")
 
     def test_title(self):
-        """test that we can extract the <title> tag"""
+        """Test that we can extract the <title> tag"""
         self.check_single(
             "<html><head><title>My title</title></head><body></body></html>", "My title"
         )
@@ -123,13 +123,13 @@ title</title>
         )
 
     def test_tag_p(self):
-        """test that we can extract the <p> tag"""
+        """Test that we can extract the <p> tag"""
         self.check_single(
             "<html><head></head><body><p>A paragraph.</p></body></html>", "A paragraph."
         )
 
     def test_tag_p_with_br(self):
-        """test that we can extract the <p> tag with an embedded <br> element"""
+        """Test that we can extract the <p> tag with an embedded <br> element"""
         markup = "<p>First line.<br>Second line.</p>"
         pofile = self.html2po(markup)
         self.compareunit(pofile, 1, "First line.<br>Second line.")
@@ -166,7 +166,7 @@ with indentation, and it consists of at least one sentence.
         )
 
     def test_tag_div(self):
-        """test that we can extract the <div> tag"""
+        """Test that we can extract the <div> tag"""
         self.check_single(
             "<html><head></head><body><div>A paragraph.</div></body></html>",
             "A paragraph.",
@@ -198,7 +198,7 @@ with indentation, and it consists of at least one sentence.
         self.compareunit(pofile, 1, "First line.<br>Second line.")
 
     def test_tag_a(self):
-        """test that we can extract the <a> tag"""
+        """Test that we can extract the <a> tag"""
         self.check_single(
             '<html><head></head><body><p>A paragraph with <a href="http://translate.org.za/">hyperlink</a>.</p></body></html>',
             'A paragraph with <a href="http://translate.org.za/">hyperlink</a>.',
@@ -223,7 +223,7 @@ newlines.</p></body></html>
         )
 
     def test_sequence_of_anchor_elements(self):
-        """test that we can extract a sequence of anchor elements without mixing up start/end tags, issue #3768"""
+        """Test that we can extract a sequence of anchor elements without mixing up start/end tags, issue #3768"""
         self.check_single(
             '<p><a href="http://example.com">This is a link</a> but this is not. <a href="http://example.com">However this is too</a></p>',
             '<a href="http://example.com">This is a link</a> but this is not. <a href="http://example.com">However this is too</a>',
@@ -280,11 +280,11 @@ newlines.</p></body></html>
         self.compareunit(pofile, 9, "Two")
 
     def test_table_empty(self):
-        """Test that we ignore tables that are empty.
+        """
+        Test that we ignore tables that are empty.
 
         A table is deemed empty if it has no translatable content.
         """
-
         self.check_null(
             """<html><head></head><body><table><tr><td><img src="bob.png"></td></tr></table></body></html>"""
         )
@@ -338,7 +338,7 @@ newlines.</p></body></html>
         )
 
     def test_span(self):
-        """test to check that we don't double extract a span item"""
+        """Test to check that we don't double extract a span item"""
         self.check_single(
             "<html><head></head><body><p>You are a <span>Spanish</span> sentence.</p></body></html>",
             "You are a <span>Spanish</span> sentence.",
@@ -382,7 +382,7 @@ newlines.</p></body></html>
         self.compareunit(pofile, 8, "Meat")
 
     def test_duplicates(self):
-        """check that we use the default style of msgctxt to disambiguate duplicate messages"""
+        """Check that we use the default style of msgctxt to disambiguate duplicate messages"""
         markup = (
             "<html><head></head><body><p>Duplicate</p><p>Duplicate</p></body></html>"
         )
@@ -395,7 +395,7 @@ newlines.</p></body></html>
         assert pofile.units[2].getlocations() == ["None+html.body.p:1-42"]
 
     def test_multiline_reflow(self):
-        """check that we reflow multiline content to make it more readable for translators"""
+        """Check that we reflow multiline content to make it more readable for translators"""
         self.check_single(
             """<td valign="middle" width="96%"><font class="headingwhite">South
                   Africa</font></td>""",
@@ -403,7 +403,7 @@ newlines.</p></body></html>
         )
 
     def test_nested_tags(self):
-        """check that we can extract items within nested tags"""
+        """Check that we can extract items within nested tags"""
         markup = "<div><p>Extract this</p>And this</div>"
         pofile = self.html2po(markup)
         self.countunits(pofile, 2)
@@ -472,7 +472,6 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
 
     def test_strip_html(self):
         """Ensure that unnecessary html is stripped from the resulting unit."""
-
         htmlsource = """<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
@@ -552,7 +551,6 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
 
     def test_php(self):
         """Test that PHP snippets don't interfere"""
-
         # A simple string
         self.check_phpsnippet("""<?=$phpvariable?>""")
 

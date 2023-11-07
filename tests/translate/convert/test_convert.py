@@ -17,19 +17,19 @@ class TestConvertCommand:
     expected_options = []
 
     def setup_method(self, method):
-        """creates a clean test directory for the given method"""
+        """Creates a clean test directory for the given method"""
         self.testdir = f"{self.__class__.__name__}_{method.__name__}"
         self.cleardir()
         os.mkdir(self.testdir)
         self.rundir = os.path.abspath(os.getcwd())
 
     def teardown_method(self, method):
-        """removes the test directory for the given method"""
+        """Removes the test directory for the given method"""
         os.chdir(self.rundir)
         self.cleardir()
 
     def cleardir(self):
-        """removes the test directory"""
+        """Removes the test directory"""
         if os.path.exists(self.testdir):
             for dirpath, subdirs, filenames in os.walk(self.testdir, topdown=False):
                 for name in filenames:
@@ -41,7 +41,7 @@ class TestConvertCommand:
         assert not os.path.exists(self.testdir)
 
     def run_command(self, *argv, **kwargs):
-        """runs the command via the main function, passing self.defaultoptions and keyword arguments as --long options and argv arguments straight"""
+        """Runs the command via the main function, passing self.defaultoptions and keyword arguments as --long options and argv arguments straight"""
         os.chdir(self.testdir)
         argv = list(argv)
         kwoptions = getattr(self, "defaultoptions", {}).copy()
@@ -57,11 +57,11 @@ class TestConvertCommand:
             os.chdir(self.rundir)
 
     def get_testfilename(self, filename):
-        """gets the path to the test file"""
+        """Gets the path to the test file"""
         return os.path.join(self.testdir, filename)
 
     def open_testfile(self, filename, mode="rb"):
-        """opens the given filename in the testdirectory in the given mode"""
+        """Opens the given filename in the testdirectory in the given mode"""
         filename = self.get_testfilename(filename)
         if not mode.startswith("r"):
             subdir = os.path.dirname(filename)
@@ -74,7 +74,7 @@ class TestConvertCommand:
         return open(filename, mode)
 
     def create_testfile(self, filename, contents):
-        """creates the given file in the testdirectory with the given contents"""
+        """Creates the given file in the testdirectory with the given contents"""
         if isinstance(contents, str):
             contents = contents.encode("utf-8")
         testfile = self.open_testfile(filename, "wb")
@@ -82,14 +82,14 @@ class TestConvertCommand:
         testfile.close()
 
     def read_testfile(self, filename):
-        """reads the given file in the testdirectory and returns the contents"""
+        """Reads the given file in the testdirectory and returns the contents"""
         with open(self.get_testfilename(filename), "rb") as testfile:
             content = testfile.read()
         return content
 
     @staticmethod
     def help_check(options, option, last=False):
-        """check that a help string occurs and remove it"""
+        """Check that a help string occurs and remove it"""
         assert option in options
         newoptions = []
         for line in options.splitlines():
@@ -101,7 +101,7 @@ class TestConvertCommand:
         return "\n".join(newoptions)
 
     def test_help(self, capsys):
-        """tests getting help (returning the help_string so further tests can be done)"""
+        """Tests getting help (returning the help_string so further tests can be done)"""
         with pytest.raises(SystemExit):
             self.run_command(help=True)
         help_string, err = capsys.readouterr()

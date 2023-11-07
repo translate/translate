@@ -14,7 +14,7 @@ class TestPOSegment:
         stripspaces=True,
         onlyaligned=True,
     ):
-        """helper that convert po source without requiring files"""
+        """Helper that convert po source without requiring files"""
         inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
         sourcelang = lang_factory.getlanguage(sourcelanguage)
@@ -43,18 +43,22 @@ msgstr ""
             out_unit.source
             == "Please let us know if you have any specific needs (A/V requirements, multiple microphones, a table, etc)."
         )
-        assert out_unit.target == "特に必要な物(A/V機器、複数のマイク、テーブルetc)があれば教えて下さい。"
+        assert (
+            out_unit.target
+            == "特に必要な物(A/V機器、複数のマイク、テーブルetc)があれば教えて下さい。"
+        )
         out_unit = poresult.units[2]
         assert (
             out_unit.source
             == "Note for example that 'audio out' is not provided for your computer unless you tell us in advance."
         )
         assert (
-            out_unit.target == "例として、コンピュータからの「音声出力」は事前にお知らせ頂いていない場合は提供できないことに注意して下さい。"
+            out_unit.target
+            == "例として、コンピュータからの「音声出力」は事前にお知らせ頂いていない場合は提供できないことに注意して下さい。"
         )
 
     def test_en_ja_punctuation(self):
-        """checks that a half-width punctuation"""
+        """Checks that a half-width punctuation"""
         posource = """
 #: docs/intro/contributing.txt:184
 msgid ""
@@ -78,5 +82,6 @@ msgstr ""
             == "When developing against trunk, you can check Django's continuous integration builds."
         )
         assert (
-            out_unit.target == "トランクバージョンで開発を行う場合､ Django の継続インテグレーションビルドをチェックしてください｡"
+            out_unit.target
+            == "トランクバージョンで開発を行う場合､ Django の継続インテグレーションビルドをチェックしてください｡"
         )

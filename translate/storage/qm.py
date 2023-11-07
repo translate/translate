@@ -17,7 +17,8 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 
-"""Module for parsing Qt .qm files.
+"""
+Module for parsing Qt .qm files.
 
 .. note::
 
@@ -137,8 +138,7 @@ class qmfile(base.TranslationStore):
                 messages_data = struct.unpack(
                     ">%db" % length,
                     input[
-                        startsection
-                        + sectionheader : startsection
+                        startsection + sectionheader : startsection
                         + sectionheader
                         + length
                     ],

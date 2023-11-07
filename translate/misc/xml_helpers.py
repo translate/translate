@@ -40,7 +40,8 @@ string_xpath_normalized = etree.XPath("normalize-space()")
 
 
 def getText(node, xml_space="preserve"):
-    """Extracts the plain text content out of the given node.
+    """
+    Extracts the plain text content out of the given node.
 
     This method checks the xml:space attribute of the given node, and takes an
     optional default to use in case nothing is specified in this node.
@@ -86,7 +87,8 @@ def setXMLspace(node, value):
 
 
 def namespaced(namespace, name):
-    """Returns name in Clark notation within the given namespace.
+    """
+    Returns name in Clark notation within the given namespace.
 
     For example namespaced("source") in an XLIFF document might return::
 
@@ -109,7 +111,8 @@ def normalize_space(text: str):
 
 
 def normalize_xml_space(node, xml_space: str, remove_start: bool = False):
-    """normalize spaces following the nodes xml:space, or alternatively the
+    """
+    normalize spaces following the nodes xml:space, or alternatively the
     given xml_space parameter.
     """
     xml_space = getXMLspace(node) or xml_space
@@ -140,7 +143,8 @@ def reindent(
     toplevel=True,
     leaves: Optional[List[str]] = None,
 ):
-    """Adjust indentation to match specification.
+    """
+    Adjust indentation to match specification.
 
     Each nested tag is identified by indent string, up to
     max_level depth, possibly skipping tags listed in skip.
@@ -206,7 +210,7 @@ def validate_char(char: str) -> bool:
     https://github.com/GNOME/libxml2/blob/master/include/libxml/chvalid.h
     """
     ord_ch = ord(char)
-    return (0x9 <= ord_ch <= 0xA) or (ord_ch == 0xD) or (0x20 <= ord_ch)
+    return (0x9 <= ord_ch <= 0xA) or (ord_ch == 0xD) or (ord_ch >= 0x20)
 
 
 def valid_chars_only(text: str) -> str:

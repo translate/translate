@@ -58,13 +58,13 @@ def test_ignore_entities():
 
 
 def test_alternate_accesskey_marker():
-    """check that we can identify the accesskey if the marker is different"""
+    """Check that we can identify the accesskey if the marker is different"""
     assert accesskey.extract("~File", "~") == ("File", "F")
     assert accesskey.extract("&File", "~") == ("&File", "")
 
 
 def test_unicode():
-    """test that we can do the same with unicode strings"""
+    """Test that we can do the same with unicode strings"""
     assert accesskey.extract("Eḓiṱ") == ("Eḓiṱ", "")
     assert accesskey.extract("E&ḓiṱ") == ("Eḓiṱ", "ḓ")
     assert accesskey.extract("E_ḓiṱ", "_") == ("Eḓiṱ", "ḓ")
@@ -75,19 +75,19 @@ def test_unicode():
 
 
 def test_numeric():
-    """test combining and extracting numeric markers"""
+    """Test combining and extracting numeric markers"""
     assert accesskey.extract("&100%") == ("100%", "1")
     assert accesskey.combine("100%", "1") == "&100%"
 
 
 def test_empty_string():
-    """test that we can handle and empty label+accesskey string"""
+    """Test that we can handle and empty label+accesskey string"""
     assert accesskey.extract("") == ("", "")
     assert accesskey.extract("", "~") == ("", "")
 
 
 def test_end_of_string():
-    """test that we can handle an accesskey at the end of the string"""
+    """Test that we can handle an accesskey at the end of the string"""
     assert accesskey.extract("Hlola&") == ("Hlola&", "")
 
 
@@ -115,13 +115,13 @@ def test_combine_label_accesskey_different_capitals():
 
 
 def test_uncombinable():
-    """test our behaviour when we cannot combine label and accesskey"""
+    """Test our behaviour when we cannot combine label and accesskey"""
     assert accesskey.combine("File", "D") is None
     assert accesskey.combine("File", "") is None
     assert accesskey.combine("", "") is None
 
 
 def test_accesskey_already_in_text():
-    """test that we can combine if the accesskey is already in the text"""
+    """Test that we can combine if the accesskey is already in the text"""
     assert accesskey.combine("Mail & Newsgroups", "N") == "Mail & &Newsgroups"
     assert accesskey.extract("Mail & &Newsgroups") == ("Mail & Newsgroups", "N")

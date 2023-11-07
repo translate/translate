@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Manage the Haiku catkeys translation format
+"""
+Manage the Haiku catkeys translation format
 
 The Haiku catkeys format is the translation format used for localisation of
 the `Haiku <http://www.haiku-os.org/>`_ operating system.
@@ -147,7 +148,8 @@ class CatkeysUnit(base.TranslationUnit):
         return self._dict
 
     def setdict(self, newdict):
-        """Set the dictionary of values for a catkeys line
+        """
+        Set the dictionary of values for a catkeys line
 
         :param newdict: a new dictionary with catkeys line elements
         :type newdict: Dict
@@ -266,7 +268,7 @@ class CatkeysFile(base.TranslationStore):
         self.header.settargetlanguage(newlang)
 
     def parse(self, input):
-        """parse the given file or file source string"""
+        """Parse the given file or file source string"""
         if hasattr(input, "name"):
             self.filename = input.name
         elif not getattr(self, "filename", ""):

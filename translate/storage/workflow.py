@@ -150,13 +150,15 @@ class Workflow:
             self._initial_state = state
 
     def get_from_states(self):
-        """Returns a list of states that can be transitioned from to the
+        """
+        Returns a list of states that can be transitioned from to the
         current state.
         """
         return [e[0] for e in self.edges if e[1] is self._current_state]
 
     def get_to_states(self):
-        """Returns a list of states that can be transitioned to from the
+        """
+        Returns a list of states that can be transitioned to from the
         current state.
         """
         return [e[1] for e in self.edges if e[0] is self._current_state]
@@ -170,7 +172,8 @@ class Workflow:
         raise StateNotInWorkflowError(state_name)
 
     def set_current_state(self, state):
-        """Set the current state. This is absolute and not subject to edge
+        """
+        Set the current state. This is absolute and not subject to edge
         constraints. The current state's ``leave`` and the new state's
         ``enter`` method is still called. For edge transitions, see the
         ``trans`` method.
@@ -202,17 +205,18 @@ class Workflow:
             if isinstance(init_state, str):
                 init_state = self.get_state_by_name(init_state)
             if init_state not in self.states:
-                raise StateNotInWorkflowError()
+                raise StateNotInWorkflowError
             self._initial_state = init_state
             self._current_state = init_state
             return
         if self._initial_state is None:
-            raise NoInitialStateError()
+            raise NoInitialStateError
         self._current_state = None
         self.set_current_state(self._initial_state)
 
     def trans(self, to_state=None):
-        """Transition to the given state. If no state is given, the first one
+        """
+        Transition to the given state. If no state is given, the first one
         returned by ``get_to_states`` is used.
         """
         if self._current_state is None:

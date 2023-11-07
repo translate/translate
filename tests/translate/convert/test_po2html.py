@@ -11,7 +11,7 @@ from . import test_convert
 class TestPO2Html:
     @staticmethod
     def converthtml(posource, htmltemplate, includefuzzy=False):
-        """helper to exercise the command line function."""
+        """Helper to exercise the command line function."""
         inputfile = BytesIO(posource.encode())
         print(inputfile.getvalue())
         outputfile = BytesIO()
@@ -21,14 +21,15 @@ class TestPO2Html:
         return outputfile.getvalue().decode("utf-8")
 
     def test_simple(self):
-        """simple po to html test."""
+        """Simple po to html test."""
         htmlsource = "<p>A sentence.</p>"
         posource = """#: html:3\nmsgid "A sentence."\nmsgstr "'n Sin."\n"""
         htmlexpected = """<p>'n Sin.</p>"""
         assert htmlexpected in self.converthtml(posource, htmlsource)
 
     def test_linebreaks(self):
-        """Test that a po file can be merged into a template with linebreaks in
+        """
+        Test that a po file can be merged into a template with linebreaks in
         it.
         """
         htmlsource = """<html>
@@ -137,7 +138,8 @@ sin.
         assert htmltarget in self.converthtml(posource, htmlsource)
 
     def test_states_fuzzy(self):
-        """Test that we use source when a string is fuzzy.
+        """
+        Test that we use source when a string is fuzzy.
 
         This fixes :issue:`3145`
         """
@@ -156,7 +158,8 @@ sin.
         )
 
     def test_untranslated_attributes(self):
-        """Verify that untranslated attributes are output as source, not
+        """
+        Verify that untranslated attributes are output as source, not
         dropped.
         """
         htmlsource = '<meta name="keywords" content="life, the universe, everything" />'
@@ -178,7 +181,8 @@ class TestPO2HtmlCommand(test_convert.TestConvertCommand, TestPO2Html):
     ]
 
     def test_individual_files(self):
-        """Test the fully non-recursive case where all inputs and outputs
+        """
+        Test the fully non-recursive case where all inputs and outputs
         (input po, template html, output html) are specified as individual
         files.
         """
@@ -190,7 +194,8 @@ class TestPO2HtmlCommand(test_convert.TestConvertCommand, TestPO2Html):
         self.then_html_file_is_translated("out.html")
 
     def test_fully_recursive(self):
-        """Test the fully recursive case where all inputs and outputs (input,
+        """
+        Test the fully recursive case where all inputs and outputs (input,
         template, output) are specified as directories.
         """
         self.given_html_test_file("template/file1.html")
@@ -204,7 +209,8 @@ class TestPO2HtmlCommand(test_convert.TestConvertCommand, TestPO2Html):
         assert not os.path.isfile(self.get_testfilename("translated/file2.html"))
 
     def test_no_input_specified(self):
-        """Test the case where no input file or directory is specified.
+        """
+        Test the case where no input file or directory is specified.
         Expect failure with exit.
         """
         self.given_html_test_file("template/file1.html")
@@ -212,7 +218,8 @@ class TestPO2HtmlCommand(test_convert.TestConvertCommand, TestPO2Html):
             self.run_command(output="translated", template="template")
 
     def test_no_template_specified(self, caplog):
-        """Test the case where no template file or directory is specified.
+        """
+        Test the case where no template file or directory is specified.
         Expect failure with log message.
         """
         self.given_po_test_file("translation/file1.po")
@@ -220,7 +227,8 @@ class TestPO2HtmlCommand(test_convert.TestConvertCommand, TestPO2Html):
         assert "Error processing:" in caplog.text
 
     def test_no_output_specified(self, capsys):
-        """Test the case where there is a single input file and no output file
+        """
+        Test the case where there is a single input file and no output file
         or directory is specified. Defaults to stdout.
         """
         self.given_html_test_file("file1.html")
@@ -233,7 +241,8 @@ class TestPO2HtmlCommand(test_convert.TestConvertCommand, TestPO2Html):
         assert err == ""
 
     def test_recursive_templates_with_single_po_file(self):
-        """Test the case where templates and outputs are directories, and the
+        """
+        Test the case where templates and outputs are directories, and the
         input is specified as an individual po file.
 
         This indicates that the po file should be applied to all
@@ -249,7 +258,8 @@ class TestPO2HtmlCommand(test_convert.TestConvertCommand, TestPO2Html):
         self.then_html_file_is_translated("translated/subdir/file2.html")
 
     def test_recursive_templates_with_single_po_file_and_templates_overwritten(self):
-        """Test the case where templates and outputs are in the same directory,
+        """
+        Test the case where templates and outputs are in the same directory,
         and the input is specified as an individual po file.
 
         This indicates that the po file should be applied to all

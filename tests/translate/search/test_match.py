@@ -7,7 +7,7 @@ class TestMatch:
 
     @staticmethod
     def candidatestrings(units):
-        """returns only the candidate strings out of the list with (score, string) tuples"""
+        """Returns only the candidate strings out of the list with (score, string) tuples"""
         return [unit.source for unit in units]
 
     @staticmethod

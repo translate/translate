@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Filters that strings can be passed through before certain tests.
+"""
+Filters that strings can be passed through before certain tests.
 """
 
 import re
@@ -26,7 +27,8 @@ from translate.misc import quote
 
 
 def removekdecomments(str1):
-    r"""Remove KDE-style PO comments.
+    r"""
+    Remove KDE-style PO comments.
 
     KDE comments start with ``_:[space]`` and end with a literal ``\n``.
     Example::
@@ -55,7 +57,8 @@ def removekdecomments(str1):
 
 
 def filteraccelerators(accelmarker):
-    """Returns a function that filters accelerators marked using *accelmarker*
+    """
+    Returns a function that filters accelerators marked using *accelmarker*
     from a strings.
 
     :param string accelmarker: Accelerator marker character
@@ -68,7 +71,8 @@ def filteraccelerators(accelmarker):
         accelmarkerlen = len(accelmarker)
 
     def filtermarkedaccelerators(str1, acceptlist=None):
-        """Modifies the accelerators in *str1* marked with the given
+        """
+        Modifies the accelerators in *str1* marked with the given
         *accelmarker*, using a given *acceptlist* filter.
         """
         acclocs, badlocs = decoration.findaccelerators(str1, accelmarker, acceptlist)
@@ -84,7 +88,8 @@ def filteraccelerators(accelmarker):
 
 
 def varname(variable, startmarker, endmarker):
-    r"""Variable filter that returns the variable name without the marking
+    r"""
+    Variable filter that returns the variable name without the marking
     punctuation.
 
     .. note:: Currently this function simply returns *variable* unchanged, no
@@ -107,7 +112,8 @@ def varname(variable, startmarker, endmarker):
 
 
 def varnone(variable, startmarker, endmarker):
-    """Variable filter that returns an empty string.
+    """
+    Variable filter that returns an empty string.
 
     :rtype: String
     :return: Empty string
@@ -116,7 +122,8 @@ def varnone(variable, startmarker, endmarker):
 
 
 def filtervariables(startmarker, endmarker, varfilter):
-    """Returns a function that filters variables marked using *startmarker* and
+    """
+    Returns a function that filters variables marked using *startmarker* and
     *endmarker* from a string.
 
     :param string startmarker: Start of variable marker
@@ -137,7 +144,8 @@ def filtervariables(startmarker, endmarker, varfilter):
         endmarkerlen = len(endmarker)
 
     def filtermarkedvariables(str1):
-        r"""Modifies the variables in *str1* marked with a given *\*marker*,
+        r"""
+        Modifies the variables in *str1* marked with a given *\*marker*,
         using a given filter.
         """
         varlocs = decoration.findmarkedvariables(str1, startmarker, endmarker)
@@ -164,7 +172,8 @@ word_with_apos_re = re.compile(r"(?u)\w+'\w+")
 
 
 def filterwordswithpunctuation(str1):
-    """Goes through a list of known words that have punctuation and removes the
+    """
+    Goes through a list of known words that have punctuation and removes the
     punctuation from them.
     """
     if "'" not in str1:

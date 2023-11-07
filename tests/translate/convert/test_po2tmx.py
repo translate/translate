@@ -10,7 +10,7 @@ from . import test_convert
 class TestPO2TMX:
     @staticmethod
     def po2tmx(posource, sourcelanguage="en", targetlanguage="af", comment=None):
-        """helper that converts po source to tmx source without requiring files"""
+        """Helper that converts po source to tmx source without requiring files"""
         inputfile = BytesIO(posource.encode("utf-8"))
         outputfile = BytesIO()
         outputfile.tmxfile = tmx.tmxfile(inputfile=None, sourcelanguage=sourcelanguage)

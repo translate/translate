@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Convert Java/Mozilla .properties files to Gettext PO localization files.
+"""
+Convert Java/Mozilla .properties files to Gettext PO localization files.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/prop2po.html
 for examples and usage instructions.
@@ -45,7 +46,7 @@ class prop2po:
         self.mixer = UnitMixer(properties.labelsuffixes, properties.accesskeysuffixes)
 
     def convertstore(self, thepropfile):
-        """converts a .properties file to a .po file..."""
+        """Converts a .properties file to a .po file..."""
         thetargetfile = po.pofile()
         if self.personality in ("mozilla", "skype"):
             targetheader = thetargetfile.init_headers(
@@ -93,7 +94,7 @@ class prop2po:
         return thetargetfile
 
     def mergestore(self, origpropfile, translatedpropfile):
-        """converts two .properties files to a .po file..."""
+        """Converts two .properties files to a .po file..."""
         thetargetfile = po.pofile()
         if self.personality in ("mozilla", "skype"):
             targetheader = thetargetfile.init_headers(
@@ -209,7 +210,7 @@ class prop2po:
             string = unit.getlocations()[0]
             match = regex.match(string)
             if not match:
-                logger.warn("Invalid key: %s", string)
+                logger.warning("Invalid key: %s", string)
                 continue
             key = match.group(1)
             variant = match.group(2)
@@ -230,7 +231,7 @@ class prop2po:
             if not variant:
                 raise Exception("Variant invalid: %s" % (old_variant))
             if variant in plurals[key].variants:
-                logger.warn(
+                logger.warning(
                     "Override %s[%s]: %s by %s",
                     key,
                     variant,
@@ -322,7 +323,8 @@ class prop2po:
 
     @staticmethod
     def convertunit(propunit, commenttype):
-        """Converts a .properties unit to a .po unit. Returns None if empty or
+        """
+        Converts a .properties unit to a .po unit. Returns None if empty or
         not for translation.
         """
         if propunit is None:
@@ -353,7 +355,8 @@ class prop2po:
         return self.mixer.mix_units(label_unit, accesskey_unit, target_unit)
 
     def convertpropunit(self, store, unit, commenttype, mixbucket="properties"):
-        """Converts a unit from store to a po unit, keeping track of mixed
+        """
+        Converts a unit from store to a po unit, keeping track of mixed
         names along the way.
 
         ``mixbucket`` can be specified to indicate if the given unit is part of
@@ -444,7 +447,8 @@ def convertprop(
     duplicatestyle="msgctxt",
     encoding=None,
 ):
-    """reads in inputfile using properties, converts using prop2po, writes to
+    """
+    reads in inputfile using properties, converts using prop2po, writes to
     outputfile
     """
     inputstore = properties.propfile(inputfile, personality, encoding)

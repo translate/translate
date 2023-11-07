@@ -18,7 +18,8 @@
 
 
 class XPathBreadcrumb:
-    """A class which is used to build XPath-like paths as a DOM tree is
+    """
+    A class which is used to build XPath-like paths as a DOM tree is
     walked. It keeps track of the number of times which it has seen
     a certain tag, so that it will correctly create indices for tags.
 

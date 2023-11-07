@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""This module represents the Vietnamese language.
+"""
+This module represents the Vietnamese language.
 
 .. seealso:: :wp:`Vietnamese_language`
 """
@@ -36,7 +37,8 @@ class vi(common.Common):
 
     @classmethod
     def punctranslate(cls, text):
-        """Implement some extra features for quotation marks.
+        """
+        Implement some extra features for quotation marks.
 
         Known shortcomings:
             - % and $ are not touched yet for fear of variables

@@ -50,9 +50,7 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:%s
 END:VEVENT
 END:VCALENDAR
-""".replace(
-            "\n", "\r\n"
-        )
+""".replace("\n", "\r\n")
         template_string = icalendar_boilerplate % "Value"
         expected_output = icalendar_boilerplate % "Value"
         assert expected_output == self._convert_to_string(input_string, template_string)
@@ -76,9 +74,7 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:%s
 END:VEVENT
 END:VCALENDAR
-""".replace(
-            "\n", "\r\n"
-        )
+""".replace("\n", "\r\n")
         template_string = icalendar_boilerplate % "Value"
         expected_output = icalendar_boilerplate % "Waarde"
         assert expected_output == self._convert_to_string(input_string, template_string)
@@ -102,9 +98,7 @@ DTSTAMP:19970714T170000Z
 ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 END:VEVENT
 END:VCALENDAR
-""".replace(
-            "\n", "\r\n"
-        )
+""".replace("\n", "\r\n")
         template_string = icalendar_boilerplate % "My description"
         expected_output = icalendar_boilerplate % "A miña descrición"
         assert expected_output == self._convert_to_string(input_string, template_string)
@@ -128,9 +122,7 @@ LOCATION:%s
 ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 END:VEVENT
 END:VCALENDAR
-""".replace(
-            "\n", "\r\n"
-        )
+""".replace("\n", "\r\n")
         template_string = icalendar_boilerplate % "The location"
         expected_output = icalendar_boilerplate % "O lugar"
         assert expected_output == self._convert_to_string(input_string, template_string)
@@ -154,9 +146,7 @@ DTSTAMP:19970714T170000Z
 ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 END:VEVENT
 END:VCALENDAR
-""".replace(
-            "\n", "\r\n"
-        )
+""".replace("\n", "\r\n")
         template_string = icalendar_boilerplate % "Some comment"
         expected_output = icalendar_boilerplate % "Comentarios ao chou"
         assert expected_output == self._convert_to_string(input_string, template_string)
@@ -195,9 +185,7 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:%s
 END:VEVENT
 END:VCALENDAR
-""".replace(
-            "\n", "\r\n"
-        )
+""".replace("\n", "\r\n")
         template_string = icalendar_boilerplate % (
             "Some comment",
             "My description",
@@ -232,9 +220,7 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:%s
 END:VEVENT
 END:VCALENDAR
-""".replace(
-            "\n", "\r\n"
-        )
+""".replace("\n", "\r\n")
         template_string = icalendar_boilerplate % "Value"
         expected_output = icalendar_boilerplate % "Value"
         assert expected_output == self._convert_to_string(input_string, template_string)
@@ -259,9 +245,7 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:%s
 END:VEVENT
 END:VCALENDAR
-""".replace(
-            "\n", "\r\n"
-        )
+""".replace("\n", "\r\n")
         template_string = icalendar_boilerplate % "Value"
         expected_output = icalendar_boilerplate % "Waarde"
         assert expected_output == self._convert_to_string(
@@ -292,9 +276,7 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:%s
 END:VEVENT
 END:VCALENDAR
-""".replace(
-            "\n", "\r\n"
-        )
+""".replace("\n", "\r\n")
         template_string = icalendar_boilerplate % "Random"
         expected_output = icalendar_boilerplate % "Random"
         assert expected_output == self._convert_to_string(input_string, template_string)
@@ -318,9 +300,7 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:%s
 END:VEVENT
 END:VCALENDAR
-""".replace(
-            "\n", "\r\n"
-        )
+""".replace("\n", "\r\n")
         template_string = icalendar_boilerplate % "Value"
         expected_output = ""
         # Input completion is 0% so with a 70% threshold it should not output.
@@ -348,9 +328,7 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:%s
 END:VEVENT
 END:VCALENDAR
-""".replace(
-            "\n", "\r\n"
-        )
+""".replace("\n", "\r\n")
         template_string = icalendar_boilerplate % "Value"
         expected_output = icalendar_boilerplate % "Waarde"
         # Input completion is 100% so with a 70% threshold it should output.

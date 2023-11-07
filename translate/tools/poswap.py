@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Builds a new translation file with the target of the input language as
+"""
+Builds a new translation file with the target of the input language as
 source language.
 
 .. note:: Ensure that the two po files correspond 100% to the same pot file before using
@@ -50,7 +51,7 @@ def swapdir(store):
 
 
 def convertpo(inputpofile, outputpotfile, template, reverse=False):
-    """reads in inputpofile, removes the header, writes to outputpotfile."""
+    """Reads in inputpofile, removes the header, writes to outputpotfile."""
     inputpo = po.pofile(inputpofile)
     templatepo = po.pofile(template)
     if reverse:

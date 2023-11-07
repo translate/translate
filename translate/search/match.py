@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Class to perform translation memory matching from a store of translation
+"""
+Class to perform translation memory matching from a store of translation
 units.
 """
 
@@ -45,7 +46,8 @@ def _sort_matches(matches, match_info):
 
 
 class matcher:
-    """A class that will do matching and store configuration for the matching
+    """
+    A class that will do matching and store configuration for the matching
     process.
     """
 
@@ -60,7 +62,8 @@ class matcher:
         comparer=None,
         usefuzzy=False,
     ):
-        """max_candidates is the maximum number of candidates that should be
+        """
+        max_candidates is the maximum number of candidates that should be
         assembled, min_similarity is the minimum similarity that must be
         attained to be included in the result, comparer is an optional Comparer
         with similarity() function
@@ -89,7 +92,8 @@ class matcher:
         return False
 
     def inittm(self, stores, reverse=False):
-        """Initialises the memory for later use. We use simple base units for
+        """
+        Initialises the memory for later use. We use simple base units for
         speedup.
         """
         # reverse is deprectated - just use self.sort_reverse
@@ -103,7 +107,8 @@ class matcher:
         self.candidates.units.sort(key=sourcelen, reverse=self.sort_reverse)
 
     def extendtm(self, units, store=None, sort=True):
-        """Extends the memory with extra unit(s).
+        """
+        Extends the memory with extra unit(s).
 
         :param units: The units to add to the TM.
         :param store: Optional store from where some metadata can be retrieved
@@ -138,7 +143,8 @@ class matcher:
             self.candidates.units.sort(key=sourcelen, reverse=self.sort_reverse)
 
     def setparameters(self, max_candidates=10, min_similarity=75, max_length=70):
-        """Sets the parameters without reinitialising the tm. If a parameter is
+        """
+        Sets the parameters without reinitialising the tm. If a parameter is
         not specified, it is set to the default, not ignored
         """
         self.MAX_CANDIDATES = max_candidates
@@ -146,20 +152,23 @@ class matcher:
         self.MAX_LENGTH = max_length
 
     def getstoplength(self, min_similarity, text):
-        """Calculates a length beyond which we are not interested.  The extra
+        """
+        Calculates a length beyond which we are not interested.  The extra
         fat is because we don't use plain character distance only.
         """
         return min(len(text) / (min_similarity / 100.0), self.MAX_LENGTH)
 
     @staticmethod
     def getstartlength(min_similarity, text):
-        """Calculates the minimum length we are interested in.  The extra fat
+        """
+        Calculates the minimum length we are interested in.  The extra fat
         is because we don't use plain character distance only.
         """
         return max(len(text) * (min_similarity / 100.0), 1)
 
     def matches(self, text):
-        """Returns a list of possible matches for given source text.
+        """
+        Returns a list of possible matches for given source text.
 
         :type text: String
         :param text: The text that will be search for in the translation memory
@@ -217,7 +226,8 @@ class matcher:
         return self.buildunits(bestcandidates)
 
     def buildunits(self, candidates):
-        """Builds a list of units conforming to base API, with the score
+        """
+        Builds a list of units conforming to base API, with the score
         in the comment.
         """
         units = []
@@ -315,7 +325,8 @@ class terminologymatcher(matcher):
         return l <= self.MAX_LENGTH and l >= self.getstartlength(None, None)
 
     def matches(self, text):
-        """Normal matching after converting text to lower case. Then replace
+        """
+        Normal matching after converting text to lower case. Then replace
         with the original unit to retain comments, etc.
         """
         text_l = len(text)
@@ -386,7 +397,7 @@ class terminologymatcher(matcher):
 
 # utility functions used by virtaal and tmserver to convert matching units in easily marshallable dictionaries
 def unit2dict(unit):
-    """converts a pounit to a simple dict structure for use over the web"""
+    """Converts a pounit to a simple dict structure for use over the web"""
     return {
         "source": unit.source,
         "target": unit.target,

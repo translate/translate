@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Translate Markdown files using Gettext PO localization files.
+"""
+Translate Markdown files using Gettext PO localization files.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/md2po.html
 for examples and usage instructions.

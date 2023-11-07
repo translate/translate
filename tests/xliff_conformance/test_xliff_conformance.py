@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 import os
-import os.path as path
+from os import path
 from subprocess import call
 
 import pytest
@@ -59,7 +59,7 @@ def test_po_to_xliff(xmllint):
 
 
 def cleardir(testdir):
-    """removes the test directory"""
+    """Removes the test directory"""
     if os.path.exists(testdir):
         for dirpath, subdirs, filenames in os.walk(testdir, topdown=False):
             for name in filenames:

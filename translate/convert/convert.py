@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Handles converting of files between formats (used by
+"""
+Handles converting of files between formats (used by
 :mod:`translate.convert` tools).
 """
 
@@ -40,7 +41,7 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser):
         allowmissingtemplate=False,
         description=None,
     ):
-        """construct the specialized Option Parser"""
+        """Construct the specialized Option Parser"""
         super().__init__(
             formats,
             usetemplates,
@@ -79,7 +80,8 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser):
         self.passthrough.append("includefuzzy")
 
     def add_remove_untranslated_option(self, default=False):
-        """Adds an option to remove key value from output if it is
+        """
+        Adds an option to remove key value from output if it is
         untranslated.
         """
         self.add_option(
@@ -93,7 +95,8 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser):
         self.passthrough.append("remove_untranslated")
 
     def add_threshold_option(self, default=None):
-        """Adds an option to output only stores where translation percentage
+        """
+        Adds an option to output only stores where translation percentage
         exceeds the threshold.
         """
         self.add_option(
@@ -180,7 +183,8 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser):
         return self.outputoptions
 
     def setpotoption(self):
-        """Sets the ``-P``/``--pot`` option depending on input/output formats
+        """
+        Sets the ``-P``/``--pot`` option depending on input/output formats
         etc.
         """
         if self.usepots:
@@ -207,10 +211,10 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser):
         self.define_option(timestampopt)
 
     def verifyoptions(self, options):
-        """Verifies that the options are valid (required options are present,
+        """
+        Verifies that the options are valid (required options are present,
         etc).
         """
-        pass
 
     def run(self, argv=None):
         """Parses the command line options and runs the conversion."""
@@ -254,18 +258,19 @@ class Replacer:
         self.replacestring = replacestring
 
     def doreplace(self, text):
-        """actually replace the text"""
+        """Actually replace the text"""
         if self.searchstring is not None and self.replacestring is not None:
             return text.replace(self.searchstring, self.replacestring)
         return text
 
     def searchreplaceinput(self, inputfile, outputfile, templatefile, **kwargs):
-        """copies the input file to the output file, searching and replacing"""
+        """Copies the input file to the output file, searching and replacing"""
         outputfile.write(self.doreplace(inputfile.read()))
         return True
 
     def searchreplacetemplate(self, inputfile, outputfile, templatefile, **kwargs):
-        """Copies the template file to the output file, searching and
+        """
+        Copies the template file to the output file, searching and
         replacing.
         """
         outputfile.write(self.doreplace(templatefile.read()))
@@ -289,7 +294,8 @@ class Replacer:
 
 
 class ArchiveConvertOptionParser(ConvertOptionParser):
-    """ConvertOptionParser that can handle recursing into single archive files.
+    """
+    ConvertOptionParser that can handle recursing into single archive files.
 
     ``archiveformats`` maps extension to class. If the extension doesn't
     matter, it can be None.
@@ -362,7 +368,8 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
         return archiveclass(archivefilename, **archiveoptions)
 
     def recurseinputfiles(self, options):
-        """Recurse through archive file / directories and return files to be
+        """
+        Recurse through archive file / directories and return files to be
         converted.
         """
         if self.isarchive(options.input, "input"):
@@ -434,7 +441,8 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
         return outputpath
 
     def checkoutputsubdir(self, options, subdir):
-        """Checks to see if subdir under ``options.output`` needs to be
+        """
+        Checks to see if subdir under ``options.output`` needs to be
         created, creates if neccessary.
         """
         if not self.isarchive(options.output, "output"):
@@ -505,7 +513,8 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
 
 
 def _output_is_newer(input_path, output_path):
-    """Check if input_path was not modified since output_path was generated,
+    """
+    Check if input_path was not modified since output_path was generated,
     used to avoid needless regeneration of output.
     """
     if not input_path or not output_path:
@@ -521,10 +530,10 @@ def _output_is_newer(input_path, output_path):
 
 
 def should_output_store(store, threshold):
-    """Check if the percent of translated source words more than or equal to
+    """
+    Check if the percent of translated source words more than or equal to
     the given threshold.
     """
-
     if not threshold:
         return True
 

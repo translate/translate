@@ -37,7 +37,6 @@ class TestCatkeysUnit(test_base.TestTranslationUnit):
 
     def test_note_sanity(self):
         """Override test, since the format doesn't support notes."""
-        pass
 
 
 class TestCatkeysFile(test_base.TestTranslationStore):

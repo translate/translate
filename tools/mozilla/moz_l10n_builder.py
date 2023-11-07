@@ -79,7 +79,8 @@ class CommandError(Exception):
 
 
 def delfiles(pattern, path, files):
-    """Delete files with names in C{files} matching glob-pattern C{glob} in the
+    """
+    Delete files with names in C{files} matching glob-pattern C{glob} in the
     directory specified by C{path}.
 
     This function is meant to be used with C{os.walk}
@@ -108,14 +109,14 @@ def run(cmd, expected_status=0, stdout=None, stderr=None, shell=False):
 
 
 def get_langs(lang_args):
-    """Returns the languages to handle based on the languages specified on the
+    """
+    Returns the languages to handle based on the languages specified on the
     command-line.
 
     If "ALL" was specified, the languages are read from the Mozilla product's
     C{shipped-locales} file. If "ZA" was specified, all South African languages
     are selected.
     """
-
     langs = []
 
     if isinstance(lang_args, str):
@@ -170,7 +171,6 @@ def get_langs(lang_args):
 
 def checkout(cvstag, langs):
     """Check-out needed files from Mozilla's CVS."""
-
     olddir = os.getcwd()
     if cvstag != "-A":
         cvstag = "-r %s" % (cvstag)
@@ -367,7 +367,6 @@ def pack_po(lang, buildlang):
 
 def pre_po2moz_hacks(lang, buildlang, debug):
     """Hacks that should be run before running C{po2moz}."""
-
     # Protect the real original PO dir
     temp_po = tempfile.mkdtemp()
     shutil.copytree(join(podir, buildlang), join(temp_po, buildlang))
@@ -415,7 +414,6 @@ def pre_po2moz_hacks(lang, buildlang, debug):
 
 def post_po2moz_hacks(lang, buildlang):
     """Hacks that should be run after running C{po2moz}."""
-
     # Hack to fix creating Thunderber installer
     inst_inc_po = join(podir_updated, lang, "mail", "installer", "installer.inc.po")
     if os.path.isfile(inst_inc_po):
@@ -580,7 +578,6 @@ def migrate_lang(lang, buildlang, recover, update_transl, debug):
 
 def create_diff(lang, buildlang):
     """Create CVS-diffs for all languages."""
-
     if not os.path.isdir("diff"):
         os.mkdir("diff")
 
@@ -610,7 +607,6 @@ def create_diff(lang, buildlang):
 
 def create_langpack(lang, buildlang):
     """Builds a XPI and installers for languages."""
-
     print("    %s" % (lang))
 
     olddir = os.getcwd()
@@ -651,7 +647,6 @@ def create_langpack(lang, buildlang):
 
 def create_option_parser():
     """Creates and returns cmd-line option parser."""
-
     from argparse import ArgumentParser
 
     parser = ArgumentParser(usage=USAGE)

@@ -55,7 +55,8 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
 
     @staticmethod
     def quick_fluent_file(unit_specs: list[dict[str, str]]) -> fluent.FluentFile:
-        """Helper to create a FluentFile populated by the FluentUnits
+        """
+        Helper to create a FluentFile populated by the FluentUnits
         parametrised in `unit_specs`.
         """
         fluent_file = fluent.FluentFile()
@@ -90,7 +91,8 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
         found_selector_branches: list[dict[str, Any]],
         found_selector_nodes: list[dict[str, Any]],
     ) -> None:
-        """Assert that the given selector branch matches the expected entry in
+        """
+        Assert that the given selector branch matches the expected entry in
         found_selector_branches at the given expect_index.
         """
         assert expect_index >= 0
@@ -142,7 +144,8 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
         found_selector_branches: list[dict[str, Any]],
         found_selector_nodes: list[dict[str, Any]],
     ) -> None:
-        """Assert that the given selector node matches the expected entry in
+        """
+        Assert that the given selector node matches the expected entry in
         found_selector_nodes at the given expect_index.
         """
         assert selector_node is not None
@@ -188,7 +191,8 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
         fluent_unit: fluent.FluentUnit,
         expect_parts: list[dict[str, Any]] | None,
     ) -> None:
-        """Assert that the given fluent unit has the expected parts.
+        """
+        Assert that the given fluent unit has the expected parts.
 
         Each part should be a dictionary defining its "name", "selector-nodes",
         "selector-branches" and "pattern-variants".
@@ -333,7 +337,8 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
     def assert_units(
         cls, fluent_file: fluent.FluentFile, expect_units: list[dict[str, Any]]
     ) -> None:
-        """Assert that the given FluentFile has the expected FluentUnits.
+        """
+        Assert that the given FluentFile has the expected FluentUnits.
 
         :param FluentFile fluent_file: The file to test.
         :param list[dict] expect_units: A list of the expected units, specified
@@ -382,7 +387,8 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
         expect_units: list[dict[str, Any]],
         expect_serialize: str | None = None,
     ) -> None:
-        """Assert that the given fluent source parses correctly to the expected
+        """
+        Assert that the given fluent source parses correctly to the expected
         FluentFile, and reserializes correctly.
 
         :param str fluent_source: The fluent source. Any common indent in this
@@ -412,7 +418,8 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
     def assert_serialize(
         self, fluent_file: fluent.FluentFile, expect_serialize: str
     ) -> None:
-        """Assert that the given FluentFile serializes to the given string.
+        """
+        Assert that the given FluentFile serializes to the given string.
 
         :param FluentFile fluent_file: The FluentFile to serialize.
         :param str expect_serialize: The expected result. Any common indent in
@@ -422,7 +429,8 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
         assert self.fluent_serialize(fluent_file) == expect_serialize
 
     def assert_parse_failure(self, fluent_source: str, error_part: str) -> None:
-        """Assert that the given fluent source fails to parse into a
+        """
+        Assert that the given fluent source fails to parse into a
         FluentFile.
 
         :param str fluent_source: The fluent source. Any common indent will be
@@ -443,7 +451,8 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
         error_unit: fluent.FluentUnit,
         error_msg: str = r".+",
     ) -> None:
-        """Assert that the given FluentFile fails to serialize.
+        """
+        Assert that the given FluentFile fails to serialize.
 
         :param FluentFile fluent_file: The FluentFile to try and serialize.
         :param FluentUnit error_unit: The FluentUnit that is expected to fail.
@@ -781,7 +790,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
         # line, as per fluent's rules.
         fluent_file.units[0].source = "line 1   \n line 2  \nline 3   \n  "
         self.assert_serialize(
-            fluent_file, "m =\n" "    line 1   \n" "     line 2  \n" "    line 3\n"
+            fluent_file, "m =\n    line 1   \n     line 2  \n    line 3\n"
         )
 
     def test_empty_unit_source(self):
@@ -990,15 +999,15 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
 
         # Trailing whitespace is preserved in fluent for all but the last line.
         self.basic_test(
-            "message =  \n" " trailing  \n" " whitespace \n" " last line  \n",
+            "message =  \n trailing  \n whitespace \n last line  \n",
             [{"id": "message", "source": "trailing  \nwhitespace \nlast line"}],
-            "message =\n" "    trailing  \n" "    whitespace \n" "    last line\n",
+            "message =\n    trailing  \n    whitespace \n    last line\n",
         )
         # Starting on the same line, and with gap.
         self.basic_test(
-            "message =   trailing  \n" " whitespace \n" "    \n" " last line  \n",
+            "message =   trailing  \n whitespace \n    \n last line  \n",
             [{"id": "message", "source": "trailing  \nwhitespace \n\nlast line"}],
-            "message =\n" "    trailing  \n" "    whitespace \n" "\n" "    last line\n",
+            "message =\n    trailing  \n    whitespace \n\n    last line\n",
         )
 
     def test_multiline_message_attributes(self):
@@ -1115,7 +1124,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             [
                 {
                     "id": "message",
-                    "source": "Message\n" ".a =\n" "My multiline\n" "attribute",
+                    "source": "Message\n.a =\nMy multiline\nattribute",
                 },
             ],
         )
@@ -1133,7 +1142,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             [
                 {
                     "id": "message",
-                    "source": "Message\n" ".a =\n" "My multiline\n" "\n" "gap",
+                    "source": "Message\n.a =\nMy multiline\n\ngap",
                 },
             ],
             """\
@@ -1399,15 +1408,15 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
 
         # Trailing whitespace is preserved in fluent for all but the last line.
         self.basic_test(
-            "-term =  \n" " trailing  \n" " whitespace \n" " last line  \n",
+            "-term =  \n trailing  \n whitespace \n last line  \n",
             [{"id": "-term", "source": "trailing  \nwhitespace \nlast line"}],
-            "-term =\n" "    trailing  \n" "    whitespace \n" "    last line\n",
+            "-term =\n    trailing  \n    whitespace \n    last line\n",
         )
         # Starting on the same line, and with gap.
         self.basic_test(
-            "-term =   trailing  \n" " whitespace \n" "    \n" " last line  \n",
+            "-term =   trailing  \n whitespace \n    \n last line  \n",
             [{"id": "-term", "source": "trailing  \nwhitespace \n\nlast line"}],
-            "-term =\n" "    trailing  \n" "    whitespace \n" "\n" "    last line\n",
+            "-term =\n    trailing  \n    whitespace \n\n    last line\n",
         )
 
     def test_special_syntax_characters(self):
@@ -2009,8 +2018,10 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
         )
 
     def test_resource_and_group_comment_prefixes(self):
-        """Test that ResourceComment and GroupComment prefixes on Messages and
-        Terms."""
+        """
+        Test that ResourceComment and GroupComment prefixes on Messages and
+        Terms.
+        """
         # With both ResourceComments and GroupComments, we gain both on
         # Messages or Terms, and they appear before their Comments.
         self.basic_test(
@@ -2162,8 +2173,10 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
         )
 
     def test_reference(self):
-        """Test fluent MessageReferences, TermReferences and
-        VariableReferences."""
+        """
+        Test fluent MessageReferences, TermReferences and
+        VariableReferences.
+        """
         # Test reference to a term or message.
         self.basic_test(
             """\
@@ -3121,7 +3134,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             [
                 {
                     "id": "m",
-                    "source": "{ $var ->\n" "   *[other] none\n" "} { $var }",
+                    "source": "{ $var ->\n   *[other] none\n} { $var }",
                     "refs": ["$var"],
                     "parts": [
                         {
@@ -3475,7 +3488,8 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             assert unit.getid() == ok_id
 
     def test_duplicate_ids(self):
-        """Test that we get a parsing error if an id is duplicated in the
+        """
+        Test that we get a parsing error if an id is duplicated in the
         source.
         """
         with raises(

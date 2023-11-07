@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Convert Comma-Separated Value (.csv) files to a TermBase eXchange (.tbx)
+"""
+Convert Comma-Separated Value (.csv) files to a TermBase eXchange (.tbx)
 glossary file
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/csv2tbx.html
@@ -27,16 +28,18 @@ from translate.storage import csvl10n, tbx
 
 
 class csv2tbx:
-    """a class that takes translations from a .csv file and puts them in a .tbx
+    """
+    a class that takes translations from a .csv file and puts them in a .tbx
     file
     """
 
     def __init__(self, charset=None):
-        """construct the converter..."""
+        """Construct the converter..."""
         self.charset = charset
 
     def convertfile(self, csvfile):
-        """converts a csvfile to a tbxfile, and returns it. uses templatepo if
+        """
+        converts a csvfile to a tbxfile, and returns it. uses templatepo if
         given at construction
         """
         mightbeheader = True
@@ -60,7 +63,8 @@ class csv2tbx:
 
 
 def convertcsv(inputfile, outputfile, templatefile, charset=None, columnorder=None):
-    """reads in inputfile using csvl10n, converts using csv2tbx, writes to
+    """
+    reads in inputfile using csvl10n, converts using csv2tbx, writes to
     outputfile
     """
     inputstore = csvl10n.csvfile(inputfile, fieldnames=columnorder)

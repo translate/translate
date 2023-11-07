@@ -11,7 +11,7 @@ from . import test_convert
 class TestDTD2PO:
     @staticmethod
     def dtd2po(dtdsource, dtdtemplate=None):
-        """helper that converts dtd source to po source without requiring files"""
+        """Helper that converts dtd source to po source without requiring files"""
         inputfile = BytesIO(dtdsource.encode())
         inputdtd = dtd.dtdfile(inputfile)
         convertor = dtd2po.dtd2po()
@@ -25,7 +25,7 @@ class TestDTD2PO:
 
     @staticmethod
     def convertdtd(dtdsource):
-        """call the convertdtd, return the outputfile"""
+        """Call the convertdtd, return the outputfile"""
         inputfile = BytesIO(dtdsource.encode())
         outputfile = BytesIO()
         templatefile = None
@@ -34,7 +34,7 @@ class TestDTD2PO:
 
     @staticmethod
     def singleelement(pofile):
-        """checks that the pofile contains a single non-header element, and returns it"""
+        """Checks that the pofile contains a single non-header element, and returns it"""
         assert len(pofile.units) == 2
         assert pofile.units[0].isheader()
         print(pofile.units[1])
@@ -42,14 +42,14 @@ class TestDTD2PO:
 
     @staticmethod
     def countelements(pofile):
-        """returns the number of non-header items"""
+        """Returns the number of non-header items"""
         if pofile.units[0].isheader():
             return len(pofile.units) - 1
         else:
             return len(pofile.units)
 
     def test_simpleentity(self):
-        """checks that a simple dtd entity definition converts properly to a po entry"""
+        """Checks that a simple dtd entity definition converts properly to a po entry"""
         dtdsource = '<!ENTITY test.me "bananas for sale">\n'
         pofile = self.dtd2po(dtdsource)
         pounit = self.singleelement(pofile)
@@ -64,7 +64,7 @@ class TestDTD2PO:
         assert pounit.target == "piesangs te koop"
 
     def test_convertdtd(self):
-        """checks that the convertdtd function is working"""
+        """Checks that the convertdtd function is working"""
         dtdsource = '<!ENTITY saveas.label "Save As...">\n'
         posource = self.convertdtd(dtdsource)
         pofile = po.pofile(BytesIO(posource))
@@ -73,14 +73,14 @@ class TestDTD2PO:
         assert unit.target == ""
 
     def test_apos(self):
-        """apostrophe should not break a single-quoted entity definition, bug 69"""
+        """Apostrophe should not break a single-quoted entity definition, bug 69"""
         dtdsource = "<!ENTITY test.me 'bananas &apos; for sale'>\n"
         pofile = self.dtd2po(dtdsource)
         pounit = self.singleelement(pofile)
         assert pounit.source == "bananas ' for sale"
 
     def test_quotes(self):
-        """quotes should be handled in a single-quoted entity definition"""
+        """Quotes should be handled in a single-quoted entity definition"""
         dtdsource = """<!ENTITY test.metoo '"Bananas" for sale'>\n"""
         pofile = self.dtd2po(dtdsource)
         pounit = self.singleelement(pofile)
@@ -88,7 +88,7 @@ class TestDTD2PO:
         assert pounit.source == '"Bananas" for sale'
 
     def test_emptyentity(self):
-        """checks that empty entity definitions survive into po file, bug 15"""
+        """Checks that empty entity definitions survive into po file, bug 15"""
         dtdsource = '<!ENTITY credit.translation "">\n'
         pofile = self.dtd2po(dtdsource)
         pounit = self.singleelement(pofile)
@@ -96,14 +96,14 @@ class TestDTD2PO:
         assert 'msgctxt "credit.translation"' in str(pounit)
 
     def test_two_empty_entities(self):
-        """checks that two empty entitu definitions have correct context (bug 2190)."""
+        """Checks that two empty entitu definitions have correct context (bug 2190)."""
         dtdsource = '<!ENTITY community.exp.start "">\n<!ENTITY contribute.end "">\n'
         pofile = self.dtd2po(dtdsource)
         assert pofile.units[-2].getcontext() == "community.exp.start"
         assert pofile.units[-1].getcontext() == "contribute.end"
 
     def test_emptyentity_translated(self):
-        """checks that if we translate an empty entity it makes it into the PO, bug 101"""
+        """Checks that if we translate an empty entity it makes it into the PO, bug 101"""
         dtdtemplate = '<!ENTITY credit.translation "">\n'
         dtdsource = '<!ENTITY credit.translation "Translators Names">\n'
         pofile = self.dtd2po(dtdsource, dtdtemplate)
@@ -115,7 +115,7 @@ class TestDTD2PO:
         assert unit.target == "Translators Names"
 
     def test_localisaton_note_simple(self):
-        """test the simple localisation more becomes a #. comment"""
+        """Test the simple localisation more becomes a #. comment"""
         dtdsource = """<!-- LOCALIZATION NOTE (alwaysCheckDefault.height):
   There's some sort of bug which makes wrapping checkboxes not properly reflow,
   causing the bottom border of the groupbox to be cut off; set this
@@ -131,7 +131,7 @@ class TestDTD2PO:
         )  # 1 Header extracted from, 3 comment lines, 1 autoinserted comment
 
     def test_localisation_note_merge(self):
-        """test that LOCALIZATION NOTES are added properly as #. comments and disambiguated with msgctxt entries"""
+        """Test that LOCALIZATION NOTES are added properly as #. comments and disambiguated with msgctxt entries"""
         dtdtemplate = (
             "<!--LOCALIZATION NOTE (%s): Some note -->\n"
             + '<!ENTITY %s "Source text">\n'
@@ -147,7 +147,7 @@ class TestDTD2PO:
         assert posource.count("msgctxt") == 2
 
     def test_donttranslate_simple(self):
-        """check that we handle DONT_TRANSLATE messages properly"""
+        """Check that we handle DONT_TRANSLATE messages properly"""
         dtdsource = """<!-- LOCALIZATION NOTE (region.Altitude): DONT_TRANSLATE -->
 <!ENTITY region.Altitude "Very High">"""
         pofile = self.dtd2po(dtdsource)
@@ -162,7 +162,7 @@ class TestDTD2PO:
         assert self.countelements(pofile) == 1
 
     def test_donttranslate_label(self):
-        """test strangeness when label entity is marked DONT_TRANSLATE and accesskey is not, bug 30"""
+        """Test strangeness when label entity is marked DONT_TRANSLATE and accesskey is not, bug 30"""
         dtdsource = (
             "<!--LOCALIZATION NOTE (editorCheck.label): DONT_TRANSLATE -->\n"
             + '<!ENTITY editorCheck.label "Composer">\n<!ENTITY editorCheck.accesskey "c">\n'
@@ -175,21 +175,21 @@ class TestDTD2PO:
         assert "editorCheck.accesskey" in posource
 
     def test_donttranslate_onlyentity(self):
-        """if the entity is itself just another entity then it shouldn't appear in the output PO file"""
+        """If the entity is itself just another entity then it shouldn't appear in the output PO file"""
         dtdsource = """<!-- LOCALIZATION NOTE (mainWindow.title): DONT_TRANSLATE -->
 <!ENTITY mainWindow.title "&brandFullName;">"""
         pofile = self.dtd2po(dtdsource)
         assert self.countelements(pofile) == 0
 
     def test_donttranslate_commentedout(self):
-        """check that we don't process messages in <!-- comments -->: bug 102"""
+        """Check that we don't process messages in <!-- comments -->: bug 102"""
         dtdsource = """<!-- commenting out until bug 38906 is fixed
 <!ENTITY messagesHeader.label         "Messages"> -->"""
         pofile = self.dtd2po(dtdsource)
         assert self.countelements(pofile) == 0
 
     def test_spaces_at_start_of_dtd_lines(self):
-        """test that pretty print spaces at the start of subsequent DTD element lines are removed from the PO file, bug 79"""
+        """Test that pretty print spaces at the start of subsequent DTD element lines are removed from the PO file, bug 79"""
         # Space at the end of the line
         dtdsource = (
             '<!ENTITY  noupdatesfound.intro "First line then \n'
@@ -210,7 +210,7 @@ class TestDTD2PO:
         assert pounit.source == "First line then next lines."
 
     def test_accesskeys_folding(self):
-        """test that we fold accesskeys into message strings"""
+        """Test that we fold accesskeys into message strings"""
         dtdsource_template = (
             '<!ENTITY  fileSaveAs.%s "Save As...">\n<!ENTITY  fileSaveAs.%s "S">\n'
         )
@@ -232,15 +232,15 @@ class TestDTD2PO:
                 assert pounit.target == "&Gcina ka..."
 
     def test_accesskeys_mismatch(self):
-        """check that we can handle accesskeys that don't match and thus can't be folded into the .label entry"""
+        """Check that we can handle accesskeys that don't match and thus can't be folded into the .label entry"""
         dtdsource = (
-            '<!ENTITY  fileSave.label "Save">\n' '<!ENTITY  fileSave.accesskey "z">\n'
+            '<!ENTITY  fileSave.label "Save">\n<!ENTITY  fileSave.accesskey "z">\n'
         )
         pofile = self.dtd2po(dtdsource)
         assert self.countelements(pofile) == 2
 
     def test_carriage_return_in_multiline_dtd(self):
-        r"""test that we create nice PO files when we find a \r\n in a multiline DTD element"""
+        r"""Test that we create nice PO files when we find a \r\n in a multiline DTD element"""
         dtdsource = (
             '<!ENTITY  noupdatesfound.intro "First line then \r\n'
             '                                next lines.">\n'
@@ -250,7 +250,7 @@ class TestDTD2PO:
         assert unit.source == "First line then next lines."
 
     def test_multiline_with_blankline(self):
-        """test that we can process a multiline entity that has a blank line in it, bug 331"""
+        """Test that we can process a multiline entity that has a blank line in it, bug 331"""
         dtdsource = """
 <!ENTITY multiline.text "
 Some text
@@ -262,7 +262,7 @@ Some other text
         assert unit.source == "Some text  Some other text"
 
     def test_multiline_closing_quotes(self):
-        """test that we support various styles and spaces after closing quotes on multiline entities"""
+        """Test that we support various styles and spaces after closing quotes on multiline entities"""
         dtdsource = """
 <!ENTITY pref.plural '<span>opsies</span><span
                       class="noWin">preferences</span>' >
@@ -274,7 +274,7 @@ Some other text
         )
 
     def test_preserving_spaces(self):
-        """test that we preserve space that appear at the start of the first line of a DTD entity"""
+        """Test that we preserve space that appear at the start of the first line of a DTD entity"""
         # Space before first character
         dtdsource = '<!ENTITY mainWindow.titlemodifiermenuseparator " - ">'
         pofile = self.dtd2po(dtdsource)
@@ -289,7 +289,7 @@ Some other text
 
     @staticmethod
     def test_escaping_newline_tabs():
-        """test that we handle all kinds of newline permutations"""
+        """Test that we handle all kinds of newline permutations"""
         dtdsource = '<!ENTITY  noupdatesfound.intro "A hard coded newline.\\nAnd tab\\t and a \\r carriage return.">\n'
         converter = dtd2po.dtd2po()
         thedtd = dtd.dtdunit()
@@ -305,7 +305,7 @@ Some other text
         )
 
     def test_abandoned_accelerator(self):
-        """test that when a language DTD has an accelerator but the template DTD does not that we abandon the accelerator"""
+        """Test that when a language DTD has an accelerator but the template DTD does not that we abandon the accelerator"""
         dtdtemplate = '<!ENTITY test.label "Test">\n'
         dtdlanguage = '<!ENTITY test.label "Toets">\n<!ENTITY test.accesskey "T">\n'
         pofile = self.dtd2po(dtdlanguage, dtdtemplate)
@@ -314,7 +314,7 @@ Some other text
         assert unit.target == "Toets"
 
     def test_unassociable_accelerator(self):
-        """test to see that we can handle accelerator keys that cannot be associated correctly"""
+        """Test to see that we can handle accelerator keys that cannot be associated correctly"""
         dtdsource = '<!ENTITY  managecerts.button "Manage Certificates...">\n<!ENTITY  managecerts.accesskey "M">'
         pofile = self.dtd2po(dtdsource)
         assert pofile.units[1].source == "Manage Certificates..."
@@ -324,7 +324,7 @@ Some other text
         assert pofile.units[2].target == "M"
 
     def test_changed_labels_and_accelerators(self):
-        """test to ensure that when the template changes an entity name we can still manage the accelerators"""
+        """Test to ensure that when the template changes an entity name we can still manage the accelerators"""
         dtdtemplate = """<!ENTITY  managecerts.caption      "Manage Certificates">
 <!ENTITY  managecerts.text         "Use the Certificate Manager to manage your personal certificates, as well as those of other people and certificate authorities.">
 <!ENTITY  managecerts.button       "Manage Certificates...">
@@ -342,7 +342,7 @@ Some other text
 
     @mark.xfail(reason="Not Implemented")
     def test_accelerator_keys_not_in_sentence(self):
-        """tests to ensure that we can manage accelerator keys that are not part of the transated sentence eg in Chinese"""
+        """Tests to ensure that we can manage accelerator keys that are not part of the transated sentence eg in Chinese"""
         dtdtemplate = """<!ENTITY useAutoScroll.label             "Use autoscrolling">
 <!ENTITY useAutoScroll.accesskey         "a">"""
         dtdlanguage = """<!ENTITY useAutoScroll.label             "使用自動捲動(Autoscrolling)">
@@ -360,13 +360,13 @@ Some other text
         assert pofile.units[1].target == "使用自動捲動 (&A)".decode("utf-8")
 
     def test_exclude_entity_includes(self):
-        """test that we don't turn an include into a translatable string"""
+        """Test that we don't turn an include into a translatable string"""
         dtdsource = '<!ENTITY % brandDTD SYSTEM "chrome://branding/locale/brand.dtd">'
         pofile = self.dtd2po(dtdsource)
         assert self.countelements(pofile) == 0
 
     def test_linewraps(self):
-        """check that redundant line wraps are removed from the po file"""
+        """Check that redundant line wraps are removed from the po file"""
         dtdsource = """<!ENTITY generic.longDesc "
 <p>Test me.</p>
 ">"""
@@ -375,7 +375,7 @@ Some other text
         assert pounit.source == "<p>Test me.</p>"
 
     def test_merging_with_new_untranslated(self):
-        """test that when we merge in new untranslated strings with existing translations we manage the encodings properly"""
+        """Test that when we merge in new untranslated strings with existing translations we manage the encodings properly"""
         # This should probably be in test_po.py but was easier to do here
         dtdtemplate = """<!ENTITY unreadFolders.label "Unread">\n<!ENTITY viewPickerUnread.label "Unread">\n<!ENTITY unreadColumn.label "Unread">"""
         dtdlanguage = """<!ENTITY viewPickerUnread.label "Непрочетени">\n<!ENTITY unreadFolders.label "Непрочетени">"""
@@ -384,7 +384,7 @@ Some other text
         assert pofile.units[1].source == "Unread"
 
     def test_merge_without_template(self):
-        """test that we we manage the case where we merge and their is no template file"""
+        """Test that we we manage the case where we merge and their is no template file"""
         # If we supply a template file we should fail if the template file does not exist or is blank.  We should
         # not put the translation in as the source.
         # TODO: this test fails, since line 16 checks for "not dtdtemplate"

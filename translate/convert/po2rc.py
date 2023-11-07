@@ -15,7 +15,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
-"""Convert Gettext PO localization files back to Windows Resource (.rc) files.
+"""
+Convert Gettext PO localization files back to Windows Resource (.rc) files.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/rc2po.html
 for examples and usage instructions.
@@ -263,7 +264,7 @@ class rerc:
                 elif element.values_[0] == "SEPARATOR":
                     yield "SEPARATOR"
                 else:
-                    raise NotImplementedError()
+                    raise NotImplementedError
 
                 yield self.templatestore.newline
 
@@ -298,7 +299,6 @@ class rerc:
 
     def translate_strings(self, s, loc, toks):
         """Change the strings in the toks by the ones in the translation."""
-
         if toks.language:
             # Recreate the language, but using the settings.
             return list(self.convert_language(s, loc, toks))
@@ -322,7 +322,7 @@ class rerc:
         return statement.transform_string(self.templatecontent.decode(self.charset))
 
     def makestoredict(self, store, includefuzzy=False):
-        """make a dictionary of the translations"""
+        """Make a dictionary of the translations"""
         for unit in store.units:
             if includefuzzy or not unit.isfuzzy():
                 rcstring = unit.target

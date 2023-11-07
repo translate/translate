@@ -593,7 +593,8 @@ plural_tags = {
 
 
 def simplercode(code):
-    """This attempts to simplify the given language code by ignoring country
+    """
+    This attempts to simplify the given language code by ignoring country
     codes, for example.
 
     .. seealso::
@@ -632,7 +633,8 @@ dialect_name_re = re.compile(r"(.+)\s\(([^)\d]{,25})\)$")
 
 
 def normalize(string, normal_form="NFC"):
-    """Return a unicode string in its normalized form
+    """
+    Return a unicode string in its normalized form
 
     :param string: The string to be normalized
     :param normal_form: NFC (default), NFD, NFKC, NFKD
@@ -653,7 +655,8 @@ __normalised_languages = {normalize_code(key) for key in languages}
 
 
 def simplify_to_common(language_code):
-    """Simplify language code to the most commonly used form for the language,
+    """
+    Simplify language code to the most commonly used form for the language,
     stripping country information for languages that tend not to be localized
     differently for different countries
     """

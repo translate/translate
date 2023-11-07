@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Classes that represent languages and provides language-specific information.
+"""
+Classes that represent languages and provides language-specific information.
 
 All classes inherit from the parent class called :class:`common`.
 

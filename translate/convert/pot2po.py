@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Convert template files (like .pot or template .xlf files) to translation
+"""
+Convert template files (like .pot or template .xlf files) to translation
 files, preserving existing translations.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pot2po.html
@@ -39,7 +40,7 @@ def convertpot(
     fuzzymatching=True,
     classes=None,
     classes_str=None,
-    **kwargs
+    **kwargs,
 ):
     """Main conversion function."""
     input_store = factory.getobject(
@@ -62,7 +63,7 @@ def convertpot(
         tm,
         min_similarity,
         fuzzymatching,
-        **kwargs
+        **kwargs,
     )
     output_store.serialize(output_file)
 
@@ -76,9 +77,10 @@ def convert_stores(
     tm=None,
     min_similarity=75,
     fuzzymatching=True,
-    **kwargs
+    **kwargs,
 ):
-    """Actual conversion function, works on stores not files, returns
+    """
+    Actual conversion function, works on stores not files, returns
     a properly initialized pretranslated output store, with structure
     based on input_store, metadata based on template_store, migrates
     old translations from template_store and pretranslating from TM.
@@ -166,7 +168,8 @@ def _store_pre_merge(input_store, output_store, template_store, **kwargs):
 
 
 def _store_post_merge(input_store, output_store, template_store, **kwargs):
-    """Close file after merging all translations, used for adding statistics,
+    """
+    Close file after merging all translations, used for adding statistics,
     obsolete messages and similar wrapup tasks.
     """
     # Dispatch to format specific functions
@@ -178,7 +181,8 @@ def _store_post_merge(input_store, output_store, template_store, **kwargs):
 
 
 def _unit_post_merge(input_unit, input_store, output_store, template_store, **kwargs):
-    """Handle any unit level cleanup and situations not handled by the merge()
+    """
+    Handle any unit level cleanup and situations not handled by the merge()
     function.
     """
     # dispatch to format specific functions
@@ -286,7 +290,7 @@ def _do_poheaders(input_store, output_store, template_store):
         language_team=language_team,
         mime_version=mime_version,
         plural_forms=plural_forms,
-        **kwargs
+        **kwargs,
     )
 
     # Get the header comments and fuzziness state

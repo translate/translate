@@ -33,7 +33,7 @@ class tmxunit(lisa.LISAunit):
     textNode = "seg"
 
     def createlanguageNode(self, lang, text, purpose):
-        """returns a langset xml Element setup with given parameters"""
+        """Returns a langset xml Element setup with given parameters"""
         langset = etree.Element(self.languageNode)
         setXMLlang(langset, lang)
         seg = etree.SubElement(langset, self.textNode)
@@ -48,7 +48,8 @@ class tmxunit(lisa.LISAunit):
         return langset
 
     def getid(self):
-        """Returns the identifier for this unit. The optional tuid property is
+        """
+        Returns the identifier for this unit. The optional tuid property is
         used if available, otherwise we inherit .getid(). Note that the tuid
         property is only mandated to be unique from TMX 2.0.
         """
@@ -59,7 +60,8 @@ class tmxunit(lisa.LISAunit):
         return bool(self.source)
 
     def addnote(self, text, origin=None, position="append"):
-        """Add a note specifically in a "note" tag.
+        """
+        Add a note specifically in a "note" tag.
 
         The origin parameter is ignored
         """
@@ -67,7 +69,8 @@ class tmxunit(lisa.LISAunit):
         note.text = text.strip()
 
     def _getnotelist(self, origin=None):
-        """Returns the text from notes.
+        """
+        Returns the text from notes.
 
         :param origin: Ignored
         :return: The text from notes
@@ -104,7 +107,8 @@ class tmxunit(lisa.LISAunit):
         return errordict
 
     def copy(self):
-        """Make a copy of the translation unit.
+        """
+        Make a copy of the translation unit.
 
         We don't want to make a deep copy - this could duplicate the whole XML
         tree. For now we just serialise and reparse the unit's XML.
@@ -148,7 +152,7 @@ class tmxfile(lisa.LISAfile):
         # headernode.set("creationid", "CodeSyntax"
 
     def addtranslation(self, source, srclang, translation, translang, comment=None):
-        """addtranslation method for testing old unit tests"""
+        """Addtranslation method for testing old unit tests"""
         unit = self.addsourceunit(source)
         unit.target = translation
         if comment is not None and len(comment) > 0:
@@ -159,5 +163,5 @@ class tmxfile(lisa.LISAfile):
         setXMLlang(next(tuvs), translang)
 
     def translate(self, sourcetext, sourcelang=None, targetlang=None):
-        """method to test old unit tests"""
+        """Method to test old unit tests"""
         return getattr(self.findunit(sourcetext), "target", None)

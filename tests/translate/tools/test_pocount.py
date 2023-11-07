@@ -21,7 +21,7 @@ _xliff_states_no = "tests/cli/data/test_pocount_xliff_states_no/states.xlf"
 class TestCount:
     @staticmethod
     def count(source, expectedsource, target=None, expectedtarget=None):
-        """simple helper to check the respective word counts"""
+        """Simple helper to check the respective word counts"""
         poelement = po.pounit(source)
         if target is not None:
             poelement.target = target
@@ -39,24 +39,24 @@ class TestCount:
             assert wordstarget == expectedtarget
 
     def test_simple_count_zero(self):
-        """no content"""
+        """No content"""
         self.count("", 0)
 
     def test_simple_count_one(self):
-        """simplest one word count"""
+        """Simplest one word count"""
         self.count("One", 1)
 
     def test_simple_count_two(self):
-        """simplest one word count"""
+        """Simplest one word count"""
         self.count("One two", 2)
 
     def test_punctuation_divides_words(self):
-        """test that we break words when there is punctuation"""
+        """Test that we break words when there is punctuation"""
         self.count("One. Two", 2)
         self.count("One.Two", 2)
 
     def test_xml_tags(self):
-        """test that we do not count XML tags as words"""
+        """Test that we do not count XML tags as words"""
         # <br> is a word break
         self.count("A word<br>Another word", 4)
         self.count("A word<br/>Another word", 4)
@@ -67,17 +67,17 @@ class TestCount:
         self.count("<no label>", 2)
 
     def test_newlines(self):
-        """test to see that newlines divide words"""
+        """Test to see that newlines divide words"""
         # newlines break words
         self.count("A word.\nAnother word", 4)
         self.count(r"A word.\\n\nAnother word", 4)
 
     def test_variables_are_words(self):
-        """test that we count variables as words"""
+        """Test that we count variables as words"""
         self.count("%PROGRAMNAME %PROGRAM% %s $file $1", 5)
 
     def test_plurals(self):
-        """test that we can handle plural PO elements"""
+        """Test that we can handle plural PO elements"""
         # #: gdk-pixbuf/gdk-pixdata.c:430
         # #, c-format
         # msgid "failed to allocate image buffer of %u byte"
@@ -87,11 +87,11 @@ class TestCount:
 
     @mark.xfail(reason="Support commented out pending removal")
     def test_plurals_kde(self):
-        """test that we correcly count old style KDE plurals"""
+        """Test that we correcly count old style KDE plurals"""
         self.count("_n: Singular\\n\nPlural", 2, "Een\\n\ntwee\\n\ndrie", 3)
 
     def test_msgid_blank(self):
-        """counts a message id"""
+        """Counts a message id"""
         self.count("   ", 0)
 
     # Counting strings

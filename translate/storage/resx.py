@@ -37,7 +37,6 @@ class RESXUnit(lisa.LISAunit):
 
     def createlanguageNode(self, lang, text, purpose):
         """Returns an xml Element setup with given parameters."""
-
         langset = etree.Element(self.namespaced(self.languageNode))
 
         langset.text = text

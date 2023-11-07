@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Convert Gettext PO localization files to Mozilla .dtd and .properties files.
+"""
+Convert Gettext PO localization files to Mozilla .dtd and .properties files.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/moz2po.html
 for examples and usage instructions.
@@ -32,7 +33,8 @@ class MozConvertOptionParser(convert.ConvertOptionParser):
         super().__init__(formats, usetemplates, usepots, description=description)
 
     def splitinputext(self, inputpath):
-        """splits a inputpath into name and extension
+        """
+        splits a inputpath into name and extension
 
         Special adaptation to handle po2moz case where extensions are
         e.g. properties.po
@@ -47,7 +49,7 @@ class MozConvertOptionParser(convert.ConvertOptionParser):
         return (root, ext)
 
     def recursiveprocess(self, options):
-        """recurse through directories and convert files"""
+        """Recurse through directories and convert files"""
         self.replacer.replacestring = options.locale
         result = super().recursiveprocess(options)
         return result

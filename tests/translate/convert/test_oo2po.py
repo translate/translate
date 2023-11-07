@@ -15,7 +15,7 @@ class TestOO2PO:
     conversion_class = oo2po.oo2po
 
     def convert(self, oosource, sourcelanguage="en-US", targetlanguage="af-ZA"):
-        """helper that converts oo source to po source without requiring files"""
+        """Helper that converts oo source to po source without requiring files"""
         if isinstance(oosource, str):
             oosource = oosource.encode("utf-8")
         inputoo = oo.oofile(oosource)
@@ -25,7 +25,7 @@ class TestOO2PO:
 
     @staticmethod
     def singleelement(pofile):
-        """checks that the pofile contains a single non-header element, and returns it"""
+        """Checks that the pofile contains a single non-header element, and returns it"""
         if isinstance(pofile, poheader):
             assert len(pofile.units) == 2
             assert pofile.units[0].isheader()
@@ -40,7 +40,6 @@ class TestOO2PO:
 
         Return the string once it has been through all the conversions.
         """
-
         ootemplate = r"helpcontent2	%s	0	help	par_id3150670 35				0	en-US	%s				2002-02-02 02:02:02"
 
         oosource = (ootemplate % (filename, entitystring)).encode("utf-8")
@@ -75,7 +74,7 @@ class TestOO2PO:
         assert self.roundtripstring(filename, text) == text
 
     def test_simpleentity(self):
-        """checks that a simple oo entry converts properly to a po entry"""
+        """Checks that a simple oo entry converts properly to a po entry"""
         oosource = r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58"
         pofile = self.convert(oosource)
         pounit = self.singleelement(pofile)
@@ -83,7 +82,7 @@ class TestOO2PO:
         assert pounit.target == ""
 
     def test_escapes(self):
-        """checks that a simple oo entry converts escapes properly to a po entry"""
+        """Checks that a simple oo entry converts escapes properly to a po entry"""
         oosource = r"wizards	source\formwizard\dbwizres.src	0	string	RID_DB_FORM_WIZARD_START + 19				0	en-US	Newline \n Newline Tab \t Tab CR \r CR				20050924 09:13:58"
         pofile = self.convert(oosource)
         pounit = self.singleelement(pofile)
@@ -122,7 +121,7 @@ class TestOO2PO:
         )
 
     def test_roundtrip_whitespaceonly(self):
-        """check items that are only special instances of whitespce"""
+        """Check items that are only special instances of whitespce"""
         self.check_roundtrip("choose_chart_type.xhp", r" ")
         self.check_roundtrip("choose_chart_type.xhp", b"\xc2\xa0".decode("utf-8"))
 
@@ -135,7 +134,7 @@ class TestOO2PO:
         assert pounit.source == r"\<"
 
     def test_escapes_helpcontent2(self):
-        """checks that a helpcontent2 entry converts escapes properly to a po entry"""
+        """Checks that a helpcontent2 entry converts escapes properly to a po entry"""
         oosource = r"helpcontent2	source\text\smath\guide\parentheses.xhp	0	help	par_id3150344	4			0	en-US	size *2 \\langle x \\rangle				2002-02-02 02:02:02"
         pofile = self.convert(oosource)
         pounit = self.singleelement(pofile)
@@ -144,7 +143,7 @@ class TestOO2PO:
         assert pounit.source == r"size *2 \langle x \rangle"
 
     def test_msgid_bug_error_address(self):
-        """tests the we have the correct url for reporting msgid bugs"""
+        """Tests the we have the correct url for reporting msgid bugs"""
         oosource = r"wizards	source\formwizard\dbwizres.src	0	string	RID_DB_FORM_WIZARD_START + 19				0	en-US	Newline \n Newline Tab \t Tab CR \r CR				20050924 09:13:58"
         pofile = self.convert(oosource)
         assert pofile.units[0].isheader()
@@ -161,7 +160,7 @@ class TestOO2PO:
         }
 
     def test_x_comment_inclusion(self):
-        """test that we can merge x-comment language entries into comment sections of the PO file"""
+        """Test that we can merge x-comment language entries into comment sections of the PO file"""
         en_USsource = r"wizards	source\formwizard\dbwizres.src	0	string	RID_DB_FORM_WIZARD_START + 19				0	en-US	Text		Quickhelp	Title	20050924 09:13:58"
         xcommentsource = r"wizards	source\formwizard\dbwizres.src	0	string	RID_DB_FORM_WIZARD_START + 19				0	x-comment	%s		%s	%s	20050924 09:13:58"
         # Real comment
@@ -228,7 +227,7 @@ class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2PO):
         assert oofile.filename.endswith("snippet.sdf")
 
     def test_simple_pot(self):
-        """tests the simplest possible conversion to a pot file"""
+        """Tests the simplest possible conversion to a pot file"""
         oosource = r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58"
         self.create_testfile("simple.oo", oosource)
         self.run_command("simple.oo", "simple.pot", pot=True, nonrecursiveinput=True)
@@ -238,7 +237,7 @@ class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2PO):
         assert poelement.target == ""
 
     def test_simple_po(self):
-        """tests the simplest possible conversion to a po file"""
+        """Tests the simplest possible conversion to a po file"""
         oosource1 = r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58"
         oosource2 = r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	ku	Karakter				20050924 09:13:58"
         self.create_testfile("simple.oo", oosource1 + "\n" + oosource2)
@@ -249,14 +248,14 @@ class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2PO):
         assert poelement.target == "Karakter"
 
     def test_onefile_nonrecursive(self):
-        """tests the --multifile=onefile option and make sure it doesn't produce a directory"""
+        """Tests the --multifile=onefile option and make sure it doesn't produce a directory"""
         oosource = r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58"
         self.create_testfile("simple.oo", oosource)
         self.run_command("simple.oo", "simple.pot", pot=True, multifile="onefile")
         assert os.path.isfile(self.get_testfilename("simple.pot"))
 
     def test_remove_duplicates(self):
-        """test that removing of duplicates works correctly (bug 171)"""
+        """Test that removing of duplicates works correctly (bug 171)"""
         oosource = r"""
 sd	source\ui\animations\SlideTransitionPane.src	0	checkbox	DLG_SLIDE_TRANSITION_PANE	CB_AUTO_PREVIEW	HID_SD_SLIDETRANSITIONPANE_CB_AUTO_PREVIEW		1	en-US	Automatic preview				20060725 03:26:42
 sd	source\ui\animations\AnimationSchemesPane.src	0	checkbox	DLG_ANIMATION_SCHEMES_PANE	CB_AUTO_PREVIEW	HID_SD_ANIMATIONSCHEMESPANE_CB_AUTO_PREVIEW		1	en-US	Automatic preview				20060725 03:26:42

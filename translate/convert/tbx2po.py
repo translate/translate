@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Convert TermBase eXchange (.tbx) glossary file into a Gettext PO file
+"""
+Convert TermBase eXchange (.tbx) glossary file into a Gettext PO file
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/tbx2po.html
 for examples and usage instructions
@@ -26,12 +27,14 @@ from translate.storage import po, tbx
 
 
 class tbx2po:
-    """A class that takes translations from a .tbx file and puts them in a .po
+    """
+    A class that takes translations from a .tbx file and puts them in a .po
     file
     """
 
     def convertfile(self, tbxfile):
-        """Converts a tbxfile to a tbxfile, and returns it. uses templatepo if
+        """
+        Converts a tbxfile to a tbxfile, and returns it. uses templatepo if
         given at construction
         """
         self.pofile = po.pofile()
@@ -47,7 +50,8 @@ class tbx2po:
 
 
 def converttbx(inputfile, outputfile, templatefile, charset=None, columnorder=None):
-    """Reads in inputfile using tbx, converts using tbx2po, writes to
+    """
+    Reads in inputfile using tbx, converts using tbx2po, writes to
     outputfile
     """
     inputstore = tbx.tbxfile(inputfile)

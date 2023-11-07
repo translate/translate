@@ -34,7 +34,8 @@ class XPathTree:
 
 
 def _split_xpath_component(xpath_component):
-    """Split an xpath component into a tag-index tuple.
+    """
+    Split an xpath component into a tag-index tuple.
 
     >>> split_xpath_component('{urn:oasis:names:tc:opendocument:xmlns:office:1.0}document-content[0]')
     ('{urn:oasis:names:tc:opendocument:xmlns:office:1.0}document-content', 0).
@@ -47,7 +48,8 @@ def _split_xpath_component(xpath_component):
 
 
 def _split_xpath(xpath):
-    """Split an 'xpath' string separated by / into a reversed list of its components. Thus:
+    """
+    Split an 'xpath' string separated by / into a reversed list of its components. Thus:
 
     >>> split_xpath('document-content[1]/body[2]/text[3]/p[4]')
     [('p', 4), ('text', 3), ('body', 2), ('document-content', 1)]
@@ -63,7 +65,8 @@ def _split_xpath(xpath):
 
 
 def _add_unit_to_tree(node, xpath_components, unit):
-    """Walk down the tree rooted a node, and follow nodes which correspond to the
+    """
+    Walk down the tree rooted a node, and follow nodes which correspond to the
     components of xpath_components. When reaching the end of xpath_components,
     set the reference of the node to unit.
 
@@ -95,7 +98,8 @@ def _add_unit_to_tree(node, xpath_components, unit):
 
 
 def build_unit_tree(store, filename=None):
-    """Enumerate a translation store and build a tree with XPath components as nodes
+    """
+    Enumerate a translation store and build a tree with XPath components as nodes
     and where a node contains a unit if a path from the root of the tree to the node
     containing the unit, is equal to the XPath of the unit.
 

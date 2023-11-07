@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Convert Gettext PO localization files to Qt Linguist (.ts) files.
+"""
+Convert Gettext PO localization files to Qt Linguist (.ts) files.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/ts2po.html
 for examples and usage instructions.
@@ -28,7 +29,7 @@ from translate.storage import po, ts2
 class po2ts:
     @staticmethod
     def convertstore(inputstore, outputfile, templatefile=None, context=None):
-        """converts a .po file to .ts format (using a template .ts file if given)"""
+        """Converts a .po file to .ts format (using a template .ts file if given)"""
         if templatefile is None:
             tsfile = ts2.tsfile()
         else:
@@ -58,7 +59,7 @@ class po2ts:
 
 
 def convertpo(inputfile, outputfile, templatefile, context):
-    """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
+    """Reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
     inputstore = po.pofile(inputfile)
     if inputstore.isempty():
         return 0

@@ -42,7 +42,7 @@ class TestPO2Txt:
         return self._convert(*args, **kwargs)[1].getvalue().decode("utf-8")
 
     def test_basic(self):
-        """test basic conversion"""
+        """Test basic conversion"""
         input_string = """msgid "Heading"
 msgstr "Opskrif"
 
@@ -58,7 +58,7 @@ Lyfteks"""
         assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_nonascii(self):
-        """test conversion with non-ascii text"""
+        """Test conversion with non-ascii text"""
         input_string = """msgid "Heading"
 msgstr "Opskrif"
 
@@ -74,7 +74,7 @@ Lêerinhoud"""
         assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_blank_handling(self):
-        """check that we discard blank messages"""
+        """Check that we discard blank messages"""
         input_string = """msgid "Heading"
 msgstr "Opskrif"
 
@@ -91,7 +91,7 @@ Body text"""
         assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_fuzzy_handling(self):
-        """check that we handle fuzzy message correctly"""
+        """Check that we handle fuzzy message correctly"""
         input_string = """#, fuzzy
 msgid "Heading"
 msgstr "Opskrif"
@@ -109,7 +109,7 @@ Lyfteks"""
         assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_obsolete_ignore(self):
-        """check that we handle obsolete message by not using it"""
+        """Check that we handle obsolete message by not using it"""
         input_string = """
 msgid "Heading"
 msgstr "Opskrif"
@@ -130,7 +130,7 @@ Lyfteks"""
         assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_header_ignore(self):
-        """check that we ignore headers"""
+        """Check that we ignore headers"""
         input_string = """
 msgid "Heading"
 msgstr "Opskrif"

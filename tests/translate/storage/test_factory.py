@@ -8,13 +8,13 @@ from translate.storage.directory import Directory
 
 
 def classname(filename):
-    """returns the classname to ease testing"""
+    """Returns the classname to ease testing"""
     classinstance = factory.getclass(filename)
     return str(classinstance.__name__).lower()
 
 
 def givefile(filename, content):
-    """returns a file dummy object with the given content"""
+    """Returns a file dummy object with the given content"""
     file = BytesIO(content)
     file.name = filename
     return file
@@ -22,18 +22,18 @@ def givefile(filename, content):
 
 class BaseTestFactory:
     def setup_method(self, method):
-        """sets up a test directory"""
+        """Sets up a test directory"""
         self.testdir = "%s_testdir" % (self.__class__.__name__)
         self.cleardir(self.testdir)
         os.mkdir(self.testdir)
 
     def teardown_method(self, method):
-        """removes the attributes set up by setup_method"""
+        """Removes the attributes set up by setup_method"""
         self.cleardir(self.testdir)
 
     @classmethod
     def cleardir(self, dirname):
-        """removes the given directory"""
+        """Removes the given directory"""
         if os.path.exists(dirname):
             for dirpath, subdirs, filenames in os.walk(dirname, topdown=False):
                 for name in filenames:
@@ -55,8 +55,8 @@ class BaseTestFactory:
         assert classname("file.tbx") == "tbxfile"
         assert classname("file.po.xliff") == "xlifffile"
 
-        assert not classname("file.po") == "tmxfile"
-        assert not classname("file.po") == "xlifffile"
+        assert classname("file.po") != "tmxfile"
+        assert classname("file.po") != "xlifffile"
 
         assert classname("file.po.gz") == "pofile"
         assert classname("file.pot.gz") == "pofile"
@@ -67,8 +67,8 @@ class BaseTestFactory:
         assert classname("file.tbx.gz") == "tbxfile"
         assert classname("file.po.xliff.gz") == "xlifffile"
 
-        assert not classname("file.po.gz") == "tmxfile"
-        assert not classname("file.po.gz") == "xlifffile"
+        assert classname("file.po.gz") != "tmxfile"
+        assert classname("file.po.gz") != "xlifffile"
 
         assert classname("file.po.bz2") == "pofile"
         assert classname("file.pot.bz2") == "pofile"
@@ -79,8 +79,8 @@ class BaseTestFactory:
         assert classname("file.tbx.bz2") == "tbxfile"
         assert classname("file.po.xliff.bz2") == "xlifffile"
 
-        assert not classname("file.po.bz2") == "tmxfile"
-        assert not classname("file.po.bz2") == "xlifffile"
+        assert classname("file.po.bz2") != "tmxfile"
+        assert classname("file.po.bz2") != "xlifffile"
 
     def test_getobject_store(self):
         """Tests that we get a valid object."""

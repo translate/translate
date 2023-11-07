@@ -17,7 +17,8 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 
-"""Convert an OpenOffice.org (SDF) localization file to Gettext PO localization files.
+"""
+Convert an OpenOffice.org (SDF) localization file to Gettext PO localization files.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/oo2po.html
 for examples and usage instructions.
@@ -37,7 +38,7 @@ class oo2po:
     def __init__(
         self, sourcelanguage, targetlanguage, blankmsgstr=False, long_keys=False
     ):
-        """construct an oo2po converter for the specified languages"""
+        """Construct an oo2po converter for the specified languages"""
         self.sourcelanguage = sourcelanguage
         self.targetlanguage = targetlanguage
         self.blankmsgstr = blankmsgstr
@@ -45,7 +46,7 @@ class oo2po:
 
     @staticmethod
     def maketargetunit(part1, part2, translators_comment, key, subkey):
-        """makes a base unit (.po or XLIFF) out of a subkey of two parts"""
+        """Makes a base unit (.po or XLIFF) out of a subkey of two parts"""
         # TODO: Do better
         text1 = getattr(part1, subkey)
         if text1 == "":
@@ -60,7 +61,7 @@ class oo2po:
         return unit
 
     def convertelement(self, theoo):
-        """convert an oo element into a list of base units (.po or XLIFF)"""
+        """Convert an oo element into a list of base units (.po or XLIFF)"""
         if self.sourcelanguage in theoo.languages:
             part1 = theoo.languages[self.sourcelanguage]
         else:
@@ -91,7 +92,7 @@ class oo2po:
         return unitlist
 
     def convertstore(self, theoofile, duplicatestyle="msgctxt"):
-        """converts an entire oo file to a base class format (.po or XLIFF)"""
+        """Converts an entire oo file to a base class format (.po or XLIFF)"""
         thetargetfile = po.pofile()
         # create a header for the file
         bug_url = "http://qa.openoffice.org/issues/enter_bug.cgi?%s" % parse.urlencode(
@@ -121,7 +122,7 @@ class oo2po:
 
 
 def verifyoptions(options):
-    """verifies the commandline options"""
+    """Verifies the commandline options"""
     if not options.pot and not options.targetlanguage:
         raise ValueError(
             "You must specify the target language unless generating POT files (-P)"
@@ -138,7 +139,7 @@ def convertoo(
     duplicatestyle="msgid_comment",
     multifilestyle="single",
 ):
-    """reads in stdin using inputstore class, converts using convertorclass, writes to stdout"""
+    """Reads in stdin using inputstore class, converts using convertorclass, writes to stdout"""
     inputstore = oo.oofile()
     if hasattr(inputfile, "filename"):
         inputfilename = inputfile.filename
@@ -154,14 +155,14 @@ def convertoo(
             sourcelanguage = "en-US"
     if sourcelanguage not in inputstore.languages:
         logger.warning(
-            "sourcelanguage '%s' not found in inputfile '%s' " "(contains %s)",
+            "sourcelanguage '%s' not found in inputfile '%s' (contains %s)",
             sourcelanguage,
             inputfilename,
             ", ".join(inputstore.languages),
         )
     if targetlanguage and targetlanguage not in inputstore.languages:
         logger.warning(
-            "targetlanguage '%s' not found in inputfile '%s' " "(contains %s)",
+            "targetlanguage '%s' not found in inputfile '%s' (contains %s)",
             targetlanguage,
             inputfilename,
             ", ".join(inputstore.languages),

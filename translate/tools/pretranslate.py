@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Fill localization files with suggested translations based on
+"""
+Fill localization files with suggested translations based on
 translation memory and existing translations.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pretranslate.html
@@ -56,7 +57,8 @@ def pretranslate_file(
     min_similarity=75,
     fuzzymatching=True,
 ):
-    """Pretranslate any factory supported file with old translations and
+    """
+    Pretranslate any factory supported file with old translations and
     translation memory.
     """
     input_store = factory.getobject(input_file)
@@ -119,7 +121,8 @@ def match_fuzzy(input_unit, matchers):
 def pretranslate_unit(
     input_unit, template_store, matchers=None, mark_reused=False, merge_on="id"
 ):
-    """Pretranslate a unit or return unchanged if no translation was found.
+    """
+    Pretranslate a unit or return unchanged if no translation was found.
 
     :param input_unit: Unit that will be pretranslated.
     :param template_store: Fill input unit with units matching in this store.

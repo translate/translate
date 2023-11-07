@@ -16,14 +16,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-import lxml.etree as etree
+from lxml import etree
 
 from translate.storage.xml_extract import extract, misc
 from translate.storage.xml_name import XmlNamer
 
 
 def _get_tag_arrays(dom_node):
-    """Return a dictionary indexed by child tag names, where each tag is associated with an array
+    """
+    Return a dictionary indexed by child tag names, where each tag is associated with an array
     of all the child nodes with matching the tag name, in the order in which they appear as children
     of dom_node.
 
@@ -81,7 +82,8 @@ def find_dom_root(parent_dom_node, dom_node):
 
 
 def find_placeable_dom_tree_roots(unit_node):
-    r"""For an inline placeable, find the root DOM node for the placeable in its
+    r"""
+    For an inline placeable, find the root DOM node for the placeable in its
     parent.
 
     Consider the diagram. In this pseudo-ODF example, there is an inline span
@@ -107,7 +109,8 @@ def find_placeable_dom_tree_roots(unit_node):
 
 
 def _map_source_dom_to_doc_dom(unit_node, source_dom_node):
-    r"""Creating a mapping from the DOM nodes in source_dom_node which correspond to
+    r"""
+    Creating a mapping from the DOM nodes in source_dom_node which correspond to
     placeables, with DOM nodes in the XML document template (this information is obtained
     from unit_node). We are interested in DOM nodes in the XML document template which
     are the roots of placeables. See the diagram below, as well as
@@ -139,7 +142,8 @@ def _map_source_dom_to_doc_dom(unit_node, source_dom_node):
 
 
 def _map_target_dom_to_source_dom(source_dom_node, target_dom_node):
-    """Associate placeables in source_dom_node and target_dom_node which
+    """
+    Associate placeables in source_dom_node and target_dom_node which
     have the same 'id' attributes.
 
     We're using XLIFF placeables. The XLIFF standard requires that
@@ -181,7 +185,8 @@ def _build_target_dom_to_doc_dom(unit_node, source_dom, target_dom):
 
 
 def _get_translated_node(target_node, target_dom_to_doc_dom):
-    """Convenience function to get node corresponding to 'target_node' and to
+    """
+    Convenience function to get node corresponding to 'target_node' and to
     assign the tail text of 'target_node' to this node.
     """
     dom_node = target_dom_to_doc_dom[target_node]
@@ -190,7 +195,8 @@ def _get_translated_node(target_node, target_dom_to_doc_dom):
 
 
 def _build_translated_dom(dom_node, target_node, target_dom_to_doc_dom):
-    """Use the "shape" of 'target_node' (which is a DOM tree) to insert nodes
+    """
+    Use the "shape" of 'target_node' (which is a DOM tree) to insert nodes
     into the DOM tree rooted at 'dom_node'.
 
     The mapping 'target_dom_to_doc_dom' is used to map nodes from 'target_node'
@@ -220,7 +226,8 @@ def _build_translated_dom(dom_node, target_node, target_dom_to_doc_dom):
 
 
 def get_xliff_source_target_doms(unit):
-    """Return a tuple with unit source and target DOM objects.
+    """
+    Return a tuple with unit source and target DOM objects.
 
     This method is method is meant to provide a way to retrieve the DOM objects
     for the unit source and target for XLIFF stores.
@@ -236,7 +243,8 @@ def replace_dom_text(
     dom_retriever=get_xliff_source_target_doms,
     process_translatable=extract.process_translatable,
 ):
-    """Return a function::
+    """
+    Return a function::
 
           action: etree_Element x base.TranslationUnit -> None
 
@@ -246,7 +254,8 @@ def replace_dom_text(
     """
 
     def action(dom_node, unit):
-        """Use the unit's target (or source in the case where there is no
+        """
+        Use the unit's target (or source in the case where there is no
         translation) to update the text in the dom_node and at the tails of its
         children.
         """

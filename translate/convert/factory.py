@@ -108,7 +108,8 @@ def get_output_extensions(ext):
 
 
 def convert(inputfile, template=None, options=None, convert_options=None):
-    """Convert the given input file to an appropriate output format, optionally
+    """
+    Convert the given input file to an appropriate output format, optionally
     using the given template file and further options.
 
     If the output extension (format) cannot be inferred the first converter

@@ -25,7 +25,8 @@ from translate.storage.xml_extract import misc, xpath_breadcrumb
 
 
 class Translatable:
-    """A node corresponds to a translatable element. A node may have children,
+    """
+    A node corresponds to a translatable element. A node may have children,
     which correspond to placeables.
     """
 
@@ -46,7 +47,8 @@ class Translatable:
 
     @property
     def has_translatable_text(self):
-        """Check if it contains any chunk of text with more than whitespace.
+        """
+        Check if it contains any chunk of text with more than whitespace.
 
         If not, then there's nothing to translate.
         """
@@ -62,7 +64,8 @@ def reduce_unit_tree(f, unit_node, *state):
 
 
 class ParseState:
-    """Maintain constants and variables used during the walking of a DOM tree
+    """
+    Maintain constants and variables used during the walking of a DOM tree
     (via the function apply).
     """
 
@@ -76,7 +79,8 @@ class ParseState:
 
 
 def _process_placeable(dom_node, state):
-    """Process current placeable.
+    """
+    Process current placeable.
 
     This returns all nested translatable content for this placeable as a single
     Translatable object, or just returns an empty Translatable object for this
@@ -100,7 +104,8 @@ def _process_placeable(dom_node, state):
 
 
 def process_translatable(dom_node, state):
-    """Process a translatable DOM node.
+    """
+    Process a translatable DOM node.
 
     Any translatable content present in a child node is treated as a placeable.
     """
@@ -215,7 +220,8 @@ def process_idml_translatable(dom_node, state):
 
 
 def _process_children(dom_node, state, process_func):
-    """Process an untranslatable DOM node.
+    """
+    Process an untranslatable DOM node.
 
     Since the node is untranslatable it just returns any translatable content
     present in its child nodes.
@@ -301,7 +307,8 @@ class IdMaker:
 
 
 def _to_placeables(parent_translatable, translatable, id_maker):
-    """Convert the translatable object to a list of strings and XLIFF
+    """
+    Convert the translatable object to a list of strings and XLIFF
     placeables.
     """
     result = []
@@ -319,7 +326,8 @@ def _to_placeables(parent_translatable, translatable, id_maker):
 
 
 def _make_store_adder(store):
-    """Return a function which, when called with a Translatable will add
+    """
+    Return a function which, when called with a Translatable will add
     a unit to 'store'. The placeables will be represented as strings according
     to 'placeable_quoter'.
     """
@@ -327,7 +335,8 @@ def _make_store_adder(store):
     from translate.storage.xliff import xliffunit
 
     def add_translatable_to_store(parent_translatable, translatable):
-        """Construct a new translation unit, set its source and location
+        """
+        Construct a new translation unit, set its source and location
         information and add it to 'store'.
         """
         unit = store.UnitClass("")
@@ -344,14 +353,16 @@ def _make_store_adder(store):
 
 
 def make_postore_adder(store, id_maker, filename):
-    """Return a function which, when called with a Translatable will add
+    """
+    Return a function which, when called with a Translatable will add
     a unit to 'store'. The placeables will be represented as strings according
     to 'placeable_quoter'.
     """
     from translate.storage.xliff import xliffunit
 
     def add_translatable_to_store(parent_translatable, translatable):
-        """Construct a new translation unit, set its source and location
+        """
+        Construct a new translation unit, set its source and location
         information and add it to 'store'.
         """
         xliff_unit = xliffunit("")
@@ -374,7 +385,8 @@ def make_postore_adder(store, id_maker, filename):
 
 
 def _walk_idml_translatable_tree(translatables, store_adder, parent_translatable):
-    """Traverse all the found IDML translatables and add them to the Store.
+    """
+    Traverse all the found IDML translatables and add them to the Store.
 
     Inline translatables are not added to the Store.
     """
@@ -392,7 +404,8 @@ def _walk_idml_translatable_tree(translatables, store_adder, parent_translatable
 def _walk_translatable_tree(
     translatables, store_adder, parent_translatable, stored_by_parent=False
 ):
-    """Traverse all the found translatables and add them to the Store.
+    """
+    Traverse all the found translatables and add them to the Store.
 
     Inline translatables are not added to the Store.
     """

@@ -20,7 +20,8 @@ from functools import wraps
 
 
 def deprecated(message=""):
-    """Decorator that marks functions and methods as deprecated.
+    """
+    Decorator that marks functions and methods as deprecated.
 
     A warning will be emitted when the function or method is used. If a custom
     message is provided, it will be shown after the default warning message.

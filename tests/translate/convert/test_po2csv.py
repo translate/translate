@@ -10,7 +10,7 @@ from . import test_convert
 class TestPO2CSV:
     @staticmethod
     def po2csv(posource):
-        """helper that converts po source to csv source without requiring files"""
+        """Helper that converts po source to csv source without requiring files"""
         inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
         convertor = po2csv.po2csv()
@@ -18,7 +18,7 @@ class TestPO2CSV:
 
     @staticmethod
     def csv2po(csvsource, template=None):
-        """helper that converts csv source to po source without requiring files"""
+        """Helper that converts csv source to po source without requiring files"""
         inputfile = BytesIO(csvsource)
         inputcsv = csvl10n.csvfile(inputfile)
         if template:
@@ -31,12 +31,12 @@ class TestPO2CSV:
 
     @staticmethod
     def singleelement(storage):
-        """checks that the pofile contains a single non-header element, and returns it"""
+        """Checks that the pofile contains a single non-header element, and returns it"""
         assert headerless_len(storage.units) == 1
         return first_translatable(storage)
 
     def test_simpleentity(self):
-        """checks that a simple csv entry definition converts properly to a po entry"""
+        """Checks that a simple csv entry definition converts properly to a po entry"""
         minipo = r'''#: term.cpp
 msgid "Term"
 msgstr "asdf"'''
@@ -47,7 +47,7 @@ msgstr "asdf"'''
         assert unit.target == "asdf"
 
     def test_multiline(self):
-        """tests multiline po entries"""
+        """Tests multiline po entries"""
         minipo = r'''msgid "First part "
 "and extra"
 msgstr "Eerste deel "
@@ -129,7 +129,7 @@ msgstr "Vind\\Opsies"
         assert headerless_len(csvfile.units) == 1
 
     def test_kdecomments(self):
-        """test that we don't carry KDE comments to CSV"""
+        """Test that we don't carry KDE comments to CSV"""
         minipo = '#: simple.c\nmsgid "_: KDE comment\\n"\n"Same"\nmsgstr "Same"\n'
         csvfile = self.po2csv(minipo)
         unit = self.singleelement(csvfile)

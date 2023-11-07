@@ -95,7 +95,8 @@ _hiddenclasses = {"txt": _examine_txt}
 
 
 def _guessextention(storefile):
-    """Guesses the type of a file object by looking at the first few
+    """
+    Guesses the type of a file object by looking at the first few
     characters.  The return value is a file extention.
     """
     start = storefile.read(300).strip()
@@ -118,14 +119,15 @@ def _guessextention(storefile):
 
 
 def _getdummyname(storefile):
-    """Provides a dummy name for a file object without a name attribute, by
+    """
+    Provides a dummy name for a file object without a name attribute, by
     guessing the file type.
     """
     return "dummy." + _guessextention(storefile)
 
 
 def _getname(storefile):
-    """returns the filename"""
+    """Returns the filename"""
     if storefile is None:
         raise ValueError(
             "This method cannot magically produce a filename when given None as input."
@@ -156,7 +158,8 @@ def getclass(
     classes_str=None,
     hiddenclasses=None,
 ):
-    """Factory that returns the applicable class for the type of file
+    """
+    Factory that returns the applicable class for the type of file
     presented.  Specify ignore to ignore some part at the back of the name
     (like .gz).
     """
@@ -202,7 +205,8 @@ def getobject(
     classes_str=None,
     hiddenclasses=None,
 ):
-    """Factory that returns a usable object for the type of file presented.
+    """
+    Factory that returns a usable object for the type of file presented.
 
     :type storefile: file or str or TranslationStore
     :param storefile: File object or file name.
@@ -274,7 +278,8 @@ supported = [
 
 
 def supported_files():
-    """Returns data about all supported files
+    """
+    Returns data about all supported files
 
     :return: list of type that include (name, extensions, mimetypes)
     :rtype: list

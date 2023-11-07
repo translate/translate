@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""XLIFF classes specifically suited for handling the PO representation in
+"""
+XLIFF classes specifically suited for handling the PO representation in
 XLIFF.
 
 This way the API supports plurals as if it was a PO file, for example.
@@ -224,7 +225,8 @@ class PoXliffUnit(xliff.xliffunit):
         return references
 
     def getautomaticcomments(self):
-        """Returns the automatic comments (x-po-autocomment), which corresponds
+        """
+        Returns the automatic comments (x-po-autocomment), which corresponds
         to the #. style po comments.
         """
         groups = self.getcontextgroups("po-entry")
@@ -237,7 +239,8 @@ class PoXliffUnit(xliff.xliffunit):
         return "\n".join(comments)
 
     def gettranslatorcomments(self):
-        """Returns the translator comments (x-po-trancomment), which
+        """
+        Returns the translator comments (x-po-trancomment), which
         corresponds to the # style po comments.
         """
         groups = self.getcontextgroups("po-entry")
@@ -313,11 +316,12 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
         # TODO: Make more robust
 
         def ispluralgroup(node):
-            """determines whether the xml node refers to a getttext plural"""
+            """Determines whether the xml node refers to a getttext plural"""
             return node.get("restype") == "x-gettext-plurals"
 
         def isnonpluralunit(node):
-            """determindes whether the xml node contains a plural like id.
+            """
+            determindes whether the xml node contains a plural like id.
 
             We want to filter out all the plural nodes, except the very first
             one in each group.

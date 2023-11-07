@@ -25,7 +25,8 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 
-"""Module for parsing Gettext .mo files for translation.
+"""
+Module for parsing Gettext .mo files for translation.
 
 The coding of .mo files was produced from `Gettext documentation
 <http://www.gnu.org/software/gettext/manual/gettext.html#MO-Files>`_,
@@ -239,7 +240,7 @@ class mofile(poheader.poheader, base.TranslationStore):
             out.write(strs)
 
     def parse(self, input):
-        """parses the given file or file source string"""
+        """Parses the given file or file source string"""
         if hasattr(input, "name"):
             self.filename = input.name
         elif not getattr(self, "filename", ""):

@@ -9,7 +9,7 @@ from . import test_convert
 class TestPO2Prop:
     @staticmethod
     def po2prop(posource):
-        """helper that converts po source to .properties source without requiring files"""
+        """Helper that converts po source to .properties source without requiring files"""
         inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
         convertor = po2prop.po2prop()
@@ -24,7 +24,7 @@ class TestPO2Prop:
         remove_untranslated=False,
         encoding="utf-8",
     ):
-        """helper that merges po translations to .properties source without requiring files"""
+        """Helper that merges po translations to .properties source without requiring files"""
         inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
         templatefile = BytesIO(
@@ -42,7 +42,7 @@ class TestPO2Prop:
         return outputprop.decode(encoding)
 
     def test_merging_simple(self):
-        """check the simplest case of merging a translation"""
+        """Check the simplest case of merging a translation"""
         posource = """#: prop\nmsgid "value"\nmsgstr "waarde"\n"""
         proptemplate = """prop=value\n"""
         propexpected = """prop=waarde\n"""
@@ -51,7 +51,7 @@ class TestPO2Prop:
         assert propfile == propexpected
 
     def test_merging_untranslated(self):
-        """check the simplest case of merging an untranslated unit"""
+        """Check the simplest case of merging an untranslated unit"""
         posource = """#: prop\nmsgid "value"\nmsgstr ""\n"""
         proptemplate = """prop=value\n"""
         propexpected = proptemplate
@@ -60,7 +60,7 @@ class TestPO2Prop:
         assert propfile == propexpected
 
     def test_hard_newlines_preserved(self):
-        """check that we preserver hard coded newlines at the start and end of sentence"""
+        """Check that we preserver hard coded newlines at the start and end of sentence"""
         posource = """#: prop\nmsgid "\\nvalue\\n\\n"\nmsgstr "\\nwaarde\\n\\n"\n"""
         proptemplate = """prop=\\nvalue\\n\\n\n"""
         propexpected = """prop=\\nwaarde\\n\\n\n"""
@@ -69,7 +69,7 @@ class TestPO2Prop:
         assert propfile == propexpected
 
     def test_space_preservation(self):
-        """check that we preserve any spacing in properties files when merging"""
+        """Check that we preserve any spacing in properties files when merging"""
         posource = """#: prop\nmsgid "value"\nmsgstr "waarde"\n"""
         proptemplate = """prop  =  value\n"""
         propexpected = """prop  =  waarde\n"""
@@ -78,7 +78,7 @@ class TestPO2Prop:
         assert propfile == propexpected
 
     def test_no_value(self):
-        """check that we can handle keys without value"""
+        """Check that we can handle keys without value"""
         posource = """#: KEY\nmsgctxt "KEY"\nmsgid ""\nmsgstr ""\n"""
         proptemplate = """KEY = \n"""
         propexpected = """KEY = \n"""
@@ -87,7 +87,7 @@ class TestPO2Prop:
         assert propfile == propexpected
 
     def test_no_separator(self):
-        """check that we can handle keys without separator"""
+        """Check that we can handle keys without separator"""
         posource = """#: KEY\nmsgctxt "KEY"\nmsgid ""\nmsgstr ""\n"""
         proptemplate = """KEY\n"""
         propexpected = """KEY\n"""
@@ -96,7 +96,7 @@ class TestPO2Prop:
         assert propfile == propexpected
 
     def test_merging_blank_entries(self):
-        """check that we can correctly merge entries that are blank in the template"""
+        """Check that we can correctly merge entries that are blank in the template"""
         posource = r'''#: accesskey-accept
 msgid ""
 "_: accesskey-accept\n"
@@ -109,7 +109,7 @@ msgstr ""'''
         assert propfile == propexpected
 
     def test_merging_fuzzy(self):
-        """check merging a fuzzy translation"""
+        """Check merging a fuzzy translation"""
         posource = """#: prop\n#, fuzzy\nmsgid "value"\nmsgstr "waarde"\n"""
         proptemplate = """prop=value\n"""
         propexpected = """prop=value\n"""
@@ -118,7 +118,7 @@ msgstr ""'''
         assert propfile == propexpected
 
     def test_mozilla_accesskeys(self):
-        """check merging Mozilla accesskeys"""
+        """Check merging Mozilla accesskeys"""
         posource = """#: prop.label prop.accesskey
 msgid "&Value"
 msgstr "&Waarde"
@@ -142,7 +142,7 @@ key.accesskey=S
         assert propfile == propexpected
 
     def test_mozilla_accesskeys_missing_accesskey(self):
-        """check merging Mozilla accesskeys"""
+        """Check merging Mozilla accesskeys"""
         posource = """#: prop.label prop.accesskey
 # No accesskey because we forgot or language doesn't do accesskeys
 msgid "&Value"
@@ -203,7 +203,7 @@ accesskey-help=م
         assert propfile == propexpected
 
     def test_merging_propertyless_template(self):
-        """check that when merging with a template with no property values that we copy the template"""
+        """Check that when merging with a template with no property values that we copy the template"""
         posource = ""
         proptemplate = "# A comment\n"
         propexpected = proptemplate
@@ -212,7 +212,7 @@ accesskey-help=م
         assert propfile == propexpected
 
     def test_delimiters(self):
-        """test that we handle different delimiters."""
+        """Test that we handle different delimiters."""
         posource = """#: prop\nmsgid "value"\nmsgstr "translated"\n"""
         proptemplate = """prop %s value\n"""
         propexpected = """prop %s translated\n"""
@@ -223,7 +223,7 @@ accesskey-help=م
             assert propfile == propexpected % delim
 
     def test_empty_value(self):
-        """test that we handle an value in the template"""
+        """Test that we handle an value in the template"""
         posource = """#: key
 msgctxt "key"
 msgid ""
@@ -236,7 +236,7 @@ msgstr "translated"
         assert propfile == propexpected
 
     def test_personalities(self):
-        """test that we output correctly for Java and Mozilla style property files.  Mozilla uses Unicode, while Java uses escaped Unicode"""
+        """Test that we output correctly for Java and Mozilla style property files.  Mozilla uses Unicode, while Java uses escaped Unicode"""
         posource = """#: prop\nmsgid "value"\nmsgstr "ṽḁḽṻḝ"\n"""
         proptemplate = """prop  =  value\n"""
         propexpectedjava = """prop  =  \\u1E7D\\u1E01\\u1E3D\\u1E7B\\u1E1D\n"""
@@ -262,7 +262,7 @@ msgstr "translated"
         assert propfile == propexpectedstrings
 
     def test_merging_untranslated_simple(self):
-        """check merging untranslated entries in two 1) use English 2) drop key, value pair"""
+        """Check merging untranslated entries in two 1) use English 2) drop key, value pair"""
         posource = """#: prop\nmsgid "value"\nmsgstr ""\n"""
         proptemplate = """prop = value\n"""
         propfile = self.merge2prop(proptemplate, posource)
@@ -273,7 +273,7 @@ msgstr "translated"
         assert propfile == ""  # We drop the key
 
     def test_merging_untranslated_multiline(self):
-        """check merging untranslated entries with multiline values"""
+        """Check merging untranslated entries with multiline values"""
         posource = """#: prop\nmsgid "value1 value2"\nmsgstr ""\n"""
         proptemplate = """prop = value1 \\
     value2
@@ -287,7 +287,7 @@ msgstr "translated"
         assert propfile == ""  # We drop the key
 
     def test_merging_untranslated_multiline2(self):
-        """check merging untranslated entries with multiline values"""
+        """Check merging untranslated entries with multiline values"""
         posource = """
 #: legal_text_and_links3
 msgid "By using {{clientShortname}} you agree to the {{terms_of_use}} and {{privacy_notice}}."
@@ -305,7 +305,7 @@ msgstr ""
         assert propfile == ""  # We drop the key
 
     def test_merging_untranslated_comments(self):
-        """check merging untranslated entries with comments"""
+        """Check merging untranslated entries with comments"""
         posource = """#: prop\nmsgid "value"\nmsgstr ""\n"""
         proptemplate = """# A comment\nprop = value\n"""
         propexpected = "# A comment\nprop = value\n"
@@ -318,7 +318,7 @@ msgstr ""
         assert propfile == "# A comment\n"  # We drop the key
 
     def test_merging_untranslated_unchanged(self):
-        """check removing untranslated entries but keeping unchanged ones"""
+        """Check removing untranslated entries but keeping unchanged ones"""
         posource = """#: prop
 msgid "value"
 msgstr ""

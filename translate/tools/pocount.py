@@ -17,7 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Count strings and words for supported localization files.
+"""
+Count strings and words for supported localization files.
 
 These include: XLIFF, TMX, Gettex PO and MO, Qt .ts and .qm, Wordfast TM, etc
 
@@ -124,7 +125,8 @@ def wordcount(string):
 
 
 def wordsinunit(unit):
-    """Counts the words in the unit's source and target, taking plurals into
+    """
+    Counts the words in the unit's source and target, taking plurals into
     account. The target words are only counted if the unit is translated.
     """
     (sourcewords, targetwords) = (0, 0)
@@ -195,7 +197,6 @@ def file_extended_totals(units, wordcounts):
     """
     Provide extended statuses (used by XLIFF)
     """
-
     stats = {}
 
     for unit in units:

@@ -69,7 +69,7 @@ class TestMultistring:
         assert t("test").__cmp__("test") == 0
 
         assert t("téßt") > "test"
-        assert "test" < t("téßt")
+        assert t("téßt") > "test"
         assert t("téßt").__cmp__("test") > 0
 
     @staticmethod

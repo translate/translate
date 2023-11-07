@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Convert Gettext PO localization files to a Wordfast translation memory file.
+"""
+Convert Gettext PO localization files to a Wordfast translation memory file.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/po2wordfast.html
 for examples and usage instructions.
@@ -32,7 +33,7 @@ from translate.storage import po, wordfast
 class po2wordfast:
     @staticmethod
     def convertfiles(inputfile, wffile, sourcelanguage="en", targetlanguage=None):
-        """converts a .po file (possibly many) to a Wordfast TM file"""
+        """Converts a .po file (possibly many) to a Wordfast TM file"""
         inputstore = po.pofile(inputfile)
         for inunit in inputstore.units:
             if inunit.isheader() or inunit.isblank() or not inunit.istranslated():
@@ -47,7 +48,7 @@ class po2wordfast:
 def convertpo(
     inputfile, outputfile, templatefile, sourcelanguage="en", targetlanguage=None
 ):
-    """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
+    """Reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
     convertor = po2wordfast()
     outputfile.wffile.header.targetlang = targetlanguage
     convertor.convertfiles(inputfile, outputfile.wffile, sourcelanguage, targetlanguage)
@@ -56,7 +57,7 @@ def convertpo(
 
 class wfmultifile:
     def __init__(self, filename, mode=None):
-        """initialises wfmultifile from a seekable inputfile or writable outputfile"""
+        """Initialises wfmultifile from a seekable inputfile or writable outputfile"""
         self.filename = filename
         if mode is None:
             if os.path.exists(filename):
@@ -68,7 +69,7 @@ class wfmultifile:
         self.wffile = wordfast.WordfastTMFile()
 
     def openoutputfile(self, subfile):
-        """returns a pseudo-file object for the given subfile"""
+        """Returns a pseudo-file object for the given subfile"""
 
         def onclose(contents):
             pass

@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Convert plain text (.txt) files to Gettext PO localization files.
+"""
+Convert plain text (.txt) files to Gettext PO localization files.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/txt2po.html
 for examples and usage instructions.
@@ -141,7 +142,7 @@ def main(argv=None):
         default="plain",
         type="choice",
         choices=["plain", "dokuwiki", "mediawiki"],
-        help=("The flavour of text file: plain (default), " "dokuwiki, mediawiki"),
+        help=("The flavour of text file: plain (default), dokuwiki, mediawiki"),
         metavar="FLAVOUR",
     )
     parser.passthrough.append("flavour")

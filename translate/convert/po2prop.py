@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Convert Gettext PO localization files to Java/Mozilla .properties files.
+"""
+Convert Gettext PO localization files to Java/Mozilla .properties files.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/prop2po.html
 for examples and usage instructions.
@@ -32,7 +33,7 @@ eol = "\n"
 
 
 def applytranslation(key, propunit, inunit, mixedkeys):
-    """applies the translation for key in the po unit to the prop unit"""
+    """Applies the translation for key in the po unit to the prop unit"""
     # this converts the po-style string to a prop-style string
     value = inunit.target
     # handle mixed keys
@@ -198,8 +199,7 @@ class reprop:
                 postspacestart = len(line[delimiter_pos + 1 :])
                 postspaceend = len(line[delimiter_pos + 1 :].lstrip())
                 postspace = line[
-                    delimiter_pos
-                    + 1 : delimiter_pos
+                    delimiter_pos + 1 : delimiter_pos
                     + (postspacestart - postspaceend)
                     + 1
                 ]

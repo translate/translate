@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Convert JSON files to Gettext PO localization files.
+"""
+Convert JSON files to Gettext PO localization files.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/json2po.html
 for examples and usage instructions.
@@ -79,7 +80,8 @@ class json2po:
 
     @staticmethod
     def convert_unit(input_unit, commenttype):
-        """Converts a JSON unit to a PO unit
+        """
+        Converts a JSON unit to a PO unit
 
         :return: None if empty or not for translation
         """
@@ -102,7 +104,8 @@ def convertjson(
     dialect="default",
     filter=None,
 ):
-    """Reads in *input_file* using jsonl10n, converts using :class:`json2po`,
+    """
+    Reads in *input_file* using jsonl10n, converts using :class:`json2po`,
     writes to *output_file*.
     """
     from translate.storage import jsonl10n

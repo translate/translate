@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Merges XLIFF and Gettext PO localization files.
+"""
+Merges XLIFF and Gettext PO localization files.
 
 Snippet file produced by e.g. :doc:`pogrep </commands/pogrep>` and updated by a
 translator can be merged back into the original files.
@@ -33,7 +34,6 @@ from translate.storage.poheader import poheader
 
 def mergestores(store1, store2, mergeblanks, mergefuzzy, mergecomments):
     """Take any new translations in store2 and write them into store1."""
-
     for unit2 in store2.units:
         if unit2.isheader():
             if isinstance(store1, poheader):
@@ -56,7 +56,8 @@ def mergestores(store1, store2, mergeblanks, mergefuzzy, mergecomments):
 
 
 def str2bool(option):
-    """Convert a string value to boolean
+    """
+    Convert a string value to boolean
 
     :param option: yes, true, 1, no, false, 0
     :type option: String

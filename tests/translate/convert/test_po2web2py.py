@@ -7,7 +7,7 @@ from translate.storage import po
 class TestPO2WEB2PY:
     @staticmethod
     def po2web2py(po_source):
-        """helper that converts po source to web2py source without requiring files"""
+        """Helper that converts po source to web2py source without requiring files"""
         input_file = BytesIO(po_source.encode())
         input_po = po.pofile(input_file)
         convertor = po2web2py.po2pydict()
@@ -15,7 +15,7 @@ class TestPO2WEB2PY:
         return output_web2py.read()
 
     def test_basic(self):
-        """test a basic po to web2py conversion"""
+        """Test a basic po to web2py conversion"""
         input_po = """#: .text
 msgid "A simple string"
 msgstr "Du texte simple"
@@ -29,7 +29,7 @@ msgstr "Du texte simple"
         assert web2py_out == expected_web2py
 
     def test_unicode(self):
-        """test a po to web2py conversion with unicode"""
+        """Test a po to web2py conversion with unicode"""
         input_po = """#: .text
 msgid "Foobar"
 msgstr "Fúbär"
@@ -43,7 +43,7 @@ msgstr "Fúbär"
         assert web2py_out == expected_web2py
 
     def test_ordering_serialize(self):
-        """test alphabetic ordering in po to web2py conversion"""
+        """Test alphabetic ordering in po to web2py conversion"""
         input_po = """
 #: .foo
 msgid "foo"
@@ -68,7 +68,7 @@ msgstr "zab"
         assert web2py_out == expected_web2py
 
     def test_markmin(self):
-        """test removal of @markmin in po to web2py conversion"""
+        """Test removal of @markmin in po to web2py conversion"""
         input_po = """
 msgid "@markmin\x01Hello **world**!"
 msgstr ""

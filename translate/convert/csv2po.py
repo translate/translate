@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Convert Comma-Separated Value (.csv) files to Gettext PO localization files.
+"""
+Convert Comma-Separated Value (.csv) files to Gettext PO localization files.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/csv2po.html
 for examples and usage instructions.
@@ -30,7 +31,8 @@ logger = logging.getLogger(__name__)
 
 
 def replacestrings(source, *pairs):
-    r"""Use ``pairs`` of ``(original, replacement)`` to replace text found in
+    r"""
+    Use ``pairs`` of ``(original, replacement)`` to replace text found in
     ``source``.
 
     :param source: String to on which ``pairs`` of strings are to be replaced
@@ -59,12 +61,13 @@ def simplify(string):
 
 
 class csv2po:
-    """a class that takes translations from a .csv file and puts them in a .po
+    """
+    a class that takes translations from a .csv file and puts them in a .po
     file
     """
 
     def __init__(self, templatepo=None, charset=None, duplicatestyle="keep"):
-        """construct the converter..."""
+        """Construct the converter..."""
         self.pofile = templatepo
         self.charset = charset
         self.duplicatestyle = duplicatestyle
@@ -78,7 +81,7 @@ class csv2po:
             self.makeindex()
 
     def makeindex(self):
-        """makes indexes required for searching..."""
+        """Makes indexes required for searching..."""
         for pounit in self.pofile.units:
             joinedcomment = " ".join(pounit.getlocations())
             source = pounit.source
@@ -91,7 +94,7 @@ class csv2po:
             # do simpler matching in case things have been mangled...
             simpleid = simplify(source)
             # but check for duplicates
-            if simpleid in self.simpleindex and not (source in self.sourceindex):
+            if simpleid in self.simpleindex and source not in self.sourceindex:
                 # keep a list of them...
                 self.simpleindex[simpleid].append(pounit)
             else:
@@ -104,7 +107,7 @@ class csv2po:
 
     @staticmethod
     def convertunit(csvunit):
-        """converts csv unit to po unit"""
+        """Converts csv unit to po unit"""
         pounit = po.pounit(encoding="UTF-8")
         if csvunit.location:
             pounit.addlocation(csvunit.location)
@@ -114,7 +117,7 @@ class csv2po:
         return pounit
 
     def handlecsvunit(self, csvunit):
-        """handles reintegrating a csv unit into the .po file"""
+        """Handles reintegrating a csv unit into the .po file"""
         if len(csvunit.location.strip()) > 0 and csvunit.location in self.commentindex:
             pounit = self.commentindex[csvunit.location]
         elif csvunit.source in self.sourceindex:
@@ -181,7 +184,8 @@ class csv2po:
             pounit.target = csvunit.target
 
     def convertstore(self, thecsvfile):
-        """converts a csvfile to a pofile, and returns it. uses templatepo if
+        """
+        converts a csvfile to a pofile, and returns it. uses templatepo if
         given at construction
         """
         self.csvfile = thecsvfile
@@ -231,7 +235,8 @@ def convertcsv(
     columnorder=None,
     duplicatestyle="msgctxt",
 ):
-    """reads in inputfile using csvl10n, converts using csv2po, writes to
+    """
+    reads in inputfile using csvl10n, converts using csv2po, writes to
     outputfile
     """
     inputstore = csvl10n.csvfile(inputfile, fieldnames=columnorder)
