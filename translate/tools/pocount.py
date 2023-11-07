@@ -161,12 +161,13 @@ def calcstats(filename):
     review = [unit for unit in units if unit.isreview()]
     untranslated = untranslatedmessages(units)
     wordcounts = {id(unit): wordsinunit(unit) for unit in units}
-    sourcewords = lambda elementlist: sum(
-        wordcounts[id(unit)][0] for unit in elementlist
-    )
-    targetwords = lambda elementlist: sum(
-        wordcounts[id(unit)][1] for unit in elementlist
-    )
+
+    def sourcewords(elementlist):
+        return sum(wordcounts[id(unit)][0] for unit in elementlist)
+
+    def targetwords(elementlist):
+        return sum(wordcounts[id(unit)][1] for unit in elementlist)
+
     stats = {"filename": filename}
 
     # units

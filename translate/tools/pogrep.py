@@ -52,16 +52,12 @@ class GrepMatch:
     def get_getter(self):
         if self.part == "target":
             if self.unit.hasplural():
-                getter = lambda: self.unit.target.strings[self.part_n]
-            else:
-                getter = lambda: self.unit.target
-            return getter
+                return lambda: self.unit.target.strings[self.part_n]
+            return lambda: self.unit.target
         if self.part == "source":
             if self.unit.hasplural():
-                getter = lambda: self.unit.source.strings[self.part_n]
-            else:
-                getter = lambda: self.unit.source
-            return getter
+                return lambda: self.unit.source.strings[self.part_n]
+            return lambda: self.unit.source
         if self.part == "notes":
 
             def getter():

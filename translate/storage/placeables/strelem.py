@@ -26,6 +26,14 @@ import logging
 import sys
 
 
+def filter_all(e):
+    return True
+
+
+def filter_editable(e):
+    return e.iseditable
+
+
 class ElementNotFoundError(ValueError):
     pass
 
@@ -397,7 +405,7 @@ class StringElem:
     def depth_first(self, filter=None):
         """Returns a list of the nodes in the tree in depth-first order."""
         if filter is None or not callable(filter):
-            filter = lambda e: True
+            filter = filter_all
         elems = []
         if filter(self):
             elems.append(self)
@@ -485,7 +493,7 @@ class StringElem:
         leaves.
         """
         if filter is None or not callable(filter):
-            filter = lambda e: True
+            filter = filter_all
         return list(self.iter_depth_first(lambda e: e.isleaf() and filter(e)))
 
     def get_ancestor_where(self, child, criteria):
@@ -573,7 +581,7 @@ class StringElem:
                 return True
             # 1.2 #
             # logging.debug('Case 1.2')
-            oparent = self.get_ancestor_where(oelem, lambda x: x.iseditable)
+            oparent = self.get_ancestor_where(oelem, filter_editable)
             if oparent is not None:
                 oparent.sub.insert(0, checkleaf(oparent, text))
                 return True
@@ -584,7 +592,7 @@ class StringElem:
         if offset == len(self):
             # logging.debug('Case 2')
             last = self.flatten()[-1]
-            parent = self.get_ancestor_where(last, lambda x: x.iseditable)
+            parent = self.get_ancestor_where(last, filter_editable)
             if parent is None:
                 parent = self
             preferred_type = type(preferred_parent)
@@ -804,7 +812,7 @@ class StringElem:
     def iter_depth_first(self, filter=None):
         """Iterate through the nodes in the tree in dept-first order."""
         if filter is None or not callable(filter):
-            filter = lambda e: True
+            filter = filter_all
         if filter(self):
             yield self
         for sub in self.sub:
@@ -823,7 +831,7 @@ class StringElem:
         if filter is not None and not callable(filter):
             raise ValueError("filter is not callable or None")
         if filter is None:
-            filter = lambda e: True
+            filter = filter_all
 
         for elem in self.depth_first():
             if filter(elem):

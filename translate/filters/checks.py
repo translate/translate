@@ -1302,13 +1302,13 @@ class StandardChecker(TranslationChecker):
 
             if startmarker and endmarker:
                 if isinstance(endmarker, int):
-                    redecorate = lambda var: startmarker + var
+                    redecorate = lambda var: startmarker + var  # noqa: E731
                 else:
-                    redecorate = lambda var: startmarker + var + endmarker
+                    redecorate = lambda var: startmarker + var + endmarker  # noqa: E731
             elif startmarker:
-                redecorate = lambda var: startmarker + var
+                redecorate = lambda var: startmarker + var  # noqa: E731
             else:
-                redecorate = lambda var: var
+                redecorate = lambda var: var  # noqa: E731
 
             vars1 = varchecker(str1)
             vars2 = varchecker(str2)
