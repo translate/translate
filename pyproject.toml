@@ -27,7 +27,6 @@ profile = "black"
 # WONTFIX - not fixable in current codebase, might be better to go for noqa
 ignore = [
   "PT013",  # TODO: Found incorrect import of pytest, use simple `import pytest` instead
-  "ISC001",  # TODO: Implicitly concatenated string literals on one line
   "PLR0124",  # TODO: Name compared with itself, consider replacing `unit1 == unit1`
   "E402",  # TODO: Module level import not at top of file
   "PT009",  # TODO: Use a regular `assert` instead of unittest-style `assertCountEqual`
