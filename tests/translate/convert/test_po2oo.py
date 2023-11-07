@@ -61,7 +61,7 @@ class TestPO2OO:
         """Checks that the convertoo function is working"""
         oobase = (
             r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	%s	%s				20050924 09:13:58"
-            + "\r\n"
+            "\r\n"
         )
         posource = """#: numpages.src#RID_SVXPAGE_NUM_OPTIONS.STR_BULLET.string.text\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n"""
         ootemplate = oobase % ("en-US", "Simple String")
@@ -138,7 +138,7 @@ class TestPO2OO:
         """Test to ensure that we convert escapes correctly"""
         oosource = (
             r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Column1\tColumn2\r\n				2002-02-02 02:02:02"
-            + "\r\n"
+            "\r\n"
         )
         posource = """#: numpages.src#RID_SVXPAGE_NUM_OPTIONS.STR_BULLET.string.text\nmsgid "Column1\\tColumn2\\r\\n"\nmsgstr "Kolom1\\tKolom2\\r\\n"\n"""
         inputfile = BytesIO(posource.encode())
@@ -157,7 +157,7 @@ class TestPO2OO:
         # the closing tag should not confuse us.
         oosource = (
             r"helpcontent2	source\text\shared\3dsettings_toolbar.xhp	0	help	par_idN1056A				0	en-US	\<ahelp hid=\".\"\>The 3D-Settings toolbar controls properties of selected 3D objects.\</ahelp\>				2002-02-02 02:02:02"
-            + "\r\n"
+            "\r\n"
         )
         posource = r"""#: 3dsettings_toolbar.xhp#par_idN1056A.help.text
 msgid ""
@@ -183,7 +183,7 @@ msgstr ""
         """Test to ensure that we convert helpcontent escapes correctly"""
         oosource = (
             r"helpcontent2	source\text\scalc\05\empty_cells.xhp	0	help	par_id2629474				0	en-US	A1: <empty>				2002-02-02 02:02:02"
-            + "\r\n"
+            "\r\n"
         )
         posource = r"""#: empty_cells.xhp#par_id2629474.help.text
 msgid "A1: <empty>"

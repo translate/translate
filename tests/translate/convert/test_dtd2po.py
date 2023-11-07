@@ -131,10 +131,7 @@ class TestDTD2PO:
 
     def test_localisation_note_merge(self):
         """Test that LOCALIZATION NOTES are added properly as #. comments and disambiguated with msgctxt entries"""
-        dtdtemplate = (
-            "<!--LOCALIZATION NOTE (%s): Some note -->\n"
-            + '<!ENTITY %s "Source text">\n'
-        )
+        dtdtemplate = """<!--LOCALIZATION NOTE (%s): Some note -->\n<!ENTITY %s "Source text">\n"""
         dtdsource = dtdtemplate % ("note1.label", "note1.label") + dtdtemplate % (
             "note2.label",
             "note2.label",
@@ -164,7 +161,7 @@ class TestDTD2PO:
         """Test strangeness when label entity is marked DONT_TRANSLATE and accesskey is not, bug 30"""
         dtdsource = (
             "<!--LOCALIZATION NOTE (editorCheck.label): DONT_TRANSLATE -->\n"
-            + '<!ENTITY editorCheck.label "Composer">\n<!ENTITY editorCheck.accesskey "c">\n'
+            '<!ENTITY editorCheck.label "Composer">\n<!ENTITY editorCheck.accesskey "c">\n'
         )
         pofile = self.dtd2po(dtdsource)
         posource = bytes(pofile).decode("utf-8")

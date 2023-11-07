@@ -28,6 +28,5 @@ class tr(common.Common):
     """This class represents Turkish."""
 
     validaccel = (
-        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
-        + "ığüşöçĞÜŞİÖÇ"
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ığüşöçĞÜŞİÖÇ"
     )

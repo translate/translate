@@ -193,9 +193,9 @@ class TestGwtProp(test_monolingual.TestMonolingualStore):
         assert isinstance(propunit.target, multistring)
         assert propunit.target.strings == ["", "", "", "", "", ""]
         assert (
-            b"test_me=I can code!\ntest_me[none]=\ntest_me[one]=I can code single!\n"
-            + b"test_me[two]=\ntest_me[few]=\ntest_me[many]=\n"
-            == propfile.__bytes__()
+            propfile.__bytes__()
+            == b"test_me=I can code!\ntest_me[none]=\ntest_me[one]=I can code single!\n"
+            b"test_me[two]=\ntest_me[few]=\ntest_me[many]=\n"
         )
 
         propunit.target = {
@@ -209,36 +209,36 @@ class TestGwtProp(test_monolingual.TestMonolingualStore):
         assert isinstance(propunit.target, multistring)
         assert propunit.target.strings == ["zero", "one", "two", "few", "many", "other"]
         assert (
-            b"test_me=other\ntest_me[none]=zero\ntest_me[one]=one\n"
-            + b"test_me[two]=two\ntest_me[few]=few\ntest_me[many]=many\n"
-            == propfile.__bytes__()
+            propfile.__bytes__()
+            == b"test_me=other\ntest_me[none]=zero\ntest_me[one]=one\n"
+            b"test_me[two]=two\ntest_me[few]=few\ntest_me[many]=many\n"
         )
 
         propunit.target = multistring(["zero", "one", "two", "few", "many", "other"])
         assert isinstance(propunit.target, multistring)
         assert propunit.target.strings == ["zero", "one", "two", "few", "many", "other"]
         assert (
-            b"test_me=other\ntest_me[none]=zero\ntest_me[one]=one\n"
-            + b"test_me[two]=two\ntest_me[few]=few\ntest_me[many]=many\n"
-            == propfile.__bytes__()
+            propfile.__bytes__()
+            == b"test_me=other\ntest_me[none]=zero\ntest_me[one]=one\n"
+            b"test_me[two]=two\ntest_me[few]=few\ntest_me[many]=many\n"
         )
 
         propunit.target = ["zero", "one", "two", "few", "many", "other"]
         assert isinstance(propunit.target, multistring)
         assert propunit.target.strings == ["zero", "one", "two", "few", "many", "other"]
         assert (
-            b"test_me=other\ntest_me[none]=zero\ntest_me[one]=one\n"
-            + b"test_me[two]=two\ntest_me[few]=few\ntest_me[many]=many\n"
-            == propfile.__bytes__()
+            propfile.__bytes__()
+            == b"test_me=other\ntest_me[none]=zero\ntest_me[one]=one\n"
+            b"test_me[two]=two\ntest_me[few]=few\ntest_me[many]=many\n"
         )
 
         propunit.source = ["zero", "one", "two", "few", "many", "other"]
         assert isinstance(propunit.target, multistring)
         assert propunit.target.strings == ["zero", "one", "two", "few", "many", "other"]
         assert (
-            b"test_me=other\ntest_me[none]=zero\ntest_me[one]=one\n"
-            + b"test_me[two]=two\ntest_me[few]=few\ntest_me[many]=many\n"
-            == propfile.__bytes__()
+            propfile.__bytes__()
+            == b"test_me=other\ntest_me[none]=zero\ntest_me[one]=one\n"
+            b"test_me[two]=two\ntest_me[few]=few\ntest_me[many]=many\n"
         )
 
     def test_extra_plurals(self):

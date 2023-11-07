@@ -297,8 +297,8 @@ def geturls(str1):
     # TODO turn this into a verbose and compiled regex
     URLPAT = (
         r"https?:[\w/\.:;+\-~\%#\$?=&,()]+|"
-        + r"www\.[\w/\.:;+\-~\%#\$?=&,()]+|"
-        + r"ftp:[\w/\.:;+\-~\%#?=&,]+"
+        r"www\.[\w/\.:;+\-~\%#\$?=&,()]+|"
+        r"ftp:[\w/\.:;+\-~\%#?=&,]+"
     )
     return re.findall(URLPAT, str1)
 
