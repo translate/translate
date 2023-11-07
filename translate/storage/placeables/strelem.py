@@ -24,7 +24,6 @@ parsed rich-string tree. It is the base class of all placeables.
 
 import contextlib
 import logging
-import sys
 
 
 def filter_all(e):
@@ -418,7 +417,7 @@ class StringElem:
                 elems.extend(sub.depth_first(filter))
         return elems
 
-    def encode(self, encoding=sys.getdefaultencoding()):
+    def encode(self, encoding="utf-8"):
         """More ``unicode`` class emulation."""
         return str(self).encode(encoding)
 
