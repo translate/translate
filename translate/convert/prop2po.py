@@ -316,7 +316,7 @@ class prop2po:
         # if everything went well, there should be nothing left in plurals
         if len(plurals) != 0:
             logger.warning(
-                "Not all plural units converted correctly:" + "\n".join(plurals)
+                "Not all plural units converted correctly: %s", "\n".join(plurals)
             )
         return new_store
 

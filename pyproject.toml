@@ -32,7 +32,6 @@ ignore = [
   "B017",  # TODO: `pytest.raises(Exception)` should be considered evil
   "PLE0604",  # TODO: Invalid object in `__all__`, must contain only strings
   "B008",  # TODO: Do not perform function call `sys.getdefaultencoding` in argument defaults
-  "G003",  # TODO: Logging statement uses `+`
   "PLW1510",  # TODO: `subprocess.run` without explicit `check` argument
   "SLOT000",  # TODO: Subclasses of `str` should define `__slots__`
   "RUF013",  # TODO: PEP 484 prohibits implicit `Optional`

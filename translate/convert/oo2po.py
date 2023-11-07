@@ -66,7 +66,8 @@ class oo2po:
             part1 = theoo.languages[self.sourcelanguage]
         else:
             logger.error(
-                "/".join(theoo.lines[0].getkey()) + "language not found: %s",
+                "%s language not found: %s",
+                "/".join(theoo.lines[0].getkey()),
                 self.sourcelanguage,
             )
             return []

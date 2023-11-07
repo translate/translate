@@ -161,9 +161,9 @@ END;
             logging.debug("created fulltext triggers")
             self.fulltext = True
 
-        except dbapi2.OperationalError as e:
+        except dbapi2.OperationalError:
             self.fulltext = False
-            logging.debug("failed to initialize fts3 support: " + str(e))
+            logging.exception("failed to initialize fts3 support")
             script = """
 DROP TRIGGER IF EXISTS sources_insert_trig;
 DROP TRIGGER IF EXISTS sources_update_trig;
