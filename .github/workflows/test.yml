@@ -1,4 +1,4 @@
-name: Test on Linux
+name: Tests
 
 on:
   push:
@@ -17,7 +17,7 @@ permissions:
 jobs:
   test:
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
@@ -28,9 +28,14 @@ jobs:
         - '3.10'
         - '3.11'
         - '3.12'
+        os:
+        - ubuntu-latest
+        - windows-latest
+        - macos-latest
         include:
         - requirements: minimal
           python-version: '3.8'
+          os: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
@@ -41,6 +46,7 @@ jobs:
         cache: pip
         cache-dependency-path: requirements/*.txt
     - name: Install apt dependencies
+      if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt-get update
         sudo apt-get install -y libgettextpo-dev libxml2-dev libxmlsec1-dev gettext hunspell-af
@@ -59,6 +65,7 @@ jobs:
     - name: pytest
       run: make test
     - name: test-functional
+      if: matrix.os != 'windows-latest'
       env:
         PYTHON_ARGS: -m coverage run --append --source ${{ github.workspace }}/translate
         COVERAGE_FILE: ${{ github.workspace }}/.coverage
