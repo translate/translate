@@ -207,7 +207,7 @@ class RubyYAMLFile(YAMLFile):
 
     def preprocess(self, data):
         if isinstance(data, CommentedMap) and len(data) == 1:
-            lang = list(data.keys())[0]
+            lang = next(iter(data.keys()))
             self.settargetlanguage(lang)
             if data[lang] is None:
                 data[lang] = CommentedMap()
