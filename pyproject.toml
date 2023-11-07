@@ -40,7 +40,6 @@ ignore = [
   "PERF203",  # TODO: `try`-`except` within a loop incurs performance overhead
   "ERA001",  # TODO: Found commented-out code
   "B023",  # TODO: Function definition does not bind loop variable
-  "EXE002",  # TODO: The file is executable but no shebang is present
   "SIM115",  # TODO: Use context handler for opening files
   "E741",  # TODO: Ambiguous variable name:
   "B007",  # TODO: Loop control variable not used within loop body
