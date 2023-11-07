@@ -34,14 +34,7 @@ class km(common.Common):
     khmerpunc = "។៕៖៘"
     """These marks are only used for Khmer."""
 
-    punctuation = "".join(
-        [
-            common.Common.commonpunc,
-            common.Common.quotes,
-            common.Common.miscpunc,
-            khmerpunc,
-        ]
-    )
+    punctuation = f"{common.Common.commonpunc}{common.Common.quotes}{common.Common.miscpunc}{khmerpunc}"
 
     sentenceend = "!?…។៕៘"
 

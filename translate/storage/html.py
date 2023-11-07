@@ -423,7 +423,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         if popped != tag:
             raise ParseError(
                 "Mismatched closing tag: "
-                "expected '%s' got '%s' at line %s" % (popped, tag, self.getpos()[0])
+                f"expected '{popped}' got '{tag}' at line {self.getpos()[0]}"
             )
 
         self.append_markup({"type": "endtag", "html_content": "</%s>" % tag})

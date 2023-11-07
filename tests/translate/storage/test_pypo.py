@@ -207,9 +207,8 @@ msgstr ""
     def test_wrap_on_max_line_length(self):
         """Test that we wrap all lines on the maximum line length"""
         string = "1 3 5 7 N " * 11
-        expected = (
-            'msgid ""\n%s\nmsgstr ""\n'
-            % '"1 3 5 7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 "\n"7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 7 N "'
+        expected = 'msgid ""\n{}\nmsgstr ""\n'.format(
+            '"1 3 5 7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 "\n"7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 7 N "'
         )
         unit = self.UnitClass(string)
         assert str(unit) == expected

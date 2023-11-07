@@ -135,14 +135,12 @@ def main():
             differ = DirDiffer(fromfile, tofile, args)
         else:
             parser.error(
-                "File %s is a directory while file %s is a regular file"
-                % (fromfile, tofile)
+                f"File {fromfile} is a directory while file {tofile} is a regular file"
             )
     else:
         if os.path.isdir(tofile):
             parser.error(
-                "File %s is a regular file while file %s is a directory"
-                % (fromfile, tofile)
+                f"File {fromfile} is a regular file while file {tofile} is a directory"
             )
         else:
             differ = FileDiffer(fromfile, tofile, args)
@@ -193,19 +191,16 @@ class DirDiffer:
                             differ.writediff(outfile)
                         else:
                             outfile.write(
-                                "Common subdirectories: %s and %s\n"
-                                % (fromfile, tofile)
+                                f"Common subdirectories: {fromfile} and {tofile}\n"
                             )
                     else:
                         outfile.write(
-                            "File %s is a directory while file %s is a regular file\n"
-                            % (fromfile, tofile)
+                            f"File {fromfile} is a directory while file {tofile} is a regular file\n"
                         )
                 else:
                     if os.path.isdir(tofile):
                         outfile.write(
-                            "File %s is a regular file while file %s is a directory\n"
-                            % (fromfile, tofile)
+                            f"File {fromfile} is a regular file while file {tofile} is a directory\n"
                         )
                     else:
                         filediffer = FileDiffer(fromfile, tofile, self.options)

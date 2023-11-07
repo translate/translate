@@ -33,14 +33,7 @@ class hy(common.Common):
 
     armenianpunc = "։՝՜՞"
 
-    punctuation = "".join(
-        [
-            common.Common.commonpunc,
-            common.Common.quotes,
-            common.Common.miscpunc,
-            armenianpunc,
-        ]
-    )
+    punctuation = f"{common.Common.commonpunc}{common.Common.quotes}{common.Common.miscpunc}{armenianpunc}"
 
     sentenceend = "։՝՜…"
 

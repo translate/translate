@@ -182,7 +182,7 @@ class TradosSoup(BeautifulSoup):
     MARKUP_MASSAGE = [
         (
             re.compile("<(?P<fulltag>(?P<tag>[^\\s\\/]+).*?)>(?P<content>.+)\r"),
-            lambda x: "<%(fulltag)s>%(content)s</%(tag)s>" % x.groupdict(),
+            lambda x: "<{fulltag}>{content}</{tag}>".format(**x.groupdict()),
         ),
     ]
 

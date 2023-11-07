@@ -48,10 +48,8 @@ ignore = [
   "SIM401",  # TODO:  Use `klass, maker = _class_dictionary.get(tag, (xliff.UnknownXML, make_unknown))` instead of an `if` block
   "F403",  # TODO: `from .base import *` used; unable to detect undefined names
   "B028",  # TODO: No explicit `stacklevel` keyword argument found
-  "FLY002",  # TODO: Consider `f"{project}/{sourcefile}"` instead of string join
   "PIE810",  # TODO: Call `startswith` once with a `tuple`
   "TRY004",  # TODO: Prefer `TypeError` exception for invalid type
-  "FLY002",  # TODO: Consider `f"{dirname}/{filename}"` instead of string join
   "TRY301",  # TODO: Abstract `raise` to an inner function
   "B006",  # TODO: Do not use mutable data structures for argument defaults
   "RUF005",  # TODO: Consider `[*prev, ("key", k)]` instead of concatenation
@@ -70,7 +68,6 @@ ignore = [
   "SIM102",  # TODO: Use a single `if` statement instead of nested `if` statements
   "SIM115",  # TODO: Use context handler for opening files
   "E741",  # TODO: Ambiguous variable name:
-  "UP031",  # TODO: Use format specifiers instead of percent format
   "B007",  # TODO: Loop control variable not used within loop body
   "B020",  # TODO: Loop control variable `node` overrides iterable it iterates
   "E731",  # TODO: Do not assign a `lambda` expression, use a `def`
