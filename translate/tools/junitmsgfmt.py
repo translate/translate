@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import subprocess
 from argparse import ArgumentParser
 from os.path import basename
@@ -20,14 +21,13 @@ class MsgfmtTester:
 
     def _run_msgfmt(self, pofile: str):
         start_time = time()
-        process = subprocess.Popen(
-            ["msgfmt", "-cv", "-o", "/dev/null", pofile],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+        process = subprocess.run(
+            ["msgfmt", "--check", "--verbose", "--output-file=/dev/null", pofile],
+            capture_output=True,
             text=True,
+            env={"LC_ALL": "C.UTF-8", "PATH": os.environ["PATH"]},
         )
-        stdout, stderr = process.communicate()
-        stderr = stderr.replace(pofile, basename(pofile))
+        stderr = process.stderr.replace(pofile, basename(pofile))
 
         failures: list[CheckFailure] = []
         if process.returncode:
