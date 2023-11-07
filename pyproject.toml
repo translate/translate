@@ -36,7 +36,6 @@ ignore = [
   "B028",  # TODO: No explicit `stacklevel` keyword argument found
   "TRY301",  # TODO: Abstract `raise` to an inner function
   "B006",  # TODO: Do not use mutable data structures for argument defaults
-  "S110",  # TODO: `try`-`except`-`pass` detected, consider logging the exception
   "PLR0913",  # TODO: Too many arguments in function definition
   "PERF203",  # TODO: `try`-`except` within a loop incurs performance overhead
   "ERA001",  # TODO: Found commented-out code
