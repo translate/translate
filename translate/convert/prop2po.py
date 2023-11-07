@@ -104,8 +104,7 @@ class prop2po:
         else:
             targetheader = thetargetfile.header()
         targetheader.addnote(
-            "extracted from %s, %s"
-            % (origpropfile.filename, translatedpropfile.filename),
+            f"extracted from {origpropfile.filename}, {translatedpropfile.filename}",
             "developer",
         )
         origpropfile.makeindex()
@@ -488,8 +487,9 @@ def main(argv=None):
         default=properties.default_dialect,
         type="choice",
         choices=list(properties.dialects.keys()),
-        help="override the input file format: %s (for .properties files, default: %s)"
-        % (", ".join(properties.dialects.keys()), properties.default_dialect),
+        help="override the input file format: {} (for .properties files, default: {})".format(
+            ", ".join(properties.dialects.keys()), properties.default_dialect
+        ),
         metavar="TYPE",
     )
     parser.add_option(

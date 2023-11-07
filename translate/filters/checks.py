@@ -508,8 +508,7 @@ class UnitChecker:
             except Exception as e:
                 if self.errorhandler is None:
                     raise ValueError(
-                        "error in filter %s: %r, %r, %s"
-                        % (functionname, unit.source, unit.target, e)
+                        f"error in filter {functionname}: {unit.source!r}, {unit.target!r}, {e}"
                     )
                 filterresult = self.errorhandler(
                     functionname, unit.source, unit.target, e
@@ -806,8 +805,8 @@ class StandardChecker(TranslationChecker):
             escapes2 = ", ".join("'%s'" % word for word in str2.split() if "\\" in word)
 
             raise SeriousFilterFailure(
-                "Escapes in original (%s) don't match "
-                "escapes in translation (%s)" % (escapes1, escapes2)
+                f"Escapes in original ({escapes1}) don't match "
+                f"escapes in translation ({escapes2})"
             )
         return True
 
@@ -1173,14 +1172,12 @@ class StandardChecker(TranslationChecker):
         elif max1 < max2:
             failure_state = max(failure_state, STATE_SERIOUS)
             messages.append(
-                "Translation requires %s anonymous formatting args, original only %s"
-                % (max2, max1)
+                f"Translation requires {max2} anonymous formatting args, original only {max1}"
             )
         else:
             failure_state = max(failure_state, STATE_MILD)
             messages.append(
-                "Highest anonymous placeholder in original is %s, in translation %s"
-                % (max1, max2)
+                f"Highest anonymous placeholder in original is {max1}, in translation {max2}"
             )
 
         if set(data1["namedvars"]) == set(data2["namedvars"]):
@@ -1247,8 +1244,8 @@ class StandardChecker(TranslationChecker):
             if count1 == 1 and count2 == 0:
                 if countbad2 == 1:
                     messages.append(
-                        "Accelerator '%s' appears before an invalid "
-                        "accelerator character '%s'" % (accelmarker, bad2[0])
+                        f"Accelerator '{accelmarker}' appears before an invalid "
+                        f"accelerator character '{bad2[0]}'"
                     )
                 else:
                     messages.append("Missing accelerator '%s'" % accelmarker)
@@ -1607,8 +1604,7 @@ class StandardChecker(TranslationChecker):
                 if len(parts) > 1 and parts[1] in str2:
                     raise FilterFailure(
                         "Consider translating parameter "
-                        "'%(param)s' of option '%(option)s'"
-                        % {"param": parts[1], "option": parts[0]}
+                        f"'{parts[1]}' of option '{parts[0]}'"
                     )
 
         return True
@@ -2330,8 +2326,8 @@ class LibreOfficeChecker(StandardChecker):
                         opentag = opentags.pop()
                         if tagname(acttag) != "/" + tagname(opentag):
                             raise FilterFailure(
-                                "Open tag »%s« and close tag »%s« "
-                                "don't match" % (opentag, acttag)
+                                f"Open tag »{opentag}« and close tag »{acttag}« "
+                                "don't match"
                             )
                     elif acttag.endswith("/>"):
                         if match.group("tag") not in lo_emptytags:
@@ -2472,9 +2468,10 @@ class MozillaChecker(StandardChecker):
                         # FIXME we could check more carefully for numbers in pair1[2]
                         if pair2[3] not in self.mozilla_dialog_valid_units:
                             raise FilterFailure(
-                                "Units should be one of '%s'. "
-                                "The source string uses '%s'"
-                                % (", ".join(self.mozilla_dialog_valid_units), pair1[3])
+                                "Units should be one of '{}'. "
+                                "The source string uses '{}'".format(
+                                    ", ".join(self.mozilla_dialog_valid_units), pair1[3]
+                                )
                             )
 
         return True
@@ -2875,8 +2872,9 @@ def runtests(str1, str2, ignorelist=()):
 
     for test in failures:
         print(
-            "failure: %s: %s\n  %r\n  %r"
-            % (test, failures[test]["message"], str1, str2)
+            "failure: {}: {}\n  {!r}\n  {!r}".format(
+                test, failures[test]["message"], str1, str2
+            )
         )
 
     return failures

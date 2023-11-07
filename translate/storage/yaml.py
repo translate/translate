@@ -140,9 +140,9 @@ class YAMLFile(base.DictStore):
             else:
                 raise ValueError(
                     "We don't handle these values:\n"
-                    "Type: %s\n"
-                    "Data: %s\n"
-                    "Previous: %s" % (type(data), data, prev)
+                    f"Type: {type(data)}\n"
+                    f"Data: {data}\n"
+                    f"Previous: {prev}"
                 )
 
     @staticmethod

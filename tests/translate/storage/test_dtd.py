@@ -61,8 +61,7 @@ def test_roundtrip_quoting():
         quoted_special = dtd.quotefordtd(special)
         unquoted_special = dtd.unquotefromdtd(quoted_special)
         print(
-            "special: %r\nquoted: %r\nunquoted: %r\n"
-            % (special, quoted_special, unquoted_special)
+            f"special: {special!r}\nquoted: {quoted_special!r}\nunquoted: {unquoted_special!r}\n"
         )
         assert special == unquoted_special
 
@@ -138,8 +137,7 @@ def test_android_roundtrip_quoting():
         quoted_special = dtd.quoteforandroid(special)
         unquoted_special = dtd.unquotefromandroid(quoted_special)
         print(
-            "special: %r\nquoted: %r\nunquoted: %r\n"
-            % (special, quoted_special, unquoted_special)
+            f"special: {special!r}\nquoted: {quoted_special!r}\nunquoted: {unquoted_special!r}\n"
         )
         assert special == unquoted_special
 

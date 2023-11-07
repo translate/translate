@@ -136,8 +136,7 @@ class PO2MDOptionParser(convert.ConvertOptionParser):
                 )
             except Exception:
                 self.warning(
-                    "Error processing: input %s, output %s, template %s"
-                    % (options.input, fulloutputpath, fulltemplatepath),
+                    f"Error processing: input {options.input}, output {fulloutputpath}, template {fulltemplatepath}",
                     options,
                     sys.exc_info(),
                 )

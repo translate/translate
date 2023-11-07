@@ -76,7 +76,7 @@ def makekey(ookey, long_keys):
     project, sourcefile, resourcetype, groupid, localid, platform = ookey
     sourcefile = sourcefile.replace("\\", "/")
     if long_keys:
-        sourcebase = "/".join((project, sourcefile))
+        sourcebase = f"{project}/{sourcefile}"
     else:
         sourceparts = sourcefile.split("/")
         sourcebase = "".join(sourceparts[-1:])

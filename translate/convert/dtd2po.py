@@ -233,8 +233,7 @@ class dtd2po:
             x_merge_on="location",
         )
         targetheader.addnote(
-            "extracted from %s, %s"
-            % (origdtdfile.filename, translateddtdfile.filename),
+            f"extracted from {origdtdfile.filename}, {translateddtdfile.filename}",
             "developer",
         )
 

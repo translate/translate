@@ -35,8 +35,8 @@ class af(common.Common):
 
     validdoublewords = [""]
 
-    punctuation = "".join(
-        [common.Common.commonpunc, common.Common.quotes, common.Common.miscpunc]
+    punctuation = (
+        f"{common.Common.commonpunc}{common.Common.quotes}{common.Common.miscpunc}"
     )
     sentenceend = ".!?…"
     sentencere = re.compile(

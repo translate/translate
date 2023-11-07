@@ -59,4 +59,4 @@ class el(common.Common):
     valid_greek_accel = "αβγδεζηθικλμνξοπρστυφχψωΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ"
 
     # Valid accelerators
-    validaccel = "".join([valid_latin_accel, valid_greek_accel])
+    validaccel = f"{valid_latin_accel}{valid_greek_accel}"

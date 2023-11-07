@@ -145,8 +145,7 @@ if __name__ == "__main__":
 
     if args.verbose:
         print(
-            "%s -s %s -d %s -p %s -v %s"
-            % (
+            "{} -s {} -d {} -p {} -v {}".format(
                 __file__,
                 srccheckout,
                 l10ncheckout,
