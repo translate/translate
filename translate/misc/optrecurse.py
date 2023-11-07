@@ -684,10 +684,17 @@ class RecursiveOptionParser(optparse.OptionParser):
             tempoutput = False
         templatefile = self.opentemplatefile(options, fulltemplatepath)
         passthroughoptions = self.getpassthroughoptions(options)
-        if fileprocessor(inputfile, outputfile, templatefile, **passthroughoptions):
+        result = fileprocessor(
+            inputfile, outputfile, templatefile, **passthroughoptions
+        )
+        if fullinputpath is not None:
+            inputfile.close()
+        if result:
             if tempoutput:
                 self.warning("writing to temporary output...")
                 self.finalizetempoutputfile(options, outputfile, fulloutputpath)
+            if fulloutputpath and os.path.isfile(fulloutputpath):
+                outputfile.close()
             return True
         else:
             # remove the file if it is a file (could be stdout etc)
