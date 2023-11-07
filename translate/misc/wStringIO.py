@@ -1,3 +1,4 @@
+# noqa: N999
 #
 # Copyright 2004-2006 Zuza Software Foundation
 #

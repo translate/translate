@@ -27,9 +27,7 @@ profile = "black"
 # WONTFIX - not fixable in current codebase, might be better to go for noqa
 ignore = [
   "PT013",  # TODO: Found incorrect import of pytest, use simple `import pytest` instead
-  "PLR0124",  # TODO: Name compared with itself, consider replacing `unit1 == unit1`
   "PT009",  # TODO: Use a regular `assert` instead of unittest-style `assertCountEqual`
-  "B015",  # TODO: Pointless comparison. Did you mean to assign a value? Otherwise, prepend `assert` or remove it
   "PGH003",  # TODO: Use specific rule codes when ignoring type issues
   "B017",  # TODO: `pytest.raises(Exception)` should be considered evil
   "PLE0604",  # TODO: Invalid object in `__all__`, must contain only strings
@@ -37,10 +35,8 @@ ignore = [
   "G003",  # TODO: Logging statement uses `+`
   "PLW1510",  # TODO: `subprocess.run` without explicit `check` argument
   "SLOT000",  # TODO: Subclasses of `str` should define `__slots__`
-  "N999",  # TODO: Invalid module name: 'pt_BR'
   "RUF013",  # TODO: PEP 484 prohibits implicit `Optional`
   "SIM401",  # TODO:  Use `klass, maker = _class_dictionary.get(tag, (xliff.UnknownXML, make_unknown))` instead of an `if` block
-  "F403",  # TODO: `from .base import *` used; unable to detect undefined names
   "B028",  # TODO: No explicit `stacklevel` keyword argument found
   "TRY301",  # TODO: Abstract `raise` to an inner function
   "B006",  # TODO: Do not use mutable data structures for argument defaults

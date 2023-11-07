@@ -34,15 +34,15 @@ usecpo = os.getenv("USECPO")
 
 if platform.python_implementation() == "CPython":
     if usecpo == "1":
-        from translate.storage.cpo import *  # pylint: disable=W0401,W0614
+        from translate.storage.cpo import *  # noqa: F403
     elif usecpo == "2":
-        from translate.storage.fpo import *  # pylint: disable=W0401,W0614
+        from translate.storage.fpo import *  # noqa: F403
     else:
-        from translate.storage.pypo import *  # pylint: disable=W0401,W0614
+        from translate.storage.pypo import *  # noqa: F403
 else:
     if usecpo:
         logging.error(
             "cPO and fPO do not work on %s defaulting to PyPO",
             platform.python_implementation(),
         )
-    from translate.storage.pypo import *  # pylint: disable=W0401
+    from translate.storage.pypo import *  # noqa: F403
