@@ -126,6 +126,13 @@ ignore = [
   "INP001",  # TODO: File `tools/mozilla/mozcronbuild.py` is part of an implicit namespace package. Add an `__init__.py`.
   "TID252",  # TODO: Relative imports from parent modules are banned
   "D409",  # TODO: Section underline should match the length of its name
+  "D206",  # CONFIG: formatter
+  'ISC001',  # CONFIG: formatter
+  'Q000',  # CONFIG: formatter
+  'Q001',  # CONFIG: formatter
+  'Q002',  # CONFIG: formatter
+  'Q003',  # CONFIG: formatter
+  'W191',  # CONFIG: formatter
   "PTH"  # TODO: Not using pathlib for now
 ]
 output-format = "github"
