@@ -218,7 +218,7 @@ class TranslationUnit:
         if len(value) < 1:
             raise ValueError("value must have at least one element.")
         if not isinstance(value[0], StringElem):
-            raise ValueError("value[0] must be of type StringElem.")
+            raise TypeError("value[0] must be of type StringElem.")
         self._rich_source = list(value)
         multi = self.rich_to_multistring(value)
         if self.source != multi:
@@ -240,7 +240,7 @@ class TranslationUnit:
         if len(value) < 1:
             raise ValueError("value must have at least one element.")
         if not isinstance(value[0], StringElem):
-            raise ValueError("value[0] must be of type StringElem.")
+            raise TypeError("value[0] must be of type StringElem.")
         self._rich_target = list(value)
         self.target = self.rich_to_multistring(value)
 

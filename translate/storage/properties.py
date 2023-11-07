@@ -484,7 +484,7 @@ class DialectGwt(DialectJavaUtf8):
 
         # Some sanity checks
         if not variant:
-            raise Exception(f'Key "{key}" variant "{variant}" is invalid')
+            raise ValueError(f'Key "{key}" variant "{variant}" is invalid')
         return f"{key}[{variant}]"
 
     @classmethod
@@ -658,7 +658,9 @@ class proppluralunit(base.TranslationUnit):
         strings = self._get_strings(strings, mapping)
         units = self._get_units(mapping)
         if len(strings) != len(units):
-            raise Exception(f'Not same plural counts between "{strings}" and "{units}"')
+            raise ValueError(
+                f'Not same plural counts between "{strings}" and "{units}"'
+            )
 
         for a, b in zip(strings, units):
             b.target = a
@@ -693,7 +695,9 @@ class proppluralunit(base.TranslationUnit):
         strings = self._get_strings(strings, mapping)
         units = self._get_units(mapping)
         if len(strings) != len(units):
-            raise Exception(f'Not same plural counts between "{strings}" and "{units}"')
+            raise ValueError(
+                f'Not same plural counts between "{strings}" and "{units}"'
+            )
 
         for a, b in zip(strings, units):
             b.source = a

@@ -286,7 +286,7 @@ class GrepFilter:
             # expression could give enough results to cause performance
             # problems. The answer is probably not very useful at this scale.
             if self.max_matches and len(matches) > self.max_matches:
-                raise Exception("Too many matches found")
+                raise ValueError("Too many matches found")
 
             if len(matches) > old_length:
                 old_length = len(matches)

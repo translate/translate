@@ -138,7 +138,7 @@ class FluentReference:
             self._type_name = "variable"
             attribute = None
         else:
-            raise ValueError(f"Unhandled reference type {reference.__class__.__name__}")
+            raise TypeError(f"Unhandled reference type {reference.__class__.__name__}")
         ref_name = reference.id.name
         if attribute:
             ref_name += f".{attribute.name}"
@@ -1004,7 +1004,7 @@ class FluentUnit(base.TranslationUnit):
         """Convert a FluentUnit's source to a fluent Term or Message."""
         entry_or_error = self._try_source_to_fluent_entry()
         if isinstance(entry_or_error, str):
-            raise ValueError(
+            raise TypeError(
                 f'Error in source of FluentUnit "{self.getid()}":\n{entry_or_error}'
             )
         return entry_or_error
@@ -1199,7 +1199,7 @@ class FluentFile(base.TranslationStore):
                     )
                 self.addunit(unit)
             else:
-                raise ValueError(
+                raise TypeError(
                     f"Unhandled fluent Entry type: {entry.__class__.__name__}"
                 )
 
