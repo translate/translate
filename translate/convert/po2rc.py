@@ -135,9 +135,8 @@ class rerc:
                     tmp.append('"' + self.inputdict[msgid][name] + '"')
                 elif EMPTY_LOCATION in self.inputdict[msgid]:
                     tmp.append('"' + self.inputdict[msgid][EMPTY_LOCATION] + '"')
-            else:
-                if i > 1:
-                    tmp.append(" ".join(c[1:i]))
+            elif i > 1:
+                tmp.append(" ".join(c[1:i]))
 
             # and the remaining items, comma separated
             for a in c[i:]:

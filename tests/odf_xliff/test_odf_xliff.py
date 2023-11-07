@@ -125,10 +125,9 @@ class ODF:
                 if l != r:
                     print("difference for file named", filename)
                     return False
-            else:
-                if self._get_data(filename) != other._get_data(filename):
-                    print("difference for file named", filename)
-                    return False
+            elif self._get_data(filename) != other._get_data(filename):
+                print("difference for file named", filename)
+                return False
         return True
 
     def __bytes__(self):

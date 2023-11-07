@@ -407,10 +407,9 @@ class xliffunit(lisa.LISAunit):
         if value == self.S_UNTRANSLATED:
             if targetnode is not None and "state" in targetnode.attrib:
                 del targetnode.attrib["state"]
-        else:
-            if targetnode is not None:
-                xmlstate = self.statemap_r.get(value)
-                targetnode.set("state", xmlstate)
+        elif targetnode is not None:
+            xmlstate = self.statemap_r.get(value)
+            targetnode.set("state", xmlstate)
 
         self.markapproved(value > self.S_NEEDS_REVIEW)
 

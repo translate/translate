@@ -100,13 +100,12 @@ class csvunit(base.TranslationUnit):
                 self.developer_comments = text + "\n" + self.developer_comments
             else:
                 self.developer_comments = text
+        elif position == "append" and self.translator_comments:
+            self.translator_comments += "\n" + text
+        elif position == "prepend" and self.translator_comments:
+            self.translator_comments = self.translator_comments + "\n" + text
         else:
-            if position == "append" and self.translator_comments:
-                self.translator_comments += "\n" + text
-            elif position == "prepend" and self.translator_comments:
-                self.translator_comments = self.translator_comments + "\n" + text
-            else:
-                self.translator_comments = text
+            self.translator_comments = text
 
     def removenotes(self, origin=None):
         self.translator_comments = ""

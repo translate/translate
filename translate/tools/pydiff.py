@@ -137,13 +137,12 @@ def main():
             parser.error(
                 f"File {fromfile} is a directory while file {tofile} is a regular file"
             )
+    elif os.path.isdir(tofile):
+        parser.error(
+            f"File {fromfile} is a regular file while file {tofile} is a directory"
+        )
     else:
-        if os.path.isdir(tofile):
-            parser.error(
-                f"File {fromfile} is a regular file while file {tofile} is a directory"
-            )
-        else:
-            differ = FileDiffer(fromfile, tofile, args)
+        differ = FileDiffer(fromfile, tofile, args)
     differ.writediff(sys.stdout)
 
 
@@ -197,14 +196,13 @@ class DirDiffer:
                         outfile.write(
                             f"File {fromfile} is a directory while file {tofile} is a regular file\n"
                         )
+                elif os.path.isdir(tofile):
+                    outfile.write(
+                        f"File {fromfile} is a regular file while file {tofile} is a directory\n"
+                    )
                 else:
-                    if os.path.isdir(tofile):
-                        outfile.write(
-                            f"File {fromfile} is a regular file while file {tofile} is a directory\n"
-                        )
-                    else:
-                        filediffer = FileDiffer(fromfile, tofile, self.options)
-                        filediffer.writediff(outfile)
+                    filediffer = FileDiffer(fromfile, tofile, self.options)
+                    filediffer.writediff(outfile)
             elif from_ok:
                 outfile.write(f"Only in {self.fromdir}: {difffile}\n")
             elif to_ok:

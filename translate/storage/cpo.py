@@ -518,11 +518,10 @@ class pounit(pocommon.pounit):
                     self._gpo_message, i, gpo_encode(targetstring)
                 )
         # add a single string
+        elif target is None:
+            gpo.po_message_set_msgstr(self._gpo_message, gpo_encode(""))
         else:
-            if target is None:
-                gpo.po_message_set_msgstr(self._gpo_message, gpo_encode(""))
-            else:
-                gpo.po_message_set_msgstr(self._gpo_message, gpo_encode(target))
+            gpo.po_message_set_msgstr(self._gpo_message, gpo_encode(target))
 
     def getid(self):
         """
@@ -644,9 +643,8 @@ class pounit(pocommon.pounit):
         elif not otherpo.istranslated():
             if self.source != otherpo.source:
                 self.markfuzzy()
-        else:
-            if self.target != otherpo.target:
-                self.markfuzzy()
+        elif self.target != otherpo.target:
+            self.markfuzzy()
 
     def isheader(self):
         # return self.source == "" and self.target != ""

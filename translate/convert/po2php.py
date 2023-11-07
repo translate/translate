@@ -60,11 +60,10 @@ class rephp:
                             unit.target = unit.source
                     else:
                         unit.target = unit.source
+                elif inputunit.istranslated():
+                    unit.target = inputunit.target
                 else:
-                    if inputunit.istranslated():
-                        unit.target = inputunit.target
-                    else:
-                        unit.target = unit.source
+                    unit.target = unit.source
             else:
                 unit.target = unit.source
         return bytes(self.outputstore)

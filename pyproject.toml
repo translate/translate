@@ -55,7 +55,6 @@ ignore = [
   "SIM103",  # TODO: Return the condition `origin in node.get("origin", "")` directly
   "S110",  # TODO: `try`-`except`-`pass` detected, consider logging the exception
   "RUF015",  # TODO: Prefer `next(iter(data.keys()))` over single element slice
-  "PLR5501",  # TODO: Use `elif` instead of `else` then `if`, to reduce indentation
   "PLR0913",  # TODO: Too many arguments in function definition
   "PERF401",  # TODO: Use a list comprehension to create a transformed list
   "PERF203",  # TODO: `try`-`except` within a loop incurs performance overhead

@@ -606,15 +606,14 @@ class pounit(pocommon.pounit):
                         if item not in splitlist1
                     ]
                 )
-            else:
+            elif list1 != list2:
                 # Normal merge, but conform to list1 newline style
-                if list1 != list2:
-                    for item in list2:
-                        if lineend:
-                            item = item.rstrip() + lineend
-                        # avoid duplicate comment lines (this might cause some problems)
-                        if item not in list1 or len(item) < 5:
-                            list1.append(item)
+                for item in list2:
+                    if lineend:
+                        item = item.rstrip() + lineend
+                    # avoid duplicate comment lines (this might cause some problems)
+                    if item not in list1 or len(item) < 5:
+                        list1.append(item)
 
         if not isinstance(otherpo, pounit):
             super().merge(otherpo, overwrite, comments)
@@ -646,9 +645,8 @@ class pounit(pocommon.pounit):
         elif not otherpo.istranslated():
             if self.source != otherpo.source:
                 self.markfuzzy()
-        else:
-            if self.target != otherpo.target:
-                self.markfuzzy()
+        elif self.target != otherpo.target:
+            self.markfuzzy()
 
     def isheader(self):
         # return (self._msgidlen() == 0) and (self._msgstrlen() > 0) and (len(self.msgidcomments) == 0)

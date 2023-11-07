@@ -73,12 +73,11 @@ class oo2po:
         if self.blankmsgstr:
             # use a blank part2
             part2 = oo.ooline()
+        elif self.targetlanguage in theoo.languages:
+            part2 = theoo.languages[self.targetlanguage]
         else:
-            if self.targetlanguage in theoo.languages:
-                part2 = theoo.languages[self.targetlanguage]
-            else:
-                # if the language doesn't exist, the translation is missing ... so make it blank
-                part2 = oo.ooline()
+            # if the language doesn't exist, the translation is missing ... so make it blank
+            part2 = oo.ooline()
         if "x-comment" in theoo.languages:
             translators_comment = theoo.languages["x-comment"]
         else:
