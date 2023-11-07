@@ -440,7 +440,7 @@ class oomultifile:
             ooname = module
         else:
             filename = filename.replace("\\", "/")
-            fileparts = [module] + filename.split("/")
+            fileparts = [module, *filename.split("/")]
             ooname = os.path.join(*fileparts[:-1])
         return ooname + os.extsep + "oo"
 

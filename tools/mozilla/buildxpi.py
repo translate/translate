@@ -180,17 +180,25 @@ ac_add_options --enable-application={product}
         # make langpack-cy LOCALE_MERGEDIR=$PWD/merge-cy
         for lang in langs:
             run(
-                ["make", "-C", os.path.join(product, "locales")]
-                + ["merge-%s" % lang]
-                + [f"LOCALE_MERGEDIR={mergedir}/merge-{lang}"]
-                + moz_app_version,
+                [
+                    "make",
+                    "-C",
+                    os.path.join(product, "locales"),
+                    "merge-%s" % lang,
+                    f"LOCALE_MERGEDIR={mergedir}/merge-{lang}",
+                    *moz_app_version,
+                ],
                 fail_msg="Unable to merge XPI!",
             )
             run(
-                ["make", "-C", os.path.join(product, "locales")]
-                + ["langpack-%s" % lang]
-                + [f"LOCALE_MERGEDIR={mergedir}/merge-{lang}"]
-                + moz_app_version,
+                [
+                    "make",
+                    "-C",
+                    os.path.join(product, "locales"),
+                    "langpack-%s" % lang,
+                    f"LOCALE_MERGEDIR={mergedir}/merge-{lang}",
+                    *moz_app_version,
+                ],
                 fail_msg="Unable to successfully build XPI!",
             )
 

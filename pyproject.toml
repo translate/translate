@@ -33,7 +33,7 @@ ignore = [
   "PGH003",  # TODO: Use specific rule codes when ignoring type issues
   "B017",  # TODO: `pytest.raises(Exception)` should be considered evil
   "TRY201",  # TODO: Use `raise` without specifying exception name
-  "PLE0605",  # TODO: Invalid format for `__all__`, must be `tuple` or `list`
+  "PLE0604",  # TODO: Invalid object in `__all__`, must contain only strings
   "B008",  # TODO: Do not perform function call `sys.getdefaultencoding` in argument defaults
   "G003",  # TODO: Logging statement uses `+`
   "PLW1510",  # TODO: `subprocess.run` without explicit `check` argument
@@ -46,7 +46,6 @@ ignore = [
   "TRY004",  # TODO: Prefer `TypeError` exception for invalid type
   "TRY301",  # TODO: Abstract `raise` to an inner function
   "B006",  # TODO: Do not use mutable data structures for argument defaults
-  "RUF005",  # TODO: Consider `[*prev, ("key", k)]` instead of concatenation
   "SIM103",  # TODO: Return the condition `origin in node.get("origin", "")` directly
   "S110",  # TODO: `try`-`except`-`pass` detected, consider logging the exception
   "RUF015",  # TODO: Prefer `next(iter(data.keys()))` over single element slice

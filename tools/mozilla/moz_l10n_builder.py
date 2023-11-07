@@ -143,7 +143,8 @@ def get_langs(lang_args):
 
         elif lang == "ZA":
             # South African languages
-            langs = langs + [
+            langs = [
+                *langs,
                 "af",
                 "en_ZA",
                 "nr",
@@ -319,12 +320,18 @@ def pack_pot(includes):
             packname + ".tar.bz2",
             join(l10ndir, "en-US"),
             join(l10ndir, "pot"),
+            *inc,
         ]
-        + inc
     )
     run(
-        ["zip", "-qr9", packname + ".zip", join(l10ndir, "en-US"), join(l10ndir, "pot")]
-        + inc
+        [
+            "zip",
+            "-qr9",
+            packname + ".zip",
+            join(l10ndir, "en-US"),
+            join(l10ndir, "pot"),
+            *inc,
+        ]
     )
 
 
@@ -539,7 +546,7 @@ def migrate_lang(lang, buildlang, recover, update_transl, debug):
     if debug:
         args.append("--fuzzy")
 
-    run(["po2moz"] + args)
+    run(["po2moz", *args])
     ###################################################
 
     post_po2moz_hacks(lang, buildlang)

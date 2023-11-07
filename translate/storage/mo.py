@@ -217,8 +217,8 @@ class mofile(poheader.poheader, base.TranslationStore):
         # The string table first has the list of keys, then the list of values.
         # Each entry has first the size of the string, then the file offset.
         for o1, l1, o2, l2 in offsets:
-            koffsets = koffsets + [l1, o1 + keystart]
-            voffsets = voffsets + [l2, o2 + valuestart]
+            koffsets = [*koffsets, l1, o1 + keystart]
+            voffsets = [*voffsets, l2, o2 + valuestart]
         offsets = koffsets + voffsets
         out.write(
             struct.pack(

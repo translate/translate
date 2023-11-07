@@ -63,7 +63,7 @@ class ProgressBar:
 
 
 class ManPageOption(optparse.Option):
-    ACTIONS = optparse.Option.ACTIONS + ("manpage",)
+    ACTIONS = (*optparse.Option.ACTIONS, "manpage")
 
     def take_action(self, action, dest, opt, value, values, parser):
         """take_action that can handle manpage as well as standard actions"""

@@ -210,12 +210,12 @@ class JsonFile(base.DictStore):
         if isinstance(data, dict):
             for k, v in data.items():
                 yield from self._extract_units(
-                    v, stop, prev + [("key", k)], k, None, data
+                    v, stop, prev.extend("key", k), k, None, data
                 )
         elif isinstance(data, list):
             for i, item in enumerate(data):
                 yield from self._extract_units(
-                    item, stop, prev + [("index", i)], i, name_node, data
+                    item, stop, prev.extend("index", i), i, name_node, data
                 )
         # apply filter
         elif prev.parts and (
@@ -423,13 +423,13 @@ class I18NextFile(JsonNestedFile):
                         sources.append(data[key])
                         items.append(key)
                     unit = self.UnitClass(multistring(sources), items)
-                    newid = prev + [("key", plural_base)]
+                    newid = prev.extend("key", plural_base)
                     unit.set_unitid(newid)
                     yield unit
                     continue
 
                 yield from self._extract_units(
-                    v, stop, prev + [("key", k)], k, None, data
+                    v, stop, prev.extend("key", k), k, None, data
                 )
         else:
             yield from super()._extract_units(
@@ -500,13 +500,13 @@ class I18NextV4File(JsonNestedFile):
                         items.append(key)
 
                     unit = self.UnitClass(multistring(sources), items)
-                    newid = prev + [("key", plural_base)]
+                    newid = prev.extend("key", plural_base)
                     unit.set_unitid(newid)
                     yield unit
                     continue
 
                 yield from self._extract_units(
-                    v, stop, prev + [("key", k)], k, None, data
+                    v, stop, prev.extend("key", k), k, None, data
                 )
         else:
             yield from super()._extract_units(
