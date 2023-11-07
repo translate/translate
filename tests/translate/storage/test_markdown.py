@@ -121,7 +121,8 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
         assert translated_output == '(![foo](/url "(title)"))\n'
         # location: link title
         locations = [tu.getlocations()[0] for tu in store.units if tu.source == "title"]
-        assert len(locations) == 1 and locations[0].endswith("link-title")
+        assert len(locations) == 1
+        assert locations[0].endswith("link-title")
 
     def test_plain_image_no_title(self):
         store = self.parse("![foo](/url)\n")
@@ -240,7 +241,8 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
         locations = [
             tu.getlocations()[0] for tu in store.units if tu.source == "bar baz"
         ]
-        assert len(locations) == 1 and locations[0].endswith("quote.p")
+        assert len(locations) == 1
+        assert locations[0].endswith("quote.p")
 
     def test_link_reference_definition_and_full_reference_link(self):
         input = [
@@ -261,14 +263,14 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
         locations = [
             tu.getlocations()[0] for tu in store.units if tu.source == "train & tracks"
         ]
-        assert len(locations) == 1 and locations[0].endswith("linkref.link-title")
+        assert len(locations) == 1
+        assert locations[0].endswith("linkref.link-title")
         # location: link label
         locations = [
             tu.getlocations()[0] for tu in store.units if tu.source == "foo *bar*"
         ]
-        assert len(locations) == 2 and all(
-            loc.endswith("link-label") for loc in locations
-        )
+        assert len(locations) == 2
+        assert all(loc.endswith("link-label") for loc in locations)
 
     def test_link_reference_definition_and_shortcut_reference_link(self):
         store = self.parse('[foo *bar*]: train.jpg "train & tracks"\n![foo *bar*]\n')
@@ -316,12 +318,14 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
         locations = [
             tu.getlocations()[0] for tu in store.units if tu.source == "First cell"
         ]
-        assert len(locations) == 1 and locations[0].endswith("table-cell")
+        assert len(locations) == 1
+        assert locations[0].endswith("table-cell")
         # location: regular table cell
         locations = [
             tu.getlocations()[0] for tu in store.units if tu.source == "Fourth"
         ]
-        assert len(locations) == 1 and locations[0].endswith("table-cell")
+        assert len(locations) == 1
+        assert locations[0].endswith("table-cell")
 
     def test_thematic_break(self):
         store = self.parse("*******\n")

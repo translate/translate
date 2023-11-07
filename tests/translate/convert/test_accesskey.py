@@ -70,7 +70,8 @@ def test_unicode():
     assert accesskey.extract("E_ḓiṱ", "_") == ("Eḓiṱ", "ḓ")
     label, akey = accesskey.extract("E&ḓiṱ")
     assert label, akey == ("Eḓiṱ", "ḓ")
-    assert isinstance(label, str) and isinstance(akey, str)
+    assert isinstance(label, str)
+    assert isinstance(akey, str)
     assert accesskey.combine("Eḓiṱ", "ḓ") == ("E&ḓiṱ")
 
 

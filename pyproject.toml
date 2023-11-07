@@ -29,14 +29,11 @@ ignore = [
   "PT013",  # TODO: Found incorrect import of pytest, use simple `import pytest` instead
   "ISC001",  # TODO: Implicitly concatenated string literals on one line
   "PLR0124",  # TODO: Name compared with itself, consider replacing `unit1 == unit1`
-  "B011",  # TODO: Do not `assert False` (`python -O` removes these calls), raise `AssertionError()`
   "E402",  # TODO: Module level import not at top of file
-  "PT015",  # TODO: Assertion always fails, replace with `pytest.fail()`
   "PT009",  # TODO: Use a regular `assert` instead of unittest-style `assertCountEqual`
   "B015",  # TODO: Pointless comparison. Did you mean to assign a value? Otherwise, prepend `assert` or remove it
   "PGH003",  # TODO: Use specific rule codes when ignoring type issues
   "SIM109",  # TODO: Use `output in (expectedpo, expectedpo2)` instead of multiple equality comparisons
-  "PT006",  # TODO: Wrong name(s) type in `@pytest.mark.parametrize`, expected `tuple`
   "SIM110",  # TODO: Use `return all(not unit.istranslatable() for unit in self.units)` instead of `for` loop
   "B017",  # TODO: `pytest.raises(Exception)` should be considered evil
   "TRY201",  # TODO: Use `raise` without specifying exception name
@@ -82,7 +79,6 @@ ignore = [
   "SIM114",  # TODO: Combine `if` branches using logical `or` operator
   "SIM102",  # TODO: Use a single `if` statement instead of nested `if` statements
   "SIM115",  # TODO: Use context handler for opening files
-  "PT018",  # TODO: Assertion should be broken down into multiple parts
   "E741",  # TODO: Ambiguous variable name:
   "UP031",  # TODO: Use format specifiers instead of percent format
   "B007",  # TODO: Loop control variable not used within loop body
@@ -108,7 +104,6 @@ ignore = [
   "DTZ005",  # TODO: The use of `datetime.datetime.now()` without `tz` argument is not allowed
   "D1",  # TODO: Missing docstring
   "PT011",  # TODO: `pytest.raises(ValueError)` is too broad, set the `match` parameter or use a more specific exception
-  "PT004",  # TODO: Fixture `change_test_dir` does not return anything, add leading underscore
   "D200",  # TODO: One-line docstring should fit on one line
   "D205",  # TODO: 1 blank line required between summary line and description
   "D301",  # TODO: Use `r"""` if any backslashes in a docstring

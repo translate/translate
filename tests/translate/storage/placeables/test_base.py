@@ -41,16 +41,17 @@ class TestStringElem:
         assert str(self.elem.sub[2]) == "&brandLong;"
         assert str(self.elem.sub[3]) == "</a>"
 
-        assert len(self.elem.sub[0].sub) == 1 and self.elem.sub[0].sub[0] == "Ģët "
+        assert len(self.elem.sub[0].sub) == 1
+        assert self.elem.sub[0].sub[0] == "Ģët "
+        assert len(self.elem.sub[1].sub) == 1
         assert (
-            len(self.elem.sub[1].sub) == 1
-            and self.elem.sub[1].sub[0]
+            self.elem.sub[1].sub[0]
             == '<a href="http://www.example.com" alt="Ģët &brand;!">'
         )
-        assert (
-            len(self.elem.sub[2].sub) == 1 and self.elem.sub[2].sub[0] == "&brandLong;"
-        )
-        assert len(self.elem.sub[3].sub) == 1 and self.elem.sub[3].sub[0] == "</a>"
+        assert len(self.elem.sub[2].sub) == 1
+        assert self.elem.sub[2].sub[0] == "&brandLong;"
+        assert len(self.elem.sub[3].sub) == 1
+        assert self.elem.sub[3].sub[0] == "</a>"
 
     def test_add(self):
         assert self.elem + " " == self.ORIGSTR + " "
@@ -106,7 +107,8 @@ class TestStringElem:
         elem = self.elem.copy()
         deleted, parent, offset = elem.delete_range(0, len(elem))
         assert deleted == self.elem
-        assert parent is None and offset is None
+        assert parent is None
+        assert offset is None
 
     def test_delete_range_case2(self):
         # Case 2: An entire element #

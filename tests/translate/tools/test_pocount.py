@@ -211,7 +211,7 @@ def test_cases(opts, capsys: CaptureFixture[str], snapshot):
 
 
 @mark.parametrize(
-    "opts,expected",
+    ("opts", "expected"),
     [
         param(
             ["--csv", "--short"],

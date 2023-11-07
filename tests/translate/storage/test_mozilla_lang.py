@@ -8,7 +8,7 @@ from . import test_base
 
 
 @pytest.mark.parametrize(
-    "orig, stripped",
+    ("orig", "stripped"),
     [
         ("", ""),
         ("String", "String"),  # No {ok}
@@ -160,7 +160,7 @@ class TestMozLangFile(test_base.TestTranslationStore):
         assert store2.units[1].target == ""
 
     @pytest.mark.parametrize(
-        "ok, target, istranslated",
+        ("ok", "target", "istranslated"),
         [
             ("", "", False),  # Untranslated, no {ok}
             (" ", "Source ", True),  # Excess whitespace, translated
