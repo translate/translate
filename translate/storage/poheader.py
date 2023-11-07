@@ -56,10 +56,7 @@ def tzstring():
 
     :rtype: str
     """
-    if time.daylight:
-        tzoffset = time.altzone
-    else:
-        tzoffset = time.timezone
+    tzoffset = time.altzone if time.daylight else time.timezone
 
     hours, minutes = time.gmtime(abs(tzoffset))[3:5]
     if tzoffset > 0:
@@ -272,14 +269,8 @@ class poheader:
             return None, None
         nplural = re.findall("nplurals=(.+?);", pluralformvalue)
         plural = re.findall("plural=(.+?);?$", pluralformvalue)
-        if not nplural or nplural[0] == "INTEGER":
-            nplural = None
-        else:
-            nplural = nplural[0]
-        if not plural or plural[0] == "EXPRESSION":
-            plural = None
-        else:
-            plural = plural[0]
+        nplural = None if not nplural or nplural[0] == "INTEGER" else nplural[0]
+        plural = None if not plural or plural[0] == "EXPRESSION" else plural[0]
         return nplural, plural
 
     def updateheaderplural(self, nplurals, plural):

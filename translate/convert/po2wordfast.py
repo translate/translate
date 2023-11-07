@@ -60,10 +60,7 @@ class wfmultifile:
         """Initialises wfmultifile from a seekable inputfile or writable outputfile"""
         self.filename = filename
         if mode is None:
-            if os.path.exists(filename):
-                mode = "r"
-            else:
-                mode = "w"
+            mode = "r" if os.path.exists(filename) else "w"
         self.mode = mode
         self.multifilename = os.path.splitext(filename)[0]
         self.wffile = wordfast.WordfastTMFile()

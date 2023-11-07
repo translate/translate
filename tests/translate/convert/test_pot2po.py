@@ -13,10 +13,7 @@ class TestPOT2PO:
     def convertpot(potsource, posource=None):
         """Helper that converts pot source to po source without requiring files"""
         potfile = BytesIO(potsource.encode())
-        if posource:
-            pofile = BytesIO(posource.encode())
-        else:
-            pofile = None
+        pofile = BytesIO(posource.encode()) if posource else None
         pooutfile = BytesIO()
         pot2po.convertpot(potfile, pooutfile, pofile)
         pooutfile.seek(0)

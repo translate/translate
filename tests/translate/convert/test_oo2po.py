@@ -167,10 +167,7 @@ class TestOO2PO:
             en_USsource + "\n" + xcommentsource % (comment, comment, comment)
         )
         pofile = self.convert(commentsource)
-        if isinstance(pofile, poheader):
-            units = pofile.units[1:]
-        else:
-            units = pofile.units
+        units = pofile.units[1:] if isinstance(pofile, poheader) else pofile.units
         textunit = units[0]
         assert textunit.source == "Text"
         assert comment in textunit.getnotes("developer")
@@ -186,10 +183,7 @@ class TestOO2PO:
                 en_USsource + "\n" + xcommentsource % (comment, comment, comment)
             )
             pofile = self.convert(commentsource)
-            if isinstance(pofile, poheader):
-                units = pofile.units[1:]
-            else:
-                units = pofile.units
+            units = pofile.units[1:] if isinstance(pofile, poheader) else pofile.units
             textunit = units[0]
             assert textunit.source == "Text"
             assert textunit.getnotes("developer") == ""

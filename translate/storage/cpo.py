@@ -468,10 +468,7 @@ class pounit(pocommon.pounit):
                 plurals.append(plural.decode(self.CPO_ENC))
                 nplural += 1
                 plural = gpo.po_message_msgstr_plural(self._gpo_message, nplural)
-            if plurals:
-                multi = multistring(plurals)
-            else:
-                multi = multistring("")
+            multi = multistring(plurals) if plurals else multistring("")
         else:
             multi = gpo_decode(gpo.po_message_msgstr(self._gpo_message)) or ""
         return multi
@@ -717,10 +714,7 @@ class pounit(pocommon.pounit):
         while location:
             locname = gpo_decode(gpo.po_filepos_file(location))
             locline = gpo.po_filepos_start_line(location)
-            if locline == -1:
-                locstring = locname
-            else:
-                locstring = ":".join([locname, str(locline)])
+            locstring = locname if locline == -1 else ":".join([locname, str(locline)])
             locations.append(pocommon.unquote_plus(locstring))
             i += 1
             location = gpo.po_message_filepos(self._gpo_message, i)
@@ -935,10 +929,7 @@ class pofile(pocommon.pofile):
         if len(self.units) == 0:
             return True
         # Skip the first unit if it is a header.
-        if self.units[0].isheader():
-            units = self.units[1:]
-        else:
-            units = self.units
+        units = self.units[1:] if self.units[0].isheader() else self.units
 
         return all(not (not unit.isblank() and not unit.isobsolete()) for unit in units)
 

@@ -303,10 +303,7 @@ class csvfile(base.TranslationStore):
             text = csvsrc.decode(self.encoding)
 
         sniffer = csv.Sniffer()
-        if sample_length:
-            sample = text[:sample_length]
-        else:
-            sample = text
+        sample = text[:sample_length] if sample_length else text
 
         try:
             self.dialect = sniffer.sniff(sample)

@@ -312,18 +312,12 @@ class podebug:
             if self.ignorefunc(unit):
                 return unit
         if prefix.find("@hash_placeholder@") != -1:
-            if unit.getlocations():
-                hashable = unit.getlocations()[0]
-            else:
-                hashable = unit.source
+            hashable = unit.getlocations()[0] if unit.getlocations() else unit.source
             prefix = prefix.replace(
                 "@hash_placeholder@",
                 md5(hashable.encode("utf-8")).hexdigest()[: self.hash_len],
             )
-        if unit.istranslated():
-            rich_string = unit.rich_target
-        else:
-            rich_string = unit.rich_source
+        rich_string = unit.rich_target if unit.istranslated() else unit.rich_source
         if not isinstance(rich_string, StringElem):
             rich_string = [
                 rich_parse(string, podebug_parsers) for string in rich_string

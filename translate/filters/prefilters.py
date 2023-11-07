@@ -65,10 +65,7 @@ def filteraccelerators(accelmarker):
     :rtype: Function
     :return: fn(str1, acceplist=None)
     """
-    if accelmarker is None:
-        accelmarkerlen = 0
-    else:
-        accelmarkerlen = len(accelmarker)
+    accelmarkerlen = 0 if accelmarker is None else len(accelmarker)
 
     def filtermarkedaccelerators(str1, acceptlist=None):
         """
@@ -131,10 +128,7 @@ def filtervariables(startmarker, endmarker, varfilter):
     :rtype: Function
     :return: fn(str1)
     """
-    if startmarker is None:
-        startmarkerlen = 0
-    else:
-        startmarkerlen = len(startmarker)
+    startmarkerlen = 0 if startmarker is None else len(startmarker)
     if endmarker is None:
         endmarkerlen = 0
     elif isinstance(endmarker, int):

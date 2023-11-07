@@ -64,7 +64,6 @@ ignore = [
   "B020",  # TODO: Loop control variable `node` overrides iterable it iterates
   "E731",  # TODO: Do not assign a `lambda` expression, use a `def`
   "ISC003",  # TODO: Explicitly concatenated string should be implicitly concatenated
-  "SIM108",  # TODO: Use ternary operator
   "PLW0603",  # TODO: Using the global statement to update is discouraged
   "PLW0602",  # TODO: Using global for `options` but no assignment is done
   "PLW2901",  # TODO: `for` loop variable `input_unit` overwritten by assignment target

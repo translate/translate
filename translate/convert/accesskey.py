@@ -180,10 +180,7 @@ def combine(label, accesskey, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
     in_entity = False
     accesskeyaltcasepos = -1
 
-    if accesskey.isupper():
-        accesskey_alt_case = accesskey.lower()
-    else:
-        accesskey_alt_case = accesskey.upper()
+    accesskey_alt_case = accesskey.lower() if accesskey.isupper() else accesskey.upper()
 
     while (accesskeypos < 0) and searchpos < len(label):
         searchchar = label[searchpos]

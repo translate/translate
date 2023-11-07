@@ -30,10 +30,7 @@ class po2ts:
     @staticmethod
     def convertstore(inputstore, outputfile, templatefile=None, context=None):
         """Converts a .po file to .ts format (using a template .ts file if given)"""
-        if templatefile is None:
-            tsfile = ts2.tsfile()
-        else:
-            tsfile = ts2.tsfile(templatefile)
+        tsfile = ts2.tsfile() if templatefile is None else ts2.tsfile(templatefile)
         for inputunit in inputstore.units:
             if inputunit.isheader() or inputunit.isblank():
                 continue
