@@ -564,7 +564,7 @@ key=value
 
     def test_mac_strings_multilines_comments(self):
         """Test .string multiline comments"""
-        propsource = ("/* Foo\nBar\nBaz */\n" '"key" = "value";').encode("utf-16")
+        propsource = ("""/* Foo\nBar\nBaz */\n"key" = "value";""").encode("utf-16")
         propfile = self.propparse(propsource, personality="strings")
         assert len(propfile.units) == 1
         propunit = propfile.units[0]

@@ -2471,7 +2471,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                 },
                 {
                     "id": "message",
-                    "source": '{ " " } space literal\n' ".attr = number { 79 }",
+                    "source": """{ " " } space literal\n.attr = number { 79 }""",
                 },
             ],
         )
