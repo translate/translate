@@ -121,7 +121,7 @@ class MarkdownFile(base.TranslationStore):
 
 
 class TranslatingMarkdownRenderer(MarkdownRenderer):
-    def __init__(self, translate_callback, *extras, max_line_length: int = None):
+    def __init__(self, translate_callback, *extras, max_line_length: int | None = None):
         super().__init__(*extras, max_line_length=max_line_length)
         self.translate_callback = translate_callback
         self.bypass = False
