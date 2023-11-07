@@ -44,7 +44,6 @@ ignore = [
   "B028",  # TODO: No explicit `stacklevel` keyword argument found
   "TRY301",  # TODO: Abstract `raise` to an inner function
   "B006",  # TODO: Do not use mutable data structures for argument defaults
-  "SIM103",  # TODO: Return the condition `origin in node.get("origin", "")` directly
   "S110",  # TODO: `try`-`except`-`pass` detected, consider logging the exception
   "RUF015",  # TODO: Prefer `next(iter(data.keys()))` over single element slice
   "PLR0913",  # TODO: Too many arguments in function definition
