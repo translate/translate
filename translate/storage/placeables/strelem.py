@@ -22,6 +22,7 @@ Contains the base :class:`StringElem` class that represents a node in a
 parsed rich-string tree. It is the base class of all placeables.
 """
 
+import contextlib
 import logging
 import sys
 
@@ -379,10 +380,8 @@ class StringElem:
         end_offset = self.elem_offset(end["elem"])
 
         for node in marked_nodes:
-            try:
+            with contextlib.suppress(ElementNotFoundError):
                 self.delete_elem(node)
-            except ElementNotFoundError:
-                pass
 
         if start["elem"] is not end["elem"]:
             if start_offset == start["index"] or (

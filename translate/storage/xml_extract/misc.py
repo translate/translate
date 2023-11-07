@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+import contextlib
 import re
 
 
@@ -54,10 +55,8 @@ def compose_mappings(left, right):
     """
     result_map = {}
     for left_key, left_val in left.items():
-        try:
+        with contextlib.suppress(KeyError):
             result_map[left_key] = right[left_val]
-        except KeyError:
-            pass
     return result_map
 
 

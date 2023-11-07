@@ -18,6 +18,8 @@
 
 """Parent class for LISA standards (TMX, TBX, XLIFF)"""
 
+import contextlib
+
 from lxml import etree
 
 from translate.misc.xml_helpers import (
@@ -171,10 +173,8 @@ class LISAunit(base.TranslationUnit):
             else:
                 if self.textNode:
                     terms = languageNode.iter(self.namespaced(self.textNode))
-                    try:
+                    with contextlib.suppress(StopIteration):
                         languageNode = next(terms)
-                    except StopIteration:
-                        pass
                 languageNode.text = target
         else:
             self.set_target_dom(None, False)

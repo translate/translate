@@ -19,6 +19,7 @@
 
 """Module to provide a translation memory database."""
 
+import contextlib
 import logging
 import math
 import re
@@ -226,16 +227,14 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
                 )
                 sid = self.cursor.fetchone()
                 (sid,) = sid
-            try:
+            # target string already exists in db, do nothing
+            with contextlib.suppress(dbapi2.IntegrityError):
                 # FIXME: get time info from translation store
                 # FIXME: do we need so store target length?
                 self.cursor.execute(
                     "INSERT INTO targets (sid, text, lang, time) VALUES (?, ?, ?, ?)",
                     (sid, unit["target"], target_lang, int(time.time())),
                 )
-            except dbapi2.IntegrityError:
-                # target string already exists in db, do nothing
-                pass
 
             if commit:
                 self.connection.commit()

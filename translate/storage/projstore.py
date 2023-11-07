@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+import contextlib
 import os
 
 from lxml import etree
@@ -80,10 +81,8 @@ class ProjectStore:
         }
 
     def __del__(self):
-        try:
+        with contextlib.suppress(Exception):
             self.close()
-        except Exception:
-            pass
 
     # ACCESSORS #
     def _get_sourcefiles(self):
