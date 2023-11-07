@@ -176,8 +176,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
         for source, translations in self.conflictmap.items():
             words = source.split()
             words.sort(key=str_len)
-            source = words[-1]
-            reducedmap.setdefault(source, []).extend(translations)
+            reducedmap.setdefault(words[-1], []).extend(translations)
         # reduce plurals
         plurals = {}
         for word in reducedmap:

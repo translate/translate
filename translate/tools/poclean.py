@@ -39,8 +39,7 @@ def cleanunit(unit):
     else:
         strings = [unit.target]
     for index, string in enumerate(strings):
-        string = string.replace(r"\par", "")
-        strings[index] = tw4winre.sub(r"\1", string)
+        strings[index] = tw4winre.sub(r"\1", string.replace(r"\par", ""))
     if len(strings) == 1:
         unit.target = strings[0]
     else:
