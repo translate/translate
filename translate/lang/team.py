@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Module to guess the language ISO code based on the 'Language-Team' entry in
+"""
+Module to guess the language ISO code based on the 'Language-Team' entry in
 the header of a Gettext PO file.
 """
 
@@ -694,7 +695,8 @@ spelling and varients, that can be used to uniquely identify the language"""
 
 
 def _regex_guesser(prefilter, regex, string, postfilter=None):
-    """Use regular expressions to extract the language team
+    """
+    Use regular expressions to extract the language team
 
     :param prefilter: simple filter to apply before attempting the regex
     :param regex: regular expression with one group that will contain
@@ -733,7 +735,8 @@ def _lower(text):
 
 
 def _snippet_guesser(snippets_dict, string, filter_=_nofilter):
-    """Guess the language based on a snippet of text in the language team
+    """
+    Guess the language based on a snippet of text in the language team
     string.
 
     :param snippets_dict: A dict of snippets that can be used to identify a
@@ -752,7 +755,6 @@ def _snippet_guesser(snippets_dict, string, filter_=_nofilter):
 
 def guess_language(team_string):
     """Gueses the language of a PO file based on the Language-Team entry"""
-
     for prefilter, regex, postfilter in LANG_TEAM_REGEX:
         lang = _regex_guesser(prefilter, regex, team_string, postfilter)
         if lang:

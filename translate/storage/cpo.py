@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Classes that hold units of .po files (pounit) or entire files (pofile).
+"""
+Classes that hold units of .po files (pounit) or entire files (pofile).
 
 Gettext-style .po (or .pot) files are used in translations for KDE, GNOME and
 many other projects.
@@ -331,7 +332,8 @@ def unquotefrompo(postr):
 
 
 def get_libgettextpo_version():
-    """Returns the libgettextpo version
+    """
+    Returns the libgettextpo version
 
     :rtype: three-value tuple
     :return: libgettextpo version in the following format::
@@ -527,7 +529,8 @@ class pounit(pocommon.pounit):
                 gpo.po_message_set_msgstr(self._gpo_message, gpo_encode(target))
 
     def getid(self):
-        """The unique identifier for this unit according to the conventions in
+        """
+        The unique identifier for this unit according to the conventions in
         .mo files.
         """
         id = gpo_decode(gpo.po_message_msgid(self._gpo_message)) or ""
@@ -606,12 +609,12 @@ class pounit(pocommon.pounit):
         return newpo
 
     def merge(self, otherpo, overwrite=False, comments=True, authoritative=False):
-        """Merges the otherpo (with the same msgid) into this one.
+        """
+        Merges the otherpo (with the same msgid) into this one.
 
         Overwrite non-blank self.msgstr only if overwrite is True
         merge comments only if comments is True
         """
-
         if not isinstance(otherpo, pounit):
             super().merge(otherpo, overwrite, comments)
             return
@@ -690,7 +693,8 @@ class pounit(pocommon.pounit):
         return gpo.po_message_msgid_plural(self._gpo_message) is not None
 
     def _extract_msgidcomments(self, text=None):
-        """Extract KDE style msgid comments from the unit.
+        """
+        Extract KDE style msgid comments from the unit.
 
         :rtype: String
         :return: Returns the extracted msgidcomments found in this unit's msgid.
@@ -751,7 +755,8 @@ class pounit(pocommon.pounit):
 
     @classmethod
     def buildfromunit(cls, unit, encoding=None):
-        """Build a native unit from a foreign unit, preserving as much
+        """
+        Build a native unit from a foreign unit, preserving as much
         information as possible.
         """
         if type(unit) is cls and hasattr(unit, "copy") and callable(unit.copy):
@@ -825,7 +830,7 @@ class pofile(pocommon.pofile):
             pass
 
     def removeduplicates(self, duplicatestyle="merge"):
-        """make sure each msgid is unique ; merge comments etc from duplicates into original"""
+        """Make sure each msgid is unique ; merge comments etc from duplicates into original"""
         # TODO: can we handle consecutive calls to removeduplicates()? What
         # about files already containing msgctxt? - test
         id_dict = {}
@@ -858,7 +863,7 @@ class pofile(pocommon.pofile):
                     thepo.setcontext(" ".join(thepo.getlocations()))
                     thepo_msgctxt = gpo.po_message_msgctxt(thepo._gpo_message)
                     idpo_msgctxt = gpo.po_message_msgctxt(id_dict[id]._gpo_message)
-                    if not thepo_msgctxt == idpo_msgctxt:
+                    if thepo_msgctxt != idpo_msgctxt:
                         uniqueunits.append(thepo)
                     else:
                         logger.warning(

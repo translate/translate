@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""A class loader that will load C or Python implementations of the PO class
+"""
+A class loader that will load C or Python implementations of the PO class
 depending on the ``USECPO`` variable.
 
 Use the environment variable ``USECPO=2`` (or ``USECPO=1``) to choose the

@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Convert XLIFF translation files to OpenDocument (ODF) files.
+"""
+Convert XLIFF translation files to OpenDocument (ODF) files.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/odf2xliff.html
 for examples and usage instructions.
@@ -25,7 +26,7 @@ for examples and usage instructions.
 import zipfile
 from io import BytesIO
 
-import lxml.etree as etree
+from lxml import etree
 
 from translate.convert import convert
 from translate.storage import factory
@@ -38,7 +39,8 @@ from translate.storage.xml_extract.unit_tree import XPathTree, build_unit_tree
 
 def translate_odf(template, input_file):
     def load_dom_trees(template):
-        """Return a dict with translatable files in the template ODF package.
+        """
+        Return a dict with translatable files in the template ODF package.
 
         The keys are the filenames inside the ODF package, and the values are
         the etrees for each of those translatable files.
@@ -49,7 +51,8 @@ def translate_odf(template, input_file):
         }
 
     def load_unit_tree(input_file):
-        """Return a dict with the translations grouped by files ODF package.
+        """
+        Return a dict with the translations grouped by files ODF package.
 
         The keys are the filenames inside the template ODF package, and the
         values are XPathTree instances for each of those files.
@@ -58,7 +61,8 @@ def translate_odf(template, input_file):
         tree = build_unit_tree(store)
 
         def extract_unit_tree(filename, root_dom_element_name):
-            """Find the subtree in 'tree' which corresponds to the data in XML
+            """
+            Find the subtree in 'tree' which corresponds to the data in XML
             file 'filename'.
             """
             try:
@@ -77,7 +81,8 @@ def translate_odf(template, input_file):
         )
 
     def translate_dom_trees(unit_trees, dom_trees):
-        """Return a dict with the translated files for the ODF package.
+        """
+        Return a dict with the translated files for the ODF package.
 
         The keys are the filenames for the translatable files inside the
         template ODF package, and the values are etree ElementTree instances
@@ -99,7 +104,8 @@ def translate_odf(template, input_file):
 
 
 def write_odf(template, output_file, dom_trees):
-    """Write the translated ODF package.
+    """
+    Write the translated ODF package.
 
     The resulting ODF package is a copy of the template ODF package, with the
     translatable files replaced by their translated versions.

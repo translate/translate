@@ -36,7 +36,8 @@ default_header = {
 
 
 def parseheaderstring(input):
-    """Parses an input string with the definition of a PO header and returns
+    """
+    Parses an input string with the definition of a PO header and returns
     the interpreted values as a dictionary.
     """
     headervalues = {}
@@ -50,7 +51,8 @@ def parseheaderstring(input):
 
 
 def tzstring():
-    """Returns the timezone as a string in the format [+-]0000, eg +0200.
+    """
+    Returns the timezone as a string in the format [+-]0000, eg +0200.
 
     :rtype: str
     """
@@ -66,7 +68,8 @@ def tzstring():
 
 
 def update(existing, add=False, **kwargs):
-    """Update an existing header dictionary with the values in kwargs, adding
+    """
+    Update an existing header dictionary with the values in kwargs, adding
     new values only if add is true.
 
     :return: Updated dictionary of header entries
@@ -99,7 +102,8 @@ def update(existing, add=False, **kwargs):
 
 
 class poheader:
-    """This class implements functionality for manipulation of po file headers.
+    """
+    This class implements functionality for manipulation of po file headers.
     This class is a mix-in class and useless on its own. It must be used from
     all classes which represent a po file
     """
@@ -124,7 +128,7 @@ class poheader:
     ]
 
     def init_headers(self, charset="UTF-8", encoding="8bit", **kwargs):
-        """sets default values for po headers"""
+        """Sets default values for po headers"""
         # FIXME: we need to allow at least setting target language, pluralforms and generator
         headerdict = self.makeheaderdict(charset=charset, encoding=encoding, **kwargs)
         self.updateheader(add=True, **headerdict)
@@ -144,7 +148,8 @@ class poheader:
         report_msgid_bugs_to=None,
         **kwargs,
     ):
-        """Create a header dictionary with useful defaults.
+        """
+        Create a header dictionary with useful defaults.
 
         pot_creation_date can be None (current date) or a value (datetime or string)
         po_revision_date can be None (form), False (=pot_creation_date), True (=now),
@@ -197,7 +202,8 @@ class poheader:
         return update(defaultargs, add=True, **kwargs)
 
     def header(self):
-        """Returns the header element, or None. Only the first element is
+        """
+        Returns the header element, or None. Only the first element is
         allowed to be a header. Note that this could still return an empty
         header element, if present.
         """
@@ -210,7 +216,8 @@ class poheader:
             return None
 
     def parseheader(self):
-        """Parses the PO header and returns the interpreted values as a
+        """
+        Parses the PO header and returns the interpreted values as a
         dictionary.
         """
         header = self.header()
@@ -219,7 +226,8 @@ class poheader:
         return parseheaderstring(header.target)
 
     def updateheader(self, add=False, **kwargs):
-        """Updates the fields in the PO style header.
+        """
+        Updates the fields in the PO style header.
 
         This will create a header if add == True.
         """
@@ -284,7 +292,8 @@ class poheader:
         )
 
     def gettargetlanguage(self):
-        """Return the target language based on information in the header.
+        """
+        Return the target language based on information in the header.
 
         The target language is determined in the following sequence:
           1. Use the 'Language' entry in the header.
@@ -315,7 +324,8 @@ class poheader:
         return None
 
     def settargetlanguage(self, lang):
-        """Set the target language in the header.
+        """
+        Set the target language in the header.
 
         This removes any custom Poedit headers if they exist.
 
@@ -328,7 +338,8 @@ class poheader:
             )
 
     def getprojectstyle(self):
-        """Return the project based on information in the header.
+        """
+        Return the project based on information in the header.
 
         The project is determined in the following sequence:
           1. Use the 'X-Project-Style' entry in the header.
@@ -360,7 +371,8 @@ class poheader:
         return None
 
     def setprojectstyle(self, project_style):
-        """Set the project in the header.
+        """
+        Set the project in the header.
 
         :param project_style: the new project
         :type project_style: str
@@ -368,13 +380,13 @@ class poheader:
         self.updateheader(add=True, X_Project_Style=project_style)
 
     def mergeheaders(self, otherstore):
-        """Merges another header with this header.
+        """
+        Merges another header with this header.
 
         This header is assumed to be the template.
 
         :type otherstore: :class:`~translate.storage.base.TranslationStore`
         """
-
         newvalues = otherstore.parseheader()
         retain_list = (
             "Project-Id-Version",
@@ -447,7 +459,8 @@ class poheader:
         header.addnote("\n".join(postlines))
 
     def makeheader(self, **kwargs):
-        """Create a header for the given filename.
+        """
+        Create a header for the given filename.
 
         Check .makeheaderdict() for information on parameters.
         """

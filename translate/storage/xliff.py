@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Module for handling XLIFF files for translation.
+"""
+Module for handling XLIFF files for translation.
 
 The official recommendation is to use the extention .xlf for XLIFF files.
 """
@@ -144,7 +145,6 @@ class xliffunit(lisa.LISAunit):
 
     def createlanguageNode(self, lang, text, purpose):
         """Returns an xml Element setup with given parameters."""
-
         # TODO: for now we do source, but we have to test if it is target,
         # perhaps with parameter. Alternatively, we can use lang, if
         # supplied, since an xliff file has to conform to the bilingual
@@ -224,7 +224,8 @@ class xliffunit(lisa.LISAunit):
         ### currently giving some issues in Virtaal: self._rich_target = value
 
     def get_rich_target(self, lang=None):
-        """retrieves the "target" text (second entry), or the entry in the
+        """
+        retrieves the "target" text (second entry), or the entry in the
         specified language, if it exists
         """
         if self._rich_target is None:
@@ -247,12 +248,12 @@ class xliffunit(lisa.LISAunit):
     def addalttrans(
         self, txt, origin=None, lang=None, sourcetxt=None, matchquality=None
     ):
-        """Adds an alt-trans tag and alt-trans components to the unit.
+        """
+        Adds an alt-trans tag and alt-trans components to the unit.
 
         :type txt: String
         :param txt: Alternative translation of the source text.
         """
-
         # TODO: support adding a source tag ad match quality attribute.  At the
         # source tag is needed to inject fuzzy matches from a TM.
         alttrans = etree.SubElement(self.xmlelement, self.namespaced("alt-trans"))
@@ -270,7 +271,8 @@ class xliffunit(lisa.LISAunit):
             setXMLlang(alttrans, lang)
 
     def getalttrans(self, origin=None):
-        """Returns <alt-trans> for the given origin as a list of units. No
+        """
+        Returns <alt-trans> for the given origin as a list of units. No
         origin means all alternatives.
         """
         translist = []
@@ -320,7 +322,8 @@ class xliffunit(lisa.LISAunit):
             note.set("from", origin)
 
     def _getnotelist(self, origin=None):
-        """Returns the text from notes matching ``origin`` or all notes.
+        """
+        Returns the text from notes matching ``origin`` or all notes.
 
         :param origin: The origin of the note (or note type)
         :type origin: String
@@ -428,7 +431,8 @@ class xliffunit(lisa.LISAunit):
         return self.get_state_id() == self.S_NEEDS_REVIEW
 
     def markreviewneeded(self, needsreview=True, explanation=None):
-        """Marks the unit to indicate whether it needs review.
+        """
+        Marks the unit to indicate whether it needs review.
 
         Adds an optional explanation as a note.
         """
@@ -527,7 +531,8 @@ class xliffunit(lisa.LISAunit):
         return locations
 
     def createcontextgroup(self, name, contexts=None, purpose=None):
-        """Add the context group to the trans-unit with contexts a list with
+        """
+        Add the context group to the trans-unit with contexts a list with
         (type, text) tuples describing each context.
         """
         assert contexts
@@ -591,7 +596,7 @@ class xliffunit(lisa.LISAunit):
         return groups
 
     def getrestype(self):
-        """returns the restype attribute in the trans-unit tag"""
+        """Returns the restype attribute in the trans-unit tag"""
         return self.xmlelement.get("restype")
 
     def merge(self, otherunit, overwrite=False, comments=True, authoritative=False):
@@ -622,7 +627,8 @@ class xliffunit(lisa.LISAunit):
 
     @classmethod
     def multistring_to_rich(cls, mstr):
-        """Override :meth:`TranslationUnit.multistring_to_rich` which is used
+        """
+        Override :meth:`TranslationUnit.multistring_to_rich` which is used
         by the ``rich_source`` and ``rich_target`` properties.
         """
         strings = mstr
@@ -635,7 +641,8 @@ class xliffunit(lisa.LISAunit):
 
     @classmethod
     def rich_to_multistring(cls, elem_list):
-        """Override :meth:`TranslationUnit.rich_to_multistring` which is used
+        """
+        Override :meth:`TranslationUnit.rich_to_multistring` which is used
         by the ``rich_source`` and ``rich_target`` properties.
         """
         return multistring([str(elem) for elem in elem_list])
@@ -689,12 +696,12 @@ class xlifffile(lisa.LISAfile):
 
     def addheader(self):
         """Initialise the file header."""
-        pass
 
     def createfilenode(
         self, filename, sourcelanguage=None, targetlanguage=None, datatype="plaintext"
     ):
-        """creates a filenode with the given filename. All parameters are
+        """
+        creates a filenode with the given filename. All parameters are
         needed for XLIFF compliance.
         """
         if sourcelanguage is None:
@@ -722,16 +729,16 @@ class xlifffile(lisa.LISAfile):
 
     @staticmethod
     def getfilename(filenode):
-        """returns the name of the given file"""
+        """Returns the name of the given file"""
         return filenode.get("original")
 
     @staticmethod
     def setfilename(filenode, filename):
-        """set the name of the given file"""
+        """Set the name of the given file"""
         return filenode.set("original", filename)
 
     def getfilenames(self):
-        """returns all filenames in this XLIFF file"""
+        """Returns all filenames in this XLIFF file"""
         filenodes = self.document.getroot().iterchildren(self.namespaced("file"))
         filenames = [self.getfilename(filenode) for filenode in filenodes]
         filenames = list(filter(None, filenames))
@@ -740,7 +747,7 @@ class xlifffile(lisa.LISAfile):
         return filenames
 
     def getfilenode(self, filename, createifmissing=False):
-        """finds the filenode with the given name"""
+        """Finds the filenode with the given name"""
         filenodes = self.document.getroot().iterchildren(self.namespaced("file"))
         for filenode in filenodes:
             if self.getfilename(filenode) == filename:
@@ -774,7 +781,8 @@ class xlifffile(lisa.LISAfile):
     targetlanguage = property(gettargetlanguage, settargetlanguage)
 
     def getdatatype(self, filename=None):
-        """Returns the datatype of the stored file. If no filename is given,
+        """
+        Returns the datatype of the stored file. If no filename is given,
         the datatype of the first file is given.
         """
         if filename:
@@ -788,7 +796,8 @@ class xlifffile(lisa.LISAfile):
         return ""
 
     def getdate(self, filename=None):
-        """Returns the date attribute for the file.
+        """
+        Returns the date attribute for the file.
 
         If no filename is given, the date of the first file is given.
         If the date attribute is not specified, None is returned.
@@ -807,7 +816,8 @@ class xlifffile(lisa.LISAfile):
         return None
 
     def removedefaultfile(self):
-        """We want to remove the default file-tag as soon as possible if we
+        """
+        We want to remove the default file-tag as soon as possible if we
         know if still present and empty.
         """
         filenodes = list(self.document.getroot().iterchildren(self.namespaced("file")))
@@ -820,7 +830,7 @@ class xlifffile(lisa.LISAfile):
                 break
 
     def getheadernode(self, filenode, createifmissing=False):
-        """finds the header node for the given filenode"""
+        """Finds the header node for the given filenode"""
         # TODO: Deprecated?
         headernode = filenode.iterchildren(self.namespaced("header"))
         try:
@@ -833,7 +843,7 @@ class xlifffile(lisa.LISAfile):
         return headernode
 
     def getbodynode(self, filenode, createifmissing=False):
-        """finds the body node for the given filenode"""
+        """Finds the body node for the given filenode"""
         bodynode = filenode.iterchildren(self.namespaced("body"))
         try:
             return next(bodynode)
@@ -852,7 +862,8 @@ class xlifffile(lisa.LISAfile):
         super().addunit(unit, new=new)
 
     def addsourceunit(self, source, filename="NoName", createifmissing=False):
-        """adds the given trans-unit to the last used body node if the filename
+        """
+        adds the given trans-unit to the last used body node if the filename
         has changed it uses the slow method instead (will create the nodes
         required if asked). Returns success
         """
@@ -867,7 +878,8 @@ class xlifffile(lisa.LISAfile):
         return unit
 
     def switchfile(self, filename, createifmissing=False):
-        """Adds the given trans-unit (will create the nodes required if asked).
+        """
+        Adds the given trans-unit (will create the nodes required if asked).
 
         :returns: Success
         :rtype: Boolean
@@ -886,7 +898,7 @@ class xlifffile(lisa.LISAfile):
         return self.body is not None
 
     def creategroup(self, filename="NoName", createifmissing=False, restype=None):
-        """adds a group tag into the specified file"""
+        """Adds a group tag into the specified file"""
         if not self.switchfile(filename, createifmissing):
             return None
         group = etree.SubElement(self.body, self.namespaced("group"))

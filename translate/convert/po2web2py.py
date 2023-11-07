@@ -17,7 +17,8 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 
-"""Convert GNU/gettext PO files to web2py translation dictionaries (.py).
+"""
+Convert GNU/gettext PO files to web2py translation dictionaries (.py).
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/web2py2po.html
 for examples and usage instructions.
@@ -49,7 +50,7 @@ class po2pydict:
         str_obj.write("# -*- coding: utf-8 -*-\n")
         str_obj.write("{\n")
         for source_str, trans_str in sorted(mydict.items()):
-            str_obj.write(f"{repr(source_str)}: {repr(trans_str)},\n")
+            str_obj.write(f"{source_str!r}: {trans_str!r},\n")
         str_obj.write("}\n")
         str_obj.seek(0)
         return str_obj

@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Convert Gettext PO localization files to plain text (.txt) files.
+"""
+Convert Gettext PO localization files to plain text (.txt) files.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/txt2po.html
 for examples and usage instructions.
@@ -29,7 +30,8 @@ from translate.storage import factory
 
 
 class po2txt:
-    """po2txt can take a po file and generate txt.
+    """
+    po2txt can take a po file and generate txt.
 
     best to give it a template file otherwise will just concat msgstrs
     """
@@ -59,7 +61,7 @@ class po2txt:
             self.template_file = template_file
 
     def wrapmessage(self, message):
-        """rewraps text as required"""
+        """Rewraps text as required"""
         if self.wrap is None:
             return message
         return "\n".join(
@@ -80,7 +82,8 @@ class po2txt:
         return txtresult.rstrip()
 
     def merge_stores(self):
-        """Convert a source file to a target file using a template file.
+        """
+        Convert a source file to a target file using a template file.
 
         Source file is in source format, while target and template files use
         target format.

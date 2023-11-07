@@ -17,7 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Classes that hold units of Gettext .po files (pounit) or entire
+"""
+Classes that hold units of Gettext .po files (pounit) or entire
 files (pofile).
 """
 
@@ -45,7 +46,8 @@ po_escape_map = {value: key for (key, value) in po_unescape_map.items()}
 
 
 def splitlines(text):
-    """Split lines based on first newline char.
+    """
+    Split lines based on first newline char.
 
     Can not use univerzal newlines as they match any newline like
     character inside text and that breaks on files with unix newlines
@@ -77,7 +79,8 @@ def splitlines(text):
 
 
 def escapeforpo(line):
-    """Escapes a line for po format. assumes no \n occurs in the line.
+    r"""
+    Escapes a line for po format. assumes no \n occurs in the line.
 
     :param line: unescaped text
     """
@@ -256,7 +259,8 @@ def quoteforpo(text, wrapper_obj=None):
 
 
 def unescape(line):
-    """Unescape the given line.
+    """
+    Unescape the given line.
 
     Quotes on either side should already have been removed.
     """
@@ -394,7 +398,8 @@ class pounit(pocommon.pounit):
 
     @source.setter
     def source(self, source):
-        """Sets the msgid to the given (unescaped) value.
+        """
+        Sets the msgid to the given (unescaped) value.
 
         :param source: an unescaped source string.
         """
@@ -406,7 +411,8 @@ class pounit(pocommon.pounit):
         return self._get_source_vars(self.prev_msgid, self.prev_msgid_plural)
 
     def _set_prev_source(self, source):
-        """Sets the msgid to the given (unescaped) value.
+        """
+        Sets the msgid to the given (unescaped) value.
 
         :param source: an unescaped source string.
         """
@@ -451,7 +457,8 @@ class pounit(pocommon.pounit):
             self.msgstr = self.quote(target)
 
     def getalttrans(self):
-        """Return a list of alternate units.
+        """
+        Return a list of alternate units.
 
         Previous msgid and current msgstr is combined to form a single
         alternative unit.
@@ -468,7 +475,8 @@ class pounit(pocommon.pounit):
         return []
 
     def getnotes(self, origin=None):
-        """Return comments based on origin value.
+        """
+        Return comments based on origin value.
 
         :param origin: programmer, developer, source code, translator or None
         """
@@ -493,7 +501,8 @@ class pounit(pocommon.pounit):
         return comments[:-1]
 
     def addnote(self, text, origin=None, position="append"):
-        """This is modeled on the XLIFF method.
+        """
+        This is modeled on the XLIFF method.
 
         See :meth:`translate.storage.xliff.xliffunit.addnote`
         """
@@ -560,7 +569,8 @@ class pounit(pocommon.pounit):
         return len(unquotefrompo(self.msgstr))
 
     def merge(self, otherpo, overwrite=False, comments=True, authoritative=False):
-        """Merges the otherpo (with the same msgid) into this one.
+        """
+        Merges the otherpo (with the same msgid) into this one.
 
         Overwrite non-blank self.msgstr only if overwrite is True
         merge comments only if comments is True
@@ -681,7 +691,8 @@ class pounit(pocommon.pounit):
         return typecomment in parsed
 
     def hasmarkedcomment(self, commentmarker):
-        """Check whether the given comment marker is present.
+        """
+        Check whether the given comment marker is present.
 
         These should appear as::
 
@@ -745,7 +756,7 @@ class pounit(pocommon.pounit):
         self.obsolete = False
 
     def hasplural(self):
-        """returns whether this pounit contains plural strings..."""
+        """Returns whether this pounit contains plural strings..."""
         return len(self.msgid_plural) > 0
 
     def _getmsgpartstr(self, partname, partlines, partcomments=""):
@@ -807,7 +818,7 @@ class pounit(pocommon.pounit):
         return self._getoutput()
 
     def _getoutput(self):
-        """return this po element as a string"""
+        """Return this po element as a string"""
 
         def add_prev_msgid_lines(lines, prefix, header, var):
             if var:
@@ -866,7 +877,8 @@ class pounit(pocommon.pounit):
         return "".join(lines)
 
     def getlocations(self):
-        """Get a list of locations from sourcecomments in the PO unit
+        """
+        Get a list of locations from sourcecomments in the PO unit
 
         rtype: List
         return: A list of the locations with '#: ' stripped
@@ -880,7 +892,8 @@ class pounit(pocommon.pounit):
         return locations
 
     def addlocation(self, location):
-        """Add a location to sourcecomments in the PO unit
+        """
+        Add a location to sourcecomments in the PO unit
 
         :param location: Text location e.g. 'file.c:23' does not include #:
         :type location: String
@@ -890,13 +903,13 @@ class pounit(pocommon.pounit):
         self.sourcecomments.append(f"#: {location}{self.newline}")
 
     def _extract_msgidcomments(self, text=None):
-        """Extract KDE style msgid comments from the unit.
+        """
+        Extract KDE style msgid comments from the unit.
 
         :rtype: String
         :return: Returns the extracted msgidcomments found in this
                  unit's msgid.
         """
-
         if not text:
             text = unquotefrompo(self.msgidcomments)
         return text.split(self.newline)[0].replace("_: ", "", 1)
@@ -962,7 +975,8 @@ class pofile(pocommon.pofile):
         poparser.parse_units(poparser.ParseState(iter(lines), self.create_unit), self)
 
     def removeduplicates(self, duplicatestyle="merge"):
-        """Make sure each msgid is unique ; merge comments etc from
+        """
+        Make sure each msgid is unique ; merge comments etc from
         duplicates into original
         """
         # TODO: can we handle consecutive calls to removeduplicates()? What
@@ -1000,7 +1014,7 @@ class pofile(pocommon.pofile):
                     thepo.msgctxt.append(
                         '"%s"' % escapeforpo(" ".join(thepo.getlocations()))
                     )
-                    if not thepo.msgctxt == id_dict[id].msgctxt:
+                    if thepo.msgctxt != id_dict[id].msgctxt:
                         uniqueunits.append(thepo)
                     else:
                         logger.warning(

@@ -1,4 +1,5 @@
-"""selector - WSGI delegation based on URL path and method.
+"""
+selector - WSGI delegation based on URL path and method.
 
 (See the docstring of selector.Selector.)
 
@@ -15,8 +16,8 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to 
-the Free Software Foundation, Inc., 51 Franklin Street, 
+License along with this library; if not, write to
+the Free Software Foundation, Inc., 51 Franklin Street,
 Fifth Floor, Boston, MA  02110-1301  USA
 
 Luke Arno can be found at http://lukearno.com/
@@ -69,7 +70,8 @@ def not_found(environ, start_response):
 
 
 class Selector:
-    """WSGI middleware for URL paths and HTTP method based delegation.
+    """
+    WSGI middleware for URL paths and HTTP method based delegation.
 
     See http://lukearno.com/projects/selector/
 
@@ -105,7 +107,8 @@ class Selector:
         self.consume_path = consume_path
 
     def slurp(self, mappings, prefix=None, parser=None, wrap=None):
-        """Slurp in a whole list (or iterable) of mappings.
+        """
+        Slurp in a whole list (or iterable) of mappings.
 
         Prefix and parser args will override self.parser and self.args
         for the given mappings.
@@ -128,7 +131,8 @@ class Selector:
             self.prefix = oldprefix
 
     def add(self, path, method_dict=None, prefix=None, **http_methods):
-        """Add a mapping.
+        """
+        Add a mapping.
 
         HTTP methods can be specified in a dict or using kwargs,
         but kwargs will override if both are given.
@@ -202,7 +206,8 @@ class Selector:
         return self.status404, {}, [], ""
 
     def slurp_file(self, the_file, prefix=None, parser=None, wrap=None):
-        """Read mappings from a simple text file.
+        """
+        Read mappings from a simple text file.
 
         Format looks like this::
 
@@ -261,7 +266,8 @@ class Selector:
             self.prefix = oldprefix
 
     def _parse_line(self, line, path, methods):
-        """Parse one line of a mapping file.
+        """
+        Parse one line of a mapping file.
 
         This method is for the use of selector.slurp_file.
         """
@@ -298,7 +304,8 @@ class Selector:
 
 
 class SimpleParser:
-    r"""Callable to turn path expressions into regexes with named groups.
+    r"""
+    Callable to turn path expressions into regexes with named groups.
 
     For instance ``"/hello/{name}"`` becomes ``r"^\/hello\/(?P<name>[^\^.]+)$"``
 
@@ -358,7 +365,8 @@ class SimpleParser:
 
     @staticmethod
     def lastly(regex):
-        """Process the result of __call__ right before it returns.
+        """
+        Process the result of __call__ right before it returns.
 
         Adds the ^ and the $ to the beginning and the end, respectively.
         """
@@ -366,7 +374,8 @@ class SimpleParser:
 
     @staticmethod
     def openended(regex):
-        """Process the result of ``__call__`` right before it returns.
+        """
+        Process the result of ``__call__`` right before it returns.
 
         Adds the ^ to the beginning but no $ to the end.
         Called as a special alternative to lastly.
@@ -431,7 +440,8 @@ class EnvironDispatcher:
         self.rules = rules
 
     def __call__(self, environ, start_response):
-        """Call the first app whose predicate is true.
+        """
+        Call the first app whose predicate is true.
 
         Each predicate is passes the environ to evaluate.
         """
@@ -449,7 +459,8 @@ class MiddlewareComposer:
         self.rules = rules
 
     def __call__(self, environ, start_response):
-        """Apply each middleware whose predicate is true.
+        """
+        Apply each middleware whose predicate is true.
 
         Each predicate is passes the environ to evaluate.
 
@@ -484,7 +495,8 @@ class Naked:
     _exposed = True
 
     def _is_exposed(self, obj):
-        """Determine if obj should be exposed.
+        """
+        Determine if obj should be exposed.
 
         If ``self._expose_all`` is True, always return True.
         Otherwise, look at obj._exposed.
@@ -518,7 +530,8 @@ class ByMethod:
 
 
 def pliant(func):
-    """Decorate an unbound wsgi callable taking args from
+    """
+    Decorate an unbound wsgi callable taking args from
     ``wsgiorg.routing_args``
     ::
 
@@ -538,7 +551,8 @@ def pliant(func):
 
 
 def opliant(meth):
-    """Decorate a bound wsgi callable taking args from
+    """
+    Decorate a bound wsgi callable taking args from
     ``wsgiorg.routing_args``
     ::
 

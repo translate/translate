@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Classes that hold units of PHP localisation files :class:`phpunit` or
+"""
+Classes that hold units of PHP localisation files :class:`phpunit` or
 entire files :class:`phpfile`. These files are used in translating many
 PHP based applications.
 
@@ -105,7 +106,8 @@ class PHPLexer(FilteredLexer):
         return token
 
     def extract_comments(self, end):
-        """Extract comments related to given parser positions.
+        """
+        Extract comments related to given parser positions.
 
         Must be called sequentially for consequent statements.
         """
@@ -171,7 +173,8 @@ class PHPLexer(FilteredLexer):
 
 
 def phpencode(text, quotechar="'"):
-    """Convert Python string to PHP escaping.
+    """
+    Convert Python string to PHP escaping.
 
     The encoding is implemented for
     `'single quote' <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.single>`_
@@ -207,11 +210,10 @@ def phpencode(text, quotechar="'"):
 
 def phpdecode(text, quotechar="'"):
     """Convert PHP escaped string to a Python string."""
-
     escape_encoding = "unicode_escape"
 
     def decode_octal_hex(match):
-        r"""decode Octal \NNN and Hex values"""
+        r"""Decode Octal \NNN and Hex values"""
         if "octal" in match.groupdict():
             return match.groupdict()["octal"].encode("latin-1").decode(escape_encoding)
         elif "hex" in match.groupdict():

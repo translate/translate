@@ -132,6 +132,6 @@ class TestRESXfile(test_monolingual.TestMonolingualStore):
     StoreClass = resx.RESXFile
 
     def resxparse(self, resxsource):
-        """helper that parses resx source without requiring files"""
+        """Helper that parses resx source without requiring files"""
         dummyfile = BytesIO(resxsource.encode())
         return self.StoreClass(dummyfile)

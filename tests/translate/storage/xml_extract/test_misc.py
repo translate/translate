@@ -37,8 +37,9 @@ def test_reduce_tree():
     def concatenate(parent_node, node, string):
         return string + node[0]
 
-    assert "abcdefgh" == misc.reduce_tree(
-        concatenate, test_tree_1, test_tree_1, get_children, ""
+    assert (
+        misc.reduce_tree(concatenate, test_tree_1, test_tree_1, get_children, "")
+        == "abcdefgh"
     )
 
     def get_even_and_total(parent_node, node, even_lst, total):
@@ -67,11 +68,11 @@ def test_compose_mappings():
 
 
 def test_parse_tag():
-    assert ("some-urn", "some-tag") == misc.parse_tag("{some-urn}some-tag")
+    assert misc.parse_tag("{some-urn}some-tag") == ("some-urn", "some-tag")
 
-    assert (
+    assert misc.parse_tag(
+        "{urn:oasis:names:tc:opendocument:xmlns:office:1.0}document-content"
+    ) == (
         "urn:oasis:names:tc:opendocument:xmlns:office:1.0",
         "document-content",
-    ) == misc.parse_tag(
-        "{urn:oasis:names:tc:opendocument:xmlns:office:1.0}document-content"
     )

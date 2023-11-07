@@ -49,9 +49,7 @@ PRODID:-//hacksw/handcal//NONSGML v1.0//EN
 BEGIN:VEVENT
 END:VEVENT
 END:VCALENDAR
-""".replace(
-            "\n", "\r\n"
-        )
+""".replace("\n", "\r\n")
         output = self._convert_to_string(input_string, success_expected=False)
         assert output == ""
 
@@ -70,9 +68,7 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:Value
 END:VEVENT
 END:VCALENDAR
-""".replace(
-            "\n", "\r\n"
-        )
+""".replace("\n", "\r\n")
         expected_output = """
 #. Start date: 1997-07-14 17:00:00+00:00
 #: [uid1@example.com]SUMMARY
@@ -98,9 +94,7 @@ DTSTAMP:19970714T170000Z
 ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 END:VEVENT
 END:VCALENDAR
-""".replace(
-            "\n", "\r\n"
-        )
+""".replace("\n", "\r\n")
         expected_output = """
 #. Start date: 1997-07-14 17:00:00+00:00
 #: [uid1@example.com]DESCRIPTION
@@ -126,9 +120,7 @@ LOCATION:Value
 ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 END:VEVENT
 END:VCALENDAR
-""".replace(
-            "\n", "\r\n"
-        )
+""".replace("\n", "\r\n")
         expected_output = """
 #. Start date: 1997-07-14 17:00:00+00:00
 #: [uid1@example.com]LOCATION
@@ -154,9 +146,7 @@ DTSTAMP:19970714T170000Z
 ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 END:VEVENT
 END:VCALENDAR
-""".replace(
-            "\n", "\r\n"
-        )
+""".replace("\n", "\r\n")
         expected_output = """
 #. Start date: 1997-07-14 17:00:00+00:00
 #: [uid1@example.com]COMMENT
@@ -190,9 +180,7 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:Value
 END:VEVENT
 END:VCALENDAR
-""".replace(
-            "\n", "\r\n"
-        )
+""".replace("\n", "\r\n")
         expected_output = """
 #. Start date: 1997-07-14 17:00:00+00:00
 #: [uid1@example.com]SUMMARY
@@ -241,9 +229,7 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:Valor
 END:VEVENT
 END:VCALENDAR
-""".replace(
-            "\n", "\r\n"
-        )
+""".replace("\n", "\r\n")
         template_string = """
 BEGIN:VCALENDAR
 VERSION:2.0
@@ -257,9 +243,7 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:Value
 END:VEVENT
 END:VCALENDAR
-""".replace(
-            "\n", "\r\n"
-        )
+""".replace("\n", "\r\n")
         expected_output = """
 #. Start date: 1997-07-18 17:00:00+00:00
 #: [uid1@example.com]SUMMARY
@@ -285,9 +269,7 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:Valor
 END:VEVENT
 END:VCALENDAR
-""".replace(
-            "\n", "\r\n"
-        )
+""".replace("\n", "\r\n")
         template_string = """
 BEGIN:VCALENDAR
 VERSION:2.0
@@ -301,9 +283,7 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:Value
 END:VEVENT
 END:VCALENDAR
-""".replace(
-            "\n", "\r\n"
-        )
+""".replace("\n", "\r\n")
         expected_output = """
 #. Start date: 1997-07-18 17:00:00+00:00
 #: [uid1@example.com]SUMMARY
@@ -329,9 +309,7 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:Valor
 END:VEVENT
 END:VCALENDAR
-""".replace(
-            "\n", "\r\n"
-        )
+""".replace("\n", "\r\n")
         template_string = """
 BEGIN:VCALENDAR
 VERSION:2.0
@@ -345,9 +323,7 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:Value
 END:VEVENT
 END:VCALENDAR
-""".replace(
-            "\n", "\r\n"
-        )
+""".replace("\n", "\r\n")
         expected_output = """
 #. Start date: 1997-07-18 17:00:00+00:00
 #: [uid1@example.com]SUMMARY
@@ -383,9 +359,7 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:Valioso
 END:VEVENT
 END:VCALENDAR
-""".replace(
-            "\n", "\r\n"
-        )
+""".replace("\n", "\r\n")
         template_string = """
 BEGIN:VCALENDAR
 VERSION:2.0
@@ -407,9 +381,7 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:Value
 END:VEVENT
 END:VCALENDAR
-""".replace(
-            "\n", "\r\n"
-        )
+""".replace("\n", "\r\n")
         expected_output = """
 #. Start date: 1997-07-14 17:00:00+00:00
 #: [uid1@example.com]SUMMARY

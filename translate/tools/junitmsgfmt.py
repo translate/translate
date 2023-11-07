@@ -7,7 +7,7 @@ from os.path import basename
 from time import time
 from typing import Iterable, NamedTuple
 
-import lxml.etree as etree
+from lxml import etree
 
 
 class MsgfmtTester:

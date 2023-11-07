@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-r"""Classes that hold units of .properties, and similar, files that are used in
+r"""
+Classes that hold units of .properties, and similar, files that are used in
 translating Java, Mozilla, MacOS and other software.
 
 The :class:`propfile` class is a monolingual class with :class:`propunit`
@@ -153,7 +154,8 @@ eol = "\n"
 
 
 def is_line_continuation(line):
-    """Determine whether *line* has a line continuation marker.
+    """
+    Determine whether *line* has a line continuation marker.
 
     .properties files can be terminated with a backslash (\\) indicating
     that the 'value' continues on the next line.  Continuation is only
@@ -178,7 +180,8 @@ def is_line_continuation(line):
 
 
 def is_comment_one_line(line):
-    """Determine whether a *line* is a one-line comment.
+    """
+    Determine whether a *line* is a one-line comment.
 
     :param line: A properties line
     :type line: unicode
@@ -196,7 +199,8 @@ def is_comment_one_line(line):
 
 
 def is_comment_start(line):
-    """Determine whether a *line* starts a new multi-line comment.
+    """
+    Determine whether a *line* starts a new multi-line comment.
 
     :param line: A properties line
     :type line: unicode
@@ -208,7 +212,8 @@ def is_comment_start(line):
 
 
 def is_comment_end(line):
-    """Determine whether a *line* ends a new multi-line comment.
+    """
+    Determine whether a *line* ends a new multi-line comment.
 
     :param line: A properties line
     :type line: unicode
@@ -220,7 +225,8 @@ def is_comment_end(line):
 
 
 def _key_strip(key):
-    """Cleanup whitespace found around a key
+    """
+    Cleanup whitespace found around a key
 
     :param key: A properties key
     :type key: str
@@ -275,7 +281,8 @@ class Dialect:
 
     @classmethod
     def find_delimiter(cls, line):
-        """Find the type and position of the delimiter in a property line.
+        """
+        Find the type and position of the delimiter in a property line.
 
         Property files can be delimited by "=", ":" or whitespace (space for now).
         We find the position of each delimiter, then find the one that appears
@@ -735,7 +742,8 @@ class proppluralunit(base.TranslationUnit):
         self.units[variant] = unit
 
     def isblank(self):
-        """returns whether this is a blank element, containing only
+        """
+        returns whether this is a blank element, containing only
         comments.
         """
         return not (self.name or self.value)
@@ -758,7 +766,8 @@ class proppluralunit(base.TranslationUnit):
         self._get_source_unit().missing = missing
 
     def __str__(self):
-        """Convert to a string. Double check that unicode is handled
+        """
+        Convert to a string. Double check that unicode is handled
         somehow here.
         """
         return self.getoutput()
@@ -803,7 +812,8 @@ class DialectJoomla(Dialect):
 
 
 class propunit(base.TranslationUnit):
-    """An element of a properties file i.e. a name and value, and any comments
+    """
+    An element of a properties file i.e. a name and value, and any comments
     associated.
     """
 
@@ -927,7 +937,7 @@ class propunit(base.TranslationUnit):
         self.comments = []
 
     def isblank(self):
-        """returns whether this is a blank element, containing only comments."""
+        """Returns whether this is a blank element, containing only comments."""
         return not (self.name or self.value)
 
     def istranslatable(self):
@@ -973,7 +983,7 @@ class propfile(base.TranslationStore):
     UnitClass = propunit
 
     def __init__(self, inputfile=None, personality="java", encoding=None):
-        """construct a propfile, optionally reading in from inputfile"""
+        """Construct a propfile, optionally reading in from inputfile"""
         super().__init__()
         self.personality = get_dialect(personality)
         self.encoding = encoding or self.personality.default_encoding

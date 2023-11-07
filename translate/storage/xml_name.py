@@ -27,7 +27,8 @@ class XmlNamespace:
 
 
 class XmlNamer:
-    """Initialize me with a DOM node or a DOM document node (the
+    """
+    Initialize me with a DOM node or a DOM document node (the
     toplevel node you get when parsing an XML file). Then use me
     to generate fully qualified XML names.
 

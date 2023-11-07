@@ -22,7 +22,8 @@ from translate.filters import decoration
 
 
 def correct(source, target):
-    """Runs a set of easy and automatic corrections
+    """
+    Runs a set of easy and automatic corrections
 
     Current corrections include:
       - Ellipses - align target to use source form of ellipses (either three dots or the Unicode ellipses characters)

@@ -8,15 +8,14 @@ from . import test_convert
 class TestAndroid2PO:
     @staticmethod
     def android2po(source, template=None):
-        """helper that converts android source to po source without requiring files"""
+        """Helper that converts android source to po source without requiring files"""
         inputfile = BytesIO(source.encode())
         templatefile = BytesIO(template.encode()) if template else None
         outputpo = android2po._convertandroid(inputfile, templatefile)
         return outputpo
 
     def test_no_template_units(self):
-        """test that we can handle android with no template"""
-
+        """Test that we can handle android with no template"""
         _input = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="id">Multimedia tab</string>
@@ -27,8 +26,7 @@ class TestAndroid2PO:
         assert poresult.units[1].source == "Multimedia tab"
 
     def test_template_units(self):
-        """test that we can handle android with template"""
-
+        """Test that we can handle android with template"""
         template = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="id">Multimedia tab</string>

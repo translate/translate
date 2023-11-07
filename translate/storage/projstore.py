@@ -117,7 +117,8 @@ class ProjectStore:
 
     # METHODS #
     def append_file(self, afile, fname, ftype="trans", delete_orig=False):
-        """Append the given file to the project with the given filename, marked
+        """
+        Append the given file to the project with the given filename, marked
         to be of type ``ftype`` ('src', 'trans', 'tgt').
 
         :type  delete_orig: bool
@@ -174,7 +175,8 @@ class ProjectStore:
         return self.append_file(afile, fname, ftype="trans")
 
     def remove_file(self, fname, ftype=None):
-        """Remove the file with the given project name from the project.  If
+        """
+        Remove the file with the given project name from the project.  If
         the file type ('src', 'trans' or 'tgt') is not given, it is guessed.
         """
         if fname not in self._files:
@@ -204,7 +206,8 @@ class ProjectStore:
         self.save()
 
     def get_file(self, fname, mode="rb"):
-        """Retrieve the file with the given name from the project store.
+        """
+        Retrieve the file with the given name from the project store.
 
         The file is looked up in the ``self._files`` dictionary. The values
         in this dictionary may be ``None``, to indicate that the file is not
@@ -252,14 +255,13 @@ class ProjectStore:
 
     def load(self, *args, **kwargs):
         """Load the project in some way. Undefined for this (base) class."""
-        pass
 
     def save(self, filename=None, *args, **kwargs):
         """Save the project in some way. Undefined for this (base) class."""
-        pass
 
     def update_file(self, pfname, infile):
-        """Remove the project file with name ``pfname`` and add the contents
+        """
+        Remove the project file with name ``pfname`` and add the contents
         from ``infile`` to the project under the same file name.
 
         :returns: the results from :meth:`ProjectStore.append_file`.
@@ -337,7 +339,8 @@ class ProjectStore:
         return etree.tostring(xml, pretty_print=True)
 
     def _load_settings(self, settingsxml):
-        """Load project settings from the given XML string.  ``settingsxml`` is
+        """
+        Load project settings from the given XML string.  ``settingsxml`` is
         parsed into a DOM tree (``lxml.etree.fromstring``) which is then
         inspected.
         """

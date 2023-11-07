@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""A class to calculate a similarity based on the Levenshtein
+"""
+A class to calculate a similarity based on the Levenshtein
 distance.
 
 .. seealso:: :wp:`Levenshtein_distance`
@@ -30,7 +31,8 @@ import math
 
 
 def python_distance(a, b, stopvalue=-1):
-    """Calculates the distance for use in similarity calculation. Python
+    """
+    Calculates the distance for use in similarity calculation. Python
     version.
     """
     l1 = len(a)
@@ -59,7 +61,8 @@ def python_distance(a, b, stopvalue=-1):
 
 
 def native_distance(a, b, stopvalue=0):
-    """Same as python_distance in functionality. This uses the fast C version
+    """
+    Same as python_distance in functionality. This uses the fast C version
     if we detected it earlier.
 
     Note that this does not support arbitrary sequence types, but only string
@@ -106,7 +109,8 @@ class LevenshteinComparer:
         return similarity / measurements
 
     def similarity_real(self, a, b, stoppercentage=40):
-        """Returns the similarity between a and b based on Levenshtein
+        """
+        Returns the similarity between a and b based on Levenshtein
         distance. It can stop prematurely as soon as it sees that a and b will
         be no simmilar than the percentage specified in stoppercentage.
 

@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Conflict finder for Gettext PO localization files.
+"""
+Conflict finder for Gettext PO localization files.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/poconflicts.html
 for examples and usage instructions.
@@ -33,7 +34,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
     """a specialized Option Parser for the conflict tool..."""
 
     def parse_args(self, args=None, values=None):
-        """parses the command line options, handling implicit input/output args"""
+        """Parses the command line options, handling implicit input/output args"""
         (options, args) = optrecurse.optparse.OptionParser.parse_args(
             self, args, values
         )
@@ -59,7 +60,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
         return (options, args)
 
     def set_usage(self, usage=None):
-        """sets the usage string - if usage not given, uses getusagestring for each option"""
+        """Sets the usage string - if usage not given, uses getusagestring for each option"""
         if usage is None:
             self.usage = (
                 "%prog "
@@ -70,7 +71,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
             super().set_usage(usage)
 
     def recursiveprocess(self, options):
-        """recurse through directories and process files"""
+        """Recurse through directories and process files"""
         if self.isrecursive(options.input, "input") and getattr(
             options, "allowrecursiveinput", True
         ):
@@ -113,7 +114,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
 
     @staticmethod
     def clean(string, options):
-        """returns the cleaned string that contains the text to be matched"""
+        """Returns the cleaned string that contains the text to be matched"""
         if options.ignorecase:
             string = string.lower()
         for accelerator in options.accelchars:
@@ -122,7 +123,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
         return string
 
     def processfile(self, fileprocessor, options, fullinputpath):
-        """process an individual file"""
+        """Process an individual file"""
         inputfile = self.openinputfile(options, fullinputpath)
         inputfile = factory.getobject(inputfile)
         for unit in inputfile.units:
@@ -140,7 +141,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
 
     @staticmethod
     def flatten(text, joinchar):
-        """flattens text to just be words"""
+        """Flattens text to just be words"""
         flattext = ""
         for c in text:
             if c.isalnum():
@@ -150,7 +151,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
         return flattext.rstrip(joinchar)
 
     def buildconflictmap(self):
-        """work out which strings are conflicting"""
+        """Work out which strings are conflicting"""
         self.conflictmap = {}
         for source, translations in self.textmap.items():
             source = self.flatten(source, " ")
@@ -164,7 +165,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
                     self.conflictmap[source] = translations
 
     def outputconflicts(self, options):
-        """saves the result of the conflict match"""
+        """Saves the result of the conflict match"""
         print(
             "%d/%d different strings have conflicts"
             % (len(self.conflictmap), len(self.textmap))

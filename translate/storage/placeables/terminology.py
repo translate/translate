@@ -26,7 +26,8 @@ __all__ = ("TerminologyPlaceable", "parsers")
 
 
 class TerminologyPlaceable(base.Ph):
-    """Terminology distinguished from the rest of a string by being
+    """
+    Terminology distinguished from the rest of a string by being
     a placeable.
     """
 

@@ -8,7 +8,7 @@ from translate.tools import pomerge
 
 
 def test_str2bool():
-    """test the str2bool function"""
+    """Test the str2bool function"""
     assert pomerge.str2bool("yes")
     assert pomerge.str2bool("true")
     assert pomerge.str2bool("1")
@@ -37,7 +37,7 @@ class TestPOMerge:
         mergefuzzy="yes",
         mergecomments="yes",
     ):
-        """merges the sources of the given files and returns a new pofile object"""
+        """Merges the sources of the given files and returns a new pofile object"""
         templatefile = BytesIO(templatesource.encode())
         inputfile = BytesIO(inputsource.encode())
         outputfile = BytesIO()
@@ -61,7 +61,7 @@ class TestPOMerge:
         mergefuzzy="yes",
         mergecomments="yes",
     ):
-        """merges the sources of the given files and returns a new xlifffile object"""
+        """Merges the sources of the given files and returns a new xlifffile object"""
         templatefile = BytesIO(templatesource.encode())
         inputfile = BytesIO(inputsource.encode())
         outputfile = BytesIO()
@@ -81,14 +81,14 @@ class TestPOMerge:
 
     @staticmethod
     def countunits(pofile):
-        """returns the number of non-header items"""
+        """Returns the number of non-header items"""
         if pofile.units[0].isheader():
             return len(pofile.units) - 1
         else:
             return len(pofile.units)
 
     def singleunit(self, pofile):
-        """checks that the pofile contains a single non-header unit, and returns it"""
+        """Checks that the pofile contains a single non-header unit, and returns it"""
         assert self.countunits(pofile) == 1
         return pofile.units[-1]
 
@@ -104,7 +104,7 @@ class TestPOMerge:
             pomerge.mergestore(inputfile, outputfile, templatefile, mergecomments="yay")
 
     def test_simplemerge(self):
-        """checks that a simple po entry merges OK"""
+        """Checks that a simple po entry merges OK"""
         templatepo = """#: simple.test\nmsgid "Simple String"\nmsgstr ""\n"""
         inputpo = """#: simple.test\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n"""
         pofile = self.mergestore(templatepo, inputpo)
@@ -113,7 +113,7 @@ class TestPOMerge:
         assert pounit.target == "Dimpled Ring"
 
     def test_simplemerge_no_locations(self):
-        """checks that a simple po entry merges OK"""
+        """Checks that a simple po entry merges OK"""
         templatepo = '''msgid "Simple String"
 msgstr ""'''
         inputpo = '''msgid "Simple String"
@@ -124,7 +124,7 @@ msgstr "Dimpled Ring"'''
         assert pounit.target == "Dimpled Ring"
 
     def test_replacemerge(self):
-        """checks that a simple po entry merges OK"""
+        """Checks that a simple po entry merges OK"""
         templatepo = (
             """#: simple.test\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n"""
         )
@@ -238,7 +238,7 @@ msgstr "Dimpled Ring"
         assert bytes(pofile).decode("utf-8") == expectedpo
 
     def test_comments_with_blank_lines(self):
-        """ensure that we don't loose empty newlines in comments"""
+        """Ensure that we don't loose empty newlines in comments"""
         templatepo = """# # ***** BEGIN LICENSE BLOCK *****
 # Version: MPL 1.1/GPL 2.0/LGPL 2.1
 #
@@ -341,7 +341,6 @@ msgstr "blabla"
     @mark.xfail(reason="Not Implemented")
     def test_escape_tabs(self):
         """Ensure that input tabs are escaped in the output, like gettext does."""
-
         # The strings below contains the tab character, not spaces.
         templatepo = """msgid "First	Second"\nmsgstr ""\n\n"""
         mergepo = """msgid "First	Second"\nmsgstr "Eerste	Tweede"\n"""
@@ -437,7 +436,6 @@ msgstr "Eerste\tTweede"
 
     def test_merging_dont_merge_kde_comments_found_in_translation(self):
         """If we find a KDE comment in the translation (target) then do not merge it."""
-
         templatepo = """msgid "_: KDE comment\\n"\n"File"\nmsgstr "File"\n\n"""
         mergepo = """msgid "_: KDE comment\\n"\n"File"\nmsgstr "_: KDE comment\\n"\n"Ifayile"\n\n"""
         expectedpo = """msgid ""\n"_: KDE comment\\n"\n"File"\nmsgstr "Ifayile"\n"""
@@ -459,7 +457,7 @@ msgstr "Eerste\tTweede"
         assert bytes(pofile).decode("utf-8") == expectedpo
 
     def test_merging_untranslated_with_kde_disambiguation(self):
-        """test merging untranslated messages that are the same except for KDE disambiguation"""
+        """Test merging untranslated messages that are the same except for KDE disambiguation"""
         templatepo = r"""#: sendMsgTitle
 #: sendMsgTitle.accesskey
 msgid "_: sendMsgTitle sendMsgTitle.accesskey\n"
@@ -472,21 +470,18 @@ msgid "_: sendMessageCheckWindowTitle sendMessageCheckWindowTitle.accesskey\n"
 "Send Message"
 msgstr ""
 """
-        mergepo = r"""#: sendMsgTitle{}sendMsgTitle.accesskey
+        mergepo = rf"""#: sendMsgTitle{po.lsep}sendMsgTitle.accesskey
 msgid ""
 "_: sendMsgTitle sendMsgTitle.accesskey\n"
 "Send Message"
 msgstr "Stuur"
 
-#: sendMessageCheckWindowTitle{}sendMessageCheckWindowTitle.accesskey
+#: sendMessageCheckWindowTitle{po.lsep}sendMessageCheckWindowTitle.accesskey
 msgid ""
 "_: sendMessageCheckWindowTitle sendMessageCheckWindowTitle.accesskey\n"
 "Send Message"
 msgstr "Stuur"
-""".format(
-            po.lsep,
-            po.lsep,
-        )
+"""
         expectedpo = mergepo
         pofile = self.mergestore(templatepo, mergepo)
         print(f"Expected:\n{expectedpo}\n---\nMerged:\n{bytes(pofile)}\n---")
@@ -494,7 +489,6 @@ msgstr "Stuur"
 
     def test_merging_header_entries(self):
         """Check that we do the right thing if we have header entries in the input PO."""
-
         templatepo = r"""#, fuzzy
 msgid ""
 msgstr ""
@@ -559,7 +553,6 @@ msgstr "Dimpled Ring"
         Test when merging units that are unchanged except for changed
         locations that we don't go fuzzy (bug 1583)
         """
-
         templatepo = r"""#, fuzzy
 msgid ""
 msgstr ""

@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Converts a Gettext PO file to a UTF-8 encoded Mozilla .dtd file.
+"""
+Converts a Gettext PO file to a UTF-8 encoded Mozilla .dtd file.
 
 .. note: Conversion is either done using a template plus PO file or just
    using the .po file.
@@ -37,7 +38,7 @@ warnings.formatwarning = dtdwarning
 
 
 def applytranslation(entity, dtdunit, inputunit, mixedentities):
-    """applies the translation for entity in the po unit to the dtd unit"""
+    """Applies the translation for entity in the po unit to the dtd unit"""
     # this converts the po-style string to a dtd-style string
     unquotedstr = inputunit.target
     # check there aren't missing entities...

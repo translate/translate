@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Convert Gettext PO localization files to a TMX (Translation Memory eXchange) file.
+"""
+Convert Gettext PO localization files to a TMX (Translation Memory eXchange) file.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/po2tmx.html
 for examples and usage instructions.
@@ -46,7 +47,7 @@ class po2tmx:
     def convertfiles(
         self, inputfile, tmxfile, sourcelanguage="en", targetlanguage=None, comment=None
     ):
-        """converts a .po file (possibly many) to TMX file"""
+        """Converts a .po file (possibly many) to TMX file"""
         inputstore = po.pofile(inputfile)
         for inunit in inputstore.units:
             if (
@@ -78,7 +79,7 @@ def convertpo(
     targetlanguage=None,
     comment=None,
 ):
-    """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
+    """Reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
     convertor = po2tmx()
     convertor.convertfiles(
         inputfile, outputfile.tmxfile, sourcelanguage, targetlanguage, comment
@@ -88,7 +89,7 @@ def convertpo(
 
 class tmxmultifile:
     def __init__(self, filename, mode=None):
-        """initialises tmxmultifile from a seekable inputfile or writable outputfile"""
+        """Initialises tmxmultifile from a seekable inputfile or writable outputfile"""
         self.filename = filename
         if mode is None:
             if os.path.exists(filename):
@@ -102,7 +103,7 @@ class tmxmultifile:
         self.tmxfile = tmx.tmxfile()
 
     def openoutputfile(self, subfile):
-        """returns a pseudo-file object for the given subfile"""
+        """Returns a pseudo-file object for the given subfile"""
 
         def onclose(contents):
             pass
@@ -151,7 +152,7 @@ def main(argv=None):
     )
     comments = ["source", "type", "others", "none"]
     comments_help = (
-        "set default comment import: none, source, type or " "others (default: none)"
+        "set default comment import: none, source, type or others (default: none)"
     )
     parser.add_option(
         "",

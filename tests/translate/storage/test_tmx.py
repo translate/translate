@@ -34,7 +34,7 @@ class TestTMXfile(test_base.TestTranslationStore):
 
     @staticmethod
     def tmxparse(tmxsource):
-        """helper that parses tmx source without requiring files"""
+        """Helper that parses tmx source without requiring files"""
         dummyfile = BytesIO(tmxsource)
         print(tmxsource)
         tmxfile = tmx.tmxfile(dummyfile)
@@ -49,7 +49,7 @@ class TestTMXfile(test_base.TestTranslationStore):
         assert tmxfile.translate("A string of characters") == "'n String karakters"
 
     def test_addtranslation(self):
-        """tests that addtranslation() stores strings correctly"""
+        """Tests that addtranslation() stores strings correctly"""
         tmxfile = tmx.tmxfile()
         tmxfile.addtranslation(
             "A string of characters", "en", "'n String karakters", "af"
@@ -59,7 +59,7 @@ class TestTMXfile(test_base.TestTranslationStore):
         assert newfile.translate("A string of characters") == "'n String karakters"
 
     def test_withcomment(self):
-        """tests that addtranslation() stores string's comments correctly"""
+        """Tests that addtranslation() stores string's comments correctly"""
         tmxfile = tmx.tmxfile()
         tmxfile.addtranslation(
             "A string of chars", "en", "'n String karakters", "af", "comment"
@@ -69,7 +69,7 @@ class TestTMXfile(test_base.TestTranslationStore):
         assert newfile.findunit("A string of chars").getnotes() == "comment"
 
     def test_withnewlines(self):
-        """test addtranslation() with newlines"""
+        """Test addtranslation() with newlines"""
         tmxfile = tmx.tmxfile()
         tmxfile.addtranslation(
             "First line\nSecond line", "en", "Eerste lyn\nTweede lyn", "af"
@@ -95,7 +95,7 @@ class TestTMXfile(test_base.TestTranslationStore):
         assert xmltext.find("Five < ten") == -1
 
     def test_controls_cleaning(self):
-        """test addtranslation() with control chars"""
+        """Test addtranslation() with control chars"""
         tmxfile = tmx.tmxfile()
         tmxfile.addtranslation("Client Version:\x0314 %s", "en", "test one", "ar")
         tmxfile.addtranslation("Client Version:\n%s", "en", "test two", "ar")

@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""A translation memory server using tmdb for storage, communicates with
+"""
+A translation memory server using tmdb for storage, communicates with
 clients using JSON over HTTP.
 """
 
@@ -133,7 +134,7 @@ class TMServer:
 
     @selector.opliant
     def upload_store(self, environ, start_response, sid, slang, tlang):
-        """add units from uploaded file to tmdb"""
+        """Add units from uploaded file to tmdb"""
         from translate.storage import factory
 
         start_response("200 OK", [("Content-type", "text/plain")])

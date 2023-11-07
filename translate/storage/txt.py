@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""This class implements the functionality for handling plain text files, or
+"""
+This class implements the functionality for handling plain text files, or
 similar wiki type files.
 
 Supported formats are
@@ -79,7 +80,7 @@ class TxtUnit(base.TranslationUnit):
 
     @property
     def target(self):
-        """gets the unquoted target string"""
+        """Gets the unquoted target string"""
         return self.source
 
     @target.setter

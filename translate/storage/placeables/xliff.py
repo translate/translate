@@ -74,7 +74,8 @@ class Sub(base.Sub):
 
 
 class UnknownXML(StringElem):
-    """Placeable for unrecognized or umimplemented XML nodes. It's main purpose
+    """
+    Placeable for unrecognized or umimplemented XML nodes. It's main purpose
     is to preserve all associated XML data.
     """
 
@@ -92,7 +93,8 @@ class UnknownXML(StringElem):
 
     # SPECIAL METHODS #
     def __repr__(self):
-        """String representation of the sub-tree with the current node as the
+        """
+        String representation of the sub-tree with the current node as the
         root.
 
         Copied from :meth:`StringElem.__repr__`, but includes
@@ -115,7 +117,8 @@ class UnknownXML(StringElem):
 
     # METHODS #
     def copy(self):
-        """Returns a copy of the sub-tree.  This should be overridden in
+        """
+        Returns a copy of the sub-tree.  This should be overridden in
         sub-classes with more data.
 
         .. note:: ``self.renderer`` is **not** copied.

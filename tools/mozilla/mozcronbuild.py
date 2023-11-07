@@ -46,12 +46,10 @@ def build_langs(langs, verbose):
 
 def check_potpacks():
     """Copy new and check available POT-packs."""
-    pass
 
 
 def update_rss():
     """Update the RSS feed with the available POT-packs."""
-    pass
 
 
 USAGE = "%prog [<options>]"
@@ -59,7 +57,6 @@ USAGE = "%prog [<options>]"
 
 def create_option_parser():
     """Creates and returns cmd-line option parser."""
-
     from argparse import ArgumentParser
 
     parser = ArgumentParser(usage=USAGE)

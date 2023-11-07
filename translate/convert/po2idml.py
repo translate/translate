@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Takes an IDML template file and a PO file containing translations of
+"""
+Takes an IDML template file and a PO file containing translations of
 strings in the IDML template. It creates a new IDML file using the translations
 of the PO file.
 """
@@ -24,7 +25,7 @@ of the PO file.
 from io import BytesIO
 from zipfile import ZIP_DEFLATED, ZipFile
 
-import lxml.etree as etree
+from lxml import etree
 
 from translate.convert import convert
 from translate.storage import factory
@@ -41,7 +42,8 @@ from translate.storage.xml_extract.unit_tree import XPathTree, build_unit_tree
 
 def translate_idml(template, input_file, translatable_files):
     def load_dom_trees(template):
-        """Return a dict with translatable files in the template IDML package.
+        """
+        Return a dict with translatable files in the template IDML package.
 
         The keys are the filenames inside the IDML package, and the values are
         the etrees for each of those translatable files.
@@ -54,7 +56,8 @@ def translate_idml(template, input_file, translatable_files):
         }
 
     def load_unit_tree(input_file):
-        """Return a dict with the translations grouped by files IDML package.
+        """
+        Return a dict with the translations grouped by files IDML package.
 
         The keys are the filenames inside the template IDML package, and the
         values are XPathTree instances for each of those files.
@@ -62,7 +65,8 @@ def translate_idml(template, input_file, translatable_files):
         store = factory.getobject(input_file)
 
         def extract_unit_tree(filename, root_dom_element_name):
-            """Find the subtree in 'tree' which corresponds to the data in XML
+            """
+            Find the subtree in 'tree' which corresponds to the data in XML
             file 'filename'
             """
             tree = build_unit_tree(store, filename)
@@ -80,7 +84,8 @@ def translate_idml(template, input_file, translatable_files):
         )
 
     def translate_dom_trees(unit_trees, dom_trees):
-        """Return a dict with the translated files for the IDML package.
+        """
+        Return a dict with the translated files for the IDML package.
 
         The keys are the filenames for the translatable files inside the
         template IDML package, and the values are etree ElementTree instances
@@ -88,7 +93,8 @@ def translate_idml(template, input_file, translatable_files):
         """
 
         def get_po_doms(unit):
-            """Return a tuple with unit source and target DOM objects.
+            """
+            Return a tuple with unit source and target DOM objects.
 
             This method is method is meant to provide a way to retrieve the DOM
             objects for the unit source and target for PO stores.
@@ -98,7 +104,8 @@ def translate_idml(template, input_file, translatable_files):
             """
 
             def add_node_content(string, node):
-                """Append the translatable content to the node.
+                """
+                Append the translatable content to the node.
 
                 The string is going to have XLIFF placeables, so we have to
                 parse it as XML in order to get the right nodes to append to

@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Convert Android string files to Gettext PO localization files.
+"""
+Convert Android string files to Gettext PO localization files.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/android2po.html
 for examples and usage instructions.
@@ -79,7 +80,8 @@ class android2po:
 
     @staticmethod
     def convert_unit(input_unit):
-        """Converts a Android resource unit to a PO unit
+        """
+        Converts a Android resource unit to a PO unit
 
         :return: None if empty or not for translation
         """
@@ -123,10 +125,10 @@ def convertandroid(
     pot=False,
     duplicatestyle="msgctxt",
 ):
-    """Reads in *input_file* using aresource, converts using :class:`android2po`,
+    """
+    Reads in *input_file* using aresource, converts using :class:`android2po`,
     writes to *output_file*.
     """
-
     output_store = _convertandroid(input_file, template_file, pot, duplicatestyle)
     output_store.serialize(output_file)
     return 1

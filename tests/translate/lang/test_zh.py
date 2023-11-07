@@ -19,5 +19,7 @@ def test_sentences():
     sentences = language.sentences("")
     assert sentences == []
 
-    sentences = language.sentences("這個用戶名稱已經存在。現在會寄一封信給已登記的電郵地址。\n")
+    sentences = language.sentences(
+        "這個用戶名稱已經存在。現在會寄一封信給已登記的電郵地址。\n"
+    )
     assert sentences == ["這個用戶名稱已經存在。", "現在會寄一封信給已登記的電郵地址。"]

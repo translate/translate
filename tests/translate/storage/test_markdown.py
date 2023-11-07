@@ -126,9 +126,12 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
     def test_plain_image_no_title(self):
         store = self.parse("![foo](/url)\n")
         unit_sources = self.get_translation_unit_sources(store)
-        assert unit_sources == [
-            "![foo]{1}"  # structurally important placeholder may not be removed even if it's at the end of the translation unit
-        ]
+        assert (
+            unit_sources
+            == [
+                "![foo]{1}"  # structurally important placeholder may not be removed even if it's at the end of the translation unit
+            ]
+        )
         translated_output = self.get_translated_output(store)
         assert translated_output == "(![foo](/url))\n"
 

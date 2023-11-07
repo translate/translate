@@ -42,7 +42,8 @@ class Directory:
         yield from self.filedata
 
     def getfiles(self):
-        """Returns a list of (dir, filename) tuples for all the file names in
+        """
+        Returns a list of (dir, filename) tuples for all the file names in
         this directory.
         """
         return list(self.file_iter())

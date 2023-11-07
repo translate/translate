@@ -64,7 +64,8 @@ class BundleProjectStore(ProjectStore):
 
     # METHODS #
     def append_file(self, afile, fname, ftype="trans", delete_orig=False):
-        """Append the given file to the project with the given filename, marked
+        """
+        Append the given file to the project with the given filename, marked
         to be of type ``ftype`` ('src', 'trans', 'tgt').
 
         :param delete_orig: If ``True``, as set by
@@ -117,7 +118,8 @@ class BundleProjectStore(ProjectStore):
         self._tempfiles = {}
 
     def get_file(self, fname):
-        """Retrieve a project file (source, translation or target file) from
+        """
+        Retrieve a project file (source, translation or target file) from
         the project archive.
         """
         retfile = None
@@ -196,7 +198,8 @@ class BundleProjectStore(ProjectStore):
         self._replace_project_zip(newzip)
 
     def update_file(self, pfname, infile):
-        """Updates the file with the given project file name with the contents
+        """
+        Updates the file with the given project file name with the contents
         of ``infile``.
 
         :returns: the results from :meth:`BundleProjStore.append_file`.
@@ -227,7 +230,8 @@ class BundleProjectStore(ProjectStore):
         return ZipFile(newzipfname, "w")
 
     def _replace_project_zip(self, zfile):
-        """Replace the currently used zip file (``self.zip``) with the given
+        """
+        Replace the currently used zip file (``self.zip``) with the given
         zip file. Basically, ``os.rename(zfile.filename,
         self.zip.filename)``.
         """

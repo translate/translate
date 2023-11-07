@@ -6,7 +6,7 @@ from translate.storage import po, poxliff
 class TestPO2XLIFF:
     @staticmethod
     def po2xliff(posource, sourcelanguage="en", targetlanguage=None):
-        """helper that converts po source to xliff source without requiring files"""
+        """Helper that converts po source to xliff source without requiring files"""
         postore = po.pofile(posource.encode("utf-8"))
         convertor = po2xliff.po2xliff()
         outputxliff = convertor.convertstore(

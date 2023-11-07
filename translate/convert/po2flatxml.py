@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Convert Gettext PO localization files to flat XML files.
+"""
+Convert Gettext PO localization files to flat XML files.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/flatxml2po.html
 for examples and usage instructions.
@@ -27,7 +28,8 @@ from translate.storage import flatxml, po
 
 
 class po2flatxml:
-    """Convert to a single PO file to a single XML file, optionally
+    """
+    Convert to a single PO file to a single XML file, optionally
     applying modifications to a template file instead of creating
     one from scratch based on input parameters.
     """

@@ -20,3 +20,166 @@ known_third_party = [
   "setuptools"
 ]
 profile = "black"
+
+[tool.ruff]
+# CONFIG - intentional configuration
+# TODO - needs decision whether intention, add noqa tags or fix
+# WONTFIX - not fixable in current codebase, might be better to go for noqa
+ignore = [
+  "PT013",  # TODO: Found incorrect import of pytest, use simple `import pytest` instead
+  "ISC001",  # TODO: Implicitly concatenated string literals on one line
+  "PLR0124",  # TODO: Name compared with itself, consider replacing `unit1 == unit1`
+  "B011",  # TODO: Do not `assert False` (`python -O` removes these calls), raise `AssertionError()`
+  "E402",  # TODO: Module level import not at top of file
+  "PT015",  # TODO: Assertion always fails, replace with `pytest.fail()`
+  "PT009",  # TODO: Use a regular `assert` instead of unittest-style `assertCountEqual`
+  "B015",  # TODO: Pointless comparison. Did you mean to assign a value? Otherwise, prepend `assert` or remove it
+  "PGH003",  # TODO: Use specific rule codes when ignoring type issues
+  "SIM109",  # TODO: Use `output in (expectedpo, expectedpo2)` instead of multiple equality comparisons
+  "PT006",  # TODO: Wrong name(s) type in `@pytest.mark.parametrize`, expected `tuple`
+  "SIM110",  # TODO: Use `return all(not unit.istranslatable() for unit in self.units)` instead of `for` loop
+  "B017",  # TODO: `pytest.raises(Exception)` should be considered evil
+  "TRY201",  # TODO: Use `raise` without specifying exception name
+  "PLE0605",  # TODO: Invalid format for `__all__`, must be `tuple` or `list`
+  "B008",  # TODO: Do not perform function call `sys.getdefaultencoding` in argument defaults
+  "PLW0120",  # TODO: `else` clause on loop without a `break` statement; remove the `else` and de-indent all the code inside it
+  "G003",  # TODO: Logging statement uses `+`
+  "PERF102",  # TODO: When using only the keys of a dict use the `keys()` method
+  "RET508",  # TODO: Unnecessary `else` after `break` statement
+  "TCH003",  # TODO: Move standard library import `collections.abc.Iterator` into a type-checking block
+  "PLR1714",  # TODO: Consider merging multiple comparisons
+  "PLW1510",  # TODO: `subprocess.run` without explicit `check` argument
+  "C417",  # TODO: Unnecessary `map` usage
+  "N804",  # TODO: First argument of a class method should be named `cls`
+  "SLOT000",  # TODO: Subclasses of `str` should define `__slots__`
+  "N999",  # TODO: Invalid module name: 'pt_BR'
+  "C408",  # TODO: Unnecessary `dict` call
+  "G004",  # TODO: Logging statement uses f-string
+  "RUF013",  # TODO: PEP 484 prohibits implicit `Optional`
+  "SIM401",  # TODO:  Use `klass, maker = _class_dictionary.get(tag, (xliff.UnknownXML, make_unknown))` instead of an `if` block
+  "F403",  # TODO: `from .base import *` used; unable to detect undefined names
+  "B028",  # TODO: No explicit `stacklevel` keyword argument found
+  "FLY002",  # TODO: Consider `f"{project}/{sourcefile}"` instead of string join
+  "PIE810",  # TODO: Call `startswith` once with a `tuple`
+  "TRY004",  # TODO: Prefer `TypeError` exception for invalid type
+  "FLY002",  # TODO: Consider `f"{dirname}/{filename}"` instead of string join
+  "TRY301",  # TODO: Abstract `raise` to an inner function
+  "E721",  # TODO: Do not compare types, use `isinstance()`
+  "FA100",  # TODO: Missing `from __future__ import annotations`
+  "B006",  # TODO: Do not use mutable data structures for argument defaults
+  "RUF005",  # TODO: Consider `[*prev, ("key", k)]` instead of concatenation
+  "SIM103",  # TODO: Return the condition `origin in node.get("origin", "")` directly
+  "SIM118",  # TODO: Use `key in dict` instead of `key in dict.keys()`
+  "S110",  # TODO: `try`-`except`-`pass` detected, consider logging the exception
+  "RUF015",  # TODO: Prefer `next(iter(data.keys()))` over single element slice
+  "PLR5501",  # TODO: Use `elif` instead of `else` then `if`, to reduce indentation
+  "PLR0913",  # TODO: Too many arguments in function definition
+  "PERF401",  # TODO: Use a list comprehension to create a transformed list
+  "PERF203",  # TODO: `try`-`except` within a loop incurs performance overhead
+  "ERA001",  # TODO: Found commented-out code
+  "B023",  # TODO: Function definition does not bind loop variable
+  "EXE002",  # TODO: The file is executable but no shebang is present
+  "SIM105",  # TODO: Use `contextlib.suppress(Exception)` instead of `try`-`except`-`pass`
+  "SIM114",  # TODO: Combine `if` branches using logical `or` operator
+  "SIM102",  # TODO: Use a single `if` statement instead of nested `if` statements
+  "RET505",  # TODO: Unnecessary `else` after `return` statement
+  "RET506",  # TODO: Unnecessary `else` after `raise` statement
+  "RET507",  # TODO: Unnecessary `elif` after `continue` statement
+  "RET504",  # TODO: Unnecessary assignment to `string` before `return` statement
+  "RET503",  # TODO: Missing explicit `return` at the end of function able to return non-`None` value
+  "SIM115",  # TODO: Use context handler for opening files
+  "PT018",  # TODO: Assertion should be broken down into multiple parts
+  "E741",  # TODO: Ambiguous variable name:
+  "UP031",  # TODO: Use format specifiers instead of percent format
+  "B007",  # TODO: Loop control variable not used within loop body
+  "B020",  # TODO: Loop control variable `node` overrides iterable it iterates
+  "E731",  # TODO: Do not assign a `lambda` expression, use a `def`
+  "ISC003",  # TODO: Explicitly concatenated string should be implicitly concatenated
+  "SIM108",  # TODO: Use ternary operator
+  "PLW0603",  # TODO: Using the global statement to update is discouraged
+  "PLW0602",  # TODO: Using global for `options` but no assignment is done
+  "PLW2901",  # TODO: `for` loop variable `input_unit` overwritten by assignment target
+  "TD004",  # TODO: Missing colon in TODO
+  "TD005",  # TODO: Missing issue description after `TODO`
+  "TD007",  # TODO: Missing space after colon in TODO
+  "SLF001",  # TODO: Private member accessed
+  "RUF012",  # TODO: Mutable class attributes should be annotated with `typing.ClassVar`
+  "TRY400",  # TODO: Use `logging.exception` instead of `logging.error`
+  "TRY002",  # TODO: Create your own exception
+  "TRY003",  # WONTFIX: Avoid specifying long messages outside the exception class
+  "TRY200",  # TODO: Use `raise from` to specify exception cause
+  "SIM102",  # TODO: Use a single `if` statement instead of nested `if` statements
+  "ANN",  # TODO: type annotations missing
+  "COM",  # CONFIG: No trailing commas
+  "DTZ005",  # TODO: The use of `datetime.datetime.now()` without `tz` argument is not allowed
+  "D1",  # TODO: Missing docstring
+  "PT011",  # TODO: `pytest.raises(ValueError)` is too broad, set the `match` parameter or use a more specific exception
+  "PT004",  # TODO: Fixture `change_test_dir` does not return anything, add leading underscore
+  "D200",  # TODO: One-line docstring should fit on one line
+  "D205",  # TODO: 1 blank line required between summary line and description
+  "D301",  # TODO: Use `r"""` if any backslashes in a docstring
+  "D400",  # TODO: First line should end with a period
+  "D401",  # TODO: First line of docstring should be in imperative mood
+  "D402",  # TODO: First line should not be the function's signature
+  "D404",  # TODO: First word of the docstring should not be "This"
+  "D415",  # TODO: First line should end with a period, question mark, or exclamation point
+  "D417",  # TODO: Missing argument descriptions in the docstring
+  "D203",  # CONFIG: incompatible with D211
+  "D212",  # CONFIG: incompatible with D213
+  "B904",  # TODO: Within an `except` clause, raise exceptions with `raise ... from err` or `raise ... from None` to distinguish them from errors in exception handling
+  "BLE001",  # WONTFIX: Do not catch blind exception: `Exception`, third-party modules do not have defined exceptions
+  "ARG001",  # TODO: Unused function argument (mostly for API compatibility)
+  "ARG002",  # TODO: Unused method argument (mostly for API compatibility)
+  "ARG004",  # TODO: Unused static method argument
+  "ARG005",  # TODO: Unused lambda argument:
+  "TD002",  # CONFIG: no detailed TODO documentation is required
+  "TD003",  # CONFIG: no detailed TODO documentation is required
+  "S603",  # CONFIG: `subprocess` call: check for execution of untrusted input
+  "S607",  # CONFIG: executing system installed tools
+  "PD011",  # WONTFIX: Use `.to_numpy()` instead of `.values
+  "FIX001",  # TODO: Line contains FIXME, consider resolving the issue
+  "FIX002",  # CONFIG: we use TODO
+  "S101",  # CONFIG: Use of `assert` detected
+  "FIX003",  # TODO: Line contains XXX, consider resolving the issue
+  "TD001",  # TODO: Invalid TODO tag: `FIXME`
+  "FIX004",  # TODO: Line contains HACK, consider resolving the issue
+  "N801",  # TODO: Class name should use CapWords convention
+  "N802",  # TODO: Function name `FAIL` should be lowercase
+  "N803",  # TODO: Argument name `attributeValue` should be lowercase
+  "N806",  # TODO: Variable `sourcelanguageNode` in function should be lowercase
+  "N813",  # TODO: Camelcase `StateEnum` imported as lowercase `state`
+  "N815",  # TODO: Variable `bodyNode` in class scope should not be mixedCase
+  "N816",  # TODO: Variable `theDOMImplementation` in global scope should not be mixedCase
+  "N818",  # TODO: Exception name `FilterFailure` should be named with an Error suffix
+  "PLR2004",  # TODO: Magic value used in comparison, consider replacing with a constant variable
+  "PLR0911",  # TODO: Too many return statements
+  "PLR0912",  # TODO: Too many branches
+  "PLR0915",  # TODO: Too many statements
+  "C901",  # TODO: too complex
+  "FBT",  # TODO: Boolean in function definition
+  "EM",  # TODO: Exception strings
+  "E501",  # WONTFIX: we accept long strings (rest is formatted by black)
+  "RUF001",  # WONTFIX: String contains ambiguous unicode character, we are using Unicode
+  "RUF002",  # WONTFIX: Docstring contains ambiguous
+  "RUF003",  # WONTFIX: Comment contains ambiguous
+  "T201",  # TODO: `print` found
+  "A001",  # TODO: Variable is shadowing a Python builtin
+  "A002",  # TODO: overriding builtins (might need noqa tags)
+  "A003",  # TODO: Class attribute `map` is shadowing a Python builtin
+  "S320",  # TODO: Using `lxml` to parse untrusted data is known to be vulnerable to XML attacks
+  "S324",  # TODO: Probable use of insecure hash functions in `hashlib`: `md5`
+  "S311",  # TODO: Standard pseudo-random generators are not suitable for cryptographic purposes
+  "S301",  # TODO: `pickle` and modules that wrap it can be unsafe when used to deserialize untrusted data, possible security issue
+  "S105",  # TODO: Possible hardcoded password assigned
+  "S307",  # TODO: Use of possibly insecure function; consider using `ast.literal_eval`
+  "S310",  # TODO: Audit URL open for permitted schemes.
+  "PLE2502",  # TODO: Contains control characters that can permit obfuscated code
+  "PGH001",  # TODO: No builtin `eval()` allowed
+  "INP001",  # TODO: File `tools/mozilla/mozcronbuild.py` is part of an implicit namespace package. Add an `__init__.py`.
+  "TID252",  # TODO: Relative imports from parent modules are banned
+  "D409",  # TODO: Section underline should match the length of its name
+  "PTH"  # TODO: Not using pathlib for now
+]
+output-format = "github"
+select = ["ALL"]
+target-version = "py38"

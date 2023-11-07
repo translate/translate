@@ -17,7 +17,8 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 
-"""Convert HTML files to Gettext PO localization files.
+"""
+Convert HTML files to Gettext PO localization files.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/html2po.html
 for examples and usage instructions.
@@ -60,7 +61,8 @@ def converthtml(
     duplicatestyle="msgctxt",
     keepcomments=False,
 ):
-    """reads in stdin using fromfileclass, converts using convertorclass,
+    """
+    reads in stdin using fromfileclass, converts using convertorclass,
     writes to stdout
     """
     convertor = html2po()
@@ -140,7 +142,8 @@ class Html2POOptionParser(convert.ConvertOptionParser):
         return super().isrecursive(fileoption, filepurpose=filepurpose)
 
     def checkoutputsubdir(self, options, subdir):
-        """Check if subdir under options.output needs to be created,
+        """
+        Check if subdir under options.output needs to be created,
         creates if neccessary. Do nothing if in single-output-file mode. (override)
         """
         if hasattr(self, "outputstore"):

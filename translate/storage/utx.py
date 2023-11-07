@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Manage the Universal Terminology eXchange (UTX) format
+"""
+Manage the Universal Terminology eXchange (UTX) format
 
 UTX is a format for terminology exchange, designed it seems with Machine
 Translation (MT) as it's primary consumer.  The format is created by
@@ -49,7 +50,8 @@ from translate.storage import base
 
 
 class UtxDialect(csv.Dialect):
-    """Describe the properties of an UTX generated TAB-delimited dictionary
+    """
+    Describe the properties of an UTX generated TAB-delimited dictionary
     file.
     """
 
@@ -65,7 +67,8 @@ csv.register_dialect("utx", UtxDialect)
 
 
 class UtxHeader:
-    """A UTX header entry
+    """
+    A UTX header entry
 
     A UTX header is a single line that looks like this::
         #UTX-S <version>; < source language >/< target language>;
@@ -95,7 +98,8 @@ class UtxUnit(base.TranslationUnit):
         return self._dict
 
     def setdict(self, newdict):
-        """Set the dictionary of values for a UTX line
+        """
+        Set the dictionary of values for a UTX line
 
         :param newdict: a new dictionary with UTX line elements
         :type newdict: Dict
@@ -193,7 +197,7 @@ class UtxFile(base.TranslationStore):
             self._fieldnames = ["src", "tgt", "src:pos"]
             # FIXME make the header properly
             self._header = {"version": "1.00"}
-            return
+            return None
         header_lines = []
         for line in header.split(UtxDialect.lineterminator):
             if line.startswith("#"):
@@ -248,7 +252,7 @@ class UtxFile(base.TranslationStore):
         self._header["target_language"] = targetlanguage
 
     def parse(self, input):
-        """parsese the given file or file source string"""
+        """Parsese the given file or file source string"""
         if hasattr(input, "name"):
             self.filename = input.name
         elif not getattr(self, "filename", ""):

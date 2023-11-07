@@ -19,9 +19,9 @@
 
 import difflib
 import os
-import os.path as path
 import sys
 import zipfile
+from os import path
 
 from lxml import etree
 

@@ -121,13 +121,13 @@ class RecursiveOptionParser(optparse.OptionParser):
     def __init__(
         self, formats, usetemplates=False, allowmissingtemplate=False, description=None
     ):
-        """Construct the specialized Option Parser.
+        """
+        Construct the specialized Option Parser.
 
         :type formats: Dictionary
         :param formats: See :meth:`~.RecursiveOptionParser.setformats`
         for an explanation of the formats parameter.
         """
-
         super().__init__(version="%prog " + __version__.sver, description=description)
         self.setmanpageoption()
         self.setprogressoptions()
@@ -141,7 +141,8 @@ class RecursiveOptionParser(optparse.OptionParser):
         return os.path.basename(sys.argv[0])
 
     def setmanpageoption(self):
-        """creates a manpage option that allows the optionparser to generate a
+        """
+        creates a manpage option that allows the optionparser to generate a
         manpage
         """
         manpageoption = ManPageOption(
@@ -155,7 +156,7 @@ class RecursiveOptionParser(optparse.OptionParser):
         self.define_option(manpageoption)
 
     def format_manpage(self):
-        """returns a formatted manpage"""
+        """Returns a formatted manpage"""
         result = []
         prog = self.get_prog_name()
         formatprog = lambda x: x.replace("%prog", prog)
@@ -195,13 +196,14 @@ class RecursiveOptionParser(optparse.OptionParser):
         return "".join(result)
 
     def print_manpage(self, file=None):
-        """outputs a manpage for the program using the help information"""
+        """Outputs a manpage for the program using the help information"""
         if file is None:
             file = sys.stdout
         file.write(self.format_manpage())
 
     def set_usage(self, usage=None):
-        """sets the usage string - if usage not given, uses getusagestring for
+        """
+        sets the usage string - if usage not given, uses getusagestring for
         each option
         """
         if usage is None:
@@ -232,7 +234,7 @@ class RecursiveOptionParser(optparse.OptionParser):
 
     @staticmethod
     def getusagestring(option):
-        """returns the usage string for the given option"""
+        """Returns the usage string for the given option"""
         optionstring = "|".join(option._short_opts + option._long_opts)
         if getattr(option, "optionalswitch", False):
             optionstring = "[%s]" % optionstring
@@ -245,7 +247,7 @@ class RecursiveOptionParser(optparse.OptionParser):
 
     @staticmethod
     def getusageman(option):
-        """returns the usage string for the given option"""
+        """Returns the usage string for the given option"""
         optionstring = "\\fR|\\fP".join(option._short_opts + option._long_opts)
         if getattr(option, "optionalswitch", False):
             optionstring = "\\fR[\\fP%s\\fR]\\fP" % optionstring
@@ -257,7 +259,8 @@ class RecursiveOptionParser(optparse.OptionParser):
             return "\\fR[\\fP%s\\fR]\\fP" % optionstring
 
     def define_option(self, option):
-        """Defines the given option, replacing an existing one of the same
+        """
+        Defines the given option, replacing an existing one of the same
         short name if neccessary...
         """
         for short_opt in option._short_opts:
@@ -269,7 +272,8 @@ class RecursiveOptionParser(optparse.OptionParser):
         self.add_option(option)
 
     def setformats(self, formats, usetemplates):
-        """Sets the format options using the given format dictionary.
+        """
+        Sets the format options using the given format dictionary.
 
         :type formats: Dictionary or iterable
         :param formats: The dictionary *keys* should be:
@@ -284,7 +288,6 @@ class RecursiveOptionParser(optparse.OptionParser):
                         The dictionary *values* should be tuples of
                         outputformat (string) and processor method.
         """
-
         self.inputformats = []
         outputformats = []
         templateformats = []
@@ -412,7 +415,8 @@ class RecursiveOptionParser(optparse.OptionParser):
             return os.path.isdir(fileoption)
 
     def parse_args(self, args=None, values=None):
-        """Parses the command line options, handling implicit input/output
+        """
+        Parses the command line options, handling implicit input/output
         args.
         """
         (options, args) = super().parse_args(args, values)
@@ -541,7 +545,8 @@ class RecursiveOptionParser(optparse.OptionParser):
             return None
 
     def run(self):
-        """Parses the arguments, and runs recursiveprocess with the resulting
+        """
+        Parses the arguments, and runs recursiveprocess with the resulting
         options...
         """
         (options, args) = self.parse_args()
@@ -719,7 +724,8 @@ class RecursiveOptionParser(optparse.OptionParser):
                 os.mkdir(currentpath)
 
     def checkoutputsubdir(self, options, subdir):
-        """Checks to see if subdir under options.output needs to be created,
+        """
+        Checks to see if subdir under options.output needs to be created,
         creates if neccessary.
         """
         fullpath = os.path.join(options.output, subdir)
@@ -781,7 +787,8 @@ class RecursiveOptionParser(optparse.OptionParser):
 
     @staticmethod
     def splitext(pathname):
-        """Splits *pathname* into name and ext, and removes the extsep.
+        """
+        Splits *pathname* into name and ext, and removes the extsep.
 
         :param pathname: A file path
         :type pathname: string

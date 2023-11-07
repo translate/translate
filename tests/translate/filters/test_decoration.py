@@ -4,7 +4,7 @@ from translate.filters import decoration
 
 
 def test_spacestart():
-    """test operation of spacestart()"""
+    """Test operation of spacestart()"""
     assert decoration.spacestart("  Start") == "  "
     assert decoration.spacestart("\u0020\u00a0Start") == "\u0020\u00a0"
     # non-breaking space
@@ -19,7 +19,7 @@ def test_spacestart():
 
 
 def test_isvalidaccelerator():
-    """test the isvalidaccelerator() function"""
+    """Test the isvalidaccelerator() function"""
     # Mostly this tests the old code path where acceptlist is None
     assert not decoration.isvalidaccelerator("")
     assert decoration.isvalidaccelerator("a")
@@ -54,7 +54,7 @@ def test_find_marked_variables():
 
 
 def test_getnumbers():
-    """test operation of getnumbers()"""
+    """Test operation of getnumbers()"""
     assert decoration.getnumbers("") == []
     assert decoration.getnumbers("No numbers") == []
     assert decoration.getnumbers("Nine 9 nine") == ["9"]
@@ -71,7 +71,7 @@ def test_getnumbers():
 
 
 def test_getfunctions():
-    """test operation of getfunctions()"""
+    """Test operation of getfunctions()"""
     assert decoration.getfunctions("") == []
     assert decoration.getfunctions("There is no function") == []
     assert decoration.getfunctions("Use the getfunction() function.") == [

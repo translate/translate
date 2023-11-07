@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""This module represents the French language.
+"""
+This module represents the French language.
 
 .. seealso:: :wp:`French_language`
 """
@@ -53,9 +54,7 @@ def guillemets(text):
 class fr(common.Common):
     """This class represents French."""
 
-    validaccel = (
-        "abcdefghijklmnopqrstuvwxyz" "ABCDEFGHIJKLMNOPQRSTUVWXYZ" "1234567890" "é" "É"
-    )
+    validaccel = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890éÉ"
 
     # According to http://french.about.com/library/writing/bl-punctuation.htm,
     # in French, a space is required both before and after all two- (or more)
@@ -68,7 +67,8 @@ class fr(common.Common):
 
     @classmethod
     def punctranslate(cls, text):
-        """Implement some extra features for quotation marks.
+        """
+        Implement some extra features for quotation marks.
 
         Known shortcomings:
             - % and $ are not touched yet for fear of variables

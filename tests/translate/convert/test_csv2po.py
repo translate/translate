@@ -18,7 +18,7 @@ def test_replacestrings():
 class TestCSV2PO:
     @staticmethod
     def csv2po(csvsource, template=None):
-        """helper that converts csv source to po source without requiring files"""
+        """Helper that converts csv source to po source without requiring files"""
         inputfile = BytesIO(csvsource.encode())
         inputcsv = csvl10n.csvfile(inputfile)
         if template:
@@ -31,13 +31,13 @@ class TestCSV2PO:
 
     @staticmethod
     def singleelement(storage):
-        """checks that the pofile contains a single non-header element, and returns it"""
+        """Checks that the pofile contains a single non-header element, and returns it"""
         print(bytes(storage))
         assert headerless_len(storage.units) == 1
         return first_translatable(storage)
 
     def test_simpleentity(self):
-        """checks that a simple csv entry definition converts properly to a po entry"""
+        """Checks that a simple csv entry definition converts properly to a po entry"""
         csvheader = "location,source,target\n"
         csvsource = "intl.charset.default,ISO-8859-1,UTF-16"
         # Headerless
@@ -51,7 +51,7 @@ class TestCSV2PO:
         assert pounit.target == "UTF-16"
 
     def test_simpleentity_with_template(self):
-        """checks that a simple csv entry definition converts properly to a po entry"""
+        """Checks that a simple csv entry definition converts properly to a po entry"""
         csvsource = """location,original,translation
 intl.charset.default,ISO-8859-1,UTF-16"""
         potsource = """#: intl.charset.default
@@ -65,7 +65,7 @@ msgstr ""
         assert pounit.target == "UTF-16"
 
     def test_newlines(self):
-        """tests multiline po entries"""
+        """Tests multiline po entries"""
         minicsv = r""""Random comment
 with continuation","Original text","Langdradige teks
 wat lank aanhou"
@@ -85,8 +85,8 @@ wat lank aanhou"
         print(unit.source)
         assert unit.source == "First column\tSecond column"
         assert (
-            not pofile.findunit("First column\tSecond column").target
-            == "Twee kolomme gesky met \\t"
+            pofile.findunit("First column\tSecond column").target
+            != "Twee kolomme gesky met \\t"
         )
 
     def test_quotes(self):
@@ -117,7 +117,7 @@ wat lank aanhou"
         assert headerless_len(pofile.units) == 1
 
     def test_kdecomment(self):
-        """checks that we can merge into KDE comment entries"""
+        """Checks that we can merge into KDE comment entries"""
         csvsource = """location,source,target
 simple.c,Source,Target"""
         potsource = r"""#: simple.c

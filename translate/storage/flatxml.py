@@ -37,7 +37,7 @@ class FlatXMLUnit(base.TranslationUnit):
         namespace=None,
         element_name=None,
         attribute_name=None,
-        **kwargs
+        **kwargs,
     ):
         self.namespace = namespace or self.DEFAULT_NAMESPACE
         self.element_name = element_name or self.DEFAULT_ELEMENT_NAME
@@ -87,7 +87,8 @@ class FlatXMLUnit(base.TranslationUnit):
     def createfromxmlElement(
         cls, element, namespace=None, element_name="str", attribute_name="key"
     ):
-        """Attempts to create a unit from the passed element.
+        """
+        Attempts to create a unit from the passed element.
 
         element must not be None and must match the given element name
         (including namespace); otherwise None will be returned.
@@ -137,7 +138,7 @@ class FlatXMLFile(base.TranslationStore):
         namespace=None,
         indent_chars=NOTPROVIDED,
         trailing_eol=None,
-        **kwargs
+        **kwargs,
     ):
         self.root_name = root_name or self.DEFAULT_ROOT_NAME
         self.value_name = value_name or self.DEFAULT_VALUE_NAME
@@ -214,10 +215,7 @@ class FlatXMLFile(base.TranslationStore):
         root_name = self.namespaced(self.root_name)
         assert (
             self.root.tag == root_name
-        ), "expected root name to be {} but got {}".format(
-            root_name,
-            self.root.tag,
-        )
+        ), f"expected root name to be {root_name} but got {self.root.tag}"
         if len(self.root):
             # we'd expect at least one child element to have the correct
             # name and attributes; otherwise the name parameters might've

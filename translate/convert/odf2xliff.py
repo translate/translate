@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Convert OpenDocument (ODF) files to XLIFF localization files.
+"""
+Convert OpenDocument (ODF) files to XLIFF localization files.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/odf2xliff.html
 for examples and usage instructions.
@@ -33,7 +34,6 @@ from translate.storage.xml_extract.extract import ParseState, build_store
 
 def convertodf(inputfile, outputfile, templates):
     """Convert an ODF package to XLIFF."""
-
     store = factory.getobject(outputfile)
 
     try:

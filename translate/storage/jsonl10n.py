@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-r"""Class that manages JSON data files for translation
+r"""
+Class that manages JSON data files for translation
 
 JSON is an acronym for JavaScript Object Notation, it is an open standard
 designed for human-readable data interchange.
@@ -33,7 +34,7 @@ JSON basic types:
 - null
 
 Example:
-
+--------
 .. code-block:: json
 
    {
@@ -59,8 +60,8 @@ Example:
    }
 
 
-TODO:
-
+Todo:
+-----
 - Handle ``\u`` and other escapes in Unicode
 - Manage data type storage and conversion. True --> "True" --> True
 
@@ -157,7 +158,7 @@ class JsonFile(base.DictStore):
     UnitClass = FlatJsonUnit
 
     def __init__(self, inputfile=None, filter=None, **kwargs):
-        """construct a JSON file, optionally reading in from inputfile."""
+        """Construct a JSON file, optionally reading in from inputfile."""
         super().__init__(**kwargs)
         self._filter = filter
         self.filename = ""
@@ -194,7 +195,8 @@ class JsonFile(base.DictStore):
         name_last_node=None,
         last_node=None,
     ):
-        """Recursive function to extract items from the data files
+        """
+        Recursive function to extract items from the data files
 
         :param data: the current branch to walk down
         :param stop: a list of leaves to extract or None to extract everything
@@ -226,7 +228,7 @@ class JsonFile(base.DictStore):
             yield unit
 
     def parse(self, input):
-        """parse the given file or file source string"""
+        """Parse the given file or file source string"""
         if hasattr(input, "name"):
             self.filename = input.name
         elif not getattr(self, "filename", ""):
@@ -272,7 +274,8 @@ class WebExtensionJsonUnit(BaseJsonUnit):
 
 
 class WebExtensionJsonFile(JsonFile):
-    """WebExtension JSON file
+    """
+    WebExtension JSON file
 
     See following URLs for doc:
 
@@ -303,7 +306,8 @@ class WebExtensionJsonFile(JsonFile):
 
 
 class I18NextUnit(JsonNestedUnit):
-    """A i18next v3 format, JSON with plurals.
+    """
+    A i18next v3 format, JSON with plurals.
 
     See https://www.i18next.com/
     """
@@ -363,7 +367,8 @@ class I18NextUnit(JsonNestedUnit):
 
 
 class I18NextFile(JsonNestedFile):
-    """A i18next v3 format, this is nested JSON with several additions.
+    """
+    A i18next v3 format, this is nested JSON with several additions.
 
     See https://www.i18next.com/
     """
@@ -433,7 +438,8 @@ class I18NextFile(JsonNestedFile):
 
 
 class I18NextV4Unit(I18NextUnit):
-    """A i18next v4 format, JSON with plurals.
+    """
+    A i18next v4 format, JSON with plurals.
 
     See https://www.i18next.com/
     """
@@ -448,7 +454,8 @@ class I18NextV4Unit(I18NextUnit):
 
 
 class I18NextV4File(JsonNestedFile):
-    """A i18next v4 format, this is nested JSON with several additions.
+    """
+    A i18next v4 format, this is nested JSON with several additions.
 
     See https://www.i18next.com/
     """
@@ -569,7 +576,8 @@ class GoTextJsonUnit(BaseJsonUnit):
 
 
 class GoTextJsonFile(JsonFile):
-    """gotext JSON file
+    """
+    gotext JSON file
 
     See following URLs for doc:
 
@@ -650,7 +658,8 @@ class GoI18NJsonUnit(BaseJsonUnit):
 
 
 class GoI18NJsonFile(JsonFile):
-    """go-i18n JSON file
+    """
+    go-i18n JSON file
 
     See following URLs for doc:
 
@@ -719,7 +728,8 @@ class GoI18NV2JsonUnit(BaseJsonUnit):
 
 
 class GoI18NV2JsonFile(JsonFile):
-    """go-i18n v2 JSON file
+    """
+    go-i18n v2 JSON file
 
     See following URLs for doc:
 
@@ -785,7 +795,8 @@ class ARBJsonUnit(BaseJsonUnit):
 
 
 class ARBJsonFile(JsonFile):
-    """ARB JSON file
+    """
+    ARB JSON file
 
     See following URLs for doc:
 

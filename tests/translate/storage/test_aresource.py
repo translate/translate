@@ -106,9 +106,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
 
     def test_escape_html_code_quote(self):
         string = "some <b>html code</b> 'here'"
-        xml = (
-            "<string name=\"teststring\">some <b>html code</b> \\'here\\'" "</string>\n"
-        )
+        xml = "<string name=\"teststring\">some <b>html code</b> \\'here\\'</string>\n"
         self.__check_escape(string, xml)
 
     def test_escape_html_code_quote_newline(self):
@@ -356,7 +354,8 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         self.__check_parse(string, xml)
 
     def test_parse_newline_in_string(self):
-        """Check that newline is read as space.
+        """
+        Check that newline is read as space.
 
         At least it seems to be what Android does.
         """

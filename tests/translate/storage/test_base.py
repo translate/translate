@@ -29,12 +29,12 @@ from translate.storage.placeables import parse as rich_parse
 
 
 def headerless_len(units):
-    """return count of translatable (non header) units"""
+    """Return count of translatable (non header) units"""
     return len(list(filter(lambda x: not x.isheader(), units)))
 
 
 def first_translatable(store):
-    """returns first translatable unit, skipping header if present"""
+    """Returns first translatable unit, skipping header if present"""
     if store.units[0].isheader() and len(store.units) > 1:
         return store.units[1]
     else:
@@ -53,20 +53,21 @@ class TestTranslationUnit:
         self.unit = self.UnitClass("Test String")
 
     def test_isfuzzy(self):
-        """Test that we can call isfuzzy() on a unit.
+        """
+        Test that we can call isfuzzy() on a unit.
 
         The default return value for isfuzzy() should be False.
         """
         assert not self.unit.isfuzzy()
 
     def test_create(self):
-        """tests a simple creation with a source string"""
+        """Tests a simple creation with a source string"""
         unit = self.unit
         print("unit.source:", unit.source)
         assert unit.source == "Test String"
 
     def test_eq(self):
-        """tests equality comparison"""
+        """Tests equality comparison"""
         unit1 = self.unit
         unit2 = self.UnitClass("Test String")
         unit3 = self.UnitClass("Test String")
@@ -92,10 +93,10 @@ class TestTranslationUnit:
             # - iniunit, phpunit and propunit (properties) can have different source/target
             #   and are reunited when serializing through `self.translation or self.value`
             assert unit1 == unit6
-            assert not (unit1 != unit6)
+            assert unit1 == unit6
         else:
             assert unit1 != unit6
-            assert not (unit1 == unit6)
+            assert unit1 != unit6
 
     def test_target(self):
         unit = self.unit
@@ -145,7 +146,6 @@ class TestTranslationUnit:
         Test difficult characters that might go wrong in a quoting and
         escaping roundtrip.
         """
-
         unit = self.unit
         specials = [
             "\\n",
@@ -298,13 +298,13 @@ class TestTranslationStore:
         assert store.translate("Beziér curve") == "Beziér-kurwe"
 
     def reparse(self, store):
-        """converts the store to a string and back to a store again"""
+        """Converts the store to a string and back to a store again"""
         storestring = bytes(store)
         return self.StoreClass.parsestring(storestring)
 
     @staticmethod
     def check_equality(store1, store2):
-        """asserts that store1 and store2 are the same"""
+        """Asserts that store1 and store2 are the same"""
         assert headerless_len(store1.units) == headerless_len(store2.units)
         for n, store1unit in enumerate(store1.units):
             store2unit = store2.units[n]

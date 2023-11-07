@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Convert Windows RC files to Gettext PO localization files.
+"""
+Convert Windows RC files to Gettext PO localization files.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/rc2po.html
 for examples and usage instructions.
@@ -33,7 +34,7 @@ class rc2po:
     """Convert a .rc file to a .po file for handling the translation."""
 
     def convert_store(self, input_store, duplicatestyle="msgctxt"):
-        """converts a .rc file to a .po file..."""
+        """Converts a .rc file to a .po file..."""
         output_store = po.pofile()
         output_header = output_store.init_headers(
             x_accelerator_marker="&",
@@ -50,7 +51,7 @@ class rc2po:
     def merge_store(
         self, template_store, input_store, blankmsgstr=False, duplicatestyle="msgctxt"
     ):
-        """converts two .rc files to a .po file..."""
+        """Converts two .rc files to a .po file..."""
         output_store = po.pofile()
         output_header = output_store.init_headers(
             x_accelerator_marker="&",
@@ -84,7 +85,8 @@ class rc2po:
 
     @staticmethod
     def convert_unit(input_unit, commenttype):
-        """Converts a .rc unit to a .po unit. Returns None if empty or not for
+        """
+        Converts a .rc unit to a .po unit. Returns None if empty or not for
         translation.
         """
         if input_unit is None:
@@ -107,7 +109,7 @@ def convertrc(
     lang=None,
     sublang=None,
 ):
-    """reads in input_file using rc, converts using rc2po, writes to output_file"""
+    """Reads in input_file using rc, converts using rc2po, writes to output_file"""
     input_store = rc.rcfile(input_file, lang, sublang, encoding=charset)
     convertor = rc2po()
     if template_file is None:

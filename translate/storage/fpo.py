@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Classes for the support of Gettext .po and .pot files.
+"""
+Classes for the support of Gettext .po and .pot files.
 
 This implementation assumes that cpo is working. This should not be used
 directly, but can be used once cpo has been established to work.
@@ -195,7 +196,8 @@ class pounit(pocommon.pounit):
             return len(self.target)
 
     def merge(self, otherpo, overwrite=False, comments=True, authoritative=False):
-        """Merges the otherpo (with the same msgid) into this one.
+        """
+        Merges the otherpo (with the same msgid) into this one.
 
         Overwrite non-blank self.msgstr only if overwrite is True
         merge comments only if comments is True
@@ -332,17 +334,18 @@ class pounit(pocommon.pounit):
         super().makeobsolete()
 
     def hasplural(self):
-        """returns whether this pounit contains plural strings..."""
+        """Returns whether this pounit contains plural strings..."""
         source = self.source
         return isinstance(source, multistring) and len(source.strings) > 1
 
     def __str__(self):
-        """convert to a string. double check that unicode is handled somehow here"""
+        """Convert to a string. double check that unicode is handled somehow here"""
         _cpo_unit = cpo.pounit.buildfromunit(self)
         return str(_cpo_unit)
 
     def getlocations(self):
-        """Get a list of locations from sourcecomments in the PO unit.
+        """
+        Get a list of locations from sourcecomments in the PO unit.
 
         rtype: List
         return: A list of the locations with '#: ' stripped
@@ -352,7 +355,8 @@ class pounit(pocommon.pounit):
         return self.sourcecomments
 
     def addlocation(self, location):
-        """Add a location to sourcecomments in the PO unit.
+        """
+        Add a location to sourcecomments in the PO unit.
 
         :param location: Text location e.g. 'file.c:23' does not include #:
         :type location: String
@@ -360,7 +364,8 @@ class pounit(pocommon.pounit):
         self.sourcecomments.append(location)
 
     def _extract_msgidcomments(self, text=None):
-        """Extract KDE style msgid comments from the unit.
+        """
+        Extract KDE style msgid comments from the unit.
 
         :rtype: String
         :return: Returns the extracted msgidcomments found in this unit's msgid.
@@ -394,7 +399,8 @@ class pounit(pocommon.pounit):
 
     @classmethod
     def buildfromunit(cls, unit):
-        """Build a native unit from a foreign unit, preserving as much
+        """
+        Build a native unit from a foreign unit, preserving as much
         information as possible.
         """
         if type(unit) is cls and hasattr(unit, "copy") and callable(unit.copy):
@@ -434,7 +440,8 @@ class pofile(pocommon.pofile):
     UnitClass = pounit
 
     def _build_self_from_cpo(self):
-        """Builds up this store from the internal cpo store.
+        """
+        Builds up this store from the internal cpo store.
 
         A user must ensure that self._cpo_store already exists, and that it is
         deleted afterwards.
@@ -444,7 +451,8 @@ class pofile(pocommon.pofile):
         self.encoding = self._cpo_store.encoding
 
     def _build_cpo_from_self(self):
-        """Builds the internal cpo store from the data in self.
+        """
+        Builds the internal cpo store from the data in self.
 
         A user must ensure that self._cpo_store does not exist, and should
         delete it after using it.
@@ -506,7 +514,7 @@ class pofile(pocommon.pofile):
                         origpo._msgctxt += " ".join(origpo.getlocations())
                         markedpos.append(thepo)
                     thepo._msgctxt += " ".join(thepo.getlocations())
-                    if not thepo._msgctxt == id_dict[id]._msgctxt:
+                    if thepo._msgctxt != id_dict[id]._msgctxt:
                         uniqueunits.append(thepo)
                     else:
                         logger.warning(

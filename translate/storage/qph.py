@@ -17,7 +17,8 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 
-"""Module for handling Qt Linguist Phrase Book (.qph) files.
+"""
+Module for handling Qt Linguist Phrase Book (.qph) files.
 
 Extract from the `Qt Linguist Manual: Translators
 <http://doc.trolltech.com/4.3/linguist-translators.html>`_:
@@ -101,7 +102,8 @@ class QphFile(lisa.LISAfile):
     namespace = ""
 
     def initbody(self):
-        """Initialises self.body so it never needs to be retrieved from the XML
+        """
+        Initialises self.body so it never needs to be retrieved from the XML
         again.
         """
         self.namespace = self.document.getroot().nsmap.get(None, None)
@@ -109,7 +111,8 @@ class QphFile(lisa.LISAfile):
         self.body = self.document.getroot()  # The root node contains the units
 
     def getsourcelanguage(self):
-        """Get the source language for this .qph file.
+        """
+        Get the source language for this .qph file.
 
         We don't implement setsourcelanguage as users really shouldn't be
         altering the source language in .qph files, it should be set correctly
@@ -124,7 +127,8 @@ class QphFile(lisa.LISAfile):
         return lang
 
     def gettargetlanguage(self):
-        """Get the target language for this .qph file.
+        """
+        Get the target language for this .qph file.
 
         :return: ISO code e.g. af, fr, pt_BR
         :rtype: String
@@ -132,7 +136,8 @@ class QphFile(lisa.LISAfile):
         return data.normalize_code(self.header.get("language"))
 
     def settargetlanguage(self, targetlanguage):
-        """Set the target language for this .qph file to *targetlanguage*.
+        """
+        Set the target language for this .qph file to *targetlanguage*.
 
         :param targetlanguage: ISO code e.g. af, fr, pt_BR
         :type targetlanguage: String
@@ -141,7 +146,8 @@ class QphFile(lisa.LISAfile):
             self.header.set("language", targetlanguage)
 
     def serialize(self, out):
-        """Write the XML document to the file `out`.
+        """
+        Write the XML document to the file `out`.
 
         We have to override this to ensure mimic the Qt convention:
             - no XML declaration

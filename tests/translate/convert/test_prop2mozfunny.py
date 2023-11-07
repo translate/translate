@@ -6,7 +6,7 @@ from translate.convert import prop2mozfunny
 class TestPO2Prop:
     @staticmethod
     def merge2inc(incsource, posource):
-        """helper that merges po translations to .inc source without requiring files"""
+        """Helper that merges po translations to .inc source without requiring files"""
         inputfile = BytesIO(posource.encode("utf-8") if posource else None)
         templatefile = BytesIO(incsource.encode("utf-8"))
         outputfile = BytesIO()
@@ -17,7 +17,7 @@ class TestPO2Prop:
         return outputinc
 
     def test_no_endlines_added(self):
-        """check that we don't add newlines at the end of file"""
+        """Check that we don't add newlines at the end of file"""
         posource = """# converted from #defines file\n#: MOZ_LANG_TITLE\nmsgid "English (US)"\nmsgstr "Deutsch (DE)"\n\n"""
         inctemplate = """#define MOZ_LANG_TITLE Deutsch (DE)\n"""
         incexpected = inctemplate
@@ -26,7 +26,7 @@ class TestPO2Prop:
         assert incfile == incexpected
 
     def test_uncomment_contributors(self):
-        """check that we handle uncommenting contributors properly"""
+        """Check that we handle uncommenting contributors properly"""
         posource = """# converted from #defines file
 #: MOZ_LANGPACK_CONTRIBUTORS
 msgid "<em:contributor>Joe Solon</em:contributor>"

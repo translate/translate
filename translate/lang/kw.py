@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""This module represents the Cornish language.
+"""
+This module represents the Cornish language.
 
 .. seealso:: :wp:`Cornish_language`
 """

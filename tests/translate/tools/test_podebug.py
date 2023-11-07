@@ -201,7 +201,8 @@ class TestPODebug:
         )
 
     def test_rewrite_chef(self):
-        """Test the chef rewrite function
+        """
+        Test the chef rewrite function
 
         This is not realy critical to test but a simple tests ensures
         that it stays working.

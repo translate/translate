@@ -22,7 +22,8 @@ from setuptools import setup
 
 
 def parse_requirements(file_name):
-    """Parses a pip requirements file and returns a list of packages.
+    """
+    Parses a pip requirements file and returns a list of packages.
 
     Use the result of this function in the ``install_requires`` field.
     Copied from cburgmer/pdfserver.

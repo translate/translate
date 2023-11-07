@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-r"""Manage the Trados .txt Translation Memory format
+r"""
+Manage the Trados .txt Translation Memory format
 
 A Trados file looks like this:
 
@@ -125,7 +126,8 @@ class TradosTxtDate:
             return time.strftime(TRADOS_TIMEFORMAT, self._time)
 
     def set_timestring(self, timestring):
-        """Set the time_struct object using a Trados time formated string
+        """
+        Set the time_struct object using a Trados time formated string
 
         :param timestring: A Trados time string (DDMMYYYY, hh:mm:ss)
         :type timestring: String
@@ -139,7 +141,8 @@ class TradosTxtDate:
         return self._time
 
     def set_time(self, newtime):
-        """Set the time_struct object
+        """
+        Set the time_struct object
 
         :param newtime: a new time object
         :type newtime: time.time_struct
@@ -196,7 +199,7 @@ class TradosTxtTmFile(base.TranslationStore):
     default_encoding = "iso-8859-1"
 
     def __init__(self, inputfile=None, **kwargs):
-        """construct a Wordfast TM, optionally reading in from inputfile."""
+        """Construct a Wordfast TM, optionally reading in from inputfile."""
         super().__init__(**kwargs)
         self.filename = ""
         if inputfile is not None:

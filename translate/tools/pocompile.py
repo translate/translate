@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Compile XLIFF and Gettext PO localization files into Gettext MO (Machine Object) files.
+"""
+Compile XLIFF and Gettext PO localization files into Gettext MO (Machine Object) files.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pocompile.html
 for examples and usage instructions.
@@ -50,7 +51,7 @@ class POCompile:
                         if mounit.hasplural():
                             mounit.source = multistring(
                                 _do_msgidcomment(unit.msgidcomment) + mounit.source,
-                                *mounit.source.strings[1:]
+                                *mounit.source.strings[1:],
                             )
                         else:
                             mounit.source = (
@@ -64,7 +65,7 @@ class POCompile:
 
 
 def convertmo(inputfile, outputfile, templatefile, includefuzzy=False):
-    """reads in a base class derived inputfile, converts using pocompile, writes to outputfile"""
+    """Reads in a base class derived inputfile, converts using pocompile, writes to outputfile"""
     # note that templatefile is not used, but it is required by the converter...
     inputstore = factory.getobject(inputfile)
     if inputstore.isempty():

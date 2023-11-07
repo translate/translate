@@ -80,7 +80,8 @@ msgstr "Two"
         assert actual == expected
 
     def test_default_namespace(self):
-        """Test a conversion with a default namespace.
+        """
+        Test a conversion with a default namespace.
 
         This conversion requires a template that specifies the namespace
         as default namespace; otherwise it will be generated.

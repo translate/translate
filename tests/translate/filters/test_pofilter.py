@@ -12,7 +12,7 @@ class BaseTestFilter:
     filename = ""
 
     def parse_text(self, filetext):
-        """helper that parses xliff file content without requiring files"""
+        """Helper that parses xliff file content without requiring files"""
         dummyfile = BytesIO(filetext.encode())
         dummyfile.name = self.filename
         store = factory.getobject(dummyfile)
@@ -37,12 +37,12 @@ class BaseTestFilter:
         return tofile
 
     def test_simplepass(self):
-        """checks that an obviously correct string passes"""
+        """Checks that an obviously correct string passes"""
         filter_result = self.filter(self.translationstore)
         assert headerless_len(filter_result.units) == 0
 
     def test_simplefail(self):
-        """checks that an obviously wrong string fails"""
+        """Checks that an obviously wrong string fails"""
         self.unit.target = "REST"
         filter_result = self.filter(self.translationstore)
         print(filter_result)
@@ -79,7 +79,7 @@ class BaseTestFilter:
         assert "untranslated" in errors
 
     def test_non_existant_check(self):
-        """check that we report an error if a user tries to run a non-existant test"""
+        """Check that we report an error if a user tries to run a non-existant test"""
         filter_result = self.filter(
             self.translationstore, cmdlineoptions=["-t nonexistant"]
         )
@@ -88,13 +88,13 @@ class BaseTestFilter:
         assert headerless_len(filter_result.units) == 0
 
     def test_list_all_tests(self):
-        """lists all available tests"""
+        """Lists all available tests"""
         filter_result = self.filter(self.translationstore, cmdlineoptions=["-l"])
         # TODO again not sure how to check the stderror output
         assert headerless_len(filter_result.units) == 0
 
     def test_test_against_fuzzy(self):
-        """test whether to run tests against fuzzy translations"""
+        """Test whether to run tests against fuzzy translations"""
         self.unit.markfuzzy()
 
         filter_result = self.filter(self.translationstore, cmdlineoptions=["--fuzzy"])
@@ -114,7 +114,7 @@ class BaseTestFilter:
         assert headerless_len(filter_result.units) == 0
 
     def test_test_against_review(self):
-        """test whether to run tests against translations marked for review"""
+        """Test whether to run tests against translations marked for review"""
         self.unit.markreviewneeded()
         filter_result = self.filter(self.translationstore, cmdlineoptions=["--review"])
         assert first_translatable(filter_result).isreview()
@@ -135,7 +135,7 @@ class BaseTestFilter:
         assert headerless_len(filter_result.units) == 0
 
     def test_isfuzzy(self):
-        """tests the extraction of items marked fuzzy"""
+        """Tests the extraction of items marked fuzzy"""
         self.unit.markfuzzy()
 
         filter_result = self.filter(
@@ -150,7 +150,7 @@ class BaseTestFilter:
         assert headerless_len(filter_result.units) == 0
 
     def test_isreview(self):
-        """tests the extraction of items marked review"""
+        """Tests the extraction of items marked review"""
         filter_result = self.filter(
             self.translationstore, cmdlineoptions=["--test=isreview"]
         )
@@ -163,7 +163,7 @@ class BaseTestFilter:
         assert first_translatable(filter_result).isreview()
 
     def test_notes(self):
-        """tests the optional adding of notes"""
+        """Tests the optional adding of notes"""
         # let's make sure we trigger the 'long' and/or 'doubleword' test
         self.unit.target = "asdf asdf asdf asdf asdf asdf asdf"
         filter_result = self.filter(self.translationstore)
@@ -191,7 +191,7 @@ class BaseTestFilter:
         assert headerless_len(filter_result.units) == 0
 
     def test_preconditions(self):
-        """tests that the preconditions work correctly"""
+        """Tests that the preconditions work correctly"""
         self.unit.source = "File"
         self.unit.target = ""
         filter_result = self.filter(self.translationstore)
@@ -289,19 +289,15 @@ class TestTMXFilter(BaseTestFilter):
 
     def test_test_against_fuzzy(self):
         """TMX doesn't support fuzzy"""
-        pass
 
     def test_test_against_review(self):
         """TMX doesn't support review"""
-        pass
 
     def test_isfuzzy(self):
         """TMX doesn't support fuzzy"""
-        pass
 
     def test_isreview(self):
         """TMX doesn't support review"""
-        pass
 
 
 class TestRomanianPOFilter(TestPOFilter):

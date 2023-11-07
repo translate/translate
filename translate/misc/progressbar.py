@@ -16,13 +16,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Progress bar utilities for reporting feedback on the progress of an
+"""
+Progress bar utilities for reporting feedback on the progress of an
 application.
 """
 
 
 class DotsProgressBar:
-    """An ultra-simple progress indicator that just writes a dot for each
+    """
+    An ultra-simple progress indicator that just writes a dot for each
     action
     """
 
@@ -33,7 +35,7 @@ class DotsProgressBar:
         self.amount = 0
 
     def show(self, verbosemessage):
-        """show a dot for progress :-)"""
+        """Show a dot for progress :-)"""
         # pylint: disable=W0613
         self.stderr.write(".")
         self.stderr.flush()
@@ -53,8 +55,7 @@ class NoProgressBar:
         self.amount = 0
 
     def show(self, verbosemessage):
-        """show nothing for progress :-)"""
-        pass
+        """Show nothing for progress :-)"""
 
     def close(self):
         pass
@@ -98,13 +99,14 @@ class ProgressBar:
         return str(self.progBar)
 
     def show(self, verbosemessage):
-        """displays the progress bar"""
+        """Displays the progress bar"""
         # pylint: disable=W0613
         print(self)
 
 
 class MessageProgressBar(ProgressBar):
-    """A ProgressBar that just writes out the messages without any progress
+    """
+    A ProgressBar that just writes out the messages without any progress
     display
     """
 

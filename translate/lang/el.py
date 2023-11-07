@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""This module represents the Greek language.
+"""
+This module represents the Greek language.
 
 .. seealso:: :wp:`Greek_language`
 """
@@ -51,13 +52,11 @@ class el(common.Common):
     }
 
     # Valid latin characters for use as accelerators
-    valid_latin_accel = (
-        "abcdefghijklmnopqrstuvwxyz" "ABCDEFGHIJKLMNOPQRSTUVWXYZ" "1234567890"
-    )
+    valid_latin_accel = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
 
     # Valid greek characters for use as accelerators (accented characters
     # and "ς" omitted)
-    valid_greek_accel = "αβγδεζηθικλμνξοπρστυφχψω" "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ"
+    valid_greek_accel = "αβγδεζηθικλμνξοπρστυφχψωΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ"
 
     # Valid accelerators
     validaccel = "".join([valid_latin_accel, valid_greek_accel])

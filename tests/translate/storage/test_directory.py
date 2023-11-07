@@ -9,19 +9,19 @@ class TestDirectory:
     """a test class to run tests on a test Pootle Server"""
 
     def setup_method(self, method):
-        """sets up a test directory"""
+        """Sets up a test directory"""
         print("setup_method called on", self.__class__.__name__)
         self.testdir = "%s_testdir" % (self.__class__.__name__)
         self.cleardir(self.testdir)
         os.mkdir(self.testdir)
 
     def teardown_method(self, method):
-        """removes the attributes set up by setup_method"""
+        """Removes the attributes set up by setup_method"""
         self.cleardir(self.testdir)
 
     @staticmethod
     def cleardir(dirname):
-        """removes the given directory"""
+        """Removes the given directory"""
         if os.path.exists(dirname):
             for dirpath, subdirs, filenames in os.walk(dirname, topdown=False):
                 for name in filenames:
@@ -44,7 +44,7 @@ class TestDirectory:
         os.mkdir(os.path.join(self.testdir, dir))
 
     def test_created(self):
-        """test that the directory actually exists"""
+        """Test that the directory actually exists"""
         print(self.testdir)
         assert os.path.isdir(self.testdir)
 

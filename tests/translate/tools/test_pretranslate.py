@@ -20,7 +20,7 @@ class TestPretranslate:
 
     @staticmethod
     def pretranslatepo(input_source, template_source=None):
-        """helper that converts strings to po source without requiring files"""
+        """Helper that converts strings to po source without requiring files"""
         input_file = BytesIO(input_source.encode())
         if template_source:
             template_file = BytesIO(template_source.encode())
@@ -34,7 +34,7 @@ class TestPretranslate:
 
     @staticmethod
     def pretranslatexliff(input_source, template_source=None):
-        """helper that converts strings to po source without requiring files"""
+        """Helper that converts strings to po source without requiring files"""
         input_file = BytesIO(input_source)
         if template_source:
             template_file = BytesIO(template_source)
@@ -72,7 +72,7 @@ class TestPretranslate:
         assert str(self.singleunit(newpo)) == input_source
 
     def test_merging_simple(self):
-        """checks that the pretranslatepo function is working for a simple merge"""
+        """Checks that the pretranslatepo function is working for a simple merge"""
         input_source = (
             """#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n"""
             % po.lsep
@@ -85,7 +85,7 @@ class TestPretranslate:
         assert str(self.singleunit(newpo)) == template_source
 
     def test_merging_messages_marked_fuzzy(self):
-        """test that when we merge PO files with a fuzzy message that it remains fuzzy"""
+        """Test that when we merge PO files with a fuzzy message that it remains fuzzy"""
         input_source = (
             """#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n"""
             % po.lsep
@@ -98,7 +98,7 @@ class TestPretranslate:
         assert str(self.singleunit(newpo)) == template_source
 
     def test_merging_plurals_with_fuzzy_matching(self):
-        """test that when we merge PO files with a fuzzy message that it remains fuzzy"""
+        """Test that when we merge PO files with a fuzzy message that it remains fuzzy"""
         input_source = r"""#: file.cpp:2
 msgid "%d manual"
 msgid_plural "%d manuals"
@@ -206,7 +206,7 @@ msgstr[1] "%d handleidings."
         assert str(newpounit) == template_source
 
     def test_merging_automatic_comments_dont_duplicate(self):
-        """ensure that we can merge #. comments correctly"""
+        """Ensure that we can merge #. comments correctly"""
         input_source = """#. Row 35\nmsgid "&About"\nmsgstr ""\n"""
         template_source = """#. Row 35\nmsgid "&About"\nmsgstr "&Info"\n"""
         newpo = self.pretranslatepo(input_source, template_source)
@@ -214,7 +214,7 @@ msgstr[1] "%d handleidings."
         assert str(newpounit) == template_source
 
     def test_merging_automatic_comments_new_overides_old(self):
-        """ensure that new #. comments override the old comments"""
+        """Ensure that new #. comments override the old comments"""
         input_source = """#. new comment\n#: someline.c\nmsgid "&About"\nmsgstr ""\n"""
         template_source = (
             """#. old comment\n#: someline.c\nmsgid "&About"\nmsgstr "&Info"\n"""
@@ -261,7 +261,7 @@ msgstr "Sekuriteit"
         assert str(newpounit) == poexpected
 
     def test_merging_msgidcomments(self):
-        """ensure that we can merge msgidcomments messages"""
+        """Ensure that we can merge msgidcomments messages"""
         input_source = r"""#: window.width
 msgid ""
 "_: Do not translate this.\n"
@@ -279,7 +279,7 @@ msgstr "36em"
         assert str(newpounit) == template_source
 
     def test_merging_plurals(self):
-        """ensure that we can merge plural messages"""
+        """Ensure that we can merge plural messages"""
         input_source = (
             """msgid "One"\nmsgid_plural "Two"\nmsgstr[0] ""\nmsgstr[1] ""\n"""
         )

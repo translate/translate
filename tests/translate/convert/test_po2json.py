@@ -36,7 +36,7 @@ msgstr ""
     def po2json(
         po_source, json_template, includefuzzy=False, remove_untranslated=False
     ):
-        """helper that converts po source to json source without requiring files"""
+        """Helper that converts po source to json source without requiring files"""
         input_file = BytesIO(po_source.encode())
         input_po = po.pofile(input_file)
         convertor = po2json.rejson(json_template, input_po)
@@ -44,7 +44,7 @@ msgstr ""
         return output_json.decode("utf-8")
 
     def test_basic(self):
-        """test a basic po to json conversion"""
+        """Test a basic po to json conversion"""
         json_template = """{ "text": "A simple string"}"""
         input_po = """#: .text
 msgid "A simple string"
@@ -104,7 +104,6 @@ msgstr ""
 
     def test_includefuzzy_false_remove_untranslated_false(self):
         """When includefuzzy is False and remove_untranslated is False"""
-
         expected_json = """{
     "foo": "oof",
     "bar": "bar",
@@ -122,7 +121,6 @@ msgstr ""
 
     def test_includefuzzy_false_remove_untranslated_true(self):
         """When includefuzzy is False and remove_untranslated is True"""
-
         expected_json = """{
     "foo": "oof"
 }
@@ -137,7 +135,6 @@ msgstr ""
 
     def test_includefuzzy_true_remove_untranslated_false(self):
         """When includefuzzy is True and remove_untranslated is False"""
-
         expected_json = """{
     "foo": "oof",
     "bar": "rab",
@@ -155,7 +152,6 @@ msgstr ""
 
     def test_includefuzzy_true_remove_untranslated_true(self):
         """When includefuzzy is True and remove_untranslated is True"""
-
         expected_json = """{
     "foo": "oof"
 }

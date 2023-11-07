@@ -29,7 +29,8 @@ prefix = "code_"
 
 @lru_cache(maxsize=128)
 def getlanguage(code):
-    """This returns a language class.
+    """
+    This returns a language class.
 
     :param code: The ISO 639 language code
     """

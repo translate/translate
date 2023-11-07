@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Py2exe can't find stuff that we import dynamically, so we have this file
+"""
+Py2exe can't find stuff that we import dynamically, so we have this file
 just for the sake of the Windows installer to easily pick up all the stuff that
 we need and ensure they make it into the installer.
 """

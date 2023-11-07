@@ -15,14 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Implements a case-insensitive (on keys) dictionary and order-sensitive
+"""
+Implements a case-insensitive (on keys) dictionary and order-sensitive
 dictionary
 """
 
 
 class cidict(dict):
     def __init__(self, fromdict=None):
-        """constructs the cidict, optionally using another dict to do so"""
+        """Constructs the cidict, optionally using another dict to do so"""
         if fromdict is not None:
             self.update(fromdict)
 
@@ -47,7 +48,8 @@ class cidict(dict):
         return super().__setitem__(key, value)
 
     def update(self, updatedict):
-        """D.update(E) -> None.
+        """
+        D.update(E) -> None.
         Update D from E: for k in E.keys(): D[k] = E[k]
         """
         for key, value in updatedict.items():

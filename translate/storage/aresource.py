@@ -228,7 +228,8 @@ class AndroidResourceUnit(base.TranslationUnit):
     def escape(
         self, text: str | None, quote_wrapping_whitespaces: bool = True
     ) -> str | None:
-        """Escape all the characters which need to be escaped in an Android XML
+        """
+        Escape all the characters which need to be escaped in an Android XML
         file.
 
         :param text: Text to escape
@@ -237,7 +238,7 @@ class AndroidResourceUnit(base.TranslationUnit):
                double quotes.
         """
         if text is None:
-            return
+            return None
         if len(text) == 0:
             return ""
 
@@ -494,7 +495,8 @@ class AndroidResourceFile(lisa.LISAfile):
     XMLuppercaseEncoding = False
 
     def initbody(self):
-        """Initialises self.body so it never needs to be retrieved from the XML
+        """
+        Initialises self.body so it never needs to be retrieved from the XML
         again.
         """
         self.namespace = self.document.getroot().nsmap.get(None, None)
@@ -539,7 +541,8 @@ class AndroidResourceFile(lisa.LISAfile):
         return target_lang
 
     def addunit(self, unit, new=True):
-        """Adds unit to the document
+        """
+        Adds unit to the document
 
         In addition to the standard addunit, it also tries to move
         namespace definitions to the top <resources> element.

@@ -85,7 +85,8 @@ class LISAunit(base.TranslationUnit):
         return True
 
     def namespaced(self, name):
-        """Returns name in Clark notation.
+        """
+        Returns name in Clark notation.
 
         For example ``namespaced("source")`` in an XLIFF document
         might return::
@@ -141,7 +142,8 @@ class LISAunit(base.TranslationUnit):
     target_dom = property(get_target_dom)
 
     def gettarget(self, lang=None):
-        """retrieves the "target" text (second entry), or the entry in the
+        """
+        retrieves the "target" text (second entry), or the entry in the
         specified language, if it exists
         """
         return self.getNodeText(
@@ -150,7 +152,8 @@ class LISAunit(base.TranslationUnit):
         )
 
     def settarget(self, target, lang="xx", append=False):
-        """Sets the "target" string (second language), or alternatively appends
+        """
+        Sets the "target" string (second language), or alternatively appends
         to the list
         """
         # XXX: we really need the language - can't really be optional, and we
@@ -187,10 +190,11 @@ class LISAunit(base.TranslationUnit):
 
     @staticmethod
     def createlanguageNode(lang, text, purpose=None):
-        """Returns a xml Element setup with given parameters to represent a
+        """
+        Returns a xml Element setup with given parameters to represent a
         single language entry. Has to be overridden.
         """
-        return None
+        return
 
     def getlanguageNodes(self):
         """Returns a list of all nodes that contain per language information."""
@@ -288,10 +292,10 @@ class LISAfile(base.TranslationStore):
 
     def addheader(self):
         """Method to be overridden to initialise headers, etc."""
-        pass
 
     def namespaced(self, name):
-        """Returns name in Clark notation.
+        """
+        Returns name in Clark notation.
 
         For example ``namespaced("source")`` in an XLIFF document
         might return::
@@ -303,7 +307,8 @@ class LISAfile(base.TranslationStore):
         return namespaced(self.namespace, name)
 
     def initbody(self):
-        """Initialises self.body so it never needs to be retrieved from the XML
+        """
+        Initialises self.body so it never needs to be retrieved from the XML
         again.
         """
         self.namespace = self.document.getroot().nsmap.get(None, None)
