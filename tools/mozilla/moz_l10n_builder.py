@@ -764,7 +764,7 @@ def main(
     langpack=False,
     verbose=True,
 ):
-    global options, targetapp
+    global targetapp  # noqa: PLW0603
     options["verbose"] = verbose
     targetapp = mozproduct
     langs = get_langs(langs)

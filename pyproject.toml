@@ -45,8 +45,6 @@ ignore = [
   "E741",  # TODO: Ambiguous variable name:
   "B007",  # TODO: Loop control variable not used within loop body
   "B020",  # TODO: Loop control variable `node` overrides iterable it iterates
-  "PLW0603",  # TODO: Using the global statement to update is discouraged
-  "PLW0602",  # TODO: Using global for `options` but no assignment is done
   "PLW2901",  # TODO: `for` loop variable `input_unit` overwritten by assignment target
   "TD004",  # TODO: Missing colon in TODO
   "TD005",  # TODO: Missing issue description after `TODO`
