@@ -137,7 +137,7 @@ def filtervariables(startmarker, endmarker, varfilter):
         startmarkerlen = len(startmarker)
     if endmarker is None:
         endmarkerlen = 0
-    elif type(endmarker) is int:
+    elif isinstance(endmarker, int):
         endmarkerlen = 0
     else:
         endmarkerlen = len(endmarker)
