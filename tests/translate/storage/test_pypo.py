@@ -2,6 +2,7 @@ from io import BytesIO
 
 from pytest import mark, raises
 
+from translate.__version__ import sver
 from translate.misc.multistring import multistring
 from translate.storage import pypo
 
@@ -640,11 +641,13 @@ msgstr ""\r
 "MIME-Version: 1.0\\n"\r
 "Content-Type: text/plain; charset=CHARSET\\n"\r
 "Content-Transfer-Encoding: ENCODING\\n"\r
-"X-Generator: Translate Toolkit 3.10.1\\n"\r
+"X-Generator: Translate Toolkit @VERSION@\\n"\r
 \r
 msgid "test me"\r
 msgstr ""\r
-"""
+""".replace(
+            b"@VERSION@", sver.encode()
+        )
         pofile = self.poparse(posource)
         assert len(pofile.units) == 1
         unit = pofile.units[0]
