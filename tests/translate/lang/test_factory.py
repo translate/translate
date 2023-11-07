@@ -45,10 +45,12 @@ def test_get_all_languages():
     """Tests that a basic call to get_all_languages() works."""
     import translate.lang as package
 
-    is_language_module = lambda x: not (
-        x.startswith("test_")
-        or x in ("common", "data", "factory", "identify", "ngram", "poedit", "team")
-    )
+    def is_language_module(x):
+        return not (
+            x.startswith("test_")
+            or x in ("common", "data", "factory", "identify", "ngram", "poedit", "team")
+        )
+
     lang_codes = []
     for _imp, modname, _isp in pkgutil.walk_packages(package.__path__):
         if is_language_module(modname):

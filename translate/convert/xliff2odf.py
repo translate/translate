@@ -88,9 +88,10 @@ def translate_odf(template, input_file):
         template ODF package, and the values are etree ElementTree instances
         for each of those files.
         """
-        make_parse_state = lambda: ParseState(
-            no_translate_content_elements, inline_elements
-        )
+
+        def make_parse_state():
+            return ParseState(no_translate_content_elements, inline_elements)
+
         for filename, dom_tree in dom_trees.items():
             file_unit_tree = unit_trees[filename]
             apply_translations(

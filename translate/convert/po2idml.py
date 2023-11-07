@@ -132,7 +132,9 @@ def translate_idml(template, input_file, translatable_files):
 
             return (source_dom, target_dom)
 
-        make_parse_state = lambda: ParseState(NO_TRANSLATE_ELEMENTS, INLINE_ELEMENTS)
+        def make_parse_state():
+            return ParseState(NO_TRANSLATE_ELEMENTS, INLINE_ELEMENTS)
+
         for filename, dom_tree in dom_trees.items():
             file_unit_tree = unit_trees[filename]
             apply_translations(
