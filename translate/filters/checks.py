@@ -2309,7 +2309,7 @@ class LibreOfficeChecker(StandardChecker):
         translation.
         """
         for location in self.locations:
-            if location.endswith(".xrm") or location.endswith(".xhp"):
+            if location.endswith((".xrm", ".xhp")):
                 opentags = []
                 match = re.search(lo_tag_re, str2)
                 while match:
