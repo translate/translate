@@ -62,11 +62,10 @@ class AndroidResourceUnit(base.TranslationUnit):
     def __init__(self, source, empty=False, xmlelement=None, **kwargs):
         if xmlelement is not None:
             self.xmlelement = xmlelement
+        elif self.hasplurals(source):
+            self.xmlelement = etree.Element("plurals")
         else:
-            if self.hasplurals(source):
-                self.xmlelement = etree.Element("plurals")
-            else:
-                self.xmlelement = etree.Element("string")
+            self.xmlelement = etree.Element("string")
         if source is not None:
             self.setid(source)
         super().__init__(source)
@@ -154,67 +153,64 @@ class AndroidResourceUnit(base.TranslationUnit):
                     del text[i]
                     i -= 1
                     active_escape = False
-            else:
-                if active_escape:
-                    # Handle the limited amount of escape codes
-                    # that we support.
-                    # TODO: What about \r, or \r\n?
-                    if c is EOF:
-                        # Basically like any other char, but put
-                        # this first so we can use the ``in`` operator
-                        # in the clauses below without issue.
-                        pass
-                    elif c in ("n", "N"):
-                        # Remove whitespace just before newline. Most likely this is result of
-                        # having real newline in the XML in front of \n.
-                        if i >= 2 and text[i - 2] == " ":
-                            offset = 2
-                        else:
-                            offset = 1
-                        text[i - offset : i + 1] = "\n"  # an actual newline
-                        i -= offset
-                    elif c in ("t", "T"):
-                        text[i - 1 : i + 1] = "\t"  # an actual tab
-                        i -= 1
-                    elif c == " ":
-                        text[i - 1 : i + 1] = " "  # an actual space
-                        i -= 1
-                    elif c in "\"'@?":
-                        text[i - 1 : i] = ""  # remove the backslash
-                        i -= 1
-                    elif c == "u":
-                        # Unicode sequence. Android is nice enough to deal
-                        # with those in a way which let's us just capture
-                        # the next 4 characters and raise an error if they
-                        # are not valid (rather than having to use a new
-                        # state to parse the unicode sequence).
-                        # Exception: In case we are at the end of the
-                        # string, we support incomplete sequences by
-                        # prefixing the missing digits with zeros.
-                        # Note: max(len()) is needed in the slice due to
-                        # trailing ``None`` element.
-                        max_slice = min(i + 5, len(text) - 1)
-                        codepoint_str = "".join(text[i + 1 : max_slice])
-                        if len(codepoint_str) < 4:
-                            codepoint_str = (
-                                "0" * (4 - len(codepoint_str)) + codepoint_str
-                            )
-                        try:
-                            # We can't trust int() to raise a ValueError,
-                            # it will ignore leading/trailing whitespace.
-                            if not codepoint_str.isalnum():
-                                raise ValueError(codepoint_str)
-                            codepoint = chr(int(codepoint_str, 16))
-                        except ValueError:
-                            raise ValueError("bad unicode escape sequence")
-
-                        text[i - 1 : max_slice] = codepoint
-                        i -= 1
+            elif active_escape:
+                # Handle the limited amount of escape codes
+                # that we support.
+                # TODO: What about \r, or \r\n?
+                if c is EOF:
+                    # Basically like any other char, but put
+                    # this first so we can use the ``in`` operator
+                    # in the clauses below without issue.
+                    pass
+                elif c in ("n", "N"):
+                    # Remove whitespace just before newline. Most likely this is result of
+                    # having real newline in the XML in front of \n.
+                    if i >= 2 and text[i - 2] == " ":
+                        offset = 2
                     else:
-                        # All others, remove, like Android does as well.
-                        text[i - 1 : i + 1] = ""
-                        i -= 1
-                    active_escape = False
+                        offset = 1
+                    text[i - offset : i + 1] = "\n"  # an actual newline
+                    i -= offset
+                elif c in ("t", "T"):
+                    text[i - 1 : i + 1] = "\t"  # an actual tab
+                    i -= 1
+                elif c == " ":
+                    text[i - 1 : i + 1] = " "  # an actual space
+                    i -= 1
+                elif c in "\"'@?":
+                    text[i - 1 : i] = ""  # remove the backslash
+                    i -= 1
+                elif c == "u":
+                    # Unicode sequence. Android is nice enough to deal
+                    # with those in a way which let's us just capture
+                    # the next 4 characters and raise an error if they
+                    # are not valid (rather than having to use a new
+                    # state to parse the unicode sequence).
+                    # Exception: In case we are at the end of the
+                    # string, we support incomplete sequences by
+                    # prefixing the missing digits with zeros.
+                    # Note: max(len()) is needed in the slice due to
+                    # trailing ``None`` element.
+                    max_slice = min(i + 5, len(text) - 1)
+                    codepoint_str = "".join(text[i + 1 : max_slice])
+                    if len(codepoint_str) < 4:
+                        codepoint_str = "0" * (4 - len(codepoint_str)) + codepoint_str
+                    try:
+                        # We can't trust int() to raise a ValueError,
+                        # it will ignore leading/trailing whitespace.
+                        if not codepoint_str.isalnum():
+                            raise ValueError(codepoint_str)
+                        codepoint = chr(int(codepoint_str, 16))
+                    except ValueError:
+                        raise ValueError("bad unicode escape sequence")
+
+                    text[i - 1 : max_slice] = codepoint
+                    i -= 1
+                else:
+                    # All others, remove, like Android does as well.
+                    text[i - 1 : i + 1] = ""
+                    i -= 1
+                active_escape = False
 
             i += 1
 

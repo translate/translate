@@ -183,9 +183,8 @@ def reindent(
     if toplevel:
         if not elem.tail or not elem.tail.strip():
             elem.tail = ""
-    else:
-        if not elem.tail or not elem.tail.strip():
-            elem.tail = i
+    elif not elem.tail or not elem.tail.strip():
+        elem.tail = i
 
 
 def expand_closing_tags(elem):

@@ -549,12 +549,11 @@ class RecursiveOptionParser(optparse.OptionParser):
                 inputfiles = self.recurseinputfilelist(options)
             else:
                 inputfiles = self.recurseinputfiles(options)
+        elif options.input:
+            inputfiles = [os.path.basename(options.input)]
+            options.input = os.path.dirname(options.input)
         else:
-            if options.input:
-                inputfiles = [os.path.basename(options.input)]
-                options.input = os.path.dirname(options.input)
-            else:
-                inputfiles = [options.input]
+            inputfiles = [options.input]
         options.recursiveoutput = self.isrecursive(
             options.output, "output"
         ) and getattr(options, "allowrecursiveoutput", True)

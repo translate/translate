@@ -1023,11 +1023,10 @@ class DictUnit(TranslationUnit):
                     while len(target) < child_key:
                         target.append(None)
                     target.append(value)
+            elif unset:
+                del target[child_key]
             else:
-                if unset:
-                    del target[child_key]
-                else:
-                    target[child_key] = value
+                target[child_key] = value
         else:
             raise ValueError(f"Unsupported element: {child_element}")
 

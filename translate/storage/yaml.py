@@ -125,25 +125,24 @@ class YAMLFile(base.DictStore):
             prev = self.UnitClass.IdClass([])
         if isinstance(data, dict):
             yield from self._parse_dict(data, prev)
+        elif isinstance(data, str):
+            yield (prev, data)
+        elif isinstance(data, (bool, int)):
+            yield (prev, str(data))
+        elif isinstance(data, list):
+            for k, v in enumerate(data):
+                yield from self._flatten(v, prev + [("index", k)])
+        elif isinstance(data, TaggedScalar):
+            yield (prev, data.value)
+        elif data is None:
+            pass
         else:
-            if isinstance(data, str):
-                yield (prev, data)
-            elif isinstance(data, (bool, int)):
-                yield (prev, str(data))
-            elif isinstance(data, list):
-                for k, v in enumerate(data):
-                    yield from self._flatten(v, prev + [("index", k)])
-            elif isinstance(data, TaggedScalar):
-                yield (prev, data.value)
-            elif data is None:
-                pass
-            else:
-                raise ValueError(
-                    "We don't handle these values:\n"
-                    f"Type: {type(data)}\n"
-                    f"Data: {data}\n"
-                    f"Previous: {prev}"
-                )
+            raise ValueError(
+                "We don't handle these values:\n"
+                f"Type: {type(data)}\n"
+                f"Data: {data}\n"
+                f"Previous: {prev}"
+            )
 
     @staticmethod
     def preprocess(data):
