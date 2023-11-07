@@ -6,7 +6,7 @@ from . import test_convert
 
 
 class TestODF2XLIFFCommand(test_convert.TestConvertCommand):
-    """Tests running actual odf2xliff commands on files"""
+    """Tests running actual odf2xliff commands on files."""
 
     convertmodule = odf2xliff
 

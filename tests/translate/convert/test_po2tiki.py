@@ -58,7 +58,7 @@ msgstr "It is translated"
 
 
 class TestPo2TikiCommand(test_convert.TestConvertCommand, TestPo2Tiki):
-    """Tests running actual po2tiki commands on files"""
+    """Tests running actual po2tiki commands on files."""
 
     convertmodule = po2tiki
     defaultoptions = {}

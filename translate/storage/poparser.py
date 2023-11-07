@@ -28,7 +28,7 @@ From the GNU gettext manual:
      #, FLAG...
      msgctxt CONTEXT                   (Gettext 0.15)
      msgid UNTRANSLATED-STRING
-     msgstr TRANSLATED-STRING
+     msgstr TRANSLATED-STRING.
 """
 
 import re

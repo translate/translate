@@ -16,9 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""
-Converts additional Mozilla files to properties files.
-"""
+"""Converts additional Mozilla files to properties files."""
 
 from io import BytesIO
 
@@ -26,7 +24,7 @@ from translate.convert import prop2po
 
 
 def inc2prop(lines):
-    """Convert a .inc file with #defines in it to a properties file"""
+    """Convert a .inc file with #defines in it to a properties file."""
     yield "# converted from #defines file\n"
     for line in lines:
         line = line.decode("utf-8")
@@ -58,7 +56,7 @@ def inc2prop(lines):
 
 
 def it2prop(lines, encoding="cp1252"):
-    """Convert a pseudo-properties .it file to a conventional properties file"""
+    """Convert a pseudo-properties .it file to a conventional properties file."""
     yield "# converted from pseudo-properties .it file\n"
     # differences: ; instead of # for comments
     #              [section] titles that we replace with # section: comments
@@ -90,7 +88,7 @@ def inc2po(
     pot=False,
     duplicatestyle="msgctxt",
 ):
-    """Wraps prop2po but converts input/template files to properties first"""
+    """Wraps prop2po but converts input/template files to properties first."""
     inputlines = inputfile.readlines()
     inputproplines = list(inc2prop(inputlines))
     inputpropfile = BytesIO("".join(inputproplines).encode())
@@ -118,7 +116,7 @@ def it2po(
     pot=False,
     duplicatestyle="msgctxt",
 ):
-    """Wraps prop2po but converts input/template files to properties first"""
+    """Wraps prop2po but converts input/template files to properties first."""
     inputlines = inputfile.readlines()
     inputproplines = list(it2prop(inputlines, encoding=encoding))
     inputpropfile = BytesIO("".join(inputproplines).encode())

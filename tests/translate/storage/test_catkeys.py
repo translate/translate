@@ -23,7 +23,7 @@ class TestCatkeysUnit(test_base.TestTranslationUnit):
             assert unit.source == special
 
     def test_newlines(self):
-        """Wordfast does not like real newlines"""
+        """Wordfast does not like real newlines."""
         unit = self.UnitClass("One\nTwo")
         assert unit.dict["source"] == "One\\nTwo"
 

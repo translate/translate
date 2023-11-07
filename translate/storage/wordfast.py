@@ -17,7 +17,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 """
-Manage the Wordfast Translation Memory format
+Manage the Wordfast Translation Memory format.
 
 Wordfast TM format is the Translation Memory format used by the
 `Wordfast <http://www.wordfast.net/>`_ computer aided translation tool.
@@ -185,8 +185,8 @@ TAB_UTF16 = b"\x00\x09"
 
 
 def _char_to_wf(string):
-    """
-    Char -> Wordfast &'XX; escapes
+    r"""
+    Char -> Wordfast &'XX; escapes.
 
     Full roundtripping is not possible because of the escaping of
     NEWLINE \\n and TAB \\t
@@ -201,7 +201,7 @@ def _char_to_wf(string):
 
 
 def _wf_to_char(string):
-    """Wordfast &'XX; escapes -> Char"""
+    """Wordfast &'XX; escapes -> Char."""
     if string:
         for code, char in WF_ESCAPE_MAP:
             string = string.replace(code, char)
@@ -221,7 +221,7 @@ csv.register_dialect("wordfast", WordfastDialect)
 
 
 class WordfastTime:
-    """Manages time stamps in the Wordfast format of YYYYMMDD~hhmmss"""
+    """Manages time stamps in the Wordfast format of YYYYMMDD~hhmmss."""
 
     def __init__(self, newtime=None):
         self._time = None
@@ -233,14 +233,14 @@ class WordfastTime:
             self.time = newtime
 
     def get_timestring(self):
-        """Get the time in the Wordfast time format"""
+        """Get the time in the Wordfast time format."""
         if not self._time:
             return None
         return time.strftime(WF_TIMEFORMAT, self._time)
 
     def set_timestring(self, timestring):
         """
-        Set the time_sturct object using a Wordfast time formated string
+        Set the time_sturct object using a Wordfast time formated string.
 
         :param timestring: A Wordfast time string (YYYMMDD~hhmmss)
         :type timestring: String
@@ -250,12 +250,12 @@ class WordfastTime:
     timestring = property(get_timestring, set_timestring)
 
     def get_time(self):
-        """Get the time_struct object"""
+        """Get the time_struct object."""
         return self._time
 
     def set_time(self, newtime):
         """
-        Set the time_struct object
+        Set the time_struct object.
 
         :param newtime: a new time object
         :type newtime: time.time_struct
@@ -274,7 +274,7 @@ class WordfastTime:
 
 
 class WordfastHeader:
-    """A wordfast translation memory header"""
+    """A wordfast translation memory header."""
 
     def __init__(self, header=None):
         self._header_dict = []
@@ -287,7 +287,7 @@ class WordfastHeader:
     def _create_default_header():
         """
         Create a default Wordfast header with the date set to the current
-        time
+        time.
         """
         defaultheader = {}
         defaultheader.update(WF_FIELDNAMES_HEADER_DEFAULTS)
@@ -295,7 +295,7 @@ class WordfastHeader:
         return defaultheader
 
     def getheader(self):
-        """Get the header dictionary"""
+        """Get the header dictionary."""
         return self._header_dict
 
     def setheader(self, newheader):
@@ -315,7 +315,7 @@ class WordfastHeader:
 
 
 class WordfastUnit(base.TranslationUnit):
-    """A Wordfast translation memory unit"""
+    """A Wordfast translation memory unit."""
 
     def __init__(self, source=None):
         self._dict = {}
@@ -324,16 +324,16 @@ class WordfastUnit(base.TranslationUnit):
         super().__init__(source)
 
     def _update_timestamp(self):
-        """Refresh the timestamp for the unit"""
+        """Refresh the timestamp for the unit."""
         self._dict["date"] = WordfastTime(time.localtime()).timestring
 
     def getdict(self):
-        """Get the dictionary of values for a Wordfast line"""
+        """Get the dictionary of values for a Wordfast line."""
         return self._dict
 
     def setdict(self, newdict):
         """
-        Set the dictionary of values for a Wordfast line
+        Set the dictionary of values for a Wordfast line.
 
         :param newdict: a new dictionary with Wordfast line elements
         :type newdict: Dict
@@ -391,7 +391,7 @@ class WordfastUnit(base.TranslationUnit):
 
 
 class WordfastTMFile(base.TranslationStore):
-    """A Wordfast translation memory file"""
+    """A Wordfast translation memory file."""
 
     Name = "Wordfast Translation Memory"
     Mimetypes = ["application/x-wordfast"]
@@ -408,7 +408,7 @@ class WordfastTMFile(base.TranslationStore):
             self.parse(inputfile)
 
     def parse(self, input):
-        """Parsese the given file or file source string"""
+        """Parsese the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name
         elif not getattr(self, "filename", ""):

@@ -78,7 +78,7 @@ class TMDB:
     cursor = property(lambda self: self._get_connection(1))
 
     def init_database(self):
-        """Creates database tables and indices"""
+        """Creates database tables and indices."""
         script = """
 CREATE TABLE IF NOT EXISTS sources (
        sid INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -114,7 +114,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS targets_uniq_idx ON targets (sid, text, lang);
             raise
 
     def init_fulltext(self):
-        """Detects if fts3 fulltext indexing module exists, initializes fulltext table if it does"""
+        """Detects if fts3 fulltext indexing module exists, initializes fulltext table if it does."""
         # HACKISH: no better way to detect fts3 support except trying to
         # construct a dummy table?!
         try:
@@ -175,7 +175,7 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
     def preload_db(self):
         """
         ugly hack to force caching of sqlite db file in memory for improved
-        performance
+        performance.
         """
         if self.fulltext:
             query = """SELECT COUNT(*) FROM sources s JOIN fulltext f ON s.sid = f.docid JOIN targets t on s.sid = t.sid"""
@@ -187,7 +187,7 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
         return numrows
 
     def add_unit(self, unit, source_lang=None, target_lang=None, commit=True):
-        """Inserts unit in the database"""
+        """Inserts unit in the database."""
         # TODO: is that really the best way to handle unspecified
         # source and target languages? what about conflicts between
         # unit attributes and passed arguments
@@ -209,7 +209,7 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
         self.add_dict(unitdict, source_lang, target_lang, commit)
 
     def add_dict(self, unit, source_lang, target_lang, commit=True):
-        """Inserts units represented as dictionaries in database"""
+        """Inserts units represented as dictionaries in database."""
         source_lang = data.normalize_code(source_lang)
         target_lang = data.normalize_code(target_lang)
         try:
@@ -244,7 +244,7 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
             raise
 
     def add_store(self, store, source_lang, target_lang, commit=True):
-        """Insert all units in store in database"""
+        """Insert all units in store in database."""
         count = 0
         for unit in store.units:
             if unit.istranslatable() and unit.istranslated():
@@ -257,7 +257,7 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
     def add_list(self, units, source_lang, target_lang, commit=True):
         """
         insert all units in list into the database, units are represented as
-        dictionaries
+        dictionaries.
         """
         count = 0
         for unit in units:
@@ -268,7 +268,7 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
         return count
 
     def translate_unit(self, unit_source, source_langs, target_langs):
-        """Return TM suggestions for unit_source"""
+        """Return TM suggestions for unit_source."""
         if isinstance(source_langs, list):
             source_langs = [data.normalize_code(lang) for lang in source_langs]
             source_langs = ",".join(source_langs)

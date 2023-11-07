@@ -45,7 +45,7 @@ sicilianconfig = CheckerConfig(
 
 
 class SicilianChecker(TranslationChecker):
-    """A Checker class for Sicilian"""
+    """A Checker class for Sicilian."""
 
     def __init__(self, **kwargs):
         checkerconfig = kwargs.get("checkerconfig")
@@ -101,7 +101,9 @@ class SicilianChecker(TranslationChecker):
     @critical
     def vocalism(self, str1, str2):
         """
-        Check correct word-endings. All words should end with a/i/u, but a handful of exceptions:
+        Check correct word-endings.
+
+        All words should end with a/i/u, but a handful of exceptions:
 
           - me, to, so (possessive pronouns)
           - po (verb "putiri")

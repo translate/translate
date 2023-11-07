@@ -18,7 +18,7 @@
 
 """
 classes that hold units of comma-separated values (.csv) files (csvunit)
-or entire files (csvfile) for use with localisation
+or entire files (csvfile) for use with localisation.
 """
 
 
@@ -122,7 +122,7 @@ class csvunit(base.TranslationUnit):
             self.fuzzy = "False"
 
     def match_header(self):
-        """See if unit might be a header"""
+        """See if unit might be a header."""
         some_value = False
         for key, value in self.todict().items():
             if value:
@@ -132,7 +132,7 @@ class csvunit(base.TranslationUnit):
         return some_value
 
     def add_spreadsheet_escapes(self, source, target):
-        """Add common spreadsheet escapes to two strings"""
+        """Add common spreadsheet escapes to two strings."""
         for unescaped, escaped in self.spreadsheetescapes:
             if source.startswith(unescaped):
                 source = source.replace(unescaped, escaped, 1)
@@ -141,7 +141,7 @@ class csvunit(base.TranslationUnit):
         return source, target
 
     def remove_spreadsheet_escapes(self, source, target):
-        """Remove common spreadsheet escapes from two strings"""
+        """Remove common spreadsheet escapes from two strings."""
         for unescaped, escaped in self.spreadsheetescapes:
             if source.startswith(escaped):
                 source = source.replace(escaped, unescaped, 1)
@@ -241,7 +241,7 @@ def valid_fieldnames(fieldnames):
 
 
 def detect_header(inputfile, dialect, fieldnames):
-    """Test if file has a header or not, also returns number of columns in first row"""
+    """Test if file has a header or not, also returns number of columns in first row."""
     try:
         reader = csv.reader(inputfile, dialect)
     except csv.Error:
@@ -262,7 +262,7 @@ def detect_header(inputfile, dialect, fieldnames):
 class csvfile(base.TranslationStore):
     """
     This class represents a .csv file with various lines.  The default
-    format contains three columns: location, source, target
+    format contains three columns: location, source, target.
     """
 
     UnitClass = csvunit
@@ -333,7 +333,7 @@ class csvfile(base.TranslationStore):
             first_row = False
 
     def serialize(self, out):
-        """Write to file"""
+        """Write to file."""
         source = self.getoutput()
         if isinstance(source, str):
             # Python 3

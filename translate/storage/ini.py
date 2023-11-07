@@ -17,7 +17,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 """
-Class that manages .ini files for translation
+Class that manages .ini files for translation.
 
 .. note::: A simple summary of what is permissible follows.
 
@@ -51,7 +51,7 @@ def register_dialect(dialect):
 
 
 class Dialect:
-    """Base class for differentiating dialect options and functions"""
+    """Base class for differentiating dialect options and functions."""
 
     name = None
 
@@ -81,7 +81,7 @@ class DialectInno(DialectDefault):
 
 
 class iniunit(base.TranslationUnit):
-    """A INI file entry"""
+    """A INI file entry."""
 
     def __init__(self, source=None, **kwargs):
         if source:
@@ -107,7 +107,7 @@ class iniunit(base.TranslationUnit):
 
 
 class inifile(base.TranslationStore):
-    """An INI file"""
+    """An INI file."""
 
     UnitClass = iniunit
 

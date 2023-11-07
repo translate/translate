@@ -696,7 +696,7 @@ spelling and varients, that can be used to uniquely identify the language"""
 
 def _regex_guesser(prefilter, regex, string, postfilter=None):
     """
-    Use regular expressions to extract the language team
+    Use regular expressions to extract the language team.
 
     :param prefilter: simple filter to apply before attempting the regex
     :param regex: regular expression with one group that will contain
@@ -725,12 +725,12 @@ def _regex_guesser(prefilter, regex, string, postfilter=None):
 
 
 def _nofilter(text):
-    """Return the supplied text unchanged"""
+    """Return the supplied text unchanged."""
     return text
 
 
 def _lower(text):
-    """Convert the supplied text to lowercase"""
+    """Convert the supplied text to lowercase."""
     return text.lower()
 
 
@@ -754,7 +754,7 @@ def _snippet_guesser(snippets_dict, string, filter_=_nofilter):
 
 
 def guess_language(team_string):
-    """Gueses the language of a PO file based on the Language-Team entry"""
+    """Gueses the language of a PO file based on the Language-Team entry."""
     for prefilter, regex, postfilter in LANG_TEAM_REGEX:
         lang = _regex_guesser(prefilter, regex, team_string, postfilter)
         if lang:

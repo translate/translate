@@ -158,7 +158,7 @@ class TerminologyExtractor:
                 )
 
     def clean(self, string):
-        """Returns the cleaned string that contains the text to be matched"""
+        """Returns the cleaned string that contains the text to be matched."""
         for accelerator in self.accelchars:
             string = string.replace(accelerator, "")
         string = self.formatpat.sub(" ", string)
@@ -167,17 +167,17 @@ class TerminologyExtractor:
         return string.strip()
 
     def stopmap(self, word):
-        """Return case-mapped stopword for input word"""
+        """Return case-mapped stopword for input word."""
         if self.stopignorecase or (self.stopfoldtitle and word.istitle()):
             word = word.lower()
         return word
 
     def stopword(self, word, defaultset=frozenset()):
-        """Return stoplist frozenset for input word"""
+        """Return stoplist frozenset for input word."""
         return self.stopwords.get(self.stopmap(word), defaultset)
 
     def addphrases(self, words, skips, translation, partials=True):
-        """Adds (sub)phrases with non-skipwords and more than one word"""
+        """Adds (sub)phrases with non-skipwords and more than one word."""
         if (
             len(words) > skips + 1
             and "skip" not in self.stopword(words[0])
@@ -340,7 +340,7 @@ class TerminologyExtractor:
     sortorders_default = ["frequency", "dictionary", "length"]
 
     def filter_terms(self, terms, nonstopmin=1, sortorders=sortorders_default):
-        """Reduce subphrases from extracted terms"""
+        """Reduce subphrases from extracted terms."""
         # reduce subphrase
         termlist = sorted(terms.keys(), key=len)
         logger.info("%d terms after thresholding", len(termlist))
@@ -382,7 +382,7 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
     """a specialized Option Parser for the terminology tool..."""
 
     def parse_args(self, args=None, values=None):
-        """Parses the command line options, handling implicit input/output args"""
+        """Parses the command line options, handling implicit input/output args."""
         (options, args) = optrecurse.optparse.OptionParser.parse_args(
             self, args, values
         )
@@ -434,7 +434,7 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
         return (options, args)
 
     def set_usage(self, usage=None):
-        """Sets the usage string - if usage not given, uses getusagestring for each option"""
+        """Sets the usage string - if usage not given, uses getusagestring for each option."""
         if usage is None:
             self.usage = (
                 "%prog "
@@ -445,7 +445,7 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
             super().set_usage(usage)
 
     def run(self):
-        """Parses the arguments, and runs recursiveprocess with the resulting options"""
+        """Parses the arguments, and runs recursiveprocess with the resulting options."""
         self.files = 0
         (options, args) = self.parse_args()
         self.extractor = TerminologyExtractor(
@@ -460,7 +460,7 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
         self.recursiveprocess(options)
 
     def recursiveprocess(self, options):
-        """Recurse through directories and process files"""
+        """Recurse through directories and process files."""
         if self.isrecursive(options.input, "input") and getattr(
             options, "allowrecursiveinput", True
         ):
@@ -494,13 +494,13 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
         self.outputterminology(options)
 
     def processfile(self, fileprocessor, options, fullinputpath):
-        """Process an individual file"""
+        """Process an individual file."""
         inputfile = self.openinputfile(options, fullinputpath)
         inputfile = factory.getobject(inputfile)
         self.extractor.processunits(inputfile.units, fullinputpath)
 
     def outputterminology(self, options):
-        """Saves the generated terminology glossary"""
+        """Saves the generated terminology glossary."""
         termfile = po.pofile()
         logger.info("scanned %d files", self.files)
         terms = self.extractor.extract_terms(

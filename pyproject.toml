@@ -57,15 +57,10 @@ ignore = [
   "DTZ005",  # TODO: The use of `datetime.datetime.now()` without `tz` argument is not allowed
   "D1",  # TODO: Missing docstring
   "PT011",  # TODO: `pytest.raises(ValueError)` is too broad, set the `match` parameter or use a more specific exception
-  "D200",  # TODO: One-line docstring should fit on one line
   "D205",  # TODO: 1 blank line required between summary line and description
-  "D301",  # TODO: Use `r"""` if any backslashes in a docstring
-  "D400",  # TODO: First line should end with a period
   "D401",  # TODO: First line of docstring should be in imperative mood
   "D402",  # TODO: First line should not be the function's signature
   "D404",  # TODO: First word of the docstring should not be "This"
-  "D415",  # TODO: First line should end with a period, question mark, or exclamation point
-  "D417",  # TODO: Missing argument descriptions in the docstring
   "D203",  # CONFIG: incompatible with D211
   "D212",  # CONFIG: incompatible with D213
   "B904",  # TODO: Within an `except` clause, raise exceptions with `raise ... from err` or `raise ... from None` to distinguish them from errors in exception handling

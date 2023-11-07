@@ -17,7 +17,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 r"""
-Class that manages JSON data files for translation
+Class that manages JSON data files for translation.
 
 JSON is an acronym for JavaScript Object Notation, it is an open standard
 designed for human-readable data interchange.
@@ -76,7 +76,7 @@ from translate.storage import base
 
 
 class BaseJsonUnit(base.DictUnit):
-    """A JSON entry"""
+    """A JSON entry."""
 
     ID_FORMAT = ".{}"
 
@@ -147,7 +147,7 @@ class FlatJsonUnit(BaseJsonUnit):
 
 
 class JsonFile(base.DictStore):
-    """A JSON file"""
+    """A JSON file."""
 
     UnitClass = FlatJsonUnit
 
@@ -187,7 +187,7 @@ class JsonFile(base.DictStore):
         last_node=None,
     ):
         """
-        Recursive function to extract items from the data files
+        Recursive function to extract items from the data files.
 
         :param data: the current branch to walk down
         :param stop: a list of leaves to extract or None to extract everything
@@ -219,7 +219,7 @@ class JsonFile(base.DictStore):
             yield unit
 
     def parse(self, input):
-        """Parse the given file or file source string"""
+        """Parse the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name
         elif not getattr(self, "filename", ""):
@@ -245,11 +245,11 @@ class JsonFile(base.DictStore):
 
 
 class JsonNestedUnit(BaseJsonUnit):
-    """A nested JSON entry"""
+    """A nested JSON entry."""
 
 
 class JsonNestedFile(JsonFile):
-    """A JSON file with nested keys"""
+    """A JSON file with nested keys."""
 
     UnitClass = JsonNestedUnit
 
@@ -266,7 +266,7 @@ class WebExtensionJsonUnit(BaseJsonUnit):
 
 class WebExtensionJsonFile(JsonFile):
     """
-    WebExtension JSON file
+    WebExtension JSON file.
 
     See following URLs for doc:
 
@@ -308,7 +308,7 @@ class I18NextUnit(JsonNestedUnit):
         return suffix == "0"
 
     def _get_base_name(self):
-        """Return base name for plurals"""
+        """Return base name for plurals."""
         item = self._item[0]
         if "_" in item:
             plural_base, _sep, suffix = item.rpartition("_")
@@ -565,7 +565,7 @@ class GoTextJsonUnit(BaseJsonUnit):
 
 class GoTextJsonFile(JsonFile):
     """
-    gotext JSON file
+    gotext JSON file.
 
     See following URLs for doc:
 
@@ -647,7 +647,7 @@ class GoI18NJsonUnit(BaseJsonUnit):
 
 class GoI18NJsonFile(JsonFile):
     """
-    go-i18n JSON file
+    go-i18n JSON file.
 
     See following URLs for doc:
 
@@ -716,7 +716,7 @@ class GoI18NV2JsonUnit(BaseJsonUnit):
 
 class GoI18NV2JsonFile(JsonFile):
     """
-    go-i18n v2 JSON file
+    go-i18n v2 JSON file.
 
     See following URLs for doc:
 
@@ -783,7 +783,7 @@ class ARBJsonUnit(BaseJsonUnit):
 
 class ARBJsonFile(JsonFile):
     """
-    ARB JSON file
+    ARB JSON file.
 
     See following URLs for doc:
 

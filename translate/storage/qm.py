@@ -70,7 +70,7 @@ QM_MAGIC_NUMBER = (0x3CB86418, 0xCAEF9C95, 0xCD211CBF, 0x60A1BDDD)
 
 
 def qmunpack(file_="messages.qm"):
-    """Helper to unpack Qt .qm files into a Python string"""
+    """Helper to unpack Qt .qm files into a Python string."""
     with open(file_, "rb") as fh:
         s = fh.read()
         print("\\x%02x" * len(s) % tuple(map(ord, s)))
@@ -96,7 +96,7 @@ class qmfile(base.TranslationStore):
             self.parsestring(inputfile)
 
     def serialize(self, out):
-        """Output a string representation of the .qm data file"""
+        """Output a string representation of the .qm data file."""
         raise NotImplementedError("Writing of .qm files is not supported yet")
 
     def parse(self, input):

@@ -16,7 +16,7 @@ class TestTS2PO:
         return outputpo
 
     def test_blank(self):
-        """Tests blank conversion"""
+        """Tests blank conversion."""
         tssource = """<!DOCTYPE TS><TS>
 <context>
     <name>MainWindowBase</name>
@@ -35,7 +35,7 @@ class TestTS2PO:
         assert not pofile.units[1].isfuzzy()
 
     def test_basic(self):
-        """Tests basic conversion"""
+        """Tests basic conversion."""
         tssource = """<!DOCTYPE TS><TS>
 <context>
     <name>AboutDialog</name>
@@ -53,7 +53,7 @@ class TestTS2PO:
         assert pofile.units[1].getlocations()[0].startswith("AboutDialog")
 
     def test_unfinished(self):
-        """Tests unfinished conversion"""
+        """Tests unfinished conversion."""
         tssource = """<!DOCTYPE TS><TS>
 <context>
     <name>MainWindowBase</name>
@@ -72,7 +72,7 @@ class TestTS2PO:
         assert pofile.units[1].isfuzzy()
 
     def test_multiline(self):
-        """Tests multiline message conversion"""
+        """Tests multiline message conversion."""
         tssource = """<!DOCTYPE TS><TS>
 <context>
     <name>@default</name>
@@ -92,7 +92,7 @@ new line</translation>
         assert pofile.units[1].getlocations()[0].startswith("@default")
 
     def test_obsolete(self):
-        """Test the handling of obsolete TS entries"""
+        """Test the handling of obsolete TS entries."""
         tssource = """<!DOCTYPE TS><TS>
 <context>
     <name>Obsoleted</name>
@@ -145,7 +145,7 @@ new line</translation>
         )
 
     def test_emptycontext(self):
-        """Test conversion with a leading empty context"""
+        """Test conversion with a leading empty context."""
         tssource = """<!DOCTYPE TS><TS>
 <context>
     <name></name>
@@ -175,7 +175,7 @@ new line</translation>
 
 
 class TestTS2POCommand(test_convert.TestConvertCommand, TestTS2PO):
-    """Tests running actual ts2po commands on files"""
+    """Tests running actual ts2po commands on files."""
 
     convertmodule = ts2po
     expected_options = [

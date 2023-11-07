@@ -40,12 +40,12 @@ def contains_illegal(illegal_substrings, string):
 
 
 class RomanianChecker(TranslationChecker):
-    """A Checker class for Romanian"""
+    """A Checker class for Romanian."""
 
     @cosmetic
     def cedillas(self, str1, str2):
         """
-        Check if the translation contains an illegal cedilla character
+        Check if the translation contains an illegal cedilla character.
 
         Cedillas are obsoleted diacritics for Romanian:
 
@@ -70,7 +70,7 @@ class RomanianChecker(TranslationChecker):
     def niciun_nicio(self, str1, str2):
         """
         Checks for sequences containing 'nici un'/'nici o' which are obsolete
-        Romanian syntax. Correct is 'niciun'/'nicio'
+        Romanian syntax. Correct is 'niciun'/'nicio'.
         """
         if contains_illegal(["nici un", "nici o"], str2):
             raise FilterFailure("String contains 'nici un' or 'nici o'")
@@ -78,6 +78,6 @@ class RomanianChecker(TranslationChecker):
 
 
 class ro(common.Common):
-    """This class represents Romanian"""
+    """This class represents Romanian."""
 
     checker = RomanianChecker()

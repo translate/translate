@@ -132,7 +132,7 @@ foo: What's up?
 
 
 class TestYAML2POCommand(test_convert.TestConvertCommand, TestYAML2PO):
-    """Tests running actual yaml2po commands on files"""
+    """Tests running actual yaml2po commands on files."""
 
     convertmodule = yaml2po
     defaultoptions = {"progress": "none"}

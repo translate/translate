@@ -38,7 +38,7 @@ warnings.formatwarning = dtdwarning
 
 
 def applytranslation(entity, dtdunit, inputunit, mixedentities):
-    """Applies the translation for entity in the po unit to the dtd unit"""
+    """Applies the translation for entity in the po unit to the dtd unit."""
     # this converts the po-style string to a dtd-style string
     unquotedstr = inputunit.target
     # check there aren't missing entities...
@@ -76,7 +76,7 @@ def applytranslation(entity, dtdunit, inputunit, mixedentities):
 
 
 class redtd:
-    """this is a convertor class that creates a new dtd based on a template using translations in a po"""
+    """this is a convertor class that creates a new dtd based on a template using translations in a po."""
 
     def __init__(self, dtdfile, android=False, remove_untranslated=False):
         self.dtdfile = dtdfile
@@ -108,7 +108,7 @@ class redtd:
 
 
 class po2dtd:
-    """this is a convertor class that creates a new dtd file based on a po file without a template"""
+    """this is a convertor class that creates a new dtd file based on a po file without a template."""
 
     def __init__(self, android=False, remove_untranslated=False):
         self.android = android

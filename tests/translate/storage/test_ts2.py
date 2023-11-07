@@ -17,7 +17,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 """
-Tests for Qt Linguist storage class
+Tests for Qt Linguist storage class.
 
 Reference implementation & tests:
 http://code.qt.io/cgit/qt/qttools.git/tree/tests/auto/linguist/lconvert/data
@@ -173,7 +173,7 @@ class TestTSfile(test_base.TestTranslationStore):
 
     @staticmethod
     def test_plurals():
-        """Test basic plurals"""
+        """Test basic plurals."""
         tsfile = ts.tsfile()
         tsunit = tsfile.addsourceunit("File(s)")
         tsunit.target = ["Leêr", "Leêrs"]
@@ -196,7 +196,7 @@ class TestTSfile(test_base.TestTranslationStore):
 
     @staticmethod
     def test_language():
-        """Check that we can get and set language and sourcelanguage in the header"""
+        """Check that we can get and set language and sourcelanguage in the header."""
         tsstr = """<!DOCTYPE TS>
 <TS version="2.0" language="fr" sourcelanguage="de">
 </TS>
@@ -217,7 +217,7 @@ class TestTSfile(test_base.TestTranslationStore):
 
     @staticmethod
     def test_edit():
-        """Test editing works well"""
+        """Test editing works well."""
         tsstr = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.0" language="hu">
@@ -257,7 +257,7 @@ class TestTSfile(test_base.TestTranslationStore):
 
     @staticmethod
     def test_locations():
-        """Test that locations work well"""
+        """Test that locations work well."""
         tsstr = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.0" language="hu">
@@ -298,7 +298,7 @@ class TestTSfile(test_base.TestTranslationStore):
 
     @staticmethod
     def test_merge_with_fuzzies():
-        """Test that merge with fuzzy works well"""
+        """Test that merge with fuzzy works well."""
         tsstr1 = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.0" language="hu">
@@ -348,7 +348,7 @@ class TestTSfile(test_base.TestTranslationStore):
 
     @staticmethod
     def test_getid():
-        """Test that getid works well"""
+        """Test that getid works well."""
         tsfile = ts.tsfile.parsestring(TS_NUMERUS)
         assert tsfile.units[0].getid() == "Dialog2%n files"
         assert tsfile.units[1].getid() == "Dialog2\nthis_is_some_id%n cars"
@@ -356,7 +356,7 @@ class TestTSfile(test_base.TestTranslationStore):
 
     @staticmethod
     def test_backnforth():
-        """Test that ts files are read and output properly"""
+        """Test that ts files are read and output properly."""
         tsfile = ts.tsfile.parsestring(TS_NUMERUS)
         assert bytes(tsfile).decode("utf-8") == TS_NUMERUS
 
@@ -395,7 +395,7 @@ class TestTSfile(test_base.TestTranslationStore):
 
     @staticmethod
     def test_edit_missing_translation():
-        """Test editing with missing translation element works well"""
+        """Test editing with missing translation element works well."""
         tsstr = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.0" language="hu">

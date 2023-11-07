@@ -33,17 +33,17 @@ from translate.storage import po
 
 
 class SplitOptionParser(optrecurse.RecursiveOptionParser):
-    """a specialized Option Parser for posplit"""
+    """a specialized Option Parser for posplit."""
 
     def parse_args(self, args=None, values=None):
-        """Parses the command line options, handling implicit input/output args"""
+        """Parses the command line options, handling implicit input/output args."""
         (options, args) = super().parse_args(args, values)
         if not options.output:
             self.error("Output file is rquired")
         return (options, args)
 
     def set_usage(self, usage=None):
-        """Sets the usage string - if usage not given, uses getusagestring for each option"""
+        """Sets the usage string - if usage not given, uses getusagestring for each option."""
         if usage is None:
             self.usage = (
                 "%prog "
@@ -55,7 +55,7 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
             super().set_usage(usage)
 
     def recursiveprocess(self, options):
-        """Recurse through directories and process files"""
+        """Recurse through directories and process files."""
         if not self.isrecursive(options.output, "output"):
             self.warning("Output directory does not exist. Attempting to create")
             try:
@@ -96,7 +96,7 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
             progress_bar.report_progress(inputpath, success)
 
     def processfile(self, options, fullinputpath):
-        """Process an individual file"""
+        """Process an individual file."""
         inputfile = self.openinputfile(options, fullinputpath)
         inputpofile = po.pofile(inputfile)
         for pounit in inputpofile.units:

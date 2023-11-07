@@ -68,9 +68,7 @@ def reduce_dom_tree(f, dom_node, *state):
 
 
 def find_dom_root(parent_dom_node, dom_node):
-    """
-    .. seealso:: :meth:`find_placeable_dom_tree_roots`
-    """
+    """.. seealso:: :meth:`find_placeable_dom_tree_roots`."""
     if dom_node is None or parent_dom_node is None:
         return None
     if dom_node.getparent() == parent_dom_node:
@@ -243,6 +241,8 @@ def replace_dom_text(
     process_translatable=extract.process_translatable,
 ):
     """
+    Generate a replacement functions.
+
     Return a function::
 
           action: etree_Element x base.TranslationUnit -> None

@@ -321,7 +321,7 @@ class rerc:
         return statement.transform_string(self.templatecontent.decode(self.charset))
 
     def makestoredict(self, store, includefuzzy=False):
-        """Make a dictionary of the translations"""
+        """Make a dictionary of the translations."""
         for unit in store.units:
             if includefuzzy or not unit.isfuzzy():
                 rcstring = unit.target

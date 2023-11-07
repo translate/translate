@@ -81,7 +81,7 @@ def segmentfile(
     stripspaces=True,
     onlyaligned=False,
 ):
-    """Reads in inputfile, segments it then, writes to outputfile"""
+    """Reads in inputfile, segments it then, writes to outputfile."""
     # note that templatefile is not used, but it is required by the converter...
     inputstore = factory.getobject(inputfile)
     if inputstore.isempty():

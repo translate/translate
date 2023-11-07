@@ -34,7 +34,7 @@ class MozConvertOptionParser(convert.ConvertOptionParser):
 
     def splitinputext(self, inputpath):
         """
-        splits a inputpath into name and extension
+        splits a inputpath into name and extension.
 
         Special adaptation to handle po2moz case where extensions are
         e.g. properties.po
@@ -49,7 +49,7 @@ class MozConvertOptionParser(convert.ConvertOptionParser):
         return (root, ext)
 
     def recursiveprocess(self, options):
-        """Recurse through directories and convert files"""
+        """Recurse through directories and convert files."""
         self.replacer.replacestring = options.locale
         return super().recursiveprocess(options)
 

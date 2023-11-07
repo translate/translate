@@ -53,7 +53,7 @@ from translate.storage import base
 
 
 class MarkdownUnit(base.TranslationUnit):
-    """A unit of translatable/localisable markdown content"""
+    """A unit of translatable/localisable markdown content."""
 
     def __init__(self, source=None):
         super().__init__(source)
@@ -73,13 +73,11 @@ class MarkdownFile(base.TranslationStore):
         """
         Construct a new object instance.
 
-        Parameters
-        ----------
-        - inputfile: if specified, the content of this file is read and parsed.
-        - callback: a function which takes a chunk of untranslated content as
+        :param inputfile: if specified, the content of this file is read and parsed.
+        :param callback: a function which takes a chunk of untranslated content as
           input and returns the corresponding translated content. Defaults to
           a no-op.
-        - max_line_length: if specified, the document is word wrapped to the
+        :param max_line_length: if specified, the document is word wrapped to the
           given line length when rendered.
         """
         base.TranslationStore.__init__(self)
@@ -93,7 +91,7 @@ class MarkdownFile(base.TranslationStore):
             self.parse(md_src)
 
     def parse(self, data):
-        """Process the given source string (binary)"""
+        """Process the given source string (binary)."""
         lines = data.decode().splitlines(keepends=False)
         with TranslatingMarkdownRenderer(
             self._translate_callback,
@@ -334,9 +332,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     def span_to_lines(
         self, tokens: Iterable[span_token.SpanToken], max_line_length: int
     ) -> Iterable[str]:
-        """
-        Renders a sequence of span tokens to markdown, with translation.
-        """
+        """Renders a sequence of span tokens to markdown, with translation."""
         # turn the span into fragments, which may include placeholders.
         # list-ify the iterator because we may need to traverse it more than once
         fragments = list(self.make_fragments(tokens))

@@ -199,7 +199,7 @@ msgstr "Ola mundo!"
 
 
 class TestPO2YAMLCommand(test_convert.TestConvertCommand, TestPO2YAML):
-    """Tests running actual po2yaml commands on files"""
+    """Tests running actual po2yaml commands on files."""
 
     convertmodule = po2yaml
     defaultoptions = {"progress": "none"}

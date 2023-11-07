@@ -67,7 +67,7 @@ class TestTiki2Po:
 
 
 class TestTiki2PoCommand(test_convert.TestConvertCommand, TestTiki2Po):
-    """Tests running actual tiki2po commands on files"""
+    """Tests running actual tiki2po commands on files."""
 
     convertmodule = tiki2po
     defaultoptions = {}

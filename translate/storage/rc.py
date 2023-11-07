@@ -98,7 +98,7 @@ def escape_to_rc(string):
 
 
 class rcunit(base.TranslationUnit):
-    """A unit of an rc file"""
+    """A unit of an rc file."""
 
     def __init__(self, source="", **kwargs):
         """Construct a blank rcunit."""
@@ -115,7 +115,7 @@ class rcunit(base.TranslationUnit):
 
     @source.setter
     def source(self, source):
-        """Sets the source AND the target to be equal"""
+        """Sets the source AND the target to be equal."""
         self._rich_source = None
         self._value = source or ""
 
@@ -125,7 +125,7 @@ class rcunit(base.TranslationUnit):
 
     @target.setter
     def target(self, target):
-        """.. note:: This also sets the ``.source`` attribute!"""
+        """.. note:: This also sets the ``.source`` attribute!."""
         self._rich_target = None
         self.source = target
 
@@ -158,7 +158,7 @@ class rcunit(base.TranslationUnit):
 
 def rc_statement():
     """
-    Generate a RC statement parser that can be used to parse a RC file
+    Generate a RC statement parser that can be used to parse a RC file.
 
     :rtype: pyparsing.ParserElement
     """

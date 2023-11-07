@@ -16,9 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""
-Converts properties files to additional Mozilla format files.
-"""
+"""Converts properties files to additional Mozilla format files."""
 
 import sys
 from io import BytesIO
@@ -28,7 +26,7 @@ from translate.storage import properties
 
 
 def prop2inc(pf):
-    """Convert a properties file back to a .inc file with #defines in it"""
+    """Convert a properties file back to a .inc file with #defines in it."""
     # any leftover blanks will not be included at the end
     pendingblanks = []
     for unit in pf.units:
@@ -51,7 +49,7 @@ def prop2inc(pf):
 
 
 def prop2it(pf):
-    """Convert a properties file back to a pseudo-properties .it file"""
+    """Convert a properties file back to a pseudo-properties .it file."""
     for unit in pf.units:
         for comment in unit.comments:
             if (
@@ -105,7 +103,7 @@ def po2inc(
     remove_untranslated=False,
     outputthreshold=None,
 ):
-    """Wraps po2prop but converts outputfile to properties first"""
+    """Wraps po2prop but converts outputfile to properties first."""
     outputpropfile = BytesIO()
     if templatefile is not None:
         templatelines = templatefile.readlines()
@@ -138,7 +136,7 @@ def po2it(
     remove_untranslated=False,
     outputthreshold=None,
 ):
-    """Wraps po2prop but converts outputfile to properties first"""
+    """Wraps po2prop but converts outputfile to properties first."""
     outputpropfile = BytesIO()
     if templatefile is not None:
         templatelines = templatefile.readlines()
@@ -175,7 +173,7 @@ def po2ini(
     remove_untranslated=False,
     outputthreshold=None,
 ):
-    """Wraps po2prop but converts outputfile to properties first using UTF-8 encoding"""
+    """Wraps po2prop but converts outputfile to properties first using UTF-8 encoding."""
     return po2it(
         inputfile=inputfile,
         outputfile=outputfile,

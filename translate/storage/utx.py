@@ -17,7 +17,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 """
-Manage the Universal Terminology eXchange (UTX) format
+Manage the Universal Terminology eXchange (UTX) format.
 
 UTX is a format for terminology exchange, designed it seems with Machine
 Translation (MT) as it's primary consumer.  The format is created by
@@ -68,7 +68,7 @@ csv.register_dialect("utx", UtxDialect)
 
 class UtxHeader:
     """
-    A UTX header entry
+    A UTX header entry.
 
     A UTX header is a single line that looks like this::
         #UTX-S <version>; < source language >/< target language>;
@@ -85,7 +85,7 @@ class UtxHeader:
 
 
 class UtxUnit(base.TranslationUnit):
-    """A UTX dictionary unit"""
+    """A UTX dictionary unit."""
 
     def __init__(self, source=None):
         self._dict = {}
@@ -94,12 +94,12 @@ class UtxUnit(base.TranslationUnit):
         super().__init__(source)
 
     def getdict(self):
-        """Get the dictionary of values for a UTX line"""
+        """Get the dictionary of values for a UTX line."""
         return self._dict
 
     def setdict(self, newdict):
         """
-        Set the dictionary of values for a UTX line
+        Set the dictionary of values for a UTX line.
 
         :param newdict: a new dictionary with UTX line elements
         :type newdict: Dict
@@ -167,7 +167,7 @@ class UtxUnit(base.TranslationUnit):
 
 
 class UtxFile(base.TranslationStore):
-    """A UTX dictionary file"""
+    """A UTX dictionary file."""
 
     Name = "UTX Dictionary"
     Mimetypes = ["text/x-utx"]
@@ -191,7 +191,7 @@ class UtxFile(base.TranslationStore):
             self.parse(inputfile)
 
     def _read_header(self, header=None):
-        """Read a UTX header"""
+        """Read a UTX header."""
         if header is None:
             self._fieldnames = ["src", "tgt", "src:pos"]
             # FIXME make the header properly
@@ -219,7 +219,7 @@ class UtxFile(base.TranslationStore):
         return len(header_lines)
 
     def _write_header(self):
-        """Create a UTX header"""
+        """Create a UTX header."""
         header = "#UTX-S {version}; {src}/{tgt}; {date}".format(
             version=self._header["version"],
             src=self._header["source_language"],
@@ -251,7 +251,7 @@ class UtxFile(base.TranslationStore):
         self._header["target_language"] = targetlanguage
 
     def parse(self, input):
-        """Parsese the given file or file source string"""
+        """Parsese the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name
         elif not getattr(self, "filename", ""):

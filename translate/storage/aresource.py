@@ -490,7 +490,7 @@ class AndroidResourceFile(lisa.LISAfile):
         self.body = self.document.getroot()
 
     def parse(self, xml):
-        """Populates this object from the given xml string"""
+        """Populates this object from the given xml string."""
         if not hasattr(self, "filename"):
             self.filename = getattr(xml, "name", "")
         if hasattr(xml, "read"):
@@ -529,7 +529,7 @@ class AndroidResourceFile(lisa.LISAfile):
 
     def addunit(self, unit, new=True):
         """
-        Adds unit to the document
+        Adds unit to the document.
 
         In addition to the standard addunit, it also tries to move
         namespace definitions to the top <resources> element.

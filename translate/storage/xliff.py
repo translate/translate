@@ -228,7 +228,7 @@ class xliffunit(lisa.LISAunit):
     def get_rich_target(self, lang=None):
         """
         retrieves the "target" text (second entry), or the entry in the
-        specified language, if it exists
+        specified language, if it exists.
         """
         if self._rich_target is None:
             self._rich_target = [
@@ -304,11 +304,11 @@ class xliffunit(lisa.LISAunit):
         return translist
 
     def delalttrans(self, alternative):
-        """Removes the supplied alternative from the list of alt-trans tags"""
+        """Removes the supplied alternative from the list of alt-trans tags."""
         self.xmlelement.remove(alternative.xmlelement)
 
     def addnote(self, text, origin=None, position="append"):
-        """Add a note specifically in a "note" tag"""
+        """Add a note specifically in a "note" tag."""
         if position != "append":
             self.removenotes(origin=origin)
 
@@ -425,7 +425,7 @@ class xliffunit(lisa.LISAunit):
             self.xmlelement.set("approved", "no")
 
     def isreview(self):
-        """States whether this unit needs to be reviewed"""
+        """States whether this unit needs to be reviewed."""
         return self.get_state_id() == self.S_NEEDS_REVIEW
 
     def markreviewneeded(self, needsreview=True, explanation=None):
@@ -551,7 +551,7 @@ class xliffunit(lisa.LISAunit):
             context.set("context-type", type)
 
     def getcontextgroups(self, name):
-        """Returns the contexts in the context groups with the specified name"""
+        """Returns the contexts in the context groups with the specified name."""
         groups = []
         grouptags = self.xmlelement.iterdescendants(self.namespaced("context-group"))
         # TODO: conbine name in query
@@ -572,7 +572,7 @@ class xliffunit(lisa.LISAunit):
         return groups
 
     def getcontextgroupsbyattribute(self, attributeName, attributeValue):
-        """Returns the contexts in the context groups with the specified attributeName and attributeValue"""
+        """Returns the contexts in the context groups with the specified attributeName and attributeValue."""
         groups = []
         grouptags = self.xmlelement.iterdescendants(self.namespaced("context-group"))
         for group in grouptags:
@@ -592,7 +592,7 @@ class xliffunit(lisa.LISAunit):
         return groups
 
     def getrestype(self):
-        """Returns the restype attribute in the trans-unit tag"""
+        """Returns the restype attribute in the trans-unit tag."""
         return self.xmlelement.get("restype")
 
     def merge(self, otherunit, overwrite=False, comments=True, authoritative=False):
@@ -611,7 +611,7 @@ class xliffunit(lisa.LISAunit):
 
     @staticmethod
     def correctorigin(node, origin):
-        """Check against node tag's origin (e.g note or alt-trans)"""
+        """Check against node tag's origin (e.g note or alt-trans)."""
         return (
             origin is None
             or origin in node.get("from", "")
@@ -722,16 +722,16 @@ class xlifffile(lisa.LISAfile):
 
     @staticmethod
     def getfilename(filenode):
-        """Returns the name of the given file"""
+        """Returns the name of the given file."""
         return filenode.get("original")
 
     @staticmethod
     def setfilename(filenode, filename):
-        """Set the name of the given file"""
+        """Set the name of the given file."""
         return filenode.set("original", filename)
 
     def getfilenames(self):
-        """Returns all filenames in this XLIFF file"""
+        """Returns all filenames in this XLIFF file."""
         filenodes = self.document.getroot().iterchildren(self.namespaced("file"))
         filenames = [self.getfilename(filenode) for filenode in filenodes]
         filenames = list(filter(None, filenames))
@@ -740,7 +740,7 @@ class xlifffile(lisa.LISAfile):
         return filenames
 
     def getfilenode(self, filename, createifmissing=False):
-        """Finds the filenode with the given name"""
+        """Finds the filenode with the given name."""
         filenodes = self.document.getroot().iterchildren(self.namespaced("file"))
         for filenode in filenodes:
             if self.getfilename(filenode) == filename:
@@ -823,7 +823,7 @@ class xlifffile(lisa.LISAfile):
                 break
 
     def getheadernode(self, filenode, createifmissing=False):
-        """Finds the header node for the given filenode"""
+        """Finds the header node for the given filenode."""
         # TODO: Deprecated?
         headernode = filenode.iterchildren(self.namespaced("header"))
         try:
@@ -835,7 +835,7 @@ class xlifffile(lisa.LISAfile):
         return etree.SubElement(filenode, self.namespaced("header"))
 
     def getbodynode(self, filenode, createifmissing=False):
-        """Finds the body node for the given filenode"""
+        """Finds the body node for the given filenode."""
         bodynode = filenode.iterchildren(self.namespaced("body"))
         try:
             return next(bodynode)
@@ -857,7 +857,7 @@ class xlifffile(lisa.LISAfile):
         """
         adds the given trans-unit to the last used body node if the filename
         has changed it uses the slow method instead (will create the nodes
-        required if asked). Returns success
+        required if asked). Returns success.
         """
         if not self.switchfile(filename, createifmissing):
             return None
@@ -890,7 +890,7 @@ class xlifffile(lisa.LISAfile):
         return self.body is not None
 
     def creategroup(self, filename="NoName", createifmissing=False, restype=None):
-        """Adds a group tag into the specified file"""
+        """Adds a group tag into the specified file."""
         if not self.switchfile(filename, createifmissing):
             return None
         group = etree.SubElement(self.body, self.namespaced("group"))
@@ -904,7 +904,7 @@ class xlifffile(lisa.LISAfile):
 
     @classmethod
     def parsestring(cls, storestring):
-        """Parses the string to return the correct file object"""
+        """Parses the string to return the correct file object."""
         xliff = super().parsestring(storestring)
         if xliff.units:
             header = xliff.units[0]

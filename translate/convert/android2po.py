@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 
 
 class android2po:
-    """Convert a Android resource file to a PO file"""
+    """Convert a Android resource file to a PO file."""
 
     def convert_store(self, input_store, duplicatestyle="msgctxt"):
         output_store = po.pofile()
@@ -47,7 +47,7 @@ class android2po:
     def merge_store(
         self, template_store, input_store, blankmsgstr=False, duplicatestyle="msgctxt"
     ):
-        """Converts two Android resource files to a PO file"""
+        """Converts two Android resource files to a PO file."""
         output_store = po.pofile()
         output_header = output_store.header()
         output_header.addnote(
@@ -81,7 +81,7 @@ class android2po:
     @staticmethod
     def convert_unit(input_unit):
         """
-        Converts a Android resource unit to a PO unit
+        Converts a Android resource unit to a PO unit.
 
         :return: None if empty or not for translation
         """

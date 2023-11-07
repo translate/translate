@@ -2,11 +2,11 @@ from translate.search import lshtein
 
 
 class TestLevenshtein:
-    """Test whether Levenshtein distance calculations are correct"""
+    """Test whether Levenshtein distance calculations are correct."""
 
     @staticmethod
     def test_basic_distance():
-        """Tests distance correctness with a few basic values"""
+        """Tests distance correctness with a few basic values."""
         assert lshtein.distance("word", "word") == 0
         assert lshtein.distance("word", "") == 4
         assert lshtein.distance("", "word") == 4
@@ -16,7 +16,7 @@ class TestLevenshtein:
 
     @staticmethod
     def test_basic_similarity():
-        """Tests similarity correctness with a few basic values"""
+        """Tests similarity correctness with a few basic values."""
         levenshtein = lshtein.LevenshteinComparer()
         assert levenshtein.similarity("word", "word") == 100
         assert levenshtein.similarity("word", "words") == 80

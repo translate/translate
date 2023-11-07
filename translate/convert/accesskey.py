@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""functions used to manipulate access keys in strings"""
+"""functions used to manipulate access keys in strings."""
 
 
 from translate.storage.placeables.general import XMLEntityPlaceable
@@ -116,7 +116,7 @@ class UnitMixer:
 
 def extract(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
     """
-    Extract the label and accesskey from a label+accesskey string
+    Extract the label and accesskey from a label+accesskey string.
 
     The function will also try to ignore &entities; which would obviously not
     contain accesskeys.
@@ -154,7 +154,7 @@ def extract(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
 
 def combine(label, accesskey, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
     """
-    Combine a label and and accesskey to form a label+accesskey string
+    Combine a label and and accesskey to form a label+accesskey string.
 
     We place an accesskey marker before the accesskey in the label and this
     creates a string with the two combined e.g. "File" + "F" = "&File"

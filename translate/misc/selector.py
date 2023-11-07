@@ -529,9 +529,9 @@ class ByMethod:
 
 def pliant(func):
     """
-    Decorate an unbound wsgi callable taking args from
-    ``wsgiorg.routing_args``
-    ::
+    Decorate an unbound wsgi callable taking args from ``wsgiorg.routing_args``.
+
+    .. code-block:: python
 
         @pliant
         def app(environ, start_response, arg1, arg2, foo='bar'):
@@ -550,9 +550,9 @@ def pliant(func):
 
 def opliant(meth):
     """
-    Decorate a bound wsgi callable taking args from
-    ``wsgiorg.routing_args``
-    ::
+    Decorate a bound wsgi callable taking args from ``wsgiorg.routing_args``.
+
+    .. code-block:: python
 
         class App:
             @opliant

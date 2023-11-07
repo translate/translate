@@ -19,7 +19,7 @@ class TestCSV(test_base.TestTranslationStore):
         return self.StoreClass(BytesIO(source), **kwargs)
 
     def test_singlequoting(self):
-        """Tests round trip on single quoting at start of string"""
+        """Tests round trip on single quoting at start of string."""
         store = self.StoreClass()
         unit1 = store.addsourceunit("Test 'String'")
         assert unit1.source == "Test 'String'"

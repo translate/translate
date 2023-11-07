@@ -49,7 +49,9 @@ def _split_xpath_component(xpath_component):
 
 def _split_xpath(xpath):
     """
-    Split an 'xpath' string separated by / into a reversed list of its components. Thus:
+    Split an 'xpath' string separated by / into a reversed list of its components.
+
+    Thus:
 
     >>> split_xpath('document-content[1]/body[2]/text[3]/p[4]')
     [('p', 4), ('text', 3), ('body', 2), ('document-content', 1)]

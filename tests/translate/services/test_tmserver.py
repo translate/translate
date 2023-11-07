@@ -35,14 +35,14 @@ msgstr "Ahoj"
         shutil.rmtree(test_dir)
 
     def test_import(self):
-        """Test importing strings into tmdb"""
+        """Test importing strings into tmdb."""
         test_dir, application = self.create_server()
         assert application.tmdb.preload_db() == 1
         self.cleanup(test_dir, application)
 
     @mark.skipif(os.name == "nt", reason="can not delete non closed files")
     def test_server(self):
-        """Test http server"""
+        """Test http server."""
         test_dir, application = self.create_server()
 
         # Prepare server thread

@@ -41,7 +41,7 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser):
         allowmissingtemplate=False,
         description=None,
     ):
-        """Construct the specialized Option Parser"""
+        """Construct the specialized Option Parser."""
         super().__init__(
             formats,
             usetemplates,
@@ -258,13 +258,13 @@ class Replacer:
         self.replacestring = replacestring
 
     def doreplace(self, text):
-        """Actually replace the text"""
+        """Actually replace the text."""
         if self.searchstring is not None and self.replacestring is not None:
             return text.replace(self.searchstring, self.replacestring)
         return text
 
     def searchreplaceinput(self, inputfile, outputfile, templatefile, **kwargs):
-        """Copies the input file to the output file, searching and replacing"""
+        """Copies the input file to the output file, searching and replacing."""
         outputfile.write(self.doreplace(inputfile.read()))
         return True
 
@@ -341,7 +341,7 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
         )
 
     def getarchiveclass(self, fileext, filepurpose, isdir=False):
-        """Returns the archiveclass for the given fileext and filepurpose"""
+        """Returns the archiveclass for the given fileext and filepurpose."""
         archiveclass = self.archiveformats.get(fileext, None)
         if archiveclass is not None:
             return archiveclass

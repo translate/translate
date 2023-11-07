@@ -65,7 +65,7 @@ class POCompile:
 
 
 def convertmo(inputfile, outputfile, templatefile, includefuzzy=False):
-    """Reads in a base class derived inputfile, converts using pocompile, writes to outputfile"""
+    """Reads in a base class derived inputfile, converts using pocompile, writes to outputfile."""
     # note that templatefile is not used, but it is required by the converter...
     inputstore = factory.getobject(inputfile)
     if inputstore.isempty():

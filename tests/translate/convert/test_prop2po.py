@@ -9,7 +9,7 @@ from . import test_convert
 class TestProp2PO:
     @staticmethod
     def prop2po(propsource, proptemplate=None, personality="java"):
-        """Helper that converts .properties source to po source without requiring files"""
+        """Helper that converts .properties source to po source without requiring files."""
         inputfile = BytesIO(propsource.encode())
         inputprop = properties.propfile(inputfile, personality=personality)
         convertor = prop2po.prop2po(personality=personality)
@@ -23,7 +23,7 @@ class TestProp2PO:
 
     @staticmethod
     def convertprop(propsource):
-        """Call the convertprop, return the outputfile"""
+        """Call the convertprop, return the outputfile."""
         inputfile = BytesIO(propsource.encode())
         outputfile = BytesIO()
         templatefile = None
@@ -32,7 +32,7 @@ class TestProp2PO:
 
     @staticmethod
     def singleelement(pofile):
-        """Checks that the pofile contains a single non-header element, and returns it"""
+        """Checks that the pofile contains a single non-header element, and returns it."""
         assert len(pofile.units) == 2
         assert pofile.units[0].isheader()
         print(pofile)
@@ -40,13 +40,13 @@ class TestProp2PO:
 
     @staticmethod
     def countelements(pofile):
-        """Counts the number of non-header entries"""
+        """Counts the number of non-header entries."""
         assert pofile.units[0].isheader()
         print(pofile)
         return len(pofile.units) - 1
 
     def test_simpleentry(self):
-        """Checks that a simple properties entry converts properly to a po entry"""
+        """Checks that a simple properties entry converts properly to a po entry."""
         propsource = "SAVEENTRY=Save file\n"
         pofile = self.prop2po(propsource)
         pounit = self.singleelement(pofile)
@@ -54,7 +54,7 @@ class TestProp2PO:
         assert pounit.target == ""
 
     def test_convertprop(self):
-        """Checks that the convertprop function is working"""
+        """Checks that the convertprop function is working."""
         propsource = "SAVEENTRY=Save file\n"
         posource = self.convertprop(propsource)
         pofile = po.pofile(BytesIO(posource))
@@ -63,7 +63,7 @@ class TestProp2PO:
         assert pounit.target == ""
 
     def test_no_value_entry(self):
-        """Checks that a properties entry without value is converted"""
+        """Checks that a properties entry without value is converted."""
         propsource = "KEY = \n"
         pofile = self.prop2po(propsource)
         pounit = self.singleelement(pofile)
@@ -72,7 +72,7 @@ class TestProp2PO:
         assert pounit.target == ""
 
     def test_no_separator_entry(self):
-        """Checks that a properties entry without separator is converted"""
+        """Checks that a properties entry without separator is converted."""
         propsource = "KEY\n"
         pofile = self.prop2po(propsource)
         pounit = self.singleelement(pofile)
@@ -81,7 +81,7 @@ class TestProp2PO:
         assert pounit.target == ""
 
     def test_tab_at_end_of_string(self):
-        """Check that we preserve tabs at the end of a string"""
+        """Check that we preserve tabs at the end of a string."""
         propsource = r"TAB_AT_END=This setence has a tab at the end.\t"
         pofile = self.prop2po(propsource)
         pounit = self.singleelement(pofile)
@@ -112,7 +112,7 @@ class TestProp2PO:
         assert pounit.source == "This setence will keep its 4 spaces at the end.\\    "
 
     def test_tab_at_start_of_value(self):
-        """Check that tabs in a property are ignored where appropriate"""
+        """Check that tabs in a property are ignored where appropriate."""
         propsource = r"property	=	value"
         pofile = self.prop2po(propsource)
         pounit = self.singleelement(pofile)
@@ -120,7 +120,7 @@ class TestProp2PO:
         assert pounit.source == "value"
 
     def test_unicode(self):
-        """Checks that unicode entries convert properly"""
+        """Checks that unicode entries convert properly."""
         unistring = r"Norsk bokm\u00E5l"
         propsource = "nb = %s\n" % unistring
         pofile = self.prop2po(propsource)
@@ -130,7 +130,7 @@ class TestProp2PO:
         assert pounit.source == "Norsk bokm\u00E5l"
 
     def test_multiline_escaping(self):
-        """Checks that multiline enties can be parsed"""
+        """Checks that multiline enties can be parsed."""
         propsource = r"""5093=Unable to connect to your IMAP server. You may have exceeded the maximum number \
 of connections to this server. If so, use the Advanced IMAP Server Settings dialog to \
 reduce the number of cached connections."""
@@ -139,7 +139,7 @@ reduce the number of cached connections."""
         assert self.countelements(pofile) == 1
 
     def test_comments(self):
-        """Test to ensure that we take comments from .properties and place them in .po"""
+        """Test to ensure that we take comments from .properties and place them in .po."""
         propsource = """# Comment
 prefPanel-smime=Security"""
         pofile = self.prop2po(propsource)
@@ -147,7 +147,7 @@ prefPanel-smime=Security"""
         assert pounit.getnotes("developer") == "# Comment"
 
     def test_multiline_comments(self):
-        """Test to ensure that we handle multiline comments well"""
+        """Test to ensure that we handle multiline comments well."""
         propsource = """# Comment
 # commenty 2
 
@@ -163,7 +163,7 @@ prefPanel-smime=
         assert pounit.getnotes("developer") == "## @name GENERIC_ERROR\n## @loc none"
 
     def test_folding_accesskeys(self):
-        """Check that we can fold various accesskeys into their associated label (bug #115)"""
+        """Check that we can fold various accesskeys into their associated label (bug #115)."""
         propsource = r"""cmd_addEngine.label = Add Engines...
 cmd_addEngine.accesskey = A"""
         pofile = self.prop2po(propsource, personality="mozilla")
@@ -171,7 +171,7 @@ cmd_addEngine.accesskey = A"""
         assert pounit.source == "&Add Engines..."
 
     def test_dont_translate(self):
-        """Check that we know how to ignore don't translate instructions in properties files (bug #116)"""
+        """Check that we know how to ignore don't translate instructions in properties files (bug #116)."""
         propsource = """# LOCALIZATION NOTE (dont): DONT_TRANSLATE.
 dont=don't translate me
 do=translate me
@@ -180,7 +180,7 @@ do=translate me
         assert self.countelements(pofile) == 1
 
     def test_emptyproperty(self):
-        """Checks that empty property definitions survive into po file, bug 15"""
+        """Checks that empty property definitions survive into po file, bug 15."""
         for delimiter in ["=", ""]:
             propsource = "# comment\ncredit%s" % delimiter
             pofile = self.prop2po(propsource)
@@ -192,7 +192,7 @@ do=translate me
             assert pounit.source == ""
 
     def test_emptyproperty_translated(self):
-        """Checks that if we translate an empty property it makes it into the PO"""
+        """Checks that if we translate an empty property it makes it into the PO."""
         for delimiter in ["=", ""]:
             proptemplate = "credit%s" % delimiter
             propsource = "credit=Translators Names"
@@ -205,14 +205,14 @@ do=translate me
             assert pounit.target == "Translators Names"
 
     def test_newlines_in_value(self):
-        """Check that we can carry newlines that appear in the property value into the PO"""
+        """Check that we can carry newlines that appear in the property value into the PO."""
         propsource = """prop=\\nvalue\\n\n"""
         pofile = self.prop2po(propsource)
         unit = self.singleelement(pofile)
         assert unit.source == "\nvalue\n"
 
     def test_header_comments(self):
-        """Check that we can handle comments not directly associated with a property"""
+        """Check that we can handle comments not directly associated with a property."""
         propsource = """# Header comment\n\n# Comment\n\nprop=value\n"""
         pofile = self.prop2po(propsource)
         unit = self.singleelement(pofile)
@@ -220,7 +220,7 @@ do=translate me
         assert unit.getnotes("developer") == "# Comment"
 
     def test_unassociated_comment_order(self):
-        """Check that we can handle the order of unassociated comments"""
+        """Check that we can handle the order of unassociated comments."""
         propsource = """# Header comment\n\n# 1st Unassociated comment\n\n# 2nd Connected comment\nprop=value\n"""
         pofile = self.prop2po(propsource)
         unit = self.singleelement(pofile)
@@ -358,7 +358,7 @@ message-multiedit-header[many]={0,number} selected
 
 
 class TestProp2POCommand(test_convert.TestConvertCommand, TestProp2PO):
-    """Tests running actual prop2po commands on files"""
+    """Tests running actual prop2po commands on files."""
 
     convertmodule = prop2po
     defaultoptions = {"progress": "none"}

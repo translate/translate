@@ -62,7 +62,7 @@ ICAL_UNIT_LOCATION_RE = re.compile("\\[(?P<uid>.+)\\](?P<property>.+)")
 
 
 class icalunit(base.TranslationUnit):
-    """An ical entry that is translatable"""
+    """An ical entry that is translatable."""
 
     def __init__(self, source=None, **kwargs):
         self.location = ""
@@ -78,7 +78,7 @@ class icalunit(base.TranslationUnit):
 
 
 class icalfile(base.TranslationStore):
-    """An ical file"""
+    """An ical file."""
 
     UnitClass = icalunit
 
@@ -108,7 +108,7 @@ class icalfile(base.TranslationStore):
             _outicalfile.serialize(out)
 
     def parse(self, input):
-        """Parse the given file or file source string"""
+        """Parse the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name
         elif not getattr(self, "filename", ""):

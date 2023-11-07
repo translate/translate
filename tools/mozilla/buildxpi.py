@@ -55,17 +55,17 @@ logger = logging.getLogger(__name__)
 
 
 class RunProcessError(CalledProcessError):
-    """Subclass of CalledProcessError exception with custom message strings"""
+    """Subclass of CalledProcessError exception with custom message strings."""
 
     _default_message = "Command '%s' returned exit status %d"
 
     def __init__(self, message=None, **kwargs):
-        """Use and strip string message='' from kwargs"""
+        """Use and strip string message='' from kwargs."""
         self._message = message or self._default_message
         super().__init__(**kwargs)
 
     def __str__(self):
-        """Format exception message string (avoiding TypeErrors)"""
+        """Format exception message string (avoiding TypeErrors)."""
         output = ""
         message = self._message
         if message.count("%") != 2:
@@ -77,7 +77,7 @@ class RunProcessError(CalledProcessError):
 
 
 def run(cmd, expected_status=0, fail_msg=None, stdout=-1, stderr=-1):
-    """Run a command"""
+    """Run a command."""
     # Default is to capture (and log) std{out,error} unless run as script
     if __name__ == "__main__" or logger.getEffectiveLevel() == logging.DEBUG:
         std = None

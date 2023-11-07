@@ -4,7 +4,7 @@ from translate.lang.team import guess_language
 def test_simple():
     """
     test the regex, team snippet and language name snippets at a high
-    level
+    level.
     """
     # standard regex guess
     assert guess_language("ab@li.org") == "ab"

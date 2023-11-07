@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""class that handles all header functions for a header in a po file"""
+"""class that handles all header functions for a header in a po file."""
 
 import re
 import time
@@ -102,7 +102,7 @@ class poheader:
     """
     This class implements functionality for manipulation of po file headers.
     This class is a mix-in class and useless on its own. It must be used from
-    all classes which represent a po file
+    all classes which represent a po file.
     """
 
     x_generator = "Translate Toolkit %s" % __version__.sver
@@ -125,7 +125,7 @@ class poheader:
     ]
 
     def init_headers(self, charset="UTF-8", encoding="8bit", **kwargs):
-        """Sets default values for po headers"""
+        """Sets default values for po headers."""
         # FIXME: we need to allow at least setting target language, pluralforms and generator
         headerdict = self.makeheaderdict(charset=charset, encoding=encoding, **kwargs)
         self.updateheader(add=True, **headerdict)

@@ -33,7 +33,7 @@ eol = "\n"
 
 
 def applytranslation(key, propunit, inunit, mixedkeys):
-    """Applies the translation for key in the po unit to the prop unit"""
+    """Applies the translation for key in the po unit to the prop unit."""
     # this converts the po-style string to a prop-style string
     value = inunit.target
     # handle mixed keys
@@ -257,7 +257,7 @@ def convertstrings(
     outputthreshold=None,
     remove_untranslated=False,
 ):
-    """.strings specific convertor function"""
+    """.strings specific convertor function."""
     return convertprop(
         inputfile,
         outputfile,
@@ -278,7 +278,7 @@ def convertmozillaprop(
     remove_untranslated=False,
     outputthreshold=None,
 ):
-    """Mozilla specific convertor function"""
+    """Mozilla specific convertor function."""
     return convertprop(
         inputfile,
         outputfile,

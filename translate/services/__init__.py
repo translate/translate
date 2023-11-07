@@ -18,5 +18,5 @@
 
 """
 translate.services is part of the translate toolkit.  It provides network
-services for interacting with the toolkit
+services for interacting with the toolkit.
 """

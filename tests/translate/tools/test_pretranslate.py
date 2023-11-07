@@ -20,7 +20,7 @@ class TestPretranslate:
 
     @staticmethod
     def pretranslatepo(input_source, template_source=None):
-        """Helper that converts strings to po source without requiring files"""
+        """Helper that converts strings to po source without requiring files."""
         input_file = BytesIO(input_source.encode())
         template_file = BytesIO(template_source.encode()) if template_source else None
         output_file = BytesIO()
@@ -31,7 +31,7 @@ class TestPretranslate:
 
     @staticmethod
     def pretranslatexliff(input_source, template_source=None):
-        """Helper that converts strings to po source without requiring files"""
+        """Helper that converts strings to po source without requiring files."""
         input_file = BytesIO(input_source)
         template_file = BytesIO(template_source) if template_source else None
         output_file = BytesIO()
@@ -44,7 +44,7 @@ class TestPretranslate:
     def singleunit(pofile):
         """
         checks that the pofile contains a single non-header unit, and
-        returns it
+        returns it.
         """
         if len(pofile.units) == 2 and pofile.units[0].isheader():
             print(pofile.units[1])
@@ -55,7 +55,7 @@ class TestPretranslate:
     def test_pretranslatepo_blank(self):
         """
         checks that the pretranslatepo function is working for a simple file
-        initialisation
+        initialisation.
         """
         input_source = (
             """#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n"""
@@ -65,7 +65,7 @@ class TestPretranslate:
         assert str(self.singleunit(newpo)) == input_source
 
     def test_merging_simple(self):
-        """Checks that the pretranslatepo function is working for a simple merge"""
+        """Checks that the pretranslatepo function is working for a simple merge."""
         input_source = (
             """#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n"""
             % po.lsep
@@ -78,7 +78,7 @@ class TestPretranslate:
         assert str(self.singleunit(newpo)) == template_source
 
     def test_merging_messages_marked_fuzzy(self):
-        """Test that when we merge PO files with a fuzzy message that it remains fuzzy"""
+        """Test that when we merge PO files with a fuzzy message that it remains fuzzy."""
         input_source = (
             """#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n"""
             % po.lsep
@@ -91,7 +91,7 @@ class TestPretranslate:
         assert str(self.singleunit(newpo)) == template_source
 
     def test_merging_plurals_with_fuzzy_matching(self):
-        """Test that when we merge PO files with a fuzzy message that it remains fuzzy"""
+        """Test that when we merge PO files with a fuzzy message that it remains fuzzy."""
         input_source = r"""#: file.cpp:2
 msgid "%d manual"
 msgid_plural "%d manuals"
@@ -120,7 +120,7 @@ msgstr[1] "%d handleidings."
     def test_merging_msgid_change(self):
         """
         tests that if the msgid changes but the location stays the same that
-        we merge
+        we merge.
         """
         input_source = """#: simple.label\n#: simple.accesskey\nmsgid "Its &hard coding a newline.\\n"\nmsgstr ""\n"""
         template_source = """#: simple.label\n#: simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n"""
@@ -132,7 +132,7 @@ msgstr[1] "%d handleidings."
     def test_merging_location_change(self):
         """
         tests that if the location changes but the msgid stays the same that
-        we merge
+        we merge.
         """
         input_source = (
             """#: new_simple.label%snew_simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n"""
@@ -153,7 +153,7 @@ msgstr[1] "%d handleidings."
     def test_merging_location_and_whitespace_change(self):
         """
         test that even if the location changes that if the msgid only has
-        whitespace changes we can still merge
+        whitespace changes we can still merge.
         """
         input_source = (
             """#: singlespace.label%ssinglespace.accesskey\nmsgid "&We have spaces"\nmsgstr ""\n"""
@@ -175,7 +175,7 @@ msgstr[1] "%d handleidings."
     def test_merging_accelerator_changes(self):
         """
         test that a change in the accelerator localtion still allows
-        merging
+        merging.
         """
         input_source = """#: someline.c\nmsgid "A&bout"\nmsgstr ""\n"""
         template_source = """#: someline.c\nmsgid "&About"\nmsgstr "&Info"\n"""
@@ -199,7 +199,7 @@ msgstr[1] "%d handleidings."
         assert str(newpounit) == template_source
 
     def test_merging_automatic_comments_dont_duplicate(self):
-        """Ensure that we can merge #. comments correctly"""
+        """Ensure that we can merge #. comments correctly."""
         input_source = """#. Row 35\nmsgid "&About"\nmsgstr ""\n"""
         template_source = """#. Row 35\nmsgid "&About"\nmsgstr "&Info"\n"""
         newpo = self.pretranslatepo(input_source, template_source)
@@ -207,7 +207,7 @@ msgstr[1] "%d handleidings."
         assert str(newpounit) == template_source
 
     def test_merging_automatic_comments_new_overides_old(self):
-        """Ensure that new #. comments override the old comments"""
+        """Ensure that new #. comments override the old comments."""
         input_source = """#. new comment\n#: someline.c\nmsgid "&About"\nmsgstr ""\n"""
         template_source = (
             """#. old comment\n#: someline.c\nmsgid "&About"\nmsgstr "&Info"\n"""
@@ -222,7 +222,7 @@ msgstr[1] "%d handleidings."
     def test_merging_comments_with_blank_comment_lines(self):
         """
         test that when we merge a comment that has a blank line we keep the
-        blank line
+        blank line.
         """
         input_source = """#: someline.c\nmsgid "About"\nmsgstr ""\n"""
         template_source = """# comment1\n#\n# comment2\n#: someline.c\nmsgid "About"\nmsgstr "Omtrent"\n"""
@@ -254,7 +254,7 @@ msgstr "Sekuriteit"
         assert str(newpounit) == poexpected
 
     def test_merging_msgidcomments(self):
-        """Ensure that we can merge msgidcomments messages"""
+        """Ensure that we can merge msgidcomments messages."""
         input_source = r"""#: window.width
 msgid ""
 "_: Do not translate this.\n"
@@ -272,7 +272,7 @@ msgstr "36em"
         assert str(newpounit) == template_source
 
     def test_merging_plurals(self):
-        """Ensure that we can merge plural messages"""
+        """Ensure that we can merge plural messages."""
         input_source = (
             """msgid "One"\nmsgid_plural "Two"\nmsgstr[0] ""\nmsgstr[1] ""\n"""
         )
@@ -285,7 +285,7 @@ msgstr "36em"
     def test_merging_resurect_obsolete_messages(self):
         """
         check that we can reuse old obsolete messages if the message comes
-        back
+        back.
         """
         input_source = """#: resurect.c\nmsgid "&About"\nmsgstr ""\n"""
         template_source = """#~ msgid "&About"\n#~ msgstr "&Omtrent"\n"""
@@ -295,7 +295,7 @@ msgstr "36em"
         assert bytes(newpo).decode("utf-8") == expected
 
     def test_merging_comments(self):
-        """Test that we can merge comments correctly"""
+        """Test that we can merge comments correctly."""
         input_source = """#. Don't do it!\n#: file.py:1\nmsgid "One"\nmsgstr ""\n"""
         template_source = (
             """#. Don't do it!\n#: file.py:2\nmsgid "One"\nmsgstr "Een"\n"""
@@ -307,7 +307,7 @@ msgstr "36em"
         assert str(newpounit) == poexpected
 
     def test_merging_typecomments(self):
-        """Test that we can merge with typecomments"""
+        """Test that we can merge with typecomments."""
         input_source = """#: file.c:1\n#, c-format\nmsgid "%d pipes"\nmsgstr ""\n"""
         template_source = """#: file.c:2\nmsgid "%d pipes"\nmsgstr "%d pype"\n"""
         poexpected = (
@@ -353,7 +353,7 @@ msgstr "36em"
 
 
 class TestPretranslateCommand(test_convert.TestConvertCommand, TestPretranslate):
-    """Tests running actual pretranslate commands on files"""
+    """Tests running actual pretranslate commands on files."""
 
     convertmodule = pretranslate
     expected_options = [

@@ -109,7 +109,7 @@ def convertrc(
     lang=None,
     sublang=None,
 ):
-    """Reads in input_file using rc, converts using rc2po, writes to output_file"""
+    """Reads in input_file using rc, converts using rc2po, writes to output_file."""
     input_store = rc.rcfile(input_file, lang, sublang, encoding=charset)
     convertor = rc2po()
     if template_file is None:

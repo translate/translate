@@ -67,7 +67,7 @@ def translate_idml(template, input_file, translatable_files):
         def extract_unit_tree(filename, root_dom_element_name):
             """
             Find the subtree in 'tree' which corresponds to the data in XML
-            file 'filename'
+            file 'filename'.
             """
             tree = build_unit_tree(store, filename)
 

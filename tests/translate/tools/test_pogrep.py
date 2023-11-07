@@ -9,12 +9,12 @@ from ..storage.test_base import first_translatable, headerless_len
 class TestPOGrep:
     @staticmethod
     def poparse(posource):
-        """Helper that parses po source without requiring files"""
+        """Helper that parses po source without requiring files."""
         dummyfile = BytesIO(posource.encode())
         return po.pofile(dummyfile)
 
     def pogrep(self, posource, searchstring, cmdlineoptions=None):
-        """Helper that parses po source and passes it through a filter"""
+        """Helper that parses po source and passes it through a filter."""
         if cmdlineoptions is None:
             cmdlineoptions = []
         options, args = pogrep.cmdlineparser().parse_args(["xxx.po", *cmdlineoptions])
@@ -32,7 +32,7 @@ class TestPOGrep:
         return bytes(tofile)
 
     def test_simplegrep_msgid(self):
-        """Grep for a string in the source"""
+        """Grep for a string in the source."""
         posource = '#: test.c\nmsgid "test"\nmsgstr "rest"\n'
         poresult = self.pogrep(posource, "test", ["--search=msgid"])
         assert poresult.decode("utf-8").index(posource) >= 0
@@ -40,7 +40,7 @@ class TestPOGrep:
         assert headerless_len(po.pofile(poresult).units) == 0
 
     def test_simplegrep_msgstr(self):
-        """Grep for a string in the target"""
+        """Grep for a string in the target."""
         posource = '#: test.c\nmsgid "test"\nmsgstr "rest"\n'
         poresult = self.pogrep(posource, "rest", ["--search=msgstr"])
         assert poresult.decode("utf-8").index(posource) >= 0
@@ -48,7 +48,7 @@ class TestPOGrep:
         assert headerless_len(po.pofile(poresult).units) == 0
 
     def test_simplegrep_locations(self):
-        """Grep for a string in the location comments"""
+        """Grep for a string in the location comments."""
         posource = '#: test.c\nmsgid "test"\nmsgstr "rest"\n'
         poresult = self.pogrep(posource, "test.c", ["--search=locations"])
         assert poresult.decode("utf-8").index(posource) >= 0
@@ -56,7 +56,7 @@ class TestPOGrep:
         assert headerless_len(po.pofile(poresult).units) == 0
 
     def test_simplegrep_comments(self):
-        """Grep for a string in the comments"""
+        """Grep for a string in the comments."""
         posource = '# (review) comment\n#: test.c\nmsgid "test"\nmsgstr "rest"\n'
         poresult = self.pogrep(posource, "review", ["--search=comment"])
         assert poresult.decode("utf-8").index(posource) >= 0
@@ -66,7 +66,7 @@ class TestPOGrep:
     def test_simplegrep_locations_with_comment_enabled(self):
         """
         grep for a string in "locations", while also "comment" is checked
-        see https://github.com/translate/translate/issues/1036
+        see https://github.com/translate/translate/issues/1036.
         """
         posource = '# (review) comment\n#: test.c\nmsgid "test"\nmsgstr "rest"\n'
         poresult = self.pogrep(
@@ -79,7 +79,7 @@ class TestPOGrep:
         assert headerless_len(po.pofile(poresult).units) == 0
 
     def test_unicode_message_searchstring(self):
-        """Check that we can grep unicode messages and use unicode search strings"""
+        """Check that we can grep unicode messages and use unicode search strings."""
         poascii = '# comment\n#: test.c\nmsgid "test"\nmsgstr "rest"\n'
         pounicode = '# comment\n#: test.c\nmsgid "test"\nmsgstr "rešṱ"\n'
         queryascii = "rest"
@@ -95,7 +95,7 @@ class TestPOGrep:
             assert poresult.index(expected) >= 0
 
     def test_unicode_message_regex_searchstring(self):
-        """Check that we can grep unicode messages and use unicode regex search strings"""
+        """Check that we can grep unicode messages and use unicode regex search strings."""
         poascii = '# comment\n#: test.c\nmsgid "test"\nmsgstr "rest"\n'
         pounicode = '# comment\n#: test.c\nmsgid "test"\nmsgstr "rešṱ"\n'
         queryascii = "rest"
@@ -111,7 +111,7 @@ class TestPOGrep:
             assert poresult.index(expected) >= 0
 
     def test_keep_translations(self):
-        """Check that we can grep unicode messages and use unicode regex search strings"""
+        """Check that we can grep unicode messages and use unicode regex search strings."""
         posource = '#: schemas.in\nmsgid "test"\nmsgstr "rest"\n'
         poresult = self.pogrep(
             posource,
@@ -125,7 +125,7 @@ class TestPOGrep:
         assert headerless_len(po.pofile(poresult).units) == 0
 
     def test_unicode_normalise(self):
-        """Check that we normlise unicode strings before comparing"""
+        """Check that we normlise unicode strings before comparing."""
         source_template = '# comment\n#: test.c\nmsgid "test"\nmsgstr "t%sst"\n'
         # é, e + '
         # Ḽ, L + ^
@@ -164,12 +164,12 @@ class TestXLiffGrep:
 
     @staticmethod
     def xliff_parse(xliff_text):
-        """Helper that parses po source without requiring files"""
+        """Helper that parses po source without requiring files."""
         dummyfile = BytesIO(xliff_text)
         return xliff.xlifffile(dummyfile)
 
     def xliff_grep(self, xliff_text, searchstring, cmdlineoptions=None):
-        """Helper that parses xliff text and passes it through a filter"""
+        """Helper that parses xliff text and passes it through a filter."""
         if cmdlineoptions is None:
             cmdlineoptions = []
         options, args = pogrep.cmdlineparser().parse_args(

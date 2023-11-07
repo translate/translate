@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""A class that does terminology matching"""
+"""A class that does terminology matching."""
 
 
 class TerminologyComparer:
@@ -25,7 +25,7 @@ class TerminologyComparer:
         self.MAX_LEN = max_len
 
     def similarity(self, text, term, stoppercentage=40):
-        """Returns the match quality of ``term`` in the ``text``"""
+        """Returns the match quality of ``term`` in the ``text``."""
         # We could segment the words, but mostly it will give less ideal
         # results, since we'll miss plurals, etc. Then we also can't search for
         # multiword terms, such as "Free Software". Ideally we should use a

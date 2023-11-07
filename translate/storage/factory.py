@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""factory methods to build real storage objects that conform to base.py"""
+"""factory methods to build real storage objects that conform to base.py."""
 
 import os
 from functools import lru_cache
@@ -66,7 +66,7 @@ _ext is a pseudo extension, that is their is no real extension by that name.
 
 
 def _examine_txt(storefile):
-    """Determine the true filetype for a .txt file"""
+    """Determine the true filetype for a .txt file."""
     if isinstance(storefile, str) and os.path.exists(storefile):
         storefile = open(storefile, "rb")
     try:
@@ -124,7 +124,7 @@ def _getdummyname(storefile):
 
 
 def _getname(storefile):
-    """Returns the filename"""
+    """Returns the filename."""
     if storefile is None:
         raise ValueError(
             "This method cannot magically produce a filename when given None as input."
@@ -276,7 +276,7 @@ supported = [
 
 def supported_files():
     """
-    Returns data about all supported files
+    Returns data about all supported files.
 
     :return: list of type that include (name, extensions, mimetypes)
     :rtype: list

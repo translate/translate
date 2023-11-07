@@ -17,7 +17,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 """
-Manage the Haiku catkeys translation format
+Manage the Haiku catkeys translation format.
 
 The Haiku catkeys format is the translation format used for localisation of
 the `Haiku <http://www.haiku-os.org/>`_ operating system.
@@ -99,7 +99,7 @@ csv.register_dialect("catkeys", CatkeysDialect)
 
 
 class CatkeysHeader:
-    """A catkeys translation memory header"""
+    """A catkeys translation memory header."""
 
     def __init__(self, header=None):
         self._header_dict = {}
@@ -114,11 +114,11 @@ class CatkeysHeader:
 
     @staticmethod
     def _create_default_header():
-        """Create a default catkeys header"""
+        """Create a default catkeys header."""
         return FIELDNAMES_HEADER_DEFAULTS.copy()
 
     def settargetlanguage(self, newlang):
-        """Set a human readable target language"""
+        """Set a human readable target language."""
         if not newlang or newlang not in data.languages:
             return
         # XXX assumption about the current structure of the languages dict in data
@@ -127,14 +127,14 @@ class CatkeysHeader:
     targetlanguage = property(None, settargetlanguage)
 
     def setchecksum(self, checksum):
-        """Set the checksum for the file"""
+        """Set the checksum for the file."""
         if not checksum:
             return
         self._header_dict["checksum"] = str(checksum)
 
 
 class CatkeysUnit(base.TranslationUnit):
-    """A catkeys translation memory unit"""
+    """A catkeys translation memory unit."""
 
     def __init__(self, source=None):
         self._dict = {}
@@ -143,12 +143,12 @@ class CatkeysUnit(base.TranslationUnit):
         super().__init__(source)
 
     def getdict(self):
-        """Get the dictionary of values for a catkeys line"""
+        """Get the dictionary of values for a catkeys line."""
         return self._dict
 
     def setdict(self, newdict):
         """
-        Set the dictionary of values for a catkeys line
+        Set the dictionary of values for a catkeys line.
 
         :param newdict: a new dictionary with catkeys line elements
         :type newdict: Dict
@@ -247,7 +247,7 @@ class CatkeysUnit(base.TranslationUnit):
 
 
 class CatkeysFile(base.TranslationStore):
-    """A catkeys translation memory file"""
+    """A catkeys translation memory file."""
 
     Name = "Haiku catkeys file"
     Mimetypes = ["application/x-catkeys"]
@@ -266,7 +266,7 @@ class CatkeysFile(base.TranslationStore):
         self.header.settargetlanguage(newlang)
 
     def parse(self, input):
-        """Parse the given file or file source string"""
+        """Parse the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name
         elif not getattr(self, "filename", ""):
@@ -307,14 +307,12 @@ class CatkeysFile(base.TranslationStore):
         out.write(output.getvalue().encode(self.encoding))
 
     def _compute_fingerprint(self):
-        """
-        Compute the current hash key in the header for the current state of the store.
-        """
+        """Compute the current hash key in the header for the current state of the store."""
 
         def hashfun(string, startValue):
             """
             This function is on CatKey::HashFun(). In this implementation C integer overflow is emulated.
-            https://github.com/haiku/haiku/blob/b65adbdfbc322bb7d86d74049389c688e9962f15/src/kits/locale/HashMapCatalog.cpp#L93
+            https://github.com/haiku/haiku/blob/b65adbdfbc322bb7d86d74049389c688e9962f15/src/kits/locale/HashMapCatalog.cpp#L93.
             """
             h = startValue
             array = string.encode("utf-8")

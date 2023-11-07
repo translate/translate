@@ -112,7 +112,7 @@ class NOTPROVIDED:
 
 
 class FlatXMLFile(base.TranslationStore):
-    """Class representing a flat XML file store"""
+    """Class representing a flat XML file store."""
 
     UnitClass = FlatXMLUnit
     _name = "Flat XML File"

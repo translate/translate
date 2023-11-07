@@ -116,7 +116,7 @@ class podebug:
         return StringElem("")
 
     def rewrite_chef(self, string):
-        """Rewrite using Mock Swedish as made famous by Monty Python"""
+        """Rewrite using Mock Swedish as made famous by Monty Python."""
         if not isinstance(string, StringElem):
             string = StringElem(string)
         # From Dive into Python which itself got it elsewhere
@@ -184,7 +184,7 @@ class podebug:
     )
 
     def rewrite_unicode(self, string):
-        """Convert to Unicode characters that look like the source string"""
+        """Convert to Unicode characters that look like the source string."""
         if not isinstance(string, StringElem):
             string = StringElem(string)
 

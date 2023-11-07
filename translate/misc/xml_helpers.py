@@ -65,17 +65,17 @@ XML_NS = "http://www.w3.org/XML/1998/namespace"
 
 
 def getXMLlang(node):
-    """Gets the xml:lang attribute on node"""
+    """Gets the xml:lang attribute on node."""
     return node.get(f"{{{XML_NS}}}lang")
 
 
 def setXMLlang(node, lang):
-    """Sets the xml:lang attribute on node"""
+    """Sets the xml:lang attribute on node."""
     node.set(f"{{{XML_NS}}}lang", lang)
 
 
 def getXMLspace(node, default=None):
-    """Gets the xml:space attribute on node"""
+    """Gets the xml:space attribute on node."""
     value = node.get(f"{{{XML_NS}}}space")
     if value is None:
         return default
@@ -83,7 +83,7 @@ def getXMLspace(node, default=None):
 
 
 def setXMLspace(node, value):
-    """Sets the xml:space attribute on node"""
+    """Sets the xml:space attribute on node."""
     node.set(f"{{{XML_NS}}}space", value)
 
 
@@ -207,16 +207,14 @@ def expand_closing_tags(elem):
 def validate_char(char: str) -> bool:
     """
     identify valid chars for XML, based on xmlIsChar_ch from
-    https://github.com/GNOME/libxml2/blob/master/include/libxml/chvalid.h
+    https://github.com/GNOME/libxml2/blob/master/include/libxml/chvalid.h.
     """
     ord_ch = ord(char)
     return (0x9 <= ord_ch <= 0xA) or (ord_ch == 0xD) or (ord_ch >= 0x20)
 
 
 def valid_chars_only(text: str) -> str:
-    """
-    prevent to crash libxml with unexpected chars
-    """
+    """Prevent to crash libxml with unexpected chars."""
     return "".join(char for char in text if validate_char(char))
 
 

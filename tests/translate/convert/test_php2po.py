@@ -9,7 +9,7 @@ from . import test_convert
 class TestPhp2PO:
     @staticmethod
     def php2po(phpsource, phptemplate=None):
-        """Helper that converts .php source to po source without requiring files"""
+        """Helper that converts .php source to po source without requiring files."""
         inputfile = BytesIO(phpsource.encode())
         output_file = BytesIO()
         templatefile = None
@@ -21,7 +21,7 @@ class TestPhp2PO:
 
     @staticmethod
     def convertphp(phpsource, template=None, expected=1):
-        """Call run_converter, return the outputfile"""
+        """Call run_converter, return the outputfile."""
         inputfile = BytesIO(phpsource.encode())
         outputfile = BytesIO()
         templatefile = None
@@ -32,7 +32,7 @@ class TestPhp2PO:
 
     @staticmethod
     def singleelement(pofile):
-        """Checks that the pofile contains a single non-header element, and returns it"""
+        """Checks that the pofile contains a single non-header element, and returns it."""
         assert len(pofile.units) == 2
         assert pofile.units[0].isheader()
         print(pofile)
@@ -40,13 +40,13 @@ class TestPhp2PO:
 
     @staticmethod
     def countelements(pofile):
-        """Counts the number of non-header entries"""
+        """Counts the number of non-header entries."""
         assert pofile.units[0].isheader()
         print(pofile)
         return len(pofile.units) - 1
 
     def test_simpleentry(self):
-        """Checks that a simple php entry converts properly to a po entry"""
+        """Checks that a simple php entry converts properly to a po entry."""
         phpsource = """$_LANG['simple'] = 'entry';"""
         pofile = self.php2po(phpsource)
         pounit = self.singleelement(pofile)
@@ -54,7 +54,7 @@ class TestPhp2PO:
         assert pounit.target == ""
 
     def test_convertphp(self):
-        """Checks that the convertphp function is working"""
+        """Checks that the convertphp function is working."""
         phpsource = """$_LANG['simple'] = 'entry';"""
         posource = self.convertphp(phpsource)
         pofile = po.pofile(BytesIO(posource))
@@ -63,7 +63,7 @@ class TestPhp2PO:
         assert pounit.target == ""
 
     def test_convertphptemplate(self):
-        """Checks that the convertphp function is working with template"""
+        """Checks that the convertphp function is working with template."""
         phpsource = """$_LANG['simple'] = 'entry';"""
         phptemplate = """$_LANG['simple'] = 'source';"""
         posource = self.convertphp(phpsource, phptemplate)
@@ -73,7 +73,7 @@ class TestPhp2PO:
         assert pounit.target == "entry"
 
     def test_convertphpmissing(self):
-        """Checks that the convertphp function is working with missing key"""
+        """Checks that the convertphp function is working with missing key."""
         phpsource = """$_LANG['simple'] = 'entry';"""
         phptemplate = """$_LANG['missing'] = 'source';"""
         posource = self.convertphp(phpsource, phptemplate)
@@ -83,7 +83,7 @@ class TestPhp2PO:
         assert pounit.target == ""
 
     def test_convertphpempty(self):
-        """Checks that the convertphp function is working with empty template"""
+        """Checks that the convertphp function is working with empty template."""
         phpsource = ""
         phptemplate = ""
         posource = self.convertphp(phpsource, phptemplate, 0)
@@ -91,7 +91,7 @@ class TestPhp2PO:
         assert len(pofile.units) == 0
 
     def test_unicode(self):
-        """Checks that unicode entries convert properly"""
+        """Checks that unicode entries convert properly."""
         unistring = "Norsk bokm\u00E5l"
         phpsource = """$lang['nb'] = '%s';""" % unistring
         pofile = self.php2po(phpsource)
@@ -101,7 +101,7 @@ class TestPhp2PO:
         assert pounit.source == "Norsk bokm\u00E5l"
 
     def test_multiline(self):
-        """Checks that multiline enties can be parsed"""
+        """Checks that multiline enties can be parsed."""
         phpsource = r"""$lang['5093'] = 'Unable to connect to your IMAP server. You may have exceeded the maximum number
 of connections to this server. If so, use the Advanced IMAP Server Settings dialog to
 reduce the number of cached connections.';"""
@@ -110,7 +110,7 @@ reduce the number of cached connections.';"""
         assert self.countelements(pofile) == 1
 
     def test_comments_before(self):
-        """Test to ensure that we take comments from .php and place them in .po"""
+        """Test to ensure that we take comments from .php and place them in .po."""
         phpsource = """/* Comment */
 $lang['prefPanel-smime'] = 'Security';"""
         pofile = self.php2po(phpsource)
@@ -119,7 +119,7 @@ $lang['prefPanel-smime'] = 'Security';"""
         # TODO write test for inline comments and check for // comments that precede an entry
 
     def test_emptyentry(self):
-        """Checks that empty definitions survives into po file"""
+        """Checks that empty definitions survives into po file."""
         phpsource = """/* comment */\n$lang['credit'] = '';"""
         pofile = self.php2po(phpsource)
         pounit = self.singleelement(pofile)
@@ -138,7 +138,7 @@ $lang['prefPanel-smime'] = 'Security';"""
         assert pounit.source == "stringy"
 
     def test_emptyentry_translated(self):
-        """Checks that if we translate an empty definition it makes it into the PO"""
+        """Checks that if we translate an empty definition it makes it into the PO."""
         phptemplate = """$lang['credit'] = '';"""
         phpsource = """$lang['credit'] = 'Translators Names';"""
         pofile = self.php2po(phpsource, phptemplate)
@@ -148,7 +148,7 @@ $lang['prefPanel-smime'] = 'Security';"""
         assert pounit.target == "Translators Names"
 
     def test_newlines_in_value(self):
-        """Check that we can carry newlines that appear in the entry value into the PO"""
+        """Check that we can carry newlines that appear in the entry value into the PO."""
         # Single quotes - \n is not a newline
         phpsource = r"""$lang['name'] = 'value1\nvalue2';"""
         pofile = self.php2po(phpsource)
@@ -161,7 +161,7 @@ $lang['prefPanel-smime'] = 'Security';"""
         assert unit.source == "value1\nvalue2"
 
     def test_spaces_in_name(self):
-        """Checks that if we have spaces in the name we create a good PO with no spaces"""
+        """Checks that if we have spaces in the name we create a good PO with no spaces."""
         phptemplate = """$lang[ 'credit' ] = 'Something';"""
         phpsource = """$lang[ 'credit' ] = 'n Ding';"""
         pofile = self.php2po(phpsource, phptemplate)
@@ -274,7 +274,7 @@ $lang['prefPanel-smime'] = 'Security';"""
 
 
 class TestPhp2POCommand(test_convert.TestConvertCommand, TestPhp2PO):
-    """Tests running actual php2po commands on files"""
+    """Tests running actual php2po commands on files."""
 
     convertmodule = php2po
     defaultoptions = {"progress": "none"}

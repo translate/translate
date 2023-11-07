@@ -38,7 +38,7 @@ def strip_ok(string):
 
 
 class LangUnit(base.TranslationUnit):
-    """This is just a normal unit with a weird string output"""
+    """This is just a normal unit with a weird string output."""
 
     def __init__(self, source=None):
         self.locations = []
@@ -74,7 +74,7 @@ class LangUnit(base.TranslationUnit):
 
 
 class LangStore(txt.TxtFile):
-    """We extend TxtFile, since that has a lot of useful stuff for encoding"""
+    """We extend TxtFile, since that has a lot of useful stuff for encoding."""
 
     UnitClass = LangUnit
 

@@ -2,7 +2,7 @@ from translate.storage import pocommon
 
 
 def test_roundtrip_quote_plus():
-    """Test that what we put in is what we get out"""
+    """Test that what we put in is what we get out."""
 
     def roundtrip_quote_plus(text, quoted):
         quote = pocommon.quote_plus(text)

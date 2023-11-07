@@ -9,7 +9,7 @@ from . import test_convert
 class TestPO2TS:
     @staticmethod
     def po2ts(posource):
-        """Helper that converts po source to ts source without requiring files"""
+        """Helper that converts po source to ts source without requiring files."""
         inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
         convertor = po2ts.po2ts()
@@ -19,12 +19,12 @@ class TestPO2TS:
 
     @staticmethod
     def singleelement(storage):
-        """Checks that the pofile contains a single non-header element, and returns it"""
+        """Checks that the pofile contains a single non-header element, and returns it."""
         assert len(storage.units) == 1
         return storage.units[0]
 
     def test_simpleunit(self):
-        """Checks that a simple po entry definition converts properly to a ts entry"""
+        """Checks that a simple po entry definition converts properly to a ts entry."""
         minipo = r'''#: term.cpp
 msgid "Term"
 msgstr "asdf"'''
@@ -36,7 +36,7 @@ msgstr "asdf"'''
         assert "<comment>" not in tsfile
 
     def test_simple_unicode_unit(self):
-        """Checks that a simple unit with unicode strings"""
+        """Checks that a simple unit with unicode strings."""
         minipo = r'''#: unicode.cpp
 msgid "ßource"
 msgstr "†arget"'''
@@ -48,7 +48,7 @@ msgstr "†arget"'''
         assert "<translation>†arget</translation>" in tsfile
 
     def test_fullunit(self):
-        """Check that an entry with various settings is converted correctly"""
+        """Check that an entry with various settings is converted correctly."""
         posource = """# Translator comment
 #. Automatic comment
 #: location.cpp:100
@@ -62,7 +62,7 @@ msgstr "Target"
         assert "<comment>Translator comment</comment>" in tsfile
 
     def test_fuzzyunit(self):
-        """Check that we handle fuzzy units correctly"""
+        """Check that we handle fuzzy units correctly."""
         posource = '''#: term.cpp
 #, fuzzy
 msgid "Source"
@@ -72,7 +72,7 @@ msgstr "Target"'''
         assert """<translation type="unfinished">Target</translation>""" in tsfile
 
     def test_obsolete(self):
-        """Test that we can take back obsolete messages"""
+        """Test that we can take back obsolete messages."""
         posource = '''#. (obsolete)
 #: term.cpp
 msgid "Source"
@@ -82,7 +82,7 @@ msgstr "Target"'''
         assert """<translation type="obsolete">Target</translation>""" in tsfile
 
     def test_duplicates(self):
-        """Test that we can handle duplicates in the same context block"""
+        """Test that we can handle duplicates in the same context block."""
         posource = """#: @@@#1
 msgid "English"
 msgstr "a"
@@ -96,7 +96,7 @@ msgstr "b"
         assert tsfile.find("English") != tsfile.rfind("English")
 
     def test_linebreak(self):
-        """Test that we can handle linebreaks"""
+        """Test that we can handle linebreaks."""
         minipo = r'''#: linebreak.cpp
 msgid "Line 1\n"
 "Line 2"
@@ -118,7 +118,7 @@ Linea 2</translation>"""
         )
 
     def test_linebreak_consecutive(self):
-        """Test that we can handle consecutive linebreaks"""
+        """Test that we can handle consecutive linebreaks."""
         minipo = r'''#: linebreak.cpp
 msgid "Line 1\n"
 "\n"
@@ -145,7 +145,7 @@ Linea 3</translation>"""
 
 
 class TestPO2TSCommand(test_convert.TestConvertCommand, TestPO2TS):
-    """Tests running actual po2ts commands on files"""
+    """Tests running actual po2ts commands on files."""
 
     convertmodule = po2ts
 

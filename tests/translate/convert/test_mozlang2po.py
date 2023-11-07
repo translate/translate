@@ -143,7 +143,7 @@ Dous
 
 
 class TestLang2POCommand(test_convert.TestConvertCommand, TestLang2PO):
-    """Tests running actual lang2po commands on files"""
+    """Tests running actual lang2po commands on files."""
 
     convertmodule = mozlang2po
     defaultoptions = {"progress": "none"}

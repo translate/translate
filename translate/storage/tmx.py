@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""module for parsing TMX translation memeory files"""
+"""module for parsing TMX translation memeory files."""
 
 from lxml import etree
 
@@ -33,7 +33,7 @@ class tmxunit(lisa.LISAunit):
     textNode = "seg"
 
     def createlanguageNode(self, lang, text, purpose):
-        """Returns a langset xml Element setup with given parameters"""
+        """Returns a langset xml Element setup with given parameters."""
         langset = etree.Element(self.languageNode)
         setXMLlang(langset, lang)
         seg = etree.SubElement(langset, self.textNode)
@@ -152,7 +152,7 @@ class tmxfile(lisa.LISAfile):
         # headernode.set("creationid", "CodeSyntax"
 
     def addtranslation(self, source, srclang, translation, translang, comment=None):
-        """Addtranslation method for testing old unit tests"""
+        """Addtranslation method for testing old unit tests."""
         unit = self.addsourceunit(source)
         unit.target = translation
         if comment is not None and len(comment) > 0:
@@ -163,5 +163,5 @@ class tmxfile(lisa.LISAfile):
         setXMLlang(next(tuvs), translang)
 
     def translate(self, sourcetext, sourcelang=None, targetlang=None):
-        """Method to test old unit tests"""
+        """Method to test old unit tests."""
         return getattr(self.findunit(sourcetext), "target", None)

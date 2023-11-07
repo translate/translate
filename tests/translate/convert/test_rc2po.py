@@ -71,7 +71,7 @@ END
 
 
 class TestRC2POCommand(test_convert.TestConvertCommand):
-    """Tests running actual rc2po commands on files"""
+    """Tests running actual rc2po commands on files."""
 
     convertmodule = rc2po
     defaultoptions = {"progress": "none"}
@@ -85,7 +85,7 @@ class TestRC2POCommand(test_convert.TestConvertCommand):
     ]
 
     def test_convert(self):
-        """Tests the conversion to a po file"""
+        """Tests the conversion to a po file."""
         self.create_testfile("simple.rc", RC_SOURCE)
         self.run_command(i="simple.rc", o="simple.po")
         po_result = pofile(self.open_testfile("simple.po"))

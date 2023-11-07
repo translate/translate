@@ -29,7 +29,7 @@ from translate.storage import po, ts2
 class po2ts:
     @staticmethod
     def convertstore(inputstore, outputfile, templatefile=None, context=None):
-        """Converts a .po file to .ts format (using a template .ts file if given)"""
+        """Converts a .po file to .ts format (using a template .ts file if given)."""
         tsfile = ts2.tsfile() if templatefile is None else ts2.tsfile(templatefile)
         for inputunit in inputstore.units:
             if inputunit.isheader() or inputunit.isblank():
@@ -56,7 +56,7 @@ class po2ts:
 
 
 def convertpo(inputfile, outputfile, templatefile, context):
-    """Reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
+    """Reads in stdin using fromfileclass, converts using convertorclass, writes to stdout."""
     inputstore = po.pofile(inputfile)
     if inputstore.isempty():
         return 0

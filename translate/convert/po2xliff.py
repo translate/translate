@@ -28,7 +28,7 @@ from translate.storage import po, poxliff
 
 class po2xliff:
     def convertunit(self, outputstore, inputunit, filename):
-        """Creates a transunit node"""
+        """Creates a transunit node."""
         source = inputunit.source
         target = inputunit.target
         if inputunit.isheader():
@@ -82,7 +82,7 @@ class po2xliff:
         return contexts
 
     def convertstore(self, inputstore, templatefile=None, **kwargs):
-        """Converts a .po file to .xlf format"""
+        """Converts a .po file to .xlf format."""
         if templatefile is None:
             outputstore = poxliff.PoXliffFile(**kwargs)
         else:
@@ -96,7 +96,7 @@ class po2xliff:
 
 
 def convertpo(inputfile, outputfile, templatefile):
-    """Reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
+    """Reads in stdin using fromfileclass, converts using convertorclass, writes to stdout."""
     inputstore = po.pofile(inputfile)
     if inputstore.isempty():
         return 0

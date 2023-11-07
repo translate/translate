@@ -195,9 +195,7 @@ def calcstats(filename):
 
 
 def file_extended_totals(units, wordcounts):
-    """
-    Provide extended statuses (used by XLIFF)
-    """
+    """Provide extended statuses (used by XLIFF)."""
     stats = {}
 
     for unit in units:
@@ -351,9 +349,7 @@ class FullRenderer(Renderer):
 
 @dataclass
 class ShortStringsRenderer(Renderer):
-    """
-    :param indent: indentation of the 2nd column (length of longest filename)
-    """
+    """:param indent: indentation of the 2nd column (length of longest filename)"""
 
     indent: int = 8
 
@@ -386,9 +382,7 @@ class ShortStringsRenderer(Renderer):
 
 @dataclass
 class ShortWordsRenderer(Renderer):
-    """
-    :param indent: indentation of the 2nd column (length of longest filename)
-    """
+    """:param indent: indentation of the 2nd column (length of longest filename)"""
 
     indent: int = 8
 
@@ -517,7 +511,7 @@ class StatCollector:
 
     @cached_property
     def totals(self) -> dict:
-        """Total stats"""
+        """Total stats."""
         totals = defaultdict(int)
         for stats in self._results:
             for key, value in stats.items():

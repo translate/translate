@@ -18,7 +18,7 @@
 #
 
 """
-module that provides modified DOM functionality for our needs
+module that provides modified DOM functionality for our needs.
 
 Note that users of ourdom should ensure that no code might still use classes
 directly from minidom, like minidom.Element, minidom.Document or methods such
@@ -94,7 +94,7 @@ def getElementsByTagName_helper(parent, name, dummy=None):
 
 
 def searchElementsByTagName_helper(parent, name, onlysearch):
-    """Limits the search to within tags occuring in onlysearch"""
+    """Limits the search to within tags occuring in onlysearch."""
     for node in parent.childNodes:
         if node.nodeType == minidom.Node.ELEMENT_NODE and (name in ("*", node.tagName)):
             yield node
@@ -109,7 +109,7 @@ def getFirstElementByTagName(node, name):
 
 
 def getnodetext(node):
-    """Returns the node's text by iterating through the child nodes"""
+    """Returns the node's text by iterating through the child nodes."""
     if node is None:
         return ""
     return "".join(t.data for t in node.childNodes if t.nodeType == t.TEXT_NODE)

@@ -4,7 +4,7 @@ from translate.storage import rc
 
 
 def test_escaping():
-    """Test escaping Windows Resource files to Python strings"""
+    """Test escaping Windows Resource files to Python strings."""
     assert (
         rc.escape_to_python(
             """First line \

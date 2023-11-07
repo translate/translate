@@ -6,7 +6,7 @@ from translate.storage import po, poxliff
 class TestPO2XLIFF:
     @staticmethod
     def po2xliff(posource, sourcelanguage="en", targetlanguage=None):
-        """Helper that converts po source to xliff source without requiring files"""
+        """Helper that converts po source to xliff source without requiring files."""
         postore = po.pofile(posource.encode("utf-8"))
         convertor = po2xliff.po2xliff()
         outputxliff = convertor.convertstore(
@@ -16,7 +16,7 @@ class TestPO2XLIFF:
 
     @staticmethod
     def getnode(xliff):
-        """Retrieves the trans-unit node from the dom"""
+        """Retrieves the trans-unit node from the dom."""
         assert len(xliff.units) == 1
         return xliff.units[0]
 
@@ -62,7 +62,7 @@ msgstr "Toepassings"
         assert xmltext.index("datatype")
 
     def test_multiline(self):
-        """Test multiline po entry"""
+        """Test multiline po entry."""
         minipo = r'''msgid "First part "
 "and extra"
 msgstr "Eerste deel "
@@ -73,7 +73,7 @@ msgstr "Eerste deel "
         assert xliff.translate("First part and extra") == "Eerste deel en ekstra"
 
     def test_escapednewlines(self):
-        """Test the escaping of newlines"""
+        """Test the escaping of newlines."""
         minipo = r"""msgid "First line\nSecond line"
 msgstr "Eerste lyn\nTweede lyn"
 """
@@ -89,7 +89,7 @@ msgstr "Eerste lyn\nTweede lyn"
         assert xmltext.find("lyn\nTweede") > 0
 
     def test_escapedtabs(self):
-        """Test the escaping of tabs"""
+        """Test the escaping of tabs."""
         minipo = r"""msgid "First column\tSecond column"
 msgstr "Eerste kolom\tTweede kolom"
 """
@@ -108,7 +108,7 @@ msgstr "Eerste kolom\tTweede kolom"
         assert xmltext.find("kolom\tTweede") > 0
 
     def test_escapedquotes(self):
-        """Test the escaping of quotes (and slash)"""
+        """Test the escaping of quotes (and slash)."""
         minipo = r"""msgid "Hello \"Everyone\""
 msgstr "Good day \"All\""
 
@@ -128,7 +128,7 @@ msgstr "Gebruik \\\"."
     def getcontexttuples(node, namespace):
         """
         Returns all the information in the context nodes as a list of tuples
-        of (type, text)
+        of (type, text).
         """
         contexts = node.findall(".//{%s}context" % namespace)
         return [(context.get("context-type"), getText(context)) for context in contexts]

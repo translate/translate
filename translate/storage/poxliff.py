@@ -155,7 +155,7 @@ class PoXliffUnit(xliff.xliffunit):
             self.units[i].target = targets[i]
 
     def addnote(self, text, origin=None, position="append"):
-        """Add a note specifically in a "note" tag"""
+        """Add a note specifically in a "note" tag."""
         note = etree.SubElement(self.xmlelement, self.namespaced("note"))
         note.text = text
         if origin:
@@ -202,7 +202,7 @@ class PoXliffUnit(xliff.xliffunit):
                 self.units[i].setid("%s[%d]" % (id, i))
 
     def getlocations(self):
-        """Returns all the references (source locations)"""
+        """Returns all the references (source locations)."""
         groups = self.getcontextgroups("po-reference")
         references = []
         for group in groups:
@@ -276,7 +276,7 @@ class PoXliffUnit(xliff.xliffunit):
 
 
 class PoXliffFile(xliff.xlifffile, poheader.poheader):
-    """a file for the po variant of Xliff files"""
+    """a file for the po variant of Xliff files."""
 
     UnitClass = PoXliffUnit
 
@@ -307,11 +307,11 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
         return unit
 
     def parse(self, xml):
-        """Populates this object from the given xml string"""
+        """Populates this object from the given xml string."""
         # TODO: Make more robust
 
         def ispluralgroup(node):
-            """Determines whether the xml node refers to a getttext plural"""
+            """Determines whether the xml node refers to a getttext plural."""
             return node.get("restype") == "x-gettext-plurals"
 
         def isnonpluralunit(node):

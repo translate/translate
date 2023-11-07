@@ -33,7 +33,7 @@ from translate.storage import po, wordfast
 class po2wordfast:
     @staticmethod
     def convertfiles(inputfile, wffile, sourcelanguage="en", targetlanguage=None):
-        """Converts a .po file (possibly many) to a Wordfast TM file"""
+        """Converts a .po file (possibly many) to a Wordfast TM file."""
         inputstore = po.pofile(inputfile)
         for inunit in inputstore.units:
             if inunit.isheader() or inunit.isblank() or not inunit.istranslated():
@@ -48,7 +48,7 @@ class po2wordfast:
 def convertpo(
     inputfile, outputfile, templatefile, sourcelanguage="en", targetlanguage=None
 ):
-    """Reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
+    """Reads in stdin using fromfileclass, converts using convertorclass, writes to stdout."""
     convertor = po2wordfast()
     outputfile.wffile.header.targetlang = targetlanguage
     convertor.convertfiles(inputfile, outputfile.wffile, sourcelanguage, targetlanguage)
@@ -57,7 +57,7 @@ def convertpo(
 
 class wfmultifile:
     def __init__(self, filename, mode=None):
-        """Initialises wfmultifile from a seekable inputfile or writable outputfile"""
+        """Initialises wfmultifile from a seekable inputfile or writable outputfile."""
         self.filename = filename
         if mode is None:
             mode = "r" if os.path.exists(filename) else "w"
@@ -66,7 +66,7 @@ class wfmultifile:
         self.wffile = wordfast.WordfastTMFile()
 
     def openoutputfile(self, subfile):
-        """Returns a pseudo-file object for the given subfile"""
+        """Returns a pseudo-file object for the given subfile."""
 
         def onclose(contents):
             pass

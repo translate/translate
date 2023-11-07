@@ -6,7 +6,7 @@ from . import test_convert
 
 
 class TestIDML2POCommand(test_convert.TestConvertCommand):
-    """Tests running actual idml2po commands on files"""
+    """Tests running actual idml2po commands on files."""
 
     convertmodule = idml2po
 
