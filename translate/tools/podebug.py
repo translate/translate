@@ -204,9 +204,9 @@ class podebug:
 
     REWRITE_FLIPPED_MAP = (
         "¡„#$%⅋,()⁎+´-˙/012Ɛᔭ59Ƚ86:;<=>¿@"
-        + "∀ԐↃᗡƎℲ⅁HIſӼ⅂WNOԀÒᴚS⊥∩ɅＭX⅄Z"
-        + "[\\]ᵥ_,"
-        + "ɐqɔpǝɟƃɥıɾʞʅɯuodbɹsʇnʌʍxʎz"
+        "∀ԐↃᗡƎℲ⅁HIſӼ⅂WNOԀÒᴚS⊥∩ɅＭX⅄Z"
+        "[\\]ᵥ_,"
+        "ɐqɔpǝɟƃɥıɾʞʅɯuodbɹsʇnʌʍxʎz"
     )
     # Brackets should be swapped if the string will be reversed in memory.
     # If a right-to-left override is used, the brackets should be

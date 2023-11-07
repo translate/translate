@@ -167,7 +167,7 @@ msgstr[1] "%d handleidings."
         """
         potsource = (
             """#: location.c:1\nmsgid ""\n"_: location.c:1\\n"\n"Source"\nmsgstr ""\n\n"""
-            + """#: location.c:10\nmsgid ""\n"_: location.c:10\\n"\n"Source"\nmsgstr ""\n"""
+            """#: location.c:10\nmsgid ""\n"_: location.c:10\\n"\n"Source"\nmsgstr ""\n"""
         )
         posource = (
             """#: location.c:1\n#: location.c:10\nmsgid "Source"\nmsgstr "Target"\n\n"""
@@ -371,7 +371,7 @@ msgstr "Sertifikate"
         """Check that we can reuse old obsolete messages even if the recipient has a msgidcomment"""
         potsource = (
             """#: resurect1.c\nmsgid "About"\nmsgstr ""\n\n"""
-            + """#: resurect2.c\nmsgid ""\n"_: resurect2.c\\n"\n"About"\nmsgstr ""\n"""
+            """#: resurect2.c\nmsgid ""\n"_: resurect2.c\\n"\n"About"\nmsgstr ""\n"""
         )
         posource = """#~ msgid "About"\n#~ msgstr "Omtrent"\n"""
         expected1 = """#: resurect1.c\nmsgid "About"\nmsgstr "Omtrent"\n"""
