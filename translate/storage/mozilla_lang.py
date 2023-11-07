@@ -32,7 +32,7 @@ from translate.storage import base, txt
 
 def strip_ok(string):
     tmpstring = string.rstrip()
-    if tmpstring.endswith("{ok}") or tmpstring.endswith("{OK}"):
+    if tmpstring.endswith(("{ok}", "{OK}")):
         return tmpstring[:-4].rstrip()
     return string
 
@@ -134,8 +134,7 @@ class LangStore(txt.TxtFile):
 
             is_comment = line.startswith("#") and (
                 not line.startswith("##")
-                or line.startswith("## TAG")
-                or line.startswith("## MAX_LENGTH")
+                or line.startswith(("## TAG", "## MAX_LENGTH"))
             )
             if is_comment:
                 # Read comments, *including* meta tags (e.g. '## TAG')

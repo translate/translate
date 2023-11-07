@@ -50,7 +50,7 @@ def parse_extra_requires(filename):
         for line in requirements:
             line = line.strip()
             # Skip comments, inclusion or blank lines
-            if not line or line.startswith("-r") or line.startswith("#"):
+            if not line or line.startswith(("-r", "#")):
                 continue
             dependency, section = line.split("#")
             dependency = dependency.strip()

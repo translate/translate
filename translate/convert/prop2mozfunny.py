@@ -76,11 +76,7 @@ def prop2funny(src, itencoding="cp1252"):
     if not header.startswith("# converted from "):
         waspseudoprops = len([line for line in lines if line.startswith("# section:")])
         wasdefines = len(
-            [
-                line
-                for line in lines
-                if line.startswith("#filter") or line.startswith("#unfilter")
-            ]
+            [line for line in lines if line.startswith(("#filter", "#unfilter"))]
         )
     else:
         waspseudoprops = "pseudo-properties" in header

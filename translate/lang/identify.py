@@ -73,7 +73,7 @@ class LanguageIdentifier:
                 # Remove trailing '[_-]-utf8' from code
                 if lcode.endswith("-utf8"):
                     lcode = lcode[: -len("-utf8")]
-                if lcode.endswith("-") or lcode.endswith("_"):
+                if lcode.endswith(("-", "_")):
                     lcode = lcode[:-1]
 
                 self._lang_codes[lname] = lcode
