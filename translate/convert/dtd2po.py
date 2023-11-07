@@ -141,17 +141,15 @@ class dtd2po:
                         del dtd_unit.comments[commentnum]
                         # finished this for loop
                         break
-                    else:
-                        # convert it into an automatic comment, to be
-                        # processed by convertcomments
-                        dtd_unit.comments[commentnum] = ("automaticcomment", actualnote)
+                    # convert it into an automatic comment, to be
+                    # processed by convertcomments
+                    dtd_unit.comments[commentnum] = ("automaticcomment", actualnote)
         # do a standard translation
         self.convertcomments(dtd_unit, po_unit)
         self.convertstrings(dtd_unit, po_unit)
         if po_unit.isblank() and not po_unit.getlocations():
             return None
-        else:
-            return po_unit
+        return po_unit
 
     def convertmixedunit(self, labeldtd, accesskeydtd):
         label_unit = self.convertunit(labeldtd)
@@ -182,7 +180,7 @@ class dtd2po:
         if alreadymixed:
             # we are successfully throwing this away...
             return None
-        elif alreadymixed is False:
+        if alreadymixed is False:
             # The mix failed before
             return self.convertunit(unit)
 
@@ -199,13 +197,12 @@ class dtd2po:
             if labelentity is not None:
                 self.mixedentities[labelentity][mixbucket] = True
             return po_unit
-        else:
-            # otherwise the mix failed. add each one separately and
-            # remember they weren't mixed
-            if accesskeyentity is not None:
-                self.mixedentities[accesskeyentity][mixbucket] = False
-            if labelentity is not None:
-                self.mixedentities[labelentity][mixbucket] = False
+        # otherwise the mix failed. add each one separately and
+        # remember they weren't mixed
+        if accesskeyentity is not None:
+            self.mixedentities[accesskeyentity][mixbucket] = False
+        if labelentity is not None:
+            self.mixedentities[labelentity][mixbucket] = False
 
         return self.convertunit(unit)
 

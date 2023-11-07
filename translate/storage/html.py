@@ -329,6 +329,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         name = attrs_dict["name"].lower() if "name" in attrs_dict else None
         if name in self.TRANSLATABLE_METADATA and "content" in attrs_dict:
             return self.create_attribute_tu("content", attrs_dict["content"])
+        return None
 
     @staticmethod
     def translatable_attribute_matches_tag(attrname, tag):
@@ -349,6 +350,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                     self.getpos()[1] + 1,
                 ),
             }
+        return None
 
     def emit_attribute_translation_units(self, markup):
         if "attribute_tus" in markup:

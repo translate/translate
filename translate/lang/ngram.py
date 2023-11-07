@@ -69,8 +69,7 @@ class _NGram:
         sorted = [(self.ngrams[k], k) for k in self.ngrams]
         sorted.sort()
         sorted.reverse()
-        sorted = sorted[:nb_ngrams]
-        return sorted
+        return sorted[:nb_ngrams]
 
     def normalise(self):
         ngrams = {}

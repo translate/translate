@@ -18,8 +18,7 @@ class TestPO2XLIFF:
     def getnode(xliff):
         """Retrieves the trans-unit node from the dom"""
         assert len(xliff.units) == 1
-        unit = xliff.units[0]
-        return unit
+        return xliff.units[0]
 
     def test_minimal(self):
         minipo = """msgid "red"\nmsgstr "rooi"\n"""

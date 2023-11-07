@@ -79,10 +79,9 @@ def extract_id(values):
     for value in values:
         if isinstance(value, str) and value.startswith('"'):
             continue
-        else:
-            if isinstance(value, str):
-                return value
-            break
+        if isinstance(value, str):
+            return value
+        break
 
     return "UNKNOWN_ID"
 
@@ -138,8 +137,7 @@ class rcunit(base.TranslationUnit):
         """Convert the element back into formatted lines for a .rc file."""
         if self.isblank():
             return "".join(self.comments + ["\n"])
-        else:
-            return "".join(self.comments + [f"{self.name}={self._value}\n"])
+        return "".join(self.comments + [f"{self.name}={self._value}\n"])
 
     def getlocations(self):
         return [self.name]

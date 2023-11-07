@@ -103,12 +103,11 @@ def varname(variable, startmarker, endmarker):
     # if the punctuation were included, we'd do the following:
     if startmarker is None:
         return variable[: variable.rfind(endmarker)]
-    elif endmarker is None:
+    if endmarker is None:
         return variable[variable.find(startmarker) + len(startmarker) :]
-    else:
-        return variable[
-            variable.find(startmarker) + len(startmarker) : variable.rfind(endmarker)
-        ]
+    return variable[
+        variable.find(startmarker) + len(startmarker) : variable.rfind(endmarker)
+    ]
 
 
 def varnone(variable, startmarker, endmarker):
@@ -197,5 +196,4 @@ def filterwordswithpunctuation(str1):
             lastpos = pos + len(word)
         newstr1 += str1[lastpos:]
         return newstr1
-    else:
-        return str1
+    return str1

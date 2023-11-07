@@ -242,8 +242,7 @@ class RecursiveOptionParser(optparse.OptionParser):
             optionstring += " " + option.metavar
         if getattr(option, "required", False):
             return optionstring
-        else:
-            return "[%s]" % optionstring
+        return "[%s]" % optionstring
 
     @staticmethod
     def getusageman(option):
@@ -255,8 +254,7 @@ class RecursiveOptionParser(optparse.OptionParser):
             optionstring += " \\fI%s\\fP" % option.metavar
         if getattr(option, "required", False):
             return optionstring
-        else:
-            return "\\fR[\\fP%s\\fR]\\fP" % optionstring
+        return "\\fR[\\fP%s\\fR]\\fP" % optionstring
 
     def define_option(self, option):
         """
@@ -399,20 +397,18 @@ class RecursiveOptionParser(optparse.OptionParser):
         formats = sorted(f for f in formats if f is not None)
         if len(formats) == 0:
             return ""
-        elif len(formats) == 1:
+        if len(formats) == 1:
             return "%s format" % (", ".join(formats))
-        else:
-            return "%s formats" % (", ".join(formats))
+        return "%s formats" % (", ".join(formats))
 
     @staticmethod
     def isrecursive(fileoption, filepurpose="input"):
         """Checks if fileoption is a recursive file."""
         if fileoption is None:
             return False
-        elif isinstance(fileoption, list):
+        if isinstance(fileoption, list):
             return True
-        else:
-            return os.path.isdir(fileoption)
+        return os.path.isdir(fileoption)
 
     def parse_args(self, args=None, values=None):
         """
@@ -466,7 +462,7 @@ class RecursiveOptionParser(optparse.OptionParser):
             templateext = None
         if (inputext, templateext) in self.outputoptions:
             return self.outputoptions[inputext, templateext]
-        elif (inputext, "*") in self.outputoptions:
+        if (inputext, "*") in self.outputoptions:
             outputformat, fileprocessor = self.outputoptions[inputext, "*"]
         elif ("*", templateext) in self.outputoptions:
             outputformat, fileprocessor = self.outputoptions["*", templateext]
@@ -486,21 +482,18 @@ class RecursiveOptionParser(optparse.OptionParser):
                     raise ValueError(
                         "don't know what to do with input format (no file extension), no template file"
                     )
-                elif templateext is None:
+                if templateext is None:
                     raise ValueError(
                         "don't know what to do with input format %s, no template file"
                         % (os.extsep + inputext)
                     )
-                else:
-                    raise ValueError(
-                        "don't know what to do with input format %s, template format %s"
-                        % (os.extsep + inputext, os.extsep + templateext)
-                    )
-            else:
                 raise ValueError(
-                    "don't know what to do with input format %s"
-                    % (os.extsep + inputext)
+                    "don't know what to do with input format %s, template format %s"
+                    % (os.extsep + inputext, os.extsep + templateext)
                 )
+            raise ValueError(
+                "don't know what to do with input format %s" % (os.extsep + inputext)
+            )
         if outputformat == "*":
             if inputext:
                 outputformat = inputext
@@ -513,10 +506,9 @@ class RecursiveOptionParser(optparse.OptionParser):
                     raise ValueError(
                         "don't know what to do with input format (no file extension), no template file"
                     )
-                else:
-                    raise ValueError(
-                        "don't know what to do with input format (no file extension)"
-                    )
+                raise ValueError(
+                    "don't know what to do with input format (no file extension)"
+                )
         return outputformat, fileprocessor
 
     @staticmethod
@@ -524,25 +516,22 @@ class RecursiveOptionParser(optparse.OptionParser):
         """Gets the full path to an input file."""
         if options.input:
             return os.path.join(options.input, inputpath)
-        else:
-            return inputpath
+        return inputpath
 
     @staticmethod
     def getfulloutputpath(options, outputpath):
         """Gets the full path to an output file."""
         if options.recursiveoutput and options.output:
             return os.path.join(options.output, outputpath)
-        else:
-            return outputpath
+        return outputpath
 
     def getfulltemplatepath(self, options, templatepath):
         """Gets the full path to a template file."""
         if not options.recursivetemplate:
             return templatepath
-        elif templatepath is not None and self.usetemplates and options.template:
+        if templatepath is not None and self.usetemplates and options.template:
             return os.path.join(options.template, templatepath)
-        else:
-            return None
+        return None
 
     def run(self):
         """
@@ -672,8 +661,7 @@ class RecursiveOptionParser(optparse.OptionParser):
         if fulltemplatepath is not None:
             if os.path.isfile(fulltemplatepath):
                 return open(fulltemplatepath, "rb")
-            else:
-                self.warning("missing template file %s" % fulltemplatepath)
+            self.warning("missing template file %s" % fulltemplatepath)
         return None
 
     def processfile(
@@ -701,12 +689,11 @@ class RecursiveOptionParser(optparse.OptionParser):
             if fulloutputpath and os.path.isfile(fulloutputpath):
                 outputfile.close()
             return True
-        else:
-            # remove the file if it is a file (could be stdout etc)
-            if fulloutputpath and os.path.isfile(fulloutputpath):
-                outputfile.close()
-                os.unlink(fulloutputpath)
-            return False
+        # remove the file if it is a file (could be stdout etc)
+        if fulloutputpath and os.path.isfile(fulloutputpath):
+            outputfile.close()
+            os.unlink(fulloutputpath)
+        return False
 
     @staticmethod
     def mkdir(parent, subdir):

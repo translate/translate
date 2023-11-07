@@ -344,8 +344,7 @@ class Common:
         expanded = []
         for subtext in text.split("\n\n"):
             expanded.append(alter_it(subtext))
-        text = "\n\n".join(expanded)
-        return text
+        return "\n\n".join(expanded)
 
     @classmethod
     def character_iter(cls, text):

@@ -66,8 +66,7 @@ class XmlNamer:
                 namespace_shortcut, tag = namespace_shortcut.split(":")
             except ValueError:
                 # If there is no namespace in namespace_shortcut.
-                tag = namespace_shortcut.lstrip("{}")
-                return tag
+                return namespace_shortcut.lstrip("{}")
         return f"{{{self.nsmap[namespace_shortcut]}}}{tag}"
 
     def namespace(self, namespace_shortcut):

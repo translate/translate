@@ -45,8 +45,7 @@ class TestDTD2PO:
         """Returns the number of non-header items"""
         if pofile.units[0].isheader():
             return len(pofile.units) - 1
-        else:
-            return len(pofile.units)
+        return len(pofile.units)
 
     def test_simpleentity(self):
         """Checks that a simple dtd entity definition converts properly to a po entry"""

@@ -89,10 +89,9 @@ class OmegaTUnit(base.TranslationUnit):
     def _get_field(self, key):
         if key not in self._dict:
             return None
-        elif self._dict[key]:
+        if self._dict[key]:
             return self._dict[key]
-        else:
-            return ""
+        return ""
 
     def _set_field(self, key, newvalue):
         if newvalue is None:

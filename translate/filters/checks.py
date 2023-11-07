@@ -282,7 +282,7 @@ class CheckerConfig:
     def updatevalidchars(self, validchars):
         """Updates the map that eliminates valid characters."""
         if validchars is None:
-            return True
+            return
 
         validcharsmap = {
             ord(validchar): None for validchar in data.normalize(validchars)
@@ -511,10 +511,9 @@ class UnitChecker:
                         "error in filter %s: %r, %r, %s"
                         % (functionname, unit.source, unit.target, e)
                     )
-                else:
-                    filterresult = self.errorhandler(
-                        functionname, unit.source, unit.target, e
-                    )
+                filterresult = self.errorhandler(
+                    functionname, unit.source, unit.target, e
+                )
             if not filterresult:
                 if not filtermessage:
                     # Should be quite rare
@@ -583,8 +582,7 @@ class TranslationChecker(UnitChecker):
             if not filterresult and filtermessages:
                 raise FilterFailure(filtermessages)
             return filterresult
-        else:
-            return test(self.str1, self.str2)
+        return test(self.str1, self.str2)
 
     def run_filters(self, unit, categorised=False):
         """
@@ -1145,9 +1143,7 @@ class StandardChecker(TranslationChecker):
             except ValueError:
                 explicit_n = 0
 
-            highest_n = max(implicit_n, explicit_n)
-
-            return highest_n
+            return max(implicit_n, explicit_n)
 
         messages = []
         # Possible failure states: 0 = ok, 1 = mild, 2 = serious
@@ -1206,9 +1202,9 @@ class StandardChecker(TranslationChecker):
 
         if failure_state == STATE_OK:
             return 1
-        elif failure_state == STATE_MILD:
+        if failure_state == STATE_MILD:
             raise FilterFailure(messages)
-        elif failure_state == STATE_SERIOUS:
+        if failure_state == STATE_SERIOUS:
             raise SeriousFilterFailure(messages)
         raise ValueError(
             "Something wrong in python brace checks: unreachable state reached"
@@ -1346,7 +1342,7 @@ class StandardChecker(TranslationChecker):
 
         if messages and mismatch1:
             raise SeriousFilterFailure(messages)
-        elif messages:
+        if messages:
             raise FilterFailure(messages)
 
         return True
@@ -1639,12 +1635,9 @@ class StandardChecker(TranslationChecker):
                 str2
             ):
                 return True
-            elif self.config.sourcelang.numstart(str1) or self.config.lang.numstart(
-                str2
-            ):
+            if self.config.sourcelang.numstart(str1) or self.config.lang.numstart(str2):
                 return True
-            else:
-                raise FilterFailure("Different capitalization at the start")
+            raise FilterFailure("Different capitalization at the start")
 
         if len(str1) == 0 and len(str2) == 0:
             return True
@@ -1683,8 +1676,7 @@ class StandardChecker(TranslationChecker):
         if capitals1 == alpha1:
             if capitals2 == alpha2:
                 return True
-            else:
-                raise FilterFailure("Different capitalization")
+            raise FilterFailure("Different capitalization")
 
         # some heuristic tests to try and see that the style of capitals is
         # vaguely the same
@@ -2081,8 +2073,7 @@ class StandardChecker(TranslationChecker):
         """
         if str1 in self.config.credit_sources:
             raise FilterFailure("Don't translate. Just credit the translators.")
-        else:
-            return True
+        return True
 
     # If the precondition filter is run and fails then the other tests listed are ignored
     preconditions = {

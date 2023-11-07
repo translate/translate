@@ -381,8 +381,7 @@ class xliffunit(lisa.LISAunit):
         if targetnode is None:
             if self.isapproved():
                 return self.S_UNREVIEWED
-            else:
-                return self.S_UNTRANSLATED
+            return self.S_UNTRANSLATED
 
         xmlstate = targetnode.get("state", None)
         state_n = self.statemap.get(xmlstate, self.S_UNTRANSLATED)
@@ -616,14 +615,11 @@ class xliffunit(lisa.LISAunit):
     @staticmethod
     def correctorigin(node, origin):
         """Check against node tag's origin (e.g note or alt-trans)"""
-        if origin is None:
-            return True
-        elif origin in node.get("from", ""):
-            return True
-        elif origin in node.get("origin", ""):
-            return True
-        else:
-            return False
+        return (
+            origin is None
+            or origin in node.get("from", "")
+            or origin in node.get("origin", "")
+        )
 
     @classmethod
     def multistring_to_rich(cls, mstr):
@@ -839,8 +835,7 @@ class xlifffile(lisa.LISAfile):
             pass
         if not createifmissing:
             return None
-        headernode = etree.SubElement(filenode, self.namespaced("header"))
-        return headernode
+        return etree.SubElement(filenode, self.namespaced("header"))
 
     def getbodynode(self, filenode, createifmissing=False):
         """Finds the body node for the given filenode"""

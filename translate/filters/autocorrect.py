@@ -58,5 +58,4 @@ def correct(source, target):
             target = target[:1].lower() + target[1:]
     if old_target != target:
         return target
-    else:
-        return None
+    return None

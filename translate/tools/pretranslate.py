@@ -93,12 +93,12 @@ def match_template_location(input_unit, template_store):
             and matching_unit.gettargetlen() > 0
         ):
             return matching_unit
+    return None
 
 
 def match_template_id(input_unit, template_store):
     """Returns a matching unit from a template. matching based on unit id"""
-    matching_unit = template_store.findid(input_unit.getid())
-    return matching_unit
+    return template_store.findid(input_unit.getid())
 
 
 def match_source(input_unit, template_store):
@@ -106,8 +106,8 @@ def match_source(input_unit, template_store):
     # hack for weird mozilla single letter strings, we don't want to
     # match them by anything but locations
     if len(input_unit.source) > 1:
-        matching_unit = template_store.findunit(input_unit.source)
-        return matching_unit
+        return template_store.findunit(input_unit.source)
+    return None
 
 
 def match_fuzzy(input_unit, matchers):
@@ -116,6 +116,7 @@ def match_fuzzy(input_unit, matchers):
         fuzzycandidates = matcher.matches(input_unit.source)
         if fuzzycandidates:
             return fuzzycandidates[0]
+    return None
 
 
 def pretranslate_unit(

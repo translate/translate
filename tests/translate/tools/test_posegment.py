@@ -22,8 +22,7 @@ class TestPOSegment:
         convertor = posegment.segment(
             sourcelang, targetlang, stripspaces=stripspaces, onlyaligned=onlyaligned
         )
-        outputpo = convertor.convertstore(inputpo)
-        return outputpo
+        return convertor.convertstore(inputpo)
 
     def test_en_ja_simple(self):
         posource = """

@@ -84,8 +84,7 @@ class TestConvertCommand:
     def read_testfile(self, filename):
         """Reads the given file in the testdirectory and returns the contents"""
         with open(self.get_testfilename(filename), "rb") as testfile:
-            content = testfile.read()
-        return content
+            return testfile.read()
 
     @staticmethod
     def help_check(options, option, last=False):

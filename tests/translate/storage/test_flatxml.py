@@ -23,8 +23,7 @@ class TestFlatXMLFile(test_monolingual.TestMonolingualStore):
     @staticmethod
     def _encoded_file(string, encoding="utf-8"):
         xmldecl = '<?xml version="1.0" encoding="%s"?>' % encoding
-        stringfile = BytesIO((xmldecl + string).encode())
-        return stringfile
+        return BytesIO((xmldecl + string).encode())
 
     def test_root_config_detect(self):
         """Test that parser fails on inconsistent root name configuration"""

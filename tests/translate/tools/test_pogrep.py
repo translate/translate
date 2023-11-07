@@ -11,8 +11,7 @@ class TestPOGrep:
     def poparse(posource):
         """Helper that parses po source without requiring files"""
         dummyfile = BytesIO(posource.encode())
-        pofile = po.pofile(dummyfile)
-        return pofile
+        return po.pofile(dummyfile)
 
     def pogrep(self, posource, searchstring, cmdlineoptions=None):
         """Helper that parses po source and passes it through a filter"""
@@ -167,8 +166,7 @@ class TestXLiffGrep:
     def xliff_parse(xliff_text):
         """Helper that parses po source without requiring files"""
         dummyfile = BytesIO(xliff_text)
-        xliff_file = xliff.xlifffile(dummyfile)
-        return xliff_file
+        return xliff.xlifffile(dummyfile)
 
     def xliff_grep(self, xliff_text, searchstring, cmdlineoptions=None):
         """Helper that parses xliff text and passes it through a filter"""

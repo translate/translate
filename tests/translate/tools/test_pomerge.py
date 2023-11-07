@@ -50,8 +50,7 @@ class TestPOMerge:
             mergecomments=mergecomments,
         )
         outputpostring = outputfile.getvalue()
-        outputpofile = po.pofile(outputpostring)
-        return outputpofile
+        return po.pofile(outputpostring)
 
     @staticmethod
     def mergexliff(
@@ -76,16 +75,14 @@ class TestPOMerge:
         outputxliffstring = outputfile.getvalue()
         print("Generated XML:")
         print(outputxliffstring)
-        outputxlifffile = xliff.xlifffile(outputxliffstring)
-        return outputxlifffile
+        return xliff.xlifffile(outputxliffstring)
 
     @staticmethod
     def countunits(pofile):
         """Returns the number of non-header items"""
         if pofile.units[0].isheader():
             return len(pofile.units) - 1
-        else:
-            return len(pofile.units)
+        return len(pofile.units)
 
     def singleunit(self, pofile):
         """Checks that the pofile contains a single non-header unit, and returns it"""

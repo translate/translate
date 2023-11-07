@@ -101,21 +101,20 @@ def isvalidaccelerator(accelerator, acceptlist=None):
         if accelerator in acceptlist:
             return True
         return False
-    else:
-        # Old code path - ensures that we don't get a large number of
-        # regressions
-        accelerator = accelerator.replace("_", "")
-        if accelerator in "-?":
-            return True
-        if not accelerator.isalnum():
-            return False
+    # Old code path - ensures that we don't get a large number of
+    # regressions
+    accelerator = accelerator.replace("_", "")
+    if accelerator in "-?":
+        return True
+    if not accelerator.isalnum():
+        return False
 
-        # We don't want to have accelerators on characters with diacritics,
-        # so let's see if the character can decompose.
-        decomposition = unicodedata.decomposition(accelerator)
-        # Next we strip out any extra information like <this>
-        decomposition = re.sub("<[^>]+>", "", decomposition).strip()
-        return decomposition.count(" ") == 0
+    # We don't want to have accelerators on characters with diacritics,
+    # so let's see if the character can decompose.
+    decomposition = unicodedata.decomposition(accelerator)
+    # Next we strip out any extra information like <this>
+    decomposition = re.sub("<[^>]+>", "", decomposition).strip()
+    return decomposition.count(" ") == 0
 
 
 def findaccelerators(str1, accelmarker, acceptlist=None):
@@ -285,8 +284,7 @@ def getfunctions(str1):
     """
     if "()" in str1:
         return _function_re.findall(str1)
-    else:
-        return []
+    return []
 
 
 def getemails(str1):

@@ -55,7 +55,7 @@ class tbxunit(lisa.LISAunit):
     def _get_origin_element(self, origin: str):
         if origin == "pos":
             return self.namespaced("termNote")
-        elif origin == "definition":
+        if origin == "definition":
             return self.namespaced("descrip")
         return self.namespaced("note")
 

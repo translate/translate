@@ -92,15 +92,14 @@ def _process_placeable(dom_node, state):
         # There are no recognized child tags and thus no Translatable object is
         # returned. So create a Translatable with the name "placeable".
         return Translatable("placeable", state.xpath_breadcrumb.xpath, dom_node, [])
-    elif len(placeable) == 1:
+    if len(placeable) == 1:
         # The ideal situation: we got exactly one Translatable back when
         # processing this tree.
         return placeable[0]
-    else:
-        raise Exception(
-            "BUG: find_translatable_dom_nodes should never return "
-            "more than a single Translatable object"
-        )
+    raise ValueError(
+        "BUG: find_translatable_dom_nodes should never return "
+        "more than a single Translatable object"
+    )
 
 
 def process_translatable(dom_node, state):
@@ -239,15 +238,13 @@ def _process_children(dom_node, state, process_func):
             tag, state.xpath_breadcrumb.xpath, dom_node, children
         )
         return [intermediate_translatable]
-    else:
-        return children
+    return children
 
 
 def compact_tag(nsmap, namespace, tag):
     if namespace in nsmap:
         return f"{nsmap[namespace]}:{tag}"
-    else:
-        return f"{{{namespace}}}{tag}"
+    return f"{{{namespace}}}{tag}"
 
 
 @contextmanager
@@ -287,8 +284,7 @@ def find_translatable_dom_nodes(dom_node, state, process_func=process_translatab
     with parse_status_set(namespace, tag, state):
         if (namespace, tag) not in state.no_translate_content_elements:
             return process_func(dom_node, state)
-        else:
-            return _process_children(dom_node, state, process_func)
+        return _process_children(dom_node, state, process_func)
 
 
 class IdMaker:

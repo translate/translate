@@ -82,8 +82,7 @@ def convertresx(
 
     if templatefile is None:
         raise ValueError("Must have template file for RESX files")
-    else:
-        convertor = po2resx(templatefile, inputstore)
+    convertor = po2resx(templatefile, inputstore)
 
     outputstring = convertor.convertstore(includefuzzy)
     outputfile.write(outputstring)

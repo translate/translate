@@ -228,15 +228,14 @@ def convertoo(
     languages = (sourcelanguage, targetlanguage)
     if templatefile is None:
         raise ValueError("must have template file for oo files")
-    else:
-        convertor = reoo(
-            templatefile,
-            languages=languages,
-            timestamp=timestamp,
-            includefuzzy=includefuzzy,
-            long_keys=multifilestyle != "single",
-            filteraction=filteraction,
-        )
+    convertor = reoo(
+        templatefile,
+        languages=languages,
+        timestamp=timestamp,
+        includefuzzy=includefuzzy,
+        long_keys=multifilestyle != "single",
+        filteraction=filteraction,
+    )
     outputstore = convertor.convertstore(inputstore)
     # TODO: check if we need to manually delete missing items
     outputstore.serialize(outputfile, skip_source, targetlanguage)

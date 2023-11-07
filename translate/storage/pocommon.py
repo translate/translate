@@ -157,10 +157,8 @@ class pounit(base.TranslationUnit):
         if self.target:
             if self.isfuzzy():
                 return self.S_FUZZY
-            else:
-                return self.S_TRANSLATED
-        else:
-            return self.S_UNTRANSLATED
+            return self.S_TRANSLATED
+        return self.S_UNTRANSLATED
 
     def set_state_n(self, value):
         super().set_state_n(value)

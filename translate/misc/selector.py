@@ -194,15 +194,14 @@ class Selector:
                         methods,
                         match.group(0),
                     )
-                elif "_ANY_" in method_dict:
+                if "_ANY_" in method_dict:
                     return (
                         method_dict["_ANY_"],
                         match.groupdict(),
                         methods,
                         match.group(0),
                     )
-                else:
-                    return self.status405, {}, methods, ""
+                return self.status405, {}, methods, ""
         return self.status404, {}, [], ""
 
     def slurp_file(self, the_file, prefix=None, parser=None, wrap=None):
@@ -428,10 +427,10 @@ class SimpleParser:
         self._pos = 0
         if url_pattern.endswith("|"):
             return self.openended(self.parse(url_pattern[:-1]))
-        else:
-            return self.lastly(self.parse(url_pattern))
+        return self.lastly(self.parse(url_pattern))
 
 
+# TODO: Is this needed?
 class EnvironDispatcher:
     """Dispatch based on list of rules."""
 
@@ -448,6 +447,7 @@ class EnvironDispatcher:
         for predicate, app in self.rules:
             if predicate(environ):
                 return app(environ, start_response)
+        return None
 
 
 class MiddlewareComposer:
@@ -512,8 +512,7 @@ class Naked:
         if callable is not None and self._is_exposed(callable):
             shift_path_info(environ)
             return callable(environ, start_response)
-        else:
-            return self._not_found(environ, start_response)
+        return self._not_found(environ, start_response)
 
 
 class ByMethod:

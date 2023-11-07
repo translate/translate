@@ -431,8 +431,7 @@ class ShortWordsRenderer(Renderer):
 def percent(denominator, devisor):
     if devisor == 0:
         return 0
-    else:
-        return denominator * 100 / devisor
+    return denominator * 100 / devisor
 
 
 def fuzzymessages(units):
@@ -472,15 +471,14 @@ class StatCollector:
     def results(self):
         if self.incomplete_only:
             return [s for s in self._results if s["total"] != s["translated"]]
-        else:
-            return self._results
+        return self._results
 
     def _handle_items(self, items: list[str]):
         for item in items:
             if not os.path.exists(item):
                 logger.error("cannot process %s: does not exist", item)
                 continue
-            elif os.path.isdir(item):
+            if os.path.isdir(item):
                 self._handle_dir(item)
             else:
                 self._handle_single_file(item)

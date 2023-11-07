@@ -128,7 +128,7 @@ class TerminologyExtractor:
                     stoptype = stopline[0]
                     if stoptype in ("#", "\n"):
                         continue
-                    elif stoptype == "!":
+                    if stoptype == "!":
                         if stopline[1] == "C":
                             self.stopfoldtitle = False
                             self.stopignorecase = False
@@ -165,8 +165,7 @@ class TerminologyExtractor:
         string = self.formatpat.sub(" ", string)
         string = self.xmlelpat.sub(" ", string)
         string = self.xmlentpat.sub(" ", string)
-        string = string.strip()
-        return string
+        return string.strip()
 
     def stopmap(self, word):
         """Return case-mapped stopword for input word"""

@@ -431,8 +431,7 @@ class DialectMozilla(DialectJavaUtf8):
     def encode(string, encoding=None):
         """Encode the string"""
         string = quote.java_utf8_properties_encode(string or "")
-        string = quote.mozillaescapemarginspaces(string or "")
-        return string
+        return quote.mozillaescapemarginspaces(string or "")
 
 
 @register_dialect

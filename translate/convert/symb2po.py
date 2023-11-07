@@ -83,8 +83,7 @@ def get_template_dict(template_file):
     if template_file is not None:
         template_header, template_units = read_symbian(template_file)
         return template_header, dict(template_units)
-    else:
-        return {}, {}
+    return {}, {}
 
 
 def build_output(units, template_header, template_dict):
@@ -116,9 +115,8 @@ def convert_symbian(
 
     if output_store.isempty():
         return 0
-    else:
-        output_store.serialize(output_file)
-        return 1
+    output_store.serialize(output_file)
+    return 1
 
 
 def main(argv=None):

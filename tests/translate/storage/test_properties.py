@@ -304,8 +304,7 @@ class TestProp(test_monolingual.TestMonolingualStore):
         dummyfile = BytesIO(
             propsource.encode() if isinstance(propsource, str) else propsource
         )
-        propfile = properties.propfile(dummyfile, personality, encoding)
-        return propfile
+        return properties.propfile(dummyfile, personality, encoding)
 
     def propregen(self, propsource, encoding=None):
         """Helper that converts properties source to propfile object and back"""
@@ -767,8 +766,7 @@ class TestXWiki(test_monolingual.TestMonolingualStore):
         dummyfile = BytesIO(
             propsource.encode() if isinstance(propsource, str) else propsource
         )
-        propfile = properties.xwikifile(dummyfile)
-        return propfile
+        return properties.xwikifile(dummyfile)
 
     def propregen(self, propsource):
         """Helper that converts properties source to propfile object and back"""
@@ -896,8 +894,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         dummyfile = BytesIO(
             propsource.encode() if isinstance(propsource, str) else propsource
         )
-        propfile = properties.XWikiPageProperties(dummyfile)
-        return propfile
+        return properties.XWikiPageProperties(dummyfile)
 
     def propregen(self, propsource):
         """Helper that converts properties source to propfile object and back"""

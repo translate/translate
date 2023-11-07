@@ -86,9 +86,8 @@ class matcher:
                 return False
             if source in self.existingunits and self.existingunits[source] == target:
                 return False
-            else:
-                self.existingunits[source] = target
-                return True
+            self.existingunits[source] = target
+            return True
         return False
 
     def inittm(self, stores, reverse=False):
@@ -411,3 +410,4 @@ def _parse_quality(comment):
     quality = re.search("([0-9]+)%", comment)
     if quality:
         return quality.group(1)
+    return None

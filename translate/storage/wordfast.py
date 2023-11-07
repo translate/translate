@@ -236,8 +236,7 @@ class WordfastTime:
         """Get the time in the Wordfast time format"""
         if not self._time:
             return None
-        else:
-            return time.strftime(WF_TIMEFORMAT, self._time)
+        return time.strftime(WF_TIMEFORMAT, self._time)
 
     def set_timestring(self, timestring):
         """
@@ -271,8 +270,7 @@ class WordfastTime:
     def __str__(self):
         if not self.timestring:
             return ""
-        else:
-            return self.timestring
+        return self.timestring
 
 
 class WordfastHeader:
@@ -348,10 +346,9 @@ class WordfastUnit(base.TranslationUnit):
     def _get_source_or_target(self, key):
         if self._dict.get(key, None) is None:
             return None
-        elif self._dict[key]:
+        if self._dict[key]:
             return _wf_to_char(self._dict[key])
-        else:
-            return ""
+        return ""
 
     def _set_source_or_target(self, key, newvalue):
         if newvalue is None:

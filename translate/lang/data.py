@@ -609,8 +609,7 @@ def simplercode(code):
     separator = normalize_code(code).rfind("-")
     if separator >= 0:
         return code[:separator]
-    else:
-        return ""
+    return ""
 
 
 expansion_factors = {

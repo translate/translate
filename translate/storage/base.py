@@ -500,14 +500,12 @@ class TranslationUnit:
                 return state_id
         if self.STATE:
             raise ValueError("No state containing value %s" % (n))
-        else:
-            return n
+        return n
 
     def get_state_n(self):
         if self.STATE:
             return self._state_n
-        else:
-            return self.S_UNREVIEWED if self.istranslated() else self.S_EMPTY
+        return self.S_UNREVIEWED if self.istranslated() else self.S_EMPTY
 
     def set_state_n(self, value):
         self._state_n = value
@@ -669,8 +667,7 @@ class TranslationStore:
         unit = self.findunit(source)
         if unit and unit.target:
             return unit.target
-        else:
-            return None
+        return None
 
     def remove_unit_from_index(self, unit):
         """Remove a unit from source and locaton indexes"""
@@ -940,10 +937,9 @@ class UnitId:
         def fmt(element, key):
             if element == "key":
                 return f"{self.KEY_SEPARATOR}{key}"
-            elif element == "index":
+            if element == "index":
                 return f"{self.INDEX_SEPARATOR}[{key}]"
-            else:
-                raise ValueError(f"Unsupported element: {element}")
+            raise ValueError(f"Unsupported element: {element}")
 
         return "".join(fmt(*part) for part in self.parts)
 

@@ -66,8 +66,7 @@ def converthtml(
     convertor = po2html()
     if templatefile is None:
         raise ValueError("must have template file for HTML files")
-    else:
-        outputstring = convertor.mergestore(inputstore, templatefile, includefuzzy)
+    outputstring = convertor.mergestore(inputstore, templatefile, includefuzzy)
     outputfile.write(outputstring.encode("utf-8"))
     return 1
 

@@ -20,8 +20,7 @@ class TestOO2PO:
             oosource = oosource.encode("utf-8")
         inputoo = oo.oofile(oosource)
         convertor = self.conversion_class(sourcelanguage, targetlanguage)
-        outputpo = convertor.convertstore(inputoo)
-        return outputpo
+        return convertor.convertstore(inputoo)
 
     @staticmethod
     def singleelement(pofile):
@@ -30,9 +29,8 @@ class TestOO2PO:
             assert len(pofile.units) == 2
             assert pofile.units[0].isheader()
             return pofile.units[1]
-        else:
-            assert len(pofile.units) == 1
-            return pofile.units[0]
+        assert len(pofile.units) == 1
+        return pofile.units[0]
 
     def roundtripstring(self, filename, entitystring):
         """

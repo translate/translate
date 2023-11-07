@@ -115,8 +115,7 @@ class CatkeysHeader:
     @staticmethod
     def _create_default_header():
         """Create a default catkeys header"""
-        defaultheader = FIELDNAMES_HEADER_DEFAULTS.copy()
-        return defaultheader
+        return FIELDNAMES_HEADER_DEFAULTS.copy()
 
     def settargetlanguage(self, newlang):
         """Set a human readable target language"""
@@ -167,10 +166,9 @@ class CatkeysUnit(base.TranslationUnit):
     def _get_source_or_target(self, key):
         if self._dict.get(key) is None:
             return None
-        elif self._dict[key]:
+        if self._dict[key]:
             return _unescape(self._dict[key])
-        else:
-            return ""
+        return ""
 
     def _set_source_or_target(self, key, newvalue):
         if newvalue is None:

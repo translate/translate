@@ -41,8 +41,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
     def fluent_parse(fluent_source: str) -> fluent.FluentFile:
         """Helper that parses Fluent source without requiring files."""
         dummyfile = BytesIO(fluent_source.encode())
-        fluent_file = fluent.FluentFile(dummyfile)
-        return fluent_file
+        return fluent.FluentFile(dummyfile)
 
     @staticmethod
     def fluent_serialize(fluent_file: fluent.FluentFile) -> str:

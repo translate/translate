@@ -11,8 +11,7 @@ class TestAndroid2PO:
         """Helper that converts android source to po source without requiring files"""
         inputfile = BytesIO(source.encode())
         templatefile = BytesIO(template.encode()) if template else None
-        outputpo = android2po._convertandroid(inputfile, templatefile)
-        return outputpo
+        return android2po._convertandroid(inputfile, templatefile)
 
     def test_no_template_units(self):
         """Test that we can handle android with no template"""

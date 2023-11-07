@@ -86,12 +86,11 @@ class csvunit(base.TranslationUnit):
                 else:
                     result = self.developer_comments
             return result
-        elif origin == "translator":
+        if origin == "translator":
             return self.translator_comments
-        elif origin in ("programmer", "developer", "source code"):
+        if origin in ("programmer", "developer", "source code"):
             return self.developer_comments
-        else:
-            raise ValueError("Comment type not valid")
+        raise ValueError("Comment type not valid")
 
     def addnote(self, text, origin=None, position="append"):
         if origin in ("programmer", "developer", "source code"):
