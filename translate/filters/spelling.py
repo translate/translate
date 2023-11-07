@@ -40,9 +40,9 @@ try:
                 checkers[lang] = checker.SpellChecker(lang)
                 # some versions only report an error when checking something
                 checkers[lang].check("bla")
-            except EnchantError as e:
+            except EnchantError:
                 # sometimes this is raised instead of DictNotFoundError
-                logger.error("Dictionary not found: %s", e)
+                logger.exception("Dictionary not found")
                 checkers[lang] = None
 
         return checkers[lang]

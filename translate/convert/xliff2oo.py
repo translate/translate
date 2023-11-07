@@ -99,7 +99,7 @@ class reoo:
                     sourceunitlines = sourceunitlines.encode("utf-8")
                 logger.warning(sourceunitlines)
             except Exception:
-                logger.error("error outputting source unit %r", str(unit))
+                logger.exception("error outputting source unit %r", str(unit))
 
     def applytranslation(self, key, subkey, theoo, unit):
         """Applies the translation from the source unit to the oo unit"""

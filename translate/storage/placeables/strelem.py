@@ -787,7 +787,7 @@ class StringElem:
             parent.sub.insert(0, text)
             return True
 
-        logging.debug(f"Could not insert between {left!r} and {right!r}... odd.")
+        logging.debug("Could not insert between %r and %r... odd.", left, right)
         return False
 
     def isleaf(self):

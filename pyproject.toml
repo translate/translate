@@ -43,7 +43,6 @@ ignore = [
   "N804",  # TODO: First argument of a class method should be named `cls`
   "SLOT000",  # TODO: Subclasses of `str` should define `__slots__`
   "N999",  # TODO: Invalid module name: 'pt_BR'
-  "G004",  # TODO: Logging statement uses f-string
   "RUF013",  # TODO: PEP 484 prohibits implicit `Optional`
   "SIM401",  # TODO:  Use `klass, maker = _class_dictionary.get(tag, (xliff.UnknownXML, make_unknown))` instead of an `if` block
   "F403",  # TODO: `from .base import *` used; unable to detect undefined names
@@ -84,7 +83,6 @@ ignore = [
   "TD007",  # TODO: Missing space after colon in TODO
   "SLF001",  # TODO: Private member accessed
   "RUF012",  # TODO: Mutable class attributes should be annotated with `typing.ClassVar`
-  "TRY400",  # TODO: Use `logging.exception` instead of `logging.error`
   "TRY002",  # TODO: Create your own exception
   "TRY003",  # WONTFIX: Avoid specifying long messages outside the exception class
   "TRY200",  # TODO: Use `raise from` to specify exception cause
