@@ -810,7 +810,7 @@ class RecursiveOptionParser(optparse.OptionParser):
                             return templatepath
             if "*" in self.inputformats:
                 for inputext1, templateext1 in self.outputoptions:
-                    if (inputext == inputext1) or (inputext1 == "*"):
+                    if inputext1 in (inputext, "*"):
                         if templateext1 == "*":
                             templatepath = inputname
                             if self.templateexists(options, templatepath):

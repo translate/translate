@@ -31,13 +31,11 @@ ignore = [
   "PT009",  # TODO: Use a regular `assert` instead of unittest-style `assertCountEqual`
   "B015",  # TODO: Pointless comparison. Did you mean to assign a value? Otherwise, prepend `assert` or remove it
   "PGH003",  # TODO: Use specific rule codes when ignoring type issues
-  "SIM109",  # TODO: Use `output in (expectedpo, expectedpo2)` instead of multiple equality comparisons
   "B017",  # TODO: `pytest.raises(Exception)` should be considered evil
   "TRY201",  # TODO: Use `raise` without specifying exception name
   "PLE0605",  # TODO: Invalid format for `__all__`, must be `tuple` or `list`
   "B008",  # TODO: Do not perform function call `sys.getdefaultencoding` in argument defaults
   "G003",  # TODO: Logging statement uses `+`
-  "PLR1714",  # TODO: Consider merging multiple comparisons
   "PLW1510",  # TODO: `subprocess.run` without explicit `check` argument
   "SLOT000",  # TODO: Subclasses of `str` should define `__slots__`
   "N999",  # TODO: Invalid module name: 'pt_BR'
