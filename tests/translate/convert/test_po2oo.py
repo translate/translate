@@ -48,7 +48,8 @@ class TestPO2OO:
             "output oo:\n",
             ooresult,
         )
-        assert ooresult.startswith(oointro) and ooresult.endswith(oooutro)
+        assert ooresult.startswith(oointro)
+        assert ooresult.endswith(oooutro)
         return ooresult[len(oointro) : -len(oooutro)]
 
     def check_roundtrip(self, oosource):

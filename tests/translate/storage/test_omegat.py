@@ -17,4 +17,4 @@ class TestOtFile(test_base.TestTranslationStore):
         "extensions, but factory listing it as one supported file type"
     )
     def test_extensions(self):
-        assert False
+        super().test_extensions()

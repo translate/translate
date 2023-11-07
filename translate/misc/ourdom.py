@@ -252,9 +252,9 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
                 uri, localname, prefix, qname = expatbuilder._parse_ns_name(self, name)
                 assert (
                     curNode.namespaceURI == uri
-                    and curNode.localName == localname
-                    and curNode.prefix == prefix
                 ), "element stack messed up! (namespace)"
+                assert curNode.localName == localname
+                assert curNode.prefix == prefix
             else:
                 assert (
                     curNode.nodeName == name

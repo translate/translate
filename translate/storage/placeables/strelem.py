@@ -249,7 +249,8 @@ class StringElem:
             # If {end} is "between" elements, we use the one on the "left"
             end["elem"] = end["elem"][0]
             end["offset"] = end["offset"][0]
-        assert start["elem"].isleaf() and end["elem"].isleaf()
+        assert start["elem"].isleaf()
+        assert end["elem"].isleaf()
 
         # logging.debug('FROM %s TO %s' % (start, end))
 

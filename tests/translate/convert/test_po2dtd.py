@@ -62,7 +62,8 @@ class TestPO2DTD:
         dtdintro, dtdoutro = "<!ENTITY Test.RoundTrip ", ">\n"
         dtdsource = dtdintro + entitystring + dtdoutro
         dtdresult = self.roundtripsource(dtdsource)
-        assert dtdresult.startswith(dtdintro) and dtdresult.endswith(dtdoutro)
+        assert dtdresult.startswith(dtdintro)
+        assert dtdresult.endswith(dtdoutro)
         return dtdresult[len(dtdintro) : -len(dtdoutro)]
 
     def check_roundtrip(self, dtdsource, dtdcompare=None):
