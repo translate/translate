@@ -32,7 +32,6 @@ ignore = [
   "B008",  # TODO: Do not perform function call `sys.getdefaultencoding` in argument defaults
   "PLW1510",  # TODO: `subprocess.run` without explicit `check` argument
   "SLOT000",  # TODO: Subclasses of `str` should define `__slots__`
-  "SIM401",  # TODO:  Use `klass, maker = _class_dictionary.get(tag, (xliff.UnknownXML, make_unknown))` instead of an `if` block
   "B028",  # TODO: No explicit `stacklevel` keyword argument found
   "TRY301",  # TODO: Abstract `raise` to an inner function
   "B006",  # TODO: Do not use mutable data structures for argument defaults

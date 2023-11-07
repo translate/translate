@@ -78,10 +78,7 @@ _class_dictionary = {
 
 def make_placeable(node, xml_space):
     _namespace, tag = misc.parse_tag(node.tag)
-    if tag in _class_dictionary:
-        klass, maker = _class_dictionary[tag]
-    else:
-        klass, maker = xliff.UnknownXML, make_unknown
+    klass, maker = _class_dictionary.get(tag, (xliff.UnknownXML, make_unknown))
     return maker(klass, node, xml_space)
 
 
