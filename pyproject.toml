@@ -36,7 +36,6 @@ ignore = [
   "TRY201",  # TODO: Use `raise` without specifying exception name
   "PLE0605",  # TODO: Invalid format for `__all__`, must be `tuple` or `list`
   "B008",  # TODO: Do not perform function call `sys.getdefaultencoding` in argument defaults
-  "PLW0120",  # TODO: `else` clause on loop without a `break` statement; remove the `else` and de-indent all the code inside it
   "G003",  # TODO: Logging statement uses `+`
   "TCH003",  # TODO: Move standard library import `collections.abc.Iterator` into a type-checking block
   "PLR1714",  # TODO: Consider merging multiple comparisons
