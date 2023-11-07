@@ -45,7 +45,7 @@ class web2py2po:
         targetheader = self.mypofile.header()
         targetheader.addnote("extracted from web2py", "developer")
 
-        for source_str in mydict.keys():
+        for source_str in mydict:
             target_str = mydict[source_str]
             if target_str == source_str.replace("@markmin\x01", ""):
                 # a convention with new (untranslated) web2py files

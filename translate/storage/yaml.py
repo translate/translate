@@ -223,7 +223,7 @@ class RubyYAMLFile(YAMLFile):
 
     def _parse_dict(self, data, prev):
         # Does this look like a plural?
-        if data and all(x in cldr_plural_categories for x in data.keys()):
+        if data and all(x in cldr_plural_categories for x in data):
             # Ensure we have correct plurals ordering.
             values = [data[item] for item in cldr_plural_categories if item in data]
             yield (prev, multistring(values))

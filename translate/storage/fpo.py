@@ -282,10 +282,8 @@ class pounit(pocommon.pounit):
         # check for word boundaries properly by using a regular expression...
         return (
             sum(
-                map(
-                    lambda tcline: len(re.findall("\\b%s\\b" % typecomment, tcline)),
-                    self.typecomments,
-                )
+                len(re.findall("\\b%s\\b" % typecomment, tcline))
+                for tcline in self.typecomments
             )
             != 0
         )
@@ -293,10 +291,7 @@ class pounit(pocommon.pounit):
     def hasmarkedcomment(self, commentmarker):
         """Check whether the given comment marker is present as # (commentmarker) ..."""
         commentmarker = "(%s)" % commentmarker
-        for comment in self.othercomments:
-            if comment.startswith(commentmarker):
-                return True
-        return False
+        return any(comment.startswith(commentmarker) for comment in self.othercomments)
 
     def settypecomment(self, typecomment, present=True):
         """Alters whether a given typecomment is present"""
@@ -305,10 +300,10 @@ class pounit(pocommon.pounit):
                 self.typecomments.append("#, %s\n" % typecomment)
             else:
                 # this should handle word boundaries properly ...
-                typecomments = map(
-                    lambda tcline: re.sub("\\b%s\\b[ \t,]*" % typecomment, "", tcline),
-                    self.typecomments,
-                )
+                typecomments = [
+                    re.sub("\\b%s\\b[ \t,]*" % typecomment, "", tcline)
+                    for tcline in self.typecomments
+                ]
                 self.typecomments = filter(
                     lambda tcline: tcline.strip() != "#,", typecomments
                 )

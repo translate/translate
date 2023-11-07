@@ -761,10 +761,7 @@ class TranslationStore:
         """Return True if the object doesn't contain any translation units."""
         if len(self.units) == 0:
             return True
-        for unit in self.units:
-            if unit.istranslatable():
-                return False
-        return True
+        return all(not unit.istranslatable() for unit in self.units)
 
     def _assignname(self):
         """

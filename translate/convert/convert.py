@@ -534,14 +534,12 @@ def should_output_store(store, threshold):
 
     from translate.tools import pocount
 
-    units = list(filter(lambda unit: unit.istranslatable(), store.units))
-    translated = list(filter(lambda unit: unit.istranslated(), units))
-    wordcounts = dict(
-        map(lambda unit: (unit.getid(), pocount.wordsinunit(unit)), units)
-    )
+    units = [unit for unit in store.units if unit.istranslatable()]
+    translated = [unit for unit in units if unit.istranslated()]
+    wordcounts = {unit.getid(): pocount.wordsinunit(unit) for unit in units}
 
     def sourcewords(elementlist):
-        return sum(map(lambda unit: wordcounts[unit.getid()][0], elementlist))
+        return sum(wordcounts[unit.getid()][0] for unit in elementlist)
 
     translated_count = sourcewords(translated)
     total_count = sourcewords(units)

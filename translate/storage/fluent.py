@@ -660,10 +660,7 @@ class _SelectorBranchIterator:
         # This is similar to a digit counter: we try and increment a digit by 1,
         # otherwise we reset the digit to 0 and try and increment the next digit
         # instead.
-        for node_iterator in self.node_iterators:
-            if node_iterator.next():
-                return True
-        return False
+        return any(node_iterator.next() for node_iterator in self.node_iterators)
 
     def selected_branches(self) -> Iterator[FluentSelectorBranch]:
         """
