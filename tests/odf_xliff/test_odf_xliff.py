@@ -19,21 +19,13 @@
 
 import difflib
 import os
-import sys
 import zipfile
 from os import path
 
 from lxml import etree
 
-# get directory of this test
-dir = os.path.dirname(os.path.abspath(__file__))
-# get top-level directory (moral equivalent of ../..)
-dir = os.path.dirname(os.path.dirname(dir))
-# load python modules from top-level
-sys.path.insert(0, dir)
-
-from translate.convert import odf2xliff, xliff2odf  # isort:skip
-from translate.storage import factory, xliff  # isort:skip
+from translate.convert import odf2xliff, xliff2odf
+from translate.storage import factory, xliff
 
 
 def args(src, tgt, **kwargs):
