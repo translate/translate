@@ -145,12 +145,12 @@ class SicilianChecker(TranslationChecker):
             "zzioni": "zziuni",
         }
 
-        stopwords = []
-
-        for word in self.config.lang.words(str2):
-            for suffix in suffixes:
-                if word not in str1 and word.lower().endswith(suffix):
-                    stopwords.append(f"{word} (-{suffixes[suffix]})")
+        stopwords = [
+            f"{word} (-{suffixes[suffix]})"
+            for word in self.config.lang.words(str2)
+            for suffix in suffixes
+            if word not in str1 and word.lower().endswith(suffix)
+        ]
 
         if stopwords:
             raise FilterFailure(

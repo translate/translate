@@ -558,17 +558,16 @@ class xliffunit(lisa.LISAunit):
         for group in grouptags:
             if group.get("name") == name:
                 contexts = group.iterdescendants(self.namespaced("context"))
-                pairs = []
-                for context in contexts:
-                    pairs.append(
-                        (
-                            context.get("context-type"),
-                            lisa.getText(
-                                context,
-                                getXMLspace(self.xmlelement, self._default_xml_space),
-                            ),
-                        )
+                pairs = [
+                    (
+                        context.get("context-type"),
+                        lisa.getText(
+                            context,
+                            getXMLspace(self.xmlelement, self._default_xml_space),
+                        ),
                     )
+                    for context in contexts
+                ]
                 groups.append(pairs)  # not extend
         return groups
 
@@ -579,17 +578,16 @@ class xliffunit(lisa.LISAunit):
         for group in grouptags:
             if group.get(attributeName) == attributeValue:
                 contexts = group.iterdescendants(self.namespaced("context"))
-                pairs = []
-                for context in contexts:
-                    pairs.append(
-                        (
-                            context.get("context-type"),
-                            lisa.getText(
-                                context,
-                                getXMLspace(self.xmlelement, self._default_xml_space),
-                            ),
-                        )
+                pairs = [
+                    (
+                        context.get("context-type"),
+                        lisa.getText(
+                            context,
+                            getXMLspace(self.xmlelement, self._default_xml_space),
+                        ),
                     )
+                    for context in contexts
+                ]
                 groups.append(pairs)  # not extend
         return groups
 

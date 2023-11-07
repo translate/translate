@@ -98,10 +98,7 @@ class pounit(base.TranslationUnit):
             # Strip (review) notes.
             notestring = self.getnotes(origin="translator")
             notes = notestring.split("\n")
-            newnotes = []
-            for note in notes:
-                if "(review)" not in note:
-                    newnotes.append(note)
+            newnotes = [note for note in notes if "(review)" not in note]
             newnotes = "\n".join(newnotes)
             self.removenotes()
             self.addnote(newnotes, origin="translator")

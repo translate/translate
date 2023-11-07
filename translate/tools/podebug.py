@@ -173,8 +173,7 @@ class podebug:
 
         for element in string_elements:
             if element.istranslatable:
-                for character in str(element):
-                    transformed.append(transform(character))
+                transformed.extend(transform(character) for character in str(element))
             else:
                 transformed.append(element.sub[0])
 

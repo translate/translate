@@ -632,10 +632,9 @@ class proppluralunit(base.TranslationUnit):
     def _get_ordered_units(self):
         # Used for str (GWT order)
         mapping = self._get_target_mapping()
-        names = []
-        for name in self.personality.get_cldr_names_order():
-            if name in mapping:
-                names.append(name)
+        names = [
+            name for name in self.personality.get_cldr_names_order() if name in mapping
+        ]
         return self._get_units(names)
 
     def hasplural(self, key=None):
