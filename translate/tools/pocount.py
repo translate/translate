@@ -503,7 +503,7 @@ class StatCollector:
             stats = calcstats(filename)
             self._results.append(stats)
         except Exception:  # This happens if we have a broken file.
-            logger.error(sys.exc_info()[1])
+            logger.exception("Broken file")
 
     @property
     def longest_filename(self):
