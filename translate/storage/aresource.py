@@ -104,7 +104,7 @@ class AndroidResourceUnit(base.TranslationUnit):
         active_percent = False
         active_escape = False
         i = 0
-        text = list(text) + [EOF]
+        text = [*list(text), EOF]
         while i < len(text):
             c = text[i]
 
@@ -408,7 +408,7 @@ class AndroidResourceUnit(base.TranslationUnit):
             # of Android builts with broken plurals handling.
             if "other" not in plural_tags and "many" in plural_tags:
                 # Create copy here to avoid modifications to laguage.data
-                plural_tags = plural_tags + ["other"]
+                plural_tags = [*plural_tags, "other"]
                 plural_strings.append(plural_strings[-1])
 
             for plural_tag, plural_string in zip(plural_tags, plural_strings):

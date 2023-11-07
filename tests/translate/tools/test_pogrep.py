@@ -17,7 +17,7 @@ class TestPOGrep:
         """Helper that parses po source and passes it through a filter"""
         if cmdlineoptions is None:
             cmdlineoptions = []
-        options, args = pogrep.cmdlineparser().parse_args(["xxx.po"] + cmdlineoptions)
+        options, args = pogrep.cmdlineparser().parse_args(["xxx.po", *cmdlineoptions])
         grepfilter = pogrep.GrepFilter(
             searchstring,
             options.searchparts,
@@ -173,7 +173,7 @@ class TestXLiffGrep:
         if cmdlineoptions is None:
             cmdlineoptions = []
         options, args = pogrep.cmdlineparser().parse_args(
-            ["xxx.xliff"] + cmdlineoptions
+            ["xxx.xliff", *cmdlineoptions]
         )
         grepfilter = pogrep.GrepFilter(
             searchstring,

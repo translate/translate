@@ -117,7 +117,7 @@ class YAMLFile(base.DictStore):
     def _parse_dict(self, data, prev):
         # Avoid using merged items, it is enough to have them once
         for k, v in data.non_merged_items():
-            yield from self._flatten(v, prev + [("key", k)])
+            yield from self._flatten(v, prev.extend("key", k))
 
     def _flatten(self, data, prev=None):
         """Flatten YAML dictionary."""
@@ -131,7 +131,7 @@ class YAMLFile(base.DictStore):
             yield (prev, str(data))
         elif isinstance(data, list):
             for k, v in enumerate(data):
-                yield from self._flatten(v, prev + [("index", k)])
+                yield from self._flatten(v, prev.extend("index", k))
         elif isinstance(data, TaggedScalar):
             yield (prev, data.value)
         elif data is None:

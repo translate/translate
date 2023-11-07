@@ -941,10 +941,8 @@ class UnitId:
 
         return "".join(fmt(*part) for part in self.parts)
 
-    def __add__(self, other):
-        if not isinstance(other, list):
-            raise ValueError(f"Not supported type for add: {type(other)}")
-        return self.__class__(self.parts + other)
+    def extend(self, key, value):
+        return self.__class__([*self.parts, (key, value)])
 
     @classmethod
     def from_string(cls, text):

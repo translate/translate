@@ -175,7 +175,7 @@ class Project:
             output_ext_parts = output_ext_parts[:-1]
         else:
             output_ext_parts.append(converted_ext)
-        output_fname += os.extsep.join([""] + output_ext_parts)
+        output_fname += os.extsep.join(["", *output_ext_parts])
 
         if os.path.isfile(output_fname):
             # If the output file already exist, we can't assume that it's safe

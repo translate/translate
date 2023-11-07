@@ -56,4 +56,5 @@ __all__ = (
     "parse",
     "StringElem",
     "xliff",
-) + all_your_base
+    *all_your_base,
+)

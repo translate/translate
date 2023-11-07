@@ -136,8 +136,8 @@ class rcunit(base.TranslationUnit):
     def getoutput(self):
         """Convert the element back into formatted lines for a .rc file."""
         if self.isblank():
-            return "".join(self.comments + ["\n"])
-        return "".join(self.comments + [f"{self.name}={self._value}\n"])
+            return "".join([*self.comments, "\n"])
+        return "".join([*self.comments, f"{self.name}={self._value}\n"])
 
     def getlocations(self):
         return [self.name]
