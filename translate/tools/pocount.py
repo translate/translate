@@ -155,7 +155,7 @@ def calcstats(filename):
         logger.warning(e)
         return {}
 
-    units = [unit for unit in store.units if unit.istranslatable()]  # type: ignore
+    units = [unit for unit in store.units if unit.istranslatable()]
     translated = translatedmessages(units)
     fuzzy = fuzzymessages(units)
     review = [unit for unit in units if unit.isreview()]
