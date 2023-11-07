@@ -368,7 +368,7 @@ class podebug:
         for unit in store.units:
             if not unit.istranslatable():
                 continue
-            unit = self.convertunit(unit, prefix)
+            self.convertunit(unit, prefix)
         return store
 
     @staticmethod
