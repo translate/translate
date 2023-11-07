@@ -133,10 +133,7 @@ def find_matches(unit, part, strings, re_search):
         if not string:
             continue
         normalized = data.normalize(string)
-        if normalized == string:
-            index_func = lambda s, i: i
-        else:
-            index_func = real_index
+        index_func = (lambda s, i: i) if normalized == string else real_index
         for matchobj in re_search.finditer(normalized):
             start = index_func(string, matchobj.start())
             end = index_func(string, matchobj.end())
@@ -270,16 +267,10 @@ class GrepFilter:
             old_length = len(matches)
 
             if self.search_target:
-                if unit.hasplural():
-                    targets = unit.target.strings
-                else:
-                    targets = [unit.target]
+                targets = unit.target.strings if unit.hasplural() else [unit.target]
                 matches.extend(find_matches(unit, "target", targets, self.re_search))
             if self.search_source:
-                if unit.hasplural():
-                    sources = unit.source.strings
-                else:
-                    sources = [unit.source]
+                sources = unit.source.strings if unit.hasplural() else [unit.source]
                 matches.extend(find_matches(unit, "source", sources, self.re_search))
             if self.search_notes:
                 matches.extend(

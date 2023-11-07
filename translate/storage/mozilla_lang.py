@@ -47,10 +47,7 @@ class LangUnit(base.TranslationUnit):
         super().__init__(source)
 
     def __str__(self):
-        if self.istranslated():
-            target = self.target
-        else:
-            target = self.source
+        target = self.target if self.istranslated() else self.source
         if self.source == self.target:
             target = self.target + " {ok}"
         if (

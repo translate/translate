@@ -217,10 +217,7 @@ def convertoo(
     if not targetlanguage:
         raise ValueError("You must specify the target language")
     if not sourcelanguage:
-        if targetlanguage.isdigit():
-            sourcelanguage = "01"
-        else:
-            sourcelanguage = "en-US"
+        sourcelanguage = "01" if targetlanguage.isdigit() else "en-US"
     languages = (sourcelanguage, targetlanguage)
     if templatefile is None:
         raise ValueError("must have template file for oo files")

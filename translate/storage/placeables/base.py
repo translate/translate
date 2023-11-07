@@ -97,10 +97,7 @@ def to_base_placeables(tree):
         if klass in [Bpt, Ept, Ph, It, G, Bx, Ex, X, Sub]
     ]
 
-    if not base_class:
-        base_class = tree.__class__
-    else:
-        base_class = base_class[0]
+    base_class = tree.__class__ if not base_class else base_class[0]
 
     newtree = base_class()
     newtree.id = tree.id

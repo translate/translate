@@ -81,10 +81,7 @@ class BaseJsonUnit(base.DictUnit):
     ID_FORMAT = ".{}"
 
     def __init__(self, source=None, item=None, notes=None, placeholders=None, **kwargs):
-        if source:
-            identifier = hex(hash(source))
-        else:
-            identifier = str(uuid.uuid4())
+        identifier = hex(hash(source)) if source else str(uuid.uuid4())
         # Global identifier across file
         self._id = self.ID_FORMAT.format(identifier)
         # Identifier at this level
@@ -141,10 +138,7 @@ class BaseJsonUnit(base.DictUnit):
 class FlatUnitId(base.UnitId):
     @classmethod
     def from_string(cls, text):
-        if text.startswith("."):
-            key = text[1:]
-        else:
-            key = text
+        key = text[1:] if text.startswith(".") else text
         return cls([("key", key)])
 
 
@@ -174,10 +168,7 @@ class JsonFile(base.DictStore):
     @property
     def plural_tags(self):
         locale = self.gettargetlanguage()
-        if locale:
-            locale = locale.replace("_", "-").split("-")[0]
-        else:
-            locale = "en"
+        locale = locale.replace("_", "-").split("-")[0] if locale else "en"
         return plural_tags.get(locale, plural_tags["en"])
 
     def serialize(self, out):
@@ -402,10 +393,7 @@ class I18NextFile(JsonNestedFile):
                 plurals = []
                 plural_base = ""
                 if k in plurals_simple or k + "_plural" in plurals_simple:
-                    if k.endswith("_plural"):
-                        plural_base = k[:-7]
-                    else:
-                        plural_base = k
+                    plural_base = k[:-7] if k.endswith("_plural") else k
                     plurals_simple.remove(plural_base)
                     plurals = [k, k + "_plural"]
                 elif "_" in k:

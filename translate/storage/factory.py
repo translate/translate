@@ -76,10 +76,7 @@ def _examine_txt(storefile):
     # Some encoding magic for Wordfast
     from translate.storage import wordfast
 
-    if wordfast.TAB_UTF16 in start.split(b"\n")[0]:
-        encoding = "utf-16"
-    else:
-        encoding = "iso-8859-1"
+    encoding = "utf-16" if wordfast.TAB_UTF16 in start.split(b"\n")[0] else "iso-8859-1"
     start = start.decode(encoding)
     if "%Wordfast TM" in start:
         pseudo_extension = "_wftm"

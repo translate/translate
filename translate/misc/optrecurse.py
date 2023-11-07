@@ -90,10 +90,7 @@ class ManHelpFormatter(optparse.HelpFormatter):
             short_opts = option._short_opts
             long_opts = option._long_opts
 
-        if self.short_first:
-            opts = short_opts + long_opts
-        else:
-            opts = long_opts + short_opts
+        opts = short_opts + long_opts if self.short_first else long_opts + short_opts
 
         return "\\fB%s\\fP" % ("\\fR, \\fP".join(opts))
 

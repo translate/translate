@@ -69,10 +69,7 @@ def splitlines(text):
         if ch == 10:
             break
         if ch == 13:
-            if text[msgid_pos + i + 1] == 10:
-                newline = b"\r\n"
-            else:
-                newline = b"\r"
+            newline = b"\r\n" if text[msgid_pos + i + 1] == 10 else b"\r"
             break
 
     return [x + newline for x in text.split(newline)], newline.decode()
@@ -171,10 +168,7 @@ class PoWrapper(textwrap.TextWrapper):
         """
         # Figure out when indent is larger than the specified width, and make
         # sure at least one character is stripped off on every pass
-        if width < 1:
-            space_left = 1
-        else:
-            space_left = width - cur_len
+        space_left = 1 if width < 1 else width - cur_len
 
         # We're allowed to break long words, then do so: put as much
         # of the next chunk onto the current line as will fit.
@@ -198,10 +192,7 @@ class PoWrapper(textwrap.TextWrapper):
             cur_len = 0
 
             # Figure out which static string will prefix this line.
-            if lines:
-                indent = self.subsequent_indent
-            else:
-                indent = self.initial_indent
+            indent = self.subsequent_indent if lines else self.initial_indent
 
             # Maximum width for this line.
             width = self.width - len(indent)
@@ -272,10 +263,7 @@ def unescape(line):
     true_escape = False
     true_escape_places = []
     for escape_pos in escape_places:
-        if escape_pos - 1 in escape_places:
-            true_escape = not true_escape
-        else:
-            true_escape = True
+        true_escape = not true_escape if escape_pos - 1 in escape_places else True
         if true_escape:
             true_escape_places.append(escape_pos)
 
@@ -382,10 +370,7 @@ class pounit(pocommon.pounit):
             source = source.strings
         if isinstance(source, list):
             msgid = self.quote(source[0])
-            if len(source) > 1:
-                msgid_plural = self.quote(source[1])
-            else:
-                msgid_plural = []
+            msgid_plural = self.quote(source[1]) if len(source) > 1 else []
         else:
             msgid = self.quote(source)
             msgid_plural = []

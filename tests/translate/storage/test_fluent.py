@@ -358,10 +358,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             assert unit_id == unit.getid()
             id_type = None
             if unit_id:
-                if unit_id.startswith("-"):
-                    id_type = "Term"
-                else:
-                    id_type = "Message"
+                id_type = "Term" if unit_id.startswith("-") else "Message"
             assert expect.get("type", id_type) == unit.fluent_type
             if unit.fluent_type.endswith("Comment"):
                 assert unit.isheader()
@@ -1458,10 +1455,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
 
             # Test with just the character on its own, or at the start of a
             # value.
-            if ok_at_start:
-                escaped_char = char
-            else:
-                escaped_char = f'{{ "{char}" }}'
+            escaped_char = char if ok_at_start else f'{{ "{char}" }}'
 
             for value in [char, f"{char}at start"]:
                 escaped_value = value.replace(char, escaped_char)

@@ -165,10 +165,7 @@ class AndroidResourceUnit(base.TranslationUnit):
                 elif c in ("n", "N"):
                     # Remove whitespace just before newline. Most likely this is result of
                     # having real newline in the XML in front of \n.
-                    if i >= 2 and text[i - 2] == " ":
-                        offset = 2
-                    else:
-                        offset = 1
+                    offset = 2 if i >= 2 and text[i - 2] == " " else 1
                     text[i - offset : i + 1] = "\n"  # an actual newline
                     i -= offset
                 elif c in ("t", "T"):

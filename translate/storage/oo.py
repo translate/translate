@@ -406,10 +406,7 @@ class oomultifile:
         """Initialises oomultifile from a seekable inputfile or writable outputfile"""
         self.filename = filename
         if mode is None:
-            if os.path.exists(filename):
-                mode = "r"
-            else:
-                mode = "w"
+            mode = "r" if os.path.exists(filename) else "w"
         self.mode = mode
         self.multifilestyle = multifilestyle
         self.multifilename = os.path.splitext(filename)[0]

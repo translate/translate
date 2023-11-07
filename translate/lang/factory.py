@@ -39,10 +39,7 @@ def getlanguage(code):
     try:
         if code is None:
             raise ImportError("Can't determine language code")
-        if code in ("or", "is", "as"):
-            internal_code = prefix + code
-        else:
-            internal_code = code
+        internal_code = prefix + code if code in ("or", "is", "as") else code
         module = import_module("translate.lang.%s" % internal_code)
         langclass = getattr(module, internal_code)
         return langclass(code)

@@ -22,10 +22,7 @@ class TestPretranslate:
     def pretranslatepo(input_source, template_source=None):
         """Helper that converts strings to po source without requiring files"""
         input_file = BytesIO(input_source.encode())
-        if template_source:
-            template_file = BytesIO(template_source.encode())
-        else:
-            template_file = None
+        template_file = BytesIO(template_source.encode()) if template_source else None
         output_file = BytesIO()
 
         pretranslate.pretranslate_file(input_file, output_file, template_file)
@@ -36,10 +33,7 @@ class TestPretranslate:
     def pretranslatexliff(input_source, template_source=None):
         """Helper that converts strings to po source without requiring files"""
         input_file = BytesIO(input_source)
-        if template_source:
-            template_file = BytesIO(template_source)
-        else:
-            template_file = None
+        template_file = BytesIO(template_source) if template_source else None
         output_file = BytesIO()
 
         pretranslate.pretranslate_file(input_file, output_file, template_file)

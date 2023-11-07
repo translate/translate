@@ -9,10 +9,7 @@ class TestInc2PO:
     def inc2po(incsource, inctemplate=None):
         """Helper that converts .inc source to po source without requiring files"""
         inputfile = BytesIO(incsource.encode())
-        if inctemplate:
-            templatefile = BytesIO(inctemplate.encode())
-        else:
-            templatefile = None
+        templatefile = BytesIO(inctemplate.encode()) if inctemplate else None
         outputfile = BytesIO()
         result = mozfunny2prop.inc2po(inputfile, outputfile, templatefile)
         assert result == 1
