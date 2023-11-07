@@ -18,11 +18,12 @@
 
 """Base classes for storage interfaces."""
 
+from __future__ import annotations
+
 import codecs
 import logging
 import pickle
 from io import BytesIO
-from typing import List, Optional, Tuple
 
 from translate.misc.multistring import multistring
 from translate.storage.placeables import StringElem
@@ -797,8 +798,8 @@ class TranslationStore:
         return None
 
     def detect_encoding(
-        self, text: bytes, default_encodings: Optional[List[str]] = None
-    ) -> Tuple[str, str]:
+        self, text: bytes, default_encodings: list[str] | None = None
+    ) -> tuple[str, str]:
         """
         Try to detect a file encoding from `text`, using either the chardet lib
         or by trying to decode the file.

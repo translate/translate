@@ -127,10 +127,11 @@ Name and Value pairs:
 
 """
 
+from __future__ import annotations
+
 import re
 from codecs import iterencode
 from copy import deepcopy
-from typing import List
 
 from lxml import etree
 
@@ -259,7 +260,7 @@ class Dialect:
 
     name = None
     default_encoding = "iso-8859-1"
-    delimiters: List[str] = []
+    delimiters: list[str] = []
     pair_terminator = ""
     key_wrap_char = ""
     value_wrap_char = ""
