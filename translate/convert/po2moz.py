@@ -51,8 +51,7 @@ class MozConvertOptionParser(convert.ConvertOptionParser):
     def recursiveprocess(self, options):
         """Recurse through directories and convert files"""
         self.replacer.replacestring = options.locale
-        result = super().recursiveprocess(options)
-        return result
+        return super().recursiveprocess(options)
 
 
 def main(argv=None):

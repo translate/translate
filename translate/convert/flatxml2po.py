@@ -55,8 +55,7 @@ class flatxml2po:
 
     def convert_unit(self, unit):
         """Convert a source format unit to a target format unit."""
-        target_unit = self.TargetUnitClass.buildfromunit(unit)
-        return target_unit
+        return self.TargetUnitClass.buildfromunit(unit)
 
     def convert_store(self):
         """Convert a single source file to a target format file."""

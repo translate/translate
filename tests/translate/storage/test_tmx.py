@@ -37,8 +37,7 @@ class TestTMXfile(test_base.TestTranslationStore):
         """Helper that parses tmx source without requiring files"""
         dummyfile = BytesIO(tmxsource)
         print(tmxsource)
-        tmxfile = tmx.tmxfile(dummyfile)
-        return tmxfile
+        return tmx.tmxfile(dummyfile)
 
     def test_translate(self):
         tmxfile = tmx.tmxfile()

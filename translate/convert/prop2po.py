@@ -377,7 +377,7 @@ class prop2po:
         if alreadymixed:
             # we are successfully throwing this away...
             return None
-        elif alreadymixed is False:
+        if alreadymixed is False:
             # The mix failed before
             return self.convertunit(unit, commenttype)
 
@@ -392,13 +392,12 @@ class prop2po:
             if labelkey is not None:
                 self.mixedkeys[labelkey][mixbucket] = True
             return po_unit
-        else:
-            # otherwise the mix failed. add each one separately and
-            # remember they weren't mixed
-            if accesskeykey is not None:
-                self.mixedkeys[accesskeykey][mixbucket] = False
-            if labelkey is not None:
-                self.mixedkeys[labelkey][mixbucket] = False
+        # otherwise the mix failed. add each one separately and
+        # remember they weren't mixed
+        if accesskeykey is not None:
+            self.mixedkeys[accesskeykey][mixbucket] = False
+        if labelkey is not None:
+            self.mixedkeys[labelkey][mixbucket] = False
 
         return self.convertunit(unit, commenttype)
 

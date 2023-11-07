@@ -442,8 +442,7 @@ class StringElem:
                 for s in e.sub:
                     if str(s) == str(elem):
                         return offset + leafoffset
-                    else:
-                        leafoffset += len(str(s))
+                    leafoffset += len(str(s))
                 offset += len(e)
         return -1
 
@@ -572,16 +571,13 @@ class StringElem:
                 oelem.prune()
                 return True
             # 1.2 #
-            else:
-                # logging.debug('Case 1.2')
-                oparent = self.get_ancestor_where(oelem, lambda x: x.iseditable)
-                if oparent is not None:
-                    oparent.sub.insert(0, checkleaf(oparent, text))
-                    return True
-                else:
-                    self.sub.insert(0, checkleaf(self, text))
-                    return True
-            return False
+            # logging.debug('Case 1.2')
+            oparent = self.get_ancestor_where(oelem, lambda x: x.iseditable)
+            if oparent is not None:
+                oparent.sub.insert(0, checkleaf(oparent, text))
+                return True
+            self.sub.insert(0, checkleaf(self, text))
+            return True
 
         # Case 2 #
         if offset == len(self):
@@ -596,7 +592,7 @@ class StringElem:
             if preferred_parent is oelem:
                 # The preferred parent is still in this StringElem
                 return oelem.insert(len_oelem, text)
-            elif oelem_type == preferred_type:
+            if oelem_type == preferred_type:
                 # oelem has the right type
                 return oelem.insert(len_oelem, text)
 
@@ -619,8 +615,7 @@ class StringElem:
                     else:
                         oelem.sub = [StringElem(head), text, StringElem(tail)]
                     return True
-                else:
-                    return oelem.insert(eoffset, text)
+                return oelem.insert(eoffset, text)
             return False
 
         # And the only case left: Case 4 #
@@ -645,7 +640,7 @@ class StringElem:
             return True
 
         # 4.2 #
-        elif before.iseditable and oelem.iseditable:
+        if before.iseditable and oelem.iseditable:
             # logging.debug('Case 4.2')
             # We can add to either, but we try hard to add to the correct one
             # so that we avoid inserting text in the wrong place on undo, for
@@ -656,10 +651,10 @@ class StringElem:
             if preferred_parent is oelem:
                 # The preferred parent is still in this StringElem
                 return oelem.insert(0, text)
-            elif oelem_type == preferred_type and before_type != preferred_type:
+            if oelem_type == preferred_type and before_type != preferred_type:
                 # oelem has the right type and before has the wrong type
                 return oelem.insert(0, text)
-            elif oelem_type != preferred_type and before_type != preferred_type:
+            if oelem_type != preferred_type and before_type != preferred_type:
                 # Both are the wrong type, so we add it as if neither were
                 # editable
                 bparent = self.get_parent_elem(before)
@@ -675,12 +670,12 @@ class StringElem:
             return before.insert(len(before), text)  # Reinterpret as a case 2
 
         # 4.3 #
-        elif before.iseditable and not oelem.iseditable:
+        if before.iseditable and not oelem.iseditable:
             # logging.debug('Case 4.3')
             return before.insert(len(before), text)  # Reinterpret as a case 2
 
         # 4.4 #
-        elif not before.iseditable and oelem.iseditable:
+        if not before.iseditable and oelem.iseditable:
             # logging.debug('Case 4.4')
             return oelem.insert(0, text)  # Reinterpret as a case 1
 

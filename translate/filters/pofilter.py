@@ -84,9 +84,8 @@ class pocheckfilter:
             if correction:
                 unit.target = correction
                 return autocorrect
-            else:
-                # ignore failures we can't correct when in autocorrect mode
-                return []
+            # ignore failures we can't correct when in autocorrect mode
+            return []
 
         return failures
 

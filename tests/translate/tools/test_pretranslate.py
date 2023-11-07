@@ -55,9 +55,8 @@ class TestPretranslate:
         if len(pofile.units) == 2 and pofile.units[0].isheader():
             print(pofile.units[1])
             return pofile.units[1]
-        else:
-            print(pofile.units[0])
-            return pofile.units[0]
+        print(pofile.units[0])
+        return pofile.units[0]
 
     def test_pretranslatepo_blank(self):
         """

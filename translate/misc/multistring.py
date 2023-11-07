@@ -50,14 +50,12 @@ class multistring(str):
             parentcompare = cmp_compat(str(self), otherstring)
             if parentcompare:
                 return parentcompare
-            else:
-                return cmp_compat(self.strings[1:], otherstring.strings[1:])
-        elif isinstance(otherstring, str):
+            return cmp_compat(self.strings[1:], otherstring.strings[1:])
+        if isinstance(otherstring, str):
             return cmp_compat(str(self), otherstring)
-        elif isinstance(otherstring, list) and otherstring:
+        if isinstance(otherstring, list) and otherstring:
             return cmp_compat(self, multistring(otherstring))
-        else:
-            return cmp_compat(str(type(self)), str(type(otherstring)))
+        return cmp_compat(str(type(self)), str(type(otherstring)))
 
     def __hash__(self):
         return hash(str(self))

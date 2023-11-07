@@ -235,12 +235,12 @@ def extractwithoutquotes(
     return (extracted, instring)
 
 
+# TODO: investigate if ord is needed
 def _encode_entity_char(char, codepoint2name):
     charnum = ord(char)
     if charnum in codepoint2name:
         return "&%s;" % codepoint2name[charnum]
-    else:
-        return char
+    return char
 
 
 def entityencode(source, codepoint2name):
@@ -285,7 +285,7 @@ def _has_entity_end(source):
     for char in source:
         if char == ";":
             return True
-        elif char == " ":
+        if char == " ":
             return False
     return False
 
@@ -388,8 +388,7 @@ def xwiki_properties_encode(source, encoding):
         source = source.replace("'", "''")
     if encoding == "utf-8":
         return java_utf8_properties_encode(source)
-    else:
-        return javapropertiesencode(source)
+    return javapropertiesencode(source)
 
 
 def escapespace(char):
@@ -412,8 +411,7 @@ def mozillaescapemarginspaces(source):
 
     if len(source) == 1:
         return escapespace(source)
-    else:
-        return escapespace(source[0]) + source[1:-1] + escapespace(source[-1])
+    return escapespace(source[0]) + source[1:-1] + escapespace(source[-1])
 
 
 propertyescapes = {
@@ -466,7 +464,7 @@ def propertiesdecode(source):
         """
         if i >= 32:
             return chr(i)
-        elif chr(i) in controlchars:
+        if chr(i) in controlchars:
             # we just return the character, unescaped
             # if people want to escape them they can use escapecontrols
             return chr(i)

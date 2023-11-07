@@ -26,9 +26,7 @@ def passes(filterfunction, str1, str2):
     except checks.FilterFailure:
         filterresult = False
 
-    filterresult = filterresult and check_category(filterfunction)
-
-    return filterresult
+    return filterresult and check_category(filterfunction)
 
 
 def fails(filterfunction, str1, str2, message=None):

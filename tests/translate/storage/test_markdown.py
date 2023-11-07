@@ -423,8 +423,7 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
     @staticmethod
     def parse(md):
         inputfile = BytesIO(md.encode())
-        store = markdown.MarkdownFile(inputfile=inputfile, callback=lambda x: f"({x})")
-        return store
+        return markdown.MarkdownFile(inputfile=inputfile, callback=lambda x: f"({x})")
 
     @staticmethod
     def get_translation_unit_sources(store):

@@ -212,8 +212,7 @@ class poheader:
         candidate = self.units[0]
         if candidate.isheader():
             return candidate
-        else:
-            return None
+        return None
 
     def parseheader(self):
         """
@@ -307,8 +306,7 @@ class poheader:
 
             if langcode_ire.match(lang):
                 return lang
-            else:
-                lang = None
+            lang = None
         if "X-Poedit-Language" in header:
             from translate.lang import poedit
 
@@ -362,7 +360,7 @@ class poheader:
         if accelerator is not None:
             if accelerator == "~":
                 return "openoffice"
-            elif accelerator == "&":
+            if accelerator == "&":
                 return "mozilla"
         project_id = header.get("Project-Id-Version")
         if project_id is not None and "gnome" in project_id.lower():
@@ -440,11 +438,10 @@ class poheader:
                 contribexists = True
                 if year in line:
                     break
-                else:
-                    # The contributor is there, but not for this year
-                    if line[-1] == ".":
-                        line = line[:-1]
-                    contriblines[i] = f"{line}, {year}."
+                # The contributor is there, but not for this year
+                if line[-1] == ".":
+                    line = line[:-1]
+                contriblines[i] = f"{line}, {year}."
 
         if not contribexists:
             # Add a new contributor

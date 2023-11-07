@@ -309,11 +309,9 @@ def convertprop(
 
     if templatefile is None:
         raise ValueError("must have template file for properties files")
-        # convertor = po2prop()
-    else:
-        convertor = reprop(
-            templatefile, inputstore, personality, encoding, remove_untranslated
-        )
+    convertor = reprop(
+        templatefile, inputstore, personality, encoding, remove_untranslated
+    )
     outputprop = convertor.convertstore(includefuzzy)
     outputfile.write(outputprop)
     return True

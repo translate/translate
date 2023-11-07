@@ -136,8 +136,7 @@ class LISAunit(base.TranslationUnit):
     def get_target_dom(self, lang=None):
         if lang:
             return self.getlanguageNode(lang=lang)
-        else:
-            return self.getlanguageNode(lang=None, index=1)
+        return self.getlanguageNode(lang=None, index=1)
 
     target_dom = property(get_target_dom)
 
@@ -212,8 +211,7 @@ class LISAunit(base.TranslationUnit):
         else:  # have to use index
             if index >= len(languageNodes):
                 return None
-            else:
-                return languageNodes[index]
+            return languageNodes[index]
         return None
 
     def getNodeText(self, languageNode, xml_space="preserve"):
@@ -229,8 +227,7 @@ class LISAunit(base.TranslationUnit):
                 return getText(node, xml_space)
             # didn't have the structure we expected
             return None
-        else:
-            return getText(languageNode, xml_space)
+        return getText(languageNode, xml_space)
 
     def __str__(self):
         # 'unicode' encoding keeps the unicode status of the output

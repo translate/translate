@@ -45,7 +45,6 @@ ignore = [
   "PLW0120",  # TODO: `else` clause on loop without a `break` statement; remove the `else` and de-indent all the code inside it
   "G003",  # TODO: Logging statement uses `+`
   "PERF102",  # TODO: When using only the keys of a dict use the `keys()` method
-  "RET508",  # TODO: Unnecessary `else` after `break` statement
   "TCH003",  # TODO: Move standard library import `collections.abc.Iterator` into a type-checking block
   "PLR1714",  # TODO: Consider merging multiple comparisons
   "PLW1510",  # TODO: `subprocess.run` without explicit `check` argument
@@ -82,11 +81,6 @@ ignore = [
   "SIM105",  # TODO: Use `contextlib.suppress(Exception)` instead of `try`-`except`-`pass`
   "SIM114",  # TODO: Combine `if` branches using logical `or` operator
   "SIM102",  # TODO: Use a single `if` statement instead of nested `if` statements
-  "RET505",  # TODO: Unnecessary `else` after `return` statement
-  "RET506",  # TODO: Unnecessary `else` after `raise` statement
-  "RET507",  # TODO: Unnecessary `elif` after `continue` statement
-  "RET504",  # TODO: Unnecessary assignment to `string` before `return` statement
-  "RET503",  # TODO: Missing explicit `return` at the end of function able to return non-`None` value
   "SIM115",  # TODO: Use context handler for opening files
   "PT018",  # TODO: Assertion should be broken down into multiple parts
   "E741",  # TODO: Ambiguous variable name:

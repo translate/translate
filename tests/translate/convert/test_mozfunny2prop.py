@@ -17,8 +17,7 @@ class TestInc2PO:
         result = mozfunny2prop.inc2po(inputfile, outputfile, templatefile)
         assert result == 1
         outputpo = outputfile.getvalue()
-        outputpofile = po.pofile(BytesIO(outputpo))
-        return outputpofile
+        return po.pofile(BytesIO(outputpo))
 
     @staticmethod
     def singleelement(pofile):

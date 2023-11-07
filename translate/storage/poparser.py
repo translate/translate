@@ -161,8 +161,7 @@ def parse_comment(parse_state, unit):
         else:
             append(unit.othercomments, next_line)
         return parse_state.read_line()
-    else:
-        return None
+    return None
 
 
 def parse_comments(parse_state, unit):
@@ -239,6 +238,7 @@ def parse_message(
         return parse_multiple_quoted(
             parse_state, msg_list, msg_comment_list, start_of_string_len
         )
+    return None
 
 
 def parse_msgctxt(parse_state, unit):

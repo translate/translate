@@ -88,10 +88,9 @@ def make_placeable(node, xml_space):
 def as_unicode(string):
     if isinstance(string, str):
         return string
-    elif isinstance(string, StringElem):
+    if isinstance(string, StringElem):
         return str(string)
-    else:
-        return string.decode("utf-8")
+    return string.decode("utf-8")
 
 
 def xml_to_strelem(dom_node, xml_space="preserve"):

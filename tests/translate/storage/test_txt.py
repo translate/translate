@@ -15,8 +15,7 @@ class TestTxtFile(test_monolingual.TestMonolingualStore):
     def txtparse(self, txtsource, no_segmentation=False):
         """Helper that parses txt source without requiring files"""
         dummyfile = BytesIO(txtsource.encode())
-        txtfile = self.StoreClass(dummyfile, no_segmentation=no_segmentation)
-        return txtfile
+        return self.StoreClass(dummyfile, no_segmentation=no_segmentation)
 
     def txtregen(self, txtsource, no_segmentation=False):
         """Helper that converts txt source to txtfile object and back"""

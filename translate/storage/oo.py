@@ -256,8 +256,7 @@ class ooline:
         """Obtains the text column and handle escaping."""
         if self.sourcefile.endswith(".xhp"):
             return unescape_help_text(self._text)
-        else:
-            return unescape_text(self._text)
+        return unescape_text(self._text)
 
     def settext(self, text):
         """Sets the text column and handle escaping."""

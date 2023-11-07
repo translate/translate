@@ -15,8 +15,7 @@ class BaseTestFilter:
         """Helper that parses xliff file content without requiring files"""
         dummyfile = BytesIO(filetext.encode())
         dummyfile.name = self.filename
-        store = factory.getobject(dummyfile)
-        return store
+        return factory.getobject(dummyfile)
 
     def filter(self, translationstore, checkerconfig=None, cmdlineoptions=None):
         """
@@ -33,8 +32,7 @@ class BaseTestFilter:
             parser = pofilter.FilterOptionParser({})
             checkerconfig = parser.build_checkerconfig(options)
         checkfilter = pofilter.pocheckfilter(options, checkerclasses, checkerconfig)
-        tofile = checkfilter.filterfile(translationstore)
-        return tofile
+        return checkfilter.filterfile(translationstore)
 
     def test_simplepass(self):
         """Checks that an obviously correct string passes"""

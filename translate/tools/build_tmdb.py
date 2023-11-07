@@ -37,7 +37,7 @@ class Builder:
             if not os.path.exists(filename):
                 logger.error("cannot process %s: does not exist", filename)
                 continue
-            elif os.path.isdir(filename):
+            if os.path.isdir(filename):
                 self.handledir(filename)
             else:
                 self.handlefile(filename)

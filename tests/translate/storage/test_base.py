@@ -37,8 +37,7 @@ def first_translatable(store):
     """Returns first translatable unit, skipping header if present"""
     if store.units[0].isheader() and len(store.units) > 1:
         return store.units[1]
-    else:
-        return store.units[0]
+    return store.units[0]
 
 
 class TestTranslationUnit:

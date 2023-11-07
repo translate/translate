@@ -367,9 +367,7 @@ def convertrc(
         raise ValueError("must specify a target language")
     if templatefile is None:
         raise ValueError("must have template file for rc files")
-        # convertor = po2rc()
-    else:
-        convertor = rerc(templatefile, charset, lang, sublang)
+    convertor = rerc(templatefile, charset, lang, sublang)
     outputrclines = convertor.convertstore(inputstore, includefuzzy)
     try:
         outputfile.write(outputrclines.encode("cp1252"))

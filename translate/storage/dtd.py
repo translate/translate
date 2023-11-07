@@ -106,8 +106,7 @@ def quoteforandroid(source):
     # "\\&apos;" or "\\'".
     source = source.replace("'", "\\u0027")
     source = source.replace('"', "\\&quot;")
-    value = quotefordtd(source)  # value is an UTF-8 encoded string.
-    return value
+    return quotefordtd(source)  # value is an UTF-8 encoded string.
 
 
 def unquotefromandroid(source):
@@ -116,8 +115,7 @@ def unquotefromandroid(source):
     value = value.replace("\\&apos;", "'")
     value = value.replace("\\'", "'")
     value = value.replace("\\u0027", "'")
-    value = value.replace('\\"', '"')  # This converts \&quot; to ".
-    return value
+    return value.replace('\\"', '"')  # This converts \&quot; to ".
 
 
 _DTD_CODEPOINT2NAME = {
@@ -194,11 +192,9 @@ def removeinvalidamps(name, value):
 
     def is_valid_entity_name(name):
         """Check that supplied *name* is a valid entity name."""
-        if name.replace(".", "").replace("_", "").isalnum():
-            return True
-        elif name[0] == "#" and name[1:].isalnum():
-            return True
-        return False
+        return name.replace(".", "").replace("_", "").isalnum() or (
+            name[0] == "#" and name[1:].isalnum()
+        )
 
     amppos = 0
     invalid_amps = []
@@ -243,8 +239,7 @@ class dtdunit(base.TranslationUnit):
         """Gets the unquoted source string"""
         if self.android:
             return unquotefromandroid(self.definition)
-        else:
-            return unquotefromdtd(self.definition)
+        return unquotefromdtd(self.definition)
 
     @source.setter
     def source(self, source):
@@ -435,7 +430,7 @@ class dtdunit(base.TranslationUnit):
                             self.entityhelp = None
                             e = 0
                             continue
-                        elif self.entitypart == "definition":
+                        if self.entitypart == "definition":
                             self.entityhelp = (e, line[e])
                             self.instring = False
                 if self.entitypart == "parameter":

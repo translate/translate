@@ -13,8 +13,7 @@ class TestPO2Prop:
         inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
         convertor = po2prop.po2prop()
-        outputprop = convertor.convertstore(inputpo)
-        return outputprop
+        return convertor.convertstore(inputpo)
 
     @staticmethod
     def merge2prop(

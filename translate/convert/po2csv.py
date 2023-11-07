@@ -32,19 +32,15 @@ class po2csv:
         return " ".join(inputunit.getlocations())
 
     def convertunit(self, inputunit):
-        csvunit = csvl10n.csvunit()
         if inputunit.isheader():
             return None
-            # csvunit.location = "location"
-            # csvunit.source = "source"
-            # csvunit.target = "target"
-        elif inputunit.isblank():
+        if inputunit.isblank():
             return None
-        else:
-            csvunit.location = self.convertcomments(inputunit)
-            csvunit.source = inputunit.source
-            csvunit.target = inputunit.target
-            csvunit.setcontext(inputunit.getcontext())
+        csvunit = csvl10n.csvunit()
+        csvunit.location = self.convertcomments(inputunit)
+        csvunit.source = inputunit.source
+        csvunit.target = inputunit.target
+        csvunit.setcontext(inputunit.getcontext())
         return csvunit
 
     def convertplurals(self, inputunit):

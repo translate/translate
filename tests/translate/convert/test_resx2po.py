@@ -210,9 +210,8 @@ class TestRESX2POCommand(test_convert.TestConvertCommand, TestRESX2PO):
             assert len(pofile.units) == 2
             assert pofile.units[0].isheader()
             return pofile.units[1]
-        else:
-            assert len(pofile.units) == 1
-            return pofile.units[0]
+        assert len(pofile.units) == 1
+        return pofile.units[0]
 
     def test_simple_pot(self):
         """Tests the simplest possible conversion to a pot file"""

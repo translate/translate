@@ -353,7 +353,7 @@ def gpo_encode(value):
 def gpo_decode(value):
     if isinstance(value, str):
         return value
-    elif isinstance(value, bytes):
+    if isinstance(value, bytes):
         return value.decode("utf-8")
     return value
 
@@ -427,10 +427,8 @@ class pounit(pocommon.pounit):
                 remainder = re.search(r"_: .*\n(.*)", text)
                 if remainder:
                     return remainder.group(1)
-                else:
-                    return ""
-            else:
-                return text
+                return ""
+            return text
 
         singular = remove_msgid_comments(
             gpo_decode(gpo.po_message_msgid(self._gpo_message)) or ""
@@ -443,10 +441,8 @@ class pounit(pocommon.pounit):
                 )
                 multi.strings.append(pluralform)
                 return multi
-            else:
-                return singular
-        else:
-            return ""
+            return singular
+        return ""
 
     @source.setter
     def source(self, source):
@@ -761,7 +757,7 @@ class pounit(pocommon.pounit):
         """
         if type(unit) is cls and hasattr(unit, "copy") and callable(unit.copy):
             return unit.copy()
-        elif isinstance(unit, pocommon.pounit):
+        if isinstance(unit, pocommon.pounit):
             newunit = cls(unit.source, encoding)
             newunit.target = unit.target
             # context
@@ -788,8 +784,7 @@ class pounit(pocommon.pounit):
                     # We assume/guess/hope that there will only be one
                     break
             return newunit
-        else:
-            return base.TranslationUnit.buildfromunit(unit)
+        return base.TranslationUnit.buildfromunit(unit)
 
 
 class pofile(pocommon.pofile):

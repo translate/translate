@@ -185,15 +185,13 @@ class pounit(pocommon.pounit):
 
     def _msgidlen(self):
         if self.hasplural():
-            len("".join(string for string in self.source.strings))
-        else:
-            return len(self.source)
+            return len("".join(string for string in self.source.strings))
+        return len(self.source)
 
     def _msgstrlen(self):
         if self.hasplural():
-            len("".join(string for string in self.target.strings))
-        else:
-            return len(self.target)
+            return len("".join(string for string in self.target.strings))
+        return len(self.target)
 
     def merge(self, otherpo, overwrite=False, comments=True, authoritative=False):
         """
@@ -372,8 +370,7 @@ class pounit(pocommon.pounit):
         """
         if text:
             return pocommon.extract_msgid_comment(text)
-        else:
-            return self.msgidcomment
+        return self.msgidcomment
 
     def getcontext(self):
         """Get the message context."""
@@ -405,7 +402,7 @@ class pounit(pocommon.pounit):
         """
         if type(unit) is cls and hasattr(unit, "copy") and callable(unit.copy):
             return unit.copy()
-        elif isinstance(unit, pocommon.pounit):
+        if isinstance(unit, pocommon.pounit):
             newunit = cls(unit.source)
             newunit.target = unit.target
             # context
@@ -430,8 +427,7 @@ class pounit(pocommon.pounit):
                     newunit.settypecomment(tc)
                     break
             return newunit
-        else:
-            return base.TranslationUnit.buildfromunit(unit)
+        return base.TranslationUnit.buildfromunit(unit)
 
 
 class pofile(pocommon.pofile):

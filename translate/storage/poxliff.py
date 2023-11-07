@@ -74,8 +74,7 @@ class PoXliffUnit(xliff.xliffunit):
         if len(self.units) <= 1:
             if isinstance(other, lisa.LISAunit):
                 return super().__eq__(other)
-            else:
-                return self.source == other.source and self.target == other.target
+            return self.source == other.source and self.target == other.target
         return False
 
     # XXX: We don't return language nodes correctly at the moment
@@ -127,10 +126,8 @@ class PoXliffUnit(xliff.xliffunit):
             strings = [unit.target or "" for unit in self.units]
             if strings:
                 return multistring(strings)
-            else:
-                return None
-        else:
-            return super().gettarget(lang)
+            return None
+        return super().gettarget(lang)
 
     def settarget(self, target, lang="xx", append=False):
         self._rich_target = None
@@ -178,7 +175,7 @@ class PoXliffUnit(xliff.xliffunit):
                 trancomments = notes
                 notes = ""
             return trancomments + notes
-        elif origin in ["programmer", "developer", "source code"]:
+        if origin in ["programmer", "developer", "source code"]:
             devcomments = super().getnotes("developer")
             autocomments = self.getautomaticcomments()
             if devcomments == autocomments or autocomments.find(devcomments) >= 0:
@@ -187,8 +184,7 @@ class PoXliffUnit(xliff.xliffunit):
                 autocomments = devcomments
                 devcomments = ""
             return autocomments
-        else:
-            return super().getnotes(origin)
+        return super().getnotes(origin)
 
     def markfuzzy(self, value=True):
         super().markfuzzy(value)

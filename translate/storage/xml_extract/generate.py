@@ -75,10 +75,9 @@ def find_dom_root(parent_dom_node, dom_node):
         return None
     if dom_node.getparent() == parent_dom_node:
         return dom_node
-    elif dom_node.getparent() is None:
+    if dom_node.getparent() is None:
         return None
-    else:
-        return find_dom_root(parent_dom_node, dom_node.getparent())
+    return find_dom_root(parent_dom_node, dom_node.getparent())
 
 
 def find_placeable_dom_tree_roots(unit_node):

@@ -204,8 +204,7 @@ def phpencode(text, quotechar="'"):
         for a, b in escapes:
             text = text.replace(a, b)
         return text
-    else:
-        return text.replace("%s" % quotechar, "\\%s" % quotechar)
+    return text.replace("%s" % quotechar, "\\%s" % quotechar)
 
 
 def phpdecode(text, quotechar="'"):
@@ -216,10 +215,9 @@ def phpdecode(text, quotechar="'"):
         r"""Decode Octal \NNN and Hex values"""
         if "octal" in match.groupdict():
             return match.groupdict()["octal"].encode("latin-1").decode(escape_encoding)
-        elif "hex" in match.groupdict():
+        if "hex" in match.groupdict():
             return match.groupdict()["hex"].encode("latin-1").decode(escape_encoding)
-        else:
-            return match.group
+        return match.group
 
     if not text:
         return text
@@ -238,10 +236,8 @@ def phpdecode(text, quotechar="'"):
         for a, b in escapes:
             text = text.replace(a, b)
         text = re.sub(r"(?P<octal>\\[0-7]{1,3})", decode_octal_hex, text)
-        text = re.sub(r"(?P<hex>\\x[0-9A-Fa-f]{1,2})", decode_octal_hex, text)
-        return text
-    else:
-        return text.replace("\\'", "'").replace("\\\\", "\\")
+        return re.sub(r"(?P<hex>\\x[0-9A-Fa-f]{1,2})", decode_octal_hex, text)
+    return text.replace("\\'", "'").replace("\\\\", "\\")
 
 
 class phpunit(base.TranslationUnit):
@@ -319,8 +315,7 @@ class phpunit(base.TranslationUnit):
     def getnotes(self, origin=None):
         if origin in ["programmer", "developer", "source code", None]:
             return "\n".join(self._comments)
-        else:
-            return super().getnotes(origin)
+        return super().getnotes(origin)
 
     def removenotes(self, origin=None):
         self._comments = []
@@ -454,7 +449,7 @@ class phpfile(base.TranslationStore):
         def concatenate(item):
             if isinstance(item, str):
                 return item
-            elif isinstance(item, Variable):
+            if isinstance(item, Variable):
                 return item.name
             assert isinstance(item, BinaryOp)
             return concatenate(item.left) + concatenate(item.right)

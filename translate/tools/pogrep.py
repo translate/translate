@@ -56,24 +56,25 @@ class GrepMatch:
             else:
                 getter = lambda: self.unit.target
             return getter
-        elif self.part == "source":
+        if self.part == "source":
             if self.unit.hasplural():
                 getter = lambda: self.unit.source.strings[self.part_n]
             else:
                 getter = lambda: self.unit.source
             return getter
-        elif self.part == "notes":
+        if self.part == "notes":
 
             def getter():
                 return self.unit.getnotes()[self.part_n]
 
             return getter
-        elif self.part == "locations":
+        if self.part == "locations":
 
             def getter():
                 return self.unit.getlocations()[self.part_n]
 
             return getter
+        raise TypeError(f"Unsupported part: {self.part}")
 
     def get_setter(self):
         if self.part == "target":
@@ -90,6 +91,7 @@ class GrepMatch:
                     self.unit.target = value
 
             return setter
+        raise TypeError(f"Unsupported part: {self.part}")
 
     # SPECIAL METHODS #
     def __str__(self):

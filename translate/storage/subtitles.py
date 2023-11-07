@@ -74,8 +74,7 @@ class SubtitleUnit(base.TranslationUnit):
     def getnotes(self, origin=None):
         if origin in ["programmer", "developer", "source code", None]:
             return "visible for %d seconds" % self._duration
-        else:
-            return ""
+        return ""
 
     def getlocations(self):
         return [f"{self._start}-->{self._end}"]

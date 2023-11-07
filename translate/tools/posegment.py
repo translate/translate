@@ -42,8 +42,7 @@ class segment:
         if unit.istranslated() and (len(sourcesegments) != len(targetsegments)):
             if not self.onlyaligned:
                 return [unit]
-            else:
-                return None
+            return None
         # We could do more here to check if the lengths correspond more or less,
         # certain quality checks are passed, etc.  But for now this is a good
         # start.

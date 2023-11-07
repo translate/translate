@@ -122,8 +122,7 @@ class TradosTxtDate:
         """Get the time in the Trados time format"""
         if not self._time:
             return None
-        else:
-            return time.strftime(TRADOS_TIMEFORMAT, self._time)
+        return time.strftime(TRADOS_TIMEFORMAT, self._time)
 
     def set_timestring(self, timestring):
         """
@@ -157,8 +156,7 @@ class TradosTxtDate:
     def __str__(self):
         if not self.timestring:
             return ""
-        else:
-            return self.timestring
+        return self.timestring
 
 
 class TradosUnit(base.TranslationUnit):

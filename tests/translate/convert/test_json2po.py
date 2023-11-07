@@ -13,8 +13,7 @@ class TestJson2PO:
         inputfile = BytesIO(jsonsource.encode())
         inputjson = jsonl10n.JsonFile(inputfile, filter=filter)
         convertor = json2po.json2po()
-        outputpo = convertor.convert_store(inputjson)
-        return outputpo
+        return convertor.convert_store(inputjson)
 
     @staticmethod
     def singleelement(storage):

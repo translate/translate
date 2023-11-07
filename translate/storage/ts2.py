@@ -120,8 +120,7 @@ class tsunit(lisa.LISAunit):
         if self.hasplural():
             numerus_nodes = targetnode.findall(self.namespaced("numerusform"))
             return multistring([node.text or "" for node in numerus_nodes])
-        else:
-            return targetnode.text or ""
+        return targetnode.text or ""
 
     @target.setter
     def target(self, target):
@@ -234,10 +233,8 @@ class tsunit(lisa.LISAunit):
         if context_name is not None:
             if self.source:
                 return context_name + self.source
-            else:
-                return context_name
-        else:
-            return self.source
+            return context_name
+        return self.source
 
     def istranslatable(self):
         # Found a file in the wild with no context and an empty source. This
@@ -368,9 +365,8 @@ class tsunit(lisa.LISAunit):
             # format doesn't really do
             if self.target:
                 return self.S_FUZZY
-            else:
-                return self.S_UNTRANSLATED
-        elif type == "vanished":
+            return self.S_UNTRANSLATED
+        if type == "vanished":
             return self.S_OBSOLETE
         return self.statemap[type]
 

@@ -119,8 +119,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
             string = string.lower()
         for accelerator in options.accelchars:
             string = string.replace(accelerator, "")
-        string = string.strip()
-        return string
+        return string.strip()
 
     def processfile(self, fileprocessor, options, fullinputpath):
         """Process an individual file"""

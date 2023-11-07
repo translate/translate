@@ -53,8 +53,7 @@ def getlanguage(code):
             if isinstance(relatedlanguage, common.Common):
                 relatedlanguage = relatedlanguage.__class__(code)
             return relatedlanguage
-        else:
-            return common.Common(code)
+        return common.Common(code)
 
 
 def get_all_languages():

@@ -198,8 +198,7 @@ class podebug:
         def transformer(s):
             if self.preserveplaceholders:
                 return self.transform_characters_preserving_placeholders(s, transpose)
-            else:
-                return "".join(transpose(c) for c in s)
+            return "".join(transpose(c) for c in s)
 
         self.apply_to_translatables(string, transformer)
         return string
@@ -236,8 +235,7 @@ class podebug:
                 return "\u202e" + self.transform_characters_preserving_placeholders(
                     s, transpose
                 )
-            else:
-                return "\u202e" + "".join(transpose(c) for c in s)
+            return "\u202e" + "".join(transpose(c) for c in s)
             # To reverse instead of using the RTL override:
             # return ''.join(reversed([transpose(c) for c in s]))
 
@@ -256,8 +254,7 @@ class podebug:
         def transformer(s):
             if self.preserveplaceholders:
                 return self.transform_characters_preserving_placeholders(s, transpose)
-            else:
-                return "".join(transpose(c) for c in s)
+            return "".join(transpose(c) for c in s)
 
         self.apply_to_translatables(string, transformer)
         return string
@@ -275,9 +272,9 @@ class podebug:
         for location in unit.getlocations():
             if location.startswith("Common.xcu#..Common.View.Localisation"):
                 return True
-            elif location.startswith("profile.lng#STR_DIR_MENU_NEW_"):
+            if location.startswith("profile.lng#STR_DIR_MENU_NEW_"):
                 return True
-            elif location.startswith("profile.lng#STR_DIR_MENU_WIZARD_"):
+            if location.startswith("profile.lng#STR_DIR_MENU_WIZARD_"):
                 return True
         return False
 

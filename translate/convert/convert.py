@@ -393,8 +393,7 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
         """Opens the input file."""
         if self.isarchive(options.input, "input"):
             return options.inputarchive.openinputfile(fullinputpath)
-        else:
-            return super().openinputfile(options, fullinputpath)
+        return super().openinputfile(options, fullinputpath)
 
     def getfullinputpath(self, options, inputpath):
         """Gets the absolute path to an input file."""
@@ -411,8 +410,7 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
                 # TODO: deal with different names in input/template archives
                 if fulltemplatepath in self.templatearchive:
                     return self.templatearchive.openinputfile(fulltemplatepath)
-                else:
-                    self.warning("missing template file %s" % fulltemplatepath)
+                self.warning("missing template file %s" % fulltemplatepath)
         return super().opentemplatefile(options, fulltemplatepath)
 
     def getfulltemplatepath(self, options, templatepath):
@@ -459,8 +457,7 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
                 )
                 return BytesIO()
             return outputstream
-        else:
-            return super().openoutputfile(options, fulloutputpath)
+        return super().openoutputfile(options, fulloutputpath)
 
     def recursiveprocess(self, options):
         """Recurse through directories and convert files."""
@@ -501,15 +498,13 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
                 if not outputfile.isatty():
                     outputfile.close()
                 return True
-            else:
-                if fulloutputpath and os.path.isfile(fulloutputpath):
-                    outputfile.close()
-                    os.unlink(fulloutputpath)
-                return False
-        else:
-            return super().processfile(
-                fileprocessor, options, fullinputpath, fulloutputpath, fulltemplatepath
-            )
+            if fulloutputpath and os.path.isfile(fulloutputpath):
+                outputfile.close()
+                os.unlink(fulloutputpath)
+            return False
+        return super().processfile(
+            fileprocessor, options, fullinputpath, fulloutputpath, fulltemplatepath
+        )
 
 
 def _output_is_newer(input_path, output_path):

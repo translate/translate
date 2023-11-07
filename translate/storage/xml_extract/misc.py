@@ -36,8 +36,7 @@ def reduce_tree(f, parent_unit_node, unit_node, get_children, *state):
     def as_tuple(x):
         if isinstance(x, tuple):
             return x
-        else:
-            return (x,)
+        return (x,)
 
     state = f(parent_unit_node, unit_node, *state)
     for child_unit_node in get_children(unit_node):
@@ -82,5 +81,4 @@ def parse_tag(full_tag):
                 value = str(value, encoding="utf-8")
             ret.append(value)
         return ret[0], ret[1]
-    else:
-        raise Exception("Passed an invalid tag")
+    raise ValueError("Passed an invalid tag")

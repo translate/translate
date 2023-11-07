@@ -123,13 +123,12 @@ class QtTsParser:
             return self.document.searchElementsByTagName(
                 "message", self.messageancestors
             )
-        else:
-            if isinstance(context, str):
-                # look up the context node by name
-                context = self.getcontextnode(context)
-                if context is None:
-                    return []
-            return context.searchElementsByTagName("message", self.messageancestors)
+        if isinstance(context, str):
+            # look up the context node by name
+            context = self.getcontextnode(context)
+            if context is None:
+                return []
+        return context.searchElementsByTagName("message", self.messageancestors)
 
     @staticmethod
     def getmessagesource(message):

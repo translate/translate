@@ -211,8 +211,7 @@ class TestPOFile(test_base.TestTranslationStore):
         dummyfile = BytesIO(
             posource.encode() if isinstance(posource, str) else posource
         )
-        pofile = self.StoreClass(dummyfile)
-        return pofile
+        return self.StoreClass(dummyfile)
 
     def poregen(self, posource):
         """Helper that converts po source to pofile object and back"""

@@ -272,33 +272,32 @@ class AndroidResourceUnit(base.TranslationUnit):
         if len(xmltarget) == 0:
             # There are no html markups, so unescaping it as plain text.
             return self.unescape(xmltarget.text)
+        # There are html markups, so clone it to perform unescaping for all elements.
+        cloned_target = copy.deepcopy(xmltarget)
+
+        # Unescaping texts.
+        if cloned_target.text is not None:
+            cloned_target.text = self.unescape(cloned_target.text, False)
+        for xmlelement in cloned_target.iterdescendants():
+            if xmlelement.text is not None and xmlelement.tag is not etree.Entity:
+                xmlelement.text = self.unescape(xmlelement.text, False)
+            if xmlelement.tail is not None:
+                xmlelement.tail = self.unescape(xmlelement.tail, False)
+
+        # Grab root text (using a temporary xml element for text escaping)
+        if cloned_target.text is not None:
+            tmp_element = etree.Element("t")
+            tmp_element.text = cloned_target.text
+            target = etree.tostring(tmp_element, encoding="unicode")[3:-4]
         else:
-            # There are html markups, so clone it to perform unescaping for all elements.
-            cloned_target = copy.deepcopy(xmltarget)
+            target = ""
 
-            # Unescaping texts.
-            if cloned_target.text is not None:
-                cloned_target.text = self.unescape(cloned_target.text, False)
-            for xmlelement in cloned_target.iterdescendants():
-                if xmlelement.text is not None and xmlelement.tag is not etree.Entity:
-                    xmlelement.text = self.unescape(xmlelement.text, False)
-                if xmlelement.tail is not None:
-                    xmlelement.tail = self.unescape(xmlelement.tail, False)
-
-            # Grab root text (using a temporary xml element for text escaping)
-            if cloned_target.text is not None:
-                tmp_element = etree.Element("t")
-                tmp_element.text = cloned_target.text
-                target = etree.tostring(tmp_element, encoding="unicode")[3:-4]
-            else:
-                target = ""
-
-            # Include markup as well
-            target += "".join(
-                etree.tostring(child, encoding="unicode")
-                for child in cloned_target.iterchildren()
-            )
-            return target
+        # Include markup as well
+        target += "".join(
+            etree.tostring(child, encoding="unicode")
+            for child in cloned_target.iterchildren()
+        )
+        return target
 
     def set_xml_text_plain(self, target, xmltarget):
         # Remove possible old elements
@@ -453,8 +452,7 @@ class AndroidResourceUnit(base.TranslationUnit):
                     prevSibling = prevSibling.getprevious()
 
             return "\n".join(comments)
-        else:
-            return super().getnotes(origin)
+        return super().getnotes(origin)
 
     def removenotes(self, origin=None):
         if (self.xmlelement is not None) and (self.xmlelement.getparent is not None):
@@ -473,11 +471,7 @@ class AndroidResourceUnit(base.TranslationUnit):
 
     @staticmethod
     def hasplurals(thing):
-        if isinstance(thing, multistring):
-            return True
-        elif isinstance(thing, list):
-            return True
-        return False
+        return isinstance(thing, (multistring, list))
 
 
 class AndroidResourceFile(lisa.LISAfile):
