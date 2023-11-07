@@ -77,7 +77,7 @@ class TestMozLangUnit(test_base.TestTranslationUnit):
         translation actually results in rawformat being ignored.
         """
         unit = self.UnitClass("Device")
-        unit.target == ""
+        assert unit.target is None
         unit.rawtarget = "Device"
         assert not unit.istranslated()
         assert str(unit) == ";Device\nDevice"
