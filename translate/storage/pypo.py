@@ -244,8 +244,7 @@ def quoteforpo(text, wrapper_obj=None):
         polines.append('""')
     for line in lines:
         lns = wrapper_obj.wrap(line)
-        for ln in lns:
-            polines.append('"%s"' % ln)
+        polines.extend(f'"{ln}"' for ln in lns)
     return polines
 
 

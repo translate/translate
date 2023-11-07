@@ -1022,8 +1022,7 @@ class FluentUnit(base.TranslationUnit):
         # and parsing it. After each newline we also indent so that it is
         # considered part of the same entry.
         source_lines = [(f"{self.getid()} =", "")]
-        for line in source.split("\n"):
-            source_lines.append((" ", line))
+        source_lines.extend((" ", line) for line in source.split("\n"))
         source = "\n".join([added + orig for (added, orig) in source_lines])
 
         # We use parse which is part of python-fluent's public API.
@@ -1135,8 +1134,9 @@ class FluentUnit(base.TranslationUnit):
         parts = []
         if entry_or_error.value:
             parts.append(FluentPart("", entry_or_error.value))
-        for attr in entry_or_error.attributes:
-            parts.append(FluentPart(attr.id.name, attr.value))
+        parts.extend(
+            FluentPart(attr.id.name, attr.value) for attr in entry_or_error.attributes
+        )
         return parts
 
 
@@ -1162,11 +1162,12 @@ class FluentFile(base.TranslationStore):
             if isinstance(entry, ast.Junk):
                 raise self._fluent_junk_to_error(entry)
 
-        resource_comment_list = []
-        for entry in resource.body:
-            if isinstance(entry, ast.ResourceComment):
-                # We add another line to the comments, even if it is blank.
-                resource_comment_list.append(entry.content)
+        # We add another line to the comments, even if it is blank.
+        resource_comment_list = [
+            entry.content
+            for entry in resource.body
+            if isinstance(entry, ast.ResourceComment)
+        ]
 
         resource_comments = "\n".join(resource_comment_list)
         comment_prefix = resource_comments
@@ -1210,10 +1211,10 @@ class FluentFile(base.TranslationStore):
             + junk.content.strip()[0:64].replace("\n", "\\n")
             + "[...]"
         ]
-        for annotation in junk.annotations:
-            error_message.append(
-                f"{annotation.code}: {annotation.message} [offset {annotation.span.start}]"
-            )
+        error_message.extend(
+            f"{annotation.code}: {annotation.message} [offset {annotation.span.start}]"
+            for annotation in junk.annotations
+        )
         return ValueError("\n".join(error_message))
 
     @staticmethod
@@ -1231,10 +1232,11 @@ class FluentFile(base.TranslationStore):
         return "\n".join(text for text in comment_text if text)
 
     def serialize(self, out):
-        prefix_comments = []
-        for unit in self.units:
-            if unit.fluent_type == "ResourceComment":
-                prefix_comments.append(unit.getnotes() or "")
+        prefix_comments = [
+            unit.getnotes() or ""
+            for unit in self.units
+            if unit.fluent_type == "ResourceComment"
+        ]
         prev_group_comment = ""
 
         body = []

@@ -330,9 +330,7 @@ class Common:
                     text = text[-extra:]
             return text
 
-        expanded = []
-        for subtext in text.split("\n\n"):
-            expanded.append(alter_it(subtext))
+        expanded = [alter_it(subtext) for subtext in text.split("\n\n")]
         return "\n\n".join(expanded)
 
     @classmethod
