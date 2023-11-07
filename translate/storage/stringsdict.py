@@ -140,7 +140,7 @@ class StringsDictFile(base.DictStore):
 
         for key, outer in plist.items():
             if not isinstance(outer, dict):
-                raise ValueError(f"{key} is not a dict")
+                raise TypeError(f"{key} is not a dict")
             for innerkey, value in outer.items():
                 if innerkey == "NSStringLocalizedFormatKey":
                     u = self.UnitClass()

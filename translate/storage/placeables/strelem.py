@@ -64,7 +64,7 @@ class StringElem:
         else:
             for elem in sub:
                 if not isinstance(elem, (str, StringElem)):
-                    raise ValueError(elem)
+                    raise TypeError(elem)
             self.sub = sub
             self.prune()
 
@@ -541,7 +541,7 @@ class StringElem:
         if isinstance(text, str):
             text = StringElem(text)
         if not isinstance(text, StringElem):
-            raise ValueError("text must be of type StringElem")
+            raise TypeError("text must be of type StringElem")
 
         def checkleaf(elem, text):
             if elem.isleaf() and type(text) is StringElem and text.isleaf():

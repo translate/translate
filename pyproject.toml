@@ -32,7 +32,6 @@ ignore = [
   "B015",  # TODO: Pointless comparison. Did you mean to assign a value? Otherwise, prepend `assert` or remove it
   "PGH003",  # TODO: Use specific rule codes when ignoring type issues
   "B017",  # TODO: `pytest.raises(Exception)` should be considered evil
-  "TRY201",  # TODO: Use `raise` without specifying exception name
   "PLE0604",  # TODO: Invalid object in `__all__`, must contain only strings
   "B008",  # TODO: Do not perform function call `sys.getdefaultencoding` in argument defaults
   "G003",  # TODO: Logging statement uses `+`
@@ -43,7 +42,6 @@ ignore = [
   "SIM401",  # TODO:  Use `klass, maker = _class_dictionary.get(tag, (xliff.UnknownXML, make_unknown))` instead of an `if` block
   "F403",  # TODO: `from .base import *` used; unable to detect undefined names
   "B028",  # TODO: No explicit `stacklevel` keyword argument found
-  "TRY004",  # TODO: Prefer `TypeError` exception for invalid type
   "TRY301",  # TODO: Abstract `raise` to an inner function
   "B006",  # TODO: Do not use mutable data structures for argument defaults
   "SIM103",  # TODO: Return the condition `origin in node.get("origin", "")` directly
@@ -73,7 +71,6 @@ ignore = [
   "TD007",  # TODO: Missing space after colon in TODO
   "SLF001",  # TODO: Private member accessed
   "RUF012",  # TODO: Mutable class attributes should be annotated with `typing.ClassVar`
-  "TRY002",  # TODO: Create your own exception
   "TRY003",  # WONTFIX: Avoid specifying long messages outside the exception class
   "TRY200",  # TODO: Use `raise from` to specify exception cause
   "SIM102",  # TODO: Use a single `if` statement instead of nested `if` statements

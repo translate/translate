@@ -263,7 +263,7 @@ class BundleProjectStore(ProjectStore):
         """Delete the files with the given names from the zip file (``self.zip``)."""
         # Sanity checking
         if not isinstance(fnames, (list, tuple)):
-            raise ValueError("fnames must be list or tuple: %s" % (fnames))
+            raise TypeError("fnames must be list or tuple: %s" % (fnames))
         if not self.zip:
             raise ValueError("No zip file to work on")
         zippedfiles = self.zip.namelist()

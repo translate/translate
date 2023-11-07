@@ -296,7 +296,7 @@ class RecursiveOptionParser(optparse.OptionParser):
             if isinstance(formatgroup, str) or formatgroup is None:
                 formatgroup = (formatgroup,)
             if not isinstance(formatgroup, tuple):
-                raise ValueError("formatgroups must be tuples or None/str/unicode")
+                raise TypeError("formatgroups must be tuples or None/str/unicode")
             if len(formatgroup) < 1 or len(formatgroup) > 2:
                 raise ValueError("formatgroups must be tuples of length 1 or 2")
             if len(formatgroup) == 1:

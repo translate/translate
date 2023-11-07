@@ -97,7 +97,7 @@ class qmfile(base.TranslationStore):
 
     def serialize(self, out):
         """Output a string representation of the .qm data file"""
-        raise Exception("Writing of .qm files is not supported yet")
+        raise NotImplementedError("Writing of .qm files is not supported yet")
 
     def parse(self, input):
         """Parses the given file or file source string."""
@@ -208,4 +208,4 @@ class qmfile(base.TranslationStore):
                 return
 
     def savefile(self, storefile):
-        raise Exception("Writing of .qm files is not supported yet")
+        raise NotImplementedError("Writing of .qm files is not supported yet")

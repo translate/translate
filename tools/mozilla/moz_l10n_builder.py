@@ -39,10 +39,10 @@ join = os.path.join
 try:
     # Make sure that all convertion tools are available
     from translate.convert import moz2po, po2moz, po2prop, txt2po  # noqa: F401
-except ImportError:
-    raise Exception(
+except ImportError as error:
+    raise ImportError(
         "Could not find the Translate Toolkit convertion tools. Please check your installation."
-    )
+    ) from error
 
 DEFAULT_TARGET_APP = "browser"
 langpack_release = "1"
@@ -240,7 +240,7 @@ def checkout(cvstag, langs):
             # "No such file or directory" errors are fine.
             # The rest we raise again.
             if oe.errno != 2:
-                raise oe
+                raise
 
     os.chdir(mozilladir)
     run(["cvs", "up", join("tools", "l10n")])
@@ -264,7 +264,7 @@ def checkout(cvstag, langs):
     except OSError as oe:
         # "No such file or directory" errors are fine. The rest we raise again.
         if oe.errno != 2:
-            raise oe
+            raise
 
     if mozversion < "3":
         for f in [
@@ -503,7 +503,7 @@ def migrate_lang(lang, buildlang, recover, update_transl, debug):
         except OSError as oe:
             # "File exists" errors are fine. The rest we raise again.
             if oe.errno != 17:
-                raise oe
+                raise
 
         shutil.copytree(join(podir_recover, buildlang), join(podir, buildlang))
 

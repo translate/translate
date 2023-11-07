@@ -228,7 +228,7 @@ class prop2po:
 
             # Some sanity checks
             if not variant:
-                raise Exception("Variant invalid: %s" % (old_variant))
+                raise ValueError("Variant invalid: %s" % (old_variant))
             if variant in plurals[key].variants:
                 logger.warning(
                     "Override %s[%s]: %s by %s",
@@ -245,7 +245,7 @@ class prop2po:
         for key, plural in plurals.items():
             # We should have at least "other" (no variant in GWT)
             if "other" not in plural.variants:
-                raise Exception("Should have property %s without any variant" % (key))
+                raise ValueError("Should have property %s without any variant" % (key))
             units = []
             for name in names:
                 if name in plural.variants:

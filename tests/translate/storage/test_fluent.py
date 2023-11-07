@@ -458,7 +458,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
         :param str error_msg: The expected syntax error for the unit.
         """
         with raises(
-            ValueError,
+            TypeError,
             match=f'^Error in source of FluentUnit "{error_unit.getid()}":\\n',
         ):
             self.fluent_serialize(fluent_file)
