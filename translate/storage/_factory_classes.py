@@ -22,6 +22,8 @@ just for the sake of the Windows installer to easily pick up all the stuff that
 we need and ensure they make it into the installer.
 """
 
+import contextlib
+
 from . import (
     catkeys,
     csvl10n,
@@ -38,10 +40,8 @@ from . import (
     xliff,
 )
 
-try:
+with contextlib.suppress(ImportError):
     from . import trados
-except ImportError:
-    pass
 
 __all__ = [
     "catkeys",

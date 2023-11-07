@@ -20,6 +20,7 @@ Create a terminology file by reading a set of .po or .pot files to produce a poo
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/poterminology.html
 for examples and usage instructions.
 """
+import contextlib
 import logging
 import os
 import re
@@ -86,12 +87,10 @@ class TerminologyExtractor:
         self.stopignorecase = False
 
         if stopfile is None:
-            try:
+            with contextlib.suppress(Exception):
                 stopfile = file_discovery.get_abs_data_filename(
                     "stoplist-%s" % self.sourcelanguage
                 )
-            except Exception:
-                pass
         self.stopfile = stopfile
         self.parse_stopword_file()
 

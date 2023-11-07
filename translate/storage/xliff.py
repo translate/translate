@@ -22,6 +22,8 @@ Module for handling XLIFF files for translation.
 The official recommendation is to use the extention .xlf for XLIFF files.
 """
 
+import contextlib
+
 from lxml import etree
 
 from translate.misc.multistring import multistring
@@ -284,12 +286,10 @@ class xliffunit(lisa.LISAunit):
 
                 # the source tag is optional
                 sourcenode = node.iterdescendants(self.namespaced("source"))
-                try:
+                with contextlib.suppress(StopIteration):
                     newunit.source = lisa.getText(
                         next(sourcenode), getXMLspace(node, self._default_xml_space)
                     )
-                except StopIteration:
-                    pass
 
                 # must have one or more targets
                 targetnode = node.iterdescendants(self.namespaced("target"))

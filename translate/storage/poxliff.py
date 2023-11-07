@@ -23,6 +23,7 @@ XLIFF.
 This way the API supports plurals as if it was a PO file, for example.
 """
 
+import contextlib
 import re
 
 from lxml import etree
@@ -102,10 +103,8 @@ class PoXliffUnit(xliff.xliffunit):
         else:
             target = self.target
             for unit in self.units:
-                try:
+                with contextlib.suppress(ValueError):
                     self.xmlelement.remove(unit.xmlelement)
-                except ValueError:
-                    pass
             self.units = []
             for s in source.strings:
                 newunit = xliff.xliffunit(s)

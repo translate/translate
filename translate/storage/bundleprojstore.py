@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+import contextlib
 import os
 import shutil
 import tempfile
@@ -85,10 +86,8 @@ class BundleProjectStore(ProjectStore):
         self._zip_add(fname, afile)
 
         if delete_orig and hasattr(afile, "name") and afile.name not in self._tempfiles:
-            try:
+            with contextlib.suppress(Exception):
                 os.unlink(afile.name)
-            except Exception:
-                pass
 
         return self.get_file(fname), fname
 
@@ -99,10 +98,8 @@ class BundleProjectStore(ProjectStore):
         tempfiles = [tmpf for tmpf, prjf in self._tempfiles.items() if prjf == fname]
         if tempfiles:
             for tmpf in tempfiles:
-                try:
+                with contextlib.suppress(Exception):
                     os.unlink(tmpf)
-                except Exception:
-                    pass
                 del self._tempfiles[tmpf]
 
     def close(self):

@@ -26,6 +26,7 @@
 #       might be a little less Pythonic. See os.system() calls for more
 #       details.
 
+import contextlib
 import glob
 import os
 import shutil
@@ -307,10 +308,8 @@ def pack_pot(includes):
         else:
             inc.append(fn)
 
-    try:
+    with contextlib.suppress(OSError):
         os.makedirs(potpacks)
-    except OSError:
-        pass
 
     packname = join(potpacks, f"{products[targetapp]}-{mozversion}-{timestamp}")
     run(
@@ -338,10 +337,8 @@ def pack_pot(includes):
 def pack_po(lang, buildlang):
     timestamp = time.strftime("%Y%m%d")
 
-    try:
+    with contextlib.suppress(OSError):
         os.makedirs(popacks)
-    except OSError:
-        pass
 
     print("    %s" % (lang))
     packname = join(
@@ -460,10 +457,9 @@ def post_po2moz_hacks(lang, buildlang):
             dir = dir[len(enUS) + 1 :]
 
         if os.path.isfile(join(enUS, dir, filename)):
-            try:
+            # Don't worry if the directory already exists
+            with contextlib.suppress(OSError):
                 os.makedirs(join(l10ndir, language, dir))
-            except OSError:
-                pass  # Don't worry if the directory already exists
             shutil.copy2(join(enUS, dir, filename), join(l10ndir, language, dir))
 
     def copyfiletype(filetype, language):
