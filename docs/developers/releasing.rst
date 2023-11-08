@@ -10,35 +10,8 @@ lists and suggests some possible cleanup tasks to be done after releasing.
    free to improve it.
 
 
-Create the package
+Prepare the relese
 ==================
-
-The first steps are to create and validate a package for the next release.
-
-
-Get a clean checkout
---------------------
-
-We work from a clean checkout to ensure that everything you are adding to the
-build is what is in the repository and doesn't contain any of your uncommitted
-changes. It also ensures that someone else could replicate your process.
-
-.. code-block:: console
-
-    $ git clone git@github.com:translate/translate.git translate-release
-    $ cd translate-release
-    $ git submodule update --init
-
-
-Check copyright dates
----------------------
-
-Update any copyright dates in :file:`docs/conf.py:copyright` and anywhere else
-that needs fixing.
-
-.. code-block:: console
-
-    $ git grep 2013  # Should pick up anything that should be examined
 
 
 Create release notes
@@ -127,82 +100,12 @@ release of a ``$MINOR`` version will always have a ``$MICRO`` of ``.0``. So
    tests, specifically the manpage ones, to use the right new version.
 
 
-Build the package
------------------
-
-Building is the first step to testing that things work. From your clean
-checkout run:
-
-.. code-block:: console
-
-    $ mkvirtualenv build-ttk-release
-    (build-ttk-release)$ pip install --upgrade setuptools pip
-    (build-ttk-release)$ pip install -r requirements/dev.txt
-    (build-ttk-release)$ make build
-    (build-ttk-release)$ deactivate
-
-
-This will create a tarball in :file:`dist/` which you can use for further
-testing.
-
-.. note:: We use a clean checkout just to make sure that no inadvertent changes
-   make it into the release.
-
-
-Test install and other tests
-----------------------------
-
-The easiest way to test is in a virtualenv. You can test the installation of
-the new release using:
-
-.. code-block:: console
-
-    $ mkvirtualenv test-ttk-release
-    (test-ttk-release)$ pip install --upgrade setuptools pip
-    (test-ttk-release)$ pip install dist/translate-toolkit-$version.tar.gz
-
-
-You can then proceed with other tests such as checking:
-
-#. Documentation is available in the package
-#. Converters and scripts are installed and run correctly:
-
-   .. code-block:: console
-
-       (test-ttk-release)$ moz2po --help
-       (test-ttk-release)$ php2po --version
-       (test-ttk-release)$ deactivate
-       $ rmvirtualenv test-ttk-release
-
-#. Meta information about the package is correct. This is stored in
-   :file:`setup.py`, to see some options to display meta-data use:
-
-   .. code-block:: console
-
-       $ ./setup.py --help
-
-   Now you can try some options like:
-
-   .. code-block:: console
-
-       $ ./setup.py --name
-       $ ./setup.py --version
-       $ ./setup.py --author
-       $ ./setup.py --author-email
-       $ ./setup.py --url
-       $ ./setup.py --license
-       $ ./setup.py --description
-       $ ./setup.py --long-description
-       $ ./setup.py --classifiers
-
-   The actual descriptions are taken from :file:`translate/__init__.py`.
-
-
 Publish the new release
 =======================
 
-Once we have a valid package it is necessary to publish it and announce the
-release.
+Once the ``master`` branch is ready, the package can be published. This is
+automated by :file:`.github/workflows/setup.yml` which automatically publishes
+tagged release to PyPI and GitHub.
 
 
 Tag and branch the release
@@ -237,59 +140,6 @@ Use the admin pages to flag a version that should be published.
     here.
 
 
-Publish on PyPI
----------------
-
-.. - `Submitting Packages to the Package Index
-  <https://packaging.python.org/tutorials/distributing-packages/#uploading-your-project-to-pypi>`_
-
-
-.. note:: You need a username and password on `Python Package Index (PyPI)
-   <https://pypi.python.org/pypi>`_ and have rights to the project before you
-   can proceed with this step.
-
-   These can be stored in :file:`$HOME/.pypirc` and will contain your username
-   and password. Check `Create a PyPI account
-   <https://packaging.python.org/en/latest/tutorials/packaging-projects/#next-steps>`_
-   for more details.
-
-
-Run the following to publish the package on PyPI:
-
-.. code-block:: console
-
-    $ workon build-ttk-release
-    (build-ttk-release)$ twine upload dist/translate*
-    (build-ttk-release)$ deactivate
-    $ rmvirtualenv build-ttk-release
-
-
-.. _releasing#create-github-release:
-
-Create a release on Github
---------------------------
-
-- https://github.com/translate/translate/releases/new
-
-You will need:
-
-- Tarball of the release
-- Release notes in Markdown
-
-
-Do the following to create the release:
-
-#. Draft a new release with the corresponding tag version
-#. Convert the major changes (no more than five) in the release notes to
-   Markdown with `Pandoc <http://pandoc.org/>`_. Bugfix releases can replace
-   the major changes with *This is a bugfix release for the X.X.X branch.*
-#. Add the converted major changes to the release description
-#. Include at the bottom of the release description a link to the full release
-   notes at Read the Docs
-#. Attach the tarball to the release
-#. Mark it as pre-release if it's a release candidate
-
-
 Update Translate Toolkit website
 --------------------------------
 
@@ -307,6 +157,13 @@ We use github pages for the website. First we need to checkout the pages:
 #. :command:`git commit` and :command:`git push` -- changes are quite quick, so
    easy to review.
 
+.. _releasing#create-github-release:
+
+Updating release notes on Github
+--------------------------------
+
+#. Open GitHub release created by the GitHub Action.
+#. Edit it to include release notes (use same text as used on website).
 
 Announce to the world
 ---------------------
