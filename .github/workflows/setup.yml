@@ -5,6 +5,8 @@ on:
     branches-ignore:
     - dependabot/**
     - deepsource**
+    tags:
+    - '*'
   pull_request:
 
 permissions:
