@@ -368,7 +368,7 @@ cldr_plural_categories = [
     "other",
 ]
 
-"""List of plural tags generated from CLDR 41.0.0 using
+"""List of plural tags generated from CLDR 44.0.1 using
 https://github.com/WeblateOrg/language-data
 """
 plural_tags = {
@@ -388,13 +388,14 @@ plural_tags = {
     "bez": ["one", "other"],
     "bg": ["one", "other"],
     "bho": ["one", "other"],
+    "blo": ["zero", "one", "other"],
     "bm": ["other"],
     "bn": ["one", "other"],
     "bo": ["other"],
     "br": ["one", "two", "few", "many", "other"],
     "brx": ["one", "other"],
     "bs": ["one", "few", "other"],
-    "ca": ["one", "other"],
+    "ca": ["one", "many", "other"],
     "ce": ["one", "other"],
     "ceb": ["one", "other"],
     "cgg": ["one", "other"],
@@ -432,7 +433,7 @@ plural_tags = {
     "gv": ["one", "two", "few", "other"],
     "ha": ["one", "other"],
     "haw": ["one", "other"],
-    "he": ["one", "two", "many", "other"],
+    "he": ["one", "two", "other"],
     "hi": ["one", "other"],
     "hnj": ["other"],
     "hr": ["one", "few", "other"],
@@ -477,6 +478,7 @@ plural_tags = {
     "lag": ["zero", "one", "other"],
     "lb": ["one", "other"],
     "lg": ["one", "other"],
+    "lij": ["one", "other"],
     "lkt": ["other"],
     "ln": ["one", "other"],
     "lo": ["other"],
@@ -491,7 +493,7 @@ plural_tags = {
     "mo": ["one", "few", "other"],
     "mr": ["one", "other"],
     "ms": ["other"],
-    "mt": ["one", "few", "many", "other"],
+    "mt": ["one", "two", "few", "many", "other"],
     "my": ["other"],
     "nah": ["one", "other"],
     "naq": ["one", "two", "other"],
@@ -576,6 +578,7 @@ plural_tags = {
     "ur": ["one", "other"],
     "uz": ["one", "other"],
     "ve": ["one", "other"],
+    "vec": ["one", "many", "other"],
     "vi": ["other"],
     "vo": ["one", "other"],
     "vun": ["one", "other"],
