@@ -1,0 +1,23 @@
+Translate Toolkit 3.11.0
+************************
+
+*Released on 15 November 2023*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- Language data
+
+  - Update to CLDR 44
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař
