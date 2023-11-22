@@ -649,6 +649,25 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
         assert len(store.units) == 2
         assert bytes(store).decode() == data
 
+    def test_add_other(self):
+        jsontext = """{
+    "simple.key": "source"
+}
+"""
+        store = self.StoreClass()
+        store.parse(jsontext)
+
+        assert len(store.units) == 1
+        assert store.units[0].source == "source"
+        assert store.units[0].getid() == ".simple.key"
+
+        assert bytes(store).decode() == jsontext
+
+        newstore = self.StoreClass()
+        newstore.addunit(store.units[0])
+
+        assert bytes(newstore).decode() == jsontext
+
 
 class TestWebExtensionUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = jsonl10n.WebExtensionJsonUnit
