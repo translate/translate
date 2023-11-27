@@ -471,6 +471,19 @@ location_batch:
         with pytest.raises(base.ParseError):
             store.parse("key: other\x08string")
 
+    def test_quotes_roundtrip(self):
+        data = """locales:
+  quoted: "Quoted"
+  plain: Plain
+  single: 'Single'
+"""
+        store = self.StoreClass()
+        store.parse(data)
+        assert len(store.units) == 3
+        assert bytes(store).decode() == data
+        store.units[0].target = "Changed"
+        assert bytes(store).decode() == data.replace("Quoted", "Changed")
+
 
 class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
     StoreClass = yaml.RubyYAMLFile
