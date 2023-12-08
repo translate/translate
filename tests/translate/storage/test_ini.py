@@ -20,3 +20,13 @@ class TestINIStore(test_monolingual.TestMonolingualStore):
         store.serialize(out)
 
         assert out.getvalue() == content
+
+    def test_rem(self):
+        content = b"[default]\nremaining=None"
+        store = self.StoreClass()
+        store.parse(content)
+        assert len(store.units) == 1
+        out = BytesIO()
+        store.serialize(out)
+
+        assert out.getvalue() == content

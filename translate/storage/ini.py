@@ -36,10 +36,14 @@ from io import StringIO
 from translate.storage import base
 
 try:
-    from iniparse import INIConfig
+    from iniparse import INIConfig, change_comment_syntax
 except ImportError:
     raise ImportError("Missing iniparse library.")
 
+
+# Disable treating anything starting with rem as a comment, this changes
+# global iniparse state
+change_comment_syntax(allow_rem=False)
 
 dialects = {}
 
