@@ -966,6 +966,8 @@ class UnitId:
                 item = item[endbracepos + 1 :]
             if item:
                 result.append(("key", item))
+        if not result:
+            result.append(("key", ""))
         return cls(result)
 
     def __eq__(self, other):

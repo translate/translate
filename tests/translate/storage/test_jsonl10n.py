@@ -686,6 +686,7 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
             ("[test]selection", [("key", "[test]selection")]),
             ("[test][0]selection", [("key", "[test][0]selection")]),
             ("[0][test]selection", [("index", 0), ("key", "[test]selection")]),
+            ("", [("key", "")]),
         ],
     )
     def test_from_string(self, id_string, expected):
