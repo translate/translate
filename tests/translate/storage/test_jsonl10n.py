@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from pytest import raises
+from pytest import mark, raises
 
 from translate.misc.multistring import multistring
 from translate.storage import base, jsonl10n
@@ -667,6 +667,31 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
         newstore.addunit(store.units[0])
 
         assert bytes(newstore).decode() == jsontext
+
+    @mark.parametrize(
+        ("id_string", "expected"),
+        [
+            ("[0]", [("index", 0)]),
+            ("test[0]", [("key", "test"), ("index", 0)]),
+            (
+                "test[0][1][2][3]",
+                [
+                    ("key", "test"),
+                    ("index", 0),
+                    ("index", 1),
+                    ("index", 2),
+                    ("index", 3),
+                ],
+            ),
+            ("[test]selection", [("key", "[test]selection")]),
+            ("[test][0]selection", [("key", "[test][0]selection")]),
+            ("[0][test]selection", [("index", 0), ("key", "[test]selection")]),
+        ],
+    )
+    def test_from_string(self, id_string, expected):
+        id_class = self.StoreClass.UnitClass.IdClass
+        from_string = id_class.from_string
+        assert from_string(id_string) == id_class(expected)
 
 
 class TestWebExtensionUnit(test_monolingual.TestMonolingualUnit):
