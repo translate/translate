@@ -952,17 +952,27 @@ class UnitId:
         for item in text.split(cls.KEY_SEPARATOR):
             bracepos = item.find("[")
             endbracepos = item.find("]")
-            if bracepos != -1 and endbracepos != -1:
+            while (
+                (bracepos := item.find("[")) != -1
+                and (endbracepos := item.find("]")) != -1
+                and item[bracepos + 1 : endbracepos].isdigit()
+            ):
                 if bracepos > 0:
                     result.append(("key", item[:bracepos]))
                     item = item[bracepos:]
-                result.extend(
-                    ("index", int(pos))
-                    for pos in item.replace("[", " ").replace("]", " ").split()
-                )
-            else:
+                    endbracepos -= bracepos
+                    bracepos = 0
+                result.append(("index", int(item[bracepos + 1 : endbracepos])))
+                item = item[endbracepos + 1 :]
+            if item:
                 result.append(("key", item))
         return cls(result)
+
+    def __eq__(self, other):
+        return self.parts == other.parts
+
+    def __repr__(self):
+        return f"<UnitId:{self.parts}>"
 
 
 class DictUnit(TranslationUnit):
