@@ -655,3 +655,21 @@ msgstr ""\r
             POT_Creation_Date="2023-10-24 10:19+0200",
         )
         assert bytes(pofile) == poexpected
+
+    def test_wrap_custom(self):
+        posource = 'msgid "HELLO"\nmsgstr ""\n'
+
+        # Instance with default wraps
+        store = self.StoreClass()
+        store.parse(posource.encode())
+        assert len(store.units) == 1
+
+        store.units[0].target = " ".join(["Hello world"] * 20)
+
+        assert max(len(line) for line in bytes(store).decode().splitlines()) <= 77
+
+        outstore = self.StoreClass()
+        outstore.wrapper.width = -1
+        outstore.addunit(store.units[0])
+
+        assert max(len(line) for line in bytes(outstore).decode().splitlines()) > 77

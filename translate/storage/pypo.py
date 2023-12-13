@@ -1040,5 +1040,10 @@ class pofile(pocommon.pofile):
                 yield unit
 
     def addunit(self, unit):
+        needs_update = (
+            unit.wrapper and self.wrapper and (unit.wrapper.width != self.wrapper.width)
+        )
         unit.wrapper = self.wrapper
         super().addunit(unit)
+        if needs_update:
+            unit.target = unit.target
