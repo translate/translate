@@ -519,6 +519,9 @@ class tsfile(lisa.LISAfile):
         return True
 
     def nplural(self):
+        code = self.header.get("language").lower().replace("-", "_").split("_")[0]
+        if code in data.qt_plural_tags:
+            return len(data.qt_plural_tags[code])
         lang = data.get_language(self.header.get("language"))
         if lang is None:
             return 1
