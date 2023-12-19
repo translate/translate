@@ -180,7 +180,7 @@ def is_line_continuation(line):
     return (count % 2) == 1  # Odd is a line continuation, even is not
 
 
-def is_comment_one_line(line):
+def get_comment_one_line(line):
     """
     Determine whether a *line* is a one-line comment.
 
@@ -193,13 +193,13 @@ def is_comment_one_line(line):
     line_starters = ("#", "!", "//", ";")
     for starter in line_starters:
         if stripped.startswith(starter):
-            return True
+            return stripped[len(starter) :].strip()
     if stripped.startswith("/*") and stripped.endswith("*/"):
-        return True
-    return False
+        return stripped[2:-2].strip()
+    return None
 
 
-def is_comment_start(line):
+def get_comment_start(line):
     """
     Determine whether a *line* starts a new multi-line comment.
 
@@ -209,10 +209,12 @@ def is_comment_start(line):
     :rtype: bool
     """
     stripped = line.strip()
-    return stripped.startswith("/*") and not stripped.endswith("*/")
+    if stripped.startswith("/*") and not stripped.endswith("*/"):
+        return line[2:].strip()
+    return None
 
 
-def is_comment_end(line):
+def get_comment_end(line):
     """
     Determine whether a *line* ends a new multi-line comment.
 
@@ -222,7 +224,9 @@ def is_comment_end(line):
     :rtype: bool
     """
     stripped = line.strip()
-    return not stripped.startswith("/*") and stripped.endswith("*/")
+    if not stripped.startswith("/*") and stripped.endswith("*/"):
+        return line[:-2].strip()
+    return None
 
 
 def _key_strip(key):
@@ -897,11 +901,11 @@ class propunit(base.TranslationUnit):
 
     def getoutput(self):
         """Convert the element back into formatted lines for a .properties file."""
-        notes = self.getnotes()
-        if self.isblank():
-            return notes + "\n"
+        notes = "\n".join(self.comments)
         if notes:
-            notes = notes + "\n"
+            notes = f"{notes}\n"
+        if self.isblank():
+            return notes or "\n"
         # encode key, if needed
         key = self.name
         kwc = self.personality.key_wrap_char
@@ -927,13 +931,36 @@ class propunit(base.TranslationUnit):
 
     def addnote(self, text, origin=None, position="append"):
         if origin in ["programmer", "developer", "source code", None]:
+            if get_comment_one_line(text) is None and get_comment_start(text) is None:
+                text = f"/* {text} */" if "\n" in text else f"// {text}"
             self.comments.append(text)
         else:
             super().addnote(text, origin=origin, position=position)
 
     def getnotes(self, origin=None):
         if origin in ["programmer", "developer", "source code", None]:
-            return "\n".join(self.comments)
+            output = []
+            inmultilinecomment = False
+            for line in self.comments:
+                if (
+                    not inmultilinecomment
+                    and (parsed := get_comment_one_line(line)) is not None
+                ):
+                    output.append(parsed)
+                elif (
+                    not inmultilinecomment
+                    and (parsed := get_comment_start(line)) is not None
+                ):
+                    output.append(parsed)
+                    inmultilinecomment = True
+                elif (
+                    inmultilinecomment and (parsed := get_comment_end(line)) is not None
+                ):
+                    output.append(parsed)
+                    inmultilinecomment = False
+                else:
+                    output.append(line)
+            return "\n".join(output)
         return super().getnotes(origin)
 
     def removenotes(self, origin=None):
@@ -1036,16 +1063,18 @@ class propfile(base.TranslationStore):
             # FIXME handle // inline comments
             elif (
                 inmultilinecomment
-                or is_comment_one_line(line)
-                or is_comment_start(line)
-                or is_comment_end(line)
+                or (one_line_comment := get_comment_one_line(line)) is not None
+                or (comment_start := get_comment_start(line)) is not None
             ) and not self.UnitClass.represents_missing(line):
                 # add a comment
                 if line not in self.personality.drop_comments:
                     newunit.comments.append(line)
-                if is_comment_start(line):
+
+                if one_line_comment is not None:
+                    pass
+                elif not inmultilinecomment and comment_start is not None:
                     inmultilinecomment = True
-                elif is_comment_end(line):
+                elif inmultilinecomment and get_comment_end(line) is not None:
                     inmultilinecomment = False
             elif not line.strip():
                 # this is a blank line...
