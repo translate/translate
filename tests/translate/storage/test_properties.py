@@ -72,24 +72,24 @@ def test_key_strip():
     assert properties._key_strip("key\\ ") == "key\\ "
 
 
-def test_is_comment_one_line():
-    assert properties.is_comment_one_line("# comment")
-    assert properties.is_comment_one_line("! comment")
-    assert properties.is_comment_one_line("// comment")
-    assert properties.is_comment_one_line("  # comment")
-    assert properties.is_comment_one_line("/* comment */")
-    assert not properties.is_comment_one_line("not = comment_line /* comment */")
-    assert not properties.is_comment_one_line("/* comment ")
+def test_get_comment_one_line():
+    assert properties.get_comment_one_line("# comment")
+    assert properties.get_comment_one_line("! comment")
+    assert properties.get_comment_one_line("// comment")
+    assert properties.get_comment_one_line("  # comment")
+    assert properties.get_comment_one_line("/* comment */")
+    assert properties.get_comment_one_line("not = comment_line /* comment */") is None
+    assert properties.get_comment_one_line("/* comment ") is None
 
 
-def test_is_comment_start():
-    assert properties.is_comment_start("/* comment")
-    assert not properties.is_comment_start("/* comment */")
+def test_get_comment_start():
+    assert properties.get_comment_start("/* comment")
+    assert properties.get_comment_start("/* comment */") is None
 
 
-def test_is_comment_end():
-    assert properties.is_comment_end(" comment */")
-    assert not properties.is_comment_end("/* comment */")
+def test_get_comment_end():
+    assert properties.get_comment_end(" comment */")
+    assert properties.get_comment_end("/* comment */") is None
 
 
 class TestPropUnit(test_monolingual.TestMonolingualUnit):
@@ -552,7 +552,7 @@ key=value
 
     def test_mac_strings_comments(self):
         """Test .string comment types."""
-        propsource = """/* Comment */
+        propsource = """/* Comment1 */
 // Comment
 "key" = "value";""".encode("utf-16")
         propfile = self.propparse(propsource, personality="strings")
@@ -560,7 +560,7 @@ key=value
         propunit = propfile.units[0]
         assert propunit.name == "key"
         assert propunit.source == "value"
-        assert propunit.getnotes() == "/* Comment */\n// Comment"
+        assert propunit.getnotes() == "Comment1\nComment"
 
     def test_mac_strings_multilines_comments(self):
         """Test .string multiline comments."""
@@ -570,7 +570,7 @@ key=value
         propunit = propfile.units[0]
         assert propunit.name == "key"
         assert propunit.source == "value"
-        assert propunit.getnotes() == "/* Foo\nBar\nBaz */"
+        assert propunit.getnotes() == "Foo\nBar\nBaz"
 
     def test_mac_strings_comments_dropping(self):
         """.string generic (and unuseful) comments should be dropped."""
@@ -648,7 +648,7 @@ key=value
         propunit = propfile.units[1]
         assert propunit.name == ""
         assert propunit.source == ""
-        assert propunit.getnotes() == "# END"
+        assert propunit.getnotes() == "END"
 
     def test_utf16_byte_order_mark(self):
         """Test that BOM appears in the resulting text once only."""
@@ -743,10 +743,10 @@ job.log.begin=Starting job of type [{0}]
         assert propunit.value == ""
         assert (
             propunit.getnotes()
-            == """# This is free software; you can redistribute it and/or modify it
-# under the terms of the GNU Lesser General Public License as
-# published by the Free Software Foundation; either version 2.1 of
-# the License, or (at your option) any later version.
+            == """This is free software; you can redistribute it and/or modify it
+under the terms of the GNU Lesser General Public License as
+published by the Free Software Foundation; either version 2.1 of
+the License, or (at your option) any later version.
 """
         )
         propunit = propfile.units[1]
@@ -755,6 +755,45 @@ job.log.begin=Starting job of type [{0}]
         print(bytes(propfile))
         print(propsource)
         assert bytes(propfile) == propsource
+
+    def test_serialize_note(self):
+        propsource = b"key=value\n"
+        propfile = self.propparse(propsource, personality="java-utf8")
+        propunit = propfile.units[0]
+        assert propunit.name == "key"
+        assert propunit.value == "value"
+        propunit.addnote("note")
+        assert (
+            bytes(propfile).decode()
+            == """// note
+key=value
+"""
+        )
+        parsed = self.propparse(bytes(propfile), personality="java-utf8")
+        propunit = parsed.units[0]
+        assert propunit.name == "key"
+        assert propunit.value == "value"
+        assert propunit.getnotes() == "note"
+
+    def test_serialize_long_note(self):
+        propsource = b"key=value\n"
+        propfile = self.propparse(propsource, personality="java-utf8")
+        propunit = propfile.units[0]
+        assert propunit.name == "key"
+        assert propunit.value == "value"
+        propunit.addnote("long\nnote")
+        assert (
+            bytes(propfile).decode()
+            == """/* long
+note */
+key=value
+"""
+        )
+        parsed = self.propparse(bytes(propfile), personality="java-utf8")
+        propunit = parsed.units[0]
+        assert propunit.name == "key"
+        assert propunit.value == "value"
+        assert propunit.getnotes() == "long\nnote"
 
 
 class TestXWiki(test_monolingual.TestMonolingualStore):

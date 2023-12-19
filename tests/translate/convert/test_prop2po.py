@@ -144,7 +144,7 @@ reduce the number of cached connections."""
 prefPanel-smime=Security"""
         pofile = self.prop2po(propsource)
         pounit = self.singleelement(pofile)
-        assert pounit.getnotes("developer") == "# Comment"
+        assert pounit.getnotes("developer") == "Comment"
 
     def test_multiline_comments(self):
         """Test to ensure that we handle multiline comments well."""
@@ -160,7 +160,7 @@ prefPanel-smime=
         # header comments:
         assert b"#. # Comment\n#. # commenty 2" in bytes(pofile)
         pounit = self.singleelement(pofile)
-        assert pounit.getnotes("developer") == "## @name GENERIC_ERROR\n## @loc none"
+        assert pounit.getnotes("developer") == "# @name GENERIC_ERROR\n# @loc none"
 
     def test_folding_accesskeys(self):
         """Check that we can fold various accesskeys into their associated label (bug #115)."""
@@ -188,7 +188,7 @@ do=translate me
             assert pounit.getlocations() == ["credit"]
             assert pounit.getcontext() == "credit"
             assert 'msgctxt "credit"' in str(pounit)
-            assert b"#. # comment" in bytes(pofile)
+            assert b"#. comment" in bytes(pofile)
             assert pounit.source == ""
 
     def test_emptyproperty_translated(self):
@@ -217,7 +217,7 @@ do=translate me
         pofile = self.prop2po(propsource)
         unit = self.singleelement(pofile)
         assert unit.source == "value"
-        assert unit.getnotes("developer") == "# Comment"
+        assert unit.getnotes("developer") == "Comment"
 
     def test_unassociated_comment_order(self):
         """Check that we can handle the order of unassociated comments."""
@@ -227,7 +227,7 @@ do=translate me
         assert unit.source == "value"
         assert (
             unit.getnotes("developer")
-            == "# 1st Unassociated comment\n\n# 2nd Connected comment"
+            == "1st Unassociated comment\n\n2nd Connected comment"
         )
 
     def test_x_header(self):
