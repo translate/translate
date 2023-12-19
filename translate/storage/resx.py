@@ -224,4 +224,4 @@ class RESXFile(lisa.LISAfile):
 
     def serialize_hook(self, treestring):
         # Additional space on empty tags same as Visual Studio
-        return treestring.replace(b"/>", b" />")
+        return treestring.replace(b"/>", b" />").replace(b"\n", b"\r\n")

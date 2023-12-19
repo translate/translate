@@ -112,7 +112,7 @@ msgstr "Some translated text"'''
   </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
-        assert resx_file == expected_output
+        assert resx_file == expected_output.replace("\n", "\r\n")
 
     def test_basic(self):
         po_source = r"""# Afrikaans translation of program ABC
@@ -146,7 +146,7 @@ msgstr "Toepassings"
   </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
-        assert resx_file == expected_output
+        assert resx_file == expected_output.replace("\n", "\r\n")
 
     def test_multiline(self):
         """Test multiline po entry."""
@@ -168,7 +168,7 @@ msgstr "Eerste deel "
   </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
-        assert resx_file == expected_output
+        assert resx_file == expected_output.replace("\n", "\r\n")
 
     def test_escapednewlines(self):
         """Test the escaping of newlines."""
@@ -190,7 +190,7 @@ Tweede lyn</value>
   </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
-        assert resx_file == expected_output
+        assert resx_file == expected_output.replace("\n", "\r\n")
 
     def test_escapedtabs(self):
         """Test the escaping of tabs."""
@@ -211,7 +211,7 @@ msgstr "Eerste kolom\tTweede kolom"
   </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
-        assert resx_file == expected_output
+        assert resx_file == expected_output.replace("\n", "\r\n")
 
     def test_escapedquotes(self):
         """Test the escaping of quotes (and slash)."""
@@ -235,7 +235,7 @@ msgstr "Gebruik \\\"."
   </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
-        assert resx_file == expected_output
+        assert resx_file == expected_output.replace("\n", "\r\n")
 
     def test_exclusions(self):
         """Test that empty and fuzzy messages are excluded."""
@@ -277,7 +277,7 @@ msgstr "Drie"
   </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
-        assert resx_file == expected_output
+        assert resx_file == expected_output.replace("\n", "\r\n")
 
     def test_automaticcomments(self):
         """Tests that automatic comments are imported."""
@@ -300,7 +300,7 @@ msgstr "Bézier-kurwe"
   </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
-        assert resx_file == expected_output
+        assert resx_file == expected_output.replace("\n", "\r\n")
 
     def test_automaticcomments_existingcomment(self):
         """Tests a differing automatic comment is added if there is an existing automatic comment."""
@@ -325,7 +325,7 @@ This is a new comment</comment>
   </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
-        assert resx_file == expected_output
+        assert resx_file == expected_output.replace("\n", "\r\n")
 
     def test_automaticcomments_existingduplicatecomment(self):
         """Tests there is no duplication of automatic comments if it already exists and hasn't changed."""
@@ -349,7 +349,7 @@ msgstr "Bézier-kurwe"
   </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
-        assert resx_file == expected_output
+        assert resx_file == expected_output.replace("\n", "\r\n")
 
     def test_automaticcomments_existingduplicatecommentwithwhitespace(self):
         """
@@ -376,7 +376,7 @@ msgstr "Bézier-kurwe"
   </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
-        assert resx_file == expected_output
+        assert resx_file == expected_output.replace("\n", "\r\n")
 
     def test_translatorcomments(self):
         """Tests that translator comments are imported."""
@@ -399,7 +399,7 @@ msgstr "Bézier-kurwe"
   </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
-        assert resx_file == expected_output
+        assert resx_file == expected_output.replace("\n", "\r\n")
 
     def test_translatorcomments_existingcomment(self):
         """Tests a differing translator comment is added if there is an existing translator comment."""
@@ -424,7 +424,7 @@ msgstr "Bézier-kurwe"
   </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
-        assert resx_file == expected_output
+        assert resx_file == expected_output.replace("\n", "\r\n")
 
     def test_translatorcomments_existingduplicatecomment(self):
         """Tests there is no duplication of translator comments if it already exists and hasn't changed."""
@@ -448,7 +448,7 @@ msgstr "Bézier-kurwe"
   </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
-        assert resx_file == expected_output
+        assert resx_file == expected_output.replace("\n", "\r\n")
 
     def test_combocomments(self):
         """Tests that translator comments and automatic comments are imported."""
@@ -473,7 +473,7 @@ msgstr "Bézier-kurwe"
   </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
-        assert resx_file == expected_output
+        assert resx_file == expected_output.replace("\n", "\r\n")
 
     def test_combocomments_existingduplicatecomment(self):
         """
@@ -502,7 +502,7 @@ msgstr "Bézier-kurwe"
   </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
-        assert resx_file == expected_output
+        assert resx_file == expected_output.replace("\n", "\r\n")
 
     def test_combocomments_existingcomment(self):
         """
@@ -532,7 +532,7 @@ This is a new comment
   </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
-        assert resx_file == expected_output
+        assert resx_file == expected_output.replace("\n", "\r\n")
 
     def test_existingcomments(self):
         """Tests that no extra space is added when there are no changes to existing comments."""
@@ -559,7 +559,7 @@ msgstr "Bézier-kurwe"
   </data>"""
         )
         resx_file = self.po2resx(resx_template, po_source)
-        assert resx_file == expected_output
+        assert resx_file == expected_output.replace("\n", "\r\n")
 
 
 class TestPO2RESXCommand(test_convert.TestConvertCommand, TestPO2RESX):

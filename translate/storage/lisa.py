@@ -345,7 +345,7 @@ class LISAfile(base.TranslationStore):
 
         xml_declaration = f"<?xml version={xml_quote_format}1.0{xml_quote_format} encoding={xml_quote_format}{xml_encoding}{xml_quote_format}?>\n"
 
-        out.write(xml_declaration.encode(self.encoding))
+        out.write(self.serialize_hook(xml_declaration.encode(self.encoding)))
 
         if self.XMLindent:
             reindent(root, **self.XMLindent)

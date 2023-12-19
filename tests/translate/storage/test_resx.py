@@ -94,10 +94,7 @@ class TestRESXUnitFromParsedString(TestRESXUnit):
         self.unit = self.store.units[0]
 
     def _assert_store(self, expected_resx):
-        output_file = BytesIO()
-        self.store.serialize(output_file)
-        actual_resx = output_file.getvalue().decode("utf-8")
-        assert actual_resx == expected_resx
+        assert bytes(self.store).decode() == expected_resx.replace("\n", "\r\n")
 
     def test_newunit(self):
         new_unit = resx.RESXUnit("New translated value")
