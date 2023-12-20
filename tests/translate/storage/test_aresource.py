@@ -863,3 +863,40 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
     <string name="test3">Test2</string>
 </resources>"""
         )
+
+    def test_cdata(self):
+        body = r"""<Data>XXX<b>x</b><![CDATA[
+    <html><head>
+      <style type=\"text/css\">
+        body { margin: 0px; }
+      </style></head><body>
+      <div style=\"background-color: transparent; color: %1$s; padding:
+%2$dpx;\">
+        <p>This app requires <strong>permission to access all
+files</strong> on the storage.</p>
+      </div>
+    </body></html>
+    ]]></Data>"""
+        content = f"""<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dialog_storage_permission_info" formatted="false">{body}</string>
+</resources>"""
+        store = self.StoreClass()
+        store.parse(content.encode())
+        assert len(store.units) == 1
+        assert store.units[0].target == body
+        assert bytes(store).decode() == content
+        store.units[0].target = body
+        assert bytes(store).decode() == content
+
+    def test_prefix(self):
+        body = "&lt; <b>body</b>"
+        content = f"""<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="test">{body}</string>
+</resources>"""
+        store = self.StoreClass()
+        store.parse(content.encode())
+        assert len(store.units) == 1
+        assert store.units[0].target == body
+        assert bytes(store).decode() == content
