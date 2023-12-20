@@ -6,6 +6,8 @@ Android string resources
 :wp:`Android <Android_%28operating_system%29>` programs make use of localisable
 string resources.
 
+:guilabel:`Mobile Kotlin resources` are supported as a variant of this format.
+
 .. note:: The toolkit supports this format, but still doesn't provide any
    converter.
 
@@ -22,3 +24,4 @@ References
 * `Localizing Android Applications <http://www.linux-mag.com/id/7794>`_ tutorial
 * Reference for `translatable attribute
   <http://tools.android.com/recent/non-translatablestrings>`_
+* `Mobile Kotlin resources <https://github.com/icerockdev/moko-resources>`_
