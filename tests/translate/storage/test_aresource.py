@@ -900,3 +900,36 @@ files</strong> on the storage.</p>
         assert len(store.units) == 1
         assert store.units[0].target == body
         assert bytes(store).decode() == content
+
+
+class TestMOKOResourceUnit(test_monolingual.TestMonolingualUnit):
+    UnitClass = aresource.MOKOResourceUnit
+
+
+class TestMOKOResourceFile(test_monolingual.TestMonolingualStore):
+    StoreClass = aresource.MOKOResourceFile
+
+    def test_plural(self):
+        content = """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plural name="vms_num_visitors">
+        <item quantity="one">%d visitor</item>
+        <item quantity="other">%d visitors</item>
+    </plural>
+</resources>"""
+        store = self.StoreClass()
+        store.parse(content.encode())
+        assert store.units[0].target == multistring(["%d visitor", "%d visitors"])
+        store = self.StoreClass()
+        store.targetlanguage = "zh-rHK"
+        store.parse(content.encode())
+        store.units[0].target = "%d 訪客"
+        assert (
+            bytes(store).decode()
+            == """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plural name="vms_num_visitors">
+        <item quantity="other">%d 訪客</item>
+    </plural>
+</resources>"""
+        )

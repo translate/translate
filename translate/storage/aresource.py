@@ -148,11 +148,14 @@ class EncodingXMLParser(DecodingXMLParser):
 class AndroidResourceUnit(base.TranslationUnit):
     """A single entry in the Android String resource file."""
 
+    SINGULAR_TAG = "string"
+    PLURAL_TAG = "plurals"
+
     @classmethod
     def createfromxmlElement(cls, element):
         term = None
         # Actually this class supports only plurals and string tags
-        if element.tag in ("plurals", "string"):
+        if element.tag in (cls.PLURAL_TAG, cls.SINGULAR_TAG):
             term = cls(None, xmlelement=element)
         return term
 
@@ -160,9 +163,9 @@ class AndroidResourceUnit(base.TranslationUnit):
         if xmlelement is not None:
             self.xmlelement = xmlelement
         elif self.hasplurals(source):
-            self.xmlelement = etree.Element("plurals")
+            self.xmlelement = etree.Element(self.PLURAL_TAG)
         else:
-            self.xmlelement = etree.Element("string")
+            self.xmlelement = etree.Element(self.SINGULAR_TAG)
         if source is not None:
             self.setid(source)
         super().__init__(source)
@@ -432,7 +435,7 @@ class AndroidResourceUnit(base.TranslationUnit):
 
     @property
     def target(self):
-        if self.xmlelement.tag != "plurals":
+        if self.xmlelement.tag != self.PLURAL_TAG:
             return self.get_xml_text_value(self.xmlelement)
         plurals = {
             entry.get("quantity"): self.get_xml_text_value(entry)
@@ -445,9 +448,9 @@ class AndroidResourceUnit(base.TranslationUnit):
     def target(self, target):
         if self.hasplurals(self.source) or self.hasplurals(target):
             # Fix the root tag if mismatching
-            if self.xmlelement.tag != "plurals":
+            if self.xmlelement.tag != self.PLURAL_TAG:
                 old_id = self.getid()
-                self.xmlelement = etree.Element("plurals")
+                self.xmlelement = etree.Element(self.PLURAL_TAG)
                 self.setid(old_id)
 
             plural_tags = self.get_plural_tags()
@@ -485,9 +488,9 @@ class AndroidResourceUnit(base.TranslationUnit):
                 self.xmlelement.append(item)
         else:
             # Fix the root tag if mismatching
-            if self.xmlelement.tag != "string":
+            if self.xmlelement.tag != self.SINGULAR_TAG:
                 old_id = self.getid()
-                self.xmlelement = etree.Element("string")
+                self.xmlelement = etree.Element(self.SINGULAR_TAG)
                 self.setid(old_id)
 
             self.set_xml_text_value(target, self.xmlelement)
@@ -638,3 +641,11 @@ class AndroidResourceFile(lisa.LISAfile):
     def removeunit(self, unit):
         unit.removenotes()
         super().removeunit(unit)
+
+
+class MOKOResourceUnit(AndroidResourceUnit):
+    PLURAL_TAG = "plural"
+
+
+class MOKOResourceFile(AndroidResourceFile):
+    UnitClass = MOKOResourceUnit
