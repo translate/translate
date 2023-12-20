@@ -24,6 +24,7 @@ from __future__ import annotations
 import copy
 import os
 import re
+from xml.parsers.expat import XML_PARAM_ENTITY_PARSING_NEVER, ParserCreate
 
 from lxml import etree
 
@@ -46,6 +47,102 @@ ESCAPE_TRANSLATE = str.maketrans(
         '"': '\\"',
     }
 )
+
+
+class DecodingXMLParser:
+    """
+    XML parser that processes non CDATA strings.
+
+    - all XML markup from given depth is output as is
+    - CDATA elements are output as is
+    - process_string() is called on all other textual content
+    """
+
+    EMIT_DEPTH = 1
+    FOREGIN_DTD = True
+
+    def __init__(self, text: str):
+        self.text = text
+        self.output = []
+        self.emit_start = None
+        self.decoded_emit = None
+        self.character_data = False
+        self.raw_string = True
+        self.depth = 0
+        self.parser = parser = ParserCreate()
+        if self.FOREGIN_DTD:
+            parser.UseForeignDTD(self.FOREGIN_DTD)
+        parser.SetParamEntityParsing(XML_PARAM_ENTITY_PARSING_NEVER)
+        parser.StartElementHandler = self.StartElementHandler
+        parser.EndElementHandler = self.EndElementHandler
+        parser.CharacterDataHandler = self.CharacterDataHandler
+        parser.StartCdataSectionHandler = self.StartCdataSectionHandler
+        parser.EndCdataSectionHandler = self.EndCdataSectionHandler
+        parser.DefaultHandler = self.DefaultHandler
+
+    @staticmethod
+    def process_string(text: str) -> str:
+        return AndroidResourceUnit.unescape(text, strip=False)
+
+    def emit(self):
+        if self.emit_start is not None:
+            text = self.text[self.emit_start : self.parser.CurrentByteIndex]
+            if not self.raw_string:
+                text = self.process_string(text)
+            self.output.append(text)
+            self.emit_start = None
+        self.character_data = False
+        self.raw_string = True
+
+    def StartElementHandler(self, _name, _attributes):
+        self.emit()
+        if self.depth >= self.EMIT_DEPTH:
+            self.emit_start = self.parser.CurrentByteIndex
+        self.depth += 1
+
+    def EndElementHandler(self, _name):
+        self.emit()
+        if self.depth >= self.EMIT_DEPTH:
+            self.emit_start = self.parser.CurrentByteIndex
+        self.depth -= 1
+
+    def CharacterDataHandler(self, _data):
+        if not self.character_data:
+            self.emit()
+            self.emit_start = self.parser.CurrentByteIndex
+            self.raw_string = False
+
+    def StartCdataSectionHandler(self):
+        self.emit()
+        self.character_data = True
+        self.emit_start = self.parser.CurrentByteIndex
+
+    def EndCdataSectionHandler(self):
+        self.character_data = False
+
+    def DefaultHandler(self, _data):
+        if self.depth >= self.EMIT_DEPTH:
+            self.emit()
+            self.emit_start = self.parser.CurrentByteIndex
+
+    def parse(self) -> str:
+        self.parser.Parse(self.text, True)
+        if self.depth >= self.EMIT_DEPTH:
+            self.emit()
+        return "".join(self.output)
+
+
+class EncodingXMLParser(DecodingXMLParser):
+    EMIT_DEPTH = 0
+    FOREGIN_DTD = False
+
+    @staticmethod
+    def process_string(text: str) -> str:
+        return AndroidResourceUnit.escape(text, quote_wrapping_whitespaces=False)
+
+    def parse(self) -> str:
+        self.emit_start = 0
+        return super().parse()
 
 
 class AndroidResourceUnit(base.TranslationUnit):
@@ -218,8 +315,9 @@ class AndroidResourceUnit(base.TranslationUnit):
     def xml_escape_space(matchobj):
         return matchobj.group(0).replace("  ", r" \u0020")
 
+    @classmethod
     def escape(
-        self, text: str | None, quote_wrapping_whitespaces: bool = True
+        cls, text: str | None, quote_wrapping_whitespaces: bool = True
     ) -> str | None:
         """
         Escape all the characters which need to be escaped in an Android XML
@@ -251,7 +349,7 @@ class AndroidResourceUnit(base.TranslationUnit):
             return '"%s"' % text
         # In xml multispace
         if not quote_wrapping_whitespaces and multispace:
-            return MULTIWHITESPACE.sub(self.xml_escape_space, text)
+            return MULTIWHITESPACE.sub(cls.xml_escape_space, text)
 
         return text
 
@@ -265,32 +363,9 @@ class AndroidResourceUnit(base.TranslationUnit):
         if len(xmltarget) == 0:
             # There are no html markups, so unescaping it as plain text.
             return self.unescape(xmltarget.text)
-        # There are html markups, so clone it to perform unescaping for all elements.
-        cloned_target = copy.deepcopy(xmltarget)
 
-        # Unescaping texts.
-        if cloned_target.text is not None:
-            cloned_target.text = self.unescape(cloned_target.text, False)
-        for xmlelement in cloned_target.iterdescendants():
-            if xmlelement.text is not None and xmlelement.tag is not etree.Entity:
-                xmlelement.text = self.unescape(xmlelement.text, False)
-            if xmlelement.tail is not None:
-                xmlelement.tail = self.unescape(xmlelement.tail, False)
-
-        # Grab root text (using a temporary xml element for text escaping)
-        if cloned_target.text is not None:
-            tmp_element = etree.Element("t")
-            tmp_element.text = cloned_target.text
-            target = etree.tostring(tmp_element, encoding="unicode")[3:-4]
-        else:
-            target = ""
-
-        # Include markup as well
-        target += "".join(
-            etree.tostring(child, encoding="unicode")
-            for child in cloned_target.iterchildren()
-        )
-        return target
+        parser = DecodingXMLParser(etree.tostring(xmltarget, encoding="unicode"))
+        return parser.parse()
 
     def set_xml_text_plain(self, target, xmltarget):
         # Remove possible old elements
@@ -320,27 +395,22 @@ class AndroidResourceUnit(base.TranslationUnit):
                 "</resources>", f"<string>{target}</string></resources>"
             )
             try:
-                newstring = etree.fromstring(newstring, parser)[0]
+                etree.fromstring(newstring, parser)
             except Exception:
                 self.set_xml_text_plain(target, xmltarget)
             else:
-                # Escape all text parts.
-                if newstring.text is not None:
-                    newstring.text = self.escape(newstring.text, False)
-                for x in newstring.iterdescendants():
-                    if x.text is not None and x.tag is not etree.Entity:
-                        x.text = self.escape(x.text, False)
-                    if x.tail is not None:
-                        x.tail = self.escape(x.tail, False)
-
+                # Escape text parts
+                encoding_parser = EncodingXMLParser(newstring)
+                newstring = encoding_parser.parse()
+                newtree = etree.fromstring(newstring, parser)[0]
                 # Update text
-                xmltarget.text = newstring.text
+                xmltarget.text = newtree.text
 
                 # Remove old elements
                 for x in xmltarget.iterchildren():
                     xmltarget.remove(x)
                 # Add new elements
-                for x in newstring.iterchildren():
+                for x in newtree.iterchildren():
                     xmltarget.append(x)
         else:
             self.set_xml_text_plain(target, xmltarget)
