@@ -444,16 +444,13 @@ plural_tags = {
     "id": ["other"],
     "ig": ["other"],
     "ii": ["other"],
-    "in": ["other"],
     "io": ["one", "other"],
     "is": ["one", "other"],
     "it": ["one", "many", "other"],
     "iu": ["one", "two", "other"],
-    "iw": ["one", "two", "many", "other"],
     "ja": ["other"],
     "jbo": ["other"],
     "jgo": ["one", "other"],
-    "ji": ["one", "other"],
     "jmc": ["one", "other"],
     "jv": ["other"],
     "jw": ["other"],
@@ -593,6 +590,11 @@ plural_tags = {
     "zh": ["other"],
     "zu": ["one", "other"],
 }
+
+# Add legacy aliases for some locales
+plural_tags["in"] = plural_tags["id"]
+plural_tags["iw"] = plural_tags["he"]
+plural_tags["ji"] = plural_tags["yi"]
 
 # Qt Linguist plural tags, extracted from
 # https://github.com/WeblateOrg/language-data
