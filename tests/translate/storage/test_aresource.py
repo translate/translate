@@ -901,6 +901,19 @@ files</strong> on the storage.</p>
         assert store.units[0].target == body
         assert bytes(store).decode() == content
 
+    def test_rtl(self):
+        content = """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="calendar_permission_required"><i>{app_name}</i> צרכה רשות לגשת ליומן שלך, על מנת ליצור תוכניות עבור עסקאות עתידיות חוזרות.</string>
+</resources>"""
+        store = self.StoreClass()
+        store.parse(content.encode())
+        assert len(store.units) == 1
+        assert (
+            store.units[0].target
+            == "<i>{app_name}</i> צרכה רשות לגשת ליומן שלך, על מנת ליצור תוכניות עבור עסקאות עתידיות חוזרות."
+        )
+
 
 class TestMOKOResourceUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = aresource.MOKOResourceUnit

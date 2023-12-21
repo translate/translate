@@ -1,0 +1,23 @@
+Translate Toolkit 3.12.1
+************************
+
+*Released on 21 December 2023*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- Android 
+
+  - Fixed parsing of some translation files
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař

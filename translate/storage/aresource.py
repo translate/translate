@@ -62,7 +62,7 @@ class DecodingXMLParser:
     FOREGIN_DTD = True
 
     def __init__(self, text: str):
-        self.text = text
+        self.text = text.encode("utf-8")
         self.output = []
         self.emit_start = None
         self.decoded_emit = None
@@ -86,7 +86,9 @@ class DecodingXMLParser:
 
     def emit(self):
         if self.emit_start is not None:
-            text = self.text[self.emit_start : self.parser.CurrentByteIndex]
+            text = self.text[self.emit_start : self.parser.CurrentByteIndex].decode(
+                "utf-8"
+            )
             if not self.raw_string:
                 text = self.process_string(text)
             self.output.append(text)
