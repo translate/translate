@@ -759,3 +759,15 @@ class TestXLIFFfile(test_base.TestTranslationStore):
             "docs/config.md:block 1 (header)",
             "file.rst",
         ]
+
+    def test_huge(self):
+        # This create approx 120MB Xliff file
+        xlfsource = self.skeleton % (
+            """<trans-unit id="1">
+                     <source>text</source>
+                     <target/>
+                 </trans-unit>"""
+            * 100_000
+        )
+        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        assert len(xlifffile.units) == 100_000
