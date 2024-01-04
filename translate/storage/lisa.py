@@ -333,14 +333,12 @@ class LISAfile(base.TranslationStore):
     def serialize(self, out):
         """Converts to a string containing the file's XML."""
         root = self.document.getroot()
-        xml_quote_format = "'"
-        xml_encoding = self.encoding.lower()
-
-        if self.XMLdoublequotes:
-            xml_quote_format = '"'
-
-        if self.XMLuppercaseEncoding:
-            xml_encoding = self.encoding.upper()
+        xml_quote_format = '"' if self.XMLdoublequotes else "'"
+        xml_encoding = (
+            self.encoding.upper()
+            if self.XMLuppercaseEncoding
+            else self.encoding.lower()
+        )
 
         xml_declaration = f"<?xml version={xml_quote_format}1.0{xml_quote_format} encoding={xml_quote_format}{xml_encoding}{xml_quote_format}?>\n"
 
@@ -351,6 +349,7 @@ class LISAfile(base.TranslationStore):
 
         if not self.XMLSelfClosingTags:
             expand_closing_tags(root)
+
         treestring = etree.tostring(
             self.document,
             pretty_print=not self.XMLindent,
@@ -359,8 +358,7 @@ class LISAfile(base.TranslationStore):
             doctype=self.XMLdoctype,
         )
 
-        treestring = self.serialize_hook(treestring)
-        out.write(treestring)
+        out.write(self.serialize_hook(treestring))
 
     def parse(self, xml):
         """Populates this object from the given xml string."""
