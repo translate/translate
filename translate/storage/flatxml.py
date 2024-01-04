@@ -187,7 +187,7 @@ class FlatXMLFile(base.TranslationStore):
             # ensure trailing EOL for VCS
             self.root.tail = "\n"
 
-    def serialize(self, out=None):
+    def serialize(self, out):
         self.reindent()
         self.document.write(
             out, xml_declaration=self.XML_DECLARATION, encoding=self.encoding

@@ -330,7 +330,7 @@ class LISAfile(base.TranslationStore):
     def serialize_hook(self, treestring: str) -> bytes:
         return treestring.encode(self.encoding)
 
-    def serialize(self, out=None):
+    def serialize(self, out):
         """Converts to a string containing the file's XML."""
         root = self.document.getroot()
         xml_quote_format = "'"
