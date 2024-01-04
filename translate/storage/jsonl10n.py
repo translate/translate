@@ -502,8 +502,23 @@ class I18NextV4File(JsonNestedFile):
             )
 
 
+class GoTextUnitId(base.UnitId):
+    """Preserves id as stored in the JSON file."""
+
+    def __str__(self):
+        return str(self.parts)
+
+    def extend(self, key, value):
+        raise ValueError("Extend is not supported")
+
+    @classmethod
+    def from_string(cls, text):
+        return cls(text)
+
+
 class GoTextJsonUnit(BaseJsonUnit):
     ID_FORMAT = "{}"
+    IdClass = GoTextUnitId
 
     def __init__(
         self,
@@ -544,7 +559,7 @@ class GoTextJsonUnit(BaseJsonUnit):
                 plural: {"msg": strings[offset]}
                 for offset, plural in enumerate(self._store.plural_tags)
             }
-        value = {"id": self.getid()}
+        value = {"id": self._unitid.parts if self._unitid else self.getid()}
         if self.message:
             value["message"] = self.message
         if self.notes:
@@ -561,6 +576,12 @@ class GoTextJsonUnit(BaseJsonUnit):
         if self.placeholders:
             value["placeholders"] = self.placeholders
         return value
+
+    def setid(self, value, unitid=None):
+        if unitid is None:
+            unitid = self.IdClass(value)
+        # Skip BaseJsonUnit.setid override
+        super(BaseJsonUnit, self).setid(str(unitid), unitid)
 
 
 class GoTextJsonFile(JsonFile):
