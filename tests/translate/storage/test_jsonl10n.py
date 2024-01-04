@@ -928,6 +928,64 @@ class TestGoTextJsonFile(test_monolingual.TestMonolingualStore):
             '"other": {\n                            "msg": ""' in bytes(store).decode()
         )
 
+    def test_case_no_msg(self):
+        store = self.StoreClass()
+        store.parse(
+            """{
+    "language": "en-US",
+    "messages": [
+        {
+            "id": "{N} more files remaining!",
+            "key": "%d more files remaining!",
+            "message": "{N} more files remaining!",
+            "translation": {
+                "select": {
+                    "feature": "plural",
+                    "cases": {
+                        "one": "One file remaining!",
+                        "other": "There are {N} more files remaining!"
+                    }
+                }
+            }
+        }
+    ]
+}
+"""
+        )
+
+        assert len(store.units) == 1
+        assert store.units[0].target == multistring(
+            ["One file remaining!", "There are {N} more files remaining!"]
+        )
+
+        assert (
+            bytes(store).decode()
+            == """{
+    "language": "en-US",
+    "messages": [
+        {
+            "id": "{N} more files remaining!",
+            "message": "{N} more files remaining!",
+            "key": "%d more files remaining!",
+            "translation": {
+                "select": {
+                    "feature": "plural",
+                    "cases": {
+                        "one": {
+                            "msg": "One file remaining!"
+                        },
+                        "other": {
+                            "msg": "There are {N} more files remaining!"
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}
+"""
+        )
+
 
 class TestI18NextV4Store(test_monolingual.TestMonolingualStore):
     StoreClass = jsonl10n.I18NextV4File

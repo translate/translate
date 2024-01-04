@@ -584,6 +584,13 @@ class GoTextJsonFile(JsonFile):
         name_last_node=None,
         last_node=None,
     ):
+        def _get_msg(cases, key):
+            value = cases.get(key, None)
+            if isinstance(value, dict):
+                return value["msg"]
+            # Direct string value and None as fallback
+            return value
+
         if prev is None:
             lang = data.get("language")
             if lang is not None:
@@ -595,7 +602,7 @@ class GoTextJsonFile(JsonFile):
                 # Ordered list of plurals
                 translation = multistring(
                     [
-                        cases.get(key, {}).get("msg")
+                        _get_msg(cases, key)
                         for key in cldr_plural_categories
                         if key in cases
                     ]
