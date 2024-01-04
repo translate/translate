@@ -858,3 +858,41 @@ class ARBJsonFile(JsonFile):
             )
             unit.setid(item)
             yield unit
+
+
+class FormatJSJsonUnit(BaseJsonUnit):
+    def storevalues(self, output):
+        value = {"defaultMessage": self.target}
+        if self.notes:
+            value["description"] = self.notes
+        self.storevalue(output, value)
+
+
+class FormatJSJsonFile(JsonFile):
+    """
+    FormatJS JSON file.
+
+    See following URLs for doc:
+
+    https://formatjs.io/docs/getting-started/message-extraction/
+    """
+
+    UnitClass = FormatJSJsonUnit
+
+    def _extract_units(
+        self,
+        data,
+        stop=None,
+        prev=None,
+        name_node=None,
+        name_last_node=None,
+        last_node=None,
+    ):
+        for item, value in data.items():
+            unit = self.UnitClass(
+                value.get("defaultMessage", ""),
+                item,
+                value.get("description", ""),
+            )
+            unit.setid(item)
+            yield unit

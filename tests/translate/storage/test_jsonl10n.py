@@ -1255,3 +1255,39 @@ class TestARBJsonFile(test_monolingual.TestMonolingualStore):
         assert store.units[3].target == "Done"
 
         assert bytes(store).decode() == JSON_ARB.decode()
+
+
+JSON_FORMATJS = """{
+    "hak27d": {
+        "defaultMessage": "Control Panel",
+        "description": "title of control panel section"
+    },
+    "haqsd": {
+        "defaultMessage": "Delete user {name}",
+        "description": "delete button"
+    },
+    "19hjs": {
+        "defaultMessage": "New Password",
+        "description": "placeholder text"
+    },
+    "explicit-id": {
+        "defaultMessage": "Confirm Password",
+        "description": "placeholder text"
+    }
+}
+"""
+
+
+class TestFormatJSJsonFile(test_monolingual.TestMonolingualStore):
+    StoreClass = jsonl10n.FormatJSJsonFile
+
+    def test_roundtrip(self):
+        store = self.StoreClass()
+        store.parse(JSON_FORMATJS)
+
+        assert len(store.units) == 4
+        assert store.units[3].getid() == "explicit-id"
+        assert store.units[3].target == "Confirm Password"
+        assert store.units[3].getnotes() == "placeholder text"
+
+        assert bytes(store).decode() == JSON_FORMATJS
