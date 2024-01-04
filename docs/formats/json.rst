@@ -39,3 +39,4 @@ Following JSON dialects are supported
 * `go-i18n v1 & v2 <https://github.com/nicksnyder/go-i18n>`_
 * `gotext <https://pkg.go.dev/golang.org/x/text/cmd/gotext>`_
 * `ARB <https://github.com/google/app-resource-bundle/wiki/ApplicationResourceBundleSpecification>`_
+* `FormatJS <https://formatjs.io/docs/getting-started/message-extraction/>`_
