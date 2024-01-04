@@ -696,6 +696,7 @@ key=value
         propunit = propfile.units[0]
         assert propunit.name == "VALUE"
         assert propunit.source == 'I am a "value"'
+        propunit.source = 'I am a "value"'
         assert bytes(propfile) == propsource
 
     def test_joomla_escape(self):

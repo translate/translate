@@ -527,6 +527,13 @@ class DialectStrings(Dialect):
     out_ending = ";"
     out_delimiter_wrappers = " "
     drop_comments = ["/* No comment provided by engineer. */"]
+    encode_trans = str.maketrans(
+        {
+            "\\": "\\\\",
+            "\n": r"\n",
+            "\t": r"\t",
+        }
+    )
 
     @staticmethod
     def key_strip(key):
@@ -548,9 +555,9 @@ class DialectStrings(Dialect):
         ret = newvalue.lstrip().lstrip('"')
         return ret.replace('\\"', '"')
 
-    @staticmethod
-    def encode(string, encoding=None):
-        return string.replace("\\", "\\\\").replace("\n", r"\n").replace("\t", r"\t")
+    @classmethod
+    def encode(cls, string, encoding=None):  # noqa: ARG003
+        return string.translate(cls.encode_trans)
 
     @staticmethod
     def is_line_continuation(line):
@@ -795,6 +802,13 @@ class DialectJoomla(Dialect):
     default_encoding = "utf-8"
     delimiters = ["="]
     out_delimiter_wrappers = ""
+    encode_trans = str.maketrans(
+        {
+            "\n": r"\n",
+            "\t": r"\t",
+            '"': '"_QQ_"',
+        }
+    )
 
     @staticmethod
     def value_strip(value):
@@ -808,14 +822,12 @@ class DialectJoomla(Dialect):
             string = string[1:-1]
         return string.replace('"_QQ_"', '"')
 
-    @staticmethod
-    def encode(string, encoding=None):
+    @classmethod
+    def encode(cls, string, encoding=None):  # noqa: ARG003
         """Encode the string."""
         if not string:
             return string
-        return '"%s"' % string.replace("\n", r"\n").replace("\t", r"\t").replace(
-            '"', '"_QQ_"'
-        )
+        return f'"{string.translate(cls.encode_trans)}"'
 
 
 class propunit(base.TranslationUnit):
