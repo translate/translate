@@ -43,6 +43,42 @@ from translate.storage.workflow import StateEnum as state
 # TODO: handle translation types
 
 
+# Encode some characters same as lupdate, this matches tsProtect implementation:
+#
+# - quote and apostrophe
+# - any whitespace character above 0x7f
+#
+# The latter can be generated using:
+# >>> for i in  range(sys.maxunicode):
+# ...     if i > 0x7f and chr(i).isspace():
+# ...         print(f'   {chr(i)!r}: "&#x{i:x};",')
+
+OUTPUT_TRANS = str.maketrans(
+    {
+        "'": "&apos;",
+        '"': "&quot;",
+        "\xa0": "&#xa0;",
+        "\u1680": "&#x1680;",
+        "\u2000": "&#x2000;",
+        "\u2001": "&#x2001;",
+        "\u2002": "&#x2002;",
+        "\u2003": "&#x2003;",
+        "\u2004": "&#x2004;",
+        "\u2005": "&#x2005;",
+        "\u2006": "&#x2006;",
+        "\u2007": "&#x2007;",
+        "\u2008": "&#x2008;",
+        "\u2009": "&#x2009;",
+        "\u200a": "&#x200a;",
+        "\u2028": "&#x2028;",
+        "\u2029": "&#x2029;",
+        "\u202f": "&#x202f;",
+        "\u205f": "&#x205f;",
+        "\u3000": "&#x3000;",
+    }
+)
+
+
 class tsunit(lisa.LISAunit):
     """A single term in the TS file."""
 
@@ -532,12 +568,7 @@ class tsfile(lisa.LISAfile):
         out = []
         while pos >= 0:
             nextpos = treestring.find("<", pos)
-            out.append(
-                treestring[pos:nextpos]
-                .replace("'", "&apos;")
-                .replace('"', "&quot;")
-                .replace("\u00a0", "&#xa0;")
-            )
+            out.append(treestring[pos:nextpos].translate(OUTPUT_TRANS))
             pos = nextpos
             nextpos = treestring.find(">", pos)
             out.append(treestring[pos:nextpos])
