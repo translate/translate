@@ -327,9 +327,8 @@ class LISAfile(base.TranslationStore):
         super().removeunit(unit)
         unit.xmlelement.getparent().remove(unit.xmlelement)
 
-    @staticmethod
-    def serialize_hook(treestring):
-        return treestring
+    def serialize_hook(self, treestring: str) -> bytes:
+        return treestring.encode(self.encoding)
 
     def serialize(self, out=None):
         """Converts to a string containing the file's XML."""
@@ -345,7 +344,7 @@ class LISAfile(base.TranslationStore):
 
         xml_declaration = f"<?xml version={xml_quote_format}1.0{xml_quote_format} encoding={xml_quote_format}{xml_encoding}{xml_quote_format}?>\n"
 
-        out.write(self.serialize_hook(xml_declaration.encode(self.encoding)))
+        out.write(self.serialize_hook(xml_declaration))
 
         if self.XMLindent:
             reindent(root, **self.XMLindent)
@@ -356,7 +355,7 @@ class LISAfile(base.TranslationStore):
             self.document,
             pretty_print=not self.XMLindent,
             xml_declaration=False,
-            encoding=self.encoding,
+            encoding="unicode",
             doctype=self.XMLdoctype,
         )
 
