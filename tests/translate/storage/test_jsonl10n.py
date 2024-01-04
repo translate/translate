@@ -986,6 +986,39 @@ class TestGoTextJsonFile(test_monolingual.TestMonolingualStore):
 """
         )
 
+    def test_complex_id(self):
+        text = """{
+    "language": "en-US",
+    "messages": [
+        {
+            "id": [
+                "msgOutOfOrder",
+                "{Device} is out of order!"
+            ],
+            "message": "{Device} is out of order!",
+            "key": "%s is out of order!",
+            "translation": ""
+        },
+        {
+            "id": "[DEBUG] msg",
+            "message": "[DEBUG] msg",
+            "key": "[DEBUG] msg",
+            "translation": ""
+        }
+    ]
+}
+"""
+        store = self.StoreClass()
+        store.parse(text)
+
+        assert len(store.units) == 2
+        assert (
+            store.units[0].getid() == "['msgOutOfOrder', '{Device} is out of order!']"
+        )
+        assert store.units[1].getid() == "[DEBUG] msg"
+
+        assert bytes(store).decode() == text
+
 
 class TestI18NextV4Store(test_monolingual.TestMonolingualStore):
     StoreClass = jsonl10n.I18NextV4File
