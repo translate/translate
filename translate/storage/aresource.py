@@ -33,7 +33,10 @@ from translate.misc.multistring import multistring
 from translate.storage import base, lisa
 
 EOF = None
-WHITESPACE = " \n\t"  # Whitespace that we collapse.
+WHITESPACE = {" ", "\n", "\t"}  # Whitespace that we collapse.
+ESCAPE_NEWLINE = {"n", "N"}
+ESCAPE_TAB = {"t", "T"}
+ESCAPE_PLAIN = {" ", '"', "'", "@", "?"}
 MULTIWHITESPACE = re.compile("[ \n\t]{2}(?!\\\\n)")
 
 ESCAPE_TRANSLATE = str.maketrans(
@@ -192,27 +195,33 @@ class AndroidResourceUnit(base.TranslationUnit):
         """
         Remove escaping from Android resource.
 
-        Code stolen from android2po
+        Code is based on android2po
         <https://github.com/miracle2k/android2po>
         """
         # Return text for empty elements
         if text is None:
             return ""
 
+        # Mirror globals into locals for faster lookups
+        eof = EOF
+        whitespace = WHITESPACE
+        escape_newline = ESCAPE_NEWLINE
+        escape_tab = ESCAPE_TAB
+        escape_plain = ESCAPE_PLAIN
+
         # We need to collapse multiple whitespace while paying
         # attention to Android's quoting and escaping.
         space_count = 0
         active_quote = False
-        active_percent = False
         active_escape = False
         i = 0
-        text = [*list(text), EOF]
+        text = [*text, eof]
         while i < len(text):
             c = text[i]
 
             if not active_escape:
                 # Handle whitespace collapsing
-                if c is not EOF and c in WHITESPACE:
+                if c is not eof and c in whitespace:
                     space_count += 1
                 elif space_count >= 1:
                     # Remove sequential whitespace; Pay attention: We
@@ -221,12 +230,12 @@ class AndroidResourceUnit(base.TranslationUnit):
                     # quotes, e.g. we reach eof while a quote is still
                     # open, we *do* collapse that trailing part; this is
                     # how Android does it, for some reason.
-                    if not active_quote or c is EOF:
+                    if not active_quote or c is eof:
                         # Replace by a single space, will get rid of
                         # non-significant newlines/tabs etc.
                         text[i - space_count : i] = " "
                         i -= space_count - 1
-                        if strip and (i == 1 or c is EOF):
+                        if strip and (i == 1 or c is eof):
                             del text[i - 1]
                     space_count = 0
                 else:
@@ -237,13 +246,6 @@ class AndroidResourceUnit(base.TranslationUnit):
                 active_quote = not active_quote
                 del text[i]
                 i -= 1
-
-            # If the string is run through a formatter, it will have
-            # percentage signs for String.format
-            if c == "%" and not active_escape:
-                active_percent = not active_percent
-            elif not active_escape and active_percent:
-                active_percent = False
 
             # Handle escapes
             if c == "\\":
@@ -259,24 +261,21 @@ class AndroidResourceUnit(base.TranslationUnit):
                 # Handle the limited amount of escape codes
                 # that we support.
                 # TODO: What about \r, or \r\n?
-                if c is EOF:
+                if c is eof:
                     # Basically like any other char, but put
                     # this first so we can use the ``in`` operator
                     # in the clauses below without issue.
                     pass
-                elif c in ("n", "N"):
+                elif c in escape_newline:
                     # Remove whitespace just before newline. Most likely this is result of
                     # having real newline in the XML in front of \n.
                     offset = 2 if i >= 2 and text[i - 2] == " " else 1
                     text[i - offset : i + 1] = "\n"  # an actual newline
                     i -= offset
-                elif c in ("t", "T"):
+                elif c in escape_tab:
                     text[i - 1 : i + 1] = "\t"  # an actual tab
                     i -= 1
-                elif c == " ":
-                    text[i - 1 : i + 1] = " "  # an actual space
-                    i -= 1
-                elif c in "\"'@?":
+                elif c in escape_plain:
                     text[i - 1 : i] = ""  # remove the backslash
                     i -= 1
                 elif c == "u":
