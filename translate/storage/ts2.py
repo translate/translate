@@ -527,23 +527,23 @@ class tsfile(lisa.LISAfile):
             return 1
         return lang[1]
 
-    def serialize_hook(self, treestring):
+    def serialize_hook(self, treestring: str) -> bytes:
         pos = 0
         out = []
         while pos >= 0:
-            nextpos = treestring.find(b"<", pos)
+            nextpos = treestring.find("<", pos)
             out.append(
                 treestring[pos:nextpos]
-                .replace(b"'", b"&apos;")
-                .replace(b'"', b"&quot;")
-                .replace(b"\xc2\xa0", b"&#xa0;")
+                .replace("'", "&apos;")
+                .replace('"', "&quot;")
+                .replace("\u00a0", "&#xa0;")
             )
             pos = nextpos
-            nextpos = treestring.find(b">", pos)
+            nextpos = treestring.find(">", pos)
             out.append(treestring[pos:nextpos])
             pos = nextpos
         out.append(treestring[pos:])
-        return b"".join(out)
+        return super().serialize_hook("".join(out))
 
     def serialize(self, out):
         """Write the XML document to a file."""

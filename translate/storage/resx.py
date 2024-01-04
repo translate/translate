@@ -222,6 +222,8 @@ class RESXFile(lisa.LISAfile):
             unit.xmlelement.text = "\n    "
         return unit
 
-    def serialize_hook(self, treestring):
+    def serialize_hook(self, treestring: str) -> bytes:
         # Additional space on empty tags same as Visual Studio
-        return treestring.replace(b"/>", b" />").replace(b"\n", b"\r\n")
+        return super().serialize_hook(
+            treestring.replace("/>", " />").replace("\n", "\r\n")
+        )
