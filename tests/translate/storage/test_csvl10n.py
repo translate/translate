@@ -136,3 +136,8 @@ GENERAL@2|Notes,"cable, motor, switch"
         assert store.units[0].target == "zkouška sirén"
         with pytest.raises(UnicodeDecodeError):
             store = self.parse_store(content.encode("iso-8859-2"), encoding="utf-8")
+
+    def test_corrupt(self):
+        store = self.StoreClass()
+        with pytest.raises(ValueError):
+            store.parse(b"PK\x03\x04\x14\x00\x06\x00\x08\x00\x00\x00!\x00b\xee\x9d")
