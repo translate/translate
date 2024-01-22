@@ -834,3 +834,13 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert unit.target == target
 
         assert bytes(xlifffile).decode() == xlfsource_preserve
+
+        xlifffile = xliff.xlifffile.parsestring(xlfsource_plain)
+
+        assert len(xlifffile.units) == 1
+        unit = xlifffile.units[0]
+
+        assert unit.target == target.replace("\n", " ")
+        unit.rich_target = [target]
+
+        assert bytes(xlifffile).decode() == xlfsource_preserve
