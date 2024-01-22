@@ -41,6 +41,8 @@ except ImportError:
     raise ImportError("Missing iniparse library.")
 
 
+location_re = re.compile("\\[(?P<section>.+)\\](?P<entry>.+)")
+
 # Disable treating anything starting with rem as a comment, this changes
 # global iniparse state
 change_comment_syntax(allow_rem=False)
@@ -130,7 +132,7 @@ class inifile(base.TranslationStore):
         _outinifile = self._inifile or INIConfig(optionxformvalue=None)
         for unit in self.units:
             for location in unit.getlocations():
-                match = re.match("\\[(?P<section>.+)\\](?P<entry>.+)", location)
+                match = location_re.match(location)
                 if match is None:
                     section = "default"
                     entry = location

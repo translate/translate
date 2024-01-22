@@ -262,6 +262,8 @@ def getnumbers(str1):
     return numbers
 
 
+_email_re = re.compile(r"[\w\.\-]+@[\w\.\-]+")
+
 _function_re = re.compile(
     r"""((?:
     [\w\.]+              # function or module name - any alpha-numeric character, _, or .
@@ -289,7 +291,7 @@ def getfunctions(str1):
 
 def getemails(str1):
     """Returns the email addresses that are in a string."""
-    return re.findall(r"[\w\.\-]+@[\w\.\-]+", str1)
+    return _email_re.findall(str1)
 
 
 def geturls(str1):
