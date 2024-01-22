@@ -7,7 +7,6 @@ from translate.storage import po
 
 from . import test_convert
 
-# Technically subtitles can also use an older gaupol
 importorskip("aeidon")
 
 

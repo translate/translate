@@ -28,8 +28,8 @@ YouTube supports `a number of formats
 Implementation details
 ======================
 
-Format support is provided by `Gaupol <https://otsaloma.io/gaupol/>`_ a
-subtitling tool.  Further enhancement of format support in Gaupol will directly
+Format support is provided by `aeidon <https://pypi.org/project/aeidon/>`_ library.
+Further enhancement of format support in aeidon will directly
 benefit our conversion ability.
 
 .. _subtitles#usage:

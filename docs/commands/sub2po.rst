@@ -102,5 +102,5 @@ Bugs
 ----
 There might be some issues with encodings, since the srt files don't specify
 them. We assume files to be encoded in UTF-8, so a conversion should solve this
-easily. Note that most of the handling of the srt files come from gaupol.
+easily. Note that most of the handling of the srt files come from aeidon.
 
