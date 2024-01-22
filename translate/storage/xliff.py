@@ -657,7 +657,13 @@ class xlifffile(lisa.LISAfile):
 </body>
 </file>
 </xliff>"""
-    XMLindent = {"indent": "  ", "max_level": 4, "toplevel": False}
+    XMLindent = {
+        "indent": "  ",
+        "max_level": 8,
+        "leaves": {"note", "source", "target"},
+        "toplevel": False,
+        "ignore_preserve": {"trans-unit"},
+    }
     namespace = "urn:oasis:names:tc:xliff:document:1.1"
     unversioned_namespace = "urn:oasis:names:tc:xliff:document:"
 

@@ -4,6 +4,6 @@
   <str key="two">Zwei-mod</str>
   <str key="three">Drei</str>
   <!-- not used as translated resource -->
-  <constant name="answer">42</constant>
+    <constant name="answer">42</constant>
   <str key="four">Vier-new</str>
 </root>
