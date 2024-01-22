@@ -214,6 +214,7 @@ class xliffunit(lisa.LISAunit):
             self.set_target_dom(self.createlanguageNode(lang, "", "target"))
             return
 
+        self._ensure_xml_space_preserve()
         languageNode = self.get_target_dom()
         if languageNode is None:
             languageNode = self.createlanguageNode(lang, "", "target")
@@ -460,12 +461,15 @@ class xliffunit(lisa.LISAunit):
             if state_id < self.S_UNREVIEWED:
                 self.set_state_n(self.S_UNREVIEWED)
 
+    def _ensure_xml_space_preserve(self):
+        if getXMLspace(self.xmlelement) != "preserve":
+            setXMLspace(self.xmlelement, "preserve")
+
     def settarget(self, target, lang="xx", append=False):
         """Sets the target string to the given value."""
         super().settarget(target, lang, append)
         if target:
-            if getXMLspace(self.xmlelement) != "preserve":
-                setXMLspace(self.xmlelement, "preserve")
+            self._ensure_xml_space_preserve()
             self.marktranslated()
 
     # This code is commented while this will almost always return false.
