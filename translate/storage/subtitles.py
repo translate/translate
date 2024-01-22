@@ -19,11 +19,7 @@
 """
 Class that manages subtitle files for translation.
 
-This class makes use of the subtitle functionality of ``gaupol``.
-
-.. seealso:: gaupol/agents/open.py::open_main
-
-A patch to gaupol is required to open utf-8 files successfully.
+This class makes use of the subtitle functionality of ``aeidon``.
 """
 
 import os
@@ -36,25 +32,9 @@ try:
     from aeidon import Subtitle, documents, newlines
     from aeidon.encodings import detect
     from aeidon.files import AdvSubStationAlpha, MicroDVD, SubRip, SubStationAlpha, new
-    from aeidon.util import detect_format as determine
+    from aeidon.util import detect_format
 except ImportError:
-    try:
-        from gaupol import FormatDeterminer, documents
-        from gaupol.encodings import detect
-        from gaupol.files import (
-            AdvSubStationAlpha,
-            MicroDVD,
-            SubRip,
-            SubStationAlpha,
-            new,
-        )
-        from gaupol.newlines import newlines
-        from gaupol.subtitle import Subtitle
-
-        _determiner = FormatDeterminer()
-        determine = _determiner.determine
-    except ImportError:
-        raise ImportError("\naeidon or gaupol package required for Subtitle support")
+    raise ImportError("\naeidon package required for Subtitle support")
 
 
 class SubtitleUnit(base.TranslationUnit):
@@ -119,7 +99,7 @@ class SubtitleFile(base.TranslationStore):
     def _parse(self):
         try:
             self.encoding = detect(self.filename)
-            self._format = determine(self.filename, self.encoding)
+            self._format = detect_format(self.filename, self.encoding)
             self._subtitlefile = new(self._format, self.filename, self.encoding)
             for subtitle in self._subtitlefile.read():
                 newunit = self.addsourceunit(subtitle.main_text)

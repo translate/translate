@@ -139,12 +139,9 @@ simply appear in English. It is therefore recommended you install the
 
 The package vobject is needed for ical2po and po2ical.
 
-The aeidon package (or gaupol if aeidon is not available) is needed for sub2po
+The aeidon package is needed for sub2po
 and po2sub. Some Unicode encoded files (including most files from
 <http://dotsub.com/>) require version 0.14 or later.
-<http://home.gna.org/gaupol/>
-Gaupol might need the 'Universal Encoding Detector'
-<http://pypi.python.org/pypi/chardet>
 
 Trados TXT TM support requires the BeautifulSoup parser
 <http://www.crummy.com/software/BeautifulSoup/>
