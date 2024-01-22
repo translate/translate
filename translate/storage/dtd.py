@@ -100,6 +100,9 @@ accesskeysuffixes = (".accesskey", ".accessKey", ".akey")
 ending in :attr:`.labelsuffixes` into accelerator notation"""
 
 
+end_entity_re = re.compile(rb"[\"']\s*>")
+
+
 def quoteforandroid(source):
     """Escapes a line for Android DTD files."""
     # Replace "'" character with the \u0027 escape. Other possible replaces are
@@ -561,7 +564,7 @@ class dtdfile(base.TranslationStore):
                     break
                 if lines[end].find(b"<!ENTITY") > -1:
                     foundentity = True
-                if foundentity and re.match(rb"[\"']\s*>", lines[end]):
+                if foundentity and end_entity_re.match(lines[end]):
                     end += 1
                     break
                 end += 1

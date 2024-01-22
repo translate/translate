@@ -32,6 +32,8 @@ from translate.storage import factory
 from translate.storage.placeables import StringElem, general
 from translate.storage.placeables import parse as rich_parse
 
+format_re = re.compile("%[0-9c]*[sfFbBdh]")
+
 
 def add_prefix(prefix, stringelems):
     for stringelem in stringelems:
@@ -330,7 +332,7 @@ class podebug:
 
     def convertstore(self, store):
         prefix = self.format
-        for formatstr in re.findall("%[0-9c]*[sfFbBdh]", self.format):
+        for formatstr in format_re.findall(self.format):
             if formatstr.endswith("s"):
                 formatted = self.shrinkfilename(store.filename)
             elif formatstr.endswith("f"):

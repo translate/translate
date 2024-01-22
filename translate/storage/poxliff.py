@@ -33,6 +33,8 @@ from translate.misc.xml_helpers import setXMLspace
 from translate.storage import base, lisa, poheader, xliff
 from translate.storage.placeables import general
 
+plural_id_re = re.compile(r".+\[[123456]\]$")
+
 
 def hasplurals(thing):
     if not isinstance(thing, multistring):
@@ -321,7 +323,7 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
             We want to filter out all the plural nodes, except the very first
             one in each group.
             """
-            return re.match(r".+\[[123456]\]$", node.get("id") or "") is None
+            return plural_id_re.match(node.get("id") or "") is None
 
         def pluralunits(pluralgroups):
             for pluralgroup in pluralgroups:

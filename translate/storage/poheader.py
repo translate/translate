@@ -25,6 +25,8 @@ from translate import __version__
 from translate.misc.dictutils import cidict
 
 author_re = re.compile(r".*<\S+@\S+>.*\d{4,4}")
+nplural_re = re.compile("nplurals=(.+?);")
+plural_re = re.compile("plural=(.+?);?$")
 
 default_header = {
     "Project-Id-Version": "PACKAGE VERSION",
@@ -267,8 +269,8 @@ class poheader:
         pluralformvalue = header.get("Plural-Forms")
         if pluralformvalue is None:
             return None, None
-        nplural = re.findall("nplurals=(.+?);", pluralformvalue)
-        plural = re.findall("plural=(.+?);?$", pluralformvalue)
+        nplural = nplural_re.findall(pluralformvalue)
+        plural = plural_re.findall(pluralformvalue)
         nplural = None if not nplural or nplural[0] == "INTEGER" else nplural[0]
         plural = None if not plural or plural[0] == "EXPRESSION" else plural[0]
         return nplural, plural

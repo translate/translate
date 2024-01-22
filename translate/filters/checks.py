@@ -73,6 +73,8 @@ property_re = re.compile(" (\\w*)=((\\\\?\".*?\\\\?\")|(\\\\?'.*?\\\\?'))")
 # The whole tag
 tag_re = re.compile("<[^>]+>")
 
+anonvar_re = re.compile(r"^{[0-9]*}$")
+
 gconf_attribute_re = re.compile('"[a-z_]+?"')
 
 # XML/HTML tags in LibreOffice help and readme, exclude short tags
@@ -1158,10 +1160,10 @@ class StandardChecker(TranslationChecker):
             data_["strclean"] = re.sub("{{|}}", "", str_)
             data_["allvars"] = pythonbraceformat_pat.findall(data_["strclean"])
             data_["anonvars"] = [
-                var[1:-1] for var in data_["allvars"] if re.match(r"^{[0-9]*}$", var)
+                var[1:-1] for var in data_["allvars"] if anonvar_re.match(var)
             ]
             data_["namedvars"] = [
-                var for var in data_["allvars"] if not re.match(r"^{[0-9]*}$", var)
+                var for var in data_["allvars"] if not anonvar_re.match(var)
             ]
 
         max1 = max_anons(data1["anonvars"])
