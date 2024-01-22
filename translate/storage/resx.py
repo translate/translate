@@ -187,7 +187,7 @@ class RESXFile(lisa.LISAfile):
   </resheader>
 </root>
 """
-    XMLindent = {"indent": "  ", "max_level": 4}
+    XMLindent = {"indent": "    ", "max_level": 4}
     # Use same header as Visual Studio
     XMLuppercaseEncoding = False
     namespace = ""
