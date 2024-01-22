@@ -431,7 +431,7 @@ class tsfile(lisa.LISAfile):
 <TS>
 </TS>
 """
-    XMLindent = {"indent": "    ", "skip": ["TS"], "toplevel": False}
+    XMLindent = {"indent": "    ", "skip": {"TS"}, "toplevel": False}
     # For conformance with Qt output, write XML declaration with double quotes
     XMLuppercaseEncoding = False
     namespace = ""

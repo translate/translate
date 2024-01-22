@@ -235,7 +235,8 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.1" version="1.1">
   <file original="NoName" source-language="en" datatype="plaintext">
     <body>
-      <trans-unit xml:space="preserve" id="2" approved="yes"><source></source>
+      <trans-unit xml:space="preserve" id="2" approved="yes">
+        <source></source>
         <target state="translated">foobaz<g id="oof"><g id="zab">barrab</g></g></target>
       </trans-unit>
     </body>
@@ -602,7 +603,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 
     @staticmethod
     def test_add_target():
-        xlfsource = b"""<?xml version="1.0" encoding="UTF-8"?>
+        xlfsource = """<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.1" version="1.1">
   <file original="doc.txt" source-language="en-US">
     <body>
@@ -617,14 +618,14 @@ class TestXLIFFfile(test_base.TestTranslationStore):
   <file original="doc.txt" source-language="en-US">
     <body>
       <trans-unit id="1" xml:space="preserve">
-      <target>Soubor</target>
+        <target>Soubor</target>
       </trans-unit>
     </body>
   </file>
 </xliff>
 """
         xfile = xliff.xlifffile.parsestring(xlfsource)
-        assert bytes(xfile) == xlfsource
+        assert bytes(xfile).decode() == xlfsource
         xfile.units[0].rich_target = ["Soubor"]
         assert bytes(xfile).decode("ascii") == xlftarget
 
@@ -784,8 +785,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
     <body>
       <group id="body">
         <trans-unit id="8864d0bd25f99594bbfb59780cb19a091946d8e6" datatype="html"{extra}>
-          <source>Status</source>
-          <target state="translated">{target}</target>
+          <source>Status</source>{target}
           <context-group purpose="location">
             <context context-type="sourcefile">src/app/settings/component/profile/example/example.component.html</context>
             <context context-type="linenumber">3</context>
@@ -797,9 +797,12 @@ class TestXLIFFfile(test_base.TestTranslationStore):
   </file>
 </xliff>
 """
-        xlfsource_plain = xlfsource_template.format(target=target, extra="")
+        target_element = f"""
+          <target state="translated">{target}</target>"""
+        xlfsource_blank = xlfsource_template.format(target="", extra="")
+        xlfsource_plain = xlfsource_template.format(target=target_element, extra="")
         xlfsource_preserve = xlfsource_template.format(
-            target=target, extra=' xml:space="preserve"'
+            target=target_element, extra=' xml:space="preserve"'
         )
         xlifffile = xliff.xlifffile.parsestring(xlfsource_plain)
 
@@ -810,6 +813,18 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         unit.target = target
 
         assert bytes(xlifffile).decode() == xlfsource_preserve
+
+        xlifffile = xliff.xlifffile.parsestring(xlfsource_blank)
+
+        assert len(xlifffile.units) == 1
+        unit = xlifffile.units[0]
+
+        assert unit.target is None
+        unit.target = target
+
+        assert bytes(xlifffile).decode() == xlfsource_template.format(
+            target=target_element, extra=' xml:space="preserve" approved="yes"'
+        )
 
         xlifffile = xliff.xlifffile.parsestring(xlfsource_preserve)
 

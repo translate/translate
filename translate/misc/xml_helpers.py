@@ -140,9 +140,11 @@ def reindent(
     level: int = 0,
     indent: str = "  ",
     max_level: int = 4,
-    skip: list[str] | None = None,
+    skip: set[str] | None = None,
     toplevel=True,
-    leaves: list[str] | None = None,
+    leaves: set[str] | None = None,
+    *,
+    ignore_preserve: set[str] | None = None,
 ):
     """
     Adjust indentation to match specification.
@@ -150,29 +152,49 @@ def reindent(
     Each nested tag is identified by indent string, up to
     max_level depth, possibly skipping tags listed in skip.
     """
-    if elem.tag is etree.Entity:
+    if ignore_preserve is None:
+        ignore_preserve = set()
+    if skip is None:
+        skip = set()
+    if leaves is None:
+        leaves = set()
+    if elem.tag is etree.Entity or elem.tag is etree.Comment:
         return
+    # Strip possible namespace from tag
+    tag_name = elem.tag.split("}", 1)[-1]
+
     i = "\n" + (indent * level)
-    if skip and elem.tag in skip:
+    if tag_name in skip:
         next_level = level
         extra_i = i
     else:
         next_level = level + 1
         extra_i = i + indent
-    if len(elem) and level < max_level:
-        is_leave = leaves and elem.tag in leaves
+    if level < max_level:
+        is_leave = tag_name in leaves
+
         if (
             (not elem.text or not elem.text.strip())
-            and getXMLspace(elem) != "preserve"
+            and (getXMLspace(elem) != "preserve" or tag_name in ignore_preserve)
+            and len(elem)
             and elem[0].tag is not etree.Entity
             and not is_leave
         ):
             elem.text = extra_i
         if not elem.tail or not elem.tail.strip():
             elem.tail = i
-        if not is_leave:
+        if not is_leave and len(elem):
             for child in elem:
-                reindent(child, next_level, indent, max_level, skip, False, leaves)
+                reindent(
+                    elem=child,
+                    level=next_level,
+                    indent=indent,
+                    max_level=max_level,
+                    skip=skip,
+                    toplevel=False,
+                    leaves=leaves,
+                    ignore_preserve=ignore_preserve,
+                )
 
             # Adjust last element
             child = elem[-1]
