@@ -1178,6 +1178,11 @@ class TestGoI18NJsonFile(test_monolingual.TestMonolingualStore):
 
         assert '"other": ""' in bytes(store).decode()
 
+    def test_invalid(self):
+        store = self.StoreClass()
+        with raises(ValueError):
+            store.parse(JSON_I18NEXT_PLURAL)
+
 
 class TestGoI18NV2JsonFile(test_monolingual.TestMonolingualStore):
     StoreClass = jsonl10n.GoI18NV2JsonFile
@@ -1239,6 +1244,11 @@ class TestGoI18NV2JsonFile(test_monolingual.TestMonolingualStore):
         )
 
         assert bytes(store).decode() == JSON_GOI18N_V2_SIMPLE
+
+    def test_invalid(self):
+        store = self.StoreClass()
+        with raises(ValueError):
+            store.parse(JSON_I18NEXT_PLURAL)
 
 
 class TestARBJsonFile(test_monolingual.TestMonolingualStore):
