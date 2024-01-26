@@ -694,17 +694,26 @@ class GoI18NJsonFile(JsonFile):
         name_last_node=None,
         last_node=None,
     ):
+        if not isinstance(data, list):
+            raise ValueError(  # noqa: TRY004
+                "Missing top-level array. Maybe this is not a go-i18n JSON file?"
+            )
         for value in data:
             translation = value.get("translation", "")
             if isinstance(translation, dict):
                 # Ordered list of plurals
-                translation = multistring(
-                    [
-                        translation.get(key)
-                        for key in cldr_plural_categories
-                        if key in translation
-                    ]
-                )
+                try:
+                    translation = multistring(
+                        [
+                            translation.get(key)
+                            for key in cldr_plural_categories
+                            if key in translation
+                        ]
+                    )
+                except ValueError:
+                    raise ValueError(
+                        f'"{id}" is an object but does not contain plurals. Maybe this is not a go-i18n JSON file?'
+                    )
             unit = self.UnitClass(
                 translation,
                 value.get("id", ""),
@@ -767,9 +776,18 @@ class GoI18NV2JsonFile(JsonFile):
             if isinstance(value, str):
                 unit = self.UnitClass(value, id)
             else:
-                translation = multistring(
-                    [value.get(key) for key in cldr_plural_categories if key in value]
-                )
+                try:
+                    translation = multistring(
+                        [
+                            value.get(key)
+                            for key in cldr_plural_categories
+                            if key in value
+                        ]
+                    )
+                except ValueError:
+                    raise ValueError(
+                        f'"{id}" is an object but does not contain plurals. Maybe this is not a go-i18n v2 JSON file?'
+                    )
                 unit = self.UnitClass(
                     translation,
                     id,
