@@ -1,0 +1,43 @@
+Translate Toolkit 3.12.2
+************************
+
+*Released on 1 February 2024*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- JSON
+
+  - Added support for FormatJS
+  - Improved error handling
+  - Improved indentation
+  - Preserve gotext key type on round-trip
+  - Improved plural parsing in gotext
+
+- XLIFF
+
+  - Improved whitespace handling
+
+- CSV
+
+  - Improved error handling
+
+- Android
+
+  - Remove not necessary escaping
+
+- TS2
+
+  - Whitespace compatibility with lupdate
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař
