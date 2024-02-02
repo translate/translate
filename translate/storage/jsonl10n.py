@@ -503,6 +503,20 @@ class I18NextV4File(JsonNestedFile):
             )
 
 
+class FlatI18NextV4Unit(I18NextV4Unit):
+    IdClass = FlatUnitId
+
+
+class FlatI18NextV4File(I18NextV4File):
+    """
+    Flat json file with support of i18next v4 format plurals.
+
+    See https://www.i18next.com/
+    """
+
+    UnitClass = FlatI18NextV4Unit
+
+
 class GoTextUnitId(base.UnitId):
     """Preserves id as stored in the JSON file."""
 
