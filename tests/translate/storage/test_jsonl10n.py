@@ -59,6 +59,46 @@ JSON_I18NEXT_V4_FIXED = """{
 }
 """
 
+JSON_FLAT_I18NEXT_V4 = """{
+    "key": "value",
+    "keyDeep.inner": "value",
+    "keyPluralSimple_one": "the singular",
+    "keyPluralSimple_other": "the plural",
+    "keyPluralMultipleEgArabic_zero": "the plural form 0",
+    "keyPluralMultipleEgArabic_one": "the plural form 1",
+    "keyPluralMultipleEgArabic_two": "the plural form 2",
+    "keyPluralMultipleEgArabic_few": "the plural form 3",
+    "keyPluralMultipleEgArabic_many": "the plural form 4",
+    "keyPluralMultipleEgArabic_other": "the plural form 5"
+}
+"""
+
+JSON_FLAT_I18NEXT_V4_FIXED = """{
+    "key": "value",
+    "keyDeep.inner": "value",
+    "keyPluralSimple_zero": "",
+    "keyPluralSimple_one": "the singular",
+    "keyPluralSimple_two": "",
+    "keyPluralSimple_few": "",
+    "keyPluralSimple_many": "",
+    "keyPluralSimple_other": "the plural",
+    "keyPluralMultipleEgArabic_zero": "the plural form 0",
+    "keyPluralMultipleEgArabic_one": "the plural form 1",
+    "keyPluralMultipleEgArabic_two": "the plural form 2",
+    "keyPluralMultipleEgArabic_few": "the plural form 3",
+    "keyPluralMultipleEgArabic_many": "the plural form 4",
+    "keyPluralMultipleEgArabic_other": "the plural form 5"
+}
+"""
+
+JSON_FLAT_I18NEXT_V4_PLURAL = b"""{
+    "key": "value",
+    "keyDeep.inner": "value",
+    "keyPluralSimple": "Ahoj",
+    "keyPluralMultipleEgArabic": "Nazdar"
+}
+"""
+
 JSON_I18NEXT_PLURAL = b"""{
     "key": "value",
     "keyDeep": {
@@ -1022,6 +1062,9 @@ class TestGoTextJsonFile(test_monolingual.TestMonolingualStore):
 
 class TestI18NextV4Store(test_monolingual.TestMonolingualStore):
     StoreClass = jsonl10n.I18NextV4File
+    DeepUnpluralizedJson = JSON_I18NEXT_PLURAL
+    PartiallyPluralizedJson = JSON_I18NEXT_V4
+    CorrectlyPluralizedJson = JSON_I18NEXT_V4_FIXED
 
     def test_serialize(self):
         store = self.StoreClass()
@@ -1036,13 +1079,13 @@ class TestI18NextV4Store(test_monolingual.TestMonolingualStore):
     def test_units(self):
         store = self.StoreClass()
         store.targetlanguage = "ar"
-        store.parse(JSON_I18NEXT_V4)
+        store.parse(self.PartiallyPluralizedJson)
         assert len(store.units) == 4
 
     def test_plurals(self):
         store = self.StoreClass()
         store.targetlanguage = "ar"
-        store.parse(JSON_I18NEXT_V4)
+        store.parse(self.PartiallyPluralizedJson)
 
         # Remove plurals
         store.units[2].target = "Ahoj"
@@ -1050,7 +1093,7 @@ class TestI18NextV4Store(test_monolingual.TestMonolingualStore):
         out = BytesIO()
         store.serialize(out)
 
-        assert out.getvalue() == JSON_I18NEXT_PLURAL
+        assert out.getvalue() == self.DeepUnpluralizedJson
 
         # Bring back plurals
         store.settargetlanguage("ar")
@@ -1078,7 +1121,7 @@ class TestI18NextV4Store(test_monolingual.TestMonolingualStore):
         out = BytesIO()
         store.serialize(out)
 
-        assert out.getvalue().decode() == JSON_I18NEXT_V4_FIXED
+        assert out.getvalue().decode() == self.CorrectlyPluralizedJson
 
     def test_nested_array(self):
         store = self.StoreClass()
@@ -1153,6 +1196,13 @@ class TestI18NextV4Store(test_monolingual.TestMonolingualStore):
             "еще +{{count}} ставки",
             "еще +{{count}} ставок",
         ]
+
+
+class TestFlatI18NextV4Store(TestI18NextV4Store):
+    StoreClass = jsonl10n.FlatI18NextV4File
+    DeepUnpluralizedJson = JSON_FLAT_I18NEXT_V4_PLURAL
+    PartiallyPluralizedJson = JSON_FLAT_I18NEXT_V4
+    CorrectlyPluralizedJson = JSON_FLAT_I18NEXT_V4_FIXED
 
 
 class TestGoI18NJsonFile(test_monolingual.TestMonolingualStore):
