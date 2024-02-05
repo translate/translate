@@ -94,6 +94,7 @@ class QtFormattingPlaceable(Ph):
       - Place markers may be repeated
       - 'L' use a localised representation e.g. in a number
       - %% some in the wild to escape real %, not documented (not in regex)
+
     """
 
     iseditable = False
