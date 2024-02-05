@@ -237,4 +237,4 @@ def isocode(language, country=None):
     dialect = dialects.get(language)
     if dialect:
         return dialect.get(country, dialect["None"])
-    return lang_names.get(language, None)
+    return lang_names.get(language)
