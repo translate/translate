@@ -417,13 +417,11 @@ class oomultifile:
 
     def createsubfileindex(self):
         """Reads in all the lines and works out the subfiles."""
-        linenum = 0
-        for line in self.multifile:
+        for linenum, line in enumerate(self.multifile):
             subfile = self.getsubfilename(line)
             if subfile not in self.subfilelines:
                 self.subfilelines[subfile] = []
             self.subfilelines[subfile].append(linenum)
-            linenum += 1
 
     def getsubfilename(self, line):
         """Looks up the subfile name for the line."""
@@ -457,12 +455,10 @@ class oomultifile:
         """Returns the list of lines matching the subfile."""
         lines = []
         requiredlines = dict.fromkeys(self.subfilelines[subfile])
-        linenum = 0
         self.multifile.seek(0)
-        for line in self.multifile:
+        for linenum, line in enumerate(self.multifile):
             if linenum in requiredlines:
                 lines.append(line)
-            linenum += 1
         return "".join(lines)
 
     def openinputfile(self, subfile):
