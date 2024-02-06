@@ -211,10 +211,8 @@ def removeinvalidamps(name, value):
             invalid_amps.append(amppos - 1)
     if len(invalid_amps) > 0:
         warnings.warn("invalid ampersands in dtd entity %s" % (name))
-        adjustment = 0
-        for amppos in invalid_amps:
+        for adjustment, amppos in enumerate(invalid_amps):
             value = value[: amppos - adjustment] + value[amppos - adjustment + 1 :]
-            adjustment += 1
     return value
 
 
