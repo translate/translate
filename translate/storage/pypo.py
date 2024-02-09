@@ -1,6 +1,7 @@
 #
 # Copyright 2002-2009 Zuza Software Foundation
 # Copyright 2013 F Wolff
+# Copyright 2024 gemmaro <gemmaro.dev@gmail.com>
 #
 # This file is part of the Translate Toolkit.
 #
@@ -987,8 +988,7 @@ class pofile(pocommon.pofile):
                         uniqueunits.append(thepo)
                 elif duplicatestyle == "msgctxt":
                     origpo = id_dict[id]
-                    if origpo not in markedpos and id:
-                        # if it doesn't have an id, we already added msgctxt
+                    if origpo not in markedpos and not origpo.msgctxt:
                         origpo.msgctxt.append(
                             '"%s"' % escapeforpo(" ".join(origpo.getlocations()))
                         )
