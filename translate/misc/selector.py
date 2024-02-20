@@ -166,7 +166,7 @@ class Selector:
         environ["selector.vars"] = dict(named)
         for k in named:
             if k.isdigit():
-                unnamed.append((k, named.pop(k)))
+                unnamed.append((k, named.pop(k)))  # noqa: PERF401
         unnamed.sort()
         unnamed = [v for k, v in unnamed]
         cur_unnamed, cur_named = environ.get("wsgiorg.routing_args", ([], {}))
