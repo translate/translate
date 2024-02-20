@@ -22,6 +22,10 @@ known_third_party = [
 profile = "black"
 
 [tool.ruff]
+output-format = "github"
+target-version = "py38"
+
+[tool.ruff.lint]
 # CONFIG - intentional configuration
 # TODO - needs decision whether intention, add noqa tags or fix
 # WONTFIX - not fixable in current codebase, might be better to go for noqa
@@ -49,7 +53,6 @@ ignore = [
   "SLF001",  # TODO: Private member accessed
   "RUF012",  # TODO: Mutable class attributes should be annotated with `typing.ClassVar`
   "TRY003",  # WONTFIX: Avoid specifying long messages outside the exception class
-  "TRY200",  # TODO: Use `raise from` to specify exception cause
   "SIM102",  # TODO: Use a single `if` statement instead of nested `if` statements
   "ANN",  # TODO: type annotations missing
   "COM",  # CONFIG: No trailing commas
@@ -110,7 +113,6 @@ ignore = [
   "S307",  # TODO: Use of possibly insecure function; consider using `ast.literal_eval`
   "S310",  # TODO: Audit URL open for permitted schemes.
   "PLE2502",  # TODO: Contains control characters that can permit obfuscated code
-  "PGH001",  # TODO: No builtin `eval()` allowed
   "INP001",  # TODO: File `tools/mozilla/mozcronbuild.py` is part of an implicit namespace package. Add an `__init__.py`.
   "TID252",  # TODO: Relative imports from parent modules are banned
   "D409",  # TODO: Section underline should match the length of its name
@@ -123,6 +125,4 @@ ignore = [
   'W191',  # CONFIG: formatter
   "PTH"  # TODO: Not using pathlib for now
 ]
-output-format = "github"
 select = ["ALL"]
-target-version = "py38"
