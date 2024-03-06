@@ -1224,6 +1224,23 @@ class TestGoI18NV2JsonFile(test_monolingual.TestMonolingualStore):
 
         assert bytes(store).decode() == JSON_GOI18N_V2
 
+    def test_plurals_blank(self):
+        store = self.StoreClass()
+        store.settargetlanguage("ar")
+        store.parse(JSON_GOI18N_V2)
+        # Remove one of plurals
+        store.units[1].target = multistring(
+            [
+                "the plural form 0",
+                "the plural form 1",
+                "the plural form 2",
+                "the plural form 3",
+                "the plural form 4",
+            ]
+        )
+
+        assert bytes(store).decode() == JSON_GOI18N_V2.replace("the plural form 5", "")
+
     def test_plurals_missing(self):
         store = self.StoreClass()
         store.parse(JSON_GOI18N_V2_SIMPLE)
