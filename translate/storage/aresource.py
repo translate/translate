@@ -456,18 +456,8 @@ class AndroidResourceUnit(base.TranslationUnit):
 
             plural_tags = self.get_plural_tags()
 
-            # Get string list to handle, wrapping non multistring/list targets into a list.
-            if isinstance(target, multistring):
-                plural_strings = target.strings
-            elif isinstance(target, list):
-                plural_strings = target
-            else:
-                plural_strings = [target]
-
             # Sync plural_strings elements to plural_tags count.
-            if len(plural_strings) < len(plural_tags):
-                plural_strings += [""] * (len(plural_tags) - len(plural_strings))
-            plural_strings = plural_strings[: len(plural_tags)]
+            plural_strings = self.sync_plural_count(target, plural_tags)
 
             # Rebuild plurals.
             for entry in self.xmlelement.iterchildren():

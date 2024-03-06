@@ -518,6 +518,28 @@ class TranslationUnit:
         current state(_n) of the unit from its current state.
         """
 
+    @staticmethod
+    def sync_plural_count(
+        target: list[str] | str | multistring, plural_tags: list[str]
+    ) -> list[str]:
+        """Ensure that plural count in string matches tags definition."""
+        # Get string list to handle, wrapping non multistring/list targets into a list.
+        if isinstance(target, multistring):
+            # Coerce all items to string, they might be multistrings
+            plural_strings = [str(string) for string in target.strings]
+        elif isinstance(target, list):
+            plural_strings = target
+        else:
+            plural_strings = [target]
+
+        # Add missing strings
+        missing = len(plural_tags) - len(plural_strings)
+        if missing:
+            plural_strings += [""] * missing
+
+        # Remove extra ones
+        return plural_strings[: len(plural_tags)]
+
 
 class TranslationStore:
     """Base class for stores for multiple translation units of type UnitClass."""

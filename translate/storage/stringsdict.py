@@ -182,17 +182,8 @@ class StringsDictFile(base.DictStore):
 
                 plural_tags = self.target_plural_tags
 
-                if isinstance(u.target, multistring):
-                    plural_strings = u.target.strings
-                elif isinstance(u.target, list):
-                    plural_strings = u.target
-                else:
-                    plural_strings = [u.target]
-
                 # Sync plural_strings elements to plural_tags count.
-                if len(plural_strings) < len(plural_tags):
-                    plural_strings += [""] * (len(plural_tags) - len(plural_strings))
-                plural_strings = plural_strings[: len(plural_tags)]
+                plural_strings = self.UnitClass.sync_plural_count(u.target, plural_tags)
 
                 for plural_tag, plural_string in zip(plural_tags, plural_strings):
                     if plural_string:

@@ -546,9 +546,7 @@ class GoTextJsonUnit(BaseJsonUnit):
     def getvalue(self):
         target = self.target
         if isinstance(target, multistring):
-            strings = list(target.strings)
-            if len(self._store.plural_tags) > len(target.strings):
-                strings += [""] * (len(self._store.plural_tags) - len(target.strings))
+            strings = self.sync_plural_count(target, self._store.plural_tags)
             target = {
                 "select": {
                     "feature": "plural",
@@ -660,9 +658,7 @@ class GoI18NJsonUnit(BaseJsonUnit):
     def getvalue(self):
         target = self.target
         if isinstance(target, multistring):
-            strings = list(target.strings)
-            if len(self._store.plural_tags) > len(target.strings):
-                strings += [""] * (len(self._store.plural_tags) - len(target.strings))
+            strings = self.sync_plural_count(target, self._store.plural_tags)
             target = {
                 plural: strings[offset]
                 for offset, plural in enumerate(self._store.plural_tags)
@@ -743,9 +739,7 @@ class GoI18NV2JsonUnit(BaseJsonUnit):
         if self.notes:
             target["description"] = self.notes
 
-        strings = self.target.strings
-        if len(self._store.plural_tags) > len(strings):
-            strings += [""] * (len(self._store.plural_tags) - len(target.strings))
+        strings = self.sync_plural_count(self.target, self._store.plural_tags)
         for offset, plural in enumerate(self._store.plural_tags):
             target[plural] = strings[offset]
 

@@ -188,12 +188,8 @@ class RubyYAMLUnit(YAMLUnit):
 
         tags = plural_tags.get(self._store.targetlanguage, plural_tags["en"])
 
-        strings = [str(s) for s in self.target.strings]
-
         # Sync plural_strings elements to plural_tags count.
-        if len(strings) < len(tags):
-            strings += [""] * (len(tags) - len(strings))
-        strings = strings[: len(tags)]
+        strings = self.sync_plural_count(self.target, tags)
 
         return CommentedMap(zip(tags, strings))
 
