@@ -21,12 +21,14 @@ String processing utilities for extracting strings with various kinds of
 delimiters.
 """
 
+from __future__ import annotations
+
 import html.entities
 import logging
 import re
 
 
-def find_all(searchin, substr):
+def find_all(searchin: str, substr: str) -> list[int]:
     """
     Returns a list of locations where substr occurs in searchin locations
     are not allowed to overlap.
@@ -236,14 +238,14 @@ def extractwithoutquotes(
 
 
 # TODO: investigate if ord is needed
-def _encode_entity_char(char, codepoint2name):
+def _encode_entity_char(char: str, codepoint2name: dict[str, str]) -> str:
     charnum = ord(char)
     if charnum in codepoint2name:
-        return "&%s;" % codepoint2name[charnum]
+        return f"&{codepoint2name[charnum]};"
     return char
 
 
-def entityencode(source, codepoint2name):
+def entityencode(source: str, codepoint2name: dict[str, str]) -> str:
     """
     Encode ``source`` using entities from ``codepoint2name``.
 
@@ -252,7 +254,7 @@ def entityencode(source, codepoint2name):
            (without the the leading ``&`` or the trailing ``;``)
     :type codepoint2name: :meth:`dict`
     """
-    output = ""
+    output = []
     inentity = False
     for char in source:
         if char == "&":
@@ -261,27 +263,27 @@ def entityencode(source, codepoint2name):
             continue
         if inentity:
             if char == ";":
-                output += "&" + possibleentity + ";"
+                output.append(f"&{possibleentity};")
                 inentity = False
             elif char == " ":
-                output += _encode_entity_char("&", codepoint2name) + entityencode(
-                    possibleentity + char, codepoint2name
-                )
+                output.append(_encode_entity_char("&", codepoint2name))
+                output.append(entityencode(possibleentity + char, codepoint2name))
                 inentity = False
             else:
                 possibleentity += char
         else:
-            output += _encode_entity_char(char, codepoint2name)
+            output.append(_encode_entity_char(char, codepoint2name))
     if inentity:
         # Handle nonentities at end of string.
-        output += _encode_entity_char("&", codepoint2name) + entityencode(
-            possibleentity, codepoint2name
+        output.append(
+            _encode_entity_char("&", codepoint2name)
+            + entityencode(possibleentity, codepoint2name)
         )
 
-    return output
+    return "".join(output)
 
 
-def _has_entity_end(source):
+def _has_entity_end(source: str) -> bool:
     for char in source:
         if char == ";":
             return True
@@ -290,7 +292,7 @@ def _has_entity_end(source):
     return False
 
 
-def entitydecode(source, name2codepoint):
+def entitydecode(source: str, name2codepoint: dict[str, str]) -> str:
     """
     Decode ``source`` using entities from ``name2codepoint``.
 
@@ -299,7 +301,7 @@ def entitydecode(source, name2codepoint):
            the leading ``&`` or the trailing ``;``) to code points
     :type name2codepoint: :meth:`dict`
     """
-    output = ""
+    output = []
     inentity = False
     for i, char in enumerate(source):
         char = source[i]
@@ -312,24 +314,24 @@ def entitydecode(source, name2codepoint):
                 if len(possibleentity) > 0 and possibleentity in name2codepoint:
                     entchar = chr(name2codepoint[possibleentity])
                     if entchar == "&" and _has_entity_end(source[i + 1 :]):
-                        output += "&" + possibleentity + ";"
+                        output.append(f"&{possibleentity};")
                     else:
-                        output += entchar
+                        output.append(entchar)
                     inentity = False
                 else:
-                    output += "&" + possibleentity + ";"
+                    output.append(f"&{possibleentity};")
                     inentity = False
             elif char == " ":
-                output += "&" + possibleentity + char
+                output.append(f"&{possibleentity}{char}")
                 inentity = False
             else:
                 possibleentity += char
         else:
-            output += char
+            output.append(char)
     if inentity:
         # Handle nonentities at end of string.
-        output += "&" + possibleentity
-    return output
+        output.append(f"&{possibleentity}")
+    return "".join(output)
 
 
 def htmlentityencode(source):
@@ -341,7 +343,7 @@ def htmlentityencode(source):
     return entityencode(source, html.entities.codepoint2name)
 
 
-def htmlentitydecode(source):
+def htmlentitydecode(source: str) -> str:
     """
     Decode source using HTML entities e.g. ``&copy;`` -> ©.
 
@@ -350,40 +352,40 @@ def htmlentitydecode(source):
     return entitydecode(source, html.entities.name2codepoint)
 
 
-def javapropertiesencode(source):
+def javapropertiesencode(source: str) -> str:
     """
     Encodes source in the escaped-unicode encoding used by Java
     .properties files.
     """
-    output = ""
+    output = []
     if source and source[0] == " ":
-        output = "\\"
+        output.append("\\")
     for char in source:
         charnum = ord(char)
         if char in controlchars:
-            output += controlchars[char]
+            output.append(controlchars[char])
         elif 0 <= charnum < 128:
-            output += str(char)
+            output.append(str(char))
         else:
-            output += "\\u%04X" % charnum
-    return output
+            output.append(f"\\u{charnum:04X}")
+    return "".join(output)
 
 
-def java_utf8_properties_encode(source):
+def java_utf8_properties_encode(source: str) -> str:
     """
     Encodes source in the escaped-unicode encoding used by java utf-8
     .properties files.
     """
-    output = ""
+    output = []
     for char in source:
         if char in controlchars:
-            output += controlchars[char]
+            output.append(controlchars[char])
         else:
-            output += char
-    return output
+            output.append(char)
+    return "".join(output)
 
 
-def xwiki_properties_encode(source, encoding):
+def xwiki_properties_encode(source: str, encoding: str) -> str:
     if re.search(r"\{[0-9]+\}", source):
         source = source.replace("'", "''")
     if encoding == "utf-8":
@@ -391,14 +393,14 @@ def xwiki_properties_encode(source, encoding):
     return javapropertiesencode(source)
 
 
-def escapespace(char):
+def escapespace(char: str) -> str:
     assert len(char) == 1
     if char.isspace():
-        return "\\u%04X" % ord(char)
+        return f"\\u{ord(char):04X}"
     return char
 
 
-def mozillaescapemarginspaces(source):
+def mozillaescapemarginspaces(source: str) -> str:
     """Escape leading and trailing spaces for Mozilla .properties files."""
     if not source:
         return ""
@@ -436,14 +438,14 @@ controlchars = {
 }
 
 
-def escapecontrols(source):
+def escapecontrols(source: str) -> str:
     """Escape control characters in the given string."""
     for key, value in controlchars.items():
         source = source.replace(key, value)
     return source
 
 
-def propertiesdecode(source):
+def propertiesdecode(source: str) -> str:
     """
     Decodes source from the escaped-unicode encoding used by .properties
     files.
@@ -454,7 +456,7 @@ def propertiesdecode(source):
     don't want to we reimplemented the algorithm from Python Objects/unicode.c
     in Python and modify it to retain escaped control characters.
     """
-    output = ""
+    output = []
     s = 0
 
     def unichr2(i):
@@ -468,19 +470,19 @@ def propertiesdecode(source):
             # we just return the character, unescaped
             # if people want to escape them they can use escapecontrols
             return chr(i)
-        return "\\u%04x" % i
+        return f"\\u{i:04x}"
 
     while s < len(source):
         c = source[s]
         if c != "\\":
-            output += c
+            output.append(c)
             s += 1
             continue
         s += 1
         if s >= len(source):
             # this is an escape at the end of the line, which implies
             # a continuation..., return the escape to inform the parser
-            output += c
+            output.append(c)
             continue
         c = source[s]
         s += 1
@@ -488,7 +490,7 @@ def propertiesdecode(source):
             pass
         # propertyescapes lookups
         elif c in propertyescapes:
-            output += propertyescapes[c]
+            output.append(propertyescapes[c])
         # \uXXXX escapes
         # \UXXXX escapes
         elif c in "uU":
@@ -509,46 +511,48 @@ def propertiesdecode(source):
                     digits = digit
                     break
             s += digits
-            output += unichr2(x)
+            output.append(unichr2(x))
         elif c == "N":
             if source[s] != "{":
                 logging.warning("Invalid named unicode escape: no { after \\N")
-                output += "\\" + c
+                output.append(f"\\{c}")
                 continue
             s += 1
             e = source.find("}", s)
             if e == -1:
                 logging.warning("Invalid named unicode escape: no } after \\N{")
-                output += "\\" + c
+                output.append(f"\\{c}")
                 continue
             import unicodedata
 
             name = source[s:e]
-            output += unicodedata.lookup(name)
+            output.append(unicodedata.lookup(name))
             s = e + 1
         else:
-            output += c  # Drop any \ that we don't specifically handle
-    return output
+            output.append(c)  # Drop any \ that we don't specifically handle
+    return "".join(output)
 
 
-def xwiki_properties_decode(source):
+def xwiki_properties_decode(source: str) -> str:
     if re.search(r"\{[0-9]+\}", source):
         source = source.replace("''", "'")
     return propertiesdecode(source)
 
 
-def findend(string, substring):
+def findend(string: str, substring: str) -> int:
     s = string.find(substring)
     if s != -1:
         s += len(substring)
     return s
 
 
-def rstripeol(string):
+def rstripeol(string: str) -> str:
     return string.rstrip("\r\n")
 
 
-def stripcomment(comment, startstring="<!--", endstring="-->"):
+def stripcomment(
+    comment: str, startstring: str = "<!--", endstring: str = "-->"
+) -> str:
     cstart = comment.find(startstring)
     if cstart == -1:
         cstart = 0
@@ -558,5 +562,7 @@ def stripcomment(comment, startstring="<!--", endstring="-->"):
     return comment[cstart:cend].strip()
 
 
-def unstripcomment(comment, startstring="<!-- ", endstring=" -->\n"):
+def unstripcomment(
+    comment: str, startstring: str = "<!-- ", endstring: str = " -->\n"
+) -> str:
     return startstring + comment.strip() + endstring
