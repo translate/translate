@@ -429,20 +429,47 @@ propertyescapes = {
 }
 
 controlchars = {
-    # the reverse of the above...
-    "\\": "\\\\",
-    "\f": "\\f",
-    "\n": "\\n",
-    "\r": "\\r",
-    "\t": "\\t",
+    # complement of the above with all control chars
+    "\\": r"\\",
+    "\x00": r"\u0000",
+    "\x01": r"\u0001",
+    "\x02": r"\u0002",
+    "\x03": r"\u0003",
+    "\x04": r"\u0004",
+    "\x05": r"\u0005",
+    "\x06": r"\u0006",
+    "\x07": r"\u0007",
+    "\x08": r"\u0008",
+    "\t": r"\t",
+    "\n": r"\n",
+    "\x0b": r"\u000b",
+    "\f": r"\f",
+    "\r": r"\r",
+    "\x0e": r"\u000e",
+    "\x0f": r"\u000f",
+    "\x10": r"\u0010",
+    "\x11": r"\u0011",
+    "\x12": r"\u0012",
+    "\x13": r"\u0013",
+    "\x14": r"\u0014",
+    "\x15": r"\u0015",
+    "\x16": r"\u0016",
+    "\x17": r"\u0017",
+    "\x18": r"\u0018",
+    "\x19": r"\u0019",
+    "\x1a": r"\u001a",
+    "\x1b": r"\u001b",
+    "\x1c": r"\u001c",
+    "\x1d": r"\u001d",
+    "\x1e": r"\u001e",
+    "\x1f": r"\u001f",
 }
+controlchars_trans = str.maketrans(controlchars)
 
 
 def escapecontrols(source: str) -> str:
     """Escape control characters in the given string."""
-    for key, value in controlchars.items():
-        source = source.replace(key, value)
-    return source
+    return source.translate(controlchars_trans)
 
 
 def propertiesdecode(source: str) -> str:
