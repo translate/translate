@@ -20,7 +20,11 @@
 
 from lxml import etree
 
-from translate.misc.xml_helpers import getXMLspace, setXMLlang
+from translate.misc.xml_helpers import (
+    getXMLspace,
+    safely_set_text,
+    setXMLlang,
+)
 from translate.storage import lisa
 
 
@@ -42,7 +46,7 @@ class tbxunit(lisa.LISAunit):
         term = etree.SubElement(tig, self.textNode)
         # probably not what we want:
         # lisa.setXMLspace(term, "preserve")
-        term.text = text
+        safely_set_text(term, text)
         return langset
 
     def getid(self):
@@ -75,7 +79,7 @@ class tbxunit(lisa.LISAunit):
         if not text:
             return
         note = etree.SubElement(self.xmlelement, self._get_origin_element(origin))
-        note.text = text
+        safely_set_text(note, text)
         if origin and origin not in ("pos", "definition"):
             note.set("from", origin)
 
