@@ -36,6 +36,7 @@ from lxml import etree
 
 from translate.lang import data
 from translate.misc.multistring import multistring
+from translate.misc.xml_helpers import safely_set_text
 from translate.storage import lisa
 from translate.storage.placeables import general
 from translate.storage.workflow import StateEnum as state
@@ -121,7 +122,7 @@ class tsunit(lisa.LISAunit):
         # TODO: check language
         # lisa.setXMLlang(langset, lang)
 
-        langset.text = text
+        safely_set_text(langset, text)
         return langset
 
     def _getsourcenode(self):
@@ -185,9 +186,9 @@ class tsunit(lisa.LISAunit):
             self.xmlelement.set("numerus", "yes")
             for string in strings:
                 numerus = etree.SubElement(targetnode, self.namespaced("numerusform"))
-                numerus.text = string or ""
+                safely_set_text(numerus, string or "")
         else:
-            targetnode.text = target or ""
+            safely_set_text(targetnode, target or "")
 
     def hasplural(self):
         return self.xmlelement.get("numerus") == "yes"
@@ -203,11 +204,11 @@ class tsunit(lisa.LISAunit):
                 self.xmlelement, self.namespaced("translatorcomment")
             )
         if position == "append":
-            note.text = "\n".join(
-                item for item in [current_notes, text.strip()] if item
+            safely_set_text(
+                note, "\n".join(item for item in [current_notes, text.strip()] if item)
             )
         else:
-            note.text = text.strip()
+            safely_set_text(note, text.strip())
 
     def getnotes(self, origin=None):
         # TODO: consider only responding when origin has certain values
@@ -494,10 +495,10 @@ class tsfile(lisa.LISAfile):
             self.document.getroot(), self.namespaced(self.bodyNode)
         )
         name = etree.SubElement(context, self.namespaced("name"))
-        name.text = contextname
+        safely_set_text(name, contextname)
         if comment:
             comment_node = etree.SubElement(context, "comment")
-            comment_node.text = comment
+            safely_set_text(comment_node, comment)
         return context
 
     def _getcontextname(self, contextnode):

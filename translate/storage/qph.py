@@ -34,6 +34,7 @@ provides the reference implementation for the Qt Linguist product.
 from lxml import etree
 
 from translate.lang import data
+from translate.misc.xml_helpers import safely_set_text
 from translate.storage import lisa
 
 
@@ -49,7 +50,7 @@ class QphUnit(lisa.LISAunit):
         """Returns an xml Element setup with given parameters."""
         assert purpose
         langset = etree.Element(self.namespaced(purpose))
-        langset.text = text
+        safely_set_text(langset, text)
         return langset
 
     def _getsourcenode(self):
@@ -69,7 +70,7 @@ class QphUnit(lisa.LISAunit):
         current_notes = self.getnotes(origin)
         self.removenotes(origin)
         note = etree.SubElement(self.xmlelement, self.namespaced("definition"))
-        note.text = "\n".join(filter(None, [current_notes, text.strip()]))
+        safely_set_text(note, "\n".join(filter(None, [current_notes, text.strip()])))
 
     def getnotes(self, origin=None):
         # TODO: consider only responding when origin has certain values

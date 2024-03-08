@@ -30,6 +30,7 @@ from translate.misc.multistring import multistring
 from translate.misc.xml_helpers import (
     clear_content,
     getXMLspace,
+    safely_set_text,
     setXMLlang,
     setXMLspace,
 )
@@ -46,46 +47,6 @@ ID_SEPARATOR = "\04"
 # instead when converting between xliff and other toolkit supported
 # formats
 ID_SEPARATOR_SAFE = "__%04__"
-
-
-# List of ASCII control codes which are unaccepted in XML.
-ASCII_CONTROL_CODES = [
-    "0000",  # Unicode Character 'NULL' (U+0000)
-    "0001",  # Unicode Character 'START OF HEADING' (U+0001)
-    "0002",  # Unicode Character 'START OF TEXT' (U+0002)
-    "0003",  # Unicode Character 'END OF TEXT' (U+0003)
-    "0004",  # Unicode Character 'END OF TRANSMISSION' (U+0004)
-    "0005",  # Unicode Character 'ENQUIRY' (U+0005)
-    "0006",  # Unicode Character 'ACKNOWLEDGE' (U+0006)
-    "0007",  # Unicode Character 'BELL' (U+0007), "\a" in Python
-    "0008",  # Unicode Character 'BACKSPACE' (U+0008), "\b" in Python
-    "000b",  # Unicode Character 'LINE TABULATION' (U+000B), "\v" in Python
-    "000c",  # Unicode Character 'FORM FEED (FF)' (U+000C), "\f" in Python
-    "000e",  # Unicode Character 'SHIFT OUT' (U+000E)
-    "000f",  # Unicode Character 'SHIFT IN' (U+000F)
-    "0010",  # Unicode Character 'DATA LINK ESCAPE' (U+0010)
-    "0011",  # Unicode Character 'DEVICE CONTROL ONE' (U+0011)
-    "0012",  # Unicode Character 'DEVICE CONTROL TWO' (U+0012)
-    "0013",  # Unicode Character 'DEVICE CONTROL THREE' (U+0013)
-    "0014",  # Unicode Character 'DEVICE CONTROL FOUR' (U+0014)
-    "0015",  # Unicode Character 'NEGATIVE ACKNOWLEDGE' (U+0015)
-    "0016",  # Unicode Character 'SYNCHRONOUS IDLE' (U+0016)
-    "0017",  # Unicode Character 'END OF TRANSMISSION BLOCK' (U+0017)
-    "0018",  # Unicode Character 'CANCEL' (U+0018)
-    "0019",  # Unicode Character 'END OF MEDIUM' (U+0019)
-    "001a",  # Unicode Character 'SUBSTITUTE' (U+001A)
-    "001b",  # Unicode Character 'ESCAPE' (U+001B)
-    "001c",  # Unicode Character 'INFORMATION SEPARATOR FOUR' (U+001C)
-    "001d",  # Unicode Character 'INFORMATION SEPARATOR THREE' (U+001D)
-    "001e",  # Unicode Character 'INFORMATION SEPARATOR TWO' (U+001E)
-    "001f",  # Unicode Character 'INFORMATION SEPARATOR ONE' (U+001F)
-]
-
-ASCII_CONTROL_CHARACTERS = {code: chr(int(code, 16)) for code in ASCII_CONTROL_CODES}
-
-ASCII_CONTROL_CHARACTERS_ESCAPES = {
-    code: "&#x%s;" % code.lstrip("0") or "0" for code in ASCII_CONTROL_CODES
-}
 
 
 class xliffunit(lisa.LISAunit):
@@ -136,15 +97,6 @@ class xliffunit(lisa.LISAunit):
             return
         setXMLspace(self.xmlelement, "preserve")
 
-    def getNodeText(self, languageNode, xml_space="preserve"):
-        """Retrieves the term from the given :attr:`languageNode`."""
-        text = super().getNodeText(languageNode, xml_space=xml_space)
-        if text is not None:
-            # Unescape the unaccepted ASCII control characters.
-            for code, character in ASCII_CONTROL_CHARACTERS.items():
-                text = text.replace(ASCII_CONTROL_CHARACTERS_ESCAPES[code], character)
-        return text
-
     def createlanguageNode(self, lang, text, purpose):
         """Returns an xml Element setup with given parameters."""
         # TODO: for now we do source, but we have to test if it is target,
@@ -156,11 +108,8 @@ class xliffunit(lisa.LISAunit):
         # TODO: check language
         # setXMLlang(langset, lang)
 
-        # Escape the unaccepted ASCII control characters.
-        for code in ASCII_CONTROL_CODES:
-            text = text.replace(chr(int(code, 16)), "&#x%s;" % code.lstrip("0") or "0")
+        safely_set_text(langset, text)
 
-        langset.text = text
         return langset
 
     def getlanguageNodes(self):

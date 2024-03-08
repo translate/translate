@@ -20,7 +20,7 @@
 
 from lxml import etree
 
-from translate.misc.xml_helpers import getText, namespaced, reindent
+from translate.misc.xml_helpers import getText, namespaced, reindent, safely_set_text
 from translate.storage import base
 
 
@@ -69,7 +69,7 @@ class FlatXMLUnit(base.TranslationUnit):
         """Updates the translated string of this unit."""
         if self.target == target:
             return
-        self.xmlelement.text = target
+        safely_set_text(self.xmlelement, target)
 
     def namespaced(self, name):
         """Returns name in Clark notation."""

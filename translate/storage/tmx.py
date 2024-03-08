@@ -21,7 +21,7 @@
 from lxml import etree
 
 from translate import __version__
-from translate.misc.xml_helpers import setXMLlang, valid_chars_only
+from translate.misc.xml_helpers import safely_set_text, setXMLlang
 from translate.storage import lisa
 
 
@@ -39,11 +39,7 @@ class tmxunit(lisa.LISAunit):
         seg = etree.SubElement(langset, self.textNode)
         # implied by the standard:
         # setXMLspace(seg, "preserve")
-        try:
-            seg.text = text
-        except ValueError:
-            # Prevents "All strings must be XML compatible" when string contains a control characters
-            seg.text = valid_chars_only(text)
+        safely_set_text(seg, text)
 
         return langset
 
@@ -66,7 +62,7 @@ class tmxunit(lisa.LISAunit):
         The origin parameter is ignored
         """
         note = etree.SubElement(self.xmlelement, self.namespaced("note"))
-        note.text = text.strip()
+        safely_set_text(note, text.strip())
 
     def _getnotelist(self, origin=None):
         """

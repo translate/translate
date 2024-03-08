@@ -226,18 +226,68 @@ def expand_closing_tags(elem):
         elements.extend(elem)
 
 
-def validate_char(char: str) -> bool:
-    """
-    identify valid chars for XML, based on xmlIsChar_ch from
-    https://github.com/GNOME/libxml2/blob/master/include/libxml/chvalid.h.
-    """
-    ord_ch = ord(char)
-    return (0x9 <= ord_ch <= 0xA) or (ord_ch == 0xD) or (ord_ch >= 0x20)
+"""
+Characters which will get rejected by lxml, based on
+https://github.com/lxml/lxml/blob/3ccc7d583e325ceb0ebdf8fc295bbb7fc8cd404d/src/lxml/apihelpers.pxi#L1474-L1503
+and
+https://github.com/GNOME/libxml2/blob/723b4de04015c5acccd3cda5dd60db7d00702064/include/libxml/chvalid.h#L108-L110
+"""
+XML_INVALID_CHARS_TRANS = str.maketrans(
+    dict.fromkeys(
+        (
+            "\x00",  # Unicode Character 'NULL' (U+0000)
+            "\x01",  # Unicode Character 'START OF HEADING' (U+0001)
+            "\x02",  # Unicode Character 'START OF TEXT' (U+0002)
+            "\x03",  # Unicode Character 'END OF TEXT' (U+0003)
+            "\x04",  # Unicode Character 'END OF TRANSMISSION' (U+0004)
+            "\x05",  # Unicode Character 'ENQUIRY' (U+0005)
+            "\x06",  # Unicode Character 'ACKNOWLEDGE' (U+0006)
+            "\x07",  # Unicode Character 'BELL' (U+0007), "\a" in Python
+            "\x08",  # Unicode Character 'BACKSPACE' (U+0008), "\b" in Python
+            "\x0b",  # Unicode Character 'LINE TABULATION' (U+000B), "\v" in Python
+            "\x0c",  # Unicode Character 'FORM FEED (FF)' (U+000C), "\f" in Python
+            "\x0e",  # Unicode Character 'SHIFT OUT' (U+000E)
+            "\x0f",  # Unicode Character 'SHIFT IN' (U+000F)
+            "\x10",  # Unicode Character 'DATA LINK ESCAPE' (U+0010)
+            "\x11",  # Unicode Character 'DEVICE CONTROL ONE' (U+0011)
+            "\x12",  # Unicode Character 'DEVICE CONTROL TWO' (U+0012)
+            "\x13",  # Unicode Character 'DEVICE CONTROL THREE' (U+0013)
+            "\x14",  # Unicode Character 'DEVICE CONTROL FOUR' (U+0014)
+            "\x15",  # Unicode Character 'NEGATIVE ACKNOWLEDGE' (U+0015)
+            "\x16",  # Unicode Character 'SYNCHRONOUS IDLE' (U+0016)
+            "\x17",  # Unicode Character 'END OF TRANSMISSION BLOCK' (U+0017)
+            "\x18",  # Unicode Character 'CANCEL' (U+0018)
+            "\x19",  # Unicode Character 'END OF MEDIUM' (U+0019)
+            "\x1a",  # Unicode Character 'SUBSTITUTE' (U+001A)
+            "\x1b",  # Unicode Character 'ESCAPE' (U+001B)
+            "\x1c",  # Unicode Character 'INFORMATION SEPARATOR FOUR' (U+001C)
+            "\x1d",  # Unicode Character 'INFORMATION SEPARATOR THREE' (U+001D)
+            "\x1e",  # Unicode Character 'INFORMATION SEPARATOR TWO' (U+001E)
+            "\x1f",  # Unicode Character 'INFORMATION SEPARATOR ONE' (U+001F)
+            "\ufffe",  # Invalid character
+            "\uffff",  # Invalid character
+            *(chr(x) for x in range(0xD800, 0xDFFF + 1)),
+        )
+    )
+)
 
 
 def valid_chars_only(text: str) -> str:
     """Prevent to crash libxml with unexpected chars."""
-    return "".join(char for char in text if validate_char(char))
+    return text.translate(XML_INVALID_CHARS_TRANS)
+
+
+def safely_set_text(node, text: str) -> None:
+    """
+    Safe updating of ElementTree text of a node.
+
+    In case of ValueError it strips any characters refused by lxml.
+    """
+    try:
+        node.text = text
+    except ValueError:
+        # Prevents "All strings must be XML compatible" when string contains a control characters
+        node.text = valid_chars_only(text)
 
 
 def clear_content(node):

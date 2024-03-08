@@ -71,20 +71,8 @@ class TestXLIFFUnit(test_base.TestTranslationUnit):
 
         Source: :wp:`Valid_characters_in_XML#XML_1.0`
         """
-        for code in xliff.ASCII_CONTROL_CODES:
-            self.unit.target = "Een&#x%s;" % code.lstrip("0") or "0"
-            assert self.unit.target == "Een%s" % chr(int(code, 16))
-            self.unit.target = "Een%s" % chr(int(code, 16))
-            assert self.unit.target == "Een%s" % chr(int(code, 16))
-
-    def test_unaccepted_control_chars_escapes_roundtrip(self):
-        """Test control characters go ok on escaping roundtrip."""
-        for code in xliff.ASCII_CONTROL_CODES:
-            special = "Een%s" % chr(int(code, 16))
-            self.unit.source = special
-            print("unit.source:", repr(self.unit.source))
-            print("special:", repr(special))
-            assert self.unit.source == special
+        self.unit.target = "Een\x00"
+        assert self.unit.target == "Een"
 
 
 class TestXLIFFfile(test_base.TestTranslationStore):
