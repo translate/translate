@@ -356,6 +356,19 @@ class TestProp(test_monolingual.TestMonolingualStore):
         propregen = self.propregen(propsource)
         assert propsource + "\n" == propregen
 
+    def test_space(self):
+        r"""Check that we preserve \n that appear at start and end of properties."""
+        propsource = r"""space=\u0020
+endspace=,\u0020
+"""
+        store = self.propparse(propsource, personality="mozilla")
+        assert len(store.units) == 2
+        assert store.units[0].source == " "
+        assert store.units[1].source == ", "
+        store.units[0].source = " "
+        store.units[1].source = ", "
+        assert bytes(store).decode("utf-8") == propsource
+
     def test_whitespace_handling(self):
         """Check that we remove extra whitespace around property."""
         whitespaces = (
