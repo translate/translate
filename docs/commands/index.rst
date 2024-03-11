@@ -182,8 +182,6 @@ Scripts
    :maxdepth: 1
    :hidden:
 
-   moz-l10n-builder
-   mozilla_l10n_scripts
    phase
    pocommentclean
    pocompendium
@@ -197,9 +195,6 @@ The scripts are for working with and manipulating PO files.  Unlike the
 Some of them are packaged since version 1.0 of the Toolkit, but you might need
 to download them from version control and do a manual installation .
 
-* :doc:`moz-l10n-builder` -- Create Mozilla XPIs and rebuild Windows installers
-  from existing translations
-* :doc:`mozilla_l10n_scripts` -- Build Mozilla products Firefox and Thunderbird
 * :doc:`phase` -- Helps manage a project divided into phases of work, including
   sending, checking, etc
 * :doc:`pocompendium` -- Creates various types of PO compendium (i.e. combines

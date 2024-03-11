@@ -113,7 +113,7 @@ ignore = [
   "S307",  # TODO: Use of possibly insecure function; consider using `ast.literal_eval`
   "S310",  # TODO: Audit URL open for permitted schemes.
   "PLE2502",  # TODO: Contains control characters that can permit obfuscated code
-  "INP001",  # TODO: File `tools/mozilla/mozcronbuild.py` is part of an implicit namespace package. Add an `__init__.py`.
+  "INP001",  # TODO: File is part of an implicit namespace package. Add an `__init__.py`.
   "TID252",  # TODO: Relative imports from parent modules are banned
   "D409",  # TODO: Section underline should match the length of its name
   "D206",  # CONFIG: formatter

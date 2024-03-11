@@ -16,7 +16,6 @@ Use Cases
    creating_a_terminology_list_from_your_existing_translations
    running_the_tools_on_microsoft_windows
    cleanup_translator_comments
-   creating_mozilla_pot_files
    document_translation
 
 * :doc:`Migrating an older version of your translations to the latest templates
@@ -33,5 +32,4 @@ Use Cases
   <running_the_tools_on_microsoft_windows>`
 * Using ``phase`` for the complete translation roundtrip
 * :doc:`Cleanup translator comments <cleanup_translator_comments>`
-* :doc:`Creating Mozilla POT files <creating_mozilla_pot_files>`
 * :doc:`Document translation <document_translation>`

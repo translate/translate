@@ -12,9 +12,7 @@ thus provides a complete roundtrip for Mozilla localisation using PO files and
 PO editors.
 
 .. note:: This page should only be used as a reference to the command-line
-   options for moz2po and po2moz. For more about using the Translate Toolkit
-   and PO files for translating Mozilla products, please see the page on
-   :doc:`mozilla_l10n_scripts`.
+   options for moz2po and po2moz.
 
 .. _moz2po#usage:
 
@@ -88,9 +86,6 @@ Examples
 
 Creating POT files
 ------------------
-
-.. seealso:: :doc:`Creating Mozilla POT files
-   </guides/creating_mozilla_pot_files>`.
 
 After extracting the en-US l10n files, you can run the following command::
 
