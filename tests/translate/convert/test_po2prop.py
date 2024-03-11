@@ -194,7 +194,7 @@ msgstr "م"
         proptemplate = """accesskey-accept=
 accesskey-help=H
 """
-        propexpected = """accesskey-accept=
+        propexpected = r"""accesskey-accept=\u0020
 accesskey-help=م
 """
         propfile = self.merge2prop(proptemplate, posource, personality="mozilla")

@@ -404,13 +404,6 @@ def mozillaescapemarginspaces(source: str) -> str:
     """Escape leading and trailing spaces for Mozilla .properties files."""
     if not source:
         return ""
-
-    if len(source) == 1 and source.isspace():
-        # FIXME: This is hack for people using white-space to mark empty
-        # Mozilla strings translated, drop this once we have better way to
-        # handle this in Pootle.
-        return ""
-
     if len(source) == 1:
         return escapespace(source)
     return escapespace(source[0]) + source[1:-1] + escapespace(source[-1])

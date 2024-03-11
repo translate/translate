@@ -127,10 +127,10 @@ class TestEncoding:
 
     @staticmethod
     def test_mozillaescapemarginspaces():
-        assert quote.mozillaescapemarginspaces(" ") == ""
+        assert quote.mozillaescapemarginspaces(" ") == r"\u0020"
         assert quote.mozillaescapemarginspaces("A") == "A"
-        assert quote.mozillaescapemarginspaces(" abc ") == "\\u0020abc\\u0020"
-        assert quote.mozillaescapemarginspaces("  abc ") == "\\u0020 abc\\u0020"
+        assert quote.mozillaescapemarginspaces(" abc ") == r"\u0020abc\u0020"
+        assert quote.mozillaescapemarginspaces("  abc ") == r"\u0020 abc\u0020"
 
     @staticmethod
     def test_mozilla_control_escapes():
