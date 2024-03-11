@@ -322,6 +322,7 @@ class RecursiveOptionParser(optparse.OptionParser):
             "-i",
             "--input",
             dest="input",
+            action="append",
             default=None,
             metavar="INPUT",
             help="read from INPUT in %s" % (inputformathelp),
