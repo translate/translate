@@ -22,7 +22,6 @@ This module represents the Afrikaans language.
 .. seealso:: :wp:`Afrikaans_language`
 """
 
-
 import re
 
 from translate.lang import common

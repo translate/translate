@@ -22,7 +22,6 @@ This module represents the Arabic language.
 .. seealso:: :wp:`Arabic_language`
 """
 
-
 import re
 
 from translate.lang import common

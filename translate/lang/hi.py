@@ -22,7 +22,6 @@ This module represents the Hindi language.
 .. seealso:: :wp:`Hindi_language`
 """
 
-
 from translate.lang import common
 
 

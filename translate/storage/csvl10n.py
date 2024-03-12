@@ -21,7 +21,6 @@ classes that hold units of comma-separated values (.csv) files (csvunit)
 or entire files (csvfile) for use with localisation.
 """
 
-
 import csv
 
 from translate.storage import base

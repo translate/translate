@@ -22,7 +22,6 @@ This module represents the Assamese language.
 .. seealso:: :wp:`Assamese_language`
 """
 
-
 from translate.lang import common
 
 

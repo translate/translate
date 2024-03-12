@@ -226,17 +226,9 @@ class reprop:
                     self.inecho = False
                     assert isinstance(value, str)
                     returnline = "%(key)s%(del)s%(value)s%(term)s%(eol)s" % {
-                        "key": "{}{}{}".format(
-                            self.personality.key_wrap_char,
-                            key,
-                            self.personality.key_wrap_char,
-                        ),
+                        "key": f"{self.personality.key_wrap_char}{key}{self.personality.key_wrap_char}",
                         "del": delimiter if delimiter_pos != -1 or value else "",
-                        "value": "{}{}{}".format(
-                            self.personality.value_wrap_char,
-                            self.personality.encode(value),
-                            self.personality.value_wrap_char,
-                        ),
+                        "value": f"{self.personality.value_wrap_char}{self.personality.encode(value)}{self.personality.value_wrap_char}",
                         "term": self.personality.pair_terminator,
                         "eol": eol,
                     }

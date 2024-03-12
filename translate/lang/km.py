@@ -22,7 +22,6 @@ This module represents the Khmer language.
 .. seealso:: :wp:`Khmer_language`
 """
 
-
 import re
 
 from translate.lang import common

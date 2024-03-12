@@ -22,7 +22,6 @@ This module represents the Greek language.
 .. seealso:: :wp:`Greek_language`
 """
 
-
 import re
 
 from translate.lang import common

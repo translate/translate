@@ -22,7 +22,6 @@ This module represents the Odia language.
 .. seealso:: :wp:`Odia_language`
 """
 
-
 import re
 
 from translate.lang import common

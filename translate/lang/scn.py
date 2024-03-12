@@ -22,7 +22,6 @@ This module represents the Sicilian language.
 .. seealso:: :wp:`Sicilian_language`
 """
 
-
 from translate.filters.checks import CheckerConfig, FilterFailure, TranslationChecker
 from translate.filters.decorators import critical
 from translate.lang import common

@@ -22,7 +22,6 @@ This module represents the Marathi language.
 .. seealso:: :wp:`Marathi_language`
 """
 
-
 from translate.lang import common
 
 

@@ -22,7 +22,6 @@ This module represents the Urdu language.
 .. seealso:: :wp:`Urdu_language`
 """
 
-
 from translate.lang import common
 
 

@@ -24,7 +24,6 @@ This module represents the Brazilian Portuguese language.
 .. seealso:: :wp:`Brazilian_Portuguese`
 """
 
-
 from translate.lang.common import Common
 
 

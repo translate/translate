@@ -22,7 +22,6 @@ This module represents the Gujarati language.
 .. seealso:: :wp:`Gujarati_language`
 """
 
-
 from translate.lang import common
 
 

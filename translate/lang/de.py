@@ -22,7 +22,6 @@ This module represents the German language.
 .. seealso:: :wp:`German_language`
 """
 
-
 from translate.lang import common
 
 

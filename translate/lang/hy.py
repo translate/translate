@@ -22,7 +22,6 @@ This module represents the Armenian language.
 .. seealso:: :wp:`Armenian_language`
 """
 
-
 import re
 
 from translate.lang import common

@@ -22,7 +22,6 @@ This module represents the the Swedish language.
 .. seealso:: :wp:`Swedish_language`
 """
 
-
 from translate.lang import common
 
 

@@ -22,7 +22,6 @@ This module represents the Sinhala language.
 .. seealso:: :wp:`Sinhala_language`
 """
 
-
 from translate.lang import common
 
 

@@ -22,7 +22,6 @@ This module represents the N'Ko language.
 .. seealso:: :wp:`N'Ko_language`
 """
 
-
 import re
 
 from translate.lang import common

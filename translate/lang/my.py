@@ -22,7 +22,6 @@ This module represents the Burmese language.
 .. seealso:: :wp:`Burmese_language`
 """
 
-
 from translate.lang import common
 
 

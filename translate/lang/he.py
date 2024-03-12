@@ -22,7 +22,6 @@ This module represents the Hebrew language.
 .. seealso:: :wp:`Hebrew_language`
 """
 
-
 from translate.lang import common
 
 

@@ -22,7 +22,6 @@ This module represents the the Danish language.
 .. seealso:: :wp:`Danish_language`
 """
 
-
 from translate.lang import common
 
 

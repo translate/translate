@@ -73,10 +73,7 @@ class php2po:
 
     def merge_stores(self):
         """Convert two source format files to a target format file."""
-        self.extraction_msg = "extracted from {}, {}".format(
-            self.template_store.filename,
-            self.source_store.filename,
-        )
+        self.extraction_msg = f"extracted from {self.template_store.filename}, {self.source_store.filename}"
 
         self.source_store.makeindex()
         for template_unit in self.template_store.units:

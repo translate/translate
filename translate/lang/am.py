@@ -22,7 +22,6 @@ This module represents the Amharic language.
 .. seealso:: :wp:`Amharic_language`
 """
 
-
 import re
 
 from translate.lang import common

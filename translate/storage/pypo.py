@@ -22,6 +22,7 @@
 Classes that hold units of Gettext .po files (pounit) or entire
 files (pofile).
 """
+
 from __future__ import annotations
 
 import copy
@@ -60,7 +61,7 @@ def splitlines(text):
     """
     # Strip UTF-8 BOM if present. This file would not be accepted
     # by gettext, but some editors might create it, so better handle it.
-    if text[:3] == b"\xEF\xBB\xBF":
+    if text[:3] == b"\xef\xbb\xbf":
         text = text[3:]
     # Find first newline
     newline = b"\n"

@@ -26,7 +26,6 @@ See https://github.com/mozilla-l10n/langchecker/wiki/.lang-files-format for
 specifications on the format.
 """
 
-
 from translate.storage import base, txt
 
 

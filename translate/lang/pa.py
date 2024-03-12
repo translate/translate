@@ -22,7 +22,6 @@ This module represents the Punjabi language.
 .. seealso:: :wp:`Punjabi_language`
 """
 
-
 import re
 
 from translate.lang import common

@@ -22,7 +22,6 @@ This module represents the Malay language.
 .. seealso:: :wp:`Malay_language`
 """
 
-
 from translate.lang import common
 
 

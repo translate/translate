@@ -25,7 +25,6 @@ Functions to manage Poedit's language features.
    (v1.4.2) to ensure that we match currently released versions of Poedit.
 """
 
-
 lang_codes = {
     "aa": "Afar",
     "ab": "Abkhazian",

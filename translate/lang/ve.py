@@ -22,7 +22,6 @@ This module represents the Venda language.
 .. seealso:: :wp:`Venda_language`
 """
 
-
 from translate.lang import common
 
 

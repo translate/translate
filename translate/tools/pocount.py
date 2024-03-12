@@ -25,6 +25,7 @@ These include: XLIFF, TMX, Gettex PO and MO, Qt .ts and .qm, Wordfast TM, etc
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pocount.html
 for examples and usage instructions.
 """
+
 from __future__ import annotations
 
 import csv
