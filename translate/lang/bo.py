@@ -22,7 +22,6 @@ This module represents the Tibetan language.
 .. seealso:: :wp:`Standard_Tibetan`
 """
 
-
 from translate.lang import common
 
 

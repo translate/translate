@@ -22,7 +22,6 @@ This module represents the Thai language.
 .. seealso:: :wp:`Thai_language`
 """
 
-
 from translate.lang import common
 
 

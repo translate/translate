@@ -22,7 +22,6 @@ This module represents the Romanian language.
 .. seealso:: :wp:`Romanian_language`
 """
 
-
 from translate.filters.checks import FilterFailure, TranslationChecker
 from translate.filters.decorators import cosmetic
 from translate.lang import common

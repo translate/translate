@@ -18,7 +18,6 @@
 
 """This module represents the Finnish language."""
 
-
 from translate.lang import common
 
 

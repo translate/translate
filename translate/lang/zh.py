@@ -22,7 +22,6 @@ This module represents the Chinese language (Both tradisional and simplified).
 .. seealso:: :wp:`Chinese_language`
 """
 
-
 import re
 
 from translate.lang import common

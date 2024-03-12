@@ -18,7 +18,6 @@
 
 """tests for storage base classes."""
 
-
 import os
 from io import BytesIO
 

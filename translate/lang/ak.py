@@ -22,7 +22,6 @@ This module represents the Akan language.
 .. seealso:: :wp:`Akan_language`
 """
 
-
 from translate.lang import common
 
 

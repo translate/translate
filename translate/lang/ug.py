@@ -22,7 +22,6 @@ This module represents the Uyghur language.
 .. seealso:: :wp:`Uyghur_language`
 """
 
-
 from translate.lang import common
 
 

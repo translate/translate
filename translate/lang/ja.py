@@ -22,7 +22,6 @@ This module represents the Japanese language.
 .. seealso:: :wp:`Japanese_language`
 """
 
-
 import re
 
 from translate.lang import common

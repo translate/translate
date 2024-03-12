@@ -22,7 +22,6 @@ This module represents the Telugu language.
 .. seealso:: :wp:`Telugu_language`
 """
 
-
 from translate.lang import common
 
 

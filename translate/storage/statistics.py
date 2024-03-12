@@ -18,7 +18,6 @@
 
 """Module to provide statistics and related functionality."""
 
-
 from translate.lang import factory
 
 # calling classifyunits() in the constructor is probably not ideal.

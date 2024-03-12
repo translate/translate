@@ -22,7 +22,6 @@ This module represents the Azerbaijani language.
 .. seealso:: :wp:`Azerbaijani_language`
 """
 
-
 from translate.lang import common
 
 

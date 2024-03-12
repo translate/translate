@@ -59,7 +59,6 @@ TODOs and Ideas for possible features:
   - phrases
 """
 
-
 import logging
 import re
 

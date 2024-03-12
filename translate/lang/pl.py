@@ -22,7 +22,6 @@ This module represents the Polish language.
 .. seealso:: :wp:`Polish_language`
 """
 
-
 from translate.lang import common
 
 

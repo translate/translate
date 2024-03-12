@@ -22,7 +22,6 @@ This module represents the Lao language.
 .. seealso:: :wp:`Lao_language`
 """
 
-
 from translate.lang import common
 
 

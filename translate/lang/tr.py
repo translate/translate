@@ -18,7 +18,6 @@
 
 """This module represents the Turkish language."""
 
-
 from translate.lang import common
 
 

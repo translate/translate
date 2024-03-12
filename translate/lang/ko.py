@@ -22,7 +22,6 @@ This module represents the Korean language.
 .. seealso:: :wp:`Korean_language`
 """
 
-
 from translate.lang import common
 
 

@@ -22,7 +22,6 @@ This module represents the Persian language.
 .. seealso:: :wp:`Persian_language`
 """
 
-
 import re
 
 from translate.lang import common

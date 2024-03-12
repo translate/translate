@@ -22,7 +22,6 @@ This module represents the Nepali language.
 .. seealso:: :wp:`Nepali_language`
 """
 
-
 import re
 
 from translate.lang import common

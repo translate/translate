@@ -34,6 +34,7 @@ White space within translation units is normalized, because the PO format does
 not preserve white space, and the translated Markdown content may have
 to be reflowed anyway.
 """
+
 from __future__ import annotations
 
 import re

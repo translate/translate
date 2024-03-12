@@ -20,6 +20,7 @@ Create a terminology file by reading a set of .po or .pot files to produce a poo
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/poterminology.html
 for examples and usage instructions.
 """
+
 import contextlib
 import logging
 import os

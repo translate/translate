@@ -22,7 +22,6 @@ This module represents the Tamil language.
 .. seealso:: :wp:`Tamil_language`
 """
 
-
 from translate.lang import common
 
 

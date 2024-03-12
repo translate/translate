@@ -23,7 +23,6 @@ This module represents the Spanish language.
    it could also be used for Asturian, Galician, or Catalan.
 """
 
-
 from translate.lang import common
 
 

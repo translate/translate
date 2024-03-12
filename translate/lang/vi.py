@@ -22,7 +22,6 @@ This module represents the Vietnamese language.
 .. seealso:: :wp:`Vietnamese_language`
 """
 
-
 from translate.lang import common, fr
 
 

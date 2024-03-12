@@ -22,7 +22,6 @@ This module represents the Chinese language (traditional).
 .. seealso:: :wp:`Chinese_language`
 """
 
-
 from translate.lang.zh import zh
 
 

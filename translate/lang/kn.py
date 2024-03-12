@@ -22,7 +22,6 @@ This module represents the Kannada language.
 .. seealso:: :wp:`Kannada_language`
 """
 
-
 from translate.lang import common
 
 

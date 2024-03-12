@@ -22,7 +22,6 @@ This module represents the Dzongkha language.
 .. seealso:: :wp:`Dzongkha_language`
 """
 
-
 from translate.lang import common
 
 

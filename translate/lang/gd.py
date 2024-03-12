@@ -22,7 +22,6 @@ This module represents the Gaelic language.
 .. seealso:: :wp:`Gaelic_language`
 """
 
-
 from translate.lang import common
 
 

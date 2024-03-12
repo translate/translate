@@ -22,7 +22,6 @@ This module represents the Northern Sotho language.
 .. seealso:: :wp:`Northern_Sotho_language`
 """
 
-
 from translate.lang import common
 
 

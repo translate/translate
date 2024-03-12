@@ -22,7 +22,6 @@ This module represents the Cornish language.
 .. seealso:: :wp:`Cornish_language`
 """
 
-
 from translate.lang import common
 
 

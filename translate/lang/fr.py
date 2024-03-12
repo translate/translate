@@ -22,7 +22,6 @@ This module represents the French language.
 .. seealso:: :wp:`French_language`
 """
 
-
 import re
 
 from translate.lang import common

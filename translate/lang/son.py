@@ -22,7 +22,6 @@ This module represents the Songhai languages.
 .. seealso:: :wp:`Songhai_languages`
 """
 
-
 from translate.lang import common
 
 

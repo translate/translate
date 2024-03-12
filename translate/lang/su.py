@@ -22,7 +22,6 @@ This module represents the Sundanese language.
 .. seealso:: :wp:`Sundanese_language`
 """
 
-
 from translate.lang import common
 
 

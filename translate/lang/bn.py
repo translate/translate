@@ -22,7 +22,6 @@ This module represents the Bengali language.
 .. seealso:: :wp:`Bengali_language`
 """
 
-
 import re
 
 from translate.lang import common
