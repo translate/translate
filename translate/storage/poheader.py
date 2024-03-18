@@ -460,6 +460,12 @@ class poheader:
         headerpo._store = self
         headerpo.markfuzzy()
         headeritems = self.makeheaderdict(**kwargs)
-        headervalue = "\n".join([f"{key}: {value}" for key, value in headeritems.items() if value is not None])
+        headervalue = "\n".join(
+            [
+                f"{key}: {value}"
+                for key, value in headeritems.items()
+                if value is not None
+            ]
+        )
         headerpo.target = headervalue
         return headerpo
