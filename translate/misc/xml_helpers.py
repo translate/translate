@@ -296,6 +296,6 @@ def clear_content(node):
 
     Unlike clear() this is not removing attributes.
     """
-    while len(node) > 0:
-        node.pop()
+    for child in node.iterchildren(reversed=True):
+        node.remove(child)
     node.text = None
