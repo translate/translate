@@ -103,7 +103,7 @@ def main(argv=None):
         callback=columnorder_callback,
         type="str",
         default=None,
-        help="specify the order and position of columns (location,source,target)",
+        help="specify the order and position of columns (location,source,target,context)",
     )
     parser.passthrough.append("columnorder")
     parser.run(argv)
