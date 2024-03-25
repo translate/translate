@@ -30,6 +30,7 @@ import logging
 import re
 import textwrap
 import unicodedata
+from itertools import chain
 
 from translate.misc import quote
 from translate.misc.multistring import multistring
@@ -460,33 +461,25 @@ class pounit(pocommon.pounit):
             return [unit]
         return []
 
-    def getnotes(self, origin=None):
+    def getnotes(self, origin: str | None = None) -> str:
         """
         Return comments based on origin value.
 
         :param origin: programmer, developer, source code, translator or None
         """
-        if origin is None:
-            comments = "".join(
-                comment[2:] or self.newline for comment in self.othercomments
-            )
-            comments += "".join(
-                comment[3:] or self.newline for comment in self.automaticcomments
-            )
-        elif origin == "translator":
-            comments = "".join(
-                comment[2:] or self.newline for comment in self.othercomments
-            )
-        elif origin in ["programmer", "developer", "source code"]:
-            comments = "".join(
-                comment[3:] or self.newline for comment in self.automaticcomments
-            )
-        else:
+        parts = []
+        newline = self.newline
+        if origin == "translator" or origin is None:
+            parts.append(comment[2:] or newline for comment in self.othercomments)
+        if origin in ["programmer", "developer", "source code", None]:
+            parts.append(comment[3:] or newline for comment in self.automaticcomments)
+        if not parts:
             raise ValueError("Comment type not valid")
+        comments = "".join(chain.from_iterable(parts))
         # Let's drop the last newline
-        return comments[:-1]
+        return comments[: -len(newline)]
 
-    def addnote(self, text, origin=None, position="append"):
+    def addnote(self, text: str, origin: str | None = None, position: str = "append"):
         """
         This is modeled on the XLIFF method.
 
