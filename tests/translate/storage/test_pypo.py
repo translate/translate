@@ -466,11 +466,14 @@ msgstr[1] "toetse"
 
     def test_dos_newlines(self):
         """Checks that dos newlines are properly parsed."""
-        posource = b'#: File1\r\n#: File2\r\nmsgid "test me"\r\nmsgstr ""\r\n'
+        posource = (
+            b'# Note!\r\n#: File1\r\n#: File2\r\nmsgid "test me"\r\nmsgstr ""\r\n'
+        )
         pofile = self.poparse(posource)
         assert len(pofile.units) == 1
         assert pofile.units[0].source == "test me"
         assert pofile.units[0].getlocations() == ["File1", "File2"]
+        assert pofile.units[0].getnotes() == "Note!"
         assert bytes(pofile) == posource
 
     def test_mac_newlines(self):
