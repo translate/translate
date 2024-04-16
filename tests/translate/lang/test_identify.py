@@ -173,8 +173,7 @@ class TestLanguageIdentifier:
             unit.target = TEXT_LIST[i]
         assert self.langident.identify_target_lang(langlist) == "de"
 
-    @staticmethod
-    def test_bad_init_data():
+    def test_bad_init_data(self):
         """Test __init__ with bad conf files and data dirs."""
         with raises(ValueError):
             LanguageIdentifier(model_dir="missing")

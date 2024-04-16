@@ -7,16 +7,14 @@ from translate.storage import tiki
 
 
 class TestTikiUnit:
-    @staticmethod
-    def test_locations():
+    def test_locations(self):
         unit = tiki.TikiUnit("one")
         unit.addlocation("blah")
         assert unit.getlocations() == []
         unit.addlocation("unused")
         assert unit.getlocations() == ["unused"]
 
-    @staticmethod
-    def test_to_unicode():
+    def test_to_unicode(self):
         unit = tiki.TikiUnit("one")
         unit.target = "two"
         assert str(unit) == '"one" => "two",\n'
@@ -28,24 +26,21 @@ class TestTikiUnit:
 
 
 class TestTikiStore:
-    @staticmethod
-    def test_parse_simple():
+    def test_parse_simple(self):
         tikisource = rb'"Top authors" => "Top autoren",'
         tikifile = tiki.TikiStore(tikisource)
         assert len(tikifile.units) == 1
         assert tikifile.units[0].source == "Top authors"
         assert tikifile.units[0].target == "Top autoren"
 
-    @staticmethod
-    def test_parse_encode():
+    def test_parse_encode(self):
         """Make sure these tiki special symbols come through correctly."""
         tikisource = rb'"test: |\n \r \t \\ \$ \"|" => "test: |\n \r \t \\ \$ \"|",'
         tikifile = tiki.TikiStore(tikisource)
         assert tikifile.units[0].source == r"test: |\n \r \t \\ \$ \"|"
         assert tikifile.units[0].target == r"test: |\n \r \t \\ \$ \"|"
 
-    @staticmethod
-    def test_parse_locations():
+    def test_parse_locations(self):
         """
         This function will test to make sure the location matching is working.  It
         tests that locations are detected, the default "translated" case, and that
@@ -76,8 +71,7 @@ class TestTikiStore:
         assert tikifile.units[5].location == ["possiblyuntranslated"]
         assert tikifile.units[6].location == ["translated"]
 
-    @staticmethod
-    def test_parse_ignore_extras():
+    def test_parse_ignore_extras(self):
         """Tests that we ignore extraneous lines."""
         tikisource = b"""<?php
 $lang = Array(

@@ -10,8 +10,7 @@ from . import test_po
 
 
 class TestHelpers:
-    @staticmethod
-    def test_unescape():
+    def test_unescape(self):
         assert pypo.unescape(r"koei") == "koei"
         assert pypo.unescape(r"koei\n") == "koei\n"
         assert pypo.unescape(r"koei\\") == "koei\\"
@@ -28,8 +27,7 @@ class TestHelpers:
         assert pypo.unescape(r"\"\\koei\"\\") == '"\\koei"\\'
         assert pypo.unescape(r"\\\rkoei\r\\") == "\\\rkoei\r\\"
 
-    @staticmethod
-    def test_quoteforpo():
+    def test_quoteforpo(self):
         """Special escaping routine to manage newlines and linewrap in PO."""
         # Simple case
         assert pypo.quoteforpo("Some test") == ['"Some test"']
@@ -75,8 +73,7 @@ class TestHelpers:
             '"obhucabhuca ukudibanisa kwakho.</b>"',
         ]
 
-    @staticmethod
-    def test_quoteforpo_escaped_quotes():
+    def test_quoteforpo_escaped_quotes(self):
         r"""
         Ensure that we don't break \" in two when wrapping.
 

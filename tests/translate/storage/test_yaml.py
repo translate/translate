@@ -520,8 +520,7 @@ class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
         store.parse(data)
         assert bytes(store) == data.encode("ascii")
 
-    @staticmethod
-    def test_invalid_value():
+    def test_invalid_value(self):
         store = yaml.YAMLFile()
         with pytest.raises(base.ParseError):
             store.parse('val: "\\u string"')

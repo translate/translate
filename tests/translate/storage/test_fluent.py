@@ -3442,8 +3442,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             r"message = { -ref",
         )
 
-    @staticmethod
-    def test_unit_ids():
+    def test_unit_ids(self):
         """Test that setting valid ids is ok, and invalid ids are blocked."""
         # Test valid ids.
         for fluent_type, unit_id in [

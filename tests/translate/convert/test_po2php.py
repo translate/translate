@@ -29,8 +29,7 @@ class TestPO2Php:
         print(outputphp)
         return outputphp
 
-    @staticmethod
-    def test_convertphp():
+    def test_convertphp(self):
         """Test convertphp helper."""
         posource = """#: $lang['name']
 msgid "value"
@@ -47,8 +46,7 @@ $lang['name'] = 'waarde';
         assert po2php.convertphp(inputfile, outputfile, templatefile) == 1
         assert outputfile.getvalue() == phpexpected
 
-    @staticmethod
-    def test_convertphp_notemplate():
+    def test_convertphp_notemplate(self):
         """Test convertphp helper without template."""
         posource = """#: $lang['name']
 msgid "value"
@@ -59,8 +57,7 @@ msgstr "waarde"
         with raises(ValueError):
             po2php.convertphp(inputfile, outputfile, None)
 
-    @staticmethod
-    def test_convertphp_empty_template():
+    def test_convertphp_empty_template(self):
         """Test convertphp helper with empty translation."""
         posource = """#: $lang['name']
 msgid "value"

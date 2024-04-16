@@ -89,8 +89,7 @@ class TestPOMerge:
         assert self.countunits(pofile) == 1
         return pofile.units[-1]
 
-    @staticmethod
-    def test_mergesore_bad_data():
+    def test_mergesore_bad_data(self):
         """Test that we catch bad options sent to mergestore."""
         templatefile = BytesIO(b"")
         inputfile = BytesIO(b"")

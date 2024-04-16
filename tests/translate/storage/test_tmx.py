@@ -77,8 +77,7 @@ class TestTMXfile(test_base.TestTranslationStore):
         print(bytes(tmxfile))
         assert newfile.translate("First line\nSecond line") == "Eerste lyn\nTweede lyn"
 
-    @staticmethod
-    def test_xmlentities():
+    def test_xmlentities(self):
         """Test that the xml entities '&' and '<'  are escaped correctly."""
         tmxfile = tmx.tmxfile()
         tmxfile.addtranslation("Mail & News", "en", "Nuus & pos", "af")

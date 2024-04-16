@@ -44,8 +44,7 @@ class BaseTestFactory:
             os.rmdir(dirname)
         assert not os.path.exists(dirname)
 
-    @staticmethod
-    def test_getclass():
+    def test_getclass(self):
         assert classname("file.po") == "pofile"
         assert classname("file.pot") == "pofile"
         assert classname("file.dtd.po") == "pofile"

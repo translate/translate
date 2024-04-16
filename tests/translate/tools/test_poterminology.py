@@ -8,8 +8,7 @@ sample_po_file = base_dir / "xliff_conformance" / "af-pootle.po"
 
 
 class TestPOTerminology:
-    @staticmethod
-    def test_term_extraction():
+    def test_term_extraction(self):
         """Test basic term extraction/filtering from a po file."""
         extractor = poterminology.TerminologyExtractor()
         # When no content has been provided, returns a simple dict
