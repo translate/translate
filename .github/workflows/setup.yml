@@ -44,7 +44,7 @@ jobs:
       run: |
         virtualenv test-ttk-release-src
         . ./test-ttk-release-src/bin/activate
-        pip install dist/translate-toolkit-*.tar.gz
+        pip install dist/translate_toolkit-*.tar.gz
         moz2po --help
         python ./test-ttk-release-src/lib/python*/site-packages/translate/lang/identify.py README.rst
     - name: Install test (wheel)
