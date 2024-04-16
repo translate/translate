@@ -10,8 +10,7 @@ from ..convert import test_convert
 
 
 class TestPyPo2PhpPo:
-    @staticmethod
-    def test_single_po():
+    def test_single_po(self):
         inputfile = b"""
 # This user comment refers to: {0}
 #. This developer comment does too: {0}
@@ -30,8 +29,7 @@ msgstr "I have {1} apples and {0} oranges"
         assert 'msgid "I have %2$s apples and %1$s oranges"' in output
         assert 'msgstr "I have %2$s apples and %1$s oranges"' in output
 
-    @staticmethod
-    def test_plural_po():
+    def test_plural_po(self):
         inputfile = b"""
 #. This developer comment refers to {0}
 #: some/path.php:111

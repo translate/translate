@@ -58,8 +58,7 @@ class TestQphFile(test_base.TestTranslationStore):
         assert newfile.findunit("Bla").source == "Bla"
         assert newfile.findunit("dit") is None
 
-    @staticmethod
-    def test_source():
+    def test_source(self):
         qphfile = qph.QphFile()
         qphunit = qphfile.addsourceunit("Concept")
         qphunit.source = "Term"
@@ -68,8 +67,7 @@ class TestQphFile(test_base.TestTranslationStore):
         assert newfile.findunit("Concept") is None
         assert newfile.findunit("Term") is not None
 
-    @staticmethod
-    def test_target():
+    def test_target(self):
         qphfile = qph.QphFile()
         qphunit = qphfile.addsourceunit("Concept")
         qphunit.target = "Konsep"
@@ -77,8 +75,7 @@ class TestQphFile(test_base.TestTranslationStore):
         print(bytes(qphfile))
         assert newfile.findunit("Concept").target == "Konsep"
 
-    @staticmethod
-    def test_language():
+    def test_language(self):
         """Check that we can get and set language and sourcelanguage in the header."""
         qphstr = """<!DOCTYPE QPH>
 <QPH language="fr" sourcelanguage="de">

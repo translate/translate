@@ -69,8 +69,7 @@ class TestPO2OO:
         newoo = self.convertoo(posource, ootemplate, language="zu")
         assert newoo.decode("utf-8") == ootemplate + ooexpected
 
-    @staticmethod
-    def test_pofilter():
+    def test_pofilter(self):
         """Tests integration with pofilter."""
         # Some bad po with a few errors:
         posource = b'#: sourcefile.bla#ID_NUMBER.txet.gnirts\nmsgid "<tag cow=\\"3\\">Mistake."\nmsgstr "  <etiket koei=\\"3\\">(fout) "'
@@ -114,8 +113,7 @@ class TestPO2OO:
         self.check_roundtrip(" ")
         self.check_roundtrip("\u00a0")
 
-    @staticmethod
-    def test_default_timestamp():
+    def test_default_timestamp(self):
         """Test to ensure that we revert to the default timestamp."""
         oointro, oooutro = (
             r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Text				",
@@ -133,8 +131,7 @@ class TestPO2OO:
             == oointro + "2002-02-02 02:02:02" + oooutro
         )
 
-    @staticmethod
-    def test_escape_conversion():
+    def test_escape_conversion(self):
         """Test to ensure that we convert escapes correctly."""
         oosource = (
             r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Column1\tColumn2\r\n				2002-02-02 02:02:02"
@@ -149,8 +146,7 @@ class TestPO2OO:
         )
         assert b"\tKolom1\\tKolom2\\r\\n\t" in outputfile.getvalue()
 
-    @staticmethod
-    def test_helpcontent_escapes():
+    def test_helpcontent_escapes(self):
         """Test to ensure that we convert helpcontent escapes correctly."""
         # Note how this test specifically uses incorrect spacing in the
         # translation. The extra space before 'hid' and an extra space before
@@ -178,8 +174,7 @@ msgstr ""
             in outputfile.getvalue()
         )
 
-    @staticmethod
-    def test_helpcontent_escapes2():
+    def test_helpcontent_escapes2(self):
         """Test to ensure that we convert helpcontent escapes correctly."""
         oosource = (
             r"helpcontent2	source\text\scalc\05\empty_cells.xhp	0	help	par_id2629474				0	en-US	A1: <empty>				2002-02-02 02:02:02"

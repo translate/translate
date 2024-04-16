@@ -4,8 +4,7 @@ from translate.misc import multistring
 
 
 class TestMultistring:
-    @staticmethod
-    def test_constructor():
+    def test_constructor(self):
         t = multistring.multistring
         s1 = t("test")
         assert type(s1) is t
@@ -19,8 +18,7 @@ class TestMultistring:
         with pytest.raises(ValueError):
             t([])
 
-    @staticmethod
-    def test_repr():
+    def test_repr(self):
         t = multistring.multistring
         s1 = t("test")
         assert repr(s1) == "multistring(['test'])"
@@ -30,8 +28,7 @@ class TestMultistring:
         assert repr(s2) == "multistring(['test', 'mé'])"
         assert eval("multistring.%s" % repr(s2)) == s2
 
-    @staticmethod
-    def test_replace():
+    def test_replace(self):
         t = multistring.multistring
         s1 = t(["abcdef", "def"])
 
@@ -62,8 +59,7 @@ class TestMultistring:
         result = s2.replace("e", "g", 1)
         assert result == t(["abcdgef", "dgef"])
 
-    @staticmethod
-    def test_comparison():
+    def test_comparison(self):
         t = multistring.multistring
         assert t("test") == "test"
         assert t("test").__cmp__("test") == 0
@@ -72,14 +68,12 @@ class TestMultistring:
         assert t("téßt") > "test"
         assert t("téßt").__cmp__("test") > 0
 
-    @staticmethod
-    def test_coercion():
+    def test_coercion(self):
         t = multistring.multistring
         assert str(t("test")) == "test"
         assert str(t("téßt")) == "téßt"
 
-    @staticmethod
-    def test_unicode_coercion():
+    def test_unicode_coercion(self):
         t = multistring.multistring
         assert str(t("test")) == "test"
         assert str(t("test")) == "test"
@@ -88,14 +82,12 @@ class TestMultistring:
         assert str(t(["téßt", "blāh"])) == "téßt"
         assert str(t(["téßt"])) == "téßt"
 
-    @staticmethod
-    def test_list_coercion():
+    def test_list_coercion(self):
         t = multistring.multistring
         assert str([t("test")]) == "[multistring(['test'])]"
         assert str([t("tést")]) == "[multistring(['tést'])]"
 
-    @staticmethod
-    def test_multistring_hash():
+    def test_multistring_hash(self):
         t = multistring.multistring
         foo = t(["foo", "bar"])
         foodict = {foo: "baz"}

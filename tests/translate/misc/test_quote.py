@@ -108,40 +108,34 @@ def test_stripcomment():
 
 
 class TestEncoding:
-    @staticmethod
-    def test_javapropertiesencode():
+    def test_javapropertiesencode(self):
         assert quote.javapropertiesencode("abc") == "abc"
         assert quote.javapropertiesencode("abcḓ") == r"abc\u1E13"
         assert quote.javapropertiesencode("abc\n") == "abc\\n"
 
-    @staticmethod
-    def test_java_utf8_properties_encode():
+    def test_java_utf8_properties_encode(self):
         assert quote.java_utf8_properties_encode("abc") == "abc"
         assert quote.java_utf8_properties_encode("abcḓ") == "abcḓ"
         assert quote.java_utf8_properties_encode("abc\n") == "abc\\n"
 
-    @staticmethod
-    def test_escapespace():
+    def test_escapespace(self):
         assert quote.escapespace(" ") == "\\u0020"
         assert quote.escapespace("\t") == "\\u0009"
 
-    @staticmethod
-    def test_mozillaescapemarginspaces():
+    def test_mozillaescapemarginspaces(self):
         assert quote.mozillaescapemarginspaces(" ") == r"\u0020"
         assert quote.mozillaescapemarginspaces("A") == "A"
         assert quote.mozillaescapemarginspaces(" abc ") == r"\u0020abc\u0020"
         assert quote.mozillaescapemarginspaces("  abc ") == r"\u0020 abc\u0020"
 
-    @staticmethod
-    def test_mozilla_control_escapes():
+    def test_mozilla_control_escapes(self):
         r"""Test that we do \uNNNN escapes for certain control characters instead of converting to UTF-8 characters."""
         prefix, suffix = "bling", "blang"
         for control in ("\u0005", "\u0006", "\u0007", "\u0011"):
             string = prefix + control + suffix
             assert quote.escapecontrols(string) != string
 
-    @staticmethod
-    def test_propertiesdecode():
+    def test_propertiesdecode(self):
         assert quote.propertiesdecode("abc") == "abc"
         assert quote.propertiesdecode("abc\\u1e13") == "abcḓ"
         assert quote.propertiesdecode("abc\\u1E13") == "abcḓ"
@@ -149,8 +143,7 @@ class TestEncoding:
         assert quote.propertiesdecode("abc\\") == "abc\\"
         assert quote.propertiesdecode("abc\\") == "abc\\"
 
-    @staticmethod
-    def test_controlchars():
+    def test_controlchars(self):
         assert quote.javapropertiesencode(quote.propertiesdecode("\u0001")) == r"\u0001"
         assert quote.javapropertiesencode(quote.propertiesdecode("\\u01")) == r"\u0001"
         assert quote.javapropertiesencode("\\") == "\\\\"
@@ -158,8 +151,7 @@ class TestEncoding:
         assert quote.propertiesdecode("\x01") == "\x01"
         assert quote.propertiesdecode("\\u0001") == "\x01"
 
-    @staticmethod
-    def test_properties_decode_slashu():
+    def test_properties_decode_slashu(self):
         # The real input strings don't have double backslashes, but we have to
         # double them here because Python immediately decode them, even for raw
         # strings.
@@ -180,8 +172,7 @@ class TestEncoding:
         raw_encoded = [("€", "&euro;"), ("©", "&copy;"), ('"', "&quot;")]
         self._html_encoding_helper(raw_encoded)
 
-    @staticmethod
-    def test_htmlencoding_existing_entities():
+    def test_htmlencoding_existing_entities(self):
         """Test that we don't mess existing entities."""
         assert quote.htmlentityencode("&amp;") == "&amp;"
 
@@ -192,8 +183,7 @@ class TestEncoding:
         ]  # Raw text should have nothing done to it.
         self._html_encoding_helper(raw_encoded)
 
-    @staticmethod
-    def test_htmlencoding_nonentities():
+    def test_htmlencoding_nonentities(self):
         """Tests to give us full coverage."""
         for encoded, real in [
             ("Some &; text", "Some &; text"),

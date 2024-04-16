@@ -283,8 +283,7 @@ Some other text
         print(repr(unit.source))
         assert unit.source == " - with a newline and more text"
 
-    @staticmethod
-    def test_escaping_newline_tabs():
+    def test_escaping_newline_tabs(self):
         """Test that we handle all kinds of newline permutations."""
         dtdsource = '<!ENTITY  noupdatesfound.intro "A hard coded newline.\\nAnd tab\\t and a \\r carriage return.">\n'
         converter = dtd2po.dtd2po()
