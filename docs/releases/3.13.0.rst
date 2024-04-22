@@ -1,0 +1,51 @@
+Translate Toolkit 3.13.0
+************************
+
+*Released on 22 April 2024*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- PO
+
+  - Fixed newlines handling in notes
+  - Improved header handling
+  - Avoid adding duplicate context when merging duplicates
+
+- LISA (Android, XLIFF,...)
+
+  - Fixed possible issue with removing content
+  - Automatically strip characters unsafe for XML
+
+- Properties
+
+  - Fixed handling of escaped space
+  - Improved escaping of control chars
+  - Improved quoting performance
+
+- Subtitles
+
+  - Updated aeidon compatibility
+
+- CSV
+
+  - Improved converter CLI reference
+
+Other changes
+-------------
+
+- Compatibility with current pytest and setuptools.
+- Updated language definitions to include CLDR aliases.
+- Dropped unmatained Mozilla l10n scripts.
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař, Aryaz Eghbali, Rihards Paskausks, Michal Karol, gemmaro
