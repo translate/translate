@@ -1,3 +1,4 @@
+from copy import copy
 from io import BytesIO
 
 from pytest import mark, raises
@@ -670,6 +671,31 @@ msgstr ""\r
 
         outstore = self.StoreClass()
         outstore.wrapper.width = -1
-        outstore.addunit(store.units[0])
+        unit = copy(store.units[0])
+        outstore.addunit(unit)
 
         assert max(len(line) for line in bytes(outstore).decode().splitlines()) > 77
+
+        outstore = self.StoreClass()
+        outstore.wrapper.width = -1
+        unit = copy(store.units[0])
+        unit.wrapper = None
+        outstore.addunit(unit)
+
+        assert max(len(line) for line in bytes(outstore).decode().splitlines()) > 77
+
+        outstore = self.StoreClass()
+        outstore.wrapper = None
+        unit = copy(store.units[0])
+        unit.wrapper = None
+        outstore.addunit(unit)
+
+        assert max(len(line) for line in bytes(outstore).decode().splitlines()) <= 77
+
+        outstore = self.StoreClass()
+        outstore.wrapper = None
+        unit = copy(store.units[0])
+        unit.wrapper.width = -1
+        outstore.addunit(unit)
+
+        assert max(len(line) for line in bytes(outstore).decode().splitlines()) <= 77

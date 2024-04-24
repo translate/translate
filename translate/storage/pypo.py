@@ -162,6 +162,11 @@ class PoWrapper(textwrap.TextWrapper):
             break_long_words=True,
         )
 
+    def __eq__(self, other):
+        if not isinstance(other, PoWrapper):
+            return False
+        return self.width == other.width
+
     def _handle_long_word(
         self, reversed_chunks: list[str], cur_line: list[str], cur_len: int, width: int
     ):
@@ -1034,9 +1039,7 @@ class pofile(pocommon.pofile):
                 yield unit
 
     def addunit(self, unit):
-        needs_update = (
-            unit.wrapper and self.wrapper and (unit.wrapper.width != self.wrapper.width)
-        )
+        needs_update = unit.wrapper != self.wrapper
         unit.wrapper = self.wrapper
         super().addunit(unit)
         if needs_update:
