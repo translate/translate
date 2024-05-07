@@ -58,7 +58,7 @@ class LangUnit(base.TranslationUnit):
         if self.getnotes():
             notes = (self.eol).join(
                 [
-                    ("#%s" % note if note.startswith("#") else "# %s" % note)
+                    (f"#{note}" if note.startswith("#") else f"# {note}")
                     for note in self.getnotes("developer").split("\n")
                 ]
             )

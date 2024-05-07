@@ -209,7 +209,7 @@ def strelem_to_xml(parent_node, elem):
 
 def parse_xliff(pstr):
     parser = etree.XMLParser(resolve_entities=False)
-    return xml_to_strelem(etree.fromstring("<source>%s</source>" % (pstr), parser))
+    return xml_to_strelem(etree.fromstring(f"<source>{pstr}</source>", parser))
 
 
 xliff.parsers = [parse_xliff]

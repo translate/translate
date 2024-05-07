@@ -171,4 +171,4 @@ if __name__ == "__main__":
     from sys import argv
 
     comparer = LevenshteinComparer()
-    print("Similarity:\n%s" % comparer.similarity(argv[1], argv[2], 50))
+    print(f"Similarity:\n{comparer.similarity(argv[1], argv[2], 50)}")

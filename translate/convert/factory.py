@@ -41,7 +41,7 @@ class UnknownExtensionError(Exception):
         self.file = afile
 
     def __str__(self):
-        return "Unable to find extension for file: %s" % (self.file)
+        return f"Unable to find extension for file: {self.file}"
 
 
 class UnsupportedConversionError(Exception):
@@ -53,7 +53,7 @@ class UnsupportedConversionError(Exception):
     def __str__(self):
         msg = f"Unsupported conversion from {self.in_ext} to {self.out_ext}"
         if self.templ_ext:
-            msg += " with template %s" % (self.templ_ext)
+            msg += f" with template {self.templ_ext}"
         return msg
 
 

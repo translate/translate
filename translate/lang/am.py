@@ -35,12 +35,11 @@ class am(common.Common):
     sentenceend = "።!?…"
 
     sentencere = re.compile(
-        r"""(?s)    #make . also match newlines
+        rf"""(?s)    #make . also match newlines
                             .*?         #anything, but match non-greedy
-                            [%s]        #the puntuation for sentence ending
+                            [{sentenceend}]        #the puntuation for sentence ending
                             \s*         #optional spacing after the puntuation
-                            """
-        % sentenceend,
+                            """,
         re.VERBOSE,
     )
 

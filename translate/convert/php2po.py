@@ -66,7 +66,7 @@ class php2po:
 
     def convert_store(self):
         """Convert a single source format file to a target format file."""
-        self.extraction_msg = "extracted from %s" % self.source_store.filename
+        self.extraction_msg = f"extracted from {self.source_store.filename}"
 
         for source_unit in self.source_store.units:
             self.target_store.addunit(self.convert_unit(source_unit))

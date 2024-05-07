@@ -36,7 +36,7 @@ class TestTxtFile(test_monolingual.TestMonolingualStore):
         assert len(txtfile.units) == 3
         print(txtsource)
         print(bytes(txtfile))
-        print("*%s*" % txtfile.units[0])
+        print(f"*{txtfile.units[0]}*")
         assert bytes(txtfile).decode("utf-8") == txtsource
         assert self.txtregen(txtsource) == txtsource
 

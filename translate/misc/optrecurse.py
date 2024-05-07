@@ -83,7 +83,7 @@ class ManHelpFormatter(optparse.HelpFormatter):
         """Return a comma-separated list of option strings & metavariables."""
         if option.takes_value():
             metavar = option.metavar or option.dest.upper()
-            metavar = "\\fI%s\\fP" % metavar
+            metavar = f"\\fI{metavar}\\fP"
             short_opts = [sopt + metavar for sopt in option._short_opts]
             long_opts = [lopt + "\\fR=\\fP" + metavar for lopt in option._long_opts]
         else:
@@ -92,7 +92,7 @@ class ManHelpFormatter(optparse.HelpFormatter):
 
         opts = short_opts + long_opts if self.short_first else long_opts + short_opts
 
-        return "\\fB%s\\fP" % ("\\fR, \\fP".join(opts))
+        return "\\fB{}\\fP".format("\\fR, \\fP".join(opts))
 
 
 class StdoutWrapper:
@@ -178,7 +178,7 @@ class RecursiveOptionParser(optparse.OptionParser):
         usage = "\\fB%prog "
         usage += " ".join(self.getusageman(option) for option in self.option_list)
         usage += "\\fP"
-        result.append("%s\n" % formatprog(usage))
+        result.append(f"{formatprog(usage)}\n")
         description_lines = self.description.split("\n\n")[1:]
         if description_lines:
             result.append(".SH DESCRIPTION\n")
@@ -192,8 +192,8 @@ class RecursiveOptionParser(optparse.OptionParser):
         result.append(".PP\n")
         for option in self.option_list:
             result.append(".TP\n")
-            result.append("%s\n" % str(option).replace("-", r"\-"))
-            result.append("%s\n" % option.help.replace("-", r"\-"))
+            result.append("{}\n".format(str(option).replace("-", r"\-")))
+            result.append("{}\n".format(option.help.replace("-", r"\-")))
         return "".join(result)
 
     def print_manpage(self, file=None):
@@ -238,24 +238,24 @@ class RecursiveOptionParser(optparse.OptionParser):
         """Returns the usage string for the given option."""
         optionstring = "|".join(option._short_opts + option._long_opts)
         if getattr(option, "optionalswitch", False):
-            optionstring = "[%s]" % optionstring
+            optionstring = f"[{optionstring}]"
         if option.metavar:
             optionstring += " " + option.metavar
         if getattr(option, "required", False):
             return optionstring
-        return "[%s]" % optionstring
+        return f"[{optionstring}]"
 
     @staticmethod
     def getusageman(option):
         """Returns the usage string for the given option."""
         optionstring = "\\fR|\\fP".join(option._short_opts + option._long_opts)
         if getattr(option, "optionalswitch", False):
-            optionstring = "\\fR[\\fP%s\\fR]\\fP" % optionstring
+            optionstring = f"\\fR[\\fP{optionstring}\\fR]\\fP"
         if option.metavar:
-            optionstring += " \\fI%s\\fP" % option.metavar
+            optionstring += f" \\fI{option.metavar}\\fP"
         if getattr(option, "required", False):
             return optionstring
-        return "\\fR[\\fP%s\\fR]\\fP" % optionstring
+        return f"\\fR[\\fP{optionstring}\\fR]\\fP"
 
     def define_option(self, option):
         """
@@ -324,7 +324,7 @@ class RecursiveOptionParser(optparse.OptionParser):
             dest="input",
             default=None,
             metavar="INPUT",
-            help="read from INPUT in %s" % (inputformathelp),
+            help=f"read from INPUT in {inputformathelp}",
         )
         inputoption.optionalswitch = True
         inputoption.required = True
@@ -347,7 +347,7 @@ class RecursiveOptionParser(optparse.OptionParser):
             dest="output",
             default=None,
             metavar="OUTPUT",
-            help="write to OUTPUT in %s" % (outputformathelp),
+            help=f"write to OUTPUT in {outputformathelp}",
         )
         outputoption.optionalswitch = True
         outputoption.required = True
@@ -361,7 +361,7 @@ class RecursiveOptionParser(optparse.OptionParser):
                 dest="template",
                 default=None,
                 metavar="TEMPLATE",
-                help="read from TEMPLATE in %s" % (templateformathelp),
+                help=f"read from TEMPLATE in {templateformathelp}",
             )
             self.define_option(templateoption)
 
@@ -374,7 +374,7 @@ class RecursiveOptionParser(optparse.OptionParser):
             default="bar",
             choices=list(ProgressBar.progress_types.keys()),
             metavar="PROGRESS",
-            help="show progress as: %s" % (", ".join(ProgressBar.progress_types)),
+            help="show progress as: {}".format(", ".join(ProgressBar.progress_types)),
         )
         self.define_option(progressoption)
 
@@ -388,7 +388,7 @@ class RecursiveOptionParser(optparse.OptionParser):
             default="message",
             choices=self.errorleveltypes,
             metavar="ERRORLEVEL",
-            help="show errorlevel as: %s" % (", ".join(self.errorleveltypes)),
+            help="show errorlevel as: {}".format(", ".join(self.errorleveltypes)),
         )
         self.define_option(errorleveloption)
 
@@ -399,8 +399,8 @@ class RecursiveOptionParser(optparse.OptionParser):
         if len(formats) == 0:
             return ""
         if len(formats) == 1:
-            return "%s format" % (", ".join(formats))
-        return "%s formats" % (", ".join(formats))
+            return "{} format".format(", ".join(formats))
+        return "{} formats".format(", ".join(formats))
 
     @staticmethod
     def isrecursive(fileoption, filepurpose="input"):
@@ -593,7 +593,7 @@ class RecursiveOptionParser(optparse.OptionParser):
                     self.checkoutputsubdir(options, os.path.dirname(outputpath))
             except Exception:
                 self.warning(
-                    "Couldn't handle input file %s" % inputpath, options, sys.exc_info()
+                    f"Couldn't handle input file {inputpath}", options, sys.exc_info()
                 )
                 continue
             try:
@@ -659,7 +659,7 @@ class RecursiveOptionParser(optparse.OptionParser):
         if fulltemplatepath is not None:
             if os.path.isfile(fulltemplatepath):
                 return open(fulltemplatepath, "rb")
-            self.warning("missing template file %s" % fulltemplatepath)
+            self.warning(f"missing template file {fulltemplatepath}")
         return None
 
     def processfile(

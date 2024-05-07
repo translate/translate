@@ -88,7 +88,7 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
                 success = self.processfile(options, fullinputpath)
             except Exception:
                 self.warning(
-                    "Error processing: input %s" % (fullinputpath),
+                    f"Error processing: input {fullinputpath}",
                     options,
                     sys.exc_info(),
                 )

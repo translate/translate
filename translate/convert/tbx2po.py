@@ -43,7 +43,9 @@ class tbx2po:
             term.source = tbxunit.source
             term.target = tbxunit.target
             term.setcontext(tbxunit.getnotes("definition"))
-            term.addnote("Part of speech: %s" % tbxunit.getnotes("pos"), "developer")
+            term.addnote(
+                "Part of speech: {}".format(tbxunit.getnotes("pos")), "developer"
+            )
             self.pofile.addunit(term)
         self.pofile.removeduplicates()
         return self.pofile

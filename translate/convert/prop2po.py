@@ -55,7 +55,7 @@ class prop2po:
             )
         else:
             targetheader = thetargetfile.header()
-        targetheader.addnote("extracted from %s" % thepropfile.filename, "developer")
+        targetheader.addnote(f"extracted from {thepropfile.filename}", "developer")
 
         thepropfile.makeindex()
         self.mixedkeys = self.mixer.match_entities(thepropfile.id_index)
@@ -228,7 +228,7 @@ class prop2po:
 
             # Some sanity checks
             if not variant:
-                raise ValueError("Variant invalid: %s" % (old_variant))
+                raise ValueError(f"Variant invalid: {old_variant}")
             if variant in plurals[key].variants:
                 logger.warning(
                     "Override %s[%s]: %s by %s",
@@ -245,7 +245,7 @@ class prop2po:
         for key, plural in plurals.items():
             # We should have at least "other" (no variant in GWT)
             if "other" not in plural.variants:
-                raise ValueError("Should have property %s without any variant" % (key))
+                raise ValueError(f"Should have property {key} without any variant")
             units = []
             for name in names:
                 if name in plural.variants:

@@ -122,7 +122,7 @@ class TestProp2PO:
     def test_unicode(self):
         """Checks that unicode entries convert properly."""
         unistring = r"Norsk bokm\u00E5l"
-        propsource = "nb = %s\n" % unistring
+        propsource = f"nb = {unistring}\n"
         pofile = self.prop2po(propsource)
         pounit = self.singleelement(pofile)
         print(repr(pofile.units[0].target))
@@ -182,7 +182,7 @@ do=translate me
     def test_emptyproperty(self):
         """Checks that empty property definitions survive into po file, bug 15."""
         for delimiter in ["=", ""]:
-            propsource = "# comment\ncredit%s" % delimiter
+            propsource = f"# comment\ncredit{delimiter}"
             pofile = self.prop2po(propsource)
             pounit = self.singleelement(pofile)
             assert pounit.getlocations() == ["credit"]
@@ -194,7 +194,7 @@ do=translate me
     def test_emptyproperty_translated(self):
         """Checks that if we translate an empty property it makes it into the PO."""
         for delimiter in ["=", ""]:
-            proptemplate = "credit%s" % delimiter
+            proptemplate = f"credit{delimiter}"
             propsource = "credit=Translators Names"
             pofile = self.prop2po(propsource, proptemplate)
             pounit = self.singleelement(pofile)

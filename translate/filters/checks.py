@@ -803,8 +803,8 @@ class StandardChecker(TranslationChecker):
         in the original string you also have them in the translation.
         """
         if not helpers.countsmatch(str1, str2, ("\\", "\\\\")):
-            escapes1 = ", ".join("'%s'" % word for word in str1.split() if "\\" in word)
-            escapes2 = ", ".join("'%s'" % word for word in str2.split() if "\\" in word)
+            escapes1 = ", ".join(f"'{word}'" for word in str1.split() if "\\" in word)
+            escapes2 = ", ".join(f"'{word}'" for word in str2.split() if "\\" in word)
 
             raise SeriousFilterFailure(
                 f"Escapes in original ({escapes1}) don't match "
@@ -1051,12 +1051,10 @@ class StandardChecker(TranslationChecker):
                             gotmatch = True
 
                 if str1ord is None:
-                    raise FilterFailure("Added printf variable: %s" % match2.group())
+                    raise FilterFailure(f"Added printf variable: {match2.group()}")
 
                 if not gotmatch:
-                    raise FilterFailure(
-                        "Different printf variable: %s" % match2.group()
-                    )
+                    raise FilterFailure(f"Different printf variable: {match2.group()}")
             elif str2key:
                 str1key = None
 
@@ -1077,11 +1075,11 @@ class StandardChecker(TranslationChecker):
 
                         if str1fullvar != str2fullvar:
                             raise FilterFailure(
-                                "Different printf variable: %s" % match2.group()
+                                f"Different printf variable: {match2.group()}"
                             )
 
                 if str1key is None:
-                    raise FilterFailure("Added printf variable: %s" % match2.group())
+                    raise FilterFailure(f"Added printf variable: {match2.group()}")
             else:
                 for var_num1, match1 in enumerate(printf_pat.finditer(str1)):
                     count1 = var_num1 + 1
@@ -1097,7 +1095,7 @@ class StandardChecker(TranslationChecker):
 
                     if (var_num1 == var_num2) and (str1fullvar != str2fullvar):
                         raise FilterFailure(
-                            "Different printf variable: %s" % match2.group()
+                            f"Different printf variable: {match2.group()}"
                         )
 
         if count2 is None:
@@ -1105,7 +1103,7 @@ class StandardChecker(TranslationChecker):
 
             if str1_variables:
                 raise FilterFailure(
-                    "Missing printf variable: %s" % ", ".join(str1_variables)
+                    "Missing printf variable: {}".format(", ".join(str1_variables))
                 )
 
         if (count1 or count2) and (count1 != count2):
@@ -1189,14 +1187,18 @@ class StandardChecker(TranslationChecker):
         if len(extra_in_2) > 0:
             failure_state = max(failure_state, STATE_SERIOUS)
             messages.append(
-                "Unknown named placeholders in translation: %s" % ", ".join(extra_in_2)
+                "Unknown named placeholders in translation: {}".format(
+                    ", ".join(extra_in_2)
+                )
             )
 
         extra_in_1 = set(data1["namedvars"]).difference(set(data2["namedvars"]))
         if len(extra_in_1) > 0:
             failure_state = max(failure_state, STATE_MILD)
             messages.append(
-                "Named placeholders absent in translation: %s" % ", ".join(extra_in_1)
+                "Named placeholders absent in translation: {}".format(
+                    ", ".join(extra_in_1)
+                )
             )
 
         if failure_state == STATE_OK:
@@ -1250,12 +1252,12 @@ class StandardChecker(TranslationChecker):
                         f"accelerator character '{bad2[0]}'"
                     )
                 else:
-                    messages.append("Missing accelerator '%s'" % accelmarker)
+                    messages.append(f"Missing accelerator '{accelmarker}'")
             elif count1 == 0:
-                messages.append("Added accelerator '%s'" % accelmarker)
+                messages.append(f"Added accelerator '{accelmarker}'")
             elif count1 == 1 and count2 > count1:
                 messages.append(
-                    "Accelerator '%s' is repeated in translation" % accelmarker
+                    f"Accelerator '{accelmarker}' is repeated in translation"
                 )
             else:
                 messages.append(
@@ -1335,9 +1337,9 @@ class StandardChecker(TranslationChecker):
                 mismatch2.extend(vars2)
 
         if mismatch1:
-            messages.append("Do not translate: %s" % ", ".join(mismatch1))
+            messages.append("Do not translate: {}".format(", ".join(mismatch1)))
         elif mismatch2:
-            messages.append("Added variables: %s" % ", ".join(mismatch2))
+            messages.append("Added variables: {}".format(", ".join(mismatch2)))
 
         if messages and mismatch1:
             raise SeriousFilterFailure(messages)
@@ -1541,15 +1543,15 @@ class StandardChecker(TranslationChecker):
             count2 = str2.count(bracket)
 
             if count2 < count1:
-                missing.append("'%s'" % bracket)
+                missing.append(f"'{bracket}'")
             elif count2 > count1:
-                extra.append("'%s'" % bracket)
+                extra.append(f"'{bracket}'")
 
         if missing:
-            messages.append("Missing %s" % ", ".join(missing))
+            messages.append("Missing {}".format(", ".join(missing)))
 
         if extra:
-            messages.append("Added %s" % ", ".join(extra))
+            messages.append("Added {}".format(", ".join(extra)))
 
         if messages:
             raise FilterFailure(messages)
@@ -1601,7 +1603,7 @@ class StandardChecker(TranslationChecker):
                 parts = word1.split("=")
 
                 if parts[0] not in str2:
-                    raise FilterFailure("Missing or translated option '%s'" % parts[0])
+                    raise FilterFailure(f"Missing or translated option '{parts[0]}'")
 
                 if len(parts) > 1 and parts[1] in str2:
                     raise FilterFailure(
@@ -1662,7 +1664,7 @@ class StandardChecker(TranslationChecker):
         str2 = self.removevariables(str2)
         # TODO: review this. The 'I' is specific to English, so it probably
         # serves no purpose to get sourcelang.sentenceend
-        str1 = re.sub("[^%s]( I )" % self.config.sourcelang.sentenceend, " i ", str1)
+        str1 = re.sub(f"[^{self.config.sourcelang.sentenceend}]( I )", " i ", str1)
 
         capitals1 = helpers.filtercount(str1, str.isupper)
         capitals2 = helpers.filtercount(str2, str.isupper)
@@ -1726,7 +1728,7 @@ class StandardChecker(TranslationChecker):
 
         if acronyms:
             raise FilterFailure(
-                "Consider not translating acronyms: %s" % ", ".join(acronyms)
+                "Consider not translating acronyms: {}".format(", ".join(acronyms))
             )
 
         return True
@@ -1755,7 +1757,7 @@ class StandardChecker(TranslationChecker):
 
         for word in words:
             if word == lastword and word not in self.config.lang.validdoublewords:
-                raise FilterFailure("The word '%s' is repeated" % word)
+                raise FilterFailure(f"The word '{word}' is repeated")
             lastword = word
 
         return True
@@ -1792,7 +1794,7 @@ class StandardChecker(TranslationChecker):
         ]
 
         if stopwords:
-            raise FilterFailure("Do not translate: %s" % (", ".join(stopwords)))
+            raise FilterFailure("Do not translate: {}".format(", ".join(stopwords)))
 
         return True
 
@@ -1829,7 +1831,7 @@ class StandardChecker(TranslationChecker):
         ]
 
         if stopwords:
-            raise FilterFailure("Please translate: %s" % (", ".join(stopwords)))
+            raise FilterFailure("Please translate: {}".format(", ".join(stopwords)))
 
         return True
 
@@ -1864,7 +1866,9 @@ class StandardChecker(TranslationChecker):
         ]
 
         if invalidchars:
-            raise FilterFailure("Invalid characters: %s" % (", ".join(invalidchars)))
+            raise FilterFailure(
+                "Invalid characters: {}".format(", ".join(invalidchars))
+            )
 
         return True
 
@@ -2051,7 +2055,7 @@ class StandardChecker(TranslationChecker):
         errors.difference_update(ignore1, self.config.notranslatewords)
 
         if errors:
-            messages = ["Check the spelling of: %s" % ", ".join(errors)]
+            messages = ["Check the spelling of: {}".format(", ".join(errors))]
             raise FilterFailure(messages)
 
         return True
@@ -2319,12 +2323,10 @@ class LibreOfficeChecker(StandardChecker):
                     if acttag.startswith("</"):
                         if match.group("tag") in lo_emptytags:
                             raise FilterFailure(
-                                "»%s« should be self-closing/empty" % acttag
+                                f"»{acttag}« should be self-closing/empty"
                             )
                         if len(opentags) == 0:
-                            raise FilterFailure(
-                                "There is no open tag for »%s«" % acttag
-                            )
+                            raise FilterFailure(f"There is no open tag for »{acttag}«")
                         opentag = opentags.pop()
                         if tagname(acttag) != "/" + tagname(opentag):
                             raise FilterFailure(
@@ -2334,16 +2336,14 @@ class LibreOfficeChecker(StandardChecker):
                     elif acttag.endswith("/>"):
                         if match.group("tag") not in lo_emptytags:
                             raise FilterFailure(
-                                "»%s« should not be self-closing/empty" % acttag
+                                f"»{acttag}« should not be self-closing/empty"
                             )
                     else:
                         opentags.append(acttag)
                     str2 = str2[match.end(0) :]
                     match = re.search(lo_tag_re, str2)
                 if len(opentags) != 0:
-                    raise FilterFailure(
-                        "There is no close tag for »%s«" % opentags.pop()
-                    )
+                    raise FilterFailure(f"There is no close tag for »{opentags.pop()}«")
         return True
 
     @critical
@@ -2464,7 +2464,7 @@ class MozillaChecker(StandardChecker):
 
                         if pair1[1] not in pair2:  # key
                             raise FilterFailure(
-                                "Do not translate the key '%s'" % pair1[1]
+                                f"Do not translate the key '{pair1[1]}'"
                             )
 
                         # FIXME we could check more carefully for numbers in pair1[2]
@@ -2528,8 +2528,8 @@ class MozillaChecker(StandardChecker):
                 )
                 if counter2(str2)[0] > 0:
                     messages.append(
-                        "Accelerator '%s' should not appear in "
-                        "translation" % accelmarker
+                        f"Accelerator '{accelmarker}' should not appear in "
+                        "translation"
                     )
 
             if messages:
@@ -2599,7 +2599,9 @@ class GnomeChecker(StandardChecker):
 
                 if stopwords:
                     raise FilterFailure(
-                        "Do not translate GConf attributes: %s" % (", ".join(stopwords))
+                        "Do not translate GConf attributes: {}".format(
+                            ", ".join(stopwords)
+                        )
                     )
 
                 return True

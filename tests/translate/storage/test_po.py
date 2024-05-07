@@ -624,14 +624,14 @@ msgstr[1] "Koeie"
         """Tests making a unit with msgidcomments obsolete."""
         posource = '#: first.c\nmsgid ""\n"_: first.c\\n"\n"test"\nmsgstr "rest"\n\n#: second.c\nmsgid ""\n"_: second.c\\n"\n"test"\nmsgstr "rest"'
         poexpected = '#~ msgid ""\n#~ "_: first.c\\n"\n#~ "test"\n#~ msgstr "rest"\n'
-        print("Source:\n%s" % posource)
-        print("Expected:\n%s" % poexpected)
+        print(f"Source:\n{posource}")
+        print(f"Expected:\n{poexpected}")
         pofile = self.poparse(posource)
         unit = pofile.units[0]
         assert not unit.isobsolete()
         unit.makeobsolete()
         assert unit.isobsolete()
-        print("Result:\n%s" % pofile)
+        print(f"Result:\n{pofile}")
         assert str(unit) == poexpected
 
     def test_multiline_obsolete(self):

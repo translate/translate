@@ -204,7 +204,7 @@ def phpencode(text, quotechar="'"):
         for a, b in escapes:
             text = text.replace(a, b)
         return text
-    return text.replace("%s" % quotechar, "\\%s" % quotechar)
+    return text.replace(f"{quotechar}", f"\\{quotechar}")
 
 
 def phpdecode(text, quotechar="'"):

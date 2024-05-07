@@ -155,7 +155,7 @@ def escape_help_text(text):
             "embedvar",
             "alt",
         ]:
-            if tag.startswith("<%s" % escape_tag) or tag == "</%s>" % escape_tag:
+            if tag.startswith(f"<{escape_tag}") or tag == f"</{escape_tag}>":
                 escapethistag = True
         if tag in ["<br/>", "<help-id-missing/>"]:
             escapethistag = True
@@ -426,7 +426,7 @@ class oomultifile:
     def getsubfilename(self, line):
         """Looks up the subfile name for the line."""
         if line.count("\t") < 2:
-            raise ValueError("invalid tab-delimited line: %r" % line)
+            raise ValueError(f"invalid tab-delimited line: {line!r}")
         lineparts = line.split("\t", 2)
         module, filename = lineparts[0], lineparts[1]
         if self.multifilestyle == "onefile":

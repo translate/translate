@@ -32,9 +32,9 @@ def test_capsstart():
 
 def test_transliterate_cyrillic():
     def trans(text):
-        print(("Orig: %s" % text).encode("utf-8"))
+        print((f"Orig: {text}").encode())
         trans = af.tranliterate_cyrillic(text)
-        print(("Trans: %s" % trans).encode("utf-8"))
+        print((f"Trans: {trans}").encode())
         return trans
 
     assert trans("Борис Николаевич Ельцин") == "Boris Nikolajewitj Jeltsin"

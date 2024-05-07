@@ -189,8 +189,8 @@ class TestCPOFile(test_po.TestPOFile):
         """Tests for correct output of mulitline obsolete messages."""
         posource = '#~ msgid ""\n#~ "Old thing\\n"\n#~ "Second old thing"\n#~ msgstr ""\n#~ "Ou ding\\n"\n#~ "Tweede ou ding"\n'
         pofile = self.poparse(posource)
-        print("Source:\n%s" % posource)
-        print("Output:\n%s" % bytes(pofile))
+        print(f"Source:\n{posource}")
+        print(f"Output:\n{bytes(pofile)}")
         assert len(pofile.units) == 1
         assert pofile.units[0].isobsolete()
         assert not pofile.units[0].istranslatable()

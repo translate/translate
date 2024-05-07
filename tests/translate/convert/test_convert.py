@@ -48,7 +48,7 @@ class TestConvertCommand:
         kwoptions.update(kwargs)
         for key, value in kwoptions.items():
             if value is True:
-                argv.append("--%s" % key)
+                argv.append(f"--{key}")
             else:
                 argv.append(f"--{key}={value}")
         try:

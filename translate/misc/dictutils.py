@@ -30,7 +30,7 @@ class cidict(dict):
     def __getitem__(self, key):
         if not isinstance(key, str):
             raise TypeError(
-                "cidict can only have str or unicode as key (got %r)" % type(key)
+                f"cidict can only have str or unicode as key (got {type(key)!r})"
             )
         for akey in self.keys():
             if akey.lower() == key.lower():
@@ -40,7 +40,7 @@ class cidict(dict):
     def __setitem__(self, key, value):
         if not isinstance(key, str):
             raise TypeError(
-                "cidict can only have str or unicode as key (got %r)" % type(key)
+                f"cidict can only have str or unicode as key (got {type(key)!r})"
             )
         for akey in self.keys():
             if akey.lower() == key.lower():
@@ -60,7 +60,7 @@ class cidict(dict):
     def __delitem__(self, key):
         if not isinstance(key, str):
             raise TypeError(
-                "cidict can only have str or unicode as key (got %r)" % type(key)
+                f"cidict can only have str or unicode as key (got {type(key)!r})"
             )
         for akey in self.keys():
             if akey.lower() == key.lower():
@@ -70,7 +70,7 @@ class cidict(dict):
     def __contains__(self, key):
         if not isinstance(key, str):
             raise TypeError(
-                "cidict can only have str or unicode as key (got %r)" % type(key)
+                f"cidict can only have str or unicode as key (got {type(key)!r})"
             )
         for akey in self.keys():
             if akey.lower() == key.lower():

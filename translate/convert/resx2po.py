@@ -40,7 +40,7 @@ class resx2po:
         output_header = output_store.init_headers(
             charset="UTF-8", encoding="8bit", x_accelerator_marker="&"
         )
-        output_header.addnote("extracted from %s" % input_store.filename, "developer")
+        output_header.addnote(f"extracted from {input_store.filename}", "developer")
         for input_unit in input_store.units:
             if input_unit.istranslatable():
                 output_unit = self.convert_unit(input_unit, "developer")

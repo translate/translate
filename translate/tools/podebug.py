@@ -61,8 +61,8 @@ class podebug:
             self.format = ""
         else:
             self.format = format
-        self.rewritefunc = getattr(self, "rewrite_%s" % rewritestyle, None)
-        self.ignorefunc = getattr(self, "ignore_%s" % ignoreoption, None)
+        self.rewritefunc = getattr(self, f"rewrite_{rewritestyle}", None)
+        self.ignorefunc = getattr(self, f"ignore_{ignoreoption}", None)
         self.preserveplaceholders = preserveplaceholders
 
     @staticmethod
@@ -438,7 +438,9 @@ def main():
         type="choice",
         choices=podebug.rewritelist(),
         metavar="STYLE",
-        help="the translation rewrite style: %s" % ", ".join(podebug.rewritelist()),
+        help="the translation rewrite style: {}".format(
+            ", ".join(podebug.rewritelist())
+        ),
     )
     parser.add_option(
         "",
@@ -447,8 +449,9 @@ def main():
         type="choice",
         choices=podebug.ignorelist(),
         metavar="APPLICATION",
-        help="apply tagging ignore rules for the given application: %s"
-        % ", ".join(podebug.ignorelist()),
+        help="apply tagging ignore rules for the given application: {}".format(
+            ", ".join(podebug.ignorelist())
+        ),
     )
     parser.add_option(
         "",

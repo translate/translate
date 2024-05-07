@@ -41,7 +41,7 @@ from translate.storage.symbian import (
 def escape(text):
     for key, val in po_escape_map.items():
         text = text.replace(key, val)
-    return '"%s"' % text
+    return f'"{text}"'
 
 
 def replace_header_items(ps, replacments):
@@ -52,7 +52,7 @@ def replace_header_items(ps, replacments):
             key = match.groupdict()["key"]
             if key in replacments:
                 ps.current_line = match.expand(
-                    "\\g<key>\\g<space>%s\n" % replacments[key]
+                    f"\\g<key>\\g<space>{replacments[key]}\n"
                 )
         ps.read_line()
 
@@ -71,7 +71,7 @@ def parse(ps, header_replacements, body_replacements):
                         body_replacements[key].target or body_replacements[key].source
                     )
                     ps.current_line = match.expand(
-                        "\\g<start>\\g<id>\\g<space>%s\n" % escape(value)
+                        f"\\g<start>\\g<id>\\g<space>{escape(value)}\n"
                     )
             ps.read_line()
     except StopIteration:

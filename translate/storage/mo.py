@@ -266,7 +266,7 @@ class mofile(poheader.poheader, base.TranslationStore):
             startvalue,
             _sizehash,
             _offsethash,
-        ) = struct.unpack("%sLHHiiiii" % endian, input[: (7 * 4)])
+        ) = struct.unpack(f"{endian}LHHiiiii", input[: (7 * 4)])
         if version_maj >= 1:
             raise base.ParseError(
                 """Unable to process version %d.%d MO files"""
@@ -276,10 +276,10 @@ class mofile(poheader.poheader, base.TranslationStore):
             nextkey = startkey + (i * 2 * 4)
             nextvalue = startvalue + (i * 2 * 4)
             klength, koffset = struct.unpack(
-                "%sii" % endian, input[nextkey : nextkey + (2 * 4)]
+                f"{endian}ii", input[nextkey : nextkey + (2 * 4)]
             )
             vlength, voffset = struct.unpack(
-                "%sii" % endian, input[nextvalue : nextvalue + (2 * 4)]
+                f"{endian}ii", input[nextvalue : nextvalue + (2 * 4)]
             )
             source = input[koffset : koffset + klength]
             context = None

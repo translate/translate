@@ -162,7 +162,7 @@ msgstr "Dimpled Ring"
                 dtdfile.makeindex()
                 assert (
                     dtd.unquotefromdtd(
-                        dtdfile.id_index["simple.%s" % accesskey].definition
+                        dtdfile.id_index[f"simple.{accesskey}"].definition
                     )
                     == "a"
                 )

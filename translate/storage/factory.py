@@ -190,7 +190,7 @@ def getclass(
         else:
             storeclass = import_class(*classes_str[ext], "translate.storage")
     except KeyError:
-        raise ValueError("Unknown filetype (%s)" % storefilename)
+        raise ValueError(f"Unknown filetype ({storefilename})")
     return storeclass
 
 

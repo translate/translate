@@ -216,7 +216,7 @@ accesskey-help=م
         proptemplate = """prop %s value\n"""
         propexpected = """prop %s translated\n"""
         for delim in ["=", ":", ""]:
-            print("testing '%s' as delimiter" % delim)
+            print(f"testing '{delim}' as delimiter")
             propfile = self.merge2prop(proptemplate % delim, posource)
             print(propfile)
             assert propfile == propexpected % delim

@@ -11,7 +11,7 @@ class TestDirectory:
     def setup_method(self, method):
         """Sets up a test directory."""
         print("setup_method called on", self.__class__.__name__)
-        self.testdir = "%s_testdir" % (self.__class__.__name__)
+        self.testdir = f"{self.__class__.__name__}_testdir"
         self.cleardir(self.testdir)
         os.mkdir(self.testdir)
 

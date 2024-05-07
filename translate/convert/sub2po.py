@@ -34,7 +34,7 @@ def convert_store(input_store, duplicatestyle="msgctxt"):
     """Converts a subtitle file to a .po file..."""
     output_store = po.pofile()
     output_header = output_store.header()
-    output_header.addnote("extracted from %s" % input_store.filename, "developer")
+    output_header.addnote(f"extracted from {input_store.filename}", "developer")
 
     for input_unit in input_store.units:
         output_unit = convert_unit(input_unit, "developer")

@@ -40,7 +40,7 @@ class rc2po:
             x_accelerator_marker="&",
             x_merge_on="location",
         )
-        output_header.addnote("extracted from %s" % input_store.filename, "developer")
+        output_header.addnote(f"extracted from {input_store.filename}", "developer")
         for input_unit in input_store.units:
             output_unit = self.convert_unit(input_unit, "developer")
             if output_unit is not None:
@@ -153,7 +153,7 @@ def main(argv=None):
         "--lang",
         dest="lang",
         default=DEFAULTLANG,
-        help="LANG entry (default: %s)" % DEFAULTLANG,
+        help=f"LANG entry (default: {DEFAULTLANG})",
         metavar="LANG",
     )
     DEFAULTSUBLANG = None
@@ -162,7 +162,7 @@ def main(argv=None):
         "--sublang",
         dest="sublang",
         default=DEFAULTSUBLANG,
-        help="SUBLANG entry (default: %s)" % DEFAULTSUBLANG,
+        help=f"SUBLANG entry (default: {DEFAULTSUBLANG})",
         metavar="SUBLANG",
     )
     parser.add_duplicates_option()

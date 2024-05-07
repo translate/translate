@@ -128,7 +128,7 @@ class ProjectStore:
                             . Not used in this class.
         """
         if ftype not in self.TYPE_INFO["f_prefix"]:
-            raise ValueError("Invalid file type: %s" % (ftype))
+            raise ValueError(f"Invalid file type: {ftype}")
 
         if isinstance(afile, str) and os.path.isfile(afile) and not fname:
             # Try and use afile as the file name
@@ -250,7 +250,7 @@ class ProjectStore:
         for fname in self._files:
             if realfname in (fname, self._files[fname]):
                 return fname
-        raise ValueError("Real file not in project store: %s" % (realfname))
+        raise ValueError(f"Real file not in project store: {realfname}")
 
     def load(self, *args, **kwargs):
         """Load the project in some way. Undefined for this (base) class."""

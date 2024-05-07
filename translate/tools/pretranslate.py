@@ -182,7 +182,7 @@ def pretranslate_store(
     if template_store is not None:
         template_store.makeindex()
         # template preparation based on type
-        prepare_template = "prepare_template_%s" % template_store.__class__.__name__
+        prepare_template = f"prepare_template_{template_store.__class__.__name__}"
         if prepare_template in globals():
             globals()[prepare_template](template_store)
 

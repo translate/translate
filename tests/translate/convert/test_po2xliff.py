@@ -130,7 +130,7 @@ msgstr "Gebruik \\\"."
         Returns all the information in the context nodes as a list of tuples
         of (type, text).
         """
-        contexts = node.findall(".//{%s}context" % namespace)
+        contexts = node.findall(f".//{{{namespace}}}context")
         return [(context.get("context-type"), getText(context)) for context in contexts]
 
     def test_locationcomments(self):
@@ -145,7 +145,7 @@ msgstr "kunye"
         assert xliff.translate("one") == "kunye"
         assert len(xliff.units) == 1
         node = xliff.units[0].xmlelement
-        contextgroups = node.findall(".//%s" % xliff.namespaced("context-group"))
+        contextgroups = node.findall(".//{}".format(xliff.namespaced("context-group")))
         assert len(contextgroups) == 2
         for group in contextgroups:
             assert group.get("name") == "po-reference"
@@ -170,7 +170,7 @@ msgstr "kunye"
         assert xliff.translate("one") == "kunye"
         assert len(xliff.units) == 1
         node = xliff.units[0].xmlelement
-        contextgroups = node.findall(".//%s" % xliff.namespaced("context-group"))
+        contextgroups = node.findall(".//{}".format(xliff.namespaced("context-group")))
         assert len(contextgroups) == 1
         for group in contextgroups:
             assert group.get("name") == "po-entry"
@@ -193,7 +193,7 @@ msgstr "kunye"
         assert xliff.translate("one") == "kunye"
         assert len(xliff.units) == 1
         node = xliff.units[0].xmlelement
-        contextgroups = node.findall(".//%s" % xliff.namespaced("context-group"))
+        contextgroups = node.findall(".//{}".format(xliff.namespaced("context-group")))
         assert len(contextgroups) == 1
         for group in contextgroups:
             assert group.get("name") == "po-entry"
@@ -218,7 +218,7 @@ msgstr ""
         assert unit.source == unit.target == "Content-Type: text/plain; charset=UTF-8\n"
         assert unit.xmlelement.get("restype") == "x-gettext-domain-header"
         assert unit.xmlelement.get("approved") != "yes"
-        assert unit.xmlelement.get("{%s}space" % XML_NS) == "preserve"
+        assert unit.xmlelement.get(f"{{{XML_NS}}}space") == "preserve"
         assert (
             unit.getnotes("po-translator") == "Pulana  Translation for bla\nHallo Ma!"
         )

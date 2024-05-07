@@ -90,7 +90,7 @@ class TerminologyExtractor:
         if stopfile is None:
             with contextlib.suppress(Exception):
                 stopfile = file_discovery.get_abs_data_filename(
-                    "stoplist-%s" % self.sourcelanguage
+                    f"stoplist-{self.sourcelanguage}"
                 )
         self.stopfile = stopfile
         self.parse_stopword_file()
@@ -400,8 +400,7 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
         if args and not options.output and not options.update:
             if os.path.lexists(args[-1]) and not os.path.isdir(args[-1]):
                 self.error(
-                    "To overwrite %s, specify it with -o/--output or -u/--update"
-                    % (args[-1])
+                    f"To overwrite {args[-1]}, specify it with -o/--output or -u/--update"
                 )
             options.output = args[-1]
             args = args[:-1]
@@ -486,7 +485,7 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
                 self.processfile(None, options, fullinputpath)
             except Exception:
                 self.warning(
-                    "Error processing: input %s" % (fullinputpath),
+                    f"Error processing: input {fullinputpath}",
                     options,
                     sys.exc_info(),
                 )
@@ -547,8 +546,9 @@ def main():
         type="string",
         metavar="STOPFILE",
         dest="stopfile",
-        help="read stopword (term exclusion) list from STOPFILE (default %s)"
-        % file_discovery.get_abs_data_filename("stoplist-en"),
+        help="read stopword (term exclusion) list from STOPFILE (default {})".format(
+            file_discovery.get_abs_data_filename("stoplist-en")
+        ),
     )
 
     parser.set_defaults(foldtitle=True, ignorecase=False)
@@ -645,8 +645,9 @@ def main():
         type="choice",
         choices=TerminologyExtractor.sortorders_default,
         metavar="ORDER",
-        help="output sort order(s): %s (may repeat option, default is all in above order)"
-        % ", ".join(TerminologyExtractor.sortorders_default),
+        help="output sort order(s): {} (may repeat option, default is all in above order)".format(
+            ", ".join(TerminologyExtractor.sortorders_default)
+        ),
     )
 
     parser.add_option(

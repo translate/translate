@@ -222,7 +222,7 @@ class TestPODebug:
         assert in_unit.source == out_unit.source
         print(out_unit.target)
         print(bytes(xliff_out))
-        assert out_unit.target == "xxx%sxxx" % (in_unit.source)
+        assert out_unit.target == f"xxx{in_unit.source}xxx"
 
     def test_hash(self):
         po_docs = (

@@ -113,9 +113,7 @@ class Project:
         input_type = self.store.get_filename_type(input_fname)
 
         if input_type == "tgt":
-            raise ValueError(
-                "Cannot convert a target document further: %s" % (input_fname)
-            )
+            raise ValueError(f"Cannot convert a target document further: {input_fname}")
 
         templ_fname = None
         if isinstance(template, str):
@@ -185,7 +183,7 @@ class Project:
             # If the output file already exist, we can't assume that it's safe
             # to overwrite it.
             os.unlink(converted_file.name)
-            raise OSError("Output file already exists: %s" % (output_fname))
+            raise OSError(f"Output file already exists: {output_fname}")
 
         os.rename(converted_file.name, output_fname)
 
@@ -229,7 +227,7 @@ class Project:
         projfile = self.get_file(projfname)
         rfname = getattr(projfile, "name", getattr(projfile, "filename", None))
         if rfname is None:
-            raise ValueError("Project file has no real file: %s" % (projfname))
+            raise ValueError(f"Project file has no real file: {projfname}")
         return rfname
 
     def remove_file(self, projfname, ftype=None):

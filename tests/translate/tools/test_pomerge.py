@@ -171,10 +171,7 @@ msgstr "Dimpled Ring"'''
             """#: location.c:1\n#: location.c:2\nmsgid "Simple String"\nmsgstr ""\n"""
         )
         inputpo = """#: location.c:1\n#: location.c:2\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n"""
-        expectedpo = (
-            """#: location.c:1%slocation.c:2\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n"""
-            % po.lsep
-        )
+        expectedpo = f"""#: location.c:1{po.lsep}location.c:2\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n"""
         pofile = self.mergestore(templatepo, inputpo)
         print(pofile)
         assert bytes(pofile).decode("utf-8") == expectedpo
@@ -224,10 +221,7 @@ msgstr "Dimpled Ring"
             """#: newMenu.label\n#: newMenu.accesskey\nmsgid "&New"\nmsgstr ""\n"""
         )
         newpo = """#: newMenu.label newMenu.accesskey\nmsgid "&New"\nmsgstr "&Nuwe"\n"""
-        expectedpo = (
-            """#: newMenu.label%snewMenu.accesskey\nmsgid "&New"\nmsgstr "&Nuwe"\n"""
-            % po.lsep
-        )
+        expectedpo = f"""#: newMenu.label{po.lsep}newMenu.accesskey\nmsgid "&New"\nmsgstr "&Nuwe"\n"""
         pofile = self.mergestore(templatepo, newpo)
         self.singleunit(pofile)
         print(pofile)

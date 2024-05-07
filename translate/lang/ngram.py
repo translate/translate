@@ -49,7 +49,7 @@ class _NGram:
         ngrams = {}
 
         for word in white_space_re.split(text):
-            word = "_%s_" % word
+            word = f"_{word}_"
             size = len(word)
             for i in range(size - 1):
                 for s in (1, 2, 3, 4):

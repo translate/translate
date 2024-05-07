@@ -93,7 +93,7 @@ class TestPhp2PO:
     def test_unicode(self):
         """Checks that unicode entries convert properly."""
         unistring = "Norsk bokm\u00e5l"
-        phpsource = """$lang['nb'] = '%s';""" % unistring
+        phpsource = f"""$lang['nb'] = '{unistring}';"""
         pofile = self.php2po(phpsource)
         pounit = self.singleelement(pofile)
         print(repr(pofile.units[0].target))

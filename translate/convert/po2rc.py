@@ -390,7 +390,7 @@ def main(argv=None):
         "--charset",
         dest="charset",
         default=defaultcharset,
-        help="charset to use to decode the RC files (default: %s)" % defaultcharset,
+        help=f"charset to use to decode the RC files (default: {defaultcharset})",
         metavar="CHARSET",
     )
     parser.add_option(
@@ -402,7 +402,7 @@ def main(argv=None):
         "--sublang",
         dest="sublang",
         default=defaultsublang,
-        help="SUBLANG entry (default: %s)" % defaultsublang,
+        help=f"SUBLANG entry (default: {defaultsublang})",
         metavar="SUBLANG",
     )
     parser.passthrough.append("charset")
