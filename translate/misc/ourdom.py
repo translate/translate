@@ -47,7 +47,7 @@ def writexml_helper(self, writer, indent="", addindent="", newl=""):
     a_names = sorted(attrs.keys())
 
     for a_name in a_names:
-        writer.write(' %s="' % a_name)
+        writer.write(f' {a_name}="')
         minidom._write_data(writer, attrs[a_name].value)
         writer.write('"')
     if self.childNodes:
@@ -69,13 +69,13 @@ def writexml_helper(self, writer, indent="", addindent="", newl=""):
             writer.write(f"</{self.tagName}>{newl}")
         else:
             # This is the normal case that we do with pretty layout
-            writer.write(">%s" % (newl))
+            writer.write(f">{newl}")
             for node in self.childNodes:
                 if node.nodeType != self.TEXT_NODE:
                     node.writexml(writer, (indent + addindent), addindent, newl)
             writer.write(f"{indent}</{self.tagName}>{newl}")
     else:
-        writer.write("/>%s" % (newl))
+        writer.write(f"/>{newl}")
 
 
 def getElementsByTagName_helper(parent, name, dummy=None):

@@ -59,7 +59,7 @@ class State:
         return self.name == rhs.name
 
     def __repr__(self):
-        return '<State "%s">' % (self.name)
+        return f'<State "{self.name}">'
 
     def enter(self, obj):
         if not self.enter_action or not callable(self.enter_action):
@@ -98,12 +98,12 @@ class TransitionError(WorkflowError):
 
 class InvalidStateObjectError(WorkflowError):
     def __init__(self, obj):
-        super().__init__("Invalid state object: %s" % (obj))
+        super().__init__(f"Invalid state object: {obj}")
 
 
 class StateNotInWorkflowError(Exception):
     def __init__(self, state):
-        super().__init__("State not in workflow: %s" % (state))
+        super().__init__(f"State not in workflow: {state}")
 
 
 class Workflow:
@@ -144,7 +144,7 @@ class Workflow:
         if not isinstance(state, State):
             raise InvalidStateObjectError(state)
         if state in self.states:
-            raise ValueError("State already in workflow: %s" % (state))
+            raise ValueError(f"State already in workflow: {state}")
         self._states.append(state)
         if self._initial_state is None:
             self._initial_state = state

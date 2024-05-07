@@ -291,7 +291,7 @@ class WordfastHeader:
         """
         defaultheader = {}
         defaultheader.update(WF_FIELDNAMES_HEADER_DEFAULTS)
-        defaultheader["date"] = "%%%s" % WordfastTime(time.localtime()).timestring
+        defaultheader["date"] = f"%{WordfastTime(time.localtime()).timestring}"
         return defaultheader
 
     def getheader(self):
@@ -304,7 +304,7 @@ class WordfastHeader:
     header = property(getheader, setheader)
 
     def settargetlang(self, newlang):
-        self._header_dict["target-lang"] = "%%%s" % newlang
+        self._header_dict["target-lang"] = f"%{newlang}"
 
     targetlang = property(None, settargetlang)
 

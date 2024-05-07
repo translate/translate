@@ -212,7 +212,7 @@ class dtd2po:
             x_accelerator_marker="&",
             x_merge_on="location",
         )
-        targetheader.addnote("extracted from %s" % dtd_store.filename, "developer")
+        targetheader.addnote(f"extracted from {dtd_store.filename}", "developer")
 
         dtd_store.makeindex()
         self.mixedentities = self.mixer.match_entities(dtd_store.id_index)

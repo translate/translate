@@ -77,4 +77,4 @@ def get_abs_data_filename(path_parts, basedirs=None):
         )
         if os.path.exists(datafile):
             return datafile
-    raise ValueError('Could not find "%s"' % (os.path.join(*path_parts)))
+    raise ValueError(f'Could not find "{os.path.join(*path_parts)}"')

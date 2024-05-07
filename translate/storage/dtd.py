@@ -210,7 +210,7 @@ def removeinvalidamps(name, value):
                 continue
             invalid_amps.append(amppos - 1)
     if len(invalid_amps) > 0:
-        warnings.warn("invalid ampersands in dtd entity %s" % (name))
+        warnings.warn(f"invalid ampersands in dtd entity {name}")
         for adjustment, amppos in enumerate(invalid_amps):
             value = value[: amppos - adjustment] + value[amppos - adjustment + 1 :]
     return value
@@ -480,7 +480,7 @@ class dtdunit(base.TranslationUnit):
                         )
                     else:
                         raise ValueError(
-                            "Unexpected quote character... %r" % (self.entityhelp[1])
+                            f"Unexpected quote character... {self.entityhelp[1]!r}"
                         )
                     # for any following lines, start at the beginning of the line. remember the quote character
                     self.entityhelp = (0, self.entityhelp[1])
@@ -593,7 +593,7 @@ class dtdfile(base.TranslationStore):
             out.write(unit_str)
             content += unit_str
         if not self._valid_store(content):
-            warnings.warn("DTD file '%s' does not validate" % self.filename)
+            warnings.warn(f"DTD file '{self.filename}' does not validate")
             out.truncate(0)
 
     def _valid_store(self, content):
@@ -612,6 +612,6 @@ class dtdfile(base.TranslationStore):
             try:
                 etree.DTD(BytesIO(_input))
             except etree.DTDParseError as e:
-                warnings.warn("DTD parse error: %s" % e.error_log)
+                warnings.warn(f"DTD parse error: {e.error_log}")
                 return False
         return True

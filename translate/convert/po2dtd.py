@@ -31,7 +31,7 @@ from translate.storage import dtd, po
 
 
 def dtdwarning(message, category, filename, lineno, line=None):
-    return "Warning: %s\n" % message
+    return f"Warning: {message}\n"
 
 
 warnings.formatwarning = dtdwarning
@@ -56,7 +56,7 @@ def applytranslation(entity, dtdunit, inputunit, mixedentities):
                 if entity in mixedentities:
                     label, unquotedstr = accesskey.extract(unquotedstr)
                     if not unquotedstr:
-                        warnings.warn("Could not find accesskey for %s" % entity)
+                        warnings.warn(f"Could not find accesskey for {entity}")
                         # Use the source language accesskey
                         label, unquotedstr = accesskey.extract(inputunit.source)
                     else:

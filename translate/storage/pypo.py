@@ -187,7 +187,7 @@ class PoWrapper(textwrap.TextWrapper):
     def _wrap_chunks(self, chunks: list[str]) -> list[str]:
         lines = []
         if self.width <= 1:
-            raise ValueError("invalid width %r (must be > 1)" % self.width)
+            raise ValueError(f"invalid width {self.width!r} (must be > 1)")
 
         # Arrange in reverse order so items can be efficiently popped
         # from a stack of chucks.
@@ -237,7 +237,7 @@ def quoteforpo(text, wrapper_obj=None):
         wrapper_obj = PoWrapper()
     text = escapeforpo(text)
     if wrapper_obj.width == -1:
-        return ['"%s"' % text]
+        return [f'"{text}"']
     lines = text.split("\\n")
     for i, l in enumerate(lines[:-1]):
         lines[i] = l + "\\n"
@@ -680,7 +680,7 @@ class pounit(pocommon.pounit):
 
                 # (commentmarker) ...
         """
-        commentmarker = "(%s)" % commentmarker
+        commentmarker = f"({commentmarker})"
         for comment in self.othercomments:
             if comment.replace("#", "", 1).strip().startswith(commentmarker):
                 return True
@@ -776,7 +776,7 @@ class pounit(pocommon.pounit):
                         comment = comment[: -len("\\n")]
                     # Before we used to strip. Necessary in some cases?
                     combinedcomment.append(comment)
-                partcomments = self.quote("_:%s" % "".join(combinedcomment))
+                partcomments = self.quote("_:{}".format("".join(combinedcomment)))
                 # Strip heading empty line for multiline string, it was already added above
                 if partcomments[0] == '""':
                     partcomments = partcomments[1:]
@@ -898,7 +898,7 @@ class pounit(pocommon.pounit):
 
     def setmsgidcomment(self, msgidcomment):
         if msgidcomment:
-            self.msgidcomments = ['"_: %s\\n"' % msgidcomment]
+            self.msgidcomments = [f'"_: {msgidcomment}\\n"']
         else:
             self.msgidcomments = []
 
@@ -970,7 +970,9 @@ class pofile(pocommon.pofile):
         markedpos = []
 
         def addcomment(thepo):
-            thepo.msgidcomments.append('"_: %s\\n"' % " ".join(thepo.getlocations()))
+            thepo.msgidcomments.append(
+                '"_: {}\\n"'.format(" ".join(thepo.getlocations()))
+            )
             markedpos.append(thepo)
 
         for thepo in self.units:
@@ -989,11 +991,11 @@ class pofile(pocommon.pofile):
                     origpo = id_dict[id]
                     if origpo not in markedpos and not origpo.msgctxt:
                         origpo.msgctxt.append(
-                            '"%s"' % escapeforpo(" ".join(origpo.getlocations()))
+                            '"{}"'.format(escapeforpo(" ".join(origpo.getlocations())))
                         )
                         markedpos.append(thepo)
                     thepo.msgctxt.append(
-                        '"%s"' % escapeforpo(" ".join(thepo.getlocations()))
+                        '"{}"'.format(escapeforpo(" ".join(thepo.getlocations())))
                     )
                     if thepo.msgctxt != id_dict[id].msgctxt:
                         uniqueunits.append(thepo)
@@ -1009,7 +1011,7 @@ class pofile(pocommon.pofile):
                         addcomment(thepo)
                     else:
                         thepo.msgctxt.append(
-                            '"%s"' % escapeforpo(" ".join(thepo.getlocations()))
+                            '"{}"'.format(escapeforpo(" ".join(thepo.getlocations())))
                         )
                 id_dict[id] = thepo
                 uniqueunits.append(thepo)

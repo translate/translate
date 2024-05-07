@@ -32,7 +32,7 @@ class vi(common.Common):
     # French, but does not use a space before '?'.
     puncdict = {}
     for c in ":;!#":
-        puncdict[c] = " %s" % c
+        puncdict[c] = f" {c}"
 
     @classmethod
     def punctranslate(cls, text):

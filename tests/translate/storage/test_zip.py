@@ -12,7 +12,7 @@ class TestZIPFile:
     def setup_method(self, method):
         """Sets up a test directory."""
         print("setup_method called on", self.__class__.__name__)
-        self.testzip = "%s_testzip.zip" % (self.__class__.__name__)
+        self.testzip = f"{self.__class__.__name__}_testzip.zip"
         self.cleardir(self.testzip)
         self.zip = ZipFile(self.testzip, mode="w")
 

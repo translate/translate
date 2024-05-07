@@ -41,13 +41,13 @@ class LanguageIdentifier:
         if model_dir is None:
             model_dir = self.MODEL_DIR
         if not path.isdir(model_dir):
-            raise ValueError("Directory does not exist: %s" % (model_dir))
+            raise ValueError(f"Directory does not exist: {model_dir}")
 
         if conf_file is None:
             conf_file = self.CONF_FILE
         conf_file = path.abspath(path.join(model_dir, conf_file))
         if not path.isfile(conf_file):
-            raise ValueError("File does not exist: %s" % (conf_file))
+            raise ValueError(f"File does not exist: {conf_file}")
 
         self._lang_codes = {}
         self._load_config(conf_file)

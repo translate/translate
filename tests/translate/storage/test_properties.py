@@ -422,7 +422,7 @@ endspace=,\u0020
         """
         delimiters = [":", "=", " "]
         for delimiter in delimiters:
-            propsource = "key%svalue" % delimiter
+            propsource = f"key{delimiter}value"
             print(f"source: '{propsource}'\ndelimiter: '{delimiter}'")
             propfile = self.propparse(propsource)
             assert len(propfile.units) == 1
@@ -434,18 +434,15 @@ endspace=,\u0020
         """Checks that we handle # and ! comments."""
         markers = ["#", "!"]
         for comment_marker in markers:
-            propsource = (
-                """%s A comment
+            propsource = f"""{comment_marker} A comment
 key=value
 """
-                % comment_marker
-            )
             propfile = self.propparse(propsource)
             print(repr(propsource))
-            print("Comment marker: '%s'" % comment_marker)
+            print(f"Comment marker: '{comment_marker}'")
             assert len(propfile.units) == 1
             propunit = propfile.units[0]
-            assert propunit.comments == ["%s A comment" % comment_marker]
+            assert propunit.comments == [f"{comment_marker} A comment"]
 
     def test_latin1(self):
         """Checks that we handle non-escaped latin1 text."""

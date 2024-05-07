@@ -213,7 +213,7 @@ class RESXFile(lisa.LISAfile):
         setXMLspace(unit.xmlelement, "preserve")
         if unit.getid() is None:
             self._messagenum += 1
-            unit.setid("%s" % unit.source.strip(" "))
+            unit.setid("{}".format(unit.source.strip(" ")))
         # adjust the current and previous elements for new ones;
         # otherwise they will not be indented correctly.
         if new:

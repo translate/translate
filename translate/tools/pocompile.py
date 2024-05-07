@@ -28,7 +28,7 @@ from translate.storage import factory, mo
 
 
 def _do_msgidcomment(string):
-    return "_: %s\n" % string
+    return f"_: {string}\n"
 
 
 class POCompile:

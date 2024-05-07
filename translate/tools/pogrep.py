@@ -254,7 +254,7 @@ class GrepFilter:
             flags |= re.IGNORECASE
         if not self.useregexp:
             searchstring = re.escape(searchstring)
-        self.re_search = re.compile("(%s)" % (searchstring), flags)
+        self.re_search = re.compile(f"({searchstring})", flags)
 
         matches = []
         indexes = []

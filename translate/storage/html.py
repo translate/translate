@@ -415,9 +415,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         try:
             popped = self.tag_path.pop()
         except IndexError:
-            raise ParseError(
-                "Mismatched tags: no more tags: line %s" % self.getpos()[0]
-            )
+            raise ParseError(f"Mismatched tags: no more tags: line {self.getpos()[0]}")
         if popped != tag and popped in self.EMPTY_HTML_ELEMENTS:
             popped = self.tag_path.pop()
         if popped != tag:
@@ -426,7 +424,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 f"expected '{popped}' got '{tag}' at line {self.getpos()[0]}"
             )
 
-        self.append_markup({"type": "endtag", "html_content": "</%s>" % tag})
+        self.append_markup({"type": "endtag", "html_content": f"</{tag}>"})
 
         if tag in self.TRANSLATABLE_ELEMENTS:
             self.end_translation_unit()
@@ -471,27 +469,27 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         """Handle named entities of the form &aaaa; e.g. &rsquo;."""
         converted = html5.get(name + ";")
         if name in ["gt", "lt", "amp"] or not converted:
-            self.handle_data("&%s;" % name)
+            self.handle_data(f"&{name};")
         else:
             self.handle_data(converted)
 
     def handle_comment(self, data):
         self.auto_close_empty_element()
         self.append_markup(
-            {"type": "comment", "html_content": "<!--%s-->" % data, "note": data}
+            {"type": "comment", "html_content": f"<!--{data}-->", "note": data}
         )
 
     def handle_decl(self, decl):
         self.auto_close_empty_element()
-        self.append_markup({"type": "decl", "html_content": "<!%s>" % decl})
+        self.append_markup({"type": "decl", "html_content": f"<!{decl}>"})
 
     def handle_pi(self, data):
         self.auto_close_empty_element()
-        self.append_markup({"type": "pi", "html_content": "<?%s?>" % data})
+        self.append_markup({"type": "pi", "html_content": f"<?{data}?>"})
 
     def unknown_decl(self, data):
         self.auto_close_empty_element()
-        self.append_markup({"type": "cdecl", "html_content": "<![%s]>" % data})
+        self.append_markup({"type": "cdecl", "html_content": f"<![{data}]>"})
 
 
 class POHTMLParser(htmlfile):

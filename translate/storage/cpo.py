@@ -658,7 +658,7 @@ class pounit(pocommon.pounit):
         gpo.po_message_set_format(self._gpo_message, gpo_encode(typecomment), present)
 
     def hasmarkedcomment(self, commentmarker):
-        commentmarker = "(%s)" % commentmarker
+        commentmarker = f"({commentmarker})"
         for comment in self.getnotes("translator").split("\n"):
             if comment.startswith(commentmarker):
                 return True

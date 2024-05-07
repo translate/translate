@@ -46,7 +46,7 @@ def applytranslation(key, propunit, inunit, mixedkeys):
             if key.endswith(akeysuffix) and key in mixedkeys:
                 label, value = accesskey.extract(value)
                 if not value:
-                    warnings.warn("Could not find accesskey for %s" % key)
+                    warnings.warn(f"Could not find accesskey for {key}")
                     # Use the source language accesskey
                     label, value = accesskey.extract(inunit.source)
                 else:
@@ -166,7 +166,7 @@ class reprop:
                 if category != "":
                     new_location = f"{location}[{category}]"
                 else:
-                    new_location = "%s" % (location)
+                    new_location = f"{location}"
                 new_unit.addlocation(new_location)
                 new_unit.target = text
                 self.inputstore.locationindex[new_location] = new_unit
@@ -191,7 +191,7 @@ class reprop:
                 self.inmultilinemsgid = True
             if delimiter_pos == -1:
                 key = self.personality.key_strip(line)
-                delimiter = " %s " % self.personality.delimiters[0]
+                delimiter = f" {self.personality.delimiters[0]} "
             else:
                 key = self.personality.key_strip(line[:delimiter_pos])
                 # Calculate space around the equal sign

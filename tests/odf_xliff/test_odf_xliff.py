@@ -34,9 +34,9 @@ def args(src, tgt, **kwargs):
     for flag, value in kwargs.items():
         value = str(value)
         if len(flag) == 1:
-            arg_list.append("-%s" % flag)
+            arg_list.append(f"-{flag}")
         else:
-            arg_list.append("--%s" % flag)
+            arg_list.append(f"--{flag}")
         if value is not None:
             arg_list.append(value)
     return arg_list

@@ -501,7 +501,7 @@ class TranslationUnit:
             if state_range[0] <= n < state_range[1]:
                 return state_id
         if self.STATE:
-            raise ValueError("No state containing value %s" % (n))
+            raise ValueError(f"No state containing value {n}")
         return n
 
     def get_state_n(self):

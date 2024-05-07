@@ -107,7 +107,7 @@ class poheader:
     all classes which represent a po file.
     """
 
-    x_generator = "Translate Toolkit %s" % __version__.sver
+    x_generator = f"Translate Toolkit {__version__.sver}"
 
     header_order = [
         "Project-Id-Version",
@@ -192,7 +192,7 @@ class poheader:
         defaultargs["Last-Translator"] = last_translator
         defaultargs["Language-Team"] = language_team
         defaultargs["MIME-Version"] = mime_version
-        defaultargs["Content-Type"] = "text/plain; charset=%s" % charset
+        defaultargs["Content-Type"] = f"text/plain; charset={charset}"
         defaultargs["Content-Transfer-Encoding"] = encoding
         if plural_forms:
             defaultargs["Plural-Forms"] = plural_forms

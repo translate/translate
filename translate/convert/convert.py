@@ -119,8 +119,7 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser):
             default=default,
             type="choice",
             choices=["msgctxt", "merge"],
-            help="what to do with duplicate strings (identical source text): merge, msgctxt (default: '%s')"
-            % default,
+            help=f"what to do with duplicate strings (identical source text): merge, msgctxt (default: '{default}')",
             metavar="DUPLICATESTYLE",
         )
         self.passthrough.append("duplicatestyle")
@@ -410,7 +409,7 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
                 # TODO: deal with different names in input/template archives
                 if fulltemplatepath in self.templatearchive:
                     return self.templatearchive.openinputfile(fulltemplatepath)
-                self.warning("missing template file %s" % fulltemplatepath)
+                self.warning(f"missing template file {fulltemplatepath}")
         return super().opentemplatefile(options, fulltemplatepath)
 
     def getfulltemplatepath(self, options, templatepath):
@@ -452,8 +451,8 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
             outputstream = self.outputarchive.openoutputfile(fulloutputpath)
             if outputstream is None:
                 self.warning(
-                    "Could not find where to put %s in output "
-                    "archive; writing to tmp" % fulloutputpath
+                    f"Could not find where to put {fulloutputpath} in output "
+                    "archive; writing to tmp"
                 )
                 return BytesIO()
             return outputstream
@@ -464,7 +463,7 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
         if hasattr(options, "multifilestyle"):
             self.archiveoptions = {"multifilestyle": options.multifilestyle}
             for filetype in ("input", "output", "template"):
-                allowoption = "allowrecursive%s" % filetype
+                allowoption = f"allowrecursive{filetype}"
                 if options.multifilestyle == "onefile" and getattr(
                     options, allowoption, True
                 ):

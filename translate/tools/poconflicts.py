@@ -102,7 +102,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
                 success = self.processfile(None, options, fullinputpath)
             except Exception:
                 self.warning(
-                    "Error processing: input %s" % (fullinputpath),
+                    f"Error processing: input {fullinputpath}",
                     options,
                     sys.exc_info(),
                 )
@@ -189,7 +189,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
             fulloutputpath = os.path.join(options.output, flatsource + os.extsep + "po")
             conflictfile = po.pofile()
             for target, unit, filename in translations:
-                unit.othercomments.append("# (poconflicts) %s\n" % filename)
+                unit.othercomments.append(f"# (poconflicts) {filename}\n")
                 conflictfile.units.append(unit)
             with open(fulloutputpath, "wb") as fh:
                 conflictfile.serialize(fh)

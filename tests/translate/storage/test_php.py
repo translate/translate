@@ -277,7 +277,7 @@ $foo = 'bar';
             assert len(phpfile.units) == 1
             phpunit = phpfile.units[0]
             assert phpunit.name == "$lang['multiline']"
-            assert phpunit.source == "Line1%sLine2" % lineending
+            assert phpunit.source == f"Line1{lineending}Line2"
 
     def test_parsing_arrays(self):
         """Parse the array syntax."""

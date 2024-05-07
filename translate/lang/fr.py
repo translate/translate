@@ -59,7 +59,7 @@ class fr(common.Common):
     # part punctuation marks and symbols, including : ; « » ! ? % $ # etc.
     puncdict = {}
     for c in ":;!?#":
-        puncdict[c] = "\u00a0%s" % c
+        puncdict[c] = f"\u00a0{c}"
     # TODO: consider adding % and $, but think about the consequences of how
     # they could be part of variables
 

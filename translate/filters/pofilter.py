@@ -185,7 +185,7 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
 
             if not os.path.exists(options.notranslatefile):
                 self.error(
-                    "notranslatefile %r does not exist" % options.notranslatefile
+                    f"notranslatefile {options.notranslatefile!r} does not exist"
                 )
 
             with open(options.notranslatefile) as fp:
@@ -199,7 +199,7 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
 
             if not os.path.exists(options.musttranslatefile):
                 self.error(
-                    "musttranslatefile %r does not exist" % options.musttranslatefile
+                    f"musttranslatefile {options.musttranslatefile!r} does not exist"
                 )
 
             with open(options.musttranslatefile) as fp:
@@ -212,7 +212,7 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
             options.validcharsfile = os.path.expanduser(options.validcharsfile)
 
             if not os.path.exists(options.validcharsfile):
-                self.error("validcharsfile %r does not exist" % options.validcharsfile)
+                self.error(f"validcharsfile {options.validcharsfile!r} does not exist")
 
             with open(options.validcharsfile) as fp:
                 validchars = fp.read()

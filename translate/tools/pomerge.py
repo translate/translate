@@ -69,7 +69,7 @@ def str2bool(option):
         return True
     if option in ("no", "false", "0"):
         return False
-    raise ValueError("invalid boolean value: %r" % option)
+    raise ValueError(f"invalid boolean value: {option!r}")
 
 
 def mergestore(
@@ -83,15 +83,15 @@ def mergestore(
     try:
         mergecomments = str2bool(mergecomments)
     except ValueError:
-        raise ValueError("invalid mergecomments value: %r" % mergecomments)
+        raise ValueError(f"invalid mergecomments value: {mergecomments!r}")
     try:
         mergeblanks = str2bool(mergeblanks)
     except ValueError:
-        raise ValueError("invalid mergeblanks value: %r" % mergeblanks)
+        raise ValueError(f"invalid mergeblanks value: {mergeblanks!r}")
     try:
         mergefuzzy = str2bool(mergefuzzy)
     except ValueError:
-        raise ValueError("invalid mergefuzzy value: %r" % mergefuzzy)
+        raise ValueError(f"invalid mergefuzzy value: {mergefuzzy!r}")
     inputstore = factory.getobject(inputfile)
     if templatefile is None:
         # just merge nothing

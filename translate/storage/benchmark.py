@@ -149,12 +149,11 @@ if __name__ == "__main__":
 
     if storetype in factory.classes_str:
         _module, _class = factory.classes_str[storetype]
-        module = import_module("translate.storage.%s" % _module)
+        module = import_module(f"translate.storage.{_module}")
         storeclass = getattr(module, _class)
     else:
         print(
-            "StoreClass: '%s' is not a base class that the class factory can load"
-            % storetype
+            f"StoreClass: '{storetype}' is not a base class that the class factory can load"
         )
         sys.exit()
 

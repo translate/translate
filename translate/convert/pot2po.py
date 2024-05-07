@@ -134,7 +134,7 @@ def convert_stores(
 def _prepare_merge(input_store, output_store, template_store, **kwargs):
     """Prepare stores & TM matchers before merging."""
     # Dispatch to format specific functions
-    prepare_merge_hook = "_prepare_merge_%s" % input_store.__class__.__name__
+    prepare_merge_hook = f"_prepare_merge_{input_store.__class__.__name__}"
     if prepare_merge_hook in globals():
         globals()[prepare_merge_hook](
             input_store, output_store, template_store, **kwargs
@@ -159,7 +159,7 @@ def _store_pre_merge(input_store, output_store, template_store, **kwargs):
             output_store.header = input_store.header
 
     # Dispatch to format specific functions
-    store_pre_merge_hook = "_store_pre_merge_%s" % input_store.__class__.__name__
+    store_pre_merge_hook = f"_store_pre_merge_{input_store.__class__.__name__}"
     if store_pre_merge_hook in globals():
         globals()[store_pre_merge_hook](
             input_store, output_store, template_store, **kwargs
@@ -172,7 +172,7 @@ def _store_post_merge(input_store, output_store, template_store, **kwargs):
     obsolete messages and similar wrapup tasks.
     """
     # Dispatch to format specific functions
-    store_post_merge_hook = "_store_post_merge_%s" % input_store.__class__.__name__
+    store_post_merge_hook = f"_store_post_merge_{input_store.__class__.__name__}"
     if store_post_merge_hook in globals():
         globals()[store_post_merge_hook](
             input_store, output_store, template_store, **kwargs
@@ -185,7 +185,7 @@ def _unit_post_merge(input_unit, input_store, output_store, template_store, **kw
     function.
     """
     # dispatch to format specific functions
-    unit_post_merge_hook = "_unit_post_merge_%s" % input_unit.__class__.__name__
+    unit_post_merge_hook = f"_unit_post_merge_{input_unit.__class__.__name__}"
     if unit_post_merge_hook in globals():
         globals()[unit_post_merge_hook](
             input_unit, input_store, output_store, template_store, **kwargs

@@ -75,7 +75,7 @@ def convertpo(inputpofile, outputpotfile, template, reverse=False):
         elif not reverse:
             if inputpo.filename:
                 unit.addnote(
-                    "No translation found in %s" % inputpo.filename, origin="programmer"
+                    f"No translation found in {inputpo.filename}", origin="programmer"
                 )
             else:
                 unit.addnote(

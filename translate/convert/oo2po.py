@@ -95,21 +95,23 @@ class oo2po:
         """Converts an entire oo file to a base class format (.po or XLIFF)."""
         thetargetfile = po.pofile()
         # create a header for the file
-        bug_url = "http://qa.openoffice.org/issues/enter_bug.cgi?%s" % parse.urlencode(
-            {
-                "subcomponent": "ui",
-                "comment": "",
-                "short_desc": "Localization issue in file: %s" % theoofile.filename,
-                "component": "l10n",
-                "form_name": "enter_issue",
-            }
+        bug_url = "http://qa.openoffice.org/issues/enter_bug.cgi?{}".format(
+            parse.urlencode(
+                {
+                    "subcomponent": "ui",
+                    "comment": "",
+                    "short_desc": f"Localization issue in file: {theoofile.filename}",
+                    "component": "l10n",
+                    "form_name": "enter_issue",
+                }
+            )
         )
         targetheader = thetargetfile.init_headers(
             x_accelerator_marker="~",
             x_merge_on="location",
             report_msgid_bugs_to=bug_url,
         )
-        targetheader.addnote("extracted from %s" % theoofile.filename, "developer")
+        targetheader.addnote(f"extracted from {theoofile.filename}", "developer")
         thetargetfile.setsourcelanguage(self.sourcelanguage)
         thetargetfile.settargetlanguage(self.targetlanguage)
         # go through the oo and convert each element

@@ -350,7 +350,7 @@ class AndroidResourceUnit(base.TranslationUnit):
         if quote_wrapping_whitespaces and (
             text[0] in WHITESPACE or text[-1] in WHITESPACE or multispace
         ):
-            return '"%s"' % text
+            return f'"{text}"'
         # In xml multispace
         if not quote_wrapping_whitespaces and multispace:
             return MULTIWHITESPACE.sub(cls.xml_escape_space, text)

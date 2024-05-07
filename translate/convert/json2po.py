@@ -37,7 +37,7 @@ class json2po:
         """Converts a JSON file to a PO file."""
         output_store = po.pofile()
         output_header = output_store.header()
-        output_header.addnote("extracted from %s" % input_store.filename, "developer")
+        output_header.addnote(f"extracted from {input_store.filename}", "developer")
         for input_unit in input_store.units:
             output_unit = self.convert_unit(input_unit, "developer")
             if output_unit is not None:

@@ -355,7 +355,7 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
 
         for entry in singularunits:
             term = self.UnitClass.createfromxmlElement(entry, namespace=self.namespace)
-            if nextplural and str(term.getid()) == ("%s[0]" % nextplural.getid()):
+            if nextplural and str(term.getid()) == (f"{nextplural.getid()}[0]"):
                 self.addunit(nextplural, new=False)
                 nextplural = next(pluralunit_iter, None)
             else:

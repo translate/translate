@@ -37,14 +37,13 @@ class hy(common.Common):
     sentenceend = "։՝՜…"
 
     sentencere = re.compile(
-        r"""
+        rf"""
         (?s)        # make . also match newlines
         .*?         # anything, but match non-greedy
-        [%s]        # the puntuation for sentence ending
+        [{sentenceend}]        # the puntuation for sentence ending
         \s+         # the spacing after the puntuation
         (?=[^a-zա-ֆ\d])  # lookahead that next part starts with caps
-        """
-        % sentenceend,
+        """,
         re.VERBOSE | re.UNICODE,
     )
 

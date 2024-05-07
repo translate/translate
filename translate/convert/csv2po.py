@@ -202,7 +202,7 @@ class csv2po:
             )
         else:
             targetheader = self.pofile.makeheader(charset="UTF-8", encoding="8bit")
-        targetheader.addnote("extracted from %s" % self.csvfile.filename, "developer")
+        targetheader.addnote(f"extracted from {self.csvfile.filename}", "developer")
         mightbeheader = True
         for csvunit in self.csvfile.units:
             # if self.charset is not None:

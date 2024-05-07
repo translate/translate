@@ -235,7 +235,7 @@ class FileDiffer:
             self.from_lines = []
             fromfiledate = 0
         else:
-            outfile.write("%s: No such file or directory\n" % self.fromfile)
+            outfile.write(f"{self.fromfile}: No such file or directory\n")
             validfiles = False
         if os.path.exists(self.tofile):
             with open(self.tofile) as fh:
@@ -248,7 +248,7 @@ class FileDiffer:
             self.to_lines = []
             tofiledate = 0
         else:
-            outfile.write("%s: No such file or directory\n" % self.tofile)
+            outfile.write(f"{self.tofile}: No such file or directory\n")
             validfiles = False
         if not validfiles:
             return

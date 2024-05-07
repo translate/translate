@@ -78,9 +78,9 @@ class BundleProjectStore(ProjectStore):
                   from disk if ``delete_orig`` is ``True``.
         """
         if fname and fname in self.zip.namelist():
-            raise ValueError("File already in bundle archive: %s" % (fname))
+            raise ValueError(f"File already in bundle archive: {fname}")
         if not fname and isinstance(afile, str) and afile in self.zip.namelist():
-            raise ValueError("File already in bundle archive: %s" % (afile))
+            raise ValueError(f"File already in bundle archive: {afile}")
 
         afile, fname = super().append_file(afile, fname, ftype)
         self._zip_add(fname, afile)
@@ -153,7 +153,7 @@ class BundleProjectStore(ProjectStore):
             return fname
         if realfname in self._tempfiles:
             return self._tempfiles[realfname]
-        raise ValueError("Real file not in project store: %s" % (realfname))
+        raise ValueError(f"Real file not in project store: {realfname}")
 
     def load(self, zipname):
         """Load the bundle project from the zip file of the given name."""
@@ -257,13 +257,13 @@ class BundleProjectStore(ProjectStore):
         """Delete the files with the given names from the zip file (``self.zip``)."""
         # Sanity checking
         if not isinstance(fnames, (list, tuple)):
-            raise TypeError("fnames must be list or tuple: %s" % (fnames))
+            raise TypeError(f"fnames must be list or tuple: {fnames}")
         if not self.zip:
             raise ValueError("No zip file to work on")
         zippedfiles = self.zip.namelist()
         for fn in fnames:
             if fn not in zippedfiles:
-                raise KeyError("File not in zip archive: %s" % (fn))
+                raise KeyError(f"File not in zip archive: {fn}")
 
         newzip = self._create_temp_zipfile()
         newzip.writestr("project.xtp", self._generate_settings())

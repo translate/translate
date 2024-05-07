@@ -71,9 +71,9 @@ msgstr "Toepassings"
         tmx = self.po2tmx(minipo, targetlanguage="xh")
         print("The generated xml:")
         print(bytes(tmx))
-        tuv = tmx.document.findall(".//%s" % tmx.namespaced("tuv"))[1]
+        tuv = tmx.document.findall(".//{}".format(tmx.namespaced("tuv")))[1]
         # tag[0] will be the source, we want the target tuv
-        assert tuv.get("{%s}lang" % XML_NS) == "xh"
+        assert tuv.get(f"{{{XML_NS}}}lang") == "xh"
 
     def test_multiline(self):
         """Test multiline po entry."""

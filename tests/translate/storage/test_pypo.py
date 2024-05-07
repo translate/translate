@@ -172,12 +172,12 @@ class TestPYPOUnit(test_po.TestPOUnit):
             "123456789 123456789 123456789 123456789 123456789 123456789 123456789 1"
         )
         unit = self.UnitClass(str_max)
-        expected = 'msgid "%s"\nmsgstr ""\n' % str_max
+        expected = f'msgid "{str_max}"\nmsgstr ""\n'
         assert str(unit) == expected
         # at this length we wrap
         str_wrap = str_max + "2"
         unit = self.UnitClass(str_wrap)
-        expected = 'msgid ""\n"%s"\nmsgstr ""\n' % str_wrap
+        expected = f'msgid ""\n"{str_wrap}"\nmsgstr ""\n'
         assert str(unit) == expected
 
     def test_wrap_on_newlines(self):
@@ -185,7 +185,7 @@ class TestPYPOUnit(test_po.TestPOUnit):
         string = "123456789\n" * 3
         postring = ('"123456789\\n"\n' * 3)[:-1]
         unit = self.UnitClass(string)
-        expected = 'msgid ""\n%s\nmsgstr ""\n' % postring
+        expected = f'msgid ""\n{postring}\nmsgstr ""\n'
         assert str(unit) == expected
 
         # Now check for long newlines segments

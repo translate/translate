@@ -357,7 +357,7 @@ class SimpleParser:
         else:
             pattern = self.patterns[self.default_pattern]
         if name == "":
-            name = "__pos%s" % self._pos
+            name = f"__pos{self._pos}"
             self._pos += 1
         return f"(?P<{name}>{pattern})"
 
@@ -368,7 +368,7 @@ class SimpleParser:
 
         Adds the ^ and the $ to the beginning and the end, respectively.
         """
-        return "^%s$" % regex
+        return f"^{regex}$"
 
     @staticmethod
     def openended(regex):
@@ -378,7 +378,7 @@ class SimpleParser:
         Adds the ^ to the beginning but no $ to the end.
         Called as a special alternative to lastly.
         """
-        return "^%s" % regex
+        return f"^{regex}"
 
     def outermost_optionals_split(self, text):
         """Split out optional portions by outermost matching delims."""
@@ -413,7 +413,7 @@ class SimpleParser:
         if self.ostart in text:
             parts = self.outermost_optionals_split(text)
             parts = map(self.parse, parts)
-            parts[1::2] = ["(%s)?" % p for p in parts[1::2]]
+            parts[1::2] = [f"({p})?" for p in parts[1::2]]
         else:
             parts = [part.split(self.end) for part in text.split(self.start)]
             parts = [y for x in parts for y in x]

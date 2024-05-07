@@ -168,14 +168,13 @@ class Common:
     # example, by checking that the following sentence doesn't start with lower
     # case or numbers.
     sentencere = re.compile(
-        r"""
+        rf"""
         (?s)        # make . also match newlines
         .*?         # anything, but match non-greedy
-        [%s]        # the puntuation for sentence ending
+        [{sentenceend}]        # the puntuation for sentence ending
         \s+         # the spacing after the puntuation
         (?=[^a-zа-џ\d])  # lookahead that next part starts with caps
-        """
-        % sentenceend,
+        """,
         re.VERBOSE | re.UNICODE,
     )
 
@@ -248,8 +247,8 @@ class Common:
         """
         detail = ""
         if self.code:
-            detail = "(%s)" % self.code
-        return "<class 'translate.lang.common.Common%s'>" % detail
+            detail = f"({self.code})"
+        return f"<class 'translate.lang.common.Common{detail}'>"
 
     @classmethod
     def numbertranslate(cls, text):

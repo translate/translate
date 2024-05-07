@@ -57,36 +57,21 @@ class TestPretranslate:
         checks that the pretranslatepo function is working for a simple file
         initialisation.
         """
-        input_source = (
-            """#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n"""
-            % po.lsep
-        )
+        input_source = f"""#: simple.label{po.lsep}simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n"""
         newpo = self.pretranslatepo(input_source)
         assert str(self.singleunit(newpo)) == input_source
 
     def test_merging_simple(self):
         """Checks that the pretranslatepo function is working for a simple merge."""
-        input_source = (
-            """#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n"""
-            % po.lsep
-        )
-        template_source = (
-            """#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n"""
-            % po.lsep
-        )
+        input_source = f"""#: simple.label{po.lsep}simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n"""
+        template_source = f"""#: simple.label{po.lsep}simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n"""
         newpo = self.pretranslatepo(input_source, template_source)
         assert str(self.singleunit(newpo)) == template_source
 
     def test_merging_messages_marked_fuzzy(self):
         """Test that when we merge PO files with a fuzzy message that it remains fuzzy."""
-        input_source = (
-            """#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n"""
-            % po.lsep
-        )
-        template_source = (
-            """#: simple.label%ssimple.accesskey\n#, fuzzy\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n"""
-            % po.lsep
-        )
+        input_source = f"""#: simple.label{po.lsep}simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n"""
+        template_source = f"""#: simple.label{po.lsep}simple.accesskey\n#, fuzzy\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n"""
         newpo = self.pretranslatepo(input_source, template_source)
         assert str(self.singleunit(newpo)) == template_source
 
@@ -134,18 +119,9 @@ msgstr[1] "%d handleidings."
         tests that if the location changes but the msgid stays the same that
         we merge.
         """
-        input_source = (
-            """#: new_simple.label%snew_simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n"""
-            % po.lsep
-        )
-        template_source = (
-            """#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n"""
-            % po.lsep
-        )
-        poexpected = (
-            """#: new_simple.label%snew_simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n"""
-            % po.lsep
-        )
+        input_source = f"""#: new_simple.label{po.lsep}new_simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n"""
+        template_source = f"""#: simple.label{po.lsep}simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n"""
+        poexpected = f"""#: new_simple.label{po.lsep}new_simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n"""
         newpo = self.pretranslatepo(input_source, template_source)
         print(bytes(newpo))
         assert bytes(newpo).decode("utf-8") == poexpected
@@ -155,18 +131,9 @@ msgstr[1] "%d handleidings."
         test that even if the location changes that if the msgid only has
         whitespace changes we can still merge.
         """
-        input_source = (
-            """#: singlespace.label%ssinglespace.accesskey\nmsgid "&We have spaces"\nmsgstr ""\n"""
-            % po.lsep
-        )
-        template_source = (
-            """#: doublespace.label%sdoublespace.accesskey\nmsgid "&We  have  spaces"\nmsgstr "&One  het  spasies"\n"""
-            % po.lsep
-        )
-        poexpected = (
-            """#: singlespace.label%ssinglespace.accesskey\n#, fuzzy\nmsgid "&We have spaces"\nmsgstr "&One  het  spasies"\n"""
-            % po.lsep
-        )
+        input_source = f"""#: singlespace.label{po.lsep}singlespace.accesskey\nmsgid "&We have spaces"\nmsgstr ""\n"""
+        template_source = f"""#: doublespace.label{po.lsep}doublespace.accesskey\nmsgid "&We  have  spaces"\nmsgstr "&One  het  spasies"\n"""
+        poexpected = f"""#: singlespace.label{po.lsep}singlespace.accesskey\n#, fuzzy\nmsgid "&We have spaces"\nmsgstr "&One  het  spasies"\n"""
         newpo = self.pretranslatepo(input_source, template_source)
         print(bytes(newpo))
         assert bytes(newpo).decode("utf-8") == poexpected
