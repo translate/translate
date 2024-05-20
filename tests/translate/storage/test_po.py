@@ -1049,6 +1049,42 @@ msgstr ""
 """
         assert self.poreflow(posource) == posource
 
+    @mark.xfail(reason="Incompatible wrapping with gettext, see #5251")
+    def test_wrap_emoji(self):
+        posource = r"""msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+msgid "test"
+msgstr ""
+"print(ts.string_get_word_breaks(\"Test ❤️‍🔥 Test\")) # Prints [1, 2, 3, 4, 5, "
+"""
+        assert self.poreflow(posource) == posource
+
+    @mark.xfail(reason="Incompatible wrapping with gettext, see #5251")
+    def test_wrap_parenthesis(self):
+        posource = r"""msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+msgid "test"
+msgstr ""
+"Konvertiert [param what] in [param type] auf die bestmögliche Weise. Der "
+"[param type] verwendet die [enum Variant.Type]-Werte.\n"
+
+msgid "test2"
+msgstr ""
+"- Eine von [Object] abgeleitete Klasse, die in [ClassDB] existiert, z. B. "
+"[Node].\n"
+
+msgid "test3"
+msgstr ""
+"Must be required by a NotificationListenerService, to ensure that only the "
+"system can bind to it. See [url=https://developer.android.com/reference/"
+"android/Manifest."
+"permission#BIND_NOTIFICATION_LISTENER_SERVICE]BIND_NOTIFICATION_LISTENER_SERVICE[/"
+"url]."
+"""
+        assert self.poreflow(posource) == posource
+
     def test_wrap_gettext(self):
         posource = r"""# Test
 msgid ""
