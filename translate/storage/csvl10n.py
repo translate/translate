@@ -21,6 +21,8 @@ classes that hold units of comma-separated values (.csv) files (csvunit)
 or entire files (csvfile) for use with localisation.
 """
 
+from __future__ import annotations
+
 import csv
 
 from translate.storage import base
@@ -291,7 +293,9 @@ class csvfile(base.TranslationStore):
             inputfile.close()
             self.parse(csvsrc)
 
-    def parse(self, csvsrc, sample_length=1024):
+    def parse(
+        self, csvsrc, sample_length: int | None = 1024, *, dialect: None | str = None
+    ):
         if self._encoding == "auto":
             text, encoding = self.detect_encoding(
                 csvsrc, default_encodings=["utf-8", "utf-16"]
@@ -305,14 +309,17 @@ class csvfile(base.TranslationStore):
         sniffer = csv.Sniffer()
         sample = text[:sample_length] if sample_length else text
 
-        try:
-            self.dialect = sniffer.sniff(sample)
-            if self.dialect.quoting == csv.QUOTE_MINIMAL:
-                # HACKISH: most probably a default, not real detection
-                self.dialect.quoting = csv.QUOTE_ALL
-                self.dialect.doublequote = True
-        except csv.Error:
-            self.dialect = "default"
+        if dialect is not None:
+            self.dialect = dialect
+        else:
+            try:
+                self.dialect = sniffer.sniff(sample)
+                if self.dialect.quoting == csv.QUOTE_MINIMAL:
+                    # HACKISH: most probably a default, not real detection
+                    self.dialect.quoting = csv.QUOTE_ALL
+                    self.dialect.doublequote = True
+            except csv.Error:
+                self.dialect = "default"
 
         inputfile = csv.StringIO(text)
         try:
