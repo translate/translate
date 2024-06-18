@@ -38,6 +38,32 @@ class TestCSV(test_base.TestTranslationStore):
         assert store.units[0].source == "test"
         assert store.units[0].target == "zkouška sirén"
 
+    def test_dialect(self):
+        payload = '"location","source","target"\r\n"foo.c:1","test","zkouška sirén"\r\n'.encode()
+        store = self.StoreClass()
+        store.parse(payload)
+        assert len(store.units) == 1
+        assert store.units[0].source == "test"
+        assert store.units[0].target == "zkouška sirén"
+
+        store = self.StoreClass()
+        store.parse(payload, dialect="excel")
+        assert len(store.units) == 1
+        assert store.units[0].source == "test"
+        assert store.units[0].target == "zkouška sirén"
+
+        store = self.StoreClass()
+        store.parse(payload, dialect="unix")
+        assert len(store.units) == 1
+        assert store.units[0].source == "test"
+        assert store.units[0].target == "zkouška sirén"
+
+        store = self.StoreClass()
+        store.parse(payload, dialect="default")
+        assert len(store.units) == 1
+        assert store.units[0].source == "test"
+        assert store.units[0].target == "zkouška sirén"
+
     def test_utf_8_sig(self):
         content = '"location";"source";"target"\r\n"foo.c:1";"test";"zkouška sirén"\r\n'.encode(
             "utf-8-sig"
