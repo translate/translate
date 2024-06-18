@@ -1,0 +1,33 @@
+Translate Toolkit 3.13.1
+************************
+
+*Released on 18 June 2024*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- CSV
+
+  - Added support to forcing dialect
+
+- PO
+
+  - Added more tests for wrapping
+  - Fixed wrapping when adding new unit
+
+Other changes
+-------------
+
+- Various code cleanups
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař
