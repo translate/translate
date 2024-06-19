@@ -932,7 +932,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
     <language>%(language)s</language>
     <title/>
     <content>%(content)s</content>
-    </xwikidoc>"""
+</xwikidoc>"""
     )
 
     def getcontent(self, content, language="en"):
@@ -1152,7 +1152,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
             <content># Users Section
 test_me=Je peux coder !
 </content>
-            </xwikidoc>"""
+</xwikidoc>"""
         )
         assert (
             generatedcontent.getvalue().decode(propfile.encoding) == expected_xml + "\n"

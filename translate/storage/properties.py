@@ -1355,6 +1355,8 @@ class XWikiPageProperties(xwikifile):
         # if we are editing the source file we should not modify it.
         if not self.is_source_file():
             self.set_xwiki_xml_attributes(newroot)
+            # We only want a single line break before the closing node.
+            newroot.find("content").tail = '\n'
         self.write_xwiki_xml(newroot, out)
 
 
