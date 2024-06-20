@@ -1,5 +1,5 @@
 build==1.2.1
-pip==24.0
+pip==24.1
 setuptools==70.1.0
 setuptools-scm==8.1.0
 Sphinx==7.3.7
