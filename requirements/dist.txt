@@ -3,5 +3,5 @@ pip==24.1
 setuptools==70.1.0
 setuptools-scm==8.1.0
 Sphinx==7.3.7
-twine==5.1.0
+twine==5.1.1
 virtualenv==20.26.3
