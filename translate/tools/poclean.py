@@ -29,7 +29,7 @@ import re
 from translate.misc.multistring import multistring
 from translate.storage import factory
 
-tw4winre = re.compile(r"\{0>.*?<\}\d{1,3}\{>(.*?)<0\}", re.M | re.S)
+tw4winre = re.compile(r"\{0>.*?<\}\d{1,3}\{>(.*?)<0\}", re.MULTILINE | re.DOTALL)
 
 
 def cleanunit(unit):

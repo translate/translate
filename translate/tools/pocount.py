@@ -315,7 +315,7 @@ class FullRenderer(Renderer):
             )
         )
         if "extended" in stats:
-            print("")
+            print()
             for state, e_stats in stats["extended"].items():
                 print(
                     "%-11s   %5d (%3d%%) %10d (%3d%%) %15d"

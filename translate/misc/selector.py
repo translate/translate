@@ -272,12 +272,10 @@ class Selector:
         if not line.strip() or line.strip()[0] == "#":
             pass
         elif not line.strip() or line.strip()[0] == "@":
-            #
             if path and methods:
                 self.add(path, methods)
             path = line.strip()
             methods = {}
-            #
             parts = line.strip()[1:].split(" ", 1)
             if len(parts) == 2:
                 directive, rest = parts

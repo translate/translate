@@ -30,12 +30,12 @@ def test__split_xpath_component():
 
 
 def test__split_xpath():
-    assert [
+    assert unit_tree._split_xpath("document-content[1]/body[2]/text[3]/p[4]") == [
         ("p", 4),
         ("text", 3),
         ("body", 2),
         ("document-content", 1),
-    ] == unit_tree._split_xpath("document-content[1]/body[2]/text[3]/p[4]")
+    ]
 
 
 # _add_unit_to_tree

@@ -48,9 +48,9 @@ def test_reduce_tree():
             even_lst.append(num)
         return even_lst, total + num
 
-    assert ([2, 4, 6, 8], 36) == misc.reduce_tree(
+    assert misc.reduce_tree(
         get_even_and_total, test_tree_2, test_tree_2, get_children, [], 0
-    )
+    ) == ([2, 4, 6, 8], 36)
 
 
 # compose_mappings
