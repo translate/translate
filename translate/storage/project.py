@@ -44,7 +44,7 @@ def split_extensions(filename):
         extensions.append(part)
     if not extensions:
         return filename, ""
-    extensions = list(reversed(extensions))
+    extensions.reverse()
 
     if len(extensions) == len(filename_parts):
         extensions = extensions[1:]
