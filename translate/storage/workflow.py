@@ -34,6 +34,8 @@ state values correspond to similar states. For example state 0 should be
 define similar states.
 """
 
+import operator
+
 
 class StateEnum:
     """Only contains the constants for default states."""
@@ -243,7 +245,7 @@ def create_unit_workflow(unit, state_names):
     wf = Workflow(unit)
 
     state_info = unit.STATE.items()
-    state_info.sort(key=lambda x: x[0])
+    state_info.sort(key=operator.itemgetter(0))
 
     init_state, prev_state = None, None
     for state_id, state_range in state_info:
