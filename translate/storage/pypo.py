@@ -643,15 +643,13 @@ class pounit(pocommon.pounit):
         )
 
     def isblank(self):
-        if self.isheader() or self.msgidcomments:
-            return False
-        if (
-            (self._msgidlen() == 0)
+        return (
+            not self.isheader()
+            and not self.msgidcomments
+            and (self._msgidlen() == 0)
             and (self._msgstrlen() == 0)
             and (is_null(self.msgctxt))
-        ):
-            return True
-        return False
+        )
         # TODO: remove:
         # Before, the equivalent of the following was the final return statement:
         # return len(self.source.strip()) == 0

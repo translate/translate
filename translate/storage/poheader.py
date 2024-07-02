@@ -81,22 +81,21 @@ def update(existing, add=False, **kwargs):
         if key.islower():
             key = key.title()
         fixedargs[key] = value
-    removed = []
+    removed = set()
     for key in poheader.header_order:
         if key in existing:
             if key in fixedargs:
                 headerargs[key] = fixedargs.pop(key)
             else:
                 headerargs[key] = existing[key]
-            removed.append(key)
+            removed.add(key)
         elif add and key in fixedargs:
             headerargs[key] = fixedargs.pop(key)
-    for key, value in existing.items():
-        if key not in removed:
-            headerargs[key] = value
+    headerargs.update(
+        (key, value) for key, value in existing.items() if key not in removed
+    )
     if add:
-        for key in fixedargs:
-            headerargs[key] = fixedargs[key]
+        headerargs.update(fixedargs)
     return headerargs
 
 

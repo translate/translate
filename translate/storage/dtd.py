@@ -291,9 +291,7 @@ class dtdunit(base.TranslationUnit):
         return self.entity is None
 
     def istranslatable(self):
-        if getattr(self, "entityparameter", None) == "SYSTEM" or self.isblank():
-            return False
-        return True
+        return getattr(self, "entityparameter", None) != "SYSTEM" and not self.isblank()
 
     def parse(self, dtdsrc):
         """Read the first dtd element from the source code into this object, return linesprocessed."""

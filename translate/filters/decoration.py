@@ -98,9 +98,7 @@ def isvalidaccelerator(accelerator, acceptlist=None):
         return False
     if acceptlist is not None:
         acceptlist = data.normalize(acceptlist)
-        if accelerator in acceptlist:
-            return True
-        return False
+        return accelerator in acceptlist
     # Old code path - ensures that we don't get a large number of
     # regressions
     accelerator = accelerator.replace("_", "")

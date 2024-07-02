@@ -112,9 +112,7 @@ class csvunit(base.TranslationUnit):
         self.translator_comments = ""
 
     def isfuzzy(self):
-        if self.fuzzy.lower() in ("1", "x", "true", "yes", "fuzzy"):
-            return True
-        return False
+        return self.fuzzy.lower() in ("1", "x", "true", "yes", "fuzzy")
 
     def markfuzzy(self, value=True):
         if value:

@@ -430,9 +430,7 @@ class xliffunit(lisa.LISAunit):
 
     def istranslatable(self):
         value = self.xmlelement.get("translate")
-        if value and value.lower() == "no":
-            return False
-        return True
+        return not value or value.lower() != "no"
 
     def marktranslated(self):
         state_id = self.get_state_id()
