@@ -655,7 +655,7 @@ msgstr ""\r
             last_translator="nobody <nobody@example.com>",
             POT_Creation_Date="2023-10-24 10:19+0200",
         )
-        assert bytes(pofile) == poexpected
+        assert bytes(pofile).decode() == poexpected.decode()
 
     def test_wrap_custom(self):
         posource = 'msgid "HELLO"\nmsgstr ""\n'
