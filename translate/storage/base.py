@@ -24,6 +24,7 @@ import codecs
 import logging
 import pickle
 from io import BytesIO
+from itertools import starmap
 
 from translate.misc.multistring import multistring
 from translate.storage.placeables import StringElem
@@ -960,7 +961,7 @@ class UnitId:
                 return f"{self.INDEX_SEPARATOR}[{key}]"
             raise ValueError(f"Unsupported element: {element}")
 
-        return "".join(fmt(*part) for part in self.parts)
+        return "".join(starmap(fmt, self.parts))
 
     def extend(self, key, value):
         return self.__class__([*self.parts, (key, value)])
