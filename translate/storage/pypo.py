@@ -256,8 +256,10 @@ def unescape(line):
     # filter escaped escapes
     true_escape = False
     true_escape_places = []
+    previous_pos = -1
     for escape_pos in escape_places:
-        true_escape = not true_escape if escape_pos - 1 in escape_places else True
+        true_escape = not true_escape if escape_pos - 1 == previous_pos else True
+        previous_pos = escape_pos
         if true_escape:
             true_escape_places.append(escape_pos)
 
