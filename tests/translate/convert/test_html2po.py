@@ -34,7 +34,7 @@ class TestHTML2PO:
         actual = len(pofile.units)
         if actual > 0:
             if pofile.units[0].isheader():
-                actual = actual - 1
+                actual -= 1
         print(pofile)
         assert actual == expected
 
@@ -42,7 +42,7 @@ class TestHTML2PO:
     def compareunit(pofile, unitnumber, expected):
         """Helper to validate a PO message."""
         if not pofile.units[0].isheader():
-            unitnumber = unitnumber - 1
+            unitnumber -= 1
         print("unit source: " + pofile.units[unitnumber].source + "|")
         print("expected: " + expected + "|")
         assert str(pofile.units[unitnumber].source) == str(expected)

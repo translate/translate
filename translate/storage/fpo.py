@@ -148,7 +148,7 @@ class pounit(pocommon.pounit):
         if position == "append":
             newcomments = commentlist + newcomments
         elif position == "prepend":
-            newcomments = newcomments + commentlist
+            newcomments += commentlist
 
         if autocomments:
             self.automaticcomments = newcomments

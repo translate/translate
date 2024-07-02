@@ -161,7 +161,7 @@ class qmfile(base.TranslationStore):
         while pos < messages_start + len(messages_data):
             (subsection,) = struct.unpack(">B", input[pos : pos + 1])
             if subsection == 0x01:  # End
-                pos = pos + 1
+                pos += 1
                 if source is not None and target is not None:
                     newunit = self.addsourceunit(source)
                     newunit.target = target
@@ -169,7 +169,7 @@ class qmfile(base.TranslationStore):
                 else:
                     raise ValueError("Old .qm format with no source defined")
                 continue
-            pos = pos + 1
+            pos += 1
             (length,) = struct.unpack(">l", input[pos : pos + 4])
             if subsection == 0x03:  # Translation
                 if length != -1:
@@ -184,7 +184,7 @@ class qmfile(base.TranslationStore):
                     pos = pos + 4 + length
                 else:
                     target = ""
-                    pos = pos + 4
+                    pos += 4
             elif subsection == 0x06:  # SourceText
                 source = input[pos + 4 : pos + 4 + length].decode("iso-8859-1")
                 pos = pos + 4 + length
@@ -196,7 +196,7 @@ class qmfile(base.TranslationStore):
                 pos = pos + 4 + length
             elif subsection == 0x05:  # hash
                 # hash = input[pos:pos + 4]
-                pos = pos + 4
+                pos += 4
             else:
                 if subsection == 0x02:  # SourceText16
                     subsection_name = "SourceText16"

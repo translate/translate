@@ -72,12 +72,12 @@ def hashpjw(str_param):
     for s in str_param:
         if not s:
             break
-        hval = hval << 4
+        hval <<= 4
         hval += s
         g = hval & 0xF << (HASHWORDBITS - 4)
         if g != 0:
-            hval = hval ^ (g >> (HASHWORDBITS - 8))
-            hval = hval ^ g
+            hval ^= g >> HASHWORDBITS - 8
+            hval ^= g
     return hval
 
 
@@ -158,7 +158,7 @@ class mofile(poheader.poheader, base.TranslationStore):
             increment = 1 + (hash_value % (hash_size - 2))
             while hash_table[hash_cursor] != 0:
                 hash_cursor += increment
-                hash_cursor = hash_cursor % hash_size
+                hash_cursor %= hash_size
             hash_table[hash_cursor] = i + 1
 
         def lst_encode(lst, join_char=b""):

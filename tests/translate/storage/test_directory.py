@@ -69,7 +69,7 @@ class TestDirectory:
         d = directory.Directory(self.testdir)
         filenames = [name for dirname, name in d.getfiles()]
         filenames.sort()
-        files = files * 2
+        files *= 2
         files.sort()
         assert filenames == files
 

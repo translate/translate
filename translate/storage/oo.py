@@ -210,7 +210,7 @@ class ooline:
             )
             newparts = list(parts)
             if len(newparts) < 15:
-                newparts = newparts + [""] * (15 - len(newparts))
+                newparts += [""] * (15 - len(newparts))
             else:
                 newparts = newparts[:15]
             parts = tuple(newparts)

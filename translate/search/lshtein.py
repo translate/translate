@@ -46,7 +46,7 @@ def python_distance(a, b, stopvalue=-1):
         for j in range(1, l1 + 1):
             change = previous[j - 1]
             if a[j - 1] != b[i - 1]:
-                change = change + 1
+                change += 1
             insert = previous[j] + 1
             delete = current[j - 1] + 1
             current[j] = min(insert, delete, change)
