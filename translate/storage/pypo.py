@@ -287,15 +287,16 @@ def unescape(line):
     return "".join(extracted)
 
 
-def unquotefrompo(postr):
+def unquotefrompo(postr: str) -> str:
     return "".join(unescape(line[1:-1]) for line in postr)
 
 
-def is_null(lst):
-    return lst == [] or len(lst) == 1 and lst[0] == '""'
+def is_null(lst: list[str]) -> bool:
+    lst_len = len(lst)
+    return lst_len == 0 or (lst_len == 1 and lst[0] == '""')
 
 
-def extractstr(string):
+def extractstr(string: str) -> str:
     left = string.find('"')
     right = string.rfind('"')
     if right > -1:
@@ -638,7 +639,7 @@ class pounit(pocommon.pounit):
         return (
             is_null(self.msgid)
             and not is_null(self.msgstr)
-            and self.msgidcomments == []
+            and len(self.msgidcomments) == 0
             and is_null(self.msgctxt)
         )
 
