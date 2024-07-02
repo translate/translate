@@ -562,9 +562,7 @@ class DialectStrings(Dialect):
     @staticmethod
     def is_line_continuation(line):
         l = line.rstrip()
-        if l and l[-1] == ";":
-            return False
-        return True
+        return not l or l[-1] != ";"
 
     @staticmethod
     def strip_line_continuation(value):

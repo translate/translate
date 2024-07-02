@@ -551,9 +551,7 @@ class tsfile(lisa.LISAfile):
             contextnode = self._createcontext(contextname, comment)
 
         self.body = contextnode
-        if self.body is None:
-            return False
-        return True
+        return self.body is not None
 
     def nplural(self):
         code = self.header.get("language").lower().replace("-", "_").split("_")[0]

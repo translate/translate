@@ -184,10 +184,11 @@ class StringsDictFile(base.DictStore):
 
                 # Sync plural_strings elements to plural_tags count.
                 plural_strings = self.UnitClass.sync_plural_count(u.target, plural_tags)
-
-                for plural_tag, plural_string in zip(plural_tags, plural_strings):
-                    if plural_string:
-                        plurals[plural_tag] = plural_string
+                plurals.update(
+                    (plural_tag, plural_string)
+                    for plural_tag, plural_string in zip(plural_tags, plural_strings)
+                    if plural_string
+                )
 
                 plist[loc][subkey] = plurals
             else:

@@ -298,15 +298,11 @@ class podebug:
 
     @staticmethod
     def ignore_gtk(unit):
-        if unit.source == "default:LTR":
-            return True
-        return False
+        return unit.source == "default:LTR"
 
     @staticmethod
     def ignore_kde(unit):
-        if unit.source == "LTR":
-            return True
-        return False
+        return unit.source == "LTR"
 
     def convertunit(self, unit, prefix):
         if self.ignorefunc:

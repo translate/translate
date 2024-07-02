@@ -263,15 +263,13 @@ class pounit(pocommon.pounit):
         return not self.getid() and len(self.target) > 0
 
     def isblank(self):
-        if self.isheader() or self.msgidcomment:
-            return False
-        if (
-            (self._msgidlen() == 0)
+        return (
+            not self.isheader()
+            and not self.msgidcomment
+            and (self._msgidlen() == 0)
             and (self._msgstrlen() == 0)
             and len(self._msgctxt) == 0
-        ):
-            return True
-        return False
+        )
 
     def hastypecomment(self, typecomment):
         """Check whether the given type comment is present."""
