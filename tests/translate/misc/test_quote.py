@@ -3,13 +3,13 @@ from translate.misc import quote
 
 def test_find_all():
     """Tests the find_all function."""
-    assert quote.find_all("", "a") == []
-    assert quote.find_all("a", "b") == []
-    assert quote.find_all("a", "a") == [0]
-    assert quote.find_all("aa", "a") == [0, 1]
-    assert quote.find_all("abba", "ba") == [2]
+    assert list(quote.find_all("", "a")) == []
+    assert list(quote.find_all("a", "b")) == []
+    assert list(quote.find_all("a", "a")) == [0]
+    assert list(quote.find_all("aa", "a")) == [0, 1]
+    assert list(quote.find_all("abba", "ba")) == [2]
     # check we skip the whole instance
-    assert quote.find_all("banana", "ana") == [1]
+    assert list(quote.find_all("banana", "ana")) == [1]
 
 
 def test_extract():

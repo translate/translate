@@ -262,7 +262,7 @@ def unescape(line):
 
     Quotes on either side should already have been removed.
     """
-    escape_places = quote.find_all(line, "\\")
+    escape_places = list(quote.find_all(line, "\\"))
     if not escape_places:
         return line
 

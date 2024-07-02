@@ -26,22 +26,19 @@ from __future__ import annotations
 import html.entities
 import logging
 import re
+from typing import Iterable
 
 
-def find_all(searchin: str, substr: str) -> list[int]:
+def find_all(searchin: str, substr: str) -> Iterable[int]:
     """
     Returns a list of locations where substr occurs in searchin locations
     are not allowed to overlap.
     """
     location = 0
-    locations = []
     substr_len = len(substr)
-    while location != -1:
-        location = searchin.find(substr, location)
-        if location != -1:
-            locations.append(location)
-            location += substr_len
-    return locations
+    while (location := searchin.find(substr, location)) != -1:
+        yield location
+        location += substr_len
 
 
 def extract(
@@ -57,14 +54,14 @@ def extract(
     enteredonce = False
     lenstart = len(startdelim)
     lenend = len(enddelim)
-    startdelim_places = find_all(source, startdelim)
+    startdelim_places = list(find_all(source, startdelim))
     if startdelim == enddelim:
         enddelim_places = startdelim_places[:]
     else:
-        enddelim_places = find_all(source, enddelim)
+        enddelim_places = list(find_all(source, enddelim))
     if escape is not None:
         lenescape = len(escape)
-        escape_places = find_all(source, escape)
+        escape_places = list(find_all(source, escape))
         # Filter escaped escapes
         true_escape = False
         true_escape_places = []
@@ -132,15 +129,15 @@ def extractwithoutquotes(
     enteredonce = False
     lenstart = len(startdelim)
     lenend = len(enddelim)
-    startdelim_places = find_all(source, startdelim)
+    startdelim_places = list(find_all(source, startdelim))
     if startdelim == enddelim:
         enddelim_places = startdelim_places[:]
     else:
-        enddelim_places = find_all(source, enddelim)
+        enddelim_places = list(find_all(source, enddelim))
     # hell slow because it is called far too often
     if escape is not None:
         lenescape = len(escape)
-        escape_places = find_all(source, escape)
+        escape_places = list(find_all(source, escape))
         # filter escaped escapes
         true_escape = False
         true_escape_places = []
