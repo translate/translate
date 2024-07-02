@@ -40,7 +40,7 @@ class ProgressBar:
 
     def __init__(self, progress_type, allfiles):
         """Set up a progress bar appropriate to the progress_type and files."""
-        if progress_type in ("bar", "verbose"):
+        if progress_type in {"bar", "verbose"}:
             file_count = len(allfiles)
             self._progressbar = self.progress_types[progress_type](0, file_count)
             logger = logging.getLogger(os.path.basename(sys.argv[0])).getChild(
@@ -667,7 +667,7 @@ class RecursiveOptionParser(optparse.OptionParser):
     ):
         """Process an individual file."""
         inputfile = self.openinputfile(options, fullinputpath)
-        if fulloutputpath and fulloutputpath in (fullinputpath, fulltemplatepath):
+        if fulloutputpath and fulloutputpath in {fullinputpath, fulltemplatepath}:
             outputfile = self.opentempoutputfile(options, fulloutputpath)
             tempoutput = True
         else:
@@ -812,7 +812,7 @@ class RecursiveOptionParser(optparse.OptionParser):
                             return templatepath
             if "*" in self.inputformats:
                 for inputext1, templateext1 in self.outputoptions:
-                    if inputext1 in (inputext, "*"):
+                    if inputext1 in {inputext, "*"}:
                         if templateext1 == "*":
                             templatepath = inputname
                             if self.templateexists(options, templatepath):

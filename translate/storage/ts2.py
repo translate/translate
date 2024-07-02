@@ -197,7 +197,7 @@ class tsunit(lisa.LISAunit):
         """Add a note specifically in the appropriate *comment* tag."""
         current_notes = self.getnotes(origin)
         self.removenotes(origin)
-        if origin in ["programmer", "developer", "source code"]:
+        if origin in {"programmer", "developer", "source code"}:
             note = etree.SubElement(self.xmlelement, self.namespaced("extracomment"))
         else:
             note = etree.SubElement(
@@ -213,11 +213,11 @@ class tsunit(lisa.LISAunit):
     def getnotes(self, origin=None):
         # TODO: consider only responding when origin has certain values
         comments = []
-        if origin in ["programmer", "developer", "source code", None]:
+        if origin in {"programmer", "developer", "source code", None}:
             notenode = self.xmlelement.find(self.namespaced("extracomment"))
             if notenode is not None and notenode.text is not None:
                 comments.append(notenode.text)
-        if origin in ["translator", None]:
+        if origin in {"translator", None}:
             notenode = self.xmlelement.find(self.namespaced("translatorcomment"))
             if notenode is not None and notenode.text is not None:
                 comments.append(notenode.text)
@@ -225,11 +225,11 @@ class tsunit(lisa.LISAunit):
 
     def removenotes(self, origin=None):
         """Remove all the translator notes."""
-        if origin in ["programmer", "developer", "source code", None]:
+        if origin in {"programmer", "developer", "source code", None}:
             note = self.xmlelement.find(self.namespaced("extracomment"))
             if note is not None:
                 self.xmlelement.remove(note)
-        if origin in ["translator", None]:
+        if origin in {"translator", None}:
             note = self.xmlelement.find(self.namespaced("translatorcomment"))
             if note is not None:
                 self.xmlelement.remove(note)
@@ -393,7 +393,7 @@ class tsunit(lisa.LISAunit):
             self.markfuzzy(False)
 
     def isobsolete(self):
-        return self._gettype() in ("obsolete", "vanished")
+        return self._gettype() in {"obsolete", "vanished"}
 
     def get_state_n(self):
         type = self._gettype()

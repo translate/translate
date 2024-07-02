@@ -252,7 +252,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         # scan the start and end tags captured between translatable content;
         # extend the captured interval to include the matching tags
         for pos in range(start + 1, end - 1):
-            if self.tu_content[pos]["type"] in ("starttag", "endtag") and pos in tagmap:
+            if self.tu_content[pos]["type"] in {"starttag", "endtag"} and pos in tagmap:
                 match = tagmap[pos]
                 start = min(start, match)
                 end = max(end, match + 1)
@@ -468,7 +468,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
     def handle_entityref(self, name):
         """Handle named entities of the form &aaaa; e.g. &rsquo;."""
         converted = html5.get(name + ";")
-        if name in ["gt", "lt", "amp"] or not converted:
+        if name in {"gt", "lt", "amp"} or not converted:
             self.handle_data(f"&{name};")
         else:
             self.handle_data(converted)

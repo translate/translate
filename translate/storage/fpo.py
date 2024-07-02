@@ -126,7 +126,7 @@ class pounit(pocommon.pounit):
             comments += "\n".join(self.automaticcomments)
         elif origin == "translator":
             comments = "\n".join(self.othercomments)
-        elif origin in ["programmer", "developer", "source code"]:
+        elif origin in {"programmer", "developer", "source code"}:
             comments = "\n".join(self.automaticcomments)
         else:
             raise ValueError("Comment type not valid")
@@ -139,7 +139,7 @@ class pounit(pocommon.pounit):
             return
         commentlist = self.othercomments
         autocomments = False
-        if origin in ["programmer", "developer", "source code"]:
+        if origin in {"programmer", "developer", "source code"}:
             autocomments = True
             commentlist = self.automaticcomments
         if text.endswith("\n"):

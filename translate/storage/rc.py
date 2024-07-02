@@ -378,7 +378,7 @@ class rcfile(base.TranslationStore):
 
         # Extract first newline
         for line in decoded.splitlines(True):
-            if len(line) >= 2 and line[-2] in ("\r", "\n"):
+            if len(line) >= 2 and line[-2] in {"\r", "\n"}:
                 self.newline = line[-2:]
             else:
                 self.newline = line[-1]
@@ -396,7 +396,7 @@ class rcfile(base.TranslationStore):
             if (
                 statement[0] == "#pragma"
                 and "code_page" in statement[1]
-                and self.encoding not in ("utf-8", "utf-16")
+                and self.encoding not in {"utf-8", "utf-16"}
             ):
                 expected_encoding = parse_encoding_pragma(statement[1])
                 if expected_encoding and expected_encoding != self.encoding:
@@ -416,7 +416,7 @@ class rcfile(base.TranslationStore):
                 continue
 
             if processblocks and statement.block_type:
-                if statement.block_type in ("DIALOG", "DIALOGEX"):
+                if statement.block_type in {"DIALOG", "DIALOGEX"}:
                     for option in statement.block_options:
                         if option.caption:
                             newunit = rcunit(escape_to_python(option.caption[1:-1]))
@@ -430,7 +430,7 @@ class rcfile(base.TranslationStore):
                         if isinstance(control, str):
                             # This is a comment
                             continue
-                        if control.id_control[0] in (
+                        if control.id_control[0] in {
                             "AUTOCHECKBOX",
                             "AUTORADIOBUTTON",
                             "CAPTION",
@@ -443,7 +443,7 @@ class rcfile(base.TranslationStore):
                             "PUSHBUTTON",
                             "RADIOBUTTON",
                             "RTEXT",
-                        ) and (
+                        } and (
                             control.values_[0].startswith('"')
                             or control.values_[0].startswith("'")
                         ):
@@ -462,7 +462,7 @@ class rcfile(base.TranslationStore):
 
                     continue
 
-                if statement.block_type in ("MENU", "MENUEX"):
+                if statement.block_type in {"MENU", "MENUEX"}:
                     pre_name = generate_menu_pre_name(
                         statement.block_type, statement.block_id[0]
                     )

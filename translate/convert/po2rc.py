@@ -303,13 +303,13 @@ class rerc:
             return list(self.convert_language(s, loc, toks))
 
         if toks.block_type:
-            if toks.block_type in ("DIALOGEX", "DIALOG"):
+            if toks.block_type in {"DIALOGEX", "DIALOG"}:
                 return list(self.convert_dialog(s, loc, toks))
 
             if toks.block_type == "STRINGTABLE":
                 return list(self.convert_string_table(s, loc, toks))
 
-            if toks.block_type in ("MENU", "MENUEX"):
+            if toks.block_type in {"MENU", "MENUEX"}:
                 return list(self.convert_menu(s, loc, toks))
 
         return toks

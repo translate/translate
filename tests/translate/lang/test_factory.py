@@ -48,7 +48,7 @@ def test_get_all_languages():
     def is_language_module(x):
         return not (
             x.startswith("test_")
-            or x in ("common", "data", "factory", "identify", "ngram", "poedit", "team")
+            or x in {"common", "data", "factory", "identify", "ngram", "poedit", "team"}
         )
 
     lang_codes = []

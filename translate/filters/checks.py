@@ -103,7 +103,7 @@ def intuplelist(pair, list):
     for pattern in list:
         x, y, z = pattern
 
-        if (x, y) in [(a, b), (None, b)] and z in [None, c]:
+        if (x, y) in {(a, b), (None, b)} and z in {None, c}:
             return pattern
 
     return pair
@@ -1680,7 +1680,7 @@ class StandardChecker(TranslationChecker):
 
         # some heuristic tests to try and see that the style of capitals is
         # vaguely the same
-        if capitals1 in (0, 1):
+        if capitals1 in {0, 1}:
             success = capitals2 == capitals1
         elif capitals1 < len(str1) / 10:
             success = capitals2 <= len(str2) / 8
@@ -2413,7 +2413,7 @@ class MozillaChecker(StandardChecker):
         units (such as urls, emails, etc.)
         """
         for location in self.locations:
-            if location in ["MOZ_LANGPACK_CONTRIBUTORS", "credit.translation"]:
+            if location in {"MOZ_LANGPACK_CONTRIBUTORS", "credit.translation"}:
                 raise FilterFailure("Don't translate. Just credit the translators.")
 
         return True

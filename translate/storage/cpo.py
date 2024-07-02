@@ -545,7 +545,7 @@ class pounit(pocommon.pounit):
             ) + gpo.po_message_extracted_comments(self._gpo_message)
         elif origin == "translator":
             comments = gpo.po_message_comments(self._gpo_message)
-        elif origin in ["programmer", "developer", "source code"]:
+        elif origin in {"programmer", "developer", "source code"}:
             comments = gpo.po_message_extracted_comments(self._gpo_message)
         else:
             raise ValueError("Comment type not valid")
@@ -587,7 +587,7 @@ class pounit(pocommon.pounit):
                 else:
                     newlines.append(line)
             newnotes = gpo_encode("\n".join(newlines))
-            if origin in ["programmer", "developer", "source code"]:
+            if origin in {"programmer", "developer", "source code"}:
                 gpo.po_message_set_extracted_comments(self._gpo_message, newnotes)
             else:
                 gpo.po_message_set_comments(self._gpo_message, newnotes)

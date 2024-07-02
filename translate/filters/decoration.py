@@ -239,7 +239,7 @@ def getnumbers(str1):
         if chr1.isdigit():
             innumber = True
         elif innumber:
-            if chr1 not in (".", degreesign):
+            if chr1 not in {".", degreesign}:
                 innumber = False
                 if lastnumber:
                     numbers.append(lastnumber)

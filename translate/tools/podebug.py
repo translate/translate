@@ -290,7 +290,7 @@ class podebug:
         for location in locations:
             if dtd2po.is_css_entity(location):
                 return True
-            if location in ["brandShortName", "brandFullName", "vendorShortName"]:
+            if location in {"brandShortName", "brandFullName", "vendorShortName"}:
                 return True
             if location.lower().endswith(".commandkey") or location.endswith(".key"):
                 return True

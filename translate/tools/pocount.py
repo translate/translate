@@ -453,7 +453,7 @@ class StatCollector:
         self._handle_items(items)
 
     def render(self, renderer_class: type[Renderer]):
-        if renderer_class in (ShortWordsRenderer, ShortStringsRenderer):
+        if renderer_class in {ShortWordsRenderer, ShortStringsRenderer}:
             renderer = renderer_class(self, indent=self.longest_filename)
         else:
             renderer = renderer_class(self)
@@ -481,7 +481,7 @@ class StatCollector:
 
     def _handle_dir(self, dirname):
         _, name = os.path.split(dirname)
-        if name in ["CVS", ".svn", "_darcs", ".git", ".hg", ".bzr"]:
+        if name in {"CVS", ".svn", "_darcs", ".git", ".hg", ".bzr"}:
             return
         entries = os.listdir(dirname)
         self._handle_multiple_files(dirname, entries)
@@ -516,7 +516,7 @@ class StatCollector:
         totals = defaultdict(int)
         for stats in self._results:
             for key, value in stats.items():
-                if key in ["extended", "filename"]:
+                if key in {"extended", "filename"}:
                     # FIXME: calculate extended totals
                     continue
                 totals[key] += value

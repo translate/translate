@@ -81,7 +81,7 @@ class _SanitizeVisitor(visitor.Visitor):
             #   4. To make sure that serializing a sub-pattern produces the same
             #      sub-string as it appears in the parent (modulo indents).
             first_char = first_element.value[0]
-            if first_char in ("[", ".", "*"):
+            if first_char in {"[", ".", "*"}:
                 # Replace with literals.
                 # NOTE: An empty TextElement is ok for the FluentSerializer.
                 first_element.value = first_element.value[1:]
@@ -810,13 +810,13 @@ class FluentUnit(base.TranslationUnit):
             would be expected to contain the same sub-strings.
         :type placeholders: list[str] or None
         """
-        if fluent_type not in (
+        if fluent_type not in {
             "Message",
             "Term",
             "ResourceComment",
             "GroupComment",
             "DetachedComment",
-        ):
+        }:
             raise ValueError(f'Unknown value "{fluent_type}" for fluent_type')
         super().__init__(source)
         self._fluent_type = fluent_type
@@ -996,7 +996,7 @@ class FluentUnit(base.TranslationUnit):
             return ast.GroupComment(content=(self.getnotes() or ""))
         if self.fluent_type == "DetachedComment":
             return ast.Comment(content=(self.getnotes() or ""))
-        if self.fluent_type in ("Term", "Message"):
+        if self.fluent_type in {"Term", "Message"}:
             return self._source_to_fluent_entry()
         raise ValueError(f"Unhandled fluent_type: {self.fluent_type}")
 
@@ -1101,7 +1101,7 @@ class FluentUnit(base.TranslationUnit):
         :return: The syntax error message, or None if it has no error.
         :rtype: str or None
         """
-        if self.fluent_type not in ("Term", "Message"):
+        if self.fluent_type not in {"Term", "Message"}:
             return None
         entry_or_error = self._try_source_to_fluent_entry()
         if isinstance(entry_or_error, str):
@@ -1120,7 +1120,7 @@ class FluentUnit(base.TranslationUnit):
             syntax error.
         :rtype: list[FluentPart] or None
         """
-        if self.fluent_type not in ("Term", "Message"):
+        if self.fluent_type not in {"Term", "Message"}:
             return []
 
         entry_or_error = self._try_source_to_fluent_entry()
@@ -1254,7 +1254,7 @@ class FluentFile(base.TranslationStore):
                     else:
                         prefix_comments[-1] = group_comment
                     prev_group_comment = group_comment
-            elif unit.fluent_type in ("Term", "Message"):
+            elif unit.fluent_type in {"Term", "Message"}:
                 comment = self._strip_prefix_from_comment(unit, prefix_comments)
                 if comment:
                     entry.comment = ast.Comment(comment)

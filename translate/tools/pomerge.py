@@ -65,9 +65,9 @@ def str2bool(option):
 
     """
     option = option.lower()
-    if option in ("yes", "true", "1"):
+    if option in {"yes", "true", "1"}:
         return True
-    if option in ("no", "false", "0"):
+    if option in {"no", "false", "0"}:
         return False
     raise ValueError(f"invalid boolean value: {option!r}")
 

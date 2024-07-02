@@ -445,7 +445,7 @@ class dtdunit(base.TranslationUnit):
                     e = 0
                     if not line:
                         continue
-                    if line[0] in ('"', "'"):
+                    if line[0] in {'"', "'"}:
                         self.entitypart = "definition"
                         self.entityhelp = (e, line[e])
                         self.instring = False

@@ -196,7 +196,7 @@ class CatkeysUnit(base.TranslationUnit):
         self._set_source_or_target("target", target)
 
     def getnotes(self, origin=None):
-        if not origin or origin in ["programmer", "developer", "source code"]:
+        if not origin or origin in {"programmer", "developer", "source code"}:
             return self._dict.get("comment", "")
         return ""
 

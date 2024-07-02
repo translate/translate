@@ -276,7 +276,7 @@ class Dialect:
         """Encode the string."""
         # FIXME: dialects are a bad idea, not possible for subclasses
         # to override key methods
-        if encoding not in ("utf-8", "utf-16"):
+        if encoding not in {"utf-8", "utf-16"}:
             return quote.javapropertiesencode(string or "")
         return quote.java_utf8_properties_encode(string or "")
 
@@ -493,7 +493,7 @@ class DialectGwt(DialectJavaUtf8):
 
     @classmethod
     def encode(cls, string, encoding=None):
-        if encoding not in ("utf-8", "utf-16"):
+        if encoding not in {"utf-8", "utf-16"}:
             result = quote.javapropertiesencode(string or "")
         else:
             result = quote.java_utf8_properties_encode(string or "")
@@ -940,7 +940,7 @@ class propunit(base.TranslationUnit):
         return [self.name]
 
     def addnote(self, text, origin=None, position="append"):
-        if origin in ["programmer", "developer", "source code", None]:
+        if origin in {"programmer", "developer", "source code", None}:
             if get_comment_one_line(text) is None and get_comment_start(text) is None:
                 text = f"/* {text} */" if "\n" in text else f"// {text}"
             self.comments.append(text)
@@ -948,7 +948,7 @@ class propunit(base.TranslationUnit):
             super().addnote(text, origin=origin, position=position)
 
     def getnotes(self, origin=None):
-        if origin in ["programmer", "developer", "source code", None]:
+        if origin in {"programmer", "developer", "source code", None}:
             output = []
             inmultilinecomment = False
             for line in self.comments:

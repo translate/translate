@@ -66,7 +66,7 @@ class Builder:
 
     def handledir(self, dirname):
         path, name = os.path.split(dirname)
-        if name in ["CVS", ".svn", "_darcs", ".git", ".hg", ".bzr"]:
+        if name in {"CVS", ".svn", "_darcs", ".git", ".hg", ".bzr"}:
             return
         entries = os.listdir(dirname)
         self.handlefiles(dirname, entries)

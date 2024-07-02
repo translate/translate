@@ -80,7 +80,7 @@ class tbxunit(lisa.LISAunit):
             return
         note = etree.SubElement(self.xmlelement, self._get_origin_element(origin))
         safely_set_text(note, text)
-        if origin and origin not in ("pos", "definition"):
+        if origin and origin not in {"pos", "definition"}:
             note.set("from", origin)
 
     def _getnotelist(self, origin=None):
@@ -99,7 +99,7 @@ class tbxunit(lisa.LISAunit):
         initial_list = [
             lisa.getText(note, getXMLspace(self.xmlelement, self._default_xml_space))
             for note in note_nodes
-            if origin in ("pos", "definition", None) or note.get("from") == origin
+            if origin in {"pos", "definition", None} or note.get("from") == origin
         ]
 
         # Remove duplicate entries from list:

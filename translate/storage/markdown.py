@@ -186,7 +186,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
 
         yield from self.embed_span(Fragment("["), token.children, Fragment("]"))
 
-        if token.dest_type in ["uri", "angle_uri"]:
+        if token.dest_type in {"uri", "angle_uri"}:
             # Markdown link format: "[" description "](" dest_part [" " title] ")"
             dest_part = "<" + target + ">" if token.dest_type == "angle_uri" else target
             placeholder = Fragment(None, important=True)

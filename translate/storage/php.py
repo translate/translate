@@ -114,17 +114,17 @@ class PHPLexer(FilteredLexer):
         comments = []
         # Process all tokens to end of statement
         while self.tokens[self.pos].lexpos < end:
-            if self.tokens[self.pos].type in ("COMMENT", "DOC_COMMENT"):
+            if self.tokens[self.pos].type in {"COMMENT", "DOC_COMMENT"}:
                 comments.append(self.tokens[self.pos].value.strip())
             self.pos += 1
         # Skip end of statement
         self.pos += 1
         # Proceed comments till newline
         length = len(self.tokens)
-        while self.pos < length and self.tokens[self.pos].type in (
+        while self.pos < length and self.tokens[self.pos].type in {
             "COMMENT",
             "WHITESPACE",
-        ):
+        }:
             token_type = self.tokens[self.pos].type
             token_value = self.tokens[self.pos].value
             self.pos += 1
@@ -152,11 +152,11 @@ class PHPLexer(FilteredLexer):
     def extract_quote(self):
         """Extract quote style."""
         pos = max(self.pos, self.codepos)
-        while self.tokens[pos].type not in (
+        while self.tokens[pos].type not in {
             "QUOTE",
             "CONSTANT_ENCAPSED_STRING",
             "START_NOWDOC",
-        ):
+        }:
             pos += 1
         if self.tokens[pos].type == "QUOTE":
             return '"'
@@ -164,7 +164,7 @@ class PHPLexer(FilteredLexer):
 
     def extract_array(self):
         pos = max(self.pos, self.codepos)
-        while self.tokens[pos].type not in ("ARRAY", "LBRACKET"):
+        while self.tokens[pos].type not in {"ARRAY", "LBRACKET"}:
             pos += 1
         self.codepos = pos
         if self.tokens[pos].type == "ARRAY":
@@ -304,7 +304,7 @@ class phpunit(base.TranslationUnit):
         return [self.name]
 
     def addnote(self, text, origin=None, position="append"):
-        if origin in ["programmer", "developer", "source code", None]:
+        if origin in {"programmer", "developer", "source code", None}:
             if position == "append":
                 self._comments.append(text)
             else:
@@ -313,7 +313,7 @@ class phpunit(base.TranslationUnit):
             super().addnote(text, origin=origin, position=position)
 
     def getnotes(self, origin=None):
-        if origin in ["programmer", "developer", "source code", None]:
+        if origin in {"programmer", "developer", "source code", None}:
             return "\n".join(self._comments)
         return super().getnotes(origin)
 
