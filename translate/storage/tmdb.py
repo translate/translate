@@ -22,6 +22,7 @@
 import contextlib
 import logging
 import math
+import operator
 import re
 import threading
 import time
@@ -318,7 +319,7 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
                         "quality": quality,
                     }
                 )
-        results.sort(key=lambda match: match["quality"], reverse=True)
+        results.sort(key=operator.itemgetter("quality"), reverse=True)
         results = results[: self.max_candidates]
         logging.debug("results: %s", str(results))
         return results
