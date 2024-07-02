@@ -45,8 +45,16 @@ lsep = "\n#: "
 
 # general functions for quoting / unquoting po strings
 
-po_unescape_map = {"\\r": "\r", "\\t": "\t", '\\"': '"', "\\n": "\n", "\\\\": "\\"}
+po_unescape_map = {
+    r"\r": "\r",
+    r"\t": "\t",
+    r"\"": '"',
+    r"\n": "\n",
+    r"\\": "\\",
+}
+po_unescape_re = re.compile(r"\\.")
 po_escape_map = {value: key for (key, value) in po_unescape_map.items()}
+po_escape_re = re.compile("|".join(re.escape(key) for key in po_escape_map))
 
 
 def splitlines(text):
@@ -79,28 +87,17 @@ def splitlines(text):
     return [x + newline for x in text.split(newline)], newline.decode()
 
 
-def escapeforpo(line):
+def escapehandler(match: re.Match) -> str:
+    return po_escape_map[match.group(0)]
+
+
+def escapeforpo(line: str) -> str:
     r"""
     Escapes a line for po format. assumes no \n occurs in the line.
 
     :param line: unescaped text
     """
-    special_locations = []
-    for special_key in po_escape_map:
-        special_locations.extend(quote.find_all(line, special_key))
-    special_locations = sorted(dict.fromkeys(special_locations).keys())
-    escaped_line = []
-    last_location = 0
-    for location in special_locations:
-        escaped_line.append(line[last_location:location])
-        escaped_line.append(po_escape_map[line[location : location + 1]])
-        last_location = location + 1
-    escaped_line.append(line[last_location:])
-    return "".join(escaped_line)
-
-
-def unescapehandler(escape):
-    return po_unescape_map.get(escape, escape)
+    return po_escape_re.sub(escapehandler, line)
 
 
 def cjkslices(text: str, index: int) -> tuple[str, str]:
@@ -243,37 +240,21 @@ def quoteforpo(text, wrapper_obj=None):
     return polines
 
 
-def unescape(line):
+def unescapehandler(match: re.Match) -> str:
+    value = match.group(0)
+    try:
+        return po_unescape_map[value]
+    except KeyError:
+        return value[1]
+
+
+def unescape(line: str) -> str:
     """
     Unescape the given line.
 
     Quotes on either side should already have been removed.
     """
-    escape_places = list(quote.find_all(line, "\\"))
-    if not escape_places:
-        return line
-
-    # filter escaped escapes
-    true_escape = False
-    true_escape_places = []
-    previous_pos = -1
-    for escape_pos in escape_places:
-        true_escape = not true_escape if escape_pos - 1 == previous_pos else True
-        previous_pos = escape_pos
-        if true_escape:
-            true_escape_places.append(escape_pos)
-
-    extracted = []
-    lastpos = 0
-    for pos in true_escape_places:
-        # everything leading up to the escape
-        extracted.append(line[lastpos:pos])
-        # the escaped sequence (consuming 2 characters)
-        extracted.append(unescapehandler(line[pos : pos + 2]))
-        lastpos = pos + 2
-
-    extracted.append(line[lastpos:])
-    return "".join(extracted)
+    return po_unescape_re.sub(unescapehandler, line)
 
 
 def unquotefrompo(postr: str) -> str:
