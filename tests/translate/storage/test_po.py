@@ -1049,7 +1049,6 @@ msgstr ""
 """
         assert self.poreflow(posource) == posource
 
-    @mark.xfail(reason="Incompatible wrapping with gettext, see #5251")
     def test_wrap_emoji(self):
         posource = r"""msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"

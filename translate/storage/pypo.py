@@ -29,8 +29,9 @@ import copy
 import logging
 import re
 import textwrap
-import unicodedata
 from itertools import chain
+
+from wcwidth import wcswidth, wcwidth
 
 from translate.misc import quote
 from translate.misc.multistring import multistring
@@ -102,28 +103,14 @@ def unescapehandler(escape):
     return po_unescape_map.get(escape, escape)
 
 
-WIDE_CHARS = {"F", "W"}
-
-
-def cjklen(text: str) -> int:
-    """
-    Return the real width of an unicode text, the len of any other type.
-
-    Fullwidth and Wide CJK chars are double-width.
-    """
-    return sum(
-        2 if unicodedata.east_asian_width(char) in WIDE_CHARS else 1 for char in text
-    )
-
-
 def cjkslices(text: str, index: int) -> tuple[str, str]:
     """Return the two slices of a text cut to the index."""
-    if cjklen(text) <= index:
+    if wcswidth(text) <= index:
         return text, ""
     length = 0
     i = 0
     for i in range(len(text)):
-        length += cjklen(text[i])
+        length += wcwidth(text[i])
         if length > index:
             break
     return text[:i], text[i:]
@@ -206,7 +193,7 @@ class PoWrapper(textwrap.TextWrapper):
             width = self.width - len(indent)
 
             while chunks:
-                l = cjklen(chunks[-1])
+                l = wcswidth(chunks[-1])
 
                 # Can at least squeeze this chunk onto the current line.
                 if cur_len + l <= width:
@@ -219,7 +206,7 @@ class PoWrapper(textwrap.TextWrapper):
 
             # The current line is full, and the next chunk is too big to
             # fit on *any* line (not just this one).
-            if chunks and cjklen(chunks[-1]) > width:
+            if chunks and wcswidth(chunks[-1]) > width:
                 self._handle_long_word(chunks, cur_line, cur_len, width)
 
             if cur_line:
