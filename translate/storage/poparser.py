@@ -193,7 +193,7 @@ def read_obsolete_lines(parse_state):
 
 def parse_obsolete(parse_state, unit):
     obsolete_lines = read_obsolete_lines(parse_state)
-    if obsolete_lines == []:
+    if len(obsolete_lines) == 0:
         return None
     unit = parse_unit(parse_state.new_input(iter(obsolete_lines)), unit)
     if unit is not None:
