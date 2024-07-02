@@ -1,2 +1,4 @@
 # lxml - for XML processing (XLIFF, TMX, TBX, ts, Android)
 lxml>=4.6.3
+# wcwidth for unicode width
+wcwidth>=0.2.10
