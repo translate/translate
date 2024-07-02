@@ -55,13 +55,13 @@ except ImportError:
 
 
 __all__ = (
-    "TRADOS_TIMEFORMAT",
     "RTF_ESCAPES",
+    "TRADOS_TIMEFORMAT",
+    "TradosTxtDate",
+    "TradosTxtTmFile",
+    "TradosUnit",
     "escape",
     "unescape",
-    "TradosTxtDate",
-    "TradosUnit",
-    "TradosTxtTmFile",
 )
 
 
