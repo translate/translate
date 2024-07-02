@@ -290,7 +290,7 @@ class phpunit(base.TranslationUnit):
         else:
             fmt = "{0} = {1}{2}{1};\n"
         out = fmt.format(
-            name if name else self.name,
+            name or self.name,
             self.escape_type,
             phpencode(self.get_raw_value(), self.escape_type),
         )
