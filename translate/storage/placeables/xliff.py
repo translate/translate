@@ -23,15 +23,15 @@ from translate.storage.placeables.strelem import StringElem
 
 __all__ = (
     "Bpt",
-    "Ept",
-    "X",
     "Bx",
+    "Ept",
     "Ex",
     "G",
     "It",
-    "Sub",
     "Ph",
+    "Sub",
     "UnknownXML",
+    "X",
     "parsers",
     "to_xliff_placeables",
 )

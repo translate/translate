@@ -53,9 +53,9 @@ __all__ = [
     "qph",
     "tbx",
     "tmx",
+    "trados",
     "ts2",
     "utx",
     "wordfast",
     "xliff",
-    "trados",
 ]
