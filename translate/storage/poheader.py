@@ -66,6 +66,13 @@ def tzstring():
     return str("%+d" % hours).zfill(3) + str(minutes).zfill(2)
 
 
+def format_key(key: str) -> str:
+    key = key.replace("_", "-")
+    if key.islower():
+        return key.title()
+    return key
+
+
 def update(existing, add=False, **kwargs):
     """
     Update an existing header dictionary with the values in kwargs, adding
@@ -75,12 +82,7 @@ def update(existing, add=False, **kwargs):
     :rtype: dict of strings
     """
     headerargs = {}
-    fixedargs = cidict()
-    for key, value in kwargs.items():
-        key = key.replace("_", "-")
-        if key.islower():
-            key = key.title()
-        fixedargs[key] = value
+    fixedargs = cidict((format_key(key), value) for key, value in kwargs.items())
     removed = set()
     for key in poheader.header_order:
         if key in existing:
@@ -156,45 +158,45 @@ class poheader:
         :return: Dictionary with the header items
         :rtype: dict of strings
         """
-        if project_id_version is None:
-            project_id_version = "PACKAGE VERSION"
-        if pot_creation_date is None or pot_creation_date is True:
-            pot_creation_date = time.strftime("%Y-%m-%d %H:%M") + tzstring()
-        if isinstance(pot_creation_date, time.struct_time):
-            pot_creation_date = (
-                time.strftime("%Y-%m-%d %H:%M", pot_creation_date) + tzstring()
-            )
-        if po_revision_date is None:
-            po_revision_date = "YEAR-MO-DA HO:MI+ZONE"
-        elif po_revision_date is False:
-            po_revision_date = pot_creation_date
-        elif po_revision_date is True:
-            po_revision_date = time.strftime("%Y-%m-%d %H:%M") + tzstring()
-        if isinstance(po_revision_date, time.struct_time):
-            po_revision_date = (
-                time.strftime("%Y-%m-%d %H:%M", po_revision_date) + tzstring()
-            )
-        if last_translator is None:
-            last_translator = "FULL NAME <EMAIL@ADDRESS>"
-        if language_team is None:
-            language_team = "LANGUAGE <LL@li.org>"
-        if mime_version is None:
-            mime_version = "1.0"
-        if report_msgid_bugs_to is None:
-            report_msgid_bugs_to = ""
 
-        defaultargs = {}
-        defaultargs["Project-Id-Version"] = project_id_version
-        defaultargs["Report-Msgid-Bugs-To"] = report_msgid_bugs_to
-        defaultargs["POT-Creation-Date"] = pot_creation_date
-        defaultargs["PO-Revision-Date"] = po_revision_date
-        defaultargs["Last-Translator"] = last_translator
-        defaultargs["Language-Team"] = language_team
-        defaultargs["MIME-Version"] = mime_version
+        def format_date(key, value, fallback=None):
+            if value is False and (fallback is not None):
+                defaultargs[key] = fallback
+            elif value is True or (value is None and fallback is None):
+                defaultargs[key] = time.strftime("%Y-%m-%d %H:%M") + tzstring()
+            elif isinstance(value, time.struct_time):
+                defaultargs[key] = time.strftime("%Y-%m-%d %H:%M", value) + tzstring()
+            elif value is not None:
+                defaultargs[key] = value
+
+        defaultargs = default_header.copy()
+
+        if project_id_version is not None:
+            defaultargs["Project-Id-Version"] = project_id_version
+
+        format_date("POT-Creation-Date", pot_creation_date)
+        format_date(
+            "PO-Revision-Date",
+            po_revision_date,
+            defaultargs["POT-Creation-Date"],
+        )
+
+        if last_translator is not None:
+            defaultargs["Last-Translator"] = last_translator
+
+        if language_team is not None:
+            defaultargs["Language-Team"] = language_team
+
+        defaultargs["MIME-Version"] = mime_version or "1.0"
+
+        defaultargs["Report-Msgid-Bugs-To"] = report_msgid_bugs_to or ""
+
         defaultargs["Content-Type"] = f"text/plain; charset={charset}"
         defaultargs["Content-Transfer-Encoding"] = encoding
         if plural_forms:
             defaultargs["Plural-Forms"] = plural_forms
+        else:
+            del defaultargs["Plural-Forms"]
         defaultargs["X-Generator"] = self.x_generator
 
         return update(defaultargs, add=True, **kwargs)

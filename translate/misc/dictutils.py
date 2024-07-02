@@ -22,18 +22,14 @@ dictionary.
 
 
 class cidict(dict):
-    def __init__(self, fromdict=None):
-        """Constructs the cidict, optionally using another dict to do so."""
-        if fromdict is not None:
-            self.update(fromdict)
-
     def __getitem__(self, key):
         if not isinstance(key, str):
             raise TypeError(
                 f"cidict can only have str or unicode as key (got {type(key)!r})"
             )
+        lkey = key.lower()
         for akey in self.keys():
-            if akey.lower() == key.lower():
+            if akey.lower() == lkey:
                 return super().__getitem__(akey)
         raise IndexError
 
@@ -42,28 +38,20 @@ class cidict(dict):
             raise TypeError(
                 f"cidict can only have str or unicode as key (got {type(key)!r})"
             )
+        lkey = key.lower()
         for akey in self.keys():
-            if akey.lower() == key.lower():
+            if akey.lower() == lkey:
                 return super().__setitem__(akey, value)
         return super().__setitem__(key, value)
-
-    def update(self, updatedict) -> None:
-        """
-        Update from a dictionary.
-
-        D.update(E) -> None.
-        Update D from E: for k in E.keys(): D[k] = E[k].
-        """
-        for key, value in updatedict.items():
-            self[key] = value
 
     def __delitem__(self, key):
         if not isinstance(key, str):
             raise TypeError(
                 f"cidict can only have str or unicode as key (got {type(key)!r})"
             )
+        lkey = key.lower()
         for akey in self.keys():
-            if akey.lower() == key.lower():
+            if akey.lower() == lkey:
                 return super().__delitem__(akey)
         raise IndexError
 
@@ -72,12 +60,5 @@ class cidict(dict):
             raise TypeError(
                 f"cidict can only have str or unicode as key (got {type(key)!r})"
             )
-        for akey in self.keys():
-            if akey.lower() == key.lower():
-                return 1
-        return 0
-
-    def get(self, key, default=None):
-        if key in self:
-            return self[key]
-        return default
+        lkey = key.lower()
+        return any(akey.lower() == lkey for akey in self.keys())
