@@ -122,7 +122,7 @@ class rerc:
             # collect initial quoted items to form msgid
             i = 1
             while isinstance(c[i], str) and c[i].startswith(("'", '"')):
-                i = i + 1
+                i += 1
             msgid = "".join(cn[1:-1] for cn in c[1:i])
 
             name = rc.generate_dialog_control_name(

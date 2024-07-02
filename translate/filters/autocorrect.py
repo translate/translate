@@ -48,7 +48,7 @@ def correct(source, target):
     puncendstr = decoration.puncend(target, punctuation)
     if puncendid != puncendstr:
         if not puncendstr:
-            target = target + puncendid
+            target += puncendid
         else:
             target = target[: -len(puncendstr)] + puncendid
     if source[:1].isalpha() and target[:1].isalpha():
