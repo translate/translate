@@ -94,7 +94,7 @@ def to_base_placeables(tree):
     base_class = [
         klass
         for klass in tree.__class__.__bases__
-        if klass in [Bpt, Ept, Ph, It, G, Bx, Ex, X, Sub]
+        if klass in {Bpt, Ept, Ph, It, G, Bx, Ex, X, Sub}
     ]
 
     base_class = tree.__class__ if not base_class else base_class[0]

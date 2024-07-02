@@ -338,10 +338,10 @@ class FileDiffer:
                 for line in self.from_lines[i1:i2]:
                     yield " " + line
                 continue
-            if tag in ("replace", "delete"):
+            if tag in {"replace", "delete"}:
                 for line in self.from_lines[i1:i2]:
                     yield "-" + line
-            if tag in ("replace", "insert"):
+            if tag in {"replace", "insert"}:
                 for line in self.to_lines[j1:j2]:
                     yield "+" + line
 

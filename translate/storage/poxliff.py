@@ -176,7 +176,7 @@ class PoXliffUnit(xliff.xliffunit):
                 trancomments = notes
                 notes = ""
             return trancomments + notes
-        if origin in ["programmer", "developer", "source code"]:
+        if origin in {"programmer", "developer", "source code"}:
             devcomments = super().getnotes("developer")
             autocomments = self.getautomaticcomments()
             if devcomments == autocomments or autocomments.find(devcomments) >= 0:

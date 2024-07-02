@@ -48,7 +48,7 @@ class prop2po:
     def convertstore(self, thepropfile):
         """Converts a .properties file to a .po file..."""
         thetargetfile = po.pofile()
-        if self.personality in ("mozilla", "skype"):
+        if self.personality in {"mozilla", "skype"}:
             targetheader = thetargetfile.init_headers(
                 x_accelerator_marker="&",
                 x_merge_on="location",
@@ -96,7 +96,7 @@ class prop2po:
     def mergestore(self, origpropfile, translatedpropfile):
         """Converts two .properties files to a .po file..."""
         thetargetfile = po.pofile()
-        if self.personality in ("mozilla", "skype"):
+        if self.personality in {"mozilla", "skype"}:
             targetheader = thetargetfile.init_headers(
                 x_accelerator_marker="&",
                 x_merge_on="location",
@@ -361,7 +361,7 @@ class prop2po:
         ``mixbucket`` can be specified to indicate if the given unit is part of
         the template or the translated file.
         """
-        if self.personality not in ("mozilla", "gwt"):
+        if self.personality not in {"mozilla", "gwt"}:
             # XXX should we enable unit mixing for other personalities?
             return self.convertunit(unit, commenttype)
 

@@ -91,7 +91,7 @@ def test_odf2xliff():
 
 
 def is_content_file(filename):
-    return filename in ("content.xml", "meta.xml", "styles.xml")
+    return filename in {"content.xml", "meta.xml", "styles.xml"}
 
 
 class ODF:

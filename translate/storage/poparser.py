@@ -130,7 +130,7 @@ def parse_prev_msgid_plural(parse_state, unit):
 
 def parse_comment(parse_state, unit):
     next_line = parse_state.next_line.lstrip()
-    if next_line and next_line[0] in ("#", "|"):
+    if next_line and next_line[0] in {"#", "|"}:
         next_char = next_line[1]
         if next_char == ".":
             append(unit.automaticcomments, next_line)

@@ -464,7 +464,7 @@ class pounit(pocommon.pounit):
         newline = self.newline
         if origin == "translator" or origin is None:
             parts.append(comment[2:] or newline for comment in self.othercomments)
-        if origin in ["programmer", "developer", "source code", None]:
+        if origin in {"programmer", "developer", "source code", None}:
             parts.append(comment[3:] or newline for comment in self.automaticcomments)
         if not parts:
             raise ValueError("Comment type not valid")
@@ -484,7 +484,7 @@ class pounit(pocommon.pounit):
         commentlist = self.othercomments
         linestart = "#"
         autocomments = False
-        if origin in ["programmer", "developer", "source code"]:
+        if origin in {"programmer", "developer", "source code"}:
             autocomments = True
             commentlist = self.automaticcomments
             linestart = "#."

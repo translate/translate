@@ -661,7 +661,7 @@ class StringElem:
             if oelem_type == preferred_type and before_type != preferred_type:
                 # oelem has the right type and before has the wrong type
                 return oelem.insert(0, text)
-            if preferred_type not in (oelem_type, before_type):
+            if preferred_type not in {oelem_type, before_type}:
                 # Both are the wrong type, so we add it as if neither were
                 # editable
                 bparent = self.get_parent_elem(before)

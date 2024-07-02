@@ -228,7 +228,7 @@ class UtxFile(base.TranslationStore):
         )
         items = []
         for key, value in self._header.items():
-            if key in ["version", "source_language", "target_language", "date_created"]:
+            if key in {"version", "source_language", "target_language", "date_created"}:
                 continue
             items.append(f"{key}: {value}")
         if len(items):

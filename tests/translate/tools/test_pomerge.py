@@ -595,4 +595,4 @@ msgstr "ZERSTÖRE WACHPOSTEN"
         pofile = self.mergestore(templatepo, mergepo)
         output = bytes(pofile).decode("utf-8")
         print(f"Expected:\n{expectedpo}\n---\nMerged:\n{output}\n---")
-        assert output in (expectedpo, expectedpo2)
+        assert output in {expectedpo, expectedpo2}

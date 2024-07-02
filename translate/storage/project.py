@@ -39,7 +39,7 @@ def split_extensions(filename):
     filename_parts = filename.split(os.extsep)
     extensions = []
     for part in reversed(filename_parts):
-        if len(part) != 3 and part not in ("po", "properties"):
+        if len(part) != 3 and part not in {"po", "properties"}:
             break
         extensions.append(part)
     if not extensions:

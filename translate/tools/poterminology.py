@@ -126,7 +126,7 @@ class TerminologyExtractor:
                 for stopline in stopfile:
                     line += 1
                     stoptype = stopline[0]
-                    if stoptype in ("#", "\n"):
+                    if stoptype in {"#", "\n"}:
                         continue
                     if stoptype == "!":
                         if stopline[1] == "C":

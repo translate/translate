@@ -81,7 +81,7 @@ class TikiUnit(base.TranslationUnit):
 
         :param location: Where the string is located in the file.  Must be a valid location.
         """
-        if location in ["unused", "untranslated", "possiblyuntranslated", "translated"]:
+        if location in {"unused", "untranslated", "possiblyuntranslated", "translated"}:
             self.location.append(location)
 
     def getlocations(self):

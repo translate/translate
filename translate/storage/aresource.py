@@ -160,7 +160,7 @@ class AndroidResourceUnit(base.TranslationUnit):
     def createfromxmlElement(cls, element):
         term = None
         # Actually this class supports only plurals and string tags
-        if element.tag in (cls.PLURAL_TAG, cls.SINGULAR_TAG):
+        if element.tag in {cls.PLURAL_TAG, cls.SINGULAR_TAG}:
             term = cls(None, xmlelement=element)
         return term
 
@@ -494,13 +494,13 @@ class AndroidResourceUnit(base.TranslationUnit):
 
     # Notes are handled as previous sibling comments.
     def addnote(self, text, origin=None, position="append"):
-        if origin in ["programmer", "developer", "source code", None]:
+        if origin in {"programmer", "developer", "source code", None}:
             self.xmlelement.addprevious(etree.Comment(text))
         else:
             super().addnote(text, origin=origin, position=position)
 
     def getnotes(self, origin=None):
-        if origin in ["programmer", "developer", "source code", None]:
+        if origin in {"programmer", "developer", "source code", None}:
             comments = []
             if self.xmlelement is not None:
                 prevSibling = self.xmlelement.getprevious()

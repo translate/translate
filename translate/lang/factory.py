@@ -39,7 +39,7 @@ def getlanguage(code):
     try:
         if code is None:
             raise ImportError("Can't determine language code")
-        internal_code = prefix + code if code in ("or", "is", "as") else code
+        internal_code = prefix + code if code in {"or", "is", "as"} else code
         module = import_module(f"translate.lang.{internal_code}")
         langclass = getattr(module, internal_code)
         return langclass(code)
@@ -60,7 +60,7 @@ def get_all_languages():
     def is_language_module(x):
         return not (
             x.startswith("test_")
-            or x in ("common", "data", "factory", "identify", "ngram", "poedit", "team")
+            or x in {"common", "data", "factory", "identify", "ngram", "poedit", "team"}
         )
 
     lang_codes = []

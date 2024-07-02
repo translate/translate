@@ -89,12 +89,12 @@ class csvunit(base.TranslationUnit):
             return result
         if origin == "translator":
             return self.translator_comments
-        if origin in ("programmer", "developer", "source code"):
+        if origin in {"programmer", "developer", "source code"}:
             return self.developer_comments
         raise ValueError("Comment type not valid")
 
     def addnote(self, text, origin=None, position="append"):
-        if origin in ("programmer", "developer", "source code"):
+        if origin in {"programmer", "developer", "source code"}:
             if position == "append" and self.developer_comments:
                 self.developer_comments += "\n" + text
             elif position == "prepend" and self.developer_comments:
@@ -112,7 +112,7 @@ class csvunit(base.TranslationUnit):
         self.translator_comments = ""
 
     def isfuzzy(self):
-        return self.fuzzy.lower() in ("1", "x", "true", "yes", "fuzzy")
+        return self.fuzzy.lower() in {"1", "x", "true", "yes", "fuzzy"}
 
     def markfuzzy(self, value=True):
         if value:

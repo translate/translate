@@ -82,7 +82,7 @@ class TestTranslationUnit:
         assert unit1 == unit2
         assert unit1 != unit3
         assert unit4 != unit5
-        if unit1.__class__.__name__ in ("RESXUnit", "dtdunit", "TxtUnit", "iniunit"):
+        if unit1.__class__.__name__ in {"RESXUnit", "dtdunit", "TxtUnit", "iniunit"}:
             # unit1 will generally equal unit6 for monolingual formats (resx, dtd, txt)
             # with the default comparison method which compare units by their
             # target and source properties only.

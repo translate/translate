@@ -126,12 +126,12 @@ class icalfile(base.TranslationStore):
         for component in self._icalfile.components():
             if component.name == "VEVENT":
                 for property in component.getChildren():
-                    if property.name in (
+                    if property.name in {
                         "SUMMARY",
                         "DESCRIPTION",
                         "COMMENT",
                         "LOCATION",
-                    ):
+                    }:
                         newunit = self.addsourceunit(property.value)
                         newunit.addnote(f"Start date: {component.dtstart.value}")
                         newunit.addlocation(f"[{component.uid.value}]{property.name}")

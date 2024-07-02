@@ -247,7 +247,7 @@ def _do_poheaders(input_store, output_store, template_store):
                 language_team = value
             elif key == "PO-Revision-Date":
                 po_revision_date = value
-            elif key in ("POT-Creation-Date", "MIME-Version"):
+            elif key in {"POT-Creation-Date", "MIME-Version"}:
                 # don't know how to handle these keys, or ignoring them
                 pass
             elif key == "Content-Type":
@@ -261,7 +261,7 @@ def _do_poheaders(input_store, output_store, template_store):
 
     inputheadervalues = input_store.parseheader()
     for key, value in inputheadervalues.items():
-        if key in (
+        if key in {
             "Project-Id-Version",
             "Last-Translator",
             "Language-Team",
@@ -269,7 +269,7 @@ def _do_poheaders(input_store, output_store, template_store):
             "Content-Type",
             "Content-Transfer-Encoding",
             "Plural-Forms",
-        ):
+        }:
             # want to carry these from the template so we ignore them
             pass
         elif key == "POT-Creation-Date":
