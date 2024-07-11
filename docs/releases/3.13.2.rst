@@ -1,0 +1,37 @@
+Translate Toolkit 3.13.2
+************************
+
+*Released on 11 July 2024*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- PO
+
+  - Optimize string escaping and header handling
+  - Fixed wrapping with wide Unicode characters
+
+- YAML 
+
+  - Avoid crash on invalid Ruby YAML files
+
+- Properties
+
+  - Fix added spaces in XWikiPageProperties format XML output
+
+Other changes
+-------------
+
+- Various code cleanups
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař, Simon Urli
