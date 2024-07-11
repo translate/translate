@@ -202,10 +202,13 @@ class RubyYAMLFile(YAMLFile):
     def preprocess(self, data):
         if isinstance(data, CommentedMap) and len(data) == 1:
             lang = next(iter(data.keys()))
-            self.settargetlanguage(lang)
+            # Handle blank values
             if data[lang] is None:
                 data[lang] = CommentedMap()
-            return data[lang]
+            # Do not try to parse string only, CommentedMap is dict as well
+            if isinstance(data[lang], dict):
+                self.settargetlanguage(lang)
+                return data[lang]
         return data
 
     def get_root_node(self):

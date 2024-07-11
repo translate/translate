@@ -520,6 +520,13 @@ class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
         store.parse(data)
         assert bytes(store) == data.encode("ascii")
 
+    def test_ruby_wrong(self):
+        data = """no_data: No data
+"""
+        store = self.StoreClass()
+        store.parse(data)
+        assert bytes(store) == data.encode("ascii")
+
     def test_invalid_value(self):
         store = yaml.YAMLFile()
         with pytest.raises(base.ParseError):
