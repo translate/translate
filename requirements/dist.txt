@@ -2,6 +2,6 @@ build==1.2.1
 pip==24.2
 setuptools==71.1.0
 setuptools-scm==8.1.0
-Sphinx==7.4.7
+Sphinx==8.0.2
 twine==5.1.1
 virtualenv==20.26.3
