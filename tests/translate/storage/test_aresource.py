@@ -914,6 +914,18 @@ files</strong> on the storage.</p>
             == "<i>{app_name}</i> צרכה רשות לגשת ליומן שלך, על מנת ליצור תוכניות עבור עסקאות עתידיות חוזרות."
         )
 
+    def test_tail(self):
+        content = """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="one"><b>One</b></string>in
+    <string name="two"><b>Two</b></string>
+</resources>"""
+        store = self.StoreClass()
+        store.parse(content.encode())
+        assert len(store.units) == 2
+        assert store.units[0].target == "<b>One</b>"
+        assert store.units[1].target == "<b>Two</b>"
+
 
 class TestMOKOResourceUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = aresource.MOKOResourceUnit

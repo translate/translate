@@ -367,8 +367,10 @@ class AndroidResourceUnit(base.TranslationUnit):
         if len(xmltarget) == 0:
             # There are no html markups, so unescaping it as plain text.
             return self.unescape(xmltarget.text)
+        parser = DecodingXMLParser(
+            etree.tostring(xmltarget, encoding="unicode", with_tail=False)
+        )
 
-        parser = DecodingXMLParser(etree.tostring(xmltarget, encoding="unicode"))
         return parser.parse()
 
     def set_xml_text_plain(self, target, xmltarget):
