@@ -93,8 +93,7 @@ class GrepMatch:
     def __str__(self):
         start, end = self.start, self.end
         start = max(start, 3)
-        if end > len(self.get_getter()()) - 3:
-            end = len(self.get_getter()()) - 3
+        end = min(end, len(self.get_getter()()) - 3)
         matchpart = self.get_getter()()[start - 2 : end + 2]
         return '<GrepMatch "%s" part=%s[%d] start=%d end=%d>' % (
             matchpart,

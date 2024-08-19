@@ -50,8 +50,7 @@ def python_distance(a, b, stopvalue=-1):
             insert = previous[j] + 1
             delete = current[j - 1] + 1
             current[j] = min(insert, delete, change)
-            if least > current[j]:
-                least = current[j]
+            least = min(least, current[j])
         # The smallest value in the current array is the best (lowest) value
         # that can be attained in the end if the strings are identical further
         if least > stopvalue:
