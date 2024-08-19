@@ -74,10 +74,8 @@ class ProgressBar:
 
     def __str__(self):
         """Produces the string representing the progress bar."""
-        if self.amount < self.min:
-            self.amount = self.min
-        if self.amount > self.max:
-            self.amount = self.max
+        self.amount = max(self.amount, self.min)
+        self.amount = min(self.amount, self.max)
 
         # Figure out the new percent done, round to an integer
         diffFromMin = float(self.amount - self.min)
