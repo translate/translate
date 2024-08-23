@@ -146,7 +146,7 @@ class TranslationUnit:
         return not self.__eq__(other)
 
     def __hash__(self):
-        return None
+        return hash((self.source, self.target, self.getid()))
 
     def __str__(self):
         """Converts to a string representation. Most often overriden by subclasses."""
