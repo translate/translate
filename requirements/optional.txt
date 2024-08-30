@@ -1,27 +1,27 @@
+# Required packages and their versions
 -r required.txt
 
-# Format support
-aeidon==1.15        # Subtitles
-# Format support
-BeautifulSoup4>=4.3  # Trados
 # Encoding detection
-charset-normalizer==3.3.2   # chardet
+charset-normalizer==3.3.2  # Replacement for chardet
+
+# Format support
+aeidon==1.15               # Subtitles
+BeautifulSoup4>=4.3        # Trados
+fluent.syntax==0.19.0      # Fluent
+iniparse==0.5              # INI
+mistletoe==1.4.0           # Markdown
+phply==1.2.6               # PHP
+ruamel.yaml==0.18.6        # YAML
+vobject==0.9.7             # iCal
+
 # Tmserver backend
-cheroot==10.0.1       # tmserver
-# Format support
-fluent.syntax==0.19.0 # Fluent
-# Format support
-iniparse==0.5        # INI
-# Format support
-mistletoe==1.4.0       # Markdown
-# Format support
-phply==1.2.6         # PHP
-pyenchant==3.2.2     # spellcheck
-# Windows Resources (rc2po and po2rc)
-pyparsing==3.1.4     # RC
+cheroot==10.0.1            # tmserver
+
 # Faster matching in e.g. pot2po
-python-Levenshtein>=0.12    # Levenshtein
-# Format support
-ruamel.yaml==0.18.6 # YAML
-# Format support
-vobject==0.9.7     # iCal
+python-Levenshtein>=0.12   # Levenshtein
+
+# Spellchecking
+pyenchant==3.2.2           # Spellcheck
+
+# Windows Resources (rc2po and po2rc)
+pyparsing==3.1.4           # RC
