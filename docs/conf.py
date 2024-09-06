@@ -20,7 +20,7 @@ sys.path.insert(0, os.path.abspath(".."))
 # -- Project information -----------------------------------------------------
 
 project = "Translate Toolkit"
-copyright = "2002-2023, Translate"
+copyright = "Translate Toolkit authors"
 
 # The short X.Y version.
 version = "3.13.3"
@@ -40,6 +40,8 @@ extensions = [
     "sphinx.ext.extlinks",
     "sphinx.ext.intersphinx",
     "sphinx.ext.todo",
+    "sphinx_copybutton",
+    "sphinxext.opengraph",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -49,6 +51,11 @@ templates_path = ["_templates"]
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ["_build", "_themes/README.rst", "releases/README.rst"]
+
+ogp_social_cards = {
+    "line_color": "#144d3f",
+    "site_url": "docs.translatehouse.org",
+}
 
 # The master toctree document.
 master_doc = "index"
@@ -71,7 +78,16 @@ autodoc_mock_imports = [
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = "sphinx-bootstrap"
+html_theme = "furo"
+
+# Define the canonical URL if you are using a custom domain on Read the Docs
+html_baseurl = os.environ.get("READTHEDOCS_CANONICAL_URL", "")
+
+# Tell Jinja2 templates the build is running on Read the Docs
+if os.environ.get("READTHEDOCS", "") == "True":
+    if "html_context" not in globals():
+        html_context = {}
+    html_context["READTHEDOCS"] = True
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -80,13 +96,16 @@ html_theme_options = {
     "nosidebar": True,
 }
 
-# Add any paths that contain custom themes here, relative to this directory.
-html_theme_path = ["_themes"]
-
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
+
+html_theme_options = {
+    "source_repository": "https://github.com/translate/translate/",
+    "source_branch": "main",
+    "source_directory": "docs/",
+}
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = "TranslateToolkitdoc"
@@ -197,12 +216,12 @@ intersphinx_mapping = {
     "python": ("https://docs.python.org/3/", None),
     "pytest": ("https://docs.pytest.org/en/latest/", None),
     "django": (
-        "https://docs.djangoproject.com/en/stable/",
-        "https://docs.djangoproject.com/en/stable/_objects/",
+        "https://docs.djangoproject.com/en/stable",
+        "https://docs.djangoproject.com/en/stable/_objects",
     ),
-    "pootle": ("https://docs.translatehouse.org/projects/pootle/en/latest/", None),
+    "pootle": ("https://docs.translatehouse.org/projects/pootle/en/latest", None),
     "guide": (
-        "https://docs.translatehouse.org/projects/localization-guide/en/latest/",
+        "https://docs.translatehouse.org/projects/localization-guide/en/latest",
         None,
     ),
 }

@@ -8,11 +8,8 @@ build: docs
 	python -m build
 
 docs:
-	# Make sure that the submodule with docs theme is pulled and up-to-date.
-	git submodule update --init
 	# The following creates the HTML docs.
-	# NOTE: cd and make must be in the same line.
-	cd ${DOCS_DIR}; make SPHINXOPTS="-T -W -q" html ${TAIL}
+	make -C ${DOCS_DIR} SPHINXOPTS="-T -W -q" html ${TAIL}
 
 docs-review: docs
 	python -mwebbrowser file://$(shell pwd)/${DOCS_DIR}/_build/html/index.html
