@@ -15,12 +15,10 @@ build:
   os: ubuntu-22.04
   tools:
     python: '3.11'
+  apt_packages:
+  - libgettextpo-dev
 
 # Optionally set the version of Python and requirements required to build your docs
 python:
   install:
   - requirements: requirements/dev.txt
-
-# submodules for doc theme
-submodules:
-  include: all
