@@ -408,6 +408,9 @@ class TranslationUnit:
         """
         return bool(self.source)
 
+    def marktranslateable(self, value):
+        """Marks the unit as translateable or not."""
+
     @staticmethod
     def isfuzzy():
         """Indicates whether this unit is fuzzy."""

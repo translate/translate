@@ -178,6 +178,9 @@ class AndroidResourceUnit(base.TranslationUnit):
     def istranslatable(self):
         return bool(self.getid()) and self.xmlelement.get("translatable") != "false"
 
+    def marktranslateable(self, value):
+        return self.xmlelement.set("translatable", value)
+
     def isblank(self):
         return not bool(self.getid())
 
