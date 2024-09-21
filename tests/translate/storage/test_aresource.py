@@ -926,6 +926,32 @@ files</strong> on the storage.</p>
         assert store.units[0].target == "<b>One</b>"
         assert store.units[1].target == "<b>Two</b>"
 
+    def test_translatable_marking(self):
+        data = """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- First -->
+    <string name="test1" translateble="true">Test</string>
+    <!-- Second -->
+    <string name="test2">Test</string>
+    <!-- Third -->
+    <string name="test3" translatable="false">Test2</string>
+</resources>"""
+        store = self.StoreClass()
+        store.parse(data.encode())
+        store.units[1].marktranslateable("false")
+        assert store.units[1].getid() == "test2"
+        assert not store.units[1].istranslatable()
+        store.units[1].marktranslateable("true")
+        assert store.units[1].istranslatable()
+
+        store.units[2].marktranslateable("true")
+        assert store.units[2].getid() == "test3"
+        assert store.units[2].istranslatable()
+
+        store.units[0].marktranslateable("false")
+        assert store.units[0].getid() == "test1"
+        assert not store.units[0].istranslatable()
+
 
 class TestMOKOResourceUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = aresource.MOKOResourceUnit
