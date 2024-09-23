@@ -42,9 +42,7 @@ MULTIWHITESPACE = re.compile("[ \n\t]{2}(?!\\\\n)")
 ESCAPE_TRANSLATE = str.maketrans(
     {
         "\\": "\\\\",
-        # This will add non intrusive real newlines to
-        # ones in translation improving readability of result
-        "\n": "\n\\n",
+        "\n": "\\n",
         "\t": "\\t",
         "'": "\\'",
         '"': '\\"',
