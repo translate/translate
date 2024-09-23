@@ -408,7 +408,7 @@ class TranslationUnit:
         """
         return bool(self.source)
 
-    def marktranslateable(self, value):
+    def marktranslatable(self, value: bool) -> None:
         """Marks the unit as translateable or not."""
 
     @staticmethod

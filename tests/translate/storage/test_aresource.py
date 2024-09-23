@@ -938,17 +938,17 @@ files</strong> on the storage.</p>
 </resources>"""
         store = self.StoreClass()
         store.parse(data.encode())
-        store.units[1].marktranslateable("false")
+        store.units[1].marktranslatable(False)
         assert store.units[1].getid() == "test2"
         assert not store.units[1].istranslatable()
-        store.units[1].marktranslateable("true")
+        store.units[1].marktranslatable(True)
         assert store.units[1].istranslatable()
 
-        store.units[2].marktranslateable("true")
+        store.units[2].marktranslatable(True)
         assert store.units[2].getid() == "test3"
         assert store.units[2].istranslatable()
 
-        store.units[0].marktranslateable("false")
+        store.units[0].marktranslatable(False)
         assert store.units[0].getid() == "test1"
         assert not store.units[0].istranslatable()
 
