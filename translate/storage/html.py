@@ -66,6 +66,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         "h4",
         "h5",
         "h6",
+        "label",
         "li",
         "main",
         "nav",
