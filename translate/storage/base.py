@@ -915,22 +915,30 @@ class TranslationStore:
         self.savefile(fileobj)
 
     @classmethod
+    def _from_handle(cls, storehandle):
+        storestring = storehandle.read()
+        newstore = cls.parsestring(storestring)
+        newstore.fileobj = storehandle
+        newstore._assignname()
+        return newstore
+
+    @classmethod
     def parsefile(cls, storefile):
         """
         Reads the given file (or opens the given filename) and parses back
         to an object.
         """
         if isinstance(storefile, str):
-            storefile = open(storefile, "rb")
+            with open(storefile, "rb") as storehandle:
+                return cls._from_handle(storehandle)
         mode = getattr(storefile, "mode", "rb")
         # For some reason GzipFile returns 1, so we have to test for that here
         if mode == 1 or "r" in mode:
-            storestring = storefile.read()
+            newstore = cls._from_handle(storefile)
             storefile.close()
-            newstore = cls.parsestring(storestring)
-        else:
-            storestring = ""
-            newstore = cls()
+            return newstore
+
+        newstore = cls()
         newstore.fileobj = storefile
         newstore._assignname()
         return newstore
