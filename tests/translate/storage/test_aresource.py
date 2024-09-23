@@ -48,18 +48,18 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
 
     def test_escape_message_with_newline(self):
         string = "message\nwith newline"
-        xml = '<string name="teststring">message\n\\nwith newline</string>\n'
+        xml = '<string name="teststring">message\\nwith newline</string>\n'
         self.__check_escape(string, xml)
 
     def test_escape_quotes_with_newline(self):
         string = "'message'\nwith newline"
-        xml = "<string name=\"teststring\">\\'message\\'\n\\nwith newline</string>\n"
+        xml = "<string name=\"teststring\">\\'message\\'\\nwith newline</string>\n"
         self.__check_escape(string, xml)
 
     def test_escape_message_with_newline_in_xml(self):
         string = "message\n\nwith newline in xml\n"
         xml = (
-            '<string name="teststring">message\n\\n\n\\nwith newline in xml\n\\n'
+            '<string name="teststring">message\\n\\nwith newline in xml\\n'
             "</string>\n"
         )
         self.__check_escape(string, xml)
@@ -112,7 +112,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
     def test_escape_html_code_quote_newline(self):
         string = "some \n<b>html code</b> 'here'"
         xml = (
-            "<string name=\"teststring\">some \n\\n<b>html code</b> \\'here\\'"
+            "<string name=\"teststring\">some \\n<b>html code</b> \\'here\\'"
             "</string>\n"
         )
         self.__check_escape(string, xml)
@@ -150,8 +150,8 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         )
         xml = (
             '<plurals name="teststring">\n'
-            '    <item quantity="one">one message\n\\nwith newline</item>'
-            '<item quantity="other">other message\n\\nwith newline</item>'
+            '    <item quantity="one">one message\\nwith newline</item>'
+            '<item quantity="other">other message\\nwith newline</item>'
             "</plurals>\n"
         )
         self.__check_escape(mString, xml, "en")
@@ -226,9 +226,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
     def test_escape_quoted_newlines(self):
         self.__check_escape(
             "\n\nstring with newlines",
-            r"""<string name="teststring">"
-\n
-\nstring with newlines"</string>
+            r"""<string name="teststring">\n\nstring with newlines</string>
 """,
         )
 
