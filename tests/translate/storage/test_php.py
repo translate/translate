@@ -316,6 +316,29 @@ $foo = 'bar';
         assert phpunit.name == "$lang->'item 1'"
         assert phpunit.source == "value1"
 
+    def test_parsing_arrays_keys_with_quotes(self):
+        """Ensure that our identifiers get escaped. Bug #5348."""
+        phpsource = """return [
+         'item\\'s 1' => 'value1',
+         "item's 2" => 'value2',
+         'item "3"' => 'value3',
+         "item \\"4\\"" => 'value4',
+      ];"""
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 4
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "return[]->'item's 1'"
+        assert phpunit.source == "value1"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "return[]->'item's 2'"
+        assert phpunit.source == "value2"
+        phpunit = phpfile.units[2]
+        assert phpunit.name == "return[]->'item \"3\"'"
+        assert phpunit.source == "value3"
+        phpunit = phpfile.units[3]
+        assert phpunit.name == "return[]->'item \"4\"'"
+        assert phpunit.source == "value4"
+
     def test_parsing_arrays_non_textual(self):
         """Don't break on non-textual data. Bug #1684."""
         phpsource = """$lang = array(
