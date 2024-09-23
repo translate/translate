@@ -338,6 +338,8 @@ $foo = 'bar';
         phpunit = phpfile.units[3]
         assert phpunit.name == "return[]->'item \"4\"'"
         assert phpunit.source == "value4"
+        
+        assert bytes(phpfile).decode() == phpsource
 
     def test_parsing_arrays_non_textual(self):
         """Don't break on non-textual data. Bug #1684."""
