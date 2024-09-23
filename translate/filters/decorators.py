@@ -30,6 +30,17 @@ class Category:
     NO_CATEGORY = 0
 
 
+def annotate_check(checkfunc):
+    """
+    Annotate check function with title attribute.
+
+    This is generated from the first list of docstring removing any
+    extra whitespace caused by indentation.
+    """
+    docstring = checkfunc.__doc__.strip().split("\n\n")[0]
+    checkfunc.title = " ".join(docstring.split())
+
+
 def critical(f):
     @wraps(f)
     def critical_f(self, *args, **kwargs):
@@ -38,6 +49,7 @@ def critical(f):
 
         return f(self, *args, **kwargs)
 
+    annotate_check(critical_f)
     return critical_f
 
 
@@ -49,6 +61,7 @@ def functional(f):
 
         return f(self, *args, **kwargs)
 
+    annotate_check(functional_f)
     return functional_f
 
 
@@ -60,6 +73,7 @@ def cosmetic(f):
 
         return f(self, *args, **kwargs)
 
+    annotate_check(cosmetic_f)
     return cosmetic_f
 
 
@@ -71,4 +85,5 @@ def extraction(f):
 
         return f(self, *args, **kwargs)
 
+    annotate_check(extraction_f)
     return extraction_f
