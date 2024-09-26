@@ -342,10 +342,13 @@ return [
     1 => 'value1',
     2 => 'value2',
     '3' => 'value3',
+    '4\'' => 'value4',
+    '5"' => 'value5',
+    '6\"' => 'value6',
 ];
 """
         phpfile = self.phpparse(phpsource)
-        assert len(phpfile.units) == 3
+        assert len(phpfile.units) == 6
         phpunit = phpfile.units[0]
         assert phpunit.name == "return[]->1"
         assert phpunit.source == "value1"
@@ -355,6 +358,15 @@ return [
         phpunit = phpfile.units[2]
         assert phpunit.name == "return[]->'3'"
         assert phpunit.source == "value3"
+        phpunit = phpfile.units[3]
+        assert phpunit.name == "return[]->'4''"
+        assert phpunit.source == "value4"
+        phpunit = phpfile.units[4]
+        assert phpunit.name == "return[]->'5\"'"
+        assert phpunit.source == "value5"
+        phpunit = phpfile.units[5]
+        assert phpunit.name == "return[]->'6\\\"'"
+        assert phpunit.source == "value6"
 
         assert bytes(phpfile).decode() == phpsource
 
