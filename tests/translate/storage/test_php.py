@@ -335,6 +335,29 @@ return [
 
         assert bytes(phpfile).decode() == phpsource
 
+    def test_parsing_arrays_keys_with_number_as_value(self):
+        """Ensure that our identifiers can have numbers as value. Bug #5355"""
+        phpsource = r"""<?php
+return [
+    1 => 'value1',
+    2 => 'value2',
+    '3' => 'value3',
+];
+"""
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 3
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "return[]->1"
+        assert phpunit.source == "value1"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "return[]->2"
+        assert phpunit.source == "value2"
+        phpunit = phpfile.units[2]
+        assert phpunit.name == "return[]->'3'"
+        assert phpunit.source == "value3"
+
+        assert bytes(phpfile).decode() == phpsource
+
     def test_parsing_arrays_non_textual(self):
         """Don't break on non-textual data. Bug #1684."""
         phpsource = """$lang = array(
