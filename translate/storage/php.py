@@ -288,7 +288,7 @@ class phpunit(base.TranslationUnit):
             if (
                 name is not None
                 and name[0] == name[-1]
-                and (name[0] == "'" or name[0] == '"')
+                and name[0] in {"'", '"'}
             ):
                 name = name[0] + phpencode(name[1:-1], name[0]) + name[0]
         elif self.name.startswith("define"):
