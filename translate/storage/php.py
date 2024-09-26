@@ -285,10 +285,12 @@ class phpunit(base.TranslationUnit):
             fmt = "{1}{2}{1},\n"
         elif "->" in self.name:
             fmt = "{0} => {1}{2}{1},\n"
-            if name is not None and name[0] == name[-1] and (name[0] == "'" or name[0] == '"'):
-                name = (
-                    name[0] + phpencode(name[1:-1], name[0]) + name[0]
-                )
+            if (
+                name is not None
+                and name[0] == name[-1]
+                and (name[0] == "'" or name[0] == '"')
+            ):
+                name = name[0] + phpencode(name[1:-1], name[0]) + name[0]
         elif self.name.startswith("define"):
             fmt = "{0}, {1}{2}{1});\n"
         else:
