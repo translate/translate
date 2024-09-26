@@ -336,7 +336,7 @@ return [
         assert bytes(phpfile).decode() == phpsource
 
     def test_parsing_arrays_keys_with_number_as_value(self):
-        """Ensure that our identifiers can have numbers as value. Bug #5355"""
+        """Ensure that our identifiers can have numbers as value. Bug #5355."""
         phpsource = r"""<?php
 return [
     1 => 'value1',
