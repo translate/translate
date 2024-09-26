@@ -1,0 +1,35 @@
+Translate Toolkit 3.13.4
+************************
+
+*Released on 23 September 2024*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- Android
+
+  - Add API to mark string translatable
+
+- PHP
+
+  - Fixed escaping quotes in keys
+
+Other changes
+-------------
+
+- Compatibility with Python 3.13
+- Documentation now uses Furo theme
+- Fixed lxml depreciation warnings
+- Fixed ``__hash__`` implementation
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař, Rafael Fontenelle, Paul Harriet Asiñero, John Stef
