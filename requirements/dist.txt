@@ -4,4 +4,4 @@ pip==24.2
 setuptools==75.1.0
 setuptools-scm==8.1.0
 twine==5.1.1
-virtualenv==20.26.5
+virtualenv==20.26.6
