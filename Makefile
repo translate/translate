@@ -4,12 +4,12 @@ DOCS_DIR = docs
 
 all: help
 
-build: docs
+build:
 	python -m build
 
 docs:
 	# The following creates the HTML docs.
-	make -C ${DOCS_DIR} SPHINXOPTS="-T -W -q" html ${TAIL}
+	make -C ${DOCS_DIR} SPHINXOPTS="--show-traceback --fail-on-warning --quiet" html ${TAIL}
 
 docs-review: docs
 	python -mwebbrowser file://$(shell pwd)/${DOCS_DIR}/_build/html/index.html
