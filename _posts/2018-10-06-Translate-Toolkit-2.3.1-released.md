@@ -10,4 +10,4 @@ The major changes in this release are:
 - Deprecated `setsource`, `getsource`, `gettarget` and `settarget` methods in favor of `source` and `target` properties.
 
 
-Read the full [Release notes](http://docs.translatehouse.org/projects/translate-toolkit/en/latest/releases/2.3.1.html) for more details.
+Read the full [Release notes](https://docs.translatehouse.org/projects/translate-toolkit/en/latest/releases/2.3.1.html) for more details.

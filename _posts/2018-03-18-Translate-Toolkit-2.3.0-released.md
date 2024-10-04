@@ -10,4 +10,4 @@ The major changes in this release are:
 - Major refactor of converters code.
 
 
-Read the full [Release notes](http://docs.translatehouse.org/projects/translate-toolkit/en/latest/releases/2.3.0.html) for more details.
+Read the full [Release notes](https://docs.translatehouse.org/projects/translate-toolkit/en/latest/releases/2.3.0.html) for more details.

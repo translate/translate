@@ -9,4 +9,4 @@ The major changes in this release are:
 - Fixes for multiple formats.
 
 
-Read the full [Release notes](http://docs.translatehouse.org/projects/translate-toolkit/en/latest/releases/2.4.0.html) for more details.
+Read the full [Release notes](https://docs.translatehouse.org/projects/translate-toolkit/en/latest/releases/2.4.0.html) for more details.

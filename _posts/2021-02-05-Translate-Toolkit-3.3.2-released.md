@@ -9,4 +9,4 @@ The major changes in this release are:
 - Fixed installation of converters
 - Fixed --columnorder handling in po2json/json2po
 
-Read the full [Release notes](http://docs.translatehouse.org/projects/translate-toolkit/en/latest/releases/3.3.2.html) for more details.
+Read the full [Release notes](https://docs.translatehouse.org/projects/translate-toolkit/en/latest/releases/3.3.2.html) for more details.

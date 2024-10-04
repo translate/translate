@@ -11,4 +11,4 @@ The major changes in this release are:
 - Added Sicilian language checks.
 
 
-Read the full [Release notes](http://docs.translatehouse.org/projects/translate-toolkit/en/latest/releases/2.5.0.html) for more details.
+Read the full [Release notes](https://docs.translatehouse.org/projects/translate-toolkit/en/latest/releases/2.5.0.html) for more details.

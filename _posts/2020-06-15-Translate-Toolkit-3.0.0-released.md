@@ -10,4 +10,4 @@ The major changes in this release are:
 - Removed lot of deprecated code.
 
 
-Read the full [Release notes](http://docs.translatehouse.org/projects/translate-toolkit/en/latest/releases/3.0.0.html) for more details.
+Read the full [Release notes](https://docs.translatehouse.org/projects/translate-toolkit/en/latest/releases/3.0.0.html) for more details.

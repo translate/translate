@@ -9,4 +9,4 @@ The major changes in this release are:
 - This is last release where Python 2.7 is still supported.
 - Updated plural definitions to match CLDR 36.
 
-Read the full [Release notes](http://docs.translatehouse.org/projects/translate-toolkit/en/latest/releases/2.5.1.html) for more details.
+Read the full [Release notes](https://docs.translatehouse.org/projects/translate-toolkit/en/latest/releases/2.5.1.html) for more details.

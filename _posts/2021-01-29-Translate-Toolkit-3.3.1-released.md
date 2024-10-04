@@ -9,4 +9,4 @@ The major changes in this release are:
 - Fixed parsing of unicode RC files
 - Minor improvements to JSON or TBX
 
-Read the full [Release notes](http://docs.translatehouse.org/projects/translate-toolkit/en/latest/releases/3.3.1.html) for more details.
+Read the full [Release notes](https://docs.translatehouse.org/projects/translate-toolkit/en/latest/releases/3.3.1.html) for more details.

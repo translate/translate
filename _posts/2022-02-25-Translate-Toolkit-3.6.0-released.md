@@ -9,4 +9,4 @@ The major changes in this release are:
 - Changed supported Python version (dropped 3.6, added 3.10).
 - Code and documentation cleanups.
 
-Read the full [Release notes](http://docs.translatehouse.org/projects/translate-toolkit/en/latest/releases/3.6.0.html) for more details.
+Read the full [Release notes](https://docs.translatehouse.org/projects/translate-toolkit/en/latest/releases/3.6.0.html) for more details.

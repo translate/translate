@@ -10,4 +10,4 @@ The major changes in this release are:
 - Bugfix for XLIFF format.
 
 
-Read the full [Release notes](http://docs.translatehouse.org/projects/translate-toolkit/en/latest/releases/2.2.5.html) for more details.
+Read the full [Release notes](https://docs.translatehouse.org/projects/translate-toolkit/en/latest/releases/2.2.5.html) for more details.

@@ -9,4 +9,4 @@ The major changes in this release are:
 - Added support for Resource Dictionary format.
 - Fixes in the CSV, PO and RC formats.
 
-Read the full [Release notes](http://docs.translatehouse.org/projects/translate-toolkit/en/latest/releases/3.7.0.html) for more details.
+Read the full [Release notes](https://docs.translatehouse.org/projects/translate-toolkit/en/latest/releases/3.7.0.html) for more details.

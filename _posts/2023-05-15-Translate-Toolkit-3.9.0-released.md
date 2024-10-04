@@ -10,4 +10,4 @@ The major changes in this release are:
 - Improvements to POXLIFF and TBX formats
 - Improvedemnts of the pocount tool
 
-Read the full [Release notes](http://docs.translatehouse.org/projects/translate-toolkit/en/latest/releases/3.9.0.html) for more details.
+Read the full [Release notes](https://docs.translatehouse.org/projects/translate-toolkit/en/latest/releases/3.9.0.html) for more details.
