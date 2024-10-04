@@ -14,7 +14,10 @@ build:
     python: '3.11'
   apt_packages:
   - libgettextpo0
-
-python:
-  install:
-  - requirements: requirements/docs.txt
+  commands:
+  - asdf plugin add uv
+  - asdf install uv latest
+  - asdf global uv latest
+  - uv venv
+  - uv pip install -r ./requirements/docs.txt
+  - .venv/bin/python -m sphinx -T -b html -d docs/_build/doctrees -D language=en docs $READTHEDOCS_OUTPUT/html
