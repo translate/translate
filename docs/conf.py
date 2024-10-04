@@ -71,6 +71,11 @@ autodoc_mock_imports = [
     "iniparse",
     "vobject",
     "mistletoe",
+    "wcwidth",
+    "lxml",
+    "phply",
+    "ruamel",
+    "cheroot",
 ]
 
 # -- Options for HTML output -------------------------------------------------
