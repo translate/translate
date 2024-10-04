@@ -76,6 +76,7 @@ autodoc_mock_imports = [
     "phply",
     "ruamel",
     "cheroot",
+    "Levenshtein",
 ]
 
 # -- Options for HTML output -------------------------------------------------
