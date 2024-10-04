@@ -6,7 +6,7 @@ Release Notes
 The following are release notes for the Translate Toolkit releases.
 
 These are the changes that have happened in the Translate Toolkit and which may
-impact you.  If you use Pootle, Virtaal or any other application that makes use
+impact you. If you use Weblate, Pootle, Virtaal or any other application that makes use
 of the Translate Toolkit you may want to familiarize yourself with these
 changes.
 
@@ -17,6 +17,7 @@ Final releases
 .. toctree::
    :maxdepth: 1
 
+   3.13.5 <3.13.5>
    3.13.4 <3.13.4>
    3.13.3 <3.13.3>
    3.13.2 <3.13.2>
