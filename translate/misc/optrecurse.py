@@ -313,7 +313,7 @@ class RecursiveOptionParser(optparse.OptionParser):
                 outputformats.append(outputformat)
             if templateformat not in templateformats:
                 templateformats.append(templateformat)
-            self.outputoptions[(inputformat, templateformat)] = (
+            self.outputoptions[inputformat, templateformat] = (
                 outputformat,
                 processor,
             )

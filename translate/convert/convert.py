@@ -177,7 +177,7 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser):
                 inputformat = self.potifyformat(inputformat)
                 templateformat = self.potifyformat(templateformat)
                 outputformat = self.potifyformat(outputformat)
-                outputoptions[(inputformat, templateformat)] = (outputformat, convertor)
+                outputoptions[inputformat, templateformat] = (outputformat, convertor)
             return outputoptions
         return self.outputoptions
 

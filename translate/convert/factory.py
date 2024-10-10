@@ -69,13 +69,13 @@ def get_converter(in_ext, out_ext=None, templ_ext=None):
     convert_candidates = None
     if templ_ext:
         if (in_ext, templ_ext) in converters:
-            convert_candidates = converters[(in_ext, templ_ext)]
+            convert_candidates = converters[in_ext, templ_ext]
         else:
             raise UnsupportedConversionError(in_ext, out_ext, templ_ext)
     elif in_ext in converters:
         convert_candidates = converters[in_ext]
     elif (in_ext,) in converters:
-        convert_candidates = converters[(in_ext,)]
+        convert_candidates = converters[in_ext,]
     else:
         raise UnsupportedConversionError(in_ext, out_ext)
 
