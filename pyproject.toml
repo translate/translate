@@ -102,14 +102,12 @@ ignore = [
   "RUF003",  # WONTFIX: Comment contains ambiguous
   "A001",  # TODO: Variable is shadowing a Python builtin
   "A002",  # TODO: overriding builtins (might need noqa tags)
-  "A003",  # TODO: Class attribute `map` is shadowing a Python builtin
   "S320",  # TODO: Using `lxml` to parse untrusted data is known to be vulnerable to XML attacks
   "S324",  # TODO: Probable use of insecure hash functions in `hashlib`: `md5`
   "S311",  # TODO: Standard pseudo-random generators are not suitable for cryptographic purposes
   "S301",  # TODO: `pickle` and modules that wrap it can be unsafe when used to deserialize untrusted data, possible security issue
   "S105",  # TODO: Possible hardcoded password assigned
   "S307",  # TODO: Use of possibly insecure function; consider using `ast.literal_eval`
-  "S310",  # TODO: Audit URL open for permitted schemes.
   "PLE2502",  # TODO: Contains control characters that can permit obfuscated code
   "INP001",  # TODO: File is part of an implicit namespace package. Add an `__init__.py`.
   "TID252",  # TODO: Relative imports from parent modules are banned
