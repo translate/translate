@@ -24,3 +24,6 @@ jobs:
       run: uv pip install --system -r requirements/lint.txt
     - name: pre-commit
       run: pre-commit run --all
+      env:
+        RUFF_OUTPUT_FORMAT: github
+        REUSE_OUTPUT_FORMAT: github
