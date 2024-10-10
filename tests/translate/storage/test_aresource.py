@@ -238,7 +238,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         self.__check_parse(string, xml)
 
     def test_parse_message_with_newline_in_xml(self):
-        string = "message\nwith\n newline\n in xml"
+        string = "message \nwith\n newline\n in xml"
         xml = (
             '<string name="teststring">message\n\\nwith\\n\nnewline\\n\nin xml'
             "</string>\n"
@@ -399,7 +399,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         self.__check_parse(string, xml)
 
     def test_parse_html_leading_space(self):
-        string = " <b>html code 'to escape'</b> some 'here'"
+        string = "<b>html code 'to escape'</b> some 'here'"
         xml = (
             "<string name=\"teststring\"> <b>html code \\'to escape\\'</b> some \\'here\\'"
             "</string>\n"
@@ -415,7 +415,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         self.__check_parse(string, xml)
 
     def test_parse_html_trailing_space(self):
-        string = "<b>html code 'to escape'</b> some 'here' "
+        string = "<b>html code 'to escape'</b> some 'here'"
         xml = (
             "<string name=\"teststring\"><b>html code \\'to escape\\'</b> some \\'here\\' "
             "</string>\n"
@@ -886,6 +886,21 @@ files</strong> on the storage.</p>
         assert bytes(store).decode() == content
         store.units[0].target = body
         assert bytes(store).decode() == content
+
+    def test_cdata_text(self):
+        body = """By continuing you accept our <![CDATA[<a href="%1$s">Terms of Use</a>]]> and <![CDATA[<a href="%2$s">Privacy Policy</a>]]>"""
+        content = f"""<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="service_terms_agreement_notice">{body}</string>
+</resources>"""
+        store = self.StoreClass()
+        store.parse(content.encode())
+        assert len(store.units) == 1
+        assert store.units[0].target == body
+        assert bytes(store).decode() == content
+        store.units[0].target = body
+        # TODO: this fails for now:
+        # assert bytes(store).decode() == content
 
     def test_prefix(self):
         body = "&lt; <b>body</b>"

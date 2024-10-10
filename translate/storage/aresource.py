@@ -69,6 +69,8 @@ class DecodingXMLParser:
         self.decoded_emit = None
         self.character_data = False
         self.raw_string = True
+        self.in_string = False
+        self.do_cleanup = False
         self.depth = 0
         self.parser = parser = ParserCreate()
         if self.FOREGIN_DTD:
@@ -82,20 +84,147 @@ class DecodingXMLParser:
         parser.DefaultHandler = self.DefaultHandler
 
     @staticmethod
-    def process_string(text: str) -> str:
-        return AndroidResourceUnit.unescape(text, strip=False)
+    def process_string(text: str) -> tuple[str, bool]:
+        """
+        Remove escaping from Android resource.
+
+        Code is based on android2po
+        <https://github.com/miracle2k/android2po>
+        """
+        # Mirror globals into locals for faster lookups
+        eof = EOF
+        whitespace = WHITESPACE
+        escape_newline = ESCAPE_NEWLINE
+        escape_tab = ESCAPE_TAB
+        escape_plain = ESCAPE_PLAIN
+        cleanup_result = True
+
+        # We need to collapse multiple whitespace while paying
+        # attention to Android's quoting and escaping.
+        space_count = 0
+        active_quote = False
+        active_escape = False
+        i = 0
+        text = [*text, eof]
+        while i < len(text):
+            c = text[i]
+
+            if not active_escape:
+                # Handle whitespace collapsing
+                if c is not eof and c in whitespace:
+                    space_count += 1
+                elif space_count >= 1:
+                    # Remove sequential whitespace; Pay attention: We
+                    # don't do this if we are currently inside a quote,
+                    # except for one special case: If we have unbalanced
+                    # quotes, e.g. we reach eof while a quote is still
+                    # open, we *do* collapse that trailing part; this is
+                    # how Android does it, for some reason.
+                    if not active_quote or c is eof:
+                        # Replace by a single space, will get rid of
+                        # non-significant newlines/tabs etc.
+                        text[i - space_count : i] = " "
+                        i -= space_count - 1
+                    space_count = 0
+                else:
+                    space_count = 0
+
+            # Handle quotes
+            if c == '"' and not active_escape:
+                if active_quote:
+                    cleanup_result = False
+                active_quote = not active_quote
+                del text[i]
+                i -= 1
+            elif c is not eof:
+                cleanup_result = True
+
+            # Handle escapes
+            if c == "\\":
+                if not active_escape:
+                    active_escape = True
+                else:
+                    # A double-backslash represents a single;
+                    # simply deleting the current char will do.
+                    del text[i]
+                    i -= 1
+                    active_escape = False
+            elif active_escape:
+                # Handle the limited amount of escape codes
+                # that we support.
+                # TODO: What about \r, or \r\n?
+                if c is eof:
+                    # Basically like any other char, but put
+                    # this first so we can use the ``in`` operator
+                    # in the clauses below without issue.
+                    pass
+                elif c in escape_newline:
+                    text[i - 1 : i + 1] = "\n"  # an actual newline
+                    i -= 1
+                elif c in escape_tab:
+                    text[i - 1 : i + 1] = "\t"  # an actual tab
+                    i -= 1
+                elif c in escape_plain:
+                    text[i - 1 : i] = ""  # remove the backslash
+                    i -= 1
+                elif c == "u":
+                    # Unicode sequence. Android is nice enough to deal
+                    # with those in a way which let's us just capture
+                    # the next 4 characters and raise an error if they
+                    # are not valid (rather than having to use a new
+                    # state to parse the unicode sequence).
+                    # Exception: In case we are at the end of the
+                    # string, we support incomplete sequences by
+                    # prefixing the missing digits with zeros.
+                    # Note: max(len()) is needed in the slice due to
+                    # trailing ``None`` element.
+                    max_slice = min(i + 5, len(text) - 1)
+                    codepoint_str = "".join(text[i + 1 : max_slice])
+                    if len(codepoint_str) < 4:
+                        codepoint_str = "0" * (4 - len(codepoint_str)) + codepoint_str
+                    try:
+                        # We can't trust int() to raise a ValueError,
+                        # it will ignore leading/trailing whitespace.
+                        if not codepoint_str.isalnum():
+                            raise ValueError(codepoint_str)
+                        codepoint = chr(int(codepoint_str, 16))
+                    except ValueError:
+                        raise ValueError("bad unicode escape sequence")
+
+                    text[i - 1 : max_slice] = codepoint
+                    i -= 1
+                else:
+                    # All others, remove, like Android does as well.
+                    text[i - 1 : i + 1] = ""
+                    i -= 1
+                active_escape = False
+
+            i += 1
+
+        # Join the string together again, but w/o EOF marker
+        return "".join(text[:-1]), cleanup_result
+
+    def cleanup_text(self, text: str) -> str:
+        """Remove leading whitespace from text."""
+        if not self.output:
+            return text.lstrip()
+        return text
 
     def emit(self):
         if self.emit_start is not None:
             text = self.text[self.emit_start : self.parser.CurrentByteIndex].decode(
                 "utf-8"
             )
+            self.do_cleanup = not self.raw_string
             if not self.raw_string:
-                text = self.process_string(text)
+                text, self.do_cleanup = self.process_string(text)
+                if self.do_cleanup:
+                    text = self.cleanup_text(text)
             self.output.append(text)
             self.emit_start = None
         self.character_data = False
         self.raw_string = True
+        self.in_string = False
 
     def StartElementHandler(self, _name, _attributes):
         self.emit()
@@ -110,10 +239,11 @@ class DecodingXMLParser:
         self.depth -= 1
 
     def CharacterDataHandler(self, _data):
-        if not self.character_data:
+        if not self.character_data and not self.in_string:
             self.emit()
             self.emit_start = self.parser.CurrentByteIndex
             self.raw_string = False
+            self.in_string = True
 
     def StartCdataSectionHandler(self):
         self.emit()
@@ -132,6 +262,9 @@ class DecodingXMLParser:
         self.parser.Parse(self.text, True)
         if self.depth >= self.EMIT_DEPTH:
             self.emit()
+        # Remove trailing whitespace from text
+        if self.do_cleanup and self.output:
+            self.output[-1] = self.output[-1].rstrip()
         return "".join(self.output)
 
 
@@ -140,8 +273,8 @@ class EncodingXMLParser(DecodingXMLParser):
     FOREGIN_DTD = False
 
     @staticmethod
-    def process_string(text: str) -> str:
-        return AndroidResourceUnit.escape(text, quote_wrapping_whitespaces=False)
+    def process_string(text: str) -> tuple[str, bool]:
+        return AndroidResourceUnit.escape(text, quote_wrapping_whitespaces=False), False
 
     def parse(self) -> str:
         self.emit_start = 0
@@ -192,131 +325,6 @@ class AndroidResourceUnit(base.TranslationUnit):
         return self.xmlelement.get("name")
 
     @staticmethod
-    def unescape(text, strip=True):
-        """
-        Remove escaping from Android resource.
-
-        Code is based on android2po
-        <https://github.com/miracle2k/android2po>
-        """
-        # Return text for empty elements
-        if text is None:
-            return ""
-
-        # Mirror globals into locals for faster lookups
-        eof = EOF
-        whitespace = WHITESPACE
-        escape_newline = ESCAPE_NEWLINE
-        escape_tab = ESCAPE_TAB
-        escape_plain = ESCAPE_PLAIN
-
-        # We need to collapse multiple whitespace while paying
-        # attention to Android's quoting and escaping.
-        space_count = 0
-        active_quote = False
-        active_escape = False
-        i = 0
-        text = [*text, eof]
-        while i < len(text):
-            c = text[i]
-
-            if not active_escape:
-                # Handle whitespace collapsing
-                if c is not eof and c in whitespace:
-                    space_count += 1
-                elif space_count >= 1:
-                    # Remove sequential whitespace; Pay attention: We
-                    # don't do this if we are currently inside a quote,
-                    # except for one special case: If we have unbalanced
-                    # quotes, e.g. we reach eof while a quote is still
-                    # open, we *do* collapse that trailing part; this is
-                    # how Android does it, for some reason.
-                    if not active_quote or c is eof:
-                        # Replace by a single space, will get rid of
-                        # non-significant newlines/tabs etc.
-                        text[i - space_count : i] = " "
-                        i -= space_count - 1
-                        if strip and (i == 1 or c is eof):
-                            del text[i - 1]
-                    space_count = 0
-                else:
-                    space_count = 0
-
-            # Handle quotes
-            if c == '"' and not active_escape:
-                active_quote = not active_quote
-                del text[i]
-                i -= 1
-
-            # Handle escapes
-            if c == "\\":
-                if not active_escape:
-                    active_escape = True
-                else:
-                    # A double-backslash represents a single;
-                    # simply deleting the current char will do.
-                    del text[i]
-                    i -= 1
-                    active_escape = False
-            elif active_escape:
-                # Handle the limited amount of escape codes
-                # that we support.
-                # TODO: What about \r, or \r\n?
-                if c is eof:
-                    # Basically like any other char, but put
-                    # this first so we can use the ``in`` operator
-                    # in the clauses below without issue.
-                    pass
-                elif c in escape_newline:
-                    # Remove whitespace just before newline. Most likely this is result of
-                    # having real newline in the XML in front of \n.
-                    offset = 2 if i >= 2 and text[i - 2] == " " else 1
-                    text[i - offset : i + 1] = "\n"  # an actual newline
-                    i -= offset
-                elif c in escape_tab:
-                    text[i - 1 : i + 1] = "\t"  # an actual tab
-                    i -= 1
-                elif c in escape_plain:
-                    text[i - 1 : i] = ""  # remove the backslash
-                    i -= 1
-                elif c == "u":
-                    # Unicode sequence. Android is nice enough to deal
-                    # with those in a way which let's us just capture
-                    # the next 4 characters and raise an error if they
-                    # are not valid (rather than having to use a new
-                    # state to parse the unicode sequence).
-                    # Exception: In case we are at the end of the
-                    # string, we support incomplete sequences by
-                    # prefixing the missing digits with zeros.
-                    # Note: max(len()) is needed in the slice due to
-                    # trailing ``None`` element.
-                    max_slice = min(i + 5, len(text) - 1)
-                    codepoint_str = "".join(text[i + 1 : max_slice])
-                    if len(codepoint_str) < 4:
-                        codepoint_str = "0" * (4 - len(codepoint_str)) + codepoint_str
-                    try:
-                        # We can't trust int() to raise a ValueError,
-                        # it will ignore leading/trailing whitespace.
-                        if not codepoint_str.isalnum():
-                            raise ValueError(codepoint_str)
-                        codepoint = chr(int(codepoint_str, 16))
-                    except ValueError:
-                        raise ValueError("bad unicode escape sequence")
-
-                    text[i - 1 : max_slice] = codepoint
-                    i -= 1
-                else:
-                    # All others, remove, like Android does as well.
-                    text[i - 1 : i + 1] = ""
-                    i -= 1
-                active_escape = False
-
-            i += 1
-
-        # Join the string together again, but w/o EOF marker
-        return "".join(text[:-1])
-
-    @staticmethod
     def xml_escape_space(matchobj):
         return matchobj.group(0).replace("  ", r" \u0020")
 
@@ -365,13 +373,19 @@ class AndroidResourceUnit(base.TranslationUnit):
         return super().source
 
     def get_xml_text_value(self, xmltarget):
-        if len(xmltarget) == 0:
-            # There are no html markups, so unescaping it as plain text.
-            return self.unescape(xmltarget.text)
-        parser = DecodingXMLParser(
-            etree.tostring(xmltarget, encoding="unicode", with_tail=False)
-        )
+        raw_xml = etree.tostring(xmltarget, encoding="unicode", with_tail=False)
+        # Unescape as plain text in case there is no XML markup. Ufortunately
+        # CDATA elements are not listed as childs in lxml, so test for it in raw XML.
+        if len(xmltarget) == 0 and "<![CDATA[" not in raw_xml:
+            if xmltarget.text is None:
+                return ""
+            text, do_cleanup = DecodingXMLParser.process_string(xmltarget.text)
+            if do_cleanup:
+                return text.strip()
+            return text
 
+        # Use decoding parser to keep XML entitities, CDATA while processing Android escaping
+        parser = DecodingXMLParser(raw_xml)
         return parser.parse()
 
     def set_xml_text_plain(self, target, xmltarget):
