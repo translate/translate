@@ -26,6 +26,7 @@ target-version = "py38"
 
 [tool.ruff.lint]
 extend-safe-fixes = [
+  "FURB113",
   "PLC2801"
 ]
 # CONFIG - intentional configuration
@@ -143,7 +144,6 @@ ignore = [
   "B909",  # X-TODO: Mutation to loop iterable `inputpo.units` during iteration
   "UP031",  # X-TODO: Use format specifiers instead of percent format
   "PLC1901",  # X-TODO: `target != ""` can be simplified to `target` as an empty string is falsey
-  "FURB113",  # X-TODO: Use `source.extend(...)` instead of repeatedly calling `source.append()`
   "DOC",  # TODO: is not documented in docstring
   "PTH"  # TODO: Not using pathlib for now
 ]

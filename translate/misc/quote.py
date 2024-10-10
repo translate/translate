@@ -263,8 +263,12 @@ def entityencode(source: str, codepoint2name: dict[str, str]) -> str:
                 output.append(f"&{possibleentity};")
                 inentity = False
             elif char == " ":
-                output.append(_encode_entity_char("&", codepoint2name))
-                output.append(entityencode(possibleentity + char, codepoint2name))
+                output.extend(
+                    (
+                        _encode_entity_char("&", codepoint2name),
+                        entityencode(possibleentity + char, codepoint2name),
+                    )
+                )
                 inentity = False
             else:
                 possibleentity += char
