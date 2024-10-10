@@ -7,6 +7,6 @@ latest_version: 3.13.5
 author: Translate House
 
 about_url: http://translatehouse.org/about.html
-docs_url: https://docs.translatehouse.org/projects/translate-toolkit/
+docs_url: https://docs.translatehouse.org/projects/translate-toolkit/en/latest/
 gh_url: https://github.com/translate/translate
 contact_url: mailto:dev@translate.org.za
