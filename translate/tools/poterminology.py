@@ -311,8 +311,7 @@ class TerminologyExtractor:
                     bestunit = unit
                 # FIXME: figure out why we did a merge to begin with
                 # termunit.merge(unit, overwrite=False, comments=False)
-                for loc in unit.getlocations():
-                    locations.add(locre.sub("", loc))
+                locations.update(locre.sub("", loc) for loc in unit.getlocations())
 
             numsources = len(sources)
             numfiles = len(filecounts)
