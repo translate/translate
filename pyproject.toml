@@ -35,7 +35,6 @@ ignore = [
   "PLW1510",  # TODO: `subprocess.run` without explicit `check` argument
   "SLOT000",  # TODO: Subclasses of `str` should define `__slots__`
   "B028",  # TODO: No explicit `stacklevel` keyword argument found
-  "TRY301",  # TODO: Abstract `raise` to an inner function
   "B006",  # TODO: Do not use mutable data structures for argument defaults
   "PLR0913",  # TODO: Too many arguments in function definition
   "PERF203",  # TODO: `try`-`except` within a loop incurs performance overhead
