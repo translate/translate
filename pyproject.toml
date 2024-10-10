@@ -142,7 +142,6 @@ ignore = [
   "PLC0206",  # X-TODO: Extracting value from dictionary without calling `.items()`
   "FURB118",  # X-TODO: Use `operator.itemgetter(1)` instead of defining a function
   "UP031",  # X-TODO: Use format specifiers instead of percent format
-  "FURB142",  # X-TODO: [*] Use of `set.add()` in a for loop
   "PLC1901",  # X-TODO: `target != ""` can be simplified to `target` as an empty string is falsey
   "PLC2801",  # X-TODO: Unnecessary dunder call to `__str__`. Use `str()` builtin.
   "FURB113",  # X-TODO: Use `source.extend(...)` instead of repeatedly calling `source.append()`
