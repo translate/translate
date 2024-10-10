@@ -25,6 +25,9 @@ profile = "black"
 target-version = "py38"
 
 [tool.ruff.lint]
+extend-safe-fixes = [
+  "PLC2801"
+]
 # CONFIG - intentional configuration
 # TODO - needs decision whether intention, add noqa tags or fix
 # WONTFIX - not fixable in current codebase, might be better to go for noqa
@@ -140,7 +143,6 @@ ignore = [
   "B909",  # X-TODO: Mutation to loop iterable `inputpo.units` during iteration
   "UP031",  # X-TODO: Use format specifiers instead of percent format
   "PLC1901",  # X-TODO: `target != ""` can be simplified to `target` as an empty string is falsey
-  "PLC2801",  # X-TODO: Unnecessary dunder call to `__str__`. Use `str()` builtin.
   "FURB113",  # X-TODO: Use `source.extend(...)` instead of repeatedly calling `source.append()`
   "DOC",  # TODO: is not documented in docstring
   "PTH"  # TODO: Not using pathlib for now
