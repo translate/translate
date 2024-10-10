@@ -222,7 +222,7 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
                     )
                     a = minidom.Attr(qname, uri, localname, prefix)
                     _attrs[qname] = a
-                    _attrsNS[(uri, localname)] = a
+                    _attrsNS[uri, localname] = a
                 else:
                     a = minidom.Attr(
                         aname,
@@ -231,7 +231,7 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
                         expatbuilder.EMPTY_PREFIX,
                     )
                     _attrs[aname] = a
-                    _attrsNS[(expatbuilder.EMPTY_NAMESPACE, aname)] = a
+                    _attrsNS[expatbuilder.EMPTY_NAMESPACE, aname] = a
                 a.ownerDocument = self.document
                 a.value = value
                 a.ownerElement = node

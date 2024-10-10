@@ -42,13 +42,13 @@ def main(argv=None):
         ("lang", mozlang2po.run_converter),
     ]
     for format, converter in converters:
-        formats[(format, format)] = (format + ".po", converter)
+        formats[format, format] = (format + ".po", converter)
         formats[format] = (format + ".po", converter)
     # handle search and replace
     replacer = convert.Replacer("en-US", "${locale}")
     for replaceformat in ("js", "rdf", "manifest"):
-        formats[(None, replaceformat)] = (replaceformat, replacer.searchreplacetemplate)
-        formats[(replaceformat, replaceformat)] = (
+        formats[None, replaceformat] = (replaceformat, replacer.searchreplacetemplate)
+        formats[replaceformat, replaceformat] = (
             replaceformat,
             replacer.searchreplaceinput,
         )
