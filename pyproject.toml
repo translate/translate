@@ -22,7 +22,6 @@ known_third_party = [
 profile = "black"
 
 [tool.ruff]
-output-format = "github"
 target-version = "py38"
 
 [tool.ruff.lint]
