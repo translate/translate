@@ -17,6 +17,8 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 
+from operator import itemgetter
+
 from translate.storage.xml_extract import misc
 
 # reduce_tree
@@ -29,16 +31,12 @@ test_tree_1 = (
 test_tree_2 = (1, [(2, []), (3, [(4, []), (5, [])]), (6, [(7, [(8, [])])])])
 
 
-def get_children(node):
-    return node[1]
-
-
 def test_reduce_tree():
     def concatenate(parent_node, node, string):
         return string + node[0]
 
     assert (
-        misc.reduce_tree(concatenate, test_tree_1, test_tree_1, get_children, "")
+        misc.reduce_tree(concatenate, test_tree_1, test_tree_1, itemgetter(1), "")
         == "abcdefgh"
     )
 
@@ -49,7 +47,7 @@ def test_reduce_tree():
         return even_lst, total + num
 
     assert misc.reduce_tree(
-        get_even_and_total, test_tree_2, test_tree_2, get_children, [], 0
+        get_even_and_total, test_tree_2, test_tree_2, itemgetter(1), [], 0
     ) == ([2, 4, 6, 8], 36)
 
 
