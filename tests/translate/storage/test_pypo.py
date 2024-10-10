@@ -3,7 +3,7 @@ from io import BytesIO
 
 from pytest import mark, raises
 
-from translate.__version__ import sver
+from translate.__version__ import sver  # noqa: PLC2701
 from translate.misc.multistring import multistring
 from translate.storage import pypo
 
