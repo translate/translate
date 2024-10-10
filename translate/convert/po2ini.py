@@ -48,7 +48,7 @@ class po2ini:
     ):
         """Initialize the converter."""
         if ini.INIConfig is None:
-            print("Missing iniparse library!")
+            print("Missing iniparse library!")  # noqa: T201
             sys.exit()
 
         if template_file is None:

@@ -100,7 +100,6 @@ ignore = [
   "RUF001",  # WONTFIX: String contains ambiguous unicode character, we are using Unicode
   "RUF002",  # WONTFIX: Docstring contains ambiguous
   "RUF003",  # WONTFIX: Comment contains ambiguous
-  "T201",  # TODO: `print` found
   "A001",  # TODO: Variable is shadowing a Python builtin
   "A002",  # TODO: overriding builtins (might need noqa tags)
   "A003",  # TODO: Class attribute `map` is shadowing a Python builtin
@@ -125,3 +124,10 @@ ignore = [
   "PTH"  # TODO: Not using pathlib for now
 ]
 select = ["ALL"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**.py" = ["T201"]
+"translate/misc/progressbar.py" = ["T201"]
+"translate/storage/benchmark.py" = ["T201"]
+"translate/storage/placeables/strelem.py" = ["T201"]
+"translate/tools/**.py" = ["T201"]

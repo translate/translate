@@ -168,7 +168,7 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
             self.error("No valid filters were specified")
 
         if options.listfilters:
-            print(options.checkfilter.getfilterdocs())
+            print(options.checkfilter.getfilterdocs())  # noqa: T201
         else:
             self.recursiveprocess(options)
 

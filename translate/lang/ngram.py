@@ -168,4 +168,4 @@ if __name__ == "__main__":
     from translate.misc.file_discovery import get_abs_data_filename
 
     lm = NGram(get_abs_data_filename("langmodels"))
-    print(lm.classify(text))
+    print(lm.classify(text))  # noqa: T201
