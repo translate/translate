@@ -61,7 +61,7 @@ class po2yaml:
 
     def convert_unit(self, unit):
         """Convert a source format unit to a target format unit."""
-        use_target = unit.istranslated() or unit.isfuzzy() and self.include_fuzzy
+        use_target = unit.istranslated() or (unit.isfuzzy() and self.include_fuzzy)
         target_unit = self.TargetUnitClass(
             source=unit.target if use_target else unit.source,
         )
