@@ -21,62 +21,57 @@ Supports a hybrid Unicode string that can also have a list of alternate
 strings in the strings attribute.
 """
 
+from __future__ import annotations
+
 
 class multistring(str):
-    def __new__(cls, string=""):
-        if isinstance(string, list):
-            if not string:
-                raise ValueError("multistring must contain at least one string")
-            newstring = str.__new__(cls, string[0])
-            newstring.strings = [newstring] + [
-                multistring.__new__(cls, altstring) for altstring in string[1:]
-            ]
-        else:
-            newstring = str.__new__(cls, string)
-            newstring.strings = [newstring]
+    def __new__(cls, string: list[str] | str | None = None):
+        if string is None:
+            string = [""]
+        elif isinstance(string, str):
+            string = [string]
+        if not isinstance(string, list) or any(
+            not isinstance(value, str) for value in string
+        ):
+            raise TypeError("multistring can only contain strings or list of strings")
+        if not string:
+            raise ValueError("multistring must contain at least one string")
+
+        newstring = str.__new__(cls, string[0])
+        newstring.extra_strings = string[1:]
         return newstring
 
     def __init__(self, *args, **kwargs):
         super().__init__()
-        if not hasattr(self, "strings"):
-            self.strings = []
+        if not hasattr(self, "extra_strings"):
+            self.extra_strings = []
 
-    def __cmp__(self, otherstring):
-        def cmp_compat(s1, s2):
-            # Python 3 compatible cmp() equivalent
-            return (s1 > s2) - (s1 < s2)
+    @property
+    def strings(self) -> list[str]:
+        return [self, *self.extra_strings]
 
-        if isinstance(otherstring, multistring):
-            parentcompare = cmp_compat(str(self), otherstring)
-            if parentcompare:
-                return parentcompare
-            return cmp_compat(self.strings[1:], otherstring.strings[1:])
-        if isinstance(otherstring, str):
-            return cmp_compat(str(self), otherstring)
-        if isinstance(otherstring, list) and otherstring:
-            return cmp_compat(self, multistring(otherstring))
-        return cmp_compat(str(type(self)), str(type(otherstring)))
+    def __hash__(self) -> int:
+        return super().__hash__()
 
-    def __hash__(self):
-        return hash(str(self))
+    def __ne__(self, other) -> bool:
+        return not self.__eq__(other)
 
-    def __ne__(self, otherstring):
-        return self.__cmp__(otherstring) != 0
+    def __eq__(self, other) -> bool:
+        if isinstance(other, multistring):
+            return super().__eq__(other) and self.extra_strings == other.extra_strings
+        if isinstance(other, str):
+            return super().__eq__(other)
+        if isinstance(other, list):
+            return self.strings == other
+        return super().__eq__(other)
 
-    def __eq__(self, otherstring):
-        return self.__cmp__(otherstring) == 0
+    def __repr__(self) -> str:
+        strings = [str(self), *self.extra_strings]
+        return f"multistring({strings!r})"
 
-    def __repr__(self):
-        return "multistring(%r)" % ([str(item) for item in self.strings])
-
-    def replace(self, old, new, count=None):
-        if count is None:
-            newstr = multistring(super().replace(old, new))
-        else:
-            newstr = multistring(super().replace(old, new, count))
-        for s in self.strings[1:]:
-            if count is None:
-                newstr.strings.append(s.replace(old, new))
-            else:
-                newstr.strings.append(s.replace(old, new, count))
+    def replace(self, old: str, new: str, count: int = -1) -> multistring:
+        newstr = multistring(super().replace(old, new, count))
+        newstr.extra_strings.extend(
+            s.replace(old, new, count) for s in self.extra_strings
+        )
         return newstr

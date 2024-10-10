@@ -350,8 +350,8 @@ class I18NextUnit(JsonNestedUnit):
             super().storevalues(output)
         else:
             if len(self.target.strings) > len(self._store.plural_tags):
-                self.target.strings = self.target.strings[
-                    : len(self._store.plural_tags)
+                self.target.extra_strings = self.target.extra_strings[
+                    : len(self._store.plural_tags) - 1
                 ]
             self._fixup_item()
             for i, value in enumerate(self.target.strings):

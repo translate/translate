@@ -439,7 +439,7 @@ class pounit(pocommon.pounit):
                 pluralform = (
                     gpo_decode(gpo.po_message_msgid_plural(self._gpo_message)) or ""
                 )
-                multi.strings.append(pluralform)
+                multi.extra_strings.append(pluralform)
                 return multi
             return singular
         return ""
