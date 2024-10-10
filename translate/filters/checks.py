@@ -771,7 +771,7 @@ class StandardChecker(TranslationChecker):
         len1 = len(str1.strip())
         len2 = len(str2.strip())
 
-        if (len1 > 0) and (0 < len2 < (len1 * 0.1)) or ((len1 > 1) and (len2 == 1)):
+        if ((len1 > 0) and (0 < len2 < (len1 * 0.1))) or ((len1 > 1) and (len2 == 1)):
             raise FilterFailure("The translation is much shorter than the original")
         return True
 
@@ -790,7 +790,7 @@ class StandardChecker(TranslationChecker):
         len1 = len(str1.strip())
         len2 = len(str2.strip())
 
-        if (len1 > 0) and (0 < len1 < (len2 * 0.1)) or ((len1 == 1) and (len2 > 1)):
+        if ((len1 > 0) and (0 < len1 < (len2 * 0.1))) or ((len1 == 1) and (len2 > 1)):
             raise FilterFailure("The translation is much longer than the original")
         return True
 

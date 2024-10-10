@@ -119,7 +119,7 @@ class reprop:
         for unit in self.inputstore.units:
             if not unit.hasplural():
                 continue
-            if unit.isfuzzy() and not self.includefuzzy or not unit.istranslated():
+            if (unit.isfuzzy() and not self.includefuzzy) or not unit.istranslated():
                 continue
 
             names = data.cldr_plural_categories
@@ -155,7 +155,7 @@ class reprop:
         for unit in self.inputstore.units:
             if not unit.hasplural():
                 continue
-            if unit.isfuzzy() and not self.includefuzzy or not unit.istranslated():
+            if (unit.isfuzzy() and not self.includefuzzy) or not unit.istranslated():
                 continue
 
             names = data.cldr_plural_categories
@@ -206,20 +206,17 @@ class reprop:
                 delimiter = prespace + delimiter_char + postspace
             if key in self.inputstore.locationindex:
                 unit = self.inputstore.locationindex[key]
-                if (
-                    unit is None
-                    or not unit.istranslated()
+                if unit is None or (
+                    not unit.istranslated()
                     and bool(unit.source)
                     and self.remove_untranslated
                 ):
                     returnline = ""
                     self.inecho = False
                 else:
-                    if (
-                        unit.isfuzzy()
-                        and not self.includefuzzy
-                        or len(unit.target) == 0
-                    ):
+                    if (unit.isfuzzy() and not self.includefuzzy) or len(
+                        unit.target
+                    ) == 0:
                         value = unit.source
                     else:
                         value = self._handle_accesskeys(unit, key)
