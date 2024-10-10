@@ -18,6 +18,8 @@
 
 """This module provides a factory to instantiate language classes."""
 
+from __future__ import annotations
+
 import pkgutil
 from functools import lru_cache
 from importlib import import_module
@@ -28,7 +30,7 @@ prefix = "code_"
 
 
 @lru_cache(maxsize=128)
-def getlanguage(code):
+def getlanguage(code: str | None):
     """
     This returns a language class.
 
@@ -36,21 +38,24 @@ def getlanguage(code):
     """
     if code:
         code = code.replace("-", "_").replace("@", "_").lower()
-    try:
-        if code is None:
-            raise ImportError("Can't determine language code")
+
+    if code is not None:
         internal_code = prefix + code if code in {"or", "is", "as"} else code
-        module = import_module(f"translate.lang.{internal_code}")
-        langclass = getattr(module, internal_code)
-        return langclass(code)
-    except ImportError:
-        simplercode = data.simplercode(code)
-        if simplercode:
-            relatedlanguage = getlanguage(simplercode)
-            if isinstance(relatedlanguage, common.Common):
-                relatedlanguage = relatedlanguage.__class__(code)
-            return relatedlanguage
-        return common.Common(code)
+        try:
+            module = import_module(f"translate.lang.{internal_code}")
+        except ImportError:
+            pass
+        else:
+            langclass = getattr(module, internal_code)
+            return langclass(code)
+
+    simplercode = data.simplercode(code)
+    if simplercode:
+        relatedlanguage = getlanguage(simplercode)
+        if isinstance(relatedlanguage, common.Common):
+            relatedlanguage = relatedlanguage.__class__(code)
+        return relatedlanguage
+    return common.Common(code)
 
 
 def get_all_languages():

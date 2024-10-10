@@ -182,14 +182,18 @@ class DecodingXMLParser:
                     codepoint_str = "".join(text[i + 1 : max_slice])
                     if len(codepoint_str) < 4:
                         codepoint_str = "0" * (4 - len(codepoint_str)) + codepoint_str
+                    # We can't trust int() to raise a ValueError,
+                    # it will ignore leading/trailing whitespace.
+                    if not codepoint_str.isalnum():
+                        raise ValueError(
+                            f"Invalid unicode escape sequence: {codepoint_str!r}"
+                        )
                     try:
-                        # We can't trust int() to raise a ValueError,
-                        # it will ignore leading/trailing whitespace.
-                        if not codepoint_str.isalnum():
-                            raise ValueError(codepoint_str)
                         codepoint = chr(int(codepoint_str, 16))
                     except ValueError:
-                        raise ValueError("bad unicode escape sequence")
+                        raise ValueError(
+                            f"Invalid unicode escape sequence: {codepoint_str!r}"
+                        )
 
                     text[i - 1 : max_slice] = codepoint
                     i -= 1
