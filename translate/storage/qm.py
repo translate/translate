@@ -178,7 +178,7 @@ class qmfile(base.TranslationStore):
                     )
                     string, templen = codecs.utf_16_be_decode(raw)
                     if target:
-                        target.strings.append(string)
+                        target.extra_strings.append(string)
                     else:
                         target = multistring(string)
                     pos = pos + 4 + length

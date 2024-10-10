@@ -1,95 +1,95 @@
 import pytest
 
-from translate.misc import multistring
+from translate.misc.multistring import multistring
 
 
 class TestMultistring:
     def test_constructor(self):
-        t = multistring.multistring
-        s1 = t("test")
-        assert type(s1) is t
+        s1 = multistring("test")
+        assert type(s1) is multistring
         assert s1 == "test"
         assert s1.strings == ["test"]
-        s2 = t(["test", "mé"])
-        assert type(s2) is t
+        s2 = multistring(["test", "mé"])
+        assert type(s2) is multistring
         assert s2 == "test"
         assert s2.strings == ["test", "mé"]
         assert s2 != s1
+
+    def test_constructor_validation(self):
         with pytest.raises(ValueError):
-            t([])
+            multistring([])
+        with pytest.raises(TypeError):
+            multistring([1])
+        with pytest.raises(TypeError):
+            multistring(["one", None])
 
     def test_repr(self):
-        t = multistring.multistring
-        s1 = t("test")
+        s1 = multistring("test")
         assert repr(s1) == "multistring(['test'])"
-        assert eval(f"multistring.{s1!r}") == s1
+        assert eval(f"{s1!r}") == s1
 
-        s2 = t(["test", "mé"])
+        s2 = multistring(["test", "mé"])
         assert repr(s2) == "multistring(['test', 'mé'])"
-        assert eval(f"multistring.{s2!r}") == s2
+        assert eval(f"{s2!r}") == s2
 
     def test_replace(self):
-        t = multistring.multistring
-        s1 = t(["abcdef", "def"])
+        s1 = multistring(["abcdef", "def"])
 
         result = s1.replace("e", "")
-        assert type(result) is t
-        assert result == t(["abcdf", "df"])
+        assert type(result) is multistring
+        assert result == multistring(["abcdf", "df"])
 
         result = s1.replace("e", "xx")
-        assert result == t(["abcdxxf", "dxxf"])
+        assert result == multistring(["abcdxxf", "dxxf"])
 
         result = s1.replace("e", "\xe9")
-        assert result == t(["abcd\xe9f", "d\xe9f"])
+        assert result == multistring(["abcd\xe9f", "d\xe9f"])
 
         result = s1.replace("e", "\n")
-        assert result == t(["abcd\nf", "d\nf"])
+        assert result == multistring(["abcd\nf", "d\nf"])
 
         result = result.replace("\n", "\\n")
-        assert result == t(["abcd\\nf", "d\\nf"])
+        assert result == multistring(["abcd\\nf", "d\\nf"])
 
         result = result.replace("\\n", "\n")
-        assert result == t(["abcd\nf", "d\nf"])
+        assert result == multistring(["abcd\nf", "d\nf"])
 
-        s2 = t(["abcdeef", "deef"])
+        s2 = multistring(["abcdeef", "deef"])
 
         result = s2.replace("e", "g")
-        assert result == t(["abcdggf", "dggf"])
+        assert result == multistring(["abcdggf", "dggf"])
 
         result = s2.replace("e", "g", 1)
-        assert result == t(["abcdgef", "dgef"])
+        assert result == multistring(["abcdgef", "dgef"])
 
     def test_comparison(self):
-        t = multistring.multistring
-        assert t("test") == "test"
-        assert t("test").__cmp__("test") == 0
+        assert multistring("test") == "test"
+        assert multistring("test") == multistring("test")
 
-        assert t("téßt") > "test"
-        assert t("téßt") > "test"
-        assert t("téßt").__cmp__("test") > 0
+        assert multistring("téßt") > "test"
+        assert multistring("téßt") > multistring("test")
+
+        assert multistring("téßt") > "test"
+        assert multistring("test") < multistring("téßt")
 
     def test_coercion(self):
-        t = multistring.multistring
-        assert str(t("test")) == "test"
-        assert str(t("téßt")) == "téßt"
+        assert str(multistring("test")) == "test"
+        assert str(multistring("téßt")) == "téßt"
 
     def test_unicode_coercion(self):
-        t = multistring.multistring
-        assert str(t("test")) == "test"
-        assert str(t("test")) == "test"
-        assert str(t("téßt")) == "téßt"
-        assert str(t("téßt")) == "téßt"
-        assert str(t(["téßt", "blāh"])) == "téßt"
-        assert str(t(["téßt"])) == "téßt"
+        assert str(multistring("test")) == "test"
+        assert str(multistring("test")) == "test"
+        assert str(multistring("téßt")) == "téßt"
+        assert str(multistring("téßt")) == "téßt"
+        assert str(multistring(["téßt", "blāh"])) == "téßt"
+        assert str(multistring(["téßt"])) == "téßt"
 
     def test_list_coercion(self):
-        t = multistring.multistring
-        assert str([t("test")]) == "[multistring(['test'])]"
-        assert str([t("tést")]) == "[multistring(['tést'])]"
+        assert str([multistring("test")]) == "[multistring(['test'])]"
+        assert str([multistring("tést")]) == "[multistring(['tést'])]"
 
     def test_multistring_hash(self):
-        t = multistring.multistring
-        foo = t(["foo", "bar"])
+        foo = multistring(["foo", "bar"])
         foodict = {foo: "baz"}
         assert "foo" in foodict
         foodict2 = {"foo": "baz"}
