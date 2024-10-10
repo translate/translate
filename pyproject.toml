@@ -139,7 +139,6 @@ ignore = [
   "F841",  # TODO: Local variable `args` is assigned to but never used
   "B909",  # X-TODO: Mutation to loop iterable `inputpo.units` during iteration
   "PLW3201",  # X-TODO: Dunder method `__in__` has no special meaning in Python 3
-  "PLC0206",  # X-TODO: Extracting value from dictionary without calling `.items()`
   "FURB118",  # X-TODO: Use `operator.itemgetter(1)` instead of defining a function
   "UP031",  # X-TODO: Use format specifiers instead of percent format
   "PLC1901",  # X-TODO: `target != ""` can be simplified to `target` as an empty string is falsey
