@@ -31,7 +31,6 @@ target-version = "py38"
 ignore = [
   "PT013",  # TODO: Found incorrect import of pytest, use simple `import pytest` instead
   "PT009",  # TODO: Use a regular `assert` instead of unittest-style `assertCountEqual`
-  "PLE0604",  # TODO: Invalid object in `__all__`, must contain only strings
   "PLW1510",  # TODO: `subprocess.run` without explicit `check` argument
   "SLOT000",  # TODO: Subclasses of `str` should define `__slots__`
   "B028",  # TODO: No explicit `stacklevel` keyword argument found
