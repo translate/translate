@@ -172,7 +172,7 @@ class oocheckfilter(pofilter.pocheckfilter):
                     logger.warning(
                         "Warning at %s::%s: %s", filename, location, filtermessage
                     )
-                    return filteraction not in {"exclude-all"}
+                    return filteraction != "exclude-all"
         return True
 
 
