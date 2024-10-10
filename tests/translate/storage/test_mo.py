@@ -488,9 +488,9 @@ class TestMOFile(test_base.TestTranslationStore):
         unit.target = "target"
         unit.setcontext("context")
         store.addunit(unit)
-        assert b"context" in store.__bytes__()
+        assert b"context" in (bytes(store))
 
-        newstore = self.StoreClass.parsestring(store.__bytes__())
+        newstore = self.StoreClass.parsestring(bytes(store))
         assert len(newstore.units) == 1
         assert newstore.units[0].getcontext(), "context"
 

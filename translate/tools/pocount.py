@@ -208,7 +208,7 @@ def file_extended_totals(units, wordcounts):
         if state not in extended_state_strings:
             for k in unit.STATE:
                 val = unit.STATE[k]
-                if val[0] <= int(state.__str__()) <= val[1]:
+                if val[0] <= int(str(state)) <= val[1]:
                     state = k
 
         extended_state = extended_state_strings[state]

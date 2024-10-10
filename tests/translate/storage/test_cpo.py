@@ -141,7 +141,7 @@ class TestCPOFile(test_po.TestPOFile):
                 """#: source%d\nmsgid ""\n"_: source%d\\n"\n"Same"\nmsgstr ""\n"""
                 % (i, i)
             )
-            assert pofile.units[i].__str__() == expected
+            assert (str(pofile.units[i])) == expected
 
     @mark.xfail(reason="Were disabled during port of Pypo to cPO - they might work")
     def test_keep_blanks(self):
