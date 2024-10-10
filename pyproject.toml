@@ -69,6 +69,10 @@ ignore = [
   "ARG005",  # TODO: Unused lambda argument:
   "TD002",  # CONFIG: no detailed TODO documentation is required
   "TD003",  # CONFIG: no detailed TODO documentation is required
+  "S404",  # TODO: `subprocess` module is possibly insecure
+  "S403",  # TODO: `pickle`, `cPickle`, `dill`, and `shelve` modules are possibly insecure
+  "S408",  # TODO: `xml.dom.minidom` is vulnerable to XML attacks
+  "S407",  # TODO: `xml.dom.expatbuilder` is vulnerable to XML attacks
   "S603",  # CONFIG: `subprocess` call: check for execution of untrusted input
   "S607",  # CONFIG: executing system installed tools
   "PD011",  # WONTFIX: Use `.to_numpy()` instead of `.values
@@ -116,8 +120,42 @@ ignore = [
   'Q002',  # CONFIG: formatter
   'Q003',  # CONFIG: formatter
   'W191',  # CONFIG: formatter
+  "E265",  # TODO: Block comment should start with `# `
+  "E262",  # TODO: Inline comment should start with `# `
+  "E266",  # TODO: Too many leading `#` before block comment
+  "A005",  # TODO: Module `statistics` is shadowing a Python builtin module
+  "PLC0415",  # TODO: `import` should be at the top-level of a file
+  "PLW1514",  # TODO: `open` in text mode without explicit `encoding` argument
+  "PLW1641",  # TODO: Object does not implement `__hash__` method
+  "PLR0914",  # TODO: Too many local variables (16/15)
+  "PLR1702",  # TODO: Too many nested blocks (8 > 5)
+  "PLR0917",  # TODO: Too many positional arguments (7/5)
+  "PLR0904",  # TODO: Too many public methods (21 > 20)
+  "PLR6301",  # TODO: Method `entry` could be a function, class method, or static method
+  "FURB103",  # TODO: `open` and `write` should be replaced by `Path(outputfile.name).write_bytes(outputmo)`
+  "FURB101",  # TODO: `open` and `read` should be replaced by `Path(file_).read_bytes()`
+  "PLR0916",  # TODO: Too many Boolean expressions (6 > 5)
+  "CPY001",  # TODO: Missing copyright notice at top of file
+  "F841",  # TODO: Local variable `args` is assigned to but never used
+  "B909",  # X-TODO: Mutation to loop iterable `inputpo.units` during iteration
+  "PLW3201",  # X-TODO: Dunder method `__in__` has no special meaning in Python 3
+  "PLC0206",  # X-TODO: Extracting value from dictionary without calling `.items()`
+  "FURB118",  # X-TODO: Use `operator.itemgetter(1)` instead of defining a function
+  "UP031",  # X-TODO: Use format specifiers instead of percent format
+  "FURB142",  # X-TODO: [*] Use of `set.add()` in a for loop
+  "PLC1901",  # X-TODO: `target != ""` can be simplified to `target` as an empty string is falsey
+  "PLC2801",  # X-TODO: Unnecessary dunder call to `__str__`. Use `str()` builtin.
+  "C419",  # X-TODO: Unnecessary list comprehension
+  "FURB113",  # X-TODO: Use `source.extend(...)` instead of repeatedly calling `source.append()`
+  "RUF021",  # X-TODO: Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
+  "FURB145",  # X-TODO: Prefer `copy` method over slicing
+  "RUF031",  # X-TODO Avoid parentheses for tuples in subscripts.
+  "FURB171",  # X-TODO Membership test against single-item container
+  "RUF022",  # X-TODO `__all__` is not sorted
+  "DOC",  # TODO: is not documented in docstring
   "PTH"  # TODO: Not using pathlib for now
 ]
+preview = true
 select = ["ALL"]
 
 [tool.ruff.lint.per-file-ignores]
