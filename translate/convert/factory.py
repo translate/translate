@@ -96,12 +96,12 @@ def get_converter(in_ext, out_ext=None, templ_ext=None):
 def get_output_extensions(ext):
     """Compiles a list of possible output extensions for the given input extension."""
     out_exts = []
-    for key in converters:
+    for key, converter in converters.items():
         in_ext = key
         if isinstance(key, tuple):
             in_ext = key[0]
         if in_ext == ext:
-            for out_ext, convert_fn in converters[key]:
+            for out_ext, convert_fn in converter:
                 out_exts.append(out_ext)
     return out_exts
 
