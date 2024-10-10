@@ -121,10 +121,6 @@ class StringElem:
         """Emulate the ``unicode`` class."""
         return str(self)[i]
 
-    def __getslice__(self, i, j):
-        """Emulate the ``unicode`` class."""
-        return str(self)[i:j]
-
     def __gt__(self, rhs):
         """Emulate the ``unicode`` class."""
         return str(self) > rhs

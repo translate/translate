@@ -104,7 +104,7 @@ class ProjectStore:
     transfiles = property(_get_transfiles)
 
     # SPECIAL METHODS #
-    def __in__(self, lhs):
+    def __contains__(self, lhs):
         """@returns ``True`` if ``lhs`` is a file name or file object in the project store."""
         return (
             lhs in self._sourcefiles
