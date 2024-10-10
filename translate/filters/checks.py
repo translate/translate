@@ -2863,6 +2863,7 @@ class StandardUnitChecker(UnitChecker):
         return not bool(suggestions)
 
 
+# TODO: convert these to proper unit tests
 def runtests(str1, str2, ignorelist=()):
     """Verifies that the tests pass for a pair of strings."""
     from translate.storage import base
@@ -2875,7 +2876,7 @@ def runtests(str1, str2, ignorelist=()):
     failures = checker.run_filters(unit)
 
     for test in failures:
-        print(
+        print(  # noqa: T201
             "failure: {}: {}\n  {!r}\n  {!r}".format(
                 test, failures[test]["message"], str1, str2
             )
@@ -2892,7 +2893,7 @@ def batchruntests(pairs):
         if runtests(str1, str2):
             passed += 1
 
-    print("\ntotal: %d/%d pairs passed" % (passed, numpairs))
+    print("\ntotal: %d/%d pairs passed" % (passed, numpairs))  # noqa: T201
 
 
 if __name__ == "__main__":

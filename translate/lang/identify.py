@@ -141,4 +141,4 @@ if __name__ == "__main__":
     identifier = LanguageIdentifier()
     with open(argv[1]) as fh:
         text = fh.read()
-    print("Language detected:", identifier.identify_lang(text))
+    print("Language detected:", identifier.identify_lang(text))  # noqa: T201

@@ -781,4 +781,4 @@ if __name__ == "__main__":
 
     for fname in argv[1:]:
         store = factory.getobject(fname)
-        print(fname, guess_language(store.parseheader().get("Language-Team", "")))
+        print(fname, guess_language(store.parseheader().get("Language-Team", "")))  # noqa: T201

@@ -23,6 +23,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+import sys
 from io import BytesIO
 
 from translate.convert import convert
@@ -39,7 +40,8 @@ def convertodf(inputfile, outputfile, templates):
     try:
         store.setfilename(store.getfilenode("NoName"), inputfile.name)
     except Exception:
-        print("couldn't set origin filename")
+        print("couldn't set origin filename")  # noqa: T201
+        sys.exit()
 
     contents = open_odf(inputfile)
     for data in contents.values():
