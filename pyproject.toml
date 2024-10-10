@@ -150,7 +150,6 @@ ignore = [
   "RUF021",  # X-TODO: Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
   "FURB145",  # X-TODO: Prefer `copy` method over slicing
   "RUF031",  # X-TODO Avoid parentheses for tuples in subscripts.
-  "FURB171",  # X-TODO Membership test against single-item container
   "DOC",  # TODO: is not documented in docstring
   "PTH"  # TODO: Not using pathlib for now
 ]
