@@ -25,6 +25,7 @@ for examples and usage instructions.
 
 import os
 import re
+from functools import partial
 from hashlib import md5
 
 from translate.convert import dtd2po
@@ -152,7 +153,7 @@ class podebug:
             (r"([a-z])[.]", r"\1. Bork Bork Bork!"),
         )
         for a, b in subs:
-            self.apply_to_translatables(string, lambda s: re.sub(a, b, s))
+            self.apply_to_translatables(string, partial(re.sub, a, b))
         return string
 
     PRESERVE_PLACEABLE_PARSERS = [
