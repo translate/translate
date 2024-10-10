@@ -56,7 +56,7 @@ def extract(
     lenend = len(enddelim)
     startdelim_places = list(find_all(source, startdelim))
     if startdelim == enddelim:
-        enddelim_places = startdelim_places[:]
+        enddelim_places = startdelim_places.copy()
     else:
         enddelim_places = list(find_all(source, enddelim))
     if escape is not None:
@@ -131,7 +131,7 @@ def extractwithoutquotes(
     lenend = len(enddelim)
     startdelim_places = list(find_all(source, startdelim))
     if startdelim == enddelim:
-        enddelim_places = startdelim_places[:]
+        enddelim_places = startdelim_places.copy()
     else:
         enddelim_places = list(find_all(source, enddelim))
     # hell slow because it is called far too often

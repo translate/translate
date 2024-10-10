@@ -148,7 +148,6 @@ ignore = [
   "C419",  # X-TODO: Unnecessary list comprehension
   "FURB113",  # X-TODO: Use `source.extend(...)` instead of repeatedly calling `source.append()`
   "RUF021",  # X-TODO: Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
-  "FURB145",  # X-TODO: Prefer `copy` method over slicing
   "DOC",  # TODO: is not documented in docstring
   "PTH"  # TODO: Not using pathlib for now
 ]
