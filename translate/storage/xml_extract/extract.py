@@ -113,8 +113,7 @@ def process_translatable(dom_node, state):
     # Append Translatable objects and unicode strings for the translatable
     # content for all the children.
     for child in dom_node:
-        source.append(_process_placeable(child, state))
-        source.append(str(child.tail or ""))
+        source.extend((_process_placeable(child, state), str(child.tail or "")))
 
     translatable = Translatable(
         state.placeable_name,
