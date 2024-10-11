@@ -9,7 +9,7 @@ build:
 
 docs:
 	# The following creates the HTML docs.
-	make -C ${DOCS_DIR} SPHINXOPTS="--show-traceback --fail-on-warning --quiet" html ${TAIL}
+	make -C ${DOCS_DIR} SPHINXOPTS="--show-traceback --fail-on-warning" html ${TAIL}
 
 docs-review: docs
 	python -mwebbrowser file://$(shell pwd)/${DOCS_DIR}/_build/html/index.html
