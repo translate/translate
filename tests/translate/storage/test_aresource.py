@@ -325,6 +325,16 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         xml = '<string name="teststring">test    </string>\n'
         self.__check_parse(string, xml)
 
+    def test_parse_trailing_escaped_newline(self):
+        string = "test\n"
+        xml = '<string name="teststring">test\\n</string>\n'
+        self.__check_parse(string, xml)
+
+    def test_parse_leading_escaped_newline(self):
+        string = "\ntest"
+        xml = '<string name="teststring">\\ntest</string>\n'
+        self.__check_parse(string, xml)
+
     def test_parse_leading_spaces(self):
         string = "test"
         xml = '<string name="teststring">    test</string>\n'
@@ -964,6 +974,16 @@ files</strong> on the storage.</p>
         store.units[0].marktranslatable(False)
         assert store.units[0].getid() == "test1"
         assert not store.units[0].istranslatable()
+
+    def test_escaping(self):
+        content = r"""<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<resources>
+<string name="hello" weblate-flags="c-format, max-length:100">Hello, world!\n</string>
+</resources>"""
+        store = self.StoreClass()
+        store.parse(content.encode())
+        assert len(store.units) == 1
+        assert store.units[0].target == "Hello, world!\n"
 
 
 class TestMOKOResourceUnit(test_monolingual.TestMonolingualUnit):

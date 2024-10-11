@@ -84,7 +84,7 @@ class DecodingXMLParser:
         parser.DefaultHandler = self.DefaultHandler
 
     @staticmethod
-    def process_string(text: str) -> tuple[str, bool]:
+    def process_string(text: str) -> tuple[str, bool, bool]:
         """
         Remove escaping from Android resource.
 
@@ -97,7 +97,8 @@ class DecodingXMLParser:
         escape_newline = ESCAPE_NEWLINE
         escape_tab = ESCAPE_TAB
         escape_plain = ESCAPE_PLAIN
-        cleanup_result = True
+        cleanup_start = True
+        cleanup_end = True
 
         # We need to collapse multiple whitespace while paying
         # attention to Android's quoting and escaping.
@@ -131,16 +132,20 @@ class DecodingXMLParser:
 
             # Handle quotes
             if c == '"' and not active_escape:
+                if i == 0:
+                    cleanup_start = False
                 if active_quote:
-                    cleanup_result = False
+                    cleanup_end = False
                 active_quote = not active_quote
                 del text[i]
                 i -= 1
             elif c is not eof:
-                cleanup_result = True
+                cleanup_end = True
 
             # Handle escapes
             if c == "\\":
+                if i == 0:
+                    cleanup_start = False
                 if not active_escape:
                     active_escape = True
                 else:
@@ -153,6 +158,7 @@ class DecodingXMLParser:
                 # Handle the limited amount of escape codes
                 # that we support.
                 # TODO: What about \r, or \r\n?
+                cleanup_end = False
                 if c is eof:
                     # Basically like any other char, but put
                     # this first so we can use the ``in`` operator
@@ -206,7 +212,7 @@ class DecodingXMLParser:
             i += 1
 
         # Join the string together again, but w/o EOF marker
-        return "".join(text[:-1]), cleanup_result
+        return "".join(text[:-1]), cleanup_start, cleanup_end
 
     def cleanup_text(self, text: str) -> str:
         """Remove leading whitespace from text."""
@@ -221,8 +227,8 @@ class DecodingXMLParser:
             )
             self.do_cleanup = not self.raw_string
             if not self.raw_string:
-                text, self.do_cleanup = self.process_string(text)
-                if self.do_cleanup:
+                text, cleanup_start, self.do_cleanup = self.process_string(text)
+                if cleanup_start:
                     text = self.cleanup_text(text)
             self.output.append(text)
             self.emit_start = None
@@ -277,8 +283,12 @@ class EncodingXMLParser(DecodingXMLParser):
     FOREGIN_DTD = False
 
     @staticmethod
-    def process_string(text: str) -> tuple[str, bool]:
-        return AndroidResourceUnit.escape(text, quote_wrapping_whitespaces=False), False
+    def process_string(text: str) -> tuple[str, bool, bool]:
+        return (
+            AndroidResourceUnit.escape(text, quote_wrapping_whitespaces=False),
+            False,
+            False,
+        )
 
     def parse(self) -> str:
         self.emit_start = 0
@@ -383,9 +393,13 @@ class AndroidResourceUnit(base.TranslationUnit):
         if len(xmltarget) == 0 and "<![CDATA[" not in raw_xml:
             if xmltarget.text is None:
                 return ""
-            text, do_cleanup = DecodingXMLParser.process_string(xmltarget.text)
-            if do_cleanup:
-                return text.strip()
+            text, cleanup_start, cleanup_end = DecodingXMLParser.process_string(
+                xmltarget.text
+            )
+            if cleanup_start:
+                text = text.lstrip()
+            if cleanup_end:
+                text = text.rstrip()
             return text
 
         # Use decoding parser to keep XML entitities, CDATA while processing Android escaping
