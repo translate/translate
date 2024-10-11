@@ -4,9 +4,9 @@
 XLIFF
 *****
 
-XLIFF[*] is the `OASIS <https://www.oasis-open.org/>`_ standard for translation.
+XLIFF [#f1]_ is the `OASIS <https://www.oasis-open.org/>`_ standard for translation.
 
-.. [*] XML Localization Interchange File Format
+.. [#f1] XML Localization Interchange File Format
 
 References
 ----------
