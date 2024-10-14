@@ -61,8 +61,7 @@ class rerc:
         if not addnl:
             yield "    "
         # Strip extra \r from \r\n which is left in the comment by the parser
-        if comment.endswith("\r"):
-            comment = comment[:-1]
+        comment = comment.removesuffix("\r")
         yield comment
 
     def convert_caption(self, toks, name):

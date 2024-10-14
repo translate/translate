@@ -450,8 +450,7 @@ class AndroidResourceUnit(base.TranslationUnit):
         if not locale:
             return data.plural_tags["en"]
         # Handle b+ style language codes
-        if locale.startswith("b+"):
-            locale = locale[2:]
+        locale = locale.removeprefix("b+")
         locale = locale.replace("_", "-").replace("+", "-").split("-")[0]
         return data.plural_tags.get(locale, data.plural_tags["en"])
 

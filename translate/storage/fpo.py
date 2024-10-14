@@ -142,8 +142,7 @@ class pounit(pocommon.pounit):
         if origin in {"programmer", "developer", "source code"}:
             autocomments = True
             commentlist = self.automaticcomments
-        if text.endswith("\n"):
-            text = text[:-1]
+        text = text.removesuffix("\n")
         newcomments = text.split("\n")
         if position == "append":
             newcomments = commentlist + newcomments

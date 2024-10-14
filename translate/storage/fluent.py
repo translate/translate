@@ -1279,6 +1279,5 @@ class FluentFile(base.TranslationStore):
             # Remove the prefix as a block.
             # NOTE: removeprefix only available in python 3.9+.
             block = prefix + "\n"
-            if unit_comment.startswith(block):
-                unit_comment = unit_comment[len(block) :]
+            unit_comment = unit_comment.removeprefix(block)
         return unit_comment

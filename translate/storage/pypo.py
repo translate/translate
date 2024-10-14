@@ -739,8 +739,7 @@ class pounit(pocommon.pounit):
                 combinedcomment = []
                 for comment in partcomments:
                     comment = unquotefrompo([comment])
-                    if comment.startswith("_:"):
-                        comment = comment[len("_:") :]
+                    comment = comment.removeprefix("_:")
                     if comment.endswith("\\n"):
                         comment = comment[: -len("\\n")]
                     # Before we used to strip. Necessary in some cases?
