@@ -431,7 +431,8 @@ class AndroidResourceUnit(base.TranslationUnit):
             else:
                 template = "<resources></resources>"
             newstring = template.replace(
-                "</resources>", f"<string>{target}</string></resources>"
+                "</resources>",
+                f"<{xmltarget.tag}>{target}</{xmltarget.tag}></resources>",
             )
             try:
                 etree.fromstring(newstring, parser)
@@ -442,15 +443,17 @@ class AndroidResourceUnit(base.TranslationUnit):
                 encoding_parser = EncodingXMLParser(newstring)
                 newstring = encoding_parser.parse()
                 newtree = etree.fromstring(newstring, parser)[0]
+                # Copy existing attributes
+                for attribute, value in xmltarget.items():
+                    newtree.attrib[attribute] = value
                 # Update text
-                xmltarget.text = newtree.text
-
-                # Remove old elements
-                for x in xmltarget.iterchildren():
-                    xmltarget.remove(x)
-                # Add new elements
-                for x in newtree.iterchildren():
-                    xmltarget.append(x)
+                parent = xmltarget.getparent()
+                # Parent can be none when operating on Unit only without a storage
+                if parent is not None:
+                    parent.replace(xmltarget, newtree)
+                # Update unit xmlelement if needed (plurals are inner elements here)
+                if xmltarget == self.xmlelement:
+                    self.xmlelement = newtree
         else:
             self.set_xml_text_plain(target, xmltarget)
 
@@ -509,8 +512,8 @@ class AndroidResourceUnit(base.TranslationUnit):
             for plural_tag, plural_string in zip(plural_tags, plural_strings):
                 item = etree.Element("item")
                 item.set("quantity", plural_tag)
-                self.set_xml_text_value(plural_string, item)
                 self.xmlelement.append(item)
+                self.set_xml_text_value(plural_string, item)
         else:
             # Fix the root tag if mismatching
             if self.xmlelement.tag != self.SINGULAR_TAG:
