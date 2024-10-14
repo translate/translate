@@ -539,3 +539,7 @@ class TestMOFile(test_base.TestTranslationStore):
             print(repr(mo_pocompile))
 
             assert mo_msgfmt == mo_pocompile
+
+            # Verify parsing of generated files
+            self.StoreClass.parsefile(MO_POCOMPILE)
+            self.StoreClass.parsefile(MO_MSGFMT)
