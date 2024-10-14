@@ -16,25 +16,6 @@ Formats and Converters
   - Improved handling of CDATA
   - Improved whitespace handling
 
-- LISA (Android, XLIFF,...)
-
-  - Fixed possible issue with removing content
-  - Automatically strip characters unsafe for XML
-
-- Properties
-
-  - Fixed handling of escaped space
-  - Improved escaping of control chars
-  - Improved quoting performance
-
-- Subtitles
-
-  - Updated aeidon compatibility
-
-- CSV
-
-  - Improved converter CLI reference
-
 Other changes
 -------------
 
