@@ -5,9 +5,12 @@ import subprocess
 from argparse import ArgumentParser
 from os.path import basename
 from time import time
-from typing import Iterable, NamedTuple
+from typing import TYPE_CHECKING, NamedTuple
 
 from lxml import etree
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 
 class MsgfmtTester:

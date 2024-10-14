@@ -22,11 +22,12 @@ known_third_party = [
 profile = "black"
 
 [tool.ruff]
-target-version = "py38"
+target-version = "py39"
 
 [tool.ruff.lint]
 extend-safe-fixes = [
   "FURB113",
+  "TCH003",
   "PLC2801"
 ]
 # CONFIG - intentional configuration

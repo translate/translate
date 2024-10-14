@@ -26,7 +26,10 @@ from __future__ import annotations
 import html.entities
 import logging
 import re
-from typing import Iterable
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 
 def find_all(searchin: str, substr: str) -> Iterable[int]:

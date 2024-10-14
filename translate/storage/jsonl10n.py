@@ -139,7 +139,7 @@ class BaseJsonUnit(base.DictUnit):
 class FlatUnitId(base.UnitId):
     @classmethod
     def from_string(cls, text):
-        key = text[1:] if text.startswith(".") else text
+        key = text.removeprefix(".")
         return cls([("key", key)])
 
 
@@ -394,7 +394,7 @@ class I18NextFile(JsonNestedFile):
                 plurals = []
                 plural_base = ""
                 if k in plurals_simple or k + "_plural" in plurals_simple:
-                    plural_base = k[:-7] if k.endswith("_plural") else k
+                    plural_base = k.removesuffix("_plural")
                     plurals_simple.remove(plural_base)
                     plurals = [k, k + "_plural"]
                 elif "_" in k:

@@ -981,8 +981,7 @@ class UnitId:
     def from_string(cls, text):
         result = []
         # Strip possible leading separator
-        if text.startswith(cls.KEY_SEPARATOR):
-            text = text[len(cls.KEY_SEPARATOR) :]
+        text = text.removeprefix(cls.KEY_SEPARATOR)
         for item in text.split(cls.KEY_SEPARATOR):
             bracepos = item.find("[")
             endbracepos = item.find("]")

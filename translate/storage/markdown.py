@@ -39,7 +39,7 @@ from __future__ import annotations
 
 import re
 from itertools import chain
-from typing import Iterable
+from typing import TYPE_CHECKING
 
 import mistletoe.token
 from mistletoe import block_token, span_token
@@ -51,6 +51,9 @@ from mistletoe.markdown_renderer import (
 )
 
 from translate.storage import base
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 
 class MarkdownUnit(base.TranslationUnit):
