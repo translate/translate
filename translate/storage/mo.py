@@ -291,7 +291,7 @@ class mofile(poheader.poheader, base.TranslationStore):
                     b"charset=([^\\s]+)", input[voffset : voffset + vlength]
                 )
                 if charset:
-                    self.encoding = charset.group(1)
+                    self.encoding = charset.group(1).decode()
             source = multistring([s.decode(self.encoding) for s in source.split(b"\0")])
             target = multistring(
                 [
