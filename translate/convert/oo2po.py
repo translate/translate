@@ -49,14 +49,14 @@ class oo2po:
         """Makes a base unit (.po or XLIFF) out of a subkey of two parts."""
         # TODO: Do better
         text1 = getattr(part1, subkey)
-        if text1 == "":
+        if not text1:
             return None
         text2 = getattr(part2, subkey)
 
         unit = po.pounit(text1, encoding="UTF-8")
         unit.target = text2
         unit.addlocation(key + "." + subkey)
-        if getattr(translators_comment, subkey).strip() != "":
+        if getattr(translators_comment, subkey).strip():
             unit.addnote(getattr(translators_comment, subkey), origin="developer")
         return unit
 

@@ -31,7 +31,7 @@ def correct(source, target):
       - Missing punction (.:?) at the end of the target
     """
     old_target = target
-    if target == "":
+    if not target:
         return None
     if "…" in source and "..." in target:
         target = target.replace("...", "…")

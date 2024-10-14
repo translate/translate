@@ -692,7 +692,7 @@ class xlifffile(lisa.LISAfile):
         filenodes = self.document.getroot().iterchildren(self.namespaced("file"))
         filenames = [self.getfilename(filenode) for filenode in filenodes]
         filenames = list(filter(None, filenames))
-        if len(filenames) == 1 and filenames[0] == "":
+        if len(filenames) == 1 and not filenames[0]:
             filenames = []
         return filenames
 

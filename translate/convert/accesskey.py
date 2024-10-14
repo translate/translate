@@ -128,7 +128,7 @@ def extract(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
     assert isinstance(string, str)
     assert isinstance(accesskey_marker, str)
     assert len(accesskey_marker) == 1
-    if string == "":
+    if not string:
         return "", ""
     accesskey = ""
     label = string

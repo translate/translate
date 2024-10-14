@@ -56,7 +56,7 @@ def read_while(ps, f, test):
 
 
 def eat_whitespace(ps):
-    read_while(ps, identity, lambda line: line.strip() == "")
+    read_while(ps, identity, lambda line: line.strip())
 
 
 def skip_no_translate(ps):

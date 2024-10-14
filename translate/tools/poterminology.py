@@ -302,7 +302,7 @@ class TerminologyExtractor:
                     if self.ignorecase or (self.foldtitle and target.istitle()):
                         target = target.lower()
                     unit.target = target
-                    if target != "":
+                    if target:
                         targets.setdefault(target, []).append(filename)
                     if term.lower() == unit.source.strip().lower():
                         sourcenotes.add(unit.getnotes("source code"))

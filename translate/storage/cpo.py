@@ -368,7 +368,7 @@ class pounit(pocommon.pounit):
         encoding = encoding or "utf-8"
         if not gpo_message:
             self._gpo_message = gpo.po_message_create()
-        if source or source == "":
+        if isinstance(source, str):
             self.source = source
             self.target = ""
         elif gpo_message:
@@ -646,7 +646,7 @@ class pounit(pocommon.pounit):
     def isheader(self):
         # return self.source == "" and self.target != ""
         # we really want to make sure that there is no msgidcomment or msgctxt
-        return self.getid() == "" and len(self.target) > 0
+        return not self.getid() and len(self.target) > 0
 
     def isblank(self):
         return len(self.source) == len(self.target) == len(self.getcontext()) == 0
