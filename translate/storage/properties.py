@@ -306,7 +306,7 @@ class Dialect:
         delimiters = delimiter_dict
         # Figure out starting position
         start_pos = len(line) - len(line.lstrip())  # Skip initial whitespace
-        if cls.key_wrap_char != "" and line[start_pos] == cls.key_wrap_char:
+        if cls.key_wrap_char and line[start_pos] == cls.key_wrap_char:
             # Skip the key if it is delimited by some char
             start_pos += 1
             while line[start_pos] != cls.key_wrap_char or line[start_pos - 1] == "\\":
@@ -1373,9 +1373,9 @@ class XWikiFullPage(XWikiPageProperties):
             content = "".join(self.root.find("content").itertext()).replace("\n", "\\n")
             title = "".join(self.root.find("title").itertext())
             forparsing = ""
-            if content != "":
+            if content:
                 forparsing += f"content={content}\n"
-            if title != "":
+            if title:
                 forparsing += f"title={title}\n"
             self.extract_language()
             super(XWikiPageProperties, self).parse(forparsing.encode(self.encoding))

@@ -414,7 +414,7 @@ class poheader:
                 incontrib = True
                 contriblines.append(line)
                 continue
-            if line == "" and incontrib:
+            if not line and incontrib:
                 incontrib = False
                 outcontrib = True
             if incontrib:

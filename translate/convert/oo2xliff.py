@@ -48,7 +48,7 @@ class oo2xliff:
         """Makes a base unit (.po or XLIFF) out of a subkey of two parts."""
         # TODO: Do better
         text1 = getattr(part1, subkey)
-        if text1 == "":
+        if not text1:
             return None
         text2 = getattr(part2, subkey)
 
@@ -59,7 +59,7 @@ class oo2xliff:
         else:
             unit.markfuzzy(True)
         unit.setid(key + "." + subkey)
-        if getattr(translators_comment, subkey).strip() != "":
+        if getattr(translators_comment, subkey).strip():
             unit.addnote(getattr(translators_comment, subkey), origin="developer")
         return unit
 

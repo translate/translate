@@ -126,7 +126,7 @@ class mounit(base.TranslationUnit):
 
     def isheader(self):
         """Is this a header entry?."""
-        return self.source == ""
+        return not self.source
 
     def istranslatable(self):
         """Is this message translateable?."""
@@ -286,7 +286,7 @@ class mofile(poheader.poheader, base.TranslationStore):
             if b"\x04" in source:
                 context, source = source.split(b"\x04")
             # Still need to handle KDE comments
-            if source == "":
+            if not source:
                 charset = re.search(
                     b"charset=([^\\s]+)", input[voffset : voffset + vlength]
                 )

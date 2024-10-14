@@ -353,7 +353,7 @@ class SimpleParser:
             pattern = self.patterns[pattern]
         else:
             pattern = self.patterns[self.default_pattern]
-        if name == "":
+        if not name:
             name = f"__pos{self._pos}"
             self._pos += 1
         return f"(?P<{name}>{pattern})"

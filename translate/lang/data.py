@@ -1077,7 +1077,7 @@ def simplify_to_common(language_code):
     differently for different countries.
     """
     simpler = simplercode(language_code)
-    if simpler == "":
+    if not simpler:
         return language_code
 
     if normalize_code(language_code) in __normalised_languages:
