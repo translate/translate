@@ -909,8 +909,7 @@ files</strong> on the storage.</p>
         assert store.units[0].target == body
         assert bytes(store).decode() == content
         store.units[0].target = body
-        # TODO: this fails for now:
-        # assert bytes(store).decode() == content
+        assert bytes(store).decode() == content
 
     def test_prefix(self):
         body = "&lt; <b>body</b>"
