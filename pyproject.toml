@@ -62,7 +62,6 @@ ignore = [
   "PT011",  # TODO: `pytest.raises(ValueError)` is too broad, set the `match` parameter or use a more specific exception
   "D205",  # TODO: 1 blank line required between summary line and description
   "D401",  # TODO: First line of docstring should be in imperative mood
-  "D402",  # TODO: First line should not be the function's signature
   "D404",  # TODO: First word of the docstring should not be "This"
   "D203",  # CONFIG: incompatible with D211
   "D212",  # CONFIG: incompatible with D213
