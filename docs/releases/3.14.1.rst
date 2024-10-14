@@ -1,0 +1,23 @@
+Translate Toolkit 3.14.0
+************************
+
+*Released on 14 October 2024*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- MO
+
+  - Fixed crash on certain files
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař
