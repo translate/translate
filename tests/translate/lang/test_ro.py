@@ -1,3 +1,5 @@
+import string
+
 from translate.lang.ro import RomanianChecker
 
 from ..filters.test_checks import fails, passes
@@ -14,8 +16,8 @@ def test_cedillas():
     assert fails(ro_checker.cedillas, "", "blaŢblaŞblaţblaşbla']")
     assert passes(ro_checker.cedillas, "", "blașțăâîbla")
     assert passes(ro_checker.cedillas, "", "blaȘȚĂÂÎbla")
-    assert passes(ro_checker.cedillas, "", "abcdefghijklmnopqrstuvwxyz")
-    assert passes(ro_checker.cedillas, "", "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    assert passes(ro_checker.cedillas, "", string.ascii_lowercase)
+    assert passes(ro_checker.cedillas, "", string.ascii_uppercase)
 
 
 def test_niciun():
@@ -32,5 +34,5 @@ def test_niciun():
     assert passes(ro_checker.niciun_nicio, "", "bla nicio bla")
     assert passes(ro_checker.niciun_nicio, "", "blașțăâîbla")
     assert passes(ro_checker.niciun_nicio, "", "blaȘȚĂÂÎbla")
-    assert passes(ro_checker.niciun_nicio, "", "abcdefghijklmnopqrstuvwxyz")
-    assert passes(ro_checker.niciun_nicio, "", "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    assert passes(ro_checker.niciun_nicio, "", string.ascii_lowercase)
+    assert passes(ro_checker.niciun_nicio, "", string.ascii_uppercase)

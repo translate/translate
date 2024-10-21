@@ -31,6 +31,7 @@ When adding a new test here, please document and explain their behaviour on the
 
 import logging
 import re
+import string
 
 from translate.filters import decoration, helpers, prefilters, spelling
 from translate.filters.decorators import cosmetic, critical, extraction, functional
@@ -2498,7 +2499,7 @@ class MozillaChecker(StandardChecker):
         """
         if (
             self.mozilla_dialog_re.findall(str1)
-            or str1.strip().lstrip("0123456789") in self.mozilla_dialog_valid_units
+            or str1.strip().lstrip(string.digits) in self.mozilla_dialog_valid_units
         ):
             return True
 
