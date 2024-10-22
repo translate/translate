@@ -29,6 +29,8 @@ When adding a new test here, please document and explain their behaviour on the
 :doc:`pofilter tests </commands/pofilter_tests>` page.
 """
 
+from __future__ import annotations
+
 import logging
 import re
 import string
@@ -110,7 +112,9 @@ def intuplelist(pair, list):
     return pair
 
 
-def tagproperties(strings, ignore):
+def tagproperties(
+    matches: list[str], ignore: list[tuple[str, str, str]]
+) -> list[tuple[str, str, str]]:
     """
     Returns all the properties in the XML/HTML tag string as (tagname,
     propertyname, propertyvalue), but ignore those combinations specified in
@@ -118,11 +122,11 @@ def tagproperties(strings, ignore):
     """
     properties = []
 
-    for string in strings:
-        tag = tagname(string)
+    for match in matches:
+        tag = tagname(match)
         properties += [(tag, None, None)]
         # Now we isolate the attribute pairs.
-        pairs = property_re.findall(string)
+        pairs = property_re.findall(match)
 
         for property, value, a, b in pairs:
             # Strip the quotes:
