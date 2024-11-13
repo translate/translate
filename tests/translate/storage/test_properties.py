@@ -806,6 +806,15 @@ key=value
         assert propunit.value == "value"
         assert propunit.getnotes() == "long\nnote"
 
+    def test_trailing_newlines(self):
+        """Ensure we can handle Unicode."""
+        propsource = """"I am a “key”" = "I am a “value”";\n"""
+        propfile = self.propparse(
+            propsource.encode() + b"\n" * 10, personality="strings-utf8"
+        )
+        assert len(propfile.units) == 1
+        assert bytes(propfile).decode() == propsource
+
 
 class TestXWiki(test_monolingual.TestMonolingualStore):
     StoreClass = properties.xwikifile

@@ -1131,10 +1131,7 @@ class propfile(base.TranslationStore):
                         self.addunit(newunit)
                         newunit = self.UnitClass("", self.personality.name)
         # see if there is a leftover one...
-        if inmultilinevalue or (
-            len(newunit.comments) > 0
-            and not (len(newunit.comments) == 1 and not (newunit.comments[0]))
-        ):
+        if inmultilinevalue or any(newunit.comments):
             self.addunit(newunit)
 
         if self.personality.has_plurals:
