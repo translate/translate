@@ -808,6 +808,7 @@ class GoI18NV2JsonFile(JsonFile):
 
 class ARBJsonUnit(BaseJsonUnit):
     ID_FORMAT = "{}"
+    IdClass = FlatUnitId
 
     def __init__(
         self,
