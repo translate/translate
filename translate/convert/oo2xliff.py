@@ -68,7 +68,7 @@ class oo2xliff:
         if self.sourcelanguage in theoo.languages:
             part1 = theoo.languages[self.sourcelanguage]
         else:
-            logging.error(
+            logger.error(
                 "%s language not found: %s",
                 "/".join(theoo.lines[0].getkey()),
                 self.sourcelanguage,

@@ -127,7 +127,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
     ENCODING_RE = re.compile(
         rb"""<meta.*
-                                content.*=.*?charset.*?=\s*?
+                                content.*=.*?charset=\s*?
                                 ([^\s]*)
                                 \s*?["']\s*?>
                              """,
