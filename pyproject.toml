@@ -138,6 +138,7 @@ ignore = [
   "PLR6301",  # TODO: Method `entry` could be a function, class method, or static method
   "FURB103",  # TODO: `open` and `write` should be replaced by `Path(outputfile.name).write_bytes(outputmo)`
   "FURB101",  # TODO: `open` and `read` should be replaced by `Path(file_).read_bytes()`
+  "FURB189",  # TODO: Subclassing `dict` can be error prone, use `collections.UserDict` instead
   "PLR0916",  # TODO: Too many Boolean expressions (6 > 5)
   "CPY001",  # TODO: Missing copyright notice at top of file
   "F841",  # TODO: Local variable `args` is assigned to but never used
