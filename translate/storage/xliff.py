@@ -144,7 +144,7 @@ class xliffunit(lisa.LISAunit):
     @property
     def rich_source(self):
         # rsrc = xml_to_strelem(self.source_dom)
-        # logging.debug('rich source: %s' % (repr(rsrc)))
+        # logger.debug('rich source: %s' % (repr(rsrc)))
         # from dubulib.debug.misc import print_stack_funcs
         # print_stack_funcs()
         return [

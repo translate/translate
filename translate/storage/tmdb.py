@@ -31,6 +31,7 @@ from sqlite3 import dbapi2
 from translate.lang import data
 from translate.search.lshtein import LevenshteinComparer
 
+logger = logging.getLogger(__name__)
 STRIP_REGEXP = re.compile(r"\W", re.UNICODE)
 
 
@@ -125,7 +126,7 @@ CREATE VIRTUAL TABLE test_for_fts3 USING fts3;
 DROP TABLE test_for_fts3;
 """
             self.cursor.executescript(script)
-            logging.debug("fts3 supported")
+            logger.debug("fts3 supported")
             # for some reason CREATE VIRTUAL TABLE doesn't support IF NOT
             # EXISTS syntax check if fulltext index table exists manually
             self.cursor.execute(
@@ -136,11 +137,11 @@ DROP TABLE test_for_fts3;
                 script = """
 CREATE VIRTUAL TABLE fulltext USING fts3(text);
 """
-                logging.debug("fulltext table not exists, creating")
+                logger.debug("fulltext table not exists, creating")
                 self.cursor.executescript(script)
-                logging.debug("created fulltext table")
+                logger.debug("created fulltext table")
             else:
-                logging.debug("fulltext table already exists")
+                logger.debug("fulltext table already exists")
 
             # create triggers that would sync sources table with fulltext index
             script = """
@@ -160,12 +161,12 @@ END;
 """
             self.cursor.executescript(script)
             self.connection.commit()
-            logging.debug("created fulltext triggers")
+            logger.debug("created fulltext triggers")
             self.fulltext = True
 
         except dbapi2.OperationalError:
             self.fulltext = False
-            logging.exception("failed to initialize fts3 support")
+            logger.exception("failed to initialize fts3 support")
             script = """
 DROP TRIGGER IF EXISTS sources_insert_trig;
 DROP TRIGGER IF EXISTS sources_update_trig;
@@ -184,7 +185,7 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
             query = """SELECT COUNT(*) FROM sources s JOIN targets t on s.sid = t.sid"""
         self.cursor.execute(query)
         (numrows,) = self.cursor.fetchone()
-        logging.debug("tmdb has %d records", numrows)
+        logger.debug("tmdb has %d records", numrows)
         return numrows
 
     def add_unit(self, unit, source_lang=None, target_lang=None, commit=True):
@@ -292,7 +293,7 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
         unit_words = list(filter(lambda word: len(word) > 2, unit_words))
 
         if self.fulltext and len(unit_words) > 3:
-            logging.debug("fulltext matching")
+            logger.debug("fulltext matching")
             query = """SELECT s.text, t.text, s.context, s.lang, t.lang FROM sources s JOIN targets t ON s.sid = t.sid JOIN fulltext f ON s.sid = f.docid
                        WHERE s.lang IN (?) AND t.lang IN (?) AND s.length BETWEEN ? AND ?
                        AND fulltext MATCH ?"""
@@ -301,7 +302,7 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
                 query, (source_langs, target_langs, minlen, maxlen, search_str)
             )
         else:
-            logging.debug("nonfulltext matching")
+            logger.debug("nonfulltext matching")
             query = """SELECT s.text, t.text, s.context, s.lang, t.lang FROM sources s JOIN targets t ON s.sid = t.sid
             WHERE s.lang IN (?) AND t.lang IN (?)
             AND s.length >= ? AND s.length <= ?"""
@@ -321,7 +322,7 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
                 )
         results.sort(key=operator.itemgetter("quality"), reverse=True)
         results = results[: self.max_candidates]
-        logging.debug("results: %s", str(results))
+        logger.debug("results: %s", str(results))
         return results
 
 

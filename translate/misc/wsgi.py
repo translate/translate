@@ -22,11 +22,13 @@ import logging
 
 from cheroot.wsgi import Server
 
+logger = logging.getLogger(__name__)
+
 
 def launch_server(host, port, app, **kwargs):
     """Use cheroot WSGI server, a multithreaded scallable server."""
     server = Server((host, port), app, **kwargs)
-    logging.info("Starting server, listening on port %s", port)
+    logger.info("Starting server, listening on port %s", port)
     try:
         server.start()
     except KeyboardInterrupt:

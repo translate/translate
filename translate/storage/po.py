@@ -30,6 +30,7 @@ import logging
 import os
 import platform
 
+logger = logging.getLogger(__name__)
 usecpo = os.getenv("USECPO")
 
 if platform.python_implementation() == "CPython":
@@ -41,7 +42,7 @@ if platform.python_implementation() == "CPython":
         from translate.storage.pypo import *  # noqa: F403
 else:
     if usecpo:
-        logging.error(
+        logger.error(
             "cPO and fPO do not work on %s defaulting to PyPO",
             platform.python_implementation(),
         )

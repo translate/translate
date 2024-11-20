@@ -27,7 +27,10 @@ If available, the `python-Levenshtein
 provide better performance as it is implemented natively.
 """
 
+import logging
 import math
+
+logger = logging.getLogger(__name__)
 
 
 def python_distance(a, b, stopvalue=-1):
@@ -75,9 +78,7 @@ try:
 
     distance = native_distance
 except ImportError:
-    import logging
-
-    logging.warning(
+    logger.warning(
         "Python-Levenshtein not found. Continuing with built-in (slower) fuzzy matching."
     )
     distance = python_distance
