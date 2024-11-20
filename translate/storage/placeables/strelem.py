@@ -25,6 +25,8 @@ parsed rich-string tree. It is the base class of all placeables.
 import contextlib
 import logging
 
+logger = logging.getLogger(__name__)
+
 
 def filter_all(e):
     return True
@@ -193,7 +195,7 @@ class StringElem:
 
         .. note:: ``self.renderer`` is **not** copied.
         """
-        # logging.debug('Copying instance of class %s' % (self.__class__.__name__))
+        # logger.debug('Copying instance of class %s' % (self.__class__.__name__))
         cp = self.__class__(id=self.id, xid=self.xid, rid=self.rid)
         for sub in self.sub:
             if isinstance(sub, StringElem):
@@ -256,7 +258,7 @@ class StringElem:
         assert start["elem"].isleaf()
         assert end["elem"].isleaf()
 
-        # logging.debug('FROM %s TO %s' % (start, end))
+        # logger.debug('FROM %s TO %s' % (start, end))
 
         # Ranges can be one of 3 types:
         # 1) The entire string.
@@ -267,7 +269,7 @@ class StringElem:
 
         # Case 1: Entire string #
         if start_index == 0 and end_index == len(self):
-            # logging.debug('Case 1: [%s]' % (unicode(self)))
+            # logger.debug('Case 1: [%s]' % (unicode(self)))
             removed = self.copy()
             self.sub = []
             return removed, None, None
@@ -285,7 +287,7 @@ class StringElem:
             #        s += '[' + unicode(e) + ']'
             #    else:
             #        s += unicode(e)
-            # logging.debug('Case 2: %s' % (s))
+            # logger.debug('Case 2: %s' % (s))
             #########################
 
             if start["elem"] is self and self.__class__ is StringElem:
@@ -316,7 +318,7 @@ class StringElem:
             #        )
             #    else:
             #        s += unicode(e)
-            # logging.debug('Case 3: %s' % (s))
+            # logger.debug('Case 3: %s' % (s))
             #########################
 
             # XXX: This might not have the expected result if start['elem']
@@ -344,7 +346,7 @@ class StringElem:
         range_nodes = range_nodes[startidx : endidx + 1]
         # assert (range_nodes[0] is start['elem'] and
         #        range_nodes[-1] is end['elem'])
-        # logging.debug("Nodes in delete range: %s" % (str(range_nodes)))
+        # logger.debug("Nodes in delete range: %s" % (str(range_nodes)))
 
         marked_nodes = []  # Contains nodes that have been marked for deletion (directly or inderectly (via parent)).
         for node in range_nodes[1:-1]:
@@ -352,7 +354,7 @@ class StringElem:
                 continue
             subtree = node.depth_first()
             if not [e for e in subtree if e is end["elem"]]:
-                # logging.debug("Marking node: %s" % (subtree))
+                # logger.debug("Marking node: %s" % (subtree))
                 marked_nodes.extend(subtree)  # "subtree" does not include "node"
 
         ##### FOR DEBUGGING #####
@@ -364,7 +366,7 @@ class StringElem:
         #        s += '%s]%s' % (e[:end['offset']], e[end['offset']:])
         #    else:
         #        s += unicode(e)
-        # logging.debug('Case 4: %s' % (s))
+        # logger.debug('Case 4: %s' % (s))
         #########################
 
         removed = self.copy()
@@ -568,12 +570,12 @@ class StringElem:
         if offset == 0:
             # 1.1 #
             if oelem.iseditable:
-                # logging.debug('Case 1.1')
+                # logger.debug('Case 1.1')
                 oelem.sub.insert(0, checkleaf(oelem, text))
                 oelem.prune()
                 return True
             # 1.2 #
-            # logging.debug('Case 1.2')
+            # logger.debug('Case 1.2')
             oparent = self.get_ancestor_where(oelem, filter_editable)
             if oparent is not None:
                 oparent.sub.insert(0, checkleaf(oparent, text))
@@ -583,7 +585,7 @@ class StringElem:
 
         # Case 2 #
         if offset == len(self):
-            # logging.debug('Case 2')
+            # logger.debug('Case 2')
             last = self.flatten()[-1]
             parent = self.get_ancestor_where(last, filter_editable)
             if parent is None:
@@ -606,7 +608,7 @@ class StringElem:
         # Case 3 #
         if oelem is before:
             if oelem.iseditable:
-                # logging.debug('Case 3')
+                # logger.debug('Case 3')
                 eoffset = offset - self.elem_offset(oelem)
                 if oelem.isleaf():
                     s = str(oelem)  # Collapse all sibling strings into one
@@ -623,7 +625,7 @@ class StringElem:
         # And the only case left: Case 4 #
         # 4.1 #
         if not before.iseditable and not oelem.iseditable:
-            # logging.debug('Case 4.1')
+            # logger.debug('Case 4.1')
             # Neither are editable, so we add it as a sibling (to the right)
             # of before
             bparent = self.get_parent_elem(before)
@@ -643,7 +645,7 @@ class StringElem:
 
         # 4.2 #
         if before.iseditable and oelem.iseditable:
-            # logging.debug('Case 4.2')
+            # logger.debug('Case 4.2')
             # We can add to either, but we try hard to add to the correct one
             # so that we avoid inserting text in the wrong place on undo, for
             # example.
@@ -673,12 +675,12 @@ class StringElem:
 
         # 4.3 #
         if before.iseditable and not oelem.iseditable:
-            # logging.debug('Case 4.3')
+            # logger.debug('Case 4.3')
             return before.insert(len(before), text)  # Reinterpret as a case 2
 
         # 4.4 #
         if not before.iseditable and oelem.iseditable:
-            # logging.debug('Case 4.4')
+            # logger.debug('Case 4.4')
             return oelem.insert(0, text)  # Reinterpret as a case 1
 
         return False
@@ -704,7 +706,7 @@ class StringElem:
             text = StringElem(text)
 
         if left is right:
-            # logging.debug('left%s.sub.append(%s)' % (repr(left), repr(text)))
+            # logger.debug('left%s.sub.append(%s)' % (repr(left), repr(text)))
             left.sub.append(text)
             return True
         # XXX: The "in" keyword is *not* used below, because the "in" tests
@@ -713,13 +715,13 @@ class StringElem:
 
         if left is None:
             if self is right:
-                # logging.debug('self%s.sub.insert(0, %s)' %
+                # logger.debug('self%s.sub.insert(0, %s)' %
                 #              (repr(self), repr(text)))
                 self.sub.insert(0, text)
                 return True
             parent = self.get_parent_elem(right)
             if parent is not None:
-                # logging.debug('parent%s.sub.insert(0, %s)' %
+                # logger.debug('parent%s.sub.insert(0, %s)' %
                 #              (repr(parent), repr(text)))
                 parent.sub.insert(0, text)
                 return True
@@ -727,13 +729,13 @@ class StringElem:
 
         if right is None:
             if self is left:
-                # logging.debug('self%s.sub.append(%s)' %
+                # logger.debug('self%s.sub.append(%s)' %
                 #              (repr(self), repr(text)))
                 self.sub.append(text)
                 return True
             parent = self.get_parent_elem(left)
             if parent is not None:
-                # logging.debug('parent%s.sub.append(%s)' %
+                # logger.debug('parent%s.sub.append(%s)' %
                 #              (repr(parent), repr(text)))
                 parent.sub.append(text)
                 return True
@@ -748,7 +750,7 @@ class StringElem:
                 ischild = True
                 break
         if ischild:
-            # logging.debug('left%s.sub.insert(0, %s)' %
+            # logger.debug('left%s.sub.insert(0, %s)' %
             #              (repr(left), repr(text)))
             left.sub.insert(0, text)
             return True
@@ -759,7 +761,7 @@ class StringElem:
                 ischild = True
                 break
         if ischild:
-            # logging.debug('right%s.sub.append(%s)' %
+            # logger.debug('right%s.sub.append(%s)' %
             #              (repr(right), repr(text)))
             right.sub.append(text)
             return True
@@ -771,7 +773,7 @@ class StringElem:
                 if child is left:
                     break
                 idx += 1
-            # logging.debug('parent%s.sub.insert(%d, %s)' %
+            # logger.debug('parent%s.sub.insert(%d, %s)' %
             #              (repr(parent), idx, repr(text)))
             parent.sub.insert(idx, text)
             return True
@@ -783,12 +785,12 @@ class StringElem:
                 if child is right:
                     break
                 idx += 1
-            # logging.debug('parent%s.sub.insert(%d, %s)' %
+            # logger.debug('parent%s.sub.insert(%d, %s)' %
             #              (repr(parent), idx, repr(text)))
             parent.sub.insert(0, text)
             return True
 
-        logging.debug("Could not insert between %r and %r... odd.", left, right)
+        logger.debug("Could not insert between %r and %r... odd.", left, right)
         return False
 
     def isleaf(self):

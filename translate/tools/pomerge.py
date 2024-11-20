@@ -31,6 +31,8 @@ import logging
 from translate.storage import factory
 from translate.storage.poheader import poheader
 
+logger = logging.getLogger(__name__)
+
 
 def mergestores(store1, store2, mergeblanks, mergefuzzy, mergecomments):
     """Take any new translations in store2 and write them into store1."""
@@ -43,7 +45,7 @@ def mergestores(store1, store2, mergeblanks, mergefuzzy, mergecomments):
         if unit1 is None:
             unit1 = store1.findunit(unit2.source)
         if unit1 is None:
-            logging.error(
+            logger.error(
                 "The template does not contain the following unit:\n%s", str(unit2)
             )
         else:

@@ -31,6 +31,8 @@ from translate.storage.placeables import StringElem
 from translate.storage.placeables import parse as rich_parse
 from translate.storage.workflow import StateEnum as states
 
+logger = logging.getLogger(__name__)
+
 # Simple BOM based encoding detection
 ENCODING_BOMS = (
     (codecs.BOM_UTF8, "utf-8-sig"),
@@ -866,7 +868,7 @@ class TranslationStore:
             if encoding == self.encoding and suffix == "sig":
                 encodings.append(detected_encoding["encoding"])
             elif detected_encoding["encoding"] != self.encoding:
-                logging.warning(
+                logger.warning(
                     "trying to parse %s with encoding: %s but "
                     "detected encoding is %s (confidence: %s)",
                     self.filename,

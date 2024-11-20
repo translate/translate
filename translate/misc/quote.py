@@ -1,4 +1,3 @@
-#
 # Copyright 2002-2006 Zuza Software Foundation
 #
 # This file is part of translate.
@@ -30,6 +29,8 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
+
+logger = logging.getLogger(__name__)
 
 
 def find_all(searchin: str, substr: str) -> Iterable[int]:
@@ -538,13 +539,13 @@ def propertiesdecode(source: str) -> str:
             output.append(unichr2(x))
         elif c == "N":
             if source[s] != "{":
-                logging.warning("Invalid named unicode escape: no { after \\N")
+                logger.warning("Invalid named unicode escape: no { after \\N")
                 output.append(f"\\{c}")
                 continue
             s += 1
             e = source.find("}", s)
             if e == -1:
-                logging.warning("Invalid named unicode escape: no } after \\N{")
+                logger.warning("Invalid named unicode escape: no } after \\N{")
                 output.append(f"\\{c}")
                 continue
             import unicodedata
