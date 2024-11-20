@@ -292,7 +292,7 @@ class csvfile(base.TranslationStore):
             self.parse(csvsrc)
 
     def parse(
-        self, csvsrc, sample_length: int | None = 1024, *, dialect: None | str = None
+        self, csvsrc, sample_length: int | None = 1024, *, dialect: str | None = None
     ):
         if self._encoding == "auto":
             text, encoding = self.detect_encoding(
