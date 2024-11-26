@@ -71,17 +71,17 @@ tagname_re = re.compile(r"<[\s]*([\w\/]*).*?(/)?[\s]*>", re.DOTALL)
 
 # We allow escaped quotes, probably for old escaping style of OOo helpcontent
 # TODO: remove escaped strings once usage is audited
-property_re = re.compile(" (\\w*)=((\\\\?\".*?\\\\?\")|(\\\\?'.*?\\\\?'))")
+property_re = re.compile(r""" (\w*)=((\\?".*?\\?")|(\\?'.*?\\?'))""")
 
 # The whole tag
-tag_re = re.compile("<[^>]+>")
+tag_re = re.compile(r"<[^>]+>")
 
 anonvar_re = re.compile(r"^{[0-9]*}$")
 
-gconf_attribute_re = re.compile('"[a-z_]+?"')
+gconf_attribute_re = re.compile(r'"[a-z_]+?"')
 
 # XML/HTML tags in LibreOffice help and readme, exclude short tags
-lo_tag_re = re.compile("""</?(?P<tag>[a-z][a-z_-]+)(?: +[a-z]+="[^"]+")* */?>""")
+lo_tag_re = re.compile(r"""</?(?P<tag>[a-z][a-z_-]+)(?: +[a-z]+="[^"]+")* */?>""")
 lo_emptytags = frozenset(["br", "embed", "embedvar", "object", "help-id-missing"])
 
 
@@ -1153,14 +1153,14 @@ class StandardChecker(TranslationChecker):
         # Possible failure states: 0 = ok, 1 = mild, 2 = serious
         STATE_OK, STATE_MILD, STATE_SERIOUS = 0, 1, 2
         failure_state = STATE_OK
-        pythonbraceformat_pat = re.compile("{[^}]*}")
+        pythonbraceformat_pat = re.compile(r"{[^}]*}")
         data1 = {}
         data2 = {}
 
         # Populate the data1 and data2 dicts.
         for data_, str_ in [(data1, str1), (data2, str2)]:
             # Remove all escaped braces {{ and }}
-            data_["strclean"] = re.sub("{{|}}", "", str_)
+            data_["strclean"] = re.sub(r"{{|}}", "", str_)
             data_["allvars"] = pythonbraceformat_pat.findall(data_["strclean"])
             data_["anonvars"] = [
                 var[1:-1] for var in data_["allvars"] if anonvar_re.match(var)

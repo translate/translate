@@ -338,7 +338,7 @@ class dtdunit(base.TranslationUnit):
                         # plain comment
                         self.commenttype = "comment"
                 # FIXME: bloody entity might share a line with something important
-                elif not self.inentity and re.search("%.*;", line):
+                elif not self.inentity and re.search(r"%.*;", line):
                     # now work out the type of comment, and save it (remember we're not in the comment yet)
                     self.comments.append(("comment", line))
                     line = ""
@@ -606,7 +606,7 @@ class dtdfile(base.TranslationStore):
         # Android files are invalid DTDs
         if not self.android:
             # #expand is a Mozilla hack and are removed as they are not valid in DTDs
-            _input = re.sub(b"#expand", b"", content)
+            _input = re.sub(rb"#expand", b"", content)
             try:
                 etree.DTD(BytesIO(_input))
             except etree.DTDParseError as e:

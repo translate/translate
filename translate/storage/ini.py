@@ -41,7 +41,7 @@ except ImportError:
     raise ImportError("Missing iniparse library.")
 
 
-location_re = re.compile("\\[(?P<section>.+)\\](?P<entry>.+)")
+location_re = re.compile(r"\[(?P<section>.+)\](?P<entry>.+)")
 
 # Disable treating anything starting with rem as a comment, this changes
 # global iniparse state

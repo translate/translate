@@ -891,7 +891,7 @@ class propunit(base.TranslationUnit):
 
     @property
     def target(self):
-        return re.sub("\\\\ ", " ", self.personality.decode(self.translation))
+        return re.sub(r"\\ ", " ", self.personality.decode(self.translation))
 
     @target.setter
     def target(self, target):

@@ -185,7 +185,7 @@ class RecursiveOptionParser(optparse.OptionParser):
                 (
                     ".SH DESCRIPTION\n",
                     "\n\n".join(
-                        re.sub("\\.\\. note::", "Note:", l) for l in description_lines
+                        re.sub(r"\.\. note::", "Note:", l) for l in description_lines
                     ),
                 )
             )

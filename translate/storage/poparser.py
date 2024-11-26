@@ -335,7 +335,7 @@ def set_encoding(parse_state, store, unit):
         and unit.msgstr
         and isinstance(unit.msgstr[0], str)
     ):
-        charset = re.search("charset=([^\\s\\\\n]+)", "".join(unit.msgstr))
+        charset = re.search(r"charset=([^\s\\n]+)", "".join(unit.msgstr))
     if charset:
         encoding = charset.group(1)
         if encoding != "CHARSET":

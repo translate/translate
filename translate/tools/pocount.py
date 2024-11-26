@@ -65,7 +65,7 @@ state_strings = {
 
 logger = logging.getLogger(__name__)
 
-# kdepluralre = re.compile("^_n: ") #Restore this if you really need support for old kdeplurals
+# kdepluralre = re.compile(r"^_n: ") #Restore this if you really need support for old kdeplurals
 brtagre = re.compile(r"<br\s*?/?>")
 # xmltagre is a direct copy of the from placeables/general.py
 xmltagre = re.compile(
@@ -79,7 +79,7 @@ xmltagre = re.compile(
         """,
     re.VERBOSE,
 )
-numberre = re.compile("\\D\\.\\D")
+numberre = re.compile(r"\D\.\D")
 
 
 class ConsoleColor:
