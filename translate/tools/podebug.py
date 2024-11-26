@@ -33,7 +33,7 @@ from translate.storage import factory
 from translate.storage.placeables import StringElem, general
 from translate.storage.placeables import parse as rich_parse
 
-format_re = re.compile("%[0-9c]*[sfFbBdh]")
+format_re = re.compile(r"%[0-9c]*[sfFbBdh]")
 
 
 def add_prefix(prefix, stringelems):

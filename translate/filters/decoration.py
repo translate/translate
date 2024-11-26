@@ -111,7 +111,7 @@ def isvalidaccelerator(accelerator, acceptlist=None):
     # so let's see if the character can decompose.
     decomposition = unicodedata.decomposition(accelerator)
     # Next we strip out any extra information like <this>
-    decomposition = re.sub("<[^>]+>", "", decomposition).strip()
+    decomposition = re.sub(r"<[^>]+>", "", decomposition).strip()
     return decomposition.count(" ") == 0
 
 

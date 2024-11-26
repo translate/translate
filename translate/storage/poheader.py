@@ -25,8 +25,8 @@ from translate import __version__
 from translate.misc.dictutils import cidict
 
 author_re = re.compile(r".*<\S+@\S+>.*\d{4,4}")
-nplural_re = re.compile("nplurals=(.+?);")
-plural_re = re.compile("plural=(.+?);?$")
+nplural_re = re.compile(r"nplurals=(.+?);")
+plural_re = re.compile(r"plural=(.+?);?$")
 
 default_header = {
     "Project-Id-Version": "PACKAGE VERSION",

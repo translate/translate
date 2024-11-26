@@ -55,7 +55,7 @@ from translate.storage import base
 def escape_to_python(string):
     """Unescape a given .rc string into a valid Python string."""
     return (
-        re.sub('"\\s*\\\\\n\\s*"', "", string)  # xxx"\n"xxx line continuation
+        re.sub(r'"\s*\\\n\s*"', "", string)  # xxx"\n"xxx line continuation
         .replace("\\\n", "")  # backslash newline line continuation
         .replace(r"\r", "\r")
         .replace(r"\n", "\n")

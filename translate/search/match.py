@@ -256,8 +256,8 @@ class matcher:
 ignorepatterns = [
     (r"y\s*$", "ie"),  # category/categories, identify/identifies, apply/applied
     (r"[\s-]+", ""),  # down time / downtime, pre-order / preorder
-    ("-", " "),  # pre-order / pre order
-    (" ", "-"),  # pre order / pre-order
+    (r"-", " "),  # pre-order / pre order
+    (r" ", "-"),  # pre order / pre-order
 ]
 ignorepatterns_re = [(re.compile(a), b) for (a, b) in ignorepatterns]
 
@@ -407,7 +407,7 @@ def unit2dict(unit):
 
 def _parse_quality(comment):
     """Extracts match quality from po comments."""
-    quality = re.search("([0-9]+)%", comment)
+    quality = re.search(r"([0-9]+)%", comment)
     if quality:
         return quality.group(1)
     return None

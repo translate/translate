@@ -39,14 +39,14 @@ def guillemets(text):
     # Check that there is an even number of double quotes, otherwise it is
     # probably not safe to convert them.
     if text.count('"') % 2 == 0:
-        text = re.sub('(.|^)"([^"]+)"', convertquotation, text)
+        text = re.sub(r'(.|^)"([^"]+)"', convertquotation, text)
     singlecount = text.count("'")
     if singlecount:
         if singlecount == text.count("`"):
-            text = re.sub("(.|^)`([^']+)'", convertquotation, text)
+            text = re.sub(r"(.|^)`([^']+)'", convertquotation, text)
         elif singlecount % 2 == 0:
-            text = re.sub("(.|^)'([^']+)'", convertquotation, text)
-    return re.sub("(.|^)“([^”]+)”", convertquotation, text)
+            text = re.sub(r"(.|^)'([^']+)'", convertquotation, text)
+    return re.sub(r"(.|^)“([^”]+)”", convertquotation, text)
 
 
 class fa(common.Common):

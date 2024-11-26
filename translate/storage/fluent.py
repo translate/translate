@@ -348,8 +348,8 @@ class FluentSelectorNode:
             pattern = ast.Pattern([ast.Placeable(self._selector)])
             serialized = _fluent_pattern_to_source(pattern)
             # Strip the outer pattern that we wrapped it in.
-            serialized = re.sub("^{ *", "", serialized, count=1)
-            serialized = re.sub(" *}$", "", serialized, count=1)
+            serialized = re.sub(r"^{ *", "", serialized, count=1)
+            serialized = re.sub(r" *}$", "", serialized, count=1)
             self._serialized_selector = serialized
         return self._serialized_selector
 

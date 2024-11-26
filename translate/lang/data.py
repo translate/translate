@@ -1038,9 +1038,9 @@ expansion_factors = {
 }
 """Source to target string length expansion factors."""
 
-langcode_re = re.compile("^[a-z]{2,3}([_-][A-Z]{2,3}|)(@[a-zA-Z0-9]+|)$")
-langcode_ire = re.compile("^[a-z]{2,3}([_-][a-z]{2,3})?(@[a-z0-9]+)?$", re.IGNORECASE)
-variant_re = re.compile("^[_-][A-Z]{2,3}(@[a-zA-Z0-9]+|)$")
+langcode_re = re.compile(r"^[a-z]{2,3}([_-][A-Z]{2,3}|)(@[a-zA-Z0-9]+|)$")
+langcode_ire = re.compile(r"^[a-z]{2,3}([_-][a-z]{2,3})?(@[a-z0-9]+)?$", re.IGNORECASE)
+variant_re = re.compile(r"^[_-][A-Z]{2,3}(@[a-zA-Z0-9]+|)$")
 
 
 dialect_name_re = re.compile(r"(.+)\s\(([^)\d]{,25})\)$")
