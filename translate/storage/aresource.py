@@ -37,7 +37,7 @@ WHITESPACE = {" ", "\n", "\t"}  # Whitespace that we collapse.
 ESCAPE_NEWLINE = {"n", "N"}
 ESCAPE_TAB = {"t", "T"}
 ESCAPE_PLAIN = {" ", '"', "'", "@", "?"}
-MULTIWHITESPACE = re.compile("[ \n\t]{2}(?!\\\\n)")
+MULTIWHITESPACE = re.compile(r"[ \n\t]{2}(?!\\n)")
 
 ESCAPE_TRANSLATE = str.maketrans(
     {

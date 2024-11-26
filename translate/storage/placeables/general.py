@@ -76,7 +76,7 @@ class NumberPlaceable(Ph):
     """Placeable for numbers."""
 
     istranslatable = False
-    regex = re.compile("[-+]?[0-9]+([\u00a0.,][0-9]+)*")
+    regex = re.compile(r"[-+]?[0-9]+([\u00a0.,][0-9]+)*")
     parse = classmethod(regex_parse)
 
 
@@ -257,7 +257,7 @@ class PunctuationPlaceable(Ph):
     # is available on the translators keyboard.  Or easily expanded by their
     # configuration.
     regex = re.compile(
-        """([™©®]|          # Marks
+        r"""([™©®]|          # Marks
              [℃℉°]|          # Degree related
              [±πθ×÷−√∞∆Σ′″]| # Maths
              [‘’ʼ‚‛“”„‟]|    # Quote characters

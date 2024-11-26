@@ -288,7 +288,7 @@ class mofile(poheader.poheader, base.TranslationStore):
             # Still need to handle KDE comments
             if not source:
                 charset = re.search(
-                    b"charset=([^\\s]+)", input[voffset : voffset + vlength]
+                    rb"charset=([^\s]+)", input[voffset : voffset + vlength]
                 )
                 if charset:
                     self.encoding = charset.group(1).decode()

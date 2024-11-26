@@ -31,7 +31,7 @@ def reverse_quotes(text):
     def convertquotation(match):
         return f"”{match.group(1)}“"
 
-    return re.sub("“([^”]+)”", convertquotation, text)
+    return re.sub(r"“([^”]+)”", convertquotation, text)
 
 
 class nqo(common.Common):

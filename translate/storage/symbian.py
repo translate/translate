@@ -18,13 +18,13 @@
 
 import re
 
-charset_re = re.compile("CHARACTER_SET[ ]+(?P<charset>.*)")
+charset_re = re.compile(r"CHARACTER_SET[ ]+(?P<charset>.*)")
 header_item_or_end_re = re.compile(
-    "(((?P<key>[^ ]+)(?P<space>[ ]*:[ ]*)(?P<value>.*))|(?P<end_comment>[*]/))"
+    r"(((?P<key>[^ ]+)(?P<space>[ ]*:[ ]*)(?P<value>.*))|(?P<end_comment>[*]/))"
 )
-header_item_re = re.compile("(?P<key>[^ ]+)(?P<space>[ ]*:[ ]*)(?P<value>.*)")
+header_item_re = re.compile(r"(?P<key>[^ ]+)(?P<space>[ ]*:[ ]*)(?P<value>.*)")
 string_entry_re = re.compile(
-    "(?P<start>rls_string[ ]+)(?P<id>[^ ]+)(?P<space>[ ]+)(?P<str>.*)"
+    r"(?P<start>rls_string[ ]+)(?P<id>[^ ]+)(?P<space>[ ]+)(?P<str>.*)"
 )
 
 
