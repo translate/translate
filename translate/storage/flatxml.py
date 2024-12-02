@@ -223,9 +223,7 @@ class FlatXMLFile(base.TranslationStore):
             # coming up empty when the file actually contains entries.
             value_name = self.namespaced(self.value_name)
             matching_nodes = list(self.root.iterchildren(value_name))
-            assert len(
-                matching_nodes
-            ), f"expected value name to be {value_name} but first node is {self.root[0].tag}"
+            assert matching_nodes, f"expected value name to be {value_name} but first node is {self.root[0].tag}"
 
             assert matching_nodes[0].get(
                 self.key_name

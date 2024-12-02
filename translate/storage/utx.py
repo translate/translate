@@ -231,7 +231,7 @@ class UtxFile(base.TranslationStore):
             if key in {"version", "source_language", "target_language", "date_created"}:
                 continue
             items.append(f"{key}: {value}")
-        if len(items):
+        if items:
             items = "; ".join(items)
             header += "; " + items
         header += UtxDialect.lineterminator
