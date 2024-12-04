@@ -47,6 +47,7 @@ class TestConvertCommand:
         kwoptions = getattr(self, "defaultoptions", {}).copy()
         kwoptions.update(kwargs)
         for key, value in kwoptions.items():
+            key = key.replace("_", "-")
             if value is True:
                 argv.append(f"--{key}")
             else:

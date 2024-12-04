@@ -433,3 +433,15 @@ msgstr "Zkopirovano"
             rc_result = rcfile(handle)
         assert len(rc_result.units) == 1
         assert rc_result.units[0].target == "Zkopirovano"
+
+    def test_output_encoding(self):
+        self.create_testfile("simple.rc", RC_SOURCE)
+        self.create_testfile("simple.po", POFILE)
+
+        self.run_command(
+            template="simple.rc",
+            i="simple.po",
+            o="output.rc",
+            l="LANG_CZECH",
+            charset_output="utf-8",
+        )
