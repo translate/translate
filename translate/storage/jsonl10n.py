@@ -287,6 +287,10 @@ class WebExtensionJsonFile(JsonFile):
         last_node=None,
     ):
         for item, value in data.items():
+            if isinstance(value, str):
+                raise base.ParseError(
+                    ValueError("File is not a valid WebExtension JSON file!")
+                )
             unit = self.UnitClass(
                 value.get("message", ""),
                 item,
