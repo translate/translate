@@ -179,8 +179,8 @@ def getclass(
         if ext in hiddenclasses:
             guesserfn = hiddenclasses[ext]
             if decomp:
-                _file = import_class(*decompressclass[decomp])
-                ext = guesserfn(_file(storefile))
+                file = import_class(*decompressclass[decomp])
+                ext = guesserfn(file(storefile))
             else:
                 ext = guesserfn(storefile)
     try:
@@ -232,8 +232,8 @@ def getobject(
         name, ext = os.path.splitext(storefilename)
         ext = ext[len(os.path.extsep) :].lower()
         if ext in decompressclass:
-            _file = import_class(*decompressclass[ext])
-            storefile = _file(storefilename)
+            file = import_class(*decompressclass[ext])
+            storefile = file(storefilename)
         store = storeclass.parsefile(storefile)
     else:
         store = storeclass()

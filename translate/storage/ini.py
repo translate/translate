@@ -129,7 +129,7 @@ class inifile(base.TranslationStore):
             self.parse(inputfile)
 
     def serialize(self, out):
-        _outinifile = self._inifile or INIConfig(optionxformvalue=None)
+        outinifile = self._inifile or INIConfig(optionxformvalue=None)
         for unit in self.units:
             for location in unit.getlocations():
                 match = location_re.match(location)
@@ -140,9 +140,9 @@ class inifile(base.TranslationStore):
                     section = match.groupdict()["section"]
                     entry = match.groupdict()["entry"]
                 value = self._dialect.escape(unit.target)
-                _outinifile[section][entry] = value
-        if _outinifile:
-            out.write(str(_outinifile).encode("utf-8"))
+                outinifile[section][entry] = value
+        if outinifile:
+            out.write(str(outinifile).encode("utf-8"))
 
     def parse(self, input):
         """Parse the given file or file source string."""
