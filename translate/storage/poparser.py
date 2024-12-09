@@ -90,8 +90,8 @@ class ParseState:
                 self.next_line = decode(self.next_line, self.encoding)
         return current
 
-    def new_input(self, _input):
-        return ParseState(_input, self.UnitClass, self.encoding)
+    def new_input(self, input_):
+        return ParseState(input_, self.UnitClass, self.encoding)
 
 
 def read_prevmsgid_lines(parse_state):
