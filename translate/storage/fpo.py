@@ -326,8 +326,8 @@ class pounit(pocommon.pounit):
 
     def __str__(self):
         """Convert to a string. double check that unicode is handled somehow here."""
-        _cpo_unit = cpo.pounit.buildfromunit(self)
-        return str(_cpo_unit)
+        cpo_unit = cpo.pounit.buildfromunit(self)
+        return str(cpo_unit)
 
     def getlocations(self):
         """
