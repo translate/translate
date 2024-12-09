@@ -15,12 +15,12 @@ class TestAndroid2PO:
 
     def test_no_template_units(self):
         """Test that we can handle android with no template."""
-        _input = """<?xml version="1.0" encoding="utf-8"?>
+        input_ = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="id">Multimedia tab</string>
 </resources>"""
 
-        poresult = self.android2po(_input)
+        poresult = self.android2po(input_)
         assert len(poresult.units) == 2
         assert poresult.units[1].source == "Multimedia tab"
 
@@ -30,12 +30,12 @@ class TestAndroid2PO:
 <resources>
     <string name="id">Multimedia tab</string>
 </resources>"""
-        _input = """<?xml version="1.0" encoding="utf-8"?>
+        input_ = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="id">Pestanya multimèdia</string>
 </resources>"""
 
-        poresult = self.android2po(_input, template)
+        poresult = self.android2po(input_, template)
         assert len(poresult.units) == 2
         assert poresult.units[1].source == "Multimedia tab"
         assert poresult.units[1].target == "Pestanya multimèdia"

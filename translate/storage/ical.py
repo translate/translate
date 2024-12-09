@@ -91,7 +91,7 @@ class icalfile(base.TranslationStore):
             self.parse(inputfile)
 
     def serialize(self, out):
-        _outicalfile = self._icalfile
+        outicalfile = self._icalfile
         for unit in self.units:
             for location in unit.getlocations():
                 match = ICAL_UNIT_LOCATION_RE.match(location)
@@ -104,8 +104,8 @@ class icalfile(base.TranslationStore):
                         if property.name == match.groupdict()["property"]:
                             property.value = unit.target
 
-        if _outicalfile:
-            _outicalfile.serialize(out)
+        if outicalfile:
+            outicalfile.serialize(out)
 
     def parse(self, input):
         """Parse the given file or file source string."""

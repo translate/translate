@@ -606,9 +606,9 @@ class dtdfile(base.TranslationStore):
         # Android files are invalid DTDs
         if not self.android:
             # #expand is a Mozilla hack and are removed as they are not valid in DTDs
-            _input = re.sub(rb"#expand", b"", content)
+            input_ = re.sub(rb"#expand", b"", content)
             try:
-                etree.DTD(BytesIO(_input))
+                etree.DTD(BytesIO(input_))
             except etree.DTDParseError as e:
                 warnings.warn(f"DTD parse error: {e.error_log}")
                 return False

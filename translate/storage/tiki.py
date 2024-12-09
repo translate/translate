@@ -107,38 +107,38 @@ class TikiStore(base.TranslationStore):
 
     def serialize(self, out):
         """Will return a formatted tiki-style language.php file."""
-        _unused = []
-        _untranslated = []
-        _possiblyuntranslated = []
-        _translated = []
+        unused = []
+        untranslated = []
+        possiblyuntranslated = []
+        translated = []
 
         out.write(self._tiki_header().encode(self.encoding))
 
         # Reorder all the units into their groups
         for unit in self.units:
             if unit.getlocations() == ["unused"]:
-                _unused.append(unit)
+                unused.append(unit)
             elif unit.getlocations() == ["untranslated"]:
-                _untranslated.append(unit)
+                untranslated.append(unit)
             elif unit.getlocations() == ["possiblyuntranslated"]:
-                _possiblyuntranslated.append(unit)
+                possiblyuntranslated.append(unit)
             else:
-                _translated.append(unit)
+                translated.append(unit)
 
         out.write(b"// ### Start of unused words\n")
-        for unit in _unused:
+        for unit in unused:
             out.write(str(unit).encode(self.encoding))
         out.write(b"// ### end of unused words\n\n// ### start of untranslated words\n")
-        for unit in _untranslated:
+        for unit in untranslated:
             out.write(str(unit).encode(self.encoding))
         out.write(
             b"// ### end of untranslated words\n\n"
             b"// ### start of possibly untranslated words\n"
         )
-        for unit in _possiblyuntranslated:
+        for unit in possiblyuntranslated:
             out.write(str(unit).encode(self.encoding))
         out.write(b"// ### end of possibly untranslated words\n\n")
-        for unit in _translated:
+        for unit in translated:
             out.write(str(unit).encode(self.encoding))
 
         out.write(self._tiki_footer().encode(self.encoding))
@@ -165,35 +165,35 @@ class TikiStore(base.TranslationStore):
         if isinstance(input, bytes):
             input = BytesIO(input)
 
-        _split_regex = re.compile(r"^(?:// )?\"(.*)\" => \"(.*)\",$", re.UNICODE)
+        split_regex = re.compile(r"^(?:// )?\"(.*)\" => \"(.*)\",$", re.UNICODE)
 
         try:
-            _location = "translated"
+            location = "translated"
 
             for line in input:
                 line = line.decode(self.encoding)
                 # The tiki file fails to identify each section so we have to look for start and end
                 # points and if we're outside of them we assume the string is translated
                 if line.count("### Start of unused words"):
-                    _location = "unused"
+                    location = "unused"
                 elif line.count("### start of untranslated words"):
-                    _location = "untranslated"
+                    location = "untranslated"
                 elif line.count("### start of possibly untranslated words"):
-                    _location = "possiblyuntranslated"
+                    location = "possiblyuntranslated"
                 elif (
                     line.count("### end of unused words")
                     or line.count("### end of untranslated words")
                     or line.count("### end of possibly untranslated words")
                 ):
-                    _location = "translated"
+                    location = "translated"
 
-                match = _split_regex.match(line)
+                match = split_regex.match(line)
 
                 if match:
                     unit = self.addsourceunit("".join(match.group(1)))
                     # Untranslated words get an empty msgstr
-                    if _location != "untranslated":
+                    if location != "untranslated":
                         unit.target = match.group(2)
-                    unit.addlocation(_location)
+                    unit.addlocation(location)
         finally:
             input.close()

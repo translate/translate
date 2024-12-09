@@ -211,8 +211,8 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
         if attributes:
             if hasattr(node, "_ensure_attributes"):
                 node._ensure_attributes()  # Python 3 only
-            _attrs = node._attrs
-            _attrsNS = node._attrsNS
+            attrs = node._attrs
+            attrsNS = node._attrsNS
             for i in range(0, len(attributes), 2):
                 aname = attributes[i]
                 value = attributes[i + 1]
@@ -221,8 +221,8 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
                         self, aname
                     )
                     a = minidom.Attr(qname, uri, localname, prefix)
-                    _attrs[qname] = a
-                    _attrsNS[uri, localname] = a
+                    attrs[qname] = a
+                    attrsNS[uri, localname] = a
                 else:
                     a = minidom.Attr(
                         aname,
@@ -230,8 +230,8 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
                         aname,
                         expatbuilder.EMPTY_PREFIX,
                     )
-                    _attrs[aname] = a
-                    _attrsNS[expatbuilder.EMPTY_NAMESPACE, aname] = a
+                    attrs[aname] = a
+                    attrsNS[expatbuilder.EMPTY_NAMESPACE, aname] = a
                 a.ownerDocument = self.document
                 a.value = value
                 a.ownerElement = node
