@@ -86,7 +86,7 @@ class ProgressBar:
         # Figure out how many hash bars the percentage should be
         allFull = self.width - 7
         numHashes = (percentDone / 100.0) * allFull
-        numHashes = int(round(numHashes))
+        numHashes = round(numHashes)
 
         # build a progress bar with hashes and spaces
         self.progBar = "[%s%s] %3d%%" % (
