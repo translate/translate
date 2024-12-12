@@ -31,7 +31,7 @@ import re
 import textwrap
 from itertools import chain
 
-from wcwidth import wcswidth, wcwidth
+from cwcwidth import wcswidth, wcwidth
 
 from translate.misc import quote
 from translate.misc.multistring import multistring
