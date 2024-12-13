@@ -369,6 +369,10 @@ class Dialect:
     def get_cldr_names_order():
         return ["other"]
 
+    @staticmethod
+    def get_expand_output_target_mapping(names: list[str]) -> list[str]:
+        return names
+
 
 @register_dialect
 class DialectJava(Dialect):
@@ -480,7 +484,7 @@ class DialectGwt(DialectJavaUtf8):
 
     @classmethod
     def get_cldr_names_order(cls):
-        return [y for x, y in cls.gwt_plural_categories]
+        return [y for _x, y in cls.gwt_plural_categories]
 
     @classmethod
     def get_key(cls, key, variant):
@@ -503,6 +507,12 @@ class DialectGwt(DialectJavaUtf8):
     def decode(cls, string):
         result = super().decode(string)
         return result.replace("''", "'")
+
+    @staticmethod
+    def get_expand_output_target_mapping(names: list[str]) -> list[str]:
+        if "other" not in names:
+            return ["other", *names]
+        return names
 
 
 @register_dialect
@@ -640,7 +650,9 @@ class proppluralunit(base.TranslationUnit):
 
     def _get_ordered_units(self):
         # Used for str (GWT order)
-        mapping = self._get_target_mapping()
+        mapping = self.personality.get_expand_output_target_mapping(
+            self._get_target_mapping()
+        )
         names = [
             name for name in self.personality.get_cldr_names_order() if name in mapping
         ]
@@ -654,7 +666,7 @@ class proppluralunit(base.TranslationUnit):
     def settarget(self, text):
         mapping = None
         if isinstance(text, multistring):
-            strings = text.strings
+            strings = [str(x) for x in text.strings]
         elif isinstance(text, list):
             strings = text
         elif isinstance(text, dict):
@@ -670,6 +682,8 @@ class proppluralunit(base.TranslationUnit):
             raise ValueError(
                 f'Not same plural counts between "{strings}" and "{units}"'
             )
+        if "other" not in mapping and "other" in self.units:
+            self.units["other"].target = strings[-1]
 
         for a, b in zip(strings, units):
             b.target = a
