@@ -294,6 +294,62 @@ PP[]=Other
         propunit.source = "xZkouška"
         assert bytes(propfile).decode() == "test=xZkou\\u0161ka\n"
 
+    def test_other_plurals(self):
+        propsource = r"""userItems.limit=Only X items can be added.
+userItems.limit[one]=Only one item can be added.
+userItems.limit[few]=Only {0} items can be added.
+userItems.limit[many]=Only {0} items can be added.
+"""
+        propfile = self.propparse(propsource, sourcelanguage="pl", targetlanguage="pl")
+        propsource_en = r"""
+userItems.test={0} items can be added.
+userItems.test[one]=One item can be added.
+"""
+        propfile_en = self.propparse(
+            propsource_en, sourcelanguage="en", targetlanguage="en"
+        )
+
+        assert len(propfile_en.units) == 1
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == "userItems.limit"
+        assert isinstance(propunit.target, multistring)
+        assert propunit.source.strings == [
+            "Only one item can be added.",
+            "Only {0} items can be added.",
+            "Only {0} items can be added.",
+        ]
+        propunit.target = multistring(
+            [
+                "Only one item can be added.",
+                "Only {0} items can be added.",
+                "Only many {0} items can be added.",
+            ]
+        )
+
+        unit = propfile_en.units[0]
+        propfile.addunit(unit)
+        unit.target = multistring(
+            [
+                "Only one item can be added.",
+                "Only {0} items can be added.",
+                "Only many {0} items can be added.",
+            ]
+        )
+
+        assert (
+            bytes(propfile).decode()
+            == """userItems.limit=Only many {0} items can be added.
+userItems.limit[one]=Only one item can be added.
+userItems.limit[few]=Only {0} items can be added.
+userItems.limit[many]=Only many {0} items can be added.
+userItems.test=Only many {0} items can be added.
+userItems.test[one]=Only one item can be added.
+userItems.test[few]=Only {0} items can be added.
+userItems.test[many]=Only many {0} items can be added.
+"""
+        )
+
 
 class TestProp(test_monolingual.TestMonolingualStore):
     StoreClass = properties.propfile
