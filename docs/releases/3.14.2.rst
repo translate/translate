@@ -1,0 +1,37 @@
+Translate Toolkit 3.14.2
+************************
+
+*Released on 13 December 2024*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- PO
+
+  - Performance improvements thanks to using C implementation of wcwidth
+
+- Properties
+
+  - Fixed hadling of plural tags for certain languages in GWT dialect
+  - Avoid adding trailing newlines to the files upon saving
+
+- JSON
+
+  - Better error messages upon parsing WebExtension
+  - Use flat structure by default for ARB files
+
+- po2rc
+
+  -  Allow po2rc output encoding to be specified  
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař, Marcus Aurelius, Jon Turney
