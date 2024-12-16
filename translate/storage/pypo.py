@@ -125,10 +125,10 @@ class PoWrapper(textwrap.TextWrapper):
     wordsep_re = re.compile(
         r"""
             (
+            \\"[^"]{1,73}\\"|                     # quoted string
             \s+|                                  # any whitespace
             [a-z0-9A-Z_-]+/|                      # nicely split long URLs
             \w*\\.\w*|                            # any escape should not be split
-            \.(?=\w)|                             # full stop inside word
             [\w\!\'\&\.\,\?=<>%]+\s+|             # space should go with a word
             [^\s\w]*\w+[a-zA-Z]-(?=\w+[a-zA-Z])|  # hyphenated words
             (?<=[\w\!\"\'\&\.\,\?])-{2,}(?=\w)    # em-dash
@@ -137,7 +137,7 @@ class PoWrapper(textwrap.TextWrapper):
         re.VERBOSE,
     )
 
-    def __init__(self, width=77):
+    def __init__(self, width: int = 77) -> None:
         super().__init__(
             width=width,
             replace_whitespace=False,
@@ -146,32 +146,31 @@ class PoWrapper(textwrap.TextWrapper):
             break_long_words=True,
         )
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         if not isinstance(other, PoWrapper):
             return False
         return self.width == other.width
 
     def _handle_long_word(
         self, reversed_chunks: list[str], cur_line: list[str], cur_len: int, width: int
-    ):
+    ) -> None:
         """
         Handle a chunk of text (most likely a word, not whitespace) that
         is too long to fit in any line.
         """
-        # Figure out when indent is larger than the specified width, and make
-        # sure at least one character is stripped off on every pass
-        space_left = 1 if width < 1 else width - cur_len
-
         # We're allowed to break long words, then do so: put as much
         # of the next chunk onto the current line as will fit.
-        chunk_start, chunk_end = cjkslices(reversed_chunks[-1], space_left)
+        chunk_start, chunk_end = cjkslices(reversed_chunks[-1], width - cur_len)
         cur_line.append(chunk_start)
         reversed_chunks[-1] = chunk_end
 
     def _wrap_chunks(self, chunks: list[str]) -> list[str]:
         lines = []
-        if self.width <= 1:
+        width = self.width
+        if width <= 1:
             raise ValueError(f"invalid width {self.width!r} (must be > 1)")
+        if self.subsequent_indent or self.initial_indent:
+            raise ValueError("PoWrapper does not support indent")
 
         # Arrange in reverse order so items can be efficiently popped
         # from a stack of chucks.
@@ -182,12 +181,6 @@ class PoWrapper(textwrap.TextWrapper):
             # cur_len is just the length of all the chunks in cur_line.
             cur_line = []
             cur_len = 0
-
-            # Figure out which static string will prefix this line.
-            indent = self.subsequent_indent if lines else self.initial_indent
-
-            # Maximum width for this line.
-            width = self.width - len(indent)
 
             while chunks:
                 l = wcswidth(chunks[-1])
@@ -209,11 +202,11 @@ class PoWrapper(textwrap.TextWrapper):
             if cur_line:
                 # Convert current line back to a string and store it in
                 # list of all lines (return value).
-                lines.append(indent + "".join(cur_line))
+                lines.append("".join(cur_line))
         return lines
 
 
-def quoteforpo(text, wrapper_obj=None):
+def quoteforpo(text: str | None, wrapper_obj: PoWrapper | None = None) -> list[str]:
     """Quotes the given text for a PO file, returning quoted and escaped lines."""
     if text is None:
         return []

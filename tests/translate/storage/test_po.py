@@ -1085,7 +1085,37 @@ msgstr ""
         assert self.poreflow(posource) == posource
 
     def test_wrap_gettext(self):
-        posource = r"""# Test
+        gettext_0_23 = r"""# Test
+msgid ""
+msgstr ""
+"Project-Id-Version: kmail\n"
+"POT-Creation-Date: 2020-05-11 04:03+0200\n"
+"PO-Revision-Date: 2020-05-12 14:13+0000\n"
+"Last-Translator: Roman Savochenko <roman@oscada.org>\n"
+"Language-Team: Ukrainian <https://mirror.git.trinitydesktop.org/weblate/"
+"projects/tdepim/kmail/uk/>\n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.0.4\n"
+
+#: configuredialog.cpp:4580
+msgid ""
+"x: to be continued with \"do not loop\", \"loop in current folder\", and "
+"\"loop in all folders\".\n"
+"When trying to find unread messages:"
+msgstr "При спробі знайти не прочитані повідомлення:"
+
+msgid ""
+"You can get a copy of your Recovery Key by going to "
+"&syncBrand.shortName.label; Options on your other device, and selecting  "
+"\"My Recovery Key\" under \"Manage Account\"."
+msgstr ""
+"""
+        gettext_0_21 = r"""# Test
 msgid ""
 msgstr ""
 "Project-Id-Version: kmail\n"
@@ -1115,13 +1145,30 @@ msgid ""
 "under \"Manage Account\"."
 msgstr ""
 """
-        reflowed = self.poreflow(posource)
-        if reflowed == posource:
-            # Gettext 0.21.1 and newer
-            assert self.poreflow(posource) == posource
+        gettext_0_20 = gettext_0_21.replace('"\n"n%10', 'n"\n"%10')
+
+        if issubclass(self.StoreClass, pypo.pofile):
+            # Python wrapper should follow the latest gettext
+            expected = gettext_0_23
         else:
-            # Gettext 0.21 and older
-            assert self.poreflow(posource) == posource.replace('"\n"n%10', 'n"\n"%10')
+            # Choose matching output depending on gettext version
+            from translate.storage.cpo import get_libgettextpo_version
+
+            version = get_libgettextpo_version()
+            if version >= (0, 23, 0):
+                print(f"Detected gettext 0.23 or newer ({version})")
+                expected = gettext_0_23
+            elif version >= (0, 21, 0):
+                print(f"Detected gettext 0.21 or newer ({version})")
+                expected = gettext_0_21
+            else:
+                print(f"Detected gettext 0.20 or older ({version})")
+                expected = gettext_0_20
+
+        # Verify that any input wraps to the expected output
+        assert self.poreflow(gettext_0_21) == expected
+        assert self.poreflow(gettext_0_23) == expected
+        assert self.poreflow(gettext_0_20) == expected
 
     def test_msgidcomments(self):
         posource = r"""
