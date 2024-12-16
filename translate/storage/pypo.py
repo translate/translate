@@ -102,7 +102,8 @@ def escapeforpo(line: str) -> str:
 
 def cjkslices(text: str, index: int) -> tuple[str, str]:
     """Return the two slices of a text cut to the index."""
-    if wcswidth(text) <= index:
+    text_width = wcswidth(text)
+    if text_width == len(text) or text_width <= index:
         return text, ""
     length = 0
     i = 0
@@ -128,7 +129,7 @@ class PoWrapper(textwrap.TextWrapper):
             \[[^\]]{1,73}\]|                      # [] braces
             \\"[^"]{1,73}\\"|                     # quoted string
             \s+|                                  # any whitespace
-            [a-z0-9A-Z_-]+/|                      # nicely split long URLs
+            [a-z0-9A-Z_#\[\].-]+/|                # nicely split long URLs
             \w*\\.\w*|                            # any escape should not be split
             [\w\!\'\&\.\,\?=<>%]+\s+|             # space should go with a word
             [^\s\w]*\w+[a-zA-Z]-(?=\w+[a-zA-Z])|  # hyphenated words
@@ -197,7 +198,7 @@ class PoWrapper(textwrap.TextWrapper):
 
             # The current line is full, and the next chunk is too big to
             # fit on *any* line (not just this one).
-            if chunks and wcswidth(chunks[-1]) > width:
+            if not cur_line and chunks and wcswidth(chunks[-1]) > width:
                 self._handle_long_word(chunks, cur_line, cur_len, width)
 
             if cur_line:

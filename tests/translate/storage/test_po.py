@@ -1075,10 +1075,8 @@ msgstr ""
 """
         assert self.poreflow(posource) == posource
 
-    @mark.xfail(reason="Incompatible wrapping with gettext, see #5251")
     def test_wrap_parenthesis_long(self):
-        posource = r"""msgid ""
-msgid "test3"
+        gettext_0_22 = r"""msgid "test3"
 msgstr ""
 "Must be required by a NotificationListenerService, to ensure that only the "
 "system can bind to it. See [url=https://developer.android.com/reference/"
@@ -1086,7 +1084,31 @@ msgstr ""
 "permission#BIND_NOTIFICATION_LISTENER_SERVICE]BIND_NOTIFICATION_LISTENER_SERVICE[/"
 "url]."
 """
-        assert self.poreflow(posource) == posource
+        gettext_0_23 = r"""msgid "test3"
+msgstr ""
+"Must be required by a NotificationListenerService, to ensure that only the "
+"system can bind to it. See [url=https://developer.android.com/reference/"
+"android/"
+"Manifest.permission#BIND_NOTIFICATION_LISTENER_SERVICE]BIND_NOTIFICATION_LISTENER_SERVICE[/"
+"url]."
+"""
+        if issubclass(self.StoreClass, pypo.pofile):
+            # Python wrapper should follow the latest gettext
+            expected = gettext_0_23
+        else:
+            # Choose matching output depending on gettext version
+            from translate.storage.cpo import get_libgettextpo_version
+
+            version = get_libgettextpo_version()
+            if version >= (0, 23, 0):
+                print(f"Detected gettext 0.23 or newer ({version})")
+                expected = gettext_0_23
+            else:
+                print(f"Detected gettext 0.22 or older ({version})")
+                expected = gettext_0_22
+
+        assert self.poreflow(gettext_0_22) == expected
+        assert self.poreflow(gettext_0_23) == expected
 
     def test_wrap_gettext(self):
         gettext_0_23 = r"""# Test
