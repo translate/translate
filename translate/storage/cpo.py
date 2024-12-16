@@ -41,7 +41,6 @@ from ctypes import (
     Structure,
     c_char_p,
     c_int,
-    c_long,
     c_size_t,
     c_uint,
     cdll,
@@ -339,7 +338,7 @@ def get_libgettextpo_version():
     :return: libgettextpo version in the following format::
         (major version, minor version, subminor version)
     """
-    libversion = c_long.in_dll(gpo, "libgettextpo_version")
+    libversion = c_int.in_dll(gpo, "libgettextpo_version")
     major = libversion.value >> 16
     minor = (libversion.value >> 8) & 0xFF
     subminor = libversion.value - (major << 16) - (minor << 8)
