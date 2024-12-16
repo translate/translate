@@ -125,6 +125,7 @@ class PoWrapper(textwrap.TextWrapper):
     wordsep_re = re.compile(
         r"""
             (
+            \[[^\]]{1,73}\]|                      # [] braces
             \\"[^"]{1,73}\\"|                     # quoted string
             \s+|                                  # any whitespace
             [a-z0-9A-Z_-]+/|                      # nicely split long URLs

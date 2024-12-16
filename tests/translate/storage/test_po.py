@@ -1059,7 +1059,6 @@ msgstr ""
 """
         assert self.poreflow(posource) == posource
 
-    @mark.xfail(reason="Incompatible wrapping with gettext, see #5251")
     def test_wrap_parenthesis(self):
         posource = r"""msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
@@ -1073,7 +1072,12 @@ msgid "test2"
 msgstr ""
 "- Eine von [Object] abgeleitete Klasse, die in [ClassDB] existiert, z. B. "
 "[Node].\n"
+"""
+        assert self.poreflow(posource) == posource
 
+    @mark.xfail(reason="Incompatible wrapping with gettext, see #5251")
+    def test_wrap_parenthesis_long(self):
+        posource = r"""msgid ""
 msgid "test3"
 msgstr ""
 "Must be required by a NotificationListenerService, to ensure that only the "
