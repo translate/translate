@@ -1,0 +1,27 @@
+Translate Toolkit 3.14.3
+************************
+
+*Released on 17 December 2024*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- PO
+
+  - Consistent line wrapiing with Gettext 0.23
+
+- Android
+
+  - Improved parsing performance
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař
