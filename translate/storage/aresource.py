@@ -32,12 +32,14 @@ from translate.lang import data
 from translate.misc.multistring import multistring
 from translate.storage import base, lisa
 
-EOF = None
 WHITESPACE = {" ", "\n", "\t"}  # Whitespace that we collapse.
 ESCAPE_NEWLINE = {"n", "N"}
 ESCAPE_TAB = {"t", "T"}
 ESCAPE_PLAIN = {" ", '"', "'", "@", "?"}
 MULTIWHITESPACE = re.compile(r"[ \n\t]{2}(?!\\n)")
+QUOTED_STRING = re.compile(r'("[^"]*")')
+UNICODE_ESCAPE = re.compile(r"\\u(.{4})")
+CHAR_ESCAPE = re.compile(r"\\(.)")
 
 ESCAPE_TRANSLATE = str.maketrans(
     {
@@ -84,135 +86,58 @@ class DecodingXMLParser:
         parser.DefaultHandler = self.DefaultHandler
 
     @staticmethod
-    def process_string(text: str) -> tuple[str, bool, bool]:
-        """
-        Remove escaping from Android resource.
+    def decode_unicode_escapes(match: re.Match) -> str:
+        escaped = match.group(1)
+        # Convert from hex to character
+        return chr(int(escaped, 16))
 
-        Code is based on android2po
-        <https://github.com/miracle2k/android2po>
-        """
-        # Mirror globals into locals for faster lookups
-        eof = EOF
-        whitespace = WHITESPACE
-        escape_newline = ESCAPE_NEWLINE
-        escape_tab = ESCAPE_TAB
-        escape_plain = ESCAPE_PLAIN
-        cleanup_start = True
-        cleanup_end = True
+    @staticmethod
+    def decode_escapes(match: re.Match) -> str:
+        escaped = match.group(1)
+        if escaped in ESCAPE_NEWLINE:
+            return "\n"  # an actual newline
+        if escaped in ESCAPE_TAB:
+            return "\t"  # an actual tab
+        if escaped in ESCAPE_PLAIN:
+            # Plain string to escape
+            return escaped
+        # All others, remove, like Android does as well.
+        return ""
 
-        # We need to collapse multiple whitespace while paying
-        # attention to Android's quoting and escaping.
-        space_count = 0
-        active_quote = False
-        active_escape = False
-        i = 0
-        text = [*text, eof]
-        while i < len(text):
-            c = text[i]
+    @classmethod
+    def process_string(cls, content: str) -> tuple[str, bool, bool]:
+        # Skip processing for a blank string
+        if not content:
+            return "", False, False
 
-            if not active_escape:
-                # Handle whitespace collapsing
-                if c is not eof and c in whitespace:
-                    space_count += 1
-                elif space_count >= 1:
-                    # Remove sequential whitespace; Pay attention: We
-                    # don't do this if we are currently inside a quote,
-                    # except for one special case: If we have unbalanced
-                    # quotes, e.g. we reach eof while a quote is still
-                    # open, we *do* collapse that trailing part; this is
-                    # how Android does it, for some reason.
-                    if not active_quote or c is eof:
-                        # Replace by a single space, will get rid of
-                        # non-significant newlines/tabs etc.
-                        text[i - space_count : i] = " "
-                        i -= space_count - 1
-                    space_count = 0
-                else:
-                    space_count = 0
+        # Extract quoted parts, remove blank ones
+        parts = [part for part in QUOTED_STRING.split(content) if part]
 
-            # Handle quotes
-            if c == '"' and not active_escape:
-                if i == 0:
-                    cleanup_start = False
-                if active_quote:
-                    cleanup_end = False
-                active_quote = not active_quote
-                del text[i]
-                i -= 1
-            elif c is not eof:
-                cleanup_end = True
+        # Detect possible cleanups
+        cleanup_start = not parts[0].startswith('"')
+        cleanup_end = not parts[-1].startswith('"')
 
-            # Handle escapes
-            if c == "\\":
-                if i == 0:
-                    cleanup_start = False
-                if not active_escape:
-                    active_escape = True
-                else:
-                    # A double-backslash represents a single;
-                    # simply deleting the current char will do.
-                    del text[i]
-                    i -= 1
-                    active_escape = False
-            elif active_escape:
-                # Handle the limited amount of escape codes
-                # that we support.
-                # TODO: What about \r, or \r\n?
-                cleanup_end = False
-                if c is eof:
-                    # Basically like any other char, but put
-                    # this first so we can use the ``in`` operator
-                    # in the clauses below without issue.
-                    pass
-                elif c in escape_newline:
-                    text[i - 1 : i + 1] = "\n"  # an actual newline
-                    i -= 1
-                elif c in escape_tab:
-                    text[i - 1 : i + 1] = "\t"  # an actual tab
-                    i -= 1
-                elif c in escape_plain:
-                    text[i - 1 : i] = ""  # remove the backslash
-                    i -= 1
-                elif c == "u":
-                    # Unicode sequence. Android is nice enough to deal
-                    # with those in a way which let's us just capture
-                    # the next 4 characters and raise an error if they
-                    # are not valid (rather than having to use a new
-                    # state to parse the unicode sequence).
-                    # Exception: In case we are at the end of the
-                    # string, we support incomplete sequences by
-                    # prefixing the missing digits with zeros.
-                    # Note: max(len()) is needed in the slice due to
-                    # trailing ``None`` element.
-                    max_slice = min(i + 5, len(text) - 1)
-                    codepoint_str = "".join(text[i + 1 : max_slice])
-                    if len(codepoint_str) < 4:
-                        codepoint_str = "0" * (4 - len(codepoint_str)) + codepoint_str
-                    # We can't trust int() to raise a ValueError,
-                    # it will ignore leading/trailing whitespace.
-                    if not codepoint_str.isalnum():
-                        raise ValueError(
-                            f"Invalid unicode escape sequence: {codepoint_str!r}"
-                        )
-                    try:
-                        codepoint = chr(int(codepoint_str, 16))
-                    except ValueError:
-                        raise ValueError(
-                            f"Invalid unicode escape sequence: {codepoint_str!r}"
-                        )
+        # Collapse whitespace
+        stripped_parts = [
+            re.sub(r"\s+", " ", part) if not part.startswith('"') else part[1:-1]
+            for part in parts
+        ]
+        # Merge this back to a single string
+        text = "".join(stripped_parts)
 
-                    text[i - 1 : max_slice] = codepoint
-                    i -= 1
-                else:
-                    # All others, remove, like Android does as well.
-                    text[i - 1 : i + 1] = ""
-                    i -= 1
-                active_escape = False
+        # Handle unicode escapes
+        unescaped_text = UNICODE_ESCAPE.sub(cls.decode_unicode_escapes, text)
+        # Handle other escapes
+        unescaped_text = CHAR_ESCAPE.sub(cls.decode_escapes, unescaped_text)
 
-            i += 1
+        # Detect escaping at the start and end of a string (we actually care only for
+        # whitespace escapes, but detecting more does not matter)
+        if text and text[0] != unescaped_text[0]:
+            cleanup_start = False
+        if text and text[-1] != unescaped_text[-1]:
+            cleanup_end = False
 
-        # Join the string together again, but w/o EOF marker
-        return "".join(text[:-1]), cleanup_start, cleanup_end
+        return unescaped_text, cleanup_start, cleanup_end
 
     def cleanup_text(self, text: str) -> str:
         """Remove leading whitespace from text."""
