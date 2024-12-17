@@ -23,7 +23,7 @@ project = "Translate Toolkit"
 copyright = "Translate Toolkit authors"
 
 # The short X.Y version.
-version = "3.14.2"
+version = "3.14.3"
 
 # The full version, including alpha/beta/rc tags
 release = version
