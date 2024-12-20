@@ -1,6 +1,5 @@
 from copy import deepcopy
 
-import pytest
 from lxml import etree
 
 from translate.misc.multistring import multistring
@@ -474,8 +473,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         self.__check_parse(string, xml)
 
     def test_parse_unicode(self):
-        with pytest.raises(ValueError):
-            self.__check_parse("", r'<string name="test">\utest</string>')
+        self.__check_parse("test", r'<string name="test">\utest</string>')
         self.__check_parse("\u0230", r'<string name="test">\u0230</string>')
 
     def test_single_unescaped(self):
