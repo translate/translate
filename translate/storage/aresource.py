@@ -38,7 +38,7 @@ ESCAPE_TAB = {"t", "T"}
 ESCAPE_PLAIN = {" ", '"', "'", "@", "?"}
 MULTIWHITESPACE = re.compile(r"[ \n\t]{2}(?!\\n)")
 QUOTED_STRING = re.compile(r'("[^"]*")')
-UNICODE_ESCAPE = re.compile(r"\\u(.{4})")
+UNICODE_ESCAPE = re.compile(r"\\u([a-fA-F0-9]{4})")
 CHAR_ESCAPE = re.compile(r"\\(.)")
 
 ESCAPE_TRANSLATE = str.maketrans(
