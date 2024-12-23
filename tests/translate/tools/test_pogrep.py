@@ -65,7 +65,7 @@ class TestPOGrep:
 
     def test_simplegrep_locations_with_comment_enabled(self):
         """
-        grep for a string in "locations", while also "comment" is checked
+        Grep for a string in "locations", while also "comment" is checked
         see https://github.com/translate/translate/issues/1036.
         """
         posource = '# (review) comment\n#: test.c\nmsgid "test"\nmsgstr "rest"\n'

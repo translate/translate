@@ -34,7 +34,7 @@ class MozConvertOptionParser(convert.ConvertOptionParser):
 
     def splitinputext(self, inputpath):
         """
-        splits a inputpath into name and extension.
+        Splits a inputpath into name and extension.
 
         Special adaptation to handle po2moz case where extensions are
         e.g. properties.po

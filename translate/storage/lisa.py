@@ -144,7 +144,7 @@ class LISAunit(base.TranslationUnit):
 
     def gettarget(self, lang=None):
         """
-        retrieves the "target" text (second entry), or the entry in the
+        Retrieves the "target" text (second entry), or the entry in the
         specified language, if it exists.
         """
         return self.getNodeText(

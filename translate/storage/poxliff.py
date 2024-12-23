@@ -318,7 +318,7 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
 
         def isnonpluralunit(node):
             """
-            determindes whether the xml node contains a plural like id.
+            Determindes whether the xml node contains a plural like id.
 
             We want to filter out all the plural nodes, except the very first
             one in each group.

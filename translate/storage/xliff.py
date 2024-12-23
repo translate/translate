@@ -177,7 +177,7 @@ class xliffunit(lisa.LISAunit):
 
     def get_rich_target(self, lang=None):
         """
-        retrieves the "target" text (second entry), or the entry in the
+        Retrieves the "target" text (second entry), or the entry in the
         specified language, if it exists.
         """
         if self._rich_target is None:
@@ -651,7 +651,7 @@ class xlifffile(lisa.LISAfile):
         self, filename, sourcelanguage=None, targetlanguage=None, datatype="plaintext"
     ):
         """
-        creates a filenode with the given filename. All parameters are
+        Creates a filenode with the given filename. All parameters are
         needed for XLIFF compliance.
         """
         if sourcelanguage is None:
@@ -812,7 +812,7 @@ class xlifffile(lisa.LISAfile):
 
     def addsourceunit(self, source, filename="NoName", createifmissing=False):
         """
-        adds the given trans-unit to the last used body node if the filename
+        Adds the given trans-unit to the last used body node if the filename
         has changed it uses the slow method instead (will create the nodes
         required if asked). Returns success.
         """

@@ -473,7 +473,7 @@ endspace=,\u0020
 
     def test_key_value_delimiters_simple(self):
         """
-        test that we can handle colon, equals and space delimiter
+        Test that we can handle colon, equals and space delimiter
         between key and value.  We don't test any space removal or escaping.
         """
         delimiters = [":", "=", " "]

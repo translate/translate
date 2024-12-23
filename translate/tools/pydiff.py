@@ -328,7 +328,7 @@ class FileDiffer:
 
     def unified_diff(self, group):
         """
-        takes the group of opcodes and generates a unified diff line
+        Takes the group of opcodes and generates a unified diff line
         by line.
         """
         i1, i2, j1, j2 = group[0][1], group[-1][2], group[0][3], group[-1][4]

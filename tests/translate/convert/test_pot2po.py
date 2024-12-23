@@ -116,7 +116,7 @@ msgstr[1] "%d handleidings."
 
     def test_merging_location_and_whitespace_change(self):
         """
-        test that even if the location changes that if the msgid
+        Test that even if the location changes that if the msgid
         only has whitespace changes we can still merge.
         """
         potsource = f"""#: singlespace.label{po.lsep}singlespace.accesskey\nmsgid "&We have spaces"\nmsgstr ""\n"""
@@ -128,7 +128,7 @@ msgstr[1] "%d handleidings."
 
     def test_merging_location_ambiguous_with_disambiguous(self):
         """
-        test that when we have a PO in ambiguous (Gettext form) and merge with
+        Test that when we have a PO in ambiguous (Gettext form) and merge with
         disamabiguous (KDE comment form) that we don't duplicate the
         location #: comments.
         """

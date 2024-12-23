@@ -185,7 +185,7 @@ msgstr "Ileti"
 
     def test_accesskey_and_amp_case_no_accesskey(self):
         """
-        tests that accesskey and &amp; can work together.
+        Tests that accesskey and &amp; can work together.
 
         If missing we use the source accesskey
         """
@@ -204,7 +204,7 @@ msgstr "Lig en Kleur"
 
     def test_accesskey_and_amp_source_no_amp_in_target(self):
         """
-        tests that accesskey and &amp; can work together.
+        Tests that accesskey and &amp; can work together.
 
         If present we use the target accesskey
         """
@@ -223,7 +223,7 @@ msgstr "Lig en &Kleur"
 
     def test_accesskey_and_amp_case_both_amp_and_accesskey(self):
         """
-        tests that accesskey and &amp; can work together.
+        Tests that accesskey and &amp; can work together.
 
         If present both & (and) and a marker then we use the correct source
         accesskey
@@ -243,7 +243,7 @@ msgstr "Lig & &Kleur"
 
     def test_accesskey_and_amp_case_amp_no_accesskey(self):
         """
-        tests that accesskey and &amp; can work together.
+        Tests that accesskey and &amp; can work together.
 
         If present both & (and) and a no marker then we use the correct source
         accesskey

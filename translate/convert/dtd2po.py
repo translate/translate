@@ -286,7 +286,7 @@ def convertdtd(
     inputfile, outputfile, templatefile, pot=False, duplicatestyle="msgctxt"
 ):
     """
-    reads in inputfile and templatefile using dtd, converts using dtd2po,
+    Reads in inputfile and templatefile using dtd, converts using dtd2po,
     writes to outputfile.
     """
     android_dtd = False

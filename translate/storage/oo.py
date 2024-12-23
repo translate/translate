@@ -64,7 +64,7 @@ def normalizefilename(filename):
 
 def makekey(ookey, long_keys):
     """
-    converts an oo key tuple into a unique identifier.
+    Converts an oo key tuple into a unique identifier.
 
     :param ookey: an oo key
     :type ookey: tuple

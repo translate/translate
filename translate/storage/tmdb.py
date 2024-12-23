@@ -176,7 +176,7 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
 
     def preload_db(self):
         """
-        ugly hack to force caching of sqlite db file in memory for improved
+        Ugly hack to force caching of sqlite db file in memory for improved
         performance.
         """
         if self.fulltext:
@@ -258,7 +258,7 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
 
     def add_list(self, units, source_lang, target_lang, commit=True):
         """
-        insert all units in list into the database, units are represented as
+        Insert all units in list into the database, units are represented as
         dictionaries.
         """
         count = 0
