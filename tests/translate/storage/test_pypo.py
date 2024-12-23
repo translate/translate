@@ -164,7 +164,7 @@ class TestPYPOUnit(test_po.TestPOUnit):
 
     def test_wrap_firstlines(self):
         """
-        tests that we wrap the first line correctly a first line if longer then 71 chars
+        Tests that we wrap the first line correctly a first line if longer then 71 chars
         as at 71 chars we should align the text on the left and preceed with with a msgid "".
         """
         # longest before we wrap text

@@ -164,7 +164,7 @@ msgstr "Dimpled Ring"'''
 
     def test_merging_locations(self):
         """
-        check that locations on separate lines are output in Gettext form
+        Check that locations on separate lines are output in Gettext form
         of all on one line.
         """
         templatepo = (
@@ -214,7 +214,7 @@ msgstr "Dimpled Ring"
 
     def test_reflowed_source_comments(self):
         """
-        ensure that we don't duplicate source comments (locations) if they
+        Ensure that we don't duplicate source comments (locations) if they
         have been reflowed.
         """
         templatepo = (
@@ -245,7 +245,7 @@ msgstr "blabla"
 
     def test_merge_dont_delete_unassociated_comments(self):
         """
-        ensure that we do not delete comments in the PO file that are not
+        Ensure that we do not delete comments in the PO file that are not
         assocaited with a message block.
         """
         templatepo = """# Lonely comment\n\n# Translation comment\nmsgid "Bob"\nmsgstr "Toolmaker"\n"""

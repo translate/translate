@@ -39,7 +39,7 @@ class csv2tbx:
 
     def convertfile(self, csvfile):
         """
-        converts a csvfile to a tbxfile, and returns it. uses templatepo if
+        Converts a csvfile to a tbxfile, and returns it. uses templatepo if
         given at construction.
         """
         mightbeheader = True
@@ -64,7 +64,7 @@ class csv2tbx:
 
 def convertcsv(inputfile, outputfile, templatefile, charset=None, columnorder=None):
     """
-    reads in inputfile using csvl10n, converts using csv2tbx, writes to
+    Reads in inputfile using csvl10n, converts using csv2tbx, writes to
     outputfile.
     """
     inputstore = csvl10n.csvfile(inputfile, fieldnames=columnorder)

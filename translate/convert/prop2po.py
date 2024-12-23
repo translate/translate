@@ -446,7 +446,7 @@ def convertprop(
     encoding=None,
 ):
     """
-    reads in inputfile using properties, converts using prop2po, writes to
+    Reads in inputfile using properties, converts using prop2po, writes to
     outputfile.
     """
     inputstore = properties.propfile(inputfile, personality, encoding)

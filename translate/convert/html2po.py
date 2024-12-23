@@ -62,7 +62,7 @@ def converthtml(
     keepcomments=False,
 ):
     """
-    reads in stdin using fromfileclass, converts using convertorclass,
+    Reads in stdin using fromfileclass, converts using convertorclass,
     writes to stdout.
     """
     convertor = html2po()

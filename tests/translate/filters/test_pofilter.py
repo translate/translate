@@ -56,7 +56,7 @@ class BaseTestFilter:
 
     def test_ignore_if_already_marked(self):
         """
-        check that we don't add another failing marker if the message is
+        Check that we don't add another failing marker if the message is
         already marked as failed.
         """
         self.unit.target = ""
@@ -180,7 +180,7 @@ class BaseTestFilter:
 
     def test_unicode(self):
         """
-        tests that we can handle UTF-8 encoded characters when there is no
+        Tests that we can handle UTF-8 encoded characters when there is no
         known header specified encoding.
         """
         self.unit.source = "Bézier curve"

@@ -200,7 +200,7 @@ msgstr ""
 
 def test_plural_equation():
     """
-    test that we work with the equation even is the last semicolon is left out, since gettext
+    Test that we work with the equation even is the last semicolon is left out, since gettext
     tools don't seem to mind.
     """
     posource = r"""msgid ""

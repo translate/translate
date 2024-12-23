@@ -30,7 +30,7 @@ class CatchStringOutput(BytesIO):
 
     def close(self):
         """
-        wrap the underlying close method, to pass the value to onclose
+        Wrap the underlying close method, to pass the value to onclose
         before it goes.
         """
         value = self.getvalue()
@@ -39,7 +39,7 @@ class CatchStringOutput(BytesIO):
 
     def slam(self):
         """
-        use this method to force the closing of the stream if it isn't
+        Use this method to force the closing of the stream if it isn't
         closed yet.
         """
         if not self.closed:

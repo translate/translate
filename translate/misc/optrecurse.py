@@ -139,7 +139,7 @@ class RecursiveOptionParser(optparse.OptionParser):
 
     def setmanpageoption(self):
         """
-        creates a manpage option that allows the optionparser to generate a
+        Creates a manpage option that allows the optionparser to generate a
         manpage.
         """
         manpageoption = ManPageOption(
@@ -210,7 +210,7 @@ class RecursiveOptionParser(optparse.OptionParser):
 
     def set_usage(self, usage=None):
         """
-        sets the usage string - if usage not given, uses getusagestring for
+        Sets the usage string - if usage not given, uses getusagestring for
         each option.
         """
         if usage is None:

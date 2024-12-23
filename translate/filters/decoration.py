@@ -82,7 +82,7 @@ def ispurepunctuation(str1):
 
 def isvalidaccelerator(accelerator, acceptlist=None):
     """
-    returns whether the given accelerator character is valid.
+    Returns whether the given accelerator character is valid.
 
     :type accelerator: character
     :param accelerator: A character to be checked for accelerator validity
@@ -117,7 +117,7 @@ def isvalidaccelerator(accelerator, acceptlist=None):
 
 def findaccelerators(str1, accelmarker, acceptlist=None):
     """
-    returns all the accelerators and locations in str1 marked with a given
+    Returns all the accelerators and locations in str1 marked with a given
     marker.
     """
     accelerators = []
@@ -143,7 +143,7 @@ def findaccelerators(str1, accelmarker, acceptlist=None):
 
 def findmarkedvariables(str1, startmarker, endmarker, ignorelist=[]):
     """
-    returns all the variables and locations in str1 marked with a given
+    Returns all the variables and locations in str1 marked with a given
     marker.
     """
     variables = []
@@ -198,7 +198,7 @@ def findmarkedvariables(str1, startmarker, endmarker, ignorelist=[]):
 
 def getaccelerators(accelmarker, acceptlist=None):
     """
-    returns a function that gets a list of accelerators marked using
+    Returns a function that gets a list of accelerators marked using
     accelmarker.
     """
 
@@ -214,7 +214,7 @@ def getaccelerators(accelmarker, acceptlist=None):
 
 def getvariables(startmarker, endmarker):
     """
-    returns a function that gets a list of variables marked using
+    Returns a function that gets a list of variables marked using
     startmarker and endmarker.
     """
 
@@ -279,7 +279,7 @@ _function_re = re.compile(
 
 def getfunctions(str1):
     """
-    returns the functions() that are in a string, while ignoring the
+    Returns the functions() that are in a string, while ignoring the
     trailing punctuation in the given parameter.
     """
     if "()" in str1:
@@ -305,7 +305,7 @@ def geturls(str1):
 
 def countaccelerators(accelmarker, acceptlist=None):
     """
-    returns a function that counts the number of accelerators marked with
+    Returns a function that counts the number of accelerators marked with
     the given marker.
     """
 

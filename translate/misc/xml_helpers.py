@@ -113,7 +113,7 @@ def normalize_space(text: str):
 
 def normalize_xml_space(node, xml_space: str, remove_start: bool = False):
     """
-    normalize spaces following the nodes xml:space, or alternatively the
+    Normalize spaces following the nodes xml:space, or alternatively the
     given xml_space parameter.
     """
     xml_space = getXMLspace(node) or xml_space

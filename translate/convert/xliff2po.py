@@ -94,7 +94,7 @@ class xliff2po:
 
 def convertxliff(inputfile, outputfile, templates, duplicatestyle="msgctxt"):
     """
-    reads in stdin using fromfileclass, converts using convertorclass,
+    Reads in stdin using fromfileclass, converts using convertorclass,
     writes to stdout.
     """
     convertor = xliff2po()

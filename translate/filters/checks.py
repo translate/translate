@@ -242,7 +242,7 @@ class CheckerConfig:
     @staticmethod
     def _init_list(list):
         """
-        initialise configuration paramaters that are lists.
+        Initialise configuration paramaters that are lists.
 
         :type list: List
         :param list: None (we'll initialise a blank list) or a list paramater

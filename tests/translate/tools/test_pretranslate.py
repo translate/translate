@@ -43,7 +43,7 @@ class TestPretranslate:
     @staticmethod
     def singleunit(pofile):
         """
-        checks that the pofile contains a single non-header unit, and
+        Checks that the pofile contains a single non-header unit, and
         returns it.
         """
         if len(pofile.units) == 2 and pofile.units[0].isheader():
@@ -54,7 +54,7 @@ class TestPretranslate:
 
     def test_pretranslatepo_blank(self):
         """
-        checks that the pretranslatepo function is working for a simple file
+        Checks that the pretranslatepo function is working for a simple file
         initialisation.
         """
         input_source = f"""#: simple.label{po.lsep}simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n"""
@@ -104,7 +104,7 @@ msgstr[1] "%d handleidings."
     @mark.xfail(reason="Not Implemented")
     def test_merging_msgid_change(self):
         """
-        tests that if the msgid changes but the location stays the same that
+        Tests that if the msgid changes but the location stays the same that
         we merge.
         """
         input_source = """#: simple.label\n#: simple.accesskey\nmsgid "Its &hard coding a newline.\\n"\nmsgstr ""\n"""
@@ -116,7 +116,7 @@ msgstr[1] "%d handleidings."
 
     def test_merging_location_change(self):
         """
-        tests that if the location changes but the msgid stays the same that
+        Tests that if the location changes but the msgid stays the same that
         we merge.
         """
         input_source = f"""#: new_simple.label{po.lsep}new_simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n"""
@@ -128,7 +128,7 @@ msgstr[1] "%d handleidings."
 
     def test_merging_location_and_whitespace_change(self):
         """
-        test that even if the location changes that if the msgid only has
+        Test that even if the location changes that if the msgid only has
         whitespace changes we can still merge.
         """
         input_source = f"""#: singlespace.label{po.lsep}singlespace.accesskey\nmsgid "&We have spaces"\nmsgstr ""\n"""
@@ -141,7 +141,7 @@ msgstr[1] "%d handleidings."
     @mark.xfail(reason="Not Implemented")
     def test_merging_accelerator_changes(self):
         """
-        test that a change in the accelerator localtion still allows
+        Test that a change in the accelerator localtion still allows
         merging.
         """
         input_source = """#: someline.c\nmsgid "A&bout"\nmsgstr ""\n"""
@@ -188,7 +188,7 @@ msgstr[1] "%d handleidings."
 
     def test_merging_comments_with_blank_comment_lines(self):
         """
-        test that when we merge a comment that has a blank line we keep the
+        Test that when we merge a comment that has a blank line we keep the
         blank line.
         """
         input_source = """#: someline.c\nmsgid "About"\nmsgstr ""\n"""
@@ -251,7 +251,7 @@ msgstr "36em"
 
     def test_merging_resurect_obsolete_messages(self):
         """
-        check that we can reuse old obsolete messages if the message comes
+        Check that we can reuse old obsolete messages if the message comes
         back.
         """
         input_source = """#: resurect.c\nmsgid "&About"\nmsgstr ""\n"""

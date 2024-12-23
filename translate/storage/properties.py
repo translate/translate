@@ -769,7 +769,7 @@ class proppluralunit(base.TranslationUnit):
 
     def isblank(self):
         """
-        returns whether this is a blank element, containing only
+        Returns whether this is a blank element, containing only
         comments.
         """
         return not (self.name or self.value)

@@ -26,7 +26,7 @@ from translate.convert import accesskey
 
 def test_get_label_and_accesskey():
     """
-    test that we can extract the label and accesskey components from an
+    Test that we can extract the label and accesskey components from an
     accesskey+label string.
     """
     assert accesskey.extract("") == ("", "")
@@ -44,7 +44,7 @@ def test_extract_bad_accesskeys():
 
 def test_ignore_entities():
     """
-    test that we don't get confused with entities and a & access key
+    Test that we don't get confused with entities and a & access key
     marker.
     """
     assert accesskey.extract("Set &browserName; as &Default") != (
@@ -94,7 +94,7 @@ def test_end_of_string():
 
 def test_combine_label_accesskey():
     """
-    test that we can combine accesskey and label to create a label+accesskey
+    Test that we can combine accesskey and label to create a label+accesskey
     string.
     """
     assert accesskey.combine("File", "F") == "&File"
@@ -103,7 +103,7 @@ def test_combine_label_accesskey():
 
 def test_combine_label_accesskey_different_capitals():
     """
-    test that we can combine accesskey and label to create a label+accesskey
+    Test that we can combine accesskey and label to create a label+accesskey
     string when we have more then one case or case is wrong.
     """
     # Prefer the correct case, even when an alternate case occurs first

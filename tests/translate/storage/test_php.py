@@ -576,7 +576,7 @@ $month_mar = 'Mar';"""
 
     def test_parsing_arrays_space_before_comma(self):
         """
-        parse the array syntax with spaces before the comma.
+        Parse the array syntax with spaces before the comma.
 
         Bug #1898
         """
@@ -595,7 +595,7 @@ $month_mar = 'Mar';"""
 
     def test_parsing_arrays_with_space_before_array_declaration(self):
         """
-        parse the array syntax with spaces before the array declaration.
+        Parse the array syntax with spaces before the array declaration.
 
         Bug #2646
         """
@@ -614,7 +614,7 @@ $month_mar = 'Mar';"""
 
     def test_parsing_arrays_declared_in_a_single_line(self):
         """
-        parse an array declared in a single line.
+        Parse an array declared in a single line.
 
         Bug #3629
         """
@@ -856,7 +856,7 @@ $lang = [
 
     def test_parsing_nested_arrays_with_array_declaration_in_next_line(self):
         """
-        parse the nested array syntax with array declaration in the next line.
+        Parse the nested array syntax with array declaration in the next line.
 
         Bug #2647
         """
@@ -1053,7 +1053,7 @@ $texts = array(
 
     def test_space_before_comma(self):
         """
-        check that spacing before comma or semicolon doesn't break parser.
+        Check that spacing before comma or semicolon doesn't break parser.
 
         See #1898
         """
