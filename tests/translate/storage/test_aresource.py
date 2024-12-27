@@ -491,6 +491,24 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         xml = '<string name="teststring">"a\nb\tc d"</string>'
         self.__check_parse(string, xml)
 
+    def test_parse_quoted_escaped_percent(self):
+        self.__check_parse(
+            """You are about to remove "%s" from your library""",
+            r"""<string name="remove_manga">You are about to remove \"%s\" from your library</string>""",
+        )
+
+    def test_parse_quoted_percent(self):
+        self.__check_parse(
+            """You are about to remove %s from your library""",
+            """<string name="remove_manga">You are about to remove "%s" from your library</string>""",
+        )
+
+    def test_parse_quoted_quote(self):
+        self.__check_parse(
+            """You are about to remove "%s" from your library""",
+            r"""<string name="remove_manga">You are about to "remove \"%s\" from" your library</string>""",
+        )
+
 
 class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
     StoreClass = aresource.AndroidResourceFile
