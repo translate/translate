@@ -1,7 +1,7 @@
-Translate Toolkit 3.14.4
+Translate Toolkit 3.14.5
 ************************
 
-*Released on 20 December 2024*
+*Released on 27 December 2024*
 
 This release contains improvements and bug fixes.
 
@@ -13,7 +13,7 @@ Formats and Converters
 
 - Android
 
-  - Improve escape sequences handling
+  - Fixed escaped quotes handling
 
 Contributors
 ============
