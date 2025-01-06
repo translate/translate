@@ -753,6 +753,17 @@ class TestWebExtensionStore(test_monolingual.TestMonolingualStore):
             == b'{\n    "key": {\n        "message": "value",\n        "description": "note"\n    }\n}\n'
         )
 
+    def test_dot_keys(self):
+        store = self.StoreClass()
+        store.parse('{"key.dot": {"message": "value", "description": "note"}}')
+        out = BytesIO()
+        store.serialize(out)
+
+        assert (
+            out.getvalue()
+            == b'{\n    "key.dot": {\n        "message": "value",\n        "description": "note"\n    }\n}\n'
+        )
+
     def test_serialize_no_description(self):
         store = self.StoreClass()
         store.parse('{"key": {"message": "value"}}')

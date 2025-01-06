@@ -256,6 +256,8 @@ class JsonNestedFile(JsonFile):
 
 
 class WebExtensionJsonUnit(BaseJsonUnit):
+    IdClass = FlatUnitId
+
     def storevalues(self, output):
         value = {"message": self.target}
         if self.notes:
