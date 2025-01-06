@@ -509,6 +509,16 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
             r"""<string name="remove_manga">You are about to "remove \"%s\" from" your library</string>""",
         )
 
+    def test_parse_unparied_quote(self):
+        self.__check_parse(
+            """You can view it here soon: %s""",
+            """<string name="cmd_camera_response_success">"You can view it here soon: %s</string>""",
+        )
+        self.__check_parse(
+            """You can view it here soon: %s""",
+            """<string name="cmd_camera_response_success">You can view it here soon: %s"</string>""",
+        )
+
 
 class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
     StoreClass = aresource.AndroidResourceFile

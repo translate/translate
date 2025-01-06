@@ -40,6 +40,7 @@ MULTIWHITESPACE = re.compile(r"[ \n\t]{2}(?!\\n)")
 QUOTED_STRING = re.compile(r'((?<!\\)"(?:\\"|[^"])*(?<!\\)")')
 UNICODE_ESCAPE = re.compile(r"\\u([a-fA-F0-9]{4})")
 CHAR_ESCAPE = re.compile(r"\\(.)")
+WHITESPACE_RE = re.compile(r"\s+")
 
 ESCAPE_TRANSLATE = str.maketrans(
     {
@@ -104,6 +105,15 @@ class DecodingXMLParser:
         # All others, remove, like Android does as well.
         return ""
 
+    @staticmethod
+    def strip_part(text: str) -> str:
+        if text.startswith('"'):
+            # Missing closing quote is gracefully ignored
+            return text.removeprefix('"').removesuffix('"')
+        # Remove possible extra closing quote
+        text = text.removesuffix('"')
+        return WHITESPACE_RE.sub(" ", text)
+
     @classmethod
     def process_string(cls, content: str) -> tuple[str, bool, bool]:
         # Skip processing for a blank string
@@ -118,10 +128,7 @@ class DecodingXMLParser:
         cleanup_end = not parts[-1].startswith('"')
 
         # Collapse whitespace
-        stripped_parts = [
-            re.sub(r"\s+", " ", part) if not part.startswith('"') else part[1:-1]
-            for part in parts
-        ]
+        stripped_parts = [cls.strip_part(part) for part in parts]
         # Merge this back to a single string
         text = "".join(stripped_parts)
 
