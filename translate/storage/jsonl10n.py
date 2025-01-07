@@ -255,9 +255,7 @@ class JsonNestedFile(JsonFile):
     UnitClass = JsonNestedUnit
 
 
-class WebExtensionJsonUnit(BaseJsonUnit):
-    IdClass = FlatUnitId
-
+class WebExtensionJsonUnit(FlatJsonUnit):
     def storevalues(self, output):
         value = {"message": self.target}
         if self.notes:
@@ -812,9 +810,8 @@ class GoI18NV2JsonFile(JsonFile):
             yield unit
 
 
-class ARBJsonUnit(BaseJsonUnit):
+class ARBJsonUnit(FlatJsonUnit):
     ID_FORMAT = "{}"
-    IdClass = FlatUnitId
 
     def __init__(
         self,
