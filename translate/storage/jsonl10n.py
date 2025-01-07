@@ -297,7 +297,7 @@ class WebExtensionJsonFile(JsonFile):
                 value.get("description", ""),
                 value.get("placeholders", None),
             )
-            unit.setid(item)
+            unit.setid(item, unitid=self.UnitClass.IdClass([("key", item)]))
             yield unit
 
 
@@ -887,7 +887,7 @@ class ARBJsonFile(JsonFile):
                 metadata.get("placeholders", None),
                 metadata=metadata,
             )
-            unit.setid(item)
+            unit.setid(item, unitid=self.UnitClass.IdClass([("key", item)]))
             yield unit
 
 
@@ -925,5 +925,5 @@ class FormatJSJsonFile(JsonFile):
                 item,
                 value.get("description", ""),
             )
-            unit.setid(item)
+            unit.setid(item, unitid=self.UnitClass.IdClass([("key", item)]))
             yield unit

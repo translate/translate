@@ -734,6 +734,17 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
         from_string = id_class.from_string
         assert from_string(id_string) == id_class(expected)
 
+    def test_dot_keys(self):
+        jsontext = """{
+    "key.dot": "message"
+}
+"""
+        store = self.StoreClass()
+        store.parse(jsontext)
+        # Edit target
+        store.units[0].target = "message"
+        assert bytes(store).decode() == jsontext
+
 
 class TestWebExtensionUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = jsonl10n.WebExtensionJsonUnit
@@ -763,6 +774,18 @@ class TestWebExtensionStore(test_monolingual.TestMonolingualStore):
             out.getvalue()
             == b'{\n    "key.dot": {\n        "message": "value",\n        "description": "note"\n    }\n}\n'
         )
+
+    def test_leading_dot_keys(self):
+        jsontext = """{
+    ".dot": {
+        "message": "value",
+        "description": "note"
+    }
+}
+"""
+        store = self.StoreClass()
+        store.parse(jsontext)
+        assert bytes(store).decode() == jsontext
 
     def test_serialize_no_description(self):
         store = self.StoreClass()
@@ -1344,6 +1367,16 @@ class TestARBJsonFile(test_monolingual.TestMonolingualStore):
 
         assert bytes(store).decode() == JSON_ARB.decode()
 
+    def test_leading_dot_keys(self):
+        jsontext = """{
+  ".dot": "dot",
+  "@.dot": {}
+}
+"""
+        store = self.StoreClass()
+        store.parse(jsontext)
+        assert bytes(store).decode() == jsontext
+
 
 JSON_FORMATJS = """{
     "hak27d": {
@@ -1379,3 +1412,15 @@ class TestFormatJSJsonFile(test_monolingual.TestMonolingualStore):
         assert store.units[3].getnotes() == "placeholder text"
 
         assert bytes(store).decode() == JSON_FORMATJS
+
+    def test_leading_dot_keys(self):
+        jsontext = """{
+    ".dot": {
+        "defaultMessage": "Control Panel",
+        "description": "title of control panel section"
+    }
+}
+"""
+        store = self.StoreClass()
+        store.parse(jsontext)
+        assert bytes(store).decode() == jsontext
