@@ -145,6 +145,7 @@ def reindent(
     leaves: set[str] | None = None,
     *,
     ignore_preserve: set[str] | None = None,
+    trailing_eol: bool = False,
 ):
     """
     Adjust indentation to match specification.
@@ -194,6 +195,7 @@ def reindent(
                     toplevel=False,
                     leaves=leaves,
                     ignore_preserve=ignore_preserve,
+                    trailing_eol=trailing_eol,
                 )
 
             # Adjust last element
@@ -203,7 +205,9 @@ def reindent(
             ) and child.tag is not etree.Entity:
                 child.tail = i
     if toplevel:
-        if not elem.tail or not elem.tail.strip():
+        if trailing_eol:
+            elem.tail = "\n"
+        elif not elem.tail or not elem.tail.strip():
             elem.tail = ""
     elif not elem.tail or not elem.tail.strip():
         elem.tail = i

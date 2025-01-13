@@ -511,7 +511,7 @@ class AndroidResourceFile(lisa.LISAfile):
     bodyNode = "resources"
     XMLskeleton = """<?xml version="1.0" encoding="utf-8"?>
 <resources></resources>"""
-    XMLindent = {"indent": "    ", "leaves": {"string", "item"}}
+    XMLindent = {"indent": "    ", "leaves": {"string", "item"}, "trailing_eol": True}
     XMLuppercaseEncoding = False
 
     def initbody(self):
