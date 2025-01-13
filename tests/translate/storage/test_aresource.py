@@ -581,7 +581,8 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         content = b"""<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="test">Test</string>
-</resources>"""
+</resources>
+"""
         store = self.StoreClass()
         store.parse(content)
         assert bytes(store) == content
@@ -600,7 +601,8 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
 <resources>
     <string name="test">Test</string>
     <string name="other">Test</string>
-</resources>"""
+</resources>
+"""
         store = self.StoreClass()
         store.parse(content)
         otherstore = self.StoreClass()
@@ -616,7 +618,8 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
 <resources>
     <string name="app_name">&appName;</string>
     <string name="app_core">&appName; Core</string>
-</resources>"""
+</resources>
+"""
         store = self.StoreClass()
         store.parse(content)
         assert store.units[0].source == "&appName;"
@@ -633,7 +636,8 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
 <resources>
     <string name="app_name">&appName;</string>
     <string name="app_core">&appName; Core</string>
-</resources>"""
+</resources>
+"""
         store = self.StoreClass()
         store.parse(content.encode())
         store.units[0].target = "&appName;"
@@ -649,7 +653,8 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
 ]>
 <resources>
     <string name="privacy_policy"><u><a href="&url_privacy_policy;">Datenschutzerklärung</a></u></string>
-</resources>""".encode()
+</resources>
+""".encode()
         store = self.StoreClass()
         store.parse(content)
         assert bytes(store) == content
@@ -662,7 +667,8 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         <item quantity="few"><xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" id="count">%d</xliff:g> dny</item>
         <item quantity="other"><xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" id="count">%d</xliff:g> dnu</item>
     </plurals>
-</resources>"""
+</resources>
+"""
         store = self.StoreClass()
         store.targetlanguage = "cs"
         store.parse(content)
@@ -683,7 +689,8 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
 <resources>
     <string name="app_name">&appName;</string>
     <string name="app_core">&appName; Core</string>
-</resources>"""
+</resources>
+"""
         store = self.StoreClass()
         store.parse(content.encode())
         second = self.StoreClass()
@@ -707,7 +714,8 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         template = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="privacy_policy"><u>Datenschutzerklärung</u></string>
-</resources>"""
+</resources>
+"""
         content = template.encode("utf-8")
         newcontent = template.replace("<u>", "").replace("</u>", "").encode("utf-8")
         store = self.StoreClass()
@@ -721,7 +729,8 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
 <resources>
     <!--Multimedia tab-->
     <string name="id">Multimedia tab</string>
-</resources>"""
+</resources>
+"""
         content = template.encode("utf-8")
         newcontent = template.replace(">Multimedia tab<", ">Other <b>tab</b><").encode(
             "utf-8"
@@ -741,7 +750,8 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         <item quantity="many"><xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" id="count">%d</xliff:g> dnu</item>
         <item quantity="other"><xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" id="count">%d</xliff:g> dnu</item>
     </plurals>
-</resources>"""
+</resources>
+"""
         store = self.StoreClass()
         store.targetlanguage = "ru"
         store.parse(content)
@@ -758,7 +768,8 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         template = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="id">Test</string>
-</resources>"""
+</resources>
+"""
         content = template.encode()
         newcontent = template.replace(
             ">Test<", ">Test <b>string</b> with \\u0020space<"
@@ -776,11 +787,13 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         original = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="id">Test: <xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">%s</xliff:g></string>
-</resources>"""
+</resources>
+"""
         expected = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="id">Other: <xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">%s</xliff:g></string>
-</resources>"""
+</resources>
+"""
         origstore = self.StoreClass()
         origstore.parse(original.encode())
         store = self.StoreClass()
@@ -796,11 +809,13 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         original = """<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="id">Test</string>
-</resources>"""
+</resources>
+"""
         expected = """<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="id">Test: <xliff:g>%s</xliff:g></string>
-</resources>"""
+</resources>
+"""
         store = self.StoreClass()
         store.parse(original.encode())
         assert bytes(store).decode() == original
@@ -817,7 +832,8 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         <item quantity="one">%d visitor</item>
         <item quantity="other">%d visitors</item>
     </plurals>
-</resources>"""
+</resources>
+"""
         store = self.StoreClass()
         store.targetlanguage = "zh-rHK"
         store.parse(content.encode())
@@ -829,7 +845,8 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
     <plurals name="vms_num_visitors">
         <item quantity="other">%d 訪客</item>
     </plurals>
-</resources>"""
+</resources>
+"""
         )
 
     def test_edit_plural_b_zh_hk(self):
@@ -839,7 +856,8 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         <item quantity="one">%d visitor</item>
         <item quantity="other">%d visitors</item>
     </plurals>
-</resources>"""
+</resources>
+"""
         store = self.StoreClass()
         store.targetlanguage = "b+zh+Hant+HK"
         store.parse(content.encode())
@@ -851,7 +869,8 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
     <plurals name="vms_num_visitors">
         <item quantity="other">%d 訪客</item>
     </plurals>
-</resources>"""
+</resources>
+"""
         )
 
     def test_missing_plural(self):
@@ -861,7 +880,8 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         <item quantity="one">%d visitor</item>
         <item quantity="other">%d visitors</item>
     </plurals>
-</resources>"""
+</resources>
+"""
         store = self.StoreClass()
         store.targetlanguage = "fr"
         store.parse(content.encode())
@@ -876,7 +896,8 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
     <string name="test2">Test</string>
     <!-- Third -->
     <string name="test3">Test2</string>
-</resources>"""
+</resources>
+"""
         store = self.StoreClass()
         store.parse(content.encode())
         assert len(store.units) == 3
@@ -890,7 +911,8 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
     <string name="test1">Test</string>
     <!-- Third -->
     <string name="test3">Test2</string>
-</resources>"""
+</resources>
+"""
         )
 
     def test_cdata(self):
@@ -909,7 +931,8 @@ files</strong> on the storage.</p>
         content = f"""<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="dialog_storage_permission_info" formatted="false">{body}</string>
-</resources>"""
+</resources>
+"""
         store = self.StoreClass()
         store.parse(content.encode())
         assert len(store.units) == 1
@@ -923,7 +946,8 @@ files</strong> on the storage.</p>
         content = f"""<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="service_terms_agreement_notice">{body}</string>
-</resources>"""
+</resources>
+"""
         store = self.StoreClass()
         store.parse(content.encode())
         assert len(store.units) == 1
@@ -937,7 +961,8 @@ files</strong> on the storage.</p>
         content = f"""<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="test">{body}</string>
-</resources>"""
+</resources>
+"""
         store = self.StoreClass()
         store.parse(content.encode())
         assert len(store.units) == 1
@@ -948,7 +973,8 @@ files</strong> on the storage.</p>
         content = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="calendar_permission_required"><i>{app_name}</i> צרכה רשות לגשת ליומן שלך, על מנת ליצור תוכניות עבור עסקאות עתידיות חוזרות.</string>
-</resources>"""
+</resources>
+"""
         store = self.StoreClass()
         store.parse(content.encode())
         assert len(store.units) == 1
@@ -1020,7 +1046,8 @@ class TestMOKOResourceFile(test_monolingual.TestMonolingualStore):
         <item quantity="one">%d visitor</item>
         <item quantity="other">%d visitors</item>
     </plural>
-</resources>"""
+</resources>
+"""
         store = self.StoreClass()
         store.parse(content.encode())
         assert store.units[0].target == multistring(["%d visitor", "%d visitors"])
@@ -1035,5 +1062,6 @@ class TestMOKOResourceFile(test_monolingual.TestMonolingualStore):
     <plural name="vms_num_visitors">
         <item quantity="other">%d 訪客</item>
     </plural>
-</resources>"""
+</resources>
+"""
         )
