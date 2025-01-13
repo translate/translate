@@ -63,8 +63,7 @@ def not_found(environ, start_response):
     """Respond with a 404."""
     start_response("404 Not Found", [("Content-Type", "text/plain")])
     return [
-        "404 Not Found\n\n"
-        "The server has not found anything matching the Request-URI."
+        "404 Not Found\n\nThe server has not found anything matching the Request-URI."
     ]
 
 

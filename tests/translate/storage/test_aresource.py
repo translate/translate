@@ -57,10 +57,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
 
     def test_escape_message_with_newline_in_xml(self):
         string = "message\n\nwith newline in xml\n"
-        xml = (
-            '<string name="teststring">message\\n\\nwith newline in xml\\n'
-            "</string>\n"
-        )
+        xml = '<string name="teststring">message\\n\\nwith newline in xml\\n</string>\n'
         self.__check_escape(string, xml)
 
     def test_escape_twitter(self):
@@ -111,8 +108,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
     def test_escape_html_code_quote_newline(self):
         string = "some \n<b>html code</b> 'here'"
         xml = (
-            "<string name=\"teststring\">some \\n<b>html code</b> \\'here\\'"
-            "</string>\n"
+            "<string name=\"teststring\">some \\n<b>html code</b> \\'here\\'</string>\n"
         )
         self.__check_escape(string, xml)
 
@@ -296,8 +292,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
     def test_parse_link(self):
         string = '<a href="http://example.net">link</a>'
         xml = (
-            '<string name="teststring"><a href="http://example.net">link'
-            "</a></string>\n"
+            '<string name="teststring"><a href="http://example.net">link</a></string>\n'
         )
         self.__check_parse(string, xml)
 

@@ -525,10 +525,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             [
                 {
                     "id": "message",
-                    "source": "test content\n"
-                    ".first = 1\n"
-                    ".second = 2\n"
-                    ".third = 3",
+                    "source": "test content\n.first = 1\n.second = 2\n.third = 3",
                 }
             ],
             """\
@@ -595,20 +592,14 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
         ):
             self.fluent_parse(
                 # Make each line 15 chars to make counting the offset simple.
-                "message =  ok \n"
-                "  .attr =first\n"
-                "  .other=other\n"
-                "  .attr =  2nd\n"
+                "message =  ok \n  .attr =first\n  .other=other\n  .attr =  2nd\n"
             )
 
         fluent_file = self.quick_fluent_file(
             [
                 {
                     "type": "Message",
-                    "source": "val\n"
-                    ".attr = first\n"
-                    ".other = other\n"
-                    "  .attr = second",
+                    "source": "val\n.attr = first\n.other = other\n  .attr = second",
                     "id": "message",
                 }
             ]
@@ -667,20 +658,14 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
         ):
             self.fluent_parse(
                 # Make each line 15 chars to make counting the offset simple.
-                "-term =   ok  \n"
-                "  .other=other\n"
-                "  .attr =first\n"
-                "  .attr =  2nd\n"
+                "-term =   ok  \n  .other=other\n  .attr =first\n  .attr =  2nd\n"
             )
 
         fluent_file = self.quick_fluent_file(
             [
                 {
                     "type": "Term",
-                    "source": "val\n"
-                    ".other = other\n"
-                    ".attr = first\n"
-                    ".attr = second",
+                    "source": "val\n.other = other\n.attr = first\n.attr = second",
                     "id": "-term",
                 }
             ]
@@ -1093,11 +1078,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             [
                 {
                     "id": "message",
-                    "source": "Message\n"
-                    ".attr =\n"
-                    "Attribute\n"
-                    "  lies across\n"
-                    "three lines",
+                    "source": "Message\n.attr =\nAttribute\n  lies across\nthree lines",
                 },
             ],
             """\
@@ -1188,19 +1169,11 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
 
         # Trailing whitespace is preserved in fluent for all but the last line.
         self.basic_test(
-            "message = Message \n"
-            ".attr = \n"
-            " trailing  \n"
-            " whitespace \n"
-            " last line  \n",
+            "message = Message \n.attr = \n trailing  \n whitespace \n last line  \n",
             [
                 {
                     "id": "message",
-                    "source": "Message\n"
-                    ".attr =\n"
-                    "trailing  \n"
-                    "whitespace \n"
-                    "last line",
+                    "source": "Message\n.attr =\ntrailing  \nwhitespace \nlast line",
                 },
             ],
             "message = Message\n"
@@ -1219,12 +1192,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             [
                 {
                     "id": "message",
-                    "source": "Message\n"
-                    ".attr =\n"
-                    "trailing  \n"
-                    "whitespace \n"
-                    "\n"
-                    "last line",
+                    "source": "Message\n.attr =\ntrailing  \nwhitespace \n\nlast line",
                 },
             ],
             "message = Message\n"
@@ -1319,11 +1287,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             [
                 {
                     "id": "-term",
-                    "source": "Term\n"
-                    ".attr =\n"
-                    "Attribute\n"
-                    "  lies across\n"
-                    "three lines",
+                    "source": "Term\n.attr =\nAttribute\n  lies across\nthree lines",
                 }
             ],
             """\
@@ -1393,11 +1357,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             [
                 {
                     "id": "-term",
-                    "source": "Term\n"
-                    ".attr =\n"
-                    " attribute with\n"
-                    "preserved\n"
-                    "  whitespace",
+                    "source": "Term\n.attr =\n attribute with\npreserved\n  whitespace",
                 }
             ],
         )
@@ -3353,10 +3313,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                 },
                 {
                     "id": "-term",
-                    "source": "{ NUMBER($n) ->\n"
-                    "    [0] Term0\n"
-                    "   *[other] Term\n"
-                    "}",
+                    "source": "{ NUMBER($n) ->\n    [0] Term0\n   *[other] Term\n}",
                     # No variable refs for Term.
                     "refs": [],
                     "parts": [

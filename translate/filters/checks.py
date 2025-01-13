@@ -2531,8 +2531,7 @@ class MozillaChecker(StandardChecker):
                 )
                 if counter2(str2)[0] > 0:
                     messages.append(
-                        f"Accelerator '{accelmarker}' should not appear in "
-                        "translation"
+                        f"Accelerator '{accelmarker}' should not appear in translation"
                     )
 
             if messages:
