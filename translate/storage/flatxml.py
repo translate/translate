@@ -213,9 +213,9 @@ class FlatXMLFile(base.TranslationStore):
         self.encoding = self.document.docinfo.encoding
 
         root_name = self.namespaced(self.root_name)
-        assert (
-            self.root.tag == root_name
-        ), f"expected root name to be {root_name} but got {self.root.tag}"
+        assert self.root.tag == root_name, (
+            f"expected root name to be {root_name} but got {self.root.tag}"
+        )
         if len(self.root):
             # we'd expect at least one child element to have the correct
             # name and attributes; otherwise the name parameters might've
@@ -223,13 +223,15 @@ class FlatXMLFile(base.TranslationStore):
             # coming up empty when the file actually contains entries.
             value_name = self.namespaced(self.value_name)
             matching_nodes = list(self.root.iterchildren(value_name))
-            assert matching_nodes, f"expected value name to be {value_name} but first node is {self.root[0].tag}"
+            assert matching_nodes, (
+                f"expected value name to be {value_name} but first node is {self.root[0].tag}"
+            )
 
-            assert matching_nodes[0].get(
-                self.key_name
-            ), "expected key attribute to be {}, found attribute(s): {}".format(
-                self.key_name,
-                ",".join(matching_nodes[0].attrib),
+            assert matching_nodes[0].get(self.key_name), (
+                "expected key attribute to be {}, found attribute(s): {}".format(
+                    self.key_name,
+                    ",".join(matching_nodes[0].attrib),
+                )
             )
 
         for entry in self.root:
