@@ -1,0 +1,29 @@
+Translate Toolkit 3.14.6
+************************
+
+*Released on 16 January 2025*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- JSON
+
+  - Do not create nested keys for flat keys formats on round trip
+  - Correctlly build new units for flat key formats
+
+- Android
+
+  - XML files will always have a trailing newline
+  - Gracefully handle unpaired double quotes
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař, Philipp Kewisch
