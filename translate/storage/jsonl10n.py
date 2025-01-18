@@ -743,7 +743,7 @@ class GoI18NJsonFile(JsonFile):
         out.write(b"\n")
 
 
-class GoI18NV2JsonUnit(BaseJsonUnit):
+class GoI18NV2JsonUnit(FlatJsonUnit):
     ID_FORMAT = "{}"
 
     def converttarget(self):

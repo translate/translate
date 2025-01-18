@@ -250,7 +250,9 @@ JSON_GOI18N_V2_SIMPLE = """{
         "description": "a piece or strip of strong paper, plastic, metal, leather, etc., for attaching by one end to something as a mark or label",
         "one": "{{.count}} tag",
         "other": "{{.count}} tags"
-    }
+    },
+    "nested.key.hello": "world",
+    "nested.key.world": "hello"
 }
 """
 
@@ -266,6 +268,12 @@ JSON_GOI18N_V2_COMPLEXE = """{
         "description": "a piece or strip of strong paper, plastic, metal, leather, etc., for attaching by one end to something as a mark or label",
         "one": "{{.count}} tag",
         "other": "{{.count}} tags"
+    },
+    "nested.key.hello": {
+        "other": "world"
+    },
+    "nested.key.world": {
+        "other": "hello"
     }
 }
 """
@@ -1275,12 +1283,14 @@ class TestGoI18NV2JsonFile(test_monolingual.TestMonolingualStore):
         store = self.StoreClass()
         store.parse(JSON_GOI18N_V2_SIMPLE)
 
-        assert len(store.units) == 3
+        assert len(store.units) == 5
         assert store.units[0].target == "value"
         assert store.units[1].target == "Table"
         assert store.units[2].target == multistring(
             ["{{.count}} tag", "{{.count}} tags"]
         )
+        assert store.units[3].target == "world"
+        assert store.units[4].target == "hello"
 
         assert bytes(store).decode() == JSON_GOI18N_V2_SIMPLE
 
@@ -1337,12 +1347,14 @@ class TestGoI18NV2JsonFile(test_monolingual.TestMonolingualStore):
         store = self.StoreClass()
         store.parse(JSON_GOI18N_V2_COMPLEXE)
 
-        assert len(store.units) == 3
+        assert len(store.units) == 5
         assert store.units[0].target == "value"
         assert store.units[1].target == "Table"
         assert store.units[2].target == multistring(
             ["{{.count}} tag", "{{.count}} tags"]
         )
+        assert store.units[3].target == "world"
+        assert store.units[4].target == "hello"
 
         assert bytes(store).decode() == JSON_GOI18N_V2_SIMPLE
 
