@@ -681,7 +681,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         )
         assert bytes(store) == content
 
-    def test_entity_add(self, edit=True):
+    def entity_add(self, *, edit: bool):
         content = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE resources [
 <!ENTITY appName "Zkouška">
@@ -707,8 +707,11 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         # The new store should have same content
         assert bytes(second).decode() == content
 
+    def test_entity_add_edit(self):
+        self.entity_add(edit=True)
+
     def test_entity_add_noedit(self):
-        self.test_entity_add(edit=False)
+        self.entity_add(edit=False)
 
     def test_markup_remove(self):
         template = """<?xml version="1.0" encoding="utf-8"?>
