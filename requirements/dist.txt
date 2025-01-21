@@ -3,5 +3,5 @@ build==1.2.2.post1
 pip==24.3.1
 setuptools==75.8.0
 setuptools-scm==8.1.0
-twine==6.0.1
+twine==6.1.0
 virtualenv==20.29.1
