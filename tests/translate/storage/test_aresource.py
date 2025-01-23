@@ -1,4 +1,4 @@
-from copy import deepcopy
+from copy import copy, deepcopy
 
 from lxml import etree
 
@@ -963,6 +963,8 @@ files</strong> on the storage.</p>
     <string name="service_terms_agreement_notice">{body}</string>
 </resources>
 """
+
+        # Verify round trip
         store = self.StoreClass()
         store.parse(content.encode())
         assert len(store.units) == 1
@@ -970,6 +972,25 @@ files</strong> on the storage.</p>
         assert bytes(store).decode() == content
         store.units[0].target = body
         assert bytes(store).decode() == content
+
+        # Verify copying unit to new store
+        newstore = self.StoreClass()
+        newstore.addunit(copy(store.units[0]), new=True)
+        assert bytes(newstore).decode() == content
+        newstore.units[0].target = body
+        assert bytes(newstore).decode() == content
+
+        # Verify creating unit from scratch
+        addstore = self.StoreClass()
+        unit = addstore.UnitClass(body)
+        unit.setid("service_terms_agreement_notice")
+        unit.target = body
+        addstore.addunit(unit, new=True)
+        assert len(addstore.units) == 1
+        assert addstore.units[0].target == body
+        assert bytes(addstore).decode() == content
+        addstore.units[0].target = body
+        assert bytes(addstore).decode() == content
 
     def test_prefix(self):
         body = "&lt; <b>body</b>"
