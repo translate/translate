@@ -252,7 +252,8 @@ JSON_GOI18N_V2_SIMPLE = """{
         "other": "{{.count}} tags"
     },
     "nested.key.hello": "world",
-    "nested.key.world": "hello"
+    "nested.key.world": "hello",
+    ".world": "hello"
 }
 """
 
@@ -273,6 +274,9 @@ JSON_GOI18N_V2_COMPLEXE = """{
         "other": "world"
     },
     "nested.key.world": {
+        "other": "hello"
+    },
+    ".world": {
         "other": "hello"
     }
 }
@@ -1275,6 +1279,20 @@ class TestGoI18NJsonFile(test_monolingual.TestMonolingualStore):
         with raises(ValueError):
             store.parse(JSON_I18NEXT_PLURAL)
 
+    def test_dot_keys(self):
+        jsontext = """[
+    {
+        "id": ".table",
+        "translation": "message"
+    }
+]
+"""
+        store = self.StoreClass()
+        store.parse(jsontext)
+        # Edit target
+        store.units[0].target = "message"
+        assert bytes(store).decode() == jsontext
+
 
 class TestGoI18NV2JsonFile(test_monolingual.TestMonolingualStore):
     StoreClass = jsonl10n.GoI18NV2JsonFile
@@ -1283,7 +1301,7 @@ class TestGoI18NV2JsonFile(test_monolingual.TestMonolingualStore):
         store = self.StoreClass()
         store.parse(JSON_GOI18N_V2_SIMPLE)
 
-        assert len(store.units) == 5
+        assert len(store.units) == 6
         assert store.units[0].target == "value"
         assert store.units[1].target == "Table"
         assert store.units[2].target == multistring(
@@ -1339,6 +1357,11 @@ class TestGoI18NV2JsonFile(test_monolingual.TestMonolingualStore):
         store = self.StoreClass()
         store.parse(JSON_GOI18N_V2_SIMPLE)
 
+        assert len(store.units) == 6
+
+        store.units[2].target = multistring(["{{.count}} tag", "{{.count}} tags"])
+        assert bytes(store).decode() == JSON_GOI18N_V2_SIMPLE
+
         store.units[2].target = multistring(["{{.count}} tag"])
 
         assert '"other": "{{.count}} tag"' in bytes(store).decode()
@@ -1347,7 +1370,7 @@ class TestGoI18NV2JsonFile(test_monolingual.TestMonolingualStore):
         store = self.StoreClass()
         store.parse(JSON_GOI18N_V2_COMPLEXE)
 
-        assert len(store.units) == 5
+        assert len(store.units) == 6
         assert store.units[0].target == "value"
         assert store.units[1].target == "Table"
         assert store.units[2].target == multistring(
@@ -1362,6 +1385,17 @@ class TestGoI18NV2JsonFile(test_monolingual.TestMonolingualStore):
         store = self.StoreClass()
         with raises(ValueError):
             store.parse(JSON_I18NEXT_PLURAL)
+
+    def test_dot_keys(self):
+        jsontext = """{
+    ".table": "message"
+}
+"""
+        store = self.StoreClass()
+        store.parse(jsontext)
+        # Edit target
+        store.units[0].target = "message"
+        assert bytes(store).decode() == jsontext
 
 
 class TestARBJsonFile(test_monolingual.TestMonolingualStore):
