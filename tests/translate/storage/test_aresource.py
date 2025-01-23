@@ -514,6 +514,18 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
             """<string name="cmd_camera_response_success">You can view it here soon: %s"</string>""",
         )
 
+    def test_parse_escape_slash(self):
+        self.__check_parse(
+            """Přechod na novější verzi databáze účtu \\<g id="account">%s</g>\\""",
+            r"""<string name="upgrade_database_format">Přechod na novější verzi databáze účtu \\<g id="account">%s</g>\\</string>""",
+        )
+
+    def test_parse_escape_ignored(self):
+        self.__check_parse(
+            """Přechod na novější verzi databáze účtu \\<g id="account">%s</g>""",
+            r"""<string name="upgrade_database_format">Přechod na novější verzi databáze účtu \\<g id="account">%s</g>\x</string>""",
+        )
+
 
 class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
     StoreClass = aresource.AndroidResourceFile
