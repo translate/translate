@@ -35,7 +35,7 @@ from translate.storage import base, lisa
 WHITESPACE = {" ", "\n", "\t"}  # Whitespace that we collapse.
 ESCAPE_NEWLINE = {"n", "N"}
 ESCAPE_TAB = {"t", "T"}
-ESCAPE_PLAIN = {" ", '"', "'", "@", "?"}
+ESCAPE_PLAIN = {" ", '"', "'", "@", "?", "\\"}
 MULTIWHITESPACE = re.compile(r"[ \n\t]{2}(?!\\n)")
 QUOTED_STRING = re.compile(r'((?<!\\)"(?:\\"|[^"])*(?<!\\)")')
 UNICODE_ESCAPE = re.compile(r"\\u([a-fA-F0-9]{4})")
@@ -139,9 +139,9 @@ class DecodingXMLParser:
 
         # Detect escaping at the start and end of a string (we actually care only for
         # whitespace escapes, but detecting more does not matter)
-        if text and text[0] != unescaped_text[0]:
+        if text and unescaped_text and text[0] != unescaped_text[0]:
             cleanup_start = False
-        if text and text[-1] != unescaped_text[-1]:
+        if text and unescaped_text and text[-1] != unescaped_text[-1]:
             cleanup_end = False
 
         return unescaped_text, cleanup_start, cleanup_end
