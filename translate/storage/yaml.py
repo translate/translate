@@ -222,7 +222,12 @@ class RubyYAMLFile(YAMLFile):
         if data and all(x in cldr_plural_categories for x in data):
             # Ensure we have correct plurals ordering.
             values = [data[item] for item in cldr_plural_categories if item in data]
-            yield (prev, multistring(values))
+
+            # Skip blank values (all plurals are None)
+            if not all(value is None for value in values):
+                # Use blank string insted of None here
+                yield (prev, multistring([value or "" for value in values]))
+
             return
 
         # Handle normal dict
