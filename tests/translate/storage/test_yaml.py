@@ -598,3 +598,35 @@ class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
         unit.setid("days_on[1]")
         store.addunit(unit)
         assert bytes(store).decode("ascii") == changed
+
+    def test_ruby_plural_blank(self):
+        data = """en:
+  string:
+  message:
+    one:
+    other:
+"""
+        store = self.StoreClass()
+        store.parse(data)
+        assert len(store.units) == 0
+        assert bytes(store).decode() == data
+
+    def test_ruby_plural_partial(self):
+        data = """en:
+  string:
+  message:
+    one: ''
+    other:
+"""
+        store = self.StoreClass()
+        store.parse(data)
+        assert len(store.units) == 1
+        assert (
+            bytes(store).decode()
+            == """en:
+  string:
+  message:
+    one: ''
+    other: ''
+"""
+        )
