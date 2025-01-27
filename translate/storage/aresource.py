@@ -110,8 +110,7 @@ class DecodingXMLParser:
         if text.startswith('"'):
             # Missing closing quote is gracefully ignored
             return text.removeprefix('"').removesuffix('"')
-        # Remove possible extra closing quote
-        text = text.removesuffix('"')
+        # Consolidate whitespace
         return WHITESPACE_RE.sub(" ", text)
 
     @classmethod

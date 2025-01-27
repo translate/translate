@@ -510,7 +510,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
             """<string name="cmd_camera_response_success">"You can view it here soon: %s</string>""",
         )
         self.__check_parse(
-            """You can view it here soon: %s""",
+            'You can view it here soon: %s"',
             """<string name="cmd_camera_response_success">You can view it here soon: %s"</string>""",
         )
 
@@ -524,6 +524,12 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         self.__check_parse(
             """Přechod na novější verzi databáze účtu \\<g id="account">%s</g>""",
             r"""<string name="upgrade_database_format">Přechod na novější verzi databáze účtu \\<g id="account">%s</g>\x</string>""",
+        )
+
+    def test_parse_escaped_quote_end(self):
+        self.__check_parse(
+            'No file %1$s found in archive "%2$s"',
+            r"""<string name="restore_backup_file_not_found">No file %1$s found in archive \"%2$s\"</string>""",
         )
 
 
