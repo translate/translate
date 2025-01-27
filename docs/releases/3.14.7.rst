@@ -1,0 +1,29 @@
+Translate Toolkit 3.14.7
+************************
+
+*Released on 27 January 2025*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- JSON
+
+  - Do not create nested keys for flat keys formats on round trip
+  - Correctlly build new units for flat key formats
+
+- Android
+
+  - Avoid stripping possible extra closing quote
+  - Gracefully handle invalid escape sequences
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař, Gusted
