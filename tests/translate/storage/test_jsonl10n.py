@@ -1416,11 +1416,15 @@ class TestARBJsonFile(test_monolingual.TestMonolingualStore):
     def test_leading_dot_keys(self):
         jsontext = """{
   ".dot": "dot",
-  "@.dot": {}
+  "@.dot": {},
+  "nav:colon": "colon in a colon",
+  "@nav:colon": {}
 }
 """
         store = self.StoreClass()
         store.parse(jsontext)
+        assert len(store.units) == 2
+        store.units[1].target = "colon in a colon"
         assert bytes(store).decode() == jsontext
 
 
