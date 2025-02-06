@@ -22,6 +22,8 @@ Class that manages subtitle files for translation.
 This class makes use of the subtitle functionality of ``aeidon``.
 """
 
+from __future__ import annotations
+
 import os
 from io import StringIO
 from tempfile import NamedTemporaryFile
@@ -42,7 +44,7 @@ class SubtitleUnit(base.TranslationUnit):
 
     init_time = "00:00:00.000"
 
-    def __init__(self, source=None, **kwargs):
+    def __init__(self, source: str | None = None, **kwargs):
         self._start = self.init_time
         self._end = self.init_time
         self._duration = 0.0
@@ -50,6 +52,11 @@ class SubtitleUnit(base.TranslationUnit):
             self.source = source
             self.target = source
         super().__init__(source)
+
+    def settime(self, start: str, end: str, duration: float):
+        self._start = start
+        self._end = end
+        self._duration = duration
 
     def getnotes(self, origin=None):
         if origin in {"programmer", "developer", "source code", None}:
@@ -84,7 +91,7 @@ class SubtitleFile(base.TranslationStore):
 
     def serialize(self, out):
         subtitles = []
-        for unit in self.units:
+        for unit in sorted(self.units, key=lambda unit: unit._start):
             subtitle = Subtitle()
             subtitle.main_text = unit.target or unit.source
             subtitle.start = unit._start
