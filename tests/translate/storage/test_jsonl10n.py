@@ -843,6 +843,34 @@ class TestWebExtensionStore(test_monolingual.TestMonolingualStore):
 
         assert out.getvalue() == DATA
 
+    def test_comments(self):
+        DATA = """{
+    "test": {
+        // Comment
+        "message": "Message //"
+    },
+    "test//": { // Comment
+        "message": "Message // Other"
+    }
+}
+"""
+        store = self.StoreClass()
+        store.parse(DATA)
+        assert len(store.units) == 2
+        # Any comments will be stripped
+        assert (
+            bytes(store).decode()
+            == """{
+    "test": {
+        "message": "Message //"
+    },
+    "test//": {
+        "message": "Message // Other"
+    }
+}
+"""
+        )
+
 
 class TestI18NextStore(test_monolingual.TestMonolingualStore):
     StoreClass = jsonl10n.I18NextFile
