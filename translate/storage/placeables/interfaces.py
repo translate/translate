@@ -21,13 +21,17 @@ This file contains abstract (semantic) interfaces for placeable
  implementations.
 """
 
+from __future__ import annotations
+
+from typing import Callable
+
 from translate.storage.placeables.strelem import StringElem
 
 
 class BasePlaceable(StringElem):
     """Base class for all placeables."""
 
-    parse = None
+    parse: Callable[[str], list[StringElem]]
 
 
 class InvisiblePlaceable(BasePlaceable):

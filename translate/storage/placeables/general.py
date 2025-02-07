@@ -21,6 +21,8 @@ Contains general placeable implementations. That is placeables that does not
 fit into any other sub-category.
 """
 
+from __future__ import annotations
+
 import re
 
 from translate.storage.placeables.base import G, Ph, StringElem
@@ -34,7 +36,7 @@ __all__ = (
 )
 
 
-def regex_parse(cls, pstr):
+def regex_parse(cls, pstr: str) -> list[StringElem]:
     """
     A parser method to extract placeables from a string based on a regular
     expression. Use this function as the ``@parse()`` method of a placeable
