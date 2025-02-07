@@ -25,6 +25,7 @@ import logging
 import pickle
 from io import BytesIO
 from itertools import starmap
+from typing import Callable, ClassVar, Literal
 
 from translate.misc.multistring import multistring
 from translate.storage.placeables import StringElem
@@ -78,7 +79,7 @@ class TranslationUnit:
 
     """
 
-    rich_parsers = []
+    rich_parsers: list[Callable[[str], list[StringElem]]] = []
     """A list of functions to use for parsing a string into a rich string
     tree."""
 
@@ -113,7 +114,7 @@ class TranslationUnit:
     # """
     #
     # ... but by default a format will not support state:
-    STATE = {}
+    STATE: dict[states, tuple[states, states]] = {}
 
     _store = None
     _source = None
@@ -550,7 +551,7 @@ class TranslationUnit:
 class TranslationStore:
     """Base class for stores for multiple translation units of type UnitClass."""
 
-    UnitClass = TranslationUnit
+    UnitClass: ClassVar[type[TranslationUnit]] = TranslationUnit
     """The class of units that will be instantiated and used by this class"""
     Name = "Base translation store"
     """The human usable name of this store type"""
@@ -826,7 +827,7 @@ class TranslationStore:
 
     def detect_encoding(
         self, text: bytes, default_encodings: list[str] | None = None
-    ) -> tuple[str, str]:
+    ) -> tuple[str | None, str | None]:
         """
         Try to detect a file encoding from `text`, using either the chardet lib
         or by trying to decode the file.
@@ -985,7 +986,7 @@ class UnitId:
 
     @classmethod
     def from_string(cls, text: str) -> UnitId:
-        result = []
+        result: list[tuple[Literal["key", "index"], str | int]] = []
         # Strip possible leading separator
         text = text.removeprefix(cls.KEY_SEPARATOR)
         for item in text.split(cls.KEY_SEPARATOR):

@@ -73,7 +73,7 @@ from __future__ import annotations
 import json
 import re
 import uuid
-from typing import BinaryIO, TextIO, cast
+from typing import BinaryIO, ClassVar, TextIO, cast
 
 from translate.lang.data import cldr_plural_categories, plural_tags
 from translate.misc.multistring import multistring
@@ -154,7 +154,7 @@ class FlatJsonUnit(BaseJsonUnit):
 class JsonFile(base.DictStore):
     """A JSON file."""
 
-    UnitClass = FlatJsonUnit
+    UnitClass: ClassVar[type[BaseJsonUnit]] = FlatJsonUnit
 
     def __init__(self, inputfile=None, filter=None, **kwargs):
         """Construct a JSON file, optionally reading in from inputfile."""
