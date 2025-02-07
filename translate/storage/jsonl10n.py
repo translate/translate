@@ -68,8 +68,12 @@ Todo:
 
 """
 
+from __future__ import annotations
+
 import json
+import re
 import uuid
+from typing import BinaryIO, TextIO, cast
 
 from translate.lang.data import cldr_plural_categories, plural_tags
 from translate.misc.multistring import multistring
@@ -219,25 +223,36 @@ class JsonFile(base.DictStore):
             unit.set_unitid(prev)
             yield unit
 
-    def parse(self, input):
+    def preprocess_input(self, text: str) -> str:
+        return text
+
+    def parse(self, data: str | bytes | TextIO | BinaryIO):
         """Parse the given file or file source string."""
-        if hasattr(input, "name"):
-            self.filename = input.name
+        text: str | bytes
+        if hasattr(data, "name"):
+            self.filename = data.name
         elif not getattr(self, "filename", ""):
             self.filename = ""
-        if hasattr(input, "read"):
-            src = input.read()
-            input.close()
-            input = src
-        if isinstance(input, bytes):
+        if hasattr(data, "read"):
+            # Make type checking happy
+            data = cast("BinaryIO", data)
+
+            text = data.read()
+            data.close()
+        else:
+            text = data
+
+        if isinstance(text, bytes):
             # The JSON files should be UTF-8, but implementations
             # that parse JSON texts MAY ignore the presence of a byte order mark
             # rather than treating it as an error, see RFC7159
-            input, self.encoding = self.detect_encoding(input)
-            if input is None:
+            decoded, self.encoding = self.detect_encoding(text)
+            if decoded is None:
                 raise base.ParseError(ValueError("Failed to decode JSON string."))
+            text = decoded
+        text = self.preprocess_input(text)
         try:
-            self._file = json.loads(input)
+            self._file = json.loads(text)
         except ValueError as e:
             raise base.ParseError(e)
 
@@ -276,6 +291,11 @@ class WebExtensionJsonFile(JsonFile):
     """
 
     UnitClass = WebExtensionJsonUnit
+
+    COMMENT_RE = re.compile(r"""^((?:[^"]|"(?:[^"\\]|\.)*")*?)//.*$""", re.MULTILINE)
+
+    def preprocess_input(self, text: str) -> str:
+        return self.COMMENT_RE.sub(r"\1", text)
 
     def _extract_units(
         self,
