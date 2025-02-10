@@ -1455,6 +1455,18 @@ class TestARBJsonFile(test_monolingual.TestMonolingualStore):
         store.units[1].target = "colon in a colon"
         assert bytes(store).decode() == jsontext
 
+    def test_invalid_nesting(self):
+        jsontext = """{
+    "key": {
+        ".dot": "dot",
+        "@.dot": {}
+    }
+}
+"""
+        store = self.StoreClass()
+        with raises(base.ParseError):
+            store.parse(jsontext)
+
 
 JSON_FORMATJS = """{
     "hak27d": {

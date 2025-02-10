@@ -254,7 +254,7 @@ class JsonFile(base.DictStore):
         try:
             self._file = json.loads(text)
         except ValueError as e:
-            raise base.ParseError(e)
+            raise base.ParseError(e) from e
 
         for unit in self._extract_units(self._file, stop=self._filter):
             self.addunit(unit)
@@ -900,6 +900,10 @@ class ARBJsonFile(JsonFile):
         for item, value in data.items():
             if item.startswith("@"):
                 continue
+            if not isinstance(value, (str, int)):
+                raise base.ParseError(
+                    ValueError(f"Key {item!r} does not contain string: {value!r}")
+                )
             metadata = data.get(f"@{item}", {})
             unit = self.UnitClass(
                 value,
