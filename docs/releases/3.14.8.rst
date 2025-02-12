@@ -1,0 +1,32 @@
+Translate Toolkit 3.14.8
+************************
+
+*Released on 12 February 2025*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- JSON
+
+  - Improved error handling in ARB files.
+  - Strip ``//`` style comments while parsing WebExtension JSON.
+
+- YAML
+
+  - Gracefully handle blank plural values.
+
+- Subtitles
+
+  - Ensure subtitles are correctly ordered upon saving.
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař
