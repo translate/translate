@@ -286,6 +286,7 @@ class csvfile(base.TranslationStore):
             self.fieldnames = fieldnames
         self.filename = getattr(inputfile, "name", "")
         self.dialect = "default"
+        self._automatic_encoding = encoding == "auto"
         if inputfile is not None:
             csvsrc = inputfile.read()
             inputfile.close()
@@ -295,6 +296,7 @@ class csvfile(base.TranslationStore):
         self, csvsrc, sample_length: int | None = 1024, *, dialect: str | None = None
     ):
         if self._encoding == "auto":
+            self._automatic_encoding = True
             text, encoding = self.detect_encoding(
                 csvsrc, default_encodings=["utf-8", "utf-16"]
             )
@@ -302,6 +304,7 @@ class csvfile(base.TranslationStore):
                 raise ValueError("Could not detect enconding!")
             self.encoding = encoding or "utf-8"
         else:
+            self._automatic_encoding = False
             text = csvsrc.decode(self.encoding)
 
         sniffer = csv.Sniffer()
@@ -340,11 +343,24 @@ class csvfile(base.TranslationStore):
     def serialize(self, out):
         """Write to file."""
         source = self.getoutput()
-        if isinstance(source, str):
-            # Python 3
-            out.write(source.encode(self.encoding))
-        else:
-            out.write(source)
+        try:
+            output = source.encode(self.encoding)
+        except UnicodeEncodeError:
+            reraise = True
+            if self._automatic_encoding:
+                # Try fallback to utf-8
+                try:
+                    output = source.encode("utf-8")
+                except UnicodeEncodeError:
+                    pass
+                else:
+                    self.encoding = "utf-8"
+                    reraise = False
+            if reraise:
+                # Raise the original exception
+                raise
+
+        out.write(output)
 
     def getoutput(self):
         output = csv.StringIO()

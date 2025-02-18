@@ -167,3 +167,26 @@ GENERAL@2|Notes,"cable, motor, switch"
         store = self.StoreClass()
         with pytest.raises(ValueError):
             store.parse(b"PK\x03\x04\x14\x00\x06\x00\x08\x00\x00\x00!\x00b\xee\x9d")
+
+    def test_encoding_save(self):
+        content = '"foo.c:1";"test";"zkouška sirén"'
+        # Use lines to avoid issues with newlines
+        expected = [
+            '"location";"source";"target"',
+            '"foo.c:1";"test";"伐木"',
+        ]
+        store = self.parse_store(content.encode("utf-8"))
+        assert len(store.units) == 1
+        store.units[0].target = "伐木"
+        assert bytes(store).decode().splitlines() == expected
+
+        store = self.parse_store(content.encode("iso-8859-2"), encoding="iso-8859-2")
+        assert len(store.units) == 1
+        store.units[0].target = "伐木"
+        with pytest.raises(UnicodeEncodeError):
+            bytes(store)
+
+        store = self.parse_store(content.encode("iso-8859-2"))
+        assert len(store.units) == 1
+        store.units[0].target = "伐木"
+        assert bytes(store).decode().splitlines() == expected
