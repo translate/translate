@@ -945,6 +945,12 @@ class FormatJSJsonFile(JsonFile):
         last_node=None,
     ):
         for item, value in data.items():
+            if not isinstance(value, dict):
+                raise base.ParseError(
+                    ValueError(
+                        f"Not a valid FormatJS file should be a object: {value!r}"
+                    )
+                )
             unit = self.UnitClass(
                 value.get("defaultMessage", ""),
                 item,

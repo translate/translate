@@ -1514,3 +1514,12 @@ class TestFormatJSJsonFile(test_monolingual.TestMonolingualStore):
         store = self.StoreClass()
         store.parse(jsontext)
         assert bytes(store).decode() == jsontext
+
+    def test_invalid(self):
+        jsontext = """{
+    ".dot": "text"
+}
+"""
+        store = self.StoreClass()
+        with raises(base.ParseError):
+            store.parse(jsontext)
