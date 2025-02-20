@@ -22,3 +22,5 @@ _site
 *.swo
 *.swp
 *~
+
+uv.lock
