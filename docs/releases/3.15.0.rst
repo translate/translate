@@ -1,0 +1,38 @@
+Translate Toolkit 3.15.0
+************************
+
+*Released on 20 February 2025*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- JSON
+
+  - Fixed possible slow processing of some WebExtension files
+  - Improved validation for FormatJS files
+
+- CVS
+
+  - Automatically upgrade to UTF-8 when legacy encoding cannot save some characters
+
+- DTD
+
+  - Simplified the entity matching
+
+Other changes
+-------------
+
+- Packaging now follows PEP 621
+
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař
