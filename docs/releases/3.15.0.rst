@@ -16,7 +16,7 @@ Formats and Converters
   - Fixed possible slow processing of some WebExtension files
   - Improved validation for FormatJS files
 
-- CVS
+- CSV
 
   - Automatically upgrade to UTF-8 when legacy encoding cannot save some characters
 
