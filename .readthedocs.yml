@@ -6,15 +6,22 @@ version: 2
 sphinx:
   configuration: docs/conf.py
 
-formats: all
+# Optionally build your docs in additional formats such as PDF and ePub
+formats: []
 
 build:
   os: ubuntu-22.04
   tools:
-    python: '3.12'
+    python: '3.13'
   apt_packages:
   - libgettextpo0
-
-python:
-  install:
-  - requirements: requirements/docs.txt
+  jobs:
+    create_environment:
+    - asdf plugin add uv
+    - asdf install uv latest
+    - asdf global uv latest
+    install:
+    - uv sync --only-group docs
+    build:
+      html:
+      - .venv/bin/sphinx-build -T -b html -d docs/_build/doctrees docs $READTHEDOCS_OUTPUT/html

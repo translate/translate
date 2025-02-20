@@ -59,27 +59,23 @@ jobs:
       run: |
         nuget install Gettext.Tools -Version 0.22.4 -OutputDirectory c:\nuget;
         Add-Content $env:GITHUB_PATH "C:\nuget\Gettext.Tools.0.22.4\tools\bin"
-    - name: Install pip dependencies
-      run: uv pip install --system -r requirements/test.txt
-    - name: Install pip dependencies
+    - name: Minimalize deps
       if: matrix.requirements == 'minimal'
-      run: |
-        make requirements/min-versions.txt
-        cat requirements/min-versions.txt
-        uv pip install --system -r requirements/min-versions.txt
-    - name: Install
-      run: uv pip install --system -e .
+      run: sed -i '/^ *"/ s/>=/==/' pyproject.toml
+    - name: Install pip dependencies
+      run: uv sync --all-extras --dev
     - name: pytest
       run: make test
     - name: test-functional
-      if: matrix.os != 'windows-latest'
+      if: matrix.os == 'ubuntu-latest'
       env:
         PYTHON_ARGS: -m coverage run --append --source ${{ github.workspace }}/translate
         COVERAGE_FILE: ${{ github.workspace }}/.coverage
-      run: make test-functional
-    - name: Coverage
       run: |
-        coverage xml
+        source .venv/bin/activate
+        make test-functional
+    - name: Coverage
+      run: uv run coverage xml
     - uses: codecov/codecov-action@v5
       with:
         name: ${{ runner.os }}, Python ${{ matrix.python-version }}, ${{ matrix.requirements }}

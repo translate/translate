@@ -22,42 +22,34 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
+        python-version: '3.13'
     - uses: astral-sh/setup-uv@v5
       with:
         enable-cache: true
         cache-dependency-glob: ''
-        cache-suffix: '3.11'
+        cache-suffix: '3.13'
     - name: Install apt dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y libgettextpo-dev
-    - name: Install pip dependencies
-      run: uv pip install --system -r requirements/dev.txt
-    - name: Build sdist
-      run: make build
+    - name: Build pakcage
+      run: uv build
     - name: Twine check
-      run: twine check dist/*
+      run: uvx twine check dist/*
     - name: Install test (source)
       run: |
-        virtualenv test-ttk-release-src
+        uv venv test-ttk-release-src
         . ./test-ttk-release-src/bin/activate
         uv pip install dist/translate_toolkit-*.tar.gz
         moz2po --help
         python ./test-ttk-release-src/lib/python*/site-packages/translate/lang/identify.py README.rst
     - name: Install test (wheel)
       run: |
-        virtualenv test-ttk-release-whl
+        uv venv test-ttk-release-whl
         . ./test-ttk-release-whl/bin/activate
         uv pip install dist/translate_toolkit*.whl
         moz2po --help
         python ./test-ttk-release-whl/lib/python*/site-packages/translate/lang/identify.py README.rst
-    - name: Run build
-      run: coverage run ./setup.py build
-    - name: Run setup
-      run: coverage run --append ./setup.py sdist
-    - name: Coverage
-      run: coverage xml
     - uses: codecov/codecov-action@v5
       with:
         name: setup

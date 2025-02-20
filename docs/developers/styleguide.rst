@@ -16,7 +16,7 @@ pre-commit hooks
 The Translate styleguide can be checked by `pre-commit`_. The Translate toolkit
 repository repository contains configuration for it to verify the committed
 files are sane. After installing it (it is already included in the
-:file:`requirements/dev.txt`) turn it on by running ``pre-commit install`` in
+:file:`pyproject.toml`) turn it on by running ``pre-commit install`` in
 Translate toolkit checkout. This way all your changes will be automatically
 checked.
 

@@ -1,4 +1,0 @@
--r test.txt
--r dist.txt
--r lint.txt
-types-lxml

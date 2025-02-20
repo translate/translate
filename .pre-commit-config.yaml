@@ -8,7 +8,6 @@ repos:
   - id: check-merge-conflict
   - id: check-json
   - id: check-toml
-  - id: requirements-txt-fixer
   - id: fix-encoding-pragma
     args: [--remove]
 - repo: meta
@@ -30,5 +29,11 @@ repos:
   hooks:
   - id: pretty-format-yaml
     args: [--autofix, --indent, '2']
-  - id: pretty-format-toml
-    args: [--autofix]
+- repo: https://github.com/pappasam/toml-sort
+  rev: v0.24.2
+  hooks:
+  - id: toml-sort-fix
+- repo: https://github.com/abravalheri/validate-pyproject
+  rev: v0.23
+  hooks:
+  - id: validate-pyproject
