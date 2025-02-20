@@ -25,16 +25,13 @@
 MANIFEST
 
 
-# Requirements generation
-.reqs
-requirements/min-versions.txt
-
 # Coverage
 .coverage*
 
 # Common virtualenv locations
 .venv
 venv
+uv.lock
 
 ##############################
 # translate/ specific excludes

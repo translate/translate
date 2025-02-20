@@ -91,14 +91,9 @@ feature set. This cal be easily specified during pip installation::
     # Install all optional dependencies
     pip install translate-toolkit[all]
 
-.. note:: Please check ``requirements/*.txt``::
+.. note:: Please check ``pyproject.toml``
 
-       pip install -r requirements/optional.txt
-
-   Will install all optional dependencies convering support for many other
-   formats.
-
-The Toolkit requires Python 3.8 or newer.
+The Toolkit requires Python 3.9 or newer.
 
 The package lxml is required. You should install version 4.6.3 or later.
 <http://lxml.de/> Depending on your platform, the easiest way to install might

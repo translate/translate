@@ -19,11 +19,9 @@ jobs:
     - uses: astral-sh/setup-uv@v5
     - uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
-    - name: Install dependencies
-      run: uv pip install --system -r requirements/lint.txt
+        python-version: '3.13'
     - name: pre-commit
-      run: pre-commit run --all
+      run: uv run --no-sources --only-group pre-commit pre-commit run --all
       env:
         RUFF_OUTPUT_FORMAT: github
         REUSE_OUTPUT_FORMAT: github
