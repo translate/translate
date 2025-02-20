@@ -292,7 +292,7 @@ class WebExtensionJsonFile(JsonFile):
 
     UnitClass = WebExtensionJsonUnit
 
-    COMMENT_RE = re.compile(r"""^((?:[^"]|"(?:[^"\\]|\.)*")*?)//.*$""", re.MULTILINE)
+    COMMENT_RE = re.compile(r'^((?:[^"\n]|"(?:[^"\\\n]|\\.)*")*?)//.*', re.MULTILINE)
 
     def preprocess_input(self, text: str) -> str:
         return self.COMMENT_RE.sub(r"\1", text)
