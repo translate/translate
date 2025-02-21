@@ -1,31 +1,18 @@
 Translate Toolkit
 -----------------
 
-.. image:: https://img.shields.io/gitter/room/translate/pootle.svg?style=flat-square
-   :alt: Join the chat at https://gitter.im/translate/pootle
-   :target: https://gitter.im/translate/pootle
-
-.. image:: https://github.com/translate/translate/workflows/Test/badge.svg
-    :alt: Build Status
-    :target: https://github.com/translate/translate/actions
-
-.. image:: https://img.shields.io/codecov/c/github/translate/translate/master.svg?style=flat-square
-    :alt: Test Coverage
-    :target: https://codecov.io/gh/translate/translate/branch/master
-
-.. image:: https://api.dependabot.com/badges/status?host=github&repo=translate/translate
-    :target: https://app.dependabot.com/accounts/translate/repos/3769696
-    :alt: Requirements
-
-.. image:: https://img.shields.io/pypi/v/translate-toolkit.svg?style=flat-square
+.. image:: https://img.shields.io/pypi/v/translate-toolkit.svg
     :alt: Released version
     :target: https://pypi.python.org/pypi/translate-toolkit/
 
-.. image:: https://img.shields.io/pypi/pyversions/translate-toolkit.svg?style=flat-square
+.. image:: https://readthedocs.org/projects/translate-toolkit/badge/
+    :target: https://docs.translatehouse.org/projects/translate-toolkit/en/latest/
+
+.. image:: https://img.shields.io/pypi/pyversions/translate-toolkit.svg
     :alt: Supported Python versions
     :target: https://pypi.python.org/pypi/translate-toolkit/
 
-.. image:: https://img.shields.io/pypi/l/translate-toolkit.svg?style=flat-square
+.. image:: https://img.shields.io/pypi/l/translate-toolkit.svg
     :target: https://pypi.python.org/pypi/translate-toolkit/
     :alt: License
 
