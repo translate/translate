@@ -50,7 +50,6 @@ localization tools.
    :hidden:
 
    developers/styleguide
-   developers/building
    developers/testing
    developers/contributing
    developers/reporting_bugs
