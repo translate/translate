@@ -189,7 +189,7 @@ FIXME need scripts to generate these formats.
 .. _creating_a_terminology_list_from_your_existing_translations#the_work_has_only_just_begun:
 
 The work has only just begun
-****************************
+============================
 
 The lists you have just created are useful in their own right.  But you most
 likely want to keep growing them, cleaning and improving them.

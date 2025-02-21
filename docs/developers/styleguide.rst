@@ -470,14 +470,14 @@ Function and method arguments
 .. _styleguide-docs:
 
 Documentation
-=============
+-------------
 
 We use Sphinx_ to generate our API and user documentation. Read the
 `reStructuredText primer`_ and `Sphinx documentation`_ as needed.
 
 
 Special roles
--------------
+^^^^^^^^^^^^^
 
 We introduce a number of special roles for documentation:
 
@@ -498,7 +498,7 @@ We introduce a number of special roles for documentation:
 
 
 Code and command line highlighting
-----------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 All code examples and format snippets should be highlighted to make them easier
 to read.  By default Sphinx uses Python highlighting of code snippets (but it
