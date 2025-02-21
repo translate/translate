@@ -3,6 +3,7 @@
 
 # /docs/
 /docs/_build/
+/docs/autoapi/
 
 # Python
 *.py[cod]
