@@ -2,14 +2,10 @@ name: Tests
 
 on:
   push:
-    paths-ignore:
-    - docs/**
     branches-ignore:
     - dependabot/**
     - deepsource**
   pull_request:
-    paths-ignore:
-    - docs/**
 
 permissions:
   contents: read
