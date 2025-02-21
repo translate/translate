@@ -56,15 +56,3 @@ Module list
 ------------
 
 All the modules included in the Translated Toolkit are listed here.
-
-.. toctree::
-   :maxdepth: 3
-
-   convert
-   filters
-   lang
-   misc
-   search
-   services
-   storage
-   tools

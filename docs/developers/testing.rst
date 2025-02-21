@@ -141,7 +141,7 @@ function parameters:
 
 
 Command Line Functional Testing
-================================
+-------------------------------
 
 Functional tests allow us to validate the operation of the tools on the command
 line.  The execution by a user is simulated using reference data files and the
