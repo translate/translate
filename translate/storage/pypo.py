@@ -735,8 +735,7 @@ class pounit(pocommon.pounit):
                 for comment in partcomments:
                     comment = unquotefrompo([comment])
                     comment = comment.removeprefix("_:")
-                    if comment.endswith("\\n"):
-                        comment = comment[: -len("\\n")]
+                    comment = comment.removesuffix("\\n")
                     # Before we used to strip. Necessary in some cases?
                     combinedcomment.append(comment)
                 partcomments = self.quote("_:{}".format("".join(combinedcomment)))

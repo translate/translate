@@ -71,8 +71,7 @@ class LanguageIdentifier:
                     lname = lname[: lname.rindex(extsep)]  # Remove extension if it has
 
                 # Remove trailing '[_-]-utf8' from code
-                if lcode.endswith("-utf8"):
-                    lcode = lcode[: -len("-utf8")]
+                lcode = lcode.removesuffix("-utf8")
                 if lcode.endswith(("-", "_")):
                     lcode = lcode[:-1]
 
