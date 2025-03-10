@@ -109,6 +109,12 @@ JSON_I18NEXT_PLURAL = b"""{
 }
 """
 
+JSON_I18NEXT_NESTED_ARRAY_BEFORE = """{
+    "apps": {
+        "legacy": "app1"
+    }
+}
+"""
 JSON_I18NEXT_NESTED_ARRAY = """{
     "apps": [
         {
@@ -1208,6 +1214,18 @@ class TestI18NextV4Store(test_monolingual.TestMonolingualStore):
         assert store.units[3].getid() == ".apps[1].description"
 
         assert bytes(store).decode() == JSON_I18NEXT_NESTED_ARRAY
+
+        newstore = self.StoreClass()
+        newstore.parse(JSON_I18NEXT_NESTED_ARRAY_BEFORE)
+
+        assert len(newstore.units) == 1
+
+        newstore.addunit(store.units[0])
+        newstore.addunit(store.units[1])
+        newstore.addunit(store.units[2])
+        newstore.addunit(store.units[3])
+
+        assert bytes(newstore).decode() == JSON_I18NEXT_NESTED_ARRAY
 
     def test_new_plural(self):
         EXPECTED = """{
