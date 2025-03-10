@@ -1048,6 +1048,9 @@ class DictUnit(TranslationUnit):
             if not use_list and isinstance(target[key], list):
                 # Convert list to dict if needed
                 target[key] = dict(enumerate(target[key]))
+            elif use_list and isinstance(target[key], dict):
+                # Replace with an empty list if needed (this loses previous content)
+                target[key] = []
             # Handle placeholders
             if target[key] is None:
                 target[key] = default.copy()
