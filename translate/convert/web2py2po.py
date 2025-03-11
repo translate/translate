@@ -24,6 +24,8 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+from ast import literal_eval
+
 from translate.storage import po
 
 
@@ -62,7 +64,7 @@ def convertpy(inputfile, outputfile, encoding="UTF-8", duplicatestyle="msgctxt")
     new_pofile = po.pofile()
     convertor = web2py2po(new_pofile)
 
-    mydict = eval(inputfile.read())
+    mydict = literal_eval(inputfile.read())
     if not isinstance(mydict, dict):
         return 0
 

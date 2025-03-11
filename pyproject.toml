@@ -327,7 +327,6 @@ ignore = [
   "S101",  # CONFIG: Use of `assert` detected
   "S105",  # TODO: Possible hardcoded password assigned
   "S301",  # TODO: `pickle` and modules that wrap it can be unsafe when used to deserialize untrusted data, possible security issue
-  "S307",  # TODO: Use of possibly insecure function; consider using `ast.literal_eval`
   "S311",  # TODO: Standard pseudo-random generators are not suitable for cryptographic purposes
   "S320",  # TODO: Using `lxml` to parse untrusted data is known to be vulnerable to XML attacks
   "S324",  # TODO: Probable use of insecure hash functions in `hashlib`: `md5`
