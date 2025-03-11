@@ -109,7 +109,7 @@ def build_output(units, template_header, template_dict):
 def convert_symbian(
     input_file, output_file, template_file, pot=False, duplicatestyle="msgctxt"
 ):
-    header, units = read_symbian(input_file)
+    _header, units = read_symbian(input_file)
     template_header, template_dict = get_template_dict(template_file)
     output_store = build_output(units, template_header, template_dict)
 

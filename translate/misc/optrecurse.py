@@ -460,11 +460,11 @@ class RecursiveOptionParser(optparse.OptionParser):
     def getoutputoptions(self, options, inputpath, templatepath):
         """Works out which output format and processor method to use..."""
         if inputpath:
-            inputbase, inputext = self.splitinputext(inputpath)
+            _inputbase, inputext = self.splitinputext(inputpath)
         else:
             inputext = None
         if templatepath:
-            templatebase, templateext = self.splittemplateext(templatepath)
+            _templatebase, templateext = self.splittemplateext(templatepath)
         else:
             templateext = None
         if (inputext, templateext) in self.outputoptions:
@@ -544,7 +544,7 @@ class RecursiveOptionParser(optparse.OptionParser):
         Parses the arguments, and runs recursiveprocess with the resulting
         options...
         """
-        (options, args) = self.parse_args()
+        (options, _args) = self.parse_args()
         self.recursiveprocess(options)
 
     def recursiveprocess(self, options):
@@ -833,7 +833,7 @@ class RecursiveOptionParser(optparse.OptionParser):
         """Gets an output filename based on the input filename."""
         if not inputname or not options.recursiveoutput:
             return options.output
-        inputbase, inputext = self.splitinputext(inputname)
+        inputbase, _inputext = self.splitinputext(inputname)
         outputname = inputbase
         if outputformat:
             outputname += os.extsep + outputformat
@@ -841,5 +841,5 @@ class RecursiveOptionParser(optparse.OptionParser):
 
     def isvalidinputname(self, inputname):
         """Checks if this is a valid input filename."""
-        inputbase, inputext = self.splitinputext(inputname)
+        _inputbase, inputext = self.splitinputext(inputname)
         return (inputext in self.inputformats) or ("*" in self.inputformats)

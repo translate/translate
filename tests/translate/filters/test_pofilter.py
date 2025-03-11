@@ -24,7 +24,7 @@ class BaseTestFilter:
         """
         if cmdlineoptions is None:
             cmdlineoptions = []
-        options, args = pofilter.cmdlineparser().parse_args(
+        options, _args = pofilter.cmdlineparser().parse_args(
             [self.filename, *cmdlineoptions]
         )
         checkerclasses = [checks.StandardChecker, checks.StandardUnitChecker]

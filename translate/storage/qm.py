@@ -176,7 +176,7 @@ class qmfile(base.TranslationStore):
                     (raw,) = struct.unpack(
                         ">%ds" % length, input[pos + 4 : pos + 4 + length]
                     )
-                    string, templen = codecs.utf_16_be_decode(raw)
+                    string, _templen = codecs.utf_16_be_decode(raw)
                     if target:
                         target.extra_strings.append(string)
                     else:

@@ -58,7 +58,7 @@ class UnsupportedConversionError(Exception):
 
 
 def get_extension(filename):
-    path, fname = os.path.split(filename)
+    _path, fname = os.path.split(filename)
     ext = fname.split(os.extsep)[-1]
     if ext == fname:
         return None

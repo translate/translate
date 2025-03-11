@@ -166,7 +166,7 @@ def unquotefromdtd(source):
     # The quote characters should be the first and last characters in the
     # string. Of course there could also be quote characters within the string.
     quotechar = source[0]
-    extracted, quotefinished = quote.extractwithoutquotes(
+    extracted, _quotefinished = quote.extractwithoutquotes(
         source, quotechar, quotechar, allowreentry=False
     )
     if quotechar == "'":
@@ -321,7 +321,7 @@ class dtdunit(base.TranslationUnit):
                     self.incomment = True
                     self.continuecomment = False
                     # now work out the type of comment, and save it (remember we're not in the comment yet)
-                    (comment, dummy) = quote.extract(line, "<!--", "-->", None, 0)
+                    comment, _dummy = quote.extract(line, "<!--", "-->", None, 0)
                     if comment.find("LOCALIZATION NOTE") != -1:
                         l = quote.findend(comment, "LOCALIZATION NOTE")
                         while comment[l] == " ":

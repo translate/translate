@@ -217,7 +217,7 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser):
 
     def run(self, argv=None):
         """Parses the command line options and runs the conversion."""
-        (options, args) = self.parse_args(argv)
+        options, _args = self.parse_args(argv)
         self.inputformats = self.filterinputformats(options)
         self.outputoptions = self.filteroutputoptions(options)
         try:
@@ -382,7 +382,7 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
         for inputpath in options.inputarchive:
             if self.isexcluded(options, inputpath):
                 continue
-            top, name = os.path.split(inputpath)
+            _top, name = os.path.split(inputpath)
             if not self.isvalidinputname(name):
                 continue
             inputfiles.append(inputpath)
