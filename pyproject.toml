@@ -298,7 +298,6 @@ ignore = [
   "N816",  # TODO: Variable `theDOMImplementation` in global scope should not be mixedCase
   "N818",  # TODO: Exception name `FilterFailure` should be named with an Error suffix
   "PD011",  # WONTFIX: Use `.to_numpy()` instead of `.values
-  "PERF203",  # TODO: `try`-`except` within a loop incurs performance overhead
   "PLC0415",  # TODO: `import` should be at the top-level of a file
   "PLE2502",  # TODO: Contains control characters that can permit obfuscated code
   "PLR0904",  # TODO: Too many public methods (21 > 20)
@@ -325,7 +324,6 @@ ignore = [
   "RUF003",  # WONTFIX: Comment contains ambiguous
   "RUF012",  # TODO: Mutable class attributes should be annotated with `typing.ClassVar`
   "S101",  # CONFIG: Use of `assert` detected
-  "S105",  # TODO: Possible hardcoded password assigned
   "S301",  # TODO: `pickle` and modules that wrap it can be unsafe when used to deserialize untrusted data, possible security issue
   "S311",  # TODO: Standard pseudo-random generators are not suitable for cryptographic purposes
   "S320",  # TODO: Using `lxml` to parse untrusted data is known to be vulnerable to XML attacks

@@ -581,7 +581,7 @@ class TranslationChecker(UnitChecker):
                 try:
                     if not test(self.str1, str(pluralform)):
                         filterresult = False
-                except FilterFailure as e:
+                except FilterFailure as e:  # noqa: PERF203
                     filterresult = False
                     filtermessages.extend(e.messages)
 
