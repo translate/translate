@@ -74,7 +74,7 @@ jobs:
         path: dist
 
     - name: Publish package distributions to PyPI
-      uses: pypa/gh-action-pypi-publish@v1.2.4
+      uses: pypa/gh-action-pypi-publish@76f52bc884231f62b9a034ebfe128415bbaabdfc # v1.12.4
 
   github-publish:
     if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/')
