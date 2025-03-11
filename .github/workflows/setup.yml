@@ -61,7 +61,7 @@ jobs:
     if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/')
     needs:
     - setup
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       # this permission is mandatory for trusted publishing
       id-token: write
@@ -80,7 +80,7 @@ jobs:
     if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/')
     needs:
     - setup
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       # this permission is mandatory for creating a release
       contents: write
