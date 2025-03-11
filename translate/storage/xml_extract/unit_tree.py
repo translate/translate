@@ -17,6 +17,8 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 
+from __future__ import annotations
+
 from translate.storage import xliff
 
 
@@ -33,7 +35,7 @@ class XPathTree:
         )
 
 
-def _split_xpath_component(xpath_component):
+def _split_xpath_component(xpath_component: str) -> tuple[str, int]:
     """
     Split an xpath component into a tag-index tuple.
 
@@ -42,12 +44,17 @@ def _split_xpath_component(xpath_component):
     """
     lbrac = xpath_component.rfind("[")
     rbrac = xpath_component.rfind("]")
+    if lbrac == -1 or rbrac == -1:
+        try:
+            return "", int(xpath_component)
+        except ValueError:
+            return xpath_component, 0
     tag = xpath_component[:lbrac]
     index = int(xpath_component[lbrac + 1 : rbrac])
     return tag, index
 
 
-def _split_xpath(xpath):
+def _split_xpath(xpath: str) -> list[tuple[str, int]]:
     """
     Split an 'xpath' string separated by / into a reversed list of its components.
 
