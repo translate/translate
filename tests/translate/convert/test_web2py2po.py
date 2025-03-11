@@ -1,3 +1,5 @@
+from ast import literal_eval
+
 from translate.convert import web2py2po
 from translate.storage import po
 
@@ -8,7 +10,7 @@ class TestWEB2PY2PO:
     @staticmethod
     def web2py2po(web2py_source):
         """Helper that converts po source to web2py source without requiring files."""
-        input_web2py = eval(web2py_source)
+        input_web2py = literal_eval(web2py_source)
         new_pofile = po.pofile()
         convertor = web2py2po.web2py2po(new_pofile)
         return convertor.convertstore(input_web2py)
