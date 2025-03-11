@@ -48,17 +48,17 @@ def applytranslation(entity, dtdunit, inputunit, mixedentities):
     for labelsuffix in dtd.labelsuffixes:
         if entity.endswith(labelsuffix):
             if entity in mixedentities:
-                unquotedstr, akey = accesskey.extract(unquotedstr)
+                unquotedstr, _akey = accesskey.extract(unquotedstr)
                 break
     else:
         for akeytype in dtd.accesskeysuffixes:
             if entity.endswith(akeytype):
                 if entity in mixedentities:
-                    label, unquotedstr = accesskey.extract(unquotedstr)
+                    _label, unquotedstr = accesskey.extract(unquotedstr)
                     if not unquotedstr:
                         warnings.warn(f"Could not find accesskey for {entity}")
                         # Use the source language accesskey
-                        label, unquotedstr = accesskey.extract(inputunit.source)
+                        _label, unquotedstr = accesskey.extract(inputunit.source)
                     else:
                         original = dtdunit.source
                         # For the sake of diffs we keep the case of the

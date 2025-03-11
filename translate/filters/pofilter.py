@@ -154,7 +154,7 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
         Parses the arguments, and runs recursiveprocess with the resulting
         options.
         """
-        (options, args) = self.parse_args()
+        (options, _args) = self.parse_args()
 
         if options.filterclass is None:
             checkerclasses = [checks.StandardChecker, checks.StandardUnitChecker]

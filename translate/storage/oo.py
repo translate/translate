@@ -73,7 +73,7 @@ def makekey(ookey, long_keys):
     :rtype: str
     :return: unique ascii identifier
     """
-    project, sourcefile, resourcetype, groupid, localid, platform = ookey
+    project, sourcefile, resourcetype, groupid, localid, _platform = ookey
     sourcefile = sourcefile.replace("\\", "/")
     if long_keys:
         sourcebase = f"{project}/{sourcefile}"

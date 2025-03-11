@@ -39,16 +39,16 @@ def applytranslation(key, propunit, inunit, mixedkeys):
     # handle mixed keys
     for labelsuffix in properties.labelsuffixes:
         if key.endswith(labelsuffix) and key in mixedkeys:
-            value, akey = accesskey.extract(value)
+            value, _akey = accesskey.extract(value)
             break
     else:
         for akeysuffix in properties.accesskeysuffixes:
             if key.endswith(akeysuffix) and key in mixedkeys:
-                label, value = accesskey.extract(value)
+                _label, value = accesskey.extract(value)
                 if not value:
                     warnings.warn(f"Could not find accesskey for {key}")
                     # Use the source language accesskey
-                    label, value = accesskey.extract(inunit.source)
+                    _label, value = accesskey.extract(inunit.source)
                 else:
                     original = propunit.source
                     # For the sake of diffs we keep the case of the

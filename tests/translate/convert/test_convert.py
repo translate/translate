@@ -104,7 +104,7 @@ class TestConvertCommand:
         """Tests getting help (returning the help_string so further tests can be done)."""
         with pytest.raises(SystemExit):
             self.run_command(help=True)
-        help_string, err = capsys.readouterr()
+        help_string, _err = capsys.readouterr()
         # normalize newlines
         help_lines = help_string.splitlines()
         print(help_lines)

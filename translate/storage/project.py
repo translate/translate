@@ -141,7 +141,7 @@ class Project:
         conv_options = {"in_fname": input_fname}
 
         if input_fname in self.store.convert_map:
-            out_name, tmpl_name = self.store.convert_map[input_fname]
+            out_name, _tmpl_name = self.store.convert_map[input_fname]
             if out_name in self.store._files and options.get("overwrite_output", True):
                 self.remove_file(out_name)
 

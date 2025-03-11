@@ -229,7 +229,7 @@ def getobject(
         hiddenclasses=hiddenclasses,
     )
     if os.path.exists(storefilename) or not getattr(storefile, "closed", True):
-        name, ext = os.path.splitext(storefilename)
+        _name, ext = os.path.splitext(storefilename)
         ext = ext[len(os.path.extsep) :].lower()
         if ext in decompressclass:
             file = import_class(*decompressclass[ext])

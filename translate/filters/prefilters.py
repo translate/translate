@@ -70,7 +70,7 @@ def filteraccelerators(accelmarker):
         Modifies the accelerators in *str1* marked with the given
         *accelmarker*, using a given *acceptlist* filter.
         """
-        acclocs, badlocs = decoration.findaccelerators(str1, accelmarker, acceptlist)
+        acclocs, _badlocs = decoration.findaccelerators(str1, accelmarker, acceptlist)
         fstr1, pos = "", 0
         for accelstart, accelerator in acclocs:
             fstr1 += str1[pos:accelstart]

@@ -271,7 +271,7 @@ class ProjectStore:
 
     def _fix_type_filename(self, ftype, fname):
         """Strip the path from the filename and prepend the correct prefix."""
-        path, fname = os.path.split(fname)
+        fname = os.path.basename(fname)
         return self.TYPE_INFO["f_prefix"][ftype] + fname
 
     def _generate_settings(self):

@@ -149,7 +149,7 @@ class Document(minidom.Document):
         return e
 
     def createElementNS(self, namespaceURI, qualifiedName):
-        prefix, localName = minidom._nssplit(qualifiedName)
+        prefix, _localName = minidom._nssplit(qualifiedName)
         e = Element(qualifiedName, namespaceURI, prefix)
         e.ownerDocument = self
         return e
@@ -245,7 +245,7 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
         def end_element_handler(self, name):
             curNode = self.curNode
             if " " in name:
-                uri, localname, prefix, qname = expatbuilder._parse_ns_name(self, name)
+                uri, localname, prefix, _qname = expatbuilder._parse_ns_name(self, name)
                 assert curNode.namespaceURI == uri, (
                     "element stack messed up! (namespace)"
                 )

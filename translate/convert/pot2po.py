@@ -199,7 +199,7 @@ def _unit_post_merge_pounit(input_unit, input_store, output_store, template_stor
     if input_unit.hasplural() and len(input_unit.target) == 0:
         # untranslated plural unit; Let's ensure that we have the correct
         # number of plural forms:
-        nplurals, plural = output_store.getheaderplural()
+        nplurals, _plural = output_store.getheaderplural()
         if nplurals and nplurals.isdigit() and nplurals != "2":
             input_unit.target = multistring([""] * int(nplurals))
 

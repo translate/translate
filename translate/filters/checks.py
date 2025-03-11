@@ -1240,12 +1240,12 @@ class StandardChecker(TranslationChecker):
             counter2 = decoration.countaccelerators(
                 accelmarker, self.config.lang.validaccel
             )
-            count1, countbad1 = counter1(str1)
+            count1, _countbad1 = counter1(str1)
             count2, countbad2 = counter2(str2)
             getaccel = decoration.getaccelerators(
                 accelmarker, self.config.lang.validaccel
             )
-            accel2, bad2 = getaccel(str2)
+            _accel2, bad2 = getaccel(str2)
 
             if count1 == count2:
                 continue

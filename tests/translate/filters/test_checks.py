@@ -20,7 +20,7 @@ def check_category(filterfunction):
 
 def passes(filterfunction, str1, str2):
     """Returns whether the given strings pass on the given test, handling FilterFailures."""
-    str1, str2, no_message = strprep(str1, str2)
+    str1, str2, _no_message = strprep(str1, str2)
     try:
         filterresult = filterfunction(str1, str2)
     except checks.FilterFailure:
