@@ -17,7 +17,7 @@ docs = [
   "furo==2024.8.6; python_version >= '3.11'",
   "matplotlib==3.10.1; python_version >= '3.11'",
   "sphinx-copybutton==0.5.2; python_version >= '3.11'",
-  "Sphinx==8.2.0; python_version >= '3.11'",
+  "Sphinx==8.2.3; python_version >= '3.11'",
   "sphinxext-opengraph==0.9.1; python_version >= '3.11'"
 ]
 lint = [
