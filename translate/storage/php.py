@@ -128,7 +128,7 @@ class PHPLexer(FilteredLexer):
             token_type = self.tokens[self.pos].type
             token_value = self.tokens[self.pos].value
             self.pos += 1
-            if token_type == "WHITESPACE":
+            if token_type == "WHITESPACE":  # noqa: S105
                 if "\n" in token_value:
                     break
                 continue
