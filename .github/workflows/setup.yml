@@ -18,12 +18,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5
       with:
         python-version: '3.13'
-    - uses: astral-sh/setup-uv@v5
+    - uses: astral-sh/setup-uv@f94ec6bedd8674c4426838e6b50417d36b6ab231 # v5
       with:
         enable-cache: true
         cache-dependency-glob: ''
@@ -50,10 +50,10 @@ jobs:
         uv pip install dist/translate_toolkit*.whl
         moz2po --help
         python ./test-ttk-release-whl/lib/python*/site-packages/translate/lang/identify.py README.rst
-    - uses: codecov/codecov-action@v5
+    - uses: codecov/codecov-action@0565863a31f2c772f9f0395002a31e3f06189574 # v5
       with:
         name: setup
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4
       with:
         path: ./dist/*
 
@@ -66,7 +66,7 @@ jobs:
       # this permission is mandatory for trusted publishing
       id-token: write
     steps:
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4
       with:
         # unpacks default artifact into dist/
         # if `name: artifact` is omitted, the action will create extra parent dir
@@ -85,12 +85,12 @@ jobs:
       # this permission is mandatory for creating a release
       contents: write
     steps:
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4
       with:
         # unpacks default artifact into dist/
         # if `name: artifact` is omitted, the action will create extra parent dir
         name: artifact
         path: dist
-    - uses: ncipollo/release-action@v1
+    - uses: ncipollo/release-action@440c8c1cb0ed28b9f43e4d1d670870f059653174 # v1
       with:
         artifacts: dist/*
