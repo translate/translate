@@ -165,7 +165,7 @@ class TikiStore(base.TranslationStore):
         if isinstance(input, bytes):
             input = BytesIO(input)
 
-        split_regex = re.compile(r"^(?:// )?\"(.*)\" => \"(.*)\",$", re.UNICODE)
+        split_regex = re.compile(r"^(?:// )?\"(.*?)\" => \"(.*?)\",$", re.UNICODE)
 
         try:
             location = "translated"
