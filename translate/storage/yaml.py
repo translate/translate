@@ -192,7 +192,9 @@ class RubyYAMLUnit(YAMLUnit):
         strings = self.sync_plural_count(self.target, tags)
 
         # Ensure the correct order of keys according to cldr_plural_categories
-        ordered_data = {key: strings.get(key) for key in cldr_plural_categories if key in strings}
+        ordered_data = {
+            key: strings.get(key) for key in cldr_plural_categories if key in strings
+        }
 
         return CommentedMap(ordered_data)
 
@@ -224,7 +226,9 @@ class RubyYAMLFile(YAMLFile):
         # Does this look like a plural?
         if data and all(x in cldr_plural_categories for x in data):
             # Ensure we have correct plurals ordering.
-            ordered_values = {key: data[key] for key in cldr_plural_categories if key in data}
+            ordered_values = {
+                key: data[key] for key in cldr_plural_categories if key in data
+            }
             data = CommentedMap(ordered_values)  # Reorder and create CommentedMap
 
         # Handle normal dict
@@ -237,7 +241,7 @@ class RubyYAMLFile(YAMLFile):
 
         units = self.preprocess(self._original)
         self.serialize_units(units)
-        
+
         # Ensure the correct order is maintained before serialization
         self._original = self.reorder_plural_categories(self._original)
 
@@ -247,9 +251,15 @@ class RubyYAMLFile(YAMLFile):
         """Reorders the plural categories to match cldr_plural_categories."""
         if isinstance(data, dict):
             for key, value in data.items():
-                if isinstance(value, dict) and all(k in cldr_plural_categories for k in value):
+                if isinstance(value, dict) and all(
+                    k in cldr_plural_categories for k in value
+                ):
                     # Reorder the keys in the dictionary to match cldr_plural_categories
-                    ordered = {key: value[key] for key in cldr_plural_categories if key in value}
+                    ordered = {
+                        key: value[key]
+                        for key in cldr_plural_categories
+                        if key in value
+                    }
                     data[key] = CommentedMap(ordered)
                 else:
                     # Recursively reorder nested dictionaries
