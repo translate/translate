@@ -191,7 +191,10 @@ class RubyYAMLUnit(YAMLUnit):
         # Sync plural_strings elements to plural_tags count.
         strings = self.sync_plural_count(self.target, tags)
 
-        return CommentedMap(zip(tags, strings))
+        # Ensure the correct order of keys according to cldr_plural_categories
+        ordered_data = {key: strings.get(key) for key in cldr_plural_categories if key in strings}
+
+        return CommentedMap(ordered_data)
 
 
 class RubyYAMLFile(YAMLFile):
@@ -221,14 +224,34 @@ class RubyYAMLFile(YAMLFile):
         # Does this look like a plural?
         if data and all(x in cldr_plural_categories for x in data):
             # Ensure we have correct plurals ordering.
-            values = [data[item] for item in cldr_plural_categories if item in data]
-
-            # Skip blank values (all plurals are None)
-            if not all(value is None for value in values):
-                # Use blank string insted of None here
-                yield (prev, multistring([value or "" for value in values]))
-
-            return
+            ordered_values = {key: data[key] for key in cldr_plural_categories if key in data}
+            data = CommentedMap(ordered_values)  # Reorder and create CommentedMap
 
         # Handle normal dict
         yield from super()._parse_dict(data, prev)
+
+    def serialize(self, out):
+        # Always start with valid root even if original file was empty
+        if self._original is None:
+            self._original = self.get_root_node()
+
+        units = self.preprocess(self._original)
+        self.serialize_units(units)
+        
+        # Ensure the correct order is maintained before serialization
+        self._original = self.reorder_plural_categories(self._original)
+
+        self.yaml.dump(self._original, out)
+
+    def reorder_plural_categories(self, data):
+        """Reorders the plural categories to match cldr_plural_categories."""
+        if isinstance(data, dict):
+            for key, value in data.items():
+                if isinstance(value, dict) and all(k in cldr_plural_categories for k in value):
+                    # Reorder the keys in the dictionary to match cldr_plural_categories
+                    ordered = {key: value[key] for key in cldr_plural_categories if key in value}
+                    data[key] = CommentedMap(ordered)
+                else:
+                    # Recursively reorder nested dictionaries
+                    self.reorder_plural_categories(value)
+        return data
