@@ -49,7 +49,10 @@ class YAMLUnit(base.DictUnit):
         # Ensure we have ID (for serialization)
         if source:
             self.source = source
-            self._id = hex(hash(source))
+            if isinstance(source, dict):
+                self._id = hex(hash(str(source)))  # ✅ Convert dict to a hashable string
+            else:
+                self._id = hex(hash(source))
         else:
             self._id = str(uuid.uuid4())
         super().__init__(source)
@@ -183,20 +186,11 @@ class YAMLFile(base.DictStore):
 
 class RubyYAMLUnit(YAMLUnit):
     def convert_target(self):
-        if not isinstance(self.target, multistring):
-            return self.target
-
-        tags = plural_tags.get(self._store.targetlanguage, plural_tags["en"])
-
-        # Sync plural_strings elements to plural_tags count.
-        strings = self.sync_plural_count(self.target, tags)
-
-        # Ensure the correct order of keys according to cldr_plural_categories
-        ordered_data = {
-            key: strings.get(key) for key in cldr_plural_categories if key in strings
-        }
-
-        return CommentedMap(ordered_data)
+        """Ensure plural messages are stored as a single unit."""
+        if isinstance(self.target, dict) and all(k in cldr_plural_categories for k in self.target):
+            return CommentedMap(self.target)  # ✅ Safely convert plurals
+        
+        return self.target  # ✅ Return normally for non-plurals
 
 
 class RubyYAMLFile(YAMLFile):
@@ -223,16 +217,25 @@ class RubyYAMLFile(YAMLFile):
         return result
 
     def _parse_dict(self, data, prev):
-        # Does this look like a plural?
-        if data and all(x in cldr_plural_categories for x in data):
-            # Ensure we have correct plurals ordering.
-            ordered_values = {
-                key: data[key] for key in cldr_plural_categories if key in data
-            }
-            data = CommentedMap(ordered_values)  # Reorder and create CommentedMap
+        """Ensure plurals are stored as a single unit and handle partial blanks properly."""
+        if isinstance(data, dict):
+            plural_keys = [k for k in data if k in cldr_plural_categories]
+            
+            # ✅ If all plural categories are present but some are empty, we still need the unit
+            if plural_keys and len(plural_keys) == len(data):
+                if any(v is not None for v in data.values()):
+                    # At least one non-empty value, so create a unit
+                    yield (prev, {k: data[k] for k in cldr_plural_categories if k in data})
+                else:
+                    # If all are empty or None, skip creating a unit
+                    return
+            else:
+                # If it's not a complete plural group, proceed normally
+                yield from super()._parse_dict(data, prev)
+        else:
+            # Normal case for non-dictionaries
+            yield from super()._parse_dict(data, prev)
 
-        # Handle normal dict
-        yield from super()._parse_dict(data, prev)
 
     def serialize(self, out):
         # Always start with valid root even if original file was empty
