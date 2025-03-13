@@ -23,8 +23,7 @@ import uuid
 from ruamel.yaml import YAML, YAMLError
 from ruamel.yaml.comments import CommentedMap, TaggedScalar
 
-from translate.lang.data import cldr_plural_categories, plural_tags
-from translate.misc.multistring import multistring
+from translate.lang.data import cldr_plural_categories
 from translate.storage import base
 
 
@@ -50,7 +49,9 @@ class YAMLUnit(base.DictUnit):
         if source:
             self.source = source
             if isinstance(source, dict):
-                self._id = hex(hash(str(source)))  # ✅ Convert dict to a hashable string
+                self._id = hex(
+                    hash(str(source))
+                )  # ✅ Convert dict to a hashable string
             else:
                 self._id = hex(hash(source))
         else:
@@ -187,9 +188,11 @@ class YAMLFile(base.DictStore):
 class RubyYAMLUnit(YAMLUnit):
     def convert_target(self):
         """Ensure plural messages are stored as a single unit."""
-        if isinstance(self.target, dict) and all(k in cldr_plural_categories for k in self.target):
+        if isinstance(self.target, dict) and all(
+            k in cldr_plural_categories for k in self.target
+        ):
             return CommentedMap(self.target)  # ✅ Safely convert plurals
-        
+
         return self.target  # ✅ Return normally for non-plurals
 
 
@@ -220,12 +223,15 @@ class RubyYAMLFile(YAMLFile):
         """Ensure plurals are stored as a single unit and handle partial blanks properly."""
         if isinstance(data, dict):
             plural_keys = [k for k in data if k in cldr_plural_categories]
-            
+
             # ✅ If all plural categories are present but some are empty, we still need the unit
             if plural_keys and len(plural_keys) == len(data):
                 if any(v is not None for v in data.values()):
                     # At least one non-empty value, so create a unit
-                    yield (prev, {k: data[k] for k in cldr_plural_categories if k in data})
+                    yield (
+                        prev,
+                        {k: data[k] for k in cldr_plural_categories if k in data},
+                    )
                 else:
                     # If all are empty or None, skip creating a unit
                     return
@@ -235,7 +241,6 @@ class RubyYAMLFile(YAMLFile):
         else:
             # Normal case for non-dictionaries
             yield from super()._parse_dict(data, prev)
-
 
     def serialize(self, out):
         # Always start with valid root even if original file was empty
