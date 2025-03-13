@@ -540,7 +540,7 @@ class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
 """
         store = self.StoreClass()
         store.parse(data)
-        assert len(store.units) == 2
+        assert len(store.units) == 1
         assert bytes(store) == data.encode("ascii")
 
     def test_empty(self):
