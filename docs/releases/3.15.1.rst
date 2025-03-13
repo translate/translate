@@ -1,0 +1,41 @@
+Translate Toolkit 3.15.1
+************************
+
+*Released on 13 March 2025*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- JSON
+
+  - Better handle changing unit types.
+
+- web2py
+
+  - Synced parsing logic with web2py.
+
+- TIKI
+
+  - Simplified parser regular expression.
+
+- XLIFF
+
+  - Gracefully handle non-standard locations.
+
+Other changes
+-------------
+
+- Dropped unused Java debugging code.
+- Documentation updates.
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař
