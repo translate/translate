@@ -1,5 +1,6 @@
 from copy import copy, deepcopy
 
+import pytest
 from lxml import etree
 
 from translate.misc.multistring import multistring
@@ -530,6 +531,21 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         self.__check_parse(
             'No file %1$s found in archive "%2$s"',
             r"""<string name="restore_backup_file_not_found">No file %1$s found in archive \"%2$s\"</string>""",
+        )
+
+    @pytest.mark.xfail(reason="Currently undefined behavior")
+    def test_parse_quoted_xml(self):
+        self.__check_parse(
+            """Your phone needs to use Bluetooth to securely collect and share IDs with other phones that are nearby.
+
+<g example="Corona-Warn">%1$s</g> can notify you if you were exposed to someone who reported to be diagnosed positive.
+
+The date, duration, and signal strength associated with an exposure will be shared with the app.""",
+            """<string name="exposure_confirm_start_summary">"Your phone needs to use Bluetooth to securely collect and share IDs with other phones that are nearby.
+
+<g example="Corona-Warn">%1$s</g> can notify you if you were exposed to someone who reported to be diagnosed positive.
+
+The date, duration, and signal strength associated with an exposure will be shared with the app."</string>""",
         )
 
 
