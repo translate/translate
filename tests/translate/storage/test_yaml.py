@@ -615,8 +615,8 @@ class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
         data = """en:
   string:
   message:
-    one: ''
-    other:
+    other: ''
+    one:
 """
         store = self.StoreClass()
         store.parse(data)
@@ -626,7 +626,18 @@ class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
             == """en:
   string:
   message:
-    one: ''
+    one:
     other: ''
 """
         )
+
+    def test_ruby_plural_no_blank(self):
+        data = """en:
+  string:
+  message:
+    one: value 1
+    other: value 2
+"""
+        store = self.StoreClass()
+        store.parse(data)
+        assert bytes(store).decode() == data
