@@ -34,7 +34,7 @@ test = [
 ]
 types = [
   "setuptools>=61.2",
-  "types-lxml==2025.3.4"
+  "types-lxml==2025.3.30"
 ]
 
 [project]
