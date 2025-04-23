@@ -635,3 +635,26 @@ class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
     other: ''
 """
         )
+
+    def test_bug_ruby_remove_zero_few_and_mix_others(self):
+        data = """en:
+  string:
+  message:
+    one: value 1
+    other: value 2
+    zero: value 3
+    few: value 4
+"""
+        store = self.StoreClass()
+        store.parse(data)
+        assert len(store.units) == 1
+        assert store.units[0].target == multistring(["value 1", "value 2"])
+        assert (
+            bytes(store).decode()
+            == """en:
+  string:
+  message:
+    one: value 1
+    other: value 2
+"""
+        )
