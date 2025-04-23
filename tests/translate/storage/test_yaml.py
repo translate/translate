@@ -1,6 +1,7 @@
 import pytest
 import ruamel.yaml
 
+from translate.misc.multistring import multistring
 from translate.storage import base, yaml
 
 from . import test_monolingual
@@ -541,6 +542,9 @@ class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
         store = self.StoreClass()
         store.parse(data)
         assert len(store.units) == 1
+        assert store.units[0].target == multistring(
+            ["There is one message", "There are %{count} messages"]
+        )
         assert bytes(store) == data.encode("ascii")
 
     def test_empty(self):
@@ -620,6 +624,7 @@ class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
 """
         store = self.StoreClass()
         store.parse(data)
+        assert store.units[0].target == multistring(["", ""])
         assert len(store.units) == 1
         assert (
             bytes(store).decode()

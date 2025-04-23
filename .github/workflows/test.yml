@@ -40,7 +40,7 @@ jobs:
       with:
         allow-prereleases: true
         python-version: ${{ matrix.python-version }}
-    - uses: astral-sh/setup-uv@0c5e2b8115b80b4c7c5ddf6ffdd634974642d182 # v5.4.1
+    - uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5.4.2
       with:
         enable-cache: true
         cache-dependency-glob: ''
@@ -72,6 +72,6 @@ jobs:
         make test-functional
     - name: Coverage
       run: uv run coverage xml
-    - uses: codecov/codecov-action@0565863a31f2c772f9f0395002a31e3f06189574 # v5.4.0
+    - uses: codecov/codecov-action@ad3126e916f78f00edff4ed0317cf185271ccc2d # v5.4.2
       with:
         name: ${{ runner.os }}, Python ${{ matrix.python-version }}, ${{ matrix.requirements }}

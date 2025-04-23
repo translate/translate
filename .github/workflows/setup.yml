@@ -23,7 +23,7 @@ jobs:
       uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5.5.0
       with:
         python-version: '3.13'
-    - uses: astral-sh/setup-uv@0c5e2b8115b80b4c7c5ddf6ffdd634974642d182 # v5.4.1
+    - uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5.4.2
       with:
         enable-cache: true
         cache-dependency-glob: ''
@@ -50,7 +50,7 @@ jobs:
         uv pip install dist/translate_toolkit*.whl
         moz2po --help
         python ./test-ttk-release-whl/lib/python*/site-packages/translate/lang/identify.py README.rst
-    - uses: codecov/codecov-action@0565863a31f2c772f9f0395002a31e3f06189574 # v5.4.0
+    - uses: codecov/codecov-action@ad3126e916f78f00edff4ed0317cf185271ccc2d # v5.4.2
       with:
         name: setup
     - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

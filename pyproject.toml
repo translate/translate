@@ -64,7 +64,7 @@ classifiers = [
 ]
 dependencies = [
   "cwcwidth>=0.1.10,<0.2",
-  "lxml>=5.2.0,<5.4"
+  "lxml>=5.2.0,<5.5"
 ]
 description = "Tools and API for translation and localization engineering."
 dynamic = [
