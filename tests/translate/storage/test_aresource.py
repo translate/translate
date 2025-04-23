@@ -1,6 +1,5 @@
 from copy import copy, deepcopy
 
-import pytest
 from lxml import etree
 
 from translate.misc.multistring import multistring
@@ -507,11 +506,11 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
 
     def test_parse_unparied_quote(self):
         self.__check_parse(
-            """You can view it here soon: %s""",
+            "You can view it here soon: %s",
             """<string name="cmd_camera_response_success">"You can view it here soon: %s</string>""",
         )
         self.__check_parse(
-            'You can view it here soon: %s"',
+            "You can view it here soon: %s",
             """<string name="cmd_camera_response_success">You can view it here soon: %s"</string>""",
         )
 
@@ -533,7 +532,6 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
             r"""<string name="restore_backup_file_not_found">No file %1$s found in archive \"%2$s\"</string>""",
         )
 
-    @pytest.mark.xfail(reason="Currently undefined behavior")
     def test_parse_quoted_xml(self):
         self.__check_parse(
             """Your phone needs to use Bluetooth to securely collect and share IDs with other phones that are nearby.

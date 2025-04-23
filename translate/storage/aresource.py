@@ -73,6 +73,7 @@ class DecodingXMLParser:
         self.character_data = False
         self.raw_string = True
         self.in_string = False
+        self.inside_quoted = False
         self.do_cleanup = False
         self.depth = 0
         self.parser = parser = ParserCreate()
@@ -105,16 +106,27 @@ class DecodingXMLParser:
         # All others, remove, like Android does as well.
         return ""
 
-    @staticmethod
-    def strip_part(text: str) -> str:
+    def strip_part(self, text: str) -> tuple[str, bool]:
+        # Detect leading quote
         if text.startswith('"'):
-            # Missing closing quote is gracefully ignored
-            return text.removeprefix('"').removesuffix('"')
-        # Consolidate whitespace
-        return WHITESPACE_RE.sub(" ", text)
+            text = text[1:]
+            self.inside_quoted ^= True
 
-    @classmethod
-    def process_string(cls, content: str) -> tuple[str, bool, bool]:
+        # Check if whitespace should be stripped
+        strip_whitespace = not self.inside_quoted
+
+        # Detect trailing quote
+        if text.endswith('"') and not text.endswith('\\"'):
+            text = text[:-1]
+            self.inside_quoted ^= True
+
+        # Consolidate whitespace if needed
+        if strip_whitespace:
+            text = WHITESPACE_RE.sub(" ", text)
+
+        return text, strip_whitespace
+
+    def process_string(self, content: str) -> tuple[str, bool, bool]:
         # Skip processing for a blank string
         if not content:
             return "", False, False
@@ -123,18 +135,25 @@ class DecodingXMLParser:
         parts = [part for part in QUOTED_STRING.split(content) if part]
 
         # Detect possible cleanups
-        cleanup_start = not parts[0].startswith('"')
-        cleanup_end = not parts[-1].startswith('"')
+        cleanup_start = False
+        cleanup_end = False
 
         # Collapse whitespace
-        stripped_parts = [cls.strip_part(part) for part in parts]
+        stripped_parts: list[str] = []
+        for i, part in enumerate(parts):
+            stripped, was_stripped = self.strip_part(part)
+            if i == 0:
+                cleanup_start = was_stripped
+            cleanup_end = was_stripped and not self.inside_quoted
+            stripped_parts.append(stripped)
+
         # Merge this back to a single string
         text = "".join(stripped_parts)
 
         # Handle unicode escapes
-        unescaped_text = UNICODE_ESCAPE.sub(cls.decode_unicode_escapes, text)
+        unescaped_text = UNICODE_ESCAPE.sub(self.decode_unicode_escapes, text)
         # Handle other escapes
-        unescaped_text = CHAR_ESCAPE.sub(cls.decode_escapes, unescaped_text)
+        unescaped_text = CHAR_ESCAPE.sub(self.decode_escapes, unescaped_text)
 
         # Detect escaping at the start and end of a string (we actually care only for
         # whitespace escapes, but detecting more does not matter)
@@ -213,8 +232,7 @@ class EncodingXMLParser(DecodingXMLParser):
     EMIT_DEPTH = 0
     FOREGIN_DTD = False
 
-    @staticmethod
-    def process_string(text: str) -> tuple[str, bool, bool]:
+    def process_string(self, text: str) -> tuple[str, bool, bool]:
         return (
             AndroidResourceUnit.escape(text, quote_wrapping_whitespaces=False),
             False,
@@ -319,22 +337,21 @@ class AndroidResourceUnit(base.TranslationUnit):
 
     def get_xml_text_value(self, xmltarget):
         raw_xml = etree.tostring(xmltarget, encoding="unicode", with_tail=False)
+        # Use decoding parser to keep XML entitities, CDATA while processing Android escaping
+        parser = DecodingXMLParser(raw_xml)
+
         # Unescape as plain text in case there is no XML markup. Ufortunately
         # CDATA elements are not listed as childs in lxml, so test for it in raw XML.
         if len(xmltarget) == 0 and "<![CDATA[" not in raw_xml:
             if xmltarget.text is None:
                 return ""
-            text, cleanup_start, cleanup_end = DecodingXMLParser.process_string(
-                xmltarget.text
-            )
+            text, cleanup_start, cleanup_end = parser.process_string(xmltarget.text)
             if cleanup_start:
                 text = text.lstrip()
             if cleanup_end:
                 text = text.rstrip()
             return text
 
-        # Use decoding parser to keep XML entitities, CDATA while processing Android escaping
-        parser = DecodingXMLParser(raw_xml)
         return parser.parse()
 
     def set_xml_text_plain(self, target, xmltarget):
