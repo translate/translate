@@ -1069,7 +1069,7 @@ class FluentUnit(base.TranslationUnit):
             # This is unexpected since if the user tried to insert extra
             # Entries, they would have likely given us Junk above since we
             # indented *all* lines, which would prevent starting a new entry.
-            return "Unexpectedly found {len(res.body)} fluent Entries"
+            return f"Unexpectedly found {len(res.body)} fluent Entries"
         entry = res.body[0]
         if self.fluent_type == "Term" and not isinstance(entry, ast.Term):
             # Also unexpected since we started with "-tmp =", which starts a new
