@@ -1,0 +1,27 @@
+Translate Toolkit 3.15.2
+************************
+
+*Released on 25 April 2025*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- YAML 
+
+  - Better handle Ruby plurals.
+
+- Android
+
+  - Improved quotes handling.
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař
