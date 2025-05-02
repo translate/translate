@@ -23,6 +23,7 @@ for examples and usage instructions.
 """
 
 import codecs
+import re
 from collections.abc import Iterable
 
 from translate.convert import convert
@@ -131,9 +132,14 @@ class rerc:
             # append translation if available, otherwise use as is
             if msgid in self.inputdict:
                 if name in self.inputdict[msgid]:
-                    tmp.append('"' + self.inputdict[msgid][name] + '"')
+                    t = self.inputdict[msgid][name]
                 elif EMPTY_LOCATION in self.inputdict[msgid]:
-                    tmp.append('"' + self.inputdict[msgid][EMPTY_LOCATION] + '"')
+                    t = self.inputdict[msgid][EMPTY_LOCATION]
+
+                # escape any embedded double quotes as two double quotes
+                t = re.sub(r'(?<!")"(?!")', r'""', t)
+
+                tmp.append('"' + t + '"')
             elif i > 1:
                 tmp.append(" ".join(c[1:i]))
 
@@ -183,9 +189,14 @@ class rerc:
             tmp = c[1:]
             if msgid in self.inputdict:
                 if name in self.inputdict[msgid]:
-                    tmp = ['"' + self.inputdict[msgid][name] + '"']
+                    tmp = self.inputdict[msgid][name]
                 elif EMPTY_LOCATION in self.inputdict[msgid]:
-                    tmp = ['"' + self.inputdict[msgid][EMPTY_LOCATION] + '"']
+                    tmp = self.inputdict[msgid][EMPTY_LOCATION]
+
+                if isinstance(tmp, str):
+                    # escape any embedded double quotes as two double quotes
+                    tmp = re.sub(r'(?<!")"(?!")', r'""', tmp)
+                    tmp = ['"' + tmp + '"']
 
             for part in tmp[:-1]:
                 yield part
