@@ -689,7 +689,7 @@ plural_tags = {
     "per": ["one", "other"],
     "pes": ["one", "other"],
     "pk": ["one", "other"],
-    "pl": ["one", "few", "many"],
+    "pl": ["one", "few", "many", "other"],
     "plk": ["one", "few", "many"],
     "plt": ["one", "other"],
     "pnb": ["one", "other"],
