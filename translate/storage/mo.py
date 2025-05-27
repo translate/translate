@@ -39,6 +39,8 @@ it is always on and does produce sometimes different results to Gettext
 in very small files.
 """
 
+from __future__ import annotations
+
 import array
 import re
 import struct
@@ -239,18 +241,10 @@ class mofile(poheader.poheader, base.TranslationStore):
             out.write(ids)
             out.write(strs)
 
-    def parse(self, input):
-        """Parses the given file or file source string."""
-        if hasattr(input, "name"):
-            self.filename = input.name
-        elif not getattr(self, "filename", ""):
-            self.filename = ""
-        if hasattr(input, "read"):
-            mosrc = input.read()
-            input.close()
-            input = mosrc
-        (little,) = struct.unpack("<L", input[:4])
-        (big,) = struct.unpack(">L", input[:4])
+    @staticmethod
+    def parse_header(content: list[bytes]) -> tuple[str, int, int, int, int, int]:
+        (little,) = struct.unpack("<L", content[:4])
+        (big,) = struct.unpack(">L", content[:4])
         if little == MO_MAGIC_NUMBER:
             endian = "<"
         elif big == MO_MAGIC_NUMBER:
@@ -264,9 +258,43 @@ class mofile(poheader.poheader, base.TranslationStore):
             lenkeys,
             startkey,
             startvalue,
+            sizehash,
+            offsethash,
+        ) = struct.unpack(f"{endian}LHHiiiii", content[: (7 * 4)])
+        return (
+            endian,
+            version_maj,
+            version_min,
+            lenkeys,
+            startkey,
+            startvalue,
+            sizehash,
+            offsethash,
+        )
+
+    def parse(self, input):
+        """Parses the given file or file source string."""
+        if hasattr(input, "name"):
+            self.filename = input.name
+        elif not getattr(self, "filename", ""):
+            self.filename = ""
+        content: list[bytes]
+        if hasattr(input, "read"):
+            mosrc = input.read()
+            input.close()
+            content = mosrc
+        else:
+            content = input
+        (
+            endian,
+            version_maj,
+            version_min,
+            lenkeys,
+            startkey,
+            startvalue,
             _sizehash,
             _offsethash,
-        ) = struct.unpack(f"{endian}LHHiiiii", input[: (7 * 4)])
+        ) = self.parse_header(content)
         if version_maj >= 1:
             raise base.ParseError(
                 """Unable to process version %d.%d MO files"""
@@ -276,19 +304,19 @@ class mofile(poheader.poheader, base.TranslationStore):
             nextkey = startkey + (i * 2 * 4)
             nextvalue = startvalue + (i * 2 * 4)
             klength, koffset = struct.unpack(
-                f"{endian}ii", input[nextkey : nextkey + (2 * 4)]
+                f"{endian}ii", content[nextkey : nextkey + (2 * 4)]
             )
             vlength, voffset = struct.unpack(
-                f"{endian}ii", input[nextvalue : nextvalue + (2 * 4)]
+                f"{endian}ii", content[nextvalue : nextvalue + (2 * 4)]
             )
-            source = input[koffset : koffset + klength]
+            source = content[koffset : koffset + klength]
             context = None
             if b"\x04" in source:
                 context, source = source.split(b"\x04")
             # Still need to handle KDE comments
             if not source:
                 charset = re.search(
-                    rb"charset=([^\s]+)", input[voffset : voffset + vlength]
+                    rb"charset=([^\s]+)", content[voffset : voffset + vlength]
                 )
                 if charset:
                     self.encoding = charset.group(1).decode()
@@ -296,7 +324,7 @@ class mofile(poheader.poheader, base.TranslationStore):
             target = multistring(
                 [
                     s.decode(self.encoding)
-                    for s in input[voffset : voffset + vlength].split(b"\0")
+                    for s in content[voffset : voffset + vlength].split(b"\0")
                 ]
             )
             newunit = mounit(source)
