@@ -67,7 +67,7 @@ def _split_xpath(xpath: str) -> list[tuple[str, int]]:
     the first component.
     """
     if xliff.ID_SEPARATOR in xpath:
-        xpath = xpath.split(xliff.ID_SEPARATOR)[-1]
+        xpath = xpath.rsplit(xliff.ID_SEPARATOR, 1)[-1]
     components = xpath.split("/")
     components = [_split_xpath_component(component) for component in components]
     return list(reversed(components))
