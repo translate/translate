@@ -83,6 +83,26 @@ class tbxunit(lisa.LISAunit):
         if origin and origin not in {"pos", "definition"}:
             note.set("from", origin)
 
+    def _getnotenodes(self, origin=None):
+        return self.xmlelement.iterdescendants(self._get_origin_element(origin))
+
+    def _getnodetext(self, node):
+        return lisa.getText(node, getXMLspace(self.xmlelement, self._default_xml_space))
+
+    def _is_administrative_status_term_node(self, node) -> bool:
+        """ Checks if the node is a `<termNote type="administrativeStatus">` node """
+        return (
+            self.namespaced("termNote") == node.tag
+            and node.get("type") == "administrativeStatus"
+        )
+
+    def _is_translation_needed_node(self, node) -> bool:
+        """ Checks if the node is a `<descrip type="Translation needed">` node """
+        return (
+            self.namespaced("descrip") == node.tag
+            and node.get("type") == "Translation needed"
+        )
+
     def _getnotelist(self, origin=None):
         """
         Returns the text from notes matching ``origin`` or all notes.
@@ -92,15 +112,22 @@ class tbxunit(lisa.LISAunit):
         :return: The text from notes matching ``origin``
         :rtype: List
         """
-        note_nodes = self.xmlelement.iterdescendants(self._get_origin_element(origin))
+        note_nodes = self._getnotenodes(origin=origin)
         # TODO: consider using xpath to construct initial_list directly
         # or to simply get the correct text from the outset (just remember to
         # check for duplication.
-        initial_list = [
-            lisa.getText(note, getXMLspace(self.xmlelement, self._default_xml_space))
-            for note in note_nodes
-            if origin in {"pos", "definition", None} or note.get("from") == origin
-        ]
+        initial_list = []
+        for node in note_nodes:
+            if (
+                origin in {"pos", "definition", None}
+                or node.get("from") == origin
+                and not (
+                    self._is_administrative_status_term_node(node)
+                    or self._is_translation_needed_node(node)
+                )
+                # ignore special termweb metadata in notes
+            ):
+                initial_list.append(self._getnodetext(node))
 
         # Remove duplicate entries from list:
         dictset = {}
@@ -112,6 +139,24 @@ class tbxunit(lisa.LISAunit):
 
     def getnotes(self, origin=None):
         return "\n".join(self._getnotelist(origin=origin))
+
+    def istranslatable(self) -> bool:
+        for node in self._getnotenodes(origin="definition"):
+            if self._is_translation_needed_node(node):
+                return self._getnodetext(node).strip().lower() == "yes"
+        return super().istranslatable()
+
+    def isobsolete(self) -> bool:
+        for note in self._getnotenodes(origin="pos"):
+            if (
+                self._is_administrative_status_term_node(note)
+                and self._getnodetext(note).strip().lower() in {
+                    "forbidden", "obsolete"
+                }
+            ):
+                   return True
+
+        return super().isobsolete()
 
 
 class tbxfile(lisa.LISAfile):

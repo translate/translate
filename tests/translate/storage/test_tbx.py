@@ -136,3 +136,63 @@ class TestTBXfile(test_base.TestTranslationStore):
         assert unit.getnotes(origin="translator") == "Translator note"
         assert unit.getnotes(origin="dev") == ""
         assert unit.getnotes() == "Translator note\nOther note"
+
+    def test_administrative_status_and_translation_needed(self):
+        tbxdata = """<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE martif SYSTEM "TBXcoreStructV02.dtd">
+<martif xmlns="urn:iso:std:iso:30042:ed-2" xml:lang="en" type="TBX">
+    <martifHeader>
+        <fileDesc>
+            <sourceDesc>
+                <p>Extended Metadata Bilingual TBX Parsing</p>
+            </sourceDesc>
+        </fileDesc>
+    </martifHeader>
+    <text>
+        <body>
+            <termEntry id="e001">
+                <descrip type="definition">Superseded but still found in older manuals.</descrip>
+                <descrip type="Translation needed">Yes</descrip>
+                <langSet xml:lang="en">
+                    <tig>
+                        <term id="e001-en">data bus</term>
+                        <termNote type="administrativeStatus">obsolete</termNote>
+                    </tig>
+                </langSet>
+                <langSet xml:lang="fr">
+                    <tig>
+                        <term id="e001-fr">bus de données</term>
+                        <termNote type="administrativeStatus">obsolete</termNote>
+                    </tig>
+                </langSet>
+            </termEntry>
+            <termEntry id="e002">
+                <descrip type="definition">An internal code identifier not to be localized.</descrip>
+                <descrip type="Translation needed">No</descrip>
+                <langSet xml:lang="en">
+                    <tig>
+                        <term id="e002-en">SYS_ERR_406</term>
+                        <note from="developer">Do not translate error codes.</note>
+                    </tig>
+                </langSet>
+                <langSet xml:lang="fr">
+                    <tig>
+                        <term id="e002-fr">SYS_ERR_406</term>
+                    </tig>
+                </langSet>
+            </termEntry>
+        </body>
+    </text>
+</martif>
+"""
+        tbxfile = tbx.tbxfile.parsestring(tbxdata.encode())
+        assert bytes(tbxfile).decode() == tbxdata
+        assert len(tbxfile.units) == 2
+        unit = tbxfile.units[0]
+        assert unit.source == "data bus"
+        assert unit.isobsolete()
+        assert unit.istranslatable()
+        unit = tbxfile.units[1]
+        assert unit.source == "SYS_ERR_406"
+        assert not unit.isobsolete()
+        assert not unit.istranslatable()
