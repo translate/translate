@@ -192,6 +192,10 @@ class TestTBXfile(test_base.TestTranslationStore):
         assert unit.source == "data bus"
         assert unit.isobsolete()
         assert unit.istranslatable()
+        assert (
+            unit.getnotes(origin="definition")
+            == "Superseded but still found in older manuals."
+        )
         unit = tbxfile.units[1]
         assert unit.source == "SYS_ERR_406"
         assert not unit.isobsolete()
