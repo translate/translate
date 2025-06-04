@@ -90,14 +90,14 @@ class tbxunit(lisa.LISAunit):
         return lisa.getText(node, getXMLspace(self.xmlelement, self._default_xml_space))
 
     def _is_administrative_status_term_node(self, node) -> bool:
-        """ Checks if the node is a `<termNote type="administrativeStatus">` node """
+        """Checks if the node is a `<termNote type="administrativeStatus">` node"""
         return (
             self.namespaced("termNote") == node.tag
             and node.get("type") == "administrativeStatus"
         )
 
     def _is_translation_needed_node(self, node) -> bool:
-        """ Checks if the node is a `<descrip type="Translation needed">` node """
+        """Checks if the node is a `<descrip type="Translation needed">` node"""
         return (
             self.namespaced("descrip") == node.tag
             and node.get("type") == "Translation needed"
@@ -120,10 +120,12 @@ class tbxunit(lisa.LISAunit):
         for node in note_nodes:
             if (
                 origin in {"pos", "definition", None}
-                or node.get("from") == origin
-                and not (
-                    self._is_administrative_status_term_node(node)
-                    or self._is_translation_needed_node(node)
+                or (
+                    node.get("from") == origin
+                    and not (
+                        self._is_administrative_status_term_node(node)
+                        or self._is_translation_needed_node(node)
+                    )
                 )
                 # ignore special termweb metadata in notes
             ):
@@ -148,13 +150,10 @@ class tbxunit(lisa.LISAunit):
 
     def isobsolete(self) -> bool:
         for note in self._getnotenodes(origin="pos"):
-            if (
-                self._is_administrative_status_term_node(note)
-                and self._getnodetext(note).strip().lower() in {
-                    "forbidden", "obsolete"
-                }
-            ):
-                   return True
+            if self._is_administrative_status_term_node(note) and self._getnodetext(
+                note
+            ).strip().lower() in {"forbidden", "obsolete"}:
+                return True
 
         return super().isobsolete()
 
