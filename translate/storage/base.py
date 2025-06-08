@@ -31,6 +31,7 @@ from translate.misc.multistring import multistring
 from translate.storage.placeables import StringElem
 from translate.storage.placeables import parse as rich_parse
 from translate.storage.workflow import StateEnum as states
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -1111,3 +1112,8 @@ class DictStore(TranslationStore):
     def serialize_units(self, output):
         for unit in self.unit_iter():
             unit.storevalues(output)
+
+
+def check_file_exists(file_path):
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"Error: {file_path} does not exist.")
