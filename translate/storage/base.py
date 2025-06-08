@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import codecs
 import logging
+import os
 import pickle
 from io import BytesIO
 from itertools import starmap
@@ -31,7 +32,6 @@ from translate.misc.multistring import multistring
 from translate.storage.placeables import StringElem
 from translate.storage.placeables import parse as rich_parse
 from translate.storage.workflow import StateEnum as states
-import os
 
 logger = logging.getLogger(__name__)
 

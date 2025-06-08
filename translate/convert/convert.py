@@ -506,9 +506,6 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
         )
 
 
-
-
-
 def _output_is_newer(input_path, output_path):
     """
     Check if input_path was not modified since output_path was generated,
@@ -549,9 +546,10 @@ def should_output_store(store, threshold):
 
     return percent >= threshold
 
+
 def safe_read_file(file_path):
     try:
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, encoding="utf-8") as f:
             return f.read()
     except FileNotFoundError:
         print(f"Error: File {file_path} not found.")
@@ -559,6 +557,7 @@ def safe_read_file(file_path):
     except Exception as e:
         print(f"Unexpected error occurred: {e}")
         return None
+
 
 def main(argv=None):
     parser = ArchiveConvertOptionParser({}, description=__doc__)
