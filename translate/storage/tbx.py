@@ -149,7 +149,11 @@ class tbxunit(lisa.LISAunit):
         for note in self._getnotenodes(origin="pos"):
             if self._is_administrative_status_term_node(note) and self._getnodetext(
                 note
-            ).strip().lower() in {"forbidden", "obsolete"}:
+            ).strip().lower() in {
+                "deprecated",
+                "deprecatedtermadmnsts",
+                "deprecatedterm-admn-sts",
+            }:
                 return True
 
         return super().isobsolete()

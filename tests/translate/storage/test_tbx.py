@@ -156,13 +156,13 @@ class TestTBXfile(test_base.TestTranslationStore):
                 <langSet xml:lang="en">
                     <tig>
                         <term id="e001-en">data bus</term>
-                        <termNote type="administrativeStatus">obsolete</termNote>
+                        <termNote type="administrativeStatus">deprecated</termNote>
                     </tig>
                 </langSet>
                 <langSet xml:lang="fr">
                     <tig>
                         <term id="e001-fr">bus de données</term>
-                        <termNote type="administrativeStatus">obsolete</termNote>
+                        <termNote type="administrativeStatus">deprecatedTerm-admn-sts</termNote>
                     </tig>
                 </langSet>
             </termEntry>
