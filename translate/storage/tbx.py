@@ -84,9 +84,14 @@ class tbxunit(lisa.LISAunit):
             note.set("from", origin)
 
     def _getnotenodes(self, origin=None):
+        """Get all nodes matching ``origin`` in the XML document."""
         return self.xmlelement.iterdescendants(self._get_origin_element(origin))
 
     def _getnodetext(self, node):
+        """
+        Get the plaintext content of the given node considering the xml namespace
+        and space configuration.
+        """
         return lisa.getText(node, getXMLspace(self.xmlelement, self._default_xml_space))
 
     def _is_administrative_status_term_node(self, node) -> bool:
@@ -146,6 +151,14 @@ class tbxunit(lisa.LISAunit):
         return super().istranslatable()
 
     def isobsolete(self) -> bool:
+        """
+        Indicate whether a unit is obsolete.
+
+        The deprecated administrative status in TBX basic maps to translate toolkit's
+        concept of obsolete units.
+
+        :rtype: bool
+        """
         for note in self._getnotenodes(origin="pos"):
             if self._is_administrative_status_term_node(note) and self._getnodetext(
                 note
