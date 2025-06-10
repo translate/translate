@@ -1,0 +1,31 @@
+Translate Toolkit 3.15.3
+************************
+
+*Released on 10 June 2025*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- TBX
+
+  - Parse "administrativeStatus" and "Translation needed" metadata
+
+- MO 
+
+  - Compatibility with latet Gettext
+
+- Fluent
+
+  - Fixed error reporting
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař, Kartik Ohri, Emmanuel Ferdman
