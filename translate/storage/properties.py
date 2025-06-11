@@ -136,8 +136,16 @@ from copy import deepcopy
 from lxml import etree
 
 from translate.lang import data
-from translate.misc import quote
 from translate.misc.multistring import multistring
+from translate.misc.quote import (
+    java_utf8_properties_encode,
+    javapropertiesencode,
+    mozillaescapemarginspaces,
+    propertiesdecode,
+    rstripeol,
+    xwiki_properties_decode,
+    xwiki_properties_encode,
+)
 from translate.storage import base
 
 labelsuffixes = (".label", ".title")
@@ -154,7 +162,7 @@ ending in :attr:`.labelsuffixes` into accelerator notation"""
 eol = "\n"
 
 
-def is_line_continuation(line):
+def is_line_continuation(line: str) -> bool:
     r"""
     Determine whether *line* has a line continuation marker.
 
@@ -199,7 +207,7 @@ def get_comment_one_line(line):
     return None
 
 
-def get_comment_start(line):
+def get_comment_start(line: str) -> str | None:
     """
     Determine whether a *line* starts a new multi-line comment.
 
@@ -214,7 +222,7 @@ def get_comment_start(line):
     return None
 
 
-def get_comment_end(line):
+def get_comment_end(line: str) -> str | None:
     """
     Determine whether a *line* ends a new multi-line comment.
 
@@ -229,7 +237,7 @@ def get_comment_end(line):
     return None
 
 
-def _key_strip(key):
+def _key_strip(key: str) -> str:
     """
     Cleanup whitespace found around a key.
 
@@ -245,11 +253,11 @@ def _key_strip(key):
     return newkey.lstrip()
 
 
-dialects = {}
+dialects: dict[str, type[Dialect]] = {}
 default_dialect = "java"
 
 
-def register_dialect(dialect):
+def register_dialect(dialect: type[Dialect]) -> type[Dialect]:
     """Decorator that registers the dialect."""
     dialects[dialect.name] = dialect
     return dialect
@@ -262,30 +270,30 @@ def get_dialect(dialect=default_dialect):
 class Dialect:
     """Settings for the various behaviours in key=value files."""
 
-    name = None
-    default_encoding = "iso-8859-1"
+    name: str
+    default_encoding: str = "iso-8859-1"
     delimiters: list[str] = []
-    pair_terminator = ""
-    key_wrap_char = ""
-    value_wrap_char = ""
-    drop_comments = []
-    has_plurals = False
+    pair_terminator: str = ""
+    key_wrap_char: str = ""
+    value_wrap_char: str = ""
+    drop_comments: list[str] = []
+    has_plurals: bool = False
 
     @staticmethod
-    def encode(string, encoding=None):
+    def encode(string: str, encoding: str | None = None) -> str:
         """Encode the string."""
         # FIXME: dialects are a bad idea, not possible for subclasses
         # to override key methods
         if encoding not in {"utf-8", "utf-16"}:
-            return quote.javapropertiesencode(string or "")
-        return quote.java_utf8_properties_encode(string or "")
+            return javapropertiesencode(string or "")
+        return java_utf8_properties_encode(string or "")
 
     @staticmethod
-    def decode(string):
-        return quote.propertiesdecode(string)
+    def decode(string: str) -> str:
+        return propertiesdecode(string)
 
     @classmethod
-    def find_delimiter(cls, line):
+    def find_delimiter(cls, line: str) -> tuple[str | None, int]:
         """
         Find the type and position of the delimiter in a property line.
 
@@ -344,29 +352,29 @@ class Dialect:
         return (mindelimiter, minpos)
 
     @staticmethod
-    def key_strip(key):
+    def key_strip(key: str) -> str:
         """Strip unneeded characters from the key."""
         return _key_strip(key)
 
     @staticmethod
-    def value_strip(value):
+    def value_strip(value: str) -> str:
         """Strip unneeded characters from the value."""
         return value.lstrip()
 
     @staticmethod
-    def is_line_continuation(line):
+    def is_line_continuation(line: str) -> bool:
         return is_line_continuation(line)
 
     @staticmethod
-    def strip_line_continuation(value):
+    def strip_line_continuation(value: str) -> str:
         return value[:-1]
 
     @staticmethod
-    def get_key_cldr_name(key):
+    def get_key_cldr_name(key: str) -> tuple[str, str]:
         return (key, "other")
 
     @staticmethod
-    def get_cldr_names_order():
+    def get_cldr_names_order() -> list[str]:
         return ["other"]
 
     @staticmethod
@@ -389,7 +397,7 @@ class DialectJavaUtf8(DialectJava):
 
     @staticmethod
     def encode(string, encoding=None):
-        return quote.java_utf8_properties_encode(string or "")
+        return java_utf8_properties_encode(string or "")
 
 
 @register_dialect
@@ -400,7 +408,7 @@ class DialectJavaUtf16(DialectJava):
 
     @staticmethod
     def encode(string, encoding=None):
-        return quote.java_utf8_properties_encode(string or "")
+        return java_utf8_properties_encode(string or "")
 
 
 @register_dialect
@@ -418,11 +426,11 @@ class DialectXWiki(DialectJava):
 
     @staticmethod
     def encode(string, encoding=None):
-        return quote.xwiki_properties_encode(string or "", encoding)
+        return xwiki_properties_encode(string or "", encoding)
 
     @staticmethod
     def decode(string):
-        return quote.xwiki_properties_decode(string)
+        return xwiki_properties_decode(string)
 
 
 @register_dialect
@@ -439,8 +447,8 @@ class DialectMozilla(DialectJavaUtf8):
     @staticmethod
     def encode(string, encoding=None):
         """Encode the string."""
-        string = quote.java_utf8_properties_encode(string or "")
-        return quote.mozillaescapemarginspaces(string or "")
+        string = java_utf8_properties_encode(string or "")
+        return mozillaescapemarginspaces(string or "")
 
 
 @register_dialect
@@ -498,9 +506,9 @@ class DialectGwt(DialectJavaUtf8):
     @classmethod
     def encode(cls, string, encoding=None):
         if encoding not in {"utf-8", "utf-16"}:
-            result = quote.javapropertiesencode(string or "")
+            result = javapropertiesencode(string or "")
         else:
-            result = quote.java_utf8_properties_encode(string or "")
+            result = java_utf8_properties_encode(string or "")
         return result.replace("'", "''")
 
     @classmethod
@@ -523,7 +531,7 @@ class DialectSkype(Dialect):
 
     @staticmethod
     def encode(string, encoding=None):
-        return quote.java_utf8_properties_encode(string or "")
+        return java_utf8_properties_encode(string or "")
 
 
 @register_dialect
@@ -1068,7 +1076,7 @@ class propfile(base.TranslationStore):
 
         for line in propsrc.split("\n"):
             # handle multiline value if we're in one
-            line = quote.rstripeol(line)
+            line = rstripeol(line)
             if inmultilinevalue:
                 newunit.value += line.lstrip()
                 # see if there's more

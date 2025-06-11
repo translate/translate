@@ -555,9 +555,9 @@ class TranslationStore:
     """The class of units that will be instantiated and used by this class"""
     Name = "Base translation store"
     """The human usable name of this store type"""
-    Mimetypes = None
+    Mimetypes: ClassVar[list[str]] = []
     """A list of MIME types associated with this store type"""
-    Extensions = None
+    Extensions: ClassVar[list[str]] = []
     """A list of file extentions associated with this store type"""
     _binary = False
     """Indicates whether a file should be accessed as a binary file."""
