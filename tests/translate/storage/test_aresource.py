@@ -1131,3 +1131,11 @@ class TestMOKOResourceFile(test_monolingual.TestMonolingualStore):
 </resources>
 """
         )
+
+
+class TestCMPResourceUnit(TestMOKOResourceUnit):
+    UnitClass = aresource.CMPResourceUnit
+
+
+class TestCMPResourceFile(test_monolingual.TestMonolingualStore):
+    StoreClass = aresource.CMPResourceFile

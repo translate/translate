@@ -622,8 +622,7 @@ class AndroidResourceFile(lisa.LISAfile):
         super().removeunit(unit)
 
 
-class MOKOResourceUnit(AndroidResourceUnit):
-    PLURAL_TAG = "plural"
+class CMPResourceUnit(AndroidResourceUnit):
     ESCAPE_TRANSLATE = str.maketrans(
         {
             "\\": "\\\\",
@@ -633,6 +632,15 @@ class MOKOResourceUnit(AndroidResourceUnit):
     )
 
 
+class CMPResourceFile(AndroidResourceFile):
+    UnitClass = CMPResourceUnit
+    Name = "Compose Multiplatform Resources"
+
+
+class MOKOResourceUnit(CMPResourceUnit):
+    PLURAL_TAG = "plural"
+
+
 class MOKOResourceFile(AndroidResourceFile):
     UnitClass = MOKOResourceUnit
-    Name = "Compose Multiplatform Resources"
+    Name = "Mobile Kotlin Resources"
