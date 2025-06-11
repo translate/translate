@@ -24,7 +24,7 @@ from __future__ import annotations
 import copy
 import os
 import re
-from typing import overload
+from typing import ClassVar, overload
 from xml.parsers.expat import XML_PARAM_ENTITY_PARSING_NEVER, ParserCreate
 
 from lxml import etree
@@ -42,16 +42,6 @@ QUOTED_STRING = re.compile(r'((?<!\\)"(?:\\"|[^"])*(?<!\\)")')
 UNICODE_ESCAPE = re.compile(r"\\u([a-fA-F0-9]{4})")
 CHAR_ESCAPE = re.compile(r"\\(.)")
 WHITESPACE_RE = re.compile(r"\s+")
-
-ESCAPE_TRANSLATE = str.maketrans(
-    {
-        "\\": "\\\\",
-        "\n": "\\n",
-        "\t": "\\t",
-        "'": "\\'",
-        '"': '\\"',
-    }
-)
 
 
 class DecodingXMLParser:
@@ -249,6 +239,15 @@ class AndroidResourceUnit(base.TranslationUnit):
 
     SINGULAR_TAG = "string"
     PLURAL_TAG = "plurals"
+    ESCAPE_TRANSLATE: ClassVar = str.maketrans(
+        {
+            "\\": "\\\\",
+            "\n": "\\n",
+            "\t": "\\t",
+            "'": "\\'",
+            '"': '\\"',
+        }
+    )
 
     @classmethod
     def createfromxmlElement(cls, element):
@@ -314,7 +313,7 @@ class AndroidResourceUnit(base.TranslationUnit):
             return ""
 
         # Escape XML chars and whitespace
-        text = text.translate(ESCAPE_TRANSLATE)
+        text = text.translate(cls.ESCAPE_TRANSLATE)
 
         # @ and ? needs to be escaped at start as this would be interpreted
         # as string/style references
@@ -625,7 +624,15 @@ class AndroidResourceFile(lisa.LISAfile):
 
 class MOKOResourceUnit(AndroidResourceUnit):
     PLURAL_TAG = "plural"
+    ESCAPE_TRANSLATE = str.maketrans(
+        {
+            "\\": "\\\\",
+            "\n": "\\n",
+            "\t": "\\t",
+        }
+    )
 
 
 class MOKOResourceFile(AndroidResourceFile):
     UnitClass = MOKOResourceUnit
+    Name = "Compose Multiplatform Resources"
