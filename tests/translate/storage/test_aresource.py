@@ -1091,6 +1091,16 @@ files</strong> on the storage.</p>
 class TestMOKOResourceUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = aresource.MOKOResourceUnit
 
+    def test_escape_quote(self):
+        """Helper that checks that a string is output with the right escape."""
+        unit = self.UnitClass("teststring")
+        unit.target = '''quoted 'string' and "string"'''
+
+        assert (
+            str(unit)
+            == """<string name="teststring">quoted 'string' and "string"</string>\n"""
+        )
+
 
 class TestMOKOResourceFile(test_monolingual.TestMonolingualStore):
     StoreClass = aresource.MOKOResourceFile
