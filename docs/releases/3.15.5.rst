@@ -1,0 +1,33 @@
+Translate Toolkit 3.15.5
+************************
+
+*Released on 16 June 2025*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- Android
+
+  - Added support for Compose Multiplatform Resources
+
+Languages
+---------
+
+- Toki Pona language settings
+
+Other
+-----
+
+- Fixed publishing issues in the 3.15.4 release
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař, Juwan
