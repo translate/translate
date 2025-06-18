@@ -13,7 +13,8 @@ class TestDeprecation:
         pass
 
     def test_deprecated_decorator(self):
-        deprecated_call(self.deprecated_helper)
+        with deprecated_call():
+            self.deprecated_helper()
 
     @mark.filterwarnings("error")
     def test_no_deprecated_decorator(self):
