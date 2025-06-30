@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsd:schema targetNamespace="urn:oasis:names:tc:xliff:document:1.1" xmlns:xyz="urn:appInfo:Items" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xlf="urn:oasis:names:tc:xliff:document:1.1" elementFormDefault="qualified" xml:lang="en">
 	<!-- Import for xml:lang and xml:space -->
-	<xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="http://www.w3.org/2001/xml.xsd"/>
+	<xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="./xml.xsd"/>
 	<!-- Attributes Lists -->
 	<xsd:simpleType name="XTend">
 		<xsd:restriction base="xsd:string">
