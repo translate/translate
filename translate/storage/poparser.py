@@ -26,6 +26,7 @@ From the GNU gettext manual:
      #| PREVIOUS MSGID                 (Gettext 0.16 - check if this is the correct position - not yet implemented)
      #: REFERENCE...
      #, FLAG...
+     #= FLAG...
      msgctxt CONTEXT                   (Gettext 0.15)
      msgid UNTRANSLATED-STRING
      msgstr TRANSLATED-STRING.
@@ -152,8 +153,10 @@ def parse_comment(parse_state, unit):
             return parse_state.next_line
         elif next_char == ":":
             append(unit.sourcecomments, next_line)
-        elif next_char == ",":
-            append(unit.typecomments, next_line)
+        elif next_char in {",", "="}:
+            # One of these will be workflow flags and one sticky flags in the future,
+            # normalize to #, for now
+            append(unit.typecomments, f"#,{next_line[2:]}")
         elif next_char == "~":
             # Special case: we refuse to parse obsoletes: they are done
             # elsewhere to ensure we reuse the normal unit parsing code

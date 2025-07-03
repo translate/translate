@@ -317,6 +317,35 @@ msgstr ""
         assert unit.typecomments == ["#, fuzzy, max-length:10\n"]
         assert unit.hastypecomment("max-length:10") is True
 
+    def test_future_flags(self):
+        """
+        Test future sticky/workflow flags handling.
+
+        See https://lists.gnu.org/archive/html/bug-gettext/2025-06/msg00018.html
+        """
+        posource = """#, max-length:10
+#= fuzzy
+msgid "Aurora"
+msgstr ""
+"""
+        expected = """#, fuzzy, max-length:10
+msgid "Aurora"
+msgstr ""
+"""
+        pofile = self.poparse(posource)
+        print(pofile)
+        assert len(pofile.units) == 1
+        assert bytes(pofile).decode("utf-8") == expected
+        unit = pofile.units[0]
+        assert unit.typecomments == ["#, fuzzy, max-length:10\n"]
+        assert unit.hastypecomment("fuzzy") is True
+        assert unit.hastypecomment("max-length:10") is True
+        unit.target = "Aurora"
+        unit.markfuzzy(False)
+        assert unit.typecomments == ["#, max-length:10\n"]
+        assert unit.hastypecomment("max-length:10") is True
+        assert unit.hastypecomment("fuzzy") is False
+
     def test_unassociated_comments(self):
         """Tests behaviour of unassociated comments."""
         oldsource = '# old lonesome comment\n\nmsgid "one"\nmsgstr "een"\n'
