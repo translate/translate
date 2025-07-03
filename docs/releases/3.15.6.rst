@@ -1,0 +1,32 @@
+Translate Toolkit 3.15.6
+************************
+
+*Released on 3 July 2025*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- PO
+
+  - Added support for new style flags using ``#=`` 
+
+- Converters
+
+  - Support for multiple ``--input`` parameters
+
+Other
+-----
+
+- Compatibility with lxml 6
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař, Simon Heimberg
