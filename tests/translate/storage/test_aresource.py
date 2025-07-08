@@ -1139,3 +1139,44 @@ class TestCMPResourceUnit(TestMOKOResourceUnit):
 
 class TestCMPResourceFile(test_monolingual.TestMonolingualStore):
     StoreClass = aresource.CMPResourceFile
+
+    def test_quote_escape(self):
+        store = self.StoreClass()
+
+        # Test parsing
+        store.parse(
+            r"""<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cloud_changelogScreen_title">Bienvenue dans la version préliminaire de l\'application Efento Cloud</string>
+</resources>
+""".encode()
+        )
+        assert len(store.units) == 1
+        assert (
+            store.units[0].target
+            == r"Bienvenue dans la version préliminaire de l\'application Efento Cloud"
+        )
+
+        # Test updating
+        store.units[
+            0
+        ].target = "Bienvenue dans la version préliminaire de l'application"
+        assert (
+            bytes(store).decode()
+            == r"""<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cloud_changelogScreen_title">Bienvenue dans la version préliminaire de l'application</string>
+</resources>
+"""
+        )
+        store.units[
+            0
+        ].target = r"Bienvenue dans la version préliminaire de l\'application"
+        assert (
+            bytes(store).decode()
+            == r"""<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cloud_changelogScreen_title">Bienvenue dans la version préliminaire de l\\'application</string>
+</resources>
+"""
+        )
