@@ -18,12 +18,12 @@ Formats and Converters
 - YAML
 
   - Handle TaggedScalar type while parsing
-    
+
 - Android
 
   - Fix setting escaped content for XML
   - Fix adding units with entities
-    
+
 - Subtitles
 
   - Add basic tests for the formats

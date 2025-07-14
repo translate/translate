@@ -16,7 +16,7 @@ Formats and Converters
 
   - Bring line wrapping closer to gettext
 
-- XLIFF 
+- XLIFF
 
   - Support non numeric ids on plurals in poxliff
 

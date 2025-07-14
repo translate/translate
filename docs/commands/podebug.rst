@@ -158,11 +158,11 @@ value.  Its is then easy to search for that value and find your problem string.
 Preserving placeholders
 =======================
 
-Some translations include placeholders for variables, such as ``This is {foo}`` 
+Some translations include placeholders for variables, such as ``This is {foo}``
 where changing the ``{foo}``-part would mean the translation is invalid and would
 fail to compile.
 
-The ``--preserveplaceholders`` makes sure this kind of variable names are 
+The ``--preserveplaceholders`` makes sure this kind of variable names are
 left intact.
 
 .. _podebug#more_reading:

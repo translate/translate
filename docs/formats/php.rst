@@ -142,8 +142,8 @@ Our format support allows:
       $lang = array(
          'name' => 'value',
          'info' => 'Some hosts disable automated mail sending
-	        on their servers. In this case the following features
-	        cannot be implemented.',
+              on their servers. In this case the following features
+              cannot be implemented.',
          'name2' => 'value2',
       );
 
@@ -207,7 +207,7 @@ Our format support allows:
          'name' => 'value',
          'datetime' => array(
             'TODAY' => 'Today',
-            'YESTERDAY'	=> 'Yesterday',
+            'YESTERDAY' => 'Yesterday',
             'AGO' => array(
                 0 => 'less than a minute ago',
                 2 => '%d minutes ago',

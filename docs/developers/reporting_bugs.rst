@@ -8,8 +8,8 @@ If you feel you found a bug, please make sure you are aware of the bug etiquette
 Bug Etiquette
 -------------
 
-In order to best solve the problem we need good bug reports.  Reports that do not give a full picture or which coders are unable to 
-reproduce, end up wasting a lot of time.  If you, the expert in your bug, spend a bit of time you can make sure your bug gets fixed. 
+In order to best solve the problem we need good bug reports.  Reports that do not give a full picture or which coders are unable to
+reproduce, end up wasting a lot of time.  If you, the expert in your bug, spend a bit of time you can make sure your bug gets fixed.
 
 Remember to first see if the bug is not already reported. Perhaps someone already reported it and you can provide some extra information in that bug report. You can also add yourself in the CC field so that you get notified of any changes to the bug report.
 

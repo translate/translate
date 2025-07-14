@@ -4,7 +4,7 @@
 flatxml2po
 **********
 
-Converts flat XML (.xml) files to Gettext PO format, a simple monolingual and 
+Converts flat XML (.xml) files to Gettext PO format, a simple monolingual and
 single-level XML.
 
 .. _flatxml2po#usage:

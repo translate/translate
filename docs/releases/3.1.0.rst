@@ -23,7 +23,7 @@ Formats and Converters
 
   - Preserve structured IDs on round trip
   - Several serialization fixes
-    
+
 - Android
 
   - Fix round trip of strings with newlines

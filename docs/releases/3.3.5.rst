@@ -21,7 +21,7 @@ Formats and Converters
   - consolidated API between dialects
 
 - QT ts2
-    
+
   - Consistent using of XML entity for non-breakable space
 
 Contributors

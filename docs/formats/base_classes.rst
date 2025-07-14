@@ -161,7 +161,7 @@ what we discussed is related to the above.  A quick summary:
       >>> print(bytes(po_store))
       msgid "bleep"
       msgstr "blorp"
-       
+
       >>> xliff_store = XliffStore(po_store)
       >>> print(bytes(xliff_store))
       <xliff>

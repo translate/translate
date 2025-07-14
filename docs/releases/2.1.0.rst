@@ -79,7 +79,7 @@ Filters and Checks
 Tools
 -----
 
-- `posegment` no longer outputs duplicate headers, 
+- `posegment` no longer outputs duplicate headers,
 
 
 Languages

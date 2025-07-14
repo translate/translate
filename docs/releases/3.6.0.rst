@@ -28,7 +28,7 @@ Formats and Converters
   - Improved element cleanup on update
 
 - Base
-    
+
   - Switch to charset-normalizer from chardet for more reliable detection
 
 General

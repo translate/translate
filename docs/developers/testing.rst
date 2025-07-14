@@ -85,7 +85,7 @@ The simplest form is the following:
 .. code-block:: python
 
     from pytest import pytest.mark
-    
+
     @mark.xfail
     def test_function():
         ...
@@ -113,7 +113,7 @@ function that we run raises a DeprecationWarning:
 .. code-block:: python
 
     from pytest import deprecated_call
- 
+
     def test_something():
         deprecated_call(function_to_run, arguments_for_function)
 

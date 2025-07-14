@@ -11,7 +11,7 @@ Changes
 Formats and Converters
 ----------------------
 
-- YAML 
+- YAML
 
   - Better handle Ruby plurals.
 

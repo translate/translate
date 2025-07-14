@@ -16,24 +16,24 @@ Formats and Converters
   - Improve previous msgid parsing
   - Improve newline detection
   - Cleanup temporary files in case of exception
-    
+
 - YAML
 
   - Do not fail on numeric keys
-    
+
 - Properties
 
   - Handle single quote escaping in GWT
   - Do not modify XWikiPageProperties source file
 
 - po2php
- 
+
   - Use phpfile as a serializer
 
 - poterminology
 
   - Fix regex escaping to remove FutureWarning.
-    
+
 Contributors
 ============
 

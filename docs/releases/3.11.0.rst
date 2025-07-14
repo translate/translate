@@ -11,7 +11,7 @@ Changes
 Formats and Converters
 ----------------------
 
-- Android 
+- Android
 
   - Improved output escaping
   - Removing unit now removes attached comments as well

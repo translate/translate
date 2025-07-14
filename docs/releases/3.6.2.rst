@@ -14,7 +14,7 @@ Formats and Converters
 - JSON
 
   - Avoid parsing root node
-   
+
 - YAML
 
   - Improve strings removal

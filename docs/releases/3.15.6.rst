@@ -13,7 +13,7 @@ Formats and Converters
 
 - PO
 
-  - Added support for new style flags using ``#=`` 
+  - Added support for new style flags using ``#=``
 
 - Converters
 

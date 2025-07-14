@@ -110,7 +110,7 @@ automatically strips the blank spaces.
        #: [Section]c
        msgid "'other example with apostrophes'"
        msgstr ""
-       
+
        #: [Section]d
        msgid "\"example with double quotes\""
        msgstr ""

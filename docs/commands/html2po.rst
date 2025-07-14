@@ -129,7 +129,7 @@ the translated HTML files will end up.
 Notes
 =====
 
-The :doc:`HTML format description </formats/html>` gives more details on the 
+The :doc:`HTML format description </formats/html>` gives more details on the
 format of the localisable HTML content and the capabilities of this converter.
 
 
