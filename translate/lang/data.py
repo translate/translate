@@ -1008,6 +1008,17 @@ qt_plural_tags = {
     "zu": ["one", "other"],
 }
 
+DECIMAL_EXTRA_TAGS = {
+    "be": ["other"],
+    "cs": ["many"],
+    "gv": ["many"],
+    "lt": ["many"],
+    "pl": ["other"],
+    "ru": ["other"],
+    "sk": ["many"],
+    "uk": ["other"],
+}
+
 
 def simplercode(code):
     """

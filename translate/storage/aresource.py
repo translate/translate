@@ -419,13 +419,17 @@ class AndroidResourceUnit(base.TranslationUnit):
             return "en"
         return super().gettargetlanguage()
 
-    def get_plural_tags(self):
+    def get_base_locale_code(self) -> str:
         locale = self.gettargetlanguage()
         if not locale:
-            return data.plural_tags["en"]
-        # Handle b+ style language codes
-        locale = locale.removeprefix("b+")
-        locale = locale.replace("_", "-").replace("+", "-").split("-")[0]
+            return "en"
+        # Handle b+ style language codes and standardize
+        return (
+            locale.removeprefix("b+").replace("_", "-").replace("+", "-").split("-")[0]
+        )
+
+    def get_plural_tags(self):
+        locale = self.get_base_locale_code()
         return data.plural_tags.get(locale, data.plural_tags["en"])
 
     @property
@@ -459,14 +463,28 @@ class AndroidResourceUnit(base.TranslationUnit):
 
             self.xmlelement.text = "\n    "
 
+            # Include additional plural for decimal numbers if not present. This is
+            # enforced by Android lint but translate-toolkit currently does not support
+            # editing this.
+            locale = self.get_base_locale_code()
+            if locale in data.DECIMAL_EXTRA_TAGS:
+                for extra in data.DECIMAL_EXTRA_TAGS[locale]:
+                    if extra not in plural_tags:
+                        # Create copy here to avoid modifications to language.data
+                        plural_tags = [*plural_tags, extra]
+                        plural_strings.append(plural_strings[-1])
+
             # Include "other" as copy of "many" if "other" is not present. This avoids crashes
             # of Android builts with broken plurals handling.
             if "other" not in plural_tags and "many" in plural_tags:
-                # Create copy here to avoid modifications to laguage.data
+                # Create copy here to avoid modifications to language.data
                 plural_tags = [*plural_tags, "other"]
                 plural_strings.append(plural_strings[-1])
 
-            for plural_tag, plural_string in zip(plural_tags, plural_strings):
+            for plural_tag, plural_string in sorted(
+                zip(plural_tags, plural_strings),
+                key=lambda item: data.cldr_plural_categories.index(item[0]),
+            ):
                 item = etree.Element("item")
                 item.set("quantity", plural_tag)
                 self.xmlelement.append(item)
