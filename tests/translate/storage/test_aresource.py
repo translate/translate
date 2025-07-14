@@ -922,6 +922,27 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         store.parse(content.encode())
         assert store.units[0].target == multistring(["%d visitor", "", "%d visitors"])
 
+    def test_empty_missing_plural_tag(self):
+        content = """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="1" />
+    <plurals name="2">
+      <item quantity="other">%1$d tiles left in pool.</item>
+    </plurals>
+    <plurals name="3">
+      <item quantity="other">%1$d tiles left in pool.</item>
+      <item quantity="one">%1$d tile left in pool.</item>
+    </plurals>
+</resources>
+"""
+        store = self.StoreClass()
+        store.parse(content.encode())
+        assert store.units[0].target == multistring(["", ""])
+        assert store.units[1].target == multistring(["", "%1$d tiles left in pool."])
+        assert store.units[2].target == multistring(
+            ["%1$d tile left in pool.", "%1$d tiles left in pool."]
+        )
+
     def test_removeunit(self):
         content = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
