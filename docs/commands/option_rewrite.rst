@@ -150,7 +150,7 @@ classified
 
 .. versionadded:: 3.7.3
 
-Rewrites the source text with black square (▮) that looks like NSA classified 
+Rewrites the source text with black square (▮) that looks like NSA classified
 files.
 
 .. code-block:: po

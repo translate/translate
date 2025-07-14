@@ -15,9 +15,9 @@ Conformance
 
 * Can identify almost all HTML elements and attributes that are localisable.
 
-* The localisable and localised text in the PO/POT files is fragments of HTML. 
+* The localisable and localised text in the PO/POT files is fragments of HTML.
   Therefore, reserved characters must be represented by HTML entities:
-  
+
   - Content from HTML elements uses the HTML entities ``&amp;`` (&), ``&lt;``
     (<), and ``&gt;`` (>).
 
@@ -25,9 +25,9 @@ Conformance
     ``&apos;`` (').
 
 * Leading and trailing tags are removed from the localisable text,
-  but only in matching pairs. 
+  but only in matching pairs.
 
-* Can cope with embedded PHP, as long as the documents remain valid HTML. If 
+* Can cope with embedded PHP, as long as the documents remain valid HTML. If
   you place PHP code inside HTML attributes, you need to make sure that the PHP
   doesn't contain special characters that interfere with the HTML.
 

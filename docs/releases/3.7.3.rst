@@ -10,10 +10,10 @@ Changes
 
 Formats and Converters
 ----------------------
-   
+
 - Converters
 
-  - Add classified rewriter to spot easily what is not part of the translation file 
+  - Add classified rewriter to spot easily what is not part of the translation file
 
 - Android
 
@@ -22,7 +22,7 @@ Formats and Converters
 - RC
 
   - Improved resource ID handling
-    
+
 
 - Properties
 

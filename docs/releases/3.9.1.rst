@@ -11,7 +11,7 @@ Changes
 Formats and Converters
 ----------------------
 
-- RC 
+- RC
 
   - Improved comments handling
   - Improved newlines handling

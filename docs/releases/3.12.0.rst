@@ -11,7 +11,7 @@ Changes
 Formats and Converters
 ----------------------
 
-- Android 
+- Android
 
   - Fixed language definitions for some languages
   - Added support for MOKO resources

@@ -12,17 +12,17 @@ Formats and Converters
 ----------------------
 
 - PO
-    
+
   - Fix newlines round-trip
 
 - Android
 
   - Improve XML handling
-    
+
 - RC
 
   - Fix parsing stringtable with a comment
-    
+
 Contributors
 ============
 

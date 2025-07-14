@@ -184,7 +184,7 @@ even achieve "weighted" thresholding, so that for example, all terms in one
 original input file will pass thresholding, while other files may be filtered.
 A simple version of this technique was used above to incorporate translations
 from the Gnome terminology PO files without having it affect the terms that
-passed the threshold filters. 
+passed the threshold filters.
 
 --locs-needed
 -------------

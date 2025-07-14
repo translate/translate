@@ -146,7 +146,7 @@ The focus is on easily accessible data in a compact form.  This will only count
 strings and uses a short syntax to make it easy for an experienced localiser to
 read.::
 
-  test-po/fuzzy.po strings: total: 1	| 0t	1f	0u	| 0%t	100%f	0%u
+  test-po/fuzzy.po strings: total: 1 | 0t 1f 0u | 0%t 100%f 0%u
 
 The filename is followed by a word indicating the type of count, here we are
 counting strings.  The total give the total string count.  While the letters t,
@@ -161,7 +161,7 @@ percentage representation of the same categories.
 
 The output is very similar to :opt:`--short-strings` above::
 
-  test-po/fuzzy.po source words: total: 3	| 0t	3f	0u	| 0%t	100%f	0%u
+  test-po/fuzzy.po source words: total: 3 | 0t 3f 0u | 0%t 100%f 0%u
 
 But instead of counting string we are now counting words as indicated by the
 term 'source words'

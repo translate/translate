@@ -526,7 +526,7 @@ Python supports both a variant of the :ref:`pofilter_tests#printf`
 formatting system, and its own formatting language which uses
 placeholders enclosed in braces. The placeholders can be named,
 numbered, or anonymous; the former two are filled in from positional
-args, the latter from keyword arguments. Example:: 
+args, the latter from keyword arguments. Example::
 
     'the {} {0} hungry {insect}'.format('very', insect='caterpiller')
     # --> 'the very very hungry caterpiller'

@@ -14,9 +14,9 @@ Formats and Converters
 - YAML
 
   - Fixed adding strings to empty Ruby YAML file
-   
+
 - RC
-  
+
   - Better handling of multiline stringtable translations in po2rc
 
 - Misc

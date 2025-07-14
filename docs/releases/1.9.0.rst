@@ -7,8 +7,8 @@ This release contains many improvements and bug fixes. While it contains many
 general improvements, it also specifically contains needed changes for the
 upcoming `Pootle <http://pootle.translatehouse.org>`_ 2.1.6 and `Virtaal
 <http://virtaal.translatehouse.org/>`_ 0.7.
-   
-   
+
+
 Highlighted improvements
 ========================
 

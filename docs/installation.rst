@@ -47,10 +47,10 @@ On Debian (if you are on etch), just type the following command:
    apt install translate-toolkit
 
    # Fedora / RedHat
-   dnf install translate-toolkit 
+   dnf install translate-toolkit
 
    # openSUSE
-   zypper install translate-toolkit 
+   zypper install translate-toolkit
 
 .. _installation#installing_on_windows:
 

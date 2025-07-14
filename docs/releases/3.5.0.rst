@@ -12,7 +12,7 @@ Formats and Converters
 ----------------------
 
 - RC
-   
+
   - Rewritten to pyparsing 3 API
 
 - XLIFF

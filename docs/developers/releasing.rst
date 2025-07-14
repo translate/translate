@@ -90,7 +90,7 @@ The version string should follow the pattern::
 E.g. ::
 
     1.10.0
-    0.9.1-rc1 
+    0.9.1-rc1
 
 ``$EXTRA`` is optional but all the three others are required.  The first
 release of a ``$MINOR`` version will always have a ``$MICRO`` of ``.0``. So

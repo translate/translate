@@ -66,7 +66,7 @@ conflicts. ::
   $ ls
   change.po         disc.po         functionality.po  letter.po          overwrite.po       restored.po
   changes.po        document.po     gb.po             library.po         page.po            restore.po
-  character.po      dots.po         graphic.po        light.po           pager.po           retry.po 
+  character.po      dots.po         graphic.po        light.po           pager.po           retry.po
   chart.po          double.po       grayscale.po      limit.po           percent.po         return.po
   check.po          down.po         grid.po           line.po            pies.po            right.po
   circle.po         drawing.po      group.po

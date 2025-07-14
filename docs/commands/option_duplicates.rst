@@ -68,7 +68,7 @@ releases of the Translate Toolkit.
     msgctxt "instruction_manual"
     msgid "Manual"
     msgstr ""
-     
+
     #: file1.dtd:manual_process
     msgctxt "manual_process"
     msgid "Manual"

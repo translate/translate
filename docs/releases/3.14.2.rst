@@ -27,7 +27,7 @@ Formats and Converters
 
 - po2rc
 
-  -  Allow po2rc output encoding to be specified  
+  -  Allow po2rc output encoding to be specified
 
 Contributors
 ============

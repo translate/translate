@@ -16,7 +16,7 @@ Formats and Converters
   - Optimize string escaping and header handling
   - Fixed wrapping with wide Unicode characters
 
-- YAML 
+- YAML
 
   - Avoid crash on invalid Ruby YAML files
 

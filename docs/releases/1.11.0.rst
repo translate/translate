@@ -53,7 +53,7 @@ Formats and Converters
   - Correctly parse XLIFF 1.2
 
 - Properties
-  
+
   - Blank source text is now always translated
   - Fuzzy units are discarded with --remove-untranslated
   - prop2po no longer drops entries that are translated the same as the source
