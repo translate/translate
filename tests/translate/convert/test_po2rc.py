@@ -445,3 +445,35 @@ msgstr "Zkopirovano"
             l="LANG_CZECH",
             charset_output="utf-8",
         )
+
+    def test_convert_quotes_strintable(self):
+        source = '''
+STRINGTABLE
+BEGIN
+    ID_T_1 "Hello ""world"""
+    //   Comment
+END
+'''
+        expected = '''
+STRINGTABLE
+BEGIN
+    ID_T_1                  "Ahoj ""svete"""
+    //   Comment
+END
+'''
+        pofile = r"""
+#: STRINGTABLE.ID_T_1
+msgid "Hello \"world\""
+msgstr "Ahoj \"svete\""
+"""
+        self.create_testfile("simple.rc", source)
+        self.create_testfile("simple.po", pofile)
+        self.run_command(
+            template="simple.rc",
+            i="simple.po",
+            o="output.rc",
+            l="LANG_CZECH",
+        )
+        with self.open_testfile("output.rc", "r") as handle:
+            content = handle.read()
+            assert content == expected
