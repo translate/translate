@@ -18,7 +18,6 @@
 
 """Tests for the Markdown classes."""
 
-import re
 from io import BytesIO
 from unittest import TestCase
 
@@ -123,7 +122,7 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
         # location: link title
         locations = [tu.getlocations()[0] for tu in store.units if tu.source == "title"]
         assert len(locations) == 1
-        assert re.search(r"\d+$", locations[0]) is not None
+        assert locations[0].endswith("1")
 
     def test_plain_image_no_title(self):
         store = self.parse("![foo](/url)\n")
