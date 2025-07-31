@@ -14,8 +14,8 @@ dev = [
 ]
 docs = [
   # Do not attempt to build doc on older Python
-  "furo==2024.8.6; python_version >= '3.11'",
-  "matplotlib==3.10.3; python_version >= '3.11'",
+  "furo==2025.7.19; python_version >= '3.11'",
+  "matplotlib==3.10.5; python_version >= '3.11'",
   "sphinx-copybutton==0.5.2; python_version >= '3.11'",
   "Sphinx==8.2.3; python_version >= '3.11'",
   "sphinxext-opengraph==0.10.0; python_version >= '3.11'"
