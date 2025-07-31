@@ -40,9 +40,6 @@ class MD2POOptionParser(convert.ConvertOptionParser):
         super().__init__(formats, usetemplates=False, usepots=True, description=__doc__)
         self.add_duplicates_option()
         self.add_multifile_option()
-        self.add_options(
-            ["--allowrecursiveoutput=False", "--allowrecursiveinput=False"]
-        )
 
     def _extract_translation_units(
         self,
