@@ -13,6 +13,8 @@ class TestMD2PO(test_convert.TestConvertCommand):
         "-P, --pot",
         "--duplicates=DUPLICATESTYLE",
         "--multifile=MULTIFILESTYLE",
+        "--allowrecursiveoutput",
+        "--allowrecursiveinput",
     ]
 
     def test_markdown_file_with_multifile_single(self):
