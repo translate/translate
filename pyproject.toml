@@ -1,8 +1,7 @@
 [build-system]
 build-backend = "setuptools.build_meta"
 requires = [
-  "setuptools>=69.0.0",
-  "setuptools_scm>=6.2"
+  "setuptools>=78.0.2"
 ]
 
 [dependency-groups]
@@ -45,7 +44,6 @@ classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Environment :: Console",
   "Intended Audience :: Developers",
-  "License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)",
   "Operating System :: MacOS :: MacOS X",
   "Operating System :: Microsoft :: Windows",
   "Operating System :: OS Independent",
@@ -73,11 +71,10 @@ dynamic = [
 keywords = [
   "i18n l10n gettext translate"
 ]
+license = "GPL-2.0-or-later"
+license-files = ["COPYING"]
 name = "translate-toolkit"
 requires-python = ">=3.9"
-
-[project.license]
-text = "GPL-2.0-or-later"
 
 [project.optional-dependencies]
 all = [
@@ -215,6 +212,32 @@ Homepage = "https://toolkit.translatehouse.org/"
 "Issue Tracker" = "https://github.com/translate/translate/issues"
 "Source Code" = "https://github.com/translate/translate"
 
+[tool.check-manifest]
+ignore = [
+  "*.toml",
+  "*.yaml",
+  "*.yml",
+  ".well-known/funding-manifest-urls",
+  "CREDITS",
+  "docs/*",
+  "docs/*/*",
+  "docs/*/*/*",
+  "docs/*/*/*/*",
+  "Makefile",
+  "tests/*",
+  "tests/*/*",
+  "tests/*/*/*",
+  "tests/*/*/*/*",
+  "tests/*/*/*/*/*",
+  "tools/phase",  # TODO: investigate purpuse, it was never installed
+  "tools/phaselist2goals",  # TODO: investigate purpuse, it was never installed
+  "translate/convert/odfxml",  # TODO: investigate purpuse, it was never installed
+  "translate/convert/roundtrip-gaia",  # TODO: investigate purpuse, it was never installed
+  "translate/convert/roundtrip-mozilla",  # TODO: investigate purpuse, it was never installed
+  "translate/convert/roundtrip-OOo",  # TODO: investigate purpuse, it was never installed
+  "translate/storage/debug.properties"  # TODO: this should be converted to tests
+]
+
 [tool.isort]
 known_third_party = [
   "bs4",
@@ -230,6 +253,9 @@ known_third_party = [
   "vobject"
 ]
 profile = "black"
+
+[tool.pytest.ini_options]
+norecursedirs = ".git build docs"
 
 [tool.ruff]
 target-version = "py39"
@@ -365,9 +391,6 @@ select = ["ALL"]
 
 [tool.setuptools]
 include-package-data = true
-license-files = [
-  "COPYING"
-]
 platforms = [
   "any"
 ]
