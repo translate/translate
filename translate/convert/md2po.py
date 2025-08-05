@@ -63,8 +63,9 @@ class MD2POOptionParser(convert.ConvertOptionParser):
         """Extract translation units from a markdown file and add them to an existing message store (pofile object) without any further processing."""
         parser = markdown.MarkdownFile(inputfile=inputfile)
         for tu in parser.units:
-            storeunit = outputstore.addsourceunit(tu.source)
-            storeunit.addlocations(tu.getlocations())
+            if not tu.isheader():
+                storeunit = outputstore.addsourceunit(tu.source)
+                storeunit.addlocations(tu.getlocations())
 
     def recursiveprocess(self, options):
         """Recurse through directories and process files. (override)."""

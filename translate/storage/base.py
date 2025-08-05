@@ -431,16 +431,16 @@ class TranslationUnit:
         """Make a unit obsolete."""
 
     @staticmethod
-    def isheader():
+    def isheader() -> bool:
         """Indicates whether this unit is a header."""
         return False
 
     @staticmethod
-    def isreview():
+    def isreview() -> bool:
         """Indicates whether this unit needs review."""
         return False
 
-    def isblank(self):
+    def isblank(self) -> bool:
         """
         Used to see if this unit has no source or target string.
 

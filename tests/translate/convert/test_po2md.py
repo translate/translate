@@ -107,3 +107,27 @@ class TestPO2MD(test_convert.TestConvertCommand):
         content = self.read_testfile("testout/file1.md").decode()
         assert "Innehåll i fil 1" in content
         assert "Innehåll i fil 2" not in content
+
+    def test_markdown_frontmatter(self):
+        content = """---
+date: 2024-02-02T04:14:54-08:00
+draft: false
+params:
+  author: John Smith
+title: Example
+weight: 10
+---
+
+# Markdown
+You are only coming through in waves.
+"""
+        self.create_testfile("file.md", content)
+        self.given_translation_file()
+        self.run_command("translation.po", "out.md", template="file.md")
+        output = self.read_testfile("out.md").decode()
+        assert (
+            content.replace(
+                "You are only coming through in waves.", "Översatt innehåll"
+            )
+            == output
+        )
