@@ -1,6 +1,9 @@
+from __future__ import annotations
+
 import os
 
 from translate.convert import md2po
+from translate.storage.po import pofile
 
 from . import test_convert
 
@@ -43,17 +46,42 @@ class TestMD2PO(test_convert.TestConvertCommand):
         assert "Content of file 1" in content
         assert "Content of file 2" in content
 
-    def given_markdown_file(self):
-        self.create_testfile(
-            "file.md", "# Markdown\nYou are only coming through in waves."
+    def given_markdown_file(self, content: str | None = None):
+        if content is None:
+            content = "# Markdown\nYou are only coming through in waves."
+        self.create_testfile("file.md", content)
+
+    def test_markdown_frontmatter(self):
+        self.given_markdown_file(
+            content="""---
+date: 2024-02-02T04:14:54-08:00
+draft: false
+params:
+  author: John Smith
+title: Example
+weight: 10
+---
+
+# Markdown
+You are only coming through in waves.
+"""
         )
+        self.run_command("file.md", "test.po")
+        content = self.then_po_file_is_written()
+        output = pofile()
+        with open(self.get_testfilename("test.po")) as handle:
+            print(handle.read())
+        with open(self.get_testfilename("test.po"), "rb") as handle:
+            output.parse(handle)
+        assert len(output.units) == 3
 
     def given_directory_of_markdown_files(self):
         os.makedirs("mddir", exist_ok=True)
         self.create_testfile("mddir/file1.md", "# Heading\nContent of file 1")
         self.create_testfile("mddir/file2.md", "# Heading\nContent of file 2")
 
-    def then_po_file_is_written(self):
+    def then_po_file_is_written(self) -> str:
         assert os.path.isfile(self.get_testfilename("test.po"))
         content = self.read_testfile("test.po").decode()
         assert "coming through" in content
+        return content
