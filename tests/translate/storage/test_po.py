@@ -1196,6 +1196,26 @@ msgstr ""
         assert self.poreflow(gettext_0_23) == expected
         assert self.poreflow(gettext_0_20) == expected
 
+    @mark.xfail(reason="Incompatible wrapping with gettext, see #5661")
+    def test_wrap_wide_stop(self):
+        posource = r"""msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+#: (content/about/overview/contents+en.lr:page.body)
+#: https://beeware.org/about/overview/
+msgid ""
+"If you'd like to keep up to date with what we're doing, follow\n"
+"[@beeware@fosstodon.org](https://fosstodon.org/@beeware) on Mastodon. If\n"
+"you'd like to receive updates, hints, tips and announcements about the\n"
+"BeeWare project, [sign up for the BeeWare Enthusiasts mailing\n"
+"list](/community/keep-informed/)."
+msgstr ""
+"在 Mastodon 上关注 [@beeware@fosstodon.org](https://fosstodon.org/@beeware)，"
+"或[加入 BeeWare 爱好者邮件列表](/zh_CN/community/keep-informed/)以获取与项目"
+"相关的更新、提示、技巧和公告。"
+"""
+        assert self.poreflow(posource) == posource
+
     def test_msgidcomments(self):
         posource = r"""
 msgid ""
