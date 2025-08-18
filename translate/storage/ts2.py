@@ -563,6 +563,8 @@ class tsfile(lisa.LISAfile):
         return lang[1]
 
     def serialize_hook(self, treestring: str) -> bytes:
+        # For conformance with Qt output, post-process etree.tostring output,
+        # replacing ' with &apos; and " with &quot; in text elements
         pos = 0
         out = []
         while pos >= 0:
@@ -578,6 +580,9 @@ class tsfile(lisa.LISAfile):
     def serialize(self, out):
         """Write the XML document to a file."""
         root = self.document.getroot()
+        # Iterate over empty tags without children and force empty text
+        # This will prevent self-closing tags in pretty_print mode
+        # Qt Linguist does self-close the "location" elements though
         for e in root.xpath(
             "//*[not(./node()) and not(text()) and not(name() = 'location')]"
         ):
