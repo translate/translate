@@ -53,6 +53,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         "article",
         "aside",
         "blockquote",
+        "button",
         "caption",
         "dd",
         "dt",
