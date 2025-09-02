@@ -17,7 +17,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 """
-This module represents the Chinese language (Both tradisional and simplified).
+This module represents the Chinese language (Both traditional and simplified).
 
 .. seealso:: :wp:`Chinese_language`
 """
@@ -48,8 +48,8 @@ class zh(common.Common):
     # The following transformation rules should be mostly useful for all types
     # of Chinese. The comma (,) is not handled here, since it maps to two
     # different characters, depending on context.
-    # If comma is used as seperation of sentence, it should be converted to a
-    # fullwidth comma ("，"). If comma is used as seperation of list items
+    # If comma is used as separation of sentence, it should be converted to a
+    # fullwidth comma ("，"). If comma is used as separation of list items
     # like "apple, orange, grape, .....", "、" is used.
     puncdict = {
         ". ": "。",

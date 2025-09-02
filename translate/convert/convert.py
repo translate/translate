@@ -440,7 +440,7 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
     def checkoutputsubdir(self, options, subdir):
         """
         Checks to see if subdir under ``options.output`` needs to be
-        created, creates if neccessary.
+        created, creates if necessary.
         """
         if not self.isarchive(options.output, "output"):
             super().checkoutputsubdir(options, subdir)

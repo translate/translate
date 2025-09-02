@@ -109,7 +109,7 @@ function FAIL {
 	failures=$(($failures + 1))
 }
 
-# Check resuls of the tests
+# Check results of the tests
 function start_checks {
 	unredirect
 }
@@ -237,7 +237,7 @@ function usage {
 	echo 
 	echo "With no options the test will run and show diffs for any failures"
 	echo "--help - show this help"
-	echo "--prep - prepare files, i.e. don't check but intialise output files"
+	echo "--prep - prepare files, i.e. don't check but initialise output files"
 	echo
 	exit 0
 }
@@ -270,6 +270,6 @@ check_options $*
 # Initial setup
 mkdir -p $resultsdir
 
-# Need to do this on source'ing this file so that tests redirect correcly but
+# Need to do this on source'ing this file so that tests redirect correctly but
 # after all the data is setup
 redirect

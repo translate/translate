@@ -87,7 +87,7 @@ class Common:
     Dialect codes should have the form of:
 
     - Khmer
-    - Portugese (Brazil)
+    - Portuguese (Brazil)
     - TODO: sr_YU@Latn?
     """
 
@@ -161,7 +161,7 @@ class Common:
 
     sentenceend = ".!?…։؟।。！？።\u06d4"
     """These marks can indicate a sentence end. Once again we try to account
-    for many languages. Most langauges won't need to override this."""
+    for many languages. Most languages won't need to override this."""
 
     # The following tries to account for a lot of things. For the best idea of
     # what works, see test_common.py. We try to ignore abbreviations, for

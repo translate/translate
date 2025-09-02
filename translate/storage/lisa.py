@@ -49,7 +49,7 @@ class LISAunit(base.TranslationUnit):
 
     namespace = None
     _default_xml_space = "preserve"
-    """The default handling of spacing in the absense of an xml:space
+    """The default handling of spacing in the absence of an xml:space
     attribute.
 
     This is mostly for correcting XLIFF behaviour."""

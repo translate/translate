@@ -17,7 +17,7 @@ Formats and Converters
 
 - Properties
 
-  - Fixed hadling of plural tags for certain languages in GWT dialect
+  - Fixed handling of plural tags for certain languages in GWT dialect
   - Avoid adding trailing newlines to the files upon saving
 
 - JSON

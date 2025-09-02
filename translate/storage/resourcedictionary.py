@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Module for handling ReosurceDictionary files."""
+"""Module for handling ResourceDictionary files."""
 
 from translate.storage import flatxml
 

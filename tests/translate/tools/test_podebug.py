@@ -188,7 +188,7 @@ class TestPODebug:
         """
         Test the chef rewrite function.
 
-        This is not realy critical to test but a simple tests ensures
+        This is not really critical to test but a simple tests ensures
         that it stays working.
         """
         assert (
@@ -252,6 +252,7 @@ msgstr "Test msgstr 3"
             podebug.podebug(format="%3cf %4cF %5cb %6cB %7cd %8cs "),
         )
         results = [
+            # spellchecker:off
             "85a9 Test msgstr 1",
             "a15d Test msgstr 2",
             "6398 Test msgstr 3",
@@ -273,6 +274,7 @@ msgstr "Test msgstr 3"
             "fll fllp fkfl fkfl.p fllpth/ fll-t-fk Test msgstr 1",
             "fll fllp fkfl fkfl.p fllpth/ fll-t-fk Test msgstr 2",
             "fll fllp fkfl fkfl.p fllpth/ fll-t-fk Test msgstr 3",
+            # spellchecker:on
         ]
 
         for debug in debugs:

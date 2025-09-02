@@ -1,16 +1,16 @@
 from pytest import mark
 
-from translate.storage import omegat as ot
+from translate.storage import omegat
 
 from . import test_base
 
 
-class TestOtUnit(test_base.TestTranslationUnit):
-    UnitClass = ot.OmegaTUnit
+class TestOmegaTUnit(test_base.TestTranslationUnit):
+    UnitClass = omegat.OmegaTUnit
 
 
-class TestOtFile(test_base.TestTranslationStore):
-    StoreClass = ot.OmegaTFile
+class TestOmegaTFile(test_base.TestTranslationStore):
+    StoreClass = omegat.OmegaTFile
 
     @mark.xfail(
         reason="This doesn't work, due to two store classes handling different "

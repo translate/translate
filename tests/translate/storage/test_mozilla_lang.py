@@ -131,7 +131,7 @@ class TestMozLangFile(test_base.TestTranslationStore):
         assert bytes(store).decode("utf-8") == lang
 
     def test_multiline_comments(self):
-        """Ensure we can handle and preserve miltiline comments."""
+        """Ensure we can handle and preserve multiline comments."""
         lang = (
             "## active ##\n"
             "# First comment\n"

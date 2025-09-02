@@ -87,7 +87,7 @@ class TestTranslationUnit:
             # with the default comparison method which compare units by their
             # target and source properties only.
             # For other monolingual formats:
-            # - AndroidResourceUnit is comparing units by their full xml serialization (overriden __eq__)
+            # - AndroidResourceUnit is comparing units by their full xml serialization (overridden __eq__)
             # - iniunit, phpunit and propunit (properties) can have different source/target
             #   and are reunited when serializing through `self.translation or self.value`
             assert unit1 == unit6
@@ -352,7 +352,7 @@ class TestTranslationStore:
         self.check_equality(store, newstore)
 
     def test_markup(self):
-        """Tests that markup survives the roundtrip. Most usefull for xml types."""
+        """Tests that markup survives the roundtrip. Most useful for xml types."""
         store = self.StoreClass()
         unit = store.addsourceunit("<vark@hok.org> %d keer %2$s")
         assert unit.source == "<vark@hok.org> %d keer %2$s"

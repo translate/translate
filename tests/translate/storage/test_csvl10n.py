@@ -118,26 +118,26 @@ GENERAL@2|Notes,"cable, motor, switch"
         assert unit1.getid() != unit2.getid()
 
     def test_newline(self):
-        content = b'"location";"source";"target"\r\n"foo.c:1";"te\\nst";"ot\\nher"\r\n'
+        content = b'"location";"source";"target"\r\n"foo.c:1";"test\\none";"other\\nanother"\r\n'
         store = self.parse_store(content)
         assert len(store.units) == 1
-        assert store.units[0].source == "te\\nst"
-        assert store.units[0].target == "ot\\nher"
+        assert store.units[0].source == "test\\none"
+        assert store.units[0].target == "other\\nanother"
         assert bytes(store) == content
 
     def test_parse_sample(self):
-        content = b'"location";"source";"target"\r\n"foo.c:1";"te\\nst";"ot\\nher"\r\n'
+        content = b'"location";"source";"target"\r\n"foo.c:1";"test\\none";"other\\nanother"\r\n'
         store = self.StoreClass()
         store.parse(content, sample_length=None)
         assert len(store.units) == 1
-        assert store.units[0].source == "te\\nst"
-        assert store.units[0].target == "ot\\nher"
+        assert store.units[0].source == "test\\none"
+        assert store.units[0].target == "other\\nanother"
         assert bytes(store) == content
 
     def test_utf_8_detection(self):
         content = (
             """"location","source","target","id","fuzzy","context","translator_comments","developer_comments"\r\n"""
-            """"","Second","秒","","False","00029.00002","","# Filter Order|IDE_2ND_ORDER_FILTER"\r\n"""
+            """"","Second","秒","","False","00029.00002","","# Filter Order|IDE_ORDER_FILTER"\r\n"""
         )
         store = self.StoreClass()
         store.parse(content.encode())

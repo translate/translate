@@ -95,7 +95,7 @@ class matcher:
         Initialises the memory for later use. We use simple base units for
         speedup.
         """
-        # reverse is deprectated - just use self.sort_reverse
+        # reverse is deprecated - just use self.sort_reverse
         self.existingunits = {}
         self.candidates = base.TranslationStore()
 
@@ -112,7 +112,7 @@ class matcher:
         :param units: The units to add to the TM.
         :param store: Optional store from where some metadata can be retrieved
                       and associated with each unit.
-        :param sort: Optional parameter that can be set to False to supress
+        :param sort: Optional parameter that can be set to False to suppress
                      sorting of the candidates list. This should probably
                      only be used in :meth:`matcher.inittm`.
         """
@@ -120,7 +120,7 @@ class matcher:
             units = [units]
         for candidate in (unit for unit in units if self.usable(unit)):
             simpleunit = base.TranslationUnit("")
-            # We need to ensure that we don't pass multistrings futher, since
+            # We need to ensure that we don't pass multistrings further, since
             # some modules (like the native Levenshtein) can't use it.
             if isinstance(candidate.source, multistring):
                 if len(candidate.source.strings) > 1:

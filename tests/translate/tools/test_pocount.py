@@ -8,7 +8,7 @@ from translate.storage import po
 from translate.tools import pocount
 
 # For now test files left in the old places, but it's better to move
-# them somwhere like tests/data.
+# them somewhere like tests/data.
 _po_csv, _po_file, _po_fuzzy = test_files = [
     "tests/cli/data/test_pocount_po_csv/one.po",
     "tests/cli/data/test_pocount_po_file/one.po",
@@ -87,7 +87,7 @@ class TestCount:
 
     @mark.xfail(reason="Support commented out pending removal")
     def test_plurals_kde(self):
-        """Test that we correcly count old style KDE plurals."""
+        """Test that we correctly count old style KDE plurals."""
         self.count("_n: Singular\\n\nPlural", 2, "Een\\n\ntwee\\n\ndrie", 3)
 
     def test_msgid_blank(self):
@@ -226,7 +226,7 @@ def test_cases(opts, capsys: CaptureFixture[str], snapshot):
 )
 def test_error_cases(opts, expected):
     # We're using special case for this, to produce correct output.
-    # Also, using partial matching instead of snapshots, becouse mac-os argparse
+    # Also, using partial matching instead of snapshots, because mac-os argparse
     # output is slightly different.
     result = subprocess.run(
         [sys.executable, pocount.__file__, *opts],

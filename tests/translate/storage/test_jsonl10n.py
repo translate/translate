@@ -155,6 +155,7 @@ JSON_COMPLEX = b"""{
     ]
 }
 """
+# spellchecker:off
 JSON_COMPLEX_ARRAY = r"""[
     {
         "url": "massivholztische",
@@ -168,6 +169,7 @@ JSON_COMPLEX_ARRAY = r"""[
     }
 ]
 """.encode()
+# spellchecker:on
 JSON_GOTEXT = b"""{
     "language": "en-US",
     "messages": [
@@ -263,7 +265,7 @@ JSON_GOI18N_V2_SIMPLE = """{
 }
 """
 
-JSON_GOI18N_V2_COMPLEXE = """{
+JSON_GOI18N_V2_COMPLEX = """{
     "key": {
         "other": "value"
     },
@@ -530,6 +532,7 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
         )
 
     def test_ordering(self):
+        # spellchecker:off
         data = b"""{
     "foo": "foo",
     "bar": {
@@ -548,6 +551,7 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
         assert store.units[2].getid() == ".bar.ba2"
         assert store.units[3].getid() == ".bar.ba3"
         assert store.units[4].getid() == ".bar.ba4"
+        # spellchecker:on
 
         out = BytesIO()
         store.serialize(out)
@@ -639,7 +643,7 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
         "tsr_0": [
             [
                 "‥",
-                "Combinato Carcer Tullianum & parco"
+                "Combination Carcer Tullianum & parco"
             ],
             "Archeologico del Colosseo"
         ]
@@ -659,7 +663,7 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
         unit = self.StoreClass.UnitClass("Archeologico del Colosseo")
         unit.setid(".story_9795.tsr_0[1]")
         store.addunit(unit)
-        unit = self.StoreClass.UnitClass("Combinato Carcer Tullianum & parco")
+        unit = self.StoreClass.UnitClass("Combination Carcer Tullianum & parco")
         unit.setid(".story_9795.tsr_0[0][1]")
         store.addunit(unit)
         unit = self.StoreClass.UnitClass("‥")
@@ -1414,7 +1418,7 @@ class TestGoI18NV2JsonFile(test_monolingual.TestMonolingualStore):
 
     def test_simplification(self):
         store = self.StoreClass()
-        store.parse(JSON_GOI18N_V2_COMPLEXE)
+        store.parse(JSON_GOI18N_V2_COMPLEX)
 
         assert len(store.units) == 6
         assert store.units[0].target == "value"

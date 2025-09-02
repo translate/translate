@@ -46,7 +46,7 @@ Encoding
     Wordfast.
 
     The format is tab separated so we are able to detect UTF-16 vs Latin-1
-    by searching for the occurance of a UTF-16 tab character and then
+    by searching for the occurrence of a UTF-16 tab character and then
     continuing with the parsing.
 
 Timestamps
@@ -63,7 +63,7 @@ Header
 Escaping
     Wordfast TM implements a form of escaping that covers two aspects:
 
-    1. Placeable: bold, formating, etc.  These are left as is and ignored.  It
+    1. Placeable: bold, formatting, etc.  These are left as is and ignored.  It
        is up to the editor and future placeable implementation to manage these.
 
     2. Escapes: items that may confuse Excel or translators are escaped as
@@ -76,7 +76,7 @@ Escaping
 
 Extended Attributes
     The last 4 columns allow users to define and manage extended attributes.
-    These are left as is and are not directly managed byour implemenation.
+    These are left as is and are not directly managed byour implementation.
 """
 
 import csv
@@ -240,7 +240,7 @@ class WordfastTime:
 
     def set_timestring(self, timestring):
         """
-        Set the time_sturct object using a Wordfast time formated string.
+        Set the time_struct object using a Wordfast time formatted string.
 
         :param timestring: A Wordfast time string (YYYMMDD~hhmmss)
         :type timestring: String

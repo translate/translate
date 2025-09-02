@@ -152,7 +152,7 @@ class TranslationUnit:
         return hash((self.source, self.target, self.getid()))
 
     def __str__(self):
-        """Converts to a string representation. Most often overriden by subclasses."""
+        """Converts to a string representation. Most often overridden by subclasses."""
         # no point in showing store object.
         return ", ".join(
             f"{k}: {self.__dict__[k]}"
@@ -280,7 +280,7 @@ class TranslationUnit:
         """
         Sets the unique identified for this unit.
 
-        only implemented if format allows ids independant from other unit
+        only implemented if format allows ids independent from other unit
         properties like source or context
         """
 
@@ -412,7 +412,7 @@ class TranslationUnit:
         return bool(self.source)
 
     def marktranslatable(self, value: bool) -> None:
-        """Marks the unit as translateable or not."""
+        """Marks the unit as translatable or not."""
 
     @staticmethod
     def isfuzzy():
@@ -558,7 +558,7 @@ class TranslationStore:
     Mimetypes: ClassVar[list[str]] = []
     """A list of MIME types associated with this store type"""
     Extensions: ClassVar[list[str]] = []
-    """A list of file extentions associated with this store type"""
+    """A list of file extensions associated with this store type"""
     _binary = False
     """Indicates whether a file should be accessed as a binary file."""
     suggestions_in_format = False
@@ -724,7 +724,7 @@ class TranslationStore:
                 del self.locationindex[location]
 
     def add_unit_to_index(self, unit):
-        """Add a unit to source and location idexes."""
+        """Add a unit to source and location indices."""
         self.id_index[unit.getid()] = unit
 
         def insert_unit(source):

@@ -101,7 +101,7 @@ class TestPhp2PO:
         assert pounit.source == "Norsk bokm\u00e5l"
 
     def test_multiline(self):
-        """Checks that multiline enties can be parsed."""
+        """Checks that multiline entries can be parsed."""
         phpsource = r"""$lang['5093'] = 'Unable to connect to your IMAP server. You may have exceeded the maximum number
 of connections to this server. If so, use the Advanced IMAP Server Settings dialog to
 reduce the number of cached connections.';"""

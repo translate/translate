@@ -419,3 +419,34 @@ sort_inline_arrays = true
 sort_inline_tables = true
 sort_table_keys = true
 spaces_before_inline_comment = 2
+
+[tool.typos.default]
+extend-ignore-re = [
+  "(?Rm)^.*# codespell:ignore.*$",
+  "(?s)(#|//)\\s*spellchecker:off.*?\\n\\s*(#|//)\\s*spellchecker:on"
+]
+
+[tool.typos.default.extend-identifiers]
+plasTeX = "plasTeX"
+
+[tool.typos.default.extend-words]
+# Open Document Format acronym
+ODF = "ODF"
+Uniforum = "Uniforum"
+# Author name
+Wil = "Wil"
+
+[tool.typos.files]
+extend-exclude = [
+  "docs/commands/poterminology_stopword_file.rst",
+  "tests/odf_xliff/test_inline-test_odf2xliff_inline-reference.xlf",
+  "tests/translate/filters/test_checks.py",
+  "tests/translate/lang/test_*.py",
+  "tests/translate/lang/test_identify.py",
+  "tests/xliff_conformance/af-pootle.po",
+  "tests/xliff_conformance/en-US.sdf",
+  "translate/lang/data.py",
+  "translate/lang/st.py",
+  "translate/share/langmodels/*.lm",
+  "translate/share/stoplist-en"
+]

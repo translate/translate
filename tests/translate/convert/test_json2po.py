@@ -82,7 +82,7 @@ msgstr ""
         poresult = self.json2po(jsonsource, filter=["text"])
         assert str(poresult.units[1]) == poexpected
 
-    def test_miltiple_units(self):
+    def test_multiple_units(self):
         """Test that we can handle json with multiple units."""
         jsonsource = """
 {

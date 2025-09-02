@@ -65,7 +65,7 @@ class TestHTMLParsing:
     def test_escaping_script_and_pre(self):
         """
         <script> and <pre> can contain < and > and these should not be
-        interpretted as tags.
+        interpreted as tags.
         """
         h = html.htmlfile()
         store = h.parsestring(

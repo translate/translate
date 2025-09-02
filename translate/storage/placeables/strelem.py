@@ -54,7 +54,7 @@ class StringElem:
     has_content = True
     """Whether this string can have sub-elements."""
     iseditable = True
-    """Whether this string should be changable by the user. Not used at
+    """Whether this string should be changeable by the user. Not used at
     the moment."""
     isfragile = False
     """Whether this element should be deleted in its entirety when partially
@@ -298,7 +298,7 @@ class StringElem:
             parent = self.get_parent_elem(start["elem"])
             offset = parent.elem_offset(start["elem"])
             # Filter out start['elem'] below with a list comprehension in stead
-            # of using parent.sub.remove(), becase list.remove() tests value
+            # of using parent.sub.remove(), because list.remove() tests value
             # and not identity, which is what we want here. This ensures that
             # start['elem'] is removed and not the first element that is equal
             # to it.

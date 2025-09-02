@@ -90,7 +90,7 @@ class MD2POOptionParser(convert.ConvertOptionParser):
     def checkoutputsubdir(self, options, subdir):
         """
         Check if subdir under options.output needs to be created, and
-        create if neccessary. Do nothing if in single-output-file mode. (override).
+        create if necessary. Do nothing if in single-output-file mode. (override).
         """
         if hasattr(self, "outputstore"):
             return

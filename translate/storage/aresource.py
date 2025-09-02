@@ -54,7 +54,7 @@ class DecodingXMLParser:
     """
 
     EMIT_DEPTH = 1
-    FOREGIN_DTD = True
+    FOREIGN_DTD = True
 
     def __init__(self, text: str, *, escape_all: bool = True):
         self.text = text.encode("utf-8")
@@ -68,8 +68,8 @@ class DecodingXMLParser:
         self.depth = 0
         self.escape_all = escape_all
         self.parser = parser = ParserCreate()
-        if self.FOREGIN_DTD:
-            parser.UseForeignDTD(self.FOREGIN_DTD)
+        if self.FOREIGN_DTD:
+            parser.UseForeignDTD(self.FOREIGN_DTD)
         parser.SetParamEntityParsing(XML_PARAM_ENTITY_PARSING_NEVER)
         parser.StartElementHandler = self.StartElementHandler
         parser.EndElementHandler = self.EndElementHandler
@@ -225,7 +225,7 @@ class DecodingXMLParser:
 
 class EncodingXMLParser(DecodingXMLParser):
     EMIT_DEPTH = 0
-    FOREGIN_DTD = False
+    FOREIGN_DTD = False
 
     def process_string(self, text: str) -> tuple[str, bool, bool]:
         return (
@@ -346,11 +346,11 @@ class AndroidResourceUnit(base.TranslationUnit):
 
     def get_xml_text_value(self, xmltarget):
         raw_xml = etree.tostring(xmltarget, encoding="unicode", with_tail=False)
-        # Use decoding parser to keep XML entitities, CDATA while processing Android escaping
+        # Use decoding parser to keep XML entities, CDATA while processing Android escaping
         parser = DecodingXMLParser(raw_xml, escape_all=self.ESCAPE_ALL)
 
         # Unescape as plain text in case there is no XML markup. Ufortunately
-        # CDATA elements are not listed as childs in lxml, so test for it in raw XML.
+        # CDATA elements are not listed as children in lxml, so test for it in raw XML.
         if len(xmltarget) == 0 and "<![CDATA[" not in raw_xml:
             if xmltarget.text is None:
                 return ""

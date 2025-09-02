@@ -51,7 +51,7 @@ Announcements
 
 1. On **first release with deprecation** highlight that the feature is
    deprecated in this release and explain reasons and alternate approaches.
-2. On **second relase** warn that the feature will be removed in the next
+2. On **second release** warn that the feature will be removed in the next
    release.
 3. On **third release** remove the feature and announce removal in the release
    announcements.

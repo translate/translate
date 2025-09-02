@@ -353,18 +353,18 @@ foo: "Hello \n World."
         reason="Empty keys serialization broken in ruamel.yaml<0.16.6",
     )
     def test_empty_key(self):
-        yaml_souce = b"""'': Jedna
+        yaml_source = b"""'': Jedna
 foo:
   '': Dve
 """
         store = self.StoreClass()
-        store.parse(yaml_souce)
+        store.parse(yaml_source)
         assert len(store.units) == 2
         assert store.units[0].getid() == ""
         assert store.units[0].source == "Jedna"
         assert store.units[1].getid() == "foo->"
         assert store.units[1].source == "Dve"
-        assert bytes(store) == yaml_souce
+        assert bytes(store) == yaml_source
 
     def test_dict_in_list(self):
         data = """e1:

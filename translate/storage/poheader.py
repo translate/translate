@@ -259,7 +259,7 @@ class poheader:
     def _insert_header(self, header):
         # we should be using .addunit() or some equivalent in case the
         # unit needs to refer back to the store, etc. This might be
-        # subtly broken for POXLIFF, since we don't dupliate the code
+        # subtly broken for POXLIFF, since we don't duplicate the code
         # from lisa::addunit().
         header._store = self
         self.units.insert(0, header)

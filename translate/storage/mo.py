@@ -131,7 +131,7 @@ class mounit(base.TranslationUnit):
         return not self.source
 
     def istranslatable(self):
-        """Is this message translateable?."""
+        """Is this message translatable?."""
         return bool(self.source)
 
 

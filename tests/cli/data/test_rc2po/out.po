@@ -27,7 +27,7 @@ msgid "Close"
 msgstr ""
 
 #: DIALOGEX.IDD_REGGHC_DIALOG.PUSHBUTTON.IDC_BUTTON1
-msgid "Activate instalation"
+msgid "Activate installation"
 msgstr ""
 
 #: DIALOGEX.IDD_REGGHC_DIALOG.CTEXT.IDC_STATIC1

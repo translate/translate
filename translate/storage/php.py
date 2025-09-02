@@ -360,7 +360,7 @@ class phpfile(base.TranslationStore):
         def handle_array(unit, arrname, handled, indent=0):
             if arrname in handled:
                 return
-            childs = set()
+            children = set()
             # Default to classic array
             init = "array("
             close = ")"
@@ -388,7 +388,9 @@ class phpfile(base.TranslationStore):
                     continue
                 name = item.name[pref_len:]
                 if "->" in name:
-                    handle_array(item, prefix + name.split("->", 1)[0], childs, indent)
+                    handle_array(
+                        item, prefix + name.split("->", 1)[0], children, indent
+                    )
                 else:
                     write(item.getoutput(" " * indent, name))
             # Write array end

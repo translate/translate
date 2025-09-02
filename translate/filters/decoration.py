@@ -122,18 +122,18 @@ def findaccelerators(str1, accelmarker, acceptlist=None):
     """
     accelerators = []
     badaccelerators = []
-    currentpos = 0
-    while currentpos >= 0:
-        currentpos = str1.find(accelmarker, currentpos)
-        if currentpos >= 0:
-            accelstart = currentpos
-            currentpos += len(accelmarker)
+    current_position = 0
+    while current_position >= 0:
+        current_position = str1.find(accelmarker, current_position)
+        if current_position >= 0:
+            accelstart = current_position
+            current_position += len(accelmarker)
             # we assume accelerators are single characters
-            accelend = currentpos + 1
+            accelend = current_position + 1
             if accelend > len(str1):
                 break
-            accelerator = str1[currentpos:accelend]
-            currentpos = accelend
+            accelerator = str1[current_position:accelend]
+            current_position = accelend
             if isvalidaccelerator(accelerator, acceptlist):
                 accelerators.append((accelstart, accelerator))
             else:
@@ -147,49 +147,49 @@ def findmarkedvariables(str1, startmarker, endmarker, ignorelist=[]):
     marker.
     """
     variables = []
-    currentpos = 0
-    while currentpos >= 0:
+    current_position = 0
+    while current_position >= 0:
         variable = None
-        currentpos = str1.find(startmarker, currentpos)
-        if currentpos >= 0:
-            startmatch = currentpos
-            currentpos += len(startmarker)
+        current_position = str1.find(startmarker, current_position)
+        if current_position >= 0:
+            startmatch = current_position
+            current_position += len(startmarker)
             if endmarker is None:
                 # handle case without an end marker - use any non-alphanumeric
                 # character as the end marker, var must be len > 1
-                endmatch = currentpos
-                for n in range(currentpos, len(str1)):
+                endmatch = current_position
+                for n in range(current_position, len(str1)):
                     if not (str1[n].isalnum() or str1[n] == "_"):
                         endmatch = n
                         break
-                if currentpos == endmatch:
+                if current_position == endmatch:
                     endmatch = len(str1)
-                if currentpos < endmatch:
-                    variable = str1[currentpos:endmatch]
-                currentpos = endmatch
+                if current_position < endmatch:
+                    variable = str1[current_position:endmatch]
+                current_position = endmatch
             elif isinstance(endmarker, int):
                 # setting endmarker to an int means it is a fixed-length
                 # variable string (usually endmarker==1)
-                endmatch = currentpos + endmarker
+                endmatch = current_position + endmarker
                 if endmatch > len(str1):
                     break
-                variable = str1[currentpos:endmatch]
-                currentpos = endmatch
+                variable = str1[current_position:endmatch]
+                current_position = endmatch
             else:
-                endmatch = str1.find(endmarker, currentpos)
+                endmatch = str1.find(endmarker, current_position)
                 if endmatch == -1:
                     break
                 # search backwards in case there's an intervening startmarker
                 # (if not it's OK)...
-                start2 = str1.rfind(startmarker, currentpos, endmatch)
+                start2 = str1.rfind(startmarker, current_position, endmatch)
                 if start2 != -1:
                     startmatch2 = start2
                     start2 += len(startmarker)
-                    if start2 != currentpos:
-                        currentpos = start2
+                    if start2 != current_position:
+                        current_position = start2
                         startmatch = startmatch2
-                variable = str1[currentpos:endmatch]
-                currentpos = endmatch + len(endmarker)
+                variable = str1[current_position:endmatch]
+                current_position = endmatch + len(endmarker)
             if variable is not None and variable not in ignorelist:
                 if not variable or variable.replace("_", "").replace(".", "").isalnum():
                     variables.append((startmatch, variable))

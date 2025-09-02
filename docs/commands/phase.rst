@@ -106,7 +106,7 @@ These are the commands that you can use:
   strings and words under review
 * checkinpo <language-dir> <phase-list> <phase-name> -- cvs checkin the files
   in the given phase
-* creategsi <language-dir> <en-US.gsi> <traget-language> -- creates a BZ2
+* creategsi <language-dir> <en-US.gsi> <target-language> -- creates a BZ2
   GSI/SDF file for the language against the en-US GSI file
 * reviewsinout <language> <phase-name> -- counts the number of review files
   returned vs sent and shows which are missing

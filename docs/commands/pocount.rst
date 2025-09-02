@@ -6,7 +6,7 @@ pocount
 
 pocount will count the number of strings and words in translatable files.
 
-Supported formates include: PO and XLIFF.   Almost all bilingual file formats
+Supported formats include: PO and XLIFF.   Almost all bilingual file formats
 supported by the Translate Toolkit will work with pocount, including: :doc:`TMX
 </formats/tmx>`, :doc:`TBX </formats/tbx>`, :doc:`Gettext .mo </formats/mo>`,
 :doc:`Qt .qm </formats/qm>`, :doc:`Wordfast .txt TM </formats/wordfast>`.

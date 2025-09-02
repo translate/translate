@@ -39,7 +39,7 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
         """Parses the command line options, handling implicit input/output args."""
         (options, args) = super().parse_args(args, values)
         if not options.output:
-            self.error("Output file is rquired")
+            self.error("Output file is required")
         return (options, args)
 
     def set_usage(self, usage=None):
@@ -123,7 +123,7 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
 
 
 def main():
-    # outputfile extentions will actually be determined by the comments in the
+    # outputfile extensions will actually be determined by the comments in the
     # po files
     pooutput = ("po", None)
     formats = {(None, None): pooutput, ("po", "po"): pooutput, "po": pooutput}

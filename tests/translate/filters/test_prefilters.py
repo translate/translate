@@ -14,9 +14,9 @@ def test_filterwordswithpunctuation():
     filtered = prefilters.filterwordswithpunctuation(string)
     assert filtered == string
     # test listed words (start / end with apostrophe)
-    string = "'n Boom het 'n tak."
+    string = "'n Boom het 'n tak."  # codespell:ignore
     filtered = prefilters.filterwordswithpunctuation(string)
-    assert filtered == "n Boom het n tak."
+    assert filtered == "n Boom het n tak."  # codespell:ignore
     # test words containing apostrophe
     string = "It's in it's own place."
     filtered = prefilters.filterwordswithpunctuation(string)

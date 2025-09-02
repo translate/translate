@@ -275,7 +275,7 @@ def generate_popup_pre_name(pre_name, caption):
     Return the pre-name generated for subelements of a popup.
 
     :param pre_name: The pre_name that already have the popup.
-    :param caption: The caption (whitout quotes) of the popup.
+    :param caption: The caption (without quotes) of the popup.
 
     :return: The subelements pre-name based in the pre-name of the popup and
              its caption.

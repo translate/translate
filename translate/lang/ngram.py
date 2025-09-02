@@ -22,7 +22,7 @@
 """
 Ngram models for language guessing.
 
-.. note:: Orignal code from http://thomas.mangin.me.uk/data/source/ngram.py
+.. note:: Original code from http://thomas.mangin.me.uk/data/source/ngram.py
 """
 
 import glob

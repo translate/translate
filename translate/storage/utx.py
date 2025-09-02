@@ -35,7 +35,7 @@ Specification
     <http://www.aamt.info/english/utx/#Download>`_ may be downloaded instead).
 
 Format Implementation
-    The UTX format is a Tab Seperated Value (TSV) file in UTF-8.  The
+    The UTX format is a Tab Separated Value (TSV) file in UTF-8.  The
     first two lines are headers with subsequent lines containing a
     single source target definition.
 

@@ -7,7 +7,7 @@ from translate.storage import properties
 
 from . import test_monolingual
 
-# Note that DialectJava delimitors are ["=", ":", " "]
+# Note that DialectJava delimiters are ["=", ":", " "]
 
 
 def test_find_delimiter_pos_simple():
@@ -509,7 +509,7 @@ key=value
         assert unit.source == "valú"
 
     def test_fullspec_delimiters(self):
-        """Test the full definiation as found in Java docs."""
+        """Test the full definition as found in Java docs."""
         proplist = [
             "Truth = Beauty\n",
             "       Truth:Beauty",
@@ -524,7 +524,7 @@ key=value
             assert propunit.source == "Beauty"
 
     def test_fullspec_escaped_key(self):
-        """Escaped delimeters can be in the key."""
+        """Escaped delimiters can be in the key."""
         prop_source = "\\:\\="
         prop_store = self.propparse(prop_source)
         assert len(prop_store.units) == 1

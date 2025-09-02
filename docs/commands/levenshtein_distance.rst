@@ -37,12 +37,12 @@ The following things should be noted:
   default) should therefore not be considered authoritative.
 
 
-.. _levenshtein_distance#shortcommings:
+.. _levenshtein_distance#shortcomings:
 
-Shortcommings
-=============
+Shortcomings
+============
 
-The following shortcommings have been identified:
+The following shortcomings have been identified:
 
 * **Cases sensitivity:** *'E'* and *'e'* are considered different characters and
   according differ as much as *'z'* and *'e'*. This is not ideal, as case

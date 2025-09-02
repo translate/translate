@@ -28,7 +28,7 @@ from translate.lang.common import Common
 
 
 class pt_BR(Common):
-    """This class represents Brazilian Portugues."""
+    """This class represents Brazilian Portuguese."""
 
     miscpunc = Common.miscpunc.replace("·", "")  # Middle dot is not valid.
 

@@ -266,7 +266,7 @@ class tsunit(lisa.LISAunit):
             return None
 
         # XXX: context_name is not supposed to be able to be None (the <name>
-        # tag is compulsary in the <context> tag)
+        # tag is compulsory in the <context> tag)
         if context_name is not None:
             if self.source:
                 return context_name + self.source

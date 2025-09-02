@@ -144,7 +144,7 @@ class Html2POOptionParser(convert.ConvertOptionParser):
     def checkoutputsubdir(self, options, subdir):
         """
         Check if subdir under options.output needs to be created,
-        creates if neccessary. Do nothing if in single-output-file mode. (override).
+        creates if necessary. Do nothing if in single-output-file mode. (override).
         """
         if hasattr(self, "outputstore"):
             return

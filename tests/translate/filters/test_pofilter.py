@@ -76,13 +76,13 @@ class BaseTestFilter:
         assert len(errors) == 1
         assert "untranslated" in errors
 
-    def test_non_existant_check(self):
-        """Check that we report an error if a user tries to run a non-existant test."""
+    def test_non_existent_check(self):
+        """Check that we report an error if a user tries to run a non-existent test."""
         filter_result = self.filter(
-            self.translationstore, cmdlineoptions=["-t nonexistant"]
+            self.translationstore, cmdlineoptions=["-t nonexistent"]
         )
         # TODO Not sure how to check for the stderror result of: warning: could
-        # not find filter  nonexistant
+        # not find filter  nonexistent
         assert headerless_len(filter_result.units) == 0
 
     def test_list_all_tests(self):

@@ -55,8 +55,10 @@ class TestWFUnit(test_base.TestTranslationUnit):
         ]:  # Only common and Windows, not testing Mac
             compare(real, escaped)
         # Real world cases
-        unit = self.UnitClass("Open &File. ’n Probleem.")
-        assert unit.dict["source"] == "Open &'26;File. &'92;n Probleem."
+        unit = self.UnitClass("Open &File. ’n Probleem.")  # codespell:ignore
+        assert (
+            unit.dict["source"] == "Open &'26;File. &'92;n Probleem."
+        )  # codespell:ignore
 
     def test_newlines(self):
         """Wordfast does not like real newlines."""

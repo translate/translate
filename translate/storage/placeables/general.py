@@ -88,7 +88,7 @@ class QtFormattingPlaceable(Ph):
 
     Implemented following Qt documentation on
     `QString::arg <http://doc.trolltech.com/4.5/qstring.html#arg>`_ where
-    the placeables are refered to as 'place markers'
+    the placeables are referred to as 'place markers'
 
     Notes
     -----

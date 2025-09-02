@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""module for parsing TMX translation memeory files."""
+"""module for parsing TMX translation memory files."""
 
 from lxml import etree
 

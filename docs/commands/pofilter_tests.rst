@@ -528,8 +528,8 @@ placeholders enclosed in braces. The placeholders can be named,
 numbered, or anonymous; the former two are filled in from positional
 args, the latter from keyword arguments. Example::
 
-    'the {} {0} hungry {insect}'.format('very', insect='caterpiller')
-    # --> 'the very very hungry caterpiller'
+    'the {} {0} hungry {insect}'.format('very', insect='caterpillar')
+    # --> 'the very very hungry caterpillar'
 
 The ``pythonbraceformat`` filter checks for the following problems:
 

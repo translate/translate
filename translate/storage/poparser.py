@@ -147,7 +147,7 @@ def parse_comment(parse_state, unit):
             parsed |= parse_prev_msgid(ps, unit)
             # Parse the msgid_plural if any
             parsed |= parse_prev_msgid_plural(ps, unit)
-            # Fail with error in csae nothing was parsed
+            # Fail with error in case nothing was parsed
             if not parsed:
                 raise PoParseError(parse_state)
             return parse_state.next_line

@@ -39,7 +39,7 @@ Formats and Converters
 
 - RC
 
-  - Fix parsing adjancent strings
+  - Fix parsing adjacent strings
   - Fix handling empty strings
 
 - po2json

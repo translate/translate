@@ -7,7 +7,7 @@ def test_find_all():
     assert list(quote.find_all("a", "b")) == []
     assert list(quote.find_all("a", "a")) == [0]
     assert list(quote.find_all("aa", "a")) == [0, 1]
-    assert list(quote.find_all("abba", "ba")) == [2]
+    assert list(quote.find_all("abba", "ba")) == [2]  # codespell:ignore
     # check we skip the whole instance
     assert list(quote.find_all("banana", "ana")) == [1]
 

@@ -33,14 +33,14 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def find_all(searchin: str, substr: str) -> Iterable[int]:
+def find_all(searching: str, substr: str) -> Iterable[int]:
     """
-    Returns a list of locations where substr occurs in searchin locations
+    Returns a list of locations where substr occurs in searching locations
     are not allowed to overlap.
     """
     location = 0
     substr_len = len(substr)
-    while (location := searchin.find(substr, location)) != -1:
+    while (location := searching.find(substr, location)) != -1:
         yield location
         location += substr_len
 

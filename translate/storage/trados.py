@@ -126,7 +126,7 @@ class TradosTxtDate:
 
     def set_timestring(self, timestring):
         """
-        Set the time_struct object using a Trados time formated string.
+        Set the time_struct object using a Trados time formatted string.
 
         :param timestring: A Trados time string (DDMMYYYY, hh:mm:ss)
         :type timestring: String
