@@ -2017,7 +2017,7 @@ class StandardChecker(TranslationChecker):
         not raise errors e.g. program names, brand names, function names.
 
         The checker works with `PyEnchant
-        <http://pythonhosted.org/pyenchant/>`_. You need to have PyEnchant
+        <https://pyenchant.github.io/pyenchant/>`_. You need to have PyEnchant
         installed as well as a dictionary for your language (for example, one
         of the `Hunspell <https://wiki.openoffice.org/wiki/Dictionaries>`_ or
         `aspell <http://ftp.gnu.org/gnu/aspell/dict/>`_ dictionaries). This
