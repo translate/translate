@@ -229,7 +229,7 @@ class RubyYAMLFile(YAMLFile):
 
             # Skip blank values (all plurals are None)
             if not all(value is None for value in values):
-                # Use blank string insted of None here
+                # Use blank string instead of None here
                 yield (prev, multistring([value or "" for value in values]))
 
             return

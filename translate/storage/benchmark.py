@@ -167,7 +167,7 @@ if __name__ == "__main__":
             5,
             10,
         ),  # Creat 1 very large file with German like ratios or source to target
-        # (100, 10, 10, 5, 10),   # Create lots of directories and files with smaller then avarage size
+        # (100, 10, 10, 5, 10),   # Create lots of directories and files with smaller then average size
         # (1, 5, 10, 10, 10),
         # (1, 10, 10, 10, 10),
         # (5, 10, 10, 10, 10),

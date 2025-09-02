@@ -165,7 +165,7 @@ class tbxunit(lisa.LISAunit):
             ).strip().lower() in {
                 "deprecated",
                 "deprecatedtermadmnsts",
-                "deprecatedterm-admn-sts",
+                "deprecatedterm-admn-sts",  # codespell:ignore
             }:
                 return True
 

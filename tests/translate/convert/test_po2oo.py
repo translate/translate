@@ -107,7 +107,7 @@ class TestPO2OO:
     def test_roundtrip_spaces(self):
         # FIXME: this test fails because the resultant PO file returns as po.isempty since .isblank returns true
         # which is caused by isblankmsgtr returning True.  Its a complete mess which would mean unravelling lots
-        # of yuch in pypo.  Until we have time to do that unravelling we're diabling this test.  You can reenable
+        # of yuch in pypo.  Until we have time to do that unravelling we're disabling this test.  You can reenable
         # once we've fixed that.
         """Checks that (escaped) quotes in strings make it through a oo->po->oo roundtrip."""
         self.check_roundtrip(" ")

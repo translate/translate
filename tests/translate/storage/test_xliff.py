@@ -741,11 +741,13 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert len(xlifffile.units) == 100_000
 
     def test_preserve_add(self):
+        # spellchecker:off
         target = """Por favor, ten a la mano los siguientes documentos para completar el proceso:
 • INE (Credencial para votar) o pasaporte, vigentes
 • Carátula del estado de cuenta bancario personal
 • Cuenta CLABE Bancaria
 • Constancia de Situación Fiscal con el Régimen de Sueldos y Salarios e Ingresos Asimilados a Salarios, con una vigencia no mayor a 90 días, completa, en FORMATO PDF"""
+        # spellchecker:on
         xlfsource_template = """<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
   <file datatype="xml" source-language="en-US" target-language="en-US" original="Email - SMTP API">

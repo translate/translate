@@ -26,6 +26,7 @@ Functions to manage Poedit's language features.
 """
 
 lang_codes = {
+    # spellchecker:off
     "aa": "Afar",
     "ab": "Abkhazian",
     "ae": "Avestan",
@@ -191,6 +192,7 @@ lang_codes = {
     "za": "Zhuang",
     "zh": "Chinese",
     "zu": "Zulu",
+    # spellchecker:on
 }
 """ISO369 codes and names as used by Poedit.
 Mostly these are identical to ISO 639, but there are some differences."""

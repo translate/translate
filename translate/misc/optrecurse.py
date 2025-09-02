@@ -266,7 +266,7 @@ class RecursiveOptionParser(optparse.OptionParser):
     def define_option(self, option):
         """
         Defines the given option, replacing an existing one of the same
-        short name if neccessary...
+        short name if necessary...
         """
         for short_opt in option._short_opts:
             if self.has_option(short_opt):
@@ -702,7 +702,7 @@ class RecursiveOptionParser(optparse.OptionParser):
 
     @staticmethod
     def mkdir(parent, subdir):
-        """Makes a subdirectory (recursively if neccessary)."""
+        """Makes a subdirectory (recursively if necessary)."""
         if not os.path.isdir(parent):
             raise ValueError(
                 f"cannot make child directory {subdir!r} if parent {parent!r} does not exist"
@@ -717,7 +717,7 @@ class RecursiveOptionParser(optparse.OptionParser):
     def checkoutputsubdir(self, options, subdir):
         """
         Checks to see if subdir under options.output needs to be created,
-        creates if neccessary.
+        creates if necessary.
         """
         fullpath = os.path.join(options.output, subdir)
         if not os.path.isdir(fullpath):

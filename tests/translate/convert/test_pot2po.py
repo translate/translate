@@ -148,7 +148,7 @@ msgstr[1] "%d handleidings."
 
     @mark.xfail(reason="Not Implemented - needs review")
     def test_merging_accelerator_changes(self):
-        """Test that a change in the accelerator localtion still allows merging."""
+        """Test that a change in the accelerator location still allows merging."""
         potsource = """#: someline.c\nmsgid "A&bout"\nmsgstr ""\n"""
         posource = """#: someline.c\nmsgid "&About"\nmsgstr "&Info"\n"""
         poexpected = """#: someline.c\nmsgid "A&bout"\nmsgstr "&Info"\n"""
@@ -175,7 +175,7 @@ msgstr[1] "%d handleidings."
         newpounit = self.singleunit(newpo)
         assert str(newpounit) == posource
 
-    def test_merging_automatic_comments_new_overides_old(self):
+    def test_merging_automatic_comments_new_overrides_old(self):
         """Ensure that new #. comments override the old comments."""
         potsource = """#. new comment\n#: someline.c\nmsgid "&About"\nmsgstr ""\n"""
         posource = """#. old comment\n#: someline.c\nmsgid "&About"\nmsgstr "&Info"\n"""
@@ -283,7 +283,7 @@ msgstr "Sertifikate"
 
     def test_merging_obsoleting_messages(self):
         """Check that we obsolete messages no longer present in the new file."""
-        # add emtpy msgid line to help factory identify format
+        # add empty msgid line to help factory identify format
         potsource = 'msgid ""\nmsgstr ""\n'
         posource = '# Some comment\n#. Extracted comment\n#: obsoleteme:10\nmsgid "One"\nmsgstr "Een"\n'
         expected = '# Some comment\n#~ msgid "One"\n#~ msgstr "Een"\n'
@@ -294,7 +294,7 @@ msgstr "Sertifikate"
 
     def test_not_obsoleting_empty_messages(self):
         """Check that we don't obsolete (and keep) untranslated messages."""
-        # add emtpy msgid line to help factory identify format
+        # add empty msgid line to help factory identify format
         potsource = 'msgid ""\nmsgstr ""\n'
         posource = '#: obsoleteme:10\nmsgid "One"\nmsgstr ""\n'
         newpo = self.convertpot(potsource, posource)
@@ -322,11 +322,11 @@ msgstr "Sertifikate"
         assert str(newpo.units[1]) == potsource
         assert str(newpo.units[2]) == posource
 
-    def test_merging_resurect_obsolete_messages(self):
+    def test_merging_resurrect_obsolete_messages(self):
         """Check that we can reuse old obsolete messages if the message comes back."""
-        potsource = """#: resurect.c\nmsgid "&About"\nmsgstr ""\n"""
+        potsource = """#: resurrect.c\nmsgid "&About"\nmsgstr ""\n"""
         posource = """#~ msgid "&About"\n#~ msgstr "&Omtrent"\n"""
-        expected = """#: resurect.c\nmsgid "&About"\nmsgstr "&Omtrent"\n"""
+        expected = """#: resurrect.c\nmsgid "&About"\nmsgstr "&Omtrent"\n"""
         newpo = self.convertpot(potsource, posource)
         print(newpo)
         assert len(newpo.units) == 2
@@ -334,15 +334,15 @@ msgstr "Sertifikate"
         newpounit = self.singleunit(newpo)
         assert str(newpounit) == expected
 
-    def test_merging_resurect_obsolete_messages_into_msgidcomment(self):
+    def test_merging_resurrect_obsolete_messages_into_msgidcomment(self):
         """Check that we can reuse old obsolete messages even if the recipient has a msgidcomment."""
         potsource = (
-            """#: resurect1.c\nmsgid "About"\nmsgstr ""\n\n"""
-            """#: resurect2.c\nmsgid ""\n"_: resurect2.c\\n"\n"About"\nmsgstr ""\n"""
+            """#: resurrect1.c\nmsgid "About"\nmsgstr ""\n\n"""
+            """#: resurrect2.c\nmsgid ""\n"_: resurrect2.c\\n"\n"About"\nmsgstr ""\n"""
         )
         posource = """#~ msgid "About"\n#~ msgstr "Omtrent"\n"""
-        expected1 = """#: resurect1.c\nmsgid "About"\nmsgstr "Omtrent"\n"""
-        expected2 = """#: resurect2.c\n#, fuzzy\nmsgid ""\n"_: resurect2.c\\n"\n"About"\nmsgstr "Omtrent"\n"""
+        expected1 = """#: resurrect1.c\nmsgid "About"\nmsgstr "Omtrent"\n"""
+        expected2 = """#: resurrect2.c\n#, fuzzy\nmsgid ""\n"_: resurrect2.c\\n"\n"About"\nmsgstr "Omtrent"\n"""
         newpo = self.convertpot(potsource, posource)
         print(newpo)
         assert len(newpo.units) == 3

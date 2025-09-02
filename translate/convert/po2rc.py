@@ -207,8 +207,8 @@ class rerc:
             yield self.sublang
 
     def convert_popup(self, popup, pre_name, ident=1):
-        identation = " " * (4 * ident)
-        yield identation
+        indentation = " " * (4 * ident)
+        yield indentation
         yield popup.block_type
         if popup.caption:
             yield " "
@@ -231,7 +231,7 @@ class rerc:
         yield from popup.post_caption  # The rest of the options
         yield self.templatestore.newline
 
-        yield identation
+        yield indentation
         yield BLOCK_START
         yield self.templatestore.newline
 
@@ -241,7 +241,7 @@ class rerc:
                 continue
 
             if element.block_type and element.block_type == "MENUITEM":
-                yield identation
+                yield indentation
                 yield "    MENUITEM"
                 yield " "
 
@@ -273,7 +273,7 @@ class rerc:
                         generate_popup_pre_name(pre_name, popup.caption[1:-1]),
                         ident + 1,
                     )
-        yield identation
+        yield indentation
         yield BLOCK_END
         yield self.templatestore.newline
 

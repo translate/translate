@@ -266,7 +266,7 @@ class TestDTD(test_monolingual.TestMonolingualStore):
 <ul>
   <li>Web addresses are usually written like
     <strong>http://www.example.com/</strong></li>
-  <li>Make sure that youre using forward slashes (i.e.
+  <li>Make sure that your using forward slashes (i.e.
     <strong>/</strong>).</li>
 </ul>
 ">

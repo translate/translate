@@ -125,7 +125,7 @@ class po_error_handler(Structure):
 
 xerror_storage = threading.local()
 
-ignored_erorrs = {
+ignored_errors = {
     # TODO: this is probably bug somewhere in cpo, but
     # it used to be silently ignored before the exceptions
     # were raised, so it is left to fixing separately
@@ -137,7 +137,7 @@ ignored_erorrs = {
 
 def trigger_exception(severity, filename, lineno, column, message_text):
     # Severity 0 is warning, severity 1 error, severity 2 critical
-    if severity >= 1 and message_text not in ignored_erorrs:
+    if severity >= 1 and message_text not in ignored_errors:
         if filename:
             detail = f"{filename}:{lineno}:{column}: {message_text}"
         else:

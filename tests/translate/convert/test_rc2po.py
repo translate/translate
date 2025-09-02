@@ -3,6 +3,7 @@ from translate.storage.po import pofile
 
 from . import test_convert
 
+# spellcheck:off
 RC_SOURCE = r"""
 #include "other_file.h" // This must be ignored
 
@@ -68,6 +69,7 @@ BEGIN
    END
 END
 """
+# spellcheck:on
 
 
 class TestRC2POCommand(test_convert.TestConvertCommand):

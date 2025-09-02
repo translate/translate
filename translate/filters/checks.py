@@ -242,10 +242,10 @@ class CheckerConfig:
     @staticmethod
     def _init_list(list):
         """
-        Initialise configuration paramaters that are lists.
+        Initialise configuration parameters that are lists.
 
         :type list: List
-        :param list: None (we'll initialise a blank list) or a list paramater
+        :param list: None (we'll initialise a blank list) or a list parameter
         :rtype: List
         """
         if list is None:
@@ -258,9 +258,9 @@ class CheckerConfig:
         """
         Initialise parameters that can have default options.
 
-        :param param: the user supplied paramater value
+        :param param: the user supplied parameter value
         :param default: default values when param is not specified
-        :return: the paramater as specified by the user of the default settings
+        :return: the parameter as specified by the user of the default settings
         """
         if param is None:
             return default
@@ -1720,7 +1720,7 @@ class StandardChecker(TranslationChecker):
         iter = self.config.lang.word_iter(str1)
         str2 = self.filteraccelerators(self.filtervariables(str2))
 
-        # TODO: strip XML? - should provide better error messsages
+        # TODO: strip XML? - should provide better error messages
         # see mail/chrome/messanger/smime.properties.po
         # TODO: consider limiting the word length for recognising acronyms to
         # something like 5/6 characters
@@ -1784,9 +1784,9 @@ class StandardChecker(TranslationChecker):
 
         # The above is full of strange quotes and things in utf-8 encoding.
         # single apostrophe perhaps problematic in words like "doesn't"
-        for seperator in self.config.punctuation:
-            str1 = str1.replace(seperator, " ")
-            str2 = str2.replace(seperator, " ")
+        for separator in self.config.punctuation:
+            str1 = str1.replace(separator, " ")
+            str2 = str2.replace(separator, " ")
 
         words1 = self.filteraccelerators(str1).split()
         words2 = self.filteraccelerators(str2).split()
@@ -1821,9 +1821,9 @@ class StandardChecker(TranslationChecker):
 
         # The above is full of strange quotes and things in utf-8 encoding.
         # single apostrophe perhaps problematic in words like "doesn't"
-        for seperator in self.config.punctuation:
-            str1 = str1.replace(seperator, " ")
-            str2 = str2.replace(seperator, " ")
+        for separator in self.config.punctuation:
+            str1 = str1.replace(separator, " ")
+            str2 = str2.replace(separator, " ")
 
         words1 = self.filteraccelerators(str1).split()
         words2 = self.filteraccelerators(str2).split()
@@ -2374,6 +2374,7 @@ mozillaconfig = CheckerConfig(
 
 class MozillaChecker(StandardChecker):
     accelerators_skipped_scripts = [
+        # spellchecker:off
         "Deva",
         "Beng",
         "Tibt",
@@ -2390,6 +2391,7 @@ class MozillaChecker(StandardChecker):
         "perso-arabic",
         "mon",
         "chinese",
+        # spellchecker:on
     ]
 
     def __init__(self, **kwargs):
@@ -2424,7 +2426,7 @@ class MozillaChecker(StandardChecker):
     mozilla_dialog_re = re.compile(
         r"""(                         # option pair "key: value;"
                                       (?P<key>[-a-z]+)           # key
-                                      :\s+                       # seperator
+                                      :\s+                       # separator
                                       (?P<number>\d+(?:[.]\d+)?) # number
                                       (?P<unit>[a-z][a-z]);?     # units
                                       )+                         # multiple pairs
@@ -2621,7 +2623,7 @@ kdeconfig = CheckerConfig(
 class KdeChecker(StandardChecker):
     def __init__(self, **kwargs):
         # TODO allow setup of KDE plural and translator comments so that they do
-        # not create false postives
+        # not create false positives
         checkerconfig = kwargs.get("checkerconfig")
 
         if checkerconfig is None:

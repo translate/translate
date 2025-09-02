@@ -227,7 +227,7 @@ def main():
         dest="max_length",
         type=int,
         default=1000,
-        help="Maxmimum string length",
+        help="Maximum string length",
     )
     parser.add_argument(
         "--debug",

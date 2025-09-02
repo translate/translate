@@ -301,7 +301,7 @@ class csvfile(base.TranslationStore):
                 csvsrc, default_encodings=["utf-8", "utf-16"]
             )
             if text is None:
-                raise ValueError("Could not detect enconding!")
+                raise ValueError("Could not detect encoding!")
             self.encoding = encoding or "utf-8"
         else:
             self._automatic_encoding = False

@@ -246,7 +246,7 @@ msgstr "blabla"
     def test_merge_dont_delete_unassociated_comments(self):
         """
         Ensure that we do not delete comments in the PO file that are not
-        assocaited with a message block.
+        associated with a message block.
         """
         templatepo = """# Lonely comment\n\n# Translation comment\nmsgid "Bob"\nmsgstr "Toolmaker"\n"""
         mergepo = """# Translation comment\nmsgid "Bob"\nmsgstr "Builder"\n"""
@@ -303,7 +303,7 @@ msgstr "blabla"
 
     def test_preserve_format_last_entry_in_a_file(self):
         """
-        The last entry in a PO file is usualy not followed by an empty
+        The last entry in a PO file is usually not followed by an empty
         line.  Test that we preserve this.
         """
         templatepo = """msgid "First"\nmsgstr ""\n\nmsgid "Second"\nmsgstr ""\n"""
@@ -344,7 +344,7 @@ msgstr "Eerste\tTweede"
     def test_preserve_comments_layout(self):
         """
         Ensure that when we merge with new '# (poconflict)' or other
-        comments that we don't mess formating.
+        comments that we don't mess formatting.
         """
         templatepo = """#: filename\nmsgid "Desktop Background.bmp"\nmsgstr "Desktop Background.bmp"\n\n"""
         mergepo = """# (pofilter) unchanged: please translate\n#: filename\nmsgid "Desktop Background.bmp"\nmsgstr "Desktop Background.bmp"\n"""

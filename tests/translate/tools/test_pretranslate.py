@@ -141,7 +141,7 @@ msgstr[1] "%d handleidings."
     @mark.xfail(reason="Not Implemented")
     def test_merging_accelerator_changes(self):
         """
-        Test that a change in the accelerator localtion still allows
+        Test that a change in the accelerator location still allows
         merging.
         """
         input_source = """#: someline.c\nmsgid "A&bout"\nmsgstr ""\n"""
@@ -173,7 +173,7 @@ msgstr[1] "%d handleidings."
         newpounit = self.singleunit(newpo)
         assert str(newpounit) == template_source
 
-    def test_merging_automatic_comments_new_overides_old(self):
+    def test_merging_automatic_comments_new_overrides_old(self):
         """Ensure that new #. comments override the old comments."""
         input_source = """#. new comment\n#: someline.c\nmsgid "&About"\nmsgstr ""\n"""
         template_source = (
@@ -249,14 +249,14 @@ msgstr "36em"
         newpounit = self.singleunit(newpo)
         assert str(newpounit) == template_source
 
-    def test_merging_resurect_obsolete_messages(self):
+    def test_merging_resurrect_obsolete_messages(self):
         """
         Check that we can reuse old obsolete messages if the message comes
         back.
         """
-        input_source = """#: resurect.c\nmsgid "&About"\nmsgstr ""\n"""
+        input_source = """#: resurrect.c\nmsgid "&About"\nmsgstr ""\n"""
         template_source = """#~ msgid "&About"\n#~ msgstr "&Omtrent"\n"""
-        expected = """#: resurect.c\nmsgid "&About"\nmsgstr "&Omtrent"\n"""
+        expected = """#: resurrect.c\nmsgid "&About"\nmsgstr "&Omtrent"\n"""
         newpo = self.pretranslatepo(input_source, template_source)
         print(bytes(newpo))
         assert bytes(newpo).decode("utf-8") == expected

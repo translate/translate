@@ -3,13 +3,13 @@
 # Import the test framework
 source $(basename $0)/test.inc.sh
 
-# You can put any extra preperation here
+# You can put any extra preparation here
 
 # Your actual command line to test No need for redirecting to /dev/stdout as
 # the test framework will do that automatically
 myprogram $one $two -o $out
 
-# Check that the results of the test match your reference resulst
+# Check that the results of the test match your reference results
 check_results  # does start_check and diff_all
 
 # OR do the following

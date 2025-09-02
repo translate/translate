@@ -29,7 +29,7 @@ import re
 from itertools import starmap
 from wsgiref.util import shift_path_info
 
-# resolver not essential for basic featurs
+# resolver not essential for basic features
 # FIXME: this library is overkill, simplify
 with contextlib.suppress(ImportError):
     from resolver import resolve

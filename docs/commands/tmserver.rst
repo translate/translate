@@ -48,7 +48,7 @@ Options:
 --min-similarity=MIN_SIMILARITY
                       minimum similarity
 --max-length=MAX_LENGTH
-                      Maxmimum string length
+                      Maximum string length
 --debug               enable debugging features
 
 .. _tmserver#testing:

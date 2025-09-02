@@ -37,7 +37,7 @@ def test_get_label_and_accesskey():
 
 
 def test_extract_bad_accesskeys():
-    """Test what we do in situations that are bad fof accesskeys."""
+    """Test what we do in situations that are bad for accesskeys."""
     # Space is not valid accesskey so we don't extract anything
     assert accesskey.extract("More& Whitespace") == ("More& Whitespace", "")
 

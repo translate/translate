@@ -444,7 +444,7 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
 <title>FMFI - South Africa - CSIR Openphone - Overview</title>
 <!-- InstanceEndEditable -->
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta name="keywords" content="fmfi, first mile, first inch, wireless, rural development, access devices, mobile devices, wifi, connectivity, rural connectivty, ict, low cost, cheap, digital divide, csir, idrc, community">
+<meta name="keywords" content="fmfi, first mile, first inch, wireless, rural development, access devices, mobile devices, wifi, connectivity, rural connectivity, ict, low cost, cheap, digital divide, csir, idrc, community">
 
 <!-- InstanceBeginEditable name="head" -->
 <!-- InstanceEndEditable -->
@@ -463,7 +463,7 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
         self.compareunit(
             pofile,
             2,
-            "fmfi, first mile, first inch, wireless, rural development, access devices, mobile devices, wifi, connectivity, rural connectivty, ict, low cost, cheap, digital divide, csir, idrc, community",
+            "fmfi, first mile, first inch, wireless, rural development, access devices, mobile devices, wifi, connectivity, rural connectivity, ict, low cost, cheap, digital divide, csir, idrc, community",
         )
         self.compareunit(pofile, 3, "We aim to please \x96 will you aim too, please?")
         self.compareunit(

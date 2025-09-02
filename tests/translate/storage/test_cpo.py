@@ -135,7 +135,7 @@ class TestCPOFile(test_po.TestPOFile):
         assert len(pofile.units) == 2
         assert cpo.unquotefrompo(pofile.units[0].msgidcomments) == "_: source0\n"
         assert cpo.unquotefrompo(pofile.units[1].msgidcomments) == "_: source1\n"
-        # Now lets check for formating
+        # Now lets check for formatting
         for i in (0, 1):
             expected = (
                 """#: source%d\nmsgid ""\n"_: source%d\\n"\n"Same"\nmsgstr ""\n"""
@@ -186,7 +186,7 @@ class TestCPOFile(test_po.TestPOFile):
         assert bytes(pofile).decode("utf-8") == posource
 
     def test_multiline_obsolete(self):
-        """Tests for correct output of mulitline obsolete messages."""
+        """Tests for correct output of multiline obsolete messages."""
         posource = '#~ msgid ""\n#~ "Old thing\\n"\n#~ "Second old thing"\n#~ msgstr ""\n#~ "Ou ding\\n"\n#~ "Tweede ou ding"\n'
         pofile = self.poparse(posource)
         print(f"Source:\n{posource}")

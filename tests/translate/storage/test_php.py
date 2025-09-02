@@ -8,7 +8,7 @@ from . import test_monolingual
 
 def test_php_escaping_single_quote():
     """
-    Test the helper escaping funtions for 'single quotes'.
+    Test the helper escaping functions for 'single quotes'.
 
     The tests are built mostly from examples from the PHP
     `string type definition <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.single>`_.
@@ -85,7 +85,7 @@ newline"""
 
 
 def test_php_escaping_double_quote():
-    """Test the helper escaping funtions for 'double quotes'."""
+    """Test the helper escaping functions for 'double quotes'."""
     # Decoding - PHP -> Python
     assert php.phpdecode("'", quotechar='"') == "'"  # we do nothing with single quotes
     assert (
@@ -180,28 +180,28 @@ class TestPhpFile(test_monolingual.TestMonolingualStore):
 
     def test_simpledefinition(self):
         """Checks that a simple php definition is parsed correctly."""
-        phpsource = """$lang['mediaselect'] = 'Bestand selectie';"""
+        phpsource = """$lang['mediaselect'] = 'Bestand selective';"""
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 1
         phpunit = phpfile.units[0]
         assert phpunit.name == "$lang['mediaselect']"
-        assert phpunit.source == "Bestand selectie"
+        assert phpunit.source == "Bestand selective"
 
     def test_simpledefinition_source(self):
         """Checks that a simple php definition can be regenerated as source."""
         phpsource = """<?php
-$lang['mediaselect'] = 'Bestand selectie';"""
+$lang['mediaselect'] = 'Bestand selective';"""
         phpregen = self.phpregen(phpsource)
         assert phpsource + "\n" == phpregen
 
     def test_spaces_in_name(self):
         """Check that spaces in the array name doesn't throw us off."""
-        phpsource = """$lang[ 'mediaselect' ] = 'Bestand selectie';"""
+        phpsource = """$lang[ 'mediaselect' ] = 'Bestand selective';"""
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 1
         phpunit = phpfile.units[0]
         assert phpunit.name == "$lang[ 'mediaselect' ]"
-        assert phpunit.source == "Bestand selectie"
+        assert phpunit.source == "Bestand selective"
 
     def test_comment_definition(self):
         """Check that comments are fully preserved."""
@@ -993,7 +993,7 @@ $month_mar = 'Mar';
     def test_simpledefinition_after_define(self):
         """Check that a simple definition after define is parsed correctly."""
         phpsource = """define("_FINISH", "Rematar");
-$lang['mediaselect'] = 'Bestand selectie';"""
+$lang['mediaselect'] = 'Bestand selective';"""
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 2
         phpunit = phpfile.units[0]
@@ -1001,7 +1001,7 @@ $lang['mediaselect'] = 'Bestand selectie';"""
         assert phpunit.source == "Rematar"
         phpunit = phpfile.units[1]
         assert phpunit.name == "$lang['mediaselect']"
-        assert phpunit.source == "Bestand selectie"
+        assert phpunit.source == "Bestand selective"
 
     def test_quotes(self):
         phpsource = """<?php
@@ -1036,7 +1036,7 @@ define("_FINISH", 'Rematar');
 // Comment 2
 define("_START", "Zacni");
 /* Comment 3 */
-$lang['mediaselect'] = 'Bestand selectie';
+$lang['mediaselect'] = 'Bestand selective';
 $texts = array(
     /*
      * Multiline comment 4
@@ -1153,12 +1153,12 @@ using nowdoc syntax."""
 
     def test_double_var(self):
         """Checks that a double $ is handled correctly."""
-        phpsource = """$$lang['mediaselect'] = 'Bestand selectie';"""
+        phpsource = """$$lang['mediaselect'] = 'Bestand selective';"""
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 1
         phpunit = phpfile.units[0]
         assert phpunit.name == "$$lang['mediaselect']"
-        assert phpunit.source == "Bestand selectie"
+        assert phpunit.source == "Bestand selective"
 
     def test_return_array(self):
         phpsource = """<?php

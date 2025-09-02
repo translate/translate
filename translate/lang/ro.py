@@ -32,7 +32,7 @@ def contains_illegal(illegal_substrings, string):
     Check if string contains any of the specified illegal substrings.
 
     :param illegal_substrings: an iterable of illegal substrings
-    :param string: the string to check against occurences of illegal substrings
+    :param string: the string to check against occurrences of illegal substrings
     :return: True if string contains any of the illegal substrings
     """
     return any(s in string for s in illegal_substrings)

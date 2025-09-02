@@ -138,6 +138,7 @@ class TestTBXfile(test_base.TestTranslationStore):
         assert unit.getnotes() == "Translator note\nOther note"
 
     def test_administrative_status_and_translation_needed(self):
+        # spellchecker:off
         tbxdata = """<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE martif SYSTEM "TBXcoreStructV02.dtd">
 <martif xmlns="urn:iso:std:iso:30042:ed-2" xml:lang="en" type="TBX">
@@ -185,6 +186,8 @@ class TestTBXfile(test_base.TestTranslationStore):
     </text>
 </martif>
 """
+        # spellchecker:on
+
         tbxfile = tbx.tbxfile.parsestring(tbxdata.encode())
         assert bytes(tbxfile).decode() == tbxdata
         assert len(tbxfile.units) == 2

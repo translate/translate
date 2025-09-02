@@ -14,7 +14,7 @@ Formats and Converters
 - JSON
 
   - Do not create nested keys for flat keys formats on round trip
-  - Correctlly build new units for flat key formats
+  - Correctly build new units for flat key formats
 
 - Android
 

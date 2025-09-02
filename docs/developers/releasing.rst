@@ -10,8 +10,8 @@ lists and suggests some possible cleanup tasks to be done after releasing.
    free to improve it.
 
 
-Prepare the relese
-==================
+Prepare the release
+===================
 
 
 Create release notes

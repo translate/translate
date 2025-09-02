@@ -28,7 +28,7 @@ API Reference
 -------------
 
 This part covers any function, class or method included within the
-Translate Toolkit that you can use to programatically build new
+Translate Toolkit that you can use to programmatically build new
 localization tools.
 
 .. toctree::

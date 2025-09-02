@@ -112,7 +112,7 @@ class LevenshteinComparer:
         """
         Returns the similarity between a and b based on Levenshtein
         distance. It can stop prematurely as soon as it sees that a and b will
-        be no simmilar than the percentage specified in stoppercentage.
+        be no similar than the percentage specified in stoppercentage.
 
         The Levenshtein distance is calculated, but the following should be noted:
 
@@ -127,7 +127,7 @@ class LevenshteinComparer:
           - Calculation is stopped as soon as a similarity of stoppercentage
             becomes unattainable. See the use of the variable stopvalue.
           - Implementation uses memory O(min(len(a), len(b))
-          - Excecution time is O(len(a)*len(b))
+          - Execution time is O(len(a)*len(b))
         """
         l1, l2 = len(a), len(b)
         if l1 == 0 or l2 == 0:

@@ -123,15 +123,19 @@ msgstr "Dimpled Ring"
         )
         possibilities = [
             # (en label, en akey, en po, af po, af label, expected af akey)
+            # spellchecker:off
             ("Sis", "S", "&Sis", "&Sies", "Sies", "S"),
             ("Sis", "s", "Si&s", "&Sies", "Sies", "S"),
             ("Sis", "S", "&Sis", "Sie&s", "Sies", "s"),
             ("Sis", "s", "Si&s", "Sie&s", "Sies", "s"),
+            # spellchecker:on
             # untranslated strings should have the casing of the source
+            # spellchecker:off
             ("Sis", "S", "&Sis", "", "Sis", "S"),
             ("Sis", "s", "Si&s", "", "Sis", "s"),
             ("Suck", "S", "&Suck", "", "Suck", "S"),
             ("Suck", "s", "&Suck", "", "Suck", "s"),
+            # spellchecker:on
         ]
         for (
             en_label,
@@ -262,7 +266,7 @@ msgstr "Lig & Kleur"
         assert '"L"' in dtdsource
 
     def test_entities_two(self):
-        """Test the error ouput when we find two entities."""
+        """Test the error output when we find two entities."""
         simplestring = """#: simple.string second.string\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n"""
         dtdfile = self.po2dtd(simplestring)
         dtdsource = bytes(dtdfile)

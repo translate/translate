@@ -313,12 +313,12 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
         # TODO: Make more robust
 
         def ispluralgroup(node):
-            """Determines whether the xml node refers to a getttext plural."""
+            """Determines whether the xml node refers to a gettext plural."""
             return node.get("restype") == "x-gettext-plurals"
 
         def isnonpluralunit(node):
             """
-            Determindes whether the xml node contains a plural like id.
+            Determines whether the xml node contains a plural like id.
 
             We want to filter out all the plural nodes, except the very first
             one in each group.

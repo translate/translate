@@ -29,4 +29,4 @@ complex cases. Following issues are known:
 * we don't seem to be extracting user defined metadata
 * we don't seem to be extracting strings embedded in charts (axis, caption etc.)
 * odf2xliff barfs on TextContents/textFormatting/alignment/testDoc.odt
-* ``<g>`` isn't clonable (see https://docs.oasis-open.org/xliff/v1.2/os/xliff-core.html#clone)
+* ``<g>`` isn't cloneable (see https://docs.oasis-open.org/xliff/v1.2/os/xliff-core.html#clone)

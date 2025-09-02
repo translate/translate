@@ -130,7 +130,7 @@ class TestProp2PO:
         assert pounit.source == "Norsk bokm\u00e5l"
 
     def test_multiline_escaping(self):
-        """Checks that multiline enties can be parsed."""
+        """Checks that multiline entries can be parsed."""
         propsource = r"""5093=Unable to connect to your IMAP server. You may have exceeded the maximum number \
 of connections to this server. If so, use the Advanced IMAP Server Settings dialog to \
 reduce the number of cached connections."""
@@ -149,7 +149,7 @@ prefPanel-smime=Security"""
     def test_multiline_comments(self):
         """Test to ensure that we handle multiline comments well."""
         propsource = """# Comment
-# commenty 2
+# commentary 2
 
 ## @name GENERIC_ERROR
 ## @loc none
@@ -158,7 +158,7 @@ prefPanel-smime=
         pofile = self.prop2po(propsource)
         print(bytes(pofile))
         # header comments:
-        assert b"#. # Comment\n#. # commenty 2" in bytes(pofile)
+        assert b"#. # Comment\n#. # commentary 2" in bytes(pofile)
         pounit = self.singleelement(pofile)
         assert pounit.getnotes("developer") == "# @name GENERIC_ERROR\n# @loc none"
 
@@ -241,7 +241,7 @@ do=translate me
         assert b"X-Accelerator-Marker" in bytes(outputpo)
         assert b"X-Merge-On" in bytes(outputpo)
 
-        # Even though the gaia flavour inherrits from mozilla, it should not
+        # Even though the gaia flavour inherits from mozilla, it should not
         # get the header
         outputpo = self.prop2po(propsource, personality="gaia")
         assert b"X-Accelerator-Marker" not in bytes(outputpo)

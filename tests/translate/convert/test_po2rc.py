@@ -21,7 +21,7 @@ FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     PUSHBUTTON      "Help",ID_HELP,99,162,48,15
     PUSHBUTTON      "Close",IDCANCEL,151,162,48,15
-    PUSHBUTTON      "Activate instalation",IDC_BUTTON1,74,76,76,18
+    PUSHBUTTON      "Activate installation",IDC_BUTTON1,74,76,76,18
     CTEXT           "My very" " good program",IDC_STATIC1,56,21,109,19,SS_SUNKEN
     CTEXT           "You can use it without registering it",IDC_STATIC,35,131,128,19,SS_SUNKEN
     PUSHBUTTON      "Offline",IDC_OFFLINE,149,108,42,13

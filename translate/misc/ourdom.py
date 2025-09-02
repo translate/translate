@@ -94,7 +94,7 @@ def getElementsByTagName_helper(parent, name, dummy=None):
 
 
 def searchElementsByTagName_helper(parent, name, onlysearch):
-    """Limits the search to within tags occuring in onlysearch."""
+    """Limits the search to within tags occurring in onlysearch."""
     for node in parent.childNodes:
         if node.nodeType == minidom.Node.ELEMENT_NODE and (name in {"*", node.tagName}):
             yield node

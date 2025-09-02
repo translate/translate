@@ -233,7 +233,7 @@ intersphinx_mapping = {
 }
 
 
-# -- Options for Exernal links -------------------------------------------------
+# -- Options for External links -------------------------------------------------
 
 extlinks = {
     # :role: (URL, prefix)

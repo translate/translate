@@ -56,13 +56,13 @@ Commands:
 	conflictpo <language-dir> <phase-list> <phase-name> [poconflict options] -- run poconflict checks against the given phase
 	diffpo <language-dir> <phase-list> <phase-name> -- perform a cvs diff for the phase
 	cvslog <language-dir> <phase-list> <phase-name> -- perform a cvs log against files in the phase
-	lastlog <language-dir> <phase-list> <phase-name> -- retreives the last cvs log entry for each file in a phase
+	lastlog <language-dir> <phase-list> <phase-name> -- retrieves the last cvs log entry for each file in a phase
 	cvsadd <languages-dir> <phase-list> <phase-name> -- CVS adds files and directories that are not already in CVS
 	reviewpo <language-dir> <phase-list> <phase-name> [pofilter options] -- extract items marked for review for the given phase
 	editreviews <language-dir> <phase-list> <phase-name> -- edit the extracted review items
 	countreviews <language-dir> <phase-list> <phase-name> -- count the number of strings and words under review
 	checkinpo <language-dir> <phase-list> <phase-name> -- cvs checkin the files in the given phase
-	creategsi <language-dir> <en-US.gsi> <traget-language> [scp target destination] -- creates a BZ2 GSI/SDF file for the language against the en-US GSI file
+	creategsi <language-dir> <en-US.gsi> <target-language> [scp target destination] -- creates a BZ2 GSI/SDF file for the language against the en-US GSI file
 	reviewsinout <language> <phase-name> -- counts the number of review files returned vs sent and shows which are missing 
 	reviewsdiff <language> <phase-name> -- create a diff between what was sent for review and what was returned
 
@@ -112,7 +112,7 @@ function getphasefiles {
 }
 
 function getphases {
-	# Retuns a list of all the defines phases
+	# Returns a list of all the defines phases
 	filelist=$1
 	cut -f1 $filelist | sort | uniq
 }
@@ -433,7 +433,7 @@ function reviewpo {
 	to the lines in the CSV file or the messages in the PO file.  Please edit the corrections taking
 	into consideration the comments in this file.
 
-	The error is presented first with a comment starting with #. This desribes the error.  After
+	The error is presented first with a comment starting with #. This describes the error.  After
 	the comments you will see a line starting with 'msgid' - this is for information only and is
 	there to assist you in locating the error if you lose your place.  Make all corrections in the
 	CSV or PO file NOT in this file.  This file is simply for your information, not for editing.
@@ -514,7 +514,7 @@ function reviewsdiff {
 }
 
 function checkphaselist {
-	# Checks the files against the phase-list to see wich are in and which are out
+	# Checks the files against the phase-list to see which are in and which are out
 	language=$1
 	phaselist=$2
 	currentlist=`mktemp tmp.XXXXXXXXXX`

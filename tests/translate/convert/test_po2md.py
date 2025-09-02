@@ -50,12 +50,12 @@ class TestPO2MD(test_convert.TestConvertCommand):
             lines=[
                 "#: test.md%2Btable-cell",
                 'msgid "right foo | between pipes |"',
-                'msgstr "right translated | between pixes |"',
+                'msgstr "right translated | between pixes |"',  # codespell:ignore
             ]
         )
         self.run_command("translation.po", "out.md", template="file.md")
         self.then_translated_markdown_file_is_written(
-            "right translated \\| between pixes"
+            "right translated \\| between pixes"  # codespell:ignore
         )
 
     def given_markdown_file(self, content: str | None = None):

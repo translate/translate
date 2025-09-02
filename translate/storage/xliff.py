@@ -19,7 +19,7 @@
 """
 Module for handling XLIFF files for translation.
 
-The official recommendation is to use the extention .xlf for XLIFF files.
+The official recommendation is to use the extension .xlf for XLIFF files.
 """
 
 import contextlib
@@ -438,7 +438,7 @@ class xliffunit(lisa.LISAunit):
             self.set_state_n(self.S_UNREVIEWED)
 
     def setid(self, id):
-        # sanitize id in case ID_SEPERATOR is present
+        # sanitize id in case ID_SEPARATOR is present
         self.xmlelement.set("id", id.replace(ID_SEPARATOR, ID_SEPARATOR_SAFE))
 
     def getid(self):
@@ -452,7 +452,7 @@ class xliffunit(lisa.LISAunit):
         except StopIteration:
             # unit has no proper file ancestor, probably newly created
             pass
-        # hide the fact that we sanitize ID_SEPERATOR
+        # hide the fact that we sanitize ID_SEPARATOR
         uid += str(self.xmlelement.get("id") or "").replace(
             ID_SEPARATOR_SAFE, ID_SEPARATOR
         )
@@ -505,7 +505,7 @@ class xliffunit(lisa.LISAunit):
         """Returns the contexts in the context groups with the specified name."""
         groups = []
         grouptags = self.xmlelement.iterdescendants(self.namespaced("context-group"))
-        # TODO: conbine name in query
+        # TODO: combine name in query
         for group in grouptags:
             if group.get("name") == name:
                 contexts = group.iterdescendants(self.namespaced("context"))

@@ -248,7 +248,7 @@ msgstr ""
         pofile = self.poparse(posource)
         assert pofile.units[0].istranslatable()
         assert not pofile.units[0].isheader()
-        # we were not generating output for thse at some stage
+        # we were not generating output for these at some stage
         assert bytes(pofile)
 
     def test_simpleentry(self):
@@ -526,6 +526,7 @@ msgstr "een"
     def test_obsolete_with_prev_msgid(self):
         """Tests that obsolete messages work."""
         # Bug 1429
+        # spellchecker:off
         posource = r"""msgid ""
 msgstr ""
 "PO-Revision-Date: 2006-02-09 23:33+0200\n"
@@ -544,6 +545,7 @@ msgstr "een"
 #~ msgstr ""
 #~ "Mit diesem Modul können leider ausschließlich Webseiten vorgelesen werden."
 """
+        # spellchecker:on
         pofile = self.poparse(posource.encode())
         assert len(pofile.units) == 3
         unit = pofile.units[2]

@@ -518,7 +518,7 @@ LANG_TEAM_LANGUAGE_SNIPPETS = {
         "Finnish",
         "Suomi",
     ),
-    "fo": ("Faroese",),
+    "fo": ("Faroese",),  # codespell:ignore
     "fr": (
         "French",
         "Français",
@@ -691,7 +691,7 @@ LANG_TEAM_LANGUAGE_SNIPPETS = {
     ),
 }
 """Language codes with snippets of language names, including English, native
-spelling and varients, that can be used to uniquely identify the language"""
+spelling and variants, that can be used to uniquely identify the language"""
 
 
 def _regex_guesser(prefilter, regex, string, postfilter=None):
@@ -703,7 +703,7 @@ def _regex_guesser(prefilter, regex, string, postfilter=None):
     the language code
     :param string: the language team string that should be examined
     :param postfilter: filter to apply to reject any potential matches
-    after they have been retreived by the regex
+    after they have been retrieved by the regex
     :return: ISO language code for the found language
     """
     # TODO instead of a posfilter, have a dictionary of transform rules

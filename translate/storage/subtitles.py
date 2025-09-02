@@ -161,7 +161,7 @@ class SubtitleFile(base.TranslationStore):
 ############# format specific classes ###################
 
 # the generic SubtitleFile can adapt to any format, but only the
-# specilized classes can be used to construct a new file
+# specialized classes can be used to construct a new file
 
 
 class SubRipFile(SubtitleFile):

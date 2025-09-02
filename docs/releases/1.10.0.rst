@@ -43,7 +43,7 @@ Formats and Converters
 ----------------------
 * Android format support [Michal Čihař]
 * Mozilla .lang, many improvements
-* PHP support for defintions, // comments and improved whitespace preservation
+* PHP support for definitions, // comments and improved whitespace preservation
 * PO: X-Merge-On header to explicitly demand a conversion strategy instead of
   guessing
 * .properties: BOMs in messages and C style comments [Roman Imankulov]
@@ -65,7 +65,7 @@ Version Control improvements
 * Don't look for VCS if it's not available
 * Stop looking for VCS at a given parent
 * Subversion VC tests
-* Alway pass -m to 'commit' in Subversion to prevent blocking
+* Always pass -m to 'commit' in Subversion to prevent blocking
 
 
 Checks

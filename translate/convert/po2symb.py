@@ -44,15 +44,15 @@ def escape(text):
     return f'"{text}"'
 
 
-def replace_header_items(ps, replacments):
+def replace_header_items(ps, replacements):
     match = read_while(ps, header_item_or_end_re.match, lambda match: match is None)
     while not ps.current_line.startswith("*/"):
         match = header_item_re.match(ps.current_line)
         if match is not None:
             key = match.groupdict()["key"]
-            if key in replacments:
+            if key in replacements:
                 ps.current_line = match.expand(
-                    f"\\g<key>\\g<space>{replacments[key]}\n"
+                    f"\\g<key>\\g<space>{replacements[key]}\n"
                 )
         ps.read_line()
 

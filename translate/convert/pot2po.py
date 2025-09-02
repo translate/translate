@@ -194,7 +194,7 @@ def _unit_post_merge(input_unit, input_store, output_store, template_store, **kw
 
 ## Format specific functions
 def _unit_post_merge_pounit(input_unit, input_store, output_store, template_store):
-    """PO format specific plural string initializtion logic."""
+    """PO format specific plural string initialization logic."""
     # FIXME: do we want to do that for poxliff also?
     if input_unit.hasplural() and len(input_unit.target) == 0:
         # untranslated plural unit; Let's ensure that we have the correct

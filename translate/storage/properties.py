@@ -53,7 +53,7 @@ Java
     MessageFormat, but this may be implemented in future.
 
     All delimiter types, comments, line continuations and spaces handling in
-    delimeters are supported.
+    delimiters are supported.
 
 Mozilla
     Mozilla files use '=' as a delimiter, are UTF-8 encoded and thus don't
@@ -874,18 +874,18 @@ class propunit(base.TranslationUnit):
         # symbol that should end every property sentence
         # (e.g. ";" is required for Mac OS X strings)
         self.out_ending = getattr(self.personality, "out_ending", "")
-        self.explicitely_missing = False
+        self.explicitly_missing = False
         self.output_missing = False
 
     @property
     def missing(self):
-        return self.explicitely_missing or (
+        return self.explicitly_missing or (
             not bool(self.translation) and not bool(self.source)
         )
 
     @missing.setter
     def missing(self, missing):
-        self.explicitely_missing = missing
+        self.explicitly_missing = missing
 
     @staticmethod
     def get_missing_part():
@@ -919,7 +919,7 @@ class propunit(base.TranslationUnit):
     def target(self, target):
         self._rich_target = None
         self.translation = self.personality.encode(target or "", self.encoding)
-        self.explicitely_missing = not bool(target)
+        self.explicitly_missing = not bool(target)
 
     @property
     def encoding(self):

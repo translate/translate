@@ -176,7 +176,7 @@ def pretranslate_store(
     input_store, template_store, tm=None, min_similarity=75, fuzzymatching=True
 ):
     """Do the actual pretranslation of a whole store."""
-    # preperation
+    # preparation
     matchers = []
     # prepare template
     if template_store is not None:

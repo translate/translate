@@ -91,39 +91,39 @@ def _examine_txt(storefile):
 _hiddenclasses = {"txt": _examine_txt}
 
 
-def _guessextention(storefile):
+def _guess_extension(storefile):
     """
     Guesses the type of a file object by looking at the first few
-    characters.  The return value is a file extention.
+    characters.  The return value is a file extension.
     """
     start = storefile.read(300).strip()
     if b"<xliff " in start:
-        extention = "xlf"
+        extension = "xlf"
     elif b'msgid "' in start:
-        extention = "po"
+        extension = "po"
     elif b"%Wordfast TM" in start:
-        extention = "txt"
+        extension = "txt"
     elif b"<!DOCTYPE TS>" in start:
-        extention = "ts"
+        extension = "ts"
     elif b"<tmx " in start:
-        extention = "tmx"
+        extension = "tmx"
     elif b"#UTX" in start:
-        extention = "utx"
+        extension = "utx"
     else:
         raise ValueError("Failed to guess file type.")
     storefile.seek(0)
-    return extention
+    return extension
 
 
-def _getdummyname(storefile):
+def _get_dummy_name(storefile):
     """
     Provides a dummy name for a file object without a name attribute, by
     guessing the file type.
     """
-    return "dummy." + _guessextention(storefile)
+    return "dummy." + _guess_extension(storefile)
 
 
-def _getname(storefile):
+def _get_name(storefile):
     """Returns the filename."""
     if storefile is None:
         raise ValueError(
@@ -131,7 +131,7 @@ def _getname(storefile):
         )
     if not isinstance(storefile, str):
         if not hasattr(storefile, "name"):
-            storefilename = _getdummyname(storefile)
+            storefilename = _get_dummy_name(storefile)
         else:
             storefilename = storefile.name
     else:
@@ -160,7 +160,7 @@ def getclass(
     presented.  Specify ignore to ignore some part at the back of the name
     (like .gz).
     """
-    storefilename = _getname(storefile)
+    storefilename = _get_name(storefile)
     if classes_str is None:
         classes_str = _classes_str
     if hiddenclasses is None:
@@ -219,7 +219,7 @@ def getobject(
     if isinstance(storefile, str):
         if os.path.isdir(storefile) or storefile.endswith(os.path.sep):
             return Directory(storefile)
-    storefilename = _getname(storefile)
+    storefilename = _get_name(storefile)
     storeclass = getclass(
         storefile,
         localfiletype,

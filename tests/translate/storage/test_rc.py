@@ -103,7 +103,7 @@ END
 LANGUAGE 10, 3
 #pragma code_page(1252)
 #include "res\regGHC.rc2"  // Recursos editados que no son de Microsoft Visual C++
-#include "afxres.rc"         // Standar components
+#include "afxres.rc"         // Standard components
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
@@ -167,7 +167,7 @@ FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     PUSHBUTTON      "Help",ID_HELP,99,162,48,15
     PUSHBUTTON      "Close",IDCANCEL,151,162,48,15
-    PUSHBUTTON      "Activate instalation",IDC_BUTTON1,74,76,76,18
+    PUSHBUTTON      "Activate installation",IDC_BUTTON1,74,76,76,18
     CTEXT           "My very good program",IDC_STATIC1,56,21,109,19,SS_SUNKEN
     CTEXT           "You can use it without registering it",IDC_STATIC,35,131,128,19,SS_SUNKEN
     PUSHBUTTON      "Offline",IDC_OFFLINE,149,108,42,13
@@ -191,7 +191,7 @@ END
         assert rc_unit.source == "Close"
         rc_unit = rc_file.units[3]
         assert rc_unit.name == "DIALOGEX.IDD_REGGHC_DIALOG.PUSHBUTTON.IDC_BUTTON1"
-        assert rc_unit.source == "Activate instalation"
+        assert rc_unit.source == "Activate installation"
         rc_unit = rc_file.units[4]
         assert rc_unit.name == "DIALOGEX.IDD_REGGHC_DIALOG.CTEXT.IDC_STATIC1"
         assert rc_unit.source == "My very good program"
