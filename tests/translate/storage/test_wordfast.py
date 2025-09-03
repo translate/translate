@@ -57,8 +57,9 @@ class TestWFUnit(test_base.TestTranslationUnit):
         # Real world cases
         unit = self.UnitClass("Open &File. ’n Probleem.")  # codespell:ignore
         assert (
-            unit.dict["source"] == "Open &'26;File. &'92;n Probleem."
-        )  # codespell:ignore
+            unit.dict["source"]
+            == "Open &'26;File. &'92;n Probleem."  # codespell:ignore
+        )
 
     def test_newlines(self):
         """Wordfast does not like real newlines."""

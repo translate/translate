@@ -637,7 +637,7 @@ msgstr[1] "Koeie"
         assert str(unit) == poexpected
 
     def test_multiline_obsolete(self):
-        """Tests for correct output of mulitline obsolete messages."""
+        """Tests for correct output of multiline obsolete messages."""
         posource = '#~ msgid ""\n#~ "Old thing\\n"\n#~ "Second old thing"\n#~ msgstr ""\n#~ "Ou ding\\n"\n#~ "Tweede ou ding"\n'
         pofile = self.poparse(posource)
         assert pofile.isempty()
@@ -878,7 +878,7 @@ msgstr "b"
         assert header_dict["Last-Translator"] == "Tránslátór"
 
     def test_final_slash(self):
-        r"""Test that \\ as last character is correcly interpreted (bug 960)."""
+        r"""Test that \\ as last character is correctly interpreted (bug 960)."""
         posource = r"""
 msgid ""
 msgstr ""

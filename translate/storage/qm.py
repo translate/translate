@@ -154,9 +154,7 @@ class qmfile(base.TranslationStore):
                 # numerusrules_data = struct.unpack(">%db" % length, input[startsection + sectionheader:startsection + sectionheader + length])
                 pass
             else:
-                section_debug(
-                    "Unkown", section_type, startsection, length
-                )  # codespell:ignore=Unkown
+                section_debug("Unknown", section_type, startsection, length)
             startsection = startsection + sectionheader + length
         pos = messages_start
         source = target = None
