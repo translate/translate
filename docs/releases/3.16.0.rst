@@ -1,0 +1,40 @@
+Translate Toolkit 3.16.0
+************************
+
+*Released on 3 September 2025*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- Markdown
+
+  - Gracefully handle front matter
+  - Use line numbers for locations
+
+- Android
+
+  - Always serialize decimal plural
+  - Corrected escape handling in Compose Multiplatform Resources
+
+Other
+-----
+
+- Language data hase been updated to CLDR 47
+
+- Various code cleanups
+
+  - Applied spell checking to the codebase
+  - Dependencies updates
+  - Packaging improvements
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař, Kattni
