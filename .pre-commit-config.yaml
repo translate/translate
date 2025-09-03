@@ -39,3 +39,10 @@ repos:
   rev: v1.0.0
   hooks:
   - id: sphinx-lint
+- repo: https://github.com/crate-ci/typos
+  rev: v1.36.0
+  hooks:
+  - id: typos
+    args: []
+    require_serial: true
+    pass_filenames: false
