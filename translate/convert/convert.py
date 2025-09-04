@@ -229,6 +229,11 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser):
     def processfile(
         self, fileprocessor, options, fullinputpath, fulloutputpath, fulltemplatepath
     ):
+        # The `fulloutputpath`s parsed when `onefile` is enabled don't exist, which causes
+        # the `_output_is_newer` check to return False. This means that even if there is
+        # no content update, the POT/PO files are regenerated. When `onefile` is enabled,
+        # This check sets the output  path used by `_output_is_newer` to the output file
+        # provided to the command, which will exist. It remains `fulloutputpath` otherwise.
         if options.multifilestyle == "onefile":
             timecheck_output_path = options.output
         else:
