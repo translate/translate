@@ -229,7 +229,12 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser):
     def processfile(
         self, fileprocessor, options, fullinputpath, fulloutputpath, fulltemplatepath
     ):
-        if options.timestamp and _output_is_newer(fullinputpath, fulloutputpath):
+        if options.multifilestyle == "onefile":
+            timecheck_output_path = options.output
+        else:
+            timecheck_output_path = fulloutputpath
+
+        if options.timestamp and _output_is_newer(fullinputpath, timecheck_output_path):
             return False
 
         return super().processfile(
