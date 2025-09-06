@@ -234,12 +234,9 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser):
         # no content update, the POT/PO files are regenerated. When `onefile` is enabled,
         # This check sets the output  path used by `_output_is_newer` to the output file
         # provided to the command, which will exist. It remains `fulloutputpath` otherwise.
-        try:
-            if options.multifilestyle == "onefile":
-                timecheck_output_path = options.output
-            else:
-                timecheck_output_path = fulloutputpath
-        except AttributeError:
+        if getattr(options, "multifilestyle", None) == "onefile":
+            timecheck_output_path = options.output
+        else:
             timecheck_output_path = fulloutputpath
 
         if options.timestamp and _output_is_newer(fullinputpath, timecheck_output_path):
