@@ -1,0 +1,28 @@
+Translate Toolkit 3.16.1
+************************
+
+*Released on 9 September 2025*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- Formats
+
+  - Fixed loading CLDR plural tags for locales with country code such as ``pt_BR``.
+
+- Converters
+
+  - Fixed ``--timestamp`` check failing when ``--multifile=onefile`` is enabled.
+
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař, Kattni
