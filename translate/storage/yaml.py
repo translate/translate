@@ -23,7 +23,7 @@ import uuid
 from ruamel.yaml import YAML, YAMLError
 from ruamel.yaml.comments import CommentedMap, TaggedScalar
 
-from translate.lang.data import cldr_plural_categories, plural_tags
+from translate.lang.data import cldr_plural_categories
 from translate.misc.multistring import multistring
 from translate.storage import base
 
@@ -186,7 +186,7 @@ class RubyYAMLUnit(YAMLUnit):
         if not isinstance(self.target, multistring):
             return self.target
 
-        tags = plural_tags.get(self._store.targetlanguage, plural_tags["en"])
+        tags = self._store.get_plural_tags()
 
         # Sync plural_strings elements to plural_tags count.
         strings = self.sync_plural_count(self.target, tags)
@@ -222,7 +222,7 @@ class RubyYAMLFile(YAMLFile):
 
     def _parse_dict(self, data, prev):
         # Does this look like a plural?
-        tags = plural_tags.get(self.targetlanguage, plural_tags["en"])
+        tags = self.get_plural_tags()
         if data and all(x in cldr_plural_categories for x in data):
             # Ensure we have correct plurals ordering.
             values = [data[item] for item in tags if item in data]
