@@ -75,7 +75,7 @@ import re
 import uuid
 from typing import BinaryIO, ClassVar, TextIO, cast
 
-from translate.lang.data import cldr_plural_categories, plural_tags
+from translate.lang.data import cldr_plural_categories
 from translate.misc.multistring import multistring
 from translate.storage import base
 
@@ -169,12 +169,6 @@ class JsonFile(base.DictStore):
         }
         if inputfile is not None:
             self.parse(inputfile)
-
-    @property
-    def plural_tags(self):
-        locale = self.gettargetlanguage()
-        locale = locale.replace("_", "-").split("-")[0] if locale else "en"
-        return plural_tags.get(locale, plural_tags["en"])
 
     def serialize(self, out):
         units = self.get_root_node()
@@ -373,9 +367,9 @@ class I18NextUnit(JsonNestedUnit):
         if not isinstance(self.target, multistring):
             super().storevalues(output)
         else:
-            if len(self.target.strings) > len(self._store.plural_tags):
+            if len(self.target.strings) > len(self._store.get_plural_tags()):
                 self.target.extra_strings = self.target.extra_strings[
-                    : len(self._store.plural_tags) - 1
+                    : len(self._store.get_plural_tags()) - 1
                 ]
             self._fixup_item()
             for i, value in enumerate(self.target.strings):
@@ -463,7 +457,7 @@ class I18NextV4Unit(I18NextUnit):
 
     def _get_plural_labels(self, count):
         base_name = self._get_base_name()
-        return [f"{base_name}_{self._store.plural_tags[i]}" for i in range(count)]
+        return [f"{base_name}_{self._store.get_plural_tags()[i]}" for i in range(count)]
 
 
 class I18NextV4File(JsonNestedFile):
@@ -502,7 +496,9 @@ class I18NextV4File(JsonNestedFile):
                     plural_base, suffix = k.rsplit("_", 1)
 
                 if suffix in cldr_plural_categories:
-                    plurals = [f"{plural_base}_{suffix}" for suffix in self.plural_tags]
+                    plurals = [
+                        f"{plural_base}_{suffix}" for suffix in self.get_plural_tags()
+                    ]
 
                 if plurals:
                     sources = []
@@ -584,7 +580,7 @@ class GoTextJsonUnit(BaseJsonUnit):
     def getvalue(self):
         target = self.target
         if isinstance(target, multistring):
-            strings = self.sync_plural_count(target, self._store.plural_tags)
+            strings = self.sync_plural_count(target, self._store.get_plural_tags())
             target = {
                 "select": {
                     "feature": "plural",
@@ -594,7 +590,7 @@ class GoTextJsonUnit(BaseJsonUnit):
                 target["select"]["arg"] = self.placeholders[0]["id"]
             target["select"]["cases"] = {
                 plural: {"msg": strings[offset]}
-                for offset, plural in enumerate(self._store.plural_tags)
+                for offset, plural in enumerate(self._store.get_plural_tags())
             }
         value = {"id": self._unitid.parts if self._unitid else self.getid()}
         if self.message:
@@ -696,10 +692,10 @@ class GoI18NJsonUnit(FlatJsonUnit):
     def getvalue(self):
         target = self.target
         if isinstance(target, multistring):
-            strings = self.sync_plural_count(target, self._store.plural_tags)
+            strings = self.sync_plural_count(target, self._store.get_plural_tags())
             target = {
                 plural: strings[offset]
-                for offset, plural in enumerate(self._store.plural_tags)
+                for offset, plural in enumerate(self._store.get_plural_tags())
             }
         value = {"id": self.getid()}
         if self.notes:
@@ -778,8 +774,8 @@ class GoI18NV2JsonUnit(FlatJsonUnit):
         if self.notes:
             target["description"] = self.notes
 
-        strings = self.sync_plural_count(self.target, self._store.plural_tags)
-        for offset, plural in enumerate(self._store.plural_tags):
+        strings = self.sync_plural_count(self.target, self._store.get_plural_tags())
+        for offset, plural in enumerate(self._store.get_plural_tags()):
             target[plural] = strings[offset]
 
         return target

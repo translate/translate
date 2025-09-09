@@ -419,19 +419,6 @@ class AndroidResourceUnit(base.TranslationUnit):
             return "en"
         return super().gettargetlanguage()
 
-    def get_base_locale_code(self) -> str:
-        locale = self.gettargetlanguage()
-        if not locale:
-            return "en"
-        # Handle b+ style language codes and standardize
-        return (
-            locale.removeprefix("b+").replace("_", "-").replace("+", "-").split("-")[0]
-        )
-
-    def get_plural_tags(self):
-        locale = self.get_base_locale_code()
-        return data.plural_tags.get(locale, data.plural_tags["en"])
-
     @property
     def target(self):
         if self.xmlelement.tag != self.PLURAL_TAG:
@@ -440,7 +427,9 @@ class AndroidResourceUnit(base.TranslationUnit):
             entry.get("quantity"): self.get_xml_text_value(entry)
             for entry in self.xmlelement.iterchildren("item")
         }
-        plural_tags = self.get_plural_tags()
+        plural_tags = (
+            self._store.get_plural_tags() if self._store else data.plural_tags["en"]
+        )
         return multistring([plurals.get(tag, "") for tag in plural_tags])
 
     @target.setter
@@ -452,7 +441,7 @@ class AndroidResourceUnit(base.TranslationUnit):
                 self.xmlelement = etree.Element(self.PLURAL_TAG)
                 self.setid(old_id)
 
-            plural_tags = self.get_plural_tags()
+            plural_tags = self._store.get_plural_tags()
 
             # Sync plural_strings elements to plural_tags count.
             plural_strings = self.sync_plural_count(target, plural_tags)
@@ -466,7 +455,7 @@ class AndroidResourceUnit(base.TranslationUnit):
             # Include additional plural for decimal numbers if not present. This is
             # enforced by Android lint but translate-toolkit currently does not support
             # editing this.
-            locale = self.get_base_locale_code()
+            locale = self._store.get_base_locale_code()
             if locale in data.DECIMAL_EXTRA_TAGS:
                 for extra in data.DECIMAL_EXTRA_TAGS[locale]:
                     if extra not in plural_tags:

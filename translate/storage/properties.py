@@ -614,12 +614,6 @@ class proppluralunit(base.TranslationUnit):
         existing = self.units.keys()
         return [key for key in data.cldr_plural_categories if key in existing]
 
-    def _get_target_mapping(self):
-        cldr_mapping = proppluralunit._get_language_mapping(self._store.targetlanguage)
-        if cldr_mapping:
-            return cldr_mapping
-        return self._get_existing_mapping()
-
     def _get_source_mapping(self):
         cldr_mapping = proppluralunit._get_language_mapping(self._store.sourcelanguage)
         if cldr_mapping:
@@ -659,7 +653,7 @@ class proppluralunit(base.TranslationUnit):
     def _get_ordered_units(self):
         # Used for str (GWT order)
         mapping = self.personality.get_expand_output_target_mapping(
-            self._get_target_mapping()
+            self._store.get_plural_tags()
         )
         names = [
             name for name in self.personality.get_cldr_names_order() if name in mapping
@@ -682,7 +676,7 @@ class proppluralunit(base.TranslationUnit):
         else:
             strings = [text]
         if mapping is None:
-            mapping = self._get_target_mapping()
+            mapping = self._store.get_plural_tags()
 
         strings = self._get_strings(strings, mapping)
         units = self._get_units(mapping)
@@ -697,7 +691,7 @@ class proppluralunit(base.TranslationUnit):
             b.target = a
 
     def gettarget(self):
-        ll = [x.target for x in self._get_units(self._get_target_mapping())]
+        ll = [x.target for x in self._get_units(self._store.get_plural_tags())]
         if len(ll) > 1:
             return multistring(ll)
         return ll[0]

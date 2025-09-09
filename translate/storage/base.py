@@ -27,6 +27,7 @@ from io import BytesIO
 from itertools import starmap
 from typing import Callable, ClassVar, Literal
 
+from translate.lang.data import plural_tags
 from translate.misc.multistring import multistring
 from translate.storage.placeables import StringElem
 from translate.storage.placeables import parse as rich_parse
@@ -958,6 +959,19 @@ class TranslationStore:
         :rtype: string
         """
         return "id"
+
+    def get_base_locale_code(self) -> str:
+        locale = self.gettargetlanguage()
+        if not locale:
+            return "en"
+        # Handle b+ style language codes and standardize
+        return (
+            locale.removeprefix("b+").replace("_", "-").replace("+", "-").split("-")[0]
+        )
+
+    def get_plural_tags(self) -> list[str]:
+        locale = self.get_base_locale_code()
+        return plural_tags.get(locale, plural_tags["en"])
 
 
 class UnitId:
