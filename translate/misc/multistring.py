@@ -53,6 +53,9 @@ class multistring(str):
     def __hash__(self) -> int:
         return super().__hash__()
 
+    def __bool__(self) -> bool:
+        return len(self) > 0 or any(self.extra_strings)
+
     def __ne__(self, other) -> bool:
         return not self.__eq__(other)
 
