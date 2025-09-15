@@ -95,3 +95,9 @@ class TestMultistring:
         foodict2 = {"foo": "baz"}
         assert foo in foodict2
         assert hash(str(foo)) == hash(foo)
+
+    def test_bool(self):
+        assert bool(multistring(["foo", "bar"])) is True
+        assert bool(multistring(["", "bar"])) is True
+        assert bool(multistring(["foo", ""])) is True
+        assert bool(multistring(["", ""])) is False
