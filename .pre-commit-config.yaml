@@ -39,6 +39,10 @@ repos:
   rev: v1.0.0
   hooks:
   - id: sphinx-lint
+- repo: https://github.com/zizmorcore/zizmor-pre-commit
+  rev: v1.13.0
+  hooks:
+  - id: zizmor
 - repo: https://github.com/crate-ci/typos
   rev: v1.36.2
   hooks:
