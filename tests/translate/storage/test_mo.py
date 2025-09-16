@@ -550,8 +550,10 @@ class TestMOFile(test_base.TestTranslationStore):
             print("pocompile output:")
             print(repr(mo_pocompile))
 
-            # Compare to known values
-            assert mo_pocompile == mosources[i]
+            # Compare to known values on little endian system as that is the
+            # endianness used in the test data.
+            if sys.byteorder == "little":
+                assert mo_pocompile == mosources[i]
 
             # Do not compare whole content because Gettext has changed the
             # hashing table content in 0.25
