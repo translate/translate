@@ -1,0 +1,63 @@
+name: Qemu tests
+
+on:
+  push:
+    branches-ignore:
+    - dependabot/**
+    - deepsource**
+  pull_request:
+
+permissions:
+  contents: read
+
+
+jobs:
+  build_job:
+    permissions:
+      # Needed for Docker container caching
+      packages: write
+    runs-on: ubuntu-24.04
+    name: test (${{ matrix.arch }}, ${{ matrix.distro }})
+
+    # Run steps on a matrix of 4 arch/distro combinations
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - arch: s390x
+          distro: ubuntu24.04
+        - arch: ppc64le
+          distro: ubuntu24.04
+    steps:
+    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8   # v5.0.0
+      with:
+        persist-credentials: false
+    - uses: astral-sh/setup-uv@b75a909f75acd358c2196fb9a5f1299a9a8868a4 # v6.7.0
+      with:
+        cache-local-path: /tmp/setup-uv-cache
+        cache-suffix: ${{ matrix.arch }}-${{ matrix.distro }}
+        prune-cache: false
+    - uses: uraimo/run-on-arch-action@d94c13912ea685de38fccc1109385b83fd79427d   # v3.0.1
+      name: Test
+      with:
+        arch: ${{ matrix.arch }}
+        distro: ${{ matrix.distro }}
+
+          # Not required, but speeds up builds
+        githubToken: ${{ github.token }}
+
+        dockerRunArgs: |
+          --volume "/tmp/setup-uv-cache:/tmp/setup-uv-cache"
+
+        install: |
+          apt-get update -q -y
+          apt-get install -q -y libgettextpo-dev libxml2-dev libxmlsec1-dev gettext hunspell-af python3-dev gcc make
+          curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR=/usr/local/bin sh
+
+        run: |
+          export UV_CACHE_DIR=/tmp/setup-uv-cache
+          uv sync --group test --all-extras --no-dev
+          source .venv/bin/activate
+          pytest --cov=. -r EfsxX
+          make test-functional
+          uv cache prune --ci
