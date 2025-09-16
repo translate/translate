@@ -252,19 +252,17 @@ class mofile(poheader.poheader, base.TranslationStore):
         else:
             raise ValueError("This is not an MO file")
         (
-            _magic,
-            version_maj,
-            version_min,
+            version,
             lenkeys,
             startkey,
             startvalue,
             sizehash,
             offsethash,
-        ) = struct.unpack(f"{endian}LHHiiiii", content[: (7 * 4)])
+        ) = struct.unpack(f"{endian}iiiiii", content[4 : (7 * 4)])
         return (
             endian,
-            version_maj,
-            version_min,
+            version >> 16,
+            version & 0xFF,
             lenkeys,
             startkey,
             startvalue,
