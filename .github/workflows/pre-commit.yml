@@ -18,6 +18,21 @@ jobs:
     - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
       with:
         persist-credentials: false
+    - name: Get cache tag
+      id: get-date
+      run: |
+        echo "cache_tag=$(/bin/date --utc '+%Y%m')" >> "$GITHUB_OUTPUT"
+        echo "previous_cache_tag=$(/bin/date --date='1 month ago' --utc '+%Y%m')" >> "$GITHUB_OUTPUT"
+      shell: bash
+    - uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 # v4.2.4
+      id: pre-commit-cache
+      with:
+        path: ~/.cache/pre-commit
+        key: ${{ runner.os }}-pre-commit-${{ steps.get-date.outputs.cache_tag }}-${{ hashFiles('.pre-commit-config.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pre-commit-${{ steps.get-date.outputs.cache_tag }}
+          ${{ runner.os }}-pre-commit-${{ steps.get-date.outputs.previous_cache_tag }}
+          ${{ runner.os }}-pre-commit-
     - uses: astral-sh/setup-uv@b75a909f75acd358c2196fb9a5f1299a9a8868a4 # v6.7.0
     - uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6.0.0
       with:

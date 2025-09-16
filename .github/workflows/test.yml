@@ -44,8 +44,6 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - uses: astral-sh/setup-uv@b75a909f75acd358c2196fb9a5f1299a9a8868a4 # v6.7.0
       with:
-        enable-cache: true
-        cache-dependency-glob: ''
         cache-suffix: ${{ matrix.python-version }}
     - name: Install apt dependencies
       if: matrix.os == 'ubuntu-latest'
