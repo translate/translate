@@ -19,7 +19,7 @@ repos:
     args: [--fix, --exit-non-zero-on-fix]
   - id: ruff-format
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.33.3
+  rev: 0.34.0
   hooks:
   - id: check-github-workflows
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
