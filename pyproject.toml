@@ -111,7 +111,7 @@ subtitles = [
   "aeidon>=1.14.1,<1.16"
 ]
 tmserver = [
-  "cheroot==10.0.1"
+  "cheroot==11.0.0"
 ]
 trados = [
   "BeautifulSoup4>=4.13.0"
