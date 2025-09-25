@@ -27,8 +27,8 @@
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": [
-        "\\.pre-commit-config\\.yaml"
+      "managerFilePatterns": [
+        "/\\.pre-commit-config\\.yaml/"
       ],
       "matchStrings": [
         "(?<depName>[^'\" ]+)==(?<currentValue>[^'\" ,\\s]+)"
@@ -38,8 +38,8 @@
     },
     {
       "customType": "regex",
-      "fileMatch": [
-        "\\.pre-commit-config\\.yaml"
+      "managerFilePatterns": [
+        "/\\.pre-commit-config\\.yaml/"
       ],
       "matchStrings": [
         "(?<depName>[^'\" ]+)@(?<currentValue>[^'\" ,\\s]+)"
