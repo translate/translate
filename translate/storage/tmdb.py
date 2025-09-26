@@ -322,7 +322,7 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
                 )
         results.sort(key=operator.itemgetter("quality"), reverse=True)
         results = results[: self.max_candidates]
-        logger.debug("results: %s", str(results))
+        logger.debug("results: %s", results)
         return results
 
 

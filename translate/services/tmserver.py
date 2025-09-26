@@ -88,7 +88,7 @@ class TMServer:
     def translate_unit(self, environ, start_response, uid, slang, tlang):
         start_response("200 OK", [("Content-type", "text/plain")])
         candidates = self.tmdb.translate_unit(uid, slang, tlang)
-        logger.debug("candidates: %s", str(candidates))
+        logger.debug("candidates: %s", candidates)
         response = json.dumps(candidates, indent=4).encode("utf-8")
         params = parse.parse_qs(environ.get("QUERY_STRING", ""))
         try:

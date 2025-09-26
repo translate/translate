@@ -152,7 +152,7 @@ class TerminologyExtractor:
                     "%s:%d - bad stopword entry starts with '%s'",
                     self.stopfile,
                     line,
-                    str(character),
+                    character,
                 )
                 logger.warning(
                     "%s:%d all lines after error ignored", self.stopfile, line + 1
