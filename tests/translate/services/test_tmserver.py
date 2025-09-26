@@ -53,7 +53,9 @@ msgstr "Ahoj"
         thread.start()
 
         # Run test
-        response = urlopen(f"http://localhost:{server_port}/en/cs/unit/Hello/")
+        response = urlopen(
+            f"http://localhost:{server_port}/en/cs/unit/Hello/", timeout=1
+        )
         payload = json.loads(response.read().decode("utf-8"))
         assert payload[0]["target"] == "Ahoj"
 
