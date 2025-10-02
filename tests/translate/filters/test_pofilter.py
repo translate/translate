@@ -212,7 +212,7 @@ class TestPOFilter(BaseTestFilter):
     def test_msgid_comments(self):
         """Tests that msgid comments don't feature anywhere."""
         posource = """
-msgid "_: Capital.  ACRONYMN. (msgid) comment 3. %d Extra sentence.\\n"
+msgid "_: Capital.  ACRONYM. (msgid) comment 3. %d Extra sentence.\\n"
 "cow"
 msgstr "koei"
 """

@@ -125,7 +125,7 @@ class TestPOGrep:
         assert headerless_len(po.pofile(poresult).units) == 0
 
     def test_unicode_normalise(self):
-        """Check that we normlise unicode strings before comparing."""
+        """Check that we normalise unicode strings before comparing."""
         source_template = '# comment\n#: test.c\nmsgid "test"\nmsgstr "t%sst"\n'
         # é, e + '
         # Ḽ, L + ^

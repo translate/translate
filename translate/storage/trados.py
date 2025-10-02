@@ -213,7 +213,7 @@ class TradosTxtTmFile(base.TranslationStore):
             input.close()
             input = tmsrc
         self._soup = TradosSoup(input)
-        for tu in self._soup.findAll("tru"):
+        for tu in self._soup.findAll("tru"):  # codespell:ignore
             unit = TradosUnit()
             unit._soup = TradosSoup(str(tu))
             self.addunit(unit)
