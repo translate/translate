@@ -20,7 +20,7 @@
 """
 Module for parsing Qt .ts files for translation.
 
-Currently this module supports the old format of .ts files. Some applictaions
+Currently this module supports the old format of .ts files. Some applications
 use the newer .ts format which are documented here:
 `TS file format 4.3 <http://doc.qt.io/archives/4.3/linguist-ts-file-format.html>`_,
 `Example <http://svn.ez.no/svn/ezcomponents/trunk/Translation/docs/linguist-format.txt>`_

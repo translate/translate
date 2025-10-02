@@ -15,7 +15,7 @@ Formats and Converters
 
   - Added support for gotext
   - Added support for i18next v4
-  - Varios cleanups and refactorings
+  - Various cleanups and refactorings
 
 - YAML
 

@@ -36,7 +36,7 @@ LANG_TEAM_REGEX = (
     ("fedoraproject", "trans-([a-z_A-Z]+)@lists.fedoraproject.org", None),
     ("gnome.org", "gnome-([a-z_A-Z]+)-list@gnome.org", ["latin"]),
 )
-"""Data for regular expression based extraction.  The fieds are: prefilter
+"""Data for regular expression based extraction. The fields are: prefilter
 information, regex with single group that contains the language code,
 postfilter."""
 

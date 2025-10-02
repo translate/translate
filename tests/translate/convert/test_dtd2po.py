@@ -337,7 +337,7 @@ Some other text
 
     @mark.xfail(reason="Not Implemented")
     def test_accelerator_keys_not_in_sentence(self):
-        """Tests to ensure that we can manage accelerator keys that are not part of the transated sentence eg in Chinese."""
+        """Tests to ensure that we can manage accelerator keys that are not part of the translated sentence eg in Chinese."""
         dtdtemplate = """<!ENTITY useAutoScroll.label             "Use autoscrolling">
 <!ENTITY useAutoScroll.accesskey         "a">"""
         dtdlanguage = """<!ENTITY useAutoScroll.label             "使用自動捲動(Autoscrolling)">
