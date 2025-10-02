@@ -31,6 +31,7 @@ import re
 import textwrap
 from functools import lru_cache
 from itertools import chain
+from warnings import warn
 
 from wcwidth import wcswidth
 
@@ -105,7 +106,10 @@ def escapeforpo(line: str) -> str:
 def unicode_width(text: str) -> int:
     result = wcswidth(text)
     if result == -1:
-        raise ValueError("String contains control characters or non-displayable characters")
+        warn(
+            f"String contains control characters or non-displayable characters: {text!r}"
+        )
+        return len(text)
     return result
 
 
