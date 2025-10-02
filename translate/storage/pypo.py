@@ -105,7 +105,7 @@ def escapeforpo(line: str) -> str:
 def unicode_width(text: str) -> int:
     result = wcswidth(text)
     if result == -1:
-        raise ValueError("Unprintable character in a string")
+        raise ValueError("String contains control characters or non-displayable characters")
     return result
 
 
