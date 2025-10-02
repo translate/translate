@@ -433,7 +433,7 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
 
     def test_encoding_latin1(self):
         """
-        Convert HTML input in iso-8859-1 correctly to unicode.
+        Convert HTML input in windows-1250 correctly to unicode.
 
         Also verifies that the charset declaration isn't extracted as a translation unit.
         """
@@ -443,7 +443,7 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
 <!-- InstanceBeginEditable name="doctitle" -->
 <title>FMFI - South Africa - CSIR Openphone - Overview</title>
 <!-- InstanceEndEditable -->
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1250">
 <meta name="keywords" content="fmfi, first mile, first inch, wireless, rural development, access devices, mobile devices, wifi, connectivity, rural connectivity, ict, low cost, cheap, digital divide, csir, idrc, community">
 
 <!-- InstanceBeginEditable name="head" -->
@@ -465,9 +465,9 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
             2,
             "fmfi, first mile, first inch, wireless, rural development, access devices, mobile devices, wifi, connectivity, rural connectivity, ict, low cost, cheap, digital divide, csir, idrc, community",
         )
-        self.compareunit(pofile, 3, "We aim to please \x96 will you aim too, please?")
+        self.compareunit(pofile, 3, "We aim to please – will you aim too, please?")
         self.compareunit(
-            pofile, 4, "South Africa\x92s language diversity can be challenging."
+            pofile, 4, "South Africa’s language diversity can be challenging."
         )
 
     def test_strip_html(self):
