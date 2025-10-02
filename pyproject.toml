@@ -33,7 +33,8 @@ test = [
 ]
 types = [
   "setuptools>=61.2",
-  "types-lxml==2025.3.30"
+  "types-lxml==2025.3.30",
+  "wcwidth-stubs==0.2.14.0"
 ]
 
 [project]
@@ -61,8 +62,8 @@ classifiers = [
   "Topic :: Software Development :: Localization"
 ]
 dependencies = [
-  "cwcwidth>=0.1.10,<0.2",
-  "lxml>=5.2.0,<6.1"
+  "lxml>=5.2.0,<6.1",
+  "wcwidth>=0.2.14,<0.3"
 ]
 description = "Tools and API for translation and localization engineering."
 dynamic = [
