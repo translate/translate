@@ -29,9 +29,10 @@ import copy
 import logging
 import re
 import textwrap
+from functools import lru_cache
 from itertools import chain
 
-from cwcwidth import wcswidth, wcwidth
+from wcwidth import wcswidth
 
 from translate.misc import quote
 from translate.misc.multistring import multistring
@@ -100,18 +101,30 @@ def escapeforpo(line: str) -> str:
     return po_escape_re.sub(escapehandler, line)
 
 
+@lru_cache(maxsize=128)
+def unicode_width(text: str) -> int:
+    result = wcswidth(text)
+    if result == -1:
+        raise ValueError("Unprintable character in a string")
+    return result
+
+
 def cjkslices(text: str, index: int) -> tuple[str, str]:
     """Return the two slices of a text cut to the index."""
-    text_width = wcswidth(text)
-    if text_width == len(text) or text_width <= index:
+    text_width = unicode_width(text)
+    # Do not wrap non-wide chars here
+    if text_width == len(text):
         return text, ""
-    length = 0
-    i = 0
-    for i in range(len(text)):
-        length += wcwidth(text[i])
-        if length > index:
-            break
-    return text[:i], text[i:]
+
+    # Guess split point
+    split_point = index * text_width // len(text)
+    while unicode_width(text[:split_point]) < index:
+        split_point += 1
+
+    while unicode_width(text[:split_point]) > index:
+        split_point -= 1
+
+    return text[:split_point], text[split_point:]
 
 
 class PoWrapper(textwrap.TextWrapper):
@@ -127,11 +140,13 @@ class PoWrapper(textwrap.TextWrapper):
         r"""
             (
             \[[^\]]{1,73}\]|                      # [] braces
+            \([^\)]{1,73}\)|                      # () braces
             \\"[^"]{1,73}\\"|                     # quoted string
             \s+|                                  # any whitespace
             [a-z0-9A-Z_#\[\].-]+/|                # nicely split long URLs
             \w*\\.\w*|                            # any escape should not be split
             [\w\!\'\&\.\,\?=<>%]+\s+|             # space should go with a word
+            [，。、]|                             # full width punctuation
             [^\s\w]*\w+[a-zA-Z]-(?=\w+[a-zA-Z])|  # hyphenated words
             (?<=[\w\!\"\'\&\.\,\?])-{2,}(?=\w)    # em-dash
             )
@@ -185,12 +200,21 @@ class PoWrapper(textwrap.TextWrapper):
             cur_len = 0
 
             while chunks:
-                l = wcswidth(chunks[-1])
+                l = unicode_width(chunks[-1])
 
                 # Can at least squeeze this chunk onto the current line.
                 if cur_len + l <= width:
                     cur_line.append(chunks.pop())
                     cur_len += l
+
+                # Figure out if we can split wide chars
+                elif l > len(chunks[-1]):
+                    slice1, slice2 = cjkslices(chunks[-1], width - cur_len)
+                    if slice2:
+                        cur_line.append(slice1)
+                        cur_len += unicode_width(slice1)
+                        chunks[-1] = slice2
+                    break
 
                 # Nope, this line is full.
                 else:
@@ -198,7 +222,7 @@ class PoWrapper(textwrap.TextWrapper):
 
             # The current line is full, and the next chunk is too big to
             # fit on *any* line (not just this one).
-            if not cur_line and chunks and wcswidth(chunks[-1]) > width:
+            if not cur_line and chunks and unicode_width(chunks[-1]) > width:
                 self._handle_long_word(chunks, cur_line, cur_len, width)
 
             if cur_line:

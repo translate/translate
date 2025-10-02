@@ -1198,7 +1198,6 @@ msgstr ""
         assert self.poreflow(gettext_0_23) == expected
         assert self.poreflow(gettext_0_20) == expected
 
-    @mark.xfail(reason="Incompatible wrapping with gettext, see #5661")
     def test_wrap_wide_stop(self):
         posource = r"""msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
