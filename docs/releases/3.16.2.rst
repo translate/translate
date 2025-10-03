@@ -1,0 +1,37 @@
+Translate Toolkit 3.16.2
+************************
+
+*Released on 3 October 2025*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- General
+
+  - Fixed handling of partial plural strings
+
+- PO
+
+  - Improved text wrapping of wide characters
+
+- MO
+
+  - Fixed parsing of version
+
+Other
+-----
+
+- Improved compatibility with big endian architectures
+
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař
