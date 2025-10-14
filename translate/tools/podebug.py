@@ -313,7 +313,9 @@ class podebug:
             hashable = unit.getlocations()[0] if unit.getlocations() else unit.source
             prefix = prefix.replace(
                 "@hash_placeholder@",
-                md5(hashable.encode("utf-8")).hexdigest()[: self.hash_len],
+                md5(hashable.encode("utf-8"), usedforsecurity=False).hexdigest()[
+                    : self.hash_len
+                ],
             )
         rich_string = unit.rich_target if unit.istranslated() else unit.rich_source
         if not isinstance(rich_string, StringElem):
