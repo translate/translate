@@ -8,7 +8,6 @@
   "labels": [
     "dependencies"
   ],
-  "rangeStrategy": "widen",
   "automerge": true,
   "automergeType": "pr",
   "automergeStrategy": "rebase",
@@ -17,6 +16,12 @@
     "enabled": true
   },
   "packageRules": [
+    {
+      "matchDatasources": [
+        "pypi"
+      ],
+      "rangeStrategy": "widen"
+    },
     {
       "matchPackageNames": [
         "shellcheck-py/shellcheck-py"
