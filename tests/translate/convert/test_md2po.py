@@ -67,7 +67,7 @@ You are only coming through in waves.
 """
         )
         self.run_command("file.md", "test.po")
-        content = self.then_po_file_is_written()
+        self.then_po_file_is_written()
         output = pofile()
         with open(self.get_testfilename("test.po")) as handle:
             print(handle.read())

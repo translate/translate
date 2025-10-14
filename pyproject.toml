@@ -306,7 +306,6 @@ ignore = [
   "E741",  # TODO: Ambiguous variable name:
   "EM",  # TODO: Exception strings
   "ERA001",  # TODO: Found commented-out code
-  "F841",  # TODO: Local variable `args` is assigned to but never used
   "FBT",  # TODO: Boolean in function definition
   "FIX001",  # TODO: Line contains FIXME, consider resolving the issue
   "FIX002",  # CONFIG: we use TODO
