@@ -324,7 +324,6 @@ ignore = [
   "N815",  # TODO: Variable `bodyNode` in class scope should not be mixedCase
   "N816",  # TODO: Variable `theDOMImplementation` in global scope should not be mixedCase
   "N818",  # TODO: Exception name `FilterFailure` should be named with an Error suffix
-  "PD011",  # WONTFIX: Use `.to_numpy()` instead of `.values
   "PLC0415",  # TODO: `import` should be at the top-level of a file
   "PLE2502",  # TODO: Contains control characters that can permit obfuscated code
   "PLR0904",  # TODO: Too many public methods (21 > 20)
