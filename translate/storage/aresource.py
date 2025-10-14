@@ -438,7 +438,11 @@ class AndroidResourceUnit(base.TranslationUnit):
             # Fix the root tag if mismatching
             if self.xmlelement.tag != self.PLURAL_TAG:
                 old_id = self.getid()
-                self.xmlelement = etree.Element(self.PLURAL_TAG)
+                newelement = etree.Element(self.PLURAL_TAG)
+                parent = self.xmlelement.getparent()
+                if parent is not None:
+                    parent.replace(self.xmlelement, newelement)
+                self.xmlelement = newelement
                 self.setid(old_id)
 
             plural_tags = self._store.get_plural_tags()
@@ -482,7 +486,11 @@ class AndroidResourceUnit(base.TranslationUnit):
             # Fix the root tag if mismatching
             if self.xmlelement.tag != self.SINGULAR_TAG:
                 old_id = self.getid()
-                self.xmlelement = etree.Element(self.SINGULAR_TAG)
+                newelement = etree.Element(self.SINGULAR_TAG)
+                parent = self.xmlelement.getparent()
+                if parent is not None:
+                    parent.replace(self.xmlelement, newelement)
+                self.xmlelement = newelement
                 self.setid(old_id)
 
             self.set_xml_text_value(target, self.xmlelement)

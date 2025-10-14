@@ -741,12 +741,44 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         store = self.StoreClass()
         store.targetlanguage = "cs"
         store.parse(content)
-        store.units[0].target = multistring(
+        assert store.units[0].target == multistring(
             [
                 '<xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" id="count">%d</xliff:g> den',
                 '<xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" id="count">%d</xliff:g> dny',
                 '<xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" id="count">%d</xliff:g> dnu',
             ]
+        )
+
+    def test_edit_to_plurals(self):
+        content = """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="teststring">Test %d string</string>
+</resources>
+"""
+        # Resulting parsed plurals are still the same
+        store = self.StoreClass()
+        store.targetlanguage = "cs"
+        store.parse(content.encode())
+        assert store.units[0].target == "Test %d string"
+        store.units[0].target = multistring(
+            [
+                "Test %d string",
+                "Test %d strings",
+                "Test %d strings",
+            ]
+        )
+        assert (
+            bytes(store).decode()
+            == """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="teststring">
+        <item quantity="one">Test %d string</item>
+        <item quantity="few">Test %d strings</item>
+        <item quantity="many">Test %d strings</item>
+        <item quantity="other">Test %d strings</item>
+    </plurals>
+</resources>
+"""
         )
 
     def entity_add(self, *, edit: bool):
