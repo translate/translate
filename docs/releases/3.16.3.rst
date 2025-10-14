@@ -1,0 +1,30 @@
+Translate Toolkit 3.16.3
+************************
+
+*Released on 14 October 2025*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- Android
+
+  - Fixed saving when string changes to plural
+
+Other
+-----
+
+- Various code cleanups
+- Python 3.14 compatibility
+
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař

@@ -18,7 +18,7 @@
 
 """This file contains the version of the Translate Toolkit."""
 
-ver = (3, 16, 2)
+ver = (3, 16, 3)
 """Machine readable version number. Used by tools that need to adjust code
 paths based on a Translate Toolkit release number."""
 
