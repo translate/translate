@@ -315,14 +315,14 @@ class FileDiffer:
     def get_from_lines(self, group):
         """Returns the lines referred to by group, from the fromfile."""
         from_lines = []
-        for tag, i1, i2, j1, j2 in group:
+        for _tag, i1, i2, _j1, _j2 in group:
             from_lines.extend(self.from_lines[i1:i2])
         return from_lines
 
     def get_to_lines(self, group):
         """Returns the lines referred to by group, from the tofile."""
         to_lines = []
-        for tag, i1, i2, j1, j2 in group:
+        for _tag, _i1, _i2, j1, j2 in group:
             to_lines.extend(self.to_lines[j1:j2])
         return to_lines
 

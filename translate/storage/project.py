@@ -132,7 +132,7 @@ class Project:
                 # inputfile is a translatable file, so it needed to be converted
                 # from some input document. Let's try and use that document as a
                 # template for this conversion.
-                for in_name, (out_name, tmpl_name) in self.store.convert_map.items():
+                for in_name, (out_name, _tmpl_name) in self.store.convert_map.items():
                     if input_fname == out_name:
                         template, templ_fname = self.get_file(in_name), in_name
                         break

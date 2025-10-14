@@ -280,7 +280,6 @@ ignore = [
   "ARG004",  # TODO: Unused static method argument
   "ARG005",  # TODO: Unused lambda argument:
   "B006",  # TODO: Do not use mutable data structures for argument defaults
-  "B007",  # TODO: Loop control variable not used within loop body
   "B020",  # TODO: Loop control variable `node` overrides iterable it iterates
   "B028",  # TODO: No explicit `stacklevel` keyword argument found
   "B904",  # TODO: Within an `except` clause, raise exceptions with `raise ... from err` or `raise ... from None` to distinguish them from errors in exception handling

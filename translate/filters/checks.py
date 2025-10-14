@@ -128,7 +128,7 @@ def tagproperties(
         # Now we isolate the attribute pairs.
         pairs = property_re.findall(match)
 
-        for property, value, a, b in pairs:
+        for property, value, _a, _b in pairs:
             # Strip the quotes:
             value = value[1:-1]
 

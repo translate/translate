@@ -188,7 +188,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
             flatsource = self.flatten(source, "-")
             fulloutputpath = os.path.join(options.output, flatsource + os.extsep + "po")
             conflictfile = po.pofile()
-            for target, unit, filename in translations:
+            for _target, unit, filename in translations:
                 unit.othercomments.append(f"# (poconflicts) {filename}\n")
                 conflictfile.units.append(unit)
             with open(fulloutputpath, "wb") as fh:

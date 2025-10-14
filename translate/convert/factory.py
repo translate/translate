@@ -101,7 +101,7 @@ def get_output_extensions(ext):
         if isinstance(key, tuple):
             in_ext = key[0]
         if in_ext == ext:
-            for out_ext, convert_fn in converter:
+            for out_ext, _convert_fn in converter:
                 out_exts.append(out_ext)
     return out_exts
 

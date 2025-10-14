@@ -511,7 +511,7 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
         termitems = self.extractor.filter_terms(
             terms, nonstopmin=options.nonstopmin, sortorders=options.sortorders
         )
-        for count, unit in termitems:
+        for _count, unit in termitems:
             termfile.units.append(unit)
         with open(options.output, "wb") as fh:
             termfile.serialize(fh)
