@@ -77,12 +77,12 @@ class TranslateBenchmarker:
                 sample_file = self.StoreClass()
                 for stringnum in range(strings_per_file):
                     source_string = " ".join(
-                        "word%d" % (random.randint(0, strings_per_file) * i)
+                        "word%d" % (random.randint(0, strings_per_file) * i)  # noqa: S311
                         for i in range(source_words_per_string)
                     )
                     sample_unit = sample_file.addsourceunit(source_string)
                     sample_unit.target = " ".join(
-                        "drow%d" % (random.randint(0, strings_per_file) * i)
+                        "drow%d" % (random.randint(0, strings_per_file) * i)  # noqa: S311
                         for i in range(target_words_per_string)
                     )
                 sample_file.savefile(

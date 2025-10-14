@@ -351,8 +351,6 @@ ignore = [
   "RUF012",  # TODO: Mutable class attributes should be annotated with `typing.ClassVar`
   "S101",  # CONFIG: Use of `assert` detected
   "S301",  # TODO: `pickle` and modules that wrap it can be unsafe when used to deserialize untrusted data, possible security issue
-  "S311",  # TODO: Standard pseudo-random generators are not suitable for cryptographic purposes
-  "S324",  # TODO: Probable use of insecure hash functions in `hashlib`: `md5`
   "S403",  # TODO: `pickle`, `cPickle`, `dill`, and `shelve` modules are possibly insecure
   "S404",  # TODO: `subprocess` module is possibly insecure
   "S407",  # TODO: `xml.dom.expatbuilder` is vulnerable to XML attacks
