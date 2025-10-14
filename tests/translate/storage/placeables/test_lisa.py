@@ -172,7 +172,7 @@ def test_unknown_xml_placeable():
     assert elem == custom
 
     xml = copy(source)
-    for i in range(len(xml)):
+    for _i in range(len(xml)):
         del xml[0]
     xml.text = None
     xml.tail = None

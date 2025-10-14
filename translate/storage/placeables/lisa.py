@@ -141,7 +141,7 @@ def unknown_placeable_as_dom_node(placeable):
     from copy import copy
 
     node = copy(placeable.xml_node)
-    for i in range(len(node)):
+    for _i in range(len(node)):
         del node[0]
     node.tail = None
     node.text = None

@@ -142,7 +142,7 @@ msgstr "Dimpled Ring"
             en_akey,
             po_source,
             po_target,
-            target_label,
+            _target_label,
             target_akey,
         ) in possibilities:
             simplepo = simplepo_template % (po_source, po_target)

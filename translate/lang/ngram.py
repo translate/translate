@@ -73,7 +73,7 @@ class _NGram:
 
     def normalise(self):
         ngrams = {}
-        for count, (v, k) in enumerate(self.sorted_by_score()):
+        for count, (_v, k) in enumerate(self.sorted_by_score()):
             ngrams[k] = count
 
         self.ngrams = ngrams
