@@ -37,12 +37,12 @@ Other possibilities:
 
 * Support for variable number of languages in the format. Examples: .txt and
   .properties support one language, PO supports two, :doc:`tmx` supports many.
-* Support for "multifiles", in other words a file that contain other entities
-  that corresponds to files in other formats. Examples: ZIP and
+* Support for "multifiles", in other words a file that contains other entities
+  that correspond to files in other formats. Examples: ZIP and
   :doc:`xliff`. In reality this is only used by some of the converters. This
   isn't present in the base class yet.
 
-All these do not mean that all formats must support al these features, but in
+All these do not mean that all formats must support all these features, but in
 the formats that do support these features, it must be accessible through the
 base class, and it must be possible to interrogate the storage format through
 the base class to know which features it supports.
@@ -90,8 +90,8 @@ As the number of languages can be seen as one "dimension" of the translation
 unit, plurality can be seen as a second dimension. A format can thus be
 classified according to the dimensionality that it supports, as follows:
 
-* .properties files supports one language and no concept of plurals. This
-  include most document types, such as .txt, HTML and OpenDocument formats.
+* .properties files support one language and no concept of plurals. This
+  includes most document types, such as .txt, HTML and OpenDocument formats.
 * Old style PO files supported two languages and no plurals.
 * New style PO files support two languages and any number of plurals as
   required by the target language. The plural forms are stored in the original
@@ -109,8 +109,8 @@ Store
 -----
 This class represents a whole collection of translation units, usually stored
 in a single file. It supports the concept of a header, and possibly comments at
-file level. A file will not necessarily be contained alone in single file on
-disc. See "multifile" below.
+file level. A file will not necessarily be contained alone in a single file on
+disk. See "multifile" below.
 
 .. _base_classes#multifile:
 

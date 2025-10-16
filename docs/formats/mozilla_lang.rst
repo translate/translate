@@ -8,7 +8,7 @@ Mozilla's custom `.lang
 is used for some of their websites.
 
 
-.. _mozilla_langd#references:
+.. _mozilla_lang#references:
 
 References
 ==========

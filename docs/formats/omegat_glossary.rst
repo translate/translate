@@ -14,13 +14,13 @@ uses this file to provide its glossary matches to the OmegaT users.
 Format specifications
 =====================
 
-The glossary files is a tab delimited files with three columns:
+The glossary file is a tab delimited file with three columns:
 
 #. source
 #. target
 #. comment
 
-The files is stored in the system locale if the files extension is ``.txt`` or
+The file is stored in the system locale if the file extension is ``.txt`` or
 in UTF-8 if the file extension is ``.utf8``.
 
 .. _omegat_glossary#conformance:

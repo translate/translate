@@ -14,7 +14,7 @@ database or a flat file the part that a user edits is a simple text file.
 
 The format does not support all features of the wiki syntax and will simply
 dump the full form if it doesn't understand the text.  But structures such as
-headers and lists are understood and the filter can remove these are correctly
+headers and lists are understood and the filter can remove these and correctly
 add them.
 
 .. _wiki#supported_wiki_formats:

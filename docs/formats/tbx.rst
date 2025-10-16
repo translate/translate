@@ -27,7 +27,7 @@ You might also be interested in reading about `TBX-Basic
 <http://www.gala-global.org/oscarStandards/tbx/tbx-basic.html>`_ -- a simpler,
 reduced version of TBX with most of the useful features included.
 
-Additionally notes and examples about TBX are available in `Terminator TBX
+Additional notes and examples about TBX are available in `Terminator TBX
 conformance notes
 <http://terminator.readthedocs.org/en/latest/tbx_conformance.html>`_ which might
 help understanding this format.
