@@ -159,7 +159,7 @@ class AsciiDocFile(base.TranslationStore):
                 continue
 
             # Heading (section titles)
-            heading_match = re.match(r"^(={2,6})\s+(.+?)(?:\s+={2,6})?\s*$", line)
+            heading_match = re.match(r"^(={2,6})\s+(\S.*?)(?:\s+={2,6})?\s*$", line)
             if heading_match:
                 level = len(heading_match.group(1))
                 title = heading_match.group(2).strip()
@@ -186,7 +186,7 @@ class AsciiDocFile(base.TranslationStore):
                 continue
 
             # List item (unordered)
-            list_match = re.match(r"^(\*+)\s+(.+?)$", line)
+            list_match = re.match(r"^(\*+)\s+(\S.*?)$", line)
             if list_match:
                 level = len(list_match.group(1))
                 content = list_match.group(2).strip()
@@ -213,7 +213,7 @@ class AsciiDocFile(base.TranslationStore):
                 continue
 
             # List item (ordered)
-            ordered_list_match = re.match(r"^(\.+)\s+(.+?)$", line)
+            ordered_list_match = re.match(r"^(\.+)\s+(\S.*?)$", line)
             if ordered_list_match:
                 level = len(ordered_list_match.group(1))
                 content = ordered_list_match.group(2).strip()
@@ -263,6 +263,12 @@ class AsciiDocFile(base.TranslationStore):
                     )
                     continue
 
+            # List continuation marker (standalone +)
+            if line.strip() == "+":
+                self._elements.append({"type": "list_continuation", "content": line})
+                i += 1
+                continue
+
             # Comment
             if line.startswith("//"):
                 self._elements.append({"type": "comment", "content": line})
@@ -271,7 +277,7 @@ class AsciiDocFile(base.TranslationStore):
 
             # Admonitions (NOTE, TIP, IMPORTANT, WARNING, CAUTION)
             admonition_match = re.match(
-                r"^(NOTE|TIP|IMPORTANT|WARNING|CAUTION):\s+(.+?)$", line
+                r"^(NOTE|TIP|IMPORTANT|WARNING|CAUTION):\s+(\S.*?)$", line
             )
             if admonition_match:
                 admon_type = admonition_match.group(1)
@@ -394,7 +400,13 @@ class AsciiDocFile(base.TranslationStore):
             if elem_type == "header":
                 if element.get("unit") and element["unit"].isheader():
                     result.append(element["content"])
-            elif elem_type in {"empty", "code_block", "comment", "attribute"}:
+            elif elem_type in {
+                "empty",
+                "code_block",
+                "comment",
+                "attribute",
+                "list_continuation",
+            }:
                 result.append(element["content"])
             elif elem_type in {"heading", "list_item", "admonition"}:
                 unit = element.get("unit")

@@ -247,6 +247,20 @@ Text after.
         # Sidebar blocks are not extracted
         self.assertCountEqual(unit_sources, ["Text before.", "Text after."])
 
+    def test_list_continuation(self):
+        """Test list continuation markers."""
+        input = """* Item one
++
+More content for item one.
+* Item two
+"""
+        store = self.parse(input)
+        unit_sources = [tu.source for tu in store.units if not tu.isheader()]
+        # Should extract list items and continuation content, but not the + marker
+        self.assertCountEqual(
+            unit_sources, ["Item one", "More content for item one.", "Item two"]
+        )
+
     def test_real_world_neuvector_content(self):
         """Test with actual content from neuvector-product-docs repository."""
         input = """= 5.x Overview
