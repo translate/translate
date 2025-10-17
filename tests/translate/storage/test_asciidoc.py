@@ -261,6 +261,48 @@ More content for item one.
             unit_sources, ["Item one", "More content for item one.", "Item two"]
         )
 
+    def test_checklist(self):
+        """Test checklist syntax."""
+        input = """* [*] Checked item
+* [x] Also checked
+* [ ] Unchecked item
+* Regular item
+"""
+        store = self.parse(input)
+        unit_sources = [tu.source for tu in store.units if not tu.isheader()]
+        # Checklist markers should not be included in translatable content
+        self.assertCountEqual(
+            unit_sources,
+            ["Checked item", "Also checked", "Unchecked item", "Regular item"],
+        )
+        translated_output = self.get_translated_output(store)
+        # Checklist markers should be preserved in output
+        assert "* [*] (Checked item)" in translated_output
+        assert "* [x] (Also checked)" in translated_output
+        assert "* [ ] (Unchecked item)" in translated_output
+
+    def test_description_list(self):
+        """Test description list."""
+        input = """Term 1:: Definition for term 1
+Term 2:: Definition for term 2
+Another term:: Another definition
+"""
+        store = self.parse(input)
+        unit_sources = [tu.source for tu in store.units if not tu.isheader()]
+        # Only definitions should be extracted, not terms
+        self.assertCountEqual(
+            unit_sources,
+            [
+                "Definition for term 1",
+                "Definition for term 2",
+                "Another definition",
+            ],
+        )
+        translated_output = self.get_translated_output(store)
+        # Terms should be preserved
+        assert "Term 1:: (Definition for term 1)" in translated_output
+        assert "Term 2:: (Definition for term 2)" in translated_output
+
     def test_real_world_neuvector_content(self):
         """Test with actual content from neuvector-product-docs repository."""
         input = """= 5.x Overview

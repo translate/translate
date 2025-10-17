@@ -191,11 +191,19 @@ class AsciiDocFile(base.TranslationStore):
                 level = len(list_match.group(1))
                 content = list_match.group(2).strip()
 
+                # Handle checklist syntax [*], [x], [ ]
+                checklist_prefix = ""
+                checklist_match = re.match(r"^(\[[*x ]\])\s+(.+)$", content)
+                if checklist_match:
+                    checklist_prefix = checklist_match.group(1) + " "
+                    content = checklist_match.group(2).strip()
+
                 unit = self.addsourceunit(content)
                 unit.addlocation(f"{self.filename or ''}:{i + 1}")
+                prefix = list_match.group(1) + " " + checklist_prefix
                 unit.set_element_info(
                     "list_item",
-                    list_match.group(1) + " ",
+                    prefix,
                     "\n" if line.endswith("\n") else "",
                 )
 
@@ -203,7 +211,7 @@ class AsciiDocFile(base.TranslationStore):
                     {
                         "type": "list_item",
                         "level": level,
-                        "prefix": list_match.group(1) + " ",
+                        "prefix": prefix,
                         "suffix": "\n" if line.endswith("\n") else "",
                         "unit": unit,
                         "line": i + 1,
@@ -231,6 +239,34 @@ class AsciiDocFile(base.TranslationStore):
                         "type": "list_item",
                         "level": level,
                         "prefix": ordered_list_match.group(1) + " ",
+                        "suffix": "\n" if line.endswith("\n") else "",
+                        "unit": unit,
+                        "line": i + 1,
+                    }
+                )
+                i += 1
+                continue
+
+            # Description list (term:: definition)
+            desc_list_match = re.match(r"^(.+?)::\s+(\S.*?)$", line)
+            if desc_list_match:
+                term = desc_list_match.group(1).strip()
+                definition = desc_list_match.group(2).strip()
+
+                # Create unit for the definition only (term is part of the markup)
+                unit = self.addsourceunit(definition)
+                unit.addlocation(f"{self.filename or ''}:{i + 1}")
+                unit.set_element_info(
+                    "description_list",
+                    f"{term}:: ",
+                    "\n" if line.endswith("\n") else "",
+                )
+
+                self._elements.append(
+                    {
+                        "type": "description_list",
+                        "term": term,
+                        "prefix": f"{term}:: ",
                         "suffix": "\n" if line.endswith("\n") else "",
                         "unit": unit,
                         "line": i + 1,
@@ -408,7 +444,12 @@ class AsciiDocFile(base.TranslationStore):
                 "list_continuation",
             }:
                 result.append(element["content"])
-            elif elem_type in {"heading", "list_item", "admonition"}:
+            elif elem_type in {
+                "heading",
+                "list_item",
+                "admonition",
+                "description_list",
+            }:
                 unit = element.get("unit")
                 if unit:
                     translated = self.callback(unit.source)
