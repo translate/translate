@@ -38,7 +38,7 @@ Supported elements
 * DIALOG, DIALOGEX: All translatables
 * MENU: POPUP, MENUITEM
 * STRINGTABLE
-* LANGUAGE: We only parse the first language tag, further LANGUAGE sections are
+* LANGUAGE: We only parse the first language tag. Further LANGUAGE sections are
   ignored
 
 .. _rc#bugs:
