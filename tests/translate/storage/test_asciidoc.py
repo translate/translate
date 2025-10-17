@@ -1,0 +1,198 @@
+#
+# Copyright 2025 Translate.org
+#
+# This file is part of the Translate Toolkit.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, see <http://www.gnu.org/licenses/>.
+
+"""Tests for the AsciiDoc classes."""
+
+from io import BytesIO
+from unittest import TestCase
+
+from translate.storage import asciidoc
+
+
+class TestAsciiDocTranslationUnitExtractionAndTranslation(TestCase):
+    def test_empty_document(self):
+        store = self.parse("")
+        unit_sources = self.get_translation_unit_sources(store)
+        assert unit_sources == []
+        translated_output = self.get_translated_output(store)
+        assert translated_output == ""
+
+    def test_plain_text_paragraph(self):
+        input = "A single paragraph.\nTwo lines.\n"
+        store = self.parse(input)
+        unit_sources = self.get_translation_unit_sources(store)
+        assert unit_sources == ["A single paragraph. Two lines."]
+        assert store.units[0].getlocations()[0].endswith(":1")
+        translated_output = self.get_translated_output(store)
+        assert translated_output == "(A single paragraph. Two lines.)\n"
+
+    def test_multiple_paragraphs(self):
+        input = "First paragraph.\n\nSecond paragraph.\n"
+        store = self.parse(input)
+        unit_sources = self.get_translation_unit_sources(store)
+        assert unit_sources == ["First paragraph.", "Second paragraph."]
+        translated_output = self.get_translated_output(store)
+        assert translated_output == "(First paragraph.)\n\n(Second paragraph.)\n"
+
+    def test_heading_level_2(self):
+        input = "== Section Title\n\nSome content.\n"
+        store = self.parse(input)
+        unit_sources = self.get_translation_unit_sources(store)
+        assert unit_sources == ["Section Title", "Some content."]
+        translated_output = self.get_translated_output(store)
+        assert translated_output == "== (Section Title)\n\n(Some content.)\n"
+        assert store.units[0].getlocations()[0].endswith(":1")
+
+    def test_heading_level_3(self):
+        input = "=== Subsection\n"
+        store = self.parse(input)
+        unit_sources = self.get_translation_unit_sources(store)
+        assert unit_sources == ["Subsection"]
+        translated_output = self.get_translated_output(store)
+        assert translated_output == "=== (Subsection)\n"
+
+    def test_unordered_list(self):
+        input = "* First item\n* Second item\n* Third item\n"
+        store = self.parse(input)
+        unit_sources = self.get_translation_unit_sources(store)
+        self.assertCountEqual(
+            unit_sources, ["First item", "Second item", "Third item"]
+        )
+        translated_output = self.get_translated_output(store)
+        assert translated_output == "* (First item)\n* (Second item)\n* (Third item)\n"
+
+    def test_nested_unordered_list(self):
+        input = "* First level\n** Second level\n* Back to first\n"
+        store = self.parse(input)
+        unit_sources = self.get_translation_unit_sources(store)
+        self.assertCountEqual(
+            unit_sources, ["First level", "Second level", "Back to first"]
+        )
+        translated_output = self.get_translated_output(store)
+        assert (
+            translated_output
+            == "* (First level)\n** (Second level)\n* (Back to first)\n"
+        )
+
+    def test_ordered_list(self):
+        input = ". First item\n. Second item\n"
+        store = self.parse(input)
+        unit_sources = self.get_translation_unit_sources(store)
+        self.assertCountEqual(unit_sources, ["First item", "Second item"])
+        translated_output = self.get_translated_output(store)
+        assert translated_output == ". (First item)\n. (Second item)\n"
+
+    def test_code_block(self):
+        input = "Some text.\n\n----\nCode block content\nMore code\n----\n\nAfter code.\n"
+        store = self.parse(input)
+        unit_sources = self.get_translation_unit_sources(store)
+        # Code blocks are not extracted for translation
+        self.assertCountEqual(unit_sources, ["Some text.", "After code."])
+        translated_output = self.get_translated_output(store)
+        assert (
+            translated_output
+            == "(Some text.)\n\n----\nCode block content\nMore code\n----\n\n(After code.)\n"
+        )
+
+    def test_literal_block(self):
+        input = "Text before.\n\n....\nLiteral block\n....\n\nText after.\n"
+        store = self.parse(input)
+        unit_sources = self.get_translation_unit_sources(store)
+        self.assertCountEqual(unit_sources, ["Text before.", "Text after."])
+
+    def test_comment(self):
+        input = "// This is a comment\nActual content.\n"
+        store = self.parse(input)
+        unit_sources = self.get_translation_unit_sources(store)
+        assert unit_sources == ["Actual content."]
+        translated_output = self.get_translated_output(store)
+        assert translated_output == "// This is a comment\n(Actual content.)\n"
+
+    def test_document_title(self):
+        input = "= Document Title\nAuthor Name\n\n== First Section\n\nContent here.\n"
+        store = self.parse(input)
+        unit_sources = self.get_translation_unit_sources(store)
+        # Document header is stored as a header unit but also appears in units list
+        assert len(unit_sources) == 3
+        assert store.units[0].isheader()
+        # Check non-header units
+        non_header_sources = [tu.source for tu in store.units if not tu.isheader()]
+        self.assertCountEqual(non_header_sources, ["First Section", "Content here."])
+
+    def test_paragraph_with_inline_formatting(self):
+        # AsciiDoc uses different inline formatting than Markdown
+        # *bold*, _italic_, `monospace`
+        input = "This has *bold* and _italic_ text.\n"
+        store = self.parse(input)
+        unit_sources = self.get_translation_unit_sources(store)
+        # Inline formatting is preserved in the translation unit
+        assert unit_sources == ["This has *bold* and _italic_ text."]
+        translated_output = self.get_translated_output(store)
+        assert translated_output == "(This has *bold* and _italic_ text.)\n"
+
+    def test_mixed_content(self):
+        input = """== Introduction
+
+This is the first paragraph.
+
+This is the second paragraph.
+
+=== Subsection
+
+* Item one
+* Item two
+
+Another paragraph here.
+"""
+        store = self.parse(input)
+        unit_sources = self.get_translation_unit_sources(store)
+        self.assertCountEqual(
+            unit_sources,
+            [
+                "Introduction",
+                "This is the first paragraph.",
+                "This is the second paragraph.",
+                "Subsection",
+                "Item one",
+                "Item two",
+                "Another paragraph here.",
+            ],
+        )
+
+    @staticmethod
+    def parse(adoc):
+        inputfile = BytesIO(adoc.encode())
+        return asciidoc.AsciiDocFile(inputfile=inputfile, callback=lambda x: f"({x})")
+
+    @staticmethod
+    def get_translation_unit_sources(store):
+        return [tu.source for tu in store.units]
+
+    @staticmethod
+    def get_translated_output(store):
+        return store.filesrc
+
+
+class TestAsciiDocRendering:
+    def test_preserves_structure(self):
+        input = "== Heading\n\nParagraph text.\n"
+        inputfile = BytesIO(input.encode())
+        store = asciidoc.AsciiDocFile(
+            inputfile=inputfile, callback=lambda x: x.upper()
+        )
+        assert store.filesrc == "== HEADING\n\nPARAGRAPH TEXT.\n"
