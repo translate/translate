@@ -300,6 +300,7 @@ pre tag
         assert len(store.units) == 2
         assert store.units[0].source == "Click to submit"
         assert store.units[1].source == "Submit"
+
     def test_extraction_lang_attribute(self):
         """Check that we extract lang attribute only from html tag."""
         h = html.htmlfile()
