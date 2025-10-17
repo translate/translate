@@ -152,7 +152,7 @@ class AsciiDocFile(base.TranslationStore):
                 continue
 
             # Heading (section titles)
-            heading_match = re.match(r"^(={2,6})\s+(.+?)(?:\s+\1)?\s*$", line)
+            heading_match = re.match(r"^(={2,6})\s+(.+?)(?:\s+={2,6})?\s*$", line)
             if heading_match:
                 level = len(heading_match.group(1))
                 title = heading_match.group(2).strip()
@@ -255,6 +255,82 @@ class AsciiDocFile(base.TranslationStore):
                 i += 1
                 continue
 
+            # Admonitions (NOTE, TIP, IMPORTANT, WARNING, CAUTION)
+            admonition_match = re.match(
+                r"^(NOTE|TIP|IMPORTANT|WARNING|CAUTION):\s+(.+)$", line
+            )
+            if admonition_match:
+                admon_type = admonition_match.group(1)
+                content = admonition_match.group(2).strip()
+
+                unit = self.addsourceunit(content)
+                unit.addlocation(f"{self.filename or ''}:{i + 1}")
+                unit.set_element_info(
+                    "admonition",
+                    f"{admon_type}: ",
+                    "\n" if line.endswith("\n") else "",
+                )
+
+                self._elements.append(
+                    {
+                        "type": "admonition",
+                        "admon_type": admon_type,
+                        "prefix": f"{admon_type}: ",
+                        "suffix": "\n" if line.endswith("\n") else "",
+                        "unit": unit,
+                        "line": i + 1,
+                    }
+                )
+                i += 1
+                continue
+
+            # Table detection (simple tables with |)
+            if line.strip().startswith("|"):
+                table_lines = []
+                start_line = i
+                # Collect all table lines
+                while i < len(lines) and (
+                    lines[i].strip().startswith("|") or not lines[i].strip()
+                ):
+                    table_lines.append(lines[i])
+                    i += 1
+                    if i < len(lines) and not lines[i].strip():
+                        # Check if next non-empty line is still part of table
+                        next_i = i
+                        while next_i < len(lines) and not lines[next_i].strip():
+                            next_i += 1
+                        if next_i >= len(lines) or not lines[next_i].strip().startswith(
+                            "|"
+                        ):
+                            break
+
+                # Parse table cells for translation
+                for table_line in table_lines:
+                    if table_line.strip() and "|" in table_line:
+                        # Extract cells (simple approach)
+                        cells = [
+                            cell.strip()
+                            for cell in table_line.split("|")
+                            if cell.strip()
+                        ]
+                        for cell in cells:
+                            # Skip cell separator markers and empty cells
+                            if cell and not cell.startswith("="):
+                                unit = self.addsourceunit(cell)
+                                unit.addlocation(
+                                    f"{self.filename or ''}:{start_line + 1}"
+                                )
+                                unit.set_element_info("table_cell", "", "")
+
+                self._elements.append(
+                    {
+                        "type": "table",
+                        "content": "".join(table_lines),
+                        "line": start_line + 1,
+                    }
+                )
+                continue
+
             # Paragraph - collect consecutive non-empty lines
             para_lines = []
             start_line = i
@@ -300,11 +376,16 @@ class AsciiDocFile(base.TranslationStore):
                     result.append(element["content"])
             elif elem_type in {"empty", "code_block", "comment"}:
                 result.append(element["content"])
-            elif elem_type in {"heading", "list_item"}:
+            elif elem_type in {"heading", "list_item", "admonition"}:
                 unit = element.get("unit")
                 if unit:
                     translated = self.callback(unit.source)
                     result.append(f"{element['prefix']}{translated}{element['suffix']}")
+            elif elem_type == "table":
+                # For tables, we need to reconstruct with translated cells
+                # For now, preserve the original table structure
+                # (proper table translation would require more complex parsing)
+                result.append(element["content"])
             elif elem_type == "paragraph":
                 unit = element.get("unit")
                 if unit:

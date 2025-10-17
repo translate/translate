@@ -62,3 +62,57 @@ msgstr "Deuxième élément"
         output = self.read_testfile("output.adoc").decode()
         assert "* Premier élément" in output
         assert "* Deuxième élément" in output
+
+    def test_round_trip_translation(self):
+        """Test that content can be extracted and translated back correctly."""
+        # Create original AsciiDoc
+        original = """== Welcome
+
+This is a test document.
+
+Features:
+
+* Feature one
+* Feature two
+"""
+        self.create_testfile("original.adoc", original)
+
+        # Create PO with translations
+        po_content = """
+#: original.adoc:1
+msgid "Welcome"
+msgstr "Bienvenue"
+
+#: original.adoc:3
+msgid "This is a test document."
+msgstr "Ceci est un document de test."
+
+#: original.adoc:5
+msgid "Features:"
+msgstr "Fonctionnalités:"
+
+#: original.adoc:7
+msgid "Feature one"
+msgstr "Fonctionnalité un"
+
+#: original.adoc:8
+msgid "Feature two"
+msgstr "Fonctionnalité deux"
+"""
+        self.create_testfile("translations.po", po_content)
+
+        # Convert back to AsciiDoc
+        self.run_command("translations.po", "translated.adoc", template="original.adoc")
+
+        # Verify all translations are present
+        translated = self.read_testfile("translated.adoc").decode()
+        assert "== Bienvenue" in translated
+        assert "Ceci est un document de test." in translated
+        assert "Fonctionnalités:" in translated
+        assert "* Fonctionnalité un" in translated
+        assert "* Fonctionnalité deux" in translated
+
+        # Verify original structure is preserved
+        assert translated.startswith("==")
+        assert "\n\n" in translated  # Empty lines preserved
+        assert translated.count("*") == 2  # Two list items

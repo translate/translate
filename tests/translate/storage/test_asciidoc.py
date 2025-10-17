@@ -174,6 +174,35 @@ Another paragraph here.
             ],
         )
 
+    def test_admonition(self):
+        input = "NOTE: This is an important note.\n\nSome text.\n"
+        store = self.parse(input)
+        unit_sources = self.get_translation_unit_sources(store)
+        self.assertCountEqual(
+            unit_sources, ["This is an important note.", "Some text."]
+        )
+        translated_output = self.get_translated_output(store)
+        assert (
+            translated_output == "NOTE: (This is an important note.)\n\n(Some text.)\n"
+        )
+
+    def test_warning_admonition(self):
+        input = "WARNING: Be careful here.\n"
+        store = self.parse(input)
+        unit_sources = self.get_translation_unit_sources(store)
+        assert unit_sources == ["Be careful here."]
+        translated_output = self.get_translated_output(store)
+        assert translated_output == "WARNING: (Be careful here.)\n"
+
+    def test_simple_table(self):
+        input = """| Cell 1 | Cell 2 |
+| Cell 3 | Cell 4 |
+"""
+        store = self.parse(input)
+        unit_sources = self.get_translation_unit_sources(store)
+        # Table cells should be extracted
+        self.assertCountEqual(unit_sources, ["Cell 1", "Cell 2", "Cell 3", "Cell 4"])
+
     @staticmethod
     def parse(adoc):
         inputfile = BytesIO(adoc.encode())

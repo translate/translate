@@ -78,3 +78,55 @@ You are only coming through in waves.
         content = self.read_testfile("test.po").decode()
         assert "coming through" in content
         return content
+
+    def test_comprehensive_extraction_and_translation(self):
+        """Test that all translatable content is extracted and used in translation."""
+        # Create a comprehensive AsciiDoc file
+        adoc_content = """== Introduction
+
+This is a paragraph with some content.
+
+Another paragraph here.
+
+=== Subsection
+
+* List item one
+* List item two
+
+. Numbered item one
+. Numbered item two
+"""
+        self.create_testfile("comprehensive.adoc", adoc_content)
+
+        # Convert to PO
+        self.run_command("comprehensive.adoc", "comprehensive.po")
+
+        # Parse the PO file and verify all content is present
+        output = pofile()
+        with open(self.get_testfilename("comprehensive.po"), "rb") as handle:
+            output.parse(handle)
+
+        # Extract all msgid values (excluding header)
+        msgids = [unit.source for unit in output.units if not unit.isheader()]
+
+        # Verify all expected translatable content is present
+        expected_content = [
+            "Introduction",
+            "This is a paragraph with some content.",
+            "Another paragraph here.",
+            "Subsection",
+            "List item one",
+            "List item two",
+            "Numbered item one",
+            "Numbered item two",
+        ]
+
+        for expected in expected_content:
+            assert expected in msgids, (
+                f"Expected content '{expected}' not found in PO file"
+            )
+
+        # Verify we have the right number of units
+        assert len(msgids) == len(expected_content), (
+            f"Expected {len(expected_content)} units, got {len(msgids)}"
+        )
