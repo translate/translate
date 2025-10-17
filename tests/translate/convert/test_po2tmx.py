@@ -204,3 +204,10 @@ class TestPO2TMXCommand(test_convert.TestConvertCommand, TestPO2TMX):
         "--source-language=LANG",
         "--comments",
     ]
+
+    def test_context(self):
+        pocontent = '#: simple.c\nmsgctxt "Context"\nmsgid "Same"\nmsgstr "Target"\n'
+        self.create_testfile("test.po", pocontent)
+        self.run_command("test.po", "test.tmx", language="af")
+        content = self.open_testfile("test.tmx", "r").read()
+        assert ("<prop type=\"x-context\">Context</prop>" in content)
