@@ -70,9 +70,7 @@ class TestAsciiDocTranslationUnitExtractionAndTranslation(TestCase):
         input = "* First item\n* Second item\n* Third item\n"
         store = self.parse(input)
         unit_sources = self.get_translation_unit_sources(store)
-        self.assertCountEqual(
-            unit_sources, ["First item", "Second item", "Third item"]
-        )
+        self.assertCountEqual(unit_sources, ["First item", "Second item", "Third item"])
         translated_output = self.get_translated_output(store)
         assert translated_output == "* (First item)\n* (Second item)\n* (Third item)\n"
 
@@ -98,7 +96,9 @@ class TestAsciiDocTranslationUnitExtractionAndTranslation(TestCase):
         assert translated_output == ". (First item)\n. (Second item)\n"
 
     def test_code_block(self):
-        input = "Some text.\n\n----\nCode block content\nMore code\n----\n\nAfter code.\n"
+        input = (
+            "Some text.\n\n----\nCode block content\nMore code\n----\n\nAfter code.\n"
+        )
         store = self.parse(input)
         unit_sources = self.get_translation_unit_sources(store)
         # Code blocks are not extracted for translation
@@ -192,7 +192,5 @@ class TestAsciiDocRendering:
     def test_preserves_structure(self):
         input = "== Heading\n\nParagraph text.\n"
         inputfile = BytesIO(input.encode())
-        store = asciidoc.AsciiDocFile(
-            inputfile=inputfile, callback=lambda x: x.upper()
-        )
+        store = asciidoc.AsciiDocFile(inputfile=inputfile, callback=lambda x: x.upper())
         assert store.filesrc == "== HEADING\n\nPARAGRAPH TEXT.\n"

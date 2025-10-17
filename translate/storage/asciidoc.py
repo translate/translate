@@ -34,12 +34,8 @@ White space within translation units is normalized.
 from __future__ import annotations
 
 import re
-from typing import TYPE_CHECKING
 
 from translate.storage import base
-
-if TYPE_CHECKING:
-    from collections.abc import Iterable
 
 
 class AsciiDocUnit(base.TranslationUnit):
@@ -97,7 +93,7 @@ class AsciiDocFile(base.TranslationStore):
         """Process the given source string (binary)."""
         text = data.decode()
         lines = text.splitlines(keepends=True)
-        
+
         # Check for document header (first line starting with = )
         header_end = -1
         if lines and lines[0].startswith("= "):
@@ -110,7 +106,7 @@ class AsciiDocFile(base.TranslationStore):
                 if line.startswith(":"):
                     header_end = i
                 # Empty line might be end of header or separator within header
-                elif line.strip() == "":
+                elif not line.strip():
                     # Check if next line is content (starts new section)
                     if i + 1 < len(lines):
                         next_line = lines[i + 1]
@@ -127,17 +123,19 @@ class AsciiDocFile(base.TranslationStore):
                 else:
                     # Regular content starts
                     break
-            
+
             if header_end >= 0:
-                header_content = "".join(lines[:header_end + 1])
+                header_content = "".join(lines[: header_end + 1])
                 header = AsciiDocHeaderUnit(header_content)
                 self.addunit(header)
-                self._elements.append({"type": "header", "content": header_content, "unit": header})
-                lines = lines[header_end + 1:]
-        
+                self._elements.append(
+                    {"type": "header", "content": header_content, "unit": header}
+                )
+                lines = lines[header_end + 1 :]
+
         # Parse the rest of the document
         self._parse_content(lines)
-        
+
         # Reconstruct the document
         self._reconstruct()
 
@@ -146,76 +144,94 @@ class AsciiDocFile(base.TranslationStore):
         i = 0
         while i < len(lines):
             line = lines[i]
-            
+
             # Skip empty lines
             if not line.strip():
                 self._elements.append({"type": "empty", "content": line})
                 i += 1
                 continue
-            
+
             # Heading (section titles)
-            heading_match = re.match(r'^(={2,6})\s+(.+?)(?:\s+\1)?\s*$', line)
+            heading_match = re.match(r"^(={2,6})\s+(.+?)(?:\s+\1)?\s*$", line)
             if heading_match:
                 level = len(heading_match.group(1))
                 title = heading_match.group(2).strip()
-                
+
                 unit = self.addsourceunit(title)
                 unit.addlocation(f"{self.filename or ''}:{i + 1}")
-                unit.set_element_info("heading", heading_match.group(1) + " ", "\n" if line.endswith('\n') else "")
-                
-                self._elements.append({
-                    "type": "heading",
-                    "level": level,
-                    "prefix": heading_match.group(1) + " ",
-                    "suffix": "\n" if line.endswith('\n') else "",
-                    "unit": unit,
-                    "line": i + 1
-                })
+                unit.set_element_info(
+                    "heading",
+                    heading_match.group(1) + " ",
+                    "\n" if line.endswith("\n") else "",
+                )
+
+                self._elements.append(
+                    {
+                        "type": "heading",
+                        "level": level,
+                        "prefix": heading_match.group(1) + " ",
+                        "suffix": "\n" if line.endswith("\n") else "",
+                        "unit": unit,
+                        "line": i + 1,
+                    }
+                )
                 i += 1
                 continue
-            
+
             # List item (unordered)
-            list_match = re.match(r'^(\*+)\s+(.+)$', line)
+            list_match = re.match(r"^(\*+)\s+(.+)$", line)
             if list_match:
                 level = len(list_match.group(1))
                 content = list_match.group(2).strip()
-                
+
                 unit = self.addsourceunit(content)
                 unit.addlocation(f"{self.filename or ''}:{i + 1}")
-                unit.set_element_info("list_item", list_match.group(1) + " ", "\n" if line.endswith('\n') else "")
-                
-                self._elements.append({
-                    "type": "list_item",
-                    "level": level,
-                    "prefix": list_match.group(1) + " ",
-                    "suffix": "\n" if line.endswith('\n') else "",
-                    "unit": unit,
-                    "line": i + 1
-                })
+                unit.set_element_info(
+                    "list_item",
+                    list_match.group(1) + " ",
+                    "\n" if line.endswith("\n") else "",
+                )
+
+                self._elements.append(
+                    {
+                        "type": "list_item",
+                        "level": level,
+                        "prefix": list_match.group(1) + " ",
+                        "suffix": "\n" if line.endswith("\n") else "",
+                        "unit": unit,
+                        "line": i + 1,
+                    }
+                )
                 i += 1
                 continue
-            
+
             # List item (ordered)
-            ordered_list_match = re.match(r'^(\.+)\s+(.+)$', line)
+            ordered_list_match = re.match(r"^(\.+)\s+(.+)$", line)
             if ordered_list_match:
                 level = len(ordered_list_match.group(1))
                 content = ordered_list_match.group(2).strip()
-                
+
                 unit = self.addsourceunit(content)
                 unit.addlocation(f"{self.filename or ''}:{i + 1}")
-                unit.set_element_info("list_item", ordered_list_match.group(1) + " ", "\n" if line.endswith('\n') else "")
-                
-                self._elements.append({
-                    "type": "list_item",
-                    "level": level,
-                    "prefix": ordered_list_match.group(1) + " ",
-                    "suffix": "\n" if line.endswith('\n') else "",
-                    "unit": unit,
-                    "line": i + 1
-                })
+                unit.set_element_info(
+                    "list_item",
+                    ordered_list_match.group(1) + " ",
+                    "\n" if line.endswith("\n") else "",
+                )
+
+                self._elements.append(
+                    {
+                        "type": "list_item",
+                        "level": level,
+                        "prefix": ordered_list_match.group(1) + " ",
+                        "suffix": "\n" if line.endswith("\n") else "",
+                        "unit": unit,
+                        "line": i + 1,
+                    }
+                )
                 i += 1
                 continue
-            
+
             # Code block or literal block
             if line.strip().startswith("----") or line.strip().startswith("...."):
                 delimiter = line.strip()
@@ -227,67 +243,64 @@ class AsciiDocFile(base.TranslationStore):
                         i += 1
                         break
                     i += 1
-                
-                self._elements.append({"type": "code_block", "content": "".join(block_lines)})
+
+                self._elements.append(
+                    {"type": "code_block", "content": "".join(block_lines)}
+                )
                 continue
-            
+
             # Comment
             if line.startswith("//"):
                 self._elements.append({"type": "comment", "content": line})
                 i += 1
                 continue
-            
+
             # Paragraph - collect consecutive non-empty lines
             para_lines = []
             start_line = i
             while i < len(lines) and lines[i].strip():
                 # Check if this is a special line that breaks paragraphs
-                if (re.match(r'^(={2,6}|\*+|\.+)\s+', lines[i]) or
-                    lines[i].strip().startswith("----") or
-                    lines[i].strip().startswith("....") or
-                    lines[i].startswith("//")):
+                if (
+                    re.match(r"^(={2,6}|\*+|\.+)\s+", lines[i])
+                    or lines[i].strip().startswith("----")
+                    or lines[i].strip().startswith("....")
+                    or lines[i].startswith("//")
+                ):
                     break
                 para_lines.append(lines[i])
                 i += 1
-            
+
             if para_lines:
                 # Join paragraph lines and normalize whitespace
                 para_text = " ".join(line.strip() for line in para_lines)
-                
+
                 if para_text:
                     unit = self.addsourceunit(para_text)
                     unit.addlocation(f"{self.filename or ''}:{start_line + 1}")
                     unit.set_element_info("paragraph", "", "\n")
-                    
-                    self._elements.append({
-                        "type": "paragraph",
-                        "unit": unit,
-                        "line": start_line + 1,
-                        "original_lines": para_lines
-                    })
+
+                    self._elements.append(
+                        {
+                            "type": "paragraph",
+                            "unit": unit,
+                            "line": start_line + 1,
+                            "original_lines": para_lines,
+                        }
+                    )
 
     def _reconstruct(self):
         """Reconstruct the AsciiDoc document with translations."""
         result = []
-        
+
         for element in self._elements:
             elem_type = element["type"]
-            
+
             if elem_type == "header":
                 if element.get("unit") and element["unit"].isheader():
                     result.append(element["content"])
-            elif elem_type == "empty":
+            elif elem_type in {"empty", "code_block", "comment"}:
                 result.append(element["content"])
-            elif elem_type == "code_block":
-                result.append(element["content"])
-            elif elem_type == "comment":
-                result.append(element["content"])
-            elif elem_type == "heading":
-                unit = element.get("unit")
-                if unit:
-                    translated = self.callback(unit.source)
-                    result.append(f"{element['prefix']}{translated}{element['suffix']}")
-            elif elem_type == "list_item":
+            elif elem_type in {"heading", "list_item"}:
                 unit = element.get("unit")
                 if unit:
                     translated = self.callback(unit.source)
@@ -298,7 +311,7 @@ class AsciiDocFile(base.TranslationStore):
                     translated = self.callback(unit.source)
                     # Try to preserve line structure somewhat
                     result.append(f"{translated}\n")
-        
+
         self.filesrc = "".join(result)
 
     @staticmethod

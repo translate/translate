@@ -81,9 +81,7 @@ class PO2AsciiDocOptionParser(convert.ConvertOptionParser):
         outputthreshold,
     ):
         inputstore = po.pofile(inputfile)
-        translator = AsciiDocTranslator(
-            inputstore, includefuzzy, outputthreshold
-        )
+        translator = AsciiDocTranslator(inputstore, includefuzzy, outputthreshold)
         return translator.translate(templatefile, outputfile)
 
     def recursiveprocess(self, options):
@@ -137,9 +135,7 @@ class PO2AsciiDocOptionParser(convert.ConvertOptionParser):
         includefuzzy,
         outputthreshold,
     ):
-        translator = AsciiDocTranslator(
-            self.inputstore, includefuzzy, outputthreshold
-        )
+        translator = AsciiDocTranslator(self.inputstore, includefuzzy, outputthreshold)
         return translator.translate(templatefile, outputfile)
 
     def recurse_template_files(self, options):
