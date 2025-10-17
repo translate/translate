@@ -151,6 +151,13 @@ class AsciiDocFile(base.TranslationStore):
                 i += 1
                 continue
 
+            # Attribute lines (e.g., [NOTE], [source,java], etc.)
+            # These should not be translated but preserved
+            if line.strip().startswith("[") and line.strip().endswith("]"):
+                self._elements.append({"type": "attribute", "content": line})
+                i += 1
+                continue
+
             # Heading (section titles)
             heading_match = re.match(r"^(={2,6})\s+(.+?)(?:\s+={2,6})?\s*$", line)
             if heading_match:
@@ -232,22 +239,29 @@ class AsciiDocFile(base.TranslationStore):
                 i += 1
                 continue
 
-            # Code block or literal block
-            if line.strip().startswith("----") or line.strip().startswith("...."):
+            # Code block, literal block, example block, sidebar, etc.
+            # AsciiDoc uses various delimiters: ----, ...., ====, ****, ____, etc.
+            if (
+                line.strip()
+                and len(set(line.strip())) == 1
+                and line.strip()[0] in "-=.*_+"
+            ):
+                # Check if it's a delimiter (4+ repeated characters)
                 delimiter = line.strip()
-                block_lines = [line]
-                i += 1
-                while i < len(lines):
-                    block_lines.append(lines[i])
-                    if lines[i].strip() == delimiter:
-                        i += 1
-                        break
+                if len(delimiter) >= 4:
+                    block_lines = [line]
                     i += 1
+                    while i < len(lines):
+                        block_lines.append(lines[i])
+                        if lines[i].strip() == delimiter:
+                            i += 1
+                            break
+                        i += 1
 
-                self._elements.append(
-                    {"type": "code_block", "content": "".join(block_lines)}
-                )
-                continue
+                    self._elements.append(
+                        {"type": "code_block", "content": "".join(block_lines)}
+                    )
+                    continue
 
             # Comment
             if line.startswith("//"):
@@ -336,10 +350,16 @@ class AsciiDocFile(base.TranslationStore):
             start_line = i
             while i < len(lines) and lines[i].strip():
                 # Check if this is a special line that breaks paragraphs
+                line_stripped = lines[i].strip()
+                # Check for block delimiters (4+ repeated characters)
+                is_delimiter = (
+                    len(line_stripped) >= 4
+                    and len(set(line_stripped)) == 1
+                    and line_stripped[0] in "-=.*_+"
+                )
                 if (
                     re.match(r"^(={2,6}|\*+|\.+)\s+", lines[i])
-                    or lines[i].strip().startswith("----")
-                    or lines[i].strip().startswith("....")
+                    or is_delimiter
                     or lines[i].startswith("//")
                 ):
                     break
@@ -374,7 +394,7 @@ class AsciiDocFile(base.TranslationStore):
             if elem_type == "header":
                 if element.get("unit") and element["unit"].isheader():
                     result.append(element["content"])
-            elif elem_type in {"empty", "code_block", "comment"}:
+            elif elem_type in {"empty", "code_block", "comment", "attribute"}:
                 result.append(element["content"])
             elif elem_type in {"heading", "list_item", "admonition"}:
                 unit = element.get("unit")

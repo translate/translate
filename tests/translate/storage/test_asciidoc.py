@@ -203,6 +203,84 @@ Another paragraph here.
         # Table cells should be extracted
         self.assertCountEqual(unit_sources, ["Cell 1", "Cell 2", "Cell 3", "Cell 4"])
 
+    def test_example_block(self):
+        input = """Some text.
+
+====
+This is an example block.
+====
+
+More text.
+"""
+        store = self.parse(input)
+        unit_sources = self.get_translation_unit_sources(store)
+        # Example blocks are not extracted
+        self.assertCountEqual(unit_sources, ["Some text.", "More text."])
+
+    def test_attribute_line(self):
+        input = """[NOTE]
+This is a note.
+
+[source,java]
+----
+code here
+----
+
+Regular paragraph.
+"""
+        store = self.parse(input)
+        unit_sources = self.get_translation_unit_sources(store)
+        # Attribute lines should not be extracted
+        self.assertCountEqual(unit_sources, ["This is a note.", "Regular paragraph."])
+
+    def test_sidebar_block(self):
+        input = """Text before.
+
+****
+This is a sidebar.
+****
+
+Text after.
+"""
+        store = self.parse(input)
+        unit_sources = self.get_translation_unit_sources(store)
+        # Sidebar blocks are not extracted
+        self.assertCountEqual(unit_sources, ["Text before.", "Text after."])
+
+    def test_real_world_neuvector_content(self):
+        """Test with actual content from neuvector-product-docs repository."""
+        input = """= 5.x Overview
+:revdate: 2025-01-10
+:page-revdate: {revdate}
+
+== The Full Life-Cycle Container Security Platform
+
+[NOTE]
+====
+These docs describe the 5.x version.
+====
+
+{product-name} provides a powerful platform.
+
+. First item here.
+. Second item here.
+
+Other features include more stuff.
+"""
+        store = self.parse(input)
+        # Get only non-header units
+        unit_sources = [tu.source for tu in store.units if not tu.isheader()]
+        # Should extract heading, paragraph, list items, and final paragraph
+        # But NOT the note block content, attributes, or document attributes
+        expected = [
+            "The Full Life-Cycle Container Security Platform",
+            "{product-name} provides a powerful platform.",
+            "First item here.",
+            "Second item here.",
+            "Other features include more stuff.",
+        ]
+        self.assertCountEqual(unit_sources, expected)
+
     @staticmethod
     def parse(adoc):
         inputfile = BytesIO(adoc.encode())
