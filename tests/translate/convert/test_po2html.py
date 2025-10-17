@@ -173,7 +173,7 @@ sin.
 
         Issue: https://github.com/translate/translate/issues/5504
         """
-        htmlsource = '''<!DOCTYPE html>
+        htmlsource = """<!DOCTYPE html>
 <html lang="en">
 <head>
     <title>Test</title>
@@ -187,15 +187,15 @@ sin.
     </nav>
     <p>This is a page about the English word <strong lang="en">Hello</strong>.</p>
 </body>
-</html>'''
-        posource = '''#: test.html+html[lang]:1-16
+</html>"""
+        posource = """#: test.html+html[lang]:1-16
 msgid "en"
 msgstr "fr"
 
 #: test.html+html.body.p:12-1
 msgid "This is a page about the English word <strong lang=\\"en\\">Hello</strong>."
 msgstr "Ceci est une page à propos du mot anglais <strong lang=\\"en\\">Hello</strong>."
-'''
+"""
         result = self.converthtml(posource, htmlsource)
         # The html tag should have lang="fr" (translated)
         assert '<html lang="fr">' in result
