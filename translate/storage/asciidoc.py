@@ -160,8 +160,8 @@ class AsciiDocFile(base.TranslationStore):
 
             # Heading (section titles)
             # Match heading with optional closing markers: == Title == or == Title
-            # Pattern avoids backtracking by matching content then optionally stripping closing markers
-            heading_match = re.match(r"^(={2,6})\s+(\S.+?)$", line)
+            # Pattern avoids backtracking by using \S to prevent whitespace overlap
+            heading_match = re.match(r"^(={2,6})\s+(\S.*?)$", line)
             if heading_match:
                 level = len(heading_match.group(1))
                 # Strip any trailing whitespace and closing = markers
@@ -196,7 +196,7 @@ class AsciiDocFile(base.TranslationStore):
 
                 # Handle checklist syntax [*], [x], [ ]
                 checklist_prefix = ""
-                checklist_match = re.match(r"^(\[[*x ]\])\s+(.+)$", content)
+                checklist_match = re.match(r"^(\[[*x ]\])\s+(\S.*)$", content)
                 if checklist_match:
                     checklist_prefix = checklist_match.group(1) + " "
                     content = checklist_match.group(2).strip()
@@ -251,7 +251,8 @@ class AsciiDocFile(base.TranslationStore):
                 continue
 
             # Description list (term:: definition)
-            desc_list_match = re.match(r"^(.+?)::\s+(\S.*?)$", line)
+            # Use \S to start term to avoid overlapping with initial whitespace
+            desc_list_match = re.match(r"^(\S.*?)::\s+(\S.*?)$", line)
             if desc_list_match:
                 term = desc_list_match.group(1).strip()
                 definition = desc_list_match.group(2).strip()
