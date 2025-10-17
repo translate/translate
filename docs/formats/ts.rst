@@ -26,7 +26,7 @@ The format is XML and seems to only have been documented properly since Qt 4.3
 Complete
 ========
 
-Note that :doc:`ts2po </commands/ts2po>` uses and older version and does not
+Note that :doc:`ts2po </commands/ts2po>` uses an older version and does not
 support all of these features.  `Virtaal <http://virtaal.org>`_, `Pootle
 <http://pootle.translatehouse.org>`_ and other users of the new ts class
 support the following:

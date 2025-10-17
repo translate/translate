@@ -9,7 +9,7 @@ Haiku catkeys
 Localisation for the `Haiku <http://www.haiku-os.org/>`_ operating system is
 done with a file format called catkeys.  It is a bilingual file format.
 
-The is a tab separated value (TSV) file, where each line represents a
+This is a tab-separated value (TSV) file, where each line represents a
 translatable unit. A line consists of four elements:
 
 +------------+---------------------------------------------------------------+
@@ -26,7 +26,7 @@ translatable unit. A line consists of four elements:
 | target     | The target text                                               |
 +------------+---------------------------------------------------------------+
 
-The first line of the file is the header file, with four tab separated values:
+The first line of the file is the header line, with four tab-separated values:
 
 * The version (currently: 1)
 * The name of the language in lower case (for example: catalan)
