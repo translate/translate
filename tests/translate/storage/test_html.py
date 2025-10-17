@@ -252,6 +252,55 @@ pre tag
         assert len(store.units) == 1
         assert store.units[0].source == "this is\na multiline\npre tag"
 
+    def test_extraction_button(self):
+        """Check that we can extract text from button elements."""
+        h = html.htmlfile()
+
+        # Simple button text
+        store = h.parsestring(
+            "<button>Zustimmen und weiter</button>"
+        )  # codespell:ignore
+        assert len(store.units) == 1
+        assert store.units[0].source == "Zustimmen und weiter"  # codespell:ignore
+
+        # Button with nested elements
+        store = h.parsestring("<button><span>Click</span> here</button>")
+        assert len(store.units) == 1
+        assert store.units[0].source == "<span>Click</span> here"
+
+        # Button with attributes
+        store = h.parsestring('<button type="submit" class="btn">Submit</button>')
+        assert len(store.units) == 1
+        assert store.units[0].source == "Submit"
+
+        # Multiple buttons
+        store = h.parsestring(
+            """
+            <button>Accept</button>
+            <button>Decline</button>
+            """
+        )
+        assert len(store.units) == 2
+        assert store.units[0].source == "Accept"
+        assert store.units[1].source == "Decline"
+
+        # Button within other elements
+        store = h.parsestring(
+            """
+            <div>
+                <button>Save</button>
+            </div>
+            """
+        )
+        assert len(store.units) == 1
+        assert store.units[0].source == "Save"
+
+        # Button with title attribute (should extract both)
+        store = h.parsestring('<button title="Click to submit">Submit</button>')
+        assert len(store.units) == 2
+        assert store.units[0].source == "Click to submit"
+        assert store.units[1].source == "Submit"
+
     def test_extraction_lang_attribute(self):
         """Check that we extract lang attribute only from html tag."""
         h = html.htmlfile()
