@@ -67,7 +67,12 @@ class po2tmx:
             }.get(comment)
 
             tmxfile.addtranslation(
-                source, sourcelanguage, translation, targetlanguage, commenttext, inunit.getcontext()
+                source,
+                sourcelanguage,
+                translation,
+                targetlanguage,
+                commenttext,
+                inunit.getcontext(),
             )
 
 

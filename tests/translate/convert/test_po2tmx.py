@@ -210,4 +210,4 @@ class TestPO2TMXCommand(test_convert.TestConvertCommand, TestPO2TMX):
         self.create_testfile("test.po", pocontent)
         self.run_command("test.po", "test.tmx", language="af")
         content = self.open_testfile("test.tmx", "r").read()
-        assert ("<prop type=\"x-context\">Context</prop>" in content)
+        assert '<prop type="x-context">Context</prop>' in content
