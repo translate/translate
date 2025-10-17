@@ -170,6 +170,7 @@ sin.
     def test_lang_attribute_only_on_html_tag(self):
         """
         Test that the lang attribute is only translated on the html tag, not on other tags.
+
         Issue: https://github.com/translate/translate/issues/5504
         """
         htmlsource = '''<!DOCTYPE html>
