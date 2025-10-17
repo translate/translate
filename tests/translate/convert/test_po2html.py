@@ -200,8 +200,7 @@ msgstr "Ceci est une page à propos du mot anglais <strong lang=\\"en\\">Hello</
         # The html tag should have lang="fr" (translated)
         assert '<html lang="fr">' in result
         # Other elements should keep lang="en" (not translated)
-        assert 'href="/en">English</a>' in result
-        assert 'lang="en"' in result  # from <a> and <strong> tags
+        assert 'lang="en" href="/en">English</a>' in result
         # Verify that <a lang="en"> is present
         assert '<a lang="en"' in result
 
