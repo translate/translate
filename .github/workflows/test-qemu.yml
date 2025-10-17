@@ -48,6 +48,7 @@ jobs:
 
         dockerRunArgs: |
           --volume "/tmp/setup-uv-cache:/tmp/setup-uv-cache"
+          --tty=false
 
         install: |
           apt-get update -q -y
