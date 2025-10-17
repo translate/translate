@@ -167,6 +167,27 @@ sin.
         expected = '<meta name="keywords" content="life, the universe, everything" />'
         assert expected in self.converthtml(posource, htmlsource)
 
+    def test_button_translation(self):
+        """Test that button elements are properly translated."""
+        htmlsource = "<button>Zustimmen und weiter</button>"
+        posource = (
+            '#: html:3\nmsgid "Zustimmen und weiter"\nmsgstr "Agree and continue"\n'
+        )
+        htmlexpected = "<button>Agree and continue</button>"
+        assert htmlexpected in self.converthtml(posource, htmlsource)
+
+        # Test button with attributes
+        htmlsource = '<button type="submit" class="btn">Submit</button>'
+        posource = '#: html:3\nmsgid "Submit"\nmsgstr "Enviar"\n'
+        htmlexpected = '<button type="submit" class="btn">Enviar</button>'
+        assert htmlexpected in self.converthtml(posource, htmlsource)
+
+        # Test button with nested elements
+        htmlsource = "<button><strong>Click</strong> here</button>"
+        posource = '#: html:3\nmsgid "<strong>Click</strong> here"\nmsgstr "<strong>Klicken</strong> Sie hier"\n'
+        htmlexpected = "<button><strong>Klicken</strong> Sie hier</button>"
+        assert htmlexpected in self.converthtml(posource, htmlsource)
+
 
 class TestPO2HtmlCommand(test_convert.TestConvertCommand, TestPO2Html):
     """Tests running actual po2html commands on files."""
