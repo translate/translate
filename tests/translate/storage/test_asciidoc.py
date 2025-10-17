@@ -303,6 +303,43 @@ Another term:: Another definition
         assert "Term 1:: (Definition for term 1)" in translated_output
         assert "Term 2:: (Definition for term 2)" in translated_output
 
+    def test_asciidoctor_documentation_patterns(self):
+        """Test with patterns from real asciidoctor documentation."""
+        input = """= Document Title
+:toc:
+:url-docs: https://docs.asciidoctor.org
+
+ifndef::env-github[]
+Content not for GitHub.
+endif::[]
+
+{url-docs}[Asciidoctor] is a text processor.
+
+.Key Features
+[.compact]
+* Feature 1
+* Feature 2
+
+[[anchor]]
+== Section
+
+See <<anchor>> for details.
+"""
+        store = self.parse(input)
+        # Get only non-header units
+        unit_sources = [tu.source for tu in store.units if not tu.isheader()]
+        # Should extract translatable content, not directives, attributes, or conditional blocks
+        # Note: Content inside conditional blocks (ifndef/ifdef) is not extracted
+        # as it's environment-specific
+        expected = [
+            "{url-docs}[Asciidoctor] is a text processor.",
+            "Feature 1",
+            "Feature 2",
+            "Section",
+            "See <<anchor>> for details.",
+        ]
+        self.assertCountEqual(unit_sources, expected)
+
     def test_real_world_neuvector_content(self):
         """Test with actual content from neuvector-product-docs repository."""
         input = """= 5.x Overview

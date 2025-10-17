@@ -151,6 +151,47 @@ class AsciiDocFile(base.TranslationStore):
                 i += 1
                 continue
 
+            # Conditional directives (ifdef, ifndef, ifeval) - skip entire block
+            if re.match(r"^(ifdef|ifndef|ifeval)::", line):
+                # Store the opening directive
+                block_lines = [line]
+                i += 1
+                # Collect everything until endif
+                depth = 1
+                while i < len(lines) and depth > 0:
+                    current_line = lines[i]
+                    block_lines.append(current_line)
+                    if re.match(r"^(ifdef|ifndef|ifeval)::", current_line):
+                        depth += 1
+                    elif re.match(r"^endif::", current_line):
+                        depth -= 1
+                        if depth == 0:
+                            i += 1
+                            break
+                    i += 1
+                self._elements.append(
+                    {"type": "conditional_block", "content": "".join(block_lines)}
+                )
+                continue
+
+            # Standalone endif (in case it appears without ifdef/ifndef)
+            if re.match(r"^endif::", line):
+                self._elements.append({"type": "directive", "content": line})
+                i += 1
+                continue
+
+            # Anchors [[anchor-id]]
+            if re.match(r"^\[\[.+\]\]\s*$", line):
+                self._elements.append({"type": "anchor", "content": line})
+                i += 1
+                continue
+
+            # Block title (starts with . followed by alphanumeric - distinguishes from ordered list and delimiters)
+            if re.match(r"^\.[A-Za-z0-9]", line):
+                self._elements.append({"type": "block_title", "content": line})
+                i += 1
+                continue
+
             # Attribute lines (e.g., [NOTE], [source,java], etc.)
             # These should not be translated but preserved
             if line.strip().startswith("[") and line.strip().endswith("]"):
@@ -446,6 +487,10 @@ class AsciiDocFile(base.TranslationStore):
                 "comment",
                 "attribute",
                 "list_continuation",
+                "directive",
+                "anchor",
+                "block_title",
+                "conditional_block",
             }:
                 result.append(element["content"])
             elif elem_type in {
