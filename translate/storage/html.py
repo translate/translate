@@ -360,15 +360,20 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 unit = self.addsourceunit(tu["html_content"])
                 unit.addlocation(tu["location"])
 
-    def translate_attributes(self, attrs):
+    def translate_attributes(self, tag, attrs):
         result = []
         for attrname, attrvalue in attrs:
             if attrvalue:
-                normalized_value = self.WHITESPACE_RE.sub(" ", attrvalue).strip()
-                translated_value = self.callback(normalized_value)
-                if translated_value != normalized_value:
-                    result.append((attrname, translated_value))
-                    continue
+                # Only translate attributes that are translatable for this specific tag
+                if (
+                    attrname in self.TRANSLATABLE_ATTRIBUTES
+                    and self.translatable_attribute_matches_tag(attrname, tag)
+                ):
+                    normalized_value = self.WHITESPACE_RE.sub(" ", attrvalue).strip()
+                    translated_value = self.callback(normalized_value)
+                    if translated_value != normalized_value:
+                        result.append((attrname, translated_value))
+                        continue
             result.append((attrname, attrvalue))
         return result
 
@@ -403,7 +408,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         if tag in self.TRANSLATABLE_ELEMENTS:
             self.begin_translation_unit()
 
-        translated_attrs = self.translate_attributes(attrs)
+        translated_attrs = self.translate_attributes(tag, attrs)
         markup = {
             "type": "starttag",
             "tag": tag,
@@ -440,7 +445,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         if tag in self.TRANSLATABLE_ELEMENTS:
             self.begin_translation_unit()
 
-        translated_attrs = self.translate_attributes(attrs)
+        translated_attrs = self.translate_attributes(tag, attrs)
         markup = {
             "type": "startendtag",
             "html_content": self.create_start_tag(tag, translated_attrs, startend=True),

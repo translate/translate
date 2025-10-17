@@ -300,3 +300,27 @@ pre tag
         assert len(store.units) == 2
         assert store.units[0].source == "Click to submit"
         assert store.units[1].source == "Submit"
+    def test_extraction_lang_attribute(self):
+        """Check that we extract lang attribute only from html tag."""
+        h = html.htmlfile()
+        store = h.parsestring(
+            """<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Test</title>
+</head>
+<body>
+    <p lang="en">A paragraph with lang attribute</p>
+    <div lang="fr">A div with lang attribute</div>
+</body>
+</html>"""
+        )
+        # Should extract "en" from html tag, but not from p or div
+        sources = [unit.source for unit in store.units]
+        assert "en" in sources  # from html tag
+        assert "Test" in sources
+        # lang attributes in p and div should not be extracted
+        lang_units = [unit for unit in store.units if unit.source == "en"]
+        assert len(lang_units) == 1  # Only one "en" unit from html tag
+        # Check location to confirm it's from html tag
+        assert "html[lang]" in lang_units[0].getlocations()[0]

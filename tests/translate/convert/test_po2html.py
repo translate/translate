@@ -187,6 +187,42 @@ sin.
             "<button><strong>Klicken</strong> Sie hier</button>"  # codespell:ignore
         )
         assert htmlexpected in self.converthtml(posource, htmlsource)
+    def test_lang_attribute_only_on_html_tag(self):
+        """
+        Test that the lang attribute is only translated on the html tag, not on other tags.
+
+        Issue: https://github.com/translate/translate/issues/5504
+        """
+        htmlsource = """<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Test</title>
+</head>
+<body>
+    <nav>
+     Language switcher:
+     <a lang="en" href="/en">English</a>
+     <a lang="es" href="/es">Español</a>
+     <a lang="fr" href="/fr">Français</a>
+    </nav>
+    <p>This is a page about the English word <strong lang="en">Hello</strong>.</p>
+</body>
+</html>"""
+        posource = """#: test.html+html[lang]:1-16
+msgid "en"
+msgstr "fr"
+
+#: test.html+html.body.p:12-1
+msgid "This is a page about the English word <strong lang=\\"en\\">Hello</strong>."
+msgstr "Ceci est une page à propos du mot anglais <strong lang=\\"en\\">Hello</strong>."
+"""
+        result = self.converthtml(posource, htmlsource)
+        # The html tag should have lang="fr" (translated)
+        assert '<html lang="fr">' in result
+        # Other elements should keep lang="en" (not translated)
+        assert 'lang="en" href="/en">English</a>' in result
+        # Verify that <a lang="en"> is present
+        assert '<a lang="en"' in result
 
 
 class TestPO2HtmlCommand(test_convert.TestConvertCommand, TestPO2Html):
