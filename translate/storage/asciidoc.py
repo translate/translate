@@ -159,10 +159,13 @@ class AsciiDocFile(base.TranslationStore):
                 continue
 
             # Heading (section titles)
-            heading_match = re.match(r"^(={2,6})\s+(\S.*?)(?:\s+={2,6})?\s*$", line)
+            # Match heading with optional closing markers: == Title == or == Title
+            # Pattern avoids backtracking by matching content then optionally stripping closing markers
+            heading_match = re.match(r"^(={2,6})\s+(\S.+?)$", line)
             if heading_match:
                 level = len(heading_match.group(1))
-                title = heading_match.group(2).strip()
+                # Strip any trailing whitespace and closing = markers
+                title = heading_match.group(2).rstrip().rstrip("=").strip()
 
                 unit = self.addsourceunit(title)
                 unit.addlocation(f"{self.filename or ''}:{i + 1}")
