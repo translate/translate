@@ -1,9 +1,0 @@
-# Configuration for typos spell checker
-# See https://github.com/crate-ci/typos for more information
-
-[default.extend-words]
-# German words used in test cases
-Zustimmen = "Zustimmen"
-weiter = "weiter"
-Sie = "Sie"
-Klicken = "Klicken"

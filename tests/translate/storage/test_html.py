@@ -257,9 +257,9 @@ pre tag
         h = html.htmlfile()
 
         # Simple button text
-        store = h.parsestring("<button>Zustimmen und weiter</button>")
+        store = h.parsestring("<button>Zustimmen und weiter</button>")  # codespell:ignore
         assert len(store.units) == 1
-        assert store.units[0].source == "Zustimmen und weiter"
+        assert store.units[0].source == "Zustimmen und weiter"  # codespell:ignore
 
         # Button with nested elements
         store = h.parsestring("<button><span>Click</span> here</button>")

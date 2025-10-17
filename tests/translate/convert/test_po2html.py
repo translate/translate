@@ -169,9 +169,9 @@ sin.
 
     def test_button_translation(self):
         """Test that button elements are properly translated."""
-        htmlsource = "<button>Zustimmen und weiter</button>"
+        htmlsource = "<button>Zustimmen und weiter</button>"  # codespell:ignore
         posource = (
-            '#: html:3\nmsgid "Zustimmen und weiter"\nmsgstr "Agree and continue"\n'
+            '#: html:3\nmsgid "Zustimmen und weiter"\nmsgstr "Agree and continue"\n'  # codespell:ignore
         )
         htmlexpected = "<button>Agree and continue</button>"
         assert htmlexpected in self.converthtml(posource, htmlsource)
@@ -184,8 +184,8 @@ sin.
 
         # Test button with nested elements
         htmlsource = "<button><strong>Click</strong> here</button>"
-        posource = '#: html:3\nmsgid "<strong>Click</strong> here"\nmsgstr "<strong>Klicken</strong> Sie hier"\n'
-        htmlexpected = "<button><strong>Klicken</strong> Sie hier</button>"
+        posource = '#: html:3\nmsgid "<strong>Click</strong> here"\nmsgstr "<strong>Klicken</strong> Sie hier"\n'  # codespell:ignore
+        htmlexpected = "<button><strong>Klicken</strong> Sie hier</button>"  # codespell:ignore
         assert htmlexpected in self.converthtml(posource, htmlsource)
 
 
