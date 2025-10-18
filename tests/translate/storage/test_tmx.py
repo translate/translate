@@ -28,6 +28,12 @@ class TestTMXUnitFromParsedString(TestTMXUnit):
         store = tmx.tmxfile.parsestring(self.tmxsource)
         self.unit = store.units[0]
 
+    def test_context(self):
+        tmxunit = self.UnitClass("Sample source")
+        assert tmxunit.getcontext() == ""
+        tmxunit.setcontext("context info")
+        assert tmxunit.getcontext() == "context info"
+
 
 class TestTMXfile(test_base.TestTranslationStore):
     StoreClass = tmx.tmxfile
@@ -101,3 +107,29 @@ class TestTMXfile(test_base.TestTranslationStore):
         print(bytes(tmxfile))
         assert newfile.translate("Client Version:14 %s") == "test one"
         assert newfile.translate("Client Version:\n%s") == "test two"
+
+    def test_context(self):
+        store = self.StoreClass()
+        unit = store.addsourceunit("Source text")
+        unit.target = "Target text"
+        unit.setcontext("Context text")
+        store.addunit(unit)
+        assert b"Context text" in (bytes(store))
+
+        newsource = """<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE tmx
+  SYSTEM 'tmx14.dtd'>
+<tmx version="1.4">
+        <header adminlang="en" creationtool="Translate Toolkit" creationtoolversion="1.0beta" datatype="PlainText" o-tmf="UTF-8" segtype="sentence" srclang="en"/>
+        <body>
+                <tu>
+                        <prop type="x-context">Context text</prop>
+                        <tuv xml:lang="en">
+                                <seg>Test String</seg>
+                        </tuv>
+                </tu>
+        </body>
+</tmx>"""
+
+        newstore = self.StoreClass().parsestring(newsource)
+        assert newstore.units[0].getcontext() == "Context text"
