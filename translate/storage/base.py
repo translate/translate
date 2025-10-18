@@ -326,8 +326,7 @@ class TranslationUnit:
         else:
             self.addlocation(location)
 
-    @staticmethod
-    def getcontext():
+    def getcontext(self):
         """Get the message context."""
         return ""
 
