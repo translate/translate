@@ -98,7 +98,7 @@ levenshtein = [
   "python-Levenshtein>=0.21.0"
 ]
 markdown = [
-  "mistletoe>=1.4.0,<1.5.0"
+  "mistletoe>=1.4.0,<1.6.0"
 ]
 php = [
   "phply>=1.2.6,<1.3"
