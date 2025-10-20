@@ -102,6 +102,19 @@ class tmxunit(lisa.LISAunit):
             errordict[errorname] = errortext
         return errordict
 
+    def setcontext(self, context):
+        context_prop = self.xmlelement.find("prop[@type='x-context']")
+        if context_prop is None:
+            context_prop = etree.SubElement(self.xmlelement, "prop")
+            context_prop.set("type", "x-context")
+        safely_set_text(context_prop, context)
+
+    def getcontext(self):
+        context_prop = self.xmlelement.find("prop[@type='x-context']")
+        if context_prop is not None and context_prop.text is not None:
+            return context_prop.text
+        return ""
+
     def copy(self):
         """
         Make a copy of the translation unit.
@@ -147,12 +160,16 @@ class tmxfile(lisa.LISAfile):
         # headernode.set("creationdate", "YYYYMMDDTHHMMSSZ"
         # headernode.set("creationid", "CodeSyntax"
 
-    def addtranslation(self, source, srclang, translation, translang, comment=None):
+    def addtranslation(
+        self, source, srclang, translation, translang, comment=None, context=None
+    ):
         """Addtranslation method for testing old unit tests."""
         unit = self.addsourceunit(source)
         unit.target = translation
         if comment is not None and len(comment) > 0:
             unit.addnote(comment)
+        if context is not None and len(context) > 0:
+            unit.setcontext(context)
 
         tuvs = unit.xmlelement.iterdescendants(self.namespaced("tuv"))
         setXMLlang(next(tuvs), srclang)
