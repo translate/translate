@@ -31,12 +31,6 @@ still work correctly.  If you are a frequent user you might want to start using
 the release candidate on your current work and report any errors before we
 release them.
 
-Compile and install the software to see if we have any platform issues::
-
-  ./setup.py install
-
-Check for any files that are missing, tools that were not installed, etc.
-
 :doc:`Run unit tests </developers/testing>` to see if
 there are any issues.  Please report any failures.
 
@@ -81,7 +75,32 @@ Don't ignore this area if you feel like you are not a hotshot coder!
 
 You will need some Python skills, this is a great way to learn.
 
-Here are some ideas to get you going:
+**Quick Start:**
+
+1. Install dependencies:
+
+   * Git
+   * Python 3.9 or newer
+   * `uv <https://docs.astral.sh/uv/>`_ (recommended package manager)
+
+2. Clone and setup:
+
+   .. code-block:: sh
+
+      git clone https://github.com/translate/translate.git
+      cd translate
+      uv sync --all-extras --dev
+
+   This will create a virtual environment in ``.venv`` and install all
+   dependencies including development tools.
+
+3. Run the tests:
+
+   .. code-block:: sh
+
+      make test
+
+**What you can contribute:**
 
 * Write a test to expose some bug
 * Try to fix the actual code to fix your bug
