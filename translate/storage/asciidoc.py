@@ -292,8 +292,8 @@ class AsciiDocFile(base.TranslationStore):
                 continue
 
             # Description list (term:: definition)
-            # Use \S to start term to avoid overlapping with initial whitespace
-            desc_list_match = re.match(r"^(\S.*?)::\s+(\S.*?)$", line)
+            # Use [^:] to prevent term from matching :: delimiter, avoiding backtracking
+            desc_list_match = re.match(r"^(\S[^:]*?)::\s+(\S.*?)$", line)
             if desc_list_match:
                 term = desc_list_match.group(1).strip()
                 definition = desc_list_match.group(2).strip()
