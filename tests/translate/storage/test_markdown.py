@@ -492,3 +492,161 @@ class TestMarkdownRendering:
             callback=lambda x: "\t1.  ---  \n|  yeah  |\n|  whatever |  ",
         )
         assert store.filesrc == "1.  ---  \\\n|  yeah  |\\\n|  whatever |\n"
+
+
+class TestMarkdownTranslationIgnore:
+    def test_ignore_section_basic(self):
+        """Test that content between translate:off and translate:on is not extracted."""
+        input = """Translate this
+
+<!-- translate:off -->
+
+Don't translate this
+
+<!-- translate:on -->
+
+Translate this too
+"""
+        store = self.parse(input)
+        unit_sources = self.get_translation_unit_sources(store)
+        assert unit_sources == ["Translate this", "Translate this too"]
+        translated_output = self.get_translated_output(store)
+        expected = """(Translate this)
+
+<!-- translate:off -->
+
+Don't translate this
+
+<!-- translate:on -->
+
+(Translate this too)
+"""
+        assert translated_output == expected
+
+    def test_ignore_section_with_markup(self):
+        """Test that ignored content preserves its markup."""
+        input = """Before
+
+<!-- translate:off -->
+
+**Bold** and *italic* text with [links](http://example.com)
+
+<!-- translate:on -->
+
+After
+"""
+        store = self.parse(input)
+        unit_sources = self.get_translation_unit_sources(store)
+        assert unit_sources == ["Before", "After"]
+        translated_output = self.get_translated_output(store)
+        expected = """(Before)
+
+<!-- translate:off -->
+
+**Bold** and *italic* text with [links](http://example.com)
+
+<!-- translate:on -->
+
+(After)
+"""
+        assert translated_output == expected
+
+    def test_ignore_section_with_code_block(self):
+        """Test ignoring sections with code blocks."""
+        input = """Text before
+
+<!-- translate:off -->
+
+```python
+def hello():
+    print("world")
+```
+
+<!-- translate:on -->
+
+Text after
+"""
+        store = self.parse(input)
+        unit_sources = self.get_translation_unit_sources(store)
+        assert unit_sources == ["Text before", "Text after"]
+
+    def test_multiple_ignore_sections(self):
+        """Test multiple ignore sections in the same document."""
+        input = """First
+
+<!-- translate:off -->
+
+Ignore A
+
+<!-- translate:on -->
+
+Second
+
+<!-- translate:off -->
+
+Ignore B
+
+<!-- translate:on -->
+
+Third
+"""
+        store = self.parse(input)
+        unit_sources = self.get_translation_unit_sources(store)
+        assert unit_sources == ["First", "Second", "Third"]
+
+    def test_ignore_at_start(self):
+        """Test that ignore section at start of document works."""
+        input = """<!-- translate:off -->
+
+Ignored
+
+<!-- translate:on -->
+
+Translated
+"""
+        store = self.parse(input)
+        unit_sources = self.get_translation_unit_sources(store)
+        assert unit_sources == ["Translated"]
+
+    def test_ignore_at_end(self):
+        """Test that ignore section at end of document works."""
+        input = """Translated
+
+<!-- translate:off -->
+
+Ignored
+"""
+        store = self.parse(input)
+        unit_sources = self.get_translation_unit_sources(store)
+        assert unit_sources == ["Translated"]
+
+    def test_nested_structures_in_ignore(self):
+        """Test that nested structures like lists and quotes are ignored."""
+        input = """Before
+
+<!-- translate:off -->
+
+> Block quote
+> - List item 1
+> - List item 2
+
+<!-- translate:on -->
+
+After
+"""
+        store = self.parse(input)
+        unit_sources = self.get_translation_unit_sources(store)
+        assert unit_sources == ["Before", "After"]
+
+    @staticmethod
+    def parse(md):
+        inputfile = BytesIO(md.encode())
+        return markdown.MarkdownFile(inputfile=inputfile, callback=lambda x: f"({x})")
+
+    @staticmethod
+    def get_translation_unit_sources(store):
+        return [tu.source for tu in store.units]
+
+    @staticmethod
+    def get_translated_output(store):
+        return store.filesrc
