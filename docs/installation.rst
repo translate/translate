@@ -90,22 +90,26 @@ from a stabilising branch then you need to use Git to get your sources:
 .. code-block:: console
 
    $ git clone https://github.com/translate/translate.git
+   $ cd translate
 
 
 This will retrieve the ``master`` branch of the Toolkit.  Further Git
 `instructions <http://git.or.cz/course/svn.html>`_ are also available.
 
-Once you have the sources you have two options, a full install:
+**For users** wanting to install from source:
 
 .. code-block:: console
 
    $ uv pip install .
 
-or, running the tools from the source directory:
+**For developers** wanting to contribute:
 
 .. code-block:: console
 
-   $ uv pip install -e .
+   $ uv sync --all-extras --dev
+
+This sets up a complete development environment with all dependencies.
+See the :doc:`contributing guide </developers/contributing>` for more details.
 
 .. _installation#verify_installed_version:
 
