@@ -668,6 +668,13 @@ ghi ?>"""
         self.compareunit(pofile, 1, "Extract this")
         self.compareunit(pofile, 2, "Translate")
 
+        # Self-closing tags with data-translate-ignore should not have attributes extracted
+        htmlsource = '<img alt="Extract this" /><img alt="Do not extract" data-translate-ignore /><p>Translate</p>'
+        pofile = self.html2po(htmlsource)
+        self.countunits(pofile, 2)
+        self.compareunit(pofile, 1, "Extract this")
+        self.compareunit(pofile, 2, "Translate")
+
     def test_translate_comment_directives(self):
         """Test that translate:off and translate:on comments work."""
         # Basic case

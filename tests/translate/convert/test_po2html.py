@@ -257,6 +257,21 @@ msgstr "Traduire ceci aussi"
         assert "<div data-translate-ignore><p>Do not translate</p></div>" in result
         assert "<div>Traduire ceci aussi</div>" in result
 
+        # Self-closing tags with data-translate-ignore should not have attributes translated
+        htmlsource = '<img alt="Extract this" /><img alt="Do not extract" data-translate-ignore /><p>Translate</p>'
+        posource = """#: test.html
+msgid "Extract this"
+msgstr "Extraire ceci"
+
+#: test.html
+msgid "Translate"
+msgstr "Traduire"
+"""
+        result = self.converthtml(posource, htmlsource)
+        assert '<img alt="Extraire ceci" />' in result
+        assert '<img alt="Do not extract" data-translate-ignore />' in result
+        assert "<p>Traduire</p>" in result
+
     def test_translate_comment_directives_preserved(self):
         """Test that translate:off/on comments are preserved and content ignored."""
         htmlsource = "<p>Translate this</p><!-- translate:off --><p>Do not translate</p><!-- translate:on --><p>Translate this too</p>"
