@@ -272,6 +272,32 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         self, token: LinkReferenceDefinition
     ) -> Iterable[Fragment]:
         # note: these tokens will never be encountered in bypass mode.
+        # If we're ignoring translation, just return the raw content
+        if self.ignore_translation:
+            # Return the definition without translation
+            placeholder = Fragment(None)
+            placeholder.placeholder_content = [
+                Fragment("["),
+                Fragment(token.label, wordwrap=True),
+                Fragment("]: ", wordwrap=True),
+                Fragment(
+                    "<" + token.dest + ">" if token.dest_type == "angle_uri" else token.dest
+                ),
+            ]
+            if token.title:
+                placeholder.placeholder_content.extend(
+                    [
+                        Fragment(" ", wordwrap=True),
+                        Fragment(token.title_delimiter),
+                        Fragment(token.title, wordwrap=True),
+                        Fragment(
+                            ")" if token.title_delimiter == "(" else token.title_delimiter
+                        ),
+                    ]
+                )
+            yield placeholder
+            return
+        
         translated_label = self.translate_callback(
             token.label, [*self.path, "link-label"]
         )

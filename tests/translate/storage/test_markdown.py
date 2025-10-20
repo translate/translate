@@ -638,6 +638,26 @@ After
         unit_sources = self.get_translation_unit_sources(store)
         assert unit_sources == ["Before", "After"]
 
+    def test_link_references_in_ignore(self):
+        """Test that link reference definitions in ignored sections are not extracted."""
+        input = """Text
+
+<!-- translate:off -->
+
+[Reference 1]: http://example.com "Title 1"
+[Reference 2]: http://example.org
+
+<!-- translate:on -->
+
+More text
+"""
+        store = self.parse(input)
+        unit_sources = self.get_translation_unit_sources(store)
+        assert unit_sources == ["Text", "More text"]
+        # Verify the link references are preserved in output
+        assert "[Reference 1]: http://example.com" in store.filesrc
+        assert "[Reference 2]: http://example.org" in store.filesrc
+
     @staticmethod
     def parse(md):
         inputfile = BytesIO(md.encode())
