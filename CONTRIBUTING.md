@@ -39,9 +39,8 @@ For detailed information about contributing, please see our [full contributing g
 
 ## Communication
 
-- [Development channel](https://gitter.im/translate/dev) - for development discussions
-- [Help channel](https://gitter.im/translate/pootle) - for support questions
-- [Issue tracker](https://github.com/translate/translate/issues) - for bug reports
+- [Issue tracker](https://github.com/translate/translate/issues) - for bug reports and discussions
+- [Mailing list](http://lists.sourceforge.net/lists/listinfo/translate-devel) - for general discussions
 
 ## Documentation
 

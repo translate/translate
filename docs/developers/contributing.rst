@@ -5,8 +5,8 @@ Contributing
 ************
 
 We could use your help.  If you are interesting in contributing then please
-join us on our `Gitter development channel
-<https://gitter.im/translate/pootle>`_.
+join us on our `mailing list
+<http://lists.sourceforge.net/lists/listinfo/translate-devel>`_.
 
 Here are some idea of how you can contribute
 
@@ -109,9 +109,6 @@ You will need some Python skills, this is a great way to learn.
 * Add a :doc:`format </formats/index>` type and converters
 * Add more features to help our formats :doc:`conform to the standards
   </formats/conformance>`
-
-You will definitely need to be on the `Development channel
-<https://gitter.im/translate/dev>`_
 
 Now is the time to familiarise yourself with the :doc:`developers guide
 <developers>`.

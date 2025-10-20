@@ -56,8 +56,7 @@ Issues
 Communication
 -------------
 
-* `Development <https://gitter.im/translate/dev>`_ - no support related questions
-* `Help <https://gitter.im/translate/pootle>`_
+* `Mailing list <http://lists.sourceforge.net/lists/listinfo/translate-devel>`_
 
 
 .. _developers#working_with_bugzilla:
