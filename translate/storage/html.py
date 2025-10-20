@@ -327,7 +327,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         # Don't extract attributes if we're in an ignored section
         if self.is_extraction_ignored():
             return []
-        
+
         result = []
         if tag == "meta":
             tu = self.create_metadata_attribute_tu(attrs)
@@ -426,7 +426,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         # Check for data-translate-ignore attribute
         attrs_dict = dict(attrs)
         has_ignore_attr = "data-translate-ignore" in attrs_dict
-        
+
         if has_ignore_attr:
             self.ignore_depth += 1
             self.ignore_tag_stack.append(tag)
@@ -464,7 +464,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         if self.ignore_tag_stack and self.ignore_tag_stack[-1] == tag:
             self.ignore_tag_stack.pop()
             self.ignore_depth -= 1
-        
+
         if tag in self.TRANSLATABLE_ELEMENTS and not self.is_extraction_ignored():
             self.end_translation_unit()
             if any(t in self.TRANSLATABLE_ELEMENTS for t in self.tag_path):
@@ -474,10 +474,6 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         self.auto_close_empty_element()
         self.tag_path.append(tag)
 
-        # Check for data-translate-ignore attribute (though self-closing tags won't contain content)
-        attrs_dict = dict(attrs)
-        has_ignore_attr = "data-translate-ignore" in attrs_dict
-        
         # For self-closing tags, we don't need to track ignore depth
 
         if tag in self.TRANSLATABLE_ELEMENTS and not self.is_extraction_ignored():
@@ -520,14 +516,14 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
     def handle_comment(self, data):
         self.auto_close_empty_element()
-        
+
         # Check for translate:off and translate:on directives
         stripped_data = data.strip()
         if stripped_data == "translate:off":
             self.comment_ignore = True
         elif stripped_data == "translate:on":
             self.comment_ignore = False
-        
+
         self.append_markup(
             {"type": "comment", "html_content": f"<!--{data}-->", "note": data}
         )

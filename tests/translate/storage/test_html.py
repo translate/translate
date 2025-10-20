@@ -329,7 +329,7 @@ pre tag
     def test_data_translate_ignore_attribute(self):
         """Check that elements with data-translate-ignore are not extracted."""
         h = html.htmlfile()
-        
+
         # Simple case: single ignored paragraph
         store = h.parsestring(
             '<p>Translate this</p><p data-translate-ignore>Do not translate</p><p>Translate this too</p>'
@@ -337,7 +337,7 @@ pre tag
         assert len(store.units) == 2
         assert store.units[0].source == "Translate this"
         assert store.units[1].source == "Translate this too"
-        
+
         # Nested elements within ignored section should also be ignored
         store = h.parsestring(
             '<div>Translate this</div><div data-translate-ignore><p>Do not translate</p><span>Also ignore</span></div><div>Translate this too</div>'
@@ -345,7 +345,7 @@ pre tag
         assert len(store.units) == 2
         assert store.units[0].source == "Translate this"
         assert store.units[1].source == "Translate this too"
-        
+
         # Attributes in ignored elements should not be extracted
         store = h.parsestring(
             '<p title="Extract this">Translate</p><p data-translate-ignore title="Do not extract">Do not translate</p>'
@@ -357,7 +357,7 @@ pre tag
     def test_translate_comment_directives(self):
         """Check that translate:off and translate:on comments work."""
         h = html.htmlfile()
-        
+
         # Basic case with comments
         store = h.parsestring(
             '<p>Translate this</p><!-- translate:off --><p>Do not translate</p><!-- translate:on --><p>Translate this too</p>'
@@ -365,7 +365,7 @@ pre tag
         assert len(store.units) == 2
         assert store.units[0].source == "Translate this"
         assert store.units[1].source == "Translate this too"
-        
+
         # Multiple elements between translate:off and translate:on
         store = h.parsestring(
             '<div>Translate</div><!-- translate:off --><p>Skip 1</p><p>Skip 2</p><div>Skip 3</div><!-- translate:on --><p>Translate again</p>'
@@ -373,7 +373,7 @@ pre tag
         assert len(store.units) == 2
         assert store.units[0].source == "Translate"
         assert store.units[1].source == "Translate again"
-        
+
         # translate:off without translate:on should ignore rest of document
         store = h.parsestring(
             '<p>Translate this</p><!-- translate:off --><p>Do not translate 1</p><p>Do not translate 2</p>'
