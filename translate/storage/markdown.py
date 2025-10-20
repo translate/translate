@@ -281,7 +281,9 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
                 Fragment(token.label, wordwrap=True),
                 Fragment("]: ", wordwrap=True),
                 Fragment(
-                    "<" + token.dest + ">" if token.dest_type == "angle_uri" else token.dest
+                    "<" + token.dest + ">"
+                    if token.dest_type == "angle_uri"
+                    else token.dest
                 ),
             ]
             if token.title:
@@ -291,13 +293,15 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
                         Fragment(token.title_delimiter),
                         Fragment(token.title, wordwrap=True),
                         Fragment(
-                            ")" if token.title_delimiter == "(" else token.title_delimiter
+                            ")"
+                            if token.title_delimiter == "("
+                            else token.title_delimiter
                         ),
                     ]
                 )
             yield placeholder
             return
-        
+
         translated_label = self.translate_callback(
             token.label, [*self.path, "link-label"]
         )
@@ -372,7 +376,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
             self.ignore_translation = True
         elif content == "<!-- translate:on -->":
             self.ignore_translation = False
-        
+
         # Return the raw HTML block content
         return super().render_html_block(token, max_line_length=max_line_length)
 
@@ -417,10 +421,12 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
                 fragments = self.make_fragments(tokens)
                 # Expand placeholders before rendering
                 expanded = list(self.expand_placeholders(fragments))
-                return super().fragments_to_lines(expanded, max_line_length=max_line_length)
+                return super().fragments_to_lines(
+                    expanded, max_line_length=max_line_length
+                )
             finally:
                 self.bypass = False
-        
+
         # turn the span into fragments, which may include placeholders.
         # list-ify the iterator because we may need to traverse it more than once
         fragments = list(self.make_fragments(tokens))
