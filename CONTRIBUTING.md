@@ -39,8 +39,8 @@ For detailed information about contributing, please see our [full contributing g
 
 ## Communication
 
-- [Issue tracker](https://github.com/translate/translate/issues) - for bug reports and discussions
-- [Mailing list](http://lists.sourceforge.net/lists/listinfo/translate-devel) - for general discussions
+- [Issue tracker](https://github.com/translate/translate/issues) - for bug reports, discussions, and questions
+- [Discussions](https://github.com/translate/translate/discussions) - for general discussions and help
 
 ## Documentation
 

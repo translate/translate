@@ -56,7 +56,8 @@ Issues
 Communication
 -------------
 
-* `Mailing list <http://lists.sourceforge.net/lists/listinfo/translate-devel>`_
+* `Issue tracker <https://github.com/translate/translate/issues>`_ - bug reports, discussions, and questions
+* `Discussions <https://github.com/translate/translate/discussions>`_ - general discussions and help
 
 
 .. _developers#working_with_bugzilla:

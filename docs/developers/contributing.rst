@@ -5,8 +5,8 @@ Contributing
 ************
 
 We could use your help.  If you are interesting in contributing then please
-join us on our `mailing list
-<http://lists.sourceforge.net/lists/listinfo/translate-devel>`_.
+check out our `issue tracker <https://github.com/translate/translate/issues>`_ or
+`discussions <https://github.com/translate/translate/discussions>`_.
 
 Here are some idea of how you can contribute
 
