@@ -71,22 +71,22 @@ Translate Toolkit. This automatically manages virtual environments for you.
 
    .. code-block:: console
 
-      $ mkdir translate-work
-      $ cd translate-work
-      $ uv venv
-      $ uv pip install translate-toolkit
+      > mkdir translate-work
+      > cd translate-work
+      > uv venv
+      > uv pip install translate-toolkit
 
 4. Activate the environment and verify:
 
    .. code-block:: console
 
-      $ .venv\Scripts\activate
-      $ po2prop --version
+      > .venv\Scripts\activate
+      > po2prop --version
 
 Next times you need to use Translate Toolkit:
 
 1. Navigate to your project directory
-2. Activate the virtual environment: ``.venv\Scripts\activate``
+2. Activate the virtual environment: ``.venv\Scripts\activate`` (Command Prompt) or ``.venv\Scripts\Activate.ps1`` (PowerShell)
 3. Run the Translate Toolkit commands you want
 
 
