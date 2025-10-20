@@ -332,7 +332,7 @@ pre tag
 
         # Simple case: single ignored paragraph
         store = h.parsestring(
-            '<p>Translate this</p><p data-translate-ignore>Do not translate</p><p>Translate this too</p>'
+            "<p>Translate this</p><p data-translate-ignore>Do not translate</p><p>Translate this too</p>"
         )
         assert len(store.units) == 2
         assert store.units[0].source == "Translate this"
@@ -340,7 +340,7 @@ pre tag
 
         # Nested elements within ignored section should also be ignored
         store = h.parsestring(
-            '<div>Translate this</div><div data-translate-ignore><p>Do not translate</p><span>Also ignore</span></div><div>Translate this too</div>'
+            "<div>Translate this</div><div data-translate-ignore><p>Do not translate</p><span>Also ignore</span></div><div>Translate this too</div>"
         )
         assert len(store.units) == 2
         assert store.units[0].source == "Translate this"
@@ -368,7 +368,7 @@ pre tag
 
         # Basic case with comments
         store = h.parsestring(
-            '<p>Translate this</p><!-- translate:off --><p>Do not translate</p><!-- translate:on --><p>Translate this too</p>'
+            "<p>Translate this</p><!-- translate:off --><p>Do not translate</p><!-- translate:on --><p>Translate this too</p>"
         )
         assert len(store.units) == 2
         assert store.units[0].source == "Translate this"
@@ -376,7 +376,7 @@ pre tag
 
         # Multiple elements between translate:off and translate:on
         store = h.parsestring(
-            '<div>Translate</div><!-- translate:off --><p>Skip 1</p><p>Skip 2</p><div>Skip 3</div><!-- translate:on --><p>Translate again</p>'
+            "<div>Translate</div><!-- translate:off --><p>Skip 1</p><p>Skip 2</p><div>Skip 3</div><!-- translate:on --><p>Translate again</p>"
         )
         assert len(store.units) == 2
         assert store.units[0].source == "Translate"
@@ -384,7 +384,7 @@ pre tag
 
         # translate:off without translate:on should ignore rest of document
         store = h.parsestring(
-            '<p>Translate this</p><!-- translate:off --><p>Do not translate 1</p><p>Do not translate 2</p>'
+            "<p>Translate this</p><!-- translate:off --><p>Do not translate 1</p><p>Do not translate 2</p>"
         )
         assert len(store.units) == 1
         assert store.units[0].source == "Translate this"

@@ -17,38 +17,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 
-"""
-module for parsing html files for translation.
-
-This module provides support for extracting translatable content from HTML files.
-
-Ignoring Content from Translation
-----------------------------------
-Two methods are available to exclude content from translation:
-
-1. **data-translate-ignore attribute**: Any element with this attribute and all
-   its children will be excluded from extraction.
-
-   Example::
-
-       <p>This will be translated</p>
-       <div data-translate-ignore>
-           <p>This won't be translated</p>
-       </div>
-
-2. **translate:off/on comment directives**: Content between <!-- translate:off -->
-   and <!-- translate:on --> comments will be excluded from extraction.
-
-   Example::
-
-       <p>This will be translated</p>
-       <!-- translate:off -->
-       <div>This won't be translated</div>
-       <!-- translate:on -->
-       <p>This will be translated</p>
-
-Both methods work with html2po extraction and po2html conversion.
-"""
+"""module for parsing html files for translation."""
 
 import html.parser
 import re

@@ -228,52 +228,52 @@ msgstr "Ceci est une page à propos du mot anglais <strong lang=\\"en\\">Hello</
     def test_data_translate_ignore_preserved(self):
         """Test that ignored content is preserved in po2html output."""
         # Simple case
-        htmlsource = '<p>Translate this</p><p data-translate-ignore>Do not translate</p><p>Translate this too</p>'
-        posource = '''#: test.html
+        htmlsource = "<p>Translate this</p><p data-translate-ignore>Do not translate</p><p>Translate this too</p>"
+        posource = """#: test.html
 msgid "Translate this"
 msgstr "Traduire ceci"
 
 #: test.html
 msgid "Translate this too"
 msgstr "Traduire ceci aussi"
-'''
+"""
         result = self.converthtml(posource, htmlsource)
-        assert '<p>Traduire ceci</p>' in result
-        assert '<p data-translate-ignore>Do not translate</p>' in result
-        assert '<p>Traduire ceci aussi</p>' in result
+        assert "<p>Traduire ceci</p>" in result
+        assert "<p data-translate-ignore>Do not translate</p>" in result
+        assert "<p>Traduire ceci aussi</p>" in result
 
         # Nested elements
-        htmlsource = '<div>Translate this</div><div data-translate-ignore><p>Do not translate</p></div><div>Translate this too</div>'
-        posource = '''#: test.html
+        htmlsource = "<div>Translate this</div><div data-translate-ignore><p>Do not translate</p></div><div>Translate this too</div>"
+        posource = """#: test.html
 msgid "Translate this"
 msgstr "Traduire ceci"
 
 #: test.html
 msgid "Translate this too"
 msgstr "Traduire ceci aussi"
-'''
+"""
         result = self.converthtml(posource, htmlsource)
-        assert '<div>Traduire ceci</div>' in result
-        assert '<div data-translate-ignore><p>Do not translate</p></div>' in result
-        assert '<div>Traduire ceci aussi</div>' in result
+        assert "<div>Traduire ceci</div>" in result
+        assert "<div data-translate-ignore><p>Do not translate</p></div>" in result
+        assert "<div>Traduire ceci aussi</div>" in result
 
     def test_translate_comment_directives_preserved(self):
         """Test that translate:off/on comments are preserved and content ignored."""
-        htmlsource = '<p>Translate this</p><!-- translate:off --><p>Do not translate</p><!-- translate:on --><p>Translate this too</p>'
-        posource = '''#: test.html
+        htmlsource = "<p>Translate this</p><!-- translate:off --><p>Do not translate</p><!-- translate:on --><p>Translate this too</p>"
+        posource = """#: test.html
 msgid "Translate this"
 msgstr "Traduire ceci"
 
 #: test.html
 msgid "Translate this too"
 msgstr "Traduire ceci aussi"
-'''
+"""
         result = self.converthtml(posource, htmlsource)
-        assert '<p>Traduire ceci</p>' in result
-        assert '<!-- translate:off -->' in result
-        assert '<p>Do not translate</p>' in result
-        assert '<!-- translate:on -->' in result
-        assert '<p>Traduire ceci aussi</p>' in result
+        assert "<p>Traduire ceci</p>" in result
+        assert "<!-- translate:off -->" in result
+        assert "<p>Do not translate</p>" in result
+        assert "<!-- translate:on -->" in result
+        assert "<p>Traduire ceci aussi</p>" in result
 
 
 class TestPO2HtmlCommand(test_convert.TestConvertCommand, TestPO2Html):
