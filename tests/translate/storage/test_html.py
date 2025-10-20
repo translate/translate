@@ -354,6 +354,14 @@ pre tag
         assert store.units[0].source == "Extract this"
         assert store.units[1].source == "Translate"
 
+        # Self-closing tags with data-translate-ignore should not have attributes extracted
+        store = h.parsestring(
+            '<img alt="Extract this" /><img alt="Do not extract" data-translate-ignore /><p>Translate</p>'
+        )
+        assert len(store.units) == 2
+        assert store.units[0].source == "Extract this"
+        assert store.units[1].source == "Translate"
+
     def test_translate_comment_directives(self):
         """Check that translate:off and translate:on comments work."""
         h = html.htmlfile()

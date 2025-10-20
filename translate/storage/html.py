@@ -17,7 +17,8 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 
-"""module for parsing html files for translation.
+"""
+module for parsing html files for translation.
 
 This module provides support for extracting translatable content from HTML files.
 
@@ -252,8 +253,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         # If we're in an ignored section, just output the raw content
         if self.is_extraction_ignored():
             for markup in self.tu_content:
-                if markup["type"] != "comment":
-                    self.filesrc += markup["html_content"]
+                self.filesrc += markup["html_content"]
             return
 
         # scan through the queue:
@@ -491,6 +491,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         self.append_markup({"type": "endtag", "html_content": f"</{tag}>"})
 
         # Check if this closing tag corresponds to an ignored tag
+        # We match from the end of the stack because tags are properly nested
         if self.ignore_tag_stack and self.ignore_tag_stack[-1] == tag:
             self.ignore_tag_stack.pop()
             self.ignore_depth -= 1
@@ -504,7 +505,13 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         self.auto_close_empty_element()
         self.tag_path.append(tag)
 
-        # For self-closing tags, we don't need to track ignore depth
+        # Check for data-translate-ignore attribute
+        attrs_dict = dict(attrs)
+        has_ignore_attr = "data-translate-ignore" in attrs_dict
+
+        # For self-closing tags with ignore attribute, temporarily set ignore state
+        if has_ignore_attr:
+            self.ignore_depth += 1
 
         if tag in self.TRANSLATABLE_ELEMENTS and not self.is_extraction_ignored():
             self.begin_translation_unit()
@@ -522,6 +529,10 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             self.end_translation_unit()
             if any(t in self.TRANSLATABLE_ELEMENTS for t in self.tag_path):
                 self.begin_translation_unit()
+
+        # Restore ignore state if we set it
+        if has_ignore_attr:
+            self.ignore_depth -= 1
 
         self.tag_path.pop()
 
