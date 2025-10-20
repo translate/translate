@@ -275,6 +275,52 @@ msgstr "Traduire ceci aussi"
         assert "<!-- translate:on -->" in result
         assert "<p>Traduire ceci aussi</p>" in result
 
+    def test_data_translate_ignore_with_translation_in_po(self):
+        """Test that ignored content is not translated even if translation exists in PO file."""
+        # Test with data-translate-ignore attribute
+        htmlsource = "<p>Translate this</p><p data-translate-ignore>Do not translate</p><p>Translate this too</p>"
+        posource = """#: test.html
+msgid "Translate this"
+msgstr "Traduire ceci"
+
+#: test.html
+msgid "Do not translate"
+msgstr "NE PAS traduire ceci"
+
+#: test.html
+msgid "Translate this too"
+msgstr "Traduire ceci aussi"
+"""
+        result = self.converthtml(posource, htmlsource)
+        assert "<p>Traduire ceci</p>" in result
+        # Verify the ignored content is NOT translated even though translation exists
+        assert "<p data-translate-ignore>Do not translate</p>" in result
+        assert "NE PAS traduire ceci" not in result
+        assert "<p>Traduire ceci aussi</p>" in result
+
+    def test_translate_comment_with_translation_in_po(self):
+        """Test that content between translate:off/on is not translated even if translation exists in PO file."""
+        # Test with comment directives
+        htmlsource = "<p>Translate this</p><!-- translate:off --><p>Do not translate</p><!-- translate:on --><p>Translate this too</p>"
+        posource = """#: test.html
+msgid "Translate this"
+msgstr "Traduire ceci"
+
+#: test.html
+msgid "Do not translate"
+msgstr "NE PAS traduire ceci"
+
+#: test.html
+msgid "Translate this too"
+msgstr "Traduire ceci aussi"
+"""
+        result = self.converthtml(posource, htmlsource)
+        assert "<p>Traduire ceci</p>" in result
+        # Verify the ignored content is NOT translated even though translation exists
+        assert "<p>Do not translate</p>" in result
+        assert "NE PAS traduire ceci" not in result
+        assert "<p>Traduire ceci aussi</p>" in result
+
 
 class TestPO2HtmlCommand(test_convert.TestConvertCommand, TestPO2Html):
     """Tests running actual po2html commands on files."""
