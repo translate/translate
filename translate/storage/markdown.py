@@ -272,57 +272,33 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         self, token: LinkReferenceDefinition
     ) -> Iterable[Fragment]:
         # note: these tokens will never be encountered in bypass mode.
-        # If we're ignoring translation, just return the raw content
+        # Translate label and title unless we're in an ignore section
         if self.ignore_translation:
-            # Return the definition without translation
-            placeholder = Fragment(None)
-            placeholder.placeholder_content = [
-                Fragment("["),
-                Fragment(token.label, wordwrap=True),
-                Fragment("]: ", wordwrap=True),
-                Fragment(
-                    "<" + token.dest + ">"
-                    if token.dest_type == "angle_uri"
-                    else token.dest
-                ),
-            ]
-            if token.title:
-                placeholder.placeholder_content.extend(
-                    [
-                        Fragment(" ", wordwrap=True),
-                        Fragment(token.title_delimiter),
-                        Fragment(token.title, wordwrap=True),
-                        Fragment(
-                            ")"
-                            if token.title_delimiter == "("
-                            else token.title_delimiter
-                        ),
-                    ]
-                )
-            yield placeholder
-            return
+            label = token.label
+            title = token.title
+        else:
+            label = self.translate_callback(token.label, [*self.path, "link-label"])
+            title = (
+                self.translate_callback(token.title, [*self.path, "link-title"])
+                if token.title
+                else None
+            )
 
-        translated_label = self.translate_callback(
-            token.label, [*self.path, "link-label"]
-        )
         placeholder = Fragment(None)
         placeholder.placeholder_content = [
             Fragment("["),
-            Fragment(translated_label, wordwrap=True),
+            Fragment(label, wordwrap=True),
             Fragment("]: ", wordwrap=True),
             Fragment(
                 "<" + token.dest + ">" if token.dest_type == "angle_uri" else token.dest
             ),
         ]
-        if token.title:
-            translated_title = self.translate_callback(
-                token.title, [*self.path, "link-title"]
-            )
+        if title:
             placeholder.placeholder_content.extend(
                 [
                     Fragment(" ", wordwrap=True),
                     Fragment(token.title_delimiter),
-                    Fragment(translated_title, wordwrap=True),
+                    Fragment(title, wordwrap=True),
                     Fragment(
                         ")" if token.title_delimiter == "(" else token.title_delimiter
                     ),
