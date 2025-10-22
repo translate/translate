@@ -50,6 +50,7 @@ Escaping
 """
 
 import csv
+from io import StringIO
 
 from translate.lang import data
 from translate.storage import base
@@ -289,7 +290,7 @@ class CatkeysFile(base.TranslationStore):
             self.addunit(newunit)
 
     def serialize(self, out):
-        output = csv.StringIO()
+        output = StringIO()
         writer = csv.DictWriter(output, FIELDNAMES, dialect="catkeys")
         # Calculate/update fingerprint
         self.header.setchecksum(self._compute_fingerprint())

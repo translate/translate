@@ -45,6 +45,7 @@ Encoding
 
 import csv
 import time
+from io import StringIO
 
 from translate.storage import base
 
@@ -281,7 +282,7 @@ class UtxFile(base.TranslationStore):
         if not translated_units:
             return
 
-        output = csv.StringIO()
+        output = StringIO()
         writer = csv.DictWriter(output, fieldnames=self._fieldnames, dialect="utx")
         for unit in translated_units:
             writer.writerow(unit.dict)
