@@ -40,6 +40,7 @@ Encoding
 
 import csv
 import locale
+from io import StringIO
 
 from translate.storage import base
 
@@ -188,7 +189,7 @@ class OmegaTFile(base.TranslationStore):
         if not translated_units:
             return
 
-        output = csv.StringIO()
+        output = StringIO()
         writer = csv.DictWriter(output, fieldnames=OMEGAT_FIELDNAMES, dialect="omegat")
         for unit in translated_units:
             writer.writerow(unit.dict)

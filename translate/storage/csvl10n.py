@@ -24,6 +24,7 @@ or entire files (csvfile) for use with localisation.
 from __future__ import annotations
 
 import csv
+from io import StringIO
 
 from translate.storage import base
 
@@ -322,7 +323,7 @@ class csvfile(base.TranslationStore):
             except csv.Error:
                 self.dialect = "default"
 
-        inputfile = csv.StringIO(text)
+        inputfile = StringIO(text)
         try:
             fieldnames = detect_header(inputfile, self.dialect, self.fieldnames)
             self.fieldnames = fieldnames
@@ -363,7 +364,7 @@ class csvfile(base.TranslationStore):
         out.write(output)
 
     def getoutput(self):
-        output = csv.StringIO()
+        output = StringIO()
         writer = csv.DictWriter(
             output, self.fieldnames, extrasaction="ignore", dialect=self.dialect
         )
