@@ -56,8 +56,8 @@ Issues
 Communication
 -------------
 
-* `Development <https://gitter.im/translate/dev>`_ - no support related questions
-* `Help <https://gitter.im/translate/pootle>`_
+* `Issue tracker <https://github.com/translate/translate/issues>`_ - bug reports, discussions, and questions
+* `Discussions <https://github.com/translate/translate/discussions>`_ - general discussions and help
 
 
 .. _developers#working_with_bugzilla:
@@ -116,13 +116,36 @@ navigate the source code tree:
 Setup
 =====
 
-The toolkit is installed by running::
+**Prerequisites:**
 
-  ./setup.py install
+* Git
+* Python 3.9 or newer
+* `uv <https://docs.astral.sh/uv/>`_ (recommended package manager)
 
-As root
+**Installation:**
 
-The various setup options are yours to explore
+Clone the repository:
+
+.. code-block:: sh
+
+   git clone https://github.com/translate/translate.git
+   cd translate
+
+Install all dependencies (creates a virtual environment in ``.venv``):
+
+.. code-block:: sh
+
+   uv sync --all-extras --dev
+
+Run the tests:
+
+.. code-block:: sh
+
+   make test
+
+**Note:** ``uv sync`` automatically creates and manages a virtual environment for
+you. All dependencies including development tools are installed using PEP 735
+dependency groups defined in ``pyproject.toml``.
 
 .. _developers#general_overview_of_the_programs:
 
