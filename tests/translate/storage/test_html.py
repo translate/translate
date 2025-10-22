@@ -467,3 +467,48 @@ pre tag
         assert store.units[0].source == "My Page Title"
         assert store.units[1].source == "Page description"
         assert store.units[2].source == "Twitter Title"
+
+    def test_data_translate_comment_attribute(self):
+        """Check that data-translate-comment attribute is extracted as a note."""
+        h = html.htmlfile()
+
+        # Single element with data-translate-comment
+        store = h.parsestring(
+            '<h1 data-translate-comment="This is the first text">Hello world!</h1>'
+        )
+        assert len(store.units) == 1
+        assert store.units[0].source == "Hello world!"
+        notes = store.units[0].getnotes(origin="source code")
+        assert notes == "This is the first text"
+
+        # Multiple elements with data-translate-comment
+        store = h.parsestring(
+            '<h1 data-translate-comment="Header comment">Header</h1><p data-translate-comment="Paragraph comment">Paragraph text</p>'
+        )
+        assert len(store.units) == 2
+        assert store.units[0].source == "Header"
+        notes = store.units[0].getnotes(origin="source code")
+        assert notes == "Header comment"
+        assert store.units[1].source == "Paragraph text"
+        notes = store.units[1].getnotes(origin="source code")
+        assert notes == "Paragraph comment"
+
+        # Element with both HTML comment and data-translate-comment (comment inside unit)
+        store = h.parsestring(
+            '<h1 data-translate-comment="Attribute comment"><!-- HTML comment -->Title</h1>'
+        )
+        assert len(store.units) == 1
+        assert store.units[0].source == "Title"
+        notes = store.units[0].getnotes(origin="source code")
+        # Both comments should be present
+        assert " HTML comment " in notes
+        assert "Attribute comment" in notes
+
+        # Element with data-translate-comment and inline markup
+        store = h.parsestring(
+            '<p data-translate-comment="This is important"><strong>Bold</strong> text here</p>'
+        )
+        assert len(store.units) == 1
+        assert store.units[0].source == "<strong>Bold</strong> text here"
+        notes = store.units[0].getnotes(origin="source code")
+        assert notes == "This is important"

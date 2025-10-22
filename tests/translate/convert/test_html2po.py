@@ -749,6 +749,47 @@ ghi ?>"""
         self.compareunit(pofile, 2, "Page description")
         self.compareunit(pofile, 3, "Twitter Title")
 
+    def test_data_translate_comment_attribute(self):
+        """Test that data-translate-comment attribute is extracted as automatic comment."""
+        # Single element with data-translate-comment
+        markup = '<h1 data-translate-comment="This is the first text">Hello world!</h1>'
+        pofile = self.html2po(markup, keepcomments=True)
+        self.countunits(pofile, 1)
+        self.compareunit(pofile, 1, "Hello world!")
+        unit = pofile.units[1] if pofile.units[0].isheader() else pofile.units[0]
+        assert unit.getnotes(origin="developer") == "This is the first text"
+
+        # Multiple elements with data-translate-comment
+        markup = '<h1 data-translate-comment="Header comment">Header</h1><p data-translate-comment="Paragraph comment">Paragraph text</p>'
+        pofile = self.html2po(markup, keepcomments=True)
+        self.countunits(pofile, 2)
+        self.compareunit(pofile, 1, "Header")
+        unit = pofile.units[1] if pofile.units[0].isheader() else pofile.units[0]
+        assert unit.getnotes(origin="developer") == "Header comment"
+        self.compareunit(pofile, 2, "Paragraph text")
+        unit = pofile.units[2] if pofile.units[0].isheader() else pofile.units[1]
+        assert unit.getnotes(origin="developer") == "Paragraph comment"
+
+        # Element with both HTML comment and data-translate-comment (comment inside unit)
+        markup = '<h1 data-translate-comment="Attribute comment"><!-- HTML comment -->Title</h1>'
+        pofile = self.html2po(markup, keepcomments=True)
+        self.countunits(pofile, 1)
+        self.compareunit(pofile, 1, "Title")
+        unit = pofile.units[1] if pofile.units[0].isheader() else pofile.units[0]
+        notes = unit.getnotes(origin="developer")
+        assert " HTML comment " in notes
+        assert "Attribute comment" in notes
+
+    def test_data_translate_comment_without_keepcomments(self):
+        """Test that data-translate-comment is not extracted when keepcomments is False."""
+        markup = '<h1 data-translate-comment="This is the first text">Hello world!</h1>'
+        pofile = self.html2po(markup, keepcomments=False)
+        self.countunits(pofile, 1)
+        self.compareunit(pofile, 1, "Hello world!")
+        unit = pofile.units[1] if pofile.units[0].isheader() else pofile.units[0]
+        # Comments should not be extracted when keepcomments=False
+        assert unit.getnotes(origin="developer") == ""
+
 
 class TestHTML2POCommand(test_convert.TestConvertCommand, TestHTML2PO):
     """Tests running actual html2po commands on files."""
