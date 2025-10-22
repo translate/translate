@@ -1187,7 +1187,7 @@ return  array(
         assert phpunit.name == "return->'peach'"
         assert phpunit.source == "pesca"
         # The output should normalize spacing
-        assert b"<?php\nreturn array(\n    'peach' => 'pesca',\n);\n" == bytes(phpfile)
+        assert bytes(phpfile) == b"<?php\nreturn array(\n    'peach' => 'pesca',\n);\n"
 
     def test_return_array_with_comments(self):
         """Test that return array with comments preserves comments correctly."""

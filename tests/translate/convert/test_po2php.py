@@ -377,7 +377,7 @@ return array(
     def test_return_array_with_comments(self):
         """
         Check that we can correctly handle return array() syntax with comments.
-        
+
         This is a regression test for the issue where php2po would generate
         locations like "return+array->'key'" instead of "return->'key'",
         causing po2php to not find the matching unit.
@@ -428,7 +428,7 @@ return array(
         proptemplate = "# A comment\n"
         propexpected = proptemplate
         propfile = self.merge2prop(proptemplate, posource)
-        print(phpfile)
+        print(propfile)
         assert propfile == [propexpected]
 
 
