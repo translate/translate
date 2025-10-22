@@ -18,6 +18,8 @@
 
 """module for parsing TMX translation memory files."""
 
+from datetime import datetime, timezone
+
 from lxml import etree
 
 from translate import __version__
@@ -31,6 +33,15 @@ class tmxunit(lisa.LISAunit):
     rootNode = "tu"
     languageNode = "tuv"
     textNode = "seg"
+
+    def __init__(self, source, empty=False, **kwargs):
+        """Constructs a TMX unit with required creationdate attribute."""
+        super().__init__(source, empty=empty, **kwargs)
+        if not empty and self.xmlelement is not None:
+            # Set creationdate attribute (required by TMX 1.4 specification)
+            if "creationdate" not in self.xmlelement.attrib:
+                now = datetime.now(timezone.utc)
+                self.xmlelement.set("creationdate", now.strftime("%Y%m%dT%H%M%SZ"))
 
     def createlanguageNode(self, lang, text, purpose):
         """Returns a langset xml Element setup with given parameters."""
