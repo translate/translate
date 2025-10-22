@@ -356,6 +356,44 @@ message-multiedit-header[many]={0,number} selected
         pounit = outputpo.units[-1]
         assert pounit.getlocations() == ["message-multiedit-header"]
 
+    def test_strings_bilingual_simple(self):
+        """Test that .strings files are treated as bilingual in convertstore mode."""
+        # Simple test case - currently FAILS because source and target are swapped
+        propsource = r'''"Source text" = "Translated text";'''
+        # .strings files use UTF-16 encoding
+        inputfile = BytesIO(propsource.encode('utf-16'))
+        inputprop = properties.propfile(inputfile, personality="strings")
+        convertor = prop2po.prop2po(personality="strings")
+        outputpo = convertor.convertstore(inputprop)
+        pounit = self.singleelement(outputpo)
+        # After fix, source should be left side (key) and target should be right side (value)
+        assert pounit.source == "Source text", f"Expected 'Source text' but got {repr(pounit.source)}"
+        assert pounit.target == "Translated text", f"Expected 'Translated text' but got {repr(pounit.target)}"
+
+    def test_strings_bilingual_multiline(self):
+        """Test multiline .strings bilingual conversion (issue from bug report)."""
+        # This is based on the actual bug report
+        propsource = r'''/* Overwrite of the app folder */
+"A '<AppNameRemovedForPrivacy>' folder has been found in  your Music folder. Unfortunately it seems incomplete.\n\nTo restart <AppNameRemovedForPrivacy> synchronization, trash the ~/Music/<AppNameRemovedForPrivacy> folder and relaunch the application." = "An incomplete <AppNameRemovedForPrivacy> folder has been found in your Music folder.\n\nTo restart, delete the ~/Music/<AppNameRemovedForPrivacy> folder and relaunch the application.";
+'''
+        # .strings files use UTF-16 encoding
+        inputfile = BytesIO(propsource.encode('utf-16'))
+        inputprop = properties.propfile(inputfile, personality="strings")
+        convertor = prop2po.prop2po(personality="strings")
+        outputpo = convertor.convertstore(inputprop)
+        pounit = self.singleelement(outputpo)
+        # The msgid should be the source (left side), not the translation (right side)
+        assert "A '<AppNameRemovedForPrivacy>' folder has been found" in pounit.source
+        assert "Unfortunately it seems incomplete" in pounit.source
+        # The msgstr should be the translation (right side)
+        assert "An incomplete <AppNameRemovedForPrivacy> folder" in pounit.target
+        assert "To restart, delete" in pounit.target
+        # The location should be the key (not URL-encoded full text)
+        locations = pounit.getlocations()
+        assert len(locations) == 1
+        # Location should be a reasonable identifier, not the full multiline text
+        assert "A '<AppNameRemovedForPrivacy>' folder" in locations[0]
+
 
 class TestProp2POCommand(test_convert.TestConvertCommand, TestProp2PO):
     """Tests running actual prop2po commands on files."""
