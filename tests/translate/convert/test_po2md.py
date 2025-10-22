@@ -172,7 +172,7 @@ This text will also be translated.
                 "",
                 "#: file.md:ignored-should-not-exist",
                 'msgid "Static text in ignored section."',
-                'msgstr "Statisk text i ignorerad sektion."',
+                'msgstr "Statisk text i ignorerad sektion."',  # codespell:ignore
                 "",
                 "#: file.md:ignored-should-not-exist",
                 'msgid "Link Title"',
@@ -195,7 +195,7 @@ This text will also be translated.
         assert "Code that should not be translated" in output
         assert "Kod som inte ska översättas" not in output
         assert "Static text in ignored section." in output
-        assert "Statisk text i ignorerad sektion." not in output
+        assert "Statisk text i ignorerad sektion." not in output  # codespell:ignore
         assert "Link Title" in output
         assert "Länktitel" not in output
 

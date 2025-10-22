@@ -392,6 +392,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         """Renders a sequence of span tokens to markdown, with translation."""
         # If we're in an ignore section, skip translation
         if self.ignore_translation:
+            original_bypass = self.bypass
             try:
                 self.bypass = True
                 fragments = self.make_fragments(tokens)
@@ -401,11 +402,12 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
                     expanded, max_line_length=max_line_length
                 )
             finally:
-                self.bypass = False
+                self.bypass = original_bypass
 
         # turn the span into fragments, which may include placeholders.
         # list-ify the iterator because we may need to traverse it more than once
         fragments = list(self.make_fragments(tokens))
+        original_bypass = self.bypass
         try:
             self.bypass = True
 
@@ -436,7 +438,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
             expanded = list(self.expand_placeholders(fragments))
             return super().fragments_to_lines(expanded, max_line_length=max_line_length)
         finally:
-            self.bypass = False
+            self.bypass = original_bypass
 
     @classmethod
     def merge_adjacent_placeholders(
