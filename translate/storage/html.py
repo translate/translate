@@ -305,13 +305,25 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
             unit = self.addsourceunit(normalized_content)
             unit.addlocation(self.tu_location)
+            
+            # Collect comments from HTML comments
             comments = [
                 markup["note"]
                 for markup in self.tu_content
                 if markup["type"] == "comment"
             ]
-            if comments:
-                unit.addnote("\n".join(comments))
+            
+            # Collect comments from data-translate-comment attributes
+            translate_comments = [
+                markup["translate_comment"]
+                for markup in self.tu_content
+                if "translate_comment" in markup
+            ]
+            
+            # Add all comments to the unit
+            all_comments = comments + translate_comments
+            if all_comments:
+                unit.addnote("\n".join(all_comments), origin="source code")
 
             html_content = (
                 self.get_leading_whitespace(html_content)
@@ -469,6 +481,11 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             "untranslated_html": self.create_start_tag(tag, attrs),
             "attribute_tus": self.extract_translatable_attributes(tag, attrs),
         }
+        
+        # Extract data-translate-comment attribute
+        if "data-translate-comment" in attrs_dict:
+            markup["translate_comment"] = attrs_dict["data-translate-comment"]
+        
         self.append_markup(markup)
 
     def handle_endtag(self, tag):
@@ -519,6 +536,11 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             "untranslated_html": self.create_start_tag(tag, attrs, startend=True),
             "attribute_tus": self.extract_translatable_attributes(tag, attrs),
         }
+        
+        # Extract data-translate-comment attribute
+        if "data-translate-comment" in attrs_dict:
+            markup["translate_comment"] = attrs_dict["data-translate-comment"]
+        
         self.append_markup(markup)
 
         if tag in self.TRANSLATABLE_ELEMENTS and not self.is_extraction_ignored():
