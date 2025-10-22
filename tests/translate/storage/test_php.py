@@ -1173,6 +1173,46 @@ return array(
         assert phpunit.source == "pesca"
         assert bytes(phpfile).decode() == phpsource
 
+    def test_return_array_with_spaces(self):
+        """Test that return array with spaces before 'array' is handled correctly."""
+        phpsource = """<?php
+return  array(
+    'peach' => 'pesca',
+);
+"""
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 1
+        phpunit = phpfile.units[0]
+        # The unit name should be "return->'peach'", NOT "return  array->'peach'"
+        assert phpunit.name == "return->'peach'"
+        assert phpunit.source == "pesca"
+        # The output should normalize spacing
+        assert b"<?php\nreturn array(\n    'peach' => 'pesca',\n);\n" == bytes(phpfile)
+
+    def test_return_array_with_comments(self):
+        """Test that return array with comments preserves comments correctly."""
+        phpsource = """<?php
+
+return array(
+
+    /*
+    |--------------------------------------------------------------------------
+    | String1
+    |--------------------------------------------------------------------------
+    |
+    */
+
+  'string1'    => 'This is string1',
+);
+"""
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 1
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "return->'string1'"
+        assert phpunit.source == "This is string1"
+        # Check that comments are preserved
+        assert "String1" in phpunit.getnotes("developer")
+
     def test_return_array_short(self):
         phpsource = """<?php
 return [

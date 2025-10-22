@@ -374,6 +374,53 @@ return array(
         print(phpfile)
         assert phpfile == phpexpected
 
+    def test_return_array_with_comments(self):
+        """
+        Check that we can correctly handle return array() syntax with comments.
+        
+        This is a regression test for the issue where php2po would generate
+        locations like "return+array->'key'" instead of "return->'key'",
+        causing po2php to not find the matching unit.
+        """
+        posource = """#: return-%3E%27string1%27
+#. /*
+#.     |--------------------------------------------------------------------------
+#.     | String1
+#.     |--------------------------------------------------------------------------
+#.     |
+#.     */
+msgid "This is string1"
+msgstr "This is TRANSLATED string1"
+"""
+        phptemplate = """<?php
+
+return array(
+
+    /*
+    |--------------------------------------------------------------------------
+    | String1
+    |--------------------------------------------------------------------------
+    |
+    */
+
+  'string1'    => 'This is string1',
+);
+"""
+        phpexpected = """<?php
+return array(
+    /*
+    |--------------------------------------------------------------------------
+    | String1
+    |--------------------------------------------------------------------------
+    |
+    */
+    'string1' => 'This is TRANSLATED string1',
+);
+"""
+        phpfile = self.merge2php(phptemplate, posource)
+        print(phpfile)
+        assert phpfile == phpexpected
+
     @mark.xfail(reason="Need to review if we want this behaviour")
     def test_merging_propertyless_template(self):
         """Check that when merging with a template with no property values that we copy the template."""
@@ -381,7 +428,7 @@ return array(
         proptemplate = "# A comment\n"
         propexpected = proptemplate
         propfile = self.merge2prop(proptemplate, posource)
-        print(propfile)
+        print(phpfile)
         assert propfile == [propexpected]
 
 
