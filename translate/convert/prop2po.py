@@ -365,6 +365,10 @@ class prop2po:
             # XXX should we enable unit mixing for other personalities?
             return self.convertunit(unit, commenttype)
 
+        # Handle None unit - can happen if locationindex contains None
+        if unit is None:
+            return self.convertunit(unit, commenttype)
+
         # keep track of whether accesskey and label were combined
         key = unit.getid()
         if key not in self.mixedkeys:

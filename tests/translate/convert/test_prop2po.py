@@ -356,6 +356,34 @@ message-multiedit-header[many]={0,number} selected
         pounit = outputpo.units[-1]
         assert pounit.getlocations() == ["message-multiedit-header"]
 
+    def test_none_unit_in_mergestore(self):
+        """Test that mergestore handles None units gracefully (bug from Lithuanian recovery)."""
+        # This test simulates the case where locationindex might contain None
+        # which caused AttributeError: 'NoneType' object has no attribute 'getid'
+        proptemplate = "key1=value1\n"
+        propsource = "key1=translation1\n"
+
+        # Create stores manually to test the edge case
+        inputfile = BytesIO(propsource.encode())
+        inputprop = properties.propfile(inputfile, personality="mozilla")
+        templatefile = BytesIO(proptemplate.encode())
+        templateprop = properties.propfile(templatefile, personality="mozilla")
+
+        # Make sure indexes are created
+        templateprop.makeindex()
+        inputprop.makeindex()
+
+        # Manually inject None into locationindex to simulate the bug condition
+        # This simulates a corrupt or unusual state where a location maps to None
+        inputprop.locationindex["key1"] = None
+
+        convertor = prop2po.prop2po(personality="mozilla")
+        # This should not raise AttributeError: 'NoneType' object has no attribute 'getid'
+        outputpo = convertor.mergestore(templateprop, inputprop)
+
+        # Should have converted the template unit successfully even if translation is None
+        assert len(outputpo.units) >= 2  # header + at least one unit
+
 
 class TestProp2POCommand(test_convert.TestConvertCommand, TestProp2PO):
     """Tests running actual prop2po commands on files."""
