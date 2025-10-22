@@ -141,19 +141,19 @@ class TestTMXfile(test_base.TestTranslationStore):
         store = self.StoreClass()
         unit = store.addsourceunit("Test")
         unit.target = "Prueba"
-        
+
         # Convert to bytes and check for creationdate attribute
-        output = bytes(store).decode('utf-8')
-        
+        output = bytes(store).decode("utf-8")
+
         # Check that creationdate is present in the <tu> tag
-        assert 'creationdate=' in output, "creationdate attribute should be present"
-        
+        assert "creationdate=" in output, "creationdate attribute should be present"
+
         # Check that creationdate is in the correct format (YYYYMMDDTHHMMSSZ)
         match = re.search(r'creationdate="(\d{8}T\d{6}Z)"', output)
         assert match is not None, "creationdate should be in format YYYYMMDDTHHMMSSZ"
-        
+
         creationdate = match.group(1)
         # Verify the format is correct (20 characters: YYYYMMDDTHHMMSSZ)
         assert len(creationdate) == 16, "creationdate should be 16 characters"
-        assert creationdate[8] == 'T', "creationdate should have T separator"
-        assert creationdate[15] == 'Z', "creationdate should end with Z"
+        assert creationdate[8] == "T", "creationdate should have T separator"
+        assert creationdate[15] == "Z", "creationdate should end with Z"
