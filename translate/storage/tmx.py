@@ -18,8 +18,6 @@
 
 """module for parsing TMX translation memory files."""
 
-from datetime import datetime, timezone
-
 from lxml import etree
 
 from translate import __version__
@@ -33,15 +31,6 @@ class tmxunit(lisa.LISAunit):
     rootNode = "tu"
     languageNode = "tuv"
     textNode = "seg"
-
-    def __init__(self, source, empty=False, **kwargs):
-        """Constructs a TMX unit with required creationdate attribute."""
-        super().__init__(source, empty=empty, **kwargs)
-        if not empty and self.xmlelement is not None:
-            # Set creationdate attribute (required by TMX 1.4 specification)
-            if "creationdate" not in self.xmlelement.attrib:
-                now = datetime.now(timezone.utc)
-                self.xmlelement.set("creationdate", now.strftime("%Y%m%dT%H%M%SZ"))
 
     def createlanguageNode(self, lang, text, purpose):
         """Returns a langset xml Element setup with given parameters."""
@@ -72,8 +61,25 @@ class tmxunit(lisa.LISAunit):
 
         The origin parameter is ignored
         """
-        note = etree.SubElement(self.xmlelement, self.namespaced("note"))
+        note = etree.Element(self.namespaced("note"))
         safely_set_text(note, text.strip())
+        
+        # According to TMX DTD, notes should come before prop and tuv elements
+        # Find the first prop or tuv element and insert before it
+        first_child = None
+        for child in self.xmlelement:
+            tag = child.tag
+            if isinstance(tag, str):  # Skip comments, etc.
+                if tag == self.namespaced(self.languageNode) or tag == "prop":
+                    first_child = child
+                    break
+        
+        if first_child is not None:
+            index = list(self.xmlelement).index(first_child)
+            self.xmlelement.insert(index, note)
+        else:
+            # No prop or tuv elements yet, append at end
+            self.xmlelement.append(note)
 
     def _getnotelist(self, origin=None):
         """
@@ -116,8 +122,24 @@ class tmxunit(lisa.LISAunit):
     def setcontext(self, context):
         context_prop = self.xmlelement.find("prop[@type='x-context']")
         if context_prop is None:
-            context_prop = etree.SubElement(self.xmlelement, "prop")
+            context_prop = etree.Element("prop")
             context_prop.set("type", "x-context")
+            
+            # According to TMX DTD, prop elements come after notes but before tuv elements
+            # Find the first tuv element and insert before it
+            first_tuv = None
+            for child in self.xmlelement:
+                tag = child.tag
+                if isinstance(tag, str) and tag == self.namespaced(self.languageNode):
+                    first_tuv = child
+                    break
+            
+            if first_tuv is not None:
+                index = list(self.xmlelement).index(first_tuv)
+                self.xmlelement.insert(index, context_prop)
+            else:
+                # No tuv elements yet, append at end
+                self.xmlelement.append(context_prop)
         safely_set_text(context_prop, context)
 
     def getcontext(self):

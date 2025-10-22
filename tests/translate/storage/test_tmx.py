@@ -134,26 +134,58 @@ class TestTMXfile(test_base.TestTranslationStore):
         newstore = self.StoreClass().parsestring(newsource)
         assert newstore.units[0].getcontext() == "Context text"
 
-    def test_creationdate_attribute(self):
-        """Test that creationdate attribute is present on <tu> elements."""
-        import re
+    def test_note_order(self):
+        """Test that notes appear before tuv elements as per TMX DTD."""
+        from lxml import etree
 
         store = self.StoreClass()
         unit = store.addsourceunit("Test")
         unit.target = "Prueba"
+        unit.addnote("Test note")
 
-        # Convert to bytes and check for creationdate attribute
-        output = bytes(store).decode("utf-8")
+        # Get the order of elements
+        element_tags = [
+            child.tag.split("}")[1] if "}" in child.tag else child.tag
+            for child in unit.xmlelement
+        ]
 
-        # Check that creationdate is present in the <tu> tag
-        assert "creationdate=" in output, "creationdate attribute should be present"
+        # Note should come before tuv elements
+        assert "note" in element_tags
+        assert "tuv" in element_tags
+        note_index = element_tags.index("note")
+        first_tuv_index = element_tags.index("tuv")
+        assert (
+            note_index < first_tuv_index
+        ), "note element should appear before tuv elements"
 
-        # Check that creationdate is in the correct format (YYYYMMDDTHHMMSSZ)
-        match = re.search(r'creationdate="(\d{8}T\d{6}Z)"', output)
-        assert match is not None, "creationdate should be in format YYYYMMDDTHHMMSSZ"
+    def test_prop_and_note_order(self):
+        """Test that notes and props appear before tuv elements as per TMX DTD."""
+        from lxml import etree
 
-        creationdate = match.group(1)
-        # Verify the format is correct (20 characters: YYYYMMDDTHHMMSSZ)
-        assert len(creationdate) == 16, "creationdate should be 16 characters"
-        assert creationdate[8] == "T", "creationdate should have T separator"
-        assert creationdate[15] == "Z", "creationdate should end with Z"
+        store = self.StoreClass()
+        unit = store.addsourceunit("Test")
+        unit.target = "Prueba"
+        unit.addnote("Test note")
+        unit.setcontext("test-context")
+
+        # Get the order of elements
+        element_tags = [
+            child.tag.split("}")[1] if "}" in child.tag else child.tag
+            for child in unit.xmlelement
+        ]
+
+        # Both note and prop should come before tuv elements
+        assert "note" in element_tags
+        assert "prop" in element_tags
+        assert "tuv" in element_tags
+
+        note_index = element_tags.index("note")
+        prop_index = element_tags.index("prop")
+        first_tuv_index = element_tags.index("tuv")
+
+        assert (
+            note_index < first_tuv_index
+        ), "note element should appear before tuv elements"
+        assert (
+            prop_index < first_tuv_index
+        ), "prop element should appear before tuv elements"
