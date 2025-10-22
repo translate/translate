@@ -43,6 +43,41 @@ class tmxunit(lisa.LISAunit):
 
         return langset
 
+    def _insert_element_before(self, element, *tag_names):
+        """
+        Insert an element before the first occurrence of any of the specified tag names.
+
+        According to TMX DTD, elements must follow this order: note, prop, tuv.
+        This helper method finds the first child matching any of the tag names
+        and inserts the element before it, or appends at the end if none found.
+
+        :param element: The element to insert
+        :param tag_names: Variable number of tag names to search for
+        """
+        first_match = None
+        for child in self.xmlelement:
+            tag = child.tag
+            if isinstance(tag, str):  # Skip comments, etc.
+                for tag_name in tag_names:
+                    # Handle both namespaced and non-namespaced tags
+                    if tag_name == "tuv":
+                        compare_tag = self.namespaced(self.languageNode)
+                    else:
+                        compare_tag = tag_name
+
+                    if tag == compare_tag:
+                        first_match = child
+                        break
+            if first_match is not None:
+                break
+
+        if first_match is not None:
+            index = list(self.xmlelement).index(first_match)
+            self.xmlelement.insert(index, element)
+        else:
+            # No matching elements found, append at end
+            self.xmlelement.append(element)
+
     def getid(self):
         """
         Returns the identifier for this unit. The optional tuid property is
@@ -63,23 +98,9 @@ class tmxunit(lisa.LISAunit):
         """
         note = etree.Element(self.namespaced("note"))
         safely_set_text(note, text.strip())
-        
+
         # According to TMX DTD, notes should come before prop and tuv elements
-        # Find the first prop or tuv element and insert before it
-        first_child = None
-        for child in self.xmlelement:
-            tag = child.tag
-            if isinstance(tag, str):  # Skip comments, etc.
-                if tag == self.namespaced(self.languageNode) or tag == "prop":
-                    first_child = child
-                    break
-        
-        if first_child is not None:
-            index = list(self.xmlelement).index(first_child)
-            self.xmlelement.insert(index, note)
-        else:
-            # No prop or tuv elements yet, append at end
-            self.xmlelement.append(note)
+        self._insert_element_before(note, "prop", "tuv")
 
     def _getnotelist(self, origin=None):
         """
@@ -124,22 +145,9 @@ class tmxunit(lisa.LISAunit):
         if context_prop is None:
             context_prop = etree.Element("prop")
             context_prop.set("type", "x-context")
-            
+
             # According to TMX DTD, prop elements come after notes but before tuv elements
-            # Find the first tuv element and insert before it
-            first_tuv = None
-            for child in self.xmlelement:
-                tag = child.tag
-                if isinstance(tag, str) and tag == self.namespaced(self.languageNode):
-                    first_tuv = child
-                    break
-            
-            if first_tuv is not None:
-                index = list(self.xmlelement).index(first_tuv)
-                self.xmlelement.insert(index, context_prop)
-            else:
-                # No tuv elements yet, append at end
-                self.xmlelement.append(context_prop)
+            self._insert_element_before(context_prop, "tuv")
         safely_set_text(context_prop, context)
 
     def getcontext(self):
