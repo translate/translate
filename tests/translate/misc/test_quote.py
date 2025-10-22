@@ -113,6 +113,24 @@ class TestEncoding:
         assert quote.javapropertiesencode("abcḓ") == r"abc\u1E13"
         assert quote.javapropertiesencode("abc\n") == "abc\\n"
 
+    def test_javapropertiesencode_iso_8859_1(self):
+        """Test that ISO-8859-1 characters (0-255) are not encoded."""
+        # ASCII characters (0-127) should not be encoded
+        assert quote.javapropertiesencode("hello") == "hello"
+
+        # ISO-8859-1 characters (128-255) should not be encoded
+        # ú = U+00FA = 250 (in ISO-8859-1)
+        assert quote.javapropertiesencode("valú") == "valú"
+
+        # Characters outside ISO-8859-1 (> 255) should be encoded
+        # š = U+0161 = 353 (NOT in ISO-8859-1)
+        assert quote.javapropertiesencode("Zkouška") == r"Zkou\u0161ka"
+
+        # Mixed test: á, é are in ISO-8859-1, č is not
+        # á = U+00E1 = 225, é = U+00E9 = 233, č = U+010D = 269
+        assert quote.javapropertiesencode("cáfé") == "cáfé"
+        assert quote.javapropertiesencode("čáfé") == r"\u010Dáfé"
+
     def test_java_utf8_properties_encode(self):
         assert quote.java_utf8_properties_encode("abc") == "abc"
         assert quote.java_utf8_properties_encode("abcḓ") == "abcḓ"

@@ -369,7 +369,7 @@ def javapropertiesencode(source: str) -> str:
         charnum = ord(char)
         if char in controlchars:
             output.append(controlchars[char])
-        elif 0 <= charnum < 128:
+        elif 0 <= charnum <= 255:
             output.append(str(char))
         else:
             output.append(f"\\u{charnum:04X}")
