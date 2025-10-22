@@ -338,14 +338,16 @@ class prop2po:
         if propunit.isblank():
             return None
         pounit.addlocation(propunit.name)
-        
+
         # For .strings files, treat them as bilingual:
         # - The key (name) is the source text (msgid)
         # - The value (source property) is the translated text (msgstr)
         if self.personality in {"strings", "strings-utf8"}:
             # Decode the key to get the actual source text
             personality_obj = properties.get_dialect(self.personality)
-            pounit.source = personality_obj.decode(personality_obj.key_strip(propunit.name))
+            pounit.source = personality_obj.decode(
+                personality_obj.key_strip(propunit.name)
+            )
             pounit.target = propunit.source
         else:
             # For other formats, use standard monolingual behavior

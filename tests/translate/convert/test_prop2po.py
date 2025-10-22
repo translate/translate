@@ -359,25 +359,29 @@ message-multiedit-header[many]={0,number} selected
     def test_strings_bilingual_simple(self):
         """Test that .strings files are treated as bilingual in convertstore mode."""
         # Simple test case - currently FAILS because source and target are swapped
-        propsource = r'''"Source text" = "Translated text";'''
+        propsource = r""""Source text" = "Translated text";"""
         # .strings files use UTF-16 encoding
-        inputfile = BytesIO(propsource.encode('utf-16'))
+        inputfile = BytesIO(propsource.encode("utf-16"))
         inputprop = properties.propfile(inputfile, personality="strings")
         convertor = prop2po.prop2po(personality="strings")
         outputpo = convertor.convertstore(inputprop)
         pounit = self.singleelement(outputpo)
         # After fix, source should be left side (key) and target should be right side (value)
-        assert pounit.source == "Source text", f"Expected 'Source text' but got {repr(pounit.source)}"
-        assert pounit.target == "Translated text", f"Expected 'Translated text' but got {repr(pounit.target)}"
+        assert pounit.source == "Source text", (
+            f"Expected 'Source text' but got {pounit.source!r}"
+        )
+        assert pounit.target == "Translated text", (
+            f"Expected 'Translated text' but got {pounit.target!r}"
+        )
 
     def test_strings_bilingual_multiline(self):
         """Test multiline .strings bilingual conversion (issue from bug report)."""
         # This is based on the actual bug report
-        propsource = r'''/* Overwrite of the app folder */
+        propsource = r"""/* Overwrite of the app folder */
 "A '<AppNameRemovedForPrivacy>' folder has been found in  your Music folder. Unfortunately it seems incomplete.\n\nTo restart <AppNameRemovedForPrivacy> synchronization, trash the ~/Music/<AppNameRemovedForPrivacy> folder and relaunch the application." = "An incomplete <AppNameRemovedForPrivacy> folder has been found in your Music folder.\n\nTo restart, delete the ~/Music/<AppNameRemovedForPrivacy> folder and relaunch the application.";
-'''
+"""
         # .strings files use UTF-16 encoding
-        inputfile = BytesIO(propsource.encode('utf-16'))
+        inputfile = BytesIO(propsource.encode("utf-16"))
         inputprop = properties.propfile(inputfile, personality="strings")
         convertor = prop2po.prop2po(personality="strings")
         outputpo = convertor.convertstore(inputprop)
