@@ -388,3 +388,82 @@ pre tag
         )
         assert len(store.units) == 1
         assert store.units[0].source == "Translate this"
+
+    def test_extraction_meta_social_media_tags(self):
+        """Check that we can extract common social media meta tags."""
+        h = html.htmlfile()
+
+        # Test Open Graph tags (use 'property' attribute)
+        store = h.parsestring(
+            """<html><head>
+            <meta property="og:title" content="My Page Title">
+            <meta property="og:description" content="A description of my page">
+            <meta property="og:site_name" content="My Website">
+            </head><body></body></html>"""
+        )
+        assert len(store.units) == 3
+        assert store.units[0].source == "My Page Title"
+        assert store.units[1].source == "A description of my page"
+        assert store.units[2].source == "My Website"
+
+        # Test Twitter Card tags (use 'name' attribute)
+        store = h.parsestring(
+            """<html><head>
+            <meta name="twitter:title" content="My Tweet Title">
+            <meta name="twitter:description" content="A tweet description">
+            </head><body></body></html>"""
+        )
+        assert len(store.units) == 2
+        assert store.units[0].source == "My Tweet Title"
+        assert store.units[1].source == "A tweet description"
+
+        # Test standard meta tags still work
+        store = h.parsestring(
+            """<html><head>
+            <meta name="description" content="Standard description">
+            <meta name="keywords" content="keyword1, keyword2">
+            </head><body></body></html>"""
+        )
+        assert len(store.units) == 2
+        assert store.units[0].source == "Standard description"
+        assert store.units[1].source == "keyword1, keyword2"
+
+    def test_extraction_meta_non_translatable_tags(self):
+        """Check that non-translatable meta tags are not extracted."""
+        h = html.htmlfile()
+
+        # These should NOT be extracted as they contain URLs, image paths, etc.
+        store = h.parsestring(
+            """<html><head>
+            <meta property="og:image" content="https://example.com/image.jpg">
+            <meta property="og:url" content="https://example.com/page">
+            <meta property="og:type" content="website">
+            <meta name="twitter:card" content="summary_large_image">
+            <meta name="twitter:image" content="https://example.com/twitter-image.jpg">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <meta charset="UTF-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            </head><body></body></html>"""
+        )
+        # Should have 0 units since none of these should be translatable
+        assert len(store.units) == 0
+
+    def test_extraction_meta_mixed_translatable_and_non_translatable(self):
+        """Check that translatable and non-translatable meta tags are handled correctly when mixed."""
+        h = html.htmlfile()
+
+        store = h.parsestring(
+            """<html><head>
+            <meta property="og:title" content="My Page Title">
+            <meta property="og:image" content="https://example.com/image.jpg">
+            <meta property="og:description" content="Page description">
+            <meta property="og:url" content="https://example.com/">
+            <meta name="twitter:card" content="summary">
+            <meta name="twitter:title" content="Twitter Title">
+            </head><body></body></html>"""
+        )
+        # Should extract only og:title, og:description, and twitter:title
+        assert len(store.units) == 3
+        assert store.units[0].source == "My Page Title"
+        assert store.units[1].source == "Page description"
+        assert store.units[2].source == "Twitter Title"

@@ -86,6 +86,65 @@ Both methods work with ``html2po`` extraction and ``po2html`` conversion,
 preserving ignored content in the original language.
 
 
+.. _html#meta_tags:
+
+Translatable Meta Tags
+======================
+
+The HTML converter automatically extracts content from meta tags that are
+suitable for translation, including social media meta tags used by platforms
+like Facebook, Twitter, and LinkedIn.
+
+**Standard Meta Tags**
+
+* ``<meta name="description" content="...">`` - Page description
+* ``<meta name="keywords" content="...">`` - Keywords
+
+**Open Graph Meta Tags** (for Facebook, LinkedIn, etc.)
+
+* ``<meta property="og:title" content="...">`` - Page title for social sharing
+* ``<meta property="og:description" content="...">`` - Page description for social sharing
+* ``<meta property="og:site_name" content="...">`` - Site name
+
+**Twitter Card Meta Tags**
+
+* ``<meta name="twitter:title" content="...">`` - Page title for Twitter cards
+* ``<meta name="twitter:description" content="...">`` - Page description for Twitter cards
+
+**Non-Translatable Meta Tags**
+
+The following meta tags are intentionally **not** extracted for translation as
+they contain URLs, images, or technical values:
+
+* ``og:url``, ``og:image``, ``og:type`` - URLs and content types
+* ``twitter:card``, ``twitter:image``, ``twitter:site`` - Technical settings and URLs
+* ``viewport``, ``charset``, ``http-equiv`` - Technical HTML settings
+
+Example
+-------
+
+.. code-block:: html
+
+   <head>
+       <meta name="description" content="Learn about our products">
+       <meta property="og:title" content="Our Amazing Products">
+       <meta property="og:description" content="Discover quality products">
+       <meta property="og:image" content="https://example.com/image.jpg">
+       <meta name="twitter:title" content="Our Amazing Products">
+   </head>
+
+When extracted with ``html2po``, the translatable strings will be:
+
+* "Learn about our products"
+* "Our Amazing Products"
+* "Discover quality products"
+
+The ``og:image`` URL is preserved as-is and not extracted for translation.
+
+After translation with ``po2html``, social media platforms will display the
+translated title and description when users share links to your website.
+
+
 .. _html#references:
 
 References

@@ -697,6 +697,58 @@ ghi ?>"""
         self.countunits(pofile, 1)
         self.compareunit(pofile, 1, "Translate this")
 
+    def test_meta_social_media_tags(self):
+        """Test that we can extract common social media meta tags."""
+        # Test Open Graph tags
+        markup = """<html><head>
+        <meta property="og:title" content="My Page Title">
+        <meta property="og:description" content="A description of my page">
+        <meta property="og:site_name" content="My Website">
+        </head><body></body></html>"""
+        pofile = self.html2po(markup)
+        self.countunits(pofile, 3)
+        self.compareunit(pofile, 1, "My Page Title")
+        self.compareunit(pofile, 2, "A description of my page")
+        self.compareunit(pofile, 3, "My Website")
+
+        # Test Twitter Card tags
+        markup = """<html><head>
+        <meta name="twitter:title" content="My Tweet Title">
+        <meta name="twitter:description" content="A tweet description">
+        </head><body></body></html>"""
+        pofile = self.html2po(markup)
+        self.countunits(pofile, 2)
+        self.compareunit(pofile, 1, "My Tweet Title")
+        self.compareunit(pofile, 2, "A tweet description")
+
+    def test_meta_non_translatable_tags_not_extracted(self):
+        """Test that non-translatable meta tags are not extracted."""
+        markup = """<html><head>
+        <meta property="og:image" content="https://example.com/image.jpg">
+        <meta property="og:url" content="https://example.com/page">
+        <meta property="og:type" content="website">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:image" content="https://example.com/twitter-image.jpg">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        </head><body></body></html>"""
+        self.check_null(markup)
+
+    def test_meta_mixed_translatable_and_non_translatable(self):
+        """Test that translatable and non-translatable meta tags are handled correctly when mixed."""
+        markup = """<html><head>
+        <meta property="og:title" content="My Page Title">
+        <meta property="og:image" content="https://example.com/image.jpg">
+        <meta property="og:description" content="Page description">
+        <meta property="og:url" content="https://example.com/">
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:title" content="Twitter Title">
+        </head><body></body></html>"""
+        pofile = self.html2po(markup)
+        self.countunits(pofile, 3)
+        self.compareunit(pofile, 1, "My Page Title")
+        self.compareunit(pofile, 2, "Page description")
+        self.compareunit(pofile, 3, "Twitter Title")
+
 
 class TestHTML2POCommand(test_convert.TestConvertCommand, TestHTML2PO):
     """Tests running actual html2po commands on files."""

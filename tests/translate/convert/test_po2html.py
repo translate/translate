@@ -336,6 +336,77 @@ msgstr "Traduire ceci aussi"
         assert "NE PAS traduire ceci" not in result
         assert "<p>Traduire ceci aussi</p>" in result
 
+    def test_meta_social_media_tags_translation(self):
+        """Test that social media meta tags are properly translated."""
+        # Test Open Graph tags
+        htmlsource = """<html><head>
+        <meta property="og:title" content="My Page Title">
+        <meta property="og:description" content="A description of my page">
+        <meta property="og:site_name" content="My Website">
+        </head><body></body></html>"""
+        posource = """#: test.html
+msgid "My Page Title"
+msgstr "Mon Titre de Page"
+
+#: test.html
+msgid "A description of my page"
+msgstr "Une description de ma page"
+
+#: test.html
+msgid "My Website"
+msgstr "Mon Site Web"
+"""
+        result = self.converthtml(posource, htmlsource)
+        assert '<meta property="og:title" content="Mon Titre de Page">' in result
+        assert (
+            '<meta property="og:description" content="Une description de ma page">'
+            in result
+        )
+        assert '<meta property="og:site_name" content="Mon Site Web">' in result
+
+        # Test Twitter Card tags
+        htmlsource = """<html><head>
+        <meta name="twitter:title" content="My Tweet Title">
+        <meta name="twitter:description" content="A tweet description">
+        </head><body></body></html>"""
+        posource = """#: test.html
+msgid "My Tweet Title"
+msgstr "Mon Titre de Tweet"
+
+#: test.html
+msgid "A tweet description"
+msgstr "Une description de tweet"
+"""
+        result = self.converthtml(posource, htmlsource)
+        assert '<meta name="twitter:title" content="Mon Titre de Tweet">' in result
+        assert (
+            '<meta name="twitter:description" content="Une description de tweet">'
+            in result
+        )
+
+    def test_meta_non_translatable_tags_preserved(self):
+        """Test that non-translatable meta tags are preserved without translation."""
+        htmlsource = """<html><head>
+        <meta property="og:title" content="My Page Title">
+        <meta property="og:image" content="https://example.com/image.jpg">
+        <meta property="og:url" content="https://example.com/">
+        <meta name="twitter:card" content="summary">
+        </head><body></body></html>"""
+        posource = """#: test.html
+msgid "My Page Title"
+msgstr "Mon Titre de Page"
+"""
+        result = self.converthtml(posource, htmlsource)
+        # Translatable tag should be translated
+        assert '<meta property="og:title" content="Mon Titre de Page">' in result
+        # Non-translatable tags should be preserved as-is
+        assert (
+            '<meta property="og:image" content="https://example.com/image.jpg">'
+            in result
+        )
+        assert '<meta property="og:url" content="https://example.com/">' in result
+        assert '<meta name="twitter:card" content="summary">' in result
+
 
 class TestPO2HtmlCommand(test_convert.TestConvertCommand, TestPO2Html):
     """Tests running actual po2html commands on files."""
