@@ -645,6 +645,58 @@ ghi ?>"""
         pofile = self.html2po(htmlsource)
         self.compareunit(pofile, 1, "EPS färg")
 
+    def test_data_translate_ignore_attribute(self):
+        """Test that elements with data-translate-ignore are not extracted."""
+        # Simple case
+        htmlsource = "<p>Translate this</p><p data-translate-ignore>Do not translate</p><p>Translate this too</p>"
+        pofile = self.html2po(htmlsource)
+        self.countunits(pofile, 2)
+        self.compareunit(pofile, 1, "Translate this")
+        self.compareunit(pofile, 2, "Translate this too")
+
+        # Nested elements within ignored section
+        htmlsource = "<div>Translate this</div><div data-translate-ignore><p>Do not translate</p><span>Also ignore</span></div><div>Translate this too</div>"
+        pofile = self.html2po(htmlsource)
+        self.countunits(pofile, 2)
+        self.compareunit(pofile, 1, "Translate this")
+        self.compareunit(pofile, 2, "Translate this too")
+
+        # Attributes in ignored elements should not be extracted
+        htmlsource = '<p title="Extract this">Translate</p><p data-translate-ignore title="Do not extract">Do not translate</p>'
+        pofile = self.html2po(htmlsource)
+        self.countunits(pofile, 2)
+        self.compareunit(pofile, 1, "Extract this")
+        self.compareunit(pofile, 2, "Translate")
+
+        # Self-closing tags with data-translate-ignore should not have attributes extracted
+        htmlsource = '<img alt="Extract this" /><img alt="Do not extract" data-translate-ignore /><p>Translate</p>'
+        pofile = self.html2po(htmlsource)
+        self.countunits(pofile, 2)
+        self.compareunit(pofile, 1, "Extract this")
+        self.compareunit(pofile, 2, "Translate")
+
+    def test_translate_comment_directives(self):
+        """Test that translate:off and translate:on comments work."""
+        # Basic case
+        htmlsource = "<p>Translate this</p><!-- translate:off --><p>Do not translate</p><!-- translate:on --><p>Translate this too</p>"
+        pofile = self.html2po(htmlsource)
+        self.countunits(pofile, 2)
+        self.compareunit(pofile, 1, "Translate this")
+        self.compareunit(pofile, 2, "Translate this too")
+
+        # Multiple elements between translate:off and translate:on
+        htmlsource = "<div>Translate</div><!-- translate:off --><p>Skip 1</p><p>Skip 2</p><div>Skip 3</div><!-- translate:on --><p>Translate again</p>"
+        pofile = self.html2po(htmlsource)
+        self.countunits(pofile, 2)
+        self.compareunit(pofile, 1, "Translate")
+        self.compareunit(pofile, 2, "Translate again")
+
+        # translate:off without translate:on should ignore rest of document
+        htmlsource = "<p>Translate this</p><!-- translate:off --><p>Do not translate 1</p><p>Do not translate 2</p>"
+        pofile = self.html2po(htmlsource)
+        self.countunits(pofile, 1)
+        self.compareunit(pofile, 1, "Translate this")
+
 
 class TestHTML2POCommand(test_convert.TestConvertCommand, TestHTML2PO):
     """Tests running actual html2po commands on files."""

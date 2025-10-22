@@ -225,6 +225,117 @@ msgstr "Ceci est une page à propos du mot anglais <strong lang=\\"en\\">Hello</
         # Verify that <a lang="en"> is present
         assert '<a lang="en"' in result
 
+    def test_data_translate_ignore_preserved(self):
+        """Test that ignored content is preserved in po2html output."""
+        # Simple case
+        htmlsource = "<p>Translate this</p><p data-translate-ignore>Do not translate</p><p>Translate this too</p>"
+        posource = """#: test.html
+msgid "Translate this"
+msgstr "Traduire ceci"
+
+#: test.html
+msgid "Translate this too"
+msgstr "Traduire ceci aussi"
+"""
+        result = self.converthtml(posource, htmlsource)
+        assert "<p>Traduire ceci</p>" in result
+        assert "<p data-translate-ignore>Do not translate</p>" in result
+        assert "<p>Traduire ceci aussi</p>" in result
+
+        # Nested elements
+        htmlsource = "<div>Translate this</div><div data-translate-ignore><p>Do not translate</p></div><div>Translate this too</div>"
+        posource = """#: test.html
+msgid "Translate this"
+msgstr "Traduire ceci"
+
+#: test.html
+msgid "Translate this too"
+msgstr "Traduire ceci aussi"
+"""
+        result = self.converthtml(posource, htmlsource)
+        assert "<div>Traduire ceci</div>" in result
+        assert "<div data-translate-ignore><p>Do not translate</p></div>" in result
+        assert "<div>Traduire ceci aussi</div>" in result
+
+        # Self-closing tags with data-translate-ignore should not have attributes translated
+        htmlsource = '<img alt="Extract this" /><img alt="Do not extract" data-translate-ignore /><p>Translate</p>'
+        posource = """#: test.html
+msgid "Extract this"
+msgstr "Extraire ceci"
+
+#: test.html
+msgid "Translate"
+msgstr "Traduire"
+"""
+        result = self.converthtml(posource, htmlsource)
+        assert '<img alt="Extraire ceci" />' in result
+        assert '<img alt="Do not extract" data-translate-ignore />' in result
+        assert "<p>Traduire</p>" in result
+
+    def test_translate_comment_directives_preserved(self):
+        """Test that translate:off/on comments are preserved and content ignored."""
+        htmlsource = "<p>Translate this</p><!-- translate:off --><p>Do not translate</p><!-- translate:on --><p>Translate this too</p>"
+        posource = """#: test.html
+msgid "Translate this"
+msgstr "Traduire ceci"
+
+#: test.html
+msgid "Translate this too"
+msgstr "Traduire ceci aussi"
+"""
+        result = self.converthtml(posource, htmlsource)
+        assert "<p>Traduire ceci</p>" in result
+        assert "<!-- translate:off -->" in result
+        assert "<p>Do not translate</p>" in result
+        assert "<!-- translate:on -->" in result
+        assert "<p>Traduire ceci aussi</p>" in result
+
+    def test_data_translate_ignore_with_translation_in_po(self):
+        """Test that ignored content is not translated even if translation exists in PO file."""
+        # Test with data-translate-ignore attribute
+        htmlsource = "<p>Translate this</p><p data-translate-ignore>Do not translate</p><p>Translate this too</p>"
+        posource = """#: test.html
+msgid "Translate this"
+msgstr "Traduire ceci"
+
+#: test.html
+msgid "Do not translate"
+msgstr "NE PAS traduire ceci"
+
+#: test.html
+msgid "Translate this too"
+msgstr "Traduire ceci aussi"
+"""
+        result = self.converthtml(posource, htmlsource)
+        assert "<p>Traduire ceci</p>" in result
+        # Verify the ignored content is NOT translated even though translation exists
+        assert "<p data-translate-ignore>Do not translate</p>" in result
+        assert "NE PAS traduire ceci" not in result
+        assert "<p>Traduire ceci aussi</p>" in result
+
+    def test_translate_comment_with_translation_in_po(self):
+        """Test that content between translate:off/on is not translated even if translation exists in PO file."""
+        # Test with comment directives
+        htmlsource = "<p>Translate this</p><!-- translate:off --><p>Do not translate</p><!-- translate:on --><p>Translate this too</p>"
+        posource = """#: test.html
+msgid "Translate this"
+msgstr "Traduire ceci"
+
+#: test.html
+msgid "Do not translate"
+msgstr "NE PAS traduire ceci"
+
+#: test.html
+msgid "Translate this too"
+msgstr "Traduire ceci aussi"
+"""
+        result = self.converthtml(posource, htmlsource)
+        assert "<p>Traduire ceci</p>" in result
+        # Verify the ignored content is NOT translated even though translation exists
+        assert "<p>Do not translate</p>" in result
+        assert "NE PAS traduire ceci" not in result
+        assert "<p>Traduire ceci aussi</p>" in result
+
 
 class TestPO2HtmlCommand(test_convert.TestConvertCommand, TestPO2Html):
     """Tests running actual po2html commands on files."""

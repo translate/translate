@@ -32,6 +32,60 @@ Conformance
   doesn't contain special characters that interfere with the HTML.
 
 
+.. _html#ignoring_content:
+
+Ignoring Content from Translation
+==================================
+
+Two methods are available to exclude specific content from translation:
+
+1. **data-translate-ignore attribute**
+
+   Any HTML element with the ``data-translate-ignore`` attribute will have its
+   content and all nested elements excluded from extraction.
+
+   .. code-block:: html
+
+      <p>This will be translated</p>
+      <div data-translate-ignore>
+          <p>This won't be translated</p>
+          <p>Neither will this</p>
+      </div>
+      <p>This will be translated again</p>
+
+   This is useful for:
+
+   * Legal disclaimers that must remain in original language
+   * Code examples or technical content
+   * Brand names and trademarks
+   * Copyright notices
+
+2. **translate:off/on comment directives**
+
+   Content between ``<!-- translate:off -->`` and ``<!-- translate:on -->``
+   HTML comments will be excluded from extraction.
+
+   .. code-block:: html
+
+      <p>This will be translated</p>
+      <!-- translate:off -->
+      <div class="technical-content">
+          <p>Technical documentation in English</p>
+          <code>function example() { return "code"; }</code>
+      </div>
+      <!-- translate:on -->
+      <p>This will be translated</p>
+
+   This is useful for:
+
+   * Temporarily disabling translation for sections during development
+   * Excluding large blocks without modifying HTML attributes
+   * Working with generated HTML where attributes can't be easily added
+
+Both methods work with ``html2po`` extraction and ``po2html`` conversion,
+preserving ignored content in the original language.
+
+
 .. _html#references:
 
 References
