@@ -161,6 +161,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         self.translate_callback = translate_callback
         self.bypass = False
         self.path = []
+        self.ignore_translation = False
 
     def render(self, token: mistletoe.token.Token) -> str:
         try:
@@ -271,27 +272,33 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         self, token: LinkReferenceDefinition
     ) -> Iterable[Fragment]:
         # note: these tokens will never be encountered in bypass mode.
-        translated_label = self.translate_callback(
-            token.label, [*self.path, "link-label"]
-        )
+        # Translate label and title unless we're in an ignore section
+        if self.ignore_translation:
+            label = token.label
+            title = token.title
+        else:
+            label = self.translate_callback(token.label, [*self.path, "link-label"])
+            title = (
+                self.translate_callback(token.title, [*self.path, "link-title"])
+                if token.title
+                else None
+            )
+
         placeholder = Fragment(None)
         placeholder.placeholder_content = [
             Fragment("["),
-            Fragment(translated_label, wordwrap=True),
+            Fragment(label, wordwrap=True),
             Fragment("]: ", wordwrap=True),
             Fragment(
                 "<" + token.dest + ">" if token.dest_type == "angle_uri" else token.dest
             ),
         ]
-        if token.title:
-            translated_title = self.translate_callback(
-                token.title, [*self.path, "link-title"]
-            )
+        if title:
             placeholder.placeholder_content.extend(
                 [
                     Fragment(" ", wordwrap=True),
                     Fragment(token.title_delimiter),
-                    Fragment(translated_title, wordwrap=True),
+                    Fragment(title, wordwrap=True),
                     Fragment(
                         ")" if token.title_delimiter == "(" else token.title_delimiter
                     ),
@@ -336,6 +343,19 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         self.path.pop()
         return content
 
+    def render_html_block(
+        self, token: block_token.HtmlBlock, max_line_length: int
+    ) -> Iterable[str]:
+        # Check if this is a translation control comment
+        content = token.content.strip()
+        if content == "<!-- translate:off -->":
+            self.ignore_translation = True
+        elif content == "<!-- translate:on -->":
+            self.ignore_translation = False
+
+        # Return the raw HTML block content
+        return super().render_html_block(token, max_line_length=max_line_length)
+
     def render_list_item(
         self, token: block_token.ListItem, max_line_length: int
     ) -> Iterable[str]:
@@ -370,9 +390,24 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         self, tokens: Iterable[span_token.SpanToken], max_line_length: int
     ) -> Iterable[str]:
         """Renders a sequence of span tokens to markdown, with translation."""
+        # If we're in an ignore section, skip translation
+        if self.ignore_translation:
+            original_bypass = self.bypass
+            try:
+                self.bypass = True
+                fragments = self.make_fragments(tokens)
+                # Expand placeholders before rendering
+                expanded = list(self.expand_placeholders(fragments))
+                return super().fragments_to_lines(
+                    expanded, max_line_length=max_line_length
+                )
+            finally:
+                self.bypass = original_bypass
+
         # turn the span into fragments, which may include placeholders.
         # list-ify the iterator because we may need to traverse it more than once
         fragments = list(self.make_fragments(tokens))
+        original_bypass = self.bypass
         try:
             self.bypass = True
 
@@ -403,7 +438,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
             expanded = list(self.expand_placeholders(fragments))
             return super().fragments_to_lines(expanded, max_line_length=max_line_length)
         finally:
-            self.bypass = False
+            self.bypass = original_bypass
 
     @classmethod
     def merge_adjacent_placeholders(

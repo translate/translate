@@ -131,3 +131,74 @@ You are only coming through in waves.
             )
             == output
         )
+
+    def test_markdown_translation_ignore_sections(self):
+        """Test that ignored sections are preserved and translations in PO are not applied to them."""
+        markdown_content = """# Welcome
+
+This text will be translated.
+
+<!-- translate:off -->
+
+```python
+def example():
+    return "Code that should not be translated"
+```
+
+Static text in ignored section.
+
+[link-ref]: https://example.com "Link Title"
+
+<!-- translate:on -->
+
+This text will also be translated.
+"""
+        self.create_testfile("file.md", markdown_content)
+        # Create a PO file that includes translations for both translatable content
+        # and content that's in ignored sections (should be ignored)
+        self.given_translation_file(
+            lines=[
+                "#: file.md:1",
+                'msgid "Welcome"',
+                'msgstr "Välkommen"',
+                "",
+                "#: file.md:3",
+                'msgid "This text will be translated."',
+                'msgstr "Den här texten kommer att översättas."',
+                "",
+                "#: file.md:ignored-should-not-exist",
+                'msgid "Code that should not be translated"',
+                'msgstr "Kod som inte ska översättas"',  # codespell:ignore
+                "",
+                "#: file.md:ignored-should-not-exist",
+                'msgid "Static text in ignored section."',
+                'msgstr "Statisk text i ignorerad sektion."',
+                "",
+                "#: file.md:ignored-should-not-exist",
+                'msgid "Link Title"',
+                'msgstr "Länktitel"',
+                "",
+                "#: file.md:19",
+                'msgid "This text will also be translated."',
+                'msgstr "Den här texten kommer också att översättas."',
+            ]
+        )
+        self.run_command("translation.po", "out.md", template="file.md")
+        output = self.read_testfile("out.md").decode()
+
+        # Verify translatable content is translated
+        assert "Välkommen" in output
+        assert "Den här texten kommer att översättas." in output
+        assert "Den här texten kommer också att översättas." in output
+
+        # Verify ignored content is preserved as-is (not translated)
+        assert "Code that should not be translated" in output
+        assert "Kod som inte ska översättas" not in output  # codespell:ignore
+        assert "Static text in ignored section." in output
+        assert "Statisk text i ignorerad sektion." not in output
+        assert "Link Title" in output
+        assert "Länktitel" not in output
+
+        # Verify the ignore markers are present in output
+        assert "<!-- translate:off -->" in output
+        assert "<!-- translate:on -->" in output

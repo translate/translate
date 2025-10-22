@@ -85,3 +85,36 @@ You are only coming through in waves.
         content = self.read_testfile("test.po").decode()
         assert "coming through" in content
         return content
+
+    def test_markdown_translation_ignore_sections(self):
+        """Test that content between translate:off and translate:on is not extracted."""
+        self.given_markdown_file(
+            content="""# Welcome
+
+This text will be translated.
+
+<!-- translate:off -->
+
+```python
+def example():
+    return "This code won't be extracted"
+```
+
+[link-ref]: https://example.com "Link Title"
+
+<!-- translate:on -->
+
+This text will also be translated.
+"""
+        )
+        self.run_command("file.md", "test.po")
+        assert os.path.isfile(self.get_testfilename("test.po"))
+        content = self.read_testfile("test.po").decode()
+        # Verify that translatable content is extracted
+        assert "Welcome" in content
+        assert "This text will be translated." in content
+        assert "This text will also be translated." in content
+        # Verify that ignored content is NOT extracted
+        assert "This code won't be extracted" not in content
+        assert "link-ref" not in content
+        assert "Link Title" not in content
