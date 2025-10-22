@@ -53,6 +53,20 @@ def test_find_delimiter_pos_escapes():
     )
 
 
+def test_find_delimiter_pos_empty_and_whitespace():
+    """Test that empty and whitespace-only lines don't cause IndexError."""
+    # These should work for DialectJava (no key_wrap_char)
+    assert properties.DialectJava.find_delimiter("") == (None, -1)
+    assert properties.DialectJava.find_delimiter("   ") == (None, -1)
+    assert properties.DialectJava.find_delimiter("\t\t") == (None, -1)
+
+    # These should also work for DialectStrings (has key_wrap_char='"')
+    # This was causing IndexError before the fix
+    assert properties.DialectStrings.find_delimiter("") == (None, -1)
+    assert properties.DialectStrings.find_delimiter("   ") == (None, -1)
+    assert properties.DialectStrings.find_delimiter("\t\t") == (None, -1)
+
+
 def test_is_line_continuation():
     assert not properties.is_line_continuation("")
     assert not properties.is_line_continuation("some text")

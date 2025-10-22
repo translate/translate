@@ -314,7 +314,11 @@ class Dialect:
         delimiters = delimiter_dict
         # Figure out starting position
         start_pos = len(line) - len(line.lstrip())  # Skip initial whitespace
-        if cls.key_wrap_char and line[start_pos] == cls.key_wrap_char:
+        if (
+            cls.key_wrap_char
+            and start_pos < len(line)
+            and line[start_pos] == cls.key_wrap_char
+        ):
             # Skip the key if it is delimited by some char
             start_pos += 1
             while line[start_pos] != cls.key_wrap_char or line[start_pos - 1] == "\\":
