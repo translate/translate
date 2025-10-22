@@ -95,8 +95,17 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
     """Text from these HTML attributes will be extracted as translation units.
     Note: the content attribute of meta tags is a special case."""
 
-    TRANSLATABLE_METADATA = ["description", "keywords"]
+    TRANSLATABLE_METADATA = [
+        "description",
+        "keywords",
+        "og:title",
+        "og:description",
+        "og:site_name",
+        "twitter:title",
+        "twitter:description",
+    ]
     """Document metadata from meta elements with these names will be extracted as translation units.
+    Includes standard meta tags and common social media tags (Open Graph and Twitter Cards).
     Reference `<https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta/name>`_"""
 
     EMPTY_HTML_ELEMENTS = [
@@ -345,7 +354,10 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
     def create_metadata_attribute_tu(self, attrs):
         attrs_dict = dict(attrs)
-        name = attrs_dict["name"].lower() if "name" in attrs_dict else None
+        # Check both 'name' and 'property' attributes (Open Graph uses 'property')
+        name = attrs_dict.get("name", "").lower()
+        if not name:
+            name = attrs_dict.get("property", "").lower()
         if name in self.TRANSLATABLE_METADATA and "content" in attrs_dict:
             return self.create_attribute_tu("content", attrs_dict["content"])
         return None
@@ -381,8 +393,21 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         result = []
         for attrname, attrvalue in attrs:
             if attrvalue:
+                # Special handling for meta tag content attribute
+                if tag == "meta" and attrname == "content":
+                    attrs_dict = dict(attrs)
+                    # Check both 'name' and 'property' attributes
+                    name = attrs_dict.get("name", "").lower()
+                    if not name:
+                        name = attrs_dict.get("property", "").lower()
+                    if name in self.TRANSLATABLE_METADATA:
+                        normalized_value = self.WHITESPACE_RE.sub(" ", attrvalue).strip()
+                        translated_value = self.callback(normalized_value)
+                        if translated_value != normalized_value:
+                            result.append((attrname, translated_value))
+                            continue
                 # Only translate attributes that are translatable for this specific tag
-                if (
+                elif (
                     attrname in self.TRANSLATABLE_ATTRIBUTES
                     and self.translatable_attribute_matches_tag(attrname, tag)
                 ):
