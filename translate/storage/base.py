@@ -850,6 +850,13 @@ class TranslationStore:
             else:
                 detected_encoding["encoding"] = detected_encoding["encoding"].lower()
 
+        # Check if the text has a BOM
+        has_bom = False
+        for bom, _ in ENCODING_BOMS:
+            if text.startswith(bom):
+                has_bom = True
+                break
+
         encodings = []
         # Purposefully accessed the internal _encoding, as encoding is never 'auto'
         if self._encoding == "auto":
@@ -869,14 +876,33 @@ class TranslationStore:
             if encoding == self.encoding and suffix == "sig":
                 encodings.append(detected_encoding["encoding"])
             elif detected_encoding["encoding"] != self.encoding:
-                logger.warning(
-                    "trying to parse %s with encoding: %s but "
-                    "detected encoding is %s (confidence: %s)",
-                    self.filename,
-                    self.encoding,
-                    detected_encoding["encoding"],
-                    detected_encoding["confidence"],
-                )
+                # Check if the detected encoding is compatible with the expected encoding
+                # when a BOM is present. For example, UTF-16 with BOM can be detected as
+                # UTF-16LE or UTF-16BE, which are compatible variants.
+                should_warn = True
+                if has_bom:
+                    # Normalize encodings by removing endianness and sig suffixes
+                    import re
+                    detected_normalized = detected_encoding["encoding"].replace("_", "-").lower()
+                    expected_normalized = self.encoding.replace("_", "-").lower()
+                    
+                    # Remove endianness suffixes (le, be) and sig suffix
+                    detected_family = re.sub(r'[-_]?(le|be|sig)$', '', detected_normalized)
+                    expected_family = re.sub(r'[-_]?(le|be|sig)$', '', expected_normalized)
+                    
+                    # If they're the same encoding family, don't warn
+                    if detected_family == expected_family:
+                        should_warn = False
+                
+                if should_warn:
+                    logger.warning(
+                        "trying to parse %s with encoding: %s but "
+                        "detected encoding is %s (confidence: %s)",
+                        self.filename,
+                        self.encoding,
+                        detected_encoding["encoding"],
+                        detected_encoding["confidence"],
+                    )
             encodings.append(self.encoding)
         else:
             encodings.append(self.encoding)
