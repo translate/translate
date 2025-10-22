@@ -135,8 +135,8 @@ class BundleProjectStore(ProjectStore):
                 tempfname = os.path.split(fname)[-1]
                 tempfd, tempfname = tempfile.mkstemp(suffix="_" + tempfname)
                 os.close(tempfd)
-                open(tempfname, "w").write(zfile.read())
-            retfile = open(tempfname)
+                open(tempfname, "wb").write(zfile.read())
+            retfile = open(tempfname, "rb")
             self._tempfiles[tempfname] = fname
 
         if not retfile:
