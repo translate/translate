@@ -710,7 +710,7 @@ ghi ?>"""
         self.compareunit(pofile, 1, "My Page Title")
         self.compareunit(pofile, 2, "A description of my page")
         self.compareunit(pofile, 3, "My Website")
-        
+
         # Test Twitter Card tags
         markup = """<html><head>
         <meta name="twitter:title" content="My Tweet Title">
@@ -720,7 +720,7 @@ ghi ?>"""
         self.countunits(pofile, 2)
         self.compareunit(pofile, 1, "My Tweet Title")
         self.compareunit(pofile, 2, "A tweet description")
-        
+
     def test_meta_non_translatable_tags_not_extracted(self):
         """Test that non-translatable meta tags are not extracted."""
         markup = """<html><head>
@@ -732,7 +732,7 @@ ghi ?>"""
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         </head><body></body></html>"""
         self.check_null(markup)
-        
+
     def test_meta_mixed_translatable_and_non_translatable(self):
         """Test that translatable and non-translatable meta tags are handled correctly when mixed."""
         markup = """<html><head>
@@ -748,7 +748,6 @@ ghi ?>"""
         self.compareunit(pofile, 1, "My Page Title")
         self.compareunit(pofile, 2, "Page description")
         self.compareunit(pofile, 3, "Twitter Title")
-
 
 
 class TestHTML2POCommand(test_convert.TestConvertCommand, TestHTML2PO):

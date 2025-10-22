@@ -358,9 +358,12 @@ msgstr "Mon Site Web"
 """
         result = self.converthtml(posource, htmlsource)
         assert '<meta property="og:title" content="Mon Titre de Page">' in result
-        assert '<meta property="og:description" content="Une description de ma page">' in result
+        assert (
+            '<meta property="og:description" content="Une description de ma page">'
+            in result
+        )
         assert '<meta property="og:site_name" content="Mon Site Web">' in result
-        
+
         # Test Twitter Card tags
         htmlsource = """<html><head>
         <meta name="twitter:title" content="My Tweet Title">
@@ -376,8 +379,11 @@ msgstr "Une description de tweet"
 """
         result = self.converthtml(posource, htmlsource)
         assert '<meta name="twitter:title" content="Mon Titre de Tweet">' in result
-        assert '<meta name="twitter:description" content="Une description de tweet">' in result
-    
+        assert (
+            '<meta name="twitter:description" content="Une description de tweet">'
+            in result
+        )
+
     def test_meta_non_translatable_tags_preserved(self):
         """Test that non-translatable meta tags are preserved without translation."""
         htmlsource = """<html><head>
@@ -394,10 +400,12 @@ msgstr "Mon Titre de Page"
         # Translatable tag should be translated
         assert '<meta property="og:title" content="Mon Titre de Page">' in result
         # Non-translatable tags should be preserved as-is
-        assert '<meta property="og:image" content="https://example.com/image.jpg">' in result
+        assert (
+            '<meta property="og:image" content="https://example.com/image.jpg">'
+            in result
+        )
         assert '<meta property="og:url" content="https://example.com/">' in result
         assert '<meta name="twitter:card" content="summary">' in result
-
 
 
 class TestPO2HtmlCommand(test_convert.TestConvertCommand, TestPO2Html):

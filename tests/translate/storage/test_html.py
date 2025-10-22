@@ -392,7 +392,7 @@ pre tag
     def test_extraction_meta_social_media_tags(self):
         """Check that we can extract common social media meta tags."""
         h = html.htmlfile()
-        
+
         # Test Open Graph tags (use 'property' attribute)
         store = h.parsestring(
             """<html><head>
@@ -405,7 +405,7 @@ pre tag
         assert store.units[0].source == "My Page Title"
         assert store.units[1].source == "A description of my page"
         assert store.units[2].source == "My Website"
-        
+
         # Test Twitter Card tags (use 'name' attribute)
         store = h.parsestring(
             """<html><head>
@@ -416,7 +416,7 @@ pre tag
         assert len(store.units) == 2
         assert store.units[0].source == "My Tweet Title"
         assert store.units[1].source == "A tweet description"
-        
+
         # Test standard meta tags still work
         store = h.parsestring(
             """<html><head>
@@ -431,7 +431,7 @@ pre tag
     def test_extraction_meta_non_translatable_tags(self):
         """Check that non-translatable meta tags are not extracted."""
         h = html.htmlfile()
-        
+
         # These should NOT be extracted as they contain URLs, image paths, etc.
         store = h.parsestring(
             """<html><head>
@@ -447,11 +447,11 @@ pre tag
         )
         # Should have 0 units since none of these should be translatable
         assert len(store.units) == 0
-        
+
     def test_extraction_meta_mixed_translatable_and_non_translatable(self):
         """Check that translatable and non-translatable meta tags are handled correctly when mixed."""
         h = html.htmlfile()
-        
+
         store = h.parsestring(
             """<html><head>
             <meta property="og:title" content="My Page Title">
@@ -467,4 +467,3 @@ pre tag
         assert store.units[0].source == "My Page Title"
         assert store.units[1].source == "Page description"
         assert store.units[2].source == "Twitter Title"
-

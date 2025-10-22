@@ -401,7 +401,9 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                     if not name:
                         name = attrs_dict.get("property", "").lower()
                     if name in self.TRANSLATABLE_METADATA:
-                        normalized_value = self.WHITESPACE_RE.sub(" ", attrvalue).strip()
+                        normalized_value = self.WHITESPACE_RE.sub(
+                            " ", attrvalue
+                        ).strip()
                         translated_value = self.callback(normalized_value)
                         if translated_value != normalized_value:
                             result.append((attrname, translated_value))
