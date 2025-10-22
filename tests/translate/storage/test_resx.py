@@ -31,7 +31,7 @@ class TestRESXUnit(test_monolingual.TestMonolingualUnit):
 class TestRESXUnitFromParsedString(TestRESXUnit):
     resxsource = XMLskeleton = """<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -132,3 +132,27 @@ class TestRESXfile(test_monolingual.TestMonolingualStore):
         """Helper that parses resx source without requiring files."""
         dummyfile = BytesIO(resxsource.encode())
         return self.StoreClass(dummyfile)
+
+    def test_xsd_schema_attribute_order(self):
+        """Test that xsd:schema attributes match Visual Studio output order."""
+        store = resx.RESXFile()
+        unit = resx.RESXUnit("Test value")
+        unit.setid("test_key")
+        store.addunit(unit)
+
+        output = BytesIO()
+        store.serialize(output)
+        result = output.getvalue().decode("utf-8")
+
+        # Visual Studio outputs attributes in this specific order:
+        # id first, then xmlns declarations
+        expected_attrs = (
+            'id="root" xmlns="" '
+            'xmlns:xsd="http://www.w3.org/2001/XMLSchema" '
+            'xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"'
+        )
+
+        assert expected_attrs in result, (
+            "xsd:schema attributes should match Visual Studio order: "
+            "id first, then namespace declarations"
+        )

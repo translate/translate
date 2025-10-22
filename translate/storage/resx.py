@@ -19,6 +19,8 @@
 
 """Module for handling .Net Resource (.resx) files."""
 
+import re
+
 from lxml import etree
 
 from translate.misc.xml_helpers import (
@@ -228,6 +230,43 @@ class RESXFile(lisa.LISAfile):
         return unit
 
     def serialize_hook(self, treestring: str) -> bytes:
+        # Reorder xsd:schema attributes to match Visual Studio output
+        # VS puts 'id' attribute first, then namespace declarations
+        def reorder_xsd_schema_attributes(match):
+            opening = match.group(1)
+            attrs_str = match.group(2)
+            closing = match.group(3)
+
+            # Parse all attributes
+            attr_pattern = r'\s+(\S+?)="([^"]*)"'
+            attrs = re.findall(attr_pattern, attrs_str)
+
+            # Separate id and namespace attributes
+            id_attr = None
+            ns_attrs = []
+
+            for name, value in attrs:
+                if name == "id":
+                    id_attr = (name, value)
+                else:
+                    ns_attrs.append((name, value))
+
+            # Rebuild in the desired order: id first, then namespaces
+            result_attrs = []
+            if id_attr:
+                result_attrs.append(id_attr)
+            result_attrs.extend(ns_attrs)
+
+            # Format back to string
+            formatted_attrs = "".join(
+                f' {name}="{value}"' for name, value in result_attrs
+            )
+            return opening + formatted_attrs + closing
+
+        # Apply the reordering
+        pattern = r"(<xsd:schema)(\s+[^>]*)(>)"
+        treestring = re.sub(pattern, reorder_xsd_schema_attributes, treestring)
+
         # Additional space on empty tags same as Visual Studio
         return super().serialize_hook(
             treestring.replace("/>", " />").replace("\n", "\r\n")
