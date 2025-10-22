@@ -885,15 +885,15 @@ class TranslationStore:
                     import re
                     detected_normalized = detected_encoding["encoding"].replace("_", "-").lower()
                     expected_normalized = self.encoding.replace("_", "-").lower()
-                    
+
                     # Remove endianness suffixes (le, be) and sig suffix
                     detected_family = re.sub(r'[-_]?(le|be|sig)$', '', detected_normalized)
                     expected_family = re.sub(r'[-_]?(le|be|sig)$', '', expected_normalized)
-                    
+
                     # If they're the same encoding family, don't warn
                     if detected_family == expected_family:
                         should_warn = False
-                
+
                 if should_warn:
                     logger.warning(
                         "trying to parse %s with encoding: %s but "
