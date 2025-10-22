@@ -131,6 +131,20 @@ class TestEncoding:
         assert quote.javapropertiesencode("cáfé") == "cáfé"
         assert quote.javapropertiesencode("čáfé") == r"\u010Dáfé"
 
+    def test_javapropertiesencode_ascii(self):
+        """Test that non-ASCII characters are encoded when using ASCII encoding."""
+        # ASCII characters (0-127) should not be encoded
+        assert quote.javapropertiesencode("hello", encoding="ascii") == "hello"
+
+        # Characters >= 128 should be encoded for ASCII
+        # é = U+00E9 = 233 (NOT in ASCII, but in ISO-8859-1)
+        assert quote.javapropertiesencode("café", encoding="ascii") == r"caf\u00E9"
+
+        # All non-ASCII characters should be encoded
+        assert (
+            quote.javapropertiesencode("Zkouška", encoding="ascii") == r"Zkou\u0161ka"
+        )
+
     def test_java_utf8_properties_encode(self):
         assert quote.java_utf8_properties_encode("abc") == "abc"
         assert quote.java_utf8_properties_encode("abcḓ") == "abcḓ"

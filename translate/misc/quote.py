@@ -357,10 +357,15 @@ def htmlentitydecode(source: str) -> str:
     return entitydecode(source, html.entities.name2codepoint)
 
 
-def javapropertiesencode(source: str) -> str:
-    """
+def javapropertiesencode(source: str, encoding: str = "iso-8859-1") -> str:
+    r"""
     Encodes source in the escaped-unicode encoding used by Java
     .properties files.
+
+    :param source: The string to encode
+    :param encoding: The target encoding (default: iso-8859-1).
+                     Only characters that cannot be represented in this
+                     encoding will be escaped as \uXXXX.
     """
     output = []
     if source and source[0] == " ":
@@ -369,10 +374,14 @@ def javapropertiesencode(source: str) -> str:
         charnum = ord(char)
         if char in controlchars:
             output.append(controlchars[char])
-        elif 0 <= charnum <= 255:
-            output.append(str(char))
         else:
-            output.append(f"\\u{charnum:04X}")
+            # Try to encode the character in the target encoding
+            # If it fails, use unicode escape
+            try:
+                char.encode(encoding)
+                output.append(str(char))
+            except (UnicodeEncodeError, LookupError):
+                output.append(f"\\u{charnum:04X}")
     return "".join(output)
 
 

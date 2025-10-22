@@ -285,7 +285,7 @@ class Dialect:
         # FIXME: dialects are a bad idea, not possible for subclasses
         # to override key methods
         if encoding not in {"utf-8", "utf-16"}:
-            return javapropertiesencode(string or "")
+            return javapropertiesencode(string or "", encoding or "iso-8859-1")
         return java_utf8_properties_encode(string or "")
 
     @staticmethod
