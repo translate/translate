@@ -132,6 +132,19 @@ Notes
 The :doc:`HTML format description </formats/html>` gives more details on the
 format of the localisable HTML content and the capabilities of this converter.
 
+**Translator Comments**
+
+Use the ``--keepcomments`` option to preserve HTML comments and
+``data-translate-comment`` attributes as translator notes in the output PO
+files. This helps translators understand the context of each string:
+
+::
+
+  html2po --keepcomments site pot
+
+For more details on adding translator context, see :ref:`html#adding_context` in
+the HTML format documentation.
+
 
 .. _html2po#bugs:
 

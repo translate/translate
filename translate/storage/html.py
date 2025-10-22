@@ -306,21 +306,21 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             unit = self.addsourceunit(normalized_content)
             unit.addlocation(self.tu_location)
 
-            # Collect comments from HTML comments
+            # Extract comment text from HTML comment elements within the translation unit
             comments = [
                 markup["note"]
                 for markup in self.tu_content
                 if markup["type"] == "comment"
             ]
 
-            # Collect comments from data-translate-comment attributes
+            # Extract translator comments from data-translate-comment attributes on any tags within the translation unit
             translate_comments = [
                 markup["translate_comment"]
                 for markup in self.tu_content
                 if "translate_comment" in markup
             ]
 
-            # Add all comments to the unit
+            # Combine and add all comments to the unit
             all_comments = comments + translate_comments
             if all_comments:
                 unit.addnote("\n".join(all_comments), origin="source code")
