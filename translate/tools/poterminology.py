@@ -27,12 +27,23 @@ import os
 import re
 import sys
 from operator import itemgetter
+from typing import NamedTuple
 
 from translate.lang import factory as lang_factory
 from translate.misc import file_discovery, optrecurse
 from translate.storage import factory, po
 
 logger = logging.getLogger(__name__)
+
+
+# Lightweight structure to store only the necessary information from a unit
+# instead of storing the entire unit object
+class UnitInfo(NamedTuple):
+    source: str
+    target: str
+    locations: frozenset
+    sourcenotes: frozenset
+    transnotes: frozenset
 
 
 def create_termunit(
@@ -201,6 +212,7 @@ class TerminologyExtractor:
         sourcelang = lang_factory.getlanguage(self.sourcelanguage)
         rematchignore = frozenset(("word", "phrase"))
         defaultignore = frozenset()
+        locre = re.compile(r":[0-9]+$")
         for unit in units:
             self.units += 1
             if unit.isheader():
@@ -213,6 +225,22 @@ class TerminologyExtractor:
                 source = self.clean(unit.target)
             if len(source) <= 1:
                 continue
+
+            # Extract unit information once and store it in a lightweight structure
+            # instead of storing the entire unit object multiple times
+            locations = frozenset(locre.sub("", loc) for loc in unit.getlocations())
+            source_note = unit.getnotes("source code")
+            trans_note = unit.getnotes("translator")
+            sourcenotes = frozenset([source_note] if source_note else [])
+            transnotes = frozenset([trans_note] if trans_note else [])
+            unit_info = UnitInfo(
+                source=unit.source,
+                target=unit.target,
+                locations=locations,
+                sourcenotes=sourcenotes,
+                transnotes=transnotes,
+            )
+
             for sentence in sourcelang.sentences(source):
                 words = []
                 skips = 0
@@ -228,7 +256,7 @@ class TerminologyExtractor:
                             if stopre.match(stword) is not None:
                                 ignore = rematchignore
                                 break
-                    translation = (source, target, unit, fullinputpath)
+                    translation = (source, target, unit_info, fullinputpath)
                     if "word" not in ignore:
                         # reduce plurals
                         root = word
@@ -279,7 +307,6 @@ class TerminologyExtractor:
         locmin=2,
     ):
         terms = {}
-        locre = re.compile(r":[0-9]+$")
         logger.info("%d terms from %d units", len(self.glossary), self.units)
         for term, translations in self.glossary.items():
             if len(translations) <= 1:
@@ -292,26 +319,26 @@ class TerminologyExtractor:
             targets = {}
             fullmsg = False
             bestunit = None
-            for source, target, unit, filename in translations:
+            for source, target, unit_info, filename in translations:
                 sources.add(source)
                 filecounts[filename] = filecounts.setdefault(filename, 0) + 1
-                # FIXME: why reclean source and target?!
-                if term.lower() == self.clean(unit.source).lower():
+                # Check if this is a full message match
+                if term.lower() == self.clean(unit_info.source).lower():
                     fullmsg = True
-                    target = self.clean(unit.target)
+                    target = self.clean(unit_info.target)
                     if self.ignorecase or (self.foldtitle and target.istitle()):
                         target = target.lower()
-                    unit.target = target
                     if target:
                         targets.setdefault(target, []).append(filename)
-                    if term.lower() == unit.source.strip().lower():
-                        sourcenotes.add(unit.getnotes("source code"))
-                        transnotes.add(unit.getnotes("translator"))
-                    unit.source = term
-                    bestunit = unit
-                # FIXME: figure out why we did a merge to begin with
-                # termunit.merge(unit, overwrite=False, comments=False)
-                locations.update(locre.sub("", loc) for loc in unit.getlocations())
+                    if term.lower() == unit_info.source.strip().lower():
+                        sourcenotes.update(unit_info.sourcenotes)
+                        transnotes.update(unit_info.transnotes)
+                    # Create a unit object only when needed as the bestunit
+                    if bestunit is None:
+                        bestunit = po.pounit(term)
+                        bestunit.target = target
+                # Collect locations from unit_info
+                locations.update(unit_info.locations)
 
             numsources = len(sources)
             numfiles = len(filecounts)
