@@ -755,6 +755,23 @@ key=value
         assert bom not in result[3:]
         assert b"None" not in result[3:]
 
+    def test_utf16_bom_no_warning(self):
+        """Test that UTF-16 files with BOM do not trigger encoding warnings."""
+        import warnings
+
+        # Test UTF-16 with BOM (typical Mac .strings file)
+        propsource = r'"key" = "value";'.encode("utf-16")
+
+        # Parse should not trigger any warnings
+        with warnings.catch_warnings():
+            warnings.simplefilter("error")
+            propfile = self.propparse(propsource, personality="strings")
+
+        # Verify the file was parsed correctly
+        assert len(propfile.units) == 1
+        assert propfile.units[0].name == "key"
+        assert propfile.units[0].source == "value"
+
     def test_joomla_set_target(self):
         """Test various items used in Joomla files."""
         propsource = b"""COM_EXAMPLE_FOO="This is a test"\n"""
