@@ -160,7 +160,7 @@ Use ``--help`` to find the syntax and options for all programs.
         pot2po   - PO file initialiser
         csv2tbx  - Create TBX (TermBase eXchange) files from Comma Separated
                    Value (CSV) files
-        ini2po   - convert .ini files to to PO
+        ini2po   - convert .ini files to PO
         ical2po  - Convert iCalendar files (*.ics) to PO
         sub2po   - Convert many subtitle files to PO
         rc2po    - convert Windows Resource .rc files to PO
