@@ -1170,6 +1170,18 @@ RTL_LANGS = {
 }
 
 
+def _normalize_to_underscore(code: str) -> str:
+    """
+    Normalize a language code by converting hyphens and @ symbols to underscores and lowercasing.
+
+    Internal helper function for consistent language code normalization.
+
+    :param code: Language code (e.g., 'ar-EG', 'en@latin')
+    :return: Normalized language code (e.g., 'ar_eg', 'en_latin')
+    """
+    return code.replace("-", "_").replace("@", "_").lower()
+
+
 def is_rtl(language_code: str | None) -> bool:
     """
     Check if a language is right-to-left.
@@ -1183,7 +1195,7 @@ def is_rtl(language_code: str | None) -> bool:
     if not language_code:
         return False
     # Normalize the language code (convert hyphens to underscores)
-    normalized = language_code.replace("-", "_").lower()
+    normalized = _normalize_to_underscore(language_code)
     # Check both the full code and the base language code
     if normalized in RTL_LANGS:
         return True
@@ -1193,7 +1205,7 @@ def is_rtl(language_code: str | None) -> bool:
 
 
 def get_language(code):
-    code = code.replace("-", "_").replace("@", "_").lower()
+    code = _normalize_to_underscore(code)
     if "_" in code:
         # convert ab_cd → ab_CD
         code = "{}_{}".format(code.split("_")[0], code.split("_", 1)[1].upper())

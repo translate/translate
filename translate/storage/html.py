@@ -406,24 +406,30 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
     def translate_attributes(self, tag, attrs):
         result = []
-        attrs_dict = dict(attrs)
         translated_lang = None
 
-        # First pass: check if lang is being translated
-        if tag == "html" and "lang" in attrs_dict:
-            normalized_value = self.WHITESPACE_RE.sub(" ", attrs_dict["lang"]).strip()
-            translated_value = self.callback(normalized_value)
-            if translated_value != normalized_value:
-                translated_lang = translated_value
+        # First pass: check if lang is being translated on html tag
+        if tag == "html":
+            attrs_dict = dict(attrs)
+            if "lang" in attrs_dict:
+                normalized_value = self.WHITESPACE_RE.sub(
+                    " ", attrs_dict["lang"]
+                ).strip()
+                translated_value = self.callback(normalized_value)
+                if translated_value != normalized_value:
+                    translated_lang = translated_value
 
         for attrname, attrvalue in attrs:
-            # Skip dir attribute on html tag when lang is translated - it will be set below
+            # When translating the lang attribute on the <html> tag, we intentionally discard
+            # any existing dir attribute and set it based on the translated language below.
+            # This ensures dir reflects the text directionality of the target language.
             if tag == "html" and attrname == "dir" and translated_lang:
                 continue
             if attrvalue:
                 # Special handling for meta tag content attribute
                 if tag == "meta" and attrname == "content":
                     # Check both 'name' and 'property' attributes
+                    attrs_dict = dict(attrs)
                     name = attrs_dict.get("name", "").lower()
                     if not name:
                         name = attrs_dict.get("property", "").lower()
