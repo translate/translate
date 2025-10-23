@@ -98,11 +98,11 @@ class YAMLUnit(base.DictUnit):
         if isinstance(value, str) and not unset and "\n" in value:
             # Use LiteralScalarString for better readability if:
             # - original was already a LiteralScalarString (preserve type)
-            # - original is None (new value) or plain str (not a special scalar string)
+            # - original is None (new value) or plain str (not a special scalar string subclass)
             if (
                 isinstance(original_value, LiteralScalarString)
                 or original_value is None
-                or (isinstance(original_value, str) and type(original_value) is str)
+                or type(original_value) is str  # Plain str, not a subclass
             ):
                 value = LiteralScalarString(value)
             # Otherwise keep the value as-is (e.g., DoubleQuotedScalarString stays quoted)
