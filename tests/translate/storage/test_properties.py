@@ -183,7 +183,7 @@ class TestGwtProp(test_monolingual.TestMonolingualStore):
         """Checks that a double properties definition can be regenerated as source."""
         propsource = "test_me=I can code!\ntest_me[one]=I can code single!"
         propregen = self.propregen(propsource).decode()
-        assert propsource + "\n" == propregen
+        assert f"{propsource}\n" == propregen
 
     def test_reduce(self):
         """Checks that if the target language has less plural form the generated properties file is correct."""
@@ -393,19 +393,19 @@ class TestProp(test_monolingual.TestMonolingualStore):
         """Checks that a simple properties definition can be regenerated as source."""
         propsource = "test_me=I can code!"
         propregen = self.propregen(propsource)
-        assert propsource + "\n" == propregen
+        assert f"{propsource}\n" == propregen
 
     def test_controlutf8_source(self):
         """Checks that a control characters are parsed correctly."""
         propsource = "test_me=\\\\\\n"
         propregen = self.propregen(propsource, encoding="utf-8")
-        assert propsource + "\n" == propregen
+        assert f"{propsource}\n" == propregen
 
     def test_control_source(self):
         """Checks that a control characters are parsed correctly."""
         propsource = "test_me=\\\\\\n"
         propregen = self.propregen(propsource)
-        assert propsource + "\n" == propregen
+        assert f"{propsource}\n" == propregen
 
     def test_unicode_escaping(self):
         """Check that escaped unicode is converted properly."""
@@ -424,7 +424,7 @@ class TestProp(test_monolingual.TestMonolingualStore):
         r"""Check that we preserve \n that appear at start and end of properties."""
         propsource = "newlines=\\ntext\\n"
         propregen = self.propregen(propsource)
-        assert propsource + "\n" == propregen
+        assert f"{propsource}\n" == propregen
 
     def test_space(self):
         r"""Check that we preserve \n that appear at start and end of properties."""
@@ -944,7 +944,7 @@ class TestXWiki(test_monolingual.TestMonolingualStore):
     def test_missing_definition_source(self):
         propsource = "### Missing: test_me=I can code!"
         propgen = self.propregen(propsource)
-        assert propsource + "\n" == propgen
+        assert f"{propsource}\n" == propgen
 
     def test_definition_with_simple_quote(self):
         propsource = "test_me=A 'quoted' translation"
@@ -954,7 +954,7 @@ class TestXWiki(test_monolingual.TestMonolingualStore):
         assert propunit.name == "test_me"
         assert propunit.source == "A 'quoted' translation"
         assert not propunit.missing
-        assert propunit.getoutput() == propsource + "\n"
+        assert propunit.getoutput() == f"{propsource}\n"
 
     def test_definition_with_simple_quote_and_argument(self):
         propsource = "test_me=A ''quoted'' translation for {0}"
@@ -964,17 +964,17 @@ class TestXWiki(test_monolingual.TestMonolingualStore):
         assert propunit.name == "test_me"
         assert propunit.source == "A 'quoted' translation for {0}"
         assert not propunit.missing
-        assert propunit.getoutput() == propsource + "\n"
+        assert propunit.getoutput() == f"{propsource}\n"
 
     def test_header_preserved(self):
         propsource = """# -----\n# Header\n# -----\n\ntest_me=I can code"""
         propgen = self.propregen(propsource)
-        assert propgen == propsource + "\n"
+        assert propgen == f"{propsource}\n"
 
     def test_blank_line_before_comment_preserved(self):
         propsource = """\n# My comment\ntest_me=I can code"""
         propgen = self.propregen(propsource)
-        assert propgen == propsource + "\n"
+        assert propgen == f"{propsource}\n"
 
     def test_deprecated_comments_preserved(self):
         propsource = """# Deprecated keys starts here.
@@ -1041,7 +1041,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
         assert (
-            generatedcontent.getvalue().decode(propfile.encoding) == propsource + "\n"
+            generatedcontent.getvalue().decode(propfile.encoding) == f"{propsource}\n"
         )
         # check translation and language attribute
         propfile.settargetlanguage("fr")
@@ -1079,7 +1079,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
     def test_missing_definition_source(self):
         propsource = self.getcontent("### Missing: test_me=I can code!")
         propgen = self.propregen(propsource)
-        assert propsource + "\n" == propgen
+        assert f"{propsource}\n" == propgen
 
     def test_definition_with_simple_quote(self):
         propsource = self.getcontent("test_me=A 'quoted' translation")
@@ -1092,7 +1092,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
         assert (
-            generatedcontent.getvalue().decode(propfile.encoding) == propsource + "\n"
+            generatedcontent.getvalue().decode(propfile.encoding) == f"{propsource}\n"
         )
 
     def test_definition_with_simple_quote_and_argument(self):
@@ -1106,7 +1106,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
         assert (
-            generatedcontent.getvalue().decode(propfile.encoding) == propsource + "\n"
+            generatedcontent.getvalue().decode(propfile.encoding) == f"{propsource}\n"
         )
 
     def test_definition_with_encoded_html(self):
@@ -1120,7 +1120,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
         assert (
-            generatedcontent.getvalue().decode(propfile.encoding) == propsource + "\n"
+            generatedcontent.getvalue().decode(propfile.encoding) == f"{propsource}\n"
         )
 
     def test_cleaning_attributes(self):
@@ -1132,9 +1132,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         ## Real XWiki files are containing multiple attributes on xwikidoc tag: we're not testing it there
         ## because ElementTree changed its implementation between Python 3.7 and 3.8 which changed the order of output of the attributes
         ## it makes it more difficult to assert it on multiple versions of Python.
-        propsource = (
-            properties.XWikiPageProperties.XML_HEADER
-            + """<xwikidoc reference="XWiki.AdminTranslations">
+        propsource = f"""{properties.XWikiPageProperties.XML_HEADER}<xwikidoc reference="XWiki.AdminTranslations">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language/>
@@ -1199,7 +1197,6 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
                 <content>something=toto</content>
             </attachment>
         </xwikidoc>"""
-        )
         propfile = self.propparse(propsource)
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
@@ -1210,9 +1207,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         propunit.target = "Je peux coder !"
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
-        expected_xml = (
-            properties.XWikiPageProperties.XML_HEADER
-            + """<xwikidoc reference="XWiki.AdminTranslations" locale="fr">
+        expected_xml = f"""{properties.XWikiPageProperties.XML_HEADER}<xwikidoc reference="XWiki.AdminTranslations" locale="fr">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language>fr</language>
@@ -1232,9 +1227,8 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
 test_me=Je peux coder !
 </content>
 </xwikidoc>"""
-        )
         assert (
-            generatedcontent.getvalue().decode(propfile.encoding) == expected_xml + "\n"
+            generatedcontent.getvalue().decode(propfile.encoding) == f"{expected_xml}\n"
         )
         assert (
             '<?xml version="1.1" encoding="UTF-8"?>\n\n<!--\n * See the NOTICE file distributed with this work for additional'
@@ -1250,9 +1244,7 @@ test_me=Je peux coder !
         ## Real XWiki files are containing multiple attributes on xwikidoc tag: we're not testing it there
         ## because ElementTree changed its implementation between Python 3.7 and 3.8 which changed the order of output of the attributes
         ## it makes it more difficult to assert it on multiple versions of Python.
-        propsource = (
-            properties.XWikiPageProperties.XML_HEADER
-            + """<xwikidoc reference="XWiki.AdminTranslations">
+        propsource = f"""{properties.XWikiPageProperties.XML_HEADER}<xwikidoc reference="XWiki.AdminTranslations">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language/>
@@ -1317,7 +1309,6 @@ test_me=Je peux coder !
                 <content>something=toto</content>
             </attachment>
         </xwikidoc>"""
-        )
         propfile = self.propparse(propsource)
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
@@ -1328,9 +1319,7 @@ test_me=Je peux coder !
         propunit.target = "I can change the translation source"
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
-        expected_xml = (
-            properties.XWikiPageProperties.XML_HEADER
-            + """<xwikidoc reference="XWiki.AdminTranslations">
+        expected_xml = f"""{properties.XWikiPageProperties.XML_HEADER}<xwikidoc reference="XWiki.AdminTranslations">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language/>
@@ -1395,9 +1384,8 @@ test_me=I can change the translation source
                 <content>something=toto</content>
             </attachment>
         </xwikidoc>"""
-        )
         assert (
-            generatedcontent.getvalue().decode(propfile.encoding) == expected_xml + "\n"
+            generatedcontent.getvalue().decode(propfile.encoding) == f"{expected_xml}\n"
         )
         assert (
             '<?xml version="1.1" encoding="UTF-8"?>\n\n<!--\n * See the NOTICE file distributed with this work for additional'
@@ -1407,15 +1395,12 @@ test_me=I can change the translation source
 
 class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
     StoreClass = properties.XWikiFullPage
-    FILE_SCHEME = (
-        properties.XWikiPageProperties.XML_HEADER
-        + """<xwikidoc locale="%(language)s">
+    FILE_SCHEME = f"""{properties.XWikiPageProperties.XML_HEADER}<xwikidoc locale="%(language)s">
     <translation>1</translation>
     <language>%(language)s</language>
     <title>%(title)s</title>
     <content>%(content)s</content>
     </xwikidoc>"""
-    )
 
     def getcontent(self, content, title, language="en"):
         return self.FILE_SCHEME % {
@@ -1462,7 +1447,7 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
         propfile.serialize(generatedcontent)
         assert (
             generatedcontent.getvalue().decode(propfile.encoding)
-            == expected_content + "\n"
+            == f"{expected_content}\n"
         )
 
     def test_parse(self):
@@ -1567,9 +1552,7 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
         ## Real XWiki files are containing multiple attributes on xwikidoc tag: we're not testing it there
         ## because ElementTree changed its implementation between Python 3.7 and 3.8 which changed the order of output of the attributes
         ## it makes it more difficult to assert it on multiple versions of Python.
-        propsource = (
-            properties.XWikiPageProperties.XML_HEADER
-            + """<xwikidoc reference="XWiki.AdminTranslations">
+        propsource = f"""{properties.XWikiPageProperties.XML_HEADER}<xwikidoc reference="XWiki.AdminTranslations">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language/>
@@ -1637,7 +1620,6 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
                 <content>something=toto</content>
             </attachment>
         </xwikidoc>"""
-        )
         propfile = self.propparse(propsource)
         assert len(propfile.units) == 2
         propunit = propfile.units[0]
@@ -1668,9 +1650,7 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
         propfile.settargetlanguage("fr")
         propfile.serialize(generatedcontent)
 
-        expected_xml = (
-            properties.XWikiPageProperties.XML_HEADER
-            + """<xwikidoc reference="XWiki.AdminTranslations" locale="fr">
+        expected_xml = f"""{properties.XWikiPageProperties.XML_HEADER}<xwikidoc reference="XWiki.AdminTranslations" locale="fr">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language>fr</language>
@@ -1693,9 +1673,8 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
             D'autres trucs.
             </content>
             </xwikidoc>"""
-        )
         assert (
-            generatedcontent.getvalue().decode(propfile.encoding) == expected_xml + "\n"
+            generatedcontent.getvalue().decode(propfile.encoding) == f"{expected_xml}\n"
         )
 
     @mark.xfail(reason="removal not working in full page")

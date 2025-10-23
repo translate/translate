@@ -55,7 +55,7 @@ class oo2po:
 
         unit = po.pounit(text1, encoding="UTF-8")
         unit.target = text2
-        unit.addlocation(key + "." + subkey)
+        unit.addlocation(f"{key}.{subkey}")
         if getattr(translators_comment, subkey).strip():
             unit.addnote(getattr(translators_comment, subkey), origin="developer")
         return unit

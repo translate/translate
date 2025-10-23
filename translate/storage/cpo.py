@@ -373,12 +373,12 @@ class pounit(pocommon.pounit):
         elif gpo_message:
             if encoding.lower() != self.CPO_ENC:
                 features = ["msgctxt", "msgid", "msgid_plural"]
-                features += ["prev_" + x for x in features]
+                features += [f"prev_{x}" for x in features]
                 features += ["comments", "extracted_comments", "msgstr"]
                 for feature in features:
-                    text = getattr(gpo, "po_message_" + feature)(gpo_message)
+                    text = getattr(gpo, f"po_message_{feature}")(gpo_message)
                     if text:
-                        getattr(gpo, "po_message_set_" + feature)(
+                        getattr(gpo, f"po_message_set_{feature}")(
                             gpo_message, text.decode(encoding).encode(self.CPO_ENC)
                         )
                 # Also iterate through plural forms
@@ -562,7 +562,7 @@ class pounit(pocommon.pounit):
         newnotes = None
         if oldnotes:
             if position == "append":
-                newnotes = oldnotes + "\n" + text
+                newnotes = f"{oldnotes}\n{text}"
             elif position == "merge":
                 if oldnotes != text:
                     oldnoteslist = oldnotes.split("\n")
@@ -573,7 +573,7 @@ class pounit(pocommon.pounit):
                             oldnoteslist.append(newline)
                     newnotes = "\n".join(oldnoteslist)
             else:
-                newnotes = text + "\n" + oldnotes
+                newnotes = f"{text}\n{oldnotes}"
         else:
             newnotes = "\n".join(line.rstrip("\r") for line in text.split("\n"))
 
@@ -582,7 +582,7 @@ class pounit(pocommon.pounit):
             needs_space = get_libgettextpo_version() < (0, 17, 0)
             for line in newnotes.split("\n"):
                 if line and needs_space:
-                    newlines.append(" " + line)
+                    newlines.append(f" {line}")
                 else:
                     newlines.append(line)
             newnotes = gpo_encode("\n".join(newlines))
@@ -626,7 +626,7 @@ class pounit(pocommon.pounit):
             # Remove kde-style comments from the translation (if any).
             if self._extract_msgidcomments(otherpo.target):
                 otherpo.target = otherpo.target.replace(
-                    "_: " + otherpo._extract_msgidcomments() + "\n", ""
+                    f"_: {otherpo._extract_msgidcomments()}\n", ""
                 )
             self.target = otherpo.target
             if (

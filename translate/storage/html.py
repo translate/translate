@@ -385,10 +385,11 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         if normalized_value:
             return {
                 "html_content": normalized_value,
-                "location": "%s+%s:%d-%d"
+                "location": "%s+%s%s:%d-%d"
                 % (
                     self.filename,
-                    ".".join(self.tag_path) + "[" + attrname + "]",
+                    ".".join(self.tag_path),
+                    f"[{attrname}]",
                     self.getpos()[0],
                     self.getpos()[1] + 1,
                 ),
@@ -438,7 +439,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         attr_strings = []
         for attrname, attrvalue in attrs:
             if attrvalue is None:
-                attr_strings.append(" " + attrname)
+                attr_strings.append(f" {attrname}")
             else:
                 attr_strings.append(f' {attrname}="{attrvalue}"')
         return "<{}{}{}>".format(tag, "".join(attr_strings), " /" if startend else "")
@@ -567,7 +568,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
     def handle_entityref(self, name):
         """Handle named entities of the form &aaaa; e.g. &rsquo;."""
-        converted = html5.get(name + ";")
+        converted = html5.get(f"{name};")
         if name in {"gt", "lt", "amp"} or not converted:
             self.handle_data(f"&{name};")
         else:

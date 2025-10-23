@@ -41,7 +41,7 @@ def writexml_helper(self, writer, indent="", addindent="", newl=""):
     # indent = current indentation
     # addindent = indentation to add to higher levels
     # newl = newline string
-    writer.write(indent + "<" + self.tagName)
+    writer.write(f"{indent}<{self.tagName}")
 
     attrs = self._get_attributes()
     a_names = sorted(attrs.keys())
@@ -191,7 +191,7 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
             for prefix, uri in self._ns_ordered_prefixes:
                 if prefix:
                     a = minidom.Attr(
-                        expatbuilder._intern(self, "xmlns:" + prefix),
+                        expatbuilder._intern(self, f"xmlns:{prefix}"),
                         expatbuilder.XMLNS_NAMESPACE,
                         prefix,
                         "xmlns",

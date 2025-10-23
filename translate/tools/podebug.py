@@ -97,7 +97,7 @@ class podebug:
                     lastnode.sub[-1] = lastnode.sub[-1].rstrip("\n")
             except IndexError:
                 pass
-            string.sub.append(append + "\n")
+            string.sub.append(f"{append}\n")
         else:
             string.sub.append(append)
         return string
@@ -374,8 +374,8 @@ class podebug:
 
     @staticmethod
     def shrinkfilename(filename):
-        if filename.startswith("." + os.sep):
-            filename = filename.replace("." + os.sep, "", 1)
+        if filename.startswith(f".{os.sep}"):
+            filename = filename.replace(f".{os.sep}", "", 1)
         dirname = os.path.dirname(filename)
         dirparts = dirname.split(os.sep)
         if not dirparts:

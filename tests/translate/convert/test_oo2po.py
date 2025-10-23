@@ -232,7 +232,7 @@ class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2PO):
         """Tests the simplest possible conversion to a po file."""
         oosource1 = r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58"
         oosource2 = r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	ku	Karakter				20050924 09:13:58"
-        self.create_testfile("simple.oo", oosource1 + "\n" + oosource2)
+        self.create_testfile("simple.oo", f"{oosource1}\n{oosource2}")
         self.run_command("simple.oo", "simple.po", lang="ku", nonrecursiveinput=True)
         pofile = self.target_filetype(self.open_testfile("simple.po"))
         poelement = self.singleelement(pofile)

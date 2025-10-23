@@ -357,7 +357,7 @@ class TranslationUnit:
                        - 'developer', 'programmer', 'source code' (synonyms)
         """
         if position == "append" and getattr(self, "notes", None):
-            self.notes += "\n" + text
+            self.notes += f"\n{text}"
         else:
             self.notes = text
 

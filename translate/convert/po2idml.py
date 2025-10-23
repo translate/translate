@@ -113,7 +113,7 @@ def translate_idml(template, input_file, translatable_files):
                 """
                 # Add a wrapper "whatever" tag to avoid problems when parsing
                 # several sibling tags at the root level.
-                fake_string = "<whatever>" + string + "</whatever>"
+                fake_string = f"<whatever>{string}</whatever>"
 
                 # Copy the children to the XLIFF unit's source or target node.
                 fake_node = etree.fromstring(fake_string)

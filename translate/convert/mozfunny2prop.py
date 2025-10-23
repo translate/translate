@@ -67,7 +67,7 @@ def it2prop(lines, encoding="cp1252"):
         elif line.lstrip().startswith(";"):
             yield line.replace(";", "#", 1)
         elif line.lstrip().startswith("[") and line.rstrip().endswith("]"):
-            yield "# section: " + line
+            yield f"# section: {line}"
         else:
             yield line
 

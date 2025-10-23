@@ -43,8 +43,6 @@ class TestHTML2PO:
         """Helper to validate a PO message."""
         if not pofile.units[0].isheader():
             unitnumber -= 1
-        print("unit source: " + pofile.units[unitnumber].source + "|")
-        print("expected: " + expected + "|")
         assert str(pofile.units[unitnumber].source) == str(expected)
 
     def check_single(self, markup, itemtext):
@@ -72,9 +70,7 @@ class TestHTML2PO:
             + '/site.html">Body text</a></p></body></html>',
             'More things in <a href="' + php + '/site.html">Body text</a>',
         )
-        self.check_single(
-            "<html><head></head><body><p>" + php + "</p></body></html>", php
-        )
+        self.check_single(f"<html><head></head><body><p>{php}</p></body></html>", php)
 
     def test_extract_lang_attribute_from_html_tag(self):
         """Test that the lang attribute is extracted from the html tag, issue #3884."""
@@ -570,16 +566,8 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
         php3 = """<? asdfghjklqwertyuiop1234567890!@#$%^&*()-=_+[]\\{}|;':",./<>? ?>"""
 
         # Put 3 different strings into an html string
-        innertext = (
-            '<a href="'
-            + php1
-            + '/site.html">Body text</a> and some '
-            + php2
-            + " more text "
-            + php2
-            + php3
-        )
-        htmlsource = "<html><head></head><body><p>" + innertext + "</p></body></html>"
+        innertext = f'<a href="{php1}/site.html">Body text</a> and some {php2} more text {php2}{php3}'
+        htmlsource = f"<html><head></head><body><p>{innertext}</p></body></html>"
         self.check_single(htmlsource, innertext)
 
     def test_php_multiline(self):
@@ -589,31 +577,11 @@ def
 ghi ?>"""
 
         # Scatter the php strings throughout the file, and show what the translation should be
-        innertext = (
-            '<a href="'
-            + php1
-            + '/site.html">Body text</a> and some '
-            + php1
-            + " more text "
-            + php1
-            + php1
-        )
-        innertrans = (
-            '<a href="'
-            + php1
-            + '/site.html">Texte de corps</a> et encore de '
-            + php1
-            + " plus de texte "
-            + php1
-            + php1
-        )
+        innertext = f'<a href="{php1}/site.html">Body text</a> and some {php1} more text {php1}{php1}'
+        innertrans = f'<a href="{php1}/site.html">Texte de corps</a> et encore de {php1} plus de texte {php1}{php1}'
 
-        htmlsource = (
-            "<html><head></head><body><p>" + innertext + "</p></body></html>"
-        )  # Current html file
-        transsource = (
-            "<html><head></head><body><p>" + innertrans + "</p></body></html>"
-        )  # Expected translation
+        htmlsource = f"<html><head></head><body><p>{innertext}</p></body></html>"  # Current html file
+        transsource = f"<html><head></head><body><p>{innertrans}</p></body></html>"  # Expected translation
 
         pofile = self.html2po(htmlsource)
         pofile.units[1].target = innertrans  # Register the translation in the PO file

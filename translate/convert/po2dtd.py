@@ -141,7 +141,7 @@ class po2dtd:
         msgidcomment = inputunit._extract_msgidcomments()
         if msgidcomment:
             locnote = quote.unstripcomment(
-                "LOCALIZATION NOTE (" + dtdunit.entity + "): " + msgidcomment
+                f"LOCALIZATION NOTE ({dtdunit.entity}): {msgidcomment}"
             )
             dtdunit.comments.append(("locnote", locnote))
 

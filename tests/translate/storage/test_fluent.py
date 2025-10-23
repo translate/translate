@@ -367,7 +367,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                 assert not unit.isheader()
                 assert unit.istranslatable()
             # Order shouldn't be important.
-            placeholders = {"{ " + ref_id + " }" for ref_id in expect.get("refs", [])}
+            placeholders = {f"{{ {ref_id} }}" for ref_id in expect.get("refs", [])}
             assert placeholders == set(unit.placeholders)
             assert expect.get("comment", "") == unit.getnotes()
             assert expect.get("source", None) == unit.source
@@ -436,7 +436,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
         """
         fluent_source = textwrap.dedent(fluent_source)
         error_regex = (
-            r"^Parsing error for fluent source: " + error_part + r".*(\nE[0-9]+: .*)*$"
+            rf"^Parsing error for fluent source: {error_part}.*(\nE[0-9]+: .*)*$"
         )
         with raises(ValueError, match=error_regex):
             self.fluent_parse(fluent_source)
@@ -3410,8 +3410,8 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             unit = fluent.FluentUnit(
                 source="ok", unit_id=unit_id, fluent_type=fluent_type
             )
-            unit.setid(unit_id + "a")
-            assert unit.getid() == unit_id + "a"
+            unit.setid(f"{unit_id}a")
+            assert unit.getid() == f"{unit_id}a"
         # Test invalid ids.
         ok_id_dict = {"Message": "i", "Term": "-i"}
         for fluent_type, unit_id in [

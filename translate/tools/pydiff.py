@@ -336,14 +336,14 @@ class FileDiffer:
         for tag, i1, i2, j1, j2 in group:
             if tag == "equal":
                 for line in self.from_lines[i1:i2]:
-                    yield " " + line
+                    yield f" {line}"
                 continue
             if tag in {"replace", "delete"}:
                 for line in self.from_lines[i1:i2]:
-                    yield "-" + line
+                    yield f"-{line}"
             if tag in {"replace", "insert"}:
                 for line in self.to_lines[j1:j2]:
-                    yield "+" + line
+                    yield f"+{line}"
 
 
 if __name__ == "__main__":

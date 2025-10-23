@@ -136,11 +136,11 @@ def quotefordtd(source):
         source = source.replace("'", "&apos;")  # This seems not to run.
         if '="' not in source:  # Avoid escaping " chars in href attributes.
             source = source.replace('"', "&quot;")
-            value = '"' + source + '"'  # Quote using double quotes.
+            value = f'"{source}"'  # Quote using double quotes.
         else:
-            value = "'" + source + "'"  # Quote using single quotes.
+            value = f"'{source}'"  # Quote using single quotes.
     else:
-        value = '"' + source + '"'  # Quote using double quotes.
+        value = f'"{source}"'  # Quote using double quotes.
     return value
 
 
@@ -501,34 +501,19 @@ class dtdunit(base.TranslationUnit):
         lines.extend(self.unparsedlines)
         if self.isblank():
             result = "".join(lines)
-            return result.rstrip() + "\n"
+            return f"{result.rstrip()}\n"
         # for f in self._locfilenotes: yield f
         # for ge in self._locgroupends: yield ge
         # for gs in self._locgroupstarts: yield gs
         # for n in self._locnotes: yield n
         if len(self.entity) > 0:
             if getattr(self, "entitytype", None) == "external":
-                entityline = (
-                    "<!ENTITY % "
-                    + self.entity
-                    + " "
-                    + self.entityparameter
-                    + " "
-                    + self.definition
-                    + self.closing
-                )
+                entityline = f"<!ENTITY % {self.entity} {self.entityparameter} {self.definition}{self.closing}"
             else:
-                entityline = (
-                    "<!ENTITY"
-                    + self.space_pre_entity
-                    + self.entity
-                    + self.space_pre_definition
-                    + self.definition
-                    + self.closing
-                )
+                entityline = f"<!ENTITY{self.space_pre_entity}{self.entity}{self.space_pre_definition}{self.definition}{self.closing}"
             if getattr(self, "hashprefix", None):
-                entityline = self.hashprefix + " " + entityline
-            lines.append(entityline + "\n")
+                entityline = f"{self.hashprefix} {entityline}"
+            lines.append(f"{entityline}\n")
         return "".join(lines)
 
 

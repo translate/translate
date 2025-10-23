@@ -247,7 +247,7 @@ def quoteforpo(text: str | None, wrapper_obj: PoWrapper | None = None) -> list[s
         return [f'"{text}"']
     lines = text.split("\\n")
     for i, l in enumerate(lines[:-1]):
-        lines[i] = l + "\\n"
+        lines[i] = f"{l}\\n"
 
     polines = []
     len_lines = len(lines)
@@ -610,7 +610,7 @@ class pounit(pocommon.pounit):
             # Remove kde-style comments from the translation (if any).
             if self._extract_msgidcomments(otherpo.target):
                 otherpo.target = otherpo.target.replace(
-                    "_: " + otherpo._extract_msgidcomments() + self.newline, ""
+                    f"_: {otherpo._extract_msgidcomments()}{self.newline}", ""
                 )
             self.target = otherpo.target
             if (

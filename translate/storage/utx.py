@@ -130,7 +130,7 @@ class UtxUnit(base.TranslationUnit):
     def addnote(self, text, origin=None, position="append"):
         currentnote = self._get_field("comment")
         if position == "append" and currentnote:
-            self._set_field("comment", currentnote + "\n" + text)
+            self._set_field("comment", f"{currentnote}\n{text}")
         else:
             self._set_field("comment", text)
 
@@ -234,7 +234,7 @@ class UtxFile(base.TranslationStore):
             items.append(f"{key}: {value}")
         if items:
             items = "; ".join(items)
-            header += "; " + items
+            header += f"; {items}"
         header += UtxDialect.lineterminator
         header += "#" + "\t".join(self._fieldnames) + UtxDialect.lineterminator
         return header

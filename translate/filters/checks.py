@@ -971,8 +971,8 @@ class StandardChecker(TranslationChecker):
             if plaincount1 != plaincount2:
                 continue
 
-            spacecount1 = str1.count(puncchar + " ")
-            spacecount2 = str2.count(puncchar + " ")
+            spacecount1 = str1.count(f"{puncchar} ")
+            spacecount2 = str2.count(f"{puncchar} ")
 
             if spacecount1 != spacecount2:
                 # Handle extra spaces that are because of transposed punctuation
@@ -1503,7 +1503,7 @@ class StandardChecker(TranslationChecker):
         str2 = str2.rstrip()
 
         if helpers.funcmatch(
-            str1, str2, decoration.puncend, self.config.endpunctuation + ":"
+            str1, str2, decoration.puncend, f"{self.config.endpunctuation}:"
         ):
             return True
         raise FilterFailure("Different punctuation at the end")
@@ -2331,7 +2331,7 @@ class LibreOfficeChecker(StandardChecker):
                         if len(opentags) == 0:
                             raise FilterFailure(f"There is no open tag for »{acttag}«")
                         opentag = opentags.pop()
-                        if tagname(acttag) != "/" + tagname(opentag):
+                        if tagname(acttag) != f"/{tagname(opentag)}":
                             raise FilterFailure(
                                 f"Open tag »{opentag}« and close tag »{acttag}« "
                                 "don't match"

@@ -106,7 +106,7 @@ class OmegaTUnit(base.TranslationUnit):
     def addnote(self, text, origin=None, position="append"):
         currentnote = self._get_field("comment")
         if position == "append" and currentnote:
-            self._set_field("comment", currentnote + "\n" + text)
+            self._set_field("comment", f"{currentnote}\n{text}")
         else:
             self._set_field("comment", text)
 

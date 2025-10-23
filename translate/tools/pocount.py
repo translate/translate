@@ -268,13 +268,10 @@ class CsvRenderer(Renderer):
 
 class FullRenderer(Renderer):
     def entry(self, title, stats):
-        print(
-            "Processing file : " + ConsoleColor.HEADER() + title + ConsoleColor.ENDC()
-        )
+        print(f"Processing file : {ConsoleColor.HEADER()}{title}{ConsoleColor.ENDC()}")
         print("Type               Strings      Words (source)    Words (translation)")
         print(
-            ConsoleColor.OKGREEN()
-            + "Translated:   %5d (%3d%%) %10d (%3d%%) %15d"
+            f"{ConsoleColor.OKGREEN()}Translated:   %5d (%3d%%) %10d (%3d%%) %15d"
             % (
                 stats["translated"],
                 percent(stats["translated"], stats["total"]),
@@ -285,8 +282,7 @@ class FullRenderer(Renderer):
             + ConsoleColor.ENDC()
         )
         print(
-            ConsoleColor.WARNING()
-            + "Fuzzy:        %5d (%3d%%) %10d (%3d%%)             n/a"
+            f"{ConsoleColor.WARNING()}Fuzzy:        %5d (%3d%%) %10d (%3d%%)             n/a"
             % (
                 stats["fuzzy"],
                 percent(stats["fuzzy"], stats["total"]),
@@ -296,8 +292,7 @@ class FullRenderer(Renderer):
             + ConsoleColor.ENDC()
         )
         print(
-            ConsoleColor.FAIL()
-            + "Untranslated: %5d (%3d%%) %10d (%3d%%)             n/a"
+            f"{ConsoleColor.FAIL()}Untranslated: %5d (%3d%%) %10d (%3d%%)             n/a"
             % (
                 stats["untranslated"],
                 percent(stats["untranslated"], stats["total"]),
@@ -320,7 +315,7 @@ class FullRenderer(Renderer):
                 print(
                     "%-11s   %5d (%3d%%) %10d (%3d%%) %15d"
                     % (
-                        state.title() + ":",
+                        f"{state.title()}:",
                         e_stats["units"],
                         percent(e_stats["units"], stats["total"]),
                         e_stats["sourcewords"],

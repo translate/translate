@@ -89,7 +89,7 @@ class tmxunit(lisa.LISAunit):
         # TODO: consider factoring out: some duplication between XLIFF and TMX
         text = errorname
         if errortext:
-            text += ": " + errortext
+            text += f": {errortext}"
         self.addnote(text, origin="pofilter")
 
     def geterrors(self):
