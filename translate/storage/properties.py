@@ -1172,7 +1172,7 @@ class propfile(base.TranslationStore):
                 # Generate fake unit for each keys (MUST use None as source)
                 new_unit = proppluralunit(None, self.personality.name)
                 new_unit.name = key
-                # Copy deprecated attribute from the original unit
+                # Copy deprecated status to the new fake unit based on the parent plural unit
                 new_unit.deprecated = getattr(unit, "deprecated", False)
                 self.addunit(new_unit)
                 plurals[key] = new_unit
@@ -1199,7 +1199,7 @@ class xwikifile(propfile):
         kwargs["encoding"] = "iso-8859-1"
         super().__init__(*args, **kwargs)
 
-    def parse(self, propsrc):
+    def parse(self, propsrc: bytes | str) -> None:
         """Parse XWiki properties and track deprecated blocks."""
         # Use the standard parsing
         super().parse(propsrc)
@@ -1227,7 +1227,7 @@ class xwikifile(propfile):
                 unit.comments = filtered_comments
 
                 # If the unit has no meaningful comments left and is not translatable, mark for removal
-                if not unit.istranslatable() and not unit.name:
+                if not unit.istranslatable():
                     # Check if there are any non-empty comments
                     has_content = any(c.strip() for c in filtered_comments)
                     if not has_content:

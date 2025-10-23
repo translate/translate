@@ -1004,7 +1004,7 @@ job.log.label=Job log
         propfile = self.propparse(propsource)
         # With the new implementation, deprecated markers are not stored as separate units
         assert len(propfile.units) == 2
-        # First unit is the comment header, second is the translatable unit
+        # The translatable unit is at index 1
         propunit = propfile.units[1]
         assert propunit.name == "job.log.label"
         assert propunit.source == "Job log"
