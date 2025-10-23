@@ -113,6 +113,60 @@ class TestEncoding:
         assert quote.javapropertiesencode("abcḓ") == r"abc\u1E13"
         assert quote.javapropertiesencode("abc\n") == "abc\\n"
 
+    def test_javapropertiesencode_iso_8859_1(self):
+        """Test that ISO-8859-1 characters (0-255) are not encoded."""
+        # ASCII characters (0-127) should not be encoded
+        assert quote.javapropertiesencode("hello") == "hello"
+
+        # ISO-8859-1 characters (128-255) should not be encoded
+        # ú = U+00FA = 250 (in ISO-8859-1)
+        assert quote.javapropertiesencode("valú") == "valú"
+
+        # Characters outside ISO-8859-1 (> 255) should be encoded
+        # š = U+0161 = 353 (NOT in ISO-8859-1)
+        assert quote.javapropertiesencode("Zkouška") == r"Zkou\u0161ka"
+
+        # Mixed test: á, é are in ISO-8859-1, č is not
+        # á = U+00E1 = 225, é = U+00E9 = 233, č = U+010D = 269
+        assert quote.javapropertiesencode("cáfé") == "cáfé"
+        assert quote.javapropertiesencode("čáfé") == r"\u010Dáfé"
+
+    def test_javapropertiesencode_ascii(self):
+        """Test that non-ASCII characters are encoded when using ASCII encoding."""
+        # ASCII characters (0-127) should not be encoded
+        assert quote.javapropertiesencode("hello", encoding="ascii") == "hello"
+
+        # Characters >= 128 should be encoded for ASCII
+        # é = U+00E9 = 233 (NOT in ASCII, but in ISO-8859-1)
+        assert (
+            quote.javapropertiesencode("café", encoding="ascii")
+            == r"caf\u00E9"  # codespell:ignore
+        )
+
+        # All non-ASCII characters should be encoded
+        assert (
+            quote.javapropertiesencode("Zkouška", encoding="ascii") == r"Zkou\u0161ka"
+        )
+
+    def test_javapropertiesencode_unicode_range(self):
+        """Test encoding full unicode range for specifically handled encodings."""
+        # Create a string with the first 512 unicode characters
+        unicode_string = "".join(chr(i) for i in range(512))
+
+        # Test ASCII encoding
+        # Convert to quoted form
+        quoted_ascii = quote.javapropertiesencode(unicode_string, encoding="ascii")
+        # The quoted string should be encodable to ASCII bytes
+        # (because non-ASCII chars are escaped as \uXXXX which are ASCII)
+        quoted_ascii.encode("ascii")
+
+        # Test ISO-8859-1 encoding
+        # Convert to quoted form
+        quoted_iso = quote.javapropertiesencode(unicode_string, encoding="iso-8859-1")
+        # The quoted string should be encodable to ISO-8859-1 bytes
+        # (because chars > 255 are escaped as \uXXXX which are ASCII)
+        quoted_iso.encode("iso-8859-1")
+
     def test_java_utf8_properties_encode(self):
         assert quote.java_utf8_properties_encode("abc") == "abc"
         assert quote.java_utf8_properties_encode("abcḓ") == "abcḓ"
