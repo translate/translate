@@ -87,6 +87,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
     TRANSLATABLE_ATTRIBUTES = [
         "abbr",  # abbreviation for a table header cell
         "alt",
+        "dir",  # text direction (ltr/rtl) -- only for the html element
         "lang",  # only for the html element -- see extract_translatable_attributes()
         "summary",
         "title",  # tooltip text for an element
@@ -376,7 +377,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
     @staticmethod
     def translatable_attribute_matches_tag(attrname, tag):
-        if attrname == "lang":
+        if attrname in ("lang", "dir"):
             return tag == "html"
         return True
 
@@ -403,12 +404,29 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 unit.addlocation(tu["location"])
 
     def translate_attributes(self, tag, attrs):
+        from translate.lang.data import is_rtl
+        
         result = []
+        attrs_dict = dict(attrs)
+        translated_lang = None
+        
+        # First pass: check if lang is being translated
+        if tag == "html" and "lang" in attrs_dict:
+            normalized_value = self.WHITESPACE_RE.sub(" ", attrs_dict["lang"]).strip()
+            translated_value = self.callback(normalized_value)
+            if translated_value != normalized_value:
+                translated_lang = translated_value
+        
         for attrname, attrvalue in attrs:
             if attrvalue:
+                # Special handling for dir attribute on html tag when lang is translated
+                if tag == "html" and attrname == "dir" and translated_lang:
+                    # Automatically set dir based on the target language
+                    new_dir = "rtl" if is_rtl(translated_lang) else "ltr"
+                    result.append((attrname, new_dir))
+                    continue
                 # Special handling for meta tag content attribute
-                if tag == "meta" and attrname == "content":
-                    attrs_dict = dict(attrs)
+                elif tag == "meta" and attrname == "content":
                     # Check both 'name' and 'property' attributes
                     name = attrs_dict.get("name", "").lower()
                     if not name:
@@ -431,7 +449,18 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                     if translated_value != normalized_value:
                         result.append((attrname, translated_value))
                         continue
+            # Special handling when dir attribute doesn't exist but lang is translated
+            elif attrname == "dir" and tag == "html" and translated_lang:
+                # Add dir attribute if it doesn't exist
+                new_dir = "rtl" if is_rtl(translated_lang) else "ltr"
+                result.append((attrname, new_dir))
+                continue
             result.append((attrname, attrvalue))
+        
+        # Add dir attribute if it doesn't exist in attrs but lang is being translated
+        if tag == "html" and translated_lang and "dir" not in attrs_dict:
+            result.append(("dir", "rtl" if is_rtl(translated_lang) else "ltr"))
+        
         return result
 
     @staticmethod

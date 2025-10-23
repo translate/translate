@@ -180,6 +180,84 @@ sin.
         htmlexpected = '<p>"ek is dom"</p>'
         assert htmlexpected in self.converthtml(posource, htmlsource)
 
+    def test_dir_attribute_auto_rtl(self):
+        """Test that dir attribute is automatically set to rtl for RTL languages."""
+        htmlsource = '<html lang="en" dir="ltr"><head><title>Test</title></head><body><p>Content</p></body></html>'
+        posource = """#: html+html[lang]:1-1
+msgid "en"
+msgstr "ar"
+
+#: html+html.head.title:1-19
+msgid "Test"
+msgstr "اختبار"
+
+#: html+html.body.p:1-48
+msgid "Content"
+msgstr "محتوى"
+"""
+        result = self.converthtml(posource, htmlsource)
+        # Check that dir was automatically changed to rtl
+        assert 'dir="rtl"' in result
+        assert 'dir="ltr"' not in result
+        assert 'lang="ar"' in result
+
+    def test_dir_attribute_auto_ltr(self):
+        """Test that dir attribute is automatically set to ltr for LTR languages."""
+        htmlsource = '<html lang="ar" dir="rtl"><head><title>اختبار</title></head><body><p>محتوى</p></body></html>'
+        posource = """#: html+html[lang]:1-1
+msgid "ar"
+msgstr "en"
+
+#: html+html.head.title:1-25
+msgid "اختبار"
+msgstr "Test"
+
+#: html+html.body.p:1-54
+msgid "محتوى"
+msgstr "Content"
+"""
+        result = self.converthtml(posource, htmlsource)
+        # Check that dir was automatically changed to ltr
+        assert 'dir="ltr"' in result
+        assert 'dir="rtl"' not in result
+        assert 'lang="en"' in result
+
+    def test_dir_attribute_added_when_missing(self):
+        """Test that dir attribute is added when translating to RTL language."""
+        htmlsource = '<html lang="en"><head><title>Test</title></head><body><p>Content</p></body></html>'
+        posource = """#: html+html[lang]:1-1
+msgid "en"
+msgstr "he"
+
+#: html+html.head.title:1-13
+msgid "Test"
+msgstr "בדיקה"
+
+#: html+html.body.p:1-42
+msgid "Content"
+msgstr "תוכן"
+"""
+        result = self.converthtml(posource, htmlsource)
+        # Check that dir was automatically added with rtl value
+        assert 'dir="rtl"' in result
+        assert 'lang="he"' in result
+
+    def test_dir_attribute_not_changed_without_lang_translation(self):
+        """Test that dir attribute is not changed when lang is not translated."""
+        htmlsource = '<html lang="en" dir="ltr"><head><title>Test</title></head><body><p>Content</p></body></html>'
+        posource = """#: html+html.head.title:1-19
+msgid "Test"
+msgstr "Prueba"
+
+#: html+html.body.p:1-48
+msgid "Content"
+msgstr "Contenido"
+"""
+        result = self.converthtml(posource, htmlsource)
+        # Check that dir remains unchanged since lang was not translated
+        assert 'dir="ltr"' in result
+        assert 'lang="en"' in result
+
     def test_states_translated(self):
         """Test that we use target when translated."""
         htmlsource = "<div>aaa</div>"
@@ -276,8 +354,9 @@ msgid "This is a page about the English word <strong lang=\\"en\\">Hello</strong
 msgstr "Ceci est une page à propos du mot anglais <strong lang=\\"en\\">Hello</strong>."
 """
         result = self.converthtml(posource, htmlsource)
-        # The html tag should have lang="fr" (translated)
-        assert '<html lang="fr">' in result
+        # The html tag should have lang="fr" (translated) and dir="ltr" (auto-added)
+        assert 'lang="fr"' in result
+        assert 'dir="ltr"' in result
         # Other elements should keep lang="en" (not translated)
         assert 'lang="en" href="/en">English</a>' in result
         # Verify that <a lang="en"> is present

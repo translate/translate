@@ -1104,6 +1104,89 @@ def simplify_to_common(language_code):
     return simplify_to_common(simpler)
 
 
+# List of RTL (right-to-left) languages
+# Sourced from https://github.com/WeblateOrg/language-data
+RTL_LANGS = {
+    "ae",
+    "aeb",
+    "aii",
+    "ajp",
+    "apc",
+    "apd",
+    "ar",
+    "ar_BH",
+    "ar_DZ",
+    "ar_EG",
+    "ar_KW",
+    "ar_LY",
+    "ar_MA",
+    "ar_SA",
+    "ar_YE",
+    "ara",
+    "arc",
+    "arq",
+    "ars",
+    "arz",
+    "ave",
+    "bal",
+    "bgn",
+    "bqi",
+    "ckb",
+    "ckb_IR",
+    "dv",
+    "egy",
+    "fa",
+    "fa_AF",
+    "fas",
+    "ha",
+    "he",
+    "heb",
+    "khw",
+    "ks",
+    "lrc",
+    "luz",
+    "ms_Arab",
+    "mzn",
+    "nqo",
+    "pa_PK",
+    "pal",
+    "per",
+    "phn",
+    "ps",
+    "rhg",
+    "sam",
+    "sd",
+    "sdh",
+    "skr",
+    "syc",
+    "syr",
+    "ug",
+    "ur",
+    "ur_IN",
+    "urd",
+    "yi",
+}
+
+
+def is_rtl(language_code):
+    """
+    Check if a language is right-to-left.
+
+    :param language_code: Language code (e.g., 'ar', 'he', 'en')
+    :return: True if the language is RTL, False otherwise
+    """
+    if not language_code:
+        return False
+    # Normalize the language code
+    normalized = language_code.replace("-", "_").lower()
+    # Check both the full code and the base language code
+    if normalized in RTL_LANGS:
+        return True
+    # Check base language (e.g., 'ar' for 'ar_SA')
+    base = normalized.split("_")[0]
+    return base in RTL_LANGS
+
+
 def get_language(code):
     code = code.replace("-", "_").replace("@", "_").lower()
     if "_" in code:
