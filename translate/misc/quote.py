@@ -357,7 +357,7 @@ def htmlentitydecode(source: str) -> str:
     return entitydecode(source, html.entities.name2codepoint)
 
 
-def javapropertiesencode(source: str, encoding: str = "iso-8859-1") -> str:
+def javapropertiesencode(source: str, encoding: str | None = None) -> str:
     r"""
     Encodes source in the escaped-unicode encoding used by Java
     .properties files.
@@ -367,21 +367,58 @@ def javapropertiesencode(source: str, encoding: str = "iso-8859-1") -> str:
                      Only characters that cannot be represented in this
                      encoding will be escaped as \uXXXX.
     """
+    if encoding is None:
+        encoding = "iso-8859-1"
+
     output = []
     if source and source[0] == " ":
         output.append("\\")
-    for char in source:
-        charnum = ord(char)
-        if char in controlchars:
-            output.append(controlchars[char])
-        else:
-            # Try to encode the character in the target encoding
-            # If it fails, use unicode escape
-            try:
-                char.encode(encoding)
+
+    # Fast path for common encodings using character ordinal checks
+    if encoding in {"ascii", "us-ascii"}:
+        # ASCII: encode all chars >= 128
+        for char in source:
+            charnum = ord(char)
+            if char in controlchars:
+                output.append(controlchars[char])
+            elif charnum < 128:
                 output.append(str(char))
-            except (UnicodeEncodeError, LookupError):
+            else:
                 output.append(f"\\u{charnum:04X}")
+    elif encoding in {"iso-8859-1", "latin-1", "latin1"}:
+        # ISO-8859-1: encode all chars > 255
+        for char in source:
+            charnum = ord(char)
+            if char in controlchars:
+                output.append(controlchars[char])
+            elif charnum <= 255:
+                output.append(str(char))
+            else:
+                output.append(f"\\u{charnum:04X}")
+    else:
+        # For other encodings, we need to test each character
+        # First try to encode the whole string to see if it's even possible
+        try:
+            source.encode(encoding)
+            # All characters can be encoded, just handle control chars
+            for char in source:
+                if char in controlchars:
+                    output.append(controlchars[char])
+                else:
+                    output.append(str(char))
+        except (UnicodeEncodeError, LookupError):
+            # Some characters can't be encoded, check each one
+            for char in source:
+                charnum = ord(char)
+                if char in controlchars:
+                    output.append(controlchars[char])
+                else:
+                    try:
+                        char.encode(encoding)
+                        output.append(str(char))
+                    except (UnicodeEncodeError, LookupError):
+                        output.append(f"\\u{charnum:04X}")
+
     return "".join(output)
 
 
