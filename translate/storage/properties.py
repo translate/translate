@@ -1073,7 +1073,6 @@ class propfile(base.TranslationStore):
         inmultilinevalue = False
         inmultilinecomment = False
         was_header = False
-        in_deprecated_block = False
 
         for line in propsrc.split("\n"):
             # handle multiline value if we're in one
@@ -1090,7 +1089,6 @@ class propfile(base.TranslationStore):
                 if not inmultilinevalue:
                     # we're finished, add it to the list...
                     newunit.value = self.personality.value_strip(newunit.value)
-                    newunit.deprecated = in_deprecated_block
                     self.addunit(newunit)
                     newunit = self.UnitClass("", self.personality.name)
             # otherwise, this could be a comment
@@ -1100,14 +1098,8 @@ class propfile(base.TranslationStore):
                 or (one_line_comment := get_comment_one_line(line)) is not None
                 or (comment_start := get_comment_start(line)) is not None
             ) and not self.UnitClass.represents_missing(line):
-                # Check for deprecated block markers - don't add them as comments
-                stripped = line.strip()
-                if stripped == "#@deprecatedstart":
-                    in_deprecated_block = True
-                elif stripped == "#@deprecatedend":
-                    in_deprecated_block = False
-                # add a comment (but not deprecated markers)
-                elif line not in self.personality.drop_comments:
+                # add a comment
+                if line not in self.personality.drop_comments:
                     newunit.comments.append(line)
 
                 if one_line_comment is not None:
@@ -1120,7 +1112,6 @@ class propfile(base.TranslationStore):
                 # this is a blank line...
                 # avoid adding comment only units
                 if newunit.name:
-                    newunit.deprecated = in_deprecated_block
                     self.addunit(newunit)
                     newunit = self.UnitClass("", self.personality.name)
                 else:
@@ -1142,7 +1133,6 @@ class propfile(base.TranslationStore):
                     newunit.value = ""
                     newunit.delimiter = ""
                     newunit.missing = ismissing
-                    newunit.deprecated = in_deprecated_block
                     self.addunit(newunit)
                     newunit = self.UnitClass("", self.personality.name)
                 else:
@@ -1160,12 +1150,10 @@ class propfile(base.TranslationStore):
                         newunit.value = self.personality.value_strip(
                             line[delimiter_pos + 1 :]
                         )
-                        newunit.deprecated = in_deprecated_block
                         self.addunit(newunit)
                         newunit = self.UnitClass("", self.personality.name)
         # see if there is a leftover one...
         if inmultilinevalue or any(newunit.comments):
-            newunit.deprecated = in_deprecated_block
             self.addunit(newunit)
 
         if self.personality.has_plurals:
@@ -1210,6 +1198,42 @@ class xwikifile(propfile):
         kwargs["personality"] = "xwiki"
         kwargs["encoding"] = "iso-8859-1"
         super().__init__(*args, **kwargs)
+
+    def parse(self, propsrc):
+        """Parse XWiki properties and track deprecated blocks."""
+        # First, do the standard parsing
+        super().parse(propsrc)
+        
+        # Now track which units are in deprecated blocks
+        text, encoding = self.detect_encoding(
+            propsrc,
+            default_encodings=[self.personality.default_encoding, "utf-8", "utf-16"],
+        )
+        if not text and propsrc:
+            return
+        
+        from translate.storage.pypo import rstripeol
+        
+        in_deprecated_block = False
+        unit_index = 0
+        
+        for line in text.split("\n"):
+            line = rstripeol(line)
+            stripped = line.strip()
+            
+            # Track deprecated block state
+            if stripped == "#@deprecatedstart":
+                in_deprecated_block = True
+            elif stripped == "#@deprecatedend":
+                in_deprecated_block = False
+            # Check if this line represents a translatable unit
+            elif line and not stripped.startswith("#") and "=" in line:
+                # Find the corresponding unit and mark it as deprecated if needed
+                if unit_index < len(self.units):
+                    unit = self.units[unit_index]
+                    if unit.istranslatable():
+                        unit.deprecated = in_deprecated_block
+                        unit_index += 1
 
     def _build_deprecated_block_content(self):
         """
