@@ -203,6 +203,12 @@ class ProjectStore:
 
     def close(self):
         self.save()
+        self.cleanup()
+
+    def cleanup(self):
+        for handle in self._files.values():
+            if handle is not None and not isinstance(handle, str):
+                handle.close()
 
     def get_file(self, fname, mode="rb"):
         """

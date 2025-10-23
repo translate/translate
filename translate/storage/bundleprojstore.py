@@ -18,8 +18,8 @@
 
 import contextlib
 import os
-import shutil
-import tempfile
+from shutil import copyfileobj, move
+from tempfile import mkstemp
 from zipfile import ZipFile
 
 from translate.storage.projstore import FileNotInProjectError, ProjectStore
@@ -109,6 +109,7 @@ class BundleProjectStore(ProjectStore):
 
     def cleanup(self):
         """Clean up our mess: remove temporary files."""
+        super().cleanup()
         for tempfname in self._tempfiles:
             if os.path.isfile(tempfname):
                 os.unlink(tempfname)
@@ -131,12 +132,13 @@ class BundleProjectStore(ProjectStore):
                 tempfname = ""
             if not tempfname:
                 # Extract the file to a temporary file
-                zfile = self.zip.open(fname)
-                tempfname = os.path.split(fname)[-1]
-                tempfd, tempfname = tempfile.mkstemp(suffix="_" + tempfname)
-                os.close(tempfd)
-                open(tempfname, "w").write(zfile.read())
-            retfile = open(tempfname)
+                with self.zip.open(fname) as zfile:
+                    tempfname = os.path.split(fname)[-1]
+                    tempfd, tempfname = mkstemp(suffix=f"_{tempfname}")
+                    os.close(tempfd)
+                    with open(tempfname, "wb") as handle:
+                        copyfileobj(zfile, handle)
+            retfile = open(tempfname, "rb")
             self._tempfiles[tempfname] = fname
 
         if not retfile:
@@ -217,9 +219,7 @@ class BundleProjectStore(ProjectStore):
     @staticmethod
     def _create_temp_zipfile():
         """Create a new zip file with a temporary file name (with mode 'w')."""
-        newzipfd, newzipfname = tempfile.mkstemp(
-            prefix="translate_bundle", suffix=".zip"
-        )
+        newzipfd, newzipfname = mkstemp(prefix="translate_bundle", suffix=".zip")
         os.close(newzipfd)
         return ZipFile(newzipfname, "w")
 
@@ -233,7 +233,7 @@ class BundleProjectStore(ProjectStore):
             zfile.close()
         if not self.zip.fp.closed:
             self.zip.close()
-        shutil.move(zfile.filename, self.zip.filename)
+        move(zfile.filename, self.zip.filename)
         self.zip = ZipFile(self.zip.filename, mode="a")
 
     def _update_from_tempfiles(self):
