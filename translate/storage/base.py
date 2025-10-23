@@ -718,7 +718,6 @@ class TranslationStore:
         for location in unit.getlocations():
             if (
                 location in self.locationindex
-                and self.locationindex[location] is not None
                 and self.locationindex[location] == unit
             ):
                 del self.locationindex[location]
