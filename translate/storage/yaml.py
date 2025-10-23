@@ -76,35 +76,37 @@ class YAMLUnit(base.DictUnit):
         """Get the original value from output to check its type."""
         target = output
         parts = self.get_unitid().parts
-        
+
         # Navigate to get the original value
         try:
             for part in parts:
                 element, key = part
-                if element == "index":
+                if element in {"index", "key"}:
                     target = target[key]
-                elif element == "key":
-                    target = target[key]
-            return target
         except (KeyError, IndexError, TypeError):
             return None
+        else:
+            return target
 
     def storevalue(self, output, value, override_key=None, unset=False):
         """Store value, preserving or converting to LiteralScalarString for multiline strings."""
         # Get the original value to check its type before it gets overwritten
         original_value = self._get_original_value(output)
-        
+
         # Convert plain strings with newlines to LiteralScalarString for better readability
         # but preserve the original type if it was already a special scalar string
         if isinstance(value, str) and not unset and "\n" in value:
-            # Preserve LiteralScalarString if it was already one
-            if isinstance(original_value, LiteralScalarString):
-                value = LiteralScalarString(value)
-            # For new values or plain strings, use LiteralScalarString for multiline content
-            elif original_value is None or type(original_value) == str:
+            # Use LiteralScalarString for better readability if:
+            # - original was already a LiteralScalarString (preserve type)
+            # - original is None (new value) or plain str (not a special scalar string)
+            if (
+                isinstance(original_value, LiteralScalarString)
+                or original_value is None
+                or (isinstance(original_value, str) and type(original_value) is str)
+            ):
                 value = LiteralScalarString(value)
             # Otherwise keep the value as-is (e.g., DoubleQuotedScalarString stays quoted)
-        
+
         # Call parent storevalue
         super().storevalue(output, value, override_key, unset)
 
