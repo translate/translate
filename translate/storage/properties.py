@@ -1125,6 +1125,15 @@ class propfile(base.TranslationStore):
                 if self.UnitClass.represents_missing(line):
                     line = self.UnitClass.strip_missing_part(line)
                     ismissing = True
+                    # After stripping the missing prefix, check if the remaining line is a comment
+                    if (
+                        get_comment_one_line(line) is not None
+                        or get_comment_start(line) is not None
+                    ):
+                        # This is a missing comment line, preserve it with the missing prefix
+                        if self.UnitClass.get_missing_part() + line not in self.personality.drop_comments:
+                            newunit.comments.append(self.UnitClass.get_missing_part() + line)
+                        continue
                 newunit.delimiter, delimiter_pos = self.personality.find_delimiter(line)
                 if delimiter_pos == -1:
                     newunit.name = self.personality.key_strip(line)

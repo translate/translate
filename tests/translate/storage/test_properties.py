@@ -1409,6 +1409,42 @@ test_me=I can change the translation source
             in generatedcontent.getvalue().decode(propfile.encoding)
         )
 
+    def test_deprecated_comments_preserved(self):
+        """
+        Ensure that deprecated comment markers like #@deprecatedstart are preserved
+        even when they are marked as missing translations.
+        """
+        propsource = self.getcontent(
+            """# Deprecated keys starts here.
+#@deprecatedstart
+
+job.log.label=Job log
+
+#@deprecatedend"""
+        )
+
+        propfile = self.propparse(propsource)
+        assert len(propfile.units) == 3
+        propunit = propfile.units[1]
+        assert propunit.name == "job.log.label"
+        assert propunit.source == "Job log"
+        assert not propunit.missing
+        propunit.missing = True
+        expected_output = self.getcontent(
+            """# Deprecated keys starts here.
+#@deprecatedstart
+
+### Missing: job.log.label=Job log
+
+#@deprecatedend"""
+        )
+        generatedcontent = BytesIO()
+        propfile.serialize(generatedcontent)
+        assert (
+            generatedcontent.getvalue().decode(propfile.encoding)
+            == expected_output + "\n"
+        )
+
 
 class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
     StoreClass = properties.XWikiFullPage
