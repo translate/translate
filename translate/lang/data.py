@@ -18,6 +18,8 @@
 
 """This module stores information and functionality that relates to plurals."""
 
+from __future__ import annotations
+
 import re
 import unicodedata
 
@@ -1168,7 +1170,7 @@ RTL_LANGS = {
 }
 
 
-def is_rtl(language_code):
+def is_rtl(language_code: str | None) -> bool:
     """
     Check if a language is right-to-left.
 

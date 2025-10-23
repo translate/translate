@@ -378,7 +378,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
     @staticmethod
     def translatable_attribute_matches_tag(attrname, tag):
-        if attrname in ("lang", "dir"):
+        if attrname in {"lang", "dir"}:
             return tag == "html"
         return True
 
