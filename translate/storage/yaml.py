@@ -21,10 +21,11 @@ r"""Class that manages YAML data files for translation."""
 from __future__ import annotations
 
 import uuid
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from ruamel.yaml import YAML, YAMLError
 from ruamel.yaml.comments import CommentedMap, TaggedScalar
+from ruamel.yaml.scalarstring import LiteralScalarString
 
 from translate.lang.data import cldr_plural_categories
 from translate.misc.multistring import multistring
@@ -77,7 +78,57 @@ class YAMLUnit(base.DictUnit):
     def convert_target(self):
         return self.target
 
-    def storevalues(self, output):
+    def _get_original_value(self, output: dict[str, Any] | list[Any]) -> Any:
+        """
+        Get the original value from the YAML output structure to check its type.
+
+        Args:
+            output: The YAML output structure (dict or list) to navigate
+
+        Returns:
+            The original value if it exists, None if navigation fails or value doesn't exist
+
+        """
+        target = output
+        parts = self.get_unitid().parts
+
+        # Navigate to get the original value
+        try:
+            for part in parts:
+                element, key = part
+                if element in {"index", "key"}:
+                    target = target[key]
+        except (KeyError, IndexError, TypeError):
+            return None
+        else:
+            return target
+
+    def storevalue(
+        self,
+        output: dict[str, Any] | list[Any],
+        value: Any,
+        override_key: str | None = None,
+        unset: bool = False,
+    ) -> None:
+        """Store value, preserving or converting to LiteralScalarString for multiline strings."""
+        # Get the original value to check its type before it gets overwritten
+        original_value = self._get_original_value(output)
+
+        # Preserve or convert to LiteralScalarString for better readability
+        if isinstance(value, str) and not unset:
+            # Always preserve LiteralScalarString if original was one, or
+            # for new values or plain strings, use LiteralScalarString if multiline
+            if isinstance(original_value, LiteralScalarString) or (
+                "\n" in value
+                and (original_value is None or type(original_value) is str)
+            ):
+                value = LiteralScalarString(value)
+            # Otherwise keep the value as-is (e.g., DoubleQuotedScalarString stays quoted)
+
+        # Call parent storevalue
+        super().storevalue(output, value, override_key, unset)
+
+    def storevalues(self, output: dict[str, Any] | list[Any]) -> None:
         self.storevalue(output, self.convert_target())
 
 

@@ -561,6 +561,55 @@ key2: value2
         assert store.units[0].getnotes() == ""
         assert store.units[1].getnotes() == ""
 
+    def test_multiline_literal_format(self):
+        """Test that multiline strings use literal format (|) for better readability."""
+        # Test 1: New file with multiline content
+        store = self.StoreClass()
+        store.parse("")
+        unit = self.StoreClass.UnitClass("")
+        unit.setid("example_code")
+        store.addunit(unit)
+        unit.target = "Line 1\nLine 2\nLine 3"
+        result = bytes(store).decode()
+        # Should use | format, not quoted with \n
+        assert "|-" in result or "|" in result
+        assert "Line 1\\n" not in result
+
+        # Test 2: Editing existing | format preserves it
+        original = """example_code: |
+  Original line 1
+  Original line 2
+"""
+        store2 = self.StoreClass()
+        store2.parse(original)
+        store2.units[0].target = "New line 1\nNew line 2"
+        result2 = bytes(store2).decode()
+        assert "|-" in result2 or "|" in result2
+        assert "New line 1\\n" not in result2
+
+        # Test 3: Quoted strings preserve their format
+        quoted = r"""key: "Text\nwith\nescapes"
+"""
+        store3 = self.StoreClass()
+        store3.parse(quoted)
+        store3.units[0].target = "New\ntext"
+        result3 = bytes(store3).decode()
+        # Should stay quoted
+        assert '"' in result3
+        assert "New\\n" in result3
+
+        # Test 4: LiteralScalarString preserved even without newlines
+        literal_single = """key: |
+  Single line
+"""
+        store4 = self.StoreClass()
+        store4.parse(literal_single)
+        store4.units[0].target = "Different single line"
+        result4 = bytes(store4).decode()
+        # Should preserve literal format even though new value has no newlines
+        assert "|-" in result4 or "|" in result4
+        assert "Different single line" in result4
+
 
 class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
     StoreClass = yaml.RubyYAMLFile
