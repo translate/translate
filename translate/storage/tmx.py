@@ -54,11 +54,11 @@ class tmxunit(lisa.LISAunit):
         :param element: The element to insert
         :param tag: Tag name to search for
         """
-        after = self.xmlelement.find(tag)
-        if after is None:
+        needle = self.xmlelement.find(tag)
+        if needle is None:
             self.xmlelement.append(element)
         else:
-            self.xmlelement.insert(self.xmlelement.index(after), element)
+            self.xmlelement.insert(self.xmlelement.index(needle), element)
 
     def getid(self):
         """
@@ -82,14 +82,11 @@ class tmxunit(lisa.LISAunit):
         safely_set_text(note, text.strip())
 
         # According to TMX DTD, notes should come before prop and tuv elements
-        # Try to insert before prop first, then tuv
-        after = self.xmlelement.find("prop")
-        if after is None:
-            after = self.xmlelement.find(self.namespaced(self.languageNode))
-        if after is None:
-            self.xmlelement.append(note)
+        # Try to insert before prop first, if not found try tuv
+        if self.xmlelement.find("prop") is not None:
+            self._insert_element_before(note, "prop")
         else:
-            self.xmlelement.insert(self.xmlelement.index(after), note)
+            self._insert_element_before(note, self.namespaced(self.languageNode))
 
     def _getnotelist(self, origin=None):
         """
