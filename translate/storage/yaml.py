@@ -118,77 +118,56 @@ class YAMLFile(base.DictStore):
         self.serialize_units(units)
         self.yaml.dump(self._original, out)
 
+    def _extract_comment_lines(self, tokens):
+        """Extract comment text from YAML comment tokens."""
+        comment_lines = []
+        # Ensure tokens is a list
+        if not isinstance(tokens, list):
+            tokens = [tokens]
+
+        for token in tokens:
+            if hasattr(token, "value"):
+                for line in token.value.split("\n"):
+                    line = line.strip()
+                    if line.startswith("#"):
+                        comment_lines.append(line[1:].strip())
+        return comment_lines
+
     def _get_key_comment(self, commented_map, key):
         """
         Extract the comment that appears before a key in a CommentedMap.
 
-        In ruamel.yaml's CommentedMap:
-        - ca.comment contains top-level comments (before the first key)
-        - ca.items[key] is a list with 4 elements:
-          [0] = comment before key on same line
-          [1] = comment after key on same line
-          [2] = comment after the value (which is typically the comment for the NEXT key)
-          [3] = comment before key on separate lines
-
-        The comment before a key can be in:
-        1. ca.comment[1] if it's the first key
-        2. ca.items[previous_key][2] (comment after previous key's value)
-        3. ca.items[key][3] (comment on separate lines before key)
+        Comments can appear in three places:
+        1. Top-level comment for the first key (ca.comment[1])
+        2. After the previous key's value (ca.items[prev_key][2])
+        3. On separate lines before the key (ca.items[key][3])
         """
-        if not isinstance(commented_map, CommentedMap):
-            return None
-
-        if not hasattr(commented_map, "ca"):
+        if not isinstance(commented_map, CommentedMap) or not hasattr(commented_map, "ca"):
             return None
 
         comment_lines = []
         keys = list(commented_map.keys())
 
-        # If this is the first key, check for top-level comment
+        # Check for top-level comment if this is the first key
         if keys and keys[0] == key:
-            if hasattr(commented_map.ca, "comment") and commented_map.ca.comment:
-                if len(commented_map.ca.comment) > 1 and commented_map.ca.comment[1]:
-                    tokens = commented_map.ca.comment[1]
-                    for token in tokens:
-                        if hasattr(token, "value"):
-                            for line in token.value.split("\n"):
-                                line = line.strip()
-                                if line.startswith("#"):
-                                    comment_lines.append(line[1:].strip())
-        # For non-first keys, check the previous key's "end" comment (index 2)
+            ca_comment = getattr(commented_map.ca, "comment", None)
+            if ca_comment and len(ca_comment) > 1 and ca_comment[1]:
+                comment_lines.extend(self._extract_comment_lines(ca_comment[1]))
+
+        # For non-first keys, check the previous key's end comment
         elif key in keys:
             key_index = keys.index(key)
-            if key_index > 0:
+            if key_index > 0 and hasattr(commented_map.ca, "items"):
                 prev_key = keys[key_index - 1]
-                if hasattr(commented_map.ca, "items") and commented_map.ca.items:
-                    prev_comment_info = commented_map.ca.items.get(prev_key)
-                    if (
-                        prev_comment_info
-                        and len(prev_comment_info) > 2
-                        and prev_comment_info[2] is not None
-                    ):
-                        token = prev_comment_info[2]
-                        if hasattr(token, "value"):
-                            for line in token.value.split("\n"):
-                                line = line.strip()
-                                if line.startswith("#"):
-                                    comment_lines.append(line[1:].strip())
+                prev_comment_info = commented_map.ca.items.get(prev_key)
+                if prev_comment_info and len(prev_comment_info) > 2 and prev_comment_info[2]:
+                    comment_lines.extend(self._extract_comment_lines(prev_comment_info[2]))
 
-        # Also check for comments in ca.items[key][3] (separate lines before key)
-        if hasattr(commented_map.ca, "items") and commented_map.ca.items:
+        # Check for comments on separate lines before this key
+        if hasattr(commented_map.ca, "items"):
             comment_info = commented_map.ca.items.get(key)
-            if comment_info and len(comment_info) > 3 and comment_info[3] is not None:
-                tokens = (
-                    comment_info[3]
-                    if isinstance(comment_info[3], list)
-                    else [comment_info[3]]
-                )
-                for token in tokens:
-                    if hasattr(token, "value"):
-                        for line in token.value.split("\n"):
-                            line = line.strip()
-                            if line.startswith("#"):
-                                comment_lines.append(line[1:].strip())
+            if comment_info and len(comment_info) > 3 and comment_info[3]:
+                comment_lines.extend(self._extract_comment_lines(comment_info[3]))
 
         return "\n".join(comment_lines) if comment_lines else None
 
