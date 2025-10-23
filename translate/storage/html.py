@@ -418,7 +418,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
         for attrname, attrvalue in attrs:
             # Skip dir attribute on html tag when lang is translated - it will be set below
-            if tag == "html" and attrname == "dir" and translated_lang:
+            if tag == "html" and attrname == "dir":
                 continue
             if attrvalue:
                 # Special handling for meta tag content attribute
