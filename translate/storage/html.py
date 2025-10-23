@@ -417,13 +417,10 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 translated_lang = translated_value
 
         for attrname, attrvalue in attrs:
+            # Skip dir attribute on html tag when lang is translated - it will be set below
+            if tag == "html" and attrname == "dir" and translated_lang:
+                continue
             if attrvalue:
-                # Special handling for dir attribute on html tag when lang is translated
-                if tag == "html" and attrname == "dir" and translated_lang:
-                    # Automatically set dir based on the target language
-                    new_dir = "rtl" if is_rtl(translated_lang) else "ltr"
-                    result.append((attrname, new_dir))
-                    continue
                 # Special handling for meta tag content attribute
                 if tag == "meta" and attrname == "content":
                     # Check both 'name' and 'property' attributes
@@ -448,16 +445,10 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                     if translated_value != normalized_value:
                         result.append((attrname, translated_value))
                         continue
-            # Special handling when dir attribute doesn't exist but lang is translated
-            elif attrname == "dir" and tag == "html" and translated_lang:
-                # Add dir attribute if it doesn't exist
-                new_dir = "rtl" if is_rtl(translated_lang) else "ltr"
-                result.append((attrname, new_dir))
-                continue
             result.append((attrname, attrvalue))
 
-        # Add dir attribute if it doesn't exist in attrs but lang is being translated
-        if tag == "html" and translated_lang and "dir" not in attrs_dict:
+        # Set dir attribute on html tag when lang is being translated
+        if tag == "html" and translated_lang:
             result.append(("dir", "rtl" if is_rtl(translated_lang) else "ltr"))
 
         return result
