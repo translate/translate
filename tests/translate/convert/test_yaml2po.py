@@ -130,6 +130,60 @@ foo: What's up?
         assert target_store.units[2].source == "What's up?"
         assert target_store.units[2].target == ""
 
+    def test_comment_extraction(self):
+        """Check that YAML comments are extracted as developer notes in PO."""
+        input_string = """# This is a comment for the greeting key
+# It helps translators understand the context
+greeting: Hello, World!
+
+# This comment explains the farewell message
+farewell: Goodbye!
+"""
+        target_store = self._convert_to_store(input_string)
+        assert self._count_elements(target_store) == 2
+
+        # Check first unit
+        assert target_store.units[1].getlocations() == ["greeting"]
+        assert target_store.units[1].source == "Hello, World!"
+        notes = target_store.units[1].getnotes(origin="developer")
+        assert (
+            "This is a comment for the greeting key" in notes
+        ), f"Expected comment not found in: {notes}"
+        assert (
+            "It helps translators understand the context" in notes
+        ), f"Expected comment not found in: {notes}"
+
+        # Check second unit
+        assert target_store.units[2].getlocations() == ["farewell"]
+        assert target_store.units[2].source == "Goodbye!"
+        notes = target_store.units[2].getnotes(origin="developer")
+        assert (
+            "This comment explains the farewell message" in notes
+        ), f"Expected comment not found in: {notes}"
+
+    def test_comment_extraction_nested(self):
+        """Check that comments on nested YAML keys are extracted."""
+        input_string = """settings:
+  # This is the app name
+  app_name: My App
+  # This is the version
+  version: 1.0.0
+"""
+        target_store = self._convert_to_store(input_string)
+        assert self._count_elements(target_store) == 2
+
+        # Check first unit
+        assert target_store.units[1].getlocations() == ["settings->app_name"]
+        assert target_store.units[1].source == "My App"
+        notes = target_store.units[1].getnotes(origin="developer")
+        assert "This is the app name" in notes, f"Expected comment not found in: {notes}"
+
+        # Check second unit
+        assert target_store.units[2].getlocations() == ["settings->version"]
+        assert target_store.units[2].source == "1.0.0"
+        notes = target_store.units[2].getnotes(origin="developer")
+        assert "This is the version" in notes, f"Expected comment not found in: {notes}"
+
 
 class TestYAML2POCommand(test_convert.TestConvertCommand, TestYAML2PO):
     """Tests running actual yaml2po commands on files."""
