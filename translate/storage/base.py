@@ -850,9 +850,6 @@ class TranslationStore:
             else:
                 detected_encoding["encoding"] = detected_encoding["encoding"].lower()
 
-        # Check if the text has a BOM
-        has_bom = any(text.startswith(bom) for bom, _ in ENCODING_BOMS)
-
         encodings = []
         # Purposefully accessed the internal _encoding, as encoding is never 'auto'
         if self._encoding == "auto":
@@ -872,28 +869,14 @@ class TranslationStore:
             if encoding == self.encoding and suffix == "sig":
                 encodings.append(detected_encoding["encoding"])
             elif detected_encoding["encoding"] != self.encoding:
-                # When BOM is present, check if encodings are compatible variants
-                # (e.g., utf-16 vs utf-16le/utf-16be)
-                should_warn = True
-                if has_bom:
-                    import re
-                    detected_normalized = detected_encoding["encoding"].replace("_", "-").lower()
-                    expected_normalized = self.encoding.replace("_", "-").lower()
-                    # Remove endianness suffixes to compare encoding families
-                    detected_family = re.sub(r'[-_]?(le|be|sig)$', '', detected_normalized)
-                    expected_family = re.sub(r'[-_]?(le|be|sig)$', '', expected_normalized)
-                    if detected_family == expected_family:
-                        should_warn = False
-
-                if should_warn:
-                    logger.warning(
-                        "trying to parse %s with encoding: %s but "
-                        "detected encoding is %s (confidence: %s)",
-                        self.filename,
-                        self.encoding,
-                        detected_encoding["encoding"],
-                        detected_encoding["confidence"],
-                    )
+                logger.warning(
+                    "trying to parse %s with encoding: %s but "
+                    "detected encoding is %s (confidence: %s)",
+                    self.filename,
+                    self.encoding,
+                    detected_encoding["encoding"],
+                    detected_encoding["confidence"],
+                )
             encodings.append(self.encoding)
         else:
             encodings.append(self.encoding)
