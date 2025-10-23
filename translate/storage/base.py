@@ -851,11 +851,7 @@ class TranslationStore:
                 detected_encoding["encoding"] = detected_encoding["encoding"].lower()
 
         # Check if the text has a BOM
-        has_bom = False
-        for bom, _ in ENCODING_BOMS:
-            if text.startswith(bom):
-                has_bom = True
-                break
+        has_bom = any(text.startswith(bom) for bom, _ in ENCODING_BOMS)
 
         encodings = []
         # Purposefully accessed the internal _encoding, as encoding is never 'auto'
@@ -876,21 +872,16 @@ class TranslationStore:
             if encoding == self.encoding and suffix == "sig":
                 encodings.append(detected_encoding["encoding"])
             elif detected_encoding["encoding"] != self.encoding:
-                # Check if the detected encoding is compatible with the expected encoding
-                # when a BOM is present. For example, UTF-16 with BOM can be detected as
-                # UTF-16LE or UTF-16BE, which are compatible variants.
+                # When BOM is present, check if encodings are compatible variants
+                # (e.g., utf-16 vs utf-16le/utf-16be)
                 should_warn = True
                 if has_bom:
-                    # Normalize encodings by removing endianness and sig suffixes
                     import re
                     detected_normalized = detected_encoding["encoding"].replace("_", "-").lower()
                     expected_normalized = self.encoding.replace("_", "-").lower()
-
-                    # Remove endianness suffixes (le, be) and sig suffix
+                    # Remove endianness suffixes to compare encoding families
                     detected_family = re.sub(r'[-_]?(le|be|sig)$', '', detected_normalized)
                     expected_family = re.sub(r'[-_]?(le|be|sig)$', '', expected_normalized)
-
-                    # If they're the same encoding family, don't warn
                     if detected_family == expected_family:
                         should_warn = False
 

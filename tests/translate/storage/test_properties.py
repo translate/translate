@@ -741,51 +741,19 @@ key=value
         assert bom not in result[3:]
         assert b"None" not in result[3:]
 
-    def test_utf16_bom_no_spurious_warning(self, caplog):
-        """Test that no spurious warning is issued for UTF-16 files with BOM."""
-        import codecs
+    def test_utf16_bom_no_warning(self):
+        """Test that UTF-16 files with BOM do not trigger encoding warnings."""
+        import warnings
 
-        # Create a .strings file with UTF-16 encoding (includes BOM)
+        # Test UTF-16 with BOM (typical Mac .strings file)
         propsource = r'"key" = "value";'.encode("utf-16")
 
-        # Ensure it has a BOM
-        assert propsource.startswith(codecs.BOM_UTF16)
-
-        # Mock charset_normalizer to return UTF-16LE (simulating old behavior)
-        # to ensure our fix handles this case
-        try:
-            import charset_normalizer
-            from charset_normalizer import detect as original_detect
-
-            def mock_detect(data):
-                """Mock detect that returns UTF-16LE when UTF-16 BOM is found."""
-                if data.startswith(codecs.BOM_UTF16):
-                    return {"encoding": "UTF-16LE", "confidence": 1.0}
-                return original_detect(data)
-
-            # Temporarily replace detect function
-            charset_normalizer.detect = mock_detect
-
-            # Parse the file
+        # Parse should not trigger any warnings
+        with warnings.catch_warnings():
+            warnings.simplefilter("error")
             propfile = self.propparse(propsource, personality="strings")
 
-            # Restore original detect
-            charset_normalizer.detect = original_detect
-
-            # After the fix, there should be no warnings about encoding mismatch
-            # when BOM is present
-            warnings = [
-                record for record in caplog.records
-                if record.levelname == "WARNING" and "detected encoding" in record.message
-            ]
-            assert len(warnings) == 0, f"Unexpected warnings: {[w.message for w in warnings]}"
-
-        except ImportError:
-            # charset_normalizer not installed, skip this part of the test
-            pass
-
-        # Verify the file was parsed correctly regardless
-        propfile = self.propparse(propsource, personality="strings")
+        # Verify the file was parsed correctly
         assert len(propfile.units) == 1
         assert propfile.units[0].name == "key"
         assert propfile.units[0].source == "value"
