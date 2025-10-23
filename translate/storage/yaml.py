@@ -98,7 +98,8 @@ class YAMLUnit(base.DictUnit):
             # Always preserve LiteralScalarString if original was one, or
             # for new values or plain strings, use LiteralScalarString if multiline
             if isinstance(original_value, LiteralScalarString) or (
-                "\n" in value and (original_value is None or type(original_value) is str)
+                "\n" in value
+                and (original_value is None or type(original_value) is str)
             ):
                 value = LiteralScalarString(value)
             # Otherwise keep the value as-is (e.g., DoubleQuotedScalarString stays quoted)
