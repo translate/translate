@@ -156,8 +156,8 @@ sin.
         """
         # Test custom entity preservation
         htmlsource = "<p>Use &brandShortName; for the best experience.</p>"
-        posource = '#: html:3\nmsgid "Use &brandShortName; for the best experience."\nmsgstr "Verwenden Sie &brandShortName; für die beste Erfahrung."\n'
-        htmlexpected = "<p>Verwenden Sie &brandShortName; für die beste Erfahrung.</p>"
+        posource = '#: html:3\nmsgid "Use &brandShortName; for the best experience."\nmsgstr "Verwenden Sie &brandShortName; für die beste Erfahrung."\n'  # codespell:ignore
+        htmlexpected = "<p>Verwenden Sie &brandShortName; für die beste Erfahrung.</p>"  # codespell:ignore
         result = self.converthtml(posource, htmlsource)
         assert htmlexpected in result
         # Ensure no double encoding
