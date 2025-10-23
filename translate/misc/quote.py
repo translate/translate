@@ -374,50 +374,45 @@ def javapropertiesencode(source: str, encoding: str | None = None) -> str:
     if source and source[0] == " ":
         output.append("\\")
 
-    # Fast path for common encodings using character ordinal checks
+    # Determine character validation function based on encoding
+    # Fast path for common encodings using ordinal checks (no exceptions)
     if encoding in {"ascii", "us-ascii"}:
-        # ASCII: encode all chars >= 128
-        for char in source:
-            charnum = ord(char)
-            if char in controlchars:
-                output.append(controlchars[char])
-            elif charnum < 128:
-                output.append(str(char))
-            else:
-                output.append(f"\\u{charnum:04X}")
+
+        def is_valid_char(charnum):
+            return 0 <= charnum < 128
     elif encoding in {"iso-8859-1", "latin-1", "latin1"}:
-        # ISO-8859-1: encode all chars > 255
-        for char in source:
-            charnum = ord(char)
-            if char in controlchars:
-                output.append(controlchars[char])
-            elif charnum <= 255:
-                output.append(str(char))
-            else:
-                output.append(f"\\u{charnum:04X}")
+
+        def is_valid_char(charnum):
+            return 0 <= charnum <= 255
     else:
-        # For other encodings, we need to test each character
-        # First try to encode the whole string to see if it's even possible
+        # For other encodings, try the full string first for performance
         try:
             source.encode(encoding)
-            # All characters can be encoded, just handle control chars
-            for char in source:
-                if char in controlchars:
-                    output.append(controlchars[char])
-                else:
-                    output.append(str(char))
+            # All characters are valid, use a function that always returns True
+
+            def is_valid_char(charnum):
+                return True
         except (UnicodeEncodeError, LookupError):
-            # Some characters can't be encoded, check each one
-            for char in source:
-                charnum = ord(char)
-                if char in controlchars:
-                    output.append(controlchars[char])
-                else:
-                    try:
-                        char.encode(encoding)
-                        output.append(str(char))
-                    except (UnicodeEncodeError, LookupError):
-                        output.append(f"\\u{charnum:04X}")
+            # Some characters can't be encoded, need per-character check
+            def is_valid_char(charnum):
+                return None  # Signal to use try/except
+
+    # Process each character with the appropriate validation
+    for char in source:
+        charnum = ord(char)
+        if char in controlchars:
+            output.append(controlchars[char])
+        elif is_valid_char(charnum) is None:
+            # Need to test encoding for this character
+            try:
+                char.encode(encoding)
+                output.append(str(char))
+            except (UnicodeEncodeError, LookupError):
+                output.append(f"\\u{charnum:04X}")
+        elif is_valid_char(charnum):
+            output.append(str(char))
+        else:
+            output.append(f"\\u{charnum:04X}")
 
     return "".join(output)
 
