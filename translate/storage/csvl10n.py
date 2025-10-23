@@ -84,7 +84,7 @@ class csvunit(base.TranslationUnit):
             result = self.translator_comments
             if self.developer_comments:
                 if result:
-                    result += "\n" + self.developer_comments
+                    result += f"\n{self.developer_comments}"
                 else:
                     result = self.developer_comments
             return result
@@ -97,15 +97,15 @@ class csvunit(base.TranslationUnit):
     def addnote(self, text, origin=None, position="append"):
         if origin in {"programmer", "developer", "source code"}:
             if position == "append" and self.developer_comments:
-                self.developer_comments += "\n" + text
+                self.developer_comments += f"\n{text}"
             elif position == "prepend" and self.developer_comments:
-                self.developer_comments = text + "\n" + self.developer_comments
+                self.developer_comments = f"{text}\n{self.developer_comments}"
             else:
                 self.developer_comments = text
         elif position == "append" and self.translator_comments:
-            self.translator_comments += "\n" + text
+            self.translator_comments += f"\n{text}"
         elif position == "prepend" and self.translator_comments:
-            self.translator_comments = self.translator_comments + "\n" + text
+            self.translator_comments = f"{self.translator_comments}\n{text}"
         else:
             self.translator_comments = text
 

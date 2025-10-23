@@ -58,7 +58,7 @@ class oo2xliff:
             unit.markfuzzy(False)
         else:
             unit.markfuzzy(True)
-        unit.setid(key + "." + subkey)
+        unit.setid(f"{key}.{subkey}")
         if getattr(translators_comment, subkey).strip():
             unit.addnote(getattr(translators_comment, subkey), origin="developer")
         return unit

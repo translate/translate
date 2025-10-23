@@ -854,7 +854,7 @@ class StringElem:
         indent_prefix = " " * indent * 2
         out = f"{indent_prefix}{self.__class__.__name__} [{self!s}]"
         if verbose:
-            out += " " + repr(self)
+            out += f" {self!r}"
 
         print(out)
 

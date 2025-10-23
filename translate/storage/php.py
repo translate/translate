@@ -296,7 +296,7 @@ class phpunit(base.TranslationUnit):
             self.escape_type,
             phpencode(self.get_raw_value(), self.escape_type),
         )
-        joiner = "\n" + indent
+        joiner = f"\n{indent}"
         return indent + joiner.join([*self._comments, out])
 
     def addlocation(self, location):

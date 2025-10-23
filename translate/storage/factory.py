@@ -120,7 +120,7 @@ def _get_dummy_name(storefile):
     Provides a dummy name for a file object without a name attribute, by
     guessing the file type.
     """
-    return "dummy." + _guess_extension(storefile)
+    return f"dummy.{_guess_extension(storefile)}"
 
 
 def _get_name(storefile):

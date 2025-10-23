@@ -313,7 +313,7 @@ class xliffunit(lisa.LISAunit):
         # TODO: consider factoring out: some duplication between XLIFF and TMX
         text = errorname
         if errortext:
-            text += ": " + errortext
+            text += f": {errortext}"
         self.addnote(text, origin="pofilter")
 
     def geterrors(self):
@@ -473,7 +473,7 @@ class xliffunit(lisa.LISAunit):
             sourcefile = next((x for x in contextgroup if x[0] == "sourcefile"), None)
             linenumber = next((x for x in contextgroup if x[0] == "linenumber"), None)
             if sourcefile is not None and linenumber is not None:
-                locations.append(sourcefile[1] + ":" + linenumber[1])
+                locations.append(f"{sourcefile[1]}:{linenumber[1]}")
             elif sourcefile is not None:
                 locations.append(sourcefile[1])
 

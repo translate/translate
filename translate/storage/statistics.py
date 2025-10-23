@@ -95,7 +95,7 @@ class Statistics:
         """Joins the unit source strings in a single string of text."""
         source_text = ""
         for unit in units:
-            source_text += unit.source + "\n"
+            source_text += f"{unit.source}\n"
             plurals = getattr(unit.source, "strings", [])
             if plurals:
                 source_text += "\n".join(plurals[1:])
@@ -137,7 +137,7 @@ class Statistics:
         # TODO: decoding should not be done here
         #        checkresult = self.checker.run_filters(unit, unit.source, unit.target)
         checkresult = {}
-        classes.extend("check-" + checkname for checkname in checkresult)
+        classes.extend(f"check-{checkname}" for checkname in checkresult)
         return classes
 
     def classifyunits(self):
@@ -153,7 +153,7 @@ class Statistics:
         self.classification["has-suggestion"] = []
         self.classification["total"] = []
         #        for checkname in self.checker.getfilters().keys():
-        #            self.classification["check-" + checkname] = []
+        #            self.classification[f"check-{checkname}"] = []
         for item, unit in enumerate(self.unit_iter()):
             classes = self.classifyunit(unit)
             #            if self.basefile.getsuggestions(item):

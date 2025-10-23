@@ -92,7 +92,7 @@ class pounit(base.TranslationUnit):
         if needsreview:
             reviewnote = "(review)"
             if explanation:
-                reviewnote += " " + explanation
+                reviewnote += f" {explanation}"
             self.addnote(reviewnote, origin="translator")
         else:
             # Strip (review) notes.

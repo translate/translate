@@ -85,7 +85,7 @@ class ManHelpFormatter(optparse.HelpFormatter):
             metavar = option.metavar or option.dest.upper()
             metavar = f"\\fI{metavar}\\fP"
             short_opts = [sopt + metavar for sopt in option._short_opts]
-            long_opts = [lopt + "\\fR=\\fP" + metavar for lopt in option._long_opts]
+            long_opts = [f"{lopt}\\fR=\\fP{metavar}" for lopt in option._long_opts]
         else:
             short_opts = option._short_opts
             long_opts = option._long_opts
@@ -125,7 +125,7 @@ class RecursiveOptionParser(optparse.OptionParser):
         :param formats: See :meth:`~.RecursiveOptionParser.setformats`
         for an explanation of the formats parameter.
         """
-        super().__init__(version="%prog " + __version__.sver, description=description)
+        super().__init__(version=f"%prog {__version__.sver}", description=description)
         self.setmanpageoption()
         self.setprogressoptions()
         self.seterrorleveloptions()
@@ -236,7 +236,7 @@ class RecursiveOptionParser(optparse.OptionParser):
             else:
                 errorinfo = ""
             if errorinfo:
-                msg += ": " + errorinfo
+                msg += f": {errorinfo}"
         logging.getLogger(self.get_prog_name()).warning(msg)
 
     @staticmethod
@@ -246,7 +246,7 @@ class RecursiveOptionParser(optparse.OptionParser):
         if getattr(option, "optionalswitch", False):
             optionstring = f"[{optionstring}]"
         if option.metavar:
-            optionstring += " " + option.metavar
+            optionstring += f" {option.metavar}"
         if getattr(option, "required", False):
             return optionstring
         return f"[{optionstring}]"

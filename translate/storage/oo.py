@@ -83,9 +83,9 @@ def makekey(ookey, long_keys):
     if len(groupid) == 0 or len(localid) == 0:
         fullid = groupid + localid
     else:
-        fullid = groupid + "." + localid
+        fullid = f"{groupid}.{localid}"
     if resourcetype:
-        fullid = fullid + "." + resourcetype
+        fullid = f"{fullid}.{resourcetype}"
     key = f"{sourcebase}#{fullid}"
     return normalizefilename(key)
 
@@ -160,7 +160,7 @@ def escape_help_text(text):
         if tag in {"<br/>", "<help-id-missing/>"}:
             escapethistag = True
         if escapethistag:
-            escaped_tag = ("\\<" + tag[1:-1] + "\\>").replace('"', '\\"')
+            escaped_tag = (f"\\<{tag[1:-1]}\\>").replace('"', '\\"')
             text = text.replace(tag, escaped_tag)
     return text
 
@@ -437,7 +437,7 @@ class oomultifile:
             filename = filename.replace("\\", "/")
             fileparts = [module, *filename.split("/")]
             ooname = os.path.join(*fileparts[:-1])
-        return ooname + os.extsep + "oo"
+        return f"{ooname}{os.extsep}oo"
 
     def listsubfiles(self):
         """Returns a list of subfiles in the file."""

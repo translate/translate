@@ -71,8 +71,8 @@ class TikiUnit(base.TranslationUnit):
         """Returns a string formatted to be inserted into a tiki language.php file."""
         ret = f'"{self.source}" => "{self.target}",'
         if self.location == ["untranslated"]:
-            ret = "// " + ret
-        return ret + "\n"
+            ret = f"// {ret}"
+        return f"{ret}\n"
 
     def addlocation(self, location):
         """

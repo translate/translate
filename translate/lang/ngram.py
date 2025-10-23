@@ -97,7 +97,7 @@ class _NGram:
 class NGram:
     def __init__(self, folder, ext=".lm"):
         self.ngrams = {}
-        folder = path.join(folder, "*" + ext)
+        folder = path.join(folder, f"*{ext}")
         size = len(ext)
 
         for fname in glob.glob(path.normcase(folder)):
@@ -137,7 +137,7 @@ class NGram:
 class Generate:
     def __init__(self, folder, ext=".txt"):
         self.ngrams = {}
-        folder = path.join(folder, "*" + ext)
+        folder = path.join(folder, f"*{ext}")
         size = len(ext)
 
         for fname in glob.glob(path.normcase(folder)):
