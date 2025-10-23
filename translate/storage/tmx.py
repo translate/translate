@@ -43,6 +43,23 @@ class tmxunit(lisa.LISAunit):
 
         return langset
 
+    def _insert_element_before(self, element: etree._Element, tag: str) -> None:
+        """
+        Insert an element before the first occurrence of the specified tag.
+
+        According to TMX DTD, elements must follow this order: note, prop, tuv.
+        This helper method finds the first child matching the tag name
+        and inserts the element before it, or appends at the end if none found.
+
+        :param element: The element to insert
+        :param tag: Tag name to search for
+        """
+        needle = self.xmlelement.find(tag)
+        if needle is None:
+            self.xmlelement.append(element)
+        else:
+            self.xmlelement.insert(self.xmlelement.index(needle), element)
+
     def getid(self):
         """
         Returns the identifier for this unit. The optional tuid property is
@@ -61,8 +78,15 @@ class tmxunit(lisa.LISAunit):
 
         The origin parameter is ignored
         """
-        note = etree.SubElement(self.xmlelement, self.namespaced("note"))
+        note = etree.Element(self.namespaced("note"))
         safely_set_text(note, text.strip())
+
+        # According to TMX DTD, notes should come before prop and tuv elements
+        # Try to insert before prop first, if not found try tuv
+        if self.xmlelement.find(self.namespaced("prop")) is not None:
+            self._insert_element_before(note, self.namespaced("prop"))
+        else:
+            self._insert_element_before(note, self.namespaced(self.languageNode))
 
     def _getnotelist(self, origin=None):
         """
@@ -103,14 +127,23 @@ class tmxunit(lisa.LISAunit):
         return errordict
 
     def setcontext(self, context):
-        context_prop = self.xmlelement.find("prop[@type='x-context']")
+        context_prop = self.xmlelement.find(
+            self.namespaced("prop") + "[@type='x-context']"
+        )
         if context_prop is None:
-            context_prop = etree.SubElement(self.xmlelement, "prop")
+            context_prop = etree.Element(self.namespaced("prop"))
             context_prop.set("type", "x-context")
+
+            # According to TMX DTD, prop elements come after notes but before tuv elements
+            self._insert_element_before(
+                context_prop, self.namespaced(self.languageNode)
+            )
         safely_set_text(context_prop, context)
 
     def getcontext(self):
-        context_prop = self.xmlelement.find("prop[@type='x-context']")
+        context_prop = self.xmlelement.find(
+            self.namespaced("prop") + "[@type='x-context']"
+        )
         if context_prop is not None and context_prop.text is not None:
             return context_prop.text
         return ""
