@@ -402,17 +402,19 @@ def javapropertiesencode(source: str, encoding: str | None = None) -> str:
         charnum = ord(char)
         if char in controlchars:
             output.append(controlchars[char])
-        elif is_valid_char(charnum) is None:
-            # Need to test encoding for this character
-            try:
-                char.encode(encoding)
-                output.append(str(char))
-            except (UnicodeEncodeError, LookupError):
-                output.append(f"\\u{charnum:04X}")
-        elif is_valid_char(charnum):
-            output.append(str(char))
         else:
-            output.append(f"\\u{charnum:04X}")
+            valid = is_valid_char(charnum)
+            if valid is None:
+                # Need to test encoding for this character
+                try:
+                    char.encode(encoding)
+                    output.append(str(char))
+                except (UnicodeEncodeError, LookupError):
+                    output.append(f"\\u{charnum:04X}")
+            elif valid:
+                output.append(str(char))
+            else:
+                output.append(f"\\u{charnum:04X}")
 
     return "".join(output)
 
