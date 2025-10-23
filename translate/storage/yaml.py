@@ -149,28 +149,27 @@ class YAMLFile(base.DictStore):
                                 line = line.strip()
                                 if line.startswith("#"):
                                     comment_lines.append(line[1:].strip())
-        else:
-            # For non-first keys, check the previous key's "end" comment (index 2)
-            if key in keys:
-                key_index = keys.index(key)
-                if key_index > 0:
-                    prev_key = keys[key_index - 1]
+        # For non-first keys, check the previous key's "end" comment (index 2)
+        elif key in keys:
+            key_index = keys.index(key)
+            if key_index > 0:
+                prev_key = keys[key_index - 1]
+                if (
+                    hasattr(commented_map.ca, "items")
+                    and commented_map.ca.items
+                ):
+                    prev_comment_info = commented_map.ca.items.get(prev_key)
                     if (
-                        hasattr(commented_map.ca, "items")
-                        and commented_map.ca.items
+                        prev_comment_info
+                        and len(prev_comment_info) > 2
+                        and prev_comment_info[2] is not None
                     ):
-                        prev_comment_info = commented_map.ca.items.get(prev_key)
-                        if (
-                            prev_comment_info
-                            and len(prev_comment_info) > 2
-                            and prev_comment_info[2] is not None
-                        ):
-                            token = prev_comment_info[2]
-                            if hasattr(token, "value"):
-                                for line in token.value.split("\n"):
-                                    line = line.strip()
-                                    if line.startswith("#"):
-                                        comment_lines.append(line[1:].strip())
+                        token = prev_comment_info[2]
+                        if hasattr(token, "value"):
+                            for line in token.value.split("\n"):
+                                line = line.strip()
+                                if line.startswith("#"):
+                                    comment_lines.append(line[1:].strip())
 
         # Also check for comments in ca.items[key][3] (separate lines before key)
         if hasattr(commented_map.ca, "items") and commented_map.ca.items:
