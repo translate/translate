@@ -93,16 +93,12 @@ class YAMLUnit(base.DictUnit):
         # Get the original value to check its type before it gets overwritten
         original_value = self._get_original_value(output)
 
-        # Convert plain strings with newlines to LiteralScalarString for better readability
-        # but preserve the original type if it was already a special scalar string
-        if isinstance(value, str) and not unset and "\n" in value:
-            # Use LiteralScalarString for better readability if:
-            # - original was already a LiteralScalarString (preserve type)
-            # - original is None (new value) or plain str (not a special scalar string subclass)
-            if (
-                isinstance(original_value, LiteralScalarString)
-                or original_value is None
-                or type(original_value) is str  # Plain str, not a subclass
+        # Preserve or convert to LiteralScalarString for better readability
+        if isinstance(value, str) and not unset:
+            # Always preserve LiteralScalarString if original was one, or
+            # for new values or plain strings, use LiteralScalarString if multiline
+            if isinstance(original_value, LiteralScalarString) or (
+                "\n" in value and (original_value is None or type(original_value) is str)
             ):
                 value = LiteralScalarString(value)
             # Otherwise keep the value as-is (e.g., DoubleQuotedScalarString stays quoted)

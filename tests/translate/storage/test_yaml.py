@@ -522,6 +522,18 @@ location_batch:
         assert '"' in result3
         assert "New\\n" in result3
 
+        # Test 4: LiteralScalarString preserved even without newlines
+        literal_single = """key: |
+  Single line
+"""
+        store4 = self.StoreClass()
+        store4.parse(literal_single)
+        store4.units[0].target = "Different single line"
+        result4 = bytes(store4).decode()
+        # Should preserve literal format even though new value has no newlines
+        assert "|-" in result4 or "|" in result4
+        assert "Different single line" in result4
+
 
 class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
     StoreClass = yaml.RubyYAMLFile
