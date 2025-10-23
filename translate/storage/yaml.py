@@ -142,7 +142,9 @@ class YAMLFile(base.DictStore):
         2. After the previous key's value (ca.items[prev_key][2])
         3. On separate lines before the key (ca.items[key][3])
         """
-        if not isinstance(commented_map, CommentedMap) or not hasattr(commented_map, "ca"):
+        if not isinstance(commented_map, CommentedMap) or not hasattr(
+            commented_map, "ca"
+        ):
             return None
 
         comment_lines = []
@@ -160,8 +162,14 @@ class YAMLFile(base.DictStore):
             if key_index > 0 and hasattr(commented_map.ca, "items"):
                 prev_key = keys[key_index - 1]
                 prev_comment_info = commented_map.ca.items.get(prev_key)
-                if prev_comment_info and len(prev_comment_info) > 2 and prev_comment_info[2]:
-                    comment_lines.extend(self._extract_comment_lines(prev_comment_info[2]))
+                if (
+                    prev_comment_info
+                    and len(prev_comment_info) > 2
+                    and prev_comment_info[2]
+                ):
+                    comment_lines.extend(
+                        self._extract_comment_lines(prev_comment_info[2])
+                    )
 
         # Check for comments on separate lines before this key
         if hasattr(commented_map.ca, "items"):
