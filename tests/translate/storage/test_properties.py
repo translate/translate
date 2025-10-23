@@ -1002,13 +1002,17 @@ job.log.label=Job log
 #@deprecatedend"""
 
         propfile = self.propparse(propsource)
-        assert len(propfile.units) == 3
+        # With the new implementation, deprecated markers are not stored as separate units
+        assert len(propfile.units) == 2
+        # First unit is the comment header, second is the translatable unit
         propunit = propfile.units[1]
         assert propunit.name == "job.log.label"
         assert propunit.source == "Job log"
         assert not propunit.missing
+        assert propunit.deprecated  # Unit should be marked as deprecated
         propunit.missing = True
         expected_output = """# Deprecated keys starts here.
+
 #@deprecatedstart
 
 ### Missing: job.log.label=Job log
