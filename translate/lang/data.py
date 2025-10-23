@@ -1172,12 +1172,15 @@ def is_rtl(language_code):
     """
     Check if a language is right-to-left.
 
-    :param language_code: Language code (e.g., 'ar', 'he', 'en')
+    Supports both hyphen and underscore separators (e.g., 'ar-EG' and 'ar_EG').
+    The function normalizes hyphens to underscores for consistency.
+
+    :param language_code: Language code (e.g., 'ar', 'he', 'en', 'ar-EG', 'ar_EG')
     :return: True if the language is RTL, False otherwise
     """
     if not language_code:
         return False
-    # Normalize the language code
+    # Normalize the language code (convert hyphens to underscores)
     normalized = language_code.replace("-", "_").lower()
     # Check both the full code and the base language code
     if normalized in RTL_LANGS:

@@ -23,6 +23,7 @@ import html.parser
 import re
 from html.entities import html5
 
+from translate.lang.data import is_rtl
 from translate.storage import base
 from translate.storage.base import ParseError
 
@@ -404,19 +405,17 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 unit.addlocation(tu["location"])
 
     def translate_attributes(self, tag, attrs):
-        from translate.lang.data import is_rtl
-        
         result = []
         attrs_dict = dict(attrs)
         translated_lang = None
-        
+
         # First pass: check if lang is being translated
         if tag == "html" and "lang" in attrs_dict:
             normalized_value = self.WHITESPACE_RE.sub(" ", attrs_dict["lang"]).strip()
             translated_value = self.callback(normalized_value)
             if translated_value != normalized_value:
                 translated_lang = translated_value
-        
+
         for attrname, attrvalue in attrs:
             if attrvalue:
                 # Special handling for dir attribute on html tag when lang is translated
@@ -426,7 +425,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                     result.append((attrname, new_dir))
                     continue
                 # Special handling for meta tag content attribute
-                elif tag == "meta" and attrname == "content":
+                if tag == "meta" and attrname == "content":
                     # Check both 'name' and 'property' attributes
                     name = attrs_dict.get("name", "").lower()
                     if not name:
@@ -440,7 +439,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                             result.append((attrname, translated_value))
                             continue
                 # Only translate attributes that are translatable for this specific tag
-                elif (
+                if (
                     attrname in self.TRANSLATABLE_ATTRIBUTES
                     and self.translatable_attribute_matches_tag(attrname, tag)
                 ):
@@ -456,11 +455,11 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 result.append((attrname, new_dir))
                 continue
             result.append((attrname, attrvalue))
-        
+
         # Add dir attribute if it doesn't exist in attrs but lang is being translated
         if tag == "html" and translated_lang and "dir" not in attrs_dict:
             result.append(("dir", "rtl" if is_rtl(translated_lang) else "ltr"))
-        
+
         return result
 
     @staticmethod
