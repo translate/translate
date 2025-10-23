@@ -1411,8 +1411,11 @@ test_me=I can change the translation source
 
     def test_deprecated_comments_preserved(self):
         """
-        Ensure that deprecated comment markers like #@deprecatedstart are preserved
-        even when they are marked as missing translations.
+        Test that comment markers like #@deprecatedstart are preserved when a
+        translation is marked as missing. When job.log.label is marked missing,
+        the output should contain '### Missing: job.log.label=Job log' while
+        preserving the #@deprecatedstart and #@deprecatedend markers as comments.
+        This prevents loss of structural markers during Weblate synchronization.
         """
         propsource = self.getcontent(
             """# Deprecated keys starts here.
