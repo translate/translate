@@ -138,7 +138,7 @@ class TestEncoding:
 
         # Characters >= 128 should be encoded for ASCII
         # é = U+00E9 = 233 (NOT in ASCII, but in ISO-8859-1)
-        assert quote.javapropertiesencode("café", encoding="ascii") == r"caf\u00E9"
+        assert quote.javapropertiesencode("café", encoding="ascii") == r"caf\u00E9"  # codespell:ignore
 
         # All non-ASCII characters should be encoded
         assert (
