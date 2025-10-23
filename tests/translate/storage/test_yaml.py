@@ -485,6 +485,82 @@ location_batch:
         store.units[0].target = "Changed"
         assert bytes(store).decode() == data.replace("Quoted", "Changed")
 
+    def test_comment_extraction_simple(self):
+        """Test extracting simple comments from YAML."""
+        data = """# This is a comment for key1
+key1: value1
+
+# This is a comment for key2
+key2: value2
+"""
+        store = self.StoreClass()
+        store.parse(data)
+        assert len(store.units) == 2
+        assert store.units[0].getnotes() == "This is a comment for key1"
+        assert store.units[1].getnotes() == "This is a comment for key2"
+
+    def test_comment_extraction_multiline(self):
+        """Test extracting multi-line comments from YAML."""
+        data = """# This is a comment for key1
+# with multiple lines
+# explaining the key
+key1: value1
+
+# Another comment
+# for key2
+key2: value2
+"""
+        store = self.StoreClass()
+        store.parse(data)
+        assert len(store.units) == 2
+        expected_note1 = (
+            "This is a comment for key1\nwith multiple lines\nexplaining the key"
+        )
+        assert store.units[0].getnotes() == expected_note1
+        expected_note2 = "Another comment\nfor key2"
+        assert store.units[1].getnotes() == expected_note2
+
+    def test_comment_extraction_nested(self):
+        """Test extracting comments from nested structures."""
+        data = """# Comment for parent
+parent:
+  # Comment for child
+  child: value
+"""
+        store = self.StoreClass()
+        store.parse(data)
+        assert len(store.units) == 1
+        assert store.units[0].getid() == "parent->child"
+        assert store.units[0].getnotes() == "Comment for child"
+
+    def test_comment_extraction_mixed(self):
+        """Test YAML with some keys having comments and some not."""
+        data = """# Comment for key1
+key1: value1
+
+key2: value2
+
+# Comment for key3
+key3: value3
+"""
+        store = self.StoreClass()
+        store.parse(data)
+        assert len(store.units) == 3
+        assert store.units[0].getnotes() == "Comment for key1"
+        assert store.units[1].getnotes() == ""
+        assert store.units[2].getnotes() == "Comment for key3"
+
+    def test_no_comment_backwards_compat(self):
+        """Test that YAML without comments still works."""
+        data = """key1: value1
+key2: value2
+"""
+        store = self.StoreClass()
+        store.parse(data)
+        assert len(store.units) == 2
+        assert store.units[0].getnotes() == ""
+        assert store.units[1].getnotes() == ""
+
     def test_multiline_literal_format(self):
         """Test that multiline strings use literal format (|) for better readability."""
         # Test 1: New file with multiline content
