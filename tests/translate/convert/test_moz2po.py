@@ -38,7 +38,7 @@ css.property.two=Segunda valor
 """
         # This should not raise AttributeError: 'NoneType' object has no attribute 'getid'
         pofile = self.moz2po(translatedprop, templateprop)
-        
+
         # Verify we got results (not testing exact structure, just that it didn't crash)
         assert len(pofile.units) > 1
         # At least one unit should have the location 'css.property.one'

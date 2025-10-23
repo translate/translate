@@ -184,7 +184,7 @@ do=translate me
         Check that we handle duplicate locations properly in Mozilla properties files.
         This tests the fix for the Lithuanian Firefox recovery issue where duplicate
         locations could cause a traceback.
-        
+
         When there are duplicate keys, locationindex will contain only the first
         occurrence from the translated file. Both template entries are processed,
         but both will map to the same translation (the first occurrence).
@@ -201,24 +201,24 @@ key2=Translated value
 """
         # Convert using Mozilla personality - should not raise AttributeError
         pofile = self.prop2po(translatedprop, templateprop, personality="mozilla")
-        
+
         # We get 3 units because both key1 entries from template are processed
         # Both map to the first translated value due to locationindex behavior
         assert self.countelements(pofile) == 3
-        
+
         # First key1 entry
         pounit1 = pofile.units[1]
         assert pounit1.source == "Original value 1"
         assert pounit1.target == "Translated value 1"
         assert pounit1.getlocations() == ["key1"]
-        
+
         # Second key1 entry (duplicate location)
         pounit2 = pofile.units[2]
         assert pounit2.source == "Original value 2"
         # Both key1 entries map to first translated value
         assert pounit2.target == "Translated value 1"
         assert pounit2.getlocations() == ["key1"]
-        
+
         # key2 entry
         pounit3 = pofile.units[3]
         assert pounit3.source == "Another value"
