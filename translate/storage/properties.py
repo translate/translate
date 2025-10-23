@@ -1201,39 +1201,120 @@ class xwikifile(propfile):
 
     def parse(self, propsrc):
         """Parse XWiki properties and track deprecated blocks."""
-        # First, do the standard parsing
-        super().parse(propsrc)
-        
-        # Now track which units are in deprecated blocks
         text, encoding = self.detect_encoding(
             propsrc,
             default_encodings=[self.personality.default_encoding, "utf-8", "utf-16"],
         )
         if not text and propsrc:
-            return
-        
-        from translate.storage.pypo import rstripeol
-        
+            raise OSError(
+                "Cannot detect encoding for %s." % (self.filename or "given string")
+            )
+        self.encoding = encoding
+        propsrc = text
+
+        newunit = self.UnitClass("", self.personality.name)
+        inmultilinevalue = False
+        inmultilinecomment = False
+        was_header = False
         in_deprecated_block = False
-        unit_index = 0
-        
-        for line in text.split("\n"):
+
+        for line in propsrc.split("\n"):
+            # handle multiline value if we're in one
             line = rstripeol(line)
-            stripped = line.strip()
-            
-            # Track deprecated block state
-            if stripped == "#@deprecatedstart":
-                in_deprecated_block = True
-            elif stripped == "#@deprecatedend":
-                in_deprecated_block = False
-            # Check if this line represents a translatable unit
-            elif line and not stripped.startswith("#") and "=" in line:
-                # Find the corresponding unit and mark it as deprecated if needed
-                if unit_index < len(self.units):
-                    unit = self.units[unit_index]
-                    if unit.istranslatable():
-                        unit.deprecated = in_deprecated_block
-                        unit_index += 1
+            if inmultilinevalue:
+                newunit.value += line.lstrip()
+                # see if there's more
+                inmultilinevalue = self.personality.is_line_continuation(newunit.value)
+                # if we're still waiting for more...
+                if inmultilinevalue:
+                    newunit.value = self.personality.strip_line_continuation(
+                        newunit.value
+                    )
+                if not inmultilinevalue:
+                    # we're finished, add it to the list...
+                    newunit.value = self.personality.value_strip(newunit.value)
+                    newunit.deprecated = in_deprecated_block
+                    self.addunit(newunit)
+                    newunit = self.UnitClass("", self.personality.name)
+            # otherwise, this could be a comment
+            # FIXME handle // inline comments
+            elif (
+                inmultilinecomment
+                or (get_comment_one_line(line)) is not None
+                or (get_comment_start(line)) is not None
+            ) and not self.UnitClass.represents_missing(line):
+                # Check for deprecated block markers - don't add them as comments
+                stripped = line.strip()
+                if stripped == "#@deprecatedstart":
+                    in_deprecated_block = True
+                elif stripped == "#@deprecatedend":
+                    in_deprecated_block = False
+                # add a comment (but not deprecated markers)
+                elif line not in self.personality.drop_comments:
+                    newunit.comments.append(line)
+
+                one_line_comment = get_comment_one_line(line)
+                comment_start = get_comment_start(line)
+                if one_line_comment is not None:
+                    pass
+                elif not inmultilinecomment and comment_start is not None:
+                    inmultilinecomment = True
+                elif inmultilinecomment and get_comment_end(line) is not None:
+                    inmultilinecomment = False
+            elif not line.strip():
+                # this is a blank line...
+                # avoid adding comment only units
+                if newunit.name:
+                    newunit.deprecated = in_deprecated_block
+                    self.addunit(newunit)
+                    newunit = self.UnitClass("", self.personality.name)
+                else:
+                    newunit.comments.append("")
+
+                if not was_header and str(newunit).strip():
+                    self.addunit(newunit)
+                    newunit = self.UnitClass("", self.personality.name)
+                    was_header = True
+
+            else:
+                ismissing = False
+                if self.UnitClass.represents_missing(line):
+                    line = self.UnitClass.strip_missing_part(line)
+                    ismissing = True
+                newunit.delimiter, delimiter_pos = self.personality.find_delimiter(line)
+                if delimiter_pos == -1:
+                    newunit.name = self.personality.key_strip(line)
+                    newunit.value = ""
+                    newunit.delimiter = ""
+                    newunit.missing = ismissing
+                    newunit.deprecated = in_deprecated_block
+                    self.addunit(newunit)
+                    newunit = self.UnitClass("", self.personality.name)
+                else:
+                    newunit.name = self.personality.key_strip(line[:delimiter_pos])
+                    newunit.missing = ismissing
+                    if self.personality.is_line_continuation(
+                        line[delimiter_pos + 1 :].lstrip()
+                    ):
+                        inmultilinevalue = True
+                        newunit.value = line[delimiter_pos + 1 :].lstrip()[:-1]
+                        newunit.value = self.personality.strip_line_continuation(
+                            line[delimiter_pos + 1 :].lstrip()
+                        )
+                    else:
+                        newunit.value = self.personality.value_strip(
+                            line[delimiter_pos + 1 :]
+                        )
+                        newunit.deprecated = in_deprecated_block
+                        self.addunit(newunit)
+                        newunit = self.UnitClass("", self.personality.name)
+        # see if there is a leftover one...
+        if inmultilinevalue or any(newunit.comments):
+            newunit.deprecated = in_deprecated_block
+            self.addunit(newunit)
+
+        if self.personality.has_plurals:
+            self.fold()
 
     def _build_deprecated_block_content(self):
         """
