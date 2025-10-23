@@ -1106,10 +1106,9 @@ class propfile(base.TranslationStore):
                     in_deprecated_block = True
                 elif stripped == "#@deprecatedend":
                     in_deprecated_block = False
-                else:
-                    # add a comment (but not deprecated markers)
-                    if line not in self.personality.drop_comments:
-                        newunit.comments.append(line)
+                # add a comment (but not deprecated markers)
+                elif line not in self.personality.drop_comments:
+                    newunit.comments.append(line)
 
                 if one_line_comment is not None:
                     pass
@@ -1186,7 +1185,7 @@ class propfile(base.TranslationStore):
                 new_unit = proppluralunit(None, self.personality.name)
                 new_unit.name = key
                 # Copy deprecated attribute from the original unit
-                new_unit.deprecated = getattr(unit, 'deprecated', False)
+                new_unit.deprecated = getattr(unit, "deprecated", False)
                 self.addunit(new_unit)
                 plurals[key] = new_unit
 
@@ -1212,42 +1211,47 @@ class xwikifile(propfile):
         kwargs["encoding"] = "iso-8859-1"
         super().__init__(*args, **kwargs)
 
-    def serialize(self, out):
-        """Write the units back to file, grouping deprecated units in blocks."""
-        from codecs import iterencode
-        
+    def _build_deprecated_block_content(self):
+        """
+        Build content with deprecated block structure.
+
+        Returns a generator of strings to be written to output.
+        """
         # Separate deprecated and non-deprecated units
         non_deprecated = []
         deprecated = []
-        
+
         for unit in self.units:
-            if getattr(unit, 'deprecated', False) and unit.istranslatable():
+            if getattr(unit, "deprecated", False) and unit.istranslatable():
                 deprecated.append(unit)
             else:
                 non_deprecated.append(unit)
-        
-        # Output non-deprecated units first
-        for chunk in iterencode(
-            (unit.getoutput() for unit in non_deprecated), self.encoding
-        ):
-            out.write(chunk)
-        
+
+        # Yield non-deprecated units first
+        for unit in non_deprecated:
+            yield unit.getoutput()
+
         # If there are deprecated units, output them in a deprecated block
         if deprecated:
-            # Check if we need to add a separator
+            # Add separator if needed
             if non_deprecated and not non_deprecated[-1].getoutput().endswith("\n\n"):
-                out.write("\n".encode(self.encoding))
-            
-            out.write("#@deprecatedstart\n".encode(self.encoding))
-            out.write("\n".encode(self.encoding))
-            
-            for chunk in iterencode(
-                (unit.getoutput() for unit in deprecated), self.encoding
-            ):
-                out.write(chunk)
-            
-            out.write("\n".encode(self.encoding))
-            out.write("#@deprecatedend\n".encode(self.encoding))
+                yield "\n"
+
+            yield "#@deprecatedstart\n"
+            yield "\n"
+
+            for unit in deprecated:
+                yield unit.getoutput()
+
+            yield "\n"
+            yield "#@deprecatedend\n"
+
+    def serialize(self, out):
+        """Write the units back to file, grouping deprecated units in blocks."""
+        from codecs import iterencode
+
+        for chunk in iterencode(self._build_deprecated_block_content(), self.encoding):
+            out.write(chunk)
 
 
 class javafile(propfile):
@@ -1414,43 +1418,14 @@ class XWikiPageProperties(xwikifile):
         if self.root is None:
             self.root = etree.XML(self.XWIKI_BASIC_XML, self.get_parser())
         newroot = deepcopy(self.root)
-        
-        # Separate deprecated and non-deprecated units for proper serialization
-        non_deprecated = []
-        deprecated = []
-        
-        for unit in self.units:
-            if getattr(unit, 'deprecated', False) and unit.istranslatable():
-                deprecated.append(unit)
-            else:
-                non_deprecated.append(unit)
-        
-        # Build content with deprecated block structure
-        content_parts = []
-        
-        # Add non-deprecated units
-        for unit in non_deprecated:
-            content_parts.append(unit.getoutput())
-        
-        # Add deprecated units in a block
-        if deprecated:
-            # Add separator if needed
-            if non_deprecated and not non_deprecated[-1].getoutput().endswith("\n\n"):
-                content_parts.append("\n")
-            
-            content_parts.append("#@deprecatedstart\n")
-            content_parts.append("\n")
-            
-            for unit in deprecated:
-                content_parts.append(unit.getoutput())
-            
-            content_parts.append("\n")
-            content_parts.append("#@deprecatedend\n")
-        
+
+        # Build content with deprecated block structure using shared helper
+        content = "".join(self._build_deprecated_block_content()).strip() + "\n"
+
         # We add a line break to ensure to have a line break before
         # closing of content tag.
-        newroot.find("content").text = "".join(content_parts).strip() + "\n"
-        
+        newroot.find("content").text = content
+
         # We only modify the XML attributes if we are editing a translation file
         # if we are editing the source file we should not modify it.
         if not self.is_source_file():

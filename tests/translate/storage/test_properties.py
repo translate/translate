@@ -1034,20 +1034,20 @@ old.key2=Old Value 2
 
 new.key=New Value
 """
-        
+
         propfile = self.propparse(propsource)
-        
+
         # Verify units are marked correctly
         for unit in propfile.units:
             if unit.istranslatable():
-                if unit.name in ['old.key', 'old.key2']:
+                if unit.name in {"old.key", "old.key2"}:
                     assert unit.deprecated, f"{unit.name} should be deprecated"
                 else:
                     assert not unit.deprecated, f"{unit.name} should not be deprecated"
-        
+
         # Serialize and verify block is maintained
         propgen = bytes(propfile).decode("utf-8")
-        
+
         assert propgen.count("#@deprecatedstart") == 1
         assert propgen.count("#@deprecatedend") == 1
         assert "old.key" in propgen
@@ -1061,19 +1061,19 @@ new.key=New Value
 old.key=Old Value
 
 #@deprecatedend"""
-        
+
         propfile = self.propparse(propsource)
-        
+
         # Add new non-deprecated unit
         new_unit = properties.xwikiunit()
         new_unit.name = "new.key"
         new_unit.source = "New Value"
         new_unit.deprecated = False
         propfile.addunit(new_unit)
-        
+
         # Serialize
         propgen = bytes(propfile).decode("utf-8")
-        
+
         # Both units should be present
         assert "new.key" in propgen
         assert "old.key" in propgen
@@ -1091,19 +1091,19 @@ old.key=Old Value
 
 new.key=New Value
 """
-        
+
         propfile = self.propparse(propsource)
-        
+
         # Add new deprecated unit
         new_deprecated = properties.xwikiunit()
         new_deprecated.name = "another.old"
         new_deprecated.source = "Another Old Value"
         new_deprecated.deprecated = True
         propfile.addunit(new_deprecated)
-        
+
         # Serialize
         propgen = bytes(propfile).decode("utf-8")
-        
+
         # All units should be present
         assert "old.key" in propgen
         assert "another.old" in propgen
@@ -1115,19 +1115,19 @@ new.key=New Value
     def test_add_deprecated_to_file_without_deprecated_block(self):
         """Test adding deprecated unit to file without deprecated block creates one."""
         propsource = """new.key=New Value"""
-        
+
         propfile = self.propparse(propsource)
-        
+
         # Add deprecated unit
         deprecated_unit = properties.xwikiunit()
         deprecated_unit.name = "old.key"
         deprecated_unit.source = "Old Value"
         deprecated_unit.deprecated = True
         propfile.addunit(deprecated_unit)
-        
+
         # Serialize
         propgen = bytes(propfile).decode("utf-8")
-        
+
         # Both units should be present
         assert "new.key" in propgen
         assert "old.key" in propgen
