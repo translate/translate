@@ -18,7 +18,10 @@
 
 r"""Class that manages YAML data files for translation."""
 
+from __future__ import annotations
+
 import uuid
+from typing import Any
 
 from ruamel.yaml import YAML, YAMLError
 from ruamel.yaml.comments import CommentedMap, TaggedScalar
@@ -72,8 +75,17 @@ class YAMLUnit(base.DictUnit):
     def convert_target(self):
         return self.target
 
-    def _get_original_value(self, output):
-        """Get the original value from output to check its type."""
+    def _get_original_value(self, output: dict[str, Any] | list[Any]) -> Any:
+        """
+        Get the original value from the YAML output structure to check its type.
+
+        Args:
+            output: The YAML output structure (dict or list) to navigate
+
+        Returns:
+            The original value if it exists, None if navigation fails or value doesn't exist
+
+        """
         target = output
         parts = self.get_unitid().parts
 
@@ -88,7 +100,13 @@ class YAMLUnit(base.DictUnit):
         else:
             return target
 
-    def storevalue(self, output, value, override_key=None, unset=False):
+    def storevalue(
+        self,
+        output: dict[str, Any] | list[Any],
+        value: Any,
+        override_key: str | None = None,
+        unset: bool = False,
+    ) -> None:
         """Store value, preserving or converting to LiteralScalarString for multiline strings."""
         # Get the original value to check its type before it gets overwritten
         original_value = self._get_original_value(output)
@@ -107,7 +125,7 @@ class YAMLUnit(base.DictUnit):
         # Call parent storevalue
         super().storevalue(output, value, override_key, unset)
 
-    def storevalues(self, output):
+    def storevalues(self, output: dict[str, Any] | list[Any]) -> None:
         self.storevalue(output, self.convert_target())
 
 
