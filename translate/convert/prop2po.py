@@ -138,14 +138,19 @@ class prop2po:
             # try and find a translation of the same name...
             if origprop.name in translatedpropfile.locationindex:
                 translatedprop = translatedpropfile.locationindex[origprop.name]
-                # Need to check that this comment is not a copy of the
-                # developer comments
-                try:
-                    translatedpo = self.convertpropunit(
-                        translatedpropfile, translatedprop, "translator"
-                    )
-                except DiscardUnit:
-                    continue
+                # The locationindex might contain None values in some edge cases
+                # (see base.py line 721 for similar defensive check)
+                if translatedprop is not None:
+                    # Need to check that this comment is not a copy of the
+                    # developer comments
+                    try:
+                        translatedpo = self.convertpropunit(
+                            translatedpropfile, translatedprop, "translator"
+                        )
+                    except DiscardUnit:
+                        continue
+                else:
+                    translatedpo = None
             else:
                 translatedpo = None
             # if we have a valid po unit, get the translation and add it...
@@ -363,10 +368,6 @@ class prop2po:
         """
         if self.personality not in {"mozilla", "gwt"}:
             # XXX should we enable unit mixing for other personalities?
-            return self.convertunit(unit, commenttype)
-
-        # Handle None unit - can happen if locationindex contains None
-        if unit is None:
             return self.convertunit(unit, commenttype)
 
         # keep track of whether accesskey and label were combined
