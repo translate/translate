@@ -112,26 +112,108 @@ class YAMLFile(base.DictStore):
         self.serialize_units(units)
         self.yaml.dump(self._original, out)
 
+    def _get_key_comment(self, commented_map, key):
+        """
+        Extract the comment that appears before a key in a CommentedMap.
+
+        In ruamel.yaml's CommentedMap:
+        - ca.comment contains top-level comments (before the first key)
+        - ca.items[key] is a list with 4 elements:
+          [0] = comment before key on same line
+          [1] = comment after key on same line
+          [2] = comment after the value (which is typically the comment for the NEXT key)
+          [3] = comment before key on separate lines
+
+        The comment before a key can be in:
+        1. ca.comment[1] if it's the first key
+        2. ca.items[previous_key][2] (comment after previous key's value)
+        3. ca.items[key][3] (comment on separate lines before key)
+        """
+        if not isinstance(commented_map, CommentedMap):
+            return None
+
+        if not hasattr(commented_map, "ca"):
+            return None
+
+        comment_lines = []
+        keys = list(commented_map.keys())
+
+        # If this is the first key, check for top-level comment
+        if keys and keys[0] == key:
+            if hasattr(commented_map.ca, "comment") and commented_map.ca.comment:
+                if len(commented_map.ca.comment) > 1 and commented_map.ca.comment[1]:
+                    tokens = commented_map.ca.comment[1]
+                    for token in tokens:
+                        if hasattr(token, "value"):
+                            for line in token.value.split("\n"):
+                                line = line.strip()
+                                if line.startswith("#"):
+                                    comment_lines.append(line[1:].strip())
+        else:
+            # For non-first keys, check the previous key's "end" comment (index 2)
+            if key in keys:
+                key_index = keys.index(key)
+                if key_index > 0:
+                    prev_key = keys[key_index - 1]
+                    if (
+                        hasattr(commented_map.ca, "items")
+                        and commented_map.ca.items
+                    ):
+                        prev_comment_info = commented_map.ca.items.get(prev_key)
+                        if (
+                            prev_comment_info
+                            and len(prev_comment_info) > 2
+                            and prev_comment_info[2] is not None
+                        ):
+                            token = prev_comment_info[2]
+                            if hasattr(token, "value"):
+                                for line in token.value.split("\n"):
+                                    line = line.strip()
+                                    if line.startswith("#"):
+                                        comment_lines.append(line[1:].strip())
+
+        # Also check for comments in ca.items[key][3] (separate lines before key)
+        if hasattr(commented_map.ca, "items") and commented_map.ca.items:
+            comment_info = commented_map.ca.items.get(key)
+            if (
+                comment_info
+                and len(comment_info) > 3
+                and comment_info[3] is not None
+            ):
+                tokens = (
+                    comment_info[3]
+                    if isinstance(comment_info[3], list)
+                    else [comment_info[3]]
+                )
+                for token in tokens:
+                    if hasattr(token, "value"):
+                        for line in token.value.split("\n"):
+                            line = line.strip()
+                            if line.startswith("#"):
+                                comment_lines.append(line[1:].strip())
+
+        return "\n".join(comment_lines) if comment_lines else None
+
     def _parse_dict(self, data, prev):
         # Avoid using merged items, it is enough to have them once
         for k, v in data.non_merged_items():
-            yield from self._flatten(v, prev.extend("key", k))
+            yield from self._flatten(v, prev.extend("key", k), parent_map=data, key=k)
 
-    def _flatten(self, data, prev=None):
+    def _flatten(self, data, prev=None, parent_map=None, key=None):
         """Flatten YAML dictionary."""
         if prev is None:
             prev = self.UnitClass.IdClass([])
         if isinstance(data, dict):
             yield from self._parse_dict(data, prev)
         elif isinstance(data, str):
-            yield (prev, data)
+            yield (prev, data, self._get_key_comment(parent_map, key))
         elif isinstance(data, (bool, int)):
-            yield (prev, str(data))
+            yield (prev, str(data), self._get_key_comment(parent_map, key))
         elif isinstance(data, list):
             for k, v in enumerate(data):
-                yield from self._flatten(v, prev.extend("index", k))
+                yield from self._flatten(v, prev.extend("index", k), parent_map=data, key=k)
         elif isinstance(data, TaggedScalar):
-            yield (prev, data.value)
+            yield (prev, data.value, self._get_key_comment(parent_map, key))
         elif data is None:
             pass
         else:
@@ -169,9 +251,17 @@ class YAMLFile(base.DictStore):
 
         content = self.preprocess(self._original)
 
-        for k, data in self._flatten(content):
+        for item in self._flatten(content):
+            # Handle both old (k, data) and new (k, data, comment) tuple formats
+            if len(item) == 3:
+                k, data, comment = item
+            else:
+                k, data = item
+                comment = None
             unit = self.UnitClass(data)
             unit.set_unitid(k)
+            if comment:
+                unit.addnote(comment, origin="developer")
             self.addunit(unit)
 
     def removeunit(self, unit):
