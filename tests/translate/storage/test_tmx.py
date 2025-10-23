@@ -136,8 +136,6 @@ class TestTMXfile(test_base.TestTranslationStore):
 
     def test_note_order(self):
         """Test that notes appear before tuv elements as per TMX DTD."""
-        from lxml import etree
-
         store = self.StoreClass()
         unit = store.addsourceunit("Test")
         unit.target = "Prueba"
@@ -154,14 +152,12 @@ class TestTMXfile(test_base.TestTranslationStore):
         assert "tuv" in element_tags
         note_index = element_tags.index("note")
         first_tuv_index = element_tags.index("tuv")
-        assert (
-            note_index < first_tuv_index
-        ), "note element should appear before tuv elements"
+        assert note_index < first_tuv_index, (
+            "note element should appear before tuv elements"
+        )
 
     def test_prop_and_note_order(self):
         """Test that notes and props appear before tuv elements as per TMX DTD."""
-        from lxml import etree
-
         store = self.StoreClass()
         unit = store.addsourceunit("Test")
         unit.target = "Prueba"
@@ -183,9 +179,9 @@ class TestTMXfile(test_base.TestTranslationStore):
         prop_index = element_tags.index("prop")
         first_tuv_index = element_tags.index("tuv")
 
-        assert (
-            note_index < first_tuv_index
-        ), "note element should appear before tuv elements"
-        assert (
-            prop_index < first_tuv_index
-        ), "prop element should appear before tuv elements"
+        assert note_index < first_tuv_index, (
+            "note element should appear before tuv elements"
+        )
+        assert prop_index < first_tuv_index, (
+            "prop element should appear before tuv elements"
+        )
