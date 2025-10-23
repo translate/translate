@@ -41,7 +41,7 @@ def test_is_rtl():
     assert data.is_rtl("ja") is False
     assert data.is_rtl("zh") is False
     assert data.is_rtl("ru") is False
-    
+
     # Edge cases
     assert data.is_rtl("") is False
     assert data.is_rtl(None) is False
