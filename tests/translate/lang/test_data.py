@@ -25,14 +25,14 @@ def test_is_rtl():
     assert data.is_rtl("ug") is True
     assert data.is_rtl("ps") is True
     assert data.is_rtl("dv") is True
-    
+
     # RTL language variants with region codes
     assert data.is_rtl("ar_EG") is True
     assert data.is_rtl("ar-EG") is True
     assert data.is_rtl("ar_SA") is True
     assert data.is_rtl("fa_AF") is True
     assert data.is_rtl("ur_IN") is True
-    
+
     # LTR languages
     assert data.is_rtl("en") is False
     assert data.is_rtl("fr") is False
