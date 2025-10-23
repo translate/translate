@@ -146,20 +146,20 @@ farewell: Goodbye!
         assert target_store.units[1].getlocations() == ["greeting"]
         assert target_store.units[1].source == "Hello, World!"
         notes = target_store.units[1].getnotes(origin="developer")
-        assert (
-            "This is a comment for the greeting key" in notes
-        ), f"Expected comment not found in: {notes}"
-        assert (
-            "It helps translators understand the context" in notes
-        ), f"Expected comment not found in: {notes}"
+        assert "This is a comment for the greeting key" in notes, (
+            f"Expected comment not found in: {notes}"
+        )
+        assert "It helps translators understand the context" in notes, (
+            f"Expected comment not found in: {notes}"
+        )
 
         # Check second unit
         assert target_store.units[2].getlocations() == ["farewell"]
         assert target_store.units[2].source == "Goodbye!"
         notes = target_store.units[2].getnotes(origin="developer")
-        assert (
-            "This comment explains the farewell message" in notes
-        ), f"Expected comment not found in: {notes}"
+        assert "This comment explains the farewell message" in notes, (
+            f"Expected comment not found in: {notes}"
+        )
 
     def test_comment_extraction_nested(self):
         """Check that comments on nested YAML keys are extracted."""
@@ -176,7 +176,9 @@ farewell: Goodbye!
         assert target_store.units[1].getlocations() == ["settings->app_name"]
         assert target_store.units[1].source == "My App"
         notes = target_store.units[1].getnotes(origin="developer")
-        assert "This is the app name" in notes, f"Expected comment not found in: {notes}"
+        assert "This is the app name" in notes, (
+            f"Expected comment not found in: {notes}"
+        )
 
         # Check second unit
         assert target_store.units[2].getlocations() == ["settings->version"]

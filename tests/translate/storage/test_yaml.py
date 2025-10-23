@@ -513,7 +513,9 @@ key2: value2
         store = self.StoreClass()
         store.parse(data)
         assert len(store.units) == 2
-        expected_note1 = "This is a comment for key1\nwith multiple lines\nexplaining the key"
+        expected_note1 = (
+            "This is a comment for key1\nwith multiple lines\nexplaining the key"
+        )
         assert store.units[0].getnotes() == expected_note1
         expected_note2 = "Another comment\nfor key2"
         assert store.units[1].getnotes() == expected_note2

@@ -160,10 +160,7 @@ class YAMLFile(base.DictStore):
             key_index = keys.index(key)
             if key_index > 0:
                 prev_key = keys[key_index - 1]
-                if (
-                    hasattr(commented_map.ca, "items")
-                    and commented_map.ca.items
-                ):
+                if hasattr(commented_map.ca, "items") and commented_map.ca.items:
                     prev_comment_info = commented_map.ca.items.get(prev_key)
                     if (
                         prev_comment_info
@@ -180,11 +177,7 @@ class YAMLFile(base.DictStore):
         # Also check for comments in ca.items[key][3] (separate lines before key)
         if hasattr(commented_map.ca, "items") and commented_map.ca.items:
             comment_info = commented_map.ca.items.get(key)
-            if (
-                comment_info
-                and len(comment_info) > 3
-                and comment_info[3] is not None
-            ):
+            if comment_info and len(comment_info) > 3 and comment_info[3] is not None:
                 tokens = (
                     comment_info[3]
                     if isinstance(comment_info[3], list)
@@ -222,7 +215,9 @@ class YAMLFile(base.DictStore):
             yield (prev, str(data), self._get_key_comment(parent_map, key))
         elif isinstance(data, list):
             for k, v in enumerate(data):
-                yield from self._flatten(v, prev.extend("index", k), parent_map=data, key=k)
+                yield from self._flatten(
+                    v, prev.extend("index", k), parent_map=data, key=k
+                )
         elif isinstance(data, TaggedScalar):
             yield (prev, data.value, self._get_key_comment(parent_map, key))
         elif data is None:
