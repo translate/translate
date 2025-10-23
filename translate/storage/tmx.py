@@ -83,8 +83,8 @@ class tmxunit(lisa.LISAunit):
 
         # According to TMX DTD, notes should come before prop and tuv elements
         # Try to insert before prop first, if not found try tuv
-        if self.xmlelement.find("prop") is not None:
-            self._insert_element_before(note, "prop")
+        if self.xmlelement.find(self.namespaced("prop")) is not None:
+            self._insert_element_before(note, self.namespaced("prop"))
         else:
             self._insert_element_before(note, self.namespaced(self.languageNode))
 
@@ -127,9 +127,9 @@ class tmxunit(lisa.LISAunit):
         return errordict
 
     def setcontext(self, context):
-        context_prop = self.xmlelement.find("prop[@type='x-context']")
+        context_prop = self.xmlelement.find(self.namespaced("prop") + "[@type='x-context']")
         if context_prop is None:
-            context_prop = etree.Element("prop")
+            context_prop = etree.Element(self.namespaced("prop"))
             context_prop.set("type", "x-context")
 
             # According to TMX DTD, prop elements come after notes but before tuv elements
@@ -137,7 +137,7 @@ class tmxunit(lisa.LISAunit):
         safely_set_text(context_prop, context)
 
     def getcontext(self):
-        context_prop = self.xmlelement.find("prop[@type='x-context']")
+        context_prop = self.xmlelement.find(self.namespaced("prop") + "[@type='x-context']")
         if context_prop is not None and context_prop.text is not None:
             return context_prop.text
         return ""
