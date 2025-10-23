@@ -18,7 +18,10 @@
 
 r"""Class that manages YAML data files for translation."""
 
+from __future__ import annotations
+
 import uuid
+from typing import TYPE_CHECKING
 
 from ruamel.yaml import YAML, YAMLError
 from ruamel.yaml.comments import CommentedMap, TaggedScalar
@@ -26,6 +29,9 @@ from ruamel.yaml.comments import CommentedMap, TaggedScalar
 from translate.lang.data import cldr_plural_categories
 from translate.misc.multistring import multistring
 from translate.storage import base
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
 
 
 class YAMLUnitId(base.UnitId):
@@ -198,8 +204,14 @@ class YAMLFile(base.DictStore):
         for k, v in data.non_merged_items():
             yield from self._flatten(v, prev.extend("key", k), parent_map=data, key=k)
 
-    def _flatten(self, data, prev=None, parent_map=None, key=None):
-        """Flatten YAML dictionary."""
+    def _flatten(
+        self, data, prev=None, parent_map=None, key=None
+    ) -> Generator[tuple[base.UnitId, str, str | None], None, None]:
+        """
+        Flatten YAML dictionary.
+
+        Yields tuples of (unit_id, data, comment) where comment may be None.
+        """
         if prev is None:
             prev = self.UnitClass.IdClass([])
         if isinstance(data, dict):
@@ -250,13 +262,7 @@ class YAMLFile(base.DictStore):
 
         content = self.preprocess(self._original)
 
-        for item in self._flatten(content):
-            # Handle both old (k, data) and new (k, data, comment) tuple formats
-            if len(item) == 3:
-                k, data, comment = item
-            else:
-                k, data = item
-                comment = None
+        for k, data, comment in self._flatten(content):
             unit = self.UnitClass(data)
             unit.set_unitid(k)
             if comment:
@@ -319,7 +325,8 @@ class RubyYAMLFile(YAMLFile):
             # Skip blank values (all plurals are None)
             if not all(value is None for value in values):
                 # Use blank string instead of None here
-                yield (prev, multistring([value or "" for value in values]))
+                # Note: plurals don't have comments, so we pass None
+                yield (prev, multistring([value or "" for value in values]), None)
 
             return
 
