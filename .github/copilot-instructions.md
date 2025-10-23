@@ -19,7 +19,7 @@ Follow existing contributor documentation in `docs/developers/`.
 
 ## Documentation
 
-- Document new feature in ``docs/``
+- Document new feature in `docs/`
 
 ### Dependencies
 
