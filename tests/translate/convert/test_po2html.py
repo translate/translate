@@ -115,6 +115,64 @@ sin.
         htmlexpected = "<p>Vis &amp; skyfies</p>"
         assert htmlexpected in self.converthtml(posource, htmlsource)
 
+    def test_utf8_non_ascii_characters(self):
+        """
+        Tests that non-ASCII UTF-8 characters are handled correctly.
+
+        This addresses issue #1043 where non-ASCII characters like ü were
+        being incorrectly converted to double-encoded entities like
+        &Atilde;&frac14; instead of being preserved as UTF-8.
+        """
+        # Test German umlauts
+        htmlsource = "<p>Übung macht den Meister</p>"
+        posource = '#: html:3\nmsgid "Übung macht den Meister"\nmsgstr "Übung macht den Meister"\n'
+        htmlexpected = "<p>Übung macht den Meister</p>"
+        result = self.converthtml(posource, htmlsource)
+        assert htmlexpected in result
+        # Ensure no double encoding like &Atilde;&frac14;
+        assert "&Atilde;" not in result
+        assert "&frac14;" not in result
+
+        # Test various non-ASCII characters
+        htmlsource = "<p>Café naïve résumé</p>"
+        posource = '#: html:3\nmsgid "Café naïve résumé"\nmsgstr "Café naïve résumé"\n'
+        htmlexpected = "<p>Café naïve résumé</p>"
+        result = self.converthtml(posource, htmlsource)
+        assert htmlexpected in result
+
+        # Test with translation containing UTF-8
+        htmlsource = "<p>Hello world</p>"
+        posource = '#: html:3\nmsgid "Hello world"\nmsgstr "Hej världen"\n'
+        htmlexpected = "<p>Hej världen</p>"
+        result = self.converthtml(posource, htmlsource)
+        assert htmlexpected in result
+
+    def test_custom_entities_preserved(self):
+        """
+        Tests that custom entities are preserved and not double-encoded.
+
+        This addresses issue #1043 where custom entities like &brandShortName;
+        were being incorrectly double-encoded to &amp;brandShortName;.
+        """
+        # Test custom entity preservation
+        htmlsource = "<p>Use &brandShortName; for the best experience.</p>"
+        posource = '#: html:3\nmsgid "Use &brandShortName; for the best experience."\nmsgstr "Verwenden Sie &brandShortName; für die beste Erfahrung."\n'
+        htmlexpected = "<p>Verwenden Sie &brandShortName; für die beste Erfahrung.</p>"
+        result = self.converthtml(posource, htmlsource)
+        assert htmlexpected in result
+        # Ensure no double encoding
+        assert "&amp;brandShortName;" not in result
+
+        # Test multiple custom entities
+        htmlsource = "<p>&brandShortName; &version; &copyright;</p>"
+        posource = '#: html:3\nmsgid "&brandShortName; &version; &copyright;"\nmsgstr "&brandShortName; &version; &copyright;"\n'
+        htmlexpected = "<p>&brandShortName; &version; &copyright;</p>"
+        result = self.converthtml(posource, htmlsource)
+        assert htmlexpected in result
+        assert "&amp;brandShortName;" not in result
+        assert "&amp;version;" not in result
+        assert "&amp;copyright;" not in result
+
     def test_escapes(self):
         """Tests that PO escapes are correctly handled."""
         htmlsource = '<p>"leverage"</p>'
