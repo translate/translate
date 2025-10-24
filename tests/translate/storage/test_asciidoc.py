@@ -156,6 +156,35 @@ Text after.
         non_header_sources = [tu.source for tu in store.units if not tu.isheader()]
         self.assertCountEqual(non_header_sources, ["First Section", "Content here."])
 
+    def test_header_parsing_stops_at_content(self):
+        # Test that header parsing correctly identifies content after blank lines
+        # and doesn't include it in the header (addresses commit c9e6aba)
+        input = "= Document Title\n:attr: value\n\nThis is content, not author.\n\nMore content.\n"
+        store = self.parse(input)
+        unit_sources = self.get_translation_unit_sources(store)
+        # Should have header unit + 2 content units
+        assert len(unit_sources) == 3
+        assert store.units[0].isheader()
+        # Check that content after blank line is treated as translatable content
+        non_header_sources = [tu.source for tu in store.units if not tu.isheader()]
+        self.assertCountEqual(
+            non_header_sources,
+            ["This is content, not author.", "More content."],
+        )
+
+    def test_header_parsing_author_lines(self):
+        # Test that author lines in first 3 lines are included in header
+        # but content-looking lines after line 3 are not (addresses commit c9e6aba)
+        input = "= Document Title\nJohn Doe\nv1.0, 2025-01-01\n\nNormal paragraph here.\n"
+        store = self.parse(input)
+        unit_sources = self.get_translation_unit_sources(store)
+        # Should have header unit + 1 content unit
+        assert len(unit_sources) == 2
+        assert store.units[0].isheader()
+        # The paragraph should be translatable content, not part of header
+        non_header_sources = [tu.source for tu in store.units if not tu.isheader()]
+        assert non_header_sources == ["Normal paragraph here."]
+
     def test_paragraph_with_inline_formatting(self):
         # AsciiDoc uses different inline formatting than Markdown
         # *bold*, _italic_, `monospace`
