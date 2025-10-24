@@ -35,6 +35,8 @@ This implementation uses pyparsing for robust and maintainable parsing.
 
 from __future__ import annotations
 
+from contextlib import suppress
+
 from pyparsing import (
     LineEnd,
     LineStart,
@@ -578,7 +580,7 @@ class AsciiDocFile(base.TranslationStore):
                 is_special = False
 
                 # Check each pattern that should break a paragraph
-                try:  # noqa: SIM105
+                with suppress(ParseBaseException):
                     is_special = (
                         grammar['heading'].matches(line_to_check, parseAll=True) or
                         grammar['unordered_list_item'].matches(line_to_check, parseAll=True) or
@@ -586,8 +588,6 @@ class AsciiDocFile(base.TranslationStore):
                         grammar['block_delimiter'].matches(line_to_check, parseAll=True) or
                         grammar['comment'].matches(line_to_check, parseAll=True)
                     )
-                except ParseBaseException:
-                    pass
 
                 if is_special:
                     break
