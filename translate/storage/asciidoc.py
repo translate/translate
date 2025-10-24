@@ -107,7 +107,7 @@ class AsciiDocFile(base.TranslationStore):
     def _parse_header(self, lines: list[str]) -> list[str]:
         """
         Parse document header if present.
-        
+
         Returns remaining lines after header.
         """
         # Check for document header (first line starting with = )
@@ -119,16 +119,16 @@ class AsciiDocFile(base.TranslationStore):
         header_end = 0  # At minimum, include the title
         seen_blank = False
         i = 1
-        
+
         while i < len(lines):
             line = lines[i]
-            
+
             # Check for comment block delimiter ////
             # Comment blocks can appear in the header and should be included
             if line.strip() == "////":
                 header_end, i = self._skip_comment_block(lines, i, header_end)
                 continue
-                
+
             # Attributes start with : - always part of header
             if line.startswith(":"):
                 header_end = i
@@ -145,8 +145,8 @@ class AsciiDocFile(base.TranslationStore):
                     # If next line is a section (==) or regular paragraph, end here
                     if next_line.strip():
                         if next_line.startswith("==") or (
-                            not next_line.startswith(":") 
-                            and not next_line.strip() == "////"
+                            not next_line.startswith(":")
+                            and next_line.strip() != "////"
                         ):
                             header_end = i
                             break
@@ -175,7 +175,7 @@ class AsciiDocFile(base.TranslationStore):
                 {"type": "header", "content": header_content, "unit": header}
             )
             return lines[header_end + 1 :]
-        
+
         return lines
 
     def _skip_comment_block(self, lines: list[str], i: int, header_end: int) -> tuple[int, int]:
@@ -207,29 +207,11 @@ class AsciiDocFile(base.TranslationStore):
             # Try each parsing method in order
             if self._try_parse_conditional(lines, i):
                 i = self._get_next_index(lines, i, "conditional")
-            elif self._try_parse_directive(line, i):
-                i += 1
-            elif self._try_parse_anchor(line, i):
-                i += 1
-            elif self._try_parse_block_title(line, i):
-                i += 1
-            elif self._try_parse_attribute(line, i):
-                i += 1
-            elif self._try_parse_heading(line, i):
-                i += 1
-            elif self._try_parse_unordered_list(line, i):
-                i += 1
-            elif self._try_parse_ordered_list(line, i):
-                i += 1
-            elif self._try_parse_description_list(line, i):
+            elif self._try_parse_directive(line, i) or self._try_parse_anchor(line, i) or self._try_parse_block_title(line, i) or self._try_parse_attribute(line, i) or self._try_parse_heading(line, i) or self._try_parse_unordered_list(line, i) or self._try_parse_ordered_list(line, i) or self._try_parse_description_list(line, i):
                 i += 1
             elif self._try_parse_block_delimiter(lines, i):
                 i = self._get_next_index(lines, i, "block")
-            elif self._try_parse_list_continuation(line, i):
-                i += 1
-            elif self._try_parse_comment(line, i):
-                i += 1
-            elif self._try_parse_admonition(line, i):
+            elif self._try_parse_list_continuation(line, i) or self._try_parse_comment(line, i) or self._try_parse_admonition(line, i):
                 i += 1
             elif self._try_parse_table(lines, i):
                 i = self._get_next_index(lines, i, "table")
