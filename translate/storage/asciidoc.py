@@ -30,23 +30,32 @@ The principles for extraction of translation units are as follows:
 
 White space within translation units is normalized.
 
-This implementation uses pyparsing for robust and maintainable parsing.
+This implementation uses pyparsing with a full-document grammar approach
+for robust and maintainable parsing.
 """
 
 from __future__ import annotations
 
-from contextlib import suppress
+from typing import Any
 
 from pyparsing import (
+    Forward,
+    Group,
     LineEnd,
     LineStart,
     Literal,
+    OneOrMore,
     Optional,
-    ParseBaseException,
+    ParseResults,
     ParserElement,
     Regex,
     SkipTo,
+    StringEnd,
+    StringStart,
+    Suppress,
     White,
+    ZeroOrMore,
+    pythonStyleComment,
 )
 
 from translate.storage import base
@@ -54,24 +63,27 @@ from translate.storage import base
 # Enable packrat parsing for better performance
 ParserElement.enablePackrat()
 
+# Set default whitespace characters (space and tab only, not newlines)
+ParserElement.setDefaultWhitespaceChars(' \t')
+
 
 class AsciiDocUnit(base.TranslationUnit):
     """A unit of translatable/localisable AsciiDoc content."""
 
-    def __init__(self, source=None):
+    def __init__(self, source: str | None = None) -> None:
         super().__init__(source)
-        self.locations = []
-        self._element_type = "paragraph"
-        self._prefix = ""
-        self._suffix = ""
+        self.locations: list[str] = []
+        self._element_type: str = "paragraph"
+        self._prefix: str = ""
+        self._suffix: str = ""
 
-    def addlocation(self, location):
+    def addlocation(self, location: str) -> None:
         self.locations.append(location)
 
-    def getlocations(self):
+    def getlocations(self) -> list[str]:
         return self.locations
 
-    def set_element_info(self, element_type: str, prefix: str = "", suffix: str = ""):
+    def set_element_info(self, element_type: str, prefix: str = "", suffix: str = "") -> None:
         """Store element type and formatting information."""
         self._element_type = element_type
         self._prefix = prefix
@@ -80,14 +92,14 @@ class AsciiDocUnit(base.TranslationUnit):
 
 class AsciiDocHeaderUnit(AsciiDocUnit):
     @staticmethod
-    def isheader():
+    def isheader() -> bool:
         return True
 
 
 class AsciiDocFile(base.TranslationStore):
     UnitClass = AsciiDocUnit
 
-    def __init__(self, inputfile=None, callback=None):
+    def __init__(self, inputfile=None, callback=None) -> None:
         """
         Construct a new object instance.
 
@@ -97,524 +109,330 @@ class AsciiDocFile(base.TranslationStore):
           a no-op.
         """
         base.TranslationStore.__init__(self)
-        self.filename = getattr(inputfile, "name", None)
+        self.filename: str | None = getattr(inputfile, "name", None)
         self.callback = callback or self._dummy_callback
-        self.filesrc = ""
-        self._elements = []  # Store parsed elements for reconstruction
+        self.filesrc: str = ""
+        self._elements: list[dict[str, Any]] = []  # Store parsed elements for reconstruction
+        self._grammar = self._create_document_grammar()
         if inputfile is not None:
             adoc_src = inputfile.read()
             inputfile.close()
             self.parse(adoc_src)
 
-    def parse(self, data):
-        """Process the given source string (binary)."""
+    def parse(self, data: bytes) -> None:
+        """Process the given source string (binary) using full-document pyparsing."""
         text = data.decode()
-        lines = text.splitlines(keepends=True)
-
-        # Check for document header (first line starting with = )
-        header_end = -1
-        if lines and lines[0].startswith("= "):
-            # The header includes: title line, optional author/revision lines, and attributes
-            # Keep going until we hit a blank line followed by content or just content
-            header_end = 0  # At minimum, include the title
-            for i in range(1, len(lines)):
-                line = lines[i]
-                # Attributes start with :
-                if line.startswith(":"):
-                    header_end = i
-                # Empty line might be end of header or separator within header
-                elif not line.strip():
-                    # Check if next line is content (starts new section)
-                    if i + 1 < len(lines):
-                        next_line = lines[i + 1]
-                        # If next line is a section header or regular content, end header here
-                        if next_line.strip() and not next_line.startswith(":"):
-                            header_end = i
-                            break
-                    header_end = i
-                # First non-empty, non-attribute line after title could be author/date
-                # but only if we haven't seen a blank line yet
-                elif i == 1 or (i == 2 and not lines[1].strip()):
-                    # Author or date line
-                    header_end = i
-                else:
-                    # Regular content starts
-                    break
-
-            if header_end >= 0:
-                header_content = "".join(lines[: header_end + 1])
-                header = AsciiDocHeaderUnit(header_content)
-                self.addunit(header)
-                self._elements.append(
-                    {"type": "header", "content": header_content, "unit": header}
-                )
-                lines = lines[header_end + 1 :]
-
-        # Parse the rest of the document
-        self._parse_content(lines)
-
+        
+        try:
+            # Parse the entire document at once
+            parsed = self._grammar.parseString(text, parseAll=True)
+            self._process_parsed_document(parsed, text)
+        except Exception as e:
+            # Fallback to the safer approach if parsing fails
+            raise ValueError(f"Failed to parse AsciiDoc document: {e}") from e
+        
         # Reconstruct the document
         self._reconstruct()
-
-    def _create_grammar(self):
-        """Create the pyparsing grammar for AsciiDoc elements."""
-        # Set default whitespace to only space and tab (not newlines)
-        ParserElement.setDefaultWhitespaceChars(' \t')
-
-        # Basic elements
-        empty_line = LineStart() + LineEnd()
-
-        # Comments
-        comment = LineStart() + Literal("//")
-
-        # Conditional directives
-        conditional_start = LineStart() + (
-            Literal("ifdef") | Literal("ifndef") | Literal("ifeval")
-        ) + Literal("::")
-        conditional_end = LineStart() + Literal("endif::")
-
-        # Anchors
-        anchor = LineStart() + Literal("[[") + SkipTo("]]") + Literal("]]")
-
-        # Block title (dot followed immediately by alphanumeric, no space)
-        block_title = LineStart() + Regex(r"\.[A-Za-z0-9][^\n]*")
-
-        # Attribute lines
-        attribute_line = LineStart() + Literal("[") + SkipTo("]", failOn="\n") + Literal("]") + Optional(White()) + LineEnd()
-
-        # Headings (2-6 levels)
-        heading_marker = Regex(r"={2,6}")
-        heading = (
-            LineStart() +
-            heading_marker("marker") +
-            White() +
-            Regex(r"[^\n]+")("title") +
-            LineEnd()
-        )
-
-        # Unordered list item
-        unordered_marker = Regex(r"\*+")
-        checklist_marker = Regex(r"\[[*x ]\]")
-        unordered_list_item = (
-            LineStart() +
-            unordered_marker("marker") +
-            White() +
-            Optional(checklist_marker("checklist") + White()) +
-            Regex(r"[^\n]+")("content") +
-            LineEnd()
-        )
-
-        # Ordered list item
-        ordered_marker = Regex(r"\.+")
-        ordered_list_item = (
-            LineStart() +
-            ordered_marker("marker") +
-            White() +
-            Regex(r"[^\n]+")("content") +
-            LineEnd()
-        )
-
-        # Description list
-        description_list = (
-            LineStart() +
-            Regex(r"[^:\n]+")("term") +
-            Literal("::") +
-            White() +
-            Regex(r"[^\n]+")("definition") +
-            LineEnd()
-        )
-
-        # Block delimiters
-        block_delimiter = LineStart() + Regex(r"[-=.*_+]{4,}") + Optional(White()) + LineEnd()
-
-        # List continuation
-        list_continuation = LineStart() + Literal("+") + LineEnd()
-
-        # Admonitions
-        admonition_type = (
-            Literal("NOTE") | Literal("TIP") | Literal("IMPORTANT") |
-            Literal("WARNING") | Literal("CAUTION")
-        )
-        admonition = (
-            LineStart() +
-            admonition_type("type") +
-            Literal(":") +
-            White() +
-            Regex(r"[^\n]+")("content") +
-            LineEnd()
-        )
-
-        # Table line
-        table_line = LineStart() + Literal("|")
-
-        return {
-            'empty_line': empty_line,
-            'comment': comment,
-            'conditional_start': conditional_start,
-            'conditional_end': conditional_end,
-            'anchor': anchor,
-            'block_title': block_title,
-            'attribute_line': attribute_line,
-            'heading': heading,
-            'unordered_list_item': unordered_list_item,
-            'ordered_list_item': ordered_list_item,
-            'description_list': description_list,
-            'block_delimiter': block_delimiter,
-            'list_continuation': list_continuation,
-            'admonition': admonition,
-            'table_line': table_line,
-        }
-
-    def _parse_content(self, lines: list[str]):
-        """Parse AsciiDoc content and extract translation units using pyparsing."""
-        grammar = self._create_grammar()
-        i = 0
-        while i < len(lines):
-            line = lines[i]
-
-            # Try to match using pyparsing grammar
-            try:
-                # Skip empty lines
-                if not line.strip():
-                    self._elements.append({"type": "empty", "content": line})
-                    i += 1
-                    continue
-
-                # Conditional directives - skip entire block
-                if grammar['conditional_start'].matches(line, parseAll=False):
-                    block_lines = [line]
-                    i += 1
-                    depth = 1
-                    while i < len(lines) and depth > 0:
-                        current_line = lines[i]
-                        block_lines.append(current_line)
-                        if grammar['conditional_start'].matches(current_line, parseAll=False):
-                            depth += 1
-                        elif grammar['conditional_end'].matches(current_line, parseAll=False):
-                            depth -= 1
-                            if depth == 0:
-                                i += 1
-                                break
-                        i += 1
-                    self._elements.append(
-                        {"type": "conditional_block", "content": "".join(block_lines)}
-                    )
-                    continue
-
-                # Standalone endif
-                if grammar['conditional_end'].matches(line, parseAll=False):
-                    self._elements.append({"type": "directive", "content": line})
-                    i += 1
-                    continue
-
-                # Anchors
-                if grammar['anchor'].matches(line, parseAll=False):
-                    self._elements.append({"type": "anchor", "content": line})
-                    i += 1
-                    continue
-
-                # Block title
-                if grammar['block_title'].matches(line, parseAll=False):
-                    self._elements.append({"type": "block_title", "content": line})
-                    i += 1
-                    continue
-
-                # Attribute lines
-                if line.strip().startswith("[") and line.strip().endswith("]"):
-                    self._elements.append({"type": "attribute", "content": line})
-                    i += 1
-                    continue
-
-                # Headings
-                result = grammar['heading'].parseString(line, parseAll=True)
-                if result:
-                    marker = result.marker
-                    title = result.title.rstrip().rstrip("=").strip()
-                    level = len(marker)
-
-                    unit = self.addsourceunit(title)
-                    unit.addlocation(f"{self.filename or ''}:{i + 1}")
-                    unit.set_element_info(
-                        "heading",
-                        marker + " ",
-                        "\n" if line.endswith("\n") else "",
-                    )
-
-                    self._elements.append(
-                        {
-                            "type": "heading",
-                            "level": level,
-                            "prefix": marker + " ",
-                            "suffix": "\n" if line.endswith("\n") else "",
-                            "unit": unit,
-                            "line": i + 1,
-                        }
-                    )
-                    i += 1
-                    continue
-
-            except ParseBaseException:
-                pass  # Fall through to next pattern
-
-            # Try unordered list
-            try:
-                result = grammar['unordered_list_item'].parseString(line, parseAll=True)
-                if result:
-                    marker = result.marker
-                    content = result.content.strip()
-                    level = len(marker)
-
-                    checklist_prefix = ""
-                    if result.checklist:
-                        # result.checklist is the string like "[*]" or "[ ]"
-                        checklist_prefix = result.checklist + " "
-
-                    unit = self.addsourceunit(content)
-                    unit.addlocation(f"{self.filename or ''}:{i + 1}")
-                    prefix = marker + " " + checklist_prefix
-                    unit.set_element_info(
-                        "list_item",
-                        prefix,
-                        "\n" if line.endswith("\n") else "",
-                    )
-
-                    self._elements.append(
-                        {
-                            "type": "list_item",
-                            "level": level,
-                            "prefix": prefix,
-                            "suffix": "\n" if line.endswith("\n") else "",
-                            "unit": unit,
-                            "line": i + 1,
-                        }
-                    )
-                    i += 1
-                    continue
-            except ParseBaseException:
-                pass
-
-            # Try ordered list
-            try:
-                result = grammar['ordered_list_item'].parseString(line, parseAll=True)
-                if result:
-                    marker = result.marker
-                    content = result.content.strip()
-                    level = len(marker)
-
-                    unit = self.addsourceunit(content)
-                    unit.addlocation(f"{self.filename or ''}:{i + 1}")
-                    unit.set_element_info(
-                        "list_item",
-                        marker + " ",
-                        "\n" if line.endswith("\n") else "",
-                    )
-
-                    self._elements.append(
-                        {
-                            "type": "list_item",
-                            "level": level,
-                            "prefix": marker + " ",
-                            "suffix": "\n" if line.endswith("\n") else "",
-                            "unit": unit,
-                            "line": i + 1,
-                        }
-                    )
-                    i += 1
-                    continue
-            except ParseBaseException:
-                pass
-
-            # Try description list
-            try:
-                result = grammar['description_list'].parseString(line, parseAll=True)
-                if result:
-                    term = result.term.strip()
-                    definition = result.definition.strip()
-
-                    unit = self.addsourceunit(definition)
-                    unit.addlocation(f"{self.filename or ''}:{i + 1}")
-                    unit.set_element_info(
-                        "description_list",
-                        f"{term}:: ",
-                        "\n" if line.endswith("\n") else "",
-                    )
-
-                    self._elements.append(
-                        {
-                            "type": "description_list",
-                            "term": term,
-                            "prefix": f"{term}:: ",
-                            "suffix": "\n" if line.endswith("\n") else "",
-                            "unit": unit,
-                            "line": i + 1,
-                        }
-                    )
-                    i += 1
-                    continue
-            except ParseBaseException:
-                pass
-
-            # Try block delimiter
-            try:
-                if grammar['block_delimiter'].matches(line, parseAll=True):
-                    delimiter = line.strip()
-                    block_lines = [line]
-                    i += 1
-                    while i < len(lines):
-                        block_lines.append(lines[i])
-                        if lines[i].strip() == delimiter:
-                            i += 1
-                            break
-                        i += 1
-
-                    self._elements.append(
-                        {"type": "code_block", "content": "".join(block_lines)}
-                    )
-                    continue
-            except ParseBaseException:
-                pass
-
-            # Try list continuation
-            try:
-                if grammar['list_continuation'].matches(line, parseAll=True):
-                    self._elements.append({"type": "list_continuation", "content": line})
-                    i += 1
-                    continue
-            except ParseBaseException:
-                pass
-
-            # Try comment
-            try:
-                if grammar['comment'].matches(line, parseAll=False) and line.startswith("//"):
-                    self._elements.append({"type": "comment", "content": line})
-                    i += 1
-                    continue
-            except ParseBaseException:
-                pass
-
-            # Try admonition
-            try:
-                result = grammar['admonition'].parseString(line, parseAll=True)
-                if result:
-                    admon_type = result.type
-                    content = result.content.strip()
-
-                    unit = self.addsourceunit(content)
-                    unit.addlocation(f"{self.filename or ''}:{i + 1}")
-                    unit.set_element_info(
-                        "admonition",
-                        f"{admon_type}: ",
-                        "\n" if line.endswith("\n") else "",
-                    )
-
-                    self._elements.append(
-                        {
-                            "type": "admonition",
-                            "admon_type": admon_type,
-                            "prefix": f"{admon_type}: ",
-                            "suffix": "\n" if line.endswith("\n") else "",
-                            "unit": unit,
-                            "line": i + 1,
-                        }
-                    )
-                    i += 1
-                    continue
-            except ParseBaseException:
-                pass
-
-            # Try table
-            try:
-                if line.strip().startswith("|"):
-                    table_lines = []
-                    start_line = i
-                    # Collect all table lines
-                    while i < len(lines) and (
-                        lines[i].strip().startswith("|") or not lines[i].strip()
-                    ):
-                        table_lines.append(lines[i])
-                        i += 1
-                        if i < len(lines) and not lines[i].strip():
-                            # Check if next non-empty line is still part of table
-                            next_i = i
-                            while next_i < len(lines) and not lines[next_i].strip():
-                                next_i += 1
-                            if next_i >= len(lines) or not lines[next_i].strip().startswith("|"):
-                                break
-
-                    # Parse table cells for translation
-                    for table_line in table_lines:
-                        if table_line.strip() and "|" in table_line:
-                            # Extract cells (simple approach)
-                            cells = [
-                                cell.strip()
-                                for cell in table_line.split("|")
-                                if cell.strip()
-                            ]
-                            for cell in cells:
-                                # Skip cell separator markers and empty cells
-                                if cell and not cell.startswith("="):
-                                    unit = self.addsourceunit(cell)
-                                    unit.addlocation(
-                                        f"{self.filename or ''}:{start_line + 1}"
-                                    )
-                                    unit.set_element_info("table_cell", "", "")
-
-                    self._elements.append(
-                        {
-                            "type": "table",
-                            "content": "".join(table_lines),
-                            "line": start_line + 1,
-                        }
-                    )
-                    continue
-            except ParseBaseException:
-                pass
-
-            # Paragraph - collect consecutive non-empty lines
-            para_lines = []
-            start_line = i
-            while i < len(lines) and lines[i].strip():
-                # Check if this is a special line that breaks paragraphs
-                # We need to check if any of our patterns match
-                line_to_check = lines[i]
-                is_special = False
-
-                # Check each pattern that should break a paragraph
-                with suppress(ParseBaseException):
-                    is_special = (
-                        grammar['heading'].matches(line_to_check, parseAll=True) or
-                        grammar['unordered_list_item'].matches(line_to_check, parseAll=True) or
-                        grammar['ordered_list_item'].matches(line_to_check, parseAll=True) or
-                        grammar['block_delimiter'].matches(line_to_check, parseAll=True) or
-                        grammar['comment'].matches(line_to_check, parseAll=True)
-                    )
-
-                if is_special:
-                    break
-                para_lines.append(lines[i])
-                i += 1
-
-            if para_lines:
-                # Join paragraph lines and normalize whitespace
-                para_text = " ".join(line.strip() for line in para_lines)
-
+    
+    def _process_parsed_document(self, parsed: ParseResults, original_text: str) -> None:
+        """Process the parsed document and extract translation units."""
+        line_number = 1
+        
+        for element in parsed:
+            if not isinstance(element, dict):
+                continue
+                
+            elem_type = element.get("type")
+            if not elem_type:
+                continue
+            
+            if elem_type == "header":
+                # Document header - not translated
+                header_content = element.content
+                header = AsciiDocHeaderUnit(header_content)
+                self.addunit(header)
+                self._elements.append({
+                    "type": "header",
+                    "content": header_content,
+                    "unit": header
+                })
+                line_number += header_content.count('\n')
+                
+            elif elem_type == "heading":
+                marker = element["marker"]
+                title = element["title"].rstrip().rstrip("=").strip()
+                suffix = "\n" if element["content"].endswith("\n") else ""
+                
+                unit = self.addsourceunit(title)
+                unit.addlocation(f"{self.filename or ''}:{line_number}")
+                unit.set_element_info("heading", marker + " ", suffix)
+                
+                self._elements.append({
+                    "type": "heading",
+                    "level": len(marker),
+                    "prefix": marker + " ",
+                    "suffix": suffix,
+                    "unit": unit,
+                    "line": line_number,
+                })
+                line_number += element["content"].count('\n')
+                
+            elif elem_type == "list_item":
+                marker = element["marker"]
+                content = element["text"].strip()
+                checklist_prefix = ""
+                
+                if element.get("checklist"):
+                    checklist_prefix = element["checklist"] + " "
+                
+                unit = self.addsourceunit(content)
+                unit.addlocation(f"{self.filename or ''}:{line_number}")
+                prefix = marker + " " + checklist_prefix
+                suffix = "\n" if element["content"].endswith("\n") else ""
+                unit.set_element_info("list_item", prefix, suffix)
+                
+                self._elements.append({
+                    "type": "list_item",
+                    "level": len(marker),
+                    "prefix": prefix,
+                    "suffix": suffix,
+                    "unit": unit,
+                    "line": line_number,
+                })
+                line_number += element["content"].count('\n')
+                
+            elif elem_type == "description_list":
+                term = element["term"].strip()
+                definition = element["definition"].strip()
+                suffix = "\n" if element["content"].endswith("\n") else ""
+                
+                unit = self.addsourceunit(definition)
+                unit.addlocation(f"{self.filename or ''}:{line_number}")
+                unit.set_element_info("description_list", f"{term}:: ", suffix)
+                
+                self._elements.append({
+                    "type": "description_list",
+                    "term": term,
+                    "prefix": f"{term}:: ",
+                    "suffix": suffix,
+                    "unit": unit,
+                    "line": line_number,
+                })
+                line_number += element["content"].count('\n')
+                
+            elif elem_type == "admonition":
+                admon_type = element["admon_type"]
+                content = element["text"].strip()
+                suffix = "\n" if element["content"].endswith("\n") else ""
+                
+                unit = self.addsourceunit(content)
+                unit.addlocation(f"{self.filename or ''}:{line_number}")
+                unit.set_element_info("admonition", f"{admon_type}: ", suffix)
+                
+                self._elements.append({
+                    "type": "admonition",
+                    "admon_type": admon_type,
+                    "prefix": f"{admon_type}: ",
+                    "suffix": suffix,
+                    "unit": unit,
+                    "line": line_number,
+                })
+                line_number += element["content"].count('\n')
+                
+            elif elem_type == "paragraph":
+                # Normalize whitespace in paragraphs
+                para_text = " ".join(element["content"].strip().split())
+                
                 if para_text:
                     unit = self.addsourceunit(para_text)
-                    unit.addlocation(f"{self.filename or ''}:{start_line + 1}")
+                    unit.addlocation(f"{self.filename or ''}:{line_number}")
                     unit.set_element_info("paragraph", "", "\n")
+                    
+                    self._elements.append({
+                        "type": "paragraph",
+                        "unit": unit,
+                        "line": line_number,
+                        "original_lines": [element["content"]],
+                    })
+                line_number += element["content"].count('\n')
+                
+            elif elem_type in ("empty_line", "code_block", "comment", "attribute",
+                             "list_continuation", "directive", "anchor", "block_title",
+                             "conditional_block", "table"):
+                # Non-translatable elements - preserve as-is
+                self._elements.append({
+                    "type": elem_type,
+                    "content": element["content"],
+                    "line": line_number,
+                })
+                line_number += element["content"].count('\n')
+        
+        # Remove trailing empty lines as they're artifacts of parsing
+        while self._elements and self._elements[-1]["type"] == "empty_line":
+            self._elements.pop()
+    
+    def _create_document_grammar(self) -> ParserElement:
+        """
+        Create a complete pyparsing grammar for AsciiDoc documents.
+        
+        This grammar parses the entire document structure at once,
+        rather than line-by-line processing.
+        """
+        # Define newline
+        newline = LineEnd()
+        
+        # Empty line
+        empty_line = (LineStart() + newline).setResultsName("empty_line", listAllMatches=True)
+        empty_line.setParseAction(lambda t: {"type": "empty_line", "content": "\n"})
+        
+        # Comments (single line starting with //)
+        comment_line = (LineStart() + Literal("//") + SkipTo(newline | StringEnd()) + Optional(newline))
+        comment_line.setResultsName("comment", listAllMatches=True)
+        comment_line.setParseAction(lambda t: {"type": "comment", "content": "".join(t)})
+        
+        # Conditional directives
+        conditional_start = LineStart() + (Literal("ifdef") | Literal("ifndef") | Literal("ifeval")) + Literal("::") + SkipTo(newline) + newline
+        conditional_end = LineStart() + Literal("endif::") + SkipTo(newline | StringEnd()) + Optional(newline)
+        
+        # Conditional block (ifdef/ifndef...endif)
+        # Simplified: match everything from start to corresponding end without recursion
+        conditional_block = conditional_start + SkipTo(conditional_end, include=False) + conditional_end
+        conditional_block.setResultsName("conditional_block", listAllMatches=True)
+        conditional_block.setParseAction(lambda t: {"type": "conditional_block", "content": "".join(t)})
+        
+        # Anchors [[id]]
+        anchor = (LineStart() + Literal("[[") + SkipTo("]]") + Literal("]]") + Optional(SkipTo(newline)) + newline)
+        anchor.setResultsName("anchor", listAllMatches=True)
+        anchor.setParseAction(lambda t: {"type": "anchor", "content": "".join(t)})
+        
+        # Block title (.Title)
+        block_title = (LineStart() + Regex(r"\.[A-Za-z0-9][^\n]*") + newline)
+        block_title.setResultsName("block_title", listAllMatches=True)
+        block_title.setParseAction(lambda t: {"type": "block_title", "content": "".join(t)})
+        
+        # Attribute lines [attribute]
+        attribute_line = (LineStart() + Literal("[") + SkipTo("]", failOn="\n") + Literal("]") + Optional(White()) + newline)
+        attribute_line.setResultsName("attribute", listAllMatches=True)
+        attribute_line.setParseAction(lambda t: {"type": "attribute", "content": "".join(t)})
+        
+        # Block delimiters (----, ...., ====, etc.)
+        block_delimiter = Regex(r"[-=.*_+]{4,}")
+        code_block = (LineStart() + block_delimiter("delim") + newline + 
+                     SkipTo(LineStart() + block_delimiter + newline) + 
+                     LineStart() + block_delimiter + newline)
+        code_block.setResultsName("code_block", listAllMatches=True)
+        code_block.setParseAction(lambda t: {"type": "code_block", "content": "".join(t)})
+        
+        # List continuation (+)
+        list_continuation = (LineStart() + Literal("+") + newline)
+        list_continuation.setResultsName("list_continuation", listAllMatches=True)
+        list_continuation.setParseAction(lambda t: {"type": "list_continuation", "content": "".join(t)})
+        
+        # Headings (==, ===, etc.)
+        heading_marker = Regex(r"={2,6}")
+        heading = (LineStart() + heading_marker("marker") + White() + 
+                  Regex(r"[^\n]+")("title") + newline)
+        heading.setResultsName("heading", listAllMatches=True)
+        heading.setParseAction(lambda t: {
+            "type": "heading",
+            "marker": t.marker,
+            "title": t.title,
+            "content": "".join(t)
+        })
+        
+        # Unordered list items (*, **, etc.)
+        unordered_marker = Regex(r"\*+")
+        checklist = Regex(r"\[[*x ]\]")
+        unordered_list_item = (LineStart() + unordered_marker("marker") + White() +
+                              Optional(checklist("checklist") + White()) +
+                              Regex(r"[^\n]+")("text") + newline)
+        
+        # Ordered list items (., .., etc.)
+        ordered_marker = Regex(r"\.+")
+        ordered_list_item = (LineStart() + ordered_marker("marker") + White() +
+                            Regex(r"[^\n]+")("text") + newline)
+        
+        # Combine list items
+        list_item = (unordered_list_item | ordered_list_item)
+        list_item.setResultsName("list_item", listAllMatches=True)
+        list_item.setParseAction(lambda t: {
+            "type": "list_item",
+            "marker": t.marker,
+            "text": t.text,
+            "checklist": t.checklist if hasattr(t, 'checklist') else "",
+            "content": "".join(t)
+        })
+        
+        # Description lists (term:: definition)
+        description_list = (LineStart() + Regex(r"[^:\n]+")("term") + Literal("::") +
+                           White() + Regex(r"[^\n]+")("definition") + newline)
+        description_list.setResultsName("description_list", listAllMatches=True)
+        description_list.setParseAction(lambda t: {
+            "type": "description_list",
+            "term": t.term,
+            "definition": t.definition,
+            "content": "".join(t)
+        })
+        
+        # Admonitions (NOTE:, TIP:, etc.)
+        admon_type = (Literal("NOTE") | Literal("TIP") | Literal("IMPORTANT") |
+                     Literal("WARNING") | Literal("CAUTION"))
+        admonition = (LineStart() + admon_type("admon_type") + Literal(":") +
+                     White() + Regex(r"[^\n]+")("text") + newline)
+        admonition.setResultsName("admonition", listAllMatches=True)
+        admonition.setParseAction(lambda t: {
+            "type": "admonition",
+            "admon_type": t.admon_type,
+            "text": t.text,
+            "content": "".join(t)
+        })
+        
+        # Table lines (starts with |)
+        table_line = LineStart() + Literal("|") + SkipTo(newline) + newline
+        table = OneOrMore(table_line | empty_line)
+        table.setResultsName("table", listAllMatches=True)
+        table.setParseAction(lambda t: {"type": "table", "content": "".join(t)})
+        
+        # Document header (= Title with attributes)
+        header_line = LineStart() + Literal("=") + White() + SkipTo(newline) + newline
+        header_attr = LineStart() + Literal(":") + SkipTo(newline) + newline
+        header_content = header_line + ZeroOrMore(Regex(r"[^\n]*") + newline | header_attr)
+        header = StringStart() + header_content
+        header.setResultsName("header", listAllMatches=True)
+        header.setParseAction(lambda t: {"type": "header", "content": "".join(t)})
+        
+        # Paragraph (consecutive non-empty, non-special lines)
+        # Must not start with special markers
+        para_line = LineStart() + Regex(r"(?![=*.\[:|//])[^\n]+") + newline
+        paragraph = OneOrMore(para_line)
+        paragraph.setResultsName("paragraph", listAllMatches=True)
+        paragraph.setParseAction(lambda t: {"type": "paragraph", "content": "".join(t)})
+        
+        # Document structure: optional header followed by content elements
+        content_element = (
+            empty_line |
+            conditional_block |
+            comment_line |
+            anchor |
+            block_title |
+            attribute_line |
+            code_block |
+            list_continuation |
+            heading |
+            list_item |
+            description_list |
+            admonition |
+            table |
+            paragraph
+        )
+        
+        document = Optional(header) + ZeroOrMore(content_element) + StringEnd()
+        
+        return document
 
-                    self._elements.append(
-                        {
-                            "type": "paragraph",
-                            "unit": unit,
-                            "line": start_line + 1,
-                            "original_lines": para_lines,
-                        }
-                    )
-
-    def _reconstruct(self):
+    def _reconstruct(self) -> None:
         """Reconstruct the AsciiDoc document with translations."""
-        result = []
+        result: list[str] = []
 
         for element in self._elements:
             elem_type = element["type"]
@@ -623,7 +441,7 @@ class AsciiDocFile(base.TranslationStore):
                 if element.get("unit") and element["unit"].isheader():
                     result.append(element["content"])
             elif elem_type in {
-                "empty",
+                "empty_line",
                 "code_block",
                 "comment",
                 "attribute",
