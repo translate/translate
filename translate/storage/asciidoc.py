@@ -98,31 +98,58 @@ class AsciiDocFile(base.TranslationStore):
         header_end = -1
         if lines and lines[0].startswith("= "):
             # The header includes: title line, optional author/revision lines, and attributes
-            # Keep going until we hit a blank line followed by content or just content
+            # Keep going until we hit a blank line followed by section/paragraph content
             header_end = 0  # At minimum, include the title
-            for i in range(1, len(lines)):
+            seen_blank = False
+            i = 1
+            while i < len(lines):
                 line = lines[i]
-                # Attributes start with :
+                # Check for comment block delimiter ////
+                # Comment blocks can appear in the header and should be included
+                if line.strip() == "////":
+                    # Include the comment block in the header
+                    header_end = i
+                    i += 1
+                    # Skip until closing delimiter
+                    while i < len(lines) and lines[i].strip() != "////":
+                        header_end = i
+                        i += 1
+                    if i < len(lines):
+                        header_end = i  # Include closing delimiter
+                        i += 1
+                    continue
+                # Attributes start with : - always part of header
                 if line.startswith(":"):
                     header_end = i
-                # Empty line might be end of header or separator within header
+                    seen_blank = False  # Reset blank line tracking
+                # Empty line - might separate header sections or end header
                 elif not line.strip():
-                    # Check if next line is content (starts new section)
+                    if seen_blank:
+                        # Two blank lines in a row typically ends header
+                        break
+                    seen_blank = True
+                    # Check if next line starts content
                     if i + 1 < len(lines):
                         next_line = lines[i + 1]
-                        # If next line is a section header or regular content, end header here
-                        if next_line.strip() and not next_line.startswith(":"):
-                            header_end = i
-                            break
+                        # If next line is a section (==) or regular paragraph, end here
+                        if next_line.strip():
+                            if next_line.startswith("==") or (
+                                not next_line.startswith(":") 
+                                and not next_line.strip() == "////"
+                            ):
+                                header_end = i
+                                break
                     header_end = i
-                # First non-empty, non-attribute line after title could be author/date
-                # but only if we haven't seen a blank line yet
-                elif i == 1 or (i == 2 and not lines[1].strip()):
-                    # Author or date line
-                    header_end = i
+                # Non-empty, non-attribute line after title
+                # Could be author, revision info, or start of content
                 else:
-                    # Regular content starts
-                    break
+                    # If we've seen a blank line and this doesn't start with :
+                    # it's likely the start of content
+                    if seen_blank:
+                        break
+                    # Otherwise it's author/revision info
+                    header_end = i
+                i += 1
 
             if header_end >= 0:
                 header_content = "".join(lines[: header_end + 1])
@@ -320,12 +347,12 @@ class AsciiDocFile(base.TranslationStore):
                 i += 1
                 continue
 
-            # Code block, literal block, example block, sidebar, etc.
-            # AsciiDoc uses various delimiters: ----, ...., ====, ****, ____, etc.
+            # Code block, literal block, example block, sidebar, comment block, etc.
+            # AsciiDoc uses various delimiters: ----, ...., ====, ****, ____, ////, etc.
             if (
                 line.strip()
                 and len(set(line.strip())) == 1
-                and line.strip()[0] in "-=.*_+"
+                and line.strip()[0] in "-=.*_+/"
             ):
                 # Check if it's a delimiter (4+ repeated characters)
                 delimiter = line.strip()

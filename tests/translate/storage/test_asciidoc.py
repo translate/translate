@@ -123,6 +123,28 @@ class TestAsciiDocTranslationUnitExtractionAndTranslation(TestCase):
         translated_output = self.get_translated_output(store)
         assert translated_output == "// This is a comment\n(Actual content.)\n"
 
+    def test_comment_block(self):
+        """Test multi-line comment blocks with ////."""
+        input = """Text before.
+
+////
+This is a comment block.
+It has multiple lines.
+////
+
+Text after.
+"""
+        store = self.parse(input)
+        unit_sources = self.get_translation_unit_sources(store)
+        # Comment blocks should not be extracted for translation
+        assert unit_sources == ["Text before.", "Text after."]
+        translated_output = self.get_translated_output(store)
+        # Comment blocks should be preserved in output
+        assert "////" in translated_output
+        assert "This is a comment block." in translated_output
+        assert "(Text before.)" in translated_output
+        assert "(Text after.)" in translated_output
+
     def test_document_title(self):
         input = "= Document Title\nAuthor Name\n\n== First Section\n\nContent here.\n"
         store = self.parse(input)
