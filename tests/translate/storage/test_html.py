@@ -326,6 +326,32 @@ pre tag
         # Check location to confirm it's from html tag
         assert "html[lang]" in lang_units[0].getlocations()[0]
 
+    def test_dir_attribute_not_extracted(self):
+        """Check that dir attribute is not extracted (it's automatically inferred from lang)."""
+        h = html.htmlfile()
+        store = h.parsestring(
+            """<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <title>Test</title>
+</head>
+<body>
+    <p dir="ltr">A paragraph with dir attribute</p>
+    <div dir="rtl">A div with dir attribute</div>
+</body>
+</html>"""
+        )
+        # dir attribute should NOT be extracted from any tag
+        sources = [unit.source for unit in store.units]
+        assert "ltr" not in sources
+        assert "rtl" not in sources
+        # lang, title, and content should be extracted (but not dir)
+        assert "en" in sources  # lang from html tag
+        assert "Test" in sources  # title
+        assert "A paragraph with dir attribute" in sources  # p content
+        assert "A div with dir attribute" in sources  # div content
+        assert len(store.units) == 4  # lang, title, p, div - but NOT dir
+
     def test_data_translate_ignore_attribute(self):
         """Check that elements with data-translate-ignore are not extracted."""
         h = html.htmlfile()
