@@ -18,6 +18,8 @@
 
 """This module stores information and functionality that relates to plurals."""
 
+from __future__ import annotations
+
 import re
 import unicodedata
 
@@ -1104,8 +1106,106 @@ def simplify_to_common(language_code):
     return simplify_to_common(simpler)
 
 
+# List of RTL (right-to-left) languages
+# Sourced from https://github.com/WeblateOrg/language-data
+RTL_LANGS = {
+    "ae",
+    "aeb",
+    "aii",
+    "ajp",
+    "apc",
+    "apd",
+    "ar",
+    "ar_BH",
+    "ar_DZ",
+    "ar_EG",
+    "ar_KW",
+    "ar_LY",
+    "ar_MA",
+    "ar_SA",
+    "ar_YE",
+    "ara",
+    "arc",
+    "arq",
+    "ars",
+    "arz",
+    "ave",
+    "bal",
+    "bgn",
+    "bqi",
+    "ckb",
+    "ckb_IR",
+    "dv",
+    "egy",
+    "fa",
+    "fa_AF",
+    "fas",
+    "ha",
+    "he",
+    "heb",
+    "khw",
+    "ks",
+    "lrc",
+    "luz",
+    "ms_Arab",
+    "mzn",
+    "nqo",
+    "pa_PK",
+    "pal",
+    "per",
+    "phn",
+    "ps",
+    "rhg",
+    "sam",
+    "sd",
+    "sdh",
+    "skr",
+    "syc",
+    "syr",
+    "ug",
+    "ur",
+    "ur_IN",
+    "urd",
+    "yi",
+}
+
+
+def _normalize_to_underscore(code: str) -> str:
+    """
+    Normalize a language code by converting hyphens and @ symbols to underscores and lowercasing.
+
+    Internal helper function for consistent language code normalization.
+
+    :param code: Language code (e.g., 'ar-EG', 'en@latin')
+    :return: Normalized language code (e.g., 'ar_eg', 'en_latin')
+    """
+    return code.replace("-", "_").replace("@", "_").lower()
+
+
+def is_rtl(language_code: str | None) -> bool:
+    """
+    Check if a language is right-to-left.
+
+    Supports both hyphen and underscore separators (e.g., 'ar-EG' and 'ar_EG').
+    The function normalizes hyphens to underscores for consistency.
+
+    :param language_code: Language code (e.g., 'ar', 'he', 'en', 'ar-EG', 'ar_EG')
+    :return: True if the language is RTL, False otherwise
+    """
+    if not language_code:
+        return False
+    # Normalize the language code (convert hyphens to underscores)
+    normalized = _normalize_to_underscore(language_code)
+    # Check both the full code and the base language code
+    if normalized in RTL_LANGS:
+        return True
+    # Check base language (e.g., 'ar' for 'ar_SA')
+    base = normalized.split("_")[0]
+    return base in RTL_LANGS
+
+
 def get_language(code):
-    code = code.replace("-", "_").replace("@", "_").lower()
+    code = _normalize_to_underscore(code)
     if "_" in code:
         # convert ab_cd → ab_CD
         code = "{}_{}".format(code.split("_")[0], code.split("_", 1)[1].upper())
