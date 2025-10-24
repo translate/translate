@@ -158,8 +158,13 @@ class AsciiDocFile(base.TranslationStore):
                 # it's likely the start of content
                 if seen_blank:
                     break
-                # Otherwise it's author/revision info
-                header_end = i
+                # Check if this looks like author/revision line (typically line 1-3 after title)
+                # Author lines don't start with [ or = and are early in the document
+                if i <= 3 and not line.startswith("[") and not line.startswith("="):
+                    header_end = i
+                else:
+                    # This is content, not header
+                    break
             i += 1
 
         if header_end >= 0:
