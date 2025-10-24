@@ -40,6 +40,7 @@ from pyparsing import (
     LineStart,
     Literal,
     Optional,
+    ParseBaseException,
     ParserElement,
     Regex,
     SkipTo,
@@ -157,38 +158,38 @@ class AsciiDocFile(base.TranslationStore):
         """Create the pyparsing grammar for AsciiDoc elements."""
         # Set default whitespace to only space and tab (not newlines)
         ParserElement.setDefaultWhitespaceChars(' \t')
-        
+
         # Basic elements
         empty_line = LineStart() + LineEnd()
-        
+
         # Comments
         comment = LineStart() + Literal("//")
-        
+
         # Conditional directives
         conditional_start = LineStart() + (
             Literal("ifdef") | Literal("ifndef") | Literal("ifeval")
         ) + Literal("::")
         conditional_end = LineStart() + Literal("endif::")
-        
+
         # Anchors
         anchor = LineStart() + Literal("[[") + SkipTo("]]") + Literal("]]")
-        
+
         # Block title (dot followed immediately by alphanumeric, no space)
         block_title = LineStart() + Regex(r"\.[A-Za-z0-9][^\n]*")
-        
+
         # Attribute lines
         attribute_line = LineStart() + Literal("[") + SkipTo("]", failOn="\n") + Literal("]") + Optional(White()) + LineEnd()
-        
+
         # Headings (2-6 levels)
         heading_marker = Regex(r"={2,6}")
         heading = (
-            LineStart() + 
-            heading_marker("marker") + 
-            White() + 
+            LineStart() +
+            heading_marker("marker") +
+            White() +
             Regex(r"[^\n]+")("title") +
             LineEnd()
         )
-        
+
         # Unordered list item
         unordered_marker = Regex(r"\*+")
         checklist_marker = Regex(r"\[[*x ]\]")
@@ -200,7 +201,7 @@ class AsciiDocFile(base.TranslationStore):
             Regex(r"[^\n]+")("content") +
             LineEnd()
         )
-        
+
         # Ordered list item
         ordered_marker = Regex(r"\.+")
         ordered_list_item = (
@@ -210,7 +211,7 @@ class AsciiDocFile(base.TranslationStore):
             Regex(r"[^\n]+")("content") +
             LineEnd()
         )
-        
+
         # Description list
         description_list = (
             LineStart() +
@@ -220,16 +221,16 @@ class AsciiDocFile(base.TranslationStore):
             Regex(r"[^\n]+")("definition") +
             LineEnd()
         )
-        
+
         # Block delimiters
         block_delimiter = LineStart() + Regex(r"[-=.*_+]{4,}") + Optional(White()) + LineEnd()
-        
+
         # List continuation
         list_continuation = LineStart() + Literal("+") + LineEnd()
-        
+
         # Admonitions
         admonition_type = (
-            Literal("NOTE") | Literal("TIP") | Literal("IMPORTANT") | 
+            Literal("NOTE") | Literal("TIP") | Literal("IMPORTANT") |
             Literal("WARNING") | Literal("CAUTION")
         )
         admonition = (
@@ -240,10 +241,10 @@ class AsciiDocFile(base.TranslationStore):
             Regex(r"[^\n]+")("content") +
             LineEnd()
         )
-        
+
         # Table line
         table_line = LineStart() + Literal("|")
-        
+
         return {
             'empty_line': empty_line,
             'comment': comment,
@@ -350,7 +351,7 @@ class AsciiDocFile(base.TranslationStore):
                     i += 1
                     continue
 
-            except Exception:
+            except ParseBaseException:
                 pass  # Fall through to next pattern
 
             # Try unordered list
@@ -360,12 +361,12 @@ class AsciiDocFile(base.TranslationStore):
                     marker = result.marker
                     content = result.content.strip()
                     level = len(marker)
-                    
+
                     checklist_prefix = ""
                     if result.checklist:
                         # result.checklist is the string like "[*]" or "[ ]"
                         checklist_prefix = result.checklist + " "
-                    
+
                     unit = self.addsourceunit(content)
                     unit.addlocation(f"{self.filename or ''}:{i + 1}")
                     prefix = marker + " " + checklist_prefix
@@ -387,7 +388,7 @@ class AsciiDocFile(base.TranslationStore):
                     )
                     i += 1
                     continue
-            except Exception:
+            except ParseBaseException:
                 pass
 
             # Try ordered list
@@ -418,7 +419,7 @@ class AsciiDocFile(base.TranslationStore):
                     )
                     i += 1
                     continue
-            except Exception:
+            except ParseBaseException:
                 pass
 
             # Try description list
@@ -448,7 +449,7 @@ class AsciiDocFile(base.TranslationStore):
                     )
                     i += 1
                     continue
-            except Exception:
+            except ParseBaseException:
                 pass
 
             # Try block delimiter
@@ -468,7 +469,7 @@ class AsciiDocFile(base.TranslationStore):
                         {"type": "code_block", "content": "".join(block_lines)}
                     )
                     continue
-            except Exception:
+            except ParseBaseException:
                 pass
 
             # Try list continuation
@@ -477,7 +478,7 @@ class AsciiDocFile(base.TranslationStore):
                     self._elements.append({"type": "list_continuation", "content": line})
                     i += 1
                     continue
-            except Exception:
+            except ParseBaseException:
                 pass
 
             # Try comment
@@ -486,7 +487,7 @@ class AsciiDocFile(base.TranslationStore):
                     self._elements.append({"type": "comment", "content": line})
                     i += 1
                     continue
-            except Exception:
+            except ParseBaseException:
                 pass
 
             # Try admonition
@@ -516,7 +517,7 @@ class AsciiDocFile(base.TranslationStore):
                     )
                     i += 1
                     continue
-            except Exception:
+            except ParseBaseException:
                 pass
 
             # Try table
@@ -564,7 +565,7 @@ class AsciiDocFile(base.TranslationStore):
                         }
                     )
                     continue
-            except Exception:
+            except ParseBaseException:
                 pass
 
             # Paragraph - collect consecutive non-empty lines
@@ -575,9 +576,9 @@ class AsciiDocFile(base.TranslationStore):
                 # We need to check if any of our patterns match
                 line_to_check = lines[i]
                 is_special = False
-                
+
                 # Check each pattern that should break a paragraph
-                try:
+                try:  # noqa: SIM105
                     is_special = (
                         grammar['heading'].matches(line_to_check, parseAll=True) or
                         grammar['unordered_list_item'].matches(line_to_check, parseAll=True) or
@@ -585,9 +586,9 @@ class AsciiDocFile(base.TranslationStore):
                         grammar['block_delimiter'].matches(line_to_check, parseAll=True) or
                         grammar['comment'].matches(line_to_check, parseAll=True)
                     )
-                except Exception:
+                except ParseBaseException:
                     pass
-                
+
                 if is_special:
                     break
                 para_lines.append(lines[i])
