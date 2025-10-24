@@ -88,7 +88,6 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
     TRANSLATABLE_ATTRIBUTES = [
         "abbr",  # abbreviation for a table header cell
         "alt",
-        "dir",  # text direction (ltr/rtl) -- only for the html element
         "lang",  # only for the html element -- see extract_translatable_attributes()
         "summary",
         "title",  # tooltip text for an element
@@ -378,7 +377,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
     @staticmethod
     def translatable_attribute_matches_tag(attrname, tag):
-        if attrname in {"lang", "dir"}:
+        if attrname == "lang":
             return tag == "html"
         return True
 

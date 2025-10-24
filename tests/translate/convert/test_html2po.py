@@ -88,47 +88,6 @@ class TestHTML2PO:
         self.compareunit(pofile, 1, "en")
         self.compareunit(pofile, 2, "translate lang attribute")
 
-    def test_extract_dir_attribute_from_html_tag(self):
-        """Test that the dir attribute is extracted from the html tag."""
-        markup = """<!DOCTYPE html>
-<html lang="en" dir="ltr">
-    <head>
-        <title>Test page</title>
-    </head>
-    <body>
-        <p>Content</p>
-    </body>
-</html>
-"""
-        pofile = self.html2po(markup)
-        self.countunits(pofile, 4)
-        self.compareunit(pofile, 1, "en")
-        self.compareunit(pofile, 2, "ltr")
-        self.compareunit(pofile, 3, "Test page")
-        self.compareunit(pofile, 4, "Content")
-
-    def test_extract_dir_attribute_without_lang(self):
-        """Test that the dir attribute is extracted even without lang attribute."""
-        markup = """<!DOCTYPE html>
-<html dir="rtl">
-    <head>
-        <title>Test page</title>
-    </head>
-    <body>
-        <p>Content</p>
-    </body>
-</html>
-"""
-        pofile = self.html2po(markup)
-        self.countunits(pofile, 3)
-        self.compareunit(pofile, 1, "rtl")
-        self.compareunit(pofile, 2, "Test page")
-        self.compareunit(pofile, 3, "Content")
-
-    def test_do_not_extract_dir_attribute_from_tags_other_than_html(self):
-        """Test that the dir attribute is only extracted from the html tag."""
-        self.check_single('<p><span dir="rtl">عربي</span></p>', "عربي")
-
     def test_do_not_extract_lang_attribute_from_tags_other_than_html(self):
         """Test that the lang attribute is extracted from the html tag."""
         self.check_single('<p><span lang="fr">Français</span></p>', "Français")
