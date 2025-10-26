@@ -55,7 +55,9 @@ class AsciiDocUnit(base.TranslationUnit):
     def getlocations(self) -> list[str]:
         return self.locations
 
-    def set_element_info(self, element_type: str, prefix: str = "", suffix: str = "") -> None:
+    def set_element_info(
+        self, element_type: str, prefix: str = "", suffix: str = ""
+    ) -> None:
         """Store element type and formatting information."""
         self._element_type = element_type
         self._prefix = prefix
@@ -84,7 +86,9 @@ class AsciiDocFile(base.TranslationStore):
         self.filename: str | None = getattr(inputfile, "name", None)
         self.callback = callback or self._dummy_callback
         self.filesrc: str = ""
-        self._elements: list[dict[str, Any]] = []  # Store parsed elements for reconstruction
+        self._elements: list[
+            dict[str, Any]
+        ] = []  # Store parsed elements for reconstruction
         if inputfile is not None:
             adoc_src = inputfile.read()
             inputfile.close()
@@ -178,7 +182,9 @@ class AsciiDocFile(base.TranslationStore):
 
         return lines
 
-    def _skip_comment_block(self, lines: list[str], i: int, header_end: int) -> tuple[int, int]:
+    def _skip_comment_block(
+        self, lines: list[str], i: int, header_end: int
+    ) -> tuple[int, int]:
         """Skip a comment block and return updated header_end and line index."""
         # Include the comment block in the header
         header_end = i
@@ -207,11 +213,24 @@ class AsciiDocFile(base.TranslationStore):
             # Try each parsing method in order
             if self._try_parse_conditional(lines, i):
                 i = self._get_next_index(lines, i, "conditional")
-            elif self._try_parse_directive(line, i) or self._try_parse_anchor(line, i) or self._try_parse_block_title(line, i) or self._try_parse_attribute(line, i) or self._try_parse_heading(line, i) or self._try_parse_unordered_list(line, i) or self._try_parse_ordered_list(line, i) or self._try_parse_description_list(line, i):
+            elif (
+                self._try_parse_directive(line, i)
+                or self._try_parse_anchor(line, i)
+                or self._try_parse_block_title(line, i)
+                or self._try_parse_attribute(line, i)
+                or self._try_parse_heading(line, i)
+                or self._try_parse_unordered_list(line, i)
+                or self._try_parse_ordered_list(line, i)
+                or self._try_parse_description_list(line, i)
+            ):
                 i += 1
             elif self._try_parse_block_delimiter(lines, i):
                 i = self._get_next_index(lines, i, "block")
-            elif self._try_parse_list_continuation(line, i) or self._try_parse_comment(line, i) or self._try_parse_admonition(line, i):
+            elif (
+                self._try_parse_list_continuation(line, i)
+                or self._try_parse_comment(line, i)
+                or self._try_parse_admonition(line, i)
+            ):
                 i += 1
             elif self._try_parse_table(lines, i):
                 i = self._get_next_index(lines, i, "table")
@@ -241,7 +260,11 @@ class AsciiDocFile(base.TranslationStore):
                     break
             i += 1
         self._elements.append(
-            {"type": "conditional_block", "content": "".join(block_lines), "end_index": i + 1}
+            {
+                "type": "conditional_block",
+                "content": "".join(block_lines),
+                "end_index": i + 1,
+            }
         )
         return True
 
@@ -499,11 +522,7 @@ class AsciiDocFile(base.TranslationStore):
         for table_line in table_lines:
             if table_line.strip() and "|" in table_line:
                 # Extract cells (simple approach)
-                cells = [
-                    cell.strip()
-                    for cell in table_line.split("|")
-                    if cell.strip()
-                ]
+                cells = [cell.strip() for cell in table_line.split("|") if cell.strip()]
                 for cell in cells:
                     # Skip cell separator markers and empty cells
                     if cell and not cell.startswith("="):
@@ -562,7 +581,9 @@ class AsciiDocFile(base.TranslationStore):
                 )
         return i
 
-    def _get_next_index(self, lines: list[str], current_i: int, element_type: str) -> int:
+    def _get_next_index(
+        self, lines: list[str], current_i: int, element_type: str
+    ) -> int:
         """Get the next index after parsing a multi-line element."""
         # Find the last element added and get its end_index
         if self._elements and "end_index" in self._elements[-1]:

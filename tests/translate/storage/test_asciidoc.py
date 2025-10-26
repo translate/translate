@@ -175,7 +175,9 @@ Text after.
     def test_header_parsing_author_lines(self):
         # Test that author lines in first 3 lines are included in header
         # but content-looking lines after line 3 are not (addresses commit c9e6aba)
-        input = "= Document Title\nJohn Doe\nv1.0, 2025-01-01\n\nNormal paragraph here.\n"
+        input = (
+            "= Document Title\nJohn Doe\nv1.0, 2025-01-01\n\nNormal paragraph here.\n"
+        )
         store = self.parse(input)
         unit_sources = self.get_translation_unit_sources(store)
         # Should have header unit + 1 content unit
