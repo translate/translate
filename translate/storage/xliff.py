@@ -808,7 +808,24 @@ class xlifffile(lisa.LISAfile):
             filename, unitid = parts[0], "\x04".join(parts[1:])
             self.switchfile(filename, createifmissing=True)
             unit.setid(unitid)
-        super().addunit(unit, new=new)
+        
+        # Check if unit belongs to a group and preserve group structure
+        group_parent = None
+        if hasattr(unit, 'xmlelement') and unit.xmlelement is not None:
+            parent = unit.xmlelement.getparent()
+            if parent is not None and parent.tag == self.namespaced("group"):
+                group_parent = parent
+        
+        # Call parent addunit but handle group placement ourselves
+        if group_parent is not None and new:
+            # Don't let parent class add to body - we'll add to group instead
+            super().addunit(unit, new=False)
+            # Find or create matching group
+            target_group = self._find_or_create_group(group_parent)
+            target_group.append(unit.xmlelement)
+        else:
+            # Normal behavior for units not in groups
+            super().addunit(unit, new=new)
 
     def addsourceunit(self, source, filename="NoName", createifmissing=False):
         """
@@ -853,6 +870,28 @@ class xlifffile(lisa.LISAfile):
         group = etree.SubElement(self.body, self.namespaced("group"))
         if restype:
             group.set("restype", restype)
+        return group
+    
+    def _find_or_create_group(self, source_group):
+        """
+        Find or create a group in the current body that matches the source_group's attributes.
+        
+        :param source_group: The source group element to match
+        :returns: The matching or newly created group element
+        """
+        # Extract all attributes from source group
+        group_attrs = dict(source_group.attrib)
+        
+        # Try to find a matching group in the current body
+        for group in self.body.iterchildren(self.namespaced("group")):
+            # Check if all attributes match
+            if dict(group.attrib) == group_attrs:
+                return group
+        
+        # No matching group found, create a new one
+        group = etree.SubElement(self.body, self.namespaced("group"))
+        for attr, value in group_attrs.items():
+            group.set(attr, value)
         return group
 
     def serialize(self, out):
