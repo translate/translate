@@ -348,3 +348,128 @@ trimmed in raw strings.
         assert len(store.units) == 1
         assert "The first newline is" in store.units[0].source
         assert "preserved" in store.units[0].source
+
+
+class TestGoI18nTOMLResourceStore(test_monolingual.TestMonolingualStore):
+    StoreClass = toml.GoI18nTOMLFile
+
+    def test_simple_plural(self):
+        """Test parsing simple pluralized strings."""
+        data = """[reading_time]
+one = "One minute to read"
+other = "{{ .Count }} minutes to read"
+"""
+        store = self.StoreClass()
+        store.parse(data)
+        assert len(store.units) == 1
+        assert store.units[0].hasplural()
+        assert store.units[0].target.strings[0] == "One minute to read"
+        assert store.units[0].target.strings[1] == "{{ .Count }} minutes to read"
+        assert bytes(store).decode("utf-8") == data
+
+    def test_plural_with_other_keys(self):
+        """Test that non-plural keys are still parsed normally."""
+        data = """[category]
+other = "category"
+
+[reading_time]
+one = "One minute to read"
+other = "{{ .Count }} minutes to read"
+
+[tag]
+other = "tag"
+"""
+        store = self.StoreClass()
+        store.parse(data)
+        assert len(store.units) == 3
+
+        # First unit is non-plural (only has "other" key)
+        assert store.units[0].getid() == "category.other"
+        assert not store.units[0].hasplural()
+        assert store.units[0].source == "category"
+
+        # Second unit is plural
+        assert store.units[1].getid() == "reading_time"
+        assert store.units[1].hasplural()
+
+        # Third unit is non-plural
+        assert store.units[2].getid() == "tag.other"
+        assert not store.units[2].hasplural()
+        assert store.units[2].source == "tag"
+
+    def test_full_plural_forms(self):
+        """Test all CLDR plural categories."""
+        data = """[items]
+zero = "No items"
+one = "One item"
+two = "Two items"
+few = "A few items"
+many = "Many items"
+other = "{{ .Count }} items"
+"""
+        store = self.StoreClass()
+        store.parse(data)
+        assert len(store.units) == 1
+        assert store.units[0].hasplural()
+        strings = store.units[0].target.strings
+        # First element is the multistring itself, rest are strings
+        assert str(strings[0]) == "No items"
+        assert strings[1] == "One item"
+        assert strings[2] == "Two items"
+        assert strings[3] == "A few items"
+        assert strings[4] == "Many items"
+        assert strings[5] == "{{ .Count }} items"
+
+    def test_roundtrip_plural(self):
+        """Test that plural forms survive round-trip."""
+        data = """[messages]
+one = "You have one message"
+other = "You have {{ .Count }} messages"
+"""
+        store = self.StoreClass()
+        store.parse(data)
+        assert len(store.units) == 1
+
+        # Modify the plural
+        from translate.misc.multistring import multistring
+
+        store.units[0].target = multistring(["Un mensaje", "{{ .Count }} mensajes"])
+
+        result = bytes(store).decode("utf-8")
+        assert 'one = "Un mensaje"' in result
+        assert 'other = "{{ .Count }} mensajes"' in result
+
+    def test_mixed_content(self):
+        """Test file with both regular and pluralized entries."""
+        data = """title = "My Application"
+
+[welcome]
+other = "Welcome!"
+
+[items_count]
+one = "One item"
+other = "{{ .Count }} items"
+
+[goodbye]
+other = "Goodbye!"
+"""
+        store = self.StoreClass()
+        store.parse(data)
+        assert len(store.units) == 4
+
+        # First is regular string
+        assert store.units[0].getid() == "title"
+        assert not store.units[0].hasplural()
+        assert store.units[0].source == "My Application"
+
+        # Second is non-plural (table with only "other")
+        assert store.units[1].getid() == "welcome.other"
+        assert not store.units[1].hasplural()
+
+        # Third is plural
+        assert store.units[2].getid() == "items_count"
+        assert store.units[2].hasplural()
+
+        # Fourth is non-plural
+        assert store.units[3].getid() == "goodbye.other"
+        assert not store.units[3].hasplural()

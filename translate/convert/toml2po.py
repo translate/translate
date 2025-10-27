@@ -1,5 +1,5 @@
 #
-# Copyright 2025 Zuza Software Foundation
+# Copyright 2025 translate-toolkit contributors
 #
 # This file is part of translate.
 #

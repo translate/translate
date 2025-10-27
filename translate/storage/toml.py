@@ -1,5 +1,5 @@
 #
-# Copyright 2025 Zuza Software Foundation
+# Copyright 2025 translate-toolkit contributors
 #
 # This file is part of the Translate Toolkit.
 #
@@ -28,6 +28,8 @@ from tomlkit.exceptions import TOMLKitError
 from tomlkit.items import Comment as TOMLComment
 from tomlkit.items import Table
 
+from translate.lang.data import cldr_plural_categories
+from translate.misc.multistring import multistring
 from translate.storage import base
 
 if TYPE_CHECKING:
@@ -234,3 +236,61 @@ class TOMLFile(base.DictStore):
             units = self.preprocess(self._original)
             unit.storevalue(units, None, unset=True)
         super().removeunit(unit)
+
+
+class GoI18nTOMLUnit(TOMLUnit):
+    """A TOML entry for Go i18n format with plural support."""
+
+    def hasplural(self):
+        """Returns whether this unit contains plural strings."""
+        return isinstance(self.target, multistring) and len(self.target.strings) > 1
+
+    def convert_target(self):
+        if not isinstance(self.target, multistring):
+            return self.target
+
+        tags = self._store.get_plural_tags()
+
+        # Sync plural_strings elements to plural_tags count.
+        strings = self.sync_plural_count(self.target, tags)
+        if any(strings):
+            # Replace blank strings by None to distinguish not completed translations
+            strings = [string or None for string in strings]
+
+        # Return a dict with plural tags as keys
+        return dict(zip(tags, strings))
+
+
+class GoI18nTOMLFile(TOMLFile):
+    """
+    TOML file for Go i18n format with plural support.
+
+    This format uses CLDR plural categories (zero, one, two, few, many, other)
+    as keys for pluralized strings.
+
+    Example:
+        [reading_time]
+        one = "One minute to read"
+        other = "{{ .Count }} minutes to read"
+
+    """
+
+    UnitClass = GoI18nTOMLUnit
+
+    def _parse_dict(self, data, prev):
+        """Parse a TOML table, checking for plurals."""
+        # Does this look like a plural?
+        # Need at least 2 keys and all keys must be CLDR plural categories
+        if data and len(data) >= 2 and all(x in cldr_plural_categories for x in data):
+            # Extract plural forms in CLDR order
+            values = [data[tag] for tag in cldr_plural_categories if tag in data]
+
+            # Skip blank values (all plurals are None or empty)
+            if values and not all(not value for value in values):
+                # Use blank string instead of None for missing forms
+                yield (prev, multistring(values), None)
+
+            return
+
+        # Handle normal dict
+        yield from super()._parse_dict(data, prev)
