@@ -33,6 +33,34 @@ from translate.storage import factory, po
 class ConflictOptionParser(optrecurse.RecursiveOptionParser):
     """a specialized Option Parser for the conflict tool..."""
 
+    def setformats(self, formats, usetemplates):
+        """Sets the formats and customizes the input/output option help text."""
+        super().setformats(formats, usetemplates)
+        # Override the input/output option help text to be more descriptive
+        inputoption = optrecurse.optparse.Option(
+            "-i",
+            "--input",
+            dest="input",
+            action="append",
+            default=None,
+            metavar="INPUT",
+            help="read from INPUT (directory or file(s)) in po format",
+        )
+        inputoption.optionalswitch = True
+        inputoption.required = True
+        self.define_option(inputoption)
+        outputoption = optrecurse.optparse.Option(
+            "-o",
+            "--output",
+            dest="output",
+            default=None,
+            metavar="OUTPUT",
+            help="write to OUTPUT (directory) in po format",
+        )
+        outputoption.optionalswitch = True
+        outputoption.required = True
+        self.define_option(outputoption)
+
     def parse_args(self, args=None, values=None):
         """Parses the command line options, handling implicit input/output args."""
         (options, args) = optrecurse.optparse.OptionParser.parse_args(
@@ -202,14 +230,6 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
 def main():
     formats = {"po": ("po", None), None: ("po", None)}
     parser = ConflictOptionParser(formats)
-
-    # Override the default input/output help text to be more descriptive
-    for option in parser.option_list:
-        if option.dest == "input":
-            option.help = "read from INPUT (directory or file(s)) in po format"
-        elif option.dest == "output":
-            option.help = "write to OUTPUT (directory) in po format"
-
     parser.add_option(
         "-I",
         "--ignore-case",
