@@ -153,7 +153,7 @@ Recibiches unha invitación para unirte!"""
         assert len(store.units) == 1
         assert store.units[0].getid() == "foo"
         assert store.units[0].source == 'Hello "World".'
-        assert bytes(store) == rb'foo = "Hello \"World\"."' + b'\n'
+        assert bytes(store) == rb'foo = "Hello \"World\"."' + b"\n"
 
     def test_newlines(self):
         """Test newlines in TOML strings."""
@@ -162,7 +162,7 @@ Recibiches unha invitación para unirte!"""
         assert len(store.units) == 1
         assert store.units[0].getid() == "foo"
         assert store.units[0].source == "Hello \n World."
-        assert bytes(store) == rb'foo = "Hello \n World."' + b'\n'
+        assert bytes(store) == rb'foo = "Hello \n World."' + b"\n"
 
     def test_list(self):
         """Test TOML arrays."""

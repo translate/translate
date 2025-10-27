@@ -3,9 +3,7 @@ from io import BytesIO
 import pytest
 
 from translate.convert import po2toml
-from translate.storage import po, toml
-
-from . import test_convert
+from translate.storage import toml
 
 
 class TestPO2TOML:

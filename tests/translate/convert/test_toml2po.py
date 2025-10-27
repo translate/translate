@@ -1,9 +1,7 @@
 from io import BytesIO
 
 from translate.convert import toml2po
-from translate.storage import po, toml
-
-from . import test_convert
+from translate.storage import po
 
 
 class TestTOML2PO:

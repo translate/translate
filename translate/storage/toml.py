@@ -23,9 +23,9 @@ from __future__ import annotations
 import uuid
 from typing import TYPE_CHECKING, Any
 
-from tomlkit import TOMLDocument, comment, document, loads
+from tomlkit import TOMLDocument, document, loads
 from tomlkit.exceptions import TOMLKitError
-from tomlkit.items import Comment, Item, String, Table, Trivia
+from tomlkit.items import Table
 
 from translate.storage import base
 
@@ -104,63 +104,63 @@ class TOMLFile(base.DictStore):
 
         units = self.preprocess(self._original)
         self.serialize_units(units)
-        
+
         # Convert TOMLDocument to string
         result = self._original.as_string()
         # Add trailing newline if not empty and not already present
-        if result and not result.endswith('\n'):
-            result += '\n'
-        
+        if result and not result.endswith("\n"):
+            result += "\n"
+
         if isinstance(out, str):
             with open(out, "w", encoding="utf-8") as f:
                 f.write(result)
-        else:
-            if hasattr(out, "write"):
-                # Handle file-like objects - BytesIO requires bytes
-                out.write(result.encode("utf-8"))
+        elif hasattr(out, "write"):
+            # Handle file-like objects - BytesIO requires bytes
+            out.write(result.encode("utf-8"))
 
     def _get_key_comment(self, table, key):
         """
         Extract the comment that appears before a key in a TOML table.
-        
+
         TOML comments appear in the body as (None, Comment) tuples.
         """
         if not isinstance(table, (Table, TOMLDocument)):
             return None
-        
+
         # Check if the table has a body attribute
-        if not hasattr(table, 'body'):
+        if not hasattr(table, "body"):
             return None
-        
+
         # Find comments that appear before this key in the body
         comments = []
-        
+
         for item in table.body:
             if not isinstance(item, tuple) or len(item) != 2:
                 continue
-                
+
             item_key, item_value = item
-            
+
             # If this is our key, we found it
             if item_key is not None and str(item_key).strip() == str(key):
                 # Return the collected comments for this key
-                return '\n'.join(comments) if comments else None
-            
+                return "\n".join(comments) if comments else None
+
             # If we hit another key before finding ours, reset comments
             if item_key is not None:
                 comments = []
                 continue
-            
+
             # Collect comments that appear before our key
             if item_key is None:
                 # Check if this is a Comment (not Whitespace)
                 from tomlkit.items import Comment as TOMLComment
+
                 if isinstance(item_value, TOMLComment):
                     # Get the comment text directly
                     comment_text = str(item_value)
-                    if comment_text.startswith('#'):
+                    if comment_text.startswith("#"):
                         comments.append(comment_text[1:].strip())
-        
+
         return None
 
     def _parse_dict(self, data, prev):
