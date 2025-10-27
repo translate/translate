@@ -202,14 +202,14 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
 def main():
     formats = {"po": ("po", None), None: ("po", None)}
     parser = ConflictOptionParser(formats)
-    
+
     # Override the default input/output help text to be more descriptive
     for option in parser.option_list:
         if option.dest == "input":
             option.help = "read from INPUT (directory or file(s)) in po format"
         elif option.dest == "output":
             option.help = "write to OUTPUT (directory) in po format"
-    
+
     parser.add_option(
         "-I",
         "--ignore-case",
