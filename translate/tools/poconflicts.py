@@ -33,6 +33,34 @@ from translate.storage import factory, po
 class ConflictOptionParser(optrecurse.RecursiveOptionParser):
     """a specialized Option Parser for the conflict tool..."""
 
+    def setformats(self, formats, usetemplates):
+        """Sets the formats and customizes the input/output option help text."""
+        super().setformats(formats, usetemplates)
+        # Override the input/output option help text to be more descriptive
+        inputoption = optrecurse.optparse.Option(
+            "-i",
+            "--input",
+            dest="input",
+            action="append",
+            default=None,
+            metavar="INPUT",
+            help="read from INPUT (directory or file(s)) in po format",
+        )
+        inputoption.optionalswitch = True
+        inputoption.required = True
+        self.define_option(inputoption)
+        outputoption = optrecurse.optparse.Option(
+            "-o",
+            "--output",
+            dest="output",
+            default=None,
+            metavar="OUTPUT",
+            help="write to OUTPUT (directory) in po format",
+        )
+        outputoption.optionalswitch = True
+        outputoption.required = True
+        self.define_option(outputoption)
+
     def parse_args(self, args=None, values=None):
         """Parses the command line options, handling implicit input/output args."""
         (options, args) = optrecurse.optparse.OptionParser.parse_args(
@@ -65,7 +93,11 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
             self.usage = (
                 "%prog "
                 + " ".join(self.getusagestring(option) for option in self.option_list)
-                + "\n  input directory is searched for PO files, PO files with name of conflicting string are output in output directory"
+                + "\n  %prog [options] <po-directory> <output-directory>"
+                + "\n  %prog [options] <po-file(s)>... <output-directory>"
+                + "\n\n"
+                + "Input is searched for PO files, output directory will contain PO files named after conflicting strings.\n"
+                + "Both -i/--input and -o/--output are optional when using positional arguments."
             )
         else:
             super().set_usage(usage)
