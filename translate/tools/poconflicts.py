@@ -65,7 +65,11 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
             self.usage = (
                 "%prog "
                 + " ".join(self.getusagestring(option) for option in self.option_list)
-                + "\n  input directory is searched for PO files, PO files with name of conflicting string are output in output directory"
+                + "\n  %prog [options] <po-directory> <output-directory>"
+                + "\n  %prog [options] <po-file(s)>... <output-directory>"
+                + "\n\n"
+                + "Input is searched for PO files, output directory will contain PO files named after conflicting strings.\n"
+                + "Both -i/--input and -o/--output are optional when using positional arguments."
             )
         else:
             super().set_usage(usage)
@@ -198,6 +202,14 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
 def main():
     formats = {"po": ("po", None), None: ("po", None)}
     parser = ConflictOptionParser(formats)
+    
+    # Override the default input/output help text to be more descriptive
+    for option in parser.option_list:
+        if option.dest == "input":
+            option.help = "read from INPUT (directory or file(s)) in po format"
+        elif option.dest == "output":
+            option.help = "write to OUTPUT (directory) in po format"
+    
     parser.add_option(
         "-I",
         "--ignore-case",
