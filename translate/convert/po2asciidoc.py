@@ -1,5 +1,5 @@
 #
-# Copyright 2025 Translate.org
+# Copyright 2025 translate-toolkit contributors
 #
 # This file is part of translate.
 #
@@ -50,10 +50,12 @@ class AsciiDocTranslator:
         return 1
 
     def _lookup(self, string):
-        unit = self.inputstore.sourceindex.get(string, None)
-        if unit is None:
+        # sourceindex.get() returns a tuple/list of matching units, or None if not found
+        units = self.inputstore.sourceindex.get(string, None)
+        if units is None:
             return string
-        unit = unit[0]
+        # Get the first matching unit
+        unit = units[0]
         if unit.istranslated():
             return unit.target
         if self.includefuzzy and unit.isfuzzy():

@@ -1,5 +1,5 @@
 #
-# Copyright 2025 Translate.org
+# Copyright 2025 translate-toolkit contributors
 #
 # This file is part of translate.
 #

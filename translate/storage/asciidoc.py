@@ -1,5 +1,5 @@
 #
-# Copyright 2025 Translate.org
+# Copyright 2025 translate-toolkit contributors
 #
 # This file is part of the Translate Toolkit.
 #
@@ -129,7 +129,7 @@ class AsciiDocFile(base.TranslationStore):
 
             # Check for comment block delimiter ////
             # Comment blocks can appear in the header and should be included
-            if line.strip() == "////":
+            if self._is_comment_block_delimiter(line):
                 header_end, i = self._skip_comment_block(lines, i, header_end)
                 continue
 
@@ -150,7 +150,7 @@ class AsciiDocFile(base.TranslationStore):
                     if next_line.strip():
                         if next_line.startswith("==") or (
                             not next_line.startswith(":")
-                            and next_line.strip() != "////"
+                            and not self._is_comment_block_delimiter(next_line)
                         ):
                             header_end = i
                             break
@@ -182,6 +182,10 @@ class AsciiDocFile(base.TranslationStore):
 
         return lines
 
+    def _is_comment_block_delimiter(self, line: str) -> bool:
+        """Check if a line is a comment block delimiter (////)."""
+        return line.strip() == "////"
+
     def _skip_comment_block(
         self, lines: list[str], i: int, header_end: int
     ) -> tuple[int, int]:
@@ -190,7 +194,7 @@ class AsciiDocFile(base.TranslationStore):
         header_end = i
         i += 1
         # Skip until closing delimiter
-        while i < len(lines) and lines[i].strip() != "////":
+        while i < len(lines) and not self._is_comment_block_delimiter(lines[i]):
             header_end = i
             i += 1
         if i < len(lines):
@@ -277,7 +281,8 @@ class AsciiDocFile(base.TranslationStore):
 
     def _try_parse_anchor(self, line: str, i: int) -> bool:
         """Parse anchor [[anchor-id]]."""
-        if not re.match(r"^\[\[.+\]\]\s*$", line):
+        # Use [^\]]+ to avoid polynomial backtracking with the .+ pattern
+        if not re.match(r"^\[\[[^\]]+\]\]\s*$", line):
             return False
         self._elements.append({"type": "anchor", "content": line})
         return True
@@ -337,7 +342,8 @@ class AsciiDocFile(base.TranslationStore):
 
         # Handle checklist syntax [*], [x], [ ]
         checklist_prefix = ""
-        checklist_match = re.match(r"^(\[[*x ]\])\s+(\S.*)$", content)
+        # Use .+ to require at least one character after whitespace
+        checklist_match = re.match(r"^(\[[*x ]\])\s+(\S.+)$", content)
         if checklist_match:
             checklist_prefix = checklist_match.group(1) + " "
             content = checklist_match.group(2).strip()
@@ -519,6 +525,9 @@ class AsciiDocFile(base.TranslationStore):
                     break
 
         # Parse table cells for translation
+        # Note: This is a simple pipe-based split that doesn't handle
+        # escaped pipes or complex AsciiDoc table formats. For more
+        # sophisticated table parsing, consider using an AsciiDoc parser library.
         for table_line in table_lines:
             if table_line.strip() and "|" in table_line:
                 # Extract cells (simple approach)
@@ -548,10 +557,11 @@ class AsciiDocFile(base.TranslationStore):
             # Check if this is a special line that breaks paragraphs
             line_stripped = lines[i].strip()
             # Check for block delimiters (4+ repeated characters)
+            # Include '/' for comment blocks to match _try_parse_block_delimiter
             is_delimiter = (
                 len(line_stripped) >= 4
                 and len(set(line_stripped)) == 1
-                and line_stripped[0] in "-=.*_+"
+                and line_stripped[0] in "-=.*_+/"
             )
             if (
                 re.match(r"^(={2,6}|\*+|\.+)\s+", lines[i])
