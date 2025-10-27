@@ -25,6 +25,7 @@ from typing import TYPE_CHECKING, Any
 
 from tomlkit import TOMLDocument, document, loads
 from tomlkit.exceptions import TOMLKitError
+from tomlkit.items import Comment as TOMLComment
 from tomlkit.items import Table
 
 from translate.storage import base
@@ -153,8 +154,6 @@ class TOMLFile(base.DictStore):
             # Collect comments that appear before our key
             if item_key is None:
                 # Check if this is a Comment (not Whitespace)
-                from tomlkit.items import Comment as TOMLComment
-
                 if isinstance(item_value, TOMLComment):
                     # Get the comment text directly
                     comment_text = str(item_value)
