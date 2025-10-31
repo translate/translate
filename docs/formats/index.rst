@@ -115,6 +115,7 @@ Formats of translatable documents
    odf
    subtitles
    text
+   toml
    wiki
    yaml
 
@@ -126,6 +127,7 @@ Formats of translatable documents
 * :wp:`OpenDocument` -- all ODF file types
 * :doc:`subtitles` -- various formats (v1.4)
 * :doc:`Text <text>` -- plain text with blocks separated by whitespace
+* :doc:`toml`
 * :doc:`Wiki <wiki>` -- :wp:`DokuWiki` and :wp:`MediaWiki` supported
 * :doc:`yaml`
 
