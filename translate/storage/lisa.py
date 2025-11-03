@@ -99,7 +99,6 @@ class LISAunit(base.TranslationUnit):
         (etree.tostring/fromstring), which may be inefficient for large XML elements.
         Consider implementing a more efficient copy method if performance becomes an issue.
         """
-        # TODO: Consider implementing a more efficient copy method if performance becomes an issue.
         new_unit = self.__class__(None, empty=True)
         new_unit.xmlelement = etree.fromstring(etree.tostring(self.xmlelement))
         return new_unit
