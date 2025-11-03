@@ -816,7 +816,12 @@ class xlifffile(lisa.LISAfile):
             if parent is not None and etree.QName(parent).localname == "group":
                 group_parent = parent
 
-        # Always call parent to handle namespace and unit registration
+        # Always call parent to handle namespace and unit registration.
+        # We always pass new=False here, regardless of the original 'new' parameter value,
+        # because the actual XML placement (including group structure preservation) is handled
+        # separately below. This ensures that the parent method only performs namespace and
+        # unit registration, while we retain full control over where the unit is inserted in
+        # the XML tree. See the logic below for group and body placement.
         super().addunit(unit, new=False)
 
         # Handle placement based on group membership
@@ -874,25 +879,22 @@ class xlifffile(lisa.LISAfile):
             group.set("restype", restype)
         return group
 
-    def _find_or_create_group(self, source_group) -> etree._Element:
+    def _find_or_create_group(self, source_group) -> etree.Element:
         """
         Find or create a group in the current body that matches the source_group's attributes.
 
         :param source_group: The source group element to match
         :returns: The matching or newly created group element
         """
-        # Extract all attributes from source group
-        group_attrs = dict(source_group.attrib)
-
         # Try to find a matching group in the current body
         for group in self.body.iterchildren(self.namespaced("group")):
             # Check if all attributes match
-            if dict(group.attrib) == group_attrs:
+            if group.attrib == source_group.attrib:
                 return group
 
         # No matching group found, create a new one
         group = etree.SubElement(self.body, self.namespaced("group"))
-        for attr, value in group_attrs.items():
+        for attr, value in source_group.attrib.items():
             group.set(attr, value)
         return group
 
