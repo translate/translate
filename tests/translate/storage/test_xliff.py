@@ -901,7 +901,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         <body>
             <trans-unit id="existing">
                 <source>Existing</source>
-                <target>Existant</target>
+                <target>Existent</target>
             </trans-unit>
         </body>
     </file>
@@ -958,7 +958,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         <body>
             <trans-unit id="existing">
                 <source>Existing</source>
-                <target>Existant</target>
+                <target>Existent</target>
             </trans-unit>
         </body>
     </file>
@@ -1043,7 +1043,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         <body>
             <trans-unit id="existing">
                 <source>Existing</source>
-                <target>Existant</target>
+                <target>Existent</target>
             </trans-unit>
         </body>
     </file>
