@@ -171,7 +171,7 @@ class TestTMXSegment:
         tmxsource = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE tmx SYSTEM "tmx14.dtd">
 <tmx version="1.4">
-  <header adminlang="en" creationtool="test" creationtoolversion="1.0" 
+  <header adminlang="en" creationtool="test" creationtoolversion="1.0"
           datatype="PlainText" o-tmf="UTF-8" segtype="sentence" srclang="en"/>
   <body>
     <tu>
