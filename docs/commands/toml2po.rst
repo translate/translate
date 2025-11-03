@@ -75,8 +75,6 @@ Formats Supported
 Check :doc:`TOML format </formats/toml>` document to see which TOML features
 are supported.
 
-Both plain TOML files and Go i18n TOML files with plurals are supported.
-
 
 .. _toml2po#examples:
 
@@ -126,34 +124,3 @@ your new translations in ``i18n/fr.toml``.
 
 To update your translations simply redo the POT creation step and make use of
 :doc:`pot2po` to bring your translation up-to-date.
-
-
-.. _toml2po#go_i18n:
-
-Go i18n Format with Plurals
-============================
-
-For Go i18n TOML files that contain pluralized strings, the conversion works
-the same way. The plural forms are automatically detected when a table contains
-2 or more keys that are all CLDR plural categories.
-
-Example Go i18n TOML file:
-
-.. code-block:: toml
-
-    [reading_time]
-    one = "One minute to read"
-    other = "{{ .Count }} minutes to read"
-
-    [category]
-    other = "category"
-
-    [items]
-    zero = "No items"
-    one = "One item"
-    other = "{{ .Count }} items"
-
-
-When converted to PO, plural entries will have proper ``msgid_plural`` and
-``msgstr[n]`` forms, while single-key tables (like ``category``) are treated as
-regular strings.
