@@ -38,17 +38,9 @@ if TYPE_CHECKING:
 
 
 class TOMLUnitId(base.UnitId):
-    """UnitId for TOML format with custom separators."""
+    """UnitId for TOML format with custom index separator."""
 
     INDEX_SEPARATOR = "->"
-
-    def __str__(self) -> str:
-        """Convert to string, stripping leading separator."""
-        result = super().__str__()
-        # Strip leading separator
-        if result.startswith(self.KEY_SEPARATOR):
-            return result[len(self.KEY_SEPARATOR) :]
-        return result
 
 
 class TOMLUnit(base.DictUnit):
@@ -64,6 +56,14 @@ class TOMLUnit(base.DictUnit):
         else:
             self._id = str(uuid.uuid4())
         super().__init__(source)
+
+    def setid(self, value, unitid=None):
+        """Set the unit ID, stripping leading separator."""
+        # Strip leading separator from the string representation
+        if isinstance(value, str) and value.startswith(self.IdClass.KEY_SEPARATOR):
+            value = value[len(self.IdClass.KEY_SEPARATOR) :]
+        self._id = value
+        self._unitid = unitid
 
     @property
     def source(self):
@@ -109,8 +109,7 @@ class TOMLFile(base.DictStore):
         if self._original is None:
             self._original = self.get_root_node()
 
-        units = self.preprocess(self._original)
-        self.serialize_units(units)
+        self.serialize_units(self._original)
 
         # Convert TOMLDocument to string
         result = self._original.as_string()
@@ -208,10 +207,6 @@ class TOMLFile(base.DictStore):
                 f"Previous: {prev}"
             )
 
-    def preprocess(self, data: TOMLDocument) -> TOMLDocument:
-        """Preprocess hook for child formats."""
-        return data
-
     def parse(self, input: str | bytes | BytesIO) -> None:
         """Parse the given file or file source string."""
         if hasattr(input, "name"):
@@ -229,9 +224,7 @@ class TOMLFile(base.DictStore):
         except TOMLKitError as e:
             raise base.ParseError(str(e))
 
-        content = self.preprocess(self._original)
-
-        for k, data, comment in self._flatten(content):
+        for k, data, comment in self._flatten(self._original):
             unit = self.UnitClass(data)
             unit.set_unitid(k)
             if comment:
@@ -240,8 +233,7 @@ class TOMLFile(base.DictStore):
 
     def removeunit(self, unit: base.TranslationUnit) -> None:
         if self._original is not None:
-            units = self.preprocess(self._original)
-            unit.storevalue(units, None, unset=True)
+            unit.storevalue(self._original, None, unset=True)
         super().removeunit(unit)
 
 
@@ -288,6 +280,11 @@ class GoI18nTOMLFile(TOMLFile):
         self, data: dict[str, Any], prev: base.UnitId
     ) -> Generator[tuple[base.UnitId, str | multistring, str | None], None, None]:
         """Parse a TOML table, checking for plurals."""
+        # Special case: table with only "other" key is treated as singular
+        if data and len(data) == 1 and "other" in data:
+            yield (prev, data["other"], None)
+            return
+
         # Does this look like a plural?
         # Need at least 2 keys and all keys must be CLDR plural categories
         if data and len(data) >= 2 and all(x in cldr_plural_categories for x in data):

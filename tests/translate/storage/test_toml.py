@@ -368,7 +368,7 @@ other = "{{ .Count }} minutes to read"
         assert bytes(store).decode("utf-8") == data
 
     def test_plural_with_other_keys(self):
-        """Test that non-plural keys are still parsed normally."""
+        """Test that tables with only 'other' key are treated as singulars."""
         data = """[category]
 other = "category"
 
@@ -383,8 +383,8 @@ other = "tag"
         store.parse(data)
         assert len(store.units) == 3
 
-        # First unit is non-plural (only has "other" key)
-        assert store.units[0].getid() == "category.other"
+        # First unit is singular (only has "other" key, treated as singular value)
+        assert store.units[0].getid() == "category"
         assert not store.units[0].hasplural()
         assert store.units[0].source == "category"
 
@@ -392,8 +392,8 @@ other = "tag"
         assert store.units[1].getid() == "reading_time"
         assert store.units[1].hasplural()
 
-        # Third unit is non-plural
-        assert store.units[2].getid() == "tag.other"
+        # Third unit is singular (only has "other" key)
+        assert store.units[2].getid() == "tag"
         assert not store.units[2].hasplural()
         assert store.units[2].source == "tag"
 
@@ -462,14 +462,16 @@ other = "Goodbye!"
         assert not store.units[0].hasplural()
         assert store.units[0].source == "My Application"
 
-        # Second is non-plural (table with only "other")
-        assert store.units[1].getid() == "welcome.other"
+        # Second is singular (table with only "other", treated as singular)
+        assert store.units[1].getid() == "welcome"
         assert not store.units[1].hasplural()
+        assert store.units[1].source == "Welcome!"
 
         # Third is plural
         assert store.units[2].getid() == "items_count"
         assert store.units[2].hasplural()
 
-        # Fourth is non-plural
-        assert store.units[3].getid() == "goodbye.other"
+        # Fourth is singular (table with only "other")
+        assert store.units[3].getid() == "goodbye"
         assert not store.units[3].hasplural()
+        assert store.units[3].source == "Goodbye!"
