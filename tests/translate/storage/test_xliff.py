@@ -936,11 +936,11 @@ class TestXLIFFfile(test_base.TestTranslationStore):
                 assert unit_id.startswith("source_file2.txt")
 
     def test_group_preservation_across_different_namespaces(self):
-        """Test that groups are preserved when adding units from files with different namespaces."""
-        # Source with XLIFF 1.1 namespace and groups
+        """Test that group structure is preserved when adding units, using namespace-independent matching."""
+        # Source with groups
         source_xliff = b"""<?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
-    <file original="file1.txt" source-language="en" datatype="plaintext">
+    <file original="source.txt" source-language="en" datatype="plaintext">
         <body>
             <group id="mygroup" restype="x-gettext-domain">
                 <trans-unit id="hello">
@@ -951,34 +951,63 @@ class TestXLIFFfile(test_base.TestTranslationStore):
     </file>
 </xliff>"""
 
+        # Target without groups (but same namespace)
+        target_xliff = b"""<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
+    <file original="target.txt" source-language="en" datatype="plaintext" target-language="fr">
+        <body>
+            <trans-unit id="existing">
+                <source>Existing</source>
+                <target>Existant</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>"""
+
         source = xliff.xlifffile.parsestring(source_xliff)
+        target = xliff.xlifffile.parsestring(target_xliff)
 
-        # Create target with same namespace
-        target = xliff.xlifffile()
-        target.sourcelanguage = "en"
-        target.targetlanguage = "fr"
+        # Verify initial state
+        assert len(source.units) == 1
+        assert len(target.units) == 1
 
-        # Add unit from source to target
+        # Add unit with group from source to target
         target.addunit(source.units[0])
 
-        # Verify group is created in target's namespace
+        # Verify target now has 2 units
+        assert len(target.units) == 2
+
+        # Serialize and reload to verify structure
         serialized = bytes(target)
         target_reloaded = xliff.xlifffile.parsestring(serialized)
 
-        # Check that group exists with correct attributes
-        assert len(target_reloaded.units) == 1
-        unit = target_reloaded.units[0]
-        parent = unit.xmlelement.getparent()
+        # Should still have 2 units after round-trip
+        assert len(target_reloaded.units) == 2
 
-        # Verify parent is a group
-        assert etree.QName(parent).localname == "group"
+        # Find the newly added unit by source text
+        new_unit = None
+        existing_unit = None
+        for unit in target_reloaded.units:
+            if unit.source == "Hello":
+                new_unit = unit
+            elif unit.source == "Existing":
+                existing_unit = unit
 
-        # Verify group attributes are preserved
-        assert parent.get("id") == "mygroup"
-        assert parent.get("restype") == "x-gettext-domain"
+        assert new_unit is not None, "New unit with 'Hello' not found"
+        assert existing_unit is not None, "Existing unit not found"
 
-        # Verify namespace is correct (target's namespace, not source's)
-        assert unit.namespace == target.namespace
+        # Verify the new unit is in a group (namespace-independent check)
+        new_parent = new_unit.xmlelement.getparent()
+        assert etree.QName(new_parent).localname == "group", "New unit should be in a group"
+        assert new_parent.get("id") == "mygroup"
+        assert new_parent.get("restype") == "x-gettext-domain"
+
+        # Verify the existing unit is NOT in a group
+        existing_parent = existing_unit.xmlelement.getparent()
+        assert etree.QName(existing_parent).localname == "body", "Existing unit should be in body"
+
+        # Verify unit's namespace is correctly set to target's namespace
+        assert new_unit.namespace == target.namespace
 
     def test_indent(self):
         xlfsource = b"""<?xml version="1.0" encoding="UTF-8"?>
