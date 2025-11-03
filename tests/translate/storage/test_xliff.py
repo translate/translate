@@ -543,6 +543,321 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert newxfile.getfilenode("file1") is not None
         assert not newxfile.getfilenode("foo")
 
+    def test_preserve_groups_when_adding_units(self):
+        """Test that groups are preserved when adding units from one store to another."""
+        source_xliff = b"""<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
+    <file original="file1.txt" source-language="en" datatype="plaintext">
+        <body>
+            <group id="group1" restype="x-gettext-domain">
+                <trans-unit id="hello">
+                    <source>Hello</source>
+                </trans-unit>
+            </group>
+            <group id="group2">
+                <trans-unit id="world">
+                    <source>World</source>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+</xliff>"""
+
+        source = xliff.xlifffile.parsestring(source_xliff)
+        assert len(source.units) == 2
+
+        # Add units to a new translation store
+        translation = xliff.xlifffile()
+        translation.sourcelanguage = "en"
+        translation.targetlanguage = "fr"
+
+        for unit in source.units:
+            translation.addunit(unit)
+
+        # Verify the structure matches the original
+        serialized = bytes(translation)
+        translation_reloaded = xliff.xlifffile.parsestring(serialized)
+
+        # Check groups are preserved
+        assert b"<group" in serialized
+        assert b'id="group1"' in serialized
+        assert b'id="group2"' in serialized
+        assert b'restype="x-gettext-domain"' in serialized
+
+        # Check that units are in their respective groups
+        for unit in translation_reloaded.units:
+            parent = unit.xmlelement.getparent()
+            assert etree.QName(parent).localname == "group"
+
+    def test_preserve_multiple_files_and_groups(self):
+        """Test that both files and groups are preserved."""
+        source_xliff = b"""<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
+    <file original="file1.txt" source-language="en" datatype="plaintext">
+        <body>
+            <group id="group1">
+                <trans-unit id="hello">
+                    <source>Hello</source>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+    <file original="file2.txt" source-language="en" datatype="plaintext">
+        <body>
+            <group id="group2">
+                <trans-unit id="foo">
+                    <source>Foo</source>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+</xliff>"""
+
+        source = xliff.xlifffile.parsestring(source_xliff)
+        assert len(source.units) == 2
+
+        # Add units to a new translation store
+        translation = xliff.xlifffile()
+        translation.sourcelanguage = "en"
+        translation.targetlanguage = "fr"
+
+        for unit in source.units:
+            translation.addunit(unit)
+
+        # Verify both files and groups are preserved
+        assert translation.getfilenames() == ["file1.txt", "file2.txt"]
+        serialized = bytes(translation)
+        translation_reloaded = xliff.xlifffile.parsestring(serialized)
+
+        # Verify structure matches original
+        assert translation_reloaded.getfilenames() == ["file1.txt", "file2.txt"]
+        assert len(translation_reloaded.units) == 2
+
+        # Check that each unit is in the correct file and group
+        for i, unit in enumerate(translation_reloaded.units):
+            parent = unit.xmlelement.getparent()
+            assert etree.QName(parent).localname == "group"
+            file_node = None
+            for ancestor in unit.xmlelement.iterancestors():
+                if ancestor.get("original"):
+                    file_node = ancestor.get("original")
+                    break
+            if i == 0:
+                assert file_node == "file1.txt"
+                assert parent.get("id") == "group1"
+            else:
+                assert file_node == "file2.txt"
+                assert parent.get("id") == "group2"
+
+    def test_add_unit_to_existing_group(self):
+        """Test that new units are added to existing groups when appropriate."""
+        # Start with translation that has one group
+        translation_xliff = b"""<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
+    <file original="file1.txt" source-language="en" datatype="plaintext" target-language="fr">
+        <body>
+            <group id="group1">
+                <trans-unit id="hello">
+                    <source>Hello</source>
+                    <target>Bonjour</target>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+</xliff>"""
+
+        translation = xliff.xlifffile.parsestring(translation_xliff)
+
+        # Add a new unit from a source that has the same group
+        source_xliff = b"""<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
+    <file original="file1.txt" source-language="en" datatype="plaintext">
+        <body>
+            <group id="group1">
+                <trans-unit id="world">
+                    <source>World</source>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+</xliff>"""
+
+        source = xliff.xlifffile.parsestring(source_xliff)
+        new_unit = source.units[0]
+
+        # Add the new unit
+        translation.addunit(new_unit)
+
+        # Verify the new unit is in the same group
+        assert len(translation.units) == 2
+        serialized = bytes(translation)
+        translation_reloaded = xliff.xlifffile.parsestring(serialized)
+
+        # Both units should be in group1
+        for unit in translation_reloaded.units:
+            parent = unit.xmlelement.getparent()
+            assert etree.QName(parent).localname == "group"
+            assert parent.get("id") == "group1"
+
+    def test_add_unit_to_different_file(self):
+        """Test adding units with different file than existing ones."""
+        # Start with translation that has one file
+        translation_xliff = b"""<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
+    <file original="file1.txt" source-language="en" datatype="plaintext" target-language="fr">
+        <body>
+            <trans-unit id="hello">
+                <source>Hello</source>
+                <target>Bonjour</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>"""
+
+        translation = xliff.xlifffile.parsestring(translation_xliff)
+        assert translation.getfilenames() == ["file1.txt"]
+
+        # Add a new unit from a different file
+        source_xliff = b"""<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
+    <file original="file2.txt" source-language="en" datatype="plaintext">
+        <body>
+            <trans-unit id="world">
+                <source>World</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>"""
+
+        source = xliff.xlifffile.parsestring(source_xliff)
+        new_unit = source.units[0]
+
+        # Add the new unit
+        translation.addunit(new_unit)
+
+        # Verify both files exist
+        assert len(translation.units) == 2
+        assert set(translation.getfilenames()) == {"file1.txt", "file2.txt"}
+
+        # Verify structure is correct
+        serialized = bytes(translation)
+        translation_reloaded = xliff.xlifffile.parsestring(serialized)
+        assert set(translation_reloaded.getfilenames()) == {"file1.txt", "file2.txt"}
+
+        # Verify each unit is in the correct file
+        for unit in translation_reloaded.units:
+            unit_id = unit.getid()
+            if "hello" in unit_id:
+                assert unit_id.startswith("file1.txt")
+            elif "world" in unit_id:
+                assert unit_id.startswith("file2.txt")
+
+    def test_mixed_groups_and_body(self):
+        """Test files with both grouped and non-grouped units."""
+        source_xliff = b"""<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
+    <file original="file1.txt" source-language="en" datatype="plaintext">
+        <body>
+            <group id="group1">
+                <trans-unit id="hello">
+                    <source>Hello</source>
+                </trans-unit>
+            </group>
+            <trans-unit id="world">
+                <source>World</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>"""
+
+        source = xliff.xlifffile.parsestring(source_xliff)
+        translation = xliff.xlifffile()
+        translation.sourcelanguage = "en"
+        translation.targetlanguage = "fr"
+
+        for unit in source.units:
+            translation.addunit(unit)
+
+        # Verify structure is preserved
+        serialized = bytes(translation)
+        translation_reloaded = xliff.xlifffile.parsestring(serialized)
+        assert len(translation_reloaded.units) == 2
+
+        # First unit should be in group
+        parent1 = translation_reloaded.units[0].xmlelement.getparent()
+        assert etree.QName(parent1).localname == "group"
+
+        # Second unit should be directly in body
+        parent2 = translation_reloaded.units[1].xmlelement.getparent()
+        assert etree.QName(parent2).localname == "body"
+
+    def test_addunit_with_new_false(self):
+        """Test that addunit with new=False doesn't duplicate units."""
+        source_xliff = b"""<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
+    <file original="file1.txt" source-language="en" datatype="plaintext">
+        <body>
+            <group id="group1">
+                <trans-unit id="hello">
+                    <source>Hello</source>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+</xliff>"""
+
+        source = xliff.xlifffile.parsestring(source_xliff)
+        translation = xliff.xlifffile()
+        translation.sourcelanguage = "en"
+        translation.targetlanguage = "fr"
+
+        unit = source.units[0]
+
+        # Add unit with new=False - should not add to XML tree
+        translation.addunit(unit, new=False)
+
+        # Unit should be in units list but namespace should be set
+        assert len(translation.units) == 1
+        assert unit.namespace == translation.namespace
+
+        # But xmlelement should not be in the body or any group
+        serialized = bytes(translation)
+        # Should not contain the trans-unit since new=False
+        translation_reloaded = xliff.xlifffile.parsestring(serialized)
+        assert len(translation_reloaded.units) == 0
+
+    def test_namespace_preservation_across_versions(self):
+        """Test that namespace is properly handled when copying between XLIFF versions."""
+        # XLIFF 1.1 source
+        source_xliff = b"""<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
+    <file original="file1.txt" source-language="en" datatype="plaintext">
+        <body>
+            <group id="group1">
+                <trans-unit id="hello">
+                    <source>Hello</source>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+</xliff>"""
+
+        source = xliff.xlifffile.parsestring(source_xliff)
+        translation = xliff.xlifffile()
+        translation.sourcelanguage = "en"
+        translation.targetlanguage = "fr"
+
+        # Add unit and verify namespace is set correctly
+        unit = source.units[0]
+        translation.addunit(unit)
+
+        # Namespace should be updated to target's namespace
+        assert unit.namespace == translation.namespace
+
+        # Verify it serializes correctly
+        serialized = bytes(translation)
+        assert b'xmlns="urn:oasis:names:tc:xliff:document:1.1"' in serialized
+
     def test_indent(self):
         xlfsource = b"""<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.1" version="1.1">

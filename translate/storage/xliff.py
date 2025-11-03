@@ -809,23 +809,25 @@ class xlifffile(lisa.LISAfile):
             self.switchfile(filename, createifmissing=True)
             unit.setid(unitid)
 
-        # Check if unit belongs to a group and preserve group structure
+        # Check if unit belongs to a group and preserve group structure (only when new=True)
         group_parent = None
-        if hasattr(unit, "xmlelement") and unit.xmlelement is not None:
+        if new and hasattr(unit, "xmlelement") and unit.xmlelement is not None:
             parent = unit.xmlelement.getparent()
-            if parent is not None and parent.tag == self.namespaced("group"):
+            if parent is not None and etree.QName(parent).localname == "group":
                 group_parent = parent
 
-        # Call parent addunit but handle group placement ourselves
-        if group_parent is not None and new:
-            # Don't let parent class add to body - we'll add to group instead
-            super().addunit(unit, new=False)
-            # Find or create matching group
-            target_group = self._find_or_create_group(group_parent)
-            target_group.append(unit.xmlelement)
-        else:
-            # Normal behavior for units not in groups
-            super().addunit(unit, new=new)
+        # Always call parent to handle namespace and unit registration
+        super().addunit(unit, new=False)
+
+        # Handle placement based on group membership
+        if new:
+            if group_parent is not None:
+                # Find or create matching group and add unit there
+                target_group = self._find_or_create_group(group_parent)
+                target_group.append(unit.xmlelement)
+            else:
+                # Add directly to body
+                self.body.append(unit.xmlelement)
 
     def addsourceunit(self, source, filename="NoName", createifmissing=False):
         """
@@ -878,14 +880,17 @@ class xlifffile(lisa.LISAfile):
 
         :param source_group: The source group element to match
         :returns: The matching or newly created group element
+        :rtype: lxml.etree.Element
         """
         # Extract all attributes from source group
         group_attrs = dict(source_group.attrib)
 
         # Try to find a matching group in the current body
         for group in self.body.iterchildren(self.namespaced("group")):
-            # Check if all attributes match
-            if dict(group.attrib) == group_attrs:
+            # Check if all attributes match efficiently
+            if len(group.attrib) == len(group_attrs) and all(
+                group.attrib.get(k) == v for k, v in group_attrs.items()
+            ):
                 return group
 
         # No matching group found, create a new one
