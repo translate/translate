@@ -103,7 +103,7 @@ class TOMLFile(base.DictStore):
         """Returns root node for serialize."""
         return document()
 
-    def serialize(self, out: str | BytesIO) -> None:
+    def serialize(self, out: BytesIO) -> None:
         """Serialize the store to file."""
         # Always start with valid root even if original file was empty
         if self._original is None:
