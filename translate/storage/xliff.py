@@ -97,17 +97,6 @@ class xliffunit(lisa.LISAunit):
             return
         setXMLspace(self.xmlelement, "preserve")
 
-    def copy(self):
-        """
-        Make a copy of the translation unit.
-
-        We don't want to make a deep copy - this could duplicate the whole XML
-        tree. For now we just serialise and reparse the unit's XML.
-        """
-        new_unit = self.__class__(None, empty=True)
-        new_unit.xmlelement = etree.fromstring(etree.tostring(self.xmlelement))
-        return new_unit
-
     def createlanguageNode(self, lang, text, purpose):
         """Returns an xml Element setup with given parameters."""
         # TODO: for now we do source, but we have to test if it is target,

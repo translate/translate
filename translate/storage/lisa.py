@@ -86,6 +86,17 @@ class LISAunit(base.TranslationUnit):
                 return False
         return True
 
+    def copy(self):
+        """
+        Make a copy of the translation unit.
+
+        We don't want to make a deep copy - this could duplicate the whole XML
+        tree. For now we just serialise and reparse the unit's XML.
+        """
+        new_unit = self.__class__(None, empty=True)
+        new_unit.xmlelement = etree.fromstring(etree.tostring(self.xmlelement))
+        return new_unit
+
     def namespaced(self, name):
         """
         Returns name in Clark notation.
