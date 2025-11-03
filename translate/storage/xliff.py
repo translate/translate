@@ -874,23 +874,20 @@ class xlifffile(lisa.LISAfile):
             group.set("restype", restype)
         return group
 
-    def _find_or_create_group(self, source_group):
+    def _find_or_create_group(self, source_group) -> etree._Element:
         """
         Find or create a group in the current body that matches the source_group's attributes.
 
         :param source_group: The source group element to match
         :returns: The matching or newly created group element
-        :rtype: lxml.etree.Element
         """
         # Extract all attributes from source group
         group_attrs = dict(source_group.attrib)
 
         # Try to find a matching group in the current body
         for group in self.body.iterchildren(self.namespaced("group")):
-            # Check if all attributes match efficiently
-            if len(group.attrib) == len(group_attrs) and all(
-                group.attrib.get(k) == v for k, v in group_attrs.items()
-            ):
+            # Check if all attributes match
+            if dict(group.attrib) == group_attrs:
                 return group
 
         # No matching group found, create a new one
