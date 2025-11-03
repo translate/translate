@@ -998,13 +998,17 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 
         # Verify the new unit is in a group (namespace-independent check)
         new_parent = new_unit.xmlelement.getparent()
-        assert etree.QName(new_parent).localname == "group", "New unit should be in a group"
+        assert etree.QName(new_parent).localname == "group", (
+            "New unit should be in a group"
+        )
         assert new_parent.get("id") == "mygroup"
         assert new_parent.get("restype") == "x-gettext-domain"
 
         # Verify the existing unit is NOT in a group
         existing_parent = existing_unit.xmlelement.getparent()
-        assert etree.QName(existing_parent).localname == "body", "Existing unit should be in body"
+        assert etree.QName(existing_parent).localname == "body", (
+            "Existing unit should be in body"
+        )
 
         # Verify unit's namespace is correctly set to target's namespace
         assert new_unit.namespace == target.namespace
@@ -1061,7 +1065,9 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 
         # Verify files are preserved - target should have original file plus two from source
         filenames = target.getfilenames()
-        assert len(filenames) == 3, f"Expected 3 files, got {len(filenames)}: {filenames}"
+        assert len(filenames) == 3, (
+            f"Expected 3 files, got {len(filenames)}: {filenames}"
+        )
         assert "target_file.txt" in filenames
         assert "source_file1.txt" in filenames
         assert "source_file2.txt" in filenames
@@ -1071,13 +1077,16 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 
         # Parse with lxml to check namespace and structure
         from lxml import etree as lxml_etree
+
         tree = lxml_etree.fromstring(serialized)
 
         # Verify the document uses target's namespace (1.1)
         assert tree.nsmap[None] == "urn:oasis:names:tc:xliff:document:1.1"
 
         # Check for groups in target namespace
-        groups = tree.xpath("//ns:group", namespaces={'ns': 'urn:oasis:names:tc:xliff:document:1.1'})
+        groups = tree.xpath(
+            "//ns:group", namespaces={"ns": "urn:oasis:names:tc:xliff:document:1.1"}
+        )
         assert len(groups) >= 1, f"Expected at least 1 group, found {len(groups)}"
 
         # Verify group attributes are preserved
@@ -1090,7 +1099,9 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert group1.get("restype") == "x-gettext-domain"
 
         # Verify all files are present in target namespace
-        files = tree.xpath("//ns:file", namespaces={'ns': 'urn:oasis:names:tc:xliff:document:1.1'})
+        files = tree.xpath(
+            "//ns:file", namespaces={"ns": "urn:oasis:names:tc:xliff:document:1.1"}
+        )
         assert len(files) == 3, f"Expected 3 file elements, found {len(files)}"
 
         file_originals = [f.get("original") for f in files]
