@@ -1009,6 +1009,95 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         # Verify unit's namespace is correctly set to target's namespace
         assert new_unit.namespace == target.namespace
 
+    def test_cross_namespace_group_and_file_preservation(self):
+        """Test that groups and files are preserved when adding units across different XLIFF namespaces."""
+        # Source with XLIFF 1.2 namespace, with groups
+        source_xliff = b"""<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file original="source_file1.txt" source-language="en" datatype="plaintext">
+        <body>
+            <group id="group1" restype="x-gettext-domain">
+                <trans-unit id="hello">
+                    <source>Hello</source>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+    <file original="source_file2.txt" source-language="en" datatype="plaintext">
+        <body>
+            <trans-unit id="world">
+                <source>World</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>"""
+
+        # Target with XLIFF 1.1 namespace (different from source)
+        target_xliff = b"""<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
+    <file original="target_file.txt" source-language="en" datatype="plaintext" target-language="fr">
+        <body>
+            <trans-unit id="existing">
+                <source>Existing</source>
+                <target>Existant</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>"""
+
+        source = xliff.xlifffile.parsestring(source_xliff)
+        target = xliff.xlifffile.parsestring(target_xliff)
+
+        # Verify different namespaces
+        assert source.namespace == "urn:oasis:names:tc:xliff:document:1.2"
+        assert target.namespace == "urn:oasis:names:tc:xliff:document:1.1"
+
+        # Add units from source (1.2) to target (1.1)
+        for unit in source.units:
+            target.addunit(unit)
+
+        # Check that units were registered
+        assert len(target.units) == 3, f"Expected 3 units, got {len(target.units)}"
+
+        # Verify files are preserved - target should have original file plus two from source
+        filenames = target.getfilenames()
+        assert len(filenames) == 3, f"Expected 3 files, got {len(filenames)}: {filenames}"
+        assert "target_file.txt" in filenames
+        assert "source_file1.txt" in filenames
+        assert "source_file2.txt" in filenames
+
+        # Serialize and check structure
+        serialized = bytes(target)
+
+        # Parse with lxml to check namespace and structure
+        from lxml import etree as lxml_etree
+        tree = lxml_etree.fromstring(serialized)
+
+        # Verify the document uses target's namespace (1.1)
+        assert tree.nsmap[None] == "urn:oasis:names:tc:xliff:document:1.1"
+
+        # Check for groups in target namespace
+        groups = tree.xpath("//ns:group", namespaces={'ns': 'urn:oasis:names:tc:xliff:document:1.1'})
+        assert len(groups) >= 1, f"Expected at least 1 group, found {len(groups)}"
+
+        # Verify group attributes are preserved
+        group1 = None
+        for g in groups:
+            if g.get("id") == "group1":
+                group1 = g
+                break
+        assert group1 is not None, "group1 not found"
+        assert group1.get("restype") == "x-gettext-domain"
+
+        # Verify all files are present in target namespace
+        files = tree.xpath("//ns:file", namespaces={'ns': 'urn:oasis:names:tc:xliff:document:1.1'})
+        assert len(files) == 3, f"Expected 3 file elements, found {len(files)}"
+
+        file_originals = [f.get("original") for f in files]
+        assert "target_file.txt" in file_originals
+        assert "source_file1.txt" in file_originals
+        assert "source_file2.txt" in file_originals
+
     def test_indent(self):
         xlfsource = b"""<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.1" version="1.1">
