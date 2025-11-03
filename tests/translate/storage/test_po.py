@@ -1217,6 +1217,22 @@ msgstr ""
 """
         assert self.poreflow(posource) == posource
 
+    def test_wrap_escape(self):
+        posource = r"""msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+#: ../../content/applications/finance/accounting/payments/online.rst:22
+msgid ""
+"By default, \":doc:`Wire Transfer </applications/finance/payment_providers/"
+"wire_transfer>`\" is the only payment provider activated, but you still have "
+"to fill out the payment details."
+msgstr ""
+"기본값으로 \":doc:`온라인 이체 </applications/finance/payment_providers/"
+"wire_transfer>`\"만 결제대행업체을 사용하도록 설정되어 있으나, 여기에도 결제 "
+"세부 정보를 입력해야 합니다."
+"""
+        assert self.poreflow(posource) == posource
+
     def test_msgidcomments(self):
         posource = r"""
 msgid ""
