@@ -34,13 +34,16 @@ from translate.storage import base
 
 if TYPE_CHECKING:
     from collections.abc import Generator
+    from io import BytesIO
 
 
 class TOMLUnitId(base.UnitId):
-    KEY_SEPARATOR = "."
+    """UnitId for TOML format with custom separators."""
+
     INDEX_SEPARATOR = "->"
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """Convert to string, stripping leading separator."""
         result = super().__str__()
         # Strip leading separator
         if result.startswith(self.KEY_SEPARATOR):
@@ -100,7 +103,8 @@ class TOMLFile(base.DictStore):
         """Returns root node for serialize."""
         return document()
 
-    def serialize(self, out):
+    def serialize(self, out: str | BytesIO) -> None:
+        """Serialize the store to file."""
         # Always start with valid root even if original file was empty
         if self._original is None:
             self._original = self.get_root_node()
@@ -114,14 +118,12 @@ class TOMLFile(base.DictStore):
         if result and not result.endswith("\n"):
             result += "\n"
 
-        if isinstance(out, str):
-            with open(out, "w", encoding="utf-8") as f:
-                f.write(result)
-        elif hasattr(out, "write"):
-            # Handle file-like objects - BytesIO requires bytes
-            out.write(result.encode("utf-8"))
+        # Write to file
+        out.write(result.encode(self.encoding))
 
-    def _get_key_comment(self, table, key):
+    def _get_key_comment(
+        self, table: Table | TOMLDocument | None, key: str
+    ) -> str | None:
         """
         Extract the comment that appears before a key in a TOML table.
 
@@ -164,13 +166,19 @@ class TOMLFile(base.DictStore):
 
         return None
 
-    def _parse_dict(self, data, prev):
+    def _parse_dict(
+        self, data: dict[str, Any], prev: base.UnitId
+    ) -> Generator[tuple[base.UnitId, str, str | None], None, None]:
         """Parse a TOML table/dictionary."""
         for k, v in data.items():
             yield from self._flatten(v, prev.extend("key", k), parent_map=data, key=k)
 
     def _flatten(
-        self, data, prev=None, parent_map=None, key=None
+        self,
+        data: Any,
+        prev: base.UnitId | None = None,
+        parent_map: dict[str, Any] | list[Any] | None = None,
+        key: str | int | None = None,
     ) -> Generator[tuple[base.UnitId, str, str | None], None, None]:
         """
         Flatten TOML structure.
@@ -200,12 +208,11 @@ class TOMLFile(base.DictStore):
                 f"Previous: {prev}"
             )
 
-    @staticmethod
-    def preprocess(data):
+    def preprocess(self, data: TOMLDocument) -> TOMLDocument:
         """Preprocess hook for child formats."""
         return data
 
-    def parse(self, input):
+    def parse(self, input: str | bytes | BytesIO) -> None:
         """Parse the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name
@@ -216,7 +223,7 @@ class TOMLFile(base.DictStore):
             input.close()
             input = src
         if isinstance(input, bytes):
-            input = input.decode("utf-8")
+            input = input.decode(self.encoding)
         try:
             self._original = loads(input)
         except TOMLKitError as e:
@@ -231,7 +238,7 @@ class TOMLFile(base.DictStore):
                 unit.addnote(comment, origin="developer")
             self.addunit(unit)
 
-    def removeunit(self, unit):
+    def removeunit(self, unit: base.TranslationUnit) -> None:
         if self._original is not None:
             units = self.preprocess(self._original)
             unit.storevalue(units, None, unset=True)
@@ -241,11 +248,11 @@ class TOMLFile(base.DictStore):
 class GoI18nTOMLUnit(TOMLUnit):
     """A TOML entry for Go i18n format with plural support."""
 
-    def hasplural(self):
+    def hasplural(self) -> bool:
         """Returns whether this unit contains plural strings."""
         return isinstance(self.target, multistring) and len(self.target.strings) > 1
 
-    def convert_target(self):
+    def convert_target(self) -> str | dict[str, str | None]:
         if not isinstance(self.target, multistring):
             return self.target
 
@@ -277,7 +284,9 @@ class GoI18nTOMLFile(TOMLFile):
 
     UnitClass = GoI18nTOMLUnit
 
-    def _parse_dict(self, data, prev):
+    def _parse_dict(
+        self, data: dict[str, Any], prev: base.UnitId
+    ) -> Generator[tuple[base.UnitId, str | multistring, str | None], None, None]:
         """Parse a TOML table, checking for plurals."""
         # Does this look like a plural?
         # Need at least 2 keys and all keys must be CLDR plural categories
