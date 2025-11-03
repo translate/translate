@@ -879,7 +879,7 @@ class xlifffile(lisa.LISAfile):
             group.set("restype", restype)
         return group
 
-    def _find_or_create_group(self, source_group) -> etree.Element:
+    def _find_or_create_group(self, source_group: etree._Element) -> etree._Element:
         """
         Find or create a group in the current body that matches the source_group's attributes.
 
