@@ -18,6 +18,8 @@
 
 """Parent class for LISA standards (TMX, TBX, XLIFF)."""
 
+from __future__ import annotations
+
 import contextlib
 
 from lxml import etree
@@ -85,6 +87,21 @@ class LISAunit(base.TranslationUnit):
                 # TODO:^ maybe we want to take children and notes into account
                 return False
         return True
+
+    def copy(self) -> LISAunit:
+        """
+        Make a copy of the translation unit.
+
+        We don't want to make a deep copy - this could duplicate the whole XML
+        tree. For now we just serialise and reparse the unit's XML.
+
+        Performance caveat: This method uses serialization and reparsing
+        (etree.tostring/fromstring), which may be inefficient for large XML elements.
+        Consider implementing a more efficient copy method if performance becomes an issue.
+        """
+        new_unit = self.__class__(None, empty=True)
+        new_unit.xmlelement = etree.fromstring(etree.tostring(self.xmlelement))
+        return new_unit
 
     def namespaced(self, name):
         """
