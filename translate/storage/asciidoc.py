@@ -66,7 +66,7 @@ class AsciiDocUnit(base.TranslationUnit):
 
 class AsciiDocHeaderUnit(AsciiDocUnit):
     @staticmethod
-    def isheader():
+    def isheader() -> bool:
         return True
 
 
@@ -281,7 +281,8 @@ class AsciiDocFile(base.TranslationStore):
 
     def _try_parse_anchor(self, line: str, i: int) -> bool:
         """Parse anchor [[anchor-id]]."""
-        # Use [^\]]+ to avoid polynomial backtracking with the .+ pattern
+        # Match anchor syntax: [[id]] where id contains non-bracket characters
+        # Pattern [^\]]+ efficiently matches the anchor ID without backtracking
         if not re.match(r"^\[\[[^\]]+\]\]\s*$", line):
             return False
         self._elements.append({"type": "anchor", "content": line})
