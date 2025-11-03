@@ -811,7 +811,7 @@ class xlifffile(lisa.LISAfile):
 
         # Check if unit belongs to a group and preserve group structure
         group_parent = None
-        if hasattr(unit, 'xmlelement') and unit.xmlelement is not None:
+        if hasattr(unit, "xmlelement") and unit.xmlelement is not None:
             parent = unit.xmlelement.getparent()
             if parent is not None and parent.tag == self.namespaced("group"):
                 group_parent = parent

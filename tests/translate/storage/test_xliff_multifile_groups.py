@@ -39,7 +39,7 @@ class TestMultipleFilesAndGroups:
 
         # Verify groups are preserved
         serialized = bytes(translation)
-        assert b'<group' in serialized
+        assert b"<group" in serialized
         assert b'id="group1"' in serialized
         assert b'id="group2"' in serialized
         assert b'restype="x-gettext-domain"' in serialized
@@ -82,7 +82,7 @@ class TestMultipleFilesAndGroups:
         # Verify both files and groups are preserved
         assert translation.getfilenames() == ["file1.txt", "file2.txt"]
         serialized = bytes(translation)
-        assert b'<group' in serialized
+        assert b"<group" in serialized
         assert b'id="group1"' in serialized
         assert b'id="group2"' in serialized
 
