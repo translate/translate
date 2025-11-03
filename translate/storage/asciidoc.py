@@ -342,8 +342,8 @@ class AsciiDocFile(base.TranslationStore):
 
         # Handle checklist syntax [*], [x], [ ]
         checklist_prefix = ""
-        # Use .+ to require at least one character after whitespace
-        checklist_match = re.match(r"^(\[[*x ]\])\s+(\S.+)$", content)
+        # Use .*? for non-greedy matching to avoid backtracking
+        checklist_match = re.match(r"^(\[[*x ]\])\s+(\S.*?)$", content)
         if checklist_match:
             checklist_prefix = checklist_match.group(1) + " "
             content = checklist_match.group(2).strip()
@@ -400,7 +400,8 @@ class AsciiDocFile(base.TranslationStore):
 
     def _try_parse_description_list(self, line: str, i: int) -> bool:
         """Parse description list (term:: definition)."""
-        desc_list_match = re.match(r"^(\S[^:]*?)::\s+(\S.*?)$", line)
+        # Use [^:\n]* to prevent backtracking on colons
+        desc_list_match = re.match(r"^(\S[^:\n]*)::\s+(\S.*?)$", line)
         if not desc_list_match:
             return False
 
