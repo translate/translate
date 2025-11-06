@@ -22,7 +22,7 @@ Convert Gettext PO localization files to OpenDocument (ODF) files.
 This converter combines the functionality of po2xliff and xliff2odf to provide
 a direct conversion from PO files to ODF files.
 
-See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/odf2xliff.html
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/
 for examples and usage instructions.
 """
 
