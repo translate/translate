@@ -73,7 +73,6 @@ from __future__ import annotations
 import json
 import re
 import uuid
-from collections import OrderedDict
 from typing import BinaryIO, ClassVar, TextIO, cast
 
 from translate.lang.data import cldr_plural_categories
@@ -1015,7 +1014,8 @@ class RESJSONFile(JsonFile):
     ):
         # First pass: identify all actual keys (not metadata)
         actual_keys = set()
-        metadata_key_list = []  # Preserve order
+        # Preserve order of metadata keys for deterministic serialization
+        metadata_key_list = []
 
         for key in data:
             if key.startswith("_") and "." in key[1:]:
@@ -1036,10 +1036,12 @@ class RESJSONFile(JsonFile):
                 # Check if this matches an actual key
                 if potential_base_key in actual_keys:
                     if potential_base_key not in metadata_keys:
-                        metadata_keys[potential_base_key] = OrderedDict()
+                        metadata_keys[potential_base_key] = {}
                     metadata_keys[potential_base_key][suffix] = data[metadata_key]
                     continue
             # If we couldn't match, treat the whole thing as a regular key
+            # Edge case: If a metadata key exists (e.g., "_foo.bar") but "foo.bar" is not in the data,
+            # it will be treated as a regular key and processed with its original name (including underscore)
             actual_keys.add(metadata_key)
 
         # Extract units
