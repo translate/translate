@@ -296,12 +296,12 @@ class dtdunit(base.TranslationUnit):
     def parse(self, dtdsrc):
         """
         Read the first dtd element from the source code into this object.
-        
+
         .. deprecated:: 3.16.4
             This method is deprecated. The file-level parser in dtdfile.parse()
             now handles all parsing directly. This method is maintained for
             backward compatibility only.
-        
+
         Returns the number of lines processed.
         """
         warnings.warn(
@@ -309,7 +309,7 @@ class dtdunit(base.TranslationUnit):
             DeprecationWarning,
             stacklevel=2
         )
-        
+
         # For backward compatibility, we recreate a simplified version of the old parsing logic
         # This is not ideal but maintains the API
         self.comments = []
@@ -320,13 +320,13 @@ class dtdunit(base.TranslationUnit):
         self.entity = None
         self.definition = ""
         self.unparsedlines = []
-        
+
         if not dtdsrc:
             return 0
-        
+
         lines = dtdsrc.split("\n")
         linesprocessed = 0
-        
+
         # Just parse the first entity/comment block
         for line in lines:
             linesprocessed += 1
@@ -341,14 +341,14 @@ class dtdunit(base.TranslationUnit):
                         start = line.find('"')
                         end = line.rfind('"')
                         if start != end:
-                            self.definition = line[start:end+1]
+                            self.definition = line[start:end + 1]
                     elif "'" in line:
                         start = line.find("'")
                         end = line.rfind("'")
                         if start != end:
-                            self.definition = line[start:end+1]
+                            self.definition = line[start:end + 1]
                 break
-        
+
         return linesprocessed
 
     def __str__(self):
@@ -396,22 +396,22 @@ class dtdfile(base.TranslationStore):
         """Read the source code of a dtd file in and include them as dtdunits in self.units."""
         if not dtdsrc:
             return
-        
+
         # Decode the source
         source = dtdsrc.decode(self.encoding)
         lines = source.split("\n")
-        
+
         # Remove the last empty line if it's just from a trailing newline
-        if lines and lines[-1] == '':
+        if lines and not lines[-1]:
             lines = lines[:-1]
-        
+
         # Parse state
         line_idx = 0
-        
+
         while line_idx < len(lines):
             # Create a new unit
             newdtd = dtdunit(android=self.android)
-            
+
             # Initialize unit state
             newdtd.comments = []
             newdtd._locfilenotes = newdtd.comments
@@ -421,7 +421,7 @@ class dtdfile(base.TranslationStore):
             newdtd.entity = None
             newdtd.definition = ""
             newdtd.unparsedlines = []
-            
+
             # Parsing state variables
             incomment = False
             continuecomment = False
@@ -434,15 +434,14 @@ class dtdfile(base.TranslationStore):
             space_pre_entity = " "
             space_pre_definition = " "
             closing = ">"
-            
-            start_line = line_idx
+
             has_content = False  # Track if this unit has any content
             malformed = False  # Track if this unit is malformed
-            
+
             # Parse lines until we have a complete unit or find the start of the next one
             while line_idx < len(lines):
                 line = lines[line_idx] + "\n"
-                
+
                 if not incomment:
                     if line.find("<!--") != -1:
                         incomment = True
@@ -471,7 +470,7 @@ class dtdfile(base.TranslationStore):
                         line = ""
                         line_idx += 1
                         continue
-                
+
                 if incomment:
                     # Parse comment
                     (comment, incomment) = quote.extract(
@@ -499,7 +498,7 @@ class dtdfile(base.TranslationStore):
                         newdtd._locnotes.append(commentpair)
                     elif commenttype == "comment":
                         newdtd.comments.append(commentpair)
-                
+
                 if not inentity and not incomment:
                     entitypos = line.find("<!ENTITY")
                     if entitypos != -1:
@@ -514,7 +513,7 @@ class dtdfile(base.TranslationStore):
                         newdtd.unparsedlines.append(line)
                         if not line.isspace():
                             has_content = True
-                
+
                 if inentity:
                     if entitypart == "start":
                         # The entity definition
@@ -522,7 +521,7 @@ class dtdfile(base.TranslationStore):
                         line = line[e:]
                         entitypart = "name"
                         entitytype = "internal"
-                    
+
                     if entitypart == "name":
                         s = 0
                         e = 0
@@ -541,7 +540,7 @@ class dtdfile(base.TranslationStore):
                             entity_name += line[e]
                             e += 1
                         s = e
-                        
+
                         newdtd.entity = entity_name
                         while e < len(line) and line[e].isspace():
                             e += 1
@@ -561,7 +560,7 @@ class dtdfile(base.TranslationStore):
                             if entitypart == "definition":
                                 entityhelp = (e, line[e])
                                 instring = False
-                    
+
                     if entitypart == "parameter":
                         while e < len(line) and line[e].isspace():
                             e += 1
@@ -581,7 +580,7 @@ class dtdfile(base.TranslationStore):
                             entitypart = "definition"
                             entityhelp = (e, line[e])
                             instring = False
-                    
+
                     if entitypart == "definition":
                         if entityhelp is None:
                             e = 0
@@ -636,13 +635,13 @@ class dtdfile(base.TranslationStore):
                                 newdtd.entitytype = entitytype
                             line_idx += 1
                             break
-                
+
                 line_idx += 1
-                
+
                 # If we have no entity and no comment in progress and no content, skip this unit
                 if not inentity and not incomment and not has_content and line_idx < len(lines):
                     break
-            
+
             # Add the unit if it's not blank or has unparsed lines or has comments,
             # but skip malformed entities
             if not malformed and (not newdtd.isblank() or newdtd.unparsedlines or newdtd.comments):
