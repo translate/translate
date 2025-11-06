@@ -157,7 +157,7 @@ Key guidelines from :pep:`257`:
 
 Type annotations and parameters:
   **Use type annotations instead of documenting parameters in docstrings.**
-  
+
   For new code, always add :pep:`484` type hints to function signatures. This
   makes parameter types and return types explicit and machine-readable:
 
