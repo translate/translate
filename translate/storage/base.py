@@ -22,7 +22,6 @@ from __future__ import annotations
 
 import codecs
 import logging
-import pickle
 from io import BytesIO
 from itertools import starmap
 from typing import Callable, ClassVar, Literal
@@ -781,8 +780,16 @@ class TranslationStore:
         Converts to a bytes representation that can be parsed back using
         :meth:`~.TranslationStore.parsestring`.
         `out` should be an open file-like objects to write to.
+        
+        .. note::
+        
+           This method should be overridden by subclasses to provide
+           format-specific serialization.
         """
-        out.write(pickle.dumps(self))
+        raise NotImplementedError(
+            f"{self.__class__.__name__} does not implement serialize(). "
+            "Subclasses must provide their own serialization method."
+        )
 
     def isempty(self):
         """Return True if the object doesn't contain any translation units."""
@@ -890,8 +897,18 @@ class TranslationStore:
         return r_text, r_encoding
 
     def parse(self, data):
-        """Parser to process the given source string."""
-        self.units = pickle.loads(data).units
+        """
+        Parser to process the given source string.
+        
+        .. note::
+        
+           This method should be overridden by subclasses to provide
+           format-specific parsing.
+        """
+        raise NotImplementedError(
+            f"{self.__class__.__name__} does not implement parse(). "
+            "Subclasses must provide their own parsing method."
+        )
 
     def savefile(self, storefile):
         """Write the string representation to the given file (or filename)."""

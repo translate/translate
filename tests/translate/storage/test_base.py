@@ -19,6 +19,7 @@
 """tests for storage base classes."""
 
 import os
+import pickle
 from io import BytesIO
 
 from translate.misc.multistring import multistring
@@ -37,6 +38,18 @@ def first_translatable(store):
     if store.units[0].isheader() and len(store.units) > 1:
         return store.units[1]
     return store.units[0]
+
+
+class PickleTranslationStore(base.TranslationStore):
+    """Test-only TranslationStore that uses pickle for serialization."""
+
+    def serialize(self, out):
+        """Serialize using pickle (only for testing)."""
+        out.write(pickle.dumps(self))
+
+    def parse(self, data):
+        """Parse using pickle (only for testing)."""
+        self.units = pickle.loads(data).units
 
 
 class TestTranslationUnit:
@@ -234,7 +247,7 @@ class TestTranslationStore:
     Derived classes can reuse these tests by pointing StoreClass to a derived Store
     """
 
-    StoreClass = base.TranslationStore
+    StoreClass = PickleTranslationStore
 
     def setup_method(self, method):
         """Allocates a unique self.filename for the method, making sure it doesn't exist."""
