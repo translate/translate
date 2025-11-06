@@ -22,7 +22,7 @@ Usage
 Where:
 
 +--------+----------------------------------------------------------------+
-| <toml> | is a valid TOML localisable file or directory of those files  |
+| <toml> | is a valid TOML localisable file or directory of those files   |
 +--------+----------------------------------------------------------------+
 | <po>   | is a directory of PO or POT files                              |
 +--------+----------------------------------------------------------------+
