@@ -954,3 +954,106 @@ class FormatJSJsonFile(JsonFile):
             )
             unit.setid(item, unitid=self.UnitClass.IdClass.from_key(item))
             yield unit
+
+
+class RESJSONUnit(FlatJsonUnit):
+    """A RESJSON entry with metadata support."""
+
+    ID_FORMAT = "{}"
+
+    def __init__(
+        self,
+        source=None,
+        item=None,
+        notes=None,
+        placeholders=None,
+        metadata=None,
+        **kwargs,
+    ):
+        super().__init__(source, item, notes, placeholders, **kwargs)
+        self.metadata = metadata or {}
+
+    def storevalues(self, output):
+        identifier = self.getid()
+        # Store the main value
+        self.storevalue(output, self.target, override_key=identifier)
+        # Store metadata with _KEY.suffix pattern
+        for key, value in self.metadata.items():
+            metadata_key = f"_{identifier}.{key}"
+            self.storevalue(output, value, override_key=metadata_key)
+
+
+class RESJSONFile(JsonFile):
+    """
+    RESJSON (JavaScript Resource File) format.
+
+    This format uses `_KEY.DATA` syntax to attach metadata to translation strings.
+
+    See following URL for doc:
+
+    https://docs.rws.com/en-US/sdl-passolo-help-785448/add-in-for-javascript-object-notation-json-file-format-types-410873
+    """
+
+    UnitClass = RESJSONUnit
+
+    def _extract_units(
+        self,
+        data,
+        stop=None,
+        prev=None,
+        name_node=None,
+        name_last_node=None,
+        last_node=None,
+    ):
+        # First pass: identify all actual keys (not metadata)
+        actual_keys = set()
+        metadata_key_list = []  # Preserve order
+        
+        for key in data.keys():
+            if key.startswith("_") and "." in key[1:]:
+                metadata_key_list.append(key)
+            else:
+                actual_keys.add(key)
+        
+        # Second pass: collect metadata for each actual key, preserving order
+        from collections import OrderedDict
+        metadata_keys = {}
+        for metadata_key in metadata_key_list:
+            # Try to match this metadata key to an actual key
+            # Pattern is _KEY.SUFFIX
+            without_underscore = metadata_key[1:]
+            # Try all possible splits to find matching actual key
+            matched = False
+            for i in range(len(without_underscore)):
+                if without_underscore[i] == ".":
+                    potential_base_key = without_underscore[:i]
+                    suffix = without_underscore[i + 1:]
+                    if potential_base_key in actual_keys:
+                        if potential_base_key not in metadata_keys:
+                            metadata_keys[potential_base_key] = OrderedDict()
+                        metadata_keys[potential_base_key][suffix] = data[metadata_key]
+                        matched = True
+                        break
+            if not matched:
+                # If we couldn't match, treat the whole thing as a regular key
+                actual_keys.add(metadata_key)
+
+        # Extract units
+        for item, value in data.items():
+            # Skip metadata keys that were matched
+            if item in metadata_key_list and item not in actual_keys:
+                continue
+            if not isinstance(value, (str, int)):
+                raise base.ParseError(
+                    ValueError(f"Key {item!r} does not contain string: {value!r}")
+                )
+            metadata = metadata_keys.get(item, {})
+            unit = self.UnitClass(
+                value,
+                item,
+                metadata.get("comment", ""),
+                metadata.get("placeholders", None),
+                metadata=metadata,
+            )
+            unit.setid(item, unitid=self.UnitClass.IdClass.from_key(item))
+            yield unit

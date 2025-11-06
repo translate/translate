@@ -1545,3 +1545,110 @@ class TestFormatJSJsonFile(test_monolingual.TestMonolingualStore):
         store = self.StoreClass()
         with raises(base.ParseError):
             store.parse(jsontext)
+
+
+JSON_RESJSON = b"""{
+    "greeting": "Hello",
+    "_greeting.comment": "A welcome greeting.",
+    "_greeting.source": "Hello",
+    "farewell": "Goodbye",
+    "_farewell.comment": "A parting message.",
+    "_farewell.source": "Goodbye"
+}
+"""
+
+
+class TestRESJSONFile(test_monolingual.TestMonolingualStore):
+    StoreClass = jsonl10n.RESJSONFile
+
+    def test_roundtrip(self):
+        store = self.StoreClass()
+        store.parse(JSON_RESJSON)
+
+        assert len(store.units) == 2
+        assert store.units[0].target == "Hello"
+        assert store.units[0].getnotes() == "A welcome greeting."
+        assert store.units[0].metadata.get("source") == "Hello"
+        assert store.units[1].target == "Goodbye"
+        assert store.units[1].getnotes() == "A parting message."
+        assert store.units[1].metadata.get("source") == "Goodbye"
+
+        assert bytes(store).decode() == JSON_RESJSON.decode()
+
+    def test_basic_parsing(self):
+        jsontext = """{
+    "key": "value",
+    "_key.comment": "A comment"
+}
+"""
+        store = self.StoreClass()
+        store.parse(jsontext)
+        assert len(store.units) == 1
+        assert store.units[0].target == "value"
+        assert store.units[0].getnotes() == "A comment"
+        assert bytes(store).decode() == jsontext
+
+    def test_multiple_metadata(self):
+        jsontext = """{
+    "message": "text",
+    "_message.comment": "comment text",
+    "_message.source": "source text",
+    "_message.custom": "custom data"
+}
+"""
+        store = self.StoreClass()
+        store.parse(jsontext)
+        assert len(store.units) == 1
+        assert store.units[0].target == "text"
+        assert store.units[0].getnotes() == "comment text"
+        assert store.units[0].metadata.get("source") == "source text"
+        assert store.units[0].metadata.get("custom") == "custom data"
+        assert bytes(store).decode() == jsontext
+
+    def test_no_metadata(self):
+        jsontext = """{
+    "simple": "value"
+}
+"""
+        store = self.StoreClass()
+        store.parse(jsontext)
+        assert len(store.units) == 1
+        assert store.units[0].target == "value"
+        assert store.units[0].getnotes() == ""
+        assert bytes(store).decode() == jsontext
+
+    def test_edit_target(self):
+        jsontext = """{
+    "key": "value",
+    "_key.comment": "comment"
+}
+"""
+        store = self.StoreClass()
+        store.parse(jsontext)
+        store.units[0].target = "new value"
+        result = bytes(store).decode()
+        assert '"key": "new value"' in result
+        assert '"_key.comment": "comment"' in result
+
+    def test_leading_dot_keys(self):
+        jsontext = """{
+    ".dot": "dot value",
+    "_.dot.comment": "comment"
+}
+"""
+        store = self.StoreClass()
+        store.parse(jsontext)
+        assert len(store.units) == 1
+        assert store.units[0].target == "dot value"
+        assert bytes(store).decode() == jsontext
+
+    def test_invalid_nesting(self):
+        jsontext = """{
+    "key": {
+        "nested": "value"
+    }
+}
+"""
+        store = self.StoreClass()
+        with raises(base.ParseError):
+            store.parse(jsontext)
