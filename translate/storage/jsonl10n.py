@@ -1008,13 +1008,13 @@ class RESJSONFile(JsonFile):
         # First pass: identify all actual keys (not metadata)
         actual_keys = set()
         metadata_key_list = []  # Preserve order
-        
-        for key in data.keys():
+
+        for key in data:
             if key.startswith("_") and "." in key[1:]:
                 metadata_key_list.append(key)
             else:
                 actual_keys.add(key)
-        
+
         # Second pass: collect metadata for each actual key, preserving order
         from collections import OrderedDict
         metadata_keys = {}
