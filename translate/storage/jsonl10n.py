@@ -1029,22 +1029,18 @@ class RESJSONFile(JsonFile):
             # Try to match this metadata key to an actual key
             # Pattern is _KEY.SUFFIX where KEY can contain dots
             without_underscore = metadata_key[1:]
-            # Try matching from the last dot backwards to handle keys with dots
-            matched = False
-            for i in range(len(without_underscore) - 1, -1, -1):
-                if without_underscore[i] == ".":
-                    potential_base_key = without_underscore[:i]
-                    suffix = without_underscore[i + 1:]
-                    # Check if this matches an actual key
-                    if potential_base_key in actual_keys:
-                        if potential_base_key not in metadata_keys:
-                            metadata_keys[potential_base_key] = OrderedDict()
-                        metadata_keys[potential_base_key][suffix] = data[metadata_key]
-                        matched = True
-                        break
-            if not matched:
-                # If we couldn't match, treat the whole thing as a regular key
-                actual_keys.add(metadata_key)
+            # Split from the right to handle keys with dots (e.g., "foo.bar.comment" -> ["foo.bar", "comment"])
+            parts = without_underscore.rsplit(".", 1)
+            if len(parts) == 2:
+                potential_base_key, suffix = parts
+                # Check if this matches an actual key
+                if potential_base_key in actual_keys:
+                    if potential_base_key not in metadata_keys:
+                        metadata_keys[potential_base_key] = OrderedDict()
+                    metadata_keys[potential_base_key][suffix] = data[metadata_key]
+                    continue
+            # If we couldn't match, treat the whole thing as a regular key
+            actual_keys.add(metadata_key)
 
         # Extract units
         for item, value in data.items():
