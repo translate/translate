@@ -165,14 +165,14 @@ msgstr[2] "%d dźon tamu"'''
         """Test that fuzzy plural forms are handled correctly."""
         minipo = r'''#: FuzzyContext
 #, fuzzy
-msgid "%d item"
-msgid_plural "%d items"
+msgid "%d item(s)"
+msgid_plural "%d item(s)"
 msgstr[0] "%d punkt"
 msgstr[1] "%d punkty"'''
         tsfile = self.po2ts(minipo)
         print(tsfile)
         assert "<name>FuzzyContext</name>" in tsfile
-        assert "<source>%d items</source>" in tsfile
+        assert "<source>%d item(s)</source>" in tsfile
         assert 'numerus="yes"' in tsfile
         assert 'type="unfinished"' in tsfile
         assert "<numerusform>%d punkt</numerusform>" in tsfile
