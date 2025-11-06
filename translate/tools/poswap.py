@@ -62,9 +62,7 @@ def swapdir(store):
 def add_missing_translation_note(unit, inputpo):
     """Add a note indicating no translation was found."""
     if inputpo.filename:
-        unit.addnote(
-            f"No translation found in {inputpo.filename}", origin="programmer"
-        )
+        unit.addnote(f"No translation found in {inputpo.filename}", origin="programmer")
     else:
         unit.addnote(
             "No translation found in the supplied source language",
