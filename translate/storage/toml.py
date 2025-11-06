@@ -214,7 +214,7 @@ class TOMLFile(base.DictStore):
         try:
             self._original = loads(input)
         except TOMLKitError as e:
-            raise base.ParseError(str(e))
+            raise base.ParseError(e) from e
 
         for k, data, comment in self._flatten(self._original):
             unit = self.UnitClass(data)
