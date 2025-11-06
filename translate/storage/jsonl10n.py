@@ -73,6 +73,7 @@ from __future__ import annotations
 import json
 import re
 import uuid
+from collections import OrderedDict
 from typing import BinaryIO, ClassVar, TextIO, cast
 
 from translate.lang.data import cldr_plural_categories
@@ -1023,18 +1024,18 @@ class RESJSONFile(JsonFile):
                 actual_keys.add(key)
 
         # Second pass: collect metadata for each actual key, preserving order
-        from collections import OrderedDict
         metadata_keys = {}
         for metadata_key in metadata_key_list:
             # Try to match this metadata key to an actual key
-            # Pattern is _KEY.SUFFIX
+            # Pattern is _KEY.SUFFIX where KEY can contain dots
             without_underscore = metadata_key[1:]
-            # Try all possible splits to find matching actual key
+            # Try matching from the last dot backwards to handle keys with dots
             matched = False
-            for i in range(len(without_underscore)):
+            for i in range(len(without_underscore) - 1, -1, -1):
                 if without_underscore[i] == ".":
                     potential_base_key = without_underscore[:i]
                     suffix = without_underscore[i + 1:]
+                    # Check if this matches an actual key
                     if potential_base_key in actual_keys:
                         if potential_base_key not in metadata_keys:
                             metadata_keys[potential_base_key] = OrderedDict()

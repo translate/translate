@@ -1645,6 +1645,20 @@ class TestRESJSONFile(test_monolingual.TestMonolingualStore):
         assert '"_key.comment": "modified comment"' in result
         assert '"_key.source": "source text"' in result
 
+    def test_keys_with_dots(self):
+        jsontext = """{
+    "foo.bar": "value",
+    "_foo.bar.comment": "comment for foo.bar"
+}
+"""
+        store = self.StoreClass()
+        store.parse(jsontext)
+        assert len(store.units) == 1
+        assert store.units[0].getid() == "foo.bar"
+        assert store.units[0].target == "value"
+        assert store.units[0].getnotes() == "comment for foo.bar"
+        assert bytes(store).decode() == jsontext
+
     def test_leading_dot_keys(self):
         jsontext = """{
     ".dot": "dot value",
