@@ -77,6 +77,8 @@ from typing import TYPE_CHECKING, Any, BinaryIO, ClassVar, TextIO, cast
 
 if TYPE_CHECKING:
     from collections.abc import Generator
+from collections import defaultdict
+from typing import BinaryIO, ClassVar, TextIO, cast
 
 from translate.lang.data import cldr_plural_categories
 from translate.misc.multistring import multistring
@@ -1045,3 +1047,108 @@ class NextcloudJsonFile(JsonFile):
 
         out.write(json.dumps(output, **self.dump_args).encode(self.encoding))
         out.write(b"\n")
+class RESJSONUnit(FlatJsonUnit):
+    """A RESJSON entry with metadata support."""
+
+    ID_FORMAT = "{}"
+
+    def __init__(
+        self,
+        source=None,
+        item=None,
+        notes=None,
+        placeholders=None,
+        metadata=None,
+        **kwargs,
+    ):
+        super().__init__(source, item, notes, placeholders, **kwargs)
+        self.metadata = metadata or {}
+
+    def storevalues(self, output):
+        # Sync notes to metadata
+        if self.notes:
+            self.metadata["comment"] = self.notes
+        elif "comment" in self.metadata and not self.notes:
+            # Remove comment if notes were cleared
+            del self.metadata["comment"]
+
+        identifier = self.getid()
+        # Store the main value
+        self.storevalue(output, self.target, override_key=identifier)
+        # Store metadata with _KEY.suffix pattern
+        for key, value in self.metadata.items():
+            metadata_key = f"_{identifier}.{key}"
+            self.storevalue(output, value, override_key=metadata_key)
+
+
+class RESJSONFile(JsonFile):
+    """
+    RESJSON (JavaScript Resource File) format.
+
+    This format uses `_KEY.DATA` syntax to attach metadata to translation strings.
+
+    See following URL for doc:
+
+    https://docs.rws.com/en-US/sdl-passolo-help-785448/add-in-for-javascript-object-notation-json-file-format-types-410873
+    """
+
+    UnitClass = RESJSONUnit
+
+    def _extract_units(
+        self,
+        data,
+        stop=None,
+        prev=None,
+        name_node=None,
+        name_last_node=None,
+        last_node=None,
+    ):
+        # First pass: identify all actual keys (not metadata)
+        actual_keys = set()
+        # Preserve order of metadata keys for deterministic serialization
+        metadata_key_list = []
+
+        for key in data:
+            if key.startswith("_") and "." in key[1:]:
+                metadata_key_list.append(key)
+            else:
+                actual_keys.add(key)
+
+        # Second pass: collect metadata for each actual key, preserving order
+        metadata_keys = defaultdict(dict)
+        for metadata_key in metadata_key_list:
+            # Try to match this metadata key to an actual key
+            # Pattern is _KEY.SUFFIX where KEY can contain dots
+            without_underscore = metadata_key[1:]
+            # Split from the right to handle keys with dots (e.g., "foo.bar.comment" -> ["foo.bar", "comment"])
+            parts = without_underscore.rsplit(".", 1)
+            if len(parts) == 2:
+                potential_base_key, suffix = parts
+                # Check if this matches an actual key
+                if potential_base_key in actual_keys:
+                    metadata_keys[potential_base_key][suffix] = data[metadata_key]
+                    continue
+            # If we couldn't match, treat the whole thing as a regular key
+            # Edge case: If a metadata key exists (e.g., "_foo.bar") but "foo.bar" is not in the data,
+            # it will be treated as a regular key and processed with its original name (including underscore)
+            actual_keys.add(metadata_key)
+
+        # Extract units
+        for item, value in data.items():
+            # Skip metadata keys that were matched
+            if item in metadata_key_list and item not in actual_keys:
+                continue
+            if not isinstance(value, (str, int)):
+                raise base.ParseError(
+                    ValueError(f"Key {item!r} does not contain string: {value!r}")
+                )
+            metadata = metadata_keys.get(item, {})
+            unit = self.UnitClass(
+                value,
+                item,
+                metadata.get("comment", ""),
+                metadata.get("placeholders", None),
+                metadata=metadata,
+            )
+            unit.setid(item, unitid=self.UnitClass.IdClass.from_key(item))
+            yield unit

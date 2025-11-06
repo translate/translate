@@ -55,6 +55,7 @@ _classes_str = {
     "xlf": ("xliff", "xlifffile"),
     "sdlxliff": ("xliff", "xlifffile"),
     "ftl": ("fluent", "FluentFile"),
+    "toml": ("toml", "TOMLFile"),
 }
 ###  XXX:  if you add anything here, you must also add it to translate.storage.
 

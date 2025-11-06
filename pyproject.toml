@@ -80,7 +80,7 @@ requires-python = ">=3.9"
 
 [project.optional-dependencies]
 all = [
-  "translate-toolkit[chardet,fluent,ical,ini,levenshtein,markdown,php,rc,spellcheck,subtitles,tmserver,trados,yaml]"
+  "translate-toolkit[chardet,fluent,ical,ini,levenshtein,markdown,php,rc,spellcheck,subtitles,tmserver,toml,trados,yaml]"
 ]
 chardet = [
   "charset-normalizer>=3.4.0,<4.0"
@@ -114,6 +114,9 @@ subtitles = [
 ]
 tmserver = [
   "cheroot==10.0.1"
+]
+toml = [
+  "tomlkit>=0.13.0,<0.14.0"
 ]
 trados = [
   "BeautifulSoup4>=4.13.0"
@@ -159,6 +162,7 @@ po2json = "translate.convert.po2json:main"
 po2md = "translate.convert.po2md:main"
 po2moz = "translate.convert.po2moz:main"
 po2mozlang = "translate.convert.po2mozlang:main"
+po2odf = "translate.convert.po2odf:main"
 po2oo = "translate.convert.po2oo:main"
 po2php = "translate.convert.po2php:main"
 po2prop = "translate.convert.po2prop:main"
@@ -168,6 +172,7 @@ po2sub = "translate.convert.po2sub:main"
 po2symb = "translate.convert.po2symb:main"
 po2tiki = "translate.convert.po2tiki:main"
 po2tmx = "translate.convert.po2tmx:main"
+po2toml = "translate.convert.po2toml:main"
 po2ts = "translate.convert.po2ts:main"
 po2txt = "translate.convert.po2txt:main"
 po2web2py = "translate.convert.po2web2py:main"
@@ -199,6 +204,7 @@ symb2po = "translate.convert.symb2po:main"
 tbx2po = "translate.convert.tbx2po:main"
 tiki2po = "translate.convert.tiki2po:main"
 tmserver = "translate.services.tmserver:main"
+toml2po = "translate.convert.toml2po:main"
 ts2po = "translate.convert.ts2po:main"
 txt2po = "translate.convert.txt2po:main"
 web2py2po = "translate.convert.web2py2po:main"
