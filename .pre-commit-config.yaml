@@ -13,7 +13,7 @@ repos:
   - id: check-hooks-apply
   - id: check-useless-excludes
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.14.2
+  rev: v0.14.3
   hooks:
   - id: ruff-check
     args: [--fix, --exit-non-zero-on-fix]
@@ -36,15 +36,15 @@ repos:
   hooks:
   - id: validate-pyproject
 - repo: https://github.com/sphinx-contrib/sphinx-lint
-  rev: v1.0.0
+  rev: v1.0.1
   hooks:
   - id: sphinx-lint
 - repo: https://github.com/zizmorcore/zizmor-pre-commit
-  rev: v1.16.0
+  rev: v1.16.3
   hooks:
   - id: zizmor
 - repo: https://github.com/crate-ci/typos
-  rev: v1.38.1
+  rev: v1.39.0
   hooks:
   - id: typos
     args: []

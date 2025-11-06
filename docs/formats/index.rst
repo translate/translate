@@ -219,7 +219,7 @@ Formats that we would like to support but don't currently support:
     <http://www.tracom.de/04/EN/techdoccenter/download/TRADOS_TTX-DTD.zip>`_,
     `other discussion
     <http://timsfoster.wordpress.com/2005/07/05/beds-mattresses-and-open-standards/>`_)
-  * Multiterm XML `TSV to MiltiTerm conversion script
+  * Multiterm XML `TSV to MultiTerm conversion script
     <http://syntax.biz.pl/multiterm.html>`_ or `XLST
     <http://translationzone.eu/mtxml2txt.html>`_
   * .tmw
