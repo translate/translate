@@ -780,9 +780,9 @@ class TranslationStore:
         Converts to a bytes representation that can be parsed back using
         :meth:`~.TranslationStore.parsestring`.
         `out` should be an open file-like objects to write to.
-        
+
         .. note::
-        
+
            This method should be overridden by subclasses to provide
            format-specific serialization.
         """
@@ -899,9 +899,9 @@ class TranslationStore:
     def parse(self, data):
         """
         Parser to process the given source string.
-        
+
         .. note::
-        
+
            This method should be overridden by subclasses to provide
            format-specific parsing.
         """
