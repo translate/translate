@@ -48,15 +48,7 @@ class toml2po:
         blank_msgstr=False,
         duplicate_style="msgctxt",
     ):
-        """
-        Initialize the converter.
-
-        :param input_file: Input TOML file or translated TOML file
-        :param output_file: Output PO file
-        :param template_file: Optional template TOML file (for merging translations)
-        :param blank_msgstr: If True, create POT file with blank msgstr
-        :param duplicate_style: How to handle duplicates ("msgctxt" or "merge")
-        """
+        """Initialize the converter."""
         self.blank_msgstr = blank_msgstr
         self.duplicate_style = duplicate_style
 
@@ -70,12 +62,7 @@ class toml2po:
             self.template_store = self.SourceStoreClass(template_file)
 
     def convert_unit(self, unit):
-        """
-        Convert a TOML unit to a PO unit.
-
-        :param unit: Source TOML unit
-        :return: Converted PO unit with location and developer notes
-        """
+        """Convert a TOML unit to a PO unit with location and developer notes."""
         target_unit = self.TargetUnitClass(encoding="UTF-8")
         target_unit.setid(unit.getid())
         target_unit.addlocation(unit.getid())
@@ -98,7 +85,6 @@ class toml2po:
         """
         Merge template and translated TOML files into PO format.
 
-        Used when both template and translated TOML files are provided.
         Template provides the structure, source file provides translations.
         """
         self.extraction_msg = f"extracted from {self.template_store.filename}, {self.source_store.filename}"
@@ -114,11 +100,7 @@ class toml2po:
             self.target_store.addunit(target_unit)
 
     def run(self):
-        """
-        Run the conversion process.
-
-        :return: 1 if successful, 0 if target store is empty
-        """
+        """Run the conversion process, returning 1 if successful or 0 if empty."""
         if self.template_store is None:
             self.convert_store()
         else:
@@ -139,16 +121,7 @@ class toml2po:
 def run_converter(
     input_file, output_file, template_file=None, pot=False, duplicatestyle="msgctxt"
 ):
-    """
-    Wrapper around converter for command-line usage.
-
-    :param input_file: Input TOML file
-    :param output_file: Output PO file
-    :param template_file: Optional template TOML file
-    :param pot: If True, create POT file (blank msgstr)
-    :param duplicatestyle: How to handle duplicate strings
-    :return: 1 if successful, 0 if no strings found
-    """
+    """Wrapper around converter for command-line usage."""
     return toml2po(
         input_file,
         output_file,
