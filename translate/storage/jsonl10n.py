@@ -954,3 +954,86 @@ class FormatJSJsonFile(JsonFile):
             )
             unit.setid(item, unitid=self.UnitClass.IdClass.from_key(item))
             yield unit
+
+
+class NextcloudJsonUnit(FlatJsonUnit):
+    """A Nextcloud JSON entry."""
+
+    ID_FORMAT = "{}"
+
+    def converttarget(self):
+        """Convert target to appropriate format for Nextcloud JSON."""
+        if isinstance(self.target, multistring):
+            # Return as array for plurals
+            return list(self.target.strings)
+        return self.target
+
+
+class NextcloudJsonFile(JsonFile):
+    """
+    Nextcloud JSON file.
+
+    Nextcloud apps use a JSON format with translations wrapped in a
+    "translations" key. Plurals follow gettext conventions with keys like
+    "_%n singular_::_%n plural_" and array values.
+
+    See:
+    https://docs.nextcloud.com/server/stable/developer_manual/basics/translations.html
+    https://github.com/nextcloud-libraries/nextcloud-l10n/
+    """
+
+    UnitClass = NextcloudJsonUnit
+
+    def __init__(self, inputfile=None, filter=None, **kwargs):
+        """Construct a Nextcloud JSON file."""
+        super().__init__(inputfile, filter, **kwargs)
+        # Store top-level elements outside 'translations' for preservation
+        self._metadata = {}
+
+    def _extract_units(
+        self,
+        data,
+        stop=None,
+        prev=None,
+        name_node=None,
+        name_last_node=None,
+        last_node=None,
+    ):
+        """Extract units from the translations key only."""
+        # Store metadata (everything outside 'translations')
+        for key, value in data.items():
+            if key != "translations":
+                self._metadata[key] = value
+
+        # Only parse the translations key
+        translations = data.get("translations", {})
+        if not isinstance(translations, dict):
+            return
+
+        for key, value in translations.items():
+            # Check if this is a plural form (gettext style)
+            if isinstance(value, list):
+                # Plural form - array of translations
+                unit = self.UnitClass(multistring(value), key)
+            else:
+                # Simple string translation
+                unit = self.UnitClass(value, key)
+
+            unit.setid(key, unitid=self.UnitClass.IdClass.from_key(key))
+            yield unit
+
+    def serialize(self, out):
+        """Serialize to Nextcloud JSON format."""
+        # Build translations dictionary
+        translations = {}
+        for unit in self.units:
+            key = unit.getid()
+            value = unit.converttarget()
+            translations[key] = value
+
+        # Combine metadata and translations
+        output = dict(self._metadata)
+        output["translations"] = translations
+
+        out.write(json.dumps(output, **self.dump_args).encode(self.encoding))
+        out.write(b"\n")
