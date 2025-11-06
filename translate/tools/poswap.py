@@ -59,6 +59,19 @@ def swapdir(store):
             unit.source, unit.target = unit.target, unit.source
 
 
+def add_missing_translation_note(unit, inputpo):
+    """Add a note indicating no translation was found."""
+    if inputpo.filename:
+        unit.addnote(
+            f"No translation found in {inputpo.filename}", origin="programmer"
+        )
+    else:
+        unit.addnote(
+            "No translation found in the supplied source language",
+            origin="programmer",
+        )
+
+
 def convertpo(inputpofile, outputpotfile, template, reverse=False, intermediate=False):
     """Reads in inputpofile, removes the header, writes to outputpotfile."""
     inputpo = po.pofile(inputpofile)
@@ -84,28 +97,12 @@ def convertpo(inputpofile, outputpotfile, template, reverse=False, intermediate=
             if unit.target and not unit.isfuzzy():
                 unit.addnote(unit.target, origin="translator")
             elif not reverse:
-                if inputpo.filename:
-                    unit.addnote(
-                        f"No translation found in {inputpo.filename}", origin="programmer"
-                    )
-                else:
-                    unit.addnote(
-                        "No translation found in the supplied source language",
-                        origin="programmer",
-                    )
+                add_missing_translation_note(unit, inputpo)
         # Original behavior: swap target to source
         elif unit.target and not unit.isfuzzy():
             unit.source = unit.target
         elif not reverse:
-            if inputpo.filename:
-                unit.addnote(
-                    f"No translation found in {inputpo.filename}", origin="programmer"
-                )
-            else:
-                unit.addnote(
-                    "No translation found in the supplied source language",
-                    origin="programmer",
-                )
+            add_missing_translation_note(unit, inputpo)
         unit.target = ""
         unit.markfuzzy(False)
         if templateunit:
