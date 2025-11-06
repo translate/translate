@@ -18,6 +18,7 @@
 
 """tests for storage base classes."""
 
+import json
 import os
 from io import BytesIO
 
@@ -37,6 +38,42 @@ def first_translatable(store):
     if store.units[0].isheader() and len(store.units) > 1:
         return store.units[1]
     return store.units[0]
+
+
+class JsonTranslationStore(base.TranslationStore):
+    """Test-only TranslationStore that uses JSON for serialization."""
+
+    def serialize(self, out):
+        """Serialize using JSON (only for testing)."""
+        units_data = []
+        for unit in self.units:
+            unit_dict = {
+                "source": str(unit.source) if unit.source else None,
+                "target": str(unit.target) if unit.target else None,
+            }
+            units_data.append(unit_dict)
+
+        store_data = {
+            "units": units_data,
+            "sourcelanguage": self.sourcelanguage,
+            "targetlanguage": self.targetlanguage,
+        }
+        out.write(json.dumps(store_data, ensure_ascii=False).encode("utf-8"))
+
+    def parse(self, data):
+        """Parse using JSON (only for testing)."""
+        store_data = json.loads(data.decode("utf-8"))
+        self.units = []
+        for unit_dict in store_data.get("units", []):
+            unit = self.UnitClass()
+            if unit_dict.get("source") is not None:
+                unit.source = unit_dict["source"]
+            if unit_dict.get("target") is not None:
+                unit.target = unit_dict["target"]
+            unit._store = self
+            self.units.append(unit)
+        self.sourcelanguage = store_data.get("sourcelanguage")
+        self.targetlanguage = store_data.get("targetlanguage")
 
 
 class TestTranslationUnit:
@@ -234,7 +271,7 @@ class TestTranslationStore:
     Derived classes can reuse these tests by pointing StoreClass to a derived Store
     """
 
-    StoreClass = base.TranslationStore
+    StoreClass = JsonTranslationStore
 
     def setup_method(self, method):
         """Allocates a unique self.filename for the method, making sure it doesn't exist."""
