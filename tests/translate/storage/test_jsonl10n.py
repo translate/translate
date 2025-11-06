@@ -1567,6 +1567,7 @@ JSON_NEXTCLOUD_WITH_PLURAL_FORM = rb"""{
 }
 """
 
+# spellchecker:off
 JSON_NEXTCLOUD_COMPLEX = rb"""{
     "translations": {
         "Simple string": "Einfache Zeichenkette",
@@ -1579,6 +1580,7 @@ JSON_NEXTCLOUD_COMPLEX = rb"""{
     "pluralForm": "nplurals=2; plural=(n != 1);"
 }
 """
+# spellchecker:on
 
 
 class TestNextcloudJsonUnit(test_monolingual.TestMonolingualUnit):
@@ -1654,7 +1656,7 @@ class TestNextcloudJsonFile(test_monolingual.TestMonolingualStore):
         # Verify parsing
         assert store.units[0].target == "Einfache Zeichenkette"
         assert isinstance(store.units[1].target, multistring)
-        assert store.units[2].target == "Ein anderer Wert"
+        assert store.units[2].target == "Ein anderer Wert"  # codespell:ignore
 
         # Serialize and re-parse
         out = BytesIO()
@@ -1667,7 +1669,7 @@ class TestNextcloudJsonFile(test_monolingual.TestMonolingualStore):
         assert store2.units[0].target == "Einfache Zeichenkette"
         assert isinstance(store2.units[1].target, multistring)
         assert len(store2.units[1].target.strings) == 2
-        assert store2.units[2].target == "Ein anderer Wert"
+        assert store2.units[2].target == "Ein anderer Wert"  # codespell:ignore
 
     def test_ignore_non_translations_keys(self):
         """Test that only 'translations' key is parsed for units."""
