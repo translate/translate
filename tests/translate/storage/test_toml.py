@@ -171,19 +171,19 @@ Recibiches unha invitación para unirte!"""
         store = self.StoreClass()
         store.parse(data)
         assert len(store.units) == 7
-        assert store.units[0].getid() == "day_names->[0]"
+        assert store.units[0].getid() == "day_names[0]"
         assert store.units[0].source == "Domingo"
-        assert store.units[1].getid() == "day_names->[1]"
+        assert store.units[1].getid() == "day_names[1]"
         assert store.units[1].source == "Luns"
-        assert store.units[2].getid() == "day_names->[2]"
+        assert store.units[2].getid() == "day_names[2]"
         assert store.units[2].source == "Martes"
-        assert store.units[3].getid() == "day_names->[3]"
+        assert store.units[3].getid() == "day_names[3]"
         assert store.units[3].source == "Mércores"
-        assert store.units[4].getid() == "day_names->[4]"
+        assert store.units[4].getid() == "day_names[4]"
         assert store.units[4].source == "Xoves"
-        assert store.units[5].getid() == "day_names->[5]"
+        assert store.units[5].getid() == "day_names[5]"
         assert store.units[5].source == "Venres"
-        assert store.units[6].getid() == "day_names->[6]"
+        assert store.units[6].getid() == "day_names[6]"
         assert store.units[6].source == "Sábado"
         assert bytes(store).decode("utf-8") == data
 
@@ -475,3 +475,36 @@ other = "Goodbye!"
         assert store.units[3].getid() == "goodbye"
         assert not store.units[3].hasplural()
         assert store.units[3].source == "Goodbye!"
+
+    def test_letsencrypt_style(self):
+        """Test Let's Encrypt website i18n format (tables with only 'other' key)."""
+        data = """[home_hero_title]
+other = "A nonprofit Certificate Authority"
+
+[home_hero_getting_started]
+other = "Get Started"
+
+[footer_policies]
+other = \"\"\"
+View our <a href="/privacy/">privacy policy</a>.<br>
+View our <a href="/trademarks/">trademark policy</a>.
+\"\"\"
+"""
+        store = self.StoreClass()
+        store.parse(data)
+        assert len(store.units) == 3
+
+        # All should be treated as singulars with IDs without '.other'
+        assert store.units[0].getid() == "home_hero_title"
+        assert not store.units[0].hasplural()
+        assert store.units[0].source == "A nonprofit Certificate Authority"
+
+        assert store.units[1].getid() == "home_hero_getting_started"
+        assert not store.units[1].hasplural()
+        assert store.units[1].source == "Get Started"
+
+        assert store.units[2].getid() == "footer_policies"
+        assert not store.units[2].hasplural()
+        assert (
+            'View our <a href="/privacy/">privacy policy</a>.' in store.units[2].source
+        )

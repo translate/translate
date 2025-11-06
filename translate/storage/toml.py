@@ -37,16 +37,8 @@ if TYPE_CHECKING:
     from io import BytesIO
 
 
-class TOMLUnitId(base.UnitId):
-    """UnitId for TOML format with custom index separator."""
-
-    INDEX_SEPARATOR = "->"
-
-
 class TOMLUnit(base.DictUnit):
     """A TOML entry."""
-
-    IdClass = TOMLUnitId
 
     def __init__(self, source=None, **kwargs):
         # Ensure we have ID (for serialization)
@@ -246,7 +238,9 @@ class GoI18nTOMLUnit(TOMLUnit):
 
     def convert_target(self) -> str | dict[str, str | None]:
         if not isinstance(self.target, multistring):
-            return self.target
+            # For Go i18n format, even singular strings should be in a dict with "other" key
+            # to preserve the table structure
+            return {"other": self.target}
 
         tags = self._store.get_plural_tags()
 
