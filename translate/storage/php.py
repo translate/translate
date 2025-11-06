@@ -535,16 +535,27 @@ class LaravelPHPUnit(phpunit):
             return
 
         # Determine the array syntax to use based on existing structure
-        # Default to short array syntax if this is a new unit
         if self.name.startswith("return[]->"):
             # Preserve short array syntax
             prefix = "return[]->"
         elif self.name.startswith("return->"):
             # Preserve array() syntax
             prefix = "return->"
+        # Check if there are other units in the store to match their syntax
+        elif hasattr(self, "_store") and self._store and self._store.units:
+            for unit in self._store.units:
+                if unit.name.startswith("return[]->"):
+                    prefix = "return[]->"
+                    break
+                if unit.name.startswith("return->"):
+                    prefix = "return->"
+                    break
+            else:
+                # Default to array() syntax to match the rest of the file
+                prefix = "return->"
         else:
-            # Default to short array syntax for new units
-            prefix = "return[]->"
+            # Default to array() syntax for new files
+            prefix = "return->"
 
         # Add quotes if not already present and value is not numeric
         if not (value and value[0] in {"'", '"'}) and not value.isdigit():

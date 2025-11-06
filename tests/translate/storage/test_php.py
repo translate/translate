@@ -1422,6 +1422,7 @@ return array(
         # Check serialization produces valid Laravel PHP structure
         output = bytes(phpfile).decode()
         assert "<?php" in output
-        assert "return [" in output
+        # Accept either array() or [] syntax (default is array())
+        assert "return array(" in output or "return [" in output
         assert "'welcome' => 'Welcome'" in output
         assert "'goodbye' => 'Goodbye'" in output
