@@ -21,7 +21,7 @@ class TestMonolingualUnit(test_base.TestTranslationUnit):
 
 
 class TestMonolingualStore(test_base.TestTranslationStore):
-    StoreClass = base.TranslationStore
+    StoreClass = test_base.JsonTranslationStore
 
     def test_translate(self):
         pass
