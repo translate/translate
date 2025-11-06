@@ -1630,6 +1630,21 @@ class TestRESJSONFile(test_monolingual.TestMonolingualStore):
         assert '"key": "new value"' in result
         assert '"_key.comment": "comment"' in result
 
+    def test_edit_notes(self):
+        jsontext = """{
+    "key": "value",
+    "_key.comment": "original comment",
+    "_key.source": "source text"
+}
+"""
+        store = self.StoreClass()
+        store.parse(jsontext)
+        store.units[0].notes = "modified comment"
+        result = bytes(store).decode()
+        assert '"key": "value"' in result
+        assert '"_key.comment": "modified comment"' in result
+        assert '"_key.source": "source text"' in result
+
     def test_leading_dot_keys(self):
         jsontext = """{
     ".dot": "dot value",

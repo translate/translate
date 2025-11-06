@@ -974,6 +974,13 @@ class RESJSONUnit(FlatJsonUnit):
         self.metadata = metadata or {}
 
     def storevalues(self, output):
+        # Sync notes to metadata
+        if self.notes:
+            self.metadata["comment"] = self.notes
+        elif "comment" in self.metadata and not self.notes:
+            # Remove comment if notes were cleared
+            del self.metadata["comment"]
+
         identifier = self.getid()
         # Store the main value
         self.storevalue(output, self.target, override_key=identifier)
