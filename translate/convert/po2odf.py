@@ -27,12 +27,13 @@ for examples and usage instructions.
 """
 
 from io import BytesIO
+from typing import BinaryIO
 
 from translate.convert import convert, po2xliff, xliff2odf
 from translate.storage import po
 
 
-def convertpo(input_file, output_file, template):
+def convertpo(input_file: BinaryIO, output_file: BinaryIO, template: BinaryIO) -> int:
     """Create a translated ODF using an ODF template and a PO file."""
     # Read the PO file
     inputstore = po.pofile(input_file)
