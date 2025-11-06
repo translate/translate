@@ -33,6 +33,7 @@ Converters
    symb2po
    tbx2po
    tiki2po
+   toml2po
    ts2po
    txt2po
    web2py2po
@@ -85,6 +86,7 @@ understanding that will make the converters much easier to use and understand.
 * :doc:`symb2po <symb2po>` -- Symbian-style translation to PO converter
 * :doc:`tiki2po <tiki2po>` -- `TikiWiki <http://tikiwiki.org/>`_ language.php
   converter
+* :doc:`toml2po <toml2po>` -- TOML converter
 * :doc:`ts2po <ts2po>` -- Qt Linguist .ts converter
 * :doc:`txt2po <txt2po>` -- Plain text to PO converter
 * :doc:`web2py2po` -- web2py translation to PO converter
