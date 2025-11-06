@@ -1762,6 +1762,8 @@ class TestNextcloudJsonFile(test_monolingual.TestMonolingualStore):
 
         assert '"translations": {}' in result
         assert '"pluralForm"' in result
+
+
 JSON_RESJSON = b"""{
     "greeting": "Hello",
     "_greeting.comment": "A welcome greeting.",

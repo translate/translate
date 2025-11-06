@@ -78,7 +78,6 @@ from typing import TYPE_CHECKING, Any, BinaryIO, ClassVar, TextIO, cast
 if TYPE_CHECKING:
     from collections.abc import Generator
 from collections import defaultdict
-from typing import BinaryIO, ClassVar, TextIO, cast
 
 from translate.lang.data import cldr_plural_categories
 from translate.misc.multistring import multistring
@@ -1047,6 +1046,8 @@ class NextcloudJsonFile(JsonFile):
 
         out.write(json.dumps(output, **self.dump_args).encode(self.encoding))
         out.write(b"\n")
+
+
 class RESJSONUnit(FlatJsonUnit):
     """A RESJSON entry with metadata support."""
 
