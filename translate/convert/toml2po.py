@@ -28,7 +28,13 @@ from translate.storage import po, toml
 
 
 class toml2po:
-    """Convert one or two TOML files to a single PO file."""
+    """
+    Convert one or two TOML files to a single PO file.
+
+    Extracts translatable strings from TOML configuration files and creates
+    Gettext PO files for translation. Supports both plain TOML and Go i18n
+    TOML formats with plurals.
+    """
 
     SourceStoreClass = toml.TOMLFile
     TargetStoreClass = po.pofile
@@ -42,7 +48,15 @@ class toml2po:
         blank_msgstr=False,
         duplicate_style="msgctxt",
     ):
-        """Initialize the converter."""
+        """
+        Initialize the converter.
+
+        :param input_file: Input TOML file or translated TOML file
+        :param output_file: Output PO file
+        :param template_file: Optional template TOML file (for merging translations)
+        :param blank_msgstr: If True, create POT file with blank msgstr
+        :param duplicate_style: How to handle duplicates ("msgctxt" or "merge")
+        """
         self.blank_msgstr = blank_msgstr
         self.duplicate_style = duplicate_style
 
@@ -56,7 +70,12 @@ class toml2po:
             self.template_store = self.SourceStoreClass(template_file)
 
     def convert_unit(self, unit):
-        """Convert a source format unit to a target format unit."""
+        """
+        Convert a TOML unit to a PO unit.
+
+        :param unit: Source TOML unit
+        :return: Converted PO unit with location and developer notes
+        """
         target_unit = self.TargetUnitClass(encoding="UTF-8")
         target_unit.setid(unit.getid())
         target_unit.addlocation(unit.getid())
@@ -65,14 +84,23 @@ class toml2po:
         return target_unit
 
     def convert_store(self):
-        """Convert a single source format file to a target format file."""
+        """
+        Convert a single TOML file to PO format.
+
+        Used when only one TOML file is provided (extraction mode).
+        """
         self.extraction_msg = f"extracted from {self.source_store.filename}"
 
         for source_unit in self.source_store.units:
             self.target_store.addunit(self.convert_unit(source_unit))
 
     def merge_stores(self):
-        """Convert two source format files to a target format file."""
+        """
+        Merge template and translated TOML files into PO format.
+
+        Used when both template and translated TOML files are provided.
+        Template provides the structure, source file provides translations.
+        """
         self.extraction_msg = f"extracted from {self.template_store.filename}, {self.source_store.filename}"
 
         self.source_store.makeindex()
@@ -86,7 +114,11 @@ class toml2po:
             self.target_store.addunit(target_unit)
 
     def run(self):
-        """Run the converter."""
+        """
+        Run the conversion process.
+
+        :return: 1 if successful, 0 if target store is empty
+        """
         if self.template_store is None:
             self.convert_store()
         else:
@@ -107,7 +139,16 @@ class toml2po:
 def run_converter(
     input_file, output_file, template_file=None, pot=False, duplicatestyle="msgctxt"
 ):
-    """Wrapper around converter."""
+    """
+    Wrapper around converter for command-line usage.
+
+    :param input_file: Input TOML file
+    :param output_file: Output PO file
+    :param template_file: Optional template TOML file
+    :param pot: If True, create POT file (blank msgstr)
+    :param duplicatestyle: How to handle duplicate strings
+    :return: 1 if successful, 0 if no strings found
+    """
     return toml2po(
         input_file,
         output_file,

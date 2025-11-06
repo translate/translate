@@ -38,9 +38,14 @@ if TYPE_CHECKING:
 
 
 class TOMLUnit(base.DictUnit):
-    """A TOML entry."""
+    """
+    A TOML translation unit.
+
+    Represents a single translatable string extracted from a TOML file.
+    """
 
     def __init__(self, source=None, **kwargs):
+        """Initialize a TOML unit with optional source text."""
         # Ensure we have ID (for serialization)
         if source:
             self.source = source
@@ -50,7 +55,12 @@ class TOMLUnit(base.DictUnit):
         super().__init__(source)
 
     def setid(self, value, unitid=None):
-        """Set the unit ID, stripping leading separator."""
+        """
+        Set the unit ID, stripping leading separator if present.
+
+        :param value: The ID value (string or UnitId object)
+        :param unitid: Optional UnitId object for internal use
+        """
         # Strip leading separator from the string representation
         if isinstance(value, str) and value.startswith(self.IdClass.KEY_SEPARATOR):
             value = value[len(self.IdClass.KEY_SEPARATOR) :]
@@ -59,32 +69,47 @@ class TOMLUnit(base.DictUnit):
 
     @property
     def source(self):
+        """Get the source text (alias for target in monolingual format)."""
         return self.target
 
     @source.setter
     def source(self, source):
+        """Set the source text (alias for target in monolingual format)."""
         self.target = source
 
     def getid(self):
+        """Get the unit identifier."""
         return self._id
 
     def getlocations(self):
+        """Get the location(s) of this unit (returns the ID as a single-element list)."""
         return [self.getid()]
 
     def convert_target(self):
+        """Convert the target value for serialization (returns as-is for plain TOML)."""
         return self.target
 
     def storevalues(self, output: dict[str, Any] | list[Any]) -> None:
+        """Store this unit's value in the output structure."""
         self.storevalue(output, self.convert_target())
 
 
 class TOMLFile(base.DictStore):
-    """A TOML file."""
+    """
+    A TOML localization file.
+
+    Handles plain TOML files with key-value pairs and nested structures.
+    Uses tomlkit library to preserve formatting and comments during roundtrips.
+    """
 
     UnitClass = TOMLUnit
 
     def __init__(self, inputfile=None, **kwargs):
-        """Construct a TOML file, optionally reading in from inputfile."""
+        """
+        Construct a TOML file, optionally reading from inputfile.
+
+        :param inputfile: Optional file path, file object, or string to parse
+        """
         super().__init__(**kwargs)
         self.filename = ""
         self._original = self.get_root_node()
@@ -92,11 +117,15 @@ class TOMLFile(base.DictStore):
             self.parse(inputfile)
 
     def get_root_node(self) -> TOMLDocument:
-        """Returns root node for serialize."""
+        """Return an empty root node for serialization."""
         return document()
 
     def serialize(self, out: BytesIO) -> None:
-        """Serialize the store to file."""
+        """
+        Serialize the store to a file.
+
+        :param out: BytesIO file handle to write to
+        """
         # Always start with valid root even if original file was empty
         if self._original is None:
             self._original = self.get_root_node()
@@ -119,6 +148,10 @@ class TOMLFile(base.DictStore):
         Extract the comment that appears before a key in a TOML table.
 
         TOML comments appear in the body as (None, Comment) tuples.
+
+        :param table: The TOML table/document containing the key
+        :param key: The key name or index
+        :return: Comment text without the '#' prefix, or None if no comment
         """
         if not isinstance(table, (Table, TOMLDocument)):
             return None
@@ -160,7 +193,13 @@ class TOMLFile(base.DictStore):
     def _parse_dict(
         self, data: dict[str, Any], prev: base.UnitId
     ) -> Generator[tuple[base.UnitId, str, str | None], None, None]:
-        """Parse a TOML table/dictionary."""
+        """
+        Parse a TOML table/dictionary recursively.
+
+        :param data: Dictionary data to parse
+        :param prev: Previous UnitId for building the full path
+        :yield: Tuples of (unit_id, string_data, comment)
+        """
         for k, v in data.items():
             yield from self._flatten(v, prev.extend("key", k), parent_map=data, key=k)
 
@@ -172,9 +211,16 @@ class TOMLFile(base.DictStore):
         key: str | int | None = None,
     ) -> Generator[tuple[base.UnitId, str, str | None], None, None]:
         """
-        Flatten TOML structure.
+        Flatten TOML structure recursively into translatable units.
 
-        Yields tuples of (unit_id, data, comment) where comment may be None.
+        Converts nested TOML structures into flat units with hierarchical IDs.
+        Extracts comments associated with keys when available.
+
+        :param data: TOML data to flatten (dict, list, string, or primitive)
+        :param prev: Previous UnitId for building the full path
+        :param parent_map: Parent container (for comment extraction)
+        :param key: Current key or index in parent container
+        :yield: Tuples of (unit_id, data, comment) where comment may be None
         """
         if prev is None:
             prev = self.UnitClass.IdClass([])
@@ -200,7 +246,15 @@ class TOMLFile(base.DictStore):
             )
 
     def parse(self, input: str | bytes | BytesIO) -> None:
-        """Parse the given file or file source string."""
+        """
+        Parse the given file, file object, or string content.
+
+        Extracts translatable units from TOML content and stores them
+        with their associated comments.
+
+        :param input: File path, file object, bytes, or string to parse
+        :raises base.ParseError: If TOML parsing fails
+        """
         if hasattr(input, "name"):
             self.filename = input.name
         elif not getattr(self, "filename", ""):
@@ -224,19 +278,37 @@ class TOMLFile(base.DictStore):
             self.addunit(unit)
 
     def removeunit(self, unit: base.TranslationUnit) -> None:
+        """
+        Remove a unit from the store and its underlying TOML structure.
+
+        :param unit: The unit to remove
+        """
         if self._original is not None:
             unit.storevalue(self._original, None, unset=True)
         super().removeunit(unit)
 
 
 class GoI18nTOMLUnit(TOMLUnit):
-    """A TOML entry for Go i18n format with plural support."""
+    """
+    A TOML entry for Go i18n format with plural support.
+
+    Handles CLDR plural categories (zero, one, two, few, many, other) for
+    pluralized strings used in Go applications and Hugo static sites.
+    """
 
     def hasplural(self) -> bool:
-        """Returns whether this unit contains plural strings."""
+        """Check if this unit contains plural strings (more than one form)."""
         return isinstance(self.target, multistring) and len(self.target.strings) > 1
 
     def convert_target(self) -> str | dict[str, str | None]:
+        """
+        Convert the target value for serialization.
+
+        For Go i18n format, returns a dict with CLDR plural category keys.
+        Singular strings are wrapped in {"other": value} to preserve structure.
+
+        :return: Either a dict with plural keys or a string value
+        """
         if not isinstance(self.target, multistring):
             # For Go i18n format, even singular strings should be in a dict with "other" key
             # to preserve the table structure
@@ -259,12 +331,19 @@ class GoI18nTOMLFile(TOMLFile):
     TOML file for Go i18n format with plural support.
 
     This format uses CLDR plural categories (zero, one, two, few, many, other)
-    as keys for pluralized strings.
+    as keys for pluralized strings. It's commonly used by:
+    - Go applications using the go-i18n library
+    - Hugo static site generators (e.g., Anatole theme)
+    - Let's Encrypt website translations
 
-    Example:
+    Example::
+
         [reading_time]
         one = "One minute to read"
         other = "{{ .Count }} minutes to read"
+
+        [category]
+        other = "category"  # Single "other" key treated as singular
 
     """
 
@@ -273,7 +352,16 @@ class GoI18nTOMLFile(TOMLFile):
     def _parse_dict(
         self, data: dict[str, Any], prev: base.UnitId
     ) -> Generator[tuple[base.UnitId, str | multistring, str | None], None, None]:
-        """Parse a TOML table, checking for plurals."""
+        """
+        Parse a TOML table, checking for plural forms.
+
+        Detects pluralized strings where all keys are CLDR plural categories.
+        Special case: a table with only "other" key is treated as singular.
+
+        :param data: Dictionary data to parse
+        :param prev: Previous UnitId for building the full path
+        :yield: Tuples of (unit_id, string_or_multistring, comment)
+        """
         # Special case: table with only "other" key is treated as singular
         if data and len(data) == 1 and "other" in data:
             yield (prev, data["other"], None)

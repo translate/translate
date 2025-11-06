@@ -28,7 +28,13 @@ from translate.storage import po, toml
 
 
 class po2toml:
-    """Convert a PO file and a template TOML file to a TOML file."""
+    """
+    Convert a PO file and a template TOML file to a TOML file.
+
+    Merges translations from PO files back into TOML format using a template.
+    The template TOML file provides the structure, and the PO file provides
+    the translations.
+    """
 
     SourceStoreClass = po.pofile
     TargetStoreClass = toml.TOMLFile
@@ -43,7 +49,16 @@ class po2toml:
         include_fuzzy=False,
         output_threshold=None,
     ):
-        """Initialize the converter."""
+        """
+        Initialize the converter.
+
+        :param input_file: Input PO file with translations
+        :param output_file: Output TOML file
+        :param template_file: Template TOML file (required)
+        :param include_fuzzy: Whether to include fuzzy translations
+        :param output_threshold: Minimum completion percentage to output
+        :raises ValueError: If template_file is not provided
+        """
         if template_file is None:
             raise ValueError(self.MissingTemplateMessage)
 
@@ -60,7 +75,12 @@ class po2toml:
             self.template_store = self.TargetStoreClass(template_file)
 
     def convert_unit(self, unit):
-        """Convert a source format unit to a target format unit."""
+        """
+        Convert a PO unit to a TOML unit.
+
+        :param unit: Source PO unit
+        :return: Converted TOML unit with translation or source text
+        """
         use_target = unit.istranslated() or (unit.isfuzzy() and self.include_fuzzy)
         target_unit = self.TargetUnitClass(
             source=unit.target if use_target else unit.source,
@@ -71,10 +91,10 @@ class po2toml:
 
     def merge_stores(self):
         """
-        Convert a source file to a target file using a template file.
+        Merge PO translations into TOML format using template.
 
-        Source file is in source format, while target and template files use
-        target format.
+        Iterates through template units and replaces with translations
+        from the PO file where available.
         """
         self.source_store.makeindex()
 
@@ -86,7 +106,11 @@ class po2toml:
                 self.target_store.addunit(self.convert_unit(input_unit))
 
     def run(self):
-        """Run the converter."""
+        """
+        Run the conversion process.
+
+        :return: 1 if successful, 0 if output should be skipped
+        """
         if not self.should_output_store:
             return 0
 
@@ -98,7 +122,16 @@ class po2toml:
 def run_converter(
     inputfile, outputfile, templatefile=None, includefuzzy=False, outputthreshold=None
 ):
-    """Wrapper around converter."""
+    """
+    Wrapper around converter for command-line usage.
+
+    :param inputfile: Input PO file
+    :param outputfile: Output TOML file
+    :param templatefile: Template TOML file (required)
+    :param includefuzzy: Whether to include fuzzy translations
+    :param outputthreshold: Minimum completion percentage
+    :return: 1 if successful, 0 if output skipped
+    """
     return po2toml(
         inputfile, outputfile, templatefile, includefuzzy, outputthreshold
     ).run()
