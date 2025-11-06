@@ -113,7 +113,7 @@ class TOMLFile(base.DictStore):
         out.write(result.encode(self.encoding))
 
     def _get_key_comment(
-        self, table: Table | TOMLDocument | None, key: str
+        self, table: Table | TOMLDocument | None, key: str | int | None
     ) -> str | None:
         """
         Extract the comment that appears before a key in a TOML table.
