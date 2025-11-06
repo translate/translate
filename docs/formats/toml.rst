@@ -82,7 +82,7 @@ Supported Features
 
 * **Nested tables**: Tables and nested tables using dot notation
   (``parent.child.key``)
-* **Arrays**: Lists of strings with index notation (``list->[0]``)
+* **Arrays**: Lists of strings with index notation (``list[0]``)
 * **Comments**: Developer comments are extracted as translator notes
 * **String types**: Basic strings, literal strings (single quotes), and
   multiline strings (triple quotes)
