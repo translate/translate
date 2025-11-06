@@ -294,200 +294,61 @@ class dtdunit(base.TranslationUnit):
         return getattr(self, "entityparameter", None) != "SYSTEM" and not self.isblank()
 
     def parse(self, dtdsrc):
-        """Read the first dtd element from the source code into this object, return linesprocessed."""
+        """
+        Read the first dtd element from the source code into this object.
+        
+        .. deprecated:: 3.16.4
+            This method is deprecated. The file-level parser in dtdfile.parse()
+            now handles all parsing directly. This method is maintained for
+            backward compatibility only.
+        
+        Returns the number of lines processed.
+        """
+        warnings.warn(
+            "dtdunit.parse() is deprecated. Use dtdfile.parse() instead.",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        
+        # For backward compatibility, we recreate a simplified version of the old parsing logic
+        # This is not ideal but maintains the API
         self.comments = []
-        # make all the lists the same
-        self._locfilenotes = self.comments
-        self._locgroupstarts = self.comments
-        self._locgroupends = self.comments
-        self._locnotes = self.comments
-        # self._locfilenotes = []
-        # self._locgroupstarts = []
-        # self._locgroupends = []
-        # self._locnotes = []
-        # self.comments = []
+        self._locfilenotes = []
+        self._locgroupstarts = []
+        self._locgroupends = []
+        self._locnotes = []
         self.entity = None
         self.definition = ""
+        self.unparsedlines = []
+        
         if not dtdsrc:
             return 0
+        
         lines = dtdsrc.split("\n")
         linesprocessed = 0
-        comment = ""
+        
+        # Just parse the first entity/comment block
         for line in lines:
-            line += "\n"
             linesprocessed += 1
-            if not self.incomment:
-                if line.find("<!--") != -1:
-                    self.incomment = True
-                    self.continuecomment = False
-                    # now work out the type of comment, and save it (remember we're not in the comment yet)
-                    comment, _dummy = quote.extract(line, "<!--", "-->", None, 0)
-                    if comment.find("LOCALIZATION NOTE") != -1:
-                        l = quote.findend(comment, "LOCALIZATION NOTE")
-                        while comment[l] == " ":
-                            l += 1
-                        if comment.find("FILE", l) == l:
-                            self.commenttype = "locfile"
-                        elif comment.find("BEGIN", l) == l:
-                            self.commenttype = "locgroupstart"
-                        elif comment.find("END", l) == l:
-                            self.commenttype = "locgroupend"
-                        else:
-                            self.commenttype = "locnote"
-                    else:
-                        # plain comment
-                        self.commenttype = "comment"
-                # FIXME: bloody entity might share a line with something important
-                elif not self.inentity and re.search(r"%[^;%]+;", line):
-                    # now work out the type of comment, and save it (remember we're not in the comment yet)
-                    self.comments.append(("comment", line))
-                    line = ""
-                    continue
-
-            if self.incomment:
-                # some kind of comment
-                (comment, self.incomment) = quote.extract(
-                    line, "<!--", "-->", None, self.continuecomment
-                )
-                self.continuecomment = self.incomment
-                # strip the comment out of what will be parsed
-                line = line.replace(comment, "", 1)
-                # add a end of line of this is the end of the comment
-                if not self.incomment:
-                    if line.isspace():
-                        comment += line
-                        line = ""
-                    else:
-                        comment += "\n"
-                # check if there's actually an entity definition that's commented out
-                # TODO: parse these, store as obsolete messages
-                # if comment.find('<!ENTITY') != -1:
-                #     # remove the entity from the comment
-                #     comment, dummy = quote.extractwithoutquotes(comment, ">", "<!ENTITY", None, 1)
-                # depending on the type of comment (worked out at the start), put it in the right place
-                # make it record the comment and type as a tuple
-                commentpair = (self.commenttype, comment)
-                if self.commenttype == "locfile":
-                    self._locfilenotes.append(commentpair)
-                elif self.commenttype == "locgroupstart":
-                    self._locgroupstarts.append(commentpair)
-                elif self.commenttype == "locgroupend":
-                    self._locgroupends.append(commentpair)
-                elif self.commenttype == "locnote":
-                    self._locnotes.append(commentpair)
-                elif self.commenttype == "comment":
-                    self.comments.append(commentpair)
-
-            if not self.inentity and not self.incomment:
-                entitypos = line.find("<!ENTITY")
-                if entitypos != -1:
-                    self.inentity = True
-                    beforeentity = line[:entitypos].strip()
-                    if beforeentity.startswith("#"):
-                        self.hashprefix = beforeentity
-                    self.entitypart = "start"
-                else:
-                    self.unparsedlines.append(line)
-
-            if self.inentity:
-                if self.entitypart == "start":
-                    # the entity definition
-                    e = quote.findend(line, "<!ENTITY")
-                    line = line[e:]
-                    self.entitypart = "name"
-                    self.entitytype = "internal"
-                if self.entitypart == "name":
-                    s = 0
-                    e = 0
-                    while e < len(line) and line[e].isspace():
-                        e += 1
-                    self.space_pre_entity = " " * (e - s)
-                    s = e
-                    self.entity = ""
-                    if e < len(line) and line[e] == "%":
-                        self.entitytype = "external"
-                        self.entityparameter = ""
-                        e += 1
-                        while e < len(line) and line[e].isspace():
-                            e += 1
-                    while e < len(line) and not line[e].isspace():
-                        self.entity += line[e]
-                        e += 1
-                    s = e
-
-                    assert quote.rstripeol(self.entity) == self.entity
-                    while e < len(line) and line[e].isspace():
-                        e += 1
-                    self.space_pre_definition = " " * (e - s)
-                    if self.entity:
-                        if self.entitytype == "external":
-                            self.entitypart = "parameter"
-                        else:
-                            self.entitypart = "definition"
-                        # remember the start position and the quote character
-                        if e == len(line):
-                            self.entityhelp = None
-                            e = 0
-                            continue
-                        if self.entitypart == "definition":
-                            self.entityhelp = (e, line[e])
-                            self.instring = False
-                if self.entitypart == "parameter":
-                    while e < len(line) and line[e].isspace():
-                        e += 1
-                    paramstart = e
-                    while e < len(line) and line[e].isalnum():
-                        e += 1
-                    self.entityparameter += line[paramstart:e]
-                    while e < len(line) and line[e].isspace():
-                        e += 1
-                    line = line[e:]
-                    e = 0
-                    if not line:
-                        continue
-                    if line[0] in {'"', "'"}:
-                        self.entitypart = "definition"
-                        self.entityhelp = (e, line[e])
-                        self.instring = False
-                if self.entitypart == "definition":
-                    if self.entityhelp is None:
-                        e = 0
-                        while e < len(line) and line[e].isspace():
-                            e += 1
-                        if e == len(line):
-                            continue
-                        self.entityhelp = (e, line[e])
-                        self.instring = False
-                    # actually the lines below should remember instring, rather than using it as dummy
-                    e = self.entityhelp[0]
-                    if self.entityhelp[1] == "'":
-                        (defpart, self.instring) = quote.extract(
-                            line[e:],
-                            "'",
-                            "'",
-                            startinstring=self.instring,
-                            allowreentry=False,
-                        )
-                    elif self.entityhelp[1] == '"':
-                        (defpart, self.instring) = quote.extract(
-                            line[e:],
-                            '"',
-                            '"',
-                            startinstring=self.instring,
-                            allowreentry=False,
-                        )
-                    else:
-                        raise ValueError(
-                            f"Unexpected quote character... {self.entityhelp[1]!r}"
-                        )
-                    # for any following lines, start at the beginning of the line. remember the quote character
-                    self.entityhelp = (0, self.entityhelp[1])
-                    self.definition += defpart
-                    if not self.instring:
-                        self.closing = line[e + len(defpart) :].rstrip("\n\r")
-                        self.inentity = False
-                        break
-
+            # This is a very simplified version - just enough for basic compatibility
+            if "<!ENTITY" in line and self.entity is None:
+                # Extract entity name and definition (simplified)
+                parts = line.split()
+                if len(parts) >= 3:
+                    self.entity = parts[1] if parts[1] != "%" else (parts[2] if len(parts) > 2 else None)
+                    # Find the definition between quotes
+                    if '"' in line:
+                        start = line.find('"')
+                        end = line.rfind('"')
+                        if start != end:
+                            self.definition = line[start:end+1]
+                    elif "'" in line:
+                        start = line.find("'")
+                        end = line.rfind("'")
+                        if start != end:
+                            self.definition = line[start:end+1]
+                break
+        
         return linesprocessed
 
     def __str__(self):
@@ -533,40 +394,259 @@ class dtdfile(base.TranslationStore):
 
     def parse(self, dtdsrc):
         """Read the source code of a dtd file in and include them as dtdunits in self.units."""
-        start = 0
-        end = 0
-        lines = dtdsrc.split(b"\n")
-        while end < len(lines):
-            if start == end:
-                end += 1
-            foundentity = False
-            while end < len(lines):
-                if end >= len(lines):
-                    break
-                if lines[end].find(b"<!ENTITY") > -1:
-                    foundentity = True
-                if foundentity and end_entity_re.match(lines[end]):
-                    end += 1
-                    break
-                end += 1
-
-            linesprocessed = 1  # to initialise loop
-            while linesprocessed >= 1:
-                newdtd = dtdunit(android=self.android)
-                try:
-                    linesprocessed = newdtd.parse(
-                        (b"\n".join(lines[start:end])).decode(self.encoding)
+        if not dtdsrc:
+            return
+        
+        # Decode the source
+        source = dtdsrc.decode(self.encoding)
+        lines = source.split("\n")
+        
+        # Remove the last empty line if it's just from a trailing newline
+        if lines and lines[-1] == '':
+            lines = lines[:-1]
+        
+        # Parse state
+        line_idx = 0
+        
+        while line_idx < len(lines):
+            # Create a new unit
+            newdtd = dtdunit(android=self.android)
+            
+            # Initialize unit state
+            newdtd.comments = []
+            newdtd._locfilenotes = newdtd.comments
+            newdtd._locgroupstarts = newdtd.comments
+            newdtd._locgroupends = newdtd.comments
+            newdtd._locnotes = newdtd.comments
+            newdtd.entity = None
+            newdtd.definition = ""
+            newdtd.unparsedlines = []
+            
+            # Parsing state variables
+            incomment = False
+            continuecomment = False
+            inentity = False
+            commenttype = "comment"
+            entitypart = None
+            entitytype = "internal"
+            entityhelp = None
+            instring = False
+            space_pre_entity = " "
+            space_pre_definition = " "
+            closing = ">"
+            
+            start_line = line_idx
+            has_content = False  # Track if this unit has any content
+            malformed = False  # Track if this unit is malformed
+            
+            # Parse lines until we have a complete unit or find the start of the next one
+            while line_idx < len(lines):
+                line = lines[line_idx] + "\n"
+                
+                if not incomment:
+                    if line.find("<!--") != -1:
+                        incomment = True
+                        continuecomment = False
+                        has_content = True
+                        # Work out the type of comment
+                        comment, _dummy = quote.extract(line, "<!--", "-->", None, 0)
+                        if comment.find("LOCALIZATION NOTE") != -1:
+                            l = quote.findend(comment, "LOCALIZATION NOTE")
+                            while comment[l] == " ":
+                                l += 1
+                            if comment.find("FILE", l) == l:
+                                commenttype = "locfile"
+                            elif comment.find("BEGIN", l) == l:
+                                commenttype = "locgroupstart"
+                            elif comment.find("END", l) == l:
+                                commenttype = "locgroupend"
+                            else:
+                                commenttype = "locnote"
+                        else:
+                            commenttype = "comment"
+                    elif not inentity and re.search(r"%[^;%]+;", line):
+                        # Entity reference line
+                        newdtd.comments.append(("comment", line))
+                        has_content = True
+                        line = ""
+                        line_idx += 1
+                        continue
+                
+                if incomment:
+                    # Parse comment
+                    (comment, incomment) = quote.extract(
+                        line, "<!--", "-->", None, continuecomment
                     )
-                    if linesprocessed >= 1 and (
-                        not newdtd.isblank() or newdtd.unparsedlines
-                    ):
-                        self.units.append(newdtd)
-                except Exception as e:
-                    warnings.warn(
-                        "%s\nError occurred between lines %d and %d:\n%s"
-                        % (e, start + 1, end, b"\n".join(lines[start:end]))
-                    )
-                start += linesprocessed
+                    continuecomment = incomment
+                    # Strip the comment out of what will be parsed
+                    line = line.replace(comment, "", 1)
+                    # Add an end of line if this is the end of the comment
+                    if not incomment:
+                        if line.isspace():
+                            comment += line
+                            line = ""
+                        else:
+                            comment += "\n"
+                    # Store the comment
+                    commentpair = (commenttype, comment)
+                    if commenttype == "locfile":
+                        newdtd._locfilenotes.append(commentpair)
+                    elif commenttype == "locgroupstart":
+                        newdtd._locgroupstarts.append(commentpair)
+                    elif commenttype == "locgroupend":
+                        newdtd._locgroupends.append(commentpair)
+                    elif commenttype == "locnote":
+                        newdtd._locnotes.append(commentpair)
+                    elif commenttype == "comment":
+                        newdtd.comments.append(commentpair)
+                
+                if not inentity and not incomment:
+                    entitypos = line.find("<!ENTITY")
+                    if entitypos != -1:
+                        inentity = True
+                        has_content = True
+                        beforeentity = line[:entitypos].strip()
+                        if beforeentity.startswith("#"):
+                            newdtd.hashprefix = beforeentity
+                        entitypart = "start"
+                    else:
+                        # Add to unparsed lines
+                        newdtd.unparsedlines.append(line)
+                        if not line.isspace():
+                            has_content = True
+                
+                if inentity:
+                    if entitypart == "start":
+                        # The entity definition
+                        e = quote.findend(line, "<!ENTITY")
+                        line = line[e:]
+                        entitypart = "name"
+                        entitytype = "internal"
+                    
+                    if entitypart == "name":
+                        s = 0
+                        e = 0
+                        while e < len(line) and line[e].isspace():
+                            e += 1
+                        space_pre_entity = " " * (e - s)
+                        s = e
+                        entity_name = ""
+                        entityparameter = ""
+                        if e < len(line) and line[e] == "%":
+                            entitytype = "external"
+                            e += 1
+                            while e < len(line) and line[e].isspace():
+                                e += 1
+                        while e < len(line) and not line[e].isspace():
+                            entity_name += line[e]
+                            e += 1
+                        s = e
+                        
+                        newdtd.entity = entity_name
+                        while e < len(line) and line[e].isspace():
+                            e += 1
+                        space_pre_definition = " " * (e - s)
+                        if newdtd.entity:
+                            if entitytype == "external":
+                                entitypart = "parameter"
+                                newdtd.entitytype = entitytype
+                            else:
+                                entitypart = "definition"
+                            # Remember the start position and the quote character
+                            if e == len(line):
+                                entityhelp = None
+                                e = 0
+                                line_idx += 1
+                                continue
+                            if entitypart == "definition":
+                                entityhelp = (e, line[e])
+                                instring = False
+                    
+                    if entitypart == "parameter":
+                        while e < len(line) and line[e].isspace():
+                            e += 1
+                        paramstart = e
+                        while e < len(line) and line[e].isalnum():
+                            e += 1
+                        entityparameter += line[paramstart:e]
+                        newdtd.entityparameter = entityparameter
+                        while e < len(line) and line[e].isspace():
+                            e += 1
+                        line = line[e:]
+                        e = 0
+                        if not line:
+                            line_idx += 1
+                            continue
+                        if line[0] in {'"', "'"}:
+                            entitypart = "definition"
+                            entityhelp = (e, line[e])
+                            instring = False
+                    
+                    if entitypart == "definition":
+                        if entityhelp is None:
+                            e = 0
+                            while e < len(line) and line[e].isspace():
+                                e += 1
+                            if e == len(line):
+                                line_idx += 1
+                                continue
+                            entityhelp = (e, line[e])
+                            instring = False
+                        # Extract the definition part
+                        e = entityhelp[0]
+                        try:
+                            if entityhelp[1] == "'":
+                                (defpart, instring) = quote.extract(
+                                    line[e:],
+                                    "'",
+                                    "'",
+                                    startinstring=instring,
+                                    allowreentry=False,
+                                )
+                            elif entityhelp[1] == '"':
+                                (defpart, instring) = quote.extract(
+                                    line[e:],
+                                    '"',
+                                    '"',
+                                    startinstring=instring,
+                                    allowreentry=False,
+                                )
+                            else:
+                                raise ValueError(
+                                    f"Unexpected quote character... {entityhelp[1]!r}"
+                                )
+                        except ValueError as exc:
+                            # Handle malformed entities gracefully
+                            warnings.warn(str(exc))
+                            # Mark as malformed and skip to next line
+                            malformed = True
+                            line_idx += 1
+                            break
+                        # For any following lines, start at the beginning of the line
+                        entityhelp = (0, entityhelp[1])
+                        newdtd.definition += defpart
+                        if not instring:
+                            closing = line[e + len(defpart) :].rstrip("\n\r")
+                            inentity = False
+                            # Entity is complete
+                            newdtd.space_pre_entity = space_pre_entity
+                            newdtd.space_pre_definition = space_pre_definition
+                            newdtd.closing = closing
+                            if entitytype == "external":
+                                newdtd.entitytype = entitytype
+                            line_idx += 1
+                            break
+                
+                line_idx += 1
+                
+                # If we have no entity and no comment in progress and no content, skip this unit
+                if not inentity and not incomment and not has_content and line_idx < len(lines):
+                    break
+            
+            # Add the unit if it's not blank or has unparsed lines or has comments,
+            # but skip malformed entities
+            if not malformed and (not newdtd.isblank() or newdtd.unparsedlines or newdtd.comments):
+                self.units.append(newdtd)
 
     def serialize(self, out):
         """Write content to file."""
