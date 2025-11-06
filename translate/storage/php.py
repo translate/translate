@@ -517,8 +517,6 @@ class LaravelPHPUnit(phpunit):
             name = name[10:]  # Remove "return[]->"
         elif name.startswith("return->"):
             name = name[8:]  # Remove "return->"
-        else:
-            return name
 
         # Strip surrounding quotes if present
         if len(name) >= 2 and name[0] == name[-1] and name[0] in {"'", '"'}:
