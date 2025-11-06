@@ -527,6 +527,31 @@ class LaravelPHPUnit(phpunit):
         """Return locations without the Laravel return prefix."""
         return [self.getid()]
 
+    def setid(self, value):
+        """Set the key, preserving the Laravel return array structure."""
+        # If value already has a return prefix, use it as is
+        if value.startswith(("return[]->", "return->")):
+            self.name = value
+            return
+
+        # Determine the array syntax to use based on existing structure
+        # Default to short array syntax if this is a new unit
+        if self.name.startswith("return[]->"):
+            # Preserve short array syntax
+            prefix = "return[]->"
+        elif self.name.startswith("return->"):
+            # Preserve array() syntax
+            prefix = "return->"
+        else:
+            # Default to short array syntax for new units
+            prefix = "return[]->"
+
+        # Add quotes if not already present and value is not numeric
+        if not (value and value[0] in {"'", '"'}) and not value.isdigit():
+            value = f"'{value}'"
+
+        self.name = f"{prefix}{value}"
+
 
 class LaravelPHPFile(phpfile):
     UnitClass = LaravelPHPUnit

@@ -1339,3 +1339,89 @@ return [
         assert len(phpfile.units) == 2
         assert phpfile.units[0].getid() == "1"
         assert phpfile.units[1].getid() == "2"
+
+    def test_roundtrip_short_array(self):
+        """Test round trip serialization with short array syntax."""
+        phpsource = r"""<?php
+return [
+    'welcome' => 'Welcome to our application',
+    'apples' => 'There is one apple|There are many apples',
+];
+"""
+        phpfile = self.phpparse(phpsource)
+        assert bytes(phpfile).decode() == phpsource
+
+    def test_roundtrip_array_syntax(self):
+        """Test round trip serialization with array() syntax."""
+        phpsource = r"""<?php
+return array(
+    'welcome' => 'Welcome',
+    'goodbye' => 'Goodbye',
+);
+"""
+        phpfile = self.phpparse(phpsource)
+        assert bytes(phpfile).decode() == phpsource
+
+    def test_setid_preserves_structure(self):
+        """Test that setid() preserves the return array structure."""
+        phpsource = r"""<?php
+return [
+    'welcome' => 'Welcome',
+];
+"""
+        phpfile = self.phpparse(phpsource)
+        unit = phpfile.units[0]
+
+        # Change the key
+        unit.setid("greeting")
+
+        # Check that getid() returns the clean key
+        assert unit.getid() == "greeting"
+
+        # Check that serialization produces valid PHP with return structure
+        output = bytes(phpfile).decode()
+        assert "return [" in output
+        assert "'greeting' => 'Welcome'" in output
+        assert "return[]->" not in output  # Should not leak internal structure
+
+    def test_setid_with_array_syntax(self):
+        """Test that setid() preserves array() syntax."""
+        phpsource = r"""<?php
+return array(
+    'welcome' => 'Welcome',
+);
+"""
+        phpfile = self.phpparse(phpsource)
+        unit = phpfile.units[0]
+
+        # Change the key
+        unit.setid("greeting")
+
+        # Check that getid() returns the clean key
+        assert unit.getid() == "greeting"
+
+        # Check that serialization produces valid PHP with return array() structure
+        output = bytes(phpfile).decode()
+        assert "return array(" in output
+        assert "'greeting' => 'Welcome'" in output
+
+    def test_addunit_with_setid(self):
+        """Test creating new units programmatically with setid()."""
+        phpfile = self.StoreClass()
+
+        unit1 = phpfile.addsourceunit("Welcome")
+        unit1.setid("welcome")
+
+        unit2 = phpfile.addsourceunit("Goodbye")
+        unit2.setid("goodbye")
+
+        # Check IDs
+        assert unit1.getid() == "welcome"
+        assert unit2.getid() == "goodbye"
+
+        # Check serialization produces valid Laravel PHP structure
+        output = bytes(phpfile).decode()
+        assert "<?php" in output
+        assert "return [" in output
+        assert "'welcome' => 'Welcome'" in output
+        assert "'goodbye' => 'Goodbye'" in output
