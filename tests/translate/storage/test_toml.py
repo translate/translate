@@ -314,6 +314,76 @@ key2 = "value2"
         assert store.units[0].getnotes() == ""
         assert store.units[1].getnotes() == ""
 
+    def test_comment_preservation_simple(self):
+        """Test that comments are preserved during roundtrip."""
+        data = """# This is a comment for key1
+key1 = "value1"
+
+# This is a comment for key2
+key2 = "value2"
+"""
+        store = self.StoreClass()
+        store.parse(data)
+        assert len(store.units) == 2
+
+        # Comments should be extracted
+        assert store.units[0].getnotes() == "This is a comment for key1"
+        assert store.units[1].getnotes() == "This is a comment for key2"
+
+        # Roundtrip should preserve comments
+        output = bytes(store).decode("utf-8")
+        assert "# This is a comment for key1" in output
+        assert "# This is a comment for key2" in output
+
+    def test_comment_preservation_multiline(self):
+        """Test that multi-line comments are preserved during roundtrip."""
+        data = """# This is a comment for key1
+# with multiple lines
+# explaining the key
+key1 = "value1"
+"""
+        store = self.StoreClass()
+        store.parse(data)
+        assert len(store.units) == 1
+
+        # Roundtrip should preserve all comment lines
+        output = bytes(store).decode("utf-8")
+        assert "# This is a comment for key1" in output
+        assert "# with multiple lines" in output
+        assert "# explaining the key" in output
+
+    def test_comment_preservation_nested(self):
+        """Test that comments are preserved in nested structures."""
+        data = """# Top-level comment
+[section]
+
+# Comment for nested key
+key = "value"
+"""
+        store = self.StoreClass()
+        store.parse(data)
+        assert len(store.units) == 1
+
+        # Roundtrip should preserve comments
+        output = bytes(store).decode("utf-8")
+        assert "# Top-level comment" in output or "# Comment for nested key" in output
+
+    def test_comment_preservation_with_modification(self):
+        """Test that comments are preserved when values are modified."""
+        data = """# This is a comment
+key1 = "original value"
+"""
+        store = self.StoreClass()
+        store.parse(data)
+
+        # Modify the value
+        store.units[0].target = "modified value"
+
+        # Roundtrip should preserve comment
+        output = bytes(store).decode("utf-8")
+        assert "# This is a comment" in output
+        assert "modified value" in output
+
     def test_literal_string(self):
         """Test TOML literal strings (single quotes)."""
         data = r"""literal_str = 'C:\Users\nodejs\templates'
@@ -508,3 +578,40 @@ View our <a href="/trademarks/">trademark policy</a>.
         assert (
             'View our <a href="/privacy/">privacy policy</a>.' in store.units[2].source
         )
+
+    def test_comment_preservation_goi18n(self):
+        """Test that comments are preserved in Go i18n format."""
+        data = """# See https://github.com/nicksnyder/go-i18n for format documentation
+
+# Welcome message for the home page
+[home_hero_title]
+other = "A nonprofit Certificate Authority"
+
+[home_hero_getting_started]
+other = "Get Started"
+"""
+        store = self.StoreClass()
+        store.parse(data)
+        assert len(store.units) == 2
+
+        # Roundtrip should preserve at least top-level comments
+        output = bytes(store).decode("utf-8")
+        assert "# See https://github.com/nicksnyder/go-i18n" in output
+        # First table's comment should be preserved
+        assert "# Welcome message for the home page" in output
+
+    def test_comment_preservation_goi18n_plural(self):
+        """Test that comments are preserved with plural forms."""
+        data = """# Comment about reading time
+[reading_time]
+one = "One minute to read"
+other = "{{ .Count }} minutes to read"
+"""
+        store = self.StoreClass()
+        store.parse(data)
+        assert len(store.units) == 1
+        assert store.units[0].hasplural()
+
+        # Roundtrip should preserve comments
+        output = bytes(store).decode("utf-8")
+        assert "# Comment about reading time" in output
