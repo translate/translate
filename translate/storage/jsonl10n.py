@@ -73,7 +73,10 @@ from __future__ import annotations
 import json
 import re
 import uuid
-from typing import Any, BinaryIO, ClassVar, TextIO, cast
+from typing import TYPE_CHECKING, Any, BinaryIO, ClassVar, TextIO, cast
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
 
 from translate.lang.data import cldr_plural_categories
 from translate.misc.multistring import multistring
@@ -993,17 +996,17 @@ class NextcloudJsonFile(JsonFile):
         """Construct a Nextcloud JSON file."""
         super().__init__(inputfile, filter, **kwargs)
         # Store top-level elements outside 'translations' for preservation
-        self._metadata = {}
+        self._metadata: dict[str, Any] = {}
 
     def _extract_units(
         self,
-        data,
-        stop=None,
-        prev=None,
-        name_node=None,
-        name_last_node=None,
-        last_node=None,
-    ):
+        data: Any,
+        stop: list[str] | None = None,
+        prev: Any = None,
+        name_node: str | int | None = None,
+        name_last_node: str | int | None = None,
+        last_node: dict | list | None = None,
+    ) -> Generator[NextcloudJsonUnit, None, None]:
         """Extract units from the translations key only."""
         # Store metadata (everything outside 'translations')
         for key, value in data.items():
