@@ -200,7 +200,7 @@ Cross-referencing code:
 
    .. code-block:: python
 
-    def process_unit(unit):
+    def process_unit(unit: TranslationUnit) -> None:
         """Process a translation unit.
 
         This delegates to :func:`validate_unit` and updates the
