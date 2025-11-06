@@ -254,7 +254,9 @@ class CsvRenderer(Renderer):
             "review": "Review Messages",
             "reviewsourcewords": "Review Source Words",
         }
-        self._writer = csv.DictWriter(sys.stdout, self._fields.values())
+        self._writer = csv.DictWriter(
+            sys.stdout, self._fields.values(), lineterminator="\n"
+        )
 
     def header(self):
         self._writer.writeheader()
