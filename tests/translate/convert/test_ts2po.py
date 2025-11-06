@@ -173,6 +173,49 @@ new line</translation>
             == "Com que venim de fora vam pensar que el millor que podíem fer era aprendre la llengua d'aquí i integrar-nos."
         )
 
+    def test_plural(self):
+        """Test the handling of plural forms in TS files."""
+        tssource = """<!DOCTYPE TS><TS language="be">
+<context>
+    <name>ExampleTS</name>
+    <message numerus="yes">
+        <source>%d days ago</source>
+        <translation><numerusform>%d dźeń tamu</numerusform><numerusform>%d dni tamu</numerusform><numerusform>%d dźon tamu</numerusform></translation>
+    </message>
+</context>
+</TS>
+"""
+        pofile = self.ts2po(tssource)
+        assert len(pofile.units) == 2
+        # Check that plural forms are properly extracted
+        assert pofile.units[1].hasplural()
+        assert pofile.units[1].source.strings[0] == "%d days ago"
+        assert pofile.units[1].source.strings[1] == "%d days ago"
+        assert pofile.units[1].target.strings[0] == "%d dźeń tamu"
+        assert pofile.units[1].target.strings[1] == "%d dni tamu"
+        assert pofile.units[1].target.strings[2] == "%d dźon tamu"
+
+    def test_plural_unfinished(self):
+        """Test the handling of unfinished plural forms in TS files."""
+        tssource = """<!DOCTYPE TS><TS language="be">
+<context>
+    <name>TestContext</name>
+    <message numerus="yes">
+        <source>%d items</source>
+        <translation type="unfinished"><numerusform>%d element</numerusform><numerusform>%d elementy</numerusform></translation>
+    </message>
+</context>
+</TS>
+"""
+        pofile = self.ts2po(tssource)
+        assert len(pofile.units) == 2
+        assert pofile.units[1].hasplural()
+        assert pofile.units[1].isfuzzy()
+        assert pofile.units[1].source.strings[0] == "%d items"
+        assert pofile.units[1].source.strings[1] == "%d items"
+        assert pofile.units[1].target.strings[0] == "%d element"
+        assert pofile.units[1].target.strings[1] == "%d elementy"
+
 
 class TestTS2POCommand(test_convert.TestConvertCommand, TestTS2PO):
     """Tests running actual ts2po commands on files."""

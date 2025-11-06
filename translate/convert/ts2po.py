@@ -23,6 +23,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+from translate.misc.multistring import multistring
 from translate.storage import po, ts2
 
 
@@ -40,11 +41,19 @@ class ts2po:
         disambiguation,
         msgcomments,
         transtype,
+        hasplural,
     ):
         """Makes a pounit from the given message."""
         thepo = po.pounit(encoding="UTF-8")
         thepo.addlocation("%s#%d" % (contextname, messagenum))
-        thepo.source = source
+        # Handle plural forms: TS stores only the plural form in source,
+        # but PO needs both singular and plural forms
+        if hasplural and isinstance(source, multistring):
+            # Use the plural form from TS as both singular and plural in PO
+            plural_form = source.strings[0] if source.strings else ""
+            thepo.source = multistring([plural_form, plural_form])
+        else:
+            thepo.source = source
         if not self.pot:
             thepo.target = target
         if len(disambiguation) > 0:
@@ -89,6 +98,7 @@ class ts2po:
                 disambiguation,
                 inputunit.getnotes(),
                 inputunit._gettype(),
+                inputunit.hasplural(),
             )
             thetargetfile.addunit(thepo)
 

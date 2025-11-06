@@ -143,6 +143,41 @@ Linea 3</translation>"""
             in tsfile
         )
 
+    def test_plural(self):
+        """Test that plural forms are correctly converted from PO to TS."""
+        minipo = r'''#: ExamplePO
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] "%d dźeń tamu"
+msgstr[1] "%d dni tamu"
+msgstr[2] "%d dźon tamu"'''
+        tsfile = self.po2ts(minipo)
+        print(tsfile)
+        assert "<name>ExamplePO</name>" in tsfile
+        # The source should use the plural form, not the singular
+        assert "<source>%d days ago</source>" in tsfile
+        assert 'numerus="yes"' in tsfile
+        assert "<numerusform>%d dźeń tamu</numerusform>" in tsfile
+        assert "<numerusform>%d dni tamu</numerusform>" in tsfile
+        assert "<numerusform>%d dźon tamu</numerusform>" in tsfile
+
+    def test_plural_fuzzy(self):
+        """Test that fuzzy plural forms are handled correctly."""
+        minipo = r'''#: FuzzyContext
+#, fuzzy
+msgid "%d item"
+msgid_plural "%d items"
+msgstr[0] "%d punkt"
+msgstr[1] "%d punkty"'''
+        tsfile = self.po2ts(minipo)
+        print(tsfile)
+        assert "<name>FuzzyContext</name>" in tsfile
+        assert "<source>%d items</source>" in tsfile
+        assert 'numerus="yes"' in tsfile
+        assert 'type="unfinished"' in tsfile
+        assert "<numerusform>%d punkt</numerusform>" in tsfile
+        assert "<numerusform>%d punkty</numerusform>" in tsfile
+
 
 class TestPO2TSCommand(test_convert.TestConvertCommand, TestPO2TS):
     """Tests running actual po2ts commands on files."""

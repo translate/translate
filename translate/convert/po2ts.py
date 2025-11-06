@@ -23,6 +23,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+from translate.misc.multistring import multistring
 from translate.storage import po, ts2
 
 
@@ -35,6 +36,9 @@ class po2ts:
             if inputunit.isheader() or inputunit.isblank():
                 continue
             source = inputunit.source
+            # For plural forms, use msgid_plural (index 1) as the TS source
+            if inputunit.hasplural() and isinstance(source, multistring):
+                source = source.strings[1] if len(source.strings) > 1 else source.strings[0]
             translation = inputunit.target
             comment = inputunit.getnotes("translator")
             for sourcelocation in inputunit.getlocations():
