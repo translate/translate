@@ -38,9 +38,11 @@ class po2ts:
             source = inputunit.source
             # For plural forms, use msgid_plural (index 1) as the TS source
             if inputunit.hasplural() and isinstance(source, multistring):
-                source = (
-                    source.strings[1] if len(source.strings) > 1 else source.strings[0]
-                )
+                if len(source.strings) > 1:
+                    source = source.strings[1]
+                elif len(source.strings) == 1:
+                    source = source.strings[0]
+                # If strings is empty, source remains as multistring (will be handled by tsunit)
             translation = inputunit.target
             comment = inputunit.getnotes("translator")
             for sourcelocation in inputunit.getlocations():
