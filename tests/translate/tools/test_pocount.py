@@ -250,7 +250,7 @@ def test_csv_line_terminator(capsys: CaptureFixture[str]):
     assert "\r" not in stdout, "CSV output should not contain carriage returns"
 
     # Verify that lines end with just \n
-    lines = stdout.split('\n')
+    lines = stdout.split("\n")
     # Filter out the last empty line if present
     lines = [line for line in lines if line]
 
