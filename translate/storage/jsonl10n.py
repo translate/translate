@@ -73,7 +73,7 @@ from __future__ import annotations
 import json
 import re
 import uuid
-from typing import BinaryIO, ClassVar, TextIO, cast
+from typing import Any, BinaryIO, ClassVar, TextIO, cast
 
 from translate.lang.data import cldr_plural_categories
 from translate.misc.multistring import multistring
@@ -961,7 +961,7 @@ class NextcloudJsonUnit(FlatJsonUnit):
 
     ID_FORMAT = "{}"
 
-    def converttarget(self):
+    def converttarget(self) -> Any:
         """Convert target to appropriate format for Nextcloud JSON."""
         if isinstance(self.target, multistring):
             # Return as array for plurals
@@ -984,7 +984,12 @@ class NextcloudJsonFile(JsonFile):
 
     UnitClass = NextcloudJsonUnit
 
-    def __init__(self, inputfile=None, filter=None, **kwargs):
+    def __init__(
+        self,
+        inputfile: str | bytes | TextIO | BinaryIO | None = None,
+        filter: Any = None,
+        **kwargs,
+    ):
         """Construct a Nextcloud JSON file."""
         super().__init__(inputfile, filter, **kwargs)
         # Store top-level elements outside 'translations' for preservation
@@ -1022,7 +1027,7 @@ class NextcloudJsonFile(JsonFile):
             unit.setid(key, unitid=self.UnitClass.IdClass.from_key(key))
             yield unit
 
-    def serialize(self, out):
+    def serialize(self, out: BinaryIO) -> None:
         """Serialize to Nextcloud JSON format."""
         # Build translations dictionary
         translations = {}
