@@ -975,7 +975,7 @@ class NextcloudJsonFile(JsonFile):
 
     Nextcloud apps use a JSON format with translations wrapped in a
     "translations" key. Plurals follow gettext conventions with keys like
-    "_%n singular_::_%n plural_" and array values.
+    ``_%n singular_::_%n plural_`` and array values.
 
     See:
     https://docs.nextcloud.com/server/stable/developer_manual/basics/translations.html
