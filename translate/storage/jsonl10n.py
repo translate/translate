@@ -73,6 +73,7 @@ from __future__ import annotations
 import json
 import re
 import uuid
+from collections import defaultdict
 from typing import BinaryIO, ClassVar, TextIO, cast
 
 from translate.lang.data import cldr_plural_categories
@@ -1024,7 +1025,7 @@ class RESJSONFile(JsonFile):
                 actual_keys.add(key)
 
         # Second pass: collect metadata for each actual key, preserving order
-        metadata_keys = {}
+        metadata_keys = defaultdict(dict)
         for metadata_key in metadata_key_list:
             # Try to match this metadata key to an actual key
             # Pattern is _KEY.SUFFIX where KEY can contain dots
@@ -1035,8 +1036,6 @@ class RESJSONFile(JsonFile):
                 potential_base_key, suffix = parts
                 # Check if this matches an actual key
                 if potential_base_key in actual_keys:
-                    if potential_base_key not in metadata_keys:
-                        metadata_keys[potential_base_key] = {}
                     metadata_keys[potential_base_key][suffix] = data[metadata_key]
                     continue
             # If we couldn't match, treat the whole thing as a regular key
