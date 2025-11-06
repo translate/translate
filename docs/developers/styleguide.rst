@@ -190,11 +190,11 @@ Cross-referencing code:
    When talking about other objects, methods, functions and variables,
    cross-reference them using Sphinx's `Python cross-referencing`_ syntax:
 
-   - ``:class:`ClassName``` -- reference a class
-   - ``:func:`function_name``` -- reference a function
-   - ``:meth:`method_name``` -- reference a method
-   - ``:mod:`module_name``` -- reference a module
-   - ``:attr:`attribute_name``` -- reference an attribute
+   - ```:class:`ClassName````` -- reference a class
+   - ```:func:`function_name````` -- reference a function
+   - ```:meth:`method_name````` -- reference a method
+   - ```:mod:`module_name````` -- reference a module
+   - ```:attr:`attribute_name````` -- reference an attribute
 
    Example:
 
@@ -210,9 +210,9 @@ Cross-referencing code:
 Linking to external documentation:
    Use standard reStructuredText syntax for external links in docstrings:
 
-   - Inline links: ```Link text <URL>`_``
+   - Inline links: ````Link text <URL>`_````
    - Reference links: Define once with ``.. _label: URL`` and reference with
-     ``label_``
+     ````label_````
 
 Other directives:
    Use `paragraph-level markup`_ when needed, such as:
