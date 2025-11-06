@@ -1296,3 +1296,46 @@ return [
         assert bytes(phpfile).decode() == phpsource
         phpunit.source = multistring(["There is an apple", "There are many apples"])
         assert bytes(phpfile).decode() == phpsource.replace("one apple", "an apple")
+
+    def test_key_stripping(self):
+        """Test that Laravel PHP files strip the return prefix from keys."""
+        phpsource = r"""<?php
+return [
+    'welcome' => 'Welcome to our application',
+    'apples' => 'There is one apple|There are many apples',
+];
+"""
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 2
+        # Check that getid() returns keys without the return[]-> prefix
+        assert phpfile.units[0].getid() == "welcome"
+        assert phpfile.units[1].getid() == "apples"
+        # Check that getlocations() also returns stripped keys
+        assert phpfile.units[0].getlocations() == ["welcome"]
+        assert phpfile.units[1].getlocations() == ["apples"]
+
+    def test_key_stripping_array_syntax(self):
+        """Test key stripping works with array() syntax."""
+        phpsource = r"""<?php
+return array(
+    'welcome' => 'Welcome',
+    'goodbye' => 'Goodbye',
+);
+"""
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 2
+        assert phpfile.units[0].getid() == "welcome"
+        assert phpfile.units[1].getid() == "goodbye"
+
+    def test_key_stripping_numeric_keys(self):
+        """Test key stripping works with numeric keys."""
+        phpsource = r"""<?php
+return [
+    1 => 'One',
+    2 => 'Two',
+];
+"""
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 2
+        assert phpfile.units[0].getid() == "1"
+        assert phpfile.units[1].getid() == "2"

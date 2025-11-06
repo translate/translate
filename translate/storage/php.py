@@ -509,6 +509,26 @@ class LaravelPHPUnit(phpunit):
             return "|".join(result.strings)
         return result
 
+    def getid(self):
+        """Return the key without the Laravel return prefix."""
+        name = self.name
+        # Strip return[]-> or return-> prefix for Laravel files
+        if name.startswith("return[]->"):
+            name = name[10:]  # Remove "return[]->"
+        elif name.startswith("return->"):
+            name = name[8:]  # Remove "return->"
+        else:
+            return name
+
+        # Strip surrounding quotes if present
+        if len(name) >= 2 and name[0] == name[-1] and name[0] in {"'", '"'}:
+            return name[1:-1]
+        return name
+
+    def getlocations(self):
+        """Return locations without the Laravel return prefix."""
+        return [self.getid()]
+
 
 class LaravelPHPFile(phpfile):
     UnitClass = LaravelPHPUnit
