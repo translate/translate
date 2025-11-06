@@ -1,0 +1,12 @@
+# Uno
+#: location.cpp
+msgid "One"
+msgstr ""
+
+#. No translation found in ./data/test_poswap_intermediate_partial/es.po
+msgid "Two"
+msgstr ""
+
+#. No translation found in ./data/test_poswap_intermediate_partial/es.po
+msgid "Three"
+msgstr ""
