@@ -65,8 +65,8 @@ class AsciiDocUnit(base.TranslationUnit):
 
 
 class AsciiDocHeaderUnit(AsciiDocUnit):
-    @staticmethod
-    def isheader() -> bool:
+    def isheader(self) -> bool:
+        """Return True to indicate this unit represents document header metadata."""
         return True
 
 
@@ -282,7 +282,8 @@ class AsciiDocFile(base.TranslationStore):
     def _try_parse_anchor(self, line: str, i: int) -> bool:
         """Parse anchor [[anchor-id]]."""
         # Match anchor syntax: [[id]] where id contains non-bracket characters
-        # Pattern [^\]]+ efficiently matches the anchor ID without backtracking
+        # Pattern [^\]]+ efficiently matches typical anchor IDs (short identifiers)
+        # without complex backtracking issues
         if not re.match(r"^\[\[[^\]]+\]\]\s*$", line):
             return False
         self._elements.append({"type": "anchor", "content": line})
@@ -401,7 +402,9 @@ class AsciiDocFile(base.TranslationStore):
 
     def _try_parse_description_list(self, line: str, i: int) -> bool:
         """Parse description list (term:: definition)."""
-        # Use [^:\n]* to prevent backtracking on colons
+        # Use [^:\n]* to match non-colon/non-newline characters for the term.
+        # This prevents the term capture from consuming the :: delimiter when
+        # the input contains multiple colons before the actual delimiter.
         desc_list_match = re.match(r"^(\S[^:\n]*)::\s+(\S.*?)$", line)
         if not desc_list_match:
             return False
@@ -527,9 +530,13 @@ class AsciiDocFile(base.TranslationStore):
                     break
 
         # Parse table cells for translation
-        # Note: This is a simple pipe-based split that doesn't handle
-        # escaped pipes or complex AsciiDoc table formats. For more
-        # sophisticated table parsing, consider using an AsciiDoc parser library.
+        # Note: This is a simple pipe-based split that doesn't handle:
+        # - Escaped pipes (e.g., \|)
+        # - CSV/PSV/DSV table formats (comma/colon/delimiter-separated values)
+        # - Cell spanning (colspan/rowspan) with +/. notation
+        # - Formatted table cells (a, e, h, l, m, s, v cell specifiers)
+        # - Complex table features (cols/rows attributes, cell alignment)
+        # For more sophisticated table parsing, consider using an AsciiDoc parser library.
         for table_line in table_lines:
             if table_line.strip() and "|" in table_line:
                 # Extract cells (simple approach)
@@ -559,7 +566,9 @@ class AsciiDocFile(base.TranslationStore):
             # Check if this is a special line that breaks paragraphs
             line_stripped = lines[i].strip()
             # Check for block delimiters (4+ repeated characters)
-            # Include '/' for comment blocks to match _try_parse_block_delimiter
+            # Include '/' for comment blocks (////) to maintain consistency with
+            # _try_parse_block_delimiter. Comment delimiters should properly break
+            # paragraph parsing just like other block delimiters.
             is_delimiter = (
                 len(line_stripped) >= 4
                 and len(set(line_stripped)) == 1

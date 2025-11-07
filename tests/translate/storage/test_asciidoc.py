@@ -158,7 +158,9 @@ Text after.
 
     def test_header_parsing_stops_at_content(self):
         # Test that header parsing correctly identifies content after blank lines
-        # and doesn't include it in the header (addresses commit c9e6aba)
+        # and doesn't include it in the header. This verifies that the parser
+        # stops treating lines as header metadata when encountering content
+        # after blank lines, ensuring proper separation of header from body.
         input = "= Document Title\n:attr: value\n\nThis is content, not author.\n\nMore content.\n"
         store = self.parse(input)
         unit_sources = self.get_translation_unit_sources(store)
@@ -173,8 +175,9 @@ Text after.
         )
 
     def test_header_parsing_author_lines(self):
-        # Test that author lines in first 3 lines are included in header
-        # but content-looking lines after line 3 are not (addresses commit c9e6aba)
+        # Test that author lines in first 3 lines are included in header metadata,
+        # but lines after position 3 are treated as content, not header metadata.
+        # This prevents incorrectly interpreting content paragraphs as document attributes.
         input = (
             "= Document Title\nJohn Doe\nv1.0, 2025-01-01\n\nNormal paragraph here.\n"
         )
