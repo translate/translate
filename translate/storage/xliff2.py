@@ -445,7 +445,7 @@ class xliff2file(lisa.LISAfile):
         """Adds the given unit to the file."""
         if new:
             unit.setid(self._getuniqueid())
-        super().addunit(unit)
+        super().addunit(unit, new=new)
 
     def _getuniqueid(self):
         """Return a unique numeric id for a unit."""
