@@ -210,9 +210,9 @@ Cross-referencing code:
 Linking to external documentation:
    Use standard reStructuredText syntax for external links in docstrings:
 
-   - Inline links: ````Link text <URL>`_````
+   - Inline links: ``Link text <URL>`_``
    - Reference links: Define once with ``.. _label: URL`` and reference with
-     ````label_````
+     ``label_``
 
 Other directives:
    Use `paragraph-level markup`_ when needed, such as:

@@ -85,7 +85,7 @@ properly.
     Fixes #123, closes #456
 
 - Commits to the default branch (or in merged pull requests) will close the
-  referenced issues automatically
+  referenced issues automatically.
 
 .. _developers#source_code_map:
 
