@@ -14,7 +14,7 @@ class TestXLIFF2Unit(test_base.TestTranslationUnit):
         unit = self.unit
         unit.source = "Test source"
         unit.target = "Test target"
-        
+
         assert str(unit.rich_source[0]) == "Test source"
         assert str(unit.rich_target[0]) == "Test target"
 
@@ -23,12 +23,12 @@ class TestXLIFF2Unit(test_base.TestTranslationUnit):
         unit = self.unit
         unit.source = "Test"
         unit.target = "Prueba"
-        
+
         # Check that segment element exists
         segment = unit._get_segment()
         assert segment is not None
         assert segment.tag == unit.namespaced("segment")
-        
+
         # Check that source and target are within segment
         source = unit._get_source_from_segment(segment)
         target = unit._get_target_from_segment(segment)
@@ -39,15 +39,15 @@ class TestXLIFF2Unit(test_base.TestTranslationUnit):
         """Test adding and retrieving notes."""
         unit = self.unit
         unit.source = "Test"
-        
+
         unit.addnote("Test note 1", origin="translator")
         unit.addnote("Test note 2", origin="developer")
-        
+
         # Get all notes
         all_notes = unit.getnotes()
         assert "Test note 1" in all_notes
         assert "Test note 2" in all_notes
-        
+
         # Get notes by origin
         translator_notes = unit.getnotes(origin="translator")
         assert "Test note 1" in translator_notes
@@ -57,7 +57,7 @@ class TestXLIFF2Unit(test_base.TestTranslationUnit):
         """Test unit id management."""
         unit = self.unit
         unit.source = "Test"
-        
+
         unit.setid("unit-1")
         assert unit.getid() == "unit-1"
 
@@ -89,7 +89,7 @@ class TestXLIFF2file(test_base.TestTranslationStore):
         xliff2file = xliff2.xliff2file()
         xliff2file.addsourceunit("Hello")
         xliff2file.units[0].target = "Hola"
-        
+
         newfile = xliff2.xliff2file.parsestring(bytes(xliff2file))
         assert newfile.units[0].source == "Hello"
         assert newfile.units[0].target == "Hola"
@@ -99,10 +99,10 @@ class TestXLIFF2file(test_base.TestTranslationStore):
         xliff2file = xliff2.xliff2file()
         xliff2file.setsourcelanguage("en")
         xliff2file.settargetlanguage("es")
-        
+
         assert xliff2file.getsourcelanguage() == "en"
         assert xliff2file.gettargetlanguage() == "es"
-        
+
         # Verify it persists after serialization
         newfile = xliff2.xliff2file.parsestring(bytes(xliff2file))
         assert newfile.getsourcelanguage() == "en"
@@ -112,9 +112,9 @@ class TestXLIFF2file(test_base.TestTranslationStore):
         """Test that XLIFF 2.0 namespace is correct."""
         xliff2file = xliff2.xliff2file()
         assert xliff2file.namespace == "urn:oasis:names:tc:xliff:document:2.0"
-        
+
         # Check the namespace in the serialized output
-        output = bytes(xliff2file).decode('utf-8')
+        output = bytes(xliff2file).decode("utf-8")
         assert 'xmlns="urn:oasis:names:tc:xliff:document:2.0"' in output
         assert 'version="2.0"' in output or "version='2.0'" in output
 
@@ -123,8 +123,8 @@ class TestXLIFF2file(test_base.TestTranslationStore):
         xliff2file = xliff2.xliff2file()
         xliff2file.addsourceunit("Test string")
         xliff2file.units[0].target = "Cadena de prueba"
-        
-        output = bytes(xliff2file).decode('utf-8')
+
+        output = bytes(xliff2file).decode("utf-8")
         # Should have unit element, not trans-unit
         assert "<unit" in output
         # Should have segment element
@@ -138,12 +138,12 @@ class TestXLIFF2file(test_base.TestTranslationStore):
         xliff2file.addsourceunit("Hello")
         xliff2file.addsourceunit("World")
         xliff2file.addsourceunit("Test")
-        
+
         assert len(xliff2file.units) == 3
         assert xliff2file.units[0].source == "Hello"
         assert xliff2file.units[1].source == "World"
         assert xliff2file.units[2].source == "Test"
-        
+
         # Verify after parsing
         newfile = xliff2.xliff2file.parsestring(bytes(xliff2file))
         assert len(newfile.units) == 3

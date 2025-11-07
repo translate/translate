@@ -30,10 +30,9 @@ from translate.misc.xml_helpers import (
     clear_content,
     getXMLspace,
     safely_set_text,
-    setXMLlang,
     setXMLspace,
 )
-from translate.storage import base, lisa
+from translate.storage import lisa
 from translate.storage.placeables.lisa import strelem_to_xml, xml_to_strelem
 from translate.storage.workflow import StateEnum as state
 
@@ -164,10 +163,18 @@ class xliff2unit(lisa.LISAunit):
         """Get the rich source content."""
         segment = self._get_segment()
         if segment is None:
-            return [xml_to_strelem("", getXMLspace(self.xmlelement, self._default_xml_space))]
+            return [
+                xml_to_strelem(
+                    "", getXMLspace(self.xmlelement, self._default_xml_space)
+                )
+            ]
         source_node = self._get_source_from_segment(segment)
         if source_node is None:
-            return [xml_to_strelem("", getXMLspace(self.xmlelement, self._default_xml_space))]
+            return [
+                xml_to_strelem(
+                    "", getXMLspace(self.xmlelement, self._default_xml_space)
+                )
+            ]
         return [
             xml_to_strelem(
                 source_node, getXMLspace(self.xmlelement, self._default_xml_space)
@@ -182,7 +189,7 @@ class xliff2unit(lisa.LISAunit):
         """Set the rich target content."""
         self._rich_target = None
         segment = self._get_or_create_segment()
-        
+
         if value is None:
             languageNode = self.createlanguageNode(lang, "", "target")
             # Insert target after source
@@ -214,11 +221,19 @@ class xliff2unit(lisa.LISAunit):
         if self._rich_target is None:
             segment = self._get_segment()
             if segment is None:
-                self._rich_target = [xml_to_strelem("", getXMLspace(self.xmlelement, self._default_xml_space))]
+                self._rich_target = [
+                    xml_to_strelem(
+                        "", getXMLspace(self.xmlelement, self._default_xml_space)
+                    )
+                ]
             else:
                 target_node = self._get_target_from_segment(segment)
                 if target_node is None:
-                    self._rich_target = [xml_to_strelem("", getXMLspace(self.xmlelement, self._default_xml_space))]
+                    self._rich_target = [
+                        xml_to_strelem(
+                            "", getXMLspace(self.xmlelement, self._default_xml_space)
+                        )
+                    ]
                 else:
                     self._rich_target = [
                         xml_to_strelem(
@@ -276,8 +291,10 @@ class xliff2unit(lisa.LISAunit):
         # In XLIFF 2.0, notes are added at the unit level in a notes container
         notes_container = self.xmlelement.find(self.namespaced("notes"))
         if notes_container is None:
-            notes_container = etree.SubElement(self.xmlelement, self.namespaced("notes"))
-        
+            notes_container = etree.SubElement(
+                self.xmlelement, self.namespaced("notes")
+            )
+
         note_elem = etree.SubElement(notes_container, self.namespaced("note"))
         note_elem.text = text
         if origin:
@@ -307,7 +324,10 @@ class xliff2unit(lisa.LISAunit):
                     if note.get("category") == origin:
                         notes_container.remove(note)
                 # If notes container is now empty, remove it
-                if len(list(notes_container.iterchildren(self.namespaced("note")))) == 0:
+                if (
+                    len(list(notes_container.iterchildren(self.namespaced("note"))))
+                    == 0
+                ):
                     self.xmlelement.remove(notes_container)
 
     def getid(self):
@@ -337,7 +357,7 @@ class xliff2unit(lisa.LISAunit):
     def merge(self, otherunit, overwrite=False, comments=True, authoritative=False):
         """Merge another unit into this one."""
         super().merge(otherunit, overwrite, comments)
-        if self.target and hasattr(otherunit, 'source'):
+        if self.target and hasattr(otherunit, "source"):
             # Set state to translated
             segment = self._get_segment()
             if segment is not None:
@@ -376,7 +396,7 @@ class xliff2file(lisa.LISAfile):
     def initbody(self):
         """Initialize the file body."""
         self.namespace = self.document.getroot().nsmap.get(None, self.namespace)
-        
+
         # Get the file node
         if self._filename:
             filenode = self.getfilenode(self._filename, createifmissing=True)
@@ -451,12 +471,14 @@ class xliff2file(lisa.LISAfile):
         """Return a unique numeric id for a unit."""
         max_id = 0
         for unit in self.units:
+            if not hasattr(unit, "getid"):
+                continue
             try:
                 unit_id = unit.getid()
-                if unit_id and unit_id.isdigit():
-                    max_id = max(max_id, int(unit_id))
             except (ValueError, AttributeError):
                 continue
+            if unit_id and unit_id.isdigit():
+                max_id = max(max_id, int(unit_id))
         return str(max_id + 1)
 
     def getsourcelanguage(self):
