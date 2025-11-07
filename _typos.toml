@@ -1,0 +1,10 @@
+# Configuration for typos spell checker
+# See: https://github.com/crate-ci/typos
+
+[default.extend-words]
+# Belarusian translations in test files
+"dźeń" = "dźeń"      # Belarusian: day
+"dźon" = "dźon"      # Belarusian: days (genitive)
+dni = "dni"           # Belarusian: days
+tamu = "tamu"         # Belarusian: ago
+elementy = "elementy" # Polish/Belarusian: elements
