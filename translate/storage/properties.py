@@ -1211,17 +1211,18 @@ class xwikifile(propfile):
         units_to_remove = []
 
         for i, unit in enumerate(self.units):
-            # Initialize marker tracking attributes for all units
-            # While most units won't have markers, initializing these is faster than
-            # repeatedly checking hasattr during serialization
-            unit._comments_before_start = []
-            unit._comments_after_start = []
-            unit._comments_before_end = []
-            unit._comments_after_end = []
-            unit._has_deprecatedstart = False
-            unit._has_deprecatedend = False
+            # Only process units that might have markers
+            if unit.comments and any(
+                "#@deprecated" in comment for comment in unit.comments
+            ):
+                # Initialize marker tracking attributes only for units with potential markers
+                unit._comments_before_start = []
+                unit._comments_after_start = []
+                unit._comments_before_end = []
+                unit._comments_after_end = []
+                unit._has_deprecatedstart = False
+                unit._has_deprecatedend = False
 
-            if unit.comments:
                 # Split comments at marker positions
                 current_list = unit._comments_before_start
 
@@ -1242,18 +1243,18 @@ class xwikifile(propfile):
                         # Add comment to current list
                         current_list.append(comment)
 
-                # Set the unit's comments to the appropriate section
+                # Set the unit's comments to the appropriate section (using copy to avoid aliasing)
                 if unit._has_deprecatedstart:
                     # Comments before start marker stay with the unit (non-deprecated)
                     # Comments after start marker will be output inside deprecated block
-                    unit.comments = unit._comments_before_start
+                    unit.comments = unit._comments_before_start.copy()
                 elif unit._has_deprecatedend:
                     # Comments before end marker are deprecated
                     # Comments after end marker are not
-                    unit.comments = unit._comments_before_end
+                    unit.comments = unit._comments_before_end.copy()
                 else:
                     # No markers, keep all comments
-                    unit.comments = unit._comments_before_start
+                    unit.comments = unit._comments_before_start.copy()
 
                 # If the unit has no meaningful comments left and is not translatable, mark for removal
                 if not unit.istranslatable():
@@ -1265,12 +1266,16 @@ class xwikifile(propfile):
                         and not unit._has_deprecatedend
                     ):
                         units_to_remove.append(i)
+            else:
+                # No markers in this unit, set default values for serialization
+                unit._has_deprecatedstart = False
+                unit._has_deprecatedend = False
 
             # Mark unit as deprecated
-            if unit._has_deprecatedstart:
+            if getattr(unit, "_has_deprecatedstart", False):
                 # Translatable content comes after the marker, so it's deprecated
                 unit.deprecated = True
-            elif unit._has_deprecatedend:
+            elif getattr(unit, "_has_deprecatedend", False):
                 # The deprecation depends on whether the unit has translatable content:
                 # - Translatable units have their content AFTER the end marker (not deprecated)
                 # - Non-translatable units are just comments/marker inside the block (deprecated)
@@ -1285,8 +1290,9 @@ class xwikifile(propfile):
     def _output_comments(self, comments):
         """Helper to output comments, handling empty comments as blank lines."""
         for comment in comments:
+            # Ensure all comments end with newline
             if comment:
-                yield comment + "\n" if not comment.endswith("\n") else comment
+                yield comment if comment.endswith("\n") else comment + "\n"
             else:
                 yield "\n"
 
@@ -1329,7 +1335,8 @@ class xwikifile(propfile):
                         hasattr(unit, "_comments_after_start")
                         and unit._comments_after_start
                     ):
-                        comments_to_output = unit._comments_after_start
+                        # Create a copy to avoid modifying the unit's internal state
+                        comments_to_output = list(unit._comments_after_start)
                         # If first comment is empty, it's the blank line after marker we already output
                         if comments_to_output and not comments_to_output[0]:
                             comments_to_output = comments_to_output[1:]
