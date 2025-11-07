@@ -1195,6 +1195,8 @@ class xwikifile(propfile):
     UnitClass = xwikiunit
 
     def __init__(self, *args, **kwargs):
+        # Initialize before super().__init__() to prevent flag reset during parsing
+        self._has_deprecated_block = False  # Track if file has deprecated blocks
         kwargs["personality"] = "xwiki"
         kwargs["encoding"] = "iso-8859-1"
         super().__init__(*args, **kwargs)
@@ -1204,42 +1206,106 @@ class xwikifile(propfile):
         # Use the standard parsing
         super().parse(propsrc)
 
-        # Post-process to mark deprecated units and remove/filter marker comments
+        # Process units to handle deprecated markers and split comments
         in_deprecated_block = False
         units_to_remove = []
 
         for i, unit in enumerate(self.units):
-            # Check if this unit has comments
-            if unit.comments:
-                # Filter out deprecated markers from comments
-                filtered_comments = []
+            # Only process units that might have markers
+            if unit.comments and any(
+                "#@deprecated" in comment for comment in unit.comments
+            ):
+                # Initialize marker tracking attributes only for units with potential markers
+                unit._comments_before_start = []
+                unit._comments_after_start = []
+                unit._comments_before_end = []
+                unit._comments_after_end = []
+                unit._has_deprecatedstart = False
+                unit._has_deprecatedend = False
+
+                # Split comments at marker positions
+                current_list = unit._comments_before_start
+
                 for comment in unit.comments:
                     stripped = comment.strip()
                     if stripped == "#@deprecatedstart":
+                        unit._has_deprecatedstart = True
+                        self._has_deprecated_block = True
                         in_deprecated_block = True
+                        # Switch to after-start comments
+                        current_list = unit._comments_after_start
                     elif stripped == "#@deprecatedend":
+                        unit._has_deprecatedend = True
                         in_deprecated_block = False
+                        # Switch to after-end comments
+                        current_list = unit._comments_after_end
                     else:
-                        # Keep comments that are not deprecated markers
-                        filtered_comments.append(comment)
+                        # Add comment to current list
+                        current_list.append(comment)
 
-                # Update the unit's comments
-                unit.comments = filtered_comments
+                # Set the unit's comments to the appropriate section (using copy to avoid aliasing)
+                if unit._has_deprecatedstart:
+                    # Comments before start marker stay with the unit (non-deprecated)
+                    # Comments after start marker will be output inside deprecated block
+                    unit.comments = unit._comments_before_start.copy()
+                elif unit._has_deprecatedend:
+                    # Comments before end marker are deprecated
+                    # Comments after end marker are not
+                    unit.comments = unit._comments_before_end.copy()
+                else:
+                    # No markers, keep all comments
+                    unit.comments = unit._comments_before_start.copy()
 
                 # If the unit has no meaningful comments left and is not translatable, mark for removal
                 if not unit.istranslatable():
                     # Check if there are any non-empty comments
-                    has_content = any(c.strip() for c in filtered_comments)
-                    if not has_content:
+                    has_content = any(c.strip() for c in unit.comments)
+                    if (
+                        not has_content
+                        and not unit._has_deprecatedstart
+                        and not unit._has_deprecatedend
+                    ):
                         units_to_remove.append(i)
+            else:
+                # No markers in this unit, set default values for serialization
+                unit._has_deprecatedstart = False
+                unit._has_deprecatedend = False
 
-            # Mark translatable units as deprecated if in deprecated block
-            if unit.istranslatable():
+            # Mark unit as deprecated
+            if getattr(unit, "_has_deprecatedstart", False):
+                # Translatable content comes after the marker, so it's deprecated
+                unit.deprecated = True
+            elif getattr(unit, "_has_deprecatedend", False):
+                # The deprecation depends on whether the unit has translatable content:
+                # - Translatable units have their content AFTER the end marker (not deprecated)
+                # - Non-translatable units are just comments/marker inside the block (deprecated)
+                unit.deprecated = not unit.istranslatable()
+            else:
                 unit.deprecated = in_deprecated_block
 
         # Remove empty comment-only units
         for i in reversed(units_to_remove):
             del self.units[i]
+
+    def _output_comments(self, comments):
+        """Helper to output comments, handling empty comments as blank lines."""
+        for comment in comments:
+            # Ensure all comments end with newline
+            if comment:
+                yield comment if comment.endswith("\n") else comment + "\n"
+            else:
+                yield "\n"
+
+    def _output_unit_content(self, unit):
+        """Helper to output translatable content of a unit."""
+        if unit.istranslatable():
+            source = unit.personality.encode(unit.source, unit.encoding)
+            target = unit.personality.encode(unit.target, unit.encoding)
+            translation = target or source
+            if unit.missing:
+                yield f"### Missing: {unit.name}={translation}\n"
+            else:
+                yield f"{unit.name}={translation}\n"
 
     def _build_deprecated_block_content(self):
         """
@@ -1247,34 +1313,96 @@ class xwikifile(propfile):
 
         Returns a generator of strings to be written to output.
         """
-        # Separate deprecated and non-deprecated units
-        non_deprecated = []
-        deprecated = []
+        # If the file originally had deprecated blocks with markers in specific positions,
+        # preserve that structure
+        if self._has_deprecated_block:
+            # Output units in order, inserting markers where they were
+            for unit in self.units:
+                # Handle units with #@deprecatedstart
+                if getattr(unit, "_has_deprecatedstart", False):
+                    # Output comments before the marker
+                    if unit.comments:
+                        yield from self._output_comments(unit.comments)
 
-        for unit in self.units:
-            if getattr(unit, "deprecated", False) and unit.istranslatable():
-                deprecated.append(unit)
-            else:
-                non_deprecated.append(unit)
+                    # Insert #@deprecatedstart
+                    yield "#@deprecatedstart\n"
+                    yield "\n"
 
-        # Yield non-deprecated units first
-        for unit in non_deprecated:
-            yield unit.getoutput()
+                    # Output comments that were after the start marker
+                    # The base parser attaches the blank line after #@deprecatedstart as an empty comment.
+                    # We already output that blank line above, so skip it to avoid duplication.
+                    if (
+                        hasattr(unit, "_comments_after_start")
+                        and unit._comments_after_start
+                    ):
+                        # Create a copy to avoid modifying the unit's internal state
+                        comments_to_output = list(unit._comments_after_start)
+                        # If first comment is empty, it's the blank line after marker we already output
+                        if comments_to_output and not comments_to_output[0]:
+                            comments_to_output = comments_to_output[1:]
 
-        # If there are deprecated units, output them in a deprecated block
-        if deprecated:
-            # Add separator if needed
-            if non_deprecated and not non_deprecated[-1].getoutput().endswith("\n\n"):
-                yield "\n"
+                        yield from self._output_comments(comments_to_output)
 
-            yield "#@deprecatedstart\n"
-            yield "\n"
+                    # Output the translatable content (if any)
+                    yield from self._output_unit_content(unit)
 
-            for unit in deprecated:
+                # Handle units with #@deprecatedend
+                elif getattr(unit, "_has_deprecatedend", False):
+                    # Output comments before end marker
+                    if unit.comments:
+                        yield from self._output_comments(unit.comments)
+
+                    # Insert #@deprecatedend (no blank line before it)
+                    yield "#@deprecatedend\n"
+
+                    # Output comments after end marker (if any)
+                    # Don't output trailing empty comments
+                    if (
+                        hasattr(unit, "_comments_after_end")
+                        and unit._comments_after_end
+                    ):
+                        non_empty_comments = [c for c in unit._comments_after_end if c]
+                        yield from self._output_comments(non_empty_comments)
+
+                    # Output the translatable content (if any) - it comes after the end marker
+                    yield from self._output_unit_content(unit)
+
+                # Regular unit
+                else:
+                    # unit.comments already contains the right comments
+                    yield unit.getoutput()
+        else:
+            # No original deprecated blocks, so create one if needed
+            # Separate deprecated and non-deprecated units
+            non_deprecated = []
+            deprecated = []
+
+            for unit in self.units:
+                if getattr(unit, "deprecated", False):
+                    deprecated.append(unit)
+                else:
+                    non_deprecated.append(unit)
+
+            # Yield non-deprecated units first
+            for unit in non_deprecated:
                 yield unit.getoutput()
 
-            yield "\n"
-            yield "#@deprecatedend\n"
+            # If there are deprecated units, output them in a deprecated block
+            if deprecated:
+                # Add separator if needed
+                if non_deprecated and not non_deprecated[-1].getoutput().endswith(
+                    "\n\n"
+                ):
+                    yield "\n"
+
+                yield "#@deprecatedstart\n"
+                yield "\n"
+
+                for unit in deprecated:
+                    yield unit.getoutput()
+
+                yield "\n"
+                yield "#@deprecatedend\n"
 
     def serialize(self, out):
         """Write the units back to file, grouping deprecated units in blocks."""
@@ -1393,6 +1521,7 @@ class XWikiPageProperties(xwikifile):
     """
 
     def __init__(self, *args, **kwargs):
+        self._has_deprecated_block = False  # Initialize before super call
         kwargs["personality"] = "xwiki"
         kwargs["encoding"] = "utf-8"
         self.root = None
