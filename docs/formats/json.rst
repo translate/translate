@@ -40,3 +40,4 @@ Following JSON dialects are supported
 * `gotext <https://pkg.go.dev/golang.org/x/text/cmd/gotext>`_
 * `ARB <https://github.com/google/app-resource-bundle/wiki/ApplicationResourceBundleSpecification>`_
 * `FormatJS <https://formatjs.io/docs/getting-started/message-extraction/>`_
+* `RESJSON <https://docs.rws.com/en-US/sdl-passolo-help-785448/add-in-for-javascript-object-notation-json-file-format-types-410873>`_ (JavaScript Resource File)
