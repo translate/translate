@@ -113,7 +113,7 @@ subtitles = [
   "aeidon>=1.14.1,<1.16"
 ]
 tmserver = [
-  "cheroot==10.0.1"
+  "cheroot==11.1.2"
 ]
 toml = [
   "tomlkit>=0.13.0,<0.14.0"
