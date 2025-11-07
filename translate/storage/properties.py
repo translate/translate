@@ -1195,10 +1195,10 @@ class xwikifile(propfile):
     UnitClass = xwikiunit
 
     def __init__(self, *args, **kwargs):
+        self._has_deprecated_block = False  # Track if file has deprecated blocks (must be before super().__init__)
         kwargs["personality"] = "xwiki"
         kwargs["encoding"] = "iso-8859-1"
         super().__init__(*args, **kwargs)
-        self._has_deprecated_block = False  # Track if file has deprecated blocks
 
     def parse(self, propsrc: bytes | str) -> None:
         """Parse XWiki properties and track deprecated blocks."""
@@ -1349,6 +1349,16 @@ class xwikifile(propfile):
                         for comment in unit._comments_after_end:
                             if comment:  # Only output non-empty comments
                                 yield comment + "\n" if not comment.endswith("\n") else comment
+                    
+                    # Output the translatable content (if any) - it comes after the end marker
+                    if unit.istranslatable():
+                        source = unit.personality.encode(unit.source, unit.encoding)
+                        target = unit.personality.encode(unit.target, unit.encoding)
+                        translation = target or source
+                        if unit.missing:
+                            yield f"### Missing: {unit.name}={translation}\n"
+                        else:
+                            yield f"{unit.name}={translation}\n"
                 
                 # Regular unit
                 else:
