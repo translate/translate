@@ -334,6 +334,33 @@ class dtdfile(base.TranslationStore):
             dtdsrc = inputfile.read()
             self.parse(dtdsrc)
 
+    def _determine_comment_type(self, comment):
+        """Determine the type of a DTD comment."""
+        if comment.find("LOCALIZATION NOTE") != -1:
+            l = quote.findend(comment, "LOCALIZATION NOTE")
+            while comment[l] == " ":
+                l += 1
+            if comment.find("FILE", l) == l:
+                return "locfile"
+            if comment.find("BEGIN", l) == l:
+                return "locgroupstart"
+            if comment.find("END", l) == l:
+                return "locgroupend"
+            return "locnote"
+        return "comment"
+
+    def _store_comment(self, unit, commenttype, comment):
+        """Store a comment in the appropriate list on the unit."""
+        commentpair = (commenttype, comment)
+        comment_targets = {
+            "locfile": unit._locfilenotes,
+            "locgroupstart": unit._locgroupstarts,
+            "locgroupend": unit._locgroupends,
+            "locnote": unit._locnotes,
+            "comment": unit.comments,
+        }
+        comment_targets.get(commenttype, unit.comments).append(commentpair)
+
     def parse(self, dtdsrc):
         """Read the source code of a dtd file in and include them as dtdunits in self.units."""
         if not dtdsrc:
@@ -390,20 +417,7 @@ class dtdfile(base.TranslationStore):
                         has_content = True
                         # Work out the type of comment
                         comment, _dummy = quote.extract(line, "<!--", "-->", None, 0)
-                        if comment.find("LOCALIZATION NOTE") != -1:
-                            l = quote.findend(comment, "LOCALIZATION NOTE")
-                            while comment[l] == " ":
-                                l += 1
-                            if comment.find("FILE", l) == l:
-                                commenttype = "locfile"
-                            elif comment.find("BEGIN", l) == l:
-                                commenttype = "locgroupstart"
-                            elif comment.find("END", l) == l:
-                                commenttype = "locgroupend"
-                            else:
-                                commenttype = "locnote"
-                        else:
-                            commenttype = "comment"
+                        commenttype = self._determine_comment_type(comment)
                     elif not inentity and re.search(r"%[^;%]+;", line):
                         # Entity reference line
                         newdtd.comments.append(("comment", line))
@@ -428,17 +442,7 @@ class dtdfile(base.TranslationStore):
                         else:
                             comment += "\n"
                     # Store the comment
-                    commentpair = (commenttype, comment)
-                    comment_targets = {
-                        "locfile": newdtd._locfilenotes,
-                        "locgroupstart": newdtd._locgroupstarts,
-                        "locgroupend": newdtd._locgroupends,
-                        "locnote": newdtd._locnotes,
-                        "comment": newdtd.comments,
-                    }
-                    comment_targets.get(commenttype, newdtd.comments).append(
-                        commentpair
-                    )
+                    self._store_comment(newdtd, commenttype, comment)
 
                 if not inentity and not incomment:
                     entitypos = line.find("<!ENTITY")
