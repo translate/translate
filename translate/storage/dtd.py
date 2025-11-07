@@ -293,64 +293,6 @@ class dtdunit(base.TranslationUnit):
     def istranslatable(self):
         return getattr(self, "entityparameter", None) != "SYSTEM" and not self.isblank()
 
-    def parse(self, dtdsrc):
-        """
-        Read the first dtd element from the source code into this object.
-
-        .. deprecated:: 3.16.4
-            This method is deprecated. The file-level parser in dtdfile.parse()
-            now handles all parsing directly. This method is maintained for
-            backward compatibility only.
-
-        Returns the number of lines processed.
-        """
-        warnings.warn(
-            "dtdunit.parse() is deprecated. Use dtdfile.parse() instead.",
-            DeprecationWarning,
-            stacklevel=2
-        )
-
-        # For backward compatibility, we recreate a simplified version of the old parsing logic
-        # This is not ideal but maintains the API
-        self.comments = []
-        self._locfilenotes = []
-        self._locgroupstarts = []
-        self._locgroupends = []
-        self._locnotes = []
-        self.entity = None
-        self.definition = ""
-        self.unparsedlines = []
-
-        if not dtdsrc:
-            return 0
-
-        lines = dtdsrc.split("\n")
-        linesprocessed = 0
-
-        # Just parse the first entity/comment block
-        for line in lines:
-            linesprocessed += 1
-            # This is a very simplified version - just enough for basic compatibility
-            if "<!ENTITY" in line and self.entity is None:
-                # Extract entity name and definition (simplified)
-                parts = line.split()
-                if len(parts) >= 3:
-                    self.entity = parts[1] if parts[1] != "%" else (parts[2] if len(parts) > 2 else None)
-                    # Find the definition between quotes
-                    if '"' in line:
-                        start = line.find('"')
-                        end = line.rfind('"')
-                        if start != end:
-                            self.definition = line[start:end + 1]
-                    elif "'" in line:
-                        start = line.find("'")
-                        end = line.rfind("'")
-                        if start != end:
-                            self.definition = line[start:end + 1]
-                break
-
-        return linesprocessed
-
     def __str__(self):
         """Convert to a string."""
         return self.getoutput()
@@ -487,16 +429,16 @@ class dtdfile(base.TranslationStore):
                             comment += "\n"
                     # Store the comment
                     commentpair = (commenttype, comment)
-                    if commenttype == "locfile":
-                        newdtd._locfilenotes.append(commentpair)
-                    elif commenttype == "locgroupstart":
-                        newdtd._locgroupstarts.append(commentpair)
-                    elif commenttype == "locgroupend":
-                        newdtd._locgroupends.append(commentpair)
-                    elif commenttype == "locnote":
-                        newdtd._locnotes.append(commentpair)
-                    elif commenttype == "comment":
-                        newdtd.comments.append(commentpair)
+                    comment_targets = {
+                        "locfile": newdtd._locfilenotes,
+                        "locgroupstart": newdtd._locgroupstarts,
+                        "locgroupend": newdtd._locgroupends,
+                        "locnote": newdtd._locnotes,
+                        "comment": newdtd.comments,
+                    }
+                    comment_targets.get(commenttype, newdtd.comments).append(
+                        commentpair
+                    )
 
                 if not inentity and not incomment:
                     entitypos = line.find("<!ENTITY")
@@ -637,12 +579,19 @@ class dtdfile(base.TranslationStore):
                 line_idx += 1
 
                 # If we have no entity and no comment in progress and no content, skip this unit
-                if not inentity and not incomment and not has_content and line_idx < len(lines):
+                if (
+                    not inentity
+                    and not incomment
+                    and not has_content
+                    and line_idx < len(lines)
+                ):
                     break
 
             # Add the unit if it's not blank or has unparsed lines or has comments,
             # but skip malformed entities
-            if not malformed and (not newdtd.isblank() or newdtd.unparsedlines or newdtd.comments):
+            if not malformed and (
+                not newdtd.isblank() or newdtd.unparsedlines or newdtd.comments
+            ):
                 self.units.append(newdtd)
 
     def serialize(self, out):
