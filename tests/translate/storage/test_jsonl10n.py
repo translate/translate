@@ -1545,3 +1545,356 @@ class TestFormatJSJsonFile(test_monolingual.TestMonolingualStore):
         store = self.StoreClass()
         with raises(base.ParseError):
             store.parse(jsontext)
+
+
+JSON_NEXTCLOUD_SIMPLE = b"""{
+    "translations": {
+        "Hello": "Hallo",
+        "Goodbye": "Auf Wiedersehen"
+    }
+}
+"""
+
+JSON_NEXTCLOUD_WITH_PLURAL_FORM = rb"""{
+    "translations": {
+        "Hello": "Hallo",
+        "_%n tree_::_%n trees_": [
+            "%n Baum",
+            "%n B\u00e4ume"
+        ]
+    },
+    "pluralForm": "nplurals=2; plural=(n != 1);"
+}
+"""
+
+# spellchecker:off
+JSON_NEXTCLOUD_COMPLEX = rb"""{
+    "translations": {
+        "Simple string": "Einfache Zeichenkette",
+        "_%n comment_::_%n comments_": [
+            "%n Kommentar",
+            "%n Kommentare"
+        ],
+        "Another key": "Ein anderer Wert"
+    },
+    "pluralForm": "nplurals=2; plural=(n != 1);"
+}
+"""
+# spellchecker:on
+
+
+class TestNextcloudJsonUnit(test_monolingual.TestMonolingualUnit):
+    UnitClass = jsonl10n.NextcloudJsonUnit
+
+
+class TestNextcloudJsonFile(test_monolingual.TestMonolingualStore):
+    StoreClass = jsonl10n.NextcloudJsonFile
+
+    def test_parse_simple(self):
+        """Test parsing simple Nextcloud JSON with no plurals."""
+        store = self.StoreClass()
+        store.parse(JSON_NEXTCLOUD_SIMPLE)
+
+        assert len(store.units) == 2
+        assert store.units[0].getid() == "Hello"
+        assert store.units[0].target == "Hallo"
+        assert store.units[1].getid() == "Goodbye"
+        assert store.units[1].target == "Auf Wiedersehen"
+
+    def test_serialize_simple(self):
+        """Test serializing simple translations."""
+        store = self.StoreClass()
+        store.parse(JSON_NEXTCLOUD_SIMPLE)
+
+        out = BytesIO()
+        store.serialize(out)
+        result = out.getvalue()
+
+        assert b'"translations"' in result
+        assert b'"Hello": "Hallo"' in result
+        assert b'"Goodbye": "Auf Wiedersehen"' in result
+
+    def test_parse_with_plurals(self):
+        """Test parsing Nextcloud JSON with plural forms."""
+        store = self.StoreClass()
+        store.parse(JSON_NEXTCLOUD_WITH_PLURAL_FORM)
+
+        assert len(store.units) == 2
+
+        # First unit should be simple string
+        assert store.units[0].getid() == "Hello"
+        assert store.units[0].target == "Hallo"
+        assert not isinstance(store.units[0].target, multistring)
+
+        # Second unit should be plural
+        assert store.units[1].getid() == "_%n tree_::_%n trees_"
+        assert isinstance(store.units[1].target, multistring)
+        assert len(store.units[1].target.strings) == 2
+        assert store.units[1].target.strings[0] == "%n Baum"
+        assert store.units[1].target.strings[1] == "%n Bäume"
+
+    def test_preserve_plural_form(self):
+        """Test that pluralForm metadata is preserved during round-trip."""
+        store = self.StoreClass()
+        store.parse(JSON_NEXTCLOUD_WITH_PLURAL_FORM)
+
+        out = BytesIO()
+        store.serialize(out)
+        result = out.getvalue().decode()
+
+        # Verify pluralForm is preserved
+        assert '"pluralForm": "nplurals=2; plural=(n != 1);"' in result
+        assert '"translations"' in result
+
+    def test_roundtrip_with_plurals(self):
+        """Test full round-trip with plurals and metadata."""
+        store = self.StoreClass()
+        store.parse(JSON_NEXTCLOUD_COMPLEX)
+
+        assert len(store.units) == 3
+
+        # Verify parsing
+        assert store.units[0].target == "Einfache Zeichenkette"
+        assert isinstance(store.units[1].target, multistring)
+        assert store.units[2].target == "Ein anderer Wert"  # codespell:ignore
+
+        # Serialize and re-parse
+        out = BytesIO()
+        store.serialize(out)
+
+        store2 = self.StoreClass()
+        store2.parse(out.getvalue())
+
+        assert len(store2.units) == 3
+        assert store2.units[0].target == "Einfache Zeichenkette"
+        assert isinstance(store2.units[1].target, multistring)
+        assert len(store2.units[1].target.strings) == 2
+        assert store2.units[2].target == "Ein anderer Wert"  # codespell:ignore
+
+    def test_ignore_non_translations_keys(self):
+        """Test that only 'translations' key is parsed for units."""
+        json_with_extra = b"""{
+    "someOtherKey": "should be ignored",
+    "translations": {
+        "Hello": "Hallo"
+    },
+    "pluralForm": "nplurals=2; plural=(n != 1);"
+}
+"""
+        store = self.StoreClass()
+        store.parse(json_with_extra)
+
+        # Should only have 1 unit from translations
+        assert len(store.units) == 1
+        assert store.units[0].getid() == "Hello"
+
+    def test_preserve_other_metadata(self):
+        """Test that arbitrary metadata outside translations is preserved."""
+        json_with_metadata = b"""{
+    "translations": {
+        "Hello": "Hallo"
+    },
+    "pluralForm": "nplurals=2; plural=(n != 1);",
+    "customField": "customValue"
+}
+"""
+        store = self.StoreClass()
+        store.parse(json_with_metadata)
+
+        out = BytesIO()
+        store.serialize(out)
+        result = out.getvalue().decode()
+
+        # Verify all metadata is preserved
+        assert '"pluralForm": "nplurals=2; plural=(n != 1);"' in result
+        assert '"customField": "customValue"' in result
+        assert '"translations"' in result
+
+    def test_add_unit(self):
+        """Test adding a new unit to Nextcloud JSON."""
+        store = self.StoreClass()
+        store.parse(JSON_NEXTCLOUD_SIMPLE)
+
+        # Add a new simple unit
+        unit = self.StoreClass.UnitClass("Neuer Wert")
+        unit.setid("New Key")
+        store.addunit(unit)
+
+        assert len(store.units) == 3
+        assert store.units[2].getid() == "New Key"
+        assert store.units[2].target == "Neuer Wert"
+
+    def test_add_plural_unit(self):
+        """Test adding a plural unit to Nextcloud JSON."""
+        store = self.StoreClass()
+        store.parse(JSON_NEXTCLOUD_SIMPLE)
+
+        # Add a plural unit
+        unit = self.StoreClass.UnitClass(multistring(["%n Datei", "%n Dateien"]))
+        unit.setid("_%n file_::_%n files_")
+        store.addunit(unit)
+
+        out = BytesIO()
+        store.serialize(out)
+        result = out.getvalue().decode()
+
+        # Verify plural is serialized as array
+        assert (
+            '"_%n file_::_%n files_": [\n            "%n Datei",\n            "%n Dateien"\n        ]'
+            in result
+        )
+
+    def test_empty_translations(self):
+        """Test handling of empty translations object."""
+        json_empty = b"""{
+    "translations": {},
+    "pluralForm": "nplurals=2; plural=(n != 1);"
+}
+"""
+        store = self.StoreClass()
+        store.parse(json_empty)
+
+        assert len(store.units) == 0
+
+        out = BytesIO()
+        store.serialize(out)
+        result = out.getvalue().decode()
+
+        assert '"translations": {}' in result
+        assert '"pluralForm"' in result
+
+
+JSON_RESJSON = b"""{
+    "greeting": "Hello",
+    "_greeting.comment": "A welcome greeting.",
+    "_greeting.source": "Hello",
+    "farewell": "Goodbye",
+    "_farewell.comment": "A parting message.",
+    "_farewell.source": "Goodbye"
+}
+"""
+
+
+class TestRESJSONFile(test_monolingual.TestMonolingualStore):
+    StoreClass = jsonl10n.RESJSONFile
+
+    def test_roundtrip(self):
+        store = self.StoreClass()
+        store.parse(JSON_RESJSON)
+
+        assert len(store.units) == 2
+        assert store.units[0].target == "Hello"
+        assert store.units[0].getnotes() == "A welcome greeting."
+        assert store.units[0].metadata.get("source") == "Hello"
+        assert store.units[1].target == "Goodbye"
+        assert store.units[1].getnotes() == "A parting message."
+        assert store.units[1].metadata.get("source") == "Goodbye"
+
+        assert bytes(store).decode() == JSON_RESJSON.decode()
+
+    def test_basic_parsing(self):
+        jsontext = """{
+    "key": "value",
+    "_key.comment": "A comment"
+}
+"""
+        store = self.StoreClass()
+        store.parse(jsontext)
+        assert len(store.units) == 1
+        assert store.units[0].target == "value"
+        assert store.units[0].getnotes() == "A comment"
+        assert bytes(store).decode() == jsontext
+
+    def test_multiple_metadata(self):
+        jsontext = """{
+    "message": "text",
+    "_message.comment": "comment text",
+    "_message.source": "source text",
+    "_message.custom": "custom data"
+}
+"""
+        store = self.StoreClass()
+        store.parse(jsontext)
+        assert len(store.units) == 1
+        assert store.units[0].target == "text"
+        assert store.units[0].getnotes() == "comment text"
+        assert store.units[0].metadata.get("source") == "source text"
+        assert store.units[0].metadata.get("custom") == "custom data"
+        assert bytes(store).decode() == jsontext
+
+    def test_no_metadata(self):
+        jsontext = """{
+    "simple": "value"
+}
+"""
+        store = self.StoreClass()
+        store.parse(jsontext)
+        assert len(store.units) == 1
+        assert store.units[0].target == "value"
+        assert store.units[0].getnotes() == ""
+        assert bytes(store).decode() == jsontext
+
+    def test_edit_target(self):
+        jsontext = """{
+    "key": "value",
+    "_key.comment": "comment"
+}
+"""
+        store = self.StoreClass()
+        store.parse(jsontext)
+        store.units[0].target = "new value"
+        result = bytes(store).decode()
+        assert '"key": "new value"' in result
+        assert '"_key.comment": "comment"' in result
+
+    def test_edit_notes(self):
+        jsontext = """{
+    "key": "value",
+    "_key.comment": "original comment",
+    "_key.source": "source text"
+}
+"""
+        store = self.StoreClass()
+        store.parse(jsontext)
+        store.units[0].notes = "modified comment"
+        result = bytes(store).decode()
+        assert '"key": "value"' in result
+        assert '"_key.comment": "modified comment"' in result
+        assert '"_key.source": "source text"' in result
+
+    def test_keys_with_dots(self):
+        jsontext = """{
+    "foo.bar": "value",
+    "_foo.bar.comment": "comment for foo.bar"
+}
+"""
+        store = self.StoreClass()
+        store.parse(jsontext)
+        assert len(store.units) == 1
+        assert store.units[0].getid() == "foo.bar"
+        assert store.units[0].target == "value"
+        assert store.units[0].getnotes() == "comment for foo.bar"
+        assert bytes(store).decode() == jsontext
+
+    def test_leading_dot_keys(self):
+        jsontext = """{
+    ".dot": "dot value",
+    "_.dot.comment": "comment"
+}
+"""
+        store = self.StoreClass()
+        store.parse(jsontext)
+        assert len(store.units) == 1
+        assert store.units[0].target == "dot value"
+        assert bytes(store).decode() == jsontext
+
+    def test_invalid_nesting(self):
+        jsontext = """{
+    "key": {
+        "nested": "value"
+    }
+}
+"""
+        store = self.StoreClass()
+        with raises(base.ParseError):
+            store.parse(jsontext)
