@@ -438,6 +438,12 @@ ODF = "ODF"
 Uniforum = "Uniforum"
 # Author name
 Wil = "Wil"
+# Belarusian/Polish translations in test files
+dni = "dni"
+"dźeń" = "dźeń"
+"dźon" = "dźon"
+elementy = "elementy"
+tamu = "tamu"
 
 [tool.typos.files]
 extend-exclude = [
