@@ -338,7 +338,7 @@ class dtdfile(base.TranslationStore):
         """Determine the type of a DTD comment."""
         if comment.find("LOCALIZATION NOTE") != -1:
             l = quote.findend(comment, "LOCALIZATION NOTE")
-            while comment[l] == " ":
+            while l < len(comment) and comment[l] == " ":
                 l += 1
             if comment.find("FILE", l) == l:
                 return "locfile"
@@ -360,6 +360,61 @@ class dtdfile(base.TranslationStore):
             "comment": unit.comments,
         }
         comment_targets.get(commenttype, unit.comments).append(commentpair)
+
+    def _parse_entity_name(self, line):
+        """
+        Parse entity name from line and return entity info.
+
+        Returns:
+            tuple: (entity_name, entitytype, space_pre_entity, space_pre_definition, position)
+
+        """
+        s = 0
+        e = 0
+        while e < len(line) and line[e].isspace():
+            e += 1
+        space_pre_entity = " " * (e - s)
+        s = e
+        entity_name = ""
+        entitytype = "internal"
+
+        if e < len(line) and line[e] == "%":
+            entitytype = "external"
+            e += 1
+            while e < len(line) and line[e].isspace():
+                e += 1
+
+        while e < len(line) and not line[e].isspace():
+            entity_name += line[e]
+            e += 1
+        s = e
+
+        while e < len(line) and line[e].isspace():
+            e += 1
+        space_pre_definition = " " * (e - s)
+
+        return entity_name, entitytype, space_pre_entity, space_pre_definition, e
+
+    def _extract_entity_definition(self, line, entityhelp, instring):
+        """
+        Extract entity definition from line.
+
+        Returns:
+            tuple: (definition_part, still_in_string) or raises ValueError
+
+        """
+        e = entityhelp[0]
+        quote_char = entityhelp[1]
+
+        if quote_char == "'":
+            return quote.extract(
+                line[e:], "'", "'", startinstring=instring, allowreentry=False
+            )
+        if quote_char == '"':
+            return quote.extract(
+                line[e:], '"', '"', startinstring=instring, allowreentry=False
+            )
+        raise ValueError(f"Unexpected quote character... {quote_char!r}")
 
     def parse(self, dtdsrc):
         """Read the source code of a dtd file in and include them as dtdunits in self.units."""
@@ -468,28 +523,15 @@ class dtdfile(base.TranslationStore):
                         entitytype = "internal"
 
                     if entitypart == "name":
-                        s = 0
-                        e = 0
-                        while e < len(line) and line[e].isspace():
-                            e += 1
-                        space_pre_entity = " " * (e - s)
-                        s = e
-                        entity_name = ""
-                        entityparameter = ""
-                        if e < len(line) and line[e] == "%":
-                            entitytype = "external"
-                            e += 1
-                            while e < len(line) and line[e].isspace():
-                                e += 1
-                        while e < len(line) and not line[e].isspace():
-                            entity_name += line[e]
-                            e += 1
-                        s = e
+                        (
+                            entity_name,
+                            entitytype,
+                            space_pre_entity,
+                            space_pre_definition,
+                            e,
+                        ) = self._parse_entity_name(line)
 
                         newdtd.entity = entity_name
-                        while e < len(line) and line[e].isspace():
-                            e += 1
-                        space_pre_definition = " " * (e - s)
                         if newdtd.entity:
                             newdtd.entitytype = entitytype
                             if entitytype == "external":
@@ -508,12 +550,13 @@ class dtdfile(base.TranslationStore):
                                 instring = False
 
                     if entitypart == "parameter":
+                        entityparameter = ""
                         while e < len(line) and line[e].isspace():
                             e += 1
                         paramstart = e
                         while e < len(line) and line[e].isalnum():
                             e += 1
-                        entityparameter += line[paramstart:e]
+                        entityparameter = line[paramstart:e]
                         newdtd.entityparameter = entityparameter
                         while e < len(line) and line[e].isspace():
                             e += 1
@@ -540,26 +583,9 @@ class dtdfile(base.TranslationStore):
                         # Extract the definition part
                         e = entityhelp[0]
                         try:
-                            if entityhelp[1] == "'":
-                                (defpart, instring) = quote.extract(
-                                    line[e:],
-                                    "'",
-                                    "'",
-                                    startinstring=instring,
-                                    allowreentry=False,
-                                )
-                            elif entityhelp[1] == '"':
-                                (defpart, instring) = quote.extract(
-                                    line[e:],
-                                    '"',
-                                    '"',
-                                    startinstring=instring,
-                                    allowreentry=False,
-                                )
-                            else:
-                                raise ValueError(
-                                    f"Unexpected quote character... {entityhelp[1]!r}"
-                                )
+                            defpart, instring = self._extract_entity_definition(
+                                line, entityhelp, instring
+                            )
                         except ValueError as exc:
                             # Handle malformed entities gracefully
                             warnings.warn(str(exc))
