@@ -476,6 +476,7 @@ class xliff2file(lisa.LISAfile):
             try:
                 unit_id = unit.getid()
             except (ValueError, AttributeError):
+                # Handle cases where getid() may fail or unit is malformed
                 continue
             if unit_id and unit_id.isdigit():
                 max_id = max(max_id, int(unit_id))
