@@ -46,8 +46,8 @@ class ts2po:
         """Makes a pounit from the given message."""
         thepo = po.pounit(encoding="UTF-8")
         thepo.addlocation("%s#%d" % (contextname, messagenum))
-        # Handle plural forms: TS stores only the plural form in source,
-        # but PO needs both singular and plural forms
+        # Handle plural forms: TS format stores only one source form (the plural),
+        # but PO needs both singular and plural. We duplicate the TS plural form for both.
         if hasplural and isinstance(source, multistring):
             # Use the plural form from TS as both singular and plural in PO
             plural_form = source.strings[0] if source.strings else ""

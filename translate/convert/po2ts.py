@@ -36,6 +36,10 @@ class po2ts:
         For example: "item" and "items" becomes "item(s)"
                      "day ago" and "days ago" becomes "day(s) ago"
         Returns the merged form if possible, otherwise returns the plural form.
+
+        Note: This is necessary because the Qt Linguist TS format does not support
+        separate singular and plural source forms like Gettext PO does. As a result,
+        we merge the forms into a single string using (s) notation where possible.
         """
         if not singular or not plural:
             return plural or singular
