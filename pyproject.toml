@@ -433,8 +433,14 @@ extend-ignore-re = [
 plasTeX = "plasTeX"
 
 [tool.typos.default.extend-words]
+# Belarusian/Polish translations in test files
+dni = "dni"
+"dźeń" = "dźeń"
+"dźon" = "dźon"
+elementy = "elementy"
 # Open Document Format acronym
 ODF = "ODF"
+tamu = "tamu"
 Uniforum = "Uniforum"
 # Author name
 Wil = "Wil"
