@@ -542,7 +542,12 @@ class LaravelPHPUnit(phpunit):
             # Preserve array() syntax
             prefix = "return->"
         # Check if the store has a detected array prefix
-        elif hasattr(self, "_store") and self._store and hasattr(self._store, "_array_prefix") and self._store._array_prefix:
+        elif (
+            hasattr(self, "_store")
+            and self._store
+            and hasattr(self._store, "_array_prefix")
+            and self._store._array_prefix
+        ):
             prefix = self._store._array_prefix
         else:
             # Default to array() syntax for new files
