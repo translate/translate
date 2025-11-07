@@ -1560,3 +1560,34 @@ return array(
 );
 """
         assert output == expected
+
+    def test_empty_string_key(self):
+        """Test that empty string keys are properly quoted."""
+        phpfile = self.StoreClass()
+
+        unit = phpfile.addsourceunit("Empty key message")
+        unit.setid("")
+
+        output = bytes(phpfile).decode()
+        expected = """<?php
+return array(
+    '' => 'Empty key message',
+);
+"""
+        assert output == expected
+
+    def test_setid_with_non_string_value(self):
+        """Test that setid handles non-string values gracefully."""
+        phpfile = self.StoreClass()
+
+        # Test with integer
+        unit1 = phpfile.addsourceunit("Message")
+        unit1.setid(123)
+
+        output = bytes(phpfile).decode()
+        expected = """<?php
+return array(
+    123 => 'Message',
+);
+"""
+        assert output == expected

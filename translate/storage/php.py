@@ -529,6 +529,10 @@ class LaravelPHPUnit(phpunit):
 
     def setid(self, value):
         """Set the key, preserving the Laravel return array structure."""
+        # Ensure value is a string
+        if not isinstance(value, str):
+            value = str(value)
+
         # If value already has a return prefix, use it as is
         if value.startswith(("return[]->", "return->")):
             self.name = value
@@ -541,30 +545,43 @@ class LaravelPHPUnit(phpunit):
         elif self.name.startswith("return->"):
             # Preserve array() syntax
             prefix = "return->"
-        # Check if the store has a detected array prefix
-        elif (
-            hasattr(self, "_store")
-            and self._store
-            and hasattr(self._store, "_array_prefix")
-            and self._store._array_prefix
-        ):
-            prefix = self._store._array_prefix
         else:
-            # Default to array() syntax for new files
-            prefix = "return->"
+            # For newly created units or units without a return prefix,
+            # check if the store has a detected array prefix
+            prefix = self._get_array_prefix_from_store()
 
         # Add quotes if not already present and value is not numeric
         # Handle empty string, quoted values, and numeric values correctly
         if value and value[0] not in {"'", '"'}:
             # Check if it's a valid integer (handles negative numbers too)
-            try:
-                int(value)
-                # It's an integer, don't quote it
-            except ValueError:
-                # Not an integer, add quotes
+            if not self._is_numeric_key(value):
                 value = f"'{value}'"
+        elif not value:
+            # Empty string should be quoted
+            value = "''"
 
         self.name = f"{prefix}{value}"
+
+    def _get_array_prefix_from_store(self):
+        """Get the array prefix from store, or return default."""
+        if (
+            hasattr(self, "_store")
+            and self._store
+            and hasattr(self._store, "_array_prefix")
+            and self._store._array_prefix
+        ):
+            return self._store._array_prefix
+        # Default to array() syntax for new files
+        return "return->"
+
+    def _is_numeric_key(self, value):
+        """Check if value is a numeric key (integer)."""
+        try:
+            int(value)
+        except (ValueError, TypeError):
+            return False
+        else:
+            return True
 
 
 class LaravelPHPFile(phpfile):
