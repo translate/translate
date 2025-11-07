@@ -1,0 +1,10 @@
+#: location.cpp
+msgid "One"
+msgstr "Uno"
+
+#, fuzzy
+msgid "Two"
+msgstr "Dos"
+
+msgid "Three"
+msgstr ""

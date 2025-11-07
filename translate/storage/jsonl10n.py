@@ -73,8 +73,11 @@ from __future__ import annotations
 import json
 import re
 import uuid
+from typing import TYPE_CHECKING, Any, BinaryIO, ClassVar, TextIO, cast
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
 from collections import defaultdict
-from typing import BinaryIO, ClassVar, TextIO, cast
 
 from translate.lang.data import cldr_plural_categories
 from translate.misc.multistring import multistring
@@ -955,6 +958,94 @@ class FormatJSJsonFile(JsonFile):
             )
             unit.setid(item, unitid=self.UnitClass.IdClass.from_key(item))
             yield unit
+
+
+class NextcloudJsonUnit(FlatJsonUnit):
+    """A Nextcloud JSON entry."""
+
+    ID_FORMAT = "{}"
+
+    def converttarget(self) -> Any:
+        """Convert target to appropriate format for Nextcloud JSON."""
+        if isinstance(self.target, multistring):
+            # Return as array for plurals
+            return list(self.target.strings)
+        return self.target
+
+
+class NextcloudJsonFile(JsonFile):
+    """
+    Nextcloud JSON file.
+
+    Nextcloud apps use a JSON format with translations wrapped in a
+    "translations" key. Plurals follow gettext conventions with keys like
+    ``_%n singular_::_%n plural_`` and array values.
+
+    See:
+    https://docs.nextcloud.com/server/stable/developer_manual/basics/translations.html
+    https://github.com/nextcloud-libraries/nextcloud-l10n/
+    """
+
+    UnitClass = NextcloudJsonUnit
+
+    def __init__(
+        self,
+        inputfile: str | bytes | TextIO | BinaryIO | None = None,
+        filter: Any = None,
+        **kwargs,
+    ):
+        """Construct a Nextcloud JSON file."""
+        super().__init__(inputfile, filter, **kwargs)
+        # Store top-level elements outside 'translations' for preservation
+        self._metadata: dict[str, Any] = {}
+
+    def _extract_units(
+        self,
+        data: Any,
+        stop: list[str] | None = None,
+        prev: Any = None,
+        name_node: str | int | None = None,
+        name_last_node: str | int | None = None,
+        last_node: dict | list | None = None,
+    ) -> Generator[NextcloudJsonUnit, None, None]:
+        """Extract units from the translations key only."""
+        # Store metadata (everything outside 'translations')
+        for key, value in data.items():
+            if key != "translations":
+                self._metadata[key] = value
+
+        # Only parse the translations key
+        translations = data.get("translations", {})
+        if not isinstance(translations, dict):
+            return
+
+        for key, value in translations.items():
+            # Check if this is a plural form (gettext style)
+            if isinstance(value, list):
+                # Plural form - array of translations
+                unit = self.UnitClass(multistring(value), key)
+            else:
+                # Simple string translation
+                unit = self.UnitClass(value, key)
+
+            unit.setid(key, unitid=self.UnitClass.IdClass.from_key(key))
+            yield unit
+
+    def serialize(self, out: BinaryIO) -> None:
+        """Serialize to Nextcloud JSON format."""
+        # Build translations dictionary
+        translations = {}
+        for unit in self.units:
+            key = unit.getid()
+            value = unit.converttarget()
+            translations[key] = value
+
+        # Combine metadata and translations
+        output = dict(self._metadata)
+        output["translations"] = translations
+
+        out.write(json.dumps(output, **self.dump_args).encode(self.encoding))
+        out.write(b"\n")
 
 
 class RESJSONUnit(FlatJsonUnit):
