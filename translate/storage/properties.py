@@ -1267,8 +1267,9 @@ class xwikifile(propfile):
                 # Translatable content comes after the marker, so it's deprecated
                 unit.deprecated = True
             elif unit._has_deprecatedend:
-                # Translatable content comes AFTER the end marker, so it's NOT deprecated
-                # Non-translatable units (just comments + marker) were in the block so they're deprecated
+                # The deprecation depends on whether the unit has translatable content:
+                # - Translatable units have their content AFTER the end marker (not deprecated)
+                # - Non-translatable units are just comments/marker inside the block (deprecated)
                 unit.deprecated = not unit.istranslatable()
             else:
                 unit.deprecated = in_deprecated_block
