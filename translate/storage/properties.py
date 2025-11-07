@@ -1220,11 +1220,11 @@ class xwikifile(propfile):
             unit._comments_after_end = []
             unit._has_deprecatedstart = False
             unit._has_deprecatedend = False
-            
+
             if unit.comments:
                 # Split comments at marker positions
                 current_list = unit._comments_before_start
-                
+
                 for comment in unit.comments:
                     stripped = comment.strip()
                     if stripped == "#@deprecatedstart":
@@ -1263,24 +1263,38 @@ class xwikifile(propfile):
                         units_to_remove.append(i)
 
             # Mark unit as deprecated
-            # Units with _has_deprecatedstart are treated specially - they have both
-            # deprecated and non-deprecated parts
             if unit._has_deprecatedstart:
-                # The non-comment part (translatable content) comes after the marker, so it's deprecated
+                # Translatable content comes after the marker, so it's deprecated
                 unit.deprecated = True
             elif unit._has_deprecatedend:
-                # If the unit is translatable, its content comes AFTER the end marker, so it's NOT deprecated
-                # If the unit is non-translatable (just comments + marker), it was in the block so it's deprecated
-                if unit.istranslatable():
-                    unit.deprecated = False
-                else:
-                    unit.deprecated = True
+                # Translatable content comes AFTER the end marker, so it's NOT deprecated
+                # Non-translatable units (just comments + marker) were in the block so they're deprecated
+                unit.deprecated = not unit.istranslatable()
             else:
                 unit.deprecated = in_deprecated_block
 
         # Remove empty comment-only units
         for i in reversed(units_to_remove):
             del self.units[i]
+
+    def _output_comments(self, comments):
+        """Helper to output comments, handling empty comments as blank lines."""
+        for comment in comments:
+            if comment:
+                yield comment + "\n" if not comment.endswith("\n") else comment
+            else:
+                yield "\n"
+
+    def _output_unit_content(self, unit):
+        """Helper to output translatable content of a unit."""
+        if unit.istranslatable():
+            source = unit.personality.encode(unit.source, unit.encoding)
+            target = unit.personality.encode(unit.target, unit.encoding)
+            translation = target or source
+            if unit.missing:
+                yield f"### Missing: {unit.name}={translation}\n"
+            else:
+                yield f"{unit.name}={translation}\n"
 
     def _build_deprecated_block_content(self):
         """
@@ -1295,75 +1309,46 @@ class xwikifile(propfile):
             for unit in self.units:
                 # Handle units with #@deprecatedstart
                 if getattr(unit, '_has_deprecatedstart', False):
-                    # Output comments before the marker (already in unit.comments)
+                    # Output comments before the marker
                     if unit.comments:
-                        for comment in unit.comments:
-                            if comment:
-                                yield comment + "\n" if not comment.endswith("\n") else comment
-                            else:
-                                yield "\n"
-                    
+                        yield from self._output_comments(unit.comments)
+
                     # Insert #@deprecatedstart
                     yield "#@deprecatedstart\n"
                     yield "\n"
-                    
+
                     # Output comments that were after the start marker
                     # The base parser attaches the blank line after #@deprecatedstart as an empty comment.
                     # We already output that blank line above, so skip it to avoid duplication.
                     if hasattr(unit, '_comments_after_start') and unit._comments_after_start:
                         comments_to_output = unit._comments_after_start
                         # If first comment is empty, it's the blank line after marker we already output
-                        if comments_to_output and comments_to_output[0] == '':
+                        if comments_to_output and not comments_to_output[0]:
                             comments_to_output = comments_to_output[1:]
-                        
-                        for comment in comments_to_output:
-                            # Empty comments represent blank lines
-                            if comment:
-                                yield comment + "\n" if not comment.endswith("\n") else comment
-                            else:
-                                yield "\n"
-                    
+
+                        yield from self._output_comments(comments_to_output)
+
                     # Output the translatable content (if any)
-                    if unit.istranslatable():
-                        # Output just the key=value line without comments (already output above)
-                        source = unit.personality.encode(unit.source, unit.encoding)
-                        target = unit.personality.encode(unit.target, unit.encoding)
-                        translation = target or source
-                        if unit.missing:
-                            yield f"### Missing: {unit.name}={translation}\n"
-                        else:
-                            yield f"{unit.name}={translation}\n"
-                
+                    yield from self._output_unit_content(unit)
+
                 # Handle units with #@deprecatedend
                 elif getattr(unit, '_has_deprecatedend', False):
-                    # Output comments before end marker (already in unit.comments)
+                    # Output comments before end marker
                     if unit.comments:
-                        for comment in unit.comments:
-                            if comment:
-                                yield comment + "\n" if not comment.endswith("\n") else comment
-                            else:
-                                yield "\n"
-                    
+                        yield from self._output_comments(unit.comments)
+
                     # Insert #@deprecatedend (no blank line before it)
                     yield "#@deprecatedend\n"
-                    
+
                     # Output comments after end marker (if any)
                     # Don't output trailing empty comments
                     if hasattr(unit, '_comments_after_end') and unit._comments_after_end:
-                        for comment in unit._comments_after_end:
-                            if comment:  # Only output non-empty comments
-                                yield comment + "\n" if not comment.endswith("\n") else comment
-                    
+                        non_empty_comments = [c for c in unit._comments_after_end if c]
+                        yield from self._output_comments(non_empty_comments)
+
                     # Output the translatable content (if any) - it comes after the end marker
-                    if unit.istranslatable():
-                        source = unit.personality.encode(unit.source, unit.encoding)
-                        target = unit.personality.encode(unit.target, unit.encoding)
-                        translation = target or source
-                        if unit.missing:
-                            yield f"### Missing: {unit.name}={translation}\n"
-                        else:
-                            yield f"{unit.name}={translation}\n"
-                
+                    yield from self._output_unit_content(unit)
+
                 # Regular unit
                 else:
                     # unit.comments already contains the right comments
