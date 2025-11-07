@@ -154,8 +154,8 @@ msgstr[2] "%d dźon tamu"'''
         tsfile = self.po2ts(minipo)
         print(tsfile)
         assert "<name>ExamplePO</name>" in tsfile
-        # The source should use the plural form, not the singular
-        assert "<source>%d days ago</source>" in tsfile
+        # The source should merge singular and plural with (s) notation
+        assert "<source>%d day(s) ago</source>" in tsfile
         assert 'numerus="yes"' in tsfile
         assert "<numerusform>%d dźeń tamu</numerusform>" in tsfile
         assert "<numerusform>%d dni tamu</numerusform>" in tsfile
@@ -165,8 +165,8 @@ msgstr[2] "%d dźon tamu"'''
         """Test that fuzzy plural forms are handled correctly."""
         minipo = r'''#: FuzzyContext
 #, fuzzy
-msgid "%d item(s)"
-msgid_plural "%d item(s)"
+msgid "%d item"
+msgid_plural "%d items"
 msgstr[0] "%d punkt"
 msgstr[1] "%d punkty"'''
         tsfile = self.po2ts(minipo)
