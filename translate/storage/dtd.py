@@ -433,7 +433,6 @@ class dtdfile(base.TranslationStore):
             instring = False
             space_pre_entity = " "
             space_pre_definition = " "
-            closing = ">"
 
             has_content = False  # Track if this unit has any content
             malformed = False  # Track if this unit is malformed
@@ -546,9 +545,10 @@ class dtdfile(base.TranslationStore):
                             e += 1
                         space_pre_definition = " " * (e - s)
                         if newdtd.entity:
+                            newdtd.entitytype = entitytype
                             if entitytype == "external":
                                 entitypart = "parameter"
-                                newdtd.entitytype = entitytype
+                                newdtd.entityparameter = ""
                             else:
                                 entitypart = "definition"
                             # Remember the start position and the quote character
@@ -631,8 +631,6 @@ class dtdfile(base.TranslationStore):
                             newdtd.space_pre_entity = space_pre_entity
                             newdtd.space_pre_definition = space_pre_definition
                             newdtd.closing = closing
-                            if entitytype == "external":
-                                newdtd.entitytype = entitytype
                             line_idx += 1
                             break
 
