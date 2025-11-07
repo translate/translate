@@ -1512,6 +1512,7 @@ class XWikiPageProperties(xwikifile):
     """
 
     def __init__(self, *args, **kwargs):
+        self._has_deprecated_block = False  # Initialize before super call
         kwargs["personality"] = "xwiki"
         kwargs["encoding"] = "utf-8"
         self.root = None
