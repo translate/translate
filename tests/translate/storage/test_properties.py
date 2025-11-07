@@ -1002,24 +1002,34 @@ job.log.label=Job log
 #@deprecatedend"""
 
         propfile = self.propparse(propsource)
-        # With the new implementation, deprecated markers are not stored as separate units
-        assert len(propfile.units) == 2
+        # With the new implementation, markers are stored in separate non-translatable units
+        # to preserve file structure
+        assert len(propfile.units) == 3
+        # Unit 0 is the comment with #@deprecatedstart
+        assert not propfile.units[0].istranslatable()
+        assert propfile.units[0].deprecated
         # The translatable unit is at index 1
         propunit = propfile.units[1]
         assert propunit.name == "job.log.label"
         assert propunit.source == "Job log"
         assert not propunit.missing
         assert propunit.deprecated  # Unit should be marked as deprecated
+        # Unit 2 is the comment with #@deprecatedend
+        assert not propfile.units[2].istranslatable()
+        assert propfile.units[2].deprecated
+        
         propunit.missing = True
         expected_output = """# Deprecated keys starts here.
-
 #@deprecatedstart
 
 ### Missing: job.log.label=Job log
-
 #@deprecatedend
 """
         propgen = bytes(propfile).decode("utf-8")
+        # Debug output
+        if propgen != expected_output:
+            print(f"\n=== Actual output ===\n{repr(propgen)}")
+            print(f"\n=== Expected output ===\n{repr(expected_output)}")
         assert propgen == expected_output
 
     def test_preserving_deprecated_block(self):
