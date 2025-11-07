@@ -541,25 +541,23 @@ class LaravelPHPUnit(phpunit):
         elif self.name.startswith("return->"):
             # Preserve array() syntax
             prefix = "return->"
-        # Check if there are other units in the store to match their syntax
-        elif hasattr(self, "_store") and self._store and self._store.units:
-            for unit in self._store.units:
-                if unit.name.startswith("return[]->"):
-                    prefix = "return[]->"
-                    break
-                if unit.name.startswith("return->"):
-                    prefix = "return->"
-                    break
-            else:
-                # Default to array() syntax to match the rest of the file
-                prefix = "return->"
+        # Check if the store has a detected array prefix
+        elif hasattr(self, "_store") and self._store and hasattr(self._store, "_array_prefix") and self._store._array_prefix:
+            prefix = self._store._array_prefix
         else:
             # Default to array() syntax for new files
             prefix = "return->"
 
         # Add quotes if not already present and value is not numeric
-        if not (value and value[0] in {"'", '"'}) and not value.isdigit():
-            value = f"'{value}'"
+        # Handle empty string, quoted values, and numeric values correctly
+        if value and value[0] not in {"'", '"'}:
+            # Check if it's a valid integer (handles negative numbers too)
+            try:
+                int(value)
+                # It's an integer, don't quote it
+            except ValueError:
+                # Not an integer, add quotes
+                value = f"'{value}'"
 
         self.name = f"{prefix}{value}"
 
@@ -567,7 +565,20 @@ class LaravelPHPUnit(phpunit):
 class LaravelPHPFile(phpfile):
     UnitClass = LaravelPHPUnit
 
+    def __init__(self, inputfile=None, **kwargs):
+        """Construct a LaravelPHPFile, optionally reading in from inputfile."""
+        # Store the array syntax prefix detected during parsing
+        self._array_prefix = None
+        super().__init__(inputfile, **kwargs)
+
     def create_and_add_unit(self, name, value, escape_type, comments):
+        # Detect and store array prefix from the first unit
+        if self._array_prefix is None and name.startswith("return"):
+            if name.startswith("return[]->"):
+                self._array_prefix = "return[]->"
+            elif name.startswith("return->"):
+                self._array_prefix = "return->"
+
         if "|" in value:
             value = multistring(value.split("|"))
         super().create_and_add_unit(name, value, escape_type, comments)

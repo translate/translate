@@ -1421,8 +1421,142 @@ return array(
 
         # Check serialization produces valid Laravel PHP structure
         output = bytes(phpfile).decode()
-        assert "<?php" in output
-        # Accept either array() or [] syntax (default is array())
-        assert "return array(" in output or "return [" in output
-        assert "'welcome' => 'Welcome'" in output
-        assert "'goodbye' => 'Goodbye'" in output
+        expected = """<?php
+return array(
+    'welcome' => 'Welcome',
+    'goodbye' => 'Goodbye',
+);
+"""
+        assert output == expected
+
+    def test_add_unit_to_short_array_file(self):
+        """Test adding a new unit to a file with short array syntax []."""
+        phpsource = r"""<?php
+return [
+    'existing' => 'Existing message',
+];
+"""
+        phpfile = self.phpparse(phpsource)
+
+        # Add a new unit
+        new_unit = phpfile.addsourceunit("New message")
+        new_unit.setid("new_key")
+
+        # Check the new unit has correct ID
+        assert new_unit.getid() == "new_key"
+
+        # Check serialization produces valid PHP with consistent [] syntax
+        output = bytes(phpfile).decode()
+        expected = """<?php
+return [
+    'existing' => 'Existing message',
+    'new_key' => 'New message',
+];
+"""
+        assert output == expected
+
+    def test_add_unit_to_array_function_file(self):
+        """Test adding a new unit to a file with array() syntax."""
+        phpsource = r"""<?php
+return array(
+    'existing' => 'Existing message',
+);
+"""
+        phpfile = self.phpparse(phpsource)
+
+        # Add a new unit
+        new_unit = phpfile.addsourceunit("New message")
+        new_unit.setid("new_key")
+
+        # Check the new unit has correct ID
+        assert new_unit.getid() == "new_key"
+
+        # Check serialization produces valid PHP with consistent array() syntax
+        output = bytes(phpfile).decode()
+        expected = """<?php
+return array(
+    'existing' => 'Existing message',
+    'new_key' => 'New message',
+);
+"""
+        assert output == expected
+
+    def test_add_multiple_units_to_short_array(self):
+        """Test adding multiple units to a file with short array syntax."""
+        phpsource = r"""<?php
+return [
+    'first' => 'First',
+];
+"""
+        phpfile = self.phpparse(phpsource)
+
+        # Add multiple new units
+        unit2 = phpfile.addsourceunit("Second")
+        unit2.setid("second")
+
+        unit3 = phpfile.addsourceunit("Third")
+        unit3.setid("third")
+
+        # Check serialization produces valid PHP
+        output = bytes(phpfile).decode()
+        expected = """<?php
+return [
+    'first' => 'First',
+    'second' => 'Second',
+    'third' => 'Third',
+];
+"""
+        assert output == expected
+
+    def test_add_multiple_units_to_array_function(self):
+        """Test adding multiple units to a file with array() syntax."""
+        phpsource = r"""<?php
+return array(
+    'first' => 'First',
+);
+"""
+        phpfile = self.phpparse(phpsource)
+
+        # Add multiple new units
+        unit2 = phpfile.addsourceunit("Second")
+        unit2.setid("second")
+
+        unit3 = phpfile.addsourceunit("Third")
+        unit3.setid("third")
+
+        # Check serialization produces valid PHP
+        output = bytes(phpfile).decode()
+        expected = """<?php
+return array(
+    'first' => 'First',
+    'second' => 'Second',
+    'third' => 'Third',
+);
+"""
+        assert output == expected
+
+    def test_numeric_keys_no_quotes(self):
+        """Test that numeric keys (including negative) are not quoted."""
+        phpfile = self.StoreClass()
+
+        # Test positive integer
+        unit1 = phpfile.addsourceunit("Message 1")
+        unit1.setid("1")
+
+        # Test negative integer
+        unit2 = phpfile.addsourceunit("Message 2")
+        unit2.setid("-1")
+
+        # Test zero
+        unit3 = phpfile.addsourceunit("Message 3")
+        unit3.setid("0")
+
+        output = bytes(phpfile).decode()
+        expected = """<?php
+return array(
+    1 => 'Message 1',
+    -1 => 'Message 2',
+    0 => 'Message 3',
+);
+"""
+        assert output == expected
