@@ -1026,10 +1026,6 @@ job.log.label=Job log
 #@deprecatedend
 """
         propgen = bytes(propfile).decode("utf-8")
-        # Debug output
-        if propgen != expected_output:
-            print(f"\n=== Actual output ===\n{repr(propgen)}")
-            print(f"\n=== Expected output ===\n{repr(expected_output)}")
         assert propgen == expected_output
 
     def test_preserving_deprecated_block(self):

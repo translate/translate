@@ -1195,7 +1195,8 @@ class xwikifile(propfile):
     UnitClass = xwikiunit
 
     def __init__(self, *args, **kwargs):
-        self._has_deprecated_block = False  # Track if file has deprecated blocks (must be before super().__init__)
+        # Initialize before super().__init__() to prevent flag reset during parsing
+        self._has_deprecated_block = False  # Track if file has deprecated blocks
         kwargs["personality"] = "xwiki"
         kwargs["encoding"] = "iso-8859-1"
         super().__init__(*args, **kwargs)
@@ -1210,7 +1211,9 @@ class xwikifile(propfile):
         units_to_remove = []
 
         for i, unit in enumerate(self.units):
-            # Track positions of markers and split comments
+            # Initialize marker tracking attributes for all units
+            # While most units won't have markers, initializing these is faster than
+            # repeatedly checking hasattr during serialization
             unit._comments_before_start = []
             unit._comments_after_start = []
             unit._comments_before_end = []
@@ -1305,7 +1308,8 @@ class xwikifile(propfile):
                     yield "\n"
                     
                     # Output comments that were after the start marker
-                    # Skip the first empty comment if it represents the blank line we just output
+                    # The base parser attaches the blank line after #@deprecatedstart as an empty comment.
+                    # We already output that blank line above, so skip it to avoid duplication.
                     if hasattr(unit, '_comments_after_start') and unit._comments_after_start:
                         comments_to_output = unit._comments_after_start
                         # If first comment is empty, it's the blank line after marker we already output
