@@ -1,0 +1,12 @@
+# Uno
+#: location.cpp
+msgid "One"
+msgstr ""
+
+# Dos
+msgid "Two"
+msgstr ""
+
+# Tres
+msgid "Three"
+msgstr ""

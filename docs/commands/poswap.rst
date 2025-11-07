@@ -50,6 +50,7 @@ Options:
 -o OUTPUT, --output=OUTPUT     write to OUTPUT in po, pot formats
 -t TEMPLATE, --template=TEMPLATE   read from TEMPLATE in po, pot formats
 --reverse  Do the inverse operation (converting back to a normal English based file). See the examples.
+--intermediate  Use intermediate language mode: keep original source and add target as translator comment. This mode is useful when translating through an intermediate language while keeping the original source language visible.
 
 .. _poswap#examples:
 
@@ -83,6 +84,41 @@ To convert the fr-ku files back to en-ku::
 
 This recreates the English based Kurdish translation from the French based
 files previously created in fr-ku/.
+
+Using Intermediate Mode
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+The ``--intermediate`` option provides a simpler workflow for translating through
+an intermediate language. Instead of swapping the source text, it keeps the
+original source language and adds the intermediate language translation as a
+translator comment.
+
+To translate Quechua (qu) through Spanish (es) using intermediate mode::
+
+    poswap --intermediate -t en/ es/ es-qu/
+
+This will create files in es-qu/ with:
+
+* English as the source language (msgid)
+* Spanish translation as a translator comment
+* Empty target language (msgstr) ready for Quechua translation
+
+This approach has several advantages:
+
+* Translators can see both English and Spanish while translating
+* Files can be directly uploaded to translation platforms like Pootle
+* No need to reverse the swap before uploading
+* English msgids remain unchanged, ensuring proper gettext matching
+
+Example output::
+
+    # Hola
+    msgid "Hello"
+    msgstr ""
+
+This mode is particularly useful for indigenous languages with a colonial
+language overlay (e.g., Latin American indigenous languages, languages in
+Francophone Africa, and other minority languages).
 
 .. _poswap#issues:
 
