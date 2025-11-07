@@ -1186,8 +1186,12 @@ active.key3=Active Value 3
         propfile = self.propparse(propsource)
 
         # Verify parsing
-        active_units = [u for u in propfile.units if u.istranslatable() and not u.deprecated]
-        deprecated_units = [u for u in propfile.units if u.istranslatable() and u.deprecated]
+        active_units = [
+            u for u in propfile.units if u.istranslatable() and not u.deprecated
+        ]
+        deprecated_units = [
+            u for u in propfile.units if u.istranslatable() and u.deprecated
+        ]
 
         assert len(active_units) == 3
         assert len(deprecated_units) == 2
@@ -1239,7 +1243,11 @@ active.key3=Active Value 3
 
         # Verify that comments after #@deprecatedstart are inside the block
         deprecated_since_comment_pos = propgen.index("## Deprecated since version 1.0")
-        assert deprecatedstart_pos < deprecated_since_comment_pos < propgen.index("#@deprecatedend")
+        assert (
+            deprecatedstart_pos
+            < deprecated_since_comment_pos
+            < propgen.index("#@deprecatedend")
+        )
 
 
 class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):

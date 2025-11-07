@@ -1259,7 +1259,11 @@ class xwikifile(propfile):
                 if not unit.istranslatable():
                     # Check if there are any non-empty comments
                     has_content = any(c.strip() for c in unit.comments)
-                    if not has_content and not unit._has_deprecatedstart and not unit._has_deprecatedend:
+                    if (
+                        not has_content
+                        and not unit._has_deprecatedstart
+                        and not unit._has_deprecatedend
+                    ):
                         units_to_remove.append(i)
 
             # Mark unit as deprecated
@@ -1309,7 +1313,7 @@ class xwikifile(propfile):
             # Output units in order, inserting markers where they were
             for unit in self.units:
                 # Handle units with #@deprecatedstart
-                if getattr(unit, '_has_deprecatedstart', False):
+                if getattr(unit, "_has_deprecatedstart", False):
                     # Output comments before the marker
                     if unit.comments:
                         yield from self._output_comments(unit.comments)
@@ -1321,7 +1325,10 @@ class xwikifile(propfile):
                     # Output comments that were after the start marker
                     # The base parser attaches the blank line after #@deprecatedstart as an empty comment.
                     # We already output that blank line above, so skip it to avoid duplication.
-                    if hasattr(unit, '_comments_after_start') and unit._comments_after_start:
+                    if (
+                        hasattr(unit, "_comments_after_start")
+                        and unit._comments_after_start
+                    ):
                         comments_to_output = unit._comments_after_start
                         # If first comment is empty, it's the blank line after marker we already output
                         if comments_to_output and not comments_to_output[0]:
@@ -1333,7 +1340,7 @@ class xwikifile(propfile):
                     yield from self._output_unit_content(unit)
 
                 # Handle units with #@deprecatedend
-                elif getattr(unit, '_has_deprecatedend', False):
+                elif getattr(unit, "_has_deprecatedend", False):
                     # Output comments before end marker
                     if unit.comments:
                         yield from self._output_comments(unit.comments)
@@ -1343,7 +1350,10 @@ class xwikifile(propfile):
 
                     # Output comments after end marker (if any)
                     # Don't output trailing empty comments
-                    if hasattr(unit, '_comments_after_end') and unit._comments_after_end:
+                    if (
+                        hasattr(unit, "_comments_after_end")
+                        and unit._comments_after_end
+                    ):
                         non_empty_comments = [c for c in unit._comments_after_end if c]
                         yield from self._output_comments(non_empty_comments)
 
@@ -1373,7 +1383,9 @@ class xwikifile(propfile):
             # If there are deprecated units, output them in a deprecated block
             if deprecated:
                 # Add separator if needed
-                if non_deprecated and not non_deprecated[-1].getoutput().endswith("\n\n"):
+                if non_deprecated and not non_deprecated[-1].getoutput().endswith(
+                    "\n\n"
+                ):
                     yield "\n"
 
                 yield "#@deprecatedstart\n"
