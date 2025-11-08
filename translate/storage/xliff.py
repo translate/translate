@@ -26,7 +26,6 @@ import contextlib
 
 from lxml import etree
 
-from translate.misc.multistring import multistring
 from translate.misc.xml_helpers import (
     clear_content,
     getXMLspace,
@@ -37,6 +36,7 @@ from translate.misc.xml_helpers import (
 from translate.storage import base, lisa
 from translate.storage.placeables.lisa import strelem_to_xml, xml_to_strelem
 from translate.storage.workflow import StateEnum as state
+from translate.storage.xliff_common import XliffUnitMixin
 
 # TODO: handle translation types
 
@@ -49,7 +49,7 @@ ID_SEPARATOR = "\04"
 ID_SEPARATOR_SAFE = "__%04__"
 
 
-class xliffunit(lisa.LISAunit):
+class xliffunit(XliffUnitMixin, lisa.LISAunit):
     """A single term in the xliff file."""
 
     rootNode = "trans-unit"
@@ -410,10 +410,6 @@ class xliffunit(lisa.LISAunit):
             if state_id < self.S_UNREVIEWED:
                 self.set_state_n(self.S_UNREVIEWED)
 
-    def _ensure_xml_space_preserve(self):
-        if getXMLspace(self.xmlelement) != "preserve":
-            setXMLspace(self.xmlelement, "preserve")
-
     def settarget(self, target, lang="xx", append=False):
         """Sets the target string to the given value."""
         super().settarget(target, lang, append)
@@ -568,28 +564,6 @@ class xliffunit(lisa.LISAunit):
             or origin in node.get("from", "")
             or origin in node.get("origin", "")
         )
-
-    @classmethod
-    def multistring_to_rich(cls, mstr):
-        """
-        Override :meth:`TranslationUnit.multistring_to_rich` which is used
-        by the ``rich_source`` and ``rich_target`` properties.
-        """
-        strings = mstr
-        if isinstance(mstr, multistring):
-            strings = mstr.strings
-        elif isinstance(mstr, str):
-            strings = [mstr]
-
-        return [xml_to_strelem(s) for s in strings]
-
-    @classmethod
-    def rich_to_multistring(cls, elem_list):
-        """
-        Override :meth:`TranslationUnit.rich_to_multistring` which is used
-        by the ``rich_source`` and ``rich_target`` properties.
-        """
-        return multistring([str(elem) for elem in elem_list])
 
 
 class xlifffile(lisa.LISAfile):

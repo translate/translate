@@ -25,7 +25,6 @@ The official recommendation is to use the extension .xlf for XLIFF files.
 
 from lxml import etree
 
-from translate.misc.multistring import multistring
 from translate.misc.xml_helpers import (
     clear_content,
     getXMLspace,
@@ -35,9 +34,10 @@ from translate.misc.xml_helpers import (
 from translate.storage import lisa
 from translate.storage.placeables.lisa import strelem_to_xml, xml_to_strelem
 from translate.storage.workflow import StateEnum as state
+from translate.storage.xliff_common import XliffUnitMixin
 
 
-class xliff2unit(lisa.LISAunit):
+class xliff2unit(XliffUnitMixin, lisa.LISAunit):
     """A single translation unit in the XLIFF 2.0 file."""
 
     rootNode = "unit"
@@ -279,11 +279,6 @@ class xliff2unit(lisa.LISAunit):
         except StopIteration:
             return None
 
-    def _ensure_xml_space_preserve(self):
-        """Ensure xml:space='preserve' is set on the unit."""
-        if getXMLspace(self.xmlelement) != "preserve":
-            setXMLspace(self.xmlelement, "preserve")
-
     def addnote(self, text, origin=None, position="append"):
         """Add a note specifically in the XLIFF 2.0 way."""
         if not text:
@@ -338,21 +333,6 @@ class xliff2unit(lisa.LISAunit):
         """Set the unit id."""
         if value:
             self.xmlelement.set("id", value)
-
-    @classmethod
-    def multistring_to_rich(cls, mstr):
-        """Convert multistring to rich format."""
-        strings = mstr
-        if isinstance(mstr, multistring):
-            strings = mstr.strings
-        elif isinstance(mstr, str):
-            strings = [mstr]
-        return [xml_to_strelem(s) for s in strings]
-
-    @classmethod
-    def rich_to_multistring(cls, elem_list):
-        """Convert rich format to multistring."""
-        return multistring([str(elem) for elem in elem_list])
 
     def merge(self, otherunit, overwrite=False, comments=True, authoritative=False):
         """Merge another unit into this one."""
