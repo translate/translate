@@ -21,6 +21,12 @@ Module for handling XLIFF 2.0 files for translation.
 
 XLIFF 2.0 is a major revision from XLIFF 1.x with significant structural changes.
 The official recommendation is to use the extension .xlf for XLIFF files.
+
+Known Limitations:
+------------------
+- Multiple <segment> elements per <unit>: If a unit contains multiple segments,
+  only the first segment's source and target are accessible via the standard API.
+  This is a rare case in practice; most XLIFF 2.0 files use one segment per unit.
 """
 
 from lxml import etree
