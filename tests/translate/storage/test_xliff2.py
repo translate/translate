@@ -1,6 +1,3 @@
-from lxml import etree
-
-from translate.misc.xml_helpers import setXMLspace
 from translate.storage import xliff2
 
 from . import test_base
