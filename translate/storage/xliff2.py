@@ -22,11 +22,11 @@ Module for handling XLIFF 2.0 files for translation.
 XLIFF 2.0 is a major revision from XLIFF 1.x with significant structural changes.
 The official recommendation is to use the extension .xlf for XLIFF files.
 
-Known Limitations:
-------------------
-- Multiple <segment> elements per <unit>: If a unit contains multiple segments,
-  only the first segment's source and target are accessible via the standard API.
-  This is a rare case in practice; most XLIFF 2.0 files use one segment per unit.
+Multiple Segments Support:
+--------------------------
+When a <unit> contains multiple <segment> elements, each segment is exposed as
+a separate unit for easier handling across the translation stack. The unit ID
+is composed as "unitId:segmentId" for multi-segment units.
 """
 
 from lxml import etree
@@ -400,8 +400,9 @@ class xliff2file(lisa.LISAfile):
         self.body = filenode
 
     def parse(self, xml):
-        """Populates this object from the given xml string.
-        
+        """
+        Populates this object from the given xml string.
+
         Overrides parent to handle multiple segments per unit.
         Each segment is exposed as a separate unit for easier handling.
         """
@@ -416,14 +417,14 @@ class xliff2file(lisa.LISAfile):
         self.encoding = self.document.docinfo.encoding
         self.initbody()
         assert self.document.getroot().tag == self.namespaced(self.rootNode)
-        
+
         # Iterate through units and expose each segment as a separate unit
         for unit_elem in self.document.getroot().iterdescendants(
             self.namespaced(self.UnitClass.rootNode)
         ):
             # Check if unit has multiple segments
             segments = list(unit_elem.iterchildren(self.namespaced("segment")))
-            
+
             if len(segments) <= 1:
                 # Single segment or no segment - create unit as normal
                 term = self.UnitClass.createfromxmlElement(unit_elem)
@@ -434,29 +435,33 @@ class xliff2file(lisa.LISAfile):
                 for idx, segment_elem in enumerate(segments):
                     # Create a wrapper unit element for this segment
                     segment_unit_elem = etree.Element(self.namespaced("unit"))
-                    
+
                     # Copy unit attributes
                     for key, value in unit_elem.attrib.items():
                         segment_unit_elem.set(key, value)
-                    
+
                     # Set unique ID for this segment
                     segment_id = segment_elem.get("id")
                     if segment_id:
                         segment_unit_elem.set("id", f"{unit_id}:{segment_id}")
                     else:
                         segment_unit_elem.set("id", f"{unit_id}:seg{idx + 1}")
-                    
+
                     # Copy notes from unit level if any
                     notes_elem = unit_elem.find(self.namespaced("notes"))
                     if notes_elem is not None:
-                        segment_unit_elem.append(etree.Element(notes_elem.tag, notes_elem.attrib))
+                        segment_unit_elem.append(
+                            etree.Element(notes_elem.tag, notes_elem.attrib)
+                        )
                         for note in notes_elem:
-                            segment_unit_elem[0].append(etree.Element(note.tag, note.attrib))
+                            segment_unit_elem[0].append(
+                                etree.Element(note.tag, note.attrib)
+                            )
                             segment_unit_elem[0][-1].text = note.text
-                    
+
                     # Add the segment to the wrapper
                     segment_unit_elem.append(segment_elem)
-                    
+
                     # Create unit from this wrapper
                     term = self.UnitClass.createfromxmlElement(segment_unit_elem)
                     self.addunit(term, new=False)

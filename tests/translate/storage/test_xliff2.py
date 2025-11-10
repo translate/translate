@@ -167,3 +167,84 @@ class TestXLIFF2file(test_base.TestTranslationStore):
         assert xliff2file.units[0].target == "Bonjour"
         assert xliff2file.getsourcelanguage() == "en"
         assert xliff2file.gettargetlanguage() == "fr"
+
+    def test_multiple_segments_per_unit(self):
+        """Test that multiple segments in a unit are exposed as separate units."""
+        xliff2_content = b"""<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="fr">
+  <file id="f1">
+    <unit id="unit1">
+      <segment id="seg1">
+        <source>First segment</source>
+        <target>Premier segment</target>
+      </segment>
+      <segment id="seg2">
+        <source>Second segment</source>
+        <target>Deuxieme segment</target>
+      </segment>
+      <segment id="seg3">
+        <source>Third segment</source>
+        <target>Troisieme segment</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>"""
+        xliff2file = xliff2.xliff2file.parsestring(xliff2_content)
+
+        # Should expose 3 separate units (one per segment)
+        assert len(xliff2file.units) == 3
+
+        # Check first segment
+        assert xliff2file.units[0].getid() == "unit1:seg1"
+        assert xliff2file.units[0].source == "First segment"
+        assert xliff2file.units[0].target == "Premier segment"
+
+        # Check second segment
+        assert xliff2file.units[1].getid() == "unit1:seg2"
+        assert xliff2file.units[1].source == "Second segment"
+        assert xliff2file.units[1].target == "Deuxieme segment"
+
+        # Check third segment
+        assert xliff2file.units[2].getid() == "unit1:seg3"
+        assert xliff2file.units[2].source == "Third segment"
+        assert xliff2file.units[2].target == "Troisieme segment"
+
+    def test_mixed_single_and_multiple_segments(self):
+        """Test files with both single-segment and multi-segment units."""
+        xliff2_content = b"""<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="es">
+  <file id="f1">
+    <unit id="unit1">
+      <segment>
+        <source>Single segment unit</source>
+        <target>Unidad de segmento unico</target>
+      </segment>
+    </unit>
+    <unit id="unit2">
+      <segment id="a">
+        <source>Multi A</source>
+        <target>Multi A es</target>
+      </segment>
+      <segment id="b">
+        <source>Multi B</source>
+        <target>Multi B es</target>
+      </segment>
+    </unit>
+    <unit id="unit3">
+      <segment>
+        <source>Another single</source>
+        <target>Otro unico</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>"""
+        xliff2file = xliff2.xliff2file.parsestring(xliff2_content)
+
+        # Should have 4 units total (unit1=1, unit2=2, unit3=1)
+        assert len(xliff2file.units) == 4
+
+        # Check IDs are correct
+        assert xliff2file.units[0].getid() == "unit1"
+        assert xliff2file.units[1].getid() == "unit2:a"
+        assert xliff2file.units[2].getid() == "unit2:b"
+        assert xliff2file.units[3].getid() == "unit3"
