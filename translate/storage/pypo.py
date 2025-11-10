@@ -258,15 +258,9 @@ def quoteforpo(text: str | None, wrapper_obj: PoWrapper | None = None) -> list[s
         or len(lines[0]) > wrapper_obj.width - 6
     ):
         polines.append('""')
-    # Temporarily reduce width by 2 to account for quotes that will be added
-    original_width = wrapper_obj.width
-    wrapper_obj.width = original_width - 2
-    try:
-        for line in lines:
-            lns = wrapper_obj.wrap(line)
-            polines.extend(f'"{ln}"' for ln in lns)
-    finally:
-        wrapper_obj.width = original_width
+    for line in lines:
+        lns = wrapper_obj.wrap(line)
+        polines.extend(f'"{ln}"' for ln in lns)
     return polines
 
 
