@@ -334,7 +334,7 @@ class dtdfile(base.TranslationStore):
             dtdsrc = inputfile.read()
             self.parse(dtdsrc)
 
-    def _determine_comment_type(self, comment):
+    def _determine_comment_type(self, comment: str) -> str:
         """Determine the type of a DTD comment."""
         if comment.find("LOCALIZATION NOTE") != -1:
             l = quote.findend(comment, "LOCALIZATION NOTE")
@@ -349,7 +349,7 @@ class dtdfile(base.TranslationStore):
             return "locnote"
         return "comment"
 
-    def _store_comment(self, unit, commenttype, comment):
+    def _store_comment(self, unit: dtdunit, commenttype: str, comment: str) -> None:
         """Store a comment in the appropriate list on the unit."""
         commentpair = (commenttype, comment)
         comment_targets = {
@@ -361,7 +361,7 @@ class dtdfile(base.TranslationStore):
         }
         comment_targets.get(commenttype, unit.comments).append(commentpair)
 
-    def _parse_entity_name(self, line):
+    def _parse_entity_name(self, line: str) -> tuple[str, str, str, str, int]:
         """
         Parse entity name from line and return entity info.
 
@@ -373,7 +373,6 @@ class dtdfile(base.TranslationStore):
         while e < len(line) and line[e].isspace():
             e += 1
         space_pre_entity = " " * e
-        s = e
         entity_name = ""
         entitytype = "internal"
 
@@ -394,7 +393,9 @@ class dtdfile(base.TranslationStore):
 
         return entity_name, entitytype, space_pre_entity, space_pre_definition, e
 
-    def _extract_entity_definition(self, line, entityhelp, instring):
+    def _extract_entity_definition(
+        self, line: str, entityhelp: tuple[int, str], instring: bool
+    ) -> tuple[str, bool]:
         """
         Extract entity definition from line.
 
@@ -454,8 +455,8 @@ class dtdfile(base.TranslationStore):
             entitytype = "internal"
             entityhelp = None
             instring = False
-            space_pre_entity = " "
-            space_pre_definition = " "
+            space_pre_entity = ""
+            space_pre_definition = ""
 
             has_content = False  # Track if this unit has any content
             malformed = False  # Track if this unit is malformed
