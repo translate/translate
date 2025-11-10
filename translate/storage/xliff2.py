@@ -1,5 +1,5 @@
 #
-# Copyright 2025 Zuza Software Foundation
+# Copyright 2025 Translate toolkit contributors
 #
 # This file is part of the Translate Toolkit.
 #
@@ -40,10 +40,10 @@ from translate.misc.xml_helpers import (
 from translate.storage import lisa
 from translate.storage.placeables.lisa import strelem_to_xml, xml_to_strelem
 from translate.storage.workflow import StateEnum as state
-from translate.storage.xliff_common import XliffUnitMixin
+from translate.storage.xliff_common import XliffUnit
 
 
-class xliff2unit(XliffUnitMixin, lisa.LISAunit):
+class xliff2unit(XliffUnit):
     """A single translation unit in the XLIFF 2.0 file."""
 
     rootNode = "unit"

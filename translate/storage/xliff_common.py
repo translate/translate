@@ -1,5 +1,5 @@
 #
-# Copyright 2025 Zuza Software Foundation
+# Copyright 2025 Translate toolkit contributors
 #
 # This file is part of the Translate Toolkit.
 #
@@ -20,11 +20,12 @@
 
 from translate.misc.multistring import multistring
 from translate.misc.xml_helpers import getXMLspace, setXMLspace
+from translate.storage import lisa
 from translate.storage.placeables.lisa import xml_to_strelem
 
 
-class XliffUnitMixin:
-    """Mixin class providing common functionality for XLIFF units."""
+class XliffUnit(lisa.LISAunit):
+    """Base class providing common functionality for XLIFF units."""
 
     def _ensure_xml_space_preserve(self):
         """Ensure xml:space='preserve' is set on the unit."""

@@ -36,7 +36,7 @@ from translate.misc.xml_helpers import (
 from translate.storage import base, lisa
 from translate.storage.placeables.lisa import strelem_to_xml, xml_to_strelem
 from translate.storage.workflow import StateEnum as state
-from translate.storage.xliff_common import XliffUnitMixin
+from translate.storage.xliff_common import XliffUnit
 
 # TODO: handle translation types
 
@@ -49,7 +49,7 @@ ID_SEPARATOR = "\04"
 ID_SEPARATOR_SAFE = "__%04__"
 
 
-class xliffunit(XliffUnitMixin, lisa.LISAunit):
+class xliffunit(XliffUnit):
     """A single term in the xliff file."""
 
     rootNode = "trans-unit"
