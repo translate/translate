@@ -399,6 +399,68 @@ class xliff2file(lisa.LISAfile):
                 filenode.set("id", "f1")
         self.body = filenode
 
+    def parse(self, xml):
+        """Populates this object from the given xml string.
+        
+        Overrides parent to handle multiple segments per unit.
+        Each segment is exposed as a separate unit for easier handling.
+        """
+        if not hasattr(self, "filename"):
+            self.filename = getattr(xml, "name", "")
+        if hasattr(xml, "read"):
+            xml.seek(0)
+            posrc = xml.read()
+            xml = posrc
+        parser = etree.XMLParser(strip_cdata=False, resolve_entities=False)
+        self.document = etree.fromstring(xml, parser).getroottree()
+        self.encoding = self.document.docinfo.encoding
+        self.initbody()
+        assert self.document.getroot().tag == self.namespaced(self.rootNode)
+        
+        # Iterate through units and expose each segment as a separate unit
+        for unit_elem in self.document.getroot().iterdescendants(
+            self.namespaced(self.UnitClass.rootNode)
+        ):
+            # Check if unit has multiple segments
+            segments = list(unit_elem.iterchildren(self.namespaced("segment")))
+            
+            if len(segments) <= 1:
+                # Single segment or no segment - create unit as normal
+                term = self.UnitClass.createfromxmlElement(unit_elem)
+                self.addunit(term, new=False)
+            else:
+                # Multiple segments - create a unit for each segment
+                unit_id = unit_elem.get("id", "")
+                for idx, segment_elem in enumerate(segments):
+                    # Create a wrapper unit element for this segment
+                    segment_unit_elem = etree.Element(self.namespaced("unit"))
+                    
+                    # Copy unit attributes
+                    for key, value in unit_elem.attrib.items():
+                        segment_unit_elem.set(key, value)
+                    
+                    # Set unique ID for this segment
+                    segment_id = segment_elem.get("id")
+                    if segment_id:
+                        segment_unit_elem.set("id", f"{unit_id}:{segment_id}")
+                    else:
+                        segment_unit_elem.set("id", f"{unit_id}:seg{idx + 1}")
+                    
+                    # Copy notes from unit level if any
+                    notes_elem = unit_elem.find(self.namespaced("notes"))
+                    if notes_elem is not None:
+                        segment_unit_elem.append(etree.Element(notes_elem.tag, notes_elem.attrib))
+                        for note in notes_elem:
+                            segment_unit_elem[0].append(etree.Element(note.tag, note.attrib))
+                            segment_unit_elem[0][-1].text = note.text
+                    
+                    # Add the segment to the wrapper
+                    segment_unit_elem.append(segment_elem)
+                    
+                    # Create unit from this wrapper
+                    term = self.UnitClass.createfromxmlElement(segment_unit_elem)
+                    self.addunit(term, new=False)
+
     def addheader(self):
         """Initialise the file header."""
 
