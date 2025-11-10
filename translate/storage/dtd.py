@@ -369,11 +369,10 @@ class dtdfile(base.TranslationStore):
             tuple: (entity_name, entitytype, space_pre_entity, space_pre_definition, position)
 
         """
-        s = 0
         e = 0
         while e < len(line) and line[e].isspace():
             e += 1
-        space_pre_entity = " " * (e - s)
+        space_pre_entity = " " * e
         s = e
         entity_name = ""
         entitytype = "internal"
@@ -520,7 +519,6 @@ class dtdfile(base.TranslationStore):
                         e = quote.findend(line, "<!ENTITY")
                         line = line[e:]
                         entitypart = "name"
-                        entitytype = "internal"
 
                     if entitypart == "name":
                         (
@@ -532,6 +530,7 @@ class dtdfile(base.TranslationStore):
                         ) = self._parse_entity_name(line)
 
                         newdtd.entity = entity_name
+                        assert quote.rstripeol(entity_name) == entity_name
                         if newdtd.entity:
                             newdtd.entitytype = entitytype
                             if entitytype == "external":
@@ -550,14 +549,12 @@ class dtdfile(base.TranslationStore):
                                 instring = False
 
                     if entitypart == "parameter":
-                        entityparameter = ""
                         while e < len(line) and line[e].isspace():
                             e += 1
                         paramstart = e
                         while e < len(line) and line[e].isalnum():
                             e += 1
-                        entityparameter = line[paramstart:e]
-                        newdtd.entityparameter = entityparameter
+                        newdtd.entityparameter += line[paramstart:e]
                         while e < len(line) and line[e].isspace():
                             e += 1
                         line = line[e:]
