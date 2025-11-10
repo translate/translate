@@ -425,7 +425,11 @@ class dtdfile(base.TranslationStore):
         source = dtdsrc.decode(self.encoding)
         lines = source.split("\n")
 
-        # Remove the last empty line if it's just from a trailing newline
+        # When splitting by "\n", a trailing newline creates an empty string at the end.
+        # For example: "text\n" → ["text", ""]
+        # We remove this empty element to avoid creating an unwanted blank unit.
+        # Intentional blank lines (e.g., "text\n\n") still work correctly:
+        # "text\n\n" → ["text", "", ""] → ["text", ""] (one blank line preserved)
         if lines and not lines[-1]:
             lines = lines[:-1]
 
