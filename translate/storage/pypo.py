@@ -149,6 +149,7 @@ class PoWrapper(textwrap.TextWrapper):
             \s+|                                  # any whitespace
             [a-z0-9A-Z_#\[\].-]+/|                # nicely split long URLs
             </?|                                  # opening or closing angle bracket for HTML tags
+            }%(?=[{])|                            # split }%{ into }% and {
             \w*\\.\w*|                            # any escape should not be split
             [\w\!\'\&\.\,\?=<>%]+\s+|             # space should go with a word
             [，。、]|                             # full width punctuation
@@ -203,48 +204,27 @@ class PoWrapper(textwrap.TextWrapper):
             # cur_len is just the length of all the chunks in cur_line.
             cur_line = []
             cur_len = 0
-            
-            # Track the last good breaking point (position where we can break)
-            last_breakable_idx = -1
-            last_breakable_len = 0
 
             while chunks:
                 l = unicode_width(chunks[-1])
-                
-                # Check if adding this chunk would exceed width
-                if cur_len + l > width:
-                    # If we have a good breaking point, use it
-                    if last_breakable_idx >= 0:
-                        # Restore chunks that shouldn't be on this line
-                        for i in range(len(cur_line) - 1, last_breakable_idx, -1):
-                            chunks.append(cur_line.pop())
-                        break
-                    # Otherwise, try to split wide chars
-                    elif l > len(chunks[-1]):
-                        slice1, slice2 = cjkslices(chunks[-1], width - cur_len)
-                        if slice2:
-                            cur_line.append(slice1)
-                            cur_len += unicode_width(slice1)
-                            chunks[-1] = slice2
-                        break
-                    else:
-                        # Line is full, break here
-                        break
-                
-                # Add chunk to current line
-                chunk = chunks.pop()
-                cur_line.append(chunk)
-                cur_len += l
-                
-                # Check if this is a good breaking point
-                # Good breaking points: after space, after </, after %, after -
-                if (chunk.endswith(' ') or 
-                    chunk == '</' or 
-                    chunk == '%' or
-                    chunk.endswith('-') or
-                    chunk == '}'):
-                    last_breakable_idx = len(cur_line) - 1
-                    last_breakable_len = cur_len
+
+                # Can at least squeeze this chunk onto the current line.
+                if cur_len + l <= width:
+                    cur_line.append(chunks.pop())
+                    cur_len += l
+
+                # Figure out if we can split wide chars
+                elif l > len(chunks[-1]):
+                    slice1, slice2 = cjkslices(chunks[-1], width - cur_len)
+                    if slice2:
+                        cur_line.append(slice1)
+                        cur_len += unicode_width(slice1)
+                        chunks[-1] = slice2
+                    break
+
+                # Nope, this line is full.
+                else:
+                    break
 
             # The current line is full, and the next chunk is too big to
             # fit on *any* line (not just this one).
@@ -279,16 +259,9 @@ def quoteforpo(text: str | None, wrapper_obj: PoWrapper | None = None) -> list[s
         or len(lines[0]) > wrapper_obj.width - 6
     ):
         polines.append('""')
-    
-    # Adjust width to account for quotes that will be added
-    original_width = wrapper_obj.width
-    wrapper_obj.width = original_width - 2
-    try:
-        for line in lines:
-            lns = wrapper_obj.wrap(line)
-            polines.extend(f'"{ln}"' for ln in lns)
-    finally:
-        wrapper_obj.width = original_width
+    for line in lines:
+        lns = wrapper_obj.wrap(line)
+        polines.extend(f'"{ln}"' for ln in lns)
     return polines
 
 
