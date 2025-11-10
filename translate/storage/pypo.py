@@ -148,8 +148,8 @@ class PoWrapper(textwrap.TextWrapper):
             \\"[^"]{1,40}\\"|                     # quoted string
             \s+|                                  # any whitespace
             [a-z0-9A-Z_#\[\].-]+/|                # nicely split long URLs
-            </?|                                  # opening or closing angle bracket for HTML tags
-            }%(?=[{])|                            # split }%{ into }% and {
+            </?|                                  # HTML tag start
+            }%(?=[{])|                            # }% before {
             \w*\\.\w*|                            # any escape should not be split
             [\w\!\'\&\.\,\?=<>%]+\s+|             # space should go with a word
             [，。、]|                             # full width punctuation
