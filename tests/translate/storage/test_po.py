@@ -1077,6 +1077,29 @@ msgstr ""
 """
         assert self.poreflow(posource) == posource
 
+    @mark.xfail(reason="broken wrapping in pypo")
+    def test_wrap_escape_line(self):
+        posource = r"""msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+msgid "test"
+msgstr ""
+"%{src?%{dest?转发:入站}:出站} %{ipv6?%{ipv4?<var>IPv4</var> and <var>IPv6</"
+"var>:<var>IPv6</var>}:<var>IPv4</var>}%{proto?, 协议 %{proto#%{next?, }%"
+"{item.types?<var class=\"cbi-tooltip-container\">%{item.name}<span "
+"class=\"cbi-tooltip\">具有类型 %{item.types#%{next?, }<var>%{item}</var>} 的 "
+"ICMP</span></var>:<var>%{item.name}</var>}}}%{mark?, 标记 <var%{mark.inv? "
+"data-tooltip=\"匹配除 %{mark.num}%{mark.mask? 带有掩码 %{mark.mask}} 的 "
+"fwmarks。\":%{mark.mask? data-tooltip=\"在比较前对fwmark 应用掩码 %"
+"{mark.mask} 。\"}}>%{mark.val}</var>}%{dscp?, DSCP %{dscp.inv?<var data-"
+"tooltip=\"匹配除 %{dscp.num?:%{dscp.name}} 以外的 DSCP 类型。\">%{dscp.val}</"
+"var>:<var>%{dscp.val}</var>}}%{helper?, 助手 %{helper.inv?<var data-"
+"tooltip=\"匹配除 &quot;%{helper.name}&quot; 以外的任意助手。\">%{helper.val}"
+"</var>:<var data-tooltip=\"%{helper.name}\">%{helper.val}</var>}}"
+"""
+        print(self.poreflow(posource))
+        assert self.poreflow(posource) == posource
+
     def test_wrap_parenthesis_long(self):
         gettext_0_22 = r"""msgid "test3"
 msgstr ""
