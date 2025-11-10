@@ -149,7 +149,6 @@ class PoWrapper(textwrap.TextWrapper):
             \s+|                                  # any whitespace
             [a-z0-9A-Z_#\[\].-]+/|                # nicely split long URLs
             </?|                                  # opening or closing angle bracket for HTML tags
-            %(?=[{])|                             # percent sign before brace (variable marker)
             \w*\\.\w*|                            # any escape should not be split
             [\w\!\'\&\.\,\?=<>%]+\s+|             # space should go with a word
             [，。、]|                             # full width punctuation
@@ -259,9 +258,15 @@ def quoteforpo(text: str | None, wrapper_obj: PoWrapper | None = None) -> list[s
         or len(lines[0]) > wrapper_obj.width - 6
     ):
         polines.append('""')
-    for line in lines:
-        lns = wrapper_obj.wrap(line)
-        polines.extend(f'"{ln}"' for ln in lns)
+    # Temporarily reduce width by 2 to account for quotes that will be added
+    original_width = wrapper_obj.width
+    wrapper_obj.width = original_width - 2
+    try:
+        for line in lines:
+            lns = wrapper_obj.wrap(line)
+            polines.extend(f'"{ln}"' for ln in lns)
+    finally:
+        wrapper_obj.width = original_width
     return polines
 
 
