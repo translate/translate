@@ -29,13 +29,13 @@ a separate unit for easier handling across the translation stack. The unit ID
 is composed as "unitId:segmentId" for multi-segment units.
 """
 
+from __future__ import annotations
+
 from lxml import etree
 
 from translate.misc.xml_helpers import (
     clear_content,
     getXMLspace,
-    safely_set_text,
-    setXMLspace,
 )
 from translate.storage import lisa
 from translate.storage.placeables.lisa import strelem_to_xml, xml_to_strelem
@@ -75,21 +75,14 @@ class xliff2unit(XliffUnit):
         S_FINAL: (state.FINAL, state.MAX),
     }
 
-    def __init__(self, source, empty=False, **kwargs):
+    def __init__(self, source, empty: bool = False, **kwargs):
         """Override the constructor to set xml:space="preserve"."""
         super().__init__(source, empty, **kwargs)
         if empty:
             return
-        setXMLspace(self.xmlelement, "preserve")
+        self._ensure_xml_space_preserve()
 
-    def createlanguageNode(self, lang, text, purpose):
-        """Returns an xml Element setup with given parameters."""
-        assert purpose
-        langset = etree.Element(self.namespaced(purpose))
-        safely_set_text(langset, text)
-        return langset
-
-    def getlanguageNodes(self):
+    def getlanguageNodes(self) -> list[etree._Element]:
         """We override this to get source and target nodes within segments."""
         nodes = []
         # In XLIFF 2.0, source and target are within segment elements
@@ -107,14 +100,14 @@ class xliff2unit(XliffUnit):
                     nodes.append(target)
         return nodes
 
-    def get_source_dom(self):
+    def get_source_dom(self) -> etree._Element | None:
         """Get the source DOM element."""
         segment = self._get_segment()
         if segment is None:
             return None
         return self._get_source_from_segment(segment)
 
-    def set_source_dom(self, dom_node):
+    def set_source_dom(self, dom_node: etree._Element | None) -> None:
         """Set the source DOM element."""
         segment = self._get_or_create_segment()
         # Remove existing source
@@ -127,14 +120,16 @@ class xliff2unit(XliffUnit):
 
     source_dom = property(get_source_dom, set_source_dom)
 
-    def get_target_dom(self, lang=None):
+    def get_target_dom(self, lang: str | None = None) -> etree._Element | None:
         """Get the target DOM element."""
         segment = self._get_segment()
         if segment is None:
             return None
         return self._get_target_from_segment(segment)
 
-    def set_target_dom(self, dom_node, append=False):
+    def set_target_dom(
+        self, dom_node: etree._Element | None, append: bool = False
+    ) -> None:
         """Set the target DOM element."""
         segment = self._get_or_create_segment()
         # Remove existing target
@@ -193,7 +188,6 @@ class xliff2unit(XliffUnit):
 
     def set_rich_target(self, value, lang="xx", append=False):
         """Set the rich target content."""
-        self._rich_target = None
         segment = self._get_or_create_segment()
 
         if value is None:
@@ -257,35 +251,41 @@ class xliff2unit(XliffUnit):
     def rich_target(self, value):
         self.set_rich_target(value)
 
-    def _get_segment(self):
+    def _get_segment(self) -> etree._Element | None:
         """Get the segment element."""
         try:
             return next(self.xmlelement.iterchildren(self.namespaced("segment")))
         except StopIteration:
             return None
 
-    def _get_or_create_segment(self):
+    def _get_or_create_segment(self) -> etree._Element:
         """Get or create the segment element."""
         segment = self._get_segment()
         if segment is None:
             segment = etree.SubElement(self.xmlelement, self.namespaced("segment"))
         return segment
 
-    def _get_source_from_segment(self, segment):
+    def _get_source_from_segment(
+        self, segment: etree._Element
+    ) -> etree._Element | None:
         """Get source element from segment."""
         try:
             return next(segment.iterchildren(self.namespaced("source")))
         except StopIteration:
             return None
 
-    def _get_target_from_segment(self, segment):
+    def _get_target_from_segment(
+        self, segment: etree._Element
+    ) -> etree._Element | None:
         """Get target element from segment."""
         try:
             return next(segment.iterchildren(self.namespaced("target")))
         except StopIteration:
             return None
 
-    def addnote(self, text, origin=None, position="append"):
+    def addnote(
+        self, text: str, origin: str | None = None, position: str = "append"
+    ) -> None:
         """Add a note specifically in the XLIFF 2.0 way."""
         if not text:
             return
@@ -301,7 +301,7 @@ class xliff2unit(XliffUnit):
         if origin:
             note_elem.set("category", origin)
 
-    def getnotes(self, origin=None):
+    def getnotes(self, origin: str | None = None) -> str:
         """Get notes from the unit."""
         notes_text = []
         notes_container = self.xmlelement.find(self.namespaced("notes"))
@@ -312,7 +312,7 @@ class xliff2unit(XliffUnit):
                         notes_text.append(note.text)
         return "\n".join(notes_text)
 
-    def removenotes(self, origin=None):
+    def removenotes(self, origin: str | None = None) -> None:
         """Remove notes from the unit."""
         notes_container = self.xmlelement.find(self.namespaced("notes"))
         if notes_container is not None:
@@ -331,16 +331,22 @@ class xliff2unit(XliffUnit):
                 ):
                     self.xmlelement.remove(notes_container)
 
-    def getid(self):
+    def getid(self) -> str | None:
         """Get the unit id."""
         return self.xmlelement.get("id")
 
-    def setid(self, value):
+    def setid(self, value: str) -> None:
         """Set the unit id."""
         if value:
             self.xmlelement.set("id", value)
 
-    def merge(self, otherunit, overwrite=False, comments=True, authoritative=False):
+    def merge(
+        self,
+        otherunit: xliff2unit,
+        overwrite: bool = False,
+        comments: bool = True,
+        authoritative: bool = False,
+    ) -> None:
         """Merge another unit into this one."""
         super().merge(otherunit, overwrite, comments)
         if self.target and hasattr(otherunit, "source"):
@@ -450,14 +456,14 @@ class xliff2file(lisa.LISAfile):
                     # Copy notes from unit level if any
                     notes_elem = unit_elem.find(self.namespaced("notes"))
                     if notes_elem is not None:
-                        segment_unit_elem.append(
-                            etree.Element(notes_elem.tag, notes_elem.attrib)
+                        notes_container = etree.Element(
+                            notes_elem.tag, notes_elem.attrib
                         )
+                        segment_unit_elem.append(notes_container)
                         for note in notes_elem:
-                            segment_unit_elem[0].append(
-                                etree.Element(note.tag, note.attrib)
-                            )
-                            segment_unit_elem[0][-1].text = note.text
+                            new_note = etree.Element(note.tag, note.attrib)
+                            new_note.text = note.text
+                            notes_container.append(new_note)
 
                     # Add the segment to the wrapper
                     segment_unit_elem.append(segment_elem)
@@ -514,13 +520,13 @@ class xliff2file(lisa.LISAfile):
             return None
         return self.createfilenode(filename)
 
-    def addunit(self, unit, new=True):
+    def addunit(self, unit: xliff2unit, new: bool = True) -> None:
         """Adds the given unit to the file."""
         if new:
             unit.setid(self._getuniqueid())
         super().addunit(unit, new=new)
 
-    def _getuniqueid(self):
+    def _getuniqueid(self) -> str:
         """Return a unique numeric id for a unit."""
         max_id = 0
         for unit in self.units:
@@ -531,23 +537,27 @@ class xliff2file(lisa.LISAfile):
             except (ValueError, AttributeError):
                 # Handle cases where getid() may fail or unit is malformed
                 continue
-            if unit_id and unit_id.isdigit():
-                max_id = max(max_id, int(unit_id))
+            if unit_id:
+                # Handle composite IDs (e.g., "unit1:seg1") by extracting numeric part before colon
+                if ":" in unit_id:
+                    unit_id = unit_id.split(":")[0]
+                if unit_id.isdigit():
+                    max_id = max(max_id, int(unit_id))
         return str(max_id + 1)
 
-    def getsourcelanguage(self):
+    def getsourcelanguage(self) -> str:
         """Get the source language for this file."""
         return self.document.getroot().get("srcLang", "en")
 
-    def setsourcelanguage(self, lang):
+    def setsourcelanguage(self, lang: str) -> None:
         """Set the source language for this file."""
         self.document.getroot().set("srcLang", lang)
 
-    def gettargetlanguage(self):
+    def gettargetlanguage(self) -> str | None:
         """Get the target language for this file."""
         return self.document.getroot().get("trgLang")
 
-    def settargetlanguage(self, lang):
+    def settargetlanguage(self, lang: str) -> None:
         """Set the target language for this file."""
         if lang:
             self.document.getroot().set("trgLang", lang)

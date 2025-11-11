@@ -165,6 +165,7 @@ class TestXLIFF2file(test_base.TestTranslationStore):
 </xliff>"""
         xliff2file = xliff2.xliff2file.parsestring(xliff2_content)
         assert len(xliff2file.units) == 1
+        assert xliff2file.units[0].getid() == "1"
         assert xliff2file.units[0].source == "Hello"
         assert xliff2file.units[0].target == "Bonjour"
         assert xliff2file.getsourcelanguage() == "en"
@@ -339,12 +340,14 @@ class TestXLIFF2file(test_base.TestTranslationStore):
 
         store = xliff2.xliff2file.parsestring(xliff_content)
         assert len(store.units) == 1
+        assert store.units[0].getid() == "1"
         assert store.units[0].source == "Welcome"
         assert store.units[0].target == "Bienvenue"
 
         # Test round-trip
         serialized = bytes(store)
         store2 = xliff2.xliff2file.parsestring(serialized)
+        assert store2.units[0].getid() == "1"
         assert store2.units[0].source == "Welcome"
         assert store2.units[0].target == "Bienvenue"
 
