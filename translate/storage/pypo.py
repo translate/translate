@@ -251,7 +251,7 @@ class PoWrapper:
         current_line = []
         current_width = 0
         
-        for chunk in chunks:
+        for i, chunk in enumerate(chunks):
             chunk_width = unicode_width(chunk)
             
             # Try to add chunk to current line
@@ -261,7 +261,7 @@ class PoWrapper:
             else:
                 # Chunk doesn't fit
                 if current_line:
-                    # Save current line
+                    # Save current line and start new one
                     lines.append(''.join(current_line))
                     current_line = []
                     current_width = 0
@@ -271,30 +271,51 @@ class PoWrapper:
                         current_line.append(chunk)
                         current_width += chunk_width
                     else:
-                        # Chunk is too long, need to break it
-                        broken = self._break_long_chunk(chunk)
-                        if broken:
-                            current_line.append(broken[0])
-                            current_width = unicode_width(broken[0])
-                            for part in broken[1:]:
-                                lines.append(''.join(current_line))
-                                current_line = [part]
-                                current_width = unicode_width(part)
+                        # Chunk is too long even for a new line
+                        # Check if it's a long word without spaces
+                        # Count how many escape sequences vs regular chars
+                        escape_count = chunk.count('\\\\')
+                        is_mostly_escapes = escape_count * 2 > len(chunk) * 0.8
+                        is_long_word = chunk.strip() and ' ' not in chunk
+                        
+                        # Allow overflow for long words that aren't mostly escape sequences
+                        # This handles cases like long identifiers/URLs but breaks repetitive escapes
+                        allow_overflow = is_long_word and not is_mostly_escapes
+                        
+                        if allow_overflow:
+                            # Allow overflow: add the whole chunk as one line
+                            current_line.append(chunk)
+                            current_width += chunk_width
+                        else:
+                            # Need to break the chunk
+                            broken = self._break_long_chunk(chunk)
+                            if broken:
+                                current_line.append(broken[0])
+                                current_width = unicode_width(broken[0])
+                                for part in broken[1:]:
+                                    lines.append(''.join(current_line))
+                                    current_line = [part]
+                                    current_width = unicode_width(part)
                 else:
                     # Current line is empty and chunk doesn't fit
-                    # Must break the chunk
-                    broken = self._break_long_chunk(chunk)
-                    for part in broken[:-1]:
-                        lines.append(part)
-                    if broken:
-                        current_line.append(broken[-1])
-                        current_width = unicode_width(broken[-1])
+                    # If it's a very long word, just add it (allow overflow)
+                    if chunk.strip() and ' ' not in chunk:
+                        current_line.append(chunk)
+                        current_width += chunk_width
+                    else:
+                        # Must break the chunk
+                        broken = self._break_long_chunk(chunk)
+                        for part in broken[:-1]:
+                            lines.append(part)
+                        if broken:
+                            current_line.append(broken[-1])
+                            current_width = unicode_width(broken[-1])
         
         # Add remaining line
         if current_line:
             lines.append(''.join(current_line))
         
-        return lines if lines else [text if text else '']
+        return lines if lines else ['']
     
     def _break_long_chunk(self, chunk: str) -> list[str]:
         """
