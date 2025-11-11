@@ -431,7 +431,7 @@ class Xliff2File(XliffFile):
                     # Generate a default unit ID if missing
                     unit_id = f"u{self._getuniqueid()}"
                     unit_elem.set("id", unit_id)
-                
+
                 for idx, segment_elem in enumerate(segments):
                     # Create a wrapper unit element for this segment
                     segment_unit_elem = etree.Element(self.namespaced("unit"))
