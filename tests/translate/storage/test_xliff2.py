@@ -77,7 +77,6 @@ class TestXLIFF2file(test_base.TestTranslationStore):
         xliff2file.addsourceunit("Hello")
         assert len(xliff2file.units) == 1
         newfile = xliff2.Xliff2File.parsestring(bytes(xliff2file))
-        print(bytes(xliff2file))
         assert len(newfile.units) == 1
         assert newfile.units[0].source == "Hello"
         assert newfile.findunit("Hello").source == "Hello"

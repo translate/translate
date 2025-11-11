@@ -86,17 +86,16 @@ class Xliff2Unit(XliffUnit):
         nodes = []
         # In XLIFF 2.0, source and target are within segment elements
         for segment in self.xmlelement.iterchildren(self.namespaced("segment")):
-            source = None
-            target = None
             try:
                 source = next(segment.iterchildren(self.namespaced(self.languageNode)))
-                target = next(segment.iterchildren(self.namespaced("target")))
-                nodes.extend([source, target])
+                nodes.append(source)
             except StopIteration:
-                if source is not None:
-                    nodes.append(source)
-                if target is not None:
-                    nodes.append(target)
+                pass
+            try:
+                target = next(segment.iterchildren(self.namespaced("target")))
+                nodes.append(target)
+            except StopIteration:
+                pass
         return nodes
 
     def get_source_dom(self) -> etree._Element | None:
@@ -126,9 +125,7 @@ class Xliff2Unit(XliffUnit):
             return None
         return self._get_target_from_segment(segment)
 
-    def set_target_dom(
-        self, dom_node: etree._Element | None, append: bool = False
-    ) -> None:
+    def set_target_dom(self, dom_node: etree._Element | None) -> None:
         """Set the target DOM element."""
         segment = self._get_or_create_segment()
         # Remove existing target
@@ -185,7 +182,7 @@ class Xliff2Unit(XliffUnit):
     def rich_source(self, value):
         self.set_rich_source(value)
 
-    def set_rich_target(self, value, lang="xx", append=False):
+    def set_rich_target(self, value, lang="xx"):
         """Set the rich target content."""
         segment = self._get_or_create_segment()
 
@@ -282,9 +279,7 @@ class Xliff2Unit(XliffUnit):
         except StopIteration:
             return None
 
-    def addnote(
-        self, text: str, origin: str | None = None, position: str = "append"
-    ) -> None:
+    def addnote(self, text: str, origin: str | None = None) -> None:
         """Add a note specifically in the XLIFF 2.0 way."""
         if not text:
             return
@@ -344,7 +339,6 @@ class Xliff2Unit(XliffUnit):
         otherunit: Xliff2Unit,
         overwrite: bool = False,
         comments: bool = True,
-        authoritative: bool = False,
     ) -> None:
         """Merge another unit into this one."""
         super().merge(otherunit, overwrite, comments)
@@ -432,7 +426,12 @@ class Xliff2File(XliffFile):
                 self.addunit(term, new=False)
             else:
                 # Multiple segments - create a unit for each segment
-                unit_id = unit_elem.get("id", "")
+                unit_id = unit_elem.get("id")
+                if not unit_id:
+                    # Generate a default unit ID if missing
+                    unit_id = f"u{self._getuniqueid()}"
+                    unit_elem.set("id", unit_id)
+                
                 for idx, segment_elem in enumerate(segments):
                     # Create a wrapper unit element for this segment
                     segment_unit_elem = etree.Element(self.namespaced("unit"))
@@ -470,9 +469,7 @@ class Xliff2File(XliffFile):
     def addheader(self):
         """Initialise the file header."""
 
-    def createfilenode(
-        self, filename, sourcelanguage=None, targetlanguage=None, datatype="plaintext"
-    ):
+    def createfilenode(self, filename, sourcelanguage=None, targetlanguage=None):
         """Creates a file node with the given filename."""
         if sourcelanguage is None:
             sourcelanguage = self.sourcelanguage
@@ -540,3 +537,6 @@ class Xliff2File(XliffFile):
         """Set the target language for this file."""
         if lang:
             self.document.getroot().set("trgLang", lang)
+
+    sourcelanguage = property(getsourcelanguage, setsourcelanguage)
+    targetlanguage = property(gettargetlanguage, settargetlanguage)
