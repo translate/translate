@@ -190,3 +190,56 @@ GENERAL@2|Notes,"cable, motor, switch"
         assert len(store.units) == 1
         store.units[0].target = "伐木"
         assert bytes(store).decode().splitlines() == expected
+
+    def test_monolingual_id_target(self):
+        """Test monolingual CSV with id and target columns."""
+        content = b'"id","target"\n"hello","Hola"\n"goodbye","Adios"'
+        store = self.parse_store(content)
+        assert len(store.units) == 2
+        assert store.units[0].id == "hello"
+        assert store.units[0].source == ""
+        assert store.units[0].target == "Hola"
+        assert store.units[1].id == "goodbye"
+        assert store.units[1].source == ""
+        assert store.units[1].target == "Adios"
+
+    def test_monolingual_context_target(self):
+        """Test monolingual CSV with context and target columns."""
+        content = b'"context","target"\n"app.hello","Hola"\n"app.goodbye","Adios"'
+        store = self.parse_store(content)
+        assert len(store.units) == 2
+        assert store.units[0].context == "app.hello"
+        assert store.units[0].source == ""
+        assert store.units[0].target == "Hola"
+        assert store.units[1].context == "app.goodbye"
+        assert store.units[1].source == ""
+        assert store.units[1].target == "Adios"
+
+    def test_monolingual_key_translation(self):
+        """Test monolingual CSV with key (mapped to id) and translation (mapped to target)."""
+        content = b'"key","translation"\n"hello_message","Hola"\n"bye_message","Adios"'
+        store = self.parse_store(content)
+        assert len(store.units) == 2
+        assert store.units[0].id == "hello_message"
+        assert store.units[0].source == ""
+        assert store.units[0].target == "Hola"
+        assert store.units[1].id == "bye_message"
+        assert store.units[1].source == ""
+        assert store.units[1].target == "Adios"
+
+    def test_monolingual_roundtrip(self):
+        """Test that monolingual CSV can be saved and loaded correctly."""
+        content = b'"id","target"\n"hello","Hola"\n"goodbye","Adios"'
+        store = self.parse_store(content)
+        assert len(store.units) == 2
+        
+        # Modify a unit
+        store.units[0].target = "Hello Spanish"
+        
+        # Roundtrip
+        newstore = self.reparse(store)
+        assert len(newstore.units) == 2
+        assert newstore.units[0].id == "hello"
+        assert newstore.units[0].target == "Hello Spanish"
+        assert newstore.units[1].id == "goodbye"
+        assert newstore.units[1].target == "Adios"
