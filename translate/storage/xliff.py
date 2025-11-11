@@ -36,7 +36,7 @@ from translate.misc.xml_helpers import (
 from translate.storage import base, lisa
 from translate.storage.placeables.lisa import strelem_to_xml, xml_to_strelem
 from translate.storage.workflow import StateEnum as state
-from translate.storage.xliff_common import XliffUnit
+from translate.storage.xliff_common import XliffFile, XliffUnit
 
 # TODO: handle translation types
 
@@ -49,7 +49,7 @@ ID_SEPARATOR = "\04"
 ID_SEPARATOR_SAFE = "__%04__"
 
 
-class xliffunit(XliffUnit):
+class Xliff1Unit(XliffUnit):
     """A single term in the xliff file."""
 
     rootNode = "trans-unit"
@@ -566,10 +566,10 @@ class xliffunit(XliffUnit):
         )
 
 
-class xlifffile(lisa.LISAfile):
+class Xliff1File(XliffFile):
     """Class representing a XLIFF file store."""
 
-    UnitClass = xliffunit
+    UnitClass = Xliff1Unit
     Name = "XLIFF Translation File"
     Mimetypes = ["application/x-xliff", "application/x-xliff+xml"]
     Extensions = ["xlf", "xliff", "sdlxliff"]
@@ -594,10 +594,6 @@ class xlifffile(lisa.LISAfile):
 
     suggestions_in_format = True
     """xliff units have alttrans tags which can be used to store suggestions"""
-
-    def __init__(self, *args, **kwargs):
-        self._filename = None
-        super().__init__(*args, **kwargs)
 
     def initbody(self):
         # detect the xliff namespace, handle both 1.1 and 1.2
@@ -890,3 +886,8 @@ class xlifffile(lisa.LISAfile):
 
                 xliff = poxliff.PoXliffFile.parsestring(storestring)
         return xliff
+
+
+# Backward compatibility aliases
+xliffunit = Xliff1Unit
+xlifffile = Xliff1File

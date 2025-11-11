@@ -40,10 +40,10 @@ from translate.misc.xml_helpers import (
 from translate.storage import lisa
 from translate.storage.placeables.lisa import strelem_to_xml, xml_to_strelem
 from translate.storage.workflow import StateEnum as state
-from translate.storage.xliff_common import XliffUnit
+from translate.storage.xliff_common import XliffFile, XliffUnit
 
 
-class xliff2unit(XliffUnit):
+class Xliff2Unit(XliffUnit):
     """A single translation unit in the XLIFF 2.0 file."""
 
     rootNode = "unit"
@@ -342,7 +342,7 @@ class xliff2unit(XliffUnit):
 
     def merge(
         self,
-        otherunit: xliff2unit,
+        otherunit: "Xliff2Unit",
         overwrite: bool = False,
         comments: bool = True,
         authoritative: bool = False,
@@ -356,10 +356,10 @@ class xliff2unit(XliffUnit):
                 segment.set("state", "translated")
 
 
-class xliff2file(lisa.LISAfile):
+class Xliff2File(XliffFile):
     """Class representing an XLIFF 2.0 file store."""
 
-    UnitClass = xliff2unit
+    UnitClass = Xliff2Unit
     Name = "XLIFF 2.0 Translation File"
     Mimetypes = ["application/x-xliff+xml"]
     Extensions = ["xlf", "xliff"]
@@ -380,10 +380,6 @@ class xliff2file(lisa.LISAfile):
     namespace = "urn:oasis:names:tc:xliff:document:2.0"
 
     suggestions_in_format = False
-
-    def __init__(self, *args, **kwargs):
-        self._filename = None
-        super().__init__(*args, **kwargs)
 
     def initbody(self):
         """Initialize the file body."""
@@ -520,7 +516,7 @@ class xliff2file(lisa.LISAfile):
             return None
         return self.createfilenode(filename)
 
-    def addunit(self, unit: xliff2unit, new: bool = True) -> None:
+    def addunit(self, unit: "Xliff2Unit", new: bool = True) -> None:
         """Adds the given unit to the file."""
         if new:
             unit.setid(self._getuniqueid())
@@ -561,3 +557,8 @@ class xliff2file(lisa.LISAfile):
         """Set the target language for this file."""
         if lang:
             self.document.getroot().set("trgLang", lang)
+
+
+# Backward compatibility aliases
+xliff2unit = Xliff2Unit
+xliff2file = Xliff2File

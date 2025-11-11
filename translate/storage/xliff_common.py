@@ -28,6 +28,15 @@ from translate.storage import lisa
 from translate.storage.placeables.lisa import xml_to_strelem
 
 
+class XliffFile(lisa.LISAfile):
+    """Base class providing common functionality for XLIFF file stores."""
+
+    def __init__(self, *args, **kwargs):
+        """Initialize XLIFF file with filename tracking."""
+        self._filename = None
+        super().__init__(*args, **kwargs)
+
+
 class XliffUnit(lisa.LISAunit):
     """Base class providing common functionality for XLIFF units."""
 
