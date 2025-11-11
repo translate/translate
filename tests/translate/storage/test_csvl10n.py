@@ -232,10 +232,10 @@ GENERAL@2|Notes,"cable, motor, switch"
         content = b'"id","target"\n"hello","Hola"\n"goodbye","Adios"'
         store = self.parse_store(content)
         assert len(store.units) == 2
-        
+
         # Modify a unit
         store.units[0].target = "Hello Spanish"
-        
+
         # Roundtrip
         newstore = self.reparse(store)
         assert len(newstore.units) == 2

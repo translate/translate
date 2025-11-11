@@ -212,18 +212,19 @@ EXTRA_KEY = "__CSVL10N__EXTRA__"
 def try_dialects(inputfile, fieldnames, dialect, has_header=False):
     """
     Create a CSV DictReader with the appropriate dialect.
-    
+
     Args:
         inputfile: The file to read
         fieldnames: The field names to use (or None to auto-detect from first row)
         dialect: The CSV dialect to use
         has_header: If True, file has a header row and fieldnames should be None
                    to let DictReader auto-detect it
+
     """
     # If file has a header row, pass None to DictReader to auto-detect it
     # Otherwise, pass explicit fieldnames
     fieldnames_param = None if has_header else fieldnames
-    
+
     # FIXME: does it verify at all if we don't actually step through the file?
     try:
         inputfile.seek(0)
@@ -234,19 +235,25 @@ def try_dialects(inputfile, fieldnames, dialect, has_header=False):
         try:
             inputfile.seek(0)
             return csv.DictReader(
-                inputfile, fieldnames=fieldnames_param, dialect="default", restkey=EXTRA_KEY
+                inputfile,
+                fieldnames=fieldnames_param,
+                dialect="default",
+                restkey=EXTRA_KEY,
             )
         except csv.Error:
             inputfile.seek(0)
             return csv.DictReader(
-                inputfile, fieldnames=fieldnames_param, dialect="excel", restkey=EXTRA_KEY
+                inputfile,
+                fieldnames=fieldnames_param,
+                dialect="excel",
+                restkey=EXTRA_KEY,
             )
 
 
 def valid_fieldnames(fieldnames):
     """
     Check if fieldnames are valid.
-    
+
     For bilingual CSV files, at least one field should be identified as "source".
     For monolingual CSV files, we accept files with "id", "context", or "target"
     fields without requiring a "source" field.
@@ -258,17 +265,19 @@ def valid_fieldnames(fieldnames):
     )
     if has_source:
         return True
-    
+
     # Check if we have id, context, or target fields (monolingual CSV)
     monolingual_fields = {"id", "context", "target"}
-    mapped_fields = {fieldname_map.get(fieldname, fieldname) for fieldname in fieldnames}
+    mapped_fields = {
+        fieldname_map.get(fieldname, fieldname) for fieldname in fieldnames
+    }
     return bool(monolingual_fields & mapped_fields)
 
 
 def detect_header(inputfile, dialect, fieldnames):
     """
     Test if file has a header or not.
-    
+
     Returns a tuple of (fieldnames, has_header) where:
     - fieldnames: list of field names to use
     - has_header: True if the first row is a valid header, False otherwise
@@ -357,7 +366,9 @@ class csvfile(base.TranslationStore):
         inputfile = StringIO(text)
         has_header = False
         try:
-            fieldnames, has_header = detect_header(inputfile, self.dialect, self.fieldnames)
+            fieldnames, has_header = detect_header(
+                inputfile, self.dialect, self.fieldnames
+            )
             self.fieldnames = fieldnames
         except csv.Error:
             pass
