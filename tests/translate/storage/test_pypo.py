@@ -38,9 +38,7 @@ class TestHelpers:
         # Strings <= 69 chars fit on one line
         assert pypo.quoteforpo(
             "A very long sentence. A very long sentence. A very long sentence. A v"
-        ) == [
-            '"A very long sentence. A very long sentence. A very long sentence. A v"'
-        ]
+        ) == ['"A very long sentence. A very long sentence. A very long sentence. A v"']
         # Strings >= 70 chars with break points are wrapped
         assert pypo.quoteforpo(
             "A very long sentence. A very long sentence. A very long sentence. A ve"
@@ -167,7 +165,7 @@ class TestPYPOUnit(test_po.TestPOUnit):
     def test_wrap_firstlines(self):
         """
         Tests that we wrap the first line correctly to match gettext behavior.
-        
+
         Gettext wraps when the line is >= 70 chars and has break points.
         Lines <= 69 chars fit on one line.
         """

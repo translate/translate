@@ -251,7 +251,7 @@ def quoteforpo(text: str | None, wrapper_obj: PoWrapper | None = None) -> list[s
 
     polines = []
     len_lines = len(lines)
-    
+
     # Determine if we need to add an empty line at the start
     # This matches gettext behavior: add empty line if the text would need wrapping
     needs_empty_line = False
@@ -281,10 +281,10 @@ def quoteforpo(text: str | None, wrapper_obj: PoWrapper | None = None) -> list[s
             # If wrapping produces multiple non-empty lines, text can be broken
             if len(first_line_wrapped) > 1:
                 needs_empty_line = True
-    
+
     if needs_empty_line:
         polines.append('""')
-    
+
     for line in lines:
         lns = wrapper_obj.wrap(line)
         polines.extend(f'"{ln}"' for ln in lns)
