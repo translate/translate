@@ -36,6 +36,40 @@ class XliffFile(lisa.LISAfile):
         self._filename = None
         super().__init__(*args, **kwargs)
 
+    @staticmethod
+    def getfilename(filenode):
+        """
+        Returns the identifier of the given file node.
+
+        Must be overridden by subclasses to specify which attribute to use.
+        """
+        raise NotImplementedError("Subclasses must implement getfilename()")
+
+    @staticmethod
+    def setfilename(filenode, filename):
+        """
+        Set the identifier of the given file node.
+
+        Must be overridden by subclasses to specify which attribute to use.
+        """
+        raise NotImplementedError("Subclasses must implement setfilename()")
+
+    def getfilenames(self):
+        """Returns all file identifiers in this XLIFF file."""
+        filenodes = self.document.getroot().iterchildren(self.namespaced("file"))
+        filenames = [self.getfilename(filenode) for filenode in filenodes]
+        return list(filter(None, filenames))
+
+    def getfilenode(self, filename, createifmissing=False):
+        """Finds the file node with the given identifier."""
+        filenodes = self.document.getroot().iterchildren(self.namespaced("file"))
+        for filenode in filenodes:
+            if self.getfilename(filenode) == filename:
+                return filenode
+        if not createifmissing:
+            return None
+        return self.createfilenode(filename)
+
 
 class XliffUnit(lisa.LISAunit):
     """Base class providing common functionality for XLIFF units."""

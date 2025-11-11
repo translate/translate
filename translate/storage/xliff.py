@@ -657,25 +657,6 @@ class Xliff1File(XliffFile):
         """Set the name of the given file."""
         return filenode.set("original", filename)
 
-    def getfilenames(self):
-        """Returns all filenames in this XLIFF file."""
-        filenodes = self.document.getroot().iterchildren(self.namespaced("file"))
-        filenames = [self.getfilename(filenode) for filenode in filenodes]
-        filenames = list(filter(None, filenames))
-        if len(filenames) == 1 and not filenames[0]:
-            filenames = []
-        return filenames
-
-    def getfilenode(self, filename, createifmissing=False):
-        """Finds the filenode with the given name."""
-        filenodes = self.document.getroot().iterchildren(self.namespaced("file"))
-        for filenode in filenodes:
-            if self.getfilename(filenode) == filename:
-                return filenode
-        if createifmissing:
-            return self.createfilenode(filename)
-        return None
-
     def setsourcelanguage(self, language):
         if not language:
             return

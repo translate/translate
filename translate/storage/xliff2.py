@@ -37,7 +37,6 @@ from translate.misc.xml_helpers import (
     clear_content,
     getXMLspace,
 )
-from translate.storage import lisa
 from translate.storage.placeables.lisa import strelem_to_xml, xml_to_strelem
 from translate.storage.workflow import StateEnum as state
 from translate.storage.xliff_common import XliffFile, XliffUnit
@@ -342,7 +341,7 @@ class Xliff2Unit(XliffUnit):
 
     def merge(
         self,
-        otherunit: "Xliff2Unit",
+        otherunit: Xliff2Unit,
         overwrite: bool = False,
         comments: bool = True,
         authoritative: bool = False,
@@ -500,23 +499,7 @@ class Xliff2File(XliffFile):
         """Set the id of the given file."""
         return filenode.set("id", filename)
 
-    def getfilenames(self):
-        """Returns all file ids in this XLIFF 2.0 file."""
-        filenodes = self.document.getroot().iterchildren(self.namespaced("file"))
-        filenames = [self.getfilename(filenode) for filenode in filenodes]
-        return list(filter(None, filenames))
-
-    def getfilenode(self, filename, createifmissing=False):
-        """Finds the file node with the given id."""
-        filenodes = self.document.getroot().iterchildren(self.namespaced("file"))
-        for filenode in filenodes:
-            if self.getfilename(filenode) == filename:
-                return filenode
-        if not createifmissing:
-            return None
-        return self.createfilenode(filename)
-
-    def addunit(self, unit: "Xliff2Unit", new: bool = True) -> None:
+    def addunit(self, unit: Xliff2Unit, new: bool = True) -> None:
         """Adds the given unit to the file."""
         if new:
             unit.setid(self._getuniqueid())
@@ -557,8 +540,3 @@ class Xliff2File(XliffFile):
         """Set the target language for this file."""
         if lang:
             self.document.getroot().set("trgLang", lang)
-
-
-# Backward compatibility aliases
-xliff2unit = Xliff2Unit
-xliff2file = Xliff2File
