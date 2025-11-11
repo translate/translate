@@ -1077,7 +1077,6 @@ msgstr ""
 """
         assert self.poreflow(posource) == posource
 
-    @mark.xfail(reason="broken wrapping in pypo")
     def test_wrap_escape_line(self):
         posource = r"""msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
