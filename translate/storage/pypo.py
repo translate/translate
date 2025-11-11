@@ -200,20 +200,23 @@ class PoWrapper:
         - Words with trailing spaces
         - Escape sequences as part of words
         - Special sequences that shouldn't be broken
+        - CJK punctuation as break points
         """
         chunks = []
         current_chunk = []
         i = 0
         
         while i < len(text):
+            char = text[i]
+            
             # Check for escape sequence - keep it with the current chunk
-            if i < len(text) - 1 and text[i] == '\\':
+            if i < len(text) - 1 and char == '\\':
                 current_chunk.append(text[i:i+2])
                 i += 2
                 continue
             
             # Check for whitespace - end current chunk and add whitespace to next
-            if text[i] in ' \t':
+            if char in ' \t':
                 # Save current chunk with trailing space
                 j = i
                 while j < len(text) and text[j] in ' \t':
@@ -226,9 +229,20 @@ class PoWrapper:
                 i = j
                 continue
             
+            # Check for CJK punctuation - these are good break points
+            # Full-width punctuation marks like ，。、
+            if char in '，。、！？；：':
+                current_chunk.append(char)
+                # End chunk after CJK punctuation
+                if current_chunk:
+                    chunks.append(''.join(current_chunk))
+                    current_chunk = []
+                i += 1
+                continue
+            
             # Check for URL-friendly break after slash
-            if text[i] == '/':
-                current_chunk.append(text[i])
+            if char == '/':
+                current_chunk.append(char)
                 # Add slash and create a break point
                 chunks.append(''.join(current_chunk))
                 current_chunk = []
@@ -236,7 +250,7 @@ class PoWrapper:
                 continue
             
             # Regular character
-            current_chunk.append(text[i])
+            current_chunk.append(char)
             i += 1
         
         # Add any remaining chunk
@@ -298,8 +312,16 @@ class PoWrapper:
                                     current_width = unicode_width(part)
                 else:
                     # Current line is empty and chunk doesn't fit
-                    # If it's a very long word, just add it (allow overflow)
-                    if chunk.strip() and ' ' not in chunk:
+                    # Check if it's mostly escape sequences - if so, break it
+                    escape_count = chunk.count('\\\\')
+                    is_mostly_escapes = escape_count * 2 > len(chunk) * 0.8
+                    is_long_word = chunk.strip() and ' ' not in chunk
+                    
+                    # Allow overflow only for long words that aren't mostly escapes
+                    allow_overflow = is_long_word and not is_mostly_escapes and chunk_width <= self.width * 1.15
+                    
+                    if allow_overflow:
+                        # Allow overflow for moderately long words
                         current_line.append(chunk)
                         current_width += chunk_width
                     else:
