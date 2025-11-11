@@ -34,17 +34,19 @@ class TestHelpers:
         assert pypo.quoteforpo("Some test") == ['"Some test"']
         # Newline handling
         assert pypo.quoteforpo("One\nTwo\n") == ['""', '"One\\n"', '"Two\\n"']
-        # First line wrapping
+        # First line wrapping - matching gettext behavior
+        # Strings <= 69 chars fit on one line
         assert pypo.quoteforpo(
-            "A very long sentence. A very long sentence. A very long sentence. A ver"
+            "A very long sentence. A very long sentence. A very long sentence. A v"
         ) == [
-            '"A very long sentence. A very long sentence. A very long sentence. A ver"'
+            '"A very long sentence. A very long sentence. A very long sentence. A v"'
         ]
+        # Strings >= 70 chars with break points are wrapped
         assert pypo.quoteforpo(
-            "A very long sentence. A very long sentence. A very long sentence. A very"
+            "A very long sentence. A very long sentence. A very long sentence. A ve"
         ) == [
             '""',
-            '"A very long sentence. A very long sentence. A very long sentence. A very"',
+            '"A very long sentence. A very long sentence. A very long sentence. A ve"',
         ]
         # Long line with a newline
         assert pypo.quoteforpo(
@@ -164,18 +166,22 @@ class TestPYPOUnit(test_po.TestPOUnit):
 
     def test_wrap_firstlines(self):
         """
-        Tests that we wrap the first line correctly a first line if longer then 71 chars
-        as at 71 chars we should align the text on the left and preceded with with a msgid "".
+        Tests that we wrap the first line correctly to match gettext behavior.
+        
+        Gettext wraps when the line is >= 70 chars and has break points.
+        Lines <= 69 chars fit on one line.
         """
-        # longest before we wrap text
+        # longest before we wrap text (69 chars)
         str_max = (
-            "123456789 123456789 123456789 123456789 123456789 123456789 123456789 1"
+            "123456789 123456789 123456789 123456789 123456789 123456789 1234567 1"
         )
         unit = self.UnitClass(str_max)
         expected = f'msgid "{str_max}"\nmsgstr ""\n'
         assert str(unit) == expected
-        # at this length we wrap
-        str_wrap = str_max + "2"
+        # at 70+ chars with spaces, we wrap
+        str_wrap = (
+            "123456789 123456789 123456789 123456789 123456789 123456789 123456789 1"
+        )
         unit = self.UnitClass(str_wrap)
         expected = f'msgid ""\n"{str_wrap}"\nmsgstr ""\n'
         assert str(unit) == expected

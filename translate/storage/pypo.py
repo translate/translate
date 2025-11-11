@@ -251,12 +251,40 @@ def quoteforpo(text: str | None, wrapper_obj: PoWrapper | None = None) -> list[s
 
     polines = []
     len_lines = len(lines)
-    if (
-        len_lines > 2
-        or (len_lines == 2 and lines[1])
-        or len(lines[0]) > wrapper_obj.width - 6
-    ):
+    
+    # Determine if we need to add an empty line at the start
+    # This matches gettext behavior: add empty line if the text would need wrapping
+    needs_empty_line = False
+    if len_lines > 2 or (len_lines == 2 and lines[1]):
+        # Multiple lines with newlines (with content in last line) always need empty line
+        needs_empty_line = True
+    else:
+        # Single line, or line ending with \n (len_lines==2 but lines[1] is empty)
+        # Check if the first line needs wrapping
+        # For single line, gettext wraps when:
+        # 1. The text is >= 70 chars (for width=77), AND
+        # 2. The text can be wrapped (has break points)
+        #
+        # The threshold comes from the total line length: "msgid " + '"' + text + '"'
+        # = 6 + 1 + len(text) + 1 = len(text) + 8
+        # For this not to exceed width (77), text must be <= 69 chars
+        # So text >= 70 chars needs wrapping if it has break points
+        first_line_width = unicode_width(lines[0])
+        if first_line_width >= wrapper_obj.width - 7:
+            # Text is long enough that wrapping might be needed
+            # Check if it CAN be wrapped by trying to wrap it
+            # Use width-8 to check if line can be broken within the available space
+            test_wrapper = PoWrapper(width=wrapper_obj.width - 8)
+            first_line_wrapped = test_wrapper.wrap(lines[0])
+            # Filter out empty lines (artifacts from force-breaking)
+            first_line_wrapped = [line for line in first_line_wrapped if line]
+            # If wrapping produces multiple non-empty lines, text can be broken
+            if len(first_line_wrapped) > 1:
+                needs_empty_line = True
+    
+    if needs_empty_line:
         polines.append('""')
+    
     for line in lines:
         lns = wrapper_obj.wrap(line)
         polines.extend(f'"{ln}"' for ln in lns)
