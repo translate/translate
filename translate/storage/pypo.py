@@ -35,6 +35,12 @@ from warnings import warn
 
 from wcwidth import wcswidth
 
+try:
+    from uniseg.linebreak import line_break_units
+    HAS_UNISEG = True
+except ImportError:
+    HAS_UNISEG = False
+
 from translate.misc import quote
 from translate.misc.multistring import multistring
 from translate.storage import pocommon, poparser
@@ -196,12 +202,43 @@ class PoWrapper:
         """
         Split text into chunks at word boundaries.
         
-        Chunks include:
+        If uniseg library is available and text contains CJK characters, uses Unicode 
+        line breaking algorithm (UAX#14) for proper CJK handling. Otherwise uses
+        custom chunking with:
         - Words with trailing spaces
         - Escape sequences as part of words
-        - Special sequences that shouldn't be broken
+        - Slash-separated paths for URLs
         - CJK punctuation as break points
         """
+        # Check if text contains CJK characters
+        has_cjk = any(0x3000 <= ord(c) <= 0x9FFF or 0xFF00 <= ord(c) <= 0xFFEF 
+                      for c in text if len(c) == 1)
+        
+        # Use uniseg for CJK text if available
+        if HAS_UNISEG and has_cjk:
+            try:
+                # Get line break units using UAX#14
+                units = list(line_break_units(text))
+                # Post-process units to handle escape sequences and slashes better
+                processed_units = []
+                for unit in units:
+                    # If unit contains escape sequences or slashes, further split it
+                    if '\\\\' in unit or ('/' in unit and '[' not in unit):
+                        # Use manual chunking for this unit
+                        sub_chunks = self._manual_chunk(unit)
+                        processed_units.extend(sub_chunks)
+                    elif unit:  # Skip empty units
+                        processed_units.append(unit)
+                return processed_units if processed_units else [text]
+            except Exception:
+                # Fall back to manual chunking if uniseg fails
+                pass
+        
+        # Fallback: Manual chunking
+        return self._manual_chunk(text)
+    
+    def _manual_chunk(self, text: str) -> list[str]:
+        """Manual text chunking for non-CJK or when uniseg is not available."""
         chunks = []
         current_chunk = []
         i = 0
