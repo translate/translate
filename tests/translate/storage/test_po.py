@@ -953,18 +953,12 @@ msgstr[0] ""
 
     def test_wrapping(self):
         """This tests that we wrap like gettext."""
-        # This string is 70 chars after escaping (\t -> \\t), so it should wrap
         posource = r"""#: file.h:1
 msgid "bla\t12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345"
 msgstr "bla\t12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345"
 """
-        posource_wanted = r"""#: file.h:1
-msgid ""
-"bla\t12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345"
-msgstr ""
-"bla\t12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345"
-"""
-        assert self.poreflow(posource) == posource_wanted
+        # should be unchanged:
+        assert self.poreflow(posource) == posource
 
         posource = r"""#: 2
 msgid "bla\t12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 1"
