@@ -34,12 +34,7 @@ from itertools import chain
 from warnings import warn
 
 from wcwidth import wcswidth
-
-try:
-    from uniseg.linebreak import line_break_units
-    HAS_UNISEG = True
-except ImportError:
-    HAS_UNISEG = False
+from uniseg.linebreak import line_break_units
 
 from translate.misc import quote
 from translate.misc.multistring import multistring
@@ -202,9 +197,8 @@ class PoWrapper:
         """
         Split text into chunks at word boundaries.
         
-        If uniseg library is available and text contains CJK characters, uses Unicode 
-        line breaking algorithm (UAX#14) for proper CJK handling. Otherwise uses
-        custom chunking with:
+        For CJK text, uses Unicode line breaking algorithm (UAX#14) via uniseg.
+        For other text, uses custom chunking with:
         - Words with trailing spaces
         - Escape sequences as part of words
         - Slash-separated paths for URLs
@@ -214,8 +208,8 @@ class PoWrapper:
         has_cjk = any(0x3000 <= ord(c) <= 0x9FFF or 0xFF00 <= ord(c) <= 0xFFEF 
                       for c in text if len(c) == 1)
         
-        # Use uniseg for CJK text if available
-        if HAS_UNISEG and has_cjk:
+        # Use uniseg for CJK text
+        if has_cjk:
             try:
                 # Get line break units using UAX#14
                 units = list(line_break_units(text))
@@ -234,7 +228,7 @@ class PoWrapper:
                 # Fall back to manual chunking if uniseg fails
                 pass
         
-        # Fallback: Manual chunking
+        # For non-CJK text or if uniseg fails: Manual chunking
         return self._manual_chunk(text)
     
     def _manual_chunk(self, text: str) -> list[str]:
