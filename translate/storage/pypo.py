@@ -131,15 +131,18 @@ def cjkslices(text: str, index: int) -> tuple[str, str]:
     return text[:split_point], text[split_point:]
 
 
-class PoWrapper(textwrap.TextWrapper):
+class PoWrapper:
     """
-    Customized TextWrapper.
+    Gettext-compatible text wrapper for PO files.
 
-    - custom word separator regexp
-    - full width chars accounting, based on https://bugs.python.org/issue24665
-    - dropped support for unused features (for example max_lines or drop_whitespace)
+    This implementation follows gettext's wrapping behavior:
+    - Never breaks escape sequences (\\n, \\", etc.)
+    - Prefers breaking after spaces
+    - Handles CJK characters with proper width calculation
+    - Breaks long words only when necessary
     """
 
+    # Word separator pattern - similar to gettext behavior
     wordsep_re = re.compile(
         r"""
             (
@@ -159,81 +162,187 @@ class PoWrapper(textwrap.TextWrapper):
     )
 
     def __init__(self, width: int = 77) -> None:
-        super().__init__(
-            width=width,
-            replace_whitespace=False,
-            expand_tabs=False,
-            drop_whitespace=False,
-            break_long_words=True,
-        )
+        self.width = width
 
     def __eq__(self, other) -> bool:
         if not isinstance(other, PoWrapper):
             return False
         return self.width == other.width
 
-    def _handle_long_word(
-        self, reversed_chunks: list[str], cur_line: list[str], cur_len: int, width: int
-    ) -> None:
+    def wrap(self, text: str) -> list[str]:
         """
-        Handle a chunk of text (most likely a word, not whitespace) that
-        is too long to fit in any line.
+        Wrap text to fit within the specified width.
+        
+        Returns a list of lines, each no longer than self.width characters
+        (accounting for character display width for CJK characters).
         """
-        # We're allowed to break long words, then do so: put as much
-        # of the next chunk onto the current line as will fit.
-        chunk_start, chunk_end = cjkslices(reversed_chunks[-1], width - cur_len)
-        cur_line.append(chunk_start)
-        reversed_chunks[-1] = chunk_end
-
+        if not text or self.width <= 0:
+            return [text] if text else []
+        
+        # Get display width of text
+        text_width = unicode_width(text)
+        
+        # If text fits on one line, return it as-is
+        if text_width <= self.width:
+            return [text]
+        
+        # Split text into chunks using word separator pattern
+        chunks = self._split_chunks(text)
+        
+        # Now wrap the chunks into lines
+        return self._wrap_chunks(chunks)
+    
+    def _split_chunks(self, text: str) -> list[str]:
+        """
+        Split text into chunks at word boundaries.
+        
+        Chunks include:
+        - Words with trailing spaces
+        - Escape sequences as part of words
+        - Special sequences that shouldn't be broken
+        """
+        chunks = []
+        current_chunk = []
+        i = 0
+        
+        while i < len(text):
+            # Check for escape sequence - keep it with the current chunk
+            if i < len(text) - 1 and text[i] == '\\':
+                current_chunk.append(text[i:i+2])
+                i += 2
+                continue
+            
+            # Check for whitespace - end current chunk and add whitespace to next
+            if text[i] in ' \t':
+                # Save current chunk with trailing space
+                j = i
+                while j < len(text) and text[j] in ' \t':
+                    current_chunk.append(text[j])
+                    j += 1
+                
+                if current_chunk:
+                    chunks.append(''.join(current_chunk))
+                    current_chunk = []
+                i = j
+                continue
+            
+            # Check for URL-friendly break after slash
+            if text[i] == '/':
+                current_chunk.append(text[i])
+                # Add slash and create a break point
+                chunks.append(''.join(current_chunk))
+                current_chunk = []
+                i += 1
+                continue
+            
+            # Regular character
+            current_chunk.append(text[i])
+            i += 1
+        
+        # Add any remaining chunk
+        if current_chunk:
+            chunks.append(''.join(current_chunk))
+        
+        return chunks if chunks else [text]
+    
     def _wrap_chunks(self, chunks: list[str]) -> list[str]:
+        """Wrap chunks into lines."""
         lines = []
-        width = self.width
-        if width <= 1:
-            raise ValueError(f"invalid width {self.width!r} (must be > 1)")
-        if self.subsequent_indent or self.initial_indent:
-            raise ValueError("PoWrapper does not support indent")
-
-        # Arrange in reverse order so items can be efficiently popped
-        # from a stack of chucks.
-        chunks.reverse()
-
-        while chunks:
-            # Start the list of chunks that will make up the current line.
-            # cur_len is just the length of all the chunks in cur_line.
-            cur_line = []
-            cur_len = 0
-
-            while chunks:
-                l = unicode_width(chunks[-1])
-
-                # Can at least squeeze this chunk onto the current line.
-                if cur_len + l <= width:
-                    cur_line.append(chunks.pop())
-                    cur_len += l
-
-                # Figure out if we can split wide chars
-                elif l > len(chunks[-1]):
-                    slice1, slice2 = cjkslices(chunks[-1], width - cur_len)
-                    if slice2:
-                        cur_line.append(slice1)
-                        cur_len += unicode_width(slice1)
-                        chunks[-1] = slice2
-                    break
-
-                # Nope, this line is full.
+        current_line = []
+        current_width = 0
+        
+        for chunk in chunks:
+            chunk_width = unicode_width(chunk)
+            
+            # Try to add chunk to current line
+            if current_width + chunk_width <= self.width:
+                current_line.append(chunk)
+                current_width += chunk_width
+            else:
+                # Chunk doesn't fit
+                if current_line:
+                    # Save current line
+                    lines.append(''.join(current_line))
+                    current_line = []
+                    current_width = 0
+                    
+                    # Try adding chunk to new line
+                    if chunk_width <= self.width:
+                        current_line.append(chunk)
+                        current_width += chunk_width
+                    else:
+                        # Chunk is too long, need to break it
+                        broken = self._break_long_chunk(chunk)
+                        if broken:
+                            current_line.append(broken[0])
+                            current_width = unicode_width(broken[0])
+                            for part in broken[1:]:
+                                lines.append(''.join(current_line))
+                                current_line = [part]
+                                current_width = unicode_width(part)
                 else:
-                    break
-
-            # The current line is full, and the next chunk is too big to
-            # fit on *any* line (not just this one).
-            if not cur_line and chunks and unicode_width(chunks[-1]) > width:
-                self._handle_long_word(chunks, cur_line, cur_len, width)
-
-            if cur_line:
-                # Convert current line back to a string and store it in
-                # list of all lines (return value).
-                lines.append("".join(cur_line))
-        return lines
+                    # Current line is empty and chunk doesn't fit
+                    # Must break the chunk
+                    broken = self._break_long_chunk(chunk)
+                    for part in broken[:-1]:
+                        lines.append(part)
+                    if broken:
+                        current_line.append(broken[-1])
+                        current_width = unicode_width(broken[-1])
+        
+        # Add remaining line
+        if current_line:
+            lines.append(''.join(current_line))
+        
+        return lines if lines else [text if text else '']
+    
+    def _break_long_chunk(self, chunk: str) -> list[str]:
+        """
+        Break a long chunk that doesn't fit in width.
+        
+        Never breaks escape sequences.
+        """
+        if unicode_width(chunk) <= self.width:
+            return [chunk]
+        
+        lines = []
+        i = 0
+        current = []
+        current_width = 0
+        
+        while i < len(chunk):
+            # Check for escape sequence
+            if i < len(chunk) - 1 and chunk[i] == '\\':
+                esc_seq = chunk[i:i+2]
+                esc_width = unicode_width(esc_seq)
+                
+                if current_width + esc_width > self.width and current:
+                    lines.append(''.join(current))
+                    current = []
+                    current_width = 0
+                
+                current.append(esc_seq)
+                current_width += esc_width
+                i += 2
+                continue
+            
+            # Check for CJK or other wide characters
+            char = chunk[i]
+            char_width = unicode_width(char)
+            
+            if current_width + char_width > self.width and current:
+                lines.append(''.join(current))
+                current = []
+                current_width = 0
+            
+            current.append(char)
+            current_width += char_width
+            i += 1
+        
+        if current:
+            lines.append(''.join(current))
+        
+        return lines if lines else [chunk]
 
 
 def quoteforpo(text: str | None, wrapper_obj: PoWrapper | None = None) -> list[str]:
