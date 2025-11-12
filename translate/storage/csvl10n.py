@@ -229,8 +229,9 @@ def try_dialects(
     # Otherwise, pass explicit fieldnames
     fieldnames_param = None if has_header else fieldnames
 
-    # FIXME: With has_header, does DictReader verify dialect/fieldnames if we don't iterate?
-    #        Clarify if verification concern applies for both header auto-detection and explicit fieldnames.
+    # NOTE: When has_header is True and fieldnames_param is None, DictReader uses the first row as field names automatically.
+    #       Header detection is already handled by detect_header(). The verification concern here is whether dialect detection worked correctly,
+    #       which may require iterating through the file, rather than focusing on header detection.
     try:
         inputfile.seek(0)
         return csv.DictReader(
