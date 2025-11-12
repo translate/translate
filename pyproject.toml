@@ -63,6 +63,7 @@ classifiers = [
 ]
 dependencies = [
   "lxml>=5.2.0,<6.1",
+  "uniseg>=0.10,<0.11",
   "wcwidth>=0.2.14,<0.3"
 ]
 description = "Tools and API for translation and localization engineering."
