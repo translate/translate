@@ -24,12 +24,9 @@ or entire files (csvfile) for use with localisation.
 from __future__ import annotations
 
 import csv
-import logging
 from io import StringIO
 
 from translate.storage import base
-
-logger = logging.getLogger(__name__)
 
 
 class DefaultDialect(csv.excel):
