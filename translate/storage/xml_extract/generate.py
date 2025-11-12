@@ -129,7 +129,7 @@ def _map_source_dom_to_doc_dom(unit_node, source_dom_node):
 
     def loop(unit_node, source_dom_node):
         for child_unit_node, child_source_dom in zip(
-            unit_node.placeables, source_dom_node
+            unit_node.placeables, source_dom_node, strict=False
         ):
             source_dom_to_doc_dom[child_source_dom] = dom_tree_roots[child_unit_node]
             loop(child_unit_node, child_source_dom)
@@ -218,7 +218,7 @@ def _build_translated_dom(dom_node, target_node, target_dom_to_doc_dom):
     )
     # Recursively call this function on pairs of matched children in
     # dom_node and target_node.
-    for dom_child, target_child in zip(dom_node, target_node):
+    for dom_child, target_child in zip(dom_node, target_node, strict=False):
         _build_translated_dom(dom_child, target_child, target_dom_to_doc_dom)
 
 

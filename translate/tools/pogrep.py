@@ -221,13 +221,11 @@ class GrepFilter:
                 if self.matches(string):
                     return True
 
-        if self.search_notes:
-            if self.matches(unit.getnotes()):
-                return True
-        if self.search_locations:
-            if self.matches(" ".join(unit.getlocations())):
-                return True
-        return False
+        if self.search_notes and self.matches(unit.getnotes()):
+            return True
+        return bool(
+            self.search_locations and self.matches(" ".join(unit.getlocations()))
+        )
 
     def filterfile(self, thefile):
         """Runs filters on a translation file object."""

@@ -164,13 +164,12 @@ class TOMLFile(base.DictStore):
                 continue
 
             # Collect comments that appear before our key
-            if item_key is None:
-                # Check if this is a Comment (not Whitespace)
-                if isinstance(item_value, TOMLComment):
-                    # Get the comment text directly
-                    comment_text = str(item_value)
-                    if comment_text.startswith("#"):
-                        comments.append(comment_text[1:].strip())
+            # Check if this is a Comment (not Whitespace)
+            if item_key is None and isinstance(item_value, TOMLComment):
+                # Get the comment text directly
+                comment_text = str(item_value)
+                if comment_text.startswith("#"):
+                    comments.append(comment_text[1:].strip())
 
         return None
 
@@ -286,7 +285,7 @@ class GoI18nTOMLUnit(TOMLUnit):
             strings = [string or None for string in strings]
 
         # Return a dict with plural tags as keys
-        return dict(zip(tags, strings))
+        return dict(zip(tags, strings, strict=True))
 
 
 class GoI18nTOMLFile(TOMLFile):

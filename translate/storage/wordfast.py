@@ -434,7 +434,11 @@ class WordfastTMFile(base.TranslationStore):
         for idx, line in enumerate(reader):
             if idx == 0:
                 header = dict(
-                    zip(WF_FIELDNAMES_HEADER, [line[key] for key in WF_FIELDNAMES])
+                    zip(
+                        WF_FIELDNAMES_HEADER,
+                        [line[key] for key in WF_FIELDNAMES],
+                        strict=True,
+                    )
                 )
                 self.header = WordfastHeader(header)
                 continue
@@ -457,6 +461,7 @@ class WordfastTMFile(base.TranslationStore):
                 zip(
                     WF_FIELDNAMES,
                     [self.header.header[key] for key in WF_FIELDNAMES_HEADER],
+                    strict=True,
                 )
             )
         )

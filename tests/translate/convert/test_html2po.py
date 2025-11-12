@@ -32,9 +32,8 @@ class TestHTML2PO:
     def countunits(pofile, expected):
         """Helper to check that we got the expected number of messages."""
         actual = len(pofile.units)
-        if actual > 0:
-            if pofile.units[0].isheader():
-                actual -= 1
+        if actual > 0 and pofile.units[0].isheader():
+            actual -= 1
         print(pofile)
         assert actual == expected
 

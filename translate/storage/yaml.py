@@ -115,15 +115,21 @@ class YAMLUnit(base.DictUnit):
         original_value = self._get_original_value(output)
 
         # Preserve or convert to LiteralScalarString for better readability
-        if isinstance(value, str) and not unset:
-            # Always preserve LiteralScalarString if original was one, or
-            # for new values or plain strings, use LiteralScalarString if multiline
-            if isinstance(original_value, LiteralScalarString) or (
-                "\n" in value
-                and (original_value is None or type(original_value) is str)
-            ):
-                value = LiteralScalarString(value)
-            # Otherwise keep the value as-is (e.g., DoubleQuotedScalarString stays quoted)
+        # Always preserve LiteralScalarString if original was one, or
+        # for new values or plain strings, use LiteralScalarString if multiline
+        if (
+            isinstance(value, str)
+            and not unset
+            and (
+                isinstance(original_value, LiteralScalarString)
+                or (
+                    "\n" in value
+                    and (original_value is None or type(original_value) is str)
+                )
+            )
+        ):
+            value = LiteralScalarString(value)
+        # Otherwise keep the value as-is (e.g., DoubleQuotedScalarString stays quoted)
 
         # Call parent storevalue
         super().storevalue(output, value, override_key, unset)
@@ -322,7 +328,7 @@ class RubyYAMLUnit(YAMLUnit):
             # Replace blank strings by None to distinguish not completed translations
             strings = [string or None for string in strings]
 
-        return CommentedMap(zip(tags, strings))
+        return CommentedMap(zip(tags, strings, strict=True))
 
 
 class RubyYAMLFile(YAMLFile):

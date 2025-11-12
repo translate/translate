@@ -18,7 +18,7 @@ class TestMatch:
         else:
             assert len(sources) == len(targets)
         csvfile = csvl10n.csvfile()
-        for source, target in zip(sources, targets):
+        for source, target in zip(sources, targets, strict=True):
             unit = csvfile.addsourceunit(source)
             unit.target = target
         return csvfile

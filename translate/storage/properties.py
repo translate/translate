@@ -343,16 +343,16 @@ class Dialect:
         if mindelimiter is None and delimiters.get(" ", -1) != -1:
             # Use space delimiter if we found nothing else
             return (" ", delimiters[" "])
+        # If space delimiter occurs earlier than ":" or "=" then it is the
+        # delimiter only if there are non-whitespace characters between it and
+        # the other detected delimiter.
         if (
             mindelimiter is not None
             and " " in delimiters
             and delimiters[" "] < delimiters[mindelimiter]
+            and len(line[delimiters[" "] : delimiters[mindelimiter]].strip()) > 0
         ):
-            # If space delimiter occurs earlier than ":" or "=" then it is the
-            # delimiter only if there are non-whitespace characters between it and
-            # the other detected delimiter.
-            if len(line[delimiters[" "] : delimiters[mindelimiter]].strip()) > 0:
-                return (" ", delimiters[" "])
+            return (" ", delimiters[" "])
         return (mindelimiter, minpos)
 
     @staticmethod
@@ -677,7 +677,7 @@ class proppluralunit(base.TranslationUnit):
         elif isinstance(text, list):
             strings = text
         elif isinstance(text, dict):
-            mapping, strings = map(list, zip(*text.items()))
+            mapping, strings = map(list, zip(*text.items(), strict=True))
         else:
             strings = [text]
         if mapping is None:
@@ -692,7 +692,7 @@ class proppluralunit(base.TranslationUnit):
         if "other" not in mapping and "other" in self.units:
             self.units["other"].target = strings[-1]
 
-        for a, b in zip(strings, units):
+        for a, b in zip(strings, units, strict=True):
             b.target = a
 
     def gettarget(self):
@@ -716,7 +716,7 @@ class proppluralunit(base.TranslationUnit):
         elif isinstance(text, list):
             strings = text
         elif isinstance(text, dict):
-            mapping, strings = tuple(map(list, zip(*text.items())))
+            mapping, strings = tuple(map(list, zip(*text.items(), strict=True)))
         else:
             strings = [text]
         if mapping is None:
@@ -729,7 +729,7 @@ class proppluralunit(base.TranslationUnit):
                 f'Not same plural counts between "{strings}" and "{units}"'
             )
 
-        for a, b in zip(strings, units):
+        for a, b in zip(strings, units, strict=True):
             b.source = a
 
     source = property(getsource, setsource)

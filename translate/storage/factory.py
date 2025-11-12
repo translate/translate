@@ -217,9 +217,10 @@ def getobject(
         classes_str = _classes_str
     if hiddenclasses is None:
         hiddenclasses = _hiddenclasses
-    if isinstance(storefile, str):
-        if os.path.isdir(storefile) or storefile.endswith(os.path.sep):
-            return Directory(storefile)
+    if isinstance(storefile, str) and (
+        os.path.isdir(storefile) or storefile.endswith(os.path.sep)
+    ):
+        return Directory(storefile)
     storefilename = _get_name(storefile)
     storeclass = getclass(
         storefile,
