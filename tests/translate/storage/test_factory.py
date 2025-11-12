@@ -52,10 +52,10 @@ class BaseTestFactory:
         assert classname("file.tmx") == "tmxfile"
         assert classname("file.af.tmx") == "tmxfile"
         assert classname("file.tbx") == "tbxfile"
-        assert classname("file.po.xliff") == "xlifffile"
+        assert classname("file.po.xliff") == "xliff1file"
 
         assert classname("file.po") != "tmxfile"
-        assert classname("file.po") != "xlifffile"
+        assert classname("file.po") != "xliff1file"
 
         assert classname("file.po.gz") == "pofile"
         assert classname("file.pot.gz") == "pofile"
@@ -64,10 +64,10 @@ class BaseTestFactory:
         assert classname("file.tmx.gz") == "tmxfile"
         assert classname("file.af.tmx.gz") == "tmxfile"
         assert classname("file.tbx.gz") == "tbxfile"
-        assert classname("file.po.xliff.gz") == "xlifffile"
+        assert classname("file.po.xliff.gz") == "xliff1file"
 
         assert classname("file.po.gz") != "tmxfile"
-        assert classname("file.po.gz") != "xlifffile"
+        assert classname("file.po.gz") != "xliff1file"
 
         assert classname("file.po.bz2") == "pofile"
         assert classname("file.pot.bz2") == "pofile"
@@ -76,10 +76,10 @@ class BaseTestFactory:
         assert classname("file.tmx.bz2") == "tmxfile"
         assert classname("file.af.tmx.bz2") == "tmxfile"
         assert classname("file.tbx.bz2") == "tbxfile"
-        assert classname("file.po.xliff.bz2") == "xlifffile"
+        assert classname("file.po.xliff.bz2") == "xliff1file"
 
         assert classname("file.po.bz2") != "tmxfile"
-        assert classname("file.po.bz2") != "xlifffile"
+        assert classname("file.po.bz2") != "xliff1file"
 
     def test_getobject_store(self):
         """Tests that we get a valid object."""
@@ -135,7 +135,7 @@ class TestPOFactory(BaseTestFactory):
 class TestXliffFactory(BaseTestFactory):
     from translate.storage import xliff
 
-    expected_instance = xliff.xlifffile
+    expected_instance = xliff.Xliff1File
     filename = "dummy.xliff"
     file_content = b"""<?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">

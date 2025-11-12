@@ -125,7 +125,9 @@ class Xliff2Unit(XliffUnit):
             return None
         return self._get_target_from_segment(segment)
 
-    def set_target_dom(self, dom_node: etree._Element | None) -> None:
+    def set_target_dom(
+        self, dom_node: etree._Element | None, append: bool = False
+    ) -> None:
         """Set the target DOM element."""
         segment = self._get_or_create_segment()
         # Remove existing target
