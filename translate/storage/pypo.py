@@ -186,8 +186,7 @@ class PoWrapper:
                 processed_units.extend(sub_chunks)
             elif unit:  # Skip empty units
                 processed_units.append(unit)
-        if processed_units:
-            return processed_units
+        return processed_units
 
     def _manual_chunk(self, text: str) -> list[str]:
         """Manual text chunking for non-CJK or when uniseg is not available."""
