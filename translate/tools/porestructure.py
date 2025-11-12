@@ -100,26 +100,27 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
         inputfile = self.openinputfile(options, fullinputpath)
         inputpofile = po.pofile(inputfile)
         for pounit in inputpofile.units:
-            if not (pounit.isheader() or pounit.hasplural()):  # XXX
-                if pounit.hasmarkedcomment("poconflicts"):
-                    for comment in pounit.othercomments:
-                        if comment.find("# (poconflicts)") == 0:
-                            pounit.othercomments.remove(comment)
-                            break
-                    # TODO: refactor writing out
-                    outputpath = comment[comment.find(")") + 2 :].strip()
-                    self.checkoutputsubdir(options, os.path.dirname(outputpath))
-                    fulloutputpath = os.path.join(options.output, outputpath)
-                    if os.path.isfile(fulloutputpath):
-                        outputfile = open(fulloutputpath, "rb")
-                        outputpofile = po.pofile(outputfile)
-                    else:
-                        outputpofile = po.pofile()
-                    outputpofile.units.append(
-                        pounit
-                    )  # TODO:perhaps check to see if it's already there...
-                    with open(fulloutputpath, "wb") as fh:
-                        outputpofile.serialize(fh)
+            if not (
+                pounit.isheader() or pounit.hasplural()
+            ) and pounit.hasmarkedcomment("poconflicts"):
+                for comment in pounit.othercomments:
+                    if comment.find("# (poconflicts)") == 0:
+                        pounit.othercomments.remove(comment)
+                        break
+                # TODO: refactor writing out
+                outputpath = comment[comment.find(")") + 2 :].strip()
+                self.checkoutputsubdir(options, os.path.dirname(outputpath))
+                fulloutputpath = os.path.join(options.output, outputpath)
+                if os.path.isfile(fulloutputpath):
+                    outputfile = open(fulloutputpath, "rb")
+                    outputpofile = po.pofile(outputfile)
+                else:
+                    outputpofile = po.pofile()
+                outputpofile.units.append(
+                    pounit
+                )  # TODO:perhaps check to see if it's already there...
+                with open(fulloutputpath, "wb") as fh:
+                    outputpofile.serialize(fh)
 
 
 def main():

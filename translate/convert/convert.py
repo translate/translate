@@ -412,14 +412,15 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
 
     def opentemplatefile(self, options, fulltemplatepath):
         """Opens the template file (if required)."""
-        if fulltemplatepath is not None:
-            if options.recursivetemplate and self.isarchive(
-                options.template, "template"
-            ):
-                # TODO: deal with different names in input/template archives
-                if fulltemplatepath in self.templatearchive:
-                    return self.templatearchive.openinputfile(fulltemplatepath)
-                self.warning(f"missing template file {fulltemplatepath}")
+        if (
+            fulltemplatepath is not None
+            and options.recursivetemplate
+            and self.isarchive(options.template, "template")
+        ):
+            # TODO: deal with different names in input/template archives
+            if fulltemplatepath in self.templatearchive:
+                return self.templatearchive.openinputfile(fulltemplatepath)
+            self.warning(f"missing template file {fulltemplatepath}")
         return super().opentemplatefile(options, fulltemplatepath)
 
     def getfulltemplatepath(self, options, templatepath):
