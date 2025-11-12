@@ -185,7 +185,9 @@ class StringsDictFile(base.DictStore):
                 plural_strings = self.UnitClass.sync_plural_count(u.target, plural_tags)
                 plurals.update(
                     (plural_tag, plural_string)
-                    for plural_tag, plural_string in zip(plural_tags, plural_strings)
+                    for plural_tag, plural_string in zip(
+                        plural_tags, plural_strings, strict=True
+                    )
                     if plural_string
                 )
 

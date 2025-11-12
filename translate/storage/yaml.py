@@ -322,7 +322,7 @@ class RubyYAMLUnit(YAMLUnit):
             # Replace blank strings by None to distinguish not completed translations
             strings = [string or None for string in strings]
 
-        return CommentedMap(zip(tags, strings))
+        return CommentedMap(zip(tags, strings, strict=True))
 
 
 class RubyYAMLFile(YAMLFile):
