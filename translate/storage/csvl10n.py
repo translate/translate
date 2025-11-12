@@ -229,7 +229,6 @@ def try_dialects(
     # Otherwise, pass explicit fieldnames
     fieldnames_param = None if has_header else fieldnames
 
-    # NOTE: DictReader automatically uses the first row as field names when fieldnames is None.
     try:
         inputfile.seek(0)
         return csv.DictReader(
