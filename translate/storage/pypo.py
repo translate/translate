@@ -124,10 +124,15 @@ class PoWrapper:
     - Breaks long words only when necessary
     """
 
+    # Constants for wrapping behavior
+    ESCAPE_HEAVY_THRESHOLD = 0.5  # 50% threshold for detecting escape-heavy text
+    ESCAPE_CHUNK_THRESHOLD = 0.8  # 80% threshold for escape-heavy chunks
+    MAX_OVERFLOW_FACTOR = 1.15  # 15% overflow tolerance for long words
+
     def __init__(self, width: int = 77) -> None:
         self.width = width
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         if not isinstance(other, PoWrapper):
             return False
         return self.width == other.width
@@ -166,7 +171,7 @@ class PoWrapper:
         """
         # For text that's mostly escape sequences, use manual chunking
         # as uniseg will break between backslashes
-        if text and text.count("\\") / len(text) > 0.5:
+        if text and text.count("\\") / len(text) > self.ESCAPE_HEAVY_THRESHOLD:
             return self._manual_chunk(text)
 
         try:
@@ -176,7 +181,7 @@ class PoWrapper:
             processed_units = []
             for unit in units:
                 # If unit contains escape sequences or slashes, further split it
-                if "\\\\" in unit or ("/" in unit and "[" not in unit):
+                if "\\" in unit or ("/" in unit and "[" not in unit):
                     # Use manual chunking for this unit
                     sub_chunks = self._manual_chunk(unit)
                     processed_units.extend(sub_chunks)
@@ -185,12 +190,9 @@ class PoWrapper:
             if processed_units:
                 return processed_units
         except Exception as e:
-            # Fall back to manual chunking if uniseg fails
-            logger.debug("uniseg failed: %s, falling back to manual chunking", e)
+            # uniseg failed; propagate exception (no fallback to manual chunking)
+            logger.debug("uniseg failed: %s, propagating exception", e)
             raise
-
-        # Fallback: Manual chunking
-        return self._manual_chunk(text)
 
     def _manual_chunk(self, text: str) -> list[str]:
         """Manual text chunking for non-CJK or when uniseg is not available."""
@@ -277,15 +279,8 @@ class PoWrapper:
                     current_width += chunk_width
                 else:
                     # Chunk is too long even for a new line
-                    # Check if it's a long word without spaces
-                    # Count how many escape sequences vs regular chars
-                    escape_count = chunk.count("\\\\")
-                    is_mostly_escapes = escape_count * 2 > len(chunk) * 0.8
-                    is_long_word = chunk.strip() and " " not in chunk
-
-                    # Allow overflow for long words that aren't mostly escape sequences
-                    # This handles cases like long identifiers/URLs but breaks repetitive escapes
-                    allow_overflow = is_long_word and not is_mostly_escapes
+                    # Check if chunk should allow overflow or be broken
+                    allow_overflow = self._should_allow_overflow(chunk, chunk_width)
 
                     if allow_overflow:
                         # Allow overflow: add the whole chunk as one line
@@ -303,16 +298,9 @@ class PoWrapper:
                                 current_width = unicode_width(part)
             else:
                 # Current line is empty and chunk doesn't fit
-                # Check if it's mostly escape sequences - if so, break it
-                escape_count = chunk.count("\\\\")
-                is_mostly_escapes = escape_count * 2 > len(chunk) * 0.8
-                is_long_word = chunk.strip() and " " not in chunk
-
-                # Allow overflow only for long words that aren't mostly escapes
-                allow_overflow = (
-                    is_long_word
-                    and not is_mostly_escapes
-                    and chunk_width <= self.width * 1.15
+                # Check if chunk should allow overflow or be broken
+                allow_overflow = self._should_allow_overflow(
+                    chunk, chunk_width, allow_moderate_overflow=True
                 )
 
                 if allow_overflow:
@@ -364,7 +352,7 @@ class PoWrapper:
                 i += 2
                 continue
 
-            # Check for CJK or other wide characters
+            # Process regular character (characters with width > 1, such as CJK, are handled here)
             char = chunk[i]
             char_width = unicode_width(char)
 

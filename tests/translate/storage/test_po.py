@@ -244,12 +244,10 @@ class TestPOFile(test_base.TestTranslationStore):
         Helper to select expected output based on gettext version.
 
         Args:
-            version_outputs: Keyword arguments like gettext_0_22="...", gettext_0_23="...", pypo_wrapper="..."
+            version_outputs: Keyword arguments like gettext_0_22="...", gettext_0_23="..."
 
-        Returns the pypo_wrapper version if specified for pypo tests, otherwise the latest
-        gettext version for pypo (Python wrapper follows latest gettext), or selects based
-        on actual libgettextpo version for cpo storage.
-
+        Returns the latest gettext version for pypo (Python wrapper follows latest gettext),
+        or selects based on actual libgettextpo version for cpo storage.
         """
         # Sort versions to find the latest
         versions = sorted(
@@ -1139,8 +1137,8 @@ msgstr ""
 "%{mark.mask} 。\"}}>%{mark.val}</var>}%{dscp?, DSCP %{dscp.inv?<var data-"
 "tooltip=\"匹配除 %{dscp.num?:%{dscp.name}} 以外的 DSCP 类型。\">%{dscp.val}</"
 "var>:<var>%{dscp.val}</var>}}%{helper?, 助手 %{helper.inv?<var data-"
-"tooltip=\"匹配除 &quot;%{helper.name}&quot; 以外的任意助手。\">%{helper.val}"
-"</var>:<var data-tooltip=\"%{helper.name}\">%{helper.val}</var>}}"
+"tooltip=\"匹配除 &quot;%{helper.name}&quot; 以外的任意助手。\">%{helper.val}</"
+"var>:<var data-tooltip=\"%{helper.name}\">%{helper.val}</var>}}"
 """
         gettext_0_23 = r"""msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
