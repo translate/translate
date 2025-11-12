@@ -44,7 +44,7 @@ the translate repository or fork it at GitHub.
 
   git clone https://github.com/translate/translate.git
 
-.. _developers#bugzilla:
+.. _developers#issues:
 
 Issues
 ------
@@ -60,35 +60,32 @@ Communication
 * `Discussions <https://github.com/translate/translate/discussions>`_ - general discussions and help
 
 
-.. _developers#working_with_bugzilla:
+.. _developers#working_with_issues:
 
-Working with Bugzilla
-=====================
-When you close bugs ensure that you give a description and git hash for the
+Working with GitHub Issues
+===========================
+When you close issues ensure that you give a description and git hash for the
 fix.  This ensures that the reporter or code reviewer can see your work and has
-an easy method of finding your fix.  This is made easier by GitHub's Bugzilla
-integration.
+an easy method of finding your fix.
 
-Automated Bugzilla update from commits
---------------------------------------
+Automated issue closing from commits
+-------------------------------------
 
-Github will post comments on Bugzilla bugs when the commit messages make
-references to the bug by its bug number.
+GitHub will automatically close issues when commit messages reference them
+properly.
 
-- Bugs are recognised by the following format (which are case-insensitive)::
+- Issues are recognised by keywords followed by the issue number::
 
-    Bug 123
+    Fixes #123
+    Closes #456
+    Resolves #789
 
-- Multiple bugs can be specified by separating them with a comma, ampersand,
-  plus or "and"::
+- Multiple issues can be referenced in a single commit::
 
-    Bug 123, 124 and 125
+    Fixes #123, closes #456
 
-- Commits to all branches will be processed.
-- If there is a "fix", "close", or "address" before the bug then that bug is
-  closed. ::
-
-    Fix bug 123
+- Commits to the default branch (or in merged pull requests) will close the
+  referenced issues automatically.
 
 .. _developers#source_code_map:
 
@@ -119,7 +116,7 @@ Setup
 **Prerequisites:**
 
 * Git
-* Python 3.9 or newer
+* Python 3.10 or newer
 * `uv <https://docs.astral.sh/uv/>`_ (recommended package manager)
 
 **Installation:**

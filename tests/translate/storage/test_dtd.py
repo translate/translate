@@ -432,6 +432,34 @@ certificate.">
         dtdregen = self.dtdregen(dtdsource)
         assert dtdsource == dtdregen
 
+    def test_multiple_blank_lines(self):
+        """Test that multiple consecutive blank lines are preserved."""
+        dtdsource = '<!ENTITY test1 "value1">\n\n\n<!ENTITY test2 "value2">\n'
+        dtdregen = self.dtdregen(dtdsource)
+        assert dtdsource == dtdregen
+
+    def test_entity_with_extra_spaces(self):
+        """Test entities with various spacing patterns are preserved."""
+        dtdsource = '<!ENTITY    test.me    "value">\n'
+        dtdfile = self.dtdparse(dtdsource)
+        assert len(dtdfile.units) == 1
+        assert dtdfile.units[0].entity == "test.me"
+        assert dtdfile.units[0].source == "value"
+        # Check that spacing is preserved
+        dtdregen = self.dtdregen(dtdsource)
+        assert dtdsource == dtdregen
+
+    def test_mixed_content_preservation(self):
+        """Test that mixed content (comments, entities, blank lines) is preserved."""
+        dtdsource = """<!-- Comment 1 -->
+<!ENTITY entity1 "value1">
+
+<!-- Comment 2 -->
+<!ENTITY entity2 "value2">
+"""
+        dtdregen = self.dtdregen(dtdsource)
+        assert dtdsource == dtdregen
+
 
 class TestAndroidDTD(test_monolingual.TestMonolingualStore):
     StoreClass = dtd.dtdfile

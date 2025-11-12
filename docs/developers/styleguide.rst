@@ -124,13 +124,14 @@ readable and beautiful documents for them.
 Docstrings
 ----------
 
-Docstring conventions:
-  All docstrings are formatted with reStructuredText as understood by
-  Sphinx.  Depending on the number of lines in the docstring, they are
-  laid out differently.  If it's just one line, the closing triple
-  quote is on the same line as the opening, otherwise the text is on
-  the same line as the opening quote and the triple quote that closes
-  the string on its own line:
+All docstrings should follow :pep:`257` (Docstring Conventions) and be formatted
+with reStructuredText as understood by Sphinx.
+
+Basic formatting:
+  Depending on the number of lines in the docstring, they are laid out
+  differently.  If it's just one line, the closing triple quote is on the same
+  line as the opening, otherwise the text is on the same line as the opening
+  quote and the triple quote that closes the string on its own line:
 
   .. code-block:: python
 
@@ -144,59 +145,81 @@ Docstring conventions:
         is on its own line.
         """
 
-
-Please read :pep:`257` (Docstring Conventions) for a general overview,
-the important parts though are:
+Key guidelines from :pep:`257`:
 
 - A docstring should have a brief one-line summary, ending with a period. Use
-  ``Do this``, ``Return that`` rather than ``Does ...``, ``Returns ...``.
+  the imperative mood: ``Do this``, ``Return that`` rather than ``Does ...``,
+  ``Returns ...``.
 - If there are more details there should be a blank line between the one-line
   summary and the rest of the text.  Use paragraphs and formatting as needed.
-- Use `reST field lists`_ to describe the input parameters and/or return types
-  as the last part of the docstring.
 - Use proper capitalisation and punctuation.
-- Don't restate things that would appear in parameter descriptions.
+- All public modules, functions, classes, and methods should have docstrings.
 
-.. code-block:: python
+Type annotations and parameters:
+  **Use type annotations instead of documenting parameters in docstrings.**
 
-    def addunit(self, unit):
+  For new code, always add :pep:`484` type hints to function signatures. This
+  makes parameter types and return types explicit and machine-readable:
+
+  .. code-block:: python
+
+    def addunit(self, unit: TranslationUnit) -> None:
         """Append the given unit to the object's list of units.
 
         This method should always be used rather than trying to modify the
         list manually.
-
-        :param Unit unit: Any object that inherits from :class:`Unit`.
         """
         self.units.append(unit)
 
-
-Parameter documentation:
-  Document parameters using `reST field lists`_ as follows:
+  Type annotations are preferred over `reST field lists`_ for documenting
+  parameter types. Only use field lists when additional explanation beyond the
+  type is necessary, or when working with legacy code that doesn't have type
+  annotations:
 
   .. code-block:: python
 
-    def foo(bar):
-        """Simple docstring.
+    def legacy_function(bar):
+        """Simple docstring for legacy code without type annotations.
 
-        :param SomeType bar: Something
-        :return: Returns something
-        :rtype: Return type
+        :param str bar: Description of what bar represents
+        :return: Description of return value
+        :rtype: int
         """
 
+Cross-referencing code:
+   When talking about other objects, methods, functions and variables,
+   cross-reference them using Sphinx's `Python cross-referencing`_ syntax:
 
-Cross referencing code:
-   When talking about other objects, methods, functions and variables
-   it is good practice to cross-reference them with Sphinx's `Python
-   cross-referencing`_.
+   - ```:class:`ClassName````` -- reference a class
+   - ```:func:`function_name````` -- reference a function
+   - ```:meth:`method_name````` -- reference a method
+   - ```:mod:`module_name````` -- reference a module
+   - ```:attr:`attribute_name````` -- reference an attribute
+
+   Example:
+
+   .. code-block:: python
+
+    def process_unit(unit: TranslationUnit) -> None:
+        """Process a translation unit.
+
+        This delegates to :func:`validate_unit` and updates the
+        :class:`TranslationStore`.
+        """
+
+Linking to external documentation:
+   Use standard reStructuredText syntax for external links in docstrings:
+
+   - Inline links: ``Link text <URL>`_``
+   - Reference links: Define once with ``.. _label: URL`` and reference with
+     ``label_``
 
 Other directives:
-   Use `paragraph-level markup`_ when needed.
+   Use `paragraph-level markup`_ when needed, such as:
 
-.. note::
-
-   We still need to gather the useful ones that we want you to use and how to use
-   them.  E.g. how to talk about a parameter in the docstring.  How to reference
-   classes in the module.  How to reference other modules, etc.
+   - ``.. note::`` for important information
+   - ``.. warning::`` for warnings
+   - ``.. versionadded::`` and ``.. deprecated::`` for version information
 
 
 Module header:

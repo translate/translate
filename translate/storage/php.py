@@ -509,11 +509,98 @@ class LaravelPHPUnit(phpunit):
             return "|".join(result.strings)
         return result
 
+    def getid(self):
+        """Return the key without the Laravel return prefix."""
+        name = self.name
+        # Strip return[]-> or return-> prefix for Laravel files
+        if name.startswith("return[]->"):
+            name = name[10:]  # Remove "return[]->"
+        elif name.startswith("return->"):
+            name = name[8:]  # Remove "return->"
+
+        # Strip surrounding quotes if present
+        if len(name) >= 2 and name[0] == name[-1] and name[0] in {"'", '"'}:
+            return name[1:-1]
+        return name
+
+    def getlocations(self):
+        """Return locations without the Laravel return prefix."""
+        return [self.getid()]
+
+    def setid(self, value):
+        """Set the key, preserving the Laravel return array structure."""
+        # Ensure value is a string
+        if not isinstance(value, str):
+            value = str(value)
+
+        # If value already has a return prefix, use it as is
+        if value.startswith(("return[]->", "return->")):
+            self.name = value
+            return
+
+        # Determine the array syntax to use based on existing structure
+        if self.name.startswith("return[]->"):
+            # Preserve short array syntax
+            prefix = "return[]->"
+        elif self.name.startswith("return->"):
+            # Preserve array() syntax
+            prefix = "return->"
+        else:
+            # For newly created units or units without a return prefix,
+            # check if the store has a detected array prefix
+            prefix = self._get_array_prefix_from_store()
+
+        # Add quotes if not already present and value is not numeric
+        # Handle empty string, quoted values, and numeric values correctly
+        if value and value[0] not in {"'", '"'}:
+            # Check if it's a valid integer (handles negative numbers too)
+            if not self._is_numeric_key(value):
+                value = f"'{value}'"
+        elif not value:
+            # Empty string should be quoted
+            value = "''"
+
+        self.name = f"{prefix}{value}"
+
+    def _get_array_prefix_from_store(self):
+        """Get the array prefix from store, or return default."""
+        if (
+            hasattr(self, "_store")
+            and self._store
+            and hasattr(self._store, "_array_prefix")
+            and self._store._array_prefix
+        ):
+            return self._store._array_prefix
+        # Default to array() syntax for new files
+        return "return->"
+
+    def _is_numeric_key(self, value):
+        """Check if value is a numeric key (integer)."""
+        try:
+            int(value)
+        except (ValueError, TypeError):
+            return False
+        else:
+            return True
+
 
 class LaravelPHPFile(phpfile):
     UnitClass = LaravelPHPUnit
 
+    def __init__(self, inputfile=None, **kwargs):
+        """Construct a LaravelPHPFile, optionally reading in from inputfile."""
+        # Store the array syntax prefix detected during parsing
+        self._array_prefix = None
+        super().__init__(inputfile, **kwargs)
+
     def create_and_add_unit(self, name, value, escape_type, comments):
+        # Detect and store array prefix from the first unit
+        if self._array_prefix is None and name.startswith("return"):
+            if name.startswith("return[]->"):
+                self._array_prefix = "return[]->"
+            elif name.startswith("return->"):
+                self._array_prefix = "return->"
+
         if "|" in value:
             value = multistring(value.split("|"))
         super().create_and_add_unit(name, value, escape_type, comments)

@@ -56,7 +56,6 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python",
   "Topic :: Software Development :: Internationalization",
   "Topic :: Software Development :: Libraries :: Python Modules",
@@ -64,6 +63,7 @@ classifiers = [
 ]
 dependencies = [
   "lxml>=5.2.0,<6.1",
+  "uniseg>=0.10,<0.11",
   "wcwidth>=0.2.14,<0.3"
 ]
 description = "Tools and API for translation and localization engineering."
@@ -76,7 +76,7 @@ keywords = [
 license = "GPL-2.0-or-later"
 license-files = ["COPYING"]
 name = "translate-toolkit"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 [project.optional-dependencies]
 all = [
@@ -113,7 +113,7 @@ subtitles = [
   "aeidon>=1.14.1,<1.16"
 ]
 tmserver = [
-  "cheroot==10.0.1"
+  "cheroot==11.1.2"
 ]
 toml = [
   "tomlkit>=0.13.0,<0.14.0"
@@ -433,8 +433,14 @@ extend-ignore-re = [
 plasTeX = "plasTeX"
 
 [tool.typos.default.extend-words]
+# Belarusian/Polish translations in test files
+dni = "dni"
+"dźeń" = "dźeń"
+"dźon" = "dźon"
+elementy = "elementy"
 # Open Document Format acronym
 ODF = "ODF"
+tamu = "tamu"
 Uniforum = "Uniforum"
 # Author name
 Wil = "Wil"
