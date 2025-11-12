@@ -168,7 +168,7 @@ class PoWrapper:
         # as uniseg will break between backslashes
         if text and text.count("\\") / len(text) > 0.5:
             return self._manual_chunk(text)
-        
+
         try:
             # Get line break units using UAX#14
             units = list(line_break_units(text))
