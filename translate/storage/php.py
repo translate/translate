@@ -495,11 +495,10 @@ class phpfile(base.TranslationStore):
                             lexer.extract_quote(),
                             lexer.extract_comments(item.lexpositions[1]),
                         )
-            elif isinstance(item, Return):
-                if isinstance(item.node, Array):
-                    # Adjustextractor position
-                    lexer.extract_name("RETURN", *item.lexpositions)
-                    handle_array("return", item.node.nodes, lexer)
+            elif isinstance(item, Return) and isinstance(item.node, Array):
+                # Adjustextractor position
+                lexer.extract_name("RETURN", *item.lexpositions)
+                handle_array("return", item.node.nodes, lexer)
 
 
 class LaravelPHPUnit(phpunit):

@@ -359,7 +359,6 @@ ignore = [
   "S408",  # TODO: `xml.dom.minidom` is vulnerable to XML attacks
   "S603",  # CONFIG: `subprocess` call: check for execution of untrusted input
   "S607",  # CONFIG: executing system installed tools
-  "SIM102",  # TODO: Use a single `if` statement instead of nested `if` statements
   "SIM115",  # TODO: Use context handler for opening files
   "SLF001",  # TODO: Private member accessed
   "SLOT000",  # TODO: Subclasses of `str` should define `__slots__`

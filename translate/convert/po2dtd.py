@@ -46,32 +46,30 @@ def applytranslation(entity, dtdunit, inputunit, mixedentities):
         return
     # handle mixed entities
     for labelsuffix in dtd.labelsuffixes:
-        if entity.endswith(labelsuffix):
-            if entity in mixedentities:
-                unquotedstr, _akey = accesskey.extract(unquotedstr)
-                break
+        if entity.endswith(labelsuffix) and entity in mixedentities:
+            unquotedstr, _akey = accesskey.extract(unquotedstr)
+            break
     else:
         for akeytype in dtd.accesskeysuffixes:
-            if entity.endswith(akeytype):
-                if entity in mixedentities:
-                    _label, unquotedstr = accesskey.extract(unquotedstr)
-                    if not unquotedstr:
-                        warnings.warn(f"Could not find accesskey for {entity}")
-                        # Use the source language accesskey
-                        _label, unquotedstr = accesskey.extract(inputunit.source)
-                    else:
-                        original = dtdunit.source
-                        # For the sake of diffs we keep the case of the
-                        # accesskey the same if we know the translation didn't
-                        # change. Casing matters in XUL.
-                        if (
-                            unquotedstr == dtdunit.source
-                            and original.lower() == unquotedstr.lower()
-                        ):
-                            if original.isupper():
-                                unquotedstr = unquotedstr.upper()
-                            elif original.islower():
-                                unquotedstr = unquotedstr.lower()
+            if entity.endswith(akeytype) and entity in mixedentities:
+                _label, unquotedstr = accesskey.extract(unquotedstr)
+                if not unquotedstr:
+                    warnings.warn(f"Could not find accesskey for {entity}")
+                    # Use the source language accesskey
+                    _label, unquotedstr = accesskey.extract(inputunit.source)
+                else:
+                    original = dtdunit.source
+                    # For the sake of diffs we keep the case of the
+                    # accesskey the same if we know the translation didn't
+                    # change. Casing matters in XUL.
+                    if (
+                        unquotedstr == dtdunit.source
+                        and original.lower() == unquotedstr.lower()
+                    ):
+                        if original.isupper():
+                            unquotedstr = unquotedstr.upper()
+                        elif original.islower():
+                            unquotedstr = unquotedstr.lower()
     dtdunit.source = unquotedstr
 
 

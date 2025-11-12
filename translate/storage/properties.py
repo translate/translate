@@ -343,16 +343,16 @@ class Dialect:
         if mindelimiter is None and delimiters.get(" ", -1) != -1:
             # Use space delimiter if we found nothing else
             return (" ", delimiters[" "])
+        # If space delimiter occurs earlier than ":" or "=" then it is the
+        # delimiter only if there are non-whitespace characters between it and
+        # the other detected delimiter.
         if (
             mindelimiter is not None
             and " " in delimiters
             and delimiters[" "] < delimiters[mindelimiter]
+            and len(line[delimiters[" "] : delimiters[mindelimiter]].strip()) > 0
         ):
-            # If space delimiter occurs earlier than ":" or "=" then it is the
-            # delimiter only if there are non-whitespace characters between it and
-            # the other detected delimiter.
-            if len(line[delimiters[" "] : delimiters[mindelimiter]].strip()) > 0:
-                return (" ", delimiters[" "])
+            return (" ", delimiters[" "])
         return (mindelimiter, minpos)
 
     @staticmethod

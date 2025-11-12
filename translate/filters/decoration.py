@@ -190,9 +190,14 @@ def findmarkedvariables(str1, startmarker, endmarker, ignorelist=[]):
                         startmatch = startmatch2
                 variable = str1[current_position:endmatch]
                 current_position = endmatch + len(endmarker)
-            if variable is not None and variable not in ignorelist:
-                if not variable or variable.replace("_", "").replace(".", "").isalnum():
-                    variables.append((startmatch, variable))
+            if (
+                variable is not None
+                and variable not in ignorelist
+                and (
+                    not variable or variable.replace("_", "").replace(".", "").isalnum()
+                )
+            ):
+                variables.append((startmatch, variable))
     return variables
 
 
@@ -238,12 +243,11 @@ def getnumbers(str1):
     for chr1 in str1:
         if chr1.isdigit():
             innumber = True
-        elif innumber:
-            if chr1 not in {".", degreesign}:
-                innumber = False
-                if lastnumber:
-                    numbers.append(lastnumber)
-                lastnumber = ""
+        elif innumber and chr1 not in {".", degreesign}:
+            innumber = False
+            if lastnumber:
+                numbers.append(lastnumber)
+            lastnumber = ""
         if innumber:
             if chr1 == degreesign:
                 lastnumber += chr1
@@ -254,9 +258,8 @@ def getnumbers(str1):
                 carryperiod = ""
         else:
             carryperiod = ""
-    if innumber:
-        if lastnumber:
-            numbers.append(lastnumber)
+    if innumber and lastnumber:
+        numbers.append(lastnumber)
     return numbers
 
 

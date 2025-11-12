@@ -306,9 +306,8 @@ class podebug:
         return unit.source == "LTR"
 
     def convertunit(self, unit, prefix):
-        if self.ignorefunc:
-            if self.ignorefunc(unit):
-                return unit
+        if self.ignorefunc and self.ignorefunc(unit):
+            return unit
         if prefix.find("@hash_placeholder@") != -1:
             hashable = unit.getlocations()[0] if unit.getlocations() else unit.source
             prefix = prefix.replace(
