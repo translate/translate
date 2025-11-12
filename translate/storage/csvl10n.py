@@ -24,9 +24,12 @@ or entire files (csvfile) for use with localisation.
 from __future__ import annotations
 
 import csv
+import logging
 from io import StringIO
 
 from translate.storage import base
+
+logger = logging.getLogger(__name__)
 
 
 class DefaultDialect(csv.excel):
@@ -229,9 +232,7 @@ def try_dialects(
     # Otherwise, pass explicit fieldnames
     fieldnames_param = None if has_header else fieldnames
 
-    # NOTE: When has_header is True and fieldnames_param is None, DictReader uses the first row as field names automatically.
-    #       Header detection is already handled by detect_header(). The verification concern here is whether dialect detection worked correctly,
-    #       which may require iterating through the file, rather than focusing on header detection.
+    # NOTE: DictReader automatically uses the first row as field names when fieldnames is None.
     try:
         inputfile.seek(0)
         return csv.DictReader(
@@ -377,6 +378,11 @@ class csvfile(base.TranslationStore):
                 # Validate that delimiter and quotechar are different
                 # (Python 3.13+ enforces this more strictly)
                 if self.dialect.delimiter == self.dialect.quotechar:
+                    logger.debug(
+                        "CSV dialect sniffer detected invalid configuration "
+                        "(delimiter == quotechar: %r), falling back to default dialect",
+                        self.dialect.delimiter,
+                    )
                     self.dialect = "default"
             except csv.Error:
                 self.dialect = "default"
