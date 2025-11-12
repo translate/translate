@@ -371,8 +371,8 @@ class csvfile(base.TranslationStore):
                     # HACKISH: most probably a default, not real detection
                     self.dialect.quoting = csv.QUOTE_ALL
                     self.dialect.doublequote = True
-                # Add delimiter for single value CSV where none is present
-                if not self.dialect.delimiter:
+                # Add delimiter for single value CSV where none is present or is obviously invalid
+                if not self.dialect.delimiter or self.dialect.delimiter in {'"', "\r", "\n"}:
                     self.dialect.delimiter = ","
             except csv.Error:
                 self.dialect = "default"
