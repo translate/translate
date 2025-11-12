@@ -243,3 +243,56 @@ GENERAL@2|Notes,"cable, motor, switch"
         assert newstore.units[0].target == "Hello Spanish"
         assert newstore.units[1].id == "goodbye"
         assert newstore.units[1].target == "Adios"
+
+    def test_monolingual_context_roundtrip(self):
+        """Test that monolingual CSV with context can be saved and loaded correctly."""
+        content = b'"context","target"\n"app.hello","Hola"\n"app.goodbye","Adios"'
+        store = self.parse_store(content)
+        assert len(store.units) == 2
+
+        # Modify a unit
+        store.units[0].target = "Hello Application"
+
+        # Roundtrip
+        newstore = self.reparse(store)
+        assert len(newstore.units) == 2
+        assert newstore.units[0].context == "app.hello"
+        assert newstore.units[0].target == "Hello Application"
+        assert newstore.units[1].context == "app.goodbye"
+        assert newstore.units[1].target == "Adios"
+
+    def test_monolingual_id_context_roundtrip(self):
+        """Test that monolingual CSV with both id and context can be saved and loaded correctly."""
+        content = (
+            b'"id","context","target"\n"msg1","app","Hello"\n"msg2","app","Goodbye"'
+        )
+        store = self.parse_store(content)
+        assert len(store.units) == 2
+
+        # Modify a unit
+        store.units[0].target = "Hello World"
+
+        # Roundtrip
+        newstore = self.reparse(store)
+        assert len(newstore.units) == 2
+        assert newstore.units[0].id == "msg1"
+        assert newstore.units[0].context == "app"
+        assert newstore.units[0].target == "Hello World"
+        assert newstore.units[1].id == "msg2"
+        assert newstore.units[1].context == "app"
+        assert newstore.units[1].target == "Goodbye"
+
+    def test_monolingual_target_only_roundtrip(self):
+        """Test that monolingual CSV with only target column can be saved and loaded correctly."""
+        content = b'"target"\n"Translation 1"\n"Translation 2"'
+        store = self.parse_store(content)
+        assert len(store.units) == 2
+
+        # Modify a unit
+        store.units[0].target = "Updated Translation 1"
+
+        # Roundtrip
+        newstore = self.reparse(store)
+        assert len(newstore.units) == 2
+        assert newstore.units[0].target == "Updated Translation 1"
+        assert newstore.units[1].target == "Translation 2"
