@@ -239,6 +239,51 @@ class TestPOFile(test_base.TestTranslationStore):
             u.target = u.target
         return bytes(pofile).decode("utf-8")
 
+    def _get_expected_for_gettext_version(self, **version_outputs):
+        """
+        Helper to select expected output based on gettext version.
+
+        Args:
+            version_outputs: Keyword arguments like gettext_0_22="...", gettext_0_23="..."
+
+        Returns the latest version for pypo (Python wrapper follows latest gettext),
+        or selects based on actual libgettextpo version for cpo storage.
+
+        """
+        # Sort versions to find the latest
+        versions = sorted(
+            [
+                (tuple(map(int, k.split("_")[1:])), v)
+                for k, v in version_outputs.items()
+            ],
+            reverse=True,
+        )
+        _latest_version, latest_output = versions[0]
+
+        if issubclass(self.StoreClass, pypo.pofile):
+            # Python wrapper should follow the latest gettext
+            return latest_output
+
+        # Choose matching output depending on gettext version
+        from translate.storage.cpo import get_libgettextpo_version
+
+        actual_version = get_libgettextpo_version()
+
+        # Find the best match
+        for version, output in versions:
+            if actual_version >= version:
+                print(
+                    f"Detected gettext {'.'.join(map(str, version))} or newer ({actual_version})"
+                )
+                return output
+
+        # Fallback to the oldest version
+        oldest_version, oldest_output = versions[-1]
+        print(
+            f"Detected gettext older than {'.'.join(map(str, oldest_version))} ({actual_version})"
+        )
+        return oldest_output
+
     def test_context_only(self):
         """Checks that an empty msgid with msgctxt is handled correctly."""
         posource = """msgctxt "CONTEXT"
@@ -1116,20 +1161,9 @@ msgstr ""
 "Manifest.permission#BIND_NOTIFICATION_LISTENER_SERVICE]BIND_NOTIFICATION_LISTENER_SERVICE[/"
 "url]."
 """
-        if issubclass(self.StoreClass, pypo.pofile):
-            # Python wrapper should follow the latest gettext
-            expected = gettext_0_23
-        else:
-            # Choose matching output depending on gettext version
-            from translate.storage.cpo import get_libgettextpo_version
-
-            version = get_libgettextpo_version()
-            if version >= (0, 23, 0):
-                print(f"Detected gettext 0.23 or newer ({version})")
-                expected = gettext_0_23
-            else:
-                print(f"Detected gettext 0.22 or older ({version})")
-                expected = gettext_0_22
+        expected = self._get_expected_for_gettext_version(
+            gettext_0_22=gettext_0_22, gettext_0_23=gettext_0_23
+        )
 
         assert self.poreflow(gettext_0_22) == expected
         assert self.poreflow(gettext_0_23) == expected
@@ -1197,23 +1231,11 @@ msgstr ""
 """
         gettext_0_20 = gettext_0_21.replace('"\n"n%10', 'n"\n"%10')
 
-        if issubclass(self.StoreClass, pypo.pofile):
-            # Python wrapper should follow the latest gettext
-            expected = gettext_0_23
-        else:
-            # Choose matching output depending on gettext version
-            from translate.storage.cpo import get_libgettextpo_version
-
-            version = get_libgettextpo_version()
-            if version >= (0, 23, 0):
-                print(f"Detected gettext 0.23 or newer ({version})")
-                expected = gettext_0_23
-            elif version >= (0, 21, 0):
-                print(f"Detected gettext 0.21 or newer ({version})")
-                expected = gettext_0_21
-            else:
-                print(f"Detected gettext 0.20 or older ({version})")
-                expected = gettext_0_20
+        expected = self._get_expected_for_gettext_version(
+            gettext_0_20=gettext_0_20,
+            gettext_0_21=gettext_0_21,
+            gettext_0_23=gettext_0_23,
+        )
 
         # Verify that any input wraps to the expected output
         assert self.poreflow(gettext_0_21) == expected
