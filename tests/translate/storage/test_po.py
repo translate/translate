@@ -1123,7 +1123,9 @@ msgstr ""
         assert self.poreflow(posource) == posource
 
     def test_wrap_escape_line(self):
-        posource = r"""msgid ""
+        # Different gettext versions may wrap this complex CJK+escape string differently
+        # Using the same input/output for both since pypo should match latest gettext
+        gettext_0_22 = r"""msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
 msgid "test"
@@ -1141,8 +1143,14 @@ msgstr ""
 "tooltip=\"匹配除 &quot;%{helper.name}&quot; 以外的任意助手。\">%{helper.val}"
 "</var>:<var data-tooltip=\"%{helper.name}\">%{helper.val}</var>}}"
 """
-        print(self.poreflow(posource))
-        assert self.poreflow(posource) == posource
+        gettext_0_23 = gettext_0_22
+
+        expected = self._get_expected_for_gettext_version(
+            gettext_0_22=gettext_0_22, gettext_0_23=gettext_0_23
+        )
+
+        assert self.poreflow(gettext_0_22) == expected
+        assert self.poreflow(gettext_0_23) == expected
 
     def test_wrap_parenthesis_long(self):
         gettext_0_22 = r"""msgid "test3"

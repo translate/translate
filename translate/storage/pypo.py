@@ -113,24 +113,6 @@ def unicode_width(text: str) -> int:
     return result
 
 
-def cjkslices(text: str, index: int) -> tuple[str, str]:
-    """Return the two slices of a text cut to the index."""
-    text_width = unicode_width(text)
-    # Do not wrap non-wide chars here
-    if text_width == len(text):
-        return text, ""
-
-    # Guess split point
-    split_point = index * text_width // len(text)
-    while unicode_width(text[:split_point]) < index:
-        split_point += 1
-
-    while unicode_width(text[:split_point]) > index:
-        split_point -= 1
-
-    return text[:split_point], text[split_point:]
-
-
 class PoWrapper:
     r"""
     Gettext-compatible text wrapper for PO files.
@@ -186,9 +168,7 @@ class PoWrapper:
         """
         # Check if text contains CJK characters
         has_cjk = any(
-            0x3000 <= ord(c) <= 0x9FFF or 0xFF00 <= ord(c) <= 0xFFEF
-            for c in text
-            if len(c) == 1
+            0x3000 <= ord(c) <= 0x9FFF or 0xFF00 <= ord(c) <= 0xFFEF for c in text
         )
 
         # Use uniseg for CJK text
