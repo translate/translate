@@ -215,17 +215,18 @@ def try_dialects(inputfile, fieldnames, dialect, has_header=False):
 
     Args:
         inputfile: The file to read
-        fieldnames: The field names to use (or None to auto-detect from first row)
+        fieldnames: The field names to use (or None to use the first row as field names)
         dialect: The CSV dialect to use
         has_header: If True, file has a header row and fieldnames should be None
-                   to let DictReader auto-detect it
+                   to let DictReader use the first row as field names
 
     """
-    # If file has a header row, pass None to DictReader to auto-detect it
+    # If file has a header row, pass None to DictReader to use the first row as field names
     # Otherwise, pass explicit fieldnames
     fieldnames_param = None if has_header else fieldnames
 
-    # FIXME: does it verify at all if we don't actually step through the file?
+    # FIXME: With has_header, does DictReader verify dialect/fieldnames if we don't iterate?
+    #        Clarify if verification concern applies for both header auto-detection and explicit fieldnames.
     try:
         inputfile.seek(0)
         return csv.DictReader(
