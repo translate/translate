@@ -18,6 +18,8 @@
 
 """This module stores information and functionality that relates to plurals."""
 
+from __future__ import annotations
+
 import re
 import unicodedata
 
@@ -34,7 +36,7 @@ languages = {
         "n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5",
     ),
     "arn": ("Mapudungun; Mapuche", 2, "n > 1"),
-    "as": ("Assamese", 2, "(n != 1)"),
+    "as": ("Assamese", 2, "n > 1"),
     "ast": ("Asturian; Bable; Leonese; Asturleonese", 2, "(n != 1)"),
     "ay": ("Aymará", 1, "0"),
     "az": ("Azerbaijani", 2, "(n != 1)"),
@@ -44,9 +46,9 @@ languages = {
         "n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2",
     ),
     "bg": ("Bulgarian", 2, "(n != 1)"),
-    "bn": ("Bengali", 2, "(n != 1)"),
-    "bn_BD": ("Bengali (Bangladesh)", 2, "(n != 1)"),
-    "bn_IN": ("Bengali (India)", 2, "(n != 1)"),
+    "bn": ("Bengali", 2, "n > 1"),
+    "bn_BD": ("Bengali (Bangladesh)", 2, "n > 1"),
+    "bn_IN": ("Bengali (India)", 2, "n > 1"),
     "bo": ("Tibetan", 1, "0"),
     "br": ("Breton", 2, "n > 1"),
     "brx": ("Bodo", 2, "(n != 1)"),
@@ -57,7 +59,7 @@ languages = {
     ),
     "ca": ("Catalan; Valencian", 2, "(n != 1)"),
     "ca@valencia": ("Catalan; Valencian (Valencia)", 2, "(n != 1)"),
-    "cgg": ("Chiga", 1, "0"),
+    "cgg": ("Chiga", 2, "n != 1"),
     "cs": ("Czech", 3, "(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2"),
     "csb": (
         "Kashubian",
@@ -79,7 +81,7 @@ languages = {
     "et": ("Estonian", 2, "(n != 1)"),
     "eu": ("Basque", 2, "(n != 1)"),
     "fa": ("Persian", 2, "n > 1"),
-    "ff": ("Fulah", 2, "(n != 1)"),
+    "ff": ("Fulah", 2, "n > 1"),
     "fi": ("Finnish", 2, "(n != 1)"),
     "fil": ("Filipino; Pilipino", 2, "(n > 1)"),
     "fo": ("Faroese", 2, "(n != 1)"),
@@ -93,11 +95,11 @@ languages = {
         "(n==1 || n==11) ? 0 : (n==2 || n==12) ? 1 : (n > 2 && n < 20) ? 2 : 3",
     ),
     "gl": ("Galician", 2, "(n != 1)"),
-    "gu": ("Gujarati", 2, "(n != 1)"),
+    "gu": ("Gujarati", 2, "n > 1"),
     "gun": ("Gun", 2, "(n > 1)"),
     "ha": ("Hausa", 2, "(n != 1)"),
     "he": ("Hebrew", 2, "(n != 1)"),
-    "hi": ("Hindi", 2, "(n != 1)"),
+    "hi": ("Hindi", 2, "n > 1"),
     "hne": ("Chhattisgarhi", 2, "(n != 1)"),
     "hr": (
         "Croatian",
@@ -106,20 +108,20 @@ languages = {
     ),
     "ht": ("Haitian; Haitian Creole", 2, "(n != 1)"),
     "hu": ("Hungarian", 2, "(n != 1)"),
-    "hy": ("Armenian", 1, "0"),
+    "hy": ("Armenian", 2, "n > 1"),
     "ia": ("Interlingua (International Auxiliary Language Association)", 2, "(n != 1)"),
     "id": ("Indonesian", 1, "0"),
     "is": ("Icelandic", 2, "(n != 1)"),
     "it": ("Italian", 2, "(n != 1)"),
     "ja": ("Japanese", 1, "0"),
     "jbo": ("Lojban", 1, "0"),
-    "jv": ("Javanese", 2, "(n != 1)"),
-    "ka": ("Georgian", 1, "0"),
-    "kab": ("Kabyle", 2, "(n != 1)"),
+    "jv": ("Javanese", 1, "0"),
+    "ka": ("Georgian", 2, "n != 1"),
+    "kab": ("Kabyle", 2, "n > 1"),
     "kk": ("Kazakh", 2, "n != 1"),
     "kl": ("Greenlandic", 2, "(n != 1)"),
     "km": ("Central Khmer", 1, "0"),
-    "kn": ("Kannada", 2, "(n != 1)"),
+    "kn": ("Kannada", 2, "n > 1"),
     "ko": ("Korean", 1, "0"),
     "kok": ("Konkani", 2, "(n != 1)"),
     "ks": ("Kashmiri", 2, "(n != 1)"),
@@ -134,7 +136,11 @@ languages = {
         3,
         "(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2)",
     ),
-    "lv": ("Latvian", 3, "(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2)"),
+    "lv": (
+        "Latvian",
+        3,
+        "(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2)",
+    ),
     "mai": ("Maithili", 2, "(n != 1)"),
     "me": (
         "Montenegrin",
@@ -149,7 +155,7 @@ languages = {
     "mn": ("Mongolian", 2, "(n != 1)"),
     "mni": ("Meithei (Manipuri)", 2, "(n != 1)"),
     "mnk": ("Mandinka", 3, "(n==0 ? 0 : n==1 ? 1 : 2)"),
-    "mr": ("Marathi", 2, "(n != 1)"),
+    "mr": ("Marathi", 2, "n > 1"),
     "ms": ("Malay", 1, "0"),
     "mt": (
         "Maltese",
@@ -163,11 +169,11 @@ languages = {
     "ne": ("Nepali", 2, "(n != 1)"),
     "nl": ("Dutch; Flemish", 2, "(n != 1)"),
     "nn": ("Norwegian Nynorsk; Nynorsk, Norwegian", 2, "(n != 1)"),
-    "nqo": ("N'Ko", 2, "(n > 1)"),
-    "nso": ("Pedi; Sepedi; Northern Sotho", 2, "(n != 1)"),
+    "nqo": ("N'Ko", 1, "0"),
+    "nso": ("Pedi; Sepedi; Northern Sotho", 2, "n > 1"),
     "oc": ("Occitan (post 1500)", 2, "(n > 1)"),
     "or": ("Odia", 2, "(n != 1)"),
-    "pa": ("Panjabi; Punjabi", 2, "(n != 1)"),
+    "pa": ("Panjabi; Punjabi", 2, "n > 1"),
     "pap": ("Papiamento", 2, "(n != 1)"),
     "pl": (
         "Polish",
@@ -176,7 +182,7 @@ languages = {
     ),
     "pms": ("Piemontese", 2, "(n != 1)"),
     "ps": ("Pushto; Pashto", 2, "(n != 1)"),
-    "pt": ("Portuguese", 2, "(n != 1)"),
+    "pt": ("Portuguese", 2, "n > 1"),
     "pt_BR": ("Portuguese (Brazil)", 2, "(n > 1)"),
     "rm": ("Romansh", 2, "(n != 1)"),
     "ro": ("Romanian", 3, "(n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2)"),
@@ -193,7 +199,7 @@ languages = {
     "scn": ("Sicilian", 2, "(n != 1)"),
     "sd": ("Sindhi", 2, "(n != 1)"),
     "se": ("Northern Sami", 2, "(n != 1)"),
-    "si": ("Sinhala; Sinhalese", 2, "(n != 1)"),
+    "si": ("Sinhala; Sinhalese", 2, "n > 1"),
     "sk": ("Slovak", 3, "(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2"),
     "sl": (
         "Slovenian",
@@ -225,19 +231,19 @@ languages = {
     "tk": ("Turkmen", 2, "(n != 1)"),
     "tr": ("Turkish", 2, "(n != 1)"),
     "tt": ("Tatar", 1, "0"),
-    "ug": ("Uighur; Uyghur", 1, "0"),
+    "ug": ("Uighur; Uyghur", 2, "n != 1"),
     "uk": (
         "Ukrainian",
         3,
         "(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)",
     ),
     "ur": ("Urdu", 2, "(n != 1)"),
-    "uz": ("Uzbek", 2, "(n > 1)"),
+    "uz": ("Uzbek", 2, "n != 1"),
     "ve": ("Venda", 2, "(n != 1)"),
     "vi": ("Vietnamese", 1, "0"),
     "wa": ("Walloon", 2, "(n > 1)"),
-    "wo": ("Wolof", 2, "(n != 1)"),
-    "yo": ("Yoruba", 2, "(n != 1)"),
+    "wo": ("Wolof", 1, "0"),
+    "yo": ("Yoruba", 1, "0"),
     "yue": ("Yue", 1, "0"),
     # Chinese is difficult because the main divide is on script, not really
     # country. Simplified Chinese is used mostly in China, Singapore and Malaysia.
@@ -245,7 +251,7 @@ languages = {
     "zh_CN": ("Chinese (China)", 1, "0"),
     "zh_HK": ("Chinese (Hong Kong)", 1, "0"),
     "zh_TW": ("Chinese (Taiwan)", 1, "0"),
-    "zu": ("Zulu", 2, "(n != 1)"),
+    "zu": ("Zulu", 2, "n > 1"),
 }
 """Dictionary of language data.
 The language code is the dictionary key (which may contain country codes
@@ -1100,8 +1106,106 @@ def simplify_to_common(language_code):
     return simplify_to_common(simpler)
 
 
+# List of RTL (right-to-left) languages
+# Sourced from https://github.com/WeblateOrg/language-data
+RTL_LANGS = {
+    "ae",
+    "aeb",
+    "aii",
+    "ajp",
+    "apc",
+    "apd",
+    "ar",
+    "ar_BH",
+    "ar_DZ",
+    "ar_EG",
+    "ar_KW",
+    "ar_LY",
+    "ar_MA",
+    "ar_SA",
+    "ar_YE",
+    "ara",
+    "arc",
+    "arq",
+    "ars",
+    "arz",
+    "ave",
+    "bal",
+    "bgn",
+    "bqi",
+    "ckb",
+    "ckb_IR",
+    "dv",
+    "egy",
+    "fa",
+    "fa_AF",
+    "fas",
+    "ha",
+    "he",
+    "heb",
+    "khw",
+    "ks",
+    "lrc",
+    "luz",
+    "ms_Arab",
+    "mzn",
+    "nqo",
+    "pa_PK",
+    "pal",
+    "per",
+    "phn",
+    "ps",
+    "rhg",
+    "sam",
+    "sd",
+    "sdh",
+    "skr",
+    "syc",
+    "syr",
+    "ug",
+    "ur",
+    "ur_IN",
+    "urd",
+    "yi",
+}
+
+
+def _normalize_to_underscore(code: str) -> str:
+    """
+    Normalize a language code by converting hyphens and @ symbols to underscores and lowercasing.
+
+    Internal helper function for consistent language code normalization.
+
+    :param code: Language code (e.g., 'ar-EG', 'en@latin')
+    :return: Normalized language code (e.g., 'ar_eg', 'en_latin')
+    """
+    return code.replace("-", "_").replace("@", "_").lower()
+
+
+def is_rtl(language_code: str | None) -> bool:
+    """
+    Check if a language is right-to-left.
+
+    Supports both hyphen and underscore separators (e.g., 'ar-EG' and 'ar_EG').
+    The function normalizes hyphens to underscores for consistency.
+
+    :param language_code: Language code (e.g., 'ar', 'he', 'en', 'ar-EG', 'ar_EG')
+    :return: True if the language is RTL, False otherwise
+    """
+    if not language_code:
+        return False
+    # Normalize the language code (convert hyphens to underscores)
+    normalized = _normalize_to_underscore(language_code)
+    # Check both the full code and the base language code
+    if normalized in RTL_LANGS:
+        return True
+    # Check base language (e.g., 'ar' for 'ar_SA')
+    base = normalized.split("_")[0]
+    return base in RTL_LANGS
+
+
 def get_language(code):
-    code = code.replace("-", "_").replace("@", "_").lower()
+    code = _normalize_to_underscore(code)
     if "_" in code:
         # convert ab_cd → ab_CD
         code = "{}_{}".format(code.split("_")[0], code.split("_", 1)[1].upper())

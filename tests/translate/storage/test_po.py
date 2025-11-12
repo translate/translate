@@ -239,6 +239,51 @@ class TestPOFile(test_base.TestTranslationStore):
             u.target = u.target
         return bytes(pofile).decode("utf-8")
 
+    def _get_expected_for_gettext_version(self, **version_outputs):
+        """
+        Helper to select expected output based on gettext version.
+
+        Args:
+            version_outputs: Keyword arguments like gettext_0_22="...", gettext_0_23="..."
+
+        Returns the latest gettext version for pypo (Python wrapper follows latest gettext),
+        or selects based on actual libgettextpo version for cpo storage.
+
+        """
+        # Sort versions to find the latest
+        versions = sorted(
+            [
+                (tuple(map(int, k.split("_")[1:])), v)
+                for k, v in version_outputs.items()
+            ],
+            reverse=True,
+        )
+        _latest_version, latest_output = versions[0]
+
+        if issubclass(self.StoreClass, pypo.pofile):
+            # Python wrapper should follow the latest gettext
+            return latest_output
+
+        # Choose matching output depending on gettext version
+        from translate.storage.cpo import get_libgettextpo_version
+
+        actual_version = get_libgettextpo_version()
+
+        # Find the best match
+        for version, output in versions:
+            if actual_version >= version:
+                print(
+                    f"Detected gettext {'.'.join(map(str, version))} or newer ({actual_version})"
+                )
+                return output
+
+        # Fallback to the oldest version
+        oldest_version, oldest_output = versions[-1]
+        print(
+            f"Detected gettext older than {'.'.join(map(str, oldest_version))} ({actual_version})"
+        )
+        return oldest_output
+
     def test_context_only(self):
         """Checks that an empty msgid with msgctxt is handled correctly."""
         posource = """msgctxt "CONTEXT"
@@ -951,7 +996,7 @@ msgstr[0] ""
         assert not unit.istranslated()
         assert unit.get_state_n() == 0
 
-    def test_wrapping(self):
+    def test_wrapping_spaces(self):
         """This tests that we wrap like gettext."""
         posource = r"""#: file.h:1
 msgid "bla\t12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345"
@@ -960,6 +1005,7 @@ msgstr "bla\t12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345"
         # should be unchanged:
         assert self.poreflow(posource) == posource
 
+    def test_wrapping_long(self):
         posource = r"""#: 2
 msgid "bla\t12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 1"
 msgstr "bla\t12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 1"
@@ -972,6 +1018,7 @@ msgstr ""
 """
         assert self.poreflow(posource) == posource_wanted
 
+    def test_wrapping_long_fit(self):
         posource = r"""#: 7
 msgid "bla\t12345 12345 12345 12345 12345 12 12345 12345 12345 12345 12345 12345 123"
 msgstr "bla\t12345 12345 12345 12345 12345 15 12345 12345 12345 12345 12345 12345 123"
@@ -984,6 +1031,7 @@ msgstr ""
 """
         assert self.poreflow(posource) == posource_wanted
 
+    def test_wrapping_long_overflow(self):
         posource = r"""#: 7
 msgid "bla\t12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 1"
 msgstr "bla\t12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 1"
@@ -998,6 +1046,7 @@ msgstr ""
 """
         assert self.poreflow(posource) == posource_wanted
 
+    def test_wrapping_long_multiline(self):
         posource = r"""#: 8
 msgid "bla\t12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 1234\n1234"
 msgstr "bla\t12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 1234\n1234"
@@ -1026,6 +1075,7 @@ msgstr ""
 """
         assert self.poreflow(posource) == posource_wanted
 
+    def test_wrapping_long_escapes(self):
         posource = r"""#: 10
 msgid "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"
 msgstr "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"
@@ -1077,6 +1127,49 @@ msgstr ""
 """
         assert self.poreflow(posource) == posource
 
+    def test_wrap_escape_line(self):
+        gettext_0_22 = r"""msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+msgid "test"
+msgstr ""
+"%{src?%{dest?转发:入站}:出站} %{ipv6?%{ipv4?<var>IPv4</var> and <var>IPv6</"
+"var>:<var>IPv6</var>}:<var>IPv4</var>}%{proto?, 协议 "
+"%{proto#%{next?, }%{item.types?<var class=\"cbi-tooltip-container\">%{item."
+"name}<span class=\"cbi-tooltip\">具有类型 %{item.types#%{next?, }<var>%{item}"
+"</var>} 的 ICMP</span></var>:<var>%{item.name}</var>}}}%{mark?, 标记 "
+"<var%{mark.inv? data-tooltip=\"匹配除 %{mark.num}%{mark.mask? 带有掩码 "
+"%{mark.mask}} 的 fwmarks。\":%{mark.mask? data-tooltip=\"在比较前对fwmark 应"
+"用掩码 %{mark.mask} 。\"}}>%{mark.val}</var>}%{dscp?, DSCP %{dscp.inv?<var "
+"data-tooltip=\"匹配除 %{dscp.num?:%{dscp.name}} 以外的 DSCP 类型。\">%{dscp."
+"val}</var>:<var>%{dscp.val}</var>}}%{helper?, 助手 %{helper.inv?<var data-"
+"tooltip=\"匹配除 &quot;%{helper.name}&quot; 以外的任意助手。\">%{helper.val}"
+"</var>:<var data-tooltip=\"%{helper.name}\">%{helper.val}</var>}}"
+"""
+        gettext_0_23 = r"""msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+msgid "test"
+msgstr ""
+"%{src?%{dest?转发:入站}:出站} %{ipv6?%{ipv4?<var>IPv4</var> and <var>IPv6</"
+"var>:<var>IPv6</var>}:<var>IPv4</var>}%{proto?, 协议 %{proto#%{next?, }%"
+"{item.types?<var class=\"cbi-tooltip-container\">%{item.name}<span "
+"class=\"cbi-tooltip\">具有类型 %{item.types#%{next?, }<var>%{item}</var>} 的 "
+"ICMP</span></var>:<var>%{item.name}</var>}}}%{mark?, 标记 <var%{mark.inv? "
+"data-tooltip=\"匹配除 %{mark.num}%{mark.mask? 带有掩码 %{mark.mask}} 的 "
+"fwmarks。\":%{mark.mask? data-tooltip=\"在比较前对fwmark 应用掩码 %"
+"{mark.mask} 。\"}}>%{mark.val}</var>}%{dscp?, DSCP %{dscp.inv?<var data-"
+"tooltip=\"匹配除 %{dscp.num?:%{dscp.name}} 以外的 DSCP 类型。\">%{dscp.val}</"
+"var>:<var>%{dscp.val}</var>}}%{helper?, 助手 %{helper.inv?<var data-"
+"tooltip=\"匹配除 &quot;%{helper.name}&quot; 以外的任意助手。\">%{helper.val}"
+"</var>:<var data-tooltip=\"%{helper.name}\">%{helper.val}</var>}}"
+"""
+        posource = self._get_expected_for_gettext_version(
+            gettext_0_22=gettext_0_22,
+            gettext_0_23=gettext_0_23,
+        )
+        assert self.poreflow(posource) == posource
+
     def test_wrap_parenthesis_long(self):
         gettext_0_22 = r"""msgid "test3"
 msgstr ""
@@ -1094,20 +1187,9 @@ msgstr ""
 "Manifest.permission#BIND_NOTIFICATION_LISTENER_SERVICE]BIND_NOTIFICATION_LISTENER_SERVICE[/"
 "url]."
 """
-        if issubclass(self.StoreClass, pypo.pofile):
-            # Python wrapper should follow the latest gettext
-            expected = gettext_0_23
-        else:
-            # Choose matching output depending on gettext version
-            from translate.storage.cpo import get_libgettextpo_version
-
-            version = get_libgettextpo_version()
-            if version >= (0, 23, 0):
-                print(f"Detected gettext 0.23 or newer ({version})")
-                expected = gettext_0_23
-            else:
-                print(f"Detected gettext 0.22 or older ({version})")
-                expected = gettext_0_22
+        expected = self._get_expected_for_gettext_version(
+            gettext_0_22=gettext_0_22, gettext_0_23=gettext_0_23
+        )
 
         assert self.poreflow(gettext_0_22) == expected
         assert self.poreflow(gettext_0_23) == expected
@@ -1175,23 +1257,11 @@ msgstr ""
 """
         gettext_0_20 = gettext_0_21.replace('"\n"n%10', 'n"\n"%10')
 
-        if issubclass(self.StoreClass, pypo.pofile):
-            # Python wrapper should follow the latest gettext
-            expected = gettext_0_23
-        else:
-            # Choose matching output depending on gettext version
-            from translate.storage.cpo import get_libgettextpo_version
-
-            version = get_libgettextpo_version()
-            if version >= (0, 23, 0):
-                print(f"Detected gettext 0.23 or newer ({version})")
-                expected = gettext_0_23
-            elif version >= (0, 21, 0):
-                print(f"Detected gettext 0.21 or newer ({version})")
-                expected = gettext_0_21
-            else:
-                print(f"Detected gettext 0.20 or older ({version})")
-                expected = gettext_0_20
+        expected = self._get_expected_for_gettext_version(
+            gettext_0_20=gettext_0_20,
+            gettext_0_21=gettext_0_21,
+            gettext_0_23=gettext_0_23,
+        )
 
         # Verify that any input wraps to the expected output
         assert self.poreflow(gettext_0_21) == expected
@@ -1214,6 +1284,22 @@ msgstr ""
 "在 Mastodon 上关注 [@beeware@fosstodon.org](https://fosstodon.org/@beeware)，"
 "或[加入 BeeWare 爱好者邮件列表](/zh_CN/community/keep-informed/)以获取与项目"
 "相关的更新、提示、技巧和公告。"
+"""
+        assert self.poreflow(posource) == posource
+
+    def test_wrap_escape(self):
+        posource = r"""msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+#: ../../content/applications/finance/accounting/payments/online.rst:22
+msgid ""
+"By default, \":doc:`Wire Transfer </applications/finance/payment_providers/"
+"wire_transfer>`\" is the only payment provider activated, but you still have "
+"to fill out the payment details."
+msgstr ""
+"기본값으로 \":doc:`온라인 이체 </applications/finance/payment_providers/"
+"wire_transfer>`\"만 결제대행업체을 사용하도록 설정되어 있으나, 여기에도 결제 "
+"세부 정보를 입력해야 합니다."
 """
         assert self.poreflow(posource) == posource
 

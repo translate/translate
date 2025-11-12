@@ -23,3 +23,31 @@ class TestPOTerminology:
 
         filtered_terms = extractor.filter_terms(terms)
         assert filtered_terms[0][0] > filtered_terms[-1][0]
+
+    def test_unitinfo_stores_minimal_data(self):
+        """Test that UnitInfo stores minimal data instead of full unit objects."""
+        extractor = poterminology.TerminologyExtractor()
+
+        with open(sample_po_file, "rb") as fh:
+            inputfile = factory.getobject(fh)
+
+        # Process units
+        extractor.processunits(inputfile.units, str(sample_po_file))
+
+        # Check that glossary contains UnitInfo objects, not full unit objects
+        for translations in extractor.glossary.values():
+            for _source, _target, unit_info, _filename in translations:
+                # Verify it's a UnitInfo namedtuple
+                assert isinstance(unit_info, poterminology.UnitInfo)
+                # Verify it has the expected attributes
+                assert hasattr(unit_info, "source")
+                assert hasattr(unit_info, "target")
+                assert hasattr(unit_info, "locations")
+                assert hasattr(unit_info, "sourcenotes")
+                assert hasattr(unit_info, "transnotes")
+                # Verify locations and notes are frozensets (immutable, memory-efficient)
+                assert isinstance(unit_info.locations, frozenset)
+                assert isinstance(unit_info.sourcenotes, frozenset)
+                assert isinstance(unit_info.transnotes, frozenset)
+                break
+            break

@@ -615,3 +615,47 @@ END
         assert (
             rc_file.units[0].source == 'The timestamp for "ABCDEF" could not be read.'
         )
+
+    def test_utf16_pragma_code_page(self):
+        """Test UTF-16LE file with pragma code_page should ignore pragma."""
+        # This test case covers the bug where pragma code_page causes
+        # re-parsing of UTF-16LE files as cp1252, resulting in UnicodeDecodeError
+        rc_source = f"""#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_DEFAULT
+#pragma code_page(1252)
+#endif
+
+STRINGTABLE
+BEGIN
+    IDS_TEST "Test {chr(0x8F00)}"
+END
+"""
+        # Parse as UTF-16LE
+        rc_file = self.source_parse(rc_source, encoding="utf-16-le")
+        # Should parse successfully and ignore pragma
+        assert len(rc_file.units) == 1
+        assert rc_file.units[0].name == "STRINGTABLE.IDS_TEST"
+        assert rc_file.units[0].source == f"Test {chr(0x8F00)}"
+        # Encoding should remain utf-16-le, not changed to cp1252
+        assert rc_file.encoding == "utf-16-le"
+
+    def test_utf8_pragma_code_page(self):
+        """Test UTF-8 file with pragma code_page should ignore pragma."""
+        rc_source = """#pragma code_page(65001)
+
+LANGUAGE LANG_ENGLISH, SUBLANG_DEFAULT
+#pragma code_page(1252)
+
+STRINGTABLE
+BEGIN
+    IDS_TEST "Test ✔"
+END
+"""
+        # Parse as UTF-8
+        rc_file = self.source_parse(rc_source, encoding="utf-8")
+        # Should parse successfully and ignore second pragma
+        assert len(rc_file.units) == 1
+        assert rc_file.units[0].name == "STRINGTABLE.IDS_TEST"
+        assert rc_file.units[0].source == "Test ✔"
+        # Encoding should remain utf-8, not changed to cp1252
+        assert rc_file.encoding == "utf-8"

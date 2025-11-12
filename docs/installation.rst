@@ -57,25 +57,36 @@ On Debian (if you are on etch), just type the following command:
 Installing on Windows
 =====================
 
-On Windows we recommend that you install Translate Toolkit using a virtual
-environment. This makes installation clean and isolated.
+On Windows we recommend using `uv <https://docs.astral.sh/uv/>`_ to install
+Translate Toolkit. This automatically manages virtual environments for you.
 
-Use the latest Python 3.9.  Install `virtualenvwrapper-win
-<https://pypi.python.org/pypi/virtualenvwrapper-win>`_ to simplify handling of
-virtualenvs.
+1. Install latest `Python 3.10+ <https://www.python.org/downloads/windows/>`_
+2. Install uv by running in PowerShell:
 
-1. Install latest `Python 3.9 <https://www.python.org/downloads/windows/>`_
-2. Open cmd.exe or similar
-3. `pip install virtualenvwrapper-win`
-4. `mkvirtualenv ttk` where "ttk" is the name for the new virtualenv
-5. `pip install translate-toolkit[recommended]` to install latest stable or `pip install
-   --pre translate-toolkit[recommended]` to try a pre-release
-6. `po2prop --version` to double check you have the right version
+   .. code-block:: powershell
 
-Next times you need to use Translate Toolkit just remember to:
+      powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 
-1. Open cmd.exe or similar
-2. `workon ttk` to enable the virtualenv again
+3. Create a project directory and install:
+
+   .. code-block:: console
+
+      > mkdir translate-work
+      > cd translate-work
+      > uv venv
+      > uv pip install translate-toolkit
+
+4. Activate the environment and verify:
+
+   .. code-block:: console
+
+      > .venv\Scripts\activate
+      > po2prop --version
+
+Next times you need to use Translate Toolkit:
+
+1. Navigate to your project directory
+2. Activate the virtual environment: ``.venv\Scripts\activate`` (Command Prompt) or ``.venv\Scripts\Activate.ps1`` (PowerShell)
 3. Run the Translate Toolkit commands you want
 
 
@@ -90,22 +101,26 @@ from a stabilising branch then you need to use Git to get your sources:
 .. code-block:: console
 
    $ git clone https://github.com/translate/translate.git
+   $ cd translate
 
 
 This will retrieve the ``master`` branch of the Toolkit.  Further Git
 `instructions <http://git.or.cz/course/svn.html>`_ are also available.
 
-Once you have the sources you have two options, a full install:
+**For users** wanting to install from source:
 
 .. code-block:: console
 
    $ uv pip install .
 
-or, running the tools from the source directory:
+**For developers** wanting to contribute:
 
 .. code-block:: console
 
-   $ uv pip install -e .
+   $ uv sync --all-extras --dev
+
+This sets up a complete development environment with all dependencies.
+See the :doc:`contributing guide </developers/contributing>` for more details.
 
 .. _installation#verify_installed_version:
 

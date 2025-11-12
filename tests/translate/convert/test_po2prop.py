@@ -511,6 +511,28 @@ message-multiedit-header[many]={0,number} gekies
         propfile = self.merge2prop(proptemplate, posource, personality="gwt")
         assert propfile == propexpected
 
+    def test_utf16_with_empty_lines(self):
+        """
+        Test that UTF-16 files with empty/whitespace lines don't cause IndexError.
+
+        This is a regression test for GitHub issue where UTF-16 .strings files
+        with empty lines or lines containing only whitespace caused an
+        IndexError in find_delimiter when processing with DialectStrings.
+        """
+        # Create a template with UTF-16 BOM and empty lines (common in XCode .strings files)
+        proptemplate = b'\xff\xfe\n\x00/\x00*\x00 \x00T\x00e\x00s\x00t\x00 \x00*\x00/\x00\n\x00"\x00t\x00e\x00s\x00t\x00"\x00 \x00=\x00 \x00"\x00"\x00;\x00\n\x00'
+        posource = """#: test
+msgid "test"
+msgstr "Hello"
+"""
+        # This should not raise an IndexError
+        propfile = self.merge2prop(
+            proptemplate, posource, personality="strings", encoding="utf-16"
+        )
+        # Just verify it doesn't crash - the exact output depends on conversion logic
+        assert propfile is not None
+        assert "test" in propfile
+
 
 class TestPO2PropCommand(test_convert.TestConvertCommand, TestPO2Prop):
     """Tests running actual po2prop commands on files."""

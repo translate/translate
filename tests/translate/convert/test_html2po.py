@@ -32,9 +32,8 @@ class TestHTML2PO:
     def countunits(pofile, expected):
         """Helper to check that we got the expected number of messages."""
         actual = len(pofile.units)
-        if actual > 0:
-            if pofile.units[0].isheader():
-                actual -= 1
+        if actual > 0 and pofile.units[0].isheader():
+            actual -= 1
         print(pofile)
         assert actual == expected
 
@@ -43,8 +42,6 @@ class TestHTML2PO:
         """Helper to validate a PO message."""
         if not pofile.units[0].isheader():
             unitnumber -= 1
-        print("unit source: " + pofile.units[unitnumber].source + "|")
-        print("expected: " + expected + "|")
         assert str(pofile.units[unitnumber].source) == str(expected)
 
     def check_single(self, markup, itemtext):
@@ -72,9 +69,7 @@ class TestHTML2PO:
             + '/site.html">Body text</a></p></body></html>',
             'More things in <a href="' + php + '/site.html">Body text</a>',
         )
-        self.check_single(
-            "<html><head></head><body><p>" + php + "</p></body></html>", php
-        )
+        self.check_single(f"<html><head></head><body><p>{php}</p></body></html>", php)
 
     def test_extract_lang_attribute_from_html_tag(self):
         """Test that the lang attribute is extracted from the html tag, issue #3884."""
@@ -570,16 +565,8 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
         php3 = """<? asdfghjklqwertyuiop1234567890!@#$%^&*()-=_+[]\\{}|;':",./<>? ?>"""
 
         # Put 3 different strings into an html string
-        innertext = (
-            '<a href="'
-            + php1
-            + '/site.html">Body text</a> and some '
-            + php2
-            + " more text "
-            + php2
-            + php3
-        )
-        htmlsource = "<html><head></head><body><p>" + innertext + "</p></body></html>"
+        innertext = f'<a href="{php1}/site.html">Body text</a> and some {php2} more text {php2}{php3}'
+        htmlsource = f"<html><head></head><body><p>{innertext}</p></body></html>"
         self.check_single(htmlsource, innertext)
 
     def test_php_multiline(self):
@@ -589,31 +576,11 @@ def
 ghi ?>"""
 
         # Scatter the php strings throughout the file, and show what the translation should be
-        innertext = (
-            '<a href="'
-            + php1
-            + '/site.html">Body text</a> and some '
-            + php1
-            + " more text "
-            + php1
-            + php1
-        )
-        innertrans = (
-            '<a href="'
-            + php1
-            + '/site.html">Texte de corps</a> et encore de '
-            + php1
-            + " plus de texte "
-            + php1
-            + php1
-        )
+        innertext = f'<a href="{php1}/site.html">Body text</a> and some {php1} more text {php1}{php1}'
+        innertrans = f'<a href="{php1}/site.html">Texte de corps</a> et encore de {php1} plus de texte {php1}{php1}'
 
-        htmlsource = (
-            "<html><head></head><body><p>" + innertext + "</p></body></html>"
-        )  # Current html file
-        transsource = (
-            "<html><head></head><body><p>" + innertrans + "</p></body></html>"
-        )  # Expected translation
+        htmlsource = f"<html><head></head><body><p>{innertext}</p></body></html>"  # Current html file
+        transsource = f"<html><head></head><body><p>{innertrans}</p></body></html>"  # Expected translation
 
         pofile = self.html2po(htmlsource)
         pofile.units[1].target = innertrans  # Register the translation in the PO file
@@ -644,6 +611,151 @@ ghi ?>"""
 """
         pofile = self.html2po(htmlsource)
         self.compareunit(pofile, 1, "EPS färg")
+
+    def test_data_translate_ignore_attribute(self):
+        """Test that elements with data-translate-ignore are not extracted."""
+        # Simple case
+        htmlsource = "<p>Translate this</p><p data-translate-ignore>Do not translate</p><p>Translate this too</p>"
+        pofile = self.html2po(htmlsource)
+        self.countunits(pofile, 2)
+        self.compareunit(pofile, 1, "Translate this")
+        self.compareunit(pofile, 2, "Translate this too")
+
+        # Nested elements within ignored section
+        htmlsource = "<div>Translate this</div><div data-translate-ignore><p>Do not translate</p><span>Also ignore</span></div><div>Translate this too</div>"
+        pofile = self.html2po(htmlsource)
+        self.countunits(pofile, 2)
+        self.compareunit(pofile, 1, "Translate this")
+        self.compareunit(pofile, 2, "Translate this too")
+
+        # Attributes in ignored elements should not be extracted
+        htmlsource = '<p title="Extract this">Translate</p><p data-translate-ignore title="Do not extract">Do not translate</p>'
+        pofile = self.html2po(htmlsource)
+        self.countunits(pofile, 2)
+        self.compareunit(pofile, 1, "Extract this")
+        self.compareunit(pofile, 2, "Translate")
+
+        # Self-closing tags with data-translate-ignore should not have attributes extracted
+        htmlsource = '<img alt="Extract this" /><img alt="Do not extract" data-translate-ignore /><p>Translate</p>'
+        pofile = self.html2po(htmlsource)
+        self.countunits(pofile, 2)
+        self.compareunit(pofile, 1, "Extract this")
+        self.compareunit(pofile, 2, "Translate")
+
+    def test_translate_comment_directives(self):
+        """Test that translate:off and translate:on comments work."""
+        # Basic case
+        htmlsource = "<p>Translate this</p><!-- translate:off --><p>Do not translate</p><!-- translate:on --><p>Translate this too</p>"
+        pofile = self.html2po(htmlsource)
+        self.countunits(pofile, 2)
+        self.compareunit(pofile, 1, "Translate this")
+        self.compareunit(pofile, 2, "Translate this too")
+
+        # Multiple elements between translate:off and translate:on
+        htmlsource = "<div>Translate</div><!-- translate:off --><p>Skip 1</p><p>Skip 2</p><div>Skip 3</div><!-- translate:on --><p>Translate again</p>"
+        pofile = self.html2po(htmlsource)
+        self.countunits(pofile, 2)
+        self.compareunit(pofile, 1, "Translate")
+        self.compareunit(pofile, 2, "Translate again")
+
+        # translate:off without translate:on should ignore rest of document
+        htmlsource = "<p>Translate this</p><!-- translate:off --><p>Do not translate 1</p><p>Do not translate 2</p>"
+        pofile = self.html2po(htmlsource)
+        self.countunits(pofile, 1)
+        self.compareunit(pofile, 1, "Translate this")
+
+    def test_meta_social_media_tags(self):
+        """Test that we can extract common social media meta tags."""
+        # Test Open Graph tags
+        markup = """<html><head>
+        <meta property="og:title" content="My Page Title">
+        <meta property="og:description" content="A description of my page">
+        <meta property="og:site_name" content="My Website">
+        </head><body></body></html>"""
+        pofile = self.html2po(markup)
+        self.countunits(pofile, 3)
+        self.compareunit(pofile, 1, "My Page Title")
+        self.compareunit(pofile, 2, "A description of my page")
+        self.compareunit(pofile, 3, "My Website")
+
+        # Test Twitter Card tags
+        markup = """<html><head>
+        <meta name="twitter:title" content="My Tweet Title">
+        <meta name="twitter:description" content="A tweet description">
+        </head><body></body></html>"""
+        pofile = self.html2po(markup)
+        self.countunits(pofile, 2)
+        self.compareunit(pofile, 1, "My Tweet Title")
+        self.compareunit(pofile, 2, "A tweet description")
+
+    def test_meta_non_translatable_tags_not_extracted(self):
+        """Test that non-translatable meta tags are not extracted."""
+        markup = """<html><head>
+        <meta property="og:image" content="https://example.com/image.jpg">
+        <meta property="og:url" content="https://example.com/page">
+        <meta property="og:type" content="website">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:image" content="https://example.com/twitter-image.jpg">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        </head><body></body></html>"""
+        self.check_null(markup)
+
+    def test_meta_mixed_translatable_and_non_translatable(self):
+        """Test that translatable and non-translatable meta tags are handled correctly when mixed."""
+        markup = """<html><head>
+        <meta property="og:title" content="My Page Title">
+        <meta property="og:image" content="https://example.com/image.jpg">
+        <meta property="og:description" content="Page description">
+        <meta property="og:url" content="https://example.com/">
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:title" content="Twitter Title">
+        </head><body></body></html>"""
+        pofile = self.html2po(markup)
+        self.countunits(pofile, 3)
+        self.compareunit(pofile, 1, "My Page Title")
+        self.compareunit(pofile, 2, "Page description")
+        self.compareunit(pofile, 3, "Twitter Title")
+
+    def test_data_translate_comment_attribute(self):
+        """Test that data-translate-comment attribute is extracted as automatic comment."""
+        # Single element with data-translate-comment
+        markup = '<h1 data-translate-comment="This is the first text">Hello world!</h1>'
+        pofile = self.html2po(markup, keepcomments=True)
+        self.countunits(pofile, 1)
+        self.compareunit(pofile, 1, "Hello world!")
+        unit = pofile.units[1] if pofile.units[0].isheader() else pofile.units[0]
+        assert unit.getnotes(origin="developer") == "This is the first text"
+
+        # Multiple elements with data-translate-comment
+        markup = '<h1 data-translate-comment="Header comment">Header</h1><p data-translate-comment="Paragraph comment">Paragraph text</p>'
+        pofile = self.html2po(markup, keepcomments=True)
+        self.countunits(pofile, 2)
+        self.compareunit(pofile, 1, "Header")
+        unit = pofile.units[1] if pofile.units[0].isheader() else pofile.units[0]
+        assert unit.getnotes(origin="developer") == "Header comment"
+        self.compareunit(pofile, 2, "Paragraph text")
+        unit = pofile.units[2] if pofile.units[0].isheader() else pofile.units[1]
+        assert unit.getnotes(origin="developer") == "Paragraph comment"
+
+        # Element with both HTML comment and data-translate-comment (comment inside unit)
+        markup = '<h1 data-translate-comment="Attribute comment"><!-- HTML comment -->Title</h1>'
+        pofile = self.html2po(markup, keepcomments=True)
+        self.countunits(pofile, 1)
+        self.compareunit(pofile, 1, "Title")
+        unit = pofile.units[1] if pofile.units[0].isheader() else pofile.units[0]
+        notes = unit.getnotes(origin="developer")
+        assert " HTML comment " in notes
+        assert "Attribute comment" in notes
+
+    def test_data_translate_comment_without_keepcomments(self):
+        """Test that data-translate-comment is not extracted when keepcomments is False."""
+        markup = '<h1 data-translate-comment="This is the first text">Hello world!</h1>'
+        pofile = self.html2po(markup, keepcomments=False)
+        self.countunits(pofile, 1)
+        self.compareunit(pofile, 1, "Hello world!")
+        unit = pofile.units[1] if pofile.units[0].isheader() else pofile.units[0]
+        # Comments should not be extracted when keepcomments=False
+        assert unit.getnotes(origin="developer") == ""
 
 
 class TestHTML2POCommand(test_convert.TestConvertCommand, TestHTML2PO):

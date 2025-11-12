@@ -65,7 +65,7 @@ class po2resx:
         # Handle # comments
         transcomment = inputunit.getnotes("translator")
         if transcomment:
-            comments.append("[Translator Comment: " + transcomment + "]")
+            comments.append(f"[Translator Comment: {transcomment}]")
 
         # Join automatic and translator comments with a newline as per
         # convention.

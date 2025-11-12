@@ -25,7 +25,7 @@ class TestPO2OO:
     def roundtripstring(entitystring):
         oointro, oooutro = (
             r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	",
-            "				2002-02-02 02:02:02" + "\r\n",
+            "				2002-02-02 02:02:02\r\n",
         )
         oosource = oointro + entitystring + oooutro
         ooinputfile = BytesIO(oosource.encode())
@@ -122,13 +122,13 @@ class TestPO2OO:
         posource = """#: numpages.src#RID_SVXPAGE_NUM_OPTIONS.STR_BULLET.string.text\nmsgid "Text"\nmsgstr "Text"\n"""
         inputfile = BytesIO(posource.encode())
         outputfile = BytesIO()
-        templatefile = BytesIO((oointro + "20050924 09:13:58" + oooutro).encode())
+        templatefile = BytesIO((f"{oointro}20050924 09:13:58{oooutro}").encode())
         assert po2oo.convertoo(
             inputfile, outputfile, templatefile, targetlanguage="en-US"
         )
         assert (
             outputfile.getvalue().decode("utf-8")
-            == oointro + "2002-02-02 02:02:02" + oooutro
+            == f"{oointro}2002-02-02 02:02:02{oooutro}"
         )
 
     def test_escape_conversion(self):

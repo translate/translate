@@ -357,22 +357,65 @@ def htmlentitydecode(source: str) -> str:
     return entitydecode(source, html.entities.name2codepoint)
 
 
-def javapropertiesencode(source: str) -> str:
-    """
+def javapropertiesencode(source: str, encoding: str | None = None) -> str:
+    r"""
     Encodes source in the escaped-unicode encoding used by Java
     .properties files.
+
+    :param source: The string to encode
+    :param encoding: The target encoding (default: iso-8859-1).
+                     Only characters that cannot be represented in this
+                     encoding will be escaped as \uXXXX.
     """
+    if encoding is None:
+        encoding = "iso-8859-1"
+
     output = []
     if source and source[0] == " ":
         output.append("\\")
+
+    # Determine character validation function based on encoding
+    # Fast path for common encodings using ordinal checks (no exceptions)
+    if encoding in {"ascii", "us-ascii"}:
+
+        def is_valid_char(charnum):
+            return 0 <= charnum < 128
+    elif encoding in {"iso-8859-1", "latin-1", "latin1"}:
+
+        def is_valid_char(charnum):
+            return 0 <= charnum <= 255
+    else:
+        # For other encodings, try the full string first for performance
+        try:
+            source.encode(encoding)
+            # All characters are valid, use a function that always returns True
+
+            def is_valid_char(charnum):
+                return True
+        except (UnicodeEncodeError, LookupError):
+            # Some characters can't be encoded, need per-character check
+            def is_valid_char(charnum):
+                return None  # Signal to use try/except
+
+    # Process each character with the appropriate validation
     for char in source:
         charnum = ord(char)
         if char in controlchars:
             output.append(controlchars[char])
-        elif 0 <= charnum < 128:
-            output.append(str(char))
         else:
-            output.append(f"\\u{charnum:04X}")
+            valid = is_valid_char(charnum)
+            if valid is None:
+                # Need to test encoding for this character
+                try:
+                    char.encode(encoding)
+                    output.append(str(char))
+                except (UnicodeEncodeError, LookupError):
+                    output.append(f"\\u{charnum:04X}")
+            elif valid:
+                output.append(str(char))
+            else:
+                output.append(f"\\u{charnum:04X}")
+
     return "".join(output)
 
 

@@ -3,6 +3,7 @@ recursive-include translate/share *.conf
 recursive-include translate/share *.lm
 include translate/share/langmodels/README
 include translate/share/stoplist-en
+include CONTRIBUTING.md
 prune .github
 exclude .gitignore
 global-exclude *.swp *.swo *.swn __pycache__ *.pyc *.pyo uv.lock *.yml *.yaml

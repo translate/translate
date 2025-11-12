@@ -56,7 +56,6 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python",
   "Topic :: Software Development :: Internationalization",
   "Topic :: Software Development :: Libraries :: Python Modules",
@@ -64,6 +63,7 @@ classifiers = [
 ]
 dependencies = [
   "lxml>=5.2.0,<6.1",
+  "uniseg>=0.10,<0.11",
   "wcwidth>=0.2.14,<0.3"
 ]
 description = "Tools and API for translation and localization engineering."
@@ -76,11 +76,11 @@ keywords = [
 license = "GPL-2.0-or-later"
 license-files = ["COPYING"]
 name = "translate-toolkit"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 [project.optional-dependencies]
 all = [
-  "translate-toolkit[chardet,fluent,ical,ini,levenshtein,markdown,php,rc,spellcheck,subtitles,tmserver,trados,yaml]"
+  "translate-toolkit[chardet,fluent,ical,ini,levenshtein,markdown,php,rc,spellcheck,subtitles,tmserver,toml,trados,yaml]"
 ]
 chardet = [
   "charset-normalizer>=3.4.0,<4.0"
@@ -98,7 +98,7 @@ levenshtein = [
   "python-Levenshtein>=0.21.0"
 ]
 markdown = [
-  "mistletoe>=1.4.0,<1.5.0"
+  "mistletoe>=1.4.0,<1.6.0"
 ]
 php = [
   "phply>=1.2.6,<1.3"
@@ -113,7 +113,10 @@ subtitles = [
   "aeidon>=1.14.1,<1.16"
 ]
 tmserver = [
-  "cheroot==10.0.1"
+  "cheroot==11.1.2"
+]
+toml = [
+  "tomlkit>=0.13.0,<0.14.0"
 ]
 trados = [
   "BeautifulSoup4>=4.13.0"
@@ -161,6 +164,7 @@ po2json = "translate.convert.po2json:main"
 po2md = "translate.convert.po2md:main"
 po2moz = "translate.convert.po2moz:main"
 po2mozlang = "translate.convert.po2mozlang:main"
+po2odf = "translate.convert.po2odf:main"
 po2oo = "translate.convert.po2oo:main"
 po2php = "translate.convert.po2php:main"
 po2prop = "translate.convert.po2prop:main"
@@ -170,6 +174,7 @@ po2sub = "translate.convert.po2sub:main"
 po2symb = "translate.convert.po2symb:main"
 po2tiki = "translate.convert.po2tiki:main"
 po2tmx = "translate.convert.po2tmx:main"
+po2toml = "translate.convert.po2toml:main"
 po2ts = "translate.convert.po2ts:main"
 po2txt = "translate.convert.po2txt:main"
 po2web2py = "translate.convert.po2web2py:main"
@@ -201,6 +206,7 @@ symb2po = "translate.convert.symb2po:main"
 tbx2po = "translate.convert.tbx2po:main"
 tiki2po = "translate.convert.tiki2po:main"
 tmserver = "translate.services.tmserver:main"
+toml2po = "translate.convert.toml2po:main"
 ts2po = "translate.convert.ts2po:main"
 txt2po = "translate.convert.txt2po:main"
 web2py2po = "translate.convert.web2py2po:main"
@@ -260,9 +266,6 @@ profile = "black"
 
 [tool.pytest.ini_options]
 norecursedirs = ".git build docs"
-
-[tool.ruff]
-target-version = "py39"
 
 [tool.ruff.lint]
 extend-safe-fixes = [
@@ -358,7 +361,6 @@ ignore = [
   "S408",  # TODO: `xml.dom.minidom` is vulnerable to XML attacks
   "S603",  # CONFIG: `subprocess` call: check for execution of untrusted input
   "S607",  # CONFIG: executing system installed tools
-  "SIM102",  # TODO: Use a single `if` statement instead of nested `if` statements
   "SIM115",  # TODO: Use context handler for opening files
   "SLF001",  # TODO: Private member accessed
   "SLOT000",  # TODO: Subclasses of `str` should define `__slots__`
@@ -429,8 +431,14 @@ extend-ignore-re = [
 plasTeX = "plasTeX"
 
 [tool.typos.default.extend-words]
+# Belarusian/Polish translations in test files
+dni = "dni"
+"dźeń" = "dźeń"
+"dźon" = "dźon"
+elementy = "elementy"
 # Open Document Format acronym
 ODF = "ODF"
+tamu = "tamu"
 Uniforum = "Uniforum"
 # Author name
 Wil = "Wil"

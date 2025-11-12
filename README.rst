@@ -80,7 +80,7 @@ feature set. This cal be easily specified during pip installation::
 
 .. note:: Please check ``pyproject.toml``
 
-The Toolkit requires Python 3.9 or newer.
+The Toolkit requires Python 3.10 or newer.
 
 The package lxml is required. You should install version 4.6.3 or later.
 <http://lxml.de/> Depending on your platform, the easiest way to install might
@@ -136,6 +136,12 @@ Program overview
 
 Use ``--help`` to find the syntax and options for all programs.
 
+.. note::
+
+   This is a selection of the most commonly used tools. For the complete list
+   of converters and tools, see the `online documentation
+   <https://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/index.html>`_.
+
 * Converters::
 
         oo2po    - convert between OpenOffice.org GSI files and PO
@@ -154,9 +160,10 @@ Use ``--help`` to find the syntax and options for all programs.
         pot2po   - PO file initialiser
         csv2tbx  - Create TBX (TermBase eXchange) files from Comma Separated
                    Value (CSV) files
-        ini2po   - convert .ini files to to PO
+        ini2po   - convert .ini files to PO
         ical2po  - Convert iCalendar files (*.ics) to PO
         sub2po   - Convert many subtitle files to PO
+        rc2po    - convert Windows Resource .rc files to PO
         resx2po  - convert .Net Resource (.resx) files to PO
 
 * Tools (Quality Assurance)::

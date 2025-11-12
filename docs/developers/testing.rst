@@ -7,16 +7,17 @@ Our aim is that all new functionality is adequately tested. Adding tests for
 existing functionality is highly recommended before any major reimplementation
 (refactoring, etcetera).
 
-We use `py.test`_ for (unit) testing. You need at least pytest >= 2.2.
+We use `pytest`_ for (unit) testing.
 
-To run tests in the current directory and its subdirectories:
+To run tests:
 
 .. code-block:: console
 
-    $ py.test  # runs all tests
-    $ py.test storage/test_dtd.py  # runs just a single test module
+    $ make test  # runs all tests with coverage
+    $ uv run pytest  # runs all tests
+    $ uv run pytest tests/translate/storage/test_dtd.py  # runs just a single test module
 
-We use several py.test features to simplify testing, and to suppress errors in
+We use several pytest features to simplify testing, and to suppress errors in
 circumstances where the tests cannot possibly succeed (limitations of
 tests and missing dependencies).
 
@@ -133,7 +134,7 @@ function parameters:
         assert 'something' in str(w.message)
 
 
-.. _py.test: http://pytest.org/
+.. _pytest: http://pytest.org/
 
 .. _recwarn plugin: http://pytest.org/latest/recwarn.html
 .. |recwarn plugin| replace:: *recwarn plugin*

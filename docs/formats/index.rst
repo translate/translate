@@ -115,6 +115,7 @@ Formats of translatable documents
    odf
    subtitles
    text
+   toml
    wiki
    yaml
 
@@ -126,6 +127,7 @@ Formats of translatable documents
 * :wp:`OpenDocument` -- all ODF file types
 * :doc:`subtitles` -- various formats (v1.4)
 * :doc:`Text <text>` -- plain text with blocks separated by whitespace
+* :doc:`toml`
 * :doc:`Wiki <wiki>` -- :wp:`DokuWiki` and :wp:`MediaWiki` supported
 * :doc:`yaml`
 
@@ -217,7 +219,7 @@ Formats that we would like to support but don't currently support:
     <http://www.tracom.de/04/EN/techdoccenter/download/TRADOS_TTX-DTD.zip>`_,
     `other discussion
     <http://timsfoster.wordpress.com/2005/07/05/beds-mattresses-and-open-standards/>`_)
-  * Multiterm XML `TSV to MiltiTerm conversion script
+  * Multiterm XML `TSV to MultiTerm conversion script
     <http://syntax.biz.pl/multiterm.html>`_ or `XLST
     <http://translationzone.eu/mtxml2txt.html>`_
   * .tmw

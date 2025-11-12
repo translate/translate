@@ -53,6 +53,20 @@ def test_find_delimiter_pos_escapes():
     )
 
 
+def test_find_delimiter_pos_empty_and_whitespace():
+    """Test that empty and whitespace-only lines don't cause IndexError."""
+    # These should work for DialectJava (no key_wrap_char)
+    assert properties.DialectJava.find_delimiter("") == (None, -1)
+    assert properties.DialectJava.find_delimiter("   ") == (None, -1)
+    assert properties.DialectJava.find_delimiter("\t\t") == (None, -1)
+
+    # These should also work for DialectStrings (has key_wrap_char='"')
+    # This was causing IndexError before the fix
+    assert properties.DialectStrings.find_delimiter("") == (None, -1)
+    assert properties.DialectStrings.find_delimiter("   ") == (None, -1)
+    assert properties.DialectStrings.find_delimiter("\t\t") == (None, -1)
+
+
 def test_is_line_continuation():
     assert not properties.is_line_continuation("")
     assert not properties.is_line_continuation("some text")
@@ -169,7 +183,7 @@ class TestGwtProp(test_monolingual.TestMonolingualStore):
         """Checks that a double properties definition can be regenerated as source."""
         propsource = "test_me=I can code!\ntest_me[one]=I can code single!"
         propregen = self.propregen(propsource).decode()
-        assert propsource + "\n" == propregen
+        assert f"{propsource}\n" == propregen
 
     def test_reduce(self):
         """Checks that if the target language has less plural form the generated properties file is correct."""
@@ -379,19 +393,19 @@ class TestProp(test_monolingual.TestMonolingualStore):
         """Checks that a simple properties definition can be regenerated as source."""
         propsource = "test_me=I can code!"
         propregen = self.propregen(propsource)
-        assert propsource + "\n" == propregen
+        assert f"{propsource}\n" == propregen
 
     def test_controlutf8_source(self):
         """Checks that a control characters are parsed correctly."""
         propsource = "test_me=\\\\\\n"
         propregen = self.propregen(propsource, encoding="utf-8")
-        assert propsource + "\n" == propregen
+        assert f"{propsource}\n" == propregen
 
     def test_control_source(self):
         """Checks that a control characters are parsed correctly."""
         propsource = "test_me=\\\\\\n"
         propregen = self.propregen(propsource)
-        assert propsource + "\n" == propregen
+        assert f"{propsource}\n" == propregen
 
     def test_unicode_escaping(self):
         """Check that escaped unicode is converted properly."""
@@ -410,7 +424,7 @@ class TestProp(test_monolingual.TestMonolingualStore):
         r"""Check that we preserve \n that appear at start and end of properties."""
         propsource = "newlines=\\ntext\\n"
         propregen = self.propregen(propsource)
-        assert propsource + "\n" == propregen
+        assert f"{propsource}\n" == propregen
 
     def test_space(self):
         r"""Check that we preserve \n that appear at start and end of properties."""
@@ -741,6 +755,23 @@ key=value
         assert bom not in result[3:]
         assert b"None" not in result[3:]
 
+    def test_utf16_bom_no_warning(self):
+        """Test that UTF-16 files with BOM do not trigger encoding warnings."""
+        import warnings
+
+        # Test UTF-16 with BOM (typical Mac .strings file)
+        propsource = r'"key" = "value";'.encode("utf-16")
+
+        # Parse should not trigger any warnings
+        with warnings.catch_warnings():
+            warnings.simplefilter("error")
+            propfile = self.propparse(propsource, personality="strings")
+
+        # Verify the file was parsed correctly
+        assert len(propfile.units) == 1
+        assert propfile.units[0].name == "key"
+        assert propfile.units[0].source == "value"
+
     def test_joomla_set_target(self):
         """Test various items used in Joomla files."""
         propsource = b"""COM_EXAMPLE_FOO="This is a test"\n"""
@@ -930,7 +961,7 @@ class TestXWiki(test_monolingual.TestMonolingualStore):
     def test_missing_definition_source(self):
         propsource = "### Missing: test_me=I can code!"
         propgen = self.propregen(propsource)
-        assert propsource + "\n" == propgen
+        assert f"{propsource}\n" == propgen
 
     def test_definition_with_simple_quote(self):
         propsource = "test_me=A 'quoted' translation"
@@ -940,7 +971,7 @@ class TestXWiki(test_monolingual.TestMonolingualStore):
         assert propunit.name == "test_me"
         assert propunit.source == "A 'quoted' translation"
         assert not propunit.missing
-        assert propunit.getoutput() == propsource + "\n"
+        assert propunit.getoutput() == f"{propsource}\n"
 
     def test_definition_with_simple_quote_and_argument(self):
         propsource = "test_me=A ''quoted'' translation for {0}"
@@ -950,17 +981,17 @@ class TestXWiki(test_monolingual.TestMonolingualStore):
         assert propunit.name == "test_me"
         assert propunit.source == "A 'quoted' translation for {0}"
         assert not propunit.missing
-        assert propunit.getoutput() == propsource + "\n"
+        assert propunit.getoutput() == f"{propsource}\n"
 
     def test_header_preserved(self):
         propsource = """# -----\n# Header\n# -----\n\ntest_me=I can code"""
         propgen = self.propregen(propsource)
-        assert propgen == propsource + "\n"
+        assert propgen == f"{propsource}\n"
 
     def test_blank_line_before_comment_preserved(self):
         propsource = """\n# My comment\ntest_me=I can code"""
         propgen = self.propregen(propsource)
-        assert propgen == propsource + "\n"
+        assert propgen == f"{propsource}\n"
 
     def test_deprecated_comments_preserved(self):
         propsource = """# Deprecated keys starts here.
@@ -971,21 +1002,252 @@ job.log.label=Job log
 #@deprecatedend"""
 
         propfile = self.propparse(propsource)
+        # With the new implementation, markers are stored in separate non-translatable units
+        # to preserve file structure
         assert len(propfile.units) == 3
+        # Unit 0 is the comment with #@deprecatedstart
+        assert not propfile.units[0].istranslatable()
+        assert propfile.units[0].deprecated
+        # The translatable unit is at index 1
         propunit = propfile.units[1]
         assert propunit.name == "job.log.label"
         assert propunit.source == "Job log"
         assert not propunit.missing
+        assert propunit.deprecated  # Unit should be marked as deprecated
+        # Unit 2 is the comment with #@deprecatedend
+        assert not propfile.units[2].istranslatable()
+        assert propfile.units[2].deprecated
+
         propunit.missing = True
         expected_output = """# Deprecated keys starts here.
 #@deprecatedstart
 
 ### Missing: job.log.label=Job log
-
 #@deprecatedend
 """
         propgen = bytes(propfile).decode("utf-8")
         assert propgen == expected_output
+
+    def test_preserving_deprecated_block(self):
+        """Test that existing deprecated blocks are preserved."""
+        propsource = """# Header
+#@deprecatedstart
+
+old.key=Old Value
+old.key2=Old Value 2
+
+#@deprecatedend
+
+new.key=New Value
+"""
+
+        propfile = self.propparse(propsource)
+
+        # Verify units are marked correctly
+        for unit in propfile.units:
+            if unit.istranslatable():
+                if unit.name in {"old.key", "old.key2"}:
+                    assert unit.deprecated, f"{unit.name} should be deprecated"
+                else:
+                    assert not unit.deprecated, f"{unit.name} should not be deprecated"
+
+        # Serialize and verify block is maintained
+        propgen = bytes(propfile).decode("utf-8")
+
+        assert propgen.count("#@deprecatedstart") == 1
+        assert propgen.count("#@deprecatedend") == 1
+        assert "old.key" in propgen
+        assert "old.key2" in propgen
+        assert "new.key" in propgen
+
+    def test_add_non_deprecated_to_file_with_deprecated_block(self):
+        """Test adding non-deprecated unit to file that has deprecated block."""
+        propsource = """#@deprecatedstart
+
+old.key=Old Value
+
+#@deprecatedend"""
+
+        propfile = self.propparse(propsource)
+
+        # Add new non-deprecated unit
+        new_unit = properties.xwikiunit()
+        new_unit.name = "new.key"
+        new_unit.source = "New Value"
+        new_unit.deprecated = False
+        propfile.addunit(new_unit)
+
+        # Serialize
+        propgen = bytes(propfile).decode("utf-8")
+
+        # Both units should be present
+        assert "new.key" in propgen
+        assert "old.key" in propgen
+        # Deprecated block should still exist
+        assert propgen.count("#@deprecatedstart") == 1
+        assert propgen.count("#@deprecatedend") == 1
+
+    def test_add_deprecated_to_file_with_deprecated_block(self):
+        """Test adding deprecated unit to file that has deprecated block."""
+        propsource = """#@deprecatedstart
+
+old.key=Old Value
+
+#@deprecatedend
+
+new.key=New Value
+"""
+
+        propfile = self.propparse(propsource)
+
+        # Add new deprecated unit
+        new_deprecated = properties.xwikiunit()
+        new_deprecated.name = "another.old"
+        new_deprecated.source = "Another Old Value"
+        new_deprecated.deprecated = True
+        propfile.addunit(new_deprecated)
+
+        # Serialize
+        propgen = bytes(propfile).decode("utf-8")
+
+        # All units should be present
+        assert "old.key" in propgen
+        assert "another.old" in propgen
+        assert "new.key" in propgen
+        # Should still have single deprecated block
+        assert propgen.count("#@deprecatedstart") == 1
+        assert propgen.count("#@deprecatedend") == 1
+
+    def test_add_deprecated_to_file_without_deprecated_block(self):
+        """Test adding deprecated unit to file without deprecated block creates one."""
+        propsource = """new.key=New Value"""
+
+        propfile = self.propparse(propsource)
+
+        # Add deprecated unit
+        deprecated_unit = properties.xwikiunit()
+        deprecated_unit.name = "old.key"
+        deprecated_unit.source = "Old Value"
+        deprecated_unit.deprecated = True
+        propfile.addunit(deprecated_unit)
+
+        # Serialize
+        propgen = bytes(propfile).decode("utf-8")
+
+        # Both units should be present
+        assert "new.key" in propgen
+        assert "old.key" in propgen
+        # Deprecated block should be created
+        assert propgen.count("#@deprecatedstart") == 1
+        assert propgen.count("#@deprecatedend") == 1
+
+    def test_round_trip_with_complex_comments_in_deprecated_block(self):
+        """
+        Test round-trip with complex real-world file structure.
+
+        This test is based on actual files from Weblate that triggered the regression.
+        It ensures comments before and inside deprecated blocks are preserved correctly.
+        """
+        propsource = """# Header comment block
+# with multiple lines
+# describing the file
+
+###############################################################################
+# Section title
+###############################################################################
+
+active.key1=Active Value 1
+active.key2=Active Value 2
+
+###############################################################################
+## Deprecated section
+## Note: keys below are deprecated and will be removed
+###############################################################################
+
+## Marker for deprecated keys
+
+#@deprecatedstart
+
+#######################################
+## Deprecated since version 1.0
+#######################################
+
+old.key1=Old Value 1
+old.key2=Old Value 2
+
+#@deprecatedend
+
+## More active keys after deprecated section
+
+active.key3=Active Value 3
+"""
+
+        # Parse the file
+        propfile = self.propparse(propsource)
+
+        # Verify parsing
+        active_units = [
+            u for u in propfile.units if u.istranslatable() and not u.deprecated
+        ]
+        deprecated_units = [
+            u for u in propfile.units if u.istranslatable() and u.deprecated
+        ]
+
+        assert len(active_units) == 3
+        assert len(deprecated_units) == 2
+
+        # Verify active units
+        active_names = {u.name for u in active_units}
+        assert active_names == {"active.key1", "active.key2", "active.key3"}
+
+        # Verify deprecated units
+        deprecated_names = {u.name for u in deprecated_units}
+        assert deprecated_names == {"old.key1", "old.key2"}
+
+        # Round-trip: serialize and compare
+        propgen = bytes(propfile).decode("utf-8")
+
+        # Verify markers are preserved
+        assert propgen.count("#@deprecatedstart") == 1
+        assert propgen.count("#@deprecatedend") == 1
+
+        # Verify all keys are present
+        assert "active.key1=Active Value 1" in propgen
+        assert "active.key2=Active Value 2" in propgen
+        assert "active.key3=Active Value 3" in propgen
+        assert "old.key1=Old Value 1" in propgen
+        assert "old.key2=Old Value 2" in propgen
+
+        # Verify important comments are preserved
+        assert "# Header comment block" in propgen
+        assert "## Deprecated section" in propgen
+        assert "## Deprecated since version 1.0" in propgen
+        assert "## More active keys after deprecated section" in propgen
+
+        # Verify structure: active keys before deprecated block
+        assert propgen.index("active.key1") < propgen.index("#@deprecatedstart")
+        assert propgen.index("active.key2") < propgen.index("#@deprecatedstart")
+
+        # Verify structure: deprecated keys inside block
+        assert propgen.index("#@deprecatedstart") < propgen.index("old.key1")
+        assert propgen.index("old.key1") < propgen.index("#@deprecatedend")
+        assert propgen.index("old.key2") < propgen.index("#@deprecatedend")
+
+        # Verify structure: active keys after deprecated block
+        assert propgen.index("#@deprecatedend") < propgen.index("active.key3")
+
+        # Verify that comments before #@deprecatedstart are not inside the block
+        deprecated_section_comment_pos = propgen.index("## Deprecated section")
+        deprecatedstart_pos = propgen.index("#@deprecatedstart")
+        assert deprecated_section_comment_pos < deprecatedstart_pos
+
+        # Verify that comments after #@deprecatedstart are inside the block
+        deprecated_since_comment_pos = propgen.index("## Deprecated since version 1.0")
+        assert (
+            deprecatedstart_pos
+            < deprecated_since_comment_pos
+            < propgen.index("#@deprecatedend")
+        )
 
 
 class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
@@ -1027,7 +1289,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
         assert (
-            generatedcontent.getvalue().decode(propfile.encoding) == propsource + "\n"
+            generatedcontent.getvalue().decode(propfile.encoding) == f"{propsource}\n"
         )
         # check translation and language attribute
         propfile.settargetlanguage("fr")
@@ -1065,7 +1327,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
     def test_missing_definition_source(self):
         propsource = self.getcontent("### Missing: test_me=I can code!")
         propgen = self.propregen(propsource)
-        assert propsource + "\n" == propgen
+        assert f"{propsource}\n" == propgen
 
     def test_definition_with_simple_quote(self):
         propsource = self.getcontent("test_me=A 'quoted' translation")
@@ -1078,7 +1340,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
         assert (
-            generatedcontent.getvalue().decode(propfile.encoding) == propsource + "\n"
+            generatedcontent.getvalue().decode(propfile.encoding) == f"{propsource}\n"
         )
 
     def test_definition_with_simple_quote_and_argument(self):
@@ -1092,7 +1354,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
         assert (
-            generatedcontent.getvalue().decode(propfile.encoding) == propsource + "\n"
+            generatedcontent.getvalue().decode(propfile.encoding) == f"{propsource}\n"
         )
 
     def test_definition_with_encoded_html(self):
@@ -1106,7 +1368,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
         assert (
-            generatedcontent.getvalue().decode(propfile.encoding) == propsource + "\n"
+            generatedcontent.getvalue().decode(propfile.encoding) == f"{propsource}\n"
         )
 
     def test_cleaning_attributes(self):
@@ -1118,9 +1380,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         ## Real XWiki files are containing multiple attributes on xwikidoc tag: we're not testing it there
         ## because ElementTree changed its implementation between Python 3.7 and 3.8 which changed the order of output of the attributes
         ## it makes it more difficult to assert it on multiple versions of Python.
-        propsource = (
-            properties.XWikiPageProperties.XML_HEADER
-            + """<xwikidoc reference="XWiki.AdminTranslations">
+        propsource = f"""{properties.XWikiPageProperties.XML_HEADER}<xwikidoc reference="XWiki.AdminTranslations">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language/>
@@ -1185,7 +1445,6 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
                 <content>something=toto</content>
             </attachment>
         </xwikidoc>"""
-        )
         propfile = self.propparse(propsource)
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
@@ -1196,9 +1455,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         propunit.target = "Je peux coder !"
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
-        expected_xml = (
-            properties.XWikiPageProperties.XML_HEADER
-            + """<xwikidoc reference="XWiki.AdminTranslations" locale="fr">
+        expected_xml = f"""{properties.XWikiPageProperties.XML_HEADER}<xwikidoc reference="XWiki.AdminTranslations" locale="fr">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language>fr</language>
@@ -1218,9 +1475,8 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
 test_me=Je peux coder !
 </content>
 </xwikidoc>"""
-        )
         assert (
-            generatedcontent.getvalue().decode(propfile.encoding) == expected_xml + "\n"
+            generatedcontent.getvalue().decode(propfile.encoding) == f"{expected_xml}\n"
         )
         assert (
             '<?xml version="1.1" encoding="UTF-8"?>\n\n<!--\n * See the NOTICE file distributed with this work for additional'
@@ -1236,9 +1492,7 @@ test_me=Je peux coder !
         ## Real XWiki files are containing multiple attributes on xwikidoc tag: we're not testing it there
         ## because ElementTree changed its implementation between Python 3.7 and 3.8 which changed the order of output of the attributes
         ## it makes it more difficult to assert it on multiple versions of Python.
-        propsource = (
-            properties.XWikiPageProperties.XML_HEADER
-            + """<xwikidoc reference="XWiki.AdminTranslations">
+        propsource = f"""{properties.XWikiPageProperties.XML_HEADER}<xwikidoc reference="XWiki.AdminTranslations">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language/>
@@ -1303,7 +1557,6 @@ test_me=Je peux coder !
                 <content>something=toto</content>
             </attachment>
         </xwikidoc>"""
-        )
         propfile = self.propparse(propsource)
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
@@ -1314,9 +1567,7 @@ test_me=Je peux coder !
         propunit.target = "I can change the translation source"
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
-        expected_xml = (
-            properties.XWikiPageProperties.XML_HEADER
-            + """<xwikidoc reference="XWiki.AdminTranslations">
+        expected_xml = f"""{properties.XWikiPageProperties.XML_HEADER}<xwikidoc reference="XWiki.AdminTranslations">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language/>
@@ -1381,9 +1632,8 @@ test_me=I can change the translation source
                 <content>something=toto</content>
             </attachment>
         </xwikidoc>"""
-        )
         assert (
-            generatedcontent.getvalue().decode(propfile.encoding) == expected_xml + "\n"
+            generatedcontent.getvalue().decode(propfile.encoding) == f"{expected_xml}\n"
         )
         assert (
             '<?xml version="1.1" encoding="UTF-8"?>\n\n<!--\n * See the NOTICE file distributed with this work for additional'
@@ -1393,15 +1643,12 @@ test_me=I can change the translation source
 
 class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
     StoreClass = properties.XWikiFullPage
-    FILE_SCHEME = (
-        properties.XWikiPageProperties.XML_HEADER
-        + """<xwikidoc locale="%(language)s">
+    FILE_SCHEME = f"""{properties.XWikiPageProperties.XML_HEADER}<xwikidoc locale="%(language)s">
     <translation>1</translation>
     <language>%(language)s</language>
     <title>%(title)s</title>
     <content>%(content)s</content>
     </xwikidoc>"""
-    )
 
     def getcontent(self, content, title, language="en"):
         return self.FILE_SCHEME % {
@@ -1448,7 +1695,7 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
         propfile.serialize(generatedcontent)
         assert (
             generatedcontent.getvalue().decode(propfile.encoding)
-            == expected_content + "\n"
+            == f"{expected_content}\n"
         )
 
     def test_parse(self):
@@ -1553,9 +1800,7 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
         ## Real XWiki files are containing multiple attributes on xwikidoc tag: we're not testing it there
         ## because ElementTree changed its implementation between Python 3.7 and 3.8 which changed the order of output of the attributes
         ## it makes it more difficult to assert it on multiple versions of Python.
-        propsource = (
-            properties.XWikiPageProperties.XML_HEADER
-            + """<xwikidoc reference="XWiki.AdminTranslations">
+        propsource = f"""{properties.XWikiPageProperties.XML_HEADER}<xwikidoc reference="XWiki.AdminTranslations">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language/>
@@ -1623,7 +1868,6 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
                 <content>something=toto</content>
             </attachment>
         </xwikidoc>"""
-        )
         propfile = self.propparse(propsource)
         assert len(propfile.units) == 2
         propunit = propfile.units[0]
@@ -1654,9 +1898,7 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
         propfile.settargetlanguage("fr")
         propfile.serialize(generatedcontent)
 
-        expected_xml = (
-            properties.XWikiPageProperties.XML_HEADER
-            + """<xwikidoc reference="XWiki.AdminTranslations" locale="fr">
+        expected_xml = f"""{properties.XWikiPageProperties.XML_HEADER}<xwikidoc reference="XWiki.AdminTranslations" locale="fr">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language>fr</language>
@@ -1679,9 +1921,8 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
             D'autres trucs.
             </content>
             </xwikidoc>"""
-        )
         assert (
-            generatedcontent.getvalue().decode(propfile.encoding) == expected_xml + "\n"
+            generatedcontent.getvalue().decode(propfile.encoding) == f"{expected_xml}\n"
         )
 
     @mark.xfail(reason="removal not working in full page")

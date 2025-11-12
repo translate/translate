@@ -235,3 +235,28 @@ def test_error_cases(opts, expected):
     )
 
     assert expected in result.stderr
+
+
+def test_csv_line_terminator(capsys: CaptureFixture[str]):
+    """Test that CSV output uses Unix line terminators without extra carriage returns."""
+    pocount.main(["--csv", _po_csv])
+
+    result = capsys.readouterr()
+    stdout = result.out
+
+    # Check that there are no carriage returns in the output
+    # On Windows, csv.DictWriter with default lineterminator would add \r\n
+    # which when redirected to a file becomes \r\r\n, causing empty lines
+    assert "\r" not in stdout, "CSV output should not contain carriage returns"
+
+    # Verify that lines end with just \n
+    lines = stdout.split("\n")
+    # Filter out the last empty line if present
+    lines = [line for line in lines if line]
+
+    # Should have at least header and one data row
+    assert len(lines) >= 2, "CSV should have at least header and one data row"
+
+    # Each line should not be empty
+    for line in lines:
+        assert line.strip(), "No line should be empty or whitespace-only"

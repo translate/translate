@@ -971,8 +971,8 @@ class StandardChecker(TranslationChecker):
             if plaincount1 != plaincount2:
                 continue
 
-            spacecount1 = str1.count(puncchar + " ")
-            spacecount2 = str2.count(puncchar + " ")
+            spacecount1 = str1.count(f"{puncchar} ")
+            spacecount2 = str2.count(f"{puncchar} ")
 
             if spacecount1 != spacecount2:
                 # Handle extra spaces that are because of transposed punctuation
@@ -1503,7 +1503,7 @@ class StandardChecker(TranslationChecker):
         str2 = str2.rstrip()
 
         if helpers.funcmatch(
-            str1, str2, decoration.puncend, self.config.endpunctuation + ":"
+            str1, str2, decoration.puncend, f"{self.config.endpunctuation}:"
         ):
             return True
         raise FilterFailure("Different punctuation at the end")
@@ -1709,7 +1709,6 @@ class StandardChecker(TranslationChecker):
         useful for tracking down translations of the acronym and correcting
         them.
         """
-        acronyms = []
         allowed = []
 
         for startmatch, endmatch in self.config.varmatches:
@@ -1724,10 +1723,14 @@ class StandardChecker(TranslationChecker):
         # see mail/chrome/messanger/smime.properties.po
         # TODO: consider limiting the word length for recognising acronyms to
         # something like 5/6 characters
-        for word in iter:
-            if word.isupper() and len(word) > 1 and word not in allowed:
-                if str2.find(word) == -1:
-                    acronyms.append(word)
+        acronyms = [
+            word
+            for word in iter
+            if word.isupper()
+            and len(word) > 1
+            and word not in allowed
+            and str2.find(word) == -1
+        ]
 
         if acronyms:
             raise FilterFailure(
@@ -1885,9 +1888,8 @@ class StandardChecker(TranslationChecker):
         an example, e.g. ``your_user_name/path/to/filename.conf``.
         """
         for word1 in self.filteraccelerators(self.filterxml(str1)).split():
-            if word1.startswith("/"):
-                if not helpers.countsmatch(str1, str2, (word1,)):
-                    raise FilterFailure("Different file paths")
+            if word1.startswith("/") and not helpers.countsmatch(str1, str2, (word1,)):
+                raise FilterFailure("Different file paths")
 
         return True
 
@@ -2331,7 +2333,7 @@ class LibreOfficeChecker(StandardChecker):
                         if len(opentags) == 0:
                             raise FilterFailure(f"There is no open tag for »{acttag}«")
                         opentag = opentags.pop()
-                        if tagname(acttag) != "/" + tagname(opentag):
+                        if tagname(acttag) != f"/{tagname(opentag)}":
                             raise FilterFailure(
                                 f"Open tag »{opentag}« and close tag »{acttag}« "
                                 "don't match"

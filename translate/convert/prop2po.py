@@ -320,8 +320,7 @@ class prop2po:
             )
         return new_store
 
-    @staticmethod
-    def convertunit(propunit, commenttype):
+    def convertunit(self, propunit, commenttype):
         """
         Converts a .properties unit to a .po unit. Returns None if empty or
         not for translation.
@@ -339,8 +338,21 @@ class prop2po:
         if propunit.isblank():
             return None
         pounit.addlocation(propunit.name)
-        pounit.source = propunit.source
-        pounit.target = ""
+
+        # For .strings files, treat them as bilingual:
+        # - The key (name) is the source text (msgid)
+        # - The value (source property) is the translated text (msgstr)
+        if self.personality in {"strings", "strings-utf8"}:
+            # Decode the key to get the actual source text
+            personality_obj = properties.get_dialect(self.personality)
+            pounit.source = personality_obj.decode(
+                personality_obj.key_strip(propunit.name)
+            )
+            pounit.target = propunit.source
+        else:
+            # For other formats, use standard monolingual behavior
+            pounit.source = propunit.source
+            pounit.target = ""
         return pounit
 
     def convertmixedunit(self, labelprop, accesskeyprop, commenttype):

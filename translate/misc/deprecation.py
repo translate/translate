@@ -32,7 +32,7 @@ def deprecated(message=""):
         def new_func(*args, **kwargs):
             msg = message  # Hack to avoid UnboundLocalError.
             if msg:
-                msg = "\n" + msg
+                msg = f"\n{msg}"
             func_code = func.__code__
             warnings.warn_explicit(
                 f"Call to deprecated function {func.__name__}.{msg}",

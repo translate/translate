@@ -115,12 +115,148 @@ sin.
         htmlexpected = "<p>Vis &amp; skyfies</p>"
         assert htmlexpected in self.converthtml(posource, htmlsource)
 
+    def test_utf8_non_ascii_characters(self):
+        """
+        Tests that non-ASCII UTF-8 characters are handled correctly.
+
+        This addresses issue #1043 where non-ASCII characters like ü were
+        being incorrectly converted to double-encoded entities like
+        &Atilde;&frac14; instead of being preserved as UTF-8.
+        """
+        # Test German umlauts
+        htmlsource = "<p>Übung macht den Meister</p>"
+        posource = '#: html:3\nmsgid "Übung macht den Meister"\nmsgstr "Übung macht den Meister"\n'
+        htmlexpected = "<p>Übung macht den Meister</p>"
+        result = self.converthtml(posource, htmlsource)
+        assert htmlexpected in result
+        # Ensure no double encoding like &Atilde;&frac14;
+        assert "&Atilde;" not in result
+        assert "&frac14;" not in result
+
+        # Test various non-ASCII characters
+        htmlsource = "<p>Café naïve résumé</p>"
+        posource = '#: html:3\nmsgid "Café naïve résumé"\nmsgstr "Café naïve résumé"\n'
+        htmlexpected = "<p>Café naïve résumé</p>"
+        result = self.converthtml(posource, htmlsource)
+        assert htmlexpected in result
+
+        # Test with translation containing UTF-8
+        htmlsource = "<p>Hello world</p>"
+        posource = '#: html:3\nmsgid "Hello world"\nmsgstr "Hej världen"\n'
+        htmlexpected = "<p>Hej världen</p>"
+        result = self.converthtml(posource, htmlsource)
+        assert htmlexpected in result
+
+    def test_custom_entities_preserved(self):
+        """
+        Tests that custom entities are preserved and not double-encoded.
+
+        This addresses issue #1043 where custom entities like &brandShortName;
+        were being incorrectly double-encoded to &amp;brandShortName;.
+        """
+        # Test custom entity preservation
+        htmlsource = "<p>Use &brandShortName; for the best experience.</p>"
+        posource = '#: html:3\nmsgid "Use &brandShortName; for the best experience."\nmsgstr "Verwenden Sie &brandShortName; für die beste Erfahrung."\n'  # codespell:ignore
+        htmlexpected = "<p>Verwenden Sie &brandShortName; für die beste Erfahrung.</p>"  # codespell:ignore
+        result = self.converthtml(posource, htmlsource)
+        assert htmlexpected in result
+        # Ensure no double encoding
+        assert "&amp;brandShortName;" not in result
+
+        # Test multiple custom entities
+        htmlsource = "<p>&brandShortName; &version; &copyright;</p>"
+        posource = '#: html:3\nmsgid "&brandShortName; &version; &copyright;"\nmsgstr "&brandShortName; &version; &copyright;"\n'
+        htmlexpected = "<p>&brandShortName; &version; &copyright;</p>"
+        result = self.converthtml(posource, htmlsource)
+        assert htmlexpected in result
+        assert "&amp;brandShortName;" not in result
+        assert "&amp;version;" not in result
+        assert "&amp;copyright;" not in result
+
     def test_escapes(self):
         """Tests that PO escapes are correctly handled."""
         htmlsource = '<p>"leverage"</p>'
         posource = '#: html3\nmsgid "\\"leverage\\""\nmsgstr "\\"ek is dom\\""\n'
         htmlexpected = '<p>"ek is dom"</p>'
         assert htmlexpected in self.converthtml(posource, htmlsource)
+
+    def test_dir_attribute_auto_rtl(self):
+        """Test that dir attribute is automatically set to rtl for RTL languages."""
+        htmlsource = '<html lang="en" dir="ltr"><head><title>Test</title></head><body><p>Content</p></body></html>'
+        posource = """#: html+html[lang]:1-1
+msgid "en"
+msgstr "ar"
+
+#: html+html.head.title:1-19
+msgid "Test"
+msgstr "اختبار"
+
+#: html+html.body.p:1-48
+msgid "Content"
+msgstr "محتوى"
+"""
+        result = self.converthtml(posource, htmlsource)
+        # Check that dir was automatically changed to rtl
+        assert 'dir="rtl"' in result
+        assert 'dir="ltr"' not in result
+        assert 'lang="ar"' in result
+
+    def test_dir_attribute_auto_ltr(self):
+        """Test that dir attribute is automatically set to ltr for LTR languages."""
+        htmlsource = '<html lang="ar" dir="rtl"><head><title>اختبار</title></head><body><p>محتوى</p></body></html>'
+        posource = """#: html+html[lang]:1-1
+msgid "ar"
+msgstr "en"
+
+#: html+html.head.title:1-25
+msgid "اختبار"
+msgstr "Test"
+
+#: html+html.body.p:1-54
+msgid "محتوى"
+msgstr "Content"
+"""
+        result = self.converthtml(posource, htmlsource)
+        # Check that dir was automatically changed to ltr
+        assert 'dir="ltr"' in result
+        assert 'dir="rtl"' not in result
+        assert 'lang="en"' in result
+
+    def test_dir_attribute_added_when_missing(self):
+        """Test that dir attribute is added when translating to RTL language."""
+        htmlsource = '<html lang="en"><head><title>Test</title></head><body><p>Content</p></body></html>'
+        posource = """#: html+html[lang]:1-1
+msgid "en"
+msgstr "he"
+
+#: html+html.head.title:1-13
+msgid "Test"
+msgstr "בדיקה"
+
+#: html+html.body.p:1-42
+msgid "Content"
+msgstr "תוכן"
+"""
+        result = self.converthtml(posource, htmlsource)
+        # Check that dir was automatically added with rtl value
+        assert 'dir="rtl"' in result
+        assert 'lang="he"' in result
+
+    def test_dir_attribute_not_changed_without_lang_translation(self):
+        """Test that dir attribute is not changed when lang is not translated."""
+        htmlsource = '<html lang="en" dir="ltr"><head><title>Test</title></head><body><p>Content</p></body></html>'
+        posource = """#: html+html.head.title:1-19
+msgid "Test"
+msgstr "Prueba"
+
+#: html+html.body.p:1-48
+msgid "Content"
+msgstr "Contenido"
+"""
+        result = self.converthtml(posource, htmlsource)
+        # Check that dir remains unchanged since lang was not translated
+        assert 'dir="ltr"' in result
+        assert 'lang="en"' in result
 
     def test_states_translated(self):
         """Test that we use target when translated."""
@@ -166,6 +302,247 @@ sin.
         posource = '#: test.html+:-1\nmsgid "life, the universe, everything"\nmsgstr ""'
         expected = '<meta name="keywords" content="life, the universe, everything" />'
         assert expected in self.converthtml(posource, htmlsource)
+
+    def test_button_translation(self):
+        """Test that button elements are properly translated."""
+        htmlsource = "<button>Zustimmen und weiter</button>"  # codespell:ignore
+        posource = '#: html:3\nmsgid "Zustimmen und weiter"\nmsgstr "Agree and continue"\n'  # codespell:ignore
+        htmlexpected = "<button>Agree and continue</button>"
+        assert htmlexpected in self.converthtml(posource, htmlsource)
+
+        # Test button with attributes
+        htmlsource = '<button type="submit" class="btn">Submit</button>'
+        posource = '#: html:3\nmsgid "Submit"\nmsgstr "Enviar"\n'
+        htmlexpected = '<button type="submit" class="btn">Enviar</button>'
+        assert htmlexpected in self.converthtml(posource, htmlsource)
+
+        # Test button with nested elements
+        htmlsource = "<button><strong>Click</strong> here</button>"
+        posource = '#: html:3\nmsgid "<strong>Click</strong> here"\nmsgstr "<strong>Klicken</strong> Sie hier"\n'  # codespell:ignore
+        htmlexpected = (
+            "<button><strong>Klicken</strong> Sie hier</button>"  # codespell:ignore
+        )
+        assert htmlexpected in self.converthtml(posource, htmlsource)
+
+    def test_lang_attribute_only_on_html_tag(self):
+        """
+        Test that the lang attribute is only translated on the html tag, not on other tags.
+
+        Issue: https://github.com/translate/translate/issues/5504
+        """
+        htmlsource = """<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Test</title>
+</head>
+<body>
+    <nav>
+     Language switcher:
+     <a lang="en" href="/en">English</a>
+     <a lang="es" href="/es">Español</a>
+     <a lang="fr" href="/fr">Français</a>
+    </nav>
+    <p>This is a page about the English word <strong lang="en">Hello</strong>.</p>
+</body>
+</html>"""
+        posource = """#: test.html+html[lang]:1-16
+msgid "en"
+msgstr "fr"
+
+#: test.html+html.body.p:12-1
+msgid "This is a page about the English word <strong lang=\\"en\\">Hello</strong>."
+msgstr "Ceci est une page à propos du mot anglais <strong lang=\\"en\\">Hello</strong>."
+"""
+        result = self.converthtml(posource, htmlsource)
+        # The html tag should have lang="fr" (translated) and dir="ltr" (auto-added)
+        assert 'lang="fr"' in result
+        assert 'dir="ltr"' in result
+        # Other elements should keep lang="en" (not translated)
+        assert 'lang="en" href="/en">English</a>' in result
+        # Verify that <a lang="en"> is present
+        assert '<a lang="en"' in result
+
+    def test_data_translate_ignore_preserved(self):
+        """Test that ignored content is preserved in po2html output."""
+        # Simple case
+        htmlsource = "<p>Translate this</p><p data-translate-ignore>Do not translate</p><p>Translate this too</p>"
+        posource = """#: test.html
+msgid "Translate this"
+msgstr "Traduire ceci"
+
+#: test.html
+msgid "Translate this too"
+msgstr "Traduire ceci aussi"
+"""
+        result = self.converthtml(posource, htmlsource)
+        assert "<p>Traduire ceci</p>" in result
+        assert "<p data-translate-ignore>Do not translate</p>" in result
+        assert "<p>Traduire ceci aussi</p>" in result
+
+        # Nested elements
+        htmlsource = "<div>Translate this</div><div data-translate-ignore><p>Do not translate</p></div><div>Translate this too</div>"
+        posource = """#: test.html
+msgid "Translate this"
+msgstr "Traduire ceci"
+
+#: test.html
+msgid "Translate this too"
+msgstr "Traduire ceci aussi"
+"""
+        result = self.converthtml(posource, htmlsource)
+        assert "<div>Traduire ceci</div>" in result
+        assert "<div data-translate-ignore><p>Do not translate</p></div>" in result
+        assert "<div>Traduire ceci aussi</div>" in result
+
+        # Self-closing tags with data-translate-ignore should not have attributes translated
+        htmlsource = '<img alt="Extract this" /><img alt="Do not extract" data-translate-ignore /><p>Translate</p>'
+        posource = """#: test.html
+msgid "Extract this"
+msgstr "Extraire ceci"
+
+#: test.html
+msgid "Translate"
+msgstr "Traduire"
+"""
+        result = self.converthtml(posource, htmlsource)
+        assert '<img alt="Extraire ceci" />' in result
+        assert '<img alt="Do not extract" data-translate-ignore />' in result
+        assert "<p>Traduire</p>" in result
+
+    def test_translate_comment_directives_preserved(self):
+        """Test that translate:off/on comments are preserved and content ignored."""
+        htmlsource = "<p>Translate this</p><!-- translate:off --><p>Do not translate</p><!-- translate:on --><p>Translate this too</p>"
+        posource = """#: test.html
+msgid "Translate this"
+msgstr "Traduire ceci"
+
+#: test.html
+msgid "Translate this too"
+msgstr "Traduire ceci aussi"
+"""
+        result = self.converthtml(posource, htmlsource)
+        assert "<p>Traduire ceci</p>" in result
+        assert "<!-- translate:off -->" in result
+        assert "<p>Do not translate</p>" in result
+        assert "<!-- translate:on -->" in result
+        assert "<p>Traduire ceci aussi</p>" in result
+
+    def test_data_translate_ignore_with_translation_in_po(self):
+        """Test that ignored content is not translated even if translation exists in PO file."""
+        # Test with data-translate-ignore attribute
+        htmlsource = "<p>Translate this</p><p data-translate-ignore>Do not translate</p><p>Translate this too</p>"
+        posource = """#: test.html
+msgid "Translate this"
+msgstr "Traduire ceci"
+
+#: test.html
+msgid "Do not translate"
+msgstr "NE PAS traduire ceci"
+
+#: test.html
+msgid "Translate this too"
+msgstr "Traduire ceci aussi"
+"""
+        result = self.converthtml(posource, htmlsource)
+        assert "<p>Traduire ceci</p>" in result
+        # Verify the ignored content is NOT translated even though translation exists
+        assert "<p data-translate-ignore>Do not translate</p>" in result
+        assert "NE PAS traduire ceci" not in result
+        assert "<p>Traduire ceci aussi</p>" in result
+
+    def test_translate_comment_with_translation_in_po(self):
+        """Test that content between translate:off/on is not translated even if translation exists in PO file."""
+        # Test with comment directives
+        htmlsource = "<p>Translate this</p><!-- translate:off --><p>Do not translate</p><!-- translate:on --><p>Translate this too</p>"
+        posource = """#: test.html
+msgid "Translate this"
+msgstr "Traduire ceci"
+
+#: test.html
+msgid "Do not translate"
+msgstr "NE PAS traduire ceci"
+
+#: test.html
+msgid "Translate this too"
+msgstr "Traduire ceci aussi"
+"""
+        result = self.converthtml(posource, htmlsource)
+        assert "<p>Traduire ceci</p>" in result
+        # Verify the ignored content is NOT translated even though translation exists
+        assert "<p>Do not translate</p>" in result
+        assert "NE PAS traduire ceci" not in result
+        assert "<p>Traduire ceci aussi</p>" in result
+
+    def test_meta_social_media_tags_translation(self):
+        """Test that social media meta tags are properly translated."""
+        # Test Open Graph tags
+        htmlsource = """<html><head>
+        <meta property="og:title" content="My Page Title">
+        <meta property="og:description" content="A description of my page">
+        <meta property="og:site_name" content="My Website">
+        </head><body></body></html>"""
+        posource = """#: test.html
+msgid "My Page Title"
+msgstr "Mon Titre de Page"
+
+#: test.html
+msgid "A description of my page"
+msgstr "Une description de ma page"
+
+#: test.html
+msgid "My Website"
+msgstr "Mon Site Web"
+"""
+        result = self.converthtml(posource, htmlsource)
+        assert '<meta property="og:title" content="Mon Titre de Page">' in result
+        assert (
+            '<meta property="og:description" content="Une description de ma page">'
+            in result
+        )
+        assert '<meta property="og:site_name" content="Mon Site Web">' in result
+
+        # Test Twitter Card tags
+        htmlsource = """<html><head>
+        <meta name="twitter:title" content="My Tweet Title">
+        <meta name="twitter:description" content="A tweet description">
+        </head><body></body></html>"""
+        posource = """#: test.html
+msgid "My Tweet Title"
+msgstr "Mon Titre de Tweet"
+
+#: test.html
+msgid "A tweet description"
+msgstr "Une description de tweet"
+"""
+        result = self.converthtml(posource, htmlsource)
+        assert '<meta name="twitter:title" content="Mon Titre de Tweet">' in result
+        assert (
+            '<meta name="twitter:description" content="Une description de tweet">'
+            in result
+        )
+
+    def test_meta_non_translatable_tags_preserved(self):
+        """Test that non-translatable meta tags are preserved without translation."""
+        htmlsource = """<html><head>
+        <meta property="og:title" content="My Page Title">
+        <meta property="og:image" content="https://example.com/image.jpg">
+        <meta property="og:url" content="https://example.com/">
+        <meta name="twitter:card" content="summary">
+        </head><body></body></html>"""
+        posource = """#: test.html
+msgid "My Page Title"
+msgstr "Mon Titre de Page"
+"""
+        result = self.converthtml(posource, htmlsource)
+        # Translatable tag should be translated
+        assert '<meta property="og:title" content="Mon Titre de Page">' in result
+        # Non-translatable tags should be preserved as-is
+        assert (
+            '<meta property="og:image" content="https://example.com/image.jpg">'
+            in result
+        )
+        assert '<meta property="og:url" content="https://example.com/">' in result
+        assert '<meta name="twitter:card" content="summary">' in result
 
 
 class TestPO2HtmlCommand(test_convert.TestConvertCommand, TestPO2Html):

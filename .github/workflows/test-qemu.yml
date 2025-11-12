@@ -32,7 +32,7 @@ jobs:
     - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8   # v5.0.0
       with:
         persist-credentials: false
-    - uses: astral-sh/setup-uv@3259c6206f993105e3a61b142c2d97bf4b9ef83d # v7.1.0
+    - uses: astral-sh/setup-uv@5a7eac68fb9809dea845d802897dc5c723910fa3 # v7.1.3
       with:
         cache-local-path: /tmp/setup-uv-cache
         cache-suffix: ${{ matrix.arch }}-${{ matrix.distro }}
@@ -52,7 +52,7 @@ jobs:
 
         install: |
           apt-get update -q -y
-          apt-get install -q -y libgettextpo-dev libxml2-dev libxmlsec1-dev gettext hunspell-af python3-dev gcc make
+          apt-get install -q -y libgettextpo-dev libxml2-dev libxmlsec1-dev gettext hunspell-af python3-dev gcc g++ make
           curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR=/usr/local/bin sh
 
         run: |

@@ -155,7 +155,7 @@ class TestStringElem:
         # Test inserting at the beginning
         elem = self.elem.copy()
         elem.insert(0, "xxx")
-        assert str(elem.sub[0]) == "xxx" + str(self.elem.sub[0])
+        assert str(elem.sub[0]) == f"xxx{self.elem.sub[0]}"
 
         # Test inserting at the end
         elem = self.elem.copy()

@@ -77,7 +77,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
         expect_refs: list[dict[str, Any]],
     ) -> None:
         """Assert that the list of references matches the expected."""
-        for ref, expect in zip(references, expect_refs):
+        for ref, expect in zip(references, expect_refs, strict=True):
             assert expect.get("type") == ref.type_name
             assert expect.get("name") == ref.name
         assert len(expect_refs) == len(references)
@@ -121,7 +121,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             )
             expect_children = found_selector_branches[expect_index]["child-nodes"]
             for child, expected_child in zip(
-                selector_branch.child_nodes, expect_children
+                selector_branch.child_nodes, expect_children, strict=True
             ):
                 cls.assert_selector_node(
                     child,
@@ -170,7 +170,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             )
             expect_children = found_selector_nodes[expect_index]["child-branches"]
             for child, expected_child in zip(
-                selector_node.child_branches, expect_children
+                selector_node.child_branches, expect_children, strict=True
             ):
                 cls.assert_selector_branch(
                     child,
@@ -253,7 +253,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
 
         unit_parts = fluent_unit.get_parts()
         assert unit_parts is not None
-        for part, expected_part in zip(unit_parts, expect_parts):
+        for part, expected_part in zip(unit_parts, expect_parts, strict=True):
             assert expected_part.get("name") == part.name
 
             found_selector_nodes = [
@@ -316,10 +316,11 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             for (path, source), expected_variant in zip(
                 pattern_variants,
                 expect_variants,
+                strict=True,
             ):
                 assert expected_variant.get("source") == source
                 expect_path = expected_variant.get("select-path")
-                for branch, index in zip(path, expect_path):
+                for branch, index in zip(path, expect_path, strict=True):
                     cls.assert_selector_branch(
                         branch,
                         index,
@@ -353,7 +354,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             If given, the "parts" value is matches against the unit's
             `get_parts`. See `assert_parts`.
         """
-        for unit, expect in zip(fluent_file.units, expect_units):
+        for unit, expect in zip(fluent_file.units, expect_units, strict=True):
             unit_id = expect.get("id", None)
             assert unit_id == unit.getid()
             id_type = None
@@ -367,7 +368,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                 assert not unit.isheader()
                 assert unit.istranslatable()
             # Order shouldn't be important.
-            placeholders = {"{ " + ref_id + " }" for ref_id in expect.get("refs", [])}
+            placeholders = {f"{{ {ref_id} }}" for ref_id in expect.get("refs", [])}
             assert placeholders == set(unit.placeholders)
             assert expect.get("comment", "") == unit.getnotes()
             assert expect.get("source", None) == unit.source
@@ -436,7 +437,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
         """
         fluent_source = textwrap.dedent(fluent_source)
         error_regex = (
-            r"^Parsing error for fluent source: " + error_part + r".*(\nE[0-9]+: .*)*$"
+            rf"^Parsing error for fluent source: {error_part}.*(\nE[0-9]+: .*)*$"
         )
         with raises(ValueError, match=error_regex):
             self.fluent_parse(fluent_source)
@@ -3410,8 +3411,8 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             unit = fluent.FluentUnit(
                 source="ok", unit_id=unit_id, fluent_type=fluent_type
             )
-            unit.setid(unit_id + "a")
-            assert unit.getid() == unit_id + "a"
+            unit.setid(f"{unit_id}a")
+            assert unit.getid() == f"{unit_id}a"
         # Test invalid ids.
         ok_id_dict = {"Message": "i", "Term": "-i"}
         for fluent_type, unit_id in [

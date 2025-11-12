@@ -241,7 +241,7 @@ class pounit(pocommon.pounit):
             # Remove kde-style comments from the translation (if any). XXX - remove
             if pocommon.extract_msgid_comment(otherpo.target):
                 otherpo.target = otherpo.target.replace(
-                    "_: " + otherpo._extract_msgidcomments() + "\n", ""
+                    f"_: {otherpo._extract_msgidcomments()}\n", ""
                 )
             self.target = otherpo.target
             if (

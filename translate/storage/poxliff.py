@@ -217,7 +217,7 @@ class PoXliffUnit(xliff.xliffunit):
                     linenumber = text
             assert sourcefile
             if linenumber:
-                sourcefile = sourcefile + ":" + linenumber
+                sourcefile = f"{sourcefile}:{linenumber}"
             references.append(sourcefile)
         return references
 

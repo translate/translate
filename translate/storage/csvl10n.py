@@ -24,6 +24,7 @@ or entire files (csvfile) for use with localisation.
 from __future__ import annotations
 
 import csv
+from io import StringIO
 
 from translate.storage import base
 
@@ -83,7 +84,7 @@ class csvunit(base.TranslationUnit):
             result = self.translator_comments
             if self.developer_comments:
                 if result:
-                    result += "\n" + self.developer_comments
+                    result += f"\n{self.developer_comments}"
                 else:
                     result = self.developer_comments
             return result
@@ -96,15 +97,15 @@ class csvunit(base.TranslationUnit):
     def addnote(self, text, origin=None, position="append"):
         if origin in {"programmer", "developer", "source code"}:
             if position == "append" and self.developer_comments:
-                self.developer_comments += "\n" + text
+                self.developer_comments += f"\n{text}"
             elif position == "prepend" and self.developer_comments:
-                self.developer_comments = text + "\n" + self.developer_comments
+                self.developer_comments = f"{text}\n{self.developer_comments}"
             else:
                 self.developer_comments = text
         elif position == "append" and self.translator_comments:
-            self.translator_comments += "\n" + text
+            self.translator_comments += f"\n{text}"
         elif position == "prepend" and self.translator_comments:
-            self.translator_comments = self.translator_comments + "\n" + text
+            self.translator_comments = f"{self.translator_comments}\n{text}"
         else:
             self.translator_comments = text
 
@@ -208,39 +209,90 @@ fieldname_map = {
 EXTRA_KEY = "__CSVL10N__EXTRA__"
 
 
-def try_dialects(inputfile, fieldnames, dialect):
-    # FIXME: does it verify at all if we don't actually step through the file?
+def try_dialects(
+    inputfile: StringIO,
+    fieldnames: list[str] | None,
+    dialect: str | csv.Dialect,
+    has_header: bool = False,
+) -> csv.DictReader:
+    """
+    Create a CSV DictReader with the appropriate dialect.
+
+    Args:
+        inputfile: CSV file to read
+        fieldnames: Field names to use, or None to use first row
+        dialect: CSV dialect to use
+        has_header: Whether file has a header row
+
+    """
+    # If file has a header row, pass None to DictReader to use the first row as field names
+    # Otherwise, pass explicit fieldnames
+    fieldnames_param = None if has_header else fieldnames
+
     try:
         inputfile.seek(0)
         return csv.DictReader(
-            inputfile, fieldnames=fieldnames, dialect=dialect, restkey=EXTRA_KEY
+            inputfile, fieldnames=fieldnames_param, dialect=dialect, restkey=EXTRA_KEY
         )
     except csv.Error:
         try:
             inputfile.seek(0)
             return csv.DictReader(
-                inputfile, fieldnames=fieldnames, dialect="default", restkey=EXTRA_KEY
+                inputfile,
+                fieldnames=fieldnames_param,
+                dialect="default",
+                restkey=EXTRA_KEY,
             )
         except csv.Error:
             inputfile.seek(0)
             return csv.DictReader(
-                inputfile, fieldnames=fieldnames, dialect="excel", restkey=EXTRA_KEY
+                inputfile,
+                fieldnames=fieldnames_param,
+                dialect="excel",
+                restkey=EXTRA_KEY,
             )
 
 
-def valid_fieldnames(fieldnames):
+def valid_fieldnames(fieldnames: list[str]) -> bool:
     """
-    Check if fieldnames are valid, that is at least one field is identified
-    as the source.
+    Check if fieldnames are valid.
+
+    For bilingual CSV files, at least one field should be identified as "source".
+    For monolingual CSV files, we accept files with "id", "context", or "target"
+    fields without requiring a "source" field.
     """
-    return any(
+    # Check if we have a source field (bilingual CSV)
+    has_source = any(
         fieldname == "source" or fieldname_map.get(fieldname) == "source"
         for fieldname in fieldnames
     )
+    if has_source:
+        return True
+
+    # Check if we have id, context, or target fields (monolingual CSV)
+    monolingual_fields = {"id", "context", "target"}
+    mapped_fields = {
+        fieldname_map.get(fieldname, fieldname) for fieldname in fieldnames
+    }
+    return bool(monolingual_fields & mapped_fields)
 
 
-def detect_header(inputfile, dialect, fieldnames):
-    """Test if file has a header or not, also returns number of columns in first row."""
+def detect_header(
+    inputfile: StringIO, dialect: str | csv.Dialect, fieldnames: list[str]
+) -> tuple[list[str], bool]:
+    """
+    Test if file has a header or not.
+
+    Args:
+        inputfile: CSV file to read
+        dialect: CSV dialect to use
+        fieldnames: Default field names if no header found
+
+    Returns:
+        Tuple of (fieldnames, has_header) where has_header is True
+        if the first row is a valid header.
+
+    """
     try:
         reader = csv.reader(inputfile, dialect)
     except csv.Error:
@@ -254,8 +306,8 @@ def detect_header(inputfile, dialect, fieldnames):
     header = next(reader)
     columncount = max(len(header), 3)
     if valid_fieldnames(header):
-        return header
-    return fieldnames[:columncount]
+        return header, True
+    return fieldnames[:columncount], False
 
 
 class csvfile(base.TranslationStore):
@@ -319,18 +371,28 @@ class csvfile(base.TranslationStore):
                     # HACKISH: most probably a default, not real detection
                     self.dialect.quoting = csv.QUOTE_ALL
                     self.dialect.doublequote = True
+                # Add delimiter for single value CSV where none is present or is obviously invalid
+                if not self.dialect.delimiter or self.dialect.delimiter in {
+                    '"',
+                    "\r",
+                    "\n",
+                }:
+                    self.dialect.delimiter = ","
             except csv.Error:
                 self.dialect = "default"
 
-        inputfile = csv.StringIO(text)
+        inputfile = StringIO(text)
+        has_header = False
         try:
-            fieldnames = detect_header(inputfile, self.dialect, self.fieldnames)
+            fieldnames, has_header = detect_header(
+                inputfile, self.dialect, self.fieldnames
+            )
             self.fieldnames = fieldnames
         except csv.Error:
             pass
 
         inputfile.seek(0)
-        reader = try_dialects(inputfile, self.fieldnames, self.dialect)
+        reader = try_dialects(inputfile, self.fieldnames, self.dialect, has_header)
 
         first_row = True
         for row in reader:
@@ -363,7 +425,7 @@ class csvfile(base.TranslationStore):
         out.write(output)
 
     def getoutput(self):
-        output = csv.StringIO()
+        output = StringIO()
         writer = csv.DictWriter(
             output, self.fieldnames, extrasaction="ignore", dialect=self.dialect
         )

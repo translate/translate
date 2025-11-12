@@ -28,6 +28,12 @@ class TestTMXUnitFromParsedString(TestTMXUnit):
         store = tmx.tmxfile.parsestring(self.tmxsource)
         self.unit = store.units[0]
 
+    def test_context(self):
+        tmxunit = self.UnitClass("Sample source")
+        assert tmxunit.getcontext() == ""
+        tmxunit.setcontext("context info")
+        assert tmxunit.getcontext() == "context info"
+
 
 class TestTMXfile(test_base.TestTranslationStore):
     StoreClass = tmx.tmxfile
@@ -101,3 +107,81 @@ class TestTMXfile(test_base.TestTranslationStore):
         print(bytes(tmxfile))
         assert newfile.translate("Client Version:14 %s") == "test one"
         assert newfile.translate("Client Version:\n%s") == "test two"
+
+    def test_context(self):
+        store = self.StoreClass()
+        unit = store.addsourceunit("Source text")
+        unit.target = "Target text"
+        unit.setcontext("Context text")
+        store.addunit(unit)
+        assert b"Context text" in (bytes(store))
+
+        newsource = """<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE tmx
+  SYSTEM 'tmx14.dtd'>
+<tmx version="1.4">
+        <header adminlang="en" creationtool="Translate Toolkit" creationtoolversion="1.0beta" datatype="PlainText" o-tmf="UTF-8" segtype="sentence" srclang="en"/>
+        <body>
+                <tu>
+                        <prop type="x-context">Context text</prop>
+                        <tuv xml:lang="en">
+                                <seg>Test String</seg>
+                        </tuv>
+                </tu>
+        </body>
+</tmx>"""
+
+        newstore = self.StoreClass().parsestring(newsource)
+        assert newstore.units[0].getcontext() == "Context text"
+
+    def test_note_order(self):
+        """Test that notes appear before tuv elements as per TMX DTD."""
+        store = self.StoreClass()
+        unit = store.addsourceunit("Test")
+        unit.target = "Prueba"
+        unit.addnote("Test note")
+
+        # Get the order of elements
+        element_tags = [
+            child.tag.split("}")[1] if "}" in child.tag else child.tag
+            for child in unit.xmlelement
+        ]
+
+        # Note should come before tuv elements
+        assert "note" in element_tags
+        assert "tuv" in element_tags
+        note_index = element_tags.index("note")
+        first_tuv_index = element_tags.index("tuv")
+        assert note_index < first_tuv_index, (
+            "note element should appear before tuv elements"
+        )
+
+    def test_prop_and_note_order(self):
+        """Test that notes and props appear before tuv elements as per TMX DTD."""
+        store = self.StoreClass()
+        unit = store.addsourceunit("Test")
+        unit.target = "Prueba"
+        unit.addnote("Test note")
+        unit.setcontext("test-context")
+
+        # Get the order of elements
+        element_tags = [
+            child.tag.split("}")[1] if "}" in child.tag else child.tag
+            for child in unit.xmlelement
+        ]
+
+        # Both note and prop should come before tuv elements
+        assert "note" in element_tags
+        assert "prop" in element_tags
+        assert "tuv" in element_tags
+
+        note_index = element_tags.index("note")
+        prop_index = element_tags.index("prop")
+        first_tuv_index = element_tags.index("tuv")
+
+        assert note_index < first_tuv_index, (
+            "note element should appear before tuv elements"
+        )
+        assert prop_index < first_tuv_index, (
+            "prop element should appear before tuv elements"
+        )

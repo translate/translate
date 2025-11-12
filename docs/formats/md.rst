@@ -36,6 +36,48 @@ Conformance
   as the source.
 
 
+.. _md#excluding_content:
+
+Excluding Content from Translation
+===================================
+
+You can exclude sections of Markdown content from translation by using HTML
+comment markers. Content between ``<!-- translate:off -->`` and
+``<!-- translate:on -->`` will be preserved in the output but will not be
+extracted for translation.
+
+Example::
+
+   # Welcome
+
+   This text will be translated.
+
+   <!-- translate:off -->
+
+   ```python
+   def example():
+       return "This code won't be extracted"
+   ```
+
+   [link-ref]: https://example.com
+
+   <!-- translate:on -->
+
+   This text will also be translated.
+
+In this example, only "Welcome", "This text will be translated.", and "This
+text will also be translated." will be extracted as translation units. The
+code block and link reference definition will remain unchanged.
+
+This feature is useful for:
+
+* Code examples and syntax highlighting blocks
+* Link reference definitions
+* Static content like images and media references
+* Configuration examples
+* API endpoints and technical identifiers
+
+
 .. _md#references:
 
 References

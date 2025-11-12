@@ -251,3 +251,290 @@ pre tag
         )
         assert len(store.units) == 1
         assert store.units[0].source == "this is\na multiline\npre tag"
+
+    def test_extraction_button(self):
+        """Check that we can extract text from button elements."""
+        h = html.htmlfile()
+
+        # Simple button text
+        store = h.parsestring(
+            "<button>Zustimmen und weiter</button>"
+        )  # codespell:ignore
+        assert len(store.units) == 1
+        assert store.units[0].source == "Zustimmen und weiter"  # codespell:ignore
+
+        # Button with nested elements
+        store = h.parsestring("<button><span>Click</span> here</button>")
+        assert len(store.units) == 1
+        assert store.units[0].source == "<span>Click</span> here"
+
+        # Button with attributes
+        store = h.parsestring('<button type="submit" class="btn">Submit</button>')
+        assert len(store.units) == 1
+        assert store.units[0].source == "Submit"
+
+        # Multiple buttons
+        store = h.parsestring(
+            """
+            <button>Accept</button>
+            <button>Decline</button>
+            """
+        )
+        assert len(store.units) == 2
+        assert store.units[0].source == "Accept"
+        assert store.units[1].source == "Decline"
+
+        # Button within other elements
+        store = h.parsestring(
+            """
+            <div>
+                <button>Save</button>
+            </div>
+            """
+        )
+        assert len(store.units) == 1
+        assert store.units[0].source == "Save"
+
+        # Button with title attribute (should extract both)
+        store = h.parsestring('<button title="Click to submit">Submit</button>')
+        assert len(store.units) == 2
+        assert store.units[0].source == "Click to submit"
+        assert store.units[1].source == "Submit"
+
+    def test_extraction_lang_attribute(self):
+        """Check that we extract lang attribute only from html tag."""
+        h = html.htmlfile()
+        store = h.parsestring(
+            """<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Test</title>
+</head>
+<body>
+    <p lang="en">A paragraph with lang attribute</p>
+    <div lang="fr">A div with lang attribute</div>
+</body>
+</html>"""
+        )
+        # Should extract "en" from html tag, but not from p or div
+        sources = [unit.source for unit in store.units]
+        assert "en" in sources  # from html tag
+        assert "Test" in sources
+        # lang attributes in p and div should not be extracted
+        lang_units = [unit for unit in store.units if unit.source == "en"]
+        assert len(lang_units) == 1  # Only one "en" unit from html tag
+        # Check location to confirm it's from html tag
+        assert "html[lang]" in lang_units[0].getlocations()[0]
+
+    def test_dir_attribute_not_extracted(self):
+        """Check that dir attribute is not extracted (it's automatically inferred from lang)."""
+        h = html.htmlfile()
+        store = h.parsestring(
+            """<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <title>Test</title>
+</head>
+<body>
+    <p dir="ltr">A paragraph with dir attribute</p>
+    <div dir="rtl">A div with dir attribute</div>
+</body>
+</html>"""
+        )
+        # dir attribute should NOT be extracted from any tag
+        sources = [unit.source for unit in store.units]
+        assert "ltr" not in sources
+        assert "rtl" not in sources
+        # lang, title, and content should be extracted (but not dir)
+        assert "en" in sources  # lang from html tag
+        assert "Test" in sources  # title
+        assert "A paragraph with dir attribute" in sources  # p content
+        assert "A div with dir attribute" in sources  # div content
+        assert len(store.units) == 4  # lang, title, p, div - but NOT dir
+
+    def test_data_translate_ignore_attribute(self):
+        """Check that elements with data-translate-ignore are not extracted."""
+        h = html.htmlfile()
+
+        # Simple case: single ignored paragraph
+        store = h.parsestring(
+            "<p>Translate this</p><p data-translate-ignore>Do not translate</p><p>Translate this too</p>"
+        )
+        assert len(store.units) == 2
+        assert store.units[0].source == "Translate this"
+        assert store.units[1].source == "Translate this too"
+
+        # Nested elements within ignored section should also be ignored
+        store = h.parsestring(
+            "<div>Translate this</div><div data-translate-ignore><p>Do not translate</p><span>Also ignore</span></div><div>Translate this too</div>"
+        )
+        assert len(store.units) == 2
+        assert store.units[0].source == "Translate this"
+        assert store.units[1].source == "Translate this too"
+
+        # Attributes in ignored elements should not be extracted
+        store = h.parsestring(
+            '<p title="Extract this">Translate</p><p data-translate-ignore title="Do not extract">Do not translate</p>'
+        )
+        assert len(store.units) == 2
+        assert store.units[0].source == "Extract this"
+        assert store.units[1].source == "Translate"
+
+        # Self-closing tags with data-translate-ignore should not have attributes extracted
+        store = h.parsestring(
+            '<img alt="Extract this" /><img alt="Do not extract" data-translate-ignore /><p>Translate</p>'
+        )
+        assert len(store.units) == 2
+        assert store.units[0].source == "Extract this"
+        assert store.units[1].source == "Translate"
+
+    def test_translate_comment_directives(self):
+        """Check that translate:off and translate:on comments work."""
+        h = html.htmlfile()
+
+        # Basic case with comments
+        store = h.parsestring(
+            "<p>Translate this</p><!-- translate:off --><p>Do not translate</p><!-- translate:on --><p>Translate this too</p>"
+        )
+        assert len(store.units) == 2
+        assert store.units[0].source == "Translate this"
+        assert store.units[1].source == "Translate this too"
+
+        # Multiple elements between translate:off and translate:on
+        store = h.parsestring(
+            "<div>Translate</div><!-- translate:off --><p>Skip 1</p><p>Skip 2</p><div>Skip 3</div><!-- translate:on --><p>Translate again</p>"
+        )
+        assert len(store.units) == 2
+        assert store.units[0].source == "Translate"
+        assert store.units[1].source == "Translate again"
+
+        # translate:off without translate:on should ignore rest of document
+        store = h.parsestring(
+            "<p>Translate this</p><!-- translate:off --><p>Do not translate 1</p><p>Do not translate 2</p>"
+        )
+        assert len(store.units) == 1
+        assert store.units[0].source == "Translate this"
+
+    def test_extraction_meta_social_media_tags(self):
+        """Check that we can extract common social media meta tags."""
+        h = html.htmlfile()
+
+        # Test Open Graph tags (use 'property' attribute)
+        store = h.parsestring(
+            """<html><head>
+            <meta property="og:title" content="My Page Title">
+            <meta property="og:description" content="A description of my page">
+            <meta property="og:site_name" content="My Website">
+            </head><body></body></html>"""
+        )
+        assert len(store.units) == 3
+        assert store.units[0].source == "My Page Title"
+        assert store.units[1].source == "A description of my page"
+        assert store.units[2].source == "My Website"
+
+        # Test Twitter Card tags (use 'name' attribute)
+        store = h.parsestring(
+            """<html><head>
+            <meta name="twitter:title" content="My Tweet Title">
+            <meta name="twitter:description" content="A tweet description">
+            </head><body></body></html>"""
+        )
+        assert len(store.units) == 2
+        assert store.units[0].source == "My Tweet Title"
+        assert store.units[1].source == "A tweet description"
+
+        # Test standard meta tags still work
+        store = h.parsestring(
+            """<html><head>
+            <meta name="description" content="Standard description">
+            <meta name="keywords" content="keyword1, keyword2">
+            </head><body></body></html>"""
+        )
+        assert len(store.units) == 2
+        assert store.units[0].source == "Standard description"
+        assert store.units[1].source == "keyword1, keyword2"
+
+    def test_extraction_meta_non_translatable_tags(self):
+        """Check that non-translatable meta tags are not extracted."""
+        h = html.htmlfile()
+
+        # These should NOT be extracted as they contain URLs, image paths, etc.
+        store = h.parsestring(
+            """<html><head>
+            <meta property="og:image" content="https://example.com/image.jpg">
+            <meta property="og:url" content="https://example.com/page">
+            <meta property="og:type" content="website">
+            <meta name="twitter:card" content="summary_large_image">
+            <meta name="twitter:image" content="https://example.com/twitter-image.jpg">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <meta charset="UTF-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            </head><body></body></html>"""
+        )
+        # Should have 0 units since none of these should be translatable
+        assert len(store.units) == 0
+
+    def test_extraction_meta_mixed_translatable_and_non_translatable(self):
+        """Check that translatable and non-translatable meta tags are handled correctly when mixed."""
+        h = html.htmlfile()
+
+        store = h.parsestring(
+            """<html><head>
+            <meta property="og:title" content="My Page Title">
+            <meta property="og:image" content="https://example.com/image.jpg">
+            <meta property="og:description" content="Page description">
+            <meta property="og:url" content="https://example.com/">
+            <meta name="twitter:card" content="summary">
+            <meta name="twitter:title" content="Twitter Title">
+            </head><body></body></html>"""
+        )
+        # Should extract only og:title, og:description, and twitter:title
+        assert len(store.units) == 3
+        assert store.units[0].source == "My Page Title"
+        assert store.units[1].source == "Page description"
+        assert store.units[2].source == "Twitter Title"
+
+    def test_data_translate_comment_attribute(self):
+        """Check that data-translate-comment attribute is extracted as a note."""
+        h = html.htmlfile()
+
+        # Single element with data-translate-comment
+        store = h.parsestring(
+            '<h1 data-translate-comment="This is the first text">Hello world!</h1>'
+        )
+        assert len(store.units) == 1
+        assert store.units[0].source == "Hello world!"
+        notes = store.units[0].getnotes(origin="source code")
+        assert notes == "This is the first text"
+
+        # Multiple elements with data-translate-comment
+        store = h.parsestring(
+            '<h1 data-translate-comment="Header comment">Header</h1><p data-translate-comment="Paragraph comment">Paragraph text</p>'
+        )
+        assert len(store.units) == 2
+        assert store.units[0].source == "Header"
+        notes = store.units[0].getnotes(origin="source code")
+        assert notes == "Header comment"
+        assert store.units[1].source == "Paragraph text"
+        notes = store.units[1].getnotes(origin="source code")
+        assert notes == "Paragraph comment"
+
+        # Element with both HTML comment and data-translate-comment (comment inside unit)
+        store = h.parsestring(
+            '<h1 data-translate-comment="Attribute comment"><!-- HTML comment -->Title</h1>'
+        )
+        assert len(store.units) == 1
+        assert store.units[0].source == "Title"
+        notes = store.units[0].getnotes(origin="source code")
+        # Both comments should be present
+        assert " HTML comment " in notes
+        assert "Attribute comment" in notes
+
+        # Element with data-translate-comment and inline markup
+        store = h.parsestring(
+            '<p data-translate-comment="This is important"><strong>Bold</strong> text here</p>'
+        )
+        assert len(store.units) == 1
+        assert store.units[0].source == "<strong>Bold</strong> text here"
+        notes = store.units[0].getnotes(origin="source code")
+        assert notes == "This is important"

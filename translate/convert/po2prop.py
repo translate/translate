@@ -124,7 +124,7 @@ class reprop:
 
             names = data.cldr_plural_categories
             location = unit.getlocations()[0]
-            for category, text in zip(names, unit.target.strings):
+            for category, text in zip(names, unit.target.strings, strict=True):
                 # TODO: for now we assume all forms are present. We need to
                 # fill in the rest after mapping things to the proper CLDR names.
                 if category == "zero":
@@ -161,7 +161,7 @@ class reprop:
             names = data.cldr_plural_categories
             names = [cldr2gwt.get(name) for name in names]
             location = unit.getlocations()[0]
-            for category, text in zip(names, unit.target.strings):
+            for category, text in zip(names, unit.target.strings, strict=True):
                 new_unit = self.inputstore.addsourceunit("fish")  # not used
                 new_location = f"{location}[{category}]" if category else f"{location}"
                 new_unit.addlocation(new_location)

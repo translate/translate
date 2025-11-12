@@ -43,7 +43,7 @@ class es(common.Common):
         if not first:
             return text
         if first[-1] == "?":
-            text = "¿" + text
+            text = f"¿{text}"
         elif first[-1] == "!":
-            text = "¡" + text
+            text = f"¡{text}"
         return text

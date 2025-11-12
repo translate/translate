@@ -55,6 +55,7 @@ _classes_str = {
     "xlf": ("xliff", "xlifffile"),
     "sdlxliff": ("xliff", "xlifffile"),
     "ftl": ("fluent", "FluentFile"),
+    "toml": ("toml", "TOMLFile"),
 }
 ###  XXX:  if you add anything here, you must also add it to translate.storage.
 
@@ -120,7 +121,7 @@ def _get_dummy_name(storefile):
     Provides a dummy name for a file object without a name attribute, by
     guessing the file type.
     """
-    return "dummy." + _guess_extension(storefile)
+    return f"dummy.{_guess_extension(storefile)}"
 
 
 def _get_name(storefile):
@@ -216,9 +217,10 @@ def getobject(
         classes_str = _classes_str
     if hiddenclasses is None:
         hiddenclasses = _hiddenclasses
-    if isinstance(storefile, str):
-        if os.path.isdir(storefile) or storefile.endswith(os.path.sep):
-            return Directory(storefile)
+    if isinstance(storefile, str) and (
+        os.path.isdir(storefile) or storefile.endswith(os.path.sep)
+    ):
+        return Directory(storefile)
     storefilename = _get_name(storefile)
     storeclass = getclass(
         storefile,

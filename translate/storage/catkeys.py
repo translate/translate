@@ -50,6 +50,7 @@ Escaping
 """
 
 import csv
+from io import StringIO
 
 from translate.lang import data
 from translate.storage import base
@@ -281,7 +282,13 @@ class CatkeysFile(base.TranslationStore):
         )
         for idx, line in enumerate(reader):
             if idx == 0:
-                header = dict(zip(FIELDNAMES_HEADER, [line[key] for key in FIELDNAMES]))
+                header = dict(
+                    zip(
+                        FIELDNAMES_HEADER,
+                        [line[key] for key in FIELDNAMES],
+                        strict=True,
+                    )
+                )
                 self.header = CatkeysHeader(header)
                 continue
             newunit = CatkeysUnit()
@@ -289,7 +296,7 @@ class CatkeysFile(base.TranslationStore):
             self.addunit(newunit)
 
     def serialize(self, out):
-        output = csv.StringIO()
+        output = StringIO()
         writer = csv.DictWriter(output, FIELDNAMES, dialect="catkeys")
         # Calculate/update fingerprint
         self.header.setchecksum(self._compute_fingerprint())
@@ -299,6 +306,7 @@ class CatkeysFile(base.TranslationStore):
                 zip(
                     FIELDNAMES,
                     [self.header._header_dict[key] for key in FIELDNAMES_HEADER],
+                    strict=True,
                 )
             )
         )

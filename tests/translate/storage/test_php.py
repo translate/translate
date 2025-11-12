@@ -1173,6 +1173,46 @@ return array(
         assert phpunit.source == "pesca"
         assert bytes(phpfile).decode() == phpsource
 
+    def test_return_array_with_spaces(self):
+        """Test that return array with spaces before 'array' is handled correctly."""
+        phpsource = """<?php
+return  array(
+    'peach' => 'pesca',
+);
+"""
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 1
+        phpunit = phpfile.units[0]
+        # The unit name should be "return->'peach'", NOT "return  array->'peach'"
+        assert phpunit.name == "return->'peach'"
+        assert phpunit.source == "pesca"
+        # The output should normalize spacing
+        assert bytes(phpfile) == b"<?php\nreturn array(\n    'peach' => 'pesca',\n);\n"
+
+    def test_return_array_with_comments(self):
+        """Test that return array with comments preserves comments correctly."""
+        phpsource = """<?php
+
+return array(
+
+    /*
+    |--------------------------------------------------------------------------
+    | String1
+    |--------------------------------------------------------------------------
+    |
+    */
+
+  'string1'    => 'This is string1',
+);
+"""
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 1
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "return->'string1'"
+        assert phpunit.source == "This is string1"
+        # Check that comments are preserved
+        assert "String1" in phpunit.getnotes("developer")
+
     def test_return_array_short(self):
         phpsource = """<?php
 return [
@@ -1256,3 +1296,298 @@ return [
         assert bytes(phpfile).decode() == phpsource
         phpunit.source = multistring(["There is an apple", "There are many apples"])
         assert bytes(phpfile).decode() == phpsource.replace("one apple", "an apple")
+
+    def test_key_stripping(self):
+        """Test that Laravel PHP files strip the return prefix from keys."""
+        phpsource = r"""<?php
+return [
+    'welcome' => 'Welcome to our application',
+    'apples' => 'There is one apple|There are many apples',
+];
+"""
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 2
+        # Check that getid() returns keys without the return[]-> prefix
+        assert phpfile.units[0].getid() == "welcome"
+        assert phpfile.units[1].getid() == "apples"
+        # Check that getlocations() also returns stripped keys
+        assert phpfile.units[0].getlocations() == ["welcome"]
+        assert phpfile.units[1].getlocations() == ["apples"]
+
+    def test_key_stripping_array_syntax(self):
+        """Test key stripping works with array() syntax."""
+        phpsource = r"""<?php
+return array(
+    'welcome' => 'Welcome',
+    'goodbye' => 'Goodbye',
+);
+"""
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 2
+        assert phpfile.units[0].getid() == "welcome"
+        assert phpfile.units[1].getid() == "goodbye"
+
+    def test_key_stripping_numeric_keys(self):
+        """Test key stripping works with numeric keys."""
+        phpsource = r"""<?php
+return [
+    1 => 'One',
+    2 => 'Two',
+];
+"""
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 2
+        assert phpfile.units[0].getid() == "1"
+        assert phpfile.units[1].getid() == "2"
+
+    def test_roundtrip_short_array(self):
+        """Test round trip serialization with short array syntax."""
+        phpsource = r"""<?php
+return [
+    'welcome' => 'Welcome to our application',
+    'apples' => 'There is one apple|There are many apples',
+];
+"""
+        phpfile = self.phpparse(phpsource)
+        assert bytes(phpfile).decode() == phpsource
+
+    def test_roundtrip_array_syntax(self):
+        """Test round trip serialization with array() syntax."""
+        phpsource = r"""<?php
+return array(
+    'welcome' => 'Welcome',
+    'goodbye' => 'Goodbye',
+);
+"""
+        phpfile = self.phpparse(phpsource)
+        assert bytes(phpfile).decode() == phpsource
+
+    def test_setid_preserves_structure(self):
+        """Test that setid() preserves the return array structure."""
+        phpsource = r"""<?php
+return [
+    'welcome' => 'Welcome',
+];
+"""
+        phpfile = self.phpparse(phpsource)
+        unit = phpfile.units[0]
+
+        # Change the key
+        unit.setid("greeting")
+
+        # Check that getid() returns the clean key
+        assert unit.getid() == "greeting"
+
+        # Check that serialization produces valid PHP with return structure
+        output = bytes(phpfile).decode()
+        assert "return [" in output
+        assert "'greeting' => 'Welcome'" in output
+        assert "return[]->" not in output  # Should not leak internal structure
+
+    def test_setid_with_array_syntax(self):
+        """Test that setid() preserves array() syntax."""
+        phpsource = r"""<?php
+return array(
+    'welcome' => 'Welcome',
+);
+"""
+        phpfile = self.phpparse(phpsource)
+        unit = phpfile.units[0]
+
+        # Change the key
+        unit.setid("greeting")
+
+        # Check that getid() returns the clean key
+        assert unit.getid() == "greeting"
+
+        # Check that serialization produces valid PHP with return array() structure
+        output = bytes(phpfile).decode()
+        assert "return array(" in output
+        assert "'greeting' => 'Welcome'" in output
+
+    def test_addunit_with_setid(self):
+        """Test creating new units programmatically with setid()."""
+        phpfile = self.StoreClass()
+
+        unit1 = phpfile.addsourceunit("Welcome")
+        unit1.setid("welcome")
+
+        unit2 = phpfile.addsourceunit("Goodbye")
+        unit2.setid("goodbye")
+
+        # Check IDs
+        assert unit1.getid() == "welcome"
+        assert unit2.getid() == "goodbye"
+
+        # Check serialization produces valid Laravel PHP structure
+        output = bytes(phpfile).decode()
+        expected = """<?php
+return array(
+    'welcome' => 'Welcome',
+    'goodbye' => 'Goodbye',
+);
+"""
+        assert output == expected
+
+    def test_add_unit_to_short_array_file(self):
+        """Test adding a new unit to a file with short array syntax []."""
+        phpsource = r"""<?php
+return [
+    'existing' => 'Existing message',
+];
+"""
+        phpfile = self.phpparse(phpsource)
+
+        # Add a new unit
+        new_unit = phpfile.addsourceunit("New message")
+        new_unit.setid("new_key")
+
+        # Check the new unit has correct ID
+        assert new_unit.getid() == "new_key"
+
+        # Check serialization produces valid PHP with consistent [] syntax
+        output = bytes(phpfile).decode()
+        expected = """<?php
+return [
+    'existing' => 'Existing message',
+    'new_key' => 'New message',
+];
+"""
+        assert output == expected
+
+    def test_add_unit_to_array_function_file(self):
+        """Test adding a new unit to a file with array() syntax."""
+        phpsource = r"""<?php
+return array(
+    'existing' => 'Existing message',
+);
+"""
+        phpfile = self.phpparse(phpsource)
+
+        # Add a new unit
+        new_unit = phpfile.addsourceunit("New message")
+        new_unit.setid("new_key")
+
+        # Check the new unit has correct ID
+        assert new_unit.getid() == "new_key"
+
+        # Check serialization produces valid PHP with consistent array() syntax
+        output = bytes(phpfile).decode()
+        expected = """<?php
+return array(
+    'existing' => 'Existing message',
+    'new_key' => 'New message',
+);
+"""
+        assert output == expected
+
+    def test_add_multiple_units_to_short_array(self):
+        """Test adding multiple units to a file with short array syntax."""
+        phpsource = r"""<?php
+return [
+    'first' => 'First',
+];
+"""
+        phpfile = self.phpparse(phpsource)
+
+        # Add multiple new units
+        unit2 = phpfile.addsourceunit("Second")
+        unit2.setid("second")
+
+        unit3 = phpfile.addsourceunit("Third")
+        unit3.setid("third")
+
+        # Check serialization produces valid PHP
+        output = bytes(phpfile).decode()
+        expected = """<?php
+return [
+    'first' => 'First',
+    'second' => 'Second',
+    'third' => 'Third',
+];
+"""
+        assert output == expected
+
+    def test_add_multiple_units_to_array_function(self):
+        """Test adding multiple units to a file with array() syntax."""
+        phpsource = r"""<?php
+return array(
+    'first' => 'First',
+);
+"""
+        phpfile = self.phpparse(phpsource)
+
+        # Add multiple new units
+        unit2 = phpfile.addsourceunit("Second")
+        unit2.setid("second")
+
+        unit3 = phpfile.addsourceunit("Third")
+        unit3.setid("third")
+
+        # Check serialization produces valid PHP
+        output = bytes(phpfile).decode()
+        expected = """<?php
+return array(
+    'first' => 'First',
+    'second' => 'Second',
+    'third' => 'Third',
+);
+"""
+        assert output == expected
+
+    def test_numeric_keys_no_quotes(self):
+        """Test that numeric keys (including negative) are not quoted."""
+        phpfile = self.StoreClass()
+
+        # Test positive integer
+        unit1 = phpfile.addsourceunit("Message 1")
+        unit1.setid("1")
+
+        # Test negative integer
+        unit2 = phpfile.addsourceunit("Message 2")
+        unit2.setid("-1")
+
+        # Test zero
+        unit3 = phpfile.addsourceunit("Message 3")
+        unit3.setid("0")
+
+        output = bytes(phpfile).decode()
+        expected = """<?php
+return array(
+    1 => 'Message 1',
+    -1 => 'Message 2',
+    0 => 'Message 3',
+);
+"""
+        assert output == expected
+
+    def test_empty_string_key(self):
+        """Test that empty string keys are properly quoted."""
+        phpfile = self.StoreClass()
+
+        unit = phpfile.addsourceunit("Empty key message")
+        unit.setid("")
+
+        output = bytes(phpfile).decode()
+        expected = """<?php
+return array(
+    '' => 'Empty key message',
+);
+"""
+        assert output == expected
+
+    def test_setid_with_non_string_value(self):
+        """Test that setid handles non-string values gracefully."""
+        phpfile = self.StoreClass()
+
+        # Test with integer
+        unit1 = phpfile.addsourceunit("Message")
+        unit1.setid(123)
+
+        output = bytes(phpfile).decode()
+        expected = """<?php
+return array(
+    123 => 'Message',
+);
+"""
+        assert output == expected

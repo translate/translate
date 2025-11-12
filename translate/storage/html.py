@@ -23,6 +23,7 @@ import html.parser
 import re
 from html.entities import html5
 
+from translate.lang.data import is_rtl
 from translate.storage import base
 from translate.storage.base import ParseError
 
@@ -53,6 +54,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         "article",
         "aside",
         "blockquote",
+        "button",
         "caption",
         "dd",
         "dt",
@@ -94,8 +96,17 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
     """Text from these HTML attributes will be extracted as translation units.
     Note: the content attribute of meta tags is a special case."""
 
-    TRANSLATABLE_METADATA = ["description", "keywords"]
+    TRANSLATABLE_METADATA = [
+        "description",
+        "keywords",
+        "og:title",
+        "og:description",
+        "og:site_name",
+        "twitter:title",
+        "twitter:description",
+    ]
     """Document metadata from meta elements with these names will be extracted as translation units.
+    Includes standard meta tags and common social media tags (Open Graph and Twitter Cards).
     Reference `<https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta/name>`_"""
 
     EMPTY_HTML_ELEMENTS = [
@@ -150,6 +161,9 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         self.tag_path = []
         self.tu_content = []
         self.tu_location = None
+        self.ignore_depth = 0  # Track nesting level of ignored elements
+        self.comment_ignore = False  # Track if inside <!-- translate:off -->
+        self.ignore_tag_stack = []  # Track which tags have ignore attribute
 
         # parse
         if inputfile is not None:
@@ -181,6 +195,10 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         htmlsrc = self.do_encoding(htmlsrc)
         self.feed(htmlsrc)
 
+    def is_extraction_ignored(self):
+        """Check if we're currently in an ignored section."""
+        return self.ignore_depth > 0 or self.comment_ignore
+
     def begin_translation_unit(self):
         # at the start of a translation unit:
         # this interrupts any translation unit in progress, so process the queue
@@ -211,6 +229,12 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             self.filesrc += markup["html_content"]
 
     def emit_translation_unit(self):
+        # If we're in an ignored section, just output the raw content
+        if self.is_extraction_ignored():
+            for markup in self.tu_content:
+                self.filesrc += markup["html_content"]
+            return
+
         # scan through the queue:
         # - find the first and last translatable markup elements: the captured
         #   interval [start, end)
@@ -282,13 +306,25 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
             unit = self.addsourceunit(normalized_content)
             unit.addlocation(self.tu_location)
+
+            # Extract comment text from HTML comment elements within the translation unit
             comments = [
                 markup["note"]
                 for markup in self.tu_content
                 if markup["type"] == "comment"
             ]
-            if comments:
-                unit.addnote("\n".join(comments))
+
+            # Extract translator comments from data-translate-comment attributes on any tags within the translation unit
+            translate_comments = [
+                markup["translate_comment"]
+                for markup in self.tu_content
+                if "translate_comment" in markup
+            ]
+
+            # Combine and add all comments to the unit
+            all_comments = comments + translate_comments
+            if all_comments:
+                unit.addnote("\n".join(all_comments), origin="source code")
 
             html_content = (
                 self.get_leading_whitespace(html_content)
@@ -309,6 +345,10 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         return markup["type"] in {"data", "pi"} and markup["html_content"].strip()
 
     def extract_translatable_attributes(self, tag, attrs):
+        # Don't extract attributes if we're in an ignored section
+        if self.is_extraction_ignored():
+            return []
+
         result = []
         if tag == "meta":
             tu = self.create_metadata_attribute_tu(attrs)
@@ -327,7 +367,10 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
     def create_metadata_attribute_tu(self, attrs):
         attrs_dict = dict(attrs)
-        name = attrs_dict["name"].lower() if "name" in attrs_dict else None
+        # Check both 'name' and 'property' attributes (Open Graph uses 'property')
+        name = attrs_dict.get("name", "").lower()
+        if not name:
+            name = attrs_dict.get("property", "").lower()
         if name in self.TRANSLATABLE_METADATA and "content" in attrs_dict:
             return self.create_attribute_tu("content", attrs_dict["content"])
         return None
@@ -343,10 +386,11 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         if normalized_value:
             return {
                 "html_content": normalized_value,
-                "location": "%s+%s:%d-%d"
+                "location": "%s+%s%s:%d-%d"
                 % (
                     self.filename,
-                    ".".join(self.tag_path) + "[" + attrname + "]",
+                    ".".join(self.tag_path),
+                    f"[{attrname}]",
                     self.getpos()[0],
                     self.getpos()[1] + 1,
                 ),
@@ -359,16 +403,59 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 unit = self.addsourceunit(tu["html_content"])
                 unit.addlocation(tu["location"])
 
-    def translate_attributes(self, attrs):
+    def translate_attributes(self, tag, attrs):
         result = []
-        for attrname, attrvalue in attrs:
-            if attrvalue:
-                normalized_value = self.WHITESPACE_RE.sub(" ", attrvalue).strip()
+        translated_lang = None
+
+        # First pass: check if lang is being translated on html tag
+        if tag == "html":
+            attrs_dict = dict(attrs)
+            if "lang" in attrs_dict:
+                normalized_value = self.WHITESPACE_RE.sub(
+                    " ", attrs_dict["lang"]
+                ).strip()
                 translated_value = self.callback(normalized_value)
                 if translated_value != normalized_value:
-                    result.append((attrname, translated_value))
-                    continue
+                    translated_lang = translated_value
+
+        for attrname, attrvalue in attrs:
+            # When translating the lang attribute on the <html> tag, we intentionally discard
+            # any existing dir attribute and set it based on the translated language below.
+            # This ensures dir reflects the text directionality of the target language.
+            if tag == "html" and attrname == "dir" and translated_lang:
+                continue
+            if attrvalue:
+                # Special handling for meta tag content attribute
+                if tag == "meta" and attrname == "content":
+                    # Check both 'name' and 'property' attributes
+                    attrs_dict = dict(attrs)
+                    name = attrs_dict.get("name", "").lower()
+                    if not name:
+                        name = attrs_dict.get("property", "").lower()
+                    if name in self.TRANSLATABLE_METADATA:
+                        normalized_value = self.WHITESPACE_RE.sub(
+                            " ", attrvalue
+                        ).strip()
+                        translated_value = self.callback(normalized_value)
+                        if translated_value != normalized_value:
+                            result.append((attrname, translated_value))
+                            continue
+                # Only translate attributes that are translatable for this specific tag
+                if (
+                    attrname in self.TRANSLATABLE_ATTRIBUTES
+                    and self.translatable_attribute_matches_tag(attrname, tag)
+                ):
+                    normalized_value = self.WHITESPACE_RE.sub(" ", attrvalue).strip()
+                    translated_value = self.callback(normalized_value)
+                    if translated_value != normalized_value:
+                        result.append((attrname, translated_value))
+                        continue
             result.append((attrname, attrvalue))
+
+        # Set dir attribute on html tag when lang is being translated
+        if tag == "html" and translated_lang:
+            result.append(("dir", "rtl" if is_rtl(translated_lang) else "ltr"))
+
         return result
 
     @staticmethod
@@ -376,7 +463,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         attr_strings = []
         for attrname, attrvalue in attrs:
             if attrvalue is None:
-                attr_strings.append(" " + attrname)
+                attr_strings.append(f" {attrname}")
             else:
                 attr_strings.append(f' {attrname}="{attrvalue}"')
         return "<{}{}{}>".format(tag, "".join(attr_strings), " /" if startend else "")
@@ -399,10 +486,19 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         self.auto_close_empty_element()
         self.tag_path.append(tag)
 
-        if tag in self.TRANSLATABLE_ELEMENTS:
+        # Check for data-translate-ignore attribute
+        attrs_dict = dict(attrs)
+        has_ignore_attr = "data-translate-ignore" in attrs_dict
+
+        if has_ignore_attr:
+            self.ignore_depth += 1
+            self.ignore_tag_stack.append(tag)
+
+        # Only begin translation unit if not in ignored section
+        if tag in self.TRANSLATABLE_ELEMENTS and not self.is_extraction_ignored():
             self.begin_translation_unit()
 
-        translated_attrs = self.translate_attributes(attrs)
+        translated_attrs = self.translate_attributes(tag, attrs)
         markup = {
             "type": "starttag",
             "tag": tag,
@@ -410,6 +506,11 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             "untranslated_html": self.create_start_tag(tag, attrs),
             "attribute_tus": self.extract_translatable_attributes(tag, attrs),
         }
+
+        # Extract data-translate-comment attribute
+        if "data-translate-comment" in attrs_dict:
+            markup["translate_comment"] = attrs_dict["data-translate-comment"]
+
         self.append_markup(markup)
 
     def handle_endtag(self, tag):
@@ -427,7 +528,13 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
         self.append_markup({"type": "endtag", "html_content": f"</{tag}>"})
 
-        if tag in self.TRANSLATABLE_ELEMENTS:
+        # Check if this closing tag corresponds to an ignored tag
+        # We match from the end of the stack because tags are properly nested
+        if self.ignore_tag_stack and self.ignore_tag_stack[-1] == tag:
+            self.ignore_tag_stack.pop()
+            self.ignore_depth -= 1
+
+        if tag in self.TRANSLATABLE_ELEMENTS and not self.is_extraction_ignored():
             self.end_translation_unit()
             if any(t in self.TRANSLATABLE_ELEMENTS for t in self.tag_path):
                 self.begin_translation_unit()
@@ -436,22 +543,39 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         self.auto_close_empty_element()
         self.tag_path.append(tag)
 
-        if tag in self.TRANSLATABLE_ELEMENTS:
+        # Check for data-translate-ignore attribute
+        attrs_dict = dict(attrs)
+        has_ignore_attr = "data-translate-ignore" in attrs_dict
+
+        # For self-closing tags with ignore attribute, temporarily set ignore state
+        if has_ignore_attr:
+            self.ignore_depth += 1
+
+        if tag in self.TRANSLATABLE_ELEMENTS and not self.is_extraction_ignored():
             self.begin_translation_unit()
 
-        translated_attrs = self.translate_attributes(attrs)
+        translated_attrs = self.translate_attributes(tag, attrs)
         markup = {
             "type": "startendtag",
             "html_content": self.create_start_tag(tag, translated_attrs, startend=True),
             "untranslated_html": self.create_start_tag(tag, attrs, startend=True),
             "attribute_tus": self.extract_translatable_attributes(tag, attrs),
         }
+
+        # Extract data-translate-comment attribute
+        if "data-translate-comment" in attrs_dict:
+            markup["translate_comment"] = attrs_dict["data-translate-comment"]
+
         self.append_markup(markup)
 
-        if tag in self.TRANSLATABLE_ELEMENTS:
+        if tag in self.TRANSLATABLE_ELEMENTS and not self.is_extraction_ignored():
             self.end_translation_unit()
             if any(t in self.TRANSLATABLE_ELEMENTS for t in self.tag_path):
                 self.begin_translation_unit()
+
+        # Restore ignore state if we set it
+        if has_ignore_attr:
+            self.ignore_depth -= 1
 
         self.tag_path.pop()
 
@@ -468,7 +592,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
     def handle_entityref(self, name):
         """Handle named entities of the form &aaaa; e.g. &rsquo;."""
-        converted = html5.get(name + ";")
+        converted = html5.get(f"{name};")
         if name in {"gt", "lt", "amp"} or not converted:
             self.handle_data(f"&{name};")
         else:
@@ -476,6 +600,14 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
     def handle_comment(self, data):
         self.auto_close_empty_element()
+
+        # Check for translate:off and translate:on directives
+        stripped_data = data.strip()
+        if stripped_data == "translate:off":
+            self.comment_ignore = True
+        elif stripped_data == "translate:on":
+            self.comment_ignore = False
+
         self.append_markup(
             {"type": "comment", "html_content": f"<!--{data}-->", "note": data}
         )

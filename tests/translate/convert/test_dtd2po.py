@@ -287,8 +287,9 @@ Some other text
         """Test that we handle all kinds of newline permutations."""
         dtdsource = '<!ENTITY  noupdatesfound.intro "A hard coded newline.\\nAnd tab\\t and a \\r carriage return.">\n'
         converter = dtd2po.dtd2po()
-        thedtd = dtd.dtdunit()
-        thedtd.parse(dtdsource)
+        dtdfile = dtd.dtdfile()
+        dtdfile.parse(dtdsource.encode())
+        thedtd = dtdfile.units[0]
         thepo = po.pounit()
         converter.convertstrings(thedtd, thepo)
         print(thedtd)

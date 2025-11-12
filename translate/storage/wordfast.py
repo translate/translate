@@ -81,6 +81,7 @@ Extended Attributes
 
 import csv
 import time
+from io import StringIO
 
 from translate.storage import base
 
@@ -433,7 +434,11 @@ class WordfastTMFile(base.TranslationStore):
         for idx, line in enumerate(reader):
             if idx == 0:
                 header = dict(
-                    zip(WF_FIELDNAMES_HEADER, [line[key] for key in WF_FIELDNAMES])
+                    zip(
+                        WF_FIELDNAMES_HEADER,
+                        [line[key] for key in WF_FIELDNAMES],
+                        strict=True,
+                    )
                 )
                 self.header = WordfastHeader(header)
                 continue
@@ -447,7 +452,7 @@ class WordfastTMFile(base.TranslationStore):
         if not translated_units:
             return
 
-        output = csv.StringIO()
+        output = StringIO()
         writer = csv.DictWriter(output, fieldnames=WF_FIELDNAMES, dialect="wordfast")
         # No real headers, the first line contains metadata
         self.header.tucount = len(translated_units)
@@ -456,6 +461,7 @@ class WordfastTMFile(base.TranslationStore):
                 zip(
                     WF_FIELDNAMES,
                     [self.header.header[key] for key in WF_FIELDNAMES_HEADER],
+                    strict=True,
                 )
             )
         )

@@ -179,6 +179,52 @@ do=translate me
         pofile = self.prop2po(propsource)
         assert self.countelements(pofile) == 1
 
+    def test_duplicate_locations_mozilla(self):
+        """
+        Check that we handle duplicate locations properly in Mozilla properties files.
+        This tests the fix for the Lithuanian Firefox recovery issue where duplicate
+        locations could cause a traceback.
+
+        When there are duplicate keys, locationindex will contain only the first
+        occurrence from the translated file. Both template entries are processed,
+        but both will map to the same translation (the first occurrence).
+        """
+        # Template file with duplicate keys
+        templateprop = """key1=Original value 1
+key1=Original value 2
+key2=Another value
+"""
+        # Translation file with duplicate keys
+        translatedprop = """key1=Translated value 1
+key1=Translated value 2
+key2=Translated value
+"""
+        # Convert using Mozilla personality - should not raise AttributeError
+        pofile = self.prop2po(translatedprop, templateprop, personality="mozilla")
+
+        # We get 3 units because both key1 entries from template are processed
+        # Both map to the first translated value due to locationindex behavior
+        assert self.countelements(pofile) == 3
+
+        # First key1 entry
+        pounit1 = pofile.units[1]
+        assert pounit1.source == "Original value 1"
+        assert pounit1.target == "Translated value 1"
+        assert pounit1.getlocations() == ["key1"]
+
+        # Second key1 entry (duplicate location)
+        pounit2 = pofile.units[2]
+        assert pounit2.source == "Original value 2"
+        # Both key1 entries map to first translated value
+        assert pounit2.target == "Translated value 1"
+        assert pounit2.getlocations() == ["key1"]
+
+        # key2 entry
+        pounit3 = pofile.units[3]
+        assert pounit3.source == "Another value"
+        assert pounit3.target == "Translated value"
+        assert pounit3.getlocations() == ["key2"]
+
     def test_emptyproperty(self):
         """Checks that empty property definitions survive into po file, bug 15."""
         for delimiter in ["=", ""]:
@@ -355,6 +401,48 @@ message-multiedit-header[many]={0,number} selected
         outputpo = self.prop2po(propsource, personality="gwt")
         pounit = outputpo.units[-1]
         assert pounit.getlocations() == ["message-multiedit-header"]
+
+    def test_strings_bilingual_simple(self):
+        """Test that .strings files are treated as bilingual in convertstore mode."""
+        # Simple test case - currently FAILS because source and target are swapped
+        propsource = r""""Source text" = "Translated text";"""
+        # .strings files use UTF-16 encoding
+        inputfile = BytesIO(propsource.encode("utf-16"))
+        inputprop = properties.propfile(inputfile, personality="strings")
+        convertor = prop2po.prop2po(personality="strings")
+        outputpo = convertor.convertstore(inputprop)
+        pounit = self.singleelement(outputpo)
+        # After fix, source should be left side (key) and target should be right side (value)
+        assert pounit.source == "Source text", (
+            f"Expected 'Source text' but got {pounit.source!r}"
+        )
+        assert pounit.target == "Translated text", (
+            f"Expected 'Translated text' but got {pounit.target!r}"
+        )
+
+    def test_strings_bilingual_multiline(self):
+        """Test multiline .strings bilingual conversion (issue from bug report)."""
+        # This is based on the actual bug report
+        propsource = r"""/* Overwrite of the app folder */
+"A '<AppNameRemovedForPrivacy>' folder has been found in  your Music folder. Unfortunately it seems incomplete.\n\nTo restart <AppNameRemovedForPrivacy> synchronization, trash the ~/Music/<AppNameRemovedForPrivacy> folder and relaunch the application." = "An incomplete <AppNameRemovedForPrivacy> folder has been found in your Music folder.\n\nTo restart, delete the ~/Music/<AppNameRemovedForPrivacy> folder and relaunch the application.";
+"""
+        # .strings files use UTF-16 encoding
+        inputfile = BytesIO(propsource.encode("utf-16"))
+        inputprop = properties.propfile(inputfile, personality="strings")
+        convertor = prop2po.prop2po(personality="strings")
+        outputpo = convertor.convertstore(inputprop)
+        pounit = self.singleelement(outputpo)
+        # The msgid should be the source (left side), not the translation (right side)
+        assert "A '<AppNameRemovedForPrivacy>' folder has been found" in pounit.source
+        assert "Unfortunately it seems incomplete" in pounit.source
+        # The msgstr should be the translation (right side)
+        assert "An incomplete <AppNameRemovedForPrivacy> folder" in pounit.target
+        assert "To restart, delete" in pounit.target
+        # The location should be the key (not URL-encoded full text)
+        locations = pounit.getlocations()
+        assert len(locations) == 1
+        # Location should be a reasonable identifier, not the full multiline text
+        assert "A '<AppNameRemovedForPrivacy>' folder" in locations[0]
 
 
 class TestProp2POCommand(test_convert.TestConvertCommand, TestProp2PO):

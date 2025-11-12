@@ -1278,6 +1278,6 @@ class FluentFile(base.TranslationStore):
                 return ""
             # Remove the prefix as a block.
             # NOTE: removeprefix only available in python 3.9+.
-            block = prefix + "\n"
+            block = f"{prefix}\n"
             unit_comment = unit_comment.removeprefix(block)
         return unit_comment

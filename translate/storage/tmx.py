@@ -43,6 +43,23 @@ class tmxunit(lisa.LISAunit):
 
         return langset
 
+    def _insert_element_before(self, element: etree._Element, tag: str) -> None:
+        """
+        Insert an element before the first occurrence of the specified tag.
+
+        According to TMX DTD, elements must follow this order: note, prop, tuv.
+        This helper method finds the first child matching the tag name
+        and inserts the element before it, or appends at the end if none found.
+
+        :param element: The element to insert
+        :param tag: Tag name to search for
+        """
+        needle = self.xmlelement.find(tag)
+        if needle is None:
+            self.xmlelement.append(element)
+        else:
+            self.xmlelement.insert(self.xmlelement.index(needle), element)
+
     def getid(self):
         """
         Returns the identifier for this unit. The optional tuid property is
@@ -61,8 +78,15 @@ class tmxunit(lisa.LISAunit):
 
         The origin parameter is ignored
         """
-        note = etree.SubElement(self.xmlelement, self.namespaced("note"))
+        note = etree.Element(self.namespaced("note"))
         safely_set_text(note, text.strip())
+
+        # According to TMX DTD, notes should come before prop and tuv elements
+        # Try to insert before prop first, if not found try tuv
+        if self.xmlelement.find(self.namespaced("prop")) is not None:
+            self._insert_element_before(note, self.namespaced("prop"))
+        else:
+            self._insert_element_before(note, self.namespaced(self.languageNode))
 
     def _getnotelist(self, origin=None):
         """
@@ -89,7 +113,7 @@ class tmxunit(lisa.LISAunit):
         # TODO: consider factoring out: some duplication between XLIFF and TMX
         text = errorname
         if errortext:
-            text += ": " + errortext
+            text += f": {errortext}"
         self.addnote(text, origin="pofilter")
 
     def geterrors(self):
@@ -102,17 +126,27 @@ class tmxunit(lisa.LISAunit):
             errordict[errorname] = errortext
         return errordict
 
-    def copy(self):
-        """
-        Make a copy of the translation unit.
+    def setcontext(self, context):
+        context_prop = self.xmlelement.find(
+            self.namespaced("prop") + "[@type='x-context']"
+        )
+        if context_prop is None:
+            context_prop = etree.Element(self.namespaced("prop"))
+            context_prop.set("type", "x-context")
 
-        We don't want to make a deep copy - this could duplicate the whole XML
-        tree. For now we just serialise and reparse the unit's XML.
-        """
-        # TODO: check performance
-        new_unit = self.__class__(None, empty=True)
-        new_unit.xmlelement = etree.fromstring(etree.tostring(self.xmlelement))
-        return new_unit
+            # According to TMX DTD, prop elements come after notes but before tuv elements
+            self._insert_element_before(
+                context_prop, self.namespaced(self.languageNode)
+            )
+        safely_set_text(context_prop, context)
+
+    def getcontext(self):
+        context_prop = self.xmlelement.find(
+            self.namespaced("prop") + "[@type='x-context']"
+        )
+        if context_prop is not None and context_prop.text is not None:
+            return context_prop.text
+        return ""
 
 
 class tmxfile(lisa.LISAfile):
@@ -147,12 +181,16 @@ class tmxfile(lisa.LISAfile):
         # headernode.set("creationdate", "YYYYMMDDTHHMMSSZ"
         # headernode.set("creationid", "CodeSyntax"
 
-    def addtranslation(self, source, srclang, translation, translang, comment=None):
+    def addtranslation(
+        self, source, srclang, translation, translang, comment=None, context=None
+    ):
         """Addtranslation method for testing old unit tests."""
         unit = self.addsourceunit(source)
         unit.target = translation
         if comment is not None and len(comment) > 0:
             unit.addnote(comment)
+        if context is not None and len(context) > 0:
+            unit.setcontext(context)
 
         tuvs = unit.xmlelement.iterdescendants(self.namespaced("tuv"))
         setXMLlang(next(tuvs), srclang)
