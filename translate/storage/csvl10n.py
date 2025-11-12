@@ -209,16 +209,20 @@ fieldname_map = {
 EXTRA_KEY = "__CSVL10N__EXTRA__"
 
 
-def try_dialects(inputfile, fieldnames, dialect, has_header=False):
+def try_dialects(
+    inputfile: StringIO,
+    fieldnames: list[str] | None,
+    dialect: str | csv.Dialect,
+    has_header: bool = False,
+) -> csv.DictReader:
     """
     Create a CSV DictReader with the appropriate dialect.
 
     Args:
-        inputfile: The file to read
-        fieldnames: The field names to use (or None to use the first row as field names)
-        dialect: The CSV dialect to use
-        has_header: If True, file has a header row and fieldnames should be None
-                   to let DictReader use the first row as field names
+        inputfile: CSV file to read
+        fieldnames: Field names to use, or None to use first row
+        dialect: CSV dialect to use
+        has_header: Whether file has a header row
 
     """
     # If file has a header row, pass None to DictReader to use the first row as field names
@@ -251,7 +255,7 @@ def try_dialects(inputfile, fieldnames, dialect, has_header=False):
             )
 
 
-def valid_fieldnames(fieldnames):
+def valid_fieldnames(fieldnames: list[str]) -> bool:
     """
     Check if fieldnames are valid.
 
@@ -275,13 +279,21 @@ def valid_fieldnames(fieldnames):
     return bool(monolingual_fields & mapped_fields)
 
 
-def detect_header(inputfile, dialect, fieldnames):
+def detect_header(
+    inputfile: StringIO, dialect: str | csv.Dialect, fieldnames: list[str]
+) -> tuple[list[str], bool]:
     """
     Test if file has a header or not.
 
-    Returns a tuple of (fieldnames, has_header) where:
-    - fieldnames: list of field names to use
-    - has_header: True if the first row is a valid header, False otherwise
+    Args:
+        inputfile: CSV file to read
+        dialect: CSV dialect to use
+        fieldnames: Default field names if no header found
+
+    Returns:
+        Tuple of (fieldnames, has_header) where has_header is True
+        if the first row is a valid header.
+
     """
     try:
         reader = csv.reader(inputfile, dialect)
