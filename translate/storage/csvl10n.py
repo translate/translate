@@ -374,6 +374,10 @@ class csvfile(base.TranslationStore):
                     # HACKISH: most probably a default, not real detection
                     self.dialect.quoting = csv.QUOTE_ALL
                     self.dialect.doublequote = True
+                # Validate that delimiter and quotechar are different
+                # (Python 3.13+ enforces this more strictly)
+                if self.dialect.delimiter == self.dialect.quotechar:
+                    self.dialect = "default"
             except csv.Error:
                 self.dialect = "default"
 
