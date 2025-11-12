@@ -157,44 +157,33 @@ class PoWrapper:
 
     def _split_chunks(self, text: str) -> list[str]:
         """
-        Split text into chunks at word boundaries.
+        Split text into chunks at word boundaries using Unicode line breaking (UAX#14).
 
-        For CJK text, uses Unicode line breaking algorithm (UAX#14) via uniseg.
-        For other text, uses custom chunking with:
-        - Words with trailing spaces
-        - Escape sequences as part of words
+        Uses the uniseg library's line_break_units() which implements the
+        Unicode Line Breaking Algorithm. Post-processes to handle:
+        - Escape sequences as atomic units
         - Slash-separated paths for URLs
-        - CJK punctuation as break points
         """
-        # Check if text contains CJK characters
-        has_cjk = any(
-            0x3000 <= ord(c) <= 0x9FFF or 0xFF00 <= ord(c) <= 0xFFEF for c in text
-        )
+        try:
+            # Get line break units using UAX#14
+            units = list(line_break_units(text))
+            # Post-process units to handle escape sequences and slashes better
+            processed_units = []
+            for unit in units:
+                # If unit contains escape sequences or slashes, further split it
+                if "\\\\" in unit or ("/" in unit and "[" not in unit):
+                    # Use manual chunking for this unit
+                    sub_chunks = self._manual_chunk(unit)
+                    processed_units.extend(sub_chunks)
+                elif unit:  # Skip empty units
+                    processed_units.append(unit)
+            if processed_units:
+                return processed_units
+        except Exception:
+            # Fall back to manual chunking if uniseg fails
+            logger.debug("uniseg failed, falling back to manual chunking")
 
-        # Use uniseg for CJK text
-        if has_cjk:
-            try:
-                # Get line break units using UAX#14
-                units = list(line_break_units(text))
-                # Post-process units to handle escape sequences and slashes better
-                processed_units = []
-                for unit in units:
-                    # If unit contains escape sequences or slashes, further split it
-                    if "\\\\" in unit or ("/" in unit and "[" not in unit):
-                        # Use manual chunking for this unit
-                        sub_chunks = self._manual_chunk(unit)
-                        processed_units.extend(sub_chunks)
-                    elif unit:  # Skip empty units
-                        processed_units.append(unit)
-                if processed_units:
-                    return processed_units
-            except Exception:
-                # Fall back to manual chunking if uniseg fails
-                logger.debug(
-                    "uniseg failed for CJK text, falling back to manual chunking"
-                )
-
-        # For non-CJK text or if uniseg fails: Manual chunking
+        # Fallback: Manual chunking
         return self._manual_chunk(text)
 
     def _manual_chunk(self, text: str) -> list[str]:
