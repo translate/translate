@@ -248,6 +248,7 @@ class TestPOFile(test_base.TestTranslationStore):
 
         Returns the latest gettext version for pypo (Python wrapper follows latest gettext),
         or selects based on actual libgettextpo version for cpo storage.
+
         """
         # Sort versions to find the latest
         versions = sorted(
