@@ -74,7 +74,7 @@ class Xliff2Unit(XliffUnit):
         S_FINAL: (state.FINAL, state.MAX),
     }
 
-    def __init__(self, source, empty: bool = False, **kwargs):
+    def __init__(self, source, empty: bool = False, **kwargs) -> None:
         """Override the constructor to set xml:space="preserve"."""
         super().__init__(source, empty, **kwargs)
         if empty:
@@ -145,7 +145,7 @@ class Xliff2Unit(XliffUnit):
 
     target_dom = property(get_target_dom, set_target_dom)
 
-    def set_rich_source(self, value, sourcelang="en"):
+    def set_rich_source(self, value, sourcelang="en") -> None:
         """Set the rich source content."""
         # Find or create segment
         segment = self._get_or_create_segment()
@@ -181,10 +181,10 @@ class Xliff2Unit(XliffUnit):
         ]
 
     @rich_source.setter
-    def rich_source(self, value):
+    def rich_source(self, value) -> None:
         self.set_rich_source(value)
 
-    def set_rich_target(self, value, lang="xx"):
+    def set_rich_target(self, value, lang="xx") -> None:
         """Set the rich target content."""
         segment = self._get_or_create_segment()
 
@@ -246,7 +246,7 @@ class Xliff2Unit(XliffUnit):
         return self.get_rich_target()
 
     @rich_target.setter
-    def rich_target(self, value):
+    def rich_target(self, value) -> None:
         self.set_rich_target(value)
 
     def _get_segment(self) -> etree._Element | None:
@@ -376,7 +376,7 @@ class Xliff2File(XliffFile):
 
     suggestions_in_format = False
 
-    def initbody(self):
+    def initbody(self) -> None:
         """Initialize the file body."""
         self.namespace = self.document.getroot().nsmap.get(None, self.namespace)
 
@@ -396,7 +396,7 @@ class Xliff2File(XliffFile):
                 filenode.set("id", "f1")
         self.body = filenode
 
-    def parse(self, xml):
+    def parse(self, xml) -> None:
         """
         Populates this object from the given xml string.
 
@@ -468,7 +468,7 @@ class Xliff2File(XliffFile):
                     term = self.UnitClass.createfromxmlElement(segment_unit_elem)
                     self.addunit(term, new=False)
 
-    def addheader(self):
+    def addheader(self) -> None:
         """Initialise the file header."""
 
     def createfilenode(self, filename, sourcelanguage=None, targetlanguage=None):
