@@ -80,7 +80,7 @@ You will need some Python skills, this is a great way to learn.
 1. Install dependencies:
 
    * Git
-   * Python 3.9 or newer
+   * Python 3.10 or newer
    * `uv <https://docs.astral.sh/uv/>`_ (recommended package manager)
 
 2. Clone and setup:

@@ -209,8 +209,7 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
             del self._ns_ordered_prefixes[:]
 
         if attributes:
-            if hasattr(node, "_ensure_attributes"):
-                node._ensure_attributes()  # Python 3 only
+            node._ensure_attributes()
             attrs = node._attrs
             attrsNS = node._attrsNS
             for i in range(0, len(attributes), 2):

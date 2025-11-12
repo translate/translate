@@ -80,7 +80,7 @@ feature set. This cal be easily specified during pip installation::
 
 .. note:: Please check ``pyproject.toml``
 
-The Toolkit requires Python 3.9 or newer.
+The Toolkit requires Python 3.10 or newer.
 
 The package lxml is required. You should install version 4.6.3 or later.
 <http://lxml.de/> Depending on your platform, the easiest way to install might

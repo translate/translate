@@ -116,7 +116,7 @@ Setup
 **Prerequisites:**
 
 * Git
-* Python 3.9 or newer
+* Python 3.10 or newer
 * `uv <https://docs.astral.sh/uv/>`_ (recommended package manager)
 
 **Installation:**
