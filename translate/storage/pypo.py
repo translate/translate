@@ -184,9 +184,10 @@ class PoWrapper:
                     processed_units.append(unit)
             if processed_units:
                 return processed_units
-        except Exception:
+        except Exception as e:
             # Fall back to manual chunking if uniseg fails
-            logger.debug("uniseg failed, falling back to manual chunking")
+            logger.debug("uniseg failed: %s, falling back to manual chunking", e)
+            raise
 
         # Fallback: Manual chunking
         return self._manual_chunk(text)
@@ -346,13 +347,6 @@ class PoWrapper:
         i = 0
         current = []
         current_width = 0
-        
-        # For chunks that are mostly escape sequences, use width-1 to match gettext behavior
-        # which accounts for quotes that will be added around the content
-        # Count escape sequences (each is 2 chars starting with \)
-        escape_count = sum(1 for i in range(0, len(chunk)-1, 2) if chunk[i] == "\\" and i+1 < len(chunk))
-        escape_ratio = (escape_count * 2) / len(chunk) if chunk else 0
-        effective_width = self.width - 1 if escape_ratio > 0.8 else self.width
 
         while i < len(chunk):
             # Check for escape sequence
@@ -360,7 +354,7 @@ class PoWrapper:
                 esc_seq = chunk[i : i + 2]
                 esc_width = unicode_width(esc_seq)
 
-                if current_width + esc_width > effective_width and current:
+                if current_width + esc_width > self.width and current:
                     lines.append("".join(current))
                     current = []
                     current_width = 0
