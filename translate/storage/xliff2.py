@@ -302,10 +302,11 @@ class Xliff2Unit(XliffUnit):
         notes_text = []
         notes_container = self.xmlelement.find(self.namespaced("notes"))
         if notes_container is not None:
-            for note in notes_container.iterchildren(self.namespaced("note")):
-                if origin is None or note.get("category") == origin:
-                    if note.text:
-                        notes_text.append(note.text)
+            notes_text.extend(
+                note.text
+                for note in notes_container.iterchildren(self.namespaced("note"))
+                if (origin is None or note.get("category") == origin) and note.text
+            )
         return "\n".join(notes_text)
 
     def removenotes(self, origin: str | None = None) -> None:
