@@ -1163,6 +1163,7 @@ msgstr ""
             gettext_0_22=gettext_0_22,
             gettext_0_23=gettext_0_23,
         )
+        print(self.poreflow(posource))
         assert self.poreflow(posource) == posource
 
     def test_wrap_parenthesis_long(self):
