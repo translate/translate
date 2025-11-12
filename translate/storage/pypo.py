@@ -260,6 +260,7 @@ class PoWrapper:
 
         Returns:
             True if the chunk should overflow, False if it should be broken
+
         """
         # Check if chunk is mostly escape sequences
         escape_count = chunk.count("\\")
@@ -270,7 +271,10 @@ class PoWrapper:
         # Check if it's a long word without spaces that should overflow
         if " " not in chunk and "\t" not in chunk and "\n" not in chunk:
             # Allow overflow for moderately long words if requested
-            if allow_moderate_overflow and chunk_width <= self.width * self.MAX_OVERFLOW_FACTOR:
+            if (
+                allow_moderate_overflow
+                and chunk_width <= self.width * self.MAX_OVERFLOW_FACTOR
+            ):
                 return True
             # Otherwise, don't allow overflow - break it
             return False
