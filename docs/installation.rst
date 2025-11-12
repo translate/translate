@@ -60,7 +60,7 @@ Installing on Windows
 On Windows we recommend using `uv <https://docs.astral.sh/uv/>`_ to install
 Translate Toolkit. This automatically manages virtual environments for you.
 
-1. Install latest `Python 3.9+ <https://www.python.org/downloads/windows/>`_
+1. Install latest `Python 3.10+ <https://www.python.org/downloads/windows/>`_
 2. Install uv by running in PowerShell:
 
    .. code-block:: powershell

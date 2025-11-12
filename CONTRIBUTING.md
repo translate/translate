@@ -6,7 +6,7 @@ Thank you for your interest in contributing to the Translate Toolkit!
 
 ### Prerequisites
 - Git
-- Python 3.9 or newer
+- Python 3.10 or newer
 - [uv](https://docs.astral.sh/uv/) (recommended package manager)
 
 ### Setup
