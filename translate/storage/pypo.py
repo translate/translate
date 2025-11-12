@@ -247,6 +247,37 @@ class PoWrapper:
 
         return chunks or [text]
 
+    def _should_allow_overflow(
+        self, chunk: str, chunk_width: int, allow_moderate_overflow: bool = False
+    ) -> bool:
+        """
+        Determine if a chunk should be allowed to overflow the line width.
+
+        Args:
+            chunk: The text chunk to evaluate
+            chunk_width: The display width of the chunk
+            allow_moderate_overflow: If True, allow overflow for moderately long words
+
+        Returns:
+            True if the chunk should overflow, False if it should be broken
+        """
+        # Check if chunk is mostly escape sequences
+        escape_count = chunk.count("\\")
+        if escape_count > 0 and escape_count / len(chunk) > self.ESCAPE_CHUNK_THRESHOLD:
+            # Chunk is mostly escapes - allow overflow
+            return True
+
+        # Check if it's a long word without spaces that should overflow
+        if " " not in chunk and "\t" not in chunk and "\n" not in chunk:
+            # Allow overflow for moderately long words if requested
+            if allow_moderate_overflow and chunk_width <= self.width * self.MAX_OVERFLOW_FACTOR:
+                return True
+            # Otherwise, don't allow overflow - break it
+            return False
+
+        # Default: don't allow overflow
+        return False
+
     def _wrap_chunks(self, chunks: list[str]) -> list[str]:
         """Wrap chunks into lines."""
         lines = []
