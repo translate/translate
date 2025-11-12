@@ -372,7 +372,11 @@ class csvfile(base.TranslationStore):
                     self.dialect.quoting = csv.QUOTE_ALL
                     self.dialect.doublequote = True
                 # Add delimiter for single value CSV where none is present or is obviously invalid
-                if not self.dialect.delimiter or self.dialect.delimiter in {'"', "\r", "\n"}:
+                if not self.dialect.delimiter or self.dialect.delimiter in {
+                    '"',
+                    "\r",
+                    "\n",
+                }:
                     self.dialect.delimiter = ","
             except csv.Error:
                 self.dialect = "default"
