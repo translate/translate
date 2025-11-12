@@ -174,25 +174,20 @@ class PoWrapper:
         if text and text.count("\\") / len(text) > self.ESCAPE_HEAVY_THRESHOLD:
             return self._manual_chunk(text)
 
-        try:
-            # Get line break units using UAX#14
-            units = list(line_break_units(text))
-            # Post-process units to handle escape sequences and slashes better
-            processed_units = []
-            for unit in units:
-                # If unit contains escape sequences or slashes, further split it
-                if "\\" in unit or ("/" in unit and "[" not in unit):
-                    # Use manual chunking for this unit
-                    sub_chunks = self._manual_chunk(unit)
-                    processed_units.extend(sub_chunks)
-                elif unit:  # Skip empty units
-                    processed_units.append(unit)
-            if processed_units:
-                return processed_units
-        except Exception as e:
-            # uniseg failed; propagate exception (no fallback to manual chunking)
-            logger.debug("uniseg failed: %s, propagating exception", e)
-            raise
+        # Get line break units using UAX#14
+        units = list(line_break_units(text))
+        # Post-process units to handle escape sequences and slashes better
+        processed_units = []
+        for unit in units:
+            # If unit contains escape sequences or slashes, further split it
+            if "\\" in unit or ("/" in unit and "[" not in unit):
+                # Use manual chunking for this unit
+                sub_chunks = self._manual_chunk(unit)
+                processed_units.extend(sub_chunks)
+            elif unit:  # Skip empty units
+                processed_units.append(unit)
+        if processed_units:
+            return processed_units
 
     def _manual_chunk(self, text: str) -> list[str]:
         """Manual text chunking for non-CJK or when uniseg is not available."""
