@@ -475,7 +475,7 @@ class AndroidResourceUnit(base.TranslationUnit):
                 plural_strings.append(plural_strings[-1])
 
             for plural_tag, plural_string in sorted(
-                zip(plural_tags, plural_strings),
+                zip(plural_tags, plural_strings, strict=True),
                 key=lambda item: data.cldr_plural_categories.index(item[0]),
             ):
                 item = etree.Element("item")

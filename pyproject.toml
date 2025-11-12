@@ -265,9 +265,6 @@ profile = "black"
 [tool.pytest.ini_options]
 norecursedirs = ".git build docs"
 
-[tool.ruff]
-target-version = "py39"
-
 [tool.ruff.lint]
 extend-safe-fixes = [
   "FURB113",

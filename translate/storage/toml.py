@@ -286,7 +286,7 @@ class GoI18nTOMLUnit(TOMLUnit):
             strings = [string or None for string in strings]
 
         # Return a dict with plural tags as keys
-        return dict(zip(tags, strings))
+        return dict(zip(tags, strings, strict=True))
 
 
 class GoI18nTOMLFile(TOMLFile):

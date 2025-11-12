@@ -23,9 +23,12 @@ This file contains abstract (semantic) interfaces for placeable
 
 from __future__ import annotations
 
-from typing import Callable
+from typing import TYPE_CHECKING
 
 from translate.storage.placeables.strelem import StringElem
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 
 class BasePlaceable(StringElem):

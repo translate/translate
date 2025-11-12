@@ -24,13 +24,16 @@ import codecs
 import logging
 from io import BytesIO
 from itertools import starmap
-from typing import Callable, ClassVar, Literal
+from typing import TYPE_CHECKING, ClassVar, Literal
 
 from translate.lang.data import plural_tags
 from translate.misc.multistring import multistring
 from translate.storage.placeables import StringElem
 from translate.storage.placeables import parse as rich_parse
 from translate.storage.workflow import StateEnum as states
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 logger = logging.getLogger(__name__)
 
