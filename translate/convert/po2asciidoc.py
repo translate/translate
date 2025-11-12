@@ -50,13 +50,15 @@ class AsciiDocTranslator:
         return 1
 
     def _lookup(self, string):
-        """Look up translation for a source string.
+        """
+        Look up translation for a source string.
 
         Args:
             string: The source string to look up.
 
         Returns:
             The translated string if found and translated, otherwise the original string.
+
         """
         # sourceindex.get() returns a tuple/list of matching units, or None if not found
         units = self.inputstore.sourceindex.get(string, None)
@@ -108,7 +110,8 @@ class PO2AsciiDocOptionParser(convert.ConvertOptionParser):
         return fileoption is not None and not os.path.isfile(fileoption)
 
     def recursiveprocess_by_templates(self, options):
-        """Recurse through directories and process files, by templates (AsciiDoc) not input files (po).
+        """
+        Recurse through directories and process files, by templates (AsciiDoc) not input files (po).
 
         This method processes AsciiDoc template files and applies translations from a single PO file.
         When a single PO file contains translations for multiple AsciiDoc files, this method

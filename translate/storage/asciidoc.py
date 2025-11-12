@@ -147,13 +147,15 @@ class AsciiDocFile(base.TranslationStore):
                 if i + 1 < len(lines):
                     next_line = lines[i + 1]
                     # If next line is a section (==) or regular paragraph, end here
-                    if next_line.strip():
-                        if next_line.startswith("==") or (
+                    if next_line.strip() and (
+                        next_line.startswith("==")
+                        or (
                             not next_line.startswith(":")
                             and not self._is_comment_block_delimiter(next_line)
-                        ):
-                            header_end = i
-                            break
+                        )
+                    ):
+                        header_end = i
+                        break
                 header_end = i
             # Non-empty, non-attribute line after title
             # Could be author, revision info, or start of content
