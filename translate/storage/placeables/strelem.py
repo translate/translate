@@ -160,13 +160,13 @@ class StringElem:
 
     def __repr__(self):
         elemstr = ", ".join(repr(elem) for elem in self.sub)
-        return "<%(class)s(%(id)s%(rid)s%(xid)s[%(subs)s])>" % {
-            "class": self.__class__.__name__,
-            "id": (self.id is not None and f'id="{self.id}" ') or "",
-            "rid": (self.rid is not None and f'rid="{self.rid}" ') or "",
-            "xid": (self.xid is not None and f'xid="{self.xid}" ') or "",
-            "subs": elemstr,
-        }
+        return "<{class_name}({id}{rid}{xid}[{subs}])>".format(
+            class_name=self.__class__.__name__,
+            id=(self.id is not None and f'id="{self.id}" ') or "",
+            rid=(self.rid is not None and f'rid="{self.rid}" ') or "",
+            xid=(self.xid is not None and f'xid="{self.xid}" ') or "",
+            subs=elemstr,
+        )
 
     def __str__(self):
         if callable(self.renderer):
@@ -237,13 +237,11 @@ class StringElem:
         if start_index == end_index:
             return StringElem(), self, 0
         if start_index > end_index:
-            raise IndexError(
-                "start_index > end_index: %d > %d" % (start_index, end_index)
-            )
+            raise IndexError(f"start_index > end_index: {start_index} > {end_index}")
         if start_index < 0 or start_index > len(self):
-            raise IndexError("start_index: %d" % (start_index))
+            raise IndexError(f"start_index: {start_index}")
         if end_index < 1 or end_index > len(self) + 1:
-            raise IndexError("end_index: %d" % (end_index))
+            raise IndexError(f"end_index: {end_index}")
 
         start = self.get_index_data(start_index)
         if isinstance(start["elem"], tuple):
@@ -540,7 +538,7 @@ class StringElem:
         string (Unicode) representation.
         """
         if offset < 0 or offset > len(self):
-            raise IndexError("Index out of range: %d" % (offset))
+            raise IndexError(f"Index out of range: {offset}")
         if isinstance(text, str):
             text = StringElem(text)
         if not isinstance(text, StringElem):

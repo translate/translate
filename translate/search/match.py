@@ -241,7 +241,7 @@ class matcher:
             if candidatenotes:
                 newunit.addnote(candidatenotes)
             if self.addpercentage:
-                newunit.addnote("%d%%" % score)
+                newunit.addnote(f"{score}%")
             units.append(newunit)
         return units
 

@@ -106,14 +106,14 @@ class UnknownXML(StringElem):
 
         elemstr = ", ".join(repr(elem) for elem in self.sub)
 
-        return "<%(class)s{%(tag)s}(%(id)s%(rid)s%(xid)s[%(subs)s])>" % {
-            "class": self.__class__.__name__,
-            "tag": tag,
-            "id": (self.id is not None and f'id="{self.id}" ') or "",
-            "rid": (self.rid is not None and f'rid="{self.rid}" ') or "",
-            "xid": (self.xid is not None and f'xid="{self.xid}" ') or "",
-            "subs": elemstr,
-        }
+        return "<{class_name}{{{tag}}}({id}{rid}{xid}[{subs}])>".format(
+            class_name=self.__class__.__name__,
+            tag=tag,
+            id=(self.id is not None and f'id="{self.id}" ') or "",
+            rid=(self.rid is not None and f'rid="{self.rid}" ') or "",
+            xid=(self.xid is not None and f'xid="{self.xid}" ') or "",
+            subs=elemstr,
+        )
 
     # METHODS #
     def copy(self):

@@ -144,7 +144,7 @@ class TMServer:
         data.name = sid
         store = factory.getobject(data)
         count = self.tmdb.add_store(store, slang, tlang)
-        response = "added %d units from %s" % (count, sid)
+        response = f"added {count} units from {sid}"
         return [response]
 
     @selector.opliant
@@ -153,7 +153,7 @@ class TMServer:
         start_response("200 OK", [("Content-type", "text/plain")])
         units = json.loads(environ["wsgi.input"].read(int(environ["CONTENT_LENGTH"])))
         count = self.tmdb.add_list(units, slang, tlang)
-        response = "added %d units from %s" % (count, sid)
+        response = f"added {count} units from {sid}"
         return [response]
 
     @selector.opliant

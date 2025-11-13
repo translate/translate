@@ -80,7 +80,7 @@ class UnitState(State):
         super().__init__(name, self._enter)
 
     def __repr__(self):
-        return "<UnitState name=%s value=%d>" % (self.name, self.state_value)
+        return f"<UnitState name={self.name} value={self.state_value}>"
 
     def _enter(self, unit):
         unit.set_state_n(self.state_value)

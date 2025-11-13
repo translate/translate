@@ -39,11 +39,11 @@ class TestMonolingualStore(test_base.TestTranslationStore):
         for n, store1unit in enumerate(store1.units):
             store2unit = store2.units[n]
 
-            print("match failed between elements %d of %d" % (n + 1, len(store1.units)))
+            print(f"match failed between elements {n + 1} of {len(store1.units)}")
             print("store1:")
             print(bytes(store1))
             print("store2:")
             print(bytes(store2))
-            print("store1.units[%d].__dict__:" % n, store1unit.__dict__)
-            print("store2.units[%d].__dict__:" % n, store2unit.__dict__)
+            print(f"store1.units[{n}].__dict__:", store1unit.__dict__)
+            print(f"store2.units[{n}].__dict__:", store2unit.__dict__)
             assert str(store1unit) == str(store2unit)

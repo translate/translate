@@ -295,8 +295,7 @@ class mofile(poheader.poheader, base.TranslationStore):
         ) = self.parse_header(content)
         if version_maj >= 1:
             raise base.ParseError(
-                """Unable to process version %d.%d MO files"""
-                % (version_maj, version_min)
+                f"Unable to process version {version_maj}.{version_min} MO files"
             )
         for i in range(lenkeys):
             nextkey = startkey + (i * 2 * 4)

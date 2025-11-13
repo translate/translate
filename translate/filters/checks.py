@@ -1266,8 +1266,7 @@ class StandardChecker(TranslationChecker):
                 )
             else:
                 messages.append(
-                    "Accelerator '%s' occurs %d time(s) in original "
-                    "and %d time(s) in translation" % (accelmarker, count1, count2)
+                    f"Accelerator '{accelmarker}' occurs {count1} time(s) in original and {count2} time(s) in translation"
                 )
 
         if messages:
@@ -1582,7 +1581,7 @@ class StandardChecker(TranslationChecker):
 
         if not sentences1 == sentences2:
             raise FilterFailure(
-                "Different number of sentences: %d ≠ %d" % (sentences1, sentences2)
+                f"Different number of sentences: {sentences1} ≠ {sentences2}"
             )
 
         return True
@@ -2899,7 +2898,7 @@ def batchruntests(pairs):
         if runtests(str1, str2):
             passed += 1
 
-    print("\ntotal: %d/%d pairs passed" % (passed, numpairs))  # noqa: T201
+    print(f"\ntotal: {passed}/{numpairs} pairs passed")  # noqa: T201
 
 
 if __name__ == "__main__":
