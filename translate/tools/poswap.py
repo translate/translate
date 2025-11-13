@@ -108,7 +108,8 @@ def convertpo(inputpofile, outputpotfile, template, reverse=False, intermediate=
             unit.markfuzzy(templateunit.isfuzzy())
             unit.target = templateunit.target
         if unit.isobsolete():
-            del inputpo.units[i]
+            # TODO: should not modify loop variable
+            del inputpo.units[i]  # noqa: B909
     inputpo.serialize(outputpotfile)
     return 1
 

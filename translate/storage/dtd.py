@@ -337,14 +337,14 @@ class dtdfile(base.TranslationStore):
     def _determine_comment_type(self, comment: str) -> str:
         """Determine the type of a DTD comment."""
         if comment.find("LOCALIZATION NOTE") != -1:
-            l = quote.findend(comment, "LOCALIZATION NOTE")
-            while l < len(comment) and comment[l] == " ":
-                l += 1
-            if comment.find("FILE", l) == l:
+            pos = quote.findend(comment, "LOCALIZATION NOTE")
+            while pos < len(comment) and comment[pos] == " ":
+                pos += 1
+            if comment.find("FILE", pos) == pos:
                 return "locfile"
-            if comment.find("BEGIN", l) == l:
+            if comment.find("BEGIN", pos) == pos:
                 return "locgroupstart"
-            if comment.find("END", l) == l:
+            if comment.find("END", pos) == pos:
                 return "locgroupend"
             return "locnote"
         return "comment"

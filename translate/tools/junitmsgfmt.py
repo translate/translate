@@ -28,6 +28,7 @@ class MsgfmtTester:
             ["msgfmt", "--check", "--verbose", "--output-file=/dev/null", pofile],
             capture_output=True,
             text=True,
+            check=False,
             env={"LC_ALL": "C.UTF-8", "PATH": os.environ["PATH"]},
         )
         stderr = process.stderr.replace(pofile, basename(pofile))

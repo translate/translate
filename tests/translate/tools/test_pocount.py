@@ -232,6 +232,7 @@ def test_error_cases(opts, expected):
         [sys.executable, pocount.__file__, *opts],
         capture_output=True,
         text=True,
+        check=False,
     )
 
     assert expected in result.stderr
