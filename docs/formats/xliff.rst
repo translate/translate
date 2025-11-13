@@ -18,13 +18,9 @@ The Translate Toolkit supports both XLIFF 1.x and XLIFF 2.0:
 * **XLIFF 1.x** (1.1 and 1.2) - Available via ``translate.storage.xliff``
 * **XLIFF 2.0** - Available via ``translate.storage.xliff2`` (added in version 3.17.0)
 
-XLIFF 2.0 introduces significant structural changes compared to 1.x:
+.. warning::
 
-* Uses ``<unit>`` instead of ``<trans-unit>``
-* Uses ``<segment>`` elements to contain source and target
-* Different namespace: ``urn:oasis:names:tc:xliff:document:2.0``
-* Simplified core with modular extensions
-* Not backward compatible with XLIFF 1.x
+   XLIFF 2.0 is not compatible with XLIFF 1.x.
 
 References
 ----------
@@ -40,7 +36,7 @@ References
 Flavours
 ========
 
-XLIFF also has documents that specify the conversion from various standard
+XLIFF 1.2 also has documents that specify the conversion from various standard
 source documents and localisation formats.
 
 * PO -- For conformance to the po2xliff spec, see :doc:`xliff2po
