@@ -243,7 +243,7 @@ class YAMLFile(base.DictStore):
 
     def _flatten(
         self, data, prev=None, parent_map=None, key=None
-    ) -> Generator[tuple[base.UnitId, str, str | None], None, None]:
+    ) -> Generator[tuple[base.UnitId, str, str | None]]:
         """
         Flatten YAML dictionary.
 
