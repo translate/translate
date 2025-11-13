@@ -287,8 +287,8 @@ def quoteforpo(text: str | None, wrapper_obj: PoWrapper | None = None) -> list[s
     if wrapper_obj.width == -1:
         return [f'"{text}"']
     lines = text.split("\\n")
-    for i, l in enumerate(lines[:-1]):
-        lines[i] = f"{l}\\n"
+    for i, line in enumerate(lines[:-1]):
+        lines[i] = f"{line}\\n"
 
     polines = []
     len_lines = len(lines)

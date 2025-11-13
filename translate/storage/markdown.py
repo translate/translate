@@ -479,17 +479,17 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         """
         fragments = list(fragments)
 
-        l = 0
-        while l < len(fragments):
-            if getattr(fragments[l], "placeholder_content", None):
-                if getattr(fragments[l], "important", False):
+        pos = 0
+        while pos < len(fragments):
+            if getattr(fragments[pos], "placeholder_content", None):
+                if getattr(fragments[pos], "important", False):
                     break
-            elif not fragments[l].text.isspace():
+            elif not fragments[pos].text.isspace():
                 break
-            l += 1
+            pos += 1
 
         t = len(fragments)
-        while t - 1 >= l:
+        while t - 1 >= pos:
             if getattr(fragments[t - 1], "placeholder_content", None):
                 if getattr(fragments[t - 1], "important", False):
                     break
@@ -497,7 +497,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
                 break
             t -= 1
 
-        return fragments[:l], fragments[l:t], fragments[t:]
+        return fragments[:pos], fragments[pos:t], fragments[t:]
 
     @classmethod
     def insert_placeholder_markers(

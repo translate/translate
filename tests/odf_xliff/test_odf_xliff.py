@@ -120,9 +120,9 @@ class ODF:
             return False
         for filename in l1:
             if is_content_file(filename):
-                l = self._get_doc_root(filename)
-                r = other._get_doc_root(filename)
-                if l != r:
+                root1 = self._get_doc_root(filename)
+                root2 = other._get_doc_root(filename)
+                if root1 != root2:
                     print("difference for file named", filename)
                     return False
             elif self._get_data(filename) != other._get_data(filename):
