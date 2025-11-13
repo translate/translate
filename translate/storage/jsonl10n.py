@@ -1007,7 +1007,7 @@ class NextcloudJsonFile(JsonFile):
         name_node: str | int | None = None,
         name_last_node: str | int | None = None,
         last_node: dict | list | None = None,
-    ) -> Generator[NextcloudJsonUnit, None, None]:
+    ) -> Generator[NextcloudJsonUnit]:
         """Extract units from the translations key only."""
         # Store metadata (everything outside 'translations')
         for key, value in data.items():
