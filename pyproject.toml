@@ -277,7 +277,6 @@ extend-safe-fixes = [
 ignore = [
   "A001",  # TODO: Variable is shadowing a Python builtin
   "A002",  # TODO: overriding builtins (might need noqa tags)
-  "A005",  # TODO: Module `statistics` is shadowing a Python builtin module
   "ANN",  # TODO: type annotations missing
   "ARG001",  # TODO: Unused function argument (mostly for API compatibility)
   "ARG002",  # TODO: Unused method argument (mostly for API compatibility)
