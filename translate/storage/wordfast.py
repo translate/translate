@@ -310,7 +310,7 @@ class WordfastHeader:
     targetlang = property(None, settargetlang)
 
     def settucount(self, count):
-        self._header_dict["tucount"] = "%%TU=%08d" % count
+        self._header_dict["tucount"] = f"%TU={count:08d}"
 
     tucount = property(None, settucount)
 

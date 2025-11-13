@@ -60,7 +60,7 @@ class SubtitleUnit(base.TranslationUnit):
 
     def getnotes(self, origin=None):
         if origin in {"programmer", "developer", "source code", None}:
-            return "visible for %d seconds" % self._duration
+            return f"visible for {self._duration} seconds"
         return ""
 
     def getlocations(self):

@@ -512,7 +512,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
             content = getattr(fragment, "placeholder_content", None)
             if content:
                 placeholders.append(fragment)
-                fragment.text = "{%d}" % len(placeholders)
+                fragment.text = f"{{{len(placeholders)}}}"
 
         return placeholders
 
@@ -525,7 +525,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
             content_md = "\n".join(
                 self.fragments_to_lines(content, max_line_length=float("inf"))
             )
-            markdown = markdown.replace("{%d}" % (index + 1), content_md)
+            markdown = markdown.replace(f"{{{index + 1}}}", content_md)
 
         return markdown
 

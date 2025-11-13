@@ -347,7 +347,7 @@ def main(argv=None):
         dest="min_similarity",
         default=defaultsimilarity,
         type="float",
-        help="The minimum similarity for inclusion (default: %d%%)" % defaultsimilarity,
+        help=f"The minimum similarity for inclusion (default: {defaultsimilarity}%)",
     )
     parser.passthrough.append("min_similarity")
 

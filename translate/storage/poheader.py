@@ -63,7 +63,7 @@ def tzstring():
     hours, minutes = time.gmtime(abs(tzoffset))[3:5]
     if tzoffset > 0:
         hours *= -1
-    return str("%+d" % hours).zfill(3) + str(minutes).zfill(2)
+    return f"{hours:+03d}{minutes:02d}"
 
 
 def format_key(key: str) -> str:
@@ -281,7 +281,7 @@ class poheader:
         if isinstance(nplurals, str):
             nplurals = int(nplurals)
         self.updateheader(
-            add=True, Plural_Forms="nplurals=%d; plural=%s;" % (nplurals, plural)
+            add=True, Plural_Forms=f"nplurals={nplurals}; plural={plural};"
         )
 
     def gettargetlanguage(self):

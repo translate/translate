@@ -70,7 +70,7 @@ def create_termunit(
     for transnote in transnotes:
         termunit.addnote(transnote, "translator")
     for filename, count in filecounts.items():
-        termunit.addnote("(poterminology) %s (%d)\n" % (filename, count), "translator")
+        termunit.addnote(f"(poterminology) {filename} ({count})\n", "translator")
     return termunit
 
 
@@ -354,9 +354,7 @@ class TerminologyExtractor:
             locmax = 2 * locmin
             if numlocs > locmax:
                 locations = list(locations)[0:locmax]
-                locations.append(
-                    "(poterminology) %d more locations" % (numlocs - locmax)
-                )
+                locations.append(f"(poterminology) {numlocs - locmax} more locations")
 
             termunit = create_termunit(
                 term, bestunit, targets, locations, sourcenotes, transnotes, filecounts

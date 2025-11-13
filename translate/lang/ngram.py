@@ -156,7 +156,7 @@ class Generate:
             fname = path.join(folder, lang + ext)
             with open(fname, mode="w", encoding="utf-8") as fp:
                 fp.writelines(
-                    "%s\t %d\n" % (k, v) for v, k in self.ngrams[lang].sorted_by_score()
+                    f"{k}\t {v}\n" for v, k in self.ngrams[lang].sorted_by_score()
                 )
 
 

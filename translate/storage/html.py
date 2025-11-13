@@ -205,7 +205,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         # and prepare for the new.
         self.emit_translation_unit()
         self.tu_content = []
-        self.tu_location = "%s+%s:%d-%d" % (
+        self.tu_location = "{}+{}:{}-{}".format(
             self.filename,
             ".".join(self.tag_path),
             self.getpos()[0],
@@ -386,8 +386,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         if normalized_value:
             return {
                 "html_content": normalized_value,
-                "location": "%s+%s%s:%d-%d"
-                % (
+                "location": "{}+{}{}:{}-{}".format(
                     self.filename,
                     ".".join(self.tag_path),
                     f"[{attrname}]",

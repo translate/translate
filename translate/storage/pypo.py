@@ -468,8 +468,7 @@ class pounit(pocommon.pounit):
                 target = target[0]
             else:
                 raise ValueError(
-                    "po msgid element has no plural but msgstr has %d elements (%s)"
-                    % (len(target), target)
+                    f"po msgid element has no plural but msgstr has {len(target)} elements ({target})"
                 )
         templates = self.msgstr
         if isinstance(templates, list):
@@ -779,7 +778,7 @@ class pounit(pocommon.pounit):
             partkeys = sorted(partlines.keys())
             return "".join(
                 self._getmsgpartstr(
-                    "%s[%d]" % (partname, partkey), partlines[partkey], partcomments
+                    f"{partname}[{partkey}]", partlines[partkey], partcomments
                 )
                 for partkey in partkeys
             )

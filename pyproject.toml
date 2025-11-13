@@ -363,7 +363,6 @@ ignore = [
   "TD007",  # TODO: Missing space after colon in TODO
   "TID252",  # TODO: Relative imports from parent modules are banned
   "TRY003",  # WONTFIX: Avoid specifying long messages outside the exception class
-  "UP031",  # X-TODO: Use format specifiers instead of percent format
   'ISC001',  # CONFIG: formatter
   'Q000',  # CONFIG: formatter
   'Q001',  # CONFIG: formatter
