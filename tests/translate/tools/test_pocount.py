@@ -26,15 +26,11 @@ class TestCount:
         if target is not None:
             poelement.target = target
         wordssource, wordstarget = pocount.wordsinunit(poelement)
-        print(
-            'Source (expected=%d; actual=%d): "%s"'
-            % (expectedsource, wordssource, source)
-        )
+        print(f'Source (expected={expectedsource}; actual={wordssource}): "{source}"')
         assert wordssource == expectedsource
         if target is not None:
             print(
-                'Target (expected=%d; actual=%d): "%s"'
-                % (expectedtarget, wordstarget, target)
+                f'Target (expected={expectedtarget}; actual={wordstarget}): "{target}"'
             )
             assert wordstarget == expectedtarget
 
@@ -232,6 +228,7 @@ def test_error_cases(opts, expected):
         [sys.executable, pocount.__file__, *opts],
         capture_output=True,
         text=True,
+        check=False,
     )
 
     assert expected in result.stderr

@@ -68,7 +68,7 @@ class TranslateBenchmarker:
             os.mkdir(self.file_dir)
         for dirnum in range(num_dirs):
             if num_dirs > 1:
-                dirname = os.path.join(self.file_dir, "sample_%d" % dirnum)
+                dirname = os.path.join(self.file_dir, f"sample_{dirnum}")
                 if not os.path.exists(dirname):
                     os.mkdir(dirname)
             else:
@@ -77,16 +77,16 @@ class TranslateBenchmarker:
                 sample_file = self.StoreClass()
                 for _stringnum in range(strings_per_file):
                     source_string = " ".join(
-                        "word%d" % (random.randint(0, strings_per_file) * i)  # noqa: S311
+                        f"word{random.randint(0, strings_per_file) * i}"  # noqa: S311
                         for i in range(source_words_per_string)
                     )
                     sample_unit = sample_file.addsourceunit(source_string)
                     sample_unit.target = " ".join(
-                        "drow%d" % (random.randint(0, strings_per_file) * i)  # noqa: S311
+                        f"drow{random.randint(0, strings_per_file) * i}"  # noqa: S311
                         for i in range(target_words_per_string)
                     )
                 sample_file.savefile(
-                    os.path.join(dirname, "file_%d.%s" % (filenum, self.extension))
+                    os.path.join(dirname, f"file_{filenum}.{self.extension}")
                 )
 
     def parse_files(self, file_dir=None):
@@ -101,7 +101,7 @@ class TranslateBenchmarker:
                 parsedfile = self.StoreClass(open(pofilename))
                 count += len(parsedfile.units)
                 self.parsedfiles.append(parsedfile)
-        print("counted %d units" % count)
+        print(f"counted {count} units")
 
     def parse_placeables(self):
         """Parses placeables."""
@@ -111,7 +111,7 @@ class TranslateBenchmarker:
                 placeables.parse(unit.source, placeables.general.parsers)
                 placeables.parse(unit.target, placeables.general.parsers)
             count += len(parsedfile.units)
-        print("counted %d units" % count)
+        print(f"counted {count} units")
 
 
 if __name__ == "__main__":
@@ -193,9 +193,8 @@ if __name__ == "__main__":
 
         for methodname, methodparam in methods:
             print("_______________________________________________________")
-            statsfile = (
-                f"{methodname}_{storetype}"
-                + "_%d_%d_%d_%d_%d.stats" % sample_file_sizes
+            statsfile = f"{methodname}_{storetype}" + "_{}_{}_{}_{}_{}.stats".format(
+                *sample_file_sizes
             )
             cProfile.run(f"benchmarker.{methodname}({methodparam})", statsfile)
             stats = pstats.Stats(statsfile)

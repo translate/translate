@@ -241,7 +241,7 @@ class matcher:
             if candidatenotes:
                 newunit.addnote(candidatenotes)
             if self.addpercentage:
-                newunit.addnote("%d%%" % score)
+                newunit.addnote(f"{score}%")
             units.append(newunit)
         return units
 
@@ -320,8 +320,8 @@ class terminologymatcher(matcher):
         """Returns whether this translation unit is usable for terminology."""
         if not unit.istranslated():
             return False
-        l = len(context_re.sub("", unit.source))
-        return l <= self.MAX_LENGTH and l >= self.getstartlength(None, None)
+        length = len(context_re.sub("", unit.source))
+        return self.getstartlength(None, None) <= length <= self.MAX_LENGTH
 
     def matches(self, text):
         """

@@ -146,7 +146,7 @@ class TikiStore(base.TranslationStore):
     @staticmethod
     def _tiki_header():
         """Returns a tiki-file header string."""
-        return f"<?php // -*- coding:utf-8 -*-\n// Generated from po2tiki on {datetime.datetime.now()}\n\n$lang=Array(\n"
+        return f"<?php // -*- coding:utf-8 -*-\n// Generated from po2tiki on {datetime.datetime.now(tz=datetime.timezone.utc)}\n\n$lang=Array(\n"
 
     @staticmethod
     def _tiki_footer():

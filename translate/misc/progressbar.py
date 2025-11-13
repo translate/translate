@@ -89,7 +89,7 @@ class ProgressBar:
         numHashes = round(numHashes)
 
         # build a progress bar with hashes and spaces
-        self.progBar = "[%s%s] %3d%%" % (
+        self.progBar = "[{}{}] {:3d}%".format(
             "#" * numHashes,
             " " * (allFull - numHashes),
             percentDone,

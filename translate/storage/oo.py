@@ -205,8 +205,7 @@ class ooline:
         """Create a line from its tab-delimited parts."""
         if len(parts) != 15:
             warnings.warn(
-                "oo line contains %d parts, it should contain 15: %r"
-                % (len(parts), parts)
+                f"oo line contains {len(parts)} parts, it should contain 15: {parts!r}"
             )
             newparts = list(parts)
             if len(newparts) < 15:
@@ -381,13 +380,11 @@ class oofile:
         for oe in self.units:
             if len(oe.lines) > 2:
                 warnings.warn(
-                    "contains %d lines (should be 2 at most): languages %r"
-                    % (len(oe.lines), oe.languages)
+                    f"contains {len(oe.lines)} lines (should be 2 at most): languages {oe.languages!r}"
                 )
                 oekeys = [line.getkey() for line in oe.lines]
                 warnings.warn(
-                    "contains %d lines (should be 2 at most): keys %r"
-                    % (len(oe.lines), oekeys)
+                    f"contains {len(oe.lines)} lines (should be 2 at most): keys {oekeys!r}"
                 )
             oeline = oe.getoutput(skip_source, fallback_lang) + "\r\n"
             lines.append(oeline)

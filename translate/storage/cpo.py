@@ -486,8 +486,7 @@ class pounit(pocommon.pounit):
                 target = target[0]
             else:
                 raise ValueError(
-                    "po msgid element has no plural but msgstr has %d elements (%s)"
-                    % (len(target), target)
+                    f"po msgid element has no plural but msgstr has {len(target)} elements ({target})"
                 )
         # empty the previous list of messages
         # TODO: the "pypo" implementation does not remove the previous items of

@@ -304,8 +304,7 @@ class FullRenderer(Renderer):
             + ConsoleColor.ENDC()
         )
         print(
-            "Total:        %5d %17d %22d"
-            % (
+            "Total:        {:5d} {:17d} {:22d}".format(
                 stats["total"],
                 stats["totalsourcewords"],
                 stats["translatedtargetwords"],
@@ -315,8 +314,7 @@ class FullRenderer(Renderer):
             print()
             for state, e_stats in stats["extended"].items():
                 print(
-                    "%-11s   %5d (%3d%%) %10d (%3d%%) %15d"
-                    % (
+                    "{:<11s}   {:5d} ({:3d}%) {:10d} ({:3d}%) {:15d}".format(
                         f"{state.title()}:",
                         e_stats["units"],
                         percent(e_stats["units"], stats["total"]),
@@ -328,8 +326,9 @@ class FullRenderer(Renderer):
 
         if stats["review"] > 0:
             print(
-                "review:          %5d %17d                    n/a"
-                % (stats["review"], stats["reviewsourcewords"])
+                "review:          {:5d} {:17d}                    n/a".format(
+                    stats["review"], stats["reviewsourcewords"]
+                )
             )
         print()
 
@@ -338,10 +337,10 @@ class FullRenderer(Renderer):
         if stats.file_count > 1:
             if stats.incomplete_only:
                 self.entry("TOTAL (incomplete only):", stats.totals)
-                print("File count (incomplete):   %5d" % len(stats.results))
+                print(f"File count (incomplete):   {len(stats.results):5d}")
             else:
                 self.entry("TOTAL:", stats.totals)
-            print("File count:   %5d" % (stats.file_count))
+            print(f"File count:   {stats.file_count:5d}")
             print()
 
 
@@ -354,8 +353,7 @@ class ShortStringsRenderer(Renderer):
     def entry(self, title, stats):
         spaces = " " * (self.indent - len(title))
         print(
-            "%s%s strings: total: %d\t| %st\t%sf\t%su\t| %st\t%sf\t%su"
-            % (
+            "{}{} strings: total: {}\t| {}t\t{}f\t{}u\t| {}t\t{}f\t{}u".format(
                 ConsoleColor.HEADER() + title + ConsoleColor.ENDC(),
                 spaces,
                 stats["total"],
@@ -387,8 +385,7 @@ class ShortWordsRenderer(Renderer):
     def entry(self, title, stats):
         spaces = " " * (self.indent - len(title))
         print(
-            "%s%s source words: total: %d\t| %st\t%sf\t%su\t| %st\t%sf\t%su"
-            % (
+            "{}{} source words: total: {}\t| {}t\t{}f\t{}u\t| {}t\t{}f\t{}u".format(
                 ConsoleColor.HEADER() + title + ConsoleColor.ENDC(),
                 spaces,
                 stats["totalsourcewords"],
@@ -421,10 +418,10 @@ class ShortWordsRenderer(Renderer):
         )
 
 
-def percent(denominator, devisor):
+def percent(denominator: int, devisor: int) -> int:
     if devisor == 0:
         return 0
-    return denominator * 100 / devisor
+    return denominator * 100 // devisor
 
 
 def fuzzymessages(units):

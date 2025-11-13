@@ -277,7 +277,6 @@ extend-safe-fixes = [
 ignore = [
   "A001",  # TODO: Variable is shadowing a Python builtin
   "A002",  # TODO: overriding builtins (might need noqa tags)
-  "A005",  # TODO: Module `statistics` is shadowing a Python builtin module
   "ANN",  # TODO: type annotations missing
   "ARG001",  # TODO: Unused function argument (mostly for API compatibility)
   "ARG002",  # TODO: Unused method argument (mostly for API compatibility)
@@ -287,7 +286,6 @@ ignore = [
   "B020",  # TODO: Loop control variable `node` overrides iterable it iterates
   "B028",  # TODO: No explicit `stacklevel` keyword argument found
   "B904",  # TODO: Within an `except` clause, raise exceptions with `raise ... from err` or `raise ... from None` to distinguish them from errors in exception handling
-  "B909",  # X-TODO: Mutation to loop iterable `inputpo.units` during iteration
   "BLE001",  # WONTFIX: Do not catch blind exception: `Exception`, third-party modules do not have defined exceptions
   "C901",  # TODO: too complex
   "COM",  # CONFIG: No trailing commas
@@ -301,12 +299,10 @@ ignore = [
   "D404",  # TODO: First word of the docstring should not be "This"
   "D409",  # TODO: Section underline should match the length of its name
   "DOC",  # TODO: is not documented in docstring
-  "DTZ005",  # TODO: The use of `datetime.datetime.now()` without `tz` argument is not allowed
   "E262",  # TODO: Inline comment should start with `# `
   "E265",  # TODO: Block comment should start with `# `
   "E266",  # TODO: Too many leading `#` before block comment
   "E501",  # WONTFIX: we accept long strings (rest is formatted by black)
-  "E741",  # TODO: Ambiguous variable name:
   "EM",  # TODO: Exception strings
   "ERA001",  # TODO: Found commented-out code
   "FBT",  # TODO: Boolean in function definition
@@ -339,7 +335,6 @@ ignore = [
   "PLR1702",  # TODO: Too many nested blocks (8 > 5)
   "PLR2004",  # TODO: Magic value used in comparison, consider replacing with a constant variable
   "PLR6301",  # TODO: Method `entry` could be a function, class method, or static method
-  "PLW1510",  # TODO: `subprocess.run` without explicit `check` argument
   "PLW1514",  # TODO: `open` in text mode without explicit `encoding` argument
   "PLW1641",  # TODO: Object does not implement `__hash__` method
   "PLW2901",  # TODO: `for` loop variable `input_unit` overwritten by assignment target
@@ -352,8 +347,6 @@ ignore = [
   "RUF003",  # WONTFIX: Comment contains ambiguous
   "RUF012",  # TODO: Mutable class attributes should be annotated with `typing.ClassVar`
   "S101",  # CONFIG: Use of `assert` detected
-  "S301",  # TODO: `pickle` and modules that wrap it can be unsafe when used to deserialize untrusted data, possible security issue
-  "S403",  # TODO: `pickle`, `cPickle`, `dill`, and `shelve` modules are possibly insecure
   "S404",  # TODO: `subprocess` module is possibly insecure
   "S407",  # TODO: `xml.dom.expatbuilder` is vulnerable to XML attacks
   "S408",  # TODO: `xml.dom.minidom` is vulnerable to XML attacks
@@ -370,7 +363,6 @@ ignore = [
   "TD007",  # TODO: Missing space after colon in TODO
   "TID252",  # TODO: Relative imports from parent modules are banned
   "TRY003",  # WONTFIX: Avoid specifying long messages outside the exception class
-  "UP031",  # X-TODO: Use format specifiers instead of percent format
   'ISC001',  # CONFIG: formatter
   'Q000',  # CONFIG: formatter
   'Q001',  # CONFIG: formatter

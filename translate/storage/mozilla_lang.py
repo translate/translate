@@ -140,7 +140,7 @@ class LangStore(txt.TxtFile):
                 source_unit = self.addsourceunit(line[1:])
                 source_unit.eol = self.eol
                 source_unit.addlocation(
-                    "%s:%d" % (self.filename[len(self.location_root) :], lineoffset + 1)
+                    f"{self.filename[len(self.location_root) :]}:{lineoffset + 1}"
                 )
                 if comment is not None:
                     source_unit.addnote(comment[:-1], "developer")

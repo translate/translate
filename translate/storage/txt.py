@@ -139,7 +139,7 @@ class TxtFile(base.TranslationStore):
                 isbreak = not line.strip()
             if isbreak and block:
                 unit = self.addsourceunit("\n".join(block))
-                unit.addlocation("%s:%d" % (self.filename, current_line))
+                unit.addlocation(f"{self.filename}:{current_line}")
                 unit.pretext = pretext
                 unit.posttext = posttext
                 pretext = ""
@@ -149,7 +149,7 @@ class TxtFile(base.TranslationStore):
                 block.append(line)
         if block:
             unit = self.addsourceunit("\n".join(block))
-            unit.addlocation("%s:%d" % (self.filename, current_line))
+            unit.addlocation(f"{self.filename}:{current_line}")
 
     def serialize(self, out):
         for idx, unit in enumerate(self.units):

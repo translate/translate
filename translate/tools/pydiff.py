@@ -332,7 +332,7 @@ class FileDiffer:
         by line.
         """
         i1, i2, j1, j2 = group[0][1], group[-1][2], group[0][3], group[-1][4]
-        yield "@@ -%d,%d +%d,%d @@%s" % (i1 + 1, i2 - i1, j1 + 1, j2 - j1, lineterm)
+        yield f"@@ -{i1 + 1},{i2 - i1} +{j1 + 1},{j2 - j1} @@{lineterm}"
         for tag, i1, i2, j1, j2 in group:
             if tag == "equal":
                 for line in self.from_lines[i1:i2]:

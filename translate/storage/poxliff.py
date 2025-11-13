@@ -201,7 +201,7 @@ class PoXliffUnit(xliff.xliffunit):
         super().setid(id)
         if len(self.units) > 1:
             for i in range(len(self.units)):
-                self.units[i].setid("%s[%d]" % (id, i))
+                self.units[i].setid(f"{id}[{i}]")
 
     def getlocations(self):
         """Returns all the references (source locations)."""

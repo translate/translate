@@ -19,6 +19,7 @@
 """Convert PHP format .po files to Python format .po files."""
 
 import re
+from typing import overload
 
 from translate.misc.multistring import multistring
 from translate.storage import po
@@ -58,19 +59,23 @@ class phppo2pypo:
         return unit
 
     @staticmethod
-    def convertstring(input):
-        return re.sub(r"%(\d)\$s", lambda x: "{%d}" % (int(x.group(1)) - 1), input)
+    def convertstring(value: str) -> str:
+        return re.sub(r"%(\d)\$s", lambda x: f"{{{int(x.group(1)) - 1}}}", value)
 
-    def convertstrings(self, input):
-        if isinstance(input, multistring):
-            strings = input.strings
-        elif isinstance(input, list):
-            strings = input
+    @overload
+    def convertstrings(self, value: str) -> str: ...
+    @overload
+    def convertstrings(self, value: multistring | list[str]) -> list[str]: ...
+    def convertstrings(self, value):
+        if isinstance(value, multistring):
+            strings = value.strings
+        elif isinstance(value, list):
+            strings = value
         else:
-            return self.convertstring(input)
+            return self.convertstring(value)
         for index, string in enumerate(strings):
             strings[index] = re.sub(
-                r"%(\d)\$s", lambda x: "{%d}" % (int(x.group(1)) - 1), string
+                r"%(\d)\$s", lambda x: f"{{{int(x.group(1)) - 1}}}", string
             )
         return multistring(strings)
 

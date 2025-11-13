@@ -319,9 +319,9 @@ class Common:
         """
 
         def alter_it(text):
-            l = len(text)
-            if l > 9:
-                extra = cls.length_difference(l)
+            length = len(text)
+            if length > 9:
+                extra = cls.length_difference(length)
                 if extra > 0:
                     text = text[:extra].replace("\n", "") + text
                 else:

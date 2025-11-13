@@ -138,8 +138,7 @@ class TestCPOFile(test_po.TestPOFile):
         # Now lets check for formatting
         for i in (0, 1):
             expected = (
-                """#: source%d\nmsgid ""\n"_: source%d\\n"\n"Same"\nmsgstr ""\n"""
-                % (i, i)
+                f"""#: source{i}\nmsgid ""\n"_: source{i}\\n"\n"Same"\nmsgstr ""\n"""
             )
             assert (str(pofile.units[i])) == expected
 
