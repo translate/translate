@@ -51,9 +51,9 @@ _classes_str = {
     "tbx": ("tbx", "tbxfile"),
     "tmx": ("tmx", "tmxfile"),
     "ts": ("ts2", "tsfile"),
-    "xliff": ("xliff", "xlifffile"),
-    "xlf": ("xliff", "xlifffile"),
-    "sdlxliff": ("xliff", "xlifffile"),
+    "xliff": ("xliff", "Xliff1File"),
+    "xlf": ("xliff", "Xliff1File"),
+    "sdlxliff": ("xliff", "Xliff1File"),
     "ftl": ("fluent", "FluentFile"),
     "toml": ("toml", "TOMLFile"),
 }
