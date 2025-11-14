@@ -31,7 +31,7 @@ class cidict(dict):
         for akey in self.keys():
             if akey.lower() == lkey:
                 return super().__getitem__(akey)
-        raise IndexError
+        raise KeyError
 
     def __setitem__(self, key, value):
         if not isinstance(key, str):
@@ -53,7 +53,7 @@ class cidict(dict):
         for akey in self.keys():
             if akey.lower() == lkey:
                 return super().__delitem__(akey)
-        raise IndexError
+        raise KeyError
 
     def __contains__(self, key):
         if not isinstance(key, str):
@@ -62,3 +62,14 @@ class cidict(dict):
             )
         lkey = key.lower()
         return any(akey.lower() == lkey for akey in self.keys())
+
+    def pop(self, key):
+        if not isinstance(key, str):
+            raise TypeError(
+                f"cidict can only have str or unicode as key (got {type(key)!r})"
+            )
+        lkey = key.lower()
+        for akey in self.keys():
+            if akey.lower() == lkey:
+                return super().pop(akey)
+        raise KeyError
