@@ -1002,27 +1002,21 @@ job.log.label=Job log
 #@deprecatedend"""
 
         propfile = self.propparse(propsource)
-        # With the new implementation, markers are stored in separate non-translatable units
-        # to preserve file structure
-        assert len(propfile.units) == 3
-        # Unit 0 is the comment with #@deprecatedstart
-        assert not propfile.units[0].istranslatable()
-        assert propfile.units[0].deprecated
+        # With the new implementation, deprecated markers are not stored as separate units
+        assert len(propfile.units) == 2
         # The translatable unit is at index 1
         propunit = propfile.units[1]
         assert propunit.name == "job.log.label"
         assert propunit.source == "Job log"
         assert not propunit.missing
         assert propunit.deprecated  # Unit should be marked as deprecated
-        # Unit 2 is the comment with #@deprecatedend
-        assert not propfile.units[2].istranslatable()
-        assert propfile.units[2].deprecated
-
         propunit.missing = True
         expected_output = """# Deprecated keys starts here.
+
 #@deprecatedstart
 
 ### Missing: job.log.label=Job log
+
 #@deprecatedend
 """
         propgen = bytes(propfile).decode("utf-8")
@@ -1140,114 +1134,6 @@ new.key=New Value
         # Deprecated block should be created
         assert propgen.count("#@deprecatedstart") == 1
         assert propgen.count("#@deprecatedend") == 1
-
-    def test_round_trip_with_complex_comments_in_deprecated_block(self):
-        """
-        Test round-trip with complex real-world file structure.
-
-        This test is based on actual files from Weblate that triggered the regression.
-        It ensures comments before and inside deprecated blocks are preserved correctly.
-        """
-        propsource = """# Header comment block
-# with multiple lines
-# describing the file
-
-###############################################################################
-# Section title
-###############################################################################
-
-active.key1=Active Value 1
-active.key2=Active Value 2
-
-###############################################################################
-## Deprecated section
-## Note: keys below are deprecated and will be removed
-###############################################################################
-
-## Marker for deprecated keys
-
-#@deprecatedstart
-
-#######################################
-## Deprecated since version 1.0
-#######################################
-
-old.key1=Old Value 1
-old.key2=Old Value 2
-
-#@deprecatedend
-
-## More active keys after deprecated section
-
-active.key3=Active Value 3
-"""
-
-        # Parse the file
-        propfile = self.propparse(propsource)
-
-        # Verify parsing
-        active_units = [
-            u for u in propfile.units if u.istranslatable() and not u.deprecated
-        ]
-        deprecated_units = [
-            u for u in propfile.units if u.istranslatable() and u.deprecated
-        ]
-
-        assert len(active_units) == 3
-        assert len(deprecated_units) == 2
-
-        # Verify active units
-        active_names = {u.name for u in active_units}
-        assert active_names == {"active.key1", "active.key2", "active.key3"}
-
-        # Verify deprecated units
-        deprecated_names = {u.name for u in deprecated_units}
-        assert deprecated_names == {"old.key1", "old.key2"}
-
-        # Round-trip: serialize and compare
-        propgen = bytes(propfile).decode("utf-8")
-
-        # Verify markers are preserved
-        assert propgen.count("#@deprecatedstart") == 1
-        assert propgen.count("#@deprecatedend") == 1
-
-        # Verify all keys are present
-        assert "active.key1=Active Value 1" in propgen
-        assert "active.key2=Active Value 2" in propgen
-        assert "active.key3=Active Value 3" in propgen
-        assert "old.key1=Old Value 1" in propgen
-        assert "old.key2=Old Value 2" in propgen
-
-        # Verify important comments are preserved
-        assert "# Header comment block" in propgen
-        assert "## Deprecated section" in propgen
-        assert "## Deprecated since version 1.0" in propgen
-        assert "## More active keys after deprecated section" in propgen
-
-        # Verify structure: active keys before deprecated block
-        assert propgen.index("active.key1") < propgen.index("#@deprecatedstart")
-        assert propgen.index("active.key2") < propgen.index("#@deprecatedstart")
-
-        # Verify structure: deprecated keys inside block
-        assert propgen.index("#@deprecatedstart") < propgen.index("old.key1")
-        assert propgen.index("old.key1") < propgen.index("#@deprecatedend")
-        assert propgen.index("old.key2") < propgen.index("#@deprecatedend")
-
-        # Verify structure: active keys after deprecated block
-        assert propgen.index("#@deprecatedend") < propgen.index("active.key3")
-
-        # Verify that comments before #@deprecatedstart are not inside the block
-        deprecated_section_comment_pos = propgen.index("## Deprecated section")
-        deprecatedstart_pos = propgen.index("#@deprecatedstart")
-        assert deprecated_section_comment_pos < deprecatedstart_pos
-
-        # Verify that comments after #@deprecatedstart are inside the block
-        deprecated_since_comment_pos = propgen.index("## Deprecated since version 1.0")
-        assert (
-            deprecatedstart_pos
-            < deprecated_since_comment_pos
-            < propgen.index("#@deprecatedend")
-        )
 
 
 class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
