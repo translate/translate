@@ -29,7 +29,12 @@ def test_html_context_same_source_different_contexts():
 
 
 def test_html_context_nested_outer_wins():
-    # Use nested translatable elements (p inside div) so that inner becomes its own unit
+    """
+    Test that outer context applies to outer unit.
+
+    This test uses nested translatable elements (p inside div)
+    so that inner becomes its own unit.
+    """
     src = (
         '<div data-translate-context="outer">Start '
         '<p data-translate-context="inner">Inner</p> End</div>'
