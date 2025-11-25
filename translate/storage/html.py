@@ -47,12 +47,14 @@ class htmlunit(base.TranslationUnit):
         return self.locations
 
     def getcontext(self):
+        """Get the message context."""
         return self._context
 
     def setcontext(self, context):
         self._context = context or ""
 
     def getid(self):
+        """Returns a unique identifier for this unit."""
         if self._context:
             return f"{self._context}\04{self.source}"
         return self.source
