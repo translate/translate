@@ -10,6 +10,7 @@ def parse_html(src: str) -> htmlfile:
 
 
 def test_html_context_basic():
+    """Test that basic context is extracted correctly from HTML."""
     store = parse_html('<div data-translate-context="greeting">Hello world</div>')
     units = store.getunits()
     assert any(
@@ -18,6 +19,7 @@ def test_html_context_basic():
 
 
 def test_html_context_same_source_different_contexts():
+    """Test that the same source with different contexts is differentiated."""
     store = parse_html(
         '<p data-translate-context="one">Hello</p><p data-translate-context="two">Hello</p>'
     )
@@ -54,6 +56,7 @@ def test_html_context_nested_outer_wins():
 
 
 def test_html_context_absent():
+    """Test that absence of context is handled correctly."""
     store = parse_html("<p>No context here</p>")
     try:
         unit = next(u for u in store.getunits() if u.source == "No context here")
