@@ -44,6 +44,7 @@ class htmlunit(base.TranslationUnit):
         self.locations.append(location)
 
     def getlocations(self):
+        """Get the list of locations for this unit."""
         return self.locations
 
     def getcontext(self):
@@ -51,6 +52,7 @@ class htmlunit(base.TranslationUnit):
         return self._context
 
     def setcontext(self, context):
+        """Set the message context."""
         self._context = context or ""
 
     def getid(self):
