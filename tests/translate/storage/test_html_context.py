@@ -50,5 +50,9 @@ def test_html_context_nested_outer_wins():
 
 def test_html_context_absent():
     store = parse_html("<p>No context here</p>")
-    unit = next(u for u in store.getunits() if u.source == "No context here")
+    try:
+        unit = next(u for u in store.getunits() if u.source == "No context here")
+    except StopIteration:
+        unit = None
+    assert unit is not None
     assert unit.getcontext() == ""
