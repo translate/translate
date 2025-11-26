@@ -438,7 +438,9 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 unit.addlocation(tu["location"])
                 if "translate_context" in markup:
                     # Include attribute in context
-                    attr_suffix = f"[{tu.get('attrname')}]" if tu.get("attrname") else ""
+                    attr_suffix = (
+                        f"[{tu.get('attrname')}]" if tu.get("attrname") else ""
+                    )
                     unit.setcontext(f"{markup['translate_context']}{attr_suffix}")
 
     def translate_attributes(self, tag, attrs):
@@ -671,7 +673,9 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             ancestor_id = self.ancestor_id_stack[-1] if self.ancestor_id_stack else None
             if ancestor_id:
                 line = self.getpos()[0]
-                markup["translate_context"] = f"{self.filename}:{ancestor_id}:{tag}:{line}"
+                markup["translate_context"] = (
+                    f"{self.filename}:{ancestor_id}:{tag}:{line}"
+                )
             self._id_pushed_stack.append(False)
 
         self.append_markup(markup)

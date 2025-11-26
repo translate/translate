@@ -20,7 +20,9 @@ def test_html_context_basic():
 
 def test_html_context_attribute():
     """Test that attribute is added to context."""
-    store = parse_html('<p data-translate-context="intro" title="Hello world">Welcome!</p>')
+    store = parse_html(
+        '<p data-translate-context="intro" title="Hello world">Welcome!</p>'
+    )
     units = store.getunits()
     unit0 = units[0]
     unit1 = units[1]
@@ -108,7 +110,9 @@ def test_html_context_id_overridden_by_explicit():
 
 def test_html_context_ancestor_path_with_pos():
     """Test that child of element with id should use filename+id.relpath:rel_line-rel_col context when no own id/context."""
-    src = '<div id="container"><p>One</p><p>Two</p><span>Three</span>\n<p>Four</p></div>'
+    src = (
+        '<div id="container"><p>One</p><p>Two</p><span>Three</span>\n<p>Four</p></div>'
+    )
     store = parse_html(src)
     units = store.getunits()
     one = next(u for u in units if u.source == "One")
