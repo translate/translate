@@ -38,12 +38,28 @@ class htmlunit(base.TranslationUnit):
     def __init__(self, source=None):
         super().__init__(source)
         self.locations = []
+        self._context = ""
 
     def addlocation(self, location):
         self.locations.append(location)
 
     def getlocations(self):
+        """Get the list of locations for this unit."""
         return self.locations
+
+    def getcontext(self):
+        """Get the message context."""
+        return self._context
+
+    def setcontext(self, context):
+        """Set the message context."""
+        self._context = context or ""
+
+    def getid(self):
+        """Returns a unique identifier for this unit."""
+        if self._context:
+            return f"{self._context}\04{self.source}"
+        return self.source
 
 
 class htmlfile(html.parser.HTMLParser, base.TranslationStore):
@@ -307,6 +323,20 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             unit = self.addsourceunit(normalized_content)
             unit.addlocation(self.tu_location)
 
+            # Determine context from data-translate-context (outermost wins)
+            # tu_content starts at the unit's opening tag, so the first
+            # translate_context encountered is the correct one.
+            context = next(
+                (
+                    m["translate_context"]
+                    for m in self.tu_content
+                    if "translate_context" in m
+                ),
+                None,
+            )
+            if context:
+                unit.setcontext(context)
+
             # Extract comment text from HTML comment elements within the translation unit
             comments = [
                 markup["note"]
@@ -401,8 +431,12 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             for tu in markup["attribute_tus"]:
                 unit = self.addsourceunit(tu["html_content"])
                 unit.addlocation(tu["location"])
+                if "translate_context" in markup:
+                    unit.setcontext(markup["translate_context"])
 
     def translate_attributes(self, tag, attrs):
+        if not attrs:
+            return []
         result = []
         translated_lang = None
 
@@ -510,6 +544,13 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         if "data-translate-comment" in attrs_dict:
             markup["translate_comment"] = attrs_dict["data-translate-comment"]
 
+        # Extract data-translate-context attribute
+        if "data-translate-context" in attrs_dict:
+            context_raw = attrs_dict.get("data-translate-context") or ""
+            context_value = self.WHITESPACE_RE.sub(" ", context_raw).strip()
+            if context_value:
+                markup["translate_context"] = context_value
+
         self.append_markup(markup)
 
     def handle_endtag(self, tag):
@@ -564,6 +605,13 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         # Extract data-translate-comment attribute
         if "data-translate-comment" in attrs_dict:
             markup["translate_comment"] = attrs_dict["data-translate-comment"]
+
+        # Extract data-translate-context attribute
+        if "data-translate-context" in attrs_dict:
+            context_raw = attrs_dict.get("data-translate-context") or ""
+            context_value = self.WHITESPACE_RE.sub(" ", context_raw).strip()
+            if context_value:
+                markup["translate_context"] = context_value
 
         self.append_markup(markup)
 

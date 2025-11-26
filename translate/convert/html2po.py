@@ -49,6 +49,9 @@ class html2po:
         for htmlunit in htmlparser.units:
             thepo = outputstore.addsourceunit(htmlunit.source)
             thepo.addlocations(htmlunit.getlocations())
+            context = htmlunit.getcontext()
+            if context:
+                thepo.setcontext(context)
             if keepcomments:
                 thepo.addnote(htmlunit.getnotes(), "developer")
 
