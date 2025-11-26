@@ -115,10 +115,17 @@ def test_html_context_ancestor_path_with_pos():
     )
     store = parse_html(src)
     units = store.getunits()
-    one = next(u for u in units if u.source == "One")
-    two = next(u for u in units if u.source == "Two")
-    three = next(u for u in units if u.source == "Three")
-    four = next(u for u in units if u.source == "Four")
+    try:
+        one = next(u for u in units if u.source == "One")
+        two = next(u for u in units if u.source == "Two")
+        three = next(u for u in units if u.source == "Three")
+        four = next(u for u in units if u.source == "Four")
+    except StopIteration:
+        one = two = three = four = None
+    assert one is not None
+    assert two is not None
+    assert three is not None
+    assert four is not None
     assert one.getcontext() == "test.html+container.p:1-21"
     assert two.getcontext() == "test.html+container.p:1-31"
     assert three.getcontext() == "test.html+container.span:1-41"
