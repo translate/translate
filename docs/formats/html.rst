@@ -157,9 +157,14 @@ cases using the ``data-translate-context`` attribute. Its value becomes the
 same ``msgid``, without the excessively differentiated contexts from automated
 context disambiguation.
 
-If an element does not specify ``data-translate-context``, the ``id`` attribute
-is used as ``msgctxt`` instead (when present and non-empty). This helps provide
-more stable, meaningful contexts without additional markup changes.
+If an element does not specify ``data-translate-context``, the following fallbacks
+apply:
+
+- ``{filename}:{element_id}`` when the element has an ``id`` attribute
+- ``{filename}+{ancestor_id}.{relative_tag_path}:{line}-{column}`` when the element
+   does not have an ``id`` but is a descendant of an element with an ``id``. The
+   ``relative_tag_path`` is the dot-separated tag path from the ancestor to the
+   element. ``line``/``column`` come from the element's source location.
 
 .. code-block:: html
 

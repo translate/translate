@@ -180,6 +180,9 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         self.ignore_depth = 0  # Track nesting level of ignored elements
         self.comment_ignore = False  # Track if inside <!-- translate:off -->
         self.ignore_tag_stack = []  # Track which tags have ignore attribute
+        self.ancestor_id_stack = []  # stack of ancestor ids (top is nearest)
+        self._id_pushed_stack = []  # parallel to tag stack: did this element push an id?
+        self._id_depth_stack = []  # indices into tag_path where ids were pushed
 
         # parse
         if inputfile is not None:
@@ -494,6 +497,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
     @staticmethod
     def create_start_tag(tag, attrs=None, startend=False):
         attr_strings = []
+        attrs = attrs or []
         for attrname, attrvalue in attrs:
             if attrvalue is None:
                 attr_strings.append(f" {attrname}")
@@ -550,12 +554,30 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             context_value = self.WHITESPACE_RE.sub(" ", context_raw).strip()
             if context_value:
                 markup["translate_context"] = context_value
+            # Even with explicit context, record that no id was pushed
+            self._id_pushed_stack.append(False)
         elif "id" in attrs_dict:
-            # Fallback: use element id as context if present
+            # Fallback: use element id as context if present, prefixed with filename
             id_raw = attrs_dict.get("id") or ""
             id_value = self.WHITESPACE_RE.sub(" ", id_raw).strip()
             if id_value:
-                markup["translate_context"] = id_value
+                markup["translate_context"] = f"{self.filename}:{id_value}"
+                # This element itself becomes an ancestor with id for descendants
+                self.ancestor_id_stack.append(id_value)
+                self._id_pushed_stack.append(True)
+                # Record depth of this id within tag_path (current element index)
+                self._id_depth_stack.append(len(self.tag_path) - 1)
+        else:
+            # No explicit context and no own id; if within ancestor with id, use path
+            ancestor_id = self.ancestor_id_stack[-1] if self.ancestor_id_stack else None
+            if ancestor_id:
+                line, col = self.getpos()[0], self.getpos()[1] + 1
+                # Build relative tag path from nearest id ancestor depth
+                id_depth = self._id_depth_stack[-1] if self._id_depth_stack else -1
+                rel_tags = self.tag_path[id_depth + 1 :]
+                path = ".".join([ancestor_id, *rel_tags]) if rel_tags else ancestor_id
+                markup["translate_context"] = f"{self.filename}+{path}:{line}-{col}"
+            self._id_pushed_stack.append(False)
 
         self.append_markup(markup)
 
@@ -584,6 +606,14 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             self.end_translation_unit()
             if any(t in self.TRANSLATABLE_ELEMENTS for t in self.tag_path):
                 self.begin_translation_unit()
+
+        # Pop ancestor id if closing the element that defined it
+        if self._id_pushed_stack:
+            pushed = self._id_pushed_stack.pop()
+            if pushed and self.ancestor_id_stack:
+                self.ancestor_id_stack.pop()
+                if self._id_depth_stack:
+                    self._id_depth_stack.pop()
 
     def handle_startendtag(self, tag, attrs):
         self.auto_close_empty_element()
@@ -619,11 +649,21 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             if context_value:
                 markup["translate_context"] = context_value
         elif "id" in attrs_dict:
-            # Fallback: use element id as context if present
+            # Fallback: use filename-prefixed element id as context if present
             id_raw = attrs_dict.get("id") or ""
             id_value = self.WHITESPACE_RE.sub(" ", id_raw).strip()
             if id_value:
-                markup["translate_context"] = id_value
+                markup["translate_context"] = f"{self.filename}:{id_value}"
+                # Treat this as a temporary ancestor for consistency; will pop after
+                self.ancestor_id_stack.append(id_value)
+                self._id_pushed_stack.append(True)
+        else:
+            # No explicit context and no own id; if within ancestor with id, use path
+            ancestor_id = self.ancestor_id_stack[-1] if self.ancestor_id_stack else None
+            if ancestor_id:
+                line = self.getpos()[0]
+                markup["translate_context"] = f"{self.filename}:{ancestor_id}:{tag}:{line}"
+            self._id_pushed_stack.append(False)
 
         self.append_markup(markup)
 
@@ -637,6 +677,13 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             self.ignore_depth -= 1
 
         self.tag_path.pop()
+        # For startend, if we pushed an id, pop it now
+        if self._id_pushed_stack:
+            pushed = self._id_pushed_stack.pop()
+            if pushed and self.ancestor_id_stack:
+                self.ancestor_id_stack.pop()
+                if self._id_depth_stack:
+                    self._id_depth_stack.pop()
 
     def handle_data(self, data):
         self.auto_close_empty_element()

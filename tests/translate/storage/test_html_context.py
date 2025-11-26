@@ -71,7 +71,7 @@ def test_html_context_id_fallback_basic():
     store = parse_html('<p id="greeting">Hello world</p>')
     units = [u for u in store.getunits() if u.source == "Hello world"]
     assert units
-    assert units[0].getcontext() == "greeting"
+    assert units[0].getcontext() == "test.html:greeting"
 
 
 def test_html_context_id_overridden_by_explicit():
@@ -80,3 +80,16 @@ def test_html_context_id_overridden_by_explicit():
     units = [u for u in store.getunits() if u.source == "Hello"]
     assert units
     assert units[0].getcontext() == "ctx"
+
+
+def test_html_context_ancestor_path_with_pos():
+    """Test that child of element with id should use filename+id.relpath:line-col context when no own id/context."""
+    src = '<div id="container"><p>One</p><p>Two</p><span>Three</span></div>'
+    store = parse_html(src)
+    units = store.getunits()
+    one = next(u for u in units if u.source == "One")
+    two = next(u for u in units if u.source == "Two")
+    three = next(u for u in units if u.source == "Three")
+    assert one.getcontext() == "test.html+container.p:1-21"
+    assert two.getcontext() == "test.html+container.p:1-31"
+    assert three.getcontext() == "test.html+container.span:1-41"
