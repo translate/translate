@@ -184,6 +184,8 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         self._id_pushed_stack = []  # parallel to tag stack: did this element push an id?
         self._id_depth_stack = []  # indices into tag_path where ids were pushed
         self._id_pos_stack = []  # positions (line, col) where ancestor ids start
+        self._id_seen = set()  # track seen element ids to disambiguate duplicates
+        self._ancestor_id_label_stack = []  # label to use in path (id or id:line-col)
 
         # parse
         if inputfile is not None:
@@ -565,14 +567,23 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             id_raw = attrs_dict.get("id") or ""
             id_value = self.WHITESPACE_RE.sub(" ", id_raw).strip()
             if id_value:
-                markup["translate_context"] = f"{self.filename}:{id_value}"
-                # This element itself becomes an ancestor with id for descendants
+                id_line, id_col = self.getpos()[0], self.getpos()[1] + 1
+                if hasattr(self, "_id_seen") and id_value in self._id_seen:
+                    # Duplicate occurrence: disambiguate
+                    markup["translate_context"] = f"{self.filename}+{id_value}:{id_line}-{id_col}"
+                    id_label = f"{id_value}:{id_line}-{id_col}"
+                else:
+                    # First occurrence: plain id
+                    markup["translate_context"] = f"{self.filename}:{id_value}"
+                    id_label = id_value
+                    if hasattr(self, "_id_seen"):
+                        self._id_seen.add(id_value)
                 self.ancestor_id_stack.append(id_value)
+                self._ancestor_id_label_stack.append(id_label)
                 self._id_pushed_stack.append(True)
                 # Record depth of this id within tag_path (current element index)
                 self._id_depth_stack.append(len(self.tag_path) - 1)
                 # Record absolute position of the id element
-                id_line, id_col = self.getpos()[0], self.getpos()[1] + 1
                 self._id_pos_stack.append((id_line, id_col))
         else:
             # No explicit context and no own id; if within ancestor with id, use path
@@ -582,7 +593,8 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 # Build relative tag path from nearest id ancestor depth
                 id_depth = self._id_depth_stack[-1] if self._id_depth_stack else -1
                 rel_tags = self.tag_path[id_depth + 1 :]
-                path = ".".join([ancestor_id, *rel_tags]) if rel_tags else ancestor_id
+                ancestor_label = self._ancestor_id_label_stack[-1] if self._ancestor_id_label_stack else ancestor_id
+                path = ".".join([ancestor_label, *rel_tags]) if rel_tags else ancestor_label
                 markup["translate_context"] = f"{self.filename}+{path}:{line}-{col}"
             self._id_pushed_stack.append(False)
 
@@ -623,6 +635,8 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                     self._id_depth_stack.pop()
                 if self._id_pos_stack:
                     self._id_pos_stack.pop()
+                if self._ancestor_id_label_stack:
+                    self._ancestor_id_label_stack.pop()
 
     def handle_startendtag(self, tag, attrs):
         self.auto_close_empty_element()
@@ -658,20 +672,37 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             if context_value:
                 markup["translate_context"] = context_value
         elif "id" in attrs_dict:
-            # Fallback: use filename-prefixed element id as context if present
+            # Fallback: use filename-prefixed element id as context if present (with duplicate disambiguation)
             id_raw = attrs_dict.get("id") or ""
             id_value = self.WHITESPACE_RE.sub(" ", id_raw).strip()
             if id_value:
-                markup["translate_context"] = f"{self.filename}:{id_value}"
+                id_line, id_col = self.getpos()[0], self.getpos()[1] + 1
+                if id_value in self._id_seen:
+                    markup["translate_context"] = f"{self.filename}+{id_value}:{id_line}-{id_col}"
+                    id_label = f"{id_value}:{id_line}-{id_col}"
+                else:
+                    markup["translate_context"] = f"{self.filename}:{id_value}"
+                    id_label = id_value
+                    self._id_seen.add(id_value)
                 # Treat this as a temporary ancestor for consistency; will pop after
                 self.ancestor_id_stack.append(id_value)
+                self._ancestor_id_label_stack.append(id_label)
                 self._id_pushed_stack.append(True)
+                self._id_depth_stack.append(len(self.tag_path) - 1)
+                self._id_pos_stack.append((id_line, id_col))
         else:
             # No explicit context and no own id; if within ancestor with id, use path
             ancestor_id = self.ancestor_id_stack[-1] if self.ancestor_id_stack else None
             if ancestor_id:
-                line = self.getpos()[0]
-                markup["translate_context"] = f"{self.filename}:{ancestor_id}:{tag}:{line}"
+                line, col = self.getpos()[0], self.getpos()[1] + 1
+                id_depth = self._id_depth_stack[-1] if self._id_depth_stack else -1
+                rel_tags = self.tag_path[id_depth + 1 :]
+                ancestor_label = self._ancestor_id_label_stack[-1] if self._ancestor_id_label_stack else ancestor_id
+                path = ".".join([ancestor_label, *rel_tags]) if rel_tags else ancestor_label
+                anc_line, anc_col = self._id_pos_stack[-1] if self._id_pos_stack else (1, 1)
+                rel_line = line - anc_line
+                rel_col = col - anc_col
+                markup["translate_context"] = f"{self.filename}+{path}:{rel_line}-{rel_col}"
             self._id_pushed_stack.append(False)
 
         self.append_markup(markup)
@@ -695,6 +726,8 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                     self._id_depth_stack.pop()
                 if self._id_pos_stack:
                     self._id_pos_stack.pop()
+                if self._ancestor_id_label_stack:
+                    self._ancestor_id_label_stack.pop()
 
     def handle_data(self, data):
         self.auto_close_empty_element()

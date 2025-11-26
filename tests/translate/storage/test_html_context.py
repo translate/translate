@@ -98,6 +98,28 @@ def test_html_context_id_fallback_attribute():
     assert unit1.source == "Welcome!"
 
 
+def test_html_context_id_fallback_duplicate():
+    """Test that multiple elements with the same id are distinguished."""
+    src = '<div id="section">First</div><div id="section">Second</div>'
+    store = parse_html(src)
+    units = store.getunits()
+    first = next(u for u in units if u.source == "First")
+    second = next(u for u in units if u.source == "Second")
+    assert first.getcontext() == "test.html:section"
+    assert second.getcontext() == "test.html+section:1-30"
+
+
+def test_html_context_id_fallback_duplicate_children():
+    """Test that children of multiple elements with the same id are distinguished."""
+    src = '<div id="section"><p>First</p></div><div id="section"><p>Second</p></div>'
+    store = parse_html(src)
+    units = store.getunits()
+    first = next(u for u in units if u.source == "First")
+    second = next(u for u in units if u.source == "Second")
+    assert first.getcontext() == "test.html+section.p:1-19"
+    assert second.getcontext() == "test.html+section:1-37.p:1-55"
+
+
 def test_html_context_id_overridden_by_explicit():
     """Test that data-translate-context overrides id fallback."""
     store = parse_html('<p id="greeting" data-translate-context="ctx">Hello</p>')
