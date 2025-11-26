@@ -18,6 +18,18 @@ def test_html_context_basic():
     )
 
 
+def test_html_context_attribute():
+    """Test that attribute is added to context."""
+    store = parse_html('<p data-translate-context="intro" title="Hello world">Welcome!</p>')
+    units = store.getunits()
+    unit0 = units[0]
+    unit1 = units[1]
+    assert unit0.getcontext() == "intro[title]"
+    assert unit0.source == "Hello world"
+    assert unit1.getcontext() == "intro"
+    assert unit1.source == "Welcome!"
+
+
 def test_html_context_same_source_different_contexts():
     """Test that the same source with different contexts is differentiated."""
     store = parse_html(
@@ -72,6 +84,18 @@ def test_html_context_id_fallback_basic():
     units = [u for u in store.getunits() if u.source == "Hello world"]
     assert units
     assert units[0].getcontext() == "test.html:greeting"
+
+
+def test_html_context_id_fallback_attribute():
+    """Test that when data-translate-context is absent, the id attribute fallback is used, including relevant translateable attribute context."""
+    store = parse_html('<p id="intro" title="Hello world">Welcome!</p>')
+    units = store.getunits()
+    unit0 = units[0]
+    unit1 = units[1]
+    assert unit0.getcontext() == "test.html:intro[title]"
+    assert unit0.source == "Hello world"
+    assert unit1.getcontext() == "test.html:intro"
+    assert unit1.source == "Welcome!"
 
 
 def test_html_context_id_overridden_by_explicit():

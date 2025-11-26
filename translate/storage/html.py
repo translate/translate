@@ -420,6 +420,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         if normalized_value:
             return {
                 "html_content": normalized_value,
+                "attrname": attrname,
                 "location": "{}+{}{}:{}-{}".format(
                     self.filename,
                     ".".join(self.tag_path),
@@ -436,7 +437,9 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 unit = self.addsourceunit(tu["html_content"])
                 unit.addlocation(tu["location"])
                 if "translate_context" in markup:
-                    unit.setcontext(markup["translate_context"])
+                    # Include attribute in context
+                    attr_suffix = f"[{tu.get('attrname')}]" if tu.get("attrname") else ""
+                    unit.setcontext(f"{markup['translate_context']}{attr_suffix}")
 
     def translate_attributes(self, tag, attrs):
         if not attrs:
