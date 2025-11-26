@@ -64,3 +64,19 @@ def test_html_context_absent():
         unit = None
     assert unit is not None
     assert unit.getcontext() == ""
+
+
+def test_html_context_id_fallback_basic():
+    """Test that when data-translate-context is absent, the id attribute fallback is used."""
+    store = parse_html('<p id="greeting">Hello world</p>')
+    units = [u for u in store.getunits() if u.source == "Hello world"]
+    assert units
+    assert units[0].getcontext() == "greeting"
+
+
+def test_html_context_id_overridden_by_explicit():
+    """Test that data-translate-context overrides id fallback."""
+    store = parse_html('<p id="greeting" data-translate-context="ctx">Hello</p>')
+    units = [u for u in store.getunits() if u.source == "Hello"]
+    assert units
+    assert units[0].getcontext() == "ctx"

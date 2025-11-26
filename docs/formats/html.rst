@@ -157,6 +157,10 @@ cases using the ``data-translate-context`` attribute. Its value becomes the
 same ``msgid``, without the excessively differentiated contexts from automated
 context disambiguation.
 
+If an element does not specify ``data-translate-context``, the ``id`` attribute
+is used as ``msgctxt`` instead (when present and non-empty). This helps provide
+more stable, meaningful contexts without additional markup changes.
+
 .. code-block:: html
 
     <p data-translate-context="verb">Open</p>

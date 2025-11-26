@@ -550,6 +550,12 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             context_value = self.WHITESPACE_RE.sub(" ", context_raw).strip()
             if context_value:
                 markup["translate_context"] = context_value
+        elif "id" in attrs_dict:
+            # Fallback: use element id as context if present
+            id_raw = attrs_dict.get("id") or ""
+            id_value = self.WHITESPACE_RE.sub(" ", id_raw).strip()
+            if id_value:
+                markup["translate_context"] = id_value
 
         self.append_markup(markup)
 
@@ -612,6 +618,12 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             context_value = self.WHITESPACE_RE.sub(" ", context_raw).strip()
             if context_value:
                 markup["translate_context"] = context_value
+        elif "id" in attrs_dict:
+            # Fallback: use element id as context if present
+            id_raw = attrs_dict.get("id") or ""
+            id_value = self.WHITESPACE_RE.sub(" ", id_raw).strip()
+            if id_value:
+                markup["translate_context"] = id_value
 
         self.append_markup(markup)
 
