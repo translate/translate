@@ -89,7 +89,7 @@ def test_html_context_id_fallback_basic():
 
 
 def test_html_context_id_fallback_attribute():
-    """Test that when data-translate-context is absent, the id attribute fallback is used, including relevant translateable attribute context."""
+    """Test that when data-translate-context is absent, the id attribute fallback is used, including relevant translatable attribute context."""
     store = parse_html('<p id="intro" title="Hello world">Welcome!</p>')
     units = store.getunits()
     unit0 = units[0]
