@@ -183,6 +183,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         self.ancestor_id_stack = []  # stack of ancestor ids (top is nearest)
         self._id_pushed_stack = []  # parallel to tag stack: did this element push an id?
         self._id_depth_stack = []  # indices into tag_path where ids were pushed
+        self._id_pos_stack = []  # positions (line, col) where ancestor ids start
 
         # parse
         if inputfile is not None:
@@ -567,6 +568,9 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 self._id_pushed_stack.append(True)
                 # Record depth of this id within tag_path (current element index)
                 self._id_depth_stack.append(len(self.tag_path) - 1)
+                # Record absolute position of the id element
+                id_line, id_col = self.getpos()[0], self.getpos()[1] + 1
+                self._id_pos_stack.append((id_line, id_col))
         else:
             # No explicit context and no own id; if within ancestor with id, use path
             ancestor_id = self.ancestor_id_stack[-1] if self.ancestor_id_stack else None
@@ -614,6 +618,8 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 self.ancestor_id_stack.pop()
                 if self._id_depth_stack:
                     self._id_depth_stack.pop()
+                if self._id_pos_stack:
+                    self._id_pos_stack.pop()
 
     def handle_startendtag(self, tag, attrs):
         self.auto_close_empty_element()
@@ -684,6 +690,8 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 self.ancestor_id_stack.pop()
                 if self._id_depth_stack:
                     self._id_depth_stack.pop()
+                if self._id_pos_stack:
+                    self._id_pos_stack.pop()
 
     def handle_data(self, data):
         self.auto_close_empty_element()

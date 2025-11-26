@@ -83,13 +83,15 @@ def test_html_context_id_overridden_by_explicit():
 
 
 def test_html_context_ancestor_path_with_pos():
-    """Test that child of element with id should use filename+id.relpath:line-col context when no own id/context."""
-    src = '<div id="container"><p>One</p><p>Two</p><span>Three</span></div>'
+    """Test that child of element with id should use filename+id.relpath:rel_line-rel_col context when no own id/context."""
+    src = '<div id="container"><p>One</p><p>Two</p><span>Three</span>\n<p>Four</p></div>'
     store = parse_html(src)
     units = store.getunits()
     one = next(u for u in units if u.source == "One")
     two = next(u for u in units if u.source == "Two")
     three = next(u for u in units if u.source == "Three")
+    four = next(u for u in units if u.source == "Four")
     assert one.getcontext() == "test.html+container.p:1-21"
     assert two.getcontext() == "test.html+container.p:1-31"
     assert three.getcontext() == "test.html+container.span:1-41"
+    assert four.getcontext() == "test.html+container.p:2-1"
