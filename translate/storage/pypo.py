@@ -28,14 +28,11 @@ from __future__ import annotations
 import copy
 import logging
 import re
-from functools import lru_cache
 from itertools import chain
 from string import punctuation
 from typing import TYPE_CHECKING
-from warnings import warn
 
-from unicode_segmentation_py import split_word_bounds
-from wcwidth import wcswidth
+from unicode_segmentation_rs import split_word_bounds, text_width
 
 from translate.misc import quote
 from translate.misc.multistring import multistring
@@ -110,17 +107,6 @@ def escapeforpo(line: str) -> str:
     :param line: unescaped text
     """
     return po_escape_re.sub(escapehandler, line)
-
-
-@lru_cache(maxsize=128)
-def unicode_width(text: str) -> int:
-    result = wcswidth(text)
-    if result == -1:
-        warn(
-            f"String contains control characters or non-displayable characters: {text!r}"
-        )
-        return len(text)
-    return result
 
 
 class PoWrapper:
@@ -212,7 +198,7 @@ class PoWrapper:
         current_width = 0
 
         for chunk in chunks:
-            chunk_width = sum(unicode_width(part) for part in chunk)
+            chunk_width = sum(text_width(part) for part in chunk)
 
             # Try to add chunk to current line
             if current_width + chunk_width <= self.width:
