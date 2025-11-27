@@ -158,7 +158,7 @@ same ``msgid``, without the excessively differentiated contexts from automated
 context disambiguation.
 
 If an element does not specify ``data-translate-context``, the following fallbacks
-apply:
+apply when disambiguated contexts are needed due to duplicate source strings:
 
 - ``{filename}:{element_id}`` when the element has an ``id`` attribute
 - ``{filename}+{ancestor_id}.{relative_tag_path}:{line}-{column}`` when the element
