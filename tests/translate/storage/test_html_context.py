@@ -88,6 +88,22 @@ def test_html_context_id_overridden_by_explicit():
     assert units[0].getcontext() == "ctx"
 
 
+def text_html_context_id_not_used_when_no_duplicates():
+    """Test that ID is not used when there are no duplicate sources."""
+    src = '<p id="a">Hello</p><p id="b">World</p>'
+    store = parse_html(src)
+    try:
+        hello_unit = next(u for u in store.getunits() if u.source == "Hello")
+        world_unit = next(u for u in store.getunits() if u.source == "World")
+    except StopIteration:
+        hello_unit = None
+        world_unit = None
+    assert hello_unit is not None
+    assert world_unit is not None
+    assert hello_unit.getcontext() == "test.html.p:1-16"
+    assert world_unit.getcontext() == "test.html.p:2-16"
+
+
 def test_html_context_disambiguates_duplicates_with_id():
     """Test that ID is used to disambiguatethe when the same source appears multiple times."""
     src = '<p id="a">Hello</p><p id="b">Hello</p>'
@@ -100,7 +116,7 @@ def test_html_context_disambiguates_duplicates_with_id():
 
 
 def test_html_context_disambiguates_duplicates_with_ancestor_id():
-    """Test that when identical sources are under duplicate ancestor IDs, use ancestor path hints."""
+    """Test that when identical sources are under different ancestor IDs, ancestor path hints are applied."""
     src = (
         '<div id="section_a"><p>Hello</p></div>\n<div id="section_b"><p>Hello</p></div>'
     )
