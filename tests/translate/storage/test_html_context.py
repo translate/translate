@@ -80,26 +80,6 @@ def test_html_context_absent():
     assert unit.getcontext() == ""
 
 
-def test_html_context_id_fallback_basic():
-    """Test that when data-translate-context is absent, the id attribute fallback is used."""
-    store = parse_html('<p id="greeting">Hello world</p>')
-    units = [u for u in store.getunits() if u.source == "Hello world"]
-    assert units
-    assert units[0].getcontext() == "test.html:greeting"
-
-
-def test_html_context_id_fallback_attribute():
-    """Test that when data-translate-context is absent, the id attribute fallback is used, including relevant translatable attribute context."""
-    store = parse_html('<p id="intro" title="Hello world">Welcome!</p>')
-    units = store.getunits()
-    unit0 = units[0]
-    unit1 = units[1]
-    assert unit0.getcontext() == "test.html:intro[title]"
-    assert unit0.source == "Hello world"
-    assert unit1.getcontext() == "test.html:intro"
-    assert unit1.source == "Welcome!"
-
-
 def test_html_context_id_overridden_by_explicit():
     """Test that data-translate-context overrides id fallback."""
     store = parse_html('<p id="greeting" data-translate-context="ctx">Hello</p>')
@@ -108,25 +88,24 @@ def test_html_context_id_overridden_by_explicit():
     assert units[0].getcontext() == "ctx"
 
 
-def test_html_context_ancestor_path_with_pos():
-    """Test that child of element with id should use filename+id.relpath:rel_line-rel_col context when no own id/context."""
-    src = (
-        '<div id="container"><p>One</p><p>Two</p><span>Three</span>\n<p>Four</p></div>'
-    )
+def test_html_context_disambiguates_duplicates_with_id():
+    """Test that ID is used to disambiguatethe when the same source appears multiple times."""
+    src = '<p id="a">Hello</p><p id="b">Hello</p>'
     store = parse_html(src)
-    units = store.getunits()
-    try:
-        one = next(u for u in units if u.source == "One")
-        two = next(u for u in units if u.source == "Two")
-        three = next(u for u in units if u.source == "Three")
-        four = next(u for u in units if u.source == "Four")
-    except StopIteration:
-        one = two = three = four = None
-    assert one is not None
-    assert two is not None
-    assert three is not None
-    assert four is not None
-    assert one.getcontext() == "test.html+container.p:1-21"
-    assert two.getcontext() == "test.html+container.p:1-31"
-    assert three.getcontext() == "test.html+container.span:1-41"
-    assert four.getcontext() == "test.html+container.p:2-1"
+    hello_units = [u for u in store.getunits() if u.source == "Hello"]
+    assert len(hello_units) == 2
+    contexts = {u.getcontext() for u in hello_units}
+    # Both should be distinct contexts on the basis of their IDs
+    assert contexts == {"test.html:a", "test.html:b"}
+
+
+def test_html_context_disambiguates_duplicates_with_ancestor_id():
+    """Test that when identical sources are under duplicate ancestor IDs, use ancestor path hints."""
+    src = '<div id="section_a"><p>Hello</p></div>\n<div id="section_b"><p>Hello</p></div>'
+    store = parse_html(src)
+    units = [u for u in store.getunits() if u.source == "Hello"]
+    assert len(units) == 2
+    ctx1 = units[0].getcontext()
+    ctx2 = units[1].getcontext()
+    assert ctx1 == "test.html+section_a.p:1-21"
+    assert ctx2 == "test.html+section_b.p:2-21"

@@ -184,6 +184,9 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         self._id_pushed_stack = []  # parallel to tag stack: did this element push an id?
         self._id_depth_stack = []  # indices into tag_path where ids were pushed
         self._id_pos_stack = []  # positions (line, col) where ancestor ids start
+        self._ancestor_id_label_stack = []  # labels for ancestor ids (id or id:line-col)
+        self._id_seen = set()  # track seen ids to disambiguate labels
+        self._units_by_source = {}  # Track units by normalized source to add context only when needed for disambiguation
 
         # parse
         if inputfile is not None:
@@ -340,6 +343,19 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             )
             if context:
                 unit.setcontext(context)
+            # If no explicit context, capture a context hint (from id/ancestor) for potential disambiguation
+            context_hint = None
+            if not context:
+                context_hint = next(
+                    (
+                        m["context_hint"]
+                        for m in self.tu_content
+                        if "context_hint" in m
+                    ),
+                    None,
+                )
+            # Register the unit for potential disambiguation using context hints
+            self._register_unit_for_disambiguation(unit, normalized_content, context_hint)
 
             # Extract comment text from HTML comment elements within the translation unit
             comments = [
@@ -436,12 +452,16 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             for tu in markup["attribute_tus"]:
                 unit = self.addsourceunit(tu["html_content"])
                 unit.addlocation(tu["location"])
-                if "translate_context" in markup:
-                    # Include attribute in context
-                    attr_suffix = (
-                        f"[{tu.get('attrname')}]" if tu.get("attrname") else ""
-                    )
-                    unit.setcontext(f"{markup['translate_context']}{attr_suffix}")
+                # Attribute context: prefer explicit translate_context; otherwise use context_hint only if needed
+                attr_suffix = f"[{tu.get('attrname')}]" if tu.get("attrname") else ""
+                explicit = markup.get("translate_context")
+                if explicit:
+                    unit.setcontext(f"{explicit}{attr_suffix}")
+                    self._register_unit_for_disambiguation(unit, tu["html_content"], None)
+                else:
+                    hint_base = markup.get("context_hint")
+                    hint = f"{hint_base}{attr_suffix}" if hint_base else None
+                    self._register_unit_for_disambiguation(unit, tu["html_content"], hint)
 
     def translate_attributes(self, tag, attrs):
         if not attrs:
@@ -567,14 +587,20 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             id_raw = attrs_dict.get("id") or ""
             id_value = self.WHITESPACE_RE.sub(" ", id_raw).strip()
             if id_value:
-                markup["translate_context"] = f"{self.filename}:{id_value}"
-                # This element itself becomes an ancestor with id for descendants
-                self.ancestor_id_stack.append(id_value)
-                self._id_pushed_stack.append(True)
-                # Record depth of this id within tag_path (current element index)
-                self._id_depth_stack.append(len(self.tag_path) - 1)
-                # Record absolute position of the id element
                 id_line, id_col = self.getpos()[0], self.getpos()[1] + 1
+                # Determine label for ancestor path hints
+                if id_value in getattr(self, "_id_seen", set()):
+                    id_label = f"{id_value}:{id_line}-{id_col}"
+                    markup["context_hint"] = f"{self.filename}+{id_value}:{id_line}-{id_col}"
+                else:
+                    id_label = id_value
+                    markup["context_hint"] = f"{self.filename}:{id_value}"
+                    if hasattr(self, "_id_seen"):
+                        self._id_seen.add(id_value)
+                self.ancestor_id_stack.append(id_value)
+                self._ancestor_id_label_stack.append(id_label)
+                self._id_pushed_stack.append(True)
+                self._id_depth_stack.append(len(self.tag_path) - 1)
                 self._id_pos_stack.append((id_line, id_col))
         else:
             # No explicit context and no own id; if within ancestor with id, use path
@@ -584,8 +610,13 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 # Build relative tag path from nearest id ancestor depth
                 id_depth = self._id_depth_stack[-1] if self._id_depth_stack else -1
                 rel_tags = self.tag_path[id_depth + 1 :]
-                path = ".".join([ancestor_id, *rel_tags]) if rel_tags else ancestor_id
-                markup["translate_context"] = f"{self.filename}+{path}:{line}-{col}"
+                ancestor_label = (
+                    self._ancestor_id_label_stack[-1]
+                    if self._ancestor_id_label_stack
+                    else ancestor_id
+                )
+                path = ".".join([ancestor_label, *rel_tags]) if rel_tags else ancestor_label
+                markup["context_hint"] = f"{self.filename}+{path}:{line}-{col}"
             self._id_pushed_stack.append(False)
 
         self.append_markup(markup)
@@ -625,6 +656,8 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                     self._id_depth_stack.pop()
                 if self._id_pos_stack:
                     self._id_pos_stack.pop()
+                if self._ancestor_id_label_stack:
+                    self._ancestor_id_label_stack.pop()
 
     def handle_startendtag(self, tag, attrs):
         self.auto_close_empty_element()
@@ -660,22 +693,40 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             if context_value:
                 markup["translate_context"] = context_value
         elif "id" in attrs_dict:
-            # Fallback: use filename-prefixed element id as context if present
             id_raw = attrs_dict.get("id") or ""
             id_value = self.WHITESPACE_RE.sub(" ", id_raw).strip()
             if id_value:
-                markup["translate_context"] = f"{self.filename}:{id_value}"
-                # Treat this as a temporary ancestor for consistency; will pop after
+                id_line, id_col = self.getpos()[0], self.getpos()[1] + 1
+                if id_value in getattr(self, "_id_seen", set()):
+                    id_label = f"{id_value}:{id_line}-{id_col}"
+                    markup["context_hint"] = f"{self.filename}+{id_value}:{id_line}-{id_col}"
+                else:
+                    id_label = id_value
+                    markup["context_hint"] = f"{self.filename}:{id_value}"
+                    self._id_seen.add(id_value)
+                # temporary ancestor; will be popped below
                 self.ancestor_id_stack.append(id_value)
+                self._ancestor_id_label_stack.append(id_label)
                 self._id_pushed_stack.append(True)
+                self._id_depth_stack.append(len(self.tag_path) - 1)
+                self._id_pos_stack.append((id_line, id_col))
         else:
-            # No explicit context and no own id; if within ancestor with id, use path
+            # No explicit context and no own id; if within ancestor with id, use path as hint
             ancestor_id = self.ancestor_id_stack[-1] if self.ancestor_id_stack else None
             if ancestor_id:
-                line = self.getpos()[0]
-                markup["translate_context"] = (
-                    f"{self.filename}:{ancestor_id}:{tag}:{line}"
+                line, col = self.getpos()[0], self.getpos()[1] + 1
+                id_depth = self._id_depth_stack[-1] if self._id_depth_stack else -1
+                rel_tags = self.tag_path[id_depth + 1 :]
+                ancestor_label = (
+                    self._ancestor_id_label_stack[-1]
+                    if self._ancestor_id_label_stack
+                    else ancestor_id
                 )
+                path = ".".join([ancestor_label, *rel_tags]) if rel_tags else ancestor_label
+                anc_line, anc_col = self._id_pos_stack[-1] if self._id_pos_stack else (1, 1)
+                rel_line = line - anc_line
+                rel_col = col - anc_col
+                markup["context_hint"] = f"{self.filename}+{path}:{rel_line}-{rel_col}"
             self._id_pushed_stack.append(False)
 
         self.append_markup(markup)
@@ -699,6 +750,18 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                     self._id_depth_stack.pop()
                 if self._id_pos_stack:
                     self._id_pos_stack.pop()
+                if self._ancestor_id_label_stack:
+                    self._ancestor_id_label_stack.pop()
+
+    def _register_unit_for_disambiguation(self, unit, source, context_hint):
+        bucket = self._units_by_source.setdefault(source, [])
+        bucket.append((unit, context_hint))
+        if len(bucket) == 2:
+            for u, hint in bucket:
+                if hint and not u.getcontext():
+                    u.setcontext(hint)
+        elif len(bucket) > 2 and context_hint and not unit.getcontext():
+            unit.setcontext(context_hint)
 
     def handle_data(self, data):
         self.auto_close_empty_element()
