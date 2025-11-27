@@ -119,7 +119,7 @@ class TestOO2PO:
         )
 
     def test_roundtrip_whitespaceonly(self):
-        """Check items that are only special instances of whitespce."""
+        """Check items that are only special instances of whitespace."""
         self.check_roundtrip("choose_chart_type.xhp", r" ")
         self.check_roundtrip("choose_chart_type.xhp", b"\xc2\xa0".decode("utf-8"))
 
