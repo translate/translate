@@ -347,15 +347,13 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             context_hint = None
             if not context:
                 context_hint = next(
-                    (
-                        m["context_hint"]
-                        for m in self.tu_content
-                        if "context_hint" in m
-                    ),
+                    (m["context_hint"] for m in self.tu_content if "context_hint" in m),
                     None,
                 )
             # Register the unit for potential disambiguation using context hints
-            self._register_unit_for_disambiguation(unit, normalized_content, context_hint)
+            self._register_unit_for_disambiguation(
+                unit, normalized_content, context_hint
+            )
 
             # Extract comment text from HTML comment elements within the translation unit
             comments = [
@@ -457,11 +455,15 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 explicit = markup.get("translate_context")
                 if explicit:
                     unit.setcontext(f"{explicit}{attr_suffix}")
-                    self._register_unit_for_disambiguation(unit, tu["html_content"], None)
+                    self._register_unit_for_disambiguation(
+                        unit, tu["html_content"], None
+                    )
                 else:
                     hint_base = markup.get("context_hint")
                     hint = f"{hint_base}{attr_suffix}" if hint_base else None
-                    self._register_unit_for_disambiguation(unit, tu["html_content"], hint)
+                    self._register_unit_for_disambiguation(
+                        unit, tu["html_content"], hint
+                    )
 
     def translate_attributes(self, tag, attrs):
         if not attrs:
@@ -591,7 +593,9 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 # Determine label for ancestor path hints
                 if id_value in getattr(self, "_id_seen", set()):
                     id_label = f"{id_value}:{id_line}-{id_col}"
-                    markup["context_hint"] = f"{self.filename}+{id_value}:{id_line}-{id_col}"
+                    markup["context_hint"] = (
+                        f"{self.filename}+{id_value}:{id_line}-{id_col}"
+                    )
                 else:
                     id_label = id_value
                     markup["context_hint"] = f"{self.filename}:{id_value}"
@@ -615,7 +619,11 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                     if self._ancestor_id_label_stack
                     else ancestor_id
                 )
-                path = ".".join([ancestor_label, *rel_tags]) if rel_tags else ancestor_label
+                path = (
+                    ".".join([ancestor_label, *rel_tags])
+                    if rel_tags
+                    else ancestor_label
+                )
                 markup["context_hint"] = f"{self.filename}+{path}:{line}-{col}"
             self._id_pushed_stack.append(False)
 
@@ -699,7 +707,9 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 id_line, id_col = self.getpos()[0], self.getpos()[1] + 1
                 if id_value in getattr(self, "_id_seen", set()):
                     id_label = f"{id_value}:{id_line}-{id_col}"
-                    markup["context_hint"] = f"{self.filename}+{id_value}:{id_line}-{id_col}"
+                    markup["context_hint"] = (
+                        f"{self.filename}+{id_value}:{id_line}-{id_col}"
+                    )
                 else:
                     id_label = id_value
                     markup["context_hint"] = f"{self.filename}:{id_value}"
@@ -722,8 +732,14 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                     if self._ancestor_id_label_stack
                     else ancestor_id
                 )
-                path = ".".join([ancestor_label, *rel_tags]) if rel_tags else ancestor_label
-                anc_line, anc_col = self._id_pos_stack[-1] if self._id_pos_stack else (1, 1)
+                path = (
+                    ".".join([ancestor_label, *rel_tags])
+                    if rel_tags
+                    else ancestor_label
+                )
+                anc_line, anc_col = (
+                    self._id_pos_stack[-1] if self._id_pos_stack else (1, 1)
+                )
                 rel_line = line - anc_line
                 rel_col = col - anc_col
                 markup["context_hint"] = f"{self.filename}+{path}:{rel_line}-{rel_col}"

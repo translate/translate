@@ -101,7 +101,9 @@ def test_html_context_disambiguates_duplicates_with_id():
 
 def test_html_context_disambiguates_duplicates_with_ancestor_id():
     """Test that when identical sources are under duplicate ancestor IDs, use ancestor path hints."""
-    src = '<div id="section_a"><p>Hello</p></div>\n<div id="section_b"><p>Hello</p></div>'
+    src = (
+        '<div id="section_a"><p>Hello</p></div>\n<div id="section_b"><p>Hello</p></div>'
+    )
     store = parse_html(src)
     units = [u for u in store.getunits() if u.source == "Hello"]
     assert len(units) == 2
