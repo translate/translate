@@ -182,12 +182,12 @@ class PoWrapper:
                 # In case the chunk is 1 char, we don't have previous character
                 second_fallback = ""
 
-            if len(chunk) == 1:
-                second_last_char = second_fallback
-                last_char = chunk
-            else:
+            try:
                 second_last_char = chunk[-2]
                 last_char = chunk[-1]
+            except IndexError:
+                second_last_char = second_fallback
+                last_char = chunk
 
         return chunks
 
