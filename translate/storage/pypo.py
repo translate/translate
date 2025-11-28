@@ -32,7 +32,7 @@ from itertools import chain
 from string import punctuation
 from typing import TYPE_CHECKING
 
-from unicode_segmentation_rs import split_word_bounds, text_width
+from unicode_segmentation_rs import gettext_wrap, text_width
 
 from translate.misc import quote
 from translate.misc.multistring import multistring
@@ -137,59 +137,7 @@ class PoWrapper:
         """
         if not text or self.width <= 0:
             return [text] if text else []
-
-        # Split text into chunks using word separator pattern
-        chunks = self._split_chunks(text)
-
-        # Now wrap the chunks into lines
-        return self._wrap_chunks(chunks)
-
-    def _split_chunks(self, text: str) -> list[list[str]]:
-        """
-        Split text into chunks at word boundaries using Unicode segmentation.
-
-        Uses the unicode_segmentation_py to split to words and postprocess
-        to apply gettext specific rules.
-        """
-        chunks: list[list[str]] = []
-        last_char = second_last_char = ""
-        last_chunk: list[str] = []
-
-        for chunk in split_word_bounds(text):
-            if (
-                last_char
-                and (
-                    not second_last_char
-                    or (last_char != "\\" or second_last_char != "\\")
-                )
-                and (
-                    chunk in po_mergeable_chars
-                    or (
-                        chunk not in po_open_parenthesis_chars
-                        and last_char not in po_line_break_chars
-                        and (
-                            last_char in po_punctuation
-                            or (chunk in po_punctuation and not last_char.isspace())
-                        )
-                    )
-                )
-            ):
-                last_chunk.append(chunk)
-                second_fallback = last_char
-            else:
-                last_chunk = [chunk]
-                chunks.append(last_chunk)
-                # In case the chunk is 1 char, we don't have previous character
-                second_fallback = ""
-
-            try:
-                second_last_char = chunk[-2]
-                last_char = chunk[-1]
-            except IndexError:
-                second_last_char = second_fallback
-                last_char = chunk
-
-        return chunks
+        return gettext_wrap(text, self.width)
 
     def _wrap_chunks(self, chunks: Iterable[list[str]]) -> list[str]:
         """Wrap chunks into lines."""
@@ -232,21 +180,13 @@ def quoteforpo(text: str | None, wrapper_obj: PoWrapper | None = None) -> list[s
     text = escapeforpo(text)
     if wrapper_obj.width == -1:
         return [f'"{text}"']
-    lines = text.split("\\n")
-    for i, line in enumerate(lines[:-1]):
-        lines[i] = f"{line}\\n"
+
+    lines = wrapper_obj.wrap(text)
 
     polines = []
-    len_lines = len(lines)
-    if (
-        len_lines > 2
-        or (len_lines == 2 and lines[1])
-        or len(lines[0]) > wrapper_obj.width - 6
-    ):
+    if len(lines) >= 2 or (lines and len(lines[0]) > wrapper_obj.width - 6):
         polines.append('""')
-    for line in lines:
-        lns = wrapper_obj.wrap(line)
-        polines.extend(f'"{ln}"' for ln in lns)
+    polines.extend(f'"{line}"' for line in lines)
     return polines
 
 
