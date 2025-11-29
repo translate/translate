@@ -18,6 +18,20 @@ def test_html_context_basic():
     )
 
 
+def test_html_context_attribute():
+    """Test that attribute is added to context."""
+    store = parse_html(
+        '<p data-translate-context="intro" title="Hello world">Welcome!</p>'
+    )
+    units = store.getunits()
+    unit0 = units[0]
+    unit1 = units[1]
+    assert unit0.getcontext() == "intro[title]"
+    assert unit0.source == "Hello world"
+    assert unit1.getcontext() == "intro"
+    assert unit1.source == "Welcome!"
+
+
 def test_html_context_same_source_different_contexts():
     """Test that the same source with different contexts is differentiated."""
     store = parse_html(
@@ -64,3 +78,52 @@ def test_html_context_absent():
         unit = None
     assert unit is not None
     assert unit.getcontext() == ""
+
+
+def test_html_context_id_overridden_by_explicit():
+    """Test that data-translate-context overrides id fallback."""
+    store = parse_html('<p id="greeting" data-translate-context="ctx">Hello</p>')
+    units = [u for u in store.getunits() if u.source == "Hello"]
+    assert units
+    assert units[0].getcontext() == "ctx"
+
+
+def text_html_context_id_not_used_when_no_duplicates():
+    """Test that ID is not used when there are no duplicate sources."""
+    src = '<p id="a">Hello</p><p id="b">World</p>'
+    store = parse_html(src)
+    try:
+        hello_unit = next(u for u in store.getunits() if u.source == "Hello")
+        world_unit = next(u for u in store.getunits() if u.source == "World")
+    except StopIteration:
+        hello_unit = None
+        world_unit = None
+    assert hello_unit is not None
+    assert world_unit is not None
+    assert hello_unit.getcontext() == "test.html.p:1-16"
+    assert world_unit.getcontext() == "test.html.p:2-16"
+
+
+def test_html_context_disambiguates_duplicates_with_id():
+    """Test that ID is used to disambiguatethe when the same source appears multiple times."""
+    src = '<p id="a">Hello</p><p id="b">Hello</p>'
+    store = parse_html(src)
+    hello_units = [u for u in store.getunits() if u.source == "Hello"]
+    assert len(hello_units) == 2
+    contexts = {u.getcontext() for u in hello_units}
+    # Both should be distinct contexts on the basis of their IDs
+    assert contexts == {"test.html:a", "test.html:b"}
+
+
+def test_html_context_disambiguates_duplicates_with_ancestor_id():
+    """Test that when identical sources are under different ancestor IDs, ancestor path hints are applied."""
+    src = (
+        '<div id="section_a"><p>Hello</p></div>\n<div id="section_b"><p>Hello</p></div>'
+    )
+    store = parse_html(src)
+    units = [u for u in store.getunits() if u.source == "Hello"]
+    assert len(units) == 2
+    ctx1 = units[0].getcontext()
+    ctx2 = units[1].getcontext()
+    assert ctx1 == "test.html+section_a.p:1-21"
+    assert ctx2 == "test.html+section_b.p:2-21"
