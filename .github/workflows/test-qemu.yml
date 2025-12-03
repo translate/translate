@@ -3,8 +3,7 @@ name: Qemu tests
 on:
   push:
     branches-ignore:
-    - dependabot/**
-    - deepsource**
+    - renovate/**
   pull_request:
 
 permissions:

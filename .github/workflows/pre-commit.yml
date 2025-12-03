@@ -3,8 +3,7 @@ name: Pre-commit check
 on:
   push:
     branches-ignore:
-    - dependabot/**
-    - deepsource**
+    - renovate/**
   pull_request:
 
 permissions:
