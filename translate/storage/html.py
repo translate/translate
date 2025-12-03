@@ -537,8 +537,8 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         if self.tag_path and self.tag_path[-1] in self.EMPTY_HTML_ELEMENTS:
             self.tag_path.pop()
 
-    def get_leading_whitespace(self, str):
-        match = self.LEADING_WHITESPACE_RE.search(str)
+    def get_leading_whitespace(self, string):
+        match = self.LEADING_WHITESPACE_RE.search(string)
         return match.group(1) if match else ""
 
     def get_trailing_whitespace(self, text):
