@@ -123,8 +123,8 @@ class NGram:
 
         min = sys.maxsize
 
-        for lang in self.ngrams:
-            d = self.ngrams[lang].compare(ngram)
+        for lang, value in self.ngrams.items():
+            d = value.compare(ngram)
             if d < min:
                 min = d
                 r = lang
@@ -152,12 +152,10 @@ class Generate:
             self.ngrams[lang] = n
 
     def save(self, folder, ext=".lm"):
-        for lang in self.ngrams:
+        for lang, value in self.ngrams.items():
             fname = path.join(folder, lang + ext)
             with open(fname, mode="w", encoding="utf-8") as fp:
-                fp.writelines(
-                    f"{k}\t {v}\n" for v, k in self.ngrams[lang].sorted_by_score()
-                )
+                fp.writelines(f"{k}\t {v}\n" for v, k in value.sorted_by_score())
 
 
 if __name__ == "__main__":

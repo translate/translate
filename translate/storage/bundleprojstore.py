@@ -124,7 +124,7 @@ class BundleProjectStore(ProjectStore):
         if fname in self._files or fname in self.zip.namelist():
             # Check if the file has not already been extracted to a temp file
             tempfname = [
-                tfn for tfn in self._tempfiles if self._tempfiles[tfn] == fname
+                tfn for tfn, tname in self._tempfiles.items() if tname == fname
             ]
             if tempfname and os.path.isfile(tempfname[0]):
                 tempfname = tempfname[0]
@@ -238,9 +238,9 @@ class BundleProjectStore(ProjectStore):
 
     def _update_from_tempfiles(self):
         """Update project files from temporary files."""
-        for tempfname in self._tempfiles:
+        for tempfname, value in self._tempfiles.items():
             tmp = open(tempfname)
-            self.update_file(self._tempfiles[tempfname], tmp)
+            self.update_file(value, tmp)
             if not tmp.closed:
                 tmp.close()
 

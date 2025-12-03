@@ -131,6 +131,7 @@ class reoo:
         # finally set the new definition in the oo, but not if its empty
         if len(unquotedstr) > 0:
             subkey = subkey.strip()
+            # pylint: disable-next=possibly-used-before-assignment
             setattr(part2, subkey, unquotedstr)
         # set the modified time
         if self.timestamp_str:

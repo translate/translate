@@ -195,10 +195,10 @@ class Statistics:
         for classname, matchingitems in self.classification.items():
             if (classname in classes) != (item in matchingitems):
                 if classname in classes:
-                    self.classification[classname].append(item)
+                    matchingitems.append(item)
                 else:
-                    self.classification[classname].remove(item)
-                self.classification[classname].sort()
+                    matchingitems.remove(item)
+                matchingitems.sort()
 
 
 #        self.savestats()

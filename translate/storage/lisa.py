@@ -75,9 +75,9 @@ class LISAunit(base.TranslationUnit):
         otherlanguageNodes = other.getlanguageNodes()
         if len(languageNodes) != len(otherlanguageNodes):
             return False
-        for i in range(len(languageNodes)):
+        for i, language_node in enumerate(languageNodes):
             mytext = self.getNodeText(
-                languageNodes[i], getXMLspace(self.xmlelement, self._default_xml_space)
+                language_node, getXMLspace(self.xmlelement, self._default_xml_space)
             )
             othertext = other.getNodeText(
                 otherlanguageNodes[i],

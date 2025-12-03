@@ -324,10 +324,10 @@ class Dialect:
             while line[start_pos] != cls.key_wrap_char or line[start_pos - 1] == "\\":
                 start_pos += 1
         # Find the position of each delimiter type
-        for delimiter in delimiters:
+        for delimiter, value in delimiters.items():
             pos = line.find(delimiter, start_pos)
             while pos != -1:
-                if delimiters[delimiter] == -1 and line[pos - 1] != "\\":
+                if value == -1 and line[pos - 1] != "\\":
                     delimiters[delimiter] = pos
                     break
                 pos = line.find(delimiter, pos + 1)

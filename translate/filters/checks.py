@@ -2880,11 +2880,9 @@ def runtests(str1, str2, ignorelist=()):
     checker = StandardChecker(excludefilters=ignorelist)
     failures = checker.run_filters(unit)
 
-    for test in failures:
+    for test, value in failures.items():
         print(  # noqa: T201
-            "failure: {}: {}\n  {!r}\n  {!r}".format(
-                test, failures[test]["message"], str1, str2
-            )
+            "failure: {}: {}\n  {!r}\n  {!r}".format(test, value["message"], str1, str2)
         )
 
     return failures

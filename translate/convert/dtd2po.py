@@ -115,8 +115,7 @@ class dtd2po:
             return None
         po_unit = po.pounit(encoding="UTF-8")
         # remove unwanted stuff
-        for commentnum in range(len(dtd_unit.comments)):
-            commenttype, locnote = dtd_unit.comments[commentnum]
+        for commentnum, (commenttype, locnote) in enumerate(dtd_unit.comments):
             # if this is a localization note
             if commenttype == "locnote":
                 # parse the locnote into the entity and the actual note

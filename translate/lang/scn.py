@@ -149,9 +149,9 @@ class SicilianChecker(TranslationChecker):
         }
 
         stopwords = [
-            f"{word} (-{suffixes[suffix]})"
+            f"{word} (-{value})"
             for word in self.config.lang.words(str2)
-            for suffix in suffixes
+            for suffix, value in suffixes.items()
             if word not in str1 and word.lower().endswith(suffix)
         ]
 
