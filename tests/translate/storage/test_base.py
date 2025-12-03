@@ -109,6 +109,7 @@ class TestTranslationUnit:
         unit4 = self.UnitClass("Blessed String")
         unit5 = self.UnitClass("Blessed String")
         unit6 = self.UnitClass("Blessed String")
+        # pylint: disable-next=comparison-with-itself
         assert unit1 == unit1  # noqa: PLR0124
         assert unit1 == unit2
         assert unit1 != unit4

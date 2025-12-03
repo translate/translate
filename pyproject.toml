@@ -20,10 +20,14 @@ docs = [
   "sphinxext-opengraph==0.13.0; python_version >= '3.11'"
 ]
 lint = [
-  {include-group = "pre-commit"}
+  {include-group = "pre-commit"},
+  {include-group = "pylint"}
 ]
 pre-commit = [
   "pre-commit==4.5.0"
+]
+pylint = [
+  "pylint==4.0.4"
 ]
 test = [
   "pytest-cov==7.0.0",
@@ -260,6 +264,84 @@ known_third_party = [
   "vobject"
 ]
 profile = "black"
+
+[tool.pylint.main]
+disable = [
+  "abstract-method",  # TODO
+  "arguments-differ",  # TODO
+  "arguments-renamed",  # TODO
+  "assignment-from-no-return",  # TODO
+  "attribute-defined-outside-init",  # TODO
+  "bidirectional-unicode",  # TODO
+  "broad-exception-caught",  # TODO
+  "c-extension-no-member",  # TODO
+  "consider-using-dict-items",  # TODO
+  "consider-using-enumerate",  # TODO
+  "consider-using-f-string",  # TODO
+  "consider-using-with",  # TODO
+  "cyclic-import",
+  "dangerous-default-value",  # TODO
+  "deprecated-method",  # TODO
+  "disallowed-name",  # TODO
+  "duplicate-code",  # TODO
+  "eval-used",  # TODO
+  "fixme",
+  "function-redefined",  # TODO
+  "global-statement",  # TODO
+  "import-outside-toplevel",
+  "invalid-name",  # TODO
+  "invalid-overridden-method",  # TODO
+  "keyword-arg-before-vararg",  # TODO
+  "line-too-long",
+  "missing-class-docstring",
+  "missing-function-docstring",
+  "missing-module-docstring",
+  "no-else-return",  # TODO
+  "no-member",  # TODO
+  "no-name-in-module",  # TODO
+  "no-value-for-parameter",  # TODO
+  "not-an-iterable",  # TODO
+  "not-callable",  # TODO
+  "pointless-string-statement",  # TODO
+  "possibly-used-before-assignment",  # TODO
+  "protected-access",  # TODO
+  "raise-missing-from",  # TODO
+  "redefined-builtin",  # TODO
+  "redefined-outer-name",  # TODO
+  "reimported",  # TODO
+  "signature-differs",  # TODO
+  "super-init-not-called",  # TODO
+  "superfluous-parens",  # TODO
+  "too-few-public-methods",
+  "too-many-arguments",
+  "too-many-boolean-expressions",  # TODO
+  "too-many-branches",
+  "too-many-function-args",
+  "too-many-instance-attributes",
+  "too-many-lines",
+  "too-many-locals",
+  "too-many-nested-blocks",
+  "too-many-positional-arguments",
+  "too-many-public-methods",
+  "too-many-return-statements",
+  "too-many-statements",
+  "undefined-loop-variable",  # TODO
+  "unidiomatic-typecheck",  # TODO
+  "unnecessary-dict-index-lookup",  # TODO
+  "unreachable",  # TODO
+  "unspecified-encoding",  # TODO
+  "unsubscriptable-object",  # TODO
+  "unsupported-assignment-operation",  # TODO
+  "unused-argument",
+  "unused-wildcard-import",  # TODO
+  "use-implicit-booleaness-not-comparison",  # TODO
+  "use-implicit-booleaness-not-len",  # TODO
+  "use-maxsplit-arg",  # TODO
+  "use-yield-from",  # TODO
+  "used-before-assignment",  # TODO
+  "wildcard-import",  # TODO
+  "wrong-import-position"  # TODO
+]
 
 [tool.pytest.ini_options]
 norecursedirs = ".git build docs"
