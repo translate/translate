@@ -3,8 +3,7 @@ name: Distribution
 on:
   push:
     branches-ignore:
-    - dependabot/**
-    - deepsource**
+    - renovate/**
     tags:
     - '*'
   pull_request:
