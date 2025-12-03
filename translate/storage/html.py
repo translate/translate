@@ -624,7 +624,12 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                     if rel_tags
                     else ancestor_label
                 )
-                markup["context_hint"] = f"{self.filename}+{path}:{line}-{col}"
+                ancestor_line, ancestor_col = (
+                    self._id_pos_stack[-1] if self._id_pos_stack else (1, 1)
+                )
+                rel_line = line - ancestor_line
+                rel_col = col - ancestor_col
+                markup["context_hint"] = f"{self.filename}+{path}:{rel_line}-{rel_col}"
             self._id_pushed_stack.append(False)
 
         self.append_markup(markup)

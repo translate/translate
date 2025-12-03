@@ -126,5 +126,5 @@ def test_html_context_disambiguates_duplicates_with_ancestor_id():
     assert len(units) == 2
     ctx1 = units[0].getcontext()
     ctx2 = units[1].getcontext()
-    assert ctx1 == "test.html+section_a.p:1-21"
-    assert ctx2 == "test.html+section_b.p:2-21"
+    assert ctx1 == "test.html+section_a.p:0-20"
+    assert ctx2 == "test.html+section_b.p:0-20"
