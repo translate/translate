@@ -78,7 +78,7 @@ def writexml_helper(self, writer, indent="", addindent="", newl=""):
         writer.write(f"/>{newl}")
 
 
-def getElementsByTagName_helper(parent, name, dummy=None):
+def getElementsByTagName_helper(parent, name):
     """
     A reimplementation of getElementsByTagName as an iterator.
 
