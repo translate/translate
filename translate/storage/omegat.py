@@ -171,10 +171,10 @@ class OmegaTFile(base.TranslationStore):
             input = tmsrc
         try:
             input = input.decode(self.encoding)
-        except Exception:
+        except UnicodeDecodeError as error:
             raise ValueError(
                 "OmegaT files are either UTF-8 encoded or use the default system encoding"
-            )
+            ) from error
         lines = csv.DictReader(
             input.split("\n"), fieldnames=OMEGAT_FIELDNAMES, dialect="omegat"
         )

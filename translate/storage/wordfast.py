@@ -424,10 +424,10 @@ class WordfastTMFile(base.TranslationStore):
             self.encoding = "iso-8859-1"
         try:
             input = input.decode(self.encoding)
-        except Exception:
+        except UnicodeDecodeError as error:
             raise ValueError(
                 "Wordfast files are either UTF-16 (UCS2) or ISO-8859-1 encoded"
-            )
+            ) from error
         reader = csv.DictReader(
             input.split("\n"), fieldnames=WF_FIELDNAMES, dialect="wordfast"
         )

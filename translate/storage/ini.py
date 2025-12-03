@@ -37,8 +37,8 @@ from translate.storage import base
 
 try:
     from iniparse import INIConfig, change_comment_syntax
-except ImportError:
-    raise ImportError("Missing iniparse library.")
+except ImportError as error:
+    raise ImportError("Missing iniparse library.") from error
 
 
 location_re = re.compile(r"\[(?P<section>.+)\](?P<entry>.+)")
