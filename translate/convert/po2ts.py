@@ -23,6 +23,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+from translate.convert import convert
 from translate.misc.multistring import multistring
 from translate.storage import po, ts2
 
@@ -124,8 +125,6 @@ def convertpo(inputfile, outputfile, templatefile, context):
 
 
 def main(argv=None):
-    from translate.convert import convert
-
     formats = {"po": ("ts", convertpo), ("po", "ts"): ("ts", convertpo)}
     parser = convert.ConvertOptionParser(
         formats, usepots=False, usetemplates=True, description=__doc__

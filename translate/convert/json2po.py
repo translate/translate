@@ -25,7 +25,8 @@ for examples and usage instructions.
 
 import logging
 
-from translate.storage import po
+from translate.convert import convert
+from translate.storage import jsonl10n, po
 
 logger = logging.getLogger(__name__)
 
@@ -108,8 +109,6 @@ def convertjson(
     Reads in *input_file* using jsonl10n, converts using :class:`json2po`,
     writes to *output_file*.
     """
-    from translate.storage import jsonl10n
-
     if filter is not None:
         filter = filter.split(",")
     input_store = jsonl10n.JsonFile(input_file, filter=filter)
@@ -130,8 +129,6 @@ def convertjson(
 
 
 def main(argv=None):
-    from translate.convert import convert
-
     formats = {
         "json": ("po", convertjson),
         ("json", "json"): ("po", convertjson),

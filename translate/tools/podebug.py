@@ -28,7 +28,7 @@ import re
 from functools import partial
 from hashlib import md5
 
-from translate.convert import dtd2po
+from translate.convert import convert, dtd2po
 from translate.storage import factory
 from translate.storage.placeables import StringElem, general
 from translate.storage.placeables import parse as rich_parse
@@ -415,8 +415,6 @@ def convertpo(
 
 
 def main():
-    from translate.convert import convert
-
     formats = {
         "po": ("po", convertpo),
         "pot": ("po", convertpo),

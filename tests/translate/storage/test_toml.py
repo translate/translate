@@ -1,5 +1,6 @@
 import pytest
 
+from translate.misc.multistring import multistring
 from translate.storage import base, toml
 
 from . import test_monolingual
@@ -501,7 +502,6 @@ other = "You have {{ .Count }} messages"
         assert len(store.units) == 1
 
         # Modify the plural
-        from translate.misc.multistring import multistring
 
         store.units[0].target = multistring(["Un mensaje", "{{ .Count }} mensajes"])
 

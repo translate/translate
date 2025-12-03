@@ -1,3 +1,4 @@
+import warnings
 from io import BytesIO
 
 from pytest import mark, raises
@@ -757,8 +758,6 @@ key=value
 
     def test_utf16_bom_no_warning(self):
         """Test that UTF-16 files with BOM do not trigger encoding warnings."""
-        import warnings
-
         # Test UTF-16 with BOM (typical Mac .strings file)
         propsource = r'"key" = "value";'.encode("utf-16")
 

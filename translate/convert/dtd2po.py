@@ -25,6 +25,7 @@ dtd2po convertor class which is in this module
 You can convert back to .dtd using po2dtd.py.
 """
 
+from translate.convert import convert
 from translate.convert.accesskey import UnitMixer
 from translate.misc import quote
 from translate.storage import dtd, po
@@ -309,8 +310,6 @@ def convertdtd(
 
 
 def main(argv=None):
-    from translate.convert import convert
-
     formats = {
         "dtd": ("po", convertdtd),
         ("dtd", "dtd"): ("po", convertdtd),

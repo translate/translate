@@ -25,6 +25,7 @@ for examples and usage instructions.
 
 import logging
 import os
+import stat
 import time
 
 from translate.convert import convert
@@ -149,8 +150,6 @@ class reoo:
 
 
 def getmtime(filename):
-    import stat
-
     return time.localtime(os.stat(filename)[stat.ST_MTIME])
 
 

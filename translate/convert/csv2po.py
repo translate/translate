@@ -25,6 +25,7 @@ for examples and usage instructions.
 
 import logging
 
+from translate.convert import convert
 from translate.storage import csvl10n, po
 
 logger = logging.getLogger(__name__)
@@ -259,8 +260,6 @@ def columnorder_callback(option, opt, value, parser):
 
 
 def main(argv=None):
-    from translate.convert import convert
-
     formats = {
         ("csv", "po"): ("po", convertcsv),
         ("csv", "pot"): ("po", convertcsv),

@@ -23,6 +23,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+from translate.convert import convert
 from translate.storage import po, poxliff
 
 
@@ -107,8 +108,6 @@ def convertpo(inputfile, outputfile, templatefile):
 
 
 def main(argv=None):
-    from translate.convert import convert
-
     formats = (
         ("po", ("xlf", convertpo)),
         (("po", "xlf"), ("xlf", convertpo)),

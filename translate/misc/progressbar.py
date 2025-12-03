@@ -21,6 +21,9 @@ Progress bar utilities for reporting feedback on the progress of an
 application.
 """
 
+import sys
+import time
+
 
 class DotsProgressBar:
     """
@@ -29,8 +32,6 @@ class DotsProgressBar:
     """
 
     def __init__(self):
-        import sys
-
         self.stderr = sys.stderr
         self.amount = 0
 
@@ -109,8 +110,6 @@ class MessageProgressBar(ProgressBar):
     """
 
     def __init__(self, *args, **kwargs):
-        import sys
-
         self.sys = sys
         super().__init__(*args, **kwargs)
 
@@ -123,8 +122,6 @@ class HashProgressBar(ProgressBar):
     """A ProgressBar which knows how to go back to the beginning of the line."""
 
     def __init__(self, *args, **kwargs):
-        import sys
-
         self.sys = sys
         super().__init__(*args, **kwargs)
 
@@ -155,8 +152,6 @@ class VerboseProgressBar(HashProgressBar):
 
 
 def test(progressbar):
-    import time
-
     for n in range(progressbar.min, progressbar.max + 1, 5):
         progressbar.amount = n
         progressbar.show("Some message")

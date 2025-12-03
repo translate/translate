@@ -26,7 +26,8 @@ for examples and usage instructions.
 
 import logging
 
-from translate.storage import po
+from translate.convert import convert
+from translate.storage import po, resx
 
 logger = logging.getLogger(__name__)
 
@@ -132,8 +133,6 @@ def convert_resx(
     duplicatestyle="msgctxt",
     filter=None,
 ):
-    from translate.storage import resx
-
     input_store = resx.RESXFile(input_file)
     convertor = resx2po()
     if template_file is None:
@@ -152,8 +151,6 @@ def convert_resx(
 
 
 def main(argv=None):
-    from translate.convert import convert
-
     formats = {
         "resx": ("po", convert_resx),
         ("resx", "resx"): ("po", convert_resx),

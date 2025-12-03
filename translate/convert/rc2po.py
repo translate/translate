@@ -25,6 +25,7 @@ for examples and usage instructions.
 
 import logging
 
+from translate.convert import convert
 from translate.storage import po, rc
 
 logger = logging.getLogger(__name__)
@@ -128,8 +129,6 @@ def convertrc(
 
 
 def main(argv=None):
-    from translate.convert import convert
-
     formats = {
         "rc": ("po", convertrc),
         ("rc", "rc"): ("po", convertrc),

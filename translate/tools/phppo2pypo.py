@@ -21,6 +21,7 @@
 import re
 from typing import overload
 
+from translate.convert import convert
 from translate.misc.multistring import multistring
 from translate.storage import po
 
@@ -99,8 +100,6 @@ def convertphp2py(inputfile, outputfile, template=None):
 
 def main(argv=None):
     """Converts PHP .po files to Python .po files."""
-    from translate.convert import convert
-
     formats = {"po": ("po", convertphp2py)}
     parser = convert.ConvertOptionParser(formats, description=__doc__)
     parser.run(argv)

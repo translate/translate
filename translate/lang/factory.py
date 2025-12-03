@@ -24,6 +24,7 @@ import pkgutil
 from functools import lru_cache
 from importlib import import_module
 
+import translate.lang as package
 from translate.lang import common, data
 
 prefix = "code_"
@@ -60,7 +61,6 @@ def getlanguage(code: str | None):
 
 def get_all_languages():
     """Return all language classes."""
-    import translate.lang as package
 
     def is_language_module(x):
         return not (

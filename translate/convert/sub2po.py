@@ -25,7 +25,8 @@ for examples and usage instructions.
 
 import logging
 
-from translate.storage import po
+from translate.convert import convert
+from translate.storage import po, subtitles
 
 logger = logging.getLogger(__name__)
 
@@ -101,8 +102,6 @@ def convertsub(
     Reads in *input_file* using translate.subtitles, converts using
     :class:`sub2po`, writes to *output_file*.
     """
-    from translate.storage import subtitles
-
     input_store = subtitles.SubtitleFile(input_file)
     if template_file is None:
         output_store = convert_store(input_store, duplicatestyle=duplicatestyle)
@@ -118,8 +117,6 @@ def convertsub(
 
 
 def main(argv=None):
-    from translate.convert import convert
-
     formats = {
         "srt": ("po", convertsub),
         ("srt", "srt"): ("po", convertsub),

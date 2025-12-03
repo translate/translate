@@ -18,6 +18,7 @@
 
 """Module to provide statistics and related functionality."""
 
+from translate.filters import checks, pofilter
 from translate.lang import factory
 
 # calling classifyunits() in the constructor is probably not ideal.
@@ -44,8 +45,6 @@ class Statistics:
         self.classification = {}
 
     def init_checker(self, checkerstyle=None):
-        from translate.filters import checks, pofilter
-
         checkerclasses = [
             checkerstyle or checks.StandardChecker,
             pofilter.StandardPOChecker,

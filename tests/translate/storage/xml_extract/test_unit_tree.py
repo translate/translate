@@ -17,6 +17,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 
+from translate.storage import xliff
 from translate.storage.xml_extract import unit_tree
 
 # _split_xpath_component
@@ -81,8 +82,6 @@ def make_tree_2(unit_1, unit_2):
 
 
 def test__add_unit_to_tree():
-    from translate.storage import xliff
-
     xliff_file = xliff.xlifffile
     #    xliff_file = factory.classes['xlf']()
 

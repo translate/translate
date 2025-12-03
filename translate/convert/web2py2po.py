@@ -26,6 +26,7 @@ for examples and usage instructions.
 
 from ast import literal_eval
 
+from translate.convert import convert
 from translate.storage import po
 
 
@@ -78,8 +79,6 @@ def convertpy(inputfile, outputfile, encoding="UTF-8", duplicatestyle="msgctxt")
 
 
 def main(argv=None):
-    from translate.convert import convert
-
     formats = {("py", "po"): ("po", convertpy), ("py", None): ("po", convertpy)}
     parser = convert.ConvertOptionParser(
         formats, usetemplates=False, usepots=True, description=__doc__

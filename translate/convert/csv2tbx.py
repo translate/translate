@@ -24,6 +24,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions
 """
 
+from translate.convert import convert
 from translate.storage import csvl10n, tbx
 
 
@@ -77,8 +78,6 @@ def convertcsv(inputfile, outputfile, templatefile, charset=None, columnorder=No
 
 
 def main():
-    from translate.convert import convert
-
     formats = {
         ("csv", "tbx"): ("tbx", convertcsv),
         ("csv", None): ("tbx", convertcsv),

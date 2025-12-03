@@ -23,6 +23,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+from translate.convert import convert
 from translate.lang import factory as lang_factory
 from translate.storage import factory, poheader
 
@@ -96,8 +97,6 @@ def segmentfile(
 
 
 def main():
-    from translate.convert import convert
-
     formats = {
         "po": ("po", segmentfile),
         "xlf": ("xlf", segmentfile),

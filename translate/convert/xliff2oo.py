@@ -25,8 +25,10 @@ for examples and usage instructions.
 
 import logging
 import os
+import stat
 import time
 
+from translate.convert import convert
 from translate.filters import autocorrect, checks, pofilter
 from translate.storage import factory, oo
 
@@ -150,8 +152,6 @@ class reoo:
 
 
 def getmtime(filename):
-    import stat
-
     return time.localtime(os.stat(filename)[stat.ST_MTIME])
 
 
@@ -238,8 +238,6 @@ def convertoo(
 
 
 def main(argv=None):
-    from translate.convert import convert
-
     formats = {
         ("po", "oo"): ("oo", convertoo),
         ("xlf", "oo"): ("oo", convertoo),

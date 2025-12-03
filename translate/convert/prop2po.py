@@ -24,8 +24,11 @@ for examples and usage instructions.
 """
 
 import logging
+import re
 
+from translate.convert import convert
 from translate.convert.accesskey import UnitMixer
+from translate.lang import data
 from translate.storage import po, properties
 
 logger = logging.getLogger(__name__)
@@ -193,10 +196,6 @@ class prop2po:
             def __init__(self, unit):
                 self.unit = unit
                 self.variants = {}
-
-        import re
-
-        from translate.lang import data
 
         regex = re.compile(r"([^\[\]]*)(?:\[(.*)\])?")
         names = data.cldr_plural_categories
@@ -487,8 +486,6 @@ formats = {
 
 
 def main(argv=None):
-    from translate.convert import convert
-
     parser = convert.ConvertOptionParser(
         formats, usetemplates=True, usepots=True, description=__doc__
     )

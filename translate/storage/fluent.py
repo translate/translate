@@ -25,6 +25,7 @@ and :class:`FluentUnit` providing file and unit level access.
 
 from __future__ import annotations
 
+import hashlib
 import re
 import textwrap
 from typing import TYPE_CHECKING, BinaryIO
@@ -837,7 +838,6 @@ class FluentUnit(base.TranslationUnit):
         # string with a collision-resistant hash function.
         # By default, we choose an id that indicates that this represents a
         # fluent Message.
-        import hashlib
 
         return "gen-" + hashlib.sha256(source.encode()).hexdigest()
 

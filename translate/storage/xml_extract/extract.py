@@ -21,6 +21,7 @@ from contextlib import contextmanager
 from lxml import etree
 
 from translate.storage.placeables import StringElem, xliff
+from translate.storage.xliff import xliffunit
 from translate.storage.xml_extract import misc, xpath_breadcrumb
 
 
@@ -325,7 +326,6 @@ def _make_store_adder(store):
     to 'placeable_quoter'.
     """
     id_maker = IdMaker()
-    from translate.storage.xliff import xliffunit
 
     def add_translatable_to_store(parent_translatable, translatable):
         """
@@ -351,7 +351,6 @@ def make_postore_adder(store, id_maker, filename):
     a unit to 'store'. The placeables will be represented as strings according
     to 'placeable_quoter'.
     """
-    from translate.storage.xliff import xliffunit
 
     def add_translatable_to_store(parent_translatable, translatable):
         """

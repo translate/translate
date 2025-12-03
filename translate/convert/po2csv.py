@@ -23,6 +23,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+from translate.convert import convert
 from translate.storage import csvl10n, po
 
 
@@ -91,8 +92,6 @@ def columnorder_callback(option, opt, value, parser):
 
 
 def main(argv=None):
-    from translate.convert import convert
-
     formats = {"po": ("csv", convertcsv)}
     parser = convert.ConvertOptionParser(formats, description=__doc__)
     parser.add_option(
