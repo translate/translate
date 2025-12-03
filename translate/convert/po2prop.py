@@ -26,6 +26,7 @@ for examples and usage instructions.
 import warnings
 
 from translate.convert import accesskey, convert
+from translate.lang import data
 from translate.misc import quote
 from translate.storage import po, properties
 
@@ -114,8 +115,6 @@ class reprop:
 
     def _explode_gaia_plurals(self):
         """Explode the gaia plurals."""
-        from translate.lang import data
-
         for unit in self.inputstore.units:
             if not unit.hasplural():
                 continue
@@ -150,7 +149,6 @@ class reprop:
             "many": "many",
             "other": "",
         }
-        from translate.lang import data
 
         for unit in self.inputstore.units:
             if not unit.hasplural():

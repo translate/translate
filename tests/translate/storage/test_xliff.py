@@ -1076,9 +1076,8 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         serialized = bytes(target)
 
         # Parse with lxml to check namespace and structure
-        from lxml import etree as lxml_etree
 
-        tree = lxml_etree.fromstring(serialized)
+        tree = etree.fromstring(serialized)
 
         # Verify the document uses target's namespace (1.1)
         assert tree.nsmap[None] == "urn:oasis:names:tc:xliff:document:1.1"

@@ -23,12 +23,13 @@ clients using JSON over HTTP.
 
 import json
 import logging
+import sys
 from argparse import ArgumentParser
 from io import BytesIO
 from urllib import parse
 
 from translate.misc import selector, wsgi
-from translate.storage import base, tmdb
+from translate.storage import base, factory, tmdb
 
 logger = logging.getLogger(__name__)
 
@@ -48,8 +49,6 @@ class TMServer:
         target_lang=None,
     ):
         if not isinstance(tmdbfile, str):
-            import sys
-
             tmdbfile = tmdbfile.decode(sys.getfilesystemencoding())
 
         self.tmdb = tmdb.TMDB(tmdbfile, max_candidates, min_similarity, max_length)
@@ -76,8 +75,6 @@ class TMServer:
         )
 
     def _load_files(self, tmfiles, source_lang, target_lang):
-        from translate.storage import factory
-
         if isinstance(tmfiles, list):
             for tmfile in tmfiles:
                 self.tmdb.add_store(factory.getobject(tmfile), source_lang, target_lang)
@@ -137,8 +134,6 @@ class TMServer:
     @selector.opliant
     def upload_store(self, environ, start_response, sid, slang, tlang):
         """Add units from uploaded file to tmdb."""
-        from translate.storage import factory
-
         start_response("200 OK", [("Content-type", "text/plain")])
         data = BytesIO(environ["wsgi.input"].read(int(environ["CONTENT_LENGTH"])))
         data.name = sid

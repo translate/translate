@@ -591,7 +591,8 @@ def propertiesdecode(source: str) -> str:
                 logger.warning("Invalid named unicode escape: no } after \\N{")
                 output.append(f"\\{c}")
                 continue
-            import unicodedata
+            # pylint: disable-next=import-outside-toplevel
+            import unicodedata  # noqa: PLC0415
 
             name = source[s:e]
             output.append(unicodedata.lookup(name))

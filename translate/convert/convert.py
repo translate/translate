@@ -25,6 +25,7 @@ import os.path
 from io import BytesIO
 
 from translate.misc import optrecurse
+from translate.tools import pocount
 
 # Don't import optparse ourselves, get the version from optrecurse.
 optparse = optrecurse.optparse
@@ -541,8 +542,6 @@ def should_output_store(store, threshold):
     """
     if not threshold:
         return True
-
-    from translate.tools import pocount
 
     units = [unit for unit in store.units if unit.istranslatable()]
     translated = [unit for unit in units if unit.istranslated()]

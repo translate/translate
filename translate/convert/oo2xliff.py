@@ -26,6 +26,7 @@ for examples and usage instructions.
 
 import logging
 
+from translate.convert import convert
 from translate.storage import oo, xliff
 
 # TODO: support using one GSI file as template, another as input (for when English is in one and translation in another)
@@ -162,8 +163,6 @@ def convertoo(
 
 
 def main(argv=None):
-    from translate.convert import convert
-
     formats = (
         ("oo", ("xlf", convertoo)),
         ("sdf", ("xlf", convertoo)),

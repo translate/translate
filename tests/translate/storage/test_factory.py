@@ -3,7 +3,7 @@ from bz2 import BZ2File
 from gzip import GzipFile
 from io import BytesIO
 
-from translate.storage import factory
+from translate.storage import factory, po, poxliff, wordfast, xliff
 from translate.storage.directory import Directory
 
 
@@ -125,16 +125,12 @@ class BaseTestFactory:
 
 
 class TestPOFactory(BaseTestFactory):
-    from translate.storage import po
-
     expected_instance = po.pofile
     filename = "dummy.po"
     file_content = b"""#: test.c\nmsgid "test"\nmsgstr "rest"\n"""
 
 
 class TestXliffFactory(BaseTestFactory):
-    from translate.storage import xliff
-
     expected_instance = xliff.Xliff1File
     filename = "dummy.xliff"
     file_content = b"""<?xml version="1.0" encoding="utf-8"?>
@@ -151,8 +147,6 @@ class TestXliffFactory(BaseTestFactory):
 
 
 class TestPOXliffFactory(BaseTestFactory):
-    from translate.storage import poxliff
-
     expected_instance = poxliff.PoXliffFile
     filename = "dummy.xliff"
     file_content = b"""<?xml version="1.0" encoding="utf-8"?>
@@ -170,8 +164,6 @@ Content-Transfer-Encoding: 8bit
 
 
 class TestWordfastFactory(BaseTestFactory):
-    from translate.storage import wordfast
-
     expected_instance = wordfast.WordfastTMFile
     filename = "dummy.txt"
     file_content = (

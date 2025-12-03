@@ -2,6 +2,7 @@
 
 import contextlib
 import os
+import shutil
 import sys
 import tempfile
 from zipfile import ZipFile
@@ -22,7 +23,6 @@ class TestBundleProjectStore:
     def teardown_method(self):
         """Clean up test fixtures."""
         # Clean up any test files
-        import shutil
 
         if os.path.exists(self.test_dir):
             shutil.rmtree(self.test_dir)

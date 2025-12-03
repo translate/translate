@@ -26,6 +26,7 @@ with only the target text in from a text version of the RTF.
 
 import re
 
+from translate.convert import convert
 from translate.misc.multistring import multistring
 from translate.storage import factory
 
@@ -65,8 +66,6 @@ def runclean(inputfile, outputfile, templatefile):
 
 
 def main():
-    from translate.convert import convert
-
     formats = {
         "po": ("po", runclean),
         "xlf": ("xlf", runclean),

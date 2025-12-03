@@ -23,6 +23,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+from translate.convert import convert
 from translate.storage import factory
 from translate.storage.pypo import unescape
 from translate.storage.symbian import (
@@ -120,8 +121,6 @@ def convert_symbian(
 
 
 def main(argv=None):
-    from translate.convert import convert
-
     formats = {"r01": ("po", convert_symbian)}
     parser = convert.ConvertOptionParser(
         formats, usetemplates=True, usepots=True, description=__doc__

@@ -28,6 +28,7 @@ for examples and usage instructions.
 
 import logging
 
+from translate.convert import convert
 from translate.storage import factory
 from translate.storage.poheader import poheader
 
@@ -108,8 +109,6 @@ def mergestore(
 
 
 def main():
-    from translate.convert import convert
-
     formats = {
         ("po", "po"): ("po", mergestore),
         ("po", "pot"): ("po", mergestore),

@@ -23,6 +23,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions
 """
 
+from translate.convert import convert
 from translate.storage import po, tbx
 
 
@@ -66,8 +67,6 @@ def converttbx(inputfile, outputfile, templatefile, charset=None, columnorder=No
 
 
 def main():
-    from translate.convert import convert
-
     formats = {
         ("tbx", None): ("po", converttbx),
     }

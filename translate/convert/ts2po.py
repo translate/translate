@@ -23,6 +23,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+from translate.convert import convert
 from translate.misc.multistring import multistring
 from translate.storage import po, ts2
 
@@ -117,8 +118,6 @@ def convertts(inputfile, outputfile, templates, pot=False, duplicatestyle="msgct
 
 
 def main(argv=None):
-    from translate.convert import convert
-
     formats = {"ts": ("po", convertts)}
     parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
     parser.add_duplicates_option()

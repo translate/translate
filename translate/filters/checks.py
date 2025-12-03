@@ -38,6 +38,7 @@ import string
 from translate.filters import decoration, helpers, prefilters, spelling
 from translate.filters.decorators import cosmetic, critical, extraction, functional
 from translate.lang import data, factory
+from translate.storage import base
 
 logger = logging.getLogger(__name__)
 
@@ -523,7 +524,8 @@ class UnitChecker:
             if not filterresult:
                 if not filtermessage:
                     # Should be quite rare
-                    import pydoc
+                    # pylint: disable-next=import-outside-toplevel
+                    import pydoc  # noqa: PLC0415
 
                     # Strip out unnecessary whitespace from docstring
                     filtermessage = pydoc.getdoc(filterfunction)
@@ -2871,8 +2873,6 @@ class StandardUnitChecker(UnitChecker):
 # TODO: convert these to proper unit tests
 def runtests(str1, str2, ignorelist=()):
     """Verifies that the tests pass for a pair of strings."""
-    from translate.storage import base
-
     str1 = data.normalize(str1)
     str2 = data.normalize(str2)
     unit = base.TranslationUnit(str1)

@@ -1,5 +1,6 @@
 import pkgutil
 
+import translate.lang as package
 from translate.lang import factory
 
 
@@ -43,7 +44,6 @@ def test_getlanguage():
 
 def test_get_all_languages():
     """Tests that a basic call to get_all_languages() works."""
-    import translate.lang as package
 
     def is_language_module(x):
         return not (

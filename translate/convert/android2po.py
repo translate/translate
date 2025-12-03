@@ -25,7 +25,8 @@ for examples and usage instructions.
 
 import logging
 
-from translate.storage import po
+from translate.convert import convert
+from translate.storage import aresource, po
 
 logger = logging.getLogger(__name__)
 
@@ -101,8 +102,6 @@ def _convertandroid(
     pot=False,
     duplicatestyle="msgctxt",
 ):
-    from translate.storage import aresource
-
     input_store = aresource.AndroidResourceFile(input_file)
     convertor = android2po()
     if template_file is None:
@@ -135,8 +134,6 @@ def convertandroid(
 
 
 def main(argv=None):
-    from translate.convert import convert
-
     formats = {
         "xml": ("po", convertandroid),
         ("xml", "xml"): ("po", convertandroid),

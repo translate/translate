@@ -75,7 +75,8 @@ def _examine_txt(storefile):
     except AttributeError:
         raise ValueError("Need to read object to determine type")
     # Some encoding magic for Wordfast
-    from translate.storage import wordfast
+    # pylint: disable-next=import-outside-toplevel
+    from translate.storage import wordfast  # noqa: PLC0415
 
     encoding = "utf-16" if wordfast.TAB_UTF16 in start.split(b"\n")[0] else "iso-8859-1"
     start = start.decode(encoding)

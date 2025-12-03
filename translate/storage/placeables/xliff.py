@@ -18,6 +18,8 @@
 
 """Contains XLIFF-specific placeables."""
 
+from copy import copy
+
 from translate.storage.placeables import base
 from translate.storage.placeables.strelem import StringElem
 
@@ -123,8 +125,6 @@ class UnknownXML(StringElem):
 
         .. note:: ``self.renderer`` is **not** copied.
         """
-        from copy import copy
-
         cp = self.__class__(
             id=self.id, rid=self.rid, xid=self.xid, xml_node=copy(self.xml_node)
         )

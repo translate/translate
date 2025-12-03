@@ -23,6 +23,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+from translate.convert import convert
 from translate.misc.multistring import multistring
 from translate.storage import factory, mo
 
@@ -81,8 +82,6 @@ def convertmo(inputfile, outputfile, templatefile, includefuzzy=False):
 
 
 def main():
-    from translate.convert import convert
-
     formats = {
         "po": ("mo", convertmo),
         "xlf": ("mo", convertmo),

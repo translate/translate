@@ -23,6 +23,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+from translate.convert import convert
 from translate.storage import po, xliff
 
 
@@ -106,8 +107,6 @@ def convertxliff(inputfile, outputfile, templates, duplicatestyle="msgctxt"):
 
 
 def main(argv=None):
-    from translate.convert import convert
-
     formats = {
         "xlf": ("po", convertxliff),
         "xliff": ("po", convertxliff),

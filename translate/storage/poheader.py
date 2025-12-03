@@ -296,13 +296,15 @@ class poheader:
         header = self.parseheader()
         lang = header.get("Language")
         if lang is not None:
-            from translate.lang.data import langcode_ire
+            # pylint: disable-next=import-outside-toplevel
+            from translate.lang.data import langcode_ire  # noqa: PLC0415
 
             if langcode_ire.match(lang):
                 return lang
             lang = None
         if "X-Poedit-Language" in header:
-            from translate.lang import poedit
+            # pylint: disable-next=import-outside-toplevel
+            from translate.lang import poedit  # noqa: PLC0415
 
             language = header.get("X-Poedit-Language")
             country = header.get("X-Poedit-Country")
@@ -310,7 +312,8 @@ class poheader:
         if "Language-Code" in header:  # Used in Plone files
             return header.get("Language-Code")
         if "Language-Team" in header:
-            from translate.lang.team import guess_language
+            # pylint: disable-next=import-outside-toplevel
+            from translate.lang.team import guess_language  # noqa: PLC0415
 
             return guess_language(header.get("Language-Team"))
         return None

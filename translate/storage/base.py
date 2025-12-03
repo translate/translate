@@ -841,7 +841,8 @@ class TranslationStore:
         if not default_encodings:
             default_encodings = ["utf-8"]
         try:
-            from charset_normalizer import detect
+            # pylint: disable-next=import-outside-toplevel
+            from charset_normalizer import detect  # noqa: PLC0415
         except ImportError:
             detected_encoding = self.fallback_detection(text)
         else:

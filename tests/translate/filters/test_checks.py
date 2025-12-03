@@ -2,7 +2,7 @@ from pytest import mark
 
 from translate.filters import checks, spelling
 from translate.lang import data
-from translate.storage import po, xliff
+from translate.storage import base, po, xliff
 
 
 def strprep(str1, str2, message=None):
@@ -1659,8 +1659,6 @@ def test_validchars():
 
 def test_minimalchecker():
     """Tests the Minimal quality checker."""
-    from translate.storage import base
-
     # The minimal checker only checks for untranslated, unchanged and blank strings.
     # All other quality checks should be ignored.
     minimalchecker = checks.MinimalChecker()
@@ -1687,8 +1685,6 @@ def test_minimalchecker():
 
 def test_reducedchecker():
     """Tests the Reduced quality checker."""
-    from translate.storage import base
-
     # The reduced checker only runs the following tests:
     # untranslated, unchanged, blank, doublespacing, doublewords, spellcheck.
     # All other quality checks should be ignored.
@@ -2390,8 +2386,6 @@ def test_dialogsizes():
 
 def test_skip_checks_per_language_in_some_checkers():
     """Test some checks are skipped for some languages in Mozilla checker."""
-    from translate.storage import base
-
     # Hijack checker config language ignoretests to test check is skipped.
     checker_config = checks.CheckerConfig(targetlanguage="gl")
     previous_ignoretests = checker_config.lang.ignoretests
@@ -2445,8 +2439,6 @@ def test_noaccelerators_only_in_mozilla_checker():
     No-accelerators is a special behavior of accelerators check in some
     languages that is present in MozillaChecker.
     """
-    from translate.storage import base
-
     asmozillachecker = checks.MozillaChecker(
         checkerconfig=checks.CheckerConfig(targetlanguage="as")
     )
@@ -2500,8 +2492,6 @@ def test_noaccelerators_only_in_mozilla_checker():
 
 def test_ensure_accelerators_not_in_target_if_not_in_source():
     """Test accelerators check works different for some languages in Mozilla."""
-    from translate.storage import base
-
     af_mozilla_checker = checks.MozillaChecker(
         checkerconfig=checks.CheckerConfig(targetlanguage="af")
     )
@@ -2566,8 +2556,6 @@ def test_ensure_bengali_languages_script_is_correct():
 
 def test_category():
     """Tests checker categories aren't mixed up."""
-    from translate.storage import base
-
     unit = base.TranslationUnit("foo")
     unit.target = "bar"
 

@@ -73,15 +73,15 @@ from __future__ import annotations
 import json
 import re
 import uuid
-from typing import TYPE_CHECKING, Any, BinaryIO, ClassVar, TextIO, cast
-
-if TYPE_CHECKING:
-    from collections.abc import Generator
 from collections import defaultdict
+from typing import TYPE_CHECKING, Any, BinaryIO, ClassVar, TextIO, cast
 
 from translate.lang.data import cldr_plural_categories
 from translate.misc.multistring import multistring
 from translate.storage import base
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
 
 
 class BaseJsonUnit(base.DictUnit):

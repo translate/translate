@@ -24,6 +24,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+from translate.convert import convert
 from translate.misc.multistring import multistring
 from translate.search import match
 from translate.storage import catkeys, factory, poheader
@@ -307,8 +308,6 @@ def _do_poheaders(input_store, output_store, template_store):
 
 
 def main(argv=None):
-    from translate.convert import convert
-
     formats = {
         "pot": ("po", convertpot),
         ("pot", "po"): ("po", convertpot),

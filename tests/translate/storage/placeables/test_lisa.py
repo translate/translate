@@ -17,6 +17,8 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 
+from copy import copy
+
 from lxml import etree
 
 from translate.storage.placeables import StringElem, lisa
@@ -135,8 +137,6 @@ def test_unknown_xml_placeable():
                <x id="_1_ski_535"/>TEXT<bx id="_1_ski_634"/>TEXT<ex id="_1_ski_733"/>TEXT.</source>"""
     )
     elem = lisa.xml_to_strelem(source)
-
-    from copy import copy
 
     custom = StringElem(
         [
