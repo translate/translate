@@ -333,12 +333,10 @@ disable = [
   "unsubscriptable-object",  # TODO
   "unsupported-assignment-operation",  # TODO
   "unused-argument",
-  "unused-wildcard-import",  # TODO
   "use-implicit-booleaness-not-comparison",  # TODO
   "use-implicit-booleaness-not-len",  # TODO
   "use-maxsplit-arg",  # TODO
   "used-before-assignment",  # TODO
-  "wildcard-import",  # TODO
   "wrong-import-position"  # TODO
 ]
 
