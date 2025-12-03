@@ -517,7 +517,7 @@ class UnitChecker:
                 if self.errorhandler is None:
                     raise ValueError(
                         f"error in filter {functionname}: {unit.source!r}, {unit.target!r}, {e}"
-                    )
+                    ) from e
                 filterresult = self.errorhandler(
                     functionname, unit.source, unit.target, e
                 )

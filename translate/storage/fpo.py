@@ -462,7 +462,7 @@ class pofile(pocommon.pofile):
             self._build_self_from_cpo()
             del self._cpo_store
         except Exception as e:
-            raise base.ParseError(e)
+            raise base.ParseError(e) from e
 
     def removeduplicates(self, duplicatestyle="merge"):
         """Make sure each msgid is unique ; merge comments etc from duplicates into original."""

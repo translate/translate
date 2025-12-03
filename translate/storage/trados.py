@@ -48,10 +48,10 @@ from translate.storage import base
 try:
     # FIXME see if we can't use lxml
     from bs4 import BeautifulSoup
-except ImportError:
+except ImportError as error:
     raise ImportError(
         "BeautifulSoup 4 is not installed. Support for Trados txt is disabled."
-    )
+    ) from error
 
 
 __all__ = (

@@ -35,8 +35,8 @@ try:
     from aeidon.encodings import detect
     from aeidon.files import AdvSubStationAlpha, MicroDVD, SubRip, SubStationAlpha, new
     from aeidon.util import detect_format
-except ImportError:
-    raise ImportError("\naeidon package required for Subtitle support")
+except ImportError as error:
+    raise ImportError("\naeidon package required for Subtitle support") from error
 
 
 class SubtitleUnit(base.TranslationUnit):
@@ -114,7 +114,7 @@ class SubtitleFile(base.TranslationStore):
                 newunit._end = subtitle.end
                 newunit._duration = subtitle.duration_seconds
         except Exception as e:
-            raise base.ParseError(e)
+            raise base.ParseError(e) from e
 
     def _parsefile(self, storefile):
         if hasattr(storefile, "name"):

@@ -298,7 +298,6 @@ disable = [
   "not-callable",  # TODO
   "possibly-used-before-assignment",  # TODO
   "protected-access",  # TODO
-  "raise-missing-from",  # TODO
   "redefined-builtin",  # TODO
   "redefined-outer-name",  # TODO
   "reimported",  # TODO
@@ -353,7 +352,6 @@ ignore = [
   "B006",  # TODO: Do not use mutable data structures for argument defaults
   "B020",  # TODO: Loop control variable `node` overrides iterable it iterates
   "B028",  # TODO: No explicit `stacklevel` keyword argument found
-  "B904",  # TODO: Within an `except` clause, raise exceptions with `raise ... from err` or `raise ... from None` to distinguish them from errors in exception handling
   "BLE001",  # WONTFIX: Do not catch blind exception: `Exception`, third-party modules do not have defined exceptions
   "C901",  # TODO: too complex
   "COM",  # CONFIG: No trailing commas

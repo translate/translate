@@ -73,7 +73,7 @@ def _examine_txt(storefile):
     try:
         start = storefile.read(600).strip()
     except AttributeError:
-        raise ValueError("Need to read object to determine type")
+        raise ValueError("Need to read object to determine type") from None
     # Some encoding magic for Wordfast
     # pylint: disable-next=import-outside-toplevel
     from translate.storage import wordfast  # noqa: PLC0415
@@ -192,7 +192,7 @@ def getclass(
         else:
             storeclass = import_class(*classes_str[ext], "translate.storage")
     except KeyError:
-        raise ValueError(f"Unknown filetype ({storefilename})")
+        raise ValueError(f"Unknown filetype ({storefilename})") from None
     return storeclass
 
 

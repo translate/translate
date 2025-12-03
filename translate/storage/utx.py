@@ -264,8 +264,8 @@ class UtxFile(base.TranslationStore):
         input = input.decode(self.encoding)
         try:
             header_length = self._read_header(input)
-        except Exception:
-            raise base.ParseError("Cannot parse header")
+        except Exception as error:
+            raise base.ParseError("Cannot parse header") from error
         lines = csv.DictReader(
             input.split(UtxDialect.lineterminator)[header_length:],
             fieldnames=self._fieldnames,

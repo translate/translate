@@ -638,7 +638,9 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         try:
             popped = self.tag_path.pop()
         except IndexError:
-            raise ParseError(f"Mismatched tags: no more tags: line {self.getpos()[0]}")
+            raise ParseError(
+                f"Mismatched tags: no more tags: line {self.getpos()[0]}"
+            ) from None
         if popped != tag and popped in self.EMPTY_HTML_ELEMENTS:
             popped = self.tag_path.pop()
         if popped != tag:

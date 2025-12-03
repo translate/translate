@@ -306,8 +306,8 @@ else:
         # might be in LD_LIBRARY_PATH or loaded with LD_PRELOAD
         try:
             gpo = cdll.LoadLibrary("libgettextpo.so")
-        except OSError:
-            raise ImportError("gettext PO library not found")
+        except OSError as error:
+            raise ImportError("gettext PO library not found") from error
 
 if gpo:
     setup_call_types(gpo)

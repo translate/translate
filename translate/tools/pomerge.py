@@ -83,16 +83,16 @@ def mergestore(
 ):
     try:
         mergecomments = str2bool(mergecomments)
-    except ValueError:
-        raise ValueError(f"invalid mergecomments value: {mergecomments!r}")
+    except ValueError as error:
+        raise ValueError(f"invalid mergecomments value: {mergecomments!r}") from error
     try:
         mergeblanks = str2bool(mergeblanks)
-    except ValueError:
-        raise ValueError(f"invalid mergeblanks value: {mergeblanks!r}")
+    except ValueError as error:
+        raise ValueError(f"invalid mergeblanks value: {mergeblanks!r}") from error
     try:
         mergefuzzy = str2bool(mergefuzzy)
-    except ValueError:
-        raise ValueError(f"invalid mergefuzzy value: {mergefuzzy!r}")
+    except ValueError as error:
+        raise ValueError(f"invalid mergefuzzy value: {mergefuzzy!r}") from error
     inputstore = factory.getobject(inputfile)
     if templatefile is None:
         # just merge nothing

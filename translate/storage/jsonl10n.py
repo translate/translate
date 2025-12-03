@@ -745,10 +745,10 @@ class GoI18NJsonFile(JsonFile):
                             if key in translation
                         ]
                     )
-                except ValueError:
+                except ValueError as error:
                     raise ValueError(
                         f'"{id}" is an object but does not contain plurals. Maybe this is not a go-i18n JSON file?'
-                    )
+                    ) from error
             unit = self.UnitClass(
                 translation,
                 value.get("id", ""),
@@ -818,10 +818,10 @@ class GoI18NV2JsonFile(JsonFile):
                             if key in value
                         ]
                     )
-                except ValueError:
+                except ValueError as error:
                     raise ValueError(
                         f'"{id}" is an object but does not contain plurals. Maybe this is not a go-i18n v2 JSON file?'
-                    )
+                    ) from error
                 unit = self.UnitClass(
                     translation,
                     id,
