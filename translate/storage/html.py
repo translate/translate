@@ -705,6 +705,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             context_value = self.WHITESPACE_RE.sub(" ", context_raw).strip()
             if context_value:
                 markup["translate_context"] = context_value
+                self._id_pushed_stack.append(False)
         elif "id" in attrs_dict:
             id_raw = attrs_dict.get("id") or ""
             id_value = self.WHITESPACE_RE.sub(" ", id_raw).strip()
