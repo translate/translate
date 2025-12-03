@@ -337,7 +337,6 @@ disable = [
   "use-implicit-booleaness-not-comparison",  # TODO
   "use-implicit-booleaness-not-len",  # TODO
   "use-maxsplit-arg",  # TODO
-  "use-yield-from",  # TODO
   "used-before-assignment",  # TODO
   "wildcard-import",  # TODO
   "wrong-import-position"  # TODO
