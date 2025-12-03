@@ -537,12 +537,12 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         if self.tag_path and self.tag_path[-1] in self.EMPTY_HTML_ELEMENTS:
             self.tag_path.pop()
 
-    def get_leading_whitespace(self, str):
-        match = self.LEADING_WHITESPACE_RE.search(str)
+    def get_leading_whitespace(self, text: str):
+        match = self.LEADING_WHITESPACE_RE.search(text)
         return match.group(1) if match else ""
 
-    def get_trailing_whitespace(self, str):
-        match = self.TRAILING_WHITESPACE_RE.search(str)
+    def get_trailing_whitespace(self, text: str):
+        match = self.TRAILING_WHITESPACE_RE.search(text)
         return match.group(1) if match else ""
 
     # From here on below, follows the methods of the HTMLParser
@@ -599,8 +599,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 else:
                     id_label = id_value
                     markup["context_hint"] = f"{self.filename}:{id_value}"
-                    if hasattr(self, "_id_seen"):
-                        self._id_seen.add(id_value)
+                    self._id_seen.add(id_value)
                 self.ancestor_id_stack.append(id_value)
                 self._ancestor_id_label_stack.append(id_label)
                 self._id_pushed_stack.append(True)
