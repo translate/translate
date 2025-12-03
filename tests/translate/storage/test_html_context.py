@@ -1,5 +1,7 @@
 from io import BytesIO
 
+import pytest
+
 from translate.storage.html import htmlfile
 
 
@@ -75,8 +77,7 @@ def test_html_context_absent():
     try:
         unit = next(u for u in store.getunits() if u.source == "No context here")
     except StopIteration:
-        unit = None
-    assert unit is not None
+        pytest.fail("Unit with 'No context here' source was not found!")
     assert unit.getcontext() == ""
 
 
@@ -94,14 +95,14 @@ def test_html_context_id_not_used_when_no_duplicates():
     store = parse_html(src)
     try:
         hello_unit = next(u for u in store.getunits() if u.source == "Hello")
+    except StopIteration:
+        pytest.fail("Unit with 'Hello' source was not found!")
+    try:
         world_unit = next(u for u in store.getunits() if u.source == "World")
     except StopIteration:
-        hello_unit = None
-        world_unit = None
-    assert hello_unit is not None
-    assert world_unit is not None
-    assert hello_unit.getcontext() == "test.html.p:1-16"
-    assert world_unit.getcontext() == "test.html.p:2-16"
+        pytest.fail("Unit with 'World' source was not found!")
+    assert hello_unit.getcontext() == ""
+    assert world_unit.getcontext() == ""
 
 
 def test_html_context_disambiguates_duplicates_with_id():
