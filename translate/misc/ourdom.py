@@ -274,7 +274,7 @@ def parse(file, parser=None, bufsize=None):
     return result
 
 
-def parseString(string, parser=None):
+def parseString(string):
     """Parse a file into a DOM from a string."""
     builder = ExpatBuilderNS()
     return builder.parseString(string)
