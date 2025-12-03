@@ -88,7 +88,7 @@ def test_html_context_id_overridden_by_explicit():
     assert units[0].getcontext() == "ctx"
 
 
-def text_html_context_id_not_used_when_no_duplicates():
+def test_html_context_id_not_used_when_no_duplicates():
     """Test that ID is not used when there are no duplicate sources."""
     src = '<p id="a">Hello</p><p id="b">World</p>'
     store = parse_html(src)
