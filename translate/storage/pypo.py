@@ -30,16 +30,12 @@ import logging
 import re
 from itertools import chain
 from string import punctuation
-from typing import TYPE_CHECKING
 
-from unicode_segmentation_rs import gettext_wrap, text_width
+from unicode_segmentation_rs import gettext_wrap
 
 from translate.misc import quote
 from translate.misc.multistring import multistring
 from translate.storage import pocommon, poparser
-
-if TYPE_CHECKING:
-    from collections.abc import Iterable
 
 logger = logging.getLogger(__name__)
 
@@ -138,37 +134,6 @@ class PoWrapper:
         if not text or self.width <= 0:
             return [text] if text else []
         return gettext_wrap(text, self.width)
-
-    def _wrap_chunks(self, chunks: Iterable[list[str]]) -> list[str]:
-        """Wrap chunks into lines."""
-        lines = []
-        current_line = []
-        current_width = 0
-
-        for chunk in chunks:
-            chunk_width = sum(text_width(part) for part in chunk)
-
-            # Try to add chunk to current line
-            if current_width + chunk_width <= self.width:
-                current_line.extend(chunk)
-                current_width += chunk_width
-            # Chunk doesn't fit
-            else:
-                if current_line:
-                    # Save current line and start new one
-                    lines.append("".join(current_line))
-                    current_line = []
-                    current_width = 0
-
-                # Add the whole chunk as one line
-                current_line.extend(chunk)
-                current_width += chunk_width
-
-        # Add remaining line
-        if current_line:
-            lines.append("".join(current_line))
-
-        return lines
 
 
 def quoteforpo(text: str | None, wrapper_obj: PoWrapper | None = None) -> list[str]:
