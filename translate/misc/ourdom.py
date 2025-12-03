@@ -263,7 +263,7 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
 # parser methods that use our modified xml classes
 
 
-def parse(file, parser=None, bufsize=None):
+def parse(file):
     """Parse a file into a DOM by filename or file object."""
     builder = ExpatBuilderNS()
     if isinstance(file, str):
