@@ -70,7 +70,7 @@ def splitlines(text):
     """
     Split lines based on first newline char.
 
-    Can not use univerzal newlines as they match any newline like
+    Can not use universal newlines as they match any newline like
     character inside text and that breaks on files with unix newlines
     and LF chars inside comments.
 

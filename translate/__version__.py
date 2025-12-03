@@ -26,7 +26,7 @@ build = ver[0] * 10000 + ver[1] * 100 + ver[2]
 """The build number is used by external users of the Translate Toolkit to
 trigger refreshes.  Thus increase the build number whenever changes are made to
 code touching stats or quality checks.  An increased build number will force a
-toolkit user, like Pootle, to regenerate it's stored stats and check
+toolkit user, like Pootle, to regenerate its stored stats and check
 results."""
 
 sver = "{}.{}.{}".format(*ver)
