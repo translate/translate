@@ -99,8 +99,7 @@ def searchElementsByTagName_helper(parent, name, onlysearch):
         if node.nodeType == minidom.Node.ELEMENT_NODE and (name in {"*", node.tagName}):
             yield node
         if node.nodeType == minidom.Node.ELEMENT_NODE and node.tagName in onlysearch:
-            for node in node.searchElementsByTagName(name, onlysearch):
-                yield node
+            yield from node.searchElementsByTagName(name, onlysearch)
 
 
 def getFirstElementByTagName(node, name):
