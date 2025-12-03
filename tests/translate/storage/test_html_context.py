@@ -105,7 +105,7 @@ def test_html_context_id_not_used_when_no_duplicates():
 
 
 def test_html_context_disambiguates_duplicates_with_id():
-    """Test that ID is used to disambiguatethe when the same source appears multiple times."""
+    """Test that ID is used to disambiguate when the same source appears multiple times."""
     src = '<p id="a">Hello</p><p id="b">Hello</p>'
     store = parse_html(src)
     hello_units = [u for u in store.getunits() if u.source == "Hello"]
