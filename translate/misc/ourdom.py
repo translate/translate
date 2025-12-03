@@ -35,7 +35,7 @@ from xml.dom import expatbuilder, minidom
 def writexml_helper(self, writer, indent="", addindent="", newl=""):
     """
     A replacement for writexml that formats it like typical XML files.
-    Nodes are intendented but text nodes, where whitespace can be significant,
+    Nodes are indented but text nodes, where whitespace can be significant,
     are not indented.
     """
     # indent = current indentation
