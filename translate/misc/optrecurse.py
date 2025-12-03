@@ -672,7 +672,7 @@ class RecursiveOptionParser(optparse.OptionParser):
 
     def processfile(
         self, fileprocessor, options, fullinputpath, fulloutputpath, fulltemplatepath
-    ):
+    ) -> bool:
         """Process an individual file."""
         inputfile = self.openinputfile(options, fullinputpath)
         if fulloutputpath and fulloutputpath in {fullinputpath, fulltemplatepath}:

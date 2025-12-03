@@ -41,7 +41,7 @@ class UnitMixer:
                     # see if there is a matching accesskey in this line,
                     # making this a mixed entity
                     for akeytype in self.accesskeysuffixes:
-                        if (entitybase + akeytype) in index:
+                        if entitybase + akeytype in index:
                             # add both versions to the list of mixed entities
                             mixedentities[entity] = {}
                             mixedentities[entitybase + akeytype] = {}
@@ -90,7 +90,7 @@ class UnitMixer:
             if entity.endswith(labelsuffix):
                 entitybase = entity[: entity.rfind(labelsuffix)]
                 for akeytype in self.accesskeysuffixes:
-                    if (entitybase + akeytype) in store.id_index:
+                    if entitybase + akeytype in store.id_index:
                         labelentity = entity
                         accesskeyentity = (
                             labelentity[: labelentity.rfind(labelsuffix)] + akeytype

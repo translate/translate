@@ -991,6 +991,8 @@ class pofile(pocommon.pofile):
 
     def _free_memory_file(self):
         return
+        # TODO: should actually free the memory
+        # pylint: disable-next=unreachable
         if self._gpo_memory_file is not None:
             gpo.po_file_free(self._gpo_memory_file)
             self._gpo_memory_file = None

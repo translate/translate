@@ -96,6 +96,7 @@ def varname(variable, startmarker, endmarker):
     """
     return variable
     # if the punctuation were included, we'd do the following:
+    # pylint: disable-next=unreachable
     if startmarker is None:
         return variable[: variable.rfind(endmarker)]
     if endmarker is None:

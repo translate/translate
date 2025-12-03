@@ -121,6 +121,7 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
                 )  # TODO:perhaps check to see if it's already there...
                 with open(fulloutputpath, "wb") as fh:
                     outputpofile.serialize(fh)
+        return True
 
 
 def main():
