@@ -541,8 +541,8 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         match = self.LEADING_WHITESPACE_RE.search(str)
         return match.group(1) if match else ""
 
-    def get_trailing_whitespace(self, str):
-        match = self.TRAILING_WHITESPACE_RE.search(str)
+    def get_trailing_whitespace(self, text):
+        match = self.TRAILING_WHITESPACE_RE.search(text)
         return match.group(1) if match else ""
 
     # From here on below, follows the methods of the HTMLParser
