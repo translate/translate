@@ -80,7 +80,7 @@ def prop2funny(src, itencoding="cp1252"):
         waspseudoprops = "pseudo-properties" in header
         wasdefines = "#defines" in header
         lines = lines[1:]
-    if not (waspseudoprops ^ wasdefines):
+    if not waspseudoprops ^ wasdefines:
         raise ValueError(
             "could not determine file type as pseudo-properties or defines file"
         )

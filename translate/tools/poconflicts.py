@@ -168,6 +168,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
                 target = self.clean(unit.source, options)
                 source = self.clean(unit.target, options)
             self.textmap.setdefault(source, []).append((target, unit, fullinputpath))
+        return True
 
     @staticmethod
     def flatten(text, joinchar):

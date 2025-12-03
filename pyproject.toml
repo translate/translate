@@ -270,7 +270,6 @@ disable = [
   "abstract-method",  # TODO
   "arguments-differ",  # TODO
   "arguments-renamed",  # TODO
-  "assignment-from-no-return",  # TODO
   "attribute-defined-outside-init",  # TODO
   "bidirectional-unicode",  # TODO
   "broad-exception-caught",  # TODO
@@ -281,12 +280,9 @@ disable = [
   "consider-using-with",  # TODO
   "cyclic-import",
   "dangerous-default-value",  # TODO
-  "deprecated-method",  # TODO
   "disallowed-name",  # TODO
   "duplicate-code",  # TODO
-  "eval-used",  # TODO
   "fixme",
-  "function-redefined",  # TODO
   "global-statement",  # TODO
   "invalid-name",  # TODO
   "invalid-overridden-method",  # TODO
@@ -295,13 +291,11 @@ disable = [
   "missing-class-docstring",
   "missing-function-docstring",
   "missing-module-docstring",
-  "no-else-return",  # TODO
   "no-member",  # TODO
   "no-name-in-module",  # TODO
   "no-value-for-parameter",  # TODO
   "not-an-iterable",  # TODO
   "not-callable",  # TODO
-  "pointless-string-statement",  # TODO
   "possibly-used-before-assignment",  # TODO
   "protected-access",  # TODO
   "raise-missing-from",  # TODO
@@ -310,7 +304,6 @@ disable = [
   "reimported",  # TODO
   "signature-differs",  # TODO
   "super-init-not-called",  # TODO
-  "superfluous-parens",  # TODO
   "too-few-public-methods",
   "too-many-arguments",
   "too-many-boolean-expressions",  # TODO
@@ -327,7 +320,6 @@ disable = [
   "undefined-loop-variable",  # TODO
   "unidiomatic-typecheck",  # TODO
   "unnecessary-dict-index-lookup",  # TODO
-  "unreachable",  # TODO
   "unspecified-encoding",  # TODO
   "unsubscriptable-object",  # TODO
   "unsupported-assignment-operation",  # TODO

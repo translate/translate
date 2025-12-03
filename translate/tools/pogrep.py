@@ -66,7 +66,7 @@ class GrepMatch:
             return getter
         if self.part == "locations":
 
-            def getter():
+            def getter():  # pylint: disable=function-redefined
                 return self.unit.getlocations()[self.part_n]
 
             return getter

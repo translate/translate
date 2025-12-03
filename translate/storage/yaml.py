@@ -100,8 +100,7 @@ class YAMLUnit(base.DictUnit):
                     target = target[key]
         except (KeyError, IndexError, TypeError):
             return None
-        else:
-            return target
+        return target
 
     def storevalue(
         self,

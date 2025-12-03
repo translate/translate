@@ -230,12 +230,10 @@ def expand_closing_tags(elem):
         elements.extend(elem)
 
 
-"""
-Characters which will get rejected by lxml, based on
-https://github.com/lxml/lxml/blob/3ccc7d583e325ceb0ebdf8fc295bbb7fc8cd404d/src/lxml/apihelpers.pxi#L1474-L1503
-and
-https://github.com/GNOME/libxml2/blob/723b4de04015c5acccd3cda5dd60db7d00702064/include/libxml/chvalid.h#L108-L110
-"""
+# Characters which will get rejected by lxml, based on
+# https://github.com/lxml/lxml/blob/3ccc7d583e325ceb0ebdf8fc295bbb7fc8cd404d/src/lxml/apihelpers.pxi#L1474-L1503
+# and
+# https://github.com/GNOME/libxml2/blob/723b4de04015c5acccd3cda5dd60db7d00702064/include/libxml/chvalid.h#L108-L110
 XML_INVALID_CHARS_TRANS = str.maketrans(
     dict.fromkeys(
         (

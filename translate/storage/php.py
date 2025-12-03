@@ -579,8 +579,7 @@ class LaravelPHPUnit(phpunit):
             int(value)
         except (ValueError, TypeError):
             return False
-        else:
-            return True
+        return True
 
 
 class LaravelPHPFile(phpfile):

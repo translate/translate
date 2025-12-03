@@ -205,4 +205,4 @@ class OmegaTFileTab(OmegaTFile):
 
     @property
     def encoding(self):
-        return locale.getdefaultlocale()[1]
+        return locale.getlocale()[1]
