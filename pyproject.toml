@@ -274,8 +274,6 @@ disable = [
   "bidirectional-unicode",  # TODO
   "broad-exception-caught",  # TODO
   "c-extension-no-member",  # TODO
-  "consider-using-dict-items",  # TODO
-  "consider-using-enumerate",  # TODO
   "consider-using-f-string",  # TODO
   "consider-using-with",  # TODO
   "cyclic-import",
@@ -296,11 +294,9 @@ disable = [
   "no-value-for-parameter",  # TODO
   "not-an-iterable",  # TODO
   "not-callable",  # TODO
-  "possibly-used-before-assignment",  # TODO
   "protected-access",  # TODO
   "redefined-builtin",  # TODO
   "redefined-outer-name",  # TODO
-  "reimported",  # TODO
   "signature-differs",  # TODO
   "super-init-not-called",  # TODO
   "too-few-public-methods",
@@ -316,16 +312,13 @@ disable = [
   "too-many-public-methods",
   "too-many-return-statements",
   "too-many-statements",
-  "undefined-loop-variable",  # TODO
   "unidiomatic-typecheck",  # TODO
-  "unnecessary-dict-index-lookup",  # TODO
   "unspecified-encoding",  # TODO
   "unsubscriptable-object",  # TODO
   "unsupported-assignment-operation",  # TODO
   "unused-argument",
   "use-implicit-booleaness-not-comparison",  # TODO
   "use-implicit-booleaness-not-len",  # TODO
-  "use-maxsplit-arg",  # TODO
   "used-before-assignment"  # TODO
 ]
 

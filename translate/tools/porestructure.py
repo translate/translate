@@ -108,6 +108,7 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
                         pounit.othercomments.remove(comment)
                         break
                 # TODO: refactor writing out
+                # pylint: disable-next=undefined-loop-variable
                 outputpath = comment[comment.find(")") + 2 :].strip()
                 self.checkoutputsubdir(options, os.path.dirname(outputpath))
                 fulloutputpath = os.path.join(options.output, outputpath)

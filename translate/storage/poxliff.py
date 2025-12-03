@@ -153,8 +153,8 @@ class PoXliffUnit(xliff.xliffunit):
         else:
             targets = target.strings
 
-        for i in range(len(self.units)):
-            self.units[i].target = targets[i]
+        for i, unit in enumerate(self.units):
+            unit.target = targets[i]
 
     def addnote(self, text, origin=None, position="append"):
         """Add a note specifically in a "note" tag."""
@@ -200,8 +200,8 @@ class PoXliffUnit(xliff.xliffunit):
     def setid(self, id):
         super().setid(id)
         if len(self.units) > 1:
-            for i in range(len(self.units)):
-                self.units[i].setid(f"{id}[{i}]")
+            for i, unit in enumerate(self.units):
+                unit.setid(f"{id}[{i}]")
 
     def getlocations(self):
         """Returns all the references (source locations)."""

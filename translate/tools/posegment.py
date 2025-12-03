@@ -48,9 +48,9 @@ class segment:
         # certain quality checks are passed, etc.  But for now this is a good
         # start.
         units = []
-        for i in range(len(sourcesegments)):
+        for i, source in enumerate(sourcesegments):
             newunit = unit.copy()
-            newunit.source = sourcesegments[i]
+            newunit.source = source
             if not unit.istranslated():
                 newunit.target = ""
             else:

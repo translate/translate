@@ -184,9 +184,9 @@ class StringElem:
                   string or unicode.
         """
         for elem in self.flatten():
-            for i in range(len(elem.sub)):
-                if isinstance(elem.sub[i], str):
-                    elem.sub[i] = f(elem.sub[i])
+            for i, subelement in enumerate(elem.sub):
+                if isinstance(subelement, str):
+                    elem.sub[i] = f(subelement)
 
     def copy(self):
         """
@@ -212,8 +212,8 @@ class StringElem:
         if parent is None:
             raise ElementNotFoundError(repr(elem))
         subidx = -1
-        for i in range(len(parent.sub)):
-            if parent.sub[i] is elem:
+        for i, subelement in enumerate(parent.sub):
+            if subelement is elem:
                 subidx = i
                 break
         if subidx < 0:
@@ -335,10 +335,10 @@ class StringElem:
         range_nodes = self.depth_first()
         startidx = 0
         endidx = -1
-        for i in range(len(range_nodes)):
-            if range_nodes[i] is start["elem"]:
+        for i, range_node in enumerate(range_nodes):
+            if range_node is start["elem"]:
                 startidx = i
-            elif range_nodes[i] is end["elem"]:
+            elif range_node is end["elem"]:
                 endidx = i
                 break
         range_nodes = range_nodes[startidx : endidx + 1]

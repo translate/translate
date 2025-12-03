@@ -429,8 +429,7 @@ class poheader:
 
         year = time.strftime("%Y")
         contribexists = False
-        for i in range(len(contriblines)):
-            line = contriblines[i]
+        for i, line in enumerate(contriblines):
             if name in line and (email is None or email in line):
                 contribexists = True
                 if year in line:
