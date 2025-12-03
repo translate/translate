@@ -34,6 +34,16 @@ def test_html_context_attribute():
     assert unit1.source == "Welcome!"
 
 
+def test_html_context_attribute_with_id():
+    """Test that attributes get context hints from element IDs when duplicated."""
+    src = '<p id="a" title="Hello">World</p><p id="b" title="Hello">Universe</p>'
+    store = parse_html(src)
+    title_units = [u for u in store.getunits() if u.source == "Hello"]
+    assert len(title_units) == 2
+    contexts = {u.getcontext() for u in title_units}
+    assert contexts == {"test.html:a[title]", "test.html:b[title]"}
+
+
 def test_html_context_same_source_different_contexts():
     """Test that the same source with different contexts is differentiated."""
     store = parse_html(
