@@ -599,8 +599,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 else:
                     id_label = id_value
                     markup["context_hint"] = f"{self.filename}:{id_value}"
-                    if hasattr(self, "_id_seen"):
-                        self._id_seen.add(id_value)
+                    self._id_seen.add(id_value)
                 self.ancestor_id_stack.append(id_value)
                 self._ancestor_id_label_stack.append(id_label)
                 self._id_pushed_stack.append(True)
