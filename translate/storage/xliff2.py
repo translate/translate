@@ -127,7 +127,8 @@ class Xliff2Unit(XliffUnit):
                     self.xmlelement.remove(notes_container)
 
     def getunitelement(self) -> etree._Element:
-        if unit_element := self.xmlelement.getparent():
+        unit_element = self.xmlelement.getparent()
+        if unit_element is not None:
             return unit_element
 
         unit_element = etree.Element(self.namespaced("unit"))
@@ -159,7 +160,7 @@ class Xliff2Unit(XliffUnit):
                 unit_id = value
             self.getunitelement().set("id", unit_id)
             if segment_id and not segment_id.startswith(SEGMENT_AUTO_ID):
-                self.xmlelement.sedid(segment_id)
+                self.xmlelement.set("id", segment_id)
 
     def isfuzzy(self) -> bool:
         return bool(self.target) and self.xmlelement.get("state", None) == "initial"

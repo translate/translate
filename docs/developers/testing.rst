@@ -41,7 +41,7 @@ to skip a test module if a dependency cannot be imported:
 .. code-block:: python
 
     from pytest import importorskip
-    importorskip("vobject")
+    importorskip("vobject", exc_type=ImportError)
 
 If *vobject* can be imported, it will be; otherwise it raises an exception
 that causes pytest to skip the entire module rather than failing.

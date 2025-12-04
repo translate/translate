@@ -249,6 +249,10 @@ ignore = [
   "translate/storage/debug.properties"  # TODO: this should be converted to tests
 ]
 
+[tool.coverage.run]
+# C Tracer not available in quemu testing
+disable_warnings = ["no-ctracer"]
+
 [tool.isort]
 known_third_party = [
   "bs4",
@@ -323,6 +327,16 @@ disable = [
 ]
 
 [tool.pytest.ini_options]
+filterwarnings = [
+  # Treat all unfiltered warnings as errors
+  "error",
+  # translate-toolkit warning for accesskeys
+  "ignore:Could not find accesskey:UserWarning:translate.convert",
+  # warning in a third-party library
+  "ignore:The 'u' type code is deprecated:DeprecationWarning:enchant.checker",
+  # TODO: these might be worth investigating
+  'default:unclosed:ResourceWarning'
+]
 norecursedirs = ".git build docs"
 
 [tool.ruff.lint]
