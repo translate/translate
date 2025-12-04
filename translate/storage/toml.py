@@ -76,6 +76,9 @@ class TOMLUnit(base.DictUnit):
         """Get the unit identifier."""
         return self._id
 
+    def getcontext(self):
+        return self._id
+
     def getlocations(self):
         """Get the location(s) of this unit (returns the ID as a single-element list)."""
         return [self.getid()]
