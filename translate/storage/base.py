@@ -48,6 +48,8 @@ ENCODING_BOMS = (
     (codecs.BOM_UTF32_LE, "utf-32-le"),
 )
 
+MISSING = object()
+
 
 class ParseError(Exception):
     def __init__(self, inner_exc):
@@ -1060,6 +1062,8 @@ class DictUnit(TranslationUnit):
         return self._unitid
 
     def storevalue(self, output, value, override_key=None, unset=False):
+        if isinstance(value, multistring):
+            value = str(value)
         parent = target = output
         parts = self.get_unitid().parts
         key = None
@@ -1096,7 +1100,7 @@ class DictUnit(TranslationUnit):
                 # Remove empty dict from parent
                 if not target and key:
                     del parent[key]
-            else:
+            elif target.get(child_key, MISSING) != value:
                 target[child_key] = value
         elif child_element == "index":
             if len(target) <= child_key:
