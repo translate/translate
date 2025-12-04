@@ -352,7 +352,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 if explicit_context:
                     unit.setcontext(explicit_context)
                     # Register for faster lookups
-                    self._units_by_src_ctx[normalized_content, explicit_context] = unit
+                    self._units_by_src_ctx[(normalized_content, explicit_context)] = unit
 
             unit.addlocation(self.tu_location)
 
