@@ -972,6 +972,14 @@ class NextcloudJsonUnit(FlatJsonUnit):
             return list(self.target.strings)
         return self.target
 
+    @property
+    def source(self):
+        return self.getid()
+
+    @source.setter
+    def source(self, source):
+        self.setid(source)
+
 
 class NextcloudJsonFile(JsonFile):
     """
@@ -1072,6 +1080,8 @@ class RESJSONUnit(FlatJsonUnit):
         elif "comment" in self.metadata and not self.notes:
             # Remove comment if notes were cleared
             del self.metadata["comment"]
+        if self._source:
+            self.metadata["source"] = self._source
 
         identifier = self.getid()
         # Store the main value
@@ -1080,6 +1090,17 @@ class RESJSONUnit(FlatJsonUnit):
         for key, value in self.metadata.items():
             metadata_key = f"_{identifier}.{key}"
             self.storevalue(output, value, override_key=metadata_key)
+
+    @property
+    def source(self):
+        return self._source
+
+    @source.setter
+    def source(self, source):
+        self._source = source
+
+    def getcontext(self):
+        return self.getid()
 
 
 class RESJSONFile(JsonFile):
@@ -1105,51 +1126,41 @@ class RESJSONFile(JsonFile):
         last_node=None,
     ):
         # First pass: identify all actual keys (not metadata)
-        actual_keys = set()
-        # Preserve order of metadata keys for deterministic serialization
-        metadata_key_list = []
-
-        for key in data:
-            if key.startswith("_") and "." in key[1:]:
-                metadata_key_list.append(key)
-            else:
-                actual_keys.add(key)
-
+        key_map = {
+            key: key.removeprefix("_").rsplit(".", 1)[0]
+            if key.startswith("_") and "." in key[1:]
+            else key
+            for key in data
+        }
         # Second pass: collect metadata for each actual key, preserving order
-        metadata_keys = defaultdict(dict)
-        for metadata_key in metadata_key_list:
-            # Try to match this metadata key to an actual key
-            # Pattern is _KEY.SUFFIX where KEY can contain dots
-            without_underscore = metadata_key[1:]
-            # Split from the right to handle keys with dots (e.g., "foo.bar.comment" -> ["foo.bar", "comment"])
-            parts = without_underscore.rsplit(".", 1)
-            if len(parts) == 2:
-                potential_base_key, suffix = parts
-                # Check if this matches an actual key
-                if potential_base_key in actual_keys:
-                    metadata_keys[potential_base_key][suffix] = data[metadata_key]
-                    continue
-            # If we couldn't match, treat the whole thing as a regular key
-            # Edge case: If a metadata key exists (e.g., "_foo.bar") but "foo.bar" is not in the data,
-            # it will be treated as a regular key and processed with its original name (including underscore)
-            actual_keys.add(metadata_key)
-
-        # Extract units
-        for item, value in data.items():
-            # Skip metadata keys that were matched
-            if item in metadata_key_list and item not in actual_keys:
-                continue
+        metadata = defaultdict(dict)
+        translations = defaultdict(str)
+        for key, value in data.items():
             if not isinstance(value, (str, int)):
                 raise base.ParseError(
-                    ValueError(f"Key {item!r} does not contain string: {value!r}")
+                    ValueError(f"Key {key!r} does not contain string: {value!r}")
                 )
-            metadata = metadata_keys.get(item, {})
+            actual_key = key_map[key]
+            if actual_key == key:
+                # Data
+                translations[key] = value
+            else:
+                suffix = key.rsplit(".", 1)[1]
+                metadata[actual_key][suffix] = value
+
+        # Extract units
+        processed = set()
+        for key in key_map.values():
+            if key in processed:
+                continue
+            processed.add(key)
             unit = self.UnitClass(
-                value,
-                item,
-                metadata.get("comment", ""),
-                metadata.get("placeholders", None),
-                metadata=metadata,
+                metadata[key].get("source", ""),
+                key,
+                metadata[key].get("comment", ""),
+                metadata[key].get("placeholders", None),
+                metadata=metadata[key],
             )
-            unit.setid(item, unitid=self.UnitClass.IdClass.from_key(item))
+            unit.target = translations[key]
+            unit.setid(key, unitid=self.UnitClass.IdClass.from_key(key))
             yield unit
