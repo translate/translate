@@ -344,7 +344,9 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             # same source+context instead of creating a duplicate unit.
             unit = None
             if explicit_context:
-                unit = self._units_by_src_ctx.get((normalized_content, explicit_context))
+                unit = self._units_by_src_ctx.get(
+                    (normalized_content, explicit_context)
+                )
             if unit is None:
                 unit = self.addsourceunit(normalized_content)
                 if explicit_context:
@@ -467,7 +469,9 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 # If explicit context exists, reuse an existing unit (source+context)
                 unit = None
                 if full_explicit:
-                    unit = self._units_by_src_ctx.get((tu["html_content"], full_explicit))
+                    unit = self._units_by_src_ctx.get(
+                        (tu["html_content"], full_explicit)
+                    )
                 if unit is None:
                     unit = self.addsourceunit(tu["html_content"])
                     if full_explicit:
