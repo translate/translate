@@ -12,7 +12,7 @@ pytestmark = mark.skipif(
 )
 
 
-cpo = importorskip("translate.storage.cpo")
+cpo = importorskip("translate.storage.cpo", exc_type=ImportError)
 
 
 class TestCPOUnit(test_po.TestPOUnit):

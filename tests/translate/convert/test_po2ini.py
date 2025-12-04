@@ -6,7 +6,7 @@ from translate.convert import po2ini
 
 from . import test_convert
 
-importorskip("iniparse")
+importorskip("iniparse", exc_type=ImportError)
 
 
 class TestPO2Ini:

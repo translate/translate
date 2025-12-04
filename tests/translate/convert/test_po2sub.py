@@ -7,7 +7,7 @@ from translate.storage import po
 
 from . import test_convert
 
-importorskip("aeidon")
+importorskip("aeidon", exc_type=ImportError)
 
 
 class TestPO2Sub:

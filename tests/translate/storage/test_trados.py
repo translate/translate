@@ -1,6 +1,6 @@
 from pytest import importorskip
 
-trados = importorskip("translate.storage.trados")
+trados = importorskip("translate.storage.trados", exc_type=ImportError)
 
 
 def test_unescape():
