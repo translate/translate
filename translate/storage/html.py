@@ -344,7 +344,10 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             unit = None
             if explicit_context:
                 for u in self.units:
-                    if u.source == normalized_content and u.getcontext() == explicit_context:
+                    if (
+                        u.source == normalized_content
+                        and u.getcontext() == explicit_context
+                    ):
                         unit = u
                         break
             if unit is None:
@@ -468,7 +471,10 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 unit = None
                 if full_explicit:
                     for u in self.units:
-                        if u.source == tu["html_content"] and u.getcontext() == full_explicit:
+                        if (
+                            u.source == tu["html_content"]
+                            and u.getcontext() == full_explicit
+                        ):
                             unit = u
                             break
                 if unit is None:
