@@ -477,7 +477,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                     if full_explicit:
                         unit.setcontext(full_explicit)
                         # Register for faster lookups
-                        self._units_by_src_ctx[tu["html_content"], full_explicit] = unit
+                        self._units_by_src_ctx[(tu["html_content"], full_explicit)] = unit
                 unit.addlocation(tu["location"])
 
                 if not full_explicit:
