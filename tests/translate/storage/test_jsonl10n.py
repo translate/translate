@@ -1586,6 +1586,24 @@ JSON_NEXTCLOUD_COMPLEX = rb"""{
 class TestNextcloudJsonUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = jsonl10n.NextcloudJsonUnit
 
+    def test_source_property_maps_to_id(self):
+        """Test that source property maps to unit ID for NextcloudJsonUnit."""
+        unit = self.UnitClass("target value")
+        unit.setid("my_key")
+        assert unit.source == "my_key"
+
+        # Setting source should update the ID
+        unit.source = "new_key"
+        assert unit.getid() == "new_key"
+        assert unit.source == "new_key"
+
+    def test_source_roundtrip(self):
+        """Test that source property persists through get/set."""
+        unit = self.UnitClass("Hello World")
+        unit.source = "greeting"
+        assert unit.getid() == "greeting"
+        assert unit.source == "greeting"
+
 
 class TestNextcloudJsonFile(test_monolingual.TestMonolingualStore):
     StoreClass = jsonl10n.NextcloudJsonFile
@@ -1898,3 +1916,120 @@ class TestRESJSONFile(test_monolingual.TestMonolingualStore):
         store = self.StoreClass()
         with raises(base.ParseError):
             store.parse(jsontext)
+
+    def test_source_property_get_set(self):
+        """Test that source property can be read and written correctly."""
+        jsontext = """{
+    "key": "value",
+    "_key.source": "original source"
+}
+"""
+        store = self.StoreClass()
+        store.parse(jsontext)
+        assert len(store.units) == 1
+        assert store.units[0].source == "original source"
+        assert store.units[0].target == "value"
+
+        # Modify source
+        store.units[0].source = "modified source"
+        result = bytes(store).decode()
+        assert '"_key.source": "modified source"' in result
+
+    def test_source_property_persists(self):
+        """Test that source property persists through serialization."""
+        store = self.StoreClass()
+        unit = store.UnitClass("")
+        unit.setid("mykey")
+        unit.target = "target value"
+        unit.source = "source value"
+        store.addunit(unit)
+
+        result = bytes(store).decode()
+        assert '"mykey": "target value"' in result
+        assert '"_mykey.source": "source value"' in result
+
+        # Parse again to verify persistence
+        store2 = self.StoreClass()
+        store2.parse(result)
+        assert len(store2.units) == 1
+        assert store2.units[0].source == "source value"
+        assert store2.units[0].target == "target value"
+
+    def test_getcontext_returns_id(self):
+        """Test that getcontext() returns the unit ID."""
+        jsontext = """{
+    "greeting": "Hello",
+    "_greeting.comment": "A greeting"
+}
+"""
+        store = self.StoreClass()
+        store.parse(jsontext)
+        assert len(store.units) == 1
+        assert store.units[0].getcontext() == "greeting"
+
+    def test_parsing_preserves_order(self):
+        """Test that parsing preserves the order of keys."""
+        jsontext = """{
+    "first": "1",
+    "_first.source": "one",
+    "second": "2",
+    "_second.source": "two",
+    "third": "3",
+    "_third.source": "three"
+}
+"""
+        store = self.StoreClass()
+        store.parse(jsontext)
+        assert len(store.units) == 3
+        assert store.units[0].getid() == "first"
+        assert store.units[1].getid() == "second"
+        assert store.units[2].getid() == "third"
+
+    def test_metadata_without_translation(self):
+        """Test handling when metadata exists but no corresponding translation value."""
+        jsontext = """{
+    "key": "value",
+    "_key.source": "source text",
+    "_orphan.comment": "orphan metadata"
+}
+"""
+        store = self.StoreClass()
+        store.parse(jsontext)
+        # Should handle orphan metadata gracefully
+        # The parsing code extracts "orphan" as the base key from "_orphan.comment"
+        assert len(store.units) == 2
+        # First unit should be the normal key with metadata
+        assert store.units[0].getid() == "key"
+        assert store.units[0].source == "source text"
+        # Second unit should extract the base key from the orphan metadata
+        assert store.units[1].getid() == "orphan"
+        assert store.units[1].metadata.get("comment") == "orphan metadata"
+
+    def test_complex_keys_with_multiple_dots(self):
+        """Test handling of keys with multiple dots."""
+        jsontext = """{
+    "app.section.key": "value",
+    "_app.section.key.source": "source",
+    "_app.section.key.comment": "comment"
+}
+"""
+        store = self.StoreClass()
+        store.parse(jsontext)
+        assert len(store.units) == 1
+        assert store.units[0].getid() == "app.section.key"
+        assert store.units[0].target == "value"
+        assert store.units[0].source == "source"
+        assert store.units[0].getnotes() == "comment"
+
+    def test_source_empty_string(self):
+        """Test that empty source strings are handled correctly."""
+        jsontext = """{
+    "key": "value",
+    "_key.source": ""
+}
+"""
+        store = self.StoreClass()
+        store.parse(jsontext)
+        assert len(store.units) == 1
+        assert store.units[0].source == ""
+        assert store.units[0].target == "value"
