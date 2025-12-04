@@ -122,6 +122,7 @@ def test_html_context_id_not_used_when_data_translate_context_identical():
     )
     hello_units = [u for u in store.getunits() if u.source == "Hello"]
     assert len(hello_units) == 1
+    assert len(hello_units[0].getlocations()) == 2
     assert hello_units[0].getcontext() == "greet"
 
 
