@@ -115,6 +115,17 @@ def test_html_context_id_not_used_when_no_duplicates():
     assert world_unit.getcontext() == ""
 
 
+def test_html_context_id_not_used_when_data_translate_context_identical():
+    """Test that identical data-translate-context has the same context."""
+    store = parse_html(
+        '<p data-translate-context="greet">Hello</p><div id="lala"><span data-translate-context="greet">Hello</span></div>'
+    )
+    hello_units = [u for u in store.getunits() if u.source == "Hello"]
+    assert len(hello_units) == 1
+    assert len(hello_units[0].getlocations()) == 2
+    assert hello_units[0].getcontext() == "greet"
+
+
 def test_html_context_disambiguates_duplicates_with_id():
     """Test that ID is used to disambiguate when the same source appears multiple times."""
     src = '<p id="a">Hello</p><p id="b">Hello</p>'
