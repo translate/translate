@@ -1,0 +1,32 @@
+Translate Toolkit 3.17.4
+************************
+
+*Released on 4 December 2025*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- JSON
+
+  - Improve RESJSON and Nextcloud JSON parsing
+
+- Core
+
+  - Improve serialization of dictionary-based formats
+
+Other
+-----
+
+- Fix deprecation warnings on recent Python versions
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+Michal Čihař
