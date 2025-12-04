@@ -327,13 +327,10 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 normalized_content = html_content.strip()
             assert normalized_content  # shouldn't be here otherwise
 
-            unit = self.addsourceunit(normalized_content)
-            unit.addlocation(self.tu_location)
-
             # Determine context from data-translate-context (outermost wins)
             # tu_content starts at the unit's opening tag, so the first
             # translate_context encountered is the correct one.
-            context = next(
+            explicit_context = next(
                 (
                     m["translate_context"]
                     for m in self.tu_content
@@ -341,19 +338,33 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 ),
                 None,
             )
-            if context:
-                unit.setcontext(context)
+
+            # If an explicit context is present, reuse an existing unit with the
+            # same source+context instead of creating a duplicate unit.
+            unit = None
+            if explicit_context:
+                for u in self.units:
+                    if u.source == normalized_content and u.getcontext() == explicit_context:
+                        unit = u
+                        break
+            if unit is None:
+                unit = self.addsourceunit(normalized_content)
+                if explicit_context:
+                    unit.setcontext(explicit_context)
+
+            unit.addlocation(self.tu_location)
+
             # If no explicit context, capture a context hint (from id/ancestor) for potential disambiguation
             context_hint = None
-            if not context:
+            if not explicit_context:
                 context_hint = next(
                     (m["context_hint"] for m in self.tu_content if "context_hint" in m),
                     None,
                 )
-            # Register the unit for potential disambiguation using context hints
-            self._register_unit_for_disambiguation(
-                unit, normalized_content, context_hint
-            )
+                # Register the unit for potential disambiguation using context hints
+                self._register_unit_for_disambiguation(
+                    unit, normalized_content, context_hint
+                )
 
             # Extract comment text from HTML comment elements within the translation unit
             comments = [
@@ -448,17 +459,25 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
     def emit_attribute_translation_units(self, markup):
         if "attribute_tus" in markup:
             for tu in markup["attribute_tus"]:
-                unit = self.addsourceunit(tu["html_content"])
-                unit.addlocation(tu["location"])
                 # Attribute context: prefer explicit translate_context; otherwise use context_hint only if needed
                 attr_suffix = f"[{tu.get('attrname')}]" if tu.get("attrname") else ""
                 explicit = markup.get("translate_context")
-                if explicit:
-                    unit.setcontext(f"{explicit}{attr_suffix}")
-                    self._register_unit_for_disambiguation(
-                        unit, tu["html_content"], None
-                    )
-                else:
+                full_explicit = f"{explicit}{attr_suffix}" if explicit else None
+
+                # If explicit context exists, reuse an existing unit (source+context)
+                unit = None
+                if full_explicit:
+                    for u in self.units:
+                        if u.source == tu["html_content"] and u.getcontext() == full_explicit:
+                            unit = u
+                            break
+                if unit is None:
+                    unit = self.addsourceunit(tu["html_content"])
+                    if full_explicit:
+                        unit.setcontext(full_explicit)
+                unit.addlocation(tu["location"])
+
+                if not full_explicit:
                     hint_base = markup.get("context_hint")
                     hint = f"{hint_base}{attr_suffix}" if hint_base else None
                     self._register_unit_for_disambiguation(
