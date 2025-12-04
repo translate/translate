@@ -187,6 +187,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         self._ancestor_id_label_stack = []  # labels for ancestor ids (id or id:line-col)
         self._id_seen = set()  # track seen ids to disambiguate labels
         self._units_by_source = {}  # Track units by normalized source to add context only when needed for disambiguation
+        self._units_by_src_ctx = {}  # Fast lookup for units created with explicit context: (source, context) -> unit
 
         # parse
         if inputfile is not None:
@@ -343,17 +344,13 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             # same source+context instead of creating a duplicate unit.
             unit = None
             if explicit_context:
-                for u in self.units:
-                    if (
-                        u.source == normalized_content
-                        and u.getcontext() == explicit_context
-                    ):
-                        unit = u
-                        break
+                unit = self._units_by_src_ctx.get((normalized_content, explicit_context))
             if unit is None:
                 unit = self.addsourceunit(normalized_content)
                 if explicit_context:
                     unit.setcontext(explicit_context)
+                    # Register for faster lookups
+                    self._units_by_src_ctx[normalized_content, explicit_context] = unit
 
             unit.addlocation(self.tu_location)
 
@@ -470,17 +467,13 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 # If explicit context exists, reuse an existing unit (source+context)
                 unit = None
                 if full_explicit:
-                    for u in self.units:
-                        if (
-                            u.source == tu["html_content"]
-                            and u.getcontext() == full_explicit
-                        ):
-                            unit = u
-                            break
+                    unit = self._units_by_src_ctx.get((tu["html_content"], full_explicit))
                 if unit is None:
                     unit = self.addsourceunit(tu["html_content"])
                     if full_explicit:
                         unit.setcontext(full_explicit)
+                        # Register for faster lookups
+                        self._units_by_src_ctx[tu["html_content"], full_explicit] = unit
                 unit.addlocation(tu["location"])
 
                 if not full_explicit:
