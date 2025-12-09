@@ -136,9 +136,7 @@ def convert(inputfile, template=None, options=None, convert_options=None):
     in_ext, out_ext, templ_ext = None, None, None
 
     # Get extensions from options
-    if options is None:
-        options = {}
-    else:
+    if options is not None:
         if "in_ext" in options:
             in_ext = options["in_ext"]
         if "out_ext" in options:

@@ -179,11 +179,13 @@ class PoXliffUnit(xliff.xliffunit):
         if origin in {"programmer", "developer", "source code"}:
             devcomments = super().getnotes("developer")
             autocomments = self.getautomaticcomments()
-            if devcomments == autocomments or autocomments.find(devcomments) >= 0:
-                devcomments = ""
-            elif devcomments.find(autocomments) >= 0:
+            if (
+                # pylint: disable-next=chained-comparison
+                devcomments != autocomments
+                and autocomments.find(devcomments) < 0
+                and devcomments.find(autocomments) >= 0
+            ):
                 autocomments = devcomments
-                devcomments = ""
             return autocomments
         return super().getnotes(origin)
 

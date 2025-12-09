@@ -424,11 +424,12 @@ msgstr ""
 
         potsource = """#: file.c:1\n#, c-format\nmsgid "%d computers"\nmsgstr ""\n"""
         posource = """#: file.c:2\n#, c-format\nmsgid "%s computers "\nmsgstr "%s-rekenaars"\n"""
-        poexpected = """#: file.c:1\n#, fuzzy, c-format\nmsgid "%d computers"\nmsgstr "%s-rekenaars"\n"""
+        poexpected = """#: file.c:1\n#, c-format, fuzzy\nmsgid "%d computers"\nmsgstr "%s-rekenaars"\n"""
         newpo = self.convertpot(potsource, posource)
         newpounit = self.singleunit(newpo)
         assert newpounit.isfuzzy()
         assert newpounit.hastypecomment("c-format")
+        assert bytes(newpo).decode().split("\n\n", 1)[1] == poexpected
 
     def test_msgctxt(self):
         """Test that msgctxt is migrated correctly."""

@@ -310,7 +310,6 @@ class prop2po:
         if current_plural:
             # The file ended with a set of plural units
             _append_plural_unit(new_store, plurals, current_plural)
-            current_plural = ""
 
         # if everything went well, there should be nothing left in plurals
         if len(plurals) != 0:

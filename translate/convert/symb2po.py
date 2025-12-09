@@ -51,7 +51,7 @@ def read_header_items(ps):
         results[match_chunks["key"]] = match_chunks["value"]
         match = header_item_re.match(ps.current_line)
 
-    match = read_while(ps, identity, lambda line: not line.startswith("*/"))
+    read_while(ps, identity, lambda line: not line.startswith("*/"))
     ps.read_line()
     return results
 

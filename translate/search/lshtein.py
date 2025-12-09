@@ -151,7 +151,6 @@ class LevenshteinComparer:
             penalty += 7
             if l1 > self.MAX_LEN:
                 a = a[: self.MAX_LEN]
-                l1 = self.MAX_LEN
                 penalty += 7
 
         # The actual value in the array that would represent a giveup situation:

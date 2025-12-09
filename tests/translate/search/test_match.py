@@ -107,6 +107,7 @@ class TestMatch:
         candidates = self.candidatestrings(matcher.matches("The bug was submitted"))
         assert candidates == ["submit"]
         candidates = self.candidatestrings(matcher.matches("The site is certified"))
+        assert candidates == ["certifie"]
 
     def test_space_mismatch(self):
         """Tests that we can match with some spacing mismatch."""
