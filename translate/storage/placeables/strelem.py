@@ -324,9 +324,6 @@ class StringElem:
             newstr = "".join(start["elem"].sub)
             removed = StringElem(newstr[start["offset"] : end["offset"]])
             newstr = newstr[: start["offset"]] + newstr[end["offset"] :]
-            parent = self.get_parent_elem(start["elem"])
-            if parent is None and start["elem"] is self:
-                parent = self
             start["elem"].sub = [newstr]
             self.prune()
             return removed, start["elem"], start["offset"]

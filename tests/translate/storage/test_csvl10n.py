@@ -161,7 +161,7 @@ GENERAL@2|Notes,"cable, motor, switch"
         assert store.units[0].source == "test"
         assert store.units[0].target == "zkouška sirén"
         with pytest.raises(UnicodeDecodeError):
-            store = self.parse_store(content.encode("iso-8859-2"), encoding="utf-8")
+            self.parse_store(content.encode("iso-8859-2"), encoding="utf-8")
 
     def test_corrupt(self):
         store = self.StoreClass()

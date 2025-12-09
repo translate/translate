@@ -983,10 +983,6 @@ class FluentUnit(base.TranslationUnit):
         :rtype: Entry or None
         :raises ValueError: if the unit source contains an error.
         """
-        fluent_id = self.getid()
-        if fluent_id:
-            # Remove the leading "-" for Terms.
-            fluent_id = re.sub(r"^-", "", fluent_id, count=1)
         if self.fluent_type == "ResourceComment":
             # Create a comment, even if empty. Especially since empty
             # GroupComments are meant to end a previous GroupComment's

@@ -294,14 +294,12 @@ class poheader:
           3. Analysing the 'Language-Team' entry.
         """
         header = self.parseheader()
-        lang = header.get("Language")
-        if lang is not None:
+        if lang := header.get("Language"):
             # pylint: disable-next=import-outside-toplevel
             from translate.lang.data import langcode_ire  # noqa: PLC0415
 
             if langcode_ire.match(lang):
                 return lang
-            lang = None
         if "X-Poedit-Language" in header:
             # pylint: disable-next=import-outside-toplevel
             from translate.lang import poedit  # noqa: PLC0415

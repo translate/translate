@@ -287,11 +287,12 @@ msgstr "36em"
 
         input_source = """#: file.c:1\n#, c-format\nmsgid "%d computers"\nmsgstr ""\n"""
         template_source = """#: file.c:2\n#, c-format\nmsgid "%s computers "\nmsgstr "%s-rekenaars"\n"""
-        poexpected = """#: file.c:1\n#, fuzzy, c-format\nmsgid "%d computers"\nmsgstr "%s-rekenaars"\n"""
+        poexpected = """#: file.c:1\n#, c-format, fuzzy\nmsgid "%d computers"\nmsgstr "%s-rekenaars"\n"""
         newpo = self.pretranslatepo(input_source, template_source)
         newpounit = self.singleunit(newpo)
         assert newpounit.isfuzzy()
         assert newpounit.hastypecomment("c-format")
+        assert bytes(newpo).decode() == poexpected
 
     def test_xliff_states(self):
         """Test correct maintenance of XLIFF states."""
