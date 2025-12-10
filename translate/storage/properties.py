@@ -568,12 +568,34 @@ class DialectStrings(Dialect):
         return ret.replace('\\"', '"')
 
     @staticmethod
+    def extract_inline_comment(value):
+        """
+        Extract inline comment from value if present.
+        
+        Returns tuple of (value_without_comment, comment_or_none)
+        """
+        stripped_value = value.rstrip()
+        if stripped_value.endswith("*/"):
+            # Find the start of the inline comment
+            comment_start = stripped_value.rfind("/*")
+            if comment_start != -1:
+                # Extract the inline comment
+                comment = stripped_value[comment_start:]
+                # Remove the inline comment from value
+                stripped_value = stripped_value[:comment_start].rstrip()
+                return stripped_value, comment
+        return value, None
+    
+    @staticmethod
     def value_strip(value):
         """Strip unneeded characters from the value."""
-        newvalue = value.rstrip().rstrip(";").rstrip('"')
+        # Strip inline comments before processing the value
+        stripped_value, _ = DialectStrings.extract_inline_comment(value)
+        
+        newvalue = stripped_value.rstrip(";").rstrip('"')
         # If string now ends in \ we put back the char that was escaped
         if newvalue[-1:] == "\\":
-            newvalue += value[len(newvalue) : len(newvalue) + 1]
+            newvalue += stripped_value[len(newvalue) : len(newvalue) + 1]
         ret = newvalue.lstrip().lstrip('"')
         return ret.replace('\\"', '"')
 
@@ -584,6 +606,11 @@ class DialectStrings(Dialect):
     @staticmethod
     def is_line_continuation(line):
         stripped = line.rstrip()
+        # Remove inline comments before checking for semicolon terminator
+        if stripped.endswith("*/"):
+            comment_start = stripped.rfind("/*")
+            if comment_start != -1:
+                stripped = stripped[:comment_start].rstrip()
         return not stripped or stripped[-1] != ";"
 
     @staticmethod
@@ -1136,17 +1163,26 @@ class propfile(base.TranslationStore):
                 else:
                     newunit.name = self.personality.key_strip(line[:delimiter_pos])
                     newunit.missing = ismissing
+                    
+                    # Extract inline comment if present (for strings dialect)
+                    value_part = line[delimiter_pos + 1 :]
+                    if hasattr(self.personality, 'extract_inline_comment'):
+                        value_part_stripped, inline_comment = self.personality.extract_inline_comment(value_part)
+                        if inline_comment and inline_comment not in self.personality.drop_comments:
+                            newunit.comments.append(inline_comment)
+                        value_part = value_part_stripped
+                    
                     if self.personality.is_line_continuation(
-                        line[delimiter_pos + 1 :].lstrip()
+                        value_part.lstrip()
                     ):
                         inmultilinevalue = True
-                        newunit.value = line[delimiter_pos + 1 :].lstrip()[:-1]
+                        newunit.value = value_part.lstrip()[:-1]
                         newunit.value = self.personality.strip_line_continuation(
-                            line[delimiter_pos + 1 :].lstrip()
+                            value_part.lstrip()
                         )
                     else:
                         newunit.value = self.personality.value_strip(
-                            line[delimiter_pos + 1 :]
+                            value_part
                         )
                         self.addunit(newunit)
                         newunit = self.UnitClass("", self.personality.name)
