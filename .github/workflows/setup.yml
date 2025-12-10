@@ -57,7 +57,7 @@ jobs:
         uv pip install dist/translate_toolkit*.whl
         moz2po --help
         python ./test-ttk-release-whl/lib/python*/site-packages/translate/lang/identify.py README.rst
-    - uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 # v5.5.1
+    - uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
       with:
         name: setup
     - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
