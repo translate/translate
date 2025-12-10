@@ -571,7 +571,7 @@ class DialectStrings(Dialect):
     def extract_inline_comment(value):
         """
         Extract inline comment from value if present.
-        
+
         Returns tuple of (value_without_comment, comment_or_none)
         """
         stripped_value = value.rstrip()
@@ -585,13 +585,13 @@ class DialectStrings(Dialect):
                 stripped_value = stripped_value[:comment_start].rstrip()
                 return stripped_value, comment
         return value, None
-    
+
     @staticmethod
     def value_strip(value):
         """Strip unneeded characters from the value."""
         # Strip inline comments before processing the value
         stripped_value, _ = DialectStrings.extract_inline_comment(value)
-        
+
         newvalue = stripped_value.rstrip(";").rstrip('"')
         # If string now ends in \ we put back the char that was escaped
         if newvalue[-1:] == "\\":
@@ -1163,27 +1163,28 @@ class propfile(base.TranslationStore):
                 else:
                     newunit.name = self.personality.key_strip(line[:delimiter_pos])
                     newunit.missing = ismissing
-                    
+
                     # Extract inline comment if present (for strings dialect)
                     value_part = line[delimiter_pos + 1 :]
-                    if hasattr(self.personality, 'extract_inline_comment'):
-                        value_part_stripped, inline_comment = self.personality.extract_inline_comment(value_part)
-                        if inline_comment and inline_comment not in self.personality.drop_comments:
+                    if hasattr(self.personality, "extract_inline_comment"):
+                        value_part_stripped, inline_comment = (
+                            self.personality.extract_inline_comment(value_part)
+                        )
+                        if (
+                            inline_comment
+                            and inline_comment not in self.personality.drop_comments
+                        ):
                             newunit.comments.append(inline_comment)
                         value_part = value_part_stripped
-                    
-                    if self.personality.is_line_continuation(
-                        value_part.lstrip()
-                    ):
+
+                    if self.personality.is_line_continuation(value_part.lstrip()):
                         inmultilinevalue = True
                         newunit.value = value_part.lstrip()[:-1]
                         newunit.value = self.personality.strip_line_continuation(
                             value_part.lstrip()
                         )
                     else:
-                        newunit.value = self.personality.value_strip(
-                            value_part
-                        )
+                        newunit.value = self.personality.value_strip(value_part)
                         self.addunit(newunit)
                         newunit = self.UnitClass("", self.personality.name)
         # see if there is a leftover one...

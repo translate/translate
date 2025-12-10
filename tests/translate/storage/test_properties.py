@@ -666,15 +666,17 @@ key=value
 
     def test_mac_strings_inline_comments(self):
         """Test .strings inline comments are parsed correctly."""
-        propsource = '"key1"="source_value1"; /*description1*/\n"key2"="source_value2"; /*description2*/\n'.encode("utf-16")
+        propsource = '"key1"="source_value1"; /*description1*/\n"key2"="source_value2"; /*description2*/\n'.encode(
+            "utf-16"
+        )
         propfile = self.propparse(propsource, personality="strings")
         assert len(propfile.units) == 2
-        
+
         propunit = propfile.units[0]
         assert propunit.name == "key1"
         assert propunit.source == "source_value1"
         assert propunit.getnotes() == "description1"
-        
+
         propunit = propfile.units[1]
         assert propunit.name == "key2"
         assert propunit.source == "source_value2"
