@@ -631,6 +631,7 @@ class DialectStrings(Dialect):
                     result.pop()
 
                 i += 2
+                comment_found = False
                 while i < len(line):
                     if i + 1 < len(line) and line[i : i + 2] == "*/":
                         # Found end of comment
@@ -640,8 +641,15 @@ class DialectStrings(Dialect):
                         # Skip whitespace after comment
                         while i < len(line) and line[i] in " \t":
                             i += 1
+                        comment_found = True
                         break
                     i += 1
+
+                # If no closing */ found, treat rest of line as comment
+                if not comment_found:
+                    comment = line[comment_start:]
+                    comments.append(comment)
+                    # i is already at end of line, loop will exit
             else:
                 result.append(char)
                 i += 1
@@ -699,7 +707,7 @@ class DialectStrings(Dialect):
         return string.translate(cls.encode_trans)
 
     @classmethod
-    def is_line_continuation(cls, line):
+    def is_line_continuation(cls, line: str) -> bool:
         stripped = line.rstrip()
         # Remove inline comments before checking for semicolon terminator
         stripped, _ = cls.extract_inline_comment(stripped)

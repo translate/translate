@@ -768,6 +768,60 @@ key=value
         assert propfile.units[0].source == "Value Four"
         assert propfile.units[0].getnotes() == "A comment at the end of the line"
 
+    def test_mac_strings_c_style_comments_roundtrip(self):
+        """Test round-trip of .strings files with C-style comments."""
+        # Test 1: Comment before entry
+        propsource = '/* Comment before */\n"key1" = "value1";\n'
+        propfile = self.propparse(propsource.encode("utf-16"), personality="strings")
+        result = bytes(propfile).decode("utf-16")
+        assert "Comment before" in result
+        assert propfile.units[0].name == "key1"
+        assert propfile.units[0].source == "value1"
+
+        # Test 2: Multiple entries with inline comments after semicolon
+        propsource = (
+            '"key1" = "value1"; /* comment1 */\n"key2" = "value2"; /* comment2 */\n'
+        )
+        propfile = self.propparse(propsource.encode("utf-16"), personality="strings")
+        result = bytes(propfile).decode("utf-16")
+        # Comments should be preserved
+        assert "comment1" in result
+        assert "comment2" in result
+        assert len(propfile.units) == 2
+        assert propfile.units[0].getnotes() == "comment1"
+        assert propfile.units[1].getnotes() == "comment2"
+
+        # Test 3: Comment between key and equals (extracted but may not serialize in same position)
+        propsource = '"key" /* between */ = "value";\n'
+        propfile = self.propparse(propsource.encode("utf-16"), personality="strings")
+        assert propfile.units[0].name == "key"
+        assert propfile.units[0].source == "value"
+        assert propfile.units[0].getnotes() == "between"
+        # When serialized, comment will be at the beginning
+        result = bytes(propfile).decode("utf-16")
+        assert "between" in result
+
+        # Test 4: Nested /* in comments
+        propsource = '"key" = "value"; /* comment with /* nested */\n'
+        propfile = self.propparse(propsource.encode("utf-16"), personality="strings")
+        result = bytes(propfile).decode("utf-16")
+        assert propfile.units[0].source == "value"
+        # Comment should be preserved
+        assert (
+            "comment with /* nested" in result or "comment with /\\* nested" in result
+        )
+
+        # Test 5: Comment inside quoted value should be preserved as-is
+        propsource = '"key" = "value with /* comment */";\n'
+        propfile = self.propparse(propsource.encode("utf-16"), personality="strings")
+        result = bytes(propfile).decode("utf-16")
+        assert propfile.units[0].source == "value with /* comment */"
+        # The /* */ should be in the value, not as a comment
+        assert (
+            "value with /* comment */" in result
+            or "value with /\\* comment \\*/" in result
+        )
+
     def test_mac_strings_quotes(self):
         """Test that parser unescapes characters used as wrappers."""
         propsource = r'"key with \"quotes\"" = "value with \"quotes\"";'.encode(
