@@ -613,11 +613,11 @@ class DialectStrings(Dialect):
     def encode(cls, string, encoding=None):  # noqa: ARG003
         return string.translate(cls.encode_trans)
 
-    @staticmethod
-    def is_line_continuation(line):
+    @classmethod
+    def is_line_continuation(cls, line):
         stripped = line.rstrip()
         # Remove inline comments before checking for semicolon terminator
-        stripped, _ = DialectStrings.extract_inline_comment(stripped)
+        stripped, _ = cls.extract_inline_comment(stripped)
         return not stripped or stripped[-1] != ";"
 
     @staticmethod
