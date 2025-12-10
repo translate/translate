@@ -583,17 +583,31 @@ class DialectStrings(Dialect):
         Extract inline comment from value if present.
 
         Returns tuple of (value_without_comment, comment_or_none)
+
+        Only extracts comments that appear after the closing quote and semicolon.
+        For example: "value"; /* comment */
+        Does not extract /* */ that appear inside quoted strings.
         """
         stripped_value = value.rstrip()
-        if stripped_value.endswith("*/"):
-            # Find the start of the inline comment
-            comment_start = stripped_value.rfind("/*")
-            if comment_start != -1:
-                # Extract the inline comment
-                comment = stripped_value[comment_start:]
-                # Remove the inline comment from value
-                stripped_value = stripped_value[:comment_start].rstrip()
-                return stripped_value, comment
+        if not stripped_value.endswith("*/"):
+            return value, None
+
+        # Find where the value ends (after the closing quote and semicolon)
+        # Look for "; (with optional whitespace before the comment)
+        semicolon_pos = stripped_value.find(";")
+        if semicolon_pos == -1:
+            # No semicolon found, no inline comment
+            return value, None
+
+        # Look for /* after the semicolon
+        comment_start = stripped_value.find("/*", semicolon_pos)
+        if comment_start != -1:
+            # Extract the inline comment
+            comment = stripped_value[comment_start:]
+            # Remove the inline comment from value
+            stripped_value = stripped_value[:comment_start].rstrip()
+            return stripped_value, comment
+
         return value, None
 
     @staticmethod

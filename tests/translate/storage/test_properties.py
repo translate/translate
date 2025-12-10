@@ -682,6 +682,48 @@ key=value
         assert propunit.source == "source_value2"
         assert propunit.getnotes() == "description2"
 
+    def test_mac_strings_inline_comments_nested(self):
+        """Test .strings inline comments with nested /* inside."""
+        propsource = '"key"="translation"; /* comment with /* in it */\n'.encode(
+            "utf-16"
+        )
+        propfile = self.propparse(propsource, personality="strings")
+        assert len(propfile.units) == 1
+
+        propunit = propfile.units[0]
+        assert propunit.name == "key"
+        assert propunit.source == "translation"
+        # Should extract the full comment starting from first /* after semicolon
+        assert propunit.getnotes() == "comment with /* in it"
+
+    def test_mac_strings_comment_inside_value(self):
+        """Test .strings with /* */ inside the quoted value string."""
+        propsource = '"key"="translation with /* comment */";'.encode("utf-16")
+        propfile = self.propparse(propsource, personality="strings")
+        assert len(propfile.units) == 1
+
+        propunit = propfile.units[0]
+        assert propunit.name == "key"
+        # The /* */ inside the quotes should be part of the value, not a comment
+        assert propunit.source == "translation with /* comment */"
+        assert propunit.getnotes() == ""
+
+    def test_mac_strings_inline_comment_with_spaces(self):
+        """Test .strings inline comments with various spacing."""
+        propsource = (
+            '"key1"="value1";/* no space */\n"key2"="value2";  /* spaces */\n'.encode(
+                "utf-16"
+            )
+        )
+        propfile = self.propparse(propsource, personality="strings")
+        assert len(propfile.units) == 2
+
+        assert propfile.units[0].source == "value1"
+        assert propfile.units[0].getnotes() == "no space"
+
+        assert propfile.units[1].source == "value2"
+        assert propfile.units[1].getnotes() == "spaces"
+
     def test_mac_strings_quotes(self):
         """Test that parser unescapes characters used as wrappers."""
         propsource = r'"key with \"quotes\"" = "value with \"quotes\"";'.encode(
