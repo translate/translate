@@ -724,6 +724,50 @@ key=value
         assert propfile.units[1].source == "value2"
         assert propfile.units[1].getnotes() == "spaces"
 
+    def test_mac_strings_c_style_comments_anywhere(self):
+        """Test .strings C-style comments can appear anywhere (like C syntax)."""
+        # Comment before entry
+        propsource = (
+            '/* A comment before the entry */\n"KEY_ONE" = "Value One";\n'.encode(
+                "utf-16"
+            )
+        )
+        propfile = self.propparse(propsource, personality="strings")
+        assert len(propfile.units) == 1
+        assert propfile.units[0].name == "KEY_ONE"
+        assert propfile.units[0].source == "Value One"
+        assert propfile.units[0].getnotes() == "A comment before the entry"
+
+        # Comment between key and equals
+        propsource = '"KEY_TWO" /* A comment between key and equals sign */ = "Value Two";\n'.encode(
+            "utf-16"
+        )
+        propfile = self.propparse(propsource, personality="strings")
+        assert len(propfile.units) == 1
+        assert propfile.units[0].name == "KEY_TWO"
+        assert propfile.units[0].source == "Value Two"
+        assert propfile.units[0].getnotes() == "A comment between key and equals sign"
+
+        # Comment between equals and value
+        propsource = '"KEY_THREE" = /* A comment between equals sign and value */ "Value Three";\n'.encode(
+            "utf-16"
+        )
+        propfile = self.propparse(propsource, personality="strings")
+        assert len(propfile.units) == 1
+        assert propfile.units[0].name == "KEY_THREE"
+        assert propfile.units[0].source == "Value Three"
+        assert propfile.units[0].getnotes() == "A comment between equals sign and value"
+
+        # Comment after value, before semicolon
+        propsource = '"KEY_FOUR" = "Value Four" /* A comment at the end of the line */;\n'.encode(
+            "utf-16"
+        )
+        propfile = self.propparse(propsource, personality="strings")
+        assert len(propfile.units) == 1
+        assert propfile.units[0].name == "KEY_FOUR"
+        assert propfile.units[0].source == "Value Four"
+        assert propfile.units[0].getnotes() == "A comment at the end of the line"
+
     def test_mac_strings_quotes(self):
         """Test that parser unescapes characters used as wrappers."""
         propsource = r'"key with \"quotes\"" = "value with \"quotes\"";'.encode(

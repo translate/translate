@@ -578,6 +578,77 @@ class DialectStrings(Dialect):
         return ret.replace('\\"', '"')
 
     @staticmethod
+    def strip_inline_comments_from_line(line: str) -> tuple[str, list[str]]:
+        """
+        Strip all C-style /* */ comments from a line, respecting quoted strings.
+
+        Returns tuple of (line_without_comments, list_of_comments_found)
+
+        This handles comments that can appear anywhere in .strings files:
+        - Between key and equals: "key" /* comment */ = "value";
+        - Between equals and value: "key" = /* comment */ "value";
+        - After value: "key" = "value" /* comment */;
+        """
+        comments = []
+        result = []
+        i = 0
+        in_quote = False
+        escape_next = False
+
+        while i < len(line):
+            char = line[i]
+
+            # Handle escape sequences inside quotes
+            if escape_next:
+                result.append(char)
+                escape_next = False
+                i += 1
+                continue
+
+            # Handle quotes
+            if char == '"' and not escape_next:
+                in_quote = not in_quote
+                result.append(char)
+                i += 1
+                continue
+
+            if char == "\\":
+                escape_next = True
+                result.append(char)
+                i += 1
+                continue
+
+            # Only process comments outside of quotes
+            if not in_quote and i + 1 < len(line) and line[i : i + 2] == "/*":
+                # Found start of comment, find the end
+                comment_start = i
+                # Skip any whitespace before the comment
+                ws_start = i
+                while ws_start > 0 and line[ws_start - 1] in " \t":
+                    ws_start -= 1
+                # Trim trailing whitespace before comment from result
+                while result and result[-1] in " \t":
+                    result.pop()
+
+                i += 2
+                while i < len(line):
+                    if i + 1 < len(line) and line[i : i + 2] == "*/":
+                        # Found end of comment
+                        comment = line[comment_start : i + 2]
+                        comments.append(comment)
+                        i += 2
+                        # Skip whitespace after comment
+                        while i < len(line) and line[i] in " \t":
+                            i += 1
+                        break
+                    i += 1
+            else:
+                result.append(char)
+                i += 1
+
+        return "".join(result), comments
+
+    @staticmethod
     def extract_inline_comment(value: str) -> tuple[str, str | None]:
         """
         Extract inline comment from value if present.
@@ -1173,19 +1244,38 @@ class propfile(base.TranslationStore):
                 if self.UnitClass.represents_missing(line):
                     line = self.UnitClass.strip_missing_part(line)
                     ismissing = True
+
+                # For strings dialect, strip inline C-style comments from the line
+                # before parsing, but preserve them
+                inline_comments = []
+                if hasattr(self.personality, "strip_inline_comments_from_line"):
+                    line, inline_comments = (
+                        self.personality.strip_inline_comments_from_line(line)
+                    )
+
                 newunit.delimiter, delimiter_pos = self.personality.find_delimiter(line)
                 if delimiter_pos == -1:
                     newunit.name = self.personality.key_strip(line)
                     newunit.value = ""
                     newunit.delimiter = ""
                     newunit.missing = ismissing
+                    # Add any inline comments found
+                    for comment in inline_comments:
+                        if comment not in self.personality.drop_comments:
+                            newunit.comments.append(comment)
                     self.addunit(newunit)
                     newunit = self.UnitClass("", self.personality.name)
                 else:
                     newunit.name = self.personality.key_strip(line[:delimiter_pos])
                     newunit.missing = ismissing
 
+                    # Add any inline comments found
+                    for comment in inline_comments:
+                        if comment not in self.personality.drop_comments:
+                            newunit.comments.append(comment)
+
                     # Extract inline comment if present (for strings dialect)
+                    # This handles the old-style comment after semicolon
                     value_part = line[delimiter_pos + 1 :]
                     value_part_stripped, inline_comment = (
                         self.personality.extract_inline_comment(value_part)
