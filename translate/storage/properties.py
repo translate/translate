@@ -385,6 +385,16 @@ class Dialect:
     def get_expand_output_target_mapping(names: list[str]) -> list[str]:
         return names
 
+    @staticmethod
+    def extract_inline_comment(value: str) -> tuple[str, str | None]:
+        """
+        Extract inline comment from value if present.
+
+        Returns tuple of (value_without_comment, comment_or_none).
+        Default implementation returns no inline comment.
+        """
+        return value, None
+
 
 @register_dialect
 class DialectJava(Dialect):
@@ -568,7 +578,7 @@ class DialectStrings(Dialect):
         return ret.replace('\\"', '"')
 
     @staticmethod
-    def extract_inline_comment(value):
+    def extract_inline_comment(value: str) -> tuple[str, str | None]:
         """
         Extract inline comment from value if present.
 
@@ -607,10 +617,7 @@ class DialectStrings(Dialect):
     def is_line_continuation(line):
         stripped = line.rstrip()
         # Remove inline comments before checking for semicolon terminator
-        if stripped.endswith("*/"):
-            comment_start = stripped.rfind("/*")
-            if comment_start != -1:
-                stripped = stripped[:comment_start].rstrip()
+        stripped, _ = DialectStrings.extract_inline_comment(stripped)
         return not stripped or stripped[-1] != ";"
 
     @staticmethod
@@ -1166,16 +1173,15 @@ class propfile(base.TranslationStore):
 
                     # Extract inline comment if present (for strings dialect)
                     value_part = line[delimiter_pos + 1 :]
-                    if hasattr(self.personality, "extract_inline_comment"):
-                        value_part_stripped, inline_comment = (
-                            self.personality.extract_inline_comment(value_part)
-                        )
-                        if (
-                            inline_comment
-                            and inline_comment not in self.personality.drop_comments
-                        ):
-                            newunit.comments.append(inline_comment)
-                        value_part = value_part_stripped
+                    value_part_stripped, inline_comment = (
+                        self.personality.extract_inline_comment(value_part)
+                    )
+                    if (
+                        inline_comment
+                        and inline_comment not in self.personality.drop_comments
+                    ):
+                        newunit.comments.append(inline_comment)
+                    value_part = value_part_stripped
 
                     if self.personality.is_line_continuation(value_part.lstrip()):
                         inmultilinevalue = True
