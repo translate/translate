@@ -575,7 +575,7 @@ class DialectStrings(Dialect):
         Returns tuple of (line_without_comments, list_of_comments_found)
 
         This handles comments that can appear anywhere in .strings files:
-        
+
         - Between key and equals: ``"key" /* comment */ = "value";``
         - Between equals and value: ``"key" = /* comment */ "value";``
         - After value: ``"key" = "value" /* comment */;``
