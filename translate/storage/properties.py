@@ -588,7 +588,7 @@ class DialectStrings(Dialect):
         while i < len(line):
             char = line[i]
 
-            # Handle escape sequences inside quotes
+            # Handle escape sequences
             if escape_next:
                 result.append(char)
                 escape_next = False
