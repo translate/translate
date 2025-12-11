@@ -649,7 +649,7 @@ class DialectStrings(Dialect):
     @classmethod
     def value_strip(cls, value: str) -> str:
         """Strip unneeded characters from the value."""
-        newvalue = value.rstrip(";").rstrip('"')
+        newvalue = value.rstrip().rstrip(";").rstrip('"')
         # If string now ends in \ we put back the char that was escaped
         if newvalue[-1:] == "\\":
             newvalue += value[len(newvalue) : len(newvalue) + 1]

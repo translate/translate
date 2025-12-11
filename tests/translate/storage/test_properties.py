@@ -833,9 +833,19 @@ key=value
         assert propfile.units[0].source == "value with /* comment */"
         assert propfile.units[0].getnotes() == ""
 
-        # Test round-trip - /* */ preserved in value
+    def test_mac_strings_trailing_whitespace_after_semicolon(self):
+        """Test .strings with trailing whitespace after semicolon."""
+        # Test parsing with trailing spaces after semicolon
+        propsource = '"key" = "value";  \n'
+        propfile = self.propparse(propsource.encode("utf-16"), personality="strings")
+        assert len(propfile.units) == 1
+        assert propfile.units[0].name == "key"
+        assert propfile.units[0].source == "value"
+        assert propfile.units[0].getnotes() == ""
+
+        # Test round-trip
         result = bytes(propfile).decode("utf-16")
-        expected = '"key" = "value with /* comment */";\n'
+        expected = '"key" = "value";\n'
         assert result == expected
 
     def test_mac_strings_quotes(self):
