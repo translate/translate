@@ -721,7 +721,9 @@ key=value
 
         # Test round-trip
         result = bytes(propfile).decode("utf-16")
-        expected = '/* no space */\n"key1" = "value1";\n/* spaces */\n"key2" = "value2";\n'
+        expected = (
+            '/* no space */\n"key1" = "value1";\n/* spaces */\n"key2" = "value2";\n'
+        )
         assert result == expected
 
     def test_mac_strings_comment_before_entry(self):
