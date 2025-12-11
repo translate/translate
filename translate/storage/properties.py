@@ -689,16 +689,13 @@ class DialectStrings(Dialect):
 
         return value, None
 
-    @staticmethod
-    def value_strip(value: str) -> str:
+    @classmethod
+    def value_strip(cls, value: str) -> str:
         """Strip unneeded characters from the value."""
-        # Strip inline comments before processing the value
-        stripped_value, _ = DialectStrings.extract_inline_comment(value)
-
-        newvalue = stripped_value.rstrip(";").rstrip('"')
+        newvalue = value.rstrip(";").rstrip('"')
         # If string now ends in \ we put back the char that was escaped
         if newvalue[-1:] == "\\":
-            newvalue += stripped_value[len(newvalue) : len(newvalue) + 1]
+            newvalue += value[len(newvalue) : len(newvalue) + 1]
         ret = newvalue.lstrip().lstrip('"')
         return ret.replace('\\"', '"')
 
@@ -709,8 +706,6 @@ class DialectStrings(Dialect):
     @classmethod
     def is_line_continuation(cls, line: str) -> bool:
         stripped = line.rstrip()
-        # Remove inline comments before checking for semicolon terminator
-        stripped, _ = cls.extract_inline_comment(stripped)
         return not stripped or stripped[-1] != ";"
 
     @staticmethod
