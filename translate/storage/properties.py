@@ -570,14 +570,15 @@ class DialectStrings(Dialect):
     @staticmethod
     def strip_inline_comments_from_line(line: str) -> tuple[str, list[str]]:
         """
-        Strip all C-style /* */ comments from a line, respecting quoted strings.
+        Strip all C-style ``/* */`` comments from a line, respecting quoted strings.
 
         Returns tuple of (line_without_comments, list_of_comments_found)
 
         This handles comments that can appear anywhere in .strings files:
-        - Between key and equals: "key" /* comment */ = "value";
-        - Between equals and value: "key" = /* comment */ "value";
-        - After value: "key" = "value" /* comment */;
+        
+        - Between key and equals: ``"key" /* comment */ = "value";``
+        - Between equals and value: ``"key" = /* comment */ "value";``
+        - After value: ``"key" = "value" /* comment */;``
         """
         comments = []
         result = []
