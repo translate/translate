@@ -683,7 +683,8 @@ key=value
         assert propunit.getnotes() == "description2"
 
     def test_mac_strings_inline_comments_nested(self):
-        """Test .strings inline comments with nested /* inside."""
+        """Test .strings inline comments with nested /* inside - parsing and round-trip."""
+        # Test parsing
         propsource = '"key"="translation"; /* comment with /* in it */\n'.encode(
             "utf-16"
         )
@@ -696,8 +697,14 @@ key=value
         # Should extract the full comment starting from first /* after semicolon
         assert propunit.getnotes() == "comment with /* in it"
 
+        # Test round-trip
+        result = bytes(propfile).decode("utf-16")
+        expected = '/* comment with /* in it */\n"key" = "translation";\n'
+        assert result == expected
+
     def test_mac_strings_inline_comment_with_spaces(self):
-        """Test .strings inline comments with various spacing."""
+        """Test .strings inline comments with various spacing - parsing and round-trip."""
+        # Test parsing
         propsource = (
             '"key1"="value1";/* no space */\n"key2"="value2";  /* spaces */\n'.encode(
                 "utf-16"
@@ -711,6 +718,11 @@ key=value
 
         assert propfile.units[1].source == "value2"
         assert propfile.units[1].getnotes() == "spaces"
+
+        # Test round-trip
+        result = bytes(propfile).decode("utf-16")
+        expected = '/* no space */\n"key1" = "value1";\n/* spaces */\n"key2" = "value2";\n'
+        assert result == expected
 
     def test_mac_strings_comment_before_entry(self):
         """Test .strings comment before entry - parsing and round-trip."""
@@ -832,6 +844,11 @@ key=value
         assert propfile.units[0].name == "key"
         assert propfile.units[0].source == "value with /* comment */"
         assert propfile.units[0].getnotes() == ""
+
+        # Test round-trip
+        result = bytes(propfile).decode("utf-16")
+        expected = '"key" = "value with /* comment */";\n'
+        assert result == expected
 
     def test_mac_strings_trailing_whitespace_after_semicolon(self):
         """Test .strings with trailing whitespace after semicolon."""
