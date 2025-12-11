@@ -724,9 +724,8 @@ key=value
         assert propfile.units[1].source == "value2"
         assert propfile.units[1].getnotes() == "spaces"
 
-    def test_mac_strings_c_style_comments_anywhere(self):
-        """Test .strings C-style comments can appear anywhere (like C syntax)."""
-        # Comment before entry
+    def test_mac_strings_comment_before_entry(self):
+        """Test .strings comment before entry."""
         propsource = (
             '/* A comment before the entry */\n"KEY_ONE" = "Value One";\n'.encode(
                 "utf-16"
@@ -738,7 +737,8 @@ key=value
         assert propfile.units[0].source == "Value One"
         assert propfile.units[0].getnotes() == "A comment before the entry"
 
-        # Comment between key and equals
+    def test_mac_strings_comment_between_key_and_equals(self):
+        """Test .strings comment between key and equals sign."""
         propsource = '"KEY_TWO" /* A comment between key and equals sign */ = "Value Two";\n'.encode(
             "utf-16"
         )
@@ -748,7 +748,8 @@ key=value
         assert propfile.units[0].source == "Value Two"
         assert propfile.units[0].getnotes() == "A comment between key and equals sign"
 
-        # Comment between equals and value
+    def test_mac_strings_comment_between_equals_and_value(self):
+        """Test .strings comment between equals sign and value."""
         propsource = '"KEY_THREE" = /* A comment between equals sign and value */ "Value Three";\n'.encode(
             "utf-16"
         )
@@ -758,7 +759,8 @@ key=value
         assert propfile.units[0].source == "Value Three"
         assert propfile.units[0].getnotes() == "A comment between equals sign and value"
 
-        # Comment after value, before semicolon
+    def test_mac_strings_comment_after_value_before_semicolon(self):
+        """Test .strings comment after value, before semicolon."""
         propsource = '"KEY_FOUR" = "Value Four" /* A comment at the end of the line */;\n'.encode(
             "utf-16"
         )
@@ -768,9 +770,8 @@ key=value
         assert propfile.units[0].source == "Value Four"
         assert propfile.units[0].getnotes() == "A comment at the end of the line"
 
-    def test_mac_strings_c_style_comments_roundtrip(self):
-        """Test round-trip of .strings files with C-style comments."""
-        # Test 1: Comment before entry - full round-trip
+    def test_mac_strings_roundtrip_comment_before_entry(self):
+        """Test round-trip: comment before entry."""
         propsource = '/* Comment before */\n"key1" = "value1";\n'
         propfile = self.propparse(propsource.encode("utf-16"), personality="strings")
         result = bytes(propfile).decode("utf-16")
@@ -783,7 +784,8 @@ key=value
         expected = '/* Comment before */\n"key1" = "value1";\n'
         assert result == expected
 
-        # Test 2: Multiple entries with inline comments after semicolon - full round-trip
+    def test_mac_strings_roundtrip_multiple_inline_comments(self):
+        """Test round-trip: multiple entries with inline comments after semicolon."""
         propsource = (
             '"key1" = "value1"; /* comment1 */\n"key2" = "value2"; /* comment2 */\n'
         )
@@ -803,7 +805,8 @@ key=value
         )
         assert result == expected
 
-        # Test 3: Comment between key and equals
+    def test_mac_strings_roundtrip_comment_between_key_equals(self):
+        """Test round-trip: comment between key and equals."""
         propsource = '"key" /* between */ = "value";\n'
         propfile = self.propparse(propsource.encode("utf-16"), personality="strings")
         result = bytes(propfile).decode("utf-16")
@@ -816,7 +819,8 @@ key=value
         expected = '/* between */\n"key" = "value";\n'
         assert result == expected
 
-        # Test 4: Nested /* in comments
+    def test_mac_strings_roundtrip_nested_comment(self):
+        """Test round-trip: nested /* in comments."""
         propsource = '"key" = "value"; /* comment with /* nested */\n'
         propfile = self.propparse(propsource.encode("utf-16"), personality="strings")
         result = bytes(propfile).decode("utf-16")
@@ -829,7 +833,8 @@ key=value
         expected = '/* comment with /* nested */\n"key" = "value";\n'
         assert result == expected
 
-        # Test 5: Comment inside quoted value should be preserved as-is
+    def test_mac_strings_roundtrip_comment_inside_value(self):
+        """Test round-trip: comment inside quoted value preserved as-is."""
         propsource = '"key" = "value with /* comment */";\n'
         propfile = self.propparse(propsource.encode("utf-16"), personality="strings")
         result = bytes(propfile).decode("utf-16")

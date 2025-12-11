@@ -606,7 +606,7 @@ class DialectStrings(Dialect):
                 continue
 
             # Handle quotes
-            if char == '"' and not escape_next:
+            if char == '"':
                 in_quote = not in_quote
                 result.append(char)
                 i += 1
@@ -690,7 +690,7 @@ class DialectStrings(Dialect):
         return value, None
 
     @staticmethod
-    def value_strip(value):
+    def value_strip(value: str) -> str:
         """Strip unneeded characters from the value."""
         # Strip inline comments before processing the value
         stripped_value, _ = DialectStrings.extract_inline_comment(value)
@@ -1282,18 +1282,8 @@ class propfile(base.TranslationStore):
                         if comment not in self.personality.drop_comments:
                             newunit.comments.append(comment)
 
-                    # Extract inline comment if present (for strings dialect)
-                    # This handles the old-style comment after semicolon
+                    # Extract value part after delimiter
                     value_part = line[delimiter_pos + 1 :]
-                    value_part_stripped, inline_comment = (
-                        self.personality.extract_inline_comment(value_part)
-                    )
-                    if (
-                        inline_comment
-                        and inline_comment not in self.personality.drop_comments
-                    ):
-                        newunit.comments.append(inline_comment)
-                    value_part = value_part_stripped
 
                     if self.personality.is_line_continuation(value_part.lstrip()):
                         inmultilinevalue = True
