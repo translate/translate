@@ -568,7 +568,87 @@ class DialectStrings(Dialect):
         return ret.replace('\\"', '"')
 
     @staticmethod
-    def value_strip(value):
+    def strip_inline_comments_from_line(line: str) -> tuple[str, list[str]]:
+        """
+        Strip all C-style ``/* */`` comments from a line, respecting quoted strings.
+
+        Returns tuple of (line_without_comments, list_of_comments_found)
+
+        This handles comments that can appear anywhere in .strings files:
+
+        - Between key and equals: ``"key" /* comment */ = "value";``
+        - Between equals and value: ``"key" = /* comment */ "value";``
+        - After value: ``"key" = "value" /* comment */;``
+        """
+        comments = []
+        result = []
+        i = 0
+        in_quote = False
+        escape_next = False
+
+        while i < len(line):
+            char = line[i]
+
+            # Handle escape sequences
+            if escape_next:
+                result.append(char)
+                escape_next = False
+                i += 1
+                continue
+
+            # Handle quotes
+            if char == '"':
+                in_quote = not in_quote
+                result.append(char)
+                i += 1
+                continue
+
+            if char == "\\":
+                escape_next = True
+                result.append(char)
+                i += 1
+                continue
+
+            # Only process comments outside of quotes
+            if not in_quote and i + 1 < len(line) and line[i : i + 2] == "/*":
+                # Found start of comment, find the end
+                comment_start = i
+                # Skip any whitespace before the comment
+                ws_start = i
+                while ws_start > 0 and line[ws_start - 1] in " \t":
+                    ws_start -= 1
+                # Trim trailing whitespace before comment from result
+                while result and result[-1] in " \t":
+                    result.pop()
+
+                i += 2
+                comment_found = False
+                while i < len(line):
+                    if i + 1 < len(line) and line[i : i + 2] == "*/":
+                        # Found end of comment
+                        comment = line[comment_start : i + 2]
+                        comments.append(comment)
+                        i += 2
+                        # Skip whitespace after comment
+                        while i < len(line) and line[i] in " \t":
+                            i += 1
+                        comment_found = True
+                        break
+                    i += 1
+
+                # If no closing */ found, treat rest of line as comment
+                if not comment_found:
+                    comment = line[comment_start:]
+                    comments.append(comment)
+                    # i is already at end of line, loop will exit
+            else:
+                result.append(char)
+                i += 1
+
+        return "".join(result), comments
+
+    @classmethod
+    def value_strip(cls, value: str) -> str:
         """Strip unneeded characters from the value."""
         newvalue = value.rstrip().rstrip(";").rstrip('"')
         # If string now ends in \ we put back the char that was escaped
@@ -581,8 +661,8 @@ class DialectStrings(Dialect):
     def encode(cls, string, encoding=None):  # noqa: ARG003
         return string.translate(cls.encode_trans)
 
-    @staticmethod
-    def is_line_continuation(line):
+    @classmethod
+    def is_line_continuation(cls, line: str) -> bool:
         stripped = line.rstrip()
         return not stripped or stripped[-1] != ";"
 
@@ -1125,29 +1205,47 @@ class propfile(base.TranslationStore):
                 if self.UnitClass.represents_missing(line):
                     line = self.UnitClass.strip_missing_part(line)
                     ismissing = True
+
+                # For strings dialect, strip inline C-style comments from the line
+                # before parsing, but preserve them
+                inline_comments = []
+                if hasattr(self.personality, "strip_inline_comments_from_line"):
+                    line, inline_comments = (
+                        self.personality.strip_inline_comments_from_line(line)
+                    )
+
                 newunit.delimiter, delimiter_pos = self.personality.find_delimiter(line)
                 if delimiter_pos == -1:
                     newunit.name = self.personality.key_strip(line)
                     newunit.value = ""
                     newunit.delimiter = ""
                     newunit.missing = ismissing
+                    # Add any inline comments found
+                    for comment in inline_comments:
+                        if comment not in self.personality.drop_comments:
+                            newunit.comments.append(comment)
                     self.addunit(newunit)
                     newunit = self.UnitClass("", self.personality.name)
                 else:
                     newunit.name = self.personality.key_strip(line[:delimiter_pos])
                     newunit.missing = ismissing
-                    if self.personality.is_line_continuation(
-                        line[delimiter_pos + 1 :].lstrip()
-                    ):
+
+                    # Add any inline comments found
+                    for comment in inline_comments:
+                        if comment not in self.personality.drop_comments:
+                            newunit.comments.append(comment)
+
+                    # Extract value part after delimiter
+                    value_part = line[delimiter_pos + 1 :]
+
+                    if self.personality.is_line_continuation(value_part.lstrip()):
                         inmultilinevalue = True
-                        newunit.value = line[delimiter_pos + 1 :].lstrip()[:-1]
+                        newunit.value = value_part.lstrip()[:-1]
                         newunit.value = self.personality.strip_line_continuation(
-                            line[delimiter_pos + 1 :].lstrip()
+                            value_part.lstrip()
                         )
                     else:
-                        newunit.value = self.personality.value_strip(
-                            line[delimiter_pos + 1 :]
-                        )
+                        newunit.value = self.personality.value_strip(value_part)
                         self.addunit(newunit)
                         newunit = self.UnitClass("", self.personality.name)
         # see if there is a leftover one...
