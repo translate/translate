@@ -385,16 +385,6 @@ class Dialect:
     def get_expand_output_target_mapping(names: list[str]) -> list[str]:
         return names
 
-    @staticmethod
-    def extract_inline_comment(value: str) -> tuple[str, str | None]:
-        """
-        Extract inline comment from value if present.
-
-        Returns tuple of (value_without_comment, comment_or_none).
-        Default implementation returns no inline comment.
-        """
-        return value, None
-
 
 @register_dialect
 class DialectJava(Dialect):
@@ -655,39 +645,6 @@ class DialectStrings(Dialect):
                 i += 1
 
         return "".join(result), comments
-
-    @staticmethod
-    def extract_inline_comment(value: str) -> tuple[str, str | None]:
-        """
-        Extract inline comment from value if present.
-
-        Returns tuple of (value_without_comment, comment_or_none)
-
-        Only extracts comments that appear after the closing quote and semicolon.
-        For example: "value"; /* comment */
-        Does not extract /* */ that appear inside quoted strings.
-        """
-        stripped_value = value.rstrip()
-        if not stripped_value.endswith("*/"):
-            return value, None
-
-        # Find where the value ends (after the closing quote and semicolon)
-        # Look for "; (with optional whitespace before the comment)
-        semicolon_pos = stripped_value.find(";")
-        if semicolon_pos == -1:
-            # No semicolon found, no inline comment
-            return value, None
-
-        # Look for /* after the semicolon
-        comment_start = stripped_value.find("/*", semicolon_pos)
-        if comment_start != -1:
-            # Extract the inline comment
-            comment = stripped_value[comment_start:]
-            # Remove the inline comment from value
-            stripped_value = stripped_value[:comment_start].rstrip()
-            return stripped_value, comment
-
-        return value, None
 
     @classmethod
     def value_strip(cls, value: str) -> str:
