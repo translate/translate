@@ -153,7 +153,7 @@ def calcstats(filename):
     try:
         store = factory.getobject(filename)
     except ValueError as e:
-        logger.warning(f"Error in {filename}: {e}")
+        logger.warning("Error in %s: %s", filename, e)
         return {}
 
     units = [unit for unit in store.units if unit.istranslatable()]
