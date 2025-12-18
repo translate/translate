@@ -1,0 +1,32 @@
+Translate Toolkit 3.17.5
+************************
+
+*Released on 18 December 2025*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- Properties
+
+  - Fix .strings file parsing with C-style comments
+
+- HTML
+
+  - Ensure data-translate-context for duplicates with ID
+
+Other
+-----
+
+- Various code cleanups
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+Michal Čihař, Frans de Jonge
