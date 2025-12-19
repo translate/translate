@@ -839,7 +839,7 @@ class FluentUnit(base.TranslationUnit):
         # By default, we choose an id that indicates that this represents a
         # fluent Message.
 
-        return "gen-" + hashlib.sha256(source.encode()).hexdigest()
+        return f"gen-{hashlib.sha256(source.encode()).hexdigest()}"
 
     def getid(self) -> str | None:
         return self._id
@@ -848,7 +848,7 @@ class FluentUnit(base.TranslationUnit):
     _FLUENT_ID_PATTERN = r"[a-zA-Z][a-zA-Z0-9_-]*"
     _FLUENT_ID_REGEXES = {
         "Message": _FLUENT_ID_PATTERN,
-        "Term": r"-" + _FLUENT_ID_PATTERN,
+        "Term": rf"-{_FLUENT_ID_PATTERN}",
     }
 
     def setid(self, value: str | None) -> None:

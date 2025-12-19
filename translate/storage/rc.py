@@ -280,7 +280,7 @@ def generate_popup_pre_name(pre_name, caption):
     :return: The subelements pre-name based in the pre-name of the popup and
              its caption.
     """
-    return "{}.{}".format(pre_name, caption.replace(" ", "_"))
+    return f"{pre_name}.{caption.replace(' ', '_')}"
 
 
 def generate_popup_caption_name(pre_name):

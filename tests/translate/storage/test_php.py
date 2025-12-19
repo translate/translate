@@ -192,7 +192,7 @@ class TestPhpFile(test_monolingual.TestMonolingualStore):
         phpsource = """<?php
 $lang['mediaselect'] = 'Bestand selective';"""
         phpregen = self.phpregen(phpsource)
-        assert phpsource + "\n" == phpregen
+        assert f"{phpsource}\n" == phpregen
 
     def test_spaces_in_name(self):
         """Check that spaces in the array name doesn't throw us off."""

@@ -163,9 +163,7 @@ class TestOO2PO:
         xcommentsource = r"wizards	source\formwizard\dbwizres.src	0	string	RID_DB_FORM_WIZARD_START + 19				0	x-comment	%s		%s	%s	20050924 09:13:58"
         # Real comment
         comment = "Comment"
-        commentsource = (
-            en_USsource + "\n" + xcommentsource % (comment, comment, comment)
-        )
+        commentsource = f"{en_USsource}\n{xcommentsource % (comment, comment, comment)}"
         pofile = self.convert(commentsource)
         units = pofile.units[1:] if isinstance(pofile, poheader) else pofile.units
         textunit = units[0]
@@ -180,7 +178,7 @@ class TestOO2PO:
         # Whitespace and blank
         for comment in ("   ", ""):
             commentsource = (
-                en_USsource + "\n" + xcommentsource % (comment, comment, comment)
+                f"{en_USsource}\n{xcommentsource % (comment, comment, comment)}"
             )
             pofile = self.convert(commentsource)
             units = pofile.units[1:] if isinstance(pofile, poheader) else pofile.units

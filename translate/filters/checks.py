@@ -1110,7 +1110,7 @@ class StandardChecker(TranslationChecker):
 
             if str1_variables:
                 raise FilterFailure(
-                    "Missing printf variable: {}".format(", ".join(str1_variables))
+                    f"Missing printf variable: {', '.join(str1_variables)}"
                 )
 
         if (count1 or count2) and (count1 != count2):
@@ -1194,18 +1194,14 @@ class StandardChecker(TranslationChecker):
         if len(extra_in_2) > 0:
             failure_state = max(failure_state, STATE_SERIOUS)
             messages.append(
-                "Unknown named placeholders in translation: {}".format(
-                    ", ".join(extra_in_2)
-                )
+                f"Unknown named placeholders in translation: {', '.join(extra_in_2)}"
             )
 
         extra_in_1 = set(data1["namedvars"]).difference(set(data2["namedvars"]))
         if len(extra_in_1) > 0:
             failure_state = max(failure_state, STATE_MILD)
             messages.append(
-                "Named placeholders absent in translation: {}".format(
-                    ", ".join(extra_in_1)
-                )
+                f"Named placeholders absent in translation: {', '.join(extra_in_1)}"
             )
 
         if failure_state == STATE_OK:
@@ -1341,9 +1337,9 @@ class StandardChecker(TranslationChecker):
                 mismatch2.extend(vars2)
 
         if mismatch1:
-            messages.append("Do not translate: {}".format(", ".join(mismatch1)))
+            messages.append(f"Do not translate: {', '.join(mismatch1)}")
         elif mismatch2:
-            messages.append("Added variables: {}".format(", ".join(mismatch2)))
+            messages.append(f"Added variables: {', '.join(mismatch2)}")
 
         if messages and mismatch1:
             raise SeriousFilterFailure(messages)
@@ -1552,10 +1548,10 @@ class StandardChecker(TranslationChecker):
                 extra.append(f"'{bracket}'")
 
         if missing:
-            messages.append("Missing {}".format(", ".join(missing)))
+            messages.append(f"Missing {', '.join(missing)}")
 
         if extra:
-            messages.append("Added {}".format(", ".join(extra)))
+            messages.append(f"Added {', '.join(extra)}")
 
         if messages:
             raise FilterFailure(messages)
@@ -1735,7 +1731,7 @@ class StandardChecker(TranslationChecker):
 
         if acronyms:
             raise FilterFailure(
-                "Consider not translating acronyms: {}".format(", ".join(acronyms))
+                f"Consider not translating acronyms: {', '.join(acronyms)}"
             )
 
         return True
@@ -1801,7 +1797,7 @@ class StandardChecker(TranslationChecker):
         ]
 
         if stopwords:
-            raise FilterFailure("Do not translate: {}".format(", ".join(stopwords)))
+            raise FilterFailure(f"Do not translate: {', '.join(stopwords)}")
 
         return True
 
@@ -1838,7 +1834,7 @@ class StandardChecker(TranslationChecker):
         ]
 
         if stopwords:
-            raise FilterFailure("Please translate: {}".format(", ".join(stopwords)))
+            raise FilterFailure(f"Please translate: {', '.join(stopwords)}")
 
         return True
 
@@ -1873,9 +1869,7 @@ class StandardChecker(TranslationChecker):
         ]
 
         if invalidchars:
-            raise FilterFailure(
-                "Invalid characters: {}".format(", ".join(invalidchars))
-            )
+            raise FilterFailure(f"Invalid characters: {', '.join(invalidchars)}")
 
         return True
 
@@ -2061,7 +2055,7 @@ class StandardChecker(TranslationChecker):
         errors.difference_update(ignore1, self.config.notranslatewords)
 
         if errors:
-            messages = ["Check the spelling of: {}".format(", ".join(errors))]
+            messages = [f"Check the spelling of: {', '.join(errors)}"]
             raise FilterFailure(messages)
 
         return True
@@ -2478,10 +2472,7 @@ class MozillaChecker(StandardChecker):
                         # FIXME we could check more carefully for numbers in pair1[2]
                         if pair2[3] not in self.mozilla_dialog_valid_units:
                             raise FilterFailure(
-                                "Units should be one of '{}'. "
-                                "The source string uses '{}'".format(
-                                    ", ".join(self.mozilla_dialog_valid_units), pair1[3]
-                                )
+                                f"Units should be one of '{', '.join(self.mozilla_dialog_valid_units)}'. The source string uses '{pair1[3]}'"
                             )
 
         return True
@@ -2606,9 +2597,7 @@ class GnomeChecker(StandardChecker):
 
                 if stopwords:
                     raise FilterFailure(
-                        "Do not translate GConf attributes: {}".format(
-                            ", ".join(stopwords)
-                        )
+                        f"Do not translate GConf attributes: {', '.join(stopwords)}"
                     )
 
                 return True
@@ -2882,7 +2871,7 @@ def runtests(str1, str2, ignorelist=()):
 
     for test, value in failures.items():
         print(  # noqa: T201
-            "failure: {}: {}\n  {!r}\n  {!r}".format(test, value["message"], str1, str2)
+            f"failure: {test}: {value['message']}\n  {str1!r}\n  {str2!r}"
         )
 
     return failures

@@ -201,8 +201,8 @@ class TestTranslationUnit:
         ]
         for special in specials:
             unit.source = special
-            print("unit.source:", repr(unit.source) + "|")
-            print("special:", repr(special) + "|")
+            print("unit.source:", f"{unit.source!r}|")
+            print("special:", f"{special!r}|")
             assert unit.source == special
 
     def test_note_sanity(self):

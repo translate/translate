@@ -712,7 +712,7 @@ class pounit(pocommon.pounit):
         while location:
             locname = gpo_decode(gpo.po_filepos_file(location))
             locline = gpo.po_filepos_start_line(location)
-            locstring = locname if locline == -1 else ":".join([locname, str(locline)])
+            locstring = locname if locline == -1 else f"{locname}:{locline!s}"
             locations.append(pocommon.unquote_plus(locstring))
             i += 1
             location = gpo.po_message_filepos(self._gpo_message, i)

@@ -76,9 +76,9 @@ class po2txt:
             if not unit.istranslatable():
                 continue
             if unit.istranslated() or (self.include_fuzzy and unit.isfuzzy()):
-                txtresult += self.wrapmessage(unit.target) + "\n\n"
+                txtresult += f"{self.wrapmessage(unit.target)}\n\n"
             else:
-                txtresult += self.wrapmessage(unit.source) + "\n\n"
+                txtresult += f"{self.wrapmessage(unit.source)}\n\n"
         return txtresult.rstrip()
 
     def merge_stores(self):

@@ -1220,5 +1220,5 @@ def get_language(code):
     code = _normalize_to_underscore(code)
     if "_" in code:
         # convert ab_cd → ab_CD
-        code = "{}_{}".format(code.split("_")[0], code.split("_", 1)[1].upper())
+        code = f"{code.split('_')[0]}_{code.split('_', 1)[1].upper()}"
     return languages.get(code)

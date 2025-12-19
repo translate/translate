@@ -472,9 +472,9 @@ class TestMOFile(test_base.TestTranslationStore):
 
     def get_mo_and_po(self):
         return (
-            os.path.abspath(self.filename + ".po"),
-            os.path.abspath(self.filename + ".msgfmt.mo"),
-            os.path.abspath(self.filename + ".pocompile.mo"),
+            os.path.abspath(f"{self.filename}.po"),
+            os.path.abspath(f"{self.filename}.msgfmt.mo"),
+            os.path.abspath(f"{self.filename}.pocompile.mo"),
         )
 
     def remove_po_and_mo(self):

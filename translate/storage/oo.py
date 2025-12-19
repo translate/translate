@@ -386,7 +386,7 @@ class oofile:
                 warnings.warn(
                     f"contains {len(oe.lines)} lines (should be 2 at most): keys {oekeys!r}"
                 )
-            oeline = oe.getoutput(skip_source, fallback_lang) + "\r\n"
+            oeline = f"{oe.getoutput(skip_source, fallback_lang)}\r\n"
             lines.append(oeline)
         return "".join(lines)
 

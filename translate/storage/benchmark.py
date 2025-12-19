@@ -193,9 +193,7 @@ if __name__ == "__main__":
 
         for methodname, methodparam in methods:
             print("_______________________________________________________")
-            statsfile = f"{methodname}_{storetype}" + "_{}_{}_{}_{}_{}.stats".format(
-                *sample_file_sizes
-            )
+            statsfile = f"{methodname}_{storetype}{'_{}_{}_{}_{}_{}.stats'.format(*sample_file_sizes)}"
             cProfile.run(f"benchmarker.{methodname}({methodparam})", statsfile)
             stats = pstats.Stats(statsfile)
             stats.sort_stats("time").print_stats(20)

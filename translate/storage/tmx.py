@@ -128,7 +128,7 @@ class tmxunit(lisa.LISAunit):
 
     def setcontext(self, context):
         context_prop = self.xmlelement.find(
-            self.namespaced("prop") + "[@type='x-context']"
+            f"{self.namespaced('prop')}[@type='x-context']"
         )
         if context_prop is None:
             context_prop = etree.Element(self.namespaced("prop"))
@@ -142,7 +142,7 @@ class tmxunit(lisa.LISAunit):
 
     def getcontext(self):
         context_prop = self.xmlelement.find(
-            self.namespaced("prop") + "[@type='x-context']"
+            f"{self.namespaced('prop')}[@type='x-context']"
         )
         if context_prop is not None and context_prop.text is not None:
             return context_prop.text

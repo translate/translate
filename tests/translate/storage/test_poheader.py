@@ -266,9 +266,10 @@ msgstr ""
     pofile.header().addnote("Khaled Hosny <khaledhosny@domain.org>, 2006, 2007, 2008.")
     pofile.updatecontributor("Khaled Hosny", "khaledhosny@domain.org")
     print(bytes(pofile))
-    assert "# Khaled Hosny <khaledhosny@domain.org>, 2006, 2007, 2008, {}.".format(
-        time.strftime("%Y")
-    ) in bytes(pofile).decode("utf-8")
+    assert (
+        f"# Khaled Hosny <khaledhosny@domain.org>, 2006, 2007, 2008, {time.strftime('%Y')}."
+        in bytes(pofile).decode("utf-8")
+    )
 
 
 def test_updatecontributor_header():
@@ -289,9 +290,7 @@ msgstr ""
     pofile.updatecontributor("Grasvreter")
 
     # Manually build expected output
-    expected = posource.replace(
-        "msgid", "# Grasvreter, {}.\nmsgid".format(time.strftime("%Y"))
-    )
+    expected = posource.replace("msgid", f"# Grasvreter, {time.strftime('%Y')}.\nmsgid")
     assert bytes(pofile).decode("utf-8") == expected
 
 

@@ -71,7 +71,7 @@ msgstr "Toepassings"
         tmx = self.po2tmx(minipo, targetlanguage="xh")
         print("The generated xml:")
         print(bytes(tmx))
-        tuv = tmx.document.findall(".//{}".format(tmx.namespaced("tuv")))[1]
+        tuv = tmx.document.findall(f".//{tmx.namespaced('tuv')}")[1]
         # tag[0] will be the source, we want the target tuv
         assert tuv.get(f"{{{XML_NS}}}lang") == "xh"
 

@@ -70,9 +70,9 @@ class rerc:
         msgid = toks.caption[1:-1]
         if msgid in self.inputdict:
             if name in self.inputdict[msgid]:
-                yield '"' + self.inputdict[msgid][name] + '"'
+                yield f'"{self.inputdict[msgid][name]}"'
             elif EMPTY_LOCATION in self.inputdict[msgid]:
-                yield '"' + self.inputdict[msgid][EMPTY_LOCATION] + '"'
+                yield f'"{self.inputdict[msgid][EMPTY_LOCATION]}"'
         else:
             yield toks.caption
 
@@ -131,9 +131,9 @@ class rerc:
             # append translation if available, otherwise use as is
             if msgid in self.inputdict:
                 if name in self.inputdict[msgid]:
-                    tmp.append('"' + self.inputdict[msgid][name] + '"')
+                    tmp.append(f'"{self.inputdict[msgid][name]}"')
                 elif EMPTY_LOCATION in self.inputdict[msgid]:
-                    tmp.append('"' + self.inputdict[msgid][EMPTY_LOCATION] + '"')
+                    tmp.append(f'"{self.inputdict[msgid][EMPTY_LOCATION]}"')
             elif i > 1:
                 tmp.append(" ".join(c[1:i]))
 
@@ -182,9 +182,9 @@ class rerc:
             tmp = c[1:]
             if msgid in self.inputdict:
                 if name in self.inputdict[msgid]:
-                    tmp = ['"' + self.inputdict[msgid][name] + '"']
+                    tmp = [f'"{self.inputdict[msgid][name]}"']
                 elif EMPTY_LOCATION in self.inputdict[msgid]:
-                    tmp = ['"' + self.inputdict[msgid][EMPTY_LOCATION] + '"']
+                    tmp = [f'"{self.inputdict[msgid][EMPTY_LOCATION]}"']
 
             for part in tmp[:-1]:
                 yield part
@@ -215,9 +215,9 @@ class rerc:
             msgid = popup.caption[1:-1]
             if msgid in self.inputdict:
                 if name in self.inputdict[msgid]:
-                    yield '"' + self.inputdict[msgid][name] + '"'
+                    yield f'"{self.inputdict[msgid][name]}"'
                 elif EMPTY_LOCATION in self.inputdict[msgid]:
-                    yield '"' + self.inputdict[msgid][EMPTY_LOCATION] + '"'
+                    yield f'"{self.inputdict[msgid][EMPTY_LOCATION]}"'
             else:
                 yield popup.caption
         else:
@@ -250,10 +250,10 @@ class rerc:
                     msgid = element.values_[0][1:-1]
                     if msgid in self.inputdict:
                         if name in self.inputdict[msgid]:
-                            element.values_[0] = '"' + self.inputdict[msgid][name] + '"'
+                            element.values_[0] = f'"{self.inputdict[msgid][name]}"'
                         elif EMPTY_LOCATION in self.inputdict[msgid]:
                             element.values_[0] = (
-                                '"' + self.inputdict[msgid][EMPTY_LOCATION] + '"'
+                                f'"{self.inputdict[msgid][EMPTY_LOCATION]}"'
                             )
 
                     yield ", ".join(element.values_)

@@ -96,17 +96,7 @@ class oo2po:
         """Converts an entire oo file to a base class format (.po or XLIFF)."""
         thetargetfile = po.pofile()
         # create a header for the file
-        bug_url = "http://qa.openoffice.org/issues/enter_bug.cgi?{}".format(
-            parse.urlencode(
-                {
-                    "subcomponent": "ui",
-                    "comment": "",
-                    "short_desc": f"Localization issue in file: {theoofile.filename}",
-                    "component": "l10n",
-                    "form_name": "enter_issue",
-                }
-            )
-        )
+        bug_url = f"http://qa.openoffice.org/issues/enter_bug.cgi?{parse.urlencode({'subcomponent': 'ui', 'comment': '', 'short_desc': f'Localization issue in file: {theoofile.filename}', 'component': 'l10n', 'form_name': 'enter_issue'})}"
         targetheader = thetargetfile.init_headers(
             x_accelerator_marker="~",
             x_merge_on="location",

@@ -54,8 +54,7 @@ def create_termunit(
         termunit.merge(unit, overwrite=False, comments=False)
     if len(targets.keys()) > 1:
         txt = "; ".join(
-            "{} {{{}}}".format(target, ", ".join(files))
-            for target, files in targets.items()
+            f"{target} {{{', '.join(files)}}}" for target, files in targets.items()
         )
         if termunit.target.find("};") < 0:
             termunit.target = txt
@@ -155,7 +154,7 @@ class TerminologyExtractor:
                                 line,
                             )
                     elif stoptype == "/":
-                        self.stoprelist.append(re.compile(stopline[1:-1] + "$"))
+                        self.stoprelist.append(re.compile(f"{stopline[1:-1]}$"))
                     else:
                         self.stopwords[stopline[1:-1]] = actions[stoptype]
             except KeyError as character:
@@ -266,8 +265,8 @@ class TerminologyExtractor:
                             and word[0:-1] in self.glossary
                         ):
                             root = word[0:-1]
-                        elif len(root) > 2 and root + "s" in self.glossary:
-                            self.glossary[root] = self.glossary.pop(root + "s")
+                        elif len(root) > 2 and f"{root}s" in self.glossary:
+                            self.glossary[root] = self.glossary.pop(f"{root}s")
                         self.glossary.setdefault(root, []).append(translation)
                     if self.termlength > 1:
                         if "phrase" in ignore:
@@ -460,11 +459,7 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
     def set_usage(self, usage=None):
         """Sets the usage string - if usage not given, uses getusagestring for each option."""
         if usage is None:
-            self.usage = (
-                "%prog "
-                + " ".join(self.getusagestring(option) for option in self.option_list)
-                + "\n  input directory is searched for PO files, terminology PO file is output file"
-            )
+            self.usage = f"%prog {' '.join(self.getusagestring(option) for option in self.option_list)}\n  input directory is searched for PO files, terminology PO file is output file"
         else:
             super().set_usage(usage)
 
@@ -570,9 +565,7 @@ def main():
         type="string",
         metavar="STOPFILE",
         dest="stopfile",
-        help="read stopword (term exclusion) list from STOPFILE (default {})".format(
-            file_discovery.get_abs_data_filename("stoplist-en")
-        ),
+        help=f"read stopword (term exclusion) list from STOPFILE (default {file_discovery.get_abs_data_filename('stoplist-en')})",
     )
 
     parser.set_defaults(foldtitle=True, ignorecase=False)
@@ -669,9 +662,7 @@ def main():
         type="choice",
         choices=TerminologyExtractor.sortorders_default,
         metavar="ORDER",
-        help="output sort order(s): {} (may repeat option, default is all in above order)".format(
-            ", ".join(TerminologyExtractor.sortorders_default)
-        ),
+        help=f"output sort order(s): {', '.join(TerminologyExtractor.sortorders_default)} (may repeat option, default is all in above order)",
     )
 
     parser.add_option(

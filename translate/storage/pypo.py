@@ -186,7 +186,7 @@ def extractstr(string: str) -> str:
     right = string.rfind('"')
     if right > -1:
         return string[left : right + 1]
-    return string[left:] + '"'
+    return f'{string[left:]}"'
 
 
 class pounit(pocommon.pounit):
@@ -380,7 +380,7 @@ class pounit(pocommon.pounit):
             commentlist = self.automaticcomments
             linestart = "#."
         newcomments = [
-            "".join((linestart, " " if line else "", line, self.newline))
+            f"{linestart}{' ' if line else ''}{line}{self.newline}"
             for line in text.split(self.newline)
         ]
         if position == "append":
@@ -651,7 +651,7 @@ class pounit(pocommon.pounit):
                     comment = comment.removesuffix("\\n")
                     # Before we used to strip. Necessary in some cases?
                     combinedcomment.append(comment)
-                partcomments = self.quote("_:{}".format("".join(combinedcomment)))
+                partcomments = self.quote(f"_:{''.join(combinedcomment)}")
                 # Strip heading empty line for multiline string, it was already added above
                 if partcomments[0] == '""':
                     partcomments = partcomments[1:]
@@ -845,9 +845,7 @@ class pofile(pocommon.pofile):
         markedpos = []
 
         def addcomment(thepo):
-            thepo.msgidcomments.append(
-                '"_: {}\\n"'.format(" ".join(thepo.getlocations()))
-            )
+            thepo.msgidcomments.append(f'"_: {" ".join(thepo.getlocations())}\\n"')
             markedpos.append(thepo)
 
         for thepo in self.units:
@@ -866,11 +864,11 @@ class pofile(pocommon.pofile):
                     origpo = id_dict[id]
                     if origpo not in markedpos and not origpo.msgctxt:
                         origpo.msgctxt.append(
-                            '"{}"'.format(escapeforpo(" ".join(origpo.getlocations())))
+                            f'"{escapeforpo(" ".join(origpo.getlocations()))}"'
                         )
                         markedpos.append(thepo)
                     thepo.msgctxt.append(
-                        '"{}"'.format(escapeforpo(" ".join(thepo.getlocations())))
+                        f'"{escapeforpo(" ".join(thepo.getlocations()))}"'
                     )
                     if thepo.msgctxt != id_dict[id].msgctxt:
                         uniqueunits.append(thepo)
@@ -886,7 +884,7 @@ class pofile(pocommon.pofile):
                         addcomment(thepo)
                     else:
                         thepo.msgctxt.append(
-                            '"{}"'.format(escapeforpo(" ".join(thepo.getlocations())))
+                            f'"{escapeforpo(" ".join(thepo.getlocations()))}"'
                         )
                 id_dict[id] = thepo
                 uniqueunits.append(thepo)

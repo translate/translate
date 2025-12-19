@@ -1460,9 +1460,9 @@ class XWikiPageProperties(xwikifile):
         newroot = deepcopy(self.root)
         # We add a line break to ensure to have a line break before
         # closing of content tag.
-        newroot.find("content").text = (
-            "".join(unit.getoutput() for unit in self.units).strip() + "\n"
-        )
+        newroot.find(
+            "content"
+        ).text = f"{''.join(unit.getoutput() for unit in self.units).strip()}\n"
         # We only modify the XML attributes if we are editing a translation file
         # if we are editing the source file we should not modify it.
         if not self.is_source_file():

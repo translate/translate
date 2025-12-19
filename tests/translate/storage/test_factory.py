@@ -103,7 +103,7 @@ class BaseTestFactory:
 
     def test_gzfile(self):
         """Test that we can open a gzip file correctly."""
-        filename = os.path.join(self.testdir, self.filename + ".gz")
+        filename = os.path.join(self.testdir, f"{self.filename}.gz")
         gzfile = GzipFile(filename, mode="wb")
         gzfile.write(self.file_content)
         gzfile.close()
@@ -112,7 +112,7 @@ class BaseTestFactory:
 
     def test_bz2file(self):
         """Test that we can open a gzip file correctly."""
-        filename = os.path.join(self.testdir, self.filename + ".bz2")
+        filename = os.path.join(self.testdir, f"{self.filename}.bz2")
         with BZ2File(filename, mode="wb") as bz2file:
             bz2file.write(self.file_content)
         store = factory.getobject(filename)

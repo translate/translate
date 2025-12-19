@@ -332,7 +332,7 @@ class phpunit(base.TranslationUnit):
     def setid(self, value):
         # Sanitize name to produce valid syntax
         if not value.startswith(("$", "define(", "return")):
-            self.name = "${}".format(value.replace(" ", "_"))
+            self.name = f"${value.replace(' ', '_')}"
         else:
             self.name = value
 
@@ -379,7 +379,7 @@ class phpfile(base.TranslationStore):
             else:
                 separator = " ="
             # Write array start
-            write("{}{}{} {}\n".format(" " * indent, name, separator, init))
+            write(f"{' ' * indent}{name}{separator} {init}\n")
             indent += 4
             prefix = f"{arrname}->"
             pref_len = len(prefix)
@@ -394,11 +394,7 @@ class phpfile(base.TranslationStore):
                 else:
                     write(item.getoutput(" " * indent, name))
             # Write array end
-            write(
-                "{}{}{}\n".format(
-                    " " * (indent - 4), close, "," if "->" in arrname else ";"
-                )
-            )
+            write(f"{' ' * (indent - 4)}{close}{',' if '->' in arrname else ';'}\n")
             handled.add(arrname)
 
         write("<?php\n")

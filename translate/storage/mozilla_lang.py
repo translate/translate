@@ -48,7 +48,7 @@ class LangUnit(base.TranslationUnit):
     def __str__(self):
         target = self.target if self.istranslated() else self.source
         if self.source == self.target:
-            target = self.target + " {ok}"
+            target = f"{self.target} {{ok}}"
         if (
             self.rawtarget is not None
             and self.target == strip_ok(self.rawtarget)
@@ -134,7 +134,7 @@ class LangStore(txt.TxtFile):
             )
             if is_comment:
                 # Read comments, *including* meta tags (e.g. '## TAG')
-                comment += line[1:].strip() + "\n"
+                comment += f"{line[1:].strip()}\n"
 
             if line.startswith(";"):
                 source_unit = self.addsourceunit(line[1:])

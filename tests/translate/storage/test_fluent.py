@@ -1612,21 +1612,21 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                     message =
                         {value}
                     """,
-                    r".*" + re.escape(value),
+                    rf".*{re.escape(value)}",
                 )
                 self.assert_parse_failure(
                     f"""\
                     message = ok
                         {value}
                     """,
-                    r".*" + re.escape(value),
+                    rf".*{re.escape(value)}",
                 )
                 self.assert_parse_failure(
                     f"""\
                     -term = ok
                         {value}
                     """,
-                    r".*" + re.escape(value),
+                    rf".*{re.escape(value)}",
                 )
                 self.assert_parse_failure(
                     f"""\
@@ -1634,7 +1634,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                       .attr =
                         {value}
                     """,
-                    r".*" + re.escape(value),
+                    rf".*{re.escape(value)}",
                 )
                 self.assert_parse_failure(
                     f"""\
@@ -1643,7 +1643,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                         {value}
                     }}
                     """,
-                    r".*" + re.escape(value),
+                    rf".*{re.escape(value)}",
                 )
 
                 for fluent_type, unit_id, source in [

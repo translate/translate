@@ -215,9 +215,7 @@ class RecursiveOptionParser(optparse.OptionParser):
         each option.
         """
         if usage is None:
-            self.usage = "%prog " + " ".join(
-                self.getusagestring(option) for option in self.option_list
-            )
+            self.usage = f"%prog {' '.join(self.getusagestring(option) for option in self.option_list)}"
         else:
             super().set_usage(usage)
 
@@ -382,7 +380,7 @@ class RecursiveOptionParser(optparse.OptionParser):
             default="bar",
             choices=list(ProgressBar.progress_types.keys()),
             metavar="PROGRESS",
-            help="show progress as: {}".format(", ".join(ProgressBar.progress_types)),
+            help=f"show progress as: {', '.join(ProgressBar.progress_types)}",
         )
         self.define_option(progressoption)
 
@@ -396,7 +394,7 @@ class RecursiveOptionParser(optparse.OptionParser):
             default="message",
             choices=self.errorleveltypes,
             metavar="ERRORLEVEL",
-            help="show errorlevel as: {}".format(", ".join(self.errorleveltypes)),
+            help=f"show errorlevel as: {', '.join(self.errorleveltypes)}",
         )
         self.define_option(errorleveloption)
 
@@ -407,8 +405,8 @@ class RecursiveOptionParser(optparse.OptionParser):
         if len(formats) == 0:
             return ""
         if len(formats) == 1:
-            return "{} format".format(", ".join(formats))
-        return "{} formats".format(", ".join(formats))
+            return f"{', '.join(formats)} format"
+        return f"{', '.join(formats)} formats"
 
     @staticmethod
     def isrecursive(fileoption, filepurpose="input"):
@@ -493,14 +491,13 @@ class RecursiveOptionParser(optparse.OptionParser):
                     )
                 if templateext is None:
                     raise ValueError(
-                        "don't know what to do with input format %s, no template file"
-                        % (os.extsep + inputext)
+                        f"don't know what to do with input format {os.extsep + inputext}, no template file"
                     )
                 raise ValueError(
                     f"don't know what to do with input format {os.extsep + inputext}, template format {os.extsep + templateext}"
                 )
             raise ValueError(
-                "don't know what to do with input format %s" % (os.extsep + inputext)
+                f"don't know what to do with input format {os.extsep + inputext}"
             )
         if outputformat == "*":
             if inputext:

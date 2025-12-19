@@ -228,10 +228,7 @@ class FlatXMLFile(base.TranslationStore):
             )
 
             assert matching_nodes[0].get(self.key_name), (
-                "expected key attribute to be {}, found attribute(s): {}".format(
-                    self.key_name,
-                    ",".join(matching_nodes[0].attrib),
-                )
+                f"expected key attribute to be {self.key_name}, found attribute(s): {','.join(matching_nodes[0].attrib)}"
             )
 
         for entry in self.root:
