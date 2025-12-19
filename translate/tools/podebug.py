@@ -182,9 +182,7 @@ class podebug:
 
         return "".join(transformed)
 
-    REWRITE_UNICODE_MAP = (
-        "ȦƁƇḒḖƑƓĦĪĴĶĿḾȠǾƤɊŘŞŦŬṼẆẊẎẐ" + "[\\]^_`" + "ȧƀƈḓḗƒɠħīĵķŀḿƞǿƥɋřşŧŭṽẇẋẏẑ"
-    )
+    REWRITE_UNICODE_MAP = "ȦƁƇḒḖƑƓĦĪĴĶĿḾȠǾƤɊŘŞŦŬṼẆẊẎẐ[\\]^_`ȧƀƈḓḗƒɠħīĵķŀḿƞǿƥɋřşŧŭṽẇẋẏẑ"
 
     def rewrite_unicode(self, string):
         """Convert to Unicode characters that look like the source string."""
@@ -234,10 +232,8 @@ class podebug:
 
         def transformer(s):
             if self.preserveplaceholders:
-                return "\u202e" + self.transform_characters_preserving_placeholders(
-                    s, transpose
-                )
-            return "\u202e" + "".join(transpose(c) for c in s)
+                return f"\u202e{self.transform_characters_preserving_placeholders(s, transpose)}"
+            return f"\u202e{''.join(transpose(c) for c in s)}"
             # To reverse instead of using the RTL override:
             # return ''.join(reversed([transpose(c) for c in s]))
 
@@ -380,9 +376,9 @@ class podebug:
         if not dirparts:
             dirshrunk = ""
         else:
-            dirshrunk = dirparts[0][:4] + "-"
+            dirshrunk = f"{dirparts[0][:4]}-"
             if len(dirparts) > 1:
-                dirshrunk += "".join(dirpart[0] for dirpart in dirparts[1:]) + "-"
+                dirshrunk += f"{''.join(dirpart[0] for dirpart in dirparts[1:])}-"
         baseshrunk = os.path.basename(filename)[:4]
         if "." in baseshrunk:
             baseshrunk = baseshrunk[: baseshrunk.find(".")]
@@ -434,9 +430,7 @@ def main():
         type="choice",
         choices=podebug.rewritelist(),
         metavar="STYLE",
-        help="the translation rewrite style: {}".format(
-            ", ".join(podebug.rewritelist())
-        ),
+        help=f"the translation rewrite style: {', '.join(podebug.rewritelist())}",
     )
     parser.add_option(
         "",
@@ -445,9 +439,7 @@ def main():
         type="choice",
         choices=podebug.ignorelist(),
         metavar="APPLICATION",
-        help="apply tagging ignore rules for the given application: {}".format(
-            ", ".join(podebug.ignorelist())
-        ),
+        help=f"apply tagging ignore rules for the given application: {', '.join(podebug.ignorelist())}",
     )
     parser.add_option(
         "",

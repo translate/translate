@@ -93,7 +93,7 @@ class SicilianChecker(TranslationChecker):
         ]
 
         if stopwords:
-            raise FilterFailure("Please translate: {}".format(", ".join(stopwords)))
+            raise FilterFailure(f"Please translate: {', '.join(stopwords)}")
 
         return True
 
@@ -130,9 +130,7 @@ class SicilianChecker(TranslationChecker):
                 stopwords.append(lower_word)
 
         if stopwords:
-            raise FilterFailure(
-                "Please respect vocalism: {}".format(", ".join(stopwords))
-            )
+            raise FilterFailure(f"Please respect vocalism: {', '.join(stopwords)}")
         return True
 
     @critical
@@ -157,7 +155,7 @@ class SicilianChecker(TranslationChecker):
 
         if stopwords:
             raise FilterFailure(
-                "Please use the correct word endings: {}".format(", ".join(stopwords))
+                f"Please use the correct word endings: {', '.join(stopwords)}"
             )
         return True
 

@@ -495,9 +495,7 @@ def main(argv=None):
         default=properties.default_dialect,
         type="choice",
         choices=list(properties.dialects.keys()),
-        help="override the input file format: {} (for .properties files, default: {})".format(
-            ", ".join(properties.dialects.keys()), properties.default_dialect
-        ),
+        help=f"override the input file format: {', '.join(properties.dialects.keys())} (for .properties files, default: {properties.default_dialect})",
         metavar="TYPE",
     )
     parser.add_option(

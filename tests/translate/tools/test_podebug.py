@@ -207,9 +207,9 @@ class TestPODebug:
         print(out_unit.target)
         print(bytes(po_out))
         rewrite_func = self.debug.rewrite_unicode
-        assert out_unit.target == "{}%s{}".format(
-            rewrite_func("This is a "),
-            rewrite_func(" test, hooray."),
+        assert (
+            out_unit.target
+            == f"{rewrite_func('This is a ')}%s{rewrite_func(' test, hooray.')}"
         )
 
     def test_xliff_rewrite(self):

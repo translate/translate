@@ -90,10 +90,8 @@ class ProgressBar:
         numHashes = round(numHashes)
 
         # build a progress bar with hashes and spaces
-        self.progBar = "[{}{}] {:3d}%".format(
-            "#" * numHashes,
-            " " * (allFull - numHashes),
-            percentDone,
+        self.progBar = (
+            f"[{'#' * numHashes}{' ' * (allFull - numHashes)}] {percentDone:3d}%"
         )
         return str(self.progBar)
 
@@ -144,7 +142,7 @@ class VerboseProgressBar(HashProgressBar):
 
     def show(self, verbosemessage):
         output = str(self)
-        self.sys.stderr.write("\r" + " " * self.lastwidth)
+        self.sys.stderr.write(f"\r{' ' * self.lastwidth}")
         self.sys.stderr.write(f"\r{verbosemessage}\n")
         self.lastwidth = len(output)
         self.sys.stderr.write(f"\r{output}")

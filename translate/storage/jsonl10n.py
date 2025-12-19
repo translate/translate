@@ -342,7 +342,7 @@ class I18NextUnit(JsonNestedUnit):
     def _get_plural_labels(self, count):
         base_name = self._get_base_name()
         if count == 2:
-            return [base_name, base_name + "_plural"][:count]
+            return [base_name, f"{base_name}_plural"][:count]
         return [f"{base_name}_{i}" for i in range(count)]
 
     def _fixup_item(self):
@@ -415,10 +415,10 @@ class I18NextFile(JsonNestedFile):
                     continue
                 plurals = []
                 plural_base = ""
-                if k in plurals_simple or k + "_plural" in plurals_simple:
+                if k in plurals_simple or f"{k}_plural" in plurals_simple:
                     plural_base = k.removesuffix("_plural")
                     plurals_simple.remove(plural_base)
-                    plurals = [k, k + "_plural"]
+                    plurals = [k, f"{k}_plural"]
                 elif "_" in k:
                     plural_base, digit = k.rsplit("_", 1)
                     if plural_base in plurals_multiple and digit.isdigit():

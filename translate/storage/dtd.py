@@ -467,7 +467,7 @@ class dtdfile(base.TranslationStore):
 
             # Parse lines until we have a complete unit or find the start of the next one
             while line_idx < len(lines):
-                line = lines[line_idx] + "\n"
+                line = f"{lines[line_idx]}\n"
 
                 if not incomment:
                     if line.find("<!--") != -1:

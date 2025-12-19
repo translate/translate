@@ -146,8 +146,8 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser):
             return fileformat
         if fileformat == "po":
             return "pot"
-        if fileformat.endswith(os.extsep + "po"):
-            return fileformat + "t"
+        if fileformat.endswith(f"{os.extsep}po"):
+            return f"{fileformat}t"
         return fileformat
 
     def getformathelp(self, formats):

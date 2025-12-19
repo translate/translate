@@ -90,15 +90,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
     def set_usage(self, usage=None):
         """Sets the usage string - if usage not given, uses getusagestring for each option."""
         if usage is None:
-            self.usage = (
-                "%prog "
-                + " ".join(self.getusagestring(option) for option in self.option_list)
-                + "\n  %prog [options] <po-directory> <output-directory>"
-                + "\n  %prog [options] <po-file(s)>... <output-directory>"
-                + "\n\n"
-                + "Input is searched for PO files, output directory will contain PO files named after conflicting strings.\n"
-                + "Both -i/--input and -o/--output are optional when using positional arguments."
-            )
+            self.usage = f"%prog {' '.join(self.getusagestring(option) for option in self.option_list)}\n  %prog [options] <po-directory> <output-directory>\n  %prog [options] <po-file(s)>... <output-directory>\n\nInput is searched for PO files, output directory will contain PO files named after conflicting strings.\nBoth -i/--input and -o/--output are optional when using positional arguments."
         else:
             super().set_usage(usage)
 
@@ -212,13 +204,13 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
         # reduce plurals
         plurals = {}
         for word in reducedmap:
-            if word + "s" in reducedmap:
-                plurals[word] = word + "s"
+            if f"{word}s" in reducedmap:
+                plurals[word] = f"{word}s"
         for word, pluralword in plurals.items():
             reducedmap[word].extend(reducedmap.pop(pluralword))
         for source, translations in reducedmap.items():
             flatsource = self.flatten(source, "-")
-            fulloutputpath = os.path.join(options.output, flatsource + os.extsep + "po")
+            fulloutputpath = os.path.join(options.output, f"{flatsource}{os.extsep}po")
             conflictfile = po.pofile()
             for _target, unit, filename in translations:
                 unit.othercomments.append(f"# (poconflicts) {filename}\n")

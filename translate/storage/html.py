@@ -229,12 +229,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         # and prepare for the new.
         self.emit_translation_unit()
         self.tu_content = []
-        self.tu_location = "{}+{}:{}-{}".format(
-            self.filename,
-            ".".join(self.tag_path),
-            self.getpos()[0],
-            self.getpos()[1] + 1,
-        )
+        self.tu_location = f"{self.filename}+{'.'.join(self.tag_path)}:{self.getpos()[0]}-{self.getpos()[1] + 1}"
 
     def end_translation_unit(self):
         # at the end of a translation unit:
@@ -448,13 +443,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             return {
                 "html_content": normalized_value,
                 "attrname": attrname,
-                "location": "{}+{}{}:{}-{}".format(
-                    self.filename,
-                    ".".join(self.tag_path),
-                    f"[{attrname}]",
-                    self.getpos()[0],
-                    self.getpos()[1] + 1,
-                ),
+                "location": f"{self.filename}+{'.'.join(self.tag_path)}[{attrname}]:{self.getpos()[0]}-{self.getpos()[1] + 1}",
             }
         return None
 
@@ -553,7 +542,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 attr_strings.append(f" {attrname}")
             else:
                 attr_strings.append(f' {attrname}="{attrvalue}"')
-        return "<{}{}{}>".format(tag, "".join(attr_strings), " /" if startend else "")
+        return f"<{tag}{''.join(attr_strings)}{' /' if startend else ''}>"
 
     def auto_close_empty_element(self):
         if self.tag_path and self.tag_path[-1] in self.EMPTY_HTML_ELEMENTS:

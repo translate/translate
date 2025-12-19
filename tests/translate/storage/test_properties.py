@@ -595,8 +595,10 @@ key=value
     def test_mac_multiline_strings(self):
         """Test can read multiline items used in Mac OS X strings files."""
         propsource = (
-            r""""I am a \"key\"" = "I am a \"value\" """ + '\n nextline";'
-        ).encode("utf-16")
+            """"I am a \\"key\\"" = "I am a \\"value\\" \n nextline";""".encode(
+                "utf-16"
+            )
+        )
         propfile = self.propparse(propsource, personality="strings")
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
@@ -1157,7 +1159,7 @@ class TestXWiki(test_monolingual.TestMonolingualStore):
         propfile.serialize(generatedcontent)
         assert (
             generatedcontent.getvalue().decode(propfile.encoding)
-            == expected_content + "\n"
+            == f"{expected_content}\n"
         )
 
     def test_missing_definition_source(self):
@@ -1223,18 +1225,10 @@ job.log.label=Job log
 
 class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
     StoreClass = properties.XWikiPageProperties
-    FILE_SCHEME = (
-        properties.XWikiPageProperties.XML_HEADER
-        + """<xwikidoc locale="%(language)s">
-    <translation>1</translation>
-    <language>%(language)s</language>
-    <title/>
-    <content>%(content)s</content>
-</xwikidoc>"""
-    )
+    FILE_SCHEME = f'{properties.XWikiPageProperties.XML_HEADER}<xwikidoc locale="%(language)s">\n    <translation>1</translation>\n    <language>%(language)s</language>\n    <title/>\n    <content>%(content)s</content>\n</xwikidoc>'
 
     def getcontent(self, content, language="en"):
-        return self.FILE_SCHEME % {"content": content + "\n", "language": language}
+        return self.FILE_SCHEME % {"content": f"{content}\n", "language": language}
 
     @staticmethod
     def propparse(propsource):
@@ -1270,7 +1264,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         propfile.serialize(generatedcontent)
         assert (
             generatedcontent.getvalue().decode(propfile.encoding)
-            == expectedcontent + "\n"
+            == f"{expectedcontent}\n"
         )
 
     def test_missing_definition(self):
@@ -1292,7 +1286,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         propfile.serialize(generatedcontent)
         assert (
             generatedcontent.getvalue().decode(propfile.encoding)
-            == expected_content + "\n"
+            == f"{expected_content}\n"
         )
 
     def test_missing_definition_source(self):

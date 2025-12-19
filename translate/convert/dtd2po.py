@@ -95,8 +95,8 @@ class dtd2po:
         # start and end quotes
         if len(lines) > 1:
             po_unit.source = "".join(
-                [lines[0].rstrip() + " "]
-                + [line.strip() + " " for line in lines[1:-1]]
+                [f"{lines[0].rstrip()} "]
+                + [f"{line.strip()} " for line in lines[1:-1]]
                 + [lines[-1].lstrip()]
             )
         elif lines:

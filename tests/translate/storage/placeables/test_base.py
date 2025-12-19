@@ -54,7 +54,7 @@ class TestStringElem:
         assert self.elem.sub[3].sub[0] == "</a>"
 
     def test_add(self):
-        assert self.elem + " " == self.ORIGSTR + " "
+        assert f"{self.elem} " == f"{self.ORIGSTR} "
         # ... and __radd__() ... doesn't work
         # assert ' ' + self.elem == ' ' + self.ORIGSTR
 

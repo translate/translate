@@ -36,7 +36,7 @@ def prop2inc(pf):
             else:
                 yield from pendingblanks
                 # TODO: could convert commented # x=y back to # #define x y
-                yield comment + "\n"
+                yield f"{comment}\n"
         if unit.isblank():
             pendingblanks.append("\n")
         else:
@@ -58,9 +58,9 @@ def prop2it(pf):
             ):
                 pass
             elif comment.startswith("# section: "):
-                yield comment.replace("# section: ", "", 1) + "\n"
+                yield f"{comment.replace('# section: ', '', 1)}\n"
             else:
-                yield comment.replace("#", ";", 1) + "\n"
+                yield f"{comment.replace('#', ';', 1)}\n"
         if unit.isblank():
             yield ""
         else:
@@ -88,10 +88,10 @@ def prop2funny(src, itencoding="cp1252"):
     pf.parse("\n".join(lines))
     if wasdefines:
         for line in prop2inc(pf):
-            yield line + "\n"
+            yield f"{line}\n"
     elif waspseudoprops:
         for line in prop2it(pf):
-            yield (line + "\n").encode(itencoding)
+            yield (f"{line}\n").encode(itencoding)
 
 
 def po2inc(

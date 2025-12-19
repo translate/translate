@@ -175,7 +175,7 @@ class TestPYPOUnit(test_po.TestPOUnit):
         expected = f'msgid "{str_max}"\nmsgstr ""\n'
         assert str(unit) == expected
         # at this length we wrap
-        str_wrap = str_max + "2"
+        str_wrap = f"{str_max}2"
         unit = self.UnitClass(str_wrap)
         expected = f'msgid ""\n"{str_wrap}"\nmsgstr ""\n'
         assert str(unit) == expected
@@ -189,7 +189,7 @@ class TestPYPOUnit(test_po.TestPOUnit):
         assert str(unit) == expected
 
         # Now check for long newlines segments
-        longstring = ("123456789 " * 10 + "\n") * 3
+        longstring = f"{'123456789 ' * 10}\n" * 3
         expected = r"""msgid ""
 "123456789 123456789 123456789 123456789 123456789 123456789 123456789 "
 "123456789 123456789 123456789 \n"

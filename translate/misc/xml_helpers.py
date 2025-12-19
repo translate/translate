@@ -164,7 +164,7 @@ def reindent(
     # Strip possible namespace from tag
     tag_name = elem.tag.split("}", 1)[-1]
 
-    i = "\n" + (indent * level)
+    i = f"\n{indent * level}"
     if tag_name in skip:
         next_level = level
         extra_i = i

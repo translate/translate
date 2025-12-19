@@ -145,7 +145,7 @@ msgstr "kunye"
         assert xliff.translate("one") == "kunye"
         assert len(xliff.units) == 1
         node = xliff.units[0].xmlelement
-        contextgroups = node.findall(".//{}".format(xliff.namespaced("context-group")))
+        contextgroups = node.findall(f".//{xliff.namespaced('context-group')}")
         assert len(contextgroups) == 2
         for group in contextgroups:
             assert group.get("name") == "po-reference"
@@ -170,7 +170,7 @@ msgstr "kunye"
         assert xliff.translate("one") == "kunye"
         assert len(xliff.units) == 1
         node = xliff.units[0].xmlelement
-        contextgroups = node.findall(".//{}".format(xliff.namespaced("context-group")))
+        contextgroups = node.findall(f".//{xliff.namespaced('context-group')}")
         assert len(contextgroups) == 1
         for group in contextgroups:
             assert group.get("name") == "po-entry"
@@ -193,7 +193,7 @@ msgstr "kunye"
         assert xliff.translate("one") == "kunye"
         assert len(xliff.units) == 1
         node = xliff.units[0].xmlelement
-        contextgroups = node.findall(".//{}".format(xliff.namespaced("context-group")))
+        contextgroups = node.findall(f".//{xliff.namespaced('context-group')}")
         assert len(contextgroups) == 1
         for group in contextgroups:
             assert group.get("name") == "po-entry"

@@ -53,9 +53,7 @@ def method_not_allowed(environ, start_response):
         ],
     )
     return [
-        "405 Method Not Allowed\n\n"
-        "The method specified in the Request-Line is not allowed "
-        "for the resource identified by the Request-URI."
+        "405 Method Not Allowed\n\nThe method specified in the Request-Line is not allowed for the resource identified by the Request-URI."
     ]
 
 
