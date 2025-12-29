@@ -73,28 +73,36 @@ def splitlines(text):
     The code looks for first msgid and looks for newline used after it. This
     should safely cover weird newlines used in comments or filenames, while
     properly parsing po files with any newlines.
+    
+    Supported line ending patterns:
+    - LF (\\n): Unix/Linux
+    - CR (\\r): Old Mac
+    - CRLF (\\r\\n): Windows
+    - Multiple CR + LF (\\r\\r\\n, etc.): Unusual but found in real files
     """
     # Strip UTF-8 BOM if present. This file would not be accepted
     # by gettext, but some editors might create it, so better handle it.
     if text[:3] == b"\xef\xbb\xbf":
         text = text[3:]
-    # Find first newline
+    # Find first newline after first msgid
     newline = b"\n"
     msgid_pos = max(0, text.find(b"\rmsgid ") + 1, text.find(b"\nmsgid ") + 1)
     for i, ch in enumerate(text[msgid_pos:]):
         # Iteration over bytes yields numbers in Python 3
-        if ch == 10:
+        if ch == 10:  # LF
             break
-        if ch == 13:
+        if ch == 13:  # CR
             # Check for CR, CRLF, or unusual patterns like \r\r\n
             j = msgid_pos + i + 1
-            # Count consecutive CRs
-            while j < len(text) and text[j] == 13:
+            # Count consecutive CRs to handle patterns like \r\r\n
+            while j < len(text) and text[j] == 13:  # CR
                 j += 1
             # Check if followed by LF
-            if j < len(text) and text[j] == 10:
+            if j < len(text) and text[j] == 10:  # LF
+                # Use the entire pattern (CR(s) + LF) as the line ending
                 newline = text[msgid_pos + i:j + 1]
             else:
+                # Just CR without LF
                 newline = b"\r"
             break
 

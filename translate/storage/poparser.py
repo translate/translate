@@ -32,9 +32,15 @@ From the GNU gettext manual:
      msgstr TRANSLATED-STRING.
 """
 
+import logging
 import re
 
 SINGLE_BYTE_ENCODING = "iso-8859-1"
+# Maximum number of lines to skip when recovering from a parse error
+MAX_SKIP_LINES = 100
+
+logger = logging.getLogger(__name__)
+
 isspace = str.isspace
 find = str.find
 rfind = str.rfind
@@ -425,10 +431,9 @@ def parse_units(parse_state, store):
             parse_errors.append(str(e))
             # Try to skip to the next msgid or comment to recover
             skipped_lines = 0
-            max_skip = 100  # Prevent infinite loops
             prev_lineno = parse_state.lineno
             
-            while not parse_state.eof and skipped_lines < max_skip:
+            while not parse_state.eof and skipped_lines < MAX_SKIP_LINES:
                 parse_state.read_line()
                 skipped_lines += 1
                 
@@ -442,7 +447,7 @@ def parse_units(parse_state, store):
                     break
                 prev_lineno = parse_state.lineno
             
-            if skipped_lines >= max_skip or parse_state.eof:
+            if skipped_lines >= MAX_SKIP_LINES or parse_state.eof:
                 # Couldn't recover, stop parsing
                 break
             
@@ -455,7 +460,5 @@ def parse_units(parse_state, store):
             # No units parsed, raise the first error
             raise PoParseError(parse_state, parse_errors[0])
         # We have some units, so just log warnings for partial parsing
-        import logging
-        logger = logging.getLogger(__name__)
         for error in parse_errors[:3]:  # Log first 3 errors to avoid spam
             logger.warning("Partial parse error: %s", error)
