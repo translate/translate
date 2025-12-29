@@ -1,0 +1,57 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: latex-git-log\n"
+"Report-Msgid-Bugs-To: ypid@riseup.net\n"
+"POT-Creation-Date: 2013-06-15 18:43+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Robin Scheider <ypid@riseup.net>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "acronym"
+msgstr "Abkürzung"
+
+msgid "meaning"
+msgstr "Bedeutung"
+
+msgid "version"
+msgstr "Version"
+
+msgid "V"
+msgid "V"
+
+msgid "tag"
+msgstr "Tag"
+
+msgid "MF"
+msgstr "DV"
+
+msgid "AL"
+msgstr "ZH"
+
+msgid "DL"
+msgstr "ZG"
+
+msgid "\\texttt{git tag}"
+msgstr "\\texttt{Markierung} einer Menge von Dateien, aus denen sich zu einem beliebigen Zeitpunkt eine bestimmte Version wiederherstellen lässt"
+
+msgid "Number of \\texttt{modified files}."
+msgstr "Wie viele \\texttt{Dateien} innerhalb dieser Version \\texttt{verändert} wurden"
+
+msgid "Number of \\texttt{added lines}."
+msgstr "Wie viele \\texttt{Zeilen} innerhalb dieser Version neu \\texttt{hinzugekommen} sind"
+
+msgid "Number of \\texttt{deleted lines}."
+msgstr "Wie viele \\texttt{Zeilen} innerhalb dieser Version \\texttt{gelöscht} wurden"
+
+msgid "author"
+msgstr "Autor"
+
+msgid "date"
+msgstr "Datum"
+
+msgid "commit message"
+msgstr "Versionsbericht"

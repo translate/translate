@@ -403,7 +403,7 @@ def parse_units(parse_state, store):
     unit = parse_header(parse_state, store)
     parse_errors = []
     
-    while not parse_state.eof:
+    while unit is not None or not parse_state.eof:
         if unit:
             unit.infer_state()
             store.addunit(unit)
