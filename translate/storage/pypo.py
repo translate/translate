@@ -86,7 +86,16 @@ def splitlines(text):
         if ch == 10:
             break
         if ch == 13:
-            newline = b"\r\n" if text[msgid_pos + i + 1] == 10 else b"\r"
+            # Check for CR, CRLF, or unusual patterns like \r\r\n
+            j = msgid_pos + i + 1
+            # Count consecutive CRs
+            while j < len(text) and text[j] == 13:
+                j += 1
+            # Check if followed by LF
+            if j < len(text) and text[j] == 10:
+                newline = text[msgid_pos + i:j + 1]
+            else:
+                newline = b"\r"
             break
 
     return [x + newline for x in text.split(newline)], newline.decode()
