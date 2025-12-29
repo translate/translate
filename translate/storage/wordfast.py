@@ -337,7 +337,6 @@ class WordfastUnit(base.TranslationUnit):
         Set the dictionary of values for a Wordfast line.
 
         :param newdict: a new dictionary with Wordfast line elements
-        :type newdict: Dict
         """
         # TODO First check that the values are OK
         self._dict = newdict

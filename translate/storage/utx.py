@@ -103,7 +103,6 @@ class UtxUnit(base.TranslationUnit):
         Set the dictionary of values for a UTX line.
 
         :param newdict: a new dictionary with UTX line elements
-        :type newdict: Dict
         """
         # TODO First check that the values are OK
         self._dict = newdict

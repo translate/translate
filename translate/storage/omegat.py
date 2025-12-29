@@ -80,7 +80,6 @@ class OmegaTUnit(base.TranslationUnit):
         Set the dictionary of values for a OmegaT line.
 
         :param newdict: a new dictionary with OmegaT line elements
-        :type newdict: Dict
         """
         # TODO First check that the values are OK
         self._dict = newdict

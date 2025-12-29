@@ -152,7 +152,6 @@ class CatkeysUnit(base.TranslationUnit):
         Set the dictionary of values for a catkeys line.
 
         :param newdict: a new dictionary with catkeys line elements
-        :type newdict: Dict
         """
         # Process the input values
         self._dict = {}

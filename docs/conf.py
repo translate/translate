@@ -79,6 +79,24 @@ autodoc_mock_imports = [
     "Levenshtein",
 ]
 
+# Use legacy autodoc implementation for compatibility with Sphinx 9+
+autodoc_use_legacy_class_based = True
+
+# Suppress warnings about ambiguous references to 'dict'
+# This is needed for Sphinx 9+ which creates cross-references from type annotations
+# and finds multiple 'dict' properties in storage classes.
+# Also suppress warnings for external documentation references (ref.ref, ref.doc)
+# which are expected to fail for external projects like pootle, guide, and pytest.
+# Suppress autodoc import warnings for modules with missing dependencies that are mocked.
+# Suppress intersphinx warnings for network issues when fetching inventories.
+suppress_warnings = [
+    "ref.python",
+    "ref.ref",
+    "ref.doc",
+    "autodoc.import_object",
+    "intersphinx",
+]
+
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
