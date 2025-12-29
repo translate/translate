@@ -31,6 +31,7 @@ import re
 from pyparsing import (
     AtLineStart,
     Combine,
+    DelimitedList,
     Forward,
     Group,
     Keyword,
@@ -41,7 +42,6 @@ from pyparsing import (
     alphanums,
     alphas,
     c_style_comment,
-    delimited_list,
     nums,
     printables,
     quoted_string,
@@ -189,7 +189,7 @@ def rc_statement():
         join_string=" ",
     )
 
-    combined_constants = delimited_list(constant, "|", min=2)
+    combined_constants = DelimitedList(constant, "|", min=2)
 
     concatenated_string = OneOrMore(quoted_string)
 
@@ -204,7 +204,7 @@ def rc_statement():
         Group(
             name_id.set_results_name("id_control")
             + Optional(",")
-            + delimited_list(
+            + DelimitedList(
                 concatenated_string ^ constant ^ numbers ^ Group(combined_constants)
             ).set_results_name("values_")
         )
@@ -237,7 +237,7 @@ def rc_statement():
         + Optional(quoted_string("caption"))
         + Optional(
             ","
-            + delimited_list(
+            + DelimitedList(
                 concatenated_string ^ constant ^ numbers ^ Group(combined_constants)
             ).set_results_name("values_")
         )
