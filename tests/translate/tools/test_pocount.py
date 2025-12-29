@@ -259,23 +259,11 @@ def test_csv_line_terminator(capsys: CaptureFixture[str]):
         assert line.strip(), "No line should be empty or whitespace-only"
 
 
-class TestPOCountSyntaxErrors:
-    """Test pocount handles files with syntax errors gracefully."""
-
-    def test_duplicate_msgid(self):
-        """Test file with duplicate msgid entries (genuinely invalid)."""
-        # f43.texlive-base.de.po has two consecutive msgid "V" lines
-        stats = pocount.calcstats(
-            "tests/translate/tools/data/pocount_syntax_errors/f43.texlive-base.de.po"
-        )
-        # Should parse partial file, not return empty stats
-        assert stats
-        assert stats["total"] > 0
-        # File has some valid translated entries before the error
-        assert stats["translated"] > 0
+class TestPOCountLineEndings:
+    """Test pocount handles files with unusual line endings."""
 
     def test_unusual_line_endings(self):
-        """Test file with \r\r\n line endings."""
+        r"""Test file with \r\r\n line endings."""
         # f43.tgif.fr.po has unusual \r\r\n line endings
         stats = pocount.calcstats(
             "tests/translate/tools/data/pocount_syntax_errors/f43.tgif.fr.po"
@@ -285,15 +273,3 @@ class TestPOCountSyntaxErrors:
         # File has 321 translated messages (verified with msgfmt)
         assert stats["total"] == 321
         assert stats["translated"] == 321
-
-    def test_inline_comments(self):
-        """Test file with inline C-style comments (invalid syntax)."""
-        # f43.tidy.de.po has inline /* */ comments in msgstr
-        stats = pocount.calcstats(
-            "tests/translate/tools/data/pocount_syntax_errors/f43.tidy.de.po"
-        )
-        # Should parse partial file, not return empty stats
-        assert stats
-        assert stats["total"] > 0
-        # File has many valid entries before and after the errors
-        assert stats["total"] > 400

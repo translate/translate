@@ -63,7 +63,7 @@ po_punctuation = set(punctuation)
 
 
 def splitlines(text):
-    """
+    r"""
     Split lines based on first newline char.
 
     Can not use universal newlines as they match any newline like
@@ -73,12 +73,12 @@ def splitlines(text):
     The code looks for first msgid and looks for newline used after it. This
     should safely cover weird newlines used in comments or filenames, while
     properly parsing po files with any newlines.
-    
+
     Supported line ending patterns:
-    - LF (\\n): Unix/Linux
-    - CR (\\r): Old Mac
-    - CRLF (\\r\\n): Windows
-    - Multiple CR + LF (\\r\\r\\n, etc.): Unusual but found in real files
+    - LF (\n): Unix/Linux
+    - CR (\r): Old Mac
+    - CRLF (\r\n): Windows
+    - Multiple CR + LF (\r\r\n, etc.): Unusual but found in real files
     """
     # Strip UTF-8 BOM if present. This file would not be accepted
     # by gettext, but some editors might create it, so better handle it.
@@ -100,7 +100,7 @@ def splitlines(text):
             # Check if followed by LF
             if j < len(text) and text[j] == 10:  # LF
                 # Use the entire pattern (CR(s) + LF) as the line ending
-                newline = text[msgid_pos + i:j + 1]
+                newline = text[msgid_pos + i : j + 1]
             else:
                 # Just CR without LF
                 newline = b"\r"

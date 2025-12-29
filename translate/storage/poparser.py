@@ -32,15 +32,9 @@ From the GNU gettext manual:
      msgstr TRANSLATED-STRING.
 """
 
-import logging
 import re
 
 SINGLE_BYTE_ENCODING = "iso-8859-1"
-# Maximum number of lines to skip when recovering from a parse error
-MAX_SKIP_LINES = 100
-
-logger = logging.getLogger(__name__)
-
 isspace = str.isspace
 find = str.find
 rfind = str.rfind
@@ -407,58 +401,9 @@ def parse_header(parse_state, store):
 
 def parse_units(parse_state, store):
     unit = parse_header(parse_state, store)
-    parse_errors = []
-    
-    while unit is not None or not parse_state.eof:
-        if unit:
-            unit.infer_state()
-            store.addunit(unit)
-            
-        # Try to parse the next unit
-        try:
-            prev_lineno = parse_state.lineno
-            unit = parse_unit(parse_state)
-            
-            # If parse_unit returned None but didn't advance the line,
-            # we need to skip this line to avoid infinite loop
-            if unit is None and parse_state.lineno == prev_lineno and not parse_state.eof:
-                # Skip this unparseable line
-                parse_state.read_line()
-                unit = None
-                
-        except PoParseError as e:
-            # Log the error but try to continue parsing
-            parse_errors.append(str(e))
-            # Try to skip to the next msgid or comment to recover
-            skipped_lines = 0
-            prev_lineno = parse_state.lineno
-            
-            while not parse_state.eof and skipped_lines < MAX_SKIP_LINES:
-                parse_state.read_line()
-                skipped_lines += 1
-                
-                # Stop if we reached a line that looks like it might start a new unit
-                line = parse_state.next_line.strip()
-                if line.startswith(("msgid", "#~", "#")):
-                    break
-                    
-                # Prevent infinite loop
-                if parse_state.lineno == prev_lineno:
-                    break
-                prev_lineno = parse_state.lineno
-            
-            if skipped_lines >= MAX_SKIP_LINES or parse_state.eof:
-                # Couldn't recover, stop parsing
-                break
-            
-            unit = None
-    
-    # If we encountered errors but managed to parse some units, just warn
-    # Otherwise raise the first error
-    if parse_errors:
-        if len(store.units) == 0:
-            # No units parsed, raise the first error
-            raise PoParseError(parse_state, parse_errors[0])
-        # We have some units, so just log warnings for partial parsing
-        for error in parse_errors[:3]:  # Log first 3 errors to avoid spam
-            logger.warning("Partial parse error: %s", error)
+    while unit:
+        unit.infer_state()
+        store.addunit(unit)
+        unit = parse_unit(parse_state)
+    if not parse_state.eof:
+        raise PoParseError(parse_state)

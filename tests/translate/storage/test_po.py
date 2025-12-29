@@ -1382,3 +1382,42 @@ msgstr "texte"
 """
         with raises(ValueError):
             self.poparse(posource)
+
+    def test_unusual_line_endings(self):
+        r"""Test that files with \r\r\n line endings can be parsed."""
+        # This file has unusual \r\r\n line endings (double CR before LF)
+        posource = b'msgid ""\r\r\nmsgstr ""\r\r\n"Content-Type: text/plain; charset=UTF-8\\n"\r\r\n\r\r\nmsgid "test"\r\r\nmsgstr "rest"\r\r\n'
+        pofile = self.poparse(posource)
+        assert len(pofile.units) == 2
+        assert pofile.units[1].source == "test"
+        assert pofile.units[1].target == "rest"
+
+    def test_charset_with_space(self):
+        """Test that charset detection works with space after equals sign."""
+        # This file has "charset= koi8-r" with a space after =
+        posource = b'msgid ""\nmsgstr ""\n"Content-Type: text/plain; charset= UTF-8\\n"\n\nmsgid "test"\nmsgstr "rest"\n'
+        pofile = self.poparse(posource)
+        assert pofile.encoding == "UTF-8"
+        assert len(pofile.units) == 2
+        assert pofile.units[1].source == "test"
+
+    def test_duplicate_msgid_error(self):
+        """Test that duplicate msgid entries (without msgstr) raise an error."""
+        # This file has two consecutive msgid lines without msgstr between them
+        posource = b"""
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\\n"
+
+msgid "test"
+msgstr "rest"
+
+msgid "V"
+msgid "V"
+
+msgid "next"
+msgstr "next translation"
+"""
+        # This should raise an error because it's genuinely invalid
+        with raises(ValueError):
+            self.poparse(posource)
