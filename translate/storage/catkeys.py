@@ -147,7 +147,7 @@ class CatkeysUnit(base.TranslationUnit):
         """Get the dictionary of values for a catkeys line."""
         return self._dict
 
-    def setdict(self, newdict: dict) -> None:
+    def setdict(self, newdict: dict[str, str]) -> None:
         """
         Set the dictionary of values for a catkeys line.
 
