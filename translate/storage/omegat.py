@@ -75,7 +75,7 @@ class OmegaTUnit(base.TranslationUnit):
         """Get the dictionary of values for a OmegaT line."""
         return self._dict
 
-    def setdict(self, newdict):
+    def setdict(self, newdict: dict) -> None:
         """
         Set the dictionary of values for a OmegaT line.
 

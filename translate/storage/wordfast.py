@@ -332,7 +332,7 @@ class WordfastUnit(base.TranslationUnit):
         """Get the dictionary of values for a Wordfast line."""
         return self._dict
 
-    def setdict(self, newdict):
+    def setdict(self, newdict: dict) -> None:
         """
         Set the dictionary of values for a Wordfast line.
 
