@@ -37,7 +37,7 @@ test = [
 ]
 types = [
   "setuptools>=61.2",
-  "types-lxml==2025.11.25",
+  "types-lxml==2026.1.1",
   "wcwidth-stubs==0.2.14.0"
 ]
 
