@@ -332,12 +332,11 @@ class WordfastUnit(base.TranslationUnit):
         """Get the dictionary of values for a Wordfast line."""
         return self._dict
 
-    def setdict(self, newdict):
+    def setdict(self, newdict: dict[str, str]) -> None:
         """
         Set the dictionary of values for a Wordfast line.
 
         :param newdict: a new dictionary with Wordfast line elements
-        :type newdict: Dict
         """
         # TODO First check that the values are OK
         self._dict = newdict

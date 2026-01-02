@@ -75,12 +75,11 @@ class OmegaTUnit(base.TranslationUnit):
         """Get the dictionary of values for a OmegaT line."""
         return self._dict
 
-    def setdict(self, newdict):
+    def setdict(self, newdict: dict[str, str]) -> None:
         """
         Set the dictionary of values for a OmegaT line.
 
         :param newdict: a new dictionary with OmegaT line elements
-        :type newdict: Dict
         """
         # TODO First check that the values are OK
         self._dict = newdict

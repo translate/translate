@@ -147,12 +147,11 @@ class CatkeysUnit(base.TranslationUnit):
         """Get the dictionary of values for a catkeys line."""
         return self._dict
 
-    def setdict(self, newdict):
+    def setdict(self, newdict: dict[str, str]) -> None:
         """
         Set the dictionary of values for a catkeys line.
 
         :param newdict: a new dictionary with catkeys line elements
-        :type newdict: Dict
         """
         # Process the input values
         self._dict = {}
