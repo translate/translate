@@ -512,6 +512,7 @@ extend-exclude = [
   "tests/translate/filters/test_checks.py",
   "tests/translate/lang/test_*.py",
   "tests/translate/lang/test_identify.py",
+  "tests/translate/tools/data/pocount_syntax_errors/",
   "tests/xliff_conformance/af-pootle.po",
   "tests/xliff_conformance/en-US.sdf",
   "translate/lang/data.py",

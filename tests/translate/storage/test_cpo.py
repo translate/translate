@@ -86,6 +86,10 @@ class TestCPOUnit(test_po.TestPOUnit):
 class TestCPOFile(test_po.TestPOFile):
     StoreClass = cpo.pofile
 
+    @mark.skip(reason="Native gettext doesn't handle \\r\\r\\n line endings")
+    def test_unusual_line_endings(self):
+        r"""Skip this test for CPO as native gettext doesn't support \r\r\n."""
+
     def test_msgidcomments(self):
         """Checks that we handle msgid comments."""
         posource = 'msgid "test me"\nmsgstr ""'
