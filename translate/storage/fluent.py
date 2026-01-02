@@ -125,9 +125,7 @@ class FluentReference:
         self,
         reference: (ast.MessageReference | ast.TermReference | ast.VariableReference),
     ) -> None:
-        """
-        :param reference: The reference this represents.
-        """
+        """:param reference: The reference this represents."""
         if isinstance(reference, ast.MessageReference):
             self._type_name = "message"
             attribute = reference.attribute
@@ -602,9 +600,7 @@ class _SelectorBranchIterator:
     """
 
     def __init__(self, branch: FluentSelectorBranch) -> None:
-        """
-        :param branch: The branch to iterate over.
-        """
+        """:param branch: The branch to iterate over."""
         self.branch = branch
         self.node_iterators = [
             _SelectorNodeIterator(node) for node in branch.child_nodes
@@ -646,9 +642,7 @@ class _SelectorNodeIterator:
     """
 
     def __init__(self, node: FluentSelectorNode) -> None:
-        """
-        :param node: The node whose branches we want to iterate over.
-        """
+        """:param node: The node whose branches we want to iterate over."""
         self.node = node
         self._index = 0
         self.branch_iterators = [

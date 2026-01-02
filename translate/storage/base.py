@@ -341,7 +341,9 @@ class TranslationUnit:
         """
         return getattr(self, "notes", "")
 
-    def addnote(self, text: str, origin: str | None = None, position: str = "append") -> None:
+    def addnote(
+        self, text: str, origin: str | None = None, position: str = "append"
+    ) -> None:
         """
         Adds a note (comment).
 
