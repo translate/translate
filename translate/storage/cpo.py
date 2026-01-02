@@ -972,7 +972,8 @@ class pofile(pocommon.pofile):
                 gpo.po_header_field(self._header, gpo_encode("Content-Type"))
             )
             if charset:
-                charset = re.search(r"charset=([^\s]+)", charset).group(1)
+                # Allow optional whitespace after '=' to match 'charset= koi8-r'
+                charset = re.search(r"charset=\s*([^\s]+)", charset).group(1)
             self.encoding = charset
         self._free_iterator()
         self._gpo_message_iterator = gpo.po_message_iterator(
