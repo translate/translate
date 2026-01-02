@@ -1,4 +1,0 @@
-[files]
-extend-exclude = [
-  "tests/translate/tools/data/pocount_syntax_errors/"
-]
