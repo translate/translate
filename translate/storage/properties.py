@@ -186,7 +186,7 @@ def is_line_continuation(line: str) -> bool:
     return (count % 2) == 1  # Odd is a line continuation, even is not
 
 
-def get_comment_one_line(line):
+def get_comment_one_line(line: str) -> str | None:
     """
     Determine whether a *line* is a one-line comment.
 

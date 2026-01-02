@@ -108,7 +108,7 @@ class tbxunit(lisa.LISAunit):
             and node.get("type") == "Translation needed"
         )
 
-    def _getnotelist(self, origin=None):
+    def _getnotelist(self, origin=None) -> list[str]:
         """
         Returns the text from notes matching ``origin`` or all notes.
 

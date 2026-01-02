@@ -88,7 +88,7 @@ class tmxunit(lisa.LISAunit):
         else:
             self._insert_element_before(note, self.namespaced(self.languageNode))
 
-    def _getnotelist(self, origin: str | None = None) -> list:
+    def _getnotelist(self, origin: str | None = None) -> list[str]:
         """
         Returns the text from notes.
 

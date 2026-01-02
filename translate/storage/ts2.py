@@ -451,7 +451,7 @@ class tsfile(lisa.LISAfile):
         else:
             self.body = self.document.getroot()
 
-    def getsourcelanguage(self):
+    def getsourcelanguage(self) -> str:
         """
         Get the source language for this .ts file.
 
@@ -469,7 +469,7 @@ class tsfile(lisa.LISAfile):
             return "en"
         return lang
 
-    def gettargetlanguage(self):
+    def gettargetlanguage(self) -> str:
         """
         Get the target language for this .ts file.
 

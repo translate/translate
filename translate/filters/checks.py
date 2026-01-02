@@ -475,7 +475,7 @@ class UnitChecker:
             )
         )
 
-    def run_filters(self, unit, categorised: bool = False) -> dict:
+    def run_filters(self, unit, categorised: bool = False) -> dict[str, dict]:
         """
         Run all the tests in this suite.
 

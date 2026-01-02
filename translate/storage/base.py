@@ -285,7 +285,7 @@ class TranslationUnit:
         """
 
     @staticmethod
-    def getlocations() -> list:
+    def getlocations() -> list[str]:
         """
         A list of source code locations.
 
@@ -371,7 +371,7 @@ class TranslationUnit:
         """
 
     @staticmethod
-    def geterrors() -> dict:
+    def geterrors() -> dict[str, str]:
         """Get all error messages."""
         return {}
 

@@ -37,6 +37,7 @@ from pyparsing import (
     Keyword,
     OneOrMore,
     Optional,
+    ParserElement,
     Word,
     ZeroOrMore,
     alphanums,
@@ -156,10 +157,8 @@ class rcunit(base.TranslationUnit):
         return not (self.name or self.value)
 
 
-def rc_statement():
-    """
-    Generate a RC statement parser that can be used to parse a RC file.
-    """
+def rc_statement() -> ParserElement:
+    """Generate a RC statement parser that can be used to parse a RC file."""
     one_line_comment = Combine("//" + rest_of_line)
 
     comments = c_style_comment ^ one_line_comment

@@ -182,7 +182,7 @@ class Xliff1Unit(XliffUnit):
         if origin:
             note.set("from", origin)
 
-    def _getnotelist(self, origin=None):
+    def _getnotelist(self, origin=None) -> list[str]:
         """
         Returns the text from notes matching ``origin`` or all notes.
 
@@ -588,7 +588,7 @@ class Xliff1File(XliffFile):
                 return self.getdatatype(filenames[0])
         return ""
 
-    def getdate(self, filename=None):
+    def getdate(self, filename=None) -> str | None:
         """
         Returns the date attribute for the file.
 

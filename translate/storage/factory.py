@@ -275,7 +275,7 @@ supported = [
 ]
 
 
-def supported_files() -> list:
+def supported_files() -> list[tuple[str, list[str], list[str]]]:
     """
     Returns data about all supported files.
 

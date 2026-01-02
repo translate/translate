@@ -111,7 +111,7 @@ class QphFile(lisa.LISAfile):
         self.header = self.document.getroot()
         self.body = self.document.getroot()  # The root node contains the units
 
-    def getsourcelanguage(self):
+    def getsourcelanguage(self) -> str:
         """
         Get the source language for this .qph file.
 
@@ -126,7 +126,7 @@ class QphFile(lisa.LISAfile):
             return "en"
         return lang
 
-    def gettargetlanguage(self):
+    def gettargetlanguage(self) -> str:
         """
         Get the target language for this .qph file.
 

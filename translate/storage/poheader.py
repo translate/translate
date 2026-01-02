@@ -52,10 +52,8 @@ def parseheaderstring(input):
     return headervalues
 
 
-def tzstring():
-    """
-    Returns the timezone as a string in the format [+-]0000, eg +0200.
-    """
+def tzstring() -> str:
+    """Returns the timezone as a string in the format [+-]0000, eg +0200."""
     tzoffset = time.altzone if time.daylight else time.timezone
 
     hours, minutes = time.gmtime(abs(tzoffset))[3:5]
@@ -71,7 +69,7 @@ def format_key(key: str) -> str:
     return key
 
 
-def update(existing, add=False, **kwargs):
+def update(existing: dict, add: bool = False, **kwargs) -> dict:
     """
     Update an existing header dictionary with the values in kwargs, adding
     new values only if add is true.
@@ -144,7 +142,7 @@ class poheader:
         plural_forms=None,
         report_msgid_bugs_to=None,
         **kwargs,
-    ):
+    ) -> dict:
         """
         Create a header dictionary with useful defaults.
 
