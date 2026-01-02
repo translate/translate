@@ -134,13 +134,11 @@ class TranslationUnit:
         if source is not None:
             self.source = source
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
         """
         Compares two TranslationUnits.
 
-        :type other: :class:`TranslationUnit`
         :param other: Another :class:`TranslationUnit`
-        :rtype: Boolean
         :return: Returns *True* if the supplied :class:`TranslationUnit`
                  equals this unit.
         """
@@ -253,11 +251,9 @@ class TranslationUnit:
         self._rich_target = list(value)
         self.target = self.rich_to_multistring(value)
 
-    def gettargetlen(self):
+    def gettargetlen(self) -> int:
         """
         Returns the length of the target string.
-
-        :rtype: Integer
 
         .. note::
 
@@ -269,11 +265,10 @@ class TranslationUnit:
             length += sum(len(pluralform) for pluralform in strings[1:])
         return length
 
-    def getid(self):
+    def getid(self) -> str:
         """
         A unique identifier for this unit.
 
-        :rtype: string
         :return: an identifier for this unit that is unique in the store
 
         Derived classes should override this in a way that guarantees a unique
@@ -290,11 +285,9 @@ class TranslationUnit:
         """
 
     @staticmethod
-    def getlocations():
+    def getlocations() -> list:
         """
         A list of source code locations.
-
-        :rtype: List
 
         .. note::
 
@@ -348,13 +341,11 @@ class TranslationUnit:
         """
         return getattr(self, "notes", "")
 
-    def addnote(self, text, origin=None, position="append"):
+    def addnote(self, text: str, origin: str | None = None, position: str = "append") -> None:
         """
         Adds a note (comment).
 
-        :type text: string
         :param text: Usually just a sentence or two.
-        :type origin: string
         :param origin: Specifies who/where the comment comes from.
                        Origin can be one of the following text strings:
                        - 'translator'
@@ -369,23 +360,17 @@ class TranslationUnit:
         """Remove all the translator's notes."""
         self.notes = ""
 
-    def adderror(self, errorname, errortext):
+    def adderror(self, errorname: str, errortext: str) -> None:
         """
         Adds an error message to this unit.
 
-        :type errorname: string
         :param errorname: A single word to id the error.
-        :type errortext: string
         :param errortext: The text describing the error.
         """
 
     @staticmethod
-    def geterrors():
-        """
-        Get all error messages.
-
-        :rtype: Dictionary
-        """
+    def geterrors() -> dict:
+        """Get all error messages."""
         return {}
 
     def markreviewneeded(self, needsreview=True, explanation=None):
@@ -630,38 +615,32 @@ class TranslationStore:
         """Return a list of all units in this store."""
         return list(self.unit_iter())
 
-    def addunit(self, unit):
+    def addunit(self, unit: TranslationUnit) -> None:
         """
         Append the given unit to the object's list of units.
 
         This method should always be used rather than trying to modify the
         list manually.
 
-        :type unit: :class:`TranslationUnit`
         :param unit: The unit that will be added.
         """
         unit._store = self
         self.units.append(unit)
 
-    def removeunit(self, unit):
+    def removeunit(self, unit: TranslationUnit) -> None:
         """
         Remove the given unit to the object's list of units.
 
         This method should always be used rather than trying to modify the
         list manually.
 
-        :type unit: :class:`TranslationUnit`
         :param unit: The unit that will be added.
         """
         self.units.remove(unit)
         self.remove_unit_from_index(unit)
 
-    def addsourceunit(self, source):
-        """
-        Add and returns a new unit with the given source string.
-
-        :rtype: :class:`TranslationUnit`
-        """
+    def addsourceunit(self, source: str) -> TranslationUnit:
+        """Add and returns a new unit with the given source string."""
         unit = self.UnitClass(source)
         self.addunit(unit)
         return unit
@@ -671,34 +650,22 @@ class TranslationStore:
         self.require_index()
         return self.id_index.get(id)
 
-    def findunit(self, source):
-        """
-        Find the unit with the given source string.
-
-        :rtype: :class:`TranslationUnit` or None
-        """
+    def findunit(self, source: str) -> TranslationUnit | None:
+        """Find the unit with the given source string."""
         self.require_index()
         if source in self.sourceindex:
             return self.sourceindex[source][0]
         return None
 
-    def findunits(self, source):
-        """
-        Find the units with the given source string.
-
-        :rtype: :class:`TranslationUnit` or None
-        """
+    def findunits(self, source: str) -> list[TranslationUnit] | None:
+        """Find the units with the given source string."""
         self.require_index()
         if source in self.sourceindex:
             return self.sourceindex[source]
         return None
 
-    def translate(self, source):
-        """
-        Return the translated string for a given source string.
-
-        :rtype: String or None
-        """
+    def translate(self, source: str) -> str | None:
+        """Return the translated string for a given source string."""
         unit = self.findunit(source)
         if unit and unit.target:
             return unit.target
@@ -969,12 +936,11 @@ class TranslationStore:
         return newstore
 
     @property
-    def merge_on(self):
+    def merge_on(self) -> str:
         """
         The matching criterion to use when merging on.
 
         :return: The default matching criterion for all the subclasses.
-        :rtype: string
         """
         return "id"
 
