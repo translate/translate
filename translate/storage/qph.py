@@ -120,7 +120,6 @@ class QphFile(lisa.LISAfile):
         by the extraction tools.
 
         :return: ISO code e.g. af, fr, pt_BR
-        :rtype: String
         """
         lang = data.normalize_code(self.header.get("sourcelanguage", "en"))
         if lang == "en-us":
@@ -132,7 +131,6 @@ class QphFile(lisa.LISAfile):
         Get the target language for this .qph file.
 
         :return: ISO code e.g. af, fr, pt_BR
-        :rtype: String
         """
         return data.normalize_code(self.header.get("language"))
 
@@ -141,7 +139,6 @@ class QphFile(lisa.LISAfile):
         Set the target language for this .qph file to *targetlanguage*.
 
         :param targetlanguage: ISO code e.g. af, fr, pt_BR
-        :type targetlanguage: String
         """
         if targetlanguage:
             self.header.set("language", targetlanguage)

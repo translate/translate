@@ -101,10 +101,7 @@ class Project:
 
         Source document (eg. ODT) -> Translation file (eg. XLIFF) ->
         Translated document (eg. ODT).
-
-        :type  input_fname: basestring
         :param input_fname: The project name of the file to convert
-        :type  convert_options: Dictionary (optional)
         :param convert_options: Passed as-is to
                                 :meth:`translate.convert.factory.convert`.
         :returns 2-tuple: the converted file object and its project name.

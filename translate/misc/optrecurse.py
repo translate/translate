@@ -120,8 +120,6 @@ class RecursiveOptionParser(optparse.OptionParser):
     ):
         """
         Construct the specialized Option Parser.
-
-        :type formats: Dictionary
         :param formats: See :meth:`~.RecursiveOptionParser.setformats`
         for an explanation of the formats parameter.
         """
@@ -278,8 +276,6 @@ class RecursiveOptionParser(optparse.OptionParser):
     def setformats(self, formats, usetemplates):
         """
         Sets the format options using the given format dictionary.
-
-        :type formats: Dictionary or iterable
         :param formats: The dictionary *keys* should be:
 
                         - Single strings (or 1-tuples) containing an

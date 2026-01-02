@@ -753,7 +753,6 @@ class pounit(pocommon.pounit):
         Add a location to sourcecomments in the PO unit.
 
         :param location: Text location e.g. 'file.c:23' does not include #:
-        :type location: String
 
         """
         location = pocommon.quote_plus(location)

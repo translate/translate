@@ -172,9 +172,7 @@ def is_line_continuation(line: str) -> bool:
     would result in a set of N/2 slashes not an escape)
 
     :param line: A properties line
-    :type line: str
     :return: Does *line* end with a line continuation
-    :rtype: Boolean
     """
     pos = -1
     count = 0
@@ -193,9 +191,7 @@ def get_comment_one_line(line):
     Determine whether a *line* is a one-line comment.
 
     :param line: A properties line
-    :type line: unicode
     :return: True if line is a one-line comment
-    :rtype: bool
     """
     stripped = line.strip()
     line_starters = ("#", "!", "//", ";")
@@ -212,9 +208,7 @@ def get_comment_start(line: str) -> str | None:
     Determine whether a *line* starts a new multi-line comment.
 
     :param line: A properties line
-    :type line: unicode
     :return: True if line starts a new multi-line comment
-    :rtype: bool
     """
     stripped = line.strip()
     if stripped.startswith("/*") and not stripped.endswith("*/"):
@@ -227,9 +221,7 @@ def get_comment_end(line: str) -> str | None:
     Determine whether a *line* ends a new multi-line comment.
 
     :param line: A properties line
-    :type line: unicode
     :return: True if line ends a new multi-line comment
-    :rtype: bool
     """
     stripped = line.strip()
     if not stripped.startswith("/*") and stripped.endswith("*/"):
@@ -242,9 +234,7 @@ def _key_strip(key: str) -> str:
     Cleanup whitespace found around a key.
 
     :param key: A properties key
-    :type key: str
     :return: Key without any unneeded whitespace
-    :rtype: str
     """
     newkey = key.rstrip()
     # If string now ends in \ we put back the whitespace that was escaped
@@ -302,11 +292,8 @@ class Dialect:
         first.
 
         :param line: A properties line
-        :type line: str
         :param delimiters: valid delimiters
-        :type delimiters: list
         :return: delimiter character and offset within *line*
-        :rtype: Tuple (delimiter char, Offset Integer)
         """
         delimiter_dict = {}
         for delimiter in cls.delimiters:

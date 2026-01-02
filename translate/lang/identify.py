@@ -90,8 +90,6 @@ class LanguageIdentifier:
         """
         Identify the source language of the given translation store or
         units.
-
-        :type  instore: ``TranslationStore`` or list or tuple of
             ``TranslationUnit``s.
         :param instore: The translation store to extract source text from.
         :returns: The identified language's code or ``None`` if the language
@@ -113,8 +111,6 @@ class LanguageIdentifier:
         """
         Identify the target language of the given translation store or
         units.
-
-        :type  instore: ``TranslationStore`` or list or tuple of
             ``TranslationUnit``s.
         :param instore: The translation store to extract target text from.
         :returns: The identified language's code or ``None`` if the language

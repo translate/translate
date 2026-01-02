@@ -159,8 +159,6 @@ class rcunit(base.TranslationUnit):
 def rc_statement():
     """
     Generate a RC statement parser that can be used to parse a RC file.
-
-    :rtype: pyparsing.ParserElement
     """
     one_line_comment = Combine("//" + rest_of_line)
 

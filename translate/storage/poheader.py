@@ -55,8 +55,6 @@ def parseheaderstring(input):
 def tzstring():
     """
     Returns the timezone as a string in the format [+-]0000, eg +0200.
-
-    :rtype: str
     """
     tzoffset = time.altzone if time.daylight else time.timezone
 
@@ -79,7 +77,6 @@ def update(existing, add=False, **kwargs):
     new values only if add is true.
 
     :return: Updated dictionary of header entries
-    :rtype: dict of strings
     """
     headerargs = {}
     fixedargs = cidict((format_key(key), value) for key, value in kwargs.items())
@@ -156,7 +153,6 @@ class poheader:
         or a value (datetime or string)
 
         :return: Dictionary with the header items
-        :rtype: dict of strings
         """
 
         def format_date(key, value, fallback=None):
@@ -323,7 +319,6 @@ class poheader:
         This removes any custom Poedit headers if they exist.
 
         :param lang: the new target language code
-        :type lang: str
         """
         if isinstance(lang, str) and len(lang) > 1:
             self.updateheader(
@@ -368,7 +363,6 @@ class poheader:
         Set the project in the header.
 
         :param project_style: the new project
-        :type project_style: str
         """
         self.updateheader(add=True, X_Project_Style=project_style)
 
@@ -377,8 +371,6 @@ class poheader:
         Merges another header with this header.
 
         This header is assumed to be the template.
-
-        :type otherstore: :class:`~translate.storage.base.TranslationStore`
         """
         newvalues = otherstore.parseheader()
         retain_list = (

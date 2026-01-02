@@ -184,12 +184,8 @@ def removeinvalidamps(name, value):
     down the problem is very difficult, thus by removing potential broken
     ampersand and warning the users we can ensure that the output DTD will
     always be parsable.
-
-    :type name: String
     :param name: Entity name
-    :type value: String
     :param value: Entity text value
-    :rtype: String
     :return: Entity value without bad ampersands
     """
 
@@ -644,7 +640,6 @@ class dtdfile(base.TranslationStore):
         This uses ElementTree to parse the DTD
 
         :return: If the store passes validation
-        :rtype: Boolean
         """
         # Android files are invalid DTDs
         if not self.android:

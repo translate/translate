@@ -244,7 +244,6 @@ class WordfastTime:
         Set the time_struct object using a Wordfast time formatted string.
 
         :param timestring: A Wordfast time string (YYYMMDD~hhmmss)
-        :type timestring: String
         """
         self._time = time.strptime(timestring, WF_TIMEFORMAT)
 
@@ -259,7 +258,6 @@ class WordfastTime:
         Set the time_struct object.
 
         :param newtime: a new time object
-        :type newtime: time.time_struct
         """
         if newtime and isinstance(newtime, time.struct_time):
             self._time = newtime

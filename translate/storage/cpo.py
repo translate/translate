@@ -330,11 +330,10 @@ def unquotefrompo(postr):
     return pypo.unquotefrompo(postr)
 
 
-def get_libgettextpo_version():
+def get_libgettextpo_version() -> tuple[int, int, int]:
     """
     Returns the libgettextpo version.
 
-    :rtype: three-value tuple
     :return: libgettextpo version in the following format::
         (major version, minor version, subminor version)
     """
@@ -681,11 +680,10 @@ class pounit(pocommon.pounit):
     def hasplural(self):
         return gpo.po_message_msgid_plural(self._gpo_message) is not None
 
-    def _extract_msgidcomments(self, text=None):
+    def _extract_msgidcomments(self, text: str | None = None) -> str:
         """
         Extract KDE style msgid comments from the unit.
 
-        :rtype: String
         :return: Returns the extracted msgidcomments found in this unit's msgid.
         """
         if not text:

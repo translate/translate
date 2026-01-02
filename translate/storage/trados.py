@@ -129,7 +129,6 @@ class TradosTxtDate:
         Set the time_struct object using a Trados time formatted string.
 
         :param timestring: A Trados time string (DDMMYYYY, hh:mm:ss)
-        :type timestring: String
         """
         self._time = time.strptime(timestring, TRADOS_TIMEFORMAT)
 
@@ -144,7 +143,6 @@ class TradosTxtDate:
         Set the time_struct object.
 
         :param newtime: a new time object
-        :type newtime: time.time_struct
         """
         if newtime and isinstance(newtime, time.struct_time):
             self._time = newtime

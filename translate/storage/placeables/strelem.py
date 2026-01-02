@@ -794,8 +794,6 @@ class StringElem:
 
         A node is a leaf node if it is a ``StringElem`` (not a sub-class) and
         contains only sub-elements of type ``str`` or ``unicode``.
-
-        :rtype: bool
         """
         return all(isinstance(e, str) for e in self.sub)
 
@@ -833,8 +831,6 @@ class StringElem:
         Parse an instance of this class from the start of the given string.
         This method should be implemented by any sub-class that wants to
         parseable by :mod:`translate.storage.placeables.parse`.
-
-        :type  pstr: unicode
         :param pstr: The string to parse into an instance of this class.
         :returns: An instance of the current class, or ``None`` if the string
                   not parseable by this class.

@@ -206,8 +206,6 @@ def getobject(
 ):
     """
     Factory that returns a usable object for the type of file presented.
-
-    :type storefile: file or str or TranslationStore
     :param storefile: File object or file name.
 
     Specify ignore to ignore some part at the back of the name (like .gz).

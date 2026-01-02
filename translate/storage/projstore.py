@@ -119,8 +119,6 @@ class ProjectStore:
         """
         Append the given file to the project with the given filename, marked
         to be of type ``ftype`` ('src', 'trans', 'tgt').
-
-        :type  delete_orig: bool
         :param delete_orig: Whether or not the original (given) file should be
                             deleted after being appended. This is set to
                             ``True`` by
@@ -220,8 +218,6 @@ class ProjectStore:
         way must be defined in this method of sub-classes. The value may
         also be a string, which indicates that it is a real file accessible
         via ``open``.
-
-        :type  mode: str
         :param mode: The mode in which to re-open the file (if it is closed).
         """
         if fname not in self._files:
