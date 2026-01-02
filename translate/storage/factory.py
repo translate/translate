@@ -277,11 +277,10 @@ supported = [
 ]
 
 
-def supported_files():
+def supported_files() -> list:
     """
     Returns data about all supported files.
 
     :return: list of type that include (name, extensions, mimetypes)
-    :rtype: list
     """
     return supported[:]

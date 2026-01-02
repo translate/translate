@@ -775,14 +775,12 @@ class RecursiveOptionParser(optparse.OptionParser):
         return inputfiles
 
     @staticmethod
-    def splitext(pathname):
+    def splitext(pathname: str) -> tuple[str, str]:
         """
         Splits *pathname* into name and ext, and removes the extsep.
 
         :param pathname: A file path
-        :type pathname: string
         :return: root, ext
-        :rtype: tuple
         """
         root, ext = os.path.splitext(pathname)
         ext = ext.replace(os.extsep, "", 1)

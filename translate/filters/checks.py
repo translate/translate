@@ -241,13 +241,11 @@ class CheckerConfig:
         self.updatevalidchars(validchars)
 
     @staticmethod
-    def _init_list(list):
+    def _init_list(list: list | None) -> list:
         """
         Initialise configuration parameters that are lists.
 
-        :type list: List
         :param list: None (we'll initialise a blank list) or a list parameter
-        :rtype: List
         """
         if list is None:
             list = []
@@ -477,11 +475,10 @@ class UnitChecker:
             )
         )
 
-    def run_filters(self, unit, categorised=False):
+    def run_filters(self, unit, categorised: bool = False) -> dict:
         """
         Run all the tests in this suite.
 
-        :rtype: Dictionary
         :return: Content of the dictionary is as follows::
 
            {'testname': { 'message': message_or_exception, 'category': failure_category } }

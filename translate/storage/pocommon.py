@@ -25,12 +25,10 @@ from translate.storage.workflow import StateEnum as state
 msgid_comment_re = re.compile(r"_: (.*?)\n")
 
 
-def extract_msgid_comment(text):
+def extract_msgid_comment(text: str) -> str:
     """
     The one definitive way to extract a msgid comment out of an unescaped
     unicode string that might contain it.
-
-    :rtype: unicode
     """
     msgidcomment = msgid_comment_re.match(text)
     if msgidcomment:

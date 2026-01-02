@@ -348,11 +348,10 @@ class pounit(pocommon.pounit):
         """
         self.sourcecomments.append(location)
 
-    def _extract_msgidcomments(self, text=None):
+    def _extract_msgidcomments(self, text: str | None = None) -> str:
         """
         Extract KDE style msgid comments from the unit.
 
-        :rtype: String
         :return: Returns the extracted msgidcomments found in this unit's msgid.
         """
         if text:
