@@ -115,7 +115,9 @@ class ProjectStore:
         )
 
     # METHODS #
-    def append_file(self, afile, fname, ftype="trans", delete_orig=False):
+    def append_file(
+        self, afile, fname, ftype: str = "trans", delete_orig: bool = False
+    ):
         """
         Append the given file to the project with the given filename, marked
         to be of type ``ftype`` ('src', 'trans', 'tgt').
@@ -208,7 +210,7 @@ class ProjectStore:
             if handle is not None and not isinstance(handle, str):
                 handle.close()
 
-    def get_file(self, fname, mode="rb"):
+    def get_file(self, fname: str, mode: str = "rb"):
         """
         Retrieve the file with the given name from the project store.
 

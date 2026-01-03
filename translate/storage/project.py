@@ -95,7 +95,9 @@ class Project:
         """
         self.store.close()
 
-    def convert_forward(self, input_fname, template=None, output_fname=None, **options):
+    def convert_forward(
+        self, input_fname: str, template=None, output_fname=None, **options
+    ):
         """
         Convert the given input file to the next type in the process.
 

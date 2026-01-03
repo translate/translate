@@ -477,7 +477,7 @@ class tsfile(lisa.LISAfile):
         """
         return data.normalize_code(self.header.get("language"))
 
-    def settargetlanguage(self, targetlanguage):
+    def settargetlanguage(self, targetlanguage: str) -> None:
         """
         Set the target language for this .ts file to *targetlanguage*.
 

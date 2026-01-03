@@ -239,7 +239,7 @@ class WordfastTime:
             return None
         return time.strftime(WF_TIMEFORMAT, self._time)
 
-    def set_timestring(self, timestring):
+    def set_timestring(self, timestring: str) -> None:
         """
         Set the time_struct object using a Wordfast time formatted string.
 
@@ -253,7 +253,7 @@ class WordfastTime:
         """Get the time_struct object."""
         return self._time
 
-    def set_time(self, newtime):
+    def set_time(self, newtime: time.struct_time | None) -> None:
         """
         Set the time_struct object.
 

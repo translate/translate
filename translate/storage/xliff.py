@@ -111,8 +111,13 @@ class Xliff1Unit(XliffUnit):
         return langset
 
     def addalttrans(
-        self, txt, origin=None, lang=None, sourcetxt=None, matchquality=None
-    ):
+        self,
+        txt: str,
+        origin: str | None = None,
+        lang: str | None = None,
+        sourcetxt: str | None = None,
+        matchquality: str | None = None,
+    ) -> None:
         """
         Adds an alt-trans tag and alt-trans components to the unit.
         :param txt: Alternative translation of the source text.
@@ -692,7 +697,7 @@ class Xliff1File(XliffFile):
         unit.setid(f"{messagenum}")
         return unit
 
-    def switchfile(self, filename, createifmissing=False):
+    def switchfile(self, filename: str, createifmissing: bool = False) -> bool:
         """
         Adds the given trans-unit (will create the nodes required if asked).
 
