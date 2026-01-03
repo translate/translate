@@ -239,12 +239,11 @@ class WordfastTime:
             return None
         return time.strftime(WF_TIMEFORMAT, self._time)
 
-    def set_timestring(self, timestring):
+    def set_timestring(self, timestring: str) -> None:
         """
         Set the time_struct object using a Wordfast time formatted string.
 
         :param timestring: A Wordfast time string (YYYMMDD~hhmmss)
-        :type timestring: String
         """
         self._time = time.strptime(timestring, WF_TIMEFORMAT)
 
@@ -254,12 +253,11 @@ class WordfastTime:
         """Get the time_struct object."""
         return self._time
 
-    def set_time(self, newtime):
+    def set_time(self, newtime: time.struct_time | None) -> None:
         """
         Set the time_struct object.
 
         :param newtime: a new time object
-        :type newtime: time.time_struct
         """
         if newtime and isinstance(newtime, time.struct_time):
             self._time = newtime

@@ -197,17 +197,15 @@ def getclass(
 
 
 def getobject(
-    storefile,
-    localfiletype=None,
-    ignore=None,
-    classes=None,
-    classes_str=None,
-    hiddenclasses=None,
-):
+    storefile: str | TranslationStore,
+    localfiletype: str | None = None,
+    ignore: str | None = None,
+    classes: dict | None = None,
+    classes_str: dict | None = None,
+    hiddenclasses: list | None = None,
+) -> TranslationStore:
     """
     Factory that returns a usable object for the type of file presented.
-
-    :type storefile: file or str or TranslationStore
     :param storefile: File object or file name.
 
     Specify ignore to ignore some part at the back of the name (like .gz).
@@ -277,11 +275,10 @@ supported = [
 ]
 
 
-def supported_files():
+def supported_files() -> list[tuple[str, list[str], list[str]]]:
     """
     Returns data about all supported files.
 
     :return: list of type that include (name, extensions, mimetypes)
-    :rtype: list
     """
     return supported[:]

@@ -174,7 +174,7 @@ def unquotefromdtd(source):
     return quote.entitydecode(extracted, _DTD_NAME2CODEPOINT)
 
 
-def removeinvalidamps(name, value):
+def removeinvalidamps(name: str, value: str) -> str:
     """
     Find and remove ampersands that are not part of an entity definition.
 
@@ -184,12 +184,8 @@ def removeinvalidamps(name, value):
     down the problem is very difficult, thus by removing potential broken
     ampersand and warning the users we can ensure that the output DTD will
     always be parsable.
-
-    :type name: String
     :param name: Entity name
-    :type value: String
     :param value: Entity text value
-    :rtype: String
     :return: Entity value without bad ampersands
     """
 
@@ -637,14 +633,13 @@ class dtdfile(base.TranslationStore):
             warnings.warn(f"DTD file '{self.filename}' does not validate")
             out.truncate(0)
 
-    def _valid_store(self, content):
+    def _valid_store(self, content: bytes) -> bool:
         """
         Validate the store to determine if it is valid.
 
         This uses ElementTree to parse the DTD
 
         :return: If the store passes validation
-        :rtype: Boolean
         """
         # Android files are invalid DTDs
         if not self.android:

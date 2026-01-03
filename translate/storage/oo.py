@@ -62,15 +62,12 @@ def normalizefilename(filename):
     return filename.translate(normalizetable)
 
 
-def makekey(ookey, long_keys):
+def makekey(ookey: tuple, long_keys: bool) -> str:
     """
     Converts an oo key tuple into a unique identifier.
 
     :param ookey: an oo key
-    :type ookey: tuple
     :param long_keys: Use long keys
-    :type long_keys: Boolean
-    :rtype: str
     :return: unique ascii identifier
     """
     project, sourcefile, resourcetype, groupid, localid, _platform = ookey

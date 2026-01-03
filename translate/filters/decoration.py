@@ -80,16 +80,13 @@ def ispurepunctuation(str1):
     return len(str1)
 
 
-def isvalidaccelerator(accelerator, acceptlist=None):
+def isvalidaccelerator(accelerator: str, acceptlist: str | None = None) -> bool:
     """
     Returns whether the given accelerator character is valid.
 
-    :type accelerator: character
     :param accelerator: A character to be checked for accelerator validity
-    :type acceptlist: String
     :param acceptlist: A list of characters that are permissible as
                        accelerators
-    :rtype: Boolean
     :return: True if the supplied character is an acceptable accelerator
     """
     assert isinstance(accelerator, str)

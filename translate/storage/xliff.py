@@ -111,12 +111,15 @@ class Xliff1Unit(XliffUnit):
         return langset
 
     def addalttrans(
-        self, txt, origin=None, lang=None, sourcetxt=None, matchquality=None
-    ):
+        self,
+        txt: str,
+        origin: str | None = None,
+        lang: str | None = None,
+        sourcetxt: str | None = None,
+        matchquality: str | None = None,
+    ) -> None:
         """
         Adds an alt-trans tag and alt-trans components to the unit.
-
-        :type txt: String
         :param txt: Alternative translation of the source text.
         """
         # TODO: support adding a source tag ad match quality attribute.  At the
@@ -184,14 +187,12 @@ class Xliff1Unit(XliffUnit):
         if origin:
             note.set("from", origin)
 
-    def _getnotelist(self, origin=None):
+    def _getnotelist(self, origin=None) -> list[str]:
         """
         Returns the text from notes matching ``origin`` or all notes.
 
         :param origin: The origin of the note (or note type)
-        :type origin: String
         :return: The text from notes matching ``origin``
-        :rtype: List
         """
         note_nodes = self.xmlelement.iterdescendants(self.namespaced("note"))
         # TODO: consider using xpath to construct initial_list directly
@@ -592,7 +593,7 @@ class Xliff1File(XliffFile):
                 return self.getdatatype(filenames[0])
         return ""
 
-    def getdate(self, filename=None):
+    def getdate(self, filename=None) -> str | None:
         """
         Returns the date attribute for the file.
 
@@ -600,7 +601,6 @@ class Xliff1File(XliffFile):
         If the date attribute is not specified, None is returned.
 
         :returns: Date attribute of file
-        :rtype: Date or None
         """
         if filename:
             node = self.getfilenode(filename)
@@ -697,12 +697,11 @@ class Xliff1File(XliffFile):
         unit.setid(f"{messagenum}")
         return unit
 
-    def switchfile(self, filename, createifmissing=False):
+    def switchfile(self, filename: str, createifmissing: bool = False) -> bool:
         """
         Adds the given trans-unit (will create the nodes required if asked).
 
         :returns: Success
-        :rtype: Boolean
         """
         if self._filename == filename:
             return True

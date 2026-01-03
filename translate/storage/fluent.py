@@ -125,10 +125,7 @@ class FluentReference:
         self,
         reference: (ast.MessageReference | ast.TermReference | ast.VariableReference),
     ) -> None:
-        """
-        :param reference: The reference this represents.
-        :type reference: MessageReference or TermReference or VariableReference
-        """
+        """:param reference: The reference this represents."""
         if isinstance(reference, ast.MessageReference):
             self._type_name = "message"
             attribute = reference.attribute
@@ -147,20 +144,12 @@ class FluentReference:
 
     @property
     def type_name(self) -> str:
-        """
-        The name for the type of reference.
-
-        :type: str
-        """
+        """The name for the type of reference."""
         return self._type_name
 
     @property
     def name(self) -> str:
-        """
-        The the reference name.
-
-        :type: str
-        """
+        """The the reference name."""
         return self._name
 
 
@@ -288,9 +277,7 @@ class FluentSelectorNode:
     ) -> None:
         """
         :param select_expression: The SelectExpression this represents.
-        :type selector: SelectExpression
         :param parent_branch: The branch this node belongs to.
-        :type parent_branch: FluentSelectorBranch
         """
         self._selector = select_expression.selector.clone()
         self._serialized_selector: str | None = None
@@ -314,8 +301,6 @@ class FluentSelectorNode:
 
         The branch represents the Fluent Pattern the SelectExpression was found
         within.
-
-        :type: FluentSelectorBranch
         """
         return self._parent_branch
 
@@ -326,18 +311,12 @@ class FluentSelectorNode:
 
         The child branches represent the Variants found within the
         SelectExpression.
-
-        :type: list[FluentSelectorBranch]
         """
         return self._child_branches
 
     @property
     def serialized_selector(self) -> str:
-        """
-        A serialized form of the SelectExpression's selector Expression.
-
-        :type: str
-        """
+        """A serialized form of the SelectExpression's selector Expression."""
         if self._serialized_selector is None:
             # NOTE: Current fluent.syntax library only allows the select
             # expression's selector to be a:
@@ -360,8 +339,6 @@ class FluentSelectorNode:
         The references found in the SelectExpression's selector Expression.
 
         These are in the order of appearance.
-
-        :type: list[FluentReference]
         """
         if self._selector_references is None:
             ref_visitor = _ReferenceVisitor()
@@ -394,13 +371,10 @@ class FluentSelectorBranch:
     ) -> None:
         """
         :param pattern: The Pattern this represents.
-        :type pattern: Pattern
         :param variant: The Variant this Pattern belongs to, or None if this is
         a top-level Pattern.
-        :type variant: Variant or None
         :param parent_node: The parent node this belongs to, or None if this is
         a top-level Pattern.
-        :type selector: FluentSelectorNode or None
         """
         self._variant = variant.clone() if variant else None
         self._top_references: list[FluentReference] | None = None
@@ -447,8 +421,6 @@ class FluentSelectorBranch:
 
         The node represents the SelectExpression the Fluent Pattern was found
         within if it belonged to a Variant.
-
-        :type: FluentSelectorNode or None
         """
         return self._parent_node
 
@@ -459,8 +431,6 @@ class FluentSelectorBranch:
 
         The child nodes represent the SelectExpressions found within the
         Pattern.
-
-        :type: list[FluentSelectorNode]
         """
         return self._child_nodes
 
@@ -472,8 +442,6 @@ class FluentSelectorBranch:
         This excludes any references found within any child SelectExpression.
 
         These are in the order of appearance.
-
-        :type: list[FluentReference]
         """
         if self._top_references is None:
             ref_visitor = _ReferenceVisitor()
@@ -492,8 +460,6 @@ class FluentSelectorBranch:
 
         This will be an empty string if this Pattern did not belong to a
         Variant.
-
-        :type: str
         """
         if not self._variant:
             return ""
@@ -511,8 +477,6 @@ class FluentSelectorBranch:
 
         This will default to True if this Pattern was top-level and did not
         belong to a Variant.
-
-        :type: bool
         """
         if not self._variant:
             return True
@@ -539,9 +503,7 @@ class FluentSelectorBranch:
         :meth:`~FluentSelectorBranch.branch_paths`.
 
         :param branches: The branches we should follow when we reach nodes.
-        :type branches: list(FluentSelectorBranch)
         :return: A iterator of pattern elements.
-        :rtype: Iterator[PatternElement]
         :raise ValueError: If we reach a node that has no branch in the given
         list.
         """
@@ -570,9 +532,7 @@ class FluentSelectorBranch:
         variants for the original Pattern.
 
         :param branches: The branches we should follow when we reach nodes.
-        :type branches: list(FluentSelectorBranch)
         :return: The flat string.
-        :rtype: str
         :raise ValueError: If we reach a node that has no branch in the given
         list.
         """
@@ -594,7 +554,6 @@ class FluentSelectorBranch:
         :meth:`~FluentSelectorBranch.to_flat_pattern_elements`.
 
         :return: An iterator over all unique branch paths.
-        :rtype: Iterator[list[FluentSelectorBranch]]
         """
         # This involves a mix of depth-first tree-traversal over the
         # nodes and and permutations over the individual children of the
@@ -641,10 +600,7 @@ class _SelectorBranchIterator:
     """
 
     def __init__(self, branch: FluentSelectorBranch) -> None:
-        """
-        :param branch: The branch to iterate over.
-        :type branch: FluentSelectorBranch
-        """
+        """:param branch: The branch to iterate over."""
         self.branch = branch
         self.node_iterators = [
             _SelectorNodeIterator(node) for node in branch.child_nodes
@@ -656,7 +612,6 @@ class _SelectorBranchIterator:
 
         :return: True if the node was able to iterate forward, otherwise resets
         itself and returns False.
-        :rtype: bool
         """
         # We try and iterate the selection state of one of our node children
         # until one of them does not reset itself.
@@ -672,7 +627,6 @@ class _SelectorBranchIterator:
         This does not include this branch itself.
 
         :return: An iterator over all currently selected branches.
-        :rtype: Iterator[FluentSelectorBranch]
         """
         for node_it in self.node_iterators:
             branch_it = node_it.selected_branch_iterator()
@@ -688,10 +642,7 @@ class _SelectorNodeIterator:
     """
 
     def __init__(self, node: FluentSelectorNode) -> None:
-        """
-        :param node: The node whose branches we want to iterate over.
-        :type node: FluentSelectorNode
-        """
+        """:param node: The node whose branches we want to iterate over."""
         self.node = node
         self._index = 0
         self.branch_iterators = [
@@ -704,7 +655,6 @@ class _SelectorNodeIterator:
 
         :return: True if the node was able to iterate forward, otherwise resets
         itself and returns False.
-        :rtype: bool
         """
         # First we try to iterate the selected branch.
         if self.branch_iterators[self._index].next():
@@ -723,7 +673,6 @@ class _SelectorNodeIterator:
         The iterator for the currently selected branch.
 
         :return: The selected branch.
-        :rtype: _SelectorBranchIterator
         """
         return self.branch_iterators[self._index]
 
@@ -738,9 +687,7 @@ class FluentPart:
     def __init__(self, name: str, pattern: ast.Pattern) -> None:
         """
         :param name: The name of this part.
-        :type name: str
         :param pattern: The Fluent Pattern for this part.
-        :type pattern: Pattern
         """
         self._name = name
         self._pattern = pattern
@@ -753,18 +700,12 @@ class FluentPart:
 
         This will be an empty string for Entry values, and the attribute name
         for Entry Attributes.
-
-        :type: str
         """
         return self._name
 
     @property
     def top_branch(self) -> FluentSelectorBranch:
-        """
-        The top-level selector branch that represents this part's Pattern.
-
-        :type: FluentSelectorBranch
-        """
+        """The top-level selector branch that represents this part's Pattern."""
         if not self._top_branch:
             self._top_branch = FluentSelectorBranch(self._pattern, None, None)
         return self._top_branch
@@ -800,16 +741,13 @@ class FluentUnit(base.TranslationUnit):
     ) -> None:
         """
         :param source: The serialized fluent value, or None.
-        :type source: str or None
         :param unit_id: An optional id to set (see :meth:`~FluentUnit.setid`),
             otherwise an id is generated from the given `source`.
-        :type unit_id: str or None
-        :param str comment: An optional comment for the unit.
-        :param str fluent_type: The fluent type this unit corresponds to.
+        :param comment: An optional comment for the unit.
+        :param fluent_type: The fluent type this unit corresponds to.
         :param placeholders: An optional list of sub-strings of the source that
             should be highlighted as placeholders. A translation of this unit
             would be expected to contain the same sub-strings.
-        :type placeholders: list[str] or None
         """
         if fluent_type not in {
             "Message",
@@ -886,13 +824,10 @@ class FluentUnit(base.TranslationUnit):
         Create a new unit corresponding to the given fluent AST entry.
 
         :param fluent_entry: A fluent Entry to convert.
-        :type fluent_entry: Entry
         :param comment: A comment to set on the unit. For fluent Comments the
             comment is taken from the object instead.
-        :type comment: str
 
         :return: A new FluentUnit.
-        :rtype: FluentUnit
         """
         if isinstance(fluent_entry, ast.ResourceComment):
             return cls(comment=fluent_entry.content, fluent_type="ResourceComment")
@@ -980,7 +915,6 @@ class FluentUnit(base.TranslationUnit):
         Convert the unit into a corresponding fluent AST Entry.
 
         :return: A new fluent AST Entry, if one was created.
-        :rtype: Entry or None
         :raises ValueError: if the unit source contains an error.
         """
         if self.fluent_type == "ResourceComment":
@@ -1095,7 +1029,6 @@ class FluentUnit(base.TranslationUnit):
         Get the Fluent syntax error for this unit, if it has one.
 
         :return: The syntax error message, or None if it has no error.
-        :rtype: str or None
         """
         if self.fluent_type not in {"Term", "Message"}:
             return None
@@ -1114,7 +1047,6 @@ class FluentUnit(base.TranslationUnit):
 
         :return: The parts that make up the string, or None if it has some
             syntax error.
-        :rtype: list[FluentPart] or None
         """
         if self.fluent_type not in {"Term", "Message"}:
             return []

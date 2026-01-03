@@ -215,7 +215,7 @@ dialects = {
 default fallback"""
 
 
-def isocode(language, country=None):
+def isocode(language: str, country: str | None = None) -> str:
     """
     Returns a language code for the given Poedit language name.
 
@@ -229,11 +229,8 @@ def isocode(language, country=None):
     to create an xx_YY style dialect code.
 
     :param language: Language name
-    :type language: String
     :param country: Country name
-    :type country: String
     :return: ISO 639 language code
-    :rtype: String
     """
     dialect = dialects.get(language)
     if dialect:

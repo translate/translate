@@ -451,7 +451,7 @@ class tsfile(lisa.LISAfile):
         else:
             self.body = self.document.getroot()
 
-    def getsourcelanguage(self):
+    def getsourcelanguage(self) -> str:
         """
         Get the source language for this .ts file.
 
@@ -463,28 +463,25 @@ class tsfile(lisa.LISAfile):
         by the extraction tools.
 
         :return: ISO code e.g. af, fr, pt_BR
-        :rtype: String
         """
         lang = data.normalize_code(self.header.get("sourcelanguage", "en"))
         if lang == "en-us":
             return "en"
         return lang
 
-    def gettargetlanguage(self):
+    def gettargetlanguage(self) -> str:
         """
         Get the target language for this .ts file.
 
         :return: ISO code e.g. af, fr, pt_BR
-        :rtype: String
         """
         return data.normalize_code(self.header.get("language"))
 
-    def settargetlanguage(self, targetlanguage):
+    def settargetlanguage(self, targetlanguage: str) -> None:
         """
         Set the target language for this .ts file to *targetlanguage*.
 
         :param targetlanguage: ISO code e.g. af, fr, pt_BR
-        :type targetlanguage: String
         """
         if targetlanguage:
             self.header.set("language", targetlanguage)

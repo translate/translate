@@ -52,12 +52,8 @@ def parseheaderstring(input):
     return headervalues
 
 
-def tzstring():
-    """
-    Returns the timezone as a string in the format [+-]0000, eg +0200.
-
-    :rtype: str
-    """
+def tzstring() -> str:
+    """Returns the timezone as a string in the format [+-]0000, eg +0200."""
     tzoffset = time.altzone if time.daylight else time.timezone
 
     hours, minutes = time.gmtime(abs(tzoffset))[3:5]
@@ -73,13 +69,12 @@ def format_key(key: str) -> str:
     return key
 
 
-def update(existing, add=False, **kwargs):
+def update(existing: dict[str, str], add: bool = False, **kwargs) -> dict[str, str]:
     """
     Update an existing header dictionary with the values in kwargs, adding
     new values only if add is true.
 
     :return: Updated dictionary of header entries
-    :rtype: dict of strings
     """
     headerargs = {}
     fixedargs = cidict((format_key(key), value) for key, value in kwargs.items())
@@ -147,7 +142,7 @@ class poheader:
         plural_forms=None,
         report_msgid_bugs_to=None,
         **kwargs,
-    ):
+    ) -> dict[str, str]:
         """
         Create a header dictionary with useful defaults.
 
@@ -156,7 +151,6 @@ class poheader:
         or a value (datetime or string)
 
         :return: Dictionary with the header items
-        :rtype: dict of strings
         """
 
         def format_date(key, value, fallback=None):
@@ -316,21 +310,20 @@ class poheader:
             return guess_language(header.get("Language-Team"))
         return None
 
-    def settargetlanguage(self, lang):
+    def settargetlanguage(self, lang: str) -> None:
         """
         Set the target language in the header.
 
         This removes any custom Poedit headers if they exist.
 
         :param lang: the new target language code
-        :type lang: str
         """
         if isinstance(lang, str) and len(lang) > 1:
             self.updateheader(
                 add=True, Language=lang, X_Poedit_Language=None, X_Poedit_Country=None
             )
 
-    def getprojectstyle(self):
+    def getprojectstyle(self) -> str | None:
         """
         Return the project based on information in the header.
 
@@ -363,22 +356,21 @@ class poheader:
         # TODO Call some project guessing code and probably move all of the above there also
         return None
 
-    def setprojectstyle(self, project_style):
+    def setprojectstyle(self, project_style: str) -> None:
         """
         Set the project in the header.
 
         :param project_style: the new project
-        :type project_style: str
         """
         self.updateheader(add=True, X_Project_Style=project_style)
 
-    def mergeheaders(self, otherstore):
+    def mergeheaders(self, otherstore) -> None:
         """
         Merges another header with this header.
 
         This header is assumed to be the template.
 
-        :type otherstore: :class:`~translate.storage.base.TranslationStore`
+        :param otherstore: The other store to merge headers from.
         """
         newvalues = otherstore.parseheader()
         retain_list = (
@@ -395,7 +387,7 @@ class poheader:
         }
         self.updateheader(**retain)
 
-    def updatecontributor(self, name, email=None):
+    def updatecontributor(self, name: str, email: str | None = None) -> None:
         """Add contribution comments if necessary."""
         header = self.header()
         if not header:

@@ -124,12 +124,11 @@ class TradosTxtDate:
             return None
         return time.strftime(TRADOS_TIMEFORMAT, self._time)
 
-    def set_timestring(self, timestring):
+    def set_timestring(self, timestring: str) -> None:
         """
         Set the time_struct object using a Trados time formatted string.
 
         :param timestring: A Trados time string (DDMMYYYY, hh:mm:ss)
-        :type timestring: String
         """
         self._time = time.strptime(timestring, TRADOS_TIMEFORMAT)
 
@@ -139,12 +138,11 @@ class TradosTxtDate:
         """Get the time_struct object."""
         return self._time
 
-    def set_time(self, newtime):
+    def set_time(self, newtime: time.struct_time | None) -> None:
         """
         Set the time_struct object.
 
         :param newtime: a new time object
-        :type newtime: time.time_struct
         """
         if newtime and isinstance(newtime, time.struct_time):
             self._time = newtime
