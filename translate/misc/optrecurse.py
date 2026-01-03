@@ -116,7 +116,11 @@ class RecursiveOptionParser(optparse.OptionParser):
     """A specialized Option Parser for recursing through directories."""
 
     def __init__(
-        self, formats, usetemplates=False, allowmissingtemplate=False, description=None
+        self,
+        formats: dict,
+        usetemplates: bool = False,
+        allowmissingtemplate: bool = False,
+        description: str | None = None,
     ):
         """
         Construct the specialized Option Parser.
@@ -273,7 +277,7 @@ class RecursiveOptionParser(optparse.OptionParser):
                 self.remove_option(long_opt)
         self.add_option(option)
 
-    def setformats(self, formats, usetemplates):
+    def setformats(self, formats: dict, usetemplates: bool):
         """
         Sets the format options using the given format dictionary.
         :param formats: The dictionary *keys* should be:

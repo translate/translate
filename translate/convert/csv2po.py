@@ -31,7 +31,7 @@ from translate.storage import csvl10n, po
 logger = logging.getLogger(__name__)
 
 
-def replacestrings(source, *pairs):
+def replacestrings(source: str, *pairs: tuple[str, str]) -> str:
     r"""
     Use ``pairs`` of ``(original, replacement)`` to replace text found in
     ``source``.

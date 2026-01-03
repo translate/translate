@@ -69,7 +69,7 @@ def format_key(key: str) -> str:
     return key
 
 
-def update(existing: dict, add: bool = False, **kwargs) -> dict:
+def update(existing: dict[str, str], add: bool = False, **kwargs) -> dict[str, str]:
     """
     Update an existing header dictionary with the values in kwargs, adding
     new values only if add is true.
@@ -142,7 +142,7 @@ class poheader:
         plural_forms=None,
         report_msgid_bugs_to=None,
         **kwargs,
-    ) -> dict:
+    ) -> dict[str, str]:
         """
         Create a header dictionary with useful defaults.
 
@@ -323,7 +323,7 @@ class poheader:
                 add=True, Language=lang, X_Poedit_Language=None, X_Poedit_Country=None
             )
 
-    def getprojectstyle(self):
+    def getprojectstyle(self) -> str | None:
         """
         Return the project based on information in the header.
 
@@ -356,7 +356,7 @@ class poheader:
         # TODO Call some project guessing code and probably move all of the above there also
         return None
 
-    def setprojectstyle(self, project_style):
+    def setprojectstyle(self, project_style: str) -> None:
         """
         Set the project in the header.
 
@@ -364,7 +364,7 @@ class poheader:
         """
         self.updateheader(add=True, X_Project_Style=project_style)
 
-    def mergeheaders(self, otherstore):
+    def mergeheaders(self, otherstore) -> None:
         """
         Merges another header with this header.
 
@@ -385,7 +385,7 @@ class poheader:
         }
         self.updateheader(**retain)
 
-    def updatecontributor(self, name, email=None):
+    def updatecontributor(self, name: str, email: str | None = None) -> None:
         """Add contribution comments if necessary."""
         header = self.header()
         if not header:

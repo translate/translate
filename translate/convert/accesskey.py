@@ -113,7 +113,9 @@ class UnitMixer:
         return (labelentity, accesskeyentity)
 
 
-def extract(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
+def extract(
+    string: str, accesskey_marker: str = DEFAULT_ACCESSKEY_MARKER
+) -> tuple[str, str]:
     """
     Extract the label and accesskey from a label+accesskey string.
 

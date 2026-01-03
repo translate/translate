@@ -21,6 +21,8 @@ This module contains functions for identifying languages based on language
 models.
 """
 
+from __future__ import annotations
+
 from os import extsep, path
 
 from translate.lang.ngram import NGram
@@ -86,7 +88,9 @@ class LanguageIdentifier:
             result = self._lang_codes[result]
         return result
 
-    def identify_source_lang(self, instore):
+    def identify_source_lang(
+        self, instore: TranslationStore | list | tuple
+    ) -> str | None:
         """
         Identify the source language of the given translation store or
         units.
@@ -107,7 +111,9 @@ class LanguageIdentifier:
             return None
         return self.identify_lang(text)
 
-    def identify_target_lang(self, instore):
+    def identify_target_lang(
+        self, instore: TranslationStore | list | tuple
+    ) -> str | None:
         """
         Identify the target language of the given translation store or
         units.

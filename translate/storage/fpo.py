@@ -339,7 +339,7 @@ class pounit(pocommon.pounit):
         # TODO: rename to .locations
         return self.sourcecomments
 
-    def addlocation(self, location):
+    def addlocation(self, location: str) -> None:
         """
         Add a location to sourcecomments in the PO unit.
 

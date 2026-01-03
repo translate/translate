@@ -788,7 +788,7 @@ class StringElem:
         logger.debug("Could not insert between %r and %r... odd.", left, right)
         return False
 
-    def isleaf(self):
+    def isleaf(self) -> bool:
         """
         Whether or not this instance is a leaf node in the ``StringElem`` tree.
 
@@ -826,7 +826,7 @@ class StringElem:
                 f(elem)
 
     @classmethod
-    def parse(cls, pstr):
+    def parse(cls, pstr: str):
         """
         Parse an instance of this class from the start of the given string.
         This method should be implemented by any sub-class that wants to

@@ -18,8 +18,11 @@
 
 """Factory methods to convert supported input files to supported translatable files."""
 
+from __future__ import annotations
+
 import os
 import tempfile
+from typing import IO, Any
 
 # from translate.convert import prop2po, po2prop, odf2xliff, xliff2odf
 
@@ -107,7 +110,12 @@ def get_output_extensions(ext):
     return out_exts
 
 
-def convert(inputfile, template=None, options=None, convert_options=None):
+def convert(
+    inputfile: IO[Any],
+    template: IO[Any] | None = None,
+    options: dict | None = None,
+    convert_options: dict | None = None,
+) -> tuple[IO[Any], str]:
     """
     Convert the given input file to an appropriate output format, optionally
     using the given template file and further options.

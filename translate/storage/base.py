@@ -134,7 +134,7 @@ class TranslationUnit:
         if source is not None:
             self.source = source
 
-    def __eq__(self, other: object) -> bool:
+    def __eq__(self, other: TranslationUnit) -> bool:
         """
         Compares two TranslationUnits.
 
@@ -342,7 +342,10 @@ class TranslationUnit:
         return getattr(self, "notes", "")
 
     def addnote(
-        self, text: str, origin: str | None = None, position: str = "append"
+        self,
+        text: str,
+        origin: str | None = None,
+        position: Literal["append", "replace", "merge"] = "append",
     ) -> None:
         """
         Adds a note (comment).

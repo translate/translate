@@ -174,7 +174,7 @@ def unquotefromdtd(source):
     return quote.entitydecode(extracted, _DTD_NAME2CODEPOINT)
 
 
-def removeinvalidamps(name, value):
+def removeinvalidamps(name: str, value: str) -> str:
     """
     Find and remove ampersands that are not part of an entity definition.
 
@@ -633,7 +633,7 @@ class dtdfile(base.TranslationStore):
             warnings.warn(f"DTD file '{self.filename}' does not validate")
             out.truncate(0)
 
-    def _valid_store(self, content):
+    def _valid_store(self, content: bytes) -> bool:
         """
         Validate the store to determine if it is valid.
 
