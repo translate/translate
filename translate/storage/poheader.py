@@ -310,7 +310,7 @@ class poheader:
             return guess_language(header.get("Language-Team"))
         return None
 
-    def settargetlanguage(self, lang):
+    def settargetlanguage(self, lang: str) -> None:
         """
         Set the target language in the header.
 
@@ -369,6 +369,8 @@ class poheader:
         Merges another header with this header.
 
         This header is assumed to be the template.
+
+        :param otherstore: The other store to merge headers from.
         """
         newvalues = otherstore.parseheader()
         retain_list = (

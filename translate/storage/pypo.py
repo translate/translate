@@ -748,7 +748,7 @@ class pounit(pocommon.pounit):
             locations[i] = pocommon.unquote_plus(loc)
         return locations
 
-    def addlocation(self, location):
+    def addlocation(self, location: str) -> None:
         """
         Add a location to sourcecomments in the PO unit.
 
