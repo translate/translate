@@ -281,6 +281,7 @@ class RecursiveOptionParser(optparse.OptionParser):
     def setformats(self, formats: dict, usetemplates: bool):
         """
         Sets the format options using the given format dictionary.
+
         :param formats: The dictionary *keys* should be:
 
                         - Single strings (or 1-tuples) containing an
