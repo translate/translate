@@ -112,7 +112,8 @@ class LanguageIdentifier:
         return self.identify_lang(text)
 
     def identify_target_lang(
-        self, instore: TranslationStore | list[TranslationUnit] | tuple[TranslationUnit,...]
+        self,
+        instore: TranslationStore | list[TranslationUnit] | tuple[TranslationUnit, ...],
     ) -> str | None:
         """
         Identify the target language of the given translation store or

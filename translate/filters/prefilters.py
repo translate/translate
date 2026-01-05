@@ -18,14 +18,16 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable
-
 """Filters that strings can be passed through before certain tests."""
 
 import re
+from typing import TYPE_CHECKING
 
 from translate.filters import decoration
 from translate.misc import quote
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 
 def removekdecomments(str1):

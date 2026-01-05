@@ -24,7 +24,9 @@ import os
 import sys
 
 
-def get_abs_data_filename(path_parts: str | list[str], basedirs: list[str] | None = None) -> str:
+def get_abs_data_filename(
+    path_parts: str | list[str], basedirs: list[str] | None = None
+) -> str:
     """
     Get the absolute path to the given file- or directory name in the
     current running application's data directory.
