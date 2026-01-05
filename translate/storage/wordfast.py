@@ -316,9 +316,6 @@ class WordfastHeader:
 class WordfastUnit(base.MetadataTranslationUnit):
     """A Wordfast translation memory unit."""
 
-    def __init__(self, source=None):
-        super().__init__(source)
-
     def _update_timestamp(self):
         """Refresh the timestamp for the unit."""
         self._metadata_dict["date"] = WordfastTime(time.localtime()).timestring

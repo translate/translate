@@ -137,9 +137,6 @@ class CatkeysHeader:
 class CatkeysUnit(base.MetadataTranslationUnit):
     """A catkeys translation memory unit."""
 
-    def __init__(self, source=None):
-        super().__init__(source)
-
     def setmetadata(self, newdict: dict[str, str]) -> None:
         """
         Set the dictionary of values for a catkeys line.

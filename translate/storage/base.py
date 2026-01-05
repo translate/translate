@@ -24,7 +24,7 @@ import codecs
 import logging
 from io import BytesIO
 from itertools import starmap
-from typing import TYPE_CHECKING, ClassVar, Literal
+from typing import TYPE_CHECKING, Any, ClassVar, Literal
 
 from translate.lang.data import plural_tags
 from translate.misc.multistring import multistring
@@ -561,10 +561,10 @@ class MetadataTranslationUnit(TranslationUnit):
 
         :param metadata: Optional initial metadata dictionary
         """
-        self._metadata_dict: dict = metadata or {}
+        self._metadata_dict: dict[str, Any] = metadata or {}
         super().__init__(*args, **kwargs)
 
-    def getmetadata(self) -> dict:
+    def getmetadata(self) -> dict[str, Any]:
         """
         Get the dictionary of metadata/field values for this unit.
 
@@ -572,7 +572,7 @@ class MetadataTranslationUnit(TranslationUnit):
         """
         return self._metadata_dict
 
-    def setmetadata(self, newdict: dict) -> None:
+    def setmetadata(self, newdict: dict[str, Any]) -> None:
         """
         Set the dictionary of metadata/field values for this unit.
 

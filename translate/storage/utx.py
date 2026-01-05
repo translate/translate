@@ -88,9 +88,6 @@ class UtxHeader:
 class UtxUnit(base.MetadataTranslationUnit):
     """A UTX dictionary unit."""
 
-    def __init__(self, source=None):
-        super().__init__(source)
-
     def _get_field(self, key):
         if key not in self._metadata_dict:
             return None
