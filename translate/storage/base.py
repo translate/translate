@@ -552,7 +552,13 @@ class DictUnitMixin:
     """
 
     def __init__(self, *args, **kwargs):
-        """Initialize the internal dictionary."""
+        """
+        Initialize the internal dictionary.
+
+        Note: _dict is initialized before calling super().__init__() because
+        the parent class (TranslationUnit) may set properties (like source)
+        that depend on _dict being available.
+        """
         self._dict: dict[str, str] = {}
         super().__init__(*args, **kwargs)
 
