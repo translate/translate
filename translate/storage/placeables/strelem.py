@@ -51,7 +51,7 @@ class StringElem:
     renderer = None
     """An optional function that returns the Unicode representation of
     the string."""
-    sub = []
+    sub: list[str | StringElem] = []
     """The sub-elements that make up this this string."""
     has_content = True
     """Whether this string can have sub-elements."""
