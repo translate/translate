@@ -18,6 +18,10 @@
 
 """Contains the placeable that represents a terminology term."""
 
+from __future__ import annotations
+
+from typing import Any
+
 from translate.storage.placeables import StringElem, base
 
 __all__ = ("TerminologyPlaceable", "parsers")
@@ -29,9 +33,9 @@ class TerminologyPlaceable(base.Ph):
     a placeable.
     """
 
-    matchers = []
+    matchers: list[Any] = []
     """A list of matcher objects to use to identify terminology."""
-    translations = []
+    translations: list[str] = []
     """The available translations for this placeable."""
 
     def __init__(self, *args, **kwargs):

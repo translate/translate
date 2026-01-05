@@ -41,7 +41,7 @@ class RegexParseMixin(BasePlaceable):
     regex: re.Pattern[str]
 
     @classmethod
-    def parse(cls, pstr: str) -> StringElem | list[StringElem] | None:
+    def parse(cls, pstr: str) -> list[StringElem] | None:
         """
         A parser method to extract placeables from a string based on a regular
         expression. Use this function as the ``@parse()`` method of a placeable
