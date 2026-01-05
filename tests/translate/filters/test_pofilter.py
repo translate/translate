@@ -1,15 +1,23 @@
+from __future__ import annotations
+
 from io import BytesIO
+from typing import TYPE_CHECKING
 
 from translate.filters import checks, pofilter
 from translate.storage import factory, xliff
 
 from ..storage.test_base import first_translatable, headerless_len
 
+if TYPE_CHECKING:
+    from translate.storage.base import TranslationStore, TranslationUnit
+
 
 class BaseTestFilter:
     """Base class for filter tests."""
 
     filename = ""
+    translationstore: TranslationStore
+    unit: TranslationUnit
 
     def parse_text(self, filetext):
         """Helper that parses xliff file content without requiring files."""
