@@ -38,12 +38,13 @@ jobs:
         persist-credentials: false
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
+      id: setup_python
       with:
         allow-prereleases: true
         python-version: ${{ matrix.python-version }}
     - uses: astral-sh/setup-uv@681c641aba71e4a1c380be3ab5e12ad51f415867 # v7.1.6
       with:
-        cache-suffix: ${{ matrix.python-version }}
+        cache-suffix: ${{ steps.setup_python.outputs.python-version }}
     - name: Install apt dependencies
       if: matrix.os == 'ubuntu-latest'
       run: |
