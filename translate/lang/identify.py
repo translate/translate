@@ -26,6 +26,7 @@ from __future__ import annotations
 from os import extsep, path
 
 from translate.lang.ngram import NGram
+from translate.storage.base import TranslationUnit
 from translate.misc.file_discovery import get_abs_data_filename
 from translate.storage.base import TranslationStore
 
@@ -89,12 +90,11 @@ class LanguageIdentifier:
         return result
 
     def identify_source_lang(
-        self, instore: TranslationStore | list | tuple
+        self, instore: TranslationStore | list[TranslationUnit] | tuple[TranslationUnit]
     ) -> str | None:
         """
         Identify the source language of the given translation store or
         units.
-            ``TranslationUnit``s.
         :param instore: The translation store to extract source text from.
         :returns: The identified language's code or ``None`` if the language
             could not be identified.
