@@ -146,6 +146,9 @@ class CatkeysUnit(base.DictUnitMixin, base.TranslationUnit):
         """
         Set the dictionary of values for a catkeys line.
 
+        Overrides the mixin's setdict() to filter and validate field names,
+        ensuring only valid catkeys fields are stored.
+
         :param newdict: a new dictionary with catkeys line elements
         """
         # Process the input values
