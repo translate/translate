@@ -95,7 +95,7 @@ class UtxUnit(base.MetadataTranslationUnit):
             return self._metadata_dict[key]
         return ""
 
-    def _set_field(self, key, newvalue):
+    def _set_field(self, key, newvalue) -> None:
         # FIXME update the header date
         if newvalue is None:
             self._metadata_dict[key] = None
@@ -105,14 +105,14 @@ class UtxUnit(base.MetadataTranslationUnit):
     def getnotes(self, origin=None):
         return self._get_field("comment")
 
-    def addnote(self, text, origin=None, position="append"):
+    def addnote(self, text, origin=None, position="append") -> None:
         currentnote = self._get_field("comment")
         if position == "append" and currentnote:
             self._set_field("comment", f"{currentnote}\n{text}")
         else:
             self._set_field("comment", text)
 
-    def removenotes(self, origin=None):
+    def removenotes(self, origin=None) -> None:
         self._set_field("comment", "")
 
     @property
@@ -120,7 +120,7 @@ class UtxUnit(base.MetadataTranslationUnit):
         return self._get_field("src")
 
     @source.setter
-    def source(self, source):
+    def source(self, source) -> None:
         self._rich_source = None
         self._set_field("src", source)
 
@@ -129,16 +129,16 @@ class UtxUnit(base.MetadataTranslationUnit):
         return self._get_field("tgt")
 
     @target.setter
-    def target(self, target):
+    def target(self, target) -> None:
         self._rich_target = None
         self._set_field("tgt", target)
 
-    def settargetlang(self, newlang):
+    def settargetlang(self, newlang: str) -> None:
         self._metadata_dict["target-lang"] = newlang
 
     targetlang = property(None, settargetlang)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self._metadata_dict)
 
     def istranslated(self):
@@ -153,7 +153,7 @@ class UtxFile(base.TranslationStore):
     Extensions = ["utx"]
     UnitClass = UtxUnit
 
-    def __init__(self, inputfile=None, **kwargs):
+    def __init__(self, inputfile=None, **kwargs) -> None:
         """Construct an UTX dictionary, optionally reading in from inputfile."""
         super().__init__(**kwargs)
         self.filename = ""
@@ -220,16 +220,16 @@ class UtxFile(base.TranslationStore):
     def getsourcelanguage(self):
         return self._header.get("source_language")
 
-    def setsourcelanguage(self, sourcelanguage):
+    def setsourcelanguage(self, sourcelanguage) -> None:
         self._header["source_language"] = sourcelanguage
 
     def gettargetlanguage(self):
         return self._header.get("target_language")
 
-    def settargetlanguage(self, targetlanguage):
+    def settargetlanguage(self, targetlanguage) -> None:
         self._header["target_language"] = targetlanguage
 
-    def parse(self, input):
+    def parse(self, input) -> None:
         """Parsese the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name
@@ -254,7 +254,7 @@ class UtxFile(base.TranslationStore):
             newunit.metadata = line
             self.addunit(newunit)
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         # Check first if there is at least one translated unit
         translated_units = [u for u in self.units if u.istranslated()]
         if not translated_units:

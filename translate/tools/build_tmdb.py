@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 
 class Builder:
-    def __init__(self, tmdbfile, source_lang, target_lang, filenames):
+    def __init__(self, tmdbfile, source_lang, target_lang, filenames) -> None:
         self.tmdb = tmdb.TMDB(tmdbfile)
         self.source_lang = source_lang
         self.target_lang = target_lang
@@ -43,7 +43,7 @@ class Builder:
                 self.handlefile(filename)
         self.tmdb.connection.commit()
 
-    def handlefile(self, filename):
+    def handlefile(self, filename) -> None:
         try:
             store = factory.getobject(filename)
         except Exception:
@@ -56,7 +56,7 @@ class Builder:
             print(e)
         print("File added:", filename)
 
-    def handlefiles(self, dirname, filenames):
+    def handlefiles(self, dirname, filenames) -> None:
         for filename in filenames:
             pathname = os.path.join(dirname, filename)
             if os.path.isdir(pathname):
@@ -64,7 +64,7 @@ class Builder:
             else:
                 self.handlefile(pathname)
 
-    def handledir(self, dirname):
+    def handledir(self, dirname) -> None:
         name = os.path.basename(dirname)
         if name in {"CVS", ".svn", "_darcs", ".git", ".hg", ".bzr"}:
             return
@@ -72,7 +72,7 @@ class Builder:
         self.handlefiles(dirname, entries)
 
 
-def main():
+def main() -> None:
     parser = ArgumentParser()
     parser.add_argument(
         "-d",

@@ -1,7 +1,7 @@
 from translate.lang import af, factory
 
 
-def test_sentences():
+def test_sentences() -> None:
     """Tests basic functionality of sentence segmentation."""
     language = factory.getlanguage("af")
     sentences = language.sentences("Normal case. Nothing interesting.")
@@ -16,7 +16,7 @@ def test_sentences():
     assert len(sentences) == 3
 
 
-def test_capsstart():
+def test_capsstart() -> None:
     """Tests that the indefinite article ('n) doesn't confuse startcaps()."""
     language = factory.getlanguage("af")
     assert not language.capsstart("")
@@ -30,7 +30,7 @@ def test_capsstart():
     assert language.capsstart("\n\n'n Koei kraam koeie")
 
 
-def test_transliterate_cyrillic():
+def test_transliterate_cyrillic() -> None:
     def trans(text):
         print((f"Orig: {text}").encode())
         trans = af.tranliterate_cyrillic(text)

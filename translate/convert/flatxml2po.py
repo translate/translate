@@ -43,7 +43,7 @@ class flatxml2po:
         value="str",
         key="key",
         ns=None,
-    ):
+    ) -> None:
         """Initialize the converter."""
         self.inputfile = inputfile
         self.outputfile = outputfile
@@ -57,12 +57,12 @@ class flatxml2po:
         """Convert a source format unit to a target format unit."""
         return self.TargetUnitClass.buildfromunit(unit)
 
-    def convert_store(self):
+    def convert_store(self) -> None:
         """Convert a single source file to a target format file."""
         for source_unit in self.source_store.units:
             self.target_store.addunit(self.convert_unit(source_unit))
 
-    def run(self):
+    def run(self) -> int:
         """Run the converter."""
         self.convert_store()
 
@@ -91,7 +91,7 @@ formats = {
 }
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     parser = convert.ConvertOptionParser(formats, description=__doc__)
 
     parser.add_option(

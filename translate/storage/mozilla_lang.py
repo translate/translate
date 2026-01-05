@@ -39,13 +39,13 @@ def strip_ok(string):
 class LangUnit(base.TranslationUnit):
     """This is just a normal unit with a weird string output."""
 
-    def __init__(self, source=None):
+    def __init__(self, source=None) -> None:
         self.locations = []
         self.eol = "\n"
         self.rawtarget = None
         super().__init__(source)
 
-    def __str__(self):
+    def __str__(self) -> str:
         target = self.target if self.istranslated() else self.source
         if self.source == self.target:
             target = f"{self.target} {{ok}}"
@@ -68,7 +68,7 @@ class LangUnit(base.TranslationUnit):
     def getlocations(self):
         return self.locations
 
-    def addlocation(self, location):
+    def addlocation(self, location) -> None:
         self.locations.append(location)
 
 
@@ -80,7 +80,7 @@ class LangStore(txt.TxtFile):
     Name = "Mozilla .lang"
     Extensions = ["lang"]
 
-    def __init__(self, inputfile=None, mark_active=False, **kwargs):
+    def __init__(self, inputfile=None, mark_active=False, **kwargs) -> None:
         self.is_active = False
         self.mark_active = mark_active
         self._headers = []
@@ -88,7 +88,7 @@ class LangStore(txt.TxtFile):
         self.location_root = getattr(inputfile, "location_root", "")
         super().__init__(inputfile, **kwargs)
 
-    def parse(self, lines):
+    def parse(self, lines) -> None:
         source_unit = None
         comment = ""
         if not isinstance(lines, list):
@@ -146,7 +146,7 @@ class LangStore(txt.TxtFile):
                     source_unit.addnote(comment[:-1], "developer")
                     comment = ""
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         eol = self.eol.encode("utf-8")
         if self.is_active or self.mark_active:
             out.write(b"## active ##")

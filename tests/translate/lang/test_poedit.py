@@ -1,7 +1,7 @@
 from translate.lang.poedit import isocode
 
 
-def test_isocode():
+def test_isocode() -> None:
     """Test the isocode function."""
     # Standard lookup
     assert isocode("French") == "fr"

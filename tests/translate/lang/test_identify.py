@@ -159,21 +159,21 @@ zusammen.
 
 
 class TestLanguageIdentifier:
-    def setup_class(self):
+    def setup_class(self) -> None:
         self.langident = LanguageIdentifier()
 
-    def test_identify_lang(self):
+    def test_identify_lang(self) -> None:
         assert self.langident.identify_lang("") is None
         assert self.langident.identify_lang(TEXT) == "de"
 
-    def test_identify_store(self):
+    def test_identify_store(self) -> None:
         langlist = [TranslationUnit(string) for string in TEXT_LIST]
         assert self.langident.identify_source_lang(langlist) == "de"
         for i, unit in enumerate(langlist):
             unit.target = TEXT_LIST[i]
         assert self.langident.identify_target_lang(langlist) == "de"
 
-    def test_bad_init_data(self):
+    def test_bad_init_data(self) -> None:
         """Test __init__ with bad conf files and data dirs."""
         with raises(ValueError):
             LanguageIdentifier(model_dir="missing")

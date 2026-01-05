@@ -31,7 +31,7 @@ from translate.misc import quote
 from translate.storage import dtd, po
 
 
-def is_css_entity(entity):
+def is_css_entity(entity) -> bool:
     """
     Says if the given entity is likely to contain CSS that should not be
     translated.
@@ -45,14 +45,14 @@ def is_css_entity(entity):
 
 
 class dtd2po:
-    def __init__(self, blankmsgstr=False, duplicatestyle="msgctxt"):
+    def __init__(self, blankmsgstr=False, duplicatestyle="msgctxt") -> None:
         self.currentgroup = None
         self.blankmsgstr = blankmsgstr
         self.duplicatestyle = duplicatestyle
         self.mixedentities = {}
         self.mixer = UnitMixer(dtd.labelsuffixes, dtd.accesskeysuffixes)
 
-    def convertcomments(self, dtd_unit, po_unit):
+    def convertcomments(self, dtd_unit, po_unit) -> None:
         entity = dtd_unit.getid()
         if len(entity) > 0:
             po_unit.addlocation(entity)
@@ -80,7 +80,7 @@ class dtd2po:
             )
 
     @staticmethod
-    def convertstrings(dtd_unit, po_unit):
+    def convertstrings(dtd_unit, po_unit) -> None:
         # extract the string, get rid of quoting
         unquoted = dtd_unit.source.replace("\r", "")
         # escape backslashes... but not if they're for a newline
@@ -284,7 +284,7 @@ class dtd2po:
 
 def convertdtd(
     inputfile, outputfile, templatefile, pot=False, duplicatestyle="msgctxt"
-):
+) -> int:
     """
     Reads in inputfile and templatefile using dtd, converts using dtd2po,
     writes to outputfile.
@@ -308,7 +308,7 @@ def convertdtd(
     return 1
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     formats = {
         "dtd": ("po", convertdtd),
         ("dtd", "dtd"): ("po", convertdtd),

@@ -35,7 +35,7 @@ msgstr "Two"
         """Helper that converts to target format string without using files."""
         return self._convert(*args, **kwargs)[1].getvalue().decode("utf-8")
 
-    def test_defaults(self):
+    def test_defaults(self) -> None:
         """Test a conversion with default values."""
         actual = self._convert_to_string(self.postring)
         expected = """<?xml version='1.0' encoding='UTF-8'?>
@@ -46,7 +46,7 @@ msgstr "Two"
 """
         assert actual == expected
 
-    def test_root_name(self):
+    def test_root_name(self) -> None:
         """Test a conversion with different root name."""
         actual = self._convert_to_string(self.postring, root="strings")
         expected = """<?xml version='1.0' encoding='UTF-8'?>
@@ -57,7 +57,7 @@ msgstr "Two"
 """
         assert actual == expected
 
-    def test_value_name(self):
+    def test_value_name(self) -> None:
         """Test a conversion with different value name."""
         actual = self._convert_to_string(self.postring, value="entry")
         expected = """<?xml version='1.0' encoding='UTF-8'?>
@@ -68,7 +68,7 @@ msgstr "Two"
 """
         assert actual == expected
 
-    def test_key(self):
+    def test_key(self) -> None:
         """Test a conversion with different key name."""
         actual = self._convert_to_string(self.postring, key="name")
         expected = """<?xml version='1.0' encoding='UTF-8'?>
@@ -79,7 +79,7 @@ msgstr "Two"
 """
         assert actual == expected
 
-    def test_default_namespace(self):
+    def test_default_namespace(self) -> None:
         """
         Test a conversion with a default namespace.
 
@@ -99,7 +99,7 @@ msgstr "Two"
 """
         assert actual == expected
 
-    def test_namespace_prefix(self):
+    def test_namespace_prefix(self) -> None:
         """Test a conversion with a namespace prefix."""
         actual = self._convert_to_string(self.postring, ns="urn:tt:test")
         expected = """<?xml version='1.0' encoding='UTF-8'?>
@@ -110,7 +110,7 @@ msgstr "Two"
 """
         assert actual == expected
 
-    def test_indent_eight(self):
+    def test_indent_eight(self) -> None:
         """Test a conversion with an indent width of 8."""
         actual = self._convert_to_string(self.postring, indent=8)
         expected = """<?xml version='1.0' encoding='UTF-8'?>
@@ -121,7 +121,7 @@ msgstr "Two"
 """
         assert actual == expected
 
-    def test_noindent(self):
+    def test_noindent(self) -> None:
         """Test a conversion with an indent width 0."""
         actual = self._convert_to_string(self.postring, indent=0)
         # no indent here...

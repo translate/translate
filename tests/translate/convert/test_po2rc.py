@@ -84,7 +84,7 @@ class TestPO2RCCommand(test_convert.TestConvertCommand):
         "--nofuzzy",
     ]
 
-    def test_convert(self):
+    def test_convert(self) -> None:
         """Tests the conversion to a po file."""
         self.create_testfile("simple.rc", RC_SOURCE)
         self.create_testfile("simple.po", POFILE)
@@ -97,7 +97,7 @@ class TestPO2RCCommand(test_convert.TestConvertCommand):
         assert rc_result.units[0].target == "Licenční dialog"
         assert rc_result.units[4].target == "Mój bardzo dobry program"
 
-    def test_convert_quotes(self):
+    def test_convert_quotes(self) -> None:
         """Tests the conversion to a po file."""
         self.create_testfile("simple.rc", RC_SOURCE)
         self.create_testfile("simple.po", POFILE_QUOTES)
@@ -111,7 +111,7 @@ class TestPO2RCCommand(test_convert.TestConvertCommand):
         assert len(rc_result.units) == 14
         assert rc_result.units[4].target == 'My "good" program'
 
-    def test_convert_comment(self):
+    def test_convert_comment(self) -> None:
         self.create_testfile(
             "simple.rc",
             """
@@ -154,7 +154,7 @@ msgstr ""
             == "This string has no translation. It will appear verbatim in the output"
         )
 
-    def test_convert_comment_dos_eol(self):
+    def test_convert_comment_dos_eol(self) -> None:
         self.create_testfile(
             "simple.rc",
             b"""\r\nSTRINGTABLE\r\nBEGIN\r\n// Comment\r\nIDS_1 "Copied"\r\nEND\r\n""",
@@ -181,7 +181,7 @@ msgstr "Zkopirovano"
         assert len(rc_result.units) == 1
         assert rc_result.units[0].target == "Zkopirovano"
 
-    def test_convert_double_string(self):
+    def test_convert_double_string(self) -> None:
         self.create_testfile(
             "simple.rc",
             """
@@ -209,7 +209,7 @@ msgstr "Zkopirovano"
         assert rc_result.units[0].target == "Zkopirovano"
         assert rc_result.units[1].target == "Copied"
 
-    def test_convert_popup(self):
+    def test_convert_popup(self) -> None:
         self.create_testfile(
             "simple.rc",
             """
@@ -249,7 +249,7 @@ msgstr "&Pomoc"
         assert rc_result.units[0].target == "&File"
         assert rc_result.units[6].target == "&Pomoc"
 
-    def test_convert_discardable(self):
+    def test_convert_discardable(self) -> None:
         self.create_testfile(
             "simple.rc",
             """
@@ -282,7 +282,7 @@ msgstr "Nazdar, světe!\\n"
         assert len(rc_result.units) == 4
         assert rc_result.units[0].target == "Nazdar, světe!\n"
 
-    def test_convert_menuex(self):
+    def test_convert_menuex(self) -> None:
         rc_source = """
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
@@ -334,7 +334,7 @@ msgstr "Vypnout..."
         assert len(rc_result.units) == 4
         assert rc_result.units[3].target == "Vypnout..."
 
-    def test_convert_newlines(self):
+    def test_convert_newlines(self) -> None:
         """Tests the conversion to a po file."""
         source = """
 STRINGTABLE
@@ -371,7 +371,7 @@ msgstr "Ahoj"
             content = handle.read()
             assert content == "\n".join(expected.splitlines()).encode()
 
-    def test_convert_comment_after(self):
+    def test_convert_comment_after(self) -> None:
         source = """
 STRINGTABLE
 BEGIN
@@ -400,7 +400,7 @@ msgstr "Ahoj"
             content = handle.read()
             assert content.decode() == expected
 
-    def test_convert_block_language(self):
+    def test_convert_block_language(self) -> None:
         rc_source = """
 STRINGTABLE LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 BEGIN
@@ -434,7 +434,7 @@ msgstr "Zkopirovano"
         assert len(rc_result.units) == 1
         assert rc_result.units[0].target == "Zkopirovano"
 
-    def test_output_encoding(self):
+    def test_output_encoding(self) -> None:
         self.create_testfile("simple.rc", RC_SOURCE)
         self.create_testfile("simple.po", POFILE)
 
@@ -446,7 +446,7 @@ msgstr "Zkopirovano"
             charset_output="utf-8",
         )
 
-    def test_convert_quotes_strintable(self):
+    def test_convert_quotes_strintable(self) -> None:
         source = '''
 STRINGTABLE
 BEGIN

@@ -41,7 +41,7 @@ class TestPO2Txt:
         """Helper that converts to target format string without using files."""
         return self._convert(*args, **kwargs)[1].getvalue().decode("utf-8")
 
-    def test_basic(self):
+    def test_basic(self) -> None:
         """Test basic conversion."""
         input_string = """msgid "Heading"
 msgstr "Opskrif"
@@ -57,7 +57,7 @@ Body text"""
 Lyfteks"""
         assert expected_output == self._convert_to_string(input_string, template_string)
 
-    def test_nonascii(self):
+    def test_nonascii(self) -> None:
         """Test conversion with non-ascii text."""
         input_string = """msgid "Heading"
 msgstr "Opskrif"
@@ -73,7 +73,7 @@ File content"""
 Lêerinhoud"""
         assert expected_output == self._convert_to_string(input_string, template_string)
 
-    def test_blank_handling(self):
+    def test_blank_handling(self) -> None:
         """Check that we discard blank messages."""
         input_string = """msgid "Heading"
 msgstr "Opskrif"
@@ -90,7 +90,7 @@ Body text"""
         assert expected_output == self._convert_to_string(input_string)
         assert expected_output == self._convert_to_string(input_string, template_string)
 
-    def test_fuzzy_handling(self):
+    def test_fuzzy_handling(self) -> None:
         """Check that we handle fuzzy message correctly."""
         input_string = """#, fuzzy
 msgid "Heading"
@@ -108,7 +108,7 @@ Lyfteks"""
         assert expected_output == self._convert_to_string(input_string)
         assert expected_output == self._convert_to_string(input_string, template_string)
 
-    def test_obsolete_ignore(self):
+    def test_obsolete_ignore(self) -> None:
         """Check that we handle obsolete message by not using it."""
         input_string = """
 msgid "Heading"
@@ -129,7 +129,7 @@ Lyfteks"""
         assert expected_output == self._convert_to_string(input_string)
         assert expected_output == self._convert_to_string(input_string, template_string)
 
-    def test_header_ignore(self):
+    def test_header_ignore(self) -> None:
         """Check that we ignore headers."""
         input_string = """
 msgid "Heading"
@@ -147,7 +147,7 @@ Lyfteks"""
         assert expected_output == self._convert_to_string(input_string)
         assert expected_output == self._convert_to_string(input_string, template_string)
 
-    def test_convert_completion_below_threshold(self):
+    def test_convert_completion_below_threshold(self) -> None:
         """Check no conversion if input completion is below threshold."""
         input_string = """
 #: key
@@ -162,7 +162,7 @@ msgstr ""
         )
         assert output == expected_output
 
-    def test_convert_completion_above_threshold(self):
+    def test_convert_completion_above_threshold(self) -> None:
         """Check no conversion if input completion is above threshold."""
         input_string = """
 #: key

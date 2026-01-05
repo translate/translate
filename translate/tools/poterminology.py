@@ -83,7 +83,7 @@ class TerminologyExtractor:
         sourcelanguage="en",
         invert=False,
         stopfile=None,
-    ):
+    ) -> None:
         self.foldtitle = foldtitle
         self.ignorecase = ignorecase
         self.accelchars = accelchars
@@ -120,7 +120,7 @@ class TerminologyExtractor:
         self.units = 0
         self.glossary = {}
 
-    def parse_stopword_file(self):
+    def parse_stopword_file(self) -> None:
         actions = {
             "+": frozenset(),
             ":": frozenset(["skip"]),
@@ -187,7 +187,7 @@ class TerminologyExtractor:
         """Return stoplist frozenset for input word."""
         return self.stopwords.get(self.stopmap(word), defaultset)
 
-    def addphrases(self, words, skips, translation, partials=True):
+    def addphrases(self, words, skips, translation, partials=True) -> None:
         """Adds (sub)phrases with non-skipwords and more than one word."""
         if (
             len(words) > skips + 1
@@ -207,7 +207,7 @@ class TerminologyExtractor:
                 ):
                     self.glossary.setdefault(" ".join(part), []).append(translation)
 
-    def processunits(self, units, fullinputpath):
+    def processunits(self, units, fullinputpath) -> None:
         sourcelang = lang_factory.getlanguage(self.sourcelanguage)
         rematchignore = frozenset(("word", "phrase"))
         defaultignore = frozenset()
@@ -456,14 +456,14 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
             options.output = "pootle-terminology.pot"
         return (options, args)
 
-    def set_usage(self, usage=None):
+    def set_usage(self, usage=None) -> None:
         """Sets the usage string - if usage not given, uses getusagestring for each option."""
         if usage is None:
             self.usage = f"%prog {' '.join(self.getusagestring(option) for option in self.option_list)}\n  input directory is searched for PO files, terminology PO file is output file"
         else:
             super().set_usage(usage)
 
-    def run(self):
+    def run(self) -> None:
         """Parses the arguments, and runs recursiveprocess with the resulting options."""
         self.files = 0
         options, _args = self.parse_args()
@@ -478,7 +478,7 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
         )
         self.recursiveprocess(options)
 
-    def recursiveprocess(self, options):
+    def recursiveprocess(self, options) -> None:
         """Recurse through directories and process files."""
         if self.isrecursive(options.input, "input") and getattr(
             options, "allowrecursiveinput", True
@@ -512,13 +512,13 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
             progress_bar.report_progress(inputpath, success)
         self.outputterminology(options)
 
-    def processfile(self, fileprocessor, options, fullinputpath):
+    def processfile(self, fileprocessor, options, fullinputpath) -> None:
         """Process an individual file."""
         inputfile = self.openinputfile(options, fullinputpath)
         inputfile = factory.getobject(inputfile)
         self.extractor.processunits(inputfile.units, fullinputpath)
 
-    def outputterminology(self, options):
+    def outputterminology(self, options) -> None:
         """Saves the generated terminology glossary."""
         termfile = po.pofile()
         logger.info("scanned %d files", self.files)
@@ -537,16 +537,16 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
             termfile.serialize(fh)
 
 
-def fold_case_option(option, opt_str, value, parser):
+def fold_case_option(option, opt_str, value, parser) -> None:
     parser.values.ignorecase = False
     parser.values.foldtitle = True
 
 
-def preserve_case_option(option, opt_str, value, parser):
+def preserve_case_option(option, opt_str, value, parser) -> None:
     parser.values.ignorecase = parser.values.foldtitle = False
 
 
-def main():
+def main() -> None:
     formats = {"po": ("po", None), "pot": ("pot", None), None: ("po", None)}
     parser = TerminologyOptionParser(formats)
 

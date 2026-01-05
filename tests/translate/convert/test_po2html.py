@@ -20,14 +20,14 @@ class TestPO2Html:
         print(outputfile.getvalue())
         return outputfile.getvalue().decode("utf-8")
 
-    def test_simple(self):
+    def test_simple(self) -> None:
         """Simple po to html test."""
         htmlsource = "<p>A sentence.</p>"
         posource = """#: html:3\nmsgid "A sentence."\nmsgstr "'n Sin."\n"""
         htmlexpected = """<p>'n Sin.</p>"""
         assert htmlexpected in self.converthtml(posource, htmlsource)
 
-    def test_linebreaks(self):
+    def test_linebreaks(self) -> None:
         """
         Test that a po file can be merged into a template with linebreaks in
         it.
@@ -66,7 +66,7 @@ sin.
             posource, htmlsource
         ).replace("\n", " ")
 
-    def test_replace_substrings(self):
+    def test_replace_substrings(self) -> None:
         """Should replace substrings correctly, issue #3416."""
         htmlsource = """<!DOCTYPE html><html><head><title>sub-strings substitution</title></head><body>
 <h2>This is heading 2</h2>
@@ -79,31 +79,31 @@ sin.
 </body></html>"""
         assert htmlexpected in self.converthtml(posource, htmlsource)
 
-    def test_attribute_outside_translatable_content(self):
+    def test_attribute_outside_translatable_content(self) -> None:
         htmlsource = '<img alt="a picture"><p>A sentence.</p>'
         posource = """#: html:3\nmsgid "A sentence."\nmsgstr "'n Sin."\n#: html:1\nmsgid "a picture"\nmsgstr "n prentjie"\n"""
         htmlexpected = """<img alt="n prentjie"><p>'n Sin.</p>"""
         assert htmlexpected in self.converthtml(posource, htmlsource)
 
-    def test_attribute_within_translatable_content_not_embedded(self):
+    def test_attribute_within_translatable_content_not_embedded(self) -> None:
         htmlsource = '<p><img alt="a picture">A sentence.</p>'
         posource = """#: html:3\nmsgid "A sentence."\nmsgstr "'n Sin."\n#: html:1\nmsgid "a picture"\nmsgstr "n prentjie"\n"""
         htmlexpected = """<p><img alt="n prentjie">'n Sin.</p>"""
         assert htmlexpected in self.converthtml(posource, htmlsource)
 
-    def test_attribute_embedded_within_translatable_content(self):
+    def test_attribute_embedded_within_translatable_content(self) -> None:
         htmlsource = '<p>A sentence<img alt="a picture">.</p>'
         posource = """#: html:3\nmsgid "A sentence<img alt="a picture">."\nmsgstr "'n Sin<img alt="n prentjie">."\n"""
         htmlexpected = """<p>'n Sin<img alt="n prentjie">.</p>"""
         assert htmlexpected in self.converthtml(posource, htmlsource)
 
-    def test_attribute_without_value(self):
+    def test_attribute_without_value(self) -> None:
         htmlsource = '<ul><li><a href="logoColor.eps" download>EPS färg</a></li></ul>'
         posource = """#: html:3\nmsgid "EPS färg"\nmsgstr "EPS color"\n"""
         htmlexpected = """<li><a href="logoColor.eps" download>EPS color</a></li>"""
         assert htmlexpected in self.converthtml(posource, htmlsource)
 
-    def test_entities(self):
+    def test_entities(self) -> None:
         """Tests that entities are handled correctly."""
         htmlsource = "<p>5 less than 6</p>"
         posource = '#:html:3\nmsgid "5 less than 6"\nmsgstr "5 &lt; 6"\n'
@@ -115,7 +115,7 @@ sin.
         htmlexpected = "<p>Vis &amp; skyfies</p>"
         assert htmlexpected in self.converthtml(posource, htmlsource)
 
-    def test_utf8_non_ascii_characters(self):
+    def test_utf8_non_ascii_characters(self) -> None:
         """
         Tests that non-ASCII UTF-8 characters are handled correctly.
 
@@ -147,7 +147,7 @@ sin.
         result = self.converthtml(posource, htmlsource)
         assert htmlexpected in result
 
-    def test_custom_entities_preserved(self):
+    def test_custom_entities_preserved(self) -> None:
         """
         Tests that custom entities are preserved and not double-encoded.
 
@@ -173,14 +173,14 @@ sin.
         assert "&amp;version;" not in result
         assert "&amp;copyright;" not in result
 
-    def test_escapes(self):
+    def test_escapes(self) -> None:
         """Tests that PO escapes are correctly handled."""
         htmlsource = '<p>"leverage"</p>'
         posource = '#: html3\nmsgid "\\"leverage\\""\nmsgstr "\\"ek is dom\\""\n'
         htmlexpected = '<p>"ek is dom"</p>'
         assert htmlexpected in self.converthtml(posource, htmlsource)
 
-    def test_dir_attribute_auto_rtl(self):
+    def test_dir_attribute_auto_rtl(self) -> None:
         """Test that dir attribute is automatically set to rtl for RTL languages."""
         htmlsource = '<html lang="en" dir="ltr"><head><title>Test</title></head><body><p>Content</p></body></html>'
         posource = """#: html+html[lang]:1-1
@@ -201,7 +201,7 @@ msgstr "محتوى"
         assert 'dir="ltr"' not in result
         assert 'lang="ar"' in result
 
-    def test_dir_attribute_auto_ltr(self):
+    def test_dir_attribute_auto_ltr(self) -> None:
         """Test that dir attribute is automatically set to ltr for LTR languages."""
         htmlsource = '<html lang="ar" dir="rtl"><head><title>اختبار</title></head><body><p>محتوى</p></body></html>'
         posource = """#: html+html[lang]:1-1
@@ -222,7 +222,7 @@ msgstr "Content"
         assert 'dir="rtl"' not in result
         assert 'lang="en"' in result
 
-    def test_dir_attribute_added_when_missing(self):
+    def test_dir_attribute_added_when_missing(self) -> None:
         """Test that dir attribute is added when translating to RTL language."""
         htmlsource = '<html lang="en"><head><title>Test</title></head><body><p>Content</p></body></html>'
         posource = """#: html+html[lang]:1-1
@@ -242,7 +242,7 @@ msgstr "תוכן"
         assert 'dir="rtl"' in result
         assert 'lang="he"' in result
 
-    def test_dir_attribute_not_changed_without_lang_translation(self):
+    def test_dir_attribute_not_changed_without_lang_translation(self) -> None:
         """Test that dir attribute is not changed when lang is not translated."""
         htmlsource = '<html lang="en" dir="ltr"><head><title>Test</title></head><body><p>Content</p></body></html>'
         posource = """#: html+html.head.title:1-19
@@ -258,7 +258,7 @@ msgstr "Contenido"
         assert 'dir="ltr"' in result
         assert 'lang="en"' in result
 
-    def test_states_translated(self):
+    def test_states_translated(self) -> None:
         """Test that we use target when translated."""
         htmlsource = "<div>aaa</div>"
         posource = 'msgid "aaa"\nmsgstr "bbb"\n'
@@ -266,14 +266,14 @@ msgstr "Contenido"
         assert htmltarget in self.converthtml(posource, htmlsource)
         assert htmlsource not in self.converthtml(posource, htmlsource)
 
-    def test_states_untranslated(self):
+    def test_states_untranslated(self) -> None:
         """Test that we use source when a string is untranslated."""
         htmlsource = "<div>aaa</div>"
         posource = 'msgid "aaa"\nmsgstr ""\n'
         htmltarget = htmlsource
         assert htmltarget in self.converthtml(posource, htmlsource)
 
-    def test_states_fuzzy(self):
+    def test_states_fuzzy(self) -> None:
         """
         Test that we use source when a string is fuzzy.
 
@@ -293,7 +293,7 @@ msgstr "Contenido"
             posource, htmlsource, includefuzzy=True
         )
 
-    def test_untranslated_attributes(self):
+    def test_untranslated_attributes(self) -> None:
         """
         Verify that untranslated attributes are output as source, not
         dropped.
@@ -303,7 +303,7 @@ msgstr "Contenido"
         expected = '<meta name="keywords" content="life, the universe, everything" />'
         assert expected in self.converthtml(posource, htmlsource)
 
-    def test_button_translation(self):
+    def test_button_translation(self) -> None:
         """Test that button elements are properly translated."""
         htmlsource = "<button>Zustimmen und weiter</button>"  # codespell:ignore
         posource = '#: html:3\nmsgid "Zustimmen und weiter"\nmsgstr "Agree and continue"\n'  # codespell:ignore
@@ -324,7 +324,7 @@ msgstr "Contenido"
         )
         assert htmlexpected in self.converthtml(posource, htmlsource)
 
-    def test_lang_attribute_only_on_html_tag(self):
+    def test_lang_attribute_only_on_html_tag(self) -> None:
         """
         Test that the lang attribute is only translated on the html tag, not on other tags.
 
@@ -362,7 +362,7 @@ msgstr "Ceci est une page à propos du mot anglais <strong lang=\\"en\\">Hello</
         # Verify that <a lang="en"> is present
         assert '<a lang="en"' in result
 
-    def test_data_translate_ignore_preserved(self):
+    def test_data_translate_ignore_preserved(self) -> None:
         """Test that ignored content is preserved in po2html output."""
         # Simple case
         htmlsource = "<p>Translate this</p><p data-translate-ignore>Do not translate</p><p>Translate this too</p>"
@@ -409,7 +409,7 @@ msgstr "Traduire"
         assert '<img alt="Do not extract" data-translate-ignore />' in result
         assert "<p>Traduire</p>" in result
 
-    def test_translate_comment_directives_preserved(self):
+    def test_translate_comment_directives_preserved(self) -> None:
         """Test that translate:off/on comments are preserved and content ignored."""
         htmlsource = "<p>Translate this</p><!-- translate:off --><p>Do not translate</p><!-- translate:on --><p>Translate this too</p>"
         posource = """#: test.html
@@ -427,7 +427,7 @@ msgstr "Traduire ceci aussi"
         assert "<!-- translate:on -->" in result
         assert "<p>Traduire ceci aussi</p>" in result
 
-    def test_data_translate_ignore_with_translation_in_po(self):
+    def test_data_translate_ignore_with_translation_in_po(self) -> None:
         """Test that ignored content is not translated even if translation exists in PO file."""
         # Test with data-translate-ignore attribute
         htmlsource = "<p>Translate this</p><p data-translate-ignore>Do not translate</p><p>Translate this too</p>"
@@ -450,7 +450,7 @@ msgstr "Traduire ceci aussi"
         assert "NE PAS traduire ceci" not in result
         assert "<p>Traduire ceci aussi</p>" in result
 
-    def test_translate_comment_with_translation_in_po(self):
+    def test_translate_comment_with_translation_in_po(self) -> None:
         """Test that content between translate:off/on is not translated even if translation exists in PO file."""
         # Test with comment directives
         htmlsource = "<p>Translate this</p><!-- translate:off --><p>Do not translate</p><!-- translate:on --><p>Translate this too</p>"
@@ -473,7 +473,7 @@ msgstr "Traduire ceci aussi"
         assert "NE PAS traduire ceci" not in result
         assert "<p>Traduire ceci aussi</p>" in result
 
-    def test_meta_social_media_tags_translation(self):
+    def test_meta_social_media_tags_translation(self) -> None:
         """Test that social media meta tags are properly translated."""
         # Test Open Graph tags
         htmlsource = """<html><head>
@@ -521,7 +521,7 @@ msgstr "Une description de tweet"
             in result
         )
 
-    def test_meta_non_translatable_tags_preserved(self):
+    def test_meta_non_translatable_tags_preserved(self) -> None:
         """Test that non-translatable meta tags are preserved without translation."""
         htmlsource = """<html><head>
         <meta property="og:title" content="My Page Title">
@@ -557,7 +557,7 @@ class TestPO2HtmlCommand(test_convert.TestConvertCommand, TestPO2Html):
         "--nofuzzy",
     ]
 
-    def test_individual_files(self):
+    def test_individual_files(self) -> None:
         """
         Test the fully non-recursive case where all inputs and outputs
         (input po, template html, output html) are specified as individual
@@ -570,7 +570,7 @@ class TestPO2HtmlCommand(test_convert.TestConvertCommand, TestPO2Html):
 
         self.then_html_file_is_translated("out.html")
 
-    def test_fully_recursive(self):
+    def test_fully_recursive(self) -> None:
         """
         Test the fully recursive case where all inputs and outputs (input,
         template, output) are specified as directories.
@@ -585,7 +585,7 @@ class TestPO2HtmlCommand(test_convert.TestConvertCommand, TestPO2Html):
         # then: file2.html is not translated because there is no matching po file.
         assert not os.path.isfile(self.get_testfilename("translated/file2.html"))
 
-    def test_no_input_specified(self):
+    def test_no_input_specified(self) -> None:
         """
         Test the case where no input file or directory is specified.
         Expect failure with exit.
@@ -594,7 +594,7 @@ class TestPO2HtmlCommand(test_convert.TestConvertCommand, TestPO2Html):
         with pytest.raises(SystemExit):
             self.run_command(output="translated", template="template")
 
-    def test_no_template_specified(self, caplog):
+    def test_no_template_specified(self, caplog) -> None:
         """
         Test the case where no template file or directory is specified.
         Expect failure with log message.
@@ -603,7 +603,7 @@ class TestPO2HtmlCommand(test_convert.TestConvertCommand, TestPO2Html):
         self.run_command("translation", "translated")
         assert "Error processing:" in caplog.text
 
-    def test_no_output_specified(self, capsys):
+    def test_no_output_specified(self, capsys) -> None:
         """
         Test the case where there is a single input file and no output file
         or directory is specified. Defaults to stdout.
@@ -617,7 +617,7 @@ class TestPO2HtmlCommand(test_convert.TestConvertCommand, TestPO2Html):
         assert "<div>target1</div>" in content
         assert err == ""
 
-    def test_recursive_templates_with_single_po_file(self):
+    def test_recursive_templates_with_single_po_file(self) -> None:
         """
         Test the case where templates and outputs are directories, and the
         input is specified as an individual po file.
@@ -634,7 +634,9 @@ class TestPO2HtmlCommand(test_convert.TestConvertCommand, TestPO2Html):
         self.then_html_file_is_translated("translated/file1.html")
         self.then_html_file_is_translated("translated/subdir/file2.html")
 
-    def test_recursive_templates_with_single_po_file_and_templates_overwritten(self):
+    def test_recursive_templates_with_single_po_file_and_templates_overwritten(
+        self,
+    ) -> None:
         """
         Test the case where templates and outputs are in the same directory,
         and the input is specified as an individual po file.
@@ -651,12 +653,12 @@ class TestPO2HtmlCommand(test_convert.TestConvertCommand, TestPO2Html):
         self.then_html_file_is_translated("html/file1.html")
         self.then_html_file_is_translated("html/subdir/file2.html")
 
-    def given_html_test_file(self, filename):
+    def given_html_test_file(self, filename) -> None:
         self.create_testfile(
             filename, "<div>You are only coming through in waves</div>"
         )
 
-    def given_po_test_file(self, filename):
+    def given_po_test_file(self, filename) -> None:
         self.create_testfile(
             filename,
             """
@@ -666,7 +668,7 @@ msgstr "target1"
 """,
         )
 
-    def then_html_file_is_translated(self, filename):
+    def then_html_file_is_translated(self, filename) -> None:
         assert os.path.isfile(self.get_testfilename(filename))
         content = str(self.read_testfile(filename))
         assert "<div>target1</div>" in content

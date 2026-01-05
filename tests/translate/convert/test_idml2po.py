@@ -10,7 +10,7 @@ class TestIDML2POCommand(test_convert.TestConvertCommand):
 
     convertmodule = idml2po
 
-    def test_convert(self):
+    def test_convert(self) -> None:
         self.run_command(
             o="simple.po",
             i=os.path.join(os.path.dirname(__file__), "test.idml"),

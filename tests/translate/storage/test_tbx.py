@@ -10,7 +10,7 @@ class TestTBXUnit(test_base.TestTranslationUnit):
 class TestTBXfile(test_base.TestTranslationStore):
     StoreClass = tbx.tbxfile
 
-    def test_basic(self):
+    def test_basic(self) -> None:
         tbxfile = tbx.tbxfile()
         assert tbxfile.units == []
         tbxfile.addsourceunit("Bla")
@@ -22,7 +22,7 @@ class TestTBXfile(test_base.TestTranslationStore):
         assert newfile.findunit("Bla").source == "Bla"
         assert newfile.findunit("dit") is None
 
-    def test_source(self):
+    def test_source(self) -> None:
         tbxfile = tbx.tbxfile()
         tbxunit = tbxfile.addsourceunit("Concept")
         tbxunit.source = "Term"
@@ -31,7 +31,7 @@ class TestTBXfile(test_base.TestTranslationStore):
         assert newfile.findunit("Concept") is None
         assert newfile.findunit("Term") is not None
 
-    def test_target(self):
+    def test_target(self) -> None:
         tbxfile = tbx.tbxfile()
         tbxunit = tbxfile.addsourceunit("Concept")
         tbxunit.target = "Konsep"
@@ -39,7 +39,7 @@ class TestTBXfile(test_base.TestTranslationStore):
         print(bytes(tbxfile))
         assert newfile.findunit("Concept").target == "Konsep"
 
-    def test_setid(self):
+    def test_setid(self) -> None:
         tbxfile = tbx.tbxfile()
         tbxunit = tbxfile.addsourceunit("Concept")
         tbxunit.setid("testid")
@@ -47,7 +47,7 @@ class TestTBXfile(test_base.TestTranslationStore):
         print(bytes(tbxfile))
         assert newfile.findunit("Concept").getid() == "testid"
 
-    def test_indent(self):
+    def test_indent(self) -> None:
         tbxfile = tbx.tbxfile()
         tbxunit = tbxfile.addsourceunit("Concept")
         tbxunit.setid("testid")
@@ -74,7 +74,7 @@ class TestTBXfile(test_base.TestTranslationStore):
 """
         )
 
-    def test_descrip(self):
+    def test_descrip(self) -> None:
         tbxdata = """<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE martif PUBLIC "ISO 12200:1999A//DTD MARTIF core (DXFcdV04)//EN" "TBXcdv04.dtd">
 <martif type="TBX" xml:lang="en">
@@ -106,7 +106,7 @@ class TestTBXfile(test_base.TestTranslationStore):
             "Explanation", "Another explanation"
         )
 
-    def test_note_from(self):
+    def test_note_from(self) -> None:
         tbxdata = """<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE martif PUBLIC "ISO 12200:1999A//DTD MARTIF core (DXFcdV04)//EN" "TBXcdv04.dtd">
 <martif type="TBX" xml:lang="en">
@@ -137,7 +137,7 @@ class TestTBXfile(test_base.TestTranslationStore):
         assert unit.getnotes(origin="dev") == ""
         assert unit.getnotes() == "Translator note\nOther note"
 
-    def test_administrative_status_and_translation_needed(self):
+    def test_administrative_status_and_translation_needed(self) -> None:
         # spellchecker:off
         tbxdata = """<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE martif SYSTEM "TBXcoreStructV02.dtd">

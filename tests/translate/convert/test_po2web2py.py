@@ -14,7 +14,7 @@ class TestPO2WEB2PY:
         output_web2py = convertor.convertstore(input_po, False)
         return output_web2py.read()
 
-    def test_basic(self):
+    def test_basic(self) -> None:
         """Test a basic po to web2py conversion."""
         input_po = """#: .text
 msgid "A simple string"
@@ -28,7 +28,7 @@ msgstr "Du texte simple"
         web2py_out = self.po2web2py(input_po)
         assert web2py_out == expected_web2py
 
-    def test_unicode(self):
+    def test_unicode(self) -> None:
         """Test a po to web2py conversion with unicode."""
         input_po = """#: .text
 msgid "Foobar"
@@ -42,7 +42,7 @@ msgstr "Fúbär"
         web2py_out = self.po2web2py(input_po)
         assert web2py_out == expected_web2py
 
-    def test_ordering_serialize(self):
+    def test_ordering_serialize(self) -> None:
         """Test alphabetic ordering in po to web2py conversion."""
         input_po = """
 #: .foo
@@ -67,7 +67,7 @@ msgstr "zab"
         web2py_out = self.po2web2py(input_po)
         assert web2py_out == expected_web2py
 
-    def test_markmin(self):
+    def test_markmin(self) -> None:
         """Test removal of @markmin in po to web2py conversion."""
         input_po = """
 msgid "@markmin\x01Hello **world**!"

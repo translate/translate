@@ -41,7 +41,7 @@ class multistring(str):
         newstring.extra_strings = string[1:]
         return newstring
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__()
         if not hasattr(self, "extra_strings"):
             self.extra_strings = []

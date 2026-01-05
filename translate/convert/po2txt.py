@@ -45,7 +45,7 @@ class po2txt:
         output_threshold=None,
         encoding="utf-8",
         wrap=None,
-    ):
+    ) -> None:
         """Initialize the converter."""
         self.source_store = factory.getobject(input_file)
 
@@ -101,7 +101,7 @@ class po2txt:
                     txtresult = txtresult.replace(txtsource, txttarget)
         return txtresult
 
-    def run(self):
+    def run(self) -> bool:
         """Run the converter."""
         if not self.should_output_store:
             return False
@@ -146,7 +146,7 @@ formats = {
 }
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     parser = convert.ConvertOptionParser(
         formats, usetemplates=True, description=__doc__
     )

@@ -43,7 +43,7 @@ msgstr ""
         output_json = convertor.convertstore(includefuzzy, remove_untranslated)
         return output_json.decode("utf-8")
 
-    def test_basic(self):
+    def test_basic(self) -> None:
         """Test a basic po to json conversion."""
         json_template = """{ "text": "A simple string"}"""
         input_po = """#: .text
@@ -57,7 +57,7 @@ msgstr "Du texte simple"
         json_out = self.po2json(input_po, json_template)
         assert json_out == expected_json
 
-    def test_ordering_serialize(self):
+    def test_ordering_serialize(self) -> None:
         json_template = """{
     "foo": "foo",
     "bar": "bar",
@@ -85,7 +85,7 @@ msgstr "zab"
         json_out = self.po2json(input_po, json_template)
         assert json_out == expected_json
 
-    def test_dont_use_empty_translation(self):
+    def test_dont_use_empty_translation(self) -> None:
         """Don't use empty translation in output."""
         json_template = """{
     "foo": "foo"
@@ -102,7 +102,7 @@ msgstr ""
         json_out = self.po2json(input_po, json_template)
         assert json_out == expected_json
 
-    def test_includefuzzy_false_remove_untranslated_false(self):
+    def test_includefuzzy_false_remove_untranslated_false(self) -> None:
         """When includefuzzy is False and remove_untranslated is False."""
         expected_json = """{
     "foo": "oof",
@@ -119,7 +119,7 @@ msgstr ""
         )
         assert json_out == expected_json
 
-    def test_includefuzzy_false_remove_untranslated_true(self):
+    def test_includefuzzy_false_remove_untranslated_true(self) -> None:
         """When includefuzzy is False and remove_untranslated is True."""
         expected_json = """{
     "foo": "oof"
@@ -133,7 +133,7 @@ msgstr ""
         )
         assert json_out == expected_json
 
-    def test_includefuzzy_true_remove_untranslated_false(self):
+    def test_includefuzzy_true_remove_untranslated_false(self) -> None:
         """When includefuzzy is True and remove_untranslated is False."""
         expected_json = """{
     "foo": "oof",
@@ -150,7 +150,7 @@ msgstr ""
         )
         assert json_out == expected_json
 
-    def test_includefuzzy_true_remove_untranslated_true(self):
+    def test_includefuzzy_true_remove_untranslated_true(self) -> None:
         """When includefuzzy is True and remove_untranslated is True."""
         expected_json = """{
     "foo": "oof"

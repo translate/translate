@@ -104,7 +104,7 @@ def translate_odf(template, input_file):
     return translate_dom_trees(unit_trees, dom_trees)
 
 
-def write_odf(template, output_file, dom_trees):
+def write_odf(template, output_file, dom_trees) -> None:
     """
     Write the translated ODF package.
 
@@ -124,7 +124,7 @@ def write_odf(template, output_file, dom_trees):
         )
 
 
-def convertxliff(input_file, output_file, template):
+def convertxliff(input_file, output_file, template) -> bool:
     """Create a translated ODF using an ODF template and a XLIFF file."""
     dom_trees = translate_odf(template, input_file)
     write_odf(template, output_file, dom_trees)
@@ -132,7 +132,7 @@ def convertxliff(input_file, output_file, template):
     return True
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     formats = {
         ("xlf", "odt"): ("odt", convertxliff),  # Text
         ("xlf", "ods"): ("ods", convertxliff),  # Spreadsheet

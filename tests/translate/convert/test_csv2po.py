@@ -7,7 +7,7 @@ from ..storage.test_base import first_translatable, headerless_len
 from . import test_convert
 
 
-def test_replacestrings():
+def test_replacestrings() -> None:
     """Test the _replacestring function."""
     assert (
         csv2po.replacestrings("Test one two three", ("one", "een"), ("two", "twee"))
@@ -36,7 +36,7 @@ class TestCSV2PO:
         assert headerless_len(storage.units) == 1
         return first_translatable(storage)
 
-    def test_simpleentity(self):
+    def test_simpleentity(self) -> None:
         """Checks that a simple csv entry definition converts properly to a po entry."""
         csvheader = "location,source,target\n"
         csvsource = "intl.charset.default,ISO-8859-1,UTF-16"
@@ -50,7 +50,7 @@ class TestCSV2PO:
         assert pounit.source == "ISO-8859-1"
         assert pounit.target == "UTF-16"
 
-    def test_simpleentity_with_template(self):
+    def test_simpleentity_with_template(self) -> None:
         """Checks that a simple csv entry definition converts properly to a po entry."""
         csvsource = """location,original,translation
 intl.charset.default,ISO-8859-1,UTF-16"""
@@ -64,7 +64,7 @@ msgstr ""
         assert pounit.source == "ISO-8859-1"
         assert pounit.target == "UTF-16"
 
-    def test_newlines(self):
+    def test_newlines(self) -> None:
         """Tests multiline po entries."""
         minicsv = r""""Random comment
 with continuation","Original text","Langdradige teks
@@ -77,7 +77,7 @@ wat lank aanhou"
         print(unit.target)
         assert unit.target == "Langdradige teks\nwat lank aanhou"
 
-    def test_tabs(self):
+    def test_tabs(self) -> None:
         """Test the escaping of tabs."""
         minicsv = ',"First column\tSecond column","Twee kolomme gesky met \t"'
         pofile = self.csv2po(minicsv)
@@ -89,7 +89,7 @@ wat lank aanhou"
             != "Twee kolomme gesky met \\t"
         )
 
-    def test_quotes(self):
+    def test_quotes(self) -> None:
         """Test the escaping of quotes (and slash)."""
         minicsv = r''',"Hello ""Everyone""","Good day ""All"""
 ,"Use \"".","Gebruik \""."'''
@@ -108,7 +108,7 @@ wat lank aanhou"
 
     #        assert pofile.findunit('Use \\".').target == 'Gebruik \\".'
 
-    def test_empties(self):
+    def test_empties(self) -> None:
         """Tests that things keep working with empty entries."""
         minicsv = ",SomeSource,"
         pofile = self.csv2po(minicsv)
@@ -116,7 +116,7 @@ wat lank aanhou"
         assert pofile.findunit("SomeSource").target == ""
         assert headerless_len(pofile.units) == 1
 
-    def test_kdecomment(self):
+    def test_kdecomment(self) -> None:
         """Checks that we can merge into KDE comment entries."""
         csvsource = """location,source,target
 simple.c,Source,Target"""
@@ -131,7 +131,7 @@ msgstr ""
         assert pounit.source == "Source"
         assert pounit.target == "Target"
 
-    def test_escaped_newlines(self):
+    def test_escaped_newlines(self) -> None:
         """Tests that things keep working with escaped newlines."""
         minicsv = '"source","target"\r\n"yellow pencil","żółty\\nołówek"'
         pofile = self.csv2po(minicsv)
@@ -153,7 +153,7 @@ class TestCSV2POCommand(test_convert.TestConvertCommand, TestCSV2PO):
         "--duplicates=DUPLICATESTYLE",
     ]
 
-    def test_columnorder(self):
+    def test_columnorder(self) -> None:
         csvcontent = '"Target","Same"\n'
         self.create_testfile("test.csv", csvcontent)
 

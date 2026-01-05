@@ -26,7 +26,7 @@ DEFAULT_ACCESSKEY_MARKER = "&"
 class UnitMixer:
     """Helper to mix separately defined labels and accesskeys into one unit."""
 
-    def __init__(self, labelsuffixes, accesskeysuffixes):
+    def __init__(self, labelsuffixes, accesskeysuffixes) -> None:
         self.labelsuffixes = labelsuffixes
         self.accesskeysuffixes = accesskeysuffixes
 

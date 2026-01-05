@@ -81,7 +81,7 @@ class phppo2pypo:
         return multistring(strings)
 
 
-def convertphp2py(inputfile, outputfile, template=None):
+def convertphp2py(inputfile, outputfile, template=None) -> bool:
     """
     Converts from PHP .po format to Python .po format.
 
@@ -98,7 +98,7 @@ def convertphp2py(inputfile, outputfile, template=None):
     return True
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     """Converts PHP .po files to Python .po files."""
     formats = {"po": ("po", convertphp2py)}
     parser = convert.ConvertOptionParser(formats, description=__doc__)

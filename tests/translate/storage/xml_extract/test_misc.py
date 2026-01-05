@@ -31,7 +31,7 @@ test_tree_1 = (
 test_tree_2 = (1, [(2, []), (3, [(4, []), (5, [])]), (6, [(7, [(8, [])])])])
 
 
-def test_reduce_tree():
+def test_reduce_tree() -> None:
     def concatenate(parent_node, node, string):
         return string + node[0]
 
@@ -58,14 +58,14 @@ right_mapping = {"a": -1, "b": -2, "d": -4, "e": -5, "f": -6}
 composed_mapping = {1: -1, 2: -2, 4: -4, 5: -5}
 
 
-def test_compose_mappings():
+def test_compose_mappings() -> None:
     assert composed_mapping == misc.compose_mappings(left_mapping, right_mapping)
 
 
 # parse_tag
 
 
-def test_parse_tag():
+def test_parse_tag() -> None:
     assert misc.parse_tag("{some-urn}some-tag") == ("some-urn", "some-tag")
 
     assert misc.parse_tag(

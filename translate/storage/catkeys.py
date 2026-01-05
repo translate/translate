@@ -102,7 +102,7 @@ csv.register_dialect("catkeys", CatkeysDialect)
 class CatkeysHeader:
     """A catkeys translation memory header."""
 
-    def __init__(self, header=None):
+    def __init__(self, header=None) -> None:
         self._header_dict = {}
         if not header:
             self._header_dict = self._create_default_header()
@@ -118,7 +118,7 @@ class CatkeysHeader:
         """Create a default catkeys header."""
         return FIELDNAMES_HEADER_DEFAULTS.copy()
 
-    def settargetlanguage(self, newlang):
+    def settargetlanguage(self, newlang) -> None:
         """Set a human readable target language."""
         if not newlang or newlang not in data.languages:
             return
@@ -127,7 +127,7 @@ class CatkeysHeader:
 
     targetlanguage = property(None, settargetlanguage)
 
-    def setchecksum(self, checksum):
+    def setchecksum(self, checksum) -> None:
         """Set the checksum for the file."""
         if not checksum:
             return
@@ -163,7 +163,7 @@ class CatkeysUnit(base.MetadataTranslationUnit):
             return _unescape(self._metadata_dict[key])
         return ""
 
-    def _set_source_or_target(self, key, newvalue):
+    def _set_source_or_target(self, key, newvalue) -> None:
         if newvalue is None:
             self._metadata_dict[key] = None
         newvalue = _escape(newvalue)
@@ -175,7 +175,7 @@ class CatkeysUnit(base.MetadataTranslationUnit):
         return self._get_source_or_target("source")
 
     @source.setter
-    def source(self, source):
+    def source(self, source) -> None:
         self._rich_source = None
         self._set_source_or_target("source", source)
 
@@ -184,7 +184,7 @@ class CatkeysUnit(base.MetadataTranslationUnit):
         return self._get_source_or_target("target")
 
     @target.setter
-    def target(self, target):
+    def target(self, target) -> None:
         self._rich_target = None
         self._set_source_or_target("target", target)
 
@@ -196,7 +196,7 @@ class CatkeysUnit(base.MetadataTranslationUnit):
     def getcontext(self):
         return self._metadata_dict.get("context", "")
 
-    def setcontext(self, context):
+    def setcontext(self, context) -> None:
         self._metadata_dict["context"] = context
 
     def getid(self):
@@ -209,16 +209,16 @@ class CatkeysUnit(base.MetadataTranslationUnit):
             id = f"{context}\04{id}"
         return id
 
-    def markfuzzy(self, present=True):
+    def markfuzzy(self, present=True) -> None:
         if present:
             self.target = ""
 
-    def settargetlang(self, newlang):
+    def settargetlang(self, newlang) -> None:
         self._metadata_dict["target-lang"] = newlang
 
     targetlang = property(None, settargetlang)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self._metadata_dict)
 
     def istranslated(self):
@@ -226,7 +226,9 @@ class CatkeysUnit(base.MetadataTranslationUnit):
             return False
         return bool(self._metadata_dict.get("target"))
 
-    def merge(self, otherunit, overwrite=False, comments=True, authoritative=False):
+    def merge(
+        self, otherunit, overwrite=False, comments=True, authoritative=False
+    ) -> None:
         """Do basic format agnostic merging."""
         # We can't go fuzzy, so just do nothing
         if (
@@ -247,7 +249,7 @@ class CatkeysFile(base.TranslationStore):
     Extensions = ["catkeys"]
     UnitClass = CatkeysUnit
 
-    def __init__(self, inputfile=None, **kwargs):
+    def __init__(self, inputfile=None, **kwargs) -> None:
         """Construct a catkeys store, optionally reading in from inputfile."""
         super().__init__(**kwargs)
         self.filename = ""
@@ -255,10 +257,10 @@ class CatkeysFile(base.TranslationStore):
         if inputfile is not None:
             self.parse(inputfile)
 
-    def settargetlanguage(self, newlang):
+    def settargetlanguage(self, newlang) -> None:
         self.header.settargetlanguage(newlang)
 
-    def parse(self, input):
+    def parse(self, input) -> None:
         """Parse the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name
@@ -287,7 +289,7 @@ class CatkeysFile(base.TranslationStore):
             newunit.metadata = line
             self.addunit(newunit)
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         output = StringIO()
         writer = csv.DictWriter(output, FIELDNAMES, dialect="catkeys")
         # Calculate/update fingerprint

@@ -65,7 +65,7 @@ flavours = {
 class TxtUnit(base.TranslationUnit):
     """This class represents a block of text from a text file."""
 
-    def __init__(self, source="", **kwargs):
+    def __init__(self, source="", **kwargs) -> None:
         """Construct the txtunit."""
         super().__init__(source)
         # Note that source and target are equivalent for monolingual units.
@@ -74,7 +74,7 @@ class TxtUnit(base.TranslationUnit):
         self.posttext = ""
         self.location = []
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Convert a txt unit to a string."""
         return f"{self.pretext}{self.source}{self.posttext}"
 
@@ -84,12 +84,12 @@ class TxtUnit(base.TranslationUnit):
         return self.source
 
     @target.setter
-    def target(self, target):
+    def target(self, target) -> None:
         """Sets the definition to the quoted value of target."""
         self._rich_target = None
         self.source = target
 
-    def addlocation(self, location):
+    def addlocation(self, location) -> None:
         self.location.append(location)
 
     def getlocations(self):
@@ -101,7 +101,9 @@ class TxtFile(base.TranslationStore):
 
     UnitClass = TxtUnit
 
-    def __init__(self, inputfile=None, flavour=None, no_segmentation=False, **kwargs):
+    def __init__(
+        self, inputfile=None, flavour=None, no_segmentation=False, **kwargs
+    ) -> None:
         super().__init__(**kwargs)
         self.filename = getattr(inputfile, "name", "")
         self.flavour = flavours.get(flavour, [])
@@ -110,7 +112,7 @@ class TxtFile(base.TranslationStore):
             txtsrc = inputfile.readlines()
             self.parse(txtsrc)
 
-    def parse(self, lines):
+    def parse(self, lines) -> None:
         """Read in text lines and create txtunits from the blocks of text."""
         if self.no_segmentation:
             self.addsourceunit("".join(line.decode(self.encoding) for line in lines))
@@ -151,7 +153,7 @@ class TxtFile(base.TranslationStore):
             unit = self.addsourceunit("\n".join(block))
             unit.addlocation(f"{self.filename}:{current_line}")
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         for idx, unit in enumerate(self.units):
             if idx > 0:
                 out.write(b"\n\n")

@@ -117,7 +117,7 @@ def _guess_extension(storefile):
     return extension
 
 
-def _get_dummy_name(storefile):
+def _get_dummy_name(storefile) -> str:
     """
     Provides a dummy name for a file object without a name attribute, by
     guessing the file type.

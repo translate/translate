@@ -35,12 +35,12 @@ html.parser.piclose = re.compile(r"\?>")
 class htmlunit(base.TranslationUnit):
     """A unit of translatable/localisable HTML content."""
 
-    def __init__(self, source=None):
+    def __init__(self, source=None) -> None:
         super().__init__(source)
         self.locations = []
         self._context = ""
 
-    def addlocation(self, location):
+    def addlocation(self, location) -> None:
         self.locations.append(location)
 
     def getlocations(self):
@@ -51,7 +51,7 @@ class htmlunit(base.TranslationUnit):
         """Get the message context."""
         return self._context
 
-    def setcontext(self, context):
+    def setcontext(self, context) -> None:
         """Set the message context."""
         self._context = context or ""
 
@@ -161,7 +161,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         re.VERBOSE | re.IGNORECASE,
     )
 
-    def __init__(self, inputfile=None, callback=None):
+    def __init__(self, inputfile=None, callback=None) -> None:
         super().__init__(convert_charrefs=False)
         base.TranslationStore.__init__(self)
 
@@ -215,7 +215,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         self.guess_encoding(htmlsrc)
         return htmlsrc.decode(self.encoding)
 
-    def parse(self, htmlsrc):
+    def parse(self, htmlsrc) -> None:
         htmlsrc = self.do_encoding(htmlsrc)
         self.feed(htmlsrc)
 
@@ -223,7 +223,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         """Check if we're currently in an ignored section."""
         return self.ignore_depth > 0 or self.comment_ignore
 
-    def begin_translation_unit(self):
+    def begin_translation_unit(self) -> None:
         # at the start of a translation unit:
         # this interrupts any translation unit in progress, so process the queue
         # and prepare for the new.
@@ -231,14 +231,14 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         self.tu_content = []
         self.tu_location = f"{self.filename}+{'.'.join(self.tag_path)}:{self.getpos()[0]}-{self.getpos()[1] + 1}"
 
-    def end_translation_unit(self):
+    def end_translation_unit(self) -> None:
         # at the end of a translation unit:
         # process the queue and reset state.
         self.emit_translation_unit()
         self.tu_content = []
         self.tu_location = None
 
-    def append_markup(self, markup):
+    def append_markup(self, markup) -> None:
         # if within a translation unit: add to the queue to be processed later.
         # otherwise handle immediately.
         if self.tu_location:
@@ -247,7 +247,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             self.emit_attribute_translation_units(markup)
             self.filesrc += markup["html_content"]
 
-    def emit_translation_unit(self):
+    def emit_translation_unit(self) -> None:
         # If we're in an ignored section, just output the raw content
         if self.is_extraction_ignored():
             for markup in self.tu_content:
@@ -447,7 +447,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             }
         return None
 
-    def emit_attribute_translation_units(self, markup):
+    def emit_attribute_translation_units(self, markup) -> None:
         if "attribute_tus" in markup:
             for tu in markup["attribute_tus"]:
                 # Attribute context: prefer explicit translate_context; otherwise use context_hint only if needed
@@ -534,7 +534,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         return result
 
     @staticmethod
-    def create_start_tag(tag, attrs=None, startend=False):
+    def create_start_tag(tag, attrs=None, startend=False) -> str:
         attr_strings = []
         attrs = attrs or []
         for attrname, attrvalue in attrs:
@@ -544,7 +544,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 attr_strings.append(f' {attrname}="{attrvalue}"')
         return f"<{tag}{''.join(attr_strings)}{' /' if startend else ''}>"
 
-    def auto_close_empty_element(self):
+    def auto_close_empty_element(self) -> None:
         if self.tag_path and self.tag_path[-1] in self.EMPTY_HTML_ELEMENTS:
             self.tag_path.pop()
 
@@ -558,7 +558,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
     # From here on below, follows the methods of the HTMLParser
 
-    def handle_starttag(self, tag, attrs):
+    def handle_starttag(self, tag, attrs) -> None:
         self.auto_close_empty_element()
         self.tag_path.append(tag)
 
@@ -644,7 +644,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
         self.append_markup(markup)
 
-    def handle_endtag(self, tag):
+    def handle_endtag(self, tag) -> None:
         try:
             popped = self.tag_path.pop()
         except IndexError:
@@ -684,7 +684,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 if self._ancestor_id_label_stack:
                     self._ancestor_id_label_stack.pop()
 
-    def handle_startendtag(self, tag, attrs):
+    def handle_startendtag(self, tag, attrs) -> None:
         self.auto_close_empty_element()
         self.tag_path.append(tag)
 
@@ -787,7 +787,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 if self._ancestor_id_label_stack:
                     self._ancestor_id_label_stack.pop()
 
-    def _register_unit_for_disambiguation(self, unit, source, context_hint):
+    def _register_unit_for_disambiguation(self, unit, source, context_hint) -> None:
         bucket = self._units_by_source.setdefault(source, [])
         bucket.append((unit, context_hint))
         if len(bucket) == 2:
@@ -797,18 +797,18 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         elif len(bucket) > 2 and context_hint and not unit.getcontext():
             unit.setcontext(context_hint)
 
-    def handle_data(self, data):
+    def handle_data(self, data) -> None:
         self.auto_close_empty_element()
         self.append_markup({"type": "data", "html_content": data})
 
-    def handle_charref(self, name):
+    def handle_charref(self, name) -> None:
         """Handle entries in the form &#NNNN; e.g. &#8417;."""
         if name.lower().startswith("x"):
             self.handle_data(chr(int(name[1:], 16)))
         else:
             self.handle_data(chr(int(name)))
 
-    def handle_entityref(self, name):
+    def handle_entityref(self, name) -> None:
         """Handle named entities of the form &aaaa; e.g. &rsquo;."""
         converted = html5.get(f"{name};")
         if name in {"gt", "lt", "amp"} or not converted:
@@ -816,7 +816,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         else:
             self.handle_data(converted)
 
-    def handle_comment(self, data):
+    def handle_comment(self, data) -> None:
         self.auto_close_empty_element()
 
         # Check for translate:off and translate:on directives
@@ -830,15 +830,15 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             {"type": "comment", "html_content": f"<!--{data}-->", "note": data}
         )
 
-    def handle_decl(self, decl):
+    def handle_decl(self, decl) -> None:
         self.auto_close_empty_element()
         self.append_markup({"type": "decl", "html_content": f"<!{decl}>"})
 
-    def handle_pi(self, data):
+    def handle_pi(self, data) -> None:
         self.auto_close_empty_element()
         self.append_markup({"type": "pi", "html_content": f"<?{data}?>"})
 
-    def unknown_decl(self, data):
+    def unknown_decl(self, data) -> None:
         self.auto_close_empty_element()
         self.append_markup({"type": "cdecl", "html_content": f"<![{data}]>"})
 

@@ -42,12 +42,12 @@ class BaseTestFilter:
         checkfilter = pofilter.pocheckfilter(options, checkerclasses, checkerconfig)
         return checkfilter.filterfile(translationstore)
 
-    def test_simplepass(self):
+    def test_simplepass(self) -> None:
         """Checks that an obviously correct string passes."""
         filter_result = self.filter(self.translationstore)
         assert headerless_len(filter_result.units) == 0
 
-    def test_simplefail(self):
+    def test_simplefail(self) -> None:
         """Checks that an obviously wrong string fails."""
         self.unit.target = "REST"
         filter_result = self.filter(self.translationstore)
@@ -55,14 +55,14 @@ class BaseTestFilter:
         print(filter_result.units)
         assert "startcaps" in first_translatable(filter_result).geterrors()
 
-    def test_variables_across_lines(self):
+    def test_variables_across_lines(self) -> None:
         """Test that variables can span lines and still fail/pass."""
         self.unit.source = '"At &timeBombURL."\n"label;."'
         self.unit.target = '"Tydens &tydBombURL."\n"etiket;."'
         filter_result = self.filter(self.translationstore)
         assert headerless_len(filter_result.units) == 0
 
-    def test_ignore_if_already_marked(self):
+    def test_ignore_if_already_marked(self) -> None:
         """
         Check that we don't add another failing marker if the message is
         already marked as failed.
@@ -84,7 +84,7 @@ class BaseTestFilter:
         assert len(errors) == 1
         assert "untranslated" in errors
 
-    def test_non_existent_check(self):
+    def test_non_existent_check(self) -> None:
         """Check that we report an error if a user tries to run a non-existent test."""
         filter_result = self.filter(
             self.translationstore, cmdlineoptions=["-t nonexistent"]
@@ -93,13 +93,13 @@ class BaseTestFilter:
         # not find filter  nonexistent
         assert headerless_len(filter_result.units) == 0
 
-    def test_list_all_tests(self):
+    def test_list_all_tests(self) -> None:
         """Lists all available tests."""
         filter_result = self.filter(self.translationstore, cmdlineoptions=["-l"])
         # TODO again not sure how to check the stderror output
         assert headerless_len(filter_result.units) == 0
 
-    def test_test_against_fuzzy(self):
+    def test_test_against_fuzzy(self) -> None:
         """Test whether to run tests against fuzzy translations."""
         self.unit.markfuzzy()
 
@@ -119,7 +119,7 @@ class BaseTestFilter:
         filter_result = self.filter(self.translationstore, cmdlineoptions=["--nofuzzy"])
         assert headerless_len(filter_result.units) == 0
 
-    def test_test_against_review(self):
+    def test_test_against_review(self) -> None:
         """Test whether to run tests against translations marked for review."""
         self.unit.markreviewneeded()
         filter_result = self.filter(self.translationstore, cmdlineoptions=["--review"])
@@ -140,7 +140,7 @@ class BaseTestFilter:
         )
         assert headerless_len(filter_result.units) == 0
 
-    def test_isfuzzy(self):
+    def test_isfuzzy(self) -> None:
         """Tests the extraction of items marked fuzzy."""
         self.unit.markfuzzy()
 
@@ -155,7 +155,7 @@ class BaseTestFilter:
         )
         assert headerless_len(filter_result.units) == 0
 
-    def test_isreview(self):
+    def test_isreview(self) -> None:
         """Tests the extraction of items marked review."""
         filter_result = self.filter(
             self.translationstore, cmdlineoptions=["--test=isreview"]
@@ -168,7 +168,7 @@ class BaseTestFilter:
         )
         assert first_translatable(filter_result).isreview()
 
-    def test_notes(self):
+    def test_notes(self) -> None:
         """Tests the optional adding of notes."""
         # let's make sure we trigger the 'long' and/or 'doubleword' test
         self.unit.target = "asdf asdf asdf asdf asdf asdf asdf"
@@ -186,7 +186,7 @@ class BaseTestFilter:
         assert headerless_len(filter_result.units) == 1
         assert len(first_translatable(filter_result).geterrors()) == 0
 
-    def test_unicode(self):
+    def test_unicode(self) -> None:
         """
         Tests that we can handle UTF-8 encoded characters when there is no
         known header specified encoding.
@@ -196,7 +196,7 @@ class BaseTestFilter:
         filter_result = self.filter(self.translationstore)
         assert headerless_len(filter_result.units) == 0
 
-    def test_preconditions(self):
+    def test_preconditions(self) -> None:
         """Tests that the preconditions work correctly."""
         self.unit.source = "File"
         self.unit.target = ""
@@ -213,11 +213,11 @@ class TestPOFilter(BaseTestFilter):
     filetext = '#: test.c\nmsgid "test"\nmsgstr "rest"\n'
     filename = "test.po"
 
-    def setup_method(self, method):
+    def setup_method(self, method) -> None:
         self.translationstore = self.parse_text(self.filetext)
         self.unit = first_translatable(self.translationstore)
 
-    def test_msgid_comments(self):
+    def test_msgid_comments(self) -> None:
         """Tests that msgid comments don't feature anywhere."""
         posource = """
 msgid "_: Capital.  ACRONYM. (msgid) comment 3. %d Extra sentence.\\n"
@@ -247,7 +247,7 @@ class TestXliffFilter(BaseTestFilter):
 </xliff>"""
     filename = "test.xlf"
 
-    def set_store_review(self, review=True):
+    def set_store_review(self, review=True) -> None:
         self.filetext = """<?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
 <file datatype="po" original="example.po" source-language="en-US">
@@ -263,7 +263,7 @@ class TestXliffFilter(BaseTestFilter):
         self.translationstore = self.parse_text(self.filetext)
         self.unit = first_translatable(self.translationstore)
 
-    def setup_method(self, method):
+    def setup_method(self, method) -> None:
         self.translationstore = self.parse_text(self.filetext)
         self.unit = first_translatable(self.translationstore)
 
@@ -289,27 +289,27 @@ class TestTMXFilter(BaseTestFilter):
 </tmx>"""
     filename = "test.tmx"
 
-    def setup_method(self, method):
+    def setup_method(self, method) -> None:
         self.translationstore = self.parse_text(self.filetext)
         self.unit = first_translatable(self.translationstore)
 
-    def test_test_against_fuzzy(self):
+    def test_test_against_fuzzy(self) -> None:
         """TMX doesn't support fuzzy."""
 
-    def test_test_against_review(self):
+    def test_test_against_review(self) -> None:
         """TMX doesn't support review."""
 
-    def test_isfuzzy(self):
+    def test_isfuzzy(self) -> None:
         """TMX doesn't support fuzzy."""
 
-    def test_isreview(self):
+    def test_isreview(self) -> None:
         """TMX doesn't support review."""
 
 
 class TestRomanianPOFilter(TestPOFilter):
     """Test class for po-specific Romanian tests."""
 
-    def test_romanian_cedillas(self):
+    def test_romanian_cedillas(self) -> None:
         """Test the Romanian cedillas check."""
         posource = """
 msgid "cow"
@@ -335,7 +335,7 @@ msgstr "blaSbla"
         assert len(errors) == 0
         assert "cedillas" not in errors
 
-    def test_romanian_niciun(self):
+    def test_romanian_niciun(self) -> None:
         """Test the Romanian niciun check."""
         posource = """
 msgid "cow"
@@ -361,7 +361,7 @@ msgstr "bla niciun bla"
         assert len(errors) == 0
         assert "niciun_nicio" not in errors
 
-    def test_romanian_nicio(self):
+    def test_romanian_nicio(self) -> None:
         """Test the Romanian nicio check."""
         posource = """
 msgid "cow"

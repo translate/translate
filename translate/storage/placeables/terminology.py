@@ -34,7 +34,7 @@ class TerminologyPlaceable(base.Ph):
     translations = []
     """The available translations for this placeable."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         self.translations = []
         super().__init__(*args, **kwargs)
 

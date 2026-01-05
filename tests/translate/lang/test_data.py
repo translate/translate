@@ -1,20 +1,20 @@
 from translate.lang import data
 
 
-def test_normalise_code():
+def test_normalise_code() -> None:
     """Test the normalisation of language codes."""
     assert data.normalize_code("af_ZA") == "af-za"
     assert data.normalize_code("xx@Latin") == "xx-latin"
 
 
-def test_simplify_to_common():
+def test_simplify_to_common() -> None:
     """Test language code simplification."""
     assert data.simplify_to_common("af_ZA") == "af"
     assert data.simplify_to_common("pt_PT") == "pt"
     assert data.simplify_to_common("pt_BR") == "pt_BR"
 
 
-def test_is_rtl():
+def test_is_rtl() -> None:
     """Test RTL language detection."""
     # RTL languages
     assert data.is_rtl("ar") is True

@@ -4,7 +4,7 @@ from io import BytesIO
 from translate.storage import oo
 
 
-def test_makekey():
+def test_makekey() -> None:
     """Checks the makekey function for consistency."""
     assert (
         oo.makekey(
@@ -86,7 +86,7 @@ def test_makekey():
     )
 
 
-def test_escape_help_text():
+def test_escape_help_text() -> None:
     """Check the help text escape function."""
     assert (
         oo.escape_help_text("If we don't know <tag> we don't <br> escape it")
@@ -119,7 +119,7 @@ class TestOO:
         oofile = self.ooparse(oosource)
         return bytes(oofile).decode("utf-8")
 
-    def test_simpleentry(self):
+    def test_simpleentry(self) -> None:
         """Checks that a simple oo entry is parsed correctly."""
         oosource = r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58"
         oofile = self.ooparse(oosource)
@@ -138,7 +138,7 @@ class TestOO:
         assert ol.text == "Character"
         assert str(ol) == oosource
 
-    def test_simpleentry_quickhelptest(self):
+    def test_simpleentry_quickhelptest(self) -> None:
         """Checks that a simple entry with quickhelptext is parsed correctly."""
         oosource = r"sd	source\ui\dlg\sdobjpal.src	0	imagebutton	FLTWIN_SDOBJPALETTE	BTN_SYMSIZE			16	en-US	-		Toggle Symbol Size		20051017 21:40:56"
         oofile = self.ooparse(oosource)
@@ -157,7 +157,7 @@ class TestOO:
         assert ol.quickhelptext == "Toggle Symbol Size"
         assert str(ol) == oosource
 
-    def test_simpleentry_title(self):
+    def test_simpleentry_title(self) -> None:
         """Checks that a simple entry with title text is parsed correctly."""
         oosource = r"dbaccess	source\ui\dlg\indexdialog.src	0	querybox	QUERY_SAVE_CURRENT_INDEX				0	en-US	Do you want to save the changes made to the current index?			Exit Index Design	20051017 21:40:56"
         oofile = self.ooparse(oosource)
@@ -176,14 +176,14 @@ class TestOO:
         assert ol.title == "Exit Index Design"
         assert str(ol) == oosource
 
-    def test_blankline(self):
+    def test_blankline(self) -> None:
         """Checks that a blank line is parsed correctly."""
         oosource = "\n"
         warnings.simplefilter("error")
         oofile = self.ooparse(oosource)
         assert len(oofile.units) == 0
 
-    def test_fieldlength(self):
+    def test_fieldlength(self) -> None:
         """Checks that we process the length field correctly."""
         # Since the actual field is 18 characters long and the field width in this example is 16 we're not sure if they even use this!
         oosource = r"sd	source\ui\dlg\sdobjpal.src	0	imagebutton	FLTWIN_SDOBJPALETTE	BTN_SYMSIZE			16	en-US	-		Toggle Symbol Size		20051017 21:40:56"
@@ -194,7 +194,7 @@ class TestOO:
         ol = oofile.oolines[0]
         assert int(ol.width) == 16
 
-    def test_escapes(self):
+    def test_escapes(self) -> None:
         """Checks that we escape properly."""
         oosource = r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	size *2 \\langle x \\rangle				20050924 09:13:58"
         oofile = self.ooregen(oosource)

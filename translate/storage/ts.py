@@ -36,7 +36,7 @@ class QtTsParser:
     contextancestors = dict.fromkeys(["TS"])
     messageancestors = dict.fromkeys(["TS", "context"])
 
-    def __init__(self, inputfile=None):
+    def __init__(self, inputfile=None) -> None:
         """Make a new QtTsParser, reading from the given inputfile if required."""
         self.filename = getattr(inputfile, "filename", None)
         self.knowncontextnodes = {}
@@ -55,7 +55,7 @@ class QtTsParser:
         comment=None,
         transtype=None,
         createifmissing=False,
-    ):
+    ) -> bool:
         """Adds the given translation (will create the nodes required if asked). Returns success."""
         contextnode = self.getcontextnode(contextname)
         if contextnode is None:
@@ -162,7 +162,7 @@ class QtTsParser:
         ):
             yield self.getcontextname(contextnode), self.getmessagenodes(contextnode)
 
-    def __del__(self):
+    def __del__(self) -> None:
         """Clean up the document if required."""
         if hasattr(self, "document"):
             self.document.unlink()

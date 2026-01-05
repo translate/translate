@@ -88,7 +88,7 @@ class Xliff1Unit(XliffUnit):
         S_SIGNED_OFF: (state.FINAL, state.MAX),
     }
 
-    def __init__(self, source, empty=False, **kwargs):
+    def __init__(self, source, empty=False, **kwargs) -> None:
         """Override the constructor to set xml:space="preserve"."""
         super().__init__(source, empty, **kwargs)
         if empty:
@@ -169,11 +169,11 @@ class Xliff1Unit(XliffUnit):
                 translist.append(newunit)
         return translist
 
-    def delalttrans(self, alternative):
+    def delalttrans(self, alternative) -> None:
         """Removes the supplied alternative from the list of alt-trans tags."""
         self.xmlelement.remove(alternative.xmlelement)
 
-    def addnote(self, text, origin=None, position="append"):
+    def addnote(self, text, origin=None, position="append") -> None:
         """Add a note specifically in a "note" tag."""
         if position != "append":
             self.removenotes(origin=origin)
@@ -215,14 +215,14 @@ class Xliff1Unit(XliffUnit):
     def getnotes(self, origin=None):
         return "\n".join(self._getnotelist(origin=origin))
 
-    def removenotes(self, origin=None):
+    def removenotes(self, origin=None) -> None:
         """Remove all the translator notes."""
         notes = self.xmlelement.iterdescendants(self.namespaced("note"))
         for note in notes:
             if self.correctorigin(note, origin=origin):
                 self.xmlelement.remove(note)
 
-    def adderror(self, errorname, errortext):
+    def adderror(self, errorname, errortext) -> None:
         """Adds an error message to this unit."""
         # TODO: consider factoring out: some duplication between XLIFF and TMX
         text = errorname
@@ -261,7 +261,7 @@ class Xliff1Unit(XliffUnit):
 
         return state_n
 
-    def set_state_n(self, value):
+    def set_state_n(self, value) -> None:
         if value not in self.statemap_r:
             value = self.get_state_id(value)
 
@@ -281,7 +281,7 @@ class Xliff1Unit(XliffUnit):
         """States whether this unit is approved."""
         return self.xmlelement.get("approved") == "yes"
 
-    def markapproved(self, value=True):
+    def markapproved(self, value=True) -> None:
         """Mark this unit as approved."""
         if value:
             self.xmlelement.set("approved", "yes")
@@ -292,7 +292,7 @@ class Xliff1Unit(XliffUnit):
         """States whether this unit needs to be reviewed."""
         return self.get_state_id() == self.S_NEEDS_REVIEW
 
-    def markreviewneeded(self, needsreview=True, explanation=None):
+    def markreviewneeded(self, needsreview=True, explanation=None) -> None:
         """
         Marks the unit to indicate whether it needs review.
 
@@ -313,7 +313,7 @@ class Xliff1Unit(XliffUnit):
         #         targetnode.get("state") == "needs-review-translation")
         return not self.isapproved() and bool(self.target)
 
-    def markfuzzy(self, value=True):
+    def markfuzzy(self, value=True) -> None:
         state_id = self.get_state_id()
         if value:
             self.markapproved(False)
@@ -324,7 +324,7 @@ class Xliff1Unit(XliffUnit):
             if state_id < self.S_UNREVIEWED:
                 self.set_state_n(self.S_UNREVIEWED)
 
-    def settarget(self, target, lang="xx", append=False):
+    def settarget(self, target, lang="xx", append=False) -> None:
         """Sets the target string to the given value."""
         super().settarget(target, lang, append)
         if target:
@@ -342,12 +342,12 @@ class Xliff1Unit(XliffUnit):
         value = self.xmlelement.get("translate")
         return not value or value.lower() != "no"
 
-    def marktranslated(self):
+    def marktranslated(self) -> None:
         state_id = self.get_state_id()
         if state_id < self.S_UNREVIEWED:
             self.set_state_n(self.S_UNREVIEWED)
 
-    def setid(self, id):
+    def setid(self, id) -> None:
         # sanitize id in case ID_SEPARATOR is present
         self.xmlelement.set("id", id.replace(ID_SEPARATOR, ID_SEPARATOR_SAFE))
 
@@ -368,7 +368,7 @@ class Xliff1Unit(XliffUnit):
         )
         return uid
 
-    def addlocation(self, location):
+    def addlocation(self, location) -> None:
         if ":" in location:
             sourcefile, linenumber = location.rsplit(":", 1)
             contexts = [("sourcefile", sourcefile), ("linenumber", linenumber)]
@@ -389,7 +389,7 @@ class Xliff1Unit(XliffUnit):
 
         return locations
 
-    def createcontextgroup(self, name, contexts=None, purpose=None):
+    def createcontextgroup(self, name, contexts=None, purpose=None) -> None:
         """
         Add the context group to the trans-unit with contexts a list with
         (type, text) tuples describing each context.
@@ -495,7 +495,7 @@ class Xliff1File(XliffFile):
     suggestions_in_format = True
     """xliff units have alttrans tags which can be used to store suggestions"""
 
-    def initbody(self):
+    def initbody(self) -> None:
         # detect the xliff namespace, handle both 1.1 and 1.2
         for ns in self.document.getroot().nsmap.values():
             if ns and ns.startswith(self.unversioned_namespace):
@@ -554,7 +554,7 @@ class Xliff1File(XliffFile):
         """Set the name of the given file."""
         return filenode.set("original", filename)
 
-    def setsourcelanguage(self, language):
+    def setsourcelanguage(self, language) -> None:
         if not language:
             return
         for filenode in self.document.getroot().iterchildren(self.namespaced("file")):
@@ -566,7 +566,7 @@ class Xliff1File(XliffFile):
 
     sourcelanguage = property(getsourcelanguage, setsourcelanguage)
 
-    def settargetlanguage(self, language):
+    def settargetlanguage(self, language) -> None:
         if not language:
             return
         for filenode in self.document.getroot().iterchildren(self.namespaced("file")):
@@ -612,7 +612,7 @@ class Xliff1File(XliffFile):
                 return self.getdate(filenames[0])
         return None
 
-    def removedefaultfile(self):
+    def removedefaultfile(self) -> None:
         """
         We want to remove the default file-tag as soon as possible if we
         know if still present and empty.
@@ -649,7 +649,7 @@ class Xliff1File(XliffFile):
             return None
         return etree.SubElement(filenode, self.namespaced("body"))
 
-    def addunit(self, unit, new=True):
+    def addunit(self, unit, new=True) -> None:
         parts = unit.getid().split("\x04")
         if len(parts) > 1:
             filename, unitid = parts[0], "\x04".join(parts[1:])
@@ -744,7 +744,7 @@ class Xliff1File(XliffFile):
             group.set(attr, value)
         return group
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         self.removedefaultfile()
         super().serialize(out)
 

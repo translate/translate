@@ -43,16 +43,16 @@ class TestIni2PO:
         """Helper that converts to target format string without using files."""
         return self._convert(*args, **kwargs)[1].getvalue().decode("utf-8")
 
-    def test_convert_empty_file(self):
+    def test_convert_empty_file(self) -> None:
         """Check converting empty INI returns no output."""
         assert self._convert_to_string("", success_expected=False) == ""
 
-    def test_convert_no_translation(self):
+    def test_convert_no_translation(self) -> None:
         """Check converting INI with no translatable text returns no output."""
         output = self._convert_to_string("[section]", success_expected=False)
         assert output == ""
 
-    def test_convert_simple(self):
+    def test_convert_simple(self) -> None:
         """Check the simplest case of converting a translation."""
         input_string = """[section]
 key=value
@@ -65,7 +65,7 @@ msgstr ""
         assert expected_output in output
         assert "extracted from " in output
 
-    def test_no_duplicates(self):
+    def test_no_duplicates(self) -> None:
         """Check converting drops duplicates."""
         input_string = """[section]
 key=value
@@ -80,7 +80,7 @@ msgstr ""
         output = self._convert_to_string(input_string, duplicate_style="merge")
         assert expected_output in output
 
-    def test_merge_simple(self):
+    def test_merge_simple(self) -> None:
         """Check the simplest case of merging a translation."""
         input_string = """[section]
 key=valor
@@ -96,7 +96,7 @@ msgstr "valor"
         assert expected_output in output
         assert "extracted from " in output
 
-    def test_merge_misaligned_files(self):
+    def test_merge_misaligned_files(self) -> None:
         """Check merging two files that are not aligned."""
         input_string = """[section]
 other=missing
@@ -110,7 +110,7 @@ msgstr ""
 """
         assert expected_output in self._convert_to_string(input_string, template_string)
 
-    def test_merge_blank_msgstr(self):
+    def test_merge_blank_msgstr(self) -> None:
         """Check merging two files returns output without translations."""
         input_string = """[section]
 key=valor
@@ -126,7 +126,7 @@ msgstr ""
             input_string, template_string, blank_msgstr=True
         )
 
-    def test_dialects_inno(self):
+    def test_dialects_inno(self) -> None:
         """Check that we output correctly for Inno files."""
         input_string = """[section]
 prop  =  ṽḁḽṻḝ%tṽḁḽṻḝ2%n

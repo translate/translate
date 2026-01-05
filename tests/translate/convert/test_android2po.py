@@ -13,7 +13,7 @@ class TestAndroid2PO:
         templatefile = BytesIO(template.encode()) if template else None
         return android2po._convertandroid(inputfile, templatefile)
 
-    def test_no_template_units(self):
+    def test_no_template_units(self) -> None:
         """Test that we can handle android with no template."""
         input_ = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
@@ -24,7 +24,7 @@ class TestAndroid2PO:
         assert len(poresult.units) == 2
         assert poresult.units[1].source == "Multimedia tab"
 
-    def test_template_units(self):
+    def test_template_units(self) -> None:
         """Test that we can handle android with template."""
         template = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
@@ -51,7 +51,7 @@ class TestAndroid2POCommand(test_convert.TestConvertCommand, TestAndroid2PO):
         "-t TEMPLATE, --template=TEMPLATE",
     ]
 
-    def test_convertandroid(self):
+    def test_convertandroid(self) -> None:
         content = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
 <string name="id">Multimedia tab</string>

@@ -30,7 +30,7 @@ class TestXLIFF2PO:
         print(bytes(outputpo))
         return outputpo
 
-    def test_minimal(self):
+    def test_minimal(self) -> None:
         minixlf = (
             self.xliffskeleton
             % """<trans-unit>
@@ -43,7 +43,7 @@ class TestXLIFF2PO:
         assert pofile.translate("red") == "rooi"
         assert pofile.translate("bla") is None
 
-    def test_basic(self):
+    def test_basic(self) -> None:
         headertext = """Project-Id-Version: program 2.1-branch
 Report-Msgid-Bugs-To:
 POT-Creation-Date: 2006-01-09 07:15+0100
@@ -77,7 +77,7 @@ Content-Transfer-Encoding: 8bit"""
         assert potext.index('msgstr "utshani"\n')
         assert potext.index("MIME-Version: 1.0\\n")
 
-    def test_translatorcomments(self):
+    def test_translatorcomments(self) -> None:
         """Tests translator comments."""
         minixlf = (
             self.xliffskeleton
@@ -121,7 +121,7 @@ it</note>
         potext = bytes(pofile).decode("utf-8")
         assert potext.index("# Couldn't do\n# it\n") >= 0
 
-    def test_autocomment(self):
+    def test_autocomment(self) -> None:
         """Tests automatic comments."""
         minixlf = (
             self.xliffskeleton
@@ -165,7 +165,7 @@ garbage</note>
         potext = bytes(pofile).decode("utf-8")
         assert potext.index("#. Note that this is\n#. garbage\n") >= 0
 
-    def test_locations(self):
+    def test_locations(self) -> None:
         """Tests location comments (#:)."""
         minixlf = (
             self.xliffskeleton
@@ -190,7 +190,7 @@ garbage</note>
         assert "example.c:123" in locations
         assert "place.py" in locations
 
-    def test_fuzzy(self):
+    def test_fuzzy(self) -> None:
         """Tests fuzzyness."""
         minixlf = (
             self.xliffskeleton
@@ -217,7 +217,7 @@ garbage</note>
         assert not pofile.units[2].isfuzzy()
         assert pofile.units[3].isfuzzy()
 
-    def test_plurals(self):
+    def test_plurals(self) -> None:
         """Tests fuzzyness."""
         minixlf = (
             self.xliffskeleton
@@ -259,7 +259,7 @@ class TestBasicXLIFF2PO(test_convert.TestConvertCommand, TestXLIFF2PO):
   </file>
 </xliff>"""
 
-    def test_simple_convert(self):
+    def test_simple_convert(self) -> None:
         self.create_testfile(
             "simple_convert.xlf",
             self.xliffskeleton
@@ -293,7 +293,7 @@ class TestXLIFF2POCommand(test_convert.TestConvertCommand, TestXLIFF2PO):
         assert len(pofile.units) == 1
         return pofile.units[0]
 
-    def test_preserve_filename(self):
+    def test_preserve_filename(self) -> None:
         """Ensures that the filename is preserved."""
         xliffsource = (
             self.xliffskeleton
@@ -308,7 +308,7 @@ class TestXLIFF2POCommand(test_convert.TestConvertCommand, TestXLIFF2PO):
         xlifffile.parse(xliffsource)
         assert xlifffile.filename.endswith("snippet.xlf")
 
-    def test_simple_pot(self):
+    def test_simple_pot(self) -> None:
         """Tests the simplest possible conversion to a pot file."""
         xliffsource = (
             self.xliffskeleton
@@ -324,7 +324,7 @@ class TestXLIFF2POCommand(test_convert.TestConvertCommand, TestXLIFF2PO):
         assert poelement.source == "nonsense"
         assert poelement.target == ""
 
-    def test_simple_po(self):
+    def test_simple_po(self) -> None:
         """Tests the simplest possible conversion to a po file."""
         xliffsource = (
             self.xliffskeleton
@@ -340,7 +340,7 @@ class TestXLIFF2POCommand(test_convert.TestConvertCommand, TestXLIFF2PO):
         assert poelement.source == "nonsense"
         assert poelement.target == "matlhapolosa"
 
-    def test_remove_duplicates(self):
+    def test_remove_duplicates(self) -> None:
         """Test that removing of duplicates works correctly."""
         xliffsource = (
             self.xliffskeleton

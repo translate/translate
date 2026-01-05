@@ -23,7 +23,7 @@ from translate.storage import xliff
 
 
 class XPathTree:
-    def __init__(self, unit=None):
+    def __init__(self, unit=None) -> None:
         self.unit = unit
         self.children = {}
 
@@ -73,7 +73,7 @@ def _split_xpath(xpath: str) -> list[tuple[str, int]]:
     return list(reversed(components))
 
 
-def _add_unit_to_tree(node, xpath_components, unit):
+def _add_unit_to_tree(node, xpath_components, unit) -> None:
     """
     Walk down the tree rooted a node, and follow nodes which correspond to the
     components of xpath_components. When reaching the end of xpath_components,

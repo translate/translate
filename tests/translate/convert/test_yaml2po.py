@@ -52,11 +52,11 @@ class TestYAML2PO:
         assert po_store.units[0].isheader()
         return len(po_store.units) - 1
 
-    def test_convert_empty_YAML(self):
+    def test_convert_empty_YAML(self) -> None:
         """Check converting empty YAML returns no output."""
         assert self._convert_to_string("", success_expected=False) == ""
 
-    def test_simple_output(self):
+    def test_simple_output(self) -> None:
         """Check that a simple single entry YAML converts valid PO output."""
         input_string = 'key: "Hello, World!"'
         expected_output = """
@@ -66,7 +66,7 @@ msgstr ""
 """
         assert expected_output in self._convert_to_string(input_string)
 
-    def test_simple(self):
+    def test_simple(self) -> None:
         """Check that a simple single entry YAML converts to a PO unit."""
         input_string = 'key: "Hello, World!"'
         target_store = self._convert_to_store(input_string)
@@ -75,7 +75,7 @@ msgstr ""
         assert target_unit.source == "Hello, World!"
         assert target_unit.target == ""
 
-    def test_nested(self):
+    def test_nested(self) -> None:
         """Check converting nested YAML."""
         input_string = """
 foo:
@@ -103,7 +103,7 @@ eggs: spam
         assert target_store.units[4].target == ""
 
     @pytest.mark.xfail(reason="This is invalid YAML document")
-    def test_no_duplicates(self):
+    def test_no_duplicates(self) -> None:
         """Check converting drops duplicates."""
         input_string = """
 foo: bar
@@ -115,7 +115,7 @@ foo: baz
         assert target_store.units[1].source == "baz"
         assert target_store.units[1].target == ""
 
-    def test_convert_with_template(self):
+    def test_convert_with_template(self) -> None:
         """Check converting a simple single-string YAML with newer template."""
         input_string = 'key: "Ola mundo!"'
         template_string = """key: "Hello, World!"
@@ -130,7 +130,7 @@ foo: What's up?
         assert target_store.units[2].source == "What's up?"
         assert target_store.units[2].target == ""
 
-    def test_comment_extraction(self):
+    def test_comment_extraction(self) -> None:
         """Check that YAML comments are extracted as developer notes in PO."""
         input_string = """# This is a comment for the greeting key
 # It helps translators understand the context
@@ -161,7 +161,7 @@ farewell: Goodbye!
             f"Expected comment not found in: {notes}"
         )
 
-    def test_comment_extraction_nested(self):
+    def test_comment_extraction_nested(self) -> None:
         """Check that comments on nested YAML keys are extracted."""
         input_string = """settings:
   # This is the app name

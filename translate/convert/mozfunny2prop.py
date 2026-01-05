@@ -155,7 +155,7 @@ def ini2po(
     )
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     lines = sys.stdin.readlines()
     for line in funny2prop(lines):
         sys.stdout.write(line)

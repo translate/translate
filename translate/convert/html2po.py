@@ -43,7 +43,7 @@ class html2po:
         return thetargetfile
 
     @staticmethod
-    def convertfile_inner(inputfile, outputstore, keepcomments):
+    def convertfile_inner(inputfile, outputstore, keepcomments) -> None:
         """Extract translation units from an html file and add to a pofile object."""
         htmlparser = html.htmlfile(inputfile=inputfile)
         for htmlunit in htmlparser.units:
@@ -63,7 +63,7 @@ def converthtml(
     pot=False,
     duplicatestyle="msgctxt",
     keepcomments=False,
-):
+) -> int:
     """
     Reads in stdin using fromfileclass, converts using convertorclass,
     writes to stdout.
@@ -80,7 +80,7 @@ def converthtml(
 
 
 class Html2POOptionParser(convert.ConvertOptionParser):
-    def __init__(self):
+    def __init__(self) -> None:
         formats = {
             "html": ("po", self.convert),
             "htm": ("po", self.convert),
@@ -109,7 +109,7 @@ class Html2POOptionParser(convert.ConvertOptionParser):
         duplicatestyle="msgctxt",
         multifilestyle="single",
         keepcomments=False,
-    ):
+    ) -> int:
         """Extract translation units from one html file."""
         convertor = html2po()
         if hasattr(self, "outputstore"):
@@ -124,7 +124,7 @@ class Html2POOptionParser(convert.ConvertOptionParser):
             outputstore.serialize(outputfile)
         return 1
 
-    def recursiveprocess(self, options):
+    def recursiveprocess(self, options) -> None:
         """Recurse through directories and process files. (override)."""
         if options.multifilestyle == "onefile":
             self.outputstore = po.pofile()
@@ -144,7 +144,7 @@ class Html2POOptionParser(convert.ConvertOptionParser):
             return True
         return super().isrecursive(fileoption, filepurpose=filepurpose)
 
-    def checkoutputsubdir(self, options, subdir):
+    def checkoutputsubdir(self, options, subdir) -> None:
         """
         Check if subdir under options.output needs to be created,
         creates if necessary. Do nothing if in single-output-file mode. (override).
@@ -160,7 +160,7 @@ class Html2POOptionParser(convert.ConvertOptionParser):
         return super().openoutputfile(options, fulloutputpath)
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     parser = Html2POOptionParser()
     parser.run(argv)
 

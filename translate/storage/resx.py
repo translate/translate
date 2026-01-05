@@ -61,7 +61,7 @@ class RESXUnit(lisa.LISAunit):
         return targetnode.text or ""
 
     @target.setter
-    def target(self, target):
+    def target(self, target) -> None:
         # Firstly deal with reinitialising to None or setting to identical
         # string.
         self._rich_target = None
@@ -71,7 +71,7 @@ class RESXUnit(lisa.LISAunit):
         targetnode.clear()
         safely_set_text(targetnode, target or "")
 
-    def addnote(self, text, origin=None, position="append"):
+    def addnote(self, text, origin=None, position="append") -> None:
         """Add a note specifically in the appropriate "comment" tag."""
         current_notes = self.getnotes(origin)
         self.removenotes(origin)
@@ -99,12 +99,12 @@ class RESXUnit(lisa.LISAunit):
             comments.append(notenode.text)
         return "\n".join(comments)
 
-    def removenotes(self, origin=None):
+    def removenotes(self, origin=None) -> None:
         note = self.xmlelement.find(self.namespaced("comment"))
         if note is not None:
             self.xmlelement.remove(note)
 
-    def setid(self, value):
+    def setid(self, value) -> None:
         if id is not None:
             self.xmlelement.set("name", value)
 
@@ -114,7 +114,9 @@ class RESXUnit(lisa.LISAunit):
     def getlocations(self):
         return [self.getid()]
 
-    def merge(self, otherunit, overwrite=False, comments=True, authoritative=False):
+    def merge(
+        self, otherunit, overwrite=False, comments=True, authoritative=False
+    ) -> None:
         super().merge(otherunit, overwrite, comments)
         if otherunit.isfuzzy():
             self.markfuzzy()
@@ -197,11 +199,11 @@ class RESXFile(lisa.LISAfile):
     XMLuppercaseEncoding = False
     namespace = ""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self._messagenum = 0
 
-    def initbody(self):
+    def initbody(self) -> None:
         """Initialises self.body."""
         self.namespace = self.document.getroot().nsmap.get(None, None)
         self.header = self.document.getroot()

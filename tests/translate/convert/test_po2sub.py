@@ -31,7 +31,7 @@ class TestPO2Sub:
         print(outputsub)
         return outputsub.decode("utf-8")
 
-    def test_subrip(self):
+    def test_subrip(self) -> None:
         """Test SubRip or .srt files."""
         posource = """#: 00:00:20.000-->00:00:24.400
 msgid "Altocumulus clouds occur between six thousand"

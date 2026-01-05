@@ -34,7 +34,7 @@ class po2tiki:
     TargetStoreClass = tiki.TikiStore
     TargetUnitClass = tiki.TikiUnit
 
-    def __init__(self, input_file, output_file, template_file=None):
+    def __init__(self, input_file, output_file, template_file=None) -> None:
         """Initialize the converter."""
         self.source_store = self.SourceStoreClass(input_file)
         self.output_file = output_file
@@ -58,14 +58,14 @@ class po2tiki:
             target_unit.addlocation("translated")
         return target_unit
 
-    def convert_store(self):
+    def convert_store(self) -> None:
         """Convert a single source format file to a target format file."""
         for source_unit in self.source_store.units:
             if source_unit.isblank() or source_unit.isheader():
                 continue
             self.target_store.addunit(self.convert_unit(source_unit))
 
-    def run(self):
+    def run(self) -> int:
         """Run the converter."""
         if self.source_store.isempty():
             return 0
@@ -85,7 +85,7 @@ formats = {
 }
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     parser = convert.ConvertOptionParser(formats, description=__doc__)
     parser.run(argv)
 

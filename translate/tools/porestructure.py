@@ -42,14 +42,14 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
             self.error("Output file is required")
         return (options, args)
 
-    def set_usage(self, usage=None):
+    def set_usage(self, usage=None) -> None:
         """Sets the usage string - if usage not given, uses getusagestring for each option."""
         if usage is None:
             self.usage = f"%prog {' '.join(self.getusagestring(option) for option in self.option_list)}\n  input directory is searched for PO files with (poconflicts) comments, all entries are written to files in a directory structure for pomerge"
         else:
             super().set_usage(usage)
 
-    def recursiveprocess(self, options):
+    def recursiveprocess(self, options) -> None:
         """Recurse through directories and process files."""
         if not self.isrecursive(options.output, "output"):
             self.warning("Output directory does not exist. Attempting to create")
@@ -90,7 +90,7 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
                 success = False
             progress_bar.report_progress(inputpath, success)
 
-    def processfile(self, options, fullinputpath):
+    def processfile(self, options, fullinputpath) -> bool:
         """Process an individual file."""
         inputfile = self.openinputfile(options, fullinputpath)
         inputpofile = po.pofile(inputfile)
@@ -120,7 +120,7 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
         return True
 
 
-def main():
+def main() -> None:
     # outputfile extensions will actually be determined by the comments in the
     # po files
     pooutput = ("po", None)

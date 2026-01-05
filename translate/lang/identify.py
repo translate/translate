@@ -39,7 +39,7 @@ class LanguageIdentifier:
     (relative to ``MODEL_DIR``).
     """
 
-    def __init__(self, model_dir=None, conf_file=None):
+    def __init__(self, model_dir=None, conf_file=None) -> None:
         if model_dir is None:
             model_dir = self.MODEL_DIR
         if not path.isdir(model_dir):
@@ -55,7 +55,7 @@ class LanguageIdentifier:
         self._load_config(conf_file)
         self.ngram = NGram(model_dir)
 
-    def _load_config(self, conf_file):
+    def _load_config(self, conf_file) -> None:
         """
         Load the mapping of language names to language codes as given in the
         configuration file.

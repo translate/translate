@@ -45,20 +45,20 @@ def find_files(base, check_ext):
                 yield fullpath
 
 
-def test_open_office_to_xliff(xmllint):
+def test_open_office_to_xliff(xmllint) -> None:
     assert call(["oo2xliff", "en-US.sdf", "-l", "fr", "fr"]) == 0
     for filepath in find_files("fr", ".xlf"):
         assert xmllint(filepath)
     cleardir("fr")
 
 
-def test_po_to_xliff(xmllint):
+def test_po_to_xliff(xmllint) -> None:
     OUTPUT = "af-pootle.xlf"
     assert call(["po2xliff", "af-pootle.po", OUTPUT]) == 0
     assert xmllint(OUTPUT)
 
 
-def cleardir(testdir):
+def cleardir(testdir) -> None:
     """Removes the test directory."""
     if os.path.exists(testdir):
         for dirpath, subdirs, filenames in os.walk(testdir, topdown=False):

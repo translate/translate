@@ -38,13 +38,13 @@ from translate.storage.symbian import (
 )
 
 
-def escape(text):
+def escape(text) -> str:
     for key, val in po_escape_map.items():
         text = text.replace(key, val)
     return f'"{text}"'
 
 
-def replace_header_items(ps, replacements):
+def replace_header_items(ps, replacements) -> None:
     match = read_while(ps, header_item_or_end_re.match, lambda match: match is None)
     while not ps.current_line.startswith("*/"):
         match = header_item_re.match(ps.current_line)
@@ -57,7 +57,7 @@ def replace_header_items(ps, replacements):
         ps.read_line()
 
 
-def parse(ps, header_replacements, body_replacements):
+def parse(ps, header_replacements, body_replacements) -> None:
     replace_header_items(ps, header_replacements)
     try:
         while True:
@@ -81,7 +81,7 @@ def parse(ps, header_replacements, body_replacements):
 def line_saver(charset):
     result = []
 
-    def save_line(line):
+    def save_line(line) -> None:
         result.append(line.encode(charset))
 
     return result, save_line
@@ -111,7 +111,7 @@ def build_location_index(store):
 
 def convert_symbian(
     input_file, output_file, template_file, pot=False, duplicatestyle="msgctxt"
-):
+) -> int:
     store = factory.getobject(input_file)
     location_index = build_location_index(store)
     header_index = {"Author": store.parseheader()["Last-Translator"]}
@@ -121,7 +121,7 @@ def convert_symbian(
     return 1
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     formats = {"po": ("r0", convert_symbian)}
     parser = convert.ConvertOptionParser(
         formats, usetemplates=True, description=__doc__

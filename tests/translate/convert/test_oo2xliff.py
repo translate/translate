@@ -11,7 +11,7 @@ class TestOO2XLIFF(test_oo2po.TestOO2PO):
     conversion_module = oo2xliff
     conversion_class = oo2xliff.oo2xliff
 
-    def test_msgid_bug_error_address(self):
+    def test_msgid_bug_error_address(self) -> None:
         pass
 
 
@@ -28,7 +28,7 @@ class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2XLIFF):
         "--nonrecursiveinput",
     ]
 
-    def test_preserve_filename(self):
+    def test_preserve_filename(self) -> None:
         """Ensures that the filename is preserved."""
         oosource = rb"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58"
         self.create_testfile("snippet.sdf", oosource)
@@ -37,7 +37,7 @@ class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2XLIFF):
         oofile.parse(oosource)
         assert oofile.filename.endswith("snippet.sdf")
 
-    def test_simple_xlf(self):
+    def test_simple_xlf(self) -> None:
         """Tests the simplest possible conversion to a xlf file."""
         oosource = r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58"
         self.create_testfile("simple.oo", oosource)
@@ -47,7 +47,7 @@ class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2XLIFF):
         assert poelement.source == "Character"
         assert poelement.target == ""
 
-    def test_simple_po(self):
+    def test_simple_po(self) -> None:
         """Tests the simplest possible conversion to a po file."""
         oosource1 = r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58"
         oosource2 = r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	ku	Karakter				20050924 09:13:58"
@@ -58,7 +58,7 @@ class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2XLIFF):
         assert poelement.source == "Character"
         assert poelement.target == "Karakter"
 
-    def test_onefile_nonrecursive(self):
+    def test_onefile_nonrecursive(self) -> None:
         """Tests the --multifile=onefile option and make sure it doesn't produce a directory."""
         oosource = r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58"
         self.create_testfile("simple.oo", oosource)
