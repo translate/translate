@@ -89,7 +89,11 @@ lo_emptytags = frozenset(["br", "embed", "embedvar", "object", "help-id-missing"
 def tagname(string):
     """Returns the name of the XML/HTML tag in string."""
     tagname_match = tagname_re.match(string)
-    return tagname_match.groups(1)[0] + tagname_match.groups("")[1]
+    assert tagname_match is not None, f"Expected tag in string: {string}"
+    # The first group always matches ([\w\/]*) so will be a string, not the default
+    group1: str = tagname_match.groups(1)[0]  # type: ignore[assignment]
+    group2: str = tagname_match.groups("")[1]
+    return group1 + group2
 
 
 def intuplelist(pair, list):

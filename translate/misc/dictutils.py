@@ -20,6 +20,12 @@ Implements a case-insensitive (on keys) dictionary and order-sensitive
 dictionary.
 """
 
+from typing import TypeVar
+
+_T = TypeVar("_T")
+_VT = TypeVar("_VT")
+_MISSING = object()
+
 
 class cidict(dict):
     def __getitem__(self, key):
@@ -63,7 +69,7 @@ class cidict(dict):
         lkey = key.lower()
         return any(akey.lower() == lkey for akey in self.keys())
 
-    def pop(self, key):
+    def pop(self, key, default=_MISSING):
         if not isinstance(key, str):
             raise TypeError(
                 f"cidict can only have str or unicode as key (got {type(key)!r})"
@@ -72,4 +78,6 @@ class cidict(dict):
         for akey in self.keys():
             if akey.lower() == lkey:
                 return super().pop(akey)
+        if default is not _MISSING:
+            return default
         raise KeyError

@@ -24,17 +24,24 @@ Converts a Gettext PO file to a UTF-8 encoded Mozilla .dtd file.
 """
 
 import warnings
+from collections.abc import Callable
 
 from translate.convert import accesskey, convert
 from translate.misc import quote
 from translate.storage import dtd, po
 
 
-def dtdwarning(message, category, filename, lineno, line=None):
+def dtdwarning(
+    message: Warning | str,
+    category: type[Warning],
+    filename: str,
+    lineno: int,
+    line: str | None = None,
+) -> str:
     return f"Warning: {message}\n"
 
 
-warnings.formatwarning = dtdwarning
+warnings.formatwarning = dtdwarning  # type: ignore[assignment]
 
 
 def applytranslation(entity, dtdunit, inputunit, mixedentities):

@@ -215,7 +215,7 @@ dialects = {
 default fallback"""
 
 
-def isocode(language: str, country: str | None = None) -> str:
+def isocode(language: str, country: str | None = None) -> str | None:
     """
     Returns a language code for the given Poedit language name.
 

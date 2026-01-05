@@ -23,6 +23,8 @@ strings in the strings attribute.
 
 from __future__ import annotations
 
+from typing import SupportsIndex
+
 
 class multistring(str):
     def __new__(cls, string: list[str] | str | None = None):
@@ -72,7 +74,9 @@ class multistring(str):
         strings = [str(self), *self.extra_strings]
         return f"multistring({strings!r})"
 
-    def replace(self, old: str, new: str, count: int = -1) -> multistring:
+    def replace(  # type: ignore[override]
+        self, old: str, new: str, count: SupportsIndex = -1, /
+    ) -> multistring:
         newstr = multistring(super().replace(old, new, count))
         newstr.extra_strings.extend(
             s.replace(old, new, count) for s in self.extra_strings
