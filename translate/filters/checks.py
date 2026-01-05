@@ -90,9 +90,9 @@ def tagname(string):
     """Returns the name of the XML/HTML tag in string."""
     tagname_match = tagname_re.match(string)
     assert tagname_match is not None, f"Expected tag in string: {string}"
-    # The first group always matches ([\w\/]*) so will be a string, not the default
-    group1: str = tagname_match.groups(1)[0]  # type: ignore[assignment]
-    group2: str = tagname_match.groups("")[1]
+    # Extract the tag name (group 1) and optional slash (group 2)
+    group1 = tagname_match.group(1) or ""
+    group2 = tagname_match.group(2) or ""
     return group1 + group2
 
 
