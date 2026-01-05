@@ -18,10 +18,16 @@
 
 """Contains XLIFF-specific placeables."""
 
+from __future__ import annotations
+
 from copy import copy
+from typing import TYPE_CHECKING
 
 from translate.storage.placeables import base
 from translate.storage.placeables.strelem import StringElem
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 __all__ = (
     "Bpt",
@@ -173,4 +179,4 @@ def to_xliff_placeables(tree):
     return newtree
 
 
-parsers = []
+parsers: list[Callable[[str], list[StringElem] | None]] = []
