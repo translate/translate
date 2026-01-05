@@ -46,6 +46,7 @@ def parse(
     ``parse_funcs``. The next level of recursion is then started on the new
     set of leaves with the used parsing function removed from
     ``parse_funcs``.
+
     :param tree: The string or string element sub-tree to parse.
     :param parse_funcs: A list of parsing functions. Each function takes
                         one argument (a ``unicode`` string to parse) and
