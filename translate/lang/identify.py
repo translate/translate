@@ -112,12 +112,11 @@ class LanguageIdentifier:
         return self.identify_lang(text)
 
     def identify_target_lang(
-        self, instore: TranslationStore | list | tuple
+        self, instore: TranslationStore | list[TranslationUnit] | tuple[TranslationUnit,...]
     ) -> str | None:
         """
         Identify the target language of the given translation store or
         units.
-            ``TranslationUnit``s.
         :param instore: The translation store to extract target text from.
         :returns: The identified language's code or ``None`` if the language
             could not be identified.
