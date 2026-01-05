@@ -542,6 +542,39 @@ class TranslationUnit:
         return plural_strings[: len(plural_tags)]
 
 
+class DictUnitMixin:
+    """
+    Mixin class for translation units that store field data in an internal dictionary.
+
+    This mixin provides a common implementation of the `dict` property pattern
+    used by several storage formats (catkeys, omegat, utx, wordfast) that manage
+    unit data through an internal dictionary with getters and setters.
+    """
+
+    def __init__(self, *args, **kwargs):
+        """Initialize the internal dictionary."""
+        self._dict: dict[str, str] = {}
+        super().__init__(*args, **kwargs)
+
+    def getdict(self) -> dict[str, str]:
+        """
+        Get the dictionary of values for this unit.
+
+        :return: The internal dictionary containing field values
+        """
+        return self._dict
+
+    def setdict(self, newdict: dict[str, str]) -> None:
+        """
+        Set the dictionary of values for this unit.
+
+        :param newdict: A new dictionary with field values
+        """
+        self._dict = newdict
+
+    dict = property(getdict, setdict)
+
+
 class TranslationStore:
     """Base class for stores for multiple translation units of type UnitClass."""
 

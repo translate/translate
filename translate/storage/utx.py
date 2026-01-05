@@ -85,29 +85,13 @@ class UtxHeader:
     """
 
 
-class UtxUnit(base.TranslationUnit):
+class UtxUnit(base.DictUnitMixin, base.TranslationUnit):
     """A UTX dictionary unit."""
 
     def __init__(self, source=None):
-        self._dict = {}
+        super().__init__(source)
         if source:
             self.source = source
-        super().__init__(source)
-
-    def getdict(self):
-        """Get the dictionary of values for a UTX line."""
-        return self._dict
-
-    def setdict(self, newdict: dict[str, str]) -> None:
-        """
-        Set the dictionary of values for a UTX line.
-
-        :param newdict: a new dictionary with UTX line elements
-        """
-        # TODO First check that the values are OK
-        self._dict = newdict
-
-    dict = property(getdict, setdict)
 
     def _get_field(self, key):
         if key not in self._dict:

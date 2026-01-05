@@ -62,29 +62,13 @@ class OmegaTDialect(csv.Dialect):
 csv.register_dialect("omegat", OmegaTDialect)
 
 
-class OmegaTUnit(base.TranslationUnit):
+class OmegaTUnit(base.DictUnitMixin, base.TranslationUnit):
     """An OmegaT glossary unit."""
 
     def __init__(self, source=None):
-        self._dict = {}
+        super().__init__(source)
         if source:
             self.source = source
-        super().__init__(source)
-
-    def getdict(self):
-        """Get the dictionary of values for a OmegaT line."""
-        return self._dict
-
-    def setdict(self, newdict: dict[str, str]) -> None:
-        """
-        Set the dictionary of values for a OmegaT line.
-
-        :param newdict: a new dictionary with OmegaT line elements
-        """
-        # TODO First check that the values are OK
-        self._dict = newdict
-
-    dict = property(getdict, setdict)
 
     def _get_field(self, key):
         if key not in self._dict:

@@ -134,18 +134,13 @@ class CatkeysHeader:
         self._header_dict["checksum"] = str(checksum)
 
 
-class CatkeysUnit(base.TranslationUnit):
+class CatkeysUnit(base.DictUnitMixin, base.TranslationUnit):
     """A catkeys translation memory unit."""
 
     def __init__(self, source=None):
-        self._dict = {}
+        super().__init__(source)
         if source:
             self.source = source
-        super().__init__(source)
-
-    def getdict(self):
-        """Get the dictionary of values for a catkeys line."""
-        return self._dict
 
     def setdict(self, newdict: dict[str, str]) -> None:
         """
@@ -160,8 +155,6 @@ class CatkeysUnit(base.TranslationUnit):
             if value is None:
                 value = ""
             self._dict[key] = value
-
-    dict = property(getdict, setdict)
 
     def _get_source_or_target(self, key):
         if self._dict.get(key) is None:

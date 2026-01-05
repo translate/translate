@@ -313,33 +313,17 @@ class WordfastHeader:
     tucount = property(None, settucount)
 
 
-class WordfastUnit(base.TranslationUnit):
+class WordfastUnit(base.DictUnitMixin, base.TranslationUnit):
     """A Wordfast translation memory unit."""
 
     def __init__(self, source=None):
-        self._dict = {}
+        super().__init__(source)
         if source:
             self.source = source
-        super().__init__(source)
 
     def _update_timestamp(self):
         """Refresh the timestamp for the unit."""
         self._dict["date"] = WordfastTime(time.localtime()).timestring
-
-    def getdict(self):
-        """Get the dictionary of values for a Wordfast line."""
-        return self._dict
-
-    def setdict(self, newdict: dict[str, str]) -> None:
-        """
-        Set the dictionary of values for a Wordfast line.
-
-        :param newdict: a new dictionary with Wordfast line elements
-        """
-        # TODO First check that the values are OK
-        self._dict = newdict
-
-    dict = property(getdict, setdict)
 
     def _get_source_or_target(self, key):
         if self._dict.get(key, None) is None:
