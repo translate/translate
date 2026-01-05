@@ -69,7 +69,7 @@ class cidict(dict):
         lkey = key.lower()
         return any(akey.lower() == lkey for akey in self.keys())
 
-    def pop(self, key, default=_MISSING):
+    def pop(self, key: str, default: _VT = _MISSING) -> _VT:  # type: ignore[override]
         if not isinstance(key, str):
             raise TypeError(
                 f"cidict can only have str or unicode as key (got {type(key)!r})"

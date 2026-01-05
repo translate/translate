@@ -25,6 +25,7 @@ import sys
 import traceback
 from io import BytesIO
 from types import TracebackType
+from typing import Any
 
 from translate import __version__
 from translate.misc import progressbar
@@ -290,7 +291,7 @@ class RecursiveOptionParser(optparse.OptionParser):
         self.add_option(option)
 
     def setformats(
-        self, formats: dict | list[tuple], usetemplates: bool
+        self, formats: dict | list[tuple[Any, Any]], usetemplates: bool
     ):
         """
         Sets the format options using the given format dictionary.
@@ -312,7 +313,9 @@ class RecursiveOptionParser(optparse.OptionParser):
         templateformats = []
         self.outputoptions = {}
         self.usetemplates = usetemplates
-        format_items: list[tuple] = list(formats.items()) if isinstance(formats, dict) else formats
+        format_items: list[tuple[Any, Any]] = (
+            list(formats.items()) if isinstance(formats, dict) else formats
+        )
         for formatgroup, outputoptions in format_items:
             if isinstance(formatgroup, str) or formatgroup is None:
                 formatgroup = (formatgroup,)
