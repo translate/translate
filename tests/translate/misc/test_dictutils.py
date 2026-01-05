@@ -3,7 +3,7 @@ import pytest
 from translate.misc import dictutils
 
 
-def test_cidict_has_key():
+def test_cidict_has_key() -> None:
     cid = dictutils.cidict()
     cid["lower"] = "lowercase"
     assert "lower" in cid
@@ -12,7 +12,7 @@ def test_cidict_has_key():
     assert "upper" not in cid
 
 
-def test_cidict_pop():
+def test_cidict_pop() -> None:
     cid = dictutils.cidict()
     cid["lower"] = "lowercase"
     assert cid.pop("LOWER")
@@ -20,7 +20,7 @@ def test_cidict_pop():
         assert cid.pop("upper")
 
 
-def test_cidict_getitem():
+def test_cidict_getitem() -> None:
     cid = dictutils.cidict()
     cid["lower"] = "lowercase"
     assert cid["lower"] == "lowercase"
@@ -30,14 +30,14 @@ def test_cidict_getitem():
         assert cid["upper"]
 
 
-def test_cidict_setitem():
+def test_cidict_setitem() -> None:
     cid = dictutils.cidict()
     cid["lower"] = "lowercase"
     cid["Lower"] = "other"
     assert cid["lower"] == "other"
 
 
-def test_cidict_delitem():
+def test_cidict_delitem() -> None:
     cid = dictutils.cidict()
     cid["lower"] = "lowercase"
     del cid["Lower"]

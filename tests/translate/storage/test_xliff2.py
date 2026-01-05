@@ -8,7 +8,7 @@ from . import test_base
 class TestXLIFF2Unit(test_base.TestTranslationUnit):
     UnitClass = xliff2.Xliff2Unit
 
-    def test_notes(self):
+    def test_notes(self) -> None:
         """Test adding and retrieving notes."""
         unit = self.unit
         unit.source = "Test"
@@ -30,7 +30,7 @@ class TestXLIFF2Unit(test_base.TestTranslationUnit):
         translator_notes = unit.getnotes(origin="translator")
         assert translator_notes == ""
 
-    def test_id_management(self):
+    def test_id_management(self) -> None:
         """Test unit id management."""
         unit = self.unit
         unit.source = "Test"
@@ -48,7 +48,7 @@ class TestXLIFF2file(test_base.TestTranslationStore):
 </file>
 </xliff>"""
 
-    def test_basic(self):
+    def test_basic(self) -> None:
         """Test basic XLIFF 2.0 file operations."""
         xliff2file = xliff2.Xliff2File()
         assert xliff2file.units == []
@@ -60,7 +60,7 @@ class TestXLIFF2file(test_base.TestTranslationStore):
         assert newfile.findunit("Hello").source == "Hello"
         assert newfile.findunit("missing") is None
 
-    def test_source_target(self):
+    def test_source_target(self) -> None:
         """Test source and target in XLIFF 2.0."""
         xliff2file = xliff2.Xliff2File()
         xliff2file.addsourceunit("Hello")
@@ -70,7 +70,7 @@ class TestXLIFF2file(test_base.TestTranslationStore):
         assert newfile.units[0].source == "Hello"
         assert newfile.units[0].target == "Hola"
 
-    def test_language_attributes(self):
+    def test_language_attributes(self) -> None:
         """Test language attributes in XLIFF 2.0."""
         xliff2file = xliff2.Xliff2File()
         xliff2file.setsourcelanguage("en")
@@ -84,7 +84,7 @@ class TestXLIFF2file(test_base.TestTranslationStore):
         assert newfile.getsourcelanguage() == "en"
         assert newfile.gettargetlanguage() == "es"
 
-    def test_namespace(self):
+    def test_namespace(self) -> None:
         """Test that XLIFF 2.0 namespace is correct."""
         xliff2file = xliff2.Xliff2File()
         assert xliff2file.namespace == "urn:oasis:names:tc:xliff:document:2.0"
@@ -94,7 +94,7 @@ class TestXLIFF2file(test_base.TestTranslationStore):
         assert 'xmlns="urn:oasis:names:tc:xliff:document:2.0"' in output
         assert 'version="2.0"' in output or "version='2.0'" in output
 
-    def test_unit_structure(self):
+    def test_unit_structure(self) -> None:
         """Test the structure of units in XLIFF 2.0."""
         xliff2file = xliff2.Xliff2File()
         xliff2file.addsourceunit("Test string")
@@ -108,7 +108,7 @@ class TestXLIFF2file(test_base.TestTranslationStore):
         # Should not have trans-unit (that's XLIFF 1.x)
         assert "<trans-unit" not in output
 
-    def test_multiple_units(self):
+    def test_multiple_units(self) -> None:
         """Test handling multiple units."""
         xliff2file = xliff2.Xliff2File()
         xliff2file.addsourceunit("Hello")
@@ -127,7 +127,7 @@ class TestXLIFF2file(test_base.TestTranslationStore):
         assert newfile.units[1].source == "World"
         assert newfile.units[2].source == "Test"
 
-    def test_parse_xliff2(self):
+    def test_parse_xliff2(self) -> None:
         """Test parsing a minimal XLIFF 2.0 document."""
         xliff2_content = b"""<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="fr">
@@ -148,7 +148,7 @@ class TestXLIFF2file(test_base.TestTranslationStore):
         assert xliff2file.getsourcelanguage() == "en"
         assert xliff2file.gettargetlanguage() == "fr"
 
-    def test_multiple_segments_per_unit(self):
+    def test_multiple_segments_per_unit(self) -> None:
         """Test that multiple segments in a unit are exposed as separate units."""
         xliff2_content = b"""<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="fr">
@@ -195,7 +195,7 @@ class TestXLIFF2file(test_base.TestTranslationStore):
 
         assert bytes(xliff2file).decode() == xliff2_content.decode()
 
-    def test_mixed_single_and_multiple_segments(self):
+    def test_mixed_single_and_multiple_segments(self) -> None:
         """Test files with both single-segment and multi-segment units."""
         xliff2_content = b"""<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="es">
@@ -243,7 +243,7 @@ class TestXLIFF2file(test_base.TestTranslationStore):
             "Multi B es", "TEST"
         )
 
-    def test_segments_without_ids(self):
+    def test_segments_without_ids(self) -> None:
         """Test that segments without IDs get auto-generated IDs."""
         xliff2_content = b"""<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="fr">
@@ -285,7 +285,7 @@ class TestXLIFF2file(test_base.TestTranslationStore):
 
         assert bytes(xliff2file).decode() == xliff2_content.decode()
 
-    def test_escaped_inline_tags(self):
+    def test_escaped_inline_tags(self) -> None:
         """
         Test escaped inline tags in content.
 
@@ -317,7 +317,7 @@ class TestXLIFF2file(test_base.TestTranslationStore):
         store2 = xliff2.Xliff2File.parsestring(serialized)
         assert store2.units[0].target == "Modified text"
 
-    def test_simple_source_target_pairs(self):
+    def test_simple_source_target_pairs(self) -> None:
         """
         Test simple source/target pairs.
 
@@ -348,7 +348,7 @@ class TestXLIFF2file(test_base.TestTranslationStore):
         assert store2.units[0].source == "Welcome"
         assert store2.units[0].target == "Bienvenue"
 
-    def test_malformed_xml_declaration(self):
+    def test_malformed_xml_declaration(self) -> None:
         """
         Test that malformed XML declarations are handled correctly.
 
@@ -374,7 +374,7 @@ class TestXLIFF2file(test_base.TestTranslationStore):
         # The error should be about XML syntax
         assert "XML" in str(exc_info.value) or "String" in str(exc_info.value)
 
-    def test_variable_placeholders(self):
+    def test_variable_placeholders(self) -> None:
         """
         Test variable placeholders in content.
 
@@ -401,7 +401,7 @@ class TestXLIFF2file(test_base.TestTranslationStore):
         store2 = xliff2.Xliff2File.parsestring(serialized)
         assert "{name}" in store2.units[0].source
 
-    def test_add_unit(self):
+    def test_add_unit(self) -> None:
         xliff2_content = b"""<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="fr">
   <file id="f1">
@@ -426,7 +426,7 @@ class TestXLIFF2file(test_base.TestTranslationStore):
 """
         )
 
-    def test_states(self):
+    def test_states(self) -> None:
         """Test that segments without IDs get auto-generated IDs."""
         xliff2_content = b"""<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="fr">

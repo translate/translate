@@ -29,7 +29,9 @@ from translate.storage import factory, poheader
 
 
 class segment:
-    def __init__(self, sourcelang, targetlang, stripspaces=True, onlyaligned=False):
+    def __init__(
+        self, sourcelang, targetlang, stripspaces=True, onlyaligned=False
+    ) -> None:
         self.sourcelang = sourcelang
         self.targetlang = targetlang
         self.stripspaces = stripspaces
@@ -80,7 +82,7 @@ def segmentfile(
     targetlanguage=None,
     stripspaces=True,
     onlyaligned=False,
-):
+) -> int:
     """Reads in inputfile, segments it then, writes to outputfile."""
     # note that templatefile is not used, but it is required by the converter...
     inputstore = factory.getobject(inputfile)
@@ -96,7 +98,7 @@ def segmentfile(
     return 1
 
 
-def main():
+def main() -> None:
     formats = {
         "po": ("po", segmentfile),
         "xlf": ("xlf", segmentfile),

@@ -23,7 +23,7 @@ from pytest import raises
 from translate.storage import base, html
 
 
-def test_guess_encoding():
+def test_guess_encoding() -> None:
     """Read an encoding header to guess the encoding correctly."""
     h = html.htmlfile()
     assert (
@@ -43,7 +43,7 @@ def test_guess_encoding():
 class TestHTMLParsing:
     h = html.htmlfile
 
-    def test_mismatched_tags(self):
+    def test_mismatched_tags(self) -> None:
         with raises(base.ParseError):
             self.h.parsestring("<h3><p>Some text<p></h3>")
         # First <tr> is not closed
@@ -57,12 +57,12 @@ class TestHTMLParsing:
                 """<table summary="This is the summary"><caption>A caption</caption><thead><tr><th abbr="Head 1">Heading One</th><th>Heading Two</th></thead><tfoot><tr><td>Foot One</td><td>Foot Two</td></tr></tfoot><tbody><tr><td>One</td><td>Two</td></tr></tbody></table>"""
             )
 
-    def test_self_closing_tags(self):
+    def test_self_closing_tags(self) -> None:
         h = html.htmlfile()
         store = h.parsestring("<h3>Some text <img><br><img></h3>")
         assert len(store.units) == 1
 
-    def test_escaping_script_and_pre(self):
+    def test_escaping_script_and_pre(self) -> None:
         """
         <script> and <pre> can contain < and > and these should not be
         interpreted as tags.
@@ -84,7 +84,7 @@ class TestHTMLExtraction:
         store = h.parsestring(str)
         return "\n".join(u.source for u in store.units)
 
-    def test_strip_html(self):
+    def test_strip_html(self) -> None:
         assert self.strip_html("<p><a>Something</a></p>") == "Something"
         assert (
             self.strip_html("<p>You are <a>Something</a></p>")
@@ -121,7 +121,7 @@ class TestHTMLExtraction:
             == "Firefox for Desktop"
         )
 
-    def test_extraction_tag_figcaption(self):
+    def test_extraction_tag_figcaption(self) -> None:
         """Check that we can extract figcaption."""
         h = html.htmlfile()
         # Example form http://www.w3schools.com/tags/tag_figcaption.asp
@@ -137,7 +137,7 @@ class TestHTMLExtraction:
         assert store.units[0].source == "The Pulpit Rock"
         assert store.units[1].source == "Fig1. - A view of the pulpit rock in Norway."
 
-    def test_extraction_tag_caption_td_th(self):
+    def test_extraction_tag_caption_td_th(self) -> None:
         """Check that we can extract table related translatable: th, td and caption."""
         h = html.htmlfile()
         # Example form http://www.w3schools.com/tags/tag_caption.asp
@@ -163,7 +163,7 @@ class TestHTMLExtraction:
         assert store.units[3].source == "January"
         assert store.units[4].source == "$100"
 
-    def test_extraction_attr_alt(self):
+    def test_extraction_attr_alt(self) -> None:
         """Check that we can extract title attribute."""
         h = html.htmlfile()
         # Example from http://www.netmechanic.com/news/vol6/html_no1.htm
@@ -177,7 +177,7 @@ class TestHTMLExtraction:
             store.units[0].source == "UAHC campers enjoy a meal in the camp cafeteria"
         )
 
-    def test_extraction_attr_title(self):
+    def test_extraction_attr_title(self) -> None:
         """Check that we can extract title attribute."""
         h = html.htmlfile()
 
@@ -222,7 +222,7 @@ class TestHTMLExtraction:
         assert len(store.units) == 1
         assert store.units[0].source == "Henry Jacobs camper application"
 
-    def test_extraction_pre(self):
+    def test_extraction_pre(self) -> None:
         """Check that we can preserve lines in the <pre> tag."""
         h = html.htmlfile()
         store = h.parsestring(
@@ -237,7 +237,7 @@ pre tag
         assert len(store.units) == 1
         assert store.units[0].source == "this is\na multiline\npre tag"
 
-    def test_extraction_pre_code(self):
+    def test_extraction_pre_code(self) -> None:
         """Check that we can preserve lines in the <pre> tag."""
         h = html.htmlfile()
         store = h.parsestring(
@@ -252,7 +252,7 @@ pre tag
         assert len(store.units) == 1
         assert store.units[0].source == "this is\na multiline\npre tag"
 
-    def test_extraction_button(self):
+    def test_extraction_button(self) -> None:
         """Check that we can extract text from button elements."""
         h = html.htmlfile()
 
@@ -301,7 +301,7 @@ pre tag
         assert store.units[0].source == "Click to submit"
         assert store.units[1].source == "Submit"
 
-    def test_extraction_lang_attribute(self):
+    def test_extraction_lang_attribute(self) -> None:
         """Check that we extract lang attribute only from html tag."""
         h = html.htmlfile()
         store = h.parsestring(
@@ -326,7 +326,7 @@ pre tag
         # Check location to confirm it's from html tag
         assert "html[lang]" in lang_units[0].getlocations()[0]
 
-    def test_dir_attribute_not_extracted(self):
+    def test_dir_attribute_not_extracted(self) -> None:
         """Check that dir attribute is not extracted (it's automatically inferred from lang)."""
         h = html.htmlfile()
         store = h.parsestring(
@@ -352,7 +352,7 @@ pre tag
         assert "A div with dir attribute" in sources  # div content
         assert len(store.units) == 4  # lang, title, p, div - but NOT dir
 
-    def test_data_translate_ignore_attribute(self):
+    def test_data_translate_ignore_attribute(self) -> None:
         """Check that elements with data-translate-ignore are not extracted."""
         h = html.htmlfile()
 
@@ -388,7 +388,7 @@ pre tag
         assert store.units[0].source == "Extract this"
         assert store.units[1].source == "Translate"
 
-    def test_translate_comment_directives(self):
+    def test_translate_comment_directives(self) -> None:
         """Check that translate:off and translate:on comments work."""
         h = html.htmlfile()
 
@@ -415,7 +415,7 @@ pre tag
         assert len(store.units) == 1
         assert store.units[0].source == "Translate this"
 
-    def test_extraction_meta_social_media_tags(self):
+    def test_extraction_meta_social_media_tags(self) -> None:
         """Check that we can extract common social media meta tags."""
         h = html.htmlfile()
 
@@ -454,7 +454,7 @@ pre tag
         assert store.units[0].source == "Standard description"
         assert store.units[1].source == "keyword1, keyword2"
 
-    def test_extraction_meta_non_translatable_tags(self):
+    def test_extraction_meta_non_translatable_tags(self) -> None:
         """Check that non-translatable meta tags are not extracted."""
         h = html.htmlfile()
 
@@ -474,7 +474,7 @@ pre tag
         # Should have 0 units since none of these should be translatable
         assert len(store.units) == 0
 
-    def test_extraction_meta_mixed_translatable_and_non_translatable(self):
+    def test_extraction_meta_mixed_translatable_and_non_translatable(self) -> None:
         """Check that translatable and non-translatable meta tags are handled correctly when mixed."""
         h = html.htmlfile()
 
@@ -494,7 +494,7 @@ pre tag
         assert store.units[1].source == "Page description"
         assert store.units[2].source == "Twitter Title"
 
-    def test_data_translate_comment_attribute(self):
+    def test_data_translate_comment_attribute(self) -> None:
         """Check that data-translate-comment attribute is extracted as a note."""
         h = html.htmlfile()
 

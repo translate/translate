@@ -30,7 +30,7 @@ from translate.storage import factory, placeables
 class TranslateBenchmarker:
     """class to aid in benchmarking Translate Toolkit stores."""
 
-    def __init__(self, test_dir, storeclass):
+    def __init__(self, test_dir, storeclass) -> None:
         """Sets up benchmarking on the test directory."""
         self.test_dir = os.path.abspath(test_dir)
         self.StoreClass = storeclass
@@ -39,7 +39,7 @@ class TranslateBenchmarker:
         self.file_dir = os.path.join(self.project_dir, "zxx")
         self.parsedfiles = []
 
-    def clear_test_dir(self):
+    def clear_test_dir(self) -> None:
         """Removes the given directory."""
         if os.path.exists(self.test_dir):
             for dirpath, subdirs, filenames in os.walk(self.test_dir, topdown=False):
@@ -58,7 +58,7 @@ class TranslateBenchmarker:
         strings_per_file,
         source_words_per_string,
         target_words_per_string,
-    ):
+    ) -> None:
         """Creates sample files for benchmarking."""
         if not os.path.exists(self.test_dir):
             os.mkdir(self.test_dir)
@@ -89,7 +89,7 @@ class TranslateBenchmarker:
                     os.path.join(dirname, f"file_{filenum}.{self.extension}")
                 )
 
-    def parse_files(self, file_dir=None):
+    def parse_files(self, file_dir=None) -> None:
         """Parses all the files in the test directory into memory."""
         count = 0
         self.parsedfiles = []
@@ -103,7 +103,7 @@ class TranslateBenchmarker:
                 self.parsedfiles.append(parsedfile)
         print(f"counted {count} units")
 
-    def parse_placeables(self):
+    def parse_placeables(self) -> None:
         """Parses placeables."""
         count = 0
         for parsedfile in self.parsedfiles:

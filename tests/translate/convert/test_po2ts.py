@@ -23,7 +23,7 @@ class TestPO2TS:
         assert len(storage.units) == 1
         return storage.units[0]
 
-    def test_simpleunit(self):
+    def test_simpleunit(self) -> None:
         """Checks that a simple po entry definition converts properly to a ts entry."""
         minipo = r'''#: term.cpp
 msgid "Term"
@@ -35,7 +35,7 @@ msgstr "asdf"'''
         assert "<translation>asdf</translation>" in tsfile
         assert "<comment>" not in tsfile
 
-    def test_simple_unicode_unit(self):
+    def test_simple_unicode_unit(self) -> None:
         """Checks that a simple unit with unicode strings."""
         minipo = r'''#: unicode.cpp
 msgid "ßource"
@@ -47,7 +47,7 @@ msgstr "†arget"'''
         assert "<source>ßource</source>" in tsfile
         assert "<translation>†arget</translation>" in tsfile
 
-    def test_fullunit(self):
+    def test_fullunit(self) -> None:
         """Check that an entry with various settings is converted correctly."""
         posource = """# Translator comment
 #. Automatic comment
@@ -61,7 +61,7 @@ msgstr "Target"
         # FIXME need to think about auto vs trans comments maybe in TS v1.1
         assert "<comment>Translator comment</comment>" in tsfile
 
-    def test_fuzzyunit(self):
+    def test_fuzzyunit(self) -> None:
         """Check that we handle fuzzy units correctly."""
         posource = '''#: term.cpp
 #, fuzzy
@@ -71,7 +71,7 @@ msgstr "Target"'''
         print(tsfile)
         assert """<translation type="unfinished">Target</translation>""" in tsfile
 
-    def test_obsolete(self):
+    def test_obsolete(self) -> None:
         """Test that we can take back obsolete messages."""
         posource = '''#. (obsolete)
 #: term.cpp
@@ -81,7 +81,7 @@ msgstr "Target"'''
         print(tsfile)
         assert """<translation type="obsolete">Target</translation>""" in tsfile
 
-    def test_duplicates(self):
+    def test_duplicates(self) -> None:
         """Test that we can handle duplicates in the same context block."""
         posource = """#: @@@#1
 msgid "English"
@@ -95,7 +95,7 @@ msgstr "b"
         print(tsfile)
         assert tsfile.find("English") != tsfile.rfind("English")
 
-    def test_linebreak(self):
+    def test_linebreak(self) -> None:
         """Test that we can handle linebreaks."""
         minipo = r'''#: linebreak.cpp
 msgid "Line 1\n"
@@ -117,7 +117,7 @@ Linea 2</translation>"""
             in tsfile
         )
 
-    def test_linebreak_consecutive(self):
+    def test_linebreak_consecutive(self) -> None:
         """Test that we can handle consecutive linebreaks."""
         minipo = r'''#: linebreak.cpp
 msgid "Line 1\n"
@@ -143,7 +143,7 @@ Linea 3</translation>"""
             in tsfile
         )
 
-    def test_plural(self):
+    def test_plural(self) -> None:
         """Test that plural forms are correctly converted from PO to TS."""
         minipo = r'''#: ExamplePO
 msgid "%d day ago"
@@ -161,7 +161,7 @@ msgstr[2] "%d dźon tamu"'''
         assert "<numerusform>%d dni tamu</numerusform>" in tsfile
         assert "<numerusform>%d dźon tamu</numerusform>" in tsfile
 
-    def test_plural_fuzzy(self):
+    def test_plural_fuzzy(self) -> None:
         """Test that fuzzy plural forms are handled correctly."""
         minipo = r'''#: FuzzyContext
 #, fuzzy

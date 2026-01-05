@@ -25,7 +25,7 @@ from cheroot.wsgi import Server
 logger = logging.getLogger(__name__)
 
 
-def launch_server(host, port, app, **kwargs):
+def launch_server(host, port, app, **kwargs) -> None:
     """Use cheroot WSGI server, a multithreaded scallable server."""
     server = Server((host, port), app, **kwargs)
     logger.info("Starting server, listening on port %s", port)

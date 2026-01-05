@@ -3,7 +3,7 @@ from io import BytesIO
 from translate.storage import rc
 
 
-def test_escaping():
+def test_escaping() -> None:
     """Test escaping Windows Resource files to Python strings."""
     assert (
         rc.escape_to_python(
@@ -45,7 +45,7 @@ class TestRcFile:
         """Helper that converts source to store object and back."""
         return bytes(self.source_parse(source))
 
-    def test_parse_only_comments(self):
+    def test_parse_only_comments(self) -> None:
         """Test parsing a RC string with only comments."""
         rc_source = r"""
 /*
@@ -112,7 +112,7 @@ LANGUAGE 10, 3
         rc_file = self.source_parse(rc_source)
         assert len(rc_file.units) == 0
 
-    def test_parse_only_textinclude(self):
+    def test_parse_only_textinclude(self) -> None:
         """Test parsing a RC string with TEXTINCLUDE blocks and comments."""
         rc_source = r"""
 #include "other_file.h" // This must be ignored
@@ -147,7 +147,7 @@ END
         rc_file = self.source_parse(rc_source)
         assert len(rc_file.units) == 0
 
-    def test_parse_dialog(self):
+    def test_parse_dialog(self) -> None:
         """Test parsing a RC string with a DIALOG block."""
         rc_source = r"""
 #include "other_file.h" // This must be ignored
@@ -211,7 +211,7 @@ END
         assert rc_unit.name == "DIALOGEX.IDD_REGGHC_DIALOG.CTEXT.IDC_ACTIVADA"
         assert rc_unit.source == "Use your finger to activate the program."
 
-    def test_parse_stringtable(self):
+    def test_parse_stringtable(self) -> None:
         """Test parsing a RC string with a STRINGTABLE block."""
         rc_source = r"""
 #include "other_file.h" // This must be ignored
@@ -254,7 +254,7 @@ END
         assert rc_unit.name == "STRINGTABLE.IDS_ERRORACTIV"
         assert rc_unit.source == "Error doing things"
 
-    def test_parse_newlines_lf(self):
+    def test_parse_newlines_lf(self) -> None:
         """Test parsing a RC string with lf line endings."""
         rc_source = """\n\
 LANGUAGE LANG_ENGLISH, SUBLANG_DEFAULT\n\
@@ -274,7 +274,7 @@ END\n\
         assert rc_unit.name == "STRINGTABLE.IDS_ACTIVARINSTALACION"
         assert rc_unit.source == "You need to try again and again."
 
-    def test_parse_newlines_crlf(self):
+    def test_parse_newlines_crlf(self) -> None:
         """Test parsing a RC string with crlf line endings."""
         rc_source = """\r\n\
 LANGUAGE LANG_ENGLISH, SUBLANG_DEFAULT\r\n\
@@ -294,7 +294,7 @@ END\r\n\
         assert rc_unit.name == "STRINGTABLE.IDS_ACTIVARINSTALACION"
         assert rc_unit.source == "You need to try again and again."
 
-    def test_parse_newlines_cr(self):
+    def test_parse_newlines_cr(self) -> None:
         """Test parsing a RC string with crlf line endings."""
         rc_source = """\r\
 LANGUAGE LANG_ENGLISH, SUBLANG_DEFAULT\r\
@@ -308,7 +308,7 @@ END\r\
         rc_file = self.source_parse(rc_source)
         assert len(rc_file.units) == 0
 
-    def test_parse_no_language(self):
+    def test_parse_no_language(self) -> None:
         """Test parsing a RC string with missing language tag."""
         rc_source = """
 STRINGTABLE
@@ -320,7 +320,7 @@ END
         assert len(rc_file.units) == 1
         assert rc_file.units[0].source == "Data isn't valid"
 
-    def test_textinclude(self):
+    def test_textinclude(self) -> None:
         rc_source = """
 // Microsoft Visual C++ generated resource script.
 //
@@ -401,7 +401,7 @@ END
         assert rc_file.units[1].source == "OK"
         assert rc_file.units[2].source == "Cancel"
 
-    def test_multiline(self):
+    def test_multiline(self) -> None:
         rc_source = r"""
 LANGUAGE LANG_ENGLISH, SUBLANG_DEFAULT
 
@@ -415,7 +415,7 @@ END
         assert len(rc_file.units) == 1
         assert rc_file.units[0].source == "Line1\nLine2"
 
-    def test_str(self):
+    def test_str(self) -> None:
         rc_source = r"""
 LANGUAGE LANG_ENGLISH, SUBLANG_DEFAULT
 
@@ -428,7 +428,7 @@ END
         assert len(rc_file.units) == 1
         assert str(rc_file.units[0]) == "STRINGTABLE.IDS_STRINGS=Line1\n"
 
-    def test_empty(self):
+    def test_empty(self) -> None:
         rc_source = """
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
@@ -441,7 +441,7 @@ END
         rc_file = self.source_parse(rc_source)
         assert len(rc_file.units) == 1
 
-    def test_utf_8(self):
+    def test_utf_8(self) -> None:
         rc_source = """#pragma code_page(65001)
 
 STRINGTABLE
@@ -453,7 +453,7 @@ END
         assert len(rc_file.units) == 1
         assert rc_file.units[0].source == "✔ Copied"
 
-    def test_utf_16(self):
+    def test_utf_16(self) -> None:
         rc_source = """
 STRINGTABLE
 BEGIN
@@ -464,7 +464,7 @@ END
         assert len(rc_file.units) == 1
         assert rc_file.units[0].source == "✔ Copied"
 
-    def test_comment(self):
+    def test_comment(self) -> None:
         rc_source = """
 STRINGTABLE
 BEGIN
@@ -476,7 +476,7 @@ END
         assert len(rc_file.units) == 1
         assert rc_file.units[0].source == "Copied"
 
-    def test_stringtables(self):
+    def test_stringtables(self) -> None:
         rc_source = """
 STRINGTABLE
 BEGIN
@@ -503,7 +503,7 @@ END
         assert rc_file.units[1].source == "Other"
         assert rc_file.units[2].source == "Next"
 
-    def test_textinclude_appstudio(self):
+    def test_textinclude_appstudio(self) -> None:
         rc_source = """
 LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 
@@ -527,7 +527,7 @@ END
         assert rc_file.units[0].source == "Copied"
         assert rc_file.units[1].source == "Other"
 
-    def test_id_whitespace(self):
+    def test_id_whitespace(self) -> None:
         rc_source = """
 IDD_DIALOG DIALOG 0, 0, 340, 180
 CAPTION "Caption"
@@ -546,7 +546,7 @@ END
         assert rc_file.units[2].source == "Wrong"
         assert rc_file.units[2].name == "DIALOG.IDD_DIALOG.LTEXT.IDC_STATIC_HEADER2"
 
-    def test_menu_comment(self):
+    def test_menu_comment(self) -> None:
         rc_source = """
 IDR_MAINFRAME MENU
 BEGIN
@@ -568,7 +568,7 @@ END
         assert rc_file.units[2].source == "Delete"
         assert rc_file.units[2].name == "MENU.IDR_MAINFRAME.MENUITEM.ID_DELETE"
 
-    def test_decompiled(self):
+    def test_decompiled(self) -> None:
         rc_source = """
 1 MENU
 {
@@ -602,7 +602,7 @@ STRINGTABLE
         assert rc_file.units[4].source == "This is a string."
         assert rc_file.units[4].name == "STRINGTABLE.5"
 
-    def test_quotes(self):
+    def test_quotes(self) -> None:
         rc_source = """
 STRINGTABLE
 BEGIN
@@ -616,7 +616,7 @@ END
             rc_file.units[0].source == 'The timestamp for "ABCDEF" could not be read.'
         )
 
-    def test_utf16_pragma_code_page(self):
+    def test_utf16_pragma_code_page(self) -> None:
         """Test UTF-16LE file with pragma code_page should ignore pragma."""
         # This test case covers the bug where pragma code_page causes
         # re-parsing of UTF-16LE files as cp1252, resulting in UnicodeDecodeError
@@ -639,7 +639,7 @@ END
         # Encoding should remain utf-16-le, not changed to cp1252
         assert rc_file.encoding == "utf-16-le"
 
-    def test_utf8_pragma_code_page(self):
+    def test_utf8_pragma_code_page(self) -> None:
         """Test UTF-8 file with pragma code_page should ignore pragma."""
         rc_source = """#pragma code_page(65001)
 

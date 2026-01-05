@@ -139,7 +139,7 @@ class TestTSUnit(test_base.TestTranslationUnit):
 class TestTSfile(test_base.TestTranslationStore):
     StoreClass = ts.tsfile
 
-    def test_basic(self):
+    def test_basic(self) -> None:
         tsfile = ts.tsfile()
         assert tsfile.units == []
         tsfile.addsourceunit("Bla")
@@ -151,7 +151,7 @@ class TestTSfile(test_base.TestTranslationStore):
         assert newfile.findunit("Bla").source == "Bla"
         assert newfile.findunit("dit") is None
 
-    def test_source(self):
+    def test_source(self) -> None:
         tsfile = ts.tsfile()
         tsunit = tsfile.addsourceunit("Concept")
         tsunit.source = "Term"
@@ -160,7 +160,7 @@ class TestTSfile(test_base.TestTranslationStore):
         assert newfile.findunit("Concept") is None
         assert newfile.findunit("Term") is not None
 
-    def test_target(self):
+    def test_target(self) -> None:
         tsfile = ts.tsfile()
         tsunit = tsfile.addsourceunit("Concept")
         tsunit.target = "Konsep"
@@ -168,7 +168,7 @@ class TestTSfile(test_base.TestTranslationStore):
         print(bytes(tsfile))
         assert newfile.findunit("Concept").target == "Konsep"
 
-    def test_plurals(self):
+    def test_plurals(self) -> None:
         """Test basic plurals."""
         tsfile = ts.tsfile()
         tsunit = tsfile.addsourceunit("File(s)")
@@ -179,7 +179,7 @@ class TestTSfile(test_base.TestTranslationStore):
         assert checkunit.target == ["Leêr", "Leêrs"]
         assert checkunit.hasplural()
 
-    def test_nplural(self):
+    def test_nplural(self) -> None:
         tsstr = """<!DOCTYPE TS>
 <TS version="2.0" language="xx" sourcelanguage="de">
 </TS>
@@ -189,7 +189,7 @@ class TestTSfile(test_base.TestTranslationStore):
         tsfile = ts.tsfile.parsestring(TS_CONTEXT_QT4)
         assert tsfile.nplural() == 3
 
-    def test_language(self):
+    def test_language(self) -> None:
         """Check that we can get and set language and sourcelanguage in the header."""
         tsstr = """<!DOCTYPE TS>
 <TS version="2.0" language="fr" sourcelanguage="de">
@@ -209,7 +209,7 @@ class TestTSfile(test_base.TestTranslationStore):
         tsfile = ts.tsfile.parsestring(tsstr)
         assert tsfile.getsourcelanguage() == "en"
 
-    def test_edit(self):
+    def test_edit(self) -> None:
         """Test editing works well."""
         tsstr = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
@@ -233,7 +233,7 @@ class TestTSfile(test_base.TestTranslationStore):
         newtsstr = tsstr.replace(">TargetString", ' type="unfinished">TestTarget')
         assert newtsstr == bytes(tsfile).decode("utf-8")
 
-    def test_obsolete(self):
+    def test_obsolete(self) -> None:
         tsfile = ts.tsfile.parsestring(TS_CONTEXT_QT4)
         assert tsfile.units[0].istranslatable()
         assert not tsfile.units[0].isobsolete()
@@ -247,7 +247,7 @@ class TestTSfile(test_base.TestTranslationStore):
         assert not tsfile.units[2].istranslatable()
         assert tsfile.units[2].isobsolete()
 
-    def test_locations(self):
+    def test_locations(self) -> None:
         """Test that locations work well."""
         tsstr = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
@@ -287,7 +287,7 @@ class TestTSfile(test_base.TestTranslationStore):
         assert tsfile.units[2].getlocations() == []
         assert tsfile.units[3].getlocations() == []
 
-    def test_merge_with_fuzzies(self):
+    def test_merge_with_fuzzies(self) -> None:
         """Test that merge with fuzzy works well."""
         tsstr1 = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
@@ -336,19 +336,19 @@ class TestTSfile(test_base.TestTranslationStore):
         assert tsfile2.units[0].isfuzzy()
         assert not tsfile2.units[1].isfuzzy()
 
-    def test_getid(self):
+    def test_getid(self) -> None:
         """Test that getid works well."""
         tsfile = ts.tsfile.parsestring(TS_NUMERUS)
         assert tsfile.units[0].getid() == "Dialog2%n files"
         assert tsfile.units[1].getid() == "Dialog2\nthis_is_some_id%n cars"
         assert tsfile.units[3].getid() == "Dialog2\nthis_is_another_idfunc3"
 
-    def test_backnforth(self):
+    def test_backnforth(self) -> None:
         """Test that ts files are read and output properly."""
         tsfile = ts.tsfile.parsestring(TS_NUMERUS)
         assert bytes(tsfile).decode("utf-8") == TS_NUMERUS
 
-    def test_context(self):
+    def test_context(self) -> None:
         tsfile = ts.tsfile.parsestring(TS_NUMERUS)
         unit = tsfile.units[0]
 
@@ -373,13 +373,13 @@ class TestTSfile(test_base.TestTranslationStore):
         newunit.setcontext("Some context")
         assert newunit.getcontext() == "Some context"
 
-    def test_roundtrip_context(self):
+    def test_roundtrip_context(self) -> None:
         tsfile = ts.tsfile.parsestring(TS_CONTEXT_QT4)
         assert bytes(tsfile).decode("utf-8") == TS_CONTEXT_QT4
         tsfile = ts.tsfile.parsestring(TS_CONTEXT_QT5)
         assert bytes(tsfile).decode("utf-8") == TS_CONTEXT_QT5
 
-    def test_edit_missing_translation(self):
+    def test_edit_missing_translation(self) -> None:
         """Test editing with missing translation element works well."""
         tsstr = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
@@ -401,7 +401,7 @@ class TestTSfile(test_base.TestTranslationStore):
         )
         assert newtsstr == bytes(tsfile).decode("utf-8")
 
-    def test_missing_source(self):
+    def test_missing_source(self) -> None:
         tsstr = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.1" language="en_EN">

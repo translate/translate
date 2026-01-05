@@ -26,7 +26,7 @@ for examples and usage instructions.
 from translate.convert import convert, dtd2po, mozfunny2prop, mozlang2po, prop2po
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     formats = {
         (None, "*"): ("*", convert.copytemplate),
         ("*", "*"): ("*", convert.copyinput),

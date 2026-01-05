@@ -14,7 +14,7 @@ class TestReindent:
             xml, pretty_print=True, xml_declaration=True, encoding="utf-8"
         )
 
-    def test_indent_four_spaces(self):
+    def test_indent_four_spaces(self) -> None:
         """Test that using 4 spaces for indent yields a consistent result."""
         xmlsource = self._xmlfromstring('<root><str key="test">Test</str></root>')
         reindent(xmlsource, indent="    ")
@@ -26,7 +26,7 @@ class TestReindent:
 """
         assert actual == expected
 
-    def test_indent_tab(self):
+    def test_indent_tab(self) -> None:
         """Test that using a tab for indent yields a consistent result."""
         xmlsource = self._xmlfromstring('<root><str key="test">Test</str></root>')
         reindent(xmlsource, indent="\t")

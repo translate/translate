@@ -1,30 +1,35 @@
 from translate.storage.placeables import general
 
 
-# pylint: disable=unsupported-membership-test
-def test_placeable_numbers():
+def test_placeable_numbers() -> None:
     """Check the correct functioning of number placeables."""
     result = general.NumberPlaceable.parse("Here is a 25 number")
     assert result
+    # pylint: disable-next=unsupported-membership-test
     assert general.NumberPlaceable(["25"]) in result
     result = general.NumberPlaceable.parse("Here is a -25 number")
     assert result
+    # pylint: disable-next=unsupported-membership-test
     assert general.NumberPlaceable(["-25"]) in result
     result = general.NumberPlaceable.parse("Here is a +25 number")
     assert result
+    # pylint: disable-next=unsupported-membership-test
     assert general.NumberPlaceable(["+25"]) in result
     result = general.NumberPlaceable.parse("Here is a 25.00 number")
     assert result
+    # pylint: disable-next=unsupported-membership-test
     assert general.NumberPlaceable(["25.00"]) in result
     result = general.NumberPlaceable.parse("Here is a 2,500.00 number")
     assert result
+    # pylint: disable-next=unsupported-membership-test
     assert general.NumberPlaceable(["2,500.00"]) in result
     result = general.NumberPlaceable.parse("Here is a 1\u00a0000,99 number")
     assert result
+    # pylint: disable-next=unsupported-membership-test
     assert general.NumberPlaceable(["1\u00a0000,99"]) in result
 
 
-def test_placeable_newline():
+def test_placeable_newline() -> None:
     result = general.NewlinePlaceable.parse("A newline\n")
     assert result
     assert result[1] == general.NewlinePlaceable(["\n"])
@@ -33,7 +38,7 @@ def test_placeable_newline():
     assert result[1] == general.NewlinePlaceable(["\n"])
 
 
-def test_placeable_alt_attr():
+def test_placeable_alt_attr() -> None:
     result = general.AltAttrPlaceable.parse(
         'Click on the <img src="image.jpg" alt="Image">'
     )
@@ -41,7 +46,7 @@ def test_placeable_alt_attr():
     assert result[1] == general.AltAttrPlaceable(['alt="Image"'])
 
 
-def test_placeable_qt_formatting():
+def test_placeable_qt_formatting() -> None:
     result = general.QtFormattingPlaceable.parse("One %1 %99 %L1 are all valid")
     assert result
     assert result[1] == general.QtFormattingPlaceable(["%1"])
@@ -49,7 +54,7 @@ def test_placeable_qt_formatting():
     assert result[5] == general.QtFormattingPlaceable(["%L1"])
 
 
-def test_placeable_camelcase():
+def test_placeable_camelcase() -> None:
     result = general.CamelCasePlaceable.parse("CamelCase")
     assert result
     assert result[0] == general.CamelCasePlaceable(["CamelCase"])
@@ -66,7 +71,7 @@ def test_placeable_camelcase():
     assert general.CamelCasePlaceable.parse("NOTCAMEL") is None
 
 
-def test_placeable_space():
+def test_placeable_space() -> None:
     result = general.SpacesPlaceable.parse(" Space at start")
     assert result
     assert result[0] == general.SpacesPlaceable([" "])
@@ -78,7 +83,7 @@ def test_placeable_space():
     assert result[1] == general.SpacesPlaceable(["  "])
 
 
-def test_placeable_punctuation():
+def test_placeable_punctuation() -> None:
     assert (
         general.PunctuationPlaceable.parse(
             'These, are not. Special: punctuation; marks! Or are "they"?'
@@ -90,7 +95,7 @@ def test_placeable_punctuation():
     assert result[1] == general.PunctuationPlaceable(["…"])
 
 
-def test_placeable_xml_entity():
+def test_placeable_xml_entity() -> None:
     result = general.XMLEntityPlaceable.parse("&brandShortName;")
     assert result
     assert result[0] == general.XMLEntityPlaceable(["&brandShortName;"])
@@ -102,7 +107,7 @@ def test_placeable_xml_entity():
     assert result[0] == general.XMLEntityPlaceable(["&xDEAD;"])
 
 
-def test_placeable_xml_tag():
+def test_placeable_xml_tag() -> None:
     result = general.XMLTagPlaceable.parse("<a>koei</a>")
     assert result
     assert result[0] == general.XMLTagPlaceable(["<a>"])
@@ -151,7 +156,7 @@ def test_placeable_xml_tag():
     )
 
 
-def test_placeable_option():
+def test_placeable_option() -> None:
     result = general.OptionPlaceable.parse("Type --help for this help")
     assert result
     assert result[1] == general.OptionPlaceable(["--help"])
@@ -160,7 +165,7 @@ def test_placeable_option():
     assert result[1] == general.OptionPlaceable(["-S"])
 
 
-def test_placeable_file():
+def test_placeable_file() -> None:
     result = general.FilePlaceable.parse("Store in /home/user")
     assert result
     assert result[1] == general.FilePlaceable(["/home/user"])
@@ -169,7 +174,7 @@ def test_placeable_file():
     assert result[1] == general.FilePlaceable(["~/Download"])
 
 
-def test_placeable_email():
+def test_placeable_email() -> None:
     result = general.EmailPlaceable.parse("Send email to info@example.com")
     assert result
     assert result[1] == general.EmailPlaceable(["info@example.com"])
@@ -178,7 +183,7 @@ def test_placeable_email():
     assert result[1] == general.EmailPlaceable(["mailto:info@example.com"])
 
 
-def test_placeable_caps():
+def test_placeable_caps() -> None:
     result = general.CapsPlaceable.parse("Use the HTML page")
     assert result
     assert result[1] == general.CapsPlaceable(["HTML"])
@@ -193,7 +198,7 @@ def test_placeable_caps():
     assert result[1] == general.CapsPlaceable(["XDG_USER_DIRS"])
 
 
-def test_placeable_formatting():
+def test_placeable_formatting() -> None:
     fp = general.FormattingPlaceable
     result = fp.parse("There were %d cows")
     assert result
@@ -239,7 +244,7 @@ def test_placeable_formatting():
     assert result[1] == fp(["%1$d"])
 
 
-def test_placeable_doubleat():
+def test_placeable_doubleat() -> None:
     dap = general.DoubleAtPlaceable
     result = dap.parse("There were @@number@@ cows")
     assert result
@@ -250,7 +255,7 @@ def test_placeable_doubleat():
     assert result[3] == dap(["@@number2@@"])
 
 
-def test_placeable_brace():
+def test_placeable_brace() -> None:
     bp = general.BracePlaceable
     # Double braces
     result = bp.parse("There were {{number}} cows")
@@ -281,7 +286,7 @@ def test_placeable_brace():
     assert result[3] == bp(["{number2}"])
 
 
-def test_python_placeable():
+def test_python_placeable() -> None:
     pfp = general.PythonFormattingPlaceable
     # No conversion
     result = pfp.parse("100%% correct")

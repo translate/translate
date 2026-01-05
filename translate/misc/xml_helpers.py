@@ -69,7 +69,7 @@ def getXMLlang(node):
     return node.get(f"{{{XML_NS}}}lang")
 
 
-def setXMLlang(node, lang):
+def setXMLlang(node, lang) -> None:
     """Sets the xml:lang attribute on node."""
     node.set(f"{{{XML_NS}}}lang", lang)
 
@@ -82,7 +82,7 @@ def getXMLspace(node, default=None):
     return value
 
 
-def setXMLspace(node, value):
+def setXMLspace(node, value) -> None:
     """Sets the xml:space attribute on node."""
     node.set(f"{{{XML_NS}}}space", value)
 
@@ -111,7 +111,7 @@ def normalize_space(text: str):
     return MULTIWHITESPACE_RE.sub(" ", text)
 
 
-def normalize_xml_space(node, xml_space: str, remove_start: bool = False):
+def normalize_xml_space(node, xml_space: str, remove_start: bool = False) -> None:
     """
     Normalize spaces following the nodes xml:space, or alternatively the
     given xml_space parameter.
@@ -146,7 +146,7 @@ def reindent(
     *,
     ignore_preserve: set[str] | None = None,
     trailing_eol: bool = False,
-):
+) -> None:
     """
     Adjust indentation to match specification.
 
@@ -213,7 +213,7 @@ def reindent(
         elem.tail = i
 
 
-def expand_closing_tags(elem):
+def expand_closing_tags(elem) -> None:
     """
     Changes value of empty XML tags to empty string.
 
@@ -292,7 +292,7 @@ def safely_set_text(node, text: str) -> None:
         node.text = valid_chars_only(text)
 
 
-def clear_content(node):
+def clear_content(node) -> None:
     """
     Removes XML node content.
 

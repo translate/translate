@@ -23,14 +23,14 @@ from translate.storage.xml_extract import unit_tree
 # _split_xpath_component
 
 
-def test__split_xpath_component():
+def test__split_xpath_component() -> None:
     assert unit_tree._split_xpath_component("some-tag[0]") == ("some-tag", 0)
 
 
 # _split_xpath
 
 
-def test__split_xpath():
+def test__split_xpath() -> None:
     assert unit_tree._split_xpath("document-content[1]/body[2]/text[3]/p[4]") == [
         ("p", 4),
         ("text", 3),
@@ -81,7 +81,7 @@ def make_tree_2(unit_1, unit_2):
     return root
 
 
-def test__add_unit_to_tree():
+def test__add_unit_to_tree() -> None:
     xliff_file = xliff.xlifffile
     #    xliff_file = factory.classes['xlf']()
 

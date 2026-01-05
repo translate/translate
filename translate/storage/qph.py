@@ -65,7 +65,7 @@ class QphUnit(lisa.LISAunit):
             n for n in [self._getsourcenode(), self._gettargetnode()] if n is not None
         ]
 
-    def addnote(self, text, origin=None, position="append"):
+    def addnote(self, text, origin=None, position="append") -> None:
         """Add a note specifically in a "definition" tag."""
         current_notes = self.getnotes(origin)
         self.removenotes(origin)
@@ -80,7 +80,7 @@ class QphUnit(lisa.LISAunit):
             comment = notenode.text
         return comment
 
-    def removenotes(self, origin=None):
+    def removenotes(self, origin=None) -> None:
         """Remove all the translator notes."""
         note = self.xmlelement.find(self.namespaced("definition"))
         if note is not None:
@@ -102,7 +102,7 @@ class QphFile(lisa.LISAfile):
 """
     namespace = ""
 
-    def initbody(self):
+    def initbody(self) -> None:
         """
         Initialises self.body so it never needs to be retrieved from the XML
         again.
@@ -143,7 +143,7 @@ class QphFile(lisa.LISAfile):
         if targetlanguage:
             self.header.set("language", targetlanguage)
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         """
         Write the XML document to the file `out`.
 

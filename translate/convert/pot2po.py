@@ -41,7 +41,7 @@ def convertpot(
     classes=None,
     classes_str=None,
     **kwargs,
-):
+) -> int:
     """Main conversion function."""
     input_store = factory.getobject(
         input_file, classes=classes, classes_str=classes_str
@@ -132,7 +132,7 @@ def convert_stores(
 
 
 ##dispatchers
-def _prepare_merge(input_store, output_store, template_store, **kwargs):
+def _prepare_merge(input_store, output_store, template_store, **kwargs) -> None:
     """Prepare stores & TM matchers before merging."""
     # Dispatch to format specific functions
     prepare_merge_hook = f"_prepare_merge_{input_store.__class__.__name__}"
@@ -147,7 +147,7 @@ def _prepare_merge(input_store, output_store, template_store, **kwargs):
         template_store.makeindex()
 
 
-def _store_pre_merge(input_store, output_store, template_store, **kwargs):
+def _store_pre_merge(input_store, output_store, template_store, **kwargs) -> None:
     """Initialize the new file with things like headers and metadata."""
     # formats that implement poheader interface are a special case
     if isinstance(input_store, poheader.poheader):
@@ -167,7 +167,7 @@ def _store_pre_merge(input_store, output_store, template_store, **kwargs):
         )
 
 
-def _store_post_merge(input_store, output_store, template_store, **kwargs):
+def _store_post_merge(input_store, output_store, template_store, **kwargs) -> None:
     """
     Close file after merging all translations, used for adding statistics,
     obsolete messages and similar wrapup tasks.
@@ -180,7 +180,9 @@ def _store_post_merge(input_store, output_store, template_store, **kwargs):
         )
 
 
-def _unit_post_merge(input_unit, input_store, output_store, template_store, **kwargs):
+def _unit_post_merge(
+    input_unit, input_store, output_store, template_store, **kwargs
+) -> None:
     """
     Handle any unit level cleanup and situations not handled by the merge()
     function.
@@ -194,7 +196,9 @@ def _unit_post_merge(input_unit, input_store, output_store, template_store, **kw
 
 
 ## Format specific functions
-def _unit_post_merge_pounit(input_unit, input_store, output_store, template_store):
+def _unit_post_merge_pounit(
+    input_unit, input_store, output_store, template_store
+) -> None:
     """PO format specific plural string initialization logic."""
     # FIXME: do we want to do that for poxliff also?
     if input_unit.hasplural() and len(input_unit.target) == 0:
@@ -205,7 +209,7 @@ def _unit_post_merge_pounit(input_unit, input_store, output_store, template_stor
             input_unit.target = multistring([""] * int(nplurals))
 
 
-def _store_post_merge_pofile(input_store, output_store, template_store):
+def _store_post_merge_pofile(input_store, output_store, template_store) -> None:
     """PO format specific: adds newly obsoleted messages to end of store."""
     # Let's take care of obsoleted messages
     if template_store:
@@ -223,7 +227,7 @@ def _store_post_merge_pofile(input_store, output_store, template_store):
             output_store.addunit(unit)
 
 
-def _do_poheaders(input_store, output_store, template_store):
+def _do_poheaders(input_store, output_store, template_store) -> None:
     """Adds initialized PO headers to output store."""
     # header values
     charset = "UTF-8"
@@ -307,7 +311,7 @@ def _do_poheaders(input_store, output_store, template_store):
             output_header.markfuzzy(template_header.isfuzzy())
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     formats = {
         "pot": ("po", convertpot),
         ("pot", "po"): ("po", convertpot),

@@ -42,7 +42,7 @@ class TestJson2PO:
         assert len(storage.units) == 1
         return storage.units[0]
 
-    def test_simple(self):
+    def test_simple(self) -> None:
         """Test the most basic json conversion."""
         jsonsource = """{ "text": "A simple string"}"""
         poexpected = """#: .text
@@ -52,7 +52,7 @@ msgstr ""
         poresult = self.json2po(jsonsource)
         assert str(poresult.units[1]) == poexpected
 
-    def test_three_same_keys(self):
+    def test_three_same_keys(self) -> None:
         """Test that we can handle JSON with three (or more) same keys."""
         jsonsource = """{
     "a": {
@@ -72,7 +72,7 @@ msgstr ""
         assert poresult.units[2].msgctxt == ['".b.x"']
         assert poresult.units[3].msgctxt == ['".c.x"']
 
-    def test_filter(self):
+    def test_filter(self) -> None:
         """Test basic json conversion with filter option."""
         jsonsource = """{ "text": "A simple string", "number": 42 }"""
         poexpected = """#: .text
@@ -82,7 +82,7 @@ msgstr ""
         poresult = self.json2po(jsonsource, filter=["text"])
         assert str(poresult.units[1]) == poexpected
 
-    def test_multiple_units(self):
+    def test_multiple_units(self) -> None:
         """Test that we can handle json with multiple units."""
         jsonsource = """
 {

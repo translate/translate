@@ -24,11 +24,11 @@ class TestTMXUnitFromParsedString(TestTMXUnit):
         </body>
 </tmx>"""
 
-    def setup_method(self, method):
+    def setup_method(self, method) -> None:
         store = tmx.tmxfile.parsestring(self.tmxsource)
         self.unit = store.units[0]
 
-    def test_context(self):
+    def test_context(self) -> None:
         tmxunit = self.UnitClass("Sample source")
         assert tmxunit.getcontext() == ""
         tmxunit.setcontext("context info")
@@ -45,7 +45,7 @@ class TestTMXfile(test_base.TestTranslationStore):
         print(tmxsource)
         return tmx.tmxfile(dummyfile)
 
-    def test_translate(self):
+    def test_translate(self) -> None:
         tmxfile = tmx.tmxfile()
         assert tmxfile.translate("Anything") is None
         tmxfile.addtranslation(
@@ -53,7 +53,7 @@ class TestTMXfile(test_base.TestTranslationStore):
         )
         assert tmxfile.translate("A string of characters") == "'n String karakters"
 
-    def test_addtranslation(self):
+    def test_addtranslation(self) -> None:
         """Tests that addtranslation() stores strings correctly."""
         tmxfile = tmx.tmxfile()
         tmxfile.addtranslation(
@@ -63,7 +63,7 @@ class TestTMXfile(test_base.TestTranslationStore):
         print(bytes(tmxfile))
         assert newfile.translate("A string of characters") == "'n String karakters"
 
-    def test_withcomment(self):
+    def test_withcomment(self) -> None:
         """Tests that addtranslation() stores string's comments correctly."""
         tmxfile = tmx.tmxfile()
         tmxfile.addtranslation(
@@ -73,7 +73,7 @@ class TestTMXfile(test_base.TestTranslationStore):
         print(bytes(tmxfile))
         assert newfile.findunit("A string of chars").getnotes() == "comment"
 
-    def test_withnewlines(self):
+    def test_withnewlines(self) -> None:
         """Test addtranslation() with newlines."""
         tmxfile = tmx.tmxfile()
         tmxfile.addtranslation(
@@ -83,7 +83,7 @@ class TestTMXfile(test_base.TestTranslationStore):
         print(bytes(tmxfile))
         assert newfile.translate("First line\nSecond line") == "Eerste lyn\nTweede lyn"
 
-    def test_xmlentities(self):
+    def test_xmlentities(self) -> None:
         """Test that the xml entities '&' and '<'  are escaped correctly."""
         tmxfile = tmx.tmxfile()
         tmxfile.addtranslation("Mail & News", "en", "Nuus & pos", "af")
@@ -98,7 +98,7 @@ class TestTMXfile(test_base.TestTranslationStore):
         assert xmltext.index("Five &lt; ten")
         assert xmltext.find("Five < ten") == -1
 
-    def test_controls_cleaning(self):
+    def test_controls_cleaning(self) -> None:
         """Test addtranslation() with control chars."""
         tmxfile = tmx.tmxfile()
         tmxfile.addtranslation("Client Version:\x0314 %s", "en", "test one", "ar")
@@ -108,7 +108,7 @@ class TestTMXfile(test_base.TestTranslationStore):
         assert newfile.translate("Client Version:14 %s") == "test one"
         assert newfile.translate("Client Version:\n%s") == "test two"
 
-    def test_context(self):
+    def test_context(self) -> None:
         store = self.StoreClass()
         unit = store.addsourceunit("Source text")
         unit.target = "Target text"
@@ -134,7 +134,7 @@ class TestTMXfile(test_base.TestTranslationStore):
         newstore = self.StoreClass().parsestring(newsource)
         assert newstore.units[0].getcontext() == "Context text"
 
-    def test_note_order(self):
+    def test_note_order(self) -> None:
         """Test that notes appear before tuv elements as per TMX DTD."""
         store = self.StoreClass()
         unit = store.addsourceunit("Test")
@@ -156,7 +156,7 @@ class TestTMXfile(test_base.TestTranslationStore):
             "note element should appear before tuv elements"
         )
 
-    def test_prop_and_note_order(self):
+    def test_prop_and_note_order(self) -> None:
         """Test that notes and props appear before tuv elements as per TMX DTD."""
         store = self.StoreClass()
         unit = store.addsourceunit("Test")

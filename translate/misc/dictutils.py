@@ -33,7 +33,7 @@ class cidict(dict):
                 return super().__getitem__(akey)
         raise KeyError
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key, value) -> None:
         if not isinstance(key, str):
             raise TypeError(
                 f"cidict can only have str or unicode as key (got {type(key)!r})"
@@ -44,7 +44,7 @@ class cidict(dict):
                 return super().__setitem__(akey, value)
         return super().__setitem__(key, value)
 
-    def __delitem__(self, key):
+    def __delitem__(self, key) -> None:
         if not isinstance(key, str):
             raise TypeError(
                 f"cidict can only have str or unicode as key (got {type(key)!r})"
@@ -55,7 +55,7 @@ class cidict(dict):
                 return super().__delitem__(akey)
         raise KeyError
 
-    def __contains__(self, key):
+    def __contains__(self, key) -> bool:
         if not isinstance(key, str):
             raise TypeError(
                 f"cidict can only have str or unicode as key (got {type(key)!r})"

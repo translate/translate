@@ -1,7 +1,7 @@
 from translate.misc import quote
 
 
-def test_find_all():
+def test_find_all() -> None:
     """Tests the find_all function."""
     assert list(quote.find_all("", "a")) == []
     assert list(quote.find_all("a", "b")) == []
@@ -12,7 +12,7 @@ def test_find_all():
     assert list(quote.find_all("banana", "ana")) == [1]
 
 
-def test_extract():
+def test_extract() -> None:
     """Tests the extract function."""
     assert quote.extract("the <quoted> part", "<", ">", "\\", 0) == ("<quoted>", False)
     assert quote.extract("the 'quoted' part", "'", "'", "\\", 0) == ("'quoted'", False)
@@ -41,7 +41,7 @@ def test_extract():
     assert quote.extract('">\n', '"', '"', None, True) == ('"', False)
 
 
-def test_extractwithoutquotes():
+def test_extractwithoutquotes() -> None:
     """Tests the extractwithoutquotes function."""
     assert quote.extractwithoutquotes("the <quoted> part", "<", ">", "\\", 0) == (
         "quoted",
@@ -96,24 +96,24 @@ def isnewlineortabescape(escape):
     return escape[-1]
 
 
-def test_extractwithoutquotes_passfunc():
+def test_extractwithoutquotes_passfunc() -> None:
     """Tests the extractwithoutquotes function with a function for includeescapes as a parameter."""
     assert quote.extractwithoutquotes(
         "<test \\r \\n \\t \\\\>", "<", ">", "\\", 0, isnewlineortabescape
     ) == ("test r \\n \\t \\", False)
 
 
-def test_stripcomment():
+def test_stripcomment() -> None:
     assert quote.stripcomment("<!-- Comment -->") == "Comment"
 
 
 class TestEncoding:
-    def test_javapropertiesencode(self):
+    def test_javapropertiesencode(self) -> None:
         assert quote.javapropertiesencode("abc") == "abc"
         assert quote.javapropertiesencode("abcḓ") == r"abc\u1E13"
         assert quote.javapropertiesencode("abc\n") == "abc\\n"
 
-    def test_javapropertiesencode_iso_8859_1(self):
+    def test_javapropertiesencode_iso_8859_1(self) -> None:
         """Test that ISO-8859-1 characters (0-255) are not encoded."""
         # ASCII characters (0-127) should not be encoded
         assert quote.javapropertiesencode("hello") == "hello"
@@ -131,7 +131,7 @@ class TestEncoding:
         assert quote.javapropertiesencode("cáfé") == "cáfé"
         assert quote.javapropertiesencode("čáfé") == r"\u010Dáfé"
 
-    def test_javapropertiesencode_ascii(self):
+    def test_javapropertiesencode_ascii(self) -> None:
         """Test that non-ASCII characters are encoded when using ASCII encoding."""
         # ASCII characters (0-127) should not be encoded
         assert quote.javapropertiesencode("hello", encoding="ascii") == "hello"
@@ -148,7 +148,7 @@ class TestEncoding:
             quote.javapropertiesencode("Zkouška", encoding="ascii") == r"Zkou\u0161ka"
         )
 
-    def test_javapropertiesencode_unicode_range(self):
+    def test_javapropertiesencode_unicode_range(self) -> None:
         """Test encoding full unicode range for specifically handled encodings."""
         # Create a string with the first 512 unicode characters
         unicode_string = "".join(chr(i) for i in range(512))
@@ -167,29 +167,29 @@ class TestEncoding:
         # (because chars > 255 are escaped as \uXXXX which are ASCII)
         quoted_iso.encode("iso-8859-1")
 
-    def test_java_utf8_properties_encode(self):
+    def test_java_utf8_properties_encode(self) -> None:
         assert quote.java_utf8_properties_encode("abc") == "abc"
         assert quote.java_utf8_properties_encode("abcḓ") == "abcḓ"
         assert quote.java_utf8_properties_encode("abc\n") == "abc\\n"
 
-    def test_escapespace(self):
+    def test_escapespace(self) -> None:
         assert quote.escapespace(" ") == "\\u0020"
         assert quote.escapespace("\t") == "\\u0009"
 
-    def test_mozillaescapemarginspaces(self):
+    def test_mozillaescapemarginspaces(self) -> None:
         assert quote.mozillaescapemarginspaces(" ") == r"\u0020"
         assert quote.mozillaescapemarginspaces("A") == "A"
         assert quote.mozillaescapemarginspaces(" abc ") == r"\u0020abc\u0020"
         assert quote.mozillaescapemarginspaces("  abc ") == r"\u0020 abc\u0020"
 
-    def test_mozilla_control_escapes(self):
+    def test_mozilla_control_escapes(self) -> None:
         r"""Test that we do \uNNNN escapes for certain control characters instead of converting to UTF-8 characters."""
         prefix, suffix = "bling", "blang"
         for control in ("\u0005", "\u0006", "\u0007", "\u0011"):
             string = prefix + control + suffix
             assert quote.escapecontrols(string) != string
 
-    def test_propertiesdecode(self):
+    def test_propertiesdecode(self) -> None:
         assert quote.propertiesdecode("abc") == "abc"
         assert quote.propertiesdecode("abc\\u1e13") == "abcḓ"
         assert quote.propertiesdecode("abc\\u1E13") == "abcḓ"
@@ -197,7 +197,7 @@ class TestEncoding:
         assert quote.propertiesdecode("abc\\") == "abc\\"
         assert quote.propertiesdecode("abc\\") == "abc\\"
 
-    def test_controlchars(self):
+    def test_controlchars(self) -> None:
         assert quote.javapropertiesencode(quote.propertiesdecode("\u0001")) == r"\u0001"
         assert quote.javapropertiesencode(quote.propertiesdecode("\\u01")) == r"\u0001"
         assert quote.javapropertiesencode("\\") == "\\\\"
@@ -205,7 +205,7 @@ class TestEncoding:
         assert quote.propertiesdecode("\x01") == "\x01"
         assert quote.propertiesdecode("\\u0001") == "\x01"
 
-    def test_properties_decode_slashu(self):
+    def test_properties_decode_slashu(self) -> None:
         # The real input strings don't have double backslashes, but we have to
         # double them here because Python immediately decode them, even for raw
         # strings.
@@ -216,28 +216,28 @@ class TestEncoding:
         assert quote.propertiesdecode("abc\\u20") == "abc "
 
     @staticmethod
-    def _html_encoding_helper(pairs):
+    def _html_encoding_helper(pairs) -> None:
         for from_, to in pairs:
             assert quote.htmlentityencode(from_) == to
             assert quote.htmlentitydecode(to) == from_
 
-    def test_htmlencoding(self):
+    def test_htmlencoding(self) -> None:
         """Test that we can encode and decode simple HTML entities."""
         raw_encoded = [("€", "&euro;"), ("©", "&copy;"), ('"', "&quot;")]
         self._html_encoding_helper(raw_encoded)
 
-    def test_htmlencoding_existing_entities(self):
+    def test_htmlencoding_existing_entities(self) -> None:
         """Test that we don't mess existing entities."""
         assert quote.htmlentityencode("&amp;") == "&amp;"
 
-    def test_htmlencoding_passthrough(self):
+    def test_htmlencoding_passthrough(self) -> None:
         """Test that we can encode and decode things that look like HTML entities but aren't."""
         raw_encoded = [
             ("copy quot", "copy quot")
         ]  # Raw text should have nothing done to it.
         self._html_encoding_helper(raw_encoded)
 
-    def test_htmlencoding_nonentities(self):
+    def test_htmlencoding_nonentities(self) -> None:
         """Tests to give us full coverage."""
         for encoded, real in [
             ("Some &; text", "Some &; text"),

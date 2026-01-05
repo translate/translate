@@ -1159,7 +1159,7 @@ class FluentFile(base.TranslationStore):
                 comment_text.append(part)
         return "\n".join(text for text in comment_text if text)
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         prefix_comments = [
             unit.getnotes() or ""
             for unit in self.units

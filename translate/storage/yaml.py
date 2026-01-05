@@ -39,7 +39,7 @@ class YAMLUnitId(base.UnitId):
     KEY_SEPARATOR = "->"
     INDEX_SEPARATOR = "->"
 
-    def __str__(self):
+    def __str__(self) -> str:
         result = super().__str__()
         # Strip leading ->
         if result.startswith(self.KEY_SEPARATOR):
@@ -52,7 +52,7 @@ class YAMLUnit(base.DictUnit):
 
     IdClass = YAMLUnitId
 
-    def __init__(self, source=None, **kwargs):
+    def __init__(self, source=None, **kwargs) -> None:
         # Ensure we have ID (for serialization)
         if source:
             self.source = source
@@ -66,7 +66,7 @@ class YAMLUnit(base.DictUnit):
         return self.target
 
     @source.setter
-    def source(self, source):
+    def source(self, source) -> None:
         self.target = source
 
     def getid(self):
@@ -142,7 +142,7 @@ class YAMLFile(base.DictStore):
 
     UnitClass = YAMLUnit
 
-    def __init__(self, inputfile=None, **kwargs):
+    def __init__(self, inputfile=None, **kwargs) -> None:
         """Construct a YAML file, optionally reading in from inputfile."""
         super().__init__(**kwargs)
         self.filename = ""
@@ -165,7 +165,7 @@ class YAMLFile(base.DictStore):
             setattr(yaml, arg, value)
         return yaml
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         # Always start with valid root even if original file was empty
         if self._original is None:
             self._original = self.get_root_node()
@@ -278,7 +278,7 @@ class YAMLFile(base.DictStore):
         """Preprocess hook for child formats."""
         return data
 
-    def parse(self, input):
+    def parse(self, input) -> None:
         """Parse the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name
@@ -307,7 +307,7 @@ class YAMLFile(base.DictStore):
                 unit.addnote(comment, origin="developer")
             self.addunit(unit)
 
-    def removeunit(self, unit):
+    def removeunit(self, unit) -> None:
         if self._original is not None:
             units = self.preprocess(self._original)
             unit.storevalue(units, None, unset=True)

@@ -33,7 +33,7 @@ def identity(x):
 
 
 class ParseState:
-    def __init__(self, f, charset, read_hook=identity):
+    def __init__(self, f, charset, read_hook=identity) -> None:
         self.f = f
         self.charset = charset
         self.current_line = ""
@@ -55,11 +55,11 @@ def read_while(ps, f, test):
     return result
 
 
-def eat_whitespace(ps):
+def eat_whitespace(ps) -> None:
     read_while(ps, identity, lambda line: line.strip())
 
 
-def skip_no_translate(ps):
+def skip_no_translate(ps) -> None:
     if ps.current_line.startswith("// DO NOT TRANSLATE"):
         ps.read_line()
         read_while(

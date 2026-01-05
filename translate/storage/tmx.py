@@ -72,7 +72,7 @@ class tmxunit(lisa.LISAunit):
     def istranslatable(self):
         return bool(self.source)
 
-    def addnote(self, text, origin=None, position="append"):
+    def addnote(self, text, origin=None, position="append") -> None:
         """
         Add a note specifically in a "note" tag.
 
@@ -101,13 +101,13 @@ class tmxunit(lisa.LISAunit):
     def getnotes(self, origin=None):
         return "\n".join(self._getnotelist(origin=origin))
 
-    def removenotes(self, origin=None):
+    def removenotes(self, origin=None) -> None:
         """Remove all the translator notes."""
         notes = self.xmlelement.iterdescendants(self.namespaced("note"))
         for note in notes:
             self.xmlelement.remove(note)
 
-    def adderror(self, errorname, errortext):
+    def adderror(self, errorname, errortext) -> None:
         """Adds an error message to this unit."""
         # TODO: consider factoring out: some duplication between XLIFF and TMX
         text = errorname
@@ -125,7 +125,7 @@ class tmxunit(lisa.LISAunit):
             errordict[errorname] = errortext
         return errordict
 
-    def setcontext(self, context):
+    def setcontext(self, context) -> None:
         context_prop = self.xmlelement.find(
             f"{self.namespaced('prop')}[@type='x-context']"
         )
@@ -164,7 +164,7 @@ class tmxfile(lisa.LISAfile):
 <body></body>
 </tmx>"""
 
-    def addheader(self):
+    def addheader(self) -> None:
         headernode = next(
             self.document.getroot().iterchildren(self.namespaced("header"))
         )
@@ -182,7 +182,7 @@ class tmxfile(lisa.LISAfile):
 
     def addtranslation(
         self, source, srclang, translation, translang, comment=None, context=None
-    ):
+    ) -> None:
         """Addtranslation method for testing old unit tests."""
         unit = self.addsourceunit(source)
         unit.target = translation

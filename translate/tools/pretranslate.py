@@ -57,7 +57,7 @@ def pretranslate_file(
     tm=None,
     min_similarity=75,
     fuzzymatching=True,
-):
+) -> int:
     """
     Pretranslate any factory supported file with old translations and
     translation memory.
@@ -220,7 +220,7 @@ def pretranslate_store(
     return input_store
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     formats = {
         "pot": ("po", pretranslate_file),
         ("pot", "po"): ("po", pretranslate_file),

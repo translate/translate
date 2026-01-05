@@ -185,7 +185,7 @@ def po2ini(
     )
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     # TODO: get encoding from charset.mk, using parameter
     src = sys.stdin.read()
     for line in prop2funny(src):

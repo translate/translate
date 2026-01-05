@@ -86,7 +86,7 @@ class TestRC2POCommand(test_convert.TestConvertCommand):
         "--duplicates=DUPLICATESTYLE",
     ]
 
-    def test_convert(self):
+    def test_convert(self) -> None:
         """Tests the conversion to a po file."""
         self.create_testfile("simple.rc", RC_SOURCE)
         self.run_command(i="simple.rc", o="simple.po")
@@ -103,13 +103,13 @@ class TestRC2POCommand(test_convert.TestConvertCommand):
             "MENU.IDR_MAINFRAME.POPUP.CAPTION"
         ]
 
-    def test_convert_encoding_utf16(self):
+    def test_convert_encoding_utf16(self) -> None:
         self.create_testfile("simple.rc", RC_SOURCE.encode("utf-16"))
         self.run_command(i="simple.rc", o="simple.po", charset="utf-16")
         po_result = pofile(self.open_testfile("simple.po"))
         assert len(po_result.units) == 23
 
-    def test_convert_encoding_wrong(self):
+    def test_convert_encoding_wrong(self) -> None:
         self.create_testfile("simple.rc", RC_SOURCE.encode("utf-8"))
         self.run_command(i="simple.rc", o="simple.po", charset="utf-16x")
         po_result = pofile(self.open_testfile("simple.po"))
@@ -118,13 +118,13 @@ class TestRC2POCommand(test_convert.TestConvertCommand):
         po_result = pofile(self.open_testfile("simple.po"))
         assert len(po_result.units) == 0
 
-    def test_convert_encoding_utf8(self):
+    def test_convert_encoding_utf8(self) -> None:
         self.create_testfile("simple.rc", RC_SOURCE.encode("utf-8"))
         self.run_command(i="simple.rc", o="simple.po", charset="utf-8")
         po_result = pofile(self.open_testfile("simple.po"))
         assert len(po_result.units) == 23
 
-    def test_menuex(self):
+    def test_menuex(self) -> None:
         source = """
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 

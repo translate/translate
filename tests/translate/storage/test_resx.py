@@ -89,14 +89,14 @@ class TestRESXUnitFromParsedString(TestRESXUnit):
   %s
 </root>"""
 
-    def setup_method(self, method):
+    def setup_method(self, method) -> None:
         self.store = resx.RESXFile.parsestring(self.resxsource % "")
         self.unit = self.store.units[0]
 
-    def _assert_store(self, expected_resx):
+    def _assert_store(self, expected_resx) -> None:
         assert bytes(self.store).decode() == expected_resx.replace("\n", "\r\n")
 
-    def test_newunit(self):
+    def test_newunit(self) -> None:
         new_unit = resx.RESXUnit("New translated value")
         new_unit.setid("test")
         self.store.addunit(new_unit)
@@ -109,7 +109,7 @@ class TestRESXUnitFromParsedString(TestRESXUnit):
         )
         self._assert_store(expected_resx)
 
-    def test_newunit_comment(self):
+    def test_newunit_comment(self) -> None:
         new_unit = resx.RESXUnit("New translated value")
         new_unit.setid("test")
         new_unit.addnote("this unit didn't exist before")

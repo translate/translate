@@ -8,7 +8,7 @@ from . import test_monolingual
 class TestSubRipFile(test_monolingual.TestMonolingualStore):
     StoreClass = subtitles.SubRipFile
 
-    def test_ordering(self):
+    def test_ordering(self) -> None:
         store = self.StoreClass()
         unit = store.UnitClass("Second")
         unit.settime("00:01:00.000", "00:01:01.000", 1)
@@ -29,7 +29,7 @@ class TestSubtitleUnit(TestSubRipFile):
     UnitClass = subtitles.SubtitleUnit
 
     @pytest.mark.xfail(reason="Not Implemented")
-    def test_note_sanity(self):
+    def test_note_sanity(self) -> None:
         super().test_note_sanity()
 
 

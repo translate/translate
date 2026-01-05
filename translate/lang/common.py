@@ -240,7 +240,7 @@ class Common:
         memo[id(self)] = self
         return self
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Give a simple string representation without address information to
         be able to store it in text for comparison later.

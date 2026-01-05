@@ -64,13 +64,13 @@ ICAL_UNIT_LOCATION_RE = re.compile(r"\[(?P<uid>.+)\](?P<property>.+)")
 class icalunit(base.TranslationUnit):
     """An ical entry that is translatable."""
 
-    def __init__(self, source=None, **kwargs):
+    def __init__(self, source=None, **kwargs) -> None:
         self.location = ""
         if source:
             self.source = source
         super().__init__(source)
 
-    def addlocation(self, location):
+    def addlocation(self, location) -> None:
         self.location = location
 
     def getlocations(self):
@@ -82,7 +82,7 @@ class icalfile(base.TranslationStore):
 
     UnitClass = icalunit
 
-    def __init__(self, inputfile=None, **kwargs):
+    def __init__(self, inputfile=None, **kwargs) -> None:
         """Construct an ical file, optionally reading in from inputfile."""
         super().__init__(**kwargs)
         self.filename = ""
@@ -90,7 +90,7 @@ class icalfile(base.TranslationStore):
         if inputfile is not None:
             self.parse(inputfile)
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         outicalfile = self._icalfile
         for unit in self.units:
             for location in unit.getlocations():
@@ -107,7 +107,7 @@ class icalfile(base.TranslationStore):
         if outicalfile:
             outicalfile.serialize(out)
 
-    def parse(self, input):
+    def parse(self, input) -> None:
         """Parse the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name

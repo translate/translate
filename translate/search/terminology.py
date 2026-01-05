@@ -20,11 +20,11 @@
 
 
 class TerminologyComparer:
-    def __init__(self, max_len=500):
+    def __init__(self, max_len=500) -> None:
         self.match_info = {}
         self.MAX_LEN = max_len
 
-    def similarity(self, text, term, stoppercentage=40):
+    def similarity(self, text, term, stoppercentage=40) -> int:
         """Returns the match quality of ``term`` in the ``text``."""
         # We could segment the words, but mostly it will give less ideal
         # results, since we'll miss plurals, etc. Then we also can't search for

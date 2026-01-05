@@ -52,7 +52,7 @@ class StateEnum:
 
 
 class State:
-    def __init__(self, name, enter_action=None, leave_action=None):
+    def __init__(self, name, enter_action=None, leave_action=None) -> None:
         self.name = name
         self.enter_action = enter_action
         self.leave_action = leave_action
@@ -60,29 +60,29 @@ class State:
     def __eq__(self, rhs):
         return self.name == rhs.name
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'<State "{self.name}">'
 
-    def enter(self, obj):
+    def enter(self, obj) -> None:
         if not self.enter_action or not callable(self.enter_action):
             return
         self.enter_action(obj)
 
-    def leave(self, obj):
+    def leave(self, obj) -> None:
         if not self.leave_action or not callable(self.leave_action):
             return
         self.leave_action(obj)
 
 
 class UnitState(State):
-    def __init__(self, name, state_value):
+    def __init__(self, name, state_value) -> None:
         self.state_value = state_value
         super().__init__(name, self._enter)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<UnitState name={self.name} value={self.state_value}>"
 
-    def _enter(self, unit):
+    def _enter(self, unit) -> None:
         unit.set_state_n(self.state_value)
 
 
@@ -99,18 +99,18 @@ class TransitionError(WorkflowError):
 
 
 class InvalidStateObjectError(WorkflowError):
-    def __init__(self, obj):
+    def __init__(self, obj) -> None:
         super().__init__(f"Invalid state object: {obj}")
 
 
 class StateNotInWorkflowError(Exception):
-    def __init__(self, state):
+    def __init__(self, state) -> None:
         super().__init__(f"State not in workflow: {state}")
 
 
 class Workflow:
     # INITIALISERS #
-    def __init__(self, wf_obj=None):
+    def __init__(self, wf_obj=None) -> None:
         self._current_state = None
         self._edges = []
         self._initial_state = None
@@ -129,7 +129,7 @@ class Workflow:
     states = property(_get_states)
 
     # METHODS #
-    def add_edge(self, from_state, to_state):
+    def add_edge(self, from_state, to_state) -> None:
         if isinstance(from_state, str):
             from_state = self.get_state_by_name(from_state)
         if isinstance(to_state, str):
@@ -142,7 +142,7 @@ class Workflow:
 
         self._edges.append((from_state, to_state))
 
-    def add_state(self, state):
+    def add_state(self, state) -> None:
         if not isinstance(state, State):
             raise InvalidStateObjectError(state)
         if state in self.states:
@@ -173,7 +173,7 @@ class Workflow:
 
         raise StateNotInWorkflowError(state_name)
 
-    def set_current_state(self, state):
+    def set_current_state(self, state) -> None:
         """
         Set the current state. This is absolute and not subject to edge
         constraints. The current state's ``leave`` and the new state's
@@ -190,7 +190,7 @@ class Workflow:
         self._current_state = state
         self._current_state.enter(self._workflow_obj)
 
-    def set_initial_state(self, state):
+    def set_initial_state(self, state) -> None:
         """Sets the initial state, used by the :meth:`.reset` method."""
         if isinstance(state, str):
             state = self.get_state_by_name(state)
@@ -200,7 +200,7 @@ class Workflow:
             raise StateNotInWorkflowError(state)
         self._initial_state = state
 
-    def reset(self, wf_obj, init_state=None):
+    def reset(self, wf_obj, init_state=None) -> None:
         """Reset the work flow to the initial state using the given object."""
         self._workflow_obj = wf_obj
         if init_state is not None:
@@ -216,7 +216,7 @@ class Workflow:
         self._current_state = None
         self.set_current_state(self._initial_state)
 
-    def trans(self, to_state=None):
+    def trans(self, to_state=None) -> None:
         """
         Transition to the given state. If no state is given, the first one
         returned by ``get_to_states`` is used.

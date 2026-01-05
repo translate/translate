@@ -78,7 +78,7 @@ def mergestore(
     mergeblanks="no",
     mergefuzzy="no",
     mergecomments="yes",
-):
+) -> int:
     try:
         mergecomments = str2bool(mergecomments)
     except ValueError as error:
@@ -106,7 +106,7 @@ def mergestore(
     return 1
 
 
-def main():
+def main() -> None:
     formats = {
         ("po", "po"): ("po", mergestore),
         ("po", "pot"): ("po", mergestore),

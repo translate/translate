@@ -30,7 +30,7 @@ class Category:
     NO_CATEGORY = 0
 
 
-def annotate_check(checkfunc):
+def annotate_check(checkfunc) -> None:
     """
     Annotate check function with title attribute.
 

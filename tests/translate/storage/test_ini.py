@@ -12,7 +12,7 @@ class TestINIUnit(test_monolingual.TestMonolingualUnit):
 class TestINIStore(test_monolingual.TestMonolingualStore):
     StoreClass = ini.inifile
 
-    def test_serialize(self):
+    def test_serialize(self) -> None:
         content = b"[default]\nkey=None"
         store = self.StoreClass()
         store.parse(content)
@@ -21,7 +21,7 @@ class TestINIStore(test_monolingual.TestMonolingualStore):
 
         assert out.getvalue() == content
 
-    def test_rem(self):
+    def test_rem(self) -> None:
         content = b"[default]\nremaining=None"
         store = self.StoreClass()
         store.parse(content)

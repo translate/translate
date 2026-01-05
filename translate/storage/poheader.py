@@ -153,7 +153,7 @@ class poheader:
         :return: Dictionary with the header items
         """
 
-        def format_date(key, value, fallback=None):
+        def format_date(key, value, fallback=None) -> None:
             if value is False and (fallback is not None):
                 defaultargs[key] = fallback
             elif value is True or (value is None and fallback is None):
@@ -250,7 +250,7 @@ class poheader:
             header.markfuzzy(False)  # TODO: check why we do this?
         return header
 
-    def _insert_header(self, header):
+    def _insert_header(self, header) -> None:
         # we should be using .addunit() or some equivalent in case the
         # unit needs to refer back to the store, etc. This might be
         # subtly broken for POXLIFF, since we don't duplicate the code
@@ -270,7 +270,7 @@ class poheader:
         plural = None if not plural or plural[0] == "EXPRESSION" else plural[0]
         return nplural, plural
 
-    def updateheaderplural(self, nplurals, plural):
+    def updateheaderplural(self, nplurals, plural) -> None:
         """Update the Plural-Form PO header."""
         if isinstance(nplurals, str):
             nplurals = int(nplurals)

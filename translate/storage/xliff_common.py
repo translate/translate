@@ -36,7 +36,7 @@ from translate.storage.placeables.lisa import strelem_to_xml, xml_to_strelem
 class XliffFile(lisa.LISAfile):
     """Base class providing common functionality for XLIFF file stores."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         """Initialize XLIFF file with filename tracking."""
         self._filename = None
         super().__init__(*args, **kwargs)
@@ -138,7 +138,7 @@ class XliffUnit(lisa.LISAunit):
                 nodes.append(target)
         return nodes
 
-    def set_rich_source(self, value, sourcelang="en"):
+    def set_rich_source(self, value, sourcelang="en") -> None:
         sourcelanguageNode = self.get_source_dom()
         if sourcelanguageNode is None:
             sourcelanguageNode = self.createlanguageNode(sourcelang, "", "source")
@@ -162,10 +162,10 @@ class XliffUnit(lisa.LISAunit):
         ]
 
     @rich_source.setter
-    def rich_source(self, value):
+    def rich_source(self, value) -> None:
         self.set_rich_source(value)
 
-    def set_rich_target(self, value, lang="xx", append=False):
+    def set_rich_target(self, value, lang="xx", append=False) -> None:
         self._rich_target = None
         if value is None:
             self.set_target_dom(self.createlanguageNode(lang, "", "target"))
@@ -202,10 +202,12 @@ class XliffUnit(lisa.LISAunit):
         return self.get_rich_target()
 
     @rich_target.setter
-    def rich_target(self, value):
+    def rich_target(self, value) -> None:
         self.set_rich_target(value)
 
-    def merge(self, otherunit, overwrite=False, comments=True, authoritative=False):
+    def merge(
+        self, otherunit, overwrite=False, comments=True, authoritative=False
+    ) -> None:
         # TODO: consider other attributes like "approved"
         super().merge(otherunit, overwrite, comments)
         if self.target:

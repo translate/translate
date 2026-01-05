@@ -1,7 +1,7 @@
 from translate.lang import factory
 
 
-def test_sentences():
+def test_sentences() -> None:
     """Tests basic functionality of sentence segmentation."""
     language = factory.getlanguage("uk")
     sentences = language.sentences("")

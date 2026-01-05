@@ -35,7 +35,7 @@ white_space_re = re.compile(r"\s+")
 
 
 class _NGram:
-    def __init__(self, arg=None):
+    def __init__(self, arg=None) -> None:
         if isinstance(arg, str):
             self.addText(arg)
             self.normalise()
@@ -95,7 +95,7 @@ class _NGram:
 
 
 class NGram:
-    def __init__(self, folder, ext=".lm"):
+    def __init__(self, folder, ext=".lm") -> None:
         self.ngrams = {}
         folder = path.join(folder, f"*{ext}")
         size = len(ext)
@@ -135,7 +135,7 @@ class NGram:
 
 
 class Generate:
-    def __init__(self, folder, ext=".txt"):
+    def __init__(self, folder, ext=".txt") -> None:
         self.ngrams = {}
         folder = path.join(folder, f"*{ext}")
         size = len(ext)
@@ -151,7 +151,7 @@ class Generate:
             n.normalise()
             self.ngrams[lang] = n
 
-    def save(self, folder, ext=".lm"):
+    def save(self, folder, ext=".lm") -> None:
         for lang, value in self.ngrams.items():
             fname = path.join(folder, lang + ext)
             with open(fname, mode="w", encoding="utf-8") as fp:

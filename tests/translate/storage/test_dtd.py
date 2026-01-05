@@ -25,7 +25,7 @@ from translate.storage import dtd
 from . import test_monolingual
 
 
-def test_roundtrip_quoting():
+def test_roundtrip_quoting() -> None:
     specials = [
         "Fish & chips",
         "five < six",
@@ -67,14 +67,14 @@ def test_roundtrip_quoting():
 
 
 @mark.xfail(reason="Not Implemented")
-def test_quotefordtd_unimplemented_cases():
+def test_quotefordtd_unimplemented_cases() -> None:
     """Test unimplemented quoting DTD cases."""
     assert dtd.quotefordtd("Between <p> and </p>") == (
         '"Between &lt;p&gt; and &lt;/p&gt;"'
     )
 
 
-def test_quotefordtd():
+def test_quotefordtd() -> None:
     """Test quoting DTD definitions."""
     assert dtd.quotefordtd("") == '""'
     assert dtd.quotefordtd("") == '""'
@@ -98,12 +98,12 @@ def test_quotefordtd():
 
 
 @mark.xfail(reason="Not Implemented")
-def test_unquotefromdtd_unimplemented_cases():
+def test_unquotefromdtd_unimplemented_cases() -> None:
     """Test unimplemented unquoting DTD cases."""
     assert dtd.unquotefromdtd('"&lt;p&gt; and &lt;/p&gt;"') == "<p> and </p>"
 
 
-def test_unquotefromdtd():
+def test_unquotefromdtd() -> None:
     """Test unquoting DTD definitions."""
     # %
     assert dtd.unquotefromdtd('"Completed &#037;S"') == "Completed %S"
@@ -131,7 +131,7 @@ def test_unquotefromdtd():
     assert dtd.unquotefromdtd('"&#187;"') == "»"
 
 
-def test_android_roundtrip_quoting():
+def test_android_roundtrip_quoting() -> None:
     specials = ["don't", 'the "thing"']
     for special in specials:
         quoted_special = dtd.quoteforandroid(special)
@@ -142,13 +142,13 @@ def test_android_roundtrip_quoting():
         assert special == unquoted_special
 
 
-def test_quoteforandroid():
+def test_quoteforandroid() -> None:
     """Test quoting Android DTD definitions."""
     assert dtd.quoteforandroid("don't") == r'"don\u0027t"'
     assert dtd.quoteforandroid('the "thing"') == r'"the \&quot;thing\&quot;"'
 
 
-def test_unquotefromandroid():
+def test_unquotefromandroid() -> None:
     """Test unquoting Android DTD definitions."""
     assert dtd.unquotefromandroid('"Don\\&apos;t show"') == "Don't show"
     assert dtd.unquotefromandroid('"Don\\\'t show"') == "Don't show"
@@ -156,10 +156,10 @@ def test_unquotefromandroid():
     assert dtd.unquotefromandroid('"A \\&quot;thing\\&quot;"') == 'A "thing"'
 
 
-def test_removeinvalidamp(recwarn):
+def test_removeinvalidamp(recwarn) -> None:
     """Tests the the removeinvalidamps function."""
 
-    def tester(actual, expected=None):
+    def tester(actual, expected=None) -> None:
         if expected is None:
             expected = actual
         assert dtd.removeinvalidamps("test.name", actual) == expected
@@ -179,10 +179,10 @@ def test_removeinvalidamp(recwarn):
 class TestDTDUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = dtd.dtdunit
 
-    def test_rich_get(self):
+    def test_rich_get(self) -> None:
         pass
 
-    def test_rich_set(self):
+    def test_rich_set(self) -> None:
         pass
 
 
@@ -201,7 +201,7 @@ class TestDTD(test_monolingual.TestMonolingualStore):
         """Helper that converts dtd source to dtdfile object and back."""
         return bytes(self.dtdparse(dtdsource)).decode("utf-8")
 
-    def test_simpleentity(self):
+    def test_simpleentity(self) -> None:
         """Checks that a simple dtd entity definition is parsed correctly."""
         dtdsource = '<!ENTITY test.me "bananas for sale">\n'
         dtdfile = self.dtdparse(dtdsource)
@@ -210,13 +210,13 @@ class TestDTD(test_monolingual.TestMonolingualStore):
         assert dtdunit.entity == "test.me"
         assert dtdunit.definition == '"bananas for sale"'
 
-    def test_blanklines(self):
+    def test_blanklines(self) -> None:
         """Checks that blank lines don't break the parsing or regeneration."""
         dtdsource = '<!ENTITY test.me "bananas for sale">\n\n'
         dtdregen = self.dtdregen(dtdsource)
         assert dtdsource == dtdregen
 
-    def test_simpleentity_source(self):
+    def test_simpleentity_source(self) -> None:
         """Checks that a simple dtd entity definition can be regenerated as source."""
         dtdsource = '<!ENTITY test.me "">\n'
         dtdregen = self.dtdregen(dtdsource)
@@ -226,19 +226,19 @@ class TestDTD(test_monolingual.TestMonolingualStore):
         dtdregen = self.dtdregen(dtdsource)
         assert dtdsource == dtdregen
 
-    def test_hashcomment_source(self):
+    def test_hashcomment_source(self) -> None:
         """Checks that a #expand comment is retained in the source."""
         dtdsource = '#expand <!ENTITY lang.version "__MOZILLA_LOCALE_VERSION__">\n'
         dtdregen = self.dtdregen(dtdsource)
         assert dtdsource == dtdregen
 
-    def test_commentclosing(self):
+    def test_commentclosing(self) -> None:
         """Tests that comment closes with trailing space aren't duplicated."""
         dtdsource = '<!-- little comment --> \n<!ENTITY pane.title "Notifications">\n'
         dtdregen = self.dtdregen(dtdsource)
         assert dtdsource == dtdregen
 
-    def test_commententity(self):
+    def test_commententity(self) -> None:
         """Check that we don't process messages in <!-- comments -->: bug 102."""
         dtdsource = """<!-- commenting out until bug 38906 is fixed
 <!ENTITY messagesHeader.label         "Messages"> -->"""
@@ -248,7 +248,7 @@ class TestDTD(test_monolingual.TestMonolingualStore):
         print(dtdunit)
         assert dtdunit.isblank()
 
-    def test_newlines_in_entity(self):
+    def test_newlines_in_entity(self) -> None:
         """Tests that we can handle newlines in the entity itself."""
         dtdsource = """<!ENTITY fileNotFound.longDesc "
 <ul>
@@ -291,7 +291,7 @@ certificate.">
         print(dtdsource)
         assert dtdsource == dtdregen
 
-    def test_conflate_comments(self):
+    def test_conflate_comments(self) -> None:
         """Tests that comments don't run onto the same line."""
         dtdsource = '<!-- test comments -->\n<!-- getting conflated -->\n<!ENTITY sample.txt "hello">\n'
         dtdregen = self.dtdregen(dtdsource)
@@ -299,7 +299,7 @@ certificate.">
         print(dtdregen)
         assert dtdsource == dtdregen
 
-    def test_localisation_notes(self):
+    def test_localisation_notes(self) -> None:
         """Test to ensure that we retain the localisation note correctly."""
         dtdsource = """<!--LOCALIZATION NOTE (publishFtp.label): Edit box appears beside this label -->
 <!ENTITY publishFtp.label "If publishing to a FTP site, enter the HTTP address to browse to:">
@@ -307,14 +307,14 @@ certificate.">
         dtdregen = self.dtdregen(dtdsource)
         assert dtdsource == dtdregen
 
-    def test_entitityreference_in_source(self):
+    def test_entitityreference_in_source(self) -> None:
         """Checks that an &entity; in the source is retained."""
         dtdsource = '<!ENTITY % realBrandDTD SYSTEM "chrome://branding/locale/brand.dtd">\n%realBrandDTD;\n'
         dtdregen = self.dtdregen(dtdsource)
         assert dtdsource == dtdregen
 
     # test for bug #610
-    def test_entitityreference_order_in_source(self):
+    def test_entitityreference_order_in_source(self) -> None:
         """Checks that an &entity; in the source is retained."""
         dtdsource = '<!ENTITY % realBrandDTD SYSTEM "chrome://branding/locale/brand.dtd">\n%realBrandDTD;\n<!-- some comment -->\n'
         dtdregen = self.dtdregen(dtdsource)
@@ -337,20 +337,20 @@ certificate.">
         assert dtdsource == dtdregen
 
     @mark.xfail(reason="Not Implemented")
-    def test_comment_following(self):
+    def test_comment_following(self) -> None:
         """Check that comments that appear after and entity are not pushed onto another line."""
         dtdsource = '<!ENTITY textZoomEnlargeCmd.commandkey2 "="> <!-- + is above this key on many keyboards -->'
         dtdregen = self.dtdregen(dtdsource)
         assert dtdsource == dtdregen
 
-    def test_comment_newline_space_closing(self):
+    def test_comment_newline_space_closing(self) -> None:
         """Check that comments that are closed by a newline then space then --> don't break the following entries."""
         dtdsource = '<!-- Comment\n -->\n<!ENTITY searchFocus.commandkey "k">\n'
         dtdregen = self.dtdregen(dtdsource)
         assert dtdsource == dtdregen
 
     @mark.xfail(reason="Not Implemented")
-    def test_invalid_quoting(self):
+    def test_invalid_quoting(self) -> None:
         """Checks that invalid quoting doesn't work - quotes can't be reopened."""
         # TODO: we should rather raise an error
         dtdsource = '<!ENTITY test.me "bananas for sale""room">\n'
@@ -363,7 +363,7 @@ certificate.">
         assert dtdunit.definition == '"bananas for sale"'
         assert bytes(dtdfile) == b'<!ENTITY test.me "bananas for sale">\n'
 
-    def test_missing_quotes(self, recwarn):
+    def test_missing_quotes(self, recwarn) -> None:
         """Test that we fail gracefully when a message without quotes is found (bug #161)."""
         dtdsource = '<!ENTITY bad no quotes">\n<!ENTITY good "correct quotes">\n'
         dtdfile = self.dtdparse(dtdsource)
@@ -371,7 +371,7 @@ certificate.">
         assert recwarn.pop(Warning)
 
     # Test for bug #68
-    def test_entity_escaping(self):
+    def test_entity_escaping(self) -> None:
         """Test entities escaping (&amp; &quot; &lt; &gt; &apos;) (bug #68)."""
         dtdsource = (
             '<!ENTITY securityView.privacy.header "Privacy &amp; '
@@ -418,7 +418,7 @@ certificate.">
         #                          "between <p> and </p> tags.")
 
     # Test for bug #68
-    def test_entity_escaping_roundtrip(self):
+    def test_entity_escaping_roundtrip(self) -> None:
         """Test entities escaping roundtrip (&amp; &quot; ...) (bug #68)."""
         dtdsource = (
             '<!ENTITY securityView.privacy.header "Privacy &amp; '
@@ -432,13 +432,13 @@ certificate.">
         dtdregen = self.dtdregen(dtdsource)
         assert dtdsource == dtdregen
 
-    def test_multiple_blank_lines(self):
+    def test_multiple_blank_lines(self) -> None:
         """Test that multiple consecutive blank lines are preserved."""
         dtdsource = '<!ENTITY test1 "value1">\n\n\n<!ENTITY test2 "value2">\n'
         dtdregen = self.dtdregen(dtdsource)
         assert dtdsource == dtdregen
 
-    def test_entity_with_extra_spaces(self):
+    def test_entity_with_extra_spaces(self) -> None:
         """Test entities with various spacing patterns are preserved."""
         dtdsource = '<!ENTITY    test.me    "value">\n'
         dtdfile = self.dtdparse(dtdsource)
@@ -449,7 +449,7 @@ certificate.">
         dtdregen = self.dtdregen(dtdsource)
         assert dtdsource == dtdregen
 
-    def test_mixed_content_preservation(self):
+    def test_mixed_content_preservation(self) -> None:
         """Test that mixed content (comments, entities, blank lines) is preserved."""
         dtdsource = """<!-- Comment 1 -->
 <!ENTITY entity1 "value1">
@@ -488,7 +488,7 @@ class TestAndroidDTD(test_monolingual.TestMonolingualStore):
         return bytes(self.dtdparse(dtdsource)).decode("utf-8")
 
     # Test for bug #2480
-    def test_android_single_quote_escape(self):
+    def test_android_single_quote_escape(self) -> None:
         """
         Checks several single quote unescaping cases in Android DTD.
 
@@ -515,7 +515,7 @@ class TestAndroidDTD(test_monolingual.TestMonolingualStore):
         assert dtdunit.source == "Don't show"
 
     # Test for bug #2480
-    def test_android_single_quote_escape_parse_and_convert_back(self):
+    def test_android_single_quote_escape_parse_and_convert_back(self) -> None:
         """
         Checks that Android DTD don't change after parse and convert back.
 
@@ -532,7 +532,7 @@ class TestAndroidDTD(test_monolingual.TestMonolingualStore):
         dtdregen = self.dtdregen(dtdsource)
         assert dtdsource == dtdregen
 
-    def test_android_double_quote_escape(self):
+    def test_android_double_quote_escape(self) -> None:
         """Checks double quote unescaping in Android DTD."""
         dtdsource = '<!ENTITY translate.test "A \\&quot;thing\\&quot;">\n'
         dtdfile = self.dtdparse(dtdsource)
@@ -542,7 +542,7 @@ class TestAndroidDTD(test_monolingual.TestMonolingualStore):
         assert dtdunit.target == 'A "thing"'
         assert dtdunit.source == 'A "thing"'
 
-    def test_android_double_quote_escape_parse_and_convert_back(self):
+    def test_android_double_quote_escape_parse_and_convert_back(self) -> None:
         """
         Checks that Android DTD don't change after parse and convert back.
 

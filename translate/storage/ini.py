@@ -89,7 +89,7 @@ class DialectInno(DialectDefault):
 class iniunit(base.TranslationUnit):
     """A INI file entry."""
 
-    def __init__(self, source=None, **kwargs):
+    def __init__(self, source=None, **kwargs) -> None:
         if source:
             self.source = source
             self.location = f"[default]{hex(hash(source))}"
@@ -97,7 +97,7 @@ class iniunit(base.TranslationUnit):
             self.location = f"[default]{uuid.uuid4()!s}"
         super().__init__(source)
 
-    def addlocation(self, location):
+    def addlocation(self, location) -> None:
         self.location = location
 
     def getlocations(self):
@@ -108,7 +108,7 @@ class iniunit(base.TranslationUnit):
         return self.source
 
     @target.setter
-    def target(self, target):
+    def target(self, target) -> None:
         self.source = target
 
 
@@ -117,7 +117,7 @@ class inifile(base.TranslationStore):
 
     UnitClass = iniunit
 
-    def __init__(self, inputfile=None, dialect="default", **kwargs):
+    def __init__(self, inputfile=None, dialect="default", **kwargs) -> None:
         """Construct an INI file, optionally reading in from inputfile."""
         self._dialect = dialects.get(
             dialect, DialectDefault
@@ -128,7 +128,7 @@ class inifile(base.TranslationStore):
         if inputfile is not None:
             self.parse(inputfile)
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         outinifile = self._inifile or INIConfig(optionxformvalue=None)
         for unit in self.units:
             for location in unit.getlocations():
@@ -144,7 +144,7 @@ class inifile(base.TranslationStore):
         if outinifile:
             out.write(str(outinifile).encode("utf-8"))
 
-    def parse(self, input):
+    def parse(self, input) -> None:
         """Parse the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name

@@ -30,7 +30,7 @@ eol = "\n"
 
 
 class rephp:
-    def __init__(self, templatefile, inputstore):
+    def __init__(self, templatefile, inputstore) -> None:
         self.outputstore = php.phpfile(templatefile)
         self.inputstore = inputstore
         self.inmultilinemsgid = False
@@ -71,7 +71,7 @@ class rephp:
 
 def convertphp(
     inputfile, outputfile, templatefile, includefuzzy=False, outputthreshold=None
-):
+) -> int:
     inputstore = po.pofile(inputfile)
 
     if not convert.should_output_store(inputstore, outputthreshold):
@@ -86,7 +86,7 @@ def convertphp(
     return 1
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     # handle command line options
     formats = {
         ("po", "php"): ("php", convertphp),

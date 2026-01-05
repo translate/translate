@@ -11,7 +11,7 @@ from . import test_po
 
 
 class TestHelpers:
-    def test_unescape(self):
+    def test_unescape(self) -> None:
         assert pypo.unescape(r"koei") == "koei"
         assert pypo.unescape(r"koei\n") == "koei\n"
         assert pypo.unescape(r"koei\\") == "koei\\"
@@ -28,7 +28,7 @@ class TestHelpers:
         assert pypo.unescape(r"\"\\koei\"\\") == '"\\koei"\\'
         assert pypo.unescape(r"\\\rkoei\r\\") == "\\\rkoei\r\\"
 
-    def test_quoteforpo(self):
+    def test_quoteforpo(self) -> None:
         """Special escaping routine to manage newlines and linewrap in PO."""
         # Simple case
         assert pypo.quoteforpo("Some test") == ['"Some test"']
@@ -74,7 +74,7 @@ class TestHelpers:
             '"obhucabhuca ukudibanisa kwakho.</b>"',
         ]
 
-    def test_quoteforpo_escaped_quotes(self):
+    def test_quoteforpo_escaped_quotes(self) -> None:
         r"""
         Ensure that we don't break \" in two when wrapping.
 
@@ -92,7 +92,7 @@ class TestHelpers:
 class TestPYPOUnit(test_po.TestPOUnit):
     UnitClass = pypo.pounit
 
-    def test_plurals(self):
+    def test_plurals(self) -> None:
         """Tests that plurals are handled correctly."""
         unit = self.UnitClass("Cow")
         unit.msgid_plural = ['"Cows"']
@@ -116,7 +116,7 @@ class TestPYPOUnit(test_po.TestPOUnit):
         assert unit.target.strings == ["Sk\u00ear", "Sk\u00eare"]
         assert unit.target == "Sk\u00ear"
 
-    def test_plural_reduction(self):
+    def test_plural_reduction(self) -> None:
         """Checks that reducing the number of plurals supplied works."""
         unit = self.UnitClass("Tree")
         unit.msgid_plural = ['"Trees"']
@@ -134,7 +134,7 @@ class TestPYPOUnit(test_po.TestPOUnit):
         unit.target = "Een Boom"
         assert unit.target.strings == ["Een Boom"]
 
-    def test_notes(self):
+    def test_notes(self) -> None:
         """Tests that the generic notes API works."""
         unit = self.UnitClass("File")
         unit.addnote("Which meaning of file?")
@@ -155,14 +155,14 @@ class TestPYPOUnit(test_po.TestPOUnit):
         with raises(ValueError):
             unit.getnotes("devteam")
 
-    def test_notes_withcomments(self):
+    def test_notes_withcomments(self) -> None:
         """Tests that when we add notes that look like comments that we treat them properly."""
         unit = self.UnitClass("File")
         unit.addnote("# Double commented comment")
         assert str(unit) == '# # Double commented comment\nmsgid "File"\nmsgstr ""\n'
         assert unit.getnotes() == "# Double commented comment"
 
-    def test_wrap_firstlines(self):
+    def test_wrap_firstlines(self) -> None:
         """
         Tests that we wrap the first line correctly a first line if longer then 71 chars
         as at 71 chars we should align the text on the left and preceded with with a msgid "".
@@ -180,7 +180,7 @@ class TestPYPOUnit(test_po.TestPOUnit):
         expected = f'msgid ""\n"{str_wrap}"\nmsgstr ""\n'
         assert str(unit) == expected
 
-    def test_wrap_on_newlines(self):
+    def test_wrap_on_newlines(self) -> None:
         r"""Test that we wrap newlines on a real \n."""
         string = "123456789\n" * 3
         postring = ('"123456789\\n"\n' * 3)[:-1]
@@ -202,7 +202,7 @@ msgstr ""
         unit = self.UnitClass(longstring)
         assert str(unit) == expected
 
-    def test_wrap_on_max_line_length(self):
+    def test_wrap_on_max_line_length(self) -> None:
         """Test that we wrap all lines on the maximum line length."""
         string = "1 3 5 7 N " * 11
         expected = 'msgid ""\n{}\nmsgstr ""\n'.format(
@@ -211,7 +211,7 @@ msgstr ""
         unit = self.UnitClass(string)
         assert str(unit) == expected
 
-    def test_wrap_on_slash(self):
+    def test_wrap_on_slash(self) -> None:
         """Test that we wrap on /."""
         string = "1/3/5/7/N/" * 11
         expected = """msgid ""
@@ -222,7 +222,7 @@ msgstr ""
         unit = self.UnitClass(string)
         assert str(unit) == expected
 
-    def test_spacing_max_line(self):
+    def test_spacing_max_line(self) -> None:
         """Test that the spacing of text is done the same as msgcat."""
         idstring = "Creates a new document using an existing template iiiiiiiiiiiiiiiiiiiiiii or "
         idstring += "opens a sample document."
@@ -238,7 +238,7 @@ msgstr ""
 class TestPYPOFile(test_po.TestPOFile):
     StoreClass = pypo.pofile
 
-    def test_combine_msgidcomments(self):
+    def test_combine_msgidcomments(self) -> None:
         """Checks that we don't get duplicate msgid comments."""
         posource = 'msgid "test me"\nmsgstr ""'
         pofile = self.poparse(posource)
@@ -248,7 +248,7 @@ class TestPYPOFile(test_po.TestPOFile):
         regenposource = bytes(pofile).decode("utf-8")
         assert regenposource.count("_:") == 1
 
-    def test_merge_duplicates_msgctxt(self):
+    def test_merge_duplicates_msgctxt(self) -> None:
         """Checks that merging duplicates works for msgctxt."""
         posource = '#: source1\nmsgid "test me"\nmsgstr ""\n\n#: source2\nmsgid "test me"\nmsgstr ""\n'
         pofile = self.poparse(posource)
@@ -259,7 +259,7 @@ class TestPYPOFile(test_po.TestPOFile):
         assert str(pofile.units[0]).count("source1") == 2
         assert str(pofile.units[1]).count("source2") == 2
 
-    def test_merge_blanks(self):
+    def test_merge_blanks(self) -> None:
         """Checks that merging adds msgid_comments to blanks."""
         posource = (
             '#: source1\nmsgid ""\nmsgstr ""\n\n#: source2\nmsgid ""\nmsgstr ""\n'
@@ -271,7 +271,7 @@ class TestPYPOFile(test_po.TestPOFile):
         assert pypo.unquotefrompo(pofile.units[0].msgidcomments) == "_: source1\n"
         assert pypo.unquotefrompo(pofile.units[1].msgidcomments) == "_: source2\n"
 
-    def test_output_str_unicode(self):
+    def test_output_str_unicode(self) -> None:
         """Checks that we can str(element) which is in unicode."""
         posource = """#: nb\nmsgid "Norwegian Bokmål"\nmsgstr ""\n"""
         pofile = self.StoreClass(BytesIO(posource.encode("UTF-8")), encoding="UTF-8")
@@ -285,7 +285,7 @@ class TestPYPOFile(test_po.TestPOFile):
         thepo.target = halfstr
         assert halfstr in str(thepo)
 
-    def test_posections(self):
+    def test_posections(self) -> None:
         """Checks the content of all the expected sections of a PO message."""
         posource = '# other comment\n#. automatic comment\n#: source comment\n#, fuzzy\nmsgid "One"\nmsgstr "Een"\n'
         pofile = self.poparse(posource)
@@ -297,7 +297,7 @@ class TestPYPOFile(test_po.TestPOFile):
         assert pofile.units[0].sourcecomments == ["#: source comment\n"]
         assert pofile.units[0].typecomments == ["#, fuzzy\n"]
 
-    def test_typecomments(self):
+    def test_typecomments(self) -> None:
         """Test typecomments handling."""
         posource = """#: 00-8C-41-10-00-00-31-10-12-05-42-44-00-2E
 #, max-length:10
@@ -317,7 +317,7 @@ msgstr ""
         assert unit.typecomments == ["#, fuzzy, max-length:10\n"]
         assert unit.hastypecomment("max-length:10") is True
 
-    def test_future_flags(self):
+    def test_future_flags(self) -> None:
         """
         Test future sticky/workflow flags handling.
 
@@ -346,14 +346,14 @@ msgstr ""
         assert unit.hastypecomment("max-length:10") is True
         assert unit.hastypecomment("fuzzy") is False
 
-    def test_unassociated_comments(self):
+    def test_unassociated_comments(self) -> None:
         """Tests behaviour of unassociated comments."""
         oldsource = '# old lonesome comment\n\nmsgid "one"\nmsgstr "een"\n'
         oldfile = self.poparse(oldsource)
         print(bytes(oldfile))
         assert len(oldfile.units) == 1
 
-    def test_unicode_header(self):
+    def test_unicode_header(self) -> None:
         """Checks that unicode header is parsed and saved correctly."""
         posource = r"""msgid ""
 msgstr ""
@@ -383,7 +383,7 @@ Zkouška: else
 """
         )
 
-    def test_prevmsgid_parse(self):
+    def test_prevmsgid_parse(self) -> None:
         """Checks that prevmsgid (i.e. #|) is parsed and saved correctly."""
         # spellchecker:off
         posource = r"""msgid ""
@@ -438,7 +438,7 @@ msgstr[1] "toetse"
         assert bytes(pofile).decode("utf-8") == posource
         # spellchecker:on
 
-    def test_wrap(self):
+    def test_wrap(self) -> None:
         hello = " ".join(["Hello"] * 100)
         posource = f'msgid "{hello}"\nmsgstr "{hello}"\n'.encode()
 
@@ -464,7 +464,7 @@ msgstr[1] "toetse"
         # Should contain additional newlines now
         assert bytes(store) != posource
 
-    def test_wrap_newlines(self):
+    def test_wrap_newlines(self) -> None:
         hello = "\n ".join(["Hello"] * 100)
         posource = 'msgid "{0}"\nmsgstr "{0}"\n'.format(
             hello.replace("\n", "\\n")
@@ -485,7 +485,7 @@ msgstr[1] "toetse"
         # Should contain additional newlines now
         assert bytes(store) != posource
 
-    def test_unix_newlines(self):
+    def test_unix_newlines(self) -> None:
         """Checks that unix newlines are properly parsed."""
         posource = b'msgid "test me"\nmsgstr ""\n'
         pofile = self.poparse(posource)
@@ -493,7 +493,7 @@ msgstr[1] "toetse"
         assert pofile.units[0].source == "test me"
         assert bytes(pofile) == posource
 
-    def test_dos_newlines(self):
+    def test_dos_newlines(self) -> None:
         """Checks that dos newlines are properly parsed."""
         posource = (
             b'# Note!\r\n#: File1\r\n#: File2\r\nmsgid "test me"\r\nmsgstr ""\r\n'
@@ -505,7 +505,7 @@ msgstr[1] "toetse"
         assert pofile.units[0].getnotes() == "Note!"
         assert bytes(pofile) == posource
 
-    def test_mac_newlines(self):
+    def test_mac_newlines(self) -> None:
         """Checks that mac newlines are properly parsed."""
         posource = b'msgid "test me"\rmsgstr ""\r'
         pofile = self.poparse(posource)
@@ -513,7 +513,7 @@ msgstr[1] "toetse"
         assert pofile.units[0].source == "test me"
         assert bytes(pofile) == posource
 
-    def test_mixed_newlines(self):
+    def test_mixed_newlines(self) -> None:
         """Checks that mixed newlines are properly parsed."""
         posource = b"""#Comment
 #: foo.c:124\r bar.c:124\r
@@ -525,7 +525,7 @@ msgstr ""
         assert pofile.units[0].source == "test me"
         assert bytes(pofile) == posource
 
-    def test_mixed_newlines_header(self):
+    def test_mixed_newlines_header(self) -> None:
         """Checks that mixed newlines are properly parsed."""
         posource = b"""# Polish message file for YaST2 (@memory@).\r
 # Copyright (C) 2005 SUSE Linux Products GmbH.\r
@@ -545,7 +545,7 @@ msgstr "FcoeClient"
         print(repr(bytes(pofile)))
         assert bytes(pofile) == posource
 
-    def test_mixed_newlines_comment(self):
+    def test_mixed_newlines_comment(self) -> None:
         posource = b"""# scootergrisen: msgid "View your battery status and change power saving settings"\r
 msgid "test me"
 msgstr ""
@@ -555,7 +555,7 @@ msgstr ""
         assert pofile.units[0].source == "test me"
         assert bytes(pofile) == posource
 
-    def test_bom(self):
+    def test_bom(self) -> None:
         """Checks that BOM is parsed."""
         posource = """msgid ""
 msgstr ""
@@ -570,7 +570,7 @@ msgstr "FcoeClient"
         assert pofile.units[1].source == "FcoeClient"
         assert bytes(pofile) == posource[3:]
 
-    def test_long_msgidcomments(self):
+    def test_long_msgidcomments(self) -> None:
         posource = """#: networkstatus/connectionmanager.cpp:148
 msgid ""
 "_: Message shown when a network connection failed.  The placeholder contains "
@@ -603,7 +603,7 @@ msgstr ""
         assert len(pofile.units) == 1
         assert bytes(pofile).decode("utf-8") == posource
 
-    def test_incomplete(self):
+    def test_incomplete(self) -> None:
         """Checks that empty file raises error."""
         posource = b"""msgid ""
 msgstr ""
@@ -614,7 +614,7 @@ EXTRA
         with raises(ValueError):
             self.poparse(posource)
 
-    def test_invalid(self):
+    def test_invalid(self) -> None:
         """Checks that empty file raises error."""
         posource = b"""README
 
@@ -623,7 +623,7 @@ This is just a random text file.
         with raises(ValueError):
             self.poparse(posource)
 
-    def test_dos_newlines_write(self):
+    def test_dos_newlines_write(self) -> None:
         """Checks that mixed newlines are properly parsed."""
         posource = b"""msgid "test me"\r
 msgstr ""\r
@@ -641,7 +641,7 @@ msgstr ""\r
         assert bytes(pofile) == poexpected
 
     @mark.xfail(reason="Not sure if this can not be parsed gracefully")
-    def test_mixed_newlines_typecomment(self):
+    def test_mixed_newlines_typecomment(self) -> None:
         """Checks that mixed newlines in typecomments are properly parsed."""
         # This was generated by translate-toolkit prior to
         # issue that test_dos_newlines_write is covering was fixed.
@@ -654,7 +654,7 @@ msgstr ""\r
         assert pofile.units[0].source == "test me"
         assert bytes(pofile) == posource
 
-    def test_dos_newlines_typecomment(self):
+    def test_dos_newlines_typecomment(self) -> None:
         """Checks that mixed newlines are properly parsed."""
         posource = b"""msgid "test me"\r
 msgstr ""\r
@@ -688,7 +688,7 @@ msgstr ""\r
         )
         assert bytes(pofile).decode() == poexpected.decode()
 
-    def test_wrap_custom(self):
+    def test_wrap_custom(self) -> None:
         posource = 'msgid "HELLO"\nmsgstr ""\n'
 
         # Instance with default wraps

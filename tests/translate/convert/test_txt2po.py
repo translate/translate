@@ -55,11 +55,11 @@ class BaseTxt2POTester:
 
 
 class TestTxt2PO(BaseTxt2POTester):
-    def test_convert_empty(self):
+    def test_convert_empty(self) -> None:
         """Check converting empty file returns no output."""
         assert self._convert_to_string("", success_expected=False) == ""
 
-    def test_keep_duplicates(self):
+    def test_keep_duplicates(self) -> None:
         """Check converting keeps duplicates."""
         input_string = """
 Simple
@@ -73,7 +73,7 @@ Simple
         assert target_store.units[2].source == "Simple"
         assert target_store.units[2].target == ""
 
-    def test_drop_duplicates(self):
+    def test_drop_duplicates(self) -> None:
         """Check converting drops duplicates."""
         input_string = """
 Simple
@@ -85,7 +85,7 @@ Simple
         assert target_store.units[1].source == "Simple"
         assert target_store.units[1].target == ""
 
-    def test_simple(self):
+    def test_simple(self) -> None:
         """Test the most basic conversion."""
         input_string = "A simple string"
         expected_output = """#: :1
@@ -96,7 +96,7 @@ msgstr ""
         assert str(target_store.units[1]) == expected_output
         assert "extracted from " in str(target_store.header())
 
-    def test_multiple_units(self):
+    def test_multiple_units(self) -> None:
         """Test that we can handle txt with multiple units."""
         input_string = """First unit
 Still part of first unit
@@ -110,7 +110,7 @@ Third unit with blank after but no more units.
         target_store = self._convert_to_store(input_string)
         assert self._count_elements(target_store) == 3
 
-    def test_carriage_return(self):
+    def test_carriage_return(self) -> None:
         """Remove carriage returns from files in dos format."""
         input_string = """The rapid expansion of telecommunications infrastructure in recent years has\r
 helped to bridge the digital divide to a limited extent.\r
@@ -121,12 +121,12 @@ helped to bridge the digital divide to a limited extent."""
         target_store = self._convert_to_store(input_string)
         assert str(target_store.units[1].source) == expected_output
 
-    def test_merge(self):
+    def test_merge(self) -> None:
         """Test converter doesn't merge."""
         with pytest.raises(NotImplementedError):
             self._convert_to_store("this", "cannot be", "blank", success_expected=False)
 
-    def test_no_segmentation(self):
+    def test_no_segmentation(self) -> None:
         """Check multiple paragraphs are extracted as a single unit."""
         input_string = """
 First paragraph
@@ -143,11 +143,11 @@ Second paragraph
 class TestDoku2po(BaseTxt2POTester):
     Flavour = "dokuwiki"
 
-    def test_convert_empty(self):
+    def test_convert_empty(self) -> None:
         """Test converting empty file returns no output."""
         assert self._convert_to_string("", success_expected=False) == ""
 
-    def test_keep_duplicates(self):
+    def test_keep_duplicates(self) -> None:
         """Check converting keeps duplicates."""
         input_string = """
 Simple
@@ -161,7 +161,7 @@ Simple
         assert target_store.units[2].source == "Simple"
         assert target_store.units[2].target == ""
 
-    def test_drop_duplicates(self):
+    def test_drop_duplicates(self) -> None:
         """Test converting drops duplicates."""
         input_string = """
 Simple
@@ -173,7 +173,7 @@ Simple
         assert target_store.units[1].source == "Simple"
         assert target_store.units[1].target == ""
 
-    def test_basic(self):
+    def test_basic(self) -> None:
         """Test basic Dokuwiki conversion."""
         input_string = """=====Heading=====
 
@@ -184,7 +184,7 @@ This is a wiki page.
         assert target_store.units[1].source == "Heading"
         assert target_store.units[2].source == "This is a wiki page."
 
-    def test_bullet_list(self):
+    def test_bullet_list(self) -> None:
         """Test Dokuwiki bullet list conversion."""
         input_string = """  * This is a fact.
   * This is a fact.
@@ -196,7 +196,7 @@ This is a wiki page.
         assert target_store.units[2].source == "This is a fact."
         assert target_store.units[2].getlocations() == [":2"]
 
-    def test_numbered_list(self):
+    def test_numbered_list(self) -> None:
         """Test Dokuwiki numbered list conversion."""
         input_string = """  - This is an item.
   - This is an item.
@@ -208,7 +208,7 @@ This is a wiki page.
         assert target_store.units[2].source == "This is an item."
         assert target_store.units[2].getlocations() == [":2"]
 
-    def test_spacing(self):
+    def test_spacing(self) -> None:
         """Test Dokuwiki list nesting conversion."""
         input_string = """ =====         Heading  =====
   * This is an item.
@@ -222,7 +222,7 @@ This is a wiki page.
         assert target_store.units[3].source == "This is a subitem."
         assert target_store.units[4].source == "This is a tabbed item."
 
-    def test_merge(self):
+    def test_merge(self) -> None:
         """Test converter doesn't merge."""
         with pytest.raises(NotImplementedError):
             self._convert_to_store("this", "cannot be", "blank", success_expected=False)

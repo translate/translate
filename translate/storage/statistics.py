@@ -36,7 +36,9 @@ from translate.lang import factory
 class Statistics:
     """Manages statistics for storage objects."""
 
-    def __init__(self, sourcelanguage="en", targetlanguage="en", checkerstyle=None):
+    def __init__(
+        self, sourcelanguage="en", targetlanguage="en", checkerstyle=None
+    ) -> None:
         self.sourcelanguage = sourcelanguage
         self.targetlanguage = targetlanguage
         self.language = factory.getlanguage(self.sourcelanguage)
@@ -44,7 +46,7 @@ class Statistics:
 
         self.classification = {}
 
-    def init_checker(self, checkerstyle=None):
+    def init_checker(self, checkerstyle=None) -> None:
         checkerclasses = [
             checkerstyle or checks.StandardChecker,
             pofilter.StandardPOChecker,
@@ -139,7 +141,7 @@ class Statistics:
         classes.extend(f"check-{checkname}" for checkname in checkresult)
         return classes
 
-    def classifyunits(self):
+    def classifyunits(self) -> None:
         """
         Makes a dictionary of which units fall into which classifications.
 
@@ -164,7 +166,7 @@ class Statistics:
                     self.classification[classname] = item
         self.countwords()
 
-    def countwords(self):
+    def countwords(self) -> None:
         """Counts the source and target words in each of the units."""
         self.sourcewordcounts = []
         self.targetwordcounts = []
@@ -176,7 +178,7 @@ class Statistics:
                 [self.wordcount(text) for text in getattr(unit.target, "strings", [""])]
             )
 
-    def reclassifyunit(self, item):
+    def reclassifyunit(self, item) -> None:
         """
         Updates the classification of a unit in self.classification.
 

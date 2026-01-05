@@ -30,7 +30,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def filter_all(e):
+def filter_all(e) -> bool:
     return True
 
 
@@ -68,7 +68,7 @@ class StringElem:
     the moment."""
 
     # INITIALIZERS #
-    def __init__(self, sub=None, id=None, rid=None, xid=None, **kwargs):
+    def __init__(self, sub=None, id=None, rid=None, xid=None, **kwargs) -> None:
         if sub is None:
             self.sub = []
         elif isinstance(sub, (str, StringElem)):
@@ -94,7 +94,7 @@ class StringElem:
         """Emulate the ``unicode`` class."""
         return str(self) + rhs
 
-    def __contains__(self, item):
+    def __contains__(self, item) -> bool:
         """Emulate the ``unicode`` class."""
         return item in str(self)
 
@@ -137,7 +137,7 @@ class StringElem:
         """Emulate the ``unicode`` class."""
         return str(self) <= rhs
 
-    def __len__(self):
+    def __len__(self) -> int:
         """Emulate the ``unicode`` class."""
         return len(str(self))
 
@@ -160,7 +160,7 @@ class StringElem:
         """Emulate the ``unicode`` class."""
         return self * lhs
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         elemstr = ", ".join(repr(elem) for elem in self.sub)
         return "<{class_name}({id}{rid}{xid}[{subs}])>".format(
             class_name=self.__class__.__name__,
@@ -170,7 +170,7 @@ class StringElem:
             subs=elemstr,
         )
 
-    def __str__(self):
+    def __str__(self) -> str:
         if callable(self.renderer):
             return self.renderer(self)
         if not self.isvisible:
@@ -178,7 +178,7 @@ class StringElem:
         return "".join(str(elem) for elem in self.sub)
 
     # METHODS #
-    def apply_to_strings(self, f):
+    def apply_to_strings(self, f) -> None:
         """
         Apply ``f`` to all actual strings in the tree.
 
@@ -206,7 +206,7 @@ class StringElem:
                 cp.sub.append(sub.__class__(sub))
         return cp
 
-    def delete_elem(self, elem):
+    def delete_elem(self, elem) -> None:
         if elem is self:
             self.sub = []
             return
@@ -682,7 +682,7 @@ class StringElem:
 
         return False
 
-    def insert_between(self, left, right, text):
+    def insert_between(self, left, right, text) -> bool:
         r"""Insert the given text between the two parameter ``StringElem``\s."""
         if not isinstance(left, StringElem) and left is not None:
             raise ValueError('"left" is not a StringElem or None')
@@ -813,7 +813,7 @@ class StringElem:
             else:
                 yield from sub.iter_depth_first(filter)
 
-    def map(self, f, filter=None):
+    def map(self, f, filter=None) -> None:
         """
         Apply ``f`` to all nodes for which ``filter`` returned ``True``
         (optional).
@@ -840,7 +840,7 @@ class StringElem:
         """
         return cls(pstr)
 
-    def print_tree(self, indent=0, verbose=False):
+    def print_tree(self, indent=0, verbose=False) -> None:
         """
         Print the tree from the current instance's point in an indented
         manner.
@@ -858,7 +858,7 @@ class StringElem:
             else:
                 print(f"{indent_prefix}{indent_prefix}[{elem}]")
 
-    def prune(self):
+    def prune(self) -> None:
         """Remove unnecessary nodes to make the tree optimal."""
         changed = False
         for elem in self.iter_depth_first():
@@ -931,7 +931,7 @@ class StringElem:
             self.prune()
 
     # TODO: Write unit test for this method
-    def remove_type(self, ptype):
+    def remove_type(self, ptype) -> None:
         r"""
         Replace nodes with type ``ptype`` with base ``StringElem``\s,
         containing the same sub-elements. This is only applicable to elements
