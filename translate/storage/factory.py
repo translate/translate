@@ -202,8 +202,8 @@ def getobject(
     ignore: str | None = None,
     classes: dict | None = None,
     classes_str: dict | None = None,
-    hiddenclasses: list | None = None,
-) -> TranslationStore:
+    hiddenclasses: dict | None = None,
+) -> TranslationStore | Directory:
     """
     Factory that returns a usable object for the type of file presented.
     :param storefile: File object or file name.

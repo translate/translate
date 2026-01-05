@@ -249,3 +249,7 @@ linkcheck_ignore = [
     "http://your_server.com/filename.html",  # Example URL
     ".*localhost.*",
 ]
+
+# Workaround for messed up resolving of type annotations, see
+# https://github.com/sphinx-doc/sphinx/issues/14223
+suppress_warnings = ["ref.python"]

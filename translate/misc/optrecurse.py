@@ -24,6 +24,8 @@ import re
 import sys
 import traceback
 from io import BytesIO
+from types import TracebackType
+from typing import Any
 
 from translate import __version__
 from translate.misc import progressbar
@@ -222,18 +224,31 @@ class RecursiveOptionParser(optparse.OptionParser):
         else:
             super().set_usage(usage)
 
-    def warning(self, msg, options=None, exc_info=None):
+    def warning(
+        self,
+        msg,
+        options=None,
+        exc_info: tuple[type[BaseException], BaseException, TracebackType]
+        | tuple[None, None, None]
+        | None = None,
+    ):
         """Print a warning message incorporating 'msg' to stderr."""
         if options:
             if options.errorlevel == "traceback":
+                assert exc_info is not None
+                assert exc_info[0] is not None
                 errorinfo = "\n".join(
                     traceback.format_exception(exc_info[0], exc_info[1], exc_info[2])
                 )
             elif options.errorlevel == "exception":
+                assert exc_info is not None
+                assert exc_info[0] is not None
                 errorinfo = "\n".join(
                     traceback.format_exception_only(exc_info[0], exc_info[1])
                 )
             elif options.errorlevel == "message":
+                assert exc_info is not None
+                assert exc_info[1] is not None
                 errorinfo = str(exc_info[1])
             else:
                 errorinfo = ""
@@ -278,7 +293,7 @@ class RecursiveOptionParser(optparse.OptionParser):
                 self.remove_option(long_opt)
         self.add_option(option)
 
-    def setformats(self, formats: dict, usetemplates: bool):
+    def setformats(self, formats: dict | list[tuple[Any, Any]], usetemplates: bool):
         """
         Sets the format options using the given format dictionary.
 
@@ -299,9 +314,10 @@ class RecursiveOptionParser(optparse.OptionParser):
         templateformats = []
         self.outputoptions = {}
         self.usetemplates = usetemplates
-        if isinstance(formats, dict):
-            formats = formats.items()
-        for formatgroup, outputoptions in formats:
+        format_items: list[tuple[Any, Any]] = (
+            list(formats.items()) if isinstance(formats, dict) else formats
+        )
+        for formatgroup, outputoptions in format_items:
             if isinstance(formatgroup, str) or formatgroup is None:
                 formatgroup = (formatgroup,)
             if not isinstance(formatgroup, tuple):
@@ -334,8 +350,8 @@ class RecursiveOptionParser(optparse.OptionParser):
             metavar="INPUT",
             help=f"read from INPUT in {inputformathelp}",
         )
-        inputoption.optionalswitch = True
-        inputoption.required = True
+        inputoption.optionalswitch = True  # type: ignore[attr-defined]
+        inputoption.required = True  # type: ignore[attr-defined]
         self.define_option(inputoption)
         excludeoption = optparse.Option(
             "-x",
@@ -357,8 +373,8 @@ class RecursiveOptionParser(optparse.OptionParser):
             metavar="OUTPUT",
             help=f"write to OUTPUT in {outputformathelp}",
         )
-        outputoption.optionalswitch = True
-        outputoption.required = True
+        outputoption.optionalswitch = True  # type: ignore[attr-defined]
+        outputoption.required = True  # type: ignore[attr-defined]
         self.define_option(outputoption)
         if self.usetemplates:
             self.templateformats = templateformats
@@ -498,6 +514,10 @@ class RecursiveOptionParser(optparse.OptionParser):
                 raise ValueError(
                     f"don't know what to do with input format {os.extsep + inputext}, template format {os.extsep + templateext}"
                 )
+            if inputext is None:
+                raise ValueError(
+                    "don't know what to do with input format (no file extension)"
+                )
             raise ValueError(
                 f"don't know what to do with input format {os.extsep + inputext}"
             )
@@ -623,16 +643,12 @@ class RecursiveOptionParser(optparse.OptionParser):
     def ensurerecursiveoutputdirexists(self, options):
         if not self.isrecursive(options.output, "output"):
             if not options.output:
-                self.error(optparse.OptionValueError("No output directory given"))
+                self.error("No output directory given")
             try:
                 self.warning("Output directory does not exist. Attempting to create")
                 os.mkdir(options.output)
             except OSError:
-                self.error(
-                    optparse.OptionValueError(
-                        "Output directory does not exist, attempt to create failed"
-                    )
-                )
+                self.error("Output directory does not exist, attempt to create failed")
 
     @staticmethod
     def openinputfile(options, fullinputpath):

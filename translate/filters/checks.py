@@ -89,7 +89,11 @@ lo_emptytags = frozenset(["br", "embed", "embedvar", "object", "help-id-missing"
 def tagname(string):
     """Returns the name of the XML/HTML tag in string."""
     tagname_match = tagname_re.match(string)
-    return tagname_match.groups(1)[0] + tagname_match.groups("")[1]
+    assert tagname_match is not None, f"Expected tag in string: {string}"
+    # Extract the tag name (group 1) and optional slash (group 2)
+    group1 = tagname_match.group(1) or ""
+    group2 = tagname_match.group(2) or ""
+    return group1 + group2
 
 
 def intuplelist(pair, list):
@@ -580,7 +584,7 @@ class TranslationChecker(UnitChecker):
                 try:
                     if not test(self.str1, str(pluralform)):
                         filterresult = False
-                except FilterFailure as e:  # noqa: PERF203
+                except FilterFailure as e:
                     filterresult = False
                     filtermessages.extend(e.messages)
 

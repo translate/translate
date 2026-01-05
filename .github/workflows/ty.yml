@@ -1,0 +1,28 @@
+name: Type check
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  ty:
+    runs-on: ubuntu-24.04
+
+    steps:
+    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      with:
+        persist-credentials: false
+
+    - name: Set up Python
+      id: setup_python
+      uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
+      with:
+        python-version: 3.14
+
+    - uses: astral-sh/setup-uv@681c641aba71e4a1c380be3ab5e12ad51f415867 # v7.1.6
+      with:
+        cache-suffix: ${{ steps.setup_python.outputs.python-version }}
+
+    - name: Type check ty
+      run: uv run --all-extras ty check --output-format=github
