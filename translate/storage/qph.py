@@ -111,7 +111,7 @@ class QphFile(lisa.LISAfile):
         self.header = self.document.getroot()
         self.body = self.document.getroot()  # The root node contains the units
 
-    def getsourcelanguage(self):
+    def getsourcelanguage(self) -> str:
         """
         Get the source language for this .qph file.
 
@@ -120,28 +120,25 @@ class QphFile(lisa.LISAfile):
         by the extraction tools.
 
         :return: ISO code e.g. af, fr, pt_BR
-        :rtype: String
         """
         lang = data.normalize_code(self.header.get("sourcelanguage", "en"))
         if lang == "en-us":
             return "en"
         return lang
 
-    def gettargetlanguage(self):
+    def gettargetlanguage(self) -> str:
         """
         Get the target language for this .qph file.
 
         :return: ISO code e.g. af, fr, pt_BR
-        :rtype: String
         """
         return data.normalize_code(self.header.get("language"))
 
-    def settargetlanguage(self, targetlanguage):
+    def settargetlanguage(self, targetlanguage: str) -> None:
         """
         Set the target language for this .qph file to *targetlanguage*.
 
         :param targetlanguage: ISO code e.g. af, fr, pt_BR
-        :type targetlanguage: String
         """
         if targetlanguage:
             self.header.set("language", targetlanguage)

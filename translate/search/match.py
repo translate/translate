@@ -21,6 +21,8 @@ Class to perform translation memory matching from a store of translation
 units.
 """
 
+from __future__ import annotations
+
 import heapq
 import re
 from operator import itemgetter
@@ -165,13 +167,11 @@ class matcher:
         """
         return max(len(text) * (min_similarity / 100.0), 1)
 
-    def matches(self, text):
+    def matches(self, text: str) -> list[base.TranslationUnit]:
         """
         Returns a list of possible matches for given source text.
 
-        :type text: String
         :param text: The text that will be search for in the translation memory
-        :rtype: list
         :return: a list of units with the source and target strings from the
                  translation memory. If :attr:`self.addpercentage` is
                  *True* (default) the match quality is given as a

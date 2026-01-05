@@ -18,10 +18,16 @@
 
 """Filters that strings can be passed through before certain tests."""
 
+from __future__ import annotations
+
 import re
+from typing import TYPE_CHECKING
 
 from translate.filters import decoration
 from translate.misc import quote
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 
 def removekdecomments(str1):
@@ -53,13 +59,12 @@ def removekdecomments(str1):
     return "\n".join(lines)
 
 
-def filteraccelerators(accelmarker):
+def filteraccelerators(accelmarker: str | None) -> Callable:
     """
     Returns a function that filters accelerators marked using *accelmarker*
     from a strings.
 
-    :param string accelmarker: Accelerator marker character
-    :rtype: Function
+    :param accelmarker: Accelerator marker character
     :return: fn(str1, acceplist=None)
     """
     accelmarkerlen = 0 if accelmarker is None else len(accelmarker)
@@ -81,7 +86,7 @@ def filteraccelerators(accelmarker):
     return filtermarkedaccelerators
 
 
-def varname(variable, startmarker, endmarker):
+def varname(variable: str, startmarker: str, endmarker: str) -> str:
     r"""
     Variable filter that returns the variable name without the marking
     punctuation.
@@ -89,7 +94,6 @@ def varname(variable, startmarker, endmarker):
     .. note:: Currently this function simply returns *variable* unchanged, no
        matter what *\*marker*’s are set to.
 
-    :rtype: String
     :return: Variable name with the supplied *startmarker* and *endmarker*
              removed.
     """
@@ -105,25 +109,25 @@ def varname(variable, startmarker, endmarker):
     ]
 
 
-def varnone(variable, startmarker, endmarker):
+def varnone(variable: str, startmarker: str, endmarker: str) -> str:
     """
     Variable filter that returns an empty string.
 
-    :rtype: String
     :return: Empty string
     """
     return ""
 
 
-def filtervariables(startmarker, endmarker, varfilter):
+def filtervariables(
+    startmarker: str | None, endmarker: str | None, varfilter: Callable
+) -> Callable:
     """
     Returns a function that filters variables marked using *startmarker* and
     *endmarker* from a string.
 
-    :param string startmarker: Start of variable marker
-    :param string endmarker: End of variable marker
-    :param Function varfilter: fn(variable, startmarker, endmarker)
-    :rtype: Function
+    :param startmarker: Start of variable marker
+    :param endmarker: End of variable marker
+    :param varfilter: fn(variable, startmarker, endmarker)
     :return: fn(str1)
     """
     startmarkerlen = 0 if startmarker is None else len(startmarker)

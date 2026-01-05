@@ -115,12 +115,13 @@ class ProjectStore:
         )
 
     # METHODS #
-    def append_file(self, afile, fname, ftype="trans", delete_orig=False):
+    def append_file(
+        self, afile, fname, ftype: str = "trans", delete_orig: bool = False
+    ):
         """
         Append the given file to the project with the given filename, marked
         to be of type ``ftype`` ('src', 'trans', 'tgt').
 
-        :type  delete_orig: bool
         :param delete_orig: Whether or not the original (given) file should be
                             deleted after being appended. This is set to
                             ``True`` by
@@ -210,7 +211,7 @@ class ProjectStore:
             if handle is not None and not isinstance(handle, str):
                 handle.close()
 
-    def get_file(self, fname, mode="rb"):
+    def get_file(self, fname: str, mode: str = "rb"):
         """
         Retrieve the file with the given name from the project store.
 
@@ -220,8 +221,6 @@ class ProjectStore:
         way must be defined in this method of sub-classes. The value may
         also be a string, which indicates that it is a real file accessible
         via ``open``.
-
-        :type  mode: str
         :param mode: The mode in which to re-open the file (if it is closed).
         """
         if fname not in self._files:

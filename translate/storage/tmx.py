@@ -88,13 +88,12 @@ class tmxunit(lisa.LISAunit):
         else:
             self._insert_element_before(note, self.namespaced(self.languageNode))
 
-    def _getnotelist(self, origin=None):
+    def _getnotelist(self, origin: str | None = None) -> list[str]:
         """
         Returns the text from notes.
 
         :param origin: Ignored
         :return: The text from notes
-        :rtype: List
         """
         note_nodes = self.xmlelement.iterdescendants(self.namespaced("note"))
         return [lisa.getText(note) for note in note_nodes]

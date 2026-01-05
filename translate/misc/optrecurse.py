@@ -116,12 +116,15 @@ class RecursiveOptionParser(optparse.OptionParser):
     """A specialized Option Parser for recursing through directories."""
 
     def __init__(
-        self, formats, usetemplates=False, allowmissingtemplate=False, description=None
+        self,
+        formats: dict,
+        usetemplates: bool = False,
+        allowmissingtemplate: bool = False,
+        description: str | None = None,
     ):
         """
         Construct the specialized Option Parser.
 
-        :type formats: Dictionary
         :param formats: See :meth:`~.RecursiveOptionParser.setformats`
         for an explanation of the formats parameter.
         """
@@ -275,11 +278,10 @@ class RecursiveOptionParser(optparse.OptionParser):
                 self.remove_option(long_opt)
         self.add_option(option)
 
-    def setformats(self, formats, usetemplates):
+    def setformats(self, formats: dict, usetemplates: bool):
         """
         Sets the format options using the given format dictionary.
 
-        :type formats: Dictionary or iterable
         :param formats: The dictionary *keys* should be:
 
                         - Single strings (or 1-tuples) containing an
@@ -775,14 +777,12 @@ class RecursiveOptionParser(optparse.OptionParser):
         return inputfiles
 
     @staticmethod
-    def splitext(pathname):
+    def splitext(pathname: str) -> tuple[str, str]:
         """
         Splits *pathname* into name and ext, and removes the extsep.
 
         :param pathname: A file path
-        :type pathname: string
         :return: root, ext
-        :rtype: tuple
         """
         root, ext = os.path.splitext(pathname)
         ext = ext.replace(os.extsep, "", 1)

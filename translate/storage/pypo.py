@@ -765,22 +765,20 @@ class pounit(pocommon.pounit):
             locations[i] = pocommon.unquote_plus(loc)
         return locations
 
-    def addlocation(self, location):
+    def addlocation(self, location: str) -> None:
         """
         Add a location to sourcecomments in the PO unit.
 
         :param location: Text location e.g. 'file.c:23' does not include #:
-        :type location: String
 
         """
         location = pocommon.quote_plus(location)
         self.sourcecomments.append(f"#: {location}{self.newline}")
 
-    def _extract_msgidcomments(self, text=None):
+    def _extract_msgidcomments(self, text: str | None = None) -> str:
         """
         Extract KDE style msgid comments from the unit.
 
-        :rtype: String
         :return: Returns the extracted msgidcomments found in this
                  unit's msgid.
         """

@@ -788,14 +788,12 @@ class StringElem:
         logger.debug("Could not insert between %r and %r... odd.", left, right)
         return False
 
-    def isleaf(self):
+    def isleaf(self) -> bool:
         """
         Whether or not this instance is a leaf node in the ``StringElem`` tree.
 
         A node is a leaf node if it is a ``StringElem`` (not a sub-class) and
         contains only sub-elements of type ``str`` or ``unicode``.
-
-        :rtype: bool
         """
         return all(isinstance(e, str) for e in self.sub)
 
@@ -828,13 +826,12 @@ class StringElem:
                 f(elem)
 
     @classmethod
-    def parse(cls, pstr):
+    def parse(cls, pstr: str):
         """
         Parse an instance of this class from the start of the given string.
-        This method should be implemented by any sub-class that wants to
+        This method should be implemented by any subclass that wants to
         parseable by :mod:`translate.storage.placeables.parse`.
 
-        :type  pstr: unicode
         :param pstr: The string to parse into an instance of this class.
         :returns: An instance of the current class, or ``None`` if the string
                   not parseable by this class.
