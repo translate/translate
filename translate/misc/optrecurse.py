@@ -235,17 +235,20 @@ class RecursiveOptionParser(optparse.OptionParser):
         """Print a warning message incorporating 'msg' to stderr."""
         if options:
             if options.errorlevel == "traceback":
-                assert exc_info is not None and exc_info[0] is not None
+                assert exc_info is not None
+                assert exc_info[0] is not None
                 errorinfo = "\n".join(
                     traceback.format_exception(exc_info[0], exc_info[1], exc_info[2])
                 )
             elif options.errorlevel == "exception":
-                assert exc_info is not None and exc_info[0] is not None
+                assert exc_info is not None
+                assert exc_info[0] is not None
                 errorinfo = "\n".join(
                     traceback.format_exception_only(exc_info[0], exc_info[1])
                 )
             elif options.errorlevel == "message":
-                assert exc_info is not None and exc_info[1] is not None
+                assert exc_info is not None
+                assert exc_info[1] is not None
                 errorinfo = str(exc_info[1])
             else:
                 errorinfo = ""

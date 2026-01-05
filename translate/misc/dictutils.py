@@ -22,7 +22,6 @@ dictionary.
 
 from typing import TypeVar
 
-_T = TypeVar("_T")
 _VT = TypeVar("_VT")
 _MISSING = object()
 
