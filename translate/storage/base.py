@@ -547,19 +547,21 @@ class MetadataTranslationUnit(TranslationUnit):
     Base class for translation units that store field data in an internal dictionary.
 
     This class provides a common implementation for storage formats (catkeys, omegat,
-    utx, wordfast) that manage unit data through an internal dictionary
+    utx, wordfast, ARB, RESJSON) that manage unit data through an internal dictionary
     accessible via a `metadata` property with getters and setters.
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, metadata=None, **kwargs):
         """
         Initialize the internal dictionary.
 
         Note: _metadata_dict is initialized before calling super().__init__() because
         the parent class (TranslationUnit) may set properties (like source)
         that depend on the dictionary being available.
+
+        :param metadata: Optional initial metadata dictionary
         """
-        self._metadata_dict: dict[str, str] = {}
+        self._metadata_dict: dict[str, str] = metadata or {}
         super().__init__(*args, **kwargs)
 
     def getmetadata(self) -> dict[str, str]:
@@ -580,30 +582,30 @@ class MetadataTranslationUnit(TranslationUnit):
 
     metadata = property(getmetadata, setmetadata)
 
+    def __eq__(self, other: TranslationUnit) -> bool:
+        """
+        Compare two units.
 
-class MetadataPropertyMixin:
-    """
-    Mixin for adding metadata property support to translation units.
+        The metadata dictionary is not compared as it's considered an implementation detail.
+        Units are equal if their source, target, and id match (as per the base TranslationUnit).
 
-    This mixin provides getmetadata/setmetadata methods and a metadata property
-    for units that need to store additional metadata without the full DictUnitMixin.
-    Used by ARBJsonUnit and RESJSONUnit which have different inheritance chains.
-    """
+        :param other: Another TranslationUnit
+        :return: True if units are equal
+        """
+        # Just use the base equality (source, target, id)
+        # Metadata is not compared as it may have implementation-specific fields
+        return super().__eq__(other)
 
-    def __init__(self, *args, metadata=None, **kwargs):
-        """Initialize metadata storage."""
-        super().__init__(*args, **kwargs)
-        self._metadata_dict = metadata or {}
+    def __hash__(self):
+        """
+        Generate hash based on base attributes only.
 
-    def getmetadata(self) -> dict:
-        """Get the metadata dictionary."""
-        return self._metadata_dict
+        Metadata is not included in the hash to match the equality behavior.
 
-    def setmetadata(self, newdict: dict) -> None:
-        """Set the metadata dictionary."""
-        self._metadata_dict = newdict
-
-    metadata = property(getmetadata, setmetadata)
+        :return: Hash value for the unit
+        """
+        # Use base hash only (source, target, id)
+        return super().__hash__()
 
 
 class TranslationStore:

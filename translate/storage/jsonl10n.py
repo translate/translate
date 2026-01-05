@@ -831,7 +831,7 @@ class GoI18NV2JsonFile(JsonFile):
             yield unit
 
 
-class ARBJsonUnit(base.MetadataPropertyMixin, FlatJsonUnit):
+class ARBJsonUnit(base.MetadataTranslationUnit, FlatJsonUnit):
     ID_FORMAT = "{}"
 
     def __init__(
@@ -843,6 +843,7 @@ class ARBJsonUnit(base.MetadataPropertyMixin, FlatJsonUnit):
         metadata=None,
         **kwargs,
     ):
+        # Pass metadata to MetadataTranslationUnit via super().__init__
         super().__init__(
             source=source,
             item=item,
@@ -1062,7 +1063,7 @@ class NextcloudJsonFile(JsonFile):
         out.write(b"\n")
 
 
-class RESJSONUnit(base.MetadataPropertyMixin, FlatJsonUnit):
+class RESJSONUnit(base.MetadataTranslationUnit, FlatJsonUnit):
     """A RESJSON entry with metadata support."""
 
     ID_FORMAT = "{}"
@@ -1076,6 +1077,7 @@ class RESJSONUnit(base.MetadataPropertyMixin, FlatJsonUnit):
         metadata=None,
         **kwargs,
     ):
+        # Pass metadata to MetadataTranslationUnit via super().__init__
         super().__init__(
             source=source,
             item=item,
