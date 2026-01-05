@@ -18,7 +18,6 @@ jobs:
       matrix:
         requirements: [latest]
         python-version:
-        - '3.10'
         - '3.11'
         - '3.12'
         - '3.13'
@@ -29,7 +28,7 @@ jobs:
         - macos-latest
         include:
         - requirements: minimal
-          python-version: '3.10'
+          python-version: '3.11'
           os: ubuntu-latest
 
     steps:
