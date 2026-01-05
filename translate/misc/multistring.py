@@ -75,7 +75,7 @@ class multistring(str):
         return f"multistring({strings!r})"
 
     def replace(  # type: ignore[override]
-        self, old: str, new: str, count: SupportsIndex = -1, /
+        self, old: str, new: str, count: int = -1, /
     ) -> multistring:
         newstr = multistring(super().replace(old, new, count))
         newstr.extra_strings.extend(

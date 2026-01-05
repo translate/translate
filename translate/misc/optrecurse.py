@@ -640,17 +640,13 @@ class RecursiveOptionParser(optparse.OptionParser):
     def ensurerecursiveoutputdirexists(self, options):
         if not self.isrecursive(options.output, "output"):
             if not options.output:
-                self.error(str(optparse.OptionValueError("No output directory given")))
+                self.error("No output directory given")
             try:
                 self.warning("Output directory does not exist. Attempting to create")
                 os.mkdir(options.output)
             except OSError:
                 self.error(
-                    str(
-                        optparse.OptionValueError(
-                            "Output directory does not exist, attempt to create failed"
-                        )
-                    )
+                    "Output directory does not exist, attempt to create failed"
                 )
 
     @staticmethod

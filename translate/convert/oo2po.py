@@ -122,6 +122,14 @@ def verifyoptions(options):
         )
 
 
+class OOConvertOptionParser(convert.ArchiveConvertOptionParser):
+    """Custom option parser for OpenOffice conversion with verification."""
+
+    def verifyoptions(self, options):
+        """Verifies that the options are valid."""
+        verifyoptions(options)
+
+
 def convertoo(
     inputfile,
     outputfile,
@@ -177,7 +185,7 @@ def main(argv=None):
     }
     # always treat the input as an archive unless it is a directory
     archiveformats = {(None, "input"): oo.oomultifile}
-    parser = convert.ArchiveConvertOptionParser(
+    parser = OOConvertOptionParser(
         formats, usepots=True, description=__doc__, archiveformats=archiveformats
     )
     parser.add_option(
@@ -209,7 +217,6 @@ def main(argv=None):
     parser.passthrough.append("pot")
     parser.passthrough.append("sourcelanguage")
     parser.passthrough.append("targetlanguage")
-    parser.verifyoptions = verifyoptions  # type: ignore[method-assign]
     parser.run(argv)
 
 
