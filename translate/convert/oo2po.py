@@ -114,20 +114,15 @@ class oo2po:
         return thetargetfile
 
 
-def verifyoptions(options):
-    """Verifies the commandline options."""
-    if not options.pot and not options.targetlanguage:
-        raise ValueError(
-            "You must specify the target language unless generating POT files (-P)"
-        )
-
-
 class OOConvertOptionParser(convert.ArchiveConvertOptionParser):
     """Custom option parser for OpenOffice conversion with verification."""
 
     def verifyoptions(self, options):
         """Verifies that the options are valid."""
-        verifyoptions(options)
+        if not options.pot and not options.targetlanguage:
+            raise ValueError(
+                "You must specify the target language unless generating POT files (-P)"
+            )
 
 
 def convertoo(
