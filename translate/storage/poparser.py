@@ -338,7 +338,8 @@ def set_encoding(parse_state, store, unit):
         and unit.msgstr
         and isinstance(unit.msgstr[0], str)
     ):
-        charset = re.search(r"charset=([^\s\\n]+)", "".join(unit.msgstr))
+        # Allow optional whitespace after '=' to match 'charset= koi8-r'
+        charset = re.search(r"charset=\s*([^\s\\n]+)", "".join(unit.msgstr))
     if charset:
         encoding = charset.group(1)
         if encoding != "CHARSET":
