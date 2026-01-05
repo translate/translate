@@ -74,7 +74,7 @@ import json
 import re
 import uuid
 from collections import defaultdict
-from typing import TYPE_CHECKING, Any, BinaryIO, ClassVar, TextIO, cast
+from typing import TYPE_CHECKING, Any, BinaryIO, ClassVar, TextIO, TypedDict, cast
 
 from translate.lang.data import cldr_plural_categories
 from translate.misc.multistring import multistring
@@ -155,6 +155,12 @@ class FlatJsonUnit(BaseJsonUnit):
     IdClass = FlatUnitId
 
 
+class DumpArgsType(TypedDict):
+    separators: tuple[str, ...]
+    indent: int
+    ensure_ascii: bool
+
+
 class JsonFile(base.DictStore):
     """A JSON file."""
 
@@ -166,7 +172,7 @@ class JsonFile(base.DictStore):
         self._filter = filter
         self.filename = ""
         self._file = ""
-        self.dump_args = {
+        self.dump_args: DumpArgsType = {
             "separators": (",", ": "),
             "indent": 4,
             "ensure_ascii": False,
