@@ -24,7 +24,7 @@ import codecs
 import logging
 from io import BytesIO
 from itertools import starmap
-from typing import TYPE_CHECKING, ClassVar, Literal
+from typing import TYPE_CHECKING, Any, ClassVar, Literal
 
 from translate.lang.data import plural_tags
 from translate.misc.multistring import multistring
@@ -542,6 +542,93 @@ class TranslationUnit:
 
         # Remove extra ones
         return plural_strings[: len(plural_tags)]
+
+
+class MetadataTranslationUnit(TranslationUnit):
+    """
+    Base class for translation units that store field data in an internal dictionary.
+
+    This class provides a common implementation for storage formats (catkeys, omegat,
+    utx, wordfast, ARB, RESJSON) that manage unit data through an internal dictionary
+    accessible via a `metadata` property with getters and setters.
+    """
+
+    def __init__(self, *args, metadata=None, **kwargs):
+        """
+        Initialize the internal dictionary.
+
+        Note: _metadata_dict is initialized before calling super().__init__() because
+        the parent class (TranslationUnit) may set properties (like source)
+        that depend on the dictionary being available.
+
+        :param metadata: Optional initial metadata dictionary
+        """
+        self._metadata_dict: dict[str, Any] = metadata or {}
+        super().__init__(*args, **kwargs)
+
+    def getmetadata(self) -> dict[str, Any]:
+        """
+        Get the dictionary of metadata/field values for this unit.
+
+        :return: The internal dictionary containing field values
+        """
+        return self._metadata_dict
+
+    def setmetadata(self, newdict: dict[str, Any]) -> None:
+        """
+        Set the dictionary of metadata/field values for this unit.
+
+        :param newdict: A new dictionary with field values
+        """
+        self._metadata_dict = newdict
+
+    metadata = property(getmetadata, setmetadata)
+
+    def __eq__(self, other: TranslationUnit) -> bool:
+        """
+        Compare two units including their metadata.
+
+        Metadata dictionaries are compared by considering only non-empty values
+        to handle cases where parsed units have all fields (including empty strings)
+        while programmatically created units only have set fields.
+
+        :param other: Another TranslationUnit
+        :return: True if units are equal including metadata
+        """
+        # First check the base equality (source, target, id)
+        if not super().__eq__(other):
+            return False
+
+        # Then check metadata if the other unit has it
+        if isinstance(other, MetadataTranslationUnit):
+            # Filter out empty string values for comparison
+            # This handles the case where parsed units have all fields (with empty strings)
+            # while created units only have the fields that were set
+            def filter_empty(d):
+                return {k: v for k, v in d.items() if v}
+
+            return filter_empty(self._metadata_dict) == filter_empty(
+                other._metadata_dict
+            )
+
+        return True
+
+    def __hash__(self):
+        """
+        Generate hash including metadata.
+
+        Only non-empty metadata values are included in the hash to match
+        the equality behavior.
+
+        :return: Hash value for the unit
+        """
+        # Hash the base attributes plus the non-empty metadata dict items
+        base_hash = super().__hash__()
+        # Filter out empty values to match __eq__ behavior
+        metadata_items = tuple(
+            sorted((k, v) for k, v in self._metadata_dict.items() if v)
+        )
+        return hash((base_hash, metadata_items))
 
 
 class TranslationStore:

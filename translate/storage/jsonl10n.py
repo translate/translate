@@ -847,7 +847,7 @@ class GoI18NV2JsonFile(JsonFile):
             yield unit
 
 
-class ARBJsonUnit(FlatJsonUnit):
+class ARBJsonUnit(base.MetadataTranslationUnit, FlatJsonUnit):
     ID_FORMAT = "{}"
 
     def __init__(
@@ -859,8 +859,15 @@ class ARBJsonUnit(FlatJsonUnit):
         metadata=None,
         **kwargs,
     ) -> None:
-        super().__init__(source, item, notes, placeholders, **kwargs)
-        self.metadata = metadata or {}
+        # Pass metadata to MetadataTranslationUnit via super().__init__
+        super().__init__(
+            source=source,
+            item=item,
+            notes=notes,
+            placeholders=placeholders,
+            metadata=metadata,
+            **kwargs,
+        )
 
     def storevalues(self, output) -> None:
         if self.notes:
@@ -1072,7 +1079,7 @@ class NextcloudJsonFile(JsonFile):
         out.write(b"\n")
 
 
-class RESJSONUnit(FlatJsonUnit):
+class RESJSONUnit(base.MetadataTranslationUnit, FlatJsonUnit):
     """A RESJSON entry with metadata support."""
 
     ID_FORMAT = "{}"
@@ -1086,8 +1093,15 @@ class RESJSONUnit(FlatJsonUnit):
         metadata=None,
         **kwargs,
     ) -> None:
-        super().__init__(source, item, notes, placeholders, **kwargs)
-        self.metadata = metadata or {}
+        # Pass metadata to MetadataTranslationUnit via super().__init__
+        super().__init__(
+            source=source,
+            item=item,
+            notes=notes,
+            placeholders=placeholders,
+            metadata=metadata,
+            **kwargs,
+        )
 
     def storevalues(self, output) -> None:
         # Sync notes to metadata

@@ -25,7 +25,7 @@ class TestCatkeysUnit(test_base.TestTranslationUnit):
     def test_newlines(self) -> None:
         """Wordfast does not like real newlines."""
         unit = self.UnitClass("One\nTwo")
-        assert unit.dict["source"] == "One\\nTwo"
+        assert unit.metadata["source"] == "One\\nTwo"
 
     def test_istranslated(self) -> None:
         unit = self.UnitClass()

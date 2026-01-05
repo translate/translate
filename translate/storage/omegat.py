@@ -62,42 +62,21 @@ class OmegaTDialect(csv.Dialect):
 csv.register_dialect("omegat", OmegaTDialect)
 
 
-class OmegaTUnit(base.TranslationUnit):
+class OmegaTUnit(base.MetadataTranslationUnit):
     """An OmegaT glossary unit."""
 
-    def __init__(self, source=None) -> None:
-        self._dict = {}
-        if source:
-            self.source = source
-        super().__init__(source)
-
-    def getdict(self):
-        """Get the dictionary of values for a OmegaT line."""
-        return self._dict
-
-    def setdict(self, newdict: dict[str, str]) -> None:
-        """
-        Set the dictionary of values for a OmegaT line.
-
-        :param newdict: a new dictionary with OmegaT line elements
-        """
-        # TODO First check that the values are OK
-        self._dict = newdict
-
-    dict = property(getdict, setdict)
-
     def _get_field(self, key):
-        if key not in self._dict:
+        if key not in self._metadata_dict:
             return None
-        if self._dict[key]:
-            return self._dict[key]
+        if self._metadata_dict[key]:
+            return self._metadata_dict[key]
         return ""
 
     def _set_field(self, key, newvalue) -> None:
         if newvalue is None:
-            self._dict[key] = None
-        if key not in self._dict or newvalue != self._dict[key]:
-            self._dict[key] = newvalue
+            self._metadata_dict[key] = None
+        if key not in self._metadata_dict or newvalue != self._metadata_dict[key]:
+            self._metadata_dict[key] = newvalue
 
     def getnotes(self, origin=None):
         return self._get_field("comment")
@@ -130,16 +109,16 @@ class OmegaTUnit(base.TranslationUnit):
         self._rich_target = None
         self._set_field("target", target)
 
-    def settargetlang(self, newlang) -> None:
-        self._dict["target-lang"] = newlang
+    def settargetlang(self, newlang: str) -> None:
+        self._metadata_dict["target-lang"] = newlang
 
     targetlang = property(None, settargetlang)
 
     def __str__(self) -> str:
-        return str(self._dict)
+        return str(self._metadata_dict)
 
     def istranslated(self):
-        return bool(self._dict.get("target", None))
+        return bool(self._metadata_dict.get("target", None))
 
 
 class OmegaTFile(base.TranslationStore):
@@ -179,7 +158,7 @@ class OmegaTFile(base.TranslationStore):
         )
         for line in lines:
             newunit = OmegaTUnit()
-            newunit.dict = line
+            newunit.metadata = line
             self.addunit(newunit)
 
     def serialize(self, out) -> None:
@@ -191,7 +170,7 @@ class OmegaTFile(base.TranslationStore):
         output = StringIO()
         writer = csv.DictWriter(output, fieldnames=OMEGAT_FIELDNAMES, dialect="omegat")
         for unit in translated_units:
-            writer.writerow(unit.dict)
+            writer.writerow(unit.metadata)
         out.write(output.getvalue().encode(self.encoding))
 
 

@@ -313,47 +313,26 @@ class WordfastHeader:
     tucount = property(None, settucount)
 
 
-class WordfastUnit(base.TranslationUnit):
+class WordfastUnit(base.MetadataTranslationUnit):
     """A Wordfast translation memory unit."""
-
-    def __init__(self, source=None) -> None:
-        self._dict = {}
-        if source:
-            self.source = source
-        super().__init__(source)
 
     def _update_timestamp(self) -> None:
         """Refresh the timestamp for the unit."""
-        self._dict["date"] = WordfastTime(time.localtime()).timestring
-
-    def getdict(self):
-        """Get the dictionary of values for a Wordfast line."""
-        return self._dict
-
-    def setdict(self, newdict: dict[str, str]) -> None:
-        """
-        Set the dictionary of values for a Wordfast line.
-
-        :param newdict: a new dictionary with Wordfast line elements
-        """
-        # TODO First check that the values are OK
-        self._dict = newdict
-
-    dict = property(getdict, setdict)
+        self._metadata_dict["date"] = WordfastTime(time.localtime()).timestring
 
     def _get_source_or_target(self, key):
-        if self._dict.get(key, None) is None:
+        if self._metadata_dict.get(key, None) is None:
             return None
-        if self._dict[key]:
-            return _wf_to_char(self._dict[key])
+        if self._metadata_dict[key]:
+            return _wf_to_char(self._metadata_dict[key])
         return ""
 
     def _set_source_or_target(self, key, newvalue) -> None:
         if newvalue is None:
-            self._dict[key] = None
+            self._metadata_dict[key] = None
         newvalue = _char_to_wf(newvalue)
-        if key not in self._dict or newvalue != self._dict[key]:
-            self._dict[key] = newvalue
+        if key not in self._metadata_dict or newvalue != self._metadata_dict[key]:
+            self._metadata_dict[key] = newvalue
             self._update_timestamp()
 
     @property
@@ -374,18 +353,18 @@ class WordfastUnit(base.TranslationUnit):
         self._rich_target = None
         self._set_source_or_target("target", target)
 
-    def settargetlang(self, newlang) -> None:
-        self._dict["target-lang"] = newlang
+    def settargetlang(self, newlang: str) -> None:
+        self._metadata_dict["target-lang"] = newlang
 
     targetlang = property(None, settargetlang)
 
     def __str__(self) -> str:
-        return str(self._dict)
+        return str(self._metadata_dict)
 
     def istranslated(self):
-        if not self._dict.get("source", None):
+        if not self._metadata_dict.get("source", None):
             return False
-        return bool(self._dict.get("target", None))
+        return bool(self._metadata_dict.get("target", None))
 
 
 class WordfastTMFile(base.TranslationStore):
@@ -440,7 +419,7 @@ class WordfastTMFile(base.TranslationStore):
                 self.header = WordfastHeader(header)
                 continue
             newunit = WordfastUnit()
-            newunit.dict = line
+            newunit.metadata = line
             self.addunit(newunit)
 
     def serialize(self, out) -> None:
@@ -464,5 +443,5 @@ class WordfastTMFile(base.TranslationStore):
         )
 
         for unit in translated_units:
-            writer.writerow(unit.dict)
+            writer.writerow(unit.metadata)
         out.write(output.getvalue().encode(self.encoding))

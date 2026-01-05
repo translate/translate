@@ -45,10 +45,10 @@ class TestWFUnit(test_base.TestTranslationUnit):
             unit = self.UnitClass(real)
             print(real.encode("utf-8"), unit.source.encode("utf-8"))
             assert unit.source == real
-            assert unit.dict["source"] == escaped
+            assert unit.metadata["source"] == escaped
             unit.target = real
             assert unit.target == real
-            assert unit.dict["target"] == escaped
+            assert unit.metadata["target"] == escaped
 
         for escaped, real in wf.WF_ESCAPE_MAP[
             :16
@@ -57,20 +57,20 @@ class TestWFUnit(test_base.TestTranslationUnit):
         # Real world cases
         unit = self.UnitClass("Open &File. ’n Probleem.")  # codespell:ignore
         assert (
-            unit.dict["source"]
+            unit.metadata["source"]
             == "Open &'26;File. &'92;n Probleem."  # codespell:ignore
         )
 
     def test_newlines(self) -> None:
         """Wordfast does not like real newlines."""
         unit = self.UnitClass("One\nTwo")
-        assert unit.dict["source"] == "One\\nTwo"
+        assert unit.metadata["source"] == "One\\nTwo"
 
     def test_language_setting(self) -> None:
         """Check that we can set the target language."""
         unit = self.UnitClass("Test")
         unit.targetlang = "AF"
-        assert unit.dict["target-lang"] == "AF"
+        assert unit.metadata["target-lang"] == "AF"
 
     def test_istranslated(self) -> None:
         unit = self.UnitClass()

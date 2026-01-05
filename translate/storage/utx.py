@@ -85,43 +85,22 @@ class UtxHeader:
     """
 
 
-class UtxUnit(base.TranslationUnit):
+class UtxUnit(base.MetadataTranslationUnit):
     """A UTX dictionary unit."""
 
-    def __init__(self, source=None) -> None:
-        self._dict = {}
-        if source:
-            self.source = source
-        super().__init__(source)
-
-    def getdict(self):
-        """Get the dictionary of values for a UTX line."""
-        return self._dict
-
-    def setdict(self, newdict: dict[str, str]) -> None:
-        """
-        Set the dictionary of values for a UTX line.
-
-        :param newdict: a new dictionary with UTX line elements
-        """
-        # TODO First check that the values are OK
-        self._dict = newdict
-
-    dict = property(getdict, setdict)
-
     def _get_field(self, key):
-        if key not in self._dict:
+        if key not in self._metadata_dict:
             return None
-        if self._dict[key]:
-            return self._dict[key]
+        if self._metadata_dict[key]:
+            return self._metadata_dict[key]
         return ""
 
     def _set_field(self, key, newvalue) -> None:
         # FIXME update the header date
         if newvalue is None:
-            self._dict[key] = None
-        if key not in self._dict or newvalue != self._dict[key]:
-            self._dict[key] = newvalue
+            self._metadata_dict[key] = None
+        if key not in self._metadata_dict or newvalue != self._metadata_dict[key]:
+            self._metadata_dict[key] = newvalue
 
     def getnotes(self, origin=None):
         return self._get_field("comment")
@@ -154,16 +133,16 @@ class UtxUnit(base.TranslationUnit):
         self._rich_target = None
         self._set_field("tgt", target)
 
-    def settargetlang(self, newlang) -> None:
-        self._dict["target-lang"] = newlang
+    def settargetlang(self, newlang: str) -> None:
+        self._metadata_dict["target-lang"] = newlang
 
     targetlang = property(None, settargetlang)
 
     def __str__(self) -> str:
-        return str(self._dict)
+        return str(self._metadata_dict)
 
     def istranslated(self):
-        return bool(self._dict.get("tgt", None))
+        return bool(self._metadata_dict.get("tgt", None))
 
 
 class UtxFile(base.TranslationStore):
@@ -272,7 +251,7 @@ class UtxFile(base.TranslationStore):
         )
         for line in lines:
             newunit = UtxUnit()
-            newunit.dict = line
+            newunit.metadata = line
             self.addunit(newunit)
 
     def serialize(self, out) -> None:
@@ -284,7 +263,7 @@ class UtxFile(base.TranslationStore):
         output = StringIO()
         writer = csv.DictWriter(output, fieldnames=self._fieldnames, dialect="utx")
         for unit in translated_units:
-            writer.writerow(unit.dict)
+            writer.writerow(unit.metadata)
 
         result = output.getvalue().encode(self.encoding)
         out.write(self._write_header().encode(self.encoding))
