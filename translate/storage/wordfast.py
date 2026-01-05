@@ -313,7 +313,7 @@ class WordfastHeader:
     tucount = property(None, settucount)
 
 
-class WordfastUnit(base.DictUnitMixin, base.TranslationUnit):
+class WordfastUnit(base.DictUnitMixin):
     """A Wordfast translation memory unit."""
 
     def __init__(self, source=None):
@@ -323,21 +323,21 @@ class WordfastUnit(base.DictUnitMixin, base.TranslationUnit):
 
     def _update_timestamp(self):
         """Refresh the timestamp for the unit."""
-        self._dict["date"] = WordfastTime(time.localtime()).timestring
+        self._metadata_dict["date"] = WordfastTime(time.localtime()).timestring
 
     def _get_source_or_target(self, key):
-        if self._dict.get(key, None) is None:
+        if self._metadata_dict.get(key, None) is None:
             return None
-        if self._dict[key]:
-            return _wf_to_char(self._dict[key])
+        if self._metadata_dict[key]:
+            return _wf_to_char(self._metadata_dict[key])
         return ""
 
     def _set_source_or_target(self, key, newvalue):
         if newvalue is None:
-            self._dict[key] = None
+            self._metadata_dict[key] = None
         newvalue = _char_to_wf(newvalue)
-        if key not in self._dict or newvalue != self._dict[key]:
-            self._dict[key] = newvalue
+        if key not in self._metadata_dict or newvalue != self._metadata_dict[key]:
+            self._metadata_dict[key] = newvalue
             self._update_timestamp()
 
     @property
@@ -359,17 +359,17 @@ class WordfastUnit(base.DictUnitMixin, base.TranslationUnit):
         self._set_source_or_target("target", target)
 
     def settargetlang(self, newlang):
-        self._dict["target-lang"] = newlang
+        self._metadata_dict["target-lang"] = newlang
 
     targetlang = property(None, settargetlang)
 
     def __str__(self):
-        return str(self._dict)
+        return str(self._metadata_dict)
 
     def istranslated(self):
-        if not self._dict.get("source", None):
+        if not self._metadata_dict.get("source", None):
             return False
-        return bool(self._dict.get("target", None))
+        return bool(self._metadata_dict.get("target", None))
 
 
 class WordfastTMFile(base.TranslationStore):

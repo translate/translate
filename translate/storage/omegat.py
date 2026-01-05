@@ -62,7 +62,7 @@ class OmegaTDialect(csv.Dialect):
 csv.register_dialect("omegat", OmegaTDialect)
 
 
-class OmegaTUnit(base.DictUnitMixin, base.TranslationUnit):
+class OmegaTUnit(base.DictUnitMixin):
     """An OmegaT glossary unit."""
 
     def __init__(self, source=None):
@@ -71,17 +71,17 @@ class OmegaTUnit(base.DictUnitMixin, base.TranslationUnit):
             self.source = source
 
     def _get_field(self, key):
-        if key not in self._dict:
+        if key not in self._metadata_dict:
             return None
-        if self._dict[key]:
-            return self._dict[key]
+        if self._metadata_dict[key]:
+            return self._metadata_dict[key]
         return ""
 
     def _set_field(self, key, newvalue):
         if newvalue is None:
-            self._dict[key] = None
-        if key not in self._dict or newvalue != self._dict[key]:
-            self._dict[key] = newvalue
+            self._metadata_dict[key] = None
+        if key not in self._metadata_dict or newvalue != self._metadata_dict[key]:
+            self._metadata_dict[key] = newvalue
 
     def getnotes(self, origin=None):
         return self._get_field("comment")
@@ -115,15 +115,15 @@ class OmegaTUnit(base.DictUnitMixin, base.TranslationUnit):
         self._set_field("target", target)
 
     def settargetlang(self, newlang):
-        self._dict["target-lang"] = newlang
+        self._metadata_dict["target-lang"] = newlang
 
     targetlang = property(None, settargetlang)
 
     def __str__(self):
-        return str(self._dict)
+        return str(self._metadata_dict)
 
     def istranslated(self):
-        return bool(self._dict.get("target", None))
+        return bool(self._metadata_dict.get("target", None))
 
 
 class OmegaTFile(base.TranslationStore):

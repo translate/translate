@@ -542,43 +542,82 @@ class TranslationUnit:
         return plural_strings[: len(plural_tags)]
 
 
-class DictUnitMixin:
+class DictUnitMixin(TranslationUnit):
     """
-    Mixin class for translation units that store field data in an internal dictionary.
+    Base class for translation units that store field data in an internal dictionary.
 
-    This mixin provides a common implementation of the `dict` property pattern
-    used by several storage formats (catkeys, omegat, utx, wordfast) that manage
-    unit data through an internal dictionary with getters and setters.
+    This class provides a common implementation for storage formats (catkeys, omegat,
+    utx, wordfast) that manage unit data through an internal dictionary
+    accessible via a `metadata` property with getters and setters.
+
+    The `metadata` property provides backward compatibility via the `dict` property
+    name for existing code.
     """
 
     def __init__(self, *args, **kwargs):
         """
         Initialize the internal dictionary.
 
-        Note: _dict is initialized before calling super().__init__() because
+        Note: _metadata_dict is initialized before calling super().__init__() because
         the parent class (TranslationUnit) may set properties (like source)
-        that depend on _dict being available.
+        that depend on the dictionary being available.
         """
-        self._dict: dict[str, str] = {}
+        self._metadata_dict: dict[str, str] = {}
         super().__init__(*args, **kwargs)
 
-    def getdict(self) -> dict[str, str]:
+    def getmetadata(self) -> dict[str, str]:
         """
-        Get the dictionary of values for this unit.
+        Get the dictionary of metadata/field values for this unit.
 
         :return: The internal dictionary containing field values
         """
-        return self._dict
+        return self._metadata_dict
 
-    def setdict(self, newdict: dict[str, str]) -> None:
+    def setmetadata(self, newdict: dict[str, str]) -> None:
         """
-        Set the dictionary of values for this unit.
+        Set the dictionary of metadata/field values for this unit.
 
         :param newdict: A new dictionary with field values
         """
-        self._dict = newdict
+        self._metadata_dict = newdict
+
+    metadata = property(getmetadata, setmetadata)
+
+    # Backward compatibility: provide 'dict' as an alias for 'metadata'
+    def getdict(self) -> dict[str, str]:
+        """Backward compatibility alias for getmetadata()."""
+        return self.getmetadata()
+
+    def setdict(self, newdict: dict[str, str]) -> None:
+        """Backward compatibility alias for setmetadata()."""
+        self.setmetadata(newdict)
 
     dict = property(getdict, setdict)
+
+
+class MetadataPropertyMixin:
+    """
+    Mixin for adding metadata property support to translation units.
+
+    This mixin provides getmetadata/setmetadata methods and a metadata property
+    for units that need to store additional metadata without the full DictUnitMixin.
+    Used by ARBJsonUnit and RESJSONUnit which have different inheritance chains.
+    """
+
+    def __init__(self, *args, metadata=None, **kwargs):
+        """Initialize metadata storage."""
+        super().__init__(*args, **kwargs)
+        self._metadata_dict = metadata or {}
+
+    def getmetadata(self) -> dict:
+        """Get the metadata dictionary."""
+        return self._metadata_dict
+
+    def setmetadata(self, newdict: dict) -> None:
+        """Set the metadata dictionary."""
+        self._metadata_dict = newdict
+
+    metadata = property(getmetadata, setmetadata)
 
 
 class TranslationStore:
