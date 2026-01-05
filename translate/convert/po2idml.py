@@ -153,7 +153,7 @@ def translate_idml(template, input_file, translatable_files):
     return translate_dom_trees(unit_trees, dom_trees)
 
 
-def write_idml(template_zip, output_file, dom_trees):
+def write_idml(template_zip, output_file, dom_trees) -> None:
     """Write the translated IDML package."""
     output_zip = ZipFile(output_file, "w", compression=ZIP_DEFLATED)
 
@@ -170,7 +170,7 @@ def write_idml(template_zip, output_file, dom_trees):
         )
 
 
-def convertpo(input_file, output_file, template):
+def convertpo(input_file, output_file, template) -> bool:
     """Create a translated IDML using an IDML template and a PO file."""
     # Now proceed with the conversion.
     template_zip = ZipFile(template, "r")
@@ -189,7 +189,7 @@ def convertpo(input_file, output_file, template):
     return True
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     formats = {
         ("po", "idml"): ("idml", convertpo),
     }

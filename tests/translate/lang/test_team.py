@@ -1,7 +1,7 @@
 from translate.lang.team import guess_language
 
 
-def test_simple():
+def test_simple() -> None:
     """
     Test the regex, team snippet and language name snippets at a high
     level.

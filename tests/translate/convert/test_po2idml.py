@@ -13,7 +13,7 @@ class TestPo2IDMLCommand(test_convert.TestConvertCommand):
         "-t TEMPLATE, --template=TEMPLATE",
     ]
 
-    def test_convert(self):
+    def test_convert(self) -> None:
         posource = """
 #: idPkg:Story[0]/%7B%7DStory[0]/%7B%7DXMLElement[0]/%7B%7DParagraphStyleRange[0]
 #: Stories/Story_mainmainmainmainmainmainmainmainmainmainmainu188.xml

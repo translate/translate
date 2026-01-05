@@ -44,7 +44,7 @@ class TOMLUnit(base.DictUnit):
     Represents a single translatable string extracted from a TOML file.
     """
 
-    def __init__(self, source=None, **kwargs):
+    def __init__(self, source=None, **kwargs) -> None:
         """Initialize a TOML unit with optional source text."""
         # Ensure we have ID (for serialization)
         if source:
@@ -54,7 +54,7 @@ class TOMLUnit(base.DictUnit):
             self._id = str(uuid.uuid4())
         super().__init__(source)
 
-    def setid(self, value, unitid=None):
+    def setid(self, value, unitid=None) -> None:
         """Set the unit ID, stripping leading separator if present."""
         # Strip leading separator from the string representation
         if isinstance(value, str) and value.startswith(self.IdClass.KEY_SEPARATOR):
@@ -68,7 +68,7 @@ class TOMLUnit(base.DictUnit):
         return self.target
 
     @source.setter
-    def source(self, source):
+    def source(self, source) -> None:
         """Set the source text (alias for target in monolingual format)."""
         self.target = source
 
@@ -102,7 +102,7 @@ class TOMLFile(base.DictStore):
 
     UnitClass = TOMLUnit
 
-    def __init__(self, inputfile=None, **kwargs):
+    def __init__(self, inputfile=None, **kwargs) -> None:
         """Construct a TOML file, optionally reading from inputfile."""
         super().__init__(**kwargs)
         self.filename = ""

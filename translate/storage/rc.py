@@ -101,7 +101,7 @@ def escape_to_rc(string):
 class rcunit(base.TranslationUnit):
     """A unit of an rc file."""
 
-    def __init__(self, source="", **kwargs):
+    def __init__(self, source="", **kwargs) -> None:
         """Construct a blank rcunit."""
         super().__init__(source)
         self.name = ""
@@ -115,7 +115,7 @@ class rcunit(base.TranslationUnit):
         return self._value
 
     @source.setter
-    def source(self, source):
+    def source(self, source) -> None:
         """Sets the source AND the target to be equal."""
         self._rich_source = None
         self._value = source or ""
@@ -125,12 +125,12 @@ class rcunit(base.TranslationUnit):
         return self.source
 
     @target.setter
-    def target(self, target):
+    def target(self, target) -> None:
         """.. note:: This also sets the ``.source`` attribute!."""
         self._rich_target = None
         self.source = target
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Convert to a string."""
         return self.getoutput()
 
@@ -143,16 +143,16 @@ class rcunit(base.TranslationUnit):
     def getlocations(self):
         return [self.name]
 
-    def addnote(self, text, origin=None, position="append"):
+    def addnote(self, text, origin=None, position="append") -> None:
         self.comments.append(text)
 
     def getnotes(self, origin=None):
         return "\n".join(self.comments)
 
-    def removenotes(self, origin=None):
+    def removenotes(self, origin=None) -> None:
         self.comments = []
 
-    def isblank(self):
+    def isblank(self) -> bool:
         """Returns whether this is a blank element, containing only comments."""
         return not (self.name or self.value)
 
@@ -257,17 +257,17 @@ def rc_statement() -> ParserElement:
     return comments ^ precompiler ^ dialog ^ string_table ^ menu ^ language_definition
 
 
-def generate_stringtable_name(identifier):
+def generate_stringtable_name(identifier) -> str:
     """Return the name generated for a stringtable element."""
     return f"STRINGTABLE.{identifier}"
 
 
-def generate_menu_pre_name(block_type, block_id):
+def generate_menu_pre_name(block_type, block_id) -> str:
     """Return the pre-name generated for elements of a menu."""
     return f"{block_type}.{block_id}"
 
 
-def generate_popup_pre_name(pre_name, caption):
+def generate_popup_pre_name(pre_name, caption) -> str:
     """
     Return the pre-name generated for subelements of a popup.
 
@@ -280,27 +280,27 @@ def generate_popup_pre_name(pre_name, caption):
     return f"{pre_name}.{caption.replace(' ', '_')}"
 
 
-def generate_popup_caption_name(pre_name):
+def generate_popup_caption_name(pre_name) -> str:
     """Return the name generated for a caption of a popup."""
     return f"{pre_name}.POPUP.CAPTION"
 
 
-def generate_menuitem_name(pre_name, block_type, identifier):
+def generate_menuitem_name(pre_name, block_type, identifier) -> str:
     """Return the name generated for a menuitem of a popup."""
     return f"{pre_name}.{block_type}.{identifier}"
 
 
-def generate_dialog_caption_name(block_type, identifier):
+def generate_dialog_caption_name(block_type, identifier) -> str:
     """Return the name generated for a caption of a dialog."""
     return f"{block_type}.{identifier}.CAPTION"
 
 
-def generate_dialog_control_name(block_type, block_id, control_type, identifier):
+def generate_dialog_control_name(block_type, block_id, control_type, identifier) -> str:
     """Return the name generated for a control of a dialog."""
     return f"{block_type}.{block_id}.{control_type}.{identifier}"
 
 
-def parse_encoding_pragma(pragma):
+def parse_encoding_pragma(pragma) -> str | None:
     pragma = pragma.strip()
     codepage = pragma.split("(")[1].split(")")[0].strip()
     if codepage == "65001":
@@ -318,7 +318,7 @@ class rcfile(base.TranslationStore):
 
     def __init__(
         self, inputfile=None, lang=None, sublang=None, encoding=None, **kwargs
-    ):
+    ) -> None:
         """Construct an rcfile, optionally reading in from inputfile."""
         super().__init__(encoding=encoding, **kwargs)
         self.filename = getattr(inputfile, "name", "")
@@ -333,7 +333,7 @@ class rcfile(base.TranslationStore):
                 encoding=encoding or "auto",
             )
 
-    def add_popup_units(self, pre_name, popup):
+    def add_popup_units(self, pre_name, popup) -> None:
         """Transverses the popup tree making new units as needed."""
         if popup.caption:
             newunit = rcunit(escape_to_python(popup.caption[1:-1]))
@@ -360,7 +360,7 @@ class rcfile(base.TranslationStore):
                         sub_popup,
                     )
 
-    def parse(self, rcsrc, encoding="auto"):
+    def parse(self, rcsrc, encoding="auto") -> None:
         """Read the source of a .rc file in and include them as units."""
         self.encoding = encoding
         if encoding != "auto":
@@ -484,6 +484,6 @@ class rcfile(base.TranslationStore):
 
                     continue
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         """Write the units back to file."""
         out.write(("".join(self.blocks)).encode(self.encoding))

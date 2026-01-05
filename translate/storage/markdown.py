@@ -59,11 +59,11 @@ if TYPE_CHECKING:
 class MarkdownUnit(base.TranslationUnit):
     """A unit of translatable/localisable markdown content."""
 
-    def __init__(self, source=None):
+    def __init__(self, source=None) -> None:
         super().__init__(source)
         self.locations = []
 
-    def addlocation(self, location):
+    def addlocation(self, location) -> None:
         self.locations.append(location)
 
     def getlocations(self):
@@ -72,14 +72,14 @@ class MarkdownUnit(base.TranslationUnit):
 
 class MarkdownFrontmatterUnit(MarkdownUnit):
     @staticmethod
-    def isheader():
+    def isheader() -> bool:
         return True
 
 
 class MarkdownFile(base.TranslationStore):
     UnitClass = MarkdownUnit
 
-    def __init__(self, inputfile=None, callback=None, max_line_length=None):
+    def __init__(self, inputfile=None, callback=None, max_line_length=None) -> None:
         """
         Construct a new object instance.
 
@@ -100,7 +100,7 @@ class MarkdownFile(base.TranslationStore):
             inputfile.close()
             self.parse(md_src)
 
-    def parse(self, data):
+    def parse(self, data) -> None:
         """Process the given source string (binary)."""
         lines = data.decode().splitlines(keepends=False)
         front_matter_end = 0
@@ -156,7 +156,9 @@ class MarkdownFile(base.TranslationStore):
 
 
 class TranslatingMarkdownRenderer(MarkdownRenderer):
-    def __init__(self, translate_callback, *extras, max_line_length: int | None = None):
+    def __init__(
+        self, translate_callback, *extras, max_line_length: int | None = None
+    ) -> None:
         super().__init__(*extras, max_line_length=max_line_length)
         self.translate_callback = translate_callback
         self.bypass = False

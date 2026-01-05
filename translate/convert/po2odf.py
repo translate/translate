@@ -50,7 +50,7 @@ def convertpo(input_file: BinaryIO, output_file: BinaryIO, template: BinaryIO) -
     return 1
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     formats = {
         ("po", "odt"): ("odt", convertpo),  # Text
         ("po", "ods"): ("ods", convertpo),  # Spreadsheet

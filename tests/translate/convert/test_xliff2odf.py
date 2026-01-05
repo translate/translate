@@ -13,7 +13,7 @@ class TestXLIFF2ODFommand(test_convert.TestConvertCommand):
         "-t TEMPLATE, --template=TEMPLATE",
     ]
 
-    def test_convert(self):
+    def test_convert(self) -> None:
         xliffsource = """<?xml version="1.0" ?>
     <xliff version="1.1">
       <file original="filename.po" source-language="en-US" datatype="po">

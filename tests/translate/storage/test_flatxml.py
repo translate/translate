@@ -25,28 +25,28 @@ class TestFlatXMLFile(test_monolingual.TestMonolingualStore):
         xmldecl = f'<?xml version="1.0" encoding="{encoding}"?>'
         return BytesIO((xmldecl + string).encode())
 
-    def test_root_config_detect(self):
+    def test_root_config_detect(self) -> None:
         """Test that parser fails on inconsistent root name configuration."""
         xmlsource = '<root><str key="test">Test</str></root>'
 
         with raises(AssertionError):
             self.StoreClass(xmlsource, root_name="different")
 
-    def test_value_config_detect(self):
+    def test_value_config_detect(self) -> None:
         """Test that parser fails on inconsistent value name configuration."""
         xmlsource = '<root><str key="test">Test</str></root>'
 
         with raises(AssertionError):
             self.StoreClass(xmlsource, value_name="different")
 
-    def test_key_config_detect(self):
+    def test_key_config_detect(self) -> None:
         """Test that parser fails on inconsistent key name configuration."""
         xmlsource = '<root><str key="test">Test</str></root>'
 
         with raises(AssertionError):
             self.StoreClass(xmlsource, key_name="different")
 
-    def test_value_config_mixed_ok(self):
+    def test_value_config_mixed_ok(self) -> None:
         """Test that parser leaves non-value entries alone."""
         xmlsource = """<root>
             <str key="test">Test</str>
@@ -58,7 +58,7 @@ class TestFlatXMLFile(test_monolingual.TestMonolingualStore):
         assert store.findid("test")
         assert len(list(store.root.iterchildren("not-a-value"))) == 1
 
-    def test_namespace_config_detect(self):
+    def test_namespace_config_detect(self) -> None:
         """
         Test that parser fails on inconsistent root namespace configuration.
 
@@ -70,7 +70,7 @@ class TestFlatXMLFile(test_monolingual.TestMonolingualStore):
         with raises(AssertionError):
             self.StoreClass(xmlsource, namespace="different")
 
-    def test_indent_four_spaces(self):
+    def test_indent_four_spaces(self) -> None:
         """Test that using 4 spaces for indent yields a consistent result."""
         xmlsource = self._encoded_file('<root><str key="test">Test</str></root>')
         store = self.StoreClass(xmlsource, indent_chars="    ")
@@ -82,7 +82,7 @@ class TestFlatXMLFile(test_monolingual.TestMonolingualStore):
 """
         assert actual == expected
 
-    def test_indent_tab(self):
+    def test_indent_tab(self) -> None:
         """Test that using a tab for indent yields a consistent result."""
         xmlsource = self._encoded_file('<root><str key="test">Test</str></root>')
         store = self.StoreClass(xmlsource, indent_chars="\t")
@@ -94,7 +94,7 @@ class TestFlatXMLFile(test_monolingual.TestMonolingualStore):
 """
         assert actual == expected
 
-    def test_indent_none_linearizes(self):
+    def test_indent_none_linearizes(self) -> None:
         """Test that using None as indent yields a linearized result."""
         xmlsource = self._encoded_file('<root>\n<str key="test">Test</str>\n</root>')
         store = self.StoreClass(xmlsource, indent_chars=None)

@@ -62,7 +62,7 @@ def getlanguage(code: str | None):
 def get_all_languages():
     """Return all language classes."""
 
-    def is_language_module(x):
+    def is_language_module(x) -> bool:
         return not (
             x.startswith("test_")
             or x in {"common", "data", "factory", "identify", "ngram", "poedit", "team"}

@@ -46,7 +46,7 @@ def is_iterable_but_not_string(o):
 
 
 class rerc:
-    def __init__(self, templatefile, charset="utf-8", lang=None, sublang=None):
+    def __init__(self, templatefile, charset="utf-8", lang=None, sublang=None) -> None:
         self.templatecontent = templatefile.read()
         self.templatestore = rcfile()
         self.templatestore.charset = charset
@@ -317,7 +317,7 @@ class rerc:
         statement.add_parse_action(self.translate_strings)
         return statement.transform_string(self.templatecontent.decode(self.charset))
 
-    def makestoredict(self, store, includefuzzy=False):
+    def makestoredict(self, store, includefuzzy=False) -> None:
         """Make a dictionary of the translations."""
         for unit in store.units:
             if includefuzzy or not unit.isfuzzy():
@@ -354,7 +354,7 @@ def convertrc(
     sublang=None,
     outputthreshold=None,
     output_charset=None,
-):
+) -> int:
     inputstore = po.pofile(inputfile)
 
     if not convert.should_output_store(inputstore, outputthreshold):
@@ -379,7 +379,7 @@ def convertrc(
     return 1
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     # handle command line options
     formats = {("po", "rc"): ("rc", convertrc)}
     parser = convert.ConvertOptionParser(

@@ -31,7 +31,7 @@ from translate.storage.xml_extract.extract import (
 )
 
 
-def convert_idml(inputfile, outputfile, template):
+def convert_idml(inputfile, outputfile, template) -> bool:
     """Convert an IDML package to PO."""
     store = factory.getobject(outputfile)
 
@@ -50,7 +50,7 @@ def convert_idml(inputfile, outputfile, template):
     return True
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     formats = {
         "idml": ("po", convert_idml),
     }

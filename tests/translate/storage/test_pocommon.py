@@ -1,10 +1,10 @@
 from translate.storage import pocommon
 
 
-def test_roundtrip_quote_plus():
+def test_roundtrip_quote_plus() -> None:
     """Test that what we put in is what we get out."""
 
-    def roundtrip_quote_plus(text, quoted):
+    def roundtrip_quote_plus(text, quoted) -> None:
         quote = pocommon.quote_plus(text)
         assert quote == quoted
         unquote = pocommon.unquote_plus(quoted)

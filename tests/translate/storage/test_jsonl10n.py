@@ -318,7 +318,7 @@ class TestJSONResourceUnit(test_monolingual.TestMonolingualUnit):
 class TestJSONResourceStore(test_monolingual.TestMonolingualStore):
     StoreClass = jsonl10n.JsonFile
 
-    def test_serialize(self):
+    def test_serialize(self) -> None:
         store = self.StoreClass()
         store.parse('{"key": "value"}')
         out = BytesIO()
@@ -326,25 +326,25 @@ class TestJSONResourceStore(test_monolingual.TestMonolingualStore):
 
         assert out.getvalue() == b'{\n    "key": "value"\n}\n'
 
-    def test_can_not_detect(self):
+    def test_can_not_detect(self) -> None:
         store = self.StoreClass()
         with raises(base.ParseError):
             store.parse(
                 b"PK\x03\x04\x14\x00\x06\x00\x08\x00\x00\x00!\x00b\xee\x9dh^\x01\x00\x00\x90\x04\x00\x00\x13\x00\x08\x02"
             )
 
-    def test_error(self):
+    def test_error(self) -> None:
         store = self.StoreClass()
         with raises(base.ParseError):
             store.parse('{"key": "value"')
 
-    def test_filter(self):
+    def test_filter(self) -> None:
         store = self.StoreClass(filter=["key"])
         store.parse('{"key": "value", "other": "second"}')
         assert len(store.units) == 1
         assert store.units[0].source == "value"
 
-    def test_ordering(self):
+    def test_ordering(self) -> None:
         store = self.StoreClass()
         store.parse(
             """{
@@ -357,7 +357,7 @@ class TestJSONResourceStore(test_monolingual.TestMonolingualStore):
         assert store.units[0].source == "foo"
         assert store.units[2].source == "baz"
 
-    def test_args(self):
+    def test_args(self) -> None:
         store = self.StoreClass()
         store.parse(
             """{
@@ -381,7 +381,7 @@ class TestJSONResourceStore(test_monolingual.TestMonolingualStore):
 """
         )
 
-    def test_bom(self):
+    def test_bom(self) -> None:
         content = "{}\n".encode("utf-8-sig")
         store = self.StoreClass()
         store.parse(content)
@@ -390,7 +390,7 @@ class TestJSONResourceStore(test_monolingual.TestMonolingualStore):
         store.serialize(out)
         assert out.getvalue() == content
 
-    def test_complex(self):
+    def test_complex(self) -> None:
         store = self.StoreClass()
         store.parse(JSON_COMPLEX)
 
@@ -399,7 +399,7 @@ class TestJSONResourceStore(test_monolingual.TestMonolingualStore):
 
         assert out.getvalue() == JSON_COMPLEX
 
-    def test_complex_array(self):
+    def test_complex_array(self) -> None:
         store = self.StoreClass()
         store.parse(JSON_COMPLEX_ARRAY)
 
@@ -408,7 +408,7 @@ class TestJSONResourceStore(test_monolingual.TestMonolingualStore):
 
         assert out.getvalue() == JSON_COMPLEX_ARRAY
 
-    def test_add(self):
+    def test_add(self) -> None:
         expected = """{
     "simple.key": "source"
 }
@@ -425,7 +425,7 @@ class TestJSONResourceStore(test_monolingual.TestMonolingualStore):
         assert str(unit) == expected.strip()
         assert bytes(store).decode() == expected
 
-    def test_add_list_like(self):
+    def test_add_list_like(self) -> None:
         store = self.StoreClass()
 
         unit = self.StoreClass.UnitClass("source")
@@ -454,7 +454,7 @@ class TestJSONResourceStore(test_monolingual.TestMonolingualStore):
 """
         )
 
-    def test_add_blank(self):
+    def test_add_blank(self) -> None:
         expected = """{
     "simple.key": "source"
 }
@@ -472,7 +472,7 @@ class TestJSONResourceStore(test_monolingual.TestMonolingualStore):
         assert str(unit) == expected.strip()
         assert bytes(store).decode() == expected
 
-    def test_types(self):
+    def test_types(self) -> None:
         store = self.StoreClass()
         store.parse('{"key": 1}')
         assert store.units[0].target == 1
@@ -495,7 +495,7 @@ class TestJSONResourceStore(test_monolingual.TestMonolingualStore):
 """
         )
 
-    def test_null(self):
+    def test_null(self) -> None:
         jsondata = """{
     "foo": [
         null,
@@ -521,7 +521,7 @@ class TestJSONResourceStore(test_monolingual.TestMonolingualStore):
 class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
     StoreClass = jsonl10n.JsonNestedFile
 
-    def test_serialize(self):
+    def test_serialize(self) -> None:
         store = self.StoreClass()
         store.parse('{"key": {"second": "value"}}')
         out = BytesIO()
@@ -531,7 +531,7 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
             out.getvalue() == b'{\n    "key": {\n        "second": "value"\n    }\n}\n'
         )
 
-    def test_ordering(self):
+    def test_ordering(self) -> None:
         # spellchecker:off
         data = b"""{
     "foo": "foo",
@@ -558,7 +558,7 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
 
         assert out.getvalue() == data
 
-    def test_array(self):
+    def test_array(self) -> None:
         store = self.StoreClass()
         store.parse(JSON_ARRAY)
 
@@ -571,7 +571,7 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
 
         assert out.getvalue() == JSON_ARRAY
 
-    def test_add(self):
+    def test_add(self) -> None:
         store = self.StoreClass()
 
         unit = self.StoreClass.UnitClass("source")
@@ -586,7 +586,7 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
 """
         assert bytes(store).decode() == expected
 
-    def test_add_index(self):
+    def test_add_index(self) -> None:
         store = self.StoreClass()
 
         unit = self.StoreClass.UnitClass("source")
@@ -607,7 +607,7 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
 """
         assert bytes(store).decode() == expected
 
-    def test_add_index_nested(self):
+    def test_add_index_nested(self) -> None:
         store = self.StoreClass()
         store.parse('{"foo":[["x", "y"]]}')
 
@@ -637,7 +637,7 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
 """
         assert bytes(store).decode() == expected
 
-    def test_nested_list_mixed(self):
+    def test_nested_list_mixed(self) -> None:
         data = """{
     "story_9795": {
         "tsr_0": [
@@ -672,7 +672,7 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
 
         assert bytes(store).decode() == data
 
-    def test_list_to_dict(self):
+    def test_list_to_dict(self) -> None:
         data = """{
     "userInfoPage": [
         "Name"
@@ -698,7 +698,7 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
 """
         )
 
-    def test_complex_keys(self):
+    def test_complex_keys(self) -> None:
         data = """{
     "view": {
         "([^.,0-9]|^)1([^.,0-9]|$)": "View `x` comment",
@@ -711,7 +711,7 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
         assert len(store.units) == 2
         assert bytes(store).decode() == data
 
-    def test_add_other(self):
+    def test_add_other(self) -> None:
         jsontext = """{
     "simple.key": "source"
 }
@@ -751,12 +751,12 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
             ("", [("key", "")]),
         ],
     )
-    def test_from_string(self, id_string, expected):
+    def test_from_string(self, id_string, expected) -> None:
         id_class = self.StoreClass.UnitClass.IdClass
         from_string = id_class.from_string
         assert from_string(id_string) == id_class(expected)
 
-    def test_dot_keys(self):
+    def test_dot_keys(self) -> None:
         jsontext = """{
     "key.dot": "message"
 }
@@ -775,7 +775,7 @@ class TestWebExtensionUnit(test_monolingual.TestMonolingualUnit):
 class TestWebExtensionStore(test_monolingual.TestMonolingualStore):
     StoreClass = jsonl10n.WebExtensionJsonFile
 
-    def test_serialize(self):
+    def test_serialize(self) -> None:
         store = self.StoreClass()
         store.parse('{"key": {"message": "value", "description": "note"}}')
         out = BytesIO()
@@ -786,7 +786,7 @@ class TestWebExtensionStore(test_monolingual.TestMonolingualStore):
             == b'{\n    "key": {\n        "message": "value",\n        "description": "note"\n    }\n}\n'
         )
 
-    def test_dot_keys(self):
+    def test_dot_keys(self) -> None:
         store = self.StoreClass()
         store.parse('{"key.dot": {"message": "value", "description": "note"}}')
         out = BytesIO()
@@ -797,7 +797,7 @@ class TestWebExtensionStore(test_monolingual.TestMonolingualStore):
             == b'{\n    "key.dot": {\n        "message": "value",\n        "description": "note"\n    }\n}\n'
         )
 
-    def test_leading_dot_keys(self):
+    def test_leading_dot_keys(self) -> None:
         jsontext = """{
     ".dot": {
         "message": "value",
@@ -809,7 +809,7 @@ class TestWebExtensionStore(test_monolingual.TestMonolingualStore):
         store.parse(jsontext)
         assert bytes(store).decode() == jsontext
 
-    def test_serialize_no_description(self):
+    def test_serialize_no_description(self) -> None:
         store = self.StoreClass()
         store.parse('{"key": {"message": "value"}}')
         out = BytesIO()
@@ -819,7 +819,7 @@ class TestWebExtensionStore(test_monolingual.TestMonolingualStore):
             out.getvalue() == b'{\n    "key": {\n        "message": "value"\n    }\n}\n'
         )
 
-    def test_set_target(self):
+    def test_set_target(self) -> None:
         store = self.StoreClass()
         store.parse('{"key": {"message": "value", "description": "note"}}')
         store.units[0].target = "another"
@@ -831,7 +831,7 @@ class TestWebExtensionStore(test_monolingual.TestMonolingualStore):
             == b'{\n    "key": {\n        "message": "another",\n        "description": "note"\n    }\n}\n'
         )
 
-    def test_placeholders(self):
+    def test_placeholders(self) -> None:
         DATA = """{
     "youCanClose": {
         "message": "Bravo ! Votre compte $SITE$ est relié à Scrobbly. Vous pouvez fermer et revenir en arrière",
@@ -853,7 +853,7 @@ class TestWebExtensionStore(test_monolingual.TestMonolingualStore):
 
         assert out.getvalue() == DATA
 
-    def test_comments(self):
+    def test_comments(self) -> None:
         DATA = """{
     "test": {
         // Comment
@@ -885,7 +885,7 @@ class TestWebExtensionStore(test_monolingual.TestMonolingualStore):
 class TestI18NextStore(test_monolingual.TestMonolingualStore):
     StoreClass = jsonl10n.I18NextFile
 
-    def test_serialize(self):
+    def test_serialize(self) -> None:
         store = self.StoreClass()
         store.settargetlanguage("ar")
         store.parse(JSON_I18NEXT)
@@ -894,13 +894,13 @@ class TestI18NextStore(test_monolingual.TestMonolingualStore):
 
         assert out.getvalue().decode() == JSON_I18NEXT
 
-    def test_units(self):
+    def test_units(self) -> None:
         store = self.StoreClass()
         store.settargetlanguage("ar")
         store.parse(JSON_I18NEXT)
         assert len(store.units) == 4
 
-    def test_plurals(self):
+    def test_plurals(self) -> None:
         store = self.StoreClass()
         store.settargetlanguage("ar")
         store.parse(JSON_I18NEXT)
@@ -935,7 +935,7 @@ class TestI18NextStore(test_monolingual.TestMonolingualStore):
 
         assert out.getvalue().decode() == JSON_I18NEXT
 
-    def test_nested_array(self):
+    def test_nested_array(self) -> None:
         store = self.StoreClass()
         store.parse(JSON_I18NEXT_NESTED_ARRAY)
 
@@ -947,7 +947,7 @@ class TestI18NextStore(test_monolingual.TestMonolingualStore):
 
         assert bytes(store).decode() == JSON_I18NEXT_NESTED_ARRAY
 
-    def test_new_plural(self):
+    def test_new_plural(self) -> None:
         EXPECTED = """{
     "simple": "the singular",
     "simple_plural": "the plural",
@@ -1008,7 +1008,7 @@ class TestI18NextStore(test_monolingual.TestMonolingualStore):
 
         assert out.getvalue().decode() == EXPECTED
 
-    def test_new_plural_id(self):
+    def test_new_plural_id(self) -> None:
         EXPECTED = """{
     "simple_0": "the singular"
 }
@@ -1032,7 +1032,7 @@ class TestI18NextStore(test_monolingual.TestMonolingualStore):
 class TestGoTextJsonFile(test_monolingual.TestMonolingualStore):
     StoreClass = jsonl10n.GoTextJsonFile
 
-    def test_plurals(self):
+    def test_plurals(self) -> None:
         store = self.StoreClass()
         store.parse(JSON_GOTEXT)
 
@@ -1042,7 +1042,7 @@ class TestGoTextJsonFile(test_monolingual.TestMonolingualStore):
 
         assert bytes(store).decode() == JSON_GOTEXT.decode()
 
-    def test_plurals_missing(self):
+    def test_plurals_missing(self) -> None:
         store = self.StoreClass()
         store.parse(JSON_GOTEXT)
 
@@ -1052,7 +1052,7 @@ class TestGoTextJsonFile(test_monolingual.TestMonolingualStore):
             '"other": {\n                            "msg": ""' in bytes(store).decode()
         )
 
-    def test_case_no_msg(self):
+    def test_case_no_msg(self) -> None:
         store = self.StoreClass()
         store.parse(
             """{
@@ -1110,7 +1110,7 @@ class TestGoTextJsonFile(test_monolingual.TestMonolingualStore):
 """
         )
 
-    def test_complex_id(self):
+    def test_complex_id(self) -> None:
         text = """{
     "language": "en-US",
     "messages": [
@@ -1150,7 +1150,7 @@ class TestI18NextV4Store(test_monolingual.TestMonolingualStore):
     PartiallyPluralizedJson = JSON_I18NEXT_V4
     CorrectlyPluralizedJson = JSON_I18NEXT_V4_FIXED
 
-    def test_serialize(self):
+    def test_serialize(self) -> None:
         store = self.StoreClass()
         store.targetlanguage = "ar"
         store.parse(JSON_I18NEXT_V4)
@@ -1160,13 +1160,13 @@ class TestI18NextV4Store(test_monolingual.TestMonolingualStore):
         # This will add missing plurals
         assert out.getvalue().decode() == JSON_I18NEXT_V4_FIXED
 
-    def test_units(self):
+    def test_units(self) -> None:
         store = self.StoreClass()
         store.targetlanguage = "ar"
         store.parse(self.PartiallyPluralizedJson)
         assert len(store.units) == 4
 
-    def test_plurals(self):
+    def test_plurals(self) -> None:
         store = self.StoreClass()
         store.targetlanguage = "ar"
         store.parse(self.PartiallyPluralizedJson)
@@ -1207,7 +1207,7 @@ class TestI18NextV4Store(test_monolingual.TestMonolingualStore):
 
         assert out.getvalue().decode() == self.CorrectlyPluralizedJson
 
-    def test_nested_array(self):
+    def test_nested_array(self) -> None:
         store = self.StoreClass()
         store.parse(JSON_I18NEXT_NESTED_ARRAY)
 
@@ -1231,7 +1231,7 @@ class TestI18NextV4Store(test_monolingual.TestMonolingualStore):
 
         assert bytes(newstore).decode() == JSON_I18NEXT_NESTED_ARRAY
 
-    def test_new_plural(self):
+    def test_new_plural(self) -> None:
         EXPECTED = """{
     "simple_zero": "the singular",
     "simple_one": "the plural",
@@ -1275,7 +1275,7 @@ class TestI18NextV4Store(test_monolingual.TestMonolingualStore):
 
         assert bytes(store).decode() == EXPECTED
 
-    def test_ru(self):
+    def test_ru(self) -> None:
         data = """{
 "bet_one": "еще +{{count}} ставка",
 "bet_few": "еще +{{count}} ставки",
@@ -1304,7 +1304,7 @@ class TestFlatI18NextV4Store(TestI18NextV4Store):
 class TestGoI18NJsonFile(test_monolingual.TestMonolingualStore):
     StoreClass = jsonl10n.GoI18NJsonFile
 
-    def test_plurals(self):
+    def test_plurals(self) -> None:
         store = self.StoreClass()
         store.parse(JSON_GOI18N)
 
@@ -1316,7 +1316,7 @@ class TestGoI18NJsonFile(test_monolingual.TestMonolingualStore):
 
         assert bytes(store).decode() == JSON_GOI18N.decode()
 
-    def test_plurals_missing(self):
+    def test_plurals_missing(self) -> None:
         store = self.StoreClass()
         store.parse(JSON_GOI18N)
 
@@ -1324,12 +1324,12 @@ class TestGoI18NJsonFile(test_monolingual.TestMonolingualStore):
 
         assert '"other": ""' in bytes(store).decode()
 
-    def test_invalid(self):
+    def test_invalid(self) -> None:
         store = self.StoreClass()
         with raises(ValueError):
             store.parse(JSON_I18NEXT_PLURAL)
 
-    def test_dot_keys(self):
+    def test_dot_keys(self) -> None:
         jsontext = """[
     {
         "id": ".table",
@@ -1347,7 +1347,7 @@ class TestGoI18NJsonFile(test_monolingual.TestMonolingualStore):
 class TestGoI18NV2JsonFile(test_monolingual.TestMonolingualStore):
     StoreClass = jsonl10n.GoI18NV2JsonFile
 
-    def test_plurals_1(self):
+    def test_plurals_1(self) -> None:
         store = self.StoreClass()
         store.parse(JSON_GOI18N_V2_SIMPLE)
 
@@ -1362,7 +1362,7 @@ class TestGoI18NV2JsonFile(test_monolingual.TestMonolingualStore):
 
         assert bytes(store).decode() == JSON_GOI18N_V2_SIMPLE
 
-    def test_plurals_2(self):
+    def test_plurals_2(self) -> None:
         store = self.StoreClass()
         store.settargetlanguage("ar")
         store.parse(JSON_GOI18N_V2)
@@ -1386,7 +1386,7 @@ class TestGoI18NV2JsonFile(test_monolingual.TestMonolingualStore):
 
         assert bytes(store).decode() == JSON_GOI18N_V2
 
-    def test_plurals_blank(self):
+    def test_plurals_blank(self) -> None:
         store = self.StoreClass()
         store.settargetlanguage("ar")
         store.parse(JSON_GOI18N_V2)
@@ -1403,7 +1403,7 @@ class TestGoI18NV2JsonFile(test_monolingual.TestMonolingualStore):
 
         assert bytes(store).decode() == JSON_GOI18N_V2.replace("the plural form 5", "")
 
-    def test_plurals_missing(self):
+    def test_plurals_missing(self) -> None:
         store = self.StoreClass()
         store.parse(JSON_GOI18N_V2_SIMPLE)
 
@@ -1416,7 +1416,7 @@ class TestGoI18NV2JsonFile(test_monolingual.TestMonolingualStore):
 
         assert '"other": "{{.count}} tag"' in bytes(store).decode()
 
-    def test_simplification(self):
+    def test_simplification(self) -> None:
         store = self.StoreClass()
         store.parse(JSON_GOI18N_V2_COMPLEX)
 
@@ -1431,12 +1431,12 @@ class TestGoI18NV2JsonFile(test_monolingual.TestMonolingualStore):
 
         assert bytes(store).decode() == JSON_GOI18N_V2_SIMPLE
 
-    def test_invalid(self):
+    def test_invalid(self) -> None:
         store = self.StoreClass()
         with raises(ValueError):
             store.parse(JSON_I18NEXT_PLURAL)
 
-    def test_dot_keys(self):
+    def test_dot_keys(self) -> None:
         jsontext = """{
     ".table": "message"
 }
@@ -1451,7 +1451,7 @@ class TestGoI18NV2JsonFile(test_monolingual.TestMonolingualStore):
 class TestARBJsonFile(test_monolingual.TestMonolingualStore):
     StoreClass = jsonl10n.ARBJsonFile
 
-    def test_roundtrip(self):
+    def test_roundtrip(self) -> None:
         store = self.StoreClass()
         store.parse(JSON_ARB)
 
@@ -1463,7 +1463,7 @@ class TestARBJsonFile(test_monolingual.TestMonolingualStore):
 
         assert bytes(store).decode() == JSON_ARB.decode()
 
-    def test_leading_dot_keys(self):
+    def test_leading_dot_keys(self) -> None:
         jsontext = """{
   ".dot": "dot",
   "@.dot": {},
@@ -1477,7 +1477,7 @@ class TestARBJsonFile(test_monolingual.TestMonolingualStore):
         store.units[1].target = "colon in a colon"
         assert bytes(store).decode() == jsontext
 
-    def test_invalid_nesting(self):
+    def test_invalid_nesting(self) -> None:
         jsontext = """{
     "key": {
         ".dot": "dot",
@@ -1514,7 +1514,7 @@ JSON_FORMATJS = """{
 class TestFormatJSJsonFile(test_monolingual.TestMonolingualStore):
     StoreClass = jsonl10n.FormatJSJsonFile
 
-    def test_roundtrip(self):
+    def test_roundtrip(self) -> None:
         store = self.StoreClass()
         store.parse(JSON_FORMATJS)
 
@@ -1525,7 +1525,7 @@ class TestFormatJSJsonFile(test_monolingual.TestMonolingualStore):
 
         assert bytes(store).decode() == JSON_FORMATJS
 
-    def test_leading_dot_keys(self):
+    def test_leading_dot_keys(self) -> None:
         jsontext = """{
     ".dot": {
         "defaultMessage": "Control Panel",
@@ -1537,7 +1537,7 @@ class TestFormatJSJsonFile(test_monolingual.TestMonolingualStore):
         store.parse(jsontext)
         assert bytes(store).decode() == jsontext
 
-    def test_invalid(self):
+    def test_invalid(self) -> None:
         jsontext = """{
     ".dot": "text"
 }
@@ -1586,7 +1586,7 @@ JSON_NEXTCLOUD_COMPLEX = rb"""{
 class TestNextcloudJsonUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = jsonl10n.NextcloudJsonUnit
 
-    def test_source_property_maps_to_id(self):
+    def test_source_property_maps_to_id(self) -> None:
         """Test that source property maps to unit ID for NextcloudJsonUnit."""
         unit = self.UnitClass("target value")
         unit.setid("my_key")
@@ -1597,7 +1597,7 @@ class TestNextcloudJsonUnit(test_monolingual.TestMonolingualUnit):
         assert unit.getid() == "new_key"
         assert unit.source == "new_key"
 
-    def test_source_roundtrip(self):
+    def test_source_roundtrip(self) -> None:
         """Test that source property persists through get/set."""
         unit = self.UnitClass("Hello World")
         unit.source = "greeting"
@@ -1608,7 +1608,7 @@ class TestNextcloudJsonUnit(test_monolingual.TestMonolingualUnit):
 class TestNextcloudJsonFile(test_monolingual.TestMonolingualStore):
     StoreClass = jsonl10n.NextcloudJsonFile
 
-    def test_parse_simple(self):
+    def test_parse_simple(self) -> None:
         """Test parsing simple Nextcloud JSON with no plurals."""
         store = self.StoreClass()
         store.parse(JSON_NEXTCLOUD_SIMPLE)
@@ -1619,7 +1619,7 @@ class TestNextcloudJsonFile(test_monolingual.TestMonolingualStore):
         assert store.units[1].getid() == "Goodbye"
         assert store.units[1].target == "Auf Wiedersehen"
 
-    def test_serialize_simple(self):
+    def test_serialize_simple(self) -> None:
         """Test serializing simple translations."""
         store = self.StoreClass()
         store.parse(JSON_NEXTCLOUD_SIMPLE)
@@ -1632,7 +1632,7 @@ class TestNextcloudJsonFile(test_monolingual.TestMonolingualStore):
         assert b'"Hello": "Hallo"' in result
         assert b'"Goodbye": "Auf Wiedersehen"' in result
 
-    def test_parse_with_plurals(self):
+    def test_parse_with_plurals(self) -> None:
         """Test parsing Nextcloud JSON with plural forms."""
         store = self.StoreClass()
         store.parse(JSON_NEXTCLOUD_WITH_PLURAL_FORM)
@@ -1651,7 +1651,7 @@ class TestNextcloudJsonFile(test_monolingual.TestMonolingualStore):
         assert store.units[1].target.strings[0] == "%n Baum"
         assert store.units[1].target.strings[1] == "%n Bäume"
 
-    def test_preserve_plural_form(self):
+    def test_preserve_plural_form(self) -> None:
         """Test that pluralForm metadata is preserved during round-trip."""
         store = self.StoreClass()
         store.parse(JSON_NEXTCLOUD_WITH_PLURAL_FORM)
@@ -1664,7 +1664,7 @@ class TestNextcloudJsonFile(test_monolingual.TestMonolingualStore):
         assert '"pluralForm": "nplurals=2; plural=(n != 1);"' in result
         assert '"translations"' in result
 
-    def test_roundtrip_with_plurals(self):
+    def test_roundtrip_with_plurals(self) -> None:
         """Test full round-trip with plurals and metadata."""
         store = self.StoreClass()
         store.parse(JSON_NEXTCLOUD_COMPLEX)
@@ -1689,7 +1689,7 @@ class TestNextcloudJsonFile(test_monolingual.TestMonolingualStore):
         assert len(store2.units[1].target.strings) == 2
         assert store2.units[2].target == "Ein anderer Wert"  # codespell:ignore
 
-    def test_ignore_non_translations_keys(self):
+    def test_ignore_non_translations_keys(self) -> None:
         """Test that only 'translations' key is parsed for units."""
         json_with_extra = b"""{
     "someOtherKey": "should be ignored",
@@ -1706,7 +1706,7 @@ class TestNextcloudJsonFile(test_monolingual.TestMonolingualStore):
         assert len(store.units) == 1
         assert store.units[0].getid() == "Hello"
 
-    def test_preserve_other_metadata(self):
+    def test_preserve_other_metadata(self) -> None:
         """Test that arbitrary metadata outside translations is preserved."""
         json_with_metadata = b"""{
     "translations": {
@@ -1728,7 +1728,7 @@ class TestNextcloudJsonFile(test_monolingual.TestMonolingualStore):
         assert '"customField": "customValue"' in result
         assert '"translations"' in result
 
-    def test_add_unit(self):
+    def test_add_unit(self) -> None:
         """Test adding a new unit to Nextcloud JSON."""
         store = self.StoreClass()
         store.parse(JSON_NEXTCLOUD_SIMPLE)
@@ -1742,7 +1742,7 @@ class TestNextcloudJsonFile(test_monolingual.TestMonolingualStore):
         assert store.units[2].getid() == "New Key"
         assert store.units[2].target == "Neuer Wert"
 
-    def test_add_plural_unit(self):
+    def test_add_plural_unit(self) -> None:
         """Test adding a plural unit to Nextcloud JSON."""
         store = self.StoreClass()
         store.parse(JSON_NEXTCLOUD_SIMPLE)
@@ -1762,7 +1762,7 @@ class TestNextcloudJsonFile(test_monolingual.TestMonolingualStore):
             in result
         )
 
-    def test_empty_translations(self):
+    def test_empty_translations(self) -> None:
         """Test handling of empty translations object."""
         json_empty = b"""{
     "translations": {},
@@ -1796,7 +1796,7 @@ JSON_RESJSON = b"""{
 class TestRESJSONFile(test_monolingual.TestMonolingualStore):
     StoreClass = jsonl10n.RESJSONFile
 
-    def test_roundtrip(self):
+    def test_roundtrip(self) -> None:
         store = self.StoreClass()
         store.parse(JSON_RESJSON)
 
@@ -1810,7 +1810,7 @@ class TestRESJSONFile(test_monolingual.TestMonolingualStore):
 
         assert bytes(store).decode() == JSON_RESJSON.decode()
 
-    def test_basic_parsing(self):
+    def test_basic_parsing(self) -> None:
         jsontext = """{
     "key": "value",
     "_key.comment": "A comment"
@@ -1823,7 +1823,7 @@ class TestRESJSONFile(test_monolingual.TestMonolingualStore):
         assert store.units[0].getnotes() == "A comment"
         assert bytes(store).decode() == jsontext
 
-    def test_multiple_metadata(self):
+    def test_multiple_metadata(self) -> None:
         jsontext = """{
     "message": "text",
     "_message.comment": "comment text",
@@ -1840,7 +1840,7 @@ class TestRESJSONFile(test_monolingual.TestMonolingualStore):
         assert store.units[0].metadata.get("custom") == "custom data"
         assert bytes(store).decode() == jsontext
 
-    def test_no_metadata(self):
+    def test_no_metadata(self) -> None:
         jsontext = """{
     "simple": "value"
 }
@@ -1852,7 +1852,7 @@ class TestRESJSONFile(test_monolingual.TestMonolingualStore):
         assert store.units[0].getnotes() == ""
         assert bytes(store).decode() == jsontext
 
-    def test_edit_target(self):
+    def test_edit_target(self) -> None:
         jsontext = """{
     "key": "value",
     "_key.comment": "comment"
@@ -1865,7 +1865,7 @@ class TestRESJSONFile(test_monolingual.TestMonolingualStore):
         assert '"key": "new value"' in result
         assert '"_key.comment": "comment"' in result
 
-    def test_edit_notes(self):
+    def test_edit_notes(self) -> None:
         jsontext = """{
     "key": "value",
     "_key.comment": "original comment",
@@ -1880,7 +1880,7 @@ class TestRESJSONFile(test_monolingual.TestMonolingualStore):
         assert '"_key.comment": "modified comment"' in result
         assert '"_key.source": "source text"' in result
 
-    def test_keys_with_dots(self):
+    def test_keys_with_dots(self) -> None:
         jsontext = """{
     "foo.bar": "value",
     "_foo.bar.comment": "comment for foo.bar"
@@ -1894,7 +1894,7 @@ class TestRESJSONFile(test_monolingual.TestMonolingualStore):
         assert store.units[0].getnotes() == "comment for foo.bar"
         assert bytes(store).decode() == jsontext
 
-    def test_leading_dot_keys(self):
+    def test_leading_dot_keys(self) -> None:
         jsontext = """{
     ".dot": "dot value",
     "_.dot.comment": "comment"
@@ -1906,7 +1906,7 @@ class TestRESJSONFile(test_monolingual.TestMonolingualStore):
         assert store.units[0].target == "dot value"
         assert bytes(store).decode() == jsontext
 
-    def test_invalid_nesting(self):
+    def test_invalid_nesting(self) -> None:
         jsontext = """{
     "key": {
         "nested": "value"
@@ -1917,7 +1917,7 @@ class TestRESJSONFile(test_monolingual.TestMonolingualStore):
         with raises(base.ParseError):
             store.parse(jsontext)
 
-    def test_source_property_get_set(self):
+    def test_source_property_get_set(self) -> None:
         """Test that source property can be read and written correctly."""
         jsontext = """{
     "key": "value",
@@ -1935,7 +1935,7 @@ class TestRESJSONFile(test_monolingual.TestMonolingualStore):
         result = bytes(store).decode()
         assert '"_key.source": "modified source"' in result
 
-    def test_source_property_persists(self):
+    def test_source_property_persists(self) -> None:
         """Test that source property persists through serialization."""
         store = self.StoreClass()
         unit = store.UnitClass("")
@@ -1955,7 +1955,7 @@ class TestRESJSONFile(test_monolingual.TestMonolingualStore):
         assert store2.units[0].source == "source value"
         assert store2.units[0].target == "target value"
 
-    def test_getcontext_returns_id(self):
+    def test_getcontext_returns_id(self) -> None:
         """Test that getcontext() returns the unit ID."""
         jsontext = """{
     "greeting": "Hello",
@@ -1967,7 +1967,7 @@ class TestRESJSONFile(test_monolingual.TestMonolingualStore):
         assert len(store.units) == 1
         assert store.units[0].getcontext() == "greeting"
 
-    def test_parsing_preserves_order(self):
+    def test_parsing_preserves_order(self) -> None:
         """Test that parsing preserves the order of keys."""
         jsontext = """{
     "first": "1",
@@ -1985,7 +1985,7 @@ class TestRESJSONFile(test_monolingual.TestMonolingualStore):
         assert store.units[1].getid() == "second"
         assert store.units[2].getid() == "third"
 
-    def test_metadata_without_translation(self):
+    def test_metadata_without_translation(self) -> None:
         """Test handling when metadata exists but no corresponding translation value."""
         jsontext = """{
     "key": "value",
@@ -2005,7 +2005,7 @@ class TestRESJSONFile(test_monolingual.TestMonolingualStore):
         assert store.units[1].getid() == "orphan"
         assert store.units[1].metadata.get("comment") == "orphan metadata"
 
-    def test_complex_keys_with_multiple_dots(self):
+    def test_complex_keys_with_multiple_dots(self) -> None:
         """Test handling of keys with multiple dots."""
         jsontext = """{
     "app.section.key": "value",
@@ -2021,7 +2021,7 @@ class TestRESJSONFile(test_monolingual.TestMonolingualStore):
         assert store.units[0].source == "source"
         assert store.units[0].getnotes() == "comment"
 
-    def test_source_empty_string(self):
+    def test_source_empty_string(self) -> None:
         """Test that empty source strings are handled correctly."""
         jsontext = """{
     "key": "value",

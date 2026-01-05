@@ -110,7 +110,7 @@ def escape(text):
 class TradosTxtDate:
     """Manages the timestamps in the Trados .txt format of DDMMYYY, hh:mm:ss."""
 
-    def __init__(self, newtime=None):
+    def __init__(self, newtime=None) -> None:
         self._time = None
         if newtime:
             if isinstance(newtime, str):
@@ -151,14 +151,14 @@ class TradosTxtDate:
 
     time = property(get_time, set_time)
 
-    def __str__(self):
+    def __str__(self) -> str:
         if not self.timestring:
             return ""
         return self.timestring
 
 
 class TradosUnit(base.TranslationUnit):
-    def __init__(self, source=None):
+    def __init__(self, source=None) -> None:
         self._soup = None
         super().__init__(source)
 
@@ -167,7 +167,7 @@ class TradosUnit(base.TranslationUnit):
         return unescape(self._soup.findAll("seg")[0].contents[0])
 
     @source.setter
-    def source(self, source):
+    def source(self, source) -> None:
         pass
 
     def gettarget(self):
@@ -194,14 +194,14 @@ class TradosTxtTmFile(base.TranslationStore):
     UnitClass = TradosUnit
     default_encoding = "iso-8859-1"
 
-    def __init__(self, inputfile=None, **kwargs):
+    def __init__(self, inputfile=None, **kwargs) -> None:
         """Construct a Wordfast TM, optionally reading in from inputfile."""
         super().__init__(**kwargs)
         self.filename = ""
         if inputfile is not None:
             self.parse(inputfile)
 
-    def parse(self, input):
+    def parse(self, input) -> None:
         if hasattr(input, "name"):
             self.filename = input.name
         elif not getattr(self, "filename", ""):
@@ -216,6 +216,6 @@ class TradosTxtTmFile(base.TranslationStore):
             unit._soup = TradosSoup(str(tu))
             self.addunit(unit)
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         # FIXME turn the lowercased tags back into mixed case
         out.write(self._soup.prettify())

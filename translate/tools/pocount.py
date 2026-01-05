@@ -227,13 +227,13 @@ def file_extended_totals(units, wordcounts):
 class Renderer:
     stats: StatCollector
 
-    def header(self):
+    def header(self) -> None:
         pass
 
-    def entry(self, title: str, stats: dict):
+    def entry(self, title: str, stats: dict) -> None:
         pass
 
-    def footer(self):
+    def footer(self) -> None:
         pass
 
 
@@ -258,10 +258,10 @@ class CsvRenderer(Renderer):
             sys.stdout, self._fields.values(), lineterminator="\n"
         )
 
-    def header(self):
+    def header(self) -> None:
         self._writer.writeheader()
 
-    def entry(self, title, stats):
+    def entry(self, title, stats) -> None:
         data = stats.copy()
         data.update(title=title)
         row = {v: data[k] for k, v in self._fields.items()}
@@ -269,7 +269,7 @@ class CsvRenderer(Renderer):
 
 
 class FullRenderer(Renderer):
-    def entry(self, title, stats):
+    def entry(self, title, stats) -> None:
         print(f"Processing file : {ConsoleColor.HEADER()}{title}{ConsoleColor.ENDC()}")
         print("Type               Strings      Words (source)    Words (translation)")
         print(
@@ -332,7 +332,7 @@ class FullRenderer(Renderer):
             )
         print()
 
-    def footer(self):
+    def footer(self) -> None:
         stats = self.stats
         if stats.file_count > 1:
             if stats.incomplete_only:
@@ -350,7 +350,7 @@ class ShortStringsRenderer(Renderer):
 
     indent: int = 8
 
-    def entry(self, title, stats):
+    def entry(self, title, stats) -> None:
         spaces = " " * (self.indent - len(title))
         print(
             "{}{} strings: total: {}\t| {}t\t{}f\t{}u\t| {}t\t{}f\t{}u".format(
@@ -382,7 +382,7 @@ class ShortWordsRenderer(Renderer):
 
     indent: int = 8
 
-    def entry(self, title, stats):
+    def entry(self, title, stats) -> None:
         spaces = " " * (self.indent - len(title))
         print(
             "{}{} source words: total: {}\t| {}t\t{}f\t{}u\t| {}t\t{}f\t{}u".format(
@@ -441,12 +441,12 @@ def untranslatedmessages(units):
 
 
 class StatCollector:
-    def __init__(self, items: list[str], incomplete_only=False):
+    def __init__(self, items: list[str], incomplete_only=False) -> None:
         self.incomplete_only = incomplete_only
         self._results: list[dict] = []
         self._handle_items(items)
 
-    def render(self, renderer_class: type[Renderer]):
+    def render(self, renderer_class: type[Renderer]) -> None:
         if renderer_class in {ShortWordsRenderer, ShortStringsRenderer}:
             renderer = renderer_class(self, indent=self.longest_filename)
         else:
@@ -463,7 +463,7 @@ class StatCollector:
             return [s for s in self._results if s["total"] != s["translated"]]
         return self._results
 
-    def _handle_items(self, items: list[str]):
+    def _handle_items(self, items: list[str]) -> None:
         for item in items:
             if not os.path.exists(item):
                 logger.error("cannot process %s: does not exist", item)
@@ -473,14 +473,14 @@ class StatCollector:
             else:
                 self._handle_single_file(item)
 
-    def _handle_dir(self, dirname):
+    def _handle_dir(self, dirname) -> None:
         _, name = os.path.split(dirname)
         if name in {"CVS", ".svn", "_darcs", ".git", ".hg", ".bzr"}:
             return
         entries = os.listdir(dirname)
         self._handle_multiple_files(dirname, entries)
 
-    def _handle_multiple_files(self, dirname, filenames):
+    def _handle_multiple_files(self, dirname, filenames) -> None:
         for filename in filenames:
             pathname = os.path.join(dirname, filename)
             if os.path.isdir(pathname):
@@ -488,7 +488,7 @@ class StatCollector:
             else:
                 self._handle_single_file(pathname)
 
-    def _handle_single_file(self, filename):
+    def _handle_single_file(self, filename) -> None:
         try:
             stats = calcstats(filename)
             self._results.append(stats)
@@ -517,7 +517,7 @@ class StatCollector:
         return totals
 
 
-def main(arguments=None):
+def main(arguments=None) -> None:
     parser = ArgumentParser()
     parser.add_argument(
         "--incomplete",

@@ -31,7 +31,7 @@ from translate.storage import factory
 class Directory:
     """This class represents a directory."""
 
-    def __init__(self, dir=None):
+    def __init__(self, dir=None) -> None:
         self.dir = dir
         self.filedata = []
 
@@ -59,7 +59,7 @@ class Directory:
         """List of all the units in all the files in this directory."""
         return list(self.unit_iter())
 
-    def scanfiles(self):
+    def scanfiles(self) -> None:
         """Populate the internal file data."""
         self.filedata = []
 

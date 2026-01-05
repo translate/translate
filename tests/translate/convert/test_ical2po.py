@@ -35,12 +35,12 @@ class TestIcal2PO:
         """Helper that converts to target format string without using files."""
         return self._convert(*args, **kwargs)[1].getvalue().decode("utf-8")
 
-    def test_convert_empty_file(self):
+    def test_convert_empty_file(self) -> None:
         """Check converting empty iCalendar returns no output."""
         with pytest.raises(StopIteration):
             self._convert_to_string("", success_expected=False)
 
-    def test_no_translations(self):
+    def test_no_translations(self) -> None:
         """Check that iCalendar with no translations returns correct result."""
         input_string = """
 BEGIN:VCALENDAR
@@ -53,7 +53,7 @@ END:VCALENDAR
         output = self._convert_to_string(input_string, success_expected=False)
         assert output == ""
 
-    def test_summary(self):
+    def test_summary(self) -> None:
         """Check that iCalendar SUMMARY converts valid PO output."""
         input_string = """
 BEGIN:VCALENDAR
@@ -79,7 +79,7 @@ msgstr ""
         assert expected_output in output
         assert "extracted from " in output
 
-    def test_description(self):
+    def test_description(self) -> None:
         """Check that iCalendar DESCRIPTION converts valid PO output."""
         input_string = """
 BEGIN:VCALENDAR
@@ -105,7 +105,7 @@ msgstr ""
         assert expected_output in output
         assert "extracted from " in output
 
-    def test_location(self):
+    def test_location(self) -> None:
         """Check that iCalendar LOCATION converts valid PO output."""
         input_string = """
 BEGIN:VCALENDAR
@@ -131,7 +131,7 @@ msgstr ""
         assert expected_output in output
         assert "extracted from " in output
 
-    def test_comment(self):
+    def test_comment(self) -> None:
         """Check that iCalendar COMMENT converts valid PO output."""
         input_string = """
 BEGIN:VCALENDAR
@@ -157,7 +157,7 @@ msgstr ""
         assert expected_output in output
         assert "extracted from " in output
 
-    def test_no_template_duplicate_style(self):
+    def test_no_template_duplicate_style(self) -> None:
         """Check that iCalendar extracts conforming duplicate style."""
         input_string = """
 BEGIN:VCALENDAR
@@ -214,7 +214,7 @@ msgstr ""
         assert expected_output in output
         assert "extracted from " in output
 
-    def test_merge(self):
+    def test_merge(self) -> None:
         """Check merging two iCalendar files converts to valid PO output."""
         input_string = """
 BEGIN:VCALENDAR
@@ -254,7 +254,7 @@ msgstr "Valor"
         assert expected_output in output
         assert "extracted from " in output
 
-    def test_merge_misaligned_files(self):
+    def test_merge_misaligned_files(self) -> None:
         """Check merging two iCalendar files that are not aligned."""
         input_string = """
 BEGIN:VCALENDAR
@@ -294,7 +294,7 @@ msgstr ""
         assert expected_output in output
         assert "extracted from " in output
 
-    def test_merge_blank_msgstr(self):
+    def test_merge_blank_msgstr(self) -> None:
         """Check merging two iCalendar files converts to valid POT output."""
         input_string = """
 BEGIN:VCALENDAR
@@ -336,7 +336,7 @@ msgstr ""
         assert expected_output in output
         assert "extracted from " in output
 
-    def test_merge_duplicate_style(self):
+    def test_merge_duplicate_style(self) -> None:
         """Check two iCalendar files convert conforming duplicate style."""
         input_string = """
 BEGIN:VCALENDAR

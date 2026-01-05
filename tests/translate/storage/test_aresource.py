@@ -12,7 +12,7 @@ from . import test_monolingual
 class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = aresource.AndroidResourceUnit
 
-    def __check_escape(self, string, xml, target_language=None):
+    def __check_escape(self, string, xml, target_language=None) -> None:
         """Helper that checks that a string is output with the right escape."""
         unit = self.UnitClass("teststring")
 
@@ -28,7 +28,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
 
         assert str(unit) == xml
 
-    def __check_parse(self, string, xml):
+    def __check_parse(self, string, xml) -> None:
         """Helper that checks that a string is parsed correctly."""
         parser = etree.XMLParser(strip_cdata=False)
 
@@ -45,79 +45,79 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
 
     ############################ Check string escape ##########################
 
-    def test_escape_message_with_newline(self):
+    def test_escape_message_with_newline(self) -> None:
         string = "message\nwith newline"
         xml = '<string name="teststring">message\\nwith newline</string>\n'
         self.__check_escape(string, xml)
 
-    def test_escape_quotes_with_newline(self):
+    def test_escape_quotes_with_newline(self) -> None:
         string = "'message'\nwith newline"
         xml = "<string name=\"teststring\">\\'message\\'\\nwith newline</string>\n"
         self.__check_escape(string, xml)
 
-    def test_escape_message_with_newline_in_xml(self):
+    def test_escape_message_with_newline_in_xml(self) -> None:
         string = "message\n\nwith newline in xml\n"
         xml = '<string name="teststring">message\\n\\nwith newline in xml\\n</string>\n'
         self.__check_escape(string, xml)
 
-    def test_escape_twitter(self):
+    def test_escape_twitter(self) -> None:
         string = "@twitterescape"
         xml = '<string name="teststring">\\@twitterescape</string>\n'
         self.__check_escape(string, xml)
 
-    def test_escape_quote(self):
+    def test_escape_quote(self) -> None:
         string = "quote 'escape'"
         xml = "<string name=\"teststring\">quote \\'escape\\'</string>\n"
         self.__check_escape(string, xml)
 
-    def test_escape_question(self):
+    def test_escape_question(self) -> None:
         string = "?question?"
         xml = '<string name="teststring">\\?question?</string>\n'
         self.__check_escape(string, xml)
 
-    def test_escape_double_space(self):
+    def test_escape_double_space(self) -> None:
         string = "double  space"
         xml = '<string name="teststring">"double  space"</string>\n'
         self.__check_escape(string, xml)
 
-    def test_escape_leading_space(self):
+    def test_escape_leading_space(self) -> None:
         string = " leading space"
         xml = '<string name="teststring">" leading space"</string>\n'
         self.__check_escape(string, xml)
 
-    def test_escape_tailing_space(self):
+    def test_escape_tailing_space(self) -> None:
         string = "tailing space "
         xml = '<string name="teststring">"tailing space "</string>\n'
         self.__check_escape(string, xml)
 
-    def test_escape_xml_entities(self):
+    def test_escape_xml_entities(self) -> None:
         string = ">xml&entities"
         xml = '<string name="teststring">&gt;xml&amp;entities</string>\n'
         self.__check_escape(string, xml)
 
-    def test_escape_html_code(self):
+    def test_escape_html_code(self) -> None:
         string = "some <b>html code</b> here"
         xml = '<string name="teststring">some <b>html code</b> here</string>\n'
         self.__check_escape(string, xml)
 
-    def test_escape_html_code_quote(self):
+    def test_escape_html_code_quote(self) -> None:
         string = "some <b>html code</b> 'here'"
         xml = "<string name=\"teststring\">some <b>html code</b> \\'here\\'</string>\n"
         self.__check_escape(string, xml)
 
-    def test_escape_html_code_quote_newline(self):
+    def test_escape_html_code_quote_newline(self) -> None:
         string = "some \n<b>html code</b> 'here'"
         xml = (
             "<string name=\"teststring\">some \\n<b>html code</b> \\'here\\'</string>\n"
         )
         self.__check_escape(string, xml)
 
-    def test_escape_arrows(self):
+    def test_escape_arrows(self) -> None:
         string = "<<< arrow"
         xml = '<string name="teststring">&lt;&lt;&lt; arrow</string>\n'
         self.__check_escape(string, xml)
 
-    def test_escape_link(self):
+    def test_escape_link(self) -> None:
         string = '<a href="http://example.net">link</a>'
         xml = (
             '<string name="teststring">\n'
@@ -126,7 +126,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         )
         self.__check_escape(string, xml)
 
-    def test_escape_link_and_text(self):
+    def test_escape_link_and_text(self) -> None:
         string = '<a href="http://example.net">link</a> and text'
         xml = (
             '<string name="teststring"><a href="http://example.net">link'
@@ -134,12 +134,12 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         )
         self.__check_escape(string, xml)
 
-    def test_escape_blank_string(self):
+    def test_escape_blank_string(self) -> None:
         string = ""
         xml = '<string name="teststring"></string>\n'
         self.__check_escape(string, xml)
 
-    def test_plural_escape_message_with_newline(self):
+    def test_plural_escape_message_with_newline(self) -> None:
         mString = multistring(
             ["one message\nwith newline", "other message\nwith newline"]
         )
@@ -151,7 +151,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         )
         self.__check_escape(mString, xml, "en")
 
-    def test_plural_invalid_lang(self):
+    def test_plural_invalid_lang(self) -> None:
         mString = multistring(["one message", "other message"])
         xml = (
             '<plurals name="teststring">\n'
@@ -161,7 +161,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         )
         self.__check_escape(mString, xml, "invalid")
 
-    def test_escape_html_quote(self):
+    def test_escape_html_quote(self) -> None:
         string = "start 'here' <b>html code 'to escape'</b> also 'here'"
         xml = (
             "<string name=\"teststring\">start \\'here\\' <b>html code \\'to escape\\'</b> also \\'here\\'"
@@ -169,7 +169,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         )
         self.__check_escape(string, xml)
 
-    def test_escape_html_leading_space(self):
+    def test_escape_html_leading_space(self) -> None:
         string = " <b>html code 'to escape'</b> some 'here'"
         xml = (
             "<string name=\"teststring\"> <b>html code \\'to escape\\'</b> some \\'here\\'"
@@ -177,7 +177,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         )
         self.__check_escape(string, xml)
 
-    def test_escape_html_trailing_space(self):
+    def test_escape_html_trailing_space(self) -> None:
         string = "<b>html code 'to escape'</b> some 'here' "
         xml = (
             "<string name=\"teststring\"><b>html code \\'to escape\\'</b> some \\'here\\' "
@@ -185,7 +185,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         )
         self.__check_escape(string, xml)
 
-    def test_escape_html_with_ampersand(self):
+    def test_escape_html_with_ampersand(self) -> None:
         string = "<b>html code 'to escape'</b> some 'here' with &amp; char"
         xml = (
             "<string name=\"teststring\"><b>html code \\'to escape\\'</b> some \\'here\\' with &amp; char"
@@ -193,7 +193,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         )
         self.__check_escape(string, xml)
 
-    def test_escape_html_double_space(self):
+    def test_escape_html_double_space(self) -> None:
         string = "<b>html code 'to  escape'</b> some 'here'"
         xml = (
             "<string name=\"teststring\"><b>html code \\'to \\u0020escape\\'</b> some \\'here\\'"
@@ -201,7 +201,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         )
         self.__check_escape(string, xml)
 
-    def test_escape_html_deep_double_space(self):
+    def test_escape_html_deep_double_space(self) -> None:
         string = "<b>html code 'to  <i>escape</i>'</b> some 'here'"
         xml = (
             "<string name=\"teststring\"><b>html code \\'to \\u0020<i>escape</i>\\'</b> some \\'here\\'"
@@ -209,7 +209,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         )
         self.__check_escape(string, xml)
 
-    def test_escape_complex_xml(self):
+    def test_escape_complex_xml(self) -> None:
         string = '<g:test xmlns:g="ttt" g:somevalue="aaaa  &quot;  aaa">value</g:test> &amp; outer &gt; <br/>text'
         xml = (
             '<string name="teststring">'
@@ -218,7 +218,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         )
         self.__check_escape(string, xml)
 
-    def test_escape_quoted_newlines(self):
+    def test_escape_quoted_newlines(self) -> None:
         self.__check_escape(
             "\n\nstring with newlines",
             r"""<string name="teststring">\n\nstring with newlines</string>
@@ -227,12 +227,12 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
 
     ############################ Check string parse ###########################
 
-    def test_parse_message_with_newline(self):
+    def test_parse_message_with_newline(self) -> None:
         string = "message\nwith newline"
         xml = '<string name="teststring">message\\nwith newline</string>\n'
         self.__check_parse(string, xml)
 
-    def test_parse_message_with_newline_in_xml(self):
+    def test_parse_message_with_newline_in_xml(self) -> None:
         string = "message \nwith\n newline\n in xml"
         xml = (
             '<string name="teststring">message\n\\nwith\\n\nnewline\\n\nin xml'
@@ -240,32 +240,32 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         )
         self.__check_parse(string, xml)
 
-    def test_parse_twitter(self):
+    def test_parse_twitter(self) -> None:
         string = "@twitterescape"
         xml = '<string name="teststring">\\@twitterescape</string>\n'
         self.__check_parse(string, xml)
 
-    def test_parse_question(self):
+    def test_parse_question(self) -> None:
         string = "?"
         xml = '<string name="question">\\?</string>'
         self.__check_parse(string, xml)
 
-    def test_parse_quote(self):
+    def test_parse_quote(self) -> None:
         string = "quote 'escape'"
         xml = "<string name=\"teststring\">quote \\'escape\\'</string>\n"
         self.__check_parse(string, xml)
 
-    def test_parse_double_space(self):
+    def test_parse_double_space(self) -> None:
         string = "double  space"
         xml = '<string name="teststring">"double  space"</string>\n'
         self.__check_parse(string, xml)
 
-    def test_parse_leading_space(self):
+    def test_parse_leading_space(self) -> None:
         string = " leading space"
         xml = '<string name="teststring">" leading space"</string>\n'
         self.__check_parse(string, xml)
 
-    def test_parse_quoted_newlines(self):
+    def test_parse_quoted_newlines(self) -> None:
         self.__check_parse(
             "\n\n\n\nstring with newlines",
             r"""<string name="teststring">"
@@ -274,29 +274,29 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
 """,
         )
 
-    def test_parse_xml_entities(self):
+    def test_parse_xml_entities(self) -> None:
         string = ">xml&entities"
         xml = '<string name="teststring">&gt;xml&amp;entities</string>\n'
         self.__check_parse(string, xml)
 
-    def test_parse_html_code(self):
+    def test_parse_html_code(self) -> None:
         string = "some <b>html code</b> here"
         xml = '<string name="teststring">some <b>html code</b> here</string>\n'
         self.__check_parse(string, xml)
 
-    def test_parse_arrows(self):
+    def test_parse_arrows(self) -> None:
         string = "<<< arrow"
         xml = '<string name="teststring">&lt;&lt;&lt; arrow</string>\n'
         self.__check_parse(string, xml)
 
-    def test_parse_link(self):
+    def test_parse_link(self) -> None:
         string = '<a href="http://example.net">link</a>'
         xml = (
             '<string name="teststring"><a href="http://example.net">link</a></string>\n'
         )
         self.__check_parse(string, xml)
 
-    def test_parse_link_and_text(self):
+    def test_parse_link_and_text(self) -> None:
         string = '<a href="http://example.net">link</a> and text'
         xml = (
             '<string name="teststring"><a href="http://example.net">link'
@@ -304,58 +304,58 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         )
         self.__check_parse(string, xml)
 
-    def test_parse_blank_string(self):
+    def test_parse_blank_string(self) -> None:
         string = ""
         xml = '<string name="teststring"></string>\n'
         self.__check_parse(string, xml)
 
-    def test_parse_trailing_space(self):
+    def test_parse_trailing_space(self) -> None:
         string = "test"
         xml = '<string name="teststring">test </string>\n'
         self.__check_parse(string, xml)
 
-    def test_parse_trailing_spaces(self):
+    def test_parse_trailing_spaces(self) -> None:
         string = "test"
         xml = '<string name="teststring">test    </string>\n'
         self.__check_parse(string, xml)
 
-    def test_parse_trailing_escaped_newline(self):
+    def test_parse_trailing_escaped_newline(self) -> None:
         string = "test\n"
         xml = '<string name="teststring">test\\n</string>\n'
         self.__check_parse(string, xml)
 
-    def test_parse_leading_escaped_newline(self):
+    def test_parse_leading_escaped_newline(self) -> None:
         string = "\ntest"
         xml = '<string name="teststring">\\ntest</string>\n'
         self.__check_parse(string, xml)
 
-    def test_parse_leading_spaces(self):
+    def test_parse_leading_spaces(self) -> None:
         string = "test"
         xml = '<string name="teststring">    test</string>\n'
         self.__check_parse(string, xml)
 
-    def test_parse_trailing_newline(self):
+    def test_parse_trailing_newline(self) -> None:
         string = "test"
         xml = '<string name="teststring">test\n</string>\n'
         self.__check_parse(string, xml)
 
-    def test_parse_many_quotes(self):
+    def test_parse_many_quotes(self) -> None:
         string = "test"
         xml = '<string name="teststring">""""""""""test"""""""</string>\n'
         self.__check_parse(string, xml)
 
-    def test_parse_blank_string_again(self):
+    def test_parse_blank_string_again(self) -> None:
         string = ""
         xml = '<string name="teststring"/>\n'
         self.__check_parse(string, xml)
 
-    def test_parse_double_quotes_string(self):
+    def test_parse_double_quotes_string(self) -> None:
         """Check that double quotes got removed."""
         string = "double quoted text"
         xml = '<string name="teststring">"double quoted text"</string>\n'
         self.__check_parse(string, xml)
 
-    def test_parse_newline_in_string(self):
+    def test_parse_newline_in_string(self) -> None:
         """
         Check that newline is read as space.
 
@@ -365,12 +365,12 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         xml = '<string name="teststring">newline\\nin string</string>\n'
         self.__check_parse(string, xml)
 
-    def test_parse_not_translatable_string(self):
+    def test_parse_not_translatable_string(self) -> None:
         string = "string"
         xml = '<string name="teststring" translatable="false">string</string>\n'
         self.__check_parse(string, xml)
 
-    def test_plural_parse_message_with_newline(self):
+    def test_plural_parse_message_with_newline(self) -> None:
         mString = multistring(
             ["one message\nwith newline", "other message\nwith newline"]
         )
@@ -382,7 +382,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         )
         self.__check_parse(mString, xml)
 
-    def test_plural_parse_message_with_comments(self):
+    def test_plural_parse_message_with_comments(self) -> None:
         mString = multistring(["one message", "other message"])
         xml = (
             '<plurals name="teststring">\n'
@@ -394,7 +394,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         )
         self.__check_parse(mString, xml)
 
-    def test_parse_html_quote(self):
+    def test_parse_html_quote(self) -> None:
         string = "start 'here' <b>html code 'to escape'</b> also 'here'"
         xml = (
             "<string name=\"teststring\">start \\'here\\' <b>html code \\'to escape\\'</b> also \\'here\\'"
@@ -402,7 +402,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         )
         self.__check_parse(string, xml)
 
-    def test_parse_html_leading_space(self):
+    def test_parse_html_leading_space(self) -> None:
         string = "<b>html code 'to escape'</b> some 'here'"
         xml = (
             "<string name=\"teststring\"> <b>html code \\'to escape\\'</b> some \\'here\\'"
@@ -410,7 +410,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         )
         self.__check_parse(string, xml)
 
-    def test_parse_html_leading_space_quoted(self):
+    def test_parse_html_leading_space_quoted(self) -> None:
         string = " <b>html code 'to escape'</b> some 'here'"
         xml = (
             '<string name="teststring">" "<b>"html code \'to escape\'"</b>" some \'here\'"'
@@ -418,7 +418,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         )
         self.__check_parse(string, xml)
 
-    def test_parse_html_trailing_space(self):
+    def test_parse_html_trailing_space(self) -> None:
         string = "<b>html code 'to escape'</b> some 'here'"
         xml = (
             "<string name=\"teststring\"><b>html code \\'to escape\\'</b> some \\'here\\' "
@@ -426,7 +426,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         )
         self.__check_parse(string, xml)
 
-    def test_parse_html_trailing_space_quoted(self):
+    def test_parse_html_trailing_space_quoted(self) -> None:
         string = "<b>html code 'to escape'</b> some 'here' "
         xml = (
             '<string name="teststring"><b>"html code \'to escape\'"</b>" some \'here\' "'
@@ -434,7 +434,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         )
         self.__check_parse(string, xml)
 
-    def test_parse_html_with_ampersand(self):
+    def test_parse_html_with_ampersand(self) -> None:
         string = "<b>html code 'to escape'</b> some 'here' with &amp; char"
         xml = (
             "<string name=\"teststring\"><b>html code \\'to escape\\'</b> some \\'here\\' with &amp; char"
@@ -442,7 +442,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         )
         self.__check_parse(string, xml)
 
-    def test_parse_html_double_space_quoted(self):
+    def test_parse_html_double_space_quoted(self) -> None:
         string = "<b>html code 'to  escape'</b> some 'here'"
         xml = (
             "<string name=\"teststring\"><b>html code 'to \\u0020escape'</b> some 'here'"
@@ -450,7 +450,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         )
         self.__check_parse(string, xml)
 
-    def test_parse_html_deep_double_space_quoted(self):
+    def test_parse_html_deep_double_space_quoted(self) -> None:
         string = "<b>html code 'to  <i>  escape</i>'</b> some 'here'"
         xml = (
             '<string name="teststring"><b>"html code \'to  "<i>"  escape"</i>\\\'</b> some \\\'here\\\''
@@ -458,7 +458,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         )
         self.__check_parse(string, xml)
 
-    def test_parse_complex_xml(self):
+    def test_parse_complex_xml(self) -> None:
         string = '<g:test xmlns:g="ttt" g:somevalue="aaaa  &quot;  aaa">value</g:test> outer &amp; text'
         xml = (
             '<string name="teststring">'
@@ -467,44 +467,44 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         )
         self.__check_parse(string, xml)
 
-    def test_parse_unicode(self):
+    def test_parse_unicode(self) -> None:
         self.__check_parse("test", r'<string name="test">\utest</string>')
         self.__check_parse("\u0230", r'<string name="test">\u0230</string>')
 
-    def test_single_unescaped(self):
+    def test_single_unescaped(self) -> None:
         string = "a b c d"
         xml = '<string name="teststring">a\nb\tc d</string>'
         self.__check_parse(string, xml)
 
-    def test_single_escaped_alone(self):
+    def test_single_escaped_alone(self) -> None:
         string = "a\nb\tc d"
         xml = '<string name="teststring">a"\n"b"\t"c" "d</string>'
         self.__check_parse(string, xml)
 
-    def test_single_escaped_full(self):
+    def test_single_escaped_full(self) -> None:
         string = "a\nb\tc d"
         xml = '<string name="teststring">"a\nb\tc d"</string>'
         self.__check_parse(string, xml)
 
-    def test_parse_quoted_escaped_percent(self):
+    def test_parse_quoted_escaped_percent(self) -> None:
         self.__check_parse(
             """You are about to remove "%s" from your library""",
             r"""<string name="remove_manga">You are about to remove \"%s\" from your library</string>""",
         )
 
-    def test_parse_quoted_percent(self):
+    def test_parse_quoted_percent(self) -> None:
         self.__check_parse(
             """You are about to remove %s from your library""",
             """<string name="remove_manga">You are about to remove "%s" from your library</string>""",
         )
 
-    def test_parse_quoted_quote(self):
+    def test_parse_quoted_quote(self) -> None:
         self.__check_parse(
             """You are about to remove "%s" from your library""",
             r"""<string name="remove_manga">You are about to "remove \"%s\" from" your library</string>""",
         )
 
-    def test_parse_unparied_quote(self):
+    def test_parse_unparied_quote(self) -> None:
         self.__check_parse(
             "You can view it here soon: %s",
             """<string name="cmd_camera_response_success">"You can view it here soon: %s</string>""",
@@ -514,25 +514,25 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
             """<string name="cmd_camera_response_success">You can view it here soon: %s"</string>""",
         )
 
-    def test_parse_escape_slash(self):
+    def test_parse_escape_slash(self) -> None:
         self.__check_parse(
             """Přechod na novější verzi databáze účtu \\<g id="account">%s</g>\\""",
             r"""<string name="upgrade_database_format">Přechod na novější verzi databáze účtu \\<g id="account">%s</g>\\</string>""",
         )
 
-    def test_parse_escape_ignored(self):
+    def test_parse_escape_ignored(self) -> None:
         self.__check_parse(
             """Přechod na novější verzi databáze účtu \\<g id="account">%s</g>""",
             r"""<string name="upgrade_database_format">Přechod na novější verzi databáze účtu \\<g id="account">%s</g>\x</string>""",
         )
 
-    def test_parse_escaped_quote_end(self):
+    def test_parse_escaped_quote_end(self) -> None:
         self.__check_parse(
             'No file %1$s found in archive "%2$s"',
             r"""<string name="restore_backup_file_not_found">No file %1$s found in archive \"%2$s\"</string>""",
         )
 
-    def test_parse_quoted_xml(self):
+    def test_parse_quoted_xml(self) -> None:
         self.__check_parse(
             """Your phone needs to use Bluetooth to securely collect and share IDs with other phones that are nearby.
 
@@ -550,7 +550,7 @@ The date, duration, and signal strength associated with an exposure will be shar
 class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
     StoreClass = aresource.AndroidResourceFile
 
-    def test_targetlanguage_default_handlings(self):
+    def test_targetlanguage_default_handlings(self) -> None:
         store = self.StoreClass()
 
         # Initial value is None
@@ -568,14 +568,14 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         store.filename = "dommy/values-it/res.xml"
         assert store.gettargetlanguage() == "de"
 
-    def test_targetlanguage_auto_detection_filename(self):
+    def test_targetlanguage_auto_detection_filename(self) -> None:
         store = self.StoreClass()
 
         # Check language auto_detection
         store.filename = "project/values-it/res.xml"
         assert store.gettargetlanguage() == "it"
 
-    def test_targetlanguage_auto_detection_filename_default_language(self):
+    def test_targetlanguage_auto_detection_filename_default_language(self) -> None:
         store = self.StoreClass()
 
         store.setsourcelanguage("en")
@@ -584,7 +584,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         store.filename = "project/values/res.xml"
         assert store.gettargetlanguage() == "en"
 
-    def test_targetlanguage_auto_detection_invalid_filename(self):
+    def test_targetlanguage_auto_detection_invalid_filename(self) -> None:
         store = self.StoreClass()
 
         store.setsourcelanguage("en")
@@ -595,7 +595,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         store.filename = "invalid_directory"
         assert store.gettargetlanguage() is None
 
-    def test_namespaces(self):
+    def test_namespaces(self) -> None:
         content = """<resources xmlns:tools="http://schemas.android.com/tools">
             <string name="string1" tools:ignore="PluralsCandidate">string1</string>
             <string name="string2">string2</string>
@@ -609,7 +609,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
             newstore
         )
 
-    def test_serialize(self):
+    def test_serialize(self) -> None:
         content = b"""<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="test">Test</string>
@@ -619,7 +619,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         store.parse(content)
         assert bytes(store) == content
 
-    def test_add_formatting(self):
+    def test_add_formatting(self) -> None:
         content = b"""<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="test">Test</string>
@@ -642,7 +642,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         store.addunit(otherstore.units[0], True)
         assert bytes(store) == expected
 
-    def test_entity(self):
+    def test_entity(self) -> None:
         content = b"""<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE resources [
 <!ENTITY appName "Linphone">
@@ -660,7 +660,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         store.units[1].target = "&appName; Core"
         assert bytes(store) == content
 
-    def test_invalid_entity(self):
+    def test_invalid_entity(self) -> None:
         content = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE resources [
 <!ENTITY appName "Linphone">
@@ -678,7 +678,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
             "&appName; Core", "&amp;otherName; Core"
         )
 
-    def test_indent(self):
+    def test_indent(self) -> None:
         content = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE resources [
 <!ENTITY url_privacy_policy "http://example.com/">
@@ -691,7 +691,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         store.parse(content)
         assert bytes(store) == content
 
-    def test_edit_plural_markup(self):
+    def test_edit_plural_markup(self) -> None:
         content = b"""<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="teststring">
@@ -726,7 +726,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
 """
         )
 
-    def test_parse_decimal_plurals(self):
+    def test_parse_decimal_plurals(self) -> None:
         content = b"""<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="teststring">
@@ -749,7 +749,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
             ]
         )
 
-    def test_edit_to_plurals(self):
+    def test_edit_to_plurals(self) -> None:
         content = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="teststring">Test %d string</string>
@@ -781,7 +781,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
 """
         )
 
-    def entity_add(self, *, edit: bool):
+    def entity_add(self, *, edit: bool) -> None:
         content = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE resources [
 <!ENTITY appName "Zkouška">
@@ -807,13 +807,13 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         # The new store should have same content
         assert bytes(second).decode() == content
 
-    def test_entity_add_edit(self):
+    def test_entity_add_edit(self) -> None:
         self.entity_add(edit=True)
 
-    def test_entity_add_noedit(self):
+    def test_entity_add_noedit(self) -> None:
         self.entity_add(edit=False)
 
-    def test_markup_remove(self):
+    def test_markup_remove(self) -> None:
         template = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="privacy_policy"><u>Datenschutzerklärung</u></string>
@@ -827,7 +827,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         store.units[0].target = "Datenschutzerklärung"
         assert bytes(store) == newcontent
 
-    def test_markup_set(self):
+    def test_markup_set(self) -> None:
         template = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--Multimedia tab-->
@@ -844,7 +844,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         store.units[0].target = "Other <b>tab</b>"
         assert bytes(store) == newcontent
 
-    def test_edit_plural_others(self):
+    def test_edit_plural_others(self) -> None:
         content = b"""<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="teststring">
@@ -867,7 +867,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         )
         assert bytes(store) == content
 
-    def test_markup_quotes_set(self):
+    def test_markup_quotes_set(self) -> None:
         template = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="id">Test</string>
@@ -883,7 +883,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         store.units[0].target = "Test <b>string</b> with  space"
         assert bytes(store).decode() == newcontent
 
-    def test_xliff_g(self):
+    def test_xliff_g(self) -> None:
         template = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
 </resources>"""
@@ -908,7 +908,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         ].target = """Other: <xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">%s</xliff:g>"""
         assert bytes(store).decode() == expected
 
-    def test_xliff_namespace(self):
+    def test_xliff_namespace(self) -> None:
         original = """<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="id">Test</string>
@@ -928,7 +928,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         # The namespace should be flattened as it is defined in the toplevel element
         assert bytes(store).decode() == expected
 
-    def test_edit_plural_zh_hk(self):
+    def test_edit_plural_zh_hk(self) -> None:
         content = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="vms_num_visitors">
@@ -952,7 +952,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
 """
         )
 
-    def test_edit_plural_b_zh_hk(self):
+    def test_edit_plural_b_zh_hk(self) -> None:
         content = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="vms_num_visitors">
@@ -976,7 +976,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
 """
         )
 
-    def test_missing_plural(self):
+    def test_missing_plural(self) -> None:
         content = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="vms_num_visitors">
@@ -990,7 +990,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         store.parse(content.encode())
         assert store.units[0].target == multistring(["%d visitor", "", "%d visitors"])
 
-    def test_empty_missing_plural_tag(self):
+    def test_empty_missing_plural_tag(self) -> None:
         content = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="1" />
@@ -1011,7 +1011,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
             ["%1$d tile left in pool.", "%1$d tiles left in pool."]
         )
 
-    def test_removeunit(self):
+    def test_removeunit(self) -> None:
         content = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- First -->
@@ -1039,7 +1039,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
 """
         )
 
-    def test_cdata(self):
+    def test_cdata(self) -> None:
         body = r"""<Data>XXX<b>x</b><![CDATA[
     <html><head>
       <style type=\"text/css\">
@@ -1065,7 +1065,7 @@ files</strong> on the storage.</p>
         store.units[0].target = body
         assert bytes(store).decode() == content
 
-    def test_cdata_text(self):
+    def test_cdata_text(self) -> None:
         body = """By continuing you accept our <![CDATA[<a href="%1$s">Terms of Use</a>]]> and <![CDATA[<a href="%2$s">Privacy Policy</a>]]>"""
         content = f"""<?xml version="1.0" encoding="utf-8"?>
 <resources>
@@ -1101,7 +1101,7 @@ files</strong> on the storage.</p>
         addstore.units[0].target = body
         assert bytes(addstore).decode() == content
 
-    def test_prefix(self):
+    def test_prefix(self) -> None:
         body = "&lt; <b>body</b>"
         content = f"""<?xml version="1.0" encoding="utf-8"?>
 <resources>
@@ -1114,7 +1114,7 @@ files</strong> on the storage.</p>
         assert store.units[0].target == body
         assert bytes(store).decode() == content
 
-    def test_rtl(self):
+    def test_rtl(self) -> None:
         content = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="calendar_permission_required"><i>{app_name}</i> צרכה רשות לגשת ליומן שלך, על מנת ליצור תוכניות עבור עסקאות עתידיות חוזרות.</string>
@@ -1128,7 +1128,7 @@ files</strong> on the storage.</p>
             == "<i>{app_name}</i> צרכה רשות לגשת ליומן שלך, על מנת ליצור תוכניות עבור עסקאות עתידיות חוזרות."
         )
 
-    def test_tail(self):
+    def test_tail(self) -> None:
         content = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="one"><b>One</b></string>in
@@ -1140,7 +1140,7 @@ files</strong> on the storage.</p>
         assert store.units[0].target == "<b>One</b>"
         assert store.units[1].target == "<b>Two</b>"
 
-    def test_translatable_marking(self):
+    def test_translatable_marking(self) -> None:
         data = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- First -->
@@ -1166,7 +1166,7 @@ files</strong> on the storage.</p>
         assert store.units[0].getid() == "test1"
         assert not store.units[0].istranslatable()
 
-    def test_escaping(self):
+    def test_escaping(self) -> None:
         content = r"""<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
 <string name="hello" weblate-flags="c-format, max-length:100">Hello, world!\n</string>
@@ -1180,7 +1180,7 @@ files</strong> on the storage.</p>
 class TestMOKOResourceUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = aresource.MOKOResourceUnit
 
-    def test_escape_quote(self):
+    def test_escape_quote(self) -> None:
         """Helper that checks that a string is output with the right escape."""
         unit = self.UnitClass("teststring")
         unit.target = '''quoted 'string' and "string"'''
@@ -1194,7 +1194,7 @@ class TestMOKOResourceUnit(test_monolingual.TestMonolingualUnit):
 class TestMOKOResourceFile(test_monolingual.TestMonolingualStore):
     StoreClass = aresource.MOKOResourceFile
 
-    def test_plural(self):
+    def test_plural(self) -> None:
         content = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plural name="vms_num_visitors">
@@ -1229,7 +1229,7 @@ class TestCMPResourceUnit(TestMOKOResourceUnit):
 class TestCMPResourceFile(test_monolingual.TestMonolingualStore):
     StoreClass = aresource.CMPResourceFile
 
-    def test_quote_escape(self):
+    def test_quote_escape(self) -> None:
         store = self.StoreClass()
 
         # Test parsing

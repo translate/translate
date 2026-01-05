@@ -104,7 +104,7 @@ def convertjson(
     duplicatestyle="msgctxt",
     dialect="default",
     filter=None,
-):
+) -> int:
     """
     Reads in *input_file* using jsonl10n, converts using :class:`json2po`,
     writes to *output_file*.
@@ -128,7 +128,7 @@ def convertjson(
     return 1
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     formats = {
         "json": ("po", convertjson),
         ("json", "json"): ("po", convertjson),

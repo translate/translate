@@ -215,7 +215,7 @@ def removeinvalidamps(name: str, value: str) -> str:
 class dtdunit(base.TranslationUnit):
     """An entity definition from a DTD file (and any associated comments)."""
 
-    def __init__(self, source="", android=False):
+    def __init__(self, source="", android=False) -> None:
         """Construct the dtdunit, prepare it for parsing."""
         self.android = android
 
@@ -239,7 +239,7 @@ class dtdunit(base.TranslationUnit):
         return unquotefromdtd(self.definition)
 
     @source.setter
-    def source(self, source):
+    def source(self, source) -> None:
         """Sets the definition to the quoted value of source."""
         if self.android:
             self.definition = quoteforandroid(source)
@@ -255,7 +255,7 @@ class dtdunit(base.TranslationUnit):
         return unquotefromdtd(self.definition)
 
     @target.setter
-    def target(self, target):
+    def target(self, target) -> None:
         """Sets the definition to the quoted value of target."""
         if target is None:
             target = ""
@@ -268,7 +268,7 @@ class dtdunit(base.TranslationUnit):
     def getid(self):
         return self.entity
 
-    def setid(self, new_id):
+    def setid(self, new_id) -> None:
         self.entity = new_id
 
     def getlocations(self):
@@ -276,7 +276,7 @@ class dtdunit(base.TranslationUnit):
         assert quote.rstripeol(self.entity) == self.entity
         return [self.entity]
 
-    def addlocation(self, location):
+    def addlocation(self, location) -> None:
         """Set the entity to the given "location"."""
         self.entity = location
 
@@ -289,7 +289,7 @@ class dtdunit(base.TranslationUnit):
     def istranslatable(self):
         return getattr(self, "entityparameter", None) != "SYSTEM" and not self.isblank()
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Convert to a string."""
         return self.getoutput()
 
@@ -321,7 +321,7 @@ class dtdfile(base.TranslationStore):
 
     UnitClass = dtdunit
 
-    def __init__(self, inputfile=None, android=False):
+    def __init__(self, inputfile=None, android=False) -> None:
         """Construct a dtdfile, optionally reading in from inputfile."""
         super().__init__()
         self.filename = getattr(inputfile, "name", "")
@@ -412,7 +412,7 @@ class dtdfile(base.TranslationStore):
             )
         raise ValueError(f"Unexpected quote character... {quote_char!r}")
 
-    def parse(self, dtdsrc):
+    def parse(self, dtdsrc) -> None:
         """Read the source code of a dtd file in and include them as dtdunits in self.units."""
         if not dtdsrc:
             return
@@ -622,7 +622,7 @@ class dtdfile(base.TranslationStore):
             ):
                 self.units.append(newdtd)
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         """Write content to file."""
         content = b""
         for dtd in self.units:

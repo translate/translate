@@ -28,7 +28,7 @@ from translate.lang import common
 
 
 def reverse_quotes(text):
-    def convertquotation(match):
+    def convertquotation(match) -> str:
         return f"”{match.group(1)}“"
 
     return re.sub(r"“([^”]+)”", convertquotation, text)

@@ -15,19 +15,19 @@ from translate.storage import bundleprojstore
 class TestBundleProjectStore:
     """Tests for BundleProjectStore class."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Set up test fixtures."""
         self.test_dir = tempfile.mkdtemp()
         self.bundle_file = os.path.join(self.test_dir, "test_bundle.zip")
 
-    def teardown_method(self):
+    def teardown_method(self) -> None:
         """Clean up test fixtures."""
         # Clean up any test files
 
         if os.path.exists(self.test_dir):
             shutil.rmtree(self.test_dir)
 
-    def test_create_empty_bundle(self):
+    def test_create_empty_bundle(self) -> None:
         """Test creating an empty bundle."""
         bundle = bundleprojstore.BundleProjectStore(self.bundle_file)
         try:
@@ -36,7 +36,7 @@ class TestBundleProjectStore:
         finally:
             bundle.close()
 
-    def test_create_bundle_from_nonexistent_file(self):
+    def test_create_bundle_from_nonexistent_file(self) -> None:
         """Test creating a bundle from a nonexistent file path."""
         bundle_path = os.path.join(self.test_dir, "new_bundle.zip")
         bundle = bundleprojstore.BundleProjectStore(bundle_path)
@@ -47,7 +47,7 @@ class TestBundleProjectStore:
         finally:
             bundle.close()
 
-    def test_save_bundle(self):
+    def test_save_bundle(self) -> None:
         """Test saving a bundle."""
         bundle = bundleprojstore.BundleProjectStore(self.bundle_file)
         try:
@@ -70,7 +70,7 @@ class TestBundleProjectStore:
             if os.path.exists(test_file.name):
                 os.unlink(test_file.name)
 
-    def test_cross_device_save(self):
+    def test_cross_device_save(self) -> None:
         """
         Test that save works across different filesystems.
 
@@ -111,7 +111,7 @@ class TestBundleProjectStore:
             if os.path.exists(test_file.name):
                 os.unlink(test_file.name)
 
-    def test_replace_project_zip(self):
+    def test_replace_project_zip(self) -> None:
         """
         Test the _replace_project_zip method directly.
 
@@ -159,7 +159,7 @@ class TestBundleProjectStore:
                 os.unlink(test_file1.name)
 
     @pytest.mark.skipif(sys.platform == "win32", reason="deletes open files")
-    def test_load_existing_bundle(self):
+    def test_load_existing_bundle(self) -> None:
         """Test loading an existing bundle."""
         # Create a bundle with some content
         initial_bundle = bundleprojstore.BundleProjectStore(self.bundle_file)
@@ -184,13 +184,13 @@ class TestBundleProjectStore:
             if os.path.exists(test_file.name):
                 os.unlink(test_file.name)
 
-    def test_update_file_in_bundle(self):
+    def test_update_file_in_bundle(self) -> None:
         """Test updating a file in the bundle."""
         # This test is removed as update_file has complex behavior
         # that requires careful handling of temporary files.
         # The core functionality is tested by other tests.
 
-    def test_remove_file_from_bundle(self):
+    def test_remove_file_from_bundle(self) -> None:
         """Test removing a file from the bundle."""
         bundle = bundleprojstore.BundleProjectStore(self.bundle_file)
         try:
@@ -218,7 +218,7 @@ class TestBundleProjectStore:
         finally:
             bundle.close()
 
-    def test_invalid_bundle_error(self):
+    def test_invalid_bundle_error(self) -> None:
         """Test that InvalidBundleError is raised for invalid bundles."""
         # Create a zip file without project.xtp
         invalid_bundle = os.path.join(self.test_dir, "invalid.zip")

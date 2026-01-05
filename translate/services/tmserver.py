@@ -47,7 +47,7 @@ class TMServer:
         prefix="",
         source_lang=None,
         target_lang=None,
-    ):
+    ) -> None:
         if not isinstance(tmdbfile, str):
             tmdbfile = tmdbfile.decode(sys.getfilesystemencoding())
 
@@ -74,7 +74,7 @@ class TMServer:
             DELETE=self.forget_store,
         )
 
-    def _load_files(self, tmfiles, source_lang, target_lang):
+    def _load_files(self, tmfiles, source_lang, target_lang) -> None:
         if isinstance(tmfiles, list):
             for tmfile in tmfiles:
                 self.tmdb.add_store(factory.getobject(tmfile), source_lang, target_lang)
@@ -160,7 +160,7 @@ class TMServer:
         return ["FIXME"]
 
 
-def main():
+def main() -> None:
     parser = ArgumentParser()
     parser.add_argument(
         "-d",

@@ -12,32 +12,32 @@ class TestQtUnit(test_base.TestTranslationUnit):
 class TestQtFile(test_base.TestTranslationStore):
     StoreClass = qm.qmfile
 
-    def test_parse(self):
+    def test_parse(self) -> None:
         # self.reparse relies on __str__ to be output and then parsed
         # qm.py does not implement serialization
         pass
 
-    def test_save(self):
+    def test_save(self) -> None:
         # QM does not implement saving
         with pytest.raises(TypeError):
             self.StoreClass.savefile(self.StoreClass())
 
-    def test_files(self):
+    def test_files(self) -> None:
         # QM does not implement saving
         with pytest.raises(TypeError):
             self.StoreClass.savefile(self.StoreClass())
 
-    def test_nonascii(self):
+    def test_nonascii(self) -> None:
         # QM does not implement serialising
         with pytest.raises(TypeError):
             self.StoreClass.serialize(self.StoreClass())
 
-    def test_add(self):
+    def test_add(self) -> None:
         # QM does not implement serialising
         with pytest.raises(TypeError):
             self.StoreClass.serialize(self.StoreClass())
 
-    def test_remove(self):
+    def test_remove(self) -> None:
         # QM does not implement serialising
         with pytest.raises(TypeError):
             self.StoreClass.serialize(self.StoreClass())

@@ -29,7 +29,7 @@ from translate.storage import factory, resx
 
 
 class po2resx:
-    def __init__(self, templatefile, inputstore):
+    def __init__(self, templatefile, inputstore) -> None:
         self.templatefile = templatefile
         self.templatestore = resx.RESXFile(templatefile)
         self.inputstore = inputstore
@@ -55,7 +55,7 @@ class po2resx:
         return bytes(self.templatestore)
 
     @staticmethod
-    def addcomments(inputunit, unit):
+    def addcomments(inputunit, unit) -> None:
         comments = []
 
         # Handle #. automatic comments
@@ -77,7 +77,7 @@ class po2resx:
 
 def convertresx(
     inputfile, outputfile, templatefile, includefuzzy=False, outputthreshold=None
-):
+) -> bool:
     inputstore = factory.getobject(inputfile)
 
     if templatefile is None:
@@ -89,7 +89,7 @@ def convertresx(
     return True
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     formats = {
         ("po", "resx"): ("resx", convertresx),
     }

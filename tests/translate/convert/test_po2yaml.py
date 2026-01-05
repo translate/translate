@@ -39,16 +39,16 @@ class TestPO2YAML:
         """Helper that converts to target format string without using files."""
         return self._convert(*args, **kwargs)[1].getvalue().decode("utf-8")
 
-    def test_convert_empty_PO(self):
+    def test_convert_empty_PO(self) -> None:
         """Check converting empty PO returns no output."""
         assert self._convert_to_string("", "{}") == "{}\n"
 
-    def test_convert_no_templates(self):
+    def test_convert_no_templates(self) -> None:
         """Check converter doesn't allow to pass no templates."""
         with pytest.raises(ValueError):
             self._convert_to_store("")
 
-    def test_simple_output(self):
+    def test_simple_output(self) -> None:
         """Check that a simple single entry PO converts valid YAML output."""
         input_string = """
 #: key
@@ -60,7 +60,7 @@ msgstr ""
 """
         assert expected_output == self._convert_to_string(input_string, template_string)
 
-    def test_simple(self):
+    def test_simple(self) -> None:
         """Check that a simple single entry PO converts to a YAML unit."""
         input_string = """
 #: key
@@ -75,7 +75,7 @@ msgstr ""
         assert target_unit.source == "Hello, World!"
         assert target_unit.target == "Hello, World!"
 
-    def test_translated(self):
+    def test_translated(self) -> None:
         """Check that a simple translated PO converts to a translated YAML."""
         input_string = """
 #: key
@@ -90,7 +90,7 @@ msgstr "Ola mundo!"
         assert target_unit.source == "Ola mundo!"
         assert target_unit.target == "Ola mundo!"
 
-    def test_no_fuzzy(self):
+    def test_no_fuzzy(self) -> None:
         """Check that a simple fuzzy PO converts to a translated YAML."""
         input_string = """
 #: key
@@ -106,7 +106,7 @@ msgstr "Ola mundo!"
         assert target_unit.source == "Hello, World!"
         assert target_unit.target == "Hello, World!"
 
-    def test_allow_fuzzy(self):
+    def test_allow_fuzzy(self) -> None:
         """Check that a simple fuzzy PO converts to a translated YAML."""
         input_string = """
 #: key
@@ -124,7 +124,7 @@ msgstr "Ola mundo!"
         assert target_unit.source == "Ola mundo!"
         assert target_unit.target == "Ola mundo!"
 
-    def test_nested(self):
+    def test_nested(self) -> None:
         """Check converting to nested YAML."""
         input_string = """
 #: foo->bar
@@ -166,7 +166,7 @@ eggs: spam
         assert target_store.units[3].source == "spam"
         assert target_store.units[3].target == "spam"
 
-    def test_convert_completion_below_threshold(self):
+    def test_convert_completion_below_threshold(self) -> None:
         """Check no conversion if input completion is below threshold."""
         input_string = """
 #: key
@@ -181,7 +181,7 @@ msgstr ""
         )
         assert output == expected_output
 
-    def test_convert_completion_above_threshold(self):
+    def test_convert_completion_above_threshold(self) -> None:
         """Check no conversion if input completion is above threshold."""
         input_string = """
 #: key

@@ -3,7 +3,7 @@ from pytest import importorskip
 trados = importorskip("translate.storage.trados", exc_type=ImportError)
 
 
-def test_unescape():
+def test_unescape() -> None:
     # NBSP
     assert trados.unescape("Ordre du jour\\~:") == "Ordre du jour\u00a0:"
     assert (
@@ -12,7 +12,7 @@ def test_unescape():
     )
 
 
-def test_escape():
+def test_escape() -> None:
     # NBSP
     assert trados.escape("Ordre du jour\u00a0:") == "Ordre du jour\\~:"
     assert (

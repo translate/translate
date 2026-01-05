@@ -21,18 +21,18 @@ def givefile(filename, content):
 
 
 class BaseTestFactory:
-    def setup_method(self, method):
+    def setup_method(self, method) -> None:
         """Sets up a test directory."""
         self.testdir = f"{self.__class__.__name__}_testdir"
         self.cleardir(self.testdir)
         os.mkdir(self.testdir)
 
-    def teardown_method(self, method):
+    def teardown_method(self, method) -> None:
         """Removes the attributes set up by setup_method."""
         self.cleardir(self.testdir)
 
     @staticmethod
-    def cleardir(dirname):
+    def cleardir(dirname) -> None:
         """Removes the given directory."""
         if os.path.exists(dirname):
             for dirpath, subdirs, filenames in os.walk(dirname, topdown=False):
@@ -44,7 +44,7 @@ class BaseTestFactory:
             os.rmdir(dirname)
         assert not os.path.exists(dirname)
 
-    def test_getclass(self):
+    def test_getclass(self) -> None:
         assert classname("file.po") == "pofile"
         assert classname("file.pot") == "pofile"
         assert classname("file.dtd.po") == "pofile"
@@ -81,27 +81,27 @@ class BaseTestFactory:
         assert classname("file.po.bz2") != "tmxfile"
         assert classname("file.po.bz2") != "xliff1file"
 
-    def test_getobject_store(self):
+    def test_getobject_store(self) -> None:
         """Tests that we get a valid object."""
         fileobj = givefile(self.filename, self.file_content)
         store = factory.getobject(fileobj)
         assert isinstance(store, self.expected_instance)
         assert store == factory.getobject(store)
 
-    def test_getobject(self):
+    def test_getobject(self) -> None:
         """Tests that we get a valid object."""
         fileobj = givefile(self.filename, self.file_content)
         store = factory.getobject(fileobj)
         assert isinstance(store, self.expected_instance)
 
-    def test_get_noname_object(self):
+    def test_get_noname_object(self) -> None:
         """Tests that we get a valid object from a file object without a name."""
         fileobj = BytesIO(self.file_content)
         assert not hasattr(fileobj, "name")
         store = factory.getobject(fileobj)
         assert isinstance(store, self.expected_instance)
 
-    def test_gzfile(self):
+    def test_gzfile(self) -> None:
         """Test that we can open a gzip file correctly."""
         filename = os.path.join(self.testdir, f"{self.filename}.gz")
         gzfile = GzipFile(filename, mode="wb")
@@ -110,7 +110,7 @@ class BaseTestFactory:
         store = factory.getobject(filename)
         assert isinstance(store, self.expected_instance)
 
-    def test_bz2file(self):
+    def test_bz2file(self) -> None:
         """Test that we can open a gzip file correctly."""
         filename = os.path.join(self.testdir, f"{self.filename}.bz2")
         with BZ2File(filename, mode="wb") as bz2file:
@@ -118,7 +118,7 @@ class BaseTestFactory:
         store = factory.getobject(filename)
         assert isinstance(store, self.expected_instance)
 
-    def test_directory(self):
+    def test_directory(self) -> None:
         """Test that a directory is correctly detected."""
         object = factory.getobject(self.testdir)
         assert isinstance(object, Directory)

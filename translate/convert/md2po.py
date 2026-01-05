@@ -29,7 +29,7 @@ from translate.storage import markdown, po
 
 
 class MD2POOptionParser(convert.ConvertOptionParser):
-    def __init__(self):
+    def __init__(self) -> None:
         formats = {
             "md": ("po", self._extract_translation_units),
             "markdown": ("po", self._extract_translation_units),
@@ -48,7 +48,7 @@ class MD2POOptionParser(convert.ConvertOptionParser):
         templates,
         duplicatestyle,
         multifilestyle,
-    ):
+    ) -> int:
         if hasattr(self, "outputstore"):
             self._parse_and_extract(inputfile, self.outputstore)
         else:
@@ -59,7 +59,7 @@ class MD2POOptionParser(convert.ConvertOptionParser):
         return 1
 
     @staticmethod
-    def _parse_and_extract(inputfile, outputstore):
+    def _parse_and_extract(inputfile, outputstore) -> None:
         """Extract translation units from a markdown file and add them to an existing message store (pofile object) without any further processing."""
         parser = markdown.MarkdownFile(inputfile=inputfile)
         for tu in parser.units:
@@ -67,7 +67,7 @@ class MD2POOptionParser(convert.ConvertOptionParser):
                 storeunit = outputstore.addsourceunit(tu.source)
                 storeunit.addlocations(tu.getlocations())
 
-    def recursiveprocess(self, options):
+    def recursiveprocess(self, options) -> None:
         """Recurse through directories and process files. (override)."""
         if options.multifilestyle == "onefile":
             self.outputstore = po.pofile()
@@ -87,7 +87,7 @@ class MD2POOptionParser(convert.ConvertOptionParser):
             return True
         return super().isrecursive(fileoption, filepurpose=filepurpose)
 
-    def checkoutputsubdir(self, options, subdir):
+    def checkoutputsubdir(self, options, subdir) -> None:
         """
         Check if subdir under options.output needs to be created, and
         create if necessary. Do nothing if in single-output-file mode. (override).
@@ -103,7 +103,7 @@ class MD2POOptionParser(convert.ConvertOptionParser):
         return super().openoutputfile(options, fulloutputpath)
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     parser = MD2POOptionParser()
     parser.run(argv)
 

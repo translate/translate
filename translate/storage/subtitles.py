@@ -44,7 +44,7 @@ class SubtitleUnit(base.TranslationUnit):
 
     init_time = "00:00:00.000"
 
-    def __init__(self, source: str | None = None, **kwargs):
+    def __init__(self, source: str | None = None, **kwargs) -> None:
         self._start = self.init_time
         self._end = self.init_time
         self._duration = 0.0
@@ -53,12 +53,12 @@ class SubtitleUnit(base.TranslationUnit):
             self.target = source
         super().__init__(source)
 
-    def settime(self, start: str, end: str, duration: float):
+    def settime(self, start: str, end: str, duration: float) -> None:
         self._start = start
         self._end = end
         self._duration = duration
 
-    def getnotes(self, origin=None):
+    def getnotes(self, origin=None) -> str:
         if origin in {"programmer", "developer", "source code", None}:
             return f"visible for {self._duration} seconds"
         return ""
@@ -81,7 +81,7 @@ class SubtitleFile(base.TranslationStore):
 
     UnitClass = SubtitleUnit
 
-    def __init__(self, inputfile=None, **kwargs):
+    def __init__(self, inputfile=None, **kwargs) -> None:
         """Construct an Subtitle file, optionally reading in from inputfile."""
         super().__init__(**kwargs)
         self.filename = None
@@ -89,7 +89,7 @@ class SubtitleFile(base.TranslationStore):
         if inputfile is not None:
             self._parsefile(inputfile)
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         subtitles = []
         for unit in sorted(self.units, key=lambda unit: unit._start):
             subtitle = Subtitle()
@@ -103,7 +103,7 @@ class SubtitleFile(base.TranslationStore):
         self._subtitlefile.write_to_file(subtitles, documents.MAIN, output)
         out.write(output.getvalue().encode(self._subtitlefile.encoding))
 
-    def _parse(self):
+    def _parse(self) -> None:
         try:
             self.encoding = detect(self.filename)
             self._format = detect_format(self.filename, self.encoding)
@@ -116,7 +116,7 @@ class SubtitleFile(base.TranslationStore):
         except Exception as e:
             raise base.ParseError(e) from e
 
-    def _parsefile(self, storefile):
+    def _parsefile(self, storefile) -> None:
         if hasattr(storefile, "name"):
             self.filename = storefile.name
             storefile.close()
@@ -138,7 +138,7 @@ class SubtitleFile(base.TranslationStore):
         newstore._parsefile(storefile)
         return newstore
 
-    def parse(self, input):
+    def parse(self, input) -> None:
         if isinstance(input, bytes):
             # Gaupol does not allow parsing from strings
             kwargs = {"delete": False}
@@ -170,7 +170,7 @@ class SubRipFile(SubtitleFile):
     Name = "SubRip subtitles file"
     Extensions = ["srt"]
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         if self._subtitlefile is None:
             self._subtitlefile = SubRip(self.filename or "", self.encoding)
@@ -185,7 +185,7 @@ class MicroDVDFile(SubtitleFile):
     Extensions = ["sub"]
     UnitClass = MicroDVDUnit
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         if self._subtitlefile is None:
             self._subtitlefile = MicroDVD(self.filename or "", self.encoding)
@@ -199,7 +199,7 @@ class AdvSubStationAlphaFile(SubtitleFile):
     Name = "Advanced Substation Alpha subtitles file"
     Extensions = ["ass"]
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         if self._subtitlefile is None:
             self._subtitlefile = AdvSubStationAlpha(self.filename or "", self.encoding)
@@ -213,7 +213,7 @@ class SubStationAlphaFile(SubtitleFile):
     Name = "Substation Alpha subtitles file"
     Extensions = ["ssa"]
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         if self._subtitlefile is None:
             self._subtitlefile = SubStationAlpha(self.filename or "", self.encoding)

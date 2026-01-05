@@ -40,7 +40,7 @@ class po2lang:
         include_fuzzy=False,
         output_threshold=None,
         mark_active=True,
-    ):
+    ) -> None:
         """Initialize the converter."""
         self.source_store = self.SourceStoreClass(input_file)
 
@@ -64,14 +64,14 @@ class po2lang:
             target_unit.addnote(unit.getnotes("developer"), "developer")
         return target_unit
 
-    def convert_store(self):
+    def convert_store(self) -> None:
         """Convert a single source format file to a target format file."""
         for source_unit in self.source_store.units:
             if source_unit.isheader() or not source_unit.istranslatable():
                 continue
             self.target_store.addunit(self.convert_unit(source_unit))
 
-    def run(self):
+    def run(self) -> int:
         """Run the converter."""
         if not self.should_output_store:
             return 0
@@ -104,7 +104,7 @@ formats = {
 }
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     parser = convert.ConvertOptionParser(
         formats, usetemplates=True, description=__doc__
     )

@@ -30,18 +30,18 @@ msgstr "Ahoj"
         return test_dir, application
 
     @staticmethod
-    def cleanup(test_dir, application):
+    def cleanup(test_dir, application) -> None:
         application.tmdb.connection.close()
         shutil.rmtree(test_dir)
 
-    def test_import(self):
+    def test_import(self) -> None:
         """Test importing strings into tmdb."""
         test_dir, application = self.create_server()
         assert application.tmdb.preload_db() == 1
         self.cleanup(test_dir, application)
 
     @mark.skipif(os.name == "nt", reason="can not delete non closed files")
-    def test_server(self):
+    def test_server(self) -> None:
         """Test http server."""
         test_dir, application = self.create_server()
 

@@ -5,7 +5,7 @@ from io import BytesIO
 from translate.storage import po, poheader, poxliff
 
 
-def test_parseheaderstring():
+def test_parseheaderstring() -> None:
     """Test for the header parsing function."""
     source = r"""item1: one
 item2: two:two
@@ -20,7 +20,7 @@ item3: three
     assert d["item3"] == "three"
 
 
-def test_update():
+def test_update() -> None:
     """Test the update function."""
     # do we really add nothing if add==False ?
     d = poheader.update({}, test="hello")
@@ -62,7 +62,7 @@ def poxliffparse(posource):
     return poxli
 
 
-def check_po_date(datestring):
+def check_po_date(datestring) -> None:
     """
     Check the validity of a PO date.
 
@@ -86,7 +86,7 @@ def check_po_date(datestring):
     assert type(time.strptime(datestring, date_format)) is time.struct_time
 
 
-def test_po_dates():
+def test_po_dates() -> None:
     pofile = po.pofile()
     headerdict = pofile.makeheaderdict(po_revision_date=True)
     check_po_date(headerdict["POT-Creation-Date"])
@@ -99,7 +99,7 @@ def test_po_dates():
     check_po_date(headerdict["PO-Revision-Date"])
 
 
-def test_timezones():
+def test_timezones() -> None:
     # The following will only work on Unix because of tzset() and %z
     if "tzset" in time.__dict__:
         os.environ["TZ"] = "Asia/Kabul"
@@ -127,10 +127,10 @@ def test_timezones():
         assert poheader.tzstring() == time.strftime("%z")
 
 
-def test_header_blank():
+def test_header_blank() -> None:
     """Test header functionality."""
 
-    def compare(pofile):
+    def compare(pofile) -> None:
         print(pofile)
         assert len(pofile.units) == 1
         header = pofile.header()
@@ -198,7 +198,7 @@ msgstr ""
 ##    compare(pofile)
 
 
-def test_plural_equation():
+def test_plural_equation() -> None:
     """
     Test that we work with the equation even is the last semicolon is left out, since gettext
     tools don't seem to mind.
@@ -224,7 +224,7 @@ msgstr ""
 ##    TODO: add the same test for PoXliffFile
 
 
-def test_plural_equation_across_lines():
+def test_plural_equation_across_lines() -> None:
     """Test that we work if the plural equation spans more than one line."""
     posource = r"""msgid ""
 msgstr ""
@@ -250,7 +250,7 @@ msgstr ""
 ##    TODO: add the same test for PoXliffFile
 
 
-def test_updatecontributor():
+def test_updatecontributor() -> None:
     """Test that we can update contributor information in the header comments."""
     posource = r"""msgid ""
 msgstr ""
@@ -272,7 +272,7 @@ msgstr ""
     )
 
 
-def test_updatecontributor_header():
+def test_updatecontributor_header() -> None:
     """Test preserving empty lines in comments."""
     posource = r"""# Japanese translation of ibus.
 # Copyright (C) 2015-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
@@ -294,7 +294,7 @@ msgstr ""
     assert bytes(pofile).decode("utf-8") == expected
 
 
-def test_language():
+def test_language() -> None:
     """Test that we can get a language from the relevant headers."""
     posource = r"""msgid ""
 msgstr ""
@@ -317,7 +317,7 @@ msgstr ""
     assert pofile.gettargetlanguage() == "fr_CA"
 
 
-def test_project():
+def test_project() -> None:
     """Test that we can get a project from the relevant headers."""
     posource = r"""msgid ""
 msgstr ""

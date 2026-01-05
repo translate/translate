@@ -31,7 +31,7 @@ class TestPOGrep:
         print(bytes(tofile))
         return bytes(tofile)
 
-    def test_simplegrep_msgid(self):
+    def test_simplegrep_msgid(self) -> None:
         """Grep for a string in the source."""
         posource = '#: test.c\nmsgid "test"\nmsgstr "rest"\n'
         poresult = self.pogrep(posource, "test", ["--search=msgid"])
@@ -39,7 +39,7 @@ class TestPOGrep:
         poresult = self.pogrep(posource, "rest", ["--search=msgid"])
         assert headerless_len(po.pofile(poresult).units) == 0
 
-    def test_simplegrep_msgstr(self):
+    def test_simplegrep_msgstr(self) -> None:
         """Grep for a string in the target."""
         posource = '#: test.c\nmsgid "test"\nmsgstr "rest"\n'
         poresult = self.pogrep(posource, "rest", ["--search=msgstr"])
@@ -47,7 +47,7 @@ class TestPOGrep:
         poresult = self.pogrep(posource, "test", ["--search=msgstr"])
         assert headerless_len(po.pofile(poresult).units) == 0
 
-    def test_simplegrep_locations(self):
+    def test_simplegrep_locations(self) -> None:
         """Grep for a string in the location comments."""
         posource = '#: test.c\nmsgid "test"\nmsgstr "rest"\n'
         poresult = self.pogrep(posource, "test.c", ["--search=locations"])
@@ -55,7 +55,7 @@ class TestPOGrep:
         poresult = self.pogrep(posource, "rest.c", ["--search=locations"])
         assert headerless_len(po.pofile(poresult).units) == 0
 
-    def test_simplegrep_comments(self):
+    def test_simplegrep_comments(self) -> None:
         """Grep for a string in the comments."""
         posource = '# (review) comment\n#: test.c\nmsgid "test"\nmsgstr "rest"\n'
         poresult = self.pogrep(posource, "review", ["--search=comment"])
@@ -63,7 +63,7 @@ class TestPOGrep:
         poresult = self.pogrep(posource, "test", ["--search=comment"])
         assert headerless_len(po.pofile(poresult).units) == 0
 
-    def test_simplegrep_locations_with_comment_enabled(self):
+    def test_simplegrep_locations_with_comment_enabled(self) -> None:
         """
         Grep for a string in "locations", while also "comment" is checked
         see https://github.com/translate/translate/issues/1036.
@@ -78,7 +78,7 @@ class TestPOGrep:
         )
         assert headerless_len(po.pofile(poresult).units) == 0
 
-    def test_unicode_message_searchstring(self):
+    def test_unicode_message_searchstring(self) -> None:
         """Check that we can grep unicode messages and use unicode search strings."""
         poascii = '# comment\n#: test.c\nmsgid "test"\nmsgstr "rest"\n'
         pounicode = '# comment\n#: test.c\nmsgid "test"\nmsgstr "rešṱ"\n'
@@ -94,7 +94,7 @@ class TestPOGrep:
             poresult = self.pogrep(source, search).decode("utf-8")
             assert poresult.index(expected) >= 0
 
-    def test_unicode_message_regex_searchstring(self):
+    def test_unicode_message_regex_searchstring(self) -> None:
         """Check that we can grep unicode messages and use unicode regex search strings."""
         poascii = '# comment\n#: test.c\nmsgid "test"\nmsgstr "rest"\n'
         pounicode = '# comment\n#: test.c\nmsgid "test"\nmsgstr "rešṱ"\n'
@@ -110,7 +110,7 @@ class TestPOGrep:
             poresult = self.pogrep(source, search, ["--regexp"]).decode("utf-8")
             assert poresult.index(expected) >= 0
 
-    def test_keep_translations(self):
+    def test_keep_translations(self) -> None:
         """Check that we can grep unicode messages and use unicode regex search strings."""
         posource = '#: schemas.in\nmsgid "test"\nmsgstr "rest"\n'
         poresult = self.pogrep(
@@ -124,7 +124,7 @@ class TestPOGrep:
         )
         assert headerless_len(po.pofile(poresult).units) == 0
 
-    def test_unicode_normalise(self):
+    def test_unicode_normalise(self) -> None:
         """Check that we normalise unicode strings before comparing."""
         source_template = '# comment\n#: test.c\nmsgid "test"\nmsgstr "t%sst"\n'
         # é, e + '
@@ -186,7 +186,7 @@ class TestXLiffGrep:
         tofile = grepfilter.filterfile(self.xliff_parse(xliff_text.encode()))
         return bytes(tofile)
 
-    def test_simplegrep(self):
+    def test_simplegrep(self) -> None:
         """Grep for a simple string."""
         xliff_text = self.xliff_text
         self.xliff_parse(xliff_text.encode())

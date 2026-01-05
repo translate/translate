@@ -21,7 +21,7 @@ class TestPO2TOML:
         toml_file.seek(0)
         return self.TargetStoreClass(toml_file)
 
-    def test_simple_convert(self):
+    def test_simple_convert(self) -> None:
         """Test converting a simple PO file to TOML."""
         template_source = """key1 = "Hello, world!"
 key2 = "Goodbye, world!"
@@ -40,7 +40,7 @@ msgstr "Adiós, mundo!"
         assert toml_store.units[0].source == "Hola, mundo!"
         assert toml_store.units[1].source == "Adiós, mundo!"
 
-    def test_nested_convert(self):
+    def test_nested_convert(self) -> None:
         """Test converting nested structures."""
         template_source = """[section]
 key1 = "Nested value"
@@ -64,7 +64,7 @@ msgstr "Profundamente anidado"
         assert toml_store.units[1].getid() == "section.subsection.key2"
         assert toml_store.units[1].source == "Profundamente anidado"
 
-    def test_template_required(self):
+    def test_template_required(self) -> None:
         """Test that template is required."""
         po_source = """
 #: key1
@@ -76,7 +76,7 @@ msgstr "Hola"
                 BytesIO(po_source.encode()), BytesIO(), None, False, None
             )
 
-    def test_untranslated_uses_source(self):
+    def test_untranslated_uses_source(self) -> None:
         """Test that untranslated strings use source."""
         template_source = """key1 = "Hello"
 key2 = "World"

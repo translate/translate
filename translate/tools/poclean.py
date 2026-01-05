@@ -33,7 +33,7 @@ from translate.storage import factory
 tw4winre = re.compile(r"\{0>.*?<\}\d{1,3}\{>(.*?)<0\}", re.MULTILINE | re.DOTALL)
 
 
-def cleanunit(unit):
+def cleanunit(unit) -> None:
     """Cleans the targets in the given unit."""
     if isinstance(unit.target, multistring):
         strings = unit.target.strings
@@ -54,7 +54,7 @@ def cleanfile(thefile):
     return thefile
 
 
-def runclean(inputfile, outputfile, templatefile):
+def runclean(inputfile, outputfile, templatefile) -> bool:
     """Reads in inputfile, cleans, writes to outputfile."""
     fromfile = factory.getobject(inputfile)
 
@@ -65,7 +65,7 @@ def runclean(inputfile, outputfile, templatefile):
     return True
 
 
-def main():
+def main() -> None:
     formats = {
         "po": ("po", runclean),
         "xlf": ("xlf", runclean),

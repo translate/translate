@@ -42,7 +42,7 @@ class po2ical:
         template_file=None,
         include_fuzzy=False,
         output_threshold=None,
-    ):
+    ) -> None:
         """Initialize the converter."""
         if template_file is None:
             raise ValueError(self.MissingTemplateMessage)
@@ -61,7 +61,7 @@ class po2ical:
 
             self.source_store.makeindex()
 
-    def merge_stores(self):
+    def merge_stores(self) -> None:
         """
         Convert a source file to a target file using a template file.
 
@@ -79,7 +79,7 @@ class po2ical:
                 else:
                     template_unit.target = template_unit.source
 
-    def run(self):
+    def run(self) -> int:
         """Run the converter."""
         if not self.should_output_store:
             return 0
@@ -101,7 +101,7 @@ def run_converter(
 formats = {("po", "ics"): ("ics", run_converter)}
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     parser = convert.ConvertOptionParser(
         formats, usetemplates=True, description=__doc__
     )

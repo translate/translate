@@ -11,7 +11,7 @@ from . import test_monolingual
 class TestStringsDictUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = stringsdict.StringsDictUnit
 
-    def test_source(self):
+    def test_source(self) -> None:
         unit = self.UnitClass()
         unit.set_unitid(unit.IdClass([("key", "Test String"), ("key", "p")]))
         unit2 = self.UnitClass("Test String:p")
@@ -22,7 +22,7 @@ class TestStringsDictUnit(test_monolingual.TestMonolingualUnit):
         assert unit != unit3
         assert unit != unit4
 
-    def test_eq_formatvaluetype(self):
+    def test_eq_formatvaluetype(self) -> None:
         unit = self.UnitClass("Test String:p")
         unit2 = self.UnitClass("Test String:p")
 
@@ -32,7 +32,7 @@ class TestStringsDictUnit(test_monolingual.TestMonolingualUnit):
         unit.format_value_type = "d"
         assert unit == unit2
 
-    def test_innerkey(self):
+    def test_innerkey(self) -> None:
         unit = self.UnitClass()
         unit.set_unitid(unit.IdClass([("key", "Test String"), ("key", "p")]))
         assert unit.outerkey == "Test String"
@@ -42,7 +42,7 @@ class TestStringsDictUnit(test_monolingual.TestMonolingualUnit):
 class TestStringsDictFile(test_monolingual.TestMonolingualStore):
     StoreClass = stringsdict.StringsDictFile
 
-    def test_serialize(self):
+    def test_serialize(self) -> None:
         content = b"""<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -103,7 +103,7 @@ class TestStringsDictFile(test_monolingual.TestMonolingualStore):
         newstore = self.reparse(store)
         self.check_equality(store, newstore)
 
-    def test_targetlanguage_default_handlings(self):
+    def test_targetlanguage_default_handlings(self) -> None:
         store = self.StoreClass()
 
         # Initial value is None
@@ -121,21 +121,21 @@ class TestStringsDictFile(test_monolingual.TestMonolingualStore):
         store.filename = "Project/it.lproj/Localizable.stringsdict"
         assert store.gettargetlanguage() == "de"
 
-    def test_targetlanguage_auto_detection_filename(self):
+    def test_targetlanguage_auto_detection_filename(self) -> None:
         store = self.StoreClass()
 
         # Check language auto_detection
         store.filename = "Project/it.lproj/Localizable.stringsdict"
         assert store.gettargetlanguage() == "it"
 
-    def test_targetlanguage_auto_detection_base_filename(self):
+    def test_targetlanguage_auto_detection_base_filename(self) -> None:
         store = self.StoreClass()
 
         # Check language auto_detection
         store.filename = "Project/Base.lproj/Localizable.stringsdict"
         assert store.gettargetlanguage() == "en"
 
-    def test_targetlanguage_auto_detection_filename_default_language(self):
+    def test_targetlanguage_auto_detection_filename_default_language(self) -> None:
         store = self.StoreClass()
 
         store.setsourcelanguage("nl")
@@ -150,7 +150,7 @@ class TestStringsDictFile(test_monolingual.TestMonolingualStore):
         store.filename = "invalid_filename"
         assert store.gettargetlanguage() == "nl"
 
-    def test_plural_zero_always_set(self):
+    def test_plural_zero_always_set(self) -> None:
         def lang_without_zero(tuple):
             return len(tuple[1]) > 3 and "zero" not in tuple[1]
 
@@ -172,7 +172,7 @@ class TestStringsDictFile(test_monolingual.TestMonolingualStore):
         plist = plistlib.load(bytes_io)
         assert plist["item"]["p"]["zero"]
 
-    def test_add_unit(self):
+    def test_add_unit(self) -> None:
         store = self.StoreClass()
 
         unit = store.UnitClass("item")

@@ -46,7 +46,7 @@ sicilianconfig = CheckerConfig(
 class SicilianChecker(TranslationChecker):
     """A Checker class for Sicilian."""
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         checkerconfig = kwargs.get("checkerconfig")
 
         if checkerconfig is None:
@@ -57,7 +57,7 @@ class SicilianChecker(TranslationChecker):
         super().__init__(**kwargs)
 
     @critical
-    def italianisms(self, str1, str2):
+    def italianisms(self, str1, str2) -> bool:
         """
         Check if the translation contains common errors done by italophones.
 
@@ -98,7 +98,7 @@ class SicilianChecker(TranslationChecker):
         return True
 
     @critical
-    def vocalism(self, str1, str2):
+    def vocalism(self, str1, str2) -> bool:
         """
         Check correct word-endings.
 
@@ -134,7 +134,7 @@ class SicilianChecker(TranslationChecker):
         return True
 
     @critical
-    def suffixes(self, str1, str2):
+    def suffixes(self, str1, str2) -> bool:
         """
         Check for common word suffixes to be written correctly.
 

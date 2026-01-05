@@ -21,7 +21,7 @@ class TestMoz2PO:
             outputpo = convertor.convertstore(inputprop)
         return outputpo
 
-    def test_duplicate_locations(self):
+    def test_duplicate_locations(self) -> None:
         """
         Test that duplicate locations in Mozilla properties files don't cause
         AttributeError. This tests the fix for the Lithuanian Firefox recovery issue.

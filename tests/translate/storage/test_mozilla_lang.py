@@ -21,7 +21,7 @@ from . import test_base
         ("String {ok} ", "String"),  # trailing space
     ],
 )
-def test_strip_ok(orig, stripped):
+def test_strip_ok(orig, stripped) -> None:
     """Test various permutations of {ok} stripping."""
     assert mozilla_lang.strip_ok(orig) == stripped
 
@@ -29,7 +29,7 @@ def test_strip_ok(orig, stripped):
 class TestMozLangUnit(test_base.TestTranslationUnit):
     UnitClass = mozilla_lang.LangUnit
 
-    def test_translate_but_same(self):
+    def test_translate_but_same(self) -> None:
         """
         Mozilla allows {ok} to indicate a line that is the
         same in source and target on purpose.
@@ -39,7 +39,7 @@ class TestMozLangUnit(test_base.TestTranslationUnit):
         assert unit.target == "Open"
         assert str(unit).endswith(" {ok}")
 
-    def test_untranslated(self):
+    def test_untranslated(self) -> None:
         """
         The target is always written to files and is never blank. If it is
         truly untranslated then it won't end with '{ok}.
@@ -57,7 +57,7 @@ class TestMozLangUnit(test_base.TestTranslationUnit):
         assert str(unit).find("Closed", 2) == 8
         assert not str(unit).endswith(" {ok}")
 
-    def test_comments(self):
+    def test_comments(self) -> None:
         """Comments start with #, tags start with ## TAG:."""
         unit = self.UnitClass("One")
         unit.addnote("Hello")
@@ -66,7 +66,7 @@ class TestMozLangUnit(test_base.TestTranslationUnit):
         unit.addnote("# TAG: goodbye")
         assert "# TAG: goodbye" in unit.getnotes(origin="developer").split("\n")
 
-    def test_copy_target(self):
+    def test_copy_target(self) -> None:
         """
         Validate that self.rawtarget does not break a valid translation.
 
@@ -96,12 +96,12 @@ class TestMozLangUnit(test_base.TestTranslationUnit):
 class TestMozLangFile(test_base.TestTranslationStore):
     StoreClass = mozilla_lang.LangStore
 
-    def test_nonascii(self):
+    def test_nonascii(self) -> None:
         # FIXME investigate why this doesn't pass or why we even do this
         # text with UTF-8 encoded strings
         pass
 
-    def test_format_layout(self):
+    def test_format_layout(self) -> None:
         """General test of layout of the format."""
         lang = "# Comment\n;Source\nTarget\n\n\n"
         store = self.StoreClass.parsestring(lang)
@@ -112,7 +112,7 @@ class TestMozLangFile(test_base.TestTranslationStore):
         assert "Comment" in unit.getnotes()
         assert bytes(store).decode("utf-8") == lang
 
-    def test_crlf(self):
+    def test_crlf(self) -> None:
         r"""While \n is preferred \r\n is allowed."""
         lang = "# Comment\r\n;Source\r\nTarget\r\n\r\n\r\n"
         store = self.StoreClass.parsestring(lang)
@@ -123,14 +123,14 @@ class TestMozLangFile(test_base.TestTranslationStore):
         assert "Comment" in unit.getnotes()
         assert bytes(store).decode("utf-8") == lang
 
-    def test_active_flag(self):
+    def test_active_flag(self) -> None:
         """Test the ## active ## flag."""
         lang = "## active ##\n;Source\nTarget\n\n\n"
         store = self.StoreClass.parsestring(lang)
         assert store.is_active
         assert bytes(store).decode("utf-8") == lang
 
-    def test_multiline_comments(self):
+    def test_multiline_comments(self) -> None:
         """Ensure we can handle and preserve multiline comments."""
         lang = (
             "## active ##\n"
@@ -144,7 +144,7 @@ class TestMozLangFile(test_base.TestTranslationStore):
         store = self.StoreClass.parsestring(lang)
         assert bytes(store).decode("utf-8") == lang
 
-    def test_template(self):
+    def test_template(self) -> None:
         """A template should have source == target, though it could be blank."""
         lang = ";Source\nSource\n\n\n"
         store = self.StoreClass.parsestring(lang)
@@ -169,7 +169,7 @@ class TestMozLangFile(test_base.TestTranslationStore):
             ("{ok}", "Source", True),  # {ok} no WS
         ],
     )
-    def test_ok_translations(self, ok, target, istranslated):
+    def test_ok_translations(self, ok, target, istranslated) -> None:
         """Various renderings of {ok} to ensure that we parse it correctly."""
         lang = ";Source\nSource%s\n"
         store = self.StoreClass.parsestring(lang % ok)
@@ -178,7 +178,7 @@ class TestMozLangFile(test_base.TestTranslationStore):
         assert unit.target == target
         assert unit.istranslated() == istranslated
 
-    def test_headers(self):
+    def test_headers(self) -> None:
         """Ensure we can handle and preserve file headers."""
         lang = (
             "## active ##\n"
@@ -212,7 +212,7 @@ class TestMozLangFile(test_base.TestTranslationStore):
             "\n\n"
         ).encode("utf-8")
 
-    def test_not_headers(self):
+    def test_not_headers(self) -> None:
         """Ensure we dont treat a tag immediately after headers as header."""
         lang = (
             "## active ##\n"
@@ -228,7 +228,7 @@ class TestMozLangFile(test_base.TestTranslationStore):
         assert "## TAG: fooled_you ##" not in store.getlangheaders()
 
     @pytest.mark.parametrize("nl", [0, 1, 2, 3])
-    def test_header_blanklines(self, nl):
+    def test_header_blanklines(self, nl) -> None:
         """Ensure that blank lines following a header are recorded."""
         lang_header = "## active ##\n## some_tag ##\n"
         lang_unit1 = "# Comment\n;Source\nTarget\n\n\n"
@@ -236,7 +236,7 @@ class TestMozLangFile(test_base.TestTranslationStore):
         store = self.StoreClass.parsestring(lang)
         assert bytes(store).decode("utf-8") == lang
 
-    def test_tag_comments(self):
+    def test_tag_comments(self) -> None:
         """Ensure we can handle comments and distinguish from headers."""
         lang = (
             "## active ##\n"
@@ -282,7 +282,7 @@ class TestMozLangFile(test_base.TestTranslationStore):
             origin="developer"
         ).split("\n")
 
-    def test_maxlength(self):
+    def test_maxlength(self) -> None:
         """Ensure we can handle MAX_LENGTH meta data."""
         lang = "## MAX_LENGTH: 80\n# Comment\n;Source\nTarget\n\n\n"
         store = self.StoreClass.parsestring(lang)

@@ -52,10 +52,10 @@ MISSING = object()
 
 
 class ParseError(Exception):
-    def __init__(self, inner_exc):
+    def __init__(self, inner_exc) -> None:
         self.inner_exc = inner_exc
 
-    def __str__(self):
+    def __str__(self) -> str:
         return repr(self.inner_exc)
 
 
@@ -129,7 +129,7 @@ class TranslationUnit:
     _state_n = 0
     notes = ""
 
-    def __init__(self, source=None):
+    def __init__(self, source=None) -> None:
         """Constructs a TranslationUnit containing the given source string."""
         if source is not None:
             self.source = source
@@ -154,7 +154,7 @@ class TranslationUnit:
     def __hash__(self):
         return hash((self.source, self.target, self.getid()))
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Converts to a string representation. Most often overridden by subclasses."""
         # no point in showing store object.
         return ", ".join(
@@ -198,7 +198,7 @@ class TranslationUnit:
         return self._source
 
     @source.setter
-    def source(self, source):
+    def source(self, source) -> None:
         """Set the source string to the given value."""
         self._rich_source = None
         self._source = source
@@ -208,7 +208,7 @@ class TranslationUnit:
         return self._target
 
     @target.setter
-    def target(self, target):
+    def target(self, target) -> None:
         """Set the target string to the given value."""
         self._rich_target = None
         self._target = target
@@ -221,7 +221,7 @@ class TranslationUnit:
         return self._rich_source
 
     @rich_source.setter
-    def rich_source(self, value):
+    def rich_source(self, value) -> None:
         if not hasattr(value, "__iter__"):
             raise ValueError("value must be iterable")
         if len(value) < 1:
@@ -241,7 +241,7 @@ class TranslationUnit:
         return self._rich_target
 
     @rich_target.setter
-    def rich_target(self, value):
+    def rich_target(self, value) -> None:
         if not hasattr(value, "__iter__"):
             raise ValueError("value must be iterable")
         if len(value) < 1:
@@ -276,7 +276,7 @@ class TranslationUnit:
         """
         return self.source
 
-    def setid(self, value):
+    def setid(self, value) -> None:
         """
         Sets the unique identified for this unit.
 
@@ -295,7 +295,7 @@ class TranslationUnit:
         """
         return []
 
-    def addlocation(self, location):
+    def addlocation(self, location) -> None:
         """
         Add one location to the list of locations.
 
@@ -304,7 +304,7 @@ class TranslationUnit:
            Shouldn't be implemented if the format doesn't support it.
         """
 
-    def addlocations(self, location):
+    def addlocations(self, location) -> None:
         """
         Add a location or a list of locations.
 
@@ -323,11 +323,11 @@ class TranslationUnit:
         else:
             self.addlocation(location)
 
-    def getcontext(self):
+    def getcontext(self) -> str:
         """Get the message context."""
         return ""
 
-    def setcontext(self, context):
+    def setcontext(self, context) -> None:
         """Set the message context."""
 
     def getnotes(self, origin=None):
@@ -361,7 +361,7 @@ class TranslationUnit:
         else:
             self.notes = text
 
-    def removenotes(self, origin=None):
+    def removenotes(self, origin=None) -> None:
         """Remove all the translator's notes."""
         self.notes = ""
 
@@ -378,7 +378,7 @@ class TranslationUnit:
         """Get all error messages."""
         return {}
 
-    def markreviewneeded(self, needsreview=True, explanation=None):
+    def markreviewneeded(self, needsreview=True, explanation=None) -> None:
         """
         Marks the unit to indicate whether it needs review.
 
@@ -409,19 +409,19 @@ class TranslationUnit:
         """Marks the unit as translatable or not."""
 
     @staticmethod
-    def isfuzzy():
+    def isfuzzy() -> bool:
         """Indicates whether this unit is fuzzy."""
         return False
 
-    def markfuzzy(self, value=True):
+    def markfuzzy(self, value=True) -> None:
         """Marks the unit as fuzzy or not."""
 
     @staticmethod
-    def isobsolete():
+    def isobsolete() -> bool:
         """Indicate whether a unit is obsolete."""
         return False
 
-    def makeobsolete(self):
+    def makeobsolete(self) -> None:
         """Make a unit obsolete."""
 
     @staticmethod
@@ -447,7 +447,7 @@ class TranslationUnit:
         return not (self.source or self.target)
 
     @staticmethod
-    def hasplural():
+    def hasplural() -> bool:
         """Tells whether or not this specific unit has plural strings."""
         # TODO: Reconsider
         return False
@@ -458,7 +458,9 @@ class TranslationUnit:
     def gettargetlanguage(self):
         return self._store.gettargetlanguage()
 
-    def merge(self, otherunit, overwrite=False, comments=True, authoritative=False):
+    def merge(
+        self, otherunit, overwrite=False, comments=True, authoritative=False
+    ) -> None:
         """Do basic format agnostic merging."""
         if not self.target or overwrite:
             self.rich_target = otherunit.rich_target
@@ -510,10 +512,10 @@ class TranslationUnit:
             return self._state_n
         return self.S_UNREVIEWED if self.istranslated() else self.S_EMPTY
 
-    def set_state_n(self, value):
+    def set_state_n(self, value) -> None:
         self._state_n = value
 
-    def infer_state(self):
+    def infer_state(self) -> None:
         """
         Empty method that should be overridden in sub-classes to infer the
         current state(_n) of the unit from its current state.
@@ -563,7 +565,7 @@ class TranslationStore:
     sourcelanguage = None
     targetlanguage = None
 
-    def __init__(self, unitclass=None, encoding=None):
+    def __init__(self, unitclass=None, encoding=None) -> None:
         """Construct a blank TranslationStore."""
         self.units = []
         if unitclass:
@@ -581,7 +583,7 @@ class TranslationStore:
         return self._encoding or self.default_encoding
 
     @encoding.setter
-    def encoding(self, value):
+    def encoding(self, value) -> None:
         if value == "CHARSET" or value is None:
             return
         if value == "ascii":
@@ -592,7 +594,7 @@ class TranslationStore:
         """Get the source language for this store."""
         return self.sourcelanguage
 
-    def setsourcelanguage(self, sourcelanguage):
+    def setsourcelanguage(self, sourcelanguage) -> None:
         """Set the source language for this store."""
         self.sourcelanguage = sourcelanguage
 
@@ -600,7 +602,7 @@ class TranslationStore:
         """Get the target language for this store."""
         return self.targetlanguage
 
-    def settargetlanguage(self, targetlanguage):
+    def settargetlanguage(self, targetlanguage) -> None:
         """Set the target language for this store."""
         self.targetlanguage = targetlanguage
 
@@ -608,7 +610,7 @@ class TranslationStore:
         """Get the project type for this store."""
         return getattr(self, "_project_style", None)
 
-    def setprojectstyle(self, project_style):
+    def setprojectstyle(self, project_style) -> None:
         """Set the project type for this store."""
         self._project_style = project_style
 
@@ -676,10 +678,10 @@ class TranslationStore:
             return unit.target
         return None
 
-    def remove_unit_from_index(self, unit):
+    def remove_unit_from_index(self, unit) -> None:
         """Remove a unit from source and locaton indexes."""
 
-        def remove_source(source):
+        def remove_source(source) -> None:
             if source in self.sourceindex:
                 self.sourceindex[source].remove(unit)
                 if len(self.sourceindex[source]) == 0:
@@ -695,11 +697,11 @@ class TranslationStore:
             if location in self.locationindex and self.locationindex[location] == unit:
                 del self.locationindex[location]
 
-    def add_unit_to_index(self, unit):
+    def add_unit_to_index(self, unit) -> None:
         """Add a unit to source and location indices."""
         self.id_index[unit.getid()] = unit
 
-        def insert_unit(source):
+        def insert_unit(source) -> None:
             if source not in self.sourceindex:
                 self.sourceindex[source] = [unit]
             else:
@@ -718,7 +720,7 @@ class TranslationStore:
                 # case there are several units with the same location.
                 self.locationindex[location] = unit
 
-    def makeindex(self):
+    def makeindex(self) -> None:
         """
         Indexes the items in this store. At least .sourceindex should be
         useful.
@@ -731,7 +733,7 @@ class TranslationStore:
             if not (unit.isheader() or unit.isblank()):
                 self.add_unit_to_index(unit)
 
-    def require_index(self):
+    def require_index(self) -> None:
         """Make sure source index exists."""
         if not self.id_index:
             self.makeindex()
@@ -747,7 +749,7 @@ class TranslationStore:
         odict["fileobj"] = None
         return odict
 
-    def __bytes__(self):
+    def __bytes__(self) -> bytes:
         out = BytesIO()
         self.serialize(out)
         return out.getvalue()
@@ -774,7 +776,7 @@ class TranslationStore:
             return True
         return all(not unit.istranslatable() for unit in self.units)
 
-    def _assignname(self):
+    def _assignname(self) -> None:
         """
         Tries to work out what the name of the filesystem file is and
         assigns it to .filename.
@@ -888,7 +890,7 @@ class TranslationStore:
             "Subclasses must provide their own parsing method."
         )
 
-    def savefile(self, storefile):
+    def savefile(self, storefile) -> None:
         """Write the string representation to the given file (or filename)."""
         if isinstance(storefile, str):
             storefile = open(storefile, "wb")
@@ -897,7 +899,7 @@ class TranslationStore:
         self.serialize(storefile)
         storefile.close()
 
-    def save(self):
+    def save(self) -> None:
         """Save to the file that data was originally read from, if available."""
         fileobj = getattr(self, "fileobj", None)
         if not fileobj:
@@ -967,11 +969,11 @@ class UnitId:
     KEY_SEPARATOR = "."
     INDEX_SEPARATOR = ""
 
-    def __init__(self, parts):
+    def __init__(self, parts) -> None:
         self.parts = parts
 
-    def __str__(self):
-        def fmt(element, key):
+    def __str__(self) -> str:
+        def fmt(element, key) -> str:
             if element == "key":
                 return f"{self.KEY_SEPARATOR}{key}"
             if element == "index":
@@ -1016,14 +1018,14 @@ class UnitId:
     def __eq__(self, other):
         return self.parts == other.parts
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<UnitId:{self.parts}>"
 
 
 class DictUnit(TranslationUnit):
     IdClass = UnitId
 
-    def __init__(self, source=None):
+    def __init__(self, source=None) -> None:
         super().__init__(source)
         self._unitid = None
 
@@ -1032,7 +1034,7 @@ class DictUnit(TranslationUnit):
             self._unitid = self.IdClass.from_string(self._id)
         return self._unitid
 
-    def storevalue(self, output, value, override_key=None, unset=False):
+    def storevalue(self, output, value, override_key=None, unset=False) -> None:
         if isinstance(value, multistring):
             value = str(value)
         parent = target = output
@@ -1087,7 +1089,7 @@ class DictUnit(TranslationUnit):
         else:
             raise ValueError(f"Unsupported element: {child_element}")
 
-    def storevalues(self, output):
+    def storevalues(self, output) -> None:
         self.storevalue(output, self.value)
 
     def getvalue(self):
@@ -1096,11 +1098,11 @@ class DictUnit(TranslationUnit):
         self.storevalues(result)
         return result
 
-    def setid(self, value, unitid=None):
+    def setid(self, value, unitid=None) -> None:
         self._id = value
         self._unitid = unitid
 
-    def set_unitid(self, unitid):
+    def set_unitid(self, unitid) -> None:
         # Set _unitid first to avoid need to re-construct it from id
         self.setid(str(unitid), unitid)
 
@@ -1113,6 +1115,6 @@ class DictStore(TranslationStore):
             return []
         return {}
 
-    def serialize_units(self, output):
+    def serialize_units(self, output) -> None:
         for unit in self.unit_iter():
             unit.storevalues(output)

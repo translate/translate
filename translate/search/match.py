@@ -37,7 +37,7 @@ def sourcelen(unit):
     return len(unit.source)
 
 
-def _sort_matches(matches, match_info):
+def _sort_matches(matches, match_info) -> None:
     """
     This function will sort a list of matches according to the match's starting
     position, putting the one with the longer source text first, if two are the
@@ -63,7 +63,7 @@ class matcher:
         max_length=70,
         comparer=None,
         usefuzzy=False,
-    ):
+    ) -> None:
         """
         max_candidates is the maximum number of candidates that should be
         assembled, min_similarity is the minimum similarity that must be
@@ -78,7 +78,7 @@ class matcher:
         self.inittm(store)
         self.addpercentage = True
 
-    def usable(self, unit):
+    def usable(self, unit) -> bool:
         """Returns whether this translation unit is usable for TM."""
         # TODO: We might want to consider more attributes, such as approved, reviewed, etc.
         source = unit.source
@@ -92,7 +92,7 @@ class matcher:
             return True
         return False
 
-    def inittm(self, stores, reverse=False):
+    def inittm(self, stores, reverse=False) -> None:
         """
         Initialises the memory for later use. We use simple base units for
         speedup.
@@ -107,7 +107,7 @@ class matcher:
             self.extendtm(store.units, store=store, sort=False)
         self.candidates.units.sort(key=sourcelen, reverse=self.sort_reverse)
 
-    def extendtm(self, units, store=None, sort=True):
+    def extendtm(self, units, store=None, sort=True) -> None:
         """
         Extends the memory with extra unit(s).
 
@@ -143,7 +143,9 @@ class matcher:
         if sort:
             self.candidates.units.sort(key=sourcelen, reverse=self.sort_reverse)
 
-    def setparameters(self, max_candidates=10, min_similarity=75, max_length=70):
+    def setparameters(
+        self, max_candidates=10, min_similarity=75, max_length=70
+    ) -> None:
         """
         Sets the parameters without reinitialising the tm. If a parameter is
         not specified, it is set to the default, not ignored.
@@ -271,7 +273,7 @@ class terminologymatcher(matcher):
 
     def __init__(
         self, store, max_candidates=10, min_similarity=75, max_length=500, comparer=None
-    ):
+    ) -> None:
         if comparer is None:
             comparer = terminology.TerminologyComparer(max_length)
         super().__init__(
@@ -284,7 +286,7 @@ class terminologymatcher(matcher):
         self.addpercentage = False
         self.match_info = {}
 
-    def inittm(self, store):
+    def inittm(self, store) -> None:
         """Normal initialisation, but convert all source strings to lower case."""
         super().inittm(store)
         extras = []
@@ -306,12 +308,12 @@ class terminologymatcher(matcher):
             # considered last.
             self.extendtm(extras, sort=False)
 
-    def getstartlength(self, min_similarity, text):
+    def getstartlength(self, min_similarity, text) -> int:
         # Let's number false matches by not working with terms of two
         # characters or less
         return 3
 
-    def getstoplength(self, min_similarity, text):
+    def getstoplength(self, min_similarity, text) -> int:
         # Let's ignore terms with more than 50 characters. Perhaps someone
         # gave a file with normal (long) translations
         return 50

@@ -43,7 +43,7 @@ class txt2po:
         encoding="utf-8",
         flavour=None,
         no_segmentation=False,
-    ):
+    ) -> None:
         """Initialize the converter."""
         self.duplicate_style = duplicate_style
 
@@ -66,7 +66,7 @@ class txt2po:
                 no_segmentation=no_segmentation,
             )
 
-    def convert_store(self):
+    def convert_store(self) -> None:
         """Convert a single source format file to a target format file."""
         self.extraction_msg = f"extracted from {self.source_store.filename}"
 
@@ -78,7 +78,7 @@ class txt2po:
         """Convert two source format files to a target format file."""
         raise NotImplementedError
 
-    def run(self):
+    def run(self) -> int:
         """Run the converter."""
         if self.template_store is None:
             self.convert_store()
@@ -124,7 +124,7 @@ formats = {
 }
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
     parser.add_option(
         "",

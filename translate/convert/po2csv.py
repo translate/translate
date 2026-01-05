@@ -75,7 +75,7 @@ class po2csv:
         return outputstore
 
 
-def convertcsv(inputfile, outputfile, templatefile, columnorder=None):
+def convertcsv(inputfile, outputfile, templatefile, columnorder=None) -> int:
     """Reads in inputfile using po, converts using po2csv, writes to outputfile."""
     # note that templatefile is not used, but it is required by the converter...
     inputstore = po.pofile(inputfile)
@@ -87,11 +87,11 @@ def convertcsv(inputfile, outputfile, templatefile, columnorder=None):
     return 1
 
 
-def columnorder_callback(option, opt, value, parser):
+def columnorder_callback(option, opt, value, parser) -> None:
     setattr(parser.values, option.dest, value.split(","))
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     formats = {"po": ("csv", convertcsv)}
     parser = convert.ConvertOptionParser(formats, description=__doc__)
     parser.add_option(

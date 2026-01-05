@@ -223,7 +223,7 @@ class pounit(pocommon.pounit):
     # fashion
     __shallow__ = ["_store", "wrapper"]
 
-    def __init__(self, source=None, wrapper: PoWrapper | None = None, **kwargs):
+    def __init__(self, source=None, wrapper: PoWrapper | None = None, **kwargs) -> None:
         self.wrapper: PoWrapper | None = wrapper
         self.obsolete: bool = False
         self._initallcomments(blankall=True)
@@ -243,7 +243,7 @@ class pounit(pocommon.pounit):
             return self._store.newline
         return "\n"
 
-    def _initallcomments(self, blankall=False):
+    def _initallcomments(self, blankall=False) -> None:
         """Initialises allcomments."""
         if blankall:
             self.othercomments = []
@@ -303,7 +303,7 @@ class pounit(pocommon.pounit):
         """Returns the unescaped msgid."""
         return self._get_source_vars(self.prev_msgid, self.prev_msgid_plural)
 
-    def _set_prev_source(self, source):
+    def _set_prev_source(self, source) -> None:
         """
         Sets the msgid to the given (unescaped) value.
 
@@ -321,7 +321,7 @@ class pounit(pocommon.pounit):
         return unquotefrompo(self.msgstr)
 
     @target.setter
-    def target(self, target):
+    def target(self, target) -> None:
         """Sets the msgstr to the given (unescaped) value."""
         self._rich_target = None
         if self.hasplural():
@@ -380,7 +380,9 @@ class pounit(pocommon.pounit):
         # Let's drop the last newline
         return comments[: -len(newline)]
 
-    def addnote(self, text: str, origin: str | None = None, position: str = "append"):
+    def addnote(
+        self, text: str, origin: str | None = None, position: str = "append"
+    ) -> None:
         """
         This is modeled on the XLIFF method.
 
@@ -410,7 +412,7 @@ class pounit(pocommon.pounit):
         else:
             self.othercomments = newcomments
 
-    def removenotes(self, origin=None):
+    def removenotes(self, origin=None) -> None:
         """Remove all the translator's notes (other comments)."""
         self.othercomments = []
 
@@ -448,7 +450,9 @@ class pounit(pocommon.pounit):
             return sum(len(unquotefrompo(msgstr)) for msgstr in self.msgstr.values())
         return len(unquotefrompo(self.msgstr))
 
-    def merge(self, otherunit, overwrite=False, comments=True, authoritative=False):
+    def merge(
+        self, otherunit, overwrite=False, comments=True, authoritative=False
+    ) -> None:
         """
         Merges the otherunit (with the same msgid) into this one.
 
@@ -456,7 +460,7 @@ class pounit(pocommon.pounit):
         merge comments only if comments is True
         """
 
-        def mergelists(list1, list2, split=False):
+        def mergelists(list1, list2, split=False) -> None:
             # Determine the newline style of list1
             lineend = ""
             if list1 and list1[0]:
@@ -566,7 +570,7 @@ class pounit(pocommon.pounit):
             parsed = self._extracttypecomment()
         return typecomment in parsed
 
-    def hasmarkedcomment(self, commentmarker):
+    def hasmarkedcomment(self, commentmarker) -> bool:
         """
         Check whether the given comment marker is present.
 
@@ -580,7 +584,7 @@ class pounit(pocommon.pounit):
                 return True
         return False
 
-    def settypecomment(self, typecomment, present=True):
+    def settypecomment(self, typecomment, present=True) -> None:
         """Alters whether a given typecomment is present."""
         typecomments = list(self._extracttypecomment())
         if self.hastypecomment(typecomment, typecomments) != present:
@@ -598,7 +602,7 @@ class pounit(pocommon.pounit):
     def isfuzzy(self):
         return self.hastypecomment("fuzzy")
 
-    def markfuzzy(self, present=True):
+    def markfuzzy(self, present=True) -> None:
         if present:
             self.set_state_n(self.STATE[self.S_FUZZY][0])
         elif (self.hasplural() and not self._msgstrlen()) or is_null(self.msgstr):
@@ -607,10 +611,10 @@ class pounit(pocommon.pounit):
             self.set_state_n(self.STATE[self.S_TRANSLATED][0])
         self._domarkfuzzy(present)
 
-    def _domarkfuzzy(self, present=True):
+    def _domarkfuzzy(self, present=True) -> None:
         self.settypecomment("fuzzy", present)
 
-    def infer_state(self):
+    def infer_state(self) -> None:
         if self.obsolete:
             self.makeobsolete()
         else:
@@ -619,14 +623,14 @@ class pounit(pocommon.pounit):
     def isobsolete(self):
         return self.obsolete
 
-    def makeobsolete(self):
+    def makeobsolete(self) -> None:
         """Makes this unit obsolete."""
         super().makeobsolete()
         self.obsolete = True
         self.sourcecomments = []
         self.automaticcomments = []
 
-    def resurrect(self):
+    def resurrect(self) -> None:
         """Makes an obsolete unit normal."""
         super().resurrect()
         self.obsolete = False
@@ -687,19 +691,19 @@ class pounit(pocommon.pounit):
             partstr.extend((partline, self.newline))
         return "".join(partstr)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Convert to a string."""
         return self._getoutput()
 
     def _getoutput(self):
         """Return this po element as a string."""
 
-        def add_prev_msgid_lines(lines, prefix, header, var):
+        def add_prev_msgid_lines(lines, prefix, header, var) -> None:
             if var:
                 lines.append(f"{prefix} {header} {var[0]}\n")
                 lines.extend(f"{prefix} {line}\n" for line in var[1:])
 
-        def add_prev_msgid_info(lines, prefix):
+        def add_prev_msgid_info(lines, prefix) -> None:
             add_prev_msgid_lines(lines, prefix, "msgctxt", self.prev_msgctxt)
             add_prev_msgid_lines(lines, prefix, "msgid", self.prev_msgid)
             add_prev_msgid_lines(lines, prefix, "msgid_plural", self.prev_msgid_plural)
@@ -786,7 +790,7 @@ class pounit(pocommon.pounit):
             text = unquotefrompo(self.msgidcomments)
         return text.split(self.newline)[0].replace("_: ", "", 1)
 
-    def setmsgidcomment(self, msgidcomment):
+    def setmsgidcomment(self, msgidcomment) -> None:
         if msgidcomment:
             self.msgidcomments = [f'"_: {msgidcomment}\\n"']
         else:
@@ -798,7 +802,7 @@ class pounit(pocommon.pounit):
         """Get the message context."""
         return unquotefrompo(self.msgctxt) + self._extract_msgidcomments()
 
-    def setcontext(self, context):
+    def setcontext(self, context) -> None:
         self.msgctxt = self.quote(context)
 
     def getid(self):
@@ -822,7 +826,7 @@ class pofile(pocommon.pofile):
 
     UnitClass = pounit
 
-    def __init__(self, inputfile=None, width=None, **kwargs):
+    def __init__(self, inputfile=None, width=None, **kwargs) -> None:
         wrapargs = {}
         if width is not None:
             wrapargs = {"width": width}
@@ -833,7 +837,7 @@ class pofile(pocommon.pofile):
     def create_unit(self):
         return self.UnitClass(wrapper=self.wrapper)
 
-    def parse(self, input):
+    def parse(self, input) -> None:
         """Parses the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name
@@ -846,7 +850,7 @@ class pofile(pocommon.pofile):
         self.units = []
         poparser.parse_units(poparser.ParseState(iter(lines), self.create_unit), self)
 
-    def removeduplicates(self, duplicatestyle="merge"):
+    def removeduplicates(self, duplicatestyle="merge") -> None:
         """
         Make sure each msgid is unique ; merge comments etc from
         duplicates into original.
@@ -859,7 +863,7 @@ class pofile(pocommon.pofile):
         # probably not used frequently enough to worry about it, though.
         markedpos = []
 
-        def addcomment(thepo):
+        def addcomment(thepo) -> None:
             thepo.msgidcomments.append(f'"_: {" ".join(thepo.getlocations())}\\n"')
             markedpos.append(thepo)
 
@@ -905,7 +909,7 @@ class pofile(pocommon.pofile):
                 uniqueunits.append(thepo)
         self.units = uniqueunits
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         """Write to file."""
         at_start = True
         try:
@@ -928,7 +932,7 @@ class pofile(pocommon.pofile):
             if not (unit.isheader() or unit.isobsolete()):
                 yield unit
 
-    def addunit(self, unit):
+    def addunit(self, unit) -> None:
         needs_update = unit.wrapper != self.wrapper
         unit.wrapper = self.wrapper
         super().addunit(unit)

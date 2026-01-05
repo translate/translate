@@ -57,7 +57,7 @@ class podebug:
         rewritestyle=None,
         ignoreoption=None,
         preserveplaceholders=False,
-    ):
+    ) -> None:
         if format is None:
             self.format = ""
         else:
@@ -67,7 +67,7 @@ class podebug:
         self.preserveplaceholders = preserveplaceholders
 
     @staticmethod
-    def apply_to_translatables(string, func):
+    def apply_to_translatables(string, func) -> None:
         """Applies func to all translatable strings in string."""
         string.map(
             lambda e: e.apply_to_strings(func),
@@ -230,7 +230,7 @@ class podebug:
                 return char
             return self.REWRITE_FLIPPED_MAP[loc]
 
-        def transformer(s):
+        def transformer(s) -> str:
             if self.preserveplaceholders:
                 return f"\u202e{self.transform_characters_preserving_placeholders(s, transpose)}"
             return f"\u202e{''.join(transpose(c) for c in s)}"
@@ -266,7 +266,7 @@ class podebug:
         ]
 
     @staticmethod
-    def ignore_openoffice(unit):
+    def ignore_openoffice(unit) -> bool:
         for location in unit.getlocations():
             if location.startswith("Common.xcu#..Common.View.Localisation"):
                 return True
@@ -280,7 +280,7 @@ class podebug:
         return self.ignore_openoffice(unit)
 
     @staticmethod
-    def ignore_mozilla(unit):
+    def ignore_mozilla(unit) -> bool:
         locations = unit.getlocations()
         if len(locations) == 1 and locations[0].lower().endswith(".accesskey"):
             return True
@@ -393,7 +393,7 @@ def convertpo(
     rewritestyle=None,
     ignoreoption=None,
     preserveplaceholders=None,
-):
+) -> int:
     """Reads in inputfile, changes it to have debug strings, writes to outputfile."""
     # note that templatefile is not used, but it is required by the converter...
     inputstore = factory.getobject(inputfile)
@@ -410,7 +410,7 @@ def convertpo(
     return 1
 
 
-def main():
+def main() -> None:
     formats = {
         "po": ("po", convertpo),
         "pot": ("po", convertpo),

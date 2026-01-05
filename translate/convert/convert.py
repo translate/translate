@@ -41,7 +41,7 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser):
         usepots=False,
         allowmissingtemplate=False,
         description=None,
-    ):
+    ) -> None:
         """Construct the specialized Option Parser."""
         super().__init__(
             formats,
@@ -54,7 +54,7 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser):
         self.setpotoption()
         self.set_usage()
 
-    def add_fuzzy_option(self, default=False):
+    def add_fuzzy_option(self, default=False) -> None:
         """Adds an option to include / exclude fuzzy translations."""
         fuzzyhelp = "use translations marked fuzzy"
         nofuzzyhelp = "don't use translations marked fuzzy"
@@ -80,7 +80,7 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser):
         )
         self.passthrough.append("includefuzzy")
 
-    def add_remove_untranslated_option(self, default=False):
+    def add_remove_untranslated_option(self, default=False) -> None:
         """
         Adds an option to remove key value from output if it is
         untranslated.
@@ -95,7 +95,7 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser):
         )
         self.passthrough.append("remove_untranslated")
 
-    def add_threshold_option(self, default=None):
+    def add_threshold_option(self, default=None) -> None:
         """
         Adds an option to output only stores where translation percentage
         exceeds the threshold.
@@ -111,7 +111,7 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser):
         )
         self.passthrough.append("outputthreshold")
 
-    def add_duplicates_option(self, default="msgctxt"):
+    def add_duplicates_option(self, default="msgctxt") -> None:
         """Adds an option to say what to do with duplicate strings."""
         self.add_option(
             "",
@@ -125,7 +125,7 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser):
         )
         self.passthrough.append("duplicatestyle")
 
-    def add_multifile_option(self, default="single"):
+    def add_multifile_option(self, default="single") -> None:
         """Adds an option to say how to split the po/pot files."""
         self.add_option(
             "",
@@ -182,7 +182,7 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser):
             return outputoptions
         return self.outputoptions
 
-    def setpotoption(self):
+    def setpotoption(self) -> None:
         """
         Sets the ``-P``/``--pot`` option depending on input/output formats
         etc.
@@ -198,7 +198,7 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser):
             )
             self.define_option(potoption)
 
-    def settimestampoption(self):
+    def settimestampoption(self) -> None:
         """Sets ``-S``/``--timestamp`` option."""
         timestampopt = optparse.Option(
             "-S",
@@ -210,13 +210,13 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser):
         )
         self.define_option(timestampopt)
 
-    def verifyoptions(self, options):
+    def verifyoptions(self, options) -> None:
         """
         Verifies that the options are valid (required options are present,
         etc).
         """
 
-    def run(self, argv=None):
+    def run(self, argv=None) -> None:
         """Parses the command line options and runs the conversion."""
         options, _args = self.parse_args(argv)
         self.inputformats = self.filterinputformats(options)
@@ -248,13 +248,13 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser):
         )
 
 
-def copyinput(inputfile, outputfile, templatefile, **kwargs):
+def copyinput(inputfile, outputfile, templatefile, **kwargs) -> bool:
     """Copies the input file to the output file."""
     outputfile.write(inputfile.read())
     return True
 
 
-def copytemplate(inputfile, outputfile, templatefile, **kwargs):
+def copytemplate(inputfile, outputfile, templatefile, **kwargs) -> bool:
     """Copies the template file to the output file."""
     outputfile.write(templatefile.read())
     return True
@@ -263,7 +263,7 @@ def copytemplate(inputfile, outputfile, templatefile, **kwargs):
 class Replacer:
     """An object that knows how to replace strings in files."""
 
-    def __init__(self, searchstring, replacestring):
+    def __init__(self, searchstring, replacestring) -> None:
         self.searchstring = searchstring
         self.replacestring = replacestring
 
@@ -273,12 +273,14 @@ class Replacer:
             return text.replace(self.searchstring, self.replacestring)
         return text
 
-    def searchreplaceinput(self, inputfile, outputfile, templatefile, **kwargs):
+    def searchreplaceinput(self, inputfile, outputfile, templatefile, **kwargs) -> bool:
         """Copies the input file to the output file, searching and replacing."""
         outputfile.write(self.doreplace(inputfile.read()))
         return True
 
-    def searchreplacetemplate(self, inputfile, outputfile, templatefile, **kwargs):
+    def searchreplacetemplate(
+        self, inputfile, outputfile, templatefile, **kwargs
+    ) -> bool:
         """
         Copies the template file to the output file, searching and
         replacing.
@@ -321,7 +323,7 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
         usepots=False,
         description=None,
         archiveformats=None,
-    ):
+    ) -> None:
         if archiveformats is None:
             self.archiveformats = {}
         else:
@@ -449,7 +451,7 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
             return os.path.join(options.output, outputpath)
         return outputpath
 
-    def checkoutputsubdir(self, options, subdir):
+    def checkoutputsubdir(self, options, subdir) -> None:
         """
         Checks to see if subdir under ``options.output`` needs to be
         created, creates if necessary.
@@ -557,6 +559,6 @@ def should_output_store(store, threshold):
     return percent >= threshold
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     parser = ArchiveConvertOptionParser({}, description=__doc__)
     parser.run(argv)

@@ -21,7 +21,7 @@ class TestTxtFile(test_monolingual.TestMonolingualStore):
         """Helper that converts txt source to txtfile object and back."""
         return bytes(self.txtparse(txtsource, no_segmentation)).decode("utf-8")
 
-    def test_simpleblock(self):
+    def test_simpleblock(self) -> None:
         """Checks that a simple txt block is parsed correctly."""
         txtsource = "bananas for sale"
         txtfile = self.txtparse(txtsource)
@@ -29,7 +29,7 @@ class TestTxtFile(test_monolingual.TestMonolingualStore):
         assert txtfile.units[0].source == txtsource
         assert self.txtregen(txtsource) == txtsource
 
-    def test_multipleblocks(self):
+    def test_multipleblocks(self) -> None:
         """Check that multiple blocks are parsed correctly."""
         txtsource = """One\nOne\n\nTwo\n---\n\nThree"""
         txtfile = self.txtparse(txtsource)
@@ -40,7 +40,7 @@ class TestTxtFile(test_monolingual.TestMonolingualStore):
         assert bytes(txtfile).decode("utf-8") == txtsource
         assert self.txtregen(txtsource) == txtsource
 
-    def test_no_segmentation(self):
+    def test_no_segmentation(self) -> None:
         """Checks that a simple txt block is parsed correctly."""
         input_string = """
 First paragraph

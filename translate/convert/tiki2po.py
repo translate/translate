@@ -36,7 +36,7 @@ class tiki2po:
 
     def __init__(
         self, input_file, output_file, template_file=None, include_unused=False
-    ):
+    ) -> None:
         """Initialize the converter."""
         self.include_unused = include_unused
 
@@ -54,14 +54,14 @@ class tiki2po:
         target_unit.target = unit.target
         return target_unit
 
-    def convert_store(self):
+    def convert_store(self) -> None:
         """Convert a single source format file to a target format file."""
         for source_unit in self.source_store.units:
             if not self.include_unused and "unused" in source_unit.getlocations():
                 continue
             self.target_store.addunit(self.convert_unit(source_unit))
 
-    def run(self):
+    def run(self) -> int:
         """Run the converter."""
         self.convert_store()
         if self.target_store.isempty():
@@ -81,7 +81,7 @@ formats = {
 }
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     parser = convert.ConvertOptionParser(formats, description=__doc__)
     parser.add_option(
         "",

@@ -44,7 +44,7 @@ decode = bytes.decode
 
 
 class PoParseError(ValueError):
-    def __init__(self, parse_state, message=None):
+    def __init__(self, parse_state, message=None) -> None:
         self.parse_state = parse_state
         if message is None:
             message = "Syntax error"
@@ -54,7 +54,9 @@ class PoParseError(ValueError):
 
 
 class ParseState:
-    def __init__(self, input_iterator, UnitClass, encoding=SINGLE_BYTE_ENCODING):
+    def __init__(
+        self, input_iterator, UnitClass, encoding=SINGLE_BYTE_ENCODING
+    ) -> None:
         # A single-byte encoding is first defined to be able to read the header
         # without risking UnicodeDecodeErrors. As soon as the header is parsed,
         # the encoding defined in the header is used for re-encoding the header
@@ -167,7 +169,7 @@ def parse_comment(parse_state, unit):
     return None
 
 
-def parse_comments(parse_state, unit):
+def parse_comments(parse_state, unit) -> bool | None:
     if not parse_comment(parse_state, unit):
         return None
     while parse_comment(parse_state, unit):
@@ -224,7 +226,9 @@ def parse_msg_comment(parse_state, msg_comment_list, string):
     return None
 
 
-def parse_multiple_quoted(parse_state, msg_list, msg_comment_list, first_start_pos=0):
+def parse_multiple_quoted(
+    parse_state, msg_list, msg_comment_list, first_start_pos=0
+) -> None:
     string = parse_quoted(parse_state, first_start_pos)
     while string is not None:
         if msg_comment_list is None or not startswith(string, '"_:'):
@@ -269,7 +273,7 @@ def parse_msgid_plural(parse_state, unit):
 MSGSTR_ARRAY_ENTRY_LEN = len("msgstr[")
 
 
-def add_to_dict(msgstr_dict, line, right_bracket_pos, entry):
+def add_to_dict(msgstr_dict, line, right_bracket_pos, entry) -> None:
     index = int(line[MSGSTR_ARRAY_ENTRY_LEN:right_bracket_pos])
     if index not in msgstr_dict:
         msgstr_dict[index] = []
@@ -282,7 +286,7 @@ def get_entry(parse_state, right_bracket_pos):
     return entry
 
 
-def parse_msgstr_array_entry(parse_state, msgstr_dict):
+def parse_msgstr_array_entry(parse_state, msgstr_dict) -> bool:
     line = parse_state.next_line
     right_bracket_pos = find(line, "]", MSGSTR_ARRAY_ENTRY_LEN)
     if right_bracket_pos >= 0:
@@ -294,7 +298,7 @@ def parse_msgstr_array_entry(parse_state, msgstr_dict):
     return False
 
 
-def parse_msgstr_array(parse_state, unit):
+def parse_msgstr_array(parse_state, unit) -> bool:
     msgstr_dict = {}
     result = parse_msgstr_array_entry(parse_state, msgstr_dict)
     if not result:  # We require at least one result
@@ -331,7 +335,7 @@ def parse_unit(parse_state, unit=None):
     return None
 
 
-def set_encoding(parse_state, store, unit):
+def set_encoding(parse_state, store, unit) -> None:
     charset = None
     if (
         isinstance(unit.msgstr, list)
@@ -355,7 +359,7 @@ def decode_list(lst, decode):
     return [decode(item.encode(SINGLE_BYTE_ENCODING)) for item in lst]
 
 
-def decode_header(unit, decode):
+def decode_header(unit, decode) -> None:
     """
     The header has been arbitrarily decoded with a single-byte encoding. We
     re-encode it to decode values with the proper encoding defined in the header
@@ -399,7 +403,7 @@ def parse_header(parse_state, store):
     return first_unit
 
 
-def parse_units(parse_state, store):
+def parse_units(parse_state, store) -> None:
     unit = parse_header(parse_state, store)
     while unit:
         unit.infer_state()

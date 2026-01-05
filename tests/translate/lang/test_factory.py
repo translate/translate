@@ -4,7 +4,7 @@ import translate.lang as package
 from translate.lang import factory
 
 
-def test_getlanguage():
+def test_getlanguage() -> None:
     """Tests that a basic call to getlanguage() works."""
     kmlanguage = factory.getlanguage("km")
     assert kmlanguage.code == "km"
@@ -42,10 +42,10 @@ def test_getlanguage():
     assert language.nplurals == 2
 
 
-def test_get_all_languages():
+def test_get_all_languages() -> None:
     """Tests that a basic call to get_all_languages() works."""
 
-    def is_language_module(x):
+    def is_language_module(x) -> bool:
         return not (
             x.startswith("test_")
             or x in {"common", "data", "factory", "identify", "ngram", "poedit", "team"}

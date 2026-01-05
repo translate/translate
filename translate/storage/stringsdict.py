@@ -10,7 +10,7 @@ from translate.storage import base
 class StringsDictId(base.UnitId):
     KEY_SEPARATOR = ":"
 
-    def __str__(self):
+    def __str__(self) -> str:
         s = super().__str__()
         if s.startswith(":"):
             return s[1:]
@@ -27,7 +27,7 @@ class StringsDictUnit(base.DictUnit):
     IdClass = StringsDictId
     format_value_type = ""
 
-    def __init__(self, source=None):
+    def __init__(self, source=None) -> None:
         super().__init__(source=source)
 
         loc = source or ""
@@ -69,7 +69,7 @@ class StringsDictUnit(base.DictUnit):
     def getid(self):
         return self.source
 
-    def setid(self, value, unitid=None):
+    def setid(self, value, unitid=None) -> None:
         self.source = value
         super().setid(value, unitid)
 
@@ -90,7 +90,7 @@ class StringsDictFile(base.DictStore):
     Mimetypes = ["application/x-plist"]
     Extensions = ["stringsdict"]
 
-    def __init__(self, inputfile=None, **kwargs):
+    def __init__(self, inputfile=None, **kwargs) -> None:
         super().__init__(**kwargs)
         self.parse(inputfile)
 
@@ -128,7 +128,7 @@ class StringsDictFile(base.DictStore):
             tags.insert(0, "zero")
         return tags
 
-    def parse(self, input):
+    def parse(self, input) -> None:
         """Read a .stringsdict file into a dictionary, and convert it to translation units."""
         if isinstance(input, (bytes, str)):
             plist = plistlib.loads(input)
@@ -164,7 +164,7 @@ class StringsDictFile(base.DictStore):
                 else:
                     raise ValueError(f"Unexpected key {innerkey} in {key}")
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         plist = {}
 
         for u in self.units:

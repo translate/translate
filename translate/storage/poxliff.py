@@ -47,7 +47,7 @@ class PoXliffUnit(xliff.xliffunit):
 
     rich_parsers = general.parsers
 
-    def __init__(self, source=None, empty=False, **kwargs):
+    def __init__(self, source=None, empty=False, **kwargs) -> None:
         self._rich_source = None
         self._rich_target = None
         self._state_n = 0
@@ -94,10 +94,10 @@ class PoXliffUnit(xliff.xliffunit):
         return multistring([unit.source for unit in self.units])
 
     @source.setter
-    def source(self, source):
+    def source(self, source) -> None:
         self.setsource(source, sourcelang="en")
 
-    def setsource(self, source, sourcelang="en"):
+    def setsource(self, source, sourcelang="en") -> None:
         # TODO: consider changing from plural to singular, etc.
         self._rich_source = None
         if not hasplurals(source):
@@ -130,7 +130,7 @@ class PoXliffUnit(xliff.xliffunit):
             return None
         return super().gettarget(lang)
 
-    def settarget(self, target, lang="xx", append=False):
+    def settarget(self, target, lang="xx", append=False) -> None:
         self._rich_target = None
         if self.target == target:
             return
@@ -156,7 +156,7 @@ class PoXliffUnit(xliff.xliffunit):
         for i, unit in enumerate(self.units):
             unit.target = targets[i]
 
-    def addnote(self, text, origin=None, position="append"):
+    def addnote(self, text, origin=None, position="append") -> None:
         """Add a note specifically in a "note" tag."""
         note = etree.SubElement(self.xmlelement, self.namespaced("note"))
         note.text = text
@@ -189,17 +189,17 @@ class PoXliffUnit(xliff.xliffunit):
             return autocomments
         return super().getnotes(origin)
 
-    def markfuzzy(self, value=True):
+    def markfuzzy(self, value=True) -> None:
         super().markfuzzy(value)
         for unit in self.units[1:]:
             unit.markfuzzy(value)
 
-    def marktranslated(self):
+    def marktranslated(self) -> None:
         super().marktranslated()
         for unit in self.units[1:]:
             unit.marktranslated()
 
-    def setid(self, id):
+    def setid(self, id) -> None:
         super().setid(id)
         if len(self.units) > 1:
             for i, unit in enumerate(self.units):
@@ -284,7 +284,7 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
 
     UnitClass = PoXliffUnit
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         if "sourcelanguage" not in kwargs:
             kwargs["sourcelanguage"] = "en-US"
         xliff.xlifffile.__init__(self, *args, **kwargs)
@@ -296,7 +296,7 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
             filename, sourcelanguage=self.sourcelanguage, datatype="po"
         )
 
-    def _insert_header(self, header):
+    def _insert_header(self, header) -> None:
         header.xmlelement.set("restype", "x-gettext-domain-header")
         header.xmlelement.set("approved", "no")
         setXMLspace(header.xmlelement, "preserve")
@@ -310,7 +310,7 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
         setXMLspace(unit.xmlelement, "preserve")
         return unit
 
-    def parse(self, xml):
+    def parse(self, xml) -> None:
         """Populates this object from the given xml string."""
         # TODO: Make more robust
 

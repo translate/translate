@@ -51,24 +51,24 @@ class XPathBreadcrumb:
     foo[0]/bar[1]
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._xpath = []
         self._tagtally = [{}]
 
-    def start_tag(self, tag):
+    def start_tag(self, tag) -> None:
         tally_dict = self._tagtally[-1]
         tally = tally_dict.get(tag, -1) + 1
         tally_dict[tag] = tally
         self._xpath.append((tag, tally))
         self._tagtally.append({})
 
-    def end_tag(self):
+    def end_tag(self) -> None:
         self._xpath.pop()
         self._tagtally.pop()
 
     @property
     def xpath(self):
-        def str_component(component):
+        def str_component(component) -> str:
             tag, pos = component
             return f"{tag}[{pos}]"
 

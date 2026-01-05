@@ -111,7 +111,7 @@ def get_next_prime_number(start):
 class mounit(base.TranslationUnit):
     """A class representing a .mo translation message."""
 
-    def __init__(self, source=None, **kwargs):
+    def __init__(self, source=None, **kwargs) -> None:
         self.msgctxt = []
         self.msgidcomments = []
         super().__init__(source)
@@ -123,10 +123,10 @@ class mounit(base.TranslationUnit):
             return None
         return "".join(self.msgctxt)
 
-    def setcontext(self, context):
+    def setcontext(self, context) -> None:
         self.msgctxt = [context]
 
-    def isheader(self):
+    def isheader(self) -> bool:
         """Is this a header entry?."""
         return not self.source
 
@@ -144,17 +144,17 @@ class mofile(poheader.poheader, base.TranslationStore):
     Extensions = ["mo", "gmo"]
     _binary = True
 
-    def __init__(self, inputfile=None, **kwargs):
+    def __init__(self, inputfile=None, **kwargs) -> None:
         super().__init__(**kwargs)
         self.filename = ""
         if inputfile is not None:
             self.parsestring(inputfile)
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         """Output a string representation of the MO data file."""
         # check the header of this file for the copyright note of this function
 
-        def add_to_hash_table(string, i):
+        def add_to_hash_table(string, i) -> None:
             hash_value = hashpjw(string)
             hash_cursor = hash_value % hash_size
             increment = 1 + (hash_value % (hash_size - 2))
@@ -270,7 +270,7 @@ class mofile(poheader.poheader, base.TranslationStore):
             offsethash,
         )
 
-    def parse(self, input):
+    def parse(self, input) -> None:
         """Parses the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name

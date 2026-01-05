@@ -38,7 +38,7 @@ logger = logging.getLogger(__name__)
 class oo2po:
     def __init__(
         self, sourcelanguage, targetlanguage, blankmsgstr=False, long_keys=False
-    ):
+    ) -> None:
         """Construct an oo2po converter for the specified languages."""
         self.sourcelanguage = sourcelanguage
         self.targetlanguage = targetlanguage
@@ -117,7 +117,7 @@ class oo2po:
 class OOConvertOptionParser(convert.ArchiveConvertOptionParser):
     """Custom option parser for OpenOffice conversion with verification."""
 
-    def verifyoptions(self, options):
+    def verifyoptions(self, options) -> None:
         """Verifies that the options are valid."""
         if not options.pot and not options.targetlanguage:
             raise ValueError(
@@ -134,7 +134,7 @@ def convertoo(
     targetlanguage=None,
     duplicatestyle="msgid_comment",
     multifilestyle="single",
-):
+) -> int:
     """Reads in stdin using inputstore class, converts using convertorclass, writes to stdout."""
     inputstore = oo.oofile()
     if hasattr(inputfile, "filename"):
@@ -173,7 +173,7 @@ def convertoo(
     return 1
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     formats = {
         "oo": ("po", convertoo),
         "sdf": ("po", convertoo),

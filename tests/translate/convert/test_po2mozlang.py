@@ -39,11 +39,11 @@ class TestPO2Lang:
         """Helper that converts to target format string without using files."""
         return self._convert(*args, **kwargs)[1].getvalue().decode("utf-8")
 
-    def test_convert_empty(self):
+    def test_convert_empty(self) -> None:
         """Check converting empty file returns no output."""
         assert self._convert_to_string("", success_expected=False) == ""
 
-    def test_simple(self):
+    def test_simple(self) -> None:
         """Check the simplest conversion case."""
         input_string = """#: prop
 msgid "Source"
@@ -58,7 +58,7 @@ Target
             input_string, mark_active=False
         )
 
-    def test_comment(self):
+    def test_comment(self) -> None:
         """Simple # comments."""
         input_string = """#. Comment
 #: prop
@@ -75,7 +75,7 @@ Target
             input_string, mark_active=False
         )
 
-    def test_ok_marker(self):
+    def test_ok_marker(self) -> None:
         """The {ok} marker."""
         input_string = """#: prop
 msgid "Same"
@@ -90,7 +90,7 @@ Same {ok}
             input_string, mark_active=False
         )
 
-    def test_convert_completion_below_threshold(self):
+    def test_convert_completion_below_threshold(self) -> None:
         """Check no conversion if input completion is below threshold."""
         input_string = """#: prop
 msgid "Source"
@@ -103,7 +103,7 @@ msgstr ""
         )
         assert output == expected_output
 
-    def test_convert_completion_above_threshold(self):
+    def test_convert_completion_above_threshold(self) -> None:
         """Check no conversion if input completion is below threshold."""
         input_string = """#: prop
 msgid "Source"
@@ -120,7 +120,7 @@ Target
         )
         assert output == expected_output
 
-    def test_convert_skip_non_translatable_input(self):
+    def test_convert_skip_non_translatable_input(self) -> None:
         """Check no conversion skips non-translatable units in input."""
         input_string = """
 msgid ""
@@ -139,7 +139,7 @@ Target
             input_string, mark_active=False
         )
 
-    def test_no_fuzzy(self):
+    def test_no_fuzzy(self) -> None:
         """Check fuzzy units are not converted."""
         input_string = """
 #: prop
@@ -156,7 +156,7 @@ Source
             input_string, include_fuzzy=False, mark_active=False
         )
 
-    def test_allow_fuzzy(self):
+    def test_allow_fuzzy(self) -> None:
         """Check fuzzy units are converted."""
         input_string = """
 #: prop
@@ -173,7 +173,7 @@ Target
             input_string, include_fuzzy=True, mark_active=False
         )
 
-    def test_mark_active(self):
+    def test_mark_active(self) -> None:
         """Check output is marked as active."""
         input_string = """
 #: prop

@@ -97,7 +97,7 @@ def convert_unit(input_unit, commenttype):
 
 def convertsub(
     input_file, output_file, template_file=None, pot=False, duplicatestyle="msgctxt"
-):
+) -> int:
     """
     Reads in *input_file* using translate.subtitles, converts using
     :class:`sub2po`, writes to *output_file*.
@@ -116,7 +116,7 @@ def convertsub(
     return 1
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     formats = {
         "srt": ("po", convertsub),
         ("srt", "srt"): ("po", convertsub),

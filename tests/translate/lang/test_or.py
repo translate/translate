@@ -1,7 +1,7 @@
 from translate.lang import factory
 
 
-def test_punctranslate():
+def test_punctranslate() -> None:
     """Tests that we can translate punctuation."""
     language = factory.getlanguage("or")
     assert language.punctranslate("") == ""
@@ -11,7 +11,7 @@ def test_punctranslate():
     assert language.punctranslate("Document loaded...") == "Document loaded..."
 
 
-def test_country_code():
+def test_country_code() -> None:
     """
     Tests that we get the correct one even if a country code is attached to
     a special code being a reserved word in Python (like 'or').
@@ -20,7 +20,7 @@ def test_country_code():
     assert language.fullname == "Odia"
 
 
-def test_sentences():
+def test_sentences() -> None:
     """Tests basic functionality of sentence segmentation."""
     language = factory.getlanguage("or")
     sentences = language.sentences("")

@@ -36,7 +36,7 @@ class ProjectStore:
     """Basic project file container."""
 
     # INITIALIZERS #
-    def __init__(self):
+    def __init__(self) -> None:
         self._files = {}
         self._sourcefiles = []
         self._targetfiles = []
@@ -80,7 +80,7 @@ class ProjectStore:
             },
         }
 
-    def __del__(self):
+    def __del__(self) -> None:
         with contextlib.suppress(Exception):
             self.close()
 
@@ -104,7 +104,7 @@ class ProjectStore:
     transfiles = property(_get_transfiles)
 
     # SPECIAL METHODS #
-    def __contains__(self, lhs):
+    def __contains__(self, lhs) -> bool:
         """@returns ``True`` if ``lhs`` is a file name or file object in the project store."""
         return (
             lhs in self._sourcefiles
@@ -174,7 +174,7 @@ class ProjectStore:
     def append_transfile(self, afile, fname=None):
         return self.append_file(afile, fname, ftype="trans")
 
-    def remove_file(self, fname, ftype=None):
+    def remove_file(self, fname, ftype=None) -> None:
         """
         Remove the file with the given project name from the project.  If
         the file type ('src', 'trans' or 'tgt') is not given, it is guessed.
@@ -193,20 +193,20 @@ class ProjectStore:
             self._files[fname].close()
         del self._files[fname]
 
-    def remove_sourcefile(self, fname):
+    def remove_sourcefile(self, fname) -> None:
         self.remove_file(fname, ftype="src")
 
-    def remove_targetfile(self, fname):
+    def remove_targetfile(self, fname) -> None:
         self.remove_file(fname, ftype="tgt")
 
-    def remove_transfile(self, fname):
+    def remove_transfile(self, fname) -> None:
         self.remove_file(fname, ftype="trans")
 
-    def close(self):
+    def close(self) -> None:
         self.save()
         self.cleanup()
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         for handle in self._files.values():
             if handle is not None and not isinstance(handle, str):
                 handle.close()
@@ -257,13 +257,13 @@ class ProjectStore:
                 return fname
         raise ValueError(f"Real file not in project store: {realfname}")
 
-    def load(self, *args, **kwargs):
+    def load(self, *args, **kwargs) -> None:
         """Load the project in some way. Undefined for this (base) class."""
 
-    def save(self, filename=None, *args, **kwargs):
+    def save(self, filename=None, *args, **kwargs) -> None:
         """Save the project in some way. Undefined for this (base) class."""
 
-    def update_file(self, pfname, infile):
+    def update_file(self, pfname, infile) -> None:
         """
         Remove the project file with name ``pfname`` and add the contents
         from ``infile`` to the project under the same file name.
@@ -342,7 +342,7 @@ class ProjectStore:
 
         return etree.tostring(xml, pretty_print=True)
 
-    def _load_settings(self, settingsxml):
+    def _load_settings(self, settingsxml) -> None:
         """
         Load project settings from the given XML string.  ``settingsxml`` is
         parsed into a DOM tree (``lxml.etree.fromstring``) which is then

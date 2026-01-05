@@ -41,7 +41,7 @@ class yaml2po:
         template_file=None,
         blank_msgstr=False,
         duplicate_style="msgctxt",
-    ):
+    ) -> None:
         """Initialize the converter."""
         self.blank_msgstr = blank_msgstr
         self.duplicate_style = duplicate_style
@@ -64,14 +64,14 @@ class yaml2po:
         target_unit.source = unit.source
         return target_unit
 
-    def convert_store(self):
+    def convert_store(self) -> None:
         """Convert a single source format file to a target format file."""
         self.extraction_msg = f"extracted from {self.source_store.filename}"
 
         for source_unit in self.source_store.units:
             self.target_store.addunit(self.convert_unit(source_unit))
 
-    def merge_stores(self):
+    def merge_stores(self) -> None:
         """Convert two source format files to a target format file."""
         self.extraction_msg = f"extracted from {self.template_store.filename}, {self.source_store.filename}"
 
@@ -85,7 +85,7 @@ class yaml2po:
                     target_unit.target = source_unit.target
             self.target_store.addunit(target_unit)
 
-    def run(self):
+    def run(self) -> int:
         """Run the converter."""
         if self.template_store is None:
             self.convert_store()
@@ -126,7 +126,7 @@ formats = {
 }
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     parser = convert.ConvertOptionParser(
         formats, usetemplates=True, usepots=True, description=__doc__
     )
