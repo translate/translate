@@ -209,7 +209,7 @@ def main(argv=None):
     parser.passthrough.append("pot")
     parser.passthrough.append("sourcelanguage")
     parser.passthrough.append("targetlanguage")
-    parser.verifyoptions = verifyoptions
+    parser.verifyoptions = verifyoptions  # type: ignore[method-assign]
     parser.run(argv)
 
 

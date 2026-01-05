@@ -202,7 +202,7 @@ def main(argv=None):
     parser.add_multifile_option()
     parser.passthrough.append("sourcelanguage")
     parser.passthrough.append("targetlanguage")
-    parser.verifyoptions = verifyoptions
+    parser.verifyoptions = verifyoptions  # type: ignore[method-assign]
     parser.run(argv)
 
 
