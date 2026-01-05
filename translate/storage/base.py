@@ -584,28 +584,49 @@ class MetadataTranslationUnit(TranslationUnit):
 
     def __eq__(self, other: TranslationUnit) -> bool:
         """
-        Compare two units.
+        Compare two units including their metadata.
 
-        The metadata dictionary is not compared as it's considered an implementation detail.
-        Units are equal if their source, target, and id match (as per the base TranslationUnit).
+        Metadata dictionaries are compared by considering only non-empty values
+        to handle cases where parsed units have all fields (including empty strings)
+        while programmatically created units only have set fields.
 
         :param other: Another TranslationUnit
-        :return: True if units are equal
+        :return: True if units are equal including metadata
         """
-        # Just use the base equality (source, target, id)
-        # Metadata is not compared as it may have implementation-specific fields
-        return super().__eq__(other)
+        # First check the base equality (source, target, id)
+        if not super().__eq__(other):
+            return False
+
+        # Then check metadata if the other unit has it
+        if isinstance(other, MetadataTranslationUnit):
+            # Filter out empty string values for comparison
+            # This handles the case where parsed units have all fields (with empty strings)
+            # while created units only have the fields that were set
+            def filter_empty(d):
+                return {k: v for k, v in d.items() if v}
+
+            return filter_empty(self._metadata_dict) == filter_empty(
+                other._metadata_dict
+            )
+
+        return True
 
     def __hash__(self):
         """
-        Generate hash based on base attributes only.
+        Generate hash including metadata.
 
-        Metadata is not included in the hash to match the equality behavior.
+        Only non-empty metadata values are included in the hash to match
+        the equality behavior.
 
         :return: Hash value for the unit
         """
-        # Use base hash only (source, target, id)
-        return super().__hash__()
+        # Hash the base attributes plus the non-empty metadata dict items
+        base_hash = super().__hash__()
+        # Filter out empty values to match __eq__ behavior
+        metadata_items = tuple(
+            sorted((k, v) for k, v in self._metadata_dict.items() if v)
+        )
+        return hash((base_hash, metadata_items))
 
 
 class TranslationStore:
