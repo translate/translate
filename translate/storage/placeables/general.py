@@ -36,7 +36,7 @@ __all__ = (
 )
 
 
-def regex_parse(cls, pstr: str) -> list[StringElem]:
+def regex_parse(cls, pstr: str) -> list[StringElem] | None:
     """
     A parser method to extract placeables from a string based on a regular
     expression. Use this function as the ``@parse()`` method of a placeable

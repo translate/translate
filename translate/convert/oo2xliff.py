@@ -108,10 +108,13 @@ class oo2xliff:
         return thetargetfile
 
 
-def verifyoptions(options):
-    """Verifies the commandline options."""
-    if not options.targetlanguage:
-        raise ValueError("You must specify the target language.")
+class OOXliffConvertOptionParser(convert.ArchiveConvertOptionParser):
+    """Custom option parser for OpenOffice to XLIFF conversion with verification."""
+
+    def verifyoptions(self, options):
+        """Verifies that the options are valid."""
+        if not options.targetlanguage:
+            raise ValueError("You must specify the target language.")
 
 
 def convertoo(
@@ -171,7 +174,7 @@ def main(argv=None):
     )
     # always treat the input as an archive unless it is a directory
     archiveformats = {(None, "input"): oo.oomultifile}
-    parser = convert.ArchiveConvertOptionParser(
+    parser = OOXliffConvertOptionParser(
         formats, usepots=False, description=__doc__, archiveformats=archiveformats
     )
     parser.add_option(
@@ -202,7 +205,6 @@ def main(argv=None):
     parser.add_multifile_option()
     parser.passthrough.append("sourcelanguage")
     parser.passthrough.append("targetlanguage")
-    parser.verifyoptions = verifyoptions
     parser.run(argv)
 
 
