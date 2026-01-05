@@ -13,11 +13,11 @@ dev = [
 ]
 docs = [
   # Do not attempt to build doc on older Python
-  "furo==2025.12.19; python_version >= '3.11'",
-  "matplotlib==3.10.8; python_version >= '3.11'",
-  "sphinx-copybutton==0.5.2; python_version >= '3.11'",
-  "Sphinx==8.2.3; python_version >= '3.11'",
-  "sphinxext-opengraph==0.13.0; python_version >= '3.11'"
+  "furo==2025.12.19; python_version >= '3.12'",
+  "matplotlib==3.10.8; python_version >= '3.12'",
+  "sphinx-copybutton==0.5.2; python_version >= '3.12'",
+  "Sphinx==9.1.0; python_version >= '3.12'",
+  "sphinxext-opengraph==0.13.0; python_version >= '3.12'"
 ]
 lint = [
   {include-group = "pre-commit"},
@@ -512,6 +512,7 @@ extend-exclude = [
   "tests/translate/filters/test_checks.py",
   "tests/translate/lang/test_*.py",
   "tests/translate/lang/test_identify.py",
+  "tests/translate/tools/data/pocount_syntax_errors/",
   "tests/xliff_conformance/af-pootle.po",
   "tests/xliff_conformance/en-US.sdf",
   "translate/lang/data.py",

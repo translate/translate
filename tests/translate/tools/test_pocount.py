@@ -257,3 +257,19 @@ def test_csv_line_terminator(capsys: CaptureFixture[str]):
     # Each line should not be empty
     for line in lines:
         assert line.strip(), "No line should be empty or whitespace-only"
+
+
+class TestPOCountLineEndings:
+    """Test pocount handles files with unusual line endings."""
+
+    def test_unusual_line_endings(self):
+        r"""Test file with \r\r\n line endings."""
+        # f43.tgif.fr.po has unusual \r\r\n line endings
+        stats = pocount.calcstats(
+            "tests/translate/tools/data/pocount_syntax_errors/f43.tgif.fr.po"
+        )
+        # Should parse successfully
+        assert stats
+        # File has 321 translated messages (verified with msgfmt)
+        assert stats["total"] == 321
+        assert stats["translated"] == 321
