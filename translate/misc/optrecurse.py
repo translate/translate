@@ -124,6 +124,7 @@ class RecursiveOptionParser(optparse.OptionParser):
     ):
         """
         Construct the specialized Option Parser.
+
         :param formats: See :meth:`~.RecursiveOptionParser.setformats`
         for an explanation of the formats parameter.
         """
