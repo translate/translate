@@ -22,6 +22,8 @@ Contains the base :class:`StringElem` class that represents a node in a
 parsed rich-string tree. It is the base class of all placeables.
 """
 
+from __future__ import annotations
+
 import contextlib
 import logging
 
@@ -826,7 +828,7 @@ class StringElem:
                 f(elem)
 
     @classmethod
-    def parse(cls, pstr: str):
+    def parse(cls, pstr: str) -> StringElem | list[StringElem] | None:
         """
         Parse an instance of this class from the start of the given string.
         This method should be implemented by any subclass that wants to

@@ -25,7 +25,8 @@ from __future__ import annotations
 
 import re
 
-from translate.storage.placeables.base import G, Ph, StringElem
+from .base import G, Ph, StringElem
+from .interfaces import BasePlaceable
 
 __all__ = (
     "AltAttrPlaceable",
@@ -36,53 +37,52 @@ __all__ = (
 )
 
 
-def regex_parse(cls, pstr: str) -> list[StringElem] | None:
-    """
-    A parser method to extract placeables from a string based on a regular
-    expression. Use this function as the ``@parse()`` method of a placeable
-    class.
-    """
-    if cls.regex is None:
-        return None
-    matches = []
-    oldend = 0
-    for match in cls.regex.finditer(pstr):
-        start, end = match.start(), match.end()
-        if oldend != start:
-            matches.append(StringElem(pstr[oldend:start]))
-        matches.append(cls([pstr[start:end]]))
-        oldend = end
-    if oldend != len(pstr) and matches:
-        matches.append(StringElem(pstr[oldend:]))
-    return matches or None
+class RegexParseMixin(BasePlaceable):
+    regex: re.Pattern[str]
+
+    @classmethod
+    def parse(cls, pstr: str) -> StringElem | list[StringElem] | None:
+        """
+        A parser method to extract placeables from a string based on a regular
+        expression. Use this function as the ``@parse()`` method of a placeable
+        class.
+        """
+        matches: list[StringElem] = []
+        oldend = 0
+        for match in cls.regex.finditer(pstr):
+            start, end = match.start(), match.end()
+            if oldend != start:
+                matches.append(StringElem(pstr[oldend:start]))
+            matches.append(cls([pstr[start:end]]))
+            oldend = end
+        if oldend != len(pstr) and matches:
+            matches.append(StringElem(pstr[oldend:]))
+        return matches or None
 
 
-class AltAttrPlaceable(G):
+class AltAttrPlaceable(RegexParseMixin, G):
     """Placeable for the "alt=..." attributes inside XML tags."""
 
     regex = re.compile(r'alt=".*?"')
-    parse = classmethod(regex_parse)
 
 
-class NewlinePlaceable(Ph):
+class NewlinePlaceable(RegexParseMixin, Ph):
     """Placeable for new-lines."""
 
     iseditable = False
     isfragile = True
     istranslatable = False
     regex = re.compile(r"\r\n|\n|\r")
-    parse = classmethod(regex_parse)
 
 
-class NumberPlaceable(Ph):
+class NumberPlaceable(RegexParseMixin, Ph):
     """Placeable for numbers."""
 
     istranslatable = False
     regex = re.compile(r"[-+]?[0-9]+([\u00a0.,][0-9]+)*")
-    parse = classmethod(regex_parse)
 
 
-class QtFormattingPlaceable(Ph):
+class QtFormattingPlaceable(RegexParseMixin, Ph):
     """
     Placeable representing a Qt string formatting variable.
 
@@ -109,10 +109,9 @@ class QtFormattingPlaceable(Ph):
                        (?=([^\d]|$))     # Double check that we aren't matching %100+ (non consuming match)
                        """
     )
-    parse = classmethod(regex_parse)
 
 
-class PythonFormattingPlaceable(Ph):
+class PythonFormattingPlaceable(RegexParseMixin, Ph):
     """
     Placeable representing a Python string formatting variable.
 
@@ -134,10 +133,9 @@ class PythonFormattingPlaceable(Ph):
                        [hlL]{0,1}            # Length modifier (optional)
                        [diouxXeEfFgGcrs]{1}) # Conversion type"""
     )
-    parse = classmethod(regex_parse)
 
 
-class JavaMessageFormatPlaceable(Ph):
+class JavaMessageFormatPlaceable(RegexParseMixin, Ph):
     """
     Placeable representing a Java MessageFormat formatting variable.
 
@@ -164,10 +162,9 @@ class JavaMessageFormatPlaceable(Ph):
       )?                     # END: (optional) FormatType
       }                      # END: MessageFormat"""
     )
-    parse = classmethod(regex_parse)
 
 
-class FormattingPlaceable(Ph):
+class FormattingPlaceable(RegexParseMixin, Ph):
     """Placeable representing string formatting variables."""
 
     # For more information, see  man 3 printf
@@ -187,28 +184,25 @@ class FormattingPlaceable(Ph):
         """,
         re.VERBOSE,
     )
-    parse = classmethod(regex_parse)
 
 
-class DoubleAtPlaceable(Ph):
+class DoubleAtPlaceable(RegexParseMixin, Ph):
     istranslatable = False
     iseditable = False
     # Matches placeholders that use two at symbols @@placeable@@.
     regex = re.compile(r"@@.*?@@", re.VERBOSE)
-    parse = classmethod(regex_parse)
 
 
-class BracePlaceable(Ph):
+class BracePlaceable(RegexParseMixin, Ph):
     istranslatable = False
     iseditable = False
     # Matches placeholders that use two braces {{placeable}} or one brace {placeable}.
     # The negative character groups with closing brace [^}] stop the regex from counting several placeholders
     # as one (e.g. '{open}something{closed}' should produce two distinct BracePlaceables '{open}' and '{closed}')
     regex = re.compile(r"{{[^}]*}}|{[^}]*}", re.VERBOSE)
-    parse = classmethod(regex_parse)
 
 
-class UrlPlaceable(Ph):
+class UrlPlaceable(RegexParseMixin, Ph):
     """Placeable handling URI."""
 
     istranslatable = False
@@ -224,10 +218,9 @@ class UrlPlaceable(Ph):
     """,
         re.VERBOSE,
     )
-    parse = classmethod(regex_parse)
 
 
-class FilePlaceable(Ph):
+class FilePlaceable(RegexParseMixin, Ph):
     """Placeable handling file locations."""
 
     istranslatable = False
@@ -236,10 +229,9 @@ class FilePlaceable(Ph):
     # handled correctly while not allowing spaces, such as
     #     "C:\Documents and Settings"
     #     "C:\Program Files"
-    parse = classmethod(regex_parse)
 
 
-class EmailPlaceable(Ph):
+class EmailPlaceable(RegexParseMixin, Ph):
     """Placeable handling emails."""
 
     istranslatable = False
@@ -247,10 +239,9 @@ class EmailPlaceable(Ph):
         r"((mailto:)|)[A-Za-z0-9]+[-a-zA-Z0-9._%]*@(([-A-Za-z0-9]+)\.)+[a-zA-Z]{2,4}"
     )
     # TODO: What about internationalised domain names? ;-)
-    parse = classmethod(regex_parse)
 
 
-class PunctuationPlaceable(Ph):
+class PunctuationPlaceable(RegexParseMixin, Ph):
     """Placeable handling punctuation."""
 
     iseditable = False
@@ -272,10 +263,9 @@ class PunctuationPlaceable(Ph):
             )+""",
         re.VERBOSE,
     )
-    parse = classmethod(regex_parse)
 
 
-class XMLEntityPlaceable(Ph):
+class XMLEntityPlaceable(RegexParseMixin, Ph):
     """Placeable handling XML entities (``&xxxxx;``-style entities)."""
 
     iseditable = False
@@ -287,18 +277,16 @@ class XMLEntityPlaceable(Ph):
         );""",
         re.VERBOSE,
     )
-    parse = classmethod(regex_parse)
 
 
-class CapsPlaceable(Ph):
+class CapsPlaceable(RegexParseMixin, Ph):
     """Placeable handling long all-caps strings."""
 
     iseditable = True
     regex = re.compile(r"\b[A-Z][A-Z_/\-:*0-9]{2,}\b[+]?")
-    parse = classmethod(regex_parse)
 
 
-class CamelCasePlaceable(Ph):
+class CamelCasePlaceable(RegexParseMixin, Ph):
     """Placeable handling camel case strings."""
 
     iseditable = True
@@ -311,10 +299,9 @@ class CamelCasePlaceable(Ph):
             )[a-zA-Z0-9]*           #Let's allow any final lower/upper/digit
             \b"""
     )
-    parse = classmethod(regex_parse)
 
 
-class SpacesPlaceable(Ph):
+class SpacesPlaceable(RegexParseMixin, Ph):
     """Placeable handling unusual spaces in strings."""
 
     iseditable = True
@@ -327,10 +314,8 @@ class SpacesPlaceable(Ph):
         re.VERBOSE,
     )
 
-    parse = classmethod(regex_parse)
 
-
-class XMLTagPlaceable(Ph):
+class XMLTagPlaceable(RegexParseMixin, Ph):
     """Placeable handling XML tags."""
 
     iseditable = True
@@ -346,10 +331,9 @@ class XMLTagPlaceable(Ph):
         """,
         re.VERBOSE,
     )
-    parse = classmethod(regex_parse)
 
 
-class OptionPlaceable(Ph):
+class OptionPlaceable(RegexParseMixin, Ph):
     """Placeble handling command line options e.g. --help."""
 
     istranslatable = False
@@ -361,7 +345,6 @@ class OptionPlaceable(Ph):
                       )\b"""
     )
     # regex = re.compile(r'''(-[a-zA-Z]|--[-a-z]+)\b''')
-    parse = classmethod(regex_parse)
 
 
 def to_general_placeables(
