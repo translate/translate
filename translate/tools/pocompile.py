@@ -28,7 +28,7 @@ from translate.misc.multistring import multistring
 from translate.storage import factory, mo
 
 
-def _do_msgidcomment(string):
+def _do_msgidcomment(string) -> str:
     return f"_: {string}\n"
 
 
@@ -65,7 +65,7 @@ class POCompile:
         return bytes(outputfile)
 
 
-def convertmo(inputfile, outputfile, templatefile, includefuzzy=False):
+def convertmo(inputfile, outputfile, templatefile, includefuzzy=False) -> int:
     """Reads in a base class derived inputfile, converts using pocompile, writes to outputfile."""
     # note that templatefile is not used, but it is required by the converter...
     inputstore = factory.getobject(inputfile)
@@ -81,7 +81,7 @@ def convertmo(inputfile, outputfile, templatefile, includefuzzy=False):
     return 1
 
 
-def main():
+def main() -> None:
     formats = {
         "po": ("mo", convertmo),
         "xlf": ("mo", convertmo),

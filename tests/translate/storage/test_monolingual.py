@@ -10,29 +10,29 @@ from . import test_base
 class TestMonolingualUnit(test_base.TestTranslationUnit):
     UnitClass = base.TranslationUnit
 
-    def test_target(self):
+    def test_target(self) -> None:
         pass
 
-    def test_rich_get(self):
+    def test_rich_get(self) -> None:
         pass
 
-    def test_rich_set(self):
+    def test_rich_set(self) -> None:
         pass
 
 
 class TestMonolingualStore(test_base.TestTranslationStore):
     StoreClass = test_base.JsonTranslationStore
 
-    def test_translate(self):
+    def test_translate(self) -> None:
         pass
 
-    def test_markup(self):
+    def test_markup(self) -> None:
         pass
 
-    def test_nonascii(self):
+    def test_nonascii(self) -> None:
         pass
 
-    def check_equality(self, store1, store2):
+    def check_equality(self, store1, store2) -> None:
         """Check that store1 and store2 are the same."""
         assert len(store1.units) == len(store2.units)
 

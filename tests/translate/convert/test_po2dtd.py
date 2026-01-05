@@ -66,7 +66,7 @@ class TestPO2DTD:
         assert dtdresult.endswith(dtdoutro)
         return dtdresult[len(dtdintro) : -len(dtdoutro)]
 
-    def check_roundtrip(self, dtdsource, dtdcompare=None):
+    def check_roundtrip(self, dtdsource, dtdcompare=None) -> None:
         """
         Checks that the round-tripped string is the same as dtdcompare.
 
@@ -84,14 +84,14 @@ class TestPO2DTD:
             dtdcompare = dtdsource
         assert self.roundtripstring(dtdsource) == dtdcompare
 
-    def test_joinlines(self):
+    def test_joinlines(self) -> None:
         """Tests that po lines are joined seamlessly (bug 16)."""
         multilinepo = """#: pref.menuPath\nmsgid ""\n"<span>Tools &gt; Options</"\n"span>"\nmsgstr ""\n"""
         dtdfile = self.po2dtd(multilinepo)
         dtdsource = bytes(dtdfile)
         assert b"</span>" in dtdsource
 
-    def test_escapedstr(self):
+    def test_escapedstr(self) -> None:
         r"""Tests that \n in msgstr is escaped correctly in dtd."""
         multilinepo = (
             """#: pref.menuPath\nmsgid "Hello\\nEveryone"\nmsgstr "Good day\\nAll"\n"""
@@ -100,7 +100,7 @@ class TestPO2DTD:
         dtdsource = bytes(dtdfile)
         assert b"Good day\nAll" in dtdsource
 
-    def test_missingaccesskey(self):
+    def test_missingaccesskey(self) -> None:
         """Tests that proper warnings are given if access key is missing."""
         simplepo = """#: simple.label
 #: simple.accesskey
@@ -113,7 +113,7 @@ msgstr "Dimpled Ring"
         with pytest.raises(Warning):
             self.merge2dtd(simpledtd, simplepo)
 
-    def test_accesskeycase(self):
+    def test_accesskeycase(self) -> None:
         """Tests that access keys come out with the same case as the original, regardless."""
         simplepo_template = (
             """#: simple.label\n#: simple.accesskey\nmsgid "%s"\nmsgstr "%s"\n"""
@@ -152,7 +152,7 @@ msgstr "Dimpled Ring"
             accel = dtd.unquotefromdtd(dtdfile.id_index["simple.accesskey"].definition)
             assert accel == target_akey
 
-    def test_accesskey_types(self):
+    def test_accesskey_types(self) -> None:
         """Tests that we can detect the various styles of accesskey."""
         simplepo_template = (
             """#: simple.%s\n#: simple.%s\nmsgid "&File"\nmsgstr "F&aele"\n"""
@@ -171,7 +171,7 @@ msgstr "Dimpled Ring"
                     == "a"
                 )
 
-    def test_accesskey_missing(self):
+    def test_accesskey_missing(self) -> None:
         """Tests that missing ampersands use the source accesskey."""
         po_snippet = r"""#: key.label
 #: key.accesskey
@@ -187,7 +187,7 @@ msgstr "Ileti"
         assert '""' not in dtdsource
         assert '"S"' in dtdsource
 
-    def test_accesskey_and_amp_case_no_accesskey(self):
+    def test_accesskey_and_amp_case_no_accesskey(self) -> None:
         """
         Tests that accesskey and &amp; can work together.
 
@@ -206,7 +206,7 @@ msgstr "Lig en Kleur"
         assert '"Lig en Kleur"' in dtdsource
         assert '"L"' in dtdsource
 
-    def test_accesskey_and_amp_source_no_amp_in_target(self):
+    def test_accesskey_and_amp_source_no_amp_in_target(self) -> None:
         """
         Tests that accesskey and &amp; can work together.
 
@@ -225,7 +225,7 @@ msgstr "Lig en &Kleur"
         assert '"Lig en Kleur"' in dtdsource
         assert '"K"' in dtdsource
 
-    def test_accesskey_and_amp_case_both_amp_and_accesskey(self):
+    def test_accesskey_and_amp_case_both_amp_and_accesskey(self) -> None:
         """
         Tests that accesskey and &amp; can work together.
 
@@ -245,7 +245,7 @@ msgstr "Lig & &Kleur"
         assert '"Lig &amp; Kleur"' in dtdsource
         assert '"K"' in dtdsource
 
-    def test_accesskey_and_amp_case_amp_no_accesskey(self):
+    def test_accesskey_and_amp_case_amp_no_accesskey(self) -> None:
         """
         Tests that accesskey and &amp; can work together.
 
@@ -265,14 +265,14 @@ msgstr "Lig & Kleur"
         assert '"Lig &amp; Kleur"' in dtdsource
         assert '"L"' in dtdsource
 
-    def test_entities_two(self):
+    def test_entities_two(self) -> None:
         """Test the error output when we find two entities."""
         simplestring = """#: simple.string second.string\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n"""
         dtdfile = self.po2dtd(simplestring)
         dtdsource = bytes(dtdfile)
         assert b"CONVERSION NOTE - multiple entities" in dtdsource
 
-    def test_entities(self):
+    def test_entities(self) -> None:
         """Tests that entities are correctly idnetified in the dtd."""
         simplestring = (
             """#: simple.string\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n"""
@@ -281,14 +281,14 @@ msgstr "Lig & Kleur"
         dtdsource = bytes(dtdfile)
         assert dtdsource.startswith(b"<!ENTITY simple.string")
 
-    def test_comments_translator(self):
+    def test_comments_translator(self) -> None:
         """Tests for translator comments."""
         simplestring = """# Comment1\n# Comment2\n#: simple.string\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n"""
         dtdfile = self.po2dtd(simplestring)
         dtdsource = bytes(dtdfile)
         assert dtdsource.startswith(b"<!-- Comment1 -->")
 
-    def test_retains_hashprefix(self):
+    def test_retains_hashprefix(self) -> None:
         """Tests that hash prefixes in the dtd are retained."""
         hashpo = """#: lang.version\nmsgid "__MOZILLA_LOCALE_VERSION__"\nmsgstr "__MOZILLA_LOCALE_VERSION__"\n"""
         hashdtd = '#expand <!ENTITY lang.version "__MOZILLA_LOCALE_VERSION__">\n'
@@ -296,7 +296,7 @@ msgstr "Lig & Kleur"
         regendtd = bytes(dtdfile).decode("utf-8")
         assert regendtd == hashdtd
 
-    def test_convertdtd(self):
+    def test_convertdtd(self) -> None:
         """Checks that the convertdtd function is working."""
         posource = """#: simple.label\n#: simple.accesskey\nmsgid "Simple &String"\nmsgstr "Dimpled &Ring"\n"""
         dtdtemplate = """<!ENTITY simple.label "Simple String">\n<!ENTITY simple.accesskey "S">\n"""
@@ -305,7 +305,7 @@ msgstr "Lig & Kleur"
         print(newdtd)
         assert newdtd == dtdexpected
 
-    def test_untranslated_with_template(self):
+    def test_untranslated_with_template(self) -> None:
         """Test removing of untranslated entries in redtd."""
         posource = """#: simple.label
 msgid "Simple string"
@@ -338,7 +338,7 @@ msgstr "simple string four"
         print(newdtd)
         assert newdtd == dtdexpected
 
-    def test_untranslated_without_template(self):
+    def test_untranslated_without_template(self) -> None:
         """Test removing of untranslated entries in po2dtd."""
         posource = """#: simple.label
 msgid "Simple string"
@@ -364,7 +364,7 @@ msgstr "simple string four"
         print(bytes(newdtd))
         assert bytes(newdtd).decode("utf-8") == dtdexpected
 
-    def test_blank_source(self):
+    def test_blank_source(self) -> None:
         """Test removing of untranslated entries where source is blank."""
         posource = """#: simple.label
 msgid "Simple string"
@@ -399,7 +399,7 @@ msgstr "Simple string 3"
         print(bytes(newdtd_no_template))
         assert bytes(newdtd_no_template).decode("utf-8") == dtdexpected_no_template
 
-    def test_newlines_escapes(self):
+    def test_newlines_escapes(self) -> None:
         r"""Check that we can handle a \n in the PO file."""
         posource = """#: simple.label\n#: simple.accesskey\nmsgid "A hard coded newline.\\n"\nmsgstr "Hart gekoeerde nuwe lyne\\n"\n"""
         dtdtemplate = '<!ENTITY  simple.label "A hard coded newline.\n">\n'
@@ -408,17 +408,17 @@ msgstr "Simple string 3"
         print(bytes(dtdfile))
         assert bytes(dtdfile).decode("utf-8") == dtdexpected
 
-    def test_roundtrip_simple(self):
+    def test_roundtrip_simple(self) -> None:
         """Checks that simple strings make it through a dtd->po->dtd roundtrip."""
         self.check_roundtrip('"Hello"')
         self.check_roundtrip('"Hello Everybody"')
 
-    def test_roundtrip_escape(self):
+    def test_roundtrip_escape(self) -> None:
         """Checks that escapes in strings make it through a dtd->po->dtd roundtrip."""
         self.check_roundtrip(r'"Simple Escape \ \n \\ \: \t \r "')
         self.check_roundtrip(r'"End Line Escape \"')
 
-    def test_roundtrip_quotes(self):
+    def test_roundtrip_quotes(self) -> None:
         """
         Checks that quotes make it through a DTD->PO->DTD roundtrip.
 
@@ -465,7 +465,7 @@ msgstr "Simple string 3"
             r'''"Both Quotes &quot;&quot; &apos;&apos; "''',
         )
 
-    def test_roundtrip_amp(self):
+    def test_roundtrip_amp(self) -> None:
         """
         Checks that quotes make it through a DTD->PO->DTD roundtrip.
 
@@ -473,7 +473,7 @@ msgstr "Simple string 3"
         """
         self.check_roundtrip('"Colour &amp; Light"')
 
-    def test_merging_entries_with_spaces_removed(self):
+    def test_merging_entries_with_spaces_removed(self) -> None:
         """dtd2po removes pretty printed spaces, this tests that we can merge this back into the pretty printed dtd."""
         posource = """#: simple.label\nmsgid "First line then "\n"next lines."\nmsgstr "Eerste lyne en dan volgende lyne."\n"""
         dtdtemplate = (
@@ -485,7 +485,7 @@ msgstr "Simple string 3"
         print(bytes(dtdfile))
         assert bytes(dtdfile).decode("utf-8") == dtdexpected
 
-    def test_preserving_spaces(self):
+    def test_preserving_spaces(self) -> None:
         """Ensure that we preserve spaces between entity and value. Bug 1662."""
         posource = """#: simple.label\nmsgid "One"\nmsgstr "Een"\n"""
         dtdtemplate = '<!ENTITY     simple.label         "One">\n'
@@ -494,7 +494,7 @@ msgstr "Simple string 3"
         print(bytes(dtdfile))
         assert bytes(dtdfile).decode("utf-8") == dtdexpected
 
-    def test_preserving_spaces_after_value(self):
+    def test_preserving_spaces_after_value(self) -> None:
         """Preserve spaces after value. Bug 1662."""
         # Space between value and >
         posource = """#: simple.label\nmsgid "One"\nmsgstr "Een"\n"""
@@ -510,7 +510,7 @@ msgstr "Simple string 3"
         print(dtdfile)
         assert bytes(dtdfile).decode("utf-8") == dtdexpected
 
-    def test_comments(self):
+    def test_comments(self) -> None:
         """Test that we preserve comments, bug 351."""
         posource = '''#: name\nmsgid "Text"\nmsgstr "Teks"'''
         dtdtemplate = """<!ENTITY name "%s">\n<!-- \n\nexample -->\n"""
@@ -518,7 +518,7 @@ msgstr "Simple string 3"
         print(bytes(dtdfile))
         assert bytes(dtdfile).decode("utf-8") == dtdtemplate % "Teks"
 
-    def test_duplicates(self):
+    def test_duplicates(self) -> None:
         """Test that we convert duplicates back correctly to their respective entries."""
         posource = r"""#: bookmarksMenu.label bookmarksMenu.accesskey
 msgctxt "bookmarksMenu.label bookmarksMenu.accesskey"

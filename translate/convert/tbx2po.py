@@ -50,7 +50,9 @@ class tbx2po:
         return self.pofile
 
 
-def converttbx(inputfile, outputfile, templatefile, charset=None, columnorder=None):
+def converttbx(
+    inputfile, outputfile, templatefile, charset=None, columnorder=None
+) -> int:
     """
     Reads in inputfile using tbx, converts using tbx2po, writes to
     outputfile.
@@ -64,7 +66,7 @@ def converttbx(inputfile, outputfile, templatefile, charset=None, columnorder=No
     return 1
 
 
-def main():
+def main() -> None:
     formats = {
         ("tbx", None): ("po", converttbx),
     }

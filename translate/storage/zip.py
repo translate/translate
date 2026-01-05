@@ -32,7 +32,7 @@ from translate.storage import directory, factory
 class ZIPFile(directory.Directory):
     """This class represents a ZIP file like a directory."""
 
-    def __init__(self, filename=None):
+    def __init__(self, filename=None) -> None:
         self.filename = filename
         self.filedata = []
         self.archive = None
@@ -46,7 +46,7 @@ class ZIPFile(directory.Directory):
             # TODO: don't regenerate all the storage objects
             yield from store.unit_iter()
 
-    def scanfiles(self):
+    def scanfiles(self) -> None:
         """Populate the internal file data."""
         self.filedata = []
         self.archive = ZipFile(self.filename)
@@ -58,7 +58,7 @@ class ZIPFile(directory.Directory):
                 name = completename
             self.filedata.append((dir, name))
 
-    def close(self):
+    def close(self) -> None:
         if self.archive is not None:
             self.archive.close()
             self.archive = None

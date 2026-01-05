@@ -35,7 +35,7 @@ class BundleProjectStore(ProjectStore):
     """Represents a translate project bundle (zip archive)."""
 
     # INITIALIZERS #
-    def __init__(self, fname):
+    def __init__(self, fname) -> None:
         super().__init__()
         self._tempfiles = {}
         if fname and os.path.isfile(fname):
@@ -91,7 +91,7 @@ class BundleProjectStore(ProjectStore):
 
         return self.get_file(fname), fname
 
-    def remove_file(self, fname, ftype=None):
+    def remove_file(self, fname, ftype=None) -> None:
         """Remove the file with the given project name from the project."""
         super().remove_file(fname, ftype)
         self._zip_delete([fname])
@@ -102,12 +102,12 @@ class BundleProjectStore(ProjectStore):
                     os.unlink(tmpf)
                 del self._tempfiles[tmpf]
 
-    def close(self):
+    def close(self) -> None:
         super().close()
         self.cleanup()
         self.zip.close()
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         """Clean up our mess: remove temporary files."""
         super().cleanup()
         for tempfname in self._tempfiles:
@@ -157,7 +157,7 @@ class BundleProjectStore(ProjectStore):
             return self._tempfiles[realfname]
         raise ValueError(f"Real file not in project store: {realfname}")
 
-    def load(self, zipname):
+    def load(self, zipname) -> None:
         """Load the bundle project from the zip file of the given name."""
         self.zip = ZipFile(zipname, mode="a")
         self._load_settings()
@@ -173,7 +173,7 @@ class BundleProjectStore(ProjectStore):
                     append_section[section](fname)
                     self._files[fname] = None
 
-    def save(self, filename=None):
+    def save(self, filename=None) -> None:
         """Save all project files to the bundle zip file."""
         self._update_from_tempfiles()
 
@@ -193,7 +193,7 @@ class BundleProjectStore(ProjectStore):
 
         self._replace_project_zip(newzip)
 
-    def update_file(self, pfname, infile):
+    def update_file(self, pfname, infile) -> None:
         """
         Updates the file with the given project file name with the contents
         of ``infile``.
@@ -210,7 +210,7 @@ class BundleProjectStore(ProjectStore):
         self._zip_delete([pfname])
         self._zip_add(pfname, infile)
 
-    def _load_settings(self):
+    def _load_settings(self) -> None:
         """Grab the project.xtp file from the zip file and load it."""
         if "project.xtp" not in self.zip.namelist():
             raise InvalidBundleError("Not a translate project bundle")
@@ -223,7 +223,7 @@ class BundleProjectStore(ProjectStore):
         os.close(newzipfd)
         return ZipFile(newzipfname, "w")
 
-    def _replace_project_zip(self, zfile):
+    def _replace_project_zip(self, zfile) -> None:
         """
         Replace the currently used zip file (``self.zip``) with the given
         zip file. Basically, ``os.rename(zfile.filename,
@@ -236,7 +236,7 @@ class BundleProjectStore(ProjectStore):
         move(zfile.filename, self.zip.filename)
         self.zip = ZipFile(self.zip.filename, mode="a")
 
-    def _update_from_tempfiles(self):
+    def _update_from_tempfiles(self) -> None:
         """Update project files from temporary files."""
         for tempfname, value in self._tempfiles.items():
             tmp = open(tempfname)
@@ -244,7 +244,7 @@ class BundleProjectStore(ProjectStore):
             if not tmp.closed:
                 tmp.close()
 
-    def _zip_add(self, pfname, infile):
+    def _zip_add(self, pfname, infile) -> None:
         """Add the contents of ``infile`` to the zip with file name ``pfname``."""
         if hasattr(infile, "seek"):
             infile.seek(0)
@@ -253,7 +253,7 @@ class BundleProjectStore(ProjectStore):
         # zip file.
         self._files[pfname] = None
 
-    def _zip_delete(self, fnames):
+    def _zip_delete(self, fnames) -> None:
         """Delete the files with the given names from the zip file (``self.zip``)."""
         # Sanity checking
         if not isinstance(fnames, (list, tuple)):

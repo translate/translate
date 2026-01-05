@@ -41,7 +41,7 @@ class lang2po:
         blank_msgstr=False,
         duplicate_style="msgctxt",
         encoding="utf-8",
-    ):
+    ) -> None:
         """Initialize the converter."""
         self.blank_msgstr = blank_msgstr
         self.duplicate_style = duplicate_style
@@ -64,7 +64,7 @@ class lang2po:
         target_unit.target = unit.target
         return target_unit
 
-    def convert_store(self):
+    def convert_store(self) -> None:
         """Convert a single source format file to a target format file."""
         self.extraction_msg = f"extracted from {self.source_store.filename}"
 
@@ -75,7 +75,7 @@ class lang2po:
         """Convert two source format files to a target format file."""
         raise NotImplementedError
 
-    def run(self):
+    def run(self) -> int:
         """Run the converter."""
         if self.template_store is None:
             self.convert_store()
@@ -116,7 +116,7 @@ def run_converter(
 formats = {"lang": ("po", run_converter)}
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
     parser.add_option(
         "",

@@ -34,7 +34,7 @@ class csv2tbx:
     file.
     """
 
-    def __init__(self, charset=None):
+    def __init__(self, charset=None) -> None:
         """Construct the converter..."""
         self.charset = charset
 
@@ -63,7 +63,9 @@ class csv2tbx:
         return self.tbxfile
 
 
-def convertcsv(inputfile, outputfile, templatefile, charset=None, columnorder=None):
+def convertcsv(
+    inputfile, outputfile, templatefile, charset=None, columnorder=None
+) -> int:
     """
     Reads in inputfile using csvl10n, converts using csv2tbx, writes to
     outputfile.
@@ -77,7 +79,7 @@ def convertcsv(inputfile, outputfile, templatefile, charset=None, columnorder=No
     return 1
 
 
-def main():
+def main() -> None:
     formats = {
         ("csv", "tbx"): ("tbx", convertcsv),
         ("csv", None): ("tbx", convertcsv),

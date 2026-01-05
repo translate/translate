@@ -1,7 +1,7 @@
 from translate.misc import progressbar
 
 
-def test_hashprogressbar():
+def test_hashprogressbar() -> None:
     """Test the [###   ] progress bar."""
     bar = progressbar.HashProgressBar()
     assert str(bar) == "[                                           ]   0%"

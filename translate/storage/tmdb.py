@@ -36,17 +36,19 @@ STRIP_REGEXP = re.compile(r"\W", re.UNICODE)
 
 
 class LanguageError(Exception):
-    def __init__(self, value):
+    def __init__(self, value) -> None:
         self.value = value
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.value)
 
 
 class TMDB:
     _tm_dbs = {}
 
-    def __init__(self, db_file, max_candidates=3, min_similarity=75, max_length=1000):
+    def __init__(
+        self, db_file, max_candidates=3, min_similarity=75, max_length=1000
+    ) -> None:
         self.max_candidates = max_candidates
         self.min_similarity = min_similarity
         self.max_length = max_length
@@ -79,7 +81,7 @@ class TMDB:
     connection = property(lambda self: self._get_connection(0))
     cursor = property(lambda self: self._get_connection(1))
 
-    def init_database(self):
+    def init_database(self) -> None:
         """Creates database tables and indices."""
         script = """
 CREATE TABLE IF NOT EXISTS sources (
@@ -115,7 +117,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS targets_uniq_idx ON targets (sid, text, lang);
             self.connection.rollback()
             raise
 
-    def init_fulltext(self):
+    def init_fulltext(self) -> None:
         """Detects if fts3 fulltext indexing module exists, initializes fulltext table if it does."""
         # HACKISH: no better way to detect fts3 support except trying to
         # construct a dummy table?!
@@ -188,7 +190,7 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
         logger.debug("tmdb has %d records", numrows)
         return numrows
 
-    def add_unit(self, unit, source_lang=None, target_lang=None, commit=True):
+    def add_unit(self, unit, source_lang=None, target_lang=None, commit=True) -> None:
         """Inserts unit in the database."""
         # TODO: is that really the best way to handle unspecified
         # source and target languages? what about conflicts between
@@ -210,7 +212,7 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
         }
         self.add_dict(unitdict, source_lang, target_lang, commit)
 
-    def add_dict(self, unit, source_lang, target_lang, commit=True):
+    def add_dict(self, unit, source_lang, target_lang, commit=True) -> None:
         """Inserts units represented as dictionaries in database."""
         source_lang = data.normalize_code(source_lang)
         target_lang = data.normalize_code(target_lang)

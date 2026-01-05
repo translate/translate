@@ -89,7 +89,7 @@ class qmfile(base.TranslationStore):
     Extensions = ["qm"]
     _binary = True
 
-    def __init__(self, inputfile=None, **kwargs):
+    def __init__(self, inputfile=None, **kwargs) -> None:
         super().__init__(**kwargs)
         self.filename = ""
         if inputfile is not None:
@@ -99,7 +99,7 @@ class qmfile(base.TranslationStore):
         """Output a string representation of the .qm data file."""
         raise NotImplementedError("Writing of .qm files is not supported yet")
 
-    def parse(self, input):
+    def parse(self, input) -> None:
         """Parses the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name
@@ -117,7 +117,7 @@ class qmfile(base.TranslationStore):
         startsection = 16
         sectionheader = 5
 
-        def section_debug(name, section_type, startsection, length):
+        def section_debug(name, section_type, startsection, length) -> None:
             print(  # noqa: T201
                 f"Section: {name} (type: {section_type:#x}, offset: {startsection:#x}, length: {length})"
             )

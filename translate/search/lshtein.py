@@ -85,7 +85,7 @@ except ImportError:
 
 
 class LevenshteinComparer:
-    def __init__(self, max_len=200):
+    def __init__(self, max_len=200) -> None:
         self.MAX_LEN = max_len
 
     def similarity(self, a, b, stoppercentage=40):

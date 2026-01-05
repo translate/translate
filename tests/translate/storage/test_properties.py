@@ -11,7 +11,7 @@ from . import test_monolingual
 # Note that DialectJava delimiters are ["=", ":", " "]
 
 
-def test_find_delimiter_pos_simple():
+def test_find_delimiter_pos_simple() -> None:
     """Simple tests to find the various delimiters."""
     assert properties.DialectJava.find_delimiter("key=value") == ("=", 3)
     assert properties.DialectJava.find_delimiter("key:value") == (":", 3)
@@ -20,20 +20,20 @@ def test_find_delimiter_pos_simple():
     assert properties.DialectJava.find_delimiter("= value") == ("=", 0)
 
 
-def test_find_delimiter_pos_multiple():
+def test_find_delimiter_pos_multiple() -> None:
     """Find delimiters when multiple potential delimiters are involved."""
     assert properties.DialectJava.find_delimiter("key=value:value") == ("=", 3)
     assert properties.DialectJava.find_delimiter("key:value=value") == (":", 3)
     assert properties.DialectJava.find_delimiter("key value=value") == (" ", 3)
 
 
-def test_find_delimiter_pos_none():
+def test_find_delimiter_pos_none() -> None:
     """Find delimiters when there isn't one."""
     assert properties.DialectJava.find_delimiter("key") == (None, -1)
     assert properties.DialectJava.find_delimiter("key\\=\\:\\ ") == (None, -1)
 
 
-def test_find_delimiter_pos_whitespace():
+def test_find_delimiter_pos_whitespace() -> None:
     """Find delimiters when whitespace is involved."""
     assert properties.DialectJava.find_delimiter("key = value") == ("=", 4)
     assert properties.DialectJava.find_delimiter("key : value") == (":", 4)
@@ -43,7 +43,7 @@ def test_find_delimiter_pos_whitespace():
     assert properties.DialectJava.find_delimiter(" key = value") == ("=", 5)
 
 
-def test_find_delimiter_pos_escapes():
+def test_find_delimiter_pos_escapes() -> None:
     """Find delimiters when potential earlier delimiters are escaped."""
     assert properties.DialectJava.find_delimiter("key\\:=value") == ("=", 5)
     assert properties.DialectJava.find_delimiter("key\\=: value") == (":", 5)
@@ -54,7 +54,7 @@ def test_find_delimiter_pos_escapes():
     )
 
 
-def test_find_delimiter_pos_empty_and_whitespace():
+def test_find_delimiter_pos_empty_and_whitespace() -> None:
     """Test that empty and whitespace-only lines don't cause IndexError."""
     # These should work for DialectJava (no key_wrap_char)
     assert properties.DialectJava.find_delimiter("") == (None, -1)
@@ -68,7 +68,7 @@ def test_find_delimiter_pos_empty_and_whitespace():
     assert properties.DialectStrings.find_delimiter("\t\t") == (None, -1)
 
 
-def test_is_line_continuation():
+def test_is_line_continuation() -> None:
     assert not properties.is_line_continuation("")
     assert not properties.is_line_continuation("some text")
     assert properties.is_line_continuation("""some text\\""")
@@ -79,7 +79,7 @@ def test_is_line_continuation():
     assert properties.is_line_continuation("""\\\\\\""")
 
 
-def test_key_strip():
+def test_key_strip() -> None:
     assert properties._key_strip("key") == "key"
     assert properties._key_strip(" key") == "key"
     assert properties._key_strip("\\ key") == "\\ key"
@@ -87,7 +87,7 @@ def test_key_strip():
     assert properties._key_strip("key\\ ") == "key\\ "
 
 
-def test_get_comment_one_line():
+def test_get_comment_one_line() -> None:
     assert properties.get_comment_one_line("# comment")
     assert properties.get_comment_one_line("! comment")
     assert properties.get_comment_one_line("// comment")
@@ -97,12 +97,12 @@ def test_get_comment_one_line():
     assert properties.get_comment_one_line("/* comment ") is None
 
 
-def test_get_comment_start():
+def test_get_comment_start() -> None:
     assert properties.get_comment_start("/* comment")
     assert properties.get_comment_start("/* comment */") is None
 
 
-def test_get_comment_end():
+def test_get_comment_end() -> None:
     assert properties.get_comment_end(" comment */")
     assert properties.get_comment_end("/* comment */") is None
 
@@ -110,10 +110,10 @@ def test_get_comment_end():
 class TestPropUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = properties.propunit
 
-    def test_rich_get(self):
+    def test_rich_get(self) -> None:
         pass
 
-    def test_rich_set(self):
+    def test_rich_set(self) -> None:
         pass
 
 
@@ -145,7 +145,7 @@ class TestGwtProp(test_monolingual.TestMonolingualStore):
         """Helper that converts properties source to propfile object and back."""
         return bytes(self.propparse(propsource))
 
-    def test_quotes(self):
+    def test_quotes(self) -> None:
         """Checks that quotes are parsed and saved correctly."""
         propsource = "test_me=I can ''code''!"
         propfile = self.propparse(propsource)
@@ -156,7 +156,7 @@ class TestGwtProp(test_monolingual.TestMonolingualStore):
         propunit.source = "I 'can' code!"
         assert bytes(propfile).decode() == "test_me=I ''can'' code!\n"
 
-    def test_simpledefinition(self):
+    def test_simpledefinition(self) -> None:
         """Checks that a simple properties definition is parsed correctly."""
         propsource = "test_me=I can code!"
         propfile = self.propparse(propsource)
@@ -165,7 +165,7 @@ class TestGwtProp(test_monolingual.TestMonolingualStore):
         assert propunit.name == "test_me"
         assert propunit.source == "I can code!"
 
-    def test_doubledefinition(self):
+    def test_doubledefinition(self) -> None:
         """Checks that a double properties definition is parsed correctly."""
         propsource = "test_me=I can code!\ntest_me[one]=I can code single!"
         propfile = self.propparse(propsource)
@@ -180,13 +180,13 @@ class TestGwtProp(test_monolingual.TestMonolingualStore):
         # propunit.value = ["I can code single!", "I can code!" ]
         # assert propunit.value == ["I can code single!", "I can code!"]
 
-    def test_doubledefinition_source(self):
+    def test_doubledefinition_source(self) -> None:
         """Checks that a double properties definition can be regenerated as source."""
         propsource = "test_me=I can code!\ntest_me[one]=I can code single!"
         propregen = self.propregen(propsource).decode()
         assert f"{propsource}\n" == propregen
 
-    def test_reduce(self):
+    def test_reduce(self) -> None:
         """Checks that if the target language has less plural form the generated properties file is correct."""
         propsource = "test_me=I can code!\ntest_me[one]=I can code single!"
         propfile = self.propparse(
@@ -196,7 +196,7 @@ class TestGwtProp(test_monolingual.TestMonolingualStore):
         print(str(propfile))
         assert (bytes(propfile)) == b"test_me=I can code!\n"
 
-    def test_increase(self):
+    def test_increase(self) -> None:
         """Checks that if the target language has more plural form the generated properties file is correct."""
         propsource = "test_me=I can code!\ntest_me[one]=I can code single!"
         propfile = self.propparse(
@@ -256,7 +256,7 @@ class TestGwtProp(test_monolingual.TestMonolingualStore):
             b"test_me[two]=two\ntest_me[few]=few\ntest_me[many]=many\n"
         )
 
-    def test_extra_plurals(self):
+    def test_extra_plurals(self) -> None:
         propsource = r"""
 userItems.limit = Only {0} items can be added.
 userItems.limit[one] = Only one item can be added.
@@ -277,7 +277,7 @@ userItems.limit[\=0] = No items can be added.
         assert not isinstance(propunit.target, multistring)
         assert propunit.source == "No items can be added."
 
-    def test_non_plurals(self):
+    def test_non_plurals(self) -> None:
         propsource = r"""Ps[Pd]_unexpected=Test string
 PP[]=Other
 """
@@ -292,7 +292,7 @@ PP[]=Other
         assert propunit.source == "Other"
         assert bytes(propfile).decode() == propsource
 
-    def test_encoding(self):
+    def test_encoding(self) -> None:
         propsource = """test=Zkouška
 """
         propfile = self.propparse(propsource)
@@ -309,7 +309,7 @@ PP[]=Other
         propunit.source = "xZkouška"
         assert bytes(propfile).decode() == "test=xZkou\\u0161ka\n"
 
-    def test_other_plurals(self):
+    def test_other_plurals(self) -> None:
         propsource = r"""userItems.limit=Only X items can be added.
 userItems.limit[one]=Only one item can be added.
 userItems.limit[few]=Only {0} items can be added.
@@ -381,7 +381,7 @@ class TestProp(test_monolingual.TestMonolingualStore):
         """Helper that converts properties source to propfile object and back."""
         return bytes(self.propparse(propsource, encoding=encoding)).decode("utf-8")
 
-    def test_simpledefinition(self):
+    def test_simpledefinition(self) -> None:
         """Checks that a simple properties definition is parsed correctly."""
         propsource = "test_me=I can code!"
         propfile = self.propparse(propsource)
@@ -390,25 +390,25 @@ class TestProp(test_monolingual.TestMonolingualStore):
         assert propunit.name == "test_me"
         assert propunit.source == "I can code!"
 
-    def test_simpledefinition_source(self):
+    def test_simpledefinition_source(self) -> None:
         """Checks that a simple properties definition can be regenerated as source."""
         propsource = "test_me=I can code!"
         propregen = self.propregen(propsource)
         assert f"{propsource}\n" == propregen
 
-    def test_controlutf8_source(self):
+    def test_controlutf8_source(self) -> None:
         """Checks that a control characters are parsed correctly."""
         propsource = "test_me=\\\\\\n"
         propregen = self.propregen(propsource, encoding="utf-8")
         assert f"{propsource}\n" == propregen
 
-    def test_control_source(self):
+    def test_control_source(self) -> None:
         """Checks that a control characters are parsed correctly."""
         propsource = "test_me=\\\\\\n"
         propregen = self.propregen(propsource)
         assert f"{propsource}\n" == propregen
 
-    def test_unicode_escaping(self):
+    def test_unicode_escaping(self) -> None:
         """Check that escaped unicode is converted properly."""
         propsource = "unicode=\u0411\u0416\u0419\u0428"
         messagevalue = "\u0411\u0416\u0419\u0428".encode()
@@ -421,13 +421,13 @@ class TestProp(test_monolingual.TestMonolingualStore):
         assert messagevalue in regensource
         assert b"\\" not in regensource
 
-    def test_newlines_startend(self):
+    def test_newlines_startend(self) -> None:
         r"""Check that we preserve \n that appear at start and end of properties."""
         propsource = "newlines=\\ntext\\n"
         propregen = self.propregen(propsource)
         assert f"{propsource}\n" == propregen
 
-    def test_space(self):
+    def test_space(self) -> None:
         r"""Check that we preserve \n that appear at start and end of properties."""
         propsource = r"""space=\u0020
 endspace=,\u0020
@@ -440,7 +440,7 @@ endspace=,\u0020
         store.units[1].source = ", "
         assert bytes(store).decode("utf-8") == propsource
 
-    def test_whitespace_handling(self):
+    def test_whitespace_handling(self) -> None:
         """Check that we remove extra whitespace around property."""
         whitespaces = (
             (
@@ -486,7 +486,7 @@ endspace=,\u0020
             propunit.target = value
             assert bytes(propfile).decode() == expected
 
-    def test_key_value_delimiters_simple(self):
+    def test_key_value_delimiters_simple(self) -> None:
         """
         Test that we can handle colon, equals and space delimiter
         between key and value.  We don't test any space removal or escaping.
@@ -501,7 +501,7 @@ endspace=,\u0020
             assert propunit.name == "key"
             assert propunit.source == "value"
 
-    def test_comments(self):
+    def test_comments(self) -> None:
         """Checks that we handle # and ! comments."""
         markers = ["#", "!"]
         for comment_marker in markers:
@@ -515,7 +515,7 @@ key=value
             propunit = propfile.units[0]
             assert propunit.comments == [f"{comment_marker} A comment"]
 
-    def test_latin1(self):
+    def test_latin1(self) -> None:
         """Checks that we handle non-escaped latin1 text."""
         prop_source = "key=valú".encode("latin1")
         prop_store = self.propparse(prop_source)
@@ -523,7 +523,7 @@ key=value
         unit = prop_store.units[0]
         assert unit.source == "valú"
 
-    def test_fullspec_delimiters(self):
+    def test_fullspec_delimiters(self) -> None:
         """Test the full definition as found in Java docs."""
         proplist = [
             "Truth = Beauty\n",
@@ -538,7 +538,7 @@ key=value
             assert propunit.name == "Truth"
             assert propunit.source == "Beauty"
 
-    def test_fullspec_escaped_key(self):
+    def test_fullspec_escaped_key(self) -> None:
         """Escaped delimiters can be in the key."""
         prop_source = "\\:\\="
         prop_store = self.propparse(prop_source)
@@ -547,7 +547,7 @@ key=value
         print(unit)
         assert unit.name == "\\:\\="
 
-    def test_fullspec_line_continuation(self):
+    def test_fullspec_line_continuation(self) -> None:
         """Whitespace delimiter and pre whitespace in line continuation are dropped."""
         prop_source = r"""fruits                           apple, banana, pear, \
                                   cantaloupe, watermelon, \
@@ -562,7 +562,7 @@ key=value
         assert unit.name == "fruits"
         assert unit.source == "apple, banana, pear, cantaloupe, watermelon, kiwi, mango"
 
-    def test_fullspec_key_without_value(self):
+    def test_fullspec_key_without_value(self) -> None:
         """A key can have no value in which case the value is the empty string."""
         prop_source = "cheeses"
         prop_store = self.propparse(prop_source)
@@ -572,7 +572,7 @@ key=value
         assert unit.name == "cheeses"
         assert unit.source == ""
 
-    def test_mac_strings(self):
+    def test_mac_strings(self) -> None:
         """Test various items used in Mac OS X strings files."""
         propsource = r""""I am a \"key\"" = "I am a \"value\"";""".encode("utf-16")
         propfile = self.propparse(propsource, personality="strings")
@@ -581,7 +581,7 @@ key=value
         assert propunit.name == 'I am a "key"'
         assert propunit.source == 'I am a "value"'
 
-    def test_utf_16_save(self):
+    def test_utf_16_save(self) -> None:
         """Test saving of utf-16 java properties files."""
         propsource = """key=zkouška\n""".encode("utf-16")
         propfile = self.propparse(propsource, personality="java-utf16")
@@ -592,7 +592,7 @@ key=value
         assert propunit.source == "zkouška"
         assert bytes(propfile) == propsource
 
-    def test_mac_multiline_strings(self):
+    def test_mac_multiline_strings(self) -> None:
         """Test can read multiline items used in Mac OS X strings files."""
         propsource = (
             """"I am a \\"key\\"" = "I am a \\"value\\" \n nextline";""".encode(
@@ -605,7 +605,7 @@ key=value
         assert propunit.name == 'I am a "key"'
         assert propunit.source == 'I am a "value" nextline'
 
-    def test_mac_strings_unicode(self):
+    def test_mac_strings_unicode(self) -> None:
         """Ensure we can handle Unicode."""
         propsource = """"I am a “key”" = "I am a “value”";""".encode("utf-16")
         propfile = self.propparse(propsource, personality="strings")
@@ -614,7 +614,7 @@ key=value
         assert propunit.name == "I am a “key”"
         assert propfile.personality.encode(propunit.source) == "I am a “value”"
 
-    def test_mac_strings_utf8(self):
+    def test_mac_strings_utf8(self) -> None:
         """Ensure we can handle Unicode."""
         propsource = """"I am a “key”" = "I am a “value”";""".encode()
         propfile = self.propparse(propsource, personality="strings-utf8")
@@ -623,7 +623,7 @@ key=value
         assert propunit.name == "I am a “key”"
         assert propfile.personality.encode(propunit.source) == "I am a “value”"
 
-    def test_mac_strings_newlines(self):
+    def test_mac_strings_newlines(self) -> None:
         r"""Test newlines \n within a strings files."""
         propsource = r""""key" = "value\nvalue";""".encode("utf-16")
         propfile = self.propparse(propsource, personality="strings")
@@ -633,7 +633,7 @@ key=value
         assert propunit.source == "value\nvalue"
         assert propfile.personality.encode(propunit.source) == r"value\nvalue"
 
-    def test_mac_strings_comments(self):
+    def test_mac_strings_comments(self) -> None:
         """Test .string comment types."""
         propsource = """/* Comment1 */
 // Comment
@@ -645,7 +645,7 @@ key=value
         assert propunit.source == "value"
         assert propunit.getnotes() == "Comment1\nComment"
 
-    def test_mac_strings_multilines_comments(self):
+    def test_mac_strings_multilines_comments(self) -> None:
         """Test .string multiline comments."""
         propsource = ("""/* Foo\nBar\nBaz */\n"key" = "value";""").encode("utf-16")
         propfile = self.propparse(propsource, personality="strings")
@@ -655,7 +655,7 @@ key=value
         assert propunit.source == "value"
         assert propunit.getnotes() == "Foo\nBar\nBaz"
 
-    def test_mac_strings_comments_dropping(self):
+    def test_mac_strings_comments_dropping(self) -> None:
         """.string generic (and unuseful) comments should be dropped."""
         propsource = """/* No comment provided by engineer. */
 "key" = "value";""".encode("utf-16")
@@ -666,7 +666,7 @@ key=value
         assert propunit.source == "value"
         assert propunit.getnotes() == ""
 
-    def test_mac_strings_inline_comments(self):
+    def test_mac_strings_inline_comments(self) -> None:
         """Test .strings inline comments are parsed correctly."""
         propsource = '"key1"="source_value1"; /*description1*/\n"key2"="source_value2"; /*description2*/\n'.encode(
             "utf-16"
@@ -684,7 +684,7 @@ key=value
         assert propunit.source == "source_value2"
         assert propunit.getnotes() == "description2"
 
-    def test_mac_strings_inline_comments_nested(self):
+    def test_mac_strings_inline_comments_nested(self) -> None:
         """Test .strings inline comments with nested /* inside - parsing and round-trip."""
         # Test parsing
         propsource = '"key"="translation"; /* comment with /* in it */\n'.encode(
@@ -704,7 +704,7 @@ key=value
         expected = '/* comment with /* in it */\n"key" = "translation";\n'
         assert result == expected
 
-    def test_mac_strings_inline_comment_with_spaces(self):
+    def test_mac_strings_inline_comment_with_spaces(self) -> None:
         """Test .strings inline comments with various spacing - parsing and round-trip."""
         # Test parsing
         propsource = (
@@ -728,7 +728,7 @@ key=value
         )
         assert result == expected
 
-    def test_mac_strings_comment_before_entry(self):
+    def test_mac_strings_comment_before_entry(self) -> None:
         """Test .strings comment before entry - parsing and round-trip."""
         # Test parsing
         propsource = (
@@ -747,7 +747,7 @@ key=value
         expected = '/* A comment before the entry */\n"KEY_ONE" = "Value One";\n'
         assert result == expected
 
-    def test_mac_strings_comment_between_key_and_equals(self):
+    def test_mac_strings_comment_between_key_and_equals(self) -> None:
         """Test .strings comment between key and equals - parsing and round-trip."""
         # Test parsing
         propsource = '"KEY_TWO" /* A comment between key and equals sign */ = "Value Two";\n'.encode(
@@ -766,7 +766,7 @@ key=value
         )
         assert result == expected
 
-    def test_mac_strings_comment_between_equals_and_value(self):
+    def test_mac_strings_comment_between_equals_and_value(self) -> None:
         """Test .strings comment between equals and value - parsing and round-trip."""
         # Test parsing
         propsource = '"KEY_THREE" = /* A comment between equals sign and value */ "Value Three";\n'.encode(
@@ -783,7 +783,7 @@ key=value
         expected = '/* A comment between equals sign and value */\n"KEY_THREE" = "Value Three";\n'
         assert result == expected
 
-    def test_mac_strings_comment_after_value_before_semicolon(self):
+    def test_mac_strings_comment_after_value_before_semicolon(self) -> None:
         """Test .strings comment after value before semicolon - parsing and round-trip."""
         # Test parsing
         propsource = '"KEY_FOUR" = "Value Four" /* A comment at the end of the line */;\n'.encode(
@@ -802,7 +802,7 @@ key=value
         )
         assert result == expected
 
-    def test_mac_strings_multiple_inline_comments(self):
+    def test_mac_strings_multiple_inline_comments(self) -> None:
         """Test .strings multiple entries with inline comments - parsing and round-trip."""
         # Test parsing
         propsource = (
@@ -824,7 +824,7 @@ key=value
         )
         assert result == expected
 
-    def test_mac_strings_nested_comment(self):
+    def test_mac_strings_nested_comment(self) -> None:
         """Test .strings nested /* in comments - parsing and round-trip."""
         # Test parsing
         propsource = '"key" = "value"; /* comment with /* nested */\n'
@@ -839,7 +839,7 @@ key=value
         expected = '/* comment with /* nested */\n"key" = "value";\n'
         assert result == expected
 
-    def test_mac_strings_comment_inside_value(self):
+    def test_mac_strings_comment_inside_value(self) -> None:
         """Test .strings comment inside quoted value - parsing and round-trip."""
         # Test parsing - comment is part of the value, not a comment
         propsource = '"key" = "value with /* comment */";\n'
@@ -854,7 +854,7 @@ key=value
         expected = '"key" = "value with /* comment */";\n'
         assert result == expected
 
-    def test_mac_strings_trailing_whitespace_after_semicolon(self):
+    def test_mac_strings_trailing_whitespace_after_semicolon(self) -> None:
         """Test .strings with trailing whitespace after semicolon."""
         # Test parsing with trailing spaces after semicolon
         propsource = '"key" = "value";  \n'
@@ -869,7 +869,7 @@ key=value
         expected = '"key" = "value";\n'
         assert result == expected
 
-    def test_mac_strings_quotes(self):
+    def test_mac_strings_quotes(self) -> None:
         """Test that parser unescapes characters used as wrappers."""
         propsource = r'"key with \"quotes\"" = "value with \"quotes\"";'.encode(
             "utf-16"
@@ -879,7 +879,7 @@ key=value
         assert propunit.name == 'key with "quotes"'
         assert propunit.value == 'value with "quotes"'
 
-    def test_mac_strings_equals(self):
+    def test_mac_strings_equals(self) -> None:
         """Test that equal signs inside keys/values are not mixed with delimiter."""
         propsource = '"key with = sign" = "value with = sign";'.encode("utf-16")
         propfile = self.propparse(propsource, personality="strings")
@@ -887,7 +887,7 @@ key=value
         assert propunit.name == "key with = sign"
         assert propunit.value == "value with = sign"
 
-    def test_mac_strings_serialization(self):
+    def test_mac_strings_serialization(self) -> None:
         """Test that serializer quotes mac strings properly."""
         propsource = r'"key with \"quotes\"" = "value with \"quotes\"";'.encode(
             "utf-16"
@@ -901,7 +901,7 @@ key=value
         # - every line ends with ";"
         assert bytes(propfile).strip(b"\n\x00") == propsource.strip(b"\n\x00")
 
-    def test_mac_strings_double_backslashes(self):
+    def test_mac_strings_double_backslashes(self) -> None:
         """Test that double backslashes are encoded correctly."""
         propsource = (
             r""""key" = "value with \\ signs but also a \n line break";""".encode(
@@ -917,7 +917,7 @@ key=value
             == r"value with \\ signs but also a \n line break"
         )
 
-    def test_override_encoding(self):
+    def test_override_encoding(self) -> None:
         """Test that we can override the encoding of a properties file."""
         propsource = "key = value".encode("cp1252")
         propfile = self.propparse(propsource, personality="strings", encoding="cp1252")
@@ -926,7 +926,7 @@ key=value
         assert propunit.name == "key"
         assert propunit.source == "value"
 
-    def test_trailing_comments(self):
+    def test_trailing_comments(self) -> None:
         """Test that we handle non-unit data at the end of a file."""
         propsource = "key = value\n# END"
         propfile = self.propparse(propsource)
@@ -936,7 +936,7 @@ key=value
         assert propunit.source == ""
         assert propunit.getnotes() == "END"
 
-    def test_utf16_byte_order_mark(self):
+    def test_utf16_byte_order_mark(self) -> None:
         """Test that BOM appears in the resulting text once only."""
         propsource = "key1 = value1\nkey2 = value2\n".encode("utf-16")
         propfile = self.propparse(propsource, encoding="utf-16")
@@ -945,13 +945,13 @@ key=value
         assert result.startswith(bom)
         assert bom not in result[2:]
 
-    def test_raise_ioerror_if_cannot_detect_encoding(self):
+    def test_raise_ioerror_if_cannot_detect_encoding(self) -> None:
         """Test that IOError is thrown if file encoding cannot be detected."""
         propsource = "key = ąćęłńóśźż".encode("cp1250")
         with raises(IOError):
             self.propparse(propsource, personality="strings")
 
-    def test_utf8_byte_order_mark(self):
+    def test_utf8_byte_order_mark(self) -> None:
         """Test that BOM handling works fine with newlines."""
         propsource = "\n\n\nkey1 = value1\n\nkey2 = value2\n".encode("utf-8-sig")
         propfile = self.propparse(propsource, personality="java-utf8")
@@ -961,7 +961,7 @@ key=value
         assert bom not in result[3:]
         assert b"None" not in result[3:]
 
-    def test_utf16_bom_no_warning(self):
+    def test_utf16_bom_no_warning(self) -> None:
         """Test that UTF-16 files with BOM do not trigger encoding warnings."""
         # Test UTF-16 with BOM (typical Mac .strings file)
         propsource = r'"key" = "value";'.encode("utf-16")
@@ -976,7 +976,7 @@ key=value
         assert propfile.units[0].name == "key"
         assert propfile.units[0].source == "value"
 
-    def test_joomla_set_target(self):
+    def test_joomla_set_target(self) -> None:
         """Test various items used in Joomla files."""
         propsource = b"""COM_EXAMPLE_FOO="This is a test"\n"""
         proptarget = b"""COM_EXAMPLE_FOO="This is another test"\n"""
@@ -989,7 +989,7 @@ key=value
         propunit.target = "This is another test"
         assert bytes(propfile) == proptarget
 
-    def test_joomla(self):
+    def test_joomla(self) -> None:
         """Test various items used in Joomla files."""
         propsource = b"""; comment\nVALUE="I am a "_QQ_"value"_QQ_""\n"""
         propfile = self.propparse(propsource, personality="joomla")
@@ -1000,7 +1000,7 @@ key=value
         propunit.source = 'I am a "value"'
         assert bytes(propfile) == propsource
 
-    def test_joomla_escape(self):
+    def test_joomla_escape(self) -> None:
         """Test various items used in Joomla files."""
         propsource = b"""; comment\nVALUE="I am a "_QQ_"value"_QQ_"\\n"\n"""
         propfile = self.propparse(propsource, personality="joomla")
@@ -1010,7 +1010,7 @@ key=value
         assert propunit.source == 'I am a "value"\n'
         assert bytes(propfile) == propsource
 
-    def test_serialize_missing_delimiter(self):
+    def test_serialize_missing_delimiter(self) -> None:
         propsource = b"key\n"
         propfile = self.propparse(propsource, personality="java-utf8")
         propunit = propfile.units[0]
@@ -1019,7 +1019,7 @@ key=value
         assert propunit.delimiter == ""
         assert bytes(propfile) == propsource
 
-    def test_serialize_missing_value(self):
+    def test_serialize_missing_value(self) -> None:
         propsource = b"key=\n"
         propfile = self.propparse(propsource, personality="java-utf8")
         propunit = propfile.units[0]
@@ -1027,7 +1027,7 @@ key=value
         assert propunit.value == ""
         assert bytes(propfile) == propsource
 
-    def test_multi_comments(self):
+    def test_multi_comments(self) -> None:
         propsource = b"""# This is free software; you can redistribute it and/or modify it
 # under the terms of the GNU Lesser General Public License as
 # published by the Free Software Foundation; either version 2.1 of
@@ -1058,7 +1058,7 @@ the License, or (at your option) any later version.
         print(propsource)
         assert bytes(propfile) == propsource
 
-    def test_serialize_note(self):
+    def test_serialize_note(self) -> None:
         propsource = b"key=value\n"
         propfile = self.propparse(propsource, personality="java-utf8")
         propunit = propfile.units[0]
@@ -1077,7 +1077,7 @@ key=value
         assert propunit.value == "value"
         assert propunit.getnotes() == "note"
 
-    def test_serialize_long_note(self):
+    def test_serialize_long_note(self) -> None:
         propsource = b"key=value\n"
         propfile = self.propparse(propsource, personality="java-utf8")
         propunit = propfile.units[0]
@@ -1097,7 +1097,7 @@ key=value
         assert propunit.value == "value"
         assert propunit.getnotes() == "long\nnote"
 
-    def test_trailing_newlines(self):
+    def test_trailing_newlines(self) -> None:
         """Ensure we can handle Unicode."""
         propsource = """"I am a “key”" = "I am a “value”";\n"""
         propfile = self.propparse(
@@ -1122,7 +1122,7 @@ class TestXWiki(test_monolingual.TestMonolingualStore):
         """Helper that converts properties source to propfile object and back."""
         return bytes(self.propparse(propsource)).decode("utf-8")
 
-    def test_simpledefinition(self):
+    def test_simpledefinition(self) -> None:
         """Checks that a simple properties definition is parsed correctly."""
         propsource = "test_me=I can code!"
         propfile = self.propparse(propsource)
@@ -1132,7 +1132,7 @@ class TestXWiki(test_monolingual.TestMonolingualStore):
         assert propunit.source == "I can code!"
         assert not propunit.missing
 
-    def test_missing_definition(self):
+    def test_missing_definition(self) -> None:
         """Checks that a simple missing properties definition is parsed correctly."""
         propsource = "### Missing: test_me=I can code!"
         propfile = self.propparse(propsource)
@@ -1162,12 +1162,12 @@ class TestXWiki(test_monolingual.TestMonolingualStore):
             == f"{expected_content}\n"
         )
 
-    def test_missing_definition_source(self):
+    def test_missing_definition_source(self) -> None:
         propsource = "### Missing: test_me=I can code!"
         propgen = self.propregen(propsource)
         assert f"{propsource}\n" == propgen
 
-    def test_definition_with_simple_quote(self):
+    def test_definition_with_simple_quote(self) -> None:
         propsource = "test_me=A 'quoted' translation"
         propfile = self.propparse(propsource)
         assert len(propfile.units) == 1
@@ -1177,7 +1177,7 @@ class TestXWiki(test_monolingual.TestMonolingualStore):
         assert not propunit.missing
         assert propunit.getoutput() == f"{propsource}\n"
 
-    def test_definition_with_simple_quote_and_argument(self):
+    def test_definition_with_simple_quote_and_argument(self) -> None:
         propsource = "test_me=A ''quoted'' translation for {0}"
         propfile = self.propparse(propsource)
         assert len(propfile.units) == 1
@@ -1187,17 +1187,17 @@ class TestXWiki(test_monolingual.TestMonolingualStore):
         assert not propunit.missing
         assert propunit.getoutput() == f"{propsource}\n"
 
-    def test_header_preserved(self):
+    def test_header_preserved(self) -> None:
         propsource = """# -----\n# Header\n# -----\n\ntest_me=I can code"""
         propgen = self.propregen(propsource)
         assert propgen == f"{propsource}\n"
 
-    def test_blank_line_before_comment_preserved(self):
+    def test_blank_line_before_comment_preserved(self) -> None:
         propsource = """\n# My comment\ntest_me=I can code"""
         propgen = self.propregen(propsource)
         assert propgen == f"{propsource}\n"
 
-    def test_deprecated_comments_preserved(self):
+    def test_deprecated_comments_preserved(self) -> None:
         propsource = """# Deprecated keys starts here.
 #@deprecatedstart
 
@@ -1242,7 +1242,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         """Helper that converts properties source to propfile object and back."""
         return bytes(self.propparse(propsource)).decode("utf-8")
 
-    def test_simpledefinition(self):
+    def test_simpledefinition(self) -> None:
         """Checks that a simple properties definition is parsed correctly."""
         propsource = self.getcontent("test_me=I can code!")
         propfile = self.propparse(propsource)
@@ -1267,7 +1267,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
             == f"{expectedcontent}\n"
         )
 
-    def test_missing_definition(self):
+    def test_missing_definition(self) -> None:
         """Checks that a simple missing properties definition is parsed correctly."""
         propsource = self.getcontent("### Missing: test_me=I can code!")
         propfile = self.propparse(propsource)
@@ -1289,12 +1289,12 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
             == f"{expected_content}\n"
         )
 
-    def test_missing_definition_source(self):
+    def test_missing_definition_source(self) -> None:
         propsource = self.getcontent("### Missing: test_me=I can code!")
         propgen = self.propregen(propsource)
         assert f"{propsource}\n" == propgen
 
-    def test_definition_with_simple_quote(self):
+    def test_definition_with_simple_quote(self) -> None:
         propsource = self.getcontent("test_me=A 'quoted' translation")
         propfile = self.propparse(propsource)
         assert len(propfile.units) == 1
@@ -1308,7 +1308,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
             generatedcontent.getvalue().decode(propfile.encoding) == f"{propsource}\n"
         )
 
-    def test_definition_with_simple_quote_and_argument(self):
+    def test_definition_with_simple_quote_and_argument(self) -> None:
         propsource = self.getcontent("test_me=A ''quoted'' translation for {0}")
         propfile = self.propparse(propsource)
         assert len(propfile.units) == 1
@@ -1322,7 +1322,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
             generatedcontent.getvalue().decode(propfile.encoding) == f"{propsource}\n"
         )
 
-    def test_definition_with_encoded_html(self):
+    def test_definition_with_encoded_html(self) -> None:
         propsource = self.getcontent("test_me=A &amp; is represented with &amp;amp;")
         propfile = self.propparse(propsource)
         assert len(propfile.units) == 1
@@ -1336,7 +1336,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
             generatedcontent.getvalue().decode(propfile.encoding) == f"{propsource}\n"
         )
 
-    def test_cleaning_attributes(self):
+    def test_cleaning_attributes(self) -> None:
         """
         Ensure that the XML is correctly formatted during serialization:
         it should not contain objects or attachments tags, and translation should be
@@ -1448,7 +1448,7 @@ test_me=Je peux coder !
             in generatedcontent.getvalue().decode(propfile.encoding)
         )
 
-    def test_translate_source(self):
+    def test_translate_source(self) -> None:
         """
         Ensure that the XML is correctly formatted during serialization:
         it should not contain objects or attachments tags, and translation should be
@@ -1636,7 +1636,7 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
         """Helper that converts properties source to propfile object and back."""
         return bytes(self.propparse(propsource)).decode("utf-8")
 
-    def test_simpledefinition(self):
+    def test_simpledefinition(self) -> None:
         """Checks that a simple properties definition is parsed correctly."""
         propsource = self.getcontent("I can code!", "This is a title")
         propfile = self.propparse(propsource)
@@ -1663,7 +1663,7 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
             == f"{expected_content}\n"
         )
 
-    def test_parse(self):
+    def test_parse(self) -> None:
         """
         Tests converting to a string and parsing the resulting string.
 
@@ -1693,7 +1693,7 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
         assert newstore.units[1]._get_source_unit().name == store.units[3].name
         assert newstore.units[1]._get_source_unit().source == store.units[3].target
 
-    def test_files(self):
+    def test_files(self) -> None:
         """
         Tests saving to and loading from files.
 
@@ -1724,7 +1724,7 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
         assert newstore.units[1]._get_source_unit().name == store.units[3].name
         assert newstore.units[1]._get_source_unit().source == store.units[3].target
 
-    def test_save(self):
+    def test_save(self) -> None:
         """
         Tests that we can save directly back to the original file.
         In case of an XWiki Full Page new units are ignored.
@@ -1756,7 +1756,7 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
         assert newstore.units[1]._get_source_unit().name == store.units[3].name
         assert newstore.units[1]._get_source_unit().source == store.units[3].target
 
-    def test_cleaning_attributes(self):
+    def test_cleaning_attributes(self) -> None:
         """
         Ensure that the XML is correctly formatted during serialization:
         it should not contain objects or attachments tags, and translation should be
@@ -1891,5 +1891,5 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
         )
 
     @mark.xfail(reason="removal not working in full page")
-    def test_remove(self):
+    def test_remove(self) -> None:
         super().test_remove()

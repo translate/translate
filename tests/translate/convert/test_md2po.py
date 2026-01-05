@@ -18,17 +18,17 @@ class TestMD2PO(test_convert.TestConvertCommand):
         "--multifile=MULTIFILESTYLE",
     ]
 
-    def test_markdown_file_with_multifile_single(self):
+    def test_markdown_file_with_multifile_single(self) -> None:
         self.given_markdown_file()
         self.run_command("file.md", "test.po", multifile="single")
         self.then_po_file_is_written()
 
-    def test_markdown_file_with_multifile_onefile(self):
+    def test_markdown_file_with_multifile_onefile(self) -> None:
         self.given_markdown_file()
         self.run_command("file.md", "test.po", multifile="onefile")
         self.then_po_file_is_written()
 
-    def test_markdown_directory_with_multifile_single(self):
+    def test_markdown_directory_with_multifile_single(self) -> None:
         self.given_directory_of_markdown_files()
         self.run_command("mddir", "podir", multifile="single")
         assert os.path.isdir(self.get_testfilename("podir"))
@@ -38,7 +38,7 @@ class TestMD2PO(test_convert.TestConvertCommand):
         assert "Content of file 1" in content
         assert "Content of file 2" not in content
 
-    def test_markdown_directory_with_multifile_onefile(self):
+    def test_markdown_directory_with_multifile_onefile(self) -> None:
         self.given_directory_of_markdown_files()
         self.run_command("mddir", "test.po", multifile="onefile")
         assert os.path.isfile(self.get_testfilename("test.po"))
@@ -46,12 +46,12 @@ class TestMD2PO(test_convert.TestConvertCommand):
         assert "Content of file 1" in content
         assert "Content of file 2" in content
 
-    def given_markdown_file(self, content: str | None = None):
+    def given_markdown_file(self, content: str | None = None) -> None:
         if content is None:
             content = "# Markdown\nYou are only coming through in waves."
         self.create_testfile("file.md", content)
 
-    def test_markdown_frontmatter(self):
+    def test_markdown_frontmatter(self) -> None:
         self.given_markdown_file(
             content="""---
 date: 2024-02-02T04:14:54-08:00
@@ -75,7 +75,7 @@ You are only coming through in waves.
             output.parse(handle)
         assert len(output.units) == 3
 
-    def given_directory_of_markdown_files(self):
+    def given_directory_of_markdown_files(self) -> None:
         os.makedirs("mddir", exist_ok=True)
         self.create_testfile("mddir/file1.md", "# Heading\nContent of file 1")
         self.create_testfile("mddir/file2.md", "# Heading\nContent of file 2")
@@ -86,7 +86,7 @@ You are only coming through in waves.
         assert "coming through" in content
         return content
 
-    def test_markdown_translation_ignore_sections(self):
+    def test_markdown_translation_ignore_sections(self) -> None:
         """Test that content between translate:off and translate:on is not extracted."""
         self.given_markdown_file(
             content="""# Welcome

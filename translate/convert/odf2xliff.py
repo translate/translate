@@ -33,7 +33,7 @@ from translate.storage.odf_shared import inline_elements, no_translate_content_e
 from translate.storage.xml_extract.extract import ParseState, build_store
 
 
-def convertodf(inputfile, outputfile, templates):
+def convertodf(inputfile, outputfile, templates) -> bool:
     """Convert an ODF package to XLIFF."""
     store = factory.getobject(outputfile)
 
@@ -52,7 +52,7 @@ def convertodf(inputfile, outputfile, templates):
     return True
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     # For formats see OpenDocument 1.2 draft 7 Appendix C
     formats = (
         ("sxw", ("xlf", convertodf)),

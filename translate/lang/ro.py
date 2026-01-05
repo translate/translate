@@ -42,7 +42,7 @@ class RomanianChecker(TranslationChecker):
     """A Checker class for Romanian."""
 
     @cosmetic
-    def cedillas(self, str1, str2):
+    def cedillas(self, str1, str2) -> bool:
         """
         Check if the translation contains an illegal cedilla character.
 
@@ -66,7 +66,7 @@ class RomanianChecker(TranslationChecker):
         return True
 
     @cosmetic
-    def niciun_nicio(self, str1, str2):
+    def niciun_nicio(self, str1, str2) -> bool:
         """
         Checks for sequences containing 'nici un'/'nici o' which are obsolete
         Romanian syntax. Correct is 'niciun'/'nicio'.

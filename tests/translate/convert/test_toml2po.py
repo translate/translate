@@ -19,7 +19,7 @@ class TestTOML2PO:
         po_file.seek(0)
         return po.pofile(po_file.read())
 
-    def test_simple_convert(self):
+    def test_simple_convert(self) -> None:
         """Test converting a simple TOML file to PO."""
         toml_source = """key1 = "Hello, world!"
 key2 = "Goodbye, world!"
@@ -29,7 +29,7 @@ key2 = "Goodbye, world!"
         assert po_file.units[1].source == "Hello, world!"
         assert po_file.units[2].source == "Goodbye, world!"
 
-    def test_nested_convert(self):
+    def test_nested_convert(self) -> None:
         """Test converting nested TOML structures."""
         toml_source = """[section]
 key1 = "Nested value"
@@ -44,7 +44,7 @@ key2 = "Deeply nested"
         assert po_file.units[2].getlocations() == ["section.subsection.key2"]
         assert po_file.units[2].source == "Deeply nested"
 
-    def test_comment_extraction(self):
+    def test_comment_extraction(self) -> None:
         """Test that comments are extracted from TOML."""
         toml_source = """# This is a developer comment
 key1 = "Value with comment"
@@ -53,7 +53,7 @@ key1 = "Value with comment"
         assert len(po_file.units) == 2  # header + 1 unit
         assert "This is a developer comment" in po_file.units[1].getnotes()
 
-    def test_merge_with_template(self):
+    def test_merge_with_template(self) -> None:
         """Test merging two TOML files."""
         template_source = """key1 = "Hello"
 key2 = "World"

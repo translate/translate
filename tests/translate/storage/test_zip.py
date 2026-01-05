@@ -9,25 +9,25 @@ from translate.storage import zip  # noqa: A004
 class TestZIPFile:
     """A test class to test the zip class that provides the directory interface."""
 
-    def setup_method(self, method):
+    def setup_method(self, method) -> None:
         """Sets up a test directory."""
         print("setup_method called on", self.__class__.__name__)
         self.testzip = f"{self.__class__.__name__}_testzip.zip"
         self.cleardir(self.testzip)
         self.zip = ZipFile(self.testzip, mode="w")
 
-    def teardown_method(self, method):
+    def teardown_method(self, method) -> None:
         """Removes the attributes set up by setup_method."""
         self.zip.close()
         self.cleardir(self.testzip)
 
-    def cleardir(self, dirname):
+    def cleardir(self, dirname) -> None:
         """Removes the given directory."""
         if os.path.exists(self.testzip):
             os.remove(self.testzip)
         assert not os.path.exists(self.testzip)
 
-    def touchfiles(self, dir, filenames, content="", last=False):
+    def touchfiles(self, dir, filenames, content="", last=False) -> None:
         for filename in filenames:
             if dir:
                 self.zip.writestr(os.path.join(dir, filename), content)
@@ -36,15 +36,15 @@ class TestZIPFile:
         if last:
             self.zip.close()
 
-    def mkdir(self, dir):
+    def mkdir(self, dir) -> None:
         """Makes a directory inside self.testzip."""
 
-    def test_created(self):
+    def test_created(self) -> None:
         """Test that the directory actually exists."""
         print(self.testzip)
         assert os.path.isfile(self.testzip)
 
-    def test_basic(self):
+    def test_basic(self) -> None:
         """Tests basic functionality."""
         files = ["a.po", "b.po", "c.po"]
         self.touchfiles(None, files, last=True)
@@ -56,7 +56,7 @@ class TestZIPFile:
         finally:
             d.close()
 
-    def test_structure(self):
+    def test_structure(self) -> None:
         """Tests a small directory structure."""
         files = ["a.po", "b.po", "c.po"]
         self.touchfiles(self.testzip, files)
@@ -70,7 +70,7 @@ class TestZIPFile:
         finally:
             d.close()
 
-    def test_getunits(self):
+    def test_getunits(self) -> None:
         """Tests basic functionality."""
         files = ["a.po", "b.po", "c.po"]
         posource = """msgid "bla"\nmsgstr "blabla"\n"""

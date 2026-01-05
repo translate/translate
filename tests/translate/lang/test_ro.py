@@ -5,7 +5,7 @@ from translate.lang.ro import RomanianChecker
 from ..filters.test_checks import fails, passes
 
 
-def test_cedillas():
+def test_cedillas() -> None:
     """Test that we can detect cedillas."""
     ro_checker = RomanianChecker()
     assert passes(ro_checker.cedillas, "", "")
@@ -20,7 +20,7 @@ def test_cedillas():
     assert passes(ro_checker.cedillas, "", string.ascii_uppercase)
 
 
-def test_niciun():
+def test_niciun() -> None:
     """Test that we can detect niciun/nicio."""
     ro_checker = RomanianChecker()
     assert passes(ro_checker.niciun_nicio, "", "")

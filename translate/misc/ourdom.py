@@ -32,7 +32,7 @@ from xml.dom import expatbuilder, minidom
 # classes below
 
 
-def writexml_helper(self, writer, indent="", addindent="", newl=""):
+def writexml_helper(self, writer, indent="", addindent="", newl="") -> None:
     """
     A replacement for writexml that formats it like typical XML files.
     Nodes are indented but text nodes, where whitespace can be significant,
@@ -160,7 +160,7 @@ theDOMImplementation = DOMImplementation()
 
 
 class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
-    def reset(self):
+    def reset(self) -> None:
         """Free all data structures used during DOM construction."""
         self.document = theDOMImplementation.createDocument(
             expatbuilder.EMPTY_NAMESPACE, None, None
@@ -170,7 +170,7 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
         self._cdata = False
         self._initNamespaces()
 
-    def start_element_handler(self, name, attributes):
+    def start_element_handler(self, name, attributes) -> None:
         # All we want to do is construct our own Element instead of
         # minidom.Element, unfortunately the only way to do this is to
         # copy this whole function from expatbuilder.py
@@ -240,7 +240,7 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
         # used.  If changing one, be sure to check the other to see if
         # it needs to be changed as well.
 
-        def end_element_handler(self, name):
+        def end_element_handler(self, name) -> None:
             curNode = self.curNode
             if " " in name:
                 uri, localname, prefix, _qname = expatbuilder._parse_ns_name(self, name)

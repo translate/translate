@@ -179,16 +179,16 @@ class Xliff2Unit(XliffUnit):
             "final",
         }
 
-    def marktranslated(self):
+    def marktranslated(self) -> None:
         self.xmlelement.set("state", "translated")
 
-    def markapproved(self, value=True):
+    def markapproved(self, value=True) -> None:
         if value:
             self.xmlelement.set("state", "reviewed")
         else:
             self.xmlelement.set("state", "translated")
 
-    def markfuzzy(self, value=True):
+    def markfuzzy(self, value=True) -> None:
         if value:
             self.xmlelement.set("state", "initial")
         else:

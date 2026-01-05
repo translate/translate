@@ -224,7 +224,7 @@ csv.register_dialect("wordfast", WordfastDialect)
 class WordfastTime:
     """Manages time stamps in the Wordfast format of YYYYMMDD~hhmmss."""
 
-    def __init__(self, newtime=None):
+    def __init__(self, newtime=None) -> None:
         self._time = None
         if not newtime:
             self.time = None
@@ -266,7 +266,7 @@ class WordfastTime:
 
     time = property(get_time, set_time)
 
-    def __str__(self):
+    def __str__(self) -> str:
         if not self.timestring:
             return ""
         return self.timestring
@@ -275,7 +275,7 @@ class WordfastTime:
 class WordfastHeader:
     """A wordfast translation memory header."""
 
-    def __init__(self, header=None):
+    def __init__(self, header=None) -> None:
         self._header_dict = []
         if not header:
             self.header = self._create_default_header()
@@ -297,17 +297,17 @@ class WordfastHeader:
         """Get the header dictionary."""
         return self._header_dict
 
-    def setheader(self, newheader):
+    def setheader(self, newheader) -> None:
         self._header_dict = newheader
 
     header = property(getheader, setheader)
 
-    def settargetlang(self, newlang):
+    def settargetlang(self, newlang) -> None:
         self._header_dict["target-lang"] = f"%{newlang}"
 
     targetlang = property(None, settargetlang)
 
-    def settucount(self, count):
+    def settucount(self, count) -> None:
         self._header_dict["tucount"] = f"%TU={count:08d}"
 
     tucount = property(None, settucount)
@@ -316,13 +316,13 @@ class WordfastHeader:
 class WordfastUnit(base.TranslationUnit):
     """A Wordfast translation memory unit."""
 
-    def __init__(self, source=None):
+    def __init__(self, source=None) -> None:
         self._dict = {}
         if source:
             self.source = source
         super().__init__(source)
 
-    def _update_timestamp(self):
+    def _update_timestamp(self) -> None:
         """Refresh the timestamp for the unit."""
         self._dict["date"] = WordfastTime(time.localtime()).timestring
 
@@ -348,7 +348,7 @@ class WordfastUnit(base.TranslationUnit):
             return _wf_to_char(self._dict[key])
         return ""
 
-    def _set_source_or_target(self, key, newvalue):
+    def _set_source_or_target(self, key, newvalue) -> None:
         if newvalue is None:
             self._dict[key] = None
         newvalue = _char_to_wf(newvalue)
@@ -361,7 +361,7 @@ class WordfastUnit(base.TranslationUnit):
         return self._get_source_or_target("source")
 
     @source.setter
-    def source(self, source):
+    def source(self, source) -> None:
         self._rich_source = None
         self._set_source_or_target("source", source)
 
@@ -370,16 +370,16 @@ class WordfastUnit(base.TranslationUnit):
         return self._get_source_or_target("target")
 
     @target.setter
-    def target(self, target):
+    def target(self, target) -> None:
         self._rich_target = None
         self._set_source_or_target("target", target)
 
-    def settargetlang(self, newlang):
+    def settargetlang(self, newlang) -> None:
         self._dict["target-lang"] = newlang
 
     targetlang = property(None, settargetlang)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self._dict)
 
     def istranslated(self):
@@ -397,7 +397,7 @@ class WordfastTMFile(base.TranslationStore):
     UnitClass = WordfastUnit
     default_encoding = "iso-8859-1"
 
-    def __init__(self, inputfile=None, **kwargs):
+    def __init__(self, inputfile=None, **kwargs) -> None:
         """Construct a Wordfast TM, optionally reading in from inputfile."""
         super().__init__(**kwargs)
         self.filename = ""
@@ -405,7 +405,7 @@ class WordfastTMFile(base.TranslationStore):
         if inputfile is not None:
             self.parse(inputfile)
 
-    def parse(self, input):
+    def parse(self, input) -> None:
         """Parsese the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name
@@ -443,7 +443,7 @@ class WordfastTMFile(base.TranslationStore):
             newunit.dict = line
             self.addunit(newunit)
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         # Check first if there is at least one translated unit
         translated_units = [u for u in self.units if u.istranslated()]
         if not translated_units:

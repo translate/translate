@@ -4,14 +4,14 @@ from . import test_base
 
 
 class TestWFTime:
-    def test_timestring(self):
+    def test_timestring(self) -> None:
         """Setting and getting times set using a timestring."""
         wftime = wf.WordfastTime()
         assert wftime.timestring is None
         wftime.timestring = "19710820~050000"
         assert wftime.time[:6] == (1971, 8, 20, 5, 0, 0)
 
-    def test_time(self):
+    def test_time(self) -> None:
         """Setting and getting times set using time tuple."""
         wftime = wf.WordfastTime()
         assert wftime.time is None
@@ -22,7 +22,7 @@ class TestWFTime:
 class TestWFUnit(test_base.TestTranslationUnit):
     UnitClass = wf.WordfastUnit
 
-    def test_difficult_escapes(self):
+    def test_difficult_escapes(self) -> None:
         r"""
         Wordfast files need to perform magic with escapes.
 
@@ -38,10 +38,10 @@ class TestWFUnit(test_base.TestTranslationUnit):
             print("special:", f"{special!r}|")
             assert unit.source == special
 
-    def test_wordfast_escaping(self):
+    def test_wordfast_escaping(self) -> None:
         """Check handling of &'NN; style escaping."""
 
-        def compare(real, escaped):
+        def compare(real, escaped) -> None:
             unit = self.UnitClass(real)
             print(real.encode("utf-8"), unit.source.encode("utf-8"))
             assert unit.source == real
@@ -61,18 +61,18 @@ class TestWFUnit(test_base.TestTranslationUnit):
             == "Open &'26;File. &'92;n Probleem."  # codespell:ignore
         )
 
-    def test_newlines(self):
+    def test_newlines(self) -> None:
         """Wordfast does not like real newlines."""
         unit = self.UnitClass("One\nTwo")
         assert unit.dict["source"] == "One\\nTwo"
 
-    def test_language_setting(self):
+    def test_language_setting(self) -> None:
         """Check that we can set the target language."""
         unit = self.UnitClass("Test")
         unit.targetlang = "AF"
         assert unit.dict["target-lang"] == "AF"
 
-    def test_istranslated(self):
+    def test_istranslated(self) -> None:
         unit = self.UnitClass()
         assert not unit.istranslated()
         unit.source = "Test"

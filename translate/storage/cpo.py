@@ -135,7 +135,7 @@ ignored_errors = {
 }
 
 
-def trigger_exception(severity, filename, lineno, column, message_text):
+def trigger_exception(severity, filename, lineno, column, message_text) -> None:
     # Severity 0 is warning, severity 1 error, severity 2 critical
     if severity >= 1 and message_text not in ignored_errors:
         if filename:
@@ -146,7 +146,9 @@ def trigger_exception(severity, filename, lineno, column, message_text):
 
 
 # Callback functions for po_xerror_handler
-def xerror_cb(severity, message, filename, lineno, column, multiline_p, message_text):
+def xerror_cb(
+    severity, message, filename, lineno, column, multiline_p, message_text
+) -> None:
     message_text = message_text.decode()
     if filename:
         filename = filename.decode()
@@ -177,7 +179,7 @@ def xerror2_cb(
     column2,
     multiline_p2,
     message_text2,
-):
+) -> None:
     message_text1 = message_text1.decode()
     message_text2 = message_text2.decode()
     if filename1:
@@ -204,7 +206,7 @@ def xerror2_cb(
 
 # Setup return and parameter types
 # See also http://git.savannah.gnu.org/cgit/gettext.git/tree/gettext-tools/libgettextpo/gettext-po.in.h
-def setup_call_types(gpo):
+def setup_call_types(gpo) -> None:
     # File access
     gpo.po_file_create.restype = po_file_t
     gpo.po_file_read_v3.argtypes = [STRING, POINTER(po_xerror_handler)]
@@ -360,7 +362,7 @@ class pounit(pocommon.pounit):
     #: fixed encoding that is always used for cPO structure (self._gpo_message)
     CPO_ENC = "utf-8"
 
-    def __init__(self, source=None, encoding="utf-8", gpo_message=None):
+    def __init__(self, source=None, encoding="utf-8", gpo_message=None) -> None:
         self._rich_source = None
         self._rich_target = None
         encoding = encoding or "utf-8"
@@ -395,7 +397,7 @@ class pounit(pocommon.pounit):
             self._gpo_message = gpo_message
         self.infer_state()
 
-    def infer_state(self):
+    def infer_state(self) -> None:
         # FIXME: do obsolete
         if gpo.po_message_is_obsolete(self._gpo_message):
             if gpo.po_message_is_fuzzy(self._gpo_message):
@@ -409,7 +411,7 @@ class pounit(pocommon.pounit):
         else:
             self.set_state_n(self.STATE[self.S_UNTRANSLATED][0])
 
-    def setmsgid_plural(self, msgid_plural):
+    def setmsgid_plural(self, msgid_plural) -> None:
         if isinstance(msgid_plural, list):
             msgid_plural = "".join(msgid_plural)
         gpo.po_message_set_msgid_plural(self._gpo_message, gpo_encode(msgid_plural))
@@ -443,7 +445,7 @@ class pounit(pocommon.pounit):
         return ""
 
     @source.setter
-    def source(self, source):
+    def source(self, source) -> None:
         if isinstance(source, multistring):
             source = source.strings
         if isinstance(source, list):
@@ -472,7 +474,7 @@ class pounit(pocommon.pounit):
         return multi
 
     @target.setter
-    def target(self, target):
+    def target(self, target) -> None:
         # for plural strings: convert 'target' into a list
         if self.hasplural():
             if isinstance(target, multistring):
@@ -552,7 +554,7 @@ class pounit(pocommon.pounit):
         # Let's drop the last newline
         return gpo_decode(comments[:-1])
 
-    def addnote(self, text, origin=None, position="append"):
+    def addnote(self, text, origin=None, position="append") -> None:
         # ignore empty strings and strings without non-space characters
         if not (text and text.strip()):
             return
@@ -589,7 +591,7 @@ class pounit(pocommon.pounit):
             else:
                 gpo.po_message_set_comments(self._gpo_message, newnotes)
 
-    def removenotes(self, origin=None):
+    def removenotes(self, origin=None) -> None:
         gpo.po_message_set_comments(self._gpo_message, b"")
 
     def copy(self):
@@ -597,7 +599,9 @@ class pounit(pocommon.pounit):
         newpo._gpo_message = self._gpo_message
         return newpo
 
-    def merge(self, otherpo, overwrite=False, comments=True, authoritative=False):
+    def merge(
+        self, otherpo, overwrite=False, comments=True, authoritative=False
+    ) -> None:
         """
         Merges the otherpo (with the same msgid) into this one.
 
@@ -651,10 +655,10 @@ class pounit(pocommon.pounit):
     def hastypecomment(self, typecomment):
         return gpo.po_message_is_format(self._gpo_message, gpo_encode(typecomment))
 
-    def settypecomment(self, typecomment, present=True):
+    def settypecomment(self, typecomment, present=True) -> None:
         gpo.po_message_set_format(self._gpo_message, gpo_encode(typecomment), present)
 
-    def hasmarkedcomment(self, commentmarker):
+    def hasmarkedcomment(self, commentmarker) -> bool:
         commentmarker = f"({commentmarker})"
         for comment in self.getnotes("translator").split("\n"):
             if comment.startswith(commentmarker):
@@ -664,16 +668,16 @@ class pounit(pocommon.pounit):
     def isfuzzy(self):
         return gpo.po_message_is_fuzzy(self._gpo_message)
 
-    def _domarkfuzzy(self, present=True):
+    def _domarkfuzzy(self, present=True) -> None:
         gpo.po_message_set_fuzzy(self._gpo_message, present)
 
-    def makeobsolete(self):
+    def makeobsolete(self) -> None:
         # FIXME: libgettexpo currently does not reset other data, we probably want to do that
         # but a better solution would be for libgettextpo to output correct data on serialisation
         gpo.po_message_set_obsolete(self._gpo_message, True)
         self.infer_state()
 
-    def resurrect(self):
+    def resurrect(self) -> None:
         gpo.po_message_set_obsolete(self._gpo_message, False)
         self.infer_state()
 
@@ -692,13 +696,13 @@ class pounit(pocommon.pounit):
             return pocommon.extract_msgid_comment(text)
         return ""
 
-    def setmsgidcomment(self, msgidcomment):
+    def setmsgidcomment(self, msgidcomment) -> None:
         if msgidcomment:
             self.source = f"_: {msgidcomment}\n{self.source}"
 
     msgidcomment = property(_extract_msgidcomments, setmsgidcomment)
 
-    def __str__(self):
+    def __str__(self) -> str:
         pf = pofile(noheader=True)
         pf.addunit(self)
         return bytes(pf).decode(self.CPO_ENC)
@@ -716,7 +720,7 @@ class pounit(pocommon.pounit):
             location = gpo.po_message_filepos(self._gpo_message, i)
         return locations
 
-    def addlocation(self, location):
+    def addlocation(self, location) -> None:
         if location.find(" ") != -1:
             location = pocommon.quote_plus(location)
         parts = location.split(":")
@@ -734,7 +738,7 @@ class pounit(pocommon.pounit):
             return gpo_decode(msgctxt)
         return self._extract_msgidcomments()
 
-    def setcontext(self, context):
+    def setcontext(self, context) -> None:
         gpo.po_message_set_msgctxt(self._gpo_message, gpo_encode(context))
 
     @classmethod
@@ -778,7 +782,7 @@ class pounit(pocommon.pounit):
 class pofile(pocommon.pofile):
     UnitClass = pounit
 
-    def __init__(self, inputfile=None, noheader=False, **kwargs):
+    def __init__(self, inputfile=None, noheader=False, **kwargs) -> None:
         self._gpo_memory_file = None
         self._gpo_message_iterator = None
         self.sourcelanguage = None
@@ -792,7 +796,7 @@ class pofile(pocommon.pofile):
             )
         super().__init__(inputfile=inputfile, noheader=noheader, **kwargs)
 
-    def addunit(self, unit, new=True):
+    def addunit(self, unit, new=True) -> None:
         if new:
             gpo.po_message_insert(self._gpo_message_iterator, unit._gpo_message)
         super().addunit(unit)
@@ -801,7 +805,7 @@ class pofile(pocommon.pofile):
         # There seems to be no API to remove a message
         raise ValueError("Unit removal not supported by cpo")
 
-    def _insert_header(self, header):
+    def _insert_header(self, header) -> None:
         header._store = self
         self.units.insert(0, header)
         self._free_iterator()
@@ -812,7 +816,7 @@ class pofile(pocommon.pofile):
         while gpo.po_next_message(self._gpo_message_iterator):
             pass
 
-    def removeduplicates(self, duplicatestyle="merge"):
+    def removeduplicates(self, duplicatestyle="merge") -> None:
         """Make sure each msgid is unique ; merge comments etc from duplicates into original."""
         # TODO: can we handle consecutive calls to removeduplicates()? What
         # about files already containing msgctxt? - test
@@ -822,7 +826,7 @@ class pofile(pocommon.pofile):
         # probably not used frequently enough to worry about it, though.
         markedpos = []
 
-        def addcomment(thepo):
+        def addcomment(thepo) -> None:
             thepo.msgidcomment = " ".join(thepo.getlocations())
             markedpos.append(thepo)
 
@@ -872,8 +876,8 @@ class pofile(pocommon.pofile):
         self._gpo_memory_file = new_gpo_memory_file
         self.units = uniqueunits
 
-    def serialize(self, out):
-        def obsolete_workaround():
+    def serialize(self, out) -> None:
+        def obsolete_workaround() -> None:
             # Remove all items that are not output by msgmerge when a unit is obsolete.  This is a work
             # around for bug in libgettextpo
             # FIXME Do version test in case they fix this bug
@@ -929,7 +933,7 @@ class pofile(pocommon.pofile):
 
         return all(not (not unit.isblank() and not unit.isobsolete()) for unit in units)
 
-    def parse(self, input):
+    def parse(self, input) -> None:
         if hasattr(input, "name"):
             self.filename = input.name
         elif not getattr(self, "filename", ""):
@@ -984,11 +988,11 @@ class pofile(pocommon.pofile):
             newmessage = gpo.po_next_message(self._gpo_message_iterator)
         self._free_iterator()
 
-    def __del__(self):
+    def __del__(self) -> None:
         self._free_iterator()
         self._free_memory_file()
 
-    def _free_memory_file(self):
+    def _free_memory_file(self) -> None:
         return
         # TODO: should actually free the memory
         # pylint: disable-next=unreachable
@@ -996,7 +1000,7 @@ class pofile(pocommon.pofile):
             gpo.po_file_free(self._gpo_memory_file)
             self._gpo_memory_file = None
 
-    def _free_iterator(self):
+    def _free_iterator(self) -> None:
         if self._gpo_message_iterator is not None:
             gpo.po_message_iterator_free(self._gpo_message_iterator)
             self._gpo_message_iterator = None

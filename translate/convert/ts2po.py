@@ -29,7 +29,7 @@ from translate.storage import po, ts2
 
 
 class ts2po:
-    def __init__(self, duplicatestyle="msgctxt", pot=False):
+    def __init__(self, duplicatestyle="msgctxt", pot=False) -> None:
         self.duplicatestyle = duplicatestyle
         self.pot = pot
 
@@ -107,7 +107,9 @@ class ts2po:
         return thetargetfile
 
 
-def convertts(inputfile, outputfile, templates, pot=False, duplicatestyle="msgctxt"):
+def convertts(
+    inputfile, outputfile, templates, pot=False, duplicatestyle="msgctxt"
+) -> int:
     """Reads in stdin using fromfileclass, converts using convertorclass, writes to stdout."""
     convertor = ts2po(duplicatestyle=duplicatestyle, pot=pot)
     outputstore = convertor.convertfile(inputfile)
@@ -117,7 +119,7 @@ def convertts(inputfile, outputfile, templates, pot=False, duplicatestyle="msgct
     return 1
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     formats = {"ts": ("po", convertts)}
     parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
     parser.add_duplicates_option()

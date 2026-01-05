@@ -71,7 +71,7 @@ class reprop:
         personality,
         encoding=None,
         remove_untranslated=False,
-    ):
+    ) -> None:
         self.templatefile = templatefile
         self.inputstore = inputstore
         self.personality = properties.get_dialect(personality)
@@ -113,7 +113,7 @@ class reprop:
 
         return value
 
-    def _explode_gaia_plurals(self):
+    def _explode_gaia_plurals(self) -> None:
         """Explode the gaia plurals."""
         for unit in self.inputstore.units:
             if not unit.hasplural():
@@ -138,7 +138,7 @@ class reprop:
             # We don't want the plural marker to be translated:
             del self.inputstore.locationindex[location]
 
-    def _explode_gwt_plurals(self):
+    def _explode_gwt_plurals(self) -> None:
         """Explode the gwt plurals."""
         # cldr names to GWT variants
         cldr2gwt = {
@@ -277,7 +277,7 @@ def convertprop(
     encoding=None,
     remove_untranslated=False,
     outputthreshold=None,
-):
+) -> bool:
     inputstore = po.pofile(inputfile)
 
     if not convert.should_output_store(inputstore, outputthreshold):
@@ -300,7 +300,7 @@ formats = {
 }
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     # handle command line options
     parser = convert.ConvertOptionParser(
         formats, usetemplates=True, description=__doc__

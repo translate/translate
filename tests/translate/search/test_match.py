@@ -23,7 +23,7 @@ class TestMatch:
             unit.target = target
         return csvfile
 
-    def test_matching(self):
+    def test_matching(self) -> None:
         """Test basic matching."""
         csvfile = self.buildcsv(["hand", "asdf", "fdas", "haas", "pond"])
         matcher = match.matcher(csvfile)
@@ -48,7 +48,7 @@ class TestMatch:
         candidates.sort()
         assert candidates[1:] == ["Ek skop die balle", "Hy skop die bal"]
 
-    def test_multiple_store(self):
+    def test_multiple_store(self) -> None:
         """Test using multiple datastores."""
         csvfile1 = self.buildcsv(["hand", "asdf", "fdas"])
         csvfile2 = self.buildcsv(["haas", "pond"])
@@ -67,7 +67,7 @@ class TestMatch:
         candidates.sort()
         assert candidates[1:] == ["Ek skop die balle", "Hy skop die bal"]
 
-    def test_extendtm(self):
+    def test_extendtm(self) -> None:
         """Test that we can extend the TM after creation."""
         message = "Open file..."
         csvfile1 = self.buildcsv(["Close application", "Do something"])
@@ -80,7 +80,7 @@ class TestMatch:
         assert len(candidates) == 1
         assert candidates[0] == "Open file"
 
-    def test_terminology(self):
+    def test_terminology(self) -> None:
         csvfile = self.buildcsv(["file", "computer", "directory"])
         matcher = match.terminologymatcher(csvfile)
         candidates = self.candidatestrings(
@@ -89,7 +89,7 @@ class TestMatch:
         candidates.sort()
         assert candidates == ["computer", "file"]
 
-    def test_brackets(self):
+    def test_brackets(self) -> None:
         """Tests that brackets at the end of a term are ignored."""
         csvfile = self.buildcsv(["file (noun)", "ISP (Internet Service Provider)"])
         matcher = match.terminologymatcher(csvfile)
@@ -100,7 +100,7 @@ class TestMatch:
         # we don't change the target text, though
         assert candidates == ["isp"]
 
-    def test_past_tences(self):
+    def test_past_tences(self) -> None:
         """Tests matching of some past tenses."""
         csvfile = self.buildcsv(["submit", "certify"])
         matcher = match.terminologymatcher(csvfile)
@@ -109,14 +109,14 @@ class TestMatch:
         candidates = self.candidatestrings(matcher.matches("The site is certified"))
         assert candidates == ["certifie"]
 
-    def test_space_mismatch(self):
+    def test_space_mismatch(self) -> None:
         """Tests that we can match with some spacing mismatch."""
         csvfile = self.buildcsv(["down time"])
         matcher = match.terminologymatcher(csvfile)
         candidates = self.candidatestrings(matcher.matches("%d minutes downtime"))
         assert candidates == ["downtime"]
 
-    def test_hyphen_mismatch(self):
+    def test_hyphen_mismatch(self) -> None:
         """Tests that we can match with some spacing mismatch."""
         csvfile = self.buildcsv(["pre-order"])
         matcher = match.terminologymatcher(csvfile)

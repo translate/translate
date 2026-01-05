@@ -60,12 +60,12 @@ class Project:
     """
 
     # INITIALIZERS #
-    def __init__(self, projstore=None):
+    def __init__(self, projstore=None) -> None:
         if projstore is None:
             projstore = ProjectStore()
         self.store = projstore
 
-    def __del__(self):
+    def __del__(self) -> None:
         if self.store:
             del self.store
 
@@ -87,7 +87,7 @@ class Project:
         )
         return srcfile, srcfname, transfile, transfname
 
-    def close(self):
+    def close(self) -> None:
         """
         Close underlying store.
 
@@ -195,7 +195,7 @@ class Project:
 
         return outputfile, output_fname
 
-    def export_file(self, fname, destfname):
+    def export_file(self, fname, destfname) -> None:
         """
         Export the file with the specified filename to the given
         destination.  This method will raise
@@ -230,7 +230,7 @@ class Project:
             raise ValueError(f"Project file has no real file: {projfname}")
         return rfname
 
-    def remove_file(self, projfname, ftype=None):
+    def remove_file(self, projfname, ftype=None) -> None:
         """
         Remove a file.
 
@@ -238,7 +238,7 @@ class Project:
         """
         self.store.remove_file(projfname, ftype)
 
-    def save(self, filename=None):
+    def save(self, filename=None) -> None:
         """
         Save a store.
 
@@ -246,7 +246,7 @@ class Project:
         """
         self.store.save(filename)
 
-    def update_file(self, proj_fname, infile):
+    def update_file(self, proj_fname, infile) -> None:
         """
         Update a file.
 

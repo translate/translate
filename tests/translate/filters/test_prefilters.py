@@ -3,13 +3,13 @@
 from translate.filters import prefilters
 
 
-def test_removekdecomments():
+def test_removekdecomments() -> None:
     assert prefilters.removekdecomments("Some sṱring") == "Some sṱring"
     assert prefilters.removekdecomments("_: Commenṱ\\n\nSome sṱring") == "Some sṱring"
     assert prefilters.removekdecomments("_: Commenṱ\\n\n") == ""
 
 
-def test_filterwordswithpunctuation():
+def test_filterwordswithpunctuation() -> None:
     string = "Nothing in here."
     filtered = prefilters.filterwordswithpunctuation(string)
     assert filtered == string

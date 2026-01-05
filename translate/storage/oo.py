@@ -45,7 +45,7 @@ normalfilenamechars = (
 
 
 class normalizechar(dict):
-    def __init__(self, normalchars):
+    def __init__(self, normalchars) -> None:
         self.normalchars = {}
         for char in normalchars:
             self.normalchars[ord(char)] = char
@@ -175,7 +175,7 @@ def unescape_help_text(text):
 class ooline:
     """this represents one line, one translation in an .oo file."""
 
-    def __init__(self, parts=None):
+    def __init__(self, parts=None) -> None:
         """Construct an ooline from its parts."""
         if parts is None:
             (
@@ -198,7 +198,7 @@ class ooline:
         else:
             self.setparts(parts)
 
-    def setparts(self, parts):
+    def setparts(self, parts) -> None:
         """Create a line from its tab-delimited parts."""
         if len(parts) != 15:
             warnings.warn(
@@ -254,7 +254,7 @@ class ooline:
             return unescape_help_text(self._text)
         return unescape_text(self._text)
 
-    def settext(self, text):
+    def settext(self, text) -> None:
         """Sets the text column and handle escaping."""
         if self.sourcefile.endswith(".xhp"):
             self._text = escape_help_text(text)
@@ -263,7 +263,7 @@ class ooline:
 
     text = property(gettext, settext)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Convert to a string."""
         return self.getoutput()
 
@@ -287,17 +287,17 @@ class ooline:
 class oounit:
     """this represents a number of translations of a resource."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Construct the oounit."""
         self.languages = {}
         self.lines = []
 
-    def addline(self, line):
+    def addline(self, line) -> None:
         """Add a line to the oounit."""
         self.languages[line.languageid] = line
         self.lines.append(line)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Convert to a string."""
         return self.getoutput()
 
@@ -321,7 +321,7 @@ class oofile:
     UnitClass = oounit
     encoding = "utf-8"
 
-    def __init__(self, input=None):
+    def __init__(self, input=None) -> None:
         """Constructs the oofile."""
         self.oolines = []
         self.units = []
@@ -331,7 +331,7 @@ class oofile:
         if input is not None:
             self.parse(input)
 
-    def addline(self, thisline):
+    def addline(self, thisline) -> None:
         """Adds a parsed line to the file."""
         key = thisline.getkey()
         element = self.ookeys.get(key)
@@ -344,7 +344,7 @@ class oofile:
         if thisline.languageid not in self.languages:
             self.languages.append(thisline.languageid)
 
-    def parse(self, input):
+    def parse(self, input) -> None:
         """Parses lines and adds them to the file."""
         if not self.filename:
             self.filename = getattr(input, "name", "")
@@ -362,12 +362,12 @@ class oofile:
             thisline = ooline(parts)
             self.addline(thisline)
 
-    def __bytes__(self):
+    def __bytes__(self) -> bytes:
         out = BytesIO()
         self.serialize(out)
         return out.getvalue()
 
-    def serialize(self, out, skip_source=False, fallback_lang=None):
+    def serialize(self, out, skip_source=False, fallback_lang=None) -> None:
         """Convert to a string. double check that unicode is handled."""
         out.write(self.getoutput(skip_source, fallback_lang).encode(self.encoding))
 
@@ -396,7 +396,7 @@ class oomultifile:
 
     encoding = "utf-8"
 
-    def __init__(self, filename, mode=None, multifilestyle="single"):
+    def __init__(self, filename, mode=None, multifilestyle="single") -> None:
         """Initialises oomultifile from a seekable inputfile or writable outputfile."""
         self.filename = filename
         if mode is None:
@@ -409,7 +409,7 @@ class oomultifile:
         if mode.startswith("r"):
             self.createsubfileindex()
 
-    def createsubfileindex(self):
+    def createsubfileindex(self) -> None:
         """Reads in all the lines and works out the subfiles."""
         for linenum, line in enumerate(self.multifile):
             subfile = self.getsubfilename(line)
@@ -417,7 +417,7 @@ class oomultifile:
                 self.subfilelines[subfile] = []
             self.subfilelines[subfile].append(linenum)
 
-    def getsubfilename(self, line):
+    def getsubfilename(self, line) -> str:
         """Looks up the subfile name for the line."""
         if line.count("\t") < 2:
             raise ValueError(f"invalid tab-delimited line: {line!r}")
@@ -441,7 +441,7 @@ class oomultifile:
         """Iterates through the subfile names."""
         yield from self.listsubfiles()
 
-    def __contains__(self, pathname):
+    def __contains__(self, pathname) -> bool:
         """Checks if this pathname is a valid subfile."""
         return pathname in self.subfilelines
 
@@ -465,7 +465,7 @@ class oomultifile:
     def openoutputfile(self, subfile):
         """Returns a pseudo-file object for the given subfile."""
 
-        def onclose(contents):
+        def onclose(contents) -> None:
             if isinstance(contents, bytes):
                 contents = contents.decode(self.encoding)
             self.multifile.write(contents)

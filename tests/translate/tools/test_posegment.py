@@ -24,7 +24,7 @@ class TestPOSegment:
         )
         return convertor.convertstore(inputpo)
 
-    def test_en_ja_simple(self):
+    def test_en_ja_simple(self) -> None:
         posource = """
 #: test/test.py:112
 msgid ""
@@ -56,7 +56,7 @@ msgstr ""
             == "例として、コンピュータからの「音声出力」は事前にお知らせ頂いていない場合は提供できないことに注意して下さい。"
         )
 
-    def test_en_ja_punctuation(self):
+    def test_en_ja_punctuation(self) -> None:
         """Checks that a half-width punctuation."""
         posource = """
 #: docs/intro/contributing.txt:184
@@ -105,7 +105,7 @@ class TestXLIFFSegment:
         )
         return convertor.convertstore(inputstore)
 
-    def test_xliff_en_simple(self):
+    def test_xliff_en_simple(self) -> None:
         """Test basic XLIFF segmentation."""
         xliffsource = """<?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
@@ -126,7 +126,7 @@ class TestXLIFFSegment:
         assert xliffresult.units[1].source == "This is the second sentence."
         assert xliffresult.units[1].target == "Ceci est la deuxième phrase."
 
-    def test_xliff_untranslated(self):
+    def test_xliff_untranslated(self) -> None:
         """Test XLIFF segmentation with untranslated units."""
         xliffsource = """<?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
@@ -166,7 +166,7 @@ class TestTMXSegment:
         )
         return convertor.convertstore(inputstore)
 
-    def test_tmx_en_simple(self):
+    def test_tmx_en_simple(self) -> None:
         """Test basic TMX segmentation."""
         tmxsource = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE tmx SYSTEM "tmx14.dtd">

@@ -38,7 +38,7 @@ from translate.storage.poheader import poheader
 
 
 class pocheckfilter:
-    def __init__(self, options, checkerclasses=None, checkerconfig=None):
+    def __init__(self, options, checkerclasses=None, checkerconfig=None) -> None:
         # excludefilters={}, limitfilters=None, includefuzzy=True, includereview=True, autocorrect=False):
         """Builds a checkfilter using the given checker (a list is allowed too)."""
         if checkerclasses is None:
@@ -124,7 +124,7 @@ class pocheckfilter:
 class FilterOptionParser(optrecurse.RecursiveOptionParser):
     """A specialized Option Parser for filter tools..."""
 
-    def __init__(self, formats):
+    def __init__(self, formats) -> None:
         """Construct the specialized Option Parser."""
         super().__init__(formats)
 
@@ -141,7 +141,7 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
         )
 
     @staticmethod
-    def parse_noinput(option, opt, value, parser, *args, **kwargs):
+    def parse_noinput(option, opt, value, parser, *args, **kwargs) -> None:
         """
         This sets an option to *True*, but also sets input to *-* to prevent
         an error.
@@ -149,7 +149,7 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
         setattr(parser.values, option.dest, kwargs["dest_value"])
         parser.values.input = "-"
 
-    def run(self):
+    def run(self) -> None:
         """
         Parses the arguments, and runs recursiveprocess with the resulting
         options.
@@ -221,7 +221,7 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
         return checkerconfig
 
 
-def runfilter(inputfile, outputfile, templatefile, checkfilter=None):
+def runfilter(inputfile, outputfile, templatefile, checkfilter=None) -> int:
     """Reads in inputfile, filters using checkfilter, writes to outputfile."""
     fromfile = factory.getobject(inputfile)
     tofile = checkfilter.filterfile(fromfile)
@@ -419,7 +419,7 @@ def cmdlineparser():
     return parser
 
 
-def main():
+def main() -> None:
     parser = cmdlineparser()
     parser.run()
 

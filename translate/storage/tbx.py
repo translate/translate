@@ -63,13 +63,13 @@ class tbxunit(lisa.LISAunit):
             return self.namespaced("descrip")
         return self.namespaced("note")
 
-    def removenotes(self, origin=None):
+    def removenotes(self, origin=None) -> None:
         """Remove all the translator notes."""
         notes = self.xmlelement.iterdescendants(self._get_origin_element(origin))
         for note in notes:
             self.xmlelement.remove(note)
 
-    def addnote(self, text, origin=None, position="append"):
+    def addnote(self, text, origin=None, position="append") -> None:
         """Add a note specifically in a "note" tag."""
         if position != "append":
             self.removenotes(origin=origin)
@@ -189,6 +189,6 @@ class tbxfile(lisa.LISAfile):
 </martif>"""
     XMLindent = {"indent": "    ", "toplevel": False}
 
-    def addheader(self):
+    def addheader(self) -> None:
         """Initialise headers with TBX specific things."""
         setXMLlang(self.document.getroot(), self.sourcelanguage)

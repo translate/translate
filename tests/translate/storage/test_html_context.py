@@ -11,7 +11,7 @@ def parse_html(src: str) -> htmlfile:
     return htmlfile(f)
 
 
-def test_html_context_basic():
+def test_html_context_basic() -> None:
     """Test that basic context is extracted correctly from HTML."""
     store = parse_html('<div data-translate-context="greeting">Hello world</div>')
     units = store.getunits()
@@ -20,7 +20,7 @@ def test_html_context_basic():
     )
 
 
-def test_html_context_attribute():
+def test_html_context_attribute() -> None:
     """Test that attribute is added to context."""
     store = parse_html(
         '<p data-translate-context="intro" title="Hello world">Welcome!</p>'
@@ -34,7 +34,7 @@ def test_html_context_attribute():
     assert unit1.source == "Welcome!"
 
 
-def test_html_context_attribute_with_id():
+def test_html_context_attribute_with_id() -> None:
     """Test that attributes get context hints from element IDs when duplicated."""
     src = '<p id="a" title="Hello">World</p><p id="b" title="Hello">Universe</p>'
     store = parse_html(src)
@@ -44,7 +44,7 @@ def test_html_context_attribute_with_id():
     assert contexts == {"test.html:a[title]", "test.html:b[title]"}
 
 
-def test_html_context_same_source_different_contexts():
+def test_html_context_same_source_different_contexts() -> None:
     """Test that the same source with different contexts is differentiated."""
     store = parse_html(
         '<p data-translate-context="one">Hello</p><p data-translate-context="two">Hello</p>'
@@ -56,7 +56,7 @@ def test_html_context_same_source_different_contexts():
     assert len({u.getid() for u in hello_units}) == 2
 
 
-def test_html_context_nested_outer_wins():
+def test_html_context_nested_outer_wins() -> None:
     """
     Test that outer context applies to outer unit.
 
@@ -81,7 +81,7 @@ def test_html_context_nested_outer_wins():
     assert any(u.getcontext() == "outer" for u in outer)
 
 
-def test_html_context_absent():
+def test_html_context_absent() -> None:
     """Test that absence of context is handled correctly."""
     store = parse_html("<p>No context here</p>")
     try:
@@ -91,7 +91,7 @@ def test_html_context_absent():
     assert unit.getcontext() == ""
 
 
-def test_html_context_id_overridden_by_explicit():
+def test_html_context_id_overridden_by_explicit() -> None:
     """Test that data-translate-context overrides id fallback."""
     store = parse_html('<p id="greeting" data-translate-context="ctx">Hello</p>')
     units = [u for u in store.getunits() if u.source == "Hello"]
@@ -99,7 +99,7 @@ def test_html_context_id_overridden_by_explicit():
     assert units[0].getcontext() == "ctx"
 
 
-def test_html_context_id_not_used_when_no_duplicates():
+def test_html_context_id_not_used_when_no_duplicates() -> None:
     """Test that ID is not used when there are no duplicate sources."""
     src = '<p id="a">Hello</p><p id="b">World</p>'
     store = parse_html(src)
@@ -115,7 +115,7 @@ def test_html_context_id_not_used_when_no_duplicates():
     assert world_unit.getcontext() == ""
 
 
-def test_html_context_id_not_used_when_data_translate_context_identical():
+def test_html_context_id_not_used_when_data_translate_context_identical() -> None:
     """Test that identical data-translate-context has the same context."""
     store = parse_html(
         '<p data-translate-context="greet">Hello</p><div id="lala"><span data-translate-context="greet">Hello</span></div>'
@@ -126,7 +126,7 @@ def test_html_context_id_not_used_when_data_translate_context_identical():
     assert hello_units[0].getcontext() == "greet"
 
 
-def test_html_context_disambiguates_duplicates_with_id():
+def test_html_context_disambiguates_duplicates_with_id() -> None:
     """Test that ID is used to disambiguate when the same source appears multiple times."""
     src = '<p id="a">Hello</p><p id="b">Hello</p>'
     store = parse_html(src)
@@ -137,7 +137,7 @@ def test_html_context_disambiguates_duplicates_with_id():
     assert contexts == {"test.html:a", "test.html:b"}
 
 
-def test_html_context_disambiguates_duplicates_with_ancestor_id():
+def test_html_context_disambiguates_duplicates_with_ancestor_id() -> None:
     """Test that when identical sources are under different ancestor IDs, ancestor path hints are applied."""
     src = (
         '<div id="section_a"><p>Hello</p></div>\n<div id="section_b"><p>Hello</p></div>'

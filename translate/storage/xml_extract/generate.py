@@ -41,7 +41,7 @@ def _get_tag_arrays(dom_node):
     return child_dict
 
 
-def apply_translations(dom_node, unit_node, do_translate):
+def apply_translations(dom_node, unit_node, do_translate) -> None:
     tag_array = _get_tag_arrays(dom_node)
     for unit_child_index, unit_child in unit_node.children.items():
         tag, index = unit_child_index
@@ -127,7 +127,7 @@ def _map_source_dom_to_doc_dom(unit_node, source_dom_node):
     dom_tree_roots = find_placeable_dom_tree_roots(unit_node)
     source_dom_to_doc_dom = {}
 
-    def loop(unit_node, source_dom_node):
+    def loop(unit_node, source_dom_node) -> None:
         for child_unit_node, child_source_dom in zip(
             unit_node.placeables, source_dom_node, strict=False
         ):
@@ -191,7 +191,7 @@ def _get_translated_node(target_node, target_dom_to_doc_dom):
     return dom_node
 
 
-def _build_translated_dom(dom_node, target_node, target_dom_to_doc_dom):
+def _build_translated_dom(dom_node, target_node, target_dom_to_doc_dom) -> None:
     """
     Use the "shape" of 'target_node' (which is a DOM tree) to insert nodes
     into the DOM tree rooted at 'dom_node'.
@@ -252,7 +252,7 @@ def replace_dom_text(
     positions in unit.source).
     """
 
-    def action(dom_node, unit):
+    def action(dom_node, unit) -> None:
         """
         Use the unit's target (or source in the case where there is no
         translation) to update the text in the dom_node and at the tails of its

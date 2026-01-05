@@ -78,7 +78,7 @@ class po2ts:
         return plural
 
     @staticmethod
-    def convertstore(inputstore, outputfile, templatefile=None, context=None):
+    def convertstore(inputstore, outputfile, templatefile=None, context=None) -> None:
         """Converts a .po file to .ts format (using a template .ts file if given)."""
         tsfile = ts2.tsfile() if templatefile is None else ts2.tsfile(templatefile)
         for inputunit in inputstore.units:
@@ -114,7 +114,7 @@ class po2ts:
         tsfile.serialize(outputfile)
 
 
-def convertpo(inputfile, outputfile, templatefile, context):
+def convertpo(inputfile, outputfile, templatefile, context) -> int:
     """Reads in stdin using fromfileclass, converts using convertorclass, writes to stdout."""
     inputstore = po.pofile(inputfile)
     if inputstore.isempty():
@@ -124,7 +124,7 @@ def convertpo(inputfile, outputfile, templatefile, context):
     return 1
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     formats = {"po": ("ts", convertpo), ("po", "ts"): ("ts", convertpo)}
     parser = convert.ConvertOptionParser(
         formats, usepots=False, usetemplates=True, description=__doc__

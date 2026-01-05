@@ -5,7 +5,7 @@ from translate.lang.scn import SicilianChecker
 from ..filters.test_checks import fails, passes
 
 
-def test_italianisms():
+def test_italianisms() -> None:
     """Test that we can detect italianisms."""
     scn_checker = SicilianChecker()
     assert passes(scn_checker.italianisms, "", "")
@@ -19,7 +19,7 @@ def test_italianisms():
     assert passes(scn_checker.italianisms, "", string.ascii_uppercase)
 
 
-def test_vocalism():
+def test_vocalism() -> None:
     """Test that we can detect vocalism issues."""
     scn_checker = SicilianChecker()
     assert passes(scn_checker.vocalism, "", "")
@@ -32,7 +32,7 @@ def test_vocalism():
     assert passes(scn_checker.vocalism, "", string.ascii_uppercase)
 
 
-def test_suffixes():
+def test_suffixes() -> None:
     """Test that we can detect wrong suffixes."""
     scn_checker = SicilianChecker()
     assert passes(scn_checker.suffixes, "", "")

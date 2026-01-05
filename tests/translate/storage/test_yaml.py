@@ -10,7 +10,7 @@ from . import test_monolingual
 class TestYAMLResourceUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = yaml.YAMLUnit
 
-    def test_getlocations(self):
+    def test_getlocations(self) -> None:
         unit = self.UnitClass("teststring")
         unit.setid("some-key")
         assert unit.getlocations() == ["some-key"]
@@ -19,29 +19,29 @@ class TestYAMLResourceUnit(test_monolingual.TestMonolingualUnit):
 class TestYAMLResourceStore(test_monolingual.TestMonolingualStore):
     StoreClass = yaml.YAMLFile
 
-    def test_serialize(self):
+    def test_serialize(self) -> None:
         store = self.StoreClass()
         store.parse("key: value")
         assert bytes(store) == b"key: value\n"
 
-    def test_empty(self):
+    def test_empty(self) -> None:
         store = self.StoreClass()
         store.parse("{}")
         assert bytes(store) == b"{}\n"
 
-    def test_edit(self):
+    def test_edit(self) -> None:
         store = self.StoreClass()
         store.parse("key: value")
         store.units[0].target = "second"
         assert bytes(store) == b"key: second\n"
 
-    def test_edit_unicode(self):
+    def test_edit_unicode(self) -> None:
         store = self.StoreClass()
         store.parse("key: value")
         store.units[0].target = "zkouška"
         assert bytes(store) == "key: zkouška\n".encode()
 
-    def test_parse_unicode_list(self):
+    def test_parse_unicode_list(self) -> None:
         data = """list:
 - zkouška
 """
@@ -51,7 +51,7 @@ class TestYAMLResourceStore(test_monolingual.TestMonolingualStore):
         store.units[0].target = "změna"
         assert bytes(store).decode("utf-8") == data.replace("zkouška", "změna")
 
-    def test_ordering(self):
+    def test_ordering(self) -> None:
         store = self.StoreClass()
         store.parse(
             """
@@ -64,7 +64,7 @@ baz: baz
         assert store.units[0].source == "foo"
         assert store.units[2].source == "baz"
 
-    def test_initial_comments(self):
+    def test_initial_comments(self) -> None:
         data = """# Hello world.
 
 foo: bar
@@ -76,7 +76,7 @@ foo: bar
         assert store.units[0].source == "bar"
         assert bytes(store).decode("ascii") == data
 
-    def test_string_key(self):
+    def test_string_key(self) -> None:
         data = """"yes": Oficina
 """
         store = self.StoreClass()
@@ -86,7 +86,7 @@ foo: bar
         assert store.units[0].source == "Oficina"
         assert bytes(store).decode("ascii") == data
 
-    def test_nested(self):
+    def test_nested(self) -> None:
         data = """foo:
   bar: bar
   baz:
@@ -106,7 +106,7 @@ eggs: spam
         assert store.units[2].source == "spam"
         assert bytes(store).decode("ascii") == data
 
-    def test_multiline(self):
+    def test_multiline(self) -> None:
         """These are used in Discourse and Diaspora* translation."""
         data = """invite: |-
   Ola!
@@ -128,7 +128,7 @@ Recibiches unha invitación para unirte!"""
         assert store.units[1].source == "spam"
         assert bytes(store).decode("utf-8") == data
 
-    def test_boolean(self):
+    def test_boolean(self) -> None:
         store = self.StoreClass()
         store.parse(
             """
@@ -144,7 +144,7 @@ foo: True
 """
         )
 
-    def test_integer(self):
+    def test_integer(self) -> None:
         store = self.StoreClass()
         store.parse(
             """
@@ -160,7 +160,7 @@ foo: 1
 """
         )
 
-    def test_no_quote_strings(self):
+    def test_no_quote_strings(self) -> None:
         """These are used in OpenStreeMap translation."""
         store = self.StoreClass()
         store.parse(
@@ -177,7 +177,7 @@ eggs: No quoting at all
 """
         )
 
-    def test_double_quote_strings(self):
+    def test_double_quote_strings(self) -> None:
         """These are used in OpenStreeMap translation."""
         store = self.StoreClass()
         store.parse(
@@ -194,7 +194,7 @@ bar: "quote, double"
 """
         )
 
-    def test_single_quote_strings(self):
+    def test_single_quote_strings(self) -> None:
         """These are used in OpenStreeMap translation."""
         store = self.StoreClass()
         store.parse(
@@ -211,7 +211,7 @@ foo: 'quote, single'
 """
         )
 
-    def test_avoid_escaping_double_quote_strings(self):
+    def test_avoid_escaping_double_quote_strings(self) -> None:
         """These are used in OpenStreeMap translation."""
         store = self.StoreClass()
         store.parse(
@@ -228,7 +228,7 @@ spam: 'avoid escaping "double quote"'
 """
         )
 
-    def test_avoid_escaping_single_quote_strings(self):
+    def test_avoid_escaping_single_quote_strings(self) -> None:
         """Test avoid escaping single quotes."""
         store = self.StoreClass()
         store.parse(
@@ -245,7 +245,7 @@ spam: "avoid escaping 'single quote'"
 """
         )
 
-    def test_escaped_double_quotes(self):
+    def test_escaped_double_quotes(self) -> None:
         """These are used in OpenStreeMap translation."""
         store = self.StoreClass()
         store.parse(
@@ -262,7 +262,7 @@ foo: "Hello \"World\"."
 """
         )
 
-    def test_newlines(self):
+    def test_newlines(self) -> None:
         """These are used in OpenStreeMap translation."""
         store = self.StoreClass()
         store.parse(
@@ -279,7 +279,7 @@ foo: "Hello \n World."
 """
         )
 
-    def test_abbreviated_list(self):
+    def test_abbreviated_list(self) -> None:
         """These are used in Redmine and Discourse translation."""
         data = """day_names: [Domingo, Luns, Martes, Mércores, Xoves, Venres, Sábado]
 """
@@ -302,7 +302,7 @@ foo: "Hello \n World."
         assert store.units[6].source == "Sábado"
         assert bytes(store).decode("utf-8") == data
 
-    def test_abbreviated_dictionary(self):
+    def test_abbreviated_dictionary(self) -> None:
         """Test abbreviated dictionary syntax."""
         data = """martin: {name: Martin D'vloper, job: Developer, skill: Elite}
 """
@@ -317,7 +317,7 @@ foo: "Hello \n World."
         assert store.units[2].source == "Elite"
         assert bytes(store).decode("ascii") == data
 
-    def test_key_nesting(self):
+    def test_key_nesting(self) -> None:
         store = self.StoreClass()
         unit = self.StoreClass.UnitClass("teststring")
         unit.setid("key")
@@ -332,7 +332,7 @@ foo: "Hello \n World."
 """
         )
 
-    def test_add_to_mepty(self):
+    def test_add_to_mepty(self) -> None:
         store = self.StoreClass()
         store.parse("")
         unit = self.StoreClass.UnitClass("teststring")
@@ -352,7 +352,7 @@ foo: "Hello \n World."
         ruamel.yaml.version_info < (0, 16, 6),
         reason="Empty keys serialization broken in ruamel.yaml<0.16.6",
     )
-    def test_empty_key(self):
+    def test_empty_key(self) -> None:
         yaml_source = b"""'': Jedna
 foo:
   '': Dve
@@ -366,7 +366,7 @@ foo:
         assert store.units[1].source == "Dve"
         assert bytes(store) == yaml_source
 
-    def test_dict_in_list(self):
+    def test_dict_in_list(self) -> None:
         data = """e1:
 - s1: Subtag 1
 """
@@ -375,7 +375,7 @@ foo:
         assert len(store.units) == 1
         assert bytes(store) == data.encode("ascii")
 
-    def test_dump_args(self):
+    def test_dump_args(self) -> None:
         data = """e1:
 - s1: Subtag 1
 """
@@ -385,7 +385,7 @@ foo:
         assert len(store.units) == 1
         assert bytes(store) == data.replace("\n", "\r\n").encode("ascii")
 
-    def test_anchors(self):
+    def test_anchors(self) -> None:
         data = """location: &location_attributes
   title: Location
   temporary_question: Temporary?
@@ -400,14 +400,14 @@ location_batch:
         assert len(store.units) == 5
         assert bytes(store).decode("ascii") == data
 
-    def test_tagged_scalar(self):
+    def test_tagged_scalar(self) -> None:
         store = self.StoreClass()
         store.parse("key: =")
         assert store.units[0].target == "="
         store.units[0].target = "second"
         assert bytes(store) == b"key: second\n"
 
-    def test_numeric(self):
+    def test_numeric(self) -> None:
         data = """error:
   404: Not found
   server: Server error
@@ -425,7 +425,7 @@ location_batch:
 """
         )
 
-    def test_remove(self):
+    def test_remove(self) -> None:
         data = """test:
   1:
     one: one
@@ -467,12 +467,12 @@ location_batch:
 """
         )
 
-    def test_special(self):
+    def test_special(self) -> None:
         store = self.StoreClass()
         with pytest.raises(base.ParseError):
             store.parse("key: other\x08string")
 
-    def test_quotes_roundtrip(self):
+    def test_quotes_roundtrip(self) -> None:
         data = """locales:
   quoted: "Quoted"
   plain: Plain
@@ -485,7 +485,7 @@ location_batch:
         store.units[0].target = "Changed"
         assert bytes(store).decode() == data.replace("Quoted", "Changed")
 
-    def test_comment_extraction_simple(self):
+    def test_comment_extraction_simple(self) -> None:
         """Test extracting simple comments from YAML."""
         data = """# This is a comment for key1
 key1: value1
@@ -499,7 +499,7 @@ key2: value2
         assert store.units[0].getnotes() == "This is a comment for key1"
         assert store.units[1].getnotes() == "This is a comment for key2"
 
-    def test_comment_extraction_multiline(self):
+    def test_comment_extraction_multiline(self) -> None:
         """Test extracting multi-line comments from YAML."""
         data = """# This is a comment for key1
 # with multiple lines
@@ -520,7 +520,7 @@ key2: value2
         expected_note2 = "Another comment\nfor key2"
         assert store.units[1].getnotes() == expected_note2
 
-    def test_comment_extraction_nested(self):
+    def test_comment_extraction_nested(self) -> None:
         """Test extracting comments from nested structures."""
         data = """# Comment for parent
 parent:
@@ -533,7 +533,7 @@ parent:
         assert store.units[0].getid() == "parent->child"
         assert store.units[0].getnotes() == "Comment for child"
 
-    def test_comment_extraction_mixed(self):
+    def test_comment_extraction_mixed(self) -> None:
         """Test YAML with some keys having comments and some not."""
         data = """# Comment for key1
 key1: value1
@@ -550,7 +550,7 @@ key3: value3
         assert store.units[1].getnotes() == ""
         assert store.units[2].getnotes() == "Comment for key3"
 
-    def test_no_comment_backwards_compat(self):
+    def test_no_comment_backwards_compat(self) -> None:
         """Test that YAML without comments still works."""
         data = """key1: value1
 key2: value2
@@ -561,7 +561,7 @@ key2: value2
         assert store.units[0].getnotes() == ""
         assert store.units[1].getnotes() == ""
 
-    def test_multiline_literal_format(self):
+    def test_multiline_literal_format(self) -> None:
         """Test that multiline strings use literal format (|) for better readability."""
         # Test 1: New file with multiline content
         store = self.StoreClass()
@@ -614,7 +614,7 @@ key2: value2
 class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
     StoreClass = yaml.RubyYAMLFile
 
-    def test_ruby_list(self):
+    def test_ruby_list(self) -> None:
         data = """en-US:
   date:
     formats:
@@ -634,7 +634,7 @@ class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
         store.parse(data)
         assert bytes(store).decode("ascii") == data
 
-    def test_ruby(self):
+    def test_ruby(self) -> None:
         data = """en:
   language_name: English
   language_name_english: English
@@ -646,19 +646,19 @@ class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
         store.parse(data)
         assert bytes(store) == data.encode("ascii")
 
-    def test_ruby_wrong(self):
+    def test_ruby_wrong(self) -> None:
         data = """no_data: No data
 """
         store = self.StoreClass()
         store.parse(data)
         assert bytes(store) == data.encode("ascii")
 
-    def test_invalid_value(self):
+    def test_invalid_value(self) -> None:
         store = yaml.YAMLFile()
         with pytest.raises(base.ParseError):
             store.parse('val: "\\u string"')
 
-    def test_ruby_plural(self):
+    def test_ruby_plural(self) -> None:
         data = """en:
   message:
     one: There is one message
@@ -672,12 +672,12 @@ class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
         )
         assert bytes(store) == data.encode("ascii")
 
-    def test_empty(self):
+    def test_empty(self) -> None:
         store = self.StoreClass()
         store.parse("{}")
         assert bytes(store) == b"{}\n"
 
-    def test_anchors(self):
+    def test_anchors(self) -> None:
         data = """en:
   location: &location_attributes
     title: Location
@@ -693,7 +693,7 @@ class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
         assert len(store.units) == 5
         assert bytes(store).decode("ascii") == data
 
-    def test_type_change(self):
+    def test_type_change(self) -> None:
         original = """en:
   days_on: '["Sunday", "Monday"]'
 """
@@ -710,7 +710,7 @@ class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
             store.addunit(unit)
         assert bytes(store).decode("ascii") == changed
 
-    def test_add(self):
+    def test_add(self) -> None:
         original = """en:
 """
         changed = """en:
@@ -728,7 +728,7 @@ class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
         store.addunit(unit)
         assert bytes(store).decode("ascii") == changed
 
-    def test_ruby_plural_blank(self):
+    def test_ruby_plural_blank(self) -> None:
         data = """en:
   string:
   message:
@@ -740,7 +740,7 @@ class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
         assert len(store.units) == 0
         assert bytes(store).decode() == data
 
-    def test_ruby_plural_partial(self):
+    def test_ruby_plural_partial(self) -> None:
         data = """en:
   string:
   message:
@@ -753,7 +753,7 @@ class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
         assert len(store.units) == 1
         assert bytes(store).decode() == data
 
-    def test_ruby_plural_pt_br(self):
+    def test_ruby_plural_pt_br(self) -> None:
         data = """pt_br:
   string:
   message:
@@ -767,7 +767,7 @@ class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
         assert len(store.units) == 1
         assert bytes(store).decode() == data
 
-    def test_bug_ruby_remove_zero_few_and_mix_others(self):
+    def test_bug_ruby_remove_zero_few_and_mix_others(self) -> None:
         data = """en:
   string:
   message:

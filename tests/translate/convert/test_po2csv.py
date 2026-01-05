@@ -35,7 +35,7 @@ class TestPO2CSV:
         assert headerless_len(storage.units) == 1
         return first_translatable(storage)
 
-    def test_simpleentity(self):
+    def test_simpleentity(self) -> None:
         """Checks that a simple csv entry definition converts properly to a po entry."""
         minipo = r'''#: term.cpp
 msgid "Term"
@@ -46,7 +46,7 @@ msgstr "asdf"'''
         assert unit.source == "Term"
         assert unit.target == "asdf"
 
-    def test_multiline(self):
+    def test_multiline(self) -> None:
         """Tests multiline po entries."""
         minipo = r'''msgid "First part "
 "and extra"
@@ -57,7 +57,7 @@ msgstr "Eerste deel "
         assert unit.source == "First part and extra"
         assert unit.target == "Eerste deel en ekstra"
 
-    def test_escapednewlines(self):
+    def test_escapednewlines(self) -> None:
         """Test the escaping of newlines."""
         minipo = r"""msgid "First line\nSecond line"
 msgstr "Eerste lyn\nTweede lyn"
@@ -71,7 +71,7 @@ msgstr "Eerste lyn\nTweede lyn"
         assert unit.source == "First line\nSecond line"
         assert unit.target == "Eerste lyn\nTweede lyn"
 
-    def test_escapedtabs(self):
+    def test_escapedtabs(self) -> None:
         """Test the escaping of tabs."""
         minipo = r"""msgid "First column\tSecond column"
 msgstr "Eerste kolom\tTweede kolom"
@@ -85,7 +85,7 @@ msgstr "Eerste kolom\tTweede kolom"
             == "Eerste kolom\tTweede kolom"
         )
 
-    def test_escapedquotes(self):
+    def test_escapedquotes(self) -> None:
         """Test the escaping of quotes (and slash)."""
         minipo = r"""msgid "Hello \"Everyone\""
 msgstr "Good day \"All\""
@@ -97,7 +97,7 @@ msgstr "Gebruik \\\"."
         assert csvfile.findunit('Hello "Everyone"').target == 'Good day "All"'
         assert csvfile.findunit('Use \\".').target == 'Gebruik \\".'
 
-    def test_escapedescape(self):
+    def test_escapedescape(self) -> None:
         """Test the escaping of pure escapes is unaffected."""
         minipo = r"""msgid "Find\\Options"
 msgstr "Vind\\Opsies"
@@ -107,7 +107,7 @@ msgstr "Vind\\Opsies"
         print(csvfile)
         assert csvfile.findunit(r"Find\Options").target == r"Vind\Opsies"
 
-    def test_singlequotes(self):
+    def test_singlequotes(self) -> None:
         """Tests that single quotes are preserved correctly."""
         minipo = """msgid "source 'source'"\nmsgstr "target 'target'"\n"""
         csvfile = self.po2csv(minipo)
@@ -120,7 +120,7 @@ msgstr "Vind\\Opsies"
         assert csvfile.findunit(r"'source'").target == r"'target'"
         # TODO check that we escape on writing not in the internal representation
 
-    def test_empties(self):
+    def test_empties(self) -> None:
         """Tests that things keep working with empty entries."""
         minipo = 'msgid "Source"\nmsgstr ""\n\nmsgid ""\nmsgstr ""'
         csvfile = self.po2csv(minipo)
@@ -128,7 +128,7 @@ msgstr "Vind\\Opsies"
         assert csvfile.findunit("Source").target == ""
         assert headerless_len(csvfile.units) == 1
 
-    def test_kdecomments(self):
+    def test_kdecomments(self) -> None:
         """Test that we don't carry KDE comments to CSV."""
         minipo = '#: simple.c\nmsgid "_: KDE comment\\n"\n"Same"\nmsgstr "Same"\n'
         csvfile = self.po2csv(minipo)
@@ -146,7 +146,7 @@ class TestPO2CSVCommand(test_convert.TestConvertCommand, TestPO2CSV):
         "--columnorder=COLUMNORDER",
     ]
 
-    def test_columnorder(self):
+    def test_columnorder(self) -> None:
         pocontent = '#: simple.c\nmsgid "Same"\nmsgstr "Target"\n'
         self.create_testfile("test.po", pocontent)
 
@@ -168,7 +168,7 @@ class TestPO2CSVCommand(test_convert.TestConvertCommand, TestPO2CSV):
 """
         )
 
-    def test_context(self):
+    def test_context(self) -> None:
         pocontent = '#: simple.c\nmsgctxt "Context"\nmsgid "Same"\nmsgstr "Target"\n'
         self.create_testfile("test.po", pocontent)
 

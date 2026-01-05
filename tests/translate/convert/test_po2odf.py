@@ -13,7 +13,7 @@ class TestPO2ODFCommand(test_convert.TestConvertCommand):
         "-t TEMPLATE, --template=TEMPLATE",
     ]
 
-    def test_convert(self):
+    def test_convert(self) -> None:
         """Test basic PO to ODF conversion."""
         posource = """# Translation file
 msgid ""
@@ -32,7 +32,7 @@ msgstr "Ahoj světe!"
         # Check that the output file was created
         assert os.path.exists(self.get_testfilename("simple.odt"))
 
-    def test_convert_with_multiple_units(self):
+    def test_convert_with_multiple_units(self) -> None:
         """Test PO to ODF conversion with multiple translation units."""
         posource = """# Translation file
 msgid ""

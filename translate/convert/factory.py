@@ -41,20 +41,20 @@ converters = {}
 
 
 class UnknownExtensionError(Exception):
-    def __init__(self, afile):
+    def __init__(self, afile) -> None:
         self.file = afile
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Unable to find extension for file: {self.file}"
 
 
 class UnsupportedConversionError(Exception):
-    def __init__(self, in_ext=None, out_ext=None, templ_ext=None):
+    def __init__(self, in_ext=None, out_ext=None, templ_ext=None) -> None:
         self.in_ext = in_ext
         self.out_ext = out_ext
         self.templ_ext = templ_ext
 
-    def __str__(self):
+    def __str__(self) -> str:
         msg = f"Unsupported conversion from {self.in_ext} to {self.out_ext}"
         if self.templ_ext:
             msg += f" with template {self.templ_ext}"

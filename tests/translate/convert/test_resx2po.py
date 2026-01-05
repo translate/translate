@@ -97,7 +97,7 @@ class TestRESX2PO:
         convertor = resx2po.resx2po()
         return convertor.convert_store(inputresx)
 
-    def test_simple(self):
+    def test_simple(self) -> None:
         """Test the most basic resx conversion."""
         resx_source = (
             self.XMLskeleton
@@ -114,7 +114,7 @@ msgstr ""
         assert str(po_result.units[1]) == poexpected
         assert headerless_len(po_result.units) == 1
 
-    def test_multiple_units(self):
+    def test_multiple_units(self) -> None:
         """Test that we can handle resx with multiple units."""
         resx_source = (
             self.XMLskeleton
@@ -130,7 +130,7 @@ msgstr ""
         assert po_result.units[0].isheader()
         assert len(po_result.units) == 3
 
-    def test_automaticcomments(self):
+    def test_automaticcomments(self) -> None:
         """Tests developer comments."""
         resx_source = (
             self.XMLskeleton
@@ -148,7 +148,7 @@ msgstr ""
         assert po_result.units[1].getnotes("developer") == "This is a comment"
         assert po_result.units[2].getnotes("developer") == ""
 
-    def test_translatorcomments(self):
+    def test_translatorcomments(self) -> None:
         """Tests translator comments."""
         resx_source = (
             self.XMLskeleton
@@ -171,7 +171,7 @@ msgstr ""
         assert po_result.units[2].getnotes("developer") == ""
         assert po_result.units[2].getnotes("translator") == ""
 
-    def test_locations(self):
+    def test_locations(self) -> None:
         """Tests location comments (#:)."""
         resx_source = (
             self.XMLskeleton
@@ -213,7 +213,7 @@ class TestRESX2POCommand(test_convert.TestConvertCommand, TestRESX2PO):
         assert len(pofile.units) == 1
         return pofile.units[0]
 
-    def test_simple_pot(self):
+    def test_simple_pot(self) -> None:
         """Tests the simplest possible conversion to a pot file."""
         resx_source = (
             self.XMLskeleton
@@ -230,7 +230,7 @@ class TestRESX2POCommand(test_convert.TestConvertCommand, TestRESX2PO):
         assert po_element.source == "A simple string"
         assert po_element.target == ""
 
-    def test_simple_po(self):
+    def test_simple_po(self) -> None:
         """Tests the simplest possible conversion to a po file."""
         resx_source = (
             self.XMLskeleton
@@ -245,7 +245,7 @@ class TestRESX2POCommand(test_convert.TestConvertCommand, TestRESX2PO):
         assert po_element.source == "A simple string"
         assert po_element.target == ""
 
-    def test_remove_duplicates(self):
+    def test_remove_duplicates(self) -> None:
         """Test that removing of duplicates works correctly."""
         resx_source = (
             self.XMLskeleton

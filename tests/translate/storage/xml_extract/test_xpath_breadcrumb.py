@@ -20,7 +20,7 @@
 from translate.storage.xml_extract import xpath_breadcrumb
 
 
-def test_breadcrumb():
+def test_breadcrumb() -> None:
     xb = xpath_breadcrumb.XPathBreadcrumb()
     assert xb.xpath == ""
 

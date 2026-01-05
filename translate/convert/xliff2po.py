@@ -93,7 +93,7 @@ class xliff2po:
         return thetargetfile
 
 
-def convertxliff(inputfile, outputfile, templates, duplicatestyle="msgctxt"):
+def convertxliff(inputfile, outputfile, templates, duplicatestyle="msgctxt") -> int:
     """
     Reads in stdin using fromfileclass, converts using convertorclass,
     writes to stdout.
@@ -106,7 +106,7 @@ def convertxliff(inputfile, outputfile, templates, duplicatestyle="msgctxt"):
     return 1
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     formats = {
         "xlf": ("po", convertxliff),
         "xliff": ("po", convertxliff),

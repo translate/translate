@@ -8,19 +8,19 @@ from translate.storage import directory
 class TestDirectory:
     """a test class to run tests on a test Pootle Server."""
 
-    def setup_method(self, method):
+    def setup_method(self, method) -> None:
         """Sets up a test directory."""
         print("setup_method called on", self.__class__.__name__)
         self.testdir = f"{self.__class__.__name__}_testdir"
         self.cleardir(self.testdir)
         os.mkdir(self.testdir)
 
-    def teardown_method(self, method):
+    def teardown_method(self, method) -> None:
         """Removes the attributes set up by setup_method."""
         self.cleardir(self.testdir)
 
     @staticmethod
-    def cleardir(dirname):
+    def cleardir(dirname) -> None:
         """Removes the given directory."""
         if os.path.exists(dirname):
             for dirpath, subdirs, filenames in os.walk(dirname, topdown=False):
@@ -33,22 +33,22 @@ class TestDirectory:
         assert not os.path.exists(dirname)
 
     @staticmethod
-    def touchfiles(dir, filenames, content=None):
+    def touchfiles(dir, filenames, content=None) -> None:
         for filename in filenames:
             with open(os.path.join(dir, filename), "w") as fh:
                 if content:
                     fh.write(content)
 
-    def mkdir(self, dir):
+    def mkdir(self, dir) -> None:
         """Makes a directory inside self.testdir."""
         os.mkdir(os.path.join(self.testdir, dir))
 
-    def test_created(self):
+    def test_created(self) -> None:
         """Test that the directory actually exists."""
         print(self.testdir)
         assert os.path.isdir(self.testdir)
 
-    def test_basic(self):
+    def test_basic(self) -> None:
         """Tests basic functionality."""
         files = ["a.po", "b.po", "c.po"]
         files.sort()
@@ -59,7 +59,7 @@ class TestDirectory:
         filenames.sort()
         assert filenames == files
 
-    def test_structure(self):
+    def test_structure(self) -> None:
         """Tests a small directory structure."""
         files = ["a.po", "b.po", "c.po"]
         self.touchfiles(self.testdir, files)
@@ -73,7 +73,7 @@ class TestDirectory:
         files.sort()
         assert filenames == files
 
-    def test_getunits(self):
+    def test_getunits(self) -> None:
         """Tests basic functionality."""
         files = ["a.po", "b.po", "c.po"]
         posource = """msgid "bla"\nmsgstr "blabla"\n"""

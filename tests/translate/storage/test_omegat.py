@@ -16,5 +16,5 @@ class TestOmegaTFile(test_base.TestTranslationStore):
         reason="This doesn't work, due to two store classes handling different "
         "extensions, but factory listing it as one supported file type"
     )
-    def test_extensions(self):
+    def test_extensions(self) -> None:
         super().test_extensions()

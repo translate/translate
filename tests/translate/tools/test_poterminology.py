@@ -8,7 +8,7 @@ sample_po_file = base_dir / "xliff_conformance" / "af-pootle.po"
 
 
 class TestPOTerminology:
-    def test_term_extraction(self):
+    def test_term_extraction(self) -> None:
         """Test basic term extraction/filtering from a po file."""
         extractor = poterminology.TerminologyExtractor()
         # When no content has been provided, returns a simple dict
@@ -24,7 +24,7 @@ class TestPOTerminology:
         filtered_terms = extractor.filter_terms(terms)
         assert filtered_terms[0][0] > filtered_terms[-1][0]
 
-    def test_unitinfo_stores_minimal_data(self):
+    def test_unitinfo_stores_minimal_data(self) -> None:
         """Test that UnitInfo stores minimal data instead of full unit objects."""
         extractor = poterminology.TerminologyExtractor()
 

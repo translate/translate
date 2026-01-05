@@ -35,7 +35,7 @@ class TestPO2Ical:
         """Helper that converts to target format string without using files."""
         return self._convert(*args, **kwargs)[1].getvalue().decode("utf-8")
 
-    def test_convert_empty_file(self):
+    def test_convert_empty_file(self) -> None:
         """Check that an empty PO converts to valid iCalendar."""
         input_string = ""
         icalendar_boilerplate = """BEGIN:VCALENDAR
@@ -55,7 +55,7 @@ END:VCALENDAR
         expected_output = icalendar_boilerplate % "Value"
         assert expected_output == self._convert_to_string(input_string, template_string)
 
-    def test_summary(self):
+    def test_summary(self) -> None:
         """Check that a simple PO converts valid iCalendar SUMMARY."""
         input_string = """
 #: [uid1@example.com]SUMMARY
@@ -79,7 +79,7 @@ END:VCALENDAR
         expected_output = icalendar_boilerplate % "Waarde"
         assert expected_output == self._convert_to_string(input_string, template_string)
 
-    def test_description(self):
+    def test_description(self) -> None:
         """Check that a simple PO converts valid iCalendar DESCRIPTION."""
         input_string = """
 #: [uid1@example.com]DESCRIPTION
@@ -103,7 +103,7 @@ END:VCALENDAR
         expected_output = icalendar_boilerplate % "A miña descrición"
         assert expected_output == self._convert_to_string(input_string, template_string)
 
-    def test_location(self):
+    def test_location(self) -> None:
         """Check that a simple PO converts valid iCalendar LOCATION."""
         input_string = """
 #: [uid1@example.com]LOCATION
@@ -127,7 +127,7 @@ END:VCALENDAR
         expected_output = icalendar_boilerplate % "O lugar"
         assert expected_output == self._convert_to_string(input_string, template_string)
 
-    def test_comment(self):
+    def test_comment(self) -> None:
         """Check that a simple PO converts valid iCalendar COMMENT."""
         input_string = """
 #: [uid1@example.com]COMMENT
@@ -151,7 +151,7 @@ END:VCALENDAR
         expected_output = icalendar_boilerplate % "Comentarios ao chou"
         assert expected_output == self._convert_to_string(input_string, template_string)
 
-    def test_complex_icalendar(self):
+    def test_complex_icalendar(self) -> None:
         """Check that a PO converts valid iCalendar."""
         input_string = """
 #: [uid1@example.com]SUMMARY
@@ -200,7 +200,7 @@ END:VCALENDAR
         )
         assert expected_output == self._convert_to_string(input_string, template_string)
 
-    def test_convert_skip_fuzzy(self):
+    def test_convert_skip_fuzzy(self) -> None:
         """Check that by default fuzzy units are converted with source text."""
         input_string = """
 #, fuzzy
@@ -225,7 +225,7 @@ END:VCALENDAR
         expected_output = icalendar_boilerplate % "Value"
         assert expected_output == self._convert_to_string(input_string, template_string)
 
-    def test_convert_include_fuzzy(self):
+    def test_convert_include_fuzzy(self) -> None:
         """Check fuzzy units are converted with target text if specified."""
         input_string = """
 #, fuzzy
@@ -252,12 +252,12 @@ END:VCALENDAR
             input_string, template_string, include_fuzzy=True
         )
 
-    def test_no_template(self):
+    def test_no_template(self) -> None:
         """Check that a template is required."""
         with pytest.raises(ValueError):
             self._convert_to_string("")
 
-    def test_template_location_not_in_source_file(self):
+    def test_template_location_not_in_source_file(self) -> None:
         """Check conversion when template unit is not in source file."""
         input_string = """
 #: [NOT_IN_TEMPLATE]SUMMARY
@@ -281,7 +281,7 @@ END:VCALENDAR
         expected_output = icalendar_boilerplate % "Random"
         assert expected_output == self._convert_to_string(input_string, template_string)
 
-    def test_convert_completion_below_threshold(self):
+    def test_convert_completion_below_threshold(self) -> None:
         """Check no conversion if input completion is below threshold."""
         input_string = """
 #: [uid1@example.com]SUMMARY
@@ -309,7 +309,7 @@ END:VCALENDAR
         )
         assert output == expected_output
 
-    def test_convert_completion_above_threshold(self):
+    def test_convert_completion_above_threshold(self) -> None:
         """Check there is conversion if input completion is above threshold."""
         input_string = """
 #: [uid1@example.com]SUMMARY

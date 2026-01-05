@@ -42,7 +42,7 @@ class po2yaml:
         template_file=None,
         include_fuzzy=False,
         output_threshold=None,
-    ):
+    ) -> None:
         """Initialize the converter."""
         if template_file is None:
             raise ValueError(self.MissingTemplateMessage)
@@ -69,7 +69,7 @@ class po2yaml:
         target_unit.addnote(unit.getnotes("developer"), "developer")
         return target_unit
 
-    def merge_stores(self):
+    def merge_stores(self) -> None:
         """
         Convert a source file to a target file using a template file.
 
@@ -85,7 +85,7 @@ class po2yaml:
                 input_unit = self.source_store.locationindex[template_unit_id]
                 self.target_store.addunit(self.convert_unit(input_unit))
 
-    def run(self):
+    def run(self) -> int:
         """Run the converter."""
         if not self.should_output_store:
             return 0
@@ -113,7 +113,7 @@ formats = (
 )
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     parser = convert.ConvertOptionParser(
         formats, usetemplates=True, description=__doc__
     )

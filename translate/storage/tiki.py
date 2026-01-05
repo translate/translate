@@ -63,18 +63,18 @@ from translate.storage import base
 class TikiUnit(base.TranslationUnit):
     """A tiki unit entry."""
 
-    def __init__(self, source=None, **kwargs):
+    def __init__(self, source=None, **kwargs) -> None:
         self.location = []
         super().__init__(source)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Returns a string formatted to be inserted into a tiki language.php file."""
         ret = f'"{self.source}" => "{self.target}",'
         if self.location == ["untranslated"]:
             ret = f"// {ret}"
         return f"{ret}\n"
 
-    def addlocation(self, location):
+    def addlocation(self, location) -> None:
         """
         Location is defined by the comments in the file. This function will only
         set valid locations.
@@ -94,7 +94,7 @@ class TikiStore(base.TranslationStore):
 
     UnitClass = TikiUnit
 
-    def __init__(self, inputfile=None):
+    def __init__(self, inputfile=None) -> None:
         """
         If an inputfile is specified it will be parsed.
 
@@ -105,7 +105,7 @@ class TikiStore(base.TranslationStore):
         if inputfile is not None:
             self.parse(inputfile)
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         """Will return a formatted tiki-style language.php file."""
         unused = []
         untranslated = []
@@ -144,16 +144,16 @@ class TikiStore(base.TranslationStore):
         out.write(self._tiki_footer().encode(self.encoding))
 
     @staticmethod
-    def _tiki_header():
+    def _tiki_header() -> str:
         """Returns a tiki-file header string."""
         return f"<?php // -*- coding:utf-8 -*-\n// Generated from po2tiki on {datetime.datetime.now(tz=datetime.UTC)}\n\n$lang=Array(\n"
 
     @staticmethod
-    def _tiki_footer():
+    def _tiki_footer() -> str:
         """Returns a tiki-file footer string."""
         return '"###end###"=>"###end###");\n?>'
 
-    def parse(self, input):
+    def parse(self, input) -> None:
         """
         Parse the given input into source units.
 

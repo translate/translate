@@ -41,7 +41,9 @@ class DiscardUnit(ValueError):
 class prop2po:
     """convert a .properties file to a .po file for handling the translation."""
 
-    def __init__(self, personality="java", blankmsgstr=False, duplicatestyle="msgctxt"):
+    def __init__(
+        self, personality="java", blankmsgstr=False, duplicatestyle="msgctxt"
+    ) -> None:
         self.personality = personality
         self.blankmsgstr = blankmsgstr
         self.duplicatestyle = duplicatestyle
@@ -174,7 +176,7 @@ class prop2po:
     def fold_gwt_plurals(self, postore):
         """Fold the multiple plural units of a gwt file into a gettext plural."""
 
-        def _append_plural_unit(plural_unit, units):
+        def _append_plural_unit(plural_unit, units) -> None:
             sources = [u.source for u in units]
             targets = [u.target for u in units]
             # TODO: only consider the right ones for sources and targets
@@ -193,7 +195,7 @@ class prop2po:
         }
 
         class Variants:
-            def __init__(self, unit):
+            def __init__(self, unit) -> None:
                 self.unit = unit
                 self.variants = {}
 
@@ -265,7 +267,7 @@ class prop2po:
     def fold_gaia_plurals(postore):
         """Fold the multiple plural units of a gaia file into a gettext plural."""
 
-        def _append_plural_unit(store, plurals, plural):
+        def _append_plural_unit(store, plurals, plural) -> None:
             units = plurals[plural]
             sources = [u.source for u in units]
             targets = [u.target for u in units]
@@ -454,7 +456,7 @@ def convertprop(
     pot=False,
     duplicatestyle="msgctxt",
     encoding=None,
-):
+) -> int:
     """
     Reads in inputfile using properties, converts using prop2po, writes to
     outputfile.
@@ -484,7 +486,7 @@ formats = {
 }
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     parser = convert.ConvertOptionParser(
         formats, usetemplates=True, usepots=True, description=__doc__
     )

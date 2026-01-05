@@ -123,7 +123,7 @@ def convertandroid(
     template_file,
     pot=False,
     duplicatestyle="msgctxt",
-):
+) -> int:
     """
     Reads in *input_file* using aresource, converts using :class:`android2po`,
     writes to *output_file*.
@@ -133,7 +133,7 @@ def convertandroid(
     return 1
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     formats = {
         "xml": ("po", convertandroid),
         ("xml", "xml"): ("po", convertandroid),

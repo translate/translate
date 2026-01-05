@@ -25,14 +25,14 @@ from translate.storage import markdown
 
 
 class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
-    def test_empty_document(self):
+    def test_empty_document(self) -> None:
         store = self.parse("")
         unit_sources = self.get_translation_unit_sources(store)
         assert unit_sources == []
         translated_output = self.get_translated_output(store)
         assert translated_output == ""
 
-    def test_plain_text_paragraph(self):
+    def test_plain_text_paragraph(self) -> None:
         input = [
             " A single paragraph. Slightly indented.\n",
             " Two lines.\n",
@@ -46,7 +46,7 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
             translated_output == "(A single paragraph. Slightly indented. Two lines.)\n"
         )
 
-    def test_paragraph_with_basic_markup(self):
+    def test_paragraph_with_basic_markup(self) -> None:
         input = [
             " *A* **single** _paragraph_. __Slightly__ ~~indented~~.\n",
             " **With *nested* markup**.\n",
@@ -62,7 +62,7 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
             == "(*A* **single** _paragraph_. __Slightly__ ~~indented~~. **With *nested* markup**.)\n"
         )
 
-    def test_html_character_entities(self):
+    def test_html_character_entities(self) -> None:
         input = "f&ouml;&ouml;"
         store = self.parse(input)
         unit_sources = self.get_translation_unit_sources(store)
@@ -70,7 +70,7 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
         translated_output = self.get_translated_output(store)
         assert translated_output == "(föö)\n"
 
-    def test_hard_line_break(self):
+    def test_hard_line_break(self) -> None:
         input = [
             "alpha\n",
             "beta\\\n",
@@ -86,28 +86,28 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
         # a '\n' in the translation gets rendered as '\\\n' in the markdown
         assert translated_output == "(alpha beta\\\ngamma\\\ndelta epsilon)\n"
 
-    def test_escaped_character(self):
+    def test_escaped_character(self) -> None:
         store = self.parse("\\*escaped, not emphasized\\*\n")
         unit_sources = self.get_translation_unit_sources(store)
         assert unit_sources == ["\\*escaped, not emphasized\\*"]
         translated_output = self.get_translated_output(store)
         assert translated_output == "(\\*escaped, not emphasized\\*)\n"
 
-    def test_html_span(self):
+    def test_html_span(self) -> None:
         store = self.parse("now <p>hear ye</p> all\n")
         unit_sources = self.get_translation_unit_sources(store)
         assert unit_sources == ["now {1}hear ye{2} all"]
         translated_output = self.get_translated_output(store)
         assert translated_output == "(now <p>hear ye</p> all)\n"
 
-    def test_code_span(self):
+    def test_code_span(self) -> None:
         store = self.parse("inline `code` span\n")
         unit_sources = self.get_translation_unit_sources(store)
         assert unit_sources == ["inline `code` span"]
         translated_output = self.get_translated_output(store)
         assert translated_output == "(inline `code` span)\n"
 
-    def test_plain_image(self):
+    def test_plain_image(self) -> None:
         store = self.parse('![foo](/url "title")\n')
         unit_sources = self.get_translation_unit_sources(store)
         self.assertCountEqual(
@@ -124,7 +124,7 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
         assert len(locations) == 1
         assert locations[0].endswith("1")
 
-    def test_plain_image_no_title(self):
+    def test_plain_image_no_title(self) -> None:
         store = self.parse("![foo](/url)\n")
         unit_sources = self.get_translation_unit_sources(store)
         assert (
@@ -136,7 +136,7 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
         translated_output = self.get_translated_output(store)
         assert translated_output == "(![foo](/url))\n"
 
-    def test_plain_link(self):
+    def test_plain_link(self) -> None:
         store = self.parse('[link](/url "title \\"&quot;")\n')
         unit_sources = self.get_translation_unit_sources(store)
         self.assertCountEqual(
@@ -149,14 +149,14 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
         translated_output = self.get_translated_output(store)
         assert translated_output == '([link](/url "(title "")"))\n'
 
-    def test_autolink(self):
+    def test_autolink(self) -> None:
         store = self.parse("what's the <http://autolink> problem?\n")
         unit_sources = self.get_translation_unit_sources(store)
         assert unit_sources == ["what's the {1} problem?"]
         translated_output = self.get_translated_output(store)
         assert translated_output == "(what's the <http://autolink> problem?)\n"
 
-    def test_atx_heading(self):
+    def test_atx_heading(self) -> None:
         store = self.parse("\n##  sweet *potato*  ##\n")
         unit_sources = self.get_translation_unit_sources(store)
         assert unit_sources == ["sweet *potato*"]
@@ -164,7 +164,7 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
         assert translated_output == "\n## (sweet *potato*) ##\n"
         assert store.units[0].getlocations()[0].endswith("2")
 
-    def test_empty_atx_heading(self):
+    def test_empty_atx_heading(self) -> None:
         input = [
             "## \n",
             "#\n",
@@ -174,7 +174,7 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
         unit_sources = self.get_translation_unit_sources(store)
         assert unit_sources == []
 
-    def test_setext_heading(self):
+    def test_setext_heading(self) -> None:
         store = self.parse("mm potatoes\n-----------\n")
         unit_sources = self.get_translation_unit_sources(store)
         assert unit_sources == ["mm potatoes"]
@@ -182,7 +182,7 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
         assert translated_output == "(mm potatoes)\n-----------\n"
         assert store.units[0].getlocations()[0].endswith("1")
 
-    def test_nested_list(self):
+    def test_nested_list(self) -> None:
         input = [
             "* 1. something\n",
             "  2. *or other*\n",
@@ -200,7 +200,7 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
         assert translated_output == "".join(expected)
         assert store.units[0].getlocations()[0].endswith("1")
 
-    def test_empty_list_item(self):
+    def test_empty_list_item(self) -> None:
         input = [
             "1. foo\n",
             "2.\n",
@@ -210,7 +210,7 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
         unit_sources = self.get_translation_unit_sources(store)
         self.assertCountEqual(unit_sources, ["foo", "bar"])
 
-    def test_code_block(self):
+    def test_code_block(self) -> None:
         input = [
             "    a simple\n",
             "      indented code block\n",
@@ -219,7 +219,7 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
         unit_sources = self.get_translation_unit_sources(store)
         assert unit_sources == []
 
-    def test_html_block(self):
+    def test_html_block(self) -> None:
         input = [
             '<i class="foo">\n',
             "*bar*\n",
@@ -229,7 +229,7 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
         unit_sources = self.get_translation_unit_sources(store)
         assert unit_sources == []
 
-    def test_block_quote(self):
+    def test_block_quote(self) -> None:
         input = [
             "> # Foo\n",
             "> bar\n",
@@ -244,7 +244,7 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
         assert len(locations) == 1
         assert locations[0].endswith("1")
 
-    def test_link_reference_definition_and_full_reference_link(self):
+    def test_link_reference_definition_and_full_reference_link(self) -> None:
         input = [
             '[foo *bar*]: train.jpg "train & tracks"\n',
             "[railroad link][foo *bar*] hello\n",
@@ -272,7 +272,7 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
         assert len(locations) == 2
         assert all(loc.endswith(str(i)) for i, loc in enumerate(locations, start=1))
 
-    def test_link_reference_definition_and_shortcut_reference_link(self):
+    def test_link_reference_definition_and_shortcut_reference_link(self) -> None:
         store = self.parse('[foo *bar*]: train.jpg "train & tracks"\n![foo *bar*]\n')
         unit_sources = self.get_translation_unit_sources(store)
         self.assertCountEqual(
@@ -284,7 +284,7 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
             == '[(foo *bar*)]: train.jpg "(train & tracks)"\n(![foo *bar*])\n'
         )
 
-    def test_link_reference_definition_and_collapsed_reference_link(self):
+    def test_link_reference_definition_and_collapsed_reference_link(self) -> None:
         store = self.parse('[foo *bar*]: train.jpg "train & tracks"\n![foo *bar*][]\n')
         unit_sources = self.get_translation_unit_sources(store)
         self.assertCountEqual(
@@ -296,7 +296,7 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
             == '[(foo *bar*)]: train.jpg "(train & tracks)"\n(![foo *bar*][])\n'
         )
 
-    def test_table_with_header(self):
+    def test_table_with_header(self) -> None:
         input = [
             "| First cell | Second cell |\n",
             "| ---------- | ----------- |\n",
@@ -327,14 +327,14 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
         assert len(locations) == 1
         assert locations[0].endswith("1")
 
-    def test_thematic_break(self):
+    def test_thematic_break(self) -> None:
         store = self.parse("*******\n")
         unit_sources = self.get_translation_unit_sources(store)
         assert unit_sources == []
         translated_output = self.get_translated_output(store)
         assert translated_output == "*******\n"
 
-    def test_nested_block_tokens(self):
+    def test_nested_block_tokens(self) -> None:
         input = [
             "> text\n",
             "> 1. list item\n",
@@ -353,14 +353,14 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
         ]
         assert translated_output == "".join(expected)
 
-    def test_merging_of_adjacent_placeholders(self):
+    def test_merging_of_adjacent_placeholders(self) -> None:
         store = self.parse("now hear ye</p> <h1> all\n")
         unit_sources = self.get_translation_unit_sources(store)
         assert unit_sources == ["now hear ye{1} all"]
         translated_output = self.get_translated_output(store)
         assert translated_output == "(now hear ye</p> <h1> all)\n"
 
-    def test_remove_placeholders_from_both_ends_of_translation_units(self):
+    def test_remove_placeholders_from_both_ends_of_translation_units(self) -> None:
         store = self.parse("<http://autolink> <h1> yeah </h1> <http://autolink>\n")
         unit_sources = self.get_translation_unit_sources(store)
         assert unit_sources == ["yeah"]
@@ -370,14 +370,14 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
             == "<http://autolink> <h1> (yeah) </h1> <http://autolink>\n"
         )
 
-    def test_paragraph_with_only_whitespace_and_placeholders(self):
+    def test_paragraph_with_only_whitespace_and_placeholders(self) -> None:
         store = self.parse("<http://autolink> <p> <p> <p>\n")
         unit_sources = self.get_translation_unit_sources(store)
         assert unit_sources == []
         translated_output = self.get_translated_output(store)
         assert translated_output == "<http://autolink> <p> <p> <p>\n"
 
-    def test_image_embedded_in_link(self):
+    def test_image_embedded_in_link(self) -> None:
         store = self.parse(
             "[*embedded image* ![moon](moon.jpg \"the moon y'all\")](/uri 'link title')\n"
         )
@@ -396,7 +396,7 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
             == "([*embedded image* ![moon](moon.jpg \"(the moon y'all)\")](/uri '(link title)'))\n"
         )
 
-    def test_placeholder_trimming(self):
+    def test_placeholder_trimming(self) -> None:
         fragments = [
             markdown.Fragment("a", placeholder_content=[markdown.Fragment("")]),
             markdown.Fragment(" "),
@@ -439,7 +439,7 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
 
 
 class TestMarkdownRendering:
-    def test_hard_line_break_in_translation_unit(self):
+    def test_hard_line_break_in_translation_unit(self) -> None:
         input = "yes box\n"
         inputfile = BytesIO(input.encode())
         store = markdown.MarkdownFile(
@@ -447,7 +447,7 @@ class TestMarkdownRendering:
         )
         assert store.filesrc == "yes\\\nbox\n"
 
-    def test_missing_placeholder(self):
+    def test_missing_placeholder(self) -> None:
         input = "yes <http://autolink> box\n"
         inputfile = BytesIO(input.encode())
         store = markdown.MarkdownFile(
@@ -455,7 +455,7 @@ class TestMarkdownRendering:
         )
         assert store.filesrc == "yes ?? box\n"
 
-    def test_duplicate_placeholder(self):
+    def test_duplicate_placeholder(self) -> None:
         input = "yes <http://autolink> box\n"
         inputfile = BytesIO(input.encode())
         store = markdown.MarkdownFile(
@@ -463,7 +463,7 @@ class TestMarkdownRendering:
         )
         assert store.filesrc == "yes <http://autolink><http://autolink> box\n"
 
-    def test_extraneous_placeholder(self):
+    def test_extraneous_placeholder(self) -> None:
         input = "yes <http://autolink> box\n"
         inputfile = BytesIO(input.encode())
         store = markdown.MarkdownFile(
@@ -471,7 +471,7 @@ class TestMarkdownRendering:
         )
         assert store.filesrc == "yes <http://autolink>{2} box\n"
 
-    def test_reordered_placeholders(self):
+    def test_reordered_placeholders(self) -> None:
         input = "yes <http://autolink> box <hr> all right\n"
         inputfile = BytesIO(input.encode())
         store = markdown.MarkdownFile(
@@ -479,7 +479,7 @@ class TestMarkdownRendering:
         )
         assert store.filesrc == "all <hr> messed up <http://autolink>!\n"
 
-    def test_invalid_markdown_in_translation(self):
+    def test_invalid_markdown_in_translation(self) -> None:
         # The translated text is processed by removing leading and trailing
         # whitespace, converting line breaks to hard line breaks, and replacing
         # placeholders. Nothing else. Therefore it's quite possible to produce
@@ -495,7 +495,7 @@ class TestMarkdownRendering:
 
 
 class TestMarkdownTranslationIgnore:
-    def test_ignore_section_basic(self):
+    def test_ignore_section_basic(self) -> None:
         """Test that content between translate:off and translate:on is not extracted."""
         input = """Translate this
 
@@ -523,7 +523,7 @@ Don't translate this
 """
         assert translated_output == expected
 
-    def test_ignore_section_with_markup(self):
+    def test_ignore_section_with_markup(self) -> None:
         """Test that ignored content preserves its markup."""
         input = """Before
 
@@ -551,7 +551,7 @@ After
 """
         assert translated_output == expected
 
-    def test_ignore_section_with_code_block(self):
+    def test_ignore_section_with_code_block(self) -> None:
         """Test ignoring sections with code blocks."""
         input = """Text before
 
@@ -570,7 +570,7 @@ Text after
         unit_sources = self.get_translation_unit_sources(store)
         assert unit_sources == ["Text before", "Text after"]
 
-    def test_multiple_ignore_sections(self):
+    def test_multiple_ignore_sections(self) -> None:
         """Test multiple ignore sections in the same document."""
         input = """First
 
@@ -594,7 +594,7 @@ Third
         unit_sources = self.get_translation_unit_sources(store)
         assert unit_sources == ["First", "Second", "Third"]
 
-    def test_ignore_at_start(self):
+    def test_ignore_at_start(self) -> None:
         """Test that ignore section at start of document works."""
         input = """<!-- translate:off -->
 
@@ -608,7 +608,7 @@ Translated
         unit_sources = self.get_translation_unit_sources(store)
         assert unit_sources == ["Translated"]
 
-    def test_ignore_at_end(self):
+    def test_ignore_at_end(self) -> None:
         """Test that ignore section at end of document works."""
         input = """Translated
 
@@ -620,7 +620,7 @@ Ignored
         unit_sources = self.get_translation_unit_sources(store)
         assert unit_sources == ["Translated"]
 
-    def test_nested_structures_in_ignore(self):
+    def test_nested_structures_in_ignore(self) -> None:
         """Test that nested structures like lists and quotes are ignored."""
         input = """Before
 
@@ -638,7 +638,7 @@ After
         unit_sources = self.get_translation_unit_sources(store)
         assert unit_sources == ["Before", "After"]
 
-    def test_link_references_in_ignore(self):
+    def test_link_references_in_ignore(self) -> None:
         """Test that link reference definitions in ignored sections are not extracted."""
         input = """Text
 
