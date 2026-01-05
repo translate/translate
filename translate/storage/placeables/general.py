@@ -43,9 +43,13 @@ class RegexParseMixin(BasePlaceable):
     @classmethod
     def parse(cls, pstr: str) -> list[StringElem] | None:
         """
-        A parser method to extract placeables from a string based on a regular
-        expression. Use this function as the ``@parse()`` method of a placeable
-        class.
+        Parse a string into placeables based on a regular expression.
+
+        This classmethod is provided by :class:`RegexParseMixin` and is
+        intended to be inherited by placeable subclasses that use
+        regex-based parsing. Subclasses must define a ``regex`` class
+        attribute (an instance of :class:`re.Pattern`) which will be used
+        to find matching segments in ``pstr``.
         """
         matches: list[StringElem] = []
         oldend = 0
