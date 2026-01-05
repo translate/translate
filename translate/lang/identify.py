@@ -26,9 +26,8 @@ from __future__ import annotations
 from os import extsep, path
 
 from translate.lang.ngram import NGram
-from translate.storage.base import TranslationUnit
 from translate.misc.file_discovery import get_abs_data_filename
-from translate.storage.base import TranslationStore
+from translate.storage.base import TranslationStore, TranslationUnit
 
 
 class LanguageIdentifier:
