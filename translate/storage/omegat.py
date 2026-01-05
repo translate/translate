@@ -62,7 +62,7 @@ class OmegaTDialect(csv.Dialect):
 csv.register_dialect("omegat", OmegaTDialect)
 
 
-class OmegaTUnit(base.DictUnitMixin):
+class OmegaTUnit(base.MetadataTranslationUnit):
     """An OmegaT glossary unit."""
 
     def __init__(self, source=None):
@@ -163,7 +163,7 @@ class OmegaTFile(base.TranslationStore):
         )
         for line in lines:
             newunit = OmegaTUnit()
-            newunit.dict = line
+            newunit.metadata = line
             self.addunit(newunit)
 
     def serialize(self, out):
@@ -175,7 +175,7 @@ class OmegaTFile(base.TranslationStore):
         output = StringIO()
         writer = csv.DictWriter(output, fieldnames=OMEGAT_FIELDNAMES, dialect="omegat")
         for unit in translated_units:
-            writer.writerow(unit.dict)
+            writer.writerow(unit.metadata)
         out.write(output.getvalue().encode(self.encoding))
 
 

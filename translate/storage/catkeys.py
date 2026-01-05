@@ -134,7 +134,7 @@ class CatkeysHeader:
         self._header_dict["checksum"] = str(checksum)
 
 
-class CatkeysUnit(base.DictUnitMixin):
+class CatkeysUnit(base.MetadataTranslationUnit):
     """A catkeys translation memory unit."""
 
     def __init__(self, source=None):
@@ -142,22 +142,24 @@ class CatkeysUnit(base.DictUnitMixin):
         if source:
             self.source = source
 
-    def setdict(self, newdict: dict[str, str]) -> None:
+    def setmetadata(self, newdict: dict[str, str]) -> None:
         """
         Set the dictionary of values for a catkeys line.
 
-        Overrides the mixin's setdict() to filter and validate field names,
+        Overrides the parent's setmetadata() to filter and validate field names,
         ensuring only valid catkeys fields are stored.
 
         :param newdict: a new dictionary with catkeys line elements
         """
-        # Process the input values
-        self._metadata_dict = {}
+        # Filter the input values to only include valid FIELDNAMES
+        filtered_dict = {}
         for key in FIELDNAMES:
             value = newdict.get(key, "")
             if value is None:
                 value = ""
-            self._metadata_dict[key] = value
+            filtered_dict[key] = value
+        # Call parent implementation with filtered data
+        super().setmetadata(filtered_dict)
 
     def _get_source_or_target(self, key):
         if self._metadata_dict.get(key) is None:
@@ -287,7 +289,7 @@ class CatkeysFile(base.TranslationStore):
                 self.header = CatkeysHeader(header)
                 continue
             newunit = CatkeysUnit()
-            newunit.dict = line
+            newunit.metadata = line
             self.addunit(newunit)
 
     def serialize(self, out):
@@ -306,7 +308,7 @@ class CatkeysFile(base.TranslationStore):
             )
         )
         for unit in self.units:
-            writer.writerow(unit.dict)
+            writer.writerow(unit.metadata)
         out.write(output.getvalue().encode(self.encoding))
 
     def _compute_fingerprint(self):

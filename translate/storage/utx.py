@@ -85,7 +85,7 @@ class UtxHeader:
     """
 
 
-class UtxUnit(base.DictUnitMixin):
+class UtxUnit(base.MetadataTranslationUnit):
     """A UTX dictionary unit."""
 
     def __init__(self, source=None):
@@ -256,7 +256,7 @@ class UtxFile(base.TranslationStore):
         )
         for line in lines:
             newunit = UtxUnit()
-            newunit.dict = line
+            newunit.metadata = line
             self.addunit(newunit)
 
     def serialize(self, out):
@@ -268,7 +268,7 @@ class UtxFile(base.TranslationStore):
         output = StringIO()
         writer = csv.DictWriter(output, fieldnames=self._fieldnames, dialect="utx")
         for unit in translated_units:
-            writer.writerow(unit.dict)
+            writer.writerow(unit.metadata)
 
         result = output.getvalue().encode(self.encoding)
         out.write(self._write_header().encode(self.encoding))

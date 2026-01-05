@@ -542,16 +542,13 @@ class TranslationUnit:
         return plural_strings[: len(plural_tags)]
 
 
-class DictUnitMixin(TranslationUnit):
+class MetadataTranslationUnit(TranslationUnit):
     """
     Base class for translation units that store field data in an internal dictionary.
 
     This class provides a common implementation for storage formats (catkeys, omegat,
     utx, wordfast) that manage unit data through an internal dictionary
     accessible via a `metadata` property with getters and setters.
-
-    The `metadata` property provides backward compatibility via the `dict` property
-    name for existing code.
     """
 
     def __init__(self, *args, **kwargs):
@@ -582,17 +579,6 @@ class DictUnitMixin(TranslationUnit):
         self._metadata_dict = newdict
 
     metadata = property(getmetadata, setmetadata)
-
-    # Backward compatibility: provide 'dict' as an alias for 'metadata'
-    def getdict(self) -> dict[str, str]:
-        """Backward compatibility alias for getmetadata()."""
-        return self.getmetadata()
-
-    def setdict(self, newdict: dict[str, str]) -> None:
-        """Backward compatibility alias for setmetadata()."""
-        self.setmetadata(newdict)
-
-    dict = property(getdict, setdict)
 
 
 class MetadataPropertyMixin:

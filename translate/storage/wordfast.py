@@ -313,7 +313,7 @@ class WordfastHeader:
     tucount = property(None, settucount)
 
 
-class WordfastUnit(base.DictUnitMixin):
+class WordfastUnit(base.MetadataTranslationUnit):
     """A Wordfast translation memory unit."""
 
     def __init__(self, source=None):
@@ -424,7 +424,7 @@ class WordfastTMFile(base.TranslationStore):
                 self.header = WordfastHeader(header)
                 continue
             newunit = WordfastUnit()
-            newunit.dict = line
+            newunit.metadata = line
             self.addunit(newunit)
 
     def serialize(self, out):
@@ -448,5 +448,5 @@ class WordfastTMFile(base.TranslationStore):
         )
 
         for unit in translated_units:
-            writer.writerow(unit.dict)
+            writer.writerow(unit.metadata)
         out.write(output.getvalue().encode(self.encoding))
