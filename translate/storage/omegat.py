@@ -67,8 +67,6 @@ class OmegaTUnit(base.MetadataTranslationUnit):
 
     def __init__(self, source=None):
         super().__init__(source)
-        if source:
-            self.source = source
 
     def _get_field(self, key):
         if key not in self._metadata_dict:

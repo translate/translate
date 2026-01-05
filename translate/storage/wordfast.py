@@ -318,8 +318,6 @@ class WordfastUnit(base.MetadataTranslationUnit):
 
     def __init__(self, source=None):
         super().__init__(source)
-        if source:
-            self.source = source
 
     def _update_timestamp(self):
         """Refresh the timestamp for the unit."""

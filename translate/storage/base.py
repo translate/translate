@@ -561,10 +561,10 @@ class MetadataTranslationUnit(TranslationUnit):
 
         :param metadata: Optional initial metadata dictionary
         """
-        self._metadata_dict: dict[str, str] = metadata or {}
+        self._metadata_dict: dict = metadata or {}
         super().__init__(*args, **kwargs)
 
-    def getmetadata(self) -> dict[str, str]:
+    def getmetadata(self) -> dict:
         """
         Get the dictionary of metadata/field values for this unit.
 
@@ -572,7 +572,7 @@ class MetadataTranslationUnit(TranslationUnit):
         """
         return self._metadata_dict
 
-    def setmetadata(self, newdict: dict[str, str]) -> None:
+    def setmetadata(self, newdict: dict) -> None:
         """
         Set the dictionary of metadata/field values for this unit.
 

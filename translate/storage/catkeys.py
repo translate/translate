@@ -139,8 +139,6 @@ class CatkeysUnit(base.MetadataTranslationUnit):
 
     def __init__(self, source=None):
         super().__init__(source)
-        if source:
-            self.source = source
 
     def setmetadata(self, newdict: dict[str, str]) -> None:
         """
