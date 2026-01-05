@@ -39,7 +39,7 @@ def get_abs_data_filename(
         ["..", "share"],
     ]
 
-    BASE_DIRS: list[str] = basedirs if basedirs else []
+    BASE_DIRS: list[str] = basedirs or []
     if not basedirs:
         # Useful for running from checkout or similar layout. This will find
         # Toolkit's data files

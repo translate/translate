@@ -20,7 +20,7 @@ Implements a case-insensitive (on keys) dictionary and order-sensitive
 dictionary.
 """
 
-from typing import TypeVar, overload
+from typing import TypeVar
 
 _T = TypeVar("_T")
 _VT = TypeVar("_VT")

@@ -290,9 +290,7 @@ class RecursiveOptionParser(optparse.OptionParser):
                 self.remove_option(long_opt)
         self.add_option(option)
 
-    def setformats(
-        self, formats: dict | list[tuple[Any, Any]], usetemplates: bool
-    ):
+    def setformats(self, formats: dict | list[tuple[Any, Any]], usetemplates: bool):
         """
         Sets the format options using the given format dictionary.
 
@@ -514,7 +512,9 @@ class RecursiveOptionParser(optparse.OptionParser):
                     f"don't know what to do with input format {os.extsep + inputext}, template format {os.extsep + templateext}"
                 )
             if inputext is None:
-                raise ValueError("don't know what to do with input format (no file extension)")
+                raise ValueError(
+                    "don't know what to do with input format (no file extension)"
+                )
             raise ValueError(
                 f"don't know what to do with input format {os.extsep + inputext}"
             )
@@ -645,9 +645,7 @@ class RecursiveOptionParser(optparse.OptionParser):
                 self.warning("Output directory does not exist. Attempting to create")
                 os.mkdir(options.output)
             except OSError:
-                self.error(
-                    "Output directory does not exist, attempt to create failed"
-                )
+                self.error("Output directory does not exist, attempt to create failed")
 
     @staticmethod
     def openinputfile(options, fullinputpath):

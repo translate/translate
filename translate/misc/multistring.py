@@ -23,8 +23,6 @@ strings in the strings attribute.
 
 from __future__ import annotations
 
-from typing import SupportsIndex
-
 
 class multistring(str):
     def __new__(cls, string: list[str] | str | None = None):
