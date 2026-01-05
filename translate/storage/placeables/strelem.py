@@ -829,8 +829,9 @@ class StringElem:
     def parse(cls, pstr: str):
         """
         Parse an instance of this class from the start of the given string.
-        This method should be implemented by any sub-class that wants to
+        This method should be implemented by any subclass that wants to
         parseable by :mod:`translate.storage.placeables.parse`.
+
         :param pstr: The string to parse into an instance of this class.
         :returns: An instance of the current class, or ``None`` if the string
                   not parseable by this class.

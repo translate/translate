@@ -121,6 +121,7 @@ class ProjectStore:
         """
         Append the given file to the project with the given filename, marked
         to be of type ``ftype`` ('src', 'trans', 'tgt').
+
         :param delete_orig: Whether or not the original (given) file should be
                             deleted after being appended. This is set to
                             ``True`` by
