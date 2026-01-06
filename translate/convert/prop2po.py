@@ -337,7 +337,10 @@ class prop2po:
         # TODO: handle multiline msgid
         if propunit.isblank():
             return None
-        pounit.addlocation(propunit.name)
+        # Use a special marker for empty keys (e.g., "=value" in properties file)
+        # so they can be properly indexed and matched during po2prop conversion
+        location = propunit.name if propunit.name else "<empty>"
+        pounit.addlocation(location)
 
         # For .strings files, treat them as bilingual:
         # - The key (name) is the source text (msgid)

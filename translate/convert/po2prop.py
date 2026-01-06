@@ -199,8 +199,10 @@ class reprop:
                     + 1
                 ]
                 delimiter = prespace + delimiter_char + postspace
-            if key in self.inputstore.locationindex:
-                unit = self.inputstore.locationindex[key]
+            # Check for the special <empty> marker used for empty keys (e.g., "=value")
+            lookup_key = "<empty>" if key == "" else key
+            if lookup_key in self.inputstore.locationindex:
+                unit = self.inputstore.locationindex[lookup_key]
                 if unit is None or (
                     not unit.istranslated()
                     and bool(unit.source)
