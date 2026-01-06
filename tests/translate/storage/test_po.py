@@ -1360,6 +1360,23 @@ msg
         with raises(ValueError):
             self.poparse(posource)
 
+    def test_c_style_comment_error_reporting(self) -> None:
+        """Test that C-style comments in msgstr show the correct error line."""
+        posource = b"""
+msgid "test"
+msgstr ""
+/* option-name: wrap */
+"translation"
+"""
+        try:
+            self.poparse(posource)
+            assert False, "Expected ValueError to be raised"
+        except ValueError as e:
+            error_msg = str(e)
+            # The error should mention the C-style comment line, not msgstr
+            assert "/* option-name: wrap */" in error_msg
+            assert 'msgstr ""' not in error_msg
+
     def test_wrapped_msgid(self) -> None:
         posource = b"""
 #| msgid "some"
