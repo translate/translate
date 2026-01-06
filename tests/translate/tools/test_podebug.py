@@ -55,13 +55,18 @@ class TestPODebug:
         """Test that blank rewrite clears fuzzy flags."""
         # Create a PO file with a fuzzy unit
         po_content = b"""
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\\n"
+
 #: test.c:20
 #, fuzzy
 msgid "Test message"
 msgstr "Translated message"
 """
         store = po.pofile(po_content)
-        unit = store.units[0]
+        # Get the actual translation unit (skip header at index 0)
+        unit = store.units[1]
 
         # Verify it's fuzzy before processing
         assert unit.isfuzzy()
@@ -78,6 +83,10 @@ msgstr "Translated message"
     def test_rewrite_blank_with_plurals(self) -> None:
         """Test that blank rewrite works with plural forms."""
         po_content = b"""
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\\n"
+
 #: test.c:30
 msgid "One item"
 msgid_plural "%d items"
@@ -88,7 +97,8 @@ msgstr[1] "%d articles"
         debugger = podebug.podebug(rewritestyle="blank")
         converted = debugger.convertstore(store)
 
-        unit = converted.units[0]
+        # Get the actual translation unit (skip header at index 0)
+        unit = converted.units[1]
         # Check that all plural forms are blanked
         assert unit.target == ["", ""]
 
