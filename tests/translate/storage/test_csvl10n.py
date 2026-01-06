@@ -296,3 +296,37 @@ GENERAL@2|Notes,"cable, motor, switch"
         assert len(newstore.units) == 2
         assert newstore.units[0].target == "Updated Translation 1"
         assert newstore.units[1].target == "Translation 2"
+
+    def test_quote_nonnumeric_handling(self) -> None:
+        """Test that CSV files with QUOTE_NONNUMERIC dialect are handled correctly."""
+        import csv
+
+        # Simulate a CSV that the sniffer might detect as QUOTE_NONNUMERIC
+        # This happens when CSV files have unquoted numeric values
+        # The test creates a dialect with QUOTE_NONNUMERIC to verify the fix
+        content = b'location,source,target\ntest1,hello,hola\ntest2,world,mundo\n'
+
+        # Monkey-patch csv.Sniffer to return a dialect with QUOTE_NONNUMERIC
+        original_sniff = csv.Sniffer.sniff
+
+        def patched_sniff(self, sample, delimiters=None):
+            result = original_sniff(self, sample, delimiters)
+            # Force QUOTE_NONNUMERIC to test the fix
+            result.quoting = csv.QUOTE_NONNUMERIC
+            return result
+
+        csv.Sniffer.sniff = patched_sniff
+
+        try:
+            # This should not raise ValueError about converting string to float
+            store = self.parse_store(content)
+            assert len(store.units) == 2
+            assert store.units[0].location == "test1"
+            assert store.units[0].source == "hello"
+            assert store.units[0].target == "hola"
+            assert store.units[1].location == "test2"
+            assert store.units[1].source == "world"
+            assert store.units[1].target == "mundo"
+        finally:
+            # Restore original method
+            csv.Sniffer.sniff = original_sniff
