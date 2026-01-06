@@ -426,22 +426,6 @@ def percent(denominator: int, devisor: int) -> int:
     return denominator * 100 // devisor
 
 
-def fuzzymessages(units):
-    return [unit for unit in units if unit.isfuzzy() and unit.target]
-
-
-def translatedmessages(units):
-    return [unit for unit in units if unit.istranslated()]
-
-
-def untranslatedmessages(units):
-    return [
-        unit
-        for unit in units
-        if not (unit.istranslated() or unit.isfuzzy()) and unit.source
-    ]
-
-
 class StatCollector:
     def __init__(self, items: list[str], incomplete_only=False) -> None:
         self.incomplete_only = incomplete_only
