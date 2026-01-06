@@ -98,7 +98,7 @@ class po2txt:
             if unit.istranslatable() and (not unit.isfuzzy() or self.include_fuzzy) and unit.istranslated()
         ]
         sorted_units = sorted(translatable_units, key=lambda u: len(u.source), reverse=True)
-        
+
         for unit in sorted_units:
             txtsource = unit.source
             txttarget = self.wrapmessage(unit.target)
