@@ -66,7 +66,14 @@ class SubtitleUnit(base.TranslationUnit):
         self._duration = duration
 
     def set_ssa_metadata(
-        self, style=None, layer=None, name=None, margin_l=None, margin_r=None, margin_v=None, effect=None
+        self,
+        style=None,
+        layer=None,
+        name=None,
+        margin_l=None,
+        margin_r=None,
+        margin_v=None,
+        effect=None,
     ) -> None:
         """Store SSA/ASS subtitle metadata (style, layer, margins, etc.)."""
         self._ssa_style = style
@@ -117,22 +124,25 @@ class SubtitleFile(base.TranslationStore):
             subtitle.start = unit._start
             subtitle.end = unit._end
             # Restore SSA/ASS metadata only for SSA and ASS formats
-            if self._format in (formats.SSA, formats.ASS):
-                if hasattr(subtitle, "ssa") and subtitle.ssa:
-                    if unit._ssa_style is not None:
-                        subtitle.ssa.style = unit._ssa_style
-                    if unit._ssa_layer is not None:
-                        subtitle.ssa.layer = unit._ssa_layer
-                    if unit._ssa_name is not None:
-                        subtitle.ssa.name = unit._ssa_name
-                    if unit._ssa_margin_l is not None:
-                        subtitle.ssa.margin_l = unit._ssa_margin_l
-                    if unit._ssa_margin_r is not None:
-                        subtitle.ssa.margin_r = unit._ssa_margin_r
-                    if unit._ssa_margin_v is not None:
-                        subtitle.ssa.margin_v = unit._ssa_margin_v
-                    if unit._ssa_effect is not None:
-                        subtitle.ssa.effect = unit._ssa_effect
+            if (
+                self._format in {formats.SSA, formats.ASS}
+                and hasattr(subtitle, "ssa")
+                and subtitle.ssa
+            ):
+                if unit._ssa_style is not None:
+                    subtitle.ssa.style = unit._ssa_style
+                if unit._ssa_layer is not None:
+                    subtitle.ssa.layer = unit._ssa_layer
+                if unit._ssa_name is not None:
+                    subtitle.ssa.name = unit._ssa_name
+                if unit._ssa_margin_l is not None:
+                    subtitle.ssa.margin_l = unit._ssa_margin_l
+                if unit._ssa_margin_r is not None:
+                    subtitle.ssa.margin_r = unit._ssa_margin_r
+                if unit._ssa_margin_v is not None:
+                    subtitle.ssa.margin_v = unit._ssa_margin_v
+                if unit._ssa_effect is not None:
+                    subtitle.ssa.effect = unit._ssa_effect
             subtitles.append(subtitle)
         # Using transient output might be dropped if/when we have more control
         # over the open mode of out files.
@@ -151,17 +161,20 @@ class SubtitleFile(base.TranslationStore):
                 newunit._end = subtitle.end
                 newunit._duration = subtitle.duration_seconds
                 # Preserve SSA/ASS metadata only for SSA and ASS formats
-                if self._format in (formats.SSA, formats.ASS):
-                    if hasattr(subtitle, "ssa") and subtitle.ssa:
-                        newunit.set_ssa_metadata(
-                            style=subtitle.ssa.style,
-                            layer=subtitle.ssa.layer,
-                            name=subtitle.ssa.name,
-                            margin_l=subtitle.ssa.margin_l,
-                            margin_r=subtitle.ssa.margin_r,
-                            margin_v=subtitle.ssa.margin_v,
-                            effect=subtitle.ssa.effect,
-                        )
+                if (
+                    self._format in {formats.SSA, formats.ASS}
+                    and hasattr(subtitle, "ssa")
+                    and subtitle.ssa
+                ):
+                    newunit.set_ssa_metadata(
+                        style=subtitle.ssa.style,
+                        layer=subtitle.ssa.layer,
+                        name=subtitle.ssa.name,
+                        margin_l=subtitle.ssa.margin_l,
+                        margin_r=subtitle.ssa.margin_r,
+                        margin_v=subtitle.ssa.margin_v,
+                        effect=subtitle.ssa.effect,
+                    )
         except Exception as e:
             raise base.ParseError(e) from e
 

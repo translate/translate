@@ -57,25 +57,25 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 Dialogue: 0,0:00:09.25,0:00:12.64,CustomStyle,,0,0,0,,First line with custom style.
 Dialogue: 0,0:00:15.00,0:00:18.00,Default,,0,0,0,,Second line with default style.
 """
-        
+
         # Parse the content
         store = self.StoreClass()
         store.parse(ass_content)
-        
+
         # Check that units have the correct style metadata
         assert len(store.units) == 2
         assert store.units[0]._ssa_style == "CustomStyle"
         assert store.units[1]._ssa_style == "Default"
-        
+
         # Serialize and check that style is preserved
         serialized = bytes(store)
-        serialized_str = serialized.decode('utf-8')
-        
+        serialized_str = serialized.decode("utf-8")
+
         # Verify CustomStyle is preserved in the dialogue lines
         assert "CustomStyle" in serialized_str
         # Check the dialogue line specifically has CustomStyle, not Default
-        lines = serialized_str.split('\n')
-        dialogue_lines = [line for line in lines if line.startswith('Dialogue:')]
+        lines = serialized_str.split("\n")
+        dialogue_lines = [line for line in lines if line.startswith("Dialogue:")]
         assert len(dialogue_lines) == 2
         assert "CustomStyle" in dialogue_lines[0]
         assert "First line with custom style." in dialogue_lines[0]
@@ -101,25 +101,25 @@ Format: Marked, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 Dialogue: Marked=0,0:00:09.25,0:00:12.64,CustomStyle,,0,0,0,,First line with custom style.
 Dialogue: Marked=0,0:00:15.00,0:00:18.00,Default,,0,0,0,,Second line with default style.
 """
-        
+
         # Parse the content
         store = self.StoreClass()
         store.parse(ssa_content)
-        
+
         # Check that units have the correct style metadata
         assert len(store.units) == 2
         assert store.units[0]._ssa_style == "CustomStyle"
         assert store.units[1]._ssa_style == "Default"
-        
+
         # Serialize and check that style is preserved
         serialized = bytes(store)
-        serialized_str = serialized.decode('utf-8')
-        
+        serialized_str = serialized.decode("utf-8")
+
         # Verify CustomStyle is preserved in the dialogue lines
         assert "CustomStyle" in serialized_str
         # Check the dialogue line specifically has CustomStyle, not Default
-        lines = serialized_str.split('\n')
-        dialogue_lines = [line for line in lines if line.startswith('Dialogue:')]
+        lines = serialized_str.split("\n")
+        dialogue_lines = [line for line in lines if line.startswith("Dialogue:")]
         assert len(dialogue_lines) == 2
         assert "CustomStyle" in dialogue_lines[0]
         assert "First line with custom style." in dialogue_lines[0]
