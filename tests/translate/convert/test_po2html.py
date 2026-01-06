@@ -131,7 +131,9 @@ sin.
 
         # Case 2: Template has & (actual character) but PO file has &amp;
         htmlsource = "<p>Fish & chips</p>"
-        posource = '#: html:3\nmsgid "Fish &amp; chips"\nmsgstr "Poisson &amp; frites"\n'
+        posource = (
+            '#: html:3\nmsgid "Fish &amp; chips"\nmsgstr "Poisson &amp; frites"\n'
+        )
         result = self.converthtml(posource, htmlsource)
         assert "Poisson" in result
 
@@ -143,7 +145,9 @@ sin.
 
         # Case 4: Template has < (actual character) but PO file has &lt;
         htmlsource = "<p>Text about less than</p>"
-        posource = '#: html:3\nmsgid "Text about less than"\nmsgstr "Texte à propos de &lt;"\n'
+        posource = (
+            '#: html:3\nmsgid "Text about less than"\nmsgstr "Texte à propos de &lt;"\n'
+        )
         result = self.converthtml(posource, htmlsource)
         assert "Texte" in result
 

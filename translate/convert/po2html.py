@@ -38,24 +38,24 @@ class po2html:
     def lookup(self, string):
         # Try exact match first
         unit = self.inputstore.sourceindex.get(string, None)
-        
+
         # If not found, try with HTML entities unescaped
         # This handles the case where template has &amp; but PO has &
         if unit is None:
             unescaped = html_module.unescape(string)
             if unescaped != string:
                 unit = self.inputstore.sourceindex.get(unescaped, None)
-        
+
         # If still not found, try with HTML entities escaped
         # This handles the case where template has & but PO has &amp;
         if unit is None:
             escaped = html_module.escape(string)
             if escaped != string:
                 unit = self.inputstore.sourceindex.get(escaped, None)
-        
+
         if unit is None:
             return string
-        
+
         unit = unit[0]
         if unit.istranslated():
             return unit.target
