@@ -33,6 +33,11 @@ from translate.storage import po, properties
 eol = "\n"
 
 
+# Special marker used for properties with no key (e.g., "=value")
+# This must match the marker in prop2po.py
+EMPTY_KEY_MARKER = "<empty>"
+
+
 def applytranslation(key, propunit, inunit, mixedkeys):
     """Applies the translation for key in the po unit to the prop unit."""
     # this converts the po-style string to a prop-style string
@@ -199,8 +204,8 @@ class reprop:
                     + 1
                 ]
                 delimiter = prespace + delimiter_char + postspace
-            # Check for the special <empty> marker used for empty keys (e.g., "=value")
-            lookup_key = "<empty>" if key == "" else key
+            # Check for the special marker used for empty keys (e.g., "=value")
+            lookup_key = EMPTY_KEY_MARKER if key == "" else key
             if lookup_key in self.inputstore.locationindex:
                 unit = self.inputstore.locationindex[lookup_key]
                 if unit is None or (
