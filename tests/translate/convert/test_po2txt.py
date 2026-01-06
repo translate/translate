@@ -205,8 +205,9 @@ vor-Konstrukteur"""  # codespell:ignore
         assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_duplicate_text_first_occurrence_only(self) -> None:
-        """Test that text appearing multiple times is only replaced once per unit.
-        
+        """
+        Test that text appearing multiple times is only replaced once per unit.
+
         This tests the bug where replace() without a count parameter replaces ALL
         occurrences of a string, even when it appears in parts of the template that
         don't have translations in the PO file.
@@ -232,7 +233,9 @@ Platzhalter sind nützlich für die Übersetzung.
 Read about Placeables."""
         result = self._convert_to_string(input_string, template_string)
         # This test will FAIL with current code because replace() replaces ALL occurrences
-        assert expected_output == result, f"Expected:\n{expected_output}\n\nGot:\n{result}"
+        assert expected_output == result, (
+            f"Expected:\n{expected_output}\n\nGot:\n{result}"
+        )
 
 
 class TestPO2TxtCommand(test_convert.TestConvertCommand, TestPO2Txt):
