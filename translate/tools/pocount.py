@@ -180,6 +180,8 @@ def calcstats(filename):
         sourcewords, targetwords = wordsinunit(unit)
 
         # Categorize unit and accumulate counts
+        # Note: A unit cannot be both translated and fuzzy, as istranslated()
+        # returns False when isfuzzy() is True
         is_translated = unit.istranslated()
         is_fuzzy = unit.isfuzzy()
 
@@ -190,7 +192,8 @@ def calcstats(filename):
         elif is_fuzzy and unit.target:
             stats["fuzzy"] += 1
             stats["fuzzysourcewords"] += sourcewords
-        elif not (is_translated or is_fuzzy) and unit.source:
+        elif unit.source:
+            # Remaining units with source are untranslated
             stats["untranslated"] += 1
             stats["untranslatedsourcewords"] += sourcewords
 
