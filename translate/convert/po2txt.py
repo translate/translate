@@ -94,10 +94,15 @@ class po2txt:
         # Sort units by source length (descending) to avoid substring replacement issues
         # e.g., "Constructor" being replaced in "Constructors" before "Constructors" is processed
         translatable_units = [
-            unit for unit in self.source_store.units
-            if unit.istranslatable() and (not unit.isfuzzy() or self.include_fuzzy) and unit.istranslated()
+            unit
+            for unit in self.source_store.units
+            if unit.istranslatable()
+            and (not unit.isfuzzy() or self.include_fuzzy)
+            and unit.istranslated()
         ]
-        sorted_units = sorted(translatable_units, key=lambda u: len(u.source), reverse=True)
+        sorted_units = sorted(
+            translatable_units, key=lambda u: len(u.source), reverse=True
+        )
 
         for unit in sorted_units:
             txtsource = unit.source

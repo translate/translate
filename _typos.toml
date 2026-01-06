@@ -1,0 +1,3 @@
+[default.extend-words]
+# German words used in test translations
+vor = "vor"
