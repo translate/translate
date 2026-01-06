@@ -1378,3 +1378,127 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         unit.rich_target = [target]
 
         assert bytes(xlifffile).decode() == xlfsource_preserve
+
+    def test_regression_weblate_4953_multi_file_reconstruction(self) -> None:
+        """
+        Regression test for https://github.com/WeblateOrg/weblate/issues/4953.
+
+        Test that when adding units from an updated source file with multiple <file> tags,
+        units are placed in the correct files.
+
+        Scenario:
+        1. Initial source has 2 files with 2 units each
+        2. Translation has all 4 units translated
+        3. Source is updated: file1 loses a unit (source2), both files gain new units
+        4. New units are added to translation using addunit()
+        5. Bug: New units from file2 ended up in file1
+        """
+        # Step 1: Initial translation with all units from both files
+        translation_xliff = b"""<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
+    <file original="file1.txt" source-language="en" datatype="plaintext" target-language="en">
+        <body>
+            <trans-unit id="source1">
+                <source>source 1</source>
+                <target>translation 1</target>
+            </trans-unit>
+            <trans-unit id="source2">
+                <source>source 2</source>
+                <target>translation 2</target>
+            </trans-unit>
+        </body>
+    </file>
+    <file original="file2.txt" source-language="en" datatype="plaintext" target-language="en">
+        <body>
+            <trans-unit id="source3">
+                <source>source 3</source>
+                <target>translation 3</target>
+            </trans-unit>
+            <trans-unit id="source4">
+                <source>source 4</source>
+                <target>translation 4</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>"""
+
+        # Step 2: Updated source with source2 removed and new units added
+        source_updated = b"""<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
+    <file original="file1.txt" source-language="en" datatype="plaintext">
+        <body>
+            <trans-unit id="source1">
+                <source>source 1</source>
+            </trans-unit>
+            <trans-unit id="source1a">
+                <source>source 1a</source>
+            </trans-unit>
+        </body>
+    </file>
+    <file original="file2.txt" source-language="en" datatype="plaintext">
+        <body>
+            <trans-unit id="source3">
+                <source>source 3</source>
+            </trans-unit>
+            <trans-unit id="source4">
+                <source>source 4</source>
+            </trans-unit>
+            <trans-unit id="source4a">
+                <source>source 4a</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>"""
+
+        # Parse both files
+        translation = xliff.xlifffile.parsestring(translation_xliff)
+        source = xliff.xlifffile.parsestring(source_updated)
+
+        # Add missing units from source to translation (simulates Weblate behavior)
+        existing_ids = {u.getid() for u in translation.units}
+        for src_unit in source.units:
+            if src_unit.getid() not in existing_ids:
+                translation.addunit(src_unit)
+
+        # Verify the structure
+        serialized = bytes(translation)
+        translation_reloaded = xliff.xlifffile.parsestring(serialized)
+
+        # Check file structure
+        filenames = translation_reloaded.getfilenames()
+        assert len(filenames) == 2
+        assert "file1.txt" in filenames
+        assert "file2.txt" in filenames
+
+        # Check units in each file
+        file1_node = translation_reloaded.getfilenode("file1.txt")
+        file1_body = translation_reloaded.getbodynode(file1_node)
+        file1_units = [
+            u.get("id")
+            for u in file1_body.iterchildren(translation_reloaded.namespaced("trans-unit"))
+        ]
+
+        file2_node = translation_reloaded.getfilenode("file2.txt")
+        file2_body = translation_reloaded.getbodynode(file2_node)
+        file2_units = [
+            u.get("id")
+            for u in file2_body.iterchildren(translation_reloaded.namespaced("trans-unit"))
+        ]
+
+        # Verify units are in correct files
+        # file1.txt should have source1, source2 (from original translation), and source1a (newly added)
+        assert "source1" in file1_units
+        assert "source2" in file1_units
+        assert "source1a" in file1_units
+        # Critically: source4a should NOT be in file1
+        assert "source4a" not in file1_units
+
+        # file2.txt should have source3, source4 (from original translation), and source4a (newly added)
+        assert "source3" in file2_units
+        assert "source4" in file2_units
+        assert "source4a" in file2_units
+        # Critically: source1a should NOT be in file2
+        assert "source1a" not in file2_units
+
+        # Verify total unit count
+        assert len(translation_reloaded.units) == 6
