@@ -261,6 +261,88 @@ def test_csv_line_terminator(capsys: CaptureFixture[str]) -> None:
         assert line.strip(), "No line should be empty or whitespace-only"
 
 
+class TestPOCountCategorization:
+    """Test that units are categorized correctly."""
+
+    def test_fuzzy_with_target(self) -> None:
+        """Test that fuzzy units with targets are counted as fuzzy, not translated."""
+        inputdata = rb"""
+msgid "test"
+msgstr ""
+
+#, fuzzy
+msgid "fuzzy unit"
+msgstr "fuzzy translation"
+"""
+        pofile = BytesIO(inputdata)
+        stats = pocount.calcstats(pofile)
+        assert stats["fuzzy"] == 1
+        assert stats["translated"] == 0
+        assert stats["untranslated"] == 1
+
+    def test_fuzzy_without_target(self) -> None:
+        """Test that fuzzy units without targets are counted as untranslated."""
+        inputdata = rb"""
+#, fuzzy
+msgid "fuzzy unit"
+msgstr ""
+"""
+        pofile = BytesIO(inputdata)
+        stats = pocount.calcstats(pofile)
+        assert stats["fuzzy"] == 0
+        assert stats["translated"] == 0
+        assert stats["untranslated"] == 1
+
+    def test_translated_not_fuzzy(self) -> None:
+        """Test that translated units without fuzzy flag are counted as translated."""
+        inputdata = rb"""
+msgid "test"
+msgstr "translation"
+"""
+        pofile = BytesIO(inputdata)
+        stats = pocount.calcstats(pofile)
+        assert stats["translated"] == 1
+        assert stats["fuzzy"] == 0
+        assert stats["untranslated"] == 0
+
+    def test_untranslated_empty_target(self) -> None:
+        """Test that units with empty targets are counted as untranslated."""
+        inputdata = rb"""
+msgid "test"
+msgstr ""
+"""
+        pofile = BytesIO(inputdata)
+        stats = pocount.calcstats(pofile)
+        assert stats["translated"] == 0
+        assert stats["fuzzy"] == 0
+        assert stats["untranslated"] == 1
+
+    def test_categorization_mutually_exclusive(self) -> None:
+        """Test that each unit is counted in exactly one category."""
+        inputdata = rb"""
+msgid "translated"
+msgstr "translation"
+
+#, fuzzy
+msgid "fuzzy"
+msgstr "fuzzy translation"
+
+msgid "untranslated"
+msgstr ""
+"""
+        pofile = BytesIO(inputdata)
+        stats = pocount.calcstats(pofile)
+        # Each unit should be in exactly one category
+        assert stats["translated"] == 1
+        assert stats["fuzzy"] == 1
+        assert stats["untranslated"] == 1
+        # Total should equal the sum
+        assert (
+            stats["total"]
+            == stats["translated"] + stats["fuzzy"] + stats["untranslated"]
+        )
+
+
 class TestPOCountLineEndings:
     """Test pocount handles files with unusual line endings."""
 

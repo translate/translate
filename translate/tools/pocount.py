@@ -156,55 +156,53 @@ def calcstats(filename):
         logger.warning("Error in %s: %s", filename, e)
         return {}
 
-    units = [unit for unit in store.units if unit.istranslatable()]
-    translated = translatedmessages(units)
-    fuzzy = fuzzymessages(units)
-    review = [unit for unit in units if unit.isreview()]
-    untranslated = untranslatedmessages(units)
-    wordcounts = {id(unit): wordsinunit(unit) for unit in units}
-
-    def sourcewords(elementlist):
-        return sum(wordcounts[id(unit)][0] for unit in elementlist)
-
-    def targetwords(elementlist):
-        return sum(wordcounts[id(unit)][1] for unit in elementlist)
-
+    # Initialize counters
     stats = {"filename": filename}
+    stats["translated"] = 0
+    stats["fuzzy"] = 0
+    stats["untranslated"] = 0
+    stats["review"] = 0
+    stats["translatedsourcewords"] = 0
+    stats["translatedtargetwords"] = 0
+    stats["fuzzysourcewords"] = 0
+    stats["untranslatedsourcewords"] = 0
+    stats["reviewsourcewords"] = 0
 
-    # units
-    stats["translated"] = len(translated)
-    stats["fuzzy"] = len(fuzzy)
-    stats["untranslated"] = len(untranslated)
-    stats["review"] = len(review)
-    stats["total"] = stats["translated"] + stats["fuzzy"] + stats["untranslated"]
+    # Extended state tracking
+    extended_stats = {}
 
-    # words
-    stats["translatedsourcewords"] = sourcewords(translated)
-    stats["translatedtargetwords"] = targetwords(translated)
-    stats["fuzzysourcewords"] = sourcewords(fuzzy)
-    stats["untranslatedsourcewords"] = sourcewords(untranslated)
-    stats["reviewsourcewords"] = sourcewords(review)
-    stats["totalsourcewords"] = (
-        stats["translatedsourcewords"]
-        + stats["fuzzysourcewords"]
-        + stats["untranslatedsourcewords"]
-    )
+    # Single pass through all units
+    for unit in store.units:
+        if not unit.istranslatable():
+            continue
 
-    stats["extended"] = file_extended_totals(units, wordcounts)
+        # Count words once per unit
+        sourcewords, targetwords = wordsinunit(unit)
 
-    return stats
+        # Categorize unit and accumulate counts
+        # Note: A unit cannot be both translated and fuzzy, as istranslated()
+        # returns False when isfuzzy() is True
+        is_translated = unit.istranslated()
+        is_fuzzy = unit.isfuzzy()
 
+        if is_translated:
+            stats["translated"] += 1
+            stats["translatedsourcewords"] += sourcewords
+            stats["translatedtargetwords"] += targetwords
+        elif is_fuzzy and unit.target:
+            stats["fuzzy"] += 1
+            stats["fuzzysourcewords"] += sourcewords
+        elif unit.source:
+            # Remaining units with source are untranslated
+            stats["untranslated"] += 1
+            stats["untranslatedsourcewords"] += sourcewords
 
-def file_extended_totals(units, wordcounts):
-    """Provide extended statuses (used by XLIFF)."""
-    stats = {}
+        if unit.isreview():
+            stats["review"] += 1
+            stats["reviewsourcewords"] += sourcewords
 
-    for unit in units:
+        # Handle extended states
         state = unit.get_state_n()
-
-        # if state is not standard (xliff)
-        # search for the default one to use
-        # each unit defines its own states
         if state not in extended_state_strings:
             for k in unit.STATE:
                 val = unit.STATE[k]
@@ -212,13 +210,20 @@ def file_extended_totals(units, wordcounts):
                     state = k
 
         extended_state = extended_state_strings[state]
+        if extended_state not in extended_stats:
+            extended_stats[extended_state] = defaultdict(int)
 
-        state_stats = stats.get(extended_state, defaultdict(int))
-        state_stats["units"] += 1
-        state_stats["sourcewords"] += wordcounts[id(unit)][0]
-        state_stats["targetwords"] += wordcounts[id(unit)][1]
+        extended_stats[extended_state]["units"] += 1
+        extended_stats[extended_state]["sourcewords"] += sourcewords
+        extended_stats[extended_state]["targetwords"] += targetwords
 
-        stats[extended_state] = state_stats
+    stats["total"] = stats["translated"] + stats["fuzzy"] + stats["untranslated"]
+    stats["totalsourcewords"] = (
+        stats["translatedsourcewords"]
+        + stats["fuzzysourcewords"]
+        + stats["untranslatedsourcewords"]
+    )
+    stats["extended"] = extended_stats
 
     return stats
 
@@ -422,22 +427,6 @@ def percent(denominator: int, devisor: int) -> int:
     if devisor == 0:
         return 0
     return denominator * 100 // devisor
-
-
-def fuzzymessages(units):
-    return [unit for unit in units if unit.isfuzzy() and unit.target]
-
-
-def translatedmessages(units):
-    return [unit for unit in units if unit.istranslated()]
-
-
-def untranslatedmessages(units):
-    return [
-        unit
-        for unit in units
-        if not (unit.istranslated() or unit.isfuzzy()) and unit.source
-    ]
 
 
 class StatCollector:
