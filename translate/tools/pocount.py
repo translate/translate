@@ -170,7 +170,6 @@ def calcstats(filename):
 
     # Extended state tracking
     extended_stats = {}
-    wordcounts = {}
 
     # Single pass through all units
     for unit in store.units:
@@ -179,7 +178,6 @@ def calcstats(filename):
 
         # Count words once per unit
         sourcewords, targetwords = wordsinunit(unit)
-        wordcounts[id(unit)] = (sourcewords, targetwords)
 
         # Categorize unit and accumulate counts
         is_translated = unit.istranslated()
@@ -192,7 +190,7 @@ def calcstats(filename):
         elif is_fuzzy and unit.target:
             stats["fuzzy"] += 1
             stats["fuzzysourcewords"] += sourcewords
-        elif unit.source:
+        elif not (is_translated or is_fuzzy) and unit.source:
             stats["untranslated"] += 1
             stats["untranslatedsourcewords"] += sourcewords
 
