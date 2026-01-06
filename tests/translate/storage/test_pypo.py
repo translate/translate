@@ -172,7 +172,7 @@ class TestPYPOUnit(test_po.TestPOUnit):
         assert str(unit) == expected
         # Getting notes back should preserve the blank lines
         assert unit.getnotes("translator") == "Line 1\n\nLine 3"
-        
+
         # Test parsing a file with blank comment lines
         po_content = b"""# Translation file
 #
