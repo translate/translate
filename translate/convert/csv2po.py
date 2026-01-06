@@ -117,8 +117,10 @@ class csv2po:
 
     def _get_csv_location(self, csvunit):
         """Get a formatted string showing the CSV file location with line number."""
-        csvfilename = getattr(self.csvfile, "filename", "(unknown)")
-        line_info = f" line {csvunit.line_number}" if csvunit.line_number is not None else ""
+        csvfilename = getattr(self.csvfile, "filename", "(unknown)") or "(unknown)"
+        line_info = (
+            f" line {csvunit.line_number}" if csvunit.line_number is not None else ""
+        )
         return f"{csvfilename}{line_info}"
 
     def handlecsvunit(self, csvunit) -> None:

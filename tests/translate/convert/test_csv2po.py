@@ -1,3 +1,4 @@
+import logging
 from io import BytesIO
 
 from translate.convert import csv2po
@@ -141,8 +142,6 @@ msgstr ""
 
     def test_line_numbers_in_errors(self, caplog) -> None:
         """Tests that line numbers are included in error messages."""
-        import logging
-
         # CSV with entries that won't be found in the template
         csvsource = """location,source,target
 not.found.location,NotFound1,Translation1
