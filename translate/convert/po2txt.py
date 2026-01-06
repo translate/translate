@@ -91,14 +91,23 @@ class po2txt:
         txtresult = self.template_file.read().decode(self.encoding)
         # TODO: make a list of blocks of text and translate them individually
         # rather than using replace
-        for unit in self.source_store.units:
-            if not unit.istranslatable():
-                continue
-            if not unit.isfuzzy() or self.include_fuzzy:
-                txtsource = unit.source
-                txttarget = self.wrapmessage(unit.target)
-                if unit.istranslated():
-                    txtresult = txtresult.replace(txtsource, txttarget)
+        # Sort units by source length (descending) to avoid substring replacement issues
+        # e.g., "Constructor" being replaced in "Constructors" before "Constructors" is processed
+        translatable_units = [
+            unit
+            for unit in self.source_store.units
+            if unit.istranslatable()
+            and (not unit.isfuzzy() or self.include_fuzzy)
+            and unit.istranslated()
+        ]
+        sorted_units = sorted(
+            translatable_units, key=lambda u: len(u.source), reverse=True
+        )
+
+        for unit in sorted_units:
+            txtsource = unit.source
+            txttarget = self.wrapmessage(unit.target)
+            txtresult = txtresult.replace(txtsource, txttarget)
         return txtresult
 
     def run(self) -> bool:

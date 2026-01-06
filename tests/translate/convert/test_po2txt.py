@@ -177,6 +177,33 @@ msgstr "Ola mundo!"
         )
         assert output == expected_output
 
+    def test_substring_replacement(self) -> None:
+        """Check that shorter strings that are substrings don't cause incorrect replacements."""
+        # Test case from issue: "Constructor" should not replace the "Constructor" part in "Constructors"
+        input_string = """#: src.adoc:2
+msgid "Constructor"
+msgstr "Konstrukteur"
+
+#: src.adoc:4
+msgid "Constructors"
+msgstr "Konstrukteure"
+
+#: src.adoc:5
+msgid "pre-Constructor"
+msgstr "vor-Konstrukteur"  # codespell:ignore
+"""
+        template_string = """Constructor
+
+Constructors
+
+pre-Constructor"""
+        expected_output = """Konstrukteur
+
+Konstrukteure
+
+vor-Konstrukteur"""  # codespell:ignore
+        assert expected_output == self._convert_to_string(input_string, template_string)
+
 
 class TestPO2TxtCommand(test_convert.TestConvertCommand, TestPO2Txt):
     """Tests running actual po2txt commands on files."""
