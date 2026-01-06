@@ -32,7 +32,7 @@ jobs:
           ${{ runner.os }}-pre-commit-${{ steps.get-date.outputs.cache_tag }}
           ${{ runner.os }}-pre-commit-${{ steps.get-date.outputs.previous_cache_tag }}
           ${{ runner.os }}-pre-commit-
-    - uses: astral-sh/setup-uv@681c641aba71e4a1c380be3ab5e12ad51f415867 # v7.1.6
+    - uses: astral-sh/setup-uv@61cb8a9741eeb8a550a1b8544337180c0fc8476b # v7.2.0
     - uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
       with:
         python-version: 3.14
