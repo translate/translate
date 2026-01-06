@@ -1372,7 +1372,7 @@ msgstr ""
         with raises(ValueError) as exc_info:
             self.poparse(posource)
         error_msg = str(exc_info.value)
-        
+
         # Verify the error doesn't incorrectly point to msgstr as the problem
         # The Python parser shows the C-style comment line content
         # The native gettext parser uses a different format but also shouldn't blame msgstr
