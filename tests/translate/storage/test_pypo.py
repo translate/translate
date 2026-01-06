@@ -162,6 +162,46 @@ class TestPYPOUnit(test_po.TestPOUnit):
         assert str(unit) == '# # Double commented comment\nmsgid "File"\nmsgstr ""\n'
         assert unit.getnotes() == "# Double commented comment"
 
+    def test_notes_with_blank_lines(self) -> None:
+        """Tests that blank comment lines (just #) are preserved."""
+        unit = self.UnitClass("File")
+        # Add a note with blank lines in it
+        unit.addnote("Line 1\n\nLine 3", origin="translator")
+        # The serialized output should have # on blank lines
+        expected = '# Line 1\n#\n# Line 3\nmsgid "File"\nmsgstr ""\n'
+        assert str(unit) == expected
+        # Getting notes back should preserve the blank lines
+        assert unit.getnotes("translator") == "Line 1\n\nLine 3"
+        
+        # Test parsing a file with blank comment lines
+        po_content = b"""# Translation file
+#
+# This is a comment
+#
+# Another comment
+msgid ""
+msgstr ""
+"""
+        from io import BytesIO
+        store = pypo.pofile()
+        store.parse(BytesIO(po_content))
+        header = store.units[0]
+        
+        # Verify blank lines are parsed correctly
+        assert header.othercomments[1] == '#\n'
+        assert header.othercomments[3] == '#\n'
+        
+        # Verify notes preserve blank lines
+        notes = header.getnotes("translator")
+        assert notes == "Translation file\n\nThis is a comment\n\nAnother comment"
+        
+        # Verify re-serialization preserves blank comment lines
+        output = BytesIO()
+        store.serialize(output)
+        result = output.getvalue()
+        assert b'#\n' in result
+        assert result.count(b'#\n') == 2
+
     def test_wrap_firstlines(self) -> None:
         """
         Tests that we wrap the first line correctly a first line if longer then 71 chars
