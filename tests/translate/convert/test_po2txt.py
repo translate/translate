@@ -204,6 +204,36 @@ Konstrukteure
 vor-Konstrukteur"""  # codespell:ignore
         assert expected_output == self._convert_to_string(input_string, template_string)
 
+    def test_duplicate_text_first_occurrence_only(self) -> None:
+        """Test that text appearing multiple times is only replaced once per unit.
+        
+        This tests the bug where replace() without a count parameter replaces ALL
+        occurrences of a string, even when it appears in parts of the template that
+        don't have translations in the PO file.
+        """
+        input_string = """msgid "Placeables"
+msgstr "Platzhalter"
+
+msgid "Placeables are useful for translation."
+msgstr "Platzhalter sind nützlich für die Übersetzung."
+"""
+        # "Placeables" appears 3 times: as heading, in translated sentence, and in untranslated text
+        template_string = """Placeables
+
+Placeables are useful for translation.
+
+Read about Placeables."""
+        # Expected: Only the first two Placeables should be translated
+        # The third "Placeables" in "Read about Placeables" is not in PO and should remain
+        expected_output = """Platzhalter
+
+Platzhalter sind nützlich für die Übersetzung.
+
+Read about Placeables."""
+        result = self._convert_to_string(input_string, template_string)
+        # This test will FAIL with current code because replace() replaces ALL occurrences
+        assert expected_output == result, f"Expected:\n{expected_output}\n\nGot:\n{result}"
+
 
 class TestPO2TxtCommand(test_convert.TestConvertCommand, TestPO2Txt):
     """Tests running actual po2txt commands on files."""

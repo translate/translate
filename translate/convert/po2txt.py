@@ -107,7 +107,7 @@ class po2txt:
         for unit in sorted_units:
             txtsource = unit.source
             txttarget = self.wrapmessage(unit.target)
-            txtresult = txtresult.replace(txtsource, txttarget)
+            txtresult = txtresult.replace(txtsource, txttarget, 1)
         return txtresult
 
     def run(self) -> bool:
