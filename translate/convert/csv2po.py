@@ -115,6 +115,12 @@ class csv2po:
         pounit.setcontext(csvunit.getcontext())
         return pounit
 
+    def _get_csv_location(self, csvunit):
+        """Get a formatted string showing the CSV file location with line number."""
+        csvfilename = getattr(self.csvfile, "filename", "(unknown)")
+        line_info = f" line {csvunit.line_number}" if csvunit.line_number else ""
+        return f"{csvfilename}{line_info}"
+
     def handlecsvunit(self, csvunit) -> None:
         """Handles reintegrating a csv unit into the .po file."""
         if len(csvunit.location.strip()) > 0 and csvunit.location in self.commentindex:
@@ -124,7 +130,6 @@ class csv2po:
         elif simplify(csvunit.source) in self.simpleindex:
             thepolist = self.simpleindex[simplify(csvunit.source)]
             if len(thepolist) > 1:
-                csvfilename = getattr(self.csvfile, "filename", "(unknown)")
                 matches = "\n  ".join(
                     f"possible match: {pounit.source}" for pounit in thepolist
                 )
@@ -135,7 +140,7 @@ class csv2po:
                     "  original\t%s\n"
                     "  translation\t%s\n"
                     "  %s",
-                    csvfilename,
+                    self._get_csv_location(csvunit),
                     csvunit.location,
                     csvunit.source,
                     csvunit.target,
@@ -145,13 +150,12 @@ class csv2po:
                 return
             pounit = thepolist[0]
         else:
-            csvfilename = getattr(self.csvfile, "filename", "(unknown)")
             logger.warning(
                 "%s - csv entry not found in pofile:\n"
                 "  location\t%s\n"
                 "  original\t%s\n"
                 "  translation\t%s",
-                csvfilename,
+                self._get_csv_location(csvunit),
                 csvunit.location,
                 csvunit.source,
                 csvunit.target,
