@@ -1223,7 +1223,9 @@ class propfile(base.TranslationStore):
                     self.addunit(newunit)
                     newunit = self.UnitClass("", self.personality.name)
                 else:
-                    newunit.name = self.personality.key_strip(line[:delimiter_pos])
+                    # Extract the key (text before delimiter)
+                    key_part = line[:delimiter_pos]
+                    newunit.name = self.personality.key_strip(key_part)
                     newunit.missing = ismissing
 
                     # Add any inline comments found
@@ -1231,8 +1233,56 @@ class propfile(base.TranslationStore):
                         if comment not in self.personality.drop_comments:
                             newunit.comments.append(comment)
 
-                    # Extract value part after delimiter
-                    value_part = line[delimiter_pos + 1 :]
+                    # Preserve whitespace between key and delimiter
+                    # For dialects with out_delimiter_wrappers (like strings), 
+                    # don't include whitespace in delimiter as it's added automatically
+                    if hasattr(self.personality, 'out_delimiter_wrappers') and self.personality.out_delimiter_wrappers:
+                        # Don't add whitespace to delimiter for these dialects
+                        ws_before_delim = ""
+                    else:
+                        # For dialects with key_wrap_char (like strings), the key_strip
+                        # removes the wrapper, so we need to find where the wrapped key ends
+                        if self.personality.key_wrap_char:
+                            # Find the closing wrap char
+                            key_end = key_part.rfind(self.personality.key_wrap_char)
+                            if key_end != -1:
+                                key_end += 1  # Include the wrap char
+                            else:
+                                key_end = len(key_part)
+                        else:
+                            # No wrapper, find where the actual key ends
+                            # Use the same logic as _key_strip to handle escaped spaces
+                            key_rstripped = key_part.rstrip()
+                            # If string ends in \ we need to include the escaped whitespace
+                            if key_rstripped and key_rstripped[-1] == "\\":
+                                key_end = len(key_rstripped) + 1
+                            else:
+                                key_end = len(key_rstripped)
+                        
+                        # Extract any whitespace between key and the delimiter
+                        ws_before_delim = key_part[key_end:]
+                    
+                    # For whitespace delimiter, extract the actual whitespace characters
+                    # to preserve them (e.g., tabs, multiple spaces)
+                    if newunit.delimiter == " ":
+                        # Find the end of whitespace to extract all consecutive whitespace chars
+                        ws_end = delimiter_pos
+                        while ws_end < len(line) and line[ws_end].isspace():
+                            ws_end += 1
+                        # Check if there's a non-whitespace delimiter after the whitespace
+                        if ws_end < len(line) and line[ws_end] in ["=", ":"]:
+                            # Whitespace before = or :, store the whitespace + delimiter
+                            newunit.delimiter = line[delimiter_pos:ws_end] + line[ws_end]
+                            value_part = line[ws_end + 1 :]
+                        else:
+                            # Pure whitespace delimiter
+                            newunit.delimiter = line[delimiter_pos:ws_end]
+                            value_part = line[ws_end:]
+                    else:
+                        # Non-whitespace delimiter (= or :)
+                        # Include any whitespace before the delimiter
+                        newunit.delimiter = ws_before_delim + newunit.delimiter
+                        value_part = line[delimiter_pos + 1 :]
 
                     if self.personality.is_line_continuation(value_part.lstrip()):
                         inmultilinevalue = True
