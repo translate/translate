@@ -190,7 +190,7 @@ msgstr "Konstrukteure"
 
 #: src.adoc:5
 msgid "pre-Constructor"
-msgstr "vor-Konstrukteur"
+msgstr "vor-Konstrukteur"  # codespell:ignore
 """
         template_string = """Constructor
 
@@ -201,7 +201,7 @@ pre-Constructor"""
 
 Konstrukteure
 
-vor-Konstrukteur"""
+vor-Konstrukteur"""  # codespell:ignore
         assert expected_output == self._convert_to_string(input_string, template_string)
 
 
