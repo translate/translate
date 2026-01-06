@@ -182,19 +182,18 @@ class TestPYPOUnit(test_po.TestPOUnit):
 msgid ""
 msgstr ""
 """
-        from io import BytesIO
         store = pypo.pofile()
         store.parse(BytesIO(po_content))
         header = store.units[0]
-        
+
         # Verify blank lines are parsed correctly
         assert header.othercomments[1] == '#\n'
         assert header.othercomments[3] == '#\n'
-        
+
         # Verify notes preserve blank lines
         notes = header.getnotes("translator")
         assert notes == "Translation file\n\nThis is a comment\n\nAnother comment"
-        
+
         # Verify re-serialization preserves blank comment lines
         output = BytesIO()
         store.serialize(output)
