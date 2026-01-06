@@ -1360,6 +1360,24 @@ msg
         with raises(ValueError):
             self.poparse(posource)
 
+    def test_c_style_comment_error_reporting(self) -> None:
+        """Test that C-style comments in msgstr show the correct error line."""
+        # C-style comments are not valid in PO files and should trigger an error
+        # pointing to the comment line, not the previous msgstr line
+        posource = b"""msgid "test"
+msgstr ""
+/* option-name: wrap */
+"translation"
+"""
+        with raises(ValueError) as exc_info:
+            self.poparse(posource)
+        error_msg = str(exc_info.value)
+
+        # Verify the error doesn't incorrectly point to msgstr as the problem
+        # The Python parser shows the C-style comment line content
+        # The native gettext parser uses a different format but also shouldn't blame msgstr
+        assert 'msgstr ""' not in error_msg
+
     def test_wrapped_msgid(self) -> None:
         posource = b"""
 #| msgid "some"

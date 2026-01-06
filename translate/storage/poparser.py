@@ -49,7 +49,7 @@ class PoParseError(ValueError):
         if message is None:
             message = "Syntax error"
         super().__init__(
-            f"{message} on line {parse_state.lineno}: {parse_state.last_line!r}"
+            f"{message} on line {parse_state.lineno}: {parse_state.next_line!r}"
         )
 
 
