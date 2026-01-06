@@ -187,8 +187,8 @@ class TestPYPOUnit(test_po.TestPOUnit):
         store.parse(BytesIO(po_content))
         header = store.units[0]
 
-        # Verify blank lines are parsed correctly
-        # Expected structure: ['# Translation file\n', '#\n', '# This is a comment\n', '#\n', '# Another comment\n']
+        # Verify blank lines are parsed correctly into header.othercomments
+        # Expected: ['# Translation file\n', '#\n', '# This is a comment\n', '#\n', '# Another comment\n']
         assert len(header.othercomments) == 5
         assert header.othercomments[1] == '#\n', "Second line should be a blank comment"
         assert header.othercomments[3] == '#\n', "Fourth line should be a blank comment"
