@@ -337,7 +337,10 @@ msgstr ""
         assert stats["fuzzy"] == 1
         assert stats["untranslated"] == 1
         # Total should equal the sum
-        assert stats["total"] == stats["translated"] + stats["fuzzy"] + stats["untranslated"]
+        assert (
+            stats["total"]
+            == stats["translated"] + stats["fuzzy"] + stats["untranslated"]
+        )
 
 
 class TestPOCountLineEndings:
