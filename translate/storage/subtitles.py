@@ -245,7 +245,7 @@ class MicroDVDFile(SubtitleFile):
 
 
 class AdvSubStationAlphaFile(SubtitleFile):
-    """specialized class for SubRipFile's only."""
+    """specialized class for Advanced Substation Alpha files only."""
 
     Name = "Advanced Substation Alpha subtitles file"
     Extensions = ["ass"]
@@ -275,7 +275,7 @@ class AdvSubStationAlphaFile(SubtitleFile):
 
 
 class SubStationAlphaFile(SubtitleFile):
-    """specialized class for SubRipFile's only."""
+    """specialized class for Substation Alpha files only."""
 
     Name = "Substation Alpha subtitles file"
     Extensions = ["ssa"]
