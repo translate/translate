@@ -232,7 +232,7 @@ Platzhalter sind nützlich für die Übersetzung.
 
 Read about Placeables."""
         result = self._convert_to_string(input_string, template_string)
-        # This test will FAIL with current code because replace() replaces ALL occurrences
+        # This test verifies the fix: replace() with count=1 only replaces first occurrence
         assert expected_output == result, (
             f"Expected:\n{expected_output}\n\nGot:\n{result}"
         )
