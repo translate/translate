@@ -174,21 +174,24 @@ class TestPYPOUnit(test_po.TestPOUnit):
         assert unit.getnotes("translator") == "Line 1\n\nLine 3"
 
         # Test parsing a file with blank comment lines
-        po_content = b"""# Translation file
-#
-# This is a comment
-#
-# Another comment
-msgid ""
-msgstr ""
-"""
+        po_content = (
+            b"# Translation file\n"
+            b"#\n"
+            b"# This is a comment\n"
+            b"#\n"
+            b"# Another comment\n"
+            b'msgid ""\n'
+            b'msgstr ""\n'
+        )
         store = pypo.pofile()
         store.parse(BytesIO(po_content))
         header = store.units[0]
 
         # Verify blank lines are parsed correctly
-        assert header.othercomments[1] == '#\n'
-        assert header.othercomments[3] == '#\n'
+        # Expected structure: ['# Translation file\n', '#\n', '# This is a comment\n', '#\n', '# Another comment\n']
+        assert len(header.othercomments) == 5
+        assert header.othercomments[1] == '#\n', "Second line should be a blank comment"
+        assert header.othercomments[3] == '#\n', "Fourth line should be a blank comment"
 
         # Verify notes preserve blank lines
         notes = header.getnotes("translator")
