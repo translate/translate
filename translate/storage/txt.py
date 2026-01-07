@@ -121,7 +121,7 @@ class TxtFile(base.TranslationStore):
             unit._line_number = 1
             return
         block = []
-        block_start_line = 0
+        block_start_line = 1
         current_line = 0
         pretext = ""
         posttext = ""
@@ -154,7 +154,7 @@ class TxtFile(base.TranslationStore):
                 pretext = ""
                 posttext = ""
                 block = []
-                block_start_line = 0
+                block_start_line = current_line + 1
             elif not isbreak:
                 if not block:
                     block_start_line = current_line
