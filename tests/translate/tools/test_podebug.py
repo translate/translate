@@ -81,13 +81,14 @@ msgstr "Translated message"
         assert unit.target == ""
 
     def test_rewrite_blank_with_plurals(self) -> None:
-        """Test that blank rewrite works with plural forms."""
+        """Test that blank rewrite works with plural forms and clears fuzzy flags."""
         po_content = b"""
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\\n"
 
 #: test.c:30
+#, fuzzy
 msgid "One item"
 msgid_plural "%d items"
 msgstr[0] "Un article"
@@ -99,8 +100,9 @@ msgstr[1] "%d articles"
 
         # Get the actual translation unit (skip header at index 0)
         unit = converted.units[1]
-        # Check that all plural forms are blanked
+        # Check that all plural forms are blanked and fuzzy flag is cleared
         assert unit.target == ["", ""]
+        assert not unit.isfuzzy()
 
     def test_rewrite_en(self) -> None:
         """Test the en rewrite function."""

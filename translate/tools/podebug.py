@@ -321,9 +321,9 @@ class podebug:
             rewritten = [self.rewritefunc(string) for string in rich_string]
             if rewritten:
                 rich_string = rewritten
-            # Clear fuzzy flag when blanking translations
-            if self.rewritefunc == self.rewrite_blank and unit.isfuzzy():
-                unit.markfuzzy(False)
+        # Clear fuzzy flag when blanking translations
+        if self.rewritefunc == self.rewrite_blank and unit.isfuzzy():
+            unit.markfuzzy(False)
         unit.rich_target = add_prefix(prefix, rich_string)
         return unit
 

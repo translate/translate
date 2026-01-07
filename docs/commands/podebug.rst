@@ -125,14 +125,10 @@ quickly finding strings that have spelling or other errors.  It can also be
 used to create a translated English file which can then be used for other
 purposes such as British English translation.
 
-The 'blank' rewriter is useful when you need to strip all translations from a
-PO file, for example to start over with a new translation into a different
-language, or to create a POT template from an existing translation.  It clears
-all ``msgstr`` entries and removes fuzzy flags::
+The 'blank' rewriter strips all translations and clears fuzzy flags, useful for
+starting fresh translations or creating POT templates::
 
   podebug --rewrite=blank fr.po new-lang.po
-
-This is equivalent to the ``msgattrib --clear-fuzzy --empty`` functionality.
 
 .. _podebug#ignoring_messages:
 
