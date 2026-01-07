@@ -1,5 +1,5 @@
-from io import BytesIO
 import csv
+from io import BytesIO
 
 import pytest
 
@@ -303,7 +303,7 @@ GENERAL@2|Notes,"cable, motor, switch"
         # Simulate a CSV that the sniffer might detect as QUOTE_NONNUMERIC
         # This happens when CSV files have unquoted numeric values
         # The test creates a dialect with QUOTE_NONNUMERIC to verify the fix
-        content = b'location,source,target\ntest1,hello,hola\ntest2,world,mundo\n'
+        content = b"location,source,target\ntest1,hello,hola\ntest2,world,mundo\n"
 
         # Monkey-patch csv.Sniffer to return a dialect with QUOTE_NONNUMERIC
         original_sniff = csv.Sniffer.sniff
