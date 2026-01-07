@@ -480,6 +480,40 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         xlifffile = xliff.xlifffile.parsestring(xlfsource)
         assert xlifffile.units[0].istranslatable()
 
+    def test_marktranslatable(self) -> None:
+        """Test marking units as translatable or untranslatable."""
+        xlfsource = (
+            self.skeleton
+            % """<trans-unit id="1" xml:space="preserve">
+                     <source>File</source>
+                     <target/>
+                 </trans-unit>"""
+        )
+        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        unit = xlifffile.units[0]
+
+        # Test marking as untranslatable
+        assert unit.istranslatable()
+        unit.marktranslatable(False)
+        assert not unit.istranslatable()
+        assert unit.xmlelement.get("translate") == "no"
+
+        # Test marking as translatable
+        unit.marktranslatable(True)
+        assert unit.istranslatable()
+        assert unit.xmlelement.get("translate") == "yes"
+
+        # Test that marking as translatable again when already translatable sets to "yes"
+        unit.marktranslatable(True)
+        assert unit.istranslatable()
+        assert unit.xmlelement.get("translate") == "yes"
+
+        # Test that marking as untranslatable when already untranslatable doesn't change it
+        unit.marktranslatable(False)
+        unit.marktranslatable(False)
+        assert not unit.istranslatable()
+        assert unit.xmlelement.get("translate") == "no"
+
     def test_entities(self) -> None:
         xlfsource = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE foo [ <!ELEMENT foo ANY > <!ENTITY xxe SYSTEM "file:///etc/passwd" >]>

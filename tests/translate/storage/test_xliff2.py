@@ -38,6 +38,33 @@ class TestXLIFF2Unit(test_base.TestTranslationUnit):
         unit.setid("unit-1")
         assert unit.getid() == "unit-1"
 
+    def test_marktranslatable(self) -> None:
+        """Test marking units as translatable or untranslatable."""
+        unit = self.unit
+        unit.source = "Test"
+
+        # Test marking as untranslatable
+        assert unit.istranslatable()
+        unit.marktranslatable(False)
+        assert not unit.istranslatable()
+        assert unit.getunitelement().get("translate") == "no"
+
+        # Test marking as translatable
+        unit.marktranslatable(True)
+        assert unit.istranslatable()
+        assert unit.getunitelement().get("translate") == "yes"
+
+        # Test that marking as translatable again when already translatable sets to "yes"
+        unit.marktranslatable(True)
+        assert unit.istranslatable()
+        assert unit.getunitelement().get("translate") == "yes"
+
+        # Test that marking as untranslatable when already untranslatable doesn't change it
+        unit.marktranslatable(False)
+        unit.marktranslatable(False)
+        assert not unit.istranslatable()
+        assert unit.getunitelement().get("translate") == "no"
+
 
 class TestXLIFF2file(test_base.TestTranslationStore):
     StoreClass = xliff2.Xliff2File
@@ -147,6 +174,50 @@ class TestXLIFF2file(test_base.TestTranslationStore):
         assert xliff2file.units[0].target == "Bonjour"
         assert xliff2file.getsourcelanguage() == "en"
         assert xliff2file.gettargetlanguage() == "fr"
+
+    def test_parse_translate_attribute(self) -> None:
+        """Test parsing with translate attribute on units."""
+        # Test with translate="yes"
+        xliff2_content = b"""<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en">
+  <file id="f1">
+    <unit id="1" translate="yes">
+      <segment>
+        <source>Translatable</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>"""
+        xliff2file = xliff2.Xliff2File.parsestring(xliff2_content)
+        assert xliff2file.units[0].istranslatable()
+
+        # Test with translate="no"
+        xliff2_content = b"""<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en">
+  <file id="f1">
+    <unit id="2" translate="no">
+      <segment>
+        <source>Not translatable</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>"""
+        xliff2file = xliff2.Xliff2File.parsestring(xliff2_content)
+        assert not xliff2file.units[0].istranslatable()
+
+        # Test without translate attribute (should default to translatable)
+        xliff2_content = b"""<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en">
+  <file id="f1">
+    <unit id="3">
+      <segment>
+        <source>Default</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>"""
+        xliff2file = xliff2.Xliff2File.parsestring(xliff2_content)
+        assert xliff2file.units[0].istranslatable()
 
     def test_multiple_segments_per_unit(self) -> None:
         """Test that multiple segments in a unit are exposed as separate units."""

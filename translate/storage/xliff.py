@@ -342,6 +342,13 @@ class Xliff1Unit(XliffUnit):
         value = self.xmlelement.get("translate")
         return not value or value.lower() != "no"
 
+    def marktranslatable(self, value=True) -> None:
+        """Mark this unit as translatable or untranslatable."""
+        if value:
+            self.xmlelement.set("translate", "yes")
+        elif self.istranslatable():
+            self.xmlelement.set("translate", "no")
+
     def marktranslated(self) -> None:
         state_id = self.get_state_id()
         if state_id < self.S_UNREVIEWED:
