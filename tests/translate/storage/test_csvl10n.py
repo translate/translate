@@ -367,7 +367,7 @@ GENERAL@2|Notes,"cable, motor, switch"
         store = self.parse_store(source)
         
         # First unit should be at line 2 (after header)
-        assert store.units[0].getlinenumber() == 2
+        assert store.units[0].line_number == 2
         
         # Second unit should be at line 3
-        assert store.units[1].getlinenumber() == 3
+        assert store.units[1].line_number == 3

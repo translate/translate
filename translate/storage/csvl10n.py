@@ -51,8 +51,6 @@ class csvunit(base.TranslationUnit):
         self.developer_comments = ""
         self.translator_comments = ""
         self.context = ""
-        # Line number in the CSV file where this unit was found (1-based)
-        self.line_number: int | None = None
 
     def getid(self):
         if self.id:
@@ -80,10 +78,6 @@ class csvunit(base.TranslationUnit):
 
     def setcontext(self, value) -> None:
         self.context = value
-
-    def getlinenumber(self) -> int | None:
-        """Get the line number in the CSV file where this unit was found."""
-        return self.line_number
 
     def getnotes(self, origin=None):
         if origin is None:

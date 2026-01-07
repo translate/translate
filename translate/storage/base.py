@@ -128,6 +128,10 @@ class TranslationUnit:
     _rich_target = None
     _state_n = 0
     notes = ""
+    line_number: int | None = None
+    """Line number in the source file where this unit was found (1-based).
+    
+    None if not supported or not available."""
 
     def __init__(self, source=None) -> None:
         """Constructs a TranslationUnit containing the given source string."""
@@ -322,19 +326,6 @@ class TranslationUnit:
                 self.addlocation(item)
         else:
             self.addlocation(location)
-
-    def getlinenumber(self) -> int | None:
-        """
-        Get the line number in the source file where this unit was found.
-
-        :return: The line number (1-based) or None if not supported/available
-
-        .. note::
-
-           This method returns None by default. Formats that support line
-           numbering should override this method.
-        """
-        return None
 
     def getcontext(self) -> str:
         """Get the message context."""
