@@ -190,8 +190,8 @@ class TestPYPOUnit(test_po.TestPOUnit):
         # Verify blank lines are parsed correctly into header.othercomments
         # Expected: ['# Translation file\n', '#\n', '# This is a comment\n', '#\n', '# Another comment\n']
         assert len(header.othercomments) == 5
-        assert header.othercomments[1] == '#\n', "Second line should be a blank comment"
-        assert header.othercomments[3] == '#\n', "Fourth line should be a blank comment"
+        assert header.othercomments[1] == "#\n", "Second line should be a blank comment"
+        assert header.othercomments[3] == "#\n", "Fourth line should be a blank comment"
 
         # Verify notes preserve blank lines
         notes = header.getnotes("translator")
@@ -201,8 +201,8 @@ class TestPYPOUnit(test_po.TestPOUnit):
         output = BytesIO()
         store.serialize(output)
         result = output.getvalue()
-        assert b'#\n' in result
-        assert result.count(b'#\n') == 2
+        assert b"#\n" in result
+        assert result.count(b"#\n") == 2
 
     def test_wrap_firstlines(self) -> None:
         """
