@@ -343,7 +343,7 @@ class prop2po:
             return None
         # Use a special marker for empty keys (e.g., "=value" in properties file)
         # so they can be properly indexed and matched during po2prop conversion
-        location = propunit.name if propunit.name else EMPTY_KEY_MARKER
+        location = propunit.name or EMPTY_KEY_MARKER
         pounit.addlocation(location)
 
         # For .strings files, treat them as bilingual:

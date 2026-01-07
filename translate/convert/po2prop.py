@@ -26,16 +26,12 @@ for examples and usage instructions.
 import warnings
 
 from translate.convert import accesskey, convert
+from translate.convert.prop2po import EMPTY_KEY_MARKER
 from translate.lang import data
 from translate.misc import quote
 from translate.storage import po, properties
 
 eol = "\n"
-
-
-# Special marker used for properties with no key (e.g., "=value")
-# This must match the marker in prop2po.py
-EMPTY_KEY_MARKER = "<empty>"
 
 
 def applytranslation(key, propunit, inunit, mixedkeys):
@@ -205,7 +201,7 @@ class reprop:
                 ]
                 delimiter = prespace + delimiter_char + postspace
             # Check for the special marker used for empty keys (e.g., "=value")
-            lookup_key = EMPTY_KEY_MARKER if key == "" else key
+            lookup_key = key or EMPTY_KEY_MARKER
             if lookup_key in self.inputstore.locationindex:
                 unit = self.inputstore.locationindex[lookup_key]
                 if unit is None or (
