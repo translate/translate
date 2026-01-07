@@ -204,37 +204,68 @@ Konstrukteure
 vor-Konstrukteur"""  # codespell:ignore
         assert expected_output == self._convert_to_string(input_string, template_string)
 
-    def test_duplicate_text_first_occurrence_only(self) -> None:
+    def test_duplicate_text_segment_based_replacement(self) -> None:
         """
-        Test that text appearing multiple times is only replaced once per unit.
+        Test that duplicate text is handled correctly using segment-based replacement.
 
-        This tests the bug where replace() without a count parameter replaces ALL
-        occurrences of a string, even when it appears in parts of the template that
-        don't have translations in the PO file.
+        When the same text appears multiple times in the template, each occurrence
+        should be treated as a separate segment and translated independently if it
+        has a translation in the PO file.
         """
+        # Test case 1: Same heading appears in multiple sections, both should be translated
         input_string = """msgid "Placeables"
 msgstr "Platzhalter"
 
 msgid "Placeables are useful for translation."
 msgstr "Platzhalter sind nützlich für die Übersetzung."
+
+msgid "Placeables are not supported in HTML."
+msgstr "Platzhalter werden in HTML nicht unterstützt."
 """
-        # "Placeables" appears 3 times: as heading, in translated sentence, and in untranslated text
-        template_string = """Placeables
+        template_string = """XML
+
+Placeables
+
+Placeables are useful for translation.
+
+HTML
+
+Placeables
+
+Placeables are not supported in HTML."""
+        expected_output = """XML
+
+Platzhalter
+
+Platzhalter sind nützlich für die Übersetzung.
+
+HTML
+
+Platzhalter
+
+Platzhalter werden in HTML nicht unterstützt."""
+        assert expected_output == self._convert_to_string(input_string, template_string)
+
+        # Test case 2: Text that appears in a longer string should not be replaced separately
+        input_string2 = """msgid "Placeables"
+msgstr "Platzhalter"
+
+msgid "Placeables are useful for translation."
+msgstr "Platzhalter sind nützlich für die Übersetzung."
+"""
+        template_string2 = """Placeables
 
 Placeables are useful for translation.
 
 Read about Placeables."""
-        # Expected: Only the first two Placeables should be translated
-        # The third "Placeables" in "Read about Placeables" is not in PO and should remain
-        expected_output = """Platzhalter
+        # "Read about Placeables" is a separate segment with no translation, so it stays in English
+        expected_output2 = """Platzhalter
 
 Platzhalter sind nützlich für die Übersetzung.
 
 Read about Placeables."""
-        result = self._convert_to_string(input_string, template_string)
-        # This test verifies the fix: replace() with count=1 only replaces first occurrence
-        assert expected_output == result, (
-            f"Expected:\n{expected_output}\n\nGot:\n{result}"
+        assert expected_output2 == self._convert_to_string(
+            input_string2, template_string2
         )
 
 

@@ -26,7 +26,7 @@ for examples and usage instructions.
 import textwrap
 
 from translate.convert import convert
-from translate.storage import factory
+from translate.storage import factory, txt
 
 
 class po2txt:
@@ -88,27 +88,38 @@ class po2txt:
         Source file is in source format, while target and template files use
         target format.
         """
-        txtresult = self.template_file.read().decode(self.encoding)
-        # TODO: make a list of blocks of text and translate them individually
-        # rather than using replace
-        # Sort units by source length (descending) to avoid substring replacement issues
-        # e.g., "Constructor" being replaced in "Constructors" before "Constructors" is processed
-        translatable_units = [
-            unit
-            for unit in self.source_store.units
-            if unit.istranslatable()
-            and (not unit.isfuzzy() or self.include_fuzzy)
-            and unit.istranslated()
-        ]
-        sorted_units = sorted(
-            translatable_units, key=lambda u: len(u.source), reverse=True
-        )
+        # Parse the template file using TxtFile to segment it the same way txt2po does
+        self.template_file.seek(0)
+        template_store = txt.TxtFile(self.template_file, encoding=self.encoding)
 
-        for unit in sorted_units:
-            txtsource = unit.source
-            txttarget = self.wrapmessage(unit.target)
-            txtresult = txtresult.replace(txtsource, txttarget, 1)
-        return txtresult
+        # Create a lookup dictionary for translations
+        translation_dict = {}
+        for unit in self.source_store.units:
+            if (
+                unit.istranslatable()
+                and unit.istranslated()
+                and (not unit.isfuzzy() or self.include_fuzzy)
+            ):
+                translation_dict[unit.source] = self.wrapmessage(unit.target)
+
+        # Build the result by going through each template unit
+        result_parts = []
+        for i, template_unit in enumerate(template_store.units):
+            # Add double newline separator between units (except before first unit)
+            if i > 0:
+                result_parts.append("\n\n")
+
+            # Look up the translation, or use the original text
+            translated_text = translation_dict.get(
+                template_unit.source, template_unit.source
+            )
+
+            # Reconstruct with pretext and posttext
+            result_parts.append(
+                f"{template_unit.pretext}{translated_text}{template_unit.posttext}"
+            )
+
+        return "".join(result_parts)
 
     def run(self) -> bool:
         """Run the converter."""
