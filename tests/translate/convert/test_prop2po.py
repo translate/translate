@@ -80,6 +80,16 @@ class TestProp2PO:
         assert pounit.source == ""
         assert pounit.target == ""
 
+    def test_value_no_key_entry(self) -> None:
+        """Checks that a properties entry with value but no key is converted."""
+        propsource = "=value\n"
+        pofile = self.prop2po(propsource)
+        pounit = self.singleelement(pofile)
+        # Empty key should use special <empty> marker for location
+        assert pounit.getlocations() == ["<empty>"]
+        assert pounit.source == "value"
+        assert pounit.target == ""
+
     def test_tab_at_end_of_string(self) -> None:
         """Check that we preserve tabs at the end of a string."""
         propsource = r"TAB_AT_END=This sentence has a tab at the end.\t"

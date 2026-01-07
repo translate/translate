@@ -94,6 +94,15 @@ class TestPO2Prop:
         print(propfile)
         assert propfile == propexpected
 
+    def test_value_no_key(self) -> None:
+        """Check that we can handle values with no key (e.g., =value)."""
+        posource = """#: <empty>\nmsgid "value"\nmsgstr "waarde"\n"""
+        proptemplate = """=value\n"""
+        propexpected = """=waarde\n"""
+        propfile = self.merge2prop(proptemplate, posource)
+        print(propfile)
+        assert propfile == propexpected
+
     def test_merging_blank_entries(self) -> None:
         """Check that we can correctly merge entries that are blank in the template."""
         posource = r'''#: accesskey-accept

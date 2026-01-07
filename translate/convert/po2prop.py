@@ -26,6 +26,7 @@ for examples and usage instructions.
 import warnings
 
 from translate.convert import accesskey, convert
+from translate.convert.prop2po import EMPTY_KEY_MARKER
 from translate.lang import data
 from translate.misc import quote
 from translate.storage import po, properties
@@ -199,8 +200,10 @@ class reprop:
                     + 1
                 ]
                 delimiter = prespace + delimiter_char + postspace
-            if key in self.inputstore.locationindex:
-                unit = self.inputstore.locationindex[key]
+            # Check for the special marker used for empty keys (e.g., "=value")
+            lookup_key = key or EMPTY_KEY_MARKER
+            if lookup_key in self.inputstore.locationindex:
+                unit = self.inputstore.locationindex[lookup_key]
                 if unit is None or (
                     not unit.istranslated()
                     and bool(unit.source)

@@ -34,6 +34,10 @@ from translate.storage import po, properties
 logger = logging.getLogger(__name__)
 
 
+# Special marker used for properties with no key (e.g., "=value")
+EMPTY_KEY_MARKER = "<empty>"
+
+
 class DiscardUnit(ValueError):
     pass
 
@@ -337,7 +341,10 @@ class prop2po:
         # TODO: handle multiline msgid
         if propunit.isblank():
             return None
-        pounit.addlocation(propunit.name)
+        # Use a special marker for empty keys (e.g., "=value" in properties file)
+        # so they can be properly indexed and matched during po2prop conversion
+        location = propunit.name or EMPTY_KEY_MARKER
+        pounit.addlocation(location)
 
         # For .strings files, treat them as bilingual:
         # - The key (name) is the source text (msgid)
