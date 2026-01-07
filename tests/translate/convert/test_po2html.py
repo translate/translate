@@ -115,6 +115,57 @@ sin.
         htmlexpected = "<p>Vis &amp; skyfies</p>"
         assert htmlexpected in self.converthtml(posource, htmlsource)
 
+    def test_entities_template_vs_po_mismatch(self) -> None:
+        """
+        Test that po2html handles HTML entity mismatches between template and PO file.
+
+        This addresses the issue where the template contains HTML entities (like &amp;)
+        but the PO file has the actual characters (like &), or vice versa.
+        """
+        # Case 1: Template has &amp; but PO file has & (actual character)
+        htmlsource = "<p>Fish &amp; chips</p>"
+        posource = '#: html:3\nmsgid "Fish & chips"\nmsgstr "Poisson & frites"\n'
+        result = self.converthtml(posource, htmlsource)
+        assert "Poisson" in result
+        # Verify ampersand is properly preserved in output
+        assert "Poisson & frites" in result or "Poisson &amp; frites" in result
+
+        # Case 2: Template has & (actual character) but PO file has &amp;
+        htmlsource = "<p>Fish & chips</p>"
+        posource = (
+            '#: html:3\nmsgid "Fish &amp; chips"\nmsgstr "Poisson &amp; frites"\n'
+        )
+        result = self.converthtml(posource, htmlsource)
+        assert "Poisson" in result
+        # Verify ampersand entity is properly preserved
+        assert "Poisson &amp; frites" in result
+
+        # Case 3: Template has &lt; but PO file has < (actual character)
+        htmlsource = "<p>5 &lt; 6</p>"
+        posource = '#: html:3\nmsgid "5 < 6"\nmsgstr "5 inférieur à 6"\n'
+        result = self.converthtml(posource, htmlsource)
+        assert "inférieur" in result
+        # Verify the translation is applied (note: translation doesn't include < symbol)
+        assert "<p>5 inférieur à 6</p>" in result
+
+        # Case 4: Template has < (actual character) but PO file has &lt;
+        htmlsource = "<p>Text about less than</p>"
+        posource = (
+            '#: html:3\nmsgid "Text about less than"\nmsgstr "Texte à propos de &lt;"\n'
+        )
+        result = self.converthtml(posource, htmlsource)
+        assert "Texte" in result
+        # Verify the &lt; entity from translation is preserved
+        assert "&lt;" in result
+
+        # Case 5: Template has &gt; but PO file has > (actual character)
+        htmlsource = "<p>x &gt; y</p>"
+        posource = '#: html:3\nmsgid "x > y"\nmsgstr "x supérieur à y"\n'
+        result = self.converthtml(posource, htmlsource)
+        assert "supérieur" in result
+        # Verify the translation is applied (note: translation doesn't include > symbol)
+        assert "<p>x supérieur à y</p>" in result
+
     def test_utf8_non_ascii_characters(self) -> None:
         """
         Tests that non-ASCII UTF-8 characters are handled correctly.
