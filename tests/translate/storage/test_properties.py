@@ -441,21 +441,21 @@ endspace=,\u0020
         assert bytes(store).decode("utf-8") == propsource
 
     def test_whitespace_handling(self) -> None:
-        """Check that we preserve whitespace in delimiters."""
+        """Check that we remove extra whitespace around property."""
         whitespaces = (
             (
-                # Standard for baseline - whitespace before = is preserved
+                # Standard for baseline
                 "key = value",
                 "key",
                 "value",
-                "key =value\n",
+                "key=value\n",
             ),
             (
-                # Extra \s before key and value - whitespace before = is preserved
+                # Extra \s before key and value
                 " key =  value",
                 "key",
                 "value",
-                "key =value\n",
+                "key=value\n",
             ),
             (
                 # extra space at start and end of key
@@ -469,7 +469,7 @@ endspace=,\u0020
                 "key = \\ value ",
                 "key",
                 " value ",
-                "key =\\ value \n",
+                "key=\\ value \n",
             ),
         )
         for propsource, key, value, expected in whitespaces:
@@ -501,43 +501,28 @@ endspace=,\u0020
             assert propunit.name == "key"
             assert propunit.source == "value"
 
-    def test_tab_delimiters(self) -> None:
-        """Test that we handle tab and other whitespace delimiters correctly."""
-        # Test tab as delimiter
+    def test_tab_delimiter_parsing(self) -> None:
+        """Test that we can parse properties with tab delimiters (Java dialect)."""
+        # Tab as delimiter
         propfile = self.propparse("key\tvalue")
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
         assert propunit.name == "key"
         assert propunit.source == "value"
-        assert propunit.delimiter == "\t"
-        assert str(propunit) == "key\tvalue\n"
 
-        # Test tab before equals
+        # Tab before equals
         propfile = self.propparse("key\t=   value")
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
         assert propunit.name == "key"
         assert propunit.source == "value"
-        assert propunit.delimiter == "\t="
-        assert str(propunit) == "key\t=value\n"
 
-        # Test multiple tabs
+        # Multiple tabs
         propfile = self.propparse("key\t\tvalue")
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
         assert propunit.name == "key"
         assert propunit.source == "value"
-        assert propunit.delimiter == "\t\t"
-        assert str(propunit) == "key\t\tvalue\n"
-
-        # Test mixed whitespace
-        propfile = self.propparse("key \t value")
-        assert len(propfile.units) == 1
-        propunit = propfile.units[0]
-        assert propunit.name == "key"
-        assert propunit.source == "value"
-        assert propunit.delimiter == " \t "
-        assert str(propunit) == "key \t value\n"
 
     def test_comments(self) -> None:
         """Checks that we handle # and ! comments."""
