@@ -31,7 +31,7 @@ from tempfile import NamedTemporaryFile
 from translate.storage import base
 
 try:
-    from aeidon import Subtitle, documents, newlines
+    from aeidon import Subtitle, documents, formats, newlines
     from aeidon.encodings import detect
     from aeidon.files import AdvSubStationAlpha, MicroDVD, SubRip, SubStationAlpha, new
     from aeidon.util import detect_format
@@ -48,6 +48,13 @@ class SubtitleUnit(base.TranslationUnit):
         self._start = self.init_time
         self._end = self.init_time
         self._duration = 0.0
+        self._ssa_style = None
+        self._ssa_layer = None
+        self._ssa_name = None
+        self._ssa_margin_l = None
+        self._ssa_margin_r = None
+        self._ssa_margin_v = None
+        self._ssa_effect = None
         if source:
             self.source = source
             self.target = source
@@ -57,6 +64,25 @@ class SubtitleUnit(base.TranslationUnit):
         self._start = start
         self._end = end
         self._duration = duration
+
+    def set_ssa_metadata(
+        self,
+        style: str | None = None,
+        layer: int | None = None,
+        name: str | None = None,
+        margin_l: int | None = None,
+        margin_r: int | None = None,
+        margin_v: int | None = None,
+        effect: str | None = None,
+    ) -> None:
+        """Store SSA/ASS subtitle metadata (style, layer, margins, etc.)."""
+        self._ssa_style = style
+        self._ssa_layer = layer
+        self._ssa_name = name
+        self._ssa_margin_l = margin_l
+        self._ssa_margin_r = margin_r
+        self._ssa_margin_v = margin_v
+        self._ssa_effect = effect
 
     def getnotes(self, origin=None) -> str:
         if origin in {"programmer", "developer", "source code", None}:
@@ -86,6 +112,7 @@ class SubtitleFile(base.TranslationStore):
         super().__init__(**kwargs)
         self.filename = None
         self._subtitlefile = None
+        self._format = None
         if inputfile is not None:
             self._parsefile(inputfile)
 
@@ -96,12 +123,44 @@ class SubtitleFile(base.TranslationStore):
             subtitle.main_text = unit.target or unit.source
             subtitle.start = unit._start
             subtitle.end = unit._end
+            # Restore SSA/ASS metadata only for SSA and ASS formats
+            if (
+                self._format in {formats.SSA, formats.ASS}
+                and hasattr(subtitle, "ssa")
+                and subtitle.ssa
+            ):
+                if unit._ssa_style is not None:
+                    subtitle.ssa.style = unit._ssa_style
+                if unit._ssa_layer is not None:
+                    subtitle.ssa.layer = unit._ssa_layer
+                if unit._ssa_name is not None:
+                    subtitle.ssa.name = unit._ssa_name
+                if unit._ssa_margin_l is not None:
+                    subtitle.ssa.margin_l = unit._ssa_margin_l
+                if unit._ssa_margin_r is not None:
+                    subtitle.ssa.margin_r = unit._ssa_margin_r
+                if unit._ssa_margin_v is not None:
+                    subtitle.ssa.margin_v = unit._ssa_margin_v
+                if unit._ssa_effect is not None:
+                    subtitle.ssa.effect = unit._ssa_effect
             subtitles.append(subtitle)
         # Using transient output might be dropped if/when we have more control
         # over the open mode of out files.
         output = StringIO()
         self._subtitlefile.write_to_file(subtitles, documents.MAIN, output)
         out.write(output.getvalue().encode(self._subtitlefile.encoding))
+
+    def _set_default_ssa_metadata(self, unit: SubtitleUnit) -> None:
+        """Set default SSA metadata for a unit (helper for SSA/ASS subclasses)."""
+        unit.set_ssa_metadata(
+            style="Default",
+            layer=0,
+            name="",
+            margin_l=0,
+            margin_r=0,
+            margin_v=0,
+            effect="",
+        )
 
     def _parse(self) -> None:
         try:
@@ -113,6 +172,21 @@ class SubtitleFile(base.TranslationStore):
                 newunit._start = subtitle.start
                 newunit._end = subtitle.end
                 newunit._duration = subtitle.duration_seconds
+                # Preserve SSA/ASS metadata only for SSA and ASS formats
+                if (
+                    self._format in {formats.SSA, formats.ASS}
+                    and hasattr(subtitle, "ssa")
+                    and subtitle.ssa
+                ):
+                    newunit.set_ssa_metadata(
+                        style=subtitle.ssa.style,
+                        layer=subtitle.ssa.layer,
+                        name=subtitle.ssa.name,
+                        margin_l=subtitle.ssa.margin_l,
+                        margin_r=subtitle.ssa.margin_r,
+                        margin_v=subtitle.ssa.margin_v,
+                        effect=subtitle.ssa.effect,
+                    )
         except Exception as e:
             raise base.ParseError(e) from e
 
@@ -174,6 +248,7 @@ class SubRipFile(SubtitleFile):
         super().__init__(*args, **kwargs)
         if self._subtitlefile is None:
             self._subtitlefile = SubRip(self.filename or "", self.encoding)
+            self._format = formats.SUBRIP
         if self._subtitlefile.newline is None:
             self._subtitlefile.newline = newlines.UNIX
 
@@ -189,12 +264,13 @@ class MicroDVDFile(SubtitleFile):
         super().__init__(*args, **kwargs)
         if self._subtitlefile is None:
             self._subtitlefile = MicroDVD(self.filename or "", self.encoding)
+            self._format = formats.MICRODVD
         if self._subtitlefile.newline is None:
             self._subtitlefile.newline = newlines.UNIX
 
 
 class AdvSubStationAlphaFile(SubtitleFile):
-    """specialized class for SubRipFile's only."""
+    """specialized class for Advanced Substation Alpha files only."""
 
     Name = "Advanced Substation Alpha subtitles file"
     Extensions = ["ass"]
@@ -203,12 +279,20 @@ class AdvSubStationAlphaFile(SubtitleFile):
         super().__init__(*args, **kwargs)
         if self._subtitlefile is None:
             self._subtitlefile = AdvSubStationAlpha(self.filename or "", self.encoding)
+            self._format = formats.ASS
         if self._subtitlefile.newline is None:
             self._subtitlefile.newline = newlines.UNIX
 
+    def addsourceunit(self, source: str) -> base.TranslationUnit:
+        """Add a unit with default SSA metadata."""
+        unit = super().addsourceunit(source)
+        # Set default SSA metadata for manually created units
+        self._set_default_ssa_metadata(unit)
+        return unit
+
 
 class SubStationAlphaFile(SubtitleFile):
-    """specialized class for SubRipFile's only."""
+    """specialized class for Substation Alpha files only."""
 
     Name = "Substation Alpha subtitles file"
     Extensions = ["ssa"]
@@ -217,5 +301,13 @@ class SubStationAlphaFile(SubtitleFile):
         super().__init__(*args, **kwargs)
         if self._subtitlefile is None:
             self._subtitlefile = SubStationAlpha(self.filename or "", self.encoding)
+            self._format = formats.SSA
         if self._subtitlefile.newline is None:
             self._subtitlefile.newline = newlines.UNIX
+
+    def addsourceunit(self, source: str) -> base.TranslationUnit:
+        """Add a unit with default SSA metadata."""
+        unit = super().addsourceunit(source)
+        # Set default SSA metadata for manually created units
+        self._set_default_ssa_metadata(unit)
+        return unit
