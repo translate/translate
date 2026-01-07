@@ -16,6 +16,8 @@ class TestPO2Txt:
         output_threshold=None,
         encoding="utf-8",
         wrap=None,
+        flavour=None,
+        no_segmentation=False,
         success_expected=True,
     ):
         """Helper that converts to target format without using files."""
@@ -33,6 +35,8 @@ class TestPO2Txt:
             output_threshold,
             encoding,
             wrap,
+            flavour,
+            no_segmentation,
         )
         assert converter.run() == expected_result
         return None, output_file
@@ -268,6 +272,30 @@ Read about Placeables."""
             input_string2, template_string2
         )
 
+    def test_dokuwiki_flavour_segmentation(self) -> None:
+        """
+        Test that dokuwiki flavour correctly segments headings with markers.
+
+        When using dokuwiki flavour, headings with ====== markers should be
+        properly segmented and the markers preserved in the output.
+        """
+        input_string = """msgid "Introduction"
+msgstr "Einführung"
+
+msgid "This is the introduction section."
+msgstr "Dies ist der Einführungsabschnitt."  # codespell:ignore
+"""
+        # Dokuwiki format with heading markers
+        template_string = """====== Introduction ======
+
+This is the introduction section."""
+        expected_output = """====== Einführung ======
+
+Dies ist der Einführungsabschnitt."""  # codespell:ignore
+        assert expected_output == self._convert_to_string(
+            input_string, template_string, flavour="dokuwiki"
+        )
+
 
 class TestPO2TxtCommand(test_convert.TestConvertCommand, TestPO2Txt):
     """Tests running actual po2txt commands on files."""
@@ -282,4 +310,6 @@ class TestPO2TxtCommand(test_convert.TestConvertCommand, TestPO2Txt):
         "--nofuzzy",
         "--encoding",
         "-w WRAP, --wrap=WRAP",
+        "--flavour=FLAVOUR",
+        "--no-segmentation",
     ]

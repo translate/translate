@@ -45,6 +45,8 @@ class po2txt:
         output_threshold=None,
         encoding="utf-8",
         wrap=None,
+        flavour=None,
+        no_segmentation=False,
     ) -> None:
         """Initialize the converter."""
         self.source_store = factory.getobject(input_file)
@@ -56,6 +58,8 @@ class po2txt:
             self.include_fuzzy = include_fuzzy
             self.encoding = encoding
             self.wrap = wrap
+            self.flavour = flavour
+            self.no_segmentation = no_segmentation
 
             self.output_file = output_file
             self.template_file = template_file
@@ -90,7 +94,12 @@ class po2txt:
         """
         # Parse the template file using TxtFile to segment it the same way txt2po does
         self.template_file.seek(0)
-        template_store = txt.TxtFile(self.template_file, encoding=self.encoding)
+        template_store = txt.TxtFile(
+            self.template_file,
+            encoding=self.encoding,
+            flavour=self.flavour,
+            no_segmentation=self.no_segmentation,
+        )
 
         # Create a lookup dictionary for translations
         translation_dict = {}
@@ -143,6 +152,8 @@ def run_converter(
     includefuzzy=False,
     encoding="utf-8",
     outputthreshold=None,
+    flavour=None,
+    no_segmentation=False,
 ):
     """Wrapper around converter."""
     return po2txt(
@@ -153,6 +164,8 @@ def run_converter(
         output_threshold=outputthreshold,
         encoding=encoding,
         wrap=wrap,
+        flavour=flavour,
+        no_segmentation=no_segmentation,
     ).run()
 
 
@@ -189,6 +202,26 @@ def main(argv=None) -> None:
         metavar="WRAP",
     )
     parser.passthrough.append("wrap")
+    parser.add_option(
+        "",
+        "--flavour",
+        dest="flavour",
+        default="plain",
+        type="choice",
+        choices=["plain", "dokuwiki", "mediawiki"],
+        help=("The flavour of text file: plain (default), dokuwiki, mediawiki"),
+        metavar="FLAVOUR",
+    )
+    parser.passthrough.append("flavour")
+    parser.add_option(
+        "",
+        "--no-segmentation",
+        dest="no_segmentation",
+        default=False,
+        action="store_true",
+        help="Don't segment the file, treat it like a single message",
+    )
+    parser.passthrough.append("no_segmentation")
     parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.run(argv)
