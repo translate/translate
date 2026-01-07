@@ -51,6 +51,8 @@ class csvunit(base.TranslationUnit):
         self.developer_comments = ""
         self.translator_comments = ""
         self.context = ""
+        # Line number in the CSV file where this unit was found (1-based)
+        self.line_number: int | None = None
 
     def getid(self):
         if self.id:
@@ -398,6 +400,7 @@ class csvfile(base.TranslationStore):
         for row in reader:
             newce = self.UnitClass()
             newce.fromdict(row)
+            newce.line_number = reader.line_num
             if not first_row or not newce.match_header():
                 self.addunit(newce)
             first_row = False

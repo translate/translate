@@ -1,3 +1,4 @@
+import logging
 from io import BytesIO
 
 from translate.convert import csv2po
@@ -138,6 +139,28 @@ msgstr ""
         assert pofile.findunit("yellow pencil") is not None
         assert pofile.findunit("yellow pencil").target == "żółty\\nołówek"
         assert headerless_len(pofile.units) == 1
+
+    def test_line_numbers_in_errors(self, caplog) -> None:
+        """Tests that line numbers are included in error messages."""
+        # CSV with entries that won't be found in the template
+        csvsource = """location,source,target
+not.found.location,NotFound1,Translation1
+another.missing,NotFound2,Translation2
+yet.another,NotFound3,Translation3"""
+
+        # Template with different entries
+        potsource = """#: different.location
+msgid "Different"
+msgstr ""
+"""
+        with caplog.at_level(logging.WARNING):
+            self.csv2po(csvsource, potsource)
+
+        # Check that line numbers appear in the warnings
+        assert "line 2" in caplog.text
+        assert "line 3" in caplog.text
+        assert "line 4" in caplog.text
+        assert "entry not found in pofile" in caplog.text
 
 
 class TestCSV2POCommand(test_convert.TestConvertCommand, TestCSV2PO):
