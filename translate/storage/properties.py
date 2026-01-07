@@ -1147,8 +1147,9 @@ class propfile(base.TranslationStore):
         inmultilinevalue = False
         inmultilinecomment = False
         was_header = False
+        unit_start_line = 1
 
-        for line in propsrc.split("\n"):
+        for linenum, line in enumerate(propsrc.split("\n"), start=1):
             # handle multiline value if we're in one
             line = rstripeol(line)
             if inmultilinevalue:
@@ -1163,8 +1164,10 @@ class propfile(base.TranslationStore):
                 if not inmultilinevalue:
                     # we're finished, add it to the list...
                     newunit.value = self.personality.value_strip(newunit.value)
+                    newunit._line_number = unit_start_line
                     self.addunit(newunit)
                     newunit = self.UnitClass("", self.personality.name)
+                    unit_start_line = linenum + 1
             # otherwise, this could be a comment
             # FIXME handle // inline comments
             elif (
@@ -1186,14 +1189,18 @@ class propfile(base.TranslationStore):
                 # this is a blank line...
                 # avoid adding comment only units
                 if newunit.name:
+                    newunit._line_number = unit_start_line
                     self.addunit(newunit)
                     newunit = self.UnitClass("", self.personality.name)
+                    unit_start_line = linenum + 1
                 else:
                     newunit.comments.append("")
 
                 if not was_header and str(newunit).strip():
+                    newunit._line_number = unit_start_line
                     self.addunit(newunit)
                     newunit = self.UnitClass("", self.personality.name)
+                    unit_start_line = linenum + 1
                     was_header = True
 
             else:
@@ -1220,8 +1227,10 @@ class propfile(base.TranslationStore):
                     for comment in inline_comments:
                         if comment not in self.personality.drop_comments:
                             newunit.comments.append(comment)
+                    newunit._line_number = unit_start_line
                     self.addunit(newunit)
                     newunit = self.UnitClass("", self.personality.name)
+                    unit_start_line = linenum + 1
                 else:
                     newunit.name = self.personality.key_strip(line[:delimiter_pos])
                     newunit.missing = ismissing
@@ -1242,10 +1251,13 @@ class propfile(base.TranslationStore):
                         )
                     else:
                         newunit.value = self.personality.value_strip(value_part)
+                        newunit._line_number = unit_start_line
                         self.addunit(newunit)
                         newunit = self.UnitClass("", self.personality.name)
+                        unit_start_line = linenum + 1
         # see if there is a leftover one...
         if inmultilinevalue or any(newunit.comments):
+            newunit._line_number = unit_start_line
             self.addunit(newunit)
 
         if self.personality.has_plurals:
