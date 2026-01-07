@@ -67,13 +67,13 @@ class SubtitleUnit(base.TranslationUnit):
 
     def set_ssa_metadata(
         self,
-        style=None,
-        layer=None,
-        name=None,
-        margin_l=None,
-        margin_r=None,
-        margin_v=None,
-        effect=None,
+        style: str | None = None,
+        layer: int | None = None,
+        name: str | None = None,
+        margin_l: int | None = None,
+        margin_r: int | None = None,
+        margin_v: int | None = None,
+        effect: str | None = None,
     ) -> None:
         """Store SSA/ASS subtitle metadata (style, layer, margins, etc.)."""
         self._ssa_style = style
@@ -149,6 +149,18 @@ class SubtitleFile(base.TranslationStore):
         output = StringIO()
         self._subtitlefile.write_to_file(subtitles, documents.MAIN, output)
         out.write(output.getvalue().encode(self._subtitlefile.encoding))
+
+    def _set_default_ssa_metadata(self, unit: SubtitleUnit) -> None:
+        """Set default SSA metadata for a unit (helper for SSA/ASS subclasses)."""
+        unit.set_ssa_metadata(
+            style="Default",
+            layer=0,
+            name="",
+            margin_l=0,
+            margin_r=0,
+            margin_v=0,
+            effect="",
+        )
 
     def _parse(self) -> None:
         try:
@@ -271,19 +283,11 @@ class AdvSubStationAlphaFile(SubtitleFile):
         if self._subtitlefile.newline is None:
             self._subtitlefile.newline = newlines.UNIX
 
-    def addsourceunit(self, source):
+    def addsourceunit(self, source: str) -> base.TranslationUnit:
         """Add a unit with default SSA metadata."""
         unit = super().addsourceunit(source)
         # Set default SSA metadata for manually created units
-        unit.set_ssa_metadata(
-            style="Default",
-            layer=0,
-            name="",
-            margin_l=0,
-            margin_r=0,
-            margin_v=0,
-            effect="",
-        )
+        self._set_default_ssa_metadata(unit)
         return unit
 
 
@@ -301,17 +305,9 @@ class SubStationAlphaFile(SubtitleFile):
         if self._subtitlefile.newline is None:
             self._subtitlefile.newline = newlines.UNIX
 
-    def addsourceunit(self, source):
+    def addsourceunit(self, source: str) -> base.TranslationUnit:
         """Add a unit with default SSA metadata."""
         unit = super().addsourceunit(source)
         # Set default SSA metadata for manually created units
-        unit.set_ssa_metadata(
-            style="Default",
-            layer=0,
-            name="",
-            margin_l=0,
-            margin_r=0,
-            margin_v=0,
-            effect="",
-        )
+        self._set_default_ssa_metadata(unit)
         return unit
