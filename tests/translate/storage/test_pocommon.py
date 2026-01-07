@@ -32,10 +32,10 @@ def test_unescaped_plus_characters() -> None:
     roundtrip_quote_plus("DLG_WORKFLOW+101", "DLG_WORKFLOW%2B101")
     roundtrip_quote_plus("Button+OK", "Button%2BOK")
     roundtrip_quote_plus("Menu+File+Save", "Menu%2BFile%2BSave")
-    
+
     # Test that unencoded + in source is preserved (not converted to space)
     assert pocommon.unquote_plus("DLG_WORKFLOW+101") == "DLG_WORKFLOW+101"
     assert pocommon.unquote_plus("Button+OK") == "Button+OK"
-    
+
     # Mixed case: both + and space
     roundtrip_quote_plus("Item +OK Button", "Item%20%2BOK%20Button")
