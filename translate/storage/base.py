@@ -129,9 +129,12 @@ class TranslationUnit:
     _state_n = 0
     notes = ""
     line_number: int | None = None
-    """Line number in the source file where this unit was found (1-based).
-    
-    None if not supported or not available."""
+    """
+    Line number in the source file where this unit was found.
+
+    The line number is 1-based (first line is line 1). Returns None if the
+    format doesn't support line numbering or if the information is not available.
+    """
 
     def __init__(self, source=None) -> None:
         """Constructs a TranslationUnit containing the given source string."""
