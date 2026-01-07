@@ -178,6 +178,40 @@ msgstr[1] "%d punkty"'''
         assert "<numerusform>%d punkt</numerusform>" in tsfile
         assert "<numerusform>%d punkty</numerusform>" in tsfile
 
+    def test_unit_without_location(self) -> None:
+        """Test that units without location comments are still converted."""
+        # This is a regression test for the issue where strings without
+        # location comments (no #: line) were not being converted to TS
+        minipo = r'''msgid "File Path"
+msgstr "Ruta del archivo"'''
+        tsfile = self.po2ts(minipo)
+        print(tsfile)
+        # The unit should be present even without a location
+        assert "<source>File Path</source>" in tsfile
+        assert "<translation>Ruta del archivo</translation>" in tsfile
+        # It should be in a context with an empty name
+        assert "<name></name>" in tsfile
+
+    def test_mixed_units_with_and_without_location(self) -> None:
+        """Test conversion of both units with and without location comments."""
+        minipo = r'''#: mainWindow#1
+msgid "Machine"
+msgstr "Máquina"
+
+msgid "File Path"
+msgstr "Ruta del archivo"'''
+        tsfile = self.po2ts(minipo)
+        print(tsfile)
+        # Both units should be present
+        assert "<source>Machine</source>" in tsfile
+        assert "<translation>Máquina</translation>" in tsfile
+        assert "<source>File Path</source>" in tsfile
+        assert "<translation>Ruta del archivo</translation>" in tsfile
+        # First should have mainWindow context
+        assert "<name>mainWindow</name>" in tsfile
+        # Second should have empty context
+        assert "<name></name>" in tsfile
+
 
 class TestPO2TSCommand(test_convert.TestConvertCommand, TestPO2TS):
     """Tests running actual po2ts commands on files."""
