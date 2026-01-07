@@ -37,15 +37,15 @@ def extract_msgid_comment(text: str) -> str:
 
 
 def quote_plus(text):
-    """Quote special characters in location strings, encoding spaces as %20."""
-    return parse.quote(text, safe="[]()/:,@")
+    """Quote the query fragment of a URL; replacing ' ' with '+'."""
+    return parse.quote_plus(text.encode("utf-8"), safe="[]()/:,@")
 
 
 def unquote_plus(text):
-    """Unquote location strings, preserving + characters."""
+    """unquote('%7e/abc+def') -> '~/abc def'."""
     try:
         # Enforce utf-8 validation
-        return parse.unquote(text, errors="strict")
+        return parse.unquote_plus(text, errors="strict")
     except (UnicodeEncodeError, UnicodeDecodeError):
         # for some reason there is a non-ascii character here. Let's assume it
         # is already unicode (because of originally decoding the file)
