@@ -115,7 +115,7 @@ class csv2po:
         pounit.setcontext(csvunit.getcontext())
         return pounit
 
-    def _get_csv_location(self, csvunit):
+    def _get_csv_location(self, csvunit) -> str:
         """Get a formatted string showing the CSV file location with line number."""
         csvfilename = getattr(self.csvfile, "filename", "(unknown)") or "(unknown)"
         line_info = (

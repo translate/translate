@@ -52,7 +52,7 @@ class csvunit(base.TranslationUnit):
         self.translator_comments = ""
         self.context = ""
         # Line number in the CSV file where this unit was found (1-based)
-        self.line_number = None
+        self.line_number: int | None = None
 
     def getid(self):
         if self.id:
