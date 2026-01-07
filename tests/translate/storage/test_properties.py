@@ -68,6 +68,20 @@ def test_find_delimiter_pos_empty_and_whitespace() -> None:
     assert properties.DialectStrings.find_delimiter("\t\t") == (None, -1)
 
 
+def test_find_delimiter_pos_tabs() -> None:
+    """Test that tab characters are recognized as whitespace delimiters."""
+    # Tab as delimiter
+    assert properties.DialectJava.find_delimiter("key\tvalue") == (" ", 3)
+    # Tab before equals
+    assert properties.DialectJava.find_delimiter("key\t=value") == ("=", 4)
+    # Multiple tabs
+    assert properties.DialectJava.find_delimiter("key\t\tvalue") == (" ", 3)
+    # Tab and space mix
+    assert properties.DialectJava.find_delimiter("key \t value") == (" ", 3)
+    # Tab before colon
+    assert properties.DialectJava.find_delimiter("key\t:value") == (":", 4)
+
+
 def test_is_line_continuation() -> None:
     assert not properties.is_line_continuation("")
     assert not properties.is_line_continuation("some text")
@@ -500,6 +514,29 @@ endspace=,\u0020
             propunit = propfile.units[0]
             assert propunit.name == "key"
             assert propunit.source == "value"
+
+    def test_tab_delimiter_parsing(self) -> None:
+        """Test that we can parse properties with tab delimiters (Java dialect)."""
+        # Tab as delimiter
+        propfile = self.propparse("key\tvalue")
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == "key"
+        assert propunit.source == "value"
+
+        # Tab before equals
+        propfile = self.propparse("key\t=   value")
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == "key"
+        assert propunit.source == "value"
+
+        # Multiple tabs
+        propfile = self.propparse("key\t\tvalue")
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == "key"
+        assert propunit.source == "value"
 
     def test_comments(self) -> None:
         """Checks that we handle # and ! comments."""

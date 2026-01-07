@@ -287,7 +287,7 @@ class Dialect:
         """
         Find the type and position of the delimiter in a property line.
 
-        Property files can be delimited by "=", ":" or whitespace (space for now).
+        Property files can be delimited by "=", ":" or whitespace (any whitespace character).
         We find the position of each delimiter, then find the one that appears
         first.
 
@@ -312,12 +312,21 @@ class Dialect:
                 start_pos += 1
         # Find the position of each delimiter type
         for delimiter, value in delimiters.items():
-            pos = line.find(delimiter, start_pos)
-            while pos != -1:
-                if value == -1 and line[pos - 1] != "\\":
-                    delimiters[delimiter] = pos
-                    break
-                pos = line.find(delimiter, pos + 1)
+            if delimiter == " ":
+                # For whitespace delimiter, find any whitespace character (tab, space, etc.)
+                pos = start_pos
+                while pos < len(line):
+                    if line[pos].isspace() and (pos == 0 or line[pos - 1] != "\\"):
+                        delimiters[delimiter] = pos
+                        break
+                    pos += 1
+            else:
+                pos = line.find(delimiter, start_pos)
+                while pos != -1:
+                    if value == -1 and line[pos - 1] != "\\":
+                        delimiters[delimiter] = pos
+                        break
+                    pos = line.find(delimiter, pos + 1)
         # Find the first delimiter
         mindelimiter = None
         minpos = -1
