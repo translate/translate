@@ -95,12 +95,11 @@ Creating PO files from existing translations
 
 ::
 
-  mozlang2po -t en-US/ fr/ fr-po/
+  mozlang2po fr/ fr-po/
 
 Convert Mozilla .lang files from the ``fr/`` directory to PO format in
-``fr-po/``, using the English .lang files in ``en-US/`` as templates. This
-allows you to work with PO editors while maintaining your existing .lang
-translations.
+``fr-po/``. This allows you to work with PO editors while maintaining your
+existing .lang translations.
 
 .. _mozlang2po#creating_.lang_files_from_po_translations:
 
