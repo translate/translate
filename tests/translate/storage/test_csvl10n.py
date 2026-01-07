@@ -330,3 +330,36 @@ GENERAL@2|Notes,"cable, motor, switch"
         finally:
             # Restore original method
             csv.Sniffer.sniff = original_sniff
+
+    def test_quote_nonnumeric_with_single_quotes(self) -> None:
+        """Test that CSV files with single quotes and QUOTE_NONNUMERIC are handled correctly."""
+        import csv
+
+        # Test CSV with single quotes - ensure the fix doesn't break single-quoted CSVs
+        content = b"'location','source','target'\n'test1','hello','hola'\n'test2','world','mundo'\n"
+
+        # Monkey-patch csv.Sniffer to return a dialect with QUOTE_NONNUMERIC and single quotes
+        original_sniff = csv.Sniffer.sniff
+
+        def patched_sniff(self, sample, delimiters=None):
+            result = original_sniff(self, sample, delimiters)
+            # Force QUOTE_NONNUMERIC to test the fix with single quotes
+            result.quoting = csv.QUOTE_NONNUMERIC
+            # The sniffer should have detected single quotes as quotechar
+            return result
+
+        csv.Sniffer.sniff = patched_sniff
+
+        try:
+            # This should not raise ValueError and should correctly parse single-quoted CSV
+            store = self.parse_store(content)
+            assert len(store.units) == 2
+            assert store.units[0].location == "test1"
+            assert store.units[0].source == "hello"
+            assert store.units[0].target == "hola"
+            assert store.units[1].location == "test2"
+            assert store.units[1].source == "world"
+            assert store.units[1].target == "mundo"
+        finally:
+            # Restore original method
+            csv.Sniffer.sniff = original_sniff
