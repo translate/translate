@@ -96,12 +96,20 @@ class po2ts:
                 # If strings is empty, source remains as multistring (will be handled by tsunit)
             translation = inputunit.target
             comment = inputunit.getnotes("translator")
-            for sourcelocation in inputunit.getlocations():
+            locations = inputunit.getlocations()
+            # If there are no locations, we still need to add the unit
+            # Use the provided context or an empty string as default
+            if not locations:
+                locations = [""]
+            for sourcelocation in locations:
                 if context is None:
-                    if "#" in sourcelocation:
+                    if sourcelocation and "#" in sourcelocation:
                         contextname = sourcelocation[: sourcelocation.find("#")]
-                    else:
+                    elif sourcelocation:
                         contextname = sourcelocation
+                    else:
+                        # No location and no context provided, use empty string
+                        contextname = ""
                 else:
                     contextname = context
                 tsunit = ts2.tsunit(source)
