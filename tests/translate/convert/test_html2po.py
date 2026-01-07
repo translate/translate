@@ -753,6 +753,24 @@ ghi ?>"""
         # Comments should not be extracted when keepcomments=False
         assert unit.getnotes(origin="developer") == ""
 
+    def test_text_after_empty_tags(self) -> None:
+        """Test that text is extracted after empty tags (regression test for issue #xxx)."""
+        # Test case from the original bug report
+        markup = """<p></p>
+<a></a>
+
+<h2>7&nbsp;&nbsp;About using the OFL for your original fonts</h2>"""
+        pofile = self.html2po(markup)
+        self.countunits(pofile, 1)
+        # Note: &nbsp; entities are normalized to regular spaces during whitespace normalization
+        self.compareunit(pofile, 1, "7 About using the OFL for your original fonts")
+
+        # Also test variations to ensure robustness
+        markup2 = "<p></p><a></a><h2>Title text</h2>"
+        pofile2 = self.html2po(markup2)
+        self.countunits(pofile2, 1)
+        self.compareunit(pofile2, 1, "Title text")
+
 
 class TestHTML2POCommand(test_convert.TestConvertCommand, TestHTML2PO):
     """Tests running actual html2po commands on files."""
