@@ -62,6 +62,7 @@ class podebug:
             self.format = ""
         else:
             self.format = format
+        self.rewritestyle = rewritestyle
         self.rewritefunc = getattr(self, f"rewrite_{rewritestyle}", None)
         self.ignorefunc = getattr(self, f"ignore_{ignoreoption}", None)
         self.preserveplaceholders = preserveplaceholders
@@ -322,7 +323,7 @@ class podebug:
             if rewritten:
                 rich_string = rewritten
         # Clear fuzzy flag when blanking translations
-        if self.rewritefunc == self.rewrite_blank and unit.isfuzzy():
+        if self.rewritestyle == "blank" and unit.isfuzzy():
             unit.markfuzzy(False)
         unit.rich_target = add_prefix(prefix, rich_string)
         return unit
