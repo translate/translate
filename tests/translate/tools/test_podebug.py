@@ -51,6 +51,59 @@ class TestPODebug:
         """Test the blank rewrite function."""
         assert str(self.debug.rewrite_blank("Test")) == ""
 
+    def test_rewrite_blank_clears_fuzzy(self) -> None:
+        """Test that blank rewrite clears fuzzy flags."""
+        # Create a PO file with a fuzzy unit
+        po_content = b"""
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\\n"
+
+#: test.c:20
+#, fuzzy
+msgid "Test message"
+msgstr "Translated message"
+"""
+        store = po.pofile(po_content)
+        # Get the actual translation unit (skip header at index 0)
+        unit = store.units[1]
+
+        # Verify it's fuzzy before processing
+        assert unit.isfuzzy()
+        assert unit.target == "Translated message"
+
+        # Apply blank rewrite
+        debugger = podebug.podebug(rewritestyle="blank")
+        unit = debugger.convertunit(unit, "")
+
+        # Verify fuzzy flag is cleared and target is blank
+        assert not unit.isfuzzy()
+        assert unit.target == ""
+
+    def test_rewrite_blank_with_plurals(self) -> None:
+        """Test that blank rewrite works with plural forms and clears fuzzy flags."""
+        po_content = b"""
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\\n"
+
+#: test.c:30
+#, fuzzy
+msgid "One item"
+msgid_plural "%d items"
+msgstr[0] "Un article"
+msgstr[1] "%d articles"
+"""
+        store = po.pofile(po_content)
+        debugger = podebug.podebug(rewritestyle="blank")
+        converted = debugger.convertstore(store)
+
+        # Get the actual translation unit (skip header at index 0)
+        unit = converted.units[1]
+        # Check that all plural forms are blanked and fuzzy flag is cleared
+        assert unit.target == ["", ""]
+        assert not unit.isfuzzy()
+
     def test_rewrite_en(self) -> None:
         """Test the en rewrite function."""
         assert str(self.debug.rewrite_en("Test")) == "Test"

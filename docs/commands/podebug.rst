@@ -125,6 +125,11 @@ quickly finding strings that have spelling or other errors.  It can also be
 used to create a translated English file which can then be used for other
 purposes such as British English translation.
 
+The 'blank' rewriter strips all translations and clears fuzzy flags, useful for
+starting fresh translations or creating POT templates::
+
+  podebug --rewrite=blank fr.po new-lang.po
+
 .. _podebug#ignoring_messages:
 
 Ignoring messages

@@ -44,16 +44,26 @@ derived translation such as British English.  It produces the same results as
 blank
 =====
 
-This simply empties your current translations
+Empties all translations and clears fuzzy flags.
+
+.. code-block:: po
+
+  #, fuzzy
+  msgid "English"
+  msgstr "Old translation"
+
+Becomes:
 
 .. code-block:: po
 
   msgid "English"
   msgstr ""
 
-When you have a set of translation files but no template this allows you to
-essentially convert a PO into a POT file.  This mimics the :opt:`--empty`
-functionality of :man:`msghack`.
+Useful for starting fresh translations in a different language or converting PO
+to POT files. Clears all ``msgstr`` entries (including plurals) and fuzzy flags
+while preserving structure and comments.
+
+Equivalent to ``msgattrib --clear-fuzzy --empty``.
 
 .. _option_rewrite#bracket:
 
