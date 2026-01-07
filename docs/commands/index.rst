@@ -20,6 +20,7 @@ Converters
    json2po
    md2po
    moz2po
+   mozlang2po
    odf2xliff
    oo2po
    php2po
@@ -70,6 +71,8 @@ understanding that will make the converters much easier to use and understand.
 * :doc:`md2po <md2po>` -- Markdown file converter
 * :doc:`moz2po <moz2po>` -- Mozilla .properties and .dtd converter.  Works with
   Firefox and Thunderbird
+* :doc:`mozlang2po <mozlang2po>` -- Mozilla .lang file converter.  Works with
+  Mozilla websites
 * :doc:`odf2xliff <odf2xliff>` -- Convert OpenDocument (ODF) documents to XLIFF
   and vice-versa.
 * :doc:`oo2po <oo2po>` -- OpenOffice.org SDF converter (Also works as
