@@ -1,4 +1,5 @@
 from io import BytesIO
+import csv
 
 import pytest
 
@@ -299,8 +300,6 @@ GENERAL@2|Notes,"cable, motor, switch"
 
     def test_quote_nonnumeric_handling(self) -> None:
         """Test that CSV files with QUOTE_NONNUMERIC dialect are handled correctly."""
-        import csv
-
         # Simulate a CSV that the sniffer might detect as QUOTE_NONNUMERIC
         # This happens when CSV files have unquoted numeric values
         # The test creates a dialect with QUOTE_NONNUMERIC to verify the fix
@@ -333,8 +332,6 @@ GENERAL@2|Notes,"cable, motor, switch"
 
     def test_quote_nonnumeric_with_single_quotes(self) -> None:
         """Test that CSV files with single quotes and QUOTE_NONNUMERIC are handled correctly."""
-        import csv
-
         # Test CSV with single quotes - ensure the fix doesn't break single-quoted CSVs
         content = b"'location','source','target'\n'test1','hello','hola'\n'test2','world','mundo'\n"
 
