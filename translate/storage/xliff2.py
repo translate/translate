@@ -194,6 +194,20 @@ class Xliff2Unit(XliffUnit):
         else:
             self.xmlelement.set("state", "translated")
 
+    def istranslatable(self) -> bool:
+        """Check if this unit is translatable."""
+        unit_element = self.getunitelement()
+        value = unit_element.get("translate")
+        return not value or value.lower() != "no"
+
+    def marktranslatable(self, value=True) -> None:
+        """Mark this unit as translatable or untranslatable."""
+        unit_element = self.getunitelement()
+        if value:
+            unit_element.set("translate", "yes")
+        elif self.istranslatable():
+            unit_element.set("translate", "no")
+
 
 class Xliff2File(XliffFile):
     """Class representing an XLIFF 2.0 file store."""
