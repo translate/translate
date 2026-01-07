@@ -332,14 +332,14 @@ def parse_unit(parse_state, unit=None):
     obsolete_unit = parse_obsolete(parse_state, unit)
     if obsolete_unit is not None:
         # Set line number for obsolete units
-        if hasattr(obsolete_unit, 'line_number'):
-            obsolete_unit.line_number = start_line
+        if hasattr(obsolete_unit, "_line_number"):
+            obsolete_unit._line_number = start_line
         return obsolete_unit
     parsed_msg_entries = parse_msg_entries(parse_state, unit)
     if parsed_comments or parsed_msg_entries:
         # Set line number for regular units
-        if hasattr(unit, 'line_number'):
-            unit.line_number = start_line
+        if hasattr(unit, "_line_number"):
+            unit._line_number = start_line
         return unit
     return None
 

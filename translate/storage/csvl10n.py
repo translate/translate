@@ -403,7 +403,7 @@ class csvfile(base.TranslationStore):
         for row in reader:
             newce = self.UnitClass()
             newce.fromdict(row)
-            newce.line_number = reader.line_num
+            newce._line_number = reader.line_num
             if not first_row or not newce.match_header():
                 self.addunit(newce)
             first_row = False

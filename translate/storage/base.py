@@ -127,19 +127,23 @@ class TranslationUnit:
     _rich_source = None
     _rich_target = None
     _state_n = 0
+    _line_number: int | None = None
     notes = ""
-    line_number: int | None = None
-    """
-    Line number in the source file where this unit was found.
-
-    The line number is 1-based (first line is line 1). Returns None if the
-    format doesn't support line numbering or if the information is not available.
-    """
 
     def __init__(self, source=None) -> None:
         """Constructs a TranslationUnit containing the given source string."""
         if source is not None:
             self.source = source
+
+    @property
+    def line_number(self) -> int | None:
+        """
+        Line number in the source file where this unit was found.
+
+        The line number is 1-based (first line is line 1). Returns None if the
+        format doesn't support line numbering or if the information is not available.
+        """
+        return self._line_number
 
     def __eq__(self, other: TranslationUnit) -> bool:
         """

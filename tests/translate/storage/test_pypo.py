@@ -789,13 +789,12 @@ msgstr "Monde"
 #~ msgstr "Obsolete Translation"
 """
         pofile = self.poparse(posource)
-        
+
         # First unit should start at line 1 (with comments)
         assert pofile.units[0].line_number == 1
-        
+
         # Second unit should start at line 7 (after blank line)
         assert pofile.units[1].line_number == 7
-        
+
         # Obsolete unit should start at line 11
         assert pofile.units[2].line_number == 11
-
