@@ -510,6 +510,33 @@ msgstr "POT-Creation-Date: 2006-03-08 17:30+0200\n"
         with raises(ValueError):
             self.poparse(posource)
 
+    def test_invalid_keyword(self) -> None:
+        """
+        Test that invalid/unknown keywords are rejected.
+
+        Regression test for issue where a typo like 'ms' instead of 'msgstr'
+        was silently accepted instead of raising an error. This ensures that
+        PO files with unknown keywords fail validation, similar to msgcat.
+        """
+        # Test case from the original issue: typo 'ms' instead of 'msgstr'
+        posource = """# : projects.py:136
+
+msgid "View"
+ms "Bekyk"
+"""
+        with raises(ValueError):
+            self.poparse(posource)
+
+        # Test other unknown keywords
+        posource = 'msgid "Test"\nmsgxyz "Translation"\n'
+        with raises(ValueError):
+            self.poparse(posource)
+
+        # Test msgstr appearing without msgid
+        posource = 'msgstr "Translation"\n'
+        with raises(ValueError):
+            self.poparse(posource)
+
     def test_malformed_obsolete_units(self) -> None:
         """Test that we handle malformed obsolete units reasonably."""
         posource = """msgid "thing"
