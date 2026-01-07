@@ -118,7 +118,7 @@ msgstr ""
         # With onlyaligned=True, only the aligned unit should be kept (plus header)
         # First unit (mismatched 3 vs 4) is removed, second unit (matched 2 vs 2) is segmented
         assert len(poresult.units) == 3  # header + 2 segments from second unit
-        
+
         # Check the segmented units from the second (matched) unit
         out_unit = poresult.units[1]
         assert (
@@ -126,7 +126,7 @@ msgstr ""
             == "Note that the latest Django trunk may not always be stable."
         )
         assert out_unit.target == "開発中の､最新の Django ではステーブルとは限りません｡"
-        
+
         out_unit = poresult.units[2]
         assert (
             out_unit.source
