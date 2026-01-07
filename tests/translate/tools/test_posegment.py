@@ -86,7 +86,9 @@ msgstr ""
         )
 
     def test_transifex_po(self) -> None:
-        """Checks that a po file with mismatched sentence counts is handled correctly."""
+        """Checks that onlyaligned=True removes units with mismatched sentence counts."""
+        # First unit: mismatched (3 EN sentences vs 4 JA sentences) - should be removed
+        # Second unit: matched (2 EN sentences vs 2 JA sentences) - should be kept
         posource = """# 8456b7744a02478cb75a9ad7f950d8cf
 #: ../../../../1.8/docs/intro/contributing.txt:184
 msgid ""
@@ -103,20 +105,36 @@ msgstr ""
 "のかが分かります｡各ビルドについてのリンクをクリックすれば､ Configuration "
 "Matrix という､ 各 Python のバージョン､ DB バックエンドに対応したテストの失"
 "敗を閲覧できます｡"
+
+#: docs/intro/contributing.txt:200
+msgid ""
+"Note that the latest Django trunk may not always be stable. When developing "
+"against trunk, you can check Django's continuous integration builds."
+msgstr ""
+"開発中の､最新の Django ではステーブルとは限りません｡トランクバージョンで開発"
+"を行う場合､ Django の継続インテグレーションビルドをチェックしてください｡"
 """
         poresult = self.posegment(posource, "en", "ja")
-        # Should have at least 2 units: header + the unsegmented translation unit
-        # (not segmented because sentence counts don't match: 3 vs 4)
-        assert len(poresult.units) >= 2
+        # With onlyaligned=True, only the aligned unit should be kept (plus header)
+        # First unit (mismatched 3 vs 4) is removed, second unit (matched 2 vs 2) is segmented
+        assert len(poresult.units) == 3  # header + 2 segments from second unit
+        
+        # Check the segmented units from the second (matched) unit
         out_unit = poresult.units[1]
-        # The unit should be preserved unsegmented since sentence counts don't match
         assert (
             out_unit.source
-            == "Note that the latest Django trunk may not always be stable. When developing against trunk, you can check `Django's continuous integration builds`__ to determine if the failures are specific to your machine or if they are also present in Django's official builds. If you click to view a particular build, you can view the Configuration Matrix which shows failures broken down by Python version and database backend."
+            == "Note that the latest Django trunk may not always be stable."
+        )
+        assert out_unit.target == "開発中の､最新の Django ではステーブルとは限りません｡"
+        
+        out_unit = poresult.units[2]
+        assert (
+            out_unit.source
+            == "When developing against trunk, you can check Django's continuous integration builds."
         )
         assert (
             out_unit.target
-            == "開発中の､最新の Django ではステーブルとは限りません｡トランクバージョンで開発を行う場合､ `Django の継続インテグレーションビルド`__ をチェックしてください｡これで､テストの失敗があなたのマシンだけのものか､ Django 公式のビルドによるものかが分かります｡各ビルドについてのリンクをクリックすれば､ Configuration Matrix という､ 各 Python のバージョン､ DB バックエンドに対応したテストの失敗を閲覧できます｡"
+            == "トランクバージョンで開発を行う場合､ Django の継続インテグレーションビルドをチェックしてください｡"
         )
 
 
