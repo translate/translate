@@ -325,12 +325,21 @@ def parse_msg_entries(parse_state, unit):
 
 def parse_unit(parse_state, unit=None):
     unit = unit or parse_state.UnitClass()
+    # Store the line number where this unit starts
+    # Use the current line number since we're at the start of parsing
+    start_line = parse_state.lineno
     parsed_comments = parse_comments(parse_state, unit)
     obsolete_unit = parse_obsolete(parse_state, unit)
     if obsolete_unit is not None:
+        # Set line number for obsolete units
+        if hasattr(obsolete_unit, 'line_number'):
+            obsolete_unit.line_number = start_line
         return obsolete_unit
     parsed_msg_entries = parse_msg_entries(parse_state, unit)
     if parsed_comments or parsed_msg_entries:
+        # Set line number for regular units
+        if hasattr(unit, 'line_number'):
+            unit.line_number = start_line
         return unit
     return None
 

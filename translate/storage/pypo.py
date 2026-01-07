@@ -235,6 +235,8 @@ class pounit(pocommon.pounit):
         self.msgid_pluralcomments: list[str] = []
         self.msgid_plural: list[str] = []
         self.msgstr: list[str] | dict[int, list[str]] = []
+        # Line number in the .po file where this unit starts (1-based)
+        self.line_number: int | None = None
         super().__init__(source)
 
     @property
@@ -804,6 +806,10 @@ class pounit(pocommon.pounit):
 
     def setcontext(self, context) -> None:
         self.msgctxt = self.quote(context)
+
+    def getlinenumber(self) -> int | None:
+        """Get the line number in the .po file where this unit starts."""
+        return self.line_number
 
     def getid(self):
         """Returns a unique identifier for this unit."""

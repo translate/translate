@@ -323,6 +323,19 @@ class TranslationUnit:
         else:
             self.addlocation(location)
 
+    def getlinenumber(self) -> int | None:
+        """
+        Get the line number in the source file where this unit was found.
+
+        :return: The line number (1-based) or None if not supported/available
+
+        .. note::
+
+           This method returns None by default. Formats that support line
+           numbering should override this method.
+        """
+        return None
+
     def getcontext(self) -> str:
         """Get the message context."""
         return ""
