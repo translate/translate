@@ -35,7 +35,7 @@ from translate.storage import html, po
 class po2html:
     """Read inputfile (po) and templatefile (html), write to outputfile (html)."""
 
-    def lookup(self, string):
+    def lookup(self, string: str) -> str:
         # Try exact match first
         unit = self.inputstore.sourceindex.get(string, None)
 
