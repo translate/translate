@@ -16,6 +16,8 @@ class TestPO2Txt:
         output_threshold=None,
         encoding="utf-8",
         wrap=None,
+        flavour=None,
+        no_segmentation=False,
         success_expected=True,
     ):
         """Helper that converts to target format without using files."""
@@ -33,6 +35,8 @@ class TestPO2Txt:
             output_threshold,
             encoding,
             wrap,
+            flavour,
+            no_segmentation,
         )
         assert converter.run() == expected_result
         return None, output_file
@@ -204,6 +208,94 @@ Konstrukteure
 vor-Konstrukteur"""  # codespell:ignore
         assert expected_output == self._convert_to_string(input_string, template_string)
 
+    def test_duplicate_text_segment_based_replacement(self) -> None:
+        """
+        Test that duplicate text is handled correctly using segment-based replacement.
+
+        When the same text appears multiple times in the template, each occurrence
+        should be treated as a separate segment and translated independently if it
+        has a translation in the PO file.
+        """
+        # Test case 1: Same heading appears in multiple sections, both should be translated
+        input_string = """msgid "Placeables"
+msgstr "Platzhalter"
+
+msgid "Placeables are useful for translation."
+msgstr "Platzhalter sind nützlich für die Übersetzung."
+
+msgid "Placeables are not supported in HTML."
+msgstr "Platzhalter werden in HTML nicht unterstützt."
+"""
+        template_string = """XML
+
+Placeables
+
+Placeables are useful for translation.
+
+HTML
+
+Placeables
+
+Placeables are not supported in HTML."""
+        expected_output = """XML
+
+Platzhalter
+
+Platzhalter sind nützlich für die Übersetzung.
+
+HTML
+
+Platzhalter
+
+Platzhalter werden in HTML nicht unterstützt."""
+        assert expected_output == self._convert_to_string(input_string, template_string)
+
+        # Test case 2: Text that appears in a longer string should not be replaced separately
+        input_string2 = """msgid "Placeables"
+msgstr "Platzhalter"
+
+msgid "Placeables are useful for translation."
+msgstr "Platzhalter sind nützlich für die Übersetzung."
+"""
+        template_string2 = """Placeables
+
+Placeables are useful for translation.
+
+Read about Placeables."""
+        # "Read about Placeables" is a separate segment with no translation, so it stays in English
+        expected_output2 = """Platzhalter
+
+Platzhalter sind nützlich für die Übersetzung.
+
+Read about Placeables."""
+        assert expected_output2 == self._convert_to_string(
+            input_string2, template_string2
+        )
+
+    def test_dokuwiki_flavour_segmentation(self) -> None:
+        """
+        Test that dokuwiki flavour correctly segments headings with markers.
+
+        When using dokuwiki flavour, headings with ====== markers should be
+        properly segmented and the markers preserved in the output.
+        """
+        input_string = """msgid "Introduction"
+msgstr "Einführung"
+
+msgid "This is the introduction section."
+msgstr "Dies ist der Einführungsabschnitt."  # codespell:ignore
+"""
+        # Dokuwiki format with heading markers
+        template_string = """====== Introduction ======
+
+This is the introduction section."""
+        expected_output = """====== Einführung ======
+
+Dies ist der Einführungsabschnitt."""  # codespell:ignore
+        assert expected_output == self._convert_to_string(
+            input_string, template_string, flavour="dokuwiki"
+        )
+
 
 class TestPO2TxtCommand(test_convert.TestConvertCommand, TestPO2Txt):
     """Tests running actual po2txt commands on files."""
@@ -218,4 +310,6 @@ class TestPO2TxtCommand(test_convert.TestConvertCommand, TestPO2Txt):
         "--nofuzzy",
         "--encoding",
         "-w WRAP, --wrap=WRAP",
+        "--flavour=FLAVOUR",
+        "--no-segmentation",
     ]
