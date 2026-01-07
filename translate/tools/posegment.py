@@ -43,9 +43,9 @@ class segment:
         sourcesegments = self.sourcelang.sentences(unit.source, strip=self.stripspaces)
         targetsegments = self.targetlang.sentences(unit.target, strip=self.stripspaces)
         if unit.istranslated() and (len(sourcesegments) != len(targetsegments)):
-            # Return unsegmented unit to preserve translations when sentence counts
-            # don't match. This avoids data loss regardless of onlyaligned setting.
-            return [unit]
+            if not self.onlyaligned:
+                return [unit]
+            return None
         # We could do more here to check if the lengths correspond more or less,
         # certain quality checks are passed, etc.  But for now this is a good
         # start.
