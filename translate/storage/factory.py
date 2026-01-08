@@ -218,7 +218,10 @@ def getobject(
     if isinstance(storefile, str) and (
         os.path.isdir(storefile) or storefile.endswith(os.path.sep)
     ):
-        raise ValueError("Directories are not supported!")
+        raise ValueError(
+            f'Cannot process directory "{storefile}" as a translation storage object. '
+            "Please specify a path to a supported file instead."
+        )
     storefilename = _get_name(storefile)
     storeclass = getclass(
         storefile,
