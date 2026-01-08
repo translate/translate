@@ -67,7 +67,7 @@ po_open_parenthesis_chars = {"{", "("}
 po_punctuation = set(punctuation)
 
 
-def splitlines(text):
+def splitlines(text: bytes) -> tuple[list[bytes], str]:
     r"""
     Split lines based on first newline char.
 
@@ -872,7 +872,7 @@ class pofile(pocommon.pofile):
         lines, self.newline = splitlines(input)
         # clear units to get rid of automatically generated headers before parsing
         self.units = []
-        poparser.parse_units(poparser.ParseState(iter(lines), self.create_unit), self)
+        poparser.parse_units(poparser.PoParseState(lines, self.create_unit), self)
 
     def removeduplicates(self, duplicatestyle="merge") -> None:
         """
