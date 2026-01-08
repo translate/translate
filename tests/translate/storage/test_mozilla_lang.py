@@ -291,3 +291,33 @@ class TestMozLangFile(test_base.TestTranslationStore):
         assert "# MAX_LENGTH: 80" in store.units[0].getnotes(origin="developer").split(
             "\n"
         )
+
+    def test_line_number(self) -> None:
+        """Test that line numbers are correctly tracked for mozilla_lang units."""
+        lang = (
+            "## active ##\n"
+            "# First comment\n"
+            ";First Source\n"
+            "First Target\n"
+            "\n\n"
+            "# Second comment\n"
+            ";Second Source\n"
+            "Second Target\n"
+            "\n\n"
+            ";Third Source\n"
+            "Third Target\n"
+            "\n\n"
+        )
+        store = self.StoreClass.parsestring(lang)
+
+        # First unit should start at line 3 (;First Source)
+        assert store.units[0].line_number == 3
+        assert store.units[0].source == "First Source"
+
+        # Second unit should start at line 8 (;Second Source)
+        assert store.units[1].line_number == 8
+        assert store.units[1].source == "Second Source"
+
+        # Third unit should start at line 12 (;Third Source)
+        assert store.units[2].line_number == 12
+        assert store.units[2].source == "Third Source"
