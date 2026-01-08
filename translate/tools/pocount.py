@@ -131,20 +131,25 @@ def wordsinunit(unit):
     account. The target words are only counted if the unit is translated.
     """
     (sourcewords, targetwords) = (0, 0)
-    if isinstance(unit.source, multistring):
-        sourcestrings = unit.source.strings
+    source = unit.source
+    if isinstance(source, multistring):
+        sourcestrings = source.strings
     else:
-        sourcestrings = [unit.source or ""]
+        sourcestrings = [source or ""]
+
     for s in sourcestrings:
         sourcewords += wordcount(s)
     if not unit.istranslated():
         return sourcewords, targetwords
-    if isinstance(unit.target, multistring):
-        targetstrings = unit.target.strings
+    target = unit.target
+    if isinstance(target, multistring):
+        targetstrings = target.strings
     else:
-        targetstrings = [unit.target or ""]
+        targetstrings = [target or ""]
+
     for s in targetstrings:
         targetwords += wordcount(s)
+
     return sourcewords, targetwords
 
 
