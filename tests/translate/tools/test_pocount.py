@@ -66,7 +66,7 @@ class TestCount:
         """Test to see that newlines divide words."""
         # newlines break words
         self.count("A word.\nAnother word", 4)
-        self.count(r"A word.\\n\nAnother word", 4)
+        self.count(r"A word.\\n\nAnother word", 5)
 
     def test_variables_are_words(self) -> None:
         """Test that we count variables as words."""

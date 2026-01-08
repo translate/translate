@@ -1714,7 +1714,7 @@ class StandardChecker(TranslationChecker):
 
         allowed += self.config.musttranslatewords.keys()
         str1 = self.filteraccelerators(self.filtervariables(str1))
-        iter = self.config.lang.word_iter(str1)
+        words = self.config.lang.words(str1)
         str2 = self.filteraccelerators(self.filtervariables(str2))
 
         # TODO: strip XML? - should provide better error messages
@@ -1723,7 +1723,7 @@ class StandardChecker(TranslationChecker):
         # something like 5/6 characters
         acronyms = [
             word
-            for word in iter
+            for word in words
             if word.isupper()
             and len(word) > 1
             and word not in allowed

@@ -62,6 +62,8 @@ TODOs and Ideas for possible features:
 import logging
 import re
 
+from unicode_segmentation_rs import unicode_words
+
 from translate.lang import data
 
 logger = logging.getLogger(__name__)
@@ -349,18 +351,9 @@ class Common:
         return list(cls.character_iter(text))
 
     @classmethod
-    def word_iter(cls, text):
-        """Returns an iterator over the words in text."""
-        # TODO: Consider replacing puctuation with space before split()
-        for w in text.split():
-            word = w.strip(cls.punctuation)
-            if word:
-                yield word
-
-    @classmethod
-    def words(cls, text):
+    def words(cls, text: str) -> list[str]:
         """Returns a list of words in text."""
-        return list(cls.word_iter(text))
+        return unicode_words(text)
 
     @classmethod
     def sentence_iter(cls, text, strip=True):
