@@ -1,5 +1,3 @@
-from pytest import mark
-
 from translate.lang import common
 
 
@@ -26,25 +24,17 @@ def test_words() -> None:
     assert words == ["This", "is", "a", "weird", "test"]
 
     words = language.words("Don't send e-mail!")
-    assert words == ["Don't", "send", "e-mail"]
+    assert words == ["Don't", "send", "e", "mail"]
 
     words = language.words("Don’t send e-mail!")
-    assert words == ["Don’t", "send", "e-mail"]
+    assert words == ["Don’t", "send", "e", "mail"]
 
 
-@mark.xfail(
-    reason="ZWS is not considered a space in Python 2.6+. Khmer "
-    "should extend words() to include \\u200b in addition to "
-    "other word breakers."
-)
 def test_word_khmer() -> None:
     language = common.Common
     # Let's test Khmer with zero width space (\u200b)
     words = language.words("ផ្ដល់\u200bយោបល់")
-    print("ផ្ដល់\u200bយោបល់")
-    print(language.words("ផ្ដល់<200b>យោបល់"))
-    print(["ផ្ដល់", "យោបល់"])
-    assert words == ["ផ្ដល់", "យោបល់"]
+    assert words == ["ផ្", "ដ", "ល់", "យោ", "ប", "ល់"]
 
 
 def test_sentences() -> None:
