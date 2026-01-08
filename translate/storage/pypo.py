@@ -28,6 +28,7 @@ from __future__ import annotations
 import copy
 import logging
 import re
+from functools import lru_cache
 from itertools import chain
 from string import punctuation
 
@@ -189,8 +190,13 @@ def unescape(line: str) -> str:
     return po_unescape_re.sub(unescapehandler, line)
 
 
-def unquotefrompo(postr: list[str]) -> str:
+@lru_cache(maxsize=2048)
+def _unquotefrompo(postr: tuple[str]) -> str:
     return "".join(unescape(line[1:-1]) for line in postr)
+
+
+def unquotefrompo(postr: list[str]) -> str:
+    return _unquotefrompo(tuple(postr))
 
 
 def is_null(lst: list[str]) -> bool:
