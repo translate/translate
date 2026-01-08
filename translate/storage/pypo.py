@@ -31,12 +31,16 @@ import re
 from functools import lru_cache
 from itertools import chain
 from string import punctuation
+from typing import TYPE_CHECKING
 
 from unicode_segmentation_rs import gettext_wrap
 
 from translate.misc import quote
 from translate.misc.multistring import multistring
 from translate.storage import pocommon, poparser
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
 
 logger = logging.getLogger(__name__)
 
@@ -242,6 +246,7 @@ class pounit(pocommon.pounit):
         self.msgid_plural: list[str] = []
         self.msgstr: list[str] | dict[int, list[str]] = []
         self._msgstrlen_cache: int | None = None
+        self._typecomments_cache: list[str] | None = None
         super().__init__(source)
 
     @property
@@ -257,6 +262,7 @@ class pounit(pocommon.pounit):
             self.automaticcomments = []
             self.sourcecomments = []
             self.typecomments = []
+            self._typecomments_cache = []
             self.msgidcomments = []
 
     def _get_all_comments(self):
@@ -518,6 +524,7 @@ class pounit(pocommon.pounit):
         if comments:
             mergelists(self.othercomments, otherunit.othercomments)
             mergelists(self.typecomments, otherunit.typecomments)
+            self._typecomments_cache = None
             if not authoritative:
                 # We don't bring across otherunit.automaticcomments as we
                 # consider ourself to be the the authority.  Same applies
@@ -567,7 +574,7 @@ class pounit(pocommon.pounit):
         # Before, the equivalent of the following was the final return statement:
         # return len(self.source.strip()) == 0
 
-    def _extracttypecomment(self):
+    def _extracttypecomment(self) -> Generator[str]:
         for tc in self.typecomments:
             for flag in tc.split(","):
                 value = flag.strip()
@@ -575,13 +582,16 @@ class pounit(pocommon.pounit):
                     continue
                 yield value
 
-    def hastypecomment(self, typecomment, parsed=None):
+    def _ensure_typecomments_cache(self) -> None:
+        if self._typecomments_cache is None:
+            self._typecomments_cache = list(self._extracttypecomment())
+
+    def hastypecomment(self, typecomment: str) -> bool:
         """Check whether the given type comment is present."""
         if not self.typecomments:
             return False
-        if not parsed:
-            parsed = self._extracttypecomment()
-        return typecomment in parsed
+        self._ensure_typecomments_cache()
+        return typecomment in self._typecomments_cache
 
     def hasmarkedcomment(self, commentmarker) -> bool:
         """
@@ -597,17 +607,18 @@ class pounit(pocommon.pounit):
                 return True
         return False
 
-    def settypecomment(self, typecomment, present=True) -> None:
+    def settypecomment(self, typecomment: str, present: bool = True) -> None:
         """Alters whether a given typecomment is present."""
-        typecomments = list(self._extracttypecomment())
-        if self.hastypecomment(typecomment, typecomments) != present:
+        if self.hastypecomment(typecomment) != present:
+            # The typecomments cache might be still missing if typecomments are not present
+            self._ensure_typecomments_cache()
             if present:
-                typecomments.append(typecomment)
+                self._typecomments_cache.append(typecomment)
             else:
-                typecomments.remove(typecomment)
-            if typecomments:
-                typecomments.sort()
-                comments_str = ", ".join(typecomments)
+                self._typecomments_cache.remove(typecomment)
+            if self._typecomments_cache:
+                self._typecomments_cache.sort()
+                comments_str = ", ".join(self._typecomments_cache)
                 self.typecomments = [f"#, {comments_str}{self.newline}"]
             else:
                 self.typecomments = []
