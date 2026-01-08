@@ -115,9 +115,13 @@ class TxtFile(base.TranslationStore):
     def parse(self, lines) -> None:
         """Read in text lines and create txtunits from the blocks of text."""
         if self.no_segmentation:
-            self.addsourceunit("".join(line.decode(self.encoding) for line in lines))
+            unit = self.addsourceunit(
+                "".join(line.decode(self.encoding) for line in lines)
+            )
+            unit._line_number = 1
             return
         block = []
+        block_start_line = 1
         current_line = 0
         pretext = ""
         posttext = ""
@@ -134,6 +138,8 @@ class TxtFile(base.TranslationStore):
                     if postmatch:
                         posttext = postmatch.group()
                         source = source[: postmatch.start()]
+                    if not block:
+                        block_start_line = current_line
                     block.append(source)
                     isbreak = True
                     break
@@ -141,17 +147,22 @@ class TxtFile(base.TranslationStore):
                 isbreak = not line.strip()
             if isbreak and block:
                 unit = self.addsourceunit("\n".join(block))
-                unit.addlocation(f"{self.filename}:{current_line}")
+                unit._line_number = block_start_line
+                unit.addlocation(f"{self.filename}:{block_start_line}")
                 unit.pretext = pretext
                 unit.posttext = posttext
                 pretext = ""
                 posttext = ""
                 block = []
+                block_start_line = current_line + 1
             elif not isbreak:
+                if not block:
+                    block_start_line = current_line
                 block.append(line)
         if block:
             unit = self.addsourceunit("\n".join(block))
-            unit.addlocation(f"{self.filename}:{current_line}")
+            unit._line_number = block_start_line
+            unit.addlocation(f"{self.filename}:{block_start_line}")
 
     def serialize(self, out) -> None:
         for idx, unit in enumerate(self.units):

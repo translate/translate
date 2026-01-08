@@ -360,3 +360,14 @@ GENERAL@2|Notes,"cable, motor, switch"
         finally:
             # Restore original method
             csv.Sniffer.sniff = original_sniff
+
+    def test_line_number(self) -> None:
+        """Test that line numbers are correctly tracked for CSV units."""
+        source = b'"location","source","target"\n"foo.c:1","Hello","Bonjour"\n"bar.c:2","World","Monde"'
+        store = self.parse_store(source)
+
+        # First unit should be at line 2 (after header)
+        assert store.units[0].line_number == 2
+
+        # Second unit should be at line 3
+        assert store.units[1].line_number == 3

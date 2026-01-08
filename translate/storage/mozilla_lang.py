@@ -139,6 +139,7 @@ class LangStore(txt.TxtFile):
             if line.startswith(";"):
                 source_unit = self.addsourceunit(line[1:])
                 source_unit.eol = self.eol
+                source_unit._line_number = lineoffset + 1
                 source_unit.addlocation(
                     f"{self.filename[len(self.location_root) :]}:{lineoffset + 1}"
                 )

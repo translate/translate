@@ -226,6 +226,11 @@ class TestTranslationUnit:
         actual_notes = unit.getnotes()
         assert actual_notes == expected_notes
 
+    def test_line_number_default(self) -> None:
+        """Test that line_number is None by default."""
+        unit = self.unit
+        assert unit.line_number is None
+
     def test_rich_get(self) -> None:
         """Basic test for converting from multistrings to StringElem trees."""
         target_mstr = multistring(["tėst", "<b>string</b>"])

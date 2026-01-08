@@ -772,3 +772,29 @@ msgstr ""\r
         outstore.addunit(unit)
 
         assert max(len(line) for line in bytes(outstore).decode().splitlines()) <= 77
+
+    def test_line_number(self) -> None:
+        """Test that line numbers are correctly tracked for PO units."""
+        posource = b"""# Translator comment
+#. Automatic comment
+#: location.c:123
+msgid "Hello"
+msgstr "Bonjour"
+
+# Another comment
+msgid "World"
+msgstr "Monde"
+
+#~ msgid "Obsolete"
+#~ msgstr "Obsolete Translation"
+"""
+        pofile = self.poparse(posource)
+
+        # First unit should start at line 1 (with comments)
+        assert pofile.units[0].line_number == 1
+
+        # Second unit should start at line 7 (after blank line)
+        assert pofile.units[1].line_number == 7
+
+        # Obsolete unit should start at line 11
+        assert pofile.units[2].line_number == 11
