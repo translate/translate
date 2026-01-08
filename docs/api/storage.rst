@@ -53,14 +53,6 @@ csvl10n
    :inherited-members:
 
 
-directory
----------
-
-.. automodule:: translate.storage.directory
-   :members:
-   :inherited-members:
-
-
 dtd
 ---
 
@@ -536,13 +528,5 @@ xml_name
 --------
 
 .. automodule:: translate.storage.xml_name
-   :members:
-   :inherited-members:
-
-
-zip
----
-
-.. automodule:: translate.storage.zip
    :members:
    :inherited-members:

@@ -3,8 +3,9 @@ from bz2 import BZ2File
 from gzip import GzipFile
 from io import BytesIO
 
+import pytest
+
 from translate.storage import factory, po, poxliff, wordfast, xliff
-from translate.storage.directory import Directory
 
 
 def classname(filename):
@@ -120,8 +121,8 @@ class BaseTestFactory:
 
     def test_directory(self) -> None:
         """Test that a directory is correctly detected."""
-        object = factory.getobject(self.testdir)
-        assert isinstance(object, Directory)
+        with pytest.raises(ValueError):
+            factory.getobject(self.testdir)
 
 
 class TestPOFactory(BaseTestFactory):
