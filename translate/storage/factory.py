@@ -23,7 +23,6 @@ from functools import lru_cache
 from importlib import import_module
 
 from translate.storage.base import TranslationStore
-from translate.storage.directory import Directory
 
 # TODO: Monolingual formats (with template?)
 
@@ -203,7 +202,7 @@ def getobject(
     classes: dict | None = None,
     classes_str: dict | None = None,
     hiddenclasses: dict | None = None,
-) -> TranslationStore | Directory:
+) -> TranslationStore:
     """
     Factory that returns a usable object for the type of file presented.
     :param storefile: File object or file name.
@@ -219,7 +218,7 @@ def getobject(
     if isinstance(storefile, str) and (
         os.path.isdir(storefile) or storefile.endswith(os.path.sep)
     ):
-        return Directory(storefile)
+        raise ValueError("Directories are not supported!")
     storefilename = _get_name(storefile)
     storeclass = getclass(
         storefile,
