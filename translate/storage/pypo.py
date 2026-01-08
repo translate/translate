@@ -317,7 +317,7 @@ class pounit(pocommon.pounit):
     def target(self):
         """Returns the unescaped msgstr."""
         if isinstance(self.msgstr, dict):
-            return multistring(list(map(unquotefrompo, self.msgstr.values())))
+            return multistring([unquotefrompo(value) for value in self.msgstr.values()])
         return unquotefrompo(self.msgstr)
 
     @target.setter
