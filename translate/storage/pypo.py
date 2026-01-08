@@ -235,6 +235,7 @@ class pounit(pocommon.pounit):
         self.msgid_pluralcomments: list[str] = []
         self.msgid_plural: list[str] = []
         self.msgstr: list[str] | dict[int, list[str]] = []
+        self._msgstrlen_cache: int | None = None
         super().__init__(source)
 
     @property
@@ -323,6 +324,7 @@ class pounit(pocommon.pounit):
     @target.setter
     def target(self, target) -> None:
         """Sets the msgstr to the given (unescaped) value."""
+        self._msgstrlen_cache = None
         self._rich_target = None
         if self.hasplural():
             if isinstance(target, multistring):
@@ -446,9 +448,14 @@ class pounit(pocommon.pounit):
         return len(unquotefrompo(self.msgid))
 
     def _msgstrlen(self):
-        if isinstance(self.msgstr, dict):
-            return sum(len(unquotefrompo(msgstr)) for msgstr in self.msgstr.values())
-        return len(unquotefrompo(self.msgstr))
+        if self._msgstrlen_cache is None:
+            if isinstance(self.msgstr, dict):
+                self._msgstrlen_cache = sum(
+                    len(unquotefrompo(msgstr)) for msgstr in self.msgstr.values()
+                )
+            else:
+                self._msgstrlen_cache = len(unquotefrompo(self.msgstr))
+        return self._msgstrlen_cache
 
     def merge(
         self, otherunit, overwrite=False, comments=True, authoritative=False
