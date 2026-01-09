@@ -42,7 +42,7 @@ Formats and Converters
 
 - RC
 
-   - pyparsing 3.3+ compatibility
+  - pyparsing 3.3+ compatibility
 
 - subtitles
 
