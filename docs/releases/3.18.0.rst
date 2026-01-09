@@ -1,0 +1,76 @@
+Translate Toolkit 3.17.0
+************************
+
+*Released on 9 January 2026*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- Added line number information to storages
+
+- PO
+
+  - Parser code cleanups
+  - Performance improvements
+  - Improved error reporting
+  - Gracefully handle mixed line endings
+
+- XLIFF
+
+  - Added method to mark strings as (non-)translatable
+
+- HTML
+
+  - po2html gracegully handles HTML escapes
+
+- CSV
+
+  - Improved quoting style detection
+
+- Properties
+
+  - Improved whitespace handling in Java Properties
+
+- TXT
+
+  - po2txt uses same segmentation logic as txt2po when translating
+
+- RC
+
+   - pyparsing 3.3+ compatibility
+
+- subtitles
+
+  - SSA/ASS preserve metadata
+
+Tools
+-----
+
+- pocount performance and logging improvements
+- podebug clears fuzzy flags with ``--rewrite=blank``
+
+Other
+-----
+
+- Use Unicode segmentation instead of own implementation
+
+- Remove Directory and ZIPFile storages
+
+- Various code cleanups
+
+- Introduced type annotations to portions of code base
+
+- Dropped support for Python 3.10
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+
+Michal Čihař, Jean-Baptiste
