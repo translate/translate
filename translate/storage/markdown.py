@@ -53,7 +53,7 @@ from mistletoe.markdown_renderer import (
 from translate.storage import base
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable
+    from collections.abc import Callable, Iterable
 
 
 class MarkdownUnit(base.TranslationUnit):
@@ -141,7 +141,7 @@ class MarkdownFile(base.TranslationStore):
     def _dummy_callback(text: str) -> str:
         return text
 
-    def _translate_callback(self, text: str, path: Iterable[str]) -> str:
+    def _translate_callback(self, text: str, path: list[str]) -> str:
         text = text.strip()
         if not text:
             return ""
@@ -157,7 +157,10 @@ class MarkdownFile(base.TranslationStore):
 
 class TranslatingMarkdownRenderer(MarkdownRenderer):
     def __init__(
-        self, translate_callback, *extras, max_line_length: int | None = None
+        self,
+        translate_callback: Callable[[str, list[str]], str],
+        *extras,
+        max_line_length: int | None = None,
     ) -> None:
         super().__init__(*extras, max_line_length=max_line_length)
         self.translate_callback = translate_callback
