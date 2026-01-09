@@ -26,7 +26,13 @@ as minidom.parseString, since the functionality provided here will not be in
 those objects.
 """
 
-from xml.dom import expatbuilder, minidom
+from xml.dom import (
+    EMPTY_NAMESPACE,
+    EMPTY_PREFIX,
+    XMLNS_NAMESPACE,
+    expatbuilder,
+    minidom,
+)
 
 # helper functions we use to do xml the way we want, used by modified
 # classes below
@@ -129,7 +135,7 @@ class Element(minidom.Element):
     def searchElementsByTagName(self, name, onlysearch):
         return searchElementsByTagName_helper(self, name, onlysearch)
 
-    def writexml(self, writer, indent, addindent, newl):
+    def writexml(self, writer, indent="", addindent="", newl=""):
         return writexml_helper(self, writer, indent, addindent, newl)
 
 
@@ -162,9 +168,7 @@ theDOMImplementation = DOMImplementation()
 class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
     def reset(self) -> None:
         """Free all data structures used during DOM construction."""
-        self.document = theDOMImplementation.createDocument(
-            expatbuilder.EMPTY_NAMESPACE, None, None
-        )
+        self.document = theDOMImplementation.createDocument(EMPTY_NAMESPACE, None, None)
         self.curNode = self.document
         self._elem_info = self.document._elem_info
         self._cdata = False
@@ -177,10 +181,10 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
         if " " in name:
             uri, localname, prefix, qname = expatbuilder._parse_ns_name(self, name)
         else:
-            uri = expatbuilder.EMPTY_NAMESPACE
+            uri = EMPTY_NAMESPACE
             qname = name
             localname = None
-            prefix = expatbuilder.EMPTY_PREFIX
+            prefix = EMPTY_PREFIX
         node = Element(qname, uri, prefix, localname)
         node.ownerDocument = self.document
         expatbuilder._append_child(self.curNode, node)
@@ -191,17 +195,12 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
                 if prefix:
                     a = minidom.Attr(
                         expatbuilder._intern(self, f"xmlns:{prefix}"),
-                        expatbuilder.XMLNS_NAMESPACE,
+                        XMLNS_NAMESPACE,
                         prefix,
                         "xmlns",
                     )
                 else:
-                    a = minidom.Attr(
-                        "xmlns",
-                        expatbuilder.XMLNS_NAMESPACE,
-                        "xmlns",
-                        expatbuilder.EMPTY_PREFIX,
-                    )
+                    a = minidom.Attr("xmlns", XMLNS_NAMESPACE, "xmlns", EMPTY_PREFIX)
                 a.value = uri
                 a.ownerDocument = self.document
                 expatbuilder._set_attribute_node(node, a)
@@ -222,14 +221,9 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
                     attrs[qname] = a
                     attrsNS[uri, localname] = a
                 else:
-                    a = minidom.Attr(
-                        aname,
-                        expatbuilder.EMPTY_NAMESPACE,
-                        aname,
-                        expatbuilder.EMPTY_PREFIX,
-                    )
+                    a = minidom.Attr(aname, EMPTY_NAMESPACE, aname, EMPTY_PREFIX)
                     attrs[aname] = a
-                    attrsNS[expatbuilder.EMPTY_NAMESPACE, aname] = a
+                    attrsNS[EMPTY_NAMESPACE, aname] = a
                 a.ownerDocument = self.document
                 a.value = value
                 a.ownerElement = node
@@ -253,7 +247,7 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
                 assert curNode.nodeName == name, (
                     "element stack messed up - bad nodeName"
                 )
-                assert curNode.namespaceURI == expatbuilder.EMPTY_NAMESPACE, (
+                assert curNode.namespaceURI == EMPTY_NAMESPACE, (
                     "element stack messed up - bad namespaceURI"
                 )
             self.curNode = curNode.parentNode
