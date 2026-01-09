@@ -1,4 +1,4 @@
-Translate Toolkit 3.17.0
+Translate Toolkit 3.18.0
 ************************
 
 *Released on 9 January 2026*
@@ -26,7 +26,7 @@ Formats and Converters
 
 - HTML
 
-  - po2html gracegully handles HTML escapes
+  - po2html gracefully handles HTML escapes
 
 - CSV
 
