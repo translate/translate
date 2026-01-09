@@ -420,7 +420,7 @@ class tsunit(lisa.LISAunit):
         self._settype(self.statemap_r[value])
 
 
-class tsfile(lisa.LISAfile):
+class tsfile(lisa.LISAfile[tsunit]):
     """Class representing a TS file store."""
 
     UnitClass = tsunit

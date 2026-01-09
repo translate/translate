@@ -173,7 +173,7 @@ class DumpArgsType(TypedDict):
     sort_keys: NotRequired[bool]
 
 
-class JsonFile(base.DictStore):
+class JsonFile(base.DictStore[FlatJsonUnit]):
     """A JSON file."""
 
     UnitClass: ClassVar[type[BaseJsonUnit]] = FlatJsonUnit

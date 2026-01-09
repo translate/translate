@@ -21,6 +21,7 @@
 from __future__ import annotations
 
 import contextlib
+from typing import TypeVar
 
 from lxml import etree
 
@@ -270,7 +271,10 @@ class LISAunit(base.TranslationUnit):
         return term
 
 
-class LISAfile(base.TranslationStore):
+U = TypeVar("U", bound=LISAunit)
+
+
+class LISAfile(base.TranslationStore[U]):
     """A class representing a file store for one of the LISA file formats."""
 
     UnitClass = LISAunit

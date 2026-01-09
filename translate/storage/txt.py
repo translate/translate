@@ -96,7 +96,7 @@ class TxtUnit(base.TranslationUnit):
         return self.location
 
 
-class TxtFile(base.TranslationStore):
+class TxtFile(base.TranslationStore[TxtUnit]):
     """This class represents a text file, made up of txtunits."""
 
     UnitClass = TxtUnit

@@ -17,6 +17,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 import re
+from typing import TypeVar
 from urllib import parse
 
 from translate.storage import base, poheader
@@ -178,7 +179,10 @@ class pounit(base.TranslationUnit):
             self._domarkfuzzy(False)
 
 
-class pofile(poheader.poheader, base.TranslationStore):
+U = TypeVar("U", bound=pounit)
+
+
+class pofile(poheader.poheader, base.TranslationStore[U]):
     Name = "Gettext PO file"  # pylint: disable=E0602
     Mimetypes = [
         "text/x-gettext-catalog",

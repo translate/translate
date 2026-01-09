@@ -89,7 +89,7 @@ class TikiUnit(base.TranslationUnit):
         return self.location
 
 
-class TikiStore(base.TranslationStore):
+class TikiStore(base.TranslationStore[TikiUnit]):
     """Represents a tiki language.php file."""
 
     UnitClass = TikiUnit
