@@ -209,7 +209,7 @@ class Xliff2Unit(XliffUnit):
             unit_element.set("translate", "no")
 
 
-class Xliff2File(XliffFile):
+class Xliff2File(XliffFile[Xliff2Unit]):
     """Class representing an XLIFF 2.0 file store."""
 
     UnitClass = Xliff2Unit

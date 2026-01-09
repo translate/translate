@@ -473,7 +473,7 @@ class Xliff1Unit(XliffUnit):
         )
 
 
-class Xliff1File(XliffFile):
+class Xliff1File(XliffFile[Xliff1Unit]):
     """Class representing a XLIFF file store."""
 
     UnitClass = Xliff1Unit

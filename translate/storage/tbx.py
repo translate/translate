@@ -168,7 +168,7 @@ class tbxunit(lisa.LISAunit):
         return super().isobsolete()
 
 
-class tbxfile(lisa.LISAfile):
+class tbxfile(lisa.LISAfile[tbxunit]):
     """Class representing a TBX file store."""
 
     UnitClass = tbxunit

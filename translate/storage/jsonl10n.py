@@ -171,7 +171,7 @@ class DumpArgsType(TypedDict):
     ensure_ascii: bool
 
 
-class JsonFile(base.DictStore):
+class JsonFile(base.DictStore[FlatJsonUnit]):
     """A JSON file."""
 
     UnitClass: ClassVar[type[BaseJsonUnit]] = FlatJsonUnit

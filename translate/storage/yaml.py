@@ -137,7 +137,7 @@ class YAMLUnit(base.DictUnit):
         self.storevalue(output, self.convert_target())
 
 
-class YAMLFile(base.DictStore):
+class YAMLFile(base.DictStore[YAMLUnit]):
     """A YAML file."""
 
     UnitClass = YAMLUnit

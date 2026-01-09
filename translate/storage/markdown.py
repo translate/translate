@@ -76,7 +76,7 @@ class MarkdownFrontmatterUnit(MarkdownUnit):
         return True
 
 
-class MarkdownFile(base.TranslationStore):
+class MarkdownFile(base.TranslationStore[MarkdownUnit]):
     UnitClass = MarkdownUnit
 
     def __init__(self, inputfile=None, callback=None, max_line_length=None) -> None:

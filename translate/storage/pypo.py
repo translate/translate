@@ -845,7 +845,7 @@ class pounit(pocommon.pounit):
         return id
 
 
-class pofile(pocommon.pofile):
+class pofile(pocommon.pofile[pounit]):
     """A .po file containing various units."""
 
     UnitClass = pounit

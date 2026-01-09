@@ -92,7 +92,7 @@ class TOMLUnit(base.DictUnit):
         self.storevalue(output, self.convert_target())
 
 
-class TOMLFile(base.DictStore):
+class TOMLFile(base.DictStore[TOMLUnit]):
     """
     A TOML localization file.
 

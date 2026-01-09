@@ -18,7 +18,7 @@
 
 """Common functionality shared between XLIFF 1.x and XLIFF 2.0 implementations."""
 
-from typing import Any
+from typing import Any, TypeVar
 
 from lxml import etree
 
@@ -31,49 +31,6 @@ from translate.misc.xml_helpers import (
 )
 from translate.storage import lisa
 from translate.storage.placeables.lisa import strelem_to_xml, xml_to_strelem
-
-
-class XliffFile(lisa.LISAfile):
-    """Base class providing common functionality for XLIFF file stores."""
-
-    def __init__(self, *args, **kwargs) -> None:
-        """Initialize XLIFF file with filename tracking."""
-        self._filename = None
-        super().__init__(*args, **kwargs)
-
-    @staticmethod
-    def getfilename(filenode):
-        """
-        Returns the identifier of the given file node.
-
-        Must be overridden by subclasses to specify which attribute to use.
-        """
-        raise NotImplementedError("Subclasses must implement getfilename()")
-
-    @staticmethod
-    def setfilename(filenode, filename):
-        """
-        Set the identifier of the given file node.
-
-        Must be overridden by subclasses to specify which attribute to use.
-        """
-        raise NotImplementedError("Subclasses must implement setfilename()")
-
-    def getfilenames(self):
-        """Returns all file identifiers in this XLIFF file."""
-        filenodes = self.document.getroot().iterchildren(self.namespaced("file"))
-        filenames = [self.getfilename(filenode) for filenode in filenodes]
-        return list(filter(None, filenames))
-
-    def getfilenode(self, filename, createifmissing=False):
-        """Finds the file node with the given identifier."""
-        filenodes = self.document.getroot().iterchildren(self.namespaced("file"))
-        for filenode in filenodes:
-            if self.getfilename(filenode) == filename:
-                return filenode
-        if not createifmissing:
-            return None
-        return self.createfilenode(filename)
 
 
 class XliffUnit(lisa.LISAunit):
@@ -220,3 +177,49 @@ class XliffUnit(lisa.LISAunit):
                 self.markfuzzy(True)
         if comments:
             self.addnote(otherunit.getnotes())
+
+
+U = TypeVar("U", bound=XliffUnit)
+
+
+class XliffFile(lisa.LISAfile[U]):
+    """Base class providing common functionality for XLIFF file stores."""
+
+    def __init__(self, *args, **kwargs) -> None:
+        """Initialize XLIFF file with filename tracking."""
+        self._filename = None
+        super().__init__(*args, **kwargs)
+
+    @staticmethod
+    def getfilename(filenode):
+        """
+        Returns the identifier of the given file node.
+
+        Must be overridden by subclasses to specify which attribute to use.
+        """
+        raise NotImplementedError("Subclasses must implement getfilename()")
+
+    @staticmethod
+    def setfilename(filenode, filename):
+        """
+        Set the identifier of the given file node.
+
+        Must be overridden by subclasses to specify which attribute to use.
+        """
+        raise NotImplementedError("Subclasses must implement setfilename()")
+
+    def getfilenames(self):
+        """Returns all file identifiers in this XLIFF file."""
+        filenodes = self.document.getroot().iterchildren(self.namespaced("file"))
+        filenames = [self.getfilename(filenode) for filenode in filenodes]
+        return list(filter(None, filenames))
+
+    def getfilenode(self, filename, createifmissing=False):
+        """Finds the file node with the given identifier."""
+        filenodes = self.document.getroot().iterchildren(self.namespaced("file"))
+        for filenode in filenodes:
+            if self.getfilename(filenode) == filename:
+                return filenode
+        if not createifmissing:
+            return None
+        return self.createfilenode(filename)
