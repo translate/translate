@@ -426,7 +426,7 @@ class DialectXWiki(DialectJava):
 
     @staticmethod
     def encode(string, encoding=None):
-        return xwiki_properties_encode(string or "", encoding)
+        return xwiki_properties_encode(string or "", encoding)  # ty:ignore[invalid-argument-type]
 
     @staticmethod
     def decode(string):
@@ -479,8 +479,8 @@ class DialectGwt(DialectJavaUtf8):
     @classmethod
     def get_key_cldr_name(cls, key):
         match = cls.plural_regex.fullmatch(key)
-        basekey = match.group(1)
-        variant = match.group(2)
+        basekey = match.group(1)  # ty:ignore[possibly-missing-attribute]
+        variant = match.group(2)  # ty:ignore[possibly-missing-attribute]
         if variant is None:
             variant = ""
 
@@ -695,7 +695,7 @@ class proppluralunit(base.TranslationUnit):
         return [key for key in data.cldr_plural_categories if key in existing]
 
     def _get_source_mapping(self):
-        cldr_mapping = proppluralunit._get_language_mapping(self._store.sourcelanguage)
+        cldr_mapping = proppluralunit._get_language_mapping(self._store.sourcelanguage)  # ty:ignore[possibly-missing-attribute]
         if cldr_mapping:
             return cldr_mapping
         return self._get_existing_mapping()
@@ -733,7 +733,7 @@ class proppluralunit(base.TranslationUnit):
     def _get_ordered_units(self):
         # Used for str (GWT order)
         mapping = self.personality.get_expand_output_target_mapping(
-            self._store.get_plural_tags()
+            self._store.get_plural_tags()  # ty:ignore[possibly-missing-attribute]
         )
         names = [
             name for name in self.personality.get_cldr_names_order() if name in mapping
@@ -756,7 +756,7 @@ class proppluralunit(base.TranslationUnit):
         else:
             strings = [text]
         if mapping is None:
-            mapping = self._store.get_plural_tags()
+            mapping = self._store.get_plural_tags()  # ty:ignore[possibly-missing-attribute]
 
         strings = self._get_strings(strings, mapping)
         units = self._get_units(mapping)
@@ -771,7 +771,7 @@ class proppluralunit(base.TranslationUnit):
             b.target = a
 
     def gettarget(self):
-        ll = [x.target for x in self._get_units(self._store.get_plural_tags())]
+        ll = [x.target for x in self._get_units(self._store.get_plural_tags())]  # ty:ignore[possibly-missing-attribute]
         if len(ll) > 1:
             return multistring(ll)
         return ll[0]
@@ -1130,7 +1130,7 @@ class propfile(base.TranslationStore):
             self.parse(propsrc)
             self.makeindex()
 
-    def parse(self, propsrc) -> None:
+    def parse(self, propsrc) -> None:  # ty:ignore[invalid-method-override]
         """Read the source of a properties file in and include them as units."""
         text, encoding = self.detect_encoding(
             propsrc,
@@ -1149,7 +1149,7 @@ class propfile(base.TranslationStore):
         was_header = False
         unit_start_line = 1
 
-        for linenum, line in enumerate(propsrc.split("\n"), start=1):
+        for linenum, line in enumerate(propsrc.split("\n"), start=1):  # ty:ignore[possibly-missing-attribute]
             # handle multiline value if we're in one
             line = rstripeol(line)
             if inmultilinevalue:
@@ -1424,15 +1424,15 @@ class XWikiPageProperties(xwikifile):
         return etree.XMLParser(strip_cdata=False, resolve_entities=False)
 
     def extract_language(self) -> None:
-        language_node = self.root.find("language")
+        language_node = self.root.find("language")  # ty:ignore[possibly-missing-attribute]
         if language_node is not None and language_node.text:
             self.setsourcelanguage(language_node.text)
         else:
-            language_node = self.root.find("defaultLanguage")
+            language_node = self.root.find("defaultLanguage")  # ty:ignore[possibly-missing-attribute]
             if language_node is not None and language_node.text:
                 self.setsourcelanguage(language_node.text)
 
-    def parse(self, propsrc) -> None:
+    def parse(self, propsrc) -> None:  # ty:ignore[invalid-method-override]
         if propsrc != b"\n":
             self.root = etree.XML(propsrc, self.get_parser())
             content = "".join(self.root.find("content").itertext())
@@ -1490,7 +1490,7 @@ class XWikiFullPage(XWikiPageProperties):
 
     Name = "XWiki Full Page"
 
-    def parse(self, propsrc) -> None:
+    def parse(self, propsrc) -> None:  # ty:ignore[invalid-method-override]
         if propsrc != b"\n":
             self.root = etree.XML(propsrc, self.get_parser())
             content = "".join(self.root.find("content").itertext()).replace("\n", "\\n")

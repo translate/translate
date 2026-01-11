@@ -191,7 +191,7 @@ class pounit(pocommon.pounit):
 
     def merge(
         self, otherpo, overwrite=False, comments=True, authoritative=False
-    ) -> None:
+    ) -> None:  # ty:ignore[invalid-method-override]
         """
         Merges the otherpo (with the same msgid) into this one.
 
@@ -291,7 +291,7 @@ class pounit(pocommon.pounit):
         """Alters whether a given typecomment is present."""
         if self.hastypecomment(typecomment) != present:
             if present:
-                self.typecomments.append(f"#, {typecomment}\n")
+                self.typecomments.append(f"#, {typecomment}\n")  # ty:ignore[possibly-missing-attribute]
             else:
                 # this should handle word boundaries properly ...
                 typecomments = [
@@ -450,7 +450,7 @@ class pofile(pocommon.pofile):
             # only add a temporary header
             self._cpo_store.makeheader(charset=self.encoding, encoding="8bit")
 
-    def parse(self, input) -> None:
+    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
         """Parses the given file or file source string."""
         try:
             if hasattr(input, "name"):

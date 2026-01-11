@@ -164,14 +164,14 @@ class TradosUnit(base.TranslationUnit):
 
     @property
     def source(self):
-        return unescape(self._soup.findAll("seg")[0].contents[0])
+        return unescape(self._soup.findAll("seg")[0].contents[0])  # ty:ignore[possibly-missing-attribute]
 
     @source.setter
     def source(self, source) -> None:
         pass
 
     def gettarget(self):
-        return unescape(self._soup.findAll("seg")[1].contents[0])
+        return unescape(self._soup.findAll("seg")[1].contents[0])  # ty:ignore[possibly-missing-attribute]
 
     target = property(gettarget, None)
 
@@ -201,7 +201,7 @@ class TradosTxtTmFile(base.TranslationStore):
         if inputfile is not None:
             self.parse(inputfile)
 
-    def parse(self, input) -> None:
+    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
         if hasattr(input, "name"):
             self.filename = input.name
         elif not getattr(self, "filename", ""):

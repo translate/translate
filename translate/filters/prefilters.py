@@ -172,7 +172,7 @@ def filterwordswithpunctuation(str1):
     if "'" not in str1:
         return str1
     occurrences = []
-    for word, replacement in wordswithpunctuation.items():
+    for word, replacement in wordswithpunctuation.items():  # ty:ignore[possibly-missing-attribute]
         occurrences.extend(
             [(pos, word, replacement) for pos in quote.find_all(str1, word)]
         )

@@ -132,7 +132,7 @@ def normalize_xml_space(node, xml_space: str, remove_start: bool = False) -> Non
         node.tail = normalize_space(node.tail)
 
     for child in node:
-        normalize_xml_space(child, remove_start)
+        normalize_xml_space(child, remove_start)  # ty:ignore[invalid-argument-type]
 
 
 def reindent(

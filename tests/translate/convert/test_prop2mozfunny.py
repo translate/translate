@@ -7,7 +7,7 @@ class TestPO2Prop:
     @staticmethod
     def merge2inc(incsource, posource):
         """Helper that merges po translations to .inc source without requiring files."""
-        inputfile = BytesIO(posource.encode("utf-8") if posource else None)
+        inputfile = BytesIO(posource.encode("utf-8") if posource else None)  # ty:ignore[invalid-argument-type]
         templatefile = BytesIO(incsource.encode("utf-8"))
         outputfile = BytesIO()
         result = prop2mozfunny.po2inc(inputfile, outputfile, templatefile)

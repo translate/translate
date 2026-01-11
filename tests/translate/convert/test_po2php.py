@@ -14,7 +14,7 @@ class TestPO2Php:
         """Helper that converts po source to .php source without requiring files."""
         inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
-        convertor = po2php.po2php()
+        convertor = po2php.po2php()  # ty:ignore[unresolved-attribute]
         return convertor.convertstore(inputpo)
 
     @staticmethod
@@ -427,7 +427,7 @@ return array(
         posource = ""
         proptemplate = "# A comment\n"
         propexpected = proptemplate
-        propfile = self.merge2prop(proptemplate, posource)
+        propfile = self.merge2prop(proptemplate, posource)  # ty:ignore[unresolved-attribute]
         print(propfile)
         assert propfile == [propexpected]
 

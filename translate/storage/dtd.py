@@ -131,7 +131,7 @@ _DTD_CODEPOINT2NAME = {
 
 def quotefordtd(source):
     """Quotes and escapes a line for regular DTD files."""
-    source = quote.entityencode(source, _DTD_CODEPOINT2NAME)
+    source = quote.entityencode(source, _DTD_CODEPOINT2NAME)  # ty:ignore[invalid-argument-type]
     if '"' in source:
         source = source.replace("'", "&apos;")  # This seems not to run.
         if '="' not in source:  # Avoid escaping " chars in href attributes.
@@ -171,7 +171,7 @@ def unquotefromdtd(source):
     )
     if quotechar == "'":
         extracted = extracted.replace("&apos;", "'")
-    return quote.entitydecode(extracted, _DTD_NAME2CODEPOINT)
+    return quote.entitydecode(extracted, _DTD_NAME2CODEPOINT)  # ty:ignore[invalid-argument-type]
 
 
 def removeinvalidamps(name: str, value: str) -> str:
@@ -268,7 +268,7 @@ class dtdunit(base.TranslationUnit):
     def getid(self):
         return self.entity
 
-    def setid(self, new_id) -> None:
+    def setid(self, new_id) -> None:  # ty:ignore[invalid-method-override]
         self.entity = new_id
 
     def getlocations(self):
@@ -307,11 +307,11 @@ class dtdunit(base.TranslationUnit):
         # for n in self._locnotes: yield n
         if len(self.entity) > 0:
             if getattr(self, "entitytype", None) == "external":
-                entityline = f"<!ENTITY % {self.entity} {self.entityparameter} {self.definition}{self.closing}"
+                entityline = f"<!ENTITY % {self.entity} {self.entityparameter} {self.definition}{self.closing}"  # ty:ignore[unresolved-attribute]
             else:
                 entityline = f"<!ENTITY{self.space_pre_entity}{self.entity}{self.space_pre_definition}{self.definition}{self.closing}"
             if getattr(self, "hashprefix", None):
-                entityline = f"{self.hashprefix} {entityline}"
+                entityline = f"{self.hashprefix} {entityline}"  # ty:ignore[unresolved-attribute]
             lines.append(f"{entityline}\n")
         return "".join(lines)
 
@@ -349,10 +349,10 @@ class dtdfile(base.TranslationStore):
         """Store a comment in the appropriate list on the unit."""
         commentpair = (commenttype, comment)
         comment_targets = {
-            "locfile": unit._locfilenotes,
-            "locgroupstart": unit._locgroupstarts,
-            "locgroupend": unit._locgroupends,
-            "locnote": unit._locnotes,
+            "locfile": unit._locfilenotes,  # ty:ignore[unresolved-attribute]
+            "locgroupstart": unit._locgroupstarts,  # ty:ignore[unresolved-attribute]
+            "locgroupend": unit._locgroupends,  # ty:ignore[unresolved-attribute]
+            "locnote": unit._locnotes,  # ty:ignore[unresolved-attribute]
             "comment": unit.comments,
         }
         comment_targets.get(commenttype, unit.comments).append(commentpair)
@@ -412,7 +412,7 @@ class dtdfile(base.TranslationStore):
             )
         raise ValueError(f"Unexpected quote character... {quote_char!r}")
 
-    def parse(self, dtdsrc) -> None:
+    def parse(self, dtdsrc) -> None:  # ty:ignore[invalid-method-override]
         """Read the source code of a dtd file in and include them as dtdunits in self.units."""
         if not dtdsrc:
             return
@@ -438,10 +438,10 @@ class dtdfile(base.TranslationStore):
 
             # Initialize unit state
             newdtd.comments = []
-            newdtd._locfilenotes = newdtd.comments
-            newdtd._locgroupstarts = newdtd.comments
-            newdtd._locgroupends = newdtd.comments
-            newdtd._locnotes = newdtd.comments
+            newdtd._locfilenotes = newdtd.comments  # ty:ignore[unresolved-attribute]
+            newdtd._locgroupstarts = newdtd.comments  # ty:ignore[unresolved-attribute]
+            newdtd._locgroupends = newdtd.comments  # ty:ignore[unresolved-attribute]
+            newdtd._locnotes = newdtd.comments  # ty:ignore[unresolved-attribute]
             newdtd.entity = None
             newdtd.definition = ""
             newdtd.unparsedlines = []
@@ -506,7 +506,7 @@ class dtdfile(base.TranslationStore):
                         has_content = True
                         beforeentity = line[:entitypos].strip()
                         if beforeentity.startswith("#"):
-                            newdtd.hashprefix = beforeentity
+                            newdtd.hashprefix = beforeentity  # ty:ignore[unresolved-attribute]
                         entitypart = "start"
                     else:
                         # Add to unparsed lines
@@ -533,10 +533,10 @@ class dtdfile(base.TranslationStore):
                         newdtd.entity = entity_name
                         assert quote.rstripeol(entity_name) == entity_name
                         if newdtd.entity:
-                            newdtd.entitytype = entitytype
+                            newdtd.entitytype = entitytype  # ty:ignore[unresolved-attribute]
                             if entitytype == "external":
                                 entitypart = "parameter"
-                                newdtd.entityparameter = ""
+                                newdtd.entityparameter = ""  # ty:ignore[unresolved-attribute]
                             else:
                                 entitypart = "definition"
                             # Remember the start position and the quote character
@@ -555,7 +555,7 @@ class dtdfile(base.TranslationStore):
                         paramstart = e
                         while e < len(line) and line[e].isalnum():
                             e += 1
-                        newdtd.entityparameter += line[paramstart:e]
+                        newdtd.entityparameter += line[paramstart:e]  # ty:ignore[unresolved-attribute]
                         while e < len(line) and line[e].isspace():
                             e += 1
                         line = line[e:]

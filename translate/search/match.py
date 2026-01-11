@@ -126,8 +126,8 @@ class matcher:
             # some modules (like the native Levenshtein) can't use it.
             if isinstance(candidate.source, multistring):
                 if len(candidate.source.strings) > 1:
-                    simpleunit.orig_source = candidate.source
-                    simpleunit.orig_target = candidate.target
+                    simpleunit.orig_source = candidate.source  # ty:ignore[unresolved-attribute]
+                    simpleunit.orig_target = candidate.target  # ty:ignore[unresolved-attribute]
                 simpleunit.source = str(candidate.source)
                 simpleunit.target = str(candidate.target)
             else:
@@ -138,7 +138,7 @@ class matcher:
             # notes, pot2po adds all previous comments as translator comments
             # in the new po file
             simpleunit.addnote(candidate.getnotes(origin="translator"))
-            simpleunit.fuzzy = candidate.isfuzzy()
+            simpleunit.fuzzy = candidate.isfuzzy()  # ty:ignore[unresolved-attribute]
             self.candidates.units.append(simpleunit)
         if sort:
             self.candidates.units.sort(key=sourcelen, reverse=self.sort_reverse)
@@ -286,7 +286,7 @@ class terminologymatcher(matcher):
         self.addpercentage = False
         self.match_info = {}
 
-    def inittm(self, store) -> None:
+    def inittm(self, store) -> None:  # ty:ignore[invalid-method-override]
         """Normal initialisation, but convert all source strings to lower case."""
         super().inittm(store)
         extras = []
@@ -336,7 +336,7 @@ class terminologymatcher(matcher):
             return []
         text = text.lower()
         comparer = self.comparer
-        comparer.match_info = {}
+        comparer.match_info = {}  # ty:ignore[invalid-assignment]
         match_info = {}
         matches = []
         known = set()
@@ -361,7 +361,7 @@ class terminologymatcher(matcher):
             if (source, cand.target) in known:
                 continue
             if comparer.similarity(text, source, self.MIN_SIMILARITY):
-                match_info[source] = {"pos": comparer.match_info[source]["pos"]}
+                match_info[source] = {"pos": comparer.match_info[source]["pos"]}  # ty:ignore[possibly-missing-attribute]
                 matches.append(cand)
                 known.add((source, cand.target))
 

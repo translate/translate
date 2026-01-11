@@ -56,7 +56,7 @@ def mounpack(filename="messages.mo"):
     """Helper to unpack Gettext MO files into a Python string."""
     with open(filename, "rb") as fh:
         s = fh.read()
-        return "\\x%02x" * len(s) % tuple(map(ord, s))
+        return "\\x%02x" * len(s) % tuple(map(ord, s))  # ty:ignore[invalid-argument-type]
 
 
 def my_swap4(result):
@@ -243,8 +243,8 @@ class mofile(poheader.poheader, base.TranslationStore):
 
     @staticmethod
     def parse_header(content: list[bytes]) -> tuple[str, int, int, int, int, int]:
-        (little,) = struct.unpack("<L", content[:4])
-        (big,) = struct.unpack(">L", content[:4])
+        (little,) = struct.unpack("<L", content[:4])  # ty:ignore[invalid-argument-type]
+        (big,) = struct.unpack(">L", content[:4])  # ty:ignore[invalid-argument-type]
         if little == MO_MAGIC_NUMBER:
             endian = "<"
         elif big == MO_MAGIC_NUMBER:
@@ -258,7 +258,7 @@ class mofile(poheader.poheader, base.TranslationStore):
             startvalue,
             sizehash,
             offsethash,
-        ) = struct.unpack(f"{endian}iiiiii", content[4 : (7 * 4)])
+        ) = struct.unpack(f"{endian}iiiiii", content[4 : (7 * 4)])  # ty:ignore[invalid-argument-type]
         return (
             endian,
             version >> 16,
@@ -268,9 +268,9 @@ class mofile(poheader.poheader, base.TranslationStore):
             startvalue,
             sizehash,
             offsethash,
-        )
+        )  # ty:ignore[invalid-return-type]
 
-    def parse(self, input) -> None:
+    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
         """Parses the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name
@@ -292,7 +292,7 @@ class mofile(poheader.poheader, base.TranslationStore):
             startvalue,
             _sizehash,
             _offsethash,
-        ) = self.parse_header(content)
+        ) = self.parse_header(content)  # ty:ignore[invalid-assignment]
         if version_maj >= 1:
             raise base.ParseError(
                 f"Unable to process version {version_maj}.{version_min} MO files"

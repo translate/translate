@@ -74,8 +74,8 @@ class wfmultifile:
             pass
 
         outputfile = wStringIO.CatchStringOutput(onclose)
-        outputfile.filename = subfile
-        outputfile.wffile = self.wffile
+        outputfile.filename = subfile  # ty:ignore[unresolved-attribute]
+        outputfile.wffile = self.wffile  # ty:ignore[unresolved-attribute]
         return outputfile
 
 

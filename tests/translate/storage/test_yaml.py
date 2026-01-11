@@ -349,7 +349,7 @@ foo: "Hello \n World."
         )
 
     @pytest.mark.skipif(
-        ruamel.yaml.version_info < (0, 16, 6),
+        ruamel.yaml.version_info < (0, 16, 6),  # ty:ignore[unsupported-operator]
         reason="Empty keys serialization broken in ruamel.yaml<0.16.6",
     )
     def test_empty_key(self) -> None:

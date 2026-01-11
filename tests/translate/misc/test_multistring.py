@@ -19,9 +19,9 @@ class TestMultistring:
         with pytest.raises(ValueError):
             multistring([])
         with pytest.raises(TypeError):
-            multistring([1])
+            multistring([1])  # ty:ignore[invalid-argument-type]
         with pytest.raises(TypeError):
-            multistring(["one", None])
+            multistring(["one", None])  # ty:ignore[invalid-argument-type]
 
     def test_repr(self) -> None:
         s1 = multistring("test")

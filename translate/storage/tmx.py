@@ -32,7 +32,7 @@ class tmxunit(lisa.LISAunit):
     languageNode = "tuv"
     textNode = "seg"
 
-    def createlanguageNode(self, lang, text, purpose):
+    def createlanguageNode(self, lang, text, purpose):  # ty:ignore[invalid-method-override]
         """Returns a langset xml Element setup with given parameters."""
         langset = etree.Element(self.languageNode)
         setXMLlang(langset, lang)
@@ -195,6 +195,6 @@ class tmxfile(lisa.LISAfile):
         setXMLlang(next(tuvs), srclang)
         setXMLlang(next(tuvs), translang)
 
-    def translate(self, sourcetext, sourcelang=None, targetlang=None):
+    def translate(self, sourcetext, sourcelang=None, targetlang=None):  # ty:ignore[invalid-method-override]
         """Method to test old unit tests."""
         return getattr(self.findunit(sourcetext), "target", None)

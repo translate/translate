@@ -95,7 +95,7 @@ class Xliff1Unit(XliffUnit):
             return
         setXMLspace(self.xmlelement, "preserve")
 
-    def createlanguageNode(self, lang, text, purpose):
+    def createlanguageNode(self, lang, text, purpose):  # ty:ignore[invalid-method-override]
         """Returns an xml Element setup with given parameters."""
         # TODO: for now we do source, but we have to test if it is target,
         # perhaps with parameter. Alternatively, we can use lang, if
@@ -164,7 +164,7 @@ class Xliff1Unit(XliffUnit):
                 )
                 # TODO: support multiple targets better
                 # TODO: support notes in alt-trans
-                newunit.xmlelement = node
+                newunit.xmlelement = node  # ty:ignore[unresolved-attribute]
 
                 translist.append(newunit)
         return translist
@@ -354,7 +354,7 @@ class Xliff1Unit(XliffUnit):
         if state_id < self.S_UNREVIEWED:
             self.set_state_n(self.S_UNREVIEWED)
 
-    def setid(self, id) -> None:
+    def setid(self, id) -> None:  # ty:ignore[invalid-method-override]
         # sanitize id in case ID_SEPARATOR is present
         self.xmlelement.set("id", id.replace(ID_SEPARATOR, ID_SEPARATOR_SAFE))
 
@@ -561,7 +561,7 @@ class Xliff1File(XliffFile[Xliff1Unit]):
         """Set the name of the given file."""
         return filenode.set("original", filename)
 
-    def setsourcelanguage(self, language) -> None:
+    def setsourcelanguage(self, language) -> None:  # ty:ignore[invalid-method-override]
         if not language:
             return
         for filenode in self.document.getroot().iterchildren(self.namespaced("file")):
@@ -573,7 +573,7 @@ class Xliff1File(XliffFile[Xliff1Unit]):
 
     sourcelanguage = property(getsourcelanguage, setsourcelanguage)
 
-    def settargetlanguage(self, language) -> None:
+    def settargetlanguage(self, language) -> None:  # ty:ignore[invalid-method-override]
         if not language:
             return
         for filenode in self.document.getroot().iterchildren(self.namespaced("file")):
@@ -686,7 +686,7 @@ class Xliff1File(XliffFile[Xliff1Unit]):
                 target_group.append(unit.xmlelement)
             else:
                 # Add directly to body
-                self.body.append(unit.xmlelement)
+                self.body.append(unit.xmlelement)  # ty:ignore[possibly-missing-attribute]
 
     def addsourceunit(self, source, filename="NoName", createifmissing=False):
         """
@@ -727,7 +727,7 @@ class Xliff1File(XliffFile[Xliff1Unit]):
         """Adds a group tag into the specified file."""
         if not self.switchfile(filename, createifmissing):
             return None
-        group = etree.SubElement(self.body, self.namespaced("group"))
+        group = etree.SubElement(self.body, self.namespaced("group"))  # ty:ignore[no-matching-overload]
         if restype:
             group.set("restype", restype)
         return group
@@ -740,13 +740,13 @@ class Xliff1File(XliffFile[Xliff1Unit]):
         :returns: The matching or newly created group element
         """
         # Try to find a matching group in the current body
-        for group in self.body.iterchildren(self.namespaced("group")):
+        for group in self.body.iterchildren(self.namespaced("group")):  # ty:ignore[possibly-missing-attribute]
             # Check if all attributes match
             if group.attrib == source_group.attrib:
                 return group
 
         # No matching group found, create a new one
-        group = etree.SubElement(self.body, self.namespaced("group"))
+        group = etree.SubElement(self.body, self.namespaced("group"))  # ty:ignore[no-matching-overload]
         for attr, value in source_group.attrib.items():
             group.set(attr, value)
         return group

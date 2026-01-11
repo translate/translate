@@ -174,7 +174,8 @@ class RecursiveOptionParser(optparse.OptionParser):
                 f'.TH {prog} 1 "{formatToolkit(self.version)}" "" "{formatToolkit(self.version)}"\n',
                 ".SH NAME\n",
                 "{} \\- {}\n".format(
-                    self.get_prog_name(), self.description.split("\n\n")[0]
+                    self.get_prog_name(),
+                    self.description.split("\n\n")[0],  # ty:ignore[possibly-missing-attribute]
                 ),
                 ".SH SYNOPSIS\n",
                 ".PP\n",
@@ -184,7 +185,7 @@ class RecursiveOptionParser(optparse.OptionParser):
         usage += " ".join(self.getusageman(option) for option in self.option_list)
         usage += "\\fP"
         result.append(f"{formatprog(usage)}\n")
-        description_lines = self.description.split("\n\n")[1:]
+        description_lines = self.description.split("\n\n")[1:]  # ty:ignore[possibly-missing-attribute]
         if description_lines:
             result.extend(
                 (
@@ -203,7 +204,7 @@ class RecursiveOptionParser(optparse.OptionParser):
                 (
                     ".TP\n",
                     "{}\n".format(str(option).replace("-", "\\-")),
-                    "{}\n".format(option.help.replace("-", "\\-")),
+                    "{}\n".format(option.help.replace("-", "\\-")),  # ty:ignore[possibly-missing-attribute]
                 )
             )
         return "".join(result)

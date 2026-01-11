@@ -537,7 +537,7 @@ class TestMOFile(test_base.TestTranslationStore):
             finally:
                 sys.argv = argv
 
-            store = factory.getobject(BytesIO(posource))
+            store = factory.getobject(BytesIO(posource))  # ty:ignore[invalid-argument-type]
             if store.isempty() and not os.path.exists(MO_POCOMPILE):
                 # pocompile doesn't create MO files for empty PO files, so we
                 # can skip the checks here.
@@ -562,8 +562,8 @@ class TestMOFile(test_base.TestTranslationStore):
             # hashing table content in 0.25
 
             # Extract header
-            msgfmt_header = self.StoreClass.parse_header(mo_msgfmt)
-            pocompile_header = self.StoreClass.parse_header(mo_pocompile)
+            msgfmt_header = self.StoreClass.parse_header(mo_msgfmt)  # ty:ignore[invalid-argument-type]
+            pocompile_header = self.StoreClass.parse_header(mo_pocompile)  # ty:ignore[invalid-argument-type]
             # Compare header without hash table sizes
             assert msgfmt_header[:-2] == pocompile_header[:-2], "MO header mismatch"
 
@@ -571,8 +571,8 @@ class TestMOFile(test_base.TestTranslationStore):
 
             # Compare string data (after hash table)
             assert (
-                mo_msgfmt[msgfmt_header[7] + msgfmt_header[6] * 4 :]
-                == mo_pocompile[pocompile_header[7] + pocompile_header[6] * 4 :]
+                mo_msgfmt[msgfmt_header[7] + msgfmt_header[6] * 4 :]  # ty:ignore[index-out-of-bounds]
+                == mo_pocompile[pocompile_header[7] + pocompile_header[6] * 4 :]  # ty:ignore[index-out-of-bounds]
             )
 
             # Verify parsing of generated files

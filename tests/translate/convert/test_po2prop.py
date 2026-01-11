@@ -12,7 +12,7 @@ class TestPO2Prop:
         """Helper that converts po source to .properties source without requiring files."""
         inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
-        convertor = po2prop.po2prop()
+        convertor = po2prop.po2prop()  # ty:ignore[unresolved-attribute]
         return convertor.convertstore(inputpo)
 
     @staticmethod

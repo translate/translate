@@ -147,8 +147,8 @@ if __name__ == "__main__":
 
     storetype = args.storetype
 
-    if storetype in factory.classes_str:
-        _module, _class = factory.classes_str[storetype]
+    if storetype in factory.classes_str:  # ty:ignore[unresolved-attribute]
+        _module, _class = factory.classes_str[storetype]  # ty:ignore[unresolved-attribute]
         module = import_module(f"translate.storage.{_module}")
         storeclass = getattr(module, _class)
     else:

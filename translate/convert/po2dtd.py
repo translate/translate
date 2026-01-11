@@ -34,7 +34,7 @@ def dtdwarning(message, category, filename, lineno, line=None) -> str:
     return f"Warning: {message}\n"
 
 
-warnings.formatwarning = dtdwarning
+warnings.formatwarning = dtdwarning  # ty:ignore[invalid-assignment]
 
 
 def applytranslation(entity, dtdunit, inputunit, mixedentities) -> None:

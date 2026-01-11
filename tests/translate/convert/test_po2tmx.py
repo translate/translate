@@ -13,7 +13,7 @@ class TestPO2TMX:
         """Helper that converts po source to tmx source without requiring files."""
         inputfile = BytesIO(posource.encode("utf-8"))
         outputfile = BytesIO()
-        outputfile.tmxfile = tmx.tmxfile(inputfile=None, sourcelanguage=sourcelanguage)
+        outputfile.tmxfile = tmx.tmxfile(inputfile=None, sourcelanguage=sourcelanguage)  # ty:ignore[unresolved-attribute]
         po2tmx.convertpo(
             inputfile,
             outputfile,
@@ -22,7 +22,7 @@ class TestPO2TMX:
             targetlanguage=targetlanguage,
             comment=comment,
         )
-        return outputfile.tmxfile
+        return outputfile.tmxfile  # ty:ignore[unresolved-attribute]
 
     def test_basic(self) -> None:
         minipo = r"""# Afrikaans translation of program ABC
