@@ -121,7 +121,7 @@ def unquotefromandroid(source):
     return value.replace('\\"', '"')  # This converts \&quot; to ".
 
 
-_DTD_CODEPOINT2NAME = {
+_DTD_CODEPOINT2NAME: dict[int, str] = {
     ord("%"): "#037",  # Always escape % sign as &#037;.
     ord("&"): "amp",
     # ord("<"): "lt",  # Not really so useful.
@@ -131,7 +131,7 @@ _DTD_CODEPOINT2NAME = {
 
 def quotefordtd(source):
     """Quotes and escapes a line for regular DTD files."""
-    source = quote.entityencode(source, _DTD_CODEPOINT2NAME)  # ty:ignore[invalid-argument-type]
+    source = quote.entityencode(source, _DTD_CODEPOINT2NAME)
     if '"' in source:
         source = source.replace("'", "&apos;")  # This seems not to run.
         if '="' not in source:  # Avoid escaping " chars in href attributes.
@@ -171,7 +171,7 @@ def unquotefromdtd(source):
     )
     if quotechar == "'":
         extracted = extracted.replace("&apos;", "'")
-    return quote.entitydecode(extracted, _DTD_NAME2CODEPOINT)  # ty:ignore[invalid-argument-type]
+    return quote.entitydecode(extracted, _DTD_NAME2CODEPOINT)
 
 
 def removeinvalidamps(name: str, value: str) -> str:
