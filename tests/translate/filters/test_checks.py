@@ -203,27 +203,27 @@ def test_acceleratedvariables() -> None:
     """Test for accelerated variables."""
     # FIXME: disabled since acceleratedvariables has been removed, but these checks are still needed
     mozillachecker = checks.MozillaChecker()
-    assert fails(mozillachecker.acceleratedvariables, "%S &Options", "&%S Ikhetho")
-    assert passes(mozillachecker.acceleratedvariables, "%S &Options", "%S &Ikhetho")
+    assert fails(mozillachecker.acceleratedvariables, "%S &Options", "&%S Ikhetho")  # ty:ignore[unresolved-attribute]
+    assert passes(mozillachecker.acceleratedvariables, "%S &Options", "%S &Ikhetho")  # ty:ignore[unresolved-attribute]
     ooochecker = checks.OpenOfficeChecker()
     assert fails(
-        ooochecker.acceleratedvariables,
+        ooochecker.acceleratedvariables,  # ty:ignore[unresolved-attribute]
         "%PRODUCTNAME% ~Options",
         "~%PRODUCTNAME% Ikhetho",
     )
     assert passes(
-        ooochecker.acceleratedvariables,
+        ooochecker.acceleratedvariables,  # ty:ignore[unresolved-attribute]
         "%PRODUCTNAME% ~Options",
         "%PRODUCTNAME% ~Ikhetho",
     )
     lochecker = checks.LibreOfficeChecker()
     assert fails(
-        lochecker.acceleratedvariables,
+        lochecker.acceleratedvariables,  # ty:ignore[unresolved-attribute]
         "%PRODUCTNAME% ~Options",
         "~%PRODUCTNAME% Ikhetho",
     )
     assert passes(
-        lochecker.acceleratedvariables,
+        lochecker.acceleratedvariables,  # ty:ignore[unresolved-attribute]
         "%PRODUCTNAME% ~Options",
         "%PRODUCTNAME% ~Ikhetho",
     )
@@ -1427,7 +1427,7 @@ def test_simplecaps() -> None:
 
 
 @mark.skipif(
-    not spelling.available or not spelling._get_checker("af"),
+    not spelling.available or not spelling._get_checker("af"),  # ty:ignore[possibly-missing-attribute]
     reason="Spell checking for af is not available",
 )
 def test_spellcheck() -> None:

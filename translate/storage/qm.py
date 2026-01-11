@@ -73,7 +73,7 @@ def qmunpack(file_="messages.qm"):
     """Helper to unpack Qt .qm files into a Python string."""
     with open(file_, "rb") as fh:
         s = fh.read()
-        return "\\x%02x" * len(s) % tuple(map(ord, s))
+        return "\\x%02x" * len(s) % tuple(map(ord, s))  # ty:ignore[invalid-argument-type]
 
 
 class qmunit(base.TranslationUnit):
@@ -99,7 +99,7 @@ class qmfile(base.TranslationStore):
         """Output a string representation of the .qm data file."""
         raise NotImplementedError("Writing of .qm files is not supported yet")
 
-    def parse(self, input) -> None:
+    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
         """Parses the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name

@@ -229,7 +229,7 @@ class UtxFile(base.TranslationStore):
     def settargetlanguage(self, targetlanguage) -> None:
         self._header["target_language"] = targetlanguage
 
-    def parse(self, input) -> None:
+    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
         """Parsese the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name

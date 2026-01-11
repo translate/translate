@@ -32,7 +32,7 @@ from wsgiref.util import shift_path_info
 # resolver not essential for basic features
 # FIXME: this library is overkill, simplify
 with contextlib.suppress(ImportError):
-    from resolver import resolve
+    from resolver import resolve  # ty:ignore[unresolved-import]
 
 
 class MappingFileError(Exception):
@@ -408,7 +408,7 @@ class SimpleParser:
         if self.ostart in text:
             parts = self.outermost_optionals_split(text)
             parts = map(self.parse, parts)
-            parts[1::2] = [f"({p})?" for p in parts[1::2]]
+            parts[1::2] = [f"({p})?" for p in parts[1::2]]  # ty:ignore[invalid-assignment, not-subscriptable]
         else:
             parts = [part.split(self.end) for part in text.split(self.start)]
             parts = [y for x in parts for y in x]

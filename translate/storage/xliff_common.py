@@ -41,7 +41,7 @@ class XliffUnit(lisa.LISAunit):
         if getXMLspace(self.xmlelement) != "preserve":
             setXMLspace(self.xmlelement, "preserve")
 
-    def createlanguageNode(self, lang: str, text: str, purpose: str) -> etree._Element:
+    def createlanguageNode(self, lang: str, text: str, purpose: str) -> etree._Element:  # ty:ignore[invalid-method-override]
         """
         Create and return an xml Element setup with given parameters.
 
@@ -53,7 +53,7 @@ class XliffUnit(lisa.LISAunit):
         return langset
 
     @classmethod
-    def multistring_to_rich(cls, mstr: Any) -> list[Any]:
+    def multistring_to_rich(cls, mstr: Any) -> list[Any]:  # ty:ignore[invalid-method-override]
         """
         Convert a multistring to rich format.
 
@@ -168,7 +168,7 @@ class XliffUnit(lisa.LISAunit):
         # TODO: consider other attributes like "approved"
         super().merge(otherunit, overwrite, comments)
         if self.target:
-            self.marktranslated()
+            self.marktranslated()  # ty:ignore[unresolved-attribute]
             if otherunit.isfuzzy():
                 self.markfuzzy()
             elif otherunit.source == self.source:
@@ -222,4 +222,4 @@ class XliffFile(lisa.LISAfile[U]):
                 return filenode
         if not createifmissing:
             return None
-        return self.createfilenode(filename)
+        return self.createfilenode(filename)  # ty:ignore[unresolved-attribute]

@@ -103,7 +103,7 @@ class LanguageIdentifier:
 
         text = " ".join(
             unit.source
-            for unit in instore[:50]
+            for unit in instore[:50]  # ty:ignore[not-subscriptable]
             if unit.istranslatable() and unit.source
         )
         if not text:
@@ -126,7 +126,7 @@ class LanguageIdentifier:
 
         text = " ".join(
             unit.target
-            for unit in instore[:200]
+            for unit in instore[:200]  # ty:ignore[not-subscriptable]
             if unit.istranslatable() and unit.target
         )
         if not text:

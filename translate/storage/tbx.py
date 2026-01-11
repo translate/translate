@@ -38,7 +38,7 @@ class tbxunit(lisa.LISAunit):
     languageNode = "langSet"
     textNode = "term"
 
-    def createlanguageNode(self, lang, text, purpose):
+    def createlanguageNode(self, lang, text, purpose):  # ty:ignore[invalid-method-override]
         """Returns a langset xml Element setup with given parameters."""
         langset = etree.Element(self.languageNode)
         setXMLlang(langset, lang)
@@ -65,7 +65,7 @@ class tbxunit(lisa.LISAunit):
 
     def removenotes(self, origin=None) -> None:
         """Remove all the translator notes."""
-        notes = self.xmlelement.iterdescendants(self._get_origin_element(origin))
+        notes = self.xmlelement.iterdescendants(self._get_origin_element(origin))  # ty:ignore[invalid-argument-type]
         for note in notes:
             self.xmlelement.remove(note)
 
@@ -78,14 +78,14 @@ class tbxunit(lisa.LISAunit):
             text = text.strip()
         if not text:
             return
-        note = etree.SubElement(self.xmlelement, self._get_origin_element(origin))
+        note = etree.SubElement(self.xmlelement, self._get_origin_element(origin))  # ty:ignore[invalid-argument-type]
         safely_set_text(note, text)
         if origin and origin not in {"pos", "definition"}:
             note.set("from", origin)
 
     def _getnotenodes(self, origin=None):
         """Get all nodes matching ``origin`` in the XML document."""
-        return self.xmlelement.iterdescendants(self._get_origin_element(origin))
+        return self.xmlelement.iterdescendants(self._get_origin_element(origin))  # ty:ignore[invalid-argument-type]
 
     def _getnodetext(self, node):
         """

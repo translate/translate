@@ -49,9 +49,9 @@ class Statistics:
     def init_checker(self, checkerstyle=None) -> None:
         checkerclasses = [
             checkerstyle or checks.StandardChecker,
-            pofilter.StandardPOChecker,
+            pofilter.StandardPOChecker,  # ty:ignore[unresolved-attribute]
         ]
-        self.checker = pofilter.POTeeChecker(checkerclasses=checkerclasses)
+        self.checker = pofilter.POTeeChecker(checkerclasses=checkerclasses)  # ty:ignore[unresolved-attribute]
 
     def fuzzy_units(self):
         """Return a list of fuzzy units."""
@@ -155,7 +155,7 @@ class Statistics:
         self.classification["total"] = []
         #        for checkname in self.checker.getfilters().keys():
         #            self.classification[f"check-{checkname}"] = []
-        for item, unit in enumerate(self.unit_iter()):
+        for item, unit in enumerate(self.unit_iter()):  # ty:ignore[unresolved-attribute]
             classes = self.classifyunit(unit)
             #            if self.basefile.getsuggestions(item):
             #                classes.append("has-suggestion")
@@ -170,7 +170,7 @@ class Statistics:
         """Counts the source and target words in each of the units."""
         self.sourcewordcounts = []
         self.targetwordcounts = []
-        for unit in self.unit_iter():
+        for unit in self.unit_iter():  # ty:ignore[unresolved-attribute]
             self.sourcewordcounts.append(
                 [self.wordcount(text) for text in getattr(unit.source, "strings", [""])]
             )

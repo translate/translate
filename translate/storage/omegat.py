@@ -137,7 +137,7 @@ class OmegaTFile(base.TranslationStore):
         if inputfile is not None:
             self.parse(inputfile)
 
-    def parse(self, input) -> None:
+    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
         """Parsese the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name

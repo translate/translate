@@ -38,7 +38,7 @@ class RESXUnit(lisa.LISAunit):
     namespace = ""
     rich_parsers = general.parsers
 
-    def createlanguageNode(self, lang, text, purpose):
+    def createlanguageNode(self, lang, text, purpose):  # ty:ignore[invalid-method-override]
         """Returns an xml Element setup with given parameters."""
         langset = etree.Element(self.namespaced(self.languageNode))
 
@@ -224,7 +224,7 @@ class RESXFile(lisa.LISAfile):
                 # this is the first element; adjust root.
                 # should not happen in a ResX file prepared by Visual Studio
                 # since it includes an inline XSD plus resheader at all times.
-                self.body.text = "\n  "
+                self.body.text = "\n  "  # ty:ignore[invalid-assignment]
             # adjust the indent of the following <value> element
             unit.xmlelement.text = "\n    "
         return unit

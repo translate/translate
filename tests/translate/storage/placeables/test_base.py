@@ -41,17 +41,17 @@ class TestStringElem:
         assert str(self.elem.sub[2]) == "&brandLong;"
         assert str(self.elem.sub[3]) == "</a>"
 
-        assert len(self.elem.sub[0].sub) == 1
-        assert self.elem.sub[0].sub[0] == "Ģët "
-        assert len(self.elem.sub[1].sub) == 1
+        assert len(self.elem.sub[0].sub) == 1  # ty:ignore[possibly-missing-attribute]
+        assert self.elem.sub[0].sub[0] == "Ģët "  # ty:ignore[possibly-missing-attribute]
+        assert len(self.elem.sub[1].sub) == 1  # ty:ignore[possibly-missing-attribute]
         assert (
-            self.elem.sub[1].sub[0]
+            self.elem.sub[1].sub[0]  # ty:ignore[possibly-missing-attribute]
             == '<a href="http://www.example.com" alt="Ģët &brand;!">'
         )
-        assert len(self.elem.sub[2].sub) == 1
-        assert self.elem.sub[2].sub[0] == "&brandLong;"
-        assert len(self.elem.sub[3].sub) == 1
-        assert self.elem.sub[3].sub[0] == "</a>"
+        assert len(self.elem.sub[2].sub) == 1  # ty:ignore[possibly-missing-attribute]
+        assert self.elem.sub[2].sub[0] == "&brandLong;"  # ty:ignore[possibly-missing-attribute]
+        assert len(self.elem.sub[3].sub) == 1  # ty:ignore[possibly-missing-attribute]
+        assert self.elem.sub[3].sub[0] == "</a>"  # ty:ignore[possibly-missing-attribute]
 
     def test_add(self) -> None:
         assert f"{self.elem} " == f"{self.ORIGSTR} "
@@ -180,7 +180,7 @@ class TestStringElem:
 
     def test_isleaf(self) -> None:
         for child in self.elem.sub:
-            assert child.isleaf()
+            assert child.isleaf()  # ty:ignore[possibly-missing-attribute]
 
     def test_prune(self) -> None:
         elem = StringElem("foo")

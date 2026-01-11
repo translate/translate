@@ -95,19 +95,19 @@ class icalfile(base.TranslationStore):
         for unit in self.units:
             for location in unit.getlocations():
                 match = ICAL_UNIT_LOCATION_RE.match(location)
-                for component in self._icalfile.components():
+                for component in self._icalfile.components():  # ty:ignore[possibly-missing-attribute]
                     if component.name != "VEVENT":
                         continue
-                    if component.uid.value != match.groupdict()["uid"]:
+                    if component.uid.value != match.groupdict()["uid"]:  # ty:ignore[possibly-missing-attribute]
                         continue
                     for property in component.getChildren():
-                        if property.name == match.groupdict()["property"]:
+                        if property.name == match.groupdict()["property"]:  # ty:ignore[possibly-missing-attribute]
                             property.value = unit.target
 
         if outicalfile:
             outicalfile.serialize(out)
 
-    def parse(self, input) -> None:
+    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
         """Parse the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name

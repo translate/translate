@@ -56,7 +56,7 @@ def mounpack(filename="messages.mo"):
     """Helper to unpack Gettext MO files into a Python string."""
     with open(filename, "rb") as fh:
         s = fh.read()
-        return "\\x%02x" * len(s) % tuple(map(ord, s))
+        return "\\x%02x" * len(s) % tuple(map(ord, s))  # ty:ignore[invalid-argument-type]
 
 
 def my_swap4(result):
@@ -242,7 +242,7 @@ class mofile(poheader.poheader, base.TranslationStore):
             out.write(strs)
 
     @staticmethod
-    def parse_header(content: list[bytes]) -> tuple[str, int, int, int, int, int]:
+    def parse_header(content: bytes) -> tuple[str, int, int, int, int, int, int, int]:
         (little,) = struct.unpack("<L", content[:4])
         (big,) = struct.unpack(">L", content[:4])
         if little == MO_MAGIC_NUMBER:
@@ -270,13 +270,13 @@ class mofile(poheader.poheader, base.TranslationStore):
             offsethash,
         )
 
-    def parse(self, input) -> None:
+    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
         """Parses the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name
         elif not getattr(self, "filename", ""):
             self.filename = ""
-        content: list[bytes]
+        content: bytes
         if hasattr(input, "read"):
             mosrc = input.read()
             input.close()

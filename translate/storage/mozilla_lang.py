@@ -88,7 +88,7 @@ class LangStore(txt.TxtFile):
         self.location_root = getattr(inputfile, "location_root", "")
         super().__init__(inputfile, **kwargs)
 
-    def parse(self, lines) -> None:
+    def parse(self, lines) -> None:  # ty:ignore[invalid-method-override]
         source_unit = None
         comment = ""
         if not isinstance(lines, list):
@@ -138,7 +138,7 @@ class LangStore(txt.TxtFile):
 
             if line.startswith(";"):
                 source_unit = self.addsourceunit(line[1:])
-                source_unit.eol = self.eol
+                source_unit.eol = self.eol  # ty:ignore[unresolved-attribute]
                 source_unit._line_number = lineoffset + 1
                 source_unit.addlocation(
                     f"{self.filename[len(self.location_root) :]}:{lineoffset + 1}"

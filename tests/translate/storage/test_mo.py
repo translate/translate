@@ -537,7 +537,7 @@ class TestMOFile(test_base.TestTranslationStore):
             finally:
                 sys.argv = argv
 
-            store = factory.getobject(BytesIO(posource))
+            store = factory.getobject(BytesIO(posource))  # ty:ignore[invalid-argument-type]
             if store.isempty() and not os.path.exists(MO_POCOMPILE):
                 # pocompile doesn't create MO files for empty PO files, so we
                 # can skip the checks here.

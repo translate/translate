@@ -16,8 +16,8 @@ class TestPO2Sub:
         """Helper that converts po source to subtitle source without requiring files."""
         inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
-        convertor = po2sub.po2sub()
-        outputsub = convertor.convert_store(inputpo)
+        convertor = po2sub.po2sub()  # ty:ignore[missing-argument]
+        outputsub = convertor.convert_store(inputpo)  # ty:ignore[too-many-positional-arguments]
         return outputsub.decode("utf-8")
 
     @staticmethod

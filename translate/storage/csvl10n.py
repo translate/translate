@@ -76,7 +76,7 @@ class csvunit(base.TranslationUnit):
     def getcontext(self):
         return self.context
 
-    def setcontext(self, value) -> None:
+    def setcontext(self, value) -> None:  # ty:ignore[invalid-method-override]
         self.context = value
 
     def getnotes(self, origin=None):
@@ -212,7 +212,7 @@ EXTRA_KEY = "__CSVL10N__EXTRA__"
 def try_dialects(
     inputfile: StringIO,
     fieldnames: list[str] | None,
-    dialect: str | csv.Dialect,
+    dialect: str | type[csv.Dialect],
     has_header: bool = False,
 ) -> csv.DictReader:
     """
@@ -278,7 +278,7 @@ def valid_fieldnames(fieldnames: list[str]) -> bool:
 
 
 def detect_header(
-    inputfile: StringIO, dialect: str | csv.Dialect, fieldnames: list[str]
+    inputfile: StringIO, dialect: str | type[csv.Dialect], fieldnames: list[str]
 ) -> tuple[list[str], bool]:
     """
     Test if file has a header or not.
@@ -346,7 +346,7 @@ class csvfile(base.TranslationStore):
 
     def parse(
         self, csvsrc, sample_length: int | None = 1024, *, dialect: str | None = None
-    ) -> None:
+    ) -> None:  # ty:ignore[invalid-method-override]
         if self._encoding == "auto":
             self._automatic_encoding = True
             text, encoding = self.detect_encoding(
@@ -390,7 +390,9 @@ class csvfile(base.TranslationStore):
         has_header = False
         try:
             fieldnames, has_header = detect_header(
-                inputfile, self.dialect, self.fieldnames
+                inputfile,
+                self.dialect,
+                self.fieldnames,
             )
             self.fieldnames = fieldnames
         except csv.Error:

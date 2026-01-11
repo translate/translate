@@ -345,7 +345,7 @@ Some other text
 <!ENTITY useAutoScroll.accesskey         "a">"""
         pofile = self.dtd2po(dtdlanguage, dtdtemplate)
         print(pofile)
-        expected_target = "使用自動捲動(&Autoscrolling)".decode("utf-8")
+        expected_target = "使用自動捲動(&Autoscrolling)".decode("utf-8")  # ty:ignore[unresolved-attribute]
         assert pofile.units[1].target == expected_target
         # We assume that accesskeys with no associated key should be done as follows "XXXX (&A)"
         # TODO - check that we can unfold this from PO -> DTD
@@ -353,7 +353,7 @@ Some other text
 <!ENTITY useAutoScroll.accesskey         "a">"""
         pofile = self.dtd2po(dtdlanguage, dtdtemplate)
         print(pofile)
-        assert pofile.units[1].target == "使用自動捲動 (&A)".decode("utf-8")
+        assert pofile.units[1].target == "使用自動捲動 (&A)".decode("utf-8")  # ty:ignore[unresolved-attribute]
 
     def test_exclude_entity_includes(self) -> None:
         """Test that we don't turn an include into a translatable string."""
