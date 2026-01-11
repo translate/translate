@@ -167,7 +167,7 @@ class FlatJsonUnit(BaseJsonUnit):
 
 
 class DumpArgsType(TypedDict):
-    separators: tuple[str, ...]
+    separators: tuple[str, str]
     indent: int
     ensure_ascii: bool
     sort_keys: NotRequired[bool]
@@ -195,7 +195,7 @@ class JsonFile(base.DictStore[BaseJsonUnit]):
     def serialize(self, out) -> None:
         units = self.get_root_node()
         self.serialize_units(units)
-        out.write(json.dumps(units, **self.dump_args).encode(self.encoding))  # ty:ignore[invalid-argument-type]
+        out.write(json.dumps(units, **self.dump_args).encode(self.encoding))
         out.write(b"\n")
 
     def _extract_units(
@@ -705,7 +705,7 @@ class GoTextJsonFile(JsonFile):
             "language": self.gettargetlanguage(),
             "messages": units,
         }
-        out.write(json.dumps(file, **self.dump_args).encode(self.encoding))  # ty:ignore[invalid-argument-type]
+        out.write(json.dumps(file, **self.dump_args).encode(self.encoding))
         out.write(b"\n")
 
 
@@ -779,7 +779,7 @@ class GoI18NJsonFile(JsonFile):
 
     def serialize(self, out) -> None:
         units = [unit.getvalue() for unit in self.units]
-        out.write(json.dumps(units, **self.dump_args).encode(self.encoding))  # ty:ignore[invalid-argument-type]
+        out.write(json.dumps(units, **self.dump_args).encode(self.encoding))
         out.write(b"\n")
 
 
@@ -1078,7 +1078,7 @@ class NextcloudJsonFile(JsonFile):
         output = dict(self._metadata)
         output["translations"] = translations
 
-        out.write(json.dumps(output, **self.dump_args).encode(self.encoding))  # ty:ignore[invalid-argument-type]
+        out.write(json.dumps(output, **self.dump_args).encode(self.encoding))
         out.write(b"\n")
 
 
