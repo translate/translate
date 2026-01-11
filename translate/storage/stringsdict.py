@@ -31,7 +31,7 @@ class StringsDictUnit(base.DictUnit):
         super().__init__(source=source)
 
         loc = source or ""
-        if len(loc) > 0 and loc[0] == ":":
+        if len(loc) > 0 and loc[0] == ":":  # ty:ignore[index-out-of-bounds]
             loc = loc[1:]
 
         # Check if this unit is a format string or a variable
@@ -52,19 +52,19 @@ class StringsDictUnit(base.DictUnit):
     def outerkey(self):
         self.get_unitid()
 
-        if len(self._unitid.parts) < 1:
+        if len(self._unitid.parts) < 1:  # ty:ignore[possibly-missing-attribute]
             return None
 
-        return self._unitid.parts[0][1]
+        return self._unitid.parts[0][1]  # ty:ignore[possibly-missing-attribute]
 
     @property
     def innerkey(self):
         self.get_unitid()
 
-        if len(self._unitid.parts) < 2:
+        if len(self._unitid.parts) < 2:  # ty:ignore[possibly-missing-attribute]
             return None
 
-        return self._unitid.parts[1][1]
+        return self._unitid.parts[1][1]  # ty:ignore[possibly-missing-attribute]
 
     def getid(self):
         return self.source
@@ -128,7 +128,7 @@ class StringsDictFile(base.DictStore):
             tags.insert(0, "zero")
         return tags
 
-    def parse(self, input) -> None:
+    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
         """Read a .stringsdict file into a dictionary, and convert it to translation units."""
         if isinstance(input, (bytes, str)):
             plist = plistlib.loads(input)

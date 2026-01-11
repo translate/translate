@@ -227,7 +227,7 @@ class LISAunit(base.TranslationUnit):
                 if getXMLlang(set) == lang:
                     return set
         else:  # have to use index
-            if index >= len(languageNodes):
+            if index >= len(languageNodes):  # ty:ignore[unsupported-operator]
                 return None
             return languageNodes[index]
         return None
@@ -342,7 +342,7 @@ class LISAfile(base.TranslationStore[U]):
         unit.namespace = self.namespace
         super().addunit(unit)
         if new:
-            self.body.append(unit.xmlelement)
+            self.body.append(unit.xmlelement)  # ty:ignore[possibly-missing-attribute]
 
     def removeunit(self, unit) -> None:
         super().removeunit(unit)
@@ -379,9 +379,9 @@ class LISAfile(base.TranslationStore[U]):
             doctype=self.XMLdoctype,
         )
 
-        out.write(self.serialize_hook(treestring))
+        out.write(self.serialize_hook(treestring))  # ty:ignore[invalid-argument-type]
 
-    def parse(self, xml) -> None:
+    def parse(self, xml) -> None:  # ty:ignore[invalid-method-override]
         """Populates this object from the given xml string."""
         if not hasattr(self, "filename"):
             self.filename = getattr(xml, "name", "")

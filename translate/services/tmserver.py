@@ -137,7 +137,7 @@ class TMServer:
         start_response("200 OK", [("Content-type", "text/plain")])
         data = BytesIO(environ["wsgi.input"].read(int(environ["CONTENT_LENGTH"])))
         data.name = sid
-        store = factory.getobject(data)
+        store = factory.getobject(data)  # ty:ignore[invalid-argument-type]
         count = self.tmdb.add_store(store, slang, tlang)
         response = f"added {count} units from {sid}"
         return [response]

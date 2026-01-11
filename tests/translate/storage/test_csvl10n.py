@@ -314,7 +314,7 @@ GENERAL@2|Notes,"cable, motor, switch"
             result.quoting = csv.QUOTE_NONNUMERIC
             return result
 
-        csv.Sniffer.sniff = patched_sniff
+        csv.Sniffer.sniff = patched_sniff  # ty:ignore[invalid-assignment]
 
         try:
             # This should not raise ValueError about converting string to float
@@ -345,7 +345,7 @@ GENERAL@2|Notes,"cable, motor, switch"
             # The sniffer should have detected single quotes as quotechar
             return result
 
-        csv.Sniffer.sniff = patched_sniff
+        csv.Sniffer.sniff = patched_sniff  # ty:ignore[invalid-assignment]
 
         try:
             # This should not raise ValueError and should correctly parse single-quoted CSV

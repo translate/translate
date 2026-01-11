@@ -20,24 +20,24 @@ class TestQtFile(test_base.TestTranslationStore):
     def test_save(self) -> None:
         # QM does not implement saving
         with pytest.raises(TypeError):
-            self.StoreClass.savefile(self.StoreClass())
+            self.StoreClass.savefile(self.StoreClass())  # ty:ignore[missing-argument]
 
     def test_files(self) -> None:
         # QM does not implement saving
         with pytest.raises(TypeError):
-            self.StoreClass.savefile(self.StoreClass())
+            self.StoreClass.savefile(self.StoreClass())  # ty:ignore[missing-argument]
 
     def test_nonascii(self) -> None:
         # QM does not implement serialising
         with pytest.raises(TypeError):
-            self.StoreClass.serialize(self.StoreClass())
+            self.StoreClass.serialize(self.StoreClass())  # ty:ignore[missing-argument]
 
     def test_add(self) -> None:
         # QM does not implement serialising
         with pytest.raises(TypeError):
-            self.StoreClass.serialize(self.StoreClass())
+            self.StoreClass.serialize(self.StoreClass())  # ty:ignore[missing-argument]
 
     def test_remove(self) -> None:
         # QM does not implement serialising
         with pytest.raises(TypeError):
-            self.StoreClass.serialize(self.StoreClass())
+            self.StoreClass.serialize(self.StoreClass())  # ty:ignore[missing-argument]

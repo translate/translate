@@ -23,7 +23,7 @@ class BaseTestFilter:
         """Helper that parses xliff file content without requiring files."""
         dummyfile = BytesIO(filetext.encode())
         dummyfile.name = self.filename
-        return factory.getobject(dummyfile)
+        return factory.getobject(dummyfile)  # ty:ignore[invalid-argument-type]
 
     def filter(self, translationstore, checkerconfig=None, cmdlineoptions=None):
         """
@@ -111,7 +111,7 @@ class BaseTestFilter:
 
         # Re-initialize the translation store object in order to get an unfuzzy
         # unit with no filter notes.
-        self.setup_method(self)
+        self.setup_method(self)  # ty:ignore[unresolved-attribute]
 
         filter_result = self.filter(self.translationstore, cmdlineoptions=["--fuzzy"])
         assert headerless_len(filter_result.units) == 0
@@ -131,7 +131,7 @@ class BaseTestFilter:
         assert headerless_len(filter_result.units) == 0
 
         # Re-initialize the translation store object.
-        self.setup_method(self)
+        self.setup_method(self)  # ty:ignore[unresolved-attribute]
 
         filter_result = self.filter(self.translationstore, cmdlineoptions=["--review"])
         assert headerless_len(filter_result.units) == 0

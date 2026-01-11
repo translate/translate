@@ -413,8 +413,8 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
         assert content == fragments[2:3]
         assert trailer == fragments[3:5]
 
-        fragments[0].important = True
-        fragments[4].important = True
+        fragments[0].important = True  # ty:ignore[invalid-assignment]
+        fragments[4].important = True  # ty:ignore[invalid-assignment]
         (
             leader,
             content,

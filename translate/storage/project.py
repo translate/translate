@@ -17,6 +17,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 import os
+from typing import cast
 
 from translate.convert import factory as convert_factory
 from translate.storage.projstore import ProjectStore
@@ -187,9 +188,12 @@ class Project:
 
         os.rename(converted_file.name, output_fname)
 
-        output_type = self.store.TYPE_INFO["next_type"][input_type]
+        output_type = cast("str", self.store.TYPE_INFO["next_type"][input_type])
         outputfile, output_fname = self.store.append_file(
-            output_fname, None, ftype=output_type, delete_orig=True
+            output_fname,
+            None,
+            ftype=output_type,
+            delete_orig=True,
         )
         self.store.convert_map[input_fname] = (output_fname, templ_fname)
 

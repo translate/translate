@@ -198,7 +198,7 @@ class FlatXMLFile(base.TranslationStore):
         self.root = etree.Element(self.namespaced(self.root_name))
         self.document = self.root.getroottree()
 
-    def parse(self, xml) -> None:
+    def parse(self, xml) -> None:  # ty:ignore[invalid-method-override]
         """Parses the passed xml file into the backing document."""
         if not hasattr(self, "filename"):
             self.filename = getattr(xml, "name", "")

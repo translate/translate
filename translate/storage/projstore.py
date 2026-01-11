@@ -161,7 +161,7 @@ class ProjectStore:
             self._files[fname] = realfname
         else:
             self._files[fname] = afile
-        self.TYPE_INFO["lists"][ftype].append(fname)
+        self.TYPE_INFO["lists"][ftype].append(fname)  # ty:ignore[possibly-missing-attribute]
 
         return afile, fname
 
@@ -188,7 +188,7 @@ class ProjectStore:
                     ftype = ft
                     break
 
-        self.TYPE_INFO["lists"][ftype].remove(fname)
+        self.TYPE_INFO["lists"][ftype].remove(fname)  # ty:ignore[possibly-missing-attribute]
         if self._files[fname] and hasattr(self._files[fname], "close"):
             self._files[fname].close()
         del self._files[fname]
@@ -234,11 +234,11 @@ class ProjectStore:
             rfname = fname
             if not os.path.isfile(rfname):
                 rfname = getattr(rfile, "name", None)
-            if not rfile or not os.path.isfile(rfname):
+            if not rfile or not os.path.isfile(rfname):  # ty:ignore[invalid-argument-type]
                 rfname = getattr(rfile, "filename", None)
-            if not rfile or not os.path.isfile(rfname):
+            if not rfile or not os.path.isfile(rfname):  # ty:ignore[invalid-argument-type]
                 raise OSError(f"Could not locate file: {rfile} ({fname})")
-            rfile = open(rfname, mode)
+            rfile = open(rfname, mode)  # ty:ignore[no-matching-overload]
             self._files[fname] = rfile
 
         return rfile
@@ -246,7 +246,7 @@ class ProjectStore:
     def get_filename_type(self, fname):
         """Get the type of file ('src', 'trans', 'tgt') with the given name."""
         for ftype in self.TYPE_INFO["lists"]:
-            if fname in self.TYPE_INFO["lists"][ftype]:
+            if fname in self.TYPE_INFO["lists"][ftype]:  # ty:ignore[unsupported-operator]
                 return ftype
         raise FileNotInProjectError(fname)
 
@@ -358,7 +358,7 @@ class ProjectStore:
                 continue
 
             settings[section] = []
-            for fnode in groupnode.getchildren():
+            for fnode in groupnode.getchildren():  # ty:ignore[deprecated]
                 settings[section].append(fnode.text)
 
         conversions_el = xml.find("conversions")

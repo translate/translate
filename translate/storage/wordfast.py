@@ -303,12 +303,12 @@ class WordfastHeader:
     header = property(getheader, setheader)
 
     def settargetlang(self, newlang) -> None:
-        self._header_dict["target-lang"] = f"%{newlang}"
+        self._header_dict["target-lang"] = f"%{newlang}"  # ty:ignore[invalid-assignment]
 
     targetlang = property(None, settargetlang)
 
     def settucount(self, count) -> None:
-        self._header_dict["tucount"] = f"%TU={count:08d}"
+        self._header_dict["tucount"] = f"%TU={count:08d}"  # ty:ignore[invalid-assignment]
 
     tucount = property(None, settucount)
 
@@ -384,7 +384,7 @@ class WordfastTMFile(base.TranslationStore):
         if inputfile is not None:
             self.parse(inputfile)
 
-    def parse(self, input) -> None:
+    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
         """Parsese the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name

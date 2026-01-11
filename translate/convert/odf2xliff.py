@@ -38,7 +38,7 @@ def convertodf(inputfile, outputfile, templates) -> bool:
     store = factory.getobject(outputfile)
 
     try:
-        store.setfilename(store.getfilenode("NoName"), inputfile.name)
+        store.setfilename(store.getfilenode("NoName"), inputfile.name)  # ty:ignore[unresolved-attribute]
     except Exception:
         print("couldn't set origin filename")  # noqa: T201
         sys.exit()

@@ -557,7 +557,7 @@ class pounit(pocommon.pounit):
         # rewritten here for performance:
         return (
             is_null(self.msgid)
-            and not is_null(self.msgstr)
+            and not is_null(self.msgstr)  # ty:ignore[invalid-argument-type]
             and len(self.msgidcomments) == 0
             and is_null(self.msgctxt)
         )
@@ -591,7 +591,7 @@ class pounit(pocommon.pounit):
         if not self.typecomments:
             return False
         self._ensure_typecomments_cache()
-        return typecomment in self._typecomments_cache
+        return typecomment in self._typecomments_cache  # ty:ignore[unsupported-operator]
 
     def hasmarkedcomment(self, commentmarker) -> bool:
         """
@@ -613,9 +613,9 @@ class pounit(pocommon.pounit):
             # The typecomments cache might be still missing if typecomments are not present
             self._ensure_typecomments_cache()
             if present:
-                self._typecomments_cache.append(typecomment)
+                self._typecomments_cache.append(typecomment)  # ty:ignore[possibly-missing-attribute]
             else:
-                self._typecomments_cache.remove(typecomment)
+                self._typecomments_cache.remove(typecomment)  # ty:ignore[possibly-missing-attribute]
             if self._typecomments_cache:
                 self._typecomments_cache.sort()
                 comments_str = ", ".join(self._typecomments_cache)
@@ -626,10 +626,10 @@ class pounit(pocommon.pounit):
     def isfuzzy(self):
         return self.hastypecomment("fuzzy")
 
-    def markfuzzy(self, present=True) -> None:
+    def markfuzzy(self, present=True) -> None:  # ty:ignore[invalid-method-override]
         if present:
             self.set_state_n(self.STATE[self.S_FUZZY][0])
-        elif (self.hasplural() and not self._msgstrlen()) or is_null(self.msgstr):
+        elif (self.hasplural() and not self._msgstrlen()) or is_null(self.msgstr):  # ty:ignore[invalid-argument-type]
             self.set_state_n(self.STATE[self.S_UNTRANSLATED][0])
         else:
             self.set_state_n(self.STATE[self.S_TRANSLATED][0])
@@ -861,7 +861,7 @@ class pofile(pocommon.pofile[pounit]):
     def create_unit(self):
         return self.UnitClass(wrapper=self.wrapper)
 
-    def parse(self, input) -> None:
+    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
         """Parses the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name

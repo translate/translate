@@ -45,7 +45,7 @@ class web2py2po:
         return pounit
 
     def convertstore(self, mydict):
-        targetheader = self.mypofile.header()
+        targetheader = self.mypofile.header()  # ty:ignore[possibly-missing-attribute]
         targetheader.addnote("extracted from web2py", "developer")
 
         for source_str in mydict:
@@ -54,9 +54,9 @@ class web2py2po:
                 # a convention with new (untranslated) web2py files
                 target_str = ""
             pounit = self.convertunit(source_str, target_str)
-            self.mypofile.addunit(pounit)
+            self.mypofile.addunit(pounit)  # ty:ignore[possibly-missing-attribute]
 
-        self.mypofile.removeduplicates(self.duplicatestyle)
+        self.mypofile.removeduplicates(self.duplicatestyle)  # ty:ignore[possibly-missing-attribute]
 
         return self.mypofile
 

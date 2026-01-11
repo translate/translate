@@ -144,7 +144,7 @@ class inifile(base.TranslationStore):
         if outinifile:
             out.write(str(outinifile).encode("utf-8"))
 
-    def parse(self, input) -> None:
+    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
         """Parse the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name

@@ -274,14 +274,14 @@ class TestPOFile(test_base.TestTranslationStore):
         for version, output in versions:
             if actual_version >= version:
                 print(
-                    f"Detected gettext {'.'.join(map(str, version))} or newer ({actual_version})"
+                    f"Detected gettext {'.'.join(map(str, version))} or newer ({actual_version})"  # ty:ignore[invalid-argument-type]
                 )
                 return output
 
         # Fallback to the oldest version
         oldest_version, oldest_output = versions[-1]
         print(
-            f"Detected gettext older than {'.'.join(map(str, oldest_version))} ({actual_version})"
+            f"Detected gettext older than {'.'.join(map(str, oldest_version))} ({actual_version})"  # ty:ignore[invalid-argument-type]
         )
         return oldest_output
 

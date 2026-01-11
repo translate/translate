@@ -150,7 +150,7 @@ class TOMLFile(base.DictStore[TOMLUnit]):
         # Find comments that appear before this key in the body
         comments = []
 
-        for item in table.body:
+        for item in table.body:  # ty:ignore[not-iterable]
             if not isinstance(item, tuple) or len(item) != 2:
                 continue
 
@@ -201,9 +201,9 @@ class TOMLFile(base.DictStore[TOMLUnit]):
         if isinstance(data, (Table, TOMLDocument, dict)):
             yield from self._parse_dict(data, prev)
         elif isinstance(data, str):
-            yield (prev, data, self._get_key_comment(parent_map, key))
+            yield (prev, data, self._get_key_comment(parent_map, key))  # ty:ignore[invalid-argument-type]
         elif isinstance(data, (bool, int, float)):
-            yield (prev, str(data), self._get_key_comment(parent_map, key))
+            yield (prev, str(data), self._get_key_comment(parent_map, key))  # ty:ignore[invalid-argument-type]
         elif isinstance(data, list):
             for k, v in enumerate(data):
                 yield from self._flatten(
@@ -219,7 +219,7 @@ class TOMLFile(base.DictStore[TOMLUnit]):
                 f"Previous: {prev}"
             )
 
-    def parse(self, input: str | bytes | BytesIO) -> None:
+    def parse(self, input: str | bytes | BytesIO) -> None:  # ty:ignore[invalid-method-override]
         """
         Parse the given file, file object, or string content.
 
@@ -231,8 +231,8 @@ class TOMLFile(base.DictStore[TOMLUnit]):
         elif not getattr(self, "filename", ""):
             self.filename = ""
         if hasattr(input, "read"):
-            src = input.read()
-            input.close()
+            src = input.read()  # ty:ignore[call-non-callable]
+            input.close()  # ty:ignore[possibly-missing-attribute]
             input = src
         if isinstance(input, bytes):
             input = input.decode(self.encoding)
@@ -251,8 +251,8 @@ class TOMLFile(base.DictStore[TOMLUnit]):
     def removeunit(self, unit: base.TranslationUnit) -> None:
         """Remove a unit from the store and its underlying TOML structure."""
         if self._original is not None:
-            unit.storevalue(self._original, None, unset=True)
-        super().removeunit(unit)
+            unit.storevalue(self._original, None, unset=True)  # ty:ignore[unresolved-attribute]
+        super().removeunit(unit)  # ty:ignore[invalid-argument-type]
 
 
 class GoI18nTOMLUnit(TOMLUnit):
@@ -279,7 +279,7 @@ class GoI18nTOMLUnit(TOMLUnit):
             # to preserve the table structure
             return {"other": self.target}
 
-        tags = self._store.get_plural_tags()
+        tags = self._store.get_plural_tags()  # ty:ignore[possibly-missing-attribute]
 
         # Sync plural_strings elements to plural_tags count.
         strings = self.sync_plural_count(self.target, tags)

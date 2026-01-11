@@ -227,7 +227,7 @@ class EncodingXMLParser(DecodingXMLParser):
     EMIT_DEPTH = 0
     FOREIGN_DTD = False
 
-    def process_string(self, text: str) -> tuple[str, bool, bool]:
+    def process_string(self, text: str) -> tuple[str, bool, bool]:  # ty:ignore[invalid-method-override]
         return (
             AndroidResourceUnit.escape(text, quote_wrapping_whitespaces=False),
             False,
@@ -286,7 +286,7 @@ class AndroidResourceUnit(base.TranslationUnit):
     def getid(self):
         return self.xmlelement.get("name")
 
-    def setid(self, newid):
+    def setid(self, newid):  # ty:ignore[invalid-method-override]
         return self.xmlelement.set("name", newid)
 
     def getcontext(self):
@@ -445,7 +445,7 @@ class AndroidResourceUnit(base.TranslationUnit):
                 self.xmlelement = newelement
                 self.setid(old_id)
 
-            plural_tags = self._store.get_plural_tags()
+            plural_tags = self._store.get_plural_tags()  # ty:ignore[possibly-missing-attribute]
 
             # Sync plural_strings elements to plural_tags count.
             plural_strings = self.sync_plural_count(target, plural_tags)
@@ -459,7 +459,7 @@ class AndroidResourceUnit(base.TranslationUnit):
             # Include additional plural for decimal numbers if not present. This is
             # enforced by Android lint but translate-toolkit currently does not support
             # editing this.
-            locale = self._store.get_base_locale_code()
+            locale = self._store.get_base_locale_code()  # ty:ignore[possibly-missing-attribute]
             if locale in data.DECIMAL_EXTRA_TAGS:
                 for extra in data.DECIMAL_EXTRA_TAGS[locale]:
                     if extra not in plural_tags:
@@ -524,7 +524,7 @@ class AndroidResourceUnit(base.TranslationUnit):
         if (self.xmlelement is not None) and (self.xmlelement.getparent is not None):
             prevSibling = self.xmlelement.getprevious()
             while (prevSibling is not None) and (prevSibling.tag is etree.Comment):
-                prevSibling.getparent().remove(prevSibling)
+                prevSibling.getparent().remove(prevSibling)  # ty:ignore[possibly-missing-attribute]
                 prevSibling = self.xmlelement.getprevious()
 
         super().removenotes()
@@ -562,7 +562,7 @@ class AndroidResourceFile(lisa.LISAfile):
         self.namespace = self.document.getroot().nsmap.get(None, None)
         self.body = self.document.getroot()
 
-    def parse(self, xml) -> None:
+    def parse(self, xml) -> None:  # ty:ignore[invalid-method-override]
         """Populates this object from the given xml string."""
         if not hasattr(self, "filename"):
             self.filename = getattr(xml, "name", "")
@@ -611,7 +611,7 @@ class AndroidResourceFile(lisa.LISAfile):
         do_cleanup = False
         if new:
             # Include any possible new namespaces
-            newns = self.body.nsmap
+            newns = self.body.nsmap  # ty:ignore[possibly-missing-attribute]
             for ns in unit.xmlelement.nsmap:
                 if ns not in newns:
                     do_cleanup = True
@@ -630,13 +630,13 @@ class AndroidResourceFile(lisa.LISAfile):
                 cloned_doc.getroot().clear()
                 self.XMLdoctype = etree.tostring(
                     cloned_doc, xml_declaration=False, encoding="unicode"
-                ).rsplit("\n", 1)[0]
+                ).rsplit("\n", 1)[0]  # ty:ignore[invalid-argument-type]
 
         super().addunit(unit, new)
         # Move aliased namespaces to the <resources> tag
         # The top_nsmap was introduced in LXML 3.5.0
         if do_cleanup:
-            etree.cleanup_namespaces(self.body, top_nsmap=newns)
+            etree.cleanup_namespaces(self.body, top_nsmap=newns)  # ty:ignore[invalid-argument-type]
 
     def removeunit(self, unit) -> None:
         unit.removenotes()
