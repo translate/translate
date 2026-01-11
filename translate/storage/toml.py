@@ -25,8 +25,8 @@ from typing import TYPE_CHECKING, Any
 
 from tomlkit import TOMLDocument, document, loads
 from tomlkit.exceptions import TOMLKitError
+from tomlkit.items import AbstractTable
 from tomlkit.items import Comment as TOMLComment
-from tomlkit.items import Table
 
 from translate.lang.data import cldr_plural_categories
 from translate.misc.multistring import multistring
@@ -132,7 +132,7 @@ class TOMLFile(base.DictStore[TOMLUnit]):
         out.write(result.encode(self.encoding))
 
     def _get_key_comment(
-        self, table: Table | TOMLDocument | None, key: str | int | None
+        self, table: AbstractTable | TOMLDocument | None, key: str | int | None
     ) -> str | None:
         """
         Extract the comment that appears before a key in a TOML table.
@@ -140,7 +140,7 @@ class TOMLFile(base.DictStore[TOMLUnit]):
         TOML comments appear in the body as (None, Comment) tuples.
         Returns comment text without the '#' prefix, or None if no comment.
         """
-        if not isinstance(table, (Table, TOMLDocument)):
+        if not isinstance(table, (AbstractTable, TOMLDocument)):
             return None
 
         # Check if the table has a body attribute
@@ -150,7 +150,7 @@ class TOMLFile(base.DictStore[TOMLUnit]):
         # Find comments that appear before this key in the body
         comments = []
 
-        for item in table.body:
+        for item in table.body:  # ty:ignore[not-iterable]
             if not isinstance(item, tuple) or len(item) != 2:
                 continue
 
@@ -177,7 +177,9 @@ class TOMLFile(base.DictStore[TOMLUnit]):
         return None
 
     def _parse_dict(
-        self, data: dict[str, Any], prev: base.UnitId
+        self,
+        data: AbstractTable | TOMLDocument,
+        prev: base.UnitId,
     ) -> Generator[tuple[base.UnitId, str, str | None]]:
         """Parse a TOML table/dictionary recursively, yielding units."""
         for k, v in data.items():
@@ -185,9 +187,9 @@ class TOMLFile(base.DictStore[TOMLUnit]):
 
     def _flatten(
         self,
-        data: Any,
+        data: AbstractTable | TOMLDocument,
         prev: base.UnitId | None = None,
-        parent_map: dict[str, Any] | list[Any] | None = None,
+        parent_map: AbstractTable | TOMLDocument | None = None,
         key: str | int | None = None,
     ) -> Generator[tuple[base.UnitId, str, str | None]]:
         """
@@ -198,7 +200,7 @@ class TOMLFile(base.DictStore[TOMLUnit]):
         """
         if prev is None:
             prev = self.UnitClass.IdClass([])
-        if isinstance(data, (Table, TOMLDocument, dict)):
+        if isinstance(data, (AbstractTable, TOMLDocument)):
             yield from self._parse_dict(data, prev)
         elif isinstance(data, str):
             yield (prev, data, self._get_key_comment(parent_map, key))
@@ -219,7 +221,7 @@ class TOMLFile(base.DictStore[TOMLUnit]):
                 f"Previous: {prev}"
             )
 
-    def parse(self, input: str | bytes | BytesIO) -> None:
+    def parse(self, input: str | bytes | BytesIO) -> None:  # ty:ignore[invalid-method-override]
         """
         Parse the given file, file object, or string content.
 
@@ -231,8 +233,8 @@ class TOMLFile(base.DictStore[TOMLUnit]):
         elif not getattr(self, "filename", ""):
             self.filename = ""
         if hasattr(input, "read"):
-            src = input.read()
-            input.close()
+            src = input.read()  # ty:ignore[call-non-callable]
+            input.close()  # ty:ignore[possibly-missing-attribute]
             input = src
         if isinstance(input, bytes):
             input = input.decode(self.encoding)
@@ -251,8 +253,8 @@ class TOMLFile(base.DictStore[TOMLUnit]):
     def removeunit(self, unit: base.TranslationUnit) -> None:
         """Remove a unit from the store and its underlying TOML structure."""
         if self._original is not None:
-            unit.storevalue(self._original, None, unset=True)
-        super().removeunit(unit)
+            unit.storevalue(self._original, None, unset=True)  # ty:ignore[unresolved-attribute]
+        super().removeunit(unit)  # ty:ignore[invalid-argument-type]
 
 
 class GoI18nTOMLUnit(TOMLUnit):
@@ -279,7 +281,7 @@ class GoI18nTOMLUnit(TOMLUnit):
             # to preserve the table structure
             return {"other": self.target}
 
-        tags = self._store.get_plural_tags()
+        tags = self._store.get_plural_tags()  # ty:ignore[possibly-missing-attribute]
 
         # Sync plural_strings elements to plural_tags count.
         strings = self.sync_plural_count(self.target, tags)
@@ -315,7 +317,9 @@ class GoI18nTOMLFile(TOMLFile):
     UnitClass = GoI18nTOMLUnit
 
     def _parse_dict(
-        self, data: dict[str, Any], prev: base.UnitId
+        self,
+        data: AbstractTable | TOMLDocument,
+        prev: base.UnitId,
     ) -> Generator[tuple[base.UnitId, str | multistring, str | None]]:
         """
         Parse a TOML table, checking for plural forms.

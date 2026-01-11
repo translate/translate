@@ -54,7 +54,7 @@ def writexml_helper(self, writer, indent="", addindent="", newl="") -> None:
 
     for a_name in a_names:
         writer.write(f' {a_name}="')
-        minidom._write_data(writer, attrs[a_name].value)
+        minidom._write_data(writer, attrs[a_name].value)  # ty:ignore[unresolved-attribute]
         writer.write('"')
     if self.childNodes:
         # We need to write text nodes without newline and indentation, so
@@ -154,7 +154,7 @@ class Document(minidom.Document):
         return e
 
     def createElementNS(self, namespaceURI, qualifiedName):
-        prefix, _localName = minidom._nssplit(qualifiedName)
+        prefix, _localName = minidom._nssplit(qualifiedName)  # ty:ignore[unresolved-attribute]
         e = Element(qualifiedName, namespaceURI, prefix)
         e.ownerDocument = self
         return e
@@ -170,16 +170,16 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
         """Free all data structures used during DOM construction."""
         self.document = theDOMImplementation.createDocument(EMPTY_NAMESPACE, None, None)
         self.curNode = self.document
-        self._elem_info = self.document._elem_info
+        self._elem_info = self.document._elem_info  # ty:ignore[unresolved-attribute]
         self._cdata = False
-        self._initNamespaces()
+        self._initNamespaces()  # ty:ignore[unresolved-attribute]
 
     def start_element_handler(self, name, attributes) -> None:
         # All we want to do is construct our own Element instead of
         # minidom.Element, unfortunately the only way to do this is to
         # copy this whole function from expatbuilder.py
         if " " in name:
-            uri, localname, prefix, qname = expatbuilder._parse_ns_name(self, name)
+            uri, localname, prefix, qname = expatbuilder._parse_ns_name(self, name)  # ty:ignore[unresolved-attribute]
         else:
             uri = EMPTY_NAMESPACE
             qname = name
@@ -187,14 +187,14 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
             prefix = EMPTY_PREFIX
         node = Element(qname, uri, prefix, localname)
         node.ownerDocument = self.document
-        expatbuilder._append_child(self.curNode, node)
+        expatbuilder._append_child(self.curNode, node)  # ty:ignore[unresolved-attribute]
         self.curNode = node
 
-        if self._ns_ordered_prefixes:
-            for prefix, uri in self._ns_ordered_prefixes:
+        if self._ns_ordered_prefixes:  # ty:ignore[unresolved-attribute]
+            for prefix, uri in self._ns_ordered_prefixes:  # ty:ignore[unresolved-attribute]
                 if prefix:
                     a = minidom.Attr(
-                        expatbuilder._intern(self, f"xmlns:{prefix}"),
+                        expatbuilder._intern(self, f"xmlns:{prefix}"),  # ty:ignore[unresolved-attribute]
                         XMLNS_NAMESPACE,
                         prefix,
                         "xmlns",
@@ -203,18 +203,18 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
                     a = minidom.Attr("xmlns", XMLNS_NAMESPACE, "xmlns", EMPTY_PREFIX)
                 a.value = uri
                 a.ownerDocument = self.document
-                expatbuilder._set_attribute_node(node, a)
-            del self._ns_ordered_prefixes[:]
+                expatbuilder._set_attribute_node(node, a)  # ty:ignore[unresolved-attribute]
+            del self._ns_ordered_prefixes[:]  # ty:ignore[unresolved-attribute]
 
         if attributes:
-            node._ensure_attributes()
-            attrs = node._attrs
-            attrsNS = node._attrsNS
+            node._ensure_attributes()  # ty:ignore[unresolved-attribute]
+            attrs = node._attrs  # ty:ignore[unresolved-attribute]
+            attrsNS = node._attrsNS  # ty:ignore[unresolved-attribute]
             for i in range(0, len(attributes), 2):
                 aname = attributes[i]
                 value = attributes[i + 1]
                 if " " in aname:
-                    uri, localname, prefix, qname = expatbuilder._parse_ns_name(
+                    uri, localname, prefix, qname = expatbuilder._parse_ns_name(  # ty:ignore[unresolved-attribute]
                         self, aname
                     )
                     a = minidom.Attr(qname, uri, localname, prefix)
@@ -237,21 +237,21 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
         def end_element_handler(self, name) -> None:
             curNode = self.curNode
             if " " in name:
-                uri, localname, prefix, _qname = expatbuilder._parse_ns_name(self, name)
-                assert curNode.namespaceURI == uri, (
+                uri, localname, prefix, _qname = expatbuilder._parse_ns_name(self, name)  # ty:ignore[unresolved-attribute]
+                assert curNode.namespaceURI == uri, (  # ty:ignore[possibly-missing-attribute]
                     "element stack messed up! (namespace)"
                 )
-                assert curNode.localName == localname
-                assert curNode.prefix == prefix
+                assert curNode.localName == localname  # ty:ignore[possibly-missing-attribute]
+                assert curNode.prefix == prefix  # ty:ignore[possibly-missing-attribute]
             else:
-                assert curNode.nodeName == name, (
+                assert curNode.nodeName == name, (  # ty:ignore[possibly-missing-attribute]
                     "element stack messed up - bad nodeName"
                 )
-                assert curNode.namespaceURI == EMPTY_NAMESPACE, (
+                assert curNode.namespaceURI == EMPTY_NAMESPACE, (  # ty:ignore[possibly-missing-attribute]
                     "element stack messed up - bad namespaceURI"
                 )
-            self.curNode = curNode.parentNode
-            self._finish_end_element(curNode)
+            self.curNode = curNode.parentNode  # ty:ignore[invalid-assignment, possibly-missing-attribute]
+            self._finish_end_element(curNode)  # ty:ignore[unresolved-attribute]
 
 
 # parser methods that use our modified xml classes

@@ -117,7 +117,7 @@ def translate_idml(template, input_file, translatable_files):
 
                 # Copy the children to the XLIFF unit's source or target node.
                 fake_node = etree.fromstring(fake_string)
-                node.extend(fake_node.getchildren())
+                node.extend(fake_node.getchildren())  # ty:ignore[deprecated]
 
                 return node
 
@@ -165,7 +165,10 @@ def write_idml(template_zip, output_file, dom_trees) -> None:
         output_zip.writestr(
             filename,
             etree.tostring(
-                dom_tree, encoding="UTF-8", xml_declaration=True, standalone="yes"
+                dom_tree,
+                encoding="UTF-8",
+                xml_declaration=True,
+                standalone="yes",  # ty:ignore[invalid-argument-type]
             ),
         )
 

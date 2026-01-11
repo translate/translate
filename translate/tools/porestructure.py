@@ -61,7 +61,7 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
                 self.error(
                     optrecurse.optparse.OptionValueError(
                         "Output directory does not exist, attempt to create failed"
-                    )
+                    )  # ty:ignore[invalid-argument-type]
                 )
         if self.isrecursive(options.input, "input") and getattr(
             options, "allowrecursiveinput", True
@@ -90,7 +90,7 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
                 success = False
             progress_bar.report_progress(inputpath, success)
 
-    def processfile(self, options, fullinputpath) -> bool:
+    def processfile(self, options, fullinputpath) -> bool:  # ty:ignore[invalid-method-override]
         """Process an individual file."""
         inputfile = self.openinputfile(options, fullinputpath)
         inputpofile = po.pofile(inputfile)

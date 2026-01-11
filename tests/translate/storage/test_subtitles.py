@@ -30,7 +30,7 @@ class TestSubtitleUnit(TestSubRipFile):
 
     @pytest.mark.xfail(reason="Not Implemented")
     def test_note_sanity(self) -> None:
-        super().test_note_sanity()
+        super().test_note_sanity()  # ty:ignore[unresolved-attribute]
 
 
 class TestMicroDVDFile(TestSubRipFile):

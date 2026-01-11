@@ -115,7 +115,7 @@ class BundleProjectStore(ProjectStore):
                 os.unlink(tempfname)
         self._tempfiles = {}
 
-    def get_file(self, fname):
+    def get_file(self, fname):  # ty:ignore[invalid-method-override]
         """
         Retrieve a project file (source, translation or target file) from
         the project archive.
@@ -173,7 +173,7 @@ class BundleProjectStore(ProjectStore):
                     append_section[section](fname)
                     self._files[fname] = None
 
-    def save(self, filename=None) -> None:
+    def save(self, filename=None) -> None:  # ty:ignore[invalid-method-override]
         """Save all project files to the bundle zip file."""
         self._update_from_tempfiles()
 
@@ -210,7 +210,7 @@ class BundleProjectStore(ProjectStore):
         self._zip_delete([pfname])
         self._zip_add(pfname, infile)
 
-    def _load_settings(self) -> None:
+    def _load_settings(self) -> None:  # ty:ignore[invalid-method-override]
         """Grab the project.xtp file from the zip file and load it."""
         if "project.xtp" not in self.zip.namelist():
             raise InvalidBundleError("Not a translate project bundle")
@@ -231,10 +231,10 @@ class BundleProjectStore(ProjectStore):
         """
         if not zfile.fp.closed:
             zfile.close()
-        if not self.zip.fp.closed:
+        if not self.zip.fp.closed:  # ty:ignore[possibly-missing-attribute]
             self.zip.close()
-        move(zfile.filename, self.zip.filename)
-        self.zip = ZipFile(self.zip.filename, mode="a")
+        move(zfile.filename, self.zip.filename)  # ty:ignore[invalid-argument-type]
+        self.zip = ZipFile(self.zip.filename, mode="a")  # ty:ignore[no-matching-overload]
 
     def _update_from_tempfiles(self) -> None:
         """Update project files from temporary files."""

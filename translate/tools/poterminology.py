@@ -369,7 +369,7 @@ class TerminologyExtractor:
         termlist = sorted(terms.keys(), key=len)
         logger.info("%d terms after thresholding", len(termlist))
         for term in termlist:
-            words = term.split()
+            words = term.split()  # ty:ignore[unresolved-attribute]
             nonstop = [word for word in words if not self.stopword(word)]
             if len(nonstop) < nonstopmin and len(nonstop) != len(words):
                 del terms[term]
@@ -380,7 +380,7 @@ class TerminologyExtractor:
                 words.pop()
                 if terms[term][0] == terms.get(" ".join(words), [0])[0]:
                     del terms[" ".join(words)]
-            words = term.split()
+            words = term.split()  # ty:ignore[unresolved-attribute]
             while len(words) > 2:
                 words.pop(0)
                 if terms[term][0] == terms.get(" ".join(words), [0])[0]:
@@ -512,7 +512,7 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
             progress_bar.report_progress(inputpath, success)
         self.outputterminology(options)
 
-    def processfile(self, fileprocessor, options, fullinputpath) -> None:
+    def processfile(self, fileprocessor, options, fullinputpath) -> None:  # ty:ignore[invalid-method-override]
         """Process an individual file."""
         inputfile = self.openinputfile(options, fullinputpath)
         inputfile = factory.getobject(inputfile)

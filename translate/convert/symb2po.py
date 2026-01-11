@@ -88,7 +88,7 @@ def get_template_dict(template_file):
 
 
 def build_output(units, template_header, template_dict):
-    output_store = factory.classes["po"]()
+    output_store = factory.classes["po"]()  # ty:ignore[unresolved-attribute]
     ignore = {"r_string_languagegroup_name"}
     header_entries = {
         "Last-Translator": template_header.get("Author", ""),

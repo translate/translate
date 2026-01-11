@@ -49,7 +49,7 @@ class rerc:
     def __init__(self, templatefile, charset="utf-8", lang=None, sublang=None) -> None:
         self.templatecontent = templatefile.read()
         self.templatestore = rcfile()
-        self.templatestore.charset = charset
+        self.templatestore.charset = charset  # ty:ignore[unresolved-attribute]
         self.templatestore.parse(self.templatecontent)
         self.inputdict = {}
         self.charset = charset

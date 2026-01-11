@@ -209,7 +209,7 @@ class CatkeysUnit(base.MetadataTranslationUnit):
             id = f"{context}\04{id}"
         return id
 
-    def markfuzzy(self, present=True) -> None:
+    def markfuzzy(self, present=True) -> None:  # ty:ignore[invalid-method-override]
         if present:
             self.target = ""
 
@@ -257,10 +257,10 @@ class CatkeysFile(base.TranslationStore):
         if inputfile is not None:
             self.parse(inputfile)
 
-    def settargetlanguage(self, newlang) -> None:
+    def settargetlanguage(self, newlang) -> None:  # ty:ignore[invalid-method-override]
         self.header.settargetlanguage(newlang)
 
-    def parse(self, input) -> None:
+    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
         """Parse the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name

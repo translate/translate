@@ -188,7 +188,7 @@ def extractwithoutquotes(
                     if callable_includeescapes:
                         replace_escape = includeescapes(
                             section[epos : epos + lenescape + 1]
-                        )
+                        )  # ty:ignore[call-non-callable]
                         # TODO: deprecate old method of returning boolean from
                         # includeescape, by removing this if block
                         if not isinstance(replace_escape, str):
@@ -242,7 +242,7 @@ def extractwithoutquotes(
 def _encode_entity_char(char: str, codepoint2name: dict[str, str]) -> str:
     charnum = ord(char)
     if charnum in codepoint2name:
-        return f"&{codepoint2name[charnum]};"
+        return f"&{codepoint2name[charnum]};"  # ty:ignore[invalid-argument-type]
     return char
 
 
@@ -343,7 +343,7 @@ def htmlentityencode(source):
 
     :param unicode source: Source string to encode
     """
-    return entityencode(source, html.entities.codepoint2name)
+    return entityencode(source, html.entities.codepoint2name)  # ty:ignore[invalid-argument-type]
 
 
 def htmlentitydecode(source: str) -> str:
@@ -352,7 +352,7 @@ def htmlentitydecode(source: str) -> str:
 
     :param unicode source: Source string to decode
     """
-    return entitydecode(source, html.entities.name2codepoint)
+    return entitydecode(source, html.entities.name2codepoint)  # ty:ignore[invalid-argument-type]
 
 
 def javapropertiesencode(source: str, encoding: str | None = None) -> str:
