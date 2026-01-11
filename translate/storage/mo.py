@@ -52,22 +52,6 @@ MO_MAGIC_NUMBER = 0x950412DE
 POT_HEADER = re.compile(r"^POT-Creation-Date:.*(\n|$)", re.IGNORECASE | re.MULTILINE)
 
 
-def mounpack(filename="messages.mo"):
-    """Helper to unpack Gettext MO files into a Python string."""
-    with open(filename, "rb") as fh:
-        s = fh.read()
-        return "\\x%02x" * len(s) % tuple(map(ord, s))  # ty:ignore[invalid-argument-type]
-
-
-def my_swap4(result):
-    c0 = (result >> 0) & 0xFF
-    c1 = (result >> 8) & 0xFF
-    c2 = (result >> 16) & 0xFF
-    c3 = (result >> 24) & 0xFF
-
-    return (c0 << 24) | (c1 << 16) | (c2 << 8) | c3
-
-
 def hashpjw(str_param):
     HASHWORDBITS = 32
     hval = 0
