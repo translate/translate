@@ -119,7 +119,7 @@ tmserver = [
   "cheroot==11.1.2"
 ]
 toml = [
-  "tomlkit>=0.13.0,<0.14.0"
+  "tomlkit>=0.13.0,<0.15.0"
 ]
 trados = [
   "BeautifulSoup4>=4.13.0"
