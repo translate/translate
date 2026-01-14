@@ -1,0 +1,24 @@
+Translate Toolkit 3.18.1
+************************
+
+*Released on 14 January 2026*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- JSON
+
+  - Store metadata in ARB only if present
+  - Corrected type annotations
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+Michal Čihař, Korpyc
