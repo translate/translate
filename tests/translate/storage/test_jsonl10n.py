@@ -1466,9 +1466,13 @@ class TestARBJsonFile(test_monolingual.TestMonolingualStore):
     def test_leading_dot_keys(self) -> None:
         jsontext = """{
   ".dot": "dot",
-  "@.dot": {},
+  "@.dot": {
+    "description": "description of .dot"
+  },
   "nav:colon": "colon in a colon",
-  "@nav:colon": {}
+  "@nav:colon": {
+    "description": "description of nav:colon"
+  }
 }
 """
         store = self.StoreClass()
@@ -1488,6 +1492,29 @@ class TestARBJsonFile(test_monolingual.TestMonolingualStore):
         store = self.StoreClass()
         with raises(base.ParseError):
             store.parse(jsontext)
+
+    def test_empty_metadata_not_stored(self) -> None:
+        """Test that empty metadata is not stored in the output."""
+        jsontext = """{
+  "key1": "value1",
+  "@key1": {},
+  "key2": "value2",
+  "@key2": {
+    "type": "text"
+  },
+  "key3": "value3"
+}
+"""
+        store = self.StoreClass()
+        store.parse(jsontext)
+        output = bytes(store).decode()
+
+        assert '"@key1": {}' not in output
+
+        # Non-empty metadata should be preserved
+        assert '"@key2"' in output
+
+        assert '"@key3"' not in output
 
 
 JSON_FORMATJS = """{

@@ -881,7 +881,8 @@ class ARBJsonUnit(base.MetadataTranslationUnit, FlatJsonUnit):
                 self.storevalue(output, value, override_key=key)
         else:
             self.storevalue(output, self.target, override_key=identifier)
-            self.storevalue(output, self.metadata, override_key=f"@{identifier}")
+            if self.metadata:
+                self.storevalue(output, self.metadata, override_key=f"@{identifier}")
 
     def isheader(self):
         return self._id == "@"
