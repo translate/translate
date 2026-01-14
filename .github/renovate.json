@@ -1,56 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended",
-    ":dependencyDashboard",
-    "helpers:pinGitHubActionDigests"
-  ],
-  "labels": [
-    "dependencies"
-  ],
-  "automerge": true,
-  "automergeType": "pr",
-  "automergeStrategy": "rebase",
-  "platformAutomerge": true,
-  "pre-commit": {
-    "enabled": true
-  },
-  "packageRules": [
-    {
-      "matchDatasources": [
-        "pypi"
-      ],
-      "rangeStrategy": "widen"
-    },
-    {
-      "matchPackageNames": [
-        "shellcheck-py/shellcheck-py"
-      ],
-      "versioning": "loose"
-    }
-  ],
-  "customManagers": [
-    {
-      "customType": "regex",
-      "managerFilePatterns": [
-        "/\\.pre-commit-config\\.yaml/"
-      ],
-      "matchStrings": [
-        "(?<depName>[^'\" ]+)==(?<currentValue>[^'\" ,\\s]+)"
-      ],
-      "datasourceTemplate": "pypi",
-      "versioningTemplate": "pep440"
-    },
-    {
-      "customType": "regex",
-      "managerFilePatterns": [
-        "/\\.pre-commit-config\\.yaml/"
-      ],
-      "matchStrings": [
-        "(?<depName>[^'\" ]+)@(?<currentValue>[^'\" ,\\s]+)"
-      ],
-      "datasourceTemplate": "npm",
-      "versioningTemplate": "npm"
-    }
+    "github>WeblateOrg/meta:renovate"
   ]
 }
