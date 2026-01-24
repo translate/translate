@@ -39,7 +39,7 @@ types = [
   "setuptools>=61.2",
   "ty==0.0.13",
   "types-lxml==2026.1.1",
-  "wcwidth-stubs==0.2.14.0"
+  "wcwidth-stubs==0.3.0.1"
 ]
 
 [project]
