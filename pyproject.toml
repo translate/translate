@@ -33,7 +33,7 @@ test = [
   "pytest-cov==7.0.0",
   "pytest-xdist==3.8.0",
   "pytest==9.0.2",
-  "syrupy==5.0.0"
+  "syrupy==5.1.0"
 ]
 types = [
   "setuptools>=61.2",
