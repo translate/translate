@@ -22,6 +22,15 @@ class TestWFTime:
 class TestWFUnit(test_base.TestTranslationUnit):
     UnitClass = wf.WordfastUnit
 
+    def normalize_unit_metadata(self, *units) -> None:
+        """Normalize timestamps to avoid flaky test failures on slow systems."""
+        # Wordfast units have timestamps in metadata that are updated on source/target
+        # assignment. On slow systems, units created milliseconds apart have different
+        # timestamps, causing equality comparisons to fail.
+        FIXED_DATE = "20200101~120000"
+        for unit in units:
+            unit.metadata["date"] = FIXED_DATE
+
     def test_difficult_escapes(self) -> None:
         r"""
         Wordfast files need to perform magic with escapes.
