@@ -22,6 +22,41 @@ class TestWFTime:
 class TestWFUnit(test_base.TestTranslationUnit):
     UnitClass = wf.WordfastUnit
 
+    def test_eq(self) -> None:
+        """Tests equality comparison with normalized timestamps."""
+        # Normalize timestamps to avoid flaky test failures on slow systems
+        # where units created milliseconds apart have different timestamps
+        FIXED_DATE = "20200101~120000"
+        
+        unit1 = self.unit
+        unit2 = self.UnitClass("Test String")
+        unit3 = self.UnitClass("Test String")
+        unit4 = self.UnitClass("Blessed String")
+        unit5 = self.UnitClass("Blessed String")
+        unit6 = self.UnitClass("Blessed String")
+        
+        # Normalize timestamps for all units
+        for unit in [unit1, unit2, unit3, unit4, unit5, unit6]:
+            unit.metadata["date"] = FIXED_DATE
+        
+        # pylint: disable-next=comparison-with-itself
+        assert unit1 == unit1  # noqa: PLR0124
+        assert unit1 == unit2
+        assert unit1 != unit4
+        unit1.target = "Stressed Ting"
+        unit2.target = "Stressed Ting"
+        unit5.target = "Stressed Bling"
+        unit6.target = "Stressed Ting"
+        
+        # Normalize timestamps again after setting targets (which updates timestamps)
+        for unit in [unit1, unit2, unit3, unit4, unit5, unit6]:
+            unit.metadata["date"] = FIXED_DATE
+        
+        assert unit1 == unit2
+        assert unit1 != unit3
+        assert unit4 != unit5
+        assert unit4 != unit6
+
     def test_difficult_escapes(self) -> None:
         r"""
         Wordfast files need to perform magic with escapes.
