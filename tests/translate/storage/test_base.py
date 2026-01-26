@@ -87,6 +87,18 @@ class TestTranslationUnit:
     def setup_method(self, method) -> None:
         self.unit = self.UnitClass("Test String")
 
+    def normalize_unit_metadata(self, *units) -> None:
+        """
+        Hook for subclasses to normalize metadata before equality checks.
+        
+        This method is called before equality comparisons in test_eq to allow
+        format-specific normalization of metadata fields that may vary between
+        unit instances (e.g., timestamps).
+        
+        :param units: Variable number of units to normalize
+        """
+        pass
+
     def test_isfuzzy(self) -> None:
         """
         Test that we can call isfuzzy() on a unit.
@@ -109,6 +121,8 @@ class TestTranslationUnit:
         unit4 = self.UnitClass("Blessed String")
         unit5 = self.UnitClass("Blessed String")
         unit6 = self.UnitClass("Blessed String")
+        # Normalize metadata before first set of comparisons
+        self.normalize_unit_metadata(unit1, unit2, unit3, unit4, unit5, unit6)
         # pylint: disable-next=comparison-with-itself
         assert unit1 == unit1  # noqa: PLR0124
         assert unit1 == unit2
@@ -117,6 +131,8 @@ class TestTranslationUnit:
         unit2.target = "Stressed Ting"
         unit5.target = "Stressed Bling"
         unit6.target = "Stressed Ting"
+        # Normalize metadata again after setting targets
+        self.normalize_unit_metadata(unit1, unit2, unit3, unit4, unit5, unit6)
         assert unit1 == unit2
         assert unit1 != unit3
         assert unit4 != unit5
