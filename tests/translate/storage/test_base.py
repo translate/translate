@@ -97,7 +97,6 @@ class TestTranslationUnit:
 
         :param units: Variable number of units to normalize
         """
-        pass
 
     def test_isfuzzy(self) -> None:
         """
