@@ -90,11 +90,11 @@ class TestTranslationUnit:
     def normalize_unit_metadata(self, *units) -> None:
         """
         Hook for subclasses to normalize metadata before equality checks.
-        
+
         This method is called before equality comparisons in test_eq to allow
         format-specific normalization of metadata fields that may vary between
         unit instances (e.g., timestamps).
-        
+
         :param units: Variable number of units to normalize
         """
         pass
