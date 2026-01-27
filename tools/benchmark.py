@@ -98,7 +98,7 @@ class TranslateBenchmarker:
         for dirpath, _subdirs, filenames in os.walk(file_dir, topdown=False):
             for name in filenames:
                 pofilename = os.path.join(dirpath, name)
-                parsedfile = self.StoreClass(open(pofilename))
+                parsedfile = self.StoreClass(open(pofilename, "rb"))
                 count += len(parsedfile.units)
                 self.parsedfiles.append(parsedfile)
         print(f"counted {count} units")
@@ -147,8 +147,8 @@ if __name__ == "__main__":
 
     storetype = args.storetype
 
-    if storetype in factory.classes_str:  # ty:ignore[unresolved-attribute]
-        _module, _class = factory.classes_str[storetype]  # ty:ignore[unresolved-attribute]
+    if storetype in factory._classes_str:
+        _module, _class = factory._classes_str[storetype]
         module = import_module(f"translate.storage.{_module}")
         storeclass = getattr(module, _class)
     else:

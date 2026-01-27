@@ -13,13 +13,6 @@ base
    :inherited-members:
 
 
-benchmark
----------
-
-.. automodule:: translate.storage.benchmark
-   :members:
-   :inherited-members:
-
 
 bundleprojstore
 ---------------
