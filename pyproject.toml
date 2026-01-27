@@ -82,7 +82,7 @@ requires-python = ">=3.11"
 
 [project.optional-dependencies]
 all = [
-  "translate-toolkit[chardet,fluent,ical,ini,levenshtein,markdown,php,rc,spellcheck,subtitles,tmserver,toml,trados,yaml]"
+  "translate-toolkit[chardet,fluent,ical,ini,levenshtein,markdown,php,rc,spellcheck,subtitles,toml,trados,yaml]"
 ]
 chardet = [
   "charset-normalizer>=3.4.0,<4.0"
@@ -114,9 +114,6 @@ spellcheck = [
 subtitles = [
   "aeidon>=1.14.1,<1.16"
 ]
-tmserver = [
-  "cheroot==11.1.2"
-]
 toml = [
   "tomlkit>=0.13.0,<0.15.0"
 ]
@@ -133,7 +130,6 @@ file = "README.rst"
 
 [project.scripts]
 android2po = "translate.convert.android2po:main"
-build_tmdb = "translate.tools.build_tmdb:main"
 csv2po = "translate.convert.csv2po:main"
 csv2tbx = "translate.convert.csv2tbx:main"
 dtd2po = "translate.convert.dtd2po:main"
@@ -205,7 +201,6 @@ sub2po = "translate.convert.sub2po:main"
 symb2po = "translate.convert.symb2po:main"
 tbx2po = "translate.convert.tbx2po:main"
 tiki2po = "translate.convert.tiki2po:main"
-tmserver = "translate.services.tmserver:main"
 toml2po = "translate.convert.toml2po:main"
 ts2po = "translate.convert.ts2po:main"
 txt2po = "translate.convert.txt2po:main"
@@ -256,7 +251,6 @@ disable_warnings = ["no-ctracer"]
 [tool.isort]
 known_third_party = [
   "bs4",
-  "cheroot",
   "iniparse",
   "lxml",
   "phply",

@@ -5,14 +5,6 @@ tools
    :show-inheritance:
 
 
-build_tmdb
-----------
-
-.. automodule:: translate.tools.build_tmdb
-   :members:
-   :inherited-members:
-
-
 phppo2pypo
 ----------
 
