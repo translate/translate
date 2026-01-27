@@ -36,11 +36,6 @@ search
 .. automodule:: translate.search
    :noindex:
 
-services
-^^^^^^^^
-.. automodule:: translate.services
-   :noindex:
-
 storage
 ^^^^^^^
 .. automodule:: translate.storage

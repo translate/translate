@@ -156,7 +156,6 @@ Other tools
    poterminology
    poterminology_stopword_file
    pretranslate
-   tmserver
 
 * :doc:`levenshtein_distance` -- edit distance algorithms for translation
   memory matching
@@ -175,8 +174,6 @@ Other tools
   files
 * :doc:`pretranslate` -- fill any missing translations from translation memory
   via fuzzy matching.
-* :doc:`tmserver` -- a Translation Memory server, can be queried over HTTP
-  using JSON
 
 .. _commands#scripts:
 

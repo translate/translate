@@ -74,7 +74,6 @@ autodoc_mock_imports = [
     "lxml",
     "phply",
     "ruamel",
-    "cheroot",
     "Levenshtein",
 ]
 
