@@ -239,6 +239,7 @@ ignore = [
   "tests/*/*/*",
   "tests/*/*/*/*",
   "tests/*/*/*/*/*",
+  "tools/benchmark.py",  # Internal benchmarking
   "tools/phase",  # TODO: investigate purpuse, it was never installed
   "tools/phaselist2goals",  # TODO: investigate purpuse, it was never installed
   "translate/convert/odfxml",  # TODO: investigate purpuse, it was never installed
@@ -446,8 +447,8 @@ select = ["ALL"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**.py" = ["PLC1901", "T201"]
+"tools/benchmark.py" = ["T201"]
 "translate/misc/progressbar.py" = ["T201"]
-"translate/storage/benchmark.py" = ["T201"]
 "translate/storage/placeables/strelem.py" = ["T201"]
 "translate/tools/**.py" = ["T201"]
 
