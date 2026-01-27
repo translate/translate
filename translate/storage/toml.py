@@ -21,7 +21,7 @@ r"""Class that manages TOML data files for translation."""
 from __future__ import annotations
 
 import uuid
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, Any, BinaryIO, cast
 
 from tomlkit import TOMLDocument, document, loads
 from tomlkit.exceptions import TOMLKitError
@@ -114,7 +114,7 @@ class TOMLFile(base.DictStore[TOMLUnit]):
         """Return an empty root node for serialization."""
         return document()
 
-    def serialize(self, out: BytesIO) -> None:
+    def serialize(self, out: BinaryIO) -> None:
         """Serialize the store to a file."""
         # Always start with valid root even if original file was empty
         if self._original is None:

@@ -45,7 +45,7 @@ class tbx2po:
             term.target = tbxunit.target
             term.setcontext(tbxunit.getnotes("definition"))
             term.addnote(f"Part of speech: {tbxunit.getnotes('pos')}", "developer")
-            self.pofile.addunit(term)
+            self.pofile.addunit(term)  # ty:ignore[invalid-argument-type]
         self.pofile.removeduplicates()
         return self.pofile
 

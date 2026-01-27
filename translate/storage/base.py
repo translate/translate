@@ -27,9 +27,11 @@ from itertools import starmap
 from typing import (
     TYPE_CHECKING,
     Any,
+    BinaryIO,
     ClassVar,
     Generic,
     Literal,
+    Self,
     TypedDict,
     TypeVar,
 )
@@ -41,7 +43,7 @@ from translate.storage.placeables import parse as rich_parse
 from translate.storage.workflow import StateEnum as states
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
+    from collections.abc import Callable, Generator
 
 logger = logging.getLogger(__name__)
 
@@ -491,7 +493,7 @@ class TranslationUnit:
         if not self.target or overwrite:
             self.rich_target = otherunit.rich_target
 
-    def unit_iter(self):
+    def unit_iter(self) -> Generator[Self]:
         """Iterator that only returns this unit."""
         yield self
 
@@ -500,14 +502,14 @@ class TranslationUnit:
         return [self]
 
     @classmethod
-    def buildfromunit(cls, unit):
+    def buildfromunit(cls, unit: TranslationUnit) -> Self:
         """
         Build a native unit from a foreign unit.
 
         Preserving as much information as possible.
         """
         if type(unit) is cls and hasattr(unit, "copy") and callable(unit.copy):
-            return unit.copy()
+            return unit.copy()  # ty:ignore[call-top-callable, invalid-return-type]
         newunit = cls(unit.source)
         newunit.target = unit.target
         newunit.markfuzzy(unit.isfuzzy())
@@ -730,7 +732,7 @@ class TranslationStore(Generic[U]):
         """Set the project type for this store."""
         self._project_style = project_style
 
-    def unit_iter(self):
+    def unit_iter(self) -> Generator[U]:
         """Iterator over all the units in this store."""
         yield from self.units
 
@@ -870,7 +872,7 @@ class TranslationStore(Generic[U]):
         self.serialize(out)
         return out.getvalue()
 
-    def serialize(self, out) -> None:
+    def serialize(self, out: BinaryIO) -> None:
         """
         Converts to a bytes representation that can be parsed back using
         :meth:`~.TranslationStore.parsestring`.
