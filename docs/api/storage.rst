@@ -21,14 +21,6 @@ benchmark
    :inherited-members:
 
 
-bundleprojstore
----------------
-
-.. automodule:: translate.storage.bundleprojstore
-   :members:
-   :inherited-members:
-
-
 catkeys
 -------
 
@@ -296,22 +288,6 @@ poxliff
 -------
 
 .. automodule:: translate.storage.poxliff
-   :members:
-   :inherited-members:
-
-
-project
--------
-
-.. automodule:: translate.storage.project
-   :members:
-   :inherited-members:
-
-
-projstore
----------
-
-.. automodule:: translate.storage.projstore
    :members:
    :inherited-members:
 
