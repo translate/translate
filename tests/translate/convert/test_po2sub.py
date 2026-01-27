@@ -12,15 +12,6 @@ importorskip("aeidon", exc_type=ImportError)
 
 class TestPO2Sub:
     @staticmethod
-    def po2sub(posource):
-        """Helper that converts po source to subtitle source without requiring files."""
-        inputfile = BytesIO(posource.encode())
-        inputpo = po.pofile(inputfile)
-        convertor = po2sub.po2sub()  # ty:ignore[missing-argument]
-        outputsub = convertor.convert_store(inputpo)  # ty:ignore[too-many-positional-arguments]
-        return outputsub.decode("utf-8")
-
-    @staticmethod
     def merge2sub(subsource, posource):
         """Helper that merges po translations to subtitle source without requiring files."""
         inputfile = BytesIO(posource.encode())
