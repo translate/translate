@@ -350,9 +350,6 @@ class pounit(pocommon.pounit):
                 raise ValueError(
                     f"po msgid element has no plural but msgstr has {len(target)} elements ({target})"
                 )
-        templates = self.msgstr
-        if isinstance(templates, list):
-            templates = {0: templates}
         if isinstance(target, list):
             self.msgstr = {i: self.quote(target[i]) for i in range(len(target))}
         elif isinstance(target, dict):
