@@ -113,7 +113,7 @@ class TerminologyExtractor:
         self.xmlelpat = re.compile(r"<(?:![\[-]|[/?]?[A-Za-z_:])[^>]*>")
         # handles XML/HTML entities (&#32; &#x20; &amp; &my_entity;)
         self.xmlentpat = re.compile(
-            r"&(?:#(?:[0-9]+|x[0-9a-f]+)|[a-z_:][\w.-:]*);",
+            r"&(?:#(?:[0-9]+|x[0-9a-f]+)|[a-z_:][\w.:-]*);",
             flags=re.UNICODE | re.IGNORECASE,
         )
 
