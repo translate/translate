@@ -24,7 +24,7 @@ import codecs
 import logging
 from io import BytesIO
 from itertools import starmap
-from typing import TYPE_CHECKING, Any, ClassVar, Generic, Literal, TypeVar
+from typing import TYPE_CHECKING, Any, ClassVar, Generic, Literal, TypedDict, TypeVar
 
 from translate.lang.data import plural_tags
 from translate.misc.multistring import multistring
@@ -49,6 +49,11 @@ ENCODING_BOMS = (
 )
 
 MISSING = object()
+
+
+class EncodingDict(TypedDict):
+    encoding: str | None
+    confidence: float | None
 
 
 class ParseError(Exception):
@@ -595,7 +600,7 @@ class MetadataTranslationUnit(TranslationUnit):
 
     metadata = property(getmetadata, setmetadata)
 
-    def __eq__(self, other: TranslationUnit) -> bool:  # ty:ignore[invalid-method-override]
+    def __eq__(self, other: TranslationUnit) -> bool:
         """
         Compare two units including their metadata.
 
@@ -901,12 +906,12 @@ class TranslationStore(Generic[U]):
         return newstore
 
     @staticmethod
-    def fallback_detection(text):
+    def fallback_detection(text: bytes) -> EncodingDict:
         """Simple detection based on BOM in case chardet is not available."""
         for bom, encoding in ENCODING_BOMS:
             if text.startswith(bom):
                 return {"encoding": encoding, "confidence": 1.0}
-        return None
+        return {"encoding": None, "confidence": None}
 
     def detect_encoding(
         self, text: bytes, default_encodings: list[str] | None = None
@@ -917,6 +922,7 @@ class TranslationStore(Generic[U]):
         """
         if not default_encodings:
             default_encodings = ["utf-8"]
+        detected_encoding: EncodingDict
         try:
             # pylint: disable-next=import-outside-toplevel
             from charset_normalizer import detect  # noqa: PLC0415
@@ -928,7 +934,7 @@ class TranslationStore(Generic[U]):
                 detected_encoding["confidence"] is None
                 or detected_encoding["confidence"] < 0.48
             ):
-                detected_encoding = None
+                detected_encoding["encoding"] = None
             elif detected_encoding["encoding"] == "ascii":
                 detected_encoding["encoding"] = self.encoding
             else:
@@ -937,12 +943,15 @@ class TranslationStore(Generic[U]):
         encodings = []
         # Purposefully accessed the internal _encoding, as encoding is never 'auto'
         if self._encoding == "auto":
-            if detected_encoding and detected_encoding["encoding"] not in encodings:
+            if (
+                detected_encoding["encoding"]
+                and detected_encoding["encoding"] not in encodings
+            ):
                 encodings.append(detected_encoding["encoding"])
             for encoding in default_encodings:
                 if encoding not in encodings:
                     encodings.append(encoding)
-        elif detected_encoding:
+        elif detected_encoding["encoding"]:
             if "-" in detected_encoding["encoding"]:
                 encoding, suffix = detected_encoding["encoding"].rsplit("-", 1)
             else:

@@ -183,7 +183,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     _leading_ws = re.compile(r"^(\s+)\S")
     _trailing_ws = re.compile(r"\S(\s+)$")
 
-    def render_raw_text(self, token: span_token.RawText) -> Iterable[Fragment]:  # ty:ignore[invalid-method-override]
+    def render_raw_text(self, token: span_token.RawText) -> Iterable[Fragment]:
         # make separate fragments for leading and trailing space, if applicable
         match = self._leading_ws.search(token.content)
         if match:
@@ -196,7 +196,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         else:
             yield Fragment(token.content, wordwrap=True)
 
-    def render_auto_link(self, token: span_token.AutoLink) -> Iterable[Fragment]:  # ty:ignore[invalid-method-override]
+    def render_auto_link(self, token: span_token.AutoLink) -> Iterable[Fragment]:
         # replace with placeholder, unless in bypass mode
         if self.bypass:
             yield from super().render_auto_link(token)
@@ -204,7 +204,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
 
         yield Fragment(None, placeholder_content=super().render_auto_link(token))  # ty:ignore[invalid-argument-type]
 
-    def render_line_break(self, token: span_token.LineBreak) -> Iterable[Fragment]:  # ty:ignore[invalid-method-override]
+    def render_line_break(self, token: span_token.LineBreak) -> Iterable[Fragment]:
         if self.bypass:
             yield from super().render_line_break(token)
             return
@@ -318,7 +318,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
 
     def render_heading(
         self, token: block_token.Heading, max_line_length: int
-    ) -> Iterable[str]:  # ty:ignore[invalid-method-override]
+    ) -> Iterable[str]:
         self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
         content = list(super().render_heading(token, max_line_length=max_line_length))
         self.path.pop()
@@ -336,7 +336,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
 
     def render_quote(
         self, token: block_token.Quote, max_line_length: int
-    ) -> Iterable[str]:  # ty:ignore[invalid-method-override]
+    ) -> Iterable[str]:
         self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
         content = list(super().render_quote(token, max_line_length=max_line_length))
         self.path.pop()
@@ -344,7 +344,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
 
     def render_paragraph(
         self, token: block_token.Paragraph, max_line_length: int
-    ) -> Iterable[str]:  # ty:ignore[invalid-method-override]
+    ) -> Iterable[str]:
         self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
         content = list(super().render_paragraph(token, max_line_length=max_line_length))
         self.path.pop()
@@ -365,7 +365,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
 
     def render_list_item(
         self, token: block_token.ListItem, max_line_length: int
-    ) -> Iterable[str]:  # ty:ignore[invalid-method-override]
+    ) -> Iterable[str]:
         self.path.append(f":{token.line_number}")
         content = list(super().render_list_item(token, max_line_length=max_line_length))
         self.path.pop()
@@ -373,7 +373,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
 
     def render_table(
         self, token: block_token.Table, max_line_length: int
-    ) -> Iterable[str]:  # ty:ignore[invalid-method-override]
+    ) -> Iterable[str]:
         self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
         content = list(super().render_table(token, max_line_length=max_line_length))
         self.path.pop()

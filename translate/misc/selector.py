@@ -408,7 +408,7 @@ class SimpleParser:
         if self.ostart in text:
             parts = self.outermost_optionals_split(text)
             parts = map(self.parse, parts)
-            parts[1::2] = [f"({p})?" for p in parts[1::2]]  # ty:ignore[invalid-assignment, not-subscriptable]
+            parts[1::2] = [f"({p})?" for p in parts[1::2]]  # ty:ignore[invalid-assignment]
         else:
             parts = [part.split(self.end) for part in text.split(self.start)]
             parts = [y for x in parts for y in x]

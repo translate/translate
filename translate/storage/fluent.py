@@ -1016,6 +1016,9 @@ class FluentUnit(base.TranslationUnit):
                 "Entry rather than a Message"
             )
 
+        if not isinstance(entry, (ast.Term, ast.Message)):
+            return f"Unexpectedly found a fluent {entry.__class__.name__}"
+
         dup_attr = _duplicate_attribute(entry)
         if dup_attr:
             return f'The "{dup_attr.id.name}" attribute is assigned to more than once'

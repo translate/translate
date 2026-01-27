@@ -231,7 +231,7 @@ def test_error_cases(opts, expected) -> None:
         capture_output=True,
         text=True,
         check=False,
-    )  # ty:ignore[no-matching-overload]
+    )
 
     assert expected in result.stderr
 

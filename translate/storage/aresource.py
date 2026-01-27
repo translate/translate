@@ -562,7 +562,7 @@ class AndroidResourceFile(lisa.LISAfile):
         self.namespace = self.document.getroot().nsmap.get(None, None)
         self.body = self.document.getroot()
 
-    def parse(self, xml) -> None:  # ty:ignore[invalid-method-override]
+    def parse(self, xml) -> None:
         """Populates this object from the given xml string."""
         if not hasattr(self, "filename"):
             self.filename = getattr(xml, "name", "")

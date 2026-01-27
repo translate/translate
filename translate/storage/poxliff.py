@@ -199,7 +199,7 @@ class PoXliffUnit(xliff.xliffunit):
         for unit in self.units[1:]:
             unit.marktranslated()
 
-    def setid(self, id) -> None:  # ty:ignore[invalid-method-override]
+    def setid(self, id) -> None:
         super().setid(id)
         if len(self.units) > 1:
             for i, unit in enumerate(self.units):
@@ -310,7 +310,7 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
         setXMLspace(unit.xmlelement, "preserve")
         return unit
 
-    def parse(self, xml) -> None:  # ty:ignore[invalid-method-override]
+    def parse(self, xml) -> None:
         """Populates this object from the given xml string."""
         # TODO: Make more robust
 
