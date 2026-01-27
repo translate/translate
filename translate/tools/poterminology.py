@@ -515,7 +515,9 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
             progress_bar.report_progress(inputpath, success)
         self.outputterminology(options)
 
-    def processfile(self, fileprocessor, options, fullinputpath, *args, **kwargs) -> None:
+    def processfile(
+        self, fileprocessor, options, fullinputpath, *args, **kwargs
+    ) -> None:
         """Process an individual file."""
         inputfile = self.openinputfile(options, fullinputpath)
         inputfile = factory.getobject(inputfile)
