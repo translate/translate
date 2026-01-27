@@ -31,7 +31,7 @@ import re
 from functools import lru_cache
 from itertools import chain
 from string import punctuation
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, BinaryIO
 
 from unicode_segmentation_rs import gettext_wrap
 
@@ -40,7 +40,7 @@ from translate.misc.multistring import multistring
 from translate.storage import pocommon, poparser
 
 if TYPE_CHECKING:
-    from collections.abc import Generator
+    from collections.abc import Generator, Iterable
 
 logger = logging.getLogger(__name__)
 
@@ -379,7 +379,7 @@ class pounit(pocommon.pounit):
 
         :param origin: programmer, developer, source code, translator or None
         """
-        parts = []
+        parts: list[Iterable[str]] = []
         newline = self.newline
         if origin == "translator" or origin is None:
             parts.append(comment[2:] or newline for comment in self.othercomments)
@@ -855,7 +855,7 @@ class pofile(pocommon.pofile[pounit]):
         self.newline = "\n"
         super().__init__(inputfile, **kwargs)
 
-    def create_unit(self):
+    def create_unit(self) -> pounit:
         return self.UnitClass(wrapper=self.wrapper)
 
     def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
@@ -871,7 +871,7 @@ class pofile(pocommon.pofile[pounit]):
         self.units = []
         poparser.parse_units(poparser.PoParseState(lines, self.create_unit), self)
 
-    def removeduplicates(self, duplicatestyle="merge") -> None:
+    def removeduplicates(self, duplicatestyle: str = "merge") -> None:
         """
         Make sure each msgid is unique ; merge comments etc from
         duplicates into original.
@@ -930,7 +930,7 @@ class pofile(pocommon.pofile[pounit]):
                 uniqueunits.append(thepo)
         self.units = uniqueunits
 
-    def serialize(self, out) -> None:
+    def serialize(self, out: BinaryIO) -> None:
         """Write to file."""
         at_start = True
         try:
@@ -948,12 +948,12 @@ class pofile(pocommon.pofile[pounit]):
             out.seek(0)
             self.serialize(out)
 
-    def unit_iter(self):
+    def unit_iter(self) -> Generator[pounit]:
         for unit in self.units:
             if not (unit.isheader() or unit.isobsolete()):
                 yield unit
 
-    def addunit(self, unit) -> None:
+    def addunit(self, unit: pounit) -> None:
         needs_update = unit.wrapper != self.wrapper
         unit.wrapper = self.wrapper
         super().addunit(unit)
