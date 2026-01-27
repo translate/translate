@@ -26,12 +26,14 @@ import logging
 import os
 import re
 import sys
+from collections.abc import Callable
 from operator import itemgetter
-from typing import NamedTuple
+from typing import NamedTuple, cast
 
 from translate.lang import factory as lang_factory
 from translate.misc import file_discovery, optrecurse
 from translate.storage import factory, po
+from translate.storage.base import TranslationUnit
 
 logger = logging.getLogger(__name__)
 
@@ -47,8 +49,14 @@ class UnitInfo(NamedTuple):
 
 
 def create_termunit(
-    term, unit, targets, locations, sourcenotes, transnotes, filecounts
-):
+    term: str,
+    unit: TranslationUnit | None,
+    targets: dict[str, list[str]],
+    locations: set[str],
+    sourcenotes: set[str],
+    transnotes: set[str],
+    filecounts: dict[str, int],
+) -> po.pounit:
     termunit = po.pounit(term)
     if unit is not None:
         termunit.merge(unit, overwrite=False, comments=False)
@@ -131,10 +139,10 @@ class TerminologyExtractor:
         }
 
         with open(self.stopfile) as stopfile:
-            line = 0
+            line_number = 0
             try:
                 for stopline in stopfile:
-                    line += 1
+                    line_number += 1
                     stoptype = stopline[0]
                     if stoptype in {"#", "\n"}:
                         continue
@@ -151,7 +159,7 @@ class TerminologyExtractor:
                             logger.warning(
                                 "%s:%d - bad case mapping directive",
                                 self.stopfile,
-                                line,
+                                line_number,
                             )
                     elif stoptype == "/":
                         self.stoprelist.append(re.compile(f"{stopline[1:-1]}$"))
@@ -161,11 +169,13 @@ class TerminologyExtractor:
                 logger.warning(
                     "%s:%d - bad stopword entry starts with '%s'",
                     self.stopfile,
-                    line,
+                    line_number,
                     character,
                 )
                 logger.warning(
-                    "%s:%d all lines after error ignored", self.stopfile, line + 1
+                    "%s:%d all lines after error ignored",
+                    self.stopfile,
+                    line_number + 1,
                 )
 
     def clean(self, string):
@@ -299,25 +309,36 @@ class TerminologyExtractor:
 
     def extract_terms(
         self,
-        create_termunit=create_termunit,
-        inputmin=1,
-        fullmsgmin=1,
-        substrmin=2,
-        locmin=2,
-    ):
-        terms = {}
+        create_termunit: Callable[
+            [
+                str,
+                TranslationUnit | None,
+                dict[str, list[str]],
+                set[str],
+                set[str],
+                set[str],
+                dict[str, int],
+            ],
+            po.pounit,
+        ] = create_termunit,
+        inputmin: int = 1,
+        fullmsgmin: int = 1,
+        substrmin: int = 2,
+        locmin: int = 2,
+    ) -> dict[str, tuple[int, TranslationUnit]]:
+        terms: dict[str, tuple[int, TranslationUnit]] = {}
         logger.info("%d terms from %d units", len(self.glossary), self.units)
         for term, translations in self.glossary.items():
             if len(translations) <= 1:
                 continue
-            filecounts = {}
-            sources = set()
-            locations = set()
-            sourcenotes = set()
-            transnotes = set()
-            targets = {}
+            filecounts: dict[str, int] = {}
+            sources: set[str] = set()
+            locations: set[str] = set()
+            sourcenotes: set[str] = set()
+            transnotes: set[str] = set()
+            targets: dict[str, list[str]] = {}
             fullmsg = False
-            bestunit = None
+            bestunit: TranslationUnit | None = None
             for source, target, unit_info, filename in translations:
                 sources.add(source)
                 filecounts[filename] = filecounts.setdefault(filename, 0) + 1
@@ -352,8 +373,8 @@ class TerminologyExtractor:
 
             locmax = 2 * locmin
             if numlocs > locmax:
-                locations = list(locations)[0:locmax]
-                locations.append(f"(poterminology) {numlocs - locmax} more locations")
+                locations = set(list(locations)[0:locmax])
+                locations.add(f"(poterminology) {numlocs - locmax} more locations")
 
             termunit = create_termunit(
                 term, bestunit, targets, locations, sourcenotes, transnotes, filecounts
@@ -363,13 +384,18 @@ class TerminologyExtractor:
 
     sortorders_default = ["frequency", "dictionary", "length"]
 
-    def filter_terms(self, terms, nonstopmin=1, sortorders=sortorders_default):
+    def filter_terms(
+        self,
+        terms: dict[str, tuple[int, TranslationUnit]],
+        nonstopmin: int = 1,
+        sortorders: list[str] = sortorders_default,
+    ) -> list[tuple[int, TranslationUnit]]:
         """Reduce subphrases from extracted terms."""
         # reduce subphrase
-        termlist = sorted(terms.keys(), key=len)
+        termlist = cast("list[str]", sorted(terms.keys(), key=len))
         logger.info("%d terms after thresholding", len(termlist))
         for term in termlist:
-            words = term.split()  # ty:ignore[unresolved-attribute]
+            words = term.split()
             nonstop = [word for word in words if not self.stopword(word)]
             if len(nonstop) < nonstopmin and len(nonstop) != len(words):
                 del terms[term]
@@ -380,7 +406,7 @@ class TerminologyExtractor:
                 words.pop()
                 if terms[term][0] == terms.get(" ".join(words), [0])[0]:
                     del terms[" ".join(words)]
-            words = term.split()  # ty:ignore[unresolved-attribute]
+            words = term.split()
             while len(words) > 2:
                 words.pop(0)
                 if terms[term][0] == terms.get(" ".join(words), [0])[0]:
@@ -404,6 +430,8 @@ class TerminologyExtractor:
 
 class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
     """a specialized Option Parser for the terminology tool..."""
+
+    extractor: TerminologyExtractor
 
     def parse_args(self, args=None, values=None):
         """Parses the command line options, handling implicit input/output args."""
@@ -501,7 +529,7 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
             fullinputpath = self.getfullinputpath(options, inputpath)
             success = True
             try:
-                self.processfile(None, options, fullinputpath)
+                self.processfile(None, options, fullinputpath, None, None)
             except Exception:
                 self.warning(
                     f"Error processing: input {fullinputpath}",
@@ -512,11 +540,14 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
             progress_bar.report_progress(inputpath, success)
         self.outputterminology(options)
 
-    def processfile(self, fileprocessor, options, fullinputpath) -> None:  # ty:ignore[invalid-method-override]
+    def processfile(
+        self, fileprocessor, options, fullinputpath, fulloutputpath, fulltemplatepath
+    ) -> bool:
         """Process an individual file."""
         inputfile = self.openinputfile(options, fullinputpath)
         inputfile = factory.getobject(inputfile)
         self.extractor.processunits(inputfile.units, fullinputpath)
+        return True
 
     def outputterminology(self, options) -> None:
         """Saves the generated terminology glossary."""
