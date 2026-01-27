@@ -79,6 +79,7 @@ from typing import (
     Any,
     BinaryIO,
     ClassVar,
+    Never,
     NotRequired,
     TextIO,
     TypedDict,
@@ -566,7 +567,7 @@ class GoTextUnitId(base.UnitId):
     def __str__(self) -> str:
         return str(self.parts)
 
-    def extend(self, key, value):
+    def extend(self, key, value) -> Never:
         raise ValueError("Extend is not supported")
 
     @classmethod

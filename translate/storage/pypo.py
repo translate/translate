@@ -593,7 +593,7 @@ class pounit(pocommon.pounit):
         self._ensure_typecomments_cache()
         return typecomment in self._typecomments_cache  # ty:ignore[unsupported-operator]
 
-    def hasmarkedcomment(self, commentmarker) -> bool:
+    def hasmarkedcomment(self, commentmarker: str) -> bool:
         """
         Check whether the given comment marker is present.
 
@@ -635,7 +635,7 @@ class pounit(pocommon.pounit):
             self.set_state_n(self.STATE[self.S_TRANSLATED][0])
         self._domarkfuzzy(present)
 
-    def _domarkfuzzy(self, present=True) -> None:
+    def _domarkfuzzy(self, present: bool = True) -> None:
         self.settypecomment("fuzzy", present)
 
     def infer_state(self) -> None:

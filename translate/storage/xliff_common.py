@@ -191,7 +191,7 @@ class XliffFile(lisa.LISAfile[U]):
         super().__init__(*args, **kwargs)
 
     @staticmethod
-    def getfilename(filenode):
+    def getfilename(filenode) -> str | None:
         """
         Returns the identifier of the given file node.
 
@@ -200,7 +200,7 @@ class XliffFile(lisa.LISAfile[U]):
         raise NotImplementedError("Subclasses must implement getfilename()")
 
     @staticmethod
-    def setfilename(filenode, filename):
+    def setfilename(filenode, filename: str) -> None:
         """
         Set the identifier of the given file node.
 
