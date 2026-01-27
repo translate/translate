@@ -1432,7 +1432,7 @@ class XWikiPageProperties(xwikifile):
             if language_node is not None and language_node.text:
                 self.setsourcelanguage(language_node.text)
 
-    def parse(self, propsrc) -> None:  # ty:ignore[invalid-method-override]
+    def parse(self, propsrc) -> None:
         if propsrc != b"\n":
             self.root = etree.XML(propsrc, self.get_parser())
             content = "".join(self.root.find("content").itertext())
@@ -1490,7 +1490,7 @@ class XWikiFullPage(XWikiPageProperties):
 
     Name = "XWiki Full Page"
 
-    def parse(self, propsrc) -> None:  # ty:ignore[invalid-method-override]
+    def parse(self, propsrc) -> None:
         if propsrc != b"\n":
             self.root = etree.XML(propsrc, self.get_parser())
             content = "".join(self.root.find("content").itertext()).replace("\n", "\\n")

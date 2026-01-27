@@ -21,7 +21,7 @@ r"""Class that manages TOML data files for translation."""
 from __future__ import annotations
 
 import uuid
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from tomlkit import TOMLDocument, document, loads
 from tomlkit.exceptions import TOMLKitError
@@ -336,7 +336,10 @@ class GoI18nTOMLFile(TOMLFile):
         # Need at least 2 keys and all keys must be CLDR plural categories
         if data and len(data) >= 2 and all(x in cldr_plural_categories for x in data):
             # Extract plural forms in CLDR order
-            values = [data[tag] for tag in cldr_plural_categories if tag in data]
+            values = cast(
+                "list[str]",
+                [data[tag] for tag in cldr_plural_categories if tag in data],
+            )
 
             # Skip blank values (all plurals are None or empty)
             if values and not all(not value for value in values):

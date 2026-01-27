@@ -626,7 +626,7 @@ class pounit(pocommon.pounit):
     def isfuzzy(self):
         return self.hastypecomment("fuzzy")
 
-    def markfuzzy(self, present=True) -> None:  # ty:ignore[invalid-method-override]
+    def markfuzzy(self, present=True) -> None:
         if present:
             self.set_state_n(self.STATE[self.S_FUZZY][0])
         elif (self.hasplural() and not self._msgstrlen()) or is_null(self.msgstr):  # ty:ignore[invalid-argument-type]

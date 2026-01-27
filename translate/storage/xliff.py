@@ -95,7 +95,7 @@ class Xliff1Unit(XliffUnit):
             return
         setXMLspace(self.xmlelement, "preserve")
 
-    def createlanguageNode(self, lang, text, purpose):  # ty:ignore[invalid-method-override]
+    def createlanguageNode(self, lang, text, purpose):
         """Returns an xml Element setup with given parameters."""
         # TODO: for now we do source, but we have to test if it is target,
         # perhaps with parameter. Alternatively, we can use lang, if

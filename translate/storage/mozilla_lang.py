@@ -88,7 +88,7 @@ class LangStore(txt.TxtFile):
         self.location_root = getattr(inputfile, "location_root", "")
         super().__init__(inputfile, **kwargs)
 
-    def parse(self, lines) -> None:  # ty:ignore[invalid-method-override]
+    def parse(self, lines) -> None:
         source_unit = None
         comment = ""
         if not isinstance(lines, list):
