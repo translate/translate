@@ -108,24 +108,24 @@ class pounit(base.TranslationUnit):
     def istranslatable(self) -> bool:
         return not (self.isheader() or self.isblank() or self.isobsolete())
 
-    def hasmarkedcomment(self, commentmarker):
+    def hasmarkedcomment(self, commentmarker: str) -> bool:
         raise NotImplementedError
 
-    def isreview(self):
+    def isreview(self) -> bool:
         return self.hasmarkedcomment("review") or self.hasmarkedcomment("pofilter")
 
-    def isobsolete(self):
+    def isobsolete(self) -> bool:
         return (
             self.STATE[self.S_FUZZY_OBSOLETE][0]
             <= self.get_state_n()
             < self.STATE[self.S_OBSOLETE][1]
         )
 
-    def isfuzzy(self):
+    def isfuzzy(self) -> bool:
         # implementation specific fuzzy detection, must not use get_state_n()
         raise NotImplementedError
 
-    def markfuzzy(self, present=True) -> None:  # ty:ignore[invalid-method-override]
+    def markfuzzy(self, present: bool = True) -> None:  # ty:ignore[invalid-method-override]
         if present:
             self.set_state_n(self.STATE[self.S_FUZZY][0])
         else:
@@ -143,7 +143,7 @@ class pounit(base.TranslationUnit):
         if not self.target:
             self.set_state_n(self.STATE[self.S_UNTRANSLATED][0])
 
-    def _domarkfuzzy(self, present=True):
+    def _domarkfuzzy(self, present: bool = True) -> None:
         raise NotImplementedError
 
     def get_state_n(self):

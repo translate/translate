@@ -60,6 +60,7 @@ http://qt.gitorious.org/+kde-developers/qt/kde-qt/blobs/master/tools/linguist/sh
 import codecs
 import logging
 import struct
+from typing import Never
 
 from translate.misc.multistring import multistring
 from translate.storage import base
@@ -95,7 +96,7 @@ class qmfile(base.TranslationStore):
         if inputfile is not None:
             self.parsestring(inputfile)
 
-    def serialize(self, out):
+    def serialize(self, out) -> Never:
         """Output a string representation of the .qm data file."""
         raise NotImplementedError("Writing of .qm files is not supported yet")
 
@@ -206,5 +207,5 @@ class qmfile(base.TranslationStore):
                 logger.warning("Unimplemented: 0x%x %s", subsection, subsection_name)
                 return
 
-    def savefile(self, storefile):
+    def savefile(self, storefile) -> Never:
         raise NotImplementedError("Writing of .qm files is not supported yet")

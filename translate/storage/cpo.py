@@ -45,6 +45,7 @@ from ctypes import (
     c_uint,
     cdll,
 )
+from typing import Never
 
 from translate.misc.multistring import multistring
 from translate.storage import base, pocommon, pypo
@@ -668,7 +669,7 @@ class pounit(pocommon.pounit):
     def isfuzzy(self):
         return gpo.po_message_is_fuzzy(self._gpo_message)  # ty:ignore[possibly-missing-attribute]
 
-    def _domarkfuzzy(self, present=True) -> None:
+    def _domarkfuzzy(self, present: bool = True) -> None:
         gpo.po_message_set_fuzzy(self._gpo_message, present)  # ty:ignore[possibly-missing-attribute]
 
     def makeobsolete(self) -> None:
@@ -801,7 +802,7 @@ class pofile(pocommon.pofile):
             gpo.po_message_insert(self._gpo_message_iterator, unit._gpo_message)  # ty:ignore[possibly-missing-attribute]
         super().addunit(unit)
 
-    def removeunit(self, unit):
+    def removeunit(self, unit) -> Never:
         # There seems to be no API to remove a message
         raise ValueError("Unit removal not supported by cpo")
 

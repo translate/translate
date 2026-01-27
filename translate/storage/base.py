@@ -24,7 +24,15 @@ import codecs
 import logging
 from io import BytesIO
 from itertools import starmap
-from typing import TYPE_CHECKING, Any, ClassVar, Generic, Literal, TypedDict, TypeVar
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    ClassVar,
+    Generic,
+    Literal,
+    TypedDict,
+    TypeVar,
+)
 
 from translate.lang.data import plural_tags
 from translate.misc.multistring import multistring
@@ -150,7 +158,7 @@ class TranslationUnit:
         """
         return self._line_number
 
-    def __eq__(self, other: TranslationUnit) -> bool:  # ty:ignore[invalid-method-override]
+    def __eq__(self, other: object) -> bool:
         """
         Compares two TranslationUnits.
 
@@ -158,6 +166,8 @@ class TranslationUnit:
         :return: Returns *True* if the supplied :class:`TranslationUnit`
                  equals this unit.
         """
+        if not isinstance(other, TranslationUnit):
+            return False
         return (
             self.source == other.source
             and self.target == other.target
@@ -569,7 +579,7 @@ class MetadataTranslationUnit(TranslationUnit):
     accessible via a `metadata` property with getters and setters.
     """
 
-    def __init__(self, *args, metadata=None, **kwargs):
+    def __init__(self, *args, metadata=None, **kwargs) -> None:
         """
         Initialize the internal dictionary.
 
@@ -600,7 +610,7 @@ class MetadataTranslationUnit(TranslationUnit):
 
     metadata = property(getmetadata, setmetadata)
 
-    def __eq__(self, other: TranslationUnit) -> bool:
+    def __eq__(self, other: object) -> bool:
         """
         Compare two units including their metadata.
 
@@ -653,7 +663,7 @@ U = TypeVar("U", bound=TranslationUnit)
 class TranslationStore(Generic[U]):
     """Base class for stores for multiple translation units of type UnitClass."""
 
-    UnitClass: ClassVar[type[U]] = TranslationUnit  # ty:ignore[invalid-assignment]
+    UnitClass: type[U] = TranslationUnit  # ty:ignore[invalid-assignment]
     """The class of units that will be instantiated and used by this class"""
     Name = "Base translation store"
     """The human usable name of this store type"""
@@ -675,7 +685,7 @@ class TranslationStore(Generic[U]):
         """Construct a blank TranslationStore."""
         self.units = []
         if unitclass:
-            self.UnitClass = unitclass  # ty:ignore[invalid-attribute-access]
+            self.UnitClass = unitclass
         self._encoding = encoding
         self.locationindex = {}
         self.sourceindex = {}
@@ -860,7 +870,7 @@ class TranslationStore(Generic[U]):
         self.serialize(out)
         return out.getvalue()
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         """
         Converts to a bytes representation that can be parsed back using
         :meth:`~.TranslationStore.parsestring`.
@@ -937,8 +947,8 @@ class TranslationStore(Generic[U]):
                 detected_encoding["encoding"] = None
             elif detected_encoding["encoding"] == "ascii":
                 detected_encoding["encoding"] = self.encoding
-            else:
-                detected_encoding["encoding"] = detected_encoding["encoding"].lower()  # ty:ignore[possibly-missing-attribute]
+            elif detected_encoding["encoding"]:
+                detected_encoding["encoding"] = detected_encoding["encoding"].lower()
 
         encodings = []
         # Purposefully accessed the internal _encoding, as encoding is never 'auto'
@@ -986,7 +996,7 @@ class TranslationStore(Generic[U]):
             r_encoding = "utf-8"
         return r_text, r_encoding
 
-    def parse(self, data):
+    def parse(self, data) -> None:
         """
         Parser to process the given source string.
 
@@ -1200,7 +1210,7 @@ class DictUnit(TranslationUnit):
             raise ValueError(f"Unsupported element: {child_element}")
 
     def storevalues(self, output) -> None:
-        self.storevalue(output, self.value)  # ty:ignore[unresolved-attribute]
+        raise NotImplementedError
 
     def getvalue(self):
         """Returns dictionary for serialization."""

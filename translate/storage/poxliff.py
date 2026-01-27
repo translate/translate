@@ -25,6 +25,7 @@ This way the API supports plurals as if it was a PO file, for example.
 
 import contextlib
 import re
+from typing import TypeVar
 
 from lxml import etree
 
@@ -279,7 +280,10 @@ class PoXliffUnit(xliff.xliffunit):
         return self.xmlelement.tag == self.namespaced("group")
 
 
-class PoXliffFile(xliff.xlifffile, poheader.poheader):
+U = TypeVar("U", bound=PoXliffUnit)
+
+
+class PoXliffFile(xliff.xlifffile[U], poheader.poheader):
     """a file for the po variant of Xliff files."""
 
     UnitClass = PoXliffUnit
@@ -289,7 +293,9 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
             kwargs["sourcelanguage"] = "en-US"
         xliff.xlifffile.__init__(self, *args, **kwargs)
 
-    def createfilenode(self, filename, sourcelanguage="en-US", datatype="po"):  # ty:ignore[invalid-method-override]
+    def createfilenode(
+        self, filename, sourcelanguage="en-US", datatype="po"
+    ) -> etree.Element:  # ty:ignore[invalid-method-override]
         # Let's ignore the sourcelanguage parameter opting for the internal
         # one. PO files will probably be one language
         return super().createfilenode(

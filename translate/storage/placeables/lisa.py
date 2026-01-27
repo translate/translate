@@ -17,6 +17,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 from copy import copy
+from typing import Never
 
 from lxml import etree
 
@@ -50,7 +51,7 @@ def make_g_placeable(klass, node, xml_space="default"):
     )
 
 
-def not_yet_implemented(klass, node, xml_space="preserve"):
+def not_yet_implemented(klass, node, xml_space="preserve") -> Never:
     raise NotImplementedError
 
 
