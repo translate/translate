@@ -131,10 +131,10 @@ class TerminologyExtractor:
         }
 
         with open(self.stopfile) as stopfile:
-            line = 0
+            line_number = 0
             try:
                 for stopline in stopfile:
-                    line += 1
+                    line_number += 1
                     stoptype = stopline[0]
                     if stoptype in {"#", "\n"}:
                         continue
@@ -151,7 +151,7 @@ class TerminologyExtractor:
                             logger.warning(
                                 "%s:%d - bad case mapping directive",
                                 self.stopfile,
-                                line,
+                                line_number,
                             )
                     elif stoptype == "/":
                         self.stoprelist.append(re.compile(f"{stopline[1:-1]}$"))
@@ -161,11 +161,13 @@ class TerminologyExtractor:
                 logger.warning(
                     "%s:%d - bad stopword entry starts with '%s'",
                     self.stopfile,
-                    line,
+                    line_number,
                     character,
                 )
                 logger.warning(
-                    "%s:%d all lines after error ignored", self.stopfile, line + 1
+                    "%s:%d all lines after error ignored",
+                    self.stopfile,
+                    line_number + 1,
                 )
 
     def clean(self, string):
