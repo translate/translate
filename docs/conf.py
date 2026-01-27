@@ -190,7 +190,7 @@ texinfo_documents = [
         "Translate Toolkit Documentation",
         "Translate.org.za",
         "TranslateToolkit",
-        "One line description of project.",
+        "Tools for localization engineers and translators to convert, manage, and maintain translation files.",
         "Miscellaneous",
     ),
 ]
