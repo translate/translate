@@ -369,7 +369,8 @@ class TerminologyExtractor:
         termlist = sorted(terms.keys(), key=len)
         logger.info("%d terms after thresholding", len(termlist))
         for term in termlist:
-            words = term.split()  # ty:ignore[unresolved-attribute]
+            term = str(term)
+            words = term.split()
             nonstop = [word for word in words if not self.stopword(word)]
             if len(nonstop) < nonstopmin and len(nonstop) != len(words):
                 del terms[term]
@@ -380,7 +381,7 @@ class TerminologyExtractor:
                 words.pop()
                 if terms[term][0] == terms.get(" ".join(words), [0])[0]:
                     del terms[" ".join(words)]
-            words = term.split()  # ty:ignore[unresolved-attribute]
+            words = term.split()
             while len(words) > 2:
                 words.pop(0)
                 if terms[term][0] == terms.get(" ".join(words), [0])[0]:
