@@ -29,5 +29,5 @@ code touching stats or quality checks.  An increased build number will force a
 toolkit user, like Pootle, to regenerate its stored stats and check
 results."""
 
-sver = "{}.{}.{}".format(*ver)
+sver = f"{ver[0]}.{ver[1]}.{ver[2]}"
 """Human readable version number. Used for version number display."""
