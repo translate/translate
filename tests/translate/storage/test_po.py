@@ -340,6 +340,31 @@ msgstr "TRANSLATED-STRING"'''
         print(pofile)
         assert len(pofile.units) == 2
 
+    def test_parse_comment(self) -> None:
+        """Parse a string."""
+        posource = 'msgid "test"\nmsgstr "rest" # comment\n'
+        pofile = self.poparse(posource)
+        assert len(pofile.units) == 1
+        unit = pofile.units[0]
+        assert unit.source == "test"
+        assert unit.target == "rest"
+
+    def test_plurals_missing_plural(self) -> None:
+        posource = r"""msgid "Cow"
+msgstr[0] "Koei"
+msgstr[1] "Koeie"
+"""
+        with raises(ValueError):
+            self.poparse(posource)
+
+    def test_plurals_missing_array(self) -> None:
+        posource = r"""msgid "Cow"
+msgid_plural "Cows"
+msgstr "Koei"
+"""
+        with raises(ValueError):
+            self.poparse(posource)
+
     def test_plurals(self) -> None:
         posource = r"""msgid "Cow"
 msgid_plural "Cows"
@@ -349,6 +374,8 @@ msgstr[1] "Koeie"
         pofile = self.poparse(posource)
         assert len(pofile.units) == 1
         unit = pofile.units[0]
+        assert isinstance(unit.source, multistring)
+        assert unit.source.strings == ["Cow", "Cows"]
         assert isinstance(unit.target, multistring)
         print(unit.target.strings)
         assert unit.target == "Koei"
