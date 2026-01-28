@@ -7,7 +7,7 @@ The :wp:`levenshtein distance <Levenshtein_distance>` is used for measuring the
 *"distance"* or similarity of two character strings. Other similarity algorithms
 can be supplied to the code that does the matching.
 
-This code is used in :doc:`pot2po`, :doc:`tmserver` and `Virtaal
+This code is used in :doc:`pot2po` and `Virtaal
 <http://virtaal.org>`_. It is implemented in the toolkit, but can optionally use
 the fast C implementation provided by `python-Levenshtein
 <https://pypi.python.org/pypi/python-Levenshtein>`_ if it is installed. It is

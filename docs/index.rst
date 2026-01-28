@@ -79,6 +79,5 @@ localization tools.
    api/lang
    api/misc
    api/search
-   api/services
    api/storage
    api/tools

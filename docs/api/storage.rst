@@ -365,14 +365,6 @@ tiki
    :inherited-members:
 
 
-tmdb
-----
-
-.. automodule:: translate.storage.tmdb
-   :members:
-   :inherited-members:
-
-
 tmx
 ---
 
