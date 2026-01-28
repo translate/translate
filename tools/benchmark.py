@@ -182,11 +182,10 @@ if __name__ == "__main__":
         benchmarker.clear_test_dir()
         if args.podir is None:
             benchmarker.create_sample_files(*sample_file_sizes)
-        benchmarker.parse_files(file_dir=args.podir)
-        methods = []  # [("create_sample_files", "*sample_file_sizes")]
+        methods = []
 
         if args.check_parsing:
-            methods.append(("parse_files", ""))
+            methods.append(("parse_files", repr(args.podir)))
 
         if args.check_placeables:
             methods.append(("parse_placeables", ""))

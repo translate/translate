@@ -42,8 +42,6 @@ if TYPE_CHECKING:
 
     from .pypo import pofile, pounit
 
-SINGLE_BYTE_ENCODING = "iso-8859-1"
-
 
 class PoParseError(ValueError):
     def __init__(self, parse_state: PoParseState, message: str | None = None) -> None:
@@ -60,26 +58,35 @@ class PoParseState:
         self,
         input_lines: list[bytes] | list[str],
         UnitClass: Callable[[], pounit],
-        encoding: str = SINGLE_BYTE_ENCODING,
+        encoding: str | None = None,
     ) -> None:
         # A single-byte encoding is first defined to be able to read the header
         # without risking UnicodeDecodeErrors. As soon as the header is parsed,
         # the encoding defined in the header is used to reset the parser and
         # re-parse all content (including the header) with the correct encoding.
         self._input_lines = input_lines
-        self._input_iterator = iter(input_lines)
         self.next_line: str = ""
         self.last_line: str = ""
         self.lineno: int = 0
         self.eof: bool = False
-        self.encoding: str = encoding
+        # Configured encoding
+        self.encoding: str | None = encoding
+        # Currently used encoding, start with UTF-8 if not provided and
+        # fall back to iso-8859-1 on decoding error.
+        self._current_encoding = encoding if encoding is not None else "utf-8"
         self.read_line()
         self.UnitClass = UnitClass
+
+    def finalize_encoding(self, encoding: str) -> bool:
+        """Finalize encoding detection and check whether restart is needed."""
+        if encoding == self._current_encoding:
+            self.encoding = encoding
+            return True
+        return False
 
     def set_encoding(self, encoding: str) -> None:
         """Reset parser state to process file with a different encoding."""
         self.encoding = encoding
-        self._input_iterator = iter(self._input_lines)
         self.next_line = ""
         self.last_line = ""
         self.lineno = 0
@@ -90,18 +97,36 @@ class PoParseState:
         self.last_line = current = self.next_line
         if self.eof:
             return current
+        next_lineno = self.lineno
         try:
-            next_line = next(self._input_iterator)
-            self.lineno += 1
-            while next_line.isspace():
-                next_line = next(self._input_iterator)
-                self.lineno += 1
-        except StopIteration:
-            self.next_line = ""
+            next_line = self._input_lines[next_lineno]
+        except IndexError:
             self.eof = True
         else:
+            while next_line.isspace():
+                next_lineno += 1
+                try:
+                    next_line = self._input_lines[next_lineno]
+                except IndexError:
+                    self.eof = True
+                    break
+
+        if self.eof:
+            self.next_line = ""
+        else:
+            # This is 1-based
+            self.lineno = next_lineno + 1
             if isinstance(next_line, bytes):
-                self.next_line = next_line.decode(self.encoding)
+                try:
+                    self.next_line = next_line.decode(self._current_encoding)
+                except UnicodeDecodeError:
+                    if self._current_encoding == "utf-8" and self.encoding is None:
+                        # Fall-back to single byte encoding for compatibility reasons
+                        self._current_encoding = "iso-8859-1"
+                        self.next_line = next_line.decode(self._current_encoding)
+                    else:
+                        raise
+
             else:
                 self.next_line = next_line
         return current
@@ -400,6 +425,10 @@ def parse_header(parse_state: PoParseState, store: pofile) -> pounit | None:
     # Configure store
     store._encoding = charset
     # Configure parser
+    if parse_state.finalize_encoding(charset):
+        return first_unit
+
+    # Restart parser on encoding change
     parse_state.set_encoding(charset)
 
     # Parse header with the new encoding
