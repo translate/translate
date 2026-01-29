@@ -1493,3 +1493,8 @@ msgstr "next translation"
         # This should raise an error because it's genuinely invalid
         with raises(ValueError):
             self.poparse(posource)
+
+    def test_parse_corrupt_header(self) -> None:
+        posource = b'msgid ""\r\nmsgstr ""\r\n"PO-Revision-Date: 2025-11-27 05:03+0000\\n"\r\n"Last-Translator: \\"x\\" <x@example.com>\\n"\r\n"Language-Team: X"\r\n"MIME-Version: 1.0"\r\n"Content-Type: text/plain; charset=UTF-8"\r\n"Content-Transfer-Encoding: 8bit"\r\n'
+        with raises(ValueError):
+            self.poparse(posource)
