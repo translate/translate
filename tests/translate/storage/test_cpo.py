@@ -210,3 +210,7 @@ class TestCPOFile(test_po.TestPOFile):
     @mark.xfail(reason="removal not working in cPO")
     def test_remove(self) -> None:
         super().test_remove()
+
+    @mark.skip(reason="Native gettext emits warning here")
+    def test_parse_corrupt_header(self) -> None:
+        pass

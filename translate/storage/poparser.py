@@ -34,6 +34,7 @@ From the GNU gettext manual:
 
 from __future__ import annotations
 
+import codecs
 import re
 from collections import defaultdict
 from typing import TYPE_CHECKING, cast
@@ -45,12 +46,18 @@ if TYPE_CHECKING:
 
 
 class PoParseError(ValueError):
-    def __init__(self, parse_state: PoParseState, message: str | None = None) -> None:
+    def __init__(
+        self,
+        parse_state: PoParseState,
+        message: str | None = None,
+        lineno: int | None = None,
+        error_line: str | None = None,
+    ) -> None:
         self.parse_state = parse_state
         if message is None:
             message = "Syntax error"
         super().__init__(
-            f"{message} on line {parse_state.lineno}: {parse_state.next_line!r}"
+            f"{message} on line {lineno or parse_state.lineno}: {error_line or parse_state.next_line!r}"
         )
 
 
@@ -69,6 +76,8 @@ class PoParseState:
         self.next_line: str = ""
         self.lineno: int = 0
         self.eof: bool = False
+        self.charset_lineno = 0
+        self.charset_line = ""
         # Configured encoding
         self.encoding: str | None = encoding
         # Currently used encoding, start with UTF-8 if not provided and
@@ -86,6 +95,15 @@ class PoParseState:
 
     def set_encoding(self, encoding: str) -> None:
         """Reset parser state to process file with a different encoding."""
+        try:
+            codecs.lookup(encoding)
+        except LookupError as error:
+            raise PoParseError(
+                self,
+                f"Unsupported charset: {encoding}",
+                lineno=self.charset_lineno,
+                error_line=self.charset_line,
+            ) from error
         self.encoding = encoding
         self.next_line = ""
         self.lineno = 0
@@ -94,6 +112,9 @@ class PoParseState:
 
     def read_line(self) -> str:
         current = self.next_line
+        if self.charset_lineno == 0 and "charset=" in current:
+            self.charset_lineno = self.lineno
+            self.charset_line = current
         if self.eof:
             return current
         next_lineno = self.lineno
@@ -388,7 +409,7 @@ def get_header_charset(unit: pounit) -> str:
         and isinstance(unit.msgstr[0], str)
     ):
         # Allow optional whitespace after '=' to match 'charset= koi8-r'
-        charset_match = re.search(r"charset=\s*([^\s\\n]+)", "".join(unit.msgstr))
+        charset_match = re.search(r"charset=\s*([^\s\n]+)", unit.target)
         if charset_match and (charset := charset_match.group(1)) != "CHARSET":
             return charset
     # fallback to utf-8
