@@ -47,7 +47,6 @@ from lxml import etree, html
 
 from translate.storage import base
 
-
 __all__ = (
     "RTF_ESCAPES",
     "TRADOS_TIMEFORMAT",
@@ -162,7 +161,7 @@ class TradosUnit(base.TranslationUnit):
             return ""
         segs = self._element.xpath(".//seg")
         if len(segs) > 0:
-            text = segs[0].text if segs[0].text else ""
+            text = segs[0].text or ""
             return unescape(text.strip())
         return ""
 
@@ -175,7 +174,7 @@ class TradosUnit(base.TranslationUnit):
             return ""
         segs = self._element.xpath(".//seg")
         if len(segs) > 1:
-            text = segs[1].text if segs[1].text else ""
+            text = segs[1].text or ""
             return unescape(text.strip())
         return ""
 
@@ -202,7 +201,9 @@ def _preprocess_trados_content(content):
         # Check if line has content after the opening tag (not just a closing tag)
         if line and not line.strip().startswith("</") and ">" in line:
             # Match tags with content after them
-            match = re.match(r"^(\s*)<(?P<fulltag>(?P<tag>[^\s/>]+).*?)>(?P<content>.+?)$", line)
+            match = re.match(
+                r"^(\s*)<(?P<fulltag>(?P<tag>[^\s/>]+).*?)>(?P<content>.+?)$", line
+            )
             if match:
                 indent = match.group(1)
                 fulltag = match.group("fulltag")
@@ -250,11 +251,11 @@ class TradosTxtTmFile(base.TranslationStore):
 
         # Find all translation units
         # If the root element is a TrU, it's the only unit
-        if self._element.tag == "tru":
+        if self._element.tag == "tru":  # codespell:ignore
             trus = [self._element]
         else:
             # Otherwise, find all TrU elements
-            trus = self._element.xpath(".//tru")
+            trus = self._element.xpath(".//tru")  # codespell:ignore
 
         for tu in trus:
             unit = TradosUnit()
