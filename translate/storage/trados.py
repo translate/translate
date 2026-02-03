@@ -40,7 +40,6 @@ A Trados file looks like this:
 
 """
 
-import re
 import time
 
 from lxml import etree, html
@@ -181,44 +180,6 @@ class TradosUnit(base.TranslationUnit):
     target = property(gettarget, None)
 
 
-def _preprocess_trados_content(content):
-    """
-    Preprocess Trados content to add closing tags for non-empty elements.
-
-    Trados format uses unclosed tags like:
-    <Seg L=EN_GB>Hello World
-
-    This converts them to proper XML:
-    <Seg L=EN_GB>Hello World</Seg>
-    """
-    if isinstance(content, bytes):
-        content = content.decode("iso-8859-1")
-
-    lines = content.split("\n")
-    processed_lines = []
-
-    for line in lines:
-        # Check if line has content after the opening tag (not just a closing tag)
-        if line and not line.strip().startswith("</") and ">" in line:
-            # Match tags with content after them
-            # Groups: indent (whitespace), fulltag (tag name + attributes), tag (name only), content (text)
-            match = re.match(
-                r"^(\s*)<(?P<fulltag>(?P<tag>[^\s/>]+).*?)>(?P<content>.+?)$", line
-            )
-            if match:
-                indent = match.group(1)
-                fulltag = match.group("fulltag")
-                tag = match.group("tag")
-                content_text = match.group("content")
-                processed_lines.append(f"{indent}<{fulltag}>{content_text}</{tag}>")
-            else:
-                processed_lines.append(line)
-        else:
-            processed_lines.append(line)
-
-    return "\n".join(processed_lines)
-
-
 class TradosTxtTmFile(base.TranslationStore):
     """A Trados translation memory file."""
 
@@ -246,9 +207,8 @@ class TradosTxtTmFile(base.TranslationStore):
             input.close()
             input = tmsrc
 
-        # Preprocess the content to add closing tags
-        processed = _preprocess_trados_content(input)
-        self._element = html.fromstring(processed)
+        # lxml.html handles unclosed tags gracefully
+        self._element = html.fromstring(input)
 
         # Find all translation units
         # Note: lxml.html lowercases all tag names, so we search for 'tru' not 'TrU'  # codespell:ignore
