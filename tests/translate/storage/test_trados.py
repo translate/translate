@@ -2,8 +2,6 @@ import time
 
 from pytest import importorskip
 
-from . import test_base
-
 trados = importorskip("translate.storage.trados", exc_type=ImportError)
 
 
