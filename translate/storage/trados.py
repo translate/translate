@@ -164,14 +164,14 @@ class TradosUnit(base.TranslationUnit):
 
     @property
     def source(self):
-        return unescape(self._soup.findAll("seg")[0].contents[0])  # ty:ignore[possibly-missing-attribute]
+        return unescape(self._soup.find_all("seg")[0].contents[0].strip())  # ty:ignore[possibly-missing-attribute]
 
     @source.setter
     def source(self, source) -> None:
         pass
 
     def gettarget(self):
-        return unescape(self._soup.findAll("seg")[1].contents[0])  # ty:ignore[possibly-missing-attribute]
+        return unescape(self._soup.find_all("seg")[1].contents[0].strip())  # ty:ignore[possibly-missing-attribute]
 
     target = property(gettarget, None)
 
@@ -210,10 +210,10 @@ class TradosTxtTmFile(base.TranslationStore):
             tmsrc = input.read()
             input.close()
             input = tmsrc
-        self._soup = TradosSoup(input)
-        for tu in self._soup.findAll("tru"):  # codespell:ignore
+        self._soup = TradosSoup(input, features="lxml")
+        for tu in self._soup.find_all("tru"):  # codespell:ignore
             unit = TradosUnit()
-            unit._soup = TradosSoup(str(tu))
+            unit._soup = TradosSoup(str(tu), features="lxml")
             self.addunit(unit)
 
     def serialize(self, out) -> None:
