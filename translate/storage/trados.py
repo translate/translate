@@ -40,19 +40,11 @@ A Trados file looks like this:
 
 """
 
-import re
 import time
 
+from lxml import etree, html
+
 from translate.storage import base
-
-try:
-    # FIXME see if we can't use lxml
-    from bs4 import BeautifulSoup
-except ImportError as error:
-    raise ImportError(
-        "BeautifulSoup 4 is not installed. Support for Trados txt is disabled."
-    ) from error
-
 
 __all__ = (
     "RTF_ESCAPES",
@@ -159,30 +151,33 @@ class TradosTxtDate:
 
 class TradosUnit(base.TranslationUnit):
     def __init__(self, source=None) -> None:
-        self._soup = None
+        self._element = None
         super().__init__(source)
 
     @property
     def source(self):
-        return unescape(self._soup.find_all("seg")[0].contents[0].strip())  # ty:ignore[possibly-missing-attribute]
+        if self._element is None:
+            return ""
+        segs = self._element.xpath(".//seg")
+        if len(segs) > 0:
+            text = segs[0].text or ""
+            return unescape(text.strip())
+        return ""
 
     @source.setter
     def source(self, source) -> None:
         pass
 
     def gettarget(self):
-        return unescape(self._soup.find_all("seg")[1].contents[0].strip())  # ty:ignore[possibly-missing-attribute]
+        if self._element is None:
+            return ""
+        segs = self._element.xpath(".//seg")
+        if len(segs) > 1:
+            text = segs[1].text or ""
+            return unescape(text.strip())
+        return ""
 
     target = property(gettarget, None)
-
-
-class TradosSoup(BeautifulSoup):
-    MARKUP_MASSAGE = [
-        (
-            re.compile(r"<(?P<fulltag>(?P<tag>[^\s\/]+).*?)>(?P<content>.+)\r"),
-            lambda x: "<{fulltag}>{content}</{tag}>".format(**x.groupdict()),
-        ),
-    ]
 
 
 class TradosTxtTmFile(base.TranslationStore):
@@ -198,6 +193,7 @@ class TradosTxtTmFile(base.TranslationStore):
         """Construct a Wordfast TM, optionally reading in from inputfile."""
         super().__init__(**kwargs)
         self.filename = ""
+        self._element = None
         if inputfile is not None:
             self.parse(inputfile)
 
@@ -210,12 +206,27 @@ class TradosTxtTmFile(base.TranslationStore):
             tmsrc = input.read()
             input.close()
             input = tmsrc
-        self._soup = TradosSoup(input, features="lxml")
-        for tu in self._soup.find_all("tru"):  # codespell:ignore
+
+        # lxml.html handles unclosed tags gracefully
+        self._element = html.fromstring(input)
+
+        # Find all translation units
+        # Note: lxml.html lowercases all tag names, so we search for 'tru' not 'TrU'  # codespell:ignore
+        # If the root element is a TrU, it's the only unit
+        if self._element.tag == "tru":  # codespell:ignore
+            trus = [self._element]
+        else:
+            # Otherwise, find all TrU elements
+            trus = self._element.xpath(".//tru")  # codespell:ignore
+
+        for tu in trus:
             unit = TradosUnit()
-            unit._soup = TradosSoup(str(tu), features="lxml")
+            unit._element = tu
             self.addunit(unit)
 
     def serialize(self, out) -> None:
-        # FIXME turn the lowercased tags back into mixed case
-        out.write(self._soup.prettify())
+        if self._element is not None:
+            output = etree.tostring(
+                self._element, encoding="unicode", pretty_print=True, method="html"
+            )
+            out.write(output)

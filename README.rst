@@ -125,9 +125,6 @@ The aeidon package is needed for sub2po
 and po2sub. Some Unicode encoded files (including most files from
 <http://dotsub.com/>) require version 0.14 or later.
 
-Trados TXT TM support requires the BeautifulSoup parser
-<http://www.crummy.com/software/BeautifulSoup/>
-
 Markdown support requires the mistletoe parser
 <https://github.com/miyuchina/mistletoe>
 

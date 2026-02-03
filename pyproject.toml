@@ -82,7 +82,7 @@ requires-python = ">=3.11"
 
 [project.optional-dependencies]
 all = [
-  "translate-toolkit[chardet,fluent,ical,ini,levenshtein,markdown,php,rc,spellcheck,subtitles,toml,trados,yaml]"
+  "translate-toolkit[chardet,fluent,ical,ini,levenshtein,markdown,php,rc,spellcheck,subtitles,toml,yaml]"
 ]
 chardet = [
   "charset-normalizer>=3.4.0,<4.0"
@@ -116,9 +116,6 @@ subtitles = [
 ]
 toml = [
   "tomlkit>=0.13.0,<0.15.0"
-]
-trados = [
-  "BeautifulSoup4>=4.13.0"
 ]
 yaml = [
   "ruamel.yaml>=0.18.0,<0.20.0"
@@ -250,7 +247,6 @@ disable_warnings = ["no-ctracer"]
 
 [tool.isort]
 known_third_party = [
-  "bs4",
   "iniparse",
   "lxml",
   "phply",
