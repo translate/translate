@@ -388,6 +388,27 @@ pre tag
         assert store.units[0].source == "Extract this"
         assert store.units[1].source == "Translate"
 
+        # Ignored content nested in parent translatable element should not be duplicated
+        # This is the bug from https://github.com/WeblateOrg/weblate/issues/17867
+        store = h.parsestring(
+            """<div>
+  <p>Welcome</p>
+  <ul class="lang-menu" data-translate-ignore>
+    <li><a href="/ar" lang="ar">العربية</a></li>
+    <li><a href="/ca" lang="ca">Català</a></li>
+  </ul>
+  <p>Choose your language</p>
+</div>"""
+        )
+        assert len(store.units) == 2
+        assert store.units[0].source == "Welcome"
+        assert store.units[1].source == "Choose your language"
+        # Ensure the ignored content is NOT in any unit
+        for unit in store.units:
+            assert "العربية" not in unit.source
+            assert "Català" not in unit.source
+            assert "<li>" not in unit.source
+
     def test_translate_comment_directives(self) -> None:
         """Check that translate:off and translate:on comments work."""
         h = html.htmlfile()
@@ -414,6 +435,29 @@ pre tag
         )
         assert len(store.units) == 1
         assert store.units[0].source == "Translate this"
+
+        # Ignored content nested in parent translatable element should not be duplicated
+        # Same test as above but with comment directives instead of attribute
+        store = h.parsestring(
+            """<div>
+  <p>Welcome</p>
+  <!-- translate:off -->
+  <ul class="lang-menu">
+    <li><a href="/ar" lang="ar">العربية</a></li>
+    <li><a href="/ca" lang="ca">Català</a></li>
+  </ul>
+  <!-- translate:on -->
+  <p>Choose your language</p>
+</div>"""
+        )
+        assert len(store.units) == 2
+        assert store.units[0].source == "Welcome"
+        assert store.units[1].source == "Choose your language"
+        # Ensure the ignored content is NOT in any unit
+        for unit in store.units:
+            assert "العربية" not in unit.source
+            assert "Català" not in unit.source
+            assert "<li>" not in unit.source
 
     def test_extraction_meta_social_media_tags(self) -> None:
         """Check that we can extract common social media meta tags."""
