@@ -1,5 +1,7 @@
 # pypo2phppo unit tests
+# spellchecker:off
 # Author: Wil Clouser <wclouser@mozilla.com>
+# spellchecker:on
 # Date: 2009-12-03
 
 from io import BytesIO
