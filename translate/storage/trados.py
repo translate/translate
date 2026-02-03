@@ -201,6 +201,7 @@ def _preprocess_trados_content(content):
         # Check if line has content after the opening tag (not just a closing tag)
         if line and not line.strip().startswith("</") and ">" in line:
             # Match tags with content after them
+            # Groups: indent (whitespace), fulltag (tag name + attributes), tag (name only), content (text)
             match = re.match(
                 r"^(\s*)<(?P<fulltag>(?P<tag>[^\s/>]+).*?)>(?P<content>.+?)$", line
             )
@@ -250,6 +251,7 @@ class TradosTxtTmFile(base.TranslationStore):
         self._element = html.fromstring(processed)
 
         # Find all translation units
+        # Note: lxml.html lowercases all tag names, so we search for 'tru' not 'TrU'  # codespell:ignore
         # If the root element is a TrU, it's the only unit
         if self._element.tag == "tru":  # codespell:ignore
             trus = [self._element]
