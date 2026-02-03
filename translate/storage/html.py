@@ -241,7 +241,11 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
     def append_markup(self, markup) -> None:
         # if within a translation unit: add to the queue to be processed later.
         # otherwise handle immediately.
-        if self.tu_location:
+        # However, if we're in an ignored section, output directly to filesrc
+        # to avoid including ignored content in parent translation units
+        if self.is_extraction_ignored():
+            self.filesrc += markup["html_content"]
+        elif self.tu_location:
             self.tu_content.append(markup)
         else:
             self.emit_attribute_translation_units(markup)
