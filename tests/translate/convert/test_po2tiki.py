@@ -1,5 +1,7 @@
 # po2tiki unit tests
+# spellchecker:off
 # Author: Wil Clouser <wclouser@mozilla.com>
+# spellchecker:on
 # Date: 2008-12-01
 from io import BytesIO
 
