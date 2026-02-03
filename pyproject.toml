@@ -117,9 +117,7 @@ subtitles = [
 toml = [
   "tomlkit>=0.13.0,<0.15.0"
 ]
-trados = [
-  "BeautifulSoup4>=4.13.0"
-]
+trados = []
 yaml = [
   "ruamel.yaml>=0.18.0,<0.20.0"
 ]
@@ -250,7 +248,6 @@ disable_warnings = ["no-ctracer"]
 
 [tool.isort]
 known_third_party = [
-  "bs4",
   "iniparse",
   "lxml",
   "phply",

@@ -43,15 +43,9 @@ A Trados file looks like this:
 import re
 import time
 
-from translate.storage import base
+from lxml import etree, html
 
-try:
-    # FIXME see if we can't use lxml
-    from bs4 import BeautifulSoup
-except ImportError as error:
-    raise ImportError(
-        "BeautifulSoup 4 is not installed. Support for Trados txt is disabled."
-    ) from error
+from translate.storage import base
 
 
 __all__ = (
@@ -159,30 +153,68 @@ class TradosTxtDate:
 
 class TradosUnit(base.TranslationUnit):
     def __init__(self, source=None) -> None:
-        self._soup = None
+        self._element = None
         super().__init__(source)
 
     @property
     def source(self):
-        return unescape(self._soup.find_all("seg")[0].contents[0].strip())  # ty:ignore[possibly-missing-attribute]
+        if self._element is None:
+            return ""
+        segs = self._element.xpath(".//seg")
+        if len(segs) > 0:
+            text = segs[0].text if segs[0].text else ""
+            return unescape(text.strip())
+        return ""
 
     @source.setter
     def source(self, source) -> None:
         pass
 
     def gettarget(self):
-        return unescape(self._soup.find_all("seg")[1].contents[0].strip())  # ty:ignore[possibly-missing-attribute]
+        if self._element is None:
+            return ""
+        segs = self._element.xpath(".//seg")
+        if len(segs) > 1:
+            text = segs[1].text if segs[1].text else ""
+            return unescape(text.strip())
+        return ""
 
     target = property(gettarget, None)
 
 
-class TradosSoup(BeautifulSoup):
-    MARKUP_MASSAGE = [
-        (
-            re.compile(r"<(?P<fulltag>(?P<tag>[^\s\/]+).*?)>(?P<content>.+)\r"),
-            lambda x: "<{fulltag}>{content}</{tag}>".format(**x.groupdict()),
-        ),
-    ]
+def _preprocess_trados_content(content):
+    """
+    Preprocess Trados content to add closing tags for non-empty elements.
+
+    Trados format uses unclosed tags like:
+    <Seg L=EN_GB>Hello World
+
+    This converts them to proper XML:
+    <Seg L=EN_GB>Hello World</Seg>
+    """
+    if isinstance(content, bytes):
+        content = content.decode("iso-8859-1")
+
+    lines = content.split("\n")
+    processed_lines = []
+
+    for line in lines:
+        # Check if line has content after the opening tag (not just a closing tag)
+        if line and not line.strip().startswith("</") and ">" in line:
+            # Match tags with content after them
+            match = re.match(r"^(\s*)<(?P<fulltag>(?P<tag>[^\s/>]+).*?)>(?P<content>.+?)$", line)
+            if match:
+                indent = match.group(1)
+                fulltag = match.group("fulltag")
+                tag = match.group("tag")
+                content_text = match.group("content")
+                processed_lines.append(f"{indent}<{fulltag}>{content_text}</{tag}>")
+            else:
+                processed_lines.append(line)
+        else:
+            processed_lines.append(line)
+
+    return "\n".join(processed_lines)
 
 
 class TradosTxtTmFile(base.TranslationStore):
@@ -198,6 +230,7 @@ class TradosTxtTmFile(base.TranslationStore):
         """Construct a Wordfast TM, optionally reading in from inputfile."""
         super().__init__(**kwargs)
         self.filename = ""
+        self._element = None
         if inputfile is not None:
             self.parse(inputfile)
 
@@ -210,12 +243,27 @@ class TradosTxtTmFile(base.TranslationStore):
             tmsrc = input.read()
             input.close()
             input = tmsrc
-        self._soup = TradosSoup(input, features="lxml")
-        for tu in self._soup.find_all("tru"):  # codespell:ignore
+
+        # Preprocess the content to add closing tags
+        processed = _preprocess_trados_content(input)
+        self._element = html.fromstring(processed)
+
+        # Find all translation units
+        # If the root element is a TrU, it's the only unit
+        if self._element.tag == "tru":
+            trus = [self._element]
+        else:
+            # Otherwise, find all TrU elements
+            trus = self._element.xpath(".//tru")
+
+        for tu in trus:
             unit = TradosUnit()
-            unit._soup = TradosSoup(str(tu), features="lxml")
+            unit._element = tu
             self.addunit(unit)
 
     def serialize(self, out) -> None:
-        # FIXME turn the lowercased tags back into mixed case
-        out.write(self._soup.prettify())
+        if self._element is not None:
+            output = etree.tostring(
+                self._element, encoding="unicode", pretty_print=True, method="html"
+            )
+            out.write(output)
