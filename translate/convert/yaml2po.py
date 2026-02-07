@@ -41,10 +41,14 @@ class yaml2po:
         template_file=None,
         blank_msgstr=False,
         duplicate_style="msgctxt",
+        personality="default",
     ) -> None:
         """Initialize the converter."""
         self.blank_msgstr = blank_msgstr
         self.duplicate_style = duplicate_style
+
+        if personality == "ruby":
+            self.SourceStoreClass = yaml.RubyYAMLFile
 
         self.extraction_msg = None
         self.output_file = output_file
@@ -105,16 +109,21 @@ class yaml2po:
 
 
 def run_converter(
-    input_file, output_file, template_file=None, pot=False, duplicatestyle="msgctxt"
+    input_file,
+    output_file,
+    template_file=None,
+    pot=False,
+    duplicatestyle="msgctxt",
+    personality="default",
 ):
     """Wrapper around converter."""
-    # TODO add Ruby personality.
     return yaml2po(
         input_file,
         output_file,
         template_file,
         blank_msgstr=pot,
         duplicate_style=duplicatestyle,
+        personality=personality,
     ).run()
 
 
@@ -131,7 +140,18 @@ def main(argv=None) -> None:
         formats, usetemplates=True, usepots=True, description=__doc__
     )
     parser.add_duplicates_option()
+    parser.add_option(
+        "",
+        "--personality",
+        dest="personality",
+        default="default",
+        type="choice",
+        choices=["default", "ruby"],
+        help="override the input YAML format: default, ruby (for Ruby on Rails YAML files with a language root node, e.g. 'en:' or 'ca:')",
+        metavar="TYPE",
+    )
     parser.passthrough.append("pot")
+    parser.passthrough.append("personality")
     parser.run(argv)
 
 
