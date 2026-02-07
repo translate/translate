@@ -42,10 +42,15 @@ class po2yaml:
         template_file=None,
         include_fuzzy=False,
         output_threshold=None,
+        personality="default",
     ) -> None:
         """Initialize the converter."""
         if template_file is None:
             raise ValueError(self.MissingTemplateMessage)
+
+        if personality == "ruby":
+            self.TargetStoreClass = yaml.RubyYAMLFile
+            self.TargetUnitClass = yaml.RubyYAMLUnit
 
         self.source_store = self.SourceStoreClass(input_file)
         self.target_store = self.TargetStoreClass()
@@ -96,12 +101,16 @@ class po2yaml:
 
 
 def run_converter(
-    inputfile, outputfile, templatefile=None, includefuzzy=False, outputthreshold=None
+    inputfile,
+    outputfile,
+    templatefile=None,
+    includefuzzy=False,
+    outputthreshold=None,
+    personality="default",
 ):
     """Wrapper around converter."""
-    # TODO add Ruby personality.
     return po2yaml(
-        inputfile, outputfile, templatefile, includefuzzy, outputthreshold
+        inputfile, outputfile, templatefile, includefuzzy, outputthreshold, personality
     ).run()
 
 
@@ -119,6 +128,17 @@ def main(argv=None) -> None:
     )
     parser.add_threshold_option()
     parser.add_fuzzy_option()
+    parser.add_option(
+        "",
+        "--personality",
+        dest="personality",
+        default="default",
+        type="choice",
+        choices=["default", "ruby"],
+        help="override the output YAML format: default, ruby (for Ruby on Rails YAML files with a language root node, e.g. 'en:' or 'ca:')",
+        metavar="TYPE",
+    )
+    parser.passthrough.append("personality")
     parser.run(argv)
 
 
