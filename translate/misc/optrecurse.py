@@ -32,7 +32,7 @@ from translate.misc import progressbar
 
 
 class ProgressBar:
-    progress_types = {
+    progress_types: dict[str, type[progressbar.ProgressBase]] = {
         "dots": progressbar.DotsProgressBar,
         "none": progressbar.NoProgressBar,
         "bar": progressbar.HashProgressBar,
