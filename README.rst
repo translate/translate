@@ -107,10 +107,10 @@ files, but has not yet been tested as extensively. Feedback is most welcome.
 The package iniparse is necessary for ini2po and po2ini:
 <https://pypi.org/project/iniparse/>
 
-The python-Levenshtein package will improve performance for fuzzy matching if
+The RapidFuzz package will improve performance for fuzzy matching if
 it is available. This can improve the performance of pot2po, for example.  It
 is optional and no functionality is lost if it is not installed, only speed.
-<http://sourceforge.net/projects/translate/files/python-Levenshtein/>
+<https://pypi.org/project/RapidFuzz/>
 
 Functions in the `lang.data` module can supply functions to translate language
 names using the `pycountry` package. It can even translate names in the format

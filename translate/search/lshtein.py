@@ -22,9 +22,8 @@ distance.
 
 .. seealso:: :wp:`Levenshtein_distance`
 
-If available, the `python-Levenshtein
-<https://pypi.python.org/pypi/python-Levenshtein>`_ will be used which will
-provide better performance as it is implemented natively.
+If available, the `RapidFuzz <https://pypi.org/project/RapidFuzz/>`_
+will be used which will provide better performance as it is implemented natively.
 """
 
 import logging
@@ -74,12 +73,12 @@ def native_distance(a, b, stopvalue=0):
 
 
 try:
-    import Levenshtein
+    from rapidfuzz.distance import Levenshtein
 
     distance = native_distance
 except ImportError:
     logger.warning(
-        "Python-Levenshtein not found. Continuing with built-in (slower) fuzzy matching."
+        "RapidFuzz not found. Continuing with built-in (slower) fuzzy matching."
     )
     distance = python_distance
 
