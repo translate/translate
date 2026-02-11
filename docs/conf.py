@@ -74,7 +74,7 @@ autodoc_mock_imports = [
     "lxml",
     "phply",
     "ruamel",
-    "Levenshtein",
+    "rapidfuzz",
 ]
 
 # -- Options for HTML output -------------------------------------------------
