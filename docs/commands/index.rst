@@ -14,6 +14,7 @@ Converters
    csv2po
    csv2tbx
    flatxml2po
+   fluent2po
    html2po
    ical2po
    ini2po
@@ -64,6 +65,8 @@ understanding that will make the converters much easier to use and understand.
 * :doc:`csv2tbx <csv2tbx>` -- Create TBX (TermBase eXchange) files from Comma
   Separated Value (CSV) files
 * :doc:`flatxml2po <flatxml2po>` -- Flat XML converter
+* :doc:`fluent2po <fluent2po>` -- Fluent (.ftl) converter. Used by Firefox,
+  Anki, etc.
 * :doc:`html2po <html2po>` -- HTML converter
 * :doc:`ical2po <ical2po>` -- iCalendar file converter
 * :doc:`ini2po <ini2po>` -- Windows INI file converter
