@@ -11,6 +11,7 @@ Converters
 
    general_usage
    android2po
+   asciidoc2po
    csv2po
    csv2tbx
    flatxml2po
@@ -59,6 +60,7 @@ converters follow a :doc:`general pattern of usage <general_usage>`,
 understanding that will make the converters much easier to use and understand.
 
 * :doc:`android2po <android2po>` -- Android resources to PO converter
+* :doc:`asciidoc2po <asciidoc2po>` -- AsciiDoc file converter
 * :doc:`csv2po <csv2po>` -- Comma Separated Value (CSV) converter. Useful for
   doing translations using a spreadsheet.
 * :doc:`csv2tbx <csv2tbx>` -- Create TBX (TermBase eXchange) files from Comma

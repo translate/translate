@@ -107,6 +107,7 @@ Formats of translatable documents
    :maxdepth: 1
    :hidden:
 
+   asciidoc
    flatxml
    html
    ical
@@ -119,6 +120,7 @@ Formats of translatable documents
    wiki
    yaml
 
+* :doc:`asciidoc`
 * :doc:`flatxml` (single-level XML)
 * :doc:`html`
 * :doc:`ical`
