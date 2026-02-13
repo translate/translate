@@ -31,7 +31,7 @@ class TestInc2PO:
         print(pofile)
         return len(pofile.units) - 1
 
-    def test_simpleentry(self):
+    def test_simpleentry(self) -> None:
         """Checks that a simple inc entry converts properly to a po entry."""
         incsource = "#define MOZ_LANGPACK_CREATOR mozilla.org\n"
         pofile = self.inc2po(incsource)
@@ -40,7 +40,7 @@ class TestInc2PO:
         assert pounit.source == "mozilla.org"
         assert pounit.target == ""
 
-    def test_uncomment_contributors(self):
+    def test_uncomment_contributors(self) -> None:
         """Checks that the contributors entry is automatically uncommented."""
         incsource = """# If non-English locales wish to credit multiple contributors, uncomment this
 # variable definition and use the format specified.

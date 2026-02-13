@@ -1,0 +1,23 @@
+Translate Toolkit 3.17.2
+************************
+
+*Released on 27 November 2025*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- PO
+
+  - Switched unicode segmentation library
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+Michal Čihař

@@ -117,7 +117,7 @@ def translate_idml(template, input_file, translatable_files):
 
                 # Copy the children to the XLIFF unit's source or target node.
                 fake_node = etree.fromstring(fake_string)
-                node.extend(fake_node.getchildren())
+                node.extend(fake_node.getchildren())  # ty:ignore[deprecated]
 
                 return node
 
@@ -153,7 +153,7 @@ def translate_idml(template, input_file, translatable_files):
     return translate_dom_trees(unit_trees, dom_trees)
 
 
-def write_idml(template_zip, output_file, dom_trees):
+def write_idml(template_zip, output_file, dom_trees) -> None:
     """Write the translated IDML package."""
     output_zip = ZipFile(output_file, "w", compression=ZIP_DEFLATED)
 
@@ -165,12 +165,15 @@ def write_idml(template_zip, output_file, dom_trees):
         output_zip.writestr(
             filename,
             etree.tostring(
-                dom_tree, encoding="UTF-8", xml_declaration=True, standalone="yes"
+                dom_tree,
+                encoding="UTF-8",
+                xml_declaration=True,
+                standalone="yes",  # ty:ignore[invalid-argument-type]
             ),
         )
 
 
-def convertpo(input_file, output_file, template):
+def convertpo(input_file, output_file, template) -> bool:
     """Create a translated IDML using an IDML template and a PO file."""
     # Now proceed with the conversion.
     template_zip = ZipFile(template, "r")
@@ -189,7 +192,7 @@ def convertpo(input_file, output_file, template):
     return True
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     formats = {
         ("po", "idml"): ("idml", convertpo),
     }

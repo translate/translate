@@ -1,5 +1,5 @@
-import sys
 from io import BytesIO
+from typing import cast
 
 from pytest import importorskip, mark, raises
 
@@ -7,18 +7,13 @@ from translate.misc.multistring import multistring
 
 from . import test_po
 
-pytestmark = mark.skipif(
-    not sys.platform.startswith("linux"), reason="cpo is only available on Linux"
-)
-
-
-cpo = importorskip("translate.storage.cpo")
+cpo = importorskip("translate.storage.cpo", exc_type=ImportError)
 
 
 class TestCPOUnit(test_po.TestPOUnit):
     UnitClass = cpo.pounit
 
-    def test_plurals(self):
+    def test_plurals(self) -> None:
         """Tests that plurals are handled correctly."""
         unit = self.UnitClass("Cow")
         unit.msgid_plural = ["Cows"]
@@ -42,7 +37,7 @@ class TestCPOUnit(test_po.TestPOUnit):
         assert unit.target.strings == ["Sk\u00ear", "Sk\u00eare"]
         assert unit.target == "Sk\u00ear"
 
-    def test_plural_reduction(self):
+    def test_plural_reduction(self) -> None:
         """Checks that reducing the number of plurals supplied works."""
         unit = self.UnitClass("Tree")
         unit.msgid_plural = ["Trees"]
@@ -56,11 +51,11 @@ class TestCPOUnit(test_po.TestPOUnit):
         unit.target = "Boom"
         # FIXME: currently assigning the target to the same as the first string won't change anything
         # we need to verify that this is the desired behaviour...
-        assert unit.target.strings[0] == "Boom"
+        assert cast("multistring", unit.target).strings[0] == "Boom"
         unit.target = "Een Boom"
-        assert unit.target.strings == ["Een Boom"]
+        assert cast("multistring", unit.target).strings == ["Een Boom"]
 
-    def test_notes(self):
+    def test_notes(self) -> None:
         """Tests that the generic notes API works."""
         unit = self.UnitClass("File")
         assert unit.getnotes() == ""
@@ -75,7 +70,7 @@ class TestCPOUnit(test_po.TestPOUnit):
         with raises(ValueError):
             unit.getnotes("devteam")
 
-    def test_notes_withcomments(self):
+    def test_notes_withcomments(self) -> None:
         """Tests that when we add notes that look like comments that we treat them properly."""
         unit = self.UnitClass("File")
         unit.addnote("# Double commented comment")
@@ -86,7 +81,11 @@ class TestCPOUnit(test_po.TestPOUnit):
 class TestCPOFile(test_po.TestPOFile):
     StoreClass = cpo.pofile
 
-    def test_msgidcomments(self):
+    @mark.skip(reason="Native gettext doesn't handle \\r\\r\\n line endings")
+    def test_unusual_line_endings(self) -> None:
+        r"""Skip this test for CPO as native gettext doesn't support \r\r\n."""
+
+    def test_msgidcomments(self) -> None:
         """Checks that we handle msgid comments."""
         posource = 'msgid "test me"\nmsgstr ""'
         pofile = self.poparse(posource)
@@ -99,7 +98,7 @@ class TestCPOFile(test_po.TestPOFile):
         assert bytes(pofile).count(b"_:") == 1
 
     @mark.xfail(reason="Were disabled during port of Pypo to cPO - they might work")
-    def test_merge_duplicates_msgctxt(self):
+    def test_merge_duplicates_msgctxt(self) -> None:
         """Checks that merging duplicates works for msgctxt."""
         posource = '#: source1\nmsgid "test me"\nmsgstr ""\n\n#: source2\nmsgid "test me"\nmsgstr ""\n'
         pofile = self.poparse(posource)
@@ -111,7 +110,7 @@ class TestCPOFile(test_po.TestPOFile):
         assert str(pofile.units[1]).count("source2") == 2
 
     @mark.xfail(reason="Were disabled during port of Pypo to cPO - they might work")
-    def test_merge_blanks(self):
+    def test_merge_blanks(self) -> None:
         """Checks that merging adds msgid_comments to blanks."""
         posource = (
             '#: source1\nmsgid ""\nmsgstr ""\n\n#: source2\nmsgid ""\nmsgstr ""\n'
@@ -126,7 +125,7 @@ class TestCPOFile(test_po.TestPOFile):
         assert cpo.unquotefrompo(pofile.units[1].msgidcomments) == "_: source2\n"
 
     @mark.xfail(reason="Were disabled during port of Pypo to cPO - they might work")
-    def test_msgid_comment(self):
+    def test_msgid_comment(self) -> None:
         """Checks that when adding msgid_comments we place them on a newline."""
         posource = '#: source0\nmsgid "Same"\nmsgstr ""\n\n#: source1\nmsgid "Same"\nmsgstr ""\n'
         pofile = self.poparse(posource)
@@ -138,13 +137,12 @@ class TestCPOFile(test_po.TestPOFile):
         # Now lets check for formatting
         for i in (0, 1):
             expected = (
-                """#: source%d\nmsgid ""\n"_: source%d\\n"\n"Same"\nmsgstr ""\n"""
-                % (i, i)
+                f"""#: source{i}\nmsgid ""\n"_: source{i}\\n"\n"Same"\nmsgstr ""\n"""
             )
             assert (str(pofile.units[i])) == expected
 
     @mark.xfail(reason="Were disabled during port of Pypo to cPO - they might work")
-    def test_keep_blanks(self):
+    def test_keep_blanks(self) -> None:
         """Checks that keeping keeps blanks and doesn't add msgid_comments."""
         posource = (
             '#: source1\nmsgid ""\nmsgstr ""\n\n#: source2\nmsgid ""\nmsgstr ""\n'
@@ -157,7 +155,7 @@ class TestCPOFile(test_po.TestPOFile):
         assert cpo.unquotefrompo(pofile.units[0].msgidcomments) == ""
         assert cpo.unquotefrompo(pofile.units[1].msgidcomments) == ""
 
-    def test_output_str_unicode(self):
+    def test_output_str_unicode(self) -> None:
         """Checks that we can serialize pofile, unit content is in unicode."""
         posource = """#: nb\nmsgid "Norwegian Bokmål"\nmsgstr ""\n"""
         pofile = self.StoreClass(BytesIO(posource.encode("UTF-8")), encoding="UTF-8")
@@ -177,7 +175,7 @@ class TestCPOFile(test_po.TestPOFile):
 
     #        assert halfstr.encode("UTF-8") in bytes(pofile)
 
-    def test_posections(self):
+    def test_posections(self) -> None:
         """Checks the content of all the expected sections of a PO message."""
         posource = '# other comment\n#. automatic comment\n#: source comment\n#, fuzzy\nmsgid "One"\nmsgstr "Een"\n'
         pofile = self.poparse(posource)
@@ -185,7 +183,7 @@ class TestCPOFile(test_po.TestPOFile):
         assert len(pofile.units) == 1
         assert bytes(pofile).decode("utf-8") == posource
 
-    def test_multiline_obsolete(self):
+    def test_multiline_obsolete(self) -> None:
         """Tests for correct output of multiline obsolete messages."""
         posource = '#~ msgid ""\n#~ "Old thing\\n"\n#~ "Second old thing"\n#~ msgstr ""\n#~ "Ou ding\\n"\n#~ "Tweede ou ding"\n'
         pofile = self.poparse(posource)
@@ -196,7 +194,7 @@ class TestCPOFile(test_po.TestPOFile):
         assert not pofile.units[0].istranslatable()
         assert bytes(pofile).decode("utf-8") == posource
 
-    def test_unassociated_comments(self):
+    def test_unassociated_comments(self) -> None:
         """Tests behaviour of unassociated comments."""
         oldsource = '# old lonesome comment\n\nmsgid "one"\nmsgstr "een"\n'
         oldfile = self.poparse(oldsource)
@@ -205,5 +203,9 @@ class TestCPOFile(test_po.TestPOFile):
         assert "# old lonesome comment\nmsgid" in bytes(oldfile).decode("utf-8")
 
     @mark.xfail(reason="removal not working in cPO")
-    def test_remove(self):
+    def test_remove(self) -> None:
         super().test_remove()
+
+    @mark.skip(reason="Native gettext emits warning here")
+    def test_parse_corrupt_header(self) -> None:
+        pass

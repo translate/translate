@@ -2,7 +2,7 @@ from pytest import mark
 
 from translate.filters import checks, spelling
 from translate.lang import data
-from translate.storage import po, xliff
+from translate.storage import base, po, xliff
 
 
 def strprep(str1, str2, message=None):
@@ -29,7 +29,7 @@ def passes(filterfunction, str1, str2):
     return filterresult and check_category(filterfunction)
 
 
-def fails(filterfunction, str1, str2, message=None):
+def fails(filterfunction, str1, str2, message=None) -> bool:
     """Returns whether the given strings fail on the given test, handling only FilterFailures."""
     str1, str2, message = strprep(str1, str2, message)
     try:
@@ -49,7 +49,7 @@ def fails(filterfunction, str1, str2, message=None):
     return not filterresult
 
 
-def fails_serious(filterfunction, str1, str2, message=None):
+def fails_serious(filterfunction, str1, str2, message=None) -> bool:
     """Returns whether the given strings fail on the given test, handling only SeriousFilterFailures."""
     str1, str2, message = strprep(str1, str2, message)
     try:
@@ -67,7 +67,7 @@ def fails_serious(filterfunction, str1, str2, message=None):
     return not filterresult
 
 
-def test_defaults():
+def test_defaults() -> None:
     """Tests default setup and that checks aren't altered by other constructions."""
     stdchecker = checks.StandardChecker()
     assert stdchecker.config.varmatches == []
@@ -77,7 +77,7 @@ def test_defaults():
     assert stdchecker.config.varmatches == []
 
 
-def test_construct():
+def test_construct() -> None:
     """Tests that the checkers can be constructed."""
     checks.StandardChecker()
     checks.MozillaChecker()
@@ -88,7 +88,7 @@ def test_construct():
     checks.IOSChecker()
 
 
-def test_accelerator_markers():
+def test_accelerator_markers() -> None:
     """Test that we have the correct accelerator marker for the various default configs."""
     stdchecker = checks.StandardChecker()
     assert stdchecker.config.accelmarkers == []
@@ -104,7 +104,7 @@ def test_accelerator_markers():
     assert kdechecker.config.accelmarkers == ["&"]
 
 
-def test_messages():
+def test_messages() -> None:
     """Test that our helpers can check for messages and that these error messages can contain Unicode."""
     stdchecker = checks.StandardChecker(
         checks.CheckerConfig(
@@ -126,7 +126,7 @@ def test_messages():
     )
 
 
-def test_accelerators():
+def test_accelerators() -> None:
     """Tests accelerators."""
     stdchecker = checks.StandardChecker(checks.CheckerConfig(accelmarkers="&"))
     assert passes(stdchecker.accelerators, "&File", "&Fayile")
@@ -199,37 +199,37 @@ def test_accelerators():
 
 
 @mark.xfail(reason="Accelerated variables needs a better implementation")
-def test_acceleratedvariables():
+def test_acceleratedvariables() -> None:
     """Test for accelerated variables."""
     # FIXME: disabled since acceleratedvariables has been removed, but these checks are still needed
     mozillachecker = checks.MozillaChecker()
-    assert fails(mozillachecker.acceleratedvariables, "%S &Options", "&%S Ikhetho")
-    assert passes(mozillachecker.acceleratedvariables, "%S &Options", "%S &Ikhetho")
+    assert fails(mozillachecker.acceleratedvariables, "%S &Options", "&%S Ikhetho")  # ty:ignore[unresolved-attribute]
+    assert passes(mozillachecker.acceleratedvariables, "%S &Options", "%S &Ikhetho")  # ty:ignore[unresolved-attribute]
     ooochecker = checks.OpenOfficeChecker()
     assert fails(
-        ooochecker.acceleratedvariables,
+        ooochecker.acceleratedvariables,  # ty:ignore[unresolved-attribute]
         "%PRODUCTNAME% ~Options",
         "~%PRODUCTNAME% Ikhetho",
     )
     assert passes(
-        ooochecker.acceleratedvariables,
+        ooochecker.acceleratedvariables,  # ty:ignore[unresolved-attribute]
         "%PRODUCTNAME% ~Options",
         "%PRODUCTNAME% ~Ikhetho",
     )
     lochecker = checks.LibreOfficeChecker()
     assert fails(
-        lochecker.acceleratedvariables,
+        lochecker.acceleratedvariables,  # ty:ignore[unresolved-attribute]
         "%PRODUCTNAME% ~Options",
         "~%PRODUCTNAME% Ikhetho",
     )
     assert passes(
-        lochecker.acceleratedvariables,
+        lochecker.acceleratedvariables,  # ty:ignore[unresolved-attribute]
         "%PRODUCTNAME% ~Options",
         "%PRODUCTNAME% ~Ikhetho",
     )
 
 
-def test_acronyms():
+def test_acronyms() -> None:
     """Tests acronyms."""
     stdchecker = checks.StandardChecker()
     assert passes(stdchecker.acronyms, "An HTML file", "'n HTML leer")
@@ -250,14 +250,14 @@ def test_acronyms():
     )
 
 
-def test_blank():
+def test_blank() -> None:
     """Tests blank."""
     stdchecker = checks.StandardChecker()
     assert fails(stdchecker.blank, "Save as", " ")
     assert fails(stdchecker.blank, "_: KDE comment\\n\nSimple string", "  ")
 
 
-def test_brackets():
+def test_brackets() -> None:
     """Tests brackets."""
     stdchecker = checks.StandardChecker()
     assert passes(stdchecker.brackets, "N number(s)", "N getal(le)")
@@ -268,7 +268,7 @@ def test_brackets():
     assert passes(stdchecker.brackets, "{[(", "[({")
 
 
-def test_compendiumconflicts():
+def test_compendiumconflicts() -> None:
     """Tests compendiumconflicts."""
     stdchecker = checks.StandardChecker()
     assert fails(
@@ -281,7 +281,7 @@ Leer nie gestoor""",
     )
 
 
-def test_doublequoting():
+def test_doublequoting() -> None:
     """Tests double quotes."""
     stdchecker = checks.StandardChecker()
     assert fails(stdchecker.doublequoting, "Hot plate", '"Ipuleti" elishisa')
@@ -316,7 +316,7 @@ def test_doublequoting():
     )
 
 
-def test_doublespacing():
+def test_doublespacing() -> None:
     """Tests double spacing."""
     stdchecker = checks.StandardChecker()
     assert passes(
@@ -353,7 +353,7 @@ def test_doublespacing():
     )
 
 
-def test_doublewords():
+def test_doublewords() -> None:
     """Tests doublewords."""
     stdchecker = checks.StandardChecker()
     assert passes(stdchecker.doublewords, "Save the rhino", "Save the rhino")
@@ -379,7 +379,7 @@ def test_doublewords():
     assert passes(st_checker.doublewords, "Give SARS the tax", "Lekgetho le le fe SARS")
 
 
-def test_endpunc():
+def test_endpunc() -> None:
     """Tests endpunc."""
     stdchecker = checks.StandardChecker()
     assert passes(stdchecker.endpunc, "Question?", "Correct?")
@@ -436,7 +436,7 @@ def test_endpunc():
     assert passes(stdchecker.endpunc, "Header:", "En-tête\u00a0:")
 
 
-def test_endwhitespace():
+def test_endwhitespace() -> None:
     """Tests endwhitespace."""
     stdchecker = checks.StandardChecker()
     assert passes(stdchecker.endwhitespace, "A setence.", "I'm correct.")
@@ -453,7 +453,7 @@ def test_endwhitespace():
     assert passes(zh_checker.endwhitespace, "Init. Limit: ", "起始时间限制：")
 
 
-def test_escapes():
+def test_escapes() -> None:
     """Tests escapes."""
     stdchecker = checks.StandardChecker()
     assert passes(stdchecker.escapes, r"""A sentence""", "I'm correct.")
@@ -485,7 +485,7 @@ def test_escapes():
     )
 
 
-def test_newlines():
+def test_newlines() -> None:
     """Tests newlines."""
     stdchecker = checks.StandardChecker()
     assert passes(stdchecker.newlines, "Nothing to see", "Niks te sien")
@@ -517,7 +517,7 @@ def test_newlines():
     )
 
 
-def test_tabs():
+def test_tabs() -> None:
     """Tests tabs."""
     stdchecker = checks.StandardChecker()
     assert passes(stdchecker.tabs, "Nothing to see", "Niks te sien")
@@ -539,7 +539,7 @@ def test_tabs():
     )
 
 
-def test_filepaths():
+def test_filepaths() -> None:
     """Tests filepaths."""
     stdchecker = checks.StandardChecker()
     assert passes(
@@ -557,7 +557,7 @@ def test_filepaths():
     )
 
 
-def test_kdecomments():
+def test_kdecomments() -> None:
     """Tests kdecomments."""
     stdchecker = checks.StandardChecker()
     assert passes(
@@ -580,7 +580,7 @@ A string to translate""",
     )
 
 
-def test_long():
+def test_long() -> None:
     """Tests long messages."""
     stdchecker = checks.StandardChecker()
     assert passes(stdchecker.long, "I am normal", "Ek is ook normaal")
@@ -593,7 +593,7 @@ def test_long():
 
 
 @mark.xfail(reason="FIXME: All fails() tests are not working")
-def test_musttranslatewords():
+def test_musttranslatewords() -> None:
     """Tests stopwords."""
     stdchecker = checks.StandardChecker(checks.CheckerConfig(musttranslatewords=[]))
     assert passes(
@@ -686,7 +686,7 @@ def test_musttranslatewords():
     assert fails(stdchecker.musttranslatewords, "Click OK", "Kiḽikani OK")
 
 
-def test_notranslatewords():
+def test_notranslatewords() -> None:
     """Tests stopwords."""
     stdchecker = checks.StandardChecker(checks.CheckerConfig(notranslatewords=[]))
     assert passes(
@@ -788,7 +788,7 @@ def test_notranslatewords():
     )
 
 
-def test_numbers():
+def test_numbers() -> None:
     """Test numbers."""
     stdchecker = checks.StandardChecker()
     assert passes(
@@ -823,7 +823,7 @@ def test_numbers():
     assert passes(mozillachecker.numbers, "width: 12em;", "width: 20em;")
 
 
-def test_persian_numbers():
+def test_persian_numbers() -> None:
     """Test non latin numbers for Persian (RTL)."""
     fa_checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="fa"))
     assert passes(fa_checker.numbers, "&حرکت آهسته (۰.۵×)", "&Slow Motion (0.5×)")
@@ -865,7 +865,7 @@ def test_persian_numbers():
     )
 
 
-def test_bengali_numbers():
+def test_bengali_numbers() -> None:
     """Test non latin numbers for Bengali (LTR)."""
     bn_checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="bn"))
     assert passes(bn_checker.numbers, "উচ্চ গতি (১.৫ গুন)", "&High Speed (1.5×)")
@@ -893,7 +893,7 @@ def test_bengali_numbers():
     )
 
 
-def test_arabic_numbers():
+def test_arabic_numbers() -> None:
     """Test non latin numbers for Arabic."""
     ar_checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="ar"))
     assert passes(
@@ -911,7 +911,7 @@ def test_arabic_numbers():
     assert passes(ar_checker.numbers, "١٧٥٪", "175%")
 
 
-def test_assamese_numbers():
+def test_assamese_numbers() -> None:
     """Test non latin numbers for Assamese."""
     as_checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="as"))
     assert passes(
@@ -928,7 +928,7 @@ def test_assamese_numbers():
     assert passes(as_checker.numbers, "১৭৫%", "175%")
 
 
-def test_options():
+def test_options() -> None:
     """Tests command line options e.g. --option."""
     stdchecker = checks.StandardChecker()
     assert passes(stdchecker.options, "--help", "--help")
@@ -941,7 +941,7 @@ def test_options():
     assert passes(stdchecker.options, "--blank--", "--vide--")
 
 
-def test_printf():
+def test_printf() -> None:
     """Tests printf style variables."""
     # This should really be a subset of the variable checks
     # Ideally we should be able to adapt based on #, directives also
@@ -1068,7 +1068,7 @@ def test_printf():
     assert passes(stdchecker.printf, "%1%, %2%, %|40t|%3%", "%1%, %2%, %|40t|%3%")
 
 
-def test_pythonbraceformat():
+def test_pythonbraceformat() -> None:
     """Tests python brace format placeholder."""
     stdchecker = checks.StandardChecker()
     # anonymous formats
@@ -1116,7 +1116,7 @@ def test_pythonbraceformat():
     )
 
 
-def test_puncspacing():
+def test_puncspacing() -> None:
     """Tests spacing after punctuation."""
     stdchecker = checks.StandardChecker()
     assert passes(
@@ -1156,7 +1156,7 @@ def test_puncspacing():
     assert passes(archecker.puncspacing, "hi. there", "السلام.\u200c عليكم")  # ZWNJ
 
 
-def test_purepunc():
+def test_purepunc() -> None:
     """Tests messages containing only punctuation."""
     stdchecker = checks.StandardChecker()
     assert passes(stdchecker.purepunc, ".", ".")
@@ -1167,7 +1167,7 @@ def test_purepunc():
     assert passes(stdchecker.purepunc, "year measurement template|2000", "2000")
 
 
-def test_sentencecount():
+def test_sentencecount() -> None:
     """Tests sentencecount messages."""
     stdchecker = checks.StandardChecker()
     assert passes(stdchecker.sentencecount, "One. Two. Three.", "Een. Twee. Drie.")
@@ -1184,7 +1184,7 @@ def test_sentencecount():
     )
 
 
-def test_short():
+def test_short() -> None:
     """Tests short messages."""
     stdchecker = checks.StandardChecker()
     assert passes(stdchecker.short, "I am normal", "Ek is ook normaal")
@@ -1192,7 +1192,7 @@ def test_short():
     assert fails(stdchecker.short, "abcde", "c")
 
 
-def test_singlequoting():
+def test_singlequoting() -> None:
     """Tests single quotes."""
     stdchecker = checks.StandardChecker()
     assert passes(stdchecker.singlequoting, "A 'Hot' plate", "Ipuleti 'elishisa' kunye")
@@ -1255,14 +1255,14 @@ def test_singlequoting():
     )
 
 
-def test_vietnamese_singlequoting():
+def test_vietnamese_singlequoting() -> None:
     vichecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="vi"))
     assert passes(vichecker.singlequoting, "Save 'File'", "Lưu « Tập tin »")
     assert passes(vichecker.singlequoting, "Save `File'", "Lưu « Tập tin »")
 
 
 @mark.xfail(reason="Bug #3408")
-def test_persian_single_and_double_quote_fail_at_the_same_time():
+def test_persian_single_and_double_quote_fail_at_the_same_time() -> None:
     """Test Persian single and double quote failures in string with single quotes."""
     checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="fa"))
 
@@ -1277,7 +1277,7 @@ def test_persian_single_and_double_quote_fail_at_the_same_time():
     assert passes(checker.doublequoting, "Path: '%S'", "مسیر: «%S»")
 
 
-def test_persian_quoting():
+def test_persian_quoting() -> None:
     """Test single and double quoting for Persian."""
     checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="fa"))
 
@@ -1359,7 +1359,7 @@ def test_persian_quoting():
     )
 
 
-def test_simplecaps():
+def test_simplecaps() -> None:
     """Tests simple caps."""
     # Simple caps is a very vauge test so the checks here are mostly for obviously fixable problem
     # or for checking obviously correct situations that are triggering a failure.
@@ -1427,10 +1427,10 @@ def test_simplecaps():
 
 
 @mark.skipif(
-    not spelling.available or not spelling._get_checker("af"),
+    not spelling.available or not spelling._get_checker("af"),  # ty:ignore[possibly-missing-attribute]
     reason="Spell checking for af is not available",
 )
-def test_spellcheck():
+def test_spellcheck() -> None:
     """Tests spell checking."""
     stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="af"))
     assert passes(stdchecker.spellcheck, "Great trek", "Groot trek")
@@ -1464,7 +1464,7 @@ def test_spellcheck():
     )
 
 
-def test_startcaps():
+def test_startcaps() -> None:
     """Tests starting capitals."""
     stdchecker = checks.StandardChecker()
     assert passes(stdchecker.startcaps, "Find", "Vind")
@@ -1520,7 +1520,7 @@ def test_startcaps():
     assert fails(afchecker.startcaps, "(a cow)", "('n Koei)")
 
 
-def test_startpunc():
+def test_startpunc() -> None:
     """Tests startpunc."""
     stdchecker = checks.StandardChecker()
     assert passes(stdchecker.startpunc, "<< Previous", "<< Correct")
@@ -1544,14 +1544,14 @@ def test_startpunc():
     assert passes(stdchecker.startpunc, "A human?", "'n Mens?")
 
 
-def test_startwhitespace():
+def test_startwhitespace() -> None:
     """Tests startwhitespace."""
     stdchecker = checks.StandardChecker()
     assert passes(stdchecker.startwhitespace, "A setence.", "I'm correct.")
     assert fails(stdchecker.startwhitespace, " A setence.", "I'm incorrect.")
 
 
-def test_unchanged():
+def test_unchanged() -> None:
     """Tests unchanged entries."""
     stdchecker = checks.StandardChecker(checks.CheckerConfig(accelmarkers="&"))
     assert fails(stdchecker.unchanged, "Unchanged", "Unchanged")
@@ -1598,7 +1598,7 @@ def test_unchanged():
     assert fails(stdchecker.unchanged, "7em", "7em")
 
 
-def test_untranslated():
+def test_untranslated() -> None:
     """Tests untranslated entries."""
     stdchecker = checks.StandardChecker()
     assert fails(stdchecker.untranslated, "I am untranslated", "")
@@ -1611,7 +1611,7 @@ def test_untranslated():
     )
 
 
-def test_validchars():
+def test_validchars() -> None:
     """Tests valid characters."""
     stdchecker = checks.StandardChecker(checks.CheckerConfig())
     assert passes(
@@ -1657,10 +1657,8 @@ def test_validchars():
     )
 
 
-def test_minimalchecker():
+def test_minimalchecker() -> None:
     """Tests the Minimal quality checker."""
-    from translate.storage import base
-
     # The minimal checker only checks for untranslated, unchanged and blank strings.
     # All other quality checks should be ignored.
     minimalchecker = checks.MinimalChecker()
@@ -1685,10 +1683,8 @@ def test_minimalchecker():
     assert "printf" not in minimalchecker.run_filters(unit)
 
 
-def test_reducedchecker():
+def test_reducedchecker() -> None:
     """Tests the Reduced quality checker."""
-    from translate.storage import base
-
     # The reduced checker only runs the following tests:
     # untranslated, unchanged, blank, doublespacing, doublewords, spellcheck.
     # All other quality checks should be ignored.
@@ -1726,7 +1722,7 @@ def test_reducedchecker():
     assert "escapes" not in reducedchecker.run_filters(unit)
 
 
-def test_variables_kde():
+def test_variables_kde() -> None:
     """Tests variables in KDE translations."""
     # GNOME variables
     kdechecker = checks.KdeChecker()
@@ -1742,7 +1738,7 @@ def test_variables_kde():
     )
 
 
-def test_variables_gnome():
+def test_variables_gnome() -> None:
     """Tests variables in GNOME translations."""
     # GNOME variables
     gnomechecker = checks.GnomeChecker()
@@ -1760,7 +1756,7 @@ def test_variables_gnome():
     assert fails_serious(gnomechecker.variables, "Save $(file)", "Stoor $(leer)")
 
 
-def test_variables_mozilla():
+def test_variables_mozilla() -> None:
     """Tests variables in Mozilla translations."""
     # Mozilla variables
     mozillachecker = checks.MozillaChecker()
@@ -1854,7 +1850,7 @@ def test_variables_mozilla():
     )
 
 
-def test_variables_openoffice():
+def test_variables_openoffice() -> None:
     """Tests variables in OpenOffice translations."""
     # OpenOffice.org variables
     for ooochecker in (checks.OpenOfficeChecker(), checks.LibreOfficeChecker()):
@@ -1908,7 +1904,7 @@ def test_variables_openoffice():
         )
 
 
-def test_variables_cclicense():
+def test_variables_cclicense() -> None:
     """Tests variables in Creative Commons translations."""
     checker = checks.CCLicenseChecker()
     assert passes(checker.variables, "CC-GNU @license_code@.", "CC-GNU @license_code@.")
@@ -1934,7 +1930,7 @@ def test_variables_cclicense():
     assert fails_serious(checker.variables, "A @ccvar@", "'n @ccvertaaldeveranderlike@")
 
 
-def test_variables_ios():
+def test_variables_ios() -> None:
     """Test variables in iOS translations."""
     ioschecker = checks.IOSChecker()
     assert passes(ioschecker.variables, "Welcome $(NAME)", "Welkom $(NAME)")
@@ -1951,7 +1947,7 @@ def test_variables_ios():
     )
 
 
-def test_xmltags():
+def test_xmltags() -> None:
     """Tests xml tags."""
     stdchecker = checks.StandardChecker()
     assert fails(stdchecker.xmltags, "Do it <b>now</b>", "Doen dit <v>nou</v>")
@@ -2055,7 +2051,7 @@ No s'ha pogut crear el servidor
 
 
 @mark.xfail(reason="Bug #3506")
-def test_bengali_mozilla_inverted_xmltags():
+def test_bengali_mozilla_inverted_xmltags() -> None:
     """Test Bengali Mozilla XML tags."""
     bn_mozilla_checker = checks.MozillaChecker(
         checkerconfig=checks.CheckerConfig(targetlanguage="bn")
@@ -2065,7 +2061,7 @@ def test_bengali_mozilla_inverted_xmltags():
     assert passes(bn_mozilla_checker.xmltags, str_en, str_bn)
 
 
-def test_ooxmltags():
+def test_ooxmltags() -> None:
     """Tests the xml tags in OpenOffice.org translations for quality as done in gsicheck."""
     for ooochecker in (checks.OpenOfficeChecker(), checks.LibreOfficeChecker()):
         # some attributes can be changed or removed
@@ -2125,7 +2121,7 @@ def test_ooxmltags():
         )
 
 
-def test_functions():
+def test_functions() -> None:
     """Tests to see that funtions() are not translated."""
     stdchecker = checks.StandardChecker()
     assert fails(stdchecker.functions, "blah rgb() blah", "blee brg() blee")
@@ -2148,7 +2144,7 @@ def test_functions():
     )
 
 
-def test_emails():
+def test_emails() -> None:
     """Tests to see that email addresses are not translated."""
     stdchecker = checks.StandardChecker()
     assert fails(
@@ -2159,7 +2155,7 @@ def test_emails():
     )
 
 
-def test_urls():
+def test_urls() -> None:
     """Tests to see that URLs are not translated."""
     stdchecker = checks.StandardChecker()
     assert fails(
@@ -2174,7 +2170,7 @@ def test_urls():
     )
 
 
-def test_simpleplurals():
+def test_simpleplurals() -> None:
     """Test that we can find English style plural(s)."""
     stdchecker = checks.StandardChecker()
     assert passes(stdchecker.simpleplurals, "computer(s)", "rekenaar(s)")
@@ -2191,7 +2187,7 @@ def test_simpleplurals():
     assert fails(stdchecker.simpleplurals, "computer(s)", "Máy tính(s)")
 
 
-def test_nplurals():
+def test_nplurals() -> None:
     """
     Test that we can find the wrong number of plural forms. Note that this
     test uses a UnitChecker, not a translation checker.
@@ -2234,7 +2230,7 @@ def test_nplurals():
     assert not checker.nplurals(unit)
 
 
-def test_credits():
+def test_credits() -> None:
     """Tests credits."""
     stdchecker = checks.StandardChecker()
     assert passes(stdchecker.credits, "File", "iFayile")
@@ -2256,7 +2252,7 @@ def test_credits():
     assert passes(gnomechecker.credits, "ROLES_OF_TRANSLATORS", "Ekke, ekke!")
 
 
-def test_gconf():
+def test_gconf() -> None:
     """Test GNOME gconf errors."""
     gnomechecker = checks.GnomeChecker()
     # Let's cheat a bit and prepare the checker as the run_filters() method
@@ -2273,7 +2269,7 @@ def test_gconf():
     assert fails(gnomechecker.gconf, 'Blah "gconf_setting"', 'Bleh "gconf_steling"')
 
 
-def test_validxml():
+def test_validxml() -> None:
     """Test wheather validxml recognize invalid xml/html expressions."""
     lochecker = checks.LibreOfficeChecker()
     # Test validity only for xrm and xhp files
@@ -2339,7 +2335,7 @@ def test_validxml():
     )
 
 
-def test_hassuggestion():
+def test_hassuggestion() -> None:
     """Test that hassuggestion() works."""
     checker = checks.StandardUnitChecker()
 
@@ -2368,7 +2364,7 @@ def test_hassuggestion():
     assert not checker.hassuggestion(xliff_store.units[0])
 
 
-def test_dialogsizes():
+def test_dialogsizes() -> None:
     """Test Mozilla dialog sizes."""
     mozillachecker = checks.MozillaChecker()
     assert passes(mozillachecker.dialogsizes, "width: 12em;", "width: 12em;")
@@ -2388,10 +2384,8 @@ def test_dialogsizes():
     )
 
 
-def test_skip_checks_per_language_in_some_checkers():
+def test_skip_checks_per_language_in_some_checkers() -> None:
     """Test some checks are skipped for some languages in Mozilla checker."""
-    from translate.storage import base
-
     # Hijack checker config language ignoretests to test check is skipped.
     checker_config = checks.CheckerConfig(targetlanguage="gl")
     previous_ignoretests = checker_config.lang.ignoretests
@@ -2419,7 +2413,7 @@ def test_skip_checks_per_language_in_some_checkers():
     checker_config.lang.ignoretests = previous_ignoretests
 
 
-def test_mozilla_no_accelerators_for_indic():
+def test_mozilla_no_accelerators_for_indic() -> None:
     """
     Test accelerators in MozillaChecker fails if accelerator in target.
 
@@ -2438,15 +2432,13 @@ def test_mozilla_no_accelerators_for_indic():
     assert passes(mozillachecker.accelerators, "Mail & News", "Pos & Nuus")
 
 
-def test_noaccelerators_only_in_mozilla_checker():
+def test_noaccelerators_only_in_mozilla_checker() -> None:
     """
     Test no-accelerators check is only present in Mozilla checker.
 
     No-accelerators is a special behavior of accelerators check in some
     languages that is present in MozillaChecker.
     """
-    from translate.storage import base
-
     asmozillachecker = checks.MozillaChecker(
         checkerconfig=checks.CheckerConfig(targetlanguage="as")
     )
@@ -2498,10 +2490,8 @@ def test_noaccelerators_only_in_mozilla_checker():
     assert "accelerators" not in stdchecker.run_filters(unit)
 
 
-def test_ensure_accelerators_not_in_target_if_not_in_source():
+def test_ensure_accelerators_not_in_target_if_not_in_source() -> None:
     """Test accelerators check works different for some languages in Mozilla."""
-    from translate.storage import base
-
     af_mozilla_checker = checks.MozillaChecker(
         checkerconfig=checks.CheckerConfig(targetlanguage="af")
     )
@@ -2548,7 +2538,7 @@ def test_ensure_accelerators_not_in_target_if_not_in_source():
     assert "should not appear" in km_failures["accelerators"]
 
 
-def test_ensure_bengali_languages_script_is_correct():
+def test_ensure_bengali_languages_script_is_correct() -> None:
     """Test script for Bengali languages is correctly set."""
     bn_BD_mozilla_checker = checks.MozillaChecker(
         checkerconfig=checks.CheckerConfig(targetlanguage="bn_BD")
@@ -2564,10 +2554,8 @@ def test_ensure_bengali_languages_script_is_correct():
     assert bn_mozilla_checker.config.language_script == "Beng"
 
 
-def test_category():
+def test_category() -> None:
     """Tests checker categories aren't mixed up."""
-    from translate.storage import base
-
     unit = base.TranslationUnit("foo")
     unit.target = "bar"
 

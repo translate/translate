@@ -6,7 +6,7 @@ from . import test_base
 class TestCatkeysUnit(test_base.TestTranslationUnit):
     UnitClass = catkeys.CatkeysUnit
 
-    def test_difficult_escapes(self):
+    def test_difficult_escapes(self) -> None:
         r"""
         Catkeys files need to perform magic with escapes.
 
@@ -18,16 +18,16 @@ class TestCatkeysUnit(test_base.TestTranslationUnit):
         specials = ['\\"', "\\ ", "\\\n", "\\\t", "\\\\r", '\\\\"']
         for special in specials:
             unit.source = special
-            print("unit.source:", repr(unit.source) + "|")
-            print("special:", repr(special) + "|")
+            print("unit.source:", f"{unit.source!r}|")
+            print("special:", f"{special!r}|")
             assert unit.source == special
 
-    def test_newlines(self):
+    def test_newlines(self) -> None:
         """Wordfast does not like real newlines."""
         unit = self.UnitClass("One\nTwo")
-        assert unit.dict["source"] == "One\\nTwo"
+        assert unit.metadata["source"] == "One\\nTwo"
 
-    def test_istranslated(self):
+    def test_istranslated(self) -> None:
         unit = self.UnitClass()
         assert not unit.istranslated()
         unit.source = "Test"
@@ -35,14 +35,14 @@ class TestCatkeysUnit(test_base.TestTranslationUnit):
         unit.target = "Rest"
         assert unit.istranslated()
 
-    def test_note_sanity(self):
+    def test_note_sanity(self) -> None:
         """Override test, since the format doesn't support notes."""
 
 
 class TestCatkeysFile(test_base.TestTranslationStore):
     StoreClass = catkeys.CatkeysFile
 
-    def test_checksum(self):
+    def test_checksum(self) -> None:
         """Tests that the checksum for a file is properly calculated."""
         # The following test is based on: https://github.com/haiku/haiku/blob/d30c60446a40ba4aa1418a548c82e6aaf72b409a/data/catalogs/add-ons/disk_systems/fat/tr.catkeys
         store = self.StoreClass()

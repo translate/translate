@@ -21,10 +21,19 @@ Contains the ``parse`` function that parses normal strings into StringElem-
 based "rich" string element trees.
 """
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from translate.storage.placeables.strelem import StringElem
 
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
-def parse(tree, parse_funcs):
+
+def parse(
+    tree: str | StringElem, parse_funcs: list[Callable[[str], list[StringElem] | None]]
+) -> StringElem:
     """
     Parse placeables from the given string or sub-tree by using the
     parsing functions provided.
@@ -38,9 +47,8 @@ def parse(tree, parse_funcs):
     set of leaves with the used parsing function removed from
     ``parse_funcs``.
 
-    :type  tree: unicode|StringElem
     :param tree: The string or string element sub-tree to parse.
-    :type  parse_funcs: A list of parsing functions. It must take exactly
+    :param parse_funcs: A list of parsing functions. Each function takes
                         one argument (a ``unicode`` string to parse) and
                         return a list of ``StringElem``s which, together,
                         form the original string. If nothing could be

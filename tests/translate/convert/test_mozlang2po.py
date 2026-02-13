@@ -58,11 +58,11 @@ class TestLang2PO:
         assert po_store.units[0].isheader()
         return len(po_store.units) - 1
 
-    def test_convert_empty(self):
+    def test_convert_empty(self) -> None:
         """Check converting empty file returns no output."""
         assert self._convert_to_string("", success_expected=False) == ""
 
-    def test_simple_string(self):
+    def test_simple_string(self) -> None:
         """Check that a simple lang string converts correctly."""
         input_string = """;One
 Een
@@ -73,12 +73,12 @@ msgstr "Een"
 """
         assert expected_output in self._convert_to_string(input_string)
 
-    def test_merge(self):
+    def test_merge(self) -> None:
         """Check converter doesn't merge."""
         with pytest.raises(NotImplementedError):
             self._convert_to_store("this", "cannot be", "blank", success_expected=False)
 
-    def test_simple_entry(self):
+    def test_simple_entry(self) -> None:
         """Check that a simple lang entry converts properly to a po entry."""
         input_string = """;One
 Een
@@ -88,7 +88,7 @@ Een
         assert target_unit.source == "One"
         assert target_unit.target == "Een"
 
-    def test_simple_comment(self):
+    def test_simple_comment(self) -> None:
         """Check handling of simple comments."""
         input_string = """# Comment
 ;One
@@ -100,7 +100,7 @@ Een
         assert target_unit.target == "Een"
         assert target_unit.getnotes() == "Comment"
 
-    def test_meta_tags(self):
+    def test_meta_tags(self) -> None:
         """Check meta tags are not extracted."""
         input_string = """## tag
 # Comment
@@ -111,7 +111,7 @@ Een
         target_unit = self._single_element(target_store)
         assert "tag" not in target_unit.getnotes()
 
-    def test_keep_duplicates(self):
+    def test_keep_duplicates(self) -> None:
         """Check converting keeps duplicates."""
         input_string = """
 ;One
@@ -127,7 +127,7 @@ Dous
         assert target_store.units[2].source == "One"
         assert target_store.units[2].target == "Dous"
 
-    def test_drop_duplicates(self):
+    def test_drop_duplicates(self) -> None:
         """Check converting drops duplicates."""
         input_string = """
 ;One

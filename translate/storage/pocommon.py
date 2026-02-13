@@ -17,6 +17,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 import re
+from typing import TypeVar
 from urllib import parse
 
 from translate.storage import base, poheader
@@ -25,12 +26,10 @@ from translate.storage.workflow import StateEnum as state
 msgid_comment_re = re.compile(r"_: (.*?)\n")
 
 
-def extract_msgid_comment(text):
+def extract_msgid_comment(text: str) -> str:
     """
     The one definitive way to extract a msgid comment out of an unescaped
     unicode string that might contain it.
-
-    :rtype: unicode
     """
     msgidcomment = msgid_comment_re.match(text)
     if msgidcomment:
@@ -69,7 +68,7 @@ class pounit(base.TranslationUnit):
         S_TRANSLATED: (state.UNREVIEWED, state.MAX),
     }
 
-    def adderror(self, errorname, errortext):
+    def adderror(self, errorname, errortext) -> None:
         """Adds an error message to this unit."""
         text = f"(pofilter) {errorname}: {errortext}"
         # Don't add the same error twice:
@@ -87,7 +86,7 @@ class pounit(base.TranslationUnit):
                 errordict[errorname] = errortext
         return errordict
 
-    def markreviewneeded(self, needsreview=True, explanation=None):
+    def markreviewneeded(self, needsreview=True, explanation=None) -> None:
         """Marks the unit to indicate whether it needs review. Adds an optional explanation as a note."""
         if needsreview:
             reviewnote = "(review)"
@@ -106,45 +105,45 @@ class pounit(base.TranslationUnit):
     def istranslated(self):
         return super().istranslated() and not self.isobsolete() and not self.isheader()
 
-    def istranslatable(self):
+    def istranslatable(self) -> bool:
         return not (self.isheader() or self.isblank() or self.isobsolete())
 
-    def hasmarkedcomment(self, commentmarker):
+    def hasmarkedcomment(self, commentmarker: str) -> bool:
         raise NotImplementedError
 
-    def isreview(self):
+    def isreview(self) -> bool:
         return self.hasmarkedcomment("review") or self.hasmarkedcomment("pofilter")
 
-    def isobsolete(self):
+    def isobsolete(self) -> bool:
         return (
             self.STATE[self.S_FUZZY_OBSOLETE][0]
             <= self.get_state_n()
             < self.STATE[self.S_OBSOLETE][1]
         )
 
-    def isfuzzy(self):
+    def isfuzzy(self) -> bool:
         # implementation specific fuzzy detection, must not use get_state_n()
         raise NotImplementedError
 
-    def markfuzzy(self, present=True):
+    def markfuzzy(self, present: bool = True) -> None:  # ty:ignore[invalid-method-override]
         if present:
             self.set_state_n(self.STATE[self.S_FUZZY][0])
         else:
             self.set_state_n(self.STATE[self.S_TRANSLATED][0])
         # set_state_n will check if target exists
 
-    def makeobsolete(self):
+    def makeobsolete(self) -> None:
         if self.isfuzzy():
             self.set_state_n(self.STATE[self.S_FUZZY_OBSOLETE][0])
         else:
             self.set_state_n(self.STATE[self.S_OBSOLETE][0])
 
-    def resurrect(self):
+    def resurrect(self) -> None:
         self.set_state_n(self.STATE[self.S_TRANSLATED][0])
         if not self.target:
             self.set_state_n(self.STATE[self.S_UNTRANSLATED][0])
 
-    def _domarkfuzzy(self, present=True):
+    def _domarkfuzzy(self, present: bool = True) -> None:
         raise NotImplementedError
 
     def get_state_n(self):
@@ -157,7 +156,7 @@ class pounit(base.TranslationUnit):
             return self.S_TRANSLATED
         return self.S_UNTRANSLATED
 
-    def set_state_n(self, value):
+    def set_state_n(self, value) -> None:
         super().set_state_n(value)
         has_target = False
         if self.hasplural():
@@ -180,7 +179,10 @@ class pounit(base.TranslationUnit):
             self._domarkfuzzy(False)
 
 
-class pofile(poheader.poheader, base.TranslationStore):
+U = TypeVar("U", bound=pounit)
+
+
+class pofile(poheader.poheader, base.TranslationStore[U]):
     Name = "Gettext PO file"  # pylint: disable=E0602
     Mimetypes = [
         "text/x-gettext-catalog",
@@ -192,7 +194,7 @@ class pofile(poheader.poheader, base.TranslationStore):
     # We don't want windows line endings on Windows:
     _binary = True
 
-    def __init__(self, inputfile=None, noheader=False, **kwargs):
+    def __init__(self, inputfile=None, noheader=False, **kwargs) -> None:
         super().__init__(**kwargs)
         self.filename = ""
         if inputfile is not None:

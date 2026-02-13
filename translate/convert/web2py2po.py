@@ -26,11 +26,12 @@ for examples and usage instructions.
 
 from ast import literal_eval
 
+from translate.convert import convert
 from translate.storage import po
 
 
 class web2py2po:
-    def __init__(self, pofile=None, duplicatestyle="msgctxt"):
+    def __init__(self, pofile=None, duplicatestyle="msgctxt") -> None:
         self.mypofile = pofile
         self.duplicatestyle = duplicatestyle
 
@@ -44,7 +45,7 @@ class web2py2po:
         return pounit
 
     def convertstore(self, mydict):
-        targetheader = self.mypofile.header()
+        targetheader = self.mypofile.header()  # ty:ignore[possibly-missing-attribute]
         targetheader.addnote("extracted from web2py", "developer")
 
         for source_str in mydict:
@@ -53,14 +54,14 @@ class web2py2po:
                 # a convention with new (untranslated) web2py files
                 target_str = ""
             pounit = self.convertunit(source_str, target_str)
-            self.mypofile.addunit(pounit)
+            self.mypofile.addunit(pounit)  # ty:ignore[possibly-missing-attribute]
 
-        self.mypofile.removeduplicates(self.duplicatestyle)
+        self.mypofile.removeduplicates(self.duplicatestyle)  # ty:ignore[possibly-missing-attribute]
 
         return self.mypofile
 
 
-def convertpy(inputfile, outputfile, encoding="UTF-8", duplicatestyle="msgctxt"):
+def convertpy(inputfile, outputfile, encoding="UTF-8", duplicatestyle="msgctxt") -> int:
     new_pofile = po.pofile()
     convertor = web2py2po(new_pofile)
 
@@ -77,9 +78,7 @@ def convertpy(inputfile, outputfile, encoding="UTF-8", duplicatestyle="msgctxt")
     return 1
 
 
-def main(argv=None):
-    from translate.convert import convert
-
+def main(argv=None) -> None:
     formats = {("py", "po"): ("po", convertpy), ("py", None): ("po", convertpy)}
     parser = convert.ConvertOptionParser(
         formats, usetemplates=False, usepots=True, description=__doc__

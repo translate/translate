@@ -25,20 +25,19 @@ for examples and usage instructions.
 
 import logging
 
+from translate.convert import convert
 from translate.storage import csvl10n, po
 
 logger = logging.getLogger(__name__)
 
 
-def replacestrings(source, *pairs):
+def replacestrings(source: str, *pairs: tuple[str, str]) -> str:
     r"""
     Use ``pairs`` of ``(original, replacement)`` to replace text found in
     ``source``.
 
     :param source: String to on which ``pairs`` of strings are to be replaced
-    :type source: String
     :param \*pairs: Strings to be matched and replaced
-    :type \*pairs: One or more tuples of (original, replacement)
     :return: String with ``*pairs`` of strings replaced
     """
     for orig, new in pairs:
@@ -66,7 +65,7 @@ class csv2po:
     file.
     """
 
-    def __init__(self, templatepo=None, charset=None, duplicatestyle="keep"):
+    def __init__(self, templatepo=None, charset=None, duplicatestyle="keep") -> None:
         """Construct the converter..."""
         self.pofile = templatepo
         self.charset = charset
@@ -80,9 +79,9 @@ class csv2po:
             self.unmatched = 0
             self.makeindex()
 
-    def makeindex(self):
+    def makeindex(self) -> None:
         """Makes indexes required for searching..."""
-        for pounit in self.pofile.units:
+        for pounit in self.pofile.units:  # ty:ignore[possibly-missing-attribute]
             joinedcomment = " ".join(pounit.getlocations())
             source = pounit.source
             # the definitive way to match is by source comment (joinedcomment)
@@ -116,7 +115,15 @@ class csv2po:
         pounit.setcontext(csvunit.getcontext())
         return pounit
 
-    def handlecsvunit(self, csvunit):
+    def _get_csv_location(self, csvunit) -> str:
+        """Get a formatted string showing the CSV file location with line number."""
+        csvfilename = getattr(self.csvfile, "filename", "(unknown)") or "(unknown)"
+        line_info = (
+            f" line {csvunit.line_number}" if csvunit.line_number is not None else ""
+        )
+        return f"{csvfilename}{line_info}"
+
+    def handlecsvunit(self, csvunit) -> None:
         """Handles reintegrating a csv unit into the .po file."""
         if len(csvunit.location.strip()) > 0 and csvunit.location in self.commentindex:
             pounit = self.commentindex[csvunit.location]
@@ -125,7 +132,6 @@ class csv2po:
         elif simplify(csvunit.source) in self.simpleindex:
             thepolist = self.simpleindex[simplify(csvunit.source)]
             if len(thepolist) > 1:
-                csvfilename = getattr(self.csvfile, "filename", "(unknown)")
                 matches = "\n  ".join(
                     f"possible match: {pounit.source}" for pounit in thepolist
                 )
@@ -136,7 +142,7 @@ class csv2po:
                     "  original\t%s\n"
                     "  translation\t%s\n"
                     "  %s",
-                    csvfilename,
+                    self._get_csv_location(csvunit),
                     csvunit.location,
                     csvunit.source,
                     csvunit.target,
@@ -146,13 +152,12 @@ class csv2po:
                 return
             pounit = thepolist[0]
         else:
-            csvfilename = getattr(self.csvfile, "filename", "(unknown)")
             logger.warning(
                 "%s - csv entry not found in pofile:\n"
                 "  location\t%s\n"
                 "  original\t%s\n"
                 "  translation\t%s",
-                csvfilename,
+                self._get_csv_location(csvunit),
                 csvunit.location,
                 csvunit.source,
                 csvunit.target,
@@ -234,7 +239,7 @@ def convertcsv(
     charset=None,
     columnorder=None,
     duplicatestyle="msgctxt",
-):
+) -> int:
     """
     Reads in inputfile using csvl10n, converts using csv2po, writes to
     outputfile.
@@ -254,13 +259,11 @@ def convertcsv(
     return 1
 
 
-def columnorder_callback(option, opt, value, parser):
+def columnorder_callback(option, opt, value, parser) -> None:
     setattr(parser.values, option.dest, value.split(","))
 
 
-def main(argv=None):
-    from translate.convert import convert
-
+def main(argv=None) -> None:
     formats = {
         ("csv", "po"): ("po", convertcsv),
         ("csv", "pot"): ("po", convertcsv),

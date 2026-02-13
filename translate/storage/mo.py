@@ -52,22 +52,6 @@ MO_MAGIC_NUMBER = 0x950412DE
 POT_HEADER = re.compile(r"^POT-Creation-Date:.*(\n|$)", re.IGNORECASE | re.MULTILINE)
 
 
-def mounpack(filename="messages.mo"):
-    """Helper to unpack Gettext MO files into a Python string."""
-    with open(filename, "rb") as fh:
-        s = fh.read()
-        return "\\x%02x" * len(s) % tuple(map(ord, s))
-
-
-def my_swap4(result):
-    c0 = (result >> 0) & 0xFF
-    c1 = (result >> 8) & 0xFF
-    c2 = (result >> 16) & 0xFF
-    c3 = (result >> 24) & 0xFF
-
-    return (c0 << 24) | (c1 << 16) | (c2 << 8) | c3
-
-
 def hashpjw(str_param):
     HASHWORDBITS = 32
     hval = 0
@@ -111,7 +95,7 @@ def get_next_prime_number(start):
 class mounit(base.TranslationUnit):
     """A class representing a .mo translation message."""
 
-    def __init__(self, source=None, **kwargs):
+    def __init__(self, source=None, **kwargs) -> None:
         self.msgctxt = []
         self.msgidcomments = []
         super().__init__(source)
@@ -123,10 +107,10 @@ class mounit(base.TranslationUnit):
             return None
         return "".join(self.msgctxt)
 
-    def setcontext(self, context):
+    def setcontext(self, context) -> None:
         self.msgctxt = [context]
 
-    def isheader(self):
+    def isheader(self) -> bool:
         """Is this a header entry?."""
         return not self.source
 
@@ -144,17 +128,17 @@ class mofile(poheader.poheader, base.TranslationStore):
     Extensions = ["mo", "gmo"]
     _binary = True
 
-    def __init__(self, inputfile=None, **kwargs):
+    def __init__(self, inputfile=None, **kwargs) -> None:
         super().__init__(**kwargs)
         self.filename = ""
         if inputfile is not None:
             self.parsestring(inputfile)
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         """Output a string representation of the MO data file."""
         # check the header of this file for the copyright note of this function
 
-        def add_to_hash_table(string, i):
+        def add_to_hash_table(string, i) -> None:
             hash_value = hashpjw(string)
             hash_cursor = hash_value % hash_size
             increment = 1 + (hash_value % (hash_size - 2))
@@ -242,7 +226,7 @@ class mofile(poheader.poheader, base.TranslationStore):
             out.write(strs)
 
     @staticmethod
-    def parse_header(content: list[bytes]) -> tuple[str, int, int, int, int, int]:
+    def parse_header(content: bytes) -> tuple[str, int, int, int, int, int, int, int]:
         (little,) = struct.unpack("<L", content[:4])
         (big,) = struct.unpack(">L", content[:4])
         if little == MO_MAGIC_NUMBER:
@@ -270,13 +254,13 @@ class mofile(poheader.poheader, base.TranslationStore):
             offsethash,
         )
 
-    def parse(self, input):
+    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
         """Parses the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name
         elif not getattr(self, "filename", ""):
             self.filename = ""
-        content: list[bytes]
+        content: bytes
         if hasattr(input, "read"):
             mosrc = input.read()
             input.close()
@@ -295,8 +279,7 @@ class mofile(poheader.poheader, base.TranslationStore):
         ) = self.parse_header(content)
         if version_maj >= 1:
             raise base.ParseError(
-                """Unable to process version %d.%d MO files"""
-                % (version_maj, version_min)
+                f"Unable to process version {version_maj}.{version_min} MO files"
             )
         for i in range(lenkeys):
             nextkey = startkey + (i * 2 * 4)

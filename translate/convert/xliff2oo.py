@@ -25,8 +25,10 @@ for examples and usage instructions.
 
 import logging
 import os
+import stat
 import time
 
+from translate.convert import convert
 from translate.filters import autocorrect, checks, pofilter
 from translate.storage import factory, oo
 
@@ -42,7 +44,7 @@ class reoo:
         includefuzzy=False,
         long_keys=False,
         filteraction="exclude",
-    ):
+    ) -> None:
         """Construct a reoo converter for the specified languages (timestamp=0 means leave unchanged)."""
         # languages is a pair of language ids
         self.long_keys = long_keys
@@ -59,21 +61,21 @@ class reoo:
             self.timestamp_str = None
         self.includefuzzy = includefuzzy
 
-    def makeindex(self):
+    def makeindex(self) -> None:
         """Makes an index of the oo keys that are used in the source file."""
         self.index = {}
         for ookey, theoo in self.o.ookeys.items():
             sourcekey = oo.makekey(ookey, self.long_keys)
             self.index[sourcekey] = theoo
 
-    def readoo(self, of):
+    def readoo(self, of) -> None:
         """Read in the oo from the file."""
         oosrc = of.read()
         self.o = oo.oofile()
         self.o.parse(oosrc)
         self.makeindex()
 
-    def handleunit(self, unit):
+    def handleunit(self, unit) -> None:
         # TODO: make this work for multiple columns in oo...
         location = unit.getid()
         # technically our formats should just have one location for each entry...
@@ -101,7 +103,7 @@ class reoo:
             except Exception:
                 logger.exception("error outputting source unit %r", str(unit))
 
-    def applytranslation(self, key, subkey, theoo, unit):
+    def applytranslation(self, key, subkey, theoo, unit) -> None:
         """Applies the translation from the source unit to the oo unit."""
         if not self.includefuzzy and unit.isfuzzy():
             return
@@ -129,6 +131,7 @@ class reoo:
         # finally set the new definition in the oo, but not if its empty
         if len(unquotedstr) > 0:
             subkey = subkey.strip()
+            # pylint: disable-next=possibly-used-before-assignment
             setattr(part2, subkey, unquotedstr)
         # set the modified time
         if self.timestamp_str:
@@ -150,8 +153,6 @@ class reoo:
 
 
 def getmtime(filename):
-    import stat
-
     return time.localtime(os.stat(filename)[stat.ST_MTIME])
 
 
@@ -211,7 +212,7 @@ def convertoo(
     multifilestyle="single",
     skip_source=False,
     filteraction=None,
-):
+) -> bool:
     inputstore = factory.getobject(inputfile)
     inputstore.filename = getattr(inputfile, "name", "")
     if not targetlanguage:
@@ -237,9 +238,7 @@ def convertoo(
     return True
 
 
-def main(argv=None):
-    from translate.convert import convert
-
+def main(argv=None) -> None:
     formats = {
         ("po", "oo"): ("oo", convertoo),
         ("xlf", "oo"): ("oo", convertoo),

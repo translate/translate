@@ -32,7 +32,9 @@ from translate.storage import po, wordfast
 
 class po2wordfast:
     @staticmethod
-    def convertfiles(inputfile, wffile, sourcelanguage="en", targetlanguage=None):
+    def convertfiles(
+        inputfile, wffile, sourcelanguage="en", targetlanguage=None
+    ) -> None:
         """Converts a .po file (possibly many) to a Wordfast TM file."""
         inputstore = po.pofile(inputfile)
         for inunit in inputstore.units:
@@ -47,7 +49,7 @@ class po2wordfast:
 
 def convertpo(
     inputfile, outputfile, templatefile, sourcelanguage="en", targetlanguage=None
-):
+) -> int:
     """Reads in stdin using fromfileclass, converts using convertorclass, writes to stdout."""
     convertor = po2wordfast()
     outputfile.wffile.header.targetlang = targetlanguage
@@ -56,7 +58,7 @@ def convertpo(
 
 
 class wfmultifile:
-    def __init__(self, filename, mode=None):
+    def __init__(self, filename, mode=None) -> None:
         """Initialises wfmultifile from a seekable inputfile or writable outputfile."""
         self.filename = filename
         if mode is None:
@@ -68,17 +70,17 @@ class wfmultifile:
     def openoutputfile(self, subfile):
         """Returns a pseudo-file object for the given subfile."""
 
-        def onclose(contents):
+        def onclose(contents) -> None:
             pass
 
         outputfile = wStringIO.CatchStringOutput(onclose)
-        outputfile.filename = subfile
-        outputfile.wffile = self.wffile
+        outputfile.filename = subfile  # ty:ignore[unresolved-attribute]
+        outputfile.wffile = self.wffile  # ty:ignore[unresolved-attribute]
         return outputfile
 
 
 class WfOptionParser(convert.ArchiveConvertOptionParser):
-    def recursiveprocess(self, options):
+    def recursiveprocess(self, options) -> None:
         if not options.targetlanguage:
             raise ValueError("You must specify the target language")
         super().recursiveprocess(options)
@@ -87,7 +89,7 @@ class WfOptionParser(convert.ArchiveConvertOptionParser):
             self.outputarchive.wffile.serialize(self.output)
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     formats = {"po": ("txt", convertpo), ("po", "txt"): ("txt", convertpo)}
     archiveformats = {(None, "output"): wfmultifile, (None, "template"): wfmultifile}
     parser = WfOptionParser(

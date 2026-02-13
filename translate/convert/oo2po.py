@@ -27,6 +27,7 @@ for examples and usage instructions.
 import logging
 from urllib import parse
 
+from translate.convert import convert
 from translate.storage import oo, po
 
 # TODO: support using one GSI file as template, another as input (for when English is in one and translation in another)
@@ -37,7 +38,7 @@ logger = logging.getLogger(__name__)
 class oo2po:
     def __init__(
         self, sourcelanguage, targetlanguage, blankmsgstr=False, long_keys=False
-    ):
+    ) -> None:
         """Construct an oo2po converter for the specified languages."""
         self.sourcelanguage = sourcelanguage
         self.targetlanguage = targetlanguage
@@ -95,17 +96,7 @@ class oo2po:
         """Converts an entire oo file to a base class format (.po or XLIFF)."""
         thetargetfile = po.pofile()
         # create a header for the file
-        bug_url = "http://qa.openoffice.org/issues/enter_bug.cgi?{}".format(
-            parse.urlencode(
-                {
-                    "subcomponent": "ui",
-                    "comment": "",
-                    "short_desc": f"Localization issue in file: {theoofile.filename}",
-                    "component": "l10n",
-                    "form_name": "enter_issue",
-                }
-            )
-        )
+        bug_url = f"http://qa.openoffice.org/issues/enter_bug.cgi?{parse.urlencode({'subcomponent': 'ui', 'comment': '', 'short_desc': f'Localization issue in file: {theoofile.filename}', 'component': 'l10n', 'form_name': 'enter_issue'})}"
         targetheader = thetargetfile.init_headers(
             x_accelerator_marker="~",
             x_merge_on="location",
@@ -123,12 +114,15 @@ class oo2po:
         return thetargetfile
 
 
-def verifyoptions(options):
-    """Verifies the commandline options."""
-    if not options.pot and not options.targetlanguage:
-        raise ValueError(
-            "You must specify the target language unless generating POT files (-P)"
-        )
+class OOConvertOptionParser(convert.ArchiveConvertOptionParser):
+    """Custom option parser for OpenOffice conversion with verification."""
+
+    def verifyoptions(self, options) -> None:
+        """Verifies that the options are valid."""
+        if not options.pot and not options.targetlanguage:
+            raise ValueError(
+                "You must specify the target language unless generating POT files (-P)"
+            )
 
 
 def convertoo(
@@ -140,7 +134,7 @@ def convertoo(
     targetlanguage=None,
     duplicatestyle="msgid_comment",
     multifilestyle="single",
-):
+) -> int:
     """Reads in stdin using inputstore class, converts using convertorclass, writes to stdout."""
     inputstore = oo.oofile()
     if hasattr(inputfile, "filename"):
@@ -151,7 +145,7 @@ def convertoo(
     inputstore.parse(inputfile.read())
     if not sourcelanguage:
         testlangtype = targetlanguage or (inputstore and inputstore.languages[0]) or ""
-        sourcelanguage = "01" if testlangtype.isdigit() else "en-US"
+        sourcelanguage = "01" if testlangtype.isdigit() else "en-US"  # ty:ignore[possibly-missing-attribute]
     if sourcelanguage not in inputstore.languages:
         logger.warning(
             "sourcelanguage '%s' not found in inputfile '%s' (contains %s)",
@@ -179,16 +173,14 @@ def convertoo(
     return 1
 
 
-def main(argv=None):
-    from translate.convert import convert
-
+def main(argv=None) -> None:
     formats = {
         "oo": ("po", convertoo),
         "sdf": ("po", convertoo),
     }
     # always treat the input as an archive unless it is a directory
     archiveformats = {(None, "input"): oo.oomultifile}
-    parser = convert.ArchiveConvertOptionParser(
+    parser = OOConvertOptionParser(
         formats, usepots=True, description=__doc__, archiveformats=archiveformats
     )
     parser.add_option(
@@ -220,7 +212,6 @@ def main(argv=None):
     parser.passthrough.append("pot")
     parser.passthrough.append("sourcelanguage")
     parser.passthrough.append("targetlanguage")
-    parser.verifyoptions = verifyoptions
     parser.run(argv)
 
 

@@ -61,14 +61,6 @@ quote
    :inherited-members:
 
 
-wsgi
-----
-
-.. automodule:: translate.misc.wsgi
-   :members:
-   :inherited-members:
-
-
 xml_helpers
 -----------
 

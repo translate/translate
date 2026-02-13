@@ -65,14 +65,14 @@ class pounit(pocommon.pounit):
     # fashion
     __shallow__ = ["_store"]
 
-    def __init__(self, source=None, **kwargs):
+    def __init__(self, source=None, **kwargs) -> None:
         super().__init__(source)
         self._initallcomments(blankall=True)
         self._msgctxt = ""
 
         self.target = ""
 
-    def _initallcomments(self, blankall=False):
+    def _initallcomments(self, blankall=False) -> None:
         """Initialises allcomments."""
         if blankall:
             self.othercomments = []
@@ -86,7 +86,7 @@ class pounit(pocommon.pounit):
         return self._source
 
     @source.setter
-    def source(self, source):
+    def source(self, source) -> None:
         self._rich_source = None
         source = source or ""
         if isinstance(source, (multistring, str)):
@@ -100,7 +100,7 @@ class pounit(pocommon.pounit):
         return self._target
 
     @target.setter
-    def target(self, target):
+    def target(self, target) -> None:
         """Sets the msgstr to the given (unescaped) value."""
         self._rich_target = None
         if self.hasplural():
@@ -113,8 +113,7 @@ class pounit(pocommon.pounit):
                 self._target = target[0]
             else:
                 raise ValueError(
-                    "po msgid element has no plural but msgstr"
-                    "has %d elements (%s)" % (len(target), target)
+                    f"po msgid element has no plural but msgstr has {len(target)} elements ({target})"
                 )
         else:
             self._target = target
@@ -132,7 +131,7 @@ class pounit(pocommon.pounit):
             raise ValueError("Comment type not valid")
         return comments
 
-    def addnote(self, text, origin=None, position="append"):
+    def addnote(self, text, origin=None, position="append") -> None:
         """This is modeled on the XLIFF method. See xliff.py::xliffunit.addnote."""
         # ignore empty strings and strings without non-space characters
         if not (text and text.strip()):
@@ -154,7 +153,7 @@ class pounit(pocommon.pounit):
         else:
             self.othercomments = newcomments
 
-    def removenotes(self, origin=None):
+    def removenotes(self, origin=None) -> None:
         """Remove all the translator's notes (other comments)."""
         self.othercomments = []
 
@@ -190,7 +189,9 @@ class pounit(pocommon.pounit):
             return len("".join(string for string in self.target.strings))
         return len(self.target)
 
-    def merge(self, otherpo, overwrite=False, comments=True, authoritative=False):
+    def merge(
+        self, otherpo, overwrite=False, comments=True, authoritative=False
+    ) -> None:  # ty:ignore[invalid-method-override]
         """
         Merges the otherpo (with the same msgid) into this one.
 
@@ -198,7 +199,7 @@ class pounit(pocommon.pounit):
         merge comments only if comments is True
         """
 
-        def mergelists(list1, list2, split=False):
+        def mergelists(list1, list2, split=False) -> None:
             # Determine the newline style of list2
             lineend = ""
             if list2 and list2[0]:
@@ -286,11 +287,11 @@ class pounit(pocommon.pounit):
         commentmarker = f"({commentmarker})"
         return any(comment.startswith(commentmarker) for comment in self.othercomments)
 
-    def settypecomment(self, typecomment, present=True):
+    def settypecomment(self, typecomment, present=True) -> None:
         """Alters whether a given typecomment is present."""
         if self.hastypecomment(typecomment) != present:
             if present:
-                self.typecomments.append(f"#, {typecomment}\n")
+                self.typecomments.append(f"#, {typecomment}\n")  # ty:ignore[possibly-missing-attribute]
             else:
                 # this should handle word boundaries properly ...
                 typecomments = [
@@ -304,16 +305,16 @@ class pounit(pocommon.pounit):
     def istranslated(self):
         return super().istranslated() and not self.isobsolete()
 
-    def istranslatable(self):
+    def istranslatable(self) -> bool:
         return not (self.isheader() or self.isblank() or self.isobsolete())
 
     def isfuzzy(self):
         return self.hastypecomment("fuzzy")
 
-    def _domarkfuzzy(self, present=True):
+    def _domarkfuzzy(self, present=True) -> None:
         self.settypecomment("fuzzy", present)
 
-    def makeobsolete(self):
+    def makeobsolete(self) -> None:
         """Makes this unit obsolete."""
         self.sourcecomments = []
         self.automaticcomments = []
@@ -324,7 +325,7 @@ class pounit(pocommon.pounit):
         source = self.source
         return isinstance(source, multistring) and len(source.strings) > 1
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Convert to a string. double check that unicode is handled somehow here."""
         cpo_unit = cpo.pounit.buildfromunit(self)
         return str(cpo_unit)
@@ -340,20 +341,18 @@ class pounit(pocommon.pounit):
         # TODO: rename to .locations
         return self.sourcecomments
 
-    def addlocation(self, location):
+    def addlocation(self, location: str) -> None:
         """
         Add a location to sourcecomments in the PO unit.
 
         :param location: Text location e.g. 'file.c:23' does not include #:
-        :type location: String
         """
         self.sourcecomments.append(location)
 
-    def _extract_msgidcomments(self, text=None):
+    def _extract_msgidcomments(self, text: str | None = None) -> str:
         """
         Extract KDE style msgid comments from the unit.
 
-        :rtype: String
         :return: Returns the extracted msgidcomments found in this unit's msgid.
         """
         if text:
@@ -364,7 +363,7 @@ class pounit(pocommon.pounit):
         """Get the message context."""
         return self._msgctxt + self.msgidcomment
 
-    def setcontext(self, context):
+    def setcontext(self, context) -> None:
         self._msgctxt = context or ""
 
     def getid(self):
@@ -423,7 +422,7 @@ class pofile(pocommon.pofile):
 
     UnitClass = pounit
 
-    def _build_self_from_cpo(self):
+    def _build_self_from_cpo(self) -> None:
         """
         Builds up this store from the internal cpo store.
 
@@ -434,7 +433,7 @@ class pofile(pocommon.pofile):
             self.addunit(self.UnitClass.buildfromunit(unit))
         self.encoding = self._cpo_store.encoding
 
-    def _build_cpo_from_self(self):
+    def _build_cpo_from_self(self) -> None:
         """
         Builds the internal cpo store from the data in self.
 
@@ -451,7 +450,7 @@ class pofile(pocommon.pofile):
             # only add a temporary header
             self._cpo_store.makeheader(charset=self.encoding, encoding="8bit")
 
-    def parse(self, input):
+    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
         """Parses the given file or file source string."""
         try:
             if hasattr(input, "name"):
@@ -463,9 +462,9 @@ class pofile(pocommon.pofile):
             self._build_self_from_cpo()
             del self._cpo_store
         except Exception as e:
-            raise base.ParseError(e)
+            raise base.ParseError(e) from e
 
-    def removeduplicates(self, duplicatestyle="merge"):
+    def removeduplicates(self, duplicatestyle="merge") -> None:
         """Make sure each msgid is unique ; merge comments etc from duplicates into original."""
         # TODO: can we handle consecutive calls to removeduplicates()? What
         # about files already containing msgctxt? - test
@@ -475,7 +474,7 @@ class pofile(pocommon.pofile):
         # probably not used frequently enough to worry about it, though.
         markedpos = []
 
-        def addcomment(thepo):
+        def addcomment(thepo) -> None:
             thepo.msgidcomment = " ".join(thepo.getlocations())
             markedpos.append(thepo)
 
@@ -516,7 +515,7 @@ class pofile(pocommon.pofile):
                 uniqueunits.append(thepo)
         self.units = uniqueunits
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         """Write content to file."""
         self._cpo_store = cpo.pofile(encoding=self.encoding, noheader=True)
         try:

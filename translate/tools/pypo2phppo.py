@@ -18,8 +18,12 @@
 
 """Convert Python format .po files to PHP format .po files."""
 
-import re
+from __future__ import annotations
 
+import re
+from typing import overload
+
+from translate.convert import convert
 from translate.misc.multistring import multistring
 from translate.storage import po
 
@@ -60,25 +64,29 @@ class pypo2phppo:
         return unit
 
     @staticmethod
-    def convertstring(string):
-        return re.sub(r"\{(\d)\}", lambda x: "%%%d$s" % (int(x.group(1)) + 1), string)
+    def convertstring(string: str) -> str:
+        return re.sub(r"\{(\d)\}", lambda x: f"%{int(x.group(1)) + 1}$s", string)
 
-    def convertstrings(self, input):
-        if isinstance(input, multistring):
-            strings = input.strings
-        elif isinstance(input, list):
-            strings = input
+    @overload
+    def convertstrings(self, value: str) -> str: ...
+    @overload
+    def convertstrings(self, value: multistring | list[str]) -> list[str]: ...
+    def convertstrings(self, value):
+        if isinstance(value, multistring):
+            strings = value.strings
+        elif isinstance(value, list):
+            strings = value
         else:
-            return self.convertstring(input)
+            return self.convertstring(value)
 
         for index, string in enumerate(strings):
             strings[index] = re.sub(
-                r"\{(\d)\}", lambda x: "%%%d$s" % (int(x.group(1)) + 1), string
+                r"\{(\d)\}", lambda x: f"%{int(x.group(1)) + 1}$s", string
             )
         return strings
 
 
-def convertpy2php(inputfile, outputfile, template=None):
+def convertpy2php(inputfile, outputfile, template=None) -> bool:
     """
     Converts from Python .po to PHP .po.
 
@@ -95,10 +103,8 @@ def convertpy2php(inputfile, outputfile, template=None):
     return True
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     """Converts from Python .po to PHP .po."""
-    from translate.convert import convert
-
     formats = {"po": ("po", convertpy2php)}
     parser = convert.ConvertOptionParser(formats, description=__doc__)
     parser.run(argv)

@@ -40,9 +40,9 @@ Options (rc2po):
 -t TEMPLATE, --template=TEMPLATE  read from TEMPLATE in rc format
 -S, --timestamp       skip conversion if the output file has newer timestamp
 -P, --pot    output PO Templates (.pot) rather than PO files (.po)
---charset=CHARSET    charset to use to decode the RC files (default: cp1252)
--l LANG, --lang=LANG  LANG entry (default: LANG_ENGLISH)
---sublang=SUBLANG     SUBLANG entry (default: SUBLANG_DEFAULT)
+--charset=CHARSET    charset to use to decode the RC files (autodetection is used by default)
+-l LANG, --lang=LANG  LANG entry (default: None)
+--sublang=SUBLANG     SUBLANG entry (default: None)
 --duplicates=DUPLICATESTYLE
                       what to do with duplicate strings (identical source
                       text): :doc:`merge, msgctxt <option_duplicates>`
@@ -62,7 +62,7 @@ Options (po2rc):
 -o OUTPUT, --output=OUTPUT      write to OUTPUT in rc format
 -t TEMPLATE, --template=TEMPLATE  read from TEMPLATE in rc format
 -S, --timestamp      skip conversion if the output file has newer timestamp
---charset=CHARSET    charset to use to decode the RC files (default: utf-8)
+--charset=CHARSET    charset to use to decode the template RC files (default: utf-8)
 -l LANG, --lang=LANG  LANG entry
 --sublang=SUBLANG     SUBLANG entry (default: SUBLANG_DEFAULT)
 --threshold=PERCENT  only convert files where the translation completion is above PERCENT
@@ -123,6 +123,18 @@ To update your translations simply redo the POT creation step and make use of
 
 Issues
 ======
+
+**Charset handling:**
+
+The ``rc2po`` and ``po2rc`` commands use different default charset handling:
+
+- ``rc2po`` uses **autodetection** by default (with cp1252 as the fallback encoding), so it can automatically detect the encoding of input RC files
+- ``po2rc`` uses **utf-8** by default for reading template RC files
+
+This difference exists because:
+
+- When extracting strings from RC files (rc2po), RC files may be in various encodings, so autodetection is more convenient
+- When creating RC files from translations (po2rc), it's more common to work with UTF-8 templates in modern workflows
 
 If you are recovering translation using ``rc2po -t en.rc xx.rc xx.po`` then
 both en.rc and xx.rc need to be in the same encoding.

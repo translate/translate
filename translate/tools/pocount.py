@@ -131,20 +131,25 @@ def wordsinunit(unit):
     account. The target words are only counted if the unit is translated.
     """
     (sourcewords, targetwords) = (0, 0)
-    if isinstance(unit.source, multistring):
-        sourcestrings = unit.source.strings
+    source = unit.source
+    if isinstance(source, multistring):
+        sourcestrings = source.strings
     else:
-        sourcestrings = [unit.source or ""]
+        sourcestrings = [source or ""]
+
     for s in sourcestrings:
         sourcewords += wordcount(s)
     if not unit.istranslated():
         return sourcewords, targetwords
-    if isinstance(unit.target, multistring):
-        targetstrings = unit.target.strings
+    target = unit.target
+    if isinstance(target, multistring):
+        targetstrings = target.strings
     else:
-        targetstrings = [unit.target or ""]
+        targetstrings = [target or ""]
+
     for s in targetstrings:
         targetwords += wordcount(s)
+
     return sourcewords, targetwords
 
 
@@ -153,58 +158,56 @@ def calcstats(filename):
     try:
         store = factory.getobject(filename)
     except ValueError as e:
-        logger.warning(e)
+        logger.warning("Error in %s: %s", filename, e)
         return {}
 
-    units = [unit for unit in store.units if unit.istranslatable()]
-    translated = translatedmessages(units)
-    fuzzy = fuzzymessages(units)
-    review = [unit for unit in units if unit.isreview()]
-    untranslated = untranslatedmessages(units)
-    wordcounts = {id(unit): wordsinunit(unit) for unit in units}
-
-    def sourcewords(elementlist):
-        return sum(wordcounts[id(unit)][0] for unit in elementlist)
-
-    def targetwords(elementlist):
-        return sum(wordcounts[id(unit)][1] for unit in elementlist)
-
+    # Initialize counters
     stats = {"filename": filename}
+    stats["translated"] = 0
+    stats["fuzzy"] = 0
+    stats["untranslated"] = 0
+    stats["review"] = 0
+    stats["translatedsourcewords"] = 0
+    stats["translatedtargetwords"] = 0
+    stats["fuzzysourcewords"] = 0
+    stats["untranslatedsourcewords"] = 0
+    stats["reviewsourcewords"] = 0
 
-    # units
-    stats["translated"] = len(translated)
-    stats["fuzzy"] = len(fuzzy)
-    stats["untranslated"] = len(untranslated)
-    stats["review"] = len(review)
-    stats["total"] = stats["translated"] + stats["fuzzy"] + stats["untranslated"]
+    # Extended state tracking
+    extended_stats = {}
 
-    # words
-    stats["translatedsourcewords"] = sourcewords(translated)
-    stats["translatedtargetwords"] = targetwords(translated)
-    stats["fuzzysourcewords"] = sourcewords(fuzzy)
-    stats["untranslatedsourcewords"] = sourcewords(untranslated)
-    stats["reviewsourcewords"] = sourcewords(review)
-    stats["totalsourcewords"] = (
-        stats["translatedsourcewords"]
-        + stats["fuzzysourcewords"]
-        + stats["untranslatedsourcewords"]
-    )
+    # Single pass through all units
+    for unit in store.units:
+        if not unit.istranslatable():
+            continue
 
-    stats["extended"] = file_extended_totals(units, wordcounts)
+        # Count words once per unit
+        sourcewords, targetwords = wordsinunit(unit)
 
-    return stats
+        # Categorize unit and accumulate counts
+        # Note: A unit cannot be both translated and fuzzy, as istranslated()
+        # returns False when isfuzzy() is True
+        is_translated = unit.istranslated()
+        is_fuzzy = unit.isfuzzy()
 
+        if is_translated:
+            stats["translated"] += 1
+            stats["translatedsourcewords"] += sourcewords
+            stats["translatedtargetwords"] += targetwords
+        elif is_fuzzy and unit.target:
+            stats["fuzzy"] += 1
+            stats["fuzzysourcewords"] += sourcewords
+        elif unit.source:
+            # Remaining units with source are untranslated
+            stats["untranslated"] += 1
+            stats["untranslatedsourcewords"] += sourcewords
 
-def file_extended_totals(units, wordcounts):
-    """Provide extended statuses (used by XLIFF)."""
-    stats = {}
+        if unit.isreview():
+            stats["review"] += 1
+            stats["reviewsourcewords"] += sourcewords
 
-    for unit in units:
+        # Handle extended states
         state = unit.get_state_n()
-
-        # if state is not standard (xliff)
-        # search for the default one to use
-        # each unit defines its own states
         if state not in extended_state_strings:
             for k in unit.STATE:
                 val = unit.STATE[k]
@@ -212,13 +215,20 @@ def file_extended_totals(units, wordcounts):
                     state = k
 
         extended_state = extended_state_strings[state]
+        if extended_state not in extended_stats:
+            extended_stats[extended_state] = defaultdict(int)
 
-        state_stats = stats.get(extended_state, defaultdict(int))
-        state_stats["units"] += 1
-        state_stats["sourcewords"] += wordcounts[id(unit)][0]
-        state_stats["targetwords"] += wordcounts[id(unit)][1]
+        extended_stats[extended_state]["units"] += 1
+        extended_stats[extended_state]["sourcewords"] += sourcewords
+        extended_stats[extended_state]["targetwords"] += targetwords
 
-        stats[extended_state] = state_stats
+    stats["total"] = stats["translated"] + stats["fuzzy"] + stats["untranslated"]
+    stats["totalsourcewords"] = (
+        stats["translatedsourcewords"]
+        + stats["fuzzysourcewords"]
+        + stats["untranslatedsourcewords"]
+    )
+    stats["extended"] = extended_stats
 
     return stats
 
@@ -227,13 +237,13 @@ def file_extended_totals(units, wordcounts):
 class Renderer:
     stats: StatCollector
 
-    def header(self):
+    def header(self) -> None:
         pass
 
-    def entry(self, title: str, stats: dict):
+    def entry(self, title: str, stats: dict) -> None:
         pass
 
-    def footer(self):
+    def footer(self) -> None:
         pass
 
 
@@ -258,10 +268,10 @@ class CsvRenderer(Renderer):
             sys.stdout, self._fields.values(), lineterminator="\n"
         )
 
-    def header(self):
+    def header(self) -> None:
         self._writer.writeheader()
 
-    def entry(self, title, stats):
+    def entry(self, title, stats) -> None:
         data = stats.copy()
         data.update(title=title)
         row = {v: data[k] for k, v in self._fields.items()}
@@ -269,7 +279,7 @@ class CsvRenderer(Renderer):
 
 
 class FullRenderer(Renderer):
-    def entry(self, title, stats):
+    def entry(self, title, stats) -> None:
         print(f"Processing file : {ConsoleColor.HEADER()}{title}{ConsoleColor.ENDC()}")
         print("Type               Strings      Words (source)    Words (translation)")
         print(
@@ -304,8 +314,7 @@ class FullRenderer(Renderer):
             + ConsoleColor.ENDC()
         )
         print(
-            "Total:        %5d %17d %22d"
-            % (
+            "Total:        {:5d} {:17d} {:22d}".format(
                 stats["total"],
                 stats["totalsourcewords"],
                 stats["translatedtargetwords"],
@@ -315,8 +324,7 @@ class FullRenderer(Renderer):
             print()
             for state, e_stats in stats["extended"].items():
                 print(
-                    "%-11s   %5d (%3d%%) %10d (%3d%%) %15d"
-                    % (
+                    "{:<11s}   {:5d} ({:3d}%) {:10d} ({:3d}%) {:15d}".format(
                         f"{state.title()}:",
                         e_stats["units"],
                         percent(e_stats["units"], stats["total"]),
@@ -328,20 +336,21 @@ class FullRenderer(Renderer):
 
         if stats["review"] > 0:
             print(
-                "review:          %5d %17d                    n/a"
-                % (stats["review"], stats["reviewsourcewords"])
+                "review:          {:5d} {:17d}                    n/a".format(
+                    stats["review"], stats["reviewsourcewords"]
+                )
             )
         print()
 
-    def footer(self):
+    def footer(self) -> None:
         stats = self.stats
         if stats.file_count > 1:
             if stats.incomplete_only:
                 self.entry("TOTAL (incomplete only):", stats.totals)
-                print("File count (incomplete):   %5d" % len(stats.results))
+                print(f"File count (incomplete):   {len(stats.results):5d}")
             else:
                 self.entry("TOTAL:", stats.totals)
-            print("File count:   %5d" % (stats.file_count))
+            print(f"File count:   {stats.file_count:5d}")
             print()
 
 
@@ -351,11 +360,10 @@ class ShortStringsRenderer(Renderer):
 
     indent: int = 8
 
-    def entry(self, title, stats):
+    def entry(self, title, stats) -> None:
         spaces = " " * (self.indent - len(title))
         print(
-            "%s%s strings: total: %d\t| %st\t%sf\t%su\t| %st\t%sf\t%su"
-            % (
+            "{}{} strings: total: {}\t| {}t\t{}f\t{}u\t| {}t\t{}f\t{}u".format(
                 ConsoleColor.HEADER() + title + ConsoleColor.ENDC(),
                 spaces,
                 stats["total"],
@@ -384,11 +392,10 @@ class ShortWordsRenderer(Renderer):
 
     indent: int = 8
 
-    def entry(self, title, stats):
+    def entry(self, title, stats) -> None:
         spaces = " " * (self.indent - len(title))
         print(
-            "%s%s source words: total: %d\t| %st\t%sf\t%su\t| %st\t%sf\t%su"
-            % (
+            "{}{} source words: total: {}\t| {}t\t{}f\t{}u\t| {}t\t{}f\t{}u".format(
                 ConsoleColor.HEADER() + title + ConsoleColor.ENDC(),
                 spaces,
                 stats["totalsourcewords"],
@@ -421,37 +428,21 @@ class ShortWordsRenderer(Renderer):
         )
 
 
-def percent(denominator, devisor):
+def percent(denominator: int, devisor: int) -> int:
     if devisor == 0:
         return 0
-    return denominator * 100 / devisor
-
-
-def fuzzymessages(units):
-    return [unit for unit in units if unit.isfuzzy() and unit.target]
-
-
-def translatedmessages(units):
-    return [unit for unit in units if unit.istranslated()]
-
-
-def untranslatedmessages(units):
-    return [
-        unit
-        for unit in units
-        if not (unit.istranslated() or unit.isfuzzy()) and unit.source
-    ]
+    return denominator * 100 // devisor
 
 
 class StatCollector:
-    def __init__(self, items: list[str], incomplete_only=False):
+    def __init__(self, items: list[str], incomplete_only=False) -> None:
         self.incomplete_only = incomplete_only
         self._results: list[dict] = []
         self._handle_items(items)
 
-    def render(self, renderer_class: type[Renderer]):
+    def render(self, renderer_class: type[Renderer]) -> None:
         if renderer_class in {ShortWordsRenderer, ShortStringsRenderer}:
-            renderer = renderer_class(self, indent=self.longest_filename)
+            renderer = renderer_class(self, indent=self.longest_filename)  # ty:ignore[unknown-argument]
         else:
             renderer = renderer_class(self)
 
@@ -466,7 +457,7 @@ class StatCollector:
             return [s for s in self._results if s["total"] != s["translated"]]
         return self._results
 
-    def _handle_items(self, items: list[str]):
+    def _handle_items(self, items: list[str]) -> None:
         for item in items:
             if not os.path.exists(item):
                 logger.error("cannot process %s: does not exist", item)
@@ -476,14 +467,14 @@ class StatCollector:
             else:
                 self._handle_single_file(item)
 
-    def _handle_dir(self, dirname):
+    def _handle_dir(self, dirname) -> None:
         _, name = os.path.split(dirname)
         if name in {"CVS", ".svn", "_darcs", ".git", ".hg", ".bzr"}:
             return
         entries = os.listdir(dirname)
         self._handle_multiple_files(dirname, entries)
 
-    def _handle_multiple_files(self, dirname, filenames):
+    def _handle_multiple_files(self, dirname, filenames) -> None:
         for filename in filenames:
             pathname = os.path.join(dirname, filename)
             if os.path.isdir(pathname):
@@ -491,7 +482,7 @@ class StatCollector:
             else:
                 self._handle_single_file(pathname)
 
-    def _handle_single_file(self, filename):
+    def _handle_single_file(self, filename) -> None:
         try:
             stats = calcstats(filename)
             self._results.append(stats)
@@ -520,7 +511,7 @@ class StatCollector:
         return totals
 
 
-def main(arguments=None):
+def main(arguments=None) -> None:
     parser = ArgumentParser()
     parser.add_argument(
         "--incomplete",

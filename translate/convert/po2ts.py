@@ -23,6 +23,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+from translate.convert import convert
 from translate.misc.multistring import multistring
 from translate.storage import po, ts2
 
@@ -57,10 +58,10 @@ class po2ts:
         # If they're identical up to the end of the shorter string
         if first_diff == min_len:
             # Check if plural is just singular + 's'
-            if len(plural) == len(singular) + 1 and plural == singular + "s":
+            if len(plural) == len(singular) + 1 and plural == f"{singular}s":
                 return f"{singular}(s)"
             # Check if plural is just singular + 'es'
-            if len(plural) == len(singular) + 2 and plural == singular + "es":
+            if len(plural) == len(singular) + 2 and plural == f"{singular}es":
                 return f"{singular}(es)"
         # They differ somewhere in the middle
         # Check if the difference is just an 's' insertion
@@ -77,7 +78,7 @@ class po2ts:
         return plural
 
     @staticmethod
-    def convertstore(inputstore, outputfile, templatefile=None, context=None):
+    def convertstore(inputstore, outputfile, templatefile=None, context=None) -> None:
         """Converts a .po file to .ts format (using a template .ts file if given)."""
         tsfile = ts2.tsfile() if templatefile is None else ts2.tsfile(templatefile)
         for inputunit in inputstore.units:
@@ -95,12 +96,20 @@ class po2ts:
                 # If strings is empty, source remains as multistring (will be handled by tsunit)
             translation = inputunit.target
             comment = inputunit.getnotes("translator")
-            for sourcelocation in inputunit.getlocations():
+            locations = inputunit.getlocations()
+            # If there are no locations, we still need to add the unit
+            # Use the provided context or an empty string as default
+            if not locations:
+                locations = [""]
+            for sourcelocation in locations:
                 if context is None:
-                    if "#" in sourcelocation:
+                    if sourcelocation and "#" in sourcelocation:
                         contextname = sourcelocation[: sourcelocation.find("#")]
-                    else:
+                    elif sourcelocation:
                         contextname = sourcelocation
+                    else:
+                        # No location and no context provided, use empty string
+                        contextname = ""
                 else:
                     contextname = context
                 tsunit = ts2.tsunit(source)
@@ -113,7 +122,7 @@ class po2ts:
         tsfile.serialize(outputfile)
 
 
-def convertpo(inputfile, outputfile, templatefile, context):
+def convertpo(inputfile, outputfile, templatefile, context) -> int:
     """Reads in stdin using fromfileclass, converts using convertorclass, writes to stdout."""
     inputstore = po.pofile(inputfile)
     if inputstore.isempty():
@@ -123,9 +132,7 @@ def convertpo(inputfile, outputfile, templatefile, context):
     return 1
 
 
-def main(argv=None):
-    from translate.convert import convert
-
+def main(argv=None) -> None:
     formats = {"po": ("ts", convertpo), ("po", "ts"): ("ts", convertpo)}
     parser = convert.ConvertOptionParser(
         formats, usepots=False, usetemplates=True, description=__doc__

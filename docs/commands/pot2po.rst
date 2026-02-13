@@ -111,7 +111,7 @@ Performance
 ===========
 
 Fuzzy matches are usually of good quality. Installation of the
-`python-Levenshtein <https://pypi.python.org/pypi/python-Levenshtein>`_ package
+`RapidFuzz <https://pypi.org/project/RapidFuzz/>`_  package
 will speed up fuzzy matching. Without this a Python based matcher is used which
 is considerably slower.
 

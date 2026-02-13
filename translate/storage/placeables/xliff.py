@@ -18,8 +18,16 @@
 
 """Contains XLIFF-specific placeables."""
 
+from __future__ import annotations
+
+from copy import copy
+from typing import TYPE_CHECKING
+
 from translate.storage.placeables import base
 from translate.storage.placeables.strelem import StringElem
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 __all__ = (
     "Bpt",
@@ -82,7 +90,9 @@ class UnknownXML(StringElem):
     iseditable = True
 
     # INITIALIZERS #
-    def __init__(self, sub=None, id=None, rid=None, xid=None, xml_node=None, **kwargs):
+    def __init__(
+        self, sub=None, id=None, rid=None, xid=None, xml_node=None, **kwargs
+    ) -> None:
         super().__init__(sub=sub, id=id, rid=rid, xid=xid, **kwargs)
         if xml_node is None:
             raise ValueError("xml_node must be a lxml node")
@@ -92,7 +102,7 @@ class UnknownXML(StringElem):
             self.has_content = True
 
     # SPECIAL METHODS #
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         String representation of the sub-tree with the current node as the
         root.
@@ -106,14 +116,14 @@ class UnknownXML(StringElem):
 
         elemstr = ", ".join(repr(elem) for elem in self.sub)
 
-        return "<%(class)s{%(tag)s}(%(id)s%(rid)s%(xid)s[%(subs)s])>" % {
-            "class": self.__class__.__name__,
-            "tag": tag,
-            "id": (self.id is not None and f'id="{self.id}" ') or "",
-            "rid": (self.rid is not None and f'rid="{self.rid}" ') or "",
-            "xid": (self.xid is not None and f'xid="{self.xid}" ') or "",
-            "subs": elemstr,
-        }
+        return "<{class_name}{{{tag}}}({id}{rid}{xid}[{subs}])>".format(
+            class_name=self.__class__.__name__,
+            tag=tag,
+            id=(self.id is not None and f'id="{self.id}" ') or "",
+            rid=(self.rid is not None and f'rid="{self.rid}" ') or "",
+            xid=(self.xid is not None and f'xid="{self.xid}" ') or "",
+            subs=elemstr,
+        )
 
     # METHODS #
     def copy(self):
@@ -123,8 +133,6 @@ class UnknownXML(StringElem):
 
         .. note:: ``self.renderer`` is **not** copied.
         """
-        from copy import copy
-
         cp = self.__class__(
             id=self.id, rid=self.rid, xid=self.xid, xml_node=copy(self.xml_node)
         )
@@ -171,4 +179,4 @@ def to_xliff_placeables(tree):
     return newtree
 
 
-parsers = []
+parsers: list[Callable[[str], list[StringElem] | None]] = []

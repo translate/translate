@@ -38,7 +38,7 @@ class tbxunit(lisa.LISAunit):
     languageNode = "langSet"
     textNode = "term"
 
-    def createlanguageNode(self, lang, text, purpose):
+    def createlanguageNode(self, lang, text, purpose):  # ty:ignore[invalid-method-override]
         """Returns a langset xml Element setup with given parameters."""
         langset = etree.Element(self.languageNode)
         setXMLlang(langset, lang)
@@ -63,13 +63,13 @@ class tbxunit(lisa.LISAunit):
             return self.namespaced("descrip")
         return self.namespaced("note")
 
-    def removenotes(self, origin=None):
+    def removenotes(self, origin=None) -> None:
         """Remove all the translator notes."""
-        notes = self.xmlelement.iterdescendants(self._get_origin_element(origin))
+        notes = self.xmlelement.iterdescendants(self._get_origin_element(origin))  # ty:ignore[invalid-argument-type]
         for note in notes:
             self.xmlelement.remove(note)
 
-    def addnote(self, text, origin=None, position="append"):
+    def addnote(self, text, origin=None, position="append") -> None:
         """Add a note specifically in a "note" tag."""
         if position != "append":
             self.removenotes(origin=origin)
@@ -78,14 +78,14 @@ class tbxunit(lisa.LISAunit):
             text = text.strip()
         if not text:
             return
-        note = etree.SubElement(self.xmlelement, self._get_origin_element(origin))
+        note = etree.SubElement(self.xmlelement, self._get_origin_element(origin))  # ty:ignore[invalid-argument-type]
         safely_set_text(note, text)
         if origin and origin not in {"pos", "definition"}:
             note.set("from", origin)
 
     def _getnotenodes(self, origin=None):
         """Get all nodes matching ``origin`` in the XML document."""
-        return self.xmlelement.iterdescendants(self._get_origin_element(origin))
+        return self.xmlelement.iterdescendants(self._get_origin_element(origin))  # ty:ignore[invalid-argument-type]
 
     def _getnodetext(self, node):
         """
@@ -108,14 +108,12 @@ class tbxunit(lisa.LISAunit):
             and node.get("type") == "Translation needed"
         )
 
-    def _getnotelist(self, origin=None):
+    def _getnotelist(self, origin=None) -> list[str]:
         """
         Returns the text from notes matching ``origin`` or all notes.
 
         :param origin: The origin of the note (or note type)
-        :type origin: String
         :return: The text from notes matching ``origin``
-        :rtype: List
         """
         note_nodes = self._getnotenodes(origin=origin)
         # TODO: consider using xpath to construct initial_list directly
@@ -156,8 +154,6 @@ class tbxunit(lisa.LISAunit):
 
         The deprecated administrative status in TBX basic maps to translate toolkit's
         concept of obsolete units.
-
-        :rtype: bool
         """
         for note in self._getnotenodes(origin="pos"):
             if self._is_administrative_status_term_node(note) and self._getnodetext(
@@ -172,7 +168,7 @@ class tbxunit(lisa.LISAunit):
         return super().isobsolete()
 
 
-class tbxfile(lisa.LISAfile):
+class tbxfile(lisa.LISAfile[tbxunit]):
     """Class representing a TBX file store."""
 
     UnitClass = tbxunit
@@ -193,6 +189,6 @@ class tbxfile(lisa.LISAfile):
 </martif>"""
     XMLindent = {"indent": "    ", "toplevel": False}
 
-    def addheader(self):
+    def addheader(self) -> None:
         """Initialise headers with TBX specific things."""
         setXMLlang(self.document.getroot(), self.sourcelanguage)

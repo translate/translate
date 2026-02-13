@@ -21,6 +21,8 @@ Class to perform translation memory matching from a store of translation
 units.
 """
 
+from __future__ import annotations
+
 import heapq
 import re
 from operator import itemgetter
@@ -35,7 +37,7 @@ def sourcelen(unit):
     return len(unit.source)
 
 
-def _sort_matches(matches, match_info):
+def _sort_matches(matches, match_info) -> None:
     """
     This function will sort a list of matches according to the match's starting
     position, putting the one with the longer source text first, if two are the
@@ -61,7 +63,7 @@ class matcher:
         max_length=70,
         comparer=None,
         usefuzzy=False,
-    ):
+    ) -> None:
         """
         max_candidates is the maximum number of candidates that should be
         assembled, min_similarity is the minimum similarity that must be
@@ -76,7 +78,7 @@ class matcher:
         self.inittm(store)
         self.addpercentage = True
 
-    def usable(self, unit):
+    def usable(self, unit) -> bool:
         """Returns whether this translation unit is usable for TM."""
         # TODO: We might want to consider more attributes, such as approved, reviewed, etc.
         source = unit.source
@@ -90,7 +92,7 @@ class matcher:
             return True
         return False
 
-    def inittm(self, stores, reverse=False):
+    def inittm(self, stores, reverse=False) -> None:
         """
         Initialises the memory for later use. We use simple base units for
         speedup.
@@ -105,7 +107,7 @@ class matcher:
             self.extendtm(store.units, store=store, sort=False)
         self.candidates.units.sort(key=sourcelen, reverse=self.sort_reverse)
 
-    def extendtm(self, units, store=None, sort=True):
+    def extendtm(self, units, store=None, sort=True) -> None:
         """
         Extends the memory with extra unit(s).
 
@@ -124,8 +126,8 @@ class matcher:
             # some modules (like the native Levenshtein) can't use it.
             if isinstance(candidate.source, multistring):
                 if len(candidate.source.strings) > 1:
-                    simpleunit.orig_source = candidate.source
-                    simpleunit.orig_target = candidate.target
+                    simpleunit.orig_source = candidate.source  # ty:ignore[unresolved-attribute]
+                    simpleunit.orig_target = candidate.target  # ty:ignore[unresolved-attribute]
                 simpleunit.source = str(candidate.source)
                 simpleunit.target = str(candidate.target)
             else:
@@ -136,12 +138,14 @@ class matcher:
             # notes, pot2po adds all previous comments as translator comments
             # in the new po file
             simpleunit.addnote(candidate.getnotes(origin="translator"))
-            simpleunit.fuzzy = candidate.isfuzzy()
+            simpleunit.fuzzy = candidate.isfuzzy()  # ty:ignore[unresolved-attribute]
             self.candidates.units.append(simpleunit)
         if sort:
             self.candidates.units.sort(key=sourcelen, reverse=self.sort_reverse)
 
-    def setparameters(self, max_candidates=10, min_similarity=75, max_length=70):
+    def setparameters(
+        self, max_candidates=10, min_similarity=75, max_length=70
+    ) -> None:
         """
         Sets the parameters without reinitialising the tm. If a parameter is
         not specified, it is set to the default, not ignored.
@@ -165,13 +169,11 @@ class matcher:
         """
         return max(len(text) * (min_similarity / 100.0), 1)
 
-    def matches(self, text):
+    def matches(self, text: str) -> list[base.TranslationUnit]:
         """
         Returns a list of possible matches for given source text.
 
-        :type text: String
         :param text: The text that will be search for in the translation memory
-        :rtype: list
         :return: a list of units with the source and target strings from the
                  translation memory. If :attr:`self.addpercentage` is
                  *True* (default) the match quality is given as a
@@ -241,7 +243,7 @@ class matcher:
             if candidatenotes:
                 newunit.addnote(candidatenotes)
             if self.addpercentage:
-                newunit.addnote("%d%%" % score)
+                newunit.addnote(f"{score}%")
             units.append(newunit)
         return units
 
@@ -271,7 +273,7 @@ class terminologymatcher(matcher):
 
     def __init__(
         self, store, max_candidates=10, min_similarity=75, max_length=500, comparer=None
-    ):
+    ) -> None:
         if comparer is None:
             comparer = terminology.TerminologyComparer(max_length)
         super().__init__(
@@ -284,7 +286,7 @@ class terminologymatcher(matcher):
         self.addpercentage = False
         self.match_info = {}
 
-    def inittm(self, store):
+    def inittm(self, store) -> None:  # ty:ignore[invalid-method-override]
         """Normal initialisation, but convert all source strings to lower case."""
         super().inittm(store)
         extras = []
@@ -306,12 +308,12 @@ class terminologymatcher(matcher):
             # considered last.
             self.extendtm(extras, sort=False)
 
-    def getstartlength(self, min_similarity, text):
+    def getstartlength(self, min_similarity, text) -> int:
         # Let's number false matches by not working with terms of two
         # characters or less
         return 3
 
-    def getstoplength(self, min_similarity, text):
+    def getstoplength(self, min_similarity, text) -> int:
         # Let's ignore terms with more than 50 characters. Perhaps someone
         # gave a file with normal (long) translations
         return 50
@@ -320,8 +322,8 @@ class terminologymatcher(matcher):
         """Returns whether this translation unit is usable for terminology."""
         if not unit.istranslated():
             return False
-        l = len(context_re.sub("", unit.source))
-        return l <= self.MAX_LENGTH and l >= self.getstartlength(None, None)
+        length = len(context_re.sub("", unit.source))
+        return self.getstartlength(None, None) <= length <= self.MAX_LENGTH
 
     def matches(self, text):
         """
@@ -334,7 +336,7 @@ class terminologymatcher(matcher):
             return []
         text = text.lower()
         comparer = self.comparer
-        comparer.match_info = {}
+        comparer.match_info = {}  # ty:ignore[invalid-assignment]
         match_info = {}
         matches = []
         known = set()
@@ -359,7 +361,7 @@ class terminologymatcher(matcher):
             if (source, cand.target) in known:
                 continue
             if comparer.similarity(text, source, self.MIN_SIMILARITY):
-                match_info[source] = {"pos": comparer.match_info[source]["pos"]}
+                match_info[source] = {"pos": comparer.match_info[source]["pos"]}  # ty:ignore[possibly-missing-attribute]
                 matches.append(cand)
                 known.add((source, cand.target))
 

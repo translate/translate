@@ -23,12 +23,13 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+from translate.convert import convert
 from translate.misc.multistring import multistring
 from translate.storage import po, ts2
 
 
 class ts2po:
-    def __init__(self, duplicatestyle="msgctxt", pot=False):
+    def __init__(self, duplicatestyle="msgctxt", pot=False) -> None:
         self.duplicatestyle = duplicatestyle
         self.pot = pot
 
@@ -45,7 +46,7 @@ class ts2po:
     ):
         """Makes a pounit from the given message."""
         thepo = po.pounit(encoding="UTF-8")
-        thepo.addlocation("%s#%d" % (contextname, messagenum))
+        thepo.addlocation(f"{contextname}#{messagenum}")
         # Handle plural forms: TS format stores only one source form (the plural),
         # but PO needs both singular and plural. We duplicate the TS plural form for both.
         if hasplural and isinstance(source, multistring):
@@ -106,7 +107,9 @@ class ts2po:
         return thetargetfile
 
 
-def convertts(inputfile, outputfile, templates, pot=False, duplicatestyle="msgctxt"):
+def convertts(
+    inputfile, outputfile, templates, pot=False, duplicatestyle="msgctxt"
+) -> int:
     """Reads in stdin using fromfileclass, converts using convertorclass, writes to stdout."""
     convertor = ts2po(duplicatestyle=duplicatestyle, pot=pot)
     outputstore = convertor.convertfile(inputfile)
@@ -116,9 +119,7 @@ def convertts(inputfile, outputfile, templates, pot=False, duplicatestyle="msgct
     return 1
 
 
-def main(argv=None):
-    from translate.convert import convert
-
+def main(argv=None) -> None:
     formats = {"ts": ("po", convertts)}
     parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
     parser.add_duplicates_option()

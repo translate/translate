@@ -18,6 +18,7 @@
 
 """Module to provide statistics and related functionality."""
 
+from translate.filters import checks, pofilter
 from translate.lang import factory
 
 # calling classifyunits() in the constructor is probably not ideal.
@@ -35,7 +36,9 @@ from translate.lang import factory
 class Statistics:
     """Manages statistics for storage objects."""
 
-    def __init__(self, sourcelanguage="en", targetlanguage="en", checkerstyle=None):
+    def __init__(
+        self, sourcelanguage="en", targetlanguage="en", checkerstyle=None
+    ) -> None:
         self.sourcelanguage = sourcelanguage
         self.targetlanguage = targetlanguage
         self.language = factory.getlanguage(self.sourcelanguage)
@@ -43,14 +46,12 @@ class Statistics:
 
         self.classification = {}
 
-    def init_checker(self, checkerstyle=None):
-        from translate.filters import checks, pofilter
-
+    def init_checker(self, checkerstyle=None) -> None:
         checkerclasses = [
             checkerstyle or checks.StandardChecker,
-            pofilter.StandardPOChecker,
+            pofilter.StandardPOChecker,  # ty:ignore[unresolved-attribute]
         ]
-        self.checker = pofilter.POTeeChecker(checkerclasses=checkerclasses)
+        self.checker = pofilter.POTeeChecker(checkerclasses=checkerclasses)  # ty:ignore[unresolved-attribute]
 
     def fuzzy_units(self):
         """Return a list of fuzzy units."""
@@ -140,7 +141,7 @@ class Statistics:
         classes.extend(f"check-{checkname}" for checkname in checkresult)
         return classes
 
-    def classifyunits(self):
+    def classifyunits(self) -> None:
         """
         Makes a dictionary of which units fall into which classifications.
 
@@ -154,7 +155,7 @@ class Statistics:
         self.classification["total"] = []
         #        for checkname in self.checker.getfilters().keys():
         #            self.classification[f"check-{checkname}"] = []
-        for item, unit in enumerate(self.unit_iter()):
+        for item, unit in enumerate(self.unit_iter()):  # ty:ignore[unresolved-attribute]
             classes = self.classifyunit(unit)
             #            if self.basefile.getsuggestions(item):
             #                classes.append("has-suggestion")
@@ -165,11 +166,11 @@ class Statistics:
                     self.classification[classname] = item
         self.countwords()
 
-    def countwords(self):
+    def countwords(self) -> None:
         """Counts the source and target words in each of the units."""
         self.sourcewordcounts = []
         self.targetwordcounts = []
-        for unit in self.unit_iter():
+        for unit in self.unit_iter():  # ty:ignore[unresolved-attribute]
             self.sourcewordcounts.append(
                 [self.wordcount(text) for text in getattr(unit.source, "strings", [""])]
             )
@@ -177,7 +178,7 @@ class Statistics:
                 [self.wordcount(text) for text in getattr(unit.target, "strings", [""])]
             )
 
-    def reclassifyunit(self, item):
+    def reclassifyunit(self, item) -> None:
         """
         Updates the classification of a unit in self.classification.
 
@@ -196,10 +197,10 @@ class Statistics:
         for classname, matchingitems in self.classification.items():
             if (classname in classes) != (item in matchingitems):
                 if classname in classes:
-                    self.classification[classname].append(item)
+                    matchingitems.append(item)
                 else:
-                    self.classification[classname].remove(item)
-                self.classification[classname].sort()
+                    matchingitems.remove(item)
+                matchingitems.sort()
 
 
 #        self.savestats()

@@ -14,11 +14,11 @@ if TYPE_CHECKING:
 
 
 class MsgfmtTester:
-    def __init__(self, files: Iterable[str], untranslated=False):
+    def __init__(self, files: Iterable[str], untranslated=False) -> None:
         self._detect_untranslated = untranslated
         self._files = files
 
-    def run(self):
+    def run(self) -> None:
         results = list(map(self._run_msgfmt, self._files))
         self._print_results(results)
 
@@ -28,6 +28,7 @@ class MsgfmtTester:
             ["msgfmt", "--check", "--verbose", "--output-file=/dev/null", pofile],
             capture_output=True,
             text=True,
+            check=False,
             env={"LC_ALL": "C.UTF-8", "PATH": os.environ["PATH"]},
         )
         stderr = process.stderr.replace(pofile, basename(pofile))
@@ -44,7 +45,7 @@ class MsgfmtTester:
         )
 
     @staticmethod
-    def _print_results(results: list[CheckResult]):
+    def _print_results(results: list[CheckResult]) -> None:
         failures = sum((len(r.failures) for r in results), 0)
         total_time = sum((r.time for r in results), 0)
         root = etree.Element(
@@ -83,7 +84,7 @@ class CheckFailure(NamedTuple):
     message: str
 
 
-def main(arguments=None):
+def main(arguments=None) -> None:
     parser = ArgumentParser()
     parser.add_argument(
         "--untranslated",

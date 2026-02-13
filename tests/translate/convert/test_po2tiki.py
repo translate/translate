@@ -1,5 +1,7 @@
 # po2tiki unit tests
+# spellchecker:off
 # Author: Wil Clouser <wclouser@mozilla.com>
+# spellchecker:on
 # Date: 2008-12-01
 from io import BytesIO
 
@@ -27,11 +29,11 @@ class TestPo2Tiki:
         """Helper that converts to target format string without using files."""
         return self._convert(*args, **kwargs)[1].getvalue().decode("utf-8")
 
-    def test_convert_empty(self):
+    def test_convert_empty(self) -> None:
         """Check converting empty file returns no output."""
         assert self._convert_to_string("", success_expected=False) == ""
 
-    def test_convert(self):
+    def test_convert(self) -> None:
         """Check converting simple file."""
         input_string = """
 #: translated
@@ -46,7 +48,7 @@ msgstr "one_target"
         assert '"one_source" => "one_target",' in output
         assert '"zero_source" => "zero_target",' in output
 
-    def test_convert_marked_untranslated(self):
+    def test_convert_marked_untranslated(self) -> None:
         """Check convert marked as untranslated keeps translation."""
         input_string = """
 #: untranslated

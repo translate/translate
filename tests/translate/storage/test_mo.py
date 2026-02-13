@@ -15,7 +15,7 @@ MO_LITTLE_ENDIAN = b"\xde\x12\x04\x95\x2a\x00\x00\x00\x02\x00\x00\x00\x1c\x00\x0
 class TestMOUnit(test_base.TestTranslationUnit):
     UnitClass = mo.mounit
 
-    def test_context(self):
+    def test_context(self) -> None:
         unit = self.UnitClass("Message")
         unit.setcontext("context")
         assert unit.getcontext() == "context"
@@ -472,31 +472,31 @@ class TestMOFile(test_base.TestTranslationStore):
 
     def get_mo_and_po(self):
         return (
-            os.path.abspath(self.filename + ".po"),
-            os.path.abspath(self.filename + ".msgfmt.mo"),
-            os.path.abspath(self.filename + ".pocompile.mo"),
+            os.path.abspath(f"{self.filename}.po"),
+            os.path.abspath(f"{self.filename}.msgfmt.mo"),
+            os.path.abspath(f"{self.filename}.pocompile.mo"),
         )
 
-    def remove_po_and_mo(self):
+    def remove_po_and_mo(self) -> None:
         for file in self.get_mo_and_po():
             if os.path.exists(file):
                 os.remove(file)
 
-    def setup_method(self, method):
+    def setup_method(self, method) -> None:
         super().setup_method(method)
         self.remove_po_and_mo()
 
-    def teardown_method(self, method):
+    def teardown_method(self, method) -> None:
         super().teardown_method(method)
         self.remove_po_and_mo()
 
-    def test_language(self):
+    def test_language(self) -> None:
         """Test that we can return the target language correctly."""
         store = self.StoreClass()
         store.updateheader(add=True, Language="zu")
         assert store.gettargetlanguage() == "zu"
 
-    def test_context(self):
+    def test_context(self) -> None:
         store = self.StoreClass()
         unit = self.StoreClass.UnitClass("source")
         unit.target = "target"
@@ -508,7 +508,7 @@ class TestMOFile(test_base.TestTranslationStore):
         assert len(newstore.units) == 1
         assert newstore.units[0].getcontext(), "context"
 
-    def test_output(self):
+    def test_output(self) -> None:
         assert len(posources) == len(mosources), "Missing MO rendering for PO sources"
         for i, posource in enumerate(posources):
             print("PO source file")
@@ -537,7 +537,7 @@ class TestMOFile(test_base.TestTranslationStore):
             finally:
                 sys.argv = argv
 
-            store = factory.getobject(BytesIO(posource))
+            store = factory.getobject(BytesIO(posource))  # ty:ignore[invalid-argument-type]
             if store.isempty() and not os.path.exists(MO_POCOMPILE):
                 # pocompile doesn't create MO files for empty PO files, so we
                 # can skip the checks here.

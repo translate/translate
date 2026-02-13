@@ -62,55 +62,33 @@ class OmegaTDialect(csv.Dialect):
 csv.register_dialect("omegat", OmegaTDialect)
 
 
-class OmegaTUnit(base.TranslationUnit):
+class OmegaTUnit(base.MetadataTranslationUnit):
     """An OmegaT glossary unit."""
 
-    def __init__(self, source=None):
-        self._dict = {}
-        if source:
-            self.source = source
-        super().__init__(source)
-
-    def getdict(self):
-        """Get the dictionary of values for a OmegaT line."""
-        return self._dict
-
-    def setdict(self, newdict):
-        """
-        Set the dictionary of values for a OmegaT line.
-
-        :param newdict: a new dictionary with OmegaT line elements
-        :type newdict: Dict
-        """
-        # TODO First check that the values are OK
-        self._dict = newdict
-
-    dict = property(getdict, setdict)
-
     def _get_field(self, key):
-        if key not in self._dict:
+        if key not in self._metadata_dict:
             return None
-        if self._dict[key]:
-            return self._dict[key]
+        if self._metadata_dict[key]:
+            return self._metadata_dict[key]
         return ""
 
-    def _set_field(self, key, newvalue):
+    def _set_field(self, key, newvalue) -> None:
         if newvalue is None:
-            self._dict[key] = None
-        if key not in self._dict or newvalue != self._dict[key]:
-            self._dict[key] = newvalue
+            self._metadata_dict[key] = None
+        if key not in self._metadata_dict or newvalue != self._metadata_dict[key]:
+            self._metadata_dict[key] = newvalue
 
     def getnotes(self, origin=None):
         return self._get_field("comment")
 
-    def addnote(self, text, origin=None, position="append"):
+    def addnote(self, text, origin=None, position="append") -> None:
         currentnote = self._get_field("comment")
         if position == "append" and currentnote:
             self._set_field("comment", f"{currentnote}\n{text}")
         else:
             self._set_field("comment", text)
 
-    def removenotes(self, origin=None):
+    def removenotes(self, origin=None) -> None:
         self._set_field("comment", "")
 
     @property
@@ -118,7 +96,7 @@ class OmegaTUnit(base.TranslationUnit):
         return self._get_field("source")
 
     @source.setter
-    def source(self, source):
+    def source(self, source) -> None:
         self._rich_source = None
         self._set_field("source", source)
 
@@ -127,20 +105,20 @@ class OmegaTUnit(base.TranslationUnit):
         return self._get_field("target")
 
     @target.setter
-    def target(self, target):
+    def target(self, target) -> None:
         self._rich_target = None
         self._set_field("target", target)
 
-    def settargetlang(self, newlang):
-        self._dict["target-lang"] = newlang
+    def settargetlang(self, newlang: str) -> None:
+        self._metadata_dict["target-lang"] = newlang
 
     targetlang = property(None, settargetlang)
 
-    def __str__(self):
-        return str(self._dict)
+    def __str__(self) -> str:
+        return str(self._metadata_dict)
 
     def istranslated(self):
-        return bool(self._dict.get("target", None))
+        return bool(self._metadata_dict.get("target", None))
 
 
 class OmegaTFile(base.TranslationStore):
@@ -151,7 +129,7 @@ class OmegaTFile(base.TranslationStore):
     Extensions = ["utf8"]
     UnitClass = OmegaTUnit
 
-    def __init__(self, inputfile=None, **kwargs):
+    def __init__(self, inputfile=None, **kwargs) -> None:
         """Construct an OmegaT glossary, optionally reading in from inputfile."""
         super().__init__(**kwargs)
         self.filename = ""
@@ -159,7 +137,7 @@ class OmegaTFile(base.TranslationStore):
         if inputfile is not None:
             self.parse(inputfile)
 
-    def parse(self, input):
+    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
         """Parsese the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name
@@ -171,19 +149,19 @@ class OmegaTFile(base.TranslationStore):
             input = tmsrc
         try:
             input = input.decode(self.encoding)
-        except Exception:
+        except UnicodeDecodeError as error:
             raise ValueError(
                 "OmegaT files are either UTF-8 encoded or use the default system encoding"
-            )
+            ) from error
         lines = csv.DictReader(
             input.split("\n"), fieldnames=OMEGAT_FIELDNAMES, dialect="omegat"
         )
         for line in lines:
             newunit = OmegaTUnit()
-            newunit.dict = line
+            newunit.metadata = line
             self.addunit(newunit)
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         # Check first if there is at least one translated unit
         translated_units = [u for u in self.units if u.istranslated()]
         if not translated_units:
@@ -192,7 +170,7 @@ class OmegaTFile(base.TranslationStore):
         output = StringIO()
         writer = csv.DictWriter(output, fieldnames=OMEGAT_FIELDNAMES, dialect="omegat")
         for unit in translated_units:
-            writer.writerow(unit.dict)
+            writer.writerow(unit.metadata)
         out.write(output.getvalue().encode(self.encoding))
 
 
@@ -205,4 +183,4 @@ class OmegaTFileTab(OmegaTFile):
 
     @property
     def encoding(self):
-        return locale.getdefaultlocale()[1]
+        return locale.getlocale()[1]

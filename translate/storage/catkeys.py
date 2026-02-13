@@ -102,7 +102,7 @@ csv.register_dialect("catkeys", CatkeysDialect)
 class CatkeysHeader:
     """A catkeys translation memory header."""
 
-    def __init__(self, header=None):
+    def __init__(self, header=None) -> None:
         self._header_dict = {}
         if not header:
             self._header_dict = self._create_default_header()
@@ -118,7 +118,7 @@ class CatkeysHeader:
         """Create a default catkeys header."""
         return FIELDNAMES_HEADER_DEFAULTS.copy()
 
-    def settargetlanguage(self, newlang):
+    def settargetlanguage(self, newlang) -> None:
         """Set a human readable target language."""
         if not newlang or newlang not in data.languages:
             return
@@ -127,63 +127,55 @@ class CatkeysHeader:
 
     targetlanguage = property(None, settargetlanguage)
 
-    def setchecksum(self, checksum):
+    def setchecksum(self, checksum) -> None:
         """Set the checksum for the file."""
         if not checksum:
             return
         self._header_dict["checksum"] = str(checksum)
 
 
-class CatkeysUnit(base.TranslationUnit):
+class CatkeysUnit(base.MetadataTranslationUnit):
     """A catkeys translation memory unit."""
 
-    def __init__(self, source=None):
-        self._dict = {}
-        if source:
-            self.source = source
-        super().__init__(source)
-
-    def getdict(self):
-        """Get the dictionary of values for a catkeys line."""
-        return self._dict
-
-    def setdict(self, newdict):
+    def setmetadata(self, newdict: dict[str, str]) -> None:
         """
         Set the dictionary of values for a catkeys line.
 
+        Overrides the parent's setmetadata() to filter and validate field names,
+        ensuring only valid catkeys fields are stored.
+
         :param newdict: a new dictionary with catkeys line elements
-        :type newdict: Dict
         """
-        # Process the input values
-        self._dict = {}
+        # Filter the input values to only include valid FIELDNAMES
+        filtered_dict = {}
         for key in FIELDNAMES:
             value = newdict.get(key, "")
             if value is None:
                 value = ""
-            self._dict[key] = value
-
-    dict = property(getdict, setdict)
+            filtered_dict[key] = value
+        # Call parent implementation with filtered data
+        super().setmetadata(filtered_dict)
 
     def _get_source_or_target(self, key):
-        if self._dict.get(key) is None:
+        if self._metadata_dict.get(key) is None:
             return None
-        if self._dict[key]:
-            return _unescape(self._dict[key])
+        if self._metadata_dict[key]:
+            return _unescape(self._metadata_dict[key])
         return ""
 
-    def _set_source_or_target(self, key, newvalue):
+    def _set_source_or_target(self, key, newvalue) -> None:
         if newvalue is None:
-            self._dict[key] = None
+            self._metadata_dict[key] = None
         newvalue = _escape(newvalue)
-        if key not in self._dict or newvalue != self._dict[key]:
-            self._dict[key] = newvalue
+        if key not in self._metadata_dict or newvalue != self._metadata_dict[key]:
+            self._metadata_dict[key] = newvalue
 
     @property
     def source(self):
         return self._get_source_or_target("source")
 
     @source.setter
-    def source(self, source):
+    def source(self, source) -> None:
         self._rich_source = None
         self._set_source_or_target("source", source)
 
@@ -192,20 +184,20 @@ class CatkeysUnit(base.TranslationUnit):
         return self._get_source_or_target("target")
 
     @target.setter
-    def target(self, target):
+    def target(self, target) -> None:
         self._rich_target = None
         self._set_source_or_target("target", target)
 
     def getnotes(self, origin=None):
         if not origin or origin in {"programmer", "developer", "source code"}:
-            return self._dict.get("comment", "")
+            return self._metadata_dict.get("comment", "")
         return ""
 
     def getcontext(self):
-        return self._dict.get("context", "")
+        return self._metadata_dict.get("context", "")
 
-    def setcontext(self, context):
-        self._dict["context"] = context
+    def setcontext(self, context) -> None:
+        self._metadata_dict["context"] = context
 
     def getid(self):
         context = self.getcontext()
@@ -217,24 +209,26 @@ class CatkeysUnit(base.TranslationUnit):
             id = f"{context}\04{id}"
         return id
 
-    def markfuzzy(self, present=True):
+    def markfuzzy(self, present=True) -> None:  # ty:ignore[invalid-method-override]
         if present:
             self.target = ""
 
-    def settargetlang(self, newlang):
-        self._dict["target-lang"] = newlang
+    def settargetlang(self, newlang) -> None:
+        self._metadata_dict["target-lang"] = newlang
 
     targetlang = property(None, settargetlang)
 
-    def __str__(self):
-        return str(self._dict)
+    def __str__(self) -> str:
+        return str(self._metadata_dict)
 
     def istranslated(self):
-        if not self._dict.get("source"):
+        if not self._metadata_dict.get("source"):
             return False
-        return bool(self._dict.get("target"))
+        return bool(self._metadata_dict.get("target"))
 
-    def merge(self, otherunit, overwrite=False, comments=True, authoritative=False):
+    def merge(
+        self, otherunit, overwrite=False, comments=True, authoritative=False
+    ) -> None:
         """Do basic format agnostic merging."""
         # We can't go fuzzy, so just do nothing
         if (
@@ -255,7 +249,7 @@ class CatkeysFile(base.TranslationStore):
     Extensions = ["catkeys"]
     UnitClass = CatkeysUnit
 
-    def __init__(self, inputfile=None, **kwargs):
+    def __init__(self, inputfile=None, **kwargs) -> None:
         """Construct a catkeys store, optionally reading in from inputfile."""
         super().__init__(**kwargs)
         self.filename = ""
@@ -263,10 +257,10 @@ class CatkeysFile(base.TranslationStore):
         if inputfile is not None:
             self.parse(inputfile)
 
-    def settargetlanguage(self, newlang):
+    def settargetlanguage(self, newlang) -> None:  # ty:ignore[invalid-method-override]
         self.header.settargetlanguage(newlang)
 
-    def parse(self, input):
+    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
         """Parse the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name
@@ -292,10 +286,10 @@ class CatkeysFile(base.TranslationStore):
                 self.header = CatkeysHeader(header)
                 continue
             newunit = CatkeysUnit()
-            newunit.dict = line
+            newunit.metadata = line
             self.addunit(newunit)
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         output = StringIO()
         writer = csv.DictWriter(output, FIELDNAMES, dialect="catkeys")
         # Calculate/update fingerprint
@@ -311,7 +305,7 @@ class CatkeysFile(base.TranslationStore):
             )
         )
         for unit in self.units:
-            writer.writerow(unit.dict)
+            writer.writerow(unit.metadata)
         out.write(output.getvalue().encode(self.encoding))
 
     def _compute_fingerprint(self):

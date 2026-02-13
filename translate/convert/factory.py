@@ -18,7 +18,11 @@
 
 """Factory methods to convert supported input files to supported translatable files."""
 
+from __future__ import annotations
+
 import os
+import tempfile
+from typing import IO, Any
 
 # from translate.convert import prop2po, po2prop, odf2xliff, xliff2odf
 
@@ -37,20 +41,20 @@ converters = {}
 
 
 class UnknownExtensionError(Exception):
-    def __init__(self, afile):
+    def __init__(self, afile) -> None:
         self.file = afile
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Unable to find extension for file: {self.file}"
 
 
 class UnsupportedConversionError(Exception):
-    def __init__(self, in_ext=None, out_ext=None, templ_ext=None):
+    def __init__(self, in_ext=None, out_ext=None, templ_ext=None) -> None:
         self.in_ext = in_ext
         self.out_ext = out_ext
         self.templ_ext = templ_ext
 
-    def __str__(self):
+    def __str__(self) -> str:
         msg = f"Unsupported conversion from {self.in_ext} to {self.out_ext}"
         if self.templ_ext:
             msg += f" with template {self.templ_ext}"
@@ -106,7 +110,12 @@ def get_output_extensions(ext):
     return out_exts
 
 
-def convert(inputfile, template=None, options=None, convert_options=None):
+def convert(
+    inputfile: IO[Any],
+    template: IO[Any] | None = None,
+    options: dict | None = None,
+    convert_options: dict | None = None,
+) -> tuple[IO[Any], str]:
     """
     Convert the given input file to an appropriate output format, optionally
     using the given template file and further options.
@@ -114,12 +123,8 @@ def convert(inputfile, template=None, options=None, convert_options=None):
     If the output extension (format) cannot be inferred the first converter
     that can handle the input file (and the format/extension it gives as
     output) is used.
-
-    :type  inputfile: file
     :param inputfile: The input file to be converted
-    :type  template: file
     :param template: Template file to use during conversion
-    :type  options: dict (default: None)
     :param options: Valid options are:
         - in_ext: The extension (format) of the input file.
         - out_ext: The extension (format) to use for the output file.
@@ -135,9 +140,7 @@ def convert(inputfile, template=None, options=None, convert_options=None):
     in_ext, out_ext, templ_ext = None, None, None
 
     # Get extensions from options
-    if options is None:
-        options = {}
-    else:
+    if options is not None:
         if "in_ext" in options:
             in_ext = options["in_ext"]
         if "out_ext" in options:
@@ -185,7 +188,6 @@ def convert(inputfile, template=None, options=None, convert_options=None):
     #      issues when being closed (and deleted) by the rest of the toolkit
     #      (eg. TranslationStore.savefile()). Therefore none of mkstemp()'s
     #      security features are being utilised.
-    import tempfile
 
     tempfd, tempfname = tempfile.mkstemp(
         prefix="ttk_convert", suffix=os.extsep + out_ext

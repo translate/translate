@@ -25,13 +25,13 @@ from translate.storage.placeables import StringElem, base, general, parse, xliff
 class TestStringElem:
     ORIGSTR = 'Ģët <a href="http://www.example.com" alt="Ģët &brand;!">&brandLong;</a>'
 
-    def setup_method(self, method):
+    def setup_method(self, method) -> None:
         self.elem = parse(self.ORIGSTR, general.parsers)
 
-    def test_parse(self):
+    def test_parse(self) -> None:
         assert str(self.elem) == self.ORIGSTR
 
-    def test_tree(self):
+    def test_tree(self) -> None:
         assert len(self.elem.sub) == 4
         assert str(self.elem.sub[0]) == "Ģët "
         assert (
@@ -41,68 +41,68 @@ class TestStringElem:
         assert str(self.elem.sub[2]) == "&brandLong;"
         assert str(self.elem.sub[3]) == "</a>"
 
-        assert len(self.elem.sub[0].sub) == 1
-        assert self.elem.sub[0].sub[0] == "Ģët "
-        assert len(self.elem.sub[1].sub) == 1
+        assert len(self.elem.sub[0].sub) == 1  # ty:ignore[possibly-missing-attribute]
+        assert self.elem.sub[0].sub[0] == "Ģët "  # ty:ignore[possibly-missing-attribute]
+        assert len(self.elem.sub[1].sub) == 1  # ty:ignore[possibly-missing-attribute]
         assert (
-            self.elem.sub[1].sub[0]
+            self.elem.sub[1].sub[0]  # ty:ignore[possibly-missing-attribute]
             == '<a href="http://www.example.com" alt="Ģët &brand;!">'
         )
-        assert len(self.elem.sub[2].sub) == 1
-        assert self.elem.sub[2].sub[0] == "&brandLong;"
-        assert len(self.elem.sub[3].sub) == 1
-        assert self.elem.sub[3].sub[0] == "</a>"
+        assert len(self.elem.sub[2].sub) == 1  # ty:ignore[possibly-missing-attribute]
+        assert self.elem.sub[2].sub[0] == "&brandLong;"  # ty:ignore[possibly-missing-attribute]
+        assert len(self.elem.sub[3].sub) == 1  # ty:ignore[possibly-missing-attribute]
+        assert self.elem.sub[3].sub[0] == "</a>"  # ty:ignore[possibly-missing-attribute]
 
-    def test_add(self):
-        assert self.elem + " " == self.ORIGSTR + " "
+    def test_add(self) -> None:
+        assert f"{self.elem} " == f"{self.ORIGSTR} "
         # ... and __radd__() ... doesn't work
         # assert ' ' + self.elem == ' ' + self.ORIGSTR
 
-    def test_contains(self):
+    def test_contains(self) -> None:
         assert "href" in self.elem
         assert "hrȩf" not in self.elem
 
-    def test_getitem(self):
+    def test_getitem(self) -> None:
         assert self.elem[0] == "Ģ"
         assert self.elem[2] == "t"
 
-    def test_getslice(self):
+    def test_getslice(self) -> None:
         assert self.elem[0:3] == "Ģët"
 
-    def test_iter(self):
+    def test_iter(self) -> None:
         for chunk in self.elem:
             assert issubclass(chunk.__class__, StringElem)
 
-    def test_len(self):
+    def test_len(self) -> None:
         assert len(self.elem) == len(self.ORIGSTR)
 
-    def test_mul(self):
+    def test_mul(self) -> None:
         assert self.elem * 2 == self.ORIGSTR * 2
         # ... and __rmul__()
         assert 2 * self.elem == 2 * self.ORIGSTR
 
-    def test_elem_offset(self):
+    def test_elem_offset(self) -> None:
         assert self.elem.elem_offset(self.elem.sub[0]) == 0
         assert self.elem.elem_offset(self.elem.sub[1]) == 4
 
-    def test_elem_at_offset(self):
+    def test_elem_at_offset(self) -> None:
         assert self.elem.elem_at_offset(0) is self.elem.sub[0]
         assert self.elem.elem_at_offset(self.elem.find("!")) is self.elem.sub[1]
 
-    def test_find(self):
+    def test_find(self) -> None:
         assert self.elem.find("example") == 24
         assert self.elem.find("example") == 24
         searchelem = parse("&brand;", general.parsers)
         assert self.elem.find(searchelem) == 46
 
-    def test_find_elems_with(self):
+    def test_find_elems_with(self) -> None:
         assert self.elem.find_elems_with("Ģët") == [self.elem.sub[0], self.elem.sub[1]]
         assert len(self.elem.find_elems_with("a")) == 3
 
-    def test_flatten(self):
+    def test_flatten(self) -> None:
         assert "".join(str(i) for i in self.elem.flatten()) == self.ORIGSTR
 
-    def test_delete_range_case1(self):
+    def test_delete_range_case1(self) -> None:
         # Case 1: Entire string #
         elem = self.elem.copy()
         deleted, parent, offset = elem.delete_range(0, len(elem))
@@ -110,7 +110,7 @@ class TestStringElem:
         assert parent is None
         assert offset is None
 
-    def test_delete_range_case2(self):
+    def test_delete_range_case2(self) -> None:
         # Case 2: An entire element #
         elem = self.elem.copy()
         offset = elem.elem_offset(elem.sub[2])
@@ -119,7 +119,7 @@ class TestStringElem:
         assert parent is elem
         assert offset == len(elem.sub[0]) + len(elem.sub[1])
 
-    def test_delete_range_case3(self):
+    def test_delete_range_case3(self) -> None:
         # Case 3: Within a single element #
         elem = self.elem.copy()
         deleted, parent, offset = elem.delete_range(1, 2)
@@ -127,7 +127,7 @@ class TestStringElem:
         assert parent is elem.sub[0]
         assert offset == 1
 
-    def test_delete_range_case4(self):
+    def test_delete_range_case4(self) -> None:
         # Case 4: Across multiple elements #
         elem = self.elem.copy()
         # Delete the last two elements
@@ -151,7 +151,7 @@ class TestStringElem:
         assert offset is None
         assert str(elem) == "foobar"
 
-    def test_insert(self):
+    def test_insert(self) -> None:
         # Test inserting at the beginning
         elem = self.elem.copy()
         elem.insert(0, "xxx")
@@ -178,11 +178,11 @@ class TestStringElem:
         elem.insert(56, "xxx")
         assert str(elem)[56:59] == "xxx"
 
-    def test_isleaf(self):
+    def test_isleaf(self) -> None:
         for child in self.elem.sub:
-            assert child.isleaf()
+            assert child.isleaf()  # ty:ignore[possibly-missing-attribute]
 
-    def test_prune(self):
+    def test_prune(self) -> None:
         elem = StringElem("foo")
         child = StringElem("bar")
         elem.sub.append(child)
@@ -191,10 +191,10 @@ class TestStringElem:
 
 
 class TestConverters:
-    def setup_method(self, method):
+    def setup_method(self, method) -> None:
         self.elem = parse(TestStringElem.ORIGSTR, general.parsers)
 
-    def test_to_base_placeables(self):
+    def test_to_base_placeables(self) -> None:
         basetree = base.to_base_placeables(self.elem)
         # The following asserts say that, even though tree and newtree represent the same string
         # (the unicode() results are the same), they are composed of different classes (and so
@@ -203,13 +203,13 @@ class TestConverters:
         assert repr(self.elem) != repr(basetree)
 
     @mark.xfail(reason="Test needs fixing, disabled for now")
-    def test_to_general_placeables(self):
+    def test_to_general_placeables(self) -> None:
         basetree = base.to_base_placeables(self.elem)
         gentree = general.to_general_placeables(basetree)
         assert gentree == self.elem
 
     @mark.xfail(reason="Test needs fixing, disabled for now")
-    def test_to_xliff_placeables(self):
+    def test_to_xliff_placeables(self) -> None:
         basetree = base.to_base_placeables(self.elem)
         xliff_from_base = xliff.to_xliff_placeables(basetree)
         assert str(xliff_from_base) != str(self.elem)

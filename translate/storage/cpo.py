@@ -45,6 +45,7 @@ from ctypes import (
     c_uint,
     cdll,
 )
+from typing import Never
 
 from translate.misc.multistring import multistring
 from translate.storage import base, pocommon, pypo
@@ -135,7 +136,7 @@ ignored_errors = {
 }
 
 
-def trigger_exception(severity, filename, lineno, column, message_text):
+def trigger_exception(severity, filename, lineno, column, message_text) -> None:
     # Severity 0 is warning, severity 1 error, severity 2 critical
     if severity >= 1 and message_text not in ignored_errors:
         if filename:
@@ -146,7 +147,9 @@ def trigger_exception(severity, filename, lineno, column, message_text):
 
 
 # Callback functions for po_xerror_handler
-def xerror_cb(severity, message, filename, lineno, column, multiline_p, message_text):
+def xerror_cb(
+    severity, message, filename, lineno, column, multiline_p, message_text
+) -> None:
     message_text = message_text.decode()
     if filename:
         filename = filename.decode()
@@ -177,7 +180,7 @@ def xerror2_cb(
     column2,
     multiline_p2,
     message_text2,
-):
+) -> None:
     message_text1 = message_text1.decode()
     message_text2 = message_text2.decode()
     if filename1:
@@ -204,7 +207,7 @@ def xerror2_cb(
 
 # Setup return and parameter types
 # See also http://git.savannah.gnu.org/cgit/gettext.git/tree/gettext-tools/libgettextpo/gettext-po.in.h
-def setup_call_types(gpo):
+def setup_call_types(gpo) -> None:
     # File access
     gpo.po_file_create.restype = po_file_t
     gpo.po_file_read_v3.argtypes = [STRING, POINTER(po_xerror_handler)]
@@ -306,8 +309,8 @@ else:
         # might be in LD_LIBRARY_PATH or loaded with LD_PRELOAD
         try:
             gpo = cdll.LoadLibrary("libgettextpo.so")
-        except OSError:
-            raise ImportError("gettext PO library not found")
+        except OSError as error:
+            raise ImportError("gettext PO library not found") from error
 
 if gpo:
     setup_call_types(gpo)
@@ -330,15 +333,14 @@ def unquotefrompo(postr):
     return pypo.unquotefrompo(postr)
 
 
-def get_libgettextpo_version():
+def get_libgettextpo_version() -> tuple[int, int, int]:
     """
     Returns the libgettextpo version.
 
-    :rtype: three-value tuple
     :return: libgettextpo version in the following format::
         (major version, minor version, subminor version)
     """
-    libversion = c_int.in_dll(gpo, "libgettextpo_version")
+    libversion = c_int.in_dll(gpo, "libgettextpo_version")  # ty:ignore[invalid-argument-type]
     major = libversion.value >> 16
     minor = (libversion.value >> 8) & 0xFF
     subminor = libversion.value - (major << 16) - (minor << 8)
@@ -361,12 +363,12 @@ class pounit(pocommon.pounit):
     #: fixed encoding that is always used for cPO structure (self._gpo_message)
     CPO_ENC = "utf-8"
 
-    def __init__(self, source=None, encoding="utf-8", gpo_message=None):
+    def __init__(self, source=None, encoding="utf-8", gpo_message=None) -> None:
         self._rich_source = None
         self._rich_target = None
         encoding = encoding or "utf-8"
         if not gpo_message:
-            self._gpo_message = gpo.po_message_create()
+            self._gpo_message = gpo.po_message_create()  # ty:ignore[possibly-missing-attribute]
         if isinstance(source, str):
             self.source = source
             self.target = ""
@@ -385,9 +387,9 @@ class pounit(pocommon.pounit):
                 nplural = 0
                 text = True
                 while text:
-                    text = gpo.po_message_msgstr_plural(gpo_message, nplural)
+                    text = gpo.po_message_msgstr_plural(gpo_message, nplural)  # ty:ignore[possibly-missing-attribute]
                     if text:
-                        gpo.po_message_set_msgstr_plural(
+                        gpo.po_message_set_msgstr_plural(  # ty:ignore[possibly-missing-attribute]
                             gpo_message,
                             text.decode(encoding).encode(self.CPO_ENC),
                             nplural,
@@ -396,24 +398,24 @@ class pounit(pocommon.pounit):
             self._gpo_message = gpo_message
         self.infer_state()
 
-    def infer_state(self):
+    def infer_state(self) -> None:
         # FIXME: do obsolete
-        if gpo.po_message_is_obsolete(self._gpo_message):
-            if gpo.po_message_is_fuzzy(self._gpo_message):
+        if gpo.po_message_is_obsolete(self._gpo_message):  # ty:ignore[possibly-missing-attribute]
+            if gpo.po_message_is_fuzzy(self._gpo_message):  # ty:ignore[possibly-missing-attribute]
                 self.set_state_n(self.STATE[self.S_FUZZY_OBSOLETE][0])
             else:
                 self.set_state_n(self.STATE[self.S_OBSOLETE][0])
-        elif gpo.po_message_is_fuzzy(self._gpo_message):
+        elif gpo.po_message_is_fuzzy(self._gpo_message):  # ty:ignore[possibly-missing-attribute]
             self.set_state_n(self.STATE[self.S_FUZZY][0])
         elif self.target:
             self.set_state_n(self.STATE[self.S_TRANSLATED][0])
         else:
             self.set_state_n(self.STATE[self.S_UNTRANSLATED][0])
 
-    def setmsgid_plural(self, msgid_plural):
+    def setmsgid_plural(self, msgid_plural) -> None:
         if isinstance(msgid_plural, list):
             msgid_plural = "".join(msgid_plural)
-        gpo.po_message_set_msgid_plural(self._gpo_message, gpo_encode(msgid_plural))
+        gpo.po_message_set_msgid_plural(self._gpo_message, gpo_encode(msgid_plural))  # ty:ignore[possibly-missing-attribute]
 
     msgid_plural = property(None, setmsgid_plural)
 
@@ -430,13 +432,13 @@ class pounit(pocommon.pounit):
             return text
 
         singular = remove_msgid_comments(
-            gpo_decode(gpo.po_message_msgid(self._gpo_message)) or ""
+            gpo_decode(gpo.po_message_msgid(self._gpo_message)) or ""  # ty:ignore[possibly-missing-attribute]
         )
         if singular:
             if self.hasplural():
                 multi = multistring(singular)
                 pluralform = (
-                    gpo_decode(gpo.po_message_msgid_plural(self._gpo_message)) or ""
+                    gpo_decode(gpo.po_message_msgid_plural(self._gpo_message)) or ""  # ty:ignore[possibly-missing-attribute]
                 )
                 multi.extra_strings.append(pluralform)
                 return multi
@@ -444,36 +446,36 @@ class pounit(pocommon.pounit):
         return ""
 
     @source.setter
-    def source(self, source):
+    def source(self, source) -> None:
         if isinstance(source, multistring):
             source = source.strings
         if isinstance(source, list):
-            gpo.po_message_set_msgid(self._gpo_message, gpo_encode(source[0]))
+            gpo.po_message_set_msgid(self._gpo_message, gpo_encode(source[0]))  # ty:ignore[possibly-missing-attribute]
             if len(source) > 1:
-                gpo.po_message_set_msgid_plural(
+                gpo.po_message_set_msgid_plural(  # ty:ignore[possibly-missing-attribute]
                     self._gpo_message, gpo_encode(source[1])
                 )
         else:
-            gpo.po_message_set_msgid(self._gpo_message, gpo_encode(source))
-            gpo.po_message_set_msgid_plural(self._gpo_message, None)
+            gpo.po_message_set_msgid(self._gpo_message, gpo_encode(source))  # ty:ignore[possibly-missing-attribute]
+            gpo.po_message_set_msgid_plural(self._gpo_message, None)  # ty:ignore[possibly-missing-attribute]
 
     @property
     def target(self):
         if self.hasplural():
             plurals = []
             nplural = 0
-            plural = gpo.po_message_msgstr_plural(self._gpo_message, nplural)
+            plural = gpo.po_message_msgstr_plural(self._gpo_message, nplural)  # ty:ignore[possibly-missing-attribute]
             while plural:
                 plurals.append(plural.decode(self.CPO_ENC))
                 nplural += 1
-                plural = gpo.po_message_msgstr_plural(self._gpo_message, nplural)
+                plural = gpo.po_message_msgstr_plural(self._gpo_message, nplural)  # ty:ignore[possibly-missing-attribute]
             multi = multistring(plurals) if plurals else multistring("")
         else:
-            multi = gpo_decode(gpo.po_message_msgstr(self._gpo_message)) or ""
+            multi = gpo_decode(gpo.po_message_msgstr(self._gpo_message)) or ""  # ty:ignore[possibly-missing-attribute]
         return multi
 
     @target.setter
-    def target(self, target):
+    def target(self, target) -> None:
         # for plural strings: convert 'target' into a list
         if self.hasplural():
             if isinstance(target, multistring):
@@ -486,8 +488,7 @@ class pounit(pocommon.pounit):
                 target = target[0]
             else:
                 raise ValueError(
-                    "po msgid element has no plural but msgstr has %d elements (%s)"
-                    % (len(target), target)
+                    f"po msgid element has no plural but msgstr has {len(target)} elements ({target})"
                 )
         # empty the previous list of messages
         # TODO: the "pypo" implementation does not remove the previous items of
@@ -496,35 +497,35 @@ class pounit(pocommon.pounit):
         #   Maybe this behaviour should be unified.
         if isinstance(target, (dict, list)):
             i = 0
-            message = gpo.po_message_msgstr_plural(self._gpo_message, i)
+            message = gpo.po_message_msgstr_plural(self._gpo_message, i)  # ty:ignore[possibly-missing-attribute]
             while message is not None:
-                gpo.po_message_set_msgstr_plural(self._gpo_message, i, None)
+                gpo.po_message_set_msgstr_plural(self._gpo_message, i, None)  # ty:ignore[possibly-missing-attribute]
                 i += 1
-                message = gpo.po_message_msgstr_plural(self._gpo_message, i)
+                message = gpo.po_message_msgstr_plural(self._gpo_message, i)  # ty:ignore[possibly-missing-attribute]
         # add the items of a list
         if isinstance(target, list):
             for i, targetstring in enumerate(target):
-                gpo.po_message_set_msgstr_plural(
+                gpo.po_message_set_msgstr_plural(  # ty:ignore[possibly-missing-attribute]
                     self._gpo_message, i, gpo_encode(targetstring)
                 )
         # add the values of a dict
         elif isinstance(target, dict):
             for i, targetstring in enumerate(target.values()):
-                gpo.po_message_set_msgstr_plural(
+                gpo.po_message_set_msgstr_plural(  # ty:ignore[possibly-missing-attribute]
                     self._gpo_message, i, gpo_encode(targetstring)
                 )
         # add a single string
         elif target is None:
-            gpo.po_message_set_msgstr(self._gpo_message, gpo_encode(""))
+            gpo.po_message_set_msgstr(self._gpo_message, gpo_encode(""))  # ty:ignore[possibly-missing-attribute]
         else:
-            gpo.po_message_set_msgstr(self._gpo_message, gpo_encode(target))
+            gpo.po_message_set_msgstr(self._gpo_message, gpo_encode(target))  # ty:ignore[possibly-missing-attribute]
 
     def getid(self):
         """
         The unique identifier for this unit according to the conventions in
         .mo files.
         """
-        id = gpo_decode(gpo.po_message_msgid(self._gpo_message)) or ""
+        id = gpo_decode(gpo.po_message_msgid(self._gpo_message)) or ""  # ty:ignore[possibly-missing-attribute]
         # Gettext does not consider the plural to determine duplicates, only
         # the msgid. For generation of .mo files, we might want to use this
         # code to generate the entry for the hash table, but for now, it is
@@ -532,20 +533,20 @@ class pounit(pocommon.pounit):
         #        plural = gpo.po_message_msgid_plural(self._gpo_message)
         #        if not plural is None:
         #            id = '%s\0%s' % (id, plural)
-        context = gpo.po_message_msgctxt(self._gpo_message)
+        context = gpo.po_message_msgctxt(self._gpo_message)  # ty:ignore[possibly-missing-attribute]
         if context:
             id = f"{gpo_decode(context)}\04{id}"
         return id
 
     def getnotes(self, origin=None):
         if origin is None:
-            comments = gpo.po_message_comments(
+            comments = gpo.po_message_comments(  # ty:ignore[possibly-missing-attribute]
                 self._gpo_message
-            ) + gpo.po_message_extracted_comments(self._gpo_message)
+            ) + gpo.po_message_extracted_comments(self._gpo_message)  # ty:ignore[possibly-missing-attribute]
         elif origin == "translator":
-            comments = gpo.po_message_comments(self._gpo_message)
+            comments = gpo.po_message_comments(self._gpo_message)  # ty:ignore[possibly-missing-attribute]
         elif origin in {"programmer", "developer", "source code"}:
-            comments = gpo.po_message_extracted_comments(self._gpo_message)
+            comments = gpo.po_message_extracted_comments(self._gpo_message)  # ty:ignore[possibly-missing-attribute]
         else:
             raise ValueError("Comment type not valid")
 
@@ -554,7 +555,7 @@ class pounit(pocommon.pounit):
         # Let's drop the last newline
         return gpo_decode(comments[:-1])
 
-    def addnote(self, text, origin=None, position="append"):
+    def addnote(self, text, origin=None, position="append") -> None:
         # ignore empty strings and strings without non-space characters
         if not (text and text.strip()):
             return
@@ -587,19 +588,21 @@ class pounit(pocommon.pounit):
                     newlines.append(line)
             newnotes = gpo_encode("\n".join(newlines))
             if origin in {"programmer", "developer", "source code"}:
-                gpo.po_message_set_extracted_comments(self._gpo_message, newnotes)
+                gpo.po_message_set_extracted_comments(self._gpo_message, newnotes)  # ty:ignore[possibly-missing-attribute]
             else:
-                gpo.po_message_set_comments(self._gpo_message, newnotes)
+                gpo.po_message_set_comments(self._gpo_message, newnotes)  # ty:ignore[possibly-missing-attribute]
 
-    def removenotes(self, origin=None):
-        gpo.po_message_set_comments(self._gpo_message, b"")
+    def removenotes(self, origin=None) -> None:
+        gpo.po_message_set_comments(self._gpo_message, b"")  # ty:ignore[possibly-missing-attribute]
 
     def copy(self):
         newpo = self.__class__()
         newpo._gpo_message = self._gpo_message
         return newpo
 
-    def merge(self, otherpo, overwrite=False, comments=True, authoritative=False):
+    def merge(
+        self, otherpo, overwrite=False, comments=True, authoritative=False
+    ) -> None:  # ty:ignore[invalid-method-override]
         """
         Merges the otherpo (with the same msgid) into this one.
 
@@ -651,12 +654,12 @@ class pounit(pocommon.pounit):
         return len(self.source) == len(self.target) == len(self.getcontext()) == 0
 
     def hastypecomment(self, typecomment):
-        return gpo.po_message_is_format(self._gpo_message, gpo_encode(typecomment))
+        return gpo.po_message_is_format(self._gpo_message, gpo_encode(typecomment))  # ty:ignore[possibly-missing-attribute]
 
-    def settypecomment(self, typecomment, present=True):
-        gpo.po_message_set_format(self._gpo_message, gpo_encode(typecomment), present)
+    def settypecomment(self, typecomment, present=True) -> None:
+        gpo.po_message_set_format(self._gpo_message, gpo_encode(typecomment), present)  # ty:ignore[possibly-missing-attribute]
 
-    def hasmarkedcomment(self, commentmarker):
+    def hasmarkedcomment(self, commentmarker) -> bool:
         commentmarker = f"({commentmarker})"
         for comment in self.getnotes("translator").split("\n"):
             if comment.startswith(commentmarker):
@@ -664,44 +667,43 @@ class pounit(pocommon.pounit):
         return False
 
     def isfuzzy(self):
-        return gpo.po_message_is_fuzzy(self._gpo_message)
+        return gpo.po_message_is_fuzzy(self._gpo_message)  # ty:ignore[possibly-missing-attribute]
 
-    def _domarkfuzzy(self, present=True):
-        gpo.po_message_set_fuzzy(self._gpo_message, present)
+    def _domarkfuzzy(self, present: bool = True) -> None:
+        gpo.po_message_set_fuzzy(self._gpo_message, present)  # ty:ignore[possibly-missing-attribute]
 
-    def makeobsolete(self):
+    def makeobsolete(self) -> None:
         # FIXME: libgettexpo currently does not reset other data, we probably want to do that
         # but a better solution would be for libgettextpo to output correct data on serialisation
-        gpo.po_message_set_obsolete(self._gpo_message, True)
+        gpo.po_message_set_obsolete(self._gpo_message, True)  # ty:ignore[possibly-missing-attribute]
         self.infer_state()
 
-    def resurrect(self):
-        gpo.po_message_set_obsolete(self._gpo_message, False)
+    def resurrect(self) -> None:
+        gpo.po_message_set_obsolete(self._gpo_message, False)  # ty:ignore[possibly-missing-attribute]
         self.infer_state()
 
     def hasplural(self):
-        return gpo.po_message_msgid_plural(self._gpo_message) is not None
+        return gpo.po_message_msgid_plural(self._gpo_message) is not None  # ty:ignore[possibly-missing-attribute]
 
-    def _extract_msgidcomments(self, text=None):
+    def _extract_msgidcomments(self, text: str | None = None) -> str:
         """
         Extract KDE style msgid comments from the unit.
 
-        :rtype: String
         :return: Returns the extracted msgidcomments found in this unit's msgid.
         """
         if not text:
-            text = gpo_decode(gpo.po_message_msgid(self._gpo_message)) or ""
+            text = gpo_decode(gpo.po_message_msgid(self._gpo_message)) or ""  # ty:ignore[possibly-missing-attribute]
         if text:
             return pocommon.extract_msgid_comment(text)
         return ""
 
-    def setmsgidcomment(self, msgidcomment):
+    def setmsgidcomment(self, msgidcomment) -> None:
         if msgidcomment:
             self.source = f"_: {msgidcomment}\n{self.source}"
 
     msgidcomment = property(_extract_msgidcomments, setmsgidcomment)
 
-    def __str__(self):
+    def __str__(self) -> str:
         pf = pofile(noheader=True)
         pf.addunit(self)
         return bytes(pf).decode(self.CPO_ENC)
@@ -709,17 +711,17 @@ class pounit(pocommon.pounit):
     def getlocations(self):
         locations = []
         i = 0
-        location = gpo.po_message_filepos(self._gpo_message, i)
+        location = gpo.po_message_filepos(self._gpo_message, i)  # ty:ignore[possibly-missing-attribute]
         while location:
-            locname = gpo_decode(gpo.po_filepos_file(location))
-            locline = gpo.po_filepos_start_line(location)
-            locstring = locname if locline == -1 else ":".join([locname, str(locline)])
+            locname = gpo_decode(gpo.po_filepos_file(location))  # ty:ignore[possibly-missing-attribute]
+            locline = gpo.po_filepos_start_line(location)  # ty:ignore[possibly-missing-attribute]
+            locstring = locname if locline == -1 else f"{locname}:{locline!s}"
             locations.append(pocommon.unquote_plus(locstring))
             i += 1
-            location = gpo.po_message_filepos(self._gpo_message, i)
+            location = gpo.po_message_filepos(self._gpo_message, i)  # ty:ignore[possibly-missing-attribute]
         return locations
 
-    def addlocation(self, location):
+    def addlocation(self, location) -> None:
         if location.find(" ") != -1:
             location = pocommon.quote_plus(location)
         parts = location.split(":")
@@ -729,16 +731,16 @@ class pounit(pocommon.pounit):
         else:
             file = location
             line = -1
-        gpo.po_message_add_filepos(self._gpo_message, gpo_encode(file), line)
+        gpo.po_message_add_filepos(self._gpo_message, gpo_encode(file), line)  # ty:ignore[possibly-missing-attribute]
 
     def getcontext(self):
-        msgctxt = gpo.po_message_msgctxt(self._gpo_message)
+        msgctxt = gpo.po_message_msgctxt(self._gpo_message)  # ty:ignore[possibly-missing-attribute]
         if msgctxt:
             return gpo_decode(msgctxt)
         return self._extract_msgidcomments()
 
-    def setcontext(self, context):
-        gpo.po_message_set_msgctxt(self._gpo_message, gpo_encode(context))
+    def setcontext(self, context) -> None:
+        gpo.po_message_set_msgctxt(self._gpo_message, gpo_encode(context))  # ty:ignore[possibly-missing-attribute]
 
     @classmethod
     def buildfromunit(cls, unit, encoding=None):
@@ -781,7 +783,7 @@ class pounit(pocommon.pounit):
 class pofile(pocommon.pofile):
     UnitClass = pounit
 
-    def __init__(self, inputfile=None, noheader=False, **kwargs):
+    def __init__(self, inputfile=None, noheader=False, **kwargs) -> None:
         self._gpo_memory_file = None
         self._gpo_message_iterator = None
         self.sourcelanguage = None
@@ -789,33 +791,33 @@ class pofile(pocommon.pofile):
         if inputfile is None:
             self.units = []
             self._encoding = kwargs.get("encoding")
-            self._gpo_memory_file = gpo.po_file_create()
-            self._gpo_message_iterator = gpo.po_message_iterator(
+            self._gpo_memory_file = gpo.po_file_create()  # ty:ignore[possibly-missing-attribute]
+            self._gpo_message_iterator = gpo.po_message_iterator(  # ty:ignore[possibly-missing-attribute]
                 self._gpo_memory_file, None
             )
         super().__init__(inputfile=inputfile, noheader=noheader, **kwargs)
 
-    def addunit(self, unit, new=True):
+    def addunit(self, unit, new=True) -> None:
         if new:
-            gpo.po_message_insert(self._gpo_message_iterator, unit._gpo_message)
+            gpo.po_message_insert(self._gpo_message_iterator, unit._gpo_message)  # ty:ignore[possibly-missing-attribute]
         super().addunit(unit)
 
-    def removeunit(self, unit):
+    def removeunit(self, unit) -> Never:
         # There seems to be no API to remove a message
         raise ValueError("Unit removal not supported by cpo")
 
-    def _insert_header(self, header):
+    def _insert_header(self, header) -> None:
         header._store = self
         self.units.insert(0, header)
         self._free_iterator()
-        self._gpo_message_iterator = gpo.po_message_iterator(
+        self._gpo_message_iterator = gpo.po_message_iterator(  # ty:ignore[possibly-missing-attribute]
             self._gpo_memory_file, None
         )
-        gpo.po_message_insert(self._gpo_message_iterator, header._gpo_message)
-        while gpo.po_next_message(self._gpo_message_iterator):
+        gpo.po_message_insert(self._gpo_message_iterator, header._gpo_message)  # ty:ignore[possibly-missing-attribute]
+        while gpo.po_next_message(self._gpo_message_iterator):  # ty:ignore[possibly-missing-attribute]
             pass
 
-    def removeduplicates(self, duplicatestyle="merge"):
+    def removeduplicates(self, duplicatestyle="merge") -> None:
         """Make sure each msgid is unique ; merge comments etc from duplicates into original."""
         # TODO: can we handle consecutive calls to removeduplicates()? What
         # about files already containing msgctxt? - test
@@ -825,7 +827,7 @@ class pofile(pocommon.pofile):
         # probably not used frequently enough to worry about it, though.
         markedpos = []
 
-        def addcomment(thepo):
+        def addcomment(thepo) -> None:
             thepo.msgidcomment = " ".join(thepo.getlocations())
             markedpos.append(thepo)
 
@@ -847,8 +849,8 @@ class pofile(pocommon.pofile):
                         origpo.setcontext(" ".join(origpo.getlocations()))
                         markedpos.append(thepo)
                     thepo.setcontext(" ".join(thepo.getlocations()))
-                    thepo_msgctxt = gpo.po_message_msgctxt(thepo._gpo_message)
-                    idpo_msgctxt = gpo.po_message_msgctxt(id_dict[id]._gpo_message)
+                    thepo_msgctxt = gpo.po_message_msgctxt(thepo._gpo_message)  # ty:ignore[possibly-missing-attribute]
+                    idpo_msgctxt = gpo.po_message_msgctxt(id_dict[id]._gpo_message)  # ty:ignore[possibly-missing-attribute]
                     if thepo_msgctxt != idpo_msgctxt:
                         uniqueunits.append(thepo)
                     else:
@@ -865,32 +867,32 @@ class pofile(pocommon.pofile):
                         thepo.setcontext(" ".join(thepo.getlocations()))
                 id_dict[id] = thepo
                 uniqueunits.append(thepo)
-        new_gpo_memory_file = gpo.po_file_create()
-        new_gpo_message_iterator = gpo.po_message_iterator(new_gpo_memory_file, None)
+        new_gpo_memory_file = gpo.po_file_create()  # ty:ignore[possibly-missing-attribute]
+        new_gpo_message_iterator = gpo.po_message_iterator(new_gpo_memory_file, None)  # ty:ignore[possibly-missing-attribute]
         for unit in uniqueunits:
-            gpo.po_message_insert(new_gpo_message_iterator, unit._gpo_message)
+            gpo.po_message_insert(new_gpo_message_iterator, unit._gpo_message)  # ty:ignore[possibly-missing-attribute]
         self._free_iterator()
         self._gpo_message_iterator = new_gpo_message_iterator
         self._free_memory_file()
         self._gpo_memory_file = new_gpo_memory_file
         self.units = uniqueunits
 
-    def serialize(self, out):
-        def obsolete_workaround():
+    def serialize(self, out) -> None:
+        def obsolete_workaround() -> None:
             # Remove all items that are not output by msgmerge when a unit is obsolete.  This is a work
             # around for bug in libgettextpo
             # FIXME Do version test in case they fix this bug
             for unit in self.units:
                 if unit.isobsolete():
-                    gpo.po_message_set_extracted_comments(unit._gpo_message, b"")
-                    location = gpo.po_message_filepos(unit._gpo_message, 0)
+                    gpo.po_message_set_extracted_comments(unit._gpo_message, b"")  # ty:ignore[possibly-missing-attribute]
+                    location = gpo.po_message_filepos(unit._gpo_message, 0)  # ty:ignore[possibly-missing-attribute]
                     while location:
-                        gpo.po_message_remove_filepos(unit._gpo_message, 0)
-                        location = gpo.po_message_filepos(unit._gpo_message, 0)
+                        gpo.po_message_remove_filepos(unit._gpo_message, 0)  # ty:ignore[possibly-missing-attribute]
+                        location = gpo.po_message_filepos(unit._gpo_message, 0)  # ty:ignore[possibly-missing-attribute]
 
         def writefile(filename):
             xerror_storage.exception = None
-            result = gpo.po_file_write_v2(
+            result = gpo.po_file_write_v2(  # ty:ignore[possibly-missing-attribute]
                 self._gpo_memory_file, gpo_encode(filename), xerror_handler
             )
             if xerror_storage.exception is not None:
@@ -932,7 +934,7 @@ class pofile(pocommon.pofile):
 
         return all(not (not unit.isblank() and not unit.isobsolete()) for unit in units)
 
-    def parse(self, input):
+    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
         if hasattr(input, "name"):
             self.filename = input.name
         elif not getattr(self, "filename", ""):
@@ -954,7 +956,7 @@ class pofile(pocommon.pofile):
         try:
             xerror_storage.exception = None
             self._free_memory_file()
-            self._gpo_memory_file = gpo.po_file_read_v3(
+            self._gpo_memory_file = gpo.po_file_read_v3(  # ty:ignore[possibly-missing-attribute]
                 gpo_encode(input), xerror_handler
             )
             if xerror_storage.exception is not None:
@@ -967,36 +969,39 @@ class pofile(pocommon.pofile):
 
         self.units = []
         # Handle xerrors here
-        self._header = gpo.po_file_domain_header(self._gpo_memory_file, None)
+        self._header = gpo.po_file_domain_header(self._gpo_memory_file, None)  # ty:ignore[possibly-missing-attribute]
         if self._header:
             charset = gpo_decode(
-                gpo.po_header_field(self._header, gpo_encode("Content-Type"))
+                gpo.po_header_field(self._header, gpo_encode("Content-Type"))  # ty:ignore[possibly-missing-attribute]
             )
             if charset:
-                charset = re.search(r"charset=([^\s]+)", charset).group(1)
+                # Allow optional whitespace after '=' to match 'charset= koi8-r'
+                charset = re.search(r"charset=\s*([^\s]+)", charset).group(1)  # ty:ignore[possibly-missing-attribute]
             self.encoding = charset
         self._free_iterator()
-        self._gpo_message_iterator = gpo.po_message_iterator(
+        self._gpo_message_iterator = gpo.po_message_iterator(  # ty:ignore[possibly-missing-attribute]
             self._gpo_memory_file, None
         )
-        newmessage = gpo.po_next_message(self._gpo_message_iterator)
+        newmessage = gpo.po_next_message(self._gpo_message_iterator)  # ty:ignore[possibly-missing-attribute]
         while newmessage:
             newunit = pounit(gpo_message=newmessage, encoding=self.encoding)
             self.addunit(newunit, new=False)
-            newmessage = gpo.po_next_message(self._gpo_message_iterator)
+            newmessage = gpo.po_next_message(self._gpo_message_iterator)  # ty:ignore[possibly-missing-attribute]
         self._free_iterator()
 
-    def __del__(self):
+    def __del__(self) -> None:
         self._free_iterator()
         self._free_memory_file()
 
-    def _free_memory_file(self):
+    def _free_memory_file(self) -> None:
         return
+        # TODO: should actually free the memory
+        # pylint: disable-next=unreachable
         if self._gpo_memory_file is not None:
             gpo.po_file_free(self._gpo_memory_file)
             self._gpo_memory_file = None
 
-    def _free_iterator(self):
+    def _free_iterator(self) -> None:
         if self._gpo_message_iterator is not None:
-            gpo.po_message_iterator_free(self._gpo_message_iterator)
+            gpo.po_message_iterator_free(self._gpo_message_iterator)  # ty:ignore[possibly-missing-attribute]
             self._gpo_message_iterator = None

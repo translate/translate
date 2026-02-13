@@ -25,12 +25,13 @@ dtd2po convertor class which is in this module
 You can convert back to .dtd using po2dtd.py.
 """
 
+from translate.convert import convert
 from translate.convert.accesskey import UnitMixer
 from translate.misc import quote
 from translate.storage import dtd, po
 
 
-def is_css_entity(entity):
+def is_css_entity(entity) -> bool:
     """
     Says if the given entity is likely to contain CSS that should not be
     translated.
@@ -44,14 +45,14 @@ def is_css_entity(entity):
 
 
 class dtd2po:
-    def __init__(self, blankmsgstr=False, duplicatestyle="msgctxt"):
+    def __init__(self, blankmsgstr=False, duplicatestyle="msgctxt") -> None:
         self.currentgroup = None
         self.blankmsgstr = blankmsgstr
         self.duplicatestyle = duplicatestyle
         self.mixedentities = {}
         self.mixer = UnitMixer(dtd.labelsuffixes, dtd.accesskeysuffixes)
 
-    def convertcomments(self, dtd_unit, po_unit):
+    def convertcomments(self, dtd_unit, po_unit) -> None:
         entity = dtd_unit.getid()
         if len(entity) > 0:
             po_unit.addlocation(entity)
@@ -79,7 +80,7 @@ class dtd2po:
             )
 
     @staticmethod
-    def convertstrings(dtd_unit, po_unit):
+    def convertstrings(dtd_unit, po_unit) -> None:
         # extract the string, get rid of quoting
         unquoted = dtd_unit.source.replace("\r", "")
         # escape backslashes... but not if they're for a newline
@@ -94,8 +95,8 @@ class dtd2po:
         # start and end quotes
         if len(lines) > 1:
             po_unit.source = "".join(
-                [lines[0].rstrip() + " "]
-                + [line.strip() + " " for line in lines[1:-1]]
+                [f"{lines[0].rstrip()} "]
+                + [f"{line.strip()} " for line in lines[1:-1]]
                 + [lines[-1].lstrip()]
             )
         elif lines:
@@ -114,8 +115,7 @@ class dtd2po:
             return None
         po_unit = po.pounit(encoding="UTF-8")
         # remove unwanted stuff
-        for commentnum in range(len(dtd_unit.comments)):
-            commenttype, locnote = dtd_unit.comments[commentnum]
+        for commentnum, (commenttype, locnote) in enumerate(dtd_unit.comments):
             # if this is a localization note
             if commenttype == "locnote":
                 # parse the locnote into the entity and the actual note
@@ -284,7 +284,7 @@ class dtd2po:
 
 def convertdtd(
     inputfile, outputfile, templatefile, pot=False, duplicatestyle="msgctxt"
-):
+) -> int:
     """
     Reads in inputfile and templatefile using dtd, converts using dtd2po,
     writes to outputfile.
@@ -308,9 +308,7 @@ def convertdtd(
     return 1
 
 
-def main(argv=None):
-    from translate.convert import convert
-
+def main(argv=None) -> None:
     formats = {
         "dtd": ("po", convertdtd),
         ("dtd", "dtd"): ("po", convertdtd),

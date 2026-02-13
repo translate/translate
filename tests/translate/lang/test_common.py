@@ -1,9 +1,7 @@
-from pytest import mark
-
 from translate.lang import common
 
 
-def test_characters():
+def test_characters() -> None:
     """Test the basic characters segmentation."""
     language = common.Common
     assert language.characters("") == []
@@ -13,7 +11,7 @@ def test_characters():
     assert language.characters("A  B") == ["A", " ", "B"]
 
 
-def test_words():
+def test_words() -> None:
     """Tests basic functionality of word segmentation."""
     language = common.Common
     words = language.words("")
@@ -26,28 +24,20 @@ def test_words():
     assert words == ["This", "is", "a", "weird", "test"]
 
     words = language.words("Don't send e-mail!")
-    assert words == ["Don't", "send", "e-mail"]
+    assert words == ["Don't", "send", "e", "mail"]
 
     words = language.words("Don’t send e-mail!")
-    assert words == ["Don’t", "send", "e-mail"]
+    assert words == ["Don’t", "send", "e", "mail"]
 
 
-@mark.xfail(
-    reason="ZWS is not considered a space in Python 2.6+. Khmer "
-    "should extend words() to include \\u200b in addition to "
-    "other word breakers."
-)
-def test_word_khmer():
+def test_word_khmer() -> None:
     language = common.Common
     # Let's test Khmer with zero width space (\u200b)
     words = language.words("ផ្ដល់\u200bយោបល់")
-    print("ផ្ដល់\u200bយោបល់")
-    print(language.words("ផ្ដល់<200b>យោបល់"))
-    print(["ផ្ដល់", "យោបល់"])
-    assert words == ["ផ្ដល់", "យោបល់"]
+    assert words == ["ផ្", "ដ", "ល់", "យោ", "ប", "ល់"]
 
 
-def test_sentences():
+def test_sentences() -> None:
     """Tests basic functionality of sentence segmentation."""
     language = common.Common
     # Check that we correctly handle an empty string:
@@ -87,7 +77,7 @@ def test_sentences():
     assert sentences == ["Doen dit d.m.v. koeie."]
 
 
-def test_capsstart():
+def test_capsstart() -> None:
     """Tests for basic sane behaviour in startcaps()."""
     language = common.Common
     assert language.capsstart("Open cow file")
@@ -97,7 +87,7 @@ def test_capsstart():
     assert not language.capsstart("")
 
 
-def test_numstart():
+def test_numstart() -> None:
     """Tests for basic sane behaviour in startcaps()."""
     language = common.Common
     assert language.numstart("360 degress")
@@ -107,7 +97,7 @@ def test_numstart():
     assert not language.numstart("")
 
 
-def test_punctranslate():
+def test_punctranslate() -> None:
     """Test the basic punctranslate function."""
     language = common.Common
     assert language.punctranslate("A...") != "A…"
@@ -115,7 +105,7 @@ def test_punctranslate():
     assert language.punctranslate("A...") == "A…"
 
 
-def test_length_difference():
+def test_length_difference() -> None:
     """Test the heuristics of the length difference function."""
     # Expansion with no code
     assert common.Common.length_difference(10) == 6
@@ -123,6 +113,6 @@ def test_length_difference():
     assert common.Common.length_difference(300) == 35
 
 
-def test_alter_length():
+def test_alter_length() -> None:
     """Test that we create the correct length by adding or removing characters."""
     assert common.Common.alter_length("One two three") == "One twOne two three"

@@ -7,7 +7,7 @@ from . import test_xliff
 class TestPOXLIFFUnit(test_xliff.TestXLIFFUnit):
     UnitClass = poxliff.PoXliffUnit
 
-    def test_plurals(self):
+    def test_plurals(self) -> None:
         """Tests that plurals are handled correctly."""
         unit = self.UnitClass(multistring(["Cow", "Cows"]))
         print(type(unit.source))
@@ -27,7 +27,7 @@ class TestPOXLIFFUnit(test_xliff.TestXLIFFUnit):
         assert unit.target.strings == ["Sk\u00ear", "Sk\u00eare"]
         assert unit.target == "Sk\u00ear"
 
-    def test_ids(self):
+    def test_ids(self) -> None:
         """Tests that ids are assigned correctly, especially for plurals."""
         unit = self.UnitClass("gras")
         assert not unit.getid()
@@ -56,7 +56,7 @@ class TestPOXLIFFfile(test_xliff.TestXLIFFfile):
   </file>
 </xliff>"""
 
-    def test_parse(self):
+    def test_parse(self) -> None:
         minixlf = (
             self.xliffskeleton
             % """<group restype="x-gettext-plurals">
@@ -76,7 +76,7 @@ class TestPOXLIFFfile(test_xliff.TestXLIFFfile):
         assert xlifffile.units[0].source == "cow"
         assert xlifffile.units[0].source == multistring(["cow", "cows"])
 
-    def test_parse_plural_alpha_id(self):
+    def test_parse_plural_alpha_id(self) -> None:
         minixlf = (
             self.xliffskeleton
             % """<group restype="x-gettext-plurals">
@@ -96,7 +96,7 @@ class TestPOXLIFFfile(test_xliff.TestXLIFFfile):
         assert xlifffile.units[0].source == "cow"
         assert xlifffile.units[0].source == multistring(["cow", "cows"])
 
-    def test_notes(self):
+    def test_notes(self) -> None:
         minixlf = (
             self.xliffskeleton
             % """<group restype="x-gettext-plurals">
@@ -125,7 +125,7 @@ class TestPOXLIFFfile(test_xliff.TestXLIFFfile):
             == "Zulu translation of program ABC"
         )
 
-    def test_plural(self):
+    def test_plural(self) -> None:
         minixlf = (
             self.xliffskeleton
             % """

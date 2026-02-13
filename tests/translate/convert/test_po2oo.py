@@ -52,12 +52,12 @@ class TestPO2OO:
         assert ooresult.endswith(oooutro)
         return ooresult[len(oointro) : -len(oooutro)]
 
-    def check_roundtrip(self, oosource):
+    def check_roundtrip(self, oosource) -> None:
         """Checks that the round-tripped string is the same as the original."""
         assert self.roundtripstring(oosource) == oosource
 
     @mark.skipif(os.name == "nt", reason="test or storage broken on Windows")
-    def test_convertoo(self):
+    def test_convertoo(self) -> None:
         """Checks that the convertoo function is working."""
         oobase = (
             r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	%s	%s				20050924 09:13:58"
@@ -69,7 +69,7 @@ class TestPO2OO:
         newoo = self.convertoo(posource, ootemplate, language="zu")
         assert newoo.decode("utf-8") == ootemplate + ooexpected
 
-    def test_pofilter(self):
+    def test_pofilter(self) -> None:
         """Tests integration with pofilter."""
         # Some bad po with a few errors:
         posource = b'#: sourcefile.bla#ID_NUMBER.txet.gnirts\nmsgid "<tag cow=\\"3\\">Mistake."\nmsgstr "  <etiket koei=\\"3\\">(fout) "'
@@ -78,13 +78,13 @@ class TestPO2OO:
         pofile.parse(posource)
         assert not filter.validelement(pofile.units[0], "dummyname.po", "exclude-all")
 
-    def test_roundtrip_simple(self):
+    def test_roundtrip_simple(self) -> None:
         """Checks that simple strings make it through a oo->po->oo roundtrip."""
         self.check_roundtrip("Hello")
         self.check_roundtrip('"Hello"')
         self.check_roundtrip('"Hello Everybody"')
 
-    def test_roundtrip_escape(self):
+    def test_roundtrip_escape(self) -> None:
         """Checks that escapes in strings make it through a oo->po->oo roundtrip."""
         self.check_roundtrip(r'"Simple Escape \ \n \\ \: \t \r "')
         self.check_roundtrip(r'"More escapes \\n \\t \\r \\: "')
@@ -97,14 +97,14 @@ class TestPO2OO:
         self.check_roundtrip(r"\\<")
         self.check_roundtrip(r"\<")
 
-    def test_roundtrip_quotes(self):
+    def test_roundtrip_quotes(self) -> None:
         """Checks that (escaped) quotes in strings make it through a oo->po->oo roundtrip."""
         self.check_roundtrip(r"""'Quote Escape "" '""")
         self.check_roundtrip(r'''"Single-Quote ' "''')
         self.check_roundtrip(r'''"Single-Quote Escape \' "''')
         self.check_roundtrip(r"""'Both Quotes "" '' '""")
 
-    def test_roundtrip_spaces(self):
+    def test_roundtrip_spaces(self) -> None:
         # FIXME: this test fails because the resultant PO file returns as po.isempty since .isblank returns true
         # which is caused by isblankmsgtr returning True.  Its a complete mess which would mean unravelling lots
         # of yuch in pypo.  Until we have time to do that unravelling we're disabling this test.  You can reenable
@@ -113,7 +113,7 @@ class TestPO2OO:
         self.check_roundtrip(" ")
         self.check_roundtrip("\u00a0")
 
-    def test_default_timestamp(self):
+    def test_default_timestamp(self) -> None:
         """Test to ensure that we revert to the default timestamp."""
         oointro, oooutro = (
             r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Text				",
@@ -131,7 +131,7 @@ class TestPO2OO:
             == f"{oointro}2002-02-02 02:02:02{oooutro}"
         )
 
-    def test_escape_conversion(self):
+    def test_escape_conversion(self) -> None:
         """Test to ensure that we convert escapes correctly."""
         oosource = (
             r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Column1\tColumn2\r\n				2002-02-02 02:02:02"
@@ -146,7 +146,7 @@ class TestPO2OO:
         )
         assert b"\tKolom1\\tKolom2\\r\\n\t" in outputfile.getvalue()
 
-    def test_helpcontent_escapes(self):
+    def test_helpcontent_escapes(self) -> None:
         """Test to ensure that we convert helpcontent escapes correctly."""
         # Note how this test specifically uses incorrect spacing in the
         # translation. The extra space before 'hid' and an extra space before
@@ -174,7 +174,7 @@ msgstr ""
             in outputfile.getvalue()
         )
 
-    def test_helpcontent_escapes2(self):
+    def test_helpcontent_escapes2(self) -> None:
         """Test to ensure that we convert helpcontent escapes correctly."""
         oosource = (
             r"helpcontent2	source\text\scalc\05\empty_cells.xhp	0	help	par_id2629474				0	en-US	A1: <empty>				2002-02-02 02:02:02"

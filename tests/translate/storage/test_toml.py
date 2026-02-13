@@ -1,5 +1,6 @@
 import pytest
 
+from translate.misc.multistring import multistring
 from translate.storage import base, toml
 
 from . import test_monolingual
@@ -8,7 +9,7 @@ from . import test_monolingual
 class TestTOMLResourceUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = toml.TOMLUnit
 
-    def test_getlocations(self):
+    def test_getlocations(self) -> None:
         unit = self.UnitClass("teststring")
         unit.setid("some-key")
         assert unit.getlocations() == ["some-key"]
@@ -17,29 +18,29 @@ class TestTOMLResourceUnit(test_monolingual.TestMonolingualUnit):
 class TestTOMLResourceStore(test_monolingual.TestMonolingualStore):
     StoreClass = toml.TOMLFile
 
-    def test_serialize(self):
+    def test_serialize(self) -> None:
         store = self.StoreClass()
         store.parse('key = "value"')
         assert bytes(store) == b'key = "value"\n'
 
-    def test_empty(self):
+    def test_empty(self) -> None:
         store = self.StoreClass()
         store.parse("")
         assert bytes(store) == b""
 
-    def test_edit(self):
+    def test_edit(self) -> None:
         store = self.StoreClass()
         store.parse('key = "value"')
         store.units[0].target = "second"
         assert bytes(store) == b'key = "second"\n'
 
-    def test_edit_unicode(self):
+    def test_edit_unicode(self) -> None:
         store = self.StoreClass()
         store.parse('key = "value"')
         store.units[0].target = "zkouška"
         assert bytes(store) == 'key = "zkouška"\n'.encode()
 
-    def test_parse_unicode_list(self):
+    def test_parse_unicode_list(self) -> None:
         data = """list = ["zkouška"]
 """
         store = self.StoreClass()
@@ -48,7 +49,7 @@ class TestTOMLResourceStore(test_monolingual.TestMonolingualStore):
         store.units[0].target = "změna"
         assert bytes(store).decode("utf-8") == data.replace("zkouška", "změna")
 
-    def test_ordering(self):
+    def test_ordering(self) -> None:
         store = self.StoreClass()
         store.parse(
             """
@@ -61,7 +62,7 @@ baz = "baz"
         assert store.units[0].source == "foo"
         assert store.units[2].source == "baz"
 
-    def test_nested(self):
+    def test_nested(self) -> None:
         data = """[foo]
 bar = "bar"
 
@@ -75,14 +76,17 @@ eggs = "spam"
         store.parse(data)
         assert len(store.units) == 3
         assert store.units[0].getid() == "foo.bar"
+        assert store.units[0].getcontext() == "foo.bar"
         assert store.units[0].source == "bar"
         assert store.units[1].getid() == "foo.baz.boo"
+        assert store.units[1].getcontext() == "foo.baz.boo"
         assert store.units[1].source == "booo"
         assert store.units[2].getid() == "root.eggs"
+        assert store.units[2].getcontext() == "root.eggs"
         assert store.units[2].source == "spam"
         assert bytes(store).decode("ascii") == data
 
-    def test_multiline(self):
+    def test_multiline(self) -> None:
         """Test multiline strings in TOML."""
         data = '''invite = """
 Ola!
@@ -103,7 +107,7 @@ Recibiches unha invitación para unirte!"""
         assert store.units[1].source == "spam"
         assert bytes(store).decode("utf-8") == data
 
-    def test_boolean(self):
+    def test_boolean(self) -> None:
         store = self.StoreClass()
         store.parse("foo = true")
         assert len(store.units) == 1
@@ -111,7 +115,7 @@ Recibiches unha invitación para unirte!"""
         assert store.units[0].source == "True"
         assert bytes(store) == b'foo = "True"\n'
 
-    def test_integer(self):
+    def test_integer(self) -> None:
         store = self.StoreClass()
         store.parse("foo = 1")
         assert len(store.units) == 1
@@ -119,7 +123,7 @@ Recibiches unha invitación para unirte!"""
         assert store.units[0].source == "1"
         assert bytes(store) == b'foo = "1"\n'
 
-    def test_no_quote_strings(self):
+    def test_no_quote_strings(self) -> None:
         """Test unquoted strings (basic strings in TOML)."""
         store = self.StoreClass()
         store.parse('eggs = "No quoting at all"')
@@ -128,7 +132,7 @@ Recibiches unha invitación para unirte!"""
         assert store.units[0].source == "No quoting at all"
         assert bytes(store) == b'eggs = "No quoting at all"\n'
 
-    def test_double_quote_strings(self):
+    def test_double_quote_strings(self) -> None:
         """Test double-quoted strings."""
         store = self.StoreClass()
         store.parse('bar = "quote, double"')
@@ -137,7 +141,7 @@ Recibiches unha invitación para unirte!"""
         assert store.units[0].source == "quote, double"
         assert bytes(store) == b'bar = "quote, double"\n'
 
-    def test_single_quote_strings(self):
+    def test_single_quote_strings(self) -> None:
         """Test literal strings (single quotes in TOML)."""
         store = self.StoreClass()
         store.parse("foo = 'quote, single'")
@@ -146,7 +150,7 @@ Recibiches unha invitación para unirte!"""
         assert store.units[0].source == "quote, single"
         assert bytes(store) == b"foo = 'quote, single'\n"
 
-    def test_escaped_double_quotes(self):
+    def test_escaped_double_quotes(self) -> None:
         """Test escaped double quotes in TOML."""
         store = self.StoreClass()
         store.parse(r'foo = "Hello \"World\"."')
@@ -155,7 +159,7 @@ Recibiches unha invitación para unirte!"""
         assert store.units[0].source == 'Hello "World".'
         assert bytes(store) == rb'foo = "Hello \"World\"."' + b"\n"
 
-    def test_newlines(self):
+    def test_newlines(self) -> None:
         """Test newlines in TOML strings."""
         store = self.StoreClass()
         store.parse(r'foo = "Hello \n World."')
@@ -164,7 +168,7 @@ Recibiches unha invitación para unirte!"""
         assert store.units[0].source == "Hello \n World."
         assert bytes(store) == rb'foo = "Hello \n World."' + b"\n"
 
-    def test_list(self):
+    def test_list(self) -> None:
         """Test TOML arrays."""
         data = """day_names = ["Domingo", "Luns", "Martes", "Mércores", "Xoves", "Venres", "Sábado"]
 """
@@ -187,7 +191,7 @@ Recibiches unha invitación para unirte!"""
         assert store.units[6].source == "Sábado"
         assert bytes(store).decode("utf-8") == data
 
-    def test_inline_table(self):
+    def test_inline_table(self) -> None:
         """Test inline table syntax."""
         data = """martin = {name = "Martin D'vloper", job = "Developer", skill = "Elite"}
 """
@@ -202,14 +206,14 @@ Recibiches unha invitación para unirte!"""
         assert store.units[2].source == "Elite"
         assert bytes(store).decode("ascii") == data
 
-    def test_key_nesting(self):
+    def test_key_nesting(self) -> None:
         store = self.StoreClass()
         unit = self.StoreClass.UnitClass("teststring2")
         unit.setid("key.value")
         store.addunit(unit)
         assert bytes(store) == b'[key]\nvalue = "teststring2"\n'
 
-    def test_add_to_empty(self):
+    def test_add_to_empty(self) -> None:
         store = self.StoreClass()
         store.parse("")
         unit = self.StoreClass.UnitClass("teststring2")
@@ -217,7 +221,7 @@ Recibiches unha invitación para unirte!"""
         store.addunit(unit)
         assert bytes(store).decode("utf-8") == '[key]\nvalue = "teststring2"\n'
 
-    def test_dict_in_list(self):
+    def test_dict_in_list(self) -> None:
         data = """[[e1]]
 s1 = "Subtag 1"
 """
@@ -226,7 +230,7 @@ s1 = "Subtag 1"
         assert len(store.units) == 1
         assert bytes(store) == data.encode("ascii")
 
-    def test_remove(self):
+    def test_remove(self) -> None:
         data = """[test."1"]
 one = "one"
 two = "two"
@@ -266,12 +270,12 @@ three = "three"
 """
         )
 
-    def test_special(self):
+    def test_special(self) -> None:
         store = self.StoreClass()
         with pytest.raises(base.ParseError):
             store.parse("key = other\x08string")
 
-    def test_comment_extraction_simple(self):
+    def test_comment_extraction_simple(self) -> None:
         """Test extracting simple comments from TOML."""
         data = """# This is a comment for key1
 key1 = "value1"
@@ -285,7 +289,7 @@ key2 = "value2"
         assert store.units[0].getnotes() == "This is a comment for key1"
         assert store.units[1].getnotes() == "This is a comment for key2"
 
-    def test_comment_extraction_multiline(self):
+    def test_comment_extraction_multiline(self) -> None:
         """Test extracting multi-line comments from TOML."""
         data = """# This is a comment for key1
 # with multiple lines
@@ -303,7 +307,7 @@ key2 = "value2"
         # For now, we expect the first line of comment
         assert "This is a comment for key1" in store.units[0].getnotes()
 
-    def test_no_comment_backwards_compat(self):
+    def test_no_comment_backwards_compat(self) -> None:
         """Test that TOML without comments still works."""
         data = """key1 = "value1"
 key2 = "value2"
@@ -314,7 +318,7 @@ key2 = "value2"
         assert store.units[0].getnotes() == ""
         assert store.units[1].getnotes() == ""
 
-    def test_comment_preservation_simple(self):
+    def test_comment_preservation_simple(self) -> None:
         """Test that comments are preserved during roundtrip."""
         data = """# This is a comment for key1
 key1 = "value1"
@@ -335,7 +339,7 @@ key2 = "value2"
         assert "# This is a comment for key1" in output
         assert "# This is a comment for key2" in output
 
-    def test_comment_preservation_multiline(self):
+    def test_comment_preservation_multiline(self) -> None:
         """Test that multi-line comments are preserved during roundtrip."""
         data = """# This is a comment for key1
 # with multiple lines
@@ -352,7 +356,7 @@ key1 = "value1"
         assert "# with multiple lines" in output
         assert "# explaining the key" in output
 
-    def test_comment_preservation_nested(self):
+    def test_comment_preservation_nested(self) -> None:
         """Test that comments are preserved in nested structures."""
         data = """# Top-level comment
 [section]
@@ -368,7 +372,7 @@ key = "value"
         output = bytes(store).decode("utf-8")
         assert "# Top-level comment" in output or "# Comment for nested key" in output
 
-    def test_comment_preservation_with_modification(self):
+    def test_comment_preservation_with_modification(self) -> None:
         """Test that comments are preserved when values are modified."""
         data = """# This is a comment
 key1 = "original value"
@@ -384,7 +388,7 @@ key1 = "original value"
         assert "# This is a comment" in output
         assert "modified value" in output
 
-    def test_literal_string(self):
+    def test_literal_string(self) -> None:
         """Test TOML literal strings (single quotes)."""
         data = r"""literal_str = 'C:\Users\nodejs\templates'
 """
@@ -394,7 +398,7 @@ key1 = "original value"
         assert store.units[0].source == r"C:\Users\nodejs\templates"
         assert bytes(store).decode() == data
 
-    def test_multiline_basic_string(self):
+    def test_multiline_basic_string(self) -> None:
         """Test TOML multiline basic strings (triple double quotes)."""
         data = '''str = """
 The quick brown fox jumps over the lazy dog."""
@@ -404,7 +408,7 @@ The quick brown fox jumps over the lazy dog."""
         assert len(store.units) == 1
         assert "The quick brown fox" in store.units[0].source
 
-    def test_multiline_literal_string(self):
+    def test_multiline_literal_string(self) -> None:
         """Test TOML multiline literal strings (triple single quotes)."""
         data = """literal_multiline_str = '''
 The first newline is
@@ -423,7 +427,7 @@ trimmed in raw strings.
 class TestGoI18nTOMLResourceStore(test_monolingual.TestMonolingualStore):
     StoreClass = toml.GoI18nTOMLFile
 
-    def test_simple_plural(self):
+    def test_simple_plural(self) -> None:
         """Test parsing simple pluralized strings."""
         data = """[reading_time]
 one = "One minute to read"
@@ -437,7 +441,7 @@ other = "{{ .Count }} minutes to read"
         assert store.units[0].target.strings[1] == "{{ .Count }} minutes to read"
         assert bytes(store).decode("utf-8") == data
 
-    def test_plural_with_other_keys(self):
+    def test_plural_with_other_keys(self) -> None:
         """Test that tables with only 'other' key are treated as singulars."""
         data = """[category]
 other = "category"
@@ -467,7 +471,7 @@ other = "tag"
         assert not store.units[2].hasplural()
         assert store.units[2].source == "tag"
 
-    def test_full_plural_forms(self):
+    def test_full_plural_forms(self) -> None:
         """Test all CLDR plural categories."""
         data = """[items]
 zero = "No items"
@@ -490,7 +494,7 @@ other = "{{ .Count }} items"
         assert strings[4] == "Many items"
         assert strings[5] == "{{ .Count }} items"
 
-    def test_roundtrip_plural(self):
+    def test_roundtrip_plural(self) -> None:
         """Test that plural forms survive round-trip."""
         data = """[messages]
 one = "You have one message"
@@ -501,7 +505,6 @@ other = "You have {{ .Count }} messages"
         assert len(store.units) == 1
 
         # Modify the plural
-        from translate.misc.multistring import multistring
 
         store.units[0].target = multistring(["Un mensaje", "{{ .Count }} mensajes"])
 
@@ -509,7 +512,7 @@ other = "You have {{ .Count }} messages"
         assert 'one = "Un mensaje"' in result
         assert 'other = "{{ .Count }} mensajes"' in result
 
-    def test_mixed_content(self):
+    def test_mixed_content(self) -> None:
         """Test file with both regular and pluralized entries."""
         data = """title = "My Application"
 
@@ -546,7 +549,7 @@ other = "Goodbye!"
         assert not store.units[3].hasplural()
         assert store.units[3].source == "Goodbye!"
 
-    def test_letsencrypt_style(self):
+    def test_letsencrypt_style(self) -> None:
         """Test Let's Encrypt website i18n format (tables with only 'other' key)."""
         data = """[home_hero_title]
 other = "A nonprofit Certificate Authority"
@@ -579,7 +582,7 @@ View our <a href="/trademarks/">trademark policy</a>.
             'View our <a href="/privacy/">privacy policy</a>.' in store.units[2].source
         )
 
-    def test_comment_preservation_goi18n(self):
+    def test_comment_preservation_goi18n(self) -> None:
         """Test that comments are preserved in Go i18n format."""
         data = """# See https://github.com/nicksnyder/go-i18n for format documentation
 
@@ -600,7 +603,7 @@ other = "Get Started"
         # First table's comment should be preserved
         assert "# Welcome message for the home page" in output
 
-    def test_comment_preservation_goi18n_plural(self):
+    def test_comment_preservation_goi18n_plural(self) -> None:
         """Test that comments are preserved with plural forms."""
         data = """# Comment about reading time
 [reading_time]

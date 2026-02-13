@@ -21,26 +21,26 @@ class TestPO2MD(test_convert.TestConvertCommand):
         "-m MAXLENGTH, --maxlinelength=MAXLENGTH",
     ]
 
-    def test_single_markdown_file_with_single_po(self):
+    def test_single_markdown_file_with_single_po(self) -> None:
         self.given_markdown_file()
         self.given_translation_file()
         self.run_command("translation.po", "out.md", template="file.md")
         self.then_translated_markdown_file_is_written()
 
-    def test_directory_of_markdown_files_with_single_po(self):
+    def test_directory_of_markdown_files_with_single_po(self) -> None:
         self.given_directory_of_markdown_files()
         self.given_translation_file()
         self.run_command("translation.po", "testout", template="mddir")
         self.then_directory_of_translated_markdown_files_is_written()
 
-    def test_directory_of_markdown_files_and_directory_of_po_files(self):
+    def test_directory_of_markdown_files_and_directory_of_po_files(self) -> None:
         self.given_directory_of_markdown_files()
         self.given_directory_of_po_files()
         self.run_command("podir", "testout", template="mddir")
         self.then_directory_of_translated_markdown_files_is_written()
 
     @pytest.mark.xfail(reason="https://github.com/miyuchina/mistletoe/issues/244")
-    def test_markdown_table(self):
+    def test_markdown_table(self) -> None:
         self.given_markdown_file(r"""
 | Left column | Right column                   |
 |-------------|--------------------------------|
@@ -58,19 +58,19 @@ class TestPO2MD(test_convert.TestConvertCommand):
             "right translated \\| between pixes"  # codespell:ignore
         )
 
-    def given_markdown_file(self, content: str | None = None):
+    def given_markdown_file(self, content: str | None = None) -> None:
         self.create_testfile(
             "file.md", content or "# Markdown\nYou are only coming through in waves."
         )
 
-    def given_directory_of_markdown_files(self):
+    def given_directory_of_markdown_files(self) -> None:
         os.makedirs("mddir", exist_ok=True)
         self.create_testfile("mddir/file1.md", "# Heading\nContent of file 1")
         self.create_testfile("mddir/file2.md", "# Heading\nContent of file 2")
 
     def given_translation_file(
         self, filename="translation.po", lines: list[str] | None = None
-    ):
+    ) -> None:
         if lines is None:
             lines = [
                 "#: 'ref'",
@@ -87,7 +87,7 @@ class TestPO2MD(test_convert.TestConvertCommand):
             ]
         self.create_testfile(filename, "\n".join(lines))
 
-    def given_directory_of_po_files(self):
+    def given_directory_of_po_files(self) -> None:
         os.makedirs("podir", exist_ok=True)
         for filename in ["podir/file1.po", "podir/file2.po"]:
             self.given_translation_file(filename=filename)
@@ -100,7 +100,7 @@ class TestPO2MD(test_convert.TestConvertCommand):
         assert expected in content
         return content
 
-    def then_directory_of_translated_markdown_files_is_written(self):
+    def then_directory_of_translated_markdown_files_is_written(self) -> None:
         assert os.path.isdir(self.get_testfilename("testout"))
         assert os.path.isfile(self.get_testfilename("testout/file1.md"))
         assert os.path.isfile(self.get_testfilename("testout/file2.md"))
@@ -108,7 +108,7 @@ class TestPO2MD(test_convert.TestConvertCommand):
         assert "Innehåll i fil 1" in content
         assert "Innehåll i fil 2" not in content
 
-    def test_markdown_frontmatter(self):
+    def test_markdown_frontmatter(self) -> None:
         content = """---
 date: 2024-02-02T04:14:54-08:00
 draft: false
@@ -132,7 +132,7 @@ You are only coming through in waves.
             == output
         )
 
-    def test_markdown_translation_ignore_sections(self):
+    def test_markdown_translation_ignore_sections(self) -> None:
         """Test that ignored sections are preserved and translations in PO are not applied to them."""
         markdown_content = """# Welcome
 

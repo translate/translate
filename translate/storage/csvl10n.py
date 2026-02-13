@@ -41,7 +41,7 @@ csv.register_dialect("default", DefaultDialect)
 class csvunit(base.TranslationUnit):
     spreadsheetescapes = [("+", "\\+"), ("-", "\\-"), ("=", "\\="), ("'", "\\'")]
 
-    def __init__(self, source=None):
+    def __init__(self, source=None) -> None:
         super().__init__(source)
         self.location = ""
         self.source = source or ""
@@ -63,20 +63,20 @@ class csvunit(base.TranslationUnit):
 
         return result
 
-    def setid(self, value):
+    def setid(self, value) -> None:
         self.id = value
 
     def getlocations(self):
         # FIXME: do we need to support more than one location
         return [self.location]
 
-    def addlocation(self, location):
+    def addlocation(self, location) -> None:
         self.location = location
 
     def getcontext(self):
         return self.context
 
-    def setcontext(self, value):
+    def setcontext(self, value) -> None:  # ty:ignore[invalid-method-override]
         self.context = value
 
     def getnotes(self, origin=None):
@@ -94,7 +94,7 @@ class csvunit(base.TranslationUnit):
             return self.developer_comments
         raise ValueError("Comment type not valid")
 
-    def addnote(self, text, origin=None, position="append"):
+    def addnote(self, text, origin=None, position="append") -> None:
         if origin in {"programmer", "developer", "source code"}:
             if position == "append" and self.developer_comments:
                 self.developer_comments += f"\n{text}"
@@ -109,13 +109,13 @@ class csvunit(base.TranslationUnit):
         else:
             self.translator_comments = text
 
-    def removenotes(self, origin=None):
+    def removenotes(self, origin=None) -> None:
         self.translator_comments = ""
 
     def isfuzzy(self):
         return self.fuzzy.lower() in {"1", "x", "true", "yes", "fuzzy"}
 
-    def markfuzzy(self, value=True):
+    def markfuzzy(self, value=True) -> None:
         if value:
             self.fuzzy = "True"
         else:
@@ -149,7 +149,7 @@ class csvunit(base.TranslationUnit):
                 target = target.replace(escaped, unescaped, 1)
         return source, target
 
-    def fromdict(self, cedict, encoding="utf-8"):
+    def fromdict(self, cedict, encoding="utf-8") -> None:
         for key, value in cedict.items():
             rkey = fieldname_map.get(key, key)
             if value is None or key is None or key == EXTRA_KEY:
@@ -187,7 +187,7 @@ class csvunit(base.TranslationUnit):
             "developer_comments": self.developer_comments,
         }
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.todict())
 
 
@@ -212,7 +212,7 @@ EXTRA_KEY = "__CSVL10N__EXTRA__"
 def try_dialects(
     inputfile: StringIO,
     fieldnames: list[str] | None,
-    dialect: str | csv.Dialect,
+    dialect: str | type[csv.Dialect],
     has_header: bool = False,
 ) -> csv.DictReader:
     """
@@ -278,7 +278,7 @@ def valid_fieldnames(fieldnames: list[str]) -> bool:
 
 
 def detect_header(
-    inputfile: StringIO, dialect: str | csv.Dialect, fieldnames: list[str]
+    inputfile: StringIO, dialect: str | type[csv.Dialect], fieldnames: list[str]
 ) -> tuple[list[str], bool]:
     """
     Test if file has a header or not.
@@ -321,7 +321,7 @@ class csvfile(base.TranslationStore):
     Mimetypes = ["text/comma-separated-values", "text/csv"]
     Extensions = ["csv"]
 
-    def __init__(self, inputfile=None, fieldnames=None, encoding="auto"):
+    def __init__(self, inputfile=None, fieldnames=None, encoding="auto") -> None:
         super().__init__(encoding=encoding)
         if not fieldnames:
             self.fieldnames = [
@@ -346,7 +346,7 @@ class csvfile(base.TranslationStore):
 
     def parse(
         self, csvsrc, sample_length: int | None = 1024, *, dialect: str | None = None
-    ):
+    ) -> None:  # ty:ignore[invalid-method-override]
         if self._encoding == "auto":
             self._automatic_encoding = True
             text, encoding = self.detect_encoding(
@@ -371,6 +371,11 @@ class csvfile(base.TranslationStore):
                     # HACKISH: most probably a default, not real detection
                     self.dialect.quoting = csv.QUOTE_ALL
                     self.dialect.doublequote = True
+                elif self.dialect.quoting == csv.QUOTE_NONNUMERIC:
+                    # QUOTE_NONNUMERIC causes csv.reader to convert unquoted values to floats
+                    # which fails for non-numeric strings like header names
+                    self.dialect.quoting = csv.QUOTE_ALL
+                    self.dialect.doublequote = True
                 # Add delimiter for single value CSV where none is present or is obviously invalid
                 if not self.dialect.delimiter or self.dialect.delimiter in {
                     '"',
@@ -385,7 +390,9 @@ class csvfile(base.TranslationStore):
         has_header = False
         try:
             fieldnames, has_header = detect_header(
-                inputfile, self.dialect, self.fieldnames
+                inputfile,
+                self.dialect,
+                self.fieldnames,
             )
             self.fieldnames = fieldnames
         except csv.Error:
@@ -398,11 +405,12 @@ class csvfile(base.TranslationStore):
         for row in reader:
             newce = self.UnitClass()
             newce.fromdict(row)
+            newce._line_number = reader.line_num
             if not first_row or not newce.match_header():
                 self.addunit(newce)
             first_row = False
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         """Write to file."""
         source = self.getoutput()
         try:

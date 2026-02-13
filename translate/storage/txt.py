@@ -65,7 +65,7 @@ flavours = {
 class TxtUnit(base.TranslationUnit):
     """This class represents a block of text from a text file."""
 
-    def __init__(self, source="", **kwargs):
+    def __init__(self, source="", **kwargs) -> None:
         """Construct the txtunit."""
         super().__init__(source)
         # Note that source and target are equivalent for monolingual units.
@@ -74,7 +74,7 @@ class TxtUnit(base.TranslationUnit):
         self.posttext = ""
         self.location = []
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Convert a txt unit to a string."""
         return f"{self.pretext}{self.source}{self.posttext}"
 
@@ -84,24 +84,26 @@ class TxtUnit(base.TranslationUnit):
         return self.source
 
     @target.setter
-    def target(self, target):
+    def target(self, target) -> None:
         """Sets the definition to the quoted value of target."""
         self._rich_target = None
         self.source = target
 
-    def addlocation(self, location):
+    def addlocation(self, location) -> None:
         self.location.append(location)
 
     def getlocations(self):
         return self.location
 
 
-class TxtFile(base.TranslationStore):
+class TxtFile(base.TranslationStore[TxtUnit]):
     """This class represents a text file, made up of txtunits."""
 
     UnitClass = TxtUnit
 
-    def __init__(self, inputfile=None, flavour=None, no_segmentation=False, **kwargs):
+    def __init__(
+        self, inputfile=None, flavour=None, no_segmentation=False, **kwargs
+    ) -> None:
         super().__init__(**kwargs)
         self.filename = getattr(inputfile, "name", "")
         self.flavour = flavours.get(flavour, [])
@@ -110,12 +112,16 @@ class TxtFile(base.TranslationStore):
             txtsrc = inputfile.readlines()
             self.parse(txtsrc)
 
-    def parse(self, lines):
+    def parse(self, lines) -> None:  # ty:ignore[invalid-method-override]
         """Read in text lines and create txtunits from the blocks of text."""
         if self.no_segmentation:
-            self.addsourceunit("".join(line.decode(self.encoding) for line in lines))
+            unit = self.addsourceunit(
+                "".join(line.decode(self.encoding) for line in lines)
+            )
+            unit._line_number = 1
             return
         block = []
+        block_start_line = 1
         current_line = 0
         pretext = ""
         posttext = ""
@@ -132,6 +138,8 @@ class TxtFile(base.TranslationStore):
                     if postmatch:
                         posttext = postmatch.group()
                         source = source[: postmatch.start()]
+                    if not block:
+                        block_start_line = current_line
                     block.append(source)
                     isbreak = True
                     break
@@ -139,19 +147,24 @@ class TxtFile(base.TranslationStore):
                 isbreak = not line.strip()
             if isbreak and block:
                 unit = self.addsourceunit("\n".join(block))
-                unit.addlocation("%s:%d" % (self.filename, current_line))
+                unit._line_number = block_start_line
+                unit.addlocation(f"{self.filename}:{block_start_line}")
                 unit.pretext = pretext
                 unit.posttext = posttext
                 pretext = ""
                 posttext = ""
                 block = []
+                block_start_line = current_line + 1
             elif not isbreak:
+                if not block:
+                    block_start_line = current_line
                 block.append(line)
         if block:
             unit = self.addsourceunit("\n".join(block))
-            unit.addlocation("%s:%d" % (self.filename, current_line))
+            unit._line_number = block_start_line
+            unit.addlocation(f"{self.filename}:{block_start_line}")
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         for idx, unit in enumerate(self.units):
             if idx > 0:
                 out.write(b"\n\n")

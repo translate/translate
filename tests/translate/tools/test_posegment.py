@@ -24,7 +24,7 @@ class TestPOSegment:
         )
         return convertor.convertstore(inputpo)
 
-    def test_en_ja_simple(self):
+    def test_en_ja_simple(self) -> None:
         posource = """
 #: test/test.py:112
 msgid ""
@@ -56,7 +56,7 @@ msgstr ""
             == "例として、コンピュータからの「音声出力」は事前にお知らせ頂いていない場合は提供できないことに注意して下さい。"
         )
 
-    def test_en_ja_punctuation(self):
+    def test_en_ja_punctuation(self) -> None:
         """Checks that a half-width punctuation."""
         posource = """
 #: docs/intro/contributing.txt:184
@@ -68,6 +68,58 @@ msgstr ""
 "を行う場合､ Django の継続インテグレーションビルドをチェックしてください｡"
 """
         poresult = self.posegment(posource, "en", "ja")
+        out_unit = poresult.units[1]
+        assert (
+            out_unit.source
+            == "Note that the latest Django trunk may not always be stable."
+        )
+        assert out_unit.target == "開発中の､最新の Django ではステーブルとは限りません｡"
+
+        out_unit = poresult.units[2]
+        assert (
+            out_unit.source
+            == "When developing against trunk, you can check Django's continuous integration builds."
+        )
+        assert (
+            out_unit.target
+            == "トランクバージョンで開発を行う場合､ Django の継続インテグレーションビルドをチェックしてください｡"
+        )
+
+    def test_transifex_po(self) -> None:
+        """Checks that onlyaligned=True removes units with mismatched sentence counts."""
+        # First unit: mismatched (3 EN sentences vs 4 JA sentences) - should be removed
+        # Second unit: matched (2 EN sentences vs 2 JA sentences) - should be kept
+        posource = """# 8456b7744a02478cb75a9ad7f950d8cf
+#: ../../../../1.8/docs/intro/contributing.txt:184
+msgid ""
+"Note that the latest Django trunk may not always be stable. When developing "
+"against trunk, you can check `Django's continuous integration builds`__ to "
+"determine if the failures are specific to your machine or if they are also "
+"present in Django's official builds. If you click to view a particular "
+"build, you can view the Configuration Matrix which shows failures broken "
+"down by Python version and database backend."
+msgstr ""
+"開発中の､最新の Django ではステーブルとは限りません｡トランクバージョンで開発"
+"を行う場合､ `Django の継続インテグレーションビルド`__ をチェックしてください｡"
+"これで､テストの失敗があなたのマシンだけのものか､ Django 公式のビルドによるも"
+"のかが分かります｡各ビルドについてのリンクをクリックすれば､ Configuration "
+"Matrix という､ 各 Python のバージョン､ DB バックエンドに対応したテストの失"
+"敗を閲覧できます｡"
+
+#: docs/intro/contributing.txt:200
+msgid ""
+"Note that the latest Django trunk may not always be stable. When developing "
+"against trunk, you can check Django's continuous integration builds."
+msgstr ""
+"開発中の､最新の Django ではステーブルとは限りません｡トランクバージョンで開発"
+"を行う場合､ Django の継続インテグレーションビルドをチェックしてください｡"
+"""
+        poresult = self.posegment(posource, "en", "ja")
+        # With onlyaligned=True, only the aligned unit should be kept (plus header)
+        # First unit (mismatched 3 vs 4) is removed, second unit (matched 2 vs 2) is segmented
+        assert len(poresult.units) == 3  # header + 2 segments from second unit
+
+        # Check the segmented units from the second (matched) unit
         out_unit = poresult.units[1]
         assert (
             out_unit.source
@@ -105,7 +157,7 @@ class TestXLIFFSegment:
         )
         return convertor.convertstore(inputstore)
 
-    def test_xliff_en_simple(self):
+    def test_xliff_en_simple(self) -> None:
         """Test basic XLIFF segmentation."""
         xliffsource = """<?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
@@ -126,7 +178,7 @@ class TestXLIFFSegment:
         assert xliffresult.units[1].source == "This is the second sentence."
         assert xliffresult.units[1].target == "Ceci est la deuxième phrase."
 
-    def test_xliff_untranslated(self):
+    def test_xliff_untranslated(self) -> None:
         """Test XLIFF segmentation with untranslated units."""
         xliffsource = """<?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
@@ -166,7 +218,7 @@ class TestTMXSegment:
         )
         return convertor.convertstore(inputstore)
 
-    def test_tmx_en_simple(self):
+    def test_tmx_en_simple(self) -> None:
         """Test basic TMX segmentation."""
         tmxsource = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE tmx SYSTEM "tmx14.dtd">

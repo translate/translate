@@ -13,7 +13,7 @@ from translate.tools import junitmsgfmt
         ),
     ],
 )
-def test_output(opts, capsys, snapshot):
+def test_output(opts, capsys, snapshot) -> None:
     junitmsgfmt.main([*opts])
     stdout = capsys.readouterr()[0]
 

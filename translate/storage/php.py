@@ -78,7 +78,7 @@ from translate.storage import base
 def wrap_production(func):
     """Decorator for production functions to store lexer positions."""
 
-    def prod(n):
+    def prod(n) -> None:
         func(n)
         if isinstance(n[0], Node):
             startpos = min(getattr(i, "lexpos", 0) for i in n.slice[1:])
@@ -93,7 +93,7 @@ def wrap_production(func):
 
 
 class PHPLexer(FilteredLexer):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(full_lexer.clone())
         self.tokens = []
         self.pos = 0
@@ -149,7 +149,7 @@ class PHPLexer(FilteredLexer):
         self.codepos = pos
         return result.rstrip()
 
-    def extract_quote(self):
+    def extract_quote(self) -> str:
         """Extract quote style."""
         pos = max(self.pos, self.codepos)
         while self.tokens[pos].type not in {
@@ -162,7 +162,7 @@ class PHPLexer(FilteredLexer):
             return '"'
         return "'"
 
-    def extract_array(self):
+    def extract_array(self) -> str:
         pos = max(self.pos, self.codepos)
         while self.tokens[pos].type not in {"ARRAY", "LBRACKET"}:
             pos += 1
@@ -243,7 +243,7 @@ def phpdecode(text, quotechar="'"):
 class phpunit(base.TranslationUnit):
     """A unit of a PHP file: a name, a value, and any comments associated."""
 
-    def __init__(self, source=""):
+    def __init__(self, source="") -> None:
         """Construct a blank phpunit."""
         self.escape_type = "'"
         super().__init__(source)
@@ -258,7 +258,7 @@ class phpunit(base.TranslationUnit):
         return self.value
 
     @source.setter
-    def source(self, source):
+    def source(self, source) -> None:
         """Set the source AND the target to be equal."""
         self._rich_source = None
         self.value = source
@@ -268,11 +268,11 @@ class phpunit(base.TranslationUnit):
         return self.translation
 
     @target.setter
-    def target(self, target):
+    def target(self, target) -> None:
         self._rich_target = None
         self.translation = target
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Convert to a string."""
         return self.getoutput()
 
@@ -299,13 +299,13 @@ class phpunit(base.TranslationUnit):
         joiner = f"\n{indent}"
         return indent + joiner.join([*self._comments, out])
 
-    def addlocation(self, location):
+    def addlocation(self, location) -> None:
         self.name = location
 
     def getlocations(self):
         return [self.name]
 
-    def addnote(self, text, origin=None, position="append"):
+    def addnote(self, text, origin=None, position="append") -> None:
         if origin in {"programmer", "developer", "source code", None}:
             if position == "append":
                 self._comments.append(text)
@@ -319,20 +319,20 @@ class phpunit(base.TranslationUnit):
             return "\n".join(self._comments)
         return super().getnotes(origin)
 
-    def removenotes(self, origin=None):
+    def removenotes(self, origin=None) -> None:
         self._comments = []
 
-    def isblank(self):
+    def isblank(self) -> bool:
         """Return whether this is a blank element, containing only comments."""
         return not (self.name or self.value)
 
     def getid(self):
         return self.name
 
-    def setid(self, value):
+    def setid(self, value) -> None:
         # Sanitize name to produce valid syntax
         if not value.startswith(("$", "define(", "return")):
-            self.name = "${}".format(value.replace(" ", "_"))
+            self.name = f"${value.replace(' ', '_')}"
         else:
             self.name = value
 
@@ -342,7 +342,7 @@ class phpfile(base.TranslationStore):
 
     UnitClass = phpunit
 
-    def __init__(self, inputfile=None, **kwargs):
+    def __init__(self, inputfile=None, **kwargs) -> None:
         """Construct a phpfile, optionally reading in from inputfile."""
         super().__init__(**kwargs)
         self.filename = getattr(inputfile, "name", "")
@@ -351,13 +351,13 @@ class phpfile(base.TranslationStore):
             inputfile.close()
             self.parse(phpsrc)
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         """Convert the units back to lines."""
 
-        def write(text):
+        def write(text) -> None:
             out.write(text.encode(self.encoding))
 
-        def handle_array(unit, arrname, handled, indent=0):
+        def handle_array(unit, arrname, handled, indent=0) -> None:
             if arrname in handled:
                 return
             children = set()
@@ -379,7 +379,7 @@ class phpfile(base.TranslationStore):
             else:
                 separator = " ="
             # Write array start
-            write("{}{}{} {}\n".format(" " * indent, name, separator, init))
+            write(f"{' ' * indent}{name}{separator} {init}\n")
             indent += 4
             prefix = f"{arrname}->"
             pref_len = len(prefix)
@@ -394,11 +394,7 @@ class phpfile(base.TranslationStore):
                 else:
                     write(item.getoutput(" " * indent, name))
             # Write array end
-            write(
-                "{}{}{}\n".format(
-                    " " * (indent - 4), close, "," if "->" in arrname else ";"
-                )
-            )
+            write(f"{' ' * (indent - 4)}{close}{',' if '->' in arrname else ';'}\n")
             handled.add(arrname)
 
         write("<?php\n")
@@ -411,7 +407,7 @@ class phpfile(base.TranslationStore):
             else:
                 write(unit.getoutput())
 
-    def create_and_add_unit(self, name, value, escape_type, comments):
+    def create_and_add_unit(self, name, value, escape_type, comments) -> None:
         newunit = self.UnitClass()
         newunit.escape_type = escape_type
         newunit.addlocation(name)
@@ -420,10 +416,10 @@ class phpfile(base.TranslationStore):
             newunit.addnote(comment, "developer")
         self.addunit(newunit)
 
-    def parse(self, phpsrc):
+    def parse(self, phpsrc) -> None:  # ty:ignore[invalid-method-override]
         """Read the source of a PHP file in and include them as units."""
 
-        def handle_array(prefix, nodes, lexer):
+        def handle_array(prefix, nodes, lexer) -> None:
             prefix += lexer.extract_array()
             for item in nodes:
                 assert isinstance(item, ArrayElement)
@@ -526,7 +522,7 @@ class LaravelPHPUnit(phpunit):
         """Return locations without the Laravel return prefix."""
         return [self.getid()]
 
-    def setid(self, value):
+    def setid(self, value) -> None:
         """Set the key, preserving the Laravel return array structure."""
         # Ensure value is a string
         if not isinstance(value, str):
@@ -573,26 +569,25 @@ class LaravelPHPUnit(phpunit):
         # Default to array() syntax for new files
         return "return->"
 
-    def _is_numeric_key(self, value):
+    def _is_numeric_key(self, value) -> bool:
         """Check if value is a numeric key (integer)."""
         try:
             int(value)
         except (ValueError, TypeError):
             return False
-        else:
-            return True
+        return True
 
 
 class LaravelPHPFile(phpfile):
     UnitClass = LaravelPHPUnit
 
-    def __init__(self, inputfile=None, **kwargs):
+    def __init__(self, inputfile=None, **kwargs) -> None:
         """Construct a LaravelPHPFile, optionally reading in from inputfile."""
         # Store the array syntax prefix detected during parsing
         self._array_prefix = None
         super().__init__(inputfile, **kwargs)
 
-    def create_and_add_unit(self, name, value, escape_type, comments):
+    def create_and_add_unit(self, name, value, escape_type, comments) -> None:
         # Detect and store array prefix from the first unit
         if self._array_prefix is None and name.startswith("return"):
             if name.startswith("return[]->"):

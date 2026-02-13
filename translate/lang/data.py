@@ -446,6 +446,7 @@ plural_tags = {
     "chr": ["one", "other"],
     "chs": ["other"],
     "cht": ["other"],
+    "chv": ["zero", "one", "other"],
     "ckb": ["one", "other"],
     "cld": ["one", "other"],
     "cmn": ["other"],
@@ -455,6 +456,7 @@ plural_tags = {
     "cs": ["one", "few", "other"],
     "csw": ["one", "other"],
     "csy": ["one", "few", "other"],
+    "cv": ["zero", "one", "other"],
     "cy": ["zero", "one", "two", "few", "many", "other"],
     "cym": ["zero", "one", "two", "few", "many", "other"],
     "cz": ["one", "few", "other"],
@@ -527,6 +529,7 @@ plural_tags = {
     "gle": ["one", "two", "few", "many", "other"],
     "glg": ["one", "other"],
     "glv": ["one", "two", "few", "other"],
+    "gom": ["one", "other"],
     "gr": ["one", "other"],
     "gre": ["one", "other"],
     "gsw": ["one", "other"],
@@ -555,11 +558,13 @@ plural_tags = {
     "ice": ["one", "other"],
     "id": ["other"],
     "ido": ["one", "other"],
+    "ie": ["one", "other"],
     "ig": ["other"],
     "ii": ["other"],
     "iii": ["other"],
     "ike": ["one", "two", "other"],
     "iku": ["one", "two", "other"],
+    "ile": ["one", "other"],
     "in": ["other"],
     "ina": ["one", "other"],
     "ind": ["other"],
@@ -602,7 +607,10 @@ plural_tags = {
     "km": ["other"],
     "kmr": ["one", "other"],
     "kn": ["one", "other"],
+    "knn": ["one", "other"],
     "ko": ["other"],
+    "kok": ["one", "other"],
+    "kok-Latn": ["one", "other"],
     "kor": ["other"],
     "ks": ["one", "other"],
     "ksb": ["one", "other"],
@@ -741,6 +749,7 @@ plural_tags = {
     "serbo_croatian": ["one", "few", "other"],
     "ses": ["other"],
     "sg": ["other"],
+    "sgs": ["one", "two", "few", "other"],
     "sh": ["one", "few", "other"],
     "shi": ["one", "few", "other"],
     "si": ["one", "other"],
@@ -869,6 +878,19 @@ plural_tags = {
     "zul": ["one", "other"],
 }
 
+# CLDR plurals with additional decimal tags
+DECIMAL_EXTRA_TAGS = {
+    "be": ["other"],
+    "cs": ["many"],
+    "gv": ["many"],
+    "lt": ["many"],
+    "pl": ["other"],
+    "ru": ["other"],
+    "sgs": ["many"],
+    "sk": ["many"],
+    "uk": ["other"],
+}
+
 # Qt Linguist plural tags, extracted from
 # https://github.com/WeblateOrg/language-data
 qt_plural_tags = {
@@ -942,6 +964,7 @@ qt_plural_tags = {
     "ky": ["one", "other"],
     "la": ["one", "other"],
     "lb": ["one", "other"],
+    "lg": ["one", "other"],
     "ln": ["one", "other"],
     "lo": ["one", "other"],
     "lt": ["one", "few", "many"],
@@ -1015,17 +1038,6 @@ qt_plural_tags = {
     "za": ["other"],
     "zh": ["other"],
     "zu": ["one", "other"],
-}
-
-DECIMAL_EXTRA_TAGS = {
-    "be": ["other"],
-    "cs": ["many"],
-    "gv": ["many"],
-    "lt": ["many"],
-    "pl": ["other"],
-    "ru": ["other"],
-    "sk": ["many"],
-    "uk": ["other"],
 }
 
 
@@ -1208,5 +1220,5 @@ def get_language(code):
     code = _normalize_to_underscore(code)
     if "_" in code:
         # convert ab_cd → ab_CD
-        code = "{}_{}".format(code.split("_")[0], code.split("_", 1)[1].upper())
+        code = f"{code.split('_')[0]}_{code.split('_', 1)[1].upper()}"
     return languages.get(code)

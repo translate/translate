@@ -19,10 +19,10 @@
 
 
 class XmlNamespace:
-    def __init__(self, namespace):
+    def __init__(self, namespace) -> None:
         self._namespace = namespace
 
-    def name(self, tag):
+    def name(self, tag) -> str:
         return f"{{{self._namespace}}}{tag}"
 
 
@@ -49,7 +49,7 @@ class XmlNamer:
     {urn:oasis:names:tc:opendocument:xmlns:office:1.0}foo
     """
 
-    def __init__(self, dom_node):
+    def __init__(self, dom_node) -> None:
         # Allow the user to pass a dom node of the
         # XML document nodle
         if hasattr(dom_node, "nsmap"):

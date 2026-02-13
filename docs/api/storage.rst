@@ -13,21 +13,6 @@ base
    :inherited-members:
 
 
-benchmark
----------
-
-.. automodule:: translate.storage.benchmark
-   :members:
-   :inherited-members:
-
-
-bundleprojstore
----------------
-
-.. automodule:: translate.storage.bundleprojstore
-   :members:
-   :inherited-members:
-
 
 catkeys
 -------
@@ -49,14 +34,6 @@ csvl10n
 -------
 
 .. automodule:: translate.storage.csvl10n
-   :members:
-   :inherited-members:
-
-
-directory
----------
-
-.. automodule:: translate.storage.directory
    :members:
    :inherited-members:
 
@@ -308,22 +285,6 @@ poxliff
    :inherited-members:
 
 
-project
--------
-
-.. automodule:: translate.storage.project
-   :members:
-   :inherited-members:
-
-
-projstore
----------
-
-.. automodule:: translate.storage.projstore
-   :members:
-   :inherited-members:
-
-
 properties
 ----------
 
@@ -400,14 +361,6 @@ tiki
 ----
 
 .. automodule:: translate.storage.tiki
-   :members:
-   :inherited-members:
-
-
-tmdb
-----
-
-.. automodule:: translate.storage.tmdb
    :members:
    :inherited-members:
 
@@ -536,13 +489,5 @@ xml_name
 --------
 
 .. automodule:: translate.storage.xml_name
-   :members:
-   :inherited-members:
-
-
-zip
----
-
-.. automodule:: translate.storage.zip
    :members:
    :inherited-members:

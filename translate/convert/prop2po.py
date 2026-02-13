@@ -24,11 +24,18 @@ for examples and usage instructions.
 """
 
 import logging
+import re
 
+from translate.convert import convert
 from translate.convert.accesskey import UnitMixer
+from translate.lang import data
 from translate.storage import po, properties
 
 logger = logging.getLogger(__name__)
+
+
+# Special marker used for properties with no key (e.g., "=value")
+EMPTY_KEY_MARKER = "<empty>"
 
 
 class DiscardUnit(ValueError):
@@ -38,7 +45,9 @@ class DiscardUnit(ValueError):
 class prop2po:
     """convert a .properties file to a .po file for handling the translation."""
 
-    def __init__(self, personality="java", blankmsgstr=False, duplicatestyle="msgctxt"):
+    def __init__(
+        self, personality="java", blankmsgstr=False, duplicatestyle="msgctxt"
+    ) -> None:
         self.personality = personality
         self.blankmsgstr = blankmsgstr
         self.duplicatestyle = duplicatestyle
@@ -171,7 +180,7 @@ class prop2po:
     def fold_gwt_plurals(self, postore):
         """Fold the multiple plural units of a gwt file into a gettext plural."""
 
-        def _append_plural_unit(plural_unit, units):
+        def _append_plural_unit(plural_unit, units) -> None:
             sources = [u.source for u in units]
             targets = [u.target for u in units]
             # TODO: only consider the right ones for sources and targets
@@ -190,13 +199,9 @@ class prop2po:
         }
 
         class Variants:
-            def __init__(self, unit):
+            def __init__(self, unit) -> None:
                 self.unit = unit
                 self.variants = {}
-
-        import re
-
-        from translate.lang import data
 
         regex = re.compile(r"([^\[\]]*)(?:\[(.*)\])?")
         names = data.cldr_plural_categories
@@ -266,7 +271,7 @@ class prop2po:
     def fold_gaia_plurals(postore):
         """Fold the multiple plural units of a gaia file into a gettext plural."""
 
-        def _append_plural_unit(store, plurals, plural):
+        def _append_plural_unit(store, plurals, plural) -> None:
             units = plurals[plural]
             sources = [u.source for u in units]
             targets = [u.target for u in units]
@@ -311,7 +316,6 @@ class prop2po:
         if current_plural:
             # The file ended with a set of plural units
             _append_plural_unit(new_store, plurals, current_plural)
-            current_plural = ""
 
         # if everything went well, there should be nothing left in plurals
         if len(plurals) != 0:
@@ -337,7 +341,10 @@ class prop2po:
         # TODO: handle multiline msgid
         if propunit.isblank():
             return None
-        pounit.addlocation(propunit.name)
+        # Use a special marker for empty keys (e.g., "=value" in properties file)
+        # so they can be properly indexed and matched during po2prop conversion
+        location = propunit.name or EMPTY_KEY_MARKER
+        pounit.addlocation(location)
 
         # For .strings files, treat them as bilingual:
         # - The key (name) is the source text (msgid)
@@ -456,7 +463,7 @@ def convertprop(
     pot=False,
     duplicatestyle="msgctxt",
     encoding=None,
-):
+) -> int:
     """
     Reads in inputfile using properties, converts using prop2po, writes to
     outputfile.
@@ -486,9 +493,7 @@ formats = {
 }
 
 
-def main(argv=None):
-    from translate.convert import convert
-
+def main(argv=None) -> None:
     parser = convert.ConvertOptionParser(
         formats, usetemplates=True, usepots=True, description=__doc__
     )
@@ -499,9 +504,7 @@ def main(argv=None):
         default=properties.default_dialect,
         type="choice",
         choices=list(properties.dialects.keys()),
-        help="override the input file format: {} (for .properties files, default: {})".format(
-            ", ".join(properties.dialects.keys()), properties.default_dialect
-        ),
+        help=f"override the input file format: {', '.join(properties.dialects.keys())} (for .properties files, default: {properties.default_dialect})",
         metavar="TYPE",
     )
     parser.add_option(

@@ -40,12 +40,12 @@ msgid "file name"
 msgstr "lêernaam"
 """
 
-    def setup_method(self, method):
+    def setup_method(self, method) -> None:
         self.term_po = pofile(BytesIO(self.TERMINOLOGY.encode("utf-8")))
         self.matcher = terminologymatcher(self.term_po)
         self.test_string = "<b>Inpüt</b> file name thingy."
 
-    def test_simple_terminology(self):
+    def test_simple_terminology(self) -> None:
         TerminologyPlaceable.matchers = [self.matcher]
         tree = parse(self.test_string, general.parsers + term_parsers)
 
@@ -53,7 +53,7 @@ msgstr "lêernaam"
         assert isinstance(tree.sub[2], general.XMLTagPlaceable)
 
         tree.print_tree()
-        term = tree.sub[3].sub[1]
+        term = tree.sub[3].sub[1]  # ty:ignore[possibly-missing-attribute]
 
         assert isinstance(term, TerminologyPlaceable)
         assert str(term) == self.term_po.getunits()[2].source

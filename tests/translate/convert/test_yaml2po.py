@@ -52,11 +52,11 @@ class TestYAML2PO:
         assert po_store.units[0].isheader()
         return len(po_store.units) - 1
 
-    def test_convert_empty_YAML(self):
+    def test_convert_empty_YAML(self) -> None:
         """Check converting empty YAML returns no output."""
         assert self._convert_to_string("", success_expected=False) == ""
 
-    def test_simple_output(self):
+    def test_simple_output(self) -> None:
         """Check that a simple single entry YAML converts valid PO output."""
         input_string = 'key: "Hello, World!"'
         expected_output = """
@@ -66,7 +66,7 @@ msgstr ""
 """
         assert expected_output in self._convert_to_string(input_string)
 
-    def test_simple(self):
+    def test_simple(self) -> None:
         """Check that a simple single entry YAML converts to a PO unit."""
         input_string = 'key: "Hello, World!"'
         target_store = self._convert_to_store(input_string)
@@ -75,7 +75,7 @@ msgstr ""
         assert target_unit.source == "Hello, World!"
         assert target_unit.target == ""
 
-    def test_nested(self):
+    def test_nested(self) -> None:
         """Check converting nested YAML."""
         input_string = """
 foo:
@@ -103,7 +103,7 @@ eggs: spam
         assert target_store.units[4].target == ""
 
     @pytest.mark.xfail(reason="This is invalid YAML document")
-    def test_no_duplicates(self):
+    def test_no_duplicates(self) -> None:
         """Check converting drops duplicates."""
         input_string = """
 foo: bar
@@ -115,7 +115,7 @@ foo: baz
         assert target_store.units[1].source == "baz"
         assert target_store.units[1].target == ""
 
-    def test_convert_with_template(self):
+    def test_convert_with_template(self) -> None:
         """Check converting a simple single-string YAML with newer template."""
         input_string = 'key: "Ola mundo!"'
         template_string = """key: "Hello, World!"
@@ -130,7 +130,7 @@ foo: What's up?
         assert target_store.units[2].source == "What's up?"
         assert target_store.units[2].target == ""
 
-    def test_comment_extraction(self):
+    def test_comment_extraction(self) -> None:
         """Check that YAML comments are extracted as developer notes in PO."""
         input_string = """# This is a comment for the greeting key
 # It helps translators understand the context
@@ -161,7 +161,7 @@ farewell: Goodbye!
             f"Expected comment not found in: {notes}"
         )
 
-    def test_comment_extraction_nested(self):
+    def test_comment_extraction_nested(self) -> None:
         """Check that comments on nested YAML keys are extracted."""
         input_string = """settings:
   # This is the app name
@@ -187,6 +187,110 @@ farewell: Goodbye!
         assert "This is the version" in notes, f"Expected comment not found in: {notes}"
 
 
+class TestRubyYAML2PO(TestYAML2PO):
+    """Tests for yaml2po with Ruby personality."""
+
+    def _convert(
+        self,
+        input_string,
+        template_string=None,
+        blank_msgstr=False,
+        duplicate_style="msgctxt",
+        success_expected=True,
+    ):
+        """Helper that converts using Ruby personality."""
+        input_file = BytesIO(input_string.encode())
+        output_file = BytesIO()
+        template_file = None
+        if template_string:
+            template_file = BytesIO(template_string.encode())
+        expected_result = 1 if success_expected else 0
+        converter = self.ConverterClass(
+            input_file,
+            output_file,
+            template_file,
+            blank_msgstr,
+            duplicate_style,
+            personality="ruby",
+        )
+        assert converter.run() == expected_result
+        return converter.target_store, output_file
+
+    def test_comment_extraction_nested(self) -> None:
+        """Check that comments on nested Ruby YAML keys are extracted."""
+        input_string = """en:
+  settings:
+    # This is the app name
+    app_name: My App
+    # This is the version
+    version: 1.0.0
+"""
+        target_store = self._convert_to_store(input_string)
+        assert self._count_elements(target_store) == 2
+
+        assert target_store.units[1].getlocations() == ["settings->app_name"]
+        assert target_store.units[1].source == "My App"
+        notes = target_store.units[1].getnotes(origin="developer")
+        assert "This is the app name" in notes
+
+        assert target_store.units[2].getlocations() == ["settings->version"]
+        assert target_store.units[2].source == "1.0.0"
+        notes = target_store.units[2].getnotes(origin="developer")
+        assert "This is the version" in notes
+
+    def test_ruby_single(self) -> None:
+        """Check that a Ruby YAML file strips the language root key."""
+        input_string = """en:
+  greeting: Hello!
+  farewell: Goodbye!
+"""
+        target_store = self._convert_to_store(input_string)
+        assert self._count_elements(target_store) == 2
+        assert target_store.units[1].getlocations() == ["greeting"]
+        assert target_store.units[1].source == "Hello!"
+        assert target_store.units[2].getlocations() == ["farewell"]
+        assert target_store.units[2].source == "Goodbye!"
+
+    def test_ruby_merge(self) -> None:
+        """Check merging two Ruby YAML files with different language root keys."""
+        template_string = """en:
+  greeting: Hello!
+  farewell: Goodbye!
+"""
+        input_string = """ca:
+  greeting: Hola!
+"""
+        target_store = self._convert_to_store(input_string, template_string)
+        assert self._count_elements(target_store) == 2
+        assert target_store.units[1].getlocations() == ["greeting"]
+        assert target_store.units[1].source == "Hello!"
+        assert target_store.units[1].target == "Hola!"
+        assert target_store.units[2].getlocations() == ["farewell"]
+        assert target_store.units[2].source == "Goodbye!"
+        assert target_store.units[2].target == ""
+
+    def test_ruby_nested_merge(self) -> None:
+        """Check merging nested Ruby YAML files with different root keys."""
+        template_string = """en:
+  messages:
+    welcome: Welcome!
+    error: Something went wrong
+"""
+        input_string = """ca:
+  messages:
+    welcome: Benvingut!
+    error: Alguna cosa ha anat malament
+"""
+        target_store = self._convert_to_store(input_string, template_string)
+        assert self._count_elements(target_store) == 2
+        assert target_store.units[1].getlocations() == ["messages->welcome"]
+        assert target_store.units[1].source == "Welcome!"
+        assert target_store.units[1].target == "Benvingut!"
+        assert target_store.units[2].getlocations() == ["messages->error"]
+        assert target_store.units[2].source == "Something went wrong"
+        assert target_store.units[2].target == "Alguna cosa ha anat malament"
+
+
 class TestYAML2POCommand(test_convert.TestConvertCommand, TestYAML2PO):
     """Tests running actual yaml2po commands on files."""
 
@@ -196,4 +300,5 @@ class TestYAML2POCommand(test_convert.TestConvertCommand, TestYAML2PO):
         "-P, --pot",
         "-t TEMPLATE, --template=TEMPLATE",
         "--duplicates=DUPLICATESTYLE",
+        "--personality=TYPE",
     ]

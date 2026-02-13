@@ -4,7 +4,7 @@ from translate.misc.multistring import multistring
 
 
 class TestMultistring:
-    def test_constructor(self):
+    def test_constructor(self) -> None:
         s1 = multistring("test")
         assert type(s1) is multistring
         assert s1 == "test"
@@ -15,24 +15,26 @@ class TestMultistring:
         assert s2.strings == ["test", "mé"]
         assert s2 != s1
 
-    def test_constructor_validation(self):
+    def test_constructor_validation(self) -> None:
         with pytest.raises(ValueError):
             multistring([])
         with pytest.raises(TypeError):
-            multistring([1])
+            multistring([1])  # ty:ignore[invalid-argument-type]
         with pytest.raises(TypeError):
-            multistring(["one", None])
+            multistring(["one", None])  # ty:ignore[invalid-argument-type]
 
-    def test_repr(self):
+    def test_repr(self) -> None:
         s1 = multistring("test")
         assert repr(s1) == "multistring(['test'])"
+        # pylint: disable-next=eval-used
         assert eval(f"{s1!r}") == s1  # noqa: S307
 
         s2 = multistring(["test", "mé"])
         assert repr(s2) == "multistring(['test', 'mé'])"
+        # pylint: disable-next=eval-used
         assert eval(f"{s2!r}") == s2  # noqa: S307
 
-    def test_replace(self):
+    def test_replace(self) -> None:
         s1 = multistring(["abcdef", "def"])
 
         result = s1.replace("e", "")
@@ -62,7 +64,7 @@ class TestMultistring:
         result = s2.replace("e", "g", 1)
         assert result == multistring(["abcdgef", "dgef"])
 
-    def test_comparison(self):
+    def test_comparison(self) -> None:
         assert multistring("test") == "test"
         assert multistring("test") == multistring("test")
 
@@ -72,11 +74,11 @@ class TestMultistring:
         assert multistring("téßt") > "test"
         assert multistring("test") < multistring("téßt")
 
-    def test_coercion(self):
+    def test_coercion(self) -> None:
         assert str(multistring("test")) == "test"
         assert str(multistring("téßt")) == "téßt"
 
-    def test_unicode_coercion(self):
+    def test_unicode_coercion(self) -> None:
         assert str(multistring("test")) == "test"
         assert str(multistring("test")) == "test"
         assert str(multistring("téßt")) == "téßt"
@@ -84,11 +86,11 @@ class TestMultistring:
         assert str(multistring(["téßt", "blāh"])) == "téßt"
         assert str(multistring(["téßt"])) == "téßt"
 
-    def test_list_coercion(self):
+    def test_list_coercion(self) -> None:
         assert str([multistring("test")]) == "[multistring(['test'])]"
         assert str([multistring("tést")]) == "[multistring(['tést'])]"
 
-    def test_multistring_hash(self):
+    def test_multistring_hash(self) -> None:
         foo = multistring(["foo", "bar"])
         foodict = {foo: "baz"}
         assert "foo" in foodict
@@ -96,7 +98,7 @@ class TestMultistring:
         assert foo in foodict2
         assert hash(str(foo)) == hash(foo)
 
-    def test_bool(self):
+    def test_bool(self) -> None:
         assert bool(multistring(["foo", "bar"])) is True
         assert bool(multistring(["", "bar"])) is True
         assert bool(multistring(["foo", ""])) is True

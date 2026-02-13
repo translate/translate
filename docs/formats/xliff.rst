@@ -8,10 +8,26 @@ XLIFF [#f1]_ is the `OASIS <https://www.oasis-open.org/>`_ standard for translat
 
 .. [#f1] XML Localization Interchange File Format
 
+.. _xliff#versions:
+
+Versions
+========
+
+The Translate Toolkit supports both XLIFF 1.x and XLIFF 2.0:
+
+* **XLIFF 1.x** (1.1 and 1.2) - Available via ``translate.storage.xliff``
+* **XLIFF 2.0** - Available via ``translate.storage.xliff2`` (added in version 3.17.0)
+
+.. warning::
+
+   XLIFF 2.0 is not compatible with XLIFF 1.x.
+
 References
 ----------
-- `XLIFF Standard
+- `XLIFF 1.2 Standard
   <http://docs.oasis-open.org/xliff/xliff-core/xliff-core.html>`_
+- `XLIFF 2.0 Standard
+  <http://docs.oasis-open.org/xliff/xliff-core/v2.0/xliff-core-v2.0.html>`_
 - `OASIS XLIFF Technical Committee
   <https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=xliff>`_ website
 
@@ -20,7 +36,7 @@ References
 Flavours
 ========
 
-XLIFF also has documents that specify the conversion from various standard
+XLIFF 1.2 also has documents that specify the conversion from various standard
 source documents and localisation formats.
 
 * PO -- For conformance to the po2xliff spec, see :doc:`xliff2po

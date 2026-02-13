@@ -21,11 +21,13 @@ This module contains functions for identifying languages based on language
 models.
 """
 
+from __future__ import annotations
+
 from os import extsep, path
 
 from translate.lang.ngram import NGram
 from translate.misc.file_discovery import get_abs_data_filename
-from translate.storage.base import TranslationStore
+from translate.storage.base import TranslationStore, TranslationUnit
 
 
 class LanguageIdentifier:
@@ -37,7 +39,7 @@ class LanguageIdentifier:
     (relative to ``MODEL_DIR``).
     """
 
-    def __init__(self, model_dir=None, conf_file=None):
+    def __init__(self, model_dir=None, conf_file=None) -> None:
         if model_dir is None:
             model_dir = self.MODEL_DIR
         if not path.isdir(model_dir):
@@ -53,7 +55,7 @@ class LanguageIdentifier:
         self._load_config(conf_file)
         self.ngram = NGram(model_dir)
 
-    def _load_config(self, conf_file):
+    def _load_config(self, conf_file) -> None:
         """
         Load the mapping of language names to language codes as given in the
         configuration file.
@@ -86,13 +88,12 @@ class LanguageIdentifier:
             result = self._lang_codes[result]
         return result
 
-    def identify_source_lang(self, instore):
+    def identify_source_lang(
+        self, instore: TranslationStore | list[TranslationUnit] | tuple[TranslationUnit]
+    ) -> str | None:
         """
         Identify the source language of the given translation store or
         units.
-
-        :type  instore: ``TranslationStore`` or list or tuple of
-            ``TranslationUnit``s.
         :param instore: The translation store to extract source text from.
         :returns: The identified language's code or ``None`` if the language
             could not be identified.
@@ -102,20 +103,20 @@ class LanguageIdentifier:
 
         text = " ".join(
             unit.source
-            for unit in instore[:50]
+            for unit in instore[:50]  # ty:ignore[not-subscriptable]
             if unit.istranslatable() and unit.source
         )
         if not text:
             return None
         return self.identify_lang(text)
 
-    def identify_target_lang(self, instore):
+    def identify_target_lang(
+        self,
+        instore: TranslationStore | list[TranslationUnit] | tuple[TranslationUnit, ...],
+    ) -> str | None:
         """
         Identify the target language of the given translation store or
         units.
-
-        :type  instore: ``TranslationStore`` or list or tuple of
-            ``TranslationUnit``s.
         :param instore: The translation store to extract target text from.
         :returns: The identified language's code or ``None`` if the language
             could not be identified.
@@ -125,7 +126,7 @@ class LanguageIdentifier:
 
         text = " ".join(
             unit.target
-            for unit in instore[:200]
+            for unit in instore[:200]  # ty:ignore[not-subscriptable]
             if unit.istranslatable() and unit.target
         )
         if not text:

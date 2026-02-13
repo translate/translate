@@ -466,7 +466,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
         assert re.match(error_msg, syntax_error)
         assert error_unit.get_parts() is None
 
-    def test_simple_values(self):
+    def test_simple_values(self) -> None:
         """Test a simple fluent Message and Term."""
         self.basic_test(
             """\
@@ -481,7 +481,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             [{"id": "-my-term", "source": "Term Content"}],
         )
 
-    def test_with_comment(self):
+    def test_with_comment(self) -> None:
         """Test a fluent Message and Term with a Comment."""
         self.basic_test(
             """\
@@ -498,7 +498,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             [{"id": "-test-term", "source": "test content", "comment": "A comment"}],
         )
 
-    def test_message_with_attributes(self):
+    def test_message_with_attributes(self) -> None:
         """Test a fluent Message with Attributes."""
         self.basic_test(
             """\
@@ -611,7 +611,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             '^The "attr" attribute is assigned to more than once$',
         )
 
-    def test_term_with_attributes(self):
+    def test_term_with_attributes(self) -> None:
         """Test a fluent Term with Attributes."""
         self.basic_test(
             """\
@@ -677,12 +677,12 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             r'The "attr" attribute is assigned to more than once$',
         )
 
-    def test_whitespace(self):
+    def test_whitespace(self) -> None:
         """Test behaviour for leading and trailing whitespace."""
 
         # Expect leading whitespace and trailing whietspace to be dropped.
         # TODO: Do we want to try and generate warnings for this?
-        def subtest_whitespace(whitespace):
+        def subtest_whitespace(whitespace) -> None:
             # Test leading and trailing whitespace.
             for position in ["start", "end"]:
                 source = f"{whitespace}ok" if position == "start" else f"ok{whitespace}"
@@ -775,10 +775,10 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             fluent_file, "m =\n    line 1   \n     line 2  \n    line 3\n"
         )
 
-    def test_empty_unit_source(self):
+    def test_empty_unit_source(self) -> None:
         """Test behaviour when we have an empty FluentUnit source."""
 
-        def subtest_empty_unit_source(source):
+        def subtest_empty_unit_source(source) -> None:
             # Empty units are not serialized.
             for fluent_type, unit_id in [
                 ("Message", "m2"),
@@ -805,7 +805,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
         subtest_empty_unit_source(None)
         subtest_empty_unit_source("")
 
-        def subtest_whitespace_unit_source(source):
+        def subtest_whitespace_unit_source(source) -> None:
             if source:
                 # If the source is non-empty but just whitespace, we expect a
                 # serializing error.
@@ -862,7 +862,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
         subtest_whitespace_unit_source(" \n ")
         subtest_whitespace_unit_source("\n \n ")
 
-    def test_multiline_value(self):
+    def test_multiline_value(self) -> None:
         """Test multiline values for fluent Messages and Terms."""
         # Starting on the same line.
         self.basic_test(
@@ -992,7 +992,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             "message =\n    trailing  \n    whitespace \n\n    last line\n",
         )
 
-    def test_multiline_message_attributes(self):
+    def test_multiline_message_attributes(self) -> None:
         """Test multiline Attributes for fluent Messages."""
         # Starting on the same line.
         self.basic_test(
@@ -1204,7 +1204,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             "        last line\n",
         )
 
-    def test_multiline_term_attributes(self):
+    def test_multiline_term_attributes(self) -> None:
         """Test multiline Attributes for fluent Terms."""
         # NOTE: Multiline attributes for fluent Terms would not usually be of
         # much use, but we still check that they behave as expected when
@@ -1376,14 +1376,14 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             "-term =\n    trailing  \n    whitespace \n\n    last line\n",
         )
 
-    def test_special_syntax_characters(self):
+    def test_special_syntax_characters(self) -> None:
         """Test special syntax characters at the start of a line."""
 
         # ".", "*" and "[" cannot appear at the start of a multiline line, but
         # as a special case they can appear at the start of a value on the same
         # line without throwing a fluent syntax error. But we expect out
         # FluentFile to escape these values for consistency.
-        def subtest_special_syntax_characters(char, ok_at_start):
+        def subtest_special_syntax_characters(char, ok_at_start) -> None:
             # Test *within* a single-line Message, Term, and Attributes.
             # Should be the same in all cases.
             middle_value = f"e{char}and more"
@@ -1612,21 +1612,21 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                     message =
                         {value}
                     """,
-                    r".*" + re.escape(value),
+                    rf".*{re.escape(value)}",
                 )
                 self.assert_parse_failure(
                     f"""\
                     message = ok
                         {value}
                     """,
-                    r".*" + re.escape(value),
+                    rf".*{re.escape(value)}",
                 )
                 self.assert_parse_failure(
                     f"""\
                     -term = ok
                         {value}
                     """,
-                    r".*" + re.escape(value),
+                    rf".*{re.escape(value)}",
                 )
                 self.assert_parse_failure(
                     f"""\
@@ -1634,7 +1634,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                       .attr =
                         {value}
                     """,
-                    r".*" + re.escape(value),
+                    rf".*{re.escape(value)}",
                 )
                 self.assert_parse_failure(
                     f"""\
@@ -1643,7 +1643,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                         {value}
                     }}
                     """,
-                    r".*" + re.escape(value),
+                    rf".*{re.escape(value)}",
                 )
 
                 for fluent_type, unit_id, source in [
@@ -1700,7 +1700,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
         subtest_special_syntax_characters('"', True)
         subtest_special_syntax_characters(",", True)
 
-    def test_multiline_message_term_comments(self):
+    def test_multiline_message_term_comments(self) -> None:
         """Test multiline Comments for fluent Messages and Terms."""
         self.basic_test(
             """\
@@ -1733,7 +1733,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             ],
         )
 
-    def test_resource_comments(self):
+    def test_resource_comments(self) -> None:
         """Test fluent ResourceComments."""
         self.basic_test(
             """\
@@ -1812,7 +1812,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             ],
         )
 
-    def test_group_comments(self):
+    def test_group_comments(self) -> None:
         """Test fluent GroupComments."""
         self.basic_test(
             """\
@@ -1907,7 +1907,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             ],
         )
 
-    def test_detached_comment(self):
+    def test_detached_comment(self) -> None:
         """Test fluent Comments with no Message or Term."""
         self.basic_test(
             """\
@@ -1971,7 +1971,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             """,
         )
 
-    def test_resource_and_group_comment_prefixes(self):
+    def test_resource_and_group_comment_prefixes(self) -> None:
         """
         Test that ResourceComment and GroupComment prefixes on Messages and
         Terms.
@@ -2126,7 +2126,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             """,
         )
 
-    def test_reference(self):
+    def test_reference(self) -> None:
         """
         Test fluent MessageReferences, TermReferences and
         VariableReferences.
@@ -2411,7 +2411,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             ],
         )
 
-    def test_literals(self):
+    def test_literals(self) -> None:
         """Test fluent Literals."""
         self.basic_test(
             """\
@@ -2431,7 +2431,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             ],
         )
 
-    def test_selectors(self):
+    def test_selectors(self) -> None:
         """Test fluent selectors."""
         self.basic_test(
             """\
@@ -3262,7 +3262,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             r"^.* \[line 4, column 1\]$",
         )
 
-    def test_functions(self):
+    def test_functions(self) -> None:
         """Test fluent functions."""
         self.basic_test(
             """\
@@ -3365,7 +3365,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             ],
         )
 
-    def test_html_markup(self):
+    def test_html_markup(self) -> None:
         """Test that Message and Term values can contain html markup."""
         self.basic_test(
             """\
@@ -3383,7 +3383,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             ],
         )
 
-    def test_parse_errors(self):
+    def test_parse_errors(self) -> None:
         """Test that errors are extracted when parsing."""
         self.assert_parse_failure(
             """\
@@ -3400,7 +3400,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             r"message = { -ref",
         )
 
-    def test_unit_ids(self):
+    def test_unit_ids(self) -> None:
         """Test that setting valid ids is ok, and invalid ids are blocked."""
         # Test valid ids.
         for fluent_type, unit_id in [
@@ -3437,7 +3437,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                 unit.setid(unit_id)
             assert unit.getid() == ok_id
 
-    def test_duplicate_ids(self):
+    def test_duplicate_ids(self) -> None:
         """
         Test that we get a parsing error if an id is duplicated in the
         source.
@@ -3484,7 +3484,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             ],
         )
 
-    def test_serialize_errors(self):
+    def test_serialize_errors(self) -> None:
         """Test that errors are extracted when serializing."""
         fluent_file = self.quick_fluent_file(
             [
@@ -3510,7 +3510,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                 f"^.+\\[line {line}, column {column}\\]$",
             )
 
-    def test_several_entries(self):
+    def test_several_entries(self) -> None:
         """Test when we have several fluent Entries."""
         resource_comment = "NOTE: Please be careful!"
         group1_comment = "This group is special 🍄."

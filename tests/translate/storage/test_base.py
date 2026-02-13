@@ -43,7 +43,7 @@ def first_translatable(store):
 class JsonTranslationStore(base.TranslationStore):
     """Test-only TranslationStore that uses JSON for serialization."""
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         """Serialize using JSON (only for testing)."""
         units_data = []
         for unit in self.units:
@@ -60,7 +60,7 @@ class JsonTranslationStore(base.TranslationStore):
         }
         out.write(json.dumps(store_data, ensure_ascii=False).encode("utf-8"))
 
-    def parse(self, data):
+    def parse(self, data) -> None:
         """Parse using JSON (only for testing)."""
         store_data = json.loads(data.decode("utf-8"))
         self.units = []
@@ -84,10 +84,21 @@ class TestTranslationUnit:
 
     UnitClass = base.TranslationUnit
 
-    def setup_method(self, method):
+    def setup_method(self, method) -> None:
         self.unit = self.UnitClass("Test String")
 
-    def test_isfuzzy(self):
+    def normalize_unit_metadata(self, *units) -> None:
+        """
+        Hook for subclasses to normalize metadata before equality checks.
+
+        This method is called before equality comparisons in test_eq to allow
+        format-specific normalization of metadata fields that may vary between
+        unit instances (e.g., timestamps).
+
+        :param units: Variable number of units to normalize
+        """
+
+    def test_isfuzzy(self) -> None:
         """
         Test that we can call isfuzzy() on a unit.
 
@@ -95,13 +106,13 @@ class TestTranslationUnit:
         """
         assert not self.unit.isfuzzy()
 
-    def test_create(self):
+    def test_create(self) -> None:
         """Tests a simple creation with a source string."""
         unit = self.unit
         print("unit.source:", unit.source)
         assert unit.source == "Test String"
 
-    def test_eq(self):
+    def test_eq(self) -> None:
         """Tests equality comparison."""
         unit1 = self.unit
         unit2 = self.UnitClass("Test String")
@@ -109,6 +120,9 @@ class TestTranslationUnit:
         unit4 = self.UnitClass("Blessed String")
         unit5 = self.UnitClass("Blessed String")
         unit6 = self.UnitClass("Blessed String")
+        # Normalize metadata before first set of comparisons
+        self.normalize_unit_metadata(unit1, unit2, unit3, unit4, unit5, unit6)
+        # pylint: disable-next=comparison-with-itself
         assert unit1 == unit1  # noqa: PLR0124
         assert unit1 == unit2
         assert unit1 != unit4
@@ -116,6 +130,8 @@ class TestTranslationUnit:
         unit2.target = "Stressed Ting"
         unit5.target = "Stressed Bling"
         unit6.target = "Stressed Ting"
+        # Normalize metadata again after setting targets
+        self.normalize_unit_metadata(unit1, unit2, unit3, unit4, unit5, unit6)
         assert unit1 == unit2
         assert unit1 != unit3
         assert unit4 != unit5
@@ -133,7 +149,7 @@ class TestTranslationUnit:
             assert unit1 != unit6
             assert unit1 != unit6
 
-    def test_target(self):
+    def test_target(self) -> None:
         unit = self.unit
         assert not unit.target
         unit.target = "Stressed Ting"
@@ -143,7 +159,7 @@ class TestTranslationUnit:
         unit.target = ""
         assert unit.target == ""
 
-    def test_escapes(self):
+    def test_escapes(self) -> None:
         """
         Test all sorts of characters that might go wrong in a quoting and
         escaping roundtrip.
@@ -176,7 +192,7 @@ class TestTranslationUnit:
             print("special:", repr(special))
             assert unit.source == special
 
-    def test_difficult_escapes(self):
+    def test_difficult_escapes(self) -> None:
         """
         Test difficult characters that might go wrong in a quoting and
         escaping roundtrip.
@@ -200,11 +216,11 @@ class TestTranslationUnit:
         ]
         for special in specials:
             unit.source = special
-            print("unit.source:", repr(unit.source) + "|")
-            print("special:", repr(special) + "|")
+            print("unit.source:", f"{unit.source!r}|")
+            print("special:", f"{special!r}|")
             assert unit.source == special
 
-    def test_note_sanity(self):
+    def test_note_sanity(self) -> None:
         """Tests that all subclasses of the base behaves consistently with regards to notes."""
         unit = self.unit
 
@@ -225,7 +241,12 @@ class TestTranslationUnit:
         actual_notes = unit.getnotes()
         assert actual_notes == expected_notes
 
-    def test_rich_get(self):
+    def test_line_number_default(self) -> None:
+        """Test that line_number is None by default."""
+        unit = self.unit
+        assert unit.line_number is None
+
+    def test_rich_get(self) -> None:
         """Basic test for converting from multistrings to StringElem trees."""
         target_mstr = multistring(["tėst", "<b>string</b>"])
         unit = self.UnitClass(multistring(["a", "b"]))
@@ -248,7 +269,7 @@ class TestTranslationUnit:
             assert len(elems[0].sub) == 1
             assert str(elems[0]) == target_mstr.strings[0]
 
-    def test_rich_set(self):
+    def test_rich_set(self) -> None:
         """Basic test for converting from multistrings to StringElem trees."""
         elems = [
             rich_parse("Tëst <x>string</x>", general.parsers),
@@ -273,23 +294,23 @@ class TestTranslationStore:
 
     StoreClass = JsonTranslationStore
 
-    def setup_method(self, method):
+    def setup_method(self, method) -> None:
         """Allocates a unique self.filename for the method, making sure it doesn't exist."""
         self.filename = f"{self.__class__.__name__}_{method.__name__}.test"
         if os.path.exists(self.filename):
             os.remove(self.filename)
 
-    def teardown_method(self, method):
+    def teardown_method(self, method) -> None:
         """Makes sure that if self.filename was created by the method, it is cleaned up."""
         if os.path.exists(self.filename):
             os.remove(self.filename)
 
-    def test_create_blank(self):
+    def test_create_blank(self) -> None:
         """Tests creating a new blank store."""
         store = self.StoreClass()
         assert headerless_len(store.units) == 0
 
-    def test_add(self):
+    def test_add(self) -> None:
         """Tests adding a new unit with a source string."""
         store = self.StoreClass()
         unit = store.addsourceunit("Test String")
@@ -298,7 +319,7 @@ class TestTranslationStore:
         assert headerless_len(store.units) == 1
         assert unit.source == "Test String"
 
-    def test_remove(self):
+    def test_remove(self) -> None:
         """Tests removing a unit with a source string."""
         store = self.StoreClass()
         unit = store.addsourceunit("Test String")
@@ -313,7 +334,7 @@ class TestTranslationStore:
         print(withoutunit)
         assert withoutunit != withunit
 
-    def test_find(self):
+    def test_find(self) -> None:
         """Tests searching for a given source string."""
         store = self.StoreClass()
         unit1 = store.addsourceunit("Test String")
@@ -322,7 +343,7 @@ class TestTranslationStore:
         assert store.findunit("Blessed String") == unit2
         assert store.findunit("Nest String") is None
 
-    def test_translate(self):
+    def test_translate(self) -> None:
         """Tests the translate method and non-ascii characters."""
         store = self.StoreClass()
         unit = store.addsourceunit("scissor")
@@ -338,24 +359,23 @@ class TestTranslationStore:
         return self.StoreClass.parsestring(storestring)
 
     @staticmethod
-    def check_equality(store1, store2):
+    def check_equality(store1, store2) -> None:
         """Asserts that store1 and store2 are the same."""
         assert headerless_len(store1.units) == headerless_len(store2.units)
         for n, store1unit in enumerate(store1.units):
             store2unit = store2.units[n]
             print(
-                "match failed between elements %d of %d"
-                % ((n + 1), headerless_len(store1.units))
+                f"match failed between elements {n + 1} of {headerless_len(store1.units)}"
             )
             print("store1:")
             print(bytes(store1))
             print("store2:")
             print(bytes(store2))
-            print("store1.units[%d].__dict__:" % n, store1unit.__dict__)
-            print("store2.units[%d].__dict__:" % n, store2unit.__dict__)
+            print(f"store1.units[{n}].__dict__:", store1unit.__dict__)
+            print(f"store2.units[{n}].__dict__:", store2unit.__dict__)
             assert store1unit == store2unit
 
-    def test_parse(self):
+    def test_parse(self) -> None:
         """Tests converting to a string and parsing the resulting string."""
         store = self.StoreClass()
         unit1 = store.addsourceunit("Test String")
@@ -365,7 +385,7 @@ class TestTranslationStore:
         newstore = self.reparse(store)
         self.check_equality(store, newstore)
 
-    def test_files(self):
+    def test_files(self) -> None:
         """Tests saving to and loading from files."""
         store = self.StoreClass()
         unit1 = store.addsourceunit("Test String")
@@ -376,7 +396,7 @@ class TestTranslationStore:
         newstore = self.StoreClass.parsefile(self.filename)
         self.check_equality(store, newstore)
 
-    def test_save(self):
+    def test_save(self) -> None:
         """Tests that we can save directly back to the original file."""
         store = self.StoreClass()
         unit1 = store.addsourceunit("Test String")
@@ -388,7 +408,7 @@ class TestTranslationStore:
         newstore = self.StoreClass.parsefile(self.filename)
         self.check_equality(store, newstore)
 
-    def test_markup(self):
+    def test_markup(self) -> None:
         """Tests that markup survives the roundtrip. Most useful for xml types."""
         store = self.StoreClass()
         unit = store.addsourceunit("<vark@hok.org> %d keer %2$s")
@@ -396,7 +416,7 @@ class TestTranslationStore:
         unit.target = "bla"
         assert store.translate("<vark@hok.org> %d keer %2$s") == "bla"
 
-    def test_nonascii(self):
+    def test_nonascii(self) -> None:
         store = self.StoreClass()
         unit = store.addsourceunit("Beziér curve")
         unit.target = "Beziér-kurwe"
@@ -405,7 +425,7 @@ class TestTranslationStore:
         # Just test that __str__ doesn't raise exception:
         store.serialize(BytesIO())
 
-    def test_extensions(self):
+    def test_extensions(self) -> None:
         """Test that the factory knows the extensions for this class."""
         supported = factory.supported_files()
         supported_dict = {
@@ -423,7 +443,7 @@ class TestTranslationStore:
         for ext in self.StoreClass.Extensions:
             assert ext in detail[0]
 
-    def test_mimetypes(self):
+    def test_mimetypes(self) -> None:
         """Test that the factory knows the mimetypes for this class."""
         supported = factory.supported_files()
         supported_dict = {

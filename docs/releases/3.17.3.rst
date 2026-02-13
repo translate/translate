@@ -1,0 +1,32 @@
+Translate Toolkit 3.17.3
+************************
+
+*Released on 3 December 2025*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- PO
+
+  - Improved text wrapping performance.
+
+- HTML
+
+  - Use ID for automatic msgctxt deduplication instead of full DOM tree when available
+
+Other
+-----
+
+- Various code cleanups
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+Michal Čihař, Frans de Jonge

@@ -25,6 +25,7 @@ This way the API supports plurals as if it was a PO file, for example.
 
 import contextlib
 import re
+from typing import TypeVar
 
 from lxml import etree
 
@@ -47,7 +48,7 @@ class PoXliffUnit(xliff.xliffunit):
 
     rich_parsers = general.parsers
 
-    def __init__(self, source=None, empty=False, **kwargs):
+    def __init__(self, source=None, empty=False, **kwargs) -> None:
         self._rich_source = None
         self._rich_target = None
         self._state_n = 0
@@ -94,10 +95,10 @@ class PoXliffUnit(xliff.xliffunit):
         return multistring([unit.source for unit in self.units])
 
     @source.setter
-    def source(self, source):
+    def source(self, source) -> None:
         self.setsource(source, sourcelang="en")
 
-    def setsource(self, source, sourcelang="en"):
+    def setsource(self, source, sourcelang="en") -> None:  # ty:ignore[invalid-method-override]
         # TODO: consider changing from plural to singular, etc.
         self._rich_source = None
         if not hasplurals(source):
@@ -116,7 +117,7 @@ class PoXliffUnit(xliff.xliffunit):
             self.target = target
 
     # We don't support any rich strings yet
-    multistring_to_rich = base.TranslationUnit.multistring_to_rich
+    multistring_to_rich = base.TranslationUnit.multistring_to_rich  # ty:ignore[invalid-method-override]
     rich_to_multistring = base.TranslationUnit.rich_to_multistring
 
     rich_source = base.TranslationUnit.rich_source
@@ -130,7 +131,7 @@ class PoXliffUnit(xliff.xliffunit):
             return None
         return super().gettarget(lang)
 
-    def settarget(self, target, lang="xx", append=False):
+    def settarget(self, target, lang="xx", append=False) -> None:
         self._rich_target = None
         if self.target == target:
             return
@@ -153,10 +154,10 @@ class PoXliffUnit(xliff.xliffunit):
         else:
             targets = target.strings
 
-        for i in range(len(self.units)):
-            self.units[i].target = targets[i]
+        for i, unit in enumerate(self.units):
+            unit.target = targets[i]
 
-    def addnote(self, text, origin=None, position="append"):
+    def addnote(self, text, origin=None, position="append") -> None:
         """Add a note specifically in a "note" tag."""
         note = etree.SubElement(self.xmlelement, self.namespaced("note"))
         note.text = text
@@ -179,29 +180,31 @@ class PoXliffUnit(xliff.xliffunit):
         if origin in {"programmer", "developer", "source code"}:
             devcomments = super().getnotes("developer")
             autocomments = self.getautomaticcomments()
-            if devcomments == autocomments or autocomments.find(devcomments) >= 0:
-                devcomments = ""
-            elif devcomments.find(autocomments) >= 0:
+            if (
+                # pylint: disable-next=chained-comparison
+                devcomments != autocomments
+                and autocomments.find(devcomments) < 0
+                and devcomments.find(autocomments) >= 0
+            ):
                 autocomments = devcomments
-                devcomments = ""
             return autocomments
         return super().getnotes(origin)
 
-    def markfuzzy(self, value=True):
+    def markfuzzy(self, value=True) -> None:
         super().markfuzzy(value)
         for unit in self.units[1:]:
             unit.markfuzzy(value)
 
-    def marktranslated(self):
+    def marktranslated(self) -> None:
         super().marktranslated()
         for unit in self.units[1:]:
             unit.marktranslated()
 
-    def setid(self, id):
+    def setid(self, id) -> None:
         super().setid(id)
         if len(self.units) > 1:
-            for i in range(len(self.units)):
-                self.units[i].setid("%s[%d]" % (id, i))
+            for i, unit in enumerate(self.units):
+                unit.setid(f"{id}[{i}]")
 
     def getlocations(self):
         """Returns all the references (source locations)."""
@@ -277,24 +280,29 @@ class PoXliffUnit(xliff.xliffunit):
         return self.xmlelement.tag == self.namespaced("group")
 
 
-class PoXliffFile(xliff.xlifffile, poheader.poheader):
+U = TypeVar("U", bound=PoXliffUnit)
+
+
+class PoXliffFile(xliff.xlifffile[U], poheader.poheader):
     """a file for the po variant of Xliff files."""
 
     UnitClass = PoXliffUnit
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         if "sourcelanguage" not in kwargs:
             kwargs["sourcelanguage"] = "en-US"
         xliff.xlifffile.__init__(self, *args, **kwargs)
 
-    def createfilenode(self, filename, sourcelanguage="en-US", datatype="po"):
+    def createfilenode(
+        self, filename, sourcelanguage="en-US", datatype="po"
+    ) -> etree.Element:  # ty:ignore[invalid-method-override]
         # Let's ignore the sourcelanguage parameter opting for the internal
         # one. PO files will probably be one language
         return super().createfilenode(
             filename, sourcelanguage=self.sourcelanguage, datatype="po"
         )
 
-    def _insert_header(self, header):
+    def _insert_header(self, header) -> None:
         header.xmlelement.set("restype", "x-gettext-domain-header")
         header.xmlelement.set("approved", "no")
         setXMLspace(header.xmlelement, "preserve")
@@ -308,7 +316,7 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
         setXMLspace(unit.xmlelement, "preserve")
         return unit
 
-    def parse(self, xml):
+    def parse(self, xml) -> None:
         """Populates this object from the given xml string."""
         # TODO: Make more robust
 

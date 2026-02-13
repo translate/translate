@@ -16,19 +16,19 @@ class TestConvertCommand:
     defaultoptions = {"progress": "none"}
     expected_options = []
 
-    def setup_method(self, method):
+    def setup_method(self, method) -> None:
         """Creates a clean test directory for the given method."""
         self.testdir = f"{self.__class__.__name__}_{method.__name__}"
         self.cleardir()
         os.mkdir(self.testdir)
         self.rundir = os.path.abspath(os.getcwd())
 
-    def teardown_method(self, method):
+    def teardown_method(self, method) -> None:
         """Removes the test directory for the given method."""
         os.chdir(self.rundir)
         self.cleardir()
 
-    def cleardir(self):
+    def cleardir(self) -> None:
         """Removes the test directory."""
         if os.path.exists(self.testdir):
             for dirpath, subdirs, filenames in os.walk(self.testdir, topdown=False):
@@ -40,7 +40,7 @@ class TestConvertCommand:
             os.rmdir(self.testdir)
         assert not os.path.exists(self.testdir)
 
-    def run_command(self, *argv, **kwargs):
+    def run_command(self, *argv, **kwargs) -> None:
         """Runs the command via the main function, passing self.defaultoptions and keyword arguments as --long options and argv arguments straight."""
         os.chdir(self.testdir)
         argv = list(argv)
@@ -74,7 +74,7 @@ class TestConvertCommand:
                         os.mkdir(currentpath)
         return open(filename, mode)
 
-    def create_testfile(self, filename, contents):
+    def create_testfile(self, filename, contents) -> None:
         """Creates the given file in the testdirectory with the given contents."""
         if isinstance(contents, str):
             contents = contents.encode("utf-8")
@@ -100,7 +100,7 @@ class TestConvertCommand:
             assert newoptions == []
         return "\n".join(newoptions)
 
-    def test_help(self, capsys):
+    def test_help(self, capsys) -> None:
         """Tests getting help (returning the help_string so further tests can be done)."""
         with pytest.raises(SystemExit):
             self.run_command(help=True)
@@ -110,7 +110,7 @@ class TestConvertCommand:
         print(help_lines)
 
         # summary documentation
-        convertsummary = self.convertmodule.__doc__.split("\n")[0]
+        convertsummary = self.convertmodule.__doc__.split("\n", maxsplit=1)[0]  # ty:ignore[possibly-missing-attribute]
         # the convertsummary might be wrapped. this will probably unwrap it
         assert convertsummary in " ".join(help_lines)
 

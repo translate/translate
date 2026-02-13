@@ -1,3 +1,4 @@
+import logging
 from io import BytesIO
 
 from translate.convert import csv2po
@@ -7,7 +8,7 @@ from ..storage.test_base import first_translatable, headerless_len
 from . import test_convert
 
 
-def test_replacestrings():
+def test_replacestrings() -> None:
     """Test the _replacestring function."""
     assert (
         csv2po.replacestrings("Test one two three", ("one", "een"), ("two", "twee"))
@@ -36,7 +37,7 @@ class TestCSV2PO:
         assert headerless_len(storage.units) == 1
         return first_translatable(storage)
 
-    def test_simpleentity(self):
+    def test_simpleentity(self) -> None:
         """Checks that a simple csv entry definition converts properly to a po entry."""
         csvheader = "location,source,target\n"
         csvsource = "intl.charset.default,ISO-8859-1,UTF-16"
@@ -50,7 +51,7 @@ class TestCSV2PO:
         assert pounit.source == "ISO-8859-1"
         assert pounit.target == "UTF-16"
 
-    def test_simpleentity_with_template(self):
+    def test_simpleentity_with_template(self) -> None:
         """Checks that a simple csv entry definition converts properly to a po entry."""
         csvsource = """location,original,translation
 intl.charset.default,ISO-8859-1,UTF-16"""
@@ -64,7 +65,7 @@ msgstr ""
         assert pounit.source == "ISO-8859-1"
         assert pounit.target == "UTF-16"
 
-    def test_newlines(self):
+    def test_newlines(self) -> None:
         """Tests multiline po entries."""
         minicsv = r""""Random comment
 with continuation","Original text","Langdradige teks
@@ -77,7 +78,7 @@ wat lank aanhou"
         print(unit.target)
         assert unit.target == "Langdradige teks\nwat lank aanhou"
 
-    def test_tabs(self):
+    def test_tabs(self) -> None:
         """Test the escaping of tabs."""
         minicsv = ',"First column\tSecond column","Twee kolomme gesky met \t"'
         pofile = self.csv2po(minicsv)
@@ -89,7 +90,7 @@ wat lank aanhou"
             != "Twee kolomme gesky met \\t"
         )
 
-    def test_quotes(self):
+    def test_quotes(self) -> None:
         """Test the escaping of quotes (and slash)."""
         minicsv = r''',"Hello ""Everyone""","Good day ""All"""
 ,"Use \"".","Gebruik \""."'''
@@ -108,7 +109,7 @@ wat lank aanhou"
 
     #        assert pofile.findunit('Use \\".').target == 'Gebruik \\".'
 
-    def test_empties(self):
+    def test_empties(self) -> None:
         """Tests that things keep working with empty entries."""
         minicsv = ",SomeSource,"
         pofile = self.csv2po(minicsv)
@@ -116,7 +117,7 @@ wat lank aanhou"
         assert pofile.findunit("SomeSource").target == ""
         assert headerless_len(pofile.units) == 1
 
-    def test_kdecomment(self):
+    def test_kdecomment(self) -> None:
         """Checks that we can merge into KDE comment entries."""
         csvsource = """location,source,target
 simple.c,Source,Target"""
@@ -131,13 +132,35 @@ msgstr ""
         assert pounit.source == "Source"
         assert pounit.target == "Target"
 
-    def test_escaped_newlines(self):
+    def test_escaped_newlines(self) -> None:
         """Tests that things keep working with escaped newlines."""
         minicsv = '"source","target"\r\n"yellow pencil","żółty\\nołówek"'
         pofile = self.csv2po(minicsv)
         assert pofile.findunit("yellow pencil") is not None
         assert pofile.findunit("yellow pencil").target == "żółty\\nołówek"
         assert headerless_len(pofile.units) == 1
+
+    def test_line_numbers_in_errors(self, caplog) -> None:
+        """Tests that line numbers are included in error messages."""
+        # CSV with entries that won't be found in the template
+        csvsource = """location,source,target
+not.found.location,NotFound1,Translation1
+another.missing,NotFound2,Translation2
+yet.another,NotFound3,Translation3"""
+
+        # Template with different entries
+        potsource = """#: different.location
+msgid "Different"
+msgstr ""
+"""
+        with caplog.at_level(logging.WARNING):
+            self.csv2po(csvsource, potsource)
+
+        # Check that line numbers appear in the warnings
+        assert "line 2" in caplog.text
+        assert "line 3" in caplog.text
+        assert "line 4" in caplog.text
+        assert "entry not found in pofile" in caplog.text
 
 
 class TestCSV2POCommand(test_convert.TestConvertCommand, TestCSV2PO):
@@ -153,7 +176,7 @@ class TestCSV2POCommand(test_convert.TestConvertCommand, TestCSV2PO):
         "--duplicates=DUPLICATESTYLE",
     ]
 
-    def test_columnorder(self):
+    def test_columnorder(self) -> None:
         csvcontent = '"Target","Same"\n'
         self.create_testfile("test.csv", csvcontent)
 

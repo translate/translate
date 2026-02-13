@@ -41,7 +41,7 @@ class GrepMatch:
     """Just a small data structure that represents a search match."""
 
     # INITIALIZERS #
-    def __init__(self, unit, part="target", part_n=0, start=0, end=0):
+    def __init__(self, unit, part="target", part_n=0, start=0, end=0) -> None:
         self.unit = unit
         self.part = part
         self.part_n = part_n
@@ -66,7 +66,7 @@ class GrepMatch:
             return getter
         if self.part == "locations":
 
-            def getter():
+            def getter():  # pylint: disable=function-redefined
                 return self.unit.getlocations()[self.part_n]
 
             return getter
@@ -76,34 +76,28 @@ class GrepMatch:
         if self.part == "target":
             if self.unit.hasplural():
 
-                def setter(value):
+                def setter(value) -> None:
                     strings = self.unit.target.strings
                     strings[self.part_n] = value
                     self.unit.target = strings
 
             else:
 
-                def setter(value):
+                def setter(value) -> None:
                     self.unit.target = value
 
             return setter
         raise TypeError(f"Unsupported part: {self.part}")
 
     # SPECIAL METHODS #
-    def __str__(self):
+    def __str__(self) -> str:
         start, end = self.start, self.end
         start = max(start, 3)
         end = min(end, len(self.get_getter()()) - 3)
         matchpart = self.get_getter()()[start - 2 : end + 2]
-        return '<GrepMatch "%s" part=%s[%d] start=%d end=%d>' % (
-            matchpart,
-            self.part,
-            self.part_n,
-            self.start,
-            self.end,
-        )
+        return f'<GrepMatch "{matchpart}" part={self.part}[{self.part_n}] start={self.start} end={self.end}>'
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return str(self)
 
 
@@ -148,7 +142,7 @@ class GrepFilter:
         accelchar=None,
         encoding="utf-8",
         max_matches=0,
-    ):
+    ) -> None:
         """Builds a checkfilter using the given checker."""
         if isinstance(searchstring, str):
             self.searchstring = searchstring
@@ -320,16 +314,14 @@ class GrepOptionParser(optrecurse.RecursiveOptionParser):
             options.input = options.input[0]
         return (options, args)
 
-    def set_usage(self, usage=None):
+    def set_usage(self, usage=None) -> None:
         """Sets the usage string - if usage not given, uses getusagestring for each option."""
         if usage is None:
-            self.usage = "%prog searchstring " + " ".join(
-                self.getusagestring(option) for option in self.option_list
-            )
+            self.usage = f"%prog searchstring {' '.join(self.getusagestring(option) for option in self.option_list)}"
         else:
             super().set_usage(usage)
 
-    def run(self):
+    def run(self) -> None:
         """Parses the arguments, and runs recursiveprocess with the resulting options."""
         options, _args = self.parse_args()
         options.checkfilter = GrepFilter(
@@ -345,7 +337,7 @@ class GrepOptionParser(optrecurse.RecursiveOptionParser):
         self.recursiveprocess(options)
 
 
-def rungrep(inputfile, outputfile, templatefile, checkfilter):
+def rungrep(inputfile, outputfile, templatefile, checkfilter) -> bool:
     """Reads in inputfile, filters using checkfilter, writes to outputfile."""
     fromfile = factory.getobject(inputfile)
     tofile = checkfilter.filterfile(fromfile)
@@ -434,7 +426,7 @@ def cmdlineparser():
     return parser
 
 
-def main():
+def main() -> None:
     parser = cmdlineparser()
     parser.run()
 

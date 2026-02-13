@@ -7,7 +7,7 @@ from translate.storage import po, xliff
 from translate.tools import pomerge
 
 
-def test_str2bool():
+def test_str2bool() -> None:
     """Test the str2bool function."""
     assert pomerge.str2bool("yes")
     assert pomerge.str2bool("true")
@@ -89,7 +89,7 @@ class TestPOMerge:
         assert self.countunits(pofile) == 1
         return pofile.units[-1]
 
-    def test_mergesore_bad_data(self):
+    def test_mergesore_bad_data(self) -> None:
         """Test that we catch bad options sent to mergestore."""
         templatefile = BytesIO(b"")
         inputfile = BytesIO(b"")
@@ -99,7 +99,7 @@ class TestPOMerge:
         with pytest.raises(ValueError):
             pomerge.mergestore(inputfile, outputfile, templatefile, mergecomments="yay")
 
-    def test_simplemerge(self):
+    def test_simplemerge(self) -> None:
         """Checks that a simple po entry merges OK."""
         templatepo = """#: simple.test\nmsgid "Simple String"\nmsgstr ""\n"""
         inputpo = """#: simple.test\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n"""
@@ -108,7 +108,7 @@ class TestPOMerge:
         assert pounit.source == "Simple String"
         assert pounit.target == "Dimpled Ring"
 
-    def test_simplemerge_no_locations(self):
+    def test_simplemerge_no_locations(self) -> None:
         """Checks that a simple po entry merges OK."""
         templatepo = '''msgid "Simple String"
 msgstr ""'''
@@ -119,7 +119,7 @@ msgstr "Dimpled Ring"'''
         assert pounit.source == "Simple String"
         assert pounit.target == "Dimpled Ring"
 
-    def test_replacemerge(self):
+    def test_replacemerge(self) -> None:
         """Checks that a simple po entry merges OK."""
         templatepo = (
             """#: simple.test\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n"""
@@ -130,7 +130,7 @@ msgstr "Dimpled Ring"'''
         assert pounit.source == "Simple String"
         assert pounit.target == "Dimpled King"
 
-    def test_merging_blanks(self):
+    def test_merging_blanks(self) -> None:
         """By default we will merge blanks, but we can also override that."""
         templatepo = (
             """#: simple.test\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n"""
@@ -145,7 +145,7 @@ msgstr "Dimpled Ring"'''
         assert pounit.source == "Simple String"
         assert pounit.target == "Dimpled Ring"
 
-    def test_merging_fuzzies(self):
+    def test_merging_fuzzies(self) -> None:
         """By default we will merge fuzzies, but can can also override that."""
         templatepo = (
             """#: simple.test\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n"""
@@ -162,7 +162,7 @@ msgstr "Dimpled Ring"'''
         assert pounit.target == "Dimpled Ring"
         assert not pounit.isfuzzy()
 
-    def test_merging_locations(self):
+    def test_merging_locations(self) -> None:
         """
         Check that locations on separate lines are output in Gettext form
         of all on one line.
@@ -176,7 +176,7 @@ msgstr "Dimpled Ring"'''
         print(pofile)
         assert bytes(pofile).decode("utf-8") == expectedpo
 
-    def test_unit_missing_in_template_with_locations(self):
+    def test_unit_missing_in_template_with_locations(self) -> None:
         """If the unit is missing in the template we should raise an error."""
         templatepo = '''#: location.c:1
 msgid "Simple String"
@@ -196,7 +196,7 @@ msgstr "Dimpled Ring"
         print(pofile)
         assert bytes(pofile).decode("utf-8") == expectedpo
 
-    def test_unit_missing_in_template_no_locations(self):
+    def test_unit_missing_in_template_no_locations(self) -> None:
         """If the unit is missing in the template we should raise an error."""
         templatepo = '''msgid "Simple String"
 msgstr ""'''
@@ -212,7 +212,7 @@ msgstr "Dimpled Ring"
         print(pofile)
         assert bytes(pofile).decode("utf-8") == expectedpo
 
-    def test_reflowed_source_comments(self):
+    def test_reflowed_source_comments(self) -> None:
         """
         Ensure that we don't duplicate source comments (locations) if they
         have been reflowed.
@@ -227,7 +227,7 @@ msgstr "Dimpled Ring"
         print(pofile)
         assert bytes(pofile).decode("utf-8") == expectedpo
 
-    def test_comments_with_blank_lines(self):
+    def test_comments_with_blank_lines(self) -> None:
         """Ensure that we don't loose empty newlines in comments."""
         templatepo = """# # ***** BEGIN LICENSE BLOCK *****
 # Version: MPL 1.1/GPL 2.0/LGPL 2.1
@@ -243,7 +243,7 @@ msgstr "blabla"
         print(pofile)
         assert bytes(pofile).decode("utf-8") == expectedpo
 
-    def test_merge_dont_delete_unassociated_comments(self):
+    def test_merge_dont_delete_unassociated_comments(self) -> None:
         """
         Ensure that we do not delete comments in the PO file that are not
         associated with a message block.
@@ -256,7 +256,7 @@ msgstr "blabla"
         print(pofile)
         assert bytes(pofile).decode("utf-8") == expectedpo
 
-    def test_preserve_format_trailing_newlines(self):
+    def test_preserve_format_trailing_newlines(self) -> None:
         """Test that we can merge messages correctly that end with a newline."""
         templatepo = """msgid "Simple string\\n"\nmsgstr ""\n"""
         mergepo = """msgid "Simple string\\n"\nmsgstr "Dimpled ring\\n"\n"""
@@ -275,7 +275,7 @@ msgstr "blabla"
             bytes(pofile).decode("utf-8") == expectedpo or bytes(pofile) == expectedpo2
         )
 
-    def test_preserve_format_minor_start_and_end_of_sentence_changes(self):
+    def test_preserve_format_minor_start_and_end_of_sentence_changes(self) -> None:
         """
         Test that we are not too fussy about large diffs for simple
         changes at the start or end of a sentence.
@@ -301,7 +301,7 @@ msgstr "blabla"
         print(f"Expected:\n{expectedpo}\n\nMerged:\n{bytes(pofile)}")
         assert bytes(pofile).decode("utf-8") == expectedpo
 
-    def test_preserve_format_last_entry_in_a_file(self):
+    def test_preserve_format_last_entry_in_a_file(self) -> None:
         """
         The last entry in a PO file is usually not followed by an empty
         line.  Test that we preserve this.
@@ -329,7 +329,7 @@ msgstr "blabla"
         assert bytes(pofile).decode("utf-8") == expectedpo
 
     @mark.xfail(reason="Not Implemented")
-    def test_escape_tabs(self):
+    def test_escape_tabs(self) -> None:
         """Ensure that input tabs are escaped in the output, like gettext does."""
         # The strings below contains the tab character, not spaces.
         templatepo = """msgid "First	Second"\nmsgstr ""\n\n"""
@@ -341,7 +341,7 @@ msgstr "Eerste\tTweede"
         print(f"Expected:\n{expectedpo}\n\nMerged:\n{bytes(pofile)}")
         assert bytes(pofile).decode("utf-8") == expectedpo
 
-    def test_preserve_comments_layout(self):
+    def test_preserve_comments_layout(self) -> None:
         """
         Ensure that when we merge with new '# (poconflict)' or other
         comments that we don't mess formatting.
@@ -353,7 +353,7 @@ msgstr "Eerste\tTweede"
         print(f"Expected:\n{expectedpo}\n\nMerged:\n{bytes(pofile)}")
         assert bytes(pofile).decode("utf-8") == expectedpo
 
-    def test_merge_dos2unix(self):
+    def test_merge_dos2unix(self) -> None:
         """Test that merging a comment line with dos newlines doesn't add a new line."""
         templatepo = """# User comment\n# (pofilter) Translate Toolkit comment\n#. Automatic comment\n#: location_comment.c:110\nmsgid "File"\nmsgstr "File"\n\n"""
         mergepo = """# User comment\r\n# (pofilter) Translate Toolkit comment\r\n#. Automatic comment\r\n#: location_comment.c:110\r\nmsgid "File"\r\nmsgstr "Ifayile"\r\n\r\n"""
@@ -375,7 +375,7 @@ msgstr "Eerste\tTweede"
         pofile = self.mergestore(templatepo, mergepo)
         assert bytes(pofile).decode("utf-8") == expectedpo
 
-    def test_xliff_into_xliff(self):
+    def test_xliff_into_xliff(self) -> None:
         templatexliff = (
             self.xliffskeleton
             % """<trans-unit>
@@ -396,7 +396,7 @@ msgstr "Eerste\tTweede"
         assert unit.source == "red"
         assert unit.target == "rooi"
 
-    def test_po_into_xliff(self):
+    def test_po_into_xliff(self) -> None:
         templatexliff = (
             self.xliffskeleton
             % """<trans-unit>
@@ -411,7 +411,7 @@ msgstr "Eerste\tTweede"
         assert unit.source == "red"
         assert unit.target == "rooi"
 
-    def test_xliff_into_po(self):
+    def test_xliff_into_po(self) -> None:
         templatepo = '# my comment\nmsgid "red"\nmsgstr ""'
         mergexliff = (
             self.xliffskeleton
@@ -424,7 +424,7 @@ msgstr "Eerste\tTweede"
         pofile = self.mergestore(templatepo, mergexliff)
         assert bytes(pofile).decode("utf-8") == expectedpo
 
-    def test_merging_dont_merge_kde_comments_found_in_translation(self):
+    def test_merging_dont_merge_kde_comments_found_in_translation(self) -> None:
         """If we find a KDE comment in the translation (target) then do not merge it."""
         templatepo = """msgid "_: KDE comment\\n"\n"File"\nmsgstr "File"\n\n"""
         mergepo = """msgid "_: KDE comment\\n"\n"File"\nmsgstr "_: KDE comment\\n"\n"Ifayile"\n\n"""
@@ -446,7 +446,7 @@ msgstr "Eerste\tTweede"
         print(f"Expected:\n{expectedpo}\n\nMerged:\n{bytes(pofile)}")
         assert bytes(pofile).decode("utf-8") == expectedpo
 
-    def test_merging_untranslated_with_kde_disambiguation(self):
+    def test_merging_untranslated_with_kde_disambiguation(self) -> None:
         """Test merging untranslated messages that are the same except for KDE disambiguation."""
         templatepo = r"""#: sendMsgTitle
 #: sendMsgTitle.accesskey
@@ -477,7 +477,7 @@ msgstr "Stuur"
         print(f"Expected:\n{expectedpo}\n---\nMerged:\n{bytes(pofile)}\n---")
         assert bytes(pofile).decode("utf-8") == expectedpo
 
-    def test_merging_header_entries(self):
+    def test_merging_header_entries(self) -> None:
         """Check that we do the right thing if we have header entries in the input PO."""
         templatepo = r"""#, fuzzy
 msgid ""
@@ -538,7 +538,7 @@ msgstr "Dimpled Ring"
         print(f"Expected:\n{expectedpo}\n---\nMerged:\n{bytes(pofile)}\n---")
         assert bytes(pofile).decode("utf-8") == expectedpo
 
-    def test_merging_different_locations(self):
+    def test_merging_different_locations(self) -> None:
         """
         Test when merging units that are unchanged except for changed
         locations that we don't go fuzzy (bug 1583).

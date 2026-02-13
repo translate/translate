@@ -14,7 +14,7 @@ class TestPO2Php:
         """Helper that converts po source to .php source without requiring files."""
         inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
-        convertor = po2php.po2php()
+        convertor = po2php.po2php()  # ty:ignore[unresolved-attribute]
         return convertor.convertstore(inputpo)
 
     @staticmethod
@@ -29,7 +29,7 @@ class TestPO2Php:
         print(outputphp)
         return outputphp
 
-    def test_convertphp(self):
+    def test_convertphp(self) -> None:
         """Test convertphp helper."""
         posource = """#: $lang['name']
 msgid "value"
@@ -46,7 +46,7 @@ $lang['name'] = 'waarde';
         assert po2php.convertphp(inputfile, outputfile, templatefile) == 1
         assert outputfile.getvalue() == phpexpected
 
-    def test_convertphp_notemplate(self):
+    def test_convertphp_notemplate(self) -> None:
         """Test convertphp helper without template."""
         posource = """#: $lang['name']
 msgid "value"
@@ -57,7 +57,7 @@ msgstr "waarde"
         with raises(ValueError):
             po2php.convertphp(inputfile, outputfile, None)
 
-    def test_convertphp_empty_template(self):
+    def test_convertphp_empty_template(self) -> None:
         """Test convertphp helper with empty translation."""
         posource = """#: $lang['name']
 msgid "value"
@@ -71,7 +71,7 @@ msgstr ""
         )
         assert outputfile.getvalue() == b""
 
-    def test_merging_simple(self):
+    def test_merging_simple(self) -> None:
         """Check the simplest case of merging a translation."""
         posource = """#: $lang['name']
 msgid "value"
@@ -87,7 +87,7 @@ $lang['name'] = 'waarde';
         print(phpfile)
         assert phpfile == phpexpected
 
-    def test_space_preservation(self):
+    def test_space_preservation(self) -> None:
         """Check that we preserve any spacing in php files when merging."""
         posource = """#: $lang['name']
 msgid "value"
@@ -103,7 +103,7 @@ $lang['name'] = 'waarde';
         print(phpfile)
         assert phpfile == phpexpected
 
-    def test_preserve_unused_statement(self):
+    def test_preserve_unused_statement(self) -> None:
         """Check that we preserve any unused statements in php files when merging."""
         posource = """#: $lang['name']
 msgid "value"
@@ -119,7 +119,7 @@ $lang['name'] = 'waarde';
         phpfile = self.merge2php(phptemplate, posource)
         assert phpfile == phpexpected
 
-    def test_not_translated_multiline(self):
+    def test_not_translated_multiline(self) -> None:
         """Check that we preserve not translated multiline strings in php files when merging."""
         posource = """#: $lang['name']
 msgid "value"
@@ -138,7 +138,7 @@ value";
         phpfile = self.merge2php(phptemplate, posource)
         assert phpfile == phpexpected
 
-    def test_merging_blank_entries(self):
+    def test_merging_blank_entries(self) -> None:
         """Check that we can correctly merge entries that are blank in the template."""
         posource = r'''#: accesskey-accept
 msgid ""
@@ -155,7 +155,7 @@ $lang['accesskey-accept'] = '';
         print(phpfile)
         assert phpfile == phpexpected
 
-    def test_merging_fuzzy(self):
+    def test_merging_fuzzy(self) -> None:
         """Check merging a fuzzy translation."""
         posource = """#: %24lang%5B+%27name%27+%5D
 #, fuzzy
@@ -172,7 +172,7 @@ $lang['name'] = 'value';
         print(phpfile)
         assert phpfile == phpexpected
 
-    def test_locations_with_spaces(self):
+    def test_locations_with_spaces(self) -> None:
         """Check that a location with spaces in php but spaces removed in PO is used correctly."""
         posource = """#: %24lang%5B+%27name%27+%5D
 msgid "value"
@@ -187,7 +187,7 @@ $lang[ 'name' ] = 'waarde';
         print(phpfile)
         assert phpfile == phpexpected
 
-    def test_inline_comments(self):
+    def test_inline_comments(self) -> None:
         """Check that we include inline comments from the template.  Bug 590."""
         posource = """#: %24lang%5B+%27name%27+%5D
 msgid "value"
@@ -204,7 +204,7 @@ $lang[ 'name' ] = 'waarde';
         print(phpfile)
         assert phpfile == phpexpected
 
-    def test_block_comments(self):
+    def test_block_comments(self) -> None:
         """Check that we include block comments from the template."""
         posource = """#: %24lang%5B+%27name%27+%5D
 msgid "value"
@@ -221,7 +221,7 @@ $lang[ 'name' ] = 'waarde';
         phpfile = self.merge2php(phptemplate, posource)
         assert phpfile == phpexpected
 
-    def test_named_variables(self):
+    def test_named_variables(self) -> None:
         """Check that we convert correctly if using named variables."""
         posource = """#: $dictYear
 msgid "Year"
@@ -237,7 +237,7 @@ $dictYear = 'Jaar';
         print(phpfile)
         assert phpfile == phpexpected
 
-    def test_multiline(self):
+    def test_multiline(self) -> None:
         """
         Check that we convert multiline strings correctly.
 
@@ -262,7 +262,7 @@ about to automatically upgrade your server to this version:
         print(phpfile)
         assert phpfile == phptemplate
 
-    def test_hash_comment(self):
+    def test_hash_comment(self) -> None:
         """Check that we convert # comments correctly."""
         posource = """#: $variable
 msgid "stringy"
@@ -280,7 +280,7 @@ $variable = 'stringetjie';
         print(phpfile)
         assert phpfile == phpexpected
 
-    def test_arrays(self):
+    def test_arrays(self) -> None:
         """Check that we can handle arrays."""
         posource = """#: $lang->'name'
 msgid "value"
@@ -300,7 +300,7 @@ $lang = array(
         print(phpfile)
         assert phpfile == phpexpected
 
-    def test_named_nested_array(self):
+    def test_named_nested_array(self) -> None:
         """Check that we can handle nested arrays."""
         posource = """#: $lang->'codes'->'name'
 msgid "value"
@@ -324,7 +324,7 @@ $lang = array(
         print(phpfile)
         assert phpfile == phpexpected
 
-    def test_unnamed_nested_arrays(self):
+    def test_unnamed_nested_arrays(self) -> None:
         posource = """
 #: return->'name1'
 msgid "source1"
@@ -374,7 +374,7 @@ return array(
         print(phpfile)
         assert phpfile == phpexpected
 
-    def test_return_array_with_comments(self):
+    def test_return_array_with_comments(self) -> None:
         """
         Check that we can correctly handle return array() syntax with comments.
 
@@ -422,12 +422,12 @@ return array(
         assert phpfile == phpexpected
 
     @mark.xfail(reason="Need to review if we want this behaviour")
-    def test_merging_propertyless_template(self):
+    def test_merging_propertyless_template(self) -> None:
         """Check that when merging with a template with no property values that we copy the template."""
         posource = ""
         proptemplate = "# A comment\n"
         propexpected = proptemplate
-        propfile = self.merge2prop(proptemplate, posource)
+        propfile = self.merge2prop(proptemplate, posource)  # ty:ignore[unresolved-attribute]
         print(propfile)
         assert propfile == [propexpected]
 

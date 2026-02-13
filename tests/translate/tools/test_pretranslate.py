@@ -52,7 +52,7 @@ class TestPretranslate:
         print(pofile.units[0])
         return pofile.units[0]
 
-    def test_pretranslatepo_blank(self):
+    def test_pretranslatepo_blank(self) -> None:
         """
         Checks that the pretranslatepo function is working for a simple file
         initialisation.
@@ -61,21 +61,21 @@ class TestPretranslate:
         newpo = self.pretranslatepo(input_source)
         assert str(self.singleunit(newpo)) == input_source
 
-    def test_merging_simple(self):
+    def test_merging_simple(self) -> None:
         """Checks that the pretranslatepo function is working for a simple merge."""
         input_source = f"""#: simple.label{po.lsep}simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n"""
         template_source = f"""#: simple.label{po.lsep}simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n"""
         newpo = self.pretranslatepo(input_source, template_source)
         assert str(self.singleunit(newpo)) == template_source
 
-    def test_merging_messages_marked_fuzzy(self):
+    def test_merging_messages_marked_fuzzy(self) -> None:
         """Test that when we merge PO files with a fuzzy message that it remains fuzzy."""
         input_source = f"""#: simple.label{po.lsep}simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n"""
         template_source = f"""#: simple.label{po.lsep}simple.accesskey\n#, fuzzy\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n"""
         newpo = self.pretranslatepo(input_source, template_source)
         assert str(self.singleunit(newpo)) == template_source
 
-    def test_merging_plurals_with_fuzzy_matching(self):
+    def test_merging_plurals_with_fuzzy_matching(self) -> None:
         """Test that when we merge PO files with a fuzzy message that it remains fuzzy."""
         input_source = r"""#: file.cpp:2
 msgid "%d manual"
@@ -102,7 +102,7 @@ msgstr[1] "%d handleidings."
         assert str(self.singleunit(newpo)) == poexpected
 
     @mark.xfail(reason="Not Implemented")
-    def test_merging_msgid_change(self):
+    def test_merging_msgid_change(self) -> None:
         """
         Tests that if the msgid changes but the location stays the same that
         we merge.
@@ -114,7 +114,7 @@ msgstr[1] "%d handleidings."
         print(bytes(newpo))
         assert bytes(newpo).decode("utf-8") == poexpected
 
-    def test_merging_location_change(self):
+    def test_merging_location_change(self) -> None:
         """
         Tests that if the location changes but the msgid stays the same that
         we merge.
@@ -126,7 +126,7 @@ msgstr[1] "%d handleidings."
         print(bytes(newpo))
         assert bytes(newpo).decode("utf-8") == poexpected
 
-    def test_merging_location_and_whitespace_change(self):
+    def test_merging_location_and_whitespace_change(self) -> None:
         """
         Test that even if the location changes that if the msgid only has
         whitespace changes we can still merge.
@@ -139,7 +139,7 @@ msgstr[1] "%d handleidings."
         assert bytes(newpo).decode("utf-8") == poexpected
 
     @mark.xfail(reason="Not Implemented")
-    def test_merging_accelerator_changes(self):
+    def test_merging_accelerator_changes(self) -> None:
         """
         Test that a change in the accelerator location still allows
         merging.
@@ -152,7 +152,7 @@ msgstr[1] "%d handleidings."
         assert bytes(newpo).decode("utf-8") == poexpected
 
     @mark.xfail(reason="Not Implemented")
-    def test_lines_cut_differently(self):
+    def test_lines_cut_differently(self) -> None:
         """
         Checks that the correct formatting is preserved when pot an po lines
         differ.
@@ -165,7 +165,7 @@ msgstr[1] "%d handleidings."
         newpounit = self.singleunit(newpo)
         assert str(newpounit) == template_source
 
-    def test_merging_automatic_comments_dont_duplicate(self):
+    def test_merging_automatic_comments_dont_duplicate(self) -> None:
         """Ensure that we can merge #. comments correctly."""
         input_source = """#. Row 35\nmsgid "&About"\nmsgstr ""\n"""
         template_source = """#. Row 35\nmsgid "&About"\nmsgstr "&Info"\n"""
@@ -173,7 +173,7 @@ msgstr[1] "%d handleidings."
         newpounit = self.singleunit(newpo)
         assert str(newpounit) == template_source
 
-    def test_merging_automatic_comments_new_overrides_old(self):
+    def test_merging_automatic_comments_new_overrides_old(self) -> None:
         """Ensure that new #. comments override the old comments."""
         input_source = """#. new comment\n#: someline.c\nmsgid "&About"\nmsgstr ""\n"""
         template_source = (
@@ -186,7 +186,7 @@ msgstr[1] "%d handleidings."
         newpounit = self.singleunit(newpo)
         assert str(newpounit) == poexpected
 
-    def test_merging_comments_with_blank_comment_lines(self):
+    def test_merging_comments_with_blank_comment_lines(self) -> None:
         """
         Test that when we merge a comment that has a blank line we keep the
         blank line.
@@ -198,7 +198,7 @@ msgstr[1] "%d handleidings."
         newpounit = self.singleunit(newpo)
         assert str(newpounit) == poexpected
 
-    def test_empty_commentlines(self):
+    def test_empty_commentlines(self) -> None:
         input_source = """#: paneSecurity.title
 msgid "Security"
 msgstr ""
@@ -220,7 +220,7 @@ msgstr "Sekuriteit"
         print(str(newpounit))
         assert str(newpounit) == poexpected
 
-    def test_merging_msgidcomments(self):
+    def test_merging_msgidcomments(self) -> None:
         """Ensure that we can merge msgidcomments messages."""
         input_source = r"""#: window.width
 msgid ""
@@ -238,7 +238,7 @@ msgstr "36em"
         newpounit = self.singleunit(newpo)
         assert str(newpounit) == template_source
 
-    def test_merging_plurals(self):
+    def test_merging_plurals(self) -> None:
         """Ensure that we can merge plural messages."""
         input_source = (
             """msgid "One"\nmsgid_plural "Two"\nmsgstr[0] ""\nmsgstr[1] ""\n"""
@@ -249,7 +249,7 @@ msgstr "36em"
         newpounit = self.singleunit(newpo)
         assert str(newpounit) == template_source
 
-    def test_merging_resurrect_obsolete_messages(self):
+    def test_merging_resurrect_obsolete_messages(self) -> None:
         """
         Check that we can reuse old obsolete messages if the message comes
         back.
@@ -261,7 +261,7 @@ msgstr "36em"
         print(bytes(newpo))
         assert bytes(newpo).decode("utf-8") == expected
 
-    def test_merging_comments(self):
+    def test_merging_comments(self) -> None:
         """Test that we can merge comments correctly."""
         input_source = """#. Don't do it!\n#: file.py:1\nmsgid "One"\nmsgstr ""\n"""
         template_source = (
@@ -273,7 +273,7 @@ msgstr "36em"
         newpounit = self.singleunit(newpo)
         assert str(newpounit) == poexpected
 
-    def test_merging_typecomments(self):
+    def test_merging_typecomments(self) -> None:
         """Test that we can merge with typecomments."""
         input_source = """#: file.c:1\n#, c-format\nmsgid "%d pipes"\nmsgstr ""\n"""
         template_source = """#: file.c:2\nmsgid "%d pipes"\nmsgstr "%d pype"\n"""
@@ -287,13 +287,14 @@ msgstr "36em"
 
         input_source = """#: file.c:1\n#, c-format\nmsgid "%d computers"\nmsgstr ""\n"""
         template_source = """#: file.c:2\n#, c-format\nmsgid "%s computers "\nmsgstr "%s-rekenaars"\n"""
-        poexpected = """#: file.c:1\n#, fuzzy, c-format\nmsgid "%d computers"\nmsgstr "%s-rekenaars"\n"""
+        poexpected = """#: file.c:1\n#, c-format, fuzzy\nmsgid "%d computers"\nmsgstr "%s-rekenaars"\n"""
         newpo = self.pretranslatepo(input_source, template_source)
         newpounit = self.singleunit(newpo)
         assert newpounit.isfuzzy()
         assert newpounit.hastypecomment("c-format")
+        assert bytes(newpo).decode() == poexpected
 
-    def test_xliff_states(self):
+    def test_xliff_states(self) -> None:
         """Test correct maintenance of XLIFF states."""
         xlf_template = self.xliff_skeleton % (
             """<trans-unit id="1" xml:space="preserve">

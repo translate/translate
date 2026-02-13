@@ -121,7 +121,7 @@ def unquotefromandroid(source):
     return value.replace('\\"', '"')  # This converts \&quot; to ".
 
 
-_DTD_CODEPOINT2NAME = {
+_DTD_CODEPOINT2NAME: dict[int, str] = {
     ord("%"): "#037",  # Always escape % sign as &#037;.
     ord("&"): "amp",
     # ord("<"): "lt",  # Not really so useful.
@@ -174,7 +174,7 @@ def unquotefromdtd(source):
     return quote.entitydecode(extracted, _DTD_NAME2CODEPOINT)
 
 
-def removeinvalidamps(name, value):
+def removeinvalidamps(name: str, value: str) -> str:
     """
     Find and remove ampersands that are not part of an entity definition.
 
@@ -184,12 +184,8 @@ def removeinvalidamps(name, value):
     down the problem is very difficult, thus by removing potential broken
     ampersand and warning the users we can ensure that the output DTD will
     always be parsable.
-
-    :type name: String
     :param name: Entity name
-    :type value: String
     :param value: Entity text value
-    :rtype: String
     :return: Entity value without bad ampersands
     """
 
@@ -219,7 +215,7 @@ def removeinvalidamps(name, value):
 class dtdunit(base.TranslationUnit):
     """An entity definition from a DTD file (and any associated comments)."""
 
-    def __init__(self, source="", android=False):
+    def __init__(self, source="", android=False) -> None:
         """Construct the dtdunit, prepare it for parsing."""
         self.android = android
 
@@ -243,7 +239,7 @@ class dtdunit(base.TranslationUnit):
         return unquotefromdtd(self.definition)
 
     @source.setter
-    def source(self, source):
+    def source(self, source) -> None:
         """Sets the definition to the quoted value of source."""
         if self.android:
             self.definition = quoteforandroid(source)
@@ -259,7 +255,7 @@ class dtdunit(base.TranslationUnit):
         return unquotefromdtd(self.definition)
 
     @target.setter
-    def target(self, target):
+    def target(self, target) -> None:
         """Sets the definition to the quoted value of target."""
         if target is None:
             target = ""
@@ -272,7 +268,7 @@ class dtdunit(base.TranslationUnit):
     def getid(self):
         return self.entity
 
-    def setid(self, new_id):
+    def setid(self, new_id) -> None:  # ty:ignore[invalid-method-override]
         self.entity = new_id
 
     def getlocations(self):
@@ -280,7 +276,7 @@ class dtdunit(base.TranslationUnit):
         assert quote.rstripeol(self.entity) == self.entity
         return [self.entity]
 
-    def addlocation(self, location):
+    def addlocation(self, location) -> None:
         """Set the entity to the given "location"."""
         self.entity = location
 
@@ -293,7 +289,7 @@ class dtdunit(base.TranslationUnit):
     def istranslatable(self):
         return getattr(self, "entityparameter", None) != "SYSTEM" and not self.isblank()
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Convert to a string."""
         return self.getoutput()
 
@@ -311,11 +307,11 @@ class dtdunit(base.TranslationUnit):
         # for n in self._locnotes: yield n
         if len(self.entity) > 0:
             if getattr(self, "entitytype", None) == "external":
-                entityline = f"<!ENTITY % {self.entity} {self.entityparameter} {self.definition}{self.closing}"
+                entityline = f"<!ENTITY % {self.entity} {self.entityparameter} {self.definition}{self.closing}"  # ty:ignore[unresolved-attribute]
             else:
                 entityline = f"<!ENTITY{self.space_pre_entity}{self.entity}{self.space_pre_definition}{self.definition}{self.closing}"
             if getattr(self, "hashprefix", None):
-                entityline = f"{self.hashprefix} {entityline}"
+                entityline = f"{self.hashprefix} {entityline}"  # ty:ignore[unresolved-attribute]
             lines.append(f"{entityline}\n")
         return "".join(lines)
 
@@ -325,7 +321,7 @@ class dtdfile(base.TranslationStore):
 
     UnitClass = dtdunit
 
-    def __init__(self, inputfile=None, android=False):
+    def __init__(self, inputfile=None, android=False) -> None:
         """Construct a dtdfile, optionally reading in from inputfile."""
         super().__init__()
         self.filename = getattr(inputfile, "name", "")
@@ -337,14 +333,14 @@ class dtdfile(base.TranslationStore):
     def _determine_comment_type(self, comment: str) -> str:
         """Determine the type of a DTD comment."""
         if comment.find("LOCALIZATION NOTE") != -1:
-            l = quote.findend(comment, "LOCALIZATION NOTE")
-            while l < len(comment) and comment[l] == " ":
-                l += 1
-            if comment.find("FILE", l) == l:
+            pos = quote.findend(comment, "LOCALIZATION NOTE")
+            while pos < len(comment) and comment[pos] == " ":
+                pos += 1
+            if comment.find("FILE", pos) == pos:
                 return "locfile"
-            if comment.find("BEGIN", l) == l:
+            if comment.find("BEGIN", pos) == pos:
                 return "locgroupstart"
-            if comment.find("END", l) == l:
+            if comment.find("END", pos) == pos:
                 return "locgroupend"
             return "locnote"
         return "comment"
@@ -353,10 +349,10 @@ class dtdfile(base.TranslationStore):
         """Store a comment in the appropriate list on the unit."""
         commentpair = (commenttype, comment)
         comment_targets = {
-            "locfile": unit._locfilenotes,
-            "locgroupstart": unit._locgroupstarts,
-            "locgroupend": unit._locgroupends,
-            "locnote": unit._locnotes,
+            "locfile": unit._locfilenotes,  # ty:ignore[unresolved-attribute]
+            "locgroupstart": unit._locgroupstarts,  # ty:ignore[unresolved-attribute]
+            "locgroupend": unit._locgroupends,  # ty:ignore[unresolved-attribute]
+            "locnote": unit._locnotes,  # ty:ignore[unresolved-attribute]
             "comment": unit.comments,
         }
         comment_targets.get(commenttype, unit.comments).append(commentpair)
@@ -416,7 +412,7 @@ class dtdfile(base.TranslationStore):
             )
         raise ValueError(f"Unexpected quote character... {quote_char!r}")
 
-    def parse(self, dtdsrc):
+    def parse(self, dtdsrc) -> None:  # ty:ignore[invalid-method-override]
         """Read the source code of a dtd file in and include them as dtdunits in self.units."""
         if not dtdsrc:
             return
@@ -442,10 +438,10 @@ class dtdfile(base.TranslationStore):
 
             # Initialize unit state
             newdtd.comments = []
-            newdtd._locfilenotes = newdtd.comments
-            newdtd._locgroupstarts = newdtd.comments
-            newdtd._locgroupends = newdtd.comments
-            newdtd._locnotes = newdtd.comments
+            newdtd._locfilenotes = newdtd.comments  # ty:ignore[unresolved-attribute]
+            newdtd._locgroupstarts = newdtd.comments  # ty:ignore[unresolved-attribute]
+            newdtd._locgroupends = newdtd.comments  # ty:ignore[unresolved-attribute]
+            newdtd._locnotes = newdtd.comments  # ty:ignore[unresolved-attribute]
             newdtd.entity = None
             newdtd.definition = ""
             newdtd.unparsedlines = []
@@ -467,7 +463,7 @@ class dtdfile(base.TranslationStore):
 
             # Parse lines until we have a complete unit or find the start of the next one
             while line_idx < len(lines):
-                line = lines[line_idx] + "\n"
+                line = f"{lines[line_idx]}\n"
 
                 if not incomment:
                     if line.find("<!--") != -1:
@@ -510,7 +506,7 @@ class dtdfile(base.TranslationStore):
                         has_content = True
                         beforeentity = line[:entitypos].strip()
                         if beforeentity.startswith("#"):
-                            newdtd.hashprefix = beforeentity
+                            newdtd.hashprefix = beforeentity  # ty:ignore[unresolved-attribute]
                         entitypart = "start"
                     else:
                         # Add to unparsed lines
@@ -537,10 +533,10 @@ class dtdfile(base.TranslationStore):
                         newdtd.entity = entity_name
                         assert quote.rstripeol(entity_name) == entity_name
                         if newdtd.entity:
-                            newdtd.entitytype = entitytype
+                            newdtd.entitytype = entitytype  # ty:ignore[unresolved-attribute]
                             if entitytype == "external":
                                 entitypart = "parameter"
-                                newdtd.entityparameter = ""
+                                newdtd.entityparameter = ""  # ty:ignore[unresolved-attribute]
                             else:
                                 entitypart = "definition"
                             # Remember the start position and the quote character
@@ -559,7 +555,7 @@ class dtdfile(base.TranslationStore):
                         paramstart = e
                         while e < len(line) and line[e].isalnum():
                             e += 1
-                        newdtd.entityparameter += line[paramstart:e]
+                        newdtd.entityparameter += line[paramstart:e]  # ty:ignore[unresolved-attribute]
                         while e < len(line) and line[e].isspace():
                             e += 1
                         line = line[e:]
@@ -626,7 +622,7 @@ class dtdfile(base.TranslationStore):
             ):
                 self.units.append(newdtd)
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         """Write content to file."""
         content = b""
         for dtd in self.units:
@@ -637,14 +633,13 @@ class dtdfile(base.TranslationStore):
             warnings.warn(f"DTD file '{self.filename}' does not validate")
             out.truncate(0)
 
-    def _valid_store(self, content):
+    def _valid_store(self, content: bytes) -> bool:
         """
         Validate the store to determine if it is valid.
 
         This uses ElementTree to parse the DTD
 
         :return: If the store passes validation
-        :rtype: Boolean
         """
         # Android files are invalid DTDs
         if not self.android:

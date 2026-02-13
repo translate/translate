@@ -23,7 +23,7 @@ project = "Translate Toolkit"
 copyright = "Translate Toolkit authors"
 
 # The short X.Y version.
-version = "3.16.3"
+version = "3.18.1"
 
 # The full version, including alpha/beta/rc tags
 release = version
@@ -71,12 +71,10 @@ autodoc_mock_imports = [
     "iniparse",
     "vobject",
     "mistletoe",
-    "cwcwidth",
     "lxml",
     "phply",
     "ruamel",
-    "cheroot",
-    "Levenshtein",
+    "rapidfuzz",
 ]
 
 # -- Options for HTML output -------------------------------------------------
@@ -100,18 +98,15 @@ if os.environ.get("READTHEDOCS", "") == "True":
 # documentation.
 html_theme_options = {
     "nosidebar": True,
+    "source_repository": "https://github.com/translate/translate/",
+    "source_branch": "main",
+    "source_directory": "docs/",
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
-
-html_theme_options = {
-    "source_repository": "https://github.com/translate/translate/",
-    "source_branch": "main",
-    "source_directory": "docs/",
-}
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = "TranslateToolkitdoc"
@@ -191,7 +186,7 @@ texinfo_documents = [
         "Translate Toolkit Documentation",
         "Translate.org.za",
         "TranslateToolkit",
-        "One line description of project.",
+        "Tools for localization engineers and translators to convert, manage, and maintain translation files.",
         "Miscellaneous",
     ),
 ]

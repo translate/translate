@@ -10,7 +10,6 @@ location = Path(__file__).parent.parent.parent.parent / "translate" / "tools"
 @pytest.mark.parametrize(
     "command",
     [
-        "build_tmdb",
         "phppo2pypo",
         "poclean",
         "pocompile",
@@ -28,7 +27,7 @@ location = Path(__file__).parent.parent.parent.parent / "translate" / "tools"
         "pypo2phppo",
     ],
 )
-def test_help(command: str):
+def test_help(command: str) -> None:
     stdout = subprocess.check_output(
         [sys.executable, str(location / f"{command}.py"), "--help"],
         text=True,

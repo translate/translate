@@ -25,6 +25,7 @@ for examples and usage instructions.
 
 import logging
 
+from translate.convert import convert
 from translate.storage import po, rc
 
 logger = logging.getLogger(__name__)
@@ -108,7 +109,7 @@ def convertrc(
     charset=None,
     lang=None,
     sublang=None,
-):
+) -> int:
     """Reads in input_file using rc, converts using rc2po, writes to output_file."""
     input_store = rc.rcfile(input_file, lang, sublang, encoding=charset)
     convertor = rc2po()
@@ -127,9 +128,7 @@ def convertrc(
     return 1
 
 
-def main(argv=None):
-    from translate.convert import convert
-
+def main(argv=None) -> None:
     formats = {
         "rc": ("po", convertrc),
         ("rc", "rc"): ("po", convertrc),

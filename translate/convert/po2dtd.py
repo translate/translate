@@ -30,14 +30,14 @@ from translate.misc import quote
 from translate.storage import dtd, po
 
 
-def dtdwarning(message, category, filename, lineno, line=None):
+def dtdwarning(message, category, filename, lineno, line=None) -> str:
     return f"Warning: {message}\n"
 
 
-warnings.formatwarning = dtdwarning
+warnings.formatwarning = dtdwarning  # ty:ignore[invalid-assignment]
 
 
-def applytranslation(entity, dtdunit, inputunit, mixedentities):
+def applytranslation(entity, dtdunit, inputunit, mixedentities) -> None:
     """Applies the translation for entity in the po unit to the dtd unit."""
     # this converts the po-style string to a dtd-style string
     unquotedstr = inputunit.target
@@ -76,7 +76,7 @@ def applytranslation(entity, dtdunit, inputunit, mixedentities):
 class redtd:
     """this is a convertor class that creates a new dtd based on a template using translations in a po."""
 
-    def __init__(self, dtdfile, android=False, remove_untranslated=False):
+    def __init__(self, dtdfile, android=False, remove_untranslated=False) -> None:
         self.dtdfile = dtdfile
         self.mixer = accesskey.UnitMixer(dtd.labelsuffixes, dtd.accesskeysuffixes)
         self.android = False
@@ -87,7 +87,7 @@ class redtd:
             self.handleinunit(inunit, includefuzzy)
         return self.dtdfile
 
-    def handleinunit(self, inunit, includefuzzy):
+    def handleinunit(self, inunit, includefuzzy) -> None:
         entities = inunit.getlocations()
         mixedentities = self.mixer.match_entities(entities)
         self.dtdfile.require_index()
@@ -108,12 +108,12 @@ class redtd:
 class po2dtd:
     """this is a convertor class that creates a new dtd file based on a po file without a template."""
 
-    def __init__(self, android=False, remove_untranslated=False):
+    def __init__(self, android=False, remove_untranslated=False) -> None:
         self.android = android
         self.remove_untranslated = remove_untranslated
 
     @staticmethod
-    def convertcomments(inputunit, dtdunit):
+    def convertcomments(inputunit, dtdunit) -> None:
         entities = inputunit.getlocations()
         if len(entities) > 1:
             # don't yet handle multiple entities
@@ -143,7 +143,7 @@ class po2dtd:
             )
             dtdunit.comments.append(("locnote", locnote))
 
-    def convertstrings(self, inputunit, dtdunit):
+    def convertstrings(self, inputunit, dtdunit) -> None:
         if inputunit.istranslated() or not bool(inputunit.source):
             unquoted = inputunit.target
         elif self.remove_untranslated:
@@ -178,7 +178,7 @@ def convertdtd(
     includefuzzy=False,
     remove_untranslated=False,
     outputthreshold=None,
-):
+) -> int:
     inputstore = po.pofile(inputfile)
 
     if not convert.should_output_store(inputstore, outputthreshold):
@@ -211,7 +211,7 @@ def convertdtd(
     return 1
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     # handle command line options
     formats = {"po": ("dtd", convertdtd), ("po", "dtd"): ("dtd", convertdtd)}
     parser = convert.ConvertOptionParser(

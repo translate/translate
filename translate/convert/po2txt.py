@@ -26,7 +26,7 @@ for examples and usage instructions.
 import textwrap
 
 from translate.convert import convert
-from translate.storage import factory
+from translate.storage import factory, txt
 
 
 class po2txt:
@@ -45,7 +45,9 @@ class po2txt:
         output_threshold=None,
         encoding="utf-8",
         wrap=None,
-    ):
+        flavour=None,
+        no_segmentation=False,
+    ) -> None:
         """Initialize the converter."""
         self.source_store = factory.getobject(input_file)
 
@@ -56,6 +58,8 @@ class po2txt:
             self.include_fuzzy = include_fuzzy
             self.encoding = encoding
             self.wrap = wrap
+            self.flavour = flavour
+            self.no_segmentation = no_segmentation
 
             self.output_file = output_file
             self.template_file = template_file
@@ -76,9 +80,9 @@ class po2txt:
             if not unit.istranslatable():
                 continue
             if unit.istranslated() or (self.include_fuzzy and unit.isfuzzy()):
-                txtresult += self.wrapmessage(unit.target) + "\n\n"
+                txtresult += f"{self.wrapmessage(unit.target)}\n\n"
             else:
-                txtresult += self.wrapmessage(unit.source) + "\n\n"
+                txtresult += f"{self.wrapmessage(unit.source)}\n\n"
         return txtresult.rstrip()
 
     def merge_stores(self):
@@ -88,20 +92,45 @@ class po2txt:
         Source file is in source format, while target and template files use
         target format.
         """
-        txtresult = self.template_file.read().decode(self.encoding)
-        # TODO: make a list of blocks of text and translate them individually
-        # rather than using replace
-        for unit in self.source_store.units:
-            if not unit.istranslatable():
-                continue
-            if not unit.isfuzzy() or self.include_fuzzy:
-                txtsource = unit.source
-                txttarget = self.wrapmessage(unit.target)
-                if unit.istranslated():
-                    txtresult = txtresult.replace(txtsource, txttarget)
-        return txtresult
+        # Parse the template file using TxtFile to segment it the same way txt2po does
+        self.template_file.seek(0)  # ty:ignore[possibly-missing-attribute]
+        template_store = txt.TxtFile(
+            self.template_file,
+            encoding=self.encoding,
+            flavour=self.flavour,
+            no_segmentation=self.no_segmentation,
+        )
 
-    def run(self):
+        # Create a lookup dictionary for translations
+        translation_dict = {}
+        for unit in self.source_store.units:
+            if (
+                unit.istranslatable()
+                and unit.istranslated()
+                and (not unit.isfuzzy() or self.include_fuzzy)
+            ):
+                translation_dict[unit.source] = self.wrapmessage(unit.target)
+
+        # Build the result by going through each template unit
+        result_parts = []
+        for i, template_unit in enumerate(template_store.units):
+            # Add double newline separator between units (except before first unit)
+            if i > 0:
+                result_parts.append("\n\n")
+
+            # Look up the translation, or use the original text
+            translated_text = translation_dict.get(
+                template_unit.source, template_unit.source
+            )
+
+            # Reconstruct with pretext and posttext
+            result_parts.append(
+                f"{template_unit.pretext}{translated_text}{template_unit.posttext}"
+            )
+
+        return "".join(result_parts)
+
+    def run(self) -> bool:
         """Run the converter."""
         if not self.should_output_store:
             return False
@@ -123,6 +152,8 @@ def run_converter(
     includefuzzy=False,
     encoding="utf-8",
     outputthreshold=None,
+    flavour=None,
+    no_segmentation=False,
 ):
     """Wrapper around converter."""
     return po2txt(
@@ -133,6 +164,8 @@ def run_converter(
         output_threshold=outputthreshold,
         encoding=encoding,
         wrap=wrap,
+        flavour=flavour,
+        no_segmentation=no_segmentation,
     ).run()
 
 
@@ -146,7 +179,7 @@ formats = {
 }
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     parser = convert.ConvertOptionParser(
         formats, usetemplates=True, description=__doc__
     )
@@ -169,6 +202,26 @@ def main(argv=None):
         metavar="WRAP",
     )
     parser.passthrough.append("wrap")
+    parser.add_option(
+        "",
+        "--flavour",
+        dest="flavour",
+        default="plain",
+        type="choice",
+        choices=["plain", "dokuwiki", "mediawiki"],
+        help=("The flavour of text file: plain (default), dokuwiki, mediawiki"),
+        metavar="FLAVOUR",
+    )
+    parser.passthrough.append("flavour")
+    parser.add_option(
+        "",
+        "--no-segmentation",
+        dest="no_segmentation",
+        default=False,
+        action="store_true",
+        help="Don't segment the file, treat it like a single message",
+    )
+    parser.passthrough.append("no_segmentation")
     parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.run(argv)

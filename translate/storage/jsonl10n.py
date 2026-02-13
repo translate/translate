@@ -73,15 +73,25 @@ from __future__ import annotations
 import json
 import re
 import uuid
-from typing import TYPE_CHECKING, Any, BinaryIO, ClassVar, TextIO, cast
-
-if TYPE_CHECKING:
-    from collections.abc import Generator
 from collections import defaultdict
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    BinaryIO,
+    ClassVar,
+    Never,
+    NotRequired,
+    TextIO,
+    TypedDict,
+    cast,
+)
 
 from translate.lang.data import cldr_plural_categories
 from translate.misc.multistring import multistring
 from translate.storage import base
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
 
 
 class BaseJsonUnit(base.DictUnit):
@@ -89,7 +99,9 @@ class BaseJsonUnit(base.DictUnit):
 
     ID_FORMAT = ".{}"
 
-    def __init__(self, source=None, item=None, notes=None, placeholders=None, **kwargs):
+    def __init__(
+        self, source=None, item=None, notes=None, placeholders=None, **kwargs
+    ) -> None:
         identifier = hex(hash(source)) if source else str(uuid.uuid4())
         # Global identifier across file
         self._id = self.ID_FORMAT.format(identifier)
@@ -112,13 +124,13 @@ class BaseJsonUnit(base.DictUnit):
         return self.target
 
     @source.setter
-    def source(self, source):
+    def source(self, source) -> None:
         self.target = source
 
-    def setid(self, value, unitid=None):
+    def setid(self, value, unitid=None) -> None:
         super().setid(value, unitid)
         self.get_unitid()
-        self._item = self._unitid.parts[-1][1]
+        self._item = self._unitid.parts[-1][1]  # ty:ignore[possibly-missing-attribute]
 
     def getid(self):
         return self._id
@@ -126,7 +138,7 @@ class BaseJsonUnit(base.DictUnit):
     def getlocations(self):
         return [self.getid()]
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Converts to a string representation."""
         return json.dumps(
             self.getvalue(), separators=(",", ": "), indent=4, ensure_ascii=False
@@ -140,7 +152,7 @@ class BaseJsonUnit(base.DictUnit):
         except ValueError:
             return str(self.target)
 
-    def storevalues(self, output):
+    def storevalues(self, output) -> None:
         self.storevalue(output, self.converttarget())
 
 
@@ -155,18 +167,25 @@ class FlatJsonUnit(BaseJsonUnit):
     IdClass = FlatUnitId
 
 
-class JsonFile(base.DictStore):
+class DumpArgsType(TypedDict):
+    separators: tuple[str, str]
+    indent: int
+    ensure_ascii: bool
+    sort_keys: NotRequired[bool]
+
+
+class JsonFile(base.DictStore[BaseJsonUnit]):
     """A JSON file."""
 
     UnitClass: ClassVar[type[BaseJsonUnit]] = FlatJsonUnit
 
-    def __init__(self, inputfile=None, filter=None, **kwargs):
+    def __init__(self, inputfile=None, filter=None, **kwargs) -> None:
         """Construct a JSON file, optionally reading in from inputfile."""
         super().__init__(**kwargs)
         self._filter = filter
         self.filename = ""
         self._file = ""
-        self.dump_args = {
+        self.dump_args: DumpArgsType = {
             "separators": (",", ": "),
             "indent": 4,
             "ensure_ascii": False,
@@ -174,7 +193,7 @@ class JsonFile(base.DictStore):
         if inputfile is not None:
             self.parse(inputfile)
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         units = self.get_root_node()
         self.serialize_units(units)
         out.write(json.dumps(units, **self.dump_args).encode(self.encoding))
@@ -224,7 +243,7 @@ class JsonFile(base.DictStore):
     def preprocess_input(self, text: str) -> str:
         return text
 
-    def parse(self, data: str | bytes | TextIO | BinaryIO):
+    def parse(self, data: str | bytes | TextIO | BinaryIO) -> None:
         """Parse the given file or file source string."""
         text: str | bytes
         if hasattr(data, "name"):
@@ -269,7 +288,7 @@ class JsonNestedFile(JsonFile):
 
 
 class WebExtensionJsonUnit(FlatJsonUnit):
-    def storevalues(self, output):
+    def storevalues(self, output) -> None:
         value = {"message": self.target}
         if self.notes:
             value["description"] = self.notes
@@ -342,10 +361,10 @@ class I18NextUnit(JsonNestedUnit):
     def _get_plural_labels(self, count):
         base_name = self._get_base_name()
         if count == 2:
-            return [base_name, base_name + "_plural"][:count]
+            return [base_name, f"{base_name}_plural"][:count]
         return [f"{base_name}_{i}" for i in range(count)]
 
-    def _fixup_item(self):
+    def _fixup_item(self) -> None:
         if isinstance(self._target, multistring):
             count = len(self._target.strings)
             is_list = isinstance(self._item, list)
@@ -363,17 +382,18 @@ class I18NextUnit(JsonNestedUnit):
         return self._target
 
     @target.setter
-    def target(self, target):
+    def target(self, target) -> None:
         self._rich_target = None
         self._target = target
 
-    def storevalues(self, output):
+    def storevalues(self, output) -> None:
         if not isinstance(self.target, multistring):
             super().storevalues(output)
         else:
-            if len(self.target.strings) > len(self._store.get_plural_tags()):
+            if len(self.target.strings) > len(self._store.get_plural_tags()):  # ty:ignore[possibly-missing-attribute]
                 self.target.extra_strings = self.target.extra_strings[
-                    : len(self._store.get_plural_tags()) - 1
+                    : len(self._store.get_plural_tags())  # ty:ignore[possibly-missing-attribute]
+                    - 1
                 ]
             self._fixup_item()
             for i, value in enumerate(self.target.strings):
@@ -415,10 +435,10 @@ class I18NextFile(JsonNestedFile):
                     continue
                 plurals = []
                 plural_base = ""
-                if k in plurals_simple or k + "_plural" in plurals_simple:
+                if k in plurals_simple or f"{k}_plural" in plurals_simple:
                     plural_base = k.removesuffix("_plural")
                     plurals_simple.remove(plural_base)
-                    plurals = [k, k + "_plural"]
+                    plurals = [k, f"{k}_plural"]
                 elif "_" in k:
                     plural_base, digit = k.rsplit("_", 1)
                     if plural_base in plurals_multiple and digit.isdigit():
@@ -461,7 +481,7 @@ class I18NextV4Unit(I18NextUnit):
 
     def _get_plural_labels(self, count):
         base_name = self._get_base_name()
-        return [f"{base_name}_{self._store.get_plural_tags()[i]}" for i in range(count)]
+        return [f"{base_name}_{self._store.get_plural_tags()[i]}" for i in range(count)]  # ty:ignore[possibly-missing-attribute]
 
 
 class I18NextV4File(JsonNestedFile):
@@ -544,10 +564,10 @@ class FlatI18NextV4File(I18NextV4File):
 class GoTextUnitId(base.UnitId):
     """Preserves id as stored in the JSON file."""
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.parts)
 
-    def extend(self, key, value):
+    def extend(self, key, value) -> Never:
         raise ValueError("Extend is not supported")
 
     @classmethod
@@ -572,7 +592,7 @@ class GoTextJsonUnit(BaseJsonUnit):
         fuzzy=None,
         position=None,
         **kwargs,
-    ):
+    ) -> None:
         super().__init__(source, item, notes, placeholders)
         self.comment = comment
         self.message = message
@@ -584,7 +604,7 @@ class GoTextJsonUnit(BaseJsonUnit):
     def getvalue(self):
         target = self.target
         if isinstance(target, multistring):
-            strings = self.sync_plural_count(target, self._store.get_plural_tags())
+            strings = self.sync_plural_count(target, self._store.get_plural_tags())  # ty:ignore[possibly-missing-attribute]
             target = {
                 "select": {
                     "feature": "plural",
@@ -594,7 +614,7 @@ class GoTextJsonUnit(BaseJsonUnit):
                 target["select"]["arg"] = self.placeholders[0]["id"]
             target["select"]["cases"] = {
                 plural: {"msg": strings[offset]}
-                for offset, plural in enumerate(self._store.get_plural_tags())
+                for offset, plural in enumerate(self._store.get_plural_tags())  # ty:ignore[possibly-missing-attribute]
             }
         value = {"id": self._unitid.parts if self._unitid else self.getid()}
         if self.message:
@@ -614,7 +634,7 @@ class GoTextJsonUnit(BaseJsonUnit):
             value["placeholders"] = self.placeholders
         return value
 
-    def setid(self, value, unitid=None):
+    def setid(self, value, unitid=None) -> None:
         if unitid is None:
             unitid = self.IdClass(value)
         # Skip BaseJsonUnit.setid override
@@ -680,7 +700,7 @@ class GoTextJsonFile(JsonFile):
             unit.setid(value.get("id", ""))
             yield unit
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         units = [unit.getvalue() for unit in self.units]
         file = {
             "language": self.gettargetlanguage(),
@@ -696,10 +716,10 @@ class GoI18NJsonUnit(FlatJsonUnit):
     def getvalue(self):
         target = self.target
         if isinstance(target, multistring):
-            strings = self.sync_plural_count(target, self._store.get_plural_tags())
+            strings = self.sync_plural_count(target, self._store.get_plural_tags())  # ty:ignore[possibly-missing-attribute]
             target = {
                 plural: strings[offset]
-                for offset, plural in enumerate(self._store.get_plural_tags())
+                for offset, plural in enumerate(self._store.get_plural_tags())  # ty:ignore[possibly-missing-attribute]
             }
         value = {"id": self.getid()}
         if self.notes:
@@ -745,10 +765,10 @@ class GoI18NJsonFile(JsonFile):
                             if key in translation
                         ]
                     )
-                except ValueError:
+                except ValueError as error:
                     raise ValueError(
                         f'"{id}" is an object but does not contain plurals. Maybe this is not a go-i18n JSON file?'
-                    )
+                    ) from error
             unit = self.UnitClass(
                 translation,
                 value.get("id", ""),
@@ -758,7 +778,7 @@ class GoI18NJsonFile(JsonFile):
             unit.setid(item, unitid=self.UnitClass.IdClass.from_key(item))
             yield unit
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         units = [unit.getvalue() for unit in self.units]
         out.write(json.dumps(units, **self.dump_args).encode(self.encoding))
         out.write(b"\n")
@@ -778,8 +798,8 @@ class GoI18NV2JsonUnit(FlatJsonUnit):
         if self.notes:
             target["description"] = self.notes
 
-        strings = self.sync_plural_count(self.target, self._store.get_plural_tags())
-        for offset, plural in enumerate(self._store.get_plural_tags()):
+        strings = self.sync_plural_count(self.target, self._store.get_plural_tags())  # ty:ignore[possibly-missing-attribute]
+        for offset, plural in enumerate(self._store.get_plural_tags()):  # ty:ignore[possibly-missing-attribute]
             target[plural] = strings[offset]
 
         return target
@@ -818,10 +838,10 @@ class GoI18NV2JsonFile(JsonFile):
                             if key in value
                         ]
                     )
-                except ValueError:
+                except ValueError as error:
                     raise ValueError(
                         f'"{id}" is an object but does not contain plurals. Maybe this is not a go-i18n v2 JSON file?'
-                    )
+                    ) from error
                 unit = self.UnitClass(
                     translation,
                     id,
@@ -831,7 +851,7 @@ class GoI18NV2JsonFile(JsonFile):
             yield unit
 
 
-class ARBJsonUnit(FlatJsonUnit):
+class ARBJsonUnit(base.MetadataTranslationUnit, FlatJsonUnit):
     ID_FORMAT = "{}"
 
     def __init__(
@@ -842,11 +862,18 @@ class ARBJsonUnit(FlatJsonUnit):
         placeholders=None,
         metadata=None,
         **kwargs,
-    ):
-        super().__init__(source, item, notes, placeholders, **kwargs)
-        self.metadata = metadata or {}
+    ) -> None:
+        # Pass metadata to MetadataTranslationUnit via super().__init__
+        super().__init__(
+            source=source,
+            item=item,
+            notes=notes,
+            placeholders=placeholders,
+            metadata=metadata,
+            **kwargs,
+        )
 
-    def storevalues(self, output):
+    def storevalues(self, output) -> None:
         if self.notes:
             self.metadata["description"] = self.notes
         identifier = self.getid()
@@ -855,7 +882,8 @@ class ARBJsonUnit(FlatJsonUnit):
                 self.storevalue(output, value, override_key=key)
         else:
             self.storevalue(output, self.target, override_key=identifier)
-            self.storevalue(output, self.metadata, override_key=f"@{identifier}")
+            if self.metadata:
+                self.storevalue(output, self.metadata, override_key=f"@{identifier}")
 
     def isheader(self):
         return self._id == "@"
@@ -873,7 +901,7 @@ class ARBJsonFile(JsonFile):
 
     UnitClass = ARBJsonUnit
 
-    def __init__(self, inputfile=None, filter=None, **kwargs):
+    def __init__(self, inputfile=None, filter=None, **kwargs) -> None:
         super().__init__(inputfile, filter, **kwargs)
         self.dump_args = {
             "separators": (",", ": "),
@@ -917,7 +945,7 @@ class ARBJsonFile(JsonFile):
 
 
 class FormatJSJsonUnit(FlatJsonUnit):
-    def storevalues(self, output):
+    def storevalues(self, output) -> None:
         value = {"defaultMessage": self.target}
         if self.notes:
             value["description"] = self.notes
@@ -972,6 +1000,14 @@ class NextcloudJsonUnit(FlatJsonUnit):
             return list(self.target.strings)
         return self.target
 
+    @property
+    def source(self):
+        return self.getid()
+
+    @source.setter
+    def source(self, source) -> None:
+        self.setid(source)
+
 
 class NextcloudJsonFile(JsonFile):
     """
@@ -993,7 +1029,7 @@ class NextcloudJsonFile(JsonFile):
         inputfile: str | bytes | TextIO | BinaryIO | None = None,
         filter: Any = None,
         **kwargs,
-    ):
+    ) -> None:
         """Construct a Nextcloud JSON file."""
         super().__init__(inputfile, filter, **kwargs)
         # Store top-level elements outside 'translations' for preservation
@@ -1007,7 +1043,7 @@ class NextcloudJsonFile(JsonFile):
         name_node: str | int | None = None,
         name_last_node: str | int | None = None,
         last_node: dict | list | None = None,
-    ) -> Generator[NextcloudJsonUnit, None, None]:
+    ) -> Generator[NextcloudJsonUnit]:
         """Extract units from the translations key only."""
         # Store metadata (everything outside 'translations')
         for key, value in data.items():
@@ -1048,7 +1084,7 @@ class NextcloudJsonFile(JsonFile):
         out.write(b"\n")
 
 
-class RESJSONUnit(FlatJsonUnit):
+class RESJSONUnit(base.MetadataTranslationUnit, FlatJsonUnit):
     """A RESJSON entry with metadata support."""
 
     ID_FORMAT = "{}"
@@ -1061,17 +1097,26 @@ class RESJSONUnit(FlatJsonUnit):
         placeholders=None,
         metadata=None,
         **kwargs,
-    ):
-        super().__init__(source, item, notes, placeholders, **kwargs)
-        self.metadata = metadata or {}
+    ) -> None:
+        # Pass metadata to MetadataTranslationUnit via super().__init__
+        super().__init__(
+            source=source,
+            item=item,
+            notes=notes,
+            placeholders=placeholders,
+            metadata=metadata,
+            **kwargs,
+        )
 
-    def storevalues(self, output):
+    def storevalues(self, output) -> None:
         # Sync notes to metadata
         if self.notes:
             self.metadata["comment"] = self.notes
         elif "comment" in self.metadata and not self.notes:
             # Remove comment if notes were cleared
             del self.metadata["comment"]
+        if self._source:
+            self.metadata["source"] = self._source
 
         identifier = self.getid()
         # Store the main value
@@ -1080,6 +1125,17 @@ class RESJSONUnit(FlatJsonUnit):
         for key, value in self.metadata.items():
             metadata_key = f"_{identifier}.{key}"
             self.storevalue(output, value, override_key=metadata_key)
+
+    @property
+    def source(self):
+        return self._source
+
+    @source.setter
+    def source(self, source) -> None:
+        self._source = source
+
+    def getcontext(self):
+        return self.getid()
 
 
 class RESJSONFile(JsonFile):
@@ -1105,51 +1161,41 @@ class RESJSONFile(JsonFile):
         last_node=None,
     ):
         # First pass: identify all actual keys (not metadata)
-        actual_keys = set()
-        # Preserve order of metadata keys for deterministic serialization
-        metadata_key_list = []
-
-        for key in data:
-            if key.startswith("_") and "." in key[1:]:
-                metadata_key_list.append(key)
-            else:
-                actual_keys.add(key)
-
+        key_map = {
+            key: key.removeprefix("_").rsplit(".", 1)[0]
+            if key.startswith("_") and "." in key[1:]
+            else key
+            for key in data
+        }
         # Second pass: collect metadata for each actual key, preserving order
-        metadata_keys = defaultdict(dict)
-        for metadata_key in metadata_key_list:
-            # Try to match this metadata key to an actual key
-            # Pattern is _KEY.SUFFIX where KEY can contain dots
-            without_underscore = metadata_key[1:]
-            # Split from the right to handle keys with dots (e.g., "foo.bar.comment" -> ["foo.bar", "comment"])
-            parts = without_underscore.rsplit(".", 1)
-            if len(parts) == 2:
-                potential_base_key, suffix = parts
-                # Check if this matches an actual key
-                if potential_base_key in actual_keys:
-                    metadata_keys[potential_base_key][suffix] = data[metadata_key]
-                    continue
-            # If we couldn't match, treat the whole thing as a regular key
-            # Edge case: If a metadata key exists (e.g., "_foo.bar") but "foo.bar" is not in the data,
-            # it will be treated as a regular key and processed with its original name (including underscore)
-            actual_keys.add(metadata_key)
-
-        # Extract units
-        for item, value in data.items():
-            # Skip metadata keys that were matched
-            if item in metadata_key_list and item not in actual_keys:
-                continue
+        metadata = defaultdict(dict)
+        translations = defaultdict(str)
+        for key, value in data.items():
             if not isinstance(value, (str, int)):
                 raise base.ParseError(
-                    ValueError(f"Key {item!r} does not contain string: {value!r}")
+                    ValueError(f"Key {key!r} does not contain string: {value!r}")
                 )
-            metadata = metadata_keys.get(item, {})
+            actual_key = key_map[key]
+            if actual_key == key:
+                # Data
+                translations[key] = value
+            else:
+                suffix = key.rsplit(".", 1)[1]
+                metadata[actual_key][suffix] = value
+
+        # Extract units
+        processed = set()
+        for key in key_map.values():
+            if key in processed:
+                continue
+            processed.add(key)
             unit = self.UnitClass(
-                value,
-                item,
-                metadata.get("comment", ""),
-                metadata.get("placeholders", None),
-                metadata=metadata,
+                metadata[key].get("source", ""),
+                key,
+                metadata[key].get("comment", ""),
+                metadata[key].get("placeholders", None),
+                metadata=metadata[key],
             )
-            unit.setid(item, unitid=self.UnitClass.IdClass.from_key(item))
+            unit.target = translations[key]
+            unit.setid(key, unitid=self.UnitClass.IdClass.from_key(key))
             yield unit

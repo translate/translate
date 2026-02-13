@@ -46,10 +46,10 @@ def is_iterable_but_not_string(o):
 
 
 class rerc:
-    def __init__(self, templatefile, charset="utf-8", lang=None, sublang=None):
+    def __init__(self, templatefile, charset="utf-8", lang=None, sublang=None) -> None:
         self.templatecontent = templatefile.read()
         self.templatestore = rcfile()
-        self.templatestore.charset = charset
+        self.templatestore.charset = charset  # ty:ignore[unresolved-attribute]
         self.templatestore.parse(self.templatecontent)
         self.inputdict = {}
         self.charset = charset
@@ -70,9 +70,9 @@ class rerc:
         msgid = toks.caption[1:-1]
         if msgid in self.inputdict:
             if name in self.inputdict[msgid]:
-                yield '"' + self.inputdict[msgid][name] + '"'
+                yield f'"{self.inputdict[msgid][name]}"'
             elif EMPTY_LOCATION in self.inputdict[msgid]:
-                yield '"' + self.inputdict[msgid][EMPTY_LOCATION] + '"'
+                yield f'"{self.inputdict[msgid][EMPTY_LOCATION]}"'
         else:
             yield toks.caption
 
@@ -131,9 +131,9 @@ class rerc:
             # append translation if available, otherwise use as is
             if msgid in self.inputdict:
                 if name in self.inputdict[msgid]:
-                    tmp.append('"' + self.inputdict[msgid][name] + '"')
+                    tmp.append(f'"{self.inputdict[msgid][name]}"')
                 elif EMPTY_LOCATION in self.inputdict[msgid]:
-                    tmp.append('"' + self.inputdict[msgid][EMPTY_LOCATION] + '"')
+                    tmp.append(f'"{self.inputdict[msgid][EMPTY_LOCATION]}"')
             elif i > 1:
                 tmp.append(" ".join(c[1:i]))
 
@@ -149,7 +149,6 @@ class rerc:
 
         if addnl:
             yield self.templatestore.newline
-            addnl = False
         yield BLOCK_END
 
     def convert_string_table(self, s, loc, toks):
@@ -183,9 +182,9 @@ class rerc:
             tmp = c[1:]
             if msgid in self.inputdict:
                 if name in self.inputdict[msgid]:
-                    tmp = ['"' + self.inputdict[msgid][name] + '"']
+                    tmp = [f'"{self.inputdict[msgid][name]}"']
                 elif EMPTY_LOCATION in self.inputdict[msgid]:
-                    tmp = ['"' + self.inputdict[msgid][EMPTY_LOCATION] + '"']
+                    tmp = [f'"{self.inputdict[msgid][EMPTY_LOCATION]}"']
 
             for part in tmp[:-1]:
                 yield part
@@ -196,7 +195,6 @@ class rerc:
 
         if addnl:
             yield self.templatestore.newline
-            addnl = False
         yield BLOCK_END
 
     def convert_language(self, s, loc, toks):
@@ -217,9 +215,9 @@ class rerc:
             msgid = popup.caption[1:-1]
             if msgid in self.inputdict:
                 if name in self.inputdict[msgid]:
-                    yield '"' + self.inputdict[msgid][name] + '"'
+                    yield f'"{self.inputdict[msgid][name]}"'
                 elif EMPTY_LOCATION in self.inputdict[msgid]:
-                    yield '"' + self.inputdict[msgid][EMPTY_LOCATION] + '"'
+                    yield f'"{self.inputdict[msgid][EMPTY_LOCATION]}"'
             else:
                 yield popup.caption
         else:
@@ -252,10 +250,10 @@ class rerc:
                     msgid = element.values_[0][1:-1]
                     if msgid in self.inputdict:
                         if name in self.inputdict[msgid]:
-                            element.values_[0] = '"' + self.inputdict[msgid][name] + '"'
+                            element.values_[0] = f'"{self.inputdict[msgid][name]}"'
                         elif EMPTY_LOCATION in self.inputdict[msgid]:
                             element.values_[0] = (
-                                '"' + self.inputdict[msgid][EMPTY_LOCATION] + '"'
+                                f'"{self.inputdict[msgid][EMPTY_LOCATION]}"'
                             )
 
                     yield ", ".join(element.values_)
@@ -319,7 +317,7 @@ class rerc:
         statement.add_parse_action(self.translate_strings)
         return statement.transform_string(self.templatecontent.decode(self.charset))
 
-    def makestoredict(self, store, includefuzzy=False):
+    def makestoredict(self, store, includefuzzy=False) -> None:
         """Make a dictionary of the translations."""
         for unit in store.units:
             if includefuzzy or not unit.isfuzzy():
@@ -356,7 +354,7 @@ def convertrc(
     sublang=None,
     outputthreshold=None,
     output_charset=None,
-):
+) -> int:
     inputstore = po.pofile(inputfile)
 
     if not convert.should_output_store(inputstore, outputthreshold):
@@ -381,7 +379,7 @@ def convertrc(
     return 1
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     # handle command line options
     formats = {("po", "rc"): ("rc", convertrc)}
     parser = convert.ConvertOptionParser(

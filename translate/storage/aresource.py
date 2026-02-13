@@ -56,7 +56,7 @@ class DecodingXMLParser:
     EMIT_DEPTH = 1
     FOREIGN_DTD = True
 
-    def __init__(self, text: str, *, escape_all: bool = True):
+    def __init__(self, text: str, *, escape_all: bool = True) -> None:
         self.text = text.encode("utf-8")
         self.output: list[str] = []
         self.emit_start: int | None = None
@@ -165,7 +165,7 @@ class DecodingXMLParser:
             return text.lstrip()
         return text
 
-    def emit(self):
+    def emit(self) -> None:
         if self.emit_start is not None:
             text = self.text[self.emit_start : self.parser.CurrentByteIndex].decode(
                 "utf-8"
@@ -181,34 +181,34 @@ class DecodingXMLParser:
         self.raw_string = True
         self.in_string = False
 
-    def StartElementHandler(self, _name, _attributes):
+    def StartElementHandler(self, _name, _attributes) -> None:
         self.emit()
         if self.depth >= self.EMIT_DEPTH:
             self.emit_start = self.parser.CurrentByteIndex
         self.depth += 1
 
-    def EndElementHandler(self, _name):
+    def EndElementHandler(self, _name) -> None:
         self.emit()
         if self.depth >= self.EMIT_DEPTH:
             self.emit_start = self.parser.CurrentByteIndex
         self.depth -= 1
 
-    def CharacterDataHandler(self, _data):
+    def CharacterDataHandler(self, _data) -> None:
         if not self.character_data and not self.in_string:
             self.emit()
             self.emit_start = self.parser.CurrentByteIndex
             self.raw_string = False
             self.in_string = True
 
-    def StartCdataSectionHandler(self):
+    def StartCdataSectionHandler(self) -> None:
         self.emit()
         self.character_data = True
         self.emit_start = self.parser.CurrentByteIndex
 
-    def EndCdataSectionHandler(self):
+    def EndCdataSectionHandler(self) -> None:
         self.character_data = False
 
-    def DefaultHandler(self, _data):
+    def DefaultHandler(self, _data) -> None:
         if self.depth >= self.EMIT_DEPTH:
             self.emit()
             self.emit_start = self.parser.CurrentByteIndex
@@ -227,7 +227,7 @@ class EncodingXMLParser(DecodingXMLParser):
     EMIT_DEPTH = 0
     FOREIGN_DTD = False
 
-    def process_string(self, text: str) -> tuple[str, bool, bool]:
+    def process_string(self, text: str) -> tuple[str, bool, bool]:  # ty:ignore[invalid-method-override]
         return (
             AndroidResourceUnit.escape(text, quote_wrapping_whitespaces=False),
             False,
@@ -263,7 +263,7 @@ class AndroidResourceUnit(base.TranslationUnit):
             term = cls(None, xmlelement=element)
         return term
 
-    def __init__(self, source, empty=False, xmlelement=None, **kwargs):
+    def __init__(self, source, empty=False, xmlelement=None, **kwargs) -> None:
         if xmlelement is not None:
             self.xmlelement = xmlelement
         elif self.hasplurals(source):
@@ -280,13 +280,13 @@ class AndroidResourceUnit(base.TranslationUnit):
     def marktranslatable(self, value: bool) -> None:
         return self.xmlelement.set("translatable", "true" if value else "false")
 
-    def isblank(self):
+    def isblank(self) -> bool:
         return not bool(self.getid())
 
     def getid(self):
         return self.xmlelement.get("name")
 
-    def setid(self, newid):
+    def setid(self, newid):  # ty:ignore[invalid-method-override]
         return self.xmlelement.set("name", newid)
 
     def getcontext(self):
@@ -363,14 +363,14 @@ class AndroidResourceUnit(base.TranslationUnit):
 
         return parser.parse()
 
-    def set_xml_text_plain(self, target, xmltarget):
+    def set_xml_text_plain(self, target, xmltarget) -> None:
         # Remove possible old elements
         for x in xmltarget.iterchildren():
             xmltarget.remove(x)
         # Handle text only
         xmltarget.text = self.escape(target)
 
-    def set_xml_text_value(self, target, xmltarget):
+    def set_xml_text_value(self, target, xmltarget) -> None:
         if "<" in target or "&" in target:
             # Try to handle it as legacy XML
             parser = etree.XMLParser(strip_cdata=False, resolve_entities=False)
@@ -433,7 +433,7 @@ class AndroidResourceUnit(base.TranslationUnit):
         return multistring([plurals.get(tag, "") for tag in plural_tags])
 
     @target.setter
-    def target(self, target):
+    def target(self, target) -> None:
         if self.hasplurals(self.source) or self.hasplurals(target):
             # Fix the root tag if mismatching
             if self.xmlelement.tag != self.PLURAL_TAG:
@@ -445,7 +445,7 @@ class AndroidResourceUnit(base.TranslationUnit):
                 self.xmlelement = newelement
                 self.setid(old_id)
 
-            plural_tags = self._store.get_plural_tags()
+            plural_tags = self._store.get_plural_tags()  # ty:ignore[possibly-missing-attribute]
 
             # Sync plural_strings elements to plural_tags count.
             plural_strings = self.sync_plural_count(target, plural_tags)
@@ -459,7 +459,7 @@ class AndroidResourceUnit(base.TranslationUnit):
             # Include additional plural for decimal numbers if not present. This is
             # enforced by Android lint but translate-toolkit currently does not support
             # editing this.
-            locale = self._store.get_base_locale_code()
+            locale = self._store.get_base_locale_code()  # ty:ignore[possibly-missing-attribute]
             if locale in data.DECIMAL_EXTRA_TAGS:
                 for extra in data.DECIMAL_EXTRA_TAGS[locale]:
                     if extra not in plural_tags:
@@ -502,7 +502,7 @@ class AndroidResourceUnit(base.TranslationUnit):
         return self.xmlelement
 
     # Notes are handled as previous sibling comments.
-    def addnote(self, text, origin=None, position="append"):
+    def addnote(self, text, origin=None, position="append") -> None:
         if origin in {"programmer", "developer", "source code", None}:
             self.xmlelement.addprevious(etree.Comment(text))
         else:
@@ -520,16 +520,16 @@ class AndroidResourceUnit(base.TranslationUnit):
             return "\n".join(comments)
         return super().getnotes(origin)
 
-    def removenotes(self, origin=None):
+    def removenotes(self, origin=None) -> None:
         if (self.xmlelement is not None) and (self.xmlelement.getparent is not None):
             prevSibling = self.xmlelement.getprevious()
             while (prevSibling is not None) and (prevSibling.tag is etree.Comment):
-                prevSibling.getparent().remove(prevSibling)
+                prevSibling.getparent().remove(prevSibling)  # ty:ignore[possibly-missing-attribute]
                 prevSibling = self.xmlelement.getprevious()
 
         super().removenotes()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return etree.tostring(self.xmlelement, pretty_print=True, encoding="unicode")
 
     def __eq__(self, other):
@@ -554,7 +554,7 @@ class AndroidResourceFile(lisa.LISAfile):
     XMLindent = {"indent": "    ", "leaves": {"string", "item"}, "trailing_eol": True}
     XMLuppercaseEncoding = False
 
-    def initbody(self):
+    def initbody(self) -> None:
         """
         Initialises self.body so it never needs to be retrieved from the XML
         again.
@@ -562,7 +562,7 @@ class AndroidResourceFile(lisa.LISAfile):
         self.namespace = self.document.getroot().nsmap.get(None, None)
         self.body = self.document.getroot()
 
-    def parse(self, xml):
+    def parse(self, xml) -> None:
         """Populates this object from the given xml string."""
         if not hasattr(self, "filename"):
             self.filename = getattr(xml, "name", "")
@@ -600,7 +600,7 @@ class AndroidResourceFile(lisa.LISAfile):
 
         return target_lang
 
-    def addunit(self, unit, new=True):
+    def addunit(self, unit, new=True) -> None:
         """
         Adds unit to the document.
 
@@ -611,7 +611,7 @@ class AndroidResourceFile(lisa.LISAfile):
         do_cleanup = False
         if new:
             # Include any possible new namespaces
-            newns = self.body.nsmap
+            newns = self.body.nsmap  # ty:ignore[possibly-missing-attribute]
             for ns in unit.xmlelement.nsmap:
                 if ns not in newns:
                     do_cleanup = True
@@ -630,15 +630,15 @@ class AndroidResourceFile(lisa.LISAfile):
                 cloned_doc.getroot().clear()
                 self.XMLdoctype = etree.tostring(
                     cloned_doc, xml_declaration=False, encoding="unicode"
-                ).rsplit("\n", 1)[0]
+                ).rsplit("\n", 1)[0]  # ty:ignore[invalid-argument-type]
 
         super().addunit(unit, new)
         # Move aliased namespaces to the <resources> tag
         # The top_nsmap was introduced in LXML 3.5.0
         if do_cleanup:
-            etree.cleanup_namespaces(self.body, top_nsmap=newns)
+            etree.cleanup_namespaces(self.body, top_nsmap=newns)  # ty:ignore[invalid-argument-type]
 
-    def removeunit(self, unit):
+    def removeunit(self, unit) -> None:
         unit.removenotes()
         super().removeunit(unit)
 

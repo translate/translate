@@ -13,7 +13,7 @@ class TestPO2TMX:
         """Helper that converts po source to tmx source without requiring files."""
         inputfile = BytesIO(posource.encode("utf-8"))
         outputfile = BytesIO()
-        outputfile.tmxfile = tmx.tmxfile(inputfile=None, sourcelanguage=sourcelanguage)
+        outputfile.tmxfile = tmx.tmxfile(inputfile=None, sourcelanguage=sourcelanguage)  # ty:ignore[unresolved-attribute]
         po2tmx.convertpo(
             inputfile,
             outputfile,
@@ -22,9 +22,9 @@ class TestPO2TMX:
             targetlanguage=targetlanguage,
             comment=comment,
         )
-        return outputfile.tmxfile
+        return outputfile.tmxfile  # ty:ignore[unresolved-attribute]
 
-    def test_basic(self):
+    def test_basic(self) -> None:
         minipo = r"""# Afrikaans translation of program ABC
 #
 msgid ""
@@ -58,7 +58,7 @@ msgstr "Toepassings"
         assert xmltext.index("segtype")
         assert xmltext.index("srclang")
 
-    def test_sourcelanguage(self):
+    def test_sourcelanguage(self) -> None:
         minipo = 'msgid "String"\nmsgstr "String"\n'
         tmx = self.po2tmx(minipo, sourcelanguage="xh")
         print("The generated xml:")
@@ -66,16 +66,16 @@ msgstr "Toepassings"
         header = tmx.document.find("header")
         assert header.get("srclang") == "xh"
 
-    def test_targetlanguage(self):
+    def test_targetlanguage(self) -> None:
         minipo = 'msgid "String"\nmsgstr "String"\n'
         tmx = self.po2tmx(minipo, targetlanguage="xh")
         print("The generated xml:")
         print(bytes(tmx))
-        tuv = tmx.document.findall(".//{}".format(tmx.namespaced("tuv")))[1]
+        tuv = tmx.document.findall(f".//{tmx.namespaced('tuv')}")[1]
         # tag[0] will be the source, we want the target tuv
         assert tuv.get(f"{{{XML_NS}}}lang") == "xh"
 
-    def test_multiline(self):
+    def test_multiline(self) -> None:
         """Test multiline po entry."""
         minipo = r'''msgid "First part "
 "and extra"
@@ -86,7 +86,7 @@ msgstr "Eerste deel "
         print(bytes(tmx))
         assert tmx.translate("First part and extra") == "Eerste deel en ekstra"
 
-    def test_escapednewlines(self):
+    def test_escapednewlines(self) -> None:
         """Test the escaping of newlines."""
         minipo = r"""msgid "First line\nSecond line"
 msgstr "Eerste lyn\nTweede lyn"
@@ -96,7 +96,7 @@ msgstr "Eerste lyn\nTweede lyn"
         print(bytes(tmx))
         assert tmx.translate("First line\nSecond line") == "Eerste lyn\nTweede lyn"
 
-    def test_escapedtabs(self):
+    def test_escapedtabs(self) -> None:
         """Test the escaping of tabs."""
         minipo = r"""msgid "First column\tSecond column"
 msgstr "Eerste kolom\tTweede kolom"
@@ -108,7 +108,7 @@ msgstr "Eerste kolom\tTweede kolom"
             tmx.translate("First column\tSecond column") == "Eerste kolom\tTweede kolom"
         )
 
-    def test_escapedquotes(self):
+    def test_escapedquotes(self) -> None:
         """Test the escaping of quotes (and slash)."""
         minipo = r"""msgid "Hello \"Everyone\""
 msgstr "Good day \"All\""
@@ -122,7 +122,7 @@ msgstr "Gebruik \\\"."
         assert tmx.translate('Hello "Everyone"') == 'Good day "All"'
         assert tmx.translate(r"Use \".") == r"Gebruik \"."
 
-    def test_exclusions(self):
+    def test_exclusions(self) -> None:
         """Test that empty and fuzzy messages are excluded."""
         minipo = r"""#, fuzzy
 msgid "One"
@@ -140,7 +140,7 @@ msgstr "Drie"
         assert b"<tu" not in bytes(tmx)
         assert len(tmx.units) == 0
 
-    def test_nonascii(self):
+    def test_nonascii(self) -> None:
         """Tests that non-ascii conversion works."""
         minipo = """msgid "Bézier curve"
 msgstr "Bézier-kurwe"
@@ -149,7 +149,7 @@ msgstr "Bézier-kurwe"
         print(bytes(tmx))
         assert tmx.translate("Bézier curve") == "Bézier-kurwe"
 
-    def test_nonecomments(self):
+    def test_nonecomments(self) -> None:
         """Tests that none comments are imported."""
         minipo = """#My comment rules
 msgid "Bézier curve"
@@ -160,7 +160,7 @@ msgstr "Bézier-kurwe"
         unit = tmx.findunits("Bézier curve")
         assert len(unit[0].getnotes()) == 0
 
-    def test_otherscomments(self):
+    def test_otherscomments(self) -> None:
         """Tests that others comments are imported."""
         minipo = """#My comment rules
 msgid "Bézier curve"
@@ -171,7 +171,7 @@ msgstr "Bézier-kurwe"
         unit = tmx.findunits("Bézier curve")
         assert unit[0].getnotes() == "My comment rules"
 
-    def test_sourcecomments(self):
+    def test_sourcecomments(self) -> None:
         """Tests that source comments are imported."""
         minipo = """#: ../PuzzleFourSided.h:45
 msgid "Bézier curve"
@@ -182,7 +182,7 @@ msgstr "Bézier-kurwe"
         unit = tmx.findunits("Bézier curve")
         assert unit[0].getnotes() == "../PuzzleFourSided.h:45"
 
-    def test_typecomments(self):
+    def test_typecomments(self) -> None:
         """Tests that others comments are imported."""
         minipo = """#, csharp-format
 msgid "Bézier curve"
@@ -205,7 +205,7 @@ class TestPO2TMXCommand(test_convert.TestConvertCommand, TestPO2TMX):
         "--comments",
     ]
 
-    def test_context(self):
+    def test_context(self) -> None:
         pocontent = '#: simple.c\nmsgctxt "Context"\nmsgid "Same"\nmsgstr "Target"\n'
         self.create_testfile("test.po", pocontent)
         self.run_command("test.po", "test.tmx", language="af")

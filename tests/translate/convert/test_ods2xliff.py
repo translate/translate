@@ -10,7 +10,7 @@ class TestODF2XLIFFCommand(test_convert.TestConvertCommand):
 
     convertmodule = odf2xliff
 
-    def test_convert(self):
+    def test_convert(self) -> None:
         self.run_command(
             o="simple.xlf",
             i=os.path.join(os.path.dirname(__file__), "test.odt"),

@@ -20,7 +20,7 @@ class TestPO2XLIFF:
         assert len(xliff.units) == 1
         return xliff.units[0]
 
-    def test_minimal(self):
+    def test_minimal(self) -> None:
         minipo = """msgid "red"\nmsgstr "rooi"\n"""
         xliff = self.po2xliff(minipo)
         print("The generated xml:")
@@ -29,7 +29,7 @@ class TestPO2XLIFF:
         assert xliff.translate("red") == "rooi"
         assert xliff.translate("bla") is None
 
-    def test_basic(self):
+    def test_basic(self) -> None:
         minipo = r"""# Afrikaans translation of program ABC
 #
 msgid ""
@@ -61,7 +61,7 @@ msgstr "Toepassings"
         assert xmltext.index("source-language")
         assert xmltext.index("datatype")
 
-    def test_multiline(self):
+    def test_multiline(self) -> None:
         """Test multiline po entry."""
         minipo = r'''msgid "First part "
 "and extra"
@@ -72,7 +72,7 @@ msgstr "Eerste deel "
         print(bytes(xliff))
         assert xliff.translate("First part and extra") == "Eerste deel en ekstra"
 
-    def test_escapednewlines(self):
+    def test_escapednewlines(self) -> None:
         """Test the escaping of newlines."""
         minipo = r"""msgid "First line\nSecond line"
 msgstr "Eerste lyn\nTweede lyn"
@@ -88,7 +88,7 @@ msgstr "Eerste lyn\nTweede lyn"
         assert xmltext.find("line\nSecond") > 0
         assert xmltext.find("lyn\nTweede") > 0
 
-    def test_escapedtabs(self):
+    def test_escapedtabs(self) -> None:
         """Test the escaping of tabs."""
         minipo = r"""msgid "First column\tSecond column"
 msgstr "Eerste kolom\tTweede kolom"
@@ -107,7 +107,7 @@ msgstr "Eerste kolom\tTweede kolom"
         assert xmltext.find("column\tSecond") > 0
         assert xmltext.find("kolom\tTweede") > 0
 
-    def test_escapedquotes(self):
+    def test_escapedquotes(self) -> None:
         """Test the escaping of quotes (and slash)."""
         minipo = r"""msgid "Hello \"Everyone\""
 msgstr "Good day \"All\""
@@ -133,7 +133,7 @@ msgstr "Gebruik \\\"."
         contexts = node.findall(f".//{{{namespace}}}context")
         return [(context.get("context-type"), getText(context)) for context in contexts]
 
-    def test_locationcomments(self):
+    def test_locationcomments(self) -> None:
         minipo = r"""#: file.c:123 asdf.c
 msgid "one"
 msgstr "kunye"
@@ -145,7 +145,7 @@ msgstr "kunye"
         assert xliff.translate("one") == "kunye"
         assert len(xliff.units) == 1
         node = xliff.units[0].xmlelement
-        contextgroups = node.findall(".//{}".format(xliff.namespaced("context-group")))
+        contextgroups = node.findall(f".//{xliff.namespaced('context-group')}")
         assert len(contextgroups) == 2
         for group in contextgroups:
             assert group.get("name") == "po-reference"
@@ -157,7 +157,7 @@ msgstr "kunye"
             ("sourcefile", "asdf.c"),
         ]
 
-    def test_othercomments(self):
+    def test_othercomments(self) -> None:
         minipo = r"""# Translate?
 # How?
 msgid "one"
@@ -170,7 +170,7 @@ msgstr "kunye"
         assert xliff.translate("one") == "kunye"
         assert len(xliff.units) == 1
         node = xliff.units[0].xmlelement
-        contextgroups = node.findall(".//{}".format(xliff.namespaced("context-group")))
+        contextgroups = node.findall(f".//{xliff.namespaced('context-group')}")
         assert len(contextgroups) == 1
         for group in contextgroups:
             assert group.get("name") == "po-entry"
@@ -180,7 +180,7 @@ msgstr "kunye"
 
         assert xliff.units[0].getnotes("translator") == "Translate?\nHow?"
 
-    def test_automaticcomments(self):
+    def test_automaticcomments(self) -> None:
         minipo = r"""#. Don't translate.
 #. Please
 msgid "one"
@@ -193,7 +193,7 @@ msgstr "kunye"
         assert xliff.translate("one") == "kunye"
         assert len(xliff.units) == 1
         node = xliff.units[0].xmlelement
-        contextgroups = node.findall(".//{}".format(xliff.namespaced("context-group")))
+        contextgroups = node.findall(f".//{xliff.namespaced('context-group')}")
         assert len(contextgroups) == 1
         for group in contextgroups:
             assert group.get("name") == "po-entry"
@@ -201,7 +201,7 @@ msgstr "kunye"
         tuples = self.getcontexttuples(node, xliff.namespace)
         assert tuples == [("x-po-autocomment", "Don't translate.\nPlease")]
 
-    def test_header(self):
+    def test_header(self) -> None:
         minipo = r"""# Pulana  Translation for bla
 # Hallo Ma!
 #, fuzzy
@@ -223,7 +223,7 @@ msgstr ""
             unit.getnotes("po-translator") == "Pulana  Translation for bla\nHallo Ma!"
         )
 
-    def test_fuzzy(self):
+    def test_fuzzy(self) -> None:
         minipo = r"""#, fuzzy
 msgid "two"
 msgstr "pedi"
@@ -239,7 +239,7 @@ msgstr "raro"
         assert xliff.units[0].isfuzzy()
         assert not xliff.units[1].isfuzzy()
 
-    def test_germanic_plurals(self):
+    def test_germanic_plurals(self) -> None:
         minipo = r"""msgid "cow"
 msgid_plural "cows"
 msgstr[0] "inkomo"
@@ -252,7 +252,7 @@ msgstr[1] "iinkomo"
         assert len(xliff.units) == 1
         assert xliff.translate("cow") == "inkomo"
 
-    def test_funny_plurals(self):
+    def test_funny_plurals(self) -> None:
         minipo = r"""msgid "cow"
 msgid_plural "cows"
 msgstr[0] "inkomo"
@@ -266,7 +266,7 @@ msgstr[2] "iiinkomo"
         assert len(xliff.units) == 1
         assert xliff.translate("cow") == "inkomo"
 
-    def test_language_tags(self):
+    def test_language_tags(self) -> None:
         minipo = r"""msgid "Een"
 msgstr "Uno"
 """
@@ -274,14 +274,14 @@ msgstr "Uno"
         assert xliff.sourcelanguage == "af"
         assert xliff.targetlanguage == "es"
 
-    def test_variables(self):
+    def test_variables(self) -> None:
         minipo = r'''msgid "%s%s%s%s has made %s his or her buddy%s%s"
 msgstr "%s%s%s%s het %s sy/haar vriend/vriendin gemaak%s%s"'''
         xliff = self.po2xliff(minipo)
         print(xliff.units[0].source)
         assert xliff.units[0].source == "%s%s%s%s has made %s his or her buddy%s%s"
 
-    def test_approved(self):
+    def test_approved(self) -> None:
         minipo = r"""#, fuzzy
 msgid "two"
 msgstr "pedi"

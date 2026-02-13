@@ -46,10 +46,10 @@ def xliff___eq__(self, other):
     return self.units == other.units
 
 
-xliff.xlifffile.__eq__ = xliff___eq__
+xliff.xlifffile.__eq__ = xliff___eq__  # ty:ignore[invalid-assignment]
 
 
-def print_diff(store1, store2):
+def print_diff(store1, store2) -> None:
     store1_lines = bytes(store1).decode(store1.encoding).split("\n")
     store2_lines = bytes(store2).decode(store2.encoding).split("\n")
     for line in difflib.unified_diff(store1_lines, store2_lines):
@@ -76,7 +76,7 @@ GENERATED_XLF_TOOLKIT_INLINE = os.path.join(
 )
 
 
-def test_odf2xliff():
+def test_odf2xliff() -> None:
     reference_xlf = factory.getobject(REFERENCE_XLF)
 
     odf2xliff.main(args(SOURCE_ODF, GENERATED_XLF_TOOLKIT))
@@ -97,7 +97,7 @@ def is_content_file(filename):
 class ODF:
     encoding = "utf-8"
 
-    def __init__(self, filename):
+    def __init__(self, filename) -> None:
         self.odf = zipfile.ZipFile(filename)
 
     def _get_data(self, filename):
@@ -120,9 +120,9 @@ class ODF:
             return False
         for filename in l1:
             if is_content_file(filename):
-                l = self._get_doc_root(filename)
-                r = other._get_doc_root(filename)
-                if l != r:
+                root1 = self._get_doc_root(filename)
+                root2 = other._get_doc_root(filename)
+                if root1 != root2:
                     print("difference for file named", filename)
                     return False
             elif self._get_data(filename) != other._get_data(filename):
@@ -130,14 +130,14 @@ class ODF:
                 return False
         return True
 
-    def __bytes__(self):
+    def __bytes__(self) -> bytes:
         return self.serialize()
 
     def serialize(self):
         return self._get_doc_root("content.xml")
 
 
-def test_roundtrip():
+def test_roundtrip() -> None:
     odf2xliff.main(args(SOURCE_ODF, TARGET_XLF))
     xliff2odf.main(args(TARGET_XLF, GENERATED_ODF, t=SOURCE_ODF))
 
@@ -148,7 +148,7 @@ def test_roundtrip():
     assert reference_odf == generated_odf
 
 
-def test_odf2xliff2_inline():
+def test_odf2xliff2_inline() -> None:
     """Test for issue #3239."""
     reference_xlf = factory.getobject(REFERENCE_XLF_INLINE)
 
@@ -158,13 +158,13 @@ def test_odf2xliff2_inline():
     assert reference_xlf == generated_xlf_toolkit
 
 
-def remove(filename):
+def remove(filename) -> None:
     """Removes the file if it exists."""
     if os.path.exists(filename):
         os.unlink(filename)
 
 
-def teardown_module(module):
+def teardown_module(module) -> None:
     remove(GENERATED_XLF_TOOLKIT_INLINE)
     remove(GENERATED_XLF_TOOLKIT)
     remove(GENERATED_ODF)

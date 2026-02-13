@@ -26,7 +26,7 @@ for examples and usage instructions.
 from translate.convert import convert, dtd2po, mozfunny2prop, mozlang2po, prop2po
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     formats = {
         (None, "*"): ("*", convert.copytemplate),
         ("*", "*"): ("*", convert.copyinput),
@@ -42,8 +42,8 @@ def main(argv=None):
         ("lang", mozlang2po.run_converter),
     ]
     for format, converter in converters:
-        formats[format, format] = (format + ".po", converter)
-        formats[format] = (format + ".po", converter)
+        formats[format, format] = (f"{format}.po", converter)
+        formats[format] = (f"{format}.po", converter)
     # handle search and replace
     replacer = convert.Replacer("en-US", "${locale}")
     for replaceformat in ("js", "rdf", "manifest"):

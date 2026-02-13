@@ -22,13 +22,15 @@ Contains the base :class:`StringElem` class that represents a node in a
 parsed rich-string tree. It is the base class of all placeables.
 """
 
+from __future__ import annotations
+
 import contextlib
 import logging
 
 logger = logging.getLogger(__name__)
 
 
-def filter_all(e):
+def filter_all(e) -> bool:
     return True
 
 
@@ -49,7 +51,7 @@ class StringElem:
     renderer = None
     """An optional function that returns the Unicode representation of
     the string."""
-    sub = []
+    sub: list[str | StringElem] = []
     """The sub-elements that make up this this string."""
     has_content = True
     """Whether this string can have sub-elements."""
@@ -66,7 +68,7 @@ class StringElem:
     the moment."""
 
     # INITIALIZERS #
-    def __init__(self, sub=None, id=None, rid=None, xid=None, **kwargs):
+    def __init__(self, sub=None, id=None, rid=None, xid=None, **kwargs) -> None:
         if sub is None:
             self.sub = []
         elif isinstance(sub, (str, StringElem)):
@@ -92,7 +94,7 @@ class StringElem:
         """Emulate the ``unicode`` class."""
         return str(self) + rhs
 
-    def __contains__(self, item):
+    def __contains__(self, item) -> bool:
         """Emulate the ``unicode`` class."""
         return item in str(self)
 
@@ -135,7 +137,7 @@ class StringElem:
         """Emulate the ``unicode`` class."""
         return str(self) <= rhs
 
-    def __len__(self):
+    def __len__(self) -> int:
         """Emulate the ``unicode`` class."""
         return len(str(self))
 
@@ -158,17 +160,17 @@ class StringElem:
         """Emulate the ``unicode`` class."""
         return self * lhs
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         elemstr = ", ".join(repr(elem) for elem in self.sub)
-        return "<%(class)s(%(id)s%(rid)s%(xid)s[%(subs)s])>" % {
-            "class": self.__class__.__name__,
-            "id": (self.id is not None and f'id="{self.id}" ') or "",
-            "rid": (self.rid is not None and f'rid="{self.rid}" ') or "",
-            "xid": (self.xid is not None and f'xid="{self.xid}" ') or "",
-            "subs": elemstr,
-        }
+        return "<{class_name}({id}{rid}{xid}[{subs}])>".format(
+            class_name=self.__class__.__name__,
+            id=(self.id is not None and f'id="{self.id}" ') or "",
+            rid=(self.rid is not None and f'rid="{self.rid}" ') or "",
+            xid=(self.xid is not None and f'xid="{self.xid}" ') or "",
+            subs=elemstr,
+        )
 
-    def __str__(self):
+    def __str__(self) -> str:
         if callable(self.renderer):
             return self.renderer(self)
         if not self.isvisible:
@@ -176,7 +178,7 @@ class StringElem:
         return "".join(str(elem) for elem in self.sub)
 
     # METHODS #
-    def apply_to_strings(self, f):
+    def apply_to_strings(self, f) -> None:
         """
         Apply ``f`` to all actual strings in the tree.
 
@@ -184,9 +186,9 @@ class StringElem:
                   string or unicode.
         """
         for elem in self.flatten():
-            for i in range(len(elem.sub)):
-                if isinstance(elem.sub[i], str):
-                    elem.sub[i] = f(elem.sub[i])
+            for i, subelement in enumerate(elem.sub):
+                if isinstance(subelement, str):
+                    elem.sub[i] = f(subelement)
 
     def copy(self):
         """
@@ -204,7 +206,7 @@ class StringElem:
                 cp.sub.append(sub.__class__(sub))
         return cp
 
-    def delete_elem(self, elem):
+    def delete_elem(self, elem) -> None:
         if elem is self:
             self.sub = []
             return
@@ -212,8 +214,8 @@ class StringElem:
         if parent is None:
             raise ElementNotFoundError(repr(elem))
         subidx = -1
-        for i in range(len(parent.sub)):
-            if parent.sub[i] is elem:
+        for i, subelement in enumerate(parent.sub):
+            if subelement is elem:
                 subidx = i
                 break
         if subidx < 0:
@@ -237,13 +239,11 @@ class StringElem:
         if start_index == end_index:
             return StringElem(), self, 0
         if start_index > end_index:
-            raise IndexError(
-                "start_index > end_index: %d > %d" % (start_index, end_index)
-            )
+            raise IndexError(f"start_index > end_index: {start_index} > {end_index}")
         if start_index < 0 or start_index > len(self):
-            raise IndexError("start_index: %d" % (start_index))
+            raise IndexError(f"start_index: {start_index}")
         if end_index < 1 or end_index > len(self) + 1:
-            raise IndexError("end_index: %d" % (end_index))
+            raise IndexError(f"end_index: {end_index}")
 
         start = self.get_index_data(start_index)
         if isinstance(start["elem"], tuple):
@@ -326,9 +326,6 @@ class StringElem:
             newstr = "".join(start["elem"].sub)
             removed = StringElem(newstr[start["offset"] : end["offset"]])
             newstr = newstr[: start["offset"]] + newstr[end["offset"] :]
-            parent = self.get_parent_elem(start["elem"])
-            if parent is None and start["elem"] is self:
-                parent = self
             start["elem"].sub = [newstr]
             self.prune()
             return removed, start["elem"], start["offset"]
@@ -337,10 +334,10 @@ class StringElem:
         range_nodes = self.depth_first()
         startidx = 0
         endidx = -1
-        for i in range(len(range_nodes)):
-            if range_nodes[i] is start["elem"]:
+        for i, range_node in enumerate(range_nodes):
+            if range_node is start["elem"]:
                 startidx = i
-            elif range_nodes[i] is end["elem"]:
+            elif range_node is end["elem"]:
                 endidx = i
                 break
         range_nodes = range_nodes[startidx : endidx + 1]
@@ -540,7 +537,7 @@ class StringElem:
         string (Unicode) representation.
         """
         if offset < 0 or offset > len(self):
-            raise IndexError("Index out of range: %d" % (offset))
+            raise IndexError(f"Index out of range: {offset}")
         if isinstance(text, str):
             text = StringElem(text)
         if not isinstance(text, StringElem):
@@ -685,7 +682,7 @@ class StringElem:
 
         return False
 
-    def insert_between(self, left, right, text):
+    def insert_between(self, left, right, text) -> bool:
         r"""Insert the given text between the two parameter ``StringElem``\s."""
         if not isinstance(left, StringElem) and left is not None:
             raise ValueError('"left" is not a StringElem or None')
@@ -793,14 +790,12 @@ class StringElem:
         logger.debug("Could not insert between %r and %r... odd.", left, right)
         return False
 
-    def isleaf(self):
+    def isleaf(self) -> bool:
         """
         Whether or not this instance is a leaf node in the ``StringElem`` tree.
 
         A node is a leaf node if it is a ``StringElem`` (not a sub-class) and
         contains only sub-elements of type ``str`` or ``unicode``.
-
-        :rtype: bool
         """
         return all(isinstance(e, str) for e in self.sub)
 
@@ -818,7 +813,7 @@ class StringElem:
             else:
                 yield from sub.iter_depth_first(filter)
 
-    def map(self, f, filter=None):
+    def map(self, f, filter=None) -> None:
         """
         Apply ``f`` to all nodes for which ``filter`` returned ``True``
         (optional).
@@ -833,20 +828,19 @@ class StringElem:
                 f(elem)
 
     @classmethod
-    def parse(cls, pstr):
+    def parse(cls, pstr: str) -> StringElem | list[StringElem] | None:
         """
         Parse an instance of this class from the start of the given string.
-        This method should be implemented by any sub-class that wants to
+        This method should be implemented by any subclass that wants to
         parseable by :mod:`translate.storage.placeables.parse`.
 
-        :type  pstr: unicode
         :param pstr: The string to parse into an instance of this class.
         :returns: An instance of the current class, or ``None`` if the string
                   not parseable by this class.
         """
         return cls(pstr)
 
-    def print_tree(self, indent=0, verbose=False):
+    def print_tree(self, indent=0, verbose=False) -> None:
         """
         Print the tree from the current instance's point in an indented
         manner.
@@ -864,7 +858,7 @@ class StringElem:
             else:
                 print(f"{indent_prefix}{indent_prefix}[{elem}]")
 
-    def prune(self):
+    def prune(self) -> None:
         """Remove unnecessary nodes to make the tree optimal."""
         changed = False
         for elem in self.iter_depth_first():
@@ -937,7 +931,7 @@ class StringElem:
             self.prune()
 
     # TODO: Write unit test for this method
-    def remove_type(self, ptype):
+    def remove_type(self, ptype) -> None:
         r"""
         Replace nodes with type ``ptype`` with base ``StringElem``\s,
         containing the same sub-elements. This is only applicable to elements

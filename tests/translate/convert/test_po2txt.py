@@ -16,6 +16,8 @@ class TestPO2Txt:
         output_threshold=None,
         encoding="utf-8",
         wrap=None,
+        flavour=None,
+        no_segmentation=False,
         success_expected=True,
     ):
         """Helper that converts to target format without using files."""
@@ -33,6 +35,8 @@ class TestPO2Txt:
             output_threshold,
             encoding,
             wrap,
+            flavour,
+            no_segmentation,
         )
         assert converter.run() == expected_result
         return None, output_file
@@ -41,7 +45,7 @@ class TestPO2Txt:
         """Helper that converts to target format string without using files."""
         return self._convert(*args, **kwargs)[1].getvalue().decode("utf-8")
 
-    def test_basic(self):
+    def test_basic(self) -> None:
         """Test basic conversion."""
         input_string = """msgid "Heading"
 msgstr "Opskrif"
@@ -57,7 +61,7 @@ Body text"""
 Lyfteks"""
         assert expected_output == self._convert_to_string(input_string, template_string)
 
-    def test_nonascii(self):
+    def test_nonascii(self) -> None:
         """Test conversion with non-ascii text."""
         input_string = """msgid "Heading"
 msgstr "Opskrif"
@@ -73,7 +77,7 @@ File content"""
 Lêerinhoud"""
         assert expected_output == self._convert_to_string(input_string, template_string)
 
-    def test_blank_handling(self):
+    def test_blank_handling(self) -> None:
         """Check that we discard blank messages."""
         input_string = """msgid "Heading"
 msgstr "Opskrif"
@@ -90,7 +94,7 @@ Body text"""
         assert expected_output == self._convert_to_string(input_string)
         assert expected_output == self._convert_to_string(input_string, template_string)
 
-    def test_fuzzy_handling(self):
+    def test_fuzzy_handling(self) -> None:
         """Check that we handle fuzzy message correctly."""
         input_string = """#, fuzzy
 msgid "Heading"
@@ -108,7 +112,7 @@ Lyfteks"""
         assert expected_output == self._convert_to_string(input_string)
         assert expected_output == self._convert_to_string(input_string, template_string)
 
-    def test_obsolete_ignore(self):
+    def test_obsolete_ignore(self) -> None:
         """Check that we handle obsolete message by not using it."""
         input_string = """
 msgid "Heading"
@@ -129,7 +133,7 @@ Lyfteks"""
         assert expected_output == self._convert_to_string(input_string)
         assert expected_output == self._convert_to_string(input_string, template_string)
 
-    def test_header_ignore(self):
+    def test_header_ignore(self) -> None:
         """Check that we ignore headers."""
         input_string = """
 msgid "Heading"
@@ -147,7 +151,7 @@ Lyfteks"""
         assert expected_output == self._convert_to_string(input_string)
         assert expected_output == self._convert_to_string(input_string, template_string)
 
-    def test_convert_completion_below_threshold(self):
+    def test_convert_completion_below_threshold(self) -> None:
         """Check no conversion if input completion is below threshold."""
         input_string = """
 #: key
@@ -162,7 +166,7 @@ msgstr ""
         )
         assert output == expected_output
 
-    def test_convert_completion_above_threshold(self):
+    def test_convert_completion_above_threshold(self) -> None:
         """Check no conversion if input completion is above threshold."""
         input_string = """
 #: key
@@ -176,6 +180,121 @@ msgstr "Ola mundo!"
             input_string, template_string, output_threshold=70
         )
         assert output == expected_output
+
+    def test_substring_replacement(self) -> None:
+        """Check that shorter strings that are substrings don't cause incorrect replacements."""
+        # Test case from issue: "Constructor" should not replace the "Constructor" part in "Constructors"
+        input_string = """#: src.adoc:2
+msgid "Constructor"
+msgstr "Konstrukteur"
+
+#: src.adoc:4
+msgid "Constructors"
+msgstr "Konstrukteure"
+
+#: src.adoc:5
+msgid "pre-Constructor"
+msgstr "vor-Konstrukteur"  # codespell:ignore
+"""
+        template_string = """Constructor
+
+Constructors
+
+pre-Constructor"""
+        expected_output = """Konstrukteur
+
+Konstrukteure
+
+vor-Konstrukteur"""  # codespell:ignore
+        assert expected_output == self._convert_to_string(input_string, template_string)
+
+    def test_duplicate_text_segment_based_replacement(self) -> None:
+        """
+        Test that duplicate text is handled correctly using segment-based replacement.
+
+        When the same text appears multiple times in the template, each occurrence
+        should be treated as a separate segment and translated independently if it
+        has a translation in the PO file.
+        """
+        # Test case 1: Same heading appears in multiple sections, both should be translated
+        input_string = """msgid "Placeables"
+msgstr "Platzhalter"
+
+msgid "Placeables are useful for translation."
+msgstr "Platzhalter sind nützlich für die Übersetzung."
+
+msgid "Placeables are not supported in HTML."
+msgstr "Platzhalter werden in HTML nicht unterstützt."
+"""
+        template_string = """XML
+
+Placeables
+
+Placeables are useful for translation.
+
+HTML
+
+Placeables
+
+Placeables are not supported in HTML."""
+        expected_output = """XML
+
+Platzhalter
+
+Platzhalter sind nützlich für die Übersetzung.
+
+HTML
+
+Platzhalter
+
+Platzhalter werden in HTML nicht unterstützt."""
+        assert expected_output == self._convert_to_string(input_string, template_string)
+
+        # Test case 2: Text that appears in a longer string should not be replaced separately
+        input_string2 = """msgid "Placeables"
+msgstr "Platzhalter"
+
+msgid "Placeables are useful for translation."
+msgstr "Platzhalter sind nützlich für die Übersetzung."
+"""
+        template_string2 = """Placeables
+
+Placeables are useful for translation.
+
+Read about Placeables."""
+        # "Read about Placeables" is a separate segment with no translation, so it stays in English
+        expected_output2 = """Platzhalter
+
+Platzhalter sind nützlich für die Übersetzung.
+
+Read about Placeables."""
+        assert expected_output2 == self._convert_to_string(
+            input_string2, template_string2
+        )
+
+    def test_dokuwiki_flavour_segmentation(self) -> None:
+        """
+        Test that dokuwiki flavour correctly segments headings with markers.
+
+        When using dokuwiki flavour, headings with ====== markers should be
+        properly segmented and the markers preserved in the output.
+        """
+        input_string = """msgid "Introduction"
+msgstr "Einführung"
+
+msgid "This is the introduction section."
+msgstr "Dies ist der Einführungsabschnitt."  # codespell:ignore
+"""
+        # Dokuwiki format with heading markers
+        template_string = """====== Introduction ======
+
+This is the introduction section."""
+        expected_output = """====== Einführung ======
+
+Dies ist der Einführungsabschnitt."""  # codespell:ignore
+        assert expected_output == self._convert_to_string(
+            input_string, template_string, flavour="dokuwiki"
+        )
 
 
 class TestPO2TxtCommand(test_convert.TestConvertCommand, TestPO2Txt):
@@ -191,4 +310,6 @@ class TestPO2TxtCommand(test_convert.TestConvertCommand, TestPO2Txt):
         "--nofuzzy",
         "--encoding",
         "-w WRAP, --wrap=WRAP",
+        "--flavour=FLAVOUR",
+        "--no-segmentation",
     ]

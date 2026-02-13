@@ -46,7 +46,7 @@ class QphUnit(lisa.LISAunit):
     textNode = ""
     namespace = ""
 
-    def createlanguageNode(self, lang, text, purpose):
+    def createlanguageNode(self, lang, text, purpose):  # ty:ignore[invalid-method-override]
         """Returns an xml Element setup with given parameters."""
         assert purpose
         langset = etree.Element(self.namespaced(purpose))
@@ -65,7 +65,7 @@ class QphUnit(lisa.LISAunit):
             n for n in [self._getsourcenode(), self._gettargetnode()] if n is not None
         ]
 
-    def addnote(self, text, origin=None, position="append"):
+    def addnote(self, text, origin=None, position="append") -> None:
         """Add a note specifically in a "definition" tag."""
         current_notes = self.getnotes(origin)
         self.removenotes(origin)
@@ -80,7 +80,7 @@ class QphUnit(lisa.LISAunit):
             comment = notenode.text
         return comment
 
-    def removenotes(self, origin=None):
+    def removenotes(self, origin=None) -> None:
         """Remove all the translator notes."""
         note = self.xmlelement.find(self.namespaced("definition"))
         if note is not None:
@@ -102,7 +102,7 @@ class QphFile(lisa.LISAfile):
 """
     namespace = ""
 
-    def initbody(self):
+    def initbody(self) -> None:
         """
         Initialises self.body so it never needs to be retrieved from the XML
         again.
@@ -111,7 +111,7 @@ class QphFile(lisa.LISAfile):
         self.header = self.document.getroot()
         self.body = self.document.getroot()  # The root node contains the units
 
-    def getsourcelanguage(self):
+    def getsourcelanguage(self) -> str:
         """
         Get the source language for this .qph file.
 
@@ -120,33 +120,30 @@ class QphFile(lisa.LISAfile):
         by the extraction tools.
 
         :return: ISO code e.g. af, fr, pt_BR
-        :rtype: String
         """
         lang = data.normalize_code(self.header.get("sourcelanguage", "en"))
         if lang == "en-us":
             return "en"
         return lang
 
-    def gettargetlanguage(self):
+    def gettargetlanguage(self) -> str:
         """
         Get the target language for this .qph file.
 
         :return: ISO code e.g. af, fr, pt_BR
-        :rtype: String
         """
         return data.normalize_code(self.header.get("language"))
 
-    def settargetlanguage(self, targetlanguage):
+    def settargetlanguage(self, targetlanguage: str) -> None:
         """
         Set the target language for this .qph file to *targetlanguage*.
 
         :param targetlanguage: ISO code e.g. af, fr, pt_BR
-        :type targetlanguage: String
         """
         if targetlanguage:
             self.header.set("language", targetlanguage)
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         """
         Write the XML document to the file `out`.
 

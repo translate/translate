@@ -21,6 +21,7 @@
 from __future__ import annotations
 
 import contextlib
+from typing import TypeVar
 
 from lxml import etree
 
@@ -56,7 +57,7 @@ class LISAunit(base.TranslationUnit):
 
     This is mostly for correcting XLIFF behaviour."""
 
-    def __init__(self, source, empty=False, **kwargs):
+    def __init__(self, source, empty=False, **kwargs) -> None:
         """Constructs a unit containing the given source string."""
         self._rich_source = None
         self._rich_target = None
@@ -75,9 +76,9 @@ class LISAunit(base.TranslationUnit):
         otherlanguageNodes = other.getlanguageNodes()
         if len(languageNodes) != len(otherlanguageNodes):
             return False
-        for i in range(len(languageNodes)):
+        for i, language_node in enumerate(languageNodes):
             mytext = self.getNodeText(
-                languageNodes[i], getXMLspace(self.xmlelement, self._default_xml_space)
+                language_node, getXMLspace(self.xmlelement, self._default_xml_space)
             )
             othertext = other.getNodeText(
                 otherlanguageNodes[i],
@@ -116,7 +117,7 @@ class LISAunit(base.TranslationUnit):
         """
         return namespaced(self.namespace, name)
 
-    def set_source_dom(self, dom_node):
+    def set_source_dom(self, dom_node) -> None:
         languageNodes = self.getlanguageNodes()
         if len(languageNodes) > 0:
             self.xmlelement.replace(languageNodes[0], dom_node)
@@ -135,14 +136,14 @@ class LISAunit(base.TranslationUnit):
         )
 
     @source.setter
-    def source(self, source):
+    def source(self, source) -> None:
         self.setsource(source, sourcelang="en")
 
-    def setsource(self, text, sourcelang="en"):
+    def setsource(self, text, sourcelang="en") -> None:
         self._rich_source = None
         self.source_dom = self.createlanguageNode(sourcelang, text, "source")
 
-    def set_target_dom(self, dom_node, append=False):
+    def set_target_dom(self, dom_node, append=False) -> None:
         languageNodes = self.getlanguageNodes()
         if dom_node is not None:
             if append or len(languageNodes) == 0:
@@ -169,7 +170,7 @@ class LISAunit(base.TranslationUnit):
             getXMLspace(self.xmlelement, self._default_xml_space),
         )
 
-    def settarget(self, target, lang="xx", append=False):
+    def settarget(self, target, lang="xx", append=False) -> None:
         """
         Sets the "target" string (second language), or alternatively appends
         to the list.
@@ -201,11 +202,11 @@ class LISAunit(base.TranslationUnit):
         return self.gettarget()
 
     @target.setter
-    def target(self, target):
+    def target(self, target) -> None:
         self.settarget(target)
 
     @staticmethod
-    def createlanguageNode(lang, text, purpose=None):
+    def createlanguageNode(lang, text, purpose=None) -> None:
         """
         Returns a xml Element setup with given parameters to represent a
         single language entry. Has to be overridden.
@@ -226,7 +227,7 @@ class LISAunit(base.TranslationUnit):
                 if getXMLlang(set) == lang:
                     return set
         else:  # have to use index
-            if index >= len(languageNodes):
+            if index >= len(languageNodes):  # ty:ignore[unsupported-operator]
                 return None
             return languageNodes[index]
         return None
@@ -246,11 +247,11 @@ class LISAunit(base.TranslationUnit):
             return None
         return getText(languageNode, xml_space)
 
-    def __str__(self):
+    def __str__(self) -> str:
         # 'unicode' encoding keeps the unicode status of the output
         return etree.tostring(self.xmlelement, pretty_print=True, encoding="unicode")
 
-    def _set_property(self, name, value):
+    def _set_property(self, name, value) -> None:
         self.xmlelement.attrib[name] = value
 
     xid = property(
@@ -270,7 +271,10 @@ class LISAunit(base.TranslationUnit):
         return term
 
 
-class LISAfile(base.TranslationStore):
+U = TypeVar("U", bound=LISAunit)
+
+
+class LISAfile(base.TranslationStore[U]):
     """A class representing a file store for one of the LISA file formats."""
 
     UnitClass = LISAunit
@@ -291,7 +295,7 @@ class LISAfile(base.TranslationStore):
 
     def __init__(
         self, inputfile=None, sourcelanguage="en", targetlanguage=None, **kwargs
-    ):
+    ) -> None:
         super().__init__(**kwargs)
         if inputfile is not None:
             self.parse(inputfile)
@@ -304,7 +308,7 @@ class LISAfile(base.TranslationStore):
             self.settargetlanguage(targetlanguage)
             self.addheader()
 
-    def addheader(self):
+    def addheader(self) -> None:
         """Method to be overridden to initialise headers, etc."""
 
     def namespaced(self, name):
@@ -320,7 +324,7 @@ class LISAfile(base.TranslationStore):
         """
         return namespaced(self.namespace, name)
 
-    def initbody(self):
+    def initbody(self) -> None:
         """
         Initialises self.body so it never needs to be retrieved from the XML
         again.
@@ -334,20 +338,20 @@ class LISAfile(base.TranslationStore):
         self.addunit(newunit)
         return newunit
 
-    def addunit(self, unit, new=True):
+    def addunit(self, unit, new=True) -> None:
         unit.namespace = self.namespace
         super().addunit(unit)
         if new:
-            self.body.append(unit.xmlelement)
+            self.body.append(unit.xmlelement)  # ty:ignore[possibly-missing-attribute]
 
-    def removeunit(self, unit):
+    def removeunit(self, unit) -> None:
         super().removeunit(unit)
         unit.xmlelement.getparent().remove(unit.xmlelement)
 
     def serialize_hook(self, treestring: str) -> bytes:
         return treestring.encode(self.encoding)
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         """Converts to a string containing the file's XML."""
         root = self.document.getroot()
         xml_quote_format = '"' if self.XMLdoublequotes else "'"
@@ -375,9 +379,9 @@ class LISAfile(base.TranslationStore):
             doctype=self.XMLdoctype,
         )
 
-        out.write(self.serialize_hook(treestring))
+        out.write(self.serialize_hook(treestring))  # ty:ignore[invalid-argument-type]
 
-    def parse(self, xml):
+    def parse(self, xml) -> None:  # ty:ignore[invalid-method-override]
         """Populates this object from the given xml string."""
         if not hasattr(self, "filename"):
             self.filename = getattr(xml, "name", "")

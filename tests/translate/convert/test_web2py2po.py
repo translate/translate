@@ -21,7 +21,7 @@ class TestWEB2PY2PO:
         assert headerless_len(storage.units) == 1
         return first_translatable(storage)
 
-    def test_basic(self):
+    def test_basic(self) -> None:
         """Test a basic web2py to po conversion."""
         input_web2py = """# -*- coding: utf-8 -*-
 {
@@ -34,7 +34,7 @@ class TestWEB2PY2PO:
         assert pounit.source == "A simple string"
         assert pounit.target == "Du texte simple"
 
-    def test_unicode(self):
+    def test_unicode(self) -> None:
         """Test a web2py to po conversion with unicode."""
         input_web2py = """# -*- coding: utf-8 -*-
 {
@@ -47,7 +47,7 @@ class TestWEB2PY2PO:
         assert pounit.source == "Foobar"
         assert pounit.target == "Fúbär"
 
-    def test_markmin(self):
+    def test_markmin(self) -> None:
         """Test removal of @markmin in po to web2py conversion."""
         input_web2py = """# -*- coding: utf-8 -*-
 {

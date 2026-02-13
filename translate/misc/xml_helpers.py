@@ -69,7 +69,7 @@ def getXMLlang(node):
     return node.get(f"{{{XML_NS}}}lang")
 
 
-def setXMLlang(node, lang):
+def setXMLlang(node, lang) -> None:
     """Sets the xml:lang attribute on node."""
     node.set(f"{{{XML_NS}}}lang", lang)
 
@@ -82,7 +82,7 @@ def getXMLspace(node, default=None):
     return value
 
 
-def setXMLspace(node, value):
+def setXMLspace(node, value) -> None:
     """Sets the xml:space attribute on node."""
     node.set(f"{{{XML_NS}}}space", value)
 
@@ -111,7 +111,7 @@ def normalize_space(text: str):
     return MULTIWHITESPACE_RE.sub(" ", text)
 
 
-def normalize_xml_space(node, xml_space: str, remove_start: bool = False):
+def normalize_xml_space(node, xml_space: str, remove_start: bool = False) -> None:
     """
     Normalize spaces following the nodes xml:space, or alternatively the
     given xml_space parameter.
@@ -132,7 +132,7 @@ def normalize_xml_space(node, xml_space: str, remove_start: bool = False):
         node.tail = normalize_space(node.tail)
 
     for child in node:
-        normalize_xml_space(child, remove_start)
+        normalize_xml_space(child, remove_start)  # ty:ignore[invalid-argument-type]
 
 
 def reindent(
@@ -146,7 +146,7 @@ def reindent(
     *,
     ignore_preserve: set[str] | None = None,
     trailing_eol: bool = False,
-):
+) -> None:
     """
     Adjust indentation to match specification.
 
@@ -164,7 +164,7 @@ def reindent(
     # Strip possible namespace from tag
     tag_name = elem.tag.split("}", 1)[-1]
 
-    i = "\n" + (indent * level)
+    i = f"\n{indent * level}"
     if tag_name in skip:
         next_level = level
         extra_i = i
@@ -213,7 +213,7 @@ def reindent(
         elem.tail = i
 
 
-def expand_closing_tags(elem):
+def expand_closing_tags(elem) -> None:
     """
     Changes value of empty XML tags to empty string.
 
@@ -230,12 +230,10 @@ def expand_closing_tags(elem):
         elements.extend(elem)
 
 
-"""
-Characters which will get rejected by lxml, based on
-https://github.com/lxml/lxml/blob/3ccc7d583e325ceb0ebdf8fc295bbb7fc8cd404d/src/lxml/apihelpers.pxi#L1474-L1503
-and
-https://github.com/GNOME/libxml2/blob/723b4de04015c5acccd3cda5dd60db7d00702064/include/libxml/chvalid.h#L108-L110
-"""
+# Characters which will get rejected by lxml, based on
+# https://github.com/lxml/lxml/blob/3ccc7d583e325ceb0ebdf8fc295bbb7fc8cd404d/src/lxml/apihelpers.pxi#L1474-L1503
+# and
+# https://github.com/GNOME/libxml2/blob/723b4de04015c5acccd3cda5dd60db7d00702064/include/libxml/chvalid.h#L108-L110
 XML_INVALID_CHARS_TRANS = str.maketrans(
     dict.fromkeys(
         (
@@ -294,7 +292,7 @@ def safely_set_text(node, text: str) -> None:
         node.text = valid_chars_only(text)
 
 
-def clear_content(node):
+def clear_content(node) -> None:
     """
     Removes XML node content.
 

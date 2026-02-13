@@ -31,7 +31,7 @@ from translate.storage import factory
 
 
 class po2pydict:
-    def __init__(self):
+    def __init__(self) -> None:
         return
 
     @staticmethod
@@ -58,7 +58,7 @@ class po2pydict:
 
 def convertpy(
     inputfile, outputfile, templatefile=None, includefuzzy=False, outputthreshold=None
-):
+) -> int:
     inputstore = factory.getobject(inputfile)
 
     if not convert.should_output_store(inputstore, outputthreshold):
@@ -71,7 +71,7 @@ def convertpy(
     return 1
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     formats = {("po", "py"): ("py", convertpy), ("po", None): ("py", convertpy)}
     parser = convert.ConvertOptionParser(
         formats, usetemplates=False, description=__doc__

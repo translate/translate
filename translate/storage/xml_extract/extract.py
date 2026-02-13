@@ -21,6 +21,7 @@ from contextlib import contextmanager
 from lxml import etree
 
 from translate.storage.placeables import StringElem, xliff
+from translate.storage.xliff import xliffunit
 from translate.storage.xml_extract import misc, xpath_breadcrumb
 
 
@@ -30,7 +31,9 @@ class Translatable:
     which correspond to placeables.
     """
 
-    def __init__(self, placeable_name, xpath, dom_node, source, is_inline=False):
+    def __init__(
+        self, placeable_name, xpath, dom_node, source, is_inline=False
+    ) -> None:
         self.placeable_name = placeable_name
         self.source = source
         self.xpath = xpath
@@ -67,7 +70,9 @@ class ParseState:
     (via the function apply).
     """
 
-    def __init__(self, no_translate_content_elements, inline_elements={}, nsmap={}):
+    def __init__(
+        self, no_translate_content_elements, inline_elements={}, nsmap={}
+    ) -> None:
         self.no_translate_content_elements = no_translate_content_elements
         self.inline_elements = inline_elements
         self.is_inline = False
@@ -238,7 +243,7 @@ def _process_children(dom_node, state, process_func):
     return children
 
 
-def compact_tag(nsmap, namespace, tag):
+def compact_tag(nsmap, namespace, tag) -> str:
     if namespace in nsmap:
         return f"{nsmap[namespace]}:{tag}"
     return f"{{{namespace}}}{tag}"
@@ -285,7 +290,7 @@ def find_translatable_dom_nodes(dom_node, state, process_func=process_translatab
 
 
 class IdMaker:
-    def __init__(self):
+    def __init__(self) -> None:
         self._max_id = 0
         self._obj_id_map = {}
 
@@ -325,9 +330,8 @@ def _make_store_adder(store):
     to 'placeable_quoter'.
     """
     id_maker = IdMaker()
-    from translate.storage.xliff import xliffunit
 
-    def add_translatable_to_store(parent_translatable, translatable):
+    def add_translatable_to_store(parent_translatable, translatable) -> None:
         """
         Construct a new translation unit, set its source and location
         information and add it to 'store'.
@@ -351,9 +355,8 @@ def make_postore_adder(store, id_maker, filename):
     a unit to 'store'. The placeables will be represented as strings according
     to 'placeable_quoter'.
     """
-    from translate.storage.xliff import xliffunit
 
-    def add_translatable_to_store(parent_translatable, translatable):
+    def add_translatable_to_store(parent_translatable, translatable) -> None:
         """
         Construct a new translation unit, set its source and location
         information and add it to 'store'.
@@ -377,7 +380,9 @@ def make_postore_adder(store, id_maker, filename):
     return add_translatable_to_store
 
 
-def _walk_idml_translatable_tree(translatables, store_adder, parent_translatable):
+def _walk_idml_translatable_tree(
+    translatables, store_adder, parent_translatable
+) -> None:
     """
     Traverse all the found IDML translatables and add them to the Store.
 
@@ -396,7 +401,7 @@ def _walk_idml_translatable_tree(translatables, store_adder, parent_translatable
 
 def _walk_translatable_tree(
     translatables, store_adder, parent_translatable, stored_by_parent=False
-):
+) -> None:
     """
     Traverse all the found translatables and add them to the Store.
 

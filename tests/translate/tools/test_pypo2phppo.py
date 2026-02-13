@@ -1,5 +1,7 @@
 # pypo2phppo unit tests
+# spellchecker:off
 # Author: Wil Clouser <wclouser@mozilla.com>
+# spellchecker:on
 # Date: 2009-12-03
 
 from io import BytesIO
@@ -10,7 +12,7 @@ from ..convert import test_convert
 
 
 class TestPyPo2PhpPo:
-    def test_single_po(self):
+    def test_single_po(self) -> None:
         inputfile = b"""
 # This user comment refers to: {0}
 #. This developer comment does too: {0}
@@ -29,7 +31,7 @@ msgstr "I have {1} apples and {0} oranges"
         assert 'msgid "I have %2$s apples and %1$s oranges"' in output
         assert 'msgstr "I have %2$s apples and %1$s oranges"' in output
 
-    def test_plural_po(self):
+    def test_plural_po(self) -> None:
         inputfile = b"""
 #. This developer comment refers to {0}
 #: some/path.php:111

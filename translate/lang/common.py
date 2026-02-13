@@ -62,6 +62,8 @@ TODOs and Ideas for possible features:
 import logging
 import re
 
+from unicode_segmentation_rs import unicode_words
+
 from translate.lang import data
 
 logger = logging.getLogger(__name__)
@@ -240,7 +242,7 @@ class Common:
         memo[id(self)] = self
         return self
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Give a simple string representation without address information to
         be able to store it in text for comparison later.
@@ -285,8 +287,8 @@ class Common:
         # As a simple improvement for messages ending in ellipses (...), we
         # test that the last character is different from the second last
         # This is only relevant if the string has two characters or more
-        if (text[-1] + " " in cls.puncdict) and (len(text) < 2 or text[-2] != text[-1]):
-            text = text[:-1] + cls.puncdict[text[-1] + " "].rstrip()
+        if (f"{text[-1]} " in cls.puncdict) and (len(text) < 2 or text[-2] != text[-1]):
+            text = text[:-1] + cls.puncdict[f"{text[-1]} "].rstrip()
         return text
 
     @classmethod
@@ -319,9 +321,9 @@ class Common:
         """
 
         def alter_it(text):
-            l = len(text)
-            if l > 9:
-                extra = cls.length_difference(l)
+            length = len(text)
+            if length > 9:
+                extra = cls.length_difference(length)
                 if extra > 0:
                     text = text[:extra].replace("\n", "") + text
                 else:
@@ -349,18 +351,9 @@ class Common:
         return list(cls.character_iter(text))
 
     @classmethod
-    def word_iter(cls, text):
-        """Returns an iterator over the words in text."""
-        # TODO: Consider replacing puctuation with space before split()
-        for w in text.split():
-            word = w.strip(cls.punctuation)
-            if word:
-                yield word
-
-    @classmethod
-    def words(cls, text):
+    def words(cls, text: str) -> list[str]:
         """Returns a list of words in text."""
-        return list(cls.word_iter(text))
+        return unicode_words(text)
 
     @classmethod
     def sentence_iter(cls, text, strip=True):

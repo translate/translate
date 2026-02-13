@@ -24,6 +24,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+from translate.convert import convert
 from translate.search import match
 from translate.storage import factory
 
@@ -56,7 +57,7 @@ def pretranslate_file(
     tm=None,
     min_similarity=75,
     fuzzymatching=True,
-):
+) -> int:
     """
     Pretranslate any factory supported file with old translations and
     translation memory.
@@ -219,9 +220,7 @@ def pretranslate_store(
     return input_store
 
 
-def main(argv=None):
-    from translate.convert import convert
-
+def main(argv=None) -> None:
     formats = {
         "pot": ("po", pretranslate_file),
         ("pot", "po"): ("po", pretranslate_file),
@@ -250,7 +249,7 @@ def main(argv=None):
         dest="min_similarity",
         default=defaultsimilarity,
         type="float",
-        help="The minimum similarity for inclusion (default: %d%%)" % defaultsimilarity,
+        help=f"The minimum similarity for inclusion (default: {defaultsimilarity}%)",
     )
     parser.passthrough.append("min_similarity")
     parser.add_option(

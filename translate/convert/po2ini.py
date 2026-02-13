@@ -45,7 +45,7 @@ class po2ini:
         include_fuzzy=False,
         output_threshold=None,
         dialect="default",
-    ):
+    ) -> None:
         """Initialize the converter."""
         if ini.INIConfig is None:
             print("Missing iniparse library!")  # noqa: T201
@@ -66,7 +66,7 @@ class po2ini:
             self.template_store = self.TargetStoreClass(template_file, dialect=dialect)
             self.target_store = self.TargetStoreClass(dialect=dialect)
 
-    def merge_stores(self):
+    def merge_stores(self) -> None:
         """
         Convert a source file to a target file using a template file.
 
@@ -85,7 +85,7 @@ class po2ini:
                 else:
                     template_unit.target = template_unit.source
 
-    def run(self):
+    def run(self) -> int:
         """Run the converter."""
         if not self.should_output_store:
             return 0
@@ -116,7 +116,7 @@ def convertisl(
     includefuzzy=False,
     dialect="inno",
     outputthreshold=None,
-):
+) -> None:
     run_converter(
         inputfile, outputfile, templatefile, includefuzzy, dialect, outputthreshold
     )
@@ -128,7 +128,7 @@ formats = {
 }
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     parser = convert.ConvertOptionParser(
         formats, usetemplates=True, description=__doc__
     )

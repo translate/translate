@@ -30,20 +30,22 @@ import logging
 import os
 import platform
 
+__all__ = ("lsep", "pofile", "pounit")
+
 logger = logging.getLogger(__name__)
 usecpo = os.getenv("USECPO")
 
 if platform.python_implementation() == "CPython":
     if usecpo == "1":
-        from translate.storage.cpo import *  # noqa: F403
+        from translate.storage.cpo import lsep, pofile, pounit
     elif usecpo == "2":
-        from translate.storage.fpo import *  # noqa: F403
+        from translate.storage.fpo import lsep, pofile, pounit
     else:
-        from translate.storage.pypo import *  # noqa: F403
+        from translate.storage.pypo import lsep, pofile, pounit
 else:
     if usecpo:
         logger.error(
             "cPO and fPO do not work on %s defaulting to PyPO",
             platform.python_implementation(),
         )
-    from translate.storage.pypo import *  # noqa: F403
+    from translate.storage.pypo import lsep, pofile, pounit

@@ -45,7 +45,7 @@ class TestPhp2PO:
         print(pofile)
         return len(pofile.units) - 1
 
-    def test_simpleentry(self):
+    def test_simpleentry(self) -> None:
         """Checks that a simple php entry converts properly to a po entry."""
         phpsource = """$_LANG['simple'] = 'entry';"""
         pofile = self.php2po(phpsource)
@@ -53,7 +53,7 @@ class TestPhp2PO:
         assert pounit.source == "entry"
         assert pounit.target == ""
 
-    def test_convertphp(self):
+    def test_convertphp(self) -> None:
         """Checks that the convertphp function is working."""
         phpsource = """$_LANG['simple'] = 'entry';"""
         posource = self.convertphp(phpsource)
@@ -62,7 +62,7 @@ class TestPhp2PO:
         assert pounit.source == "entry"
         assert pounit.target == ""
 
-    def test_convertphptemplate(self):
+    def test_convertphptemplate(self) -> None:
         """Checks that the convertphp function is working with template."""
         phpsource = """$_LANG['simple'] = 'entry';"""
         phptemplate = """$_LANG['simple'] = 'source';"""
@@ -72,7 +72,7 @@ class TestPhp2PO:
         assert pounit.source == "source"
         assert pounit.target == "entry"
 
-    def test_convertphpmissing(self):
+    def test_convertphpmissing(self) -> None:
         """Checks that the convertphp function is working with missing key."""
         phpsource = """$_LANG['simple'] = 'entry';"""
         phptemplate = """$_LANG['missing'] = 'source';"""
@@ -82,7 +82,7 @@ class TestPhp2PO:
         assert pounit.source == "source"
         assert pounit.target == ""
 
-    def test_convertphpempty(self):
+    def test_convertphpempty(self) -> None:
         """Checks that the convertphp function is working with empty template."""
         phpsource = ""
         phptemplate = ""
@@ -90,7 +90,7 @@ class TestPhp2PO:
         pofile = po.pofile(BytesIO(posource))
         assert len(pofile.units) == 0
 
-    def test_unicode(self):
+    def test_unicode(self) -> None:
         """Checks that unicode entries convert properly."""
         unistring = "Norsk bokm\u00e5l"
         phpsource = f"""$lang['nb'] = '{unistring}';"""
@@ -100,7 +100,7 @@ class TestPhp2PO:
         print(repr(pounit.source))
         assert pounit.source == "Norsk bokm\u00e5l"
 
-    def test_multiline(self):
+    def test_multiline(self) -> None:
         """Checks that multiline entries can be parsed."""
         phpsource = r"""$lang['5093'] = 'Unable to connect to your IMAP server. You may have exceeded the maximum number
 of connections to this server. If so, use the Advanced IMAP Server Settings dialog to
@@ -109,7 +109,7 @@ reduce the number of cached connections.';"""
         print(repr(pofile.units[1].target))
         assert self.countelements(pofile) == 1
 
-    def test_comments_before(self):
+    def test_comments_before(self) -> None:
         """Test to ensure that we take comments from .php and place them in .po."""
         phpsource = """/* Comment */
 $lang['prefPanel-smime'] = 'Security';"""
@@ -118,7 +118,7 @@ $lang['prefPanel-smime'] = 'Security';"""
         assert pounit.getnotes("developer") == "/* Comment */"
         # TODO write test for inline comments and check for // comments that precede an entry
 
-    def test_emptyentry(self):
+    def test_emptyentry(self) -> None:
         """Checks that empty definitions survives into po file."""
         phpsource = """/* comment */\n$lang['credit'] = '';"""
         pofile = self.php2po(phpsource)
@@ -128,7 +128,7 @@ $lang['prefPanel-smime'] = 'Security';"""
         assert b"#. /* comment" in bytes(pofile)
         assert pounit.source == ""
 
-    def test_hash_comment_with_equals(self):
+    def test_hash_comment_with_equals(self) -> None:
         """Check that a # comment with = in it doesn't confuse us. Bug 1298."""
         phpsource = """# inside alt= stuffies\n$variable = 'stringy';"""
         pofile = self.php2po(phpsource)
@@ -137,7 +137,7 @@ $lang['prefPanel-smime'] = 'Security';"""
         assert b"#. # inside alt= stuffies" in bytes(pofile)
         assert pounit.source == "stringy"
 
-    def test_emptyentry_translated(self):
+    def test_emptyentry_translated(self) -> None:
         """Checks that if we translate an empty definition it makes it into the PO."""
         phptemplate = """$lang['credit'] = '';"""
         phpsource = """$lang['credit'] = 'Translators Names';"""
@@ -147,7 +147,7 @@ $lang['prefPanel-smime'] = 'Security';"""
         assert pounit.source == ""
         assert pounit.target == "Translators Names"
 
-    def test_newlines_in_value(self):
+    def test_newlines_in_value(self) -> None:
         """Check that we can carry newlines that appear in the entry value into the PO."""
         # Single quotes - \n is not a newline
         phpsource = r"""$lang['name'] = 'value1\nvalue2';"""
@@ -160,7 +160,7 @@ $lang['prefPanel-smime'] = 'Security';"""
         unit = self.singleelement(pofile)
         assert unit.source == "value1\nvalue2"
 
-    def test_spaces_in_name(self):
+    def test_spaces_in_name(self) -> None:
         """Checks that if we have spaces in the name we create a good PO with no spaces."""
         phptemplate = """$lang[ 'credit' ] = 'Something';"""
         phpsource = """$lang[ 'credit' ] = 'n Ding';"""
@@ -168,21 +168,21 @@ $lang['prefPanel-smime'] = 'Security';"""
         pounit = self.singleelement(pofile)
         assert pounit.getlocations() == ["$lang[ 'credit' ]"]
 
-    def test_named_array(self):
+    def test_named_array(self) -> None:
         phptemplate = """$strings = array(\n'id-1' => 'source-1',\n);"""
         phpsource = """$strings = array(\n'id-1' => 'target-1',\n);"""
         pofile = self.php2po(phpsource, phptemplate)
         pounit = self.singleelement(pofile)
         assert pounit.getlocations() == ["$strings->'id-1'"]
 
-    def test_unnamed_array(self):
+    def test_unnamed_array(self) -> None:
         phptemplate = """return array(\n'id-1' => 'source-1',\n);"""
         phpsource = """return array(\n'id-1' => 'target-1',\n);"""
         pofile = self.php2po(phpsource, phptemplate)
         pounit = self.singleelement(pofile)
         assert pounit.getlocations() == ["return->'id-1'"]
 
-    def test_named_nested_arrays(self):
+    def test_named_nested_arrays(self) -> None:
         phptemplate = """$strings = array(
             'name1' => 'source1',
             'list1' => array(
@@ -227,7 +227,7 @@ $lang['prefPanel-smime'] = 'Security';"""
                 pounit.getlocations()[0]
             )
 
-    def test_unnamed_nested_arrays(self):
+    def test_unnamed_nested_arrays(self) -> None:
         phptemplate = """return array(
             'name1' => 'source1',
             'list1' => array(

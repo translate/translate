@@ -26,7 +26,8 @@ for examples and usage instructions.
 
 import logging
 
-from translate.storage import po
+from translate.convert import convert
+from translate.storage import po, resx
 
 logger = logging.getLogger(__name__)
 
@@ -95,7 +96,7 @@ class resx2po:
         return output_store
 
     @staticmethod
-    def split_comments(origpo, translatedpo):
+    def split_comments(origpo, translatedpo) -> None:
         autocomments = translatedpo.getnotes("developer")
         if autocomments:
             devcomment, transcomment = autocomments.partition("[Translator Comment: ")[
@@ -131,9 +132,7 @@ def convert_resx(
     pot=False,
     duplicatestyle="msgctxt",
     filter=None,
-):
-    from translate.storage import resx
-
+) -> int:
     input_store = resx.RESXFile(input_file)
     convertor = resx2po()
     if template_file is None:
@@ -151,9 +150,7 @@ def convert_resx(
     return 1
 
 
-def main(argv=None):
-    from translate.convert import convert
-
+def main(argv=None) -> None:
     formats = {
         "resx": ("po", convert_resx),
         ("resx", "resx"): ("po", convert_resx),

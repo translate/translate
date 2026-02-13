@@ -3,7 +3,7 @@
 from translate.filters import decoration
 
 
-def test_spacestart():
+def test_spacestart() -> None:
     """Test operation of spacestart()."""
     assert decoration.spacestart("  Start") == "  "
     assert decoration.spacestart("\u0020\u00a0Start") == "\u0020\u00a0"
@@ -18,7 +18,7 @@ def test_spacestart():
     )
 
 
-def test_isvalidaccelerator():
+def test_isvalidaccelerator() -> None:
     """Test the isvalidaccelerator() function."""
     # Mostly this tests the old code path where acceptlist is None
     assert not decoration.isvalidaccelerator("")
@@ -31,7 +31,7 @@ def test_isvalidaccelerator():
     assert not decoration.isvalidaccelerator("a", "ḓṱḽṋṅ")
 
 
-def test_find_marked_variables():
+def test_find_marked_variables() -> None:
     """
     Check that we can identify variables correctly, the first returned
     value is the start location, the second returned value is the actual
@@ -53,7 +53,7 @@ def test_find_marked_variables():
     assert variables == [(4, "variable.variable")]
 
 
-def test_getnumbers():
+def test_getnumbers() -> None:
     """Test operation of getnumbers()."""
     assert decoration.getnumbers("") == []
     assert decoration.getnumbers("No numbers") == []
@@ -70,7 +70,7 @@ def test_getnumbers():
     ]
 
 
-def test_getfunctions():
+def test_getfunctions() -> None:
     """Test operation of getfunctions()."""
     assert decoration.getfunctions("") == []
     assert decoration.getfunctions("There is no function") == []

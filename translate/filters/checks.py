@@ -38,6 +38,7 @@ import string
 from translate.filters import decoration, helpers, prefilters, spelling
 from translate.filters.decorators import cosmetic, critical, extraction, functional
 from translate.lang import data, factory
+from translate.storage import base
 
 logger = logging.getLogger(__name__)
 
@@ -88,7 +89,11 @@ lo_emptytags = frozenset(["br", "embed", "embedvar", "object", "help-id-missing"
 def tagname(string):
     """Returns the name of the XML/HTML tag in string."""
     tagname_match = tagname_re.match(string)
-    return tagname_match.groups(1)[0] + tagname_match.groups("")[1]
+    assert tagname_match is not None, f"Expected tag in string: {string}"
+    # Extract the tag name (group 1) and optional slash (group 2)
+    group1 = tagname_match.group(1) or ""
+    group2 = tagname_match.group(2) or ""
+    return group1 + group2
 
 
 def intuplelist(pair, list):
@@ -152,7 +157,7 @@ class FilterFailure(Exception):
     explanation or a comment.
     """
 
-    def __init__(self, messages):
+    def __init__(self, messages) -> None:
         if not isinstance(messages, list):
             messages = [messages]
 
@@ -160,7 +165,7 @@ class FilterFailure(Exception):
 
         self.messages = messages
 
-    def __str__(self):
+    def __str__(self) -> str:
         return ", ".join(self.messages)
 
 
@@ -206,7 +211,7 @@ class CheckerConfig:
         canchangetags=None,
         criticaltests=None,
         credit_sources=None,
-    ):
+    ) -> None:
         # Init lists
         self.accelmarkers = self._init_list(accelmarkers)
         self.varmatches = self._init_list(varmatches)
@@ -240,13 +245,11 @@ class CheckerConfig:
         self.updatevalidchars(validchars)
 
     @staticmethod
-    def _init_list(list):
+    def _init_list(list: list | None) -> list:
         """
         Initialise configuration parameters that are lists.
 
-        :type list: List
         :param list: None (we'll initialise a blank list) or a list parameter
-        :rtype: List
         """
         if list is None:
             list = []
@@ -267,7 +270,7 @@ class CheckerConfig:
 
         return param
 
-    def update(self, otherconfig):
+    def update(self, otherconfig) -> None:
         """Combines the info in ``otherconfig`` into this config object."""
         self.targetlanguage = otherconfig.targetlanguage or self.targetlanguage
         self.updatetargetlanguage(self.targetlanguage)
@@ -286,7 +289,7 @@ class CheckerConfig:
         self.criticaltests.extend(otherconfig.criticaltests)
         self.credit_sources = otherconfig.credit_sources
 
-    def updatevalidchars(self, validchars):
+    def updatevalidchars(self, validchars) -> None:
         """Updates the map that eliminates valid characters."""
         if validchars is None:
             return
@@ -296,7 +299,7 @@ class CheckerConfig:
         }
         self.validcharsmap.update(validcharsmap)
 
-    def updatetargetlanguage(self, langcode):
+    def updatetargetlanguage(self, langcode) -> None:
         """
         Updates the target language in the config to the given target
         language and sets its script.
@@ -339,7 +342,7 @@ class UnitChecker:
         excludefilters=None,
         limitfilters=None,
         errorhandler=None,
-    ):
+    ) -> None:
         self.errorhandler = errorhandler
 
         #: Categories where each checking function falls into
@@ -395,7 +398,7 @@ class UnitChecker:
 
         return filters
 
-    def setconfig(self, config):
+    def setconfig(self, config) -> None:
         """Sets the accelerator list."""
         self.config = config
         self.accfilters = [
@@ -411,7 +414,7 @@ class UnitChecker:
             for startmatch, endmatch in self.config.varmatches
         ]
 
-    def setsuggestionstore(self, store):
+    def setsuggestionstore(self, store) -> None:
         """
         Sets the filename that a checker should use for evaluating
         suggestions.
@@ -476,11 +479,10 @@ class UnitChecker:
             )
         )
 
-    def run_filters(self, unit, categorised=False):
+    def run_filters(self, unit, categorised: bool = False) -> dict[str, dict]:
         """
         Run all the tests in this suite.
 
-        :rtype: Dictionary
         :return: Content of the dictionary is as follows::
 
            {'testname': { 'message': message_or_exception, 'category': failure_category } }
@@ -516,14 +518,15 @@ class UnitChecker:
                 if self.errorhandler is None:
                     raise ValueError(
                         f"error in filter {functionname}: {unit.source!r}, {unit.target!r}, {e}"
-                    )
+                    ) from e
                 filterresult = self.errorhandler(
                     functionname, unit.source, unit.target, e
                 )
             if not filterresult:
                 if not filtermessage:
                     # Should be quite rare
-                    import pydoc
+                    # pylint: disable-next=import-outside-toplevel
+                    import pydoc  # noqa: PLC0415
 
                     # Strip out unnecessary whitespace from docstring
                     filtermessage = pydoc.getdoc(filterfunction)
@@ -561,7 +564,7 @@ class TranslationChecker(UnitChecker):
         excludefilters=None,
         limitfilters=None,
         errorhandler=None,
-    ):
+    ) -> None:
         super().__init__(checkerconfig, excludefilters, limitfilters, errorhandler)
 
         self.locations = []
@@ -581,7 +584,7 @@ class TranslationChecker(UnitChecker):
                 try:
                     if not test(self.str1, str(pluralform)):
                         filterresult = False
-                except FilterFailure as e:  # noqa: PERF203
+                except FilterFailure as e:
                     filterresult = False
                     filtermessages.extend(e.messages)
 
@@ -618,7 +621,7 @@ class TeeChecker:
         checkerclasses=None,
         errorhandler=None,
         languagecode=None,
-    ):
+    ) -> None:
         """Construct a TeeChecker from the given checkers."""
         self.limitfilters = limitfilters
 
@@ -682,7 +685,7 @@ class TeeChecker:
 
         return failures
 
-    def setsuggestionstore(self, store):
+    def setsuggestionstore(self, store) -> None:
         """
         Sets the filename that a checker should use for evaluating
         suggestions.
@@ -695,7 +698,7 @@ class StandardChecker(TranslationChecker):
     """The basic test suite for source -> target translations."""
 
     @extraction
-    def untranslated(self, str1, str2):
+    def untranslated(self, str1, str2) -> bool:
         """
         Checks whether a string has been translated at all.
 
@@ -707,7 +710,7 @@ class StandardChecker(TranslationChecker):
         return not (len(str1.strip()) > 0 and len(str2) == 0)
 
     @functional
-    def unchanged(self, str1, str2):
+    def unchanged(self, str1, str2) -> bool:
         """
         Checks whether a translation is basically identical to the original
         string.
@@ -746,7 +749,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @functional
-    def blank(self, str1, str2):
+    def blank(self, str1, str2) -> bool:
         """
         Checks whether a translation is totally blank.
 
@@ -763,7 +766,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @functional
-    def short(self, str1, str2):
+    def short(self, str1, str2) -> bool:
         """
         Checks whether a translation is much shorter than the original
         string.
@@ -781,7 +784,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @functional
-    def long(self, str1, str2):
+    def long(self, str1, str2) -> bool:
         """
         Checks whether a translation is much longer than the original
         string.
@@ -800,7 +803,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @critical
-    def escapes(self, str1, str2):
+    def escapes(self, str1, str2) -> bool:
         r"""
         Checks whether escaping is consistent between the two strings.
 
@@ -818,7 +821,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @critical
-    def newlines(self, str1, str2):
+    def newlines(self, str1, str2) -> bool:
         r"""
         Checks whether newlines are consistent between the two strings.
 
@@ -837,7 +840,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @critical
-    def tabs(self, str1, str2):
+    def tabs(self, str1, str2) -> bool:
         r"""
         Checks whether tabs are consistent between the two strings.
 
@@ -849,7 +852,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @cosmetic
-    def singlequoting(self, str1, str2):
+    def singlequoting(self, str1, str2) -> bool:
         """
         Checks whether singlequoting is consistent between the two strings.
 
@@ -874,7 +877,7 @@ class StandardChecker(TranslationChecker):
         raise FilterFailure("Different quotation marks")
 
     @cosmetic
-    def doublequoting(self, str1, str2):
+    def doublequoting(self, str1, str2) -> bool:
         """
         Checks whether doublequoting is consistent between the two strings.
 
@@ -895,7 +898,7 @@ class StandardChecker(TranslationChecker):
         raise FilterFailure("Different quotation marks")
 
     @cosmetic
-    def doublespacing(self, str1, str2):
+    def doublespacing(self, str1, str2) -> bool:
         """
         Checks for bad double-spaces by comparing to original.
 
@@ -912,7 +915,7 @@ class StandardChecker(TranslationChecker):
         raise FilterFailure("Different use of double spaces")
 
     @cosmetic
-    def puncspacing(self, str1, str2):
+    def puncspacing(self, str1, str2) -> bool:
         """
         Checks for bad spacing after punctuation.
 
@@ -987,7 +990,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @critical
-    def printf(self, str1, str2):
+    def printf(self, str1, str2) -> int:
         """
         Checks whether printf format strings match.
 
@@ -1108,7 +1111,7 @@ class StandardChecker(TranslationChecker):
 
             if str1_variables:
                 raise FilterFailure(
-                    "Missing printf variable: {}".format(", ".join(str1_variables))
+                    f"Missing printf variable: {', '.join(str1_variables)}"
                 )
 
         if (count1 or count2) and (count1 != count2):
@@ -1117,7 +1120,7 @@ class StandardChecker(TranslationChecker):
         return 1
 
     @critical
-    def pythonbraceformat(self, str1, str2):
+    def pythonbraceformat(self, str1, str2) -> int:
         """Checks whether python brace format strings match."""
 
         # Helper function
@@ -1192,18 +1195,14 @@ class StandardChecker(TranslationChecker):
         if len(extra_in_2) > 0:
             failure_state = max(failure_state, STATE_SERIOUS)
             messages.append(
-                "Unknown named placeholders in translation: {}".format(
-                    ", ".join(extra_in_2)
-                )
+                f"Unknown named placeholders in translation: {', '.join(extra_in_2)}"
             )
 
         extra_in_1 = set(data1["namedvars"]).difference(set(data2["namedvars"]))
         if len(extra_in_1) > 0:
             failure_state = max(failure_state, STATE_MILD)
             messages.append(
-                "Named placeholders absent in translation: {}".format(
-                    ", ".join(extra_in_1)
-                )
+                f"Named placeholders absent in translation: {', '.join(extra_in_1)}"
             )
 
         if failure_state == STATE_OK:
@@ -1217,7 +1216,7 @@ class StandardChecker(TranslationChecker):
         )
 
     @functional
-    def accelerators(self, str1, str2):
+    def accelerators(self, str1, str2) -> bool:
         """
         Checks whether accelerators are consistent between the two strings.
 
@@ -1266,8 +1265,7 @@ class StandardChecker(TranslationChecker):
                 )
             else:
                 messages.append(
-                    "Accelerator '%s' occurs %d time(s) in original "
-                    "and %d time(s) in translation" % (accelmarker, count1, count2)
+                    f"Accelerator '{accelmarker}' occurs {count1} time(s) in original and {count2} time(s) in translation"
                 )
 
         if messages:
@@ -1292,7 +1290,7 @@ class StandardChecker(TranslationChecker):
     #        return True
 
     @critical
-    def variables(self, str1, str2):
+    def variables(self, str1, str2) -> bool:
         """
         Checks whether variables of various forms are consistent between the
         two strings.
@@ -1340,9 +1338,9 @@ class StandardChecker(TranslationChecker):
                 mismatch2.extend(vars2)
 
         if mismatch1:
-            messages.append("Do not translate: {}".format(", ".join(mismatch1)))
+            messages.append(f"Do not translate: {', '.join(mismatch1)}")
         elif mismatch2:
-            messages.append("Added variables: {}".format(", ".join(mismatch2)))
+            messages.append(f"Added variables: {', '.join(mismatch2)}")
 
         if messages and mismatch1:
             raise SeriousFilterFailure(messages)
@@ -1352,7 +1350,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @functional
-    def functions(self, str1, str2):
+    def functions(self, str1, str2) -> bool:
         """
         Checks that function names are not translated.
 
@@ -1367,7 +1365,7 @@ class StandardChecker(TranslationChecker):
         raise FilterFailure("Different functions")
 
     @functional
-    def emails(self, str1, str2):
+    def emails(self, str1, str2) -> bool:
         """
         Checks that emails are not translated.
 
@@ -1381,7 +1379,7 @@ class StandardChecker(TranslationChecker):
         raise FilterFailure("Different e-mails")
 
     @functional
-    def urls(self, str1, str2):
+    def urls(self, str1, str2) -> bool:
         """
         Checks that URLs are not translated.
 
@@ -1398,7 +1396,7 @@ class StandardChecker(TranslationChecker):
         raise FilterFailure("Different URLs")
 
     @functional
-    def numbers(self, str1, str2):
+    def numbers(self, str1, str2) -> bool:
         """
         Checks whether numbers of various forms are consistent between the
         two strings.
@@ -1414,7 +1412,7 @@ class StandardChecker(TranslationChecker):
         raise FilterFailure("Different numbers")
 
     @cosmetic
-    def startwhitespace(self, str1, str2):
+    def startwhitespace(self, str1, str2) -> bool:
         """
         Checks whether whitespace at the beginning of the strings matches.
 
@@ -1425,7 +1423,7 @@ class StandardChecker(TranslationChecker):
         raise FilterFailure("Different whitespace at the start")
 
     @cosmetic
-    def endwhitespace(self, str1, str2):
+    def endwhitespace(self, str1, str2) -> bool:
         """
         Checks whether whitespace at the end of the strings matches.
 
@@ -1446,7 +1444,7 @@ class StandardChecker(TranslationChecker):
         raise FilterFailure("Different whitespace at the end")
 
     @cosmetic
-    def startpunc(self, str1, str2):
+    def startpunc(self, str1, str2) -> bool:
         """
         Checks whether punctuation at the beginning of the strings match.
 
@@ -1469,7 +1467,7 @@ class StandardChecker(TranslationChecker):
         raise FilterFailure("Different punctuation at the start")
 
     @cosmetic
-    def endpunc(self, str1, str2):
+    def endpunc(self, str1, str2) -> bool:
         """
         Checks whether punctuation at the end of the strings match.
 
@@ -1509,7 +1507,7 @@ class StandardChecker(TranslationChecker):
         raise FilterFailure("Different punctuation at the end")
 
     @functional
-    def purepunc(self, str1, str2):
+    def purepunc(self, str1, str2) -> bool:
         """
         Checks that strings that are purely punctuation are not changed.
 
@@ -1527,7 +1525,7 @@ class StandardChecker(TranslationChecker):
         raise FilterFailure("Consider not translating punctuation")
 
     @cosmetic
-    def brackets(self, str1, str2):
+    def brackets(self, str1, str2) -> bool:
         """
         Checks that the number of brackets in both strings match.
 
@@ -1551,10 +1549,10 @@ class StandardChecker(TranslationChecker):
                 extra.append(f"'{bracket}'")
 
         if missing:
-            messages.append("Missing {}".format(", ".join(missing)))
+            messages.append(f"Missing {', '.join(missing)}")
 
         if extra:
-            messages.append("Added {}".format(", ".join(extra)))
+            messages.append(f"Added {', '.join(extra)}")
 
         if messages:
             raise FilterFailure(messages)
@@ -1562,7 +1560,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @functional
-    def sentencecount(self, str1, str2):
+    def sentencecount(self, str1, str2) -> bool:
         """
         Checks that the number of sentences in both strings match.
 
@@ -1582,13 +1580,13 @@ class StandardChecker(TranslationChecker):
 
         if not sentences1 == sentences2:
             raise FilterFailure(
-                "Different number of sentences: %d ≠ %d" % (sentences1, sentences2)
+                f"Different number of sentences: {sentences1} ≠ {sentences2}"
             )
 
         return True
 
     @functional
-    def options(self, str1, str2):
+    def options(self, str1, str2) -> bool:
         """
         Checks that command line options are not translated.
 
@@ -1617,7 +1615,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @cosmetic
-    def startcaps(self, str1, str2):
+    def startcaps(self, str1, str2) -> bool:
         """
         Checks that the message starts with the correct capitalisation.
 
@@ -1651,7 +1649,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @cosmetic
-    def simplecaps(self, str1, str2):
+    def simplecaps(self, str1, str2) -> bool:
         """
         Checks the capitalisation of two strings isn't wildly different.
 
@@ -1699,7 +1697,7 @@ class StandardChecker(TranslationChecker):
         raise FilterFailure("Different capitalization")
 
     @functional
-    def acronyms(self, str1, str2):
+    def acronyms(self, str1, str2) -> bool:
         """
         Checks that acronyms that appear are unchanged.
 
@@ -1716,7 +1714,7 @@ class StandardChecker(TranslationChecker):
 
         allowed += self.config.musttranslatewords.keys()
         str1 = self.filteraccelerators(self.filtervariables(str1))
-        iter = self.config.lang.word_iter(str1)
+        words = self.config.lang.words(str1)
         str2 = self.filteraccelerators(self.filtervariables(str2))
 
         # TODO: strip XML? - should provide better error messages
@@ -1725,7 +1723,7 @@ class StandardChecker(TranslationChecker):
         # something like 5/6 characters
         acronyms = [
             word
-            for word in iter
+            for word in words
             if word.isupper()
             and len(word) > 1
             and word not in allowed
@@ -1734,13 +1732,13 @@ class StandardChecker(TranslationChecker):
 
         if acronyms:
             raise FilterFailure(
-                "Consider not translating acronyms: {}".format(", ".join(acronyms))
+                f"Consider not translating acronyms: {', '.join(acronyms)}"
             )
 
         return True
 
     @cosmetic
-    def doublewords(self, str1, str2):
+    def doublewords(self, str1, str2) -> bool:
         """
         Checks for repeated words in the translation.
 
@@ -1769,7 +1767,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @functional
-    def notranslatewords(self, str1, str2):
+    def notranslatewords(self, str1, str2) -> bool:
         """
         Checks that words configured as untranslatable appear in the
         translation too.
@@ -1800,12 +1798,12 @@ class StandardChecker(TranslationChecker):
         ]
 
         if stopwords:
-            raise FilterFailure("Do not translate: {}".format(", ".join(stopwords)))
+            raise FilterFailure(f"Do not translate: {', '.join(stopwords)}")
 
         return True
 
     @functional
-    def musttranslatewords(self, str1, str2):
+    def musttranslatewords(self, str1, str2) -> bool:
         """
         Checks that words configured as definitely translatable don't appear
         in the translation.
@@ -1837,12 +1835,12 @@ class StandardChecker(TranslationChecker):
         ]
 
         if stopwords:
-            raise FilterFailure("Please translate: {}".format(", ".join(stopwords)))
+            raise FilterFailure(f"Please translate: {', '.join(stopwords)}")
 
         return True
 
     @cosmetic
-    def validchars(self, str1, str2):
+    def validchars(self, str1, str2) -> bool:
         """
         Checks that only characters specified as valid appear in the
         translation.
@@ -1872,14 +1870,12 @@ class StandardChecker(TranslationChecker):
         ]
 
         if invalidchars:
-            raise FilterFailure(
-                "Invalid characters: {}".format(", ".join(invalidchars))
-            )
+            raise FilterFailure(f"Invalid characters: {', '.join(invalidchars)}")
 
         return True
 
     @functional
-    def filepaths(self, str1, str2):
+    def filepaths(self, str1, str2) -> bool:
         """
         Checks that file paths have not been translated.
 
@@ -1894,7 +1890,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @critical
-    def xmltags(self, str1, str2):
+    def xmltags(self, str1, str2) -> bool:
         """
         Checks that XML/HTML tags have not been translated.
 
@@ -1968,7 +1964,7 @@ class StandardChecker(TranslationChecker):
         return str2.find("#-#-#-#-#") == -1
 
     @cosmetic
-    def simpleplurals(self, str1, str2):
+    def simpleplurals(self, str1, str2) -> bool:
         """
         Checks for English style plural(s) for you to review.
 
@@ -2008,7 +2004,7 @@ class StandardChecker(TranslationChecker):
         raise FilterFailure("The original uses plural(s)")
 
     @functional
-    def spellcheck(self, str1, str2):
+    def spellcheck(self, str1, str2) -> bool:
         """
         Checks words that don't pass a spell check.
 
@@ -2060,13 +2056,13 @@ class StandardChecker(TranslationChecker):
         errors.difference_update(ignore1, self.config.notranslatewords)
 
         if errors:
-            messages = ["Check the spelling of: {}".format(", ".join(errors))]
+            messages = [f"Check the spelling of: {', '.join(errors)}"]
             raise FilterFailure(messages)
 
         return True
 
     @extraction
-    def credits(self, str1, str2):
+    def credits(self, str1, str2) -> bool:
         """
         Checks for messages containing translation credits instead of
         normal translations.
@@ -2261,7 +2257,7 @@ openofficeconfig = CheckerConfig(
 
 
 class OpenOfficeChecker(StandardChecker):
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         checkerconfig = kwargs.get("checkerconfig")
 
         if checkerconfig is None:
@@ -2302,7 +2298,7 @@ libreofficeconfig = CheckerConfig(
 
 
 class LibreOfficeChecker(StandardChecker):
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         checkerconfig = kwargs.get("checkerconfig")
 
         if checkerconfig is None:
@@ -2314,7 +2310,7 @@ class LibreOfficeChecker(StandardChecker):
         super().__init__(**kwargs)
 
     @critical
-    def validxml(self, str1, str2):
+    def validxml(self, str1, str2) -> bool:
         """
         Check that all XML/HTML open/close tags has close/open pair in the
         translation.
@@ -2352,7 +2348,7 @@ class LibreOfficeChecker(StandardChecker):
         return True
 
     @critical
-    def pythonbraceformat(self, str1, str2):
+    def pythonbraceformat(self, str1, str2) -> bool:
         """Not used in LibreOffice."""
         return True
 
@@ -2396,7 +2392,7 @@ class MozillaChecker(StandardChecker):
         # spellchecker:on
     ]
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         checkerconfig = kwargs.get("checkerconfig")
 
         if checkerconfig is None:
@@ -2407,7 +2403,7 @@ class MozillaChecker(StandardChecker):
         super().__init__(**kwargs)
 
     @extraction
-    def credits(self, str1, str2):
+    def credits(self, str1, str2) -> bool:
         """
         Checks for messages containing translation credits instead of
         normal translations.
@@ -2438,7 +2434,7 @@ class MozillaChecker(StandardChecker):
     mozilla_dialog_valid_units = ["em", "px", "ch"]
 
     @critical
-    def dialogsizes(self, str1, str2):
+    def dialogsizes(self, str1, str2) -> bool:
         """
         Checks that dialog sizes are not translated.
 
@@ -2477,10 +2473,7 @@ class MozillaChecker(StandardChecker):
                         # FIXME we could check more carefully for numbers in pair1[2]
                         if pair2[3] not in self.mozilla_dialog_valid_units:
                             raise FilterFailure(
-                                "Units should be one of '{}'. "
-                                "The source string uses '{}'".format(
-                                    ", ".join(self.mozilla_dialog_valid_units), pair1[3]
-                                )
+                                f"Units should be one of '{', '.join(self.mozilla_dialog_valid_units)}'. The source string uses '{pair1[3]}'"
                             )
 
         return True
@@ -2553,7 +2546,7 @@ drupalconfig = CheckerConfig(
 
 
 class DrupalChecker(StandardChecker):
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         checkerconfig = kwargs.get("checkerconfig")
 
         if checkerconfig is None:
@@ -2572,7 +2565,7 @@ gnomeconfig = CheckerConfig(
 
 
 class GnomeChecker(StandardChecker):
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         checkerconfig = kwargs.get("checkerconfig")
 
         if checkerconfig is None:
@@ -2583,7 +2576,7 @@ class GnomeChecker(StandardChecker):
         super().__init__(**kwargs)
 
     @functional
-    def gconf(self, str1, str2):
+    def gconf(self, str1, str2) -> bool:
         """
         Checks if we have any gconf config settings translated.
 
@@ -2605,9 +2598,7 @@ class GnomeChecker(StandardChecker):
 
                 if stopwords:
                     raise FilterFailure(
-                        "Do not translate GConf attributes: {}".format(
-                            ", ".join(stopwords)
-                        )
+                        f"Do not translate GConf attributes: {', '.join(stopwords)}"
                     )
 
                 return True
@@ -2623,7 +2614,7 @@ kdeconfig = CheckerConfig(
 
 
 class KdeChecker(StandardChecker):
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         # TODO allow setup of KDE plural and translator comments so that they do
         # not create false positives
         checkerconfig = kwargs.get("checkerconfig")
@@ -2640,7 +2631,7 @@ cclicenseconfig = CheckerConfig(varmatches=[("@", "@")])
 
 
 class CCLicenseChecker(StandardChecker):
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         checkerconfig = kwargs.get("checkerconfig")
 
         if checkerconfig is None:
@@ -2655,7 +2646,7 @@ minimalconfig = CheckerConfig()
 
 
 class MinimalChecker(StandardChecker):
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         checkerconfig = kwargs.get("checkerconfig")
 
         if checkerconfig is None:
@@ -2676,7 +2667,7 @@ reducedconfig = CheckerConfig()
 
 
 class ReducedChecker(StandardChecker):
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         checkerconfig = kwargs.get("checkerconfig")
 
         if checkerconfig is None:
@@ -2704,7 +2695,7 @@ termconfig = CheckerConfig()
 
 
 class TermChecker(StandardChecker):
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         checkerconfig = kwargs.get("checkerconfig")
 
         if checkerconfig is None:
@@ -2730,7 +2721,7 @@ class L20nChecker(MozillaChecker):
     ]
     complex_unit_pattern = "->"
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         checkerconfig = kwargs.get("checkerconfig")
 
         if checkerconfig is None:
@@ -2768,7 +2759,7 @@ iosconfig = CheckerConfig(
 
 
 class IOSChecker(StandardChecker):
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         checkerconfig = kwargs.get("checkerconfig")
 
         if checkerconfig is None:
@@ -2800,7 +2791,7 @@ class StandardUnitChecker(UnitChecker):
     """The standard checks for common checks on translation units."""
 
     @extraction
-    def isfuzzy(self, unit):
+    def isfuzzy(self, unit) -> bool:
         """
         Check if the unit has been marked fuzzy.
 
@@ -2812,7 +2803,7 @@ class StandardUnitChecker(UnitChecker):
         return not unit.isfuzzy()
 
     @extraction
-    def isreview(self, unit):
+    def isreview(self, unit) -> bool:
         """
         Check if the unit has been marked review.
 
@@ -2848,7 +2839,7 @@ class StandardUnitChecker(UnitChecker):
         return True
 
     @extraction
-    def hassuggestion(self, unit):
+    def hassuggestion(self, unit) -> bool:
         """
         Checks if there is at least one suggested translation for this unit.
 
@@ -2872,8 +2863,6 @@ class StandardUnitChecker(UnitChecker):
 # TODO: convert these to proper unit tests
 def runtests(str1, str2, ignorelist=()):
     """Verifies that the tests pass for a pair of strings."""
-    from translate.storage import base
-
     str1 = data.normalize(str1)
     str2 = data.normalize(str2)
     unit = base.TranslationUnit(str1)
@@ -2881,17 +2870,15 @@ def runtests(str1, str2, ignorelist=()):
     checker = StandardChecker(excludefilters=ignorelist)
     failures = checker.run_filters(unit)
 
-    for test in failures:
+    for test, value in failures.items():
         print(  # noqa: T201
-            "failure: {}: {}\n  {!r}\n  {!r}".format(
-                test, failures[test]["message"], str1, str2
-            )
+            f"failure: {test}: {value['message']}\n  {str1!r}\n  {str2!r}"
         )
 
     return failures
 
 
-def batchruntests(pairs):
+def batchruntests(pairs) -> None:
     """Runs test on a batch of string pairs."""
     passed, numpairs = 0, len(pairs)
 
@@ -2899,7 +2886,7 @@ def batchruntests(pairs):
         if runtests(str1, str2):
             passed += 1
 
-    print("\ntotal: %d/%d pairs passed" % (passed, numpairs))  # noqa: T201
+    print(f"\ntotal: {passed}/{numpairs} pairs passed")  # noqa: T201
 
 
 if __name__ == "__main__":

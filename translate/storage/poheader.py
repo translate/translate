@@ -52,18 +52,14 @@ def parseheaderstring(input):
     return headervalues
 
 
-def tzstring():
-    """
-    Returns the timezone as a string in the format [+-]0000, eg +0200.
-
-    :rtype: str
-    """
+def tzstring() -> str:
+    """Returns the timezone as a string in the format [+-]0000, eg +0200."""
     tzoffset = time.altzone if time.daylight else time.timezone
 
     hours, minutes = time.gmtime(abs(tzoffset))[3:5]
     if tzoffset > 0:
         hours *= -1
-    return str("%+d" % hours).zfill(3) + str(minutes).zfill(2)
+    return f"{hours:+03d}{minutes:02d}"
 
 
 def format_key(key: str) -> str:
@@ -73,13 +69,12 @@ def format_key(key: str) -> str:
     return key
 
 
-def update(existing, add=False, **kwargs):
+def update(existing: dict[str, str], add: bool = False, **kwargs) -> dict[str, str]:
     """
     Update an existing header dictionary with the values in kwargs, adding
     new values only if add is true.
 
     :return: Updated dictionary of header entries
-    :rtype: dict of strings
     """
     headerargs = {}
     fixedargs = cidict((format_key(key), value) for key, value in kwargs.items())
@@ -147,7 +142,7 @@ class poheader:
         plural_forms=None,
         report_msgid_bugs_to=None,
         **kwargs,
-    ):
+    ) -> dict[str, str]:
         """
         Create a header dictionary with useful defaults.
 
@@ -156,10 +151,9 @@ class poheader:
         or a value (datetime or string)
 
         :return: Dictionary with the header items
-        :rtype: dict of strings
         """
 
-        def format_date(key, value, fallback=None):
+        def format_date(key, value, fallback=None) -> None:
             if value is False and (fallback is not None):
                 defaultargs[key] = fallback
             elif value is True or (value is None and fallback is None):
@@ -207,9 +201,9 @@ class poheader:
         allowed to be a header. Note that this could still return an empty
         header element, if present.
         """
-        if len(self.units) == 0:
+        if len(self.units) == 0:  # ty:ignore[unresolved-attribute]
             return None
-        candidate = self.units[0]
+        candidate = self.units[0]  # ty:ignore[unresolved-attribute]
         if candidate.isheader():
             return candidate
         return None
@@ -256,13 +250,13 @@ class poheader:
             header.markfuzzy(False)  # TODO: check why we do this?
         return header
 
-    def _insert_header(self, header):
+    def _insert_header(self, header) -> None:
         # we should be using .addunit() or some equivalent in case the
         # unit needs to refer back to the store, etc. This might be
         # subtly broken for POXLIFF, since we don't duplicate the code
         # from lisa::addunit().
         header._store = self
-        self.units.insert(0, header)
+        self.units.insert(0, header)  # ty:ignore[unresolved-attribute]
 
     def getheaderplural(self):
         """Returns the nplural and plural values from the header."""
@@ -276,12 +270,12 @@ class poheader:
         plural = None if not plural or plural[0] == "EXPRESSION" else plural[0]
         return nplural, plural
 
-    def updateheaderplural(self, nplurals, plural):
+    def updateheaderplural(self, nplurals, plural) -> None:
         """Update the Plural-Form PO header."""
         if isinstance(nplurals, str):
             nplurals = int(nplurals)
         self.updateheader(
-            add=True, Plural_Forms="nplurals=%d; plural=%s;" % (nplurals, plural)
+            add=True, Plural_Forms=f"nplurals={nplurals}; plural={plural};"
         )
 
     def gettargetlanguage(self):
@@ -294,15 +288,15 @@ class poheader:
           3. Analysing the 'Language-Team' entry.
         """
         header = self.parseheader()
-        lang = header.get("Language")
-        if lang is not None:
-            from translate.lang.data import langcode_ire
+        if lang := header.get("Language"):
+            # pylint: disable-next=import-outside-toplevel
+            from translate.lang.data import langcode_ire  # noqa: PLC0415
 
             if langcode_ire.match(lang):
                 return lang
-            lang = None
         if "X-Poedit-Language" in header:
-            from translate.lang import poedit
+            # pylint: disable-next=import-outside-toplevel
+            from translate.lang import poedit  # noqa: PLC0415
 
             language = header.get("X-Poedit-Language")
             country = header.get("X-Poedit-Country")
@@ -310,26 +304,26 @@ class poheader:
         if "Language-Code" in header:  # Used in Plone files
             return header.get("Language-Code")
         if "Language-Team" in header:
-            from translate.lang.team import guess_language
+            # pylint: disable-next=import-outside-toplevel
+            from translate.lang.team import guess_language  # noqa: PLC0415
 
             return guess_language(header.get("Language-Team"))
         return None
 
-    def settargetlanguage(self, lang):
+    def settargetlanguage(self, lang: str) -> None:
         """
         Set the target language in the header.
 
         This removes any custom Poedit headers if they exist.
 
         :param lang: the new target language code
-        :type lang: str
         """
         if isinstance(lang, str) and len(lang) > 1:
             self.updateheader(
                 add=True, Language=lang, X_Poedit_Language=None, X_Poedit_Country=None
             )
 
-    def getprojectstyle(self):
+    def getprojectstyle(self) -> str | None:
         """
         Return the project based on information in the header.
 
@@ -362,22 +356,21 @@ class poheader:
         # TODO Call some project guessing code and probably move all of the above there also
         return None
 
-    def setprojectstyle(self, project_style):
+    def setprojectstyle(self, project_style: str) -> None:
         """
         Set the project in the header.
 
         :param project_style: the new project
-        :type project_style: str
         """
         self.updateheader(add=True, X_Project_Style=project_style)
 
-    def mergeheaders(self, otherstore):
+    def mergeheaders(self, otherstore) -> None:
         """
         Merges another header with this header.
 
         This header is assumed to be the template.
 
-        :type otherstore: :class:`~translate.storage.base.TranslationStore`
+        :param otherstore: The other store to merge headers from.
         """
         newvalues = otherstore.parseheader()
         retain_list = (
@@ -394,7 +387,7 @@ class poheader:
         }
         self.updateheader(**retain)
 
-    def updatecontributor(self, name, email=None):
+    def updatecontributor(self, name: str, email: str | None = None) -> None:
         """Add contribution comments if necessary."""
         header = self.header()
         if not header:
@@ -426,8 +419,7 @@ class poheader:
 
         year = time.strftime("%Y")
         contribexists = False
-        for i in range(len(contriblines)):
-            line = contriblines[i]
+        for i, line in enumerate(contriblines):
             if name in line and (email is None or email in line):
                 contribexists = True
                 if year in line:
@@ -455,7 +447,7 @@ class poheader:
 
         Check .makeheaderdict() for information on parameters.
         """
-        headerpo = self.UnitClass("", encoding=self._encoding)
+        headerpo = self.UnitClass("", encoding=self._encoding)  # ty:ignore[unresolved-attribute]
         # This is hack to make sure proper newlines are used
         # in markfuzzy -> settypecomment calls.
         headerpo._store = self

@@ -7,19 +7,10 @@ from translate.storage import po
 
 from . import test_convert
 
-importorskip("aeidon")
+importorskip("aeidon", exc_type=ImportError)
 
 
 class TestPO2Sub:
-    @staticmethod
-    def po2sub(posource):
-        """Helper that converts po source to subtitle source without requiring files."""
-        inputfile = BytesIO(posource.encode())
-        inputpo = po.pofile(inputfile)
-        convertor = po2sub.po2sub()
-        outputsub = convertor.convert_store(inputpo)
-        return outputsub.decode("utf-8")
-
     @staticmethod
     def merge2sub(subsource, posource):
         """Helper that merges po translations to subtitle source without requiring files."""
@@ -31,7 +22,7 @@ class TestPO2Sub:
         print(outputsub)
         return outputsub.decode("utf-8")
 
-    def test_subrip(self):
+    def test_subrip(self) -> None:
         """Test SubRip or .srt files."""
         posource = """#: 00:00:20.000-->00:00:24.400
 msgid "Altocumulus clouds occur between six thousand"

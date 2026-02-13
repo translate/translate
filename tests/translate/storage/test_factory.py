@@ -3,8 +3,9 @@ from bz2 import BZ2File
 from gzip import GzipFile
 from io import BytesIO
 
-from translate.storage import factory
-from translate.storage.directory import Directory
+import pytest
+
+from translate.storage import factory, po, poxliff, wordfast, xliff
 
 
 def classname(filename):
@@ -21,18 +22,18 @@ def givefile(filename, content):
 
 
 class BaseTestFactory:
-    def setup_method(self, method):
+    def setup_method(self, method) -> None:
         """Sets up a test directory."""
         self.testdir = f"{self.__class__.__name__}_testdir"
         self.cleardir(self.testdir)
         os.mkdir(self.testdir)
 
-    def teardown_method(self, method):
+    def teardown_method(self, method) -> None:
         """Removes the attributes set up by setup_method."""
         self.cleardir(self.testdir)
 
     @staticmethod
-    def cleardir(dirname):
+    def cleardir(dirname) -> None:
         """Removes the given directory."""
         if os.path.exists(dirname):
             for dirpath, subdirs, filenames in os.walk(dirname, topdown=False):
@@ -44,7 +45,7 @@ class BaseTestFactory:
             os.rmdir(dirname)
         assert not os.path.exists(dirname)
 
-    def test_getclass(self):
+    def test_getclass(self) -> None:
         assert classname("file.po") == "pofile"
         assert classname("file.pot") == "pofile"
         assert classname("file.dtd.po") == "pofile"
@@ -52,10 +53,10 @@ class BaseTestFactory:
         assert classname("file.tmx") == "tmxfile"
         assert classname("file.af.tmx") == "tmxfile"
         assert classname("file.tbx") == "tbxfile"
-        assert classname("file.po.xliff") == "xlifffile"
+        assert classname("file.po.xliff") == "xliff1file"
 
         assert classname("file.po") != "tmxfile"
-        assert classname("file.po") != "xlifffile"
+        assert classname("file.po") != "xliff1file"
 
         assert classname("file.po.gz") == "pofile"
         assert classname("file.pot.gz") == "pofile"
@@ -64,10 +65,10 @@ class BaseTestFactory:
         assert classname("file.tmx.gz") == "tmxfile"
         assert classname("file.af.tmx.gz") == "tmxfile"
         assert classname("file.tbx.gz") == "tbxfile"
-        assert classname("file.po.xliff.gz") == "xlifffile"
+        assert classname("file.po.xliff.gz") == "xliff1file"
 
         assert classname("file.po.gz") != "tmxfile"
-        assert classname("file.po.gz") != "xlifffile"
+        assert classname("file.po.gz") != "xliff1file"
 
         assert classname("file.po.bz2") == "pofile"
         assert classname("file.pot.bz2") == "pofile"
@@ -76,66 +77,62 @@ class BaseTestFactory:
         assert classname("file.tmx.bz2") == "tmxfile"
         assert classname("file.af.tmx.bz2") == "tmxfile"
         assert classname("file.tbx.bz2") == "tbxfile"
-        assert classname("file.po.xliff.bz2") == "xlifffile"
+        assert classname("file.po.xliff.bz2") == "xliff1file"
 
         assert classname("file.po.bz2") != "tmxfile"
-        assert classname("file.po.bz2") != "xlifffile"
+        assert classname("file.po.bz2") != "xliff1file"
 
-    def test_getobject_store(self):
+    def test_getobject_store(self) -> None:
         """Tests that we get a valid object."""
-        fileobj = givefile(self.filename, self.file_content)
+        fileobj = givefile(self.filename, self.file_content)  # ty:ignore[unresolved-attribute]
         store = factory.getobject(fileobj)
-        assert isinstance(store, self.expected_instance)
+        assert isinstance(store, self.expected_instance)  # ty:ignore[unresolved-attribute]
         assert store == factory.getobject(store)
 
-    def test_getobject(self):
+    def test_getobject(self) -> None:
         """Tests that we get a valid object."""
-        fileobj = givefile(self.filename, self.file_content)
+        fileobj = givefile(self.filename, self.file_content)  # ty:ignore[unresolved-attribute]
         store = factory.getobject(fileobj)
-        assert isinstance(store, self.expected_instance)
+        assert isinstance(store, self.expected_instance)  # ty:ignore[unresolved-attribute]
 
-    def test_get_noname_object(self):
+    def test_get_noname_object(self) -> None:
         """Tests that we get a valid object from a file object without a name."""
-        fileobj = BytesIO(self.file_content)
+        fileobj = BytesIO(self.file_content)  # ty:ignore[unresolved-attribute]
         assert not hasattr(fileobj, "name")
         store = factory.getobject(fileobj)
-        assert isinstance(store, self.expected_instance)
+        assert isinstance(store, self.expected_instance)  # ty:ignore[unresolved-attribute]
 
-    def test_gzfile(self):
+    def test_gzfile(self) -> None:
         """Test that we can open a gzip file correctly."""
-        filename = os.path.join(self.testdir, self.filename + ".gz")
+        filename = os.path.join(self.testdir, f"{self.filename}.gz")  # ty:ignore[unresolved-attribute]
         gzfile = GzipFile(filename, mode="wb")
-        gzfile.write(self.file_content)
+        gzfile.write(self.file_content)  # ty:ignore[unresolved-attribute]
         gzfile.close()
         store = factory.getobject(filename)
-        assert isinstance(store, self.expected_instance)
+        assert isinstance(store, self.expected_instance)  # ty:ignore[unresolved-attribute]
 
-    def test_bz2file(self):
+    def test_bz2file(self) -> None:
         """Test that we can open a gzip file correctly."""
-        filename = os.path.join(self.testdir, self.filename + ".bz2")
+        filename = os.path.join(self.testdir, f"{self.filename}.bz2")  # ty:ignore[unresolved-attribute]
         with BZ2File(filename, mode="wb") as bz2file:
-            bz2file.write(self.file_content)
+            bz2file.write(self.file_content)  # ty:ignore[unresolved-attribute]
         store = factory.getobject(filename)
-        assert isinstance(store, self.expected_instance)
+        assert isinstance(store, self.expected_instance)  # ty:ignore[unresolved-attribute]
 
-    def test_directory(self):
+    def test_directory(self) -> None:
         """Test that a directory is correctly detected."""
-        object = factory.getobject(self.testdir)
-        assert isinstance(object, Directory)
+        with pytest.raises(ValueError):
+            factory.getobject(self.testdir)
 
 
 class TestPOFactory(BaseTestFactory):
-    from translate.storage import po
-
     expected_instance = po.pofile
     filename = "dummy.po"
     file_content = b"""#: test.c\nmsgid "test"\nmsgstr "rest"\n"""
 
 
 class TestXliffFactory(BaseTestFactory):
-    from translate.storage import xliff
-
-    expected_instance = xliff.xlifffile
+    expected_instance = xliff.Xliff1File
     filename = "dummy.xliff"
     file_content = b"""<?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
@@ -151,8 +148,6 @@ class TestXliffFactory(BaseTestFactory):
 
 
 class TestPOXliffFactory(BaseTestFactory):
-    from translate.storage import poxliff
-
     expected_instance = poxliff.PoXliffFile
     filename = "dummy.xliff"
     file_content = b"""<?xml version="1.0" encoding="utf-8"?>
@@ -170,8 +165,6 @@ Content-Transfer-Encoding: 8bit
 
 
 class TestWordfastFactory(BaseTestFactory):
-    from translate.storage import wordfast
-
     expected_instance = wordfast.WordfastTMFile
     filename = "dummy.txt"
     file_content = (

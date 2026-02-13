@@ -20,6 +20,7 @@ Converters
    json2po
    md2po
    moz2po
+   mozlang2po
    odf2xliff
    oo2po
    php2po
@@ -70,6 +71,8 @@ understanding that will make the converters much easier to use and understand.
 * :doc:`md2po <md2po>` -- Markdown file converter
 * :doc:`moz2po <moz2po>` -- Mozilla .properties and .dtd converter.  Works with
   Firefox and Thunderbird
+* :doc:`mozlang2po <mozlang2po>` -- Mozilla .lang file converter.  Works with
+  Mozilla websites
 * :doc:`odf2xliff <odf2xliff>` -- Convert OpenDocument (ODF) documents to XLIFF
   and vice-versa.
 * :doc:`oo2po <oo2po>` -- OpenOffice.org SDF converter (Also works as
@@ -153,7 +156,6 @@ Other tools
    poterminology
    poterminology_stopword_file
    pretranslate
-   tmserver
 
 * :doc:`levenshtein_distance` -- edit distance algorithms for translation
   memory matching
@@ -172,8 +174,6 @@ Other tools
   files
 * :doc:`pretranslate` -- fill any missing translations from translation memory
   via fuzzy matching.
-* :doc:`tmserver` -- a Translation Memory server, can be queried over HTTP
-  using JSON
 
 .. _commands#scripts:
 

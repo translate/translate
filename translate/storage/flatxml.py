@@ -38,14 +38,14 @@ class FlatXMLUnit(base.TranslationUnit):
         element_name=None,
         attribute_name=None,
         **kwargs,
-    ):
+    ) -> None:
         self.namespace = namespace or self.DEFAULT_NAMESPACE
         self.element_name = element_name or self.DEFAULT_ELEMENT_NAME
         self.attribute_name = attribute_name or self.DEFAULT_ATTRIBUTE_NAME
         self.xmlelement = etree.Element(self.namespaced(self.element_name))
         super().__init__(source, **kwargs)
 
-    def __str__(self):
+    def __str__(self) -> str:
         # "unicode" encoding keeps the unicode status of the output
         return etree.tostring(self.xmlelement, encoding="unicode")
 
@@ -55,7 +55,7 @@ class FlatXMLUnit(base.TranslationUnit):
         return self.xmlelement.get(self.attribute_name)
 
     @source.setter
-    def source(self, source):
+    def source(self, source) -> None:
         """Updates the unique identifier of this unit."""
         self.xmlelement.set(self.attribute_name, source)
 
@@ -65,7 +65,7 @@ class FlatXMLUnit(base.TranslationUnit):
         return self.node_text
 
     @target.setter
-    def target(self, target):
+    def target(self, target) -> None:
         """Updates the translated string of this unit."""
         if self.target == target:
             return
@@ -139,7 +139,7 @@ class FlatXMLFile(base.TranslationStore):
         indent_chars=NOTPROVIDED,
         trailing_eol=None,
         **kwargs,
-    ):
+    ) -> None:
         self.root_name = root_name or self.DEFAULT_ROOT_NAME
         self.value_name = value_name or self.DEFAULT_VALUE_NAME
         self.key_name = key_name or self.DEFAULT_KEY_NAME
@@ -159,20 +159,20 @@ class FlatXMLFile(base.TranslationStore):
             self.setsourcelanguage(sourcelanguage)
             self.settargetlanguage(targetlanguage)
 
-    def addunit(self, unit, new=True):
+    def addunit(self, unit, new=True) -> None:
         unit.namespace = self.namespace
         super().addunit(unit)
         if new:
             self.root.append(unit.xmlelement)
 
-    def removeunit(self, unit):
+    def removeunit(self, unit) -> None:
         super().removeunit(unit)
         self.root.remove(unit.xmlelement)
 
-    def reindent(self):
+    def reindent(self) -> None:
         """Reindents the backing document to be consistent."""
         # no elements? nothing to do.
-        if not (len(self.root)):
+        if not len(self.root):
             pass
 
         if self.indent_chars is None:
@@ -187,18 +187,18 @@ class FlatXMLFile(base.TranslationStore):
             # ensure trailing EOL for VCS
             self.root.tail = "\n"
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         self.reindent()
         self.document.write(
             out, xml_declaration=self.XML_DECLARATION, encoding=self.encoding
         )
 
-    def make_empty_file(self):
+    def make_empty_file(self) -> None:
         """Initializes the backing document to be an empty root element."""
         self.root = etree.Element(self.namespaced(self.root_name))
         self.document = self.root.getroottree()
 
-    def parse(self, xml):
+    def parse(self, xml) -> None:  # ty:ignore[invalid-method-override]
         """Parses the passed xml file into the backing document."""
         if not hasattr(self, "filename"):
             self.filename = getattr(xml, "name", "")
@@ -228,10 +228,7 @@ class FlatXMLFile(base.TranslationStore):
             )
 
             assert matching_nodes[0].get(self.key_name), (
-                "expected key attribute to be {}, found attribute(s): {}".format(
-                    self.key_name,
-                    ",".join(matching_nodes[0].attrib),
-                )
+                f"expected key attribute to be {self.key_name}, found attribute(s): {','.join(matching_nodes[0].attrib)}"
             )
 
         for entry in self.root:

@@ -15,7 +15,7 @@ class TestTS2PO:
         print(bytes(outputpo))
         return outputpo
 
-    def test_blank(self):
+    def test_blank(self) -> None:
         """Tests blank conversion."""
         tssource = """<!DOCTYPE TS><TS>
 <context>
@@ -34,7 +34,7 @@ class TestTS2PO:
         assert pofile.units[1].getlocations()[0].startswith("MainWindowBase")
         assert not pofile.units[1].isfuzzy()
 
-    def test_basic(self):
+    def test_basic(self) -> None:
         """Tests basic conversion."""
         tssource = """<!DOCTYPE TS><TS>
 <context>
@@ -52,7 +52,7 @@ class TestTS2PO:
         assert pofile.units[1].target == "&Giới thiệu"
         assert pofile.units[1].getlocations()[0].startswith("AboutDialog")
 
-    def test_unfinished(self):
+    def test_unfinished(self) -> None:
         """Tests unfinished conversion."""
         tssource = """<!DOCTYPE TS><TS>
 <context>
@@ -71,7 +71,7 @@ class TestTS2PO:
         assert pofile.units[1].getlocations()[0].startswith("MainWindowBase")
         assert pofile.units[1].isfuzzy()
 
-    def test_multiline(self):
+    def test_multiline(self) -> None:
         """Tests multiline message conversion."""
         tssource = """<!DOCTYPE TS><TS>
 <context>
@@ -91,7 +91,7 @@ new line</translation>
         assert pofile.units[1].target == "Test with\nnew line"
         assert pofile.units[1].getlocations()[0].startswith("@default")
 
-    def test_obsolete(self):
+    def test_obsolete(self) -> None:
         """Test the handling of obsolete TS entries."""
         tssource = """<!DOCTYPE TS><TS>
 <context>
@@ -108,7 +108,7 @@ new line</translation>
         # Test that we aren't following the old style
         assert "_ OBSOLETE" not in pofile.units[1].getnotes()
 
-    def test_comment(self):
+    def test_comment(self) -> None:
         """Test that we can handle disambiguation identifiers."""
         # Example from https://www.gnu.org/software/gettext/manual/html_node/Contexts.html
         tssource = """<!DOCTYPE TS><TS>
@@ -125,7 +125,7 @@ new line</translation>
         pofile = self.ts2po(tssource)
         assert pofile.units[1].getcontext() == "Menu|File|"
 
-    def test_extracomment(self):
+    def test_extracomment(self) -> None:
         """Test that we can handle '//:' comments from developers to translators."""
         tssource = """<!DOCTYPE TS><TS>
 <context>
@@ -144,7 +144,7 @@ new line</translation>
             == "Appears in the Help menu (on Windows and Linux) or the app menu (on macOS)."
         )
 
-    def test_emptycontext(self):
+    def test_emptycontext(self) -> None:
         """Test conversion with a leading empty context."""
         tssource = """<!DOCTYPE TS><TS>
 <context>
@@ -173,7 +173,7 @@ new line</translation>
             == "Com que venim de fora vam pensar que el millor que podíem fer era aprendre la llengua d'aquí i integrar-nos."
         )
 
-    def test_plural(self):
+    def test_plural(self) -> None:
         """Test the handling of plural forms in TS files."""
         tssource = """<!DOCTYPE TS><TS language="be">
 <context>
@@ -195,7 +195,7 @@ new line</translation>
         assert pofile.units[1].target.strings[1] == "%d dni tamu"
         assert pofile.units[1].target.strings[2] == "%d dźon tamu"
 
-    def test_plural_unfinished(self):
+    def test_plural_unfinished(self) -> None:
         """Test the handling of unfinished plural forms in TS files."""
         tssource = """<!DOCTYPE TS><TS language="be">
 <context>

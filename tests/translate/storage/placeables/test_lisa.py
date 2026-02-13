@@ -17,13 +17,15 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 
+from copy import copy
+
 from lxml import etree
 
 from translate.storage.placeables import StringElem, lisa
 from translate.storage.placeables.xliff import Bx, Ex, G, UnknownXML, X
 
 
-def test_xml_to_strelem():
+def test_xml_to_strelem() -> None:
     source = etree.fromstring("<source>a</source>")
     elem = lisa.xml_to_strelem(source)
     assert elem == StringElem("a")
@@ -50,7 +52,7 @@ def test_xml_to_strelem():
     ]
 
 
-def test_xml_space():
+def test_xml_space() -> None:
     source = etree.fromstring(
         '<source xml:space="default"> a <x id="foo[1]/bar[1]/baz[1]"/> </source>'
     )
@@ -59,7 +61,7 @@ def test_xml_space():
     assert elem.sub == [StringElem("a "), X(id="foo[1]/bar[1]/baz[1]"), StringElem(" ")]
 
 
-def test_chunk_list():
+def test_chunk_list() -> None:
     left = StringElem(
         [
             "a",
@@ -77,7 +79,7 @@ def test_chunk_list():
     assert left == right
 
 
-def test_set_strelem_to_xml():
+def test_set_strelem_to_xml() -> None:
     source = etree.Element("source")
     lisa.strelem_to_xml(source, StringElem("a"))
     assert etree.tostring(source, encoding="UTF-8") == b"<source>a</source>"
@@ -127,7 +129,7 @@ def test_set_strelem_to_xml():
     )
 
 
-def test_unknown_xml_placeable():
+def test_unknown_xml_placeable() -> None:
     # The XML below is (modified) from the official XLIFF example file Sample_AlmostEverything_1.2_strict.xlf
     source = etree.fromstring(
         """<source xml:lang="en-us">Text <g id="_1_ski_040">g</g>TEXT<bpt id="_1_ski_139">bpt<sub>sub</sub>
@@ -135,8 +137,6 @@ def test_unknown_xml_placeable():
                <x id="_1_ski_535"/>TEXT<bx id="_1_ski_634"/>TEXT<ex id="_1_ski_733"/>TEXT.</source>"""
     )
     elem = lisa.xml_to_strelem(source)
-
-    from copy import copy
 
     custom = StringElem(
         [

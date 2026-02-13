@@ -41,7 +41,7 @@ class multistring(str):
         newstring.extra_strings = string[1:]
         return newstring
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__()
         if not hasattr(self, "extra_strings"):
             self.extra_strings = []
@@ -72,7 +72,7 @@ class multistring(str):
         strings = [str(self), *self.extra_strings]
         return f"multistring({strings!r})"
 
-    def replace(self, old: str, new: str, count: int = -1) -> multistring:
+    def replace(self, old: str, new: str, count: int = -1) -> multistring:  # ty:ignore[invalid-method-override]
         newstr = multistring(super().replace(old, new, count))
         newstr.extra_strings.extend(
             s.replace(old, new, count) for s in self.extra_strings

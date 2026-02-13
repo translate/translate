@@ -39,7 +39,7 @@ class YAMLUnitId(base.UnitId):
     KEY_SEPARATOR = "->"
     INDEX_SEPARATOR = "->"
 
-    def __str__(self):
+    def __str__(self) -> str:
         result = super().__str__()
         # Strip leading ->
         if result.startswith(self.KEY_SEPARATOR):
@@ -52,7 +52,7 @@ class YAMLUnit(base.DictUnit):
 
     IdClass = YAMLUnitId
 
-    def __init__(self, source=None, **kwargs):
+    def __init__(self, source=None, **kwargs) -> None:
         # Ensure we have ID (for serialization)
         if source:
             self.source = source
@@ -66,7 +66,7 @@ class YAMLUnit(base.DictUnit):
         return self.target
 
     @source.setter
-    def source(self, source):
+    def source(self, source) -> None:
         self.target = source
 
     def getid(self):
@@ -100,8 +100,7 @@ class YAMLUnit(base.DictUnit):
                     target = target[key]
         except (KeyError, IndexError, TypeError):
             return None
-        else:
-            return target
+        return target
 
     def storevalue(
         self,
@@ -138,12 +137,12 @@ class YAMLUnit(base.DictUnit):
         self.storevalue(output, self.convert_target())
 
 
-class YAMLFile(base.DictStore):
+class YAMLFile(base.DictStore[YAMLUnit]):
     """A YAML file."""
 
     UnitClass = YAMLUnit
 
-    def __init__(self, inputfile=None, **kwargs):
+    def __init__(self, inputfile=None, **kwargs) -> None:
         """Construct a YAML file, optionally reading in from inputfile."""
         super().__init__(**kwargs)
         self.filename = ""
@@ -166,7 +165,7 @@ class YAMLFile(base.DictStore):
             setattr(yaml, arg, value)
         return yaml
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         # Always start with valid root even if original file was empty
         if self._original is None:
             self._original = self.get_root_node()
@@ -243,7 +242,7 @@ class YAMLFile(base.DictStore):
 
     def _flatten(
         self, data, prev=None, parent_map=None, key=None
-    ) -> Generator[tuple[base.UnitId, str, str | None], None, None]:
+    ) -> Generator[tuple[base.UnitId, str, str | None]]:
         """
         Flatten YAML dictionary.
 
@@ -279,7 +278,7 @@ class YAMLFile(base.DictStore):
         """Preprocess hook for child formats."""
         return data
 
-    def parse(self, input):
+    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
         """Parse the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name
@@ -297,7 +296,7 @@ class YAMLFile(base.DictStore):
             message = getattr(e, "problem", getattr(e, "message", str(e)))
             if hasattr(e, "problem_mark"):
                 message += f" {e.problem_mark}"
-            raise base.ParseError(message)
+            raise base.ParseError(message) from e
 
         content = self.preprocess(self._original)
 
@@ -308,7 +307,7 @@ class YAMLFile(base.DictStore):
                 unit.addnote(comment, origin="developer")
             self.addunit(unit)
 
-    def removeunit(self, unit):
+    def removeunit(self, unit) -> None:
         if self._original is not None:
             units = self.preprocess(self._original)
             unit.storevalue(units, None, unset=True)
@@ -320,7 +319,7 @@ class RubyYAMLUnit(YAMLUnit):
         if not isinstance(self.target, multistring):
             return self.target
 
-        tags = self._store.get_plural_tags()
+        tags = self._store.get_plural_tags()  # ty:ignore[possibly-missing-attribute]
 
         # Sync plural_strings elements to plural_tags count.
         strings = self.sync_plural_count(self.target, tags)

@@ -6,7 +6,7 @@ from translate.storage import php
 from . import test_monolingual
 
 
-def test_php_escaping_single_quote():
+def test_php_escaping_single_quote() -> None:
     """
     Test the helper escaping functions for 'single quotes'.
 
@@ -84,7 +84,7 @@ newline"""
     assert php.phpencode(r"You deleted C:\*.*?") == r"You deleted C:\*.*?"
 
 
-def test_php_escaping_double_quote():
+def test_php_escaping_double_quote() -> None:
     """Test the helper escaping functions for 'double quotes'."""
     # Decoding - PHP -> Python
     assert php.phpdecode("'", quotechar='"') == "'"  # we do nothing with single quotes
@@ -161,7 +161,7 @@ def test_php_escaping_double_quote():
 class TestPhpUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = php.phpunit
 
-    def test_difficult_escapes(self):
+    def test_difficult_escapes(self) -> None:
         pass
 
 
@@ -178,7 +178,7 @@ class TestPhpFile(test_monolingual.TestMonolingualStore):
         """Helper that converts php source to phpfile object and back."""
         return bytes(self.phpparse(phpsource)).decode("utf-8")
 
-    def test_simpledefinition(self):
+    def test_simpledefinition(self) -> None:
         """Checks that a simple php definition is parsed correctly."""
         phpsource = """$lang['mediaselect'] = 'Bestand selective';"""
         phpfile = self.phpparse(phpsource)
@@ -187,14 +187,14 @@ class TestPhpFile(test_monolingual.TestMonolingualStore):
         assert phpunit.name == "$lang['mediaselect']"
         assert phpunit.source == "Bestand selective"
 
-    def test_simpledefinition_source(self):
+    def test_simpledefinition_source(self) -> None:
         """Checks that a simple php definition can be regenerated as source."""
         phpsource = """<?php
 $lang['mediaselect'] = 'Bestand selective';"""
         phpregen = self.phpregen(phpsource)
-        assert phpsource + "\n" == phpregen
+        assert f"{phpsource}\n" == phpregen
 
-    def test_spaces_in_name(self):
+    def test_spaces_in_name(self) -> None:
         """Check that spaces in the array name doesn't throw us off."""
         phpsource = """$lang[ 'mediaselect' ] = 'Bestand selective';"""
         phpfile = self.phpparse(phpsource)
@@ -203,7 +203,7 @@ $lang['mediaselect'] = 'Bestand selective';"""
         assert phpunit.name == "$lang[ 'mediaselect' ]"
         assert phpunit.source == "Bestand selective"
 
-    def test_comment_definition(self):
+    def test_comment_definition(self) -> None:
         """Check that comments are fully preserved."""
         phpsource = """/*
  * Comment line 1
@@ -223,7 +223,7 @@ $foo = "bar";
  */"""
         ]
 
-    def test_comment_blocks(self):
+    def test_comment_blocks(self) -> None:
         """Check that we don't process name value pairs in comment blocks."""
         phpsource = """/*
  * $lang[0] = "Blah";
@@ -237,7 +237,7 @@ $lang[2] = "Yeah";
         assert phpunit.name == "$lang[2]"
         assert phpunit.source == "Yeah"
 
-    def test_comment_output(self):
+    def test_comment_output(self) -> None:
         """Check that linebreaks and spacing is preserved when comments are output."""
         phpsource = """/*
  * Comment line 1
@@ -250,7 +250,7 @@ $foo = 'bar';
         phpunit = phpfile.units[0]
         assert str(phpunit) == phpsource
 
-    def test_comment_add(self):
+    def test_comment_add(self) -> None:
         """Check that comments are actually added."""
         phpsource = """/* NOTE 1 */
 $foo = 'bar';
@@ -268,7 +268,7 @@ $foo = 'bar';
         assert phpunit._comments == ["/* NOTE 2 */"]
         assert str(phpunit) == phpsource.replace("NOTE 1", "NOTE 2")
 
-    def test_multiline(self):
+    def test_multiline(self) -> None:
         """Check that we preserve newlines in a multiline message."""
         phpsource = """$lang['multiline'] = "Line1%sLine2";"""
         # Try DOS and Unix and make sure the output has the same
@@ -279,7 +279,7 @@ $foo = 'bar';
             assert phpunit.name == "$lang['multiline']"
             assert phpunit.source == f"Line1{lineending}Line2"
 
-    def test_parsing_arrays(self):
+    def test_parsing_arrays(self) -> None:
         """Parse the array syntax."""
         phpsource = """$lang = %s(
          'item1' => 'value1',
@@ -292,7 +292,7 @@ $foo = 'bar';
             assert phpunit.name == "$lang->'item1'"
             assert phpunit.source == "value1"
 
-    def test_parsing_array_no_array_syntax(self):
+    def test_parsing_array_no_array_syntax(self) -> None:
         """Parse the array syntax."""
         phpsource = """global $_LANGPDF;
         $_LANGPDF = array();
@@ -304,7 +304,7 @@ $foo = 'bar';
         assert phpunit.name == "$_LANGPDF['PDF065ab3a28ca4f16f55f103adc7d0226f']"
         assert phpunit.source == "Delivery"
 
-    def test_parsing_arrays_keys_with_spaces(self):
+    def test_parsing_arrays_keys_with_spaces(self) -> None:
         """Ensure that our identifiers can have spaces. Bug #1683."""
         phpsource = """$lang = array(
          'item 1' => 'value1',
@@ -316,7 +316,7 @@ $foo = 'bar';
         assert phpunit.name == "$lang->'item 1'"
         assert phpunit.source == "value1"
 
-    def test_parsing_arrays_keys_with_quotes(self):
+    def test_parsing_arrays_keys_with_quotes(self) -> None:
         """Ensure that our identifiers get escaped. Bug #5348."""
         phpsource = r"""<?php
 return [
@@ -335,7 +335,7 @@ return [
 
         assert bytes(phpfile).decode() == phpsource
 
-    def test_parsing_arrays_keys_with_number_as_value(self):
+    def test_parsing_arrays_keys_with_number_as_value(self) -> None:
         """Ensure that our identifiers can have numbers as value. Bug #5355."""
         phpsource = r"""<?php
 return [
@@ -370,7 +370,7 @@ return [
 
         assert bytes(phpfile).decode() == phpsource
 
-    def test_parsing_arrays_non_textual(self):
+    def test_parsing_arrays_non_textual(self) -> None:
         """Don't break on non-textual data. Bug #1684."""
         phpsource = """$lang = array(
          'item 1' => 'value1',
@@ -383,7 +383,7 @@ return [
         assert phpunit.name == "$lang->'item 3'"
         assert phpunit.source == "value3"
 
-    def test_parsing_simple_define(self):
+    def test_parsing_simple_define(self) -> None:
         """Parse simple define syntax."""
         phpsource = """define("_FINISH", "Rematar");
 define('_POSTEDON', 'Enviado o');"""
@@ -396,7 +396,7 @@ define('_POSTEDON', 'Enviado o');"""
         assert phpunit.name == "define('_POSTEDON'"
         assert phpunit.source == "Enviado o"
 
-    def test_parsing_simple_define_with_spaces_before_key(self):
+    def test_parsing_simple_define_with_spaces_before_key(self) -> None:
         """Parse simple define syntax with spaces before key."""
         phpsource = """define( "_FINISH", "Rematar");
 define( '_CM_POSTED', 'Enviado');"""
@@ -409,7 +409,7 @@ define( '_CM_POSTED', 'Enviado');"""
         assert phpunit.name == "define( '_CM_POSTED'"
         assert phpunit.source == "Enviado"
 
-    def test_parsing_define_spaces_after_equal_delimiter(self):
+    def test_parsing_define_spaces_after_equal_delimiter(self) -> None:
         """Parse define syntax with spaces after the equal delimiter."""
         phpsource = """define("_RELOAD",       "Recargar");
 define('_CM_POSTED',    'Enviado');"""
@@ -422,7 +422,7 @@ define('_CM_POSTED',    'Enviado');"""
         assert phpunit.name == "define('_CM_POSTED'"
         assert phpunit.source == "Enviado"
 
-    def test_parsing_define_spaces_after_equal_delimiter_and_before_key(self):
+    def test_parsing_define_spaces_after_equal_delimiter_and_before_key(self) -> None:
         """
         Parse define syntax with spaces after the equal delimiter as well
         before the key.
@@ -438,7 +438,7 @@ define(  '_UPGRADE_CHARSET',    'Upgrade charset');"""
         assert phpunit.name == "define(  '_UPGRADE_CHARSET'"
         assert phpunit.source == "Upgrade charset"
 
-    def test_parsing_define_no_spaces_after_equal_delimiter(self):
+    def test_parsing_define_no_spaces_after_equal_delimiter(self) -> None:
         """Parse define syntax without spaces after the equal delimiter."""
         phpsource = """define("_POSTEDON","Enviado o");
 define('_UPGRADE_CHARSET','Upgrade charset');"""
@@ -451,7 +451,7 @@ define('_UPGRADE_CHARSET','Upgrade charset');"""
         assert phpunit.name == "define('_UPGRADE_CHARSET'"
         assert phpunit.source == "Upgrade charset"
 
-    def test_parsing_define_no_spaces_after_equaldel_but_before_key(self):
+    def test_parsing_define_no_spaces_after_equaldel_but_before_key(self) -> None:
         """
         Parse define syntax without spaces after the equal delimiter but
         with spaces before the key.
@@ -467,7 +467,7 @@ define( '_CM_POSTED','Enviado');"""
         assert phpunit.name == "define( '_CM_POSTED'"
         assert phpunit.source == "Enviado"
 
-    def test_parsing_define_entries_with_quotes(self):
+    def test_parsing_define_entries_with_quotes(self) -> None:
         """Parse define syntax for entries with quotes."""
         phpsource = r"""define('_SETTINGS_COOKIEPREFIX', 'Prefixo da "cookie"');
 define('_YOUR_USERNAME', 'O seu nome de usuario: "cookie"');
@@ -484,7 +484,7 @@ define("_REGISTER", "Register <a href=\"register.php\">here</a>");"""
         assert phpunit.name == 'define("_REGISTER"'
         assert phpunit.source == 'Register <a href="register.php">here</a>'
 
-    def test_parsing_define_comments_at_entry_line_end(self):
+    def test_parsing_define_comments_at_entry_line_end(self) -> None:
         """Parse define syntax with comments at the end of the entry line."""
         phpsource = """define("_POSTEDON", "Enviado o");// Keep this short
 define('_CM_POSTED', 'Enviado'); // Posted date"""
@@ -499,7 +499,7 @@ define('_CM_POSTED', 'Enviado'); // Posted date"""
         assert phpunit.source == "Enviado"
         assert phpunit._comments == ["// Posted date"]
 
-    def test_parsing_define_double_slash_comments_before_entries(self):
+    def test_parsing_define_double_slash_comments_before_entries(self) -> None:
         """Parse define syntax with double slash comments before the entries."""
         phpsource = """// Keep this short
 define("_FINISH", "Rematar");
@@ -521,7 +521,7 @@ define('_CM_POSTED', 'Enviado');"""
             "// It appears besides posts",
         ]
 
-    def test_parsing_define_spaces_before_end_delimiter(self):
+    def test_parsing_define_spaces_before_end_delimiter(self) -> None:
         """Parse define syntax with spaces before the end delimiter."""
         phpsource = """define("_POSTEDON", "Enviado o");
 define("_FINISH", "Rematar"     );
@@ -538,7 +538,7 @@ define("_RELOAD", "Recargar");"""
         assert phpunit.name == 'define("_RELOAD"'
         assert phpunit.source == "Recargar"
 
-    def test_parsing_simpledefinition_spaces_before_end_delimiter(self):
+    def test_parsing_simpledefinition_spaces_before_end_delimiter(self) -> None:
         """Parse simple definition syntax with spaces before the end delimiter."""
         phpsource = """$month_jan = 'Jan';
 $month_feb = 'Feb'  ;
@@ -555,7 +555,7 @@ $month_mar = 'Mar';"""
         assert phpunit.name == "$month_mar"
         assert phpunit.source == "Mar"
 
-    def test_parsing_arrays_no_trailing_comma(self):
+    def test_parsing_arrays_no_trailing_comma(self) -> None:
         """
         Parse the array syntax where we don't have a trailing comma.
 
@@ -574,7 +574,7 @@ $month_mar = 'Mar';"""
         assert phpunit.name == "$lang->'item2'"
         assert phpunit.source == "value2"
 
-    def test_parsing_arrays_space_before_comma(self):
+    def test_parsing_arrays_space_before_comma(self) -> None:
         """
         Parse the array syntax with spaces before the comma.
 
@@ -593,7 +593,7 @@ $month_mar = 'Mar';"""
         assert phpunit.name == "$lang->'item2'"
         assert phpunit.source == "value2"
 
-    def test_parsing_arrays_with_space_before_array_declaration(self):
+    def test_parsing_arrays_with_space_before_array_declaration(self) -> None:
         """
         Parse the array syntax with spaces before the array declaration.
 
@@ -612,7 +612,7 @@ $month_mar = 'Mar';"""
         assert phpunit.name == "$lang->'item2'"
         assert phpunit.source == "value2"
 
-    def test_parsing_arrays_declared_in_a_single_line(self):
+    def test_parsing_arrays_declared_in_a_single_line(self) -> None:
         """
         Parse an array declared in a single line.
 
@@ -631,7 +631,7 @@ $month_mar = 'Mar';"""
         assert phpunit.name == "$lang->'item3'"
         assert phpunit.source == "value3"
 
-    def test_parsing_arrays_with_no_keys(self):
+    def test_parsing_arrays_with_no_keys(self) -> None:
         """Parse an array with no keys."""
         phpsource = """<?php
 $days = array(
@@ -669,7 +669,7 @@ $days = array(
         assert phpunit.source == "Saturday"
         assert bytes(phpfile).decode() == phpsource
 
-    def test_parsing_arrays_with_no_keys_assigned_to_array(self):
+    def test_parsing_arrays_with_no_keys_assigned_to_array(self) -> None:
         """Parse an array with no keys assigned to another array."""
         phpsource = """<?php
 $messages['days_short'] = array(
@@ -707,7 +707,7 @@ $messages['days_short'] = array(
         assert phpunit.name == "$messages['days_short']->[]"
         assert phpunit.source == "Sat"
 
-    def test_parsing_nested_arrays_with_no_keys(self):
+    def test_parsing_nested_arrays_with_no_keys(self) -> None:
         """Parse a nested array with no keys."""
         phpsource = """$lang = array(array("key" => "value"));"""
         phpfile = self.phpparse(phpsource)
@@ -716,7 +716,7 @@ $messages['days_short'] = array(
         assert phpunit.name == "$lang->[]->'key'"
         assert phpunit.source == "value"
 
-    def test_assignment_in_line_where_multiline_comment_ends(self):
+    def test_assignment_in_line_where_multiline_comment_ends(self) -> None:
         """Check parsing assignment in same line a multiline comment ends."""
         phpsource = """<?php
 /*
@@ -730,7 +730,7 @@ $messages['days_short'] = array(
         assert phpunit.name == "$messages['help']"
         assert phpunit.source == "Help"
 
-    def test_parsing_arrays_using_short_array_syntax(self):
+    def test_parsing_arrays_using_short_array_syntax(self) -> None:
         """Parse short array syntax.  Bug #3626."""
         phpsource = """<?php
 $lang = [
@@ -748,7 +748,7 @@ $lang = [
         assert phpunit.source == "value2"
         assert bytes(phpfile).decode() == phpsource
 
-    def test_parsing_nested_arrays(self):
+    def test_parsing_nested_arrays(self) -> None:
         """Parse the nested array syntax. Bug #2240."""
         phpsource = """$app_list_strings = array(
             'Mailbox' => 'Mailbox',
@@ -777,7 +777,7 @@ $lang = [
         assert phpunit.name == "$app_list_strings->'FAQ'"
         assert phpunit.source == "FAQ"
 
-    def test_parsing_nested_arrays_with_space_before_array_declaration(self):
+    def test_parsing_nested_arrays_with_space_before_array_declaration(self) -> None:
         """Parse the nested array syntax with whitespace before the array declaration."""
         phpsource = """$app_list_strings = array  (
             'Mailbox' => 'Mailbox',
@@ -820,7 +820,7 @@ $lang = [
         assert phpunit.name == "$app_list_strings->'FAQ'"
         assert phpunit.source == "FAQ"
 
-    def test_parsing_unnamed_nested_arrays(self):
+    def test_parsing_unnamed_nested_arrays(self) -> None:
         """Parse the unnamed nested array."""
         phpsource = """return array  (
             'name1' => 'target1',
@@ -854,7 +854,7 @@ $lang = [
         assert phpunit.name == "return->'list2'->'l1'"
         assert phpunit.source == "target_l2_1"
 
-    def test_parsing_nested_arrays_with_array_declaration_in_next_line(self):
+    def test_parsing_nested_arrays_with_array_declaration_in_next_line(self) -> None:
         """
         Parse the nested array syntax with array declaration in the next line.
 
@@ -880,7 +880,7 @@ $lang = [
         assert phpunit.name == "$lang->'item2'"
         assert phpunit.source == "value2"
 
-    def test_parsing_array_with_newline_after_delimiter(self):
+    def test_parsing_array_with_newline_after_delimiter(self) -> None:
         """
         Parse array with newline between key and value.
 
@@ -904,7 +904,7 @@ $lang = [
         assert phpunit.name == "$lang->'item2'"
         assert phpunit.source == "value2"
 
-    def test_parsing_nested_arrays_with_blank_entries(self):
+    def test_parsing_nested_arrays_with_blank_entries(self) -> None:
         """Parse the nested array syntax with blank entries. Bug #2648."""
         phpsource = """<?php
 $lang = array(
@@ -932,7 +932,7 @@ $lang = array(
         assert phpunit.source == "value2"
         assert bytes(phpfile).decode() == phpsource
 
-    def test_slashstar_in_string(self):
+    def test_slashstar_in_string(self) -> None:
         """Ignore the /* comment delimiter when it is part of a string.  Bug #3627."""
         phpsource = """$definition['key'] = 'Value /* value continued';
       $lang = array(
@@ -955,7 +955,7 @@ $lang = array(
         assert phpunit.name == "$lang->'thirdkey'"
         assert phpunit.source == "Third value"
 
-    def test_parsing_simple_heredoc_syntax(self):
+    def test_parsing_simple_heredoc_syntax(self) -> None:
         """Parse the heredoc syntax. Bug #2611."""
         phpsource = """$month_jan = 'Jan';
 $lang_register_approve_email = <<<EOT
@@ -990,7 +990,7 @@ $month_mar = 'Mar';
         assert phpunit.name == "$month_mar"
         assert phpunit.source == "Mar"
 
-    def test_simpledefinition_after_define(self):
+    def test_simpledefinition_after_define(self) -> None:
         """Check that a simple definition after define is parsed correctly."""
         phpsource = """define("_FINISH", "Rematar");
 $lang['mediaselect'] = 'Bestand selective';"""
@@ -1003,14 +1003,14 @@ $lang['mediaselect'] = 'Bestand selective';"""
         assert phpunit.name == "$lang['mediaselect']"
         assert phpunit.source == "Bestand selective"
 
-    def test_quotes(self):
+    def test_quotes(self) -> None:
         phpsource = """<?php
 $txt[\'DISPLAYEDINFOS\'] = "<a href=\\"__PARAM2__\\">Modificar...</a>";
 """
         phpfile = self.phpparse(phpsource)
         assert bytes(phpfile).decode() == phpsource
 
-    def test_concatenation(self):
+    def test_concatenation(self) -> None:
         """Check that concatenating strings and variables is parsed correctly."""
         phpsource = """
 $lang['mediaselect'] = "Really \\\"something\\\"" . $variable . "\\\"something else\\\"";
@@ -1029,7 +1029,7 @@ $messages['greeting'] = 'Hi ' . $name;
         assert phpunit.name == "$messages['greeting']"
         assert phpunit.source == "Hi $name"
 
-    def test_serialize(self):
+    def test_serialize(self) -> None:
         phpsource = """<?php
 # Comment 1
 define("_FINISH", 'Rematar');
@@ -1051,7 +1051,7 @@ $texts = array(
         phpfile = self.phpparse(phpsource)
         assert bytes(phpfile).decode() == phpsource
 
-    def test_space_before_comma(self):
+    def test_space_before_comma(self) -> None:
         """
         Check that spacing before comma or semicolon doesn't break parser.
 
@@ -1073,7 +1073,7 @@ $texts = array(
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 9
 
-    def test_equals_in_id(self):
+    def test_equals_in_id(self) -> None:
         """
         Check that equals in id doesn't break parser.
 
@@ -1087,7 +1087,7 @@ $texts = array(
         assert phpfile.units[0].source == "Message"
         assert phpfile.units[0].name == "$strings['key = value']"
 
-    def test_comma_in_string(self):
+    def test_comma_in_string(self) -> None:
         """
         Check that comma in string doesn't break parser.
 
@@ -1103,7 +1103,7 @@ $texts = array(
         assert phpfile.units[0].source == " text (comment **),**"
         assert phpfile.units[0].name == "$t->'key'"
 
-    def test_nowdoc(self):
+    def test_nowdoc(self) -> None:
         """Check parsing nowdoc strings."""
         phpsource = """$str = <<<'EOD'
 Example of string
@@ -1121,7 +1121,7 @@ using nowdoc syntax."""
         )
         assert phpfile.units[0].name == "$str"
 
-    def test_plain_concatenation(self):
+    def test_plain_concatenation(self) -> None:
         """Check parsing concatenated strings."""
         phpsource = """$str = 'Concatenated' . ' ' . 'string';
         $arr['x'] = 'Concatenated' . ' ' . 'string';
@@ -1133,7 +1133,7 @@ using nowdoc syntax."""
         assert phpfile.units[1].source == "Concatenated string"
         assert phpfile.units[1].name == "$arr['x']"
 
-    def test_array_keys(self):
+    def test_array_keys(self) -> None:
         """Check parsing different array keys."""
         phpsource = """
         $arr = [
@@ -1151,7 +1151,7 @@ using nowdoc syntax."""
         assert phpfile.units[2].source == "Third"
         assert phpfile.units[2].name == "$arr[]->'1245'"
 
-    def test_double_var(self):
+    def test_double_var(self) -> None:
         """Checks that a double $ is handled correctly."""
         phpsource = """$$lang['mediaselect'] = 'Bestand selective';"""
         phpfile = self.phpparse(phpsource)
@@ -1160,7 +1160,7 @@ using nowdoc syntax."""
         assert phpunit.name == "$$lang['mediaselect']"
         assert phpunit.source == "Bestand selective"
 
-    def test_return_array(self):
+    def test_return_array(self) -> None:
         phpsource = """<?php
 return array(
     'peach' => 'pesca',
@@ -1173,7 +1173,7 @@ return array(
         assert phpunit.source == "pesca"
         assert bytes(phpfile).decode() == phpsource
 
-    def test_return_array_with_spaces(self):
+    def test_return_array_with_spaces(self) -> None:
         """Test that return array with spaces before 'array' is handled correctly."""
         phpsource = """<?php
 return  array(
@@ -1189,7 +1189,7 @@ return  array(
         # The output should normalize spacing
         assert bytes(phpfile) == b"<?php\nreturn array(\n    'peach' => 'pesca',\n);\n"
 
-    def test_return_array_with_comments(self):
+    def test_return_array_with_comments(self) -> None:
         """Test that return array with comments preserves comments correctly."""
         phpsource = """<?php
 
@@ -1213,7 +1213,7 @@ return array(
         # Check that comments are preserved
         assert "String1" in phpunit.getnotes("developer")
 
-    def test_return_array_short(self):
+    def test_return_array_short(self) -> None:
         phpsource = """<?php
 return [
     'peach' => 'pesca',
@@ -1230,7 +1230,7 @@ return [
         phpunit.source = "pesca"
         assert bytes(phpfile).decode() == phpsource
 
-    def test_return_array_short_quotes(self):
+    def test_return_array_short_quotes(self) -> None:
         phpsource = r"""<?php
 return [
     'peach' => "foo \"pesca\"",
@@ -1248,7 +1248,7 @@ return [
         phpunit.source = 'foo "pesca"'
         assert bytes(phpfile).decode() == phpsource
 
-    def test_addunit(self):
+    def test_addunit(self) -> None:
         expected = """<?php
 $key = 'first';
 $sec = 'second';
@@ -1276,7 +1276,7 @@ class TestLaravelPhpFile(test_monolingual.TestMonolingualStore):
         dummyfile = BytesIO(phpsource.encode())
         return self.StoreClass(dummyfile)
 
-    def test_plurals(self):
+    def test_plurals(self) -> None:
         phpsource = r"""<?php
 return [
     'welcome' => 'Welcome to our application',
@@ -1297,7 +1297,7 @@ return [
         phpunit.source = multistring(["There is an apple", "There are many apples"])
         assert bytes(phpfile).decode() == phpsource.replace("one apple", "an apple")
 
-    def test_key_stripping(self):
+    def test_key_stripping(self) -> None:
         """Test that Laravel PHP files strip the return prefix from keys."""
         phpsource = r"""<?php
 return [
@@ -1314,7 +1314,7 @@ return [
         assert phpfile.units[0].getlocations() == ["welcome"]
         assert phpfile.units[1].getlocations() == ["apples"]
 
-    def test_key_stripping_array_syntax(self):
+    def test_key_stripping_array_syntax(self) -> None:
         """Test key stripping works with array() syntax."""
         phpsource = r"""<?php
 return array(
@@ -1327,7 +1327,7 @@ return array(
         assert phpfile.units[0].getid() == "welcome"
         assert phpfile.units[1].getid() == "goodbye"
 
-    def test_key_stripping_numeric_keys(self):
+    def test_key_stripping_numeric_keys(self) -> None:
         """Test key stripping works with numeric keys."""
         phpsource = r"""<?php
 return [
@@ -1340,7 +1340,7 @@ return [
         assert phpfile.units[0].getid() == "1"
         assert phpfile.units[1].getid() == "2"
 
-    def test_roundtrip_short_array(self):
+    def test_roundtrip_short_array(self) -> None:
         """Test round trip serialization with short array syntax."""
         phpsource = r"""<?php
 return [
@@ -1351,7 +1351,7 @@ return [
         phpfile = self.phpparse(phpsource)
         assert bytes(phpfile).decode() == phpsource
 
-    def test_roundtrip_array_syntax(self):
+    def test_roundtrip_array_syntax(self) -> None:
         """Test round trip serialization with array() syntax."""
         phpsource = r"""<?php
 return array(
@@ -1362,7 +1362,7 @@ return array(
         phpfile = self.phpparse(phpsource)
         assert bytes(phpfile).decode() == phpsource
 
-    def test_setid_preserves_structure(self):
+    def test_setid_preserves_structure(self) -> None:
         """Test that setid() preserves the return array structure."""
         phpsource = r"""<?php
 return [
@@ -1384,7 +1384,7 @@ return [
         assert "'greeting' => 'Welcome'" in output
         assert "return[]->" not in output  # Should not leak internal structure
 
-    def test_setid_with_array_syntax(self):
+    def test_setid_with_array_syntax(self) -> None:
         """Test that setid() preserves array() syntax."""
         phpsource = r"""<?php
 return array(
@@ -1405,7 +1405,7 @@ return array(
         assert "return array(" in output
         assert "'greeting' => 'Welcome'" in output
 
-    def test_addunit_with_setid(self):
+    def test_addunit_with_setid(self) -> None:
         """Test creating new units programmatically with setid()."""
         phpfile = self.StoreClass()
 
@@ -1429,7 +1429,7 @@ return array(
 """
         assert output == expected
 
-    def test_add_unit_to_short_array_file(self):
+    def test_add_unit_to_short_array_file(self) -> None:
         """Test adding a new unit to a file with short array syntax []."""
         phpsource = r"""<?php
 return [
@@ -1455,7 +1455,7 @@ return [
 """
         assert output == expected
 
-    def test_add_unit_to_array_function_file(self):
+    def test_add_unit_to_array_function_file(self) -> None:
         """Test adding a new unit to a file with array() syntax."""
         phpsource = r"""<?php
 return array(
@@ -1481,7 +1481,7 @@ return array(
 """
         assert output == expected
 
-    def test_add_multiple_units_to_short_array(self):
+    def test_add_multiple_units_to_short_array(self) -> None:
         """Test adding multiple units to a file with short array syntax."""
         phpsource = r"""<?php
 return [
@@ -1508,7 +1508,7 @@ return [
 """
         assert output == expected
 
-    def test_add_multiple_units_to_array_function(self):
+    def test_add_multiple_units_to_array_function(self) -> None:
         """Test adding multiple units to a file with array() syntax."""
         phpsource = r"""<?php
 return array(
@@ -1535,7 +1535,7 @@ return array(
 """
         assert output == expected
 
-    def test_numeric_keys_no_quotes(self):
+    def test_numeric_keys_no_quotes(self) -> None:
         """Test that numeric keys (including negative) are not quoted."""
         phpfile = self.StoreClass()
 
@@ -1561,7 +1561,7 @@ return array(
 """
         assert output == expected
 
-    def test_empty_string_key(self):
+    def test_empty_string_key(self) -> None:
         """Test that empty string keys are properly quoted."""
         phpfile = self.StoreClass()
 
@@ -1576,7 +1576,7 @@ return array(
 """
         assert output == expected
 
-    def test_setid_with_non_string_value(self):
+    def test_setid_with_non_string_value(self) -> None:
         """Test that setid handles non-string values gracefully."""
         phpfile = self.StoreClass()
 

@@ -53,17 +53,17 @@ from mistletoe.markdown_renderer import (
 from translate.storage import base
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable
+    from collections.abc import Callable, Iterable
 
 
 class MarkdownUnit(base.TranslationUnit):
     """A unit of translatable/localisable markdown content."""
 
-    def __init__(self, source=None):
+    def __init__(self, source=None) -> None:
         super().__init__(source)
         self.locations = []
 
-    def addlocation(self, location):
+    def addlocation(self, location) -> None:
         self.locations.append(location)
 
     def getlocations(self):
@@ -72,14 +72,14 @@ class MarkdownUnit(base.TranslationUnit):
 
 class MarkdownFrontmatterUnit(MarkdownUnit):
     @staticmethod
-    def isheader():
+    def isheader() -> bool:
         return True
 
 
-class MarkdownFile(base.TranslationStore):
+class MarkdownFile(base.TranslationStore[MarkdownUnit]):
     UnitClass = MarkdownUnit
 
-    def __init__(self, inputfile=None, callback=None, max_line_length=None):
+    def __init__(self, inputfile=None, callback=None, max_line_length=None) -> None:
         """
         Construct a new object instance.
 
@@ -100,7 +100,7 @@ class MarkdownFile(base.TranslationStore):
             inputfile.close()
             self.parse(md_src)
 
-    def parse(self, data):
+    def parse(self, data) -> None:
         """Process the given source string (binary)."""
         lines = data.decode().splitlines(keepends=False)
         front_matter_end = 0
@@ -141,7 +141,7 @@ class MarkdownFile(base.TranslationStore):
     def _dummy_callback(text: str) -> str:
         return text
 
-    def _translate_callback(self, text: str, path: Iterable[str]) -> str:
+    def _translate_callback(self, text: str, path: list[str]) -> str:
         text = text.strip()
         if not text:
             return ""
@@ -156,8 +156,13 @@ class MarkdownFile(base.TranslationStore):
 
 
 class TranslatingMarkdownRenderer(MarkdownRenderer):
-    def __init__(self, translate_callback, *extras, max_line_length: int | None = None):
-        super().__init__(*extras, max_line_length=max_line_length)
+    def __init__(
+        self,
+        translate_callback: Callable[[str, list[str]], str],
+        *extras,
+        max_line_length: int | None = None,
+    ) -> None:
+        super().__init__(*extras, max_line_length=max_line_length)  # ty:ignore[invalid-argument-type]
         self.translate_callback = translate_callback
         self.bypass = False
         self.path = []
@@ -167,7 +172,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         try:
             # set the root node here, because the rendering also involves some parsing,
             # and the parsing requires a valid root node.
-            mistletoe.token._root_node = token
+            mistletoe.token._root_node = token  # ty:ignore[invalid-assignment]
             return super().render(token)
         finally:
             mistletoe.token._root_node = None
@@ -197,7 +202,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
             yield from super().render_auto_link(token)
             return
 
-        yield Fragment(None, placeholder_content=super().render_auto_link(token))
+        yield Fragment(None, placeholder_content=super().render_auto_link(token))  # ty:ignore[invalid-argument-type]
 
     def render_line_break(self, token: span_token.LineBreak) -> Iterable[Fragment]:
         if self.bypass:
@@ -212,7 +217,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
             yield from super().render_html_span(token)
             return
 
-        yield Fragment(None, placeholder_content=super().render_html_span(token))
+        yield Fragment(None, placeholder_content=super().render_html_span(token))  # ty:ignore[invalid-argument-type]
 
     def render_link_or_image(
         self, token: span_token.SpanToken, target: str
@@ -221,47 +226,49 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
             yield from super().render_link_or_image(token, target)
             return
 
-        yield from self.embed_span(Fragment("["), token.children, Fragment("]"))
+        yield from self.embed_span(Fragment("["), token.children, Fragment("]"))  # ty:ignore[invalid-argument-type]
 
-        if token.dest_type in {"uri", "angle_uri"}:
+        if token.dest_type in {"uri", "angle_uri"}:  # ty:ignore[unresolved-attribute]
             # Markdown link format: "[" description "](" dest_part [" " title] ")"
-            dest_part = f"<{target}>" if token.dest_type == "angle_uri" else target
-            placeholder = Fragment(None, important=True)
-            placeholder.placeholder_content = [
+            dest_part = f"<{target}>" if token.dest_type == "angle_uri" else target  # ty:ignore[unresolved-attribute]
+            placeholder = Fragment(None, important=True)  # ty:ignore[invalid-argument-type]
+            placeholder.placeholder_content = [  # ty:ignore[unresolved-attribute]
                 Fragment("("),
                 Fragment(dest_part),
             ]
-            if token.title:
+            if token.title:  # ty:ignore[unresolved-attribute]
                 translated_title = self.translate_callback(
-                    token.title, [*self.path, "link-title"]
+                    token.title,  # ty:ignore[unresolved-attribute]
+                    [*self.path, "link-title"],
                 )
-                placeholder.placeholder_content.extend(
+                placeholder.placeholder_content.extend(  # ty:ignore[unresolved-attribute]
                     [
                         Fragment(" ", wordwrap=True),
-                        Fragment(token.title_delimiter),
+                        Fragment(token.title_delimiter),  # ty:ignore[unresolved-attribute]
                         Fragment(translated_title, wordwrap=True),
                         Fragment(
                             ")"
-                            if token.title_delimiter == "("
-                            else token.title_delimiter
+                            if token.title_delimiter == "("  # ty:ignore[unresolved-attribute]
+                            else token.title_delimiter  # ty:ignore[unresolved-attribute]
                         ),
                     ]
                 )
-            placeholder.placeholder_content.append(Fragment(")"))
+            placeholder.placeholder_content.append(Fragment(")"))  # ty:ignore[unresolved-attribute]
             yield placeholder
-        elif token.dest_type == "full":
+        elif token.dest_type == "full":  # ty:ignore[unresolved-attribute]
             # Markdown link format: "[" description "][" label "]"
             translated_label = self.translate_callback(
-                token.label, [*self.path, "link-label"]
+                token.label,  # ty:ignore[unresolved-attribute]
+                [*self.path, "link-label"],
             )
-            placeholder = Fragment(None, important=True)
-            placeholder.placeholder_content = [
+            placeholder = Fragment(None, important=True)  # ty:ignore[invalid-argument-type]
+            placeholder.placeholder_content = [  # ty:ignore[unresolved-attribute]
                 Fragment("["),
                 Fragment(translated_label, wordwrap=True),
                 Fragment("]"),
             ]
             yield placeholder
-        elif token.dest_type == "collapsed":
+        elif token.dest_type == "collapsed":  # ty:ignore[unresolved-attribute]
             # Markdown link format: "[" description "][]"
             yield Fragment("[]")
         else:
@@ -284,8 +291,8 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
                 else None
             )
 
-        placeholder = Fragment(None)
-        placeholder.placeholder_content = [
+        placeholder = Fragment(None)  # ty:ignore[invalid-argument-type]
+        placeholder.placeholder_content = [  # ty:ignore[unresolved-attribute]
             Fragment("["),
             Fragment(label, wordwrap=True),
             Fragment("]: ", wordwrap=True),
@@ -294,7 +301,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
             ),
         ]
         if title:
-            placeholder.placeholder_content.extend(
+            placeholder.placeholder_content.extend(  # ty:ignore[unresolved-attribute]
                 [
                     Fragment(" ", wordwrap=True),
                     Fragment(token.title_delimiter),
@@ -312,7 +319,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     def render_heading(
         self, token: block_token.Heading, max_line_length: int
     ) -> Iterable[str]:
-        self.path.append(f":{token.line_number}")
+        self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
         content = list(super().render_heading(token, max_line_length=max_line_length))
         self.path.pop()
         return content
@@ -320,7 +327,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     def render_setext_heading(
         self, token: block_token.SetextHeading, max_line_length: int
     ) -> Iterable[str]:
-        self.path.append(f":{token.line_number}")
+        self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
         content = list(
             super().render_setext_heading(token, max_line_length=max_line_length)
         )
@@ -330,7 +337,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     def render_quote(
         self, token: block_token.Quote, max_line_length: int
     ) -> Iterable[str]:
-        self.path.append(f":{token.line_number}")
+        self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
         content = list(super().render_quote(token, max_line_length=max_line_length))
         self.path.pop()
         return content
@@ -338,7 +345,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     def render_paragraph(
         self, token: block_token.Paragraph, max_line_length: int
     ) -> Iterable[str]:
-        self.path.append(f":{token.line_number}")
+        self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
         content = list(super().render_paragraph(token, max_line_length=max_line_length))
         self.path.pop()
         return content
@@ -367,7 +374,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     def render_table(
         self, token: block_token.Table, max_line_length: int
     ) -> Iterable[str]:
-        self.path.append(f":{token.line_number}")
+        self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
         content = list(super().render_table(token, max_line_length=max_line_length))
         self.path.pop()
         return content
@@ -375,7 +382,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     def render_link_reference_definition_block(
         self, token: LinkReferenceDefinitionBlock, max_line_length: int
     ) -> Iterable[str]:
-        self.path.append(f":{token.line_number}")
+        self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
         content = list(
             super().render_link_reference_definition_block(
                 token, max_line_length=max_line_length
@@ -418,7 +425,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
 
             # render the translatable content (with placeholders) to markdown
             content_md = "\n".join(
-                self.fragments_to_lines(content, max_line_length=float("inf"))
+                self.fragments_to_lines(content, max_line_length=float("inf"))  # ty:ignore[invalid-argument-type]
             )
 
             # translate and parse into new fragments. handle hard line breaks.
@@ -459,8 +466,8 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
                         break
                 if end:
                     chunk = fragments[start:end]
-                    placeholder = Fragment(None, placeholder_content=chunk)
-                    placeholder.important = any(
+                    placeholder = Fragment(None, placeholder_content=chunk)  # ty:ignore[invalid-argument-type]
+                    placeholder.important = any(  # ty:ignore[unresolved-attribute]
                         getattr(fragment, "important", False) for fragment in chunk
                     )
                     fragments[start:end] = (placeholder,)
@@ -479,17 +486,17 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         """
         fragments = list(fragments)
 
-        l = 0
-        while l < len(fragments):
-            if getattr(fragments[l], "placeholder_content", None):
-                if getattr(fragments[l], "important", False):
+        pos = 0
+        while pos < len(fragments):
+            if getattr(fragments[pos], "placeholder_content", None):
+                if getattr(fragments[pos], "important", False):
                     break
-            elif not fragments[l].text.isspace():
+            elif not fragments[pos].text.isspace():
                 break
-            l += 1
+            pos += 1
 
         t = len(fragments)
-        while t - 1 >= l:
+        while t - 1 >= pos:
             if getattr(fragments[t - 1], "placeholder_content", None):
                 if getattr(fragments[t - 1], "important", False):
                     break
@@ -497,7 +504,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
                 break
             t -= 1
 
-        return fragments[:l], fragments[l:t], fragments[t:]
+        return fragments[:pos], fragments[pos:t], fragments[t:]
 
     @classmethod
     def insert_placeholder_markers(
@@ -512,7 +519,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
             content = getattr(fragment, "placeholder_content", None)
             if content:
                 placeholders.append(fragment)
-                fragment.text = "{%d}" % len(placeholders)
+                fragment.text = f"{{{len(placeholders)}}}"
 
         return placeholders
 
@@ -521,11 +528,11 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     ) -> str:
         """Replaces placeholder markers in the given markdown with placeholder content."""
         for index, placeholder in enumerate(placeholders):
-            content = self.expand_placeholders(placeholder.placeholder_content)
+            content = self.expand_placeholders(placeholder.placeholder_content)  # ty:ignore[unresolved-attribute]
             content_md = "\n".join(
-                self.fragments_to_lines(content, max_line_length=float("inf"))
+                self.fragments_to_lines(content, max_line_length=float("inf"))  # ty:ignore[invalid-argument-type]
             )
-            markdown = markdown.replace("{%d}" % (index + 1), content_md)
+            markdown = markdown.replace(f"{{{index + 1}}}", content_md)
 
         return markdown
 

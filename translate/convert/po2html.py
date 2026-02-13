@@ -23,6 +23,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+import html as html_module
 import os
 import sys
 
@@ -34,10 +35,27 @@ from translate.storage import html, po
 class po2html:
     """Read inputfile (po) and templatefile (html), write to outputfile (html)."""
 
-    def lookup(self, string):
+    def lookup(self, string: str) -> str:
+        # Try exact match first
         unit = self.inputstore.sourceindex.get(string, None)
+
+        # If not found, try with HTML entities unescaped
+        # This handles the case where template has &amp; but PO has &
+        if unit is None:
+            unescaped = html_module.unescape(string)
+            if unescaped != string:
+                unit = self.inputstore.sourceindex.get(unescaped, None)
+
+        # If still not found, try with HTML entities escaped
+        # This handles the case where template has & but PO has &amp;
+        if unit is None:
+            escaped = html_module.escape(string)
+            if escaped != string:
+                unit = self.inputstore.sourceindex.get(escaped, None)
+
         if unit is None:
             return string
+
         unit = unit[0]
         if unit.istranslated():
             return unit.target
@@ -56,7 +74,7 @@ class po2html:
 
 def converthtml(
     inputfile, outputfile, templatefile, includefuzzy=False, outputthreshold=None
-):
+) -> int:
     """Read inputfile (po) and templatefile (html), write to outputfile (html)."""
     inputstore = po.pofile(inputfile)
 
@@ -72,7 +90,7 @@ def converthtml(
 
 
 class PO2HtmlOptionParser(convert.ConvertOptionParser):
-    def __init__(self):
+    def __init__(self) -> None:
         formats = {
             ("po", "htm"): ("htm", converthtml),
             ("po", "html"): ("html", converthtml),
@@ -83,7 +101,7 @@ class PO2HtmlOptionParser(convert.ConvertOptionParser):
         self.add_threshold_option()
         self.add_fuzzy_option()
 
-    def recursiveprocess(self, options):
+    def recursiveprocess(self, options) -> None:
         if (
             self.isrecursive(options.template, "template")
             and not self.isrecursive(options.input, "input")
@@ -97,7 +115,7 @@ class PO2HtmlOptionParser(convert.ConvertOptionParser):
     def can_be_recursive(fileoption, filepurpose):
         return fileoption is not None and not os.path.isfile(fileoption)
 
-    def recursiveprocess_by_templates(self, options):
+    def recursiveprocess_by_templates(self, options) -> None:
         """Recurse through directories and process files, by templates (html) not input files (po)."""
         inputfile = self.openinputfile(options, options.input)
         self.inputstore = po.pofile(inputfile)
@@ -133,7 +151,7 @@ class PO2HtmlOptionParser(convert.ConvertOptionParser):
         templatefile,
         includefuzzy=False,
         outputthreshold=None,
-    ):
+    ) -> int:
         if not convert.should_output_store(self.inputstore, outputthreshold):
             return False
 
@@ -174,7 +192,7 @@ class PO2HtmlOptionParser(convert.ConvertOptionParser):
         return any(ext == templateformat for _, templateformat in self.outputoptions)
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     parser = PO2HtmlOptionParser()
     parser.run(argv)
 

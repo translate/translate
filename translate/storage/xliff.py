@@ -23,20 +23,19 @@ The official recommendation is to use the extension .xlf for XLIFF files.
 """
 
 import contextlib
+from typing import TypeVar
 
 from lxml import etree
 
-from translate.misc.multistring import multistring
 from translate.misc.xml_helpers import (
-    clear_content,
     getXMLspace,
     safely_set_text,
     setXMLlang,
     setXMLspace,
 )
 from translate.storage import base, lisa
-from translate.storage.placeables.lisa import strelem_to_xml, xml_to_strelem
 from translate.storage.workflow import StateEnum as state
+from translate.storage.xliff_common import XliffFile, XliffUnit
 
 # TODO: handle translation types
 
@@ -49,7 +48,7 @@ ID_SEPARATOR = "\04"
 ID_SEPARATOR_SAFE = "__%04__"
 
 
-class xliffunit(lisa.LISAunit):
+class Xliff1Unit(XliffUnit):
     """A single term in the xliff file."""
 
     rootNode = "trans-unit"
@@ -90,7 +89,7 @@ class xliffunit(lisa.LISAunit):
         S_SIGNED_OFF: (state.FINAL, state.MAX),
     }
 
-    def __init__(self, source, empty=False, **kwargs):
+    def __init__(self, source, empty=False, **kwargs) -> None:
         """Override the constructor to set xml:space="preserve"."""
         super().__init__(source, empty, **kwargs)
         if empty:
@@ -112,98 +111,16 @@ class xliffunit(lisa.LISAunit):
 
         return langset
 
-    def getlanguageNodes(self):
-        """We override this to get source and target nodes."""
-        source = None
-        target = None
-        nodes = []
-        try:
-            source = next(
-                self.xmlelement.iterchildren(self.namespaced(self.languageNode))
-            )
-            target = next(self.xmlelement.iterchildren(self.namespaced("target")))
-            nodes = [source, target]
-        except StopIteration:
-            if source is not None:
-                nodes.append(source)
-            if target is not None:
-                nodes.append(target)
-        return nodes
-
-    def set_rich_source(self, value, sourcelang="en"):
-        sourcelanguageNode = self.get_source_dom()
-        if sourcelanguageNode is None:
-            sourcelanguageNode = self.createlanguageNode(sourcelang, "", "source")
-            self.set_source_dom(sourcelanguageNode)
-
-        # Clear sourcelanguageNode first
-        clear_content(sourcelanguageNode)
-
-        strelem_to_xml(sourcelanguageNode, value[0])
-
-    @property
-    def rich_source(self):
-        # rsrc = xml_to_strelem(self.source_dom)
-        # logger.debug('rich source: %s' % (repr(rsrc)))
-        # from dubulib.debug.misc import print_stack_funcs
-        # print_stack_funcs()
-        return [
-            xml_to_strelem(
-                self.source_dom, getXMLspace(self.xmlelement, self._default_xml_space)
-            )
-        ]
-
-    @rich_source.setter
-    def rich_source(self, value):
-        self.set_rich_source(value)
-
-    def set_rich_target(self, value, lang="xx", append=False):
-        self._rich_target = None
-        if value is None:
-            self.set_target_dom(self.createlanguageNode(lang, "", "target"))
-            return
-
-        self._ensure_xml_space_preserve()
-        languageNode = self.get_target_dom()
-        if languageNode is None:
-            languageNode = self.createlanguageNode(lang, "", "target")
-            self.set_target_dom(languageNode, append)
-
-        # Clear languageNode first
-        clear_content(languageNode)
-
-        strelem_to_xml(languageNode, value[0])
-        ### currently giving some issues in Virtaal: self._rich_target = value
-
-    def get_rich_target(self, lang=None):
-        """
-        Retrieves the "target" text (second entry), or the entry in the
-        specified language, if it exists.
-        """
-        if self._rich_target is None:
-            self._rich_target = [
-                xml_to_strelem(
-                    self.get_target_dom(lang),
-                    getXMLspace(self.xmlelement, self._default_xml_space),
-                )
-            ]
-        return self._rich_target
-
-    @property
-    def rich_target(self):
-        return self.get_rich_target()
-
-    @rich_target.setter
-    def rich_target(self, value):
-        self.set_rich_target(value)
-
     def addalttrans(
-        self, txt, origin=None, lang=None, sourcetxt=None, matchquality=None
-    ):
+        self,
+        txt: str,
+        origin: str | None = None,
+        lang: str | None = None,
+        sourcetxt: str | None = None,
+        matchquality: str | None = None,
+    ) -> None:
         """
         Adds an alt-trans tag and alt-trans components to the unit.
-
-        :type txt: String
         :param txt: Alternative translation of the source text.
         """
         # TODO: support adding a source tag ad match quality attribute.  At the
@@ -248,16 +165,16 @@ class xliffunit(lisa.LISAunit):
                 )
                 # TODO: support multiple targets better
                 # TODO: support notes in alt-trans
-                newunit.xmlelement = node
+                newunit.xmlelement = node  # ty:ignore[unresolved-attribute]
 
                 translist.append(newunit)
         return translist
 
-    def delalttrans(self, alternative):
+    def delalttrans(self, alternative) -> None:
         """Removes the supplied alternative from the list of alt-trans tags."""
         self.xmlelement.remove(alternative.xmlelement)
 
-    def addnote(self, text, origin=None, position="append"):
+    def addnote(self, text, origin=None, position="append") -> None:
         """Add a note specifically in a "note" tag."""
         if position != "append":
             self.removenotes(origin=origin)
@@ -271,14 +188,12 @@ class xliffunit(lisa.LISAunit):
         if origin:
             note.set("from", origin)
 
-    def _getnotelist(self, origin=None):
+    def _getnotelist(self, origin=None) -> list[str]:
         """
         Returns the text from notes matching ``origin`` or all notes.
 
         :param origin: The origin of the note (or note type)
-        :type origin: String
         :return: The text from notes matching ``origin``
-        :rtype: List
         """
         note_nodes = self.xmlelement.iterdescendants(self.namespaced("note"))
         # TODO: consider using xpath to construct initial_list directly
@@ -301,14 +216,14 @@ class xliffunit(lisa.LISAunit):
     def getnotes(self, origin=None):
         return "\n".join(self._getnotelist(origin=origin))
 
-    def removenotes(self, origin=None):
+    def removenotes(self, origin=None) -> None:
         """Remove all the translator notes."""
         notes = self.xmlelement.iterdescendants(self.namespaced("note"))
         for note in notes:
             if self.correctorigin(note, origin=origin):
                 self.xmlelement.remove(note)
 
-    def adderror(self, errorname, errortext):
+    def adderror(self, errorname, errortext) -> None:
         """Adds an error message to this unit."""
         # TODO: consider factoring out: some duplication between XLIFF and TMX
         text = errorname
@@ -347,7 +262,7 @@ class xliffunit(lisa.LISAunit):
 
         return state_n
 
-    def set_state_n(self, value):
+    def set_state_n(self, value) -> None:
         if value not in self.statemap_r:
             value = self.get_state_id(value)
 
@@ -367,7 +282,7 @@ class xliffunit(lisa.LISAunit):
         """States whether this unit is approved."""
         return self.xmlelement.get("approved") == "yes"
 
-    def markapproved(self, value=True):
+    def markapproved(self, value=True) -> None:
         """Mark this unit as approved."""
         if value:
             self.xmlelement.set("approved", "yes")
@@ -378,7 +293,7 @@ class xliffunit(lisa.LISAunit):
         """States whether this unit needs to be reviewed."""
         return self.get_state_id() == self.S_NEEDS_REVIEW
 
-    def markreviewneeded(self, needsreview=True, explanation=None):
+    def markreviewneeded(self, needsreview=True, explanation=None) -> None:
         """
         Marks the unit to indicate whether it needs review.
 
@@ -399,7 +314,7 @@ class xliffunit(lisa.LISAunit):
         #         targetnode.get("state") == "needs-review-translation")
         return not self.isapproved() and bool(self.target)
 
-    def markfuzzy(self, value=True):
+    def markfuzzy(self, value=True) -> None:
         state_id = self.get_state_id()
         if value:
             self.markapproved(False)
@@ -410,11 +325,7 @@ class xliffunit(lisa.LISAunit):
             if state_id < self.S_UNREVIEWED:
                 self.set_state_n(self.S_UNREVIEWED)
 
-    def _ensure_xml_space_preserve(self):
-        if getXMLspace(self.xmlelement) != "preserve":
-            setXMLspace(self.xmlelement, "preserve")
-
-    def settarget(self, target, lang="xx", append=False):
+    def settarget(self, target, lang="xx", append=False) -> None:
         """Sets the target string to the given value."""
         super().settarget(target, lang, append)
         if target:
@@ -432,12 +343,19 @@ class xliffunit(lisa.LISAunit):
         value = self.xmlelement.get("translate")
         return not value or value.lower() != "no"
 
-    def marktranslated(self):
+    def marktranslatable(self, value=True) -> None:
+        """Mark this unit as translatable or untranslatable."""
+        if value:
+            self.xmlelement.set("translate", "yes")
+        elif self.istranslatable():
+            self.xmlelement.set("translate", "no")
+
+    def marktranslated(self) -> None:
         state_id = self.get_state_id()
         if state_id < self.S_UNREVIEWED:
             self.set_state_n(self.S_UNREVIEWED)
 
-    def setid(self, id):
+    def setid(self, id) -> None:  # ty:ignore[invalid-method-override]
         # sanitize id in case ID_SEPARATOR is present
         self.xmlelement.set("id", id.replace(ID_SEPARATOR, ID_SEPARATOR_SAFE))
 
@@ -458,7 +376,7 @@ class xliffunit(lisa.LISAunit):
         )
         return uid
 
-    def addlocation(self, location):
+    def addlocation(self, location) -> None:
         if ":" in location:
             sourcefile, linenumber = location.rsplit(":", 1)
             contexts = [("sourcefile", sourcefile), ("linenumber", linenumber)]
@@ -479,7 +397,7 @@ class xliffunit(lisa.LISAunit):
 
         return locations
 
-    def createcontextgroup(self, name, contexts=None, purpose=None):
+    def createcontextgroup(self, name, contexts=None, purpose=None) -> None:
         """
         Add the context group to the trans-unit with contexts a list with
         (type, text) tuples describing each context.
@@ -546,20 +464,6 @@ class xliffunit(lisa.LISAunit):
         """Returns the restype attribute in the trans-unit tag."""
         return self.xmlelement.get("restype")
 
-    def merge(self, otherunit, overwrite=False, comments=True, authoritative=False):
-        # TODO: consider other attributes like "approved"
-        super().merge(otherunit, overwrite, comments)
-        if self.target:
-            self.marktranslated()
-            if otherunit.isfuzzy():
-                self.markfuzzy()
-            elif otherunit.source == self.source:
-                self.markfuzzy(False)
-            elif otherunit.source != self.source:
-                self.markfuzzy(True)
-        if comments:
-            self.addnote(otherunit.getnotes())
-
     @staticmethod
     def correctorigin(node, origin):
         """Check against node tag's origin (e.g note or alt-trans)."""
@@ -569,33 +473,14 @@ class xliffunit(lisa.LISAunit):
             or origin in node.get("origin", "")
         )
 
-    @classmethod
-    def multistring_to_rich(cls, mstr):
-        """
-        Override :meth:`TranslationUnit.multistring_to_rich` which is used
-        by the ``rich_source`` and ``rich_target`` properties.
-        """
-        strings = mstr
-        if isinstance(mstr, multistring):
-            strings = mstr.strings
-        elif isinstance(mstr, str):
-            strings = [mstr]
 
-        return [xml_to_strelem(s) for s in strings]
-
-    @classmethod
-    def rich_to_multistring(cls, elem_list):
-        """
-        Override :meth:`TranslationUnit.rich_to_multistring` which is used
-        by the ``rich_source`` and ``rich_target`` properties.
-        """
-        return multistring([str(elem) for elem in elem_list])
+U = TypeVar("U", bound=Xliff1Unit)
 
 
-class xlifffile(lisa.LISAfile):
+class Xliff1File(XliffFile[U]):
     """Class representing a XLIFF file store."""
 
-    UnitClass = xliffunit
+    UnitClass = Xliff1Unit
     Name = "XLIFF Translation File"
     Mimetypes = ["application/x-xliff", "application/x-xliff+xml"]
     Extensions = ["xlf", "xliff", "sdlxliff"]
@@ -621,11 +506,7 @@ class xlifffile(lisa.LISAfile):
     suggestions_in_format = True
     """xliff units have alttrans tags which can be used to store suggestions"""
 
-    def __init__(self, *args, **kwargs):
-        self._filename = None
-        super().__init__(*args, **kwargs)
-
-    def initbody(self):
+    def initbody(self) -> None:
         # detect the xliff namespace, handle both 1.1 and 1.2
         for ns in self.document.getroot().nsmap.values():
             if ns and ns.startswith(self.unversioned_namespace):
@@ -644,12 +525,9 @@ class xlifffile(lisa.LISAfile):
             )
         self.body = self.getbodynode(filenode, createifmissing=True)
 
-    def addheader(self):
-        """Initialise the file header."""
-
     def createfilenode(
         self, filename, sourcelanguage=None, targetlanguage=None, datatype="plaintext"
-    ):
+    ) -> etree.Element:
         """
         Creates a filenode with the given filename. All parameters are
         needed for XLIFF compliance.
@@ -678,7 +556,7 @@ class xlifffile(lisa.LISAfile):
         return filenode
 
     @staticmethod
-    def getfilename(filenode):
+    def getfilename(filenode) -> str | None:
         """Returns the name of the given file."""
         return filenode.get("original")
 
@@ -687,26 +565,7 @@ class xlifffile(lisa.LISAfile):
         """Set the name of the given file."""
         return filenode.set("original", filename)
 
-    def getfilenames(self):
-        """Returns all filenames in this XLIFF file."""
-        filenodes = self.document.getroot().iterchildren(self.namespaced("file"))
-        filenames = [self.getfilename(filenode) for filenode in filenodes]
-        filenames = list(filter(None, filenames))
-        if len(filenames) == 1 and not filenames[0]:
-            filenames = []
-        return filenames
-
-    def getfilenode(self, filename, createifmissing=False):
-        """Finds the filenode with the given name."""
-        filenodes = self.document.getroot().iterchildren(self.namespaced("file"))
-        for filenode in filenodes:
-            if self.getfilename(filenode) == filename:
-                return filenode
-        if createifmissing:
-            return self.createfilenode(filename)
-        return None
-
-    def setsourcelanguage(self, language):
+    def setsourcelanguage(self, language) -> None:  # ty:ignore[invalid-method-override]
         if not language:
             return
         for filenode in self.document.getroot().iterchildren(self.namespaced("file")):
@@ -718,7 +577,7 @@ class xlifffile(lisa.LISAfile):
 
     sourcelanguage = property(getsourcelanguage, setsourcelanguage)
 
-    def settargetlanguage(self, language):
+    def settargetlanguage(self, language) -> None:  # ty:ignore[invalid-method-override]
         if not language:
             return
         for filenode in self.document.getroot().iterchildren(self.namespaced("file")):
@@ -745,7 +604,7 @@ class xlifffile(lisa.LISAfile):
                 return self.getdatatype(filenames[0])
         return ""
 
-    def getdate(self, filename=None):
+    def getdate(self, filename=None) -> str | None:
         """
         Returns the date attribute for the file.
 
@@ -753,7 +612,6 @@ class xlifffile(lisa.LISAfile):
         If the date attribute is not specified, None is returned.
 
         :returns: Date attribute of file
-        :rtype: Date or None
         """
         if filename:
             node = self.getfilenode(filename)
@@ -765,7 +623,7 @@ class xlifffile(lisa.LISAfile):
                 return self.getdate(filenames[0])
         return None
 
-    def removedefaultfile(self):
+    def removedefaultfile(self) -> None:
         """
         We want to remove the default file-tag as soon as possible if we
         know if still present and empty.
@@ -802,7 +660,7 @@ class xlifffile(lisa.LISAfile):
             return None
         return etree.SubElement(filenode, self.namespaced("body"))
 
-    def addunit(self, unit, new=True):
+    def addunit(self, unit, new=True) -> None:
         parts = unit.getid().split("\x04")
         if len(parts) > 1:
             filename, unitid = parts[0], "\x04".join(parts[1:])
@@ -832,7 +690,7 @@ class xlifffile(lisa.LISAfile):
                 target_group.append(unit.xmlelement)
             else:
                 # Add directly to body
-                self.body.append(unit.xmlelement)
+                self.body.append(unit.xmlelement)  # ty:ignore[possibly-missing-attribute]
 
     def addsourceunit(self, source, filename="NoName", createifmissing=False):
         """
@@ -850,12 +708,11 @@ class xlifffile(lisa.LISAfile):
         unit.setid(f"{messagenum}")
         return unit
 
-    def switchfile(self, filename, createifmissing=False):
+    def switchfile(self, filename: str, createifmissing: bool = False) -> bool:
         """
         Adds the given trans-unit (will create the nodes required if asked).
 
         :returns: Success
-        :rtype: Boolean
         """
         if self._filename == filename:
             return True
@@ -874,7 +731,7 @@ class xlifffile(lisa.LISAfile):
         """Adds a group tag into the specified file."""
         if not self.switchfile(filename, createifmissing):
             return None
-        group = etree.SubElement(self.body, self.namespaced("group"))
+        group = etree.SubElement(self.body, self.namespaced("group"))  # ty:ignore[no-matching-overload]
         if restype:
             group.set("restype", restype)
         return group
@@ -887,24 +744,27 @@ class xlifffile(lisa.LISAfile):
         :returns: The matching or newly created group element
         """
         # Try to find a matching group in the current body
-        for group in self.body.iterchildren(self.namespaced("group")):
+        for group in self.body.iterchildren(self.namespaced("group")):  # ty:ignore[possibly-missing-attribute]
             # Check if all attributes match
             if group.attrib == source_group.attrib:
                 return group
 
         # No matching group found, create a new one
-        group = etree.SubElement(self.body, self.namespaced("group"))
+        group = etree.SubElement(self.body, self.namespaced("group"))  # ty:ignore[no-matching-overload]
         for attr, value in source_group.attrib.items():
             group.set(attr, value)
         return group
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         self.removedefaultfile()
         super().serialize(out)
 
     @classmethod
     def parsestring(cls, storestring):
         """Parses the string to return the correct file object."""
+        # pylint: disable-next=import-outside-toplevel
+        from translate.storage import poxliff  # noqa: PLC0415
+
         xliff = super().parsestring(storestring)
         if xliff.units:
             header = xliff.units[0]
@@ -912,7 +772,10 @@ class xlifffile(lisa.LISAfile):
                 "gettext-domain-header" in (header.getrestype() or "")
                 or xliff.getdatatype() == "po"
             ) and cls.__name__.lower() != "poxlifffile":
-                from translate.storage import poxliff
-
                 xliff = poxliff.PoXliffFile.parsestring(storestring)
         return xliff
+
+
+# Backward compatibility aliases
+xliffunit = Xliff1Unit
+xlifffile = Xliff1File

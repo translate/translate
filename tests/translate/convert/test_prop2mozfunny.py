@@ -7,7 +7,7 @@ class TestPO2Prop:
     @staticmethod
     def merge2inc(incsource, posource):
         """Helper that merges po translations to .inc source without requiring files."""
-        inputfile = BytesIO(posource.encode("utf-8") if posource else None)
+        inputfile = BytesIO(posource.encode("utf-8") if posource else None)  # ty:ignore[invalid-argument-type]
         templatefile = BytesIO(incsource.encode("utf-8"))
         outputfile = BytesIO()
         result = prop2mozfunny.po2inc(inputfile, outputfile, templatefile)
@@ -16,7 +16,7 @@ class TestPO2Prop:
         assert result
         return outputinc
 
-    def test_no_endlines_added(self):
+    def test_no_endlines_added(self) -> None:
         """Check that we don't add newlines at the end of file."""
         posource = """# converted from #defines file\n#: MOZ_LANG_TITLE\nmsgid "English (US)"\nmsgstr "Deutsch (DE)"\n\n"""
         inctemplate = """#define MOZ_LANG_TITLE Deutsch (DE)\n"""
@@ -25,7 +25,7 @@ class TestPO2Prop:
         print(incfile)
         assert incfile == incexpected
 
-    def test_uncomment_contributors(self):
+    def test_uncomment_contributors(self) -> None:
         """Check that we handle uncommenting contributors properly."""
         posource = """# converted from #defines file
 #: MOZ_LANGPACK_CONTRIBUTORS
@@ -38,7 +38,7 @@ msgstr "<em:contributor>Mr Fury</em:contributor>"
         print(incfile)
         assert incfile == incexpected
 
-    def test_multiline_comment_newlines(self):
+    def test_multiline_comment_newlines(self) -> None:
         """Ensure that we preserve newlines in multiline comments."""
         inctemplate = """# This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -48,4 +48,4 @@ msgstr "<em:contributor>Mr Fury</em:contributor>"
         incexpected = inctemplate
         incfile = self.merge2inc(inctemplate, None)
         print(incfile)
-        assert incfile == incexpected + "\n"
+        assert incfile == f"{incexpected}\n"

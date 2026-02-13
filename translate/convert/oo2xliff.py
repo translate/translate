@@ -26,6 +26,7 @@ for examples and usage instructions.
 
 import logging
 
+from translate.convert import convert
 from translate.storage import oo, xliff
 
 # TODO: support using one GSI file as template, another as input (for when English is in one and translation in another)
@@ -36,7 +37,7 @@ logger = logging.getLogger(__name__)
 class oo2xliff:
     def __init__(
         self, sourcelanguage, targetlanguage, blankmsgstr=False, long_keys=False
-    ):
+    ) -> None:
         """Construct an oo2xliff converter for the specified languages."""
         self.sourcelanguage = sourcelanguage
         self.targetlanguage = targetlanguage
@@ -107,10 +108,13 @@ class oo2xliff:
         return thetargetfile
 
 
-def verifyoptions(options):
-    """Verifies the commandline options."""
-    if not options.targetlanguage:
-        raise ValueError("You must specify the target language.")
+class OOXliffConvertOptionParser(convert.ArchiveConvertOptionParser):
+    """Custom option parser for OpenOffice to XLIFF conversion with verification."""
+
+    def verifyoptions(self, options) -> None:
+        """Verifies that the options are valid."""
+        if not options.targetlanguage:
+            raise ValueError("You must specify the target language.")
 
 
 def convertoo(
@@ -122,7 +126,7 @@ def convertoo(
     targetlanguage=None,
     duplicatestyle="msgctxt",
     multifilestyle="single",
-):
+) -> int:
     """Reads in stdin using inputstore class, converts using convertorclass, writes to stdout."""
     inputstore = oo.oofile()
     if hasattr(inputfile, "filename"):
@@ -133,7 +137,7 @@ def convertoo(
     inputstore.parse(inputfile.read())
     if not sourcelanguage:
         testlangtype = targetlanguage or (inputstore and inputstore.languages[0]) or ""
-        sourcelanguage = "01" if testlangtype.isdigit() else "en-US"
+        sourcelanguage = "01" if testlangtype.isdigit() else "en-US"  # ty:ignore[possibly-missing-attribute]
     if sourcelanguage not in inputstore.languages:
         logger.warning(
             "sourcelanguage '%s' not found in inputfile '%s' (contains %s)",
@@ -161,9 +165,7 @@ def convertoo(
     return 1
 
 
-def main(argv=None):
-    from translate.convert import convert
-
+def main(argv=None) -> None:
     formats = (
         ("oo", ("xlf", convertoo)),
         ("sdf", ("xlf", convertoo)),
@@ -172,7 +174,7 @@ def main(argv=None):
     )
     # always treat the input as an archive unless it is a directory
     archiveformats = {(None, "input"): oo.oomultifile}
-    parser = convert.ArchiveConvertOptionParser(
+    parser = OOXliffConvertOptionParser(
         formats, usepots=False, description=__doc__, archiveformats=archiveformats
     )
     parser.add_option(
@@ -203,7 +205,6 @@ def main(argv=None):
     parser.add_multifile_option()
     parser.passthrough.append("sourcelanguage")
     parser.passthrough.append("targetlanguage")
-    parser.verifyoptions = verifyoptions
     parser.run(argv)
 
 

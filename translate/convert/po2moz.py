@@ -29,7 +29,9 @@ from translate.convert import convert, po2dtd, po2mozlang, po2prop, prop2mozfunn
 
 
 class MozConvertOptionParser(convert.ConvertOptionParser):
-    def __init__(self, formats, usetemplates=False, usepots=False, description=None):
+    def __init__(
+        self, formats, usetemplates=False, usepots=False, description=None
+    ) -> None:
         super().__init__(formats, usetemplates, usepots, description=description)
 
     def splitinputext(self, inputpath):
@@ -50,11 +52,11 @@ class MozConvertOptionParser(convert.ConvertOptionParser):
 
     def recursiveprocess(self, options):
         """Recurse through directories and convert files."""
-        self.replacer.replacestring = options.locale
+        self.replacer.replacestring = options.locale  # ty:ignore[unresolved-attribute]
         return super().recursiveprocess(options)
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     # handle command line options
     formats = {
         ("dtd.po", "dtd"): ("dtd", po2dtd.convertdtd),
@@ -88,7 +90,7 @@ def main(argv=None):
     parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.add_remove_untranslated_option()
-    parser.replacer = replacer
+    parser.replacer = replacer  # ty:ignore[unresolved-attribute]
     parser.run(argv)
 
 

@@ -23,6 +23,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+from translate.convert import convert
 from translate.storage import po, poxliff
 
 
@@ -95,7 +96,7 @@ class po2xliff:
         return bytes(outputstore)
 
 
-def convertpo(inputfile, outputfile, templatefile):
+def convertpo(inputfile, outputfile, templatefile) -> int:
     """Reads in stdin using fromfileclass, converts using convertorclass, writes to stdout."""
     inputstore = po.pofile(inputfile)
     if inputstore.isempty():
@@ -106,9 +107,7 @@ def convertpo(inputfile, outputfile, templatefile):
     return 1
 
 
-def main(argv=None):
-    from translate.convert import convert
-
+def main(argv=None) -> None:
     formats = (
         ("po", ("xlf", convertpo)),
         (("po", "xlf"), ("xlf", convertpo)),

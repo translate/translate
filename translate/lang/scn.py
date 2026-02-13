@@ -46,7 +46,7 @@ sicilianconfig = CheckerConfig(
 class SicilianChecker(TranslationChecker):
     """A Checker class for Sicilian."""
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         checkerconfig = kwargs.get("checkerconfig")
 
         if checkerconfig is None:
@@ -57,7 +57,7 @@ class SicilianChecker(TranslationChecker):
         super().__init__(**kwargs)
 
     @critical
-    def italianisms(self, str1, str2):
+    def italianisms(self, str1, str2) -> bool:
         """
         Check if the translation contains common errors done by italophones.
 
@@ -93,12 +93,12 @@ class SicilianChecker(TranslationChecker):
         ]
 
         if stopwords:
-            raise FilterFailure("Please translate: {}".format(", ".join(stopwords)))
+            raise FilterFailure(f"Please translate: {', '.join(stopwords)}")
 
         return True
 
     @critical
-    def vocalism(self, str1, str2):
+    def vocalism(self, str1, str2) -> bool:
         """
         Check correct word-endings.
 
@@ -130,13 +130,11 @@ class SicilianChecker(TranslationChecker):
                 stopwords.append(lower_word)
 
         if stopwords:
-            raise FilterFailure(
-                "Please respect vocalism: {}".format(", ".join(stopwords))
-            )
+            raise FilterFailure(f"Please respect vocalism: {', '.join(stopwords)}")
         return True
 
     @critical
-    def suffixes(self, str1, str2):
+    def suffixes(self, str1, str2) -> bool:
         """
         Check for common word suffixes to be written correctly.
 
@@ -149,15 +147,15 @@ class SicilianChecker(TranslationChecker):
         }
 
         stopwords = [
-            f"{word} (-{suffixes[suffix]})"
+            f"{word} (-{value})"
             for word in self.config.lang.words(str2)
-            for suffix in suffixes
+            for suffix, value in suffixes.items()
             if word not in str1 and word.lower().endswith(suffix)
         ]
 
         if stopwords:
             raise FilterFailure(
-                "Please use the correct word endings: {}".format(", ".join(stopwords))
+                f"Please use the correct word endings: {', '.join(stopwords)}"
             )
         return True
 

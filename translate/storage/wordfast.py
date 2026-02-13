@@ -224,7 +224,7 @@ csv.register_dialect("wordfast", WordfastDialect)
 class WordfastTime:
     """Manages time stamps in the Wordfast format of YYYYMMDD~hhmmss."""
 
-    def __init__(self, newtime=None):
+    def __init__(self, newtime=None) -> None:
         self._time = None
         if not newtime:
             self.time = None
@@ -239,12 +239,11 @@ class WordfastTime:
             return None
         return time.strftime(WF_TIMEFORMAT, self._time)
 
-    def set_timestring(self, timestring):
+    def set_timestring(self, timestring: str) -> None:
         """
         Set the time_struct object using a Wordfast time formatted string.
 
         :param timestring: A Wordfast time string (YYYMMDD~hhmmss)
-        :type timestring: String
         """
         self._time = time.strptime(timestring, WF_TIMEFORMAT)
 
@@ -254,12 +253,11 @@ class WordfastTime:
         """Get the time_struct object."""
         return self._time
 
-    def set_time(self, newtime):
+    def set_time(self, newtime: time.struct_time | None) -> None:
         """
         Set the time_struct object.
 
         :param newtime: a new time object
-        :type newtime: time.time_struct
         """
         if newtime and isinstance(newtime, time.struct_time):
             self._time = newtime
@@ -268,7 +266,7 @@ class WordfastTime:
 
     time = property(get_time, set_time)
 
-    def __str__(self):
+    def __str__(self) -> str:
         if not self.timestring:
             return ""
         return self.timestring
@@ -277,7 +275,7 @@ class WordfastTime:
 class WordfastHeader:
     """A wordfast translation memory header."""
 
-    def __init__(self, header=None):
+    def __init__(self, header=None) -> None:
         self._header_dict = []
         if not header:
             self.header = self._create_default_header()
@@ -299,64 +297,42 @@ class WordfastHeader:
         """Get the header dictionary."""
         return self._header_dict
 
-    def setheader(self, newheader):
+    def setheader(self, newheader) -> None:
         self._header_dict = newheader
 
     header = property(getheader, setheader)
 
-    def settargetlang(self, newlang):
-        self._header_dict["target-lang"] = f"%{newlang}"
+    def settargetlang(self, newlang) -> None:
+        self._header_dict["target-lang"] = f"%{newlang}"  # ty:ignore[invalid-assignment]
 
     targetlang = property(None, settargetlang)
 
-    def settucount(self, count):
-        self._header_dict["tucount"] = "%%TU=%08d" % count
+    def settucount(self, count) -> None:
+        self._header_dict["tucount"] = f"%TU={count:08d}"  # ty:ignore[invalid-assignment]
 
     tucount = property(None, settucount)
 
 
-class WordfastUnit(base.TranslationUnit):
+class WordfastUnit(base.MetadataTranslationUnit):
     """A Wordfast translation memory unit."""
 
-    def __init__(self, source=None):
-        self._dict = {}
-        if source:
-            self.source = source
-        super().__init__(source)
-
-    def _update_timestamp(self):
+    def _update_timestamp(self) -> None:
         """Refresh the timestamp for the unit."""
-        self._dict["date"] = WordfastTime(time.localtime()).timestring
-
-    def getdict(self):
-        """Get the dictionary of values for a Wordfast line."""
-        return self._dict
-
-    def setdict(self, newdict):
-        """
-        Set the dictionary of values for a Wordfast line.
-
-        :param newdict: a new dictionary with Wordfast line elements
-        :type newdict: Dict
-        """
-        # TODO First check that the values are OK
-        self._dict = newdict
-
-    dict = property(getdict, setdict)
+        self._metadata_dict["date"] = WordfastTime(time.localtime()).timestring
 
     def _get_source_or_target(self, key):
-        if self._dict.get(key, None) is None:
+        if self._metadata_dict.get(key, None) is None:
             return None
-        if self._dict[key]:
-            return _wf_to_char(self._dict[key])
+        if self._metadata_dict[key]:
+            return _wf_to_char(self._metadata_dict[key])
         return ""
 
-    def _set_source_or_target(self, key, newvalue):
+    def _set_source_or_target(self, key, newvalue) -> None:
         if newvalue is None:
-            self._dict[key] = None
+            self._metadata_dict[key] = None
         newvalue = _char_to_wf(newvalue)
-        if key not in self._dict or newvalue != self._dict[key]:
-            self._dict[key] = newvalue
+        if key not in self._metadata_dict or newvalue != self._metadata_dict[key]:
+            self._metadata_dict[key] = newvalue
             self._update_timestamp()
 
     @property
@@ -364,7 +340,7 @@ class WordfastUnit(base.TranslationUnit):
         return self._get_source_or_target("source")
 
     @source.setter
-    def source(self, source):
+    def source(self, source) -> None:
         self._rich_source = None
         self._set_source_or_target("source", source)
 
@@ -373,22 +349,22 @@ class WordfastUnit(base.TranslationUnit):
         return self._get_source_or_target("target")
 
     @target.setter
-    def target(self, target):
+    def target(self, target) -> None:
         self._rich_target = None
         self._set_source_or_target("target", target)
 
-    def settargetlang(self, newlang):
-        self._dict["target-lang"] = newlang
+    def settargetlang(self, newlang: str) -> None:
+        self._metadata_dict["target-lang"] = newlang
 
     targetlang = property(None, settargetlang)
 
-    def __str__(self):
-        return str(self._dict)
+    def __str__(self) -> str:
+        return str(self._metadata_dict)
 
     def istranslated(self):
-        if not self._dict.get("source", None):
+        if not self._metadata_dict.get("source", None):
             return False
-        return bool(self._dict.get("target", None))
+        return bool(self._metadata_dict.get("target", None))
 
 
 class WordfastTMFile(base.TranslationStore):
@@ -400,7 +376,7 @@ class WordfastTMFile(base.TranslationStore):
     UnitClass = WordfastUnit
     default_encoding = "iso-8859-1"
 
-    def __init__(self, inputfile=None, **kwargs):
+    def __init__(self, inputfile=None, **kwargs) -> None:
         """Construct a Wordfast TM, optionally reading in from inputfile."""
         super().__init__(**kwargs)
         self.filename = ""
@@ -408,7 +384,7 @@ class WordfastTMFile(base.TranslationStore):
         if inputfile is not None:
             self.parse(inputfile)
 
-    def parse(self, input):
+    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
         """Parsese the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name
@@ -424,10 +400,10 @@ class WordfastTMFile(base.TranslationStore):
             self.encoding = "iso-8859-1"
         try:
             input = input.decode(self.encoding)
-        except Exception:
+        except UnicodeDecodeError as error:
             raise ValueError(
                 "Wordfast files are either UTF-16 (UCS2) or ISO-8859-1 encoded"
-            )
+            ) from error
         reader = csv.DictReader(
             input.split("\n"), fieldnames=WF_FIELDNAMES, dialect="wordfast"
         )
@@ -443,10 +419,10 @@ class WordfastTMFile(base.TranslationStore):
                 self.header = WordfastHeader(header)
                 continue
             newunit = WordfastUnit()
-            newunit.dict = line
+            newunit.metadata = line
             self.addunit(newunit)
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         # Check first if there is at least one translated unit
         translated_units = [u for u in self.units if u.istranslated()]
         if not translated_units:
@@ -467,5 +443,5 @@ class WordfastTMFile(base.TranslationStore):
         )
 
         for unit in translated_units:
-            writer.writerow(unit.dict)
+            writer.writerow(unit.metadata)
         out.write(output.getvalue().encode(self.encoding))

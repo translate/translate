@@ -28,7 +28,7 @@ from translate.storage import factory, jsonl10n
 
 
 class rejson:
-    def __init__(self, templatefile, inputstore):
+    def __init__(self, templatefile, inputstore) -> None:
         self.templatefile = templatefile
         self.templatestore = jsonl10n.JsonFile(templatefile)
         self.ouputstore = jsonl10n.JsonFile()
@@ -74,7 +74,7 @@ def convertjson(
     includefuzzy=False,
     outputthreshold=None,
     remove_untranslated=False,
-):
+) -> bool:
     inputstore = factory.getobject(inputfile)
 
     if not convert.should_output_store(inputstore, outputthreshold):
@@ -89,7 +89,7 @@ def convertjson(
     return True
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     # handle command line options
     formats = {
         ("po", "json"): ("json", convertjson),

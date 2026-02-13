@@ -10,40 +10,40 @@ from . import test_base
 class TestMonolingualUnit(test_base.TestTranslationUnit):
     UnitClass = base.TranslationUnit
 
-    def test_target(self):
+    def test_target(self) -> None:
         pass
 
-    def test_rich_get(self):
+    def test_rich_get(self) -> None:
         pass
 
-    def test_rich_set(self):
+    def test_rich_set(self) -> None:
         pass
 
 
 class TestMonolingualStore(test_base.TestTranslationStore):
     StoreClass = test_base.JsonTranslationStore
 
-    def test_translate(self):
+    def test_translate(self) -> None:
         pass
 
-    def test_markup(self):
+    def test_markup(self) -> None:
         pass
 
-    def test_nonascii(self):
+    def test_nonascii(self) -> None:
         pass
 
-    def check_equality(self, store1, store2):
+    def check_equality(self, store1, store2) -> None:
         """Check that store1 and store2 are the same."""
         assert len(store1.units) == len(store2.units)
 
         for n, store1unit in enumerate(store1.units):
             store2unit = store2.units[n]
 
-            print("match failed between elements %d of %d" % (n + 1, len(store1.units)))
+            print(f"match failed between elements {n + 1} of {len(store1.units)}")
             print("store1:")
             print(bytes(store1))
             print("store2:")
             print(bytes(store2))
-            print("store1.units[%d].__dict__:" % n, store1unit.__dict__)
-            print("store2.units[%d].__dict__:" % n, store2unit.__dict__)
+            print(f"store1.units[{n}].__dict__:", store1unit.__dict__)
+            print(f"store2.units[{n}].__dict__:", store2unit.__dict__)
             assert str(store1unit) == str(store2unit)

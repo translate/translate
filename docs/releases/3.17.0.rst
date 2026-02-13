@@ -1,0 +1,113 @@
+Translate Toolkit 3.17.0
+************************
+
+*Released on 25 November 2025*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- PO
+
+  - Fixed header updating
+  - Improved line wrapping
+
+- XLIFF
+
+  - Added support for XLIFF 2.0
+  - Preserves ``<group>`` and ``<file>`` tags upon adding units
+
+- JSON
+
+  - Add support for Nextcloud JSON translation format
+  - Add support for RESJSON (JavaScript Resource File) format
+
+- TOML
+
+  - Initial support for TOML, needs the ``toml`` extra
+
+- CSV
+
+  - Added support for monolingual CSV files
+
+- Properties
+
+  - Non-unicode encoding is respected when serializing
+  - Gracefully handle blank lines in UTF-16
+
+- YAML
+
+  - Comments are now extracted
+  - Use literal block scalars for multiline strings
+
+- PHP
+
+  - Strip unneeded prefix from Laravel translation files
+
+- Markdown
+
+  - Added support for excluding content via special comments
+
+- HTML
+
+  - Automatically set text direction
+  - Comments can be extracted from the ``data-translate-comment`` attribute
+  - Context can be specified using the ``data-translate-context`` attribute
+  - Add support for translating social media meta tags in ``<head>``
+  - Added support for excluding content via special comments or the ``data-translate-ignore`` attribute
+  - Add button element to translatable HTML elements
+  - Translate the ``lang`` attribute only on the ``<html>`` element
+
+- DTD
+
+  - Parser cleanups and improvements
+
+- RC
+
+  - Fixed pragma code_page issue with UTF-16/UTF-8 encoded files
+
+- TMX
+
+  - Fixed element ordering to comply with the specification
+  - Add support for context
+
+- po2ts, ts2po
+
+  - Added support for plurals
+
+- po2odf
+
+  - New convertor
+
+- prop2po
+
+  - Improved bilingual files support
+  - Fixed duplicate locations handling
+
+- pocount
+
+  - Fixed output on Windows
+
+- poterminology
+
+  - Optimized memory usage
+
+Other
+-----
+
+- Dropped support for Python 3.9
+
+- Various code cleanups
+
+- Adjusted built-in language definitions to be closer to CLDR
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+Michal Čihař, Gersona, Copilot

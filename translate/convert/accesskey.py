@@ -26,7 +26,7 @@ DEFAULT_ACCESSKEY_MARKER = "&"
 class UnitMixer:
     """Helper to mix separately defined labels and accesskeys into one unit."""
 
-    def __init__(self, labelsuffixes, accesskeysuffixes):
+    def __init__(self, labelsuffixes, accesskeysuffixes) -> None:
         self.labelsuffixes = labelsuffixes
         self.accesskeysuffixes = accesskeysuffixes
 
@@ -41,7 +41,7 @@ class UnitMixer:
                     # see if there is a matching accesskey in this line,
                     # making this a mixed entity
                     for akeytype in self.accesskeysuffixes:
-                        if (entitybase + akeytype) in index:
+                        if entitybase + akeytype in index:
                             # add both versions to the list of mixed entities
                             mixedentities[entity] = {}
                             mixedentities[entitybase + akeytype] = {}
@@ -90,7 +90,7 @@ class UnitMixer:
             if entity.endswith(labelsuffix):
                 entitybase = entity[: entity.rfind(labelsuffix)]
                 for akeytype in self.accesskeysuffixes:
-                    if (entitybase + akeytype) in store.id_index:
+                    if entitybase + akeytype in store.id_index:
                         labelentity = entity
                         accesskeyentity = (
                             labelentity[: labelentity.rfind(labelsuffix)] + akeytype
@@ -113,16 +113,15 @@ class UnitMixer:
         return (labelentity, accesskeyentity)
 
 
-def extract(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
+def extract(
+    string: str, accesskey_marker: str = DEFAULT_ACCESSKEY_MARKER
+) -> tuple[str, str]:
     """
     Extract the label and accesskey from a label+accesskey string.
 
     The function will also try to ignore &entities; which would obviously not
     contain accesskeys.
-
-    :type string: Unicode
     :param string: A string that might contain a label with accesskey marker
-    :type accesskey_marker: Char
     :param accesskey_marker: The character that is used to prefix an access key
     """
     assert isinstance(string, str)
@@ -151,7 +150,9 @@ def extract(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
     return label, accesskey
 
 
-def combine(label, accesskey, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
+def combine(
+    label: str, accesskey: str, accesskey_marker: str = DEFAULT_ACCESSKEY_MARKER
+) -> str | None:
     """
     Combine a label and and accesskey to form a label+accesskey string.
 
@@ -161,11 +162,8 @@ def combine(label, accesskey, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
     The case of the accesskey is preferred unless no match is found, in which
     case the alternate case is used.
 
-    :type label: unicode
     :param label: a label
-    :type accesskey: unicode char
     :param accesskey: The accesskey
-    :rtype: unicode or None
     :return: label+accesskey string or None if uncombineable
     """
     assert isinstance(label, str)

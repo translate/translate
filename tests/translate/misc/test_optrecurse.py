@@ -5,7 +5,7 @@ from translate.misc import optrecurse
 
 
 class TestRecursiveOptionParser:
-    def test_splitext(self):
+    def test_splitext(self) -> None:
         """Test the ``optrecurse.splitext`` function."""
         self.parser = optrecurse.RecursiveOptionParser({"txt": ("po", None)})
         name = "name"
@@ -17,7 +17,7 @@ class TestRecursiveOptionParser:
         print(fullpath)
         assert self.parser.splitext(fullpath) == (root, extension)
 
-    def test_outputfile_receives_bytes(self, capsys):
+    def test_outputfile_receives_bytes(self, capsys) -> None:
         parser = optrecurse.RecursiveOptionParser({"txt": ("po", None)})
 
         temp_file = NamedTemporaryFile(delete=False)

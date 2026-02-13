@@ -41,10 +41,14 @@ class yaml2po:
         template_file=None,
         blank_msgstr=False,
         duplicate_style="msgctxt",
-    ):
+        personality="default",
+    ) -> None:
         """Initialize the converter."""
         self.blank_msgstr = blank_msgstr
         self.duplicate_style = duplicate_style
+
+        if personality == "ruby":
+            self.SourceStoreClass = yaml.RubyYAMLFile
 
         self.extraction_msg = None
         self.output_file = output_file
@@ -64,19 +68,19 @@ class yaml2po:
         target_unit.source = unit.source
         return target_unit
 
-    def convert_store(self):
+    def convert_store(self) -> None:
         """Convert a single source format file to a target format file."""
         self.extraction_msg = f"extracted from {self.source_store.filename}"
 
         for source_unit in self.source_store.units:
             self.target_store.addunit(self.convert_unit(source_unit))
 
-    def merge_stores(self):
+    def merge_stores(self) -> None:
         """Convert two source format files to a target format file."""
-        self.extraction_msg = f"extracted from {self.template_store.filename}, {self.source_store.filename}"
+        self.extraction_msg = f"extracted from {self.template_store.filename}, {self.source_store.filename}"  # ty:ignore[possibly-missing-attribute]
 
         self.source_store.makeindex()
-        for template_unit in self.template_store.units:
+        for template_unit in self.template_store.units:  # ty:ignore[possibly-missing-attribute]
             target_unit = self.convert_unit(template_unit)
 
             for location in target_unit.getlocations():
@@ -85,7 +89,7 @@ class yaml2po:
                     target_unit.target = source_unit.target
             self.target_store.addunit(target_unit)
 
-    def run(self):
+    def run(self) -> int:
         """Run the converter."""
         if self.template_store is None:
             self.convert_store()
@@ -105,16 +109,21 @@ class yaml2po:
 
 
 def run_converter(
-    input_file, output_file, template_file=None, pot=False, duplicatestyle="msgctxt"
+    input_file,
+    output_file,
+    template_file=None,
+    pot=False,
+    duplicatestyle="msgctxt",
+    personality="default",
 ):
     """Wrapper around converter."""
-    # TODO add Ruby personality.
     return yaml2po(
         input_file,
         output_file,
         template_file,
         blank_msgstr=pot,
         duplicate_style=duplicatestyle,
+        personality=personality,
     ).run()
 
 
@@ -126,12 +135,23 @@ formats = {
 }
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     parser = convert.ConvertOptionParser(
         formats, usetemplates=True, usepots=True, description=__doc__
     )
     parser.add_duplicates_option()
+    parser.add_option(
+        "",
+        "--personality",
+        dest="personality",
+        default="default",
+        type="choice",
+        choices=["default", "ruby"],
+        help="override the input YAML format: default, ruby (for Ruby on Rails YAML files with a language root node, e.g. 'en:' or 'ca:')",
+        metavar="TYPE",
+    )
     parser.passthrough.append("pot")
+    parser.passthrough.append("personality")
     parser.run(argv)
 
 

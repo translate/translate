@@ -8,14 +8,14 @@ sample_po_file = base_dir / "xliff_conformance" / "af-pootle.po"
 
 
 class TestPOTerminology:
-    def test_term_extraction(self):
+    def test_term_extraction(self) -> None:
         """Test basic term extraction/filtering from a po file."""
         extractor = poterminology.TerminologyExtractor()
         # When no content has been provided, returns a simple dict
         assert extractor.extract_terms() == {}
 
         with open(sample_po_file, "rb") as fh:
-            inputfile = factory.getobject(fh)
+            inputfile = factory.getobject(fh)  # ty:ignore[invalid-argument-type]
         extractor.processunits(inputfile.units, str(sample_po_file))
         terms = extractor.extract_terms()
         assert len(terms) > 50
@@ -24,12 +24,12 @@ class TestPOTerminology:
         filtered_terms = extractor.filter_terms(terms)
         assert filtered_terms[0][0] > filtered_terms[-1][0]
 
-    def test_unitinfo_stores_minimal_data(self):
+    def test_unitinfo_stores_minimal_data(self) -> None:
         """Test that UnitInfo stores minimal data instead of full unit objects."""
         extractor = poterminology.TerminologyExtractor()
 
         with open(sample_po_file, "rb") as fh:
-            inputfile = factory.getobject(fh)
+            inputfile = factory.getobject(fh)  # ty:ignore[invalid-argument-type]
 
         # Process units
         extractor.processunits(inputfile.units, str(sample_po_file))

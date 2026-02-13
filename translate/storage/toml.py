@@ -21,12 +21,12 @@ r"""Class that manages TOML data files for translation."""
 from __future__ import annotations
 
 import uuid
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, BinaryIO, cast
 
 from tomlkit import TOMLDocument, document, loads
 from tomlkit.exceptions import TOMLKitError
+from tomlkit.items import AbstractTable
 from tomlkit.items import Comment as TOMLComment
-from tomlkit.items import Table
 
 from translate.lang.data import cldr_plural_categories
 from translate.misc.multistring import multistring
@@ -44,7 +44,7 @@ class TOMLUnit(base.DictUnit):
     Represents a single translatable string extracted from a TOML file.
     """
 
-    def __init__(self, source=None, **kwargs):
+    def __init__(self, source=None, **kwargs) -> None:
         """Initialize a TOML unit with optional source text."""
         # Ensure we have ID (for serialization)
         if source:
@@ -54,7 +54,7 @@ class TOMLUnit(base.DictUnit):
             self._id = str(uuid.uuid4())
         super().__init__(source)
 
-    def setid(self, value, unitid=None):
+    def setid(self, value, unitid=None) -> None:
         """Set the unit ID, stripping leading separator if present."""
         # Strip leading separator from the string representation
         if isinstance(value, str) and value.startswith(self.IdClass.KEY_SEPARATOR):
@@ -68,12 +68,15 @@ class TOMLUnit(base.DictUnit):
         return self.target
 
     @source.setter
-    def source(self, source):
+    def source(self, source) -> None:
         """Set the source text (alias for target in monolingual format)."""
         self.target = source
 
     def getid(self):
         """Get the unit identifier."""
+        return self._id
+
+    def getcontext(self):
         return self._id
 
     def getlocations(self):
@@ -89,7 +92,7 @@ class TOMLUnit(base.DictUnit):
         self.storevalue(output, self.convert_target())
 
 
-class TOMLFile(base.DictStore):
+class TOMLFile(base.DictStore[TOMLUnit]):
     """
     A TOML localization file.
 
@@ -99,7 +102,7 @@ class TOMLFile(base.DictStore):
 
     UnitClass = TOMLUnit
 
-    def __init__(self, inputfile=None, **kwargs):
+    def __init__(self, inputfile=None, **kwargs) -> None:
         """Construct a TOML file, optionally reading from inputfile."""
         super().__init__(**kwargs)
         self.filename = ""
@@ -111,7 +114,7 @@ class TOMLFile(base.DictStore):
         """Return an empty root node for serialization."""
         return document()
 
-    def serialize(self, out: BytesIO) -> None:
+    def serialize(self, out: BinaryIO) -> None:
         """Serialize the store to a file."""
         # Always start with valid root even if original file was empty
         if self._original is None:
@@ -129,7 +132,7 @@ class TOMLFile(base.DictStore):
         out.write(result.encode(self.encoding))
 
     def _get_key_comment(
-        self, table: Table | TOMLDocument | None, key: str | int | None
+        self, table: AbstractTable | TOMLDocument | None, key: str | int | None
     ) -> str | None:
         """
         Extract the comment that appears before a key in a TOML table.
@@ -137,7 +140,7 @@ class TOMLFile(base.DictStore):
         TOML comments appear in the body as (None, Comment) tuples.
         Returns comment text without the '#' prefix, or None if no comment.
         """
-        if not isinstance(table, (Table, TOMLDocument)):
+        if not isinstance(table, (AbstractTable, TOMLDocument)):
             return None
 
         # Check if the table has a body attribute
@@ -147,7 +150,7 @@ class TOMLFile(base.DictStore):
         # Find comments that appear before this key in the body
         comments = []
 
-        for item in table.body:
+        for item in table.body:  # ty:ignore[not-iterable]
             if not isinstance(item, tuple) or len(item) != 2:
                 continue
 
@@ -174,19 +177,21 @@ class TOMLFile(base.DictStore):
         return None
 
     def _parse_dict(
-        self, data: dict[str, Any], prev: base.UnitId
-    ) -> Generator[tuple[base.UnitId, str, str | None], None, None]:
+        self,
+        data: AbstractTable | TOMLDocument,
+        prev: base.UnitId,
+    ) -> Generator[tuple[base.UnitId, str, str | None]]:
         """Parse a TOML table/dictionary recursively, yielding units."""
         for k, v in data.items():
             yield from self._flatten(v, prev.extend("key", k), parent_map=data, key=k)
 
     def _flatten(
         self,
-        data: Any,
+        data: AbstractTable | TOMLDocument,
         prev: base.UnitId | None = None,
-        parent_map: dict[str, Any] | list[Any] | None = None,
+        parent_map: AbstractTable | TOMLDocument | None = None,
         key: str | int | None = None,
-    ) -> Generator[tuple[base.UnitId, str, str | None], None, None]:
+    ) -> Generator[tuple[base.UnitId, str, str | None]]:
         """
         Flatten TOML structure recursively into translatable units.
 
@@ -195,7 +200,7 @@ class TOMLFile(base.DictStore):
         """
         if prev is None:
             prev = self.UnitClass.IdClass([])
-        if isinstance(data, (Table, TOMLDocument, dict)):
+        if isinstance(data, (AbstractTable, TOMLDocument)):
             yield from self._parse_dict(data, prev)
         elif isinstance(data, str):
             yield (prev, data, self._get_key_comment(parent_map, key))
@@ -216,7 +221,7 @@ class TOMLFile(base.DictStore):
                 f"Previous: {prev}"
             )
 
-    def parse(self, input: str | bytes | BytesIO) -> None:
+    def parse(self, input: str | bytes | BytesIO) -> None:  # ty:ignore[invalid-method-override]
         """
         Parse the given file, file object, or string content.
 
@@ -228,8 +233,8 @@ class TOMLFile(base.DictStore):
         elif not getattr(self, "filename", ""):
             self.filename = ""
         if hasattr(input, "read"):
-            src = input.read()
-            input.close()
+            src = input.read()  # ty:ignore[call-non-callable]
+            input.close()  # ty:ignore[possibly-missing-attribute]
             input = src
         if isinstance(input, bytes):
             input = input.decode(self.encoding)
@@ -248,8 +253,8 @@ class TOMLFile(base.DictStore):
     def removeunit(self, unit: base.TranslationUnit) -> None:
         """Remove a unit from the store and its underlying TOML structure."""
         if self._original is not None:
-            unit.storevalue(self._original, None, unset=True)
-        super().removeunit(unit)
+            unit.storevalue(self._original, None, unset=True)  # ty:ignore[unresolved-attribute]
+        super().removeunit(unit)  # ty:ignore[invalid-argument-type]
 
 
 class GoI18nTOMLUnit(TOMLUnit):
@@ -276,7 +281,7 @@ class GoI18nTOMLUnit(TOMLUnit):
             # to preserve the table structure
             return {"other": self.target}
 
-        tags = self._store.get_plural_tags()
+        tags = self._store.get_plural_tags()  # ty:ignore[possibly-missing-attribute]
 
         # Sync plural_strings elements to plural_tags count.
         strings = self.sync_plural_count(self.target, tags)
@@ -312,8 +317,10 @@ class GoI18nTOMLFile(TOMLFile):
     UnitClass = GoI18nTOMLUnit
 
     def _parse_dict(
-        self, data: dict[str, Any], prev: base.UnitId
-    ) -> Generator[tuple[base.UnitId, str | multistring, str | None], None, None]:
+        self,
+        data: AbstractTable | TOMLDocument,
+        prev: base.UnitId,
+    ) -> Generator[tuple[base.UnitId, str | multistring, str | None]]:
         """
         Parse a TOML table, checking for plural forms.
 
@@ -329,7 +336,10 @@ class GoI18nTOMLFile(TOMLFile):
         # Need at least 2 keys and all keys must be CLDR plural categories
         if data and len(data) >= 2 and all(x in cldr_plural_categories for x in data):
             # Extract plural forms in CLDR order
-            values = [data[tag] for tag in cldr_plural_categories if tag in data]
+            values = cast(
+                "list[str]",
+                [data[tag] for tag in cldr_plural_categories if tag in data],
+            )
 
             # Skip blank values (all plurals are None or empty)
             if values and not all(not value for value in values):

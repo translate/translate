@@ -34,14 +34,14 @@ DEFAULT_MAX_LINE_LENGTH = 80
 
 
 class MarkdownTranslator:
-    def __init__(self, inputstore, includefuzzy, outputthreshold, maxlength):
+    def __init__(self, inputstore, includefuzzy, outputthreshold, maxlength) -> None:
         self.inputstore = inputstore
         self.inputstore.require_index()
         self.includefuzzy = includefuzzy
         self.outputthreshold = outputthreshold
         self.maxlength = maxlength
 
-    def translate(self, templatefile, outputfile):
+    def translate(self, templatefile, outputfile) -> int:
         if not convert.should_output_store(self.inputstore, self.outputthreshold):
             return False
 
@@ -66,7 +66,7 @@ class MarkdownTranslator:
 
 
 class PO2MDOptionParser(convert.ConvertOptionParser):
-    def __init__(self):
+    def __init__(self) -> None:
         formats = {
             ("po", "md"): ("md", self._translate_md_file),
             ("po", "markdown"): ("markdown", self._translate_md_file),
@@ -101,7 +101,7 @@ class PO2MDOptionParser(convert.ConvertOptionParser):
         )
         return translator.translate(templatefile, outputfile)
 
-    def recursiveprocess(self, options):
+    def recursiveprocess(self, options) -> None:
         if (
             self.isrecursive(options.template, "template")
             and not self.isrecursive(options.input, "input")
@@ -114,7 +114,7 @@ class PO2MDOptionParser(convert.ConvertOptionParser):
     def can_be_recursive(self, fileoption, filepurpose):
         return fileoption is not None and not os.path.isfile(fileoption)
 
-    def recursiveprocess_by_templates(self, options):
+    def recursiveprocess_by_templates(self, options) -> None:
         """Recurse through directories and process files, by templates (markdown) not input files (po)."""
         inputfile = self.openinputfile(options, options.input)
         self.inputstore = po.pofile(inputfile)
@@ -190,7 +190,7 @@ class PO2MDOptionParser(convert.ConvertOptionParser):
         return any(ext == templateformat for _, templateformat in self.outputoptions)
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     parser = PO2MDOptionParser()
     parser.run(argv)
 

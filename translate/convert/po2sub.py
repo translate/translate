@@ -24,13 +24,11 @@ for examples and usage instructions.
 """
 
 from translate.convert import convert
-from translate.storage import po
+from translate.storage import po, subtitles
 
 
 class po2sub:
-    def __init__(self, templatefile, inputstore, includefuzzy=False):
-        from translate.storage import subtitles
-
+    def __init__(self, templatefile, inputstore, includefuzzy=False) -> None:
         self.includefuzzy = includefuzzy
         self.templatefile = templatefile
         self.templatestore = subtitles.SubtitleFile(templatefile)
@@ -53,7 +51,7 @@ class po2sub:
 
 def convertsub(
     inputfile, outputfile, templatefile, includefuzzy=False, outputthreshold=None
-):
+) -> int:
     if templatefile is None:
         raise ValueError("must have template file for subtitle files")
 
@@ -75,7 +73,7 @@ formats = {
 }
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     parser = convert.ConvertOptionParser(
         formats, usetemplates=True, description=__doc__
     )

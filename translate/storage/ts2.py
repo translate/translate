@@ -113,7 +113,7 @@ class tsunit(lisa.LISAunit):
     _context = None
     _locations = None
 
-    def createlanguageNode(self, lang, text, purpose):
+    def createlanguageNode(self, lang, text, purpose):  # ty:ignore[invalid-method-override]
         """Returns an xml Element setup with given parameters."""
         assert purpose
         if purpose == "target":
@@ -160,7 +160,7 @@ class tsunit(lisa.LISAunit):
         return targetnode.text or ""
 
     @target.setter
-    def target(self, target):
+    def target(self, target) -> None:
         # This is a fairly destructive implementation. Don't assume that this
         # is necessarily correct in all regards, but it does deal with a lot of
         # cases. It is hard to deal with plurals.
@@ -193,7 +193,7 @@ class tsunit(lisa.LISAunit):
     def hasplural(self):
         return self.xmlelement.get("numerus") == "yes"
 
-    def addnote(self, text, origin=None, position="append"):
+    def addnote(self, text, origin=None, position="append") -> None:
         """Add a note specifically in the appropriate *comment* tag."""
         current_notes = self.getnotes(origin)
         self.removenotes(origin)
@@ -223,7 +223,7 @@ class tsunit(lisa.LISAunit):
                 comments.append(notenode.text)
         return "\n".join(comments)
 
-    def removenotes(self, origin=None):
+    def removenotes(self, origin=None) -> None:
         """Remove all the translator notes."""
         if origin in {"programmer", "developer", "source code", None}:
             note = self.xmlelement.find(self.namespaced("extracomment"))
@@ -238,7 +238,7 @@ class tsunit(lisa.LISAunit):
         """Returns the type of this translation."""
         return self._gettargetnode().get("type")
 
-    def _settype(self, value=None):
+    def _settype(self, value=None) -> None:
         """Set the type of this translation."""
         if value:
             self._gettargetnode().set("type", value)
@@ -254,7 +254,7 @@ class tsunit(lisa.LISAunit):
     def isfuzzy(self):
         return self._gettype() == "unfinished" and bool(self.target)
 
-    def markfuzzy(self, value=True):
+    def markfuzzy(self, value=True) -> None:
         if value:
             self._settype("unfinished")
         else:
@@ -292,7 +292,7 @@ class tsunit(lisa.LISAunit):
             return None
         return context.text
 
-    def setcontext(self, value):
+    def setcontext(self, value) -> None:  # ty:ignore[invalid-method-override]
         if value == self.getcontextname():
             return
         parent = self.xmlelement.getparent()
@@ -314,7 +314,7 @@ class tsunit(lisa.LISAunit):
         contexts = filter(None, contexts)
         return "\n".join(contexts)
 
-    def addlocation(self, location):
+    def addlocation(self, location) -> None:
         self._locations = None
         newlocation = etree.SubElement(self.xmlelement, self.namespaced("location"))
         try:
@@ -326,7 +326,7 @@ class tsunit(lisa.LISAunit):
         if line is not None:
             newlocation.set("line", line)
 
-    def parse_locations(self):
+    def parse_locations(self) -> None:
         location_tags = self.xmlelement.iterfind(self.namespaced("location"))
         locations = []
         last_location = None
@@ -365,7 +365,7 @@ class tsunit(lisa.LISAunit):
 
     def get_previous_unit(self):
         found = None
-        for pos, unit in enumerate(self._store.units):
+        for pos, unit in enumerate(self._store.units):  # ty:ignore[possibly-missing-attribute]
             # Use is here to compare objects as __eq__ implementation in
             # LISAUnit might give unexpected results
             if unit is self:
@@ -373,7 +373,7 @@ class tsunit(lisa.LISAunit):
                 break
         if not found or found == 0:
             return None
-        return self._store.units[found - 1]
+        return self._store.units[found - 1]  # ty:ignore[possibly-missing-attribute]
 
     def getlocations(self):
         if self._locations is None:
@@ -381,10 +381,12 @@ class tsunit(lisa.LISAunit):
 
         return [
             f"{location}{':' if location else ''}{line}"
-            for location, line in self._locations
+            for location, line in self._locations  # ty:ignore[not-iterable]
         ]
 
-    def merge(self, otherunit, overwrite=False, comments=True, authoritative=False):
+    def merge(
+        self, otherunit, overwrite=False, comments=True, authoritative=False
+    ) -> None:
         super().merge(otherunit, overwrite, comments)
         # TODO: check if this is necessary:
         if otherunit.isfuzzy():
@@ -407,7 +409,7 @@ class tsunit(lisa.LISAunit):
             return self.S_OBSOLETE
         return self.statemap[type]
 
-    def set_state_n(self, value):
+    def set_state_n(self, value) -> None:
         if value not in self.statemap_r:
             value = self.get_state_id(value)
 
@@ -418,7 +420,7 @@ class tsunit(lisa.LISAunit):
         self._settype(self.statemap_r[value])
 
 
-class tsfile(lisa.LISAfile):
+class tsfile(lisa.LISAfile[tsunit]):
     """Class representing a TS file store."""
 
     UnitClass = tsunit
@@ -437,12 +439,12 @@ class tsfile(lisa.LISAfile):
     XMLuppercaseEncoding = False
     namespace = ""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         self._contextname = None
         self.last_location = None
         super().__init__(*args, **kwargs)
 
-    def initbody(self):
+    def initbody(self) -> None:
         """Initialises self.body."""
         self.namespace = self.document.getroot().nsmap.get(None, None)
         self.header = self.document.getroot()
@@ -451,7 +453,7 @@ class tsfile(lisa.LISAfile):
         else:
             self.body = self.document.getroot()
 
-    def getsourcelanguage(self):
+    def getsourcelanguage(self) -> str:
         """
         Get the source language for this .ts file.
 
@@ -463,28 +465,25 @@ class tsfile(lisa.LISAfile):
         by the extraction tools.
 
         :return: ISO code e.g. af, fr, pt_BR
-        :rtype: String
         """
         lang = data.normalize_code(self.header.get("sourcelanguage", "en"))
         if lang == "en-us":
             return "en"
         return lang
 
-    def gettargetlanguage(self):
+    def gettargetlanguage(self) -> str:
         """
         Get the target language for this .ts file.
 
         :return: ISO code e.g. af, fr, pt_BR
-        :rtype: String
         """
         return data.normalize_code(self.header.get("language"))
 
-    def settargetlanguage(self, targetlanguage):
+    def settargetlanguage(self, targetlanguage: str) -> None:
         """
         Set the target language for this .ts file to *targetlanguage*.
 
         :param targetlanguage: ISO code e.g. af, fr, pt_BR
-        :type targetlanguage: String
         """
         if targetlanguage:
             self.header.set("language", targetlanguage)
@@ -508,7 +507,7 @@ class tsfile(lisa.LISAfile):
     def _getcontextnames(self):
         """Returns all contextnames in this TS file."""
         contextnodes = self.document.findall(self.namespaced("context"))
-        return [self.getcontextname(contextnode) for contextnode in contextnodes]
+        return [self.getcontextname(contextnode) for contextnode in contextnodes]  # ty:ignore[unresolved-attribute]
 
     def _getcontextnode(self, contextname):
         """Returns the context node with the given name."""
@@ -554,7 +553,7 @@ class tsfile(lisa.LISAfile):
         return self.body is not None
 
     def nplural(self):
-        code = self.header.get("language").lower().replace("-", "_").split("_")[0]
+        code = self.header.get("language").lower().replace("-", "_").split("_")[0]  # ty:ignore[possibly-missing-attribute]
         if code in data.qt_plural_tags:
             return len(data.qt_plural_tags[code])
         lang = data.get_language(self.header.get("language"))
@@ -577,7 +576,7 @@ class tsfile(lisa.LISAfile):
         out.append(treestring[pos:])
         return super().serialize_hook("".join(out))
 
-    def serialize(self, out):
+    def serialize(self, out) -> None:
         """Write the XML document to a file."""
         root = self.document.getroot()
         # Iterate over empty tags without children and force empty text

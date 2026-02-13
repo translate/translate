@@ -44,7 +44,7 @@ class ini2po:
         blank_msgstr=False,
         duplicate_style="msgctxt",
         dialect="default",
-    ):
+    ) -> None:
         """Initialize the converter."""
         if ini.INIConfig is None:
             print("Missing iniparse library!")  # noqa: T201
@@ -70,19 +70,19 @@ class ini2po:
         target_unit.target = ""
         return target_unit
 
-    def convert_store(self):
+    def convert_store(self) -> None:
         """Convert a single source format file to a target format file."""
         self.extraction_msg = f"extracted from {self.source_store.filename}"
 
         for source_unit in self.source_store.units:
             self.target_store.addunit(self.convert_unit(source_unit))
 
-    def merge_stores(self):
+    def merge_stores(self) -> None:
         """Convert two source format files to a target format file."""
-        self.extraction_msg = f"extracted from {self.template_store.filename}, {self.source_store.filename}"
+        self.extraction_msg = f"extracted from {self.template_store.filename}, {self.source_store.filename}"  # ty:ignore[possibly-missing-attribute]
 
         self.source_store.makeindex()
-        for template_unit in self.template_store.units:
+        for template_unit in self.template_store.units:  # ty:ignore[possibly-missing-attribute]
             target_unit = self.convert_unit(template_unit)
 
             template_unit_name = "".join(template_unit.getlocations())
@@ -95,7 +95,7 @@ class ini2po:
                 target_unit.target = source_unit.source
             self.target_store.addunit(target_unit)
 
-    def run(self):
+    def run(self) -> int:
         """Run the converter."""
         if self.template_store is None:
             self.convert_store()
@@ -156,7 +156,7 @@ formats = {
 }
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     parser = convert.ConvertOptionParser(
         formats, usetemplates=True, usepots=True, description=__doc__
     )

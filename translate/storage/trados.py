@@ -40,19 +40,11 @@ A Trados file looks like this:
 
 """
 
-import re
 import time
 
+from lxml import etree, html
+
 from translate.storage import base
-
-try:
-    # FIXME see if we can't use lxml
-    from bs4 import BeautifulSoup
-except ImportError:
-    raise ImportError(
-        "BeautifulSoup 4 is not installed. Support for Trados txt is disabled."
-    )
-
 
 __all__ = (
     "RTF_ESCAPES",
@@ -110,7 +102,7 @@ def escape(text):
 class TradosTxtDate:
     """Manages the timestamps in the Trados .txt format of DDMMYYY, hh:mm:ss."""
 
-    def __init__(self, newtime=None):
+    def __init__(self, newtime=None) -> None:
         self._time = None
         if newtime:
             if isinstance(newtime, str):
@@ -124,12 +116,11 @@ class TradosTxtDate:
             return None
         return time.strftime(TRADOS_TIMEFORMAT, self._time)
 
-    def set_timestring(self, timestring):
+    def set_timestring(self, timestring: str) -> None:
         """
         Set the time_struct object using a Trados time formatted string.
 
         :param timestring: A Trados time string (DDMMYYYY, hh:mm:ss)
-        :type timestring: String
         """
         self._time = time.strptime(timestring, TRADOS_TIMEFORMAT)
 
@@ -139,12 +130,11 @@ class TradosTxtDate:
         """Get the time_struct object."""
         return self._time
 
-    def set_time(self, newtime):
+    def set_time(self, newtime: time.struct_time | None) -> None:
         """
         Set the time_struct object.
 
         :param newtime: a new time object
-        :type newtime: time.time_struct
         """
         if newtime and isinstance(newtime, time.struct_time):
             self._time = newtime
@@ -153,38 +143,41 @@ class TradosTxtDate:
 
     time = property(get_time, set_time)
 
-    def __str__(self):
+    def __str__(self) -> str:
         if not self.timestring:
             return ""
         return self.timestring
 
 
 class TradosUnit(base.TranslationUnit):
-    def __init__(self, source=None):
-        self._soup = None
+    def __init__(self, source=None) -> None:
+        self._element = None
         super().__init__(source)
 
     @property
     def source(self):
-        return unescape(self._soup.findAll("seg")[0].contents[0])
+        if self._element is None:
+            return ""
+        segs = self._element.xpath(".//seg")
+        if len(segs) > 0:
+            text = segs[0].text or ""
+            return unescape(text.strip())
+        return ""
 
     @source.setter
-    def source(self, source):
+    def source(self, source) -> None:
         pass
 
     def gettarget(self):
-        return unescape(self._soup.findAll("seg")[1].contents[0])
+        if self._element is None:
+            return ""
+        segs = self._element.xpath(".//seg")
+        if len(segs) > 1:
+            text = segs[1].text or ""
+            return unescape(text.strip())
+        return ""
 
     target = property(gettarget, None)
-
-
-class TradosSoup(BeautifulSoup):
-    MARKUP_MASSAGE = [
-        (
-            re.compile(r"<(?P<fulltag>(?P<tag>[^\s\/]+).*?)>(?P<content>.+)\r"),
-            lambda x: "<{fulltag}>{content}</{tag}>".format(**x.groupdict()),
-        ),
-    ]
 
 
 class TradosTxtTmFile(base.TranslationStore):
@@ -196,14 +189,15 @@ class TradosTxtTmFile(base.TranslationStore):
     UnitClass = TradosUnit
     default_encoding = "iso-8859-1"
 
-    def __init__(self, inputfile=None, **kwargs):
+    def __init__(self, inputfile=None, **kwargs) -> None:
         """Construct a Wordfast TM, optionally reading in from inputfile."""
         super().__init__(**kwargs)
         self.filename = ""
+        self._element = None
         if inputfile is not None:
             self.parse(inputfile)
 
-    def parse(self, input):
+    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
         if hasattr(input, "name"):
             self.filename = input.name
         elif not getattr(self, "filename", ""):
@@ -212,12 +206,27 @@ class TradosTxtTmFile(base.TranslationStore):
             tmsrc = input.read()
             input.close()
             input = tmsrc
-        self._soup = TradosSoup(input)
-        for tu in self._soup.findAll("tru"):  # codespell:ignore
+
+        # lxml.html handles unclosed tags gracefully
+        self._element = html.fromstring(input)
+
+        # Find all translation units
+        # Note: lxml.html lowercases all tag names, so we search for 'tru' not 'TrU'  # codespell:ignore
+        # If the root element is a TrU, it's the only unit
+        if self._element.tag == "tru":  # codespell:ignore
+            trus = [self._element]
+        else:
+            # Otherwise, find all TrU elements
+            trus = self._element.xpath(".//tru")  # codespell:ignore
+
+        for tu in trus:
             unit = TradosUnit()
-            unit._soup = TradosSoup(str(tu))
+            unit._element = tu
             self.addunit(unit)
 
-    def serialize(self, out):
-        # FIXME turn the lowercased tags back into mixed case
-        out.write(self._soup.prettify())
+    def serialize(self, out) -> None:
+        if self._element is not None:
+            output = etree.tostring(
+                self._element, encoding="unicode", pretty_print=True, method="html"
+            )
+            out.write(output)

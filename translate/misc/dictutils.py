@@ -31,9 +31,9 @@ class cidict(dict):
         for akey in self.keys():
             if akey.lower() == lkey:
                 return super().__getitem__(akey)
-        raise IndexError
+        raise KeyError
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key, value) -> None:
         if not isinstance(key, str):
             raise TypeError(
                 f"cidict can only have str or unicode as key (got {type(key)!r})"
@@ -44,7 +44,7 @@ class cidict(dict):
                 return super().__setitem__(akey, value)
         return super().__setitem__(key, value)
 
-    def __delitem__(self, key):
+    def __delitem__(self, key) -> None:
         if not isinstance(key, str):
             raise TypeError(
                 f"cidict can only have str or unicode as key (got {type(key)!r})"
@@ -53,12 +53,23 @@ class cidict(dict):
         for akey in self.keys():
             if akey.lower() == lkey:
                 return super().__delitem__(akey)
-        raise IndexError
+        raise KeyError
 
-    def __contains__(self, key):
+    def __contains__(self, key) -> bool:
         if not isinstance(key, str):
             raise TypeError(
                 f"cidict can only have str or unicode as key (got {type(key)!r})"
             )
         lkey = key.lower()
         return any(akey.lower() == lkey for akey in self.keys())
+
+    def pop(self, key: str):  # ty:ignore[invalid-method-override]
+        if not isinstance(key, str):
+            raise TypeError(
+                f"cidict can only have str or unicode as key (got {type(key)!r})"
+            )
+        lkey = key.lower()
+        for akey in self.keys():
+            if akey.lower() == lkey:
+                return super().pop(akey)
+        raise KeyError

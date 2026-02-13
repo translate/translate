@@ -48,7 +48,7 @@ from translate.convert import convert
 from translate.storage import po
 
 
-def swapdir(store):
+def swapdir(store) -> None:
     """Swap the source and target of each unit."""
     for unit in store.units:
         if unit.isheader():
@@ -59,7 +59,7 @@ def swapdir(store):
             unit.source, unit.target = unit.target, unit.source
 
 
-def add_missing_translation_note(unit, inputpo):
+def add_missing_translation_note(unit, inputpo) -> None:
     """Add a note indicating no translation was found."""
     if inputpo.filename:
         unit.addnote(f"No translation found in {inputpo.filename}", origin="programmer")
@@ -70,7 +70,9 @@ def add_missing_translation_note(unit, inputpo):
         )
 
 
-def convertpo(inputpofile, outputpotfile, template, reverse=False, intermediate=False):
+def convertpo(
+    inputpofile, outputpotfile, template, reverse=False, intermediate=False
+) -> int:
     """Reads in inputpofile, removes the header, writes to outputpotfile."""
     inputpo = po.pofile(inputpofile)
     templatepo = po.pofile(template)
@@ -108,12 +110,13 @@ def convertpo(inputpofile, outputpotfile, template, reverse=False, intermediate=
             unit.markfuzzy(templateunit.isfuzzy())
             unit.target = templateunit.target
         if unit.isobsolete():
-            del inputpo.units[i]
+            # TODO: should not modify loop variable
+            del inputpo.units[i]  # noqa: B909
     inputpo.serialize(outputpotfile)
     return 1
 
 
-def main(argv=None):
+def main(argv=None) -> None:
     formats = {
         ("po", "po"): ("po", convertpo),
         ("po", "pot"): ("po", convertpo),

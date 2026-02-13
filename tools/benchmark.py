@@ -30,7 +30,7 @@ from translate.storage import factory, placeables
 class TranslateBenchmarker:
     """class to aid in benchmarking Translate Toolkit stores."""
 
-    def __init__(self, test_dir, storeclass):
+    def __init__(self, test_dir, storeclass) -> None:
         """Sets up benchmarking on the test directory."""
         self.test_dir = os.path.abspath(test_dir)
         self.StoreClass = storeclass
@@ -39,7 +39,7 @@ class TranslateBenchmarker:
         self.file_dir = os.path.join(self.project_dir, "zxx")
         self.parsedfiles = []
 
-    def clear_test_dir(self):
+    def clear_test_dir(self) -> None:
         """Removes the given directory."""
         if os.path.exists(self.test_dir):
             for dirpath, subdirs, filenames in os.walk(self.test_dir, topdown=False):
@@ -58,7 +58,7 @@ class TranslateBenchmarker:
         strings_per_file,
         source_words_per_string,
         target_words_per_string,
-    ):
+    ) -> None:
         """Creates sample files for benchmarking."""
         if not os.path.exists(self.test_dir):
             os.mkdir(self.test_dir)
@@ -68,7 +68,7 @@ class TranslateBenchmarker:
             os.mkdir(self.file_dir)
         for dirnum in range(num_dirs):
             if num_dirs > 1:
-                dirname = os.path.join(self.file_dir, "sample_%d" % dirnum)
+                dirname = os.path.join(self.file_dir, f"sample_{dirnum}")
                 if not os.path.exists(dirname):
                     os.mkdir(dirname)
             else:
@@ -77,19 +77,19 @@ class TranslateBenchmarker:
                 sample_file = self.StoreClass()
                 for _stringnum in range(strings_per_file):
                     source_string = " ".join(
-                        "word%d" % (random.randint(0, strings_per_file) * i)  # noqa: S311
+                        f"word{random.randint(0, strings_per_file) * i}"  # noqa: S311
                         for i in range(source_words_per_string)
                     )
                     sample_unit = sample_file.addsourceunit(source_string)
                     sample_unit.target = " ".join(
-                        "drow%d" % (random.randint(0, strings_per_file) * i)  # noqa: S311
+                        f"drow{random.randint(0, strings_per_file) * i}"  # noqa: S311
                         for i in range(target_words_per_string)
                     )
                 sample_file.savefile(
-                    os.path.join(dirname, "file_%d.%s" % (filenum, self.extension))
+                    os.path.join(dirname, f"file_{filenum}.{self.extension}")
                 )
 
-    def parse_files(self, file_dir=None):
+    def parse_files(self, file_dir=None) -> None:
         """Parses all the files in the test directory into memory."""
         count = 0
         self.parsedfiles = []
@@ -98,12 +98,12 @@ class TranslateBenchmarker:
         for dirpath, _subdirs, filenames in os.walk(file_dir, topdown=False):
             for name in filenames:
                 pofilename = os.path.join(dirpath, name)
-                parsedfile = self.StoreClass(open(pofilename))
+                parsedfile = self.StoreClass(open(pofilename, "rb"))
                 count += len(parsedfile.units)
                 self.parsedfiles.append(parsedfile)
-        print("counted %d units" % count)
+        print(f"counted {count} units")
 
-    def parse_placeables(self):
+    def parse_placeables(self) -> None:
         """Parses placeables."""
         count = 0
         for parsedfile in self.parsedfiles:
@@ -111,7 +111,7 @@ class TranslateBenchmarker:
                 placeables.parse(unit.source, placeables.general.parsers)
                 placeables.parse(unit.target, placeables.general.parsers)
             count += len(parsedfile.units)
-        print("counted %d units" % count)
+        print(f"counted {count} units")
 
 
 if __name__ == "__main__":
@@ -147,8 +147,8 @@ if __name__ == "__main__":
 
     storetype = args.storetype
 
-    if storetype in factory.classes_str:
-        _module, _class = factory.classes_str[storetype]
+    if storetype in factory._classes_str:
+        _module, _class = factory._classes_str[storetype]
         module = import_module(f"translate.storage.{_module}")
         storeclass = getattr(module, _class)
     else:
@@ -182,21 +182,17 @@ if __name__ == "__main__":
         benchmarker.clear_test_dir()
         if args.podir is None:
             benchmarker.create_sample_files(*sample_file_sizes)
-        benchmarker.parse_files(file_dir=args.podir)
-        methods = []  # [("create_sample_files", "*sample_file_sizes")]
+        methods = []
 
         if args.check_parsing:
-            methods.append(("parse_files", ""))
+            methods.append(("parse_files", repr(args.podir)))
 
         if args.check_placeables:
             methods.append(("parse_placeables", ""))
 
         for methodname, methodparam in methods:
             print("_______________________________________________________")
-            statsfile = (
-                f"{methodname}_{storetype}"
-                + "_%d_%d_%d_%d_%d.stats" % sample_file_sizes
-            )
+            statsfile = f"{methodname}_{storetype}{'_{}_{}_{}_{}_{}.stats'.format(*sample_file_sizes)}"
             cProfile.run(f"benchmarker.{methodname}({methodparam})", statsfile)
             stats = pstats.Stats(statsfile)
             stats.sort_stats("time").print_stats(20)

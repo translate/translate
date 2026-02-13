@@ -60,6 +60,7 @@ http://qt.gitorious.org/+kde-developers/qt/kde-qt/blobs/master/tools/linguist/sh
 import codecs
 import logging
 import struct
+from typing import Never
 
 from translate.misc.multistring import multistring
 from translate.storage import base
@@ -73,7 +74,7 @@ def qmunpack(file_="messages.qm"):
     """Helper to unpack Qt .qm files into a Python string."""
     with open(file_, "rb") as fh:
         s = fh.read()
-        return "\\x%02x" * len(s) % tuple(map(ord, s))
+        return "\\x%02x" * len(s) % tuple(map(ord, s))  # ty:ignore[invalid-argument-type]
 
 
 class qmunit(base.TranslationUnit):
@@ -89,17 +90,17 @@ class qmfile(base.TranslationStore):
     Extensions = ["qm"]
     _binary = True
 
-    def __init__(self, inputfile=None, **kwargs):
+    def __init__(self, inputfile=None, **kwargs) -> None:
         super().__init__(**kwargs)
         self.filename = ""
         if inputfile is not None:
             self.parsestring(inputfile)
 
-    def serialize(self, out):
+    def serialize(self, out) -> Never:
         """Output a string representation of the .qm data file."""
         raise NotImplementedError("Writing of .qm files is not supported yet")
 
-    def parse(self, input):
+    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
         """Parses the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name
@@ -117,10 +118,9 @@ class qmfile(base.TranslationStore):
         startsection = 16
         sectionheader = 5
 
-        def section_debug(name, section_type, startsection, length):
+        def section_debug(name, section_type, startsection, length) -> None:
             print(  # noqa: T201
-                "Section: %s (type: %#x, offset: %#x, length: %d)"
-                % (name, section_type, startsection, length)
+                f"Section: {name} (type: {section_type:#x}, offset: {startsection:#x}, length: {length})"
             )
 
         while startsection < len(input):
@@ -136,7 +136,7 @@ class qmfile(base.TranslationStore):
                 # section_debug("Messages", section_type, startsection, length)
                 messages_start = startsection + sectionheader
                 messages_data = struct.unpack(
-                    ">%db" % length,
+                    f">{length}b",
                     input[
                         startsection + sectionheader : startsection
                         + sectionheader
@@ -174,7 +174,7 @@ class qmfile(base.TranslationStore):
             if subsection == 0x03:  # Translation
                 if length != -1:
                     (raw,) = struct.unpack(
-                        ">%ds" % length, input[pos + 4 : pos + 4 + length]
+                        f">{length}s", input[pos + 4 : pos + 4 + length]
                     )
                     string, _templen = codecs.utf_16_be_decode(raw)
                     if target:
@@ -207,5 +207,5 @@ class qmfile(base.TranslationStore):
                 logger.warning("Unimplemented: 0x%x %s", subsection, subsection_name)
                 return
 
-    def savefile(self, storefile):
+    def savefile(self, storefile) -> Never:
         raise NotImplementedError("Writing of .qm files is not supported yet")

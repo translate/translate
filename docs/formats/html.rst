@@ -86,9 +86,9 @@ Both methods work with ``html2po`` extraction and ``po2html`` conversion,
 preserving ignored content in the original language.
 
 
-.. _html#adding_context:
+.. _html#adding_comment:
 
-Adding Translator Context
+Adding Translator Comment
 ==========================
 
 Translators often need additional context to provide accurate translations. The
@@ -145,6 +145,43 @@ The ``data-translate-comment`` attribute works alongside regular HTML comments
    which is designed for custom data that doesn't affect rendering. This means
    your HTML remains valid and the attributes are safely ignored by browsers.
 
+.. _html#adding_context:
+
+Message Context (Disambiguation)
+================================
+
+Sometimes the same source string needs different translations depending on
+where it appears (e.g. "Open" as a verb vs. noun). You can disambiguate such
+cases using the ``data-translate-context`` attribute. Its value becomes the
+``msgctxt`` in the generated PO file, allowing separate translations for the
+same ``msgid``, without the excessively differentiated contexts from automated
+context disambiguation.
+
+If an element does not specify ``data-translate-context``, the following fallbacks
+apply when disambiguated contexts are needed due to duplicate source strings:
+
+- ``{filename}:{element_id}`` when the element has an ``id`` attribute
+- ``{filename}+{ancestor_id}.{relative_tag_path}:{line}-{column}`` when the element
+   does not have an ``id`` but is a descendant of an element with an ``id``. The
+   ``relative_tag_path`` is the dot-separated tag path from the ancestor to the
+   element. ``line``/``column`` come from the element's source location.
+
+.. code-block:: html
+
+    <p data-translate-context="verb">Open</p>
+    <p data-translate-context="noun">Open</p>
+
+After extraction with ``html2po`` the PO will contain two distinct entries:
+
+.. code-block:: po
+
+    msgctxt "verb"
+    msgid "Open"
+    msgstr ""
+
+    msgctxt "noun"
+    msgid "Open"
+    msgstr ""
 
 .. _html#meta_tags:
 
