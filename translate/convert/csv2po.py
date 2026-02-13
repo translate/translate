@@ -81,7 +81,7 @@ class csv2po:
 
     def makeindex(self) -> None:
         """Makes indexes required for searching..."""
-        for pounit in self.pofile.units:  # ty:ignore[possibly-missing-attribute]
+        for pounit in self.pofile.units:  # ty:ignore[unresolved-attribute]
             joinedcomment = " ".join(pounit.getlocations())
             source = pounit.source
             # the definitive way to match is by source comment (joinedcomment)

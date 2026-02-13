@@ -93,7 +93,7 @@ class po2txt:
         target format.
         """
         # Parse the template file using TxtFile to segment it the same way txt2po does
-        self.template_file.seek(0)  # ty:ignore[possibly-missing-attribute]
+        self.template_file.seek(0)  # ty:ignore[unresolved-attribute]
         template_store = txt.TxtFile(
             self.template_file,
             encoding=self.encoding,

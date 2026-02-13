@@ -361,7 +361,7 @@ class terminologymatcher(matcher):
             if (source, cand.target) in known:
                 continue
             if comparer.similarity(text, source, self.MIN_SIMILARITY):
-                match_info[source] = {"pos": comparer.match_info[source]["pos"]}  # ty:ignore[possibly-missing-attribute]
+                match_info[source] = {"pos": comparer.match_info[source]["pos"]}  # ty:ignore[unresolved-attribute]
                 matches.append(cand)
                 known.add((source, cand.target))
 
