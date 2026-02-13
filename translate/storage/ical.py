@@ -95,13 +95,13 @@ class icalfile(base.TranslationStore):
         for unit in self.units:
             for location in unit.getlocations():
                 match = ICAL_UNIT_LOCATION_RE.match(location)
-                for component in self._icalfile.components():  # ty:ignore[possibly-missing-attribute]
+                for component in self._icalfile.components():  # ty:ignore[unresolved-attribute]
                     if component.name != "VEVENT":
                         continue
-                    if component.uid.value != match.groupdict()["uid"]:  # ty:ignore[possibly-missing-attribute]
+                    if component.uid.value != match.groupdict()["uid"]:  # ty:ignore[unresolved-attribute]
                         continue
                     for property in component.getChildren():
-                        if property.name == match.groupdict()["property"]:  # ty:ignore[possibly-missing-attribute]
+                        if property.name == match.groupdict()["property"]:  # ty:ignore[unresolved-attribute]
                             property.value = unit.target
 
         if outicalfile:

@@ -610,9 +610,9 @@ class pounit(pocommon.pounit):
             # The typecomments cache might be still missing if typecomments are not present
             self._ensure_typecomments_cache()
             if present:
-                self._typecomments_cache.append(typecomment)  # ty:ignore[possibly-missing-attribute]
+                self._typecomments_cache.append(typecomment)  # ty:ignore[unresolved-attribute]
             else:
-                self._typecomments_cache.remove(typecomment)  # ty:ignore[possibly-missing-attribute]
+                self._typecomments_cache.remove(typecomment)  # ty:ignore[unresolved-attribute]
             if self._typecomments_cache:
                 self._typecomments_cache.sort()
                 comments_str = ", ".join(self._typecomments_cache)

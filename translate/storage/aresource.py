@@ -445,7 +445,7 @@ class AndroidResourceUnit(base.TranslationUnit):
                 self.xmlelement = newelement
                 self.setid(old_id)
 
-            plural_tags = self._store.get_plural_tags()  # ty:ignore[possibly-missing-attribute]
+            plural_tags = self._store.get_plural_tags()  # ty:ignore[unresolved-attribute]
 
             # Sync plural_strings elements to plural_tags count.
             plural_strings = self.sync_plural_count(target, plural_tags)
@@ -459,7 +459,7 @@ class AndroidResourceUnit(base.TranslationUnit):
             # Include additional plural for decimal numbers if not present. This is
             # enforced by Android lint but translate-toolkit currently does not support
             # editing this.
-            locale = self._store.get_base_locale_code()  # ty:ignore[possibly-missing-attribute]
+            locale = self._store.get_base_locale_code()  # ty:ignore[unresolved-attribute]
             if locale in data.DECIMAL_EXTRA_TAGS:
                 for extra in data.DECIMAL_EXTRA_TAGS[locale]:
                     if extra not in plural_tags:
@@ -524,7 +524,7 @@ class AndroidResourceUnit(base.TranslationUnit):
         if (self.xmlelement is not None) and (self.xmlelement.getparent is not None):
             prevSibling = self.xmlelement.getprevious()
             while (prevSibling is not None) and (prevSibling.tag is etree.Comment):
-                prevSibling.getparent().remove(prevSibling)  # ty:ignore[possibly-missing-attribute]
+                prevSibling.getparent().remove(prevSibling)  # ty:ignore[unresolved-attribute]
                 prevSibling = self.xmlelement.getprevious()
 
         super().removenotes()
@@ -611,7 +611,7 @@ class AndroidResourceFile(lisa.LISAfile):
         do_cleanup = False
         if new:
             # Include any possible new namespaces
-            newns = self.body.nsmap  # ty:ignore[possibly-missing-attribute]
+            newns = self.body.nsmap  # ty:ignore[unresolved-attribute]
             for ns in unit.xmlelement.nsmap:
                 if ns not in newns:
                     do_cleanup = True

@@ -690,7 +690,7 @@ class Xliff1File(XliffFile[U]):
                 target_group.append(unit.xmlelement)
             else:
                 # Add directly to body
-                self.body.append(unit.xmlelement)  # ty:ignore[possibly-missing-attribute]
+                self.body.append(unit.xmlelement)  # ty:ignore[unresolved-attribute]
 
     def addsourceunit(self, source, filename="NoName", createifmissing=False):
         """
@@ -744,7 +744,7 @@ class Xliff1File(XliffFile[U]):
         :returns: The matching or newly created group element
         """
         # Try to find a matching group in the current body
-        for group in self.body.iterchildren(self.namespaced("group")):  # ty:ignore[possibly-missing-attribute]
+        for group in self.body.iterchildren(self.namespaced("group")):  # ty:ignore[unresolved-attribute]
             # Check if all attributes match
             if group.attrib == source_group.attrib:
                 return group
