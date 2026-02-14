@@ -238,19 +238,19 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
             curNode = self.curNode
             if " " in name:
                 uri, localname, prefix, _qname = expatbuilder._parse_ns_name(self, name)  # ty:ignore[unresolved-attribute]
-                assert curNode.namespaceURI == uri, (  # ty:ignore[possibly-missing-attribute]
+                assert curNode.namespaceURI == uri, (  # ty:ignore[unresolved-attribute]
                     "element stack messed up! (namespace)"
                 )
-                assert curNode.localName == localname  # ty:ignore[possibly-missing-attribute]
-                assert curNode.prefix == prefix  # ty:ignore[possibly-missing-attribute]
+                assert curNode.localName == localname  # ty:ignore[unresolved-attribute]
+                assert curNode.prefix == prefix  # ty:ignore[unresolved-attribute]
             else:
-                assert curNode.nodeName == name, (  # ty:ignore[possibly-missing-attribute]
+                assert curNode.nodeName == name, (  # ty:ignore[unresolved-attribute]
                     "element stack messed up - bad nodeName"
                 )
-                assert curNode.namespaceURI == EMPTY_NAMESPACE, (  # ty:ignore[possibly-missing-attribute]
+                assert curNode.namespaceURI == EMPTY_NAMESPACE, (  # ty:ignore[unresolved-attribute]
                     "element stack messed up - bad namespaceURI"
                 )
-            self.curNode = curNode.parentNode  # ty:ignore[invalid-assignment, possibly-missing-attribute]
+            self.curNode = curNode.parentNode  # ty:ignore[invalid-assignment, unresolved-attribute]
             self._finish_end_element(curNode)  # ty:ignore[unresolved-attribute]
 
 

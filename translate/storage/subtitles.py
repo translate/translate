@@ -147,8 +147,8 @@ class SubtitleFile(base.TranslationStore):
         # Using transient output might be dropped if/when we have more control
         # over the open mode of out files.
         output = StringIO()
-        self._subtitlefile.write_to_file(subtitles, documents.MAIN, output)  # ty:ignore[possibly-missing-attribute, unresolved-attribute]
-        out.write(output.getvalue().encode(self._subtitlefile.encoding))  # ty:ignore[possibly-missing-attribute]
+        self._subtitlefile.write_to_file(subtitles, documents.MAIN, output)  # ty:ignore[unresolved-attribute]
+        out.write(output.getvalue().encode(self._subtitlefile.encoding))  # ty:ignore[unresolved-attribute]
 
     def _set_default_ssa_metadata(self, unit: SubtitleUnit) -> None:
         """Set default SSA metadata for a unit (helper for SSA/ASS subclasses)."""

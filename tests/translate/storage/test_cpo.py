@@ -1,16 +1,11 @@
-import sys
 from io import BytesIO
+from typing import cast
 
 from pytest import importorskip, mark, raises
 
 from translate.misc.multistring import multistring
 
 from . import test_po
-
-pytestmark = mark.skipif(
-    not sys.platform.startswith("linux"), reason="cpo is only available on Linux"
-)
-
 
 cpo = importorskip("translate.storage.cpo", exc_type=ImportError)
 
@@ -56,9 +51,9 @@ class TestCPOUnit(test_po.TestPOUnit):
         unit.target = "Boom"
         # FIXME: currently assigning the target to the same as the first string won't change anything
         # we need to verify that this is the desired behaviour...
-        assert unit.target.strings[0] == "Boom"
+        assert cast("multistring", unit.target).strings[0] == "Boom"
         unit.target = "Een Boom"
-        assert unit.target.strings == ["Een Boom"]
+        assert cast("multistring", unit.target).strings == ["Een Boom"]
 
     def test_notes(self) -> None:
         """Tests that the generic notes API works."""
