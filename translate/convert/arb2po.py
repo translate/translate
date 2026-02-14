@@ -73,7 +73,9 @@ class arb2po:
                     origpo.target = translatedpo.source
                 output_store.addunit(origpo)
             elif translatedpo is not None:
-                logger.error("error converting original ARB definition %s", origpo.name)
+                logger.error(
+                    "error converting original ARB definition %s", template_unit_name
+                )
         output_store.removeduplicates(duplicatestyle)
         return output_store
 
