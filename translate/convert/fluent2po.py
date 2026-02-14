@@ -83,9 +83,9 @@ class fluent2po:
         Converts a Fluent unit to a PO unit.
 
         :return: None if the unit is a comment-only header (ResourceComment,
-            GroupComment, DetachedComment).
+            GroupComment, DetachedComment), or is not translatable.
         """
-        if input_unit is None or input_unit.isheader():
+        if input_unit is None or input_unit.isheader() or not input_unit.istranslatable():
             return None
         output_unit = po.pounit(encoding="UTF-8")
         output_unit.addlocation(input_unit.getid())

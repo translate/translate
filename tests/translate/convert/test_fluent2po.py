@@ -97,6 +97,20 @@ hello = Hello World!
         unit = poresult.units[1]
         assert "{ $name }" in unit.source
 
+    def test_empty_message_skipped(self) -> None:
+        """Test that entries without value/attributes are skipped."""
+        fluentsource = """\
+empty =
+hello = Hello
+"""
+        poresult = self.fluent2po(fluentsource)
+        # header + 1 translatable unit
+        assert len(poresult.units) == 2
+        assert poresult.units[1].source == "Hello"
+        empty_msgid_units = [unit for unit in poresult.units if unit.source == ""]
+        assert len(empty_msgid_units) == 1
+        assert empty_msgid_units[0].isheader()
+
     def test_merge(self) -> None:
         """Test merging template Fluent with translated Fluent."""
         template = """\
