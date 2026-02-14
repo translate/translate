@@ -414,7 +414,6 @@ message-multiedit-header[many]={0,number} selected
 
     def test_strings_bilingual_simple(self) -> None:
         """Test that .strings files are treated as bilingual in convertstore mode."""
-        # Simple test case - currently FAILS because source and target are swapped
         propsource = r""""Source text" = "Translated text";"""
         # .strings files use UTF-16 encoding
         inputfile = BytesIO(propsource.encode("utf-16"))
@@ -453,6 +452,47 @@ message-multiedit-header[many]={0,number} selected
         assert len(locations) == 1
         # Location should be a reasonable identifier, not the full multiline text
         assert "A '<AppNameRemovedForPrivacy>' folder" in locations[0]
+
+    def test_strings_merge_mode_uses_template_value_as_msgid(self) -> None:
+        """Ensure merge mode keeps standard monolingual behavior for .strings."""
+        templatesource = r""""Hello" = "Hello from template";"""
+        translationsource = r""""Hello" = "Hola des de la plantilla";"""
+
+        templatefile = BytesIO(templatesource.encode("utf-16"))
+        translationfile = BytesIO(translationsource.encode("utf-16"))
+        templateprop = properties.propfile(templatefile, personality="strings")
+        translationprop = properties.propfile(translationfile, personality="strings")
+
+        convertor = prop2po.prop2po(personality="strings")
+        outputpo = convertor.mergestore(templateprop, translationprop)
+        pounit = self.singleelement(outputpo)
+
+        # In merge mode, msgid comes from the template value and msgstr from input value.
+        assert pounit.source == "Hello from template"
+        assert pounit.target == "Hola des de la plantilla"
+        assert pounit.getlocations() == ["Hello"]
+
+    def test_strings_merge_template(self) -> None:
+        """Test that .strings merge mode uses template value as msgid."""
+        template_source = b'"greeting" = "Hello";\n"farewell" = "Goodbye";\n'
+        input_source = b'"greeting" = "Hola";\n"farewell" = "Adeu";\n'
+
+        template_file = BytesIO(template_source)
+        input_file = BytesIO(input_source)
+
+        template_prop = properties.propfile(template_file, personality="strings-utf8")
+        input_prop = properties.propfile(input_file, personality="strings-utf8")
+
+        convertor = prop2po.prop2po(personality="strings-utf8")
+        outputpo = convertor.mergestore(template_prop, input_prop)
+
+        units = [u for u in outputpo.units if u.source]
+        assert len(units) == 2
+        # msgid must be the English value from the template, not the key
+        assert units[0].source == "Hello"
+        assert units[0].target == "Hola"
+        assert units[1].source == "Goodbye"
+        assert units[1].target == "Adeu"
 
 
 class TestProp2POCommand(test_convert.TestConvertCommand, TestProp2PO):
