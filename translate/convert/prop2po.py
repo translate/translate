@@ -74,7 +74,9 @@ class prop2po:
         waitingcomments = []
         for propunit in thepropfile.units:
             try:
-                pounit = self.convertpropunit(thepropfile, propunit, "developer")
+                pounit = self.convertpropunit(
+                    thepropfile, propunit, "developer", bilingual=True
+                )
             except DiscardUnit:
                 continue
             if pounit is None:
@@ -324,7 +326,7 @@ class prop2po:
             )
         return new_store
 
-    def convertunit(self, propunit, commenttype):
+    def convertunit(self, propunit, commenttype, bilingual=False):
         """
         Converts a .properties unit to a .po unit. Returns None if empty or
         not for translation.
@@ -346,10 +348,12 @@ class prop2po:
         location = propunit.name or EMPTY_KEY_MARKER
         pounit.addlocation(location)
 
-        # For .strings files, treat them as bilingual:
+        # For .strings files in single-file (bilingual) mode:
         # - The key (name) is the source text (msgid)
         # - The value (source property) is the translated text (msgstr)
-        if self.personality in {"strings", "strings-utf8"}:
+        # In merge mode (template + translation), use standard monolingual
+        # behavior so that the template value becomes the msgid.
+        if bilingual and self.personality in {"strings", "strings-utf8"}:
             # Decode the key to get the actual source text
             personality_obj = properties.get_dialect(self.personality)
             pounit.source = personality_obj.decode(
@@ -357,7 +361,6 @@ class prop2po:
             )
             pounit.target = propunit.source
         else:
-            # For other formats, use standard monolingual behavior
             pounit.source = propunit.source
             pounit.target = ""
         return pounit
@@ -372,7 +375,9 @@ class prop2po:
         target_unit = po.pounit(encoding="UTF-8")
         return self.mixer.mix_units(label_unit, accesskey_unit, target_unit)
 
-    def convertpropunit(self, store, unit, commenttype, mixbucket="properties"):
+    def convertpropunit(
+        self, store, unit, commenttype, mixbucket="properties", bilingual=False
+    ):
         """
         Converts a unit from store to a po unit, keeping track of mixed
         names along the way.
@@ -382,12 +387,12 @@ class prop2po:
         """
         if self.personality not in {"mozilla", "gwt"}:
             # XXX should we enable unit mixing for other personalities?
-            return self.convertunit(unit, commenttype)
+            return self.convertunit(unit, commenttype, bilingual=bilingual)
 
         # keep track of whether accesskey and label were combined
         key = unit.getid()
         if key not in self.mixedkeys:
-            return self.convertunit(unit, commenttype)
+            return self.convertunit(unit, commenttype, bilingual=bilingual)
 
         # use special convertmixed unit which produces one pounit with
         # both combined for the label and None for the accesskey
@@ -397,7 +402,7 @@ class prop2po:
             return None
         if alreadymixed is False:
             # The mix failed before
-            return self.convertunit(unit, commenttype)
+            return self.convertunit(unit, commenttype, bilingual=bilingual)
 
         # assert alreadymixed is None
         labelkey, accesskeykey = self.mixer.find_mixed_pair(self.mixedkeys, store, unit)
@@ -417,7 +422,7 @@ class prop2po:
         if labelkey is not None:
             self.mixedkeys[labelkey][mixbucket] = False
 
-        return self.convertunit(unit, commenttype)
+        return self.convertunit(unit, commenttype, bilingual=bilingual)
 
 
 def convertstrings(
