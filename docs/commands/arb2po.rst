@@ -58,8 +58,8 @@ First, create a POT file::
 
 The English ARB file is converted to a Gettext POT file. ARB metadata entries
 (``@@locale``, ``@@last_modified``, etc.) are automatically filtered out, and
-``@key`` description fields are preserved as translator comments.
-
+``@key`` description fields are preserved as developer comments in the
+resulting PO or POT file.
 To recover existing translations, run::
 
   arb2po -t app_en.arb app_ca.arb ca.po
