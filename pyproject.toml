@@ -37,7 +37,7 @@ test = [
 ]
 types = [
   "setuptools>=61.2",
-  "ty==0.0.15",
+  "ty==0.0.17",
   "types-lxml==2026.1.1"
 ]
 
@@ -97,7 +97,7 @@ ini = [
   "iniparse==0.5"
 ]
 levenshtein = [
-  "python-Levenshtein>=0.21.0"
+  "RapidFuzz>=3.14.0"
 ]
 markdown = [
   "mistletoe>=1.4.0,<1.6.0"

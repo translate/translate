@@ -286,7 +286,7 @@ class Xliff2File(XliffFile[Xliff2Unit]):
         super().addunit(unit, new=False)
         if new:
             # TODO: merge units with same ID and different segment
-            self.body.append(unit.getunitelement())  # ty:ignore[possibly-missing-attribute]
+            self.body.append(unit.getunitelement())  # ty:ignore[unresolved-attribute]
 
     def getsourcelanguage(self) -> str:
         """Get the source language for this file."""

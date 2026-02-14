@@ -291,7 +291,7 @@ class pounit(pocommon.pounit):
         """Alters whether a given typecomment is present."""
         if self.hastypecomment(typecomment) != present:
             if present:
-                self.typecomments.append(f"#, {typecomment}\n")  # ty:ignore[possibly-missing-attribute]
+                self.typecomments.append(f"#, {typecomment}\n")  # ty:ignore[unresolved-attribute]
             else:
                 # this should handle word boundaries properly ...
                 typecomments = [

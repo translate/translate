@@ -481,10 +481,10 @@ class TranslationUnit:
         return False
 
     def getsourcelanguage(self):
-        return self._store.getsourcelanguage()  # ty:ignore[possibly-missing-attribute]
+        return self._store.getsourcelanguage()  # ty:ignore[unresolved-attribute]
 
     def gettargetlanguage(self):
-        return self._store.gettargetlanguage()  # ty:ignore[possibly-missing-attribute]
+        return self._store.gettargetlanguage()  # ty:ignore[unresolved-attribute]
 
     def merge(
         self, otherunit, overwrite=False, comments=True, authoritative=False

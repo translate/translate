@@ -23,7 +23,7 @@ project = "Translate Toolkit"
 copyright = "Translate Toolkit authors"
 
 # The short X.Y version.
-version = "3.18.1"
+version = "3.19.0"
 
 # The full version, including alpha/beta/rc tags
 release = version
@@ -74,7 +74,7 @@ autodoc_mock_imports = [
     "lxml",
     "phply",
     "ruamel",
-    "Levenshtein",
+    "rapidfuzz",
 ]
 
 # -- Options for HTML output -------------------------------------------------

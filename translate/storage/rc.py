@@ -374,14 +374,14 @@ class rcfile(base.TranslationStore):
             )
 
         # Extract first newline
-        for line in decoded.splitlines(True):  # ty:ignore[possibly-missing-attribute]
+        for line in decoded.splitlines(True):  # ty:ignore[unresolved-attribute]
             if len(line) >= 2 and line[-2] in {"\r", "\n"}:
                 self.newline = line[-2:]
             else:
                 self.newline = line[-1]
             break
 
-        decoded = decoded.replace("\r", "")  # ty:ignore[possibly-missing-attribute]
+        decoded = decoded.replace("\r", "")  # ty:ignore[unresolved-attribute]
 
         # Parse the strings into a structure.
         results = rc_statement().search_string(decoded)

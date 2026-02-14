@@ -48,7 +48,7 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt-get update
-        sudo apt-get install -y libgettextpo-dev libxml2-dev libxmlsec1-dev gettext hunspell-af
+        sudo apt-get install -y libgettextpo-dev gettext hunspell-af
     - name: Install Windows dependencies
       if: matrix.os == 'windows-latest'
       run: |

@@ -234,7 +234,7 @@ class TOMLFile(base.DictStore[TOMLUnit]):
             self.filename = ""
         if hasattr(input, "read"):
             src = input.read()  # ty:ignore[call-non-callable]
-            input.close()  # ty:ignore[possibly-missing-attribute]
+            input.close()  # ty:ignore[unresolved-attribute]
             input = src
         if isinstance(input, bytes):
             input = input.decode(self.encoding)
@@ -281,7 +281,7 @@ class GoI18nTOMLUnit(TOMLUnit):
             # to preserve the table structure
             return {"other": self.target}
 
-        tags = self._store.get_plural_tags()  # ty:ignore[possibly-missing-attribute]
+        tags = self._store.get_plural_tags()  # ty:ignore[unresolved-attribute]
 
         # Sync plural_strings elements to plural_tags count.
         strings = self.sync_plural_count(self.target, tags)
