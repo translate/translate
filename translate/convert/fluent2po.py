@@ -23,12 +23,8 @@ Fluent is a monolingual localization format used by Mozilla Firefox, Anki,
 and other projects.
 """
 
-import logging
-
 from translate.convert import convert
 from translate.storage import fluent, po
-
-logger = logging.getLogger(__name__)
 
 
 class fluent2po:
