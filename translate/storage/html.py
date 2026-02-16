@@ -472,6 +472,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 "html_content": normalized_value,
                 "attrname": attrname,
                 "location": f"{self.filename}+{'.'.join(self.tag_path)}[{attrname}]:{self.getpos()[0]}-{self.getpos()[1] + 1}",
+                "docpath": self._build_docpath() + f"[{attrname}]",
             }
         return None
 
@@ -496,6 +497,8 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                         # Register for faster lookups
                         self._units_by_src_ctx[tu["html_content"], full_explicit] = unit
                 unit.addlocation(tu["location"])
+                if tu.get("docpath"):
+                    unit.setdocpath(tu["docpath"])
 
                 if not full_explicit:
                     hint_base = markup.get("context_hint")
@@ -572,14 +575,17 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 attr_strings.append(f' {attrname}="{attrvalue}"')
         return f"<{tag}{''.join(attr_strings)}{' /' if startend else ''}>"
 
+    def _pop_docpath_level(self) -> None:
+        """Pop the current docpath level (sibling counts and path entry)."""
+        if self._docpath_stack:
+            self._docpath_stack.pop()
+        if len(self._sibling_counts) > 1:
+            self._sibling_counts.pop()
+
     def auto_close_empty_element(self) -> None:
         if self.tag_path and self.tag_path[-1] in self.EMPTY_HTML_ELEMENTS:
             self.tag_path.pop()
-            # Pop docpath for the auto-closed empty element
-            if self._docpath_stack:
-                self._docpath_stack.pop()
-            if len(self._sibling_counts) > 1:
-                self._sibling_counts.pop()
+            self._pop_docpath_level()
 
     def get_leading_whitespace(self, text: str):
         match = self.LEADING_WHITESPACE_RE.search(text)
@@ -692,22 +698,14 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             ) from None
         if popped != tag and popped in self.EMPTY_HTML_ELEMENTS:
             popped = self.tag_path.pop()
-            # Pop docpath for the auto-closed empty element
-            if self._docpath_stack:
-                self._docpath_stack.pop()
-            if len(self._sibling_counts) > 1:
-                self._sibling_counts.pop()
+            self._pop_docpath_level()
         if popped != tag:
             raise ParseError(
                 "Mismatched closing tag: "
                 f"expected '{popped}' got '{tag}' at line {self.getpos()[0]}"
             )
 
-        # Pop docpath for the closed element
-        if self._docpath_stack:
-            self._docpath_stack.pop()
-        if len(self._sibling_counts) > 1:
-            self._sibling_counts.pop()
+        self._pop_docpath_level()
 
         self.append_markup({"type": "endtag", "html_content": f"</{tag}>"})
 
@@ -831,11 +829,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             self.ignore_depth -= 1
 
         self.tag_path.pop()
-        # Pop docpath for the self-closing element
-        if self._docpath_stack:
-            self._docpath_stack.pop()
-        if len(self._sibling_counts) > 1:
-            self._sibling_counts.pop()
+        self._pop_docpath_level()
         # For startend, if we pushed an id, pop it now
         if self._id_pushed_stack:
             pushed = self._id_pushed_stack.pop()
