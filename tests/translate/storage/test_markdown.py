@@ -658,6 +658,74 @@ More text
         assert "[Reference 1]: http://example.com" in store.filesrc
         assert "[Reference 2]: http://example.org" in store.filesrc
 
+    def test_docpath_heading_hierarchy(self) -> None:
+        """Test logical document path with heading hierarchy."""
+        input = "# Chapter 1\n\nFirst paragraph.\n\nSecond paragraph.\n\n## Section 1.1\n\nThird paragraph.\n\n# Chapter 2\n\nFourth paragraph.\n"
+        store = self.parse(input)
+        docpaths = [tu.getdocpath() for tu in store.units]
+        assert docpaths == [
+            "/h1[1]",
+            "/h1[1]/p[1]",
+            "/h1[1]/p[2]",
+            "/h1[1]/h2[1]",
+            "/h1[1]/h2[1]/p[1]",
+            "/h1[2]",
+            "/h1[2]/p[1]",
+        ]
+
+    def test_docpath_no_initial_heading(self) -> None:
+        """Test docpath for content before any heading."""
+        input = "Introduction.\n\n# Title\n\nContent.\n"
+        store = self.parse(input)
+        assert store.units[0].getdocpath() == "/p[1]"
+        assert store.units[1].getdocpath() == "/h1[1]"
+        assert store.units[2].getdocpath() == "/h1[1]/p[1]"
+
+    def test_docpath_list_items(self) -> None:
+        """Test docpath for list items."""
+        input = "# Title\n\n- Item 1\n- Item 2\n- Item 3\n"
+        store = self.parse(input)
+        docpaths = [tu.getdocpath() for tu in store.units]
+        assert docpaths == [
+            "/h1[1]",
+            "/h1[1]/li[1]/p[1]",
+            "/h1[1]/li[2]/p[1]",
+            "/h1[1]/li[3]/p[1]",
+        ]
+
+    def test_docpath_blockquote(self) -> None:
+        """Test docpath for blockquotes."""
+        input = "# Title\n\n> A quote\n\nParagraph.\n"
+        store = self.parse(input)
+        docpaths = [tu.getdocpath() for tu in store.units]
+        assert docpaths == [
+            "/h1[1]",
+            "/h1[1]/blockquote[1]/p[1]",
+            "/h1[1]/p[1]",
+        ]
+
+    def test_docpath_table(self) -> None:
+        """Test docpath for tables."""
+        input = "# Title\n\nParagraph.\n\n| A | B |\n|---|---|\n| 1 | 2 |\n"
+        store = self.parse(input)
+        assert store.units[0].getdocpath() == "/h1[1]"
+        assert store.units[1].getdocpath() == "/h1[1]/p[1]"
+        # All table cells share the same table docpath
+        for unit in store.units[2:]:
+            assert unit.getdocpath() == "/h1[1]/table[1]"
+
+    def test_docpath_setext_headings(self) -> None:
+        """Test docpath with setext-style headings."""
+        input = "Chapter 1\n=========\n\nContent.\n\nSection 1.1\n-----------\n\nMore content.\n"
+        store = self.parse(input)
+        docpaths = [tu.getdocpath() for tu in store.units]
+        assert docpaths == [
+            "/h1[1]",
+            "/h1[1]/p[1]",
+            "/h1[1]/h2[1]",
+            "/h1[1]/h2[1]/p[1]",
+        ]
+
     @staticmethod
     def parse(md):
         inputfile = BytesIO(md.encode())
