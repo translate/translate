@@ -127,8 +127,8 @@ file = "README.rst"
 
 [project.scripts]
 android2po = "translate.convert.android2po:main"
-asciidoc2po = "translate.convert.asciidoc2po:main"
 arb2po = "translate.convert.arb2po:main"
+asciidoc2po = "translate.convert.asciidoc2po:main"
 csv2po = "translate.convert.csv2po:main"
 csv2tbx = "translate.convert.csv2tbx:main"
 dtd2po = "translate.convert.dtd2po:main"
