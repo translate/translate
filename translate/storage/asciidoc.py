@@ -48,12 +48,21 @@ class AsciiDocUnit(base.TranslationUnit):
         self._element_type: str = "paragraph"
         self._prefix: str = ""
         self._suffix: str = ""
+        self._docpath: str = ""
 
     def addlocation(self, location: str) -> None:
         self.locations.append(location)
 
     def getlocations(self) -> list[str]:
         return self.locations
+
+    def getdocpath(self) -> str:
+        """Get the logical location path within the document structure."""
+        return self._docpath
+
+    def setdocpath(self, docpath: str) -> None:
+        """Set the logical location path within the document structure."""
+        self._docpath = docpath
 
     def set_element_info(
         self, element_type: str, prefix: str = "", suffix: str = ""
@@ -89,6 +98,11 @@ class AsciiDocFile(base.TranslationStore):
         self._elements: list[
             dict[str, Any]
         ] = []  # Store parsed elements for reconstruction
+        # Docpath tracking: hierarchical heading structure
+        self._heading_stack: list[tuple[int, int]] = []  # (level, index) pairs
+        self._section_counts: list[dict[str, int]] = [
+            {}
+        ]  # Stack of element counts per section
         if inputfile is not None:
             adoc_src = inputfile.read()
             inputfile.close()
@@ -315,8 +329,12 @@ class AsciiDocFile(base.TranslationStore):
         # Strip any trailing whitespace and closing = markers
         title = heading_match.group(2).rstrip().rstrip("=").strip()
 
+        # Update heading hierarchy and get docpath
+        docpath = self._enter_heading(level)
+
         unit = self.addsourceunit(title)
         unit.addlocation(f"{self.filename or ''}:{i + 1}")
+        unit.setdocpath(docpath)
         unit.set_element_info(
             "heading",
             heading_match.group(1) + " ",
@@ -352,8 +370,10 @@ class AsciiDocFile(base.TranslationStore):
             checklist_prefix = checklist_match.group(1) + " "
             content = checklist_match.group(2).strip()
 
+        docpath = self._build_docpath("li")
         unit = self.addsourceunit(content)
         unit.addlocation(f"{self.filename or ''}:{i + 1}")
+        unit.setdocpath(docpath)
         prefix = list_match.group(1) + " " + checklist_prefix
         unit.set_element_info(
             "list_item",
@@ -382,8 +402,10 @@ class AsciiDocFile(base.TranslationStore):
         level = len(ordered_list_match.group(1))
         content = ordered_list_match.group(2).strip()
 
+        docpath = self._build_docpath("li")
         unit = self.addsourceunit(content)
         unit.addlocation(f"{self.filename or ''}:{i + 1}")
+        unit.setdocpath(docpath)
         unit.set_element_info(
             "list_item",
             ordered_list_match.group(1) + " ",
@@ -415,8 +437,10 @@ class AsciiDocFile(base.TranslationStore):
         definition = desc_list_match.group(2).strip()
 
         # Create unit for the definition only (term is part of the markup)
+        docpath = self._build_docpath("dl")
         unit = self.addsourceunit(definition)
         unit.addlocation(f"{self.filename or ''}:{i + 1}")
+        unit.setdocpath(docpath)
         unit.set_element_info(
             "description_list",
             f"{term}:: ",
@@ -489,8 +513,10 @@ class AsciiDocFile(base.TranslationStore):
         admon_type = admonition_match.group(1)
         content = admonition_match.group(2).strip()
 
+        docpath = self._build_docpath("admonition")
         unit = self.addsourceunit(content)
         unit.addlocation(f"{self.filename or ''}:{i + 1}")
+        unit.setdocpath(docpath)
         unit.set_element_info(
             "admonition",
             f"{admon_type}: ",
@@ -539,15 +565,23 @@ class AsciiDocFile(base.TranslationStore):
         # - Formatted table cells (a, e, h, l, m, s, v cell specifiers)
         # - Complex table features (cols/rows attributes, cell alignment)
         # For more sophisticated table parsing, consider using an AsciiDoc parser library.
+        
+        # Build table docpath
+        table_docpath = self._build_docpath("table")
+        row_index = 0
+        
         for table_line in table_lines:
             if table_line.strip() and "|" in table_line:
+                row_index += 1
                 # Extract cells (simple approach)
                 cells = [cell.strip() for cell in table_line.split("|") if cell.strip()]
-                for cell in cells:
+                for col_index, cell in enumerate(cells, 1):
                     # Skip cell separator markers and empty cells
                     if cell and not cell.startswith("="):
+                        cell_docpath = f"{table_docpath}/r[{row_index}]/c[{col_index}]"
                         unit = self.addsourceunit(cell)
                         unit.addlocation(f"{self.filename or ''}:{start_line + 1}")
+                        unit.setdocpath(cell_docpath)
                         unit.set_element_info("table_cell", "", "")
 
         self._elements.append(
@@ -590,8 +624,10 @@ class AsciiDocFile(base.TranslationStore):
             para_text = " ".join(line.strip() for line in para_lines)
 
             if para_text:
+                docpath = self._build_docpath("p")
                 unit = self.addsourceunit(para_text)
                 unit.addlocation(f"{self.filename or ''}:{start_line + 1}")
+                unit.setdocpath(docpath)
                 unit.set_element_info("paragraph", "", "\n")
 
                 self._elements.append(
@@ -663,3 +699,39 @@ class AsciiDocFile(base.TranslationStore):
     def _dummy_callback(text: str) -> str:
         """Default callback that returns text unchanged."""
         return text
+
+    def _build_docpath(self, element_type: str) -> str:
+        """
+        Build the current docpath string for a block element.
+        
+        Docpath format follows the heading hierarchy with element counters:
+        h2[1]/h3[1]/p[2] - second paragraph under first h3 under first h2
+        h2[1]/table[1]/r[1]/c[2] - second column of first row of first table under first h2
+        """
+        parts = [f"h{level}[{idx}]" for level, idx in self._heading_stack]
+        counts = self._section_counts[-1]
+        counts[element_type] = counts.get(element_type, 0) + 1
+        parts.append(f"{element_type}[{counts[element_type]}]")
+        return "/".join(parts)
+
+    def _enter_heading(self, level: int) -> str:
+        """
+        Update heading stack when entering a heading and return its docpath.
+        
+        Pops any headings of equal or greater level, counts this heading at the
+        current section level, and pushes a new section level.
+        """
+        # Pop headings of equal or greater level
+        while self._heading_stack and self._heading_stack[-1][0] >= level:
+            self._heading_stack.pop()
+            self._section_counts.pop()
+        # Count this heading at the current section level
+        counts = self._section_counts[-1]
+        heading_key = f"h{level}"
+        counts[heading_key] = counts.get(heading_key, 0) + 1
+        idx = counts[heading_key]
+        # Push new section level
+        self._heading_stack.append((level, idx))
+        self._section_counts.append({})
+        # Build and return path
+        return "/".join(f"h{lvl}[{i}]" for lvl, i in self._heading_stack)

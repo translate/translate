@@ -450,3 +450,142 @@ class TestAsciiDocRendering:
         inputfile = BytesIO(input.encode())
         store = asciidoc.AsciiDocFile(inputfile=inputfile, callback=lambda x: x.upper())
         assert store.filesrc == "== HEADING\n\nPARAGRAPH TEXT.\n"
+
+
+class TestAsciiDocDocpath:
+    """Test docpath functionality for AsciiDoc units."""
+
+    def test_heading_docpath(self):
+        """Test that headings get proper docpaths."""
+        input = "== First Heading\n\n=== Nested Heading\n\n== Second Heading\n"
+        inputfile = BytesIO(input.encode())
+        store = asciidoc.AsciiDocFile(inputfile=inputfile)
+        units = store.getunits()
+        
+        # First heading
+        assert units[0].getdocpath() == "h2[1]"
+        # Nested heading under first
+        assert units[1].getdocpath() == "h2[1]/h3[1]"
+        # Second heading (sibling of first)
+        assert units[2].getdocpath() == "h2[2]"
+
+    def test_paragraph_docpath(self):
+        """Test that paragraphs get proper docpaths."""
+        input = "== Heading\n\nFirst paragraph.\n\nSecond paragraph.\n"
+        inputfile = BytesIO(input.encode())
+        store = asciidoc.AsciiDocFile(inputfile=inputfile)
+        units = store.getunits()
+        
+        # Heading
+        assert units[0].getdocpath() == "h2[1]"
+        # First paragraph under heading
+        assert units[1].getdocpath() == "h2[1]/p[1]"
+        # Second paragraph under heading
+        assert units[2].getdocpath() == "h2[1]/p[2]"
+
+    def test_list_docpath(self):
+        """Test that list items get proper docpaths."""
+        input = "== Heading\n\n* First item\n* Second item\n"
+        inputfile = BytesIO(input.encode())
+        store = asciidoc.AsciiDocFile(inputfile=inputfile)
+        units = store.getunits()
+        
+        # Heading
+        assert units[0].getdocpath() == "h2[1]"
+        # List items
+        assert units[1].getdocpath() == "h2[1]/li[1]"
+        assert units[2].getdocpath() == "h2[1]/li[2]"
+
+    def test_table_docpath(self):
+        """Test that table cells get proper docpaths with row/column indices."""
+        input = "== Heading\n\n|Cell 1|Cell 2\n|Cell 3|Cell 4\n"
+        inputfile = BytesIO(input.encode())
+        store = asciidoc.AsciiDocFile(inputfile=inputfile)
+        units = store.getunits()
+        
+        # Heading
+        assert units[0].getdocpath() == "h2[1]"
+        # Table cells with row/column indices
+        assert units[1].getdocpath() == "h2[1]/table[1]/r[1]/c[1]"
+        assert units[2].getdocpath() == "h2[1]/table[1]/r[1]/c[2]"
+        assert units[3].getdocpath() == "h2[1]/table[1]/r[2]/c[1]"
+        assert units[4].getdocpath() == "h2[1]/table[1]/r[2]/c[2]"
+
+    def test_admonition_docpath(self):
+        """Test that admonitions get proper docpaths."""
+        input = "== Heading\n\nNOTE: First note\n\nWARNING: A warning\n"
+        inputfile = BytesIO(input.encode())
+        store = asciidoc.AsciiDocFile(inputfile=inputfile)
+        units = store.getunits()
+        
+        # Heading
+        assert units[0].getdocpath() == "h2[1]"
+        # Admonitions
+        assert units[1].getdocpath() == "h2[1]/admonition[1]"
+        assert units[2].getdocpath() == "h2[1]/admonition[2]"
+
+    def test_description_list_docpath(self):
+        """Test that description lists get proper docpaths."""
+        input = "== Heading\n\nTerm1:: Definition 1\nTerm2:: Definition 2\n"
+        inputfile = BytesIO(input.encode())
+        store = asciidoc.AsciiDocFile(inputfile=inputfile)
+        units = store.getunits()
+        
+        # Heading
+        assert units[0].getdocpath() == "h2[1]"
+        # Description list items
+        assert units[1].getdocpath() == "h2[1]/dl[1]"
+        assert units[2].getdocpath() == "h2[1]/dl[2]"
+
+    def test_mixed_content_docpath(self):
+        """Test docpaths in a document with mixed content types."""
+        input = """== First Section
+
+First paragraph.
+
+* List item 1
+* List item 2
+
+=== Subsection
+
+Nested paragraph.
+
+NOTE: An admonition
+
+== Second Section
+
+Another paragraph.
+"""
+        inputfile = BytesIO(input.encode())
+        store = asciidoc.AsciiDocFile(inputfile=inputfile)
+        units = store.getunits()
+        
+        # First section heading
+        assert units[0].getdocpath() == "h2[1]"
+        # Paragraph under first section
+        assert units[1].getdocpath() == "h2[1]/p[1]"
+        # List items under first section
+        assert units[2].getdocpath() == "h2[1]/li[1]"
+        assert units[3].getdocpath() == "h2[1]/li[2]"
+        # Subsection
+        assert units[4].getdocpath() == "h2[1]/h3[1]"
+        # Paragraph under subsection
+        assert units[5].getdocpath() == "h2[1]/h3[1]/p[1]"
+        # Admonition under subsection
+        assert units[6].getdocpath() == "h2[1]/h3[1]/admonition[1]"
+        # Second section (sibling of first)
+        assert units[7].getdocpath() == "h2[2]"
+        # Paragraph under second section
+        assert units[8].getdocpath() == "h2[2]/p[1]"
+
+    def test_docpath_without_headings(self):
+        """Test docpaths when document has no headings."""
+        input = "First paragraph.\n\nSecond paragraph.\n\n* List item\n"
+        inputfile = BytesIO(input.encode())
+        store = asciidoc.AsciiDocFile(inputfile=inputfile)
+        units = store.getunits()
+        
+        # Elements at document root level
+        assert units[0].getdocpath() == "p[1]"
+        assert units[1].getdocpath() == "p[2]"
+        assert units[2].getdocpath() == "li[1]"
