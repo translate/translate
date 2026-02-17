@@ -11,6 +11,7 @@ Converters
 
    general_usage
    android2po
+   asciidoc2po
    arb2po
    csv2po
    csv2tbx
@@ -61,6 +62,7 @@ converters follow a :doc:`general pattern of usage <general_usage>`,
 understanding that will make the converters much easier to use and understand.
 
 * :doc:`android2po <android2po>` -- Android resources to PO converter
+* :doc:`asciidoc2po <asciidoc2po>` -- AsciiDoc file converter
 * :doc:`arb2po <arb2po>` -- ARB (Application Resource Bundle) converter. Used
   by Flutter apps.
 * :doc:`csv2po <csv2po>` -- Comma Separated Value (CSV) converter. Useful for
