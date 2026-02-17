@@ -538,6 +538,52 @@ pre tag
         assert store.units[1].source == "Page description"
         assert store.units[2].source == "Twitter Title"
 
+    def test_extraction_meta_additional_og_twitter_tags(self) -> None:
+        """Check that additional Open Graph and Twitter meta tags can be extracted."""
+        h = html.htmlfile()
+
+        # Test og:image:alt and twitter:image:alt
+        store = h.parsestring(
+            """<html><head>
+            <meta property="og:image:alt" content="Description of the image">
+            <meta name="twitter:image:alt" content="Twitter image description">
+            </head><body></body></html>"""
+        )
+        assert len(store.units) == 2
+        assert store.units[0].source == "Description of the image"
+        assert store.units[1].source == "Twitter image description"
+
+        # Test video tags
+        store = h.parsestring(
+            """<html><head>
+            <meta property="video:actor:role" content="Lead Actor">
+            <meta property="video:tag" content="action, thriller">
+            </head><body></body></html>"""
+        )
+        assert len(store.units) == 2
+        assert store.units[0].source == "Lead Actor"
+        assert store.units[1].source == "action, thriller"
+
+        # Test article tags
+        store = h.parsestring(
+            """<html><head>
+            <meta property="article:section" content="Technology">
+            <meta property="article:tag" content="programming, python">
+            </head><body></body></html>"""
+        )
+        assert len(store.units) == 2
+        assert store.units[0].source == "Technology"
+        assert store.units[1].source == "programming, python"
+
+        # Test payment:description
+        store = h.parsestring(
+            """<html><head>
+            <meta property="payment:description" content="Premium subscription">
+            </head><body></body></html>"""
+        )
+        assert len(store.units) == 1
+        assert store.units[0].source == "Premium subscription"
+
     def test_data_translate_comment_attribute(self) -> None:
         """Check that data-translate-comment attribute is extracted as a note."""
         h = html.htmlfile()

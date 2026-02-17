@@ -413,6 +413,76 @@ msgstr "Ceci est une page à propos du mot anglais <strong lang=\\"en\\">Hello</
         # Verify that <a lang="en"> is present
         assert '<a lang="en"' in result
 
+    def test_og_locale_sync_with_lang_attribute(self) -> None:
+        """Test that og:locale is automatically synchronized with html lang attribute when translated."""
+        htmlsource = """<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta property="og:locale" content="en_US">
+    <meta property="og:title" content="Test Page">
+    <title>Test</title>
+</head>
+<body>
+    <p>Content</p>
+</body>
+</html>"""
+        posource = """#: test.html+html[lang]:1-16
+msgid "en"
+msgstr "fr"
+
+#: test.html+html.head.meta[content]:3-5
+msgid "Test Page"
+msgstr "Page de Test"
+
+#: test.html+html.head.title:5-5
+msgid "Test"
+msgstr "Test"
+
+#: test.html+html.body.p:8-1
+msgid "Content"
+msgstr "Contenu"
+"""
+        result = self.converthtml(posource, htmlsource)
+        # The html tag should have lang="fr" (translated)
+        assert 'lang="fr"' in result
+        # og:locale should be automatically synchronized to "fr"
+        assert 'property="og:locale" content="fr"' in result
+        # og:title should be translated
+        assert 'property="og:title" content="Page de Test"' in result
+
+    def test_og_locale_unchanged_without_lang_translation(self) -> None:
+        """Test that og:locale is not changed when lang is not translated."""
+        htmlsource = """<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta property="og:locale" content="en_US">
+    <meta property="og:title" content="Test Page">
+    <title>Test</title>
+</head>
+<body>
+    <p>Content</p>
+</body>
+</html>"""
+        posource = """#: test.html+html.head.meta[content]:3-5
+msgid "Test Page"
+msgstr "Page de Test"
+
+#: test.html+html.head.title:5-5
+msgid "Test"
+msgstr "Test"
+
+#: test.html+html.body.p:8-1
+msgid "Content"
+msgstr "Contenu"
+"""
+        result = self.converthtml(posource, htmlsource)
+        # The html tag should remain lang="en" (not translated)
+        assert 'lang="en"' in result
+        # og:locale should remain unchanged as en_US
+        assert 'property="og:locale" content="en_US"' in result
+        # og:title should be translated
+        assert 'property="og:title" content="Page de Test"' in result
+
     def test_data_translate_ignore_preserved(self) -> None:
         """Test that ignored content is preserved in po2html output."""
         # Simple case

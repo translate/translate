@@ -127,8 +127,15 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         "og:title",
         "og:description",
         "og:site_name",
+        "og:image:alt",
         "twitter:title",
         "twitter:description",
+        "twitter:image:alt",
+        "video:actor:role",
+        "video:tag",
+        "article:section",
+        "article:tag",
+        "payment:description",
     ]
     """Document metadata from meta elements with these names will be extracted as translation units.
     Includes standard meta tags and common social media tags (Open Graph and Twitter Cards).
@@ -202,6 +209,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         self._sibling_counts = [{}]
         # Stack of (tag, index) tuples for current docpath
         self._docpath_stack = []
+        self._translated_lang = None  # Track translated language from <html lang=""> for og:locale sync
 
         # parse
         if inputfile is not None:
@@ -521,6 +529,8 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 translated_value = self.callback(normalized_value)
                 if translated_value != normalized_value:
                     translated_lang = translated_value
+                    # Store translated language for og:locale synchronization
+                    self._translated_lang = translated_value
 
         for attrname, attrvalue in attrs:
             # When translating the lang attribute on the <html> tag, we intentionally discard
@@ -536,6 +546,10 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                     name = attrs_dict.get("name", "").lower()
                     if not name:
                         name = attrs_dict.get("property", "").lower()
+                    # Synchronize og:locale with translated lang attribute
+                    if name == "og:locale" and self._translated_lang:
+                        result.append((attrname, self._translated_lang))
+                        continue
                     if name in self.TRANSLATABLE_METADATA:
                         normalized_value = self.WHITESPACE_RE.sub(
                             " ", attrvalue
