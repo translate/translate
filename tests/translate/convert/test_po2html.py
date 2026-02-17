@@ -501,7 +501,7 @@ msgstr "Contenu1"
         result1 = self.converthtml(posource1, htmlsource1)
         # First translation should sync og:locale to "fr"
         assert 'property="og:locale" content="fr"' in result1
-        
+
         # Second document WITHOUT lang translation
         htmlsource2 = """<html lang="de">
 <head><meta property="og:locale" content="de_DE"></head>
