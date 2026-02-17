@@ -73,7 +73,7 @@ class AsciiDoc2POOptionParser(convert.ConvertOptionParser):
                 storeunit.addlocations(tu.getlocations())
 
     @staticmethod
-    def _merge_with_template(inputfile, templatefile, outputstore):
+    def _merge_with_template(inputfile, templatefile, outputstore) -> None:
         """Merge translation from inputfile with source from templatefile using docpath matching."""
         # Parse both files
         templateparser = asciidoc.AsciiDocFile(inputfile=templatefile)
