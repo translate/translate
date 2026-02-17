@@ -351,6 +351,31 @@ class TranslationUnit:
         else:
             self.addlocation(location)
 
+    @staticmethod
+    def getdocpath() -> str:
+        """
+        A logical location path within the document structure.
+
+        Unlike :meth:`~.TranslationUnit.getlocations`, which may include
+        line numbers that differ between translations, the document path
+        provides a stable structural identifier based on the logical
+        position within the document (e.g. ``/body/h1[1]/p[2]``).
+
+        .. note::
+
+           Shouldn't be implemented if the format doesn't support it.
+        """
+        return ""
+
+    def setdocpath(self, docpath: str) -> None:
+        """
+        Set the logical location path within the document structure.
+
+        .. note::
+
+           Shouldn't be implemented if the format doesn't support it.
+        """
+
     def getcontext(self) -> str:
         """Get the message context."""
         return ""
@@ -481,10 +506,10 @@ class TranslationUnit:
         return False
 
     def getsourcelanguage(self):
-        return self._store.getsourcelanguage()  # ty:ignore[possibly-missing-attribute]
+        return self._store.getsourcelanguage()  # ty:ignore[unresolved-attribute]
 
     def gettargetlanguage(self):
-        return self._store.gettargetlanguage()  # ty:ignore[possibly-missing-attribute]
+        return self._store.gettargetlanguage()  # ty:ignore[unresolved-attribute]
 
     def merge(
         self, otherunit, overwrite=False, comments=True, authoritative=False

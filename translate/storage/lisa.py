@@ -342,7 +342,7 @@ class LISAfile(base.TranslationStore[U]):
         unit.namespace = self.namespace
         super().addunit(unit)
         if new:
-            self.body.append(unit.xmlelement)  # ty:ignore[possibly-missing-attribute]
+            self.body.append(unit.xmlelement)  # ty:ignore[unresolved-attribute]
 
     def removeunit(self, unit) -> None:
         super().removeunit(unit)

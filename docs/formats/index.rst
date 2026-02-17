@@ -109,6 +109,7 @@ Formats of translatable documents
 
    asciidoc
    flatxml
+   fluent
    html
    ical
    json
@@ -122,6 +123,7 @@ Formats of translatable documents
 
 * :doc:`asciidoc`
 * :doc:`flatxml` (single-level XML)
+* :doc:`fluent` (used by Firefox, Anki, etc.)
 * :doc:`html`
 * :doc:`ical`
 * :doc:`json`

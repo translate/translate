@@ -77,10 +77,10 @@ class yaml2po:
 
     def merge_stores(self) -> None:
         """Convert two source format files to a target format file."""
-        self.extraction_msg = f"extracted from {self.template_store.filename}, {self.source_store.filename}"  # ty:ignore[possibly-missing-attribute]
+        self.extraction_msg = f"extracted from {self.template_store.filename}, {self.source_store.filename}"  # ty:ignore[unresolved-attribute]
 
         self.source_store.makeindex()
-        for template_unit in self.template_store.units:  # ty:ignore[possibly-missing-attribute]
+        for template_unit in self.template_store.units:  # ty:ignore[unresolved-attribute]
             target_unit = self.convert_unit(template_unit)
 
             for location in target_unit.getlocations():

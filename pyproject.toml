@@ -37,8 +37,8 @@ test = [
 ]
 types = [
   "setuptools>=61.2",
-  "ty==0.0.16",
-  "types-lxml==2026.1.1"
+  "ty==0.0.17",
+  "types-lxml==2026.2.16"
 ]
 
 [project]
@@ -128,10 +128,12 @@ file = "README.rst"
 [project.scripts]
 android2po = "translate.convert.android2po:main"
 asciidoc2po = "translate.convert.asciidoc2po:main"
+arb2po = "translate.convert.arb2po:main"
 csv2po = "translate.convert.csv2po:main"
 csv2tbx = "translate.convert.csv2tbx:main"
 dtd2po = "translate.convert.dtd2po:main"
 flatxml2po = "translate.convert.flatxml2po:main"
+fluent2po = "translate.convert.fluent2po:main"
 html2po = "translate.convert.html2po:main"
 ical2po = "translate.convert.ical2po:main"
 idml2po = "translate.convert.idml2po:main"

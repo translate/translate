@@ -365,7 +365,7 @@ class tsunit(lisa.LISAunit):
 
     def get_previous_unit(self):
         found = None
-        for pos, unit in enumerate(self._store.units):  # ty:ignore[possibly-missing-attribute]
+        for pos, unit in enumerate(self._store.units):  # ty:ignore[unresolved-attribute]
             # Use is here to compare objects as __eq__ implementation in
             # LISAUnit might give unexpected results
             if unit is self:
@@ -373,7 +373,7 @@ class tsunit(lisa.LISAunit):
                 break
         if not found or found == 0:
             return None
-        return self._store.units[found - 1]  # ty:ignore[possibly-missing-attribute]
+        return self._store.units[found - 1]  # ty:ignore[unresolved-attribute]
 
     def getlocations(self):
         if self._locations is None:
@@ -553,7 +553,7 @@ class tsfile(lisa.LISAfile[tsunit]):
         return self.body is not None
 
     def nplural(self):
-        code = self.header.get("language").lower().replace("-", "_").split("_")[0]  # ty:ignore[possibly-missing-attribute]
+        code = self.header.get("language").lower().replace("-", "_").split("_")[0]  # ty:ignore[unresolved-attribute]
         if code in data.qt_plural_tags:
             return len(data.qt_plural_tags[code])
         lang = data.get_language(self.header.get("language"))

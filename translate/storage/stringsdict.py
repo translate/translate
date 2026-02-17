@@ -52,19 +52,19 @@ class StringsDictUnit(base.DictUnit):
     def outerkey(self):
         self.get_unitid()
 
-        if len(self._unitid.parts) < 1:  # ty:ignore[possibly-missing-attribute]
+        if len(self._unitid.parts) < 1:  # ty:ignore[unresolved-attribute]
             return None
 
-        return self._unitid.parts[0][1]  # ty:ignore[possibly-missing-attribute]
+        return self._unitid.parts[0][1]  # ty:ignore[unresolved-attribute]
 
     @property
     def innerkey(self):
         self.get_unitid()
 
-        if len(self._unitid.parts) < 2:  # ty:ignore[possibly-missing-attribute]
+        if len(self._unitid.parts) < 2:  # ty:ignore[unresolved-attribute]
             return None
 
-        return self._unitid.parts[1][1]  # ty:ignore[possibly-missing-attribute]
+        return self._unitid.parts[1][1]  # ty:ignore[unresolved-attribute]
 
     def getid(self):
         return self.source

@@ -88,7 +88,7 @@ class LangStore(txt.TxtFile):
         self.location_root = getattr(inputfile, "location_root", "")
         super().__init__(inputfile, **kwargs)
 
-    def parse(self, lines) -> None:
+    def parse(self, lines: bytes | list[bytes]) -> None:
         source_unit = None
         comment = ""
         if not isinstance(lines, list):
@@ -120,7 +120,7 @@ class LangStore(txt.TxtFile):
 
             if source_unit:
                 # If we have a source_unit get the target
-                source_unit.rawtarget = line
+                source_unit.rawtarget = line  # ty: ignore[invalid-assignment]
                 if line != source_unit.source:
                     source_unit.target = strip_ok(line)
                 else:

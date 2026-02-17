@@ -49,7 +49,7 @@ class pocheckfilter:
             excludefilters=options.excludefilters,
             limitfilters=options.limitfilters,
             checkerclasses=checkerclasses,
-            languagecode=checkerconfig.targetlanguage,  # ty:ignore[possibly-missing-attribute]
+            languagecode=checkerconfig.targetlanguage,  # ty:ignore[unresolved-attribute]
         )
         self.options = options
 
@@ -224,7 +224,7 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
 def runfilter(inputfile, outputfile, templatefile, checkfilter=None) -> int:
     """Reads in inputfile, filters using checkfilter, writes to outputfile."""
     fromfile = factory.getobject(inputfile)
-    tofile = checkfilter.filterfile(fromfile)  # ty:ignore[possibly-missing-attribute]
+    tofile = checkfilter.filterfile(fromfile)  # ty:ignore[unresolved-attribute]
 
     if tofile.isempty():
         return 0
@@ -414,7 +414,7 @@ def cmdlineparser():
     )
 
     parser.passthrough.append("checkfilter")
-    parser.description = f"{__doc__.strip()}\n"  # ty:ignore[possibly-missing-attribute]
+    parser.description = f"{__doc__.strip()}\n"  # ty:ignore[unresolved-attribute]
 
     return parser
 

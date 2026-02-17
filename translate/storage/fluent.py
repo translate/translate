@@ -971,7 +971,7 @@ class FluentUnit(base.TranslationUnit):
                 for annotation in entry.annotations:
                     # Convert the fluent error position into a line number and
                     # offset of the unit's source.
-                    offset = annotation.span.start  # ty:ignore[possibly-missing-attribute]
+                    offset = annotation.span.start  # ty:ignore[unresolved-attribute]
                     line = 0
                     for added, orig in source_lines:
                         if not orig:
@@ -1117,7 +1117,7 @@ class FluentFile(base.TranslationStore):
                 if unit_id in found_ids:
                     raise ValueError(
                         f'Entry "{unit_id}" has the same id as a previous entry'
-                        f" [offset {entry.span.start}]"  # ty:ignore[possibly-missing-attribute]
+                        f" [offset {entry.span.start}]"  # ty:ignore[unresolved-attribute]
                     )
                 found_ids.append(unit_id)
 
@@ -1126,7 +1126,7 @@ class FluentFile(base.TranslationStore):
                     raise ValueError(
                         f'Entry "{unit_id}" assigns to the same '
                         f'"{dup_attr.id.name}" attribute more than once '
-                        f"[offset {dup_attr.span.start}]"  # ty:ignore[possibly-missing-attribute]
+                        f"[offset {dup_attr.span.start}]"  # ty:ignore[unresolved-attribute]
                     )
                 self.addunit(unit)
             else:
@@ -1139,11 +1139,11 @@ class FluentFile(base.TranslationStore):
         """Convert the given fluent Junk object into a ValueError."""
         error_message = [
             "Parsing error for fluent source: "
-            + junk.content.strip()[0:64].replace("\n", "\\n")  # ty:ignore[possibly-missing-attribute]
+            + junk.content.strip()[0:64].replace("\n", "\\n")  # ty:ignore[unresolved-attribute]
             + "[...]"
         ]
         error_message.extend(
-            f"{annotation.code}: {annotation.message} [offset {annotation.span.start}]"  # ty:ignore[possibly-missing-attribute]
+            f"{annotation.code}: {annotation.message} [offset {annotation.span.start}]"  # ty:ignore[unresolved-attribute]
             for annotation in junk.annotations
         )
         return ValueError("\n".join(error_message))

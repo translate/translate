@@ -319,7 +319,7 @@ class RubyYAMLUnit(YAMLUnit):
         if not isinstance(self.target, multistring):
             return self.target
 
-        tags = self._store.get_plural_tags()  # ty:ignore[possibly-missing-attribute]
+        tags = self._store.get_plural_tags()  # ty:ignore[unresolved-attribute]
 
         # Sync plural_strings elements to plural_tags count.
         strings = self.sync_plural_count(self.target, tags)

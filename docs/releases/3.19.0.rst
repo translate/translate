@@ -1,0 +1,44 @@
+Translate Toolkit 3.19.0
+************************
+
+*Released on 13 February 2026*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- PO
+
+  - Improved charset detection and parsing
+
+- YAML
+
+  - Add Ruby personality to yaml2po and po2yaml
+
+- HTML
+
+  - Fix data-translate-ignore causing content duplication in parent elements
+
+Other
+-----
+
+- Use RapidFuzz for Levenshtein implementation.
+
+- Remove BeautifulSoup4 dependency from Trados, use lxml html parser
+
+- tmserver and related code was removed
+
+- removed project storage
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+
+Michal Čihař, Copilot, Pere Orga
+

@@ -137,7 +137,7 @@ def convertoo(
     inputstore.parse(inputfile.read())
     if not sourcelanguage:
         testlangtype = targetlanguage or (inputstore and inputstore.languages[0]) or ""
-        sourcelanguage = "01" if testlangtype.isdigit() else "en-US"  # ty:ignore[possibly-missing-attribute]
+        sourcelanguage = "01" if testlangtype.isdigit() else "en-US"  # ty:ignore[unresolved-attribute]
     if sourcelanguage not in inputstore.languages:
         logger.warning(
             "sourcelanguage '%s' not found in inputfile '%s' (contains %s)",
