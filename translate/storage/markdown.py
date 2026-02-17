@@ -202,9 +202,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
 
     def _build_docpath(self, element_type: str) -> str:
         """Build the current docpath string for a block element."""
-        parts = []
-        for _level, idx in self._heading_stack:
-            parts.append(f"h{_level}[{idx}]")
+        parts = [f"h{level}[{idx}]" for level, idx in self._heading_stack]
         for container_type, container_idx in self._container_stack:
             parts.append(f"{container_type}[{container_idx}]")
         counts = self._section_counts[-1]
@@ -227,7 +225,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         self._heading_stack.append((level, idx))
         self._section_counts.append({})
         # Build path
-        parts = [f"h{_level}[{i}]" for _level, i in self._heading_stack]
+        parts = [f"h{level}[{i}]" for level, i in self._heading_stack]
         for container_type, container_idx in self._container_stack:
             parts.append(f"{container_type}[{container_idx}]")
         return "/" + "/".join(parts)
