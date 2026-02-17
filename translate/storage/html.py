@@ -39,7 +39,6 @@ class htmlunit(base.TranslationUnit):
         super().__init__(source)
         self.locations = []
         self._context = ""
-        self._docpath = ""
 
     def addlocation(self, location) -> None:
         self.locations.append(location)
@@ -47,14 +46,6 @@ class htmlunit(base.TranslationUnit):
     def getlocations(self):
         """Get the list of locations for this unit."""
         return self.locations
-
-    def getdocpath(self) -> str:
-        """Get the logical location path within the document structure."""
-        return self._docpath
-
-    def setdocpath(self, docpath: str) -> None:
-        """Set the logical location path within the document structure."""
-        self._docpath = docpath
 
     def getcontext(self):
         """Get the message context."""
