@@ -238,6 +238,8 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         return htmlsrc.decode(self.encoding)
 
     def parse(self, htmlsrc) -> None:  # ty:ignore[invalid-method-override]
+        # Reset translation state for new parse
+        self._translated_lang = None
         htmlsrc = self.do_encoding(htmlsrc)
         self.feed(htmlsrc)
 

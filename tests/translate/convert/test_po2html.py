@@ -483,6 +483,40 @@ msgstr "Contenu"
         # og:title should be translated
         assert 'property="og:title" content="Page de Test"' in result
 
+    def test_og_locale_state_reset_between_parses(self) -> None:
+        """Test that og:locale state is properly reset between translations."""
+        # First document with lang translation
+        htmlsource1 = """<html lang="en">
+<head><meta property="og:locale" content="en_US"></head>
+<body><p>Content1</p></body>
+</html>"""
+        posource1 = """#: test.html+html[lang]:1-1
+msgid "en"
+msgstr "fr"
+
+#: test.html+html.body.p:3-7
+msgid "Content1"
+msgstr "Contenu1"
+"""
+        result1 = self.converthtml(posource1, htmlsource1)
+        # First translation should sync og:locale to "fr"
+        assert 'property="og:locale" content="fr"' in result1
+        
+        # Second document WITHOUT lang translation
+        htmlsource2 = """<html lang="de">
+<head><meta property="og:locale" content="de_DE"></head>
+<body><p>Content2</p></body>
+</html>"""
+        posource2 = """#: test.html+html.body.p:3-7
+msgid "Content2"
+msgstr "Inhalt2"
+"""
+        result2 = self.converthtml(posource2, htmlsource2)
+        # Second translation should NOT sync og:locale (should remain "de_DE")
+        # This verifies that _translated_lang was properly reset
+        assert 'property="og:locale" content="de_DE"' in result2
+        assert 'property="og:locale" content="fr"' not in result2
+
     def test_data_translate_ignore_preserved(self) -> None:
         """Test that ignored content is preserved in po2html output."""
         # Simple case
