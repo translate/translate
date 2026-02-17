@@ -146,7 +146,7 @@ Another paragraph here.
         )
         # Run conversion with template
         self.run_command("translated.adoc", "output.po", template="template.adoc")
-        
+
         # Verify output
         assert os.path.isfile(self.get_testfilename("output.po"))
         content = self.read_testfile("output.po").decode()
@@ -169,7 +169,7 @@ Second paragraph
 * Item 1
 * Item 2
 """
-        
+
         # Create translated file (same structure, different content)
         translated_adoc = """== Bienvenue
 
@@ -182,21 +182,21 @@ Deuxième paragraphe
 * Article 1
 * Article 2
 """
-        
+
         self.create_testfile("template_complex.adoc", template_adoc)
         self.create_testfile("translated_complex.adoc", translated_adoc)
-        
+
         # Run conversion
         self.run_command(
             "translated_complex.adoc",
             "output_complex.po",
             template="template_complex.adoc",
         )
-        
+
         # Verify output
         assert os.path.isfile(self.get_testfilename("output_complex.po"))
         content = self.read_testfile("output_complex.po").decode()
-        
+
         # Check source strings
         assert "Welcome" in content
         assert "First paragraph" in content
@@ -204,7 +204,7 @@ Deuxième paragraphe
         assert "Subsection" in content
         assert "Item 1" in content
         assert "Item 2" in content
-        
+
         # Check target strings
         assert "Bienvenue" in content
         assert "Premier paragraphe" in content

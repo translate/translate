@@ -65,25 +65,25 @@ class html2po:
         # Parse both files
         templateparser = html.htmlfile(inputfile=templatefile)
         inputparser = html.htmlfile(inputfile=inputfile)
-        
+
         # Build a docpath index for the input (translated) file
         input_index = {}
         for unit in inputparser.units:
             docpath = unit.getdocpath()
             if docpath:
                 input_index[docpath] = unit
-        
+
         # Iterate through template units and match with input by docpath
         for templateunit in templateparser.units:
             docpath = templateunit.getdocpath()
             thepo = outputstore.addsourceunit(templateunit.source)
             thepo.addlocations(templateunit.getlocations())
-            
+
             # Set target from matching input unit if found
             if docpath and docpath in input_index:
                 inputunit = input_index[docpath]
                 thepo.target = inputunit.source
-            
+
             context = templateunit.getcontext()
             if context:
                 thepo.setcontext(context)

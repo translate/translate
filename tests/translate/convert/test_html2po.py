@@ -843,7 +843,7 @@ class TestHTML2POCommand(test_convert.TestConvertCommand, TestHTML2PO):
         )
         # Run conversion with template
         self.run_command("translated.html", "output.po", template="template.html")
-        
+
         # Verify output
         assert os.path.isfile(self.get_testfilename("output.po"))
         content = self.read_testfile("output.po").decode()
@@ -866,7 +866,7 @@ class TestHTML2POCommand(test_convert.TestConvertCommand, TestHTML2PO):
     </ul>
 </body>
 </html>"""
-        
+
         # Create translated file (same structure, different content)
         translated_html = """<html>
 <body>
@@ -879,28 +879,28 @@ class TestHTML2POCommand(test_convert.TestConvertCommand, TestHTML2PO):
     </ul>
 </body>
 </html>"""
-        
+
         self.create_testfile("template_complex.html", template_html)
         self.create_testfile("translated_complex.html", translated_html)
-        
+
         # Run conversion
         self.run_command(
             "translated_complex.html",
             "output_complex.po",
             template="template_complex.html",
         )
-        
+
         # Verify output
         assert os.path.isfile(self.get_testfilename("output_complex.po"))
         content = self.read_testfile("output_complex.po").decode()
-        
+
         # Check source strings
         assert "Welcome" in content
         assert "First paragraph" in content
         assert "Second paragraph" in content
         assert "Item 1" in content
         assert "Item 2" in content
-        
+
         # Check target strings
         assert "Bienvenue" in content
         assert "Premier paragraphe" in content

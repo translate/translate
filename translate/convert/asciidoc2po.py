@@ -78,7 +78,7 @@ class AsciiDoc2POOptionParser(convert.ConvertOptionParser):
         # Parse both files
         templateparser = asciidoc.AsciiDocFile(inputfile=templatefile)
         inputparser = asciidoc.AsciiDocFile(inputfile=inputfile)
-        
+
         # Build a docpath index for the input (translated) file
         input_index = {}
         for unit in inputparser.units:
@@ -86,14 +86,14 @@ class AsciiDoc2POOptionParser(convert.ConvertOptionParser):
                 docpath = unit.getdocpath()
                 if docpath:
                     input_index[docpath] = unit
-        
+
         # Iterate through template units and match with input by docpath
         for templateunit in templateparser.units:
             if not templateunit.isheader():
                 docpath = templateunit.getdocpath()
                 storeunit = outputstore.addsourceunit(templateunit.source)
                 storeunit.addlocations(templateunit.getlocations())
-                
+
                 # Set target from matching input unit if found
                 if docpath and docpath in input_index:
                     inputunit = input_index[docpath]

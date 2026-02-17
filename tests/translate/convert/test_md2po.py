@@ -134,7 +134,7 @@ This text will also be translated.
         )
         # Run conversion with template
         self.run_command("translated.md", "output.po", template="template.md")
-        
+
         # Verify output
         assert os.path.isfile(self.get_testfilename("output.po"))
         content = self.read_testfile("output.po").decode()
@@ -157,7 +157,7 @@ Second paragraph
 - Item 1
 - Item 2
 """
-        
+
         # Create translated file (same structure, different content)
         translated_md = """# Bienvenue
 
@@ -170,21 +170,21 @@ Deuxième paragraphe
 - Article 1
 - Article 2
 """
-        
+
         self.create_testfile("template_complex.md", template_md)
         self.create_testfile("translated_complex.md", translated_md)
-        
+
         # Run conversion
         self.run_command(
             "translated_complex.md",
             "output_complex.po",
             template="template_complex.md",
         )
-        
+
         # Verify output
         assert os.path.isfile(self.get_testfilename("output_complex.po"))
         content = self.read_testfile("output_complex.po").decode()
-        
+
         # Check source strings
         assert "Welcome" in content
         assert "First paragraph" in content
@@ -192,7 +192,7 @@ Deuxième paragraphe
         assert "Subsection" in content
         assert "Item 1" in content
         assert "Item 2" in content
-        
+
         # Check target strings
         assert "Bienvenue" in content
         assert "Premier paragraphe" in content
