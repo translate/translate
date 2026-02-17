@@ -466,7 +466,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
                 f"{self._table_docpath}/r[{self._table_row_index}]/c[{col_index + 1}]"
             )
             result.append(
-                next(self.span_to_lines(col.children, max_line_length=None), "")
+                next(self.span_to_lines(col.children, max_line_length=None), "")  # ty:ignore[invalid-argument-type]
             )
         return result
 
