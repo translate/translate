@@ -664,13 +664,13 @@ More text
         store = self.parse(input)
         docpaths = [tu.getdocpath() for tu in store.units]
         assert docpaths == [
-            "/h1[1]",
-            "/h1[1]/p[1]",
-            "/h1[1]/p[2]",
-            "/h1[1]/h2[1]",
-            "/h1[1]/h2[1]/p[1]",
-            "/h1[2]",
-            "/h1[2]/p[1]",
+            "h1[1]",
+            "h1[1]/p[1]",
+            "h1[1]/p[2]",
+            "h1[1]/h2[1]",
+            "h1[1]/h2[1]/p[1]",
+            "h1[2]",
+            "h1[2]/p[1]",
         ]
 
     def test_docpath_no_initial_heading(self) -> None:
@@ -687,10 +687,10 @@ More text
         store = self.parse(input)
         docpaths = [tu.getdocpath() for tu in store.units]
         assert docpaths == [
-            "/h1[1]",
-            "/h1[1]/li[1]/p[1]",
-            "/h1[1]/li[2]/p[1]",
-            "/h1[1]/li[3]/p[1]",
+            "h1[1]",
+            "h1[1]/li[1]/p[1]",
+            "h1[1]/li[2]/p[1]",
+            "h1[1]/li[3]/p[1]",
         ]
 
     def test_docpath_blockquote(self) -> None:
@@ -699,9 +699,9 @@ More text
         store = self.parse(input)
         docpaths = [tu.getdocpath() for tu in store.units]
         assert docpaths == [
-            "/h1[1]",
-            "/h1[1]/blockquote[1]/p[1]",
-            "/h1[1]/p[1]",
+            "h1[1]",
+            "h1[1]/blockquote[1]/p[1]",
+            "h1[1]/p[1]",
         ]
 
     def test_docpath_table(self) -> None:
@@ -720,10 +720,10 @@ More text
         store = self.parse(input)
         docpaths = [tu.getdocpath() for tu in store.units]
         assert docpaths == [
-            "/h1[1]",
-            "/h1[1]/p[1]",
-            "/h1[1]/h2[1]",
-            "/h1[1]/h2[1]/p[1]",
+            "h1[1]",
+            "h1[1]/p[1]",
+            "h1[1]/h2[1]",
+            "h1[1]/h2[1]/p[1]",
         ]
 
     @staticmethod

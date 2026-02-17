@@ -208,7 +208,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         counts = self._section_counts[-1]
         counts[element_type] = counts.get(element_type, 0) + 1
         parts.append(f"{element_type}[{counts[element_type]}]")
-        return "/" + "/".join(parts)
+        return "/".join(parts)
 
     def _enter_heading(self, level: int) -> str:
         """Update heading stack and return docpath for this heading."""
@@ -228,7 +228,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         parts = [f"h{level}[{i}]" for level, i in self._heading_stack]
         for container_type, container_idx in self._container_stack:
             parts.append(f"{container_type}[{container_idx}]")
-        return "/" + "/".join(parts)
+        return "/".join(parts)
 
     def _enter_container(self, container_type: str) -> None:
         """Push a container (list item, blockquote) onto the nesting stack."""

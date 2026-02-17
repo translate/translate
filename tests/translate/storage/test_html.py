@@ -594,9 +594,9 @@ class TestHTMLDocpath:
         )
         docpaths = [u.getdocpath() for u in store.units]
         assert docpaths == [
-            "/html[1]/body[1]/h1[1]",
-            "/html[1]/body[1]/p[1]",
-            "/html[1]/body[1]/p[2]",
+            "html[1]/body[1]/h1[1]",
+            "html[1]/body[1]/p[1]",
+            "html[1]/body[1]/p[2]",
         ]
 
     def test_nested_structure(self) -> None:
@@ -609,9 +609,9 @@ class TestHTMLDocpath:
         )
         docpaths = [u.getdocpath() for u in store.units]
         assert docpaths == [
-            "/html[1]/body[1]/h1[1]",
-            "/html[1]/body[1]/p[1]",
-            "/html[1]/body[1]/div[1]/p[1]",
+            "html[1]/body[1]/h1[1]",
+            "html[1]/body[1]/p[1]",
+            "html[1]/body[1]/div[1]/p[1]",
         ]
 
     def test_multiple_headings(self) -> None:
@@ -627,11 +627,11 @@ class TestHTMLDocpath:
         )
         docpaths = [u.getdocpath() for u in store.units]
         assert docpaths == [
-            "/html[1]/body[1]/h1[1]",
-            "/html[1]/body[1]/h2[1]",
-            "/html[1]/body[1]/p[1]",
-            "/html[1]/body[1]/h2[2]",
-            "/html[1]/body[1]/p[2]",
+            "html[1]/body[1]/h1[1]",
+            "html[1]/body[1]/h2[1]",
+            "html[1]/body[1]/p[1]",
+            "html[1]/body[1]/h2[2]",
+            "html[1]/body[1]/p[2]",
         ]
 
     def test_list_items(self) -> None:
@@ -641,8 +641,8 @@ class TestHTMLDocpath:
         )
         docpaths = [u.getdocpath() for u in store.units]
         assert docpaths == [
-            "/html[1]/body[1]/ul[1]/li[1]",
-            "/html[1]/body[1]/ul[1]/li[2]",
+            "html[1]/body[1]/ul[1]/li[1]",
+            "html[1]/body[1]/ul[1]/li[2]",
         ]
 
     def test_docpath_stable_across_content_changes(self) -> None:

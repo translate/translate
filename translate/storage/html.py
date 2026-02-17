@@ -239,7 +239,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
     def _build_docpath(self) -> str:
         """Build the current document path from the docpath stack."""
-        return "/" + "/".join(f"{tag}[{index}]" for tag, index in self._docpath_stack)
+        return "/".join(f"{tag}[{index}]" for tag, index in self._docpath_stack)
 
     def begin_translation_unit(self) -> None:
         # at the start of a translation unit:
