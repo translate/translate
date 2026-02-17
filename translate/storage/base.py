@@ -149,6 +149,7 @@ class TranslationUnit:
         """Constructs a TranslationUnit containing the given source string."""
         if source is not None:
             self.source = source
+        self._docpath = ""
 
     @property
     def line_number(self) -> int | None:
@@ -351,30 +352,20 @@ class TranslationUnit:
         else:
             self.addlocation(location)
 
-    @staticmethod
-    def getdocpath() -> str:
+    def getdocpath(self) -> str:
         """
         A logical location path within the document structure.
 
         Unlike :meth:`~.TranslationUnit.getlocations`, which may include
         line numbers that differ between translations, the document path
         provides a stable structural identifier based on the logical
-        position within the document (e.g. ``/body/h1[1]/p[2]``).
-
-        .. note::
-
-           Shouldn't be implemented if the format doesn't support it.
+        position within the document (e.g. ``body/h1[1]/p[2]``).
         """
-        return ""
+        return self._docpath
 
     def setdocpath(self, docpath: str) -> None:
-        """
-        Set the logical location path within the document structure.
-
-        .. note::
-
-           Shouldn't be implemented if the format doesn't support it.
-        """
+        """Set the logical location path within the document structure."""
+        self._docpath = docpath
 
     def getcontext(self) -> str:
         """Get the message context."""

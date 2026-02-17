@@ -48,21 +48,12 @@ class AsciiDocUnit(base.TranslationUnit):
         self._element_type: str = "paragraph"
         self._prefix: str = ""
         self._suffix: str = ""
-        self._docpath: str = ""
 
     def addlocation(self, location: str) -> None:
         self.locations.append(location)
 
     def getlocations(self) -> list[str]:
         return self.locations
-
-    def getdocpath(self) -> str:
-        """Get the logical location path within the document structure."""
-        return self._docpath
-
-    def setdocpath(self, docpath: str) -> None:
-        """Set the logical location path within the document structure."""
-        self._docpath = docpath
 
     def set_element_info(
         self, element_type: str, prefix: str = "", suffix: str = ""

@@ -62,21 +62,12 @@ class MarkdownUnit(base.TranslationUnit):
     def __init__(self, source=None) -> None:
         super().__init__(source)
         self.locations = []
-        self._docpath = ""
 
     def addlocation(self, location) -> None:
         self.locations.append(location)
 
     def getlocations(self):
         return self.locations
-
-    def getdocpath(self) -> str:
-        """Get the logical location path within the document structure."""
-        return self._docpath
-
-    def setdocpath(self, docpath: str) -> None:
-        """Set the logical location path within the document structure."""
-        self._docpath = docpath
 
 
 class MarkdownFrontmatterUnit(MarkdownUnit):
