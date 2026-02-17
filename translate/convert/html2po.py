@@ -28,17 +28,21 @@ from translate.convert import convert
 from translate.storage import html, po
 
 
-class html2po:
+class html2po(convert.DocpathMerger):
     def convertfile(
         self,
         inputfile,
         filename,
         duplicatestyle="msgctxt",
         keepcomments=False,
+        templatefile=None,
     ):
         """Convert an html file to .po format."""
         thetargetfile = po.pofile()
-        self.convertfile_inner(inputfile, thetargetfile, keepcomments)
+        if templatefile is None:
+            self.convertfile_inner(inputfile, thetargetfile, keepcomments)
+        else:
+            self.mergefile(inputfile, templatefile, thetargetfile, keepcomments)
         thetargetfile.removeduplicates(duplicatestyle)
         return thetargetfile
 
@@ -55,11 +59,31 @@ class html2po:
             if keepcomments:
                 thepo.addnote(htmlunit.getnotes(), "developer")
 
+    def mergefile(self, inputfile, templatefile, outputstore, keepcomments) -> None:
+        """Merge translation from inputfile with source from templatefile using docpath matching."""
+
+        def process_html_unit(templateunit, storeunit):
+            """Process HTML-specific unit attributes."""
+            context = templateunit.getcontext()
+            if context:
+                storeunit.setcontext(context)
+            if keepcomments:
+                storeunit.addnote(templateunit.getnotes(), "developer")
+
+        self.merge_stores_by_docpath(
+            inputfile,
+            templatefile,
+            outputstore,
+            html.htmlfile,
+            filter_header=False,
+            process_unit_callback=process_html_unit,
+        )
+
 
 def converthtml(
     inputfile,
     outputfile,
-    templates,
+    templatefile,
     pot=False,
     duplicatestyle="msgctxt",
     keepcomments=False,
@@ -74,6 +98,7 @@ def converthtml(
         getattr(inputfile, "name", "unknown"),
         duplicatestyle=duplicatestyle,
         keepcomments=keepcomments,
+        templatefile=templatefile,
     )
     outputstore.serialize(outputfile)
     return 1
@@ -87,7 +112,7 @@ class Html2POOptionParser(convert.ConvertOptionParser):
             "xhtml": ("po", self.convert),
             None: ("po", self.convert),
         }
-        super().__init__(formats, usetemplates=False, usepots=True, description=__doc__)
+        super().__init__(formats, usetemplates=True, usepots=True, description=__doc__)
         self.add_option(
             "--keepcomments",
             dest="keepcomments",
@@ -104,7 +129,7 @@ class Html2POOptionParser(convert.ConvertOptionParser):
         self,
         inputfile,
         outputfile,
-        templates,
+        templatefile,
         pot=False,
         duplicatestyle="msgctxt",
         multifilestyle="single",
@@ -113,13 +138,19 @@ class Html2POOptionParser(convert.ConvertOptionParser):
         """Extract translation units from one html file."""
         convertor = html2po()
         if hasattr(self, "outputstore"):
-            convertor.convertfile_inner(inputfile, self.outputstore, keepcomments)
+            if templatefile is None:
+                convertor.convertfile_inner(inputfile, self.outputstore, keepcomments)
+            else:
+                convertor.mergefile(
+                    inputfile, templatefile, self.outputstore, keepcomments
+                )
         else:
             outputstore = convertor.convertfile(
                 inputfile,
                 getattr(inputfile, "name", "unknown"),
                 duplicatestyle=duplicatestyle,
                 keepcomments=keepcomments,
+                templatefile=templatefile,
             )
             outputstore.serialize(outputfile)
         return 1

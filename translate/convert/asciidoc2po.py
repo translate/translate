@@ -28,7 +28,7 @@ from translate.convert import convert
 from translate.storage import asciidoc, po
 
 
-class AsciiDoc2POOptionParser(convert.ConvertOptionParser):
+class AsciiDoc2POOptionParser(convert.ConvertOptionParser, convert.DocpathMerger):
     def __init__(self):
         formats = {
             "adoc": ("po", self._extract_translation_units),
@@ -36,7 +36,7 @@ class AsciiDoc2POOptionParser(convert.ConvertOptionParser):
             "asc": ("po", self._extract_translation_units),
             None: ("po", self._extract_translation_units),
         }
-        super().__init__(formats, usetemplates=False, usepots=True, description=__doc__)
+        super().__init__(formats, usetemplates=True, usepots=True, description=__doc__)
         self.add_duplicates_option()
         self.add_multifile_option()
 
@@ -44,15 +44,21 @@ class AsciiDoc2POOptionParser(convert.ConvertOptionParser):
         self,
         inputfile,
         outputfile,
-        templates,
+        templatefile,
         duplicatestyle,
         multifilestyle,
     ):
         if hasattr(self, "outputstore"):
-            self._parse_and_extract(inputfile, self.outputstore)
+            if templatefile is None:
+                self._parse_and_extract(inputfile, self.outputstore)
+            else:
+                self._merge_with_template(inputfile, templatefile, self.outputstore)
         else:
             store = po.pofile()
-            self._parse_and_extract(inputfile, store)
+            if templatefile is None:
+                self._parse_and_extract(inputfile, store)
+            else:
+                self._merge_with_template(inputfile, templatefile, store)
             store.removeduplicates(duplicatestyle)
             store.serialize(outputfile)
         return 1
@@ -65,6 +71,16 @@ class AsciiDoc2POOptionParser(convert.ConvertOptionParser):
             if not tu.isheader():
                 storeunit = outputstore.addsourceunit(tu.source)
                 storeunit.addlocations(tu.getlocations())
+
+    def _merge_with_template(self, inputfile, templatefile, outputstore) -> None:
+        """Merge translation from inputfile with source from templatefile using docpath matching."""
+        self.merge_stores_by_docpath(
+            inputfile,
+            templatefile,
+            outputstore,
+            asciidoc.AsciiDocFile,
+            filter_header=True,
+        )
 
     def recursiveprocess(self, options):
         """Recurse through directories and process files. (override)."""

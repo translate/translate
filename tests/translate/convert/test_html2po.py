@@ -780,6 +780,7 @@ class TestHTML2POCommand(test_convert.TestConvertCommand, TestHTML2PO):
 
     expected_options = [
         "-P, --pot",
+        "-t TEMPLATE, --template=TEMPLATE",
         "--duplicates=DUPLICATESTYLE",
         "--keepcomments",
         "--multifile=MULTIFILESTYLE",
@@ -827,3 +828,82 @@ class TestHTML2POCommand(test_convert.TestConvertCommand, TestHTML2PO):
         assert "coming through" in content
         assert "cannot hear" in content
         assert err == ""
+
+    def test_html_with_template_basic(self):
+        """Test html2po with template file for basic matching."""
+        # Create template (source language)
+        self.create_testfile(
+            "template.html",
+            "<html><body><h1>Hello</h1><p>World</p></body></html>",
+        )
+        # Create translated file
+        self.create_testfile(
+            "translated.html",
+            "<html><body><h1>Hola</h1><p>Mundo</p></body></html>",
+        )
+        # Run conversion with template
+        self.run_command("translated.html", "output.po", template="template.html")
+
+        # Verify output
+        assert os.path.isfile(self.get_testfilename("output.po"))
+        content = self.read_testfile("output.po").decode()
+        assert "Hello" in content  # source
+        assert "Hola" in content  # target
+        assert "World" in content  # source
+        assert "Mundo" in content  # target
+
+    def test_html_with_template_complex(self):
+        """Test html2po with template file for complex HTML structure."""
+        # Create template (source language)
+        template_html = """<html>
+<body>
+    <h1>Welcome</h1>
+    <p>First paragraph</p>
+    <p>Second paragraph</p>
+    <ul>
+        <li>Item 1</li>
+        <li>Item 2</li>
+    </ul>
+</body>
+</html>"""
+
+        # Create translated file (same structure, different content)
+        translated_html = """<html>
+<body>
+    <h1>Bienvenue</h1>
+    <p>Premier paragraphe</p>
+    <p>Deuxième paragraphe</p>
+    <ul>
+        <li>Article 1</li>
+        <li>Article 2</li>
+    </ul>
+</body>
+</html>"""
+
+        self.create_testfile("template_complex.html", template_html)
+        self.create_testfile("translated_complex.html", translated_html)
+
+        # Run conversion
+        self.run_command(
+            "translated_complex.html",
+            "output_complex.po",
+            template="template_complex.html",
+        )
+
+        # Verify output
+        assert os.path.isfile(self.get_testfilename("output_complex.po"))
+        content = self.read_testfile("output_complex.po").decode()
+
+        # Check source strings
+        assert "Welcome" in content
+        assert "First paragraph" in content
+        assert "Second paragraph" in content
+        assert "Item 1" in content
+        assert "Item 2" in content
+
+        # Check target strings
+        assert "Bienvenue" in content
+        assert "Premier paragraphe" in content
+        assert "Deuxième paragraphe" in content
+        assert "Article 1" in content
+        assert "Article 2" in content
