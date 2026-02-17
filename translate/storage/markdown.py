@@ -349,9 +349,13 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
             label = token.label
             title = token.title
         else:
-            label = self.translate_callback(token.label, [*self.path, "link-label"], self._current_docpath)
+            label = self.translate_callback(
+                token.label, [*self.path, "link-label"], self._current_docpath
+            )
             title = (
-                self.translate_callback(token.title, [*self.path, "link-title"], self._current_docpath)
+                self.translate_callback(
+                    token.title, [*self.path, "link-title"], self._current_docpath
+                )
                 if token.title
                 else None
             )
@@ -504,7 +508,9 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
 
             # translate and parse into new fragments. handle hard line breaks.
             if content_md:
-                translated_md = self.translate_callback(content_md, self.path, self._current_docpath)
+                translated_md = self.translate_callback(
+                    content_md, self.path, self._current_docpath
+                )
                 translated_md = translated_md.replace("\n", "\\\n").strip(" \t")
                 translated_md = self.remove_placeholder_markers(
                     translated_md, placeholders

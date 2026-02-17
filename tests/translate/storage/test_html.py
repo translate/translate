@@ -647,9 +647,7 @@ class TestHTMLDocpath:
 
     def test_docpath_stable_across_content_changes(self) -> None:
         """Test that docpath is the same for structurally equivalent documents."""
-        store1 = self.h.parsestring(
-            "<html><body><h1>Short</h1><p>A</p></body></html>"
-        )
+        store1 = self.h.parsestring("<html><body><h1>Short</h1><p>A</p></body></html>")
         store2 = self.h.parsestring(
             "<html><body><h1>A much longer title here</h1>"
             "<p>A much longer paragraph with more content</p></body></html>"
