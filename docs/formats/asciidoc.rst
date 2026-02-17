@@ -39,17 +39,17 @@ The AsciiDoc converter supports the following elements:
 **Document Structure:**
 
 * Document headers (preserved but not translated)
-* Section headings at all levels (==, ===, etc.)
+* Section headings at all levels (``==``, ``===``, etc.)
 * Paragraphs with normalized whitespace
 
 **Lists:**
 
-* Unordered lists (*)
-* Ordered lists (.)
-* Description lists (term:: definition)
-* Checklists ([*], [x], [ ])
+* Unordered lists (``*``)
+* Ordered lists (``.``)
+* Description lists (``term:: definition``)
+* Checklists (``[*]``, ``[x]``, ``[ ]``)
 * Nested lists
-* List continuation markers (+)
+* List continuation markers (``+``)
 
 **Block Elements:**
 
@@ -63,13 +63,13 @@ The AsciiDoc converter supports the following elements:
 
 **Inline and Special Elements:**
 
-* Admonitions (NOTE, TIP, WARNING, IMPORTANT, CAUTION)
+* Admonitions (``NOTE``, ``TIP``, ``WARNING``, ``IMPORTANT``, ``CAUTION``)
 * Simple tables (pipe-separated cells)
-* Attribute lines (e.g., [NOTE], [source,java])
-* Conditional blocks (ifdef, ifndef, ifeval, endif)
-* Anchors ([[anchor-id]])
-* Block titles (.Title)
-* Comments (// and ////)
+* Attribute lines (e.g., ``[NOTE]``, ``[source,java]``)
+* Conditional blocks (``ifdef``, ``ifndef``, ``ifeval``, ``endif``)
+* Anchors (``[[anchor-id]]``)
+* Block titles (``.Title``)
+* Comments (``//`` and ``////``)
 
 **Preserved Elements:**
 
