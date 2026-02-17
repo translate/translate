@@ -209,7 +209,8 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         self._sibling_counts = [{}]
         # Stack of (tag, index) tuples for current docpath
         self._docpath_stack = []
-        self._translated_lang = None  # Track translated language from <html lang=""> for og:locale sync
+        # Track translated language value when <html lang=""> is translated, used to sync og:locale
+        self._translated_lang = None
 
         # parse
         if inputfile is not None:
@@ -548,7 +549,9 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                     name = attrs_dict.get("name", "").lower()
                     if not name:
                         name = attrs_dict.get("property", "").lower()
-                    # Synchronize og:locale with translated lang attribute
+                    # Automatically synchronize og:locale with the translated language when
+                    # the <html lang=""> attribute was translated during this parse.
+                    # This ensures consistency between the page language and Open Graph metadata.
                     if name == "og:locale" and self._translated_lang:
                         result.append((attrname, self._translated_lang))
                         continue
