@@ -53,13 +53,13 @@ The AsciiDoc converter supports the following elements:
 
 **Block Elements:**
 
-* Code blocks (----)
-* Literal blocks (....)
-* Example blocks (====)
-* Sidebar blocks (****)
-* Comment blocks (////)
-* Quote blocks (____)
-* Passthrough blocks (++++)
+* Code blocks (``----``)
+* Literal blocks (``....``)
+* Example blocks (``====``)
+* Sidebar blocks (``****``)
+* Comment blocks (``////``)
+* Quote blocks (``____``)
+* Passthrough blocks (``++++``)
 
 **Inline and Special Elements:**
 
