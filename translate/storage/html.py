@@ -552,6 +552,8 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                     # Automatically synchronize og:locale with the translated language when
                     # the <html lang=""> attribute was translated during this parse.
                     # This ensures consistency between the page language and Open Graph metadata.
+                    # Similar to how dir is automatically set, this intentionally overrides
+                    # any explicit translation to maintain consistency.
                     if name == "og:locale" and self._translated_lang:
                         result.append((attrname, self._translated_lang))
                         continue
