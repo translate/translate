@@ -710,9 +710,14 @@ More text
         store = self.parse(input)
         assert store.units[0].getdocpath() == "h1[1]"
         assert store.units[1].getdocpath() == "h1[1]/p[1]"
-        # All table cells share the same table docpath
-        for unit in store.units[2:]:
-            assert unit.getdocpath() == "h1[1]/table[1]"
+        # Each table cell gets a unique docpath
+        docpaths = [tu.getdocpath() for tu in store.units[2:]]
+        assert docpaths == [
+            "h1[1]/table[1]/r[1]/c[1]",
+            "h1[1]/table[1]/r[1]/c[2]",
+            "h1[1]/table[1]/r[2]/c[1]",
+            "h1[1]/table[1]/r[2]/c[2]",
+        ]
 
     def test_docpath_setext_headings(self) -> None:
         """Test docpath with setext-style headings."""

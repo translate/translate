@@ -451,10 +451,24 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         self, token: block_token.Table, max_line_length: int
     ) -> Iterable[str]:
         self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
-        self._current_docpath = self._build_docpath("table")
+        self._table_docpath = self._build_docpath("table")
+        self._table_row_index = 0
         content = list(super().render_table(token, max_line_length=max_line_length))
         self.path.pop()
         return content
+
+    def table_row_to_text(self, row) -> list[str]:
+        """Render each table cell with a unique docpath."""
+        self._table_row_index += 1
+        result = []
+        for col_index, col in enumerate(row.children):
+            self._current_docpath = (
+                f"{self._table_docpath}/r[{self._table_row_index}]/c[{col_index + 1}]"
+            )
+            result.append(
+                next(self.span_to_lines(col.children, max_line_length=None), "")
+            )
+        return result
 
     def render_link_reference_definition_block(
         self, token: LinkReferenceDefinitionBlock, max_line_length: int
