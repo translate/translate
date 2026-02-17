@@ -1,0 +1,33 @@
+Translate Toolkit 3.19.1
+************************
+
+*Released on 17 February 2026*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- PO
+
+  - Add fluent2arb and arb2po converters
+  - Fixed prop2po converter in merge mode
+
+- AsciiDoc
+
+  - Initial support for this format.
+
+- Base
+
+  - Added logical document path API with initial implementation for HTML, Markdown and AsciiDoc
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+Michal Čihař, Copilot, Pere Orga
+
