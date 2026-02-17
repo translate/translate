@@ -398,7 +398,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         self, token: block_token.SetextHeading, max_line_length: int
     ) -> Iterable[str]:
         self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
-        self._current_docpath = self._enter_heading(token.level)  # ty:ignore[unresolved-attribute]
+        self._current_docpath = self._enter_heading(token.level)
         content = list(
             super().render_setext_heading(token, max_line_length=max_line_length)
         )
