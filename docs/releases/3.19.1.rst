@@ -13,8 +13,8 @@ Formats and Converters
 
 - PO
 
-  - Add fluent2arb and arb2po covertors
-  - Fixed prop2po covertor in merge mode
+  - Add fluent2arb and arb2po converters
+  - Fixed prop2po converter in merge mode
 
 - AsciiDoc
 
