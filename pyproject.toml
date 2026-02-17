@@ -38,7 +38,7 @@ test = [
 types = [
   "setuptools>=61.2",
   "ty==0.0.17",
-  "types-lxml==2026.1.1"
+  "types-lxml==2026.2.16"
 ]
 
 [project]
