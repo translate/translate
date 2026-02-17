@@ -75,29 +75,13 @@ class AsciiDoc2POOptionParser(convert.ConvertOptionParser):
     @staticmethod
     def _merge_with_template(inputfile, templatefile, outputstore) -> None:
         """Merge translation from inputfile with source from templatefile using docpath matching."""
-        # Parse both files - note that AsciiDocFile uses 'inputfile' as parameter name
-        templateparser = asciidoc.AsciiDocFile(inputfile=templatefile)  # Source language
-        inputparser = asciidoc.AsciiDocFile(inputfile=inputfile)  # Translated language
-
-        # Build a docpath index for the input (translated) file
-        input_index = {}
-        for unit in inputparser.units:
-            if not unit.isheader():
-                docpath = unit.getdocpath()
-                if docpath:
-                    input_index[docpath] = unit
-
-        # Iterate through template units and match with input by docpath
-        for templateunit in templateparser.units:
-            if not templateunit.isheader():
-                docpath = templateunit.getdocpath()
-                storeunit = outputstore.addsourceunit(templateunit.source)
-                storeunit.addlocations(templateunit.getlocations())
-
-                # Set target from matching input unit if found
-                if docpath and docpath in input_index:
-                    inputunit = input_index[docpath]
-                    storeunit.target = inputunit.source
+        convert.DocpathMerger.merge_stores_by_docpath(
+            inputfile,
+            templatefile,
+            outputstore,
+            asciidoc.AsciiDocFile,
+            filter_header=True,
+        )
 
     def recursiveprocess(self, options):
         """Recurse through directories and process files. (override)."""

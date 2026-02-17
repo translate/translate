@@ -559,6 +559,71 @@ def should_output_store(store, threshold):
     return percent >= threshold
 
 
+class DocpathMerger:
+    """
+    Base class for merging translations using docpath-based matching.
+
+    This class provides common functionality for converters that need to
+    create PO files from existing translations by matching translation units
+    based on their logical document path (docpath) rather than source text.
+    """
+
+    @staticmethod
+    def merge_stores_by_docpath(
+        inputfile,
+        templatefile,
+        outputstore,
+        input_store_class,
+        template_store_class=None,
+        filter_header=False,
+        process_unit_callback=None,
+    ) -> None:
+        """
+        Merge translation from inputfile with source from templatefile using docpath matching.
+
+        :param inputfile: File handle for the translated file (target language)
+        :param templatefile: File handle for the source file (source language)
+        :param outputstore: PO store to add units to
+        :param input_store_class: Class to parse the input file
+        :param template_store_class: Class to parse the template file (defaults to input_store_class)
+        :param filter_header: Whether to skip units where isheader() returns True
+        :param process_unit_callback: Optional callback to process each unit (unit, po_unit) -> None
+        """
+        if template_store_class is None:
+            template_store_class = input_store_class
+
+        # Parse both files - note that storage classes use 'inputfile' as parameter name
+        templateparser = template_store_class(inputfile=templatefile)  # Source language
+        inputparser = input_store_class(inputfile=inputfile)  # Translated language
+
+        # Build a docpath index for the input (translated) file
+        input_index = {}
+        for unit in inputparser.units:
+            if filter_header and hasattr(unit, "isheader") and unit.isheader():
+                continue
+            docpath = unit.getdocpath()
+            if docpath:
+                input_index[docpath] = unit
+
+        # Iterate through template units and match with input by docpath
+        for templateunit in templateparser.units:
+            if filter_header and hasattr(templateunit, "isheader") and templateunit.isheader():
+                continue
+
+            docpath = templateunit.getdocpath()
+            storeunit = outputstore.addsourceunit(templateunit.source)
+            storeunit.addlocations(templateunit.getlocations())
+
+            # Set target from matching input unit if found
+            if docpath and docpath in input_index:
+                inputunit = input_index[docpath]
+                storeunit.target = inputunit.source
+
+            # Allow subclass-specific processing
+            if process_unit_callback:
+                process_unit_callback(templateunit, storeunit)
+
+
 def main(argv=None) -> None:
     parser = ArchiveConvertOptionParser({}, description=__doc__)
     parser.run(argv)

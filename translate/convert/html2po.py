@@ -62,33 +62,23 @@ class html2po:
     @staticmethod
     def mergefile(inputfile, templatefile, outputstore, keepcomments) -> None:
         """Merge translation from inputfile with source from templatefile using docpath matching."""
-        # Parse both files - note that htmlfile uses 'inputfile' as parameter name
-        templateparser = html.htmlfile(inputfile=templatefile)  # Source language
-        inputparser = html.htmlfile(inputfile=inputfile)  # Translated language
 
-        # Build a docpath index for the input (translated) file
-        input_index = {}
-        for unit in inputparser.units:
-            docpath = unit.getdocpath()
-            if docpath:
-                input_index[docpath] = unit
-
-        # Iterate through template units and match with input by docpath
-        for templateunit in templateparser.units:
-            docpath = templateunit.getdocpath()
-            thepo = outputstore.addsourceunit(templateunit.source)
-            thepo.addlocations(templateunit.getlocations())
-
-            # Set target from matching input unit if found
-            if docpath and docpath in input_index:
-                inputunit = input_index[docpath]
-                thepo.target = inputunit.source
-
+        def process_html_unit(templateunit, storeunit):
+            """Process HTML-specific unit attributes."""
             context = templateunit.getcontext()
             if context:
-                thepo.setcontext(context)
+                storeunit.setcontext(context)
             if keepcomments:
-                thepo.addnote(templateunit.getnotes(), "developer")
+                storeunit.addnote(templateunit.getnotes(), "developer")
+
+        convert.DocpathMerger.merge_stores_by_docpath(
+            inputfile,
+            templatefile,
+            outputstore,
+            html.htmlfile,
+            filter_header=False,
+            process_unit_callback=process_html_unit,
+        )
 
 
 def converthtml(
