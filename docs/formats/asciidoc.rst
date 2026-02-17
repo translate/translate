@@ -87,7 +87,6 @@ Limitations
 ===========
 
 * Table parsing is limited to simple pipe-separated format. Does not support:
-  
   * Cell spanning
   * CSV-formatted tables
   * PSV-formatted tables (colon-separated)
