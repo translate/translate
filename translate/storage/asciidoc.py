@@ -565,11 +565,11 @@ class AsciiDocFile(base.TranslationStore):
         # - Formatted table cells (a, e, h, l, m, s, v cell specifiers)
         # - Complex table features (cols/rows attributes, cell alignment)
         # For more sophisticated table parsing, consider using an AsciiDoc parser library.
-        
+
         # Build table docpath
         table_docpath = self._build_docpath("table")
         row_index = 0
-        
+
         for table_line in table_lines:
             if table_line.strip() and "|" in table_line:
                 row_index += 1
@@ -703,7 +703,7 @@ class AsciiDocFile(base.TranslationStore):
     def _build_docpath(self, element_type: str) -> str:
         """
         Build the current docpath string for a block element.
-        
+
         Docpath format follows the heading hierarchy with element counters:
         h2[1]/h3[1]/p[2] - second paragraph under first h3 under first h2
         h2[1]/table[1]/r[1]/c[2] - second column of first row of first table under first h2
@@ -717,7 +717,7 @@ class AsciiDocFile(base.TranslationStore):
     def _enter_heading(self, level: int) -> str:
         """
         Update heading stack when entering a heading and return its docpath.
-        
+
         Pops any headings of equal or greater level, counts this heading at the
         current section level, and pushes a new section level.
         """

@@ -461,7 +461,7 @@ class TestAsciiDocDocpath:
         inputfile = BytesIO(input.encode())
         store = asciidoc.AsciiDocFile(inputfile=inputfile)
         units = store.getunits()
-        
+
         # First heading
         assert units[0].getdocpath() == "h2[1]"
         # Nested heading under first
@@ -475,7 +475,7 @@ class TestAsciiDocDocpath:
         inputfile = BytesIO(input.encode())
         store = asciidoc.AsciiDocFile(inputfile=inputfile)
         units = store.getunits()
-        
+
         # Heading
         assert units[0].getdocpath() == "h2[1]"
         # First paragraph under heading
@@ -489,7 +489,7 @@ class TestAsciiDocDocpath:
         inputfile = BytesIO(input.encode())
         store = asciidoc.AsciiDocFile(inputfile=inputfile)
         units = store.getunits()
-        
+
         # Heading
         assert units[0].getdocpath() == "h2[1]"
         # List items
@@ -502,7 +502,7 @@ class TestAsciiDocDocpath:
         inputfile = BytesIO(input.encode())
         store = asciidoc.AsciiDocFile(inputfile=inputfile)
         units = store.getunits()
-        
+
         # Heading
         assert units[0].getdocpath() == "h2[1]"
         # Table cells with row/column indices
@@ -517,7 +517,7 @@ class TestAsciiDocDocpath:
         inputfile = BytesIO(input.encode())
         store = asciidoc.AsciiDocFile(inputfile=inputfile)
         units = store.getunits()
-        
+
         # Heading
         assert units[0].getdocpath() == "h2[1]"
         # Admonitions
@@ -530,7 +530,7 @@ class TestAsciiDocDocpath:
         inputfile = BytesIO(input.encode())
         store = asciidoc.AsciiDocFile(inputfile=inputfile)
         units = store.getunits()
-        
+
         # Heading
         assert units[0].getdocpath() == "h2[1]"
         # Description list items
@@ -559,7 +559,7 @@ Another paragraph.
         inputfile = BytesIO(input.encode())
         store = asciidoc.AsciiDocFile(inputfile=inputfile)
         units = store.getunits()
-        
+
         # First section heading
         assert units[0].getdocpath() == "h2[1]"
         # Paragraph under first section
@@ -584,7 +584,7 @@ Another paragraph.
         inputfile = BytesIO(input.encode())
         store = asciidoc.AsciiDocFile(inputfile=inputfile)
         units = store.getunits()
-        
+
         # Elements at document root level
         assert units[0].getdocpath() == "p[1]"
         assert units[1].getdocpath() == "p[2]"
