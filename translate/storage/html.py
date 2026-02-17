@@ -39,6 +39,7 @@ class htmlunit(base.TranslationUnit):
         super().__init__(source)
         self.locations = []
         self._context = ""
+        self._docpath = ""
 
     def addlocation(self, location) -> None:
         self.locations.append(location)
@@ -46,6 +47,14 @@ class htmlunit(base.TranslationUnit):
     def getlocations(self):
         """Get the list of locations for this unit."""
         return self.locations
+
+    def getdocpath(self) -> str:
+        """Get the logical location path within the document structure."""
+        return self._docpath
+
+    def setdocpath(self, docpath: str) -> None:
+        """Set the logical location path within the document structure."""
+        self._docpath = docpath
 
     def getcontext(self):
         """Get the message context."""
@@ -177,6 +186,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         self.tag_path = []
         self.tu_content = []
         self.tu_location = None
+        self.tu_docpath = None
         self.ignore_depth = 0  # Track nesting level of ignored elements
         self.comment_ignore = False  # Track if inside <!-- translate:off -->
         self.ignore_tag_stack = []  # Track which tags have ignore attribute
@@ -188,6 +198,10 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         self._id_seen = set()  # track seen ids to disambiguate labels
         self._units_by_source = {}  # Track units by normalized source to add context only when needed for disambiguation
         self._units_by_src_ctx = {}  # Fast lookup for units created with explicit context: (source, context) -> unit
+        # Stack of dicts for sibling tag counts at each nesting level (for docpath)
+        self._sibling_counts = [{}]
+        # Stack of (tag, index) tuples for current docpath
+        self._docpath_stack = []
 
         # parse
         if inputfile is not None:
@@ -223,6 +237,10 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         """Check if we're currently in an ignored section."""
         return self.ignore_depth > 0 or self.comment_ignore
 
+    def _build_docpath(self) -> str:
+        """Build the current document path from the docpath stack."""
+        return "/".join(f"{tag}[{index}]" for tag, index in self._docpath_stack)
+
     def begin_translation_unit(self) -> None:
         # at the start of a translation unit:
         # this interrupts any translation unit in progress, so process the queue
@@ -230,6 +248,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         self.emit_translation_unit()
         self.tu_content = []
         self.tu_location = f"{self.filename}+{'.'.join(self.tag_path)}:{self.getpos()[0]}-{self.getpos()[1] + 1}"
+        self.tu_docpath = self._build_docpath()
 
     def end_translation_unit(self) -> None:
         # at the end of a translation unit:
@@ -237,6 +256,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         self.emit_translation_unit()
         self.tu_content = []
         self.tu_location = None
+        self.tu_docpath = None
 
     def append_markup(self, markup) -> None:
         # if within a translation unit: add to the queue to be processed later.
@@ -354,6 +374,8 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                     self._units_by_src_ctx[normalized_content, explicit_context] = unit
 
             unit.addlocation(self.tu_location)
+            if self.tu_docpath:
+                unit.setdocpath(self.tu_docpath)
 
             # If no explicit context, capture a context hint (from id/ancestor) for potential disambiguation
             context_hint = None
@@ -448,6 +470,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 "html_content": normalized_value,
                 "attrname": attrname,
                 "location": f"{self.filename}+{'.'.join(self.tag_path)}[{attrname}]:{self.getpos()[0]}-{self.getpos()[1] + 1}",
+                "docpath": self._build_docpath() + f"[{attrname}]",
             }
         return None
 
@@ -472,6 +495,8 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                         # Register for faster lookups
                         self._units_by_src_ctx[tu["html_content"], full_explicit] = unit
                 unit.addlocation(tu["location"])
+                if tu.get("docpath"):
+                    unit.setdocpath(tu["docpath"])
 
                 if not full_explicit:
                     hint_base = markup.get("context_hint")
@@ -548,9 +573,17 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 attr_strings.append(f' {attrname}="{attrvalue}"')
         return f"<{tag}{''.join(attr_strings)}{' /' if startend else ''}>"
 
+    def _pop_docpath_level(self) -> None:
+        """Pop the current docpath level (sibling counts and path entry)."""
+        if self._docpath_stack:
+            self._docpath_stack.pop()
+        if len(self._sibling_counts) > 1:
+            self._sibling_counts.pop()
+
     def auto_close_empty_element(self) -> None:
         if self.tag_path and self.tag_path[-1] in self.EMPTY_HTML_ELEMENTS:
             self.tag_path.pop()
+            self._pop_docpath_level()
 
     def get_leading_whitespace(self, text: str):
         match = self.LEADING_WHITESPACE_RE.search(text)
@@ -565,6 +598,12 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
     def handle_starttag(self, tag, attrs) -> None:
         self.auto_close_empty_element()
         self.tag_path.append(tag)
+
+        # Update docpath tracking: count siblings and push new level
+        counts = self._sibling_counts[-1]
+        counts[tag] = counts.get(tag, 0) + 1
+        self._docpath_stack.append((tag, counts[tag]))
+        self._sibling_counts.append({})
 
         # Check for data-translate-ignore attribute
         attrs_dict = dict(attrs)
@@ -657,11 +696,14 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             ) from None
         if popped != tag and popped in self.EMPTY_HTML_ELEMENTS:
             popped = self.tag_path.pop()
+            self._pop_docpath_level()
         if popped != tag:
             raise ParseError(
                 "Mismatched closing tag: "
                 f"expected '{popped}' got '{tag}' at line {self.getpos()[0]}"
             )
+
+        self._pop_docpath_level()
 
         self.append_markup({"type": "endtag", "html_content": f"</{tag}>"})
 
@@ -691,6 +733,12 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
     def handle_startendtag(self, tag, attrs) -> None:
         self.auto_close_empty_element()
         self.tag_path.append(tag)
+
+        # Update docpath tracking: count siblings and push new level
+        counts = self._sibling_counts[-1]
+        counts[tag] = counts.get(tag, 0) + 1
+        self._docpath_stack.append((tag, counts[tag]))
+        self._sibling_counts.append({})
 
         # Check for data-translate-ignore attribute
         attrs_dict = dict(attrs)
@@ -779,6 +827,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             self.ignore_depth -= 1
 
         self.tag_path.pop()
+        self._pop_docpath_level()
         # For startend, if we pushed an id, pop it now
         if self._id_pushed_stack:
             pushed = self._id_pushed_stack.pop()

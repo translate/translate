@@ -62,12 +62,21 @@ class MarkdownUnit(base.TranslationUnit):
     def __init__(self, source=None) -> None:
         super().__init__(source)
         self.locations = []
+        self._docpath = ""
 
     def addlocation(self, location) -> None:
         self.locations.append(location)
 
     def getlocations(self):
         return self.locations
+
+    def getdocpath(self) -> str:
+        """Get the logical location path within the document structure."""
+        return self._docpath
+
+    def setdocpath(self, docpath: str) -> None:
+        """Set the logical location path within the document structure."""
+        self._docpath = docpath
 
 
 class MarkdownFrontmatterUnit(MarkdownUnit):
@@ -141,7 +150,7 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
     def _dummy_callback(text: str) -> str:
         return text
 
-    def _translate_callback(self, text: str, path: list[str]) -> str:
+    def _translate_callback(self, text: str, path: list[str], docpath: str = "") -> str:
         text = text.strip()
         if not text:
             return ""
@@ -150,6 +159,8 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
         unit = self.addsourceunit(text)
         # Index path to avoid duplicate location on list items.
         unit.addlocation(f"{self.filename or ''}{''.join(path[0])}")
+        if docpath:
+            unit.setdocpath(docpath)
 
         # return translated text
         return self.callback(text)
@@ -158,7 +169,7 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
 class TranslatingMarkdownRenderer(MarkdownRenderer):
     def __init__(
         self,
-        translate_callback: Callable[[str, list[str]], str],
+        translate_callback: Callable[[str, list[str], str], str],
         *extras,
         max_line_length: int | None = None,
     ) -> None:
@@ -167,6 +178,15 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         self.bypass = False
         self.path = []
         self.ignore_translation = False
+        # Docpath tracking: heading hierarchy and sibling counts
+        # _heading_stack: list of (level, heading_index) for current heading nesting
+        self._heading_stack: list[tuple[int, int]] = []
+        # _section_counts: dict mapping element type to count at current section level
+        self._section_counts: list[dict[str, int]] = [{}]
+        # _container_stack: list of (container_type, index) for nested containers
+        self._container_stack: list[tuple[str, int]] = []
+        # _current_docpath: the current docpath string for the current block
+        self._current_docpath = ""
 
     def render(self, token: mistletoe.token.Token) -> str:
         try:
@@ -179,6 +199,49 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
 
     # rendering of span tokens:
     # override to inject placeholders and translate content
+
+    def _build_docpath(self, element_type: str) -> str:
+        """Build the current docpath string for a block element."""
+        parts = [f"h{level}[{idx}]" for level, idx in self._heading_stack]
+        for container_type, container_idx in self._container_stack:
+            parts.append(f"{container_type}[{container_idx}]")
+        counts = self._section_counts[-1]
+        counts[element_type] = counts.get(element_type, 0) + 1
+        parts.append(f"{element_type}[{counts[element_type]}]")
+        return "/".join(parts)
+
+    def _enter_heading(self, level: int) -> str:
+        """Update heading stack and return docpath for this heading."""
+        # Pop headings of equal or greater level
+        while self._heading_stack and self._heading_stack[-1][0] >= level:
+            self._heading_stack.pop()
+            self._section_counts.pop()
+        # Count this heading at the current section level
+        counts = self._section_counts[-1]
+        heading_key = f"h{level}"
+        counts[heading_key] = counts.get(heading_key, 0) + 1
+        idx = counts[heading_key]
+        # Push new section level
+        self._heading_stack.append((level, idx))
+        self._section_counts.append({})
+        # Build path
+        parts = [f"h{level}[{i}]" for level, i in self._heading_stack]
+        for container_type, container_idx in self._container_stack:
+            parts.append(f"{container_type}[{container_idx}]")
+        return "/".join(parts)
+
+    def _enter_container(self, container_type: str) -> None:
+        """Push a container (list item, blockquote) onto the nesting stack."""
+        counts = self._section_counts[-1]
+        counts[container_type] = counts.get(container_type, 0) + 1
+        self._container_stack.append((container_type, counts[container_type]))
+        self._section_counts.append({})
+
+    def _exit_container(self) -> None:
+        """Pop a container from the nesting stack."""
+        if self._container_stack:
+            self._container_stack.pop()
+            self._section_counts.pop()
 
     _leading_ws = re.compile(r"^(\s+)\S")
     _trailing_ws = re.compile(r"\S(\s+)$")
@@ -240,6 +303,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
                 translated_title = self.translate_callback(
                     token.title,  # ty:ignore[unresolved-attribute]
                     [*self.path, "link-title"],
+                    self._current_docpath,
                 )
                 placeholder.placeholder_content.extend(  # ty:ignore[unresolved-attribute]
                     [
@@ -260,6 +324,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
             translated_label = self.translate_callback(
                 token.label,  # ty:ignore[unresolved-attribute]
                 [*self.path, "link-label"],
+                self._current_docpath,
             )
             placeholder = Fragment(None, important=True)  # ty:ignore[invalid-argument-type]
             placeholder.placeholder_content = [  # ty:ignore[unresolved-attribute]
@@ -284,9 +349,13 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
             label = token.label
             title = token.title
         else:
-            label = self.translate_callback(token.label, [*self.path, "link-label"])
+            label = self.translate_callback(
+                token.label, [*self.path, "link-label"], self._current_docpath
+            )
             title = (
-                self.translate_callback(token.title, [*self.path, "link-title"])
+                self.translate_callback(
+                    token.title, [*self.path, "link-title"], self._current_docpath
+                )
                 if token.title
                 else None
             )
@@ -320,6 +389,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         self, token: block_token.Heading, max_line_length: int
     ) -> Iterable[str]:
         self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
+        self._current_docpath = self._enter_heading(token.level)
         content = list(super().render_heading(token, max_line_length=max_line_length))
         self.path.pop()
         return content
@@ -328,6 +398,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         self, token: block_token.SetextHeading, max_line_length: int
     ) -> Iterable[str]:
         self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
+        self._current_docpath = self._enter_heading(token.level)
         content = list(
             super().render_setext_heading(token, max_line_length=max_line_length)
         )
@@ -338,7 +409,9 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         self, token: block_token.Quote, max_line_length: int
     ) -> Iterable[str]:
         self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
+        self._enter_container("blockquote")
         content = list(super().render_quote(token, max_line_length=max_line_length))
+        self._exit_container()
         self.path.pop()
         return content
 
@@ -346,6 +419,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         self, token: block_token.Paragraph, max_line_length: int
     ) -> Iterable[str]:
         self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
+        self._current_docpath = self._build_docpath("p")
         content = list(super().render_paragraph(token, max_line_length=max_line_length))
         self.path.pop()
         return content
@@ -367,7 +441,9 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         self, token: block_token.ListItem, max_line_length: int
     ) -> Iterable[str]:
         self.path.append(f":{token.line_number}")
+        self._enter_container("li")
         content = list(super().render_list_item(token, max_line_length=max_line_length))
+        self._exit_container()
         self.path.pop()
         return content
 
@@ -375,14 +451,30 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         self, token: block_token.Table, max_line_length: int
     ) -> Iterable[str]:
         self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
+        self._table_docpath = self._build_docpath("table")
+        self._table_row_index = 0
         content = list(super().render_table(token, max_line_length=max_line_length))
         self.path.pop()
         return content
+
+    def table_row_to_text(self, row) -> list[str]:
+        """Render each table cell with a unique docpath."""
+        self._table_row_index += 1
+        result = []
+        for col_index, col in enumerate(row.children):
+            self._current_docpath = (
+                f"{self._table_docpath}/r[{self._table_row_index}]/c[{col_index + 1}]"
+            )
+            result.append(
+                next(self.span_to_lines(col.children, max_line_length=None), "")  # ty:ignore[invalid-argument-type]
+            )
+        return result
 
     def render_link_reference_definition_block(
         self, token: LinkReferenceDefinitionBlock, max_line_length: int
     ) -> Iterable[str]:
         self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
+        self._current_docpath = self._build_docpath("link-ref-def")
         content = list(
             super().render_link_reference_definition_block(
                 token, max_line_length=max_line_length
@@ -430,7 +522,9 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
 
             # translate and parse into new fragments. handle hard line breaks.
             if content_md:
-                translated_md = self.translate_callback(content_md, self.path)
+                translated_md = self.translate_callback(
+                    content_md, self.path, self._current_docpath
+                )
                 translated_md = translated_md.replace("\n", "\\\n").strip(" \t")
                 translated_md = self.remove_placeholder_markers(
                     translated_md, placeholders
