@@ -677,9 +677,9 @@ More text
         """Test docpath for content before any heading."""
         input = "Introduction.\n\n# Title\n\nContent.\n"
         store = self.parse(input)
-        assert store.units[0].getdocpath() == "/p[1]"
-        assert store.units[1].getdocpath() == "/h1[1]"
-        assert store.units[2].getdocpath() == "/h1[1]/p[1]"
+        assert store.units[0].getdocpath() == "p[1]"
+        assert store.units[1].getdocpath() == "h1[1]"
+        assert store.units[2].getdocpath() == "h1[1]/p[1]"
 
     def test_docpath_list_items(self) -> None:
         """Test docpath for list items."""
@@ -708,11 +708,11 @@ More text
         """Test docpath for tables."""
         input = "# Title\n\nParagraph.\n\n| A | B |\n|---|---|\n| 1 | 2 |\n"
         store = self.parse(input)
-        assert store.units[0].getdocpath() == "/h1[1]"
-        assert store.units[1].getdocpath() == "/h1[1]/p[1]"
+        assert store.units[0].getdocpath() == "h1[1]"
+        assert store.units[1].getdocpath() == "h1[1]/p[1]"
         # All table cells share the same table docpath
         for unit in store.units[2:]:
-            assert unit.getdocpath() == "/h1[1]/table[1]"
+            assert unit.getdocpath() == "h1[1]/table[1]"
 
     def test_docpath_setext_headings(self) -> None:
         """Test docpath with setext-style headings."""
