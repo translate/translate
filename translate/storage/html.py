@@ -118,8 +118,15 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         "og:title",
         "og:description",
         "og:site_name",
+        "og:image:alt",
         "twitter:title",
         "twitter:description",
+        "twitter:image:alt",
+        "video:actor:role",
+        "video:tag",
+        "article:section",
+        "article:tag",
+        "payment:description",
     ]
     """Document metadata from meta elements with these names will be extracted as translation units.
     Includes standard meta tags and common social media tags (Open Graph and Twitter Cards).
@@ -193,6 +200,8 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         self._sibling_counts = [{}]
         # Stack of (tag, index) tuples for current docpath
         self._docpath_stack = []
+        # Track translated language value when <html lang=""> is translated, used to sync og:locale
+        self._translated_lang = None
 
         # parse
         if inputfile is not None:
@@ -221,6 +230,8 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         return htmlsrc.decode(self.encoding)
 
     def parse(self, htmlsrc) -> None:  # ty:ignore[invalid-method-override]
+        # Reset translation state for new parse
+        self._translated_lang = None
         htmlsrc = self.do_encoding(htmlsrc)
         self.feed(htmlsrc)
 
@@ -512,6 +523,8 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 translated_value = self.callback(normalized_value)
                 if translated_value != normalized_value:
                     translated_lang = translated_value
+                    # Store translated language for og:locale synchronization
+                    self._translated_lang = translated_value
 
         for attrname, attrvalue in attrs:
             # When translating the lang attribute on the <html> tag, we intentionally discard
@@ -527,6 +540,14 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                     name = attrs_dict.get("name", "").lower()
                     if not name:
                         name = attrs_dict.get("property", "").lower()
+                    # Automatically synchronize og:locale with the translated language when
+                    # the <html lang=""> attribute was translated during this parse.
+                    # This ensures consistency between the page language and Open Graph metadata.
+                    # Similar to how dir is automatically set, this intentionally overrides
+                    # any explicit translation to maintain consistency.
+                    if name == "og:locale" and self._translated_lang:
+                        result.append((attrname, self._translated_lang))
+                        continue
                     if name in self.TRANSLATABLE_METADATA:
                         normalized_value = self.WHITESPACE_RE.sub(
                             " ", attrvalue
