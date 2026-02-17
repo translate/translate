@@ -76,9 +76,9 @@ class MD2POOptionParser(convert.ConvertOptionParser):
     @staticmethod
     def _merge_with_template(inputfile, templatefile, outputstore) -> None:
         """Merge translation from inputfile with source from templatefile using docpath matching."""
-        # Parse both files
-        templateparser = markdown.MarkdownFile(inputfile=templatefile)
-        inputparser = markdown.MarkdownFile(inputfile=inputfile)
+        # Parse both files - note that MarkdownFile uses 'inputfile' as parameter name
+        templateparser = markdown.MarkdownFile(inputfile=templatefile)  # Source language
+        inputparser = markdown.MarkdownFile(inputfile=inputfile)  # Translated language
 
         # Build a docpath index for the input (translated) file
         input_index = {}

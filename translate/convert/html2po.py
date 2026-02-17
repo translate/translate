@@ -62,9 +62,9 @@ class html2po:
     @staticmethod
     def mergefile(inputfile, templatefile, outputstore, keepcomments) -> None:
         """Merge translation from inputfile with source from templatefile using docpath matching."""
-        # Parse both files
-        templateparser = html.htmlfile(inputfile=templatefile)
-        inputparser = html.htmlfile(inputfile=inputfile)
+        # Parse both files - note that htmlfile uses 'inputfile' as parameter name
+        templateparser = html.htmlfile(inputfile=templatefile)  # Source language
+        inputparser = html.htmlfile(inputfile=inputfile)  # Translated language
 
         # Build a docpath index for the input (translated) file
         input_index = {}

@@ -75,9 +75,9 @@ class AsciiDoc2POOptionParser(convert.ConvertOptionParser):
     @staticmethod
     def _merge_with_template(inputfile, templatefile, outputstore) -> None:
         """Merge translation from inputfile with source from templatefile using docpath matching."""
-        # Parse both files
-        templateparser = asciidoc.AsciiDocFile(inputfile=templatefile)
-        inputparser = asciidoc.AsciiDocFile(inputfile=inputfile)
+        # Parse both files - note that AsciiDocFile uses 'inputfile' as parameter name
+        templateparser = asciidoc.AsciiDocFile(inputfile=templatefile)  # Source language
+        inputparser = asciidoc.AsciiDocFile(inputfile=inputfile)  # Translated language
 
         # Build a docpath index for the input (translated) file
         input_index = {}
