@@ -14,6 +14,7 @@ class TestAsciiDoc2PO(test_convert.TestConvertCommand):
 
     expected_options = [
         "-P, --pot",
+        "-t TEMPLATE, --template=TEMPLATE",
         "--duplicates=DUPLICATESTYLE",
         "--multifile=MULTIFILESTYLE",
     ]
@@ -130,3 +131,84 @@ Another paragraph here.
         assert len(msgids) == len(expected_content), (
             f"Expected {len(expected_content)} units, got {len(msgids)}"
         )
+
+    def test_asciidoc_with_template_basic(self):
+        """Test asciidoc2po with template file for basic matching."""
+        # Create template (source language)
+        self.create_testfile(
+            "template.adoc",
+            "== Hello\n\nWorld\n",
+        )
+        # Create translated file
+        self.create_testfile(
+            "translated.adoc",
+            "== Hola\n\nMundo\n",
+        )
+        # Run conversion with template
+        self.run_command("translated.adoc", "output.po", template="template.adoc")
+        
+        # Verify output
+        assert os.path.isfile(self.get_testfilename("output.po"))
+        content = self.read_testfile("output.po").decode()
+        assert "Hello" in content  # source
+        assert "Hola" in content  # target
+        assert "World" in content  # source
+        assert "Mundo" in content  # target
+
+    def test_asciidoc_with_template_complex(self):
+        """Test asciidoc2po with template file for complex AsciiDoc structure."""
+        # Create template (source language)
+        template_adoc = """== Welcome
+
+First paragraph
+
+Second paragraph
+
+=== Subsection
+
+* Item 1
+* Item 2
+"""
+        
+        # Create translated file (same structure, different content)
+        translated_adoc = """== Bienvenue
+
+Premier paragraphe
+
+Deuxième paragraphe
+
+=== Sous-section
+
+* Article 1
+* Article 2
+"""
+        
+        self.create_testfile("template_complex.adoc", template_adoc)
+        self.create_testfile("translated_complex.adoc", translated_adoc)
+        
+        # Run conversion
+        self.run_command(
+            "translated_complex.adoc",
+            "output_complex.po",
+            template="template_complex.adoc",
+        )
+        
+        # Verify output
+        assert os.path.isfile(self.get_testfilename("output_complex.po"))
+        content = self.read_testfile("output_complex.po").decode()
+        
+        # Check source strings
+        assert "Welcome" in content
+        assert "First paragraph" in content
+        assert "Second paragraph" in content
+        assert "Subsection" in content
+        assert "Item 1" in content
+        assert "Item 2" in content
+        
+        # Check target strings
+        assert "Bienvenue" in content
+        assert "Premier paragraphe" in content
+        assert "Deuxième paragraphe" in content
+        assert "Sous-section" in content
+        assert "Article 1" in content
+        assert "Article 2" in content

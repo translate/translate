@@ -35,10 +35,14 @@ class html2po:
         filename,
         duplicatestyle="msgctxt",
         keepcomments=False,
+        templatefile=None,
     ):
         """Convert an html file to .po format."""
         thetargetfile = po.pofile()
-        self.convertfile_inner(inputfile, thetargetfile, keepcomments)
+        if templatefile is None:
+            self.convertfile_inner(inputfile, thetargetfile, keepcomments)
+        else:
+            self.mergefile(inputfile, templatefile, thetargetfile, keepcomments)
         thetargetfile.removeduplicates(duplicatestyle)
         return thetargetfile
 
@@ -55,11 +59,42 @@ class html2po:
             if keepcomments:
                 thepo.addnote(htmlunit.getnotes(), "developer")
 
+    @staticmethod
+    def mergefile(inputfile, templatefile, outputstore, keepcomments) -> None:
+        """Merge translation from inputfile with source from templatefile using docpath matching."""
+        # Parse both files
+        templateparser = html.htmlfile(inputfile=templatefile)
+        inputparser = html.htmlfile(inputfile=inputfile)
+        
+        # Build a docpath index for the input (translated) file
+        input_index = {}
+        for unit in inputparser.units:
+            docpath = unit.getdocpath()
+            if docpath:
+                input_index[docpath] = unit
+        
+        # Iterate through template units and match with input by docpath
+        for templateunit in templateparser.units:
+            docpath = templateunit.getdocpath()
+            thepo = outputstore.addsourceunit(templateunit.source)
+            thepo.addlocations(templateunit.getlocations())
+            
+            # Set target from matching input unit if found
+            if docpath and docpath in input_index:
+                inputunit = input_index[docpath]
+                thepo.target = inputunit.source
+            
+            context = templateunit.getcontext()
+            if context:
+                thepo.setcontext(context)
+            if keepcomments:
+                thepo.addnote(templateunit.getnotes(), "developer")
+
 
 def converthtml(
     inputfile,
     outputfile,
-    templates,
+    templatefile,
     pot=False,
     duplicatestyle="msgctxt",
     keepcomments=False,
@@ -74,6 +109,7 @@ def converthtml(
         getattr(inputfile, "name", "unknown"),
         duplicatestyle=duplicatestyle,
         keepcomments=keepcomments,
+        templatefile=templatefile,
     )
     outputstore.serialize(outputfile)
     return 1
@@ -87,7 +123,7 @@ class Html2POOptionParser(convert.ConvertOptionParser):
             "xhtml": ("po", self.convert),
             None: ("po", self.convert),
         }
-        super().__init__(formats, usetemplates=False, usepots=True, description=__doc__)
+        super().__init__(formats, usetemplates=True, usepots=True, description=__doc__)
         self.add_option(
             "--keepcomments",
             dest="keepcomments",
@@ -104,7 +140,7 @@ class Html2POOptionParser(convert.ConvertOptionParser):
         self,
         inputfile,
         outputfile,
-        templates,
+        templatefile,
         pot=False,
         duplicatestyle="msgctxt",
         multifilestyle="single",
@@ -113,13 +149,17 @@ class Html2POOptionParser(convert.ConvertOptionParser):
         """Extract translation units from one html file."""
         convertor = html2po()
         if hasattr(self, "outputstore"):
-            convertor.convertfile_inner(inputfile, self.outputstore, keepcomments)
+            if templatefile is None:
+                convertor.convertfile_inner(inputfile, self.outputstore, keepcomments)
+            else:
+                convertor.mergefile(inputfile, templatefile, self.outputstore, keepcomments)
         else:
             outputstore = convertor.convertfile(
                 inputfile,
                 getattr(inputfile, "name", "unknown"),
                 duplicatestyle=duplicatestyle,
                 keepcomments=keepcomments,
+                templatefile=templatefile,
             )
             outputstore.serialize(outputfile)
         return 1

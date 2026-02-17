@@ -14,6 +14,7 @@ class TestMD2PO(test_convert.TestConvertCommand):
 
     expected_options = [
         "-P, --pot",
+        "-t TEMPLATE, --template=TEMPLATE",
         "--duplicates=DUPLICATESTYLE",
         "--multifile=MULTIFILESTYLE",
     ]
@@ -118,3 +119,84 @@ This text will also be translated.
         assert "This code won't be extracted" not in content
         assert "link-ref" not in content
         assert "Link Title" not in content
+
+    def test_markdown_with_template_basic(self):
+        """Test md2po with template file for basic matching."""
+        # Create template (source language)
+        self.create_testfile(
+            "template.md",
+            "# Hello\n\nWorld\n",
+        )
+        # Create translated file
+        self.create_testfile(
+            "translated.md",
+            "# Hola\n\nMundo\n",
+        )
+        # Run conversion with template
+        self.run_command("translated.md", "output.po", template="template.md")
+        
+        # Verify output
+        assert os.path.isfile(self.get_testfilename("output.po"))
+        content = self.read_testfile("output.po").decode()
+        assert "Hello" in content  # source
+        assert "Hola" in content  # target
+        assert "World" in content  # source
+        assert "Mundo" in content  # target
+
+    def test_markdown_with_template_complex(self):
+        """Test md2po with template file for complex Markdown structure."""
+        # Create template (source language)
+        template_md = """# Welcome
+
+First paragraph
+
+Second paragraph
+
+## Subsection
+
+- Item 1
+- Item 2
+"""
+        
+        # Create translated file (same structure, different content)
+        translated_md = """# Bienvenue
+
+Premier paragraphe
+
+Deuxième paragraphe
+
+## Sous-section
+
+- Article 1
+- Article 2
+"""
+        
+        self.create_testfile("template_complex.md", template_md)
+        self.create_testfile("translated_complex.md", translated_md)
+        
+        # Run conversion
+        self.run_command(
+            "translated_complex.md",
+            "output_complex.po",
+            template="template_complex.md",
+        )
+        
+        # Verify output
+        assert os.path.isfile(self.get_testfilename("output_complex.po"))
+        content = self.read_testfile("output_complex.po").decode()
+        
+        # Check source strings
+        assert "Welcome" in content
+        assert "First paragraph" in content
+        assert "Second paragraph" in content
+        assert "Subsection" in content
+        assert "Item 1" in content
+        assert "Item 2" in content
+        
+        # Check target strings
+        assert "Bienvenue" in content
+        assert "Premier paragraphe" in content
+        assert "Deuxième paragraphe" in content
+        assert "Sous-section" in content
+        assert "Article 1" in content
+        assert "Article 2" in content

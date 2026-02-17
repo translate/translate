@@ -37,7 +37,7 @@ class MD2POOptionParser(convert.ConvertOptionParser):
             "text": ("po", self._extract_translation_units),
             None: ("po", self._extract_translation_units),
         }
-        super().__init__(formats, usetemplates=False, usepots=True, description=__doc__)
+        super().__init__(formats, usetemplates=True, usepots=True, description=__doc__)
         self.add_duplicates_option()
         self.add_multifile_option()
 
@@ -45,15 +45,21 @@ class MD2POOptionParser(convert.ConvertOptionParser):
         self,
         inputfile,
         outputfile,
-        templates,
+        templatefile,
         duplicatestyle,
         multifilestyle,
     ) -> int:
         if hasattr(self, "outputstore"):
-            self._parse_and_extract(inputfile, self.outputstore)
+            if templatefile is None:
+                self._parse_and_extract(inputfile, self.outputstore)
+            else:
+                self._merge_with_template(inputfile, templatefile, self.outputstore)
         else:
             store = po.pofile()
-            self._parse_and_extract(inputfile, store)
+            if templatefile is None:
+                self._parse_and_extract(inputfile, store)
+            else:
+                self._merge_with_template(inputfile, templatefile, store)
             store.removeduplicates(duplicatestyle)
             store.serialize(outputfile)
         return 1
@@ -66,6 +72,33 @@ class MD2POOptionParser(convert.ConvertOptionParser):
             if not tu.isheader():
                 storeunit = outputstore.addsourceunit(tu.source)
                 storeunit.addlocations(tu.getlocations())
+
+    @staticmethod
+    def _merge_with_template(inputfile, templatefile, outputstore) -> None:
+        """Merge translation from inputfile with source from templatefile using docpath matching."""
+        # Parse both files
+        templateparser = markdown.MarkdownFile(inputfile=templatefile)
+        inputparser = markdown.MarkdownFile(inputfile=inputfile)
+        
+        # Build a docpath index for the input (translated) file
+        input_index = {}
+        for unit in inputparser.units:
+            if not unit.isheader():
+                docpath = unit.getdocpath()
+                if docpath:
+                    input_index[docpath] = unit
+        
+        # Iterate through template units and match with input by docpath
+        for templateunit in templateparser.units:
+            if not templateunit.isheader():
+                docpath = templateunit.getdocpath()
+                storeunit = outputstore.addsourceunit(templateunit.source)
+                storeunit.addlocations(templateunit.getlocations())
+                
+                # Set target from matching input unit if found
+                if docpath and docpath in input_index:
+                    inputunit = input_index[docpath]
+                    storeunit.target = inputunit.source
 
     def recursiveprocess(self, options) -> None:
         """Recurse through directories and process files. (override)."""
