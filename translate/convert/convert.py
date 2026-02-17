@@ -561,15 +561,15 @@ def should_output_store(store, threshold):
 
 class DocpathMerger:
     """
-    Base class for merging translations using docpath-based matching.
+    Mixin class for merging translations using docpath-based matching.
 
-    This class provides common functionality for converters that need to
+    This mixin provides common functionality for converters that need to
     create PO files from existing translations by matching translation units
     based on their logical document path (docpath) rather than source text.
     """
 
-    @staticmethod
     def merge_stores_by_docpath(
+        self,
         inputfile,
         templatefile,
         outputstore,
@@ -607,7 +607,11 @@ class DocpathMerger:
 
         # Iterate through template units and match with input by docpath
         for templateunit in templateparser.units:
-            if filter_header and hasattr(templateunit, "isheader") and templateunit.isheader():
+            if (
+                filter_header
+                and hasattr(templateunit, "isheader")
+                and templateunit.isheader()
+            ):
                 continue
 
             docpath = templateunit.getdocpath()

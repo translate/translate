@@ -28,7 +28,7 @@ from translate.convert import convert
 from translate.storage import asciidoc, po
 
 
-class AsciiDoc2POOptionParser(convert.ConvertOptionParser):
+class AsciiDoc2POOptionParser(convert.ConvertOptionParser, convert.DocpathMerger):
     def __init__(self):
         formats = {
             "adoc": ("po", self._extract_translation_units),
@@ -72,10 +72,9 @@ class AsciiDoc2POOptionParser(convert.ConvertOptionParser):
                 storeunit = outputstore.addsourceunit(tu.source)
                 storeunit.addlocations(tu.getlocations())
 
-    @staticmethod
-    def _merge_with_template(inputfile, templatefile, outputstore) -> None:
+    def _merge_with_template(self, inputfile, templatefile, outputstore) -> None:
         """Merge translation from inputfile with source from templatefile using docpath matching."""
-        convert.DocpathMerger.merge_stores_by_docpath(
+        self.merge_stores_by_docpath(
             inputfile,
             templatefile,
             outputstore,

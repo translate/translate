@@ -28,7 +28,7 @@ from translate.convert import convert
 from translate.storage import html, po
 
 
-class html2po:
+class html2po(convert.DocpathMerger):
     def convertfile(
         self,
         inputfile,
@@ -59,8 +59,7 @@ class html2po:
             if keepcomments:
                 thepo.addnote(htmlunit.getnotes(), "developer")
 
-    @staticmethod
-    def mergefile(inputfile, templatefile, outputstore, keepcomments) -> None:
+    def mergefile(self, inputfile, templatefile, outputstore, keepcomments) -> None:
         """Merge translation from inputfile with source from templatefile using docpath matching."""
 
         def process_html_unit(templateunit, storeunit):
@@ -71,7 +70,7 @@ class html2po:
             if keepcomments:
                 storeunit.addnote(templateunit.getnotes(), "developer")
 
-        convert.DocpathMerger.merge_stores_by_docpath(
+        self.merge_stores_by_docpath(
             inputfile,
             templatefile,
             outputstore,
@@ -142,7 +141,9 @@ class Html2POOptionParser(convert.ConvertOptionParser):
             if templatefile is None:
                 convertor.convertfile_inner(inputfile, self.outputstore, keepcomments)
             else:
-                convertor.mergefile(inputfile, templatefile, self.outputstore, keepcomments)
+                convertor.mergefile(
+                    inputfile, templatefile, self.outputstore, keepcomments
+                )
         else:
             outputstore = convertor.convertfile(
                 inputfile,
