@@ -239,9 +239,17 @@ class Xliff2File(XliffFile[Xliff2Unit]):
         # Validate XLIFF version
         root = self.document.getroot()
         version = root.get("version", "")
+        namespace = root.nsmap.get(None, "")
+
+        # Check version attribute first, then fall back to namespace detection
         if version and not version.startswith("2."):
             raise ValueError(
                 f"This file appears to be XLIFF 1.x (version='{version}'). "
+                "Please use the XLIFF 1.x parser (xliff.xlifffile) instead."
+            )
+        elif not version and namespace and ":1." in namespace:
+            raise ValueError(
+                "This file appears to be XLIFF 1.x (namespace contains ':1.'). "
                 "Please use the XLIFF 1.x parser (xliff.xlifffile) instead."
             )
 

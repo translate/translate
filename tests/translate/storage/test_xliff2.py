@@ -626,3 +626,41 @@ class TestXLIFF2file(test_base.TestTranslationStore):
         assert "XLIFF 1" in str(exc_info.value)
         assert "version='1.2'" in str(exc_info.value)
         assert "xliff.xlifffile" in str(exc_info.value)
+
+    def test_xliff2_rejects_xliff1_files_without_version(self) -> None:
+        """Test that XLIFF 2.0 parser rejects XLIFF 1.x files without version attribute."""
+        # Test XLIFF 1.1 without version
+        xliff11_no_version = b"""<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.1">
+    <file original="test.txt" source-language="en" datatype="plaintext">
+        <body>
+            <trans-unit id="1">
+                <source>Hello</source>
+                <target>Hola</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>"""
+        with pytest.raises(ValueError) as exc_info:
+            xliff2.Xliff2File.parsestring(xliff11_no_version)
+        assert "XLIFF 1" in str(exc_info.value)
+        assert "namespace" in str(exc_info.value)
+        assert "xliff.xlifffile" in str(exc_info.value)
+
+        # Test XLIFF 1.2 without version
+        xliff12_no_version = b"""<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file original="test.txt" source-language="en" datatype="plaintext">
+        <body>
+            <trans-unit id="1">
+                <source>Hello</source>
+                <target>Hola</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>"""
+        with pytest.raises(ValueError) as exc_info:
+            xliff2.Xliff2File.parsestring(xliff12_no_version)
+        assert "XLIFF 1" in str(exc_info.value)
+        assert "namespace" in str(exc_info.value)
+        assert "xliff.xlifffile" in str(exc_info.value)
