@@ -284,7 +284,7 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
         assert plural is not None
         assert plural["target"].strings[1] == "One item"
         assert plural["target"].strings[2] == "%d items"
-    
+
     def test_real_world_plural_patterns(self):
         """Test parsing real-world Apple XLIFF plural patterns."""
         # Pattern from ONLYOFFICE files - uses leading slashes in IDs
@@ -315,20 +315,22 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
     </body>
   </file>
 </xliff>"""
-        
+
         store = self.StoreClass()
         store.settargetlanguage("lt")
         store.parse(xliff_content)
-        
+
         # Should parse successfully and recognize plurals
         assert len(store.units) == 5
-        
+
         # The NSStringLocalizedFormatKey trans-unit exists
         format_key_unit = store.units[0]
         assert "NSStringLocalizedFormatKey" in format_key_unit.xmlelement.get("id")
-        
+
         # Check plural forms
-        plural = store.get_plural_unit("/%d days are left until the license expiration.:dict/days")
+        plural = store.get_plural_unit(
+            "/%d days are left until the license expiration.:dict/days"
+        )
         assert plural is not None
         # Lithuanian has multiple plural forms (few, many, one, other)
-        assert len([s for s in plural['target'].strings if s]) >= 4
+        assert len([s for s in plural["target"].strings if s]) >= 4
