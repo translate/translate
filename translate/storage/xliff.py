@@ -515,7 +515,7 @@ class Xliff1File(XliffFile[U]):
                 f"This file appears to be XLIFF 2.x (version='{version}'). "
                 "Please use the XLIFF 2.0 parser (xliff2.Xliff2File) instead."
             )
-        
+
         # detect the xliff namespace, handle both 1.1 and 1.2
         for ns in self.document.getroot().nsmap.values():
             if ns and ns.startswith(self.unversioned_namespace):

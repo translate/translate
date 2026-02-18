@@ -244,7 +244,7 @@ class Xliff2File(XliffFile[Xliff2Unit]):
                 f"This file appears to be XLIFF 1.x (version='{version}'). "
                 "Please use the XLIFF 1.x parser (xliff.xlifffile) instead."
             )
-        
+
         self.namespace = self.document.getroot().nsmap.get(None, self.namespace)
 
         # Get the file node

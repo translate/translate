@@ -1,5 +1,4 @@
 import pytest
-
 from lxml import etree
 
 from translate.misc.xml_helpers import setXMLspace
