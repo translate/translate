@@ -69,7 +69,7 @@ The Apple XLIFF variant uses a special ID naming convention to represent plural 
 
 * ``key:variable:dict`` - Marks a plural variable (source: ``NSStringPluralRuleType``)
 * ``key:variable:dict/:string`` - Specifies the format value type (e.g., ``d`` for integer)
-* ``key:variable:dict/PLURAL_FORM:dict/:string`` - Contains the actual plural form strings 
+* ``key:variable:dict/PLURAL_FORM:dict/:string`` - Contains the actual plural form strings
   (e.g., ``one``, ``other``, ``zero``)
 
 Example
@@ -86,13 +86,13 @@ Example
            <source>NSStringPluralRuleType</source>
            <target>NSStringPluralRuleType</target>
          </trans-unit>
-         
+
          <!-- Format type -->
          <trans-unit id="items:count:dict/:string">
            <source>d</source>
            <target>d</target>
          </trans-unit>
-         
+
          <!-- Plural forms -->
          <trans-unit id="items:count:dict/one:dict/:string">
            <source>One item</source>
