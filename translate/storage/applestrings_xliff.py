@@ -282,6 +282,63 @@ class AppleStringsXliffFile(xliff.Xliff1File):
         }
 
 
+    def add_plural_unit(self, base_key, plural_strings, format_value_type="d", source_strings=None):
+        """
+        Add a plural unit to the store as Apple XLIFF trans-units.
+        
+        :param base_key: The base key like "shopping-list:apple"
+        :param plural_strings: Either a multistring or list of plural strings
+        :param format_value_type: Format type like "d" for integer
+        :param source_strings: Optional source strings (if None, uses plural_strings)
+        """
+        # Convert to list if needed
+        if isinstance(plural_strings, multistring):
+            plural_strings = plural_strings.strings
+        
+        if source_strings is None:
+            source_strings = plural_strings
+        elif isinstance(source_strings, multistring):
+            source_strings = source_strings.strings
+        
+        # Get plural tags for the target language
+        plural_tags = self.target_plural_tags
+        
+        # Ensure plural_strings matches plural_tags length
+        if len(plural_strings) != len(plural_tags):
+            # Pad or truncate as needed
+            plural_strings = list(plural_strings) + [""] * (len(plural_tags) - len(plural_strings))
+            plural_strings = plural_strings[:len(plural_tags)]
+        
+        if len(source_strings) != len(plural_tags):
+            source_strings = list(source_strings) + [""] * (len(plural_tags) - len(source_strings))
+            source_strings = source_strings[:len(plural_tags)]
+        
+        # Add marker unit
+        marker_unit = self.addsourceunit("")
+        marker_unit.xmlelement.set("id", f"{base_key}:dict")
+        marker_unit.source = "NSStringPluralRuleType"
+        marker_unit.target = "NSStringPluralRuleType"
+        
+        # Add format type unit
+        format_unit = self.addsourceunit("")
+        format_unit.xmlelement.set("id", f"{base_key}:dict/:string")
+        format_unit.source = format_value_type
+        format_unit.target = format_value_type
+        
+        # Add plural form units
+        for i, (tag, source_str, target_str) in enumerate(zip(plural_tags, source_strings, plural_strings)):
+            if not target_str and not source_str:
+                continue  # Skip empty forms
+            
+            form_unit = self.addsourceunit("")
+            form_unit.xmlelement.set("id", f"{base_key}:dict/{tag}:dict/:string")
+            form_unit.source = source_str or ""
+            form_unit.target = target_str or ""
+        
+        # Update the internal cache
+        self._plural_units = self._group_plural_units()
+
+
 def AppleStringsXliff(inputfile=None, **kwargs):
     """Helper function to create AppleStringsXliffFile instances."""
     return AppleStringsXliffFile(inputfile, **kwargs)

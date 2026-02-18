@@ -205,3 +205,85 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
         # Check language auto-detection
         store.filename = "Project/Base.lproj/Localizable.xliff"
         assert store.gettargetlanguage() == "en"
+    
+    def test_add_plural_unit(self):
+        """Test adding a plural unit programmatically."""
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        
+        # Add a plural unit
+        plural_strings = ["", "One item", "%d items"]
+        store.add_plural_unit("items:count", plural_strings, "d")
+        
+        # Verify the units were added (marker + format + non-empty plural forms)
+        # zero is empty, so only one and other are added
+        assert len(store.units) == 4
+        
+        # Check marker unit
+        marker_unit = store.units[0]
+        assert marker_unit.xmlelement.get("id") == "items:count:dict"
+        assert marker_unit.source == "NSStringPluralRuleType"
+        
+        # Check format unit
+        format_unit = store.units[1]
+        assert format_unit.xmlelement.get("id") == "items:count:dict/:string"
+        assert format_unit.target == "d"
+        
+        # Check plural form units
+        one_unit = store.units[2]
+        assert "one:dict/:string" in one_unit.xmlelement.get("id")
+        assert one_unit.target == "One item"
+        
+        other_unit = store.units[3]
+        assert "other:dict/:string" in other_unit.xmlelement.get("id")
+        assert other_unit.target == "%d items"
+        
+        # Verify we can retrieve the plural unit
+        plural = store.get_plural_unit("items:count")
+        assert plural is not None
+        assert plural['target'].strings[1] == "One item"
+        assert plural['target'].strings[2] == "%d items"
+    
+    def test_serialize_plural_roundtrip(self):
+        """Test that we can parse and serialize plural units."""
+        xliff_content = b"""<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file original="Localizable.strings" source-language="en" target-language="en" datatype="plaintext">
+    <body>
+      <trans-unit id="items:count:dict" xml:space="preserve">
+        <source>NSStringPluralRuleType</source>
+        <target>NSStringPluralRuleType</target>
+      </trans-unit>
+      <trans-unit id="items:count:dict/:string" xml:space="preserve">
+        <source>d</source>
+        <target>d</target>
+      </trans-unit>
+      <trans-unit id="items:count:dict/one:dict/:string" xml:space="preserve">
+        <source>One item</source>
+        <target>One item</target>
+      </trans-unit>
+      <trans-unit id="items:count:dict/other:dict/:string" xml:space="preserve">
+        <source>%d items</source>
+        <target>%d items</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>"""
+        
+        # Parse
+        store = self.StoreClass()
+        store.parse(xliff_content)
+        
+        # Serialize
+        output = bytes(store)
+        
+        # Parse again
+        store2 = self.StoreClass()
+        store2.parse(output)
+        
+        # Verify
+        plural = store2.get_plural_unit("items:count")
+        assert plural is not None
+        assert plural['target'].strings[1] == "One item"
+        assert plural['target'].strings[2] == "%d items"
+
