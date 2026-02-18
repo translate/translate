@@ -56,6 +56,60 @@ source documents and localisation formats.
   `representation guide
   <http://www.icu-project.org/repos/icu/icuhtml/trunk/design/locale/xliff-profile-icuresourcebundle-1.2.htm>`_
 
+.. _xliff#apple_xliff:
+
+Apple XLIFF
+-----------
+
+Apple has developed a custom variant of XLIFF 1.2 that encodes iOS/macOS .stringsdict
+plural information directly in XLIFF trans-units. This format is supported via
+``translate.storage.applestrings_xliff``.
+
+The Apple XLIFF variant uses a special ID naming convention to represent plural forms:
+
+* ``key:variable:dict`` - Marks a plural variable (source: ``NSStringPluralRuleType``)
+* ``key:variable:dict/:string`` - Specifies the format value type (e.g., ``d`` for integer)
+* ``key:variable:dict/PLURAL_FORM:dict/:string`` - Contains the actual plural form strings
+  (e.g., ``one``, ``other``, ``zero``)
+
+Example
+^^^^^^^
+
+.. code-block:: xml
+
+   <?xml version="1.0" encoding="UTF-8"?>
+   <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+     <file original="Localizable.strings" source-language="en" target-language="en">
+       <body>
+         <!-- Plural variable marker -->
+         <trans-unit id="items:count:dict">
+           <source>NSStringPluralRuleType</source>
+           <target>NSStringPluralRuleType</target>
+         </trans-unit>
+
+         <!-- Format type -->
+         <trans-unit id="items:count:dict/:string">
+           <source>d</source>
+           <target>d</target>
+         </trans-unit>
+
+         <!-- Plural forms -->
+         <trans-unit id="items:count:dict/one:dict/:string">
+           <source>One item</source>
+           <target>One item</target>
+         </trans-unit>
+         <trans-unit id="items:count:dict/other:dict/:string">
+           <source>%d items</source>
+           <target>%d items</target>
+         </trans-unit>
+       </body>
+     </file>
+   </xliff>
+
+The Translate Toolkit can parse these plural forms and access them as multistring units,
+similar to the .stringsdict format. Language detection from ``.lproj`` directories is
+also supported (e.g., ``en.lproj``, ``Base.lproj``).
+
 .. _xliff#standard_conformance:
 
 Standard conformance
