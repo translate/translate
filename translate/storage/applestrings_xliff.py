@@ -241,9 +241,9 @@ class AppleStringsXliffFile(xliff.Xliff1File):
         # keep the original structure or transform it
         # self.units = [u for u in self.units if id(u) not in units_to_remove]
 
-    def parse(self, input):
+    def parse(self, xml) -> None:
         """Parse the Apple XLIFF file and process plural units."""
-        super().parse(input)
+        super().parse(xml)
         # For now, we'll keep the original structure but add methods
         # to access plural forms as multistrings when needed
         self._plural_units = self._group_plural_units()
