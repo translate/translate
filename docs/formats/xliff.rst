@@ -61,8 +61,8 @@ source documents and localisation formats.
 Apple XLIFF
 -----------
 
-Apple has developed a custom variant of XLIFF 1.2 that encodes iOS/macOS .stringsdict 
-plural information directly in XLIFF trans-units. This format is supported via 
+Apple has developed a custom variant of XLIFF 1.2 that encodes iOS/macOS .stringsdict
+plural information directly in XLIFF trans-units. This format is supported via
 ``translate.storage.applestrings_xliff``.
 
 The Apple XLIFF variant uses a special ID naming convention to represent plural forms:
@@ -109,8 +109,6 @@ Example
 The Translate Toolkit can parse these plural forms and access them as multistring units,
 similar to the .stringsdict format. Language detection from ``.lproj`` directories is
 also supported (e.g., ``en.lproj``, ``Base.lproj``).
-
-Reference: `Lokalise XLIFF documentation <https://docs.lokalise.com/en/articles/1400816-xliff-xlf-xliff#plural-support>`_
 
 .. _xliff#standard_conformance:
 
