@@ -507,6 +507,23 @@ class Xliff1File(XliffFile[U]):
     """xliff units have alttrans tags which can be used to store suggestions"""
 
     def initbody(self) -> None:
+        # Validate XLIFF version
+        root = self.document.getroot()
+        version = root.get("version", "")
+        namespace = root.nsmap.get(None, "")
+
+        # Check version attribute first, then fall back to namespace detection
+        if version.startswith("2."):
+            raise ValueError(
+                f"This file appears to be XLIFF 2.x (version='{version}'). "
+                "Please use the XLIFF 2.0 parser (xliff2.Xliff2File) instead."
+            )
+        if not version and namespace and ":2." in namespace:
+            raise ValueError(
+                "This file appears to be XLIFF 2.x (namespace contains ':2.'). "
+                "Please use the XLIFF 2.0 parser (xliff2.Xliff2File) instead."
+            )
+
         # detect the xliff namespace, handle both 1.1 and 1.2
         for ns in self.document.getroot().nsmap.values():
             if ns and ns.startswith(self.unversioned_namespace):
