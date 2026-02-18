@@ -1,3 +1,5 @@
+import pytest
+
 from lxml import etree
 
 from translate.misc.xml_helpers import setXMLspace
@@ -1412,3 +1414,22 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         unit.rich_target = [target]
 
         assert bytes(xlifffile).decode() == xlfsource_preserve
+
+    def test_xliff1_rejects_xliff2_files(self) -> None:
+        """Test that XLIFF 1.x parser rejects XLIFF 2.0 files with a clear error."""
+        xliff2_content = b"""<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.0" xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en">
+    <file id="f1">
+        <unit id="1">
+            <segment>
+                <source>Hello</source>
+                <target>Hola</target>
+            </segment>
+        </unit>
+    </file>
+</xliff>"""
+        with pytest.raises(ValueError) as exc_info:
+            xliff.xlifffile.parsestring(xliff2_content)
+        assert "XLIFF 2" in str(exc_info.value)
+        assert "version='2.0'" in str(exc_info.value)
+        assert "xliff2.Xliff2File" in str(exc_info.value)

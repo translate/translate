@@ -236,6 +236,15 @@ class Xliff2File(XliffFile[Xliff2Unit]):
 
     def initbody(self) -> None:
         """Initialize the file body."""
+        # Validate XLIFF version
+        root = self.document.getroot()
+        version = root.get("version", "")
+        if version and not version.startswith("2."):
+            raise ValueError(
+                f"This file appears to be XLIFF 1.x (version='{version}'). "
+                "Please use the XLIFF 1.x parser (xliff.xlifffile) instead."
+            )
+        
         self.namespace = self.document.getroot().nsmap.get(None, self.namespace)
 
         # Get the file node
