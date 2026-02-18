@@ -247,7 +247,7 @@ class Xliff2File(XliffFile[Xliff2Unit]):
                 f"This file appears to be XLIFF 1.x (version='{version}'). "
                 "Please use the XLIFF 1.x parser (xliff.xlifffile) instead."
             )
-        elif not version and namespace and ":1." in namespace:
+        if not version and namespace and ":1." in namespace:
             raise ValueError(
                 "This file appears to be XLIFF 1.x (namespace contains ':1.'). "
                 "Please use the XLIFF 1.x parser (xliff.xlifffile) instead."
