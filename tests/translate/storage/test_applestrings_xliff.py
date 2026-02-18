@@ -284,3 +284,51 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
         assert plural is not None
         assert plural["target"].strings[1] == "One item"
         assert plural["target"].strings[2] == "%d items"
+    
+    def test_real_world_plural_patterns(self):
+        """Test parsing real-world Apple XLIFF plural patterns."""
+        # Pattern from ONLYOFFICE files - uses leading slashes in IDs
+        xliff_content = b"""<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file original="Localizable.strings" source-language="en" target-language="lt" datatype="plaintext">
+    <body>
+      <trans-unit id="/%d days are left until the license expiration.:dict/NSStringLocalizedFormatKey:dict/:string">
+        <source>%#@days@</source>
+        <target>%#@dienos@</target>
+      </trans-unit>
+      <trans-unit id="/%d days are left until the license expiration.:dict/days:dict/few:dict/:string">
+        <source>%d days are left until the license expiration.</source>
+        <target state="translated">Days left until expiration (few).</target>
+      </trans-unit>
+      <trans-unit id="/%d days are left until the license expiration.:dict/days:dict/many:dict/:string">
+        <source>%d days are left until the license expiration.</source>
+        <target state="translated">Days left until expiration (many).</target>
+      </trans-unit>
+      <trans-unit id="/%d days are left until the license expiration.:dict/days:dict/one:dict/:string">
+        <source>%d day are left until the license expiration.</source>
+        <target state="translated">Days left until expiration (one).</target>
+      </trans-unit>
+      <trans-unit id="/%d days are left until the license expiration.:dict/days:dict/other:dict/:string">
+        <source>%d days are left until the license expiration.</source>
+        <target state="translated">Days left until expiration (other).</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>"""
+        
+        store = self.StoreClass()
+        store.settargetlanguage("lt")
+        store.parse(xliff_content)
+        
+        # Should parse successfully and recognize plurals
+        assert len(store.units) == 5
+        
+        # The NSStringLocalizedFormatKey trans-unit exists
+        format_key_unit = store.units[0]
+        assert "NSStringLocalizedFormatKey" in format_key_unit.xmlelement.get("id")
+        
+        # Check plural forms
+        plural = store.get_plural_unit("/%d days are left until the license expiration.:dict/days")
+        assert plural is not None
+        # Lithuanian has multiple plural forms (few, many, one, other)
+        assert len([s for s in plural['target'].strings if s]) >= 4
