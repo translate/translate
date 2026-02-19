@@ -351,8 +351,10 @@ class LISAfile(base.TranslationStore[U]):
             # namespace) is added to a store with a different namespace, ensuring
             # round-trip serialization works correctly.
             for node in unit.xmlelement.iter():
-                if isinstance(node.tag, str) and etree.QName(node).namespace == old_ns:
-                    node.tag = namespaced(self.namespace, etree.QName(node).localname)
+                if isinstance(node.tag, str):
+                    qname = etree.QName(node)
+                    if qname.namespace == old_ns:
+                        node.tag = namespaced(self.namespace, qname.localname)
         super().addunit(unit)
         if new:
             self.body.append(unit.xmlelement)  # ty:ignore[unresolved-attribute]
