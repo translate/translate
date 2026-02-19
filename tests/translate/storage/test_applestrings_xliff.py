@@ -334,3 +334,228 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
         assert plural is not None
         # Lithuanian has multiple plural forms (few, many, one, other)
         assert len([s for s in plural["target"].strings if s]) >= 4
+
+    def test_serialize_plural_xml_structure(self):
+        """Test that serialized plural units have the correct XML structure."""
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        store.add_plural_unit("items:count", ["", "One item", "%d items"], "d")
+
+        output = bytes(store).decode("utf-8")
+
+        # Verify the marker unit
+        assert 'id="items:count:dict"' in output
+        assert "<source>NSStringPluralRuleType</source>" in output
+
+        # Verify the format type unit
+        assert 'id="items:count:dict/:string"' in output
+        assert "<source>d</source>" in output
+
+        # Verify plural form units
+        assert 'id="items:count:dict/one:dict/:string"' in output
+        assert "<source>One item</source>" in output
+
+        assert 'id="items:count:dict/other:dict/:string"' in output
+        assert "<source>%d items</source>" in output
+
+        # Verify zero form is not present (was empty)
+        assert 'id="items:count:dict/zero:dict/:string"' not in output
+
+    def test_serialize_plural_all_forms(self):
+        """Test serialization when all plural forms are provided."""
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        store.add_plural_unit(
+            "items:count", ["No items", "One item", "%d items"], "d"
+        )
+
+        output = bytes(store).decode("utf-8")
+
+        # All three forms should be present
+        assert 'id="items:count:dict/zero:dict/:string"' in output
+        assert 'id="items:count:dict/one:dict/:string"' in output
+        assert 'id="items:count:dict/other:dict/:string"' in output
+        assert "<source>No items</source>" in output
+        assert "<source>One item</source>" in output
+        assert "<source>%d items</source>" in output
+
+    def test_convert_non_plural_to_plural(self):
+        """Test changing a non-plural unit to plural on a parsed store."""
+        xliff_content = b"""<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file original="Localizable.strings" source-language="en" target-language="en" datatype="plaintext">
+    <body>
+      <trans-unit id="greeting" xml:space="preserve">
+        <source>Hello</source>
+        <target>Hello</target>
+      </trans-unit>
+      <trans-unit id="item_count" xml:space="preserve">
+        <source>%d items</source>
+        <target>%d items</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>"""
+
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        store.parse(xliff_content)
+
+        assert len(store.units) == 2
+
+        # Remove the non-plural unit
+        unit_to_replace = next(
+            (u for u in store.units if u.xmlelement.get("id") == "item_count"), None
+        )
+        assert unit_to_replace is not None
+        store.removeunit(unit_to_replace)
+
+        assert len(store.units) == 1
+
+        # Add plural unit in its place
+        store.add_plural_unit("item_count:count", ["", "One item", "%d items"], "d")
+
+        # Should now have 1 original + 4 plural (marker + format + one + other)
+        assert len(store.units) == 5
+
+        # Serialize and check output
+        output = bytes(store).decode("utf-8")
+        assert 'id="greeting"' in output
+        assert 'id="item_count:count:dict"' in output
+        assert 'id="item_count:count:dict/one:dict/:string"' in output
+        assert 'id="item_count:count:dict/other:dict/:string"' in output
+
+        # Verify round-trip
+        store2 = self.StoreClass()
+        store2.settargetlanguage("en")
+        store2.parse(output.encode("utf-8"))
+        plural = store2.get_plural_unit("item_count:count")
+        assert plural is not None
+        assert plural["target"].strings[1] == "One item"
+        assert plural["target"].strings[2] == "%d items"
+
+    def test_convert_plural_to_non_plural(self):
+        """Test changing plural units back to a non-plural unit."""
+        xliff_content = b"""<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file original="Localizable.strings" source-language="en" target-language="en" datatype="plaintext">
+    <body>
+      <trans-unit id="greeting" xml:space="preserve">
+        <source>Hello</source>
+        <target>Hello</target>
+      </trans-unit>
+      <trans-unit id="items:count:dict" xml:space="preserve">
+        <source>NSStringPluralRuleType</source>
+        <target>NSStringPluralRuleType</target>
+      </trans-unit>
+      <trans-unit id="items:count:dict/:string" xml:space="preserve">
+        <source>d</source>
+        <target>d</target>
+      </trans-unit>
+      <trans-unit id="items:count:dict/one:dict/:string" xml:space="preserve">
+        <source>One item</source>
+        <target>One item</target>
+      </trans-unit>
+      <trans-unit id="items:count:dict/other:dict/:string" xml:space="preserve">
+        <source>%d items</source>
+        <target>%d items</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>"""
+
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        store.parse(xliff_content)
+
+        assert len(store.units) == 5
+
+        # Remove all plural units for "items:count"
+        removed = store.remove_plural_unit("items:count")
+        assert removed is True
+
+        # Only the greeting unit should remain
+        assert len(store.units) == 1
+
+        # Verify plural unit is gone
+        assert store.get_plural_unit("items:count") is None
+
+        # Add a simple non-plural unit in its place
+        new_unit = store.addsourceunit(
+            "Items", filename="Localizable.strings", createifmissing=True
+        )
+        new_unit.setid("items_label")
+        new_unit.target = "Items"
+
+        assert len(store.units) == 2
+
+        # Serialize and verify
+        output = bytes(store).decode("utf-8")
+        assert 'id="greeting"' in output
+        assert 'id="items_label"' in output
+        assert "items:count:dict" not in output
+
+        # Verify round-trip
+        store2 = self.StoreClass()
+        store2.parse(output.encode("utf-8"))
+        assert len(store2.units) == 2
+        greeting_unit = next(
+            (u for u in store2.units if u.xmlelement.get("id") == "greeting"), None
+        )
+        assert greeting_unit is not None
+        assert greeting_unit.target == "Hello"
+
+    def test_remove_plural_unit(self):
+        """Test remove_plural_unit method."""
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        store.add_plural_unit("items:count", ["", "One item", "%d items"], "d")
+        store.add_plural_unit("orders:count", ["", "One order", "%d orders"], "d")
+
+        # 2 groups × (marker + format + 2 forms) = 8 units
+        assert len(store.units) == 8
+
+        # Remove one group
+        removed = store.remove_plural_unit("items:count")
+        assert removed is True
+        assert len(store.units) == 4
+
+        # The remaining units should be for orders:count
+        assert store.get_plural_unit("items:count") is None
+        orders_plural = store.get_plural_unit("orders:count")
+        assert orders_plural is not None
+        assert orders_plural["target"].strings[1] == "One order"
+
+        # Removing a non-existent key returns False
+        assert store.remove_plural_unit("nonexistent:key") is False
+
+    def test_add_plural_unit_to_parsed_store(self):
+        """Test that add_plural_unit works correctly on a parsed store."""
+        xliff_content = b"""<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file original="Localizable.strings" source-language="en" target-language="en" datatype="plaintext">
+    <body>
+      <trans-unit id="greeting" xml:space="preserve">
+        <source>Hello</source>
+        <target>Hello</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>"""
+
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        store.parse(xliff_content)
+
+        assert len(store.units) == 1
+
+        # Add plural unit to the already-parsed store (previously would fail)
+        store.add_plural_unit("items:count", ["", "One item", "%d items"], "d")
+
+        # Should now have 1 original + 4 plural units
+        assert len(store.units) == 5
+
+        plural = store.get_plural_unit("items:count")
+        assert plural is not None
+        assert plural["target"].strings[1] == "One item"
+        assert plural["target"].strings[2] == "%d items"

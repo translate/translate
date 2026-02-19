@@ -279,6 +279,19 @@ class AppleStringsXliffFile(xliff.Xliff1File):
             "format_value_type": group_data["format_type"],
         }
 
+    def _get_current_filename(self):
+        """
+        Get the filename of the current file in the store.
+
+        Falls back to the first file's name if available, or "NoName".
+        This is needed when adding units to a parsed store where the internal
+        filename tracker may not be set.
+        """
+        if self._filename:
+            return self._filename
+        filenames = self.getfilenames()
+        return filenames[0] if filenames else "NoName"
+
     def add_plural_unit(
         self, base_key, plural_strings, format_value_type="d", source_strings=None
     ):
@@ -316,14 +329,17 @@ class AppleStringsXliffFile(xliff.Xliff1File):
             )
             source_strings = source_strings[: len(plural_tags)]
 
+        # Determine the filename to add units to (handles parsed stores)
+        filename = self._get_current_filename()
+
         # Add marker unit
-        marker_unit = self.addsourceunit("")
+        marker_unit = self.addsourceunit("", filename=filename, createifmissing=True)
         marker_unit.xmlelement.set("id", f"{base_key}:dict")
         marker_unit.source = "NSStringPluralRuleType"
         marker_unit.target = "NSStringPluralRuleType"
 
         # Add format type unit
-        format_unit = self.addsourceunit("")
+        format_unit = self.addsourceunit("", filename=filename, createifmissing=True)
         format_unit.xmlelement.set("id", f"{base_key}:dict/:string")
         format_unit.source = format_value_type
         format_unit.target = format_value_type
@@ -335,13 +351,32 @@ class AppleStringsXliffFile(xliff.Xliff1File):
             if not target_str and not source_str:
                 continue  # Skip empty forms
 
-            form_unit = self.addsourceunit("")
+            form_unit = self.addsourceunit("", filename=filename, createifmissing=True)
             form_unit.xmlelement.set("id", f"{base_key}:dict/{tag}:dict/:string")
             form_unit.source = source_str or ""
             form_unit.target = target_str or ""
 
         # Update the internal cache
         self._plural_units = self._group_plural_units()
+
+    def remove_plural_unit(self, base_key):
+        """
+        Remove all trans-units related to a plural group.
+
+        Removes the marker unit, format type unit, and all plural form units
+        associated with the given base key.
+
+        :param base_key: The base key like "shopping-list:apple"
+        :returns: True if any units were removed, False if the key was not found
+        """
+        units_to_remove = [u for u in self.units if u.get_base_key() == base_key]
+        if not units_to_remove:
+            return False
+        for unit in units_to_remove:
+            self.removeunit(unit)
+        # Update the internal cache
+        self._plural_units = self._group_plural_units()
+        return True
 
 
 def AppleStringsXliff(inputfile=None, **kwargs):
