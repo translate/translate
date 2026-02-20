@@ -302,6 +302,73 @@ msgstr "Hodnota"
         output = self._convert_to_string(po, template)
         assert 'Culture="cs-cz"' in output
 
+    def test_template_preserves_xml_comments(self) -> None:
+        """XML comments in the template are preserved in po2wxl WXL output."""
+        template = b"""<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization xmlns="http://wixtoolset.org/schemas/v4/wxl" Culture="en-us">
+  <!-- Navigation buttons -->
+  <String Id="WixUIBack" Value="Back" />
+  <!-- Footer -->
+  <String Id="WixUINext" Value="Next" />
+</WixLocalization>
+"""
+        po = b"""
+msgid "WixUIBack"
+msgstr "Zurueck"
+
+msgid "WixUINext"
+msgstr "Weiter"
+"""
+        output = self._convert_to_string(po, template)
+        assert "<!-- Navigation buttons -->" in output
+        assert "<!-- Footer -->" in output
+        assert "Zurueck" in output
+        assert "Weiter" in output
+
+    def test_template_preserves_non_translatable_ui(self) -> None:
+        """Non-translatable UI elements (no Text attr) are preserved in po2wxl WXL output."""
+        template = b"""<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization xmlns="http://wixtoolset.org/schemas/v4/wxl" Culture="en-us">
+  <String Id="WixUIBack" Value="Back" />
+  <UI Id="WixUI_Mondo" />
+  <String Id="WixUINext" Value="Next" />
+</WixLocalization>
+"""
+        po = b"""
+msgid "WixUIBack"
+msgstr "Zurueck"
+
+msgid "WixUINext"
+msgstr "Weiter"
+"""
+        output = self._convert_to_string(po, template)
+        assert 'Id="WixUI_Mondo"' in output
+        assert "Zurueck" in output
+        assert "Weiter" in output
+
+    def test_template_output_matches_structure(self) -> None:
+        """po2wxl output with template is structurally identical to template with changed values."""
+        template = b"""<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization xmlns="http://wixtoolset.org/schemas/v4/wxl" Culture="en-us">
+  <!-- Buttons -->
+  <String Id="WixUIBack" Value="Back" />
+  <UI Id="WixUI_Mondo" />
+</WixLocalization>
+"""
+        po = b"""
+msgid "WixUIBack"
+msgstr "Zurueck"
+"""
+        output = self._convert_to_string(po, template)
+        # Comment preserved
+        assert "<!-- Buttons -->" in output
+        # Non-translatable UI preserved
+        assert 'Id="WixUI_Mondo"' in output
+        # Translation applied
+        assert 'Value="Zurueck"' in output
+        # Source value replaced (not present)
+        assert 'Value="Back"' not in output
+
     def test_empty_po_returns_zero(self) -> None:
         """An empty PO file yields a return code of 0."""
         result, _, _ = self._convert(b"")
