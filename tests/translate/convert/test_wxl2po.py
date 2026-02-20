@@ -118,6 +118,100 @@ class TestWxl2PO:
         assert next_unit is not None
         assert next_unit.target == ""
 
+    def test_merge_non_translatable_ui_excluded(self) -> None:
+        """Non-translatable UI elements (no Text attr) are excluded from PO output."""
+        template = b"""<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization xmlns="http://wixtoolset.org/schemas/v4/wxl" Culture="en-us">
+  <String Id="WixUIBack" Value="Back" />
+  <UI Id="WixUI_Mondo" />
+  <String Id="WixUINext" Value="Next" />
+</WixLocalization>
+"""
+        wxl_de = b"""<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization xmlns="http://wixtoolset.org/schemas/v4/wxl" Culture="de-de">
+  <String Id="WixUIBack" Value="Zurueck" />
+  <String Id="WixUINext" Value="Weiter" />
+</WixLocalization>
+"""
+        result, store, outputfile = self._convert_with_template(wxl_de, template)
+        assert result == 1
+        units = [u for u in store.units if not u.isheader()]
+        # WixUI_Mondo (non-translatable) must not appear as a PO unit
+        assert len(units) == 2
+        po_text = outputfile.getvalue().decode("utf-8")
+        assert "WixUI_Mondo" not in po_text
+        assert 'msgid "WixUIBack"' in po_text
+        assert 'msgstr "Zurueck"' in po_text
+
+    def test_merge_xml_comments_excluded(self) -> None:
+        """XML comments in the WXL template are excluded from PO output."""
+        template = b"""<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization xmlns="http://wixtoolset.org/schemas/v4/wxl" Culture="en-us">
+  <!-- Buttons -->
+  <String Id="WixUIBack" Value="Back" />
+  <!-- Navigation -->
+  <String Id="WixUINext" Value="Next" />
+</WixLocalization>
+"""
+        wxl_de = b"""<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization xmlns="http://wixtoolset.org/schemas/v4/wxl" Culture="de-de">
+  <String Id="WixUIBack" Value="Zurueck" />
+  <String Id="WixUINext" Value="Weiter" />
+</WixLocalization>
+"""
+        result, store, outputfile = self._convert_with_template(wxl_de, template)
+        assert result == 1
+        po_text = outputfile.getvalue().decode("utf-8")
+        assert "Buttons" not in po_text
+        assert "Navigation" not in po_text
+        assert 'msgid "WixUIBack"' in po_text
+        assert 'msgstr "Zurueck"' in po_text
+        assert 'msgid "WixUINext"' in po_text
+        assert 'msgstr "Weiter"' in po_text
+
+    def test_merge_translatable_ui_with_text_included(self) -> None:
+        """UI elements with a Text attribute are treated as translatable."""
+        template = b"""<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization xmlns="http://wixtoolset.org/schemas/v4/wxl" Culture="en-us">
+  <UI Id="WixUIInstallTitle" Text="Installation" />
+  <UI Id="WixUI_Mondo" />
+</WixLocalization>
+"""
+        wxl_de = b"""<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization xmlns="http://wixtoolset.org/schemas/v4/wxl" Culture="de-de">
+  <UI Id="WixUIInstallTitle" Text="Installation DE" />
+</WixLocalization>
+"""
+        result, store, outputfile = self._convert_with_template(wxl_de, template)
+        assert result == 1
+        units = [u for u in store.units if not u.isheader()]
+        # WixUI_Mondo has no Text → not translatable, so only 1 unit
+        assert len(units) == 1
+        po_text = outputfile.getvalue().decode("utf-8")
+        assert 'msgid "WixUIInstallTitle"' in po_text
+        assert 'msgstr "Installation DE"' in po_text
+        assert "WixUI_Mondo" not in po_text
+
+    def test_no_template_non_translatable_ui_excluded(self) -> None:
+        """Without a template, non-translatable UI elements are excluded from PO."""
+        content = b"""<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization xmlns="http://wixtoolset.org/schemas/v4/wxl" Culture="de-de">
+  <!-- A comment -->
+  <String Id="WixUIBack" Value="Zurueck" />
+  <UI Id="WixUI_Mondo" />
+  <UI Id="WixUIInstallTitle" Text="Installation DE" />
+</WixLocalization>
+"""
+        result, store, outputfile = self._convert(content)
+        assert result == 1
+        units = [u for u in store.units if not u.isheader()]
+        assert len(units) == 2
+        po_text = outputfile.getvalue().decode("utf-8")
+        assert "WixUI_Mondo" not in po_text
+        assert "A comment" not in po_text
+        assert 'msgid "WixUIBack"' in po_text
+        assert 'msgid "WixUIInstallTitle"' in po_text
+
     def test_merge_v3_template(self) -> None:
         """Template handling works with WiX v3 text-content format."""
         wxl_en_v3 = b"""<?xml version="1.0" encoding="utf-8"?>
