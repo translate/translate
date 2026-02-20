@@ -43,10 +43,7 @@ class po2wxl:
     def convert_unit(self, unit):
         """Convert a PO unit to a WXL unit."""
         target_unit = self.TargetUnitClass(source=unit.source)
-        if unit.istranslated() or not unit.source:
-            target_unit.target = unit.target
-        else:
-            target_unit.target = unit.source
+        target_unit.target = unit.target
         return target_unit
 
     def convert_store(self) -> None:

@@ -5,6 +5,34 @@ from io import BytesIO
 from lxml import etree
 
 from translate.convert import po2wxl, wxl2po
+from translate.storage import wxl
+
+from . import test_convert
+
+WXL_V4_TEMPLATE = b"""<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization xmlns="http://wixtoolset.org/schemas/v4/wxl" Culture="de-de" Codepage="65001">
+  <String Id="WixUIBack" Overridable="yes" Value="Back" />
+  <String Id="WixUICancel" Overridable="yes" Value="Cancel" />
+  <String Id="WixUINext" Overridable="yes" Value="Next" />
+</WixLocalization>
+"""
+
+WXL_V3_TEMPLATE = b"""<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization xmlns="http://schemas.microsoft.com/wix/2006/localization" Culture="cs-cz">
+  <String Id="WixUIBack">Back</String>
+  <String Id="WixUICancel">Cancel</String>
+</WixLocalization>
+"""
+
+PO_CONTENT = """
+#: WixUIBack
+msgid "WixUIBack"
+msgstr "Zurueck"
+
+#: WixUICancel
+msgid "WixUICancel"
+msgstr "Abbrechen"
+"""
 
 
 class TestWxl2PO:
@@ -373,3 +401,186 @@ msgstr "Zurueck"
         """An empty PO file yields a return code of 0."""
         result, _, _ = self._convert(b"")
         assert result == 0
+
+    def test_comments_preserved(self) -> None:
+        """XML comments in the template are preserved in the output."""
+        template = b"""<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization xmlns="http://wixtoolset.org/schemas/v4/wxl" Culture="de-de" Codepage="65001">
+  <!-- Back button label -->
+  <String Id="WixUIBack" Value="Back" />
+  <!-- Cancel button label -->
+  <String Id="WixUICancel" Value="Cancel" />
+</WixLocalization>
+"""
+        po = b"""
+msgid "WixUIBack"
+msgstr "Zurueck"
+
+msgid "WixUICancel"
+msgstr "Abbrechen"
+"""
+        output = self._convert_to_string(po, template)
+        assert "<!-- Back button label -->" in output
+        assert "<!-- Cancel button label -->" in output
+        assert "Zurueck" in output
+        assert "Abbrechen" in output
+
+    def test_nontranslatable_ui_preserved(self) -> None:
+        """Non-translatable UI elements in the template are preserved."""
+        template = b"""<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization xmlns="http://wixtoolset.org/schemas/v4/wxl" Culture="de-de" Codepage="65001">
+  <String Id="WixUIBack" Value="Back" />
+  <UI Id="WixUI_Advanced" />
+  <UI Id="WixUI_Minimal" ControlType="Button" />
+</WixLocalization>
+"""
+        po = b"""
+msgid "WixUIBack"
+msgstr "Zurueck"
+"""
+        output = self._convert_to_string(po, template)
+        assert 'Id="WixUI_Advanced"' in output
+        assert 'Id="WixUI_Minimal"' in output
+        assert 'ControlType="Button"' in output
+
+    def test_untranslated_keeps_template_value(self) -> None:
+        """Strings without a translation keep the value from the template."""
+        template = b"""<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization xmlns="http://wixtoolset.org/schemas/v4/wxl" Culture="de-de" Codepage="65001">
+  <String Id="WixUIBack" Value="Back" />
+  <String Id="WixUICancel" Value="Cancel" />
+</WixLocalization>
+"""
+        po = b"""
+msgid "WixUIBack"
+msgstr "Zurueck"
+"""
+        _, store, _ = self._convert(po, template)
+        assert store.findid("WixUIBack").target == "Zurueck"
+        assert store.findid("WixUICancel").target == "Cancel"
+
+    def test_untranslated_no_template(self) -> None:
+        """Without a template, untranslated units produce an empty string."""
+        po = b"""
+msgid "WixUIBack"
+msgstr ""
+"""
+        _, store, _ = self._convert(po)
+        unit = store.findid("WixUIBack")
+        assert unit is not None
+        assert unit.target == ""
+
+    def test_element_order_preserved(self) -> None:
+        """Element ordering from the template is preserved in the output."""
+        template = b"""<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization xmlns="http://wixtoolset.org/schemas/v4/wxl" Culture="de-de" Codepage="65001">
+  <String Id="ZZZ" Value="Last" />
+  <String Id="AAA" Value="First" />
+</WixLocalization>
+"""
+        po = b"""
+msgid "ZZZ"
+msgstr "ZZZ-translated"
+
+msgid "AAA"
+msgstr "AAA-translated"
+"""
+        output = self._convert_to_string(po, template)
+        assert output.index("ZZZ") < output.index("AAA")
+
+
+class TestPO2WXLCommand(test_convert.TestConvertCommand):
+    """Tests running actual po2wxl commands on files."""
+
+    convertmodule = po2wxl
+    defaultoptions = {"progress": "none"}
+    expected_options = [
+        "-t TEMPLATE, --template=TEMPLATE",
+    ]
+
+    def test_convert(self) -> None:
+        """Tests the conversion to a WXL file using a template."""
+        self.create_testfile("template.wxl", WXL_V4_TEMPLATE)
+        self.create_testfile("input.po", PO_CONTENT)
+        self.run_command(template="template.wxl", i="input.po", o="output.wxl")
+        with self.open_testfile("output.wxl") as handle:
+            wxl_result = wxl.WxlFile(handle)
+        assert wxl_result.findid("WixUIBack").target == "Zurueck"
+        assert wxl_result.findid("WixUICancel").target == "Abbrechen"
+
+    def test_preserve_comments(self) -> None:
+        """XML comments in the template are preserved in the output."""
+        template_with_comments = (
+            b'<?xml version="1.0" encoding="utf-8"?>\n'
+            b'<WixLocalization xmlns="http://wixtoolset.org/schemas/v4/wxl"'
+            b' Culture="de-de" Codepage="65001">\n'
+            b"  <!-- Back button label -->\n"
+            b'  <String Id="WixUIBack" Value="Back" />\n'
+            b"  <!-- Cancel button label -->\n"
+            b'  <String Id="WixUICancel" Value="Cancel" />\n'
+            b"</WixLocalization>\n"
+        )
+        self.create_testfile("template.wxl", template_with_comments)
+        self.create_testfile("input.po", PO_CONTENT)
+        self.run_command(template="template.wxl", i="input.po", o="output.wxl")
+        with self.open_testfile("output.wxl") as handle:
+            content = handle.read().decode("utf-8")
+        assert "<!-- Back button label -->" in content
+        assert "<!-- Cancel button label -->" in content
+        assert "Zurueck" in content
+        assert "Abbrechen" in content
+
+    def test_preserve_nontranslatable_ui(self) -> None:
+        """Non-translatable UI elements in the template are preserved."""
+        template_with_ui = (
+            b'<?xml version="1.0" encoding="utf-8"?>\n'
+            b'<WixLocalization xmlns="http://wixtoolset.org/schemas/v4/wxl"'
+            b' Culture="de-de" Codepage="65001">\n'
+            b'  <String Id="WixUIBack" Value="Back" />\n'
+            b'  <UI Id="WixUI_Advanced" />\n'
+            b'  <UI Id="WixUI_Minimal" ControlType="Button" />\n'
+            b"</WixLocalization>\n"
+        )
+        po = b"""
+msgid "WixUIBack"
+msgstr "Zurueck"
+"""
+        self.create_testfile("template.wxl", template_with_ui)
+        self.create_testfile("input.po", po)
+        self.run_command(template="template.wxl", i="input.po", o="output.wxl")
+        with self.open_testfile("output.wxl") as handle:
+            content = handle.read().decode("utf-8")
+        assert 'Id="WixUI_Advanced"' in content
+        assert 'Id="WixUI_Minimal"' in content
+        assert 'ControlType="Button"' in content
+
+    def test_untranslated_kept_from_template(self) -> None:
+        """Untranslated strings use the value from the template."""
+        self.create_testfile("template.wxl", WXL_V4_TEMPLATE)
+        po = b"""
+msgid "WixUIBack"
+msgstr "Zurueck"
+"""
+        self.create_testfile("input.po", po)
+        self.run_command(template="template.wxl", i="input.po", o="output.wxl")
+        with self.open_testfile("output.wxl") as handle:
+            wxl_result = wxl.WxlFile(handle)
+        assert wxl_result.findid("WixUIBack").target == "Zurueck"
+        assert wxl_result.findid("WixUINext").target == "Next"
+
+    def test_convert_v3(self) -> None:
+        """V3 text-content format is handled correctly with a template."""
+        self.create_testfile("template.wxl", WXL_V3_TEMPLATE)
+        po = b"""
+msgid "WixUIBack"
+msgstr "Zurueck"
+
+msgid "WixUICancel"
+msgstr "Abbrechen"
+"""
+        self.create_testfile("input.po", po)
+        self.run_command(template="template.wxl", i="input.po", o="output.wxl")
+        with self.open_testfile("output.wxl") as handle:
+            wxl_result = wxl.WxlFile(handle)
+        assert wxl_result.findid("WixUIBack").target == "Zurueck"
+        assert wxl_result.findid("WixUICancel").target == "Abbrechen"
