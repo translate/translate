@@ -354,9 +354,3 @@ class WxlFile(base.TranslationStore):
                 pretty_print=False,
             )
         )
-
-    def units_iter(self) -> Iterator[WxlUnit]:
-        yield from self.units
-
-    def unit_iter(self) -> Iterator[WxlUnit]:
-        yield from self.units
