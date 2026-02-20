@@ -365,9 +365,7 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
         """Test serialization when all plural forms are provided."""
         store = self.StoreClass()
         store.settargetlanguage("en")
-        store.add_plural_unit(
-            "items:count", ["No items", "One item", "%d items"], "d"
-        )
+        store.add_plural_unit("items:count", ["No items", "One item", "%d items"], "d")
 
         output = bytes(store).decode("utf-8")
 
