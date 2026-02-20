@@ -37,6 +37,7 @@ class wxl2po:
     def __init__(self, inputfile, outputfile, templatefile=None) -> None:
         self.inputfile = inputfile
         self.outputfile = outputfile
+        self.templatefile = templatefile
         self.source_store = self.SourceStoreClass(inputfile)
         self.target_store = self.TargetStoreClass()
 
@@ -49,9 +50,31 @@ class wxl2po:
         for source_unit in self.source_store.units:
             self.target_store.addunit(self.convert_unit(source_unit))
 
+    def merge_store(self, template_store) -> None:
+        """
+        Merge the template (source language) and input (translation) stores.
+
+        The template provides the msgid (source text), while the input store
+        provides the msgstr (translated text).  Units are matched by their
+        ``Id`` attribute.
+        """
+        self.source_store.makeindex()
+        for template_unit in template_store.units:
+            po_unit = self.convert_unit(template_unit)
+            po_unit.target = ""
+            unit_id = template_unit.getid()
+            translated = self.source_store.findid(unit_id)
+            if translated is not None:
+                po_unit.target = translated.target
+            self.target_store.addunit(po_unit)
+
     def run(self) -> int:
         """Run the converter."""
-        self.convert_store()
+        if self.templatefile is not None:
+            template_store = self.SourceStoreClass(self.templatefile)
+            self.merge_store(template_store)
+        else:
+            self.convert_store()
         if self.target_store.isempty():
             return 0
         self.target_store.serialize(self.outputfile)
@@ -65,11 +88,14 @@ def run_converter(inputfile, outputfile, templatefile=None):
 
 formats = {
     "wxl": ("po", run_converter),
+    ("wxl", "wxl"): ("po", run_converter),
 }
 
 
 def main(argv=None) -> None:
-    parser = convert.ConvertOptionParser(formats, description=__doc__)
+    parser = convert.ConvertOptionParser(
+        formats, usetemplates=True, usepots=True, description=__doc__
+    )
     parser.run(argv)
 
 

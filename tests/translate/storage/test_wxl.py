@@ -146,6 +146,36 @@ class TestWxlFile(test_monolingual.TestMonolingualStore):
         assert len(store.units) == 1
         assert store.findid("test").target == "Straße"
 
+    def test_encoding_detection_utf8_bom_no_xml_declaration(self) -> None:
+        """Files with a UTF-8 BOM but no XML declaration are parsed as UTF-8."""
+        # Codepage="1252" is the WiX locale codepage, NOT the file encoding;
+        # the BOM must take precedence.
+        content = (
+            b"\xef\xbb\xbf"
+            b"<!-- comment -->"
+            b'<WixLocalization xmlns="http://wixtoolset.org/schemas/v4/wxl"'
+            b' Culture="de-de" Codepage="1252">'
+            b'<String Id="WixUIBack" Overridable="yes" Value="Zur\xc3\xbcck" />'
+            b"</WixLocalization>"
+        )
+        store = self._parse(content)
+        assert len(store.units) == 1
+        assert store.findid("WixUIBack").target == "Zurück"
+
+    def test_encoding_detection_utf8_bom_with_xml_declaration(self) -> None:
+        """Files with a UTF-8 BOM and XML declaration are parsed as UTF-8."""
+        content = (
+            b"\xef\xbb\xbf"
+            b'<?xml version="1.0" encoding="utf-8"?>'
+            b'<WixLocalization xmlns="http://wixtoolset.org/schemas/v4/wxl"'
+            b' Culture="pt-br" Codepage="1252">'
+            b'<String Id="WixUIBack">&amp;Voltar</String>'
+            b"</WixLocalization>"
+        )
+        store = self._parse(content)
+        assert len(store.units) == 1
+        assert store.findid("WixUIBack").target == "&Voltar"
+
     def test_codepage_utf8_variants(self) -> None:
         """Both '65001' and 'utf-8' are recognised as UTF-8."""
         assert wxl._codepage_to_encoding("65001") == "utf-8"
