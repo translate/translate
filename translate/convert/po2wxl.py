@@ -52,6 +52,8 @@ class po2wxl:
     def convert_store(self) -> None:
         """Convert the PO store to a WXL file."""
         for unit in self.source_store.units:
+            if unit.isheader():
+                continue
             key = unit.source
             if not key:
                 continue

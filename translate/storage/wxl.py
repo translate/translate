@@ -90,7 +90,11 @@ def _codepage_to_encoding(codepage: str | None) -> str:
     if not codepage:
         return _DEFAULT_ENCODING
     key = str(codepage).lower().strip()
-    return _CODEPAGE_MAP.get(key, f"cp{codepage}")
+    if key in _CODEPAGE_MAP:
+        return _CODEPAGE_MAP[key]
+    if key.isdigit():
+        return f"cp{key}"
+    return _DEFAULT_ENCODING
 
 
 def _detect_encoding(content: bytes) -> str:
@@ -352,4 +356,7 @@ class WxlFile(base.TranslationStore):
         )
 
     def units_iter(self) -> Iterator[WxlUnit]:
+        yield from self.units
+
+    def unit_iter(self) -> Iterator[WxlUnit]:
         yield from self.units
