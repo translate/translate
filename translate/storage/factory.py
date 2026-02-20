@@ -55,6 +55,7 @@ _classes_str = {
     "sdlxliff": ("xliff", "Xliff1File"),
     "ftl": ("fluent", "FluentFile"),
     "toml": ("toml", "TOMLFile"),
+    "wxl": ("wxl", "WxlFile"),
 }
 ###  XXX:  if you add anything here, you must also add it to translate.storage.
 
@@ -274,6 +275,7 @@ supported = [
     ("UTX Dictionary", ["utx"], ["text/x-utx"]),
     ("Haiku catkeys file", ["catkeys"], ["application/x-catkeys"]),
     ("Fluent file", ["ftl"], []),
+    ("WiX Localization File", ["wxl"], ["text/xml"]),
 ]
 
 

@@ -41,6 +41,7 @@ Converters
    ts2po
    txt2po
    web2py2po
+   wxl2po
    xliff2po
    yaml2po
 
@@ -101,6 +102,7 @@ understanding that will make the converters much easier to use and understand.
 * :doc:`ts2po <ts2po>` -- Qt Linguist .ts converter
 * :doc:`txt2po <txt2po>` -- Plain text to PO converter
 * :doc:`web2py2po` -- web2py translation to PO converter
+* :doc:`wxl2po <wxl2po>` -- WiX Localization (.wxl) converter
 * :doc:`xliff2po <xliff2po>` -- XLIFF (XML Localisation Interchange File
   Format) converter
 * :doc:`yaml2po <yaml2po>` -- YAML (Yet Another Markup Language) converter

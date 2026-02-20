@@ -46,6 +46,7 @@ Other translation formats
    android
    resx
    mozilla_lang
+   wxl
 
 * :doc:`csv`
 * :doc:`ini` (including Inno Setup .isl dialect)
@@ -62,6 +63,7 @@ Other translation formats
 * :doc:`android` (supports storage, not conversion)
 * :doc:`resx` .NET Resource files (.resx)
 * Mozilla :doc:`.lang <mozilla_lang>` files
+* WiX :doc:`wxl` localization files (.wxl)
 
 .. _formats#translation_memory_formats:
 
