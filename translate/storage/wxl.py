@@ -325,9 +325,9 @@ class WxlFile(base.TranslationStore):
         # declared authoritatively via a BOM or an XML encoding declaration;
         # those always take precedence over the WiX Codepage attribute.
         bom_prefixes = (b"\xef\xbb\xbf", b"\xff\xfe", b"\xfe\xff")
-        encoding_is_authoritative = content.startswith(bom_prefixes) or content.startswith(
-            b"<?xml"
-        )
+        encoding_is_authoritative = content.startswith(
+            bom_prefixes
+        ) or content.startswith(b"<?xml")
         correct_encoding = _codepage_to_encoding(codepage)
         if not encoding_is_authoritative and correct_encoding.lower().replace(
             "-", ""
