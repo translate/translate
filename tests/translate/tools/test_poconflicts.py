@@ -53,7 +53,10 @@ class TestConflictOptionParser:
     def run_conflicts(self, po_files_content, ignorecase=True):
         """Run conflict detection on multiple in-memory PO files and return output files."""
         parser = make_parser()
-        with tempfile.TemporaryDirectory() as inputdir, tempfile.TemporaryDirectory() as outputdir:
+        with (
+            tempfile.TemporaryDirectory() as inputdir,
+            tempfile.TemporaryDirectory() as outputdir,
+        ):
             for i, content in enumerate(po_files_content):
                 with open(os.path.join(inputdir, f"file{i}.po"), "wb") as fh:
                     fh.write(content)
