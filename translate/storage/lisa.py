@@ -339,7 +339,22 @@ class LISAfile(base.TranslationStore[U]):
         return newunit
 
     def addunit(self, unit, new=True) -> None:
+        old_ns = (
+            etree.QName(unit.xmlelement).namespace
+            if hasattr(unit, "xmlelement") and unit.xmlelement is not None
+            else None
+        )
         unit.namespace = self.namespace
+        if old_ns and old_ns != self.namespace and unit.xmlelement is not None:
+            # Remap XML element namespaces so they match the store's namespace.
+            # This is needed when a freshly-created unit (using the class default
+            # namespace) is added to a store with a different namespace, ensuring
+            # round-trip serialization works correctly.
+            for node in unit.xmlelement.iter():
+                if isinstance(node.tag, str):
+                    qname = etree.QName(node)
+                    if qname.namespace == old_ns:
+                        node.tag = namespaced(self.namespace, qname.localname)
         super().addunit(unit)
         if new:
             self.body.append(unit.xmlelement)  # ty:ignore[unresolved-attribute]
