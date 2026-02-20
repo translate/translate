@@ -159,7 +159,7 @@ class TestWxl2PO:
   <String Id="WixUINext" Value="Weiter" />
 </WixLocalization>
 """
-        result, store, outputfile = self._convert_with_template(wxl_de, template)
+        result, _store, outputfile = self._convert_with_template(wxl_de, template)
         assert result == 1
         po_text = outputfile.getvalue().decode("utf-8")
         assert "Buttons" not in po_text
