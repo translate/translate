@@ -26,15 +26,11 @@ XML schema: https://wixtoolset.org/schemas/v4/wxl/
 from __future__ import annotations
 
 import re
-from typing import TYPE_CHECKING
 
 from lxml import etree
 
 from translate.misc.xml_helpers import reindent
 from translate.storage import base
-
-if TYPE_CHECKING:
-    from collections.abc import Iterator
 
 # WiX XML namespace identifiers
 WXL_NAMESPACE_V4 = "http://wixtoolset.org/schemas/v4/wxl"
