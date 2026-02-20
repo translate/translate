@@ -212,7 +212,6 @@ class WxlFile(base.TranslationStore):
 
     def __init__(self, inputfile=None, **kwargs) -> None:
         super().__init__(**kwargs)
-        self._culture: str = ""
         self._codepage: str = "1252"
 
         if inputfile is not None:
@@ -221,19 +220,18 @@ class WxlFile(base.TranslationStore):
             self._make_empty()
 
     # ------------------------------------------------------------------
-    # Culture / Codepage properties
+    # Language / Codepage
 
-    @property
-    def culture(self) -> str:
-        """The BCP 47-like locale string (e.g. ``de-de``, ``pt-br``)."""
-        return self._culture
+    def gettargetlanguage(self) -> str:
+        """Return the target language (WXL ``Culture`` attribute)."""
+        return self.targetlanguage or ""
 
-    @culture.setter
-    def culture(self, value: str) -> None:
-        self._culture = value
+    def settargetlanguage(self, targetlanguage: str) -> None:
+        """Set the target language and update the ``Culture`` attribute."""
+        self.targetlanguage = targetlanguage
         if hasattr(self, "root") and self.root is not None:
-            if value:
-                self.root.set("Culture", value)
+            if targetlanguage:
+                self.root.set("Culture", targetlanguage)
             elif "Culture" in self.root.attrib:
                 del self.root.attrib["Culture"]
 
@@ -315,7 +313,7 @@ class WxlFile(base.TranslationStore):
         # Read Codepage and verify the encoding we used was correct.
         codepage = self.root.get("Codepage", "1252")
         self._codepage = codepage
-        self._culture = self.root.get("Culture", "")
+        self.settargetlanguage(self.root.get("Culture", ""))
 
         correct_encoding = _codepage_to_encoding(codepage)
         if correct_encoding.lower().replace("-", "") != encoding.lower().replace(
@@ -331,8 +329,9 @@ class WxlFile(base.TranslationStore):
     def serialize(self, out) -> None:
         """Serialize the store back to a WXL file."""
         # Ensure Culture is written to the root element.
-        if self._culture:
-            self.root.set("Culture", self._culture)
+        culture = self.gettargetlanguage()
+        if culture:
+            self.root.set("Culture", culture)
 
         # Determine output encoding from Codepage.
         encoding = _codepage_to_encoding(self._codepage)

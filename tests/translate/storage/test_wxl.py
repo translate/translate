@@ -109,16 +109,16 @@ class TestWxlFile(test_monolingual.TestMonolingualStore):
         assert 'Width="80"' in serialized
 
     def test_culture_attribute(self) -> None:
-        """Culture is read from and written to the root element."""
+        """Culture is read from and written to the root element via settargetlanguage."""
         content = b"""<?xml version="1.0" encoding="utf-8"?>
 <WixLocalization xmlns="http://wixtoolset.org/schemas/v4/wxl" Culture="cs-cz">
   <String Id="Key">Value</String>
 </WixLocalization>
 """
         store = self._parse(content)
-        assert store.culture == "cs-cz"
+        assert store.gettargetlanguage() == "cs-cz"
 
-        store.culture = "sk-sk"
+        store.settargetlanguage("sk-sk")
         serialized = self._store_to_string(store)
         assert 'Culture="sk-sk"' in serialized
 
@@ -195,7 +195,7 @@ class TestWxlFile(test_monolingual.TestMonolingualStore):
     def test_new_empty_store(self) -> None:
         """A freshly created store serialises with the WiX v4 namespace."""
         store = wxl.WxlFile()
-        store.culture = "cs-cz"
+        store.settargetlanguage("cs-cz")
         unit = wxl.WxlUnit("TestKey")
         unit.target = "Test Value"
         store.addunit(unit)
