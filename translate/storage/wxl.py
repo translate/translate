@@ -97,10 +97,16 @@ def _detect_encoding(content: bytes) -> str:
     """
     Detect the encoding of a WXL file from its bytes.
 
-    Checks the XML encoding declaration first; if absent, looks for
-    the Codepage attribute on the root element and maps it to a codec.
-    Falls back to windows-1252 (most common in WXL files).
+    Checks for a BOM first; then the XML encoding declaration; if absent,
+    looks for the Codepage attribute on the root element and maps it to a
+    codec.  Falls back to windows-1252 (most common in WXL files).
     """
+    # Byte-Order Marks take highest precedence.
+    if content.startswith(b"\xef\xbb\xbf"):
+        return "utf-8"
+    if content.startswith((b"\xff\xfe", b"\xfe\xff")):
+        return "utf-16"
+
     if content.startswith(b"<?xml"):
         m = re.search(rb'encoding=["\']([\w-]+)["\']', content[:200])
         if m:
@@ -315,10 +321,17 @@ class WxlFile(base.TranslationStore):
         self._codepage = codepage
         self.settargetlanguage(self.root.get("Culture", ""))
 
+        # Only re-parse based on Codepage when the encoding wasn't already
+        # declared authoritatively via a BOM or an XML encoding declaration;
+        # those always take precedence over the WiX Codepage attribute.
+        bom_prefixes = (b"\xef\xbb\xbf", b"\xff\xfe", b"\xfe\xff")
+        encoding_is_authoritative = content.startswith(
+            bom_prefixes
+        ) or content.startswith(b"<?xml")
         correct_encoding = _codepage_to_encoding(codepage)
-        if correct_encoding.lower().replace("-", "") != encoding.lower().replace(
+        if not encoding_is_authoritative and correct_encoding.lower().replace(
             "-", ""
-        ):
+        ) != encoding.lower().replace("-", ""):
             # Re-parse with the correct encoding indicated by Codepage.
             parser = etree.XMLParser(encoding=correct_encoding, resolve_entities=False)
             self.root = etree.fromstring(content, parser)
