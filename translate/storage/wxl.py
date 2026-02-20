@@ -104,7 +104,7 @@ def _detect_encoding(content: bytes) -> str:
     # Byte-Order Marks take highest precedence.
     if content.startswith(b"\xef\xbb\xbf"):
         return "utf-8"
-    if content.startswith(b"\xff\xfe") or content.startswith(b"\xfe\xff"):
+    if content.startswith((b"\xff\xfe", b"\xfe\xff")):
         return "utf-16"
 
     if content.startswith(b"<?xml"):
@@ -324,8 +324,8 @@ class WxlFile(base.TranslationStore):
         # Only re-parse based on Codepage when the encoding wasn't already
         # declared authoritatively via a BOM or an XML encoding declaration;
         # those always take precedence over the WiX Codepage attribute.
-        _bom = (b"\xef\xbb\xbf", b"\xff\xfe", b"\xfe\xff")
-        encoding_is_authoritative = content.startswith(_bom) or content.startswith(
+        bom_prefixes = (b"\xef\xbb\xbf", b"\xff\xfe", b"\xfe\xff")
+        encoding_is_authoritative = content.startswith(bom_prefixes) or content.startswith(
             b"<?xml"
         )
         correct_encoding = _codepage_to_encoding(codepage)
