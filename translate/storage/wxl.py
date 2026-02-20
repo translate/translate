@@ -142,7 +142,7 @@ class WxlUnit(base.TranslationUnit):
     @property
     def target(self) -> str:
         """Return the translatable text for this entry."""
-        tag = etree.QName(self.xmlelement.tag).localname
+        tag = etree.QName(str(self.xmlelement.tag)).localname
         if tag == "UI":
             return self.xmlelement.get("Text", "")
         # String element: prefer Value attribute (WiX v4), fall back to text
@@ -155,7 +155,7 @@ class WxlUnit(base.TranslationUnit):
     def target(self, value: str) -> None:
         if self.target == value:
             return
-        tag = etree.QName(self.xmlelement.tag).localname
+        tag = etree.QName(str(self.xmlelement.tag)).localname
         if tag == "UI":
             self.xmlelement.set("Text", value or "")
         elif self.xmlelement.get("Value") is not None:
@@ -165,11 +165,11 @@ class WxlUnit(base.TranslationUnit):
             self.xmlelement.text = value or ""
 
     def setid(self, value: str) -> None:
-        if value is not None:
+        if value:
             self.xmlelement.set("Id", value)
 
-    def getid(self) -> str | None:
-        return self.xmlelement.get("Id")
+    def getid(self) -> str:
+        return self.xmlelement.get("Id") or ""
 
     def getlocations(self) -> list[str]:
         id_ = self.getid()
