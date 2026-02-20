@@ -207,7 +207,8 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
             if f"{word}s" in reducedmap:
                 plurals[word] = f"{word}s"
         for word, pluralword in plurals.items():
-            reducedmap[word].extend(reducedmap.pop(pluralword))
+            if word in reducedmap and pluralword in reducedmap:
+                reducedmap[word].extend(reducedmap.pop(pluralword))
         for source, translations in reducedmap.items():
             flatsource = self.flatten(source, "-")
             fulloutputpath = os.path.join(options.output, f"{flatsource}{os.extsep}po")
