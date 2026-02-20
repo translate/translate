@@ -22,11 +22,28 @@ class TestWxl2PO:
 </WixLocalization>
 """
 
+    WXL_EN = b"""<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization xmlns="http://wixtoolset.org/schemas/v4/wxl" Culture="en-us">
+  <String Id="WixUIBack" Value="Back" />
+  <String Id="WixUICancel" Value="Cancel" />
+  <String Id="WixUINext" Value="Next" />
+</WixLocalization>
+"""
+
     @staticmethod
     def _convert(input_bytes):
         inputfile = BytesIO(input_bytes)
         outputfile = BytesIO()
         converter = wxl2po.wxl2po(inputfile, outputfile)
+        result = converter.run()
+        return result, converter.target_store, outputfile
+
+    @staticmethod
+    def _convert_with_template(input_bytes, template_bytes):
+        inputfile = BytesIO(input_bytes)
+        outputfile = BytesIO()
+        templatefile = BytesIO(template_bytes)
+        converter = wxl2po.wxl2po(inputfile, outputfile, templatefile)
         result = converter.run()
         return result, converter.target_store, outputfile
 
@@ -63,6 +80,60 @@ class TestWxl2PO:
         output = outputfile.getvalue().decode("utf-8")
         assert "Project-Id-Version" in output
         assert 'msgid "WixUIBack"' in output
+
+    def test_merge_with_template(self) -> None:
+        """With a template, msgid comes from template and msgstr from input."""
+        wxl_de = b"""<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization xmlns="http://wixtoolset.org/schemas/v4/wxl" Culture="de-de">
+  <String Id="WixUIBack" Value="Zurueck" />
+  <String Id="WixUICancel" Value="Abbrechen" />
+</WixLocalization>
+"""
+        result, store, _ = self._convert_with_template(wxl_de, self.WXL_EN)
+        assert result == 1
+        units = [u for u in store.units if not u.isheader()]
+        # All template keys appear in output
+        assert len(units) == 3
+        back_unit = store.findunit("WixUIBack")
+        assert back_unit is not None
+        assert back_unit.target == "Zurueck"
+        cancel_unit = store.findunit("WixUICancel")
+        assert cancel_unit is not None
+        assert cancel_unit.target == "Abbrechen"
+
+    def test_merge_template_missing_translation(self) -> None:
+        """Keys in template but absent in input appear with empty msgstr."""
+        wxl_de = b"""<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization xmlns="http://wixtoolset.org/schemas/v4/wxl" Culture="de-de">
+  <String Id="WixUIBack" Value="Zurueck" />
+</WixLocalization>
+"""
+        result, store, _ = self._convert_with_template(wxl_de, self.WXL_EN)
+        assert result == 1
+        units = [u for u in store.units if not u.isheader()]
+        # All three template keys appear
+        assert len(units) == 3
+        # WixUINext has no translation in input → empty msgstr
+        next_unit = store.findunit("WixUINext")
+        assert next_unit is not None
+        assert next_unit.target == ""
+
+    def test_merge_v3_template(self) -> None:
+        """Template handling works with WiX v3 text-content format."""
+        wxl_en_v3 = b"""<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization xmlns="http://schemas.microsoft.com/wix/2006/localization" Culture="en-us">
+  <String Id="WixUIBack">Back</String>
+  <String Id="WixUICancel">Cancel</String>
+</WixLocalization>
+"""
+        result, store, _ = self._convert_with_template(self.WXL_V3, wxl_en_v3)
+        assert result == 1
+        back_unit = store.findunit("WixUIBack")
+        assert back_unit is not None
+        assert back_unit.target == "Voltar"
+        cancel_unit = store.findunit("WixUICancel")
+        assert cancel_unit is not None
+        assert cancel_unit.target == "Cancelar"
 
 
 class TestPO2WXL:
