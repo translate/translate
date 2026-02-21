@@ -12,6 +12,7 @@ from . import test_convert
 WXL_V4_TEMPLATE = b"""<?xml version="1.0" encoding="utf-8"?>
 <WixLocalization xmlns="http://wixtoolset.org/schemas/v4/wxl" Culture="de-de" Codepage="65001">
   <String Id="WixUIBack" Overridable="yes" Value="Back" />
+  <UI Id="WixUI_Mondo" />
   <String Id="WixUICancel" Overridable="yes" Value="Cancel" />
   <String Id="WixUINext" Overridable="yes" Value="Next" />
 </WixLocalization>
@@ -504,9 +505,11 @@ class TestPO2WXLCommand(test_convert.TestConvertCommand):
         self.create_testfile("input.po", PO_CONTENT)
         self.run_command(template="template.wxl", i="input.po", o="output.wxl")
         with self.open_testfile("output.wxl") as handle:
-            wxl_result = wxl.WxlFile(handle)
+            content = handle.read()
+        wxl_result = wxl.WxlFile(BytesIO(content))
         assert wxl_result.findid("WixUIBack").target == "Zurueck"
         assert wxl_result.findid("WixUICancel").target == "Abbrechen"
+        assert 'Id="WixUI_Mondo"' in content.decode("utf-8")
 
     def test_preserve_comments(self) -> None:
         """XML comments in the template are preserved in the output."""
