@@ -1,5 +1,7 @@
 """Tests for Apple XLIFF format with plural support."""
 
+from __future__ import annotations
+
 from translate.misc.multistring import multistring
 from translate.storage import applestrings_xliff
 
@@ -46,8 +48,13 @@ _BASIC_PLURAL_XLIFF = b"""<?xml version="1.0" encoding="UTF-8"?>
 </xliff>"""
 
 
-def _add_plural(store, base_key, target_strings, format_value_type="d",
-                source_strings=None):
+def _add_plural(
+    store: applestrings_xliff.AppleStringsXliffFile,
+    base_key: str,
+    target_strings: list,
+    format_value_type: str = "d",
+    source_strings: list | None = None,
+) -> applestrings_xliff.AppleStringsXliffUnit:
     """
     Add a plural unit using the standard store API.
 
@@ -123,8 +130,8 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
         # source and target are multistrings (zero, one, other for English)
         assert isinstance(unit.source, multistring)
         assert isinstance(unit.target, multistring)
-        assert unit.source.strings[1] == "One item"   # 'one' form
-        assert unit.source.strings[2] == "%d items"   # 'other' form
+        assert unit.source.strings[1] == "One item"  # 'one' form
+        assert unit.source.strings[2] == "%d items"  # 'other' form
         assert unit.target.strings[1] == "One item"
         assert unit.target.strings[2] == "%d items"
 
@@ -193,16 +200,16 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
         assert apple.hasplural()
         assert apple._plural_base_key == "shopping-list:apple"
         assert apple.format_value_type == "d"
-        assert apple.target.strings[1] == "One apple"   # 'one'
-        assert apple.target.strings[2] == "%d apples"   # 'other'
+        assert apple.target.strings[1] == "One apple"  # 'one'
+        assert apple.target.strings[2] == "%d apples"  # 'other'
 
         # orange group
         orange = store.units[2]
         assert orange.hasplural()
         assert orange._plural_base_key == "shopping-list:orange"
-        assert orange.target.strings[0] == "no oranges"   # 'zero'
-        assert orange.target.strings[1] == "one orange"   # 'one'
-        assert orange.target.strings[2] == "%d oranges"   # 'other'
+        assert orange.target.strings[0] == "no oranges"  # 'zero'
+        assert orange.target.strings[1] == "one orange"  # 'one'
+        assert orange.target.strings[2] == "%d oranges"  # 'other'
 
     # ------------------------------------------------------------------
     # getid / setid
@@ -339,20 +346,20 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
 
         # Convert to plural
         unit.source = multistring(["", "One item", "%d items"])
-        unit.target = multistring(["", "Ein Artikel", "%d Artikel"])
+        unit.target = multistring(["", "Jeden Artikel", "%d Artikel"])
         unit.setid("items:count")
         unit.format_value_type = "d"
 
         assert unit.hasplural()
         assert unit._plural_base_key == "items:count"
-        assert unit.target.strings[1] == "Ein Artikel"
+        assert unit.target.strings[1] == "Jeden Artikel"
         assert unit.target.strings[2] == "%d Artikel"
 
         # Serialise – the XML must have the full Apple XLIFF plural structure
         output = bytes(store).decode("utf-8")
         assert 'id="items:count:dict"' in output
         assert 'id="items:count:dict/one:dict/:string"' in output
-        assert "Ein Artikel" in output
+        assert "Jeden Artikel" in output
 
         # Round-trip
         store2 = self.StoreClass()
@@ -360,7 +367,7 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
         store2.parse(output.encode("utf-8"))
         assert len(store2.units) == 1
         assert store2.units[0].hasplural()
-        assert store2.units[0].target.strings[1] == "Ein Artikel"
+        assert store2.units[0].target.strings[1] == "Jeden Artikel"
 
     # ------------------------------------------------------------------
     # Conversion: plural → singular
@@ -377,11 +384,11 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
 
         # Convert to singular
         unit.source = "Item count"
-        unit.target = "Anzahl der Elemente"
+        unit.target = "Anzahl der Objekte"
 
         assert not unit.hasplural()
         assert unit.source == "Item count"
-        assert unit.target == "Anzahl der Elemente"
+        assert unit.target == "Anzahl der Objekte"
 
     def test_plural_to_singular_full_roundtrip(self):
         """A plural-to-singular conversion serialises cleanly."""
@@ -395,7 +402,7 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
         # Convert to singular: clear plural state then fix the id
         unit.source = "Item count"
         unit.target = "Anzahl"
-        unit.setid("items_label")   # clears _plural_base_key, removes stale elements
+        unit.setid("items_label")  # clears _plural_base_key, removes stale elements
 
         output = bytes(store).decode("utf-8")
         assert 'id="items_label"' in output
@@ -417,7 +424,7 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
     # ------------------------------------------------------------------
 
     def test_remove_plural_unit(self):
-        """remove_plural_unit() removes the unit and its sibling XML elements."""
+        """removeunit() on a plural unit removes it and its sibling XML elements."""
         store = self.StoreClass()
         store.settargetlanguage("en")
         _add_plural(store, "items:count", ["", "One item", "%d items"])
@@ -425,17 +432,15 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
 
         assert len(store.units) == 2
 
-        removed = store.remove_plural_unit("items:count")
-        assert removed is True
+        # Find and remove the items:count plural unit
+        items_unit = next(u for u in store.units if u._plural_base_key == "items:count")
+        store.removeunit(items_unit)
         assert len(store.units) == 1
 
         # Remaining unit is for orders:count
         remaining = store.units[0]
         assert remaining._plural_base_key == "orders:count"
         assert remaining.target.strings[1] == "One order"
-
-        # Removing a non-existent key returns False
-        assert store.remove_plural_unit("nonexistent:key") is False
 
     def test_removeunit_cleans_sibling_xml(self):
         """removeunit() on a plural unit also removes the sibling XML elements."""
@@ -487,8 +492,12 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
         assert len(store.units) == 1
 
         # Add a plural unit in its place (1 original + 1 plural = 2 units)
-        _add_plural(store, "item_count:count", ["", "One item", "%d items"],
-                    source_strings=["", "One item", "%d items"])
+        _add_plural(
+            store,
+            "item_count:count",
+            ["", "One item", "%d items"],
+            source_strings=["", "One item", "%d items"],
+        )
         assert len(store.units) == 2
 
         output = bytes(store).decode("utf-8")
@@ -517,8 +526,9 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
         # After folding: 1 merged plural = 1 unit
         assert len(store.units) == 1
 
-        removed = store.remove_plural_unit("items:count")
-        assert removed is True
+        plural_unit = store.units[0]
+        assert plural_unit._plural_base_key == "items:count"
+        store.removeunit(plural_unit)
         assert len(store.units) == 0
 
         new_unit = store.addsourceunit(
@@ -565,10 +575,10 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
         unit = store.units[0]
         assert unit.hasplural()
 
-        unit.target = multistring(["", "Ein Artikel", "%d Artikel"])
+        unit.target = multistring(["", "Jeden Artikel", "%d Artikel"])
 
         output = bytes(store).decode("utf-8")
-        assert "Ein Artikel" in output
+        assert "Jeden Artikel" in output
         assert "%d Artikel" in output
         assert 'id="items:count:dict/one:dict/:string"' in output
         assert 'id="items:count:dict/other:dict/:string"' in output
@@ -577,7 +587,7 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
         store2.settargetlanguage("en")
         store2.parse(output.encode("utf-8"))
         assert len(store2.units) == 1
-        assert store2.units[0].target.strings[1] == "Ein Artikel"
+        assert store2.units[0].target.strings[1] == "Jeden Artikel"
         assert store2.units[0].target.strings[2] == "%d Artikel"
 
     # ------------------------------------------------------------------

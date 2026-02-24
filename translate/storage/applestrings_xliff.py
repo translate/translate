@@ -34,8 +34,11 @@ compatible with how other formats (e.g. .stringsdict) handle plurals.
 Reference: https://docs.lokalise.com/en/articles/1400816-xliff-xlf-xliff#plural-support
 """
 
+from __future__ import annotations
+
 import os
 import re
+from typing import IO, Any
 
 from lxml import etree
 
@@ -56,16 +59,16 @@ class AppleStringsXliffUnit(xliff.Xliff1Unit):
     (always including "zero" as the first entry, per Apple convention).
     """
 
-    format_value_type = ""
+    format_value_type: str = ""
 
-    def __init__(self, source, **kwargs):
+    def __init__(self, source, **kwargs) -> None:
         # Initialise plural attributes BEFORE super().__init__() so that
         # self.source = source (called inside super().__init__) can set them.
         self.format_value_type = ""
-        self._plural_source = None
-        self._plural_target = None
-        self._plural_base_key = None
-        self._plural_dirty = False
+        self._plural_source: multistring | None = None
+        self._plural_target: multistring | None = None
+        self._plural_base_key: str | None = None
+        self._plural_dirty: bool = False
         super().__init__(source, **kwargs)
 
     # ------------------------------------------------------------------
@@ -80,7 +83,7 @@ class AppleStringsXliffUnit(xliff.Xliff1Unit):
         return super().source
 
     @source.setter
-    def source(self, value):
+    def source(self, value) -> None:
         if isinstance(value, multistring):
             self._plural_source = value
             self._plural_dirty = True
@@ -95,7 +98,7 @@ class AppleStringsXliffUnit(xliff.Xliff1Unit):
         return super().target
 
     @target.setter
-    def target(self, value):
+    def target(self, value) -> None:
         if isinstance(value, multistring):
             self._plural_target = value
             self._plural_dirty = True
@@ -103,7 +106,7 @@ class AppleStringsXliffUnit(xliff.Xliff1Unit):
             self._plural_target = None
             self.settarget(value)
 
-    def hasplural(self):
+    def hasplural(self) -> bool:
         """Return True if this unit represents a plural group."""
         return self._plural_source is not None or self._plural_target is not None
 
@@ -137,7 +140,7 @@ class AppleStringsXliffUnit(xliff.Xliff1Unit):
 
     # getid() adds filename prefix then the raw XML id.  For plural units we
     # return the base key (without the ":dict" suffix used in the XML).
-    def getid(self):
+    def getid(self) -> str:
         if self._plural_base_key is not None:
             uid = ""
             try:
@@ -151,7 +154,7 @@ class AppleStringsXliffUnit(xliff.Xliff1Unit):
             return uid + self._plural_base_key
         return super().getid()
 
-    def setid(self, id) -> None:  # noqa: A002
+    def setid(self, id) -> None:
         if self.hasplural():
             # Plural unit: the logical ID is the base key; update XML element id.
             self._plural_base_key = id
@@ -180,19 +183,17 @@ class AppleStringsXliffUnit(xliff.Xliff1Unit):
     # ------------------------------------------------------------------
 
     @property
-    def is_plural_marker(self):
+    def is_plural_marker(self) -> bool:
         """True if the XML source contains NSStringPluralRuleType."""
         # Read from the XML element directly so the check works before folding
         source_node = self.get_source_dom()
         if source_node is None:
             return False
-        raw_src = getText(
-            source_node, getattr(self, "_default_xml_space", "preserve")
-        )
+        raw_src = getText(source_node, getattr(self, "_default_xml_space", "preserve"))
         return raw_src == "NSStringPluralRuleType"
 
     @property
-    def is_format_type(self):
+    def is_format_type(self) -> bool:
         """True if this unit specifies a plural format value type (e.g. "d")."""
         unit_id = self.xmlelement.get("id", "")
         return unit_id.endswith(":dict/:string") and not any(
@@ -200,14 +201,14 @@ class AppleStringsXliffUnit(xliff.Xliff1Unit):
         )
 
     @property
-    def is_plural_form(self):
+    def is_plural_form(self) -> bool:
         """True if this unit contains a plural form string."""
         unit_id = self.xmlelement.get("id", "")
         return any(
             f"/{tag}:dict/:string" in unit_id for tag in data.cldr_plural_categories
         )
 
-    def get_base_key(self):
+    def get_base_key(self) -> str | None:
         """
         Extract the base key from a plural-related XML id.
 
@@ -221,7 +222,7 @@ class AppleStringsXliffUnit(xliff.Xliff1Unit):
             return unit_id
         return None
 
-    def get_plural_form(self):
+    def get_plural_form(self) -> str | None:
         """
         Extract the plural form name from the XML id.
 
@@ -253,7 +254,7 @@ class AppleStringsXliffFile(xliff.Xliff1File):
     Mimetypes = ["application/x-xliff+xml"]
     Extensions = ["xliff", "xlf"]
 
-    def gettargetlanguage(self):
+    def gettargetlanguage(self) -> str | None:
         target_lang = super().gettargetlanguage()
 
         # If targetlanguage isn't set, try to extract from filename (like stringsdict)
@@ -272,7 +273,7 @@ class AppleStringsXliffFile(xliff.Xliff1File):
         return target_lang
 
     @property
-    def target_plural_tags(self):
+    def target_plural_tags(self) -> list[str]:
         """
         Return the plural tags for the target language.
 
@@ -280,7 +281,7 @@ class AppleStringsXliffFile(xliff.Xliff1File):
         """
         target_lang = self.gettargetlanguage()
         if target_lang is None:
-            return data.cldr_plural_categories
+            return list(data.cldr_plural_categories)
 
         tags = self.get_plural_tags().copy()
         if "zero" not in tags:
@@ -292,7 +293,7 @@ class AppleStringsXliffFile(xliff.Xliff1File):
     # ------------------------------------------------------------------
 
     @staticmethod
-    def _is_plural_sibling(child_id, base_key):
+    def _is_plural_sibling(child_id: str, base_key: str) -> bool:
         """
         Return ``True`` if *child_id* belongs to the plural group *base_key*.
 
@@ -306,7 +307,7 @@ class AppleStringsXliffFile(xliff.Xliff1File):
             for tag in data.cldr_plural_categories
         )
 
-    def _group_plural_units(self):
+    def _group_plural_units(self) -> dict[str, Any]:
         """
         Scan *raw* units (as produced by the parent parser) and group them.
 
@@ -316,7 +317,7 @@ class AppleStringsXliffFile(xliff.Xliff1File):
         Only units whose XML element is still intact (i.e. before folding)
         are examined; already-folded units are ignored.
         """
-        groups = {}
+        groups: dict[str, Any] = {}
 
         for unit in self.units:
             if unit.is_plural_marker:
@@ -354,7 +355,7 @@ class AppleStringsXliffFile(xliff.Xliff1File):
 
         return groups
 
-    def _fold_plural_units(self):
+    def _fold_plural_units(self) -> None:
         """
         Merge plural-form units into single multistring units.
 
@@ -374,7 +375,7 @@ class AppleStringsXliffFile(xliff.Xliff1File):
         foldable_keys = {k for k, v in plural_groups.items() if v["forms"]}
 
         new_units = []
-        processed_keys = set()
+        processed_keys: set[str] = set()
 
         for unit in self.units:
             base_key = unit.get_base_key()
@@ -412,10 +413,10 @@ class AppleStringsXliffFile(xliff.Xliff1File):
 
         self.units = new_units
 
-    def _make_trans_unit_xml_element(self, unit_id, source_text, target_text):
-        """
-        Create a ``<trans-unit>`` XML element with the given id, source and target.
-        """
+    def _make_trans_unit_xml_element(
+        self, unit_id: str, source_text: str, target_text: str
+    ):
+        """Create a ``<trans-unit>`` XML element with the given id, source and target."""
         ns = self.namespace
         trans_unit = etree.Element(
             etree.QName(ns, "trans-unit") if ns else "trans-unit"
@@ -435,7 +436,7 @@ class AppleStringsXliffFile(xliff.Xliff1File):
 
         return trans_unit
 
-    def _sync_plural_unit_to_xml(self, unit):
+    def _sync_plural_unit_to_xml(self, unit: AppleStringsXliffUnit) -> None:
         """
         Rebuild the XML elements for a plural unit.
 
@@ -472,7 +473,8 @@ class AppleStringsXliffFile(xliff.Xliff1File):
         # --- Remove stale format-type and form XML elements for this group ---
         marker_pos = list(body).index(unit.xmlelement)
         stale = [
-            child for child in body
+            child
+            for child in body
             if self._is_plural_sibling(child.get("id", ""), base_key)
         ]
         for el in stale:
@@ -505,7 +507,7 @@ class AppleStringsXliffFile(xliff.Xliff1File):
 
         unit._plural_dirty = False
 
-    def removeunit(self, unit) -> None:
+    def removeunit(self, unit: AppleStringsXliffUnit) -> None:
         """Remove a unit; for plural units also removes their sibling XML elements."""
         if unit._plural_base_key is not None:
             base_key = unit._plural_base_key
@@ -525,7 +527,7 @@ class AppleStringsXliffFile(xliff.Xliff1File):
         super().parse(xml)
         self._fold_plural_units()
 
-    def serialize(self, out) -> None:
+    def serialize(self, out: IO[bytes]) -> None:
         """
         Serialise to Apple XLIFF.
 
@@ -537,18 +539,6 @@ class AppleStringsXliffFile(xliff.Xliff1File):
             if unit._plural_base_key is not None and unit._plural_dirty:
                 self._sync_plural_unit_to_xml(unit)
         super().serialize(out)
-
-    def remove_plural_unit(self, base_key):
-        """
-        Remove the plural unit identified by *base_key*.
-
-        :returns: ``True`` if found and removed, ``False`` otherwise.
-        """
-        for unit in list(self.units):
-            if unit._plural_base_key == base_key:
-                self.removeunit(unit)
-                return True
-        return False
 
 
 def AppleStringsXliff(inputfile=None, **kwargs):
