@@ -151,6 +151,30 @@ class AppleStringsXliffUnit(xliff.Xliff1Unit):
             return uid + self._plural_base_key
         return super().getid()
 
+    def setid(self, id) -> None:  # noqa: A002
+        if self.hasplural():
+            # Plural unit: the logical ID is the base key; update XML element id.
+            self._plural_base_key = id
+            self.xmlelement.set(
+                "id",
+                id.replace(xliff.ID_SEPARATOR, xliff.ID_SEPARATOR_SAFE) + ":dict",
+            )
+            self._plural_dirty = True
+        else:
+            # Non-plural or transitioning from plural to non-plural:
+            # clean up stale XML sibling elements from the previous plural group.
+            if self._plural_base_key is not None:
+                body = self.xmlelement.getparent()
+                if body is not None:
+                    old_base_key = self._plural_base_key
+                    for child in list(body):
+                        if AppleStringsXliffFile._is_plural_sibling(
+                            child.get("id", ""), old_base_key
+                        ):
+                            body.remove(child)
+                self._plural_base_key = None
+            super().setid(id)
+
     # ------------------------------------------------------------------
     # Helpers used during parsing to identify the role of a raw unit
     # ------------------------------------------------------------------
@@ -266,6 +290,21 @@ class AppleStringsXliffFile(xliff.Xliff1File):
     # ------------------------------------------------------------------
     # Internal helpers
     # ------------------------------------------------------------------
+
+    @staticmethod
+    def _is_plural_sibling(child_id, base_key):
+        """
+        Return ``True`` if *child_id* belongs to the plural group *base_key*.
+
+        This covers the format-type element (``base_key:dict/:string``) and all
+        per-form elements (``base_key:dict/<tag>:dict/:string``).
+        """
+        if child_id == f"{base_key}:dict/:string":
+            return True
+        return any(
+            child_id == f"{base_key}:dict/{tag}:dict/:string"
+            for tag in data.cldr_plural_categories
+        )
 
     def _group_plural_units(self):
         """
@@ -432,16 +471,10 @@ class AppleStringsXliffFile(xliff.Xliff1File):
 
         # --- Remove stale format-type and form XML elements for this group ---
         marker_pos = list(body).index(unit.xmlelement)
-        stale = []
-        for child in body:
-            child_id = child.get("id", "")
-            if child_id == f"{base_key}:dict/:string":
-                stale.append(child)
-            elif any(
-                child_id == f"{base_key}:dict/{tag}:dict/:string"
-                for tag in data.cldr_plural_categories
-            ):
-                stale.append(child)
+        stale = [
+            child for child in body
+            if self._is_plural_sibling(child.get("id", ""), base_key)
+        ]
         for el in stale:
             body.remove(el)
 
@@ -472,6 +505,17 @@ class AppleStringsXliffFile(xliff.Xliff1File):
 
         unit._plural_dirty = False
 
+    def removeunit(self, unit) -> None:
+        """Remove a unit; for plural units also removes their sibling XML elements."""
+        if unit._plural_base_key is not None:
+            base_key = unit._plural_base_key
+            body = unit.xmlelement.getparent()
+            if body is not None:
+                for child in list(body):
+                    if self._is_plural_sibling(child.get("id", ""), base_key):
+                        body.remove(child)
+        super().removeunit(unit)
+
     # ------------------------------------------------------------------
     # parse / serialize
     # ------------------------------------------------------------------
@@ -494,118 +538,17 @@ class AppleStringsXliffFile(xliff.Xliff1File):
                 self._sync_plural_unit_to_xml(unit)
         super().serialize(out)
 
-    # ------------------------------------------------------------------
-    # Public API helpers
-    # ------------------------------------------------------------------
-
-    def _get_current_filename(self):
-        """
-        Return the filename of the current file section in the store.
-
-        Falls back to the first file's name or "NoName".
-        """
-        if self._filename:
-            return self._filename
-        filenames = self.getfilenames()
-        return filenames[0] if filenames else "NoName"
-
-    def add_plural_unit(
-        self, base_key, plural_strings, format_value_type="d", source_strings=None
-    ):
-        """
-        Add a plural unit as a single merged unit with multistring source/target.
-
-        :param base_key: Logical key, e.g. ``"shopping-list:apple"``
-        :param plural_strings: A :class:`multistring` or list of plural target strings
-        :param format_value_type: The NSStringFormatValueTypeKey value (e.g. ``"d"``)
-        :param source_strings: Optional source strings; defaults to *plural_strings*
-        """
-        # Normalise inputs to lists aligned with target_plural_tags
-        if isinstance(plural_strings, multistring):
-            plural_strings = plural_strings.strings
-        if source_strings is None:
-            source_strings = plural_strings
-        elif isinstance(source_strings, multistring):
-            source_strings = source_strings.strings
-
-        plural_tags = self.target_plural_tags
-
-        def _pad(lst):
-            lst = list(lst) + [""] * (len(plural_tags) - len(lst))
-            return lst[: len(plural_tags)]
-
-        plural_strings = _pad(plural_strings)
-        source_strings = _pad(source_strings)
-
-        filename = self._get_current_filename()
-
-        # Create a single merged unit backed by a marker XML element
-        marker_unit = self.addsourceunit("", filename=filename, createifmissing=True)
-        marker_unit.xmlelement.set("id", f"{base_key}:dict")
-        # Set XML source/target so the element is a valid XLIFF trans-unit
-        marker_unit.setsource("NSStringPluralRuleType")
-        marker_unit.settarget("NSStringPluralRuleType")
-
-        # Store plural data in Python attributes
-        marker_unit._plural_source = multistring(source_strings)
-        marker_unit._plural_target = multistring(plural_strings)
-        marker_unit._plural_base_key = base_key
-        marker_unit.format_value_type = format_value_type
-        marker_unit._plural_dirty = True  # XML needs format-type + form elements
-
-    def get_plural_unit(self, base_key):
-        """
-        Return a merged plural unit description for *base_key*.
-
-        For backward compatibility this returns a dict::
-
-            {"target": multistring(...), "format_value_type": "d"}
-
-        Returns ``None`` when *base_key* is not found.
-        """
-        for unit in self.units:
-            if unit._plural_base_key == base_key:
-                return {
-                    "target": unit.target,
-                    "format_value_type": unit.format_value_type,
-                }
-        return None
-
     def remove_plural_unit(self, base_key):
         """
-        Remove the plural unit for *base_key* along with its XML elements.
+        Remove the plural unit identified by *base_key*.
 
-        :returns: ``True`` if the unit was found and removed, ``False`` otherwise.
+        :returns: ``True`` if found and removed, ``False`` otherwise.
         """
-        # Find the merged unit
-        merged = None
-        for unit in self.units:
+        for unit in list(self.units):
             if unit._plural_base_key == base_key:
-                merged = unit
-                break
-
-        if merged is None:
-            # Fall back: look for any raw units whose base key matches
-            raw_units = [u for u in self.units if u.get_base_key() == base_key]
-            if not raw_units:
-                return False
-            for unit in raw_units:
                 self.removeunit(unit)
-            return True
-
-        # Remove form / format-type XML elements from the document
-        body = merged.xmlelement.getparent()
-        if body is not None:
-            for child in list(body):
-                child_id = child.get("id", "")
-                if child_id == f"{base_key}:dict/:string" or any(
-                    child_id == f"{base_key}:dict/{tag}:dict/:string"
-                    for tag in data.cldr_plural_categories
-                ):
-                    body.remove(child)
-
-        self.removeunit(merged)
-        return True
+                return True
+        return False
 
 
 def AppleStringsXliff(inputfile=None, **kwargs):
