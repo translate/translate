@@ -50,3 +50,5 @@ repos:
     args: []
     require_serial: true
     pass_filenames: false
+ci:
+  autoupdate_schedule: quarterly
