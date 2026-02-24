@@ -34,11 +34,15 @@ class wxl2po:
     TargetStoreClass = po.pofile
     TargetUnitClass = po.pounit
 
-    def __init__(self, inputfile, outputfile, templatefile=None) -> None:
-        self.inputfile = inputfile
-        self.outputfile = outputfile
-        self.templatefile = templatefile
-        self.source_store = self.SourceStoreClass(inputfile)
+    def __init__(self, input_file, output_file, template_file=None) -> None:
+        self.input_file = input_file
+        self.output_file = output_file
+        self.template_file = template_file
+        self.source_store = (
+            self.SourceStoreClass(input_file)
+            if not isinstance(input_file, self.SourceStoreClass)
+            else input_file
+        )
         self.target_store = self.TargetStoreClass()
 
     def convert_unit(self, unit):
@@ -70,20 +74,20 @@ class wxl2po:
 
     def run(self) -> int:
         """Run the converter."""
-        if self.templatefile is not None:
-            template_store = self.SourceStoreClass(self.templatefile)
+        if self.template_file is not None:
+            template_store = self.SourceStoreClass(self.template_file)
             self.merge_store(template_store)
         else:
             self.convert_store()
         if self.target_store.isempty():
             return 0
-        self.target_store.serialize(self.outputfile)
+        self.target_store.serialize(self.output_file)
         return 1
 
 
-def run_converter(inputfile, outputfile, templatefile=None):
+def run_converter(input_file, output_file, template_file=None):
     """Wrapper around the converter."""
-    return wxl2po(inputfile, outputfile, templatefile).run()
+    return wxl2po(input_file, output_file, template_file).run()
 
 
 formats = {
