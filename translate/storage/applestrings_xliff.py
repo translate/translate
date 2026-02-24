@@ -41,7 +41,7 @@ from lxml import etree
 
 from translate.lang import data
 from translate.misc.multistring import multistring
-from translate.misc.xml_helpers import setXMLspace
+from translate.misc.xml_helpers import getText, setXMLspace
 from translate.storage import base, xliff
 
 
@@ -162,8 +162,6 @@ class AppleStringsXliffUnit(xliff.Xliff1Unit):
         source_node = self.get_source_dom()
         if source_node is None:
             return False
-        from translate.misc.xml_helpers import getText  # noqa: PLC0415
-
         raw_src = getText(
             source_node, getattr(self, "_default_xml_space", "preserve")
         )
