@@ -33,12 +33,16 @@ class po2wxl:
     TargetStoreClass = wxl.WxlFile
     TargetUnitClass = wxl.WxlUnit
 
-    def __init__(self, inputfile, outputfile, templatefile=None) -> None:
-        self.inputfile = inputfile
-        self.outputfile = outputfile
-        self.templatefile = templatefile
-        self.source_store = po.pofile(inputfile)
-        self.target_store = self.TargetStoreClass(templatefile)
+    def __init__(self, input_file, output_file, template_file=None) -> None:
+        self.input_file = input_file
+        self.output_file = output_file
+        self.template_file = template_file
+        self.source_store = (
+            po.pofile(input_file)
+            if not isinstance(input_file, po.pofile)
+            else input_file
+        )
+        self.target_store = self.TargetStoreClass(template_file)
 
     def convert_unit(self, unit):
         """Convert a PO unit to a WXL unit."""
@@ -46,7 +50,7 @@ class po2wxl:
         target_unit.target = unit.target
         return target_unit
 
-    def convert_store(self) -> None:
+    def merge_stores(self) -> None:
         """Convert the PO store to a WXL file."""
         for unit in self.source_store.units:
             if unit.isheader():
@@ -63,16 +67,16 @@ class po2wxl:
 
     def run(self) -> int:
         """Run the converter."""
-        self.convert_store()
+        self.merge_stores()
         if self.target_store.isempty():
             return 0
-        self.target_store.serialize(self.outputfile)
+        self.target_store.serialize(self.output_file)
         return 1
 
 
-def run_converter(inputfile, outputfile, templatefile=None):
+def run_converter(input_file, output_file, template_file=None):
     """Wrapper around the converter."""
-    return po2wxl(inputfile, outputfile, templatefile).run()
+    return po2wxl(input_file, output_file, template_file).run()
 
 
 formats = {
