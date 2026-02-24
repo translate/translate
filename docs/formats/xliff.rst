@@ -106,9 +106,17 @@ Example
      </file>
    </xliff>
 
-The Translate Toolkit can parse these plural forms and access them as multistring units,
-similar to the .stringsdict format. Language detection from ``.lproj`` directories is
-also supported (e.g., ``en.lproj``, ``Base.lproj``).
+The Translate Toolkit parses Apple XLIFF files and **folds** each plural group
+(marker + format-type + individual form trans-units) into a single
+:class:`~translate.storage.applestrings_xliff.AppleStringsXliffUnit` whose
+``source`` and ``target`` are :class:`~translate.misc.multistring.multistring`
+objects.  The strings list follows the same ordering as
+:func:`translate.lang.data.plural_tags` for the target language, with ``zero``
+always included first (Apple convention).
+
+This mirrors the behaviour of the :doc:`stringsdict` format and makes Apple
+XLIFF plural units compatible with the rest of the Translate Toolkit's plural
+pipeline.
 
 .. _xliff#standard_conformance:
 

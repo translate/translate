@@ -39,7 +39,7 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
         assert unit.target == "Hello"
 
     def test_parse_apple_plural_basic(self):
-        """Test parsing Apple XLIFF with simple plurals."""
+        """Test parsing Apple XLIFF with simple plurals – plurals are folded into one unit."""
         xliff_content = b"""<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file original="Localizable.strings" source-language="en" target-language="en" datatype="plaintext">
@@ -66,32 +66,24 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
         store = self.StoreClass()
         store.parse(xliff_content)
 
-        # Check that units were parsed
-        assert len(store.units) == 4
+        # The four raw trans-units are folded into a single plural unit
+        assert len(store.units) == 1
 
-        # Check the marker unit
-        marker_unit = store.units[0]
-        assert marker_unit.is_plural_marker
-        assert marker_unit.get_base_key() == "items:count"
+        unit = store.units[0]
+        assert unit.hasplural()
+        assert unit.format_value_type == "d"
+        assert unit._plural_base_key == "items:count"
 
-        # Check format type unit
-        format_unit = store.units[1]
-        assert format_unit.is_format_type
-        assert format_unit.target == "d"
-
-        # Check plural form units
-        one_unit = store.units[2]
-        assert one_unit.is_plural_form
-        assert one_unit.get_plural_form() == "one"
-        assert one_unit.target == "One item"
-
-        other_unit = store.units[3]
-        assert other_unit.is_plural_form
-        assert other_unit.get_plural_form() == "other"
-        assert other_unit.target == "%d items"
+        # source and target are multistrings (zero, one, other for English)
+        assert isinstance(unit.source, multistring)
+        assert isinstance(unit.target, multistring)
+        assert unit.source.strings[1] == "One item"   # 'one' form
+        assert unit.source.strings[2] == "%d items"   # 'other' form
+        assert unit.target.strings[1] == "One item"
+        assert unit.target.strings[2] == "%d items"
 
     def test_parse_apple_plural_complex(self):
-        """Test parsing Apple XLIFF with complex plural example from issue."""
+        """Test parsing Apple XLIFF with complex plural example – each group becomes one unit."""
         xliff_content = b"""<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file original="Localizable.strings" source-language="en" target-language="en" datatype="plaintext">
@@ -143,31 +135,37 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
         store.settargetlanguage("en")
         store.parse(xliff_content)
 
-        # Check that all units were parsed
-        assert len(store.units) == 10
+        # 1 regular string + 2 plural groups = 3 units
+        assert len(store.units) == 3
 
-        # Check the format string
+        # The regular format string is kept as-is
         format_string_unit = store.units[0]
         assert format_string_unit.source == "%1$#@apple@ and %2$#@orange@."
 
-        # Check grouped plural units
+        # Apple group: accessible via get_plural_unit() and directly via unit
+        apple_unit = store.units[1]
+        assert apple_unit.hasplural()
+        assert apple_unit.format_value_type == "d"
+        assert isinstance(apple_unit.target, multistring)
+        # For English: zero, one, other
+        assert len(apple_unit.target.strings) == 3
+        assert apple_unit.target.strings[1] == "One apple"   # 'one'
+        assert apple_unit.target.strings[2] == "%d apples"   # 'other'
+
+        # Convenience accessor still works
         apple_plural = store.get_plural_unit("shopping-list:apple")
         assert apple_plural is not None
         assert apple_plural["format_value_type"] == "d"
-        assert isinstance(apple_plural["target"], multistring)
-        # For English, we expect: zero, one, other
-        assert len(apple_plural["target"].strings) == 3
-        assert apple_plural["target"].strings[1] == "One apple"  # 'one' form
-        assert apple_plural["target"].strings[2] == "%d apples"  # 'other' form
+        assert apple_plural["target"].strings[1] == "One apple"
+        assert apple_plural["target"].strings[2] == "%d apples"
 
+        orange_unit = store.units[2]
+        assert orange_unit.hasplural()
         orange_plural = store.get_plural_unit("shopping-list:orange")
         assert orange_plural is not None
-        assert orange_plural["format_value_type"] == "d"
-        assert isinstance(orange_plural["target"], multistring)
-        assert len(orange_plural["target"].strings) == 3
-        assert orange_plural["target"].strings[0] == "no oranges"  # 'zero' form
-        assert orange_plural["target"].strings[1] == "one orange"  # 'one' form
-        assert orange_plural["target"].strings[2] == "%d oranges"  # 'other' form
+        assert orange_plural["target"].strings[0] == "no oranges"   # 'zero'
+        assert orange_plural["target"].strings[1] == "one orange"   # 'one'
+        assert orange_plural["target"].strings[2] == "%d oranges"   # 'other'
 
     def test_get_base_key(self):
         """Test extracting base keys from Apple XLIFF IDs."""
@@ -205,7 +203,7 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
         assert store.gettargetlanguage() == "en"
 
     def test_add_plural_unit(self):
-        """Test adding a plural unit programmatically."""
+        """Test adding a plural unit programmatically – results in a single merged unit."""
         store = self.StoreClass()
         store.settargetlanguage("en")
 
@@ -213,30 +211,21 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
         plural_strings = ["", "One item", "%d items"]
         store.add_plural_unit("items:count", plural_strings, "d")
 
-        # Verify the units were added (marker + format + non-empty plural forms)
-        # zero is empty, so only one and other are added
-        assert len(store.units) == 4
+        # add_plural_unit creates a single merged unit (not 4 raw trans-units)
+        assert len(store.units) == 1
 
-        # Check marker unit
-        marker_unit = store.units[0]
-        assert marker_unit.xmlelement.get("id") == "items:count:dict"
-        assert marker_unit.source == "NSStringPluralRuleType"
+        unit = store.units[0]
+        assert unit.hasplural()
+        assert unit._plural_base_key == "items:count"
+        assert unit.format_value_type == "d"
 
-        # Check format unit
-        format_unit = store.units[1]
-        assert format_unit.xmlelement.get("id") == "items:count:dict/:string"
-        assert format_unit.target == "d"
+        # source and target are multistrings
+        assert isinstance(unit.source, multistring)
+        assert isinstance(unit.target, multistring)
+        assert unit.target.strings[1] == "One item"
+        assert unit.target.strings[2] == "%d items"
 
-        # Check plural form units
-        one_unit = store.units[2]
-        assert "one:dict/:string" in one_unit.xmlelement.get("id")
-        assert one_unit.target == "One item"
-
-        other_unit = store.units[3]
-        assert "other:dict/:string" in other_unit.xmlelement.get("id")
-        assert other_unit.target == "%d items"
-
-        # Verify we can retrieve the plural unit
+        # Verify we can retrieve the plural unit via the convenience method
         plural = store.get_plural_unit("items:count")
         assert plural is not None
         assert plural["target"].strings[1] == "One item"
@@ -286,8 +275,9 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
         assert plural["target"].strings[2] == "%d items"
 
     def test_real_world_plural_patterns(self):
-        """Test parsing real-world Apple XLIFF plural patterns."""
-        # Pattern from ONLYOFFICE files - uses leading slashes in IDs
+        """Test parsing real-world Apple XLIFF plural patterns (ONLYOFFICE style)."""
+        # Pattern from ONLYOFFICE files - uses leading slashes in IDs and
+        # no NSStringPluralRuleType marker; plural forms are nested directly.
         xliff_content = b"""<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file original="Localizable.strings" source-language="en" target-language="lt" datatype="plaintext">
@@ -320,19 +310,26 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
         store.settargetlanguage("lt")
         store.parse(xliff_content)
 
-        # Should parse successfully and recognize plurals
-        assert len(store.units) == 5
+        # NSStringLocalizedFormatKey (format_type but no plural forms → kept as regular unit)
+        # + merged plural unit for "days" variable = 2 units
+        assert len(store.units) == 2
 
-        # The NSStringLocalizedFormatKey trans-unit exists
+        # The NSStringLocalizedFormatKey trans-unit is preserved as a regular unit
         format_key_unit = store.units[0]
         assert "NSStringLocalizedFormatKey" in format_key_unit.xmlelement.get("id")
 
-        # Check plural forms
+        # The "days" plural group is folded into one unit
+        days_unit = store.units[1]
+        assert days_unit.hasplural()
+
+        # Lithuanian has multiple plural forms (few, many, one, other)
+        assert len([s for s in days_unit.target.strings if s]) >= 4
+
+        # Also accessible via get_plural_unit()
         plural = store.get_plural_unit(
             "/%d days are left until the license expiration.:dict/days"
         )
         assert plural is not None
-        # Lithuanian has multiple plural forms (few, many, one, other)
         assert len([s for s in plural["target"].strings if s]) >= 4
 
     def test_serialize_plural_xml_structure(self):
@@ -410,13 +407,13 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
 
         assert len(store.units) == 1
 
-        # Add plural unit in its place
+        # Add plural unit in its place (creates a single merged unit)
         store.add_plural_unit("item_count:count", ["", "One item", "%d items"], "d")
 
-        # Should now have 1 original + 4 plural (marker + format + one + other)
-        assert len(store.units) == 5
+        # 1 original (greeting) + 1 merged plural = 2 units
+        assert len(store.units) == 2
 
-        # Serialize and check output
+        # Serialize and check output (XML has all 4 trans-units for the plural)
         output = bytes(store).decode("utf-8")
         assert 'id="greeting"' in output
         assert 'id="item_count:count:dict"' in output
@@ -427,6 +424,7 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
         store2 = self.StoreClass()
         store2.settargetlanguage("en")
         store2.parse(output.encode("utf-8"))
+        assert len(store2.units) == 2
         plural = store2.get_plural_unit("item_count:count")
         assert plural is not None
         assert plural["target"].strings[1] == "One item"
@@ -466,7 +464,8 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
         store.settargetlanguage("en")
         store.parse(xliff_content)
 
-        assert len(store.units) == 5
+        # After folding: 1 greeting + 1 merged plural = 2 units
+        assert len(store.units) == 2
 
         # Remove all plural units for "items:count"
         removed = store.remove_plural_unit("items:count")
@@ -510,15 +509,15 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
         store.add_plural_unit("items:count", ["", "One item", "%d items"], "d")
         store.add_plural_unit("orders:count", ["", "One order", "%d orders"], "d")
 
-        # 2 groups × (marker + format + 2 forms) = 8 units
-        assert len(store.units) == 8
+        # Each group is now a single merged unit  →  2 units total
+        assert len(store.units) == 2
 
         # Remove one group
         removed = store.remove_plural_unit("items:count")
         assert removed is True
-        assert len(store.units) == 4
+        assert len(store.units) == 1
 
-        # The remaining units should be for orders:count
+        # The remaining unit should be for orders:count
         assert store.get_plural_unit("items:count") is None
         orders_plural = store.get_plural_unit("orders:count")
         assert orders_plural is not None
@@ -547,13 +546,102 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
 
         assert len(store.units) == 1
 
-        # Add plural unit to the already-parsed store (previously would fail)
+        # Add plural unit to the already-parsed store
         store.add_plural_unit("items:count", ["", "One item", "%d items"], "d")
 
-        # Should now have 1 original + 4 plural units
-        assert len(store.units) == 5
+        # 1 original + 1 merged plural = 2 units
+        assert len(store.units) == 2
 
         plural = store.get_plural_unit("items:count")
         assert plural is not None
         assert plural["target"].strings[1] == "One item"
         assert plural["target"].strings[2] == "%d items"
+
+    def test_plural_unit_target_update_roundtrip(self):
+        """Test that changing a parsed plural unit's target round-trips correctly."""
+        xliff_content = b"""<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file original="Localizable.strings" source-language="en" target-language="en" datatype="plaintext">
+    <body>
+      <trans-unit id="items:count:dict" xml:space="preserve">
+        <source>NSStringPluralRuleType</source>
+        <target>NSStringPluralRuleType</target>
+      </trans-unit>
+      <trans-unit id="items:count:dict/:string" xml:space="preserve">
+        <source>d</source>
+        <target>d</target>
+      </trans-unit>
+      <trans-unit id="items:count:dict/one:dict/:string" xml:space="preserve">
+        <source>One item</source>
+        <target>One item</target>
+      </trans-unit>
+      <trans-unit id="items:count:dict/other:dict/:string" xml:space="preserve">
+        <source>%d items</source>
+        <target>%d items</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>"""
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        store.parse(xliff_content)
+
+        unit = store.units[0]
+        assert unit.hasplural()
+
+        # Change the target (simulate translation update)
+        unit.target = multistring(["", "Ein Artikel", "%d Artikel"])
+
+        # Serialize – should output updated Apple XLIFF
+        output = bytes(store).decode("utf-8")
+        assert "Ein Artikel" in output
+        assert "%d Artikel" in output
+        assert 'id="items:count:dict/one:dict/:string"' in output
+        assert 'id="items:count:dict/other:dict/:string"' in output
+
+        # Round-trip
+        store2 = self.StoreClass()
+        store2.settargetlanguage("en")
+        store2.parse(output.encode("utf-8"))
+        assert len(store2.units) == 1
+        assert store2.units[0].target.strings[1] == "Ein Artikel"
+        assert store2.units[0].target.strings[2] == "%d Artikel"
+
+    def test_plural_unit_hasplural_and_getid(self):
+        """Test hasplural() and getid() on a folded plural unit."""
+        xliff_content = b"""<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file original="L.strings" source-language="en" target-language="en" datatype="plaintext">
+    <body>
+      <trans-unit id="hello" xml:space="preserve">
+        <source>Hello</source><target>Hello</target>
+      </trans-unit>
+      <trans-unit id="n:count:dict" xml:space="preserve">
+        <source>NSStringPluralRuleType</source><target>NSStringPluralRuleType</target>
+      </trans-unit>
+      <trans-unit id="n:count:dict/:string" xml:space="preserve">
+        <source>d</source><target>d</target>
+      </trans-unit>
+      <trans-unit id="n:count:dict/one:dict/:string" xml:space="preserve">
+        <source>one</source><target>one</target>
+      </trans-unit>
+      <trans-unit id="n:count:dict/other:dict/:string" xml:space="preserve">
+        <source>other</source><target>other</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>"""
+        store = self.StoreClass()
+        store.parse(xliff_content)
+
+        assert len(store.units) == 2
+
+        regular = store.units[0]
+        assert not regular.hasplural()
+        assert "hello" in regular.getid()
+
+        plural = store.units[1]
+        assert plural.hasplural()
+        # getid() returns the base key (without ":dict" suffix)
+        assert plural.getid().endswith("n:count")
+        assert "n:count:dict" not in plural.getid()
