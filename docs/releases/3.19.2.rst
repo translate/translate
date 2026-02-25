@@ -1,0 +1,31 @@
+Translate Toolkit 3.19.2
+************************
+
+*Released on 25 February 2026*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- XLIFF
+
+  - Add variant with Apple plurals handling
+
+- WXL
+
+  - New format and po2wxl and wxl2po convertors
+
+- HTML
+
+  - Expose more header tags for localization
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+Michal Čihař, Copilot
