@@ -41,6 +41,7 @@ Other translation formats
    ts
    rc
    strings
+   stringsdict
    flex
    catkeys
    android
@@ -58,6 +59,7 @@ Other translation formats
 * Symbian localization files
 * Windows :doc:`rc` files
 * Mac OSX :doc:`strings` files (also used on the iPhone) (from version 1.8)
+* Apple :doc:`stringsdict` plural files (from version 3.14)
 * Adobe :doc:`flex` files (from version 1.8)
 * Haiku :doc:`catkeys` (from version 1.8)
 * :doc:`android` (supports storage, not conversion)
