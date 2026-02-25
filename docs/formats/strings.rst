@@ -13,25 +13,14 @@ po2prop are used for conversion.
 
 This format is standardized as PWG 5100.13 and used on NeXTSTEP/OpenSTEP as well.
 
-.. _strings#stringsdict:
+.. seealso::
 
-.stringsdict format
-===================
+   :doc:`stringsdict`
+      Apple's plist-based plural format used alongside .strings files.
 
-.. versionadded:: 3.14
-
-The .stringsdict format is used by Apple for plural handling in iOS/macOS applications.
-It stores plural rules using CLDR plural categories (zero, one, two, few, many, other)
-in a plist (property list) format.
-
-The Translate Toolkit supports .stringsdict files via ``translate.storage.stringsdict``.
-
-Apple XLIFF variant
--------------------
-
-Apple has also developed a custom XLIFF variant that encodes .stringsdict plural
-information in XLIFF format. This is supported via ``translate.storage.applestrings_xliff``.
-See :ref:`xliff#apple_xliff` for details.
+   :ref:`xliff#apple_xliff`
+      Apple's XLIFF variant that encodes .stringsdict plural information in
+      XLIFF format.
 
 .. _strings#references:
 
