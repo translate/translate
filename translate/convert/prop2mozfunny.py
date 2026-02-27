@@ -40,12 +40,11 @@ def prop2inc(pf):
         if unit.isblank():
             pendingblanks.append("\n")
         else:
-            definition = "#define {} {}\n".format(
+            yield from pendingblanks
+            yield "#define {} {}\n".format(
                 unit.name,
                 unit.value.replace("\n", "\\n"),
             )
-            yield from pendingblanks
-            yield definition
 
 
 def prop2it(pf):
@@ -64,8 +63,7 @@ def prop2it(pf):
         if unit.isblank():
             yield ""
         else:
-            definition = f"{unit.name}={unit.value}\n"
-            yield definition
+            yield f"{unit.name}={unit.value}\n"
 
 
 def prop2funny(src, itencoding="cp1252"):
