@@ -35,7 +35,8 @@ release = version
 # ones.
 extensions = [
     "translate_docs",
-    "sphinx.ext.autodoc",
+    #    "sphinx.ext.autodoc",
+    "autoapi.extension",
     "sphinx.ext.coverage",
     "sphinx.ext.extlinks",
     "sphinx.ext.intersphinx",
@@ -76,6 +77,9 @@ autodoc_mock_imports = [
     "ruamel",
     "rapidfuzz",
 ]
+
+autoapi_dirs = ["../translate/"]
+autoapi_add_toctree_entry = False
 
 # -- Options for HTML output -------------------------------------------------
 

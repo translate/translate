@@ -15,6 +15,7 @@ docs = [
   # Do not attempt to build doc on older Python
   "furo==2025.12.19; python_version >= '3.12'",
   "matplotlib==3.10.8; python_version >= '3.12'",
+  "sphinx-autoapi==3.7.0; python_version >= '3.12'",
   "sphinx-copybutton==0.5.2; python_version >= '3.12'",
   "Sphinx==9.1.0; python_version >= '3.12'",
   "sphinxext-opengraph==0.13.0; python_version >= '3.12'"

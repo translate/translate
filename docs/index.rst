@@ -73,11 +73,4 @@ localization tools.
    :caption: API Reference
    :hidden:
 
-   api/index
-   api/convert
-   api/filters
-   api/lang
-   api/misc
-   api/search
-   api/storage
-   api/tools
+   autoapi/translate/index
