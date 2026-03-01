@@ -693,15 +693,21 @@ key=value
         assert propunit.getnotes() == "Foo\nBar\nBaz"
 
     def test_mac_strings_comments_dropping(self) -> None:
-        """.string generic (and unuseful) comments should be dropped."""
-        propsource = """/* No comment provided by engineer. */
-"key" = "value";""".encode("utf-16")
+        """.string generic (and unuseful) comments should be hidden from notes but preserved in round-trip."""
+        propsource = """/* No comment provided by engineer. */\n"key" = "value";\n""".encode(
+            "utf-16"
+        )
         propfile = self.propparse(propsource, personality="strings")
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
         assert propunit.name == "key"
         assert propunit.source == "value"
+        # Comment should not be exposed via getnotes()
         assert propunit.getnotes() == ""
+        # But it should be preserved in round-trip
+        result = bytes(propfile).decode("utf-16")
+        expected = '/* No comment provided by engineer. */\n"key" = "value";\n'
+        assert result == expected
 
     def test_mac_strings_inline_comments(self) -> None:
         """Test .strings inline comments are parsed correctly."""
@@ -1133,6 +1139,88 @@ key=value
         assert propunit.name == "key"
         assert propunit.value == "value"
         assert propunit.getnotes() == "long\nnote"
+
+    def test_mac_strings_no_comment_round_trip(self) -> None:
+        """Test that 'No comment provided by engineer.' is preserved in round-trip."""
+        propsource = (
+            '/* No comment provided by engineer. */\n"key1" = "value1";\n'
+            "\n"
+            '/* No comment provided by engineer. */\n"key2" = "value2";\n'
+        ).encode("utf-16")
+        propfile = self.propparse(propsource, personality="strings")
+        assert len(propfile.units) == 2
+        # Comments should not be exposed via getnotes()
+        assert propfile.units[0].getnotes() == ""
+        assert propfile.units[1].getnotes() == ""
+        # But the full file should round-trip correctly
+        result = bytes(propfile).decode("utf-16")
+        expected = (
+            '/* No comment provided by engineer. */\n"key1" = "value1";\n'
+            "\n"
+            '/* No comment provided by engineer. */\n"key2" = "value2";\n'
+        )
+        assert result == expected
+
+    def test_mac_strings_blank_lines_preserved(self) -> None:
+        """Test that blank lines between entries are preserved in round-trip."""
+        propsource = (
+            '/* comment1 */\n"key1" = "value1";\n'
+            "\n"
+            '/* comment2 */\n"key2" = "value2";\n'
+        ).encode("utf-16")
+        propfile = self.propparse(propsource, personality="strings")
+        assert len(propfile.units) == 2
+        result = bytes(propfile).decode("utf-16")
+        expected = (
+            '/* comment1 */\n"key1" = "value1";\n'
+            "\n"
+            '/* comment2 */\n"key2" = "value2";\n'
+        )
+        assert result == expected
+
+    def test_mac_strings_single_blank_line_preserved(self) -> None:
+        """Test that a single blank line between entries without comments is preserved."""
+        propsource = '"key1" = "value1";\n\n"key2" = "value2";\n'.encode("utf-16")
+        propfile = self.propparse(propsource, personality="strings")
+        assert len(propfile.units) == 2
+        result = bytes(propfile).decode("utf-16")
+        expected = '"key1" = "value1";\n\n"key2" = "value2";\n'
+        assert result == expected
+
+    def test_mac_strings_multiple_blank_lines_preserved(self) -> None:
+        """Test that multiple blank lines between entries are preserved."""
+        propsource = '"key1" = "value1";\n\n\n"key2" = "value2";\n'.encode("utf-16")
+        propfile = self.propparse(propsource, personality="strings")
+        assert len(propfile.units) == 2
+        result = bytes(propfile).decode("utf-16")
+        expected = '"key1" = "value1";\n\n\n"key2" = "value2";\n'
+        assert result == expected
+
+    def test_mac_strings_realistic_round_trip(self) -> None:
+        """Test round-trip of a realistic .strings file with mixed comments and blank lines."""
+        propsource = (
+            '/* No comment provided by engineer. */\n"key1" = "value1";\n'
+            "\n"
+            '/* A real comment */\n"key2" = "value2";\n'
+            "\n"
+            '/* No comment provided by engineer. */\n"key3" = "value3";\n'
+        ).encode("utf-16")
+        propfile = self.propparse(propsource, personality="strings")
+        assert len(propfile.units) == 3
+        # Only the real comment should be exposed via getnotes()
+        assert propfile.units[0].getnotes() == ""
+        assert propfile.units[1].getnotes() == "A real comment"
+        assert propfile.units[2].getnotes() == ""
+        # Full round-trip should be preserved
+        result = bytes(propfile).decode("utf-16")
+        expected = (
+            '/* No comment provided by engineer. */\n"key1" = "value1";\n'
+            "\n"
+            '/* A real comment */\n"key2" = "value2";\n'
+            "\n"
+            '/* No comment provided by engineer. */\n"key3" = "value3";\n'
+        )
+        assert result == expected
 
     def test_trailing_newlines(self) -> None:
         """Ensure we can handle Unicode."""
