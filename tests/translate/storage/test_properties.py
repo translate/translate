@@ -695,7 +695,8 @@ key=value
     def test_mac_strings_comments_dropping(self) -> None:
         """.string generic (and unuseful) comments should be hidden from notes but preserved in round-trip."""
         propsource = """/* No comment provided by engineer. */
-"key" = "value";\n""".encode("utf-16")
+"key" = "value";
+""".encode("utf-16")
         propfile = self.propparse(propsource, personality="strings")
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
