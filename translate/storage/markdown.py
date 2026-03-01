@@ -79,7 +79,13 @@ class MarkdownFrontmatterUnit(MarkdownUnit):
 class MarkdownFile(base.TranslationStore[MarkdownUnit]):
     UnitClass = MarkdownUnit
 
-    def __init__(self, inputfile=None, callback=None, max_line_length=None) -> None:
+    def __init__(
+        self,
+        inputfile=None,
+        callback=None,
+        max_line_length=None,
+        extract_code_blocks=True,
+    ) -> None:
         """
         Construct a new object instance.
 
@@ -89,11 +95,14 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
           a no-op.
         :param max_line_length: if specified, the document is word wrapped to the
           given line length when rendered.
+        :param extract_code_blocks: if True (default), code blocks are extracted
+          for translation. If False, code blocks are left as-is.
         """
         base.TranslationStore.__init__(self)
         self.filename = getattr(inputfile, "name", None)
         self.callback = callback or self._dummy_callback
         self.max_line_length = max_line_length
+        self.extract_code_blocks = extract_code_blocks
         self.filesrc = ""
         if inputfile is not None:
             md_src = inputfile.read()
@@ -133,6 +142,7 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
             self._translate_callback,
             block_token.Table,
             max_line_length=self.max_line_length,
+            extract_code_blocks=self.extract_code_blocks,
         ) as renderer:
             document = block_token.Document(lines)
             self.filesrc = front_matter + renderer.render(document)
@@ -163,12 +173,14 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         translate_callback: Callable[[str, list[str], str], str],
         *extras,
         max_line_length: int | None = None,
+        extract_code_blocks: bool = True,
     ) -> None:
         super().__init__(*extras, max_line_length=max_line_length)  # ty:ignore[invalid-argument-type]
         self.translate_callback = translate_callback
         self.bypass = False
         self.path = []
         self.ignore_translation = False
+        self.extract_code_blocks = extract_code_blocks
         # Docpath tracking: heading hierarchy and sibling counts
         # _heading_stack: list of (level, heading_index) for current heading nesting
         self._heading_stack: list[tuple[int, int]] = []
@@ -427,6 +439,37 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
 
         # Return the raw HTML block content
         return super().render_html_block(token, max_line_length=max_line_length)
+
+    def render_block_code(
+        self, token: block_token.BlockCode, max_line_length: int
+    ) -> Iterable[str]:
+        if not self.extract_code_blocks or self.ignore_translation:
+            return super().render_block_code(token, max_line_length=max_line_length)
+
+        self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
+        self._current_docpath = self._build_docpath("code")
+        code_content = token.content[:-1]  # strip trailing \n
+        translated = self.translate_callback(code_content, self.path, self._current_docpath)
+        lines = translated.split("\n")
+        self.path.pop()
+        return self.prefix_lines(lines, "    ")
+
+    def render_fenced_code_block(
+        self, token: block_token.CodeFence, max_line_length: int  # ty:ignore[invalid-argument-type]
+    ) -> Iterable[str]:
+        if not self.extract_code_blocks or self.ignore_translation:
+            return super().render_fenced_code_block(token, max_line_length=max_line_length)
+
+        self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
+        self._current_docpath = self._build_docpath("code")
+        code_content = token.content[:-1]  # strip trailing \n
+        translated = self.translate_callback(code_content, self.path, self._current_docpath)
+        indentation = " " * token.indentation
+        result = [indentation + token.delimiter + token.info_string]
+        result.extend(self.prefix_lines(translated.split("\n"), indentation))
+        result.append(indentation + token.delimiter)
+        self.path.pop()
+        return result
 
     def render_list_item(
         self, token: block_token.ListItem, max_line_length: int
