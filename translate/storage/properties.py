@@ -546,7 +546,7 @@ class DialectStrings(Dialect):
     value_wrap_char = '"'
     out_ending = ";"
     out_delimiter_wrappers = " "
-    drop_comments: list[str] = []
+    drop_comments = []
     hidden_comments = ["/* No comment provided by engineer. */"]
     preserve_blank_lines = True
     encode_trans = str.maketrans(
