@@ -267,6 +267,8 @@ class Dialect:
     key_wrap_char: str = ""
     value_wrap_char: str = ""
     drop_comments: list[str] = []
+    hidden_comments: list[str] = []
+    preserve_blank_lines: bool = False
     has_plurals: bool = False
 
     @staticmethod
@@ -544,7 +546,9 @@ class DialectStrings(Dialect):
     value_wrap_char = '"'
     out_ending = ";"
     out_delimiter_wrappers = " "
-    drop_comments = ["/* No comment provided by engineer. */"]
+    drop_comments = []
+    hidden_comments = ["/* No comment provided by engineer. */"]
+    preserve_blank_lines = True
     encode_trans = str.maketrans(
         {
             "\\": "\\\\",
@@ -1008,7 +1012,7 @@ class propunit(base.TranslationUnit):
     def getoutput(self):
         """Convert the element back into formatted lines for a .properties file."""
         notes = "\n".join(self.comments)
-        if notes:
+        if notes or (self.comments and self.personality.preserve_blank_lines):
             notes = f"{notes}\n"
         if self.isblank():
             return notes or "\n"
@@ -1045,9 +1049,13 @@ class propunit(base.TranslationUnit):
 
     def getnotes(self, origin=None):
         if origin in {"programmer", "developer", "source code", None}:
+            hidden = self.personality.hidden_comments
+            skip_blank = self.personality.preserve_blank_lines
             output = []
             inmultilinecomment = False
             for line in self.comments:
+                if line in hidden or (skip_blank and not line):
+                    continue
                 if (
                     not inmultilinecomment
                     and (parsed := get_comment_one_line(line)) is not None
