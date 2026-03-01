@@ -217,6 +217,61 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
         ]
         store = self.parse("".join(input))
         unit_sources = self.get_translation_unit_sources(store)
+        assert unit_sources == ["a simple\n  indented code block"]
+        translated_output = self.get_translated_output(store)
+        assert translated_output == "    (a simple\n      indented code block)\n"
+
+    def test_code_block_not_extracted(self) -> None:
+        input = [
+            "    a simple\n",
+            "      indented code block\n",
+        ]
+        inputfile = BytesIO("".join(input).encode())
+        store = markdown.MarkdownFile(
+            inputfile=inputfile,
+            callback=lambda x: f"({x})",
+            extract_code_blocks=False,
+        )
+        unit_sources = self.get_translation_unit_sources(store)
+        assert unit_sources == []
+
+    def test_fenced_code_block(self) -> None:
+        input = [
+            "```\n",
+            "fenced code block\n",
+            "```\n",
+        ]
+        store = self.parse("".join(input))
+        unit_sources = self.get_translation_unit_sources(store)
+        assert unit_sources == ["fenced code block"]
+        translated_output = self.get_translated_output(store)
+        assert translated_output == "```\n(fenced code block)\n```\n"
+
+    def test_fenced_code_block_with_language(self) -> None:
+        input = [
+            "```python\n",
+            "print('hello')\n",
+            "```\n",
+        ]
+        store = self.parse("".join(input))
+        unit_sources = self.get_translation_unit_sources(store)
+        assert unit_sources == ["print('hello')"]
+        translated_output = self.get_translated_output(store)
+        assert translated_output == "```python\n(print('hello'))\n```\n"
+
+    def test_fenced_code_block_not_extracted(self) -> None:
+        input = [
+            "```python\n",
+            "print('hello')\n",
+            "```\n",
+        ]
+        inputfile = BytesIO("".join(input).encode())
+        store = markdown.MarkdownFile(
+            inputfile=inputfile,
+            callback=lambda x: f"({x})",
+            extract_code_blocks=False,
+        )
+        unit_sources = self.get_translation_unit_sources(store)
         assert unit_sources == []
 
     def test_html_block(self) -> None:
