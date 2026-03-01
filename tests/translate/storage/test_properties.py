@@ -1163,17 +1163,13 @@ key=value
     def test_mac_strings_blank_lines_preserved(self) -> None:
         """Test that blank lines between entries are preserved in round-trip."""
         propsource = (
-            '/* comment1 */\n"key1" = "value1";\n'
-            "\n"
-            '/* comment2 */\n"key2" = "value2";\n'
+            '/* comment1 */\n"key1" = "value1";\n\n/* comment2 */\n"key2" = "value2";\n'
         ).encode("utf-16")
         propfile = self.propparse(propsource, personality="strings")
         assert len(propfile.units) == 2
         result = bytes(propfile).decode("utf-16")
         expected = (
-            '/* comment1 */\n"key1" = "value1";\n'
-            "\n"
-            '/* comment2 */\n"key2" = "value2";\n'
+            '/* comment1 */\n"key1" = "value1";\n\n/* comment2 */\n"key2" = "value2";\n'
         )
         assert result == expected
 
