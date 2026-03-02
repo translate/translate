@@ -463,7 +463,8 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     ) -> Iterable[str]:
         if not self.extract_code_blocks or self.ignore_translation:
             return super().render_fenced_code_block(
-                token, max_line_length=max_line_length  # ty:ignore[invalid-argument-type]
+                token,
+                max_line_length=max_line_length,  # ty:ignore[invalid-argument-type]
             )
 
         self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
