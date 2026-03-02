@@ -24,6 +24,10 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+from __future__ import annotations
+
+import functools
+
 from translate.convert import convert
 from translate.storage import markdown, po
 
@@ -40,46 +44,84 @@ class MD2POOptionParser(convert.ConvertOptionParser, convert.DocpathMerger):
         super().__init__(formats, usetemplates=True, usepots=True, description=__doc__)
         self.add_duplicates_option()
         self.add_multifile_option()
+        self.add_option(
+            "",
+            "--no-code-blocks",
+            action="store_false",
+            dest="extract_code_blocks",
+            default=True,
+            help="do not extract code blocks for translation",
+        )
+        self.passthrough.append("extract_code_blocks")
 
     def _extract_translation_units(
         self,
         inputfile,
         outputfile,
         templatefile,
-        duplicatestyle,
-        multifilestyle,
+        duplicatestyle: str,
+        multifilestyle: str,
+        extract_code_blocks: bool = True,
     ) -> int:
         if hasattr(self, "outputstore"):
             if templatefile is None:
-                self._parse_and_extract(inputfile, self.outputstore)
+                self._parse_and_extract(
+                    inputfile, self.outputstore, extract_code_blocks=extract_code_blocks
+                )
             else:
-                self._merge_with_template(inputfile, templatefile, self.outputstore)
+                self._merge_with_template(
+                    inputfile,
+                    templatefile,
+                    self.outputstore,
+                    extract_code_blocks=extract_code_blocks,
+                )
         else:
             store = po.pofile()
             if templatefile is None:
-                self._parse_and_extract(inputfile, store)
+                self._parse_and_extract(
+                    inputfile, store, extract_code_blocks=extract_code_blocks
+                )
             else:
-                self._merge_with_template(inputfile, templatefile, store)
+                self._merge_with_template(
+                    inputfile,
+                    templatefile,
+                    store,
+                    extract_code_blocks=extract_code_blocks,
+                )
             store.removeduplicates(duplicatestyle)
             store.serialize(outputfile)
         return 1
 
     @staticmethod
-    def _parse_and_extract(inputfile, outputstore) -> None:
+    def _parse_and_extract(
+        inputfile, outputstore: po.pofile, *, extract_code_blocks: bool = True
+    ) -> None:
         """Extract translation units from a markdown file and add them to an existing message store (pofile object) without any further processing."""
-        parser = markdown.MarkdownFile(inputfile=inputfile)
+        parser = markdown.MarkdownFile(
+            inputfile=inputfile, extract_code_blocks=extract_code_blocks
+        )
         for tu in parser.units:
             if not tu.isheader():
                 storeunit = outputstore.addsourceunit(tu.source)
                 storeunit.addlocations(tu.getlocations())
 
-    def _merge_with_template(self, inputfile, templatefile, outputstore) -> None:
+    def _merge_with_template(
+        self,
+        inputfile,
+        templatefile,
+        outputstore: po.pofile,
+        *,
+        extract_code_blocks: bool = True,
+    ) -> None:
         """Merge translation from inputfile with source from templatefile using docpath matching."""
+        store_class = functools.partial(
+            markdown.MarkdownFile, extract_code_blocks=extract_code_blocks
+        )
         self.merge_stores_by_docpath(
             inputfile,
             templatefile,
             outputstore,
-            markdown.MarkdownFile,
+            store_class,
             filter_header=True,
         )
 

@@ -17,6 +17,7 @@ class TestMD2PO(test_convert.TestConvertCommand):
         "-t TEMPLATE, --template=TEMPLATE",
         "--duplicates=DUPLICATESTYLE",
         "--multifile=MULTIFILESTYLE",
+        "--no-code-blocks",
     ]
 
     def test_markdown_file_with_multifile_single(self) -> None:
