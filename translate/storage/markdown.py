@@ -446,7 +446,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         if not self.extract_code_blocks or self.ignore_translation:
             return super().render_block_code(token, max_line_length=max_line_length)
 
-        self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
+        self.path.append(f":{token.line_number}")
         self._current_docpath = self._build_docpath("code")
         code_content = token.content[:-1]  # strip trailing \n
         translated = self.translate_callback(
@@ -458,15 +458,15 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
 
     def render_fenced_code_block(
         self,
-        token: block_token.CodeFence,
-        max_line_length: int,  # ty:ignore[invalid-argument-type]
+        token: block_token.BlockCode,
+        max_line_length: int,
     ) -> Iterable[str]:
         if not self.extract_code_blocks or self.ignore_translation:
             return super().render_fenced_code_block(
                 token, max_line_length=max_line_length
             )
 
-        self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
+        self.path.append(f":{token.line_number}")
         self._current_docpath = self._build_docpath("code")
         code_content = token.content[:-1]  # strip trailing \n
         translated = self.translate_callback(
