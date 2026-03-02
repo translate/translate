@@ -225,7 +225,7 @@ ignore = [
   "*.toml",
   "*.yaml",
   "*.yml",
-  ".well-known/funding-manifest-urls",
+  "AGENTS.md",
   "CREDITS",
   "docs/*",
   "docs/*/*",
