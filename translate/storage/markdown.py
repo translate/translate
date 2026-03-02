@@ -449,21 +449,29 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
         self._current_docpath = self._build_docpath("code")
         code_content = token.content[:-1]  # strip trailing \n
-        translated = self.translate_callback(code_content, self.path, self._current_docpath)
+        translated = self.translate_callback(
+            code_content, self.path, self._current_docpath
+        )
         lines = translated.split("\n")
         self.path.pop()
         return self.prefix_lines(lines, "    ")
 
     def render_fenced_code_block(
-        self, token: block_token.CodeFence, max_line_length: int  # ty:ignore[invalid-argument-type]
+        self,
+        token: block_token.CodeFence,
+        max_line_length: int,  # ty:ignore[invalid-argument-type]
     ) -> Iterable[str]:
         if not self.extract_code_blocks or self.ignore_translation:
-            return super().render_fenced_code_block(token, max_line_length=max_line_length)
+            return super().render_fenced_code_block(
+                token, max_line_length=max_line_length
+            )
 
         self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
         self._current_docpath = self._build_docpath("code")
         code_content = token.content[:-1]  # strip trailing \n
-        translated = self.translate_callback(code_content, self.path, self._current_docpath)
+        translated = self.translate_callback(
+            code_content, self.path, self._current_docpath
+        )
         indentation = " " * token.indentation
         result = [indentation + token.delimiter + token.info_string]
         result.extend(self.prefix_lines(translated.split("\n"), indentation))
