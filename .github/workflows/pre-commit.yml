@@ -17,27 +17,23 @@ jobs:
     - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         persist-credentials: false
-    - name: Get cache tag
-      id: get-date
-      run: |
-        echo "cache_tag=$(/bin/date --utc '+%Y%m')" >> "$GITHUB_OUTPUT"
-        echo "previous_cache_tag=$(/bin/date --date='1 month ago' --utc '+%Y%m')" >> "$GITHUB_OUTPUT"
-      shell: bash
     - uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
-      id: pre-commit-cache
       with:
-        path: ~/.cache/pre-commit
-        key: ${{ runner.os }}-pre-commit-${{ steps.get-date.outputs.cache_tag }}-${{ hashFiles('.pre-commit-config.yaml') }}
+        path: ~/.cache/prek
+        key: ${{ runner.os }}-prek-${{ hashFiles('.pre-commit-config.yaml') }}
         restore-keys: |
-          ${{ runner.os }}-pre-commit-${{ steps.get-date.outputs.cache_tag }}
-          ${{ runner.os }}-pre-commit-${{ steps.get-date.outputs.previous_cache_tag }}
-          ${{ runner.os }}-pre-commit-
+          ${{ runner.os }}-prek-
     - uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
     - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
       with:
         python-version: 3.14
-    - name: pre-commit
-      run: uv run --no-sources --only-group pre-commit pre-commit run --all
+    - name: prek
+      run: uv run --no-sources --only-group pre-commit prek run --all-files
       env:
         RUFF_OUTPUT_FORMAT: github
         REUSE_OUTPUT_FORMAT: github
+    - name: diff
+      run: git diff
+      if: always()
+    - name: prek-prune
+      run: uv run --no-sources --only-group pre-commit prek cache gc
