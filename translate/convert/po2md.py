@@ -23,6 +23,8 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+from __future__ import annotations
+
 import os
 import sys
 
@@ -34,12 +36,20 @@ DEFAULT_MAX_LINE_LENGTH = 80
 
 
 class MarkdownTranslator:
-    def __init__(self, inputstore, includefuzzy, outputthreshold, maxlength) -> None:
+    def __init__(
+        self,
+        inputstore: po.pofile,
+        includefuzzy: bool,
+        outputthreshold: int | None,
+        maxlength: int,
+        extract_code_blocks: bool = True,
+    ) -> None:
         self.inputstore = inputstore
         self.inputstore.require_index()
         self.includefuzzy = includefuzzy
         self.outputthreshold = outputthreshold
         self.maxlength = maxlength
+        self.extract_code_blocks = extract_code_blocks
 
     def translate(self, templatefile, outputfile) -> int:
         if not convert.should_output_store(self.inputstore, self.outputthreshold):
@@ -49,11 +59,12 @@ class MarkdownTranslator:
             inputfile=templatefile,
             callback=self._lookup,
             max_line_length=self.maxlength if self.maxlength > 0 else None,
+            extract_code_blocks=self.extract_code_blocks,
         )
         outputfile.write(outputstore.filesrc.encode("utf-8"))
         return 1
 
-    def _lookup(self, string):
+    def _lookup(self, string: str) -> str:
         unit = self.inputstore.sourceindex.get(string, None)
         if unit is None:
             return string
@@ -83,6 +94,15 @@ class PO2MDOptionParser(convert.ConvertOptionParser):
             help="reflow (word wrap) the output to the given maximum line length. set to 0 to disable",
         )
         self.passthrough.append("maxlength")
+        self.add_option(
+            "",
+            "--no-code-blocks",
+            action="store_false",
+            dest="extract_code_blocks",
+            default=True,
+            help="do not extract code blocks for translation",
+        )
+        self.passthrough.append("extract_code_blocks")
         self.add_threshold_option()
         self.add_fuzzy_option()
 
@@ -91,13 +111,18 @@ class PO2MDOptionParser(convert.ConvertOptionParser):
         inputfile,
         outputfile,
         templatefile,
-        includefuzzy,
-        outputthreshold,
-        maxlength,
+        includefuzzy: bool,
+        outputthreshold: int | None,
+        maxlength: int,
+        extract_code_blocks: bool = True,
     ):
         inputstore = po.pofile(inputfile)
         translator = MarkdownTranslator(
-            inputstore, includefuzzy, outputthreshold, maxlength
+            inputstore,
+            includefuzzy,
+            outputthreshold,
+            maxlength,
+            extract_code_blocks=extract_code_blocks,
         )
         return translator.translate(templatefile, outputfile)
 
@@ -149,12 +174,17 @@ class PO2MDOptionParser(convert.ConvertOptionParser):
         inputfile,
         outputfile,
         templatefile,
-        includefuzzy,
-        outputthreshold,
-        maxlength,
+        includefuzzy: bool,
+        outputthreshold: int | None,
+        maxlength: int,
+        extract_code_blocks: bool = True,
     ):
         translator = MarkdownTranslator(
-            self.inputstore, includefuzzy, outputthreshold, maxlength
+            self.inputstore,
+            includefuzzy,
+            outputthreshold,
+            maxlength,
+            extract_code_blocks=extract_code_blocks,
         )
         return translator.translate(templatefile, outputfile)
 
