@@ -1049,12 +1049,14 @@ class propunit(base.TranslationUnit):
 
     def getnotes(self, origin=None):
         if origin in {"programmer", "developer", "source code", None}:
-            hidden = self.personality.hidden_comments
+            hidden = {c.strip() for c in self.personality.hidden_comments}
             skip_blank = self.personality.preserve_blank_lines
             output = []
             inmultilinecomment = False
             for line in self.comments:
-                if line in hidden or (skip_blank and not line):
+                if line.strip() in hidden or (
+                    skip_blank and not line and not inmultilinecomment
+                ):
                     continue
                 if (
                     not inmultilinecomment

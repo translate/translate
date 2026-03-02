@@ -1218,6 +1218,24 @@ key=value
         )
         assert result == expected
 
+    def test_mac_strings_no_comment_with_whitespace(self) -> None:
+        """Test that 'No comment provided by engineer.' is hidden even with extra whitespace."""
+        propsource = (
+            '  /* No comment provided by engineer. */  \n"key" = "value";\n'
+        ).encode("utf-16")
+        propfile = self.propparse(propsource, personality="strings")
+        assert len(propfile.units) == 1
+        # Comment should not be exposed via getnotes() even with whitespace
+        assert propfile.units[0].getnotes() == ""
+
+    def test_mac_strings_multiline_comment_blank_lines(self) -> None:
+        """Test that blank lines inside multi-line comments are preserved in notes."""
+        propsource = "/* Foo\n\nBar */\n\"key\" = \"value\";\n".encode("utf-16")
+        propfile = self.propparse(propsource, personality="strings")
+        assert len(propfile.units) == 1
+        # Blank line inside multi-line comment should be preserved in notes
+        assert propfile.units[0].getnotes() == "Foo\n\nBar"
+
     def test_trailing_newlines(self) -> None:
         """Ensure we can handle Unicode."""
         propsource = """"I am a “key”" = "I am a “value”";\n"""
