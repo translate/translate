@@ -1230,7 +1230,7 @@ key=value
 
     def test_mac_strings_multiline_comment_blank_lines(self) -> None:
         """Test that blank lines inside multi-line comments are preserved in notes."""
-        propsource = "/* Foo\n\nBar */\n\"key\" = \"value\";\n".encode("utf-16")
+        propsource = '/* Foo\n\nBar */\n"key" = "value";\n'.encode("utf-16")
         propfile = self.propparse(propsource, personality="strings")
         assert len(propfile.units) == 1
         # Blank line inside multi-line comment should be preserved in notes
