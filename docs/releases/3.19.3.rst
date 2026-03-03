@@ -1,0 +1,27 @@
+Translate Toolkit 3.19.3
+************************
+
+*Released on 3 March 2026*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- Markdown
+
+  - Extract code blocks for translation (opt-out possible)
+
+- Apple strings
+
+  - Improve whitespace and comments preservation upon saving
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+Michal Čihař, Copilot
