@@ -27,10 +27,14 @@ from __future__ import annotations
 
 import os
 import sys
+from typing import TYPE_CHECKING
 
 from translate.convert import convert
 from translate.misc.optrecurse import ProgressBar
 from translate.storage import markdown, po
+
+if TYPE_CHECKING:
+    from translate.storage.base import TranslationStore
 
 DEFAULT_MAX_LINE_LENGTH = 80
 
@@ -38,7 +42,7 @@ DEFAULT_MAX_LINE_LENGTH = 80
 class MarkdownTranslator:
     def __init__(
         self,
-        inputstore: po.pofile,
+        inputstore: TranslationStore,
         includefuzzy: bool,
         outputthreshold: int | None,
         maxlength: int,

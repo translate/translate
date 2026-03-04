@@ -28,7 +28,7 @@ from __future__ import annotations
 import hashlib
 import re
 import textwrap
-from typing import TYPE_CHECKING, BinaryIO
+from typing import IO, TYPE_CHECKING
 
 from fluent.syntax import FluentSerializer, ast, parse, serialize, visitor
 
@@ -1079,7 +1079,7 @@ class FluentFile(base.TranslationStore):
     Extensions = ["ftl"]
     UnitClass = FluentUnit
 
-    def __init__(self, inputfile: BinaryIO | None = None, **kwargs) -> None:
+    def __init__(self, inputfile: IO[bytes] | None = None, **kwargs) -> None:
         super().__init__(**kwargs)
         self.filename = getattr(inputfile, "name", "")
         if inputfile is not None:

@@ -75,6 +75,7 @@ import re
 import uuid
 from collections import defaultdict
 from typing import (
+    IO,
     TYPE_CHECKING,
     Any,
     BinaryIO,
@@ -1067,7 +1068,7 @@ class NextcloudJsonFile(JsonFile):
             unit.setid(key, unitid=self.UnitClass.IdClass.from_key(key))
             yield unit
 
-    def serialize(self, out: BinaryIO) -> None:
+    def serialize(self, out: IO[bytes]) -> None:
         """Serialize to Nextcloud JSON format."""
         # Build translations dictionary
         translations = {}
