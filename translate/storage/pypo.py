@@ -31,7 +31,7 @@ import re
 from functools import lru_cache
 from itertools import chain
 from string import punctuation
-from typing import TYPE_CHECKING, BinaryIO
+from typing import IO, TYPE_CHECKING
 
 from unicode_segmentation_rs import gettext_wrap
 
@@ -930,7 +930,7 @@ class pofile(pocommon.pofile[pounit]):
                 uniqueunits.append(thepo)
         self.units = uniqueunits
 
-    def serialize(self, out: BinaryIO) -> None:
+    def serialize(self, out: IO[bytes]) -> None:
         """Write to file."""
         at_start = True
         try:

@@ -178,6 +178,9 @@ class XliffUnit(lisa.LISAunit):
         if comments:
             self.addnote(otherunit.getnotes())
 
+    def markapproved(self, value=True) -> None:
+        raise NotImplementedError
+
 
 U = TypeVar("U", bound=XliffUnit)
 

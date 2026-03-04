@@ -25,9 +25,9 @@ import logging
 from io import BytesIO
 from itertools import starmap
 from typing import (
+    IO,
     TYPE_CHECKING,
     Any,
-    BinaryIO,
     ClassVar,
     Generic,
     Literal,
@@ -888,7 +888,7 @@ class TranslationStore(Generic[U]):
         self.serialize(out)
         return out.getvalue()
 
-    def serialize(self, out: BinaryIO) -> None:
+    def serialize(self, out: IO[bytes]) -> None:
         """
         Converts to a bytes representation that can be parsed back using
         :meth:`~.TranslationStore.parsestring`.
