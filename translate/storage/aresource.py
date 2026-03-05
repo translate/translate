@@ -432,18 +432,22 @@ class AndroidResourceUnit(base.TranslationUnit):
         )
         return multistring([plurals.get(tag, "") for tag in plural_tags])
 
+    def fixup_tag(self, expected: str) -> None:
+        # Fix the root tag if mismatching
+        if self.xmlelement.tag != expected:
+            old_id = self.getid()
+            newelement = etree.Element(expected)
+            parent = self.xmlelement.getparent()
+            if parent is not None:
+                parent.replace(self.xmlelement, newelement)
+            self.xmlelement = newelement
+            self.setid(old_id)
+
     @target.setter
     def target(self, target) -> None:
         if self.hasplurals(self.source) or self.hasplurals(target):
             # Fix the root tag if mismatching
-            if self.xmlelement.tag != self.PLURAL_TAG:
-                old_id = self.getid()
-                newelement = etree.Element(self.PLURAL_TAG)
-                parent = self.xmlelement.getparent()
-                if parent is not None:
-                    parent.replace(self.xmlelement, newelement)
-                self.xmlelement = newelement
-                self.setid(old_id)
+            self.fixup_tag(self.PLURAL_TAG)
 
             plural_tags = self._store.get_plural_tags()  # ty:ignore[unresolved-attribute]
 
@@ -484,14 +488,7 @@ class AndroidResourceUnit(base.TranslationUnit):
                 self.set_xml_text_value(plural_string, item)
         else:
             # Fix the root tag if mismatching
-            if self.xmlelement.tag != self.SINGULAR_TAG:
-                old_id = self.getid()
-                newelement = etree.Element(self.SINGULAR_TAG)
-                parent = self.xmlelement.getparent()
-                if parent is not None:
-                    parent.replace(self.xmlelement, newelement)
-                self.xmlelement = newelement
-                self.setid(old_id)
+            self.fixup_tag(self.SINGULAR_TAG)
 
             self.set_xml_text_value(target, self.xmlelement)
 
