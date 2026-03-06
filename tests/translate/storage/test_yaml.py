@@ -380,7 +380,7 @@ foo:
 - s1: Subtag 1
 """
         store = self.StoreClass()
-        store.dump_args["line_break"] = "\r\n"
+        store.dump_args["line_break"] = "\r\n"  # ty:ignore[invalid-assignment]
         store.parse(data)
         assert len(store.units) == 1
         assert bytes(store) == data.replace("\n", "\r\n").encode("ascii")

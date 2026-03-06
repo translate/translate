@@ -616,7 +616,7 @@ class GoTextJsonUnit(BaseJsonUnit):
             target["select"]["cases"] = {
                 plural: {"msg": strings[offset]}
                 for offset, plural in enumerate(self._store.get_plural_tags())  # ty:ignore[unresolved-attribute]
-            }
+            }  # ty:ignore[invalid-assignment]
         value = {"id": self._unitid.parts if self._unitid else self.getid()}
         if self.message:
             value["message"] = self.message
