@@ -99,7 +99,7 @@ class TranslationUnit:
 
     """
 
-    rich_parsers: list[Callable[[str], list[StringElem] | None]] = []
+    rich_parsers: list[Callable[[str], StringElem | list[StringElem] | None]] = []
     """A list of functions to use for parsing a string into a rich string
     tree."""
 

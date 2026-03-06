@@ -25,7 +25,7 @@ from __future__ import annotations
 
 import re
 
-from .base import G, Ph, StringElem
+from .base import G, ParseCallback, ParseResult, Ph, StringElem
 from .interfaces import BasePlaceable
 
 __all__ = (
@@ -41,7 +41,7 @@ class RegexParseMixin(BasePlaceable):
     regex: re.Pattern[str]
 
     @classmethod
-    def parse(cls, pstr: str) -> list[StringElem] | None:
+    def parse(cls, pstr: str) -> ParseResult:
         """
         Parse a string into placeables based on a regular expression.
 
@@ -393,7 +393,7 @@ def to_general_placeables(
 
 
 # The order of these parsers are very important
-parsers = [
+parsers: list[ParseCallback] = [
     NewlinePlaceable.parse,
     XMLTagPlaceable.parse,
     AltAttrPlaceable.parse,

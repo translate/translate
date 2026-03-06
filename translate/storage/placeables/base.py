@@ -21,6 +21,10 @@ Contains base placeable classes with names based on XLIFF placeables. See the
 XLIFF standard for more information about what the names mean.
 """
 
+from __future__ import annotations
+
+from collections.abc import Callable
+
 from translate.storage.placeables.interfaces import (
     Delimiter,
     MaskingPlaceable,
@@ -31,6 +35,10 @@ from translate.storage.placeables.interfaces import (
 from translate.storage.placeables.strelem import StringElem
 
 __all__ = ("Bpt", "Bx", "Ept", "Ex", "G", "It", "Ph", "Sub", "X", "to_base_placeables")
+
+
+ParseResult = StringElem | list[StringElem] | None
+ParseCallback = Callable[[str], ParseResult]
 
 
 # Basic placeable types.

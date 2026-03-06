@@ -43,7 +43,7 @@ class TerminologyPlaceable(base.Ph):
         super().__init__(*args, **kwargs)
 
     @classmethod
-    def parse(cls, pstr):
+    def parse(cls, pstr: str) -> base.ParseResult:
         parts = []
         matches = []
         match_info = {}
