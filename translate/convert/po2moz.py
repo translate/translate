@@ -72,7 +72,7 @@ def main(argv=None) -> None:
     # handle search and replace
     replacer = convert.Replacer("${locale}", None)
     for replaceformat in ("js", "rdf", "manifest"):
-        formats[None, replaceformat] = (replaceformat, replacer.searchreplacetemplate)
+        formats[None, replaceformat] = (replaceformat, replacer.searchreplacetemplate)  # ty:ignore[invalid-assignment]
         formats[replaceformat, replaceformat] = (
             replaceformat,
             replacer.searchreplaceinput,

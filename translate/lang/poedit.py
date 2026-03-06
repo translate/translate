@@ -234,5 +234,5 @@ def isocode(language: str, country: str | None = None) -> str | None:
     """
     dialect = dialects.get(language)
     if dialect:
-        return dialect.get(country, dialect["None"])
+        return dialect.get(country, dialect["None"])  # ty:ignore[no-matching-overload]
     return lang_names.get(language)

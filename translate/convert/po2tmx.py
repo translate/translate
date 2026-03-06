@@ -64,7 +64,7 @@ class po2tmx:
                 "source": self.cleancomments(inunit.sourcecomments, "source"),
                 "type": self.cleancomments(inunit.typecomments, "type"),
                 "others": self.cleancomments(inunit.othercomments),
-            }.get(comment)
+            }.get(comment)  # ty:ignore[invalid-argument-type]
 
             tmxfile.addtranslation(
                 source,
