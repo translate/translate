@@ -32,6 +32,7 @@ from translate.convert import convert, dtd2po
 from translate.storage import factory
 from translate.storage.placeables import StringElem, general
 from translate.storage.placeables import parse as rich_parse
+from translate.storage.placeables.base import ParseCallback
 
 format_re = re.compile(r"%[0-9c]*[sfFbBdh]")
 
@@ -45,7 +46,7 @@ def add_prefix(prefix, stringelems):
     return stringelems
 
 
-podebug_parsers = general.parsers
+podebug_parsers: list[ParseCallback] = general.parsers.copy()
 podebug_parsers.remove(general.CapsPlaceable.parse)
 podebug_parsers.remove(general.CamelCasePlaceable.parse)
 
@@ -157,7 +158,7 @@ class podebug:
             self.apply_to_translatables(string, partial(re.sub, a, b))
         return string
 
-    PRESERVE_PLACEABLE_PARSERS = [
+    PRESERVE_PLACEABLE_PARSERS: list[ParseCallback] = [
         general.UrlPlaceable.parse,
         general.EmailPlaceable.parse,
         general.XMLTagPlaceable.parse,

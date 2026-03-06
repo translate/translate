@@ -32,7 +32,8 @@ if TYPE_CHECKING:
 
 
 def parse(
-    tree: str | StringElem, parse_funcs: list[Callable[[str], list[StringElem] | None]]
+    tree: str | StringElem,
+    parse_funcs: list[Callable[[str], StringElem | list[StringElem] | None]],
 ) -> StringElem:
     """
     Parse placeables from the given string or sub-tree by using the
