@@ -86,6 +86,13 @@ You are only coming through in waves.
         assert os.path.isfile(self.get_testfilename("podir/file2.po"))
         assert not os.path.isfile(self.get_testfilename("podir/notes.po"))
 
+    def test_explicit_txt_file_is_processed(self) -> None:
+        self.create_testfile("file.txt", "# Heading\nText file content")
+        self.run_command("file.txt", "test.po")
+        assert os.path.isfile(self.get_testfilename("test.po"))
+        content = self.read_testfile("test.po").decode()
+        assert "Text file content" in content
+
     def given_directory_of_markdown_files(self) -> None:
         os.makedirs("mddir", exist_ok=True)
         self.create_testfile("mddir/file1.md", "# Heading\nContent of file 1")

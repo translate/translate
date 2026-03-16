@@ -85,6 +85,8 @@ class PO2MDOptionParser(convert.ConvertOptionParser):
         formats = {
             ("po", "md"): ("md", self._translate_md_file),
             ("po", "markdown"): ("markdown", self._translate_md_file),
+            ("po", "txt"): ("txt", self._translate_md_file),
+            ("po", "text"): ("text", self._translate_md_file),
         }
         super().__init__(formats, usetemplates=True, description=__doc__)
         self.add_option(
@@ -216,9 +218,13 @@ class PO2MDOptionParser(convert.ConvertOptionParser):
             dirstack.extend(dirs)
         return templatefiles
 
+    _txt_extensions = {"txt", "text"}
+
     def isvalidtemplatename(self, filename):
         """Checks if this is a valid template/output filename."""
         _, ext = self.splitext(filename)
+        if ext in self._txt_extensions:
+            return False
         return any(ext == templateformat for _, templateformat in self.outputoptions)
 
 

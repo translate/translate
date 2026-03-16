@@ -37,6 +37,8 @@ class MD2POOptionParser(convert.ConvertOptionParser, convert.DocpathMerger):
         formats = {
             "md": ("po", self._extract_translation_units),
             "markdown": ("po", self._extract_translation_units),
+            "txt": ("po", self._extract_translation_units),
+            "text": ("po", self._extract_translation_units),
             None: ("po", self._extract_translation_units),
         }
         super().__init__(formats, usetemplates=True, usepots=True, description=__doc__)
@@ -122,6 +124,15 @@ class MD2POOptionParser(convert.ConvertOptionParser, convert.DocpathMerger):
             store_class,
             filter_header=True,
         )
+
+    _txt_extensions = {"txt", "text"}
+
+    def isvalidinputname(self, inputname):
+        """Checks if this is a valid input filename (override)."""
+        _inputbase, inputext = self.splitinputext(inputname)
+        if inputext in self._txt_extensions:
+            return False
+        return super().isvalidinputname(inputname)
 
     def recursiveprocess(self, options) -> None:
         """Recurse through directories and process files. (override)."""
