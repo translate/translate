@@ -37,8 +37,6 @@ class MD2POOptionParser(convert.ConvertOptionParser, convert.DocpathMerger):
         formats = {
             "md": ("po", self._extract_translation_units),
             "markdown": ("po", self._extract_translation_units),
-            "txt": ("po", self._extract_translation_units),
-            "text": ("po", self._extract_translation_units),
             None: ("po", self._extract_translation_units),
         }
         super().__init__(formats, usetemplates=True, usepots=True, description=__doc__)

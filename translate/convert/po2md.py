@@ -85,8 +85,6 @@ class PO2MDOptionParser(convert.ConvertOptionParser):
         formats = {
             ("po", "md"): ("md", self._translate_md_file),
             ("po", "markdown"): ("markdown", self._translate_md_file),
-            ("po", "txt"): ("txt", self._translate_md_file),
-            ("po", "text"): ("text", self._translate_md_file),
         }
         super().__init__(formats, usetemplates=True, description=__doc__)
         self.add_option(
