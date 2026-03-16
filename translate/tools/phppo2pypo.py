@@ -65,20 +65,22 @@ class phppo2pypo:
 
     @overload
     def convertstrings(self, value: str) -> str: ...
+
     @overload
-    def convertstrings(self, value: multistring | list[str]) -> list[str]: ...
-    def convertstrings(self, value):
+    def convertstrings(self, value: multistring | list[str]) -> multistring: ...
+
+    def convertstrings(self, value: multistring | list[str] | str) -> multistring | str:
+        strings: list[str]
         if isinstance(value, multistring):
             strings = value.strings
         elif isinstance(value, list):
             strings = value
         else:
             return self.convertstring(value)
-        for index, string in enumerate(strings):
-            strings[index] = re.sub(
-                r"%(\d)\$s", lambda x: f"{{{int(x.group(1)) - 1}}}", string
-            )
-        return multistring(strings)
+
+        result = [self.convertstring(string) for string in strings]
+
+        return multistring(result)
 
 
 def convertphp2py(inputfile, outputfile, template=None) -> bool:
