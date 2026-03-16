@@ -2,13 +2,26 @@ import logging
 import optparse
 import os
 import sys
-from io import BytesIO
+from io import BytesIO, StringIO
 from tempfile import NamedTemporaryFile
 from types import SimpleNamespace
 
 import pytest
 
 from translate.misc import optrecurse
+
+
+def _noop_processor(inputfile, outputfile, templatefile):
+    return True
+
+
+def _make_exc_info(exc):
+    """Create an exc_info tuple for testing warning methods."""
+    try:
+        raise exc
+    except type(exc):
+        return sys.exc_info()
+    return None  # pragma: no cover
 
 
 class TestRecursiveOptionParser:
@@ -169,15 +182,17 @@ class TestGetFullTemplatePath:
         parser = optrecurse.RecursiveOptionParser(
             {("txt", "pot"): ("po", None)}, usetemplates=True
         )
-        options = SimpleNamespace(recursivetemplate=True, template="/tmpl/dir")
+        options = SimpleNamespace(recursivetemplate=True, template="/templates/dir")
         result = parser.getfulltemplatepath(options, "file.pot")
-        assert result == os.path.join("/tmpl/dir", "file.pot")
+        assert result == os.path.join("/templates/dir", "file.pot")
 
     def test_not_recursive_template(self) -> None:
         parser = optrecurse.RecursiveOptionParser(
             {("txt", "pot"): ("po", None)}, usetemplates=True
         )
-        options = SimpleNamespace(recursivetemplate=False, template="/tmpl/file.pot")
+        options = SimpleNamespace(
+            recursivetemplate=False, template="/templates/file.pot"
+        )
         result = parser.getfulltemplatepath(options, "file.pot")
         assert result == "file.pot"
 
@@ -185,7 +200,7 @@ class TestGetFullTemplatePath:
         parser = optrecurse.RecursiveOptionParser(
             {("txt", "pot"): ("po", None)}, usetemplates=True
         )
-        options = SimpleNamespace(recursivetemplate=True, template="/tmpl/dir")
+        options = SimpleNamespace(recursivetemplate=True, template="/templates/dir")
         result = parser.getfulltemplatepath(options, None)
         assert result is None
 
@@ -241,24 +256,21 @@ class TestGetOutputOptions:
     """Tests for RecursiveOptionParser.getoutputoptions."""
 
     def test_exact_match(self) -> None:
-        processor = lambda i, o, t: True
-        parser = optrecurse.RecursiveOptionParser({"txt": ("po", processor)})
+        parser = optrecurse.RecursiveOptionParser({"txt": ("po", _noop_processor)})
         fmt, proc = parser.getoutputoptions(None, "file.txt", None)
         assert fmt == "po"
-        assert proc is processor
+        assert proc is _noop_processor
 
     def test_wildcard_input(self) -> None:
-        processor = lambda i, o, t: True
-        parser = optrecurse.RecursiveOptionParser({"*": ("po", processor)})
-        fmt, proc = parser.getoutputoptions(None, "file.txt", None)
+        parser = optrecurse.RecursiveOptionParser({"*": ("po", _noop_processor)})
+        fmt, _proc = parser.getoutputoptions(None, "file.txt", None)
         assert fmt == "po"
 
     def test_template_exact_match(self) -> None:
-        processor = lambda i, o, t: True
         parser = optrecurse.RecursiveOptionParser(
-            {("txt", "pot"): ("po", processor)}, usetemplates=True
+            {("txt", "pot"): ("po", _noop_processor)}, usetemplates=True
         )
-        fmt, proc = parser.getoutputoptions(None, "file.txt", "tmpl.pot")
+        fmt, _proc = parser.getoutputoptions(None, "file.txt", "tmpl.pot")
         assert fmt == "po"
 
     def test_no_matching_format_raises(self) -> None:
@@ -272,16 +284,17 @@ class TestGetOutputOptions:
             parser.getoutputoptions(None, None, None)
 
     def test_wildcard_output_uses_input_ext(self) -> None:
-        processor = lambda i, o, t: True
-        parser = optrecurse.RecursiveOptionParser({"*": ("*", processor)})
-        fmt, proc = parser.getoutputoptions(None, "file.txt", None)
+        parser = optrecurse.RecursiveOptionParser({"*": ("*", _noop_processor)})
+        fmt, _proc = parser.getoutputoptions(None, "file.txt", None)
         assert fmt == "txt"
 
     def test_no_match_with_templates_raises_with_both_formats(self) -> None:
         parser = optrecurse.RecursiveOptionParser(
             {("txt", "pot"): ("po", None)}, usetemplates=True
         )
-        with pytest.raises(ValueError, match="input format .csv.*template format .xlf"):
+        with pytest.raises(
+            ValueError, match=r"input format .csv.*template format .xlf"
+        ):
             parser.getoutputoptions(None, "file.csv", "tmpl.xlf")
 
     def test_no_match_with_templates_no_template(self) -> None:
@@ -292,11 +305,10 @@ class TestGetOutputOptions:
             parser.getoutputoptions(None, "file.csv", None)
 
     def test_wildcard_template(self) -> None:
-        processor = lambda i, o, t: True
         parser = optrecurse.RecursiveOptionParser(
-            {("txt", "*"): ("po", processor)}, usetemplates=True
+            {("txt", "*"): ("po", _noop_processor)}, usetemplates=True
         )
-        fmt, proc = parser.getoutputoptions(None, "file.txt", "tmpl.pot")
+        fmt, _proc = parser.getoutputoptions(None, "file.txt", "tmpl.pot")
         assert fmt == "po"
 
 
@@ -394,7 +406,7 @@ class TestMkdir:
         assert (tmp_path / "a" / "b" / "c").is_dir()
 
     def test_parent_must_exist(self) -> None:
-        with pytest.raises(ValueError, match="parent.*does not exist"):
+        with pytest.raises(ValueError, match=r"parent.*does not exist"):
             optrecurse.RecursiveOptionParser.mkdir("/nonexistent/path", "subdir")
 
 
@@ -585,12 +597,9 @@ class TestWarning:
     def test_warning_message_errorlevel(self, caplog) -> None:
         parser = optrecurse.RecursiveOptionParser({"txt": ("po", None)})
         options = SimpleNamespace(errorlevel="message")
-        try:
-            raise ValueError("test error")
-        except ValueError:
-            exc_info = sys.exc_info()
-            with caplog.at_level(logging.WARNING):
-                parser.warning("processing failed", options, exc_info)
+        exc_info = _make_exc_info(ValueError("test error"))
+        with caplog.at_level(logging.WARNING):
+            parser.warning("processing failed", options, exc_info)
         assert "test error" in caplog.text
 
     def test_warning_none_errorlevel(self, caplog) -> None:
@@ -603,23 +612,17 @@ class TestWarning:
     def test_warning_exception_errorlevel(self, caplog) -> None:
         parser = optrecurse.RecursiveOptionParser({"txt": ("po", None)})
         options = SimpleNamespace(errorlevel="exception")
-        try:
-            raise ValueError("exc detail")
-        except ValueError:
-            exc_info = sys.exc_info()
-            with caplog.at_level(logging.WARNING):
-                parser.warning("err", options, exc_info)
+        exc_info = _make_exc_info(ValueError("exc detail"))
+        with caplog.at_level(logging.WARNING):
+            parser.warning("err", options, exc_info)
         assert "exc detail" in caplog.text
 
     def test_warning_traceback_errorlevel(self, caplog) -> None:
         parser = optrecurse.RecursiveOptionParser({"txt": ("po", None)})
         options = SimpleNamespace(errorlevel="traceback")
-        try:
-            raise ValueError("tb detail")
-        except ValueError:
-            exc_info = sys.exc_info()
-            with caplog.at_level(logging.WARNING):
-                parser.warning("err", options, exc_info)
+        exc_info = _make_exc_info(ValueError("tb detail"))
+        with caplog.at_level(logging.WARNING):
+            parser.warning("err", options, exc_info)
         assert "Traceback" in caplog.text
         assert "tb detail" in caplog.text
 
@@ -629,24 +632,24 @@ class TestParseArgs:
 
     def test_explicit_input_and_output(self) -> None:
         parser = optrecurse.RecursiveOptionParser({"txt": ("po", None)})
-        options, args = parser.parse_args(["-i", "input.txt", "-o", "output.po"])
+        options, _args = parser.parse_args(["-i", "input.txt", "-o", "output.po"])
         assert options.input == "input.txt"
         assert options.output == "output.po"
 
     def test_implicit_input_from_args(self) -> None:
         parser = optrecurse.RecursiveOptionParser({"txt": ("po", None)})
-        options, args = parser.parse_args(["input.txt"])
+        options, _args = parser.parse_args(["input.txt"])
         assert options.input == "input.txt"
 
     def test_implicit_input_and_output(self) -> None:
         parser = optrecurse.RecursiveOptionParser({"txt": ("po", None)})
-        options, args = parser.parse_args(["input.txt", "output.po"])
+        options, _args = parser.parse_args(["input.txt", "output.po"])
         assert options.input == "input.txt"
         assert options.output == "output.po"
 
     def test_stdin_dash(self) -> None:
         parser = optrecurse.RecursiveOptionParser({"txt": ("po", None)})
-        options, args = parser.parse_args(["-i", "-", "-o", "output.po"])
+        options, _args = parser.parse_args(["-i", "-", "-o", "output.po"])
         assert options.input is None
         assert options.output == "output.po"
 
@@ -657,13 +660,13 @@ class TestParseArgs:
 
     def test_single_item_list_is_unwrapped(self) -> None:
         parser = optrecurse.RecursiveOptionParser({"txt": ("po", None)})
-        options, args = parser.parse_args(["-i", "only.txt"])
+        options, _args = parser.parse_args(["-i", "only.txt"])
         assert options.input == "only.txt"
         assert not isinstance(options.input, list)
 
     def test_multiple_inputs(self) -> None:
         parser = optrecurse.RecursiveOptionParser({"txt": ("po", None)})
-        options, args = parser.parse_args(
+        options, _args = parser.parse_args(
             ["-i", "a.txt", "-i", "b.txt", "-o", "output.po"]
         )
         assert isinstance(options.input, list)
@@ -755,20 +758,20 @@ class TestRecurseInputFileList:
         Test the fix from PR #6158.
 
         os.path.commonprefix operates on characters and can split in the
-        middle of a path component (e.g., /home/abc and /home/abd would
+        middle of a path component (e.g., /home/abc and /home/abx would
         give /home/ab). os.path.commonpath correctly operates on path
         components and always returns a valid directory boundary.
         """
         parser = optrecurse.RecursiveOptionParser({"txt": ("po", None)})
         # Create directories with a common character prefix but different names
         dir_abc = tmp_path / "abc"
-        dir_abd = tmp_path / "abd"
+        dir_abx = tmp_path / "abx"
         dir_abc.mkdir()
-        dir_abd.mkdir()
+        dir_abx.mkdir()
         (dir_abc / "file1.txt").write_text("1")
-        (dir_abd / "file2.txt").write_text("2")
+        (dir_abx / "file2.txt").write_text("2")
 
-        original = [str(dir_abc / "file1.txt"), str(dir_abd / "file2.txt")]
+        original = [str(dir_abc / "file1.txt"), str(dir_abx / "file2.txt")]
         options = SimpleNamespace(input=list(original), exclude=[])
         result = parser.recurseinputfilelist(options)
 
@@ -987,8 +990,6 @@ class TestFormatManpage:
         parser = optrecurse.RecursiveOptionParser(
             {"txt": ("po", None)}, description="A test converter.\n\nMore details."
         )
-        from io import StringIO
-
         buf = StringIO()
         parser.print_manpage(file=buf)
         assert ".TH" in buf.getvalue()
@@ -1000,6 +1001,7 @@ class TestSetUsage:
     def test_auto_usage(self) -> None:
         parser = optrecurse.RecursiveOptionParser({"txt": ("po", None)})
         parser.set_usage()
+        assert parser.usage is not None
         assert "%prog" in parser.usage
 
     def test_custom_usage(self) -> None:
