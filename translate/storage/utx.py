@@ -182,7 +182,7 @@ class UtxFile(base.TranslationStore):
                 header_lines.append(line)
             else:
                 break
-        self._header = {}
+        self._header: dict[str, str | None] = {}
         header_components = []
         for line in header_lines[:-1]:
             header_components += line[1:].split(";")

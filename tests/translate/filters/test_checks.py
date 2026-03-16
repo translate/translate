@@ -1427,7 +1427,7 @@ def test_simplecaps() -> None:
 
 
 @mark.skipif(
-    not spelling.available or not spelling._get_checker("af"),  # ty:ignore[possibly-missing-attribute]
+    not spelling.available or not spelling._get_checker("af"),
     reason="Spell checking for af is not available",
 )
 def test_spellcheck() -> None:
