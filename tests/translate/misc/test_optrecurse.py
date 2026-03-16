@@ -90,9 +90,7 @@ class TestIsExcluded:
 
     def test_excluded_fnmatch_pattern(self) -> None:
         options = SimpleNamespace(exclude=["*.bak"])
-        assert (
-            optrecurse.RecursiveOptionParser.isexcluded(options, "file.bak") is True
-        )
+        assert optrecurse.RecursiveOptionParser.isexcluded(options, "file.bak") is True
 
     def test_not_excluded_partial_match(self) -> None:
         options = SimpleNamespace(exclude=["CVS"])
@@ -131,23 +129,17 @@ class TestGetFullInputPath:
 
     def test_with_input_dir(self) -> None:
         options = SimpleNamespace(input="/base/dir")
-        result = optrecurse.RecursiveOptionParser.getfullinputpath(
-            options, "file.txt"
-        )
+        result = optrecurse.RecursiveOptionParser.getfullinputpath(options, "file.txt")
         assert result == os.path.join("/base/dir", "file.txt")
 
     def test_without_input_dir(self) -> None:
         options = SimpleNamespace(input="")
-        result = optrecurse.RecursiveOptionParser.getfullinputpath(
-            options, "file.txt"
-        )
+        result = optrecurse.RecursiveOptionParser.getfullinputpath(options, "file.txt")
         assert result == "file.txt"
 
     def test_with_none_input(self) -> None:
         options = SimpleNamespace(input=None)
-        result = optrecurse.RecursiveOptionParser.getfullinputpath(
-            options, "file.txt"
-        )
+        result = optrecurse.RecursiveOptionParser.getfullinputpath(options, "file.txt")
         assert result == "file.txt"
 
 
@@ -156,23 +148,17 @@ class TestGetFullOutputPath:
 
     def test_recursive_with_output_dir(self) -> None:
         options = SimpleNamespace(recursiveoutput=True, output="/out/dir")
-        result = optrecurse.RecursiveOptionParser.getfulloutputpath(
-            options, "file.po"
-        )
+        result = optrecurse.RecursiveOptionParser.getfulloutputpath(options, "file.po")
         assert result == os.path.join("/out/dir", "file.po")
 
     def test_not_recursive(self) -> None:
         options = SimpleNamespace(recursiveoutput=False, output="/out/dir")
-        result = optrecurse.RecursiveOptionParser.getfulloutputpath(
-            options, "file.po"
-        )
+        result = optrecurse.RecursiveOptionParser.getfulloutputpath(options, "file.po")
         assert result == "file.po"
 
     def test_recursive_without_output_dir(self) -> None:
         options = SimpleNamespace(recursiveoutput=True, output=None)
-        result = optrecurse.RecursiveOptionParser.getfulloutputpath(
-            options, "file.po"
-        )
+        result = optrecurse.RecursiveOptionParser.getfulloutputpath(options, "file.po")
         assert result == "file.po"
 
 
@@ -183,9 +169,7 @@ class TestGetFullTemplatePath:
         parser = optrecurse.RecursiveOptionParser(
             {("txt", "pot"): ("po", None)}, usetemplates=True
         )
-        options = SimpleNamespace(
-            recursivetemplate=True, template="/tmpl/dir"
-        )
+        options = SimpleNamespace(recursivetemplate=True, template="/tmpl/dir")
         result = parser.getfulltemplatepath(options, "file.pot")
         assert result == os.path.join("/tmpl/dir", "file.pot")
 
@@ -486,18 +470,14 @@ class TestGetTemplateName:
             {("po", "pot"): ("po", None)}, usetemplates=True
         )
         (tmp_path / "file.pot").write_text("template")
-        options = SimpleNamespace(
-            template=str(tmp_path), recursivetemplate=True
-        )
+        options = SimpleNamespace(template=str(tmp_path), recursivetemplate=True)
         assert parser.gettemplatename(options, "file.po") == "file.pot"
 
     def test_recursive_no_matching_template(self, tmp_path) -> None:
         parser = optrecurse.RecursiveOptionParser(
             {("po", "pot"): ("po", None)}, usetemplates=True
         )
-        options = SimpleNamespace(
-            template=str(tmp_path), recursivetemplate=True
-        )
+        options = SimpleNamespace(template=str(tmp_path), recursivetemplate=True)
         assert parser.gettemplatename(options, "file.po") is None
 
 
@@ -744,7 +724,8 @@ class TestProcessFile:
 
 
 class TestRecurseInputFileList:
-    """Tests for RecursiveOptionParser.recurseinputfilelist.
+    """
+    Tests for RecursiveOptionParser.recurseinputfilelist.
 
     This covers the fix from PR #6158 (commonpath vs commonprefix).
     """
@@ -859,9 +840,7 @@ class TestRecurseInputFiles:
         (tmp_path / "file2.txt").write_text("content2")
         (tmp_path / "file3.csv").write_text("content3")
 
-        options = SimpleNamespace(
-            input=str(tmp_path), exclude=["CVS", ".svn", ".git"]
-        )
+        options = SimpleNamespace(input=str(tmp_path), exclude=["CVS", ".svn", ".git"])
         result = parser.recurseinputfiles(options)
         assert "file1.txt" in result
         assert "file2.txt" in result
@@ -874,9 +853,7 @@ class TestRecurseInputFiles:
         (tmp_path / "file1.txt").write_text("content1")
         (subdir / "file2.txt").write_text("content2")
 
-        options = SimpleNamespace(
-            input=str(tmp_path), exclude=["CVS", ".svn", ".git"]
-        )
+        options = SimpleNamespace(input=str(tmp_path), exclude=["CVS", ".svn", ".git"])
         result = parser.recurseinputfiles(options)
         assert "file1.txt" in result
         assert os.path.join("sub", "file2.txt") in result
@@ -888,9 +865,7 @@ class TestRecurseInputFiles:
         (git_dir / "file.txt").write_text("excluded")
         (tmp_path / "file.txt").write_text("included")
 
-        options = SimpleNamespace(
-            input=str(tmp_path), exclude=["CVS", ".svn", ".git"]
-        )
+        options = SimpleNamespace(input=str(tmp_path), exclude=["CVS", ".svn", ".git"])
         result = parser.recurseinputfiles(options)
         assert "file.txt" in result
         assert os.path.join(".git", "file.txt") not in result
@@ -900,9 +875,7 @@ class TestRecurseInputFiles:
         (tmp_path / "file.txt").write_text("text")
         (tmp_path / "file.csv").write_text("csv")
 
-        options = SimpleNamespace(
-            input=str(tmp_path), exclude=[]
-        )
+        options = SimpleNamespace(input=str(tmp_path), exclude=[])
         result = parser.recurseinputfiles(options)
         assert "file.txt" in result
         assert "file.csv" in result
