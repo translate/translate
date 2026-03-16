@@ -71,7 +71,8 @@ class pypo2phppo:
     def convertstrings(self, value: str) -> str: ...
     @overload
     def convertstrings(self, value: multistring | list[str]) -> list[str]: ...
-    def convertstrings(self, value):
+    def convertstrings(self, value: multistring | list[str] | str) -> list[str] | str:
+        strings: list[str]
         if isinstance(value, multistring):
             strings = value.strings
         elif isinstance(value, list):
@@ -79,11 +80,7 @@ class pypo2phppo:
         else:
             return self.convertstring(value)
 
-        for index, string in enumerate(strings):
-            strings[index] = re.sub(
-                r"\{(\d)\}", lambda x: f"%{int(x.group(1)) + 1}$s", string
-            )
-        return strings
+        return [self.convertstring(string) for string in strings]
 
 
 def convertpy2php(inputfile, outputfile, template=None) -> bool:
