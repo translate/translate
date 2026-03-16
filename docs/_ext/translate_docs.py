@@ -18,11 +18,11 @@
 
 """Sphinx extension with custom stuff for Translate Toolkit docs."""
 
-import docutils
+import docutils.nodes
 
 
 def setup(app):
     # :opt: to mark options -P --pot and options values --progress=dots
-    app.add_generic_role(name="opt", nodeclass=docutils.nodes.literal)  # ty:ignore[possibly-missing-attribute]
+    app.add_generic_role(name="opt", nodeclass=docutils.nodes.literal)
 
     return {"parallel_read_safe": True}
