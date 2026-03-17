@@ -578,13 +578,15 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
                 # Note: if the translation is intentionally identical to the
                 # source, this fallback is harmless — it will also not find a
                 # different translation.
-                if translated_md == content_md and placeholders and self.lookup_callback:
+                if (
+                    translated_md == content_md
+                    and placeholders
+                    and self.lookup_callback
+                ):
                     expanded_content_md = self.remove_placeholder_markers(
                         content_md, list(placeholders)
                     )
-                    expanded_translated_md = self.lookup_callback(
-                        expanded_content_md
-                    )
+                    expanded_translated_md = self.lookup_callback(expanded_content_md)
                     if expanded_translated_md != expanded_content_md:
                         translated_md = expanded_translated_md
                         # Clear placeholders since the expanded translation
