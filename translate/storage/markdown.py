@@ -104,6 +104,7 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
         self.max_line_length = max_line_length
         self.extract_code_blocks = extract_code_blocks
         self.filesrc = ""
+        self._suppress_unit_creation = False
         if inputfile is not None:
             md_src = inputfile.read()
             inputfile.close()
@@ -156,12 +157,13 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
         if not text:
             return ""
 
-        # emit a translation unit. The PO store takes care of the escaping.
-        unit = self.addsourceunit(text)
-        # Index path to avoid duplicate location on list items.
-        unit.addlocation(f"{self.filename or ''}{''.join(path[0])}")
-        if docpath:
-            unit.setdocpath(docpath)
+        if not self._suppress_unit_creation:
+            # emit a translation unit. The PO store takes care of the escaping.
+            unit = self.addsourceunit(text)
+            # Index path to avoid duplicate location on list items.
+            unit.addlocation(f"{self.filename or ''}{''.join(path[0])}")
+            if docpath:
+                unit.setdocpath(docpath)
 
         # return translated text
         return self.callback(text)
@@ -579,9 +581,24 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
                     expanded_content_md = self.remove_placeholder_markers(
                         content_md, list(placeholders)
                     )
-                    expanded_translated_md = self.translate_callback(
-                        expanded_content_md, self.path, self._current_docpath
+                    # Suppress unit creation during fallback lookup to avoid
+                    # creating duplicate translation units with expanded text.
+                    callback_self = getattr(
+                        self.translate_callback, "__self__", None
                     )
+                    suppress = (
+                        callback_self is not None
+                        and hasattr(callback_self, "_suppress_unit_creation")
+                    )
+                    if suppress:
+                        callback_self._suppress_unit_creation = True
+                    try:
+                        expanded_translated_md = self.translate_callback(
+                            expanded_content_md, self.path, self._current_docpath
+                        )
+                    finally:
+                        if suppress:
+                            callback_self._suppress_unit_creation = False
                     if expanded_translated_md != expanded_content_md:
                         translated_md = expanded_translated_md
                         # Clear placeholders since the expanded translation
