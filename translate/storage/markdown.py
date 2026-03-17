@@ -568,6 +568,20 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
                 translated_md = self.translate_callback(
                     content_md, self.path, self._current_docpath
                 )
+                # If translation with placeholders didn't match and there are
+                # placeholders, try looking up with expanded placeholders
+                # (full markdown links, etc.) to support PO files that contain
+                # the original markdown syntax instead of placeholder markers.
+                if translated_md == content_md and placeholders:
+                    expanded_content_md = self.remove_placeholder_markers(
+                        content_md, list(placeholders)
+                    )
+                    expanded_translated_md = self.translate_callback(
+                        expanded_content_md, self.path, self._current_docpath
+                    )
+                    if expanded_translated_md != expanded_content_md:
+                        translated_md = expanded_translated_md
+                        placeholders = []
                 translated_md = translated_md.replace("\n", "\\\n").strip(" \t")
                 translated_md = self.remove_placeholder_markers(
                     translated_md, placeholders
