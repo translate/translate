@@ -162,11 +162,14 @@ You are only coming through in waves.
             lines=[
                 "#: file.md:1",
                 'msgid "Visit [Google](https://google.com) and [GitHub](https://github.com) for more."',
-                'msgstr "Besuchen Sie [Google](https://google.com) und [GitHub](https://github.com)."',
+                'msgstr "Översatt [Google](https://google.com) och [GitHub](https://github.com)."',
             ]
         )
         self.run_command("translation.po", "out.md", template="file.md")
-        self.then_translated_markdown_file_is_written("Besuchen Sie")
+        output = self.then_translated_markdown_file_is_written("Översatt")
+        assert "[Google](https://google.com)" in output
+        assert "[GitHub](https://github.com)" in output
+        assert "Visit" not in output
 
     def test_markdown_translation_ignore_sections(self) -> None:
         """Test that ignored sections are preserved and translations in PO are not applied to them."""

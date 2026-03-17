@@ -572,6 +572,9 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
                 # placeholders, try looking up with expanded placeholders
                 # (full markdown links, etc.) to support PO files that contain
                 # the original markdown syntax instead of placeholder markers.
+                # Note: if the translation is intentionally identical to the
+                # source, this fallback is harmless — it will also not find a
+                # different translation.
                 if translated_md == content_md and placeholders:
                     expanded_content_md = self.remove_placeholder_markers(
                         content_md, list(placeholders)
@@ -581,6 +584,9 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
                     )
                     if expanded_translated_md != expanded_content_md:
                         translated_md = expanded_translated_md
+                        # Clear placeholders since the expanded translation
+                        # already contains full markdown syntax (e.g. links)
+                        # and does not need placeholder replacement.
                         placeholders = []
                 translated_md = translated_md.replace("\n", "\\\n").strip(" \t")
                 translated_md = self.remove_placeholder_markers(
