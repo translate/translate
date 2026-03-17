@@ -64,6 +64,26 @@ class TestPO2MD(test_convert.TestConvertCommand):
             "file.md", content or "# Markdown\nYou are only coming through in waves."
         )
 
+    def test_directory_of_markdown_files_ignores_txt_files(self) -> None:
+        self.given_directory_of_markdown_files()
+        self.create_testfile("mddir/notes.txt", "Text file content")
+        self.given_translation_file()
+        self.run_command("translation.po", "testout", template="mddir")
+        assert os.path.isdir(self.get_testfilename("testout"))
+        assert os.path.isfile(self.get_testfilename("testout/file1.md"))
+        assert os.path.isfile(self.get_testfilename("testout/file2.md"))
+        assert not os.path.isfile(self.get_testfilename("testout/notes.txt"))
+
+    def test_explicit_txt_template_is_processed(self) -> None:
+        self.create_testfile(
+            "file.txt", "# Markdown\nYou are only coming through in waves."
+        )
+        self.given_translation_file()
+        self.run_command("translation.po", "out.txt", template="file.txt")
+        assert os.path.isfile(self.get_testfilename("out.txt"))
+        content = self.read_testfile("out.txt").decode()
+        assert "Översatt innehåll" in content
+
     def given_directory_of_markdown_files(self) -> None:
         os.makedirs("mddir", exist_ok=True)
         self.create_testfile("mddir/file1.md", "# Heading\nContent of file 1")

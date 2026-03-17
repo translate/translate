@@ -218,9 +218,13 @@ class PO2MDOptionParser(convert.ConvertOptionParser):
             dirstack.extend(dirs)
         return templatefiles
 
+    _txt_extensions = {"txt", "text"}
+
     def isvalidtemplatename(self, filename):
         """Checks if this is a valid template/output filename."""
         _, ext = self.splitext(filename)
+        if ext in self._txt_extensions:
+            return False
         return any(ext == templateformat for _, templateformat in self.outputoptions)
 
 
