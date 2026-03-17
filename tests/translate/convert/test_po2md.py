@@ -133,6 +133,44 @@ You are only coming through in waves.
             == output
         )
 
+    def test_markdown_hyperlink_translation_with_full_link_in_po(self) -> None:
+        """Test that PO entries with full markdown hyperlinks (without placeholders) are matched."""
+        self.given_markdown_file(
+            "The [OSPO Alliance EN](https://ospo-alliance.org) website\n"
+        )
+        self.given_translation_file(
+            lines=[
+                "#: file.md:1",
+                'msgid "The [OSPO Alliance EN](https://ospo-alliance.org) website"',
+                'msgstr "Die Website [OSPO Alliance DE](https://ospo-alliance.org)"',
+            ]
+        )
+        self.run_command("translation.po", "out.md", template="file.md")
+        output = self.then_translated_markdown_file_is_written(
+            "Die Website [OSPO Alliance DE](https://ospo-alliance.org)"
+        )
+        assert "The [OSPO Alliance EN]" not in output
+
+    def test_markdown_multiple_hyperlinks_translation_with_full_links_in_po(
+        self,
+    ) -> None:
+        """Test that PO entries with multiple full markdown hyperlinks are matched."""
+        self.given_markdown_file(
+            "Visit [Google](https://google.com) and [GitHub](https://github.com) for more.\n"
+        )
+        self.given_translation_file(
+            lines=[
+                "#: file.md:1",
+                'msgid "Visit [Google](https://google.com) and [GitHub](https://github.com) for more."',
+                'msgstr "Översatt [Google](https://google.com) och [GitHub](https://github.com)."',
+            ]
+        )
+        self.run_command("translation.po", "out.md", template="file.md")
+        output = self.then_translated_markdown_file_is_written("Översatt")
+        assert "[Google](https://google.com)" in output
+        assert "[GitHub](https://github.com)" in output
+        assert "Visit" not in output
+
     def test_markdown_translation_ignore_sections(self) -> None:
         """Test that ignored sections are preserved and translations in PO are not applied to them."""
         markdown_content = """# Welcome
