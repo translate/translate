@@ -104,7 +104,6 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
         self.max_line_length = max_line_length
         self.extract_code_blocks = extract_code_blocks
         self.filesrc = ""
-        self._suppress_unit_creation = False
         if inputfile is not None:
             md_src = inputfile.read()
             inputfile.close()
@@ -144,6 +143,7 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
             block_token.Table,
             max_line_length=self.max_line_length,
             extract_code_blocks=self.extract_code_blocks,
+            lookup_callback=self.callback,
         ) as renderer:
             document = block_token.Document(lines)
             self.filesrc = front_matter + renderer.render(document)
@@ -157,13 +157,12 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
         if not text:
             return ""
 
-        if not self._suppress_unit_creation:
-            # emit a translation unit. The PO store takes care of the escaping.
-            unit = self.addsourceunit(text)
-            # Index path to avoid duplicate location on list items.
-            unit.addlocation(f"{self.filename or ''}{''.join(path[0])}")
-            if docpath:
-                unit.setdocpath(docpath)
+        # emit a translation unit. The PO store takes care of the escaping.
+        unit = self.addsourceunit(text)
+        # Index path to avoid duplicate location on list items.
+        unit.addlocation(f"{self.filename or ''}{''.join(path[0])}")
+        if docpath:
+            unit.setdocpath(docpath)
 
         # return translated text
         return self.callback(text)
@@ -176,9 +175,11 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         *extras,
         max_line_length: int | None = None,
         extract_code_blocks: bool = True,
+        lookup_callback: Callable[[str], str] | None = None,
     ) -> None:
         super().__init__(*extras, max_line_length=max_line_length)  # ty:ignore[invalid-argument-type]
         self.translate_callback = translate_callback
+        self.lookup_callback = lookup_callback
         self.bypass = False
         self.path = []
         self.ignore_translation = False
@@ -577,28 +578,13 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
                 # Note: if the translation is intentionally identical to the
                 # source, this fallback is harmless — it will also not find a
                 # different translation.
-                if translated_md == content_md and placeholders:
+                if translated_md == content_md and placeholders and self.lookup_callback:
                     expanded_content_md = self.remove_placeholder_markers(
                         content_md, list(placeholders)
                     )
-                    # Suppress unit creation during fallback lookup to avoid
-                    # creating duplicate translation units with expanded text.
-                    callback_self = getattr(
-                        self.translate_callback, "__self__", None
+                    expanded_translated_md = self.lookup_callback(
+                        expanded_content_md
                     )
-                    suppress = (
-                        callback_self is not None
-                        and hasattr(callback_self, "_suppress_unit_creation")
-                    )
-                    if suppress:
-                        callback_self._suppress_unit_creation = True
-                    try:
-                        expanded_translated_md = self.translate_callback(
-                            expanded_content_md, self.path, self._current_docpath
-                        )
-                    finally:
-                        if suppress:
-                            callback_self._suppress_unit_creation = False
                     if expanded_translated_md != expanded_content_md:
                         translated_md = expanded_translated_md
                         # Clear placeholders since the expanded translation
