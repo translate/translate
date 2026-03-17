@@ -106,9 +106,7 @@ You are only coming through in waves.
         self.run_command("file.md", "test.po")
         assert os.path.isfile(self.get_testfilename("test.po"))
         content = self.read_testfile("test.po").decode()
-        assert (
-            'msgid "Visit [Google]{1} and [GitHub]{2} for more."' in content
-        )
+        assert 'msgid "Visit [Google]{1} and [GitHub]{2} for more."' in content
 
     def test_markdown_translation_ignore_sections(self) -> None:
         """Test that content between translate:off and translate:on is not extracted."""
