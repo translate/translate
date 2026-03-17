@@ -17,11 +17,12 @@ def _noop_processor(inputfile, outputfile, templatefile):
 
 def _make_exc_info(exc):
     """Create an exc_info tuple for testing warning methods."""
+    result = None
     try:
         raise exc
     except type(exc):
-        return sys.exc_info()
-    return None  # pragma: no cover
+        result = sys.exc_info()
+    return result
 
 
 class TestRecursiveOptionParser:
@@ -345,8 +346,8 @@ class TestOpenInputFile:
             result.close()
 
     def test_open_stdin(self) -> None:
-        result = optrecurse.RecursiveOptionParser.openinputfile(None, None)
-        assert result is sys.stdin
+        # openinputfile returns sys.stdin when path is None; stdin must not be closed
+        assert optrecurse.RecursiveOptionParser.openinputfile(None, None) is sys.stdin
 
 
 class TestOpenTempOutputFile:
@@ -384,10 +385,13 @@ class TestOpenTemplateFile:
 
     def test_none_template_path(self) -> None:
         parser = optrecurse.RecursiveOptionParser({"txt": ("po", None)})
-        assert parser.opentemplatefile(None, None) is None
+        # No file is opened when template path is None
+        result = parser.opentemplatefile(None, None)
+        assert result is None
 
     def test_missing_template_returns_none(self, tmp_path) -> None:
         parser = optrecurse.RecursiveOptionParser({"txt": ("po", None)})
+        # No file is opened when template path doesn't exist
         result = parser.opentemplatefile(None, str(tmp_path / "missing.pot"))
         assert result is None
 
