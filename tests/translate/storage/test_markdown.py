@@ -479,6 +479,23 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
         assert content == fragments
         assert trailer == []
 
+    def test_parse_without_callback_no_duplicate_units(self) -> None:
+        """Parsing with default callback should not create duplicate units for links."""
+        md = "Click [here](http://example.com) for more info.\n"
+        inputfile = BytesIO(md.encode())
+        store = markdown.MarkdownFile(inputfile=inputfile)
+        unit_sources = self.get_translation_unit_sources(store)
+        assert unit_sources == ["Click [here]{1} for more info."]
+        assert store.units[0].getdocpath() == "p[1]"
+
+    def test_parse_without_callback_multiple_links(self) -> None:
+        """Parsing with default callback preserves all link placeholders."""
+        md = "See [a](http://a.com) and [b](http://b.com).\n"
+        inputfile = BytesIO(md.encode())
+        store = markdown.MarkdownFile(inputfile=inputfile)
+        unit_sources = self.get_translation_unit_sources(store)
+        assert unit_sources == ["See [a]{1} and [b]{2}."]
+
     @staticmethod
     def parse(md):
         inputfile = BytesIO(md.encode())
