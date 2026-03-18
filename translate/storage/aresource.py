@@ -555,6 +555,8 @@ class AndroidResourceUnit(base.TranslationUnit):
                 zip(plural_tags, plural_strings, strict=True),
                 key=lambda item: data.cldr_plural_categories.index(item[0]),
             ):
+                if not plural_string:
+                    continue
                 item = etree.Element("item")
                 item.set("quantity", plural_tag)
                 self.xmlelement.append(item)
