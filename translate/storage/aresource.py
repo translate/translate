@@ -24,7 +24,7 @@ from __future__ import annotations
 import copy
 import os
 import re
-from typing import ClassVar, overload
+from typing import ClassVar, cast, overload
 from xml.parsers.expat import XML_PARAM_ENTITY_PARSING_NEVER, ParserCreate
 
 from lxml import etree
@@ -565,7 +565,7 @@ class AndroidResourceUnit(base.TranslationUnit):
             # Fix the root tag if mismatching
             self.fixup_tag(self.SINGULAR_TAG)
 
-            self.set_xml_text_value(target, self.xmlelement)
+            self.set_xml_text_value(cast("str | None", target), self.xmlelement)
 
         self._rich_target = None
         self._target = target
