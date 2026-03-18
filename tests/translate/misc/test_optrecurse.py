@@ -35,7 +35,6 @@ class TestRecursiveOptionParser:
         dirname = os.path.join("some", "path", "to")
         fullpath = os.path.join(dirname, filename)
         root = os.path.join(dirname, name)
-        print(fullpath)
         assert self.parser.splitext(fullpath) == (root, extension)
 
     def test_outputfile_receives_bytes(self, capsys) -> None:
@@ -45,13 +44,13 @@ class TestRecursiveOptionParser:
         temp_file.close()
         try:
             out = parser.openoutputfile(None, temp_file.name)
-            out.write(b"binary suff")
+            out.write(b"binary stuff")
             out.close()
         finally:
             os.unlink(temp_file.name)
 
         out = parser.openoutputfile(None, None)  # To sys.stdout
-        out.write(b"binary suff")
+        out.write(b"binary stuff")
 
 
 class TestIsRecursive:
