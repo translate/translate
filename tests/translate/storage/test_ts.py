@@ -101,3 +101,20 @@ class TestTS:
         tsfile = ts.QtTsParser(parser_input)
 
         assert tsfile.getmessagesource(tsfile.getmessagenodes("ctx")[0]) == "é"
+
+    def test_normalize_text_input_strips_tab_heavy_encoding_declaration(self) -> None:
+        content = (
+            '<?xml\tversion="1.0"\t\t\tencoding="ISO-8859-1"\tstandalone="yes"?><TS/>'
+        )
+
+        normalized = ts.QtTsParser._normalize_text_input(content)
+
+        assert 'encoding="ISO-8859-1"' not in normalized
+        assert normalized == '<?xml\tversion="1.0"\tstandalone="yes"?><TS/>'
+
+    def test_normalize_text_input_ignores_repeated_encoding_like_text(self) -> None:
+        content = '<?xml version="1.0"?>' + ('\tencoding="' * 64)
+
+        normalized = ts.QtTsParser._normalize_text_input(content)
+
+        assert normalized == content
