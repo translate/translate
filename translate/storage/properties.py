@@ -146,6 +146,7 @@ from translate.misc.quote import (
     xwiki_properties_decode,
     xwiki_properties_encode,
 )
+from translate.misc.xml_helpers import get_safe_xml_parser
 from translate.storage import base
 
 labelsuffixes = (".label", ".title")
@@ -1431,7 +1432,7 @@ class XWikiPageProperties(xwikifile):
 
     @staticmethod
     def get_parser():
-        return etree.XMLParser(strip_cdata=False, resolve_entities=False)
+        return get_safe_xml_parser(strip_cdata=False)
 
     def extract_language(self) -> None:
         language_node = self.root.find("language")  # ty:ignore[unresolved-attribute]

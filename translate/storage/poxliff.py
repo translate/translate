@@ -30,7 +30,7 @@ from typing import TypeVar
 from lxml import etree
 
 from translate.misc.multistring import multistring
-from translate.misc.xml_helpers import setXMLspace
+from translate.misc.xml_helpers import get_safe_xml_parser, setXMLspace
 from translate.storage import base, lisa, poheader, xliff
 from translate.storage.placeables import general
 
@@ -344,7 +344,7 @@ class PoXliffFile(xliff.xlifffile[U], poheader.poheader):
             xml.seek(0)
             xmlsrc = xml.read()
             xml = xmlsrc
-        parser = etree.XMLParser(resolve_entities=False)
+        parser = get_safe_xml_parser()
         self.document = etree.fromstring(xml, parser).getroottree()
         self.initbody()
         root_node = self.document.getroot()

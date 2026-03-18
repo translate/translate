@@ -31,6 +31,7 @@ from lxml import etree
 
 from translate.lang import data
 from translate.misc.multistring import multistring
+from translate.misc.xml_helpers import get_safe_xml_parser
 from translate.storage import base, lisa
 
 WHITESPACE = {" ", "\n", "\t"}  # Whitespace that we collapse.
@@ -442,7 +443,7 @@ class AndroidResourceUnit(base.TranslationUnit):
 
         if "<" in target or "&" in target:
             # Try to handle it as legacy XML
-            parser = etree.XMLParser(strip_cdata=False, resolve_entities=False)
+            parser = get_safe_xml_parser(strip_cdata=False)
             if self._store is not None:
                 cloned_doc = copy.deepcopy(self._store.document)
                 cloned_root = cloned_doc.getroot()
@@ -644,7 +645,7 @@ class AndroidResourceFile(lisa.LISAfile):
             xml.seek(0)
             posrc = xml.read()
             xml = posrc
-        parser = etree.XMLParser(strip_cdata=False, resolve_entities=False)
+        parser = get_safe_xml_parser(strip_cdata=False)
         self.document = etree.fromstring(xml, parser).getroottree()
         self._encoding = self.document.docinfo.encoding
         self.initbody()

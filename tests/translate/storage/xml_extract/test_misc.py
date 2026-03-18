@@ -17,9 +17,12 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 
+from io import BytesIO
 from operator import itemgetter
 
-from translate.storage.xml_extract import misc
+from lxml import etree
+
+from translate.storage.xml_extract import extract, misc
 
 # reduce_tree
 
@@ -74,3 +77,27 @@ def test_parse_tag() -> None:
         "urn:oasis:names:tc:opendocument:xmlns:office:1.0",
         "document-content",
     )
+
+
+def test_safe_parser_rejects_entity_expansion() -> None:
+    xml = BytesIO(
+        b"""<!DOCTYPE root [
+<!ENTITY a0 "ha">
+<!ENTITY a1 "&a0;&a0;&a0;&a0;&a0;&a0;&a0;&a0;&a0;&a0;">
+<!ENTITY a2 "&a1;&a1;&a1;&a1;&a1;&a1;&a1;&a1;&a1;&a1;">
+]>
+<root>&a2;</root>"""
+    )
+
+    # libxml2 may either preserve the unresolved entity node or reject the
+    # nested entity definitions as a loop, depending on the build/version.
+    # Both outcomes are acceptable here because neither expands the entity.
+    try:
+        tree = etree.parse(xml, extract.get_safe_xml_parser())
+    except etree.XMLSyntaxError:
+        return
+    root = tree.getroot()
+
+    assert root.text is None
+    assert len(root) == 1
+    assert root[0].tag is extract.etree.Entity

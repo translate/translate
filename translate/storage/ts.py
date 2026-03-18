@@ -29,140 +29,184 @@ use the newer .ts format which are documented here:
 `2 <http://doc.qt.io/qt-5/qstring.html#arg-2>`_
 """
 
-from translate.misc import ourdom
+from __future__ import annotations
+
+import re
+from typing import TYPE_CHECKING, BinaryIO, TextIO
+
+from lxml import etree
+
+from translate.misc.xml_helpers import get_safe_xml_parser
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+
+TSInput = str | bytes | BinaryIO | TextIO
+MessageNode = etree._Element
+ContextNode = etree._Element
+XML_DECLARATION_RE = re.compile(
+    r"""^\s*<\?xml(?P<attrs>[^?]*?)\?>""",
+    re.IGNORECASE | re.DOTALL,
+)
+XML_ENCODING_RE = re.compile(
+    r"""\s+encoding\s*=\s*(['"]).*?\1""",
+    re.IGNORECASE | re.DOTALL,
+)
 
 
 class QtTsParser:
-    contextancestors = dict.fromkeys(["TS"])
-    messageancestors = dict.fromkeys(["TS", "context"])
-
-    def __init__(self, inputfile=None) -> None:
+    def __init__(self, inputfile: TSInput | None = None) -> None:
         """Make a new QtTsParser, reading from the given inputfile if required."""
         self.filename = getattr(inputfile, "filename", None)
-        self.knowncontextnodes = {}
-        self.indexcontextnodes = {}
+        self.knowncontextnodes: dict[str, ContextNode] = {}
+        self.doctype: str | None
+        self.document: etree._ElementTree
         if inputfile is None:
-            self.document = ourdom.parseString("<!DOCTYPE TS><TS></TS>")
+            self.doctype = "<!DOCTYPE TS>"
+            self.document = self._parse_content(b"<TS></TS>")
         else:
-            self.document = ourdom.parse(inputfile)
-            assert self.document.documentElement.tagName == "TS"
+            if isinstance(inputfile, bytes):
+                content = inputfile
+            elif isinstance(inputfile, str) and not self._looks_like_xml(inputfile):
+                self.filename = inputfile
+                with open(inputfile, "rb") as input_handle:
+                    content = input_handle.read()
+            elif isinstance(inputfile, str):
+                content = inputfile
+            else:
+                content = inputfile.read()
+            self.document = self._parse_content(content)
+            # Preserve the original doctype so round-tripped TS files keep the
+            # same declaration shape as the input.
+            self.doctype = self.document.docinfo.doctype or None
+            assert self.document.getroot().tag == "TS"
+
+    @staticmethod
+    def _parse_content(content: str | bytes) -> etree._ElementTree:
+        if isinstance(content, str):
+            content = QtTsParser._normalize_text_input(content).encode("utf-8")
+        root = etree.fromstring(content, parser=get_safe_xml_parser())
+        return root.getroottree()
+
+    @staticmethod
+    def _looks_like_xml(content: str) -> bool:
+        return content.lstrip().startswith("<")
+
+    @staticmethod
+    def _normalize_text_input(content: str) -> str:
+        """
+        Normalize text input before parsing as UTF-8 bytes.
+
+        Text streams are already decoded, so any XML encoding declaration no
+        longer reflects the in-memory string. Drop just the encoding attribute
+        to preserve the remaining declaration fields without corrupting text.
+        """
+        declaration = XML_DECLARATION_RE.match(content)
+        if declaration is None:
+            return content
+        attrs = XML_ENCODING_RE.sub("", declaration.group("attrs"))
+        return f"<?xml{attrs}?>{content[declaration.end() :]}"
+
+    @property
+    def documentElement(self) -> etree._Element:
+        return self.document.getroot()
 
     def addtranslation(
         self,
-        contextname,
-        source,
-        translation,
-        comment=None,
-        transtype=None,
-        createifmissing=False,
+        contextname: str,
+        source: str,
+        translation: str,
+        comment: str | None = None,
+        transtype: str | None = None,
+        createifmissing: bool = False,
     ) -> bool:
         """Adds the given translation (will create the nodes required if asked). Returns success."""
         contextnode = self.getcontextnode(contextname)
         if contextnode is None:
             if not createifmissing:
                 return False
-            # construct a context node with the given name
-            contextnode = self.document.createElement("context")
-            namenode = self.document.createElement("name")
-            nametext = self.document.createTextNode(contextname)
-            namenode.appendChild(nametext)
-            contextnode.appendChild(namenode)
-            self.document.documentElement.appendChild(contextnode)
+            contextnode = etree.SubElement(self.documentElement, "context")
+            etree.SubElement(contextnode, "name").text = contextname
+            self.knowncontextnodes[contextname] = contextnode
         if not createifmissing:
             return False
-        messagenode = self.document.createElement("message")
-        sourcenode = self.document.createElement("source")
-        sourcetext = self.document.createTextNode(source)
-        sourcenode.appendChild(sourcetext)
-        messagenode.appendChild(sourcenode)
+        messagenode = etree.SubElement(contextnode, "message")
+        etree.SubElement(messagenode, "source").text = source
         if comment:
-            commentnode = self.document.createElement("comment")
-            commenttext = self.document.createTextNode(comment)
-            commentnode.appendChild(commenttext)
-            messagenode.appendChild(commentnode)
-        translationnode = self.document.createElement("translation")
-        translationtext = self.document.createTextNode(translation)
-        translationnode.appendChild(translationtext)
+            etree.SubElement(messagenode, "comment").text = comment
+        translationnode = etree.SubElement(messagenode, "translation")
+        translationnode.text = translation
         if transtype:
-            translationnode.setAttribute("type", transtype)
-        messagenode.appendChild(translationnode)
-        contextnode.appendChild(messagenode)
+            translationnode.set("type", transtype)
         return True
 
-    def getxml(self):
+    def getxml(self) -> str:
         """Return the ts file as xml."""
-        xml = self.document.toprettyxml(indent="    ", encoding="utf-8").decode("utf-8")
-        # This line causes empty lines in the translation text to be removed
-        # (when there are two newlines)
+        xml = etree.tostring(
+            self.document,
+            pretty_print=True,
+            encoding="utf-8",
+            xml_declaration=True,
+            doctype=self.doctype,
+        ).decode("utf-8")
+        # Keep output compact and match the historic behavior of dropping
+        # blank lines introduced by pretty printing.
         return "\n".join(line for line in xml.split("\n") if line.strip())
 
     @staticmethod
-    def getcontextname(contextnode):
+    def getcontextname(contextnode: ContextNode) -> str:
         """Returns the name of the given context."""
-        namenode = ourdom.getFirstElementByTagName(contextnode, "name")
-        return ourdom.getnodetext(namenode)
+        return contextnode.findtext("name", default="")
 
-    def getcontextnode(self, contextname):
+    def getcontextnode(self, contextname: str) -> ContextNode | None:
         """Finds the contextnode with the given name."""
         contextnode = self.knowncontextnodes.get(contextname)
         if contextnode is not None:
             return contextnode
-        contextnodes = self.document.searchElementsByTagName(
-            "context", self.contextancestors
-        )
-        for contextnode in contextnodes:
+        # Cache by context name because repeated lookups are common during
+        # addtranslation() and iterative reads.
+        for contextnode in self.documentElement.findall("context"):
             if self.getcontextname(contextnode) == contextname:
                 self.knowncontextnodes[contextname] = contextnode
                 return contextnode
         return None
 
-    def getmessagenodes(self, context=None):
+    def getmessagenodes(
+        self, context: str | ContextNode | None = None
+    ) -> list[MessageNode]:
         """Returns all the messagenodes, limiting to the given context (name or node) if given."""
         if context is None:
-            return self.document.searchElementsByTagName(
-                "message", self.messageancestors
-            )
+            return self.documentElement.findall("./context/message")
         if isinstance(context, str):
-            # look up the context node by name
             context = self.getcontextnode(context)
             if context is None:
                 return []
-        return context.searchElementsByTagName("message", self.messageancestors)
+        return context.findall("message")
 
     @staticmethod
-    def getmessagesource(message):
+    def getmessagesource(message: MessageNode) -> str:
         """Returns the message source for a given node."""
-        sourcenode = ourdom.getFirstElementByTagName(message, "source")
-        return ourdom.getnodetext(sourcenode)
+        return message.findtext("source", default="")
 
     @staticmethod
-    def getmessagetranslation(message):
+    def getmessagetranslation(message: MessageNode) -> str:
         """Returns the message translation for a given node."""
-        translationnode = ourdom.getFirstElementByTagName(message, "translation")
-        return ourdom.getnodetext(translationnode)
+        return message.findtext("translation", default="")
 
     @staticmethod
-    def getmessagetype(message):
+    def getmessagetype(message: MessageNode) -> str:
         """Returns the message translation attributes for a given node."""
-        translationnode = ourdom.getFirstElementByTagName(message, "translation")
-        return translationnode.getAttribute("type")
+        translationnode = message.find("translation")
+        if translationnode is None:
+            return ""
+        return translationnode.get("type", "")
 
     @staticmethod
-    def getmessagecomment(message):
+    def getmessagecomment(message: MessageNode) -> str:
         """Returns the message comment for a given node."""
-        commentnode = ourdom.getFirstElementByTagName(message, "comment")
-        # NOTE: handles only one comment per msgid (OK)
-        # and only one-line comments (can be VERY wrong) TODO!!!
-        return ourdom.getnodetext(commentnode)
+        return message.findtext("comment", default="")
 
-    def iteritems(self):
+    def iteritems(self) -> Iterator[tuple[str, list[MessageNode]]]:
         """Iterates through (contextname, messages)."""
-        for contextnode in self.document.searchElementsByTagName(
-            "context", self.contextancestors
-        ):
+        for contextnode in self.documentElement.findall("context"):
             yield self.getcontextname(contextnode), self.getmessagenodes(contextnode)
-
-    def __del__(self) -> None:
-        """Clean up the document if required."""
-        if hasattr(self, "document"):
-            self.document.unlink()
