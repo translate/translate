@@ -284,6 +284,22 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         xml = '<string name="teststring">some <b>html code</b> here</string>\n'
         self.__check_parse(string, xml)
 
+    def test_parse_escaped_html_code_flag(self) -> None:
+        xml = '<string name="teststring">some &lt;b&gt;html code&lt;/b&gt; here</string>\n'
+        parser = etree.XMLParser(strip_cdata=False)
+        unit = self.UnitClass.createfromxmlElement(etree.fromstring(xml, parser))
+
+        assert unit.target == "some <b>html code</b> here"
+        assert unit.target_markup is True
+
+    def test_parse_nested_html_code_flag(self) -> None:
+        xml = '<string name="teststring">some <b>html code</b> here</string>\n'
+        parser = etree.XMLParser(strip_cdata=False)
+        unit = self.UnitClass.createfromxmlElement(etree.fromstring(xml, parser))
+
+        assert unit.target == "some <b>html code</b> here"
+        assert unit.target_markup is False
+
     def test_parse_arrows(self) -> None:
         string = "<<< arrow"
         xml = '<string name="teststring">&lt;&lt;&lt; arrow</string>\n'
@@ -843,6 +859,161 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         assert bytes(store) == content
         store.units[0].target = "Other <b>tab</b>"
         assert bytes(store) == newcontent
+
+    def test_markup_roundtrip_preserves_escaped_html(self) -> None:
+        content = b"""<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="id">Other &lt;b&gt;tab&lt;/b&gt;</string>
+</resources>
+"""
+        store = self.StoreClass()
+        store.parse(content)
+
+        assert store.units[0].target == "Other <b>tab</b>"
+        assert store.units[0].target_markup is True
+
+        store.units[0].target = "Next <b>tab</b>"
+        assert (
+            bytes(store).decode()
+            == """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="id">Next &lt;b&gt;tab&lt;/b&gt;</string>
+</resources>
+"""
+        )
+
+    def test_target_markup_setter_overrides_to_nested_markup(self) -> None:
+        content = b"""<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="id">Other &lt;b&gt;tab&lt;/b&gt;</string>
+</resources>
+"""
+        store = self.StoreClass()
+        store.parse(content)
+
+        store.units[0].target_markup = False
+        store.units[0].target = "Next <b>tab</b>"
+
+        assert store.units[0].target_markup is False
+        assert (
+            bytes(store).decode()
+            == """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="id">Next <b>tab</b></string>
+</resources>
+"""
+        )
+
+    def test_target_markup_setter_overrides_to_escaped_markup(self) -> None:
+        content = b"""<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="id">Other <b>tab</b></string>
+</resources>
+"""
+        store = self.StoreClass()
+        store.parse(content)
+
+        store.units[0].target_markup = True
+        store.units[0].target = "Next <b>tab</b>"
+
+        assert store.units[0].target_markup is True
+        assert (
+            bytes(store).decode()
+            == """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="id">Next &lt;b&gt;tab&lt;/b&gt;</string>
+</resources>
+"""
+        )
+
+    def test_plural_markup_roundtrip_preserves_escaped_html(self) -> None:
+        content = b"""<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="teststring">
+        <item quantity="one">Other &lt;b&gt;tab&lt;/b&gt;</item>
+        <item quantity="other">Other &lt;b&gt;tabs&lt;/b&gt;</item>
+    </plurals>
+</resources>
+"""
+        store = self.StoreClass()
+        store.targetlanguage = "en"
+        store.parse(content)
+
+        assert store.units[0].target == multistring(
+            ["Other <b>tab</b>", "Other <b>tabs</b>"]
+        )
+        assert store.units[0].target_markup is True
+
+        store.units[0].target = multistring(["Next <b>tab</b>", "Next <b>tabs</b>"])
+        assert (
+            bytes(store).decode()
+            == """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="teststring">
+        <item quantity="one">Next &lt;b&gt;tab&lt;/b&gt;</item>
+        <item quantity="other">Next &lt;b&gt;tabs&lt;/b&gt;</item>
+    </plurals>
+</resources>
+"""
+        )
+
+    def test_plural_target_markup_setter_overrides_to_nested_markup(self) -> None:
+        content = b"""<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="teststring">
+        <item quantity="one">Other &lt;b&gt;tab&lt;/b&gt;</item>
+        <item quantity="other">Other &lt;b&gt;tabs&lt;/b&gt;</item>
+    </plurals>
+</resources>
+"""
+        store = self.StoreClass()
+        store.targetlanguage = "en"
+        store.parse(content)
+
+        store.units[0].target_markup = False
+        store.units[0].target = multistring(["Next <b>tab</b>", "Next <b>tabs</b>"])
+
+        assert store.units[0].target_markup is False
+        assert (
+            bytes(store).decode()
+            == """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="teststring">
+        <item quantity="one">Next <b>tab</b></item>
+        <item quantity="other">Next <b>tabs</b></item>
+    </plurals>
+</resources>
+"""
+        )
+
+    def test_plural_target_markup_setter_overrides_to_escaped_markup(self) -> None:
+        content = b"""<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="teststring">
+        <item quantity="one">Other <b>tab</b></item>
+        <item quantity="other">Other <b>tabs</b></item>
+    </plurals>
+</resources>
+"""
+        store = self.StoreClass()
+        store.targetlanguage = "en"
+        store.parse(content)
+
+        store.units[0].target_markup = True
+        store.units[0].target = multistring(["Next <b>tab</b>", "Next <b>tabs</b>"])
+
+        assert store.units[0].target_markup is True
+        assert (
+            bytes(store).decode()
+            == """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="teststring">
+        <item quantity="one">Next &lt;b&gt;tab&lt;/b&gt;</item>
+        <item quantity="other">Next &lt;b&gt;tabs&lt;/b&gt;</item>
+    </plurals>
+</resources>
+"""
+        )
 
     def test_edit_plural_others(self) -> None:
         content = b"""<?xml version="1.0" encoding="utf-8"?>
