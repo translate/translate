@@ -24,7 +24,7 @@ from __future__ import annotations
 import copy
 import os
 import re
-from typing import ClassVar, overload
+from typing import ClassVar, cast, overload
 from xml.parsers.expat import XML_PARAM_ENTITY_PARSING_NEVER, ParserCreate
 
 from lxml import etree
@@ -42,6 +42,7 @@ QUOTED_STRING = re.compile(r'((?<!\\)"(?:\\"|[^"])*(?<!\\)")')
 UNICODE_ESCAPE = re.compile(r"\\u([a-fA-F0-9]{4})")
 CHAR_ESCAPE = re.compile(r"\\(.)")
 WHITESPACE_RE = re.compile(r"\s+")
+MARKUP_TAG = re.compile(r"</?[A-Za-z_][^>]*>")
 
 
 class DecodingXMLParser:
@@ -255,24 +256,69 @@ class AndroidResourceUnit(base.TranslationUnit):
     )
     ESCAPE_ALL: ClassVar[bool] = True
 
+    TargetType = str | multistring | list[str] | None
+
     @classmethod
-    def createfromxmlElement(cls, element):
+    def createfromxmlElement(cls, element: etree._Element):
         term = None
         # Actually this class supports only plurals and string tags
         if element.tag in {cls.PLURAL_TAG, cls.SINGULAR_TAG}:
             term = cls(None, xmlelement=element)
         return term
 
-    def __init__(self, source, empty=False, xmlelement=None, **kwargs) -> None:
+    def __init__(
+        self,
+        source,
+        empty: bool = False,
+        xmlelement: etree._Element | None = None,
+        **kwargs,
+    ) -> None:
         if xmlelement is not None:
             self.xmlelement = xmlelement
         elif self.hasplurals(source):
             self.xmlelement = etree.Element(self.PLURAL_TAG)
         else:
             self.xmlelement = etree.Element(self.SINGULAR_TAG)
+        self._target_markup = False
+        self._init_target_markup()
         if source is not None:
             self.setid(source)
         super().__init__(source)
+
+    @staticmethod
+    def _contains_markup_text(text: str | None) -> bool:
+        return bool(text) and bool(MARKUP_TAG.search(text))
+
+    def _uses_plain_markup_roundtrip(self, xmltarget: etree._Element) -> bool:
+        raw_xml = etree.tostring(xmltarget, encoding="unicode", with_tail=False)
+        if len(xmltarget) != 0 or "<![CDATA[" in raw_xml:
+            return False
+        return self._contains_markup_text(xmltarget.text)
+
+    def _get_markup_targets(self) -> list[etree._Element]:
+        if self.xmlelement.tag == self.PLURAL_TAG:
+            return list(self.xmlelement.iterchildren("item"))
+        return [self.xmlelement]
+
+    def _init_target_markup(self) -> None:
+        self._target_markup = any(
+            self._uses_plain_markup_roundtrip(xmltarget)
+            for xmltarget in self._get_markup_targets()
+        )
+
+    def _get_target_markup(self) -> bool:
+        return self._target_markup
+
+    def _set_target_markup(self, preserve_markup: bool) -> None:
+        self._target_markup = preserve_markup
+
+    def gettargetmarkup(self) -> bool:
+        return self._get_target_markup()
+
+    def settargetmarkup(self, preserve_markup: bool) -> None:
+        self._set_target_markup(preserve_markup)
+
+    target_markup = property(gettargetmarkup, settargetmarkup)
 
     def istranslatable(self):
         return bool(self.getid()) and self.xmlelement.get("translatable") != "false"
@@ -344,7 +390,7 @@ class AndroidResourceUnit(base.TranslationUnit):
             return self.target
         return super().source
 
-    def get_xml_text_value(self, xmltarget):
+    def get_xml_text_value(self, xmltarget: etree._Element) -> str:
         raw_xml = etree.tostring(xmltarget, encoding="unicode", with_tail=False)
         # Use decoding parser to keep XML entities, CDATA while processing Android escaping
         parser = DecodingXMLParser(raw_xml, escape_all=self.ESCAPE_ALL)
@@ -363,14 +409,37 @@ class AndroidResourceUnit(base.TranslationUnit):
 
         return parser.parse()
 
-    def set_xml_text_plain(self, target, xmltarget) -> None:
+    def set_xml_text_plain(
+        self,
+        target: str | None,
+        xmltarget: etree._Element,
+        *,
+        preserve_markup: bool = False,
+    ) -> None:
         # Remove possible old elements
         for x in xmltarget.iterchildren():
             xmltarget.remove(x)
         # Handle text only
         xmltarget.text = self.escape(target)
+        self._set_target_markup(preserve_markup)
 
-    def set_xml_text_value(self, target, xmltarget) -> None:
+    def set_xml_text_value(
+        self,
+        target: str | None,
+        xmltarget: etree._Element,
+        preserve_markup: bool | None = None,
+    ) -> None:
+        if preserve_markup is None:
+            preserve_markup = self._get_target_markup()
+        if target is None:
+            self.set_xml_text_plain(
+                target, xmltarget, preserve_markup=bool(preserve_markup)
+            )
+            return
+        if preserve_markup:
+            self.set_xml_text_plain(target, xmltarget, preserve_markup=True)
+            return
+
         if "<" in target or "&" in target:
             # Try to handle it as legacy XML
             parser = etree.XMLParser(strip_cdata=False, resolve_entities=False)
@@ -394,7 +463,7 @@ class AndroidResourceUnit(base.TranslationUnit):
             try:
                 etree.fromstring(newstring, parser)
             except Exception:
-                self.set_xml_text_plain(target, xmltarget)
+                self.set_xml_text_plain(target, xmltarget, preserve_markup=False)
             else:
                 # Escape text parts
                 encoding_parser = EncodingXMLParser(newstring)
@@ -411,8 +480,9 @@ class AndroidResourceUnit(base.TranslationUnit):
                 # Update unit xmlelement if needed (plurals are inner elements here)
                 if xmltarget == self.xmlelement:
                     self.xmlelement = newtree
+                self._set_target_markup(False)
         else:
-            self.set_xml_text_plain(target, xmltarget)
+            self.set_xml_text_plain(target, xmltarget, preserve_markup=False)
 
     def gettargetlanguage(self):
         if self._store is None:
@@ -444,7 +514,7 @@ class AndroidResourceUnit(base.TranslationUnit):
             self.setid(old_id)
 
     @target.setter
-    def target(self, target) -> None:
+    def target(self, target: TargetType) -> None:
         if self.hasplurals(self.source) or self.hasplurals(target):
             # Fix the root tag if mismatching
             self.fixup_tag(self.PLURAL_TAG)
@@ -452,7 +522,10 @@ class AndroidResourceUnit(base.TranslationUnit):
             plural_tags = self._store.get_plural_tags()  # ty:ignore[unresolved-attribute]
 
             # Sync plural_strings elements to plural_tags count.
-            plural_strings = self.sync_plural_count(target, plural_tags)
+            plural_target: str | multistring | list[str] = (
+                "" if target is None else target
+            )
+            plural_strings = self.sync_plural_count(plural_target, plural_tags)
 
             # Rebuild plurals.
             for entry in self.xmlelement.iterchildren():
@@ -485,12 +558,14 @@ class AndroidResourceUnit(base.TranslationUnit):
                 item = etree.Element("item")
                 item.set("quantity", plural_tag)
                 self.xmlelement.append(item)
-                self.set_xml_text_value(plural_string, item)
+                self.set_xml_text_value(
+                    plural_string, item, preserve_markup=self._get_target_markup()
+                )
         else:
             # Fix the root tag if mismatching
             self.fixup_tag(self.SINGULAR_TAG)
 
-            self.set_xml_text_value(target, self.xmlelement)
+            self.set_xml_text_value(cast("str | None", target), self.xmlelement)
 
         self._rich_target = None
         self._target = target
