@@ -49,8 +49,8 @@ XML_DECLARATION_RE = re.compile(
     re.IGNORECASE | re.DOTALL,
 )
 XML_ENCODING_RE = re.compile(
-    r"""\s+encoding\s*=\s*(['"]).*?\1""",
-    re.IGNORECASE | re.DOTALL,
+    r"""\s+encoding\s*=\s*(?:"[^"]*"|'[^']*')""",
+    re.IGNORECASE,
 )
 
 
