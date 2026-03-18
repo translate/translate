@@ -40,6 +40,18 @@ string_xpath_normalized = etree.XPath("normalize-space()")
 """Return a (space) normalized string in the node subtree"""
 
 
+def get_safe_xml_parser(
+    *, encoding: str | None = None, strip_cdata: bool = False
+) -> etree.XMLParser:
+    """Return an XML parser suitable for untrusted input."""
+    return etree.XMLParser(
+        encoding=encoding,
+        strip_cdata=strip_cdata,
+        resolve_entities=False,
+        no_network=True,
+    )
+
+
 def getText(node, xml_space="preserve"):
     """
     Extracts the plain text content out of the given node.

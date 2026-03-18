@@ -27,6 +27,7 @@ from lxml import etree
 
 from translate.misc.xml_helpers import (
     expand_closing_tags,
+    get_safe_xml_parser,
     getText,
     getXMLlang,
     getXMLspace,
@@ -404,7 +405,7 @@ class LISAfile(base.TranslationStore[U]):
             xml.seek(0)
             posrc = xml.read()
             xml = posrc
-        parser = etree.XMLParser(strip_cdata=False, resolve_entities=False)
+        parser = get_safe_xml_parser(strip_cdata=False)
         self.document = etree.fromstring(xml, parser).getroottree()
         self.encoding = self.document.docinfo.encoding
         self.initbody()

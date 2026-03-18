@@ -36,15 +36,6 @@ optrecurse
    :members:
    :inherited-members:
 
-
-ourdom
-------
-
-.. automodule:: translate.misc.ourdom
-   :members:
-   :inherited-members:
-
-
 progressbar
 -----------
 
