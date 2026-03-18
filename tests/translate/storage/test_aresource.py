@@ -1161,6 +1161,49 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         store.parse(content.encode())
         assert store.units[0].target == multistring(["%d visitor", "", "%d visitors"])
 
+    def test_partial_plural_roundtrip(self) -> None:
+        content = """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="vms_num_visitors">
+        <item quantity="one">%d visitor</item>
+        <item quantity="other">%d visitors</item>
+    </plurals>
+</resources>
+"""
+        store = self.StoreClass()
+        store.targetlanguage = "fr"
+        store.parse(content.encode())
+
+        assert store.units[0].target == multistring(["%d visitor", "", "%d visitors"])
+
+        store.units[0].target = store.units[0].target
+
+        assert bytes(store).decode() == content
+
+    def test_partial_plural_setter_omits_empty_translations(self) -> None:
+        content = """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="vms_num_visitors">%d visitors</string>
+</resources>
+"""
+        store = self.StoreClass()
+        store.targetlanguage = "fr"
+        store.parse(content.encode())
+
+        store.units[0].target = multistring(["%d visiteur", "", "%d visiteurs"])
+
+        assert (
+            bytes(store).decode()
+            == """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="vms_num_visitors">
+        <item quantity="one">%d visiteur</item>
+        <item quantity="other">%d visiteurs</item>
+    </plurals>
+</resources>
+"""
+        )
+
     def test_empty_missing_plural_tag(self) -> None:
         content = """<?xml version="1.0" encoding="utf-8"?>
 <resources>
