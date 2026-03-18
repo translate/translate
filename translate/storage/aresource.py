@@ -565,12 +565,7 @@ class AndroidResourceUnit(base.TranslationUnit):
             # Fix the root tag if mismatching
             self.fixup_tag(self.SINGULAR_TAG)
 
-            singular_target: str | None
-            if isinstance(target, list):
-                singular_target = target[0] if target else ""
-            else:
-                singular_target = target
-            self.set_xml_text_value(singular_target, self.xmlelement)
+            self.set_xml_text_value(target, self.xmlelement)
 
         self._rich_target = None
         self._target = target
