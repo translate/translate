@@ -16,7 +16,21 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import annotations
+
 import zipfile
+from os import PathLike
+from typing import IO, TYPE_CHECKING
+
+from translate.misc.zipfile_helpers import (
+    read_archive_members,
+    validate_archive_members,
+)
+
+if TYPE_CHECKING:
+    from collections.abc import Collection
+
+ZipInput = str | PathLike[str] | IO[bytes]
 
 # Tags to be extracted as placeables (tags that are within translatable texts).
 INLINE_ELEMENTS = [
@@ -70,19 +84,28 @@ NO_TRANSLATE_ELEMENTS = [
 ]
 
 
-def open_idml(filename):
-    z = zipfile.ZipFile(filename, "r")
-    # Return a dictionary containing all the files inside the Stories
-    # subdirectory, being the keys the filenames (for example
-    # 'Stories/Story_u49f.xml' and the values the strings for those files.
-    return {
-        filename: z.read(filename)
-        for filename in z.namelist()
-        if filename.startswith("Stories/")
-    }
+def open_idml(filename: ZipInput) -> dict[str, bytes]:
+    with zipfile.ZipFile(filename, "r") as z:
+        selected = [
+            info for info in z.infolist() if info.filename.startswith("Stories/")
+        ]
+        return read_archive_members(z, selected)
 
 
-def copy_idml(input_zip, output_zip, exclusion_list):
-    for name in [name for name in input_zip.namelist() if name not in exclusion_list]:
-        output_zip.writestr(name, input_zip.read(name))
+def copy_idml(
+    input_zip: zipfile.ZipFile,
+    output_zip: zipfile.ZipFile,
+    exclusion_list: Collection[str],
+) -> zipfile.ZipFile:
+    selected = [
+        input_zip.getinfo(name)
+        for name in input_zip.namelist()
+        if name not in exclusion_list
+    ]
+    validate_archive_members(selected, validate_total_size=False)
+    for info in selected:
+        if info.is_dir():
+            output_zip.writestr(info.filename, b"")
+            continue
+        output_zip.writestr(info.filename, input_zip.read(info.filename))
     return output_zip
