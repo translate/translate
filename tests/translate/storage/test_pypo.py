@@ -357,7 +357,12 @@ msgstr ""
         unit.target = "Aurora"
         unit.markfuzzy()
         assert unit.typecomments == ["#, fuzzy, max-length:10\n"]
+        assert unit.hastypecomment("fuzzy") is True
         assert unit.hastypecomment("max-length:10") is True
+        unit.markfuzzy(False)
+        assert unit.typecomments == ["#, max-length:10\n"]
+        assert unit.hastypecomment("max-length:10") is True
+        assert unit.hastypecomment("fuzzy") is False
 
     def test_future_flags(self) -> None:
         """
@@ -387,6 +392,32 @@ msgstr ""
         assert unit.typecomments == ["#, max-length:10\n"]
         assert unit.hastypecomment("max-length:10") is True
         assert unit.hastypecomment("fuzzy") is False
+
+    def test_obsolete_untranslated_state(self) -> None:
+        posource = '#~ msgid "x"\n#~ msgstr ""\n'
+        pofile = self.poparse(posource)
+        unit = pofile.units[0]
+        assert unit.isobsolete()
+        assert not unit.isfuzzy()
+        assert unit.get_state_n() == unit.S_UNTRANSLATED
+
+    def test_obsolete_fuzzy_untranslated_state(self) -> None:
+        posource = '#, fuzzy\n#~ msgid "x"\n#~ msgstr ""\n'
+        pofile = self.poparse(posource)
+        unit = pofile.units[0]
+        assert unit.isobsolete()
+        assert not unit.isfuzzy()
+        assert unit.typecomments == []
+        assert unit.get_state_n() == unit.S_UNTRANSLATED
+
+    def test_obsolete_fuzzy_translated_state(self) -> None:
+        posource = '#, fuzzy\n#~ msgid "x"\n#~ msgstr "y"\n'
+        pofile = self.poparse(posource)
+        unit = pofile.units[0]
+        assert unit.isobsolete()
+        assert unit.isfuzzy()
+        assert unit.typecomments == ["#, fuzzy\n"]
+        assert unit.get_state_n() == unit.S_FUZZY_OBSOLETE
 
     def test_unassociated_comments(self) -> None:
         """Tests behaviour of unassociated comments."""
