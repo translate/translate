@@ -197,6 +197,47 @@ msgstr "Ola mundo!"
         )
         assert output == expected_output
 
+    def test_duplicates_merge(self) -> None:
+        """Check that PO files created with --duplicates=merge are handled."""
+        # A single PO unit with two locations (result of yaml2po --duplicates=merge)
+        input_string = """
+#: navbar->about
+#: footer->about_aboutus
+msgid "About us"
+msgstr "Über uns"
+"""
+        template_string = """navbar:
+  about: About us
+footer:
+  about_aboutus: About us
+"""
+        target_store = self._convert_to_store(input_string, template_string)
+        assert len(target_store.units) == 2
+        assert target_store.units[0].getlocations() == ["navbar->about"]
+        assert target_store.units[0].source == "Über uns"
+        assert target_store.units[1].getlocations() == ["footer->about_aboutus"]
+        assert target_store.units[1].source == "Über uns"
+
+    def test_duplicates_merge_untranslated(self) -> None:
+        """Check that untranslated PO with multiple locations copies source."""
+        input_string = """
+#: navbar->about
+#: footer->about_aboutus
+msgid "About us"
+msgstr ""
+"""
+        template_string = """navbar:
+  about: About us
+footer:
+  about_aboutus: About us
+"""
+        target_store = self._convert_to_store(input_string, template_string)
+        assert len(target_store.units) == 2
+        assert target_store.units[0].getlocations() == ["navbar->about"]
+        assert target_store.units[0].source == "About us"
+        assert target_store.units[1].getlocations() == ["footer->about_aboutus"]
+        assert target_store.units[1].source == "About us"
+
 
 class TestRubyPO2YAML(TestPO2YAML):
     """Tests for po2yaml with Ruby personality."""
