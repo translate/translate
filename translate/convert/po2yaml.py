@@ -88,7 +88,9 @@ class po2yaml:
 
             if template_unit_id in self.source_store.locationindex:
                 input_unit = self.source_store.locationindex[template_unit_id]
-                self.target_store.addunit(self.convert_unit(input_unit, template_unit_id))
+                self.target_store.addunit(
+                    self.convert_unit(input_unit, template_unit_id)
+                )
 
     def run(self) -> int:
         """Run the converter."""
