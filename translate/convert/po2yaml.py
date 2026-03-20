@@ -64,7 +64,7 @@ class po2yaml:
             self.output_file = output_file
             self.template_store = self.TargetStoreClass(template_file)
 
-    def convert_unit(self, unit, unit_id=None):
+    def convert_unit(self, unit: po.pounit, unit_id: str | None = None) -> yaml.YAMLUnit:
         """Convert a source format unit to a target format unit."""
         use_target = unit.istranslated() or (unit.isfuzzy() and self.include_fuzzy)
         target_unit = self.TargetUnitClass(
