@@ -944,6 +944,43 @@ key=value
         # - every line ends with ";"
         assert bytes(propfile).strip(b"\n\x00") == propsource.strip(b"\n\x00")
 
+    def test_mac_strings_ns_key_no_quotes(self) -> None:
+        """Test that NS*Description keys are not quoted in .strings files."""
+        propsource = 'NSCameraUsageDescription = "We need camera access";'.encode(
+            "utf-16"
+        )
+        propfile = self.propparse(propsource, personality="strings")
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == "NSCameraUsageDescription"
+        assert propunit.source == "We need camera access"
+        # Verify round-trip preserves unquoted key
+        assert bytes(propfile).strip(b"\n\x00") == propsource.strip(b"\n\x00")
+
+    def test_mac_strings_ns_key_no_quotes_multiple(self) -> None:
+        """Test that multiple NS*Description keys stay unquoted."""
+        propsource = (
+            'NSPhotoLibraryAddUsageDescription = "Photo library access";\n'
+            'NSFaceIDUsageDescription = "Face ID access";\n'
+            '"RegularKey" = "Regular value";'
+        ).encode("utf-16")
+        propfile = self.propparse(propsource, personality="strings")
+        assert len(propfile.units) == 3
+        assert propfile.units[0].name == "NSPhotoLibraryAddUsageDescription"
+        assert propfile.units[1].name == "NSFaceIDUsageDescription"
+        assert propfile.units[2].name == "RegularKey"
+        # Verify round-trip
+        assert bytes(propfile).strip(b"\n\x00") == propsource.strip(b"\n\x00")
+
+    def test_mac_strings_ns_key_non_matching_quoted(self) -> None:
+        """Test that keys not matching NS*Description pattern are still quoted."""
+        propsource = '"NSNotMatching" = "value";'.encode("utf-16")
+        propfile = self.propparse(propsource, personality="strings")
+        propunit = propfile.units[0]
+        assert propunit.name == "NSNotMatching"
+        # This key doesn't match ^NS.*Description$ so it should remain quoted
+        assert bytes(propfile).strip(b"\n\x00") == propsource.strip(b"\n\x00")
+
     def test_mac_strings_double_backslashes(self) -> None:
         """Test that double backslashes are encoded correctly."""
         propsource = (

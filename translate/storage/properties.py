@@ -267,6 +267,7 @@ class Dialect:
     pair_terminator: str = ""
     key_wrap_char: str = ""
     value_wrap_char: str = ""
+    skip_key_quote_re: re.Pattern[str] | None = None
     drop_comments: list[str] = []
     hidden_comments: list[str] = []
     preserve_blank_lines: bool = False
@@ -550,6 +551,7 @@ class DialectStrings(Dialect):
     drop_comments = []
     hidden_comments = ["/* No comment provided by engineer. */"]
     preserve_blank_lines = True
+    skip_key_quote_re = re.compile(r"^NS.*Description$")
     encode_trans = str.maketrans(
         {
             "\\": "\\\\",
@@ -1020,7 +1022,10 @@ class propunit(base.TranslationUnit):
         # encode key, if needed
         key = self.name
         kwc = self.personality.key_wrap_char
-        if kwc:
+        if kwc and not (
+            self.personality.skip_key_quote_re
+            and self.personality.skip_key_quote_re.match(key)
+        ):
             key = key.replace(kwc, f"\\{kwc}")
             key = f"{kwc}{key}{kwc}"
         # encode value, if needed
