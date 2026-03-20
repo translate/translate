@@ -64,13 +64,15 @@ class po2yaml:
             self.output_file = output_file
             self.template_store = self.TargetStoreClass(template_file)
 
-    def convert_unit(self, unit):
+    def convert_unit(
+        self, unit: po.pounit, unit_id: str | None = None
+    ) -> yaml.YAMLUnit:
         """Convert a source format unit to a target format unit."""
         use_target = unit.istranslated() or (unit.isfuzzy() and self.include_fuzzy)
         target_unit = self.TargetUnitClass(
             source=unit.target if use_target else unit.source,
         )
-        target_unit.setid(unit.getlocations()[0])
+        target_unit.setid(unit_id if unit_id is not None else unit.getlocations()[0])
         target_unit.addnote(unit.getnotes("developer"), "developer")
         return target_unit
 
@@ -88,7 +90,9 @@ class po2yaml:
 
             if template_unit_id in self.source_store.locationindex:
                 input_unit = self.source_store.locationindex[template_unit_id]
-                self.target_store.addunit(self.convert_unit(input_unit))
+                self.target_store.addunit(
+                    self.convert_unit(input_unit, template_unit_id)
+                )
 
     def run(self) -> int:
         """Run the converter."""
