@@ -247,6 +247,7 @@ class pounit(pocommon.pounit):
         self.msgstr: list[str] | dict[int, list[str]] = []
         self._msgstrlen_cache: int | None = None
         self._typecomments_cache: list[str] | None = None
+        self._target_cache: str | tuple[str, ...] | None = None
         super().__init__(source)
 
     @property
@@ -275,6 +276,9 @@ class pounit(pocommon.pounit):
         ]
 
     allcomments = property(_get_all_comments)
+
+    def _invalidate_target_cache(self) -> None:
+        self._target_cache = None
 
     def _get_source_vars(self, msgid, msgid_plural):
         singular = unquotefrompo(msgid)
@@ -329,15 +333,23 @@ class pounit(pocommon.pounit):
     @property
     def target(self):
         """Returns the unescaped msgstr."""
-        if isinstance(self.msgstr, dict):
-            return multistring([unquotefrompo(value) for value in self.msgstr.values()])
-        return unquotefrompo(self.msgstr)
+        if self._target_cache is None:
+            if isinstance(self.msgstr, dict):
+                self._target_cache = tuple(
+                    unquotefrompo(value) for value in self.msgstr.values()
+                )
+            else:
+                self._target_cache = unquotefrompo(self.msgstr)
+        if isinstance(self._target_cache, tuple):
+            return multistring(list(self._target_cache))
+        return self._target_cache
 
     @target.setter
     def target(self, target) -> None:
         """Sets the msgstr to the given (unescaped) value."""
         self._msgstrlen_cache = None
         self._rich_target = None
+        self._invalidate_target_cache()
         if self.hasplural():
             if isinstance(target, multistring):
                 target = target.strings
@@ -648,6 +660,8 @@ class pounit(pocommon.pounit):
         """Makes this unit obsolete."""
         super().makeobsolete()
         self.obsolete = True
+        # Historically gettext did not preserve these comment types on obsolete
+        # units, so we keep dropping them here for compatibility.
         self.sourcecomments = []
         self.automaticcomments = []
 
