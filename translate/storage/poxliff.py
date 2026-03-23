@@ -24,7 +24,7 @@ This way the API supports plurals as if it was a PO file, for example.
 """
 
 import contextlib
-import re
+from collections.abc import Iterable, Iterator
 from typing import TypeVar
 
 from lxml import etree
@@ -33,8 +33,6 @@ from translate.misc.multistring import multistring
 from translate.misc.xml_helpers import get_safe_xml_parser, setXMLspace
 from translate.storage import base, lisa, poheader, xliff
 from translate.storage.placeables import general
-
-plural_id_re = re.compile(r".+\[[123456]\]$")
 
 
 def hasplurals(thing):
@@ -99,22 +97,67 @@ class PoXliffUnit(xliff.xliffunit):
         self.setsource(source, sourcelang="en")
 
     def setsource(self, source, sourcelang="en") -> None:  # ty:ignore[invalid-method-override]
-        # TODO: consider changing from plural to singular, etc.
         self._rich_source = None
         if not hasplurals(source):
+            if self.hasplural():
+                # Don't add <source> directly on the <group> element.
+                # Set source on each child trans-unit instead.
+                for unit in self.units:
+                    unit.source = source
+                # Also remove any stale <source> element directly on the group
+                for child in list(self.xmlelement):
+                    if child.tag == self.namespaced("source"):
+                        self.xmlelement.remove(child)
+                return
             super().setsource(source, sourcelang)
         else:
             target = self.target
+            if self.hasplural():
+                had_target = any(
+                    unit.xmlelement.find(unit.namespaced("target")) is not None
+                    or bool(unit.target)
+                    for unit in self.units
+                )
+            else:
+                had_target = self.xmlelement.find(
+                    self.namespaced("target")
+                ) is not None or bool(target)
+            if not self.hasplural():
+                old_element = self.xmlelement
+                group = etree.Element(self.namespaced("group"))
+                for key, value in old_element.attrib.items():
+                    group.set(key, value)
+                group.set("restype", "x-gettext-plurals")
+                for child in list(old_element):
+                    if child.tag not in {
+                        self.namespaced("source"),
+                        self.namespaced("target"),
+                    }:
+                        old_element.remove(child)
+                        group.append(child)
+                parent = old_element.getparent()
+                if parent is not None:
+                    parent.replace(old_element, group)
+                self.xmlelement = group
+            # Remove any stale <source> element directly on the group
+            for child in list(self.xmlelement):
+                if child.tag == self.namespaced("source"):
+                    self.xmlelement.remove(child)
             for unit in self.units:
                 with contextlib.suppress(ValueError):
                     self.xmlelement.remove(unit.xmlelement)
             self.units = []
             for s in source.strings:
                 newunit = xliff.xliffunit(s)
-                #                newunit.namespace = self.namespace #XXX?necessary?
                 self.units.append(newunit)
                 self.xmlelement.append(newunit.xmlelement)
-            self.target = target
+            # Propagate group ID to new child trans-units
+            group_id = self.xmlelement.get("id")
+            if group_id and self.units:
+                for i, unit in enumerate(self.units):
+                    unit.setid(f"{group_id}[{i}]")
+            if had_target and target is not None:
+                self.target = target
 
     # We don't support any rich strings yet
     multistring_to_rich = base.TranslationUnit.multistring_to_rich  # ty:ignore[invalid-method-override]
@@ -137,6 +180,11 @@ class PoXliffUnit(xliff.xliffunit):
             return
         if not self.hasplural():
             super().settarget(target, lang, append)
+            return
+        if target is None:
+            # Clear targets on all child units
+            for unit in self.units:
+                unit.target = None
             return
         if not isinstance(target, multistring):
             target = multistring(target)
@@ -320,24 +368,42 @@ class PoXliffFile(xliff.xlifffile[U], poheader.poheader):
         """Populates this object from the given xml string."""
         # TODO: Make more robust
 
-        def ispluralgroup(node):
+        def ispluralgroup(node: etree._Element) -> bool:
             """Determines whether the xml node refers to a gettext plural."""
             return node.get("restype") == "x-gettext-plurals"
 
-        def isnonpluralunit(node):
+        def isunit_parse_anchor(node: etree._Element) -> bool:
             """
-            Determines whether the xml node contains a plural like id.
+            Determines whether the xml node should anchor unit insertion during
+            iteration.
 
-            We want to filter out all the plural nodes, except the very first
-            one in each group.
+            This includes true standalone units and the first trans-unit in each
+            plural group, which acts as the placeholder where we inject the
+            whole plural group back into the unit stream.
             """
-            return plural_id_re.match(node.get("id") or "") is None
+            parent = node.getparent()
+            if parent is None or not ispluralgroup(parent):
+                return True
+            first_plural_child = next(
+                parent.iterchildren(self.namespaced(self.UnitClass.rootNode)), None
+            )
+            return node is first_plural_child
 
-        def pluralunits(pluralgroups):
+        def pluralunits(
+            pluralgroups: Iterable[etree._Element],
+        ) -> Iterator[PoXliffUnit]:
             for pluralgroup in pluralgroups:
                 yield self.UnitClass.createfromxmlElement(
                     pluralgroup, namespace=self.namespace
                 )
+
+        def next_nonempty_plural(
+            pluralunit_iter: Iterator[PoXliffUnit],
+        ) -> PoXliffUnit | None:
+            nextplural = next(pluralunit_iter, None)
+            while nextplural is not None and not nextplural.units:
+                nextplural = next(pluralunit_iter, None)
+            return nextplural
 
         self.filename = getattr(xml, "name", "")
         if hasattr(xml, "read"):
@@ -355,16 +421,22 @@ class PoXliffFile(xliff.xlifffile[U], poheader.poheader):
             self.namespaced(self.UnitClass.rootNode)
         )
 
-        singularunits = list(filter(isnonpluralunit, termEntries))
+        singularunits = list(filter(isunit_parse_anchor, termEntries))
         if len(singularunits) == 0:
             return
         pluralunit_iter = pluralunits(pluralgroups)
-        nextplural = next(pluralunit_iter, None)
+        nextplural = next_nonempty_plural(pluralunit_iter)
 
         for entry in singularunits:
-            term = self.UnitClass.createfromxmlElement(entry, namespace=self.namespace)
-            if nextplural and str(term.getid()) == (f"{nextplural.getid()}[0]"):
+            if (
+                nextplural
+                and nextplural.units
+                and entry is nextplural.units[0].xmlelement
+            ):
                 self.addunit(nextplural, new=False)
-                nextplural = next(pluralunit_iter, None)
+                nextplural = next_nonempty_plural(pluralunit_iter)
             else:
+                term = self.UnitClass.createfromxmlElement(
+                    entry, namespace=self.namespace
+                )
                 self.addunit(term, new=False)
