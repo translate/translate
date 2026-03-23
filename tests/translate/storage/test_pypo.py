@@ -393,6 +393,41 @@ msgstr ""
         assert unit.hastypecomment("max-length:10") is True
         assert unit.hastypecomment("fuzzy") is False
 
+    def test_fuzzy_untranslated_state(self) -> None:
+        posource = '#, fuzzy\nmsgid "x"\nmsgstr ""\n'
+        pofile = self.poparse(posource)
+        unit = pofile.units[0]
+        assert not unit.isobsolete()
+        assert unit.isfuzzy()
+        assert unit.typecomments == ["#, fuzzy\n"]
+        assert unit.get_state_n() == unit.S_UNTRANSLATED
+
+    def test_fuzzy_multiline_empty_untranslated_state(self) -> None:
+        posource = '#, fuzzy\nmsgid "x"\nmsgstr ""\n""\n'
+        pofile = self.poparse(posource)
+        unit = pofile.units[0]
+        assert not unit.isobsolete()
+        assert unit.isfuzzy()
+        assert unit.typecomments == ["#, fuzzy\n"]
+        assert unit.get_state_n() == unit.S_UNTRANSLATED
+
+    def test_fuzzy_multiline_empty_plural_untranslated_state(self) -> None:
+        posource = (
+            "#, fuzzy\n"
+            'msgid "x"\n'
+            'msgid_plural "xs"\n'
+            'msgstr[0] ""\n'
+            '""\n'
+            'msgstr[1] ""\n'
+            '""\n'
+        )
+        pofile = self.poparse(posource)
+        unit = pofile.units[0]
+        assert not unit.isobsolete()
+        assert unit.isfuzzy()
+        assert unit.typecomments == ["#, fuzzy\n"]
+        assert unit.get_state_n() == unit.S_UNTRANSLATED
+
     def test_obsolete_untranslated_state(self) -> None:
         posource = '#~ msgid "x"\n#~ msgstr ""\n'
         pofile = self.poparse(posource)
@@ -418,6 +453,42 @@ msgstr ""
         assert unit.isfuzzy()
         assert unit.typecomments == ["#, fuzzy\n"]
         assert unit.get_state_n() == unit.S_FUZZY_OBSOLETE
+
+    def test_markfuzzy_untranslated_state(self) -> None:
+        unit = pypo.pounit("Aurora")
+        unit.markfuzzy()
+        assert not unit.isobsolete()
+        assert unit.isfuzzy()
+        assert unit.typecomments == ["#, fuzzy\n"]
+        assert unit.get_state_n() == unit.S_UNTRANSLATED
+
+    def test_makeobsolete_fuzzy_untranslated_state(self) -> None:
+        unit = pypo.pounit("Aurora")
+        unit.markfuzzy()
+        unit.makeobsolete()
+        assert unit.isobsolete()
+        assert not unit.isfuzzy()
+        assert unit.typecomments == []
+        assert unit.get_state_n() == unit.S_UNTRANSLATED
+
+    def test_target_cache_invalidation(self) -> None:
+        unit = pypo.pounit("Aurora")
+        unit.target = "Dawn"
+        assert unit.target == "Dawn"
+        unit.target = "Glow"
+        assert unit.target == "Glow"
+
+    def test_plural_target_returns_fresh_multistring(self) -> None:
+        unit = pypo.pounit("Aurora")
+        unit.msgid_plural = ['"Auroras"']
+        unit.target = ["Dawn", "Glows"]
+
+        first = unit.target
+        second = unit.target
+
+        assert first.strings == ["Dawn", "Glows"]
+        assert second.strings == ["Dawn", "Glows"]
+        assert first is not second
 
     def test_unassociated_comments(self) -> None:
         """Tests behaviour of unassociated comments."""
