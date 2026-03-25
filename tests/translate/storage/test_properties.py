@@ -771,6 +771,30 @@ key=value
         )
         assert result == expected
 
+    def test_mac_strings_inline_comment_on_key_only_line(self) -> None:
+        """Test that inline comments are preserved when a .strings line has no value."""
+        propsource = '"key" /* key-only note */\n'.encode("utf-16")
+        propfile = self.propparse(propsource, personality="strings")
+
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == "key"
+        assert propunit.source == ""
+        assert propunit.comments == ["/* key-only note */"]
+        assert propunit.getnotes() == "key-only note"
+
+    def test_mac_strings_unterminated_inline_comment(self) -> None:
+        """Test that unterminated inline comments are captured as trailing comments."""
+        propsource = '"key" = "value"; /* unterminated comment\n'.encode("utf-16")
+        propfile = self.propparse(propsource, personality="strings")
+
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == "key"
+        assert propunit.source == "value"
+        assert propunit.comments == ["/* unterminated comment"]
+        assert propunit.getnotes() == "unterminated comment"
+
     def test_mac_strings_comment_before_entry(self) -> None:
         """Test .strings comment before entry - parsing and round-trip."""
         # Test parsing
@@ -1272,6 +1296,30 @@ key=value
         assert len(propfile.units) == 1
         # Blank line inside multi-line comment should be preserved in notes
         assert propfile.units[0].getnotes() == "Foo\n\nBar"
+
+    def test_mac_strings_drop_comments_are_filtered_during_parse(
+        self, monkeypatch
+    ) -> None:
+        """Test that parser-level dropped comments are skipped for inline and standalone comments."""
+        ignored_comment = "/* ignored comment */"
+        propsource = (
+            f"{ignored_comment}\n"
+            '"key" = "value"; /* visible comment */\n'
+            '"empty" /* ignored comment */\n'
+        ).encode("utf-16")
+        monkeypatch.setattr(
+            properties.DialectStrings, "drop_comments", [ignored_comment]
+        )
+
+        propfile = self.propparse(propsource, personality="strings")
+
+        assert len(propfile.units) == 2
+        assert propfile.units[0].name == "key"
+        assert propfile.units[0].comments == ["/* visible comment */"]
+        assert propfile.units[0].getnotes() == "visible comment"
+        assert propfile.units[1].name == "empty"
+        assert propfile.units[1].comments == []
+        assert propfile.units[1].getnotes() == ""
 
     def test_trailing_newlines(self) -> None:
         """Ensure we can handle Unicode."""
