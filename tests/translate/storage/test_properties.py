@@ -454,6 +454,19 @@ endspace=,\u0020
         store.units[1].source = ", "
         assert bytes(store).decode("utf-8") == propsource
 
+    def test_multiline_comment_closed_by_hash_comment_line(self) -> None:
+        """Closing a multiline comment must resume parsing entries."""
+        propsource = """/* comment start
+# closes */
+key=value
+"""
+        propfile = self.propparse(propsource)
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == "key"
+        assert propunit.source == "value"
+        assert propunit.getnotes() == "comment start\n# closes"
+
     def test_whitespace_handling(self) -> None:
         """Check that we remove extra whitespace around property."""
         whitespaces = (

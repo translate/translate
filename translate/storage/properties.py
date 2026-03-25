@@ -132,6 +132,7 @@ from __future__ import annotations
 import re
 from codecs import iterencode
 from copy import deepcopy
+from dataclasses import dataclass
 
 from lxml import etree
 
@@ -1129,6 +1130,17 @@ class xwikiunit(propunit):
         return line.startswith(cls.get_missing_part())
 
 
+@dataclass
+class _ParseState:
+    """Mutable state while parsing a properties file."""
+
+    unit: propunit
+    in_multiline_value: bool = False
+    in_multiline_comment: bool = False
+    was_header: bool = False
+    unit_start_line: int = 1
+
+
 class propfile(base.TranslationStore):
     """this class represents a .properties file, made up of propunits."""
 
@@ -1157,127 +1169,132 @@ class propfile(base.TranslationStore):
                 "Cannot detect encoding for %s." % (self.filename or "given string")
             )
         self.encoding = encoding
-        propsrc = text
+        if text is None:
+            text = ""
+        state = _ParseState(unit=self.UnitClass("", self.personality.name))
 
-        newunit = self.UnitClass("", self.personality.name)
-        inmultilinevalue = False
-        inmultilinecomment = False
-        was_header = False
-        unit_start_line = 1
-
-        for linenum, line in enumerate(propsrc.split("\n"), start=1):  # ty:ignore[unresolved-attribute]
-            # handle multiline value if we're in one
+        for linenum, line in enumerate(text.split("\n"), start=1):
             line = rstripeol(line)
-            if inmultilinevalue:
-                newunit.value += line.lstrip()
-                # see if there's more
-                inmultilinevalue = self.personality.is_line_continuation(newunit.value)
-                # if we're still waiting for more...
-                if inmultilinevalue:
-                    newunit.value = self.personality.strip_line_continuation(
-                        newunit.value
-                    )
-                if not inmultilinevalue:
-                    # we're finished, add it to the list...
-                    newunit.value = self.personality.value_strip(newunit.value)
-                    newunit._line_number = unit_start_line
-                    self.addunit(newunit)
-                    newunit = self.UnitClass("", self.personality.name)
-                    unit_start_line = linenum + 1
-            # otherwise, this could be a comment
-            # FIXME handle // inline comments
-            elif (
-                inmultilinecomment
-                or (one_line_comment := get_comment_one_line(line)) is not None
-                or (comment_start := get_comment_start(line)) is not None
-            ) and not self.UnitClass.represents_missing(line):
-                # add a comment
-                if line not in self.personality.drop_comments:
-                    newunit.comments.append(line)
-
-                if one_line_comment is not None:
-                    pass
-                elif not inmultilinecomment and comment_start is not None:
-                    inmultilinecomment = True
-                elif inmultilinecomment and get_comment_end(line) is not None:
-                    inmultilinecomment = False
+            if state.in_multiline_value:
+                self._append_multiline_value(state, line, linenum)
+            elif self._is_comment_line(state, line):
+                self._consume_comment_line(state, line)
             elif not line.strip():
-                # this is a blank line...
-                # avoid adding comment only units
-                if newunit.name:
-                    newunit._line_number = unit_start_line
-                    self.addunit(newunit)
-                    newunit = self.UnitClass("", self.personality.name)
-                    unit_start_line = linenum + 1
-                else:
-                    newunit.comments.append("")
-
-                if not was_header and str(newunit).strip():
-                    newunit._line_number = unit_start_line
-                    self.addunit(newunit)
-                    newunit = self.UnitClass("", self.personality.name)
-                    unit_start_line = linenum + 1
-                    was_header = True
-
+                self._consume_blank_line(state, linenum)
             else:
-                ismissing = False
-                if self.UnitClass.represents_missing(line):
-                    line = self.UnitClass.strip_missing_part(line)
-                    ismissing = True
-
-                # For strings dialect, strip inline C-style comments from the line
-                # before parsing, but preserve them
-                inline_comments = []
-                if hasattr(self.personality, "strip_inline_comments_from_line"):
-                    line, inline_comments = (
-                        self.personality.strip_inline_comments_from_line(line)
-                    )
-
-                newunit.delimiter, delimiter_pos = self.personality.find_delimiter(line)
-                if delimiter_pos == -1:
-                    newunit.name = self.personality.key_strip(line)
-                    newunit.value = ""
-                    newunit.delimiter = ""
-                    newunit.missing = ismissing
-                    # Add any inline comments found
-                    for comment in inline_comments:
-                        if comment not in self.personality.drop_comments:
-                            newunit.comments.append(comment)
-                    newunit._line_number = unit_start_line
-                    self.addunit(newunit)
-                    newunit = self.UnitClass("", self.personality.name)
-                    unit_start_line = linenum + 1
-                else:
-                    newunit.name = self.personality.key_strip(line[:delimiter_pos])
-                    newunit.missing = ismissing
-
-                    # Add any inline comments found
-                    for comment in inline_comments:
-                        if comment not in self.personality.drop_comments:
-                            newunit.comments.append(comment)
-
-                    # Extract value part after delimiter
-                    value_part = line[delimiter_pos + 1 :]
-
-                    if self.personality.is_line_continuation(value_part.lstrip()):
-                        inmultilinevalue = True
-                        newunit.value = value_part.lstrip()[:-1]
-                        newunit.value = self.personality.strip_line_continuation(
-                            value_part.lstrip()
-                        )
-                    else:
-                        newunit.value = self.personality.value_strip(value_part)
-                        newunit._line_number = unit_start_line
-                        self.addunit(newunit)
-                        newunit = self.UnitClass("", self.personality.name)
-                        unit_start_line = linenum + 1
+                self._consume_entry_line(state, line, linenum)
         # see if there is a leftover one...
-        if inmultilinevalue or any(newunit.comments):
-            newunit._line_number = unit_start_line
-            self.addunit(newunit)
+        if state.in_multiline_value or any(state.unit.comments):
+            self._finalize_current_unit(state)
 
         if self.personality.has_plurals:
             self.fold()
+
+    def _new_unit(self) -> propunit:
+        return self.UnitClass("", self.personality.name)
+
+    def _finalize_current_unit(
+        self, state: _ParseState, next_line: int | None = None
+    ) -> None:
+        state.unit._line_number = state.unit_start_line
+        self.addunit(state.unit)
+        state.unit = self._new_unit()
+        if next_line is not None:
+            state.unit_start_line = next_line
+
+    def _append_comment(self, state: _ParseState, comment: str) -> None:
+        if comment not in self.personality.drop_comments:
+            state.unit.comments.append(comment)
+
+    def _is_comment_line(self, state: _ParseState, line: str) -> bool:
+        # FIXME handle // inline comments
+        if self.UnitClass.represents_missing(line):
+            return False
+        return (
+            state.in_multiline_comment
+            or get_comment_one_line(line) is not None
+            or get_comment_start(line) is not None
+        )
+
+    def _consume_comment_line(self, state: _ParseState, line: str) -> None:
+        one_line_comment = get_comment_one_line(line)
+        comment_start = get_comment_start(line)
+        comment_end = get_comment_end(line)
+        self._append_comment(state, line)
+        if state.in_multiline_comment and comment_end is not None:
+            state.in_multiline_comment = False
+            return
+        if one_line_comment is not None:
+            return
+        if not state.in_multiline_comment and comment_start is not None:
+            state.in_multiline_comment = True
+
+    def _consume_blank_line(self, state: _ParseState, linenum: int) -> None:
+        if state.unit.name:
+            self._finalize_current_unit(state, linenum + 1)
+        else:
+            state.unit.comments.append("")
+
+        if not state.was_header and str(state.unit).strip():
+            self._finalize_current_unit(state, linenum + 1)
+            state.was_header = True
+
+    def _strip_missing_marker(self, line: str) -> tuple[str, bool]:
+        if self.UnitClass.represents_missing(line):
+            return self.UnitClass.strip_missing_part(line), True
+        return line, False
+
+    def _strip_inline_comments(self, line: str) -> tuple[str, list[str]]:
+        if hasattr(self.personality, "strip_inline_comments_from_line"):
+            return self.personality.strip_inline_comments_from_line(line)
+        return line, []
+
+    def _add_inline_comments(
+        self, state: _ParseState, inline_comments: list[str]
+    ) -> None:
+        for comment in inline_comments:
+            self._append_comment(state, comment)
+
+    def _consume_entry_line(self, state: _ParseState, line: str, linenum: int) -> None:
+        line, ismissing = self._strip_missing_marker(line)
+        line, inline_comments = self._strip_inline_comments(line)
+        state.unit.delimiter, delimiter_pos = self.personality.find_delimiter(line)
+        state.unit.missing = ismissing
+        self._add_inline_comments(state, inline_comments)
+
+        if delimiter_pos == -1:
+            state.unit.name = self.personality.key_strip(line)
+            state.unit.value = ""
+            state.unit.delimiter = ""
+            self._finalize_current_unit(state, linenum + 1)
+            return
+
+        state.unit.name = self.personality.key_strip(line[:delimiter_pos])
+        value_part = line[delimiter_pos + 1 :]
+        stripped_value = value_part.lstrip()
+        if self.personality.is_line_continuation(stripped_value):
+            state.in_multiline_value = True
+            state.unit.value = self.personality.strip_line_continuation(stripped_value)
+            return
+
+        state.unit.value = self.personality.value_strip(value_part)
+        self._finalize_current_unit(state, linenum + 1)
+
+    def _append_multiline_value(
+        self, state: _ParseState, line: str, linenum: int
+    ) -> None:
+        state.unit.value += line.lstrip()
+        state.in_multiline_value = self.personality.is_line_continuation(
+            state.unit.value
+        )
+        if state.in_multiline_value:
+            state.unit.value = self.personality.strip_line_continuation(
+                state.unit.value
+            )
+            return
+
+        state.unit.value = self.personality.value_strip(state.unit.value)
+        self._finalize_current_unit(state, linenum + 1)
 
     def fold(self) -> None:
         old_units = self.units
