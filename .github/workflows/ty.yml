@@ -26,6 +26,6 @@ jobs:
       with:
         cache-suffix: ${{ steps.setup_python.outputs.python-version }}
 
-        version: 0.9.5
+        version: 0.11.1
     - name: Type check ty
       run: uv run --all-extras ty check --output-format=github
