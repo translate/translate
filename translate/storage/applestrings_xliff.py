@@ -143,18 +143,32 @@ class AppleStringsXliffUnit(xliff.Xliff1Unit):
     def getid(self) -> str:
         if self._plural_base_key is not None:
             uid = ""
-            try:
-                filename = next(
-                    self.xmlelement.iterancestors(self.namespaced("file"))
-                ).get("original")
+            file_ancestor = next(
+                self.xmlelement.iterancestors(self.namespaced("file")), None
+            )
+            if file_ancestor is not None:
+                filename = file_ancestor.get("original")
                 if filename:
                     uid = filename + xliff.ID_SEPARATOR
-            except StopIteration:
-                pass
+            elif self._pending_filename:
+                uid = self._pending_filename + xliff.ID_SEPARATOR
             return uid + self._plural_base_key
         return super().getid()
 
     def setid(self, id) -> None:
+        file_ancestor = next(
+            self.xmlelement.iterancestors(self.namespaced("file")), None
+        )
+        if file_ancestor is None:
+            if xliff.ID_SEPARATOR in id:
+                filename, localid = id.split(xliff.ID_SEPARATOR, 1)
+                if self._pending_filename is None or xliff._looks_like_filename(
+                    filename
+                ):
+                    self._pending_filename = filename
+                    id = localid
+        else:
+            self._pending_filename = None
         if self.hasplural():
             # Plural unit: the logical ID is the base key; update XML element id.
             self._plural_base_key = id
