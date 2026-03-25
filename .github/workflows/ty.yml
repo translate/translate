@@ -1,6 +1,8 @@
 name: Type check
 
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
 
 permissions:
   contents: read
@@ -24,5 +26,6 @@ jobs:
       with:
         cache-suffix: ${{ steps.setup_python.outputs.python-version }}
 
+        version: 0.9.5
     - name: Type check ty
       run: uv run --all-extras ty check --output-format=github
