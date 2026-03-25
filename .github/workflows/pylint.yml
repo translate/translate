@@ -8,6 +8,7 @@ on:
   push:
     branches-ignore:
     - renovate/**
+    - dependabot/**
   pull_request:
 
 permissions:
