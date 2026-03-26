@@ -64,7 +64,14 @@ class ProgressBar:
         self._progressbar.show(filename)
 
 
-class ManPageOption(optparse.Option):
+class RecursiveOption(optparse.Option):
+    """Option type with extra usage metadata used by RecursiveOptionParser."""
+
+    optionalswitch: bool = False
+    required: bool = False
+
+
+class ManPageOption(RecursiveOption):
     ACTIONS = (*optparse.Option.ACTIONS, "manpage")
 
     def take_action(self, action, dest, opt, value, values, parser):
@@ -344,7 +351,7 @@ class RecursiveOptionParser(optparse.OptionParser):
                 processor,
             )
         inputformathelp = self.getformathelp(self.inputformats)
-        inputoption = optparse.Option(
+        inputoption = RecursiveOption(
             "-i",
             "--input",
             dest="input",
@@ -353,10 +360,10 @@ class RecursiveOptionParser(optparse.OptionParser):
             metavar="INPUT",
             help=f"read from INPUT in {inputformathelp}",
         )
-        inputoption.optionalswitch = True  # type: ignore[attr-defined]
-        inputoption.required = True  # type: ignore[attr-defined]
+        inputoption.optionalswitch = True
+        inputoption.required = True
         self.define_option(inputoption)
-        excludeoption = optparse.Option(
+        excludeoption = RecursiveOption(
             "-x",
             "--exclude",
             dest="exclude",
@@ -368,7 +375,7 @@ class RecursiveOptionParser(optparse.OptionParser):
         )
         self.define_option(excludeoption)
         outputformathelp = self.getformathelp(outputformats)
-        outputoption = optparse.Option(
+        outputoption = RecursiveOption(
             "-o",
             "--output",
             dest="output",
@@ -376,13 +383,13 @@ class RecursiveOptionParser(optparse.OptionParser):
             metavar="OUTPUT",
             help=f"write to OUTPUT in {outputformathelp}",
         )
-        outputoption.optionalswitch = True  # type: ignore[attr-defined]
-        outputoption.required = True  # type: ignore[attr-defined]
+        outputoption.optionalswitch = True
+        outputoption.required = True
         self.define_option(outputoption)
         if self.usetemplates:
             self.templateformats = templateformats
             templateformathelp = self.getformathelp(self.templateformats)
-            templateoption = optparse.Option(
+            templateoption = RecursiveOption(
                 "-t",
                 "--template",
                 dest="template",
@@ -394,7 +401,7 @@ class RecursiveOptionParser(optparse.OptionParser):
 
     def setprogressoptions(self) -> None:
         """Sets the progress options."""
-        progressoption = optparse.Option(
+        progressoption = RecursiveOption(
             None,
             "--progress",
             dest="progress",
@@ -408,7 +415,7 @@ class RecursiveOptionParser(optparse.OptionParser):
     def seterrorleveloptions(self) -> None:
         """Sets the errorlevel options."""
         self.errorleveltypes = ["none", "message", "exception", "traceback"]
-        errorleveloption = optparse.Option(
+        errorleveloption = RecursiveOption(
             None,
             "--errorlevel",
             dest="errorlevel",

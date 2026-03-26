@@ -500,8 +500,10 @@ class TestGetUsageString:
     """Tests for RecursiveOptionParser.getusagestring."""
 
     def test_required_option(self) -> None:
-        option = optparse.Option("-i", "--input", dest="input", metavar="INPUT")
-        option.required = True  # type: ignore[attr-defined]
+        option = optrecurse.RecursiveOption(
+            "-i", "--input", dest="input", metavar="INPUT"
+        )
+        option.required = True
         result = optrecurse.RecursiveOptionParser.getusagestring(option)
         assert result == "-i|--input INPUT"
 
@@ -511,8 +513,8 @@ class TestGetUsageString:
         assert result == "[-o|--output OUTPUT]"
 
     def test_optional_switch(self) -> None:
-        option = optparse.Option("-v", "--verbose", dest="verbose")
-        option.optionalswitch = True  # type: ignore[attr-defined]
+        option = optrecurse.RecursiveOption("-v", "--verbose", dest="verbose")
+        option.optionalswitch = True
         result = optrecurse.RecursiveOptionParser.getusagestring(option)
         assert "[-v|--verbose]" in result
 
@@ -526,8 +528,10 @@ class TestGetUsageMan:
     """Tests for RecursiveOptionParser.getusageman."""
 
     def test_required_option(self) -> None:
-        option = optparse.Option("-i", "--input", dest="input", metavar="INPUT")
-        option.required = True  # type: ignore[attr-defined]
+        option = optrecurse.RecursiveOption(
+            "-i", "--input", dest="input", metavar="INPUT"
+        )
+        option.required = True
         result = optrecurse.RecursiveOptionParser.getusageman(option)
         assert "-i" in result
         assert "--input" in result
