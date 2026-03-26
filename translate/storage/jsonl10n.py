@@ -79,11 +79,12 @@ from typing import (
     TYPE_CHECKING,
     Any,
     BinaryIO,
-    ClassVar,
+    Generic,
     Never,
     NotRequired,
     TextIO,
     TypedDict,
+    TypeVar,
     cast,
 )
 
@@ -175,10 +176,13 @@ class DumpArgsType(TypedDict):
     sort_keys: NotRequired[bool]
 
 
-class JsonFile(base.DictStore[BaseJsonUnit]):
+JsonUnit = TypeVar("JsonUnit", bound=BaseJsonUnit)
+
+
+class JsonFile(base.DictStore[JsonUnit], Generic[JsonUnit]):
     """A JSON file."""
 
-    UnitClass: ClassVar[type[BaseJsonUnit]] = FlatJsonUnit
+    UnitClass: type[JsonUnit] = FlatJsonUnit  # ty:ignore[invalid-assignment]
 
     def __init__(self, inputfile=None, filter=None, **kwargs) -> None:
         """Construct a JSON file, optionally reading in from inputfile."""
@@ -1010,7 +1014,7 @@ class NextcloudJsonUnit(FlatJsonUnit):
         self.setid(source)
 
 
-class NextcloudJsonFile(JsonFile):
+class NextcloudJsonFile(JsonFile[NextcloudJsonUnit]):
     """
     Nextcloud JSON file.
 

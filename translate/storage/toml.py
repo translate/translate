@@ -329,7 +329,7 @@ class GoI18nTOMLFile(TOMLFile):
         """
         # Special case: table with only "other" key is treated as singular
         if data and len(data) == 1 and "other" in data:
-            yield (prev, data["other"], None)
+            yield (prev, str(data["other"]), None)
             return
 
         # Does this look like a plural?
