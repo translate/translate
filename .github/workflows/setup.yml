@@ -59,7 +59,7 @@ jobs:
         uv pip install dist/translate_toolkit*.whl
         moz2po --help
         python ./test-ttk-release-whl/lib/python*/site-packages/translate/lang/identify.py README.rst
-    - uses: codecov/codecov-action@75cd11691c0faa626561e295848008c8a7dddffe # v5.5.4
+    - uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6.0.0
       with:
         name: setup
         token: ${{ secrets.CODECOV_TOKEN }} # zizmor: ignore[secrets-outside-env]
