@@ -1188,8 +1188,7 @@ class StandardChecker(TranslationChecker):
                 f"Highest anonymous placeholder in original is {max1}, in translation {max2}"
             )
 
-        if set(data1["namedvars"]) == set(data2["namedvars"]):
-            pass
+        set(data1["namedvars"]) == set(data2["namedvars"])
 
         extra_in_2 = set(data2["namedvars"]).difference(set(data1["namedvars"]))
         if len(extra_in_2) > 0:
