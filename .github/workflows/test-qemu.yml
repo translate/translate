@@ -37,7 +37,7 @@ jobs:
         cache-local-path: /tmp/setup-uv-cache
         cache-suffix: ${{ matrix.arch }}-${{ matrix.distro }}
         prune-cache: false
-        version: 0.11.1
+        version: 0.11.2
     - uses: uraimo/run-on-arch-action@d94c13912ea685de38fccc1109385b83fd79427d   # v3.0.1
       name: Test
       with:
