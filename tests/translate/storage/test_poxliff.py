@@ -304,3 +304,216 @@ class TestPOXLIFFfile(test_xliff.TestXLIFFfile):
         assert unit.xmlelement.get("id") == "menu[12]"
         assert unit.source == "Menu item"
         assert unit.target == "Polozka menu"
+
+    def test_expanding_plural_targets_keeps_local_xliff_ids(self) -> None:
+        """Tests that plural growth doesn't leak file-qualified IDs to XML."""
+        minixlf = (
+            self.xliffskeleton
+            % """<group restype="x-gettext-plurals" id="5" approved="no">
+        <trans-unit id="5[0]" xml:space="preserve" approved="yes">
+            <source>This is one</source>
+            <target state="translated">nl one</target>
+        </trans-unit>
+        <trans-unit id="5[1]" xml:space="preserve" approved="yes">
+            <source>These are many</source>
+            <target state="translated">nl many</target>
+        </trans-unit>
+</group>"""
+        )
+        xlifffile = self.StoreClass.parsestring(minixlf)
+        unit = xlifffile.units[0]
+
+        unit.target = multistring(["pl one", "pl few", "pl many"])
+
+        assert unit.getid() == "filename.po\x045"
+        assert unit.xmlelement.get("id") == "5"
+        assert [child.xmlelement.get("id") for child in unit.units] == [
+            "5[0]",
+            "5[1]",
+            "5[2]",
+        ]
+        serialized = bytes(xlifffile).decode("utf-8")
+        assert 'id="5"' in serialized
+        assert 'id="5[2]"' in serialized
+        assert "__%04__" not in serialized
+
+    def test_expanding_plural_targets_without_group_id_preserves_anonymous_group(
+        self,
+    ) -> None:
+        """Tests that plural growth keeps anonymous groups anonymous."""
+        minixlf = (
+            self.xliffskeleton
+            % """<group restype="x-gettext-plurals" approved="no">
+        <trans-unit id="test[0]" xml:space="preserve" approved="yes">
+            <source>This is one</source>
+            <target state="translated">nl one</target>
+        </trans-unit>
+        <trans-unit id="test[1]" xml:space="preserve" approved="yes">
+            <source>These are many</source>
+            <target state="translated">nl many</target>
+        </trans-unit>
+</group>"""
+        )
+        xlifffile = self.StoreClass.parsestring(minixlf)
+        unit = xlifffile.units[0]
+
+        unit.target = multistring(["pl one", "pl few", "pl many"])
+
+        assert unit.xmlelement.get("id") is None
+        assert [child.xmlelement.get("id") for child in unit.units] == [
+            "test[0]",
+            "test[1]",
+            "test[2]",
+        ]
+        serialized = bytes(xlifffile).decode("utf-8")
+        assert 'id="test[2]"' in serialized
+        assert '<group restype="x-gettext-plurals" approved="no">' in serialized
+        assert 'id=""' not in serialized
+        assert 'id="[0]"' not in serialized
+
+    def test_expanding_anonymous_plural_targets_does_not_collide_with_existing_id(
+        self,
+    ) -> None:
+        """Tests that anonymous plural growth does not synthesize a colliding group ID."""
+        minixlf = (
+            self.xliffskeleton
+            % """<trans-unit id="test" xml:space="preserve">
+        <source>Standalone</source>
+        <target>Standalone target</target>
+      </trans-unit>
+      <group restype="x-gettext-plurals" approved="no">
+        <trans-unit id="test[0]" xml:space="preserve" approved="yes">
+            <source>This is one</source>
+            <target state="translated">nl one</target>
+        </trans-unit>
+        <trans-unit id="test[1]" xml:space="preserve" approved="yes">
+            <source>These are many</source>
+            <target state="translated">nl many</target>
+        </trans-unit>
+</group>"""
+        )
+        xlifffile = self.StoreClass.parsestring(minixlf)
+        singular = xlifffile.units[0]
+        plural = xlifffile.units[1]
+
+        plural.target = multistring(["pl one", "pl few", "pl many"])
+
+        assert singular.getid() == "filename.po\x04test"
+        assert plural.getid() == "filename.po\x04"
+        assert xlifffile.findid("filename.po\x04test") is singular
+        assert plural.xmlelement.get("id") is None
+        assert [child.xmlelement.get("id") for child in plural.units] == [
+            "test[0]",
+            "test[1]",
+            "test[2]",
+        ]
+
+    def test_detached_plural_with_file_qualified_id_adds_to_matching_file(self) -> None:
+        """Tests that detached plural units still route to the right file."""
+        xlifffile = self.StoreClass()
+        unit = self.StoreClass.UnitClass(multistring(["cow", "cows"]))
+
+        unit.setid("other.po\x04msg")
+        xlifffile.addunit(unit)
+
+        assert xlifffile.getfilenames() == ["other.po"]
+        assert unit.getid() == "other.po\x04msg"
+        assert unit.xmlelement.get("id") == "msg"
+        assert [child.xmlelement.get("id") for child in unit.units] == [
+            "msg[0]",
+            "msg[1]",
+        ]
+
+    def test_detached_anonymous_plural_routed_by_filename_normalizes_child_ids(
+        self,
+    ) -> None:
+        """Tests that anonymous plural filename routing doesn't leak filename into child IDs."""
+        xlifffile = self.StoreClass()
+        unit = self.StoreClass.UnitClass(multistring(["cow", "cows"]))
+
+        unit.setid("")
+        unit.setpendingfilename("other.po")
+        xlifffile.addunit(unit)
+
+        assert xlifffile.getfilenames() == ["other.po"]
+        assert unit.getid() == "other.po\x04"
+        assert unit.xmlelement.get("id") is None
+        assert [child.xmlelement.get("id") for child in unit.units] == [
+            "[0]",
+            "[1]",
+        ]
+        serialized = bytes(xlifffile).decode("utf-8")
+        assert "other.po__%04__" not in serialized
+
+    def test_expanding_plural_targets_preserves_contextual_id(self) -> None:
+        """Tests that plural growth preserves local contextual IDs."""
+        minixlf = (
+            self.xliffskeleton
+            % """<group restype="x-gettext-plurals" id="context__%04__message">
+        <trans-unit id="context__%04__message[0]" xml:space="preserve">
+            <source>a</source>
+            <target>x</target>
+        </trans-unit>
+        <trans-unit id="context__%04__message[1]" xml:space="preserve">
+            <source>b</source>
+            <target>y</target>
+        </trans-unit>
+</group>"""
+        )
+        xlifffile = self.StoreClass.parsestring(minixlf)
+        unit = xlifffile.units[0]
+
+        unit.target = multistring(["pl one", "pl few", "pl many"])
+
+        assert unit.getid() == "filename.po\x04context\x04message"
+        assert unit.xmlelement.get("id") == "context__%04__message"
+        assert [child.xmlelement.get("id") for child in unit.units] == [
+            "context__%04__message[0]",
+            "context__%04__message[1]",
+            "context__%04__message[2]",
+        ]
+
+    def test_expanding_detached_plural_targets_preserves_file_qualified_id(
+        self,
+    ) -> None:
+        """Tests that detached plural growth keeps file-qualified IDs for addunit."""
+        xlifffile = self.StoreClass()
+        unit = self.StoreClass.UnitClass(multistring(["cow", "cows"]))
+
+        unit.setid("message")
+        unit.setpendingfilename("other.po")
+        unit.target = multistring(["one", "few", "many"])
+        xlifffile.addunit(unit)
+
+        assert xlifffile.getfilenames() == ["other.po"]
+        assert unit.getid() == "other.po\x04message"
+        assert unit.xmlelement.get("id") == "message"
+        assert [child.xmlelement.get("id") for child in unit.units] == [
+            "message[0]",
+            "message[1]",
+            "message[2]",
+        ]
+
+    def test_expanding_detached_anonymous_plural_targets_keeps_bracket_ids(
+        self,
+    ) -> None:
+        """Tests detached anonymous plural growth preserves bracket-only child IDs."""
+        xlifffile = self.StoreClass()
+        unit = self.StoreClass.UnitClass(multistring(["cow", "cows"]))
+        unit.setid("")
+        unit.setpendingfilename("other.po")
+        xlifffile.addunit(unit)
+
+        assert [child.xmlelement.get("id") for child in unit.units] == [
+            "[0]",
+            "[1]",
+        ]
+
+        unit.target = multistring(["one", "few", "many"])
+
+        assert unit.xmlelement.get("id") is None
+        assert [child.xmlelement.get("id") for child in unit.units] == [
+            "[0]",
+            "[1]",
+            "[2]",
+        ]

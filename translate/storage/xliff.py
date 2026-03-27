@@ -48,6 +48,10 @@ ID_SEPARATOR = "\04"
 ID_SEPARATOR_SAFE = "__%04__"
 
 
+def _looks_like_filename(value: str) -> bool:
+    return "." in value or "/" in value or "\\" in value
+
+
 class Xliff1Unit(XliffUnit):
     """A single term in the xliff file."""
 
@@ -91,6 +95,7 @@ class Xliff1Unit(XliffUnit):
 
     def __init__(self, source, empty=False, **kwargs) -> None:
         """Override the constructor to set xml:space="preserve"."""
+        self._pending_filename = None
         super().__init__(source, empty, **kwargs)
         if empty:
             return
@@ -356,24 +361,44 @@ class Xliff1Unit(XliffUnit):
             self.set_state_n(self.S_UNREVIEWED)
 
     def setid(self, id) -> None:  # ty:ignore[invalid-method-override]
+        file_ancestor = next(
+            self.xmlelement.iterancestors(self.namespaced("file")), None
+        )
+        if file_ancestor is None:
+            if ID_SEPARATOR in id:
+                filename, localid = id.split(ID_SEPARATOR, 1)
+                if self._pending_filename is None or _looks_like_filename(filename):
+                    self._pending_filename = filename
+                    id = localid
+        else:
+            self._pending_filename = None
+        self.setlocalid(id)
+
+    def setlocalid(self, id) -> None:
         # sanitize id in case ID_SEPARATOR is present
         self.xmlelement.set("id", id.replace(ID_SEPARATOR, ID_SEPARATOR_SAFE))
 
-    def getid(self):
-        uid = ""
-        try:
-            filename = next(self.xmlelement.iterancestors(self.namespaced("file"))).get(
-                "original"
-            )
-            if filename:
-                uid = filename + ID_SEPARATOR
-        except StopIteration:
-            # unit has no proper file ancestor, probably newly created
-            pass
-        # hide the fact that we sanitize ID_SEPARATOR
-        uid += str(self.xmlelement.get("id") or "").replace(
+    def setpendingfilename(self, filename: str | None) -> None:
+        self._pending_filename = filename
+
+    def getlocalid(self) -> str:
+        return str(self.xmlelement.get("id") or "").replace(
             ID_SEPARATOR_SAFE, ID_SEPARATOR
         )
+
+    def getid(self):
+        uid = ""
+        file_ancestor = next(
+            self.xmlelement.iterancestors(self.namespaced("file")), None
+        )
+        if file_ancestor is not None:
+            filename = file_ancestor.get("original")
+            if filename:
+                uid = filename + ID_SEPARATOR
+        elif self._pending_filename:
+            uid = self._pending_filename + ID_SEPARATOR
+        # hide the fact that we sanitize ID_SEPARATOR
+        uid += self.getlocalid()
         return uid
 
     def addlocation(self, location) -> None:
@@ -678,11 +703,33 @@ class Xliff1File(XliffFile[U]):
         return etree.SubElement(filenode, self.namespaced("body"))
 
     def addunit(self, unit, new=True) -> None:
-        parts = unit.getid().split("\x04")
-        if len(parts) > 1:
-            filename, unitid = parts[0], "\x04".join(parts[1:])
+        filename = getattr(unit, "_pending_filename", None)
+        unitid = None
+        route_from_pending = filename is not None
+        if filename is None:
+            parts = unit.getid().split("\x04")
+            if len(parts) > 1:
+                filename, unitid = parts[0], "\x04".join(parts[1:])
+        else:
+            prefix = f"{filename}{ID_SEPARATOR}"
+            full_id = unit.getid()
+            unitid = (
+                full_id.removeprefix(prefix)
+                if full_id.startswith(prefix)
+                else unit.getlocalid()
+            )
+
+        if filename is not None:
             self.switchfile(filename, createifmissing=True)
-            unit.setid(unitid)
+            if unitid:
+                unit.setid(unitid)
+                if route_from_pending:
+                    unit.setpendingfilename(None)
+            elif route_from_pending:
+                unit.setlocalid(unitid)
+                unit.setpendingfilename(None)
+                if hasattr(unit, "xmlelement") and unit.xmlelement is not None:
+                    unit.xmlelement.attrib.pop("id", None)
 
         # Check if unit belongs to a group and preserve group structure (only when new=True)
         group_parent = None

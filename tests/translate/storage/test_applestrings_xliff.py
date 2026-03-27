@@ -562,6 +562,50 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
         assert plural.target.strings[1] == "One item"
         assert plural.target.strings[2] == "%d items"
 
+    def test_add_detached_plural_unit_with_pending_filename(self):
+        """A detached Apple plural unit keeps its logical id when rerouted."""
+        source = self.StoreClass()
+        source.settargetlanguage("en")
+        unit = _add_plural(source, "items:count", ["", "One item", "%d items"])
+        source.removeunit(unit)
+
+        unit.setpendingfilename("Other.strings")
+
+        target = self.StoreClass()
+        target.settargetlanguage("en")
+        target.addunit(unit)
+
+        assert unit.getid() == "Other.strings\x04items:count"
+        assert unit.xmlelement.get("id") == "items:count:dict"
+
+        output = bytes(target).decode("utf-8")
+        assert 'original="Other.strings"' in output
+        assert 'id="items:count:dict/one:dict/:string"' in output
+        assert 'id="items:count:dict/other:dict/:string"' in output
+
+    def test_setid_file_qualified_id_overrides_pending_filename_for_plural(self):
+        """A file-qualified id overrides an existing pending filename for plurals."""
+        source = self.StoreClass()
+        source.settargetlanguage("en")
+        unit = _add_plural(source, "items:count", ["", "One item", "%d items"])
+        source.removeunit(unit)
+
+        unit.setpendingfilename("Old.strings")
+        unit.setid("New.strings\x04items:count")
+
+        target = self.StoreClass()
+        target.settargetlanguage("en")
+        target.addunit(unit)
+
+        assert unit.getid() == "New.strings\x04items:count"
+        assert unit.xmlelement.get("id") == "items:count:dict"
+
+        output = bytes(target).decode("utf-8")
+        assert 'original="New.strings"' in output
+        assert "\x04" not in output
+        assert 'id="items:count:dict/one:dict/:string"' in output
+        assert 'id="items:count:dict/other:dict/:string"' in output
+
     # ------------------------------------------------------------------
     # Target update round-trip
     # ------------------------------------------------------------------

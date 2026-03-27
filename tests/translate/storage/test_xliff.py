@@ -876,6 +876,71 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         translation_reloaded = xliff.xlifffile.parsestring(serialized)
         assert len(translation_reloaded.units) == 0
 
+    def test_addunit_file_qualified_empty_local_id_clears_xml_id(self) -> None:
+        """Test that routing by filename doesn't keep an empty local ID in XML."""
+        translation = xliff.xlifffile()
+        translation.sourcelanguage = "en"
+        translation.targetlanguage = "fr"
+
+        unit = xliff.xliffunit("Hello")
+        unit.setid("other.po\x04")
+
+        translation.addunit(unit)
+
+        assert translation.getfilenames() == ["other.po"]
+        assert unit.getid() == "other.po\x04"
+        assert unit.xmlelement.get("id") is None
+        serialized = bytes(translation).decode("utf-8")
+        assert "other.po__%04__" not in serialized
+
+    def test_addunit_pending_filename_preserves_local_contextual_id(self) -> None:
+        """Test explicit pending filename routing without overloading the XML id."""
+        translation = xliff.xlifffile()
+        translation.sourcelanguage = "en"
+        translation.targetlanguage = "fr"
+
+        unit = xliff.xliffunit("Hello")
+        unit.setlocalid("context\x04hello")
+        unit.setpendingfilename("other.po")
+
+        translation.addunit(unit)
+
+        assert translation.getfilenames() == ["other.po"]
+        assert unit.getid() == "other.po\x04context\x04hello"
+        assert unit.xmlelement.get("id") == "context__%04__hello"
+
+    def test_setid_preserves_existing_pending_filename_on_detached_unit(self) -> None:
+        """Test detached units keep explicit pending filename when setting local id."""
+        translation = xliff.xlifffile()
+        translation.sourcelanguage = "en"
+        translation.targetlanguage = "fr"
+
+        unit = xliff.xliffunit("Hello")
+        unit.setpendingfilename("other.po")
+        unit.setid("context\x04hello")
+
+        translation.addunit(unit)
+
+        assert translation.getfilenames() == ["other.po"]
+        assert unit.getid() == "other.po\x04context\x04hello"
+        assert unit.xmlelement.get("id") == "context__%04__hello"
+
+    def test_setid_file_qualified_id_overrides_pending_filename(self) -> None:
+        """Test detached units honor file-qualified ids after setting pending filename."""
+        translation = xliff.xlifffile()
+        translation.sourcelanguage = "en"
+        translation.targetlanguage = "fr"
+
+        unit = xliff.xliffunit("Hello")
+        unit.setpendingfilename("old.po")
+        unit.setid("new.po\x04msg")
+
+        translation.addunit(unit)
+
+        assert translation.getfilenames() == ["new.po"]
+        assert unit.getid() == "new.po\x04msg"
+        assert unit.xmlelement.get("id") == "msg"
+
     def test_namespace_preservation_across_versions(self) -> None:
         """Test that namespace is properly handled when copying between XLIFF versions."""
         # XLIFF 1.1 source

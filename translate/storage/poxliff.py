@@ -24,6 +24,7 @@ This way the API supports plurals as if it was a PO file, for example.
 """
 
 import contextlib
+import re
 from collections.abc import Iterable, Iterator
 from typing import TypeVar
 
@@ -33,6 +34,7 @@ from translate.misc.multistring import multistring
 from translate.misc.xml_helpers import get_safe_xml_parser, setXMLspace
 from translate.storage import base, lisa, poheader, xliff
 from translate.storage.placeables import general
+from translate.storage.xliff import ID_SEPARATOR_SAFE
 
 
 def hasplurals(thing):
@@ -49,6 +51,7 @@ class PoXliffUnit(xliff.xliffunit):
     def __init__(self, source=None, empty=False, **kwargs) -> None:
         self._rich_source = None
         self._rich_target = None
+        self._pending_filename = None
         self._state_n = 0
         self.units = []
 
@@ -155,7 +158,7 @@ class PoXliffUnit(xliff.xliffunit):
             group_id = self.xmlelement.get("id")
             if group_id and self.units:
                 for i, unit in enumerate(self.units):
-                    unit.setid(f"{group_id}[{i}]")
+                    unit.setlocalid(f"{group_id}[{i}]")
             if had_target and target is not None:
                 self.target = target
 
@@ -173,6 +176,19 @@ class PoXliffUnit(xliff.xliffunit):
                 return multistring(strings)
             return None
         return super().gettarget(lang)
+
+    def _get_plural_child_base_id(self):
+        child_units = self.units or [
+            xliff.xliffunit.createfromxmlElement(child)
+            for child in self.xmlelement.iterchildren(self.namespaced("trans-unit"))
+        ]
+        for unit in child_units:
+            child_id = unit.xmlelement.get("id")
+            if not child_id:
+                continue
+            base_id = re.sub(r"\[\d+\]$", "", child_id)
+            return base_id.replace(ID_SEPARATOR_SAFE, "\x04")
+        return None
 
     def settarget(self, target, lang="xx", append=False) -> None:
         self._rich_target = None
@@ -194,9 +210,15 @@ class PoXliffUnit(xliff.xliffunit):
         if sourcel < targetl:
             sources = source.strings + [source.strings[-1]] * (targetl - sourcel)
             targets = target.strings
-            id = self.getid()
+            group_has_id = "id" in self.xmlelement.attrib
+            group_local_id = self.getlocalid() if group_has_id else None
+            child_base_id = None if group_has_id else self._get_plural_child_base_id()
             self.source = multistring(sources)
-            self.setid(id)
+            if group_local_id is not None:
+                self.setlocalid(group_local_id)
+            elif child_base_id is not None:
+                for i, unit in enumerate(self.units):
+                    unit.setlocalid(f"{child_base_id}[{i}]")
         elif targetl < sourcel:
             targets = target.strings + [""] * (sourcel - targetl)
         else:
@@ -248,11 +270,11 @@ class PoXliffUnit(xliff.xliffunit):
         for unit in self.units[1:]:
             unit.marktranslated()
 
-    def setid(self, id) -> None:
-        super().setid(id)
+    def setlocalid(self, id) -> None:
+        super().setlocalid(id)
         if len(self.units) > 1:
             for i, unit in enumerate(self.units):
-                unit.setid(f"{id}[{i}]")
+                unit.setlocalid(f"{id}[{i}]")
 
     def getlocations(self):
         """Returns all the references (source locations)."""
