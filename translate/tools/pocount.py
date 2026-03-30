@@ -283,7 +283,7 @@ class FullRenderer(Renderer):
         print(f"Processing file : {ConsoleColor.HEADER()}{title}{ConsoleColor.ENDC()}")
         print("Type               Strings      Words (source)    Words (translation)")
         print(
-            f"{ConsoleColor.OKGREEN()}Translated:   %5d (%3d%%) %10d (%3d%%) %15d"
+            f"{ConsoleColor.OKGREEN()}Translated:   %5d (%3d%%) %10d (%3d%%) %15d"  # noqa: RUF073
             % (
                 stats["translated"],
                 percent(stats["translated"], stats["total"]),
@@ -294,7 +294,7 @@ class FullRenderer(Renderer):
             + ConsoleColor.ENDC()
         )
         print(
-            f"{ConsoleColor.WARNING()}Fuzzy:        %5d (%3d%%) %10d (%3d%%)             n/a"
+            f"{ConsoleColor.WARNING()}Fuzzy:        %5d (%3d%%) %10d (%3d%%)             n/a"  # noqa: RUF073
             % (
                 stats["fuzzy"],
                 percent(stats["fuzzy"], stats["total"]),
@@ -304,7 +304,7 @@ class FullRenderer(Renderer):
             + ConsoleColor.ENDC()
         )
         print(
-            f"{ConsoleColor.FAIL()}Untranslated: %5d (%3d%%) %10d (%3d%%)             n/a"
+            f"{ConsoleColor.FAIL()}Untranslated: %5d (%3d%%) %10d (%3d%%)             n/a"  # noqa: RUF073
             % (
                 stats["untranslated"],
                 percent(stats["untranslated"], stats["total"]),
