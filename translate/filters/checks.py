@@ -1175,21 +1175,16 @@ class StandardChecker(TranslationChecker):
         max1 = max_anons(data1["anonvars"])
         max2 = max_anons(data2["anonvars"])
 
-        if max1 == max2:
-            pass
-        elif max1 < max2:
+        if max1 < max2:
             failure_state = max(failure_state, STATE_SERIOUS)
             messages.append(
                 f"Translation requires {max2} anonymous formatting args, original only {max1}"
             )
-        else:
+        elif max1 > max2:
             failure_state = max(failure_state, STATE_MILD)
             messages.append(
                 f"Highest anonymous placeholder in original is {max1}, in translation {max2}"
             )
-
-        if set(data1["namedvars"]) == set(data2["namedvars"]):
-            pass
 
         extra_in_2 = set(data2["namedvars"]).difference(set(data1["namedvars"]))
         if len(extra_in_2) > 0:

@@ -179,7 +179,7 @@ class FlatXMLFile(base.TranslationStore):
         """Reindents the backing document to be consistent."""
         # no elements? nothing to do.
         if not len(self.root):
-            pass
+            return
 
         if self.indent_chars is None:
             # indent None means: linearize
