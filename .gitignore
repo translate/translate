@@ -53,3 +53,5 @@ tests/xliff_conformance/af-pootle.xlf
 
 # cli testing
 tests/cli/results
+
+/.codex
