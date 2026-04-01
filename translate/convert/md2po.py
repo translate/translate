@@ -53,6 +53,15 @@ class MD2POOptionParser(convert.ConvertOptionParser, convert.DocpathMerger):
             help="do not extract code blocks for translation",
         )
         self.passthrough.append("extract_code_blocks")
+        self.add_option(
+            "",
+            "--no-frontmatter",
+            action="store_false",
+            dest="extract_frontmatter",
+            default=True,
+            help="do not extract front matter for translation",
+        )
+        self.passthrough.append("extract_frontmatter")
 
     def _extract_translation_units(
         self,
@@ -62,11 +71,15 @@ class MD2POOptionParser(convert.ConvertOptionParser, convert.DocpathMerger):
         duplicatestyle: str,
         multifilestyle: str,
         extract_code_blocks: bool = True,
+        extract_frontmatter: bool = True,
     ) -> int:
         if hasattr(self, "outputstore"):
             if templatefile is None:
                 self._parse_and_extract(
-                    inputfile, self.outputstore, extract_code_blocks=extract_code_blocks
+                    inputfile,
+                    self.outputstore,
+                    extract_code_blocks=extract_code_blocks,
+                    extract_frontmatter=extract_frontmatter,
                 )
             else:
                 self._merge_with_template(
@@ -74,12 +87,16 @@ class MD2POOptionParser(convert.ConvertOptionParser, convert.DocpathMerger):
                     templatefile,
                     self.outputstore,
                     extract_code_blocks=extract_code_blocks,
+                    extract_frontmatter=extract_frontmatter,
                 )
         else:
             store = po.pofile()
             if templatefile is None:
                 self._parse_and_extract(
-                    inputfile, store, extract_code_blocks=extract_code_blocks
+                    inputfile,
+                    store,
+                    extract_code_blocks=extract_code_blocks,
+                    extract_frontmatter=extract_frontmatter,
                 )
             else:
                 self._merge_with_template(
@@ -87,6 +104,7 @@ class MD2POOptionParser(convert.ConvertOptionParser, convert.DocpathMerger):
                     templatefile,
                     store,
                     extract_code_blocks=extract_code_blocks,
+                    extract_frontmatter=extract_frontmatter,
                 )
             store.removeduplicates(duplicatestyle)
             store.serialize(outputfile)
@@ -94,16 +112,21 @@ class MD2POOptionParser(convert.ConvertOptionParser, convert.DocpathMerger):
 
     @staticmethod
     def _parse_and_extract(
-        inputfile, outputstore: po.pofile, *, extract_code_blocks: bool = True
+        inputfile,
+        outputstore: po.pofile,
+        *,
+        extract_code_blocks: bool = True,
+        extract_frontmatter: bool = True,
     ) -> None:
         """Extract translation units from a markdown file and add them to an existing message store (pofile object) without any further processing."""
         parser = markdown.MarkdownFile(
-            inputfile=inputfile, extract_code_blocks=extract_code_blocks
+            inputfile=inputfile,
+            extract_code_blocks=extract_code_blocks,
+            extract_frontmatter=extract_frontmatter,
         )
         for tu in parser.units:
-            if not tu.isheader():
-                storeunit = outputstore.addsourceunit(tu.source)
-                storeunit.addlocations(tu.getlocations())
+            storeunit = outputstore.addsourceunit(tu.source)
+            storeunit.addlocations(tu.getlocations())
 
     def _merge_with_template(
         self,
@@ -112,10 +135,13 @@ class MD2POOptionParser(convert.ConvertOptionParser, convert.DocpathMerger):
         outputstore: po.pofile,
         *,
         extract_code_blocks: bool = True,
+        extract_frontmatter: bool = True,
     ) -> None:
         """Merge translation from inputfile with source from templatefile using docpath matching."""
         store_class = functools.partial(
-            markdown.MarkdownFile, extract_code_blocks=extract_code_blocks
+            markdown.MarkdownFile,
+            extract_code_blocks=extract_code_blocks,
+            extract_frontmatter=extract_frontmatter,
         )
         self.merge_stores_by_docpath(
             inputfile,

@@ -259,6 +259,57 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
         translated_output = self.get_translated_output(store)
         assert translated_output == "```python\n(print('hello'))\n```\n"
 
+    def test_frontmatter_is_normal_translation_unit(self) -> None:
+        inputfile = BytesIO(
+            b"---\ntitle: Example\nauthor: John Smith\n---\n\n# Heading\nBody text.\n"
+        )
+        inputfile.name = "file.md"
+        store = markdown.MarkdownFile(
+            inputfile=inputfile,
+            callback=lambda x: f"({x})",
+        )
+        assert self.get_translation_unit_sources(store) == [
+            "---\ntitle: Example\nauthor: John Smith\n---\n\n",
+            "Heading",
+            "Body text.",
+        ]
+        assert not store.units[0].isheader()
+        assert store.units[0].getlocations() == ["file.md:1"]
+        assert store.units[0].getdocpath() == "frontmatter[1]"
+        assert (
+            self.get_translated_output(store)
+            == """(---
+title: Example
+author: John Smith
+---
+
+)# (Heading)
+(Body text.)
+"""
+        )
+
+    def test_frontmatter_not_extracted_when_disabled(self) -> None:
+        inputfile = BytesIO(
+            b"---\ntitle: Example\nauthor: John Smith\n---\n\n# Heading\nBody text.\n"
+        )
+        store = markdown.MarkdownFile(
+            inputfile=inputfile,
+            callback=lambda x: f"({x})",
+            extract_frontmatter=False,
+        )
+        assert self.get_translation_unit_sources(store) == ["Heading", "Body text."]
+        assert (
+            self.get_translated_output(store)
+            == """---
+title: Example
+author: John Smith
+---
+
+# (Heading)
+(Body text.)
+"""
+        )
+
     def test_fenced_code_block_not_extracted(self) -> None:
         input = [
             "```python\n",

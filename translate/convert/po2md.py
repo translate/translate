@@ -47,6 +47,7 @@ class MarkdownTranslator:
         outputthreshold: int | None,
         maxlength: int,
         extract_code_blocks: bool = True,
+        extract_frontmatter: bool = True,
     ) -> None:
         self.inputstore = inputstore
         self.inputstore.require_index()
@@ -54,6 +55,7 @@ class MarkdownTranslator:
         self.outputthreshold = outputthreshold
         self.maxlength = maxlength
         self.extract_code_blocks = extract_code_blocks
+        self.extract_frontmatter = extract_frontmatter
 
     def translate(self, templatefile, outputfile) -> int:
         if not convert.should_output_store(self.inputstore, self.outputthreshold):
@@ -64,6 +66,7 @@ class MarkdownTranslator:
             callback=self._lookup,
             max_line_length=self.maxlength if self.maxlength > 0 else None,
             extract_code_blocks=self.extract_code_blocks,
+            extract_frontmatter=self.extract_frontmatter,
         )
         outputfile.write(outputstore.filesrc.encode("utf-8"))
         return 1
@@ -107,6 +110,15 @@ class PO2MDOptionParser(convert.ConvertOptionParser):
             help="do not extract code blocks for translation",
         )
         self.passthrough.append("extract_code_blocks")
+        self.add_option(
+            "",
+            "--no-frontmatter",
+            action="store_false",
+            dest="extract_frontmatter",
+            default=True,
+            help="do not extract front matter for translation",
+        )
+        self.passthrough.append("extract_frontmatter")
         self.add_threshold_option()
         self.add_fuzzy_option()
 
@@ -119,6 +131,7 @@ class PO2MDOptionParser(convert.ConvertOptionParser):
         outputthreshold: int | None,
         maxlength: int,
         extract_code_blocks: bool = True,
+        extract_frontmatter: bool = True,
     ):
         inputstore = po.pofile(inputfile)
         translator = MarkdownTranslator(
@@ -127,6 +140,7 @@ class PO2MDOptionParser(convert.ConvertOptionParser):
             outputthreshold,
             maxlength,
             extract_code_blocks=extract_code_blocks,
+            extract_frontmatter=extract_frontmatter,
         )
         return translator.translate(templatefile, outputfile)
 
@@ -182,6 +196,7 @@ class PO2MDOptionParser(convert.ConvertOptionParser):
         outputthreshold: int | None,
         maxlength: int,
         extract_code_blocks: bool = True,
+        extract_frontmatter: bool = True,
     ):
         translator = MarkdownTranslator(
             self.inputstore,
@@ -189,6 +204,7 @@ class PO2MDOptionParser(convert.ConvertOptionParser):
             outputthreshold,
             maxlength,
             extract_code_blocks=extract_code_blocks,
+            extract_frontmatter=extract_frontmatter,
         )
         return translator.translate(templatefile, outputfile)
 

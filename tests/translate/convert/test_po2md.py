@@ -20,6 +20,7 @@ class TestPO2MD(test_convert.TestConvertCommand):
         "--nofuzzy",
         "-m MAXLENGTH, --maxlinelength=MAXLENGTH",
         "--no-code-blocks",
+        "--no-frontmatter",
     ]
 
     def test_single_markdown_file_with_single_po(self) -> None:
@@ -152,6 +153,118 @@ You are only coming through in waves.
             )
             == output
         )
+
+    def test_markdown_frontmatter_translation(self) -> None:
+        content = """---
+date: 2024-02-02T04:14:54-08:00
+draft: false
+params:
+  author: John Smith
+title: Example
+weight: 10
+---
+
+# Markdown
+You are only coming through in waves.
+"""
+        self.create_testfile("file.md", content)
+        self.given_translation_file(
+            lines=[
+                "#: file.md",
+                'msgid ""',
+                '"---\\n"',
+                '"date: 2024-02-02T04:14:54-08:00\\n"',
+                '"draft: false\\n"',
+                '"params:\\n"',
+                '"  author: John Smith\\n"',
+                '"title: Example\\n"',
+                '"weight: 10\\n"',
+                '"---\\n"',
+                '"\\n"',
+                'msgstr ""',
+                '"---\\n"',
+                '"date: 2024-02-02T04:14:54-08:00\\n"',
+                '"draft: false\\n"',
+                '"params:\\n"',
+                '"  author: Jan Novak\\n"',
+                '"title: Ukazka\\n"',
+                '"weight: 10\\n"',
+                '"---\\n"',
+                '"\\n"',
+                "",
+                "#: file.md:9",
+                'msgid "Markdown"',
+                'msgstr "Prehled"',
+                "",
+                "#: file.md:10",
+                'msgid "You are only coming through in waves."',
+                'msgstr "Prelozeny obsah"',
+            ]
+        )
+        self.run_command("translation.po", "out.md", template="file.md")
+        output = self.read_testfile("out.md").decode()
+
+        assert "author: Jan Novak" in output
+        assert "title: Ukazka" in output
+        assert "# Prehled" in output
+        assert "Prelozeny obsah" in output
+
+    def test_markdown_frontmatter_not_translated_when_disabled(self) -> None:
+        content = """---
+title: Example
+author: John Smith
+---
+
+# Markdown
+You are only coming through in waves.
+"""
+        self.create_testfile("file.md", content)
+        self.given_translation_file(
+            lines=[
+                "#: file.md",
+                'msgid ""',
+                '"---\\n"',
+                '"title: Example\\n"',
+                '"author: John Smith\\n"',
+                '"---\\n"',
+                '"\\n"',
+                'msgstr ""',
+                '"---\\n"',
+                '"title: Ukazka\\n"',
+                '"author: Jan Novak\\n"',
+                '"---\\n"',
+                '"\\n"',
+                "",
+                "#: file.md:5",
+                'msgid "Markdown"',
+                'msgstr "Prehled"',
+                "",
+                "#: file.md:6",
+                'msgid "You are only coming through in waves."',
+                'msgstr "Prelozeny obsah"',
+            ]
+        )
+        os.chdir(self.testdir)
+        try:
+            self.convertmodule.main(
+                [
+                    "translation.po",
+                    "out.md",
+                    "--progress=none",
+                    "--template=file.md",
+                    "--no-frontmatter",
+                ]
+            )
+        finally:
+            os.chdir(self.rundir)
+        output = self.read_testfile("out.md").decode()
+
+        assert "title: Example" in output
+        assert "author: John Smith" in output
+        assert "title: Ukazka" not in output
+        assert "author: Jan Novak" not in output
+        assert "# Prehled" in output
+        assert "Prelozeny obsah" in output
 
     def test_markdown_hyperlink_translation_with_full_link_in_po(self) -> None:
         """Test that PO entries with full markdown hyperlinks (without placeholders) are matched."""

@@ -70,12 +70,6 @@ class MarkdownUnit(base.TranslationUnit):
         return self.locations
 
 
-class MarkdownFrontmatterUnit(MarkdownUnit):
-    @staticmethod
-    def isheader() -> bool:
-        return True
-
-
 class MarkdownFile(base.TranslationStore[MarkdownUnit]):
     UnitClass = MarkdownUnit
 
@@ -85,6 +79,7 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
         callback=None,
         max_line_length=None,
         extract_code_blocks=True,
+        extract_frontmatter=True,
     ) -> None:
         """
         Construct a new object instance.
@@ -97,12 +92,15 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
           given line length when rendered.
         :param extract_code_blocks: if True (default), code blocks are extracted
           for translation. If False, code blocks are left as-is.
+        :param extract_frontmatter: if True (default), front matter is extracted
+          for translation. If False, it is preserved as-is.
         """
         base.TranslationStore.__init__(self)
         self.filename = getattr(inputfile, "name", None)
         self.callback = callback or self._dummy_callback
         self.max_line_length = max_line_length
         self.extract_code_blocks = extract_code_blocks
+        self.extract_frontmatter = extract_frontmatter
         self.filesrc = ""
         if inputfile is not None:
             md_src = inputfile.read()
@@ -132,10 +130,15 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
                 not lines[front_matter_end + 1] or lines[front_matter_end + 1].isspace()
             ):
                 front_matter_end += 1
-            # Generate header unit to store front matter
             front_matter = "\n".join(chain(lines[: front_matter_end + 1], [""]))
-            header = MarkdownFrontmatterUnit(front_matter)
-            self.addunit(header)
+            if self.extract_frontmatter:
+                # Keep front matter as a normal translation unit.
+                unit = MarkdownUnit(front_matter)
+                if self.filename:
+                    unit.addlocation(f"{self.filename}:1")
+                unit.setdocpath("frontmatter[1]")
+                self.addunit(unit)
+                front_matter = self.callback(front_matter)
             lines = lines[front_matter_end + 1 :]
 
         with TranslatingMarkdownRenderer(
