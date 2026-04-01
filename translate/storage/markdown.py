@@ -133,7 +133,7 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
             front_matter = "\n".join(chain(lines[: front_matter_end + 1], [""]))
             if self.extract_frontmatter:
                 # Keep front matter as a normal translation unit.
-                unit = MarkdownUnit(front_matter)
+                unit = self.UnitClass(front_matter)
                 if self.filename:
                     unit.addlocation(f"{self.filename}:1")
                 unit.setdocpath("frontmatter[1]")
