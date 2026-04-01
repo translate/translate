@@ -230,6 +230,45 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 """
         )
 
+    def test_rich_source_preserves_whitespace_with_inline_markup(self) -> None:
+        xlfsource = """<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
+    <file original="doc.txt" source-language="en-US">
+        <body>
+            <trans-unit id="preserve-space-inline-markup" maxwidth="2000" size-unit="char" approved="yes">
+                <source xml:space="preserve">Label A: <mrk mtype="protected">%1</mrk> | Label B: <mrk mtype="protected">%2</mrk> |  Label C: <mrk mtype="protected">%3</mrk></source>
+                <target xml:space="preserve" state="final">Translated A:<mrk mtype="protected">%1</mrk> | Translated B: <mrk mtype="protected">%2</mrk> |  Translated C: <mrk mtype="protected">%3</mrk></target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>"""
+        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        xliffunit = xlifffile.units[0]
+
+        assert xliffunit.source == "Label A: %1 | Label B: %2 |  Label C: %3"
+        assert (
+            str(xliffunit.rich_source[0]) == "Label A: %1 | Label B: %2 |  Label C: %3"
+        )
+        assert (
+            xliffunit.target == "Translated A:%1 | Translated B: %2 |  Translated C: %3"
+        )
+        assert (
+            str(xliffunit.rich_target[0])
+            == "Translated A:%1 | Translated B: %2 |  Translated C: %3"
+        )
+        assert (
+            bytes(xlifffile)
+            .decode()
+            .count('|  Label C: <mrk mtype="protected">%3</mrk>')
+            == 1
+        )
+        assert (
+            bytes(xlifffile)
+            .decode()
+            .count('|  Translated C: <mrk mtype="protected">%3</mrk>')
+            == 1
+        )
+
     def test_source(self) -> None:
         xlifffile = xliff.xlifffile()
         xliffunit = xlifffile.addsourceunit("Concept")
