@@ -18,6 +18,7 @@ class TestMD2PO(test_convert.TestConvertCommand):
         "--duplicates=DUPLICATESTYLE",
         "--multifile=MULTIFILESTYLE",
         "--no-code-blocks",
+        "--no-frontmatter",
     ]
 
     def test_markdown_file_with_multifile_single(self) -> None:
@@ -71,11 +72,48 @@ You are only coming through in waves.
         self.run_command("file.md", "test.po")
         self.then_po_file_is_written()
         output = pofile()
-        with open(self.get_testfilename("test.po")) as handle:
-            print(handle.read())
         with open(self.get_testfilename("test.po"), "rb") as handle:
             output.parse(handle)
-        assert len(output.units) == 3
+        assert len(output.units) == 4
+        assert (
+            output.units[1].source
+            == """---
+date: 2024-02-02T04:14:54-08:00
+draft: false
+params:
+  author: John Smith
+title: Example
+weight: 10
+---
+
+"""
+        )
+        assert output.units[1].getlocations() == ["file.md:1"]
+
+    def test_markdown_frontmatter_not_extracted_when_disabled(self) -> None:
+        self.given_markdown_file(
+            content="""---
+title: Example
+author: John Smith
+---
+
+# Markdown
+You are only coming through in waves.
+"""
+        )
+        os.chdir(self.testdir)
+        try:
+            self.convertmodule.main(
+                ["file.md", "test.po", "--progress=none", "--no-frontmatter"]
+            )
+        finally:
+            os.chdir(self.rundir)
+        self.then_po_file_is_written()
+        output = pofile()
+        with open(self.get_testfilename("test.po"), "rb") as handle:
+            output.parse(handle)
+        sources = [unit.source for unit in output.units]
+        assert "---\ntitle: Example\nauthor: John Smith\n---\n\n" not in sources
 
     def test_markdown_directory_ignores_txt_files(self) -> None:
         self.given_directory_of_markdown_files()
@@ -237,3 +275,85 @@ Deuxième paragraphe
         assert "Sous-section" in content
         assert "Article 1" in content
         assert "Article 2" in content
+
+    def test_markdown_frontmatter_with_template(self) -> None:
+        self.create_testfile(
+            "template.md",
+            """---
+title: Example
+author: John Smith
+---
+
+# Welcome
+Body text.
+""",
+        )
+        self.create_testfile(
+            "translated.md",
+            """---
+title: Ukazka
+author: Jan Novak
+---
+
+# Vitejte
+Prelozeny text.
+""",
+        )
+
+        self.run_command("translated.md", "output.po", template="template.md")
+
+        content = self.read_testfile("output.po").decode()
+        assert "title: Example" in content
+        assert "author: John Smith" in content
+        assert "title: Ukazka" in content
+        assert "author: Jan Novak" in content
+        assert "Welcome" in content
+        assert "Vitejte" in content
+
+    def test_markdown_frontmatter_with_template_not_extracted_when_disabled(
+        self,
+    ) -> None:
+        self.create_testfile(
+            "template.md",
+            """---
+title: Example
+author: John Smith
+---
+
+# Welcome
+Body text.
+""",
+        )
+        self.create_testfile(
+            "translated.md",
+            """---
+title: Ukazka
+author: Jan Novak
+---
+
+# Vitejte
+Prelozeny text.
+""",
+        )
+
+        os.chdir(self.testdir)
+        try:
+            self.convertmodule.main(
+                [
+                    "translated.md",
+                    "output.po",
+                    "--progress=none",
+                    "--template=template.md",
+                    "--no-frontmatter",
+                ]
+            )
+        finally:
+            os.chdir(self.rundir)
+
+        content = self.read_testfile("output.po").decode()
+        assert "title: Example" not in content
+        assert "author: John Smith" not in content
+        assert "title: Ukazka" not in content
+        assert "author: Jan Novak" not in content
+        assert "Welcome" in content
+        assert "Vitejte" in content
