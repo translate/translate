@@ -201,16 +201,16 @@ class TestMozLangFile(test_base.TestTranslationStore):
         out = io.BytesIO()
         store.serialize(out)
         out.seek(0)
-        assert out.read() == str(
-            "## active ##\n"
-            "## some_tag ##\n"
-            "## another_tag ##\n"
-            "## NOTE: foo\n"
-            "\n\n"
-            ";Source\n"
-            "Target\n"
-            "\n\n"
-        ).encode("utf-8")
+        assert out.read() == (
+            b"## active ##\n"
+            b"## some_tag ##\n"
+            b"## another_tag ##\n"
+            b"## NOTE: foo\n"
+            b"\n\n"
+            b";Source\n"
+            b"Target\n"
+            b"\n\n"
+        )
 
     def test_not_headers(self) -> None:
         """Ensure we dont treat a tag immediately after headers as header."""
