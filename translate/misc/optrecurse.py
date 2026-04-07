@@ -228,22 +228,9 @@ class RecursiveOptionParser(optparse.OptionParser):
         each option.
         """
         if usage is None:
-            self._custom_usage = False
             self.usage = f"%prog {' '.join(self.getusagestring(option) for option in self.option_list)}"
         else:
-            self._custom_usage = True
             super().set_usage(usage)
-
-    def get_usage(self) -> str:
-        """
-        Returns the usage string, regenerating it from the current options.
-
-        This ensures that options added by subclasses after ``__init__``
-        are always included in the usage string.
-        """
-        if not getattr(self, "_custom_usage", False):
-            self.set_usage()
-        return super().get_usage()
 
     def warning(
         self,

@@ -52,7 +52,6 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser):
         self.usepots = usepots
         self.settimestampoption()
         self.setpotoption()
-        self.set_usage()
 
     def add_fuzzy_option(self, default=False) -> None:
         """Adds an option to include / exclude fuzzy translations."""
@@ -218,6 +217,7 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser):
 
     def run(self, argv=None) -> None:
         """Parses the command line options and runs the conversion."""
+        self.set_usage()
         options, _args = self.parse_args(argv)
         self.inputformats = self.filterinputformats(options)
         self.outputoptions = self.filteroutputoptions(options)
