@@ -139,7 +139,7 @@ def hello():
         with open(self.get_testfilename("test.po"), "rb") as handle:
             output.parse(handle)
         sources = [unit.source for unit in output.units]
-        assert any("hello" in s for s in sources) is False
+        assert not any("hello" in s for s in sources)
 
     def test_markdown_directory_ignores_txt_files(self) -> None:
         self.given_directory_of_markdown_files()
