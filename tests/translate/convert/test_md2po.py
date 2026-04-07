@@ -115,6 +115,32 @@ You are only coming through in waves.
         sources = [unit.source for unit in output.units]
         assert "---\ntitle: Example\nauthor: John Smith\n---\n\n" not in sources
 
+    def test_markdown_code_blocks_not_extracted_when_disabled(self) -> None:
+        self.given_markdown_file(
+            content="""# Markdown
+
+You are only coming through in waves.
+
+```python
+def hello():
+    return "world"
+```
+"""
+        )
+        os.chdir(self.testdir)
+        try:
+            self.convertmodule.main(
+                ["file.md", "test.po", "--progress=none", "--no-code-blocks"]
+            )
+        finally:
+            os.chdir(self.rundir)
+        self.then_po_file_is_written()
+        output = pofile()
+        with open(self.get_testfilename("test.po"), "rb") as handle:
+            output.parse(handle)
+        sources = [unit.source for unit in output.units]
+        assert any("hello" in s for s in sources) is False
+
     def test_markdown_directory_ignores_txt_files(self) -> None:
         self.given_directory_of_markdown_files()
         self.create_testfile("mddir/notes.txt", "Text file content")
