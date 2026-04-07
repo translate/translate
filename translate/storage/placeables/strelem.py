@@ -781,13 +781,6 @@ class StringElem:
 
         parent = self.get_parent_elem(right)
         if parent.iseditable:
-            idx = 0
-            for child in parent.sub:
-                if child is right:
-                    break
-                idx += 1
-            # logger.debug('parent%s.sub.insert(%d, %s)' %
-            #              (repr(parent), idx, repr(text)))
             parent.sub.insert(0, text)
             return True
 
