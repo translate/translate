@@ -118,3 +118,14 @@ class TestTS:
         normalized = ts.QtTsParser._normalize_text_input(content)
 
         assert normalized == content
+
+    def test_normalize_text_input_preserves_other_xml_attributes(self) -> None:
+        content = (
+            "<?xml   version='1.0'\n"
+            "\tencoding = 'ISO-8859-1'\n"
+            ' standalone = "yes"?>\n<TS/>'
+        )
+
+        normalized = ts.QtTsParser._normalize_text_input(content)
+
+        assert normalized == "<?xml   version='1.0'\n standalone = \"yes\"?>\n<TS/>"

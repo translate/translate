@@ -48,10 +48,6 @@ XML_DECLARATION_RE = re.compile(
     r"""^\s*<\?xml(?P<attrs>[^?]*?)\?>""",
     re.IGNORECASE | re.DOTALL,
 )
-XML_ENCODING_RE = re.compile(
-    r"""\s+encoding\s*=\s*(?:"[^"]*"|'[^']*')""",
-    re.IGNORECASE,
-)
 
 
 class QtTsParser:
@@ -104,8 +100,56 @@ class QtTsParser:
         declaration = XML_DECLARATION_RE.match(content)
         if declaration is None:
             return content
-        attrs = XML_ENCODING_RE.sub("", declaration.group("attrs"))
+        attrs = QtTsParser._strip_xml_encoding_attribute(declaration.group("attrs"))
         return f"<?xml{attrs}?>{content[declaration.end() :]}"
+
+    @staticmethod
+    def _strip_xml_encoding_attribute(attrs: str) -> str:
+        result: list[str] = []
+        index = 0
+        attr_count = len(attrs)
+
+        while index < attr_count:
+            whitespace_start = index
+            while index < attr_count and attrs[index].isspace():
+                index += 1
+
+            if index >= attr_count:
+                result.append(attrs[whitespace_start:index])
+                break
+
+            name_start = index
+            while index < attr_count and (
+                attrs[index].isalnum() or attrs[index] in "._:-"
+            ):
+                index += 1
+            if name_start == index:
+                return attrs
+
+            name = attrs[name_start:index]
+
+            while index < attr_count and attrs[index].isspace():
+                index += 1
+            if index >= attr_count or attrs[index] != "=":
+                return attrs
+            index += 1
+
+            while index < attr_count and attrs[index].isspace():
+                index += 1
+            if index >= attr_count or attrs[index] not in {'"', "'"}:
+                return attrs
+
+            quote = attrs[index]
+            index += 1
+            value_end = attrs.find(quote, index)
+            if value_end == -1:
+                return attrs
+            index = value_end + 1
+
+            if name.lower() != "encoding":
+                result.append(attrs[whitespace_start:index])
+
+        return "".join(result)
 
     @property
     def documentElement(self) -> etree._Element:
