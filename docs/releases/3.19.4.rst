@@ -23,7 +23,7 @@ Formats and Converters
 - Markdown
 
   - Improved frontmatter handling
-  - po2md better handle PO files with translated URLs
+  - po2md better handles PO files with translated URLs
 
 - Properties
 
