@@ -31,7 +31,7 @@ jobs:
       with:
         save-cache: ${{ github.ref == 'refs/heads/master' }}
         cache-suffix: ${{ steps.setup_python.outputs.python-version }}
-        version: 0.11.5
+        version: 0.11.6
     - name: Install deps
       run: uv sync --all-extras --group pylint
     - name: Run pylint
