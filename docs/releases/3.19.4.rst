@@ -1,0 +1,61 @@
+Translate Toolkit 3.19.4
+************************
+
+*Released on 9 April 2026*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- PO
+
+  - Cache parsed strings for improved performance
+
+- XLIFF
+
+  - Correctly preserve whitespace in rich segments
+  - Improved plural handling in poxliff
+
+- Markdown
+
+  - Improved frontmatter handling
+  - po2md better handle PO files with translated URLs
+
+- Properties
+
+  - Improved parser and extended test coverage
+  - Skip quoting NS*Description keys in Apple .strings files (#6183)
+
+- Android
+
+  - Omit blank plural strings
+  - Preserve XML formatting
+
+- TS
+
+  - Improved parsing
+
+- Converters
+
+  - Improved command line arguments handling
+  - Add template2translation alias for pot2po command
+  - po2yaml better handles --duplicates=merge
+  - md2po and po2md ignore .txt files by default
+
+Other
+-----
+
+- Various code cleanups
+- Consolidated XML parsing to use lxml
+- Apply limits on processed ZIP files
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+Michal Čihař, Copilot, Matt Van Horn
