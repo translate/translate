@@ -28,7 +28,7 @@ Formats and Converters
 - Properties
 
   - Improved parser and extended test coverage
-  - Skip quoting NS*Description keys in Apple .strings files (#6183)
+  - Skip quoting ``NS*Description`` keys in Apple .strings files
 
 - Android
 
