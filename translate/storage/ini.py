@@ -125,8 +125,23 @@ class inifile(base.TranslationStore):
         super().__init__(**kwargs)
         self.filename = ""
         self._inifile = None
+        self.newline = "\n"
         if inputfile is not None:
             self.parse(inputfile)
+
+    @staticmethod
+    def _detect_newline(text: str) -> str:
+        """Return the first newline sequence used in the source text."""
+        match = re.search(r"\r\n|\r|\n", text)
+        return match.group(0) if match else "\n"
+
+    def _normalize_newlines(self, text: str) -> str:
+        """Rewrite serialized output to use the stored newline style."""
+        if self.newline == "\n":
+            return text
+        return (
+            text.replace("\r\n", "\n").replace("\r", "\n").replace("\n", self.newline)
+        )
 
     def serialize(self, out) -> None:
         outinifile = self._inifile or INIConfig(optionxformvalue=None)
@@ -142,7 +157,8 @@ class inifile(base.TranslationStore):
                 value = self._dialect.escape(unit.target)
                 outinifile[section][entry] = value
         if outinifile:
-            out.write(str(outinifile).encode("utf-8"))
+            output = self._normalize_newlines(str(outinifile))
+            out.write(output.encode("utf-8"))
 
     def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
         """Parse the given file or file source string."""
@@ -156,10 +172,13 @@ class inifile(base.TranslationStore):
             input = inisrc
 
         if isinstance(input, bytes):
-            input = StringIO(input.decode("utf-8"))
-            self._inifile = INIConfig(input, optionxformvalue=None)
+            decoded = input.decode("utf-8")
         else:
-            self._inifile = INIConfig(open(input), optionxformvalue=None)
+            with open(input, "rb") as source:
+                decoded = source.read().decode("utf-8")
+
+        self.newline = self._detect_newline(decoded)
+        self._inifile = INIConfig(StringIO(decoded), optionxformvalue=None)
 
         for section in self._inifile:
             for entry in self._inifile[section]:
