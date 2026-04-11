@@ -96,7 +96,7 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
     def test_html_span(self) -> None:
         store = self.parse("now <p>hear ye</p> all\n")
         unit_sources = self.get_translation_unit_sources(store)
-        assert unit_sources == ["now {1}hear ye{2} all"]
+        assert unit_sources == ["now <p>hear ye</p> all"]
         translated_output = self.get_translated_output(store)
         assert translated_output == "(now <p>hear ye</p> all)\n"
 
@@ -113,7 +113,7 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
         self.assertCountEqual(
             unit_sources,
             [
-                "![foo]{1}",  # structurally important placeholder may not be removed even if it's at the end of the translation unit
+                '![foo](/url "(title)")',
                 "title",
             ],
         )
@@ -127,12 +127,7 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
     def test_plain_image_no_title(self) -> None:
         store = self.parse("![foo](/url)\n")
         unit_sources = self.get_translation_unit_sources(store)
-        assert (
-            unit_sources
-            == [
-                "![foo]{1}"  # structurally important placeholder may not be removed even if it's at the end of the translation unit
-            ]
-        )
+        assert unit_sources == ["![foo](/url)"]
         translated_output = self.get_translated_output(store)
         assert translated_output == "(![foo](/url))\n"
 
@@ -142,7 +137,7 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
         self.assertCountEqual(
             unit_sources,
             [
-                "[link]{1}",  # structurally important placeholder may not be removed even if it's at the end of the translation unit
+                '[link](/url "(title "")")',
                 'title ""',
             ],
         )
@@ -152,7 +147,7 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
     def test_autolink(self) -> None:
         store = self.parse("what's the <http://autolink> problem?\n")
         unit_sources = self.get_translation_unit_sources(store)
-        assert unit_sources == ["what's the {1} problem?"]
+        assert unit_sources == ["what's the <http://autolink> problem?"]
         translated_output = self.get_translated_output(store)
         assert translated_output == "(what's the <http://autolink> problem?)\n"
 
@@ -358,7 +353,7 @@ author: John Smith
         store = self.parse("".join(input))
         self.assertCountEqual(
             self.get_translation_unit_sources(store),
-            ["foo *bar*", "train & tracks", "[railroad link]{1} hello", "foo *bar*"],
+            ["foo *bar*", "train & tracks", "[railroad link][(foo *bar*)] hello", "foo *bar*"],
         )
         expected = [
             '[(foo *bar*)]: train.jpg "(train & tracks)"\n',
@@ -462,7 +457,7 @@ author: John Smith
     def test_merging_of_adjacent_placeholders(self) -> None:
         store = self.parse("now hear ye</p> <h1> all\n")
         unit_sources = self.get_translation_unit_sources(store)
-        assert unit_sources == ["now hear ye{1} all"]
+        assert unit_sources == ["now hear ye</p> <h1> all"]
         translated_output = self.get_translated_output(store)
         assert translated_output == "(now hear ye</p> <h1> all)\n"
 
@@ -491,7 +486,7 @@ author: John Smith
         self.assertCountEqual(
             unit_sources,
             [
-                "[*embedded image* ![moon]{1}]{2}",
+                "[*embedded image* ![moon](moon.jpg \"(the moon y'all)\")](/uri '(link title)')",
                 "the moon y'all",
                 "link title",
             ],
@@ -536,16 +531,16 @@ author: John Smith
         inputfile = BytesIO(md.encode())
         store = markdown.MarkdownFile(inputfile=inputfile)
         unit_sources = self.get_translation_unit_sources(store)
-        assert unit_sources == ["Click [here]{1} for more info."]
+        assert unit_sources == ["Click [here](http://example.com) for more info."]
         assert store.units[0].getdocpath() == "p[1]"
 
     def test_parse_without_callback_multiple_links(self) -> None:
-        """Parsing with default callback preserves all link placeholders."""
+        """Parsing with default callback preserves all link URLs."""
         md = "See [a](http://a.com) and [b](http://b.com).\n"
         inputfile = BytesIO(md.encode())
         store = markdown.MarkdownFile(inputfile=inputfile)
         unit_sources = self.get_translation_unit_sources(store)
-        assert unit_sources == ["See [a]{1} and [b]{2}."]
+        assert unit_sources == ["See [a](http://a.com) and [b](http://b.com)."]
 
     @staticmethod
     def parse(md):

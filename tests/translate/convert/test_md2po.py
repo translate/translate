@@ -169,24 +169,25 @@ def hello():
         return content
 
     def test_markdown_hyperlink_extraction(self) -> None:
-        """Test that markdown hyperlinks are extracted with placeholders."""
+        """Test that markdown hyperlinks are extracted with full link syntax."""
         self.given_markdown_file(
             "The [OSPO Alliance EN](https://ospo-alliance.org) website\n"
         )
         self.run_command("file.md", "test.po")
         assert os.path.isfile(self.get_testfilename("test.po"))
         content = self.read_testfile("test.po").decode()
-        assert 'msgid "The [OSPO Alliance EN]{1} website"' in content
+        assert 'msgid "The [OSPO Alliance EN](https://ospo-alliance.org) website"' in content
 
     def test_markdown_multiple_hyperlinks_extraction(self) -> None:
-        """Test that multiple markdown hyperlinks are extracted with placeholders."""
+        """Test that multiple markdown hyperlinks are extracted with full link syntax."""
         self.given_markdown_file(
             "Visit [Google](https://google.com) and [GitHub](https://github.com) for more.\n"
         )
         self.run_command("file.md", "test.po")
         assert os.path.isfile(self.get_testfilename("test.po"))
         content = self.read_testfile("test.po").decode()
-        assert 'msgid "Visit [Google]{1} and [GitHub]{2} for more."' in content
+        assert "[Google](https://google.com)" in content
+        assert "[GitHub](https://github.com)" in content
 
     def test_markdown_translation_ignore_sections(self) -> None:
         """Test that content between translate:off and translate:on is not extracted."""

@@ -274,7 +274,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
             yield from super().render_auto_link(token)
             return
 
-        yield Fragment(None, placeholder_content=super().render_auto_link(token))  # ty:ignore[invalid-argument-type]
+        yield Fragment(None, placeholder_content=list(super().render_auto_link(token)))  # ty:ignore[invalid-argument-type]
 
     def render_line_break(self, token: span_token.LineBreak) -> Iterable[Fragment]:
         if self.bypass:
@@ -289,7 +289,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
             yield from super().render_html_span(token)
             return
 
-        yield Fragment(None, placeholder_content=super().render_html_span(token))  # ty:ignore[invalid-argument-type]
+        yield Fragment(None, placeholder_content=list(super().render_html_span(token)))  # ty:ignore[invalid-argument-type]
 
     def render_link_or_image(
         self, token: span_token.SpanToken, target: str
@@ -571,31 +571,32 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
 
             # translate and parse into new fragments. handle hard line breaks.
             if content_md:
+                # Expand placeholders to full content (e.g. full markdown links)
+                # before calling translate_callback so that extraction stores the
+                # complete source string rather than placeholder markers like {1}.
+                if placeholders:
+                    expanded_content_md = self.remove_placeholder_markers(
+                        content_md, list(placeholders)
+                    )
+                else:
+                    expanded_content_md = content_md
                 translated_md = self.translate_callback(
-                    content_md, self.path, self._current_docpath
+                    expanded_content_md, self.path, self._current_docpath
                 )
-                # If translation with placeholders didn't match and there are
-                # placeholders, try looking up with expanded placeholders
-                # (full markdown links, etc.) to support PO files that contain
-                # the original markdown syntax instead of placeholder markers.
+                # If translation with expanded content didn't match and there are
+                # placeholders, try looking up with placeholder markers to support
+                # PO files that use placeholder syntax instead of full markdown.
                 # Note: if the translation is intentionally identical to the
                 # source, this fallback is harmless — it will also not find a
                 # different translation.
                 if (
-                    translated_md == content_md
+                    translated_md == expanded_content_md
                     and placeholders
                     and self.lookup_callback
                 ):
-                    expanded_content_md = self.remove_placeholder_markers(
-                        content_md, list(placeholders)
-                    )
-                    expanded_translated_md = self.lookup_callback(expanded_content_md)
-                    if expanded_translated_md != expanded_content_md:
-                        translated_md = expanded_translated_md
-                        # Clear placeholders since the expanded translation
-                        # already contains full markdown syntax (e.g. links)
-                        # and does not need placeholder replacement.
-                        placeholders = []
+                    placeholder_translated_md = self.lookup_callback(content_md)
+                    if placeholder_translated_md != content_md:
+                        translated_md = placeholder_translated_md
                 translated_md = translated_md.replace("\n", "\\\n").strip(" \t")
                 translated_md = self.remove_placeholder_markers(
                     translated_md, placeholders
