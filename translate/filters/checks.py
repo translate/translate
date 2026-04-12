@@ -58,7 +58,7 @@ printf_pat = re.compile(
               (?:(?P<ord>\d+)\$|    # variable order, like %1$s
               \((?P<key>\w+)\))?    # Python style variables, like %(var)s
         (?P<fullvar>
-            [+#-]*                  # flags
+            [+#'-]*                 # flags
             (?:\d+)?                # width
             (?:\.\d+)?              # precision
             (hh\|h\|l\|ll)?         # length formatting

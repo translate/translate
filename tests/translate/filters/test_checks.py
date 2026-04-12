@@ -1025,9 +1025,16 @@ def test_printf() -> None:
         "String %(str)s and number %(num)d",
         "Nommer %(num)d en string %s",
     )
+    # checking POSIX thousands separator flag %'d
+    assert passes(stdchecker.printf, "delete %'d items", "supprimer %'d éléments")
+    assert fails(stdchecker.printf, "delete %'d items", "supprimer éléments")
+    assert fails(stdchecker.printf, "delete %'d items", "supprimer %d éléments")
     # checking omitted plural format string placeholder %.0s
     stdchecker.hasplural = 1
     assert passes(stdchecker.printf, "%d plurals", "%.0s plural")
+    # checking POSIX thousands separator flag with plural
+    assert passes(stdchecker.printf, "delete %'d items", "supprimer %'d éléments")
+    assert fails(stdchecker.printf, "delete %'d items", "supprimer éléments")
     # checking Objective-C %@ format specification
     assert fails(stdchecker.printf, "I am %@", "Ek is @%")  # typo
     assert fails(
