@@ -176,7 +176,10 @@ def hello():
         self.run_command("file.md", "test.po")
         assert os.path.isfile(self.get_testfilename("test.po"))
         content = self.read_testfile("test.po").decode()
-        assert 'msgid "The [OSPO Alliance EN](https://ospo-alliance.org) website"' in content
+        assert (
+            'msgid "The [OSPO Alliance EN](https://ospo-alliance.org) website"'
+            in content
+        )
 
     def test_markdown_multiple_hyperlinks_extraction(self) -> None:
         """Test that multiple markdown hyperlinks are extracted with full link syntax."""

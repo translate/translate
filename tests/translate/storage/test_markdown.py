@@ -353,7 +353,12 @@ author: John Smith
         store = self.parse("".join(input))
         self.assertCountEqual(
             self.get_translation_unit_sources(store),
-            ["foo *bar*", "train & tracks", "[railroad link][(foo *bar*)] hello", "foo *bar*"],
+            [
+                "foo *bar*",
+                "train & tracks",
+                "[railroad link][(foo *bar*)] hello",
+                "foo *bar*",
+            ],
         )
         expected = [
             '[(foo *bar*)]: train.jpg "(train & tracks)"\n',
