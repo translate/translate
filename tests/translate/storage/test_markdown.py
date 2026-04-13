@@ -96,7 +96,7 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
     def test_html_span(self) -> None:
         store = self.parse("now <p>hear ye</p> all\n")
         unit_sources = self.get_translation_unit_sources(store)
-        assert unit_sources == ["now <p>hear ye</p> all"]
+        assert unit_sources == ["now {1}hear ye{2} all"]
         translated_output = self.get_translated_output(store)
         assert translated_output == "(now <p>hear ye</p> all)\n"
 
@@ -113,7 +113,7 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
         self.assertCountEqual(
             unit_sources,
             [
-                '![foo](/url "(title)")',
+                "![foo]{1}",  # structurally important placeholder may not be removed even if it's at the end of the translation unit
                 "title",
             ],
         )
@@ -127,7 +127,12 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
     def test_plain_image_no_title(self) -> None:
         store = self.parse("![foo](/url)\n")
         unit_sources = self.get_translation_unit_sources(store)
-        assert unit_sources == ["![foo](/url)"]
+        assert (
+            unit_sources
+            == [
+                "![foo]{1}"  # structurally important placeholder may not be removed even if it's at the end of the translation unit
+            ]
+        )
         translated_output = self.get_translated_output(store)
         assert translated_output == "(![foo](/url))\n"
 
@@ -137,7 +142,7 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
         self.assertCountEqual(
             unit_sources,
             [
-                '[link](/url "(title "")")',
+                "[link]{1}",  # structurally important placeholder may not be removed even if it's at the end of the translation unit
                 'title ""',
             ],
         )
@@ -147,7 +152,7 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
     def test_autolink(self) -> None:
         store = self.parse("what's the <http://autolink> problem?\n")
         unit_sources = self.get_translation_unit_sources(store)
-        assert unit_sources == ["what's the <http://autolink> problem?"]
+        assert unit_sources == ["what's the {1} problem?"]
         translated_output = self.get_translated_output(store)
         assert translated_output == "(what's the <http://autolink> problem?)\n"
 
@@ -356,7 +361,7 @@ author: John Smith
             [
                 "foo *bar*",
                 "train & tracks",
-                "[railroad link][(foo *bar*)] hello",
+                "[railroad link]{1} hello",
                 "foo *bar*",
             ],
         )
@@ -462,7 +467,7 @@ author: John Smith
     def test_merging_of_adjacent_placeholders(self) -> None:
         store = self.parse("now hear ye</p> <h1> all\n")
         unit_sources = self.get_translation_unit_sources(store)
-        assert unit_sources == ["now hear ye</p> <h1> all"]
+        assert unit_sources == ["now hear ye{1} all"]
         translated_output = self.get_translated_output(store)
         assert translated_output == "(now hear ye</p> <h1> all)\n"
 
@@ -491,7 +496,7 @@ author: John Smith
         self.assertCountEqual(
             unit_sources,
             [
-                "[*embedded image* ![moon](moon.jpg \"(the moon y'all)\")](/uri '(link title)')",
+                "[*embedded image* ![moon]{1}]{2}",
                 "the moon y'all",
                 "link title",
             ],
@@ -536,21 +541,30 @@ author: John Smith
         inputfile = BytesIO(md.encode())
         store = markdown.MarkdownFile(inputfile=inputfile)
         unit_sources = self.get_translation_unit_sources(store)
-        assert unit_sources == ["Click [here](http://example.com) for more info."]
+        assert unit_sources == ["Click [here]{1} for more info."]
         assert store.units[0].getdocpath() == "p[1]"
 
     def test_parse_without_callback_multiple_links(self) -> None:
-        """Parsing with default callback preserves all link URLs."""
+        """Parsing with default callback uses placeholder markers for links."""
         md = "See [a](http://a.com) and [b](http://b.com).\n"
         inputfile = BytesIO(md.encode())
         store = markdown.MarkdownFile(inputfile=inputfile)
         unit_sources = self.get_translation_unit_sources(store)
-        assert unit_sources == ["See [a](http://a.com) and [b](http://b.com)."]
+        assert unit_sources == ["See [a]{1} and [b]{2}."]
 
     @staticmethod
     def parse(md):
         inputfile = BytesIO(md.encode())
         return markdown.MarkdownFile(inputfile=inputfile, callback=lambda x: f"({x})")
+
+    @staticmethod
+    def parse_no_placeholders(md):
+        inputfile = BytesIO(md.encode())
+        return markdown.MarkdownFile(
+            inputfile=inputfile,
+            callback=lambda x: f"({x})",
+            no_placeholders=True,
+        )
 
     @staticmethod
     def get_translation_unit_sources(store):
@@ -559,6 +573,158 @@ author: John Smith
     @staticmethod
     def get_translated_output(store):
         return store.filesrc
+
+
+class TestMarkdownNoPlaceholders(TestMarkdownTranslationUnitExtractionAndTranslation):
+    """
+    Tests for no_placeholders=True mode.
+
+    In this mode inline elements (links, images, autolinks, HTML spans) are
+    rendered verbatim in translation units — no {n} marker substitution occurs
+    and no sub-attribute extraction (e.g. link titles) is performed.
+    """
+
+    def test_html_span(self) -> None:
+        store = self.parse("now <p>hear ye</p> all\n")
+        unit_sources = self.get_translation_unit_sources(store)
+        assert unit_sources == ["now <p>hear ye</p> all"]
+        translated_output = self.get_translated_output(store)
+        assert translated_output == "(now <p>hear ye</p> all)\n"
+
+    def test_plain_image(self) -> None:
+        store = self.parse('![foo](/url "title")\n')
+        unit_sources = self.get_translation_unit_sources(store)
+        # title is NOT extracted as a separate unit; the whole link is one unit
+        assert unit_sources == ['![foo](/url "title")']
+        translated_output = self.get_translated_output(store)
+        assert translated_output == '(![foo](/url "title"))\n'
+
+    def test_plain_image_no_title(self) -> None:
+        store = self.parse("![foo](/url)\n")
+        unit_sources = self.get_translation_unit_sources(store)
+        assert unit_sources == ["![foo](/url)"]
+        translated_output = self.get_translated_output(store)
+        assert translated_output == "(![foo](/url))\n"
+
+    def test_plain_link(self) -> None:
+        store = self.parse('[link](/url "title \\"&quot;")\n')
+        unit_sources = self.get_translation_unit_sources(store)
+        # title is NOT extracted as a separate unit; HTML entity &quot; is decoded
+        # by the parser and the base renderer re-encodes it as a plain " character
+        assert unit_sources == ['[link](/url "title """)']
+        translated_output = self.get_translated_output(store)
+        assert translated_output == '([link](/url "title """))\n'
+
+    def test_link_reference_definition_and_full_reference_link(self) -> None:
+        input = [
+            '[foo *bar*]: train.jpg "train & tracks"\n',
+            "[railroad link][foo *bar*] hello\n",
+        ]
+        store = self.parse("".join(input))
+        # In no_placeholders mode, the inline full reference link label is NOT
+        # extracted separately; only the link-ref-def's label and title are.
+        self.assertCountEqual(
+            self.get_translation_unit_sources(store),
+            [
+                "foo *bar*",
+                "train & tracks",
+                "[railroad link][foo *bar*] hello",
+            ],
+        )
+        expected = [
+            '[(foo *bar*)]: train.jpg "(train & tracks)"\n',
+            "([railroad link][foo *bar*] hello)\n",
+        ]
+        assert self.get_translated_output(store) == "".join(expected)
+        # location: link title
+        locations = [
+            tu.getlocations()[0] for tu in store.units if tu.source == "train & tracks"
+        ]
+        assert len(locations) == 1
+        assert locations[0].endswith("1")
+        # location: link label (only one, from the definition — not from the inline ref)
+        locations = [
+            tu.getlocations()[0] for tu in store.units if tu.source == "foo *bar*"
+        ]
+        assert len(locations) == 1
+
+    def test_remove_placeholders_from_both_ends_of_translation_units(self) -> None:
+        # In no_placeholders mode, inline elements are not trimmed from the ends
+        # of translation units — the whole content is extracted verbatim.
+        store = self.parse("<http://autolink> <h1> yeah </h1> <http://autolink>\n")
+        unit_sources = self.get_translation_unit_sources(store)
+        assert unit_sources == ["<http://autolink> <h1> yeah </h1> <http://autolink>"]
+        translated_output = self.get_translated_output(store)
+        assert (
+            translated_output
+            == "(<http://autolink> <h1> yeah </h1> <http://autolink>)\n"
+        )
+
+    def test_paragraph_with_only_whitespace_and_placeholders(self) -> None:
+        # In no_placeholders mode, all inline content is rendered verbatim so
+        # paragraphs consisting only of inline elements ARE extracted.
+        store = self.parse("<http://autolink> <p> <p> <p>\n")
+        unit_sources = self.get_translation_unit_sources(store)
+        assert unit_sources == ["<http://autolink> <p> <p> <p>"]
+        translated_output = self.get_translated_output(store)
+        assert translated_output == "(<http://autolink> <p> <p> <p>)\n"
+
+    def test_autolink(self) -> None:
+        store = self.parse("what's the <http://autolink> problem?\n")
+        unit_sources = self.get_translation_unit_sources(store)
+        assert unit_sources == ["what's the <http://autolink> problem?"]
+        translated_output = self.get_translated_output(store)
+        assert translated_output == "(what's the <http://autolink> problem?)\n"
+
+    def test_merging_of_adjacent_placeholders(self) -> None:
+        # In no_placeholders mode there are no placeholder fragments to merge;
+        # the content is rendered verbatim.
+        store = self.parse("now hear ye</p> <h1> all\n")
+        unit_sources = self.get_translation_unit_sources(store)
+        assert unit_sources == ["now hear ye</p> <h1> all"]
+        translated_output = self.get_translated_output(store)
+        assert translated_output == "(now hear ye</p> <h1> all)\n"
+
+    def test_image_embedded_in_link(self) -> None:
+        store = self.parse(
+            "[*embedded image* ![moon](moon.jpg \"the moon y'all\")](/uri 'link title')\n"
+        )
+        unit_sources = self.get_translation_unit_sources(store)
+        # Only one unit — titles/nested images are not extracted separately
+        assert unit_sources == [
+            "[*embedded image* ![moon](moon.jpg \"the moon y'all\")](/uri 'link title')"
+        ]
+        translated_output = self.get_translated_output(store)
+        assert (
+            translated_output
+            == "([*embedded image* ![moon](moon.jpg \"the moon y'all\")](/uri 'link title'))\n"
+        )
+
+    def test_parse_without_callback_no_duplicate_units(self) -> None:
+        """In no_placeholders mode, full link syntax is preserved in unit sources."""
+        md = "Click [here](http://example.com) for more info.\n"
+        inputfile = BytesIO(md.encode())
+        store = markdown.MarkdownFile(inputfile=inputfile, no_placeholders=True)
+        unit_sources = self.get_translation_unit_sources(store)
+        assert unit_sources == ["Click [here](http://example.com) for more info."]
+        assert store.units[0].getdocpath() == "p[1]"
+
+    def test_parse_without_callback_multiple_links(self) -> None:
+        """In no_placeholders mode, multiple links are preserved verbatim."""
+        md = "See [a](http://a.com) and [b](http://b.com).\n"
+        inputfile = BytesIO(md.encode())
+        store = markdown.MarkdownFile(inputfile=inputfile, no_placeholders=True)
+        unit_sources = self.get_translation_unit_sources(store)
+        assert unit_sources == ["See [a](http://a.com) and [b](http://b.com)."]
+
+    @staticmethod
+    def parse(md):
+        inputfile = BytesIO(md.encode())
+        return markdown.MarkdownFile(
+            inputfile=inputfile,
+            callback=lambda x: f"({x})",
+            no_placeholders=True,
+        )
 
 
 class TestMarkdownRendering:

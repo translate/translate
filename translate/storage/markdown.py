@@ -80,6 +80,7 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
         max_line_length=None,
         extract_code_blocks=True,
         extract_frontmatter=True,
+        no_placeholders=False,
     ) -> None:
         """
         Construct a new object instance.
@@ -94,6 +95,11 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
           for translation. If False, code blocks are left as-is.
         :param extract_frontmatter: if True (default), front matter is extracted
           for translation. If False, it is preserved as-is.
+        :param no_placeholders: if True, inline elements (links, images, HTML
+          spans, autolinks) are rendered verbatim in translation units instead
+          of being replaced by {n} placeholder markers. Sub-attribute extraction
+          (e.g. link titles as separate units) is suppressed in this mode. If
+          False (default), the classic placeholder behavior is used.
         """
         base.TranslationStore.__init__(self)
         self.filename = getattr(inputfile, "name", None)
@@ -101,6 +107,7 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
         self.max_line_length = max_line_length
         self.extract_code_blocks = extract_code_blocks
         self.extract_frontmatter = extract_frontmatter
+        self.no_placeholders = no_placeholders
         self.filesrc = ""
         if inputfile is not None:
             md_src = inputfile.read()
@@ -147,6 +154,7 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
             max_line_length=self.max_line_length,
             extract_code_blocks=self.extract_code_blocks,
             lookup_callback=self.callback,
+            no_placeholders=self.no_placeholders,
         ) as renderer:
             document = block_token.Document(lines)
             self.filesrc = front_matter + renderer.render(document)
@@ -179,11 +187,13 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         max_line_length: int | None = None,
         extract_code_blocks: bool = True,
         lookup_callback: Callable[[str], str] | None = None,
+        no_placeholders: bool = False,
     ) -> None:
         super().__init__(*extras, max_line_length=max_line_length)  # ty:ignore[invalid-argument-type]
         self.translate_callback = translate_callback
         self.lookup_callback = lookup_callback
         self.bypass = False
+        self.no_placeholders = no_placeholders
         self.path = []
         self.ignore_translation = False
         self.extract_code_blocks = extract_code_blocks
@@ -552,6 +562,56 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
             finally:
                 self.bypass = original_bypass
 
+        # No-placeholders opt-in mode: render source-side fragments verbatim.
+        # bypass=True is set BEFORE make_fragments so render_link_or_image,
+        # render_auto_link, and render_html_span fall through to their super()
+        # implementations, yielding raw text fragments instead of Fragment(None,
+        # placeholder_content=...) placeholders.  This means links/images/HTML
+        # appear in full in the translation unit rather than as {n} markers, and
+        # no sub-attribute extraction (e.g. link titles as separate units) occurs.
+        #
+        # render_link_reference_definition does NOT check bypass; it always
+        # creates Fragment(None, ...) placeholders with label/title already
+        # extracted via translate_callback.  We reuse trim_flanking_placeholders
+        # so those placeholders end up in leader/trailer (not in content), which
+        # prevents translate_callback from being called a second time for them.
+        if self.no_placeholders:
+            original_bypass = self.bypass
+            try:
+                self.bypass = True
+                fragments = list(self.make_fragments(tokens))
+                merged = self.merge_adjacent_placeholders(fragments)
+                leader, content, trailer = self.trim_flanking_placeholders(merged)
+                content_frags = list(self.expand_placeholders(content))
+                content_md = "\n".join(
+                    super().fragments_to_lines(
+                        content_frags,
+                        max_line_length=float("inf"),  # ty:ignore[invalid-argument-type]
+                    )
+                )
+                # normalize hard line break markers (\\\n and trailing-space \n)
+                # to plain \n so translate_callback receives clean text and the
+                # subsequent replace("\n", "\\\n") round-trip works correctly.
+                content_md = re.sub(r"\\\n| {2,}\n", "\n", content_md)
+                if content_md:
+                    translated_md = self.translate_callback(
+                        content_md, self.path, self._current_docpath
+                    )
+                    translated_md = translated_md.replace("\n", "\\\n").strip(" \t")
+                    translated = list(
+                        self.make_fragments(span_token.tokenize_inner(translated_md))
+                    )
+                    expanded = list(
+                        self.expand_placeholders(chain(leader, translated, trailer))
+                    )
+                else:
+                    expanded = list(self.expand_placeholders(chain(leader, trailer)))
+                return super().fragments_to_lines(
+                    expanded, max_line_length=max_line_length
+                )
+            finally:
+                self.bypass = original_bypass
+
         # turn the span into fragments, which may include placeholders.
         # list-ify the iterator because we may need to traverse it more than once
         fragments = list(self.make_fragments(tokens))
@@ -571,32 +631,31 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
 
             # translate and parse into new fragments. handle hard line breaks.
             if content_md:
-                # Expand placeholders to full content (e.g. full markdown links)
-                # before calling translate_callback so that extraction stores the
-                # complete source string rather than placeholder markers like {1}.
-                if placeholders:
-                    expanded_content_md = self.remove_placeholder_markers(
-                        content_md, list(placeholders)
-                    )
-                else:
-                    expanded_content_md = content_md
                 translated_md = self.translate_callback(
-                    expanded_content_md, self.path, self._current_docpath
+                    content_md, self.path, self._current_docpath
                 )
-                # If translation with expanded content didn't match and there are
-                # placeholders, try looking up with placeholder markers to support
-                # PO files that use placeholder syntax instead of full markdown.
+                # If translation with placeholders didn't match and there are
+                # placeholders, try looking up with expanded placeholders
+                # (full markdown links, etc.) to support PO files that contain
+                # the original markdown syntax instead of placeholder markers.
                 # Note: if the translation is intentionally identical to the
                 # source, this fallback is harmless — it will also not find a
                 # different translation.
                 if (
-                    translated_md == expanded_content_md
+                    translated_md == content_md
                     and placeholders
                     and self.lookup_callback
                 ):
-                    placeholder_translated_md = self.lookup_callback(content_md)
-                    if placeholder_translated_md != content_md:
-                        translated_md = placeholder_translated_md
+                    expanded_content_md = self.remove_placeholder_markers(
+                        content_md, list(placeholders)
+                    )
+                    expanded_translated_md = self.lookup_callback(expanded_content_md)
+                    if expanded_translated_md != expanded_content_md:
+                        translated_md = expanded_translated_md
+                        # Clear placeholders since the expanded translation
+                        # already contains full markdown syntax (e.g. links)
+                        # and does not need placeholder replacement.
+                        placeholders = []
                 translated_md = translated_md.replace("\n", "\\\n").strip(" \t")
                 translated_md = self.remove_placeholder_markers(
                     translated_md, placeholders

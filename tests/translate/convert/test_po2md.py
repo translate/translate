@@ -21,6 +21,7 @@ class TestPO2MD(test_convert.TestConvertCommand):
         "-m MAXLENGTH, --maxlinelength=MAXLENGTH",
         "--no-code-blocks",
         "--no-frontmatter",
+        "--no-placeholders",
     ]
 
     def test_single_markdown_file_with_single_po(self) -> None:

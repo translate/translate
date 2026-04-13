@@ -48,6 +48,7 @@ class MarkdownTranslator:
         maxlength: int,
         extract_code_blocks: bool = True,
         extract_frontmatter: bool = True,
+        no_placeholders: bool = False,
     ) -> None:
         self.inputstore = inputstore
         self.inputstore.require_index()
@@ -56,6 +57,7 @@ class MarkdownTranslator:
         self.maxlength = maxlength
         self.extract_code_blocks = extract_code_blocks
         self.extract_frontmatter = extract_frontmatter
+        self.no_placeholders = no_placeholders
 
     def translate(self, templatefile, outputfile) -> int:
         if not convert.should_output_store(self.inputstore, self.outputthreshold):
@@ -67,6 +69,7 @@ class MarkdownTranslator:
             max_line_length=self.maxlength if self.maxlength > 0 else None,
             extract_code_blocks=self.extract_code_blocks,
             extract_frontmatter=self.extract_frontmatter,
+            no_placeholders=self.no_placeholders,
         )
         outputfile.write(outputstore.filesrc.encode("utf-8"))
         return 1
@@ -119,6 +122,20 @@ class PO2MDOptionParser(convert.ConvertOptionParser):
             help="do not extract front matter for translation",
         )
         self.passthrough.append("extract_frontmatter")
+        self.add_option(
+            "",
+            "--no-placeholders",
+            action="store_true",
+            dest="no_placeholders",
+            default=False,
+            help=(
+                "look up translation units by their full inline markdown "
+                "(links, images, autolinks, HTML spans rendered verbatim) "
+                "instead of {n} placeholder markers; use together with "
+                "md2po --no-placeholders"
+            ),
+        )
+        self.passthrough.append("no_placeholders")
         self.add_threshold_option()
         self.add_fuzzy_option()
 
@@ -132,6 +149,7 @@ class PO2MDOptionParser(convert.ConvertOptionParser):
         maxlength: int,
         extract_code_blocks: bool = True,
         extract_frontmatter: bool = True,
+        no_placeholders: bool = False,
     ):
         inputstore = po.pofile(inputfile)
         translator = MarkdownTranslator(
@@ -141,6 +159,7 @@ class PO2MDOptionParser(convert.ConvertOptionParser):
             maxlength,
             extract_code_blocks=extract_code_blocks,
             extract_frontmatter=extract_frontmatter,
+            no_placeholders=no_placeholders,
         )
         return translator.translate(templatefile, outputfile)
 
@@ -197,6 +216,7 @@ class PO2MDOptionParser(convert.ConvertOptionParser):
         maxlength: int,
         extract_code_blocks: bool = True,
         extract_frontmatter: bool = True,
+        no_placeholders: bool = False,
     ):
         translator = MarkdownTranslator(
             self.inputstore,
@@ -205,6 +225,7 @@ class PO2MDOptionParser(convert.ConvertOptionParser):
             maxlength,
             extract_code_blocks=extract_code_blocks,
             extract_frontmatter=extract_frontmatter,
+            no_placeholders=no_placeholders,
         )
         return translator.translate(templatefile, outputfile)
 

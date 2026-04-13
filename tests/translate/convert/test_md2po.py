@@ -19,6 +19,7 @@ class TestMD2PO(test_convert.TestConvertCommand):
         "--multifile=MULTIFILESTYLE",
         "--no-code-blocks",
         "--no-frontmatter",
+        "--no-placeholders",
     ]
 
     def test_markdown_file_with_multifile_single(self) -> None:
@@ -169,11 +170,43 @@ def hello():
         return content
 
     def test_markdown_hyperlink_extraction(self) -> None:
-        """Test that markdown hyperlinks are extracted with full link syntax."""
+        """Test that markdown hyperlinks are extracted with {n} placeholder markers by default."""
         self.given_markdown_file(
             "The [OSPO Alliance EN](https://ospo-alliance.org) website\n"
         )
         self.run_command("file.md", "test.po")
+        assert os.path.isfile(self.get_testfilename("test.po"))
+        content = self.read_testfile("test.po").decode()
+        assert 'msgid "The [OSPO Alliance EN]{1} website"' in content
+
+    def test_markdown_multiple_hyperlinks_extraction(self) -> None:
+        """Test that multiple markdown hyperlinks are extracted with placeholder markers by default."""
+        self.given_markdown_file(
+            "Visit [Google](https://google.com) and [GitHub](https://github.com) for more.\n"
+        )
+        self.run_command("file.md", "test.po")
+        assert os.path.isfile(self.get_testfilename("test.po"))
+        content = self.read_testfile("test.po").decode()
+        assert "{1}" in content
+        assert "{2}" in content
+
+    def test_markdown_hyperlink_extraction_no_placeholders(self) -> None:
+        """Test that --no-placeholders preserves full link syntax in msgids."""
+        self.given_markdown_file(
+            "The [OSPO Alliance EN](https://ospo-alliance.org) website\n"
+        )
+        os.chdir(self.testdir)
+        try:
+            self.convertmodule.main(
+                [
+                    "file.md",
+                    "test.po",
+                    "--progress=none",
+                    "--no-placeholders",
+                ]
+            )
+        finally:
+            os.chdir(self.rundir)
         assert os.path.isfile(self.get_testfilename("test.po"))
         content = self.read_testfile("test.po").decode()
         assert (
@@ -181,16 +214,29 @@ def hello():
             in content
         )
 
-    def test_markdown_multiple_hyperlinks_extraction(self) -> None:
-        """Test that multiple markdown hyperlinks are extracted with full link syntax."""
+    def test_markdown_multiple_hyperlinks_extraction_no_placeholders(self) -> None:
+        """Test that --no-placeholders preserves full links for multiple hyperlinks."""
         self.given_markdown_file(
             "Visit [Google](https://google.com) and [GitHub](https://github.com) for more.\n"
         )
-        self.run_command("file.md", "test.po")
+        os.chdir(self.testdir)
+        try:
+            self.convertmodule.main(
+                [
+                    "file.md",
+                    "test.po",
+                    "--progress=none",
+                    "--no-placeholders",
+                ]
+            )
+        finally:
+            os.chdir(self.rundir)
         assert os.path.isfile(self.get_testfilename("test.po"))
         content = self.read_testfile("test.po").decode()
         assert "[Google](https://google.com)" in content
         assert "[GitHub](https://github.com)" in content
+        assert "{1}" not in content
+        assert "{2}" not in content
 
     def test_markdown_translation_ignore_sections(self) -> None:
         """Test that content between translate:off and translate:on is not extracted."""

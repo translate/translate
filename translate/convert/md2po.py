@@ -62,6 +62,19 @@ class MD2POOptionParser(convert.ConvertOptionParser, convert.DocpathMerger):
             help="do not extract front matter for translation",
         )
         self.passthrough.append("extract_frontmatter")
+        self.add_option(
+            "",
+            "--no-placeholders",
+            action="store_true",
+            dest="no_placeholders",
+            default=False,
+            help=(
+                "render inline elements (links, images, autolinks, HTML spans) "
+                "verbatim in translation units instead of replacing them with "
+                "{n} placeholder markers"
+            ),
+        )
+        self.passthrough.append("no_placeholders")
 
     def _extract_translation_units(
         self,
@@ -72,6 +85,7 @@ class MD2POOptionParser(convert.ConvertOptionParser, convert.DocpathMerger):
         multifilestyle: str,
         extract_code_blocks: bool = True,
         extract_frontmatter: bool = True,
+        no_placeholders: bool = False,
     ) -> int:
         if hasattr(self, "outputstore"):
             if templatefile is None:
@@ -80,6 +94,7 @@ class MD2POOptionParser(convert.ConvertOptionParser, convert.DocpathMerger):
                     self.outputstore,
                     extract_code_blocks=extract_code_blocks,
                     extract_frontmatter=extract_frontmatter,
+                    no_placeholders=no_placeholders,
                 )
             else:
                 self._merge_with_template(
@@ -88,6 +103,7 @@ class MD2POOptionParser(convert.ConvertOptionParser, convert.DocpathMerger):
                     self.outputstore,
                     extract_code_blocks=extract_code_blocks,
                     extract_frontmatter=extract_frontmatter,
+                    no_placeholders=no_placeholders,
                 )
         else:
             store = po.pofile()
@@ -97,6 +113,7 @@ class MD2POOptionParser(convert.ConvertOptionParser, convert.DocpathMerger):
                     store,
                     extract_code_blocks=extract_code_blocks,
                     extract_frontmatter=extract_frontmatter,
+                    no_placeholders=no_placeholders,
                 )
             else:
                 self._merge_with_template(
@@ -105,6 +122,7 @@ class MD2POOptionParser(convert.ConvertOptionParser, convert.DocpathMerger):
                     store,
                     extract_code_blocks=extract_code_blocks,
                     extract_frontmatter=extract_frontmatter,
+                    no_placeholders=no_placeholders,
                 )
             store.removeduplicates(duplicatestyle)
             store.serialize(outputfile)
@@ -117,12 +135,14 @@ class MD2POOptionParser(convert.ConvertOptionParser, convert.DocpathMerger):
         *,
         extract_code_blocks: bool = True,
         extract_frontmatter: bool = True,
+        no_placeholders: bool = False,
     ) -> None:
         """Extract translation units from a markdown file and add them to an existing message store (pofile object) without any further processing."""
         parser = markdown.MarkdownFile(
             inputfile=inputfile,
             extract_code_blocks=extract_code_blocks,
             extract_frontmatter=extract_frontmatter,
+            no_placeholders=no_placeholders,
         )
         for tu in parser.units:
             storeunit = outputstore.addsourceunit(tu.source)
@@ -136,12 +156,14 @@ class MD2POOptionParser(convert.ConvertOptionParser, convert.DocpathMerger):
         *,
         extract_code_blocks: bool = True,
         extract_frontmatter: bool = True,
+        no_placeholders: bool = False,
     ) -> None:
         """Merge translation from inputfile with source from templatefile using docpath matching."""
         store_class = functools.partial(
             markdown.MarkdownFile,
             extract_code_blocks=extract_code_blocks,
             extract_frontmatter=extract_frontmatter,
+            no_placeholders=no_placeholders,
         )
         self.merge_stores_by_docpath(
             inputfile,
