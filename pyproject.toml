@@ -112,7 +112,7 @@ spellcheck = [
   "pyenchant==3.3.0"
 ]
 subtitles = [
-  "aeidon>=1.15,<1.16"
+  "aeidon>=1.15,<1.17"
 ]
 toml = [
   "tomlkit>=0.13.0,<0.15.0"
