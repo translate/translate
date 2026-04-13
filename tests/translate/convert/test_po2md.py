@@ -279,19 +279,9 @@ You are only coming through in waves.
                 'msgstr "Die Website [OSPO Alliance DE](https://ospo-alliance.org)"',
             ]
         )
-        os.chdir(self.testdir)
-        try:
-            self.convertmodule.main(
-                [
-                    "translation.po",
-                    "out.md",
-                    "--progress=none",
-                    "--template=file.md",
-                    "--no-placeholders",
-                ]
-            )
-        finally:
-            os.chdir(self.rundir)
+        self.run_command(
+            "translation.po", "out.md", template="file.md", no_placeholders=True
+        )
         output = self.read_testfile("out.md").decode()
         assert "Die Website [OSPO Alliance DE](https://ospo-alliance.org)" in output
         assert "OSPO Alliance EN" not in output
@@ -308,19 +298,9 @@ You are only coming through in waves.
                 'msgstr "Besök [Google](https://google.com) och [GitHub](https://github.com) för mer."',
             ]
         )
-        os.chdir(self.testdir)
-        try:
-            self.convertmodule.main(
-                [
-                    "translation.po",
-                    "out.md",
-                    "--progress=none",
-                    "--template=file.md",
-                    "--no-placeholders",
-                ]
-            )
-        finally:
-            os.chdir(self.rundir)
+        self.run_command(
+            "translation.po", "out.md", template="file.md", no_placeholders=True
+        )
         output = self.read_testfile("out.md").decode()
         assert (
             "Besök [Google](https://google.com) och [GitHub](https://github.com) för mer."
@@ -341,19 +321,9 @@ You are only coming through in waves.
                 'msgstr "[Besuche die foo-Seite][foo]"',
             ]
         )
-        os.chdir(self.testdir)
-        try:
-            self.convertmodule.main(
-                [
-                    "translation.po",
-                    "out.md",
-                    "--progress=none",
-                    "--template=file.md",
-                    "--no-placeholders",
-                ]
-            )
-        finally:
-            os.chdir(self.rundir)
+        self.run_command(
+            "translation.po", "out.md", template="file.md", no_placeholders=True
+        )
         output = self.read_testfile("out.md").decode()
         # Definition is preserved verbatim so the reference resolves
         assert '[foo]: https://example.com "Example site"' in output
@@ -370,19 +340,9 @@ You are only coming through in waves.
                 'msgstr "Läs det <strong>viktiga</strong> meddelandet."',
             ]
         )
-        os.chdir(self.testdir)
-        try:
-            self.convertmodule.main(
-                [
-                    "translation.po",
-                    "out.md",
-                    "--progress=none",
-                    "--template=file.md",
-                    "--no-placeholders",
-                ]
-            )
-        finally:
-            os.chdir(self.rundir)
+        self.run_command(
+            "translation.po", "out.md", template="file.md", no_placeholders=True
+        )
         output = self.read_testfile("out.md").decode()
         assert "Läs det <strong>viktiga</strong> meddelandet." in output
         assert "Read the" not in output
