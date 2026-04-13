@@ -24,6 +24,7 @@ from __future__ import annotations
 import copy
 import os
 import re
+import warnings
 from typing import ClassVar, cast, overload
 from xml.parsers.expat import XML_PARAM_ENTITY_PARSING_NEVER, ParserCreate
 
@@ -43,7 +44,12 @@ QUOTED_STRING = re.compile(r'((?<!\\)"(?:\\"|[^"])*(?<!\\)")')
 UNICODE_ESCAPE = re.compile(r"\\u([a-fA-F0-9]{4})")
 CHAR_ESCAPE = re.compile(r"\\(.)")
 WHITESPACE_RE = re.compile(r"\s+")
-MARKUP_TAG = re.compile(r"</?[A-Za-z_][^>]*>")
+XML_NAME = r"[A-Za-z_][A-Za-z0-9_.:-]*"
+XML_ATTRIBUTE = rf'\s+{XML_NAME}\s*=\s*(?:"[^"]*"|\'[^\']*\')'
+XML_ATTRIBUTE_CAPTURE = re.compile(rf"({XML_NAME})\s*=\s*(\"[^\"]*\"|'[^']*')")
+XML_TAG_NAME = re.compile(rf"^</?({XML_NAME})")
+MARKUP_TAG = re.compile(rf"</?{XML_NAME}(?:{XML_ATTRIBUTE})*\s*/?>")
+ESCAPED_MARKUP_TAG = re.compile(rf"&lt;/?{XML_NAME}(?:{XML_ATTRIBUTE})*\s*/?&gt;")
 
 
 class DecodingXMLParser:
@@ -256,6 +262,9 @@ class AndroidResourceUnit(base.TranslationUnit):
         }
     )
     ESCAPE_ALL: ClassVar[bool] = True
+    TARGET_MARKUP_PLAIN: ClassVar[str] = "plain"
+    TARGET_MARKUP_ESCAPED: ClassVar[str] = "escaped-markup"
+    TARGET_MARKUP_XML: ClassVar[str] = "xml-markup"
 
     TargetType = str | multistring | list[str] | None
 
@@ -276,12 +285,14 @@ class AndroidResourceUnit(base.TranslationUnit):
     ) -> None:
         if xmlelement is not None:
             self.xmlelement = xmlelement
+            self._target_markup_mode = self.TARGET_MARKUP_PLAIN
+            self._init_target_markup_mode()
         elif self.hasplurals(source):
             self.xmlelement = etree.Element(self.PLURAL_TAG)
+            self._target_markup_mode = self.TARGET_MARKUP_XML
         else:
             self.xmlelement = etree.Element(self.SINGULAR_TAG)
-        self._target_markup = False
-        self._init_target_markup()
+            self._target_markup_mode = self.TARGET_MARKUP_XML
         if source is not None:
             self.setid(source)
         super().__init__(source)
@@ -290,34 +301,220 @@ class AndroidResourceUnit(base.TranslationUnit):
     def _contains_markup_text(text: str | None) -> bool:
         return bool(text) and bool(MARKUP_TAG.search(text))
 
+    @staticmethod
+    def _serialize_text(text: str) -> str:
+        wrapper = etree.Element("wrapper")
+        wrapper.text = text
+        serialized = etree.tostring(wrapper, encoding="unicode", with_tail=False)
+        return serialized.removeprefix("<wrapper>").removesuffix("</wrapper>")
+
+    @staticmethod
+    def _unescape_markup_tag(match: re.Match) -> str:
+        return match.group(0).replace("&lt;", "<").replace("&gt;", ">")
+
+    def _render_xml_context(self, xmltarget: etree._Element, target: str) -> str:
+        probe_marker = "__translate_toolkit_markup_probe__"
+        probe_target = copy.deepcopy(xmltarget)
+        for child in list(probe_target):
+            probe_target.remove(child)
+        probe_target.text = probe_marker
+        probe_target.tail = None
+
+        source_document = self._store.document if self._store is not None else None
+        if source_document is None:
+            source_document = xmltarget.getroottree()
+
+        source_root = source_document.getroot()
+        if source_root is xmltarget:
+            template = etree.tostring(probe_target, encoding="unicode", with_tail=False)
+            return template.replace(probe_marker, target)
+
+        cloned_doc = copy.deepcopy(source_document)
+        cloned_root = cloned_doc.getroot()
+        cloned_root.clear()
+        cloned_root.text = " "
+        cloned_root.append(probe_target)
+        template = etree.tostring(
+            cloned_doc,
+            encoding="unicode",
+            doctype=copy.copy(self._store.XMLdoctype)
+            if self._store is not None
+            else None,
+        )
+        return template.replace(probe_marker, target)
+
+    def _get_markup_scope(self, xmltarget: etree._Element) -> dict[str | None, str]:
+        source_document = self._store.document if self._store is not None else None
+        if source_document is None:
+            source_document = xmltarget.getroottree()
+        source_root = source_document.getroot()
+        scope = {
+            prefix: namespace
+            for prefix, namespace in source_root.nsmap.items()
+            if namespace is not None
+        }
+        scope.update(
+            {
+                prefix: namespace
+                for prefix, namespace in xmltarget.nsmap.items()
+                if namespace is not None
+            }
+        )
+        return scope
+
+    @staticmethod
+    def _get_markup_name(tag: str) -> str | None:
+        match = XML_TAG_NAME.match(tag)
+        if match is None:
+            return None
+        return match.group(1)
+
+    @staticmethod
+    def _update_markup_scope(
+        scope: dict[str | None, str],
+        tag: str,
+    ) -> dict[str | None, str]:
+        tag_scope = scope.copy()
+        for attribute, value in XML_ATTRIBUTE_CAPTURE.findall(tag):
+            namespace = value[1:-1]
+            if attribute == "xmlns":
+                tag_scope[None] = namespace
+            elif attribute.startswith("xmlns:"):
+                tag_scope[attribute.split(":", 1)[1]] = namespace
+        return tag_scope
+
+    @staticmethod
+    def _is_resolved_markup_name(
+        markup_name: str,
+        scope: dict[str | None, str],
+    ) -> bool:
+        if ":" not in markup_name:
+            return True
+        prefix = markup_name.split(":", 1)[0]
+        return prefix in scope
+
+    def _has_escaped_markup_structure(
+        self, xmltarget: etree._Element, text: str
+    ) -> bool:
+        scope_stack = [self._get_markup_scope(xmltarget)]
+        open_tags: list[str] = []
+        saw_tag = False
+
+        for match in ESCAPED_MARKUP_TAG.finditer(text):
+            tag = self._unescape_markup_tag(match)
+            markup_name = self._get_markup_name(tag)
+            if markup_name is None:
+                return False
+
+            if tag.startswith("</"):
+                if not open_tags or open_tags[-1] != markup_name:
+                    return False
+                if not self._is_resolved_markup_name(markup_name, scope_stack[-1]):
+                    return False
+                open_tags.pop()
+                scope_stack.pop()
+                saw_tag = True
+                continue
+
+            tag_scope = self._update_markup_scope(scope_stack[-1], tag)
+            if not self._is_resolved_markup_name(markup_name, tag_scope):
+                return False
+
+            saw_tag = True
+            if tag.endswith("/>"):
+                continue
+
+            open_tags.append(markup_name)
+            scope_stack.append(tag_scope)
+
+        return saw_tag and not open_tags
+
     def _uses_plain_markup_roundtrip(self, xmltarget: etree._Element) -> bool:
         raw_xml = etree.tostring(xmltarget, encoding="unicode", with_tail=False)
         if len(xmltarget) != 0 or "<![CDATA[" in raw_xml:
             return False
-        return self._contains_markup_text(xmltarget.text)
+        text = xmltarget.text
+        if text is None or not self._contains_markup_text(text):
+            return False
+        serialized_text = self._serialize_text(text)
+        parsed_text = ESCAPED_MARKUP_TAG.sub(self._unescape_markup_tag, serialized_text)
+        if parsed_text == serialized_text:
+            return False
+        return self._has_escaped_markup_structure(xmltarget, serialized_text)
+
+    @staticmethod
+    def _has_literal_angle_text(xmltarget: etree._Element) -> bool:
+        raw_xml = etree.tostring(xmltarget, encoding="unicode", with_tail=False)
+        return (
+            len(xmltarget) == 0
+            and "<![CDATA[" not in raw_xml
+            and xmltarget.text is not None
+            and "<" in xmltarget.text
+            and ">" in xmltarget.text
+        )
 
     def _get_markup_targets(self) -> list[etree._Element]:
         if self.xmlelement.tag == self.PLURAL_TAG:
             return list(self.xmlelement.iterchildren("item"))
         return [self.xmlelement]
 
-    def _init_target_markup(self) -> None:
-        self._target_markup = any(
+    def _has_xml_markup(self) -> bool:
+        return any(len(xmltarget) != 0 for xmltarget in self._get_markup_targets())
+
+    def _init_target_markup_mode(self) -> None:
+        if self._has_xml_markup():
+            self._target_markup_mode = self.TARGET_MARKUP_XML
+        elif any(
             self._uses_plain_markup_roundtrip(xmltarget)
             for xmltarget in self._get_markup_targets()
-        )
+        ):
+            self._target_markup_mode = self.TARGET_MARKUP_ESCAPED
+        elif any(
+            self._has_literal_angle_text(xmltarget)
+            for xmltarget in self._get_markup_targets()
+        ):
+            self._target_markup_mode = self.TARGET_MARKUP_PLAIN
+        else:
+            self._target_markup_mode = self.TARGET_MARKUP_XML
 
-    def _get_target_markup(self) -> bool:
-        return self._target_markup
+    def _get_target_markup_mode(self) -> str:
+        return self._target_markup_mode
 
-    def _set_target_markup(self, preserve_markup: bool) -> None:
-        self._target_markup = preserve_markup
+    def _set_target_markup_mode(self, target_markup_mode: str) -> None:
+        if target_markup_mode not in {
+            self.TARGET_MARKUP_PLAIN,
+            self.TARGET_MARKUP_ESCAPED,
+            self.TARGET_MARKUP_XML,
+        }:
+            msg = f"Unsupported target markup mode: {target_markup_mode}"
+            raise ValueError(msg)
+        self._target_markup_mode = target_markup_mode
+
+    def gettargetmarkupmode(self) -> str:
+        return self._get_target_markup_mode()
+
+    def settargetmarkupmode(self, target_markup_mode: str) -> None:
+        self._set_target_markup_mode(target_markup_mode)
+
+    target_markup_mode = property(gettargetmarkupmode, settargetmarkupmode)
 
     def gettargetmarkup(self) -> bool:
-        return self._get_target_markup()
+        warnings.warn(
+            "target_markup is deprecated; use target_markup_mode instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self._get_target_markup_mode() == self.TARGET_MARKUP_ESCAPED
 
     def settargetmarkup(self, preserve_markup: bool) -> None:
-        self._set_target_markup(preserve_markup)
+        warnings.warn(
+            "target_markup is deprecated; use target_markup_mode instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        self._set_target_markup_mode(
+            self.TARGET_MARKUP_ESCAPED if preserve_markup else self.TARGET_MARKUP_XML
+        )
 
     target_markup = property(gettargetmarkup, settargetmarkup)
 
@@ -415,75 +612,87 @@ class AndroidResourceUnit(base.TranslationUnit):
         target: str | None,
         xmltarget: etree._Element,
         *,
-        preserve_markup: bool = False,
+        target_markup_mode: str = TARGET_MARKUP_PLAIN,
     ) -> None:
         # Remove possible old elements
         for x in xmltarget.iterchildren():
             xmltarget.remove(x)
         # Handle text only
         xmltarget.text = self.escape(target)
-        self._set_target_markup(preserve_markup)
+        self._set_target_markup_mode(target_markup_mode)
 
     def set_xml_text_value(
         self,
         target: str | None,
         xmltarget: etree._Element,
-        preserve_markup: bool | None = None,
-    ) -> None:
-        if preserve_markup is None:
-            preserve_markup = self._get_target_markup()
+        target_markup_mode: str | None = None,
+    ) -> str:
+        if target_markup_mode is None:
+            target_markup_mode = self._get_target_markup_mode()
         if target is None:
-            self.set_xml_text_plain(
-                target, xmltarget, preserve_markup=bool(preserve_markup)
+            resulting_mode = (
+                self.TARGET_MARKUP_ESCAPED
+                if target_markup_mode == self.TARGET_MARKUP_ESCAPED
+                else self.TARGET_MARKUP_PLAIN
             )
-            return
-        if preserve_markup:
-            self.set_xml_text_plain(target, xmltarget, preserve_markup=True)
-            return
+            self.set_xml_text_plain(
+                target,
+                xmltarget,
+                target_markup_mode=resulting_mode,
+            )
+            return resulting_mode
+        if target_markup_mode != self.TARGET_MARKUP_XML:
+            self.set_xml_text_plain(
+                target,
+                xmltarget,
+                target_markup_mode=target_markup_mode,
+            )
+            return target_markup_mode
 
         if "<" in target or "&" in target:
             # Try to handle it as legacy XML
             parser = get_safe_xml_parser(strip_cdata=False)
-            if self._store is not None:
-                cloned_doc = copy.deepcopy(self._store.document)
-                cloned_root = cloned_doc.getroot()
-                cloned_root.clear()
-                # Add content to the element so that we get a real closing tag
-                cloned_root.text = " "
-                template = etree.tostring(
-                    cloned_doc,
-                    encoding="unicode",
-                    doctype=copy.copy(self._store.XMLdoctype),
-                )
-            else:
-                template = "<resources></resources>"
-            newstring = template.replace(
-                "</resources>",
-                f"<{xmltarget.tag}>{target}</{xmltarget.tag}></resources>",
-            )
+            newstring = self._render_xml_context(xmltarget, target)
             try:
                 etree.fromstring(newstring, parser)
             except Exception:
-                self.set_xml_text_plain(target, xmltarget, preserve_markup=False)
-            else:
-                # Escape text parts
-                encoding_parser = EncodingXMLParser(newstring)
-                newstring = encoding_parser.parse()
-                newtree = etree.fromstring(newstring, parser)[0]
-                # Copy existing attributes
-                for attribute, value in xmltarget.items():
-                    newtree.attrib[attribute] = value
-                # Update text
-                parent = xmltarget.getparent()
-                # Parent can be none when operating on Unit only without a storage
-                if parent is not None:
-                    parent.replace(xmltarget, newtree)
-                # Update unit xmlelement if needed (plurals are inner elements here)
-                if xmltarget == self.xmlelement:
-                    self.xmlelement = newtree
-                self._set_target_markup(False)
-        else:
-            self.set_xml_text_plain(target, xmltarget, preserve_markup=False)
+                self.set_xml_text_plain(
+                    target,
+                    xmltarget,
+                    target_markup_mode=self.TARGET_MARKUP_PLAIN,
+                )
+                return self.TARGET_MARKUP_PLAIN
+            # Escape text parts
+            encoding_parser = EncodingXMLParser(newstring)
+            newstring = encoding_parser.parse()
+            parsed_root = etree.fromstring(newstring, parser)
+            newtree = (
+                parsed_root if parsed_root.tag == xmltarget.tag else parsed_root[0]
+            )
+            # Copy existing attributes
+            for attribute, value in xmltarget.items():
+                newtree.attrib[attribute] = value
+            # Update text
+            parent = xmltarget.getparent()
+            # Parent can be none when operating on Unit only without a storage
+            if parent is not None:
+                parent.replace(xmltarget, newtree)
+            # Update unit xmlelement if needed (plurals are inner elements here)
+            if xmltarget == self.xmlelement:
+                self.xmlelement = newtree
+            resulting_mode = (
+                self.TARGET_MARKUP_XML
+                if len(newtree) != 0 or "<![CDATA[" in target
+                else self.TARGET_MARKUP_PLAIN
+            )
+            self._set_target_markup_mode(resulting_mode)
+            return resulting_mode
+        self.set_xml_text_plain(
+            target,
+            xmltarget,
+            target_markup_mode=self.TARGET_MARKUP_PLAIN,
+        )
+        return self.TARGET_MARKUP_PLAIN
 
     def gettargetlanguage(self):
         if self._store is None:
@@ -519,6 +728,12 @@ class AndroidResourceUnit(base.TranslationUnit):
         if self.hasplurals(self.source) or self.hasplurals(target):
             # Fix the root tag if mismatching
             self.fixup_tag(self.PLURAL_TAG)
+            target_markup_mode = self._get_target_markup_mode()
+            resulting_mode = (
+                self.TARGET_MARKUP_PLAIN
+                if target_markup_mode == self.TARGET_MARKUP_XML
+                else target_markup_mode
+            )
 
             plural_tags = self._store.get_plural_tags()  # ty:ignore[unresolved-attribute]
 
@@ -561,9 +776,20 @@ class AndroidResourceUnit(base.TranslationUnit):
                 item = etree.Element("item")
                 item.set("quantity", plural_tag)
                 self.xmlelement.append(item)
-                self.set_xml_text_value(
-                    plural_string, item, preserve_markup=self._get_target_markup()
+                item_markup_mode = self.set_xml_text_value(
+                    plural_string,
+                    item,
+                    target_markup_mode=target_markup_mode,
                 )
+                if (
+                    target_markup_mode == self.TARGET_MARKUP_XML
+                    and item_markup_mode == self.TARGET_MARKUP_XML
+                ):
+                    resulting_mode = self.TARGET_MARKUP_XML
+            if target_markup_mode == self.TARGET_MARKUP_XML:
+                self._set_target_markup_mode(resulting_mode)
+            else:
+                self._set_target_markup_mode(target_markup_mode)
         else:
             # Fix the root tag if mismatching
             self.fixup_tag(self.SINGULAR_TAG)

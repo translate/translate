@@ -1,5 +1,6 @@
 from copy import copy, deepcopy
 
+import pytest
 from lxml import etree
 
 from translate.misc.multistring import multistring
@@ -290,7 +291,15 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         unit = self.UnitClass.createfromxmlElement(etree.fromstring(xml, parser))
 
         assert unit.target == "some <b>html code</b> here"
-        assert unit.target_markup is True
+        assert unit.target_markup_mode == unit.TARGET_MARKUP_ESCAPED
+
+    def test_parse_escaped_angle_text_flag(self) -> None:
+        xml = '<string name="teststring">&lt;not set&gt;</string>\n'
+        parser = etree.XMLParser(strip_cdata=False)
+        unit = self.UnitClass.createfromxmlElement(etree.fromstring(xml, parser))
+
+        assert unit.target == "<not set>"
+        assert unit.target_markup_mode == unit.TARGET_MARKUP_PLAIN
 
     def test_parse_nested_html_code_flag(self) -> None:
         xml = '<string name="teststring">some <b>html code</b> here</string>\n'
@@ -298,7 +307,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         unit = self.UnitClass.createfromxmlElement(etree.fromstring(xml, parser))
 
         assert unit.target == "some <b>html code</b> here"
-        assert unit.target_markup is False
+        assert unit.target_markup_mode == unit.TARGET_MARKUP_XML
 
     def test_parse_arrows(self) -> None:
         string = "<<< arrow"
@@ -694,6 +703,20 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
             "&appName; Core", "&amp;otherName; Core"
         )
 
+    def test_quoted_entity_doctype_preserved(self) -> None:
+        content = b"""<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE resources [
+<!ENTITY quoted "a&quot;b&#10;c">
+]>
+<resources>
+    <string name="quoted_value">&quoted;</string>
+</resources>
+"""
+        store = self.StoreClass()
+        store.parse(content)
+        store.units[0].target = "&quoted;"
+        assert bytes(store) == content
+
     def test_indent(self) -> None:
         content = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE resources [
@@ -870,7 +893,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         store.parse(content)
 
         assert store.units[0].target == "Other <b>tab</b>"
-        assert store.units[0].target_markup is True
+        assert store.units[0].target_markup_mode == store.units[0].TARGET_MARKUP_ESCAPED
 
         store.units[0].target = "Next <b>tab</b>"
         assert (
@@ -882,7 +905,93 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
 """
         )
 
-    def test_target_markup_setter_overrides_to_nested_markup(self) -> None:
+    def test_namespaced_markup_roundtrip_preserves_escaped_xml(self) -> None:
+        content = b"""<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="id">&lt;xliff:g&gt;%s&lt;/xliff:g&gt; den</string>
+</resources>
+"""
+        store = self.StoreClass()
+        store.parse(content)
+
+        assert store.units[0].target == "<xliff:g>%s</xliff:g> den"
+        assert store.units[0].target_markup_mode == store.units[0].TARGET_MARKUP_ESCAPED
+
+        store.units[0].target = store.units[0].target
+        assert (
+            bytes(store).decode()
+            == """<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="id">&lt;xliff:g&gt;%s&lt;/xliff:g&gt; den</string>
+</resources>
+"""
+        )
+
+    def test_plain_angle_text_noop_edit_roundtrip(self) -> None:
+        content = b"""<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="id">&lt;not set&gt;</string>
+</resources>
+"""
+        store = self.StoreClass()
+        store.parse(content)
+
+        assert store.units[0].target == "<not set>"
+        assert store.units[0].target_markup_mode == store.units[0].TARGET_MARKUP_PLAIN
+
+        store.units[0].target = store.units[0].target
+        assert (
+            bytes(store).decode()
+            == """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="id">&lt;not set&gt;</string>
+</resources>
+"""
+        )
+
+    def test_plain_angle_text_literal_entities_do_not_double_escape(self) -> None:
+        content = b"""<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="id">&lt;not set&gt;</string>
+</resources>
+"""
+        store = self.StoreClass()
+        store.parse(content)
+
+        store.units[0].target_markup_mode = store.units[0].TARGET_MARKUP_XML
+        store.units[0].target = "&lt;not set&gt;"
+        assert store.units[0].target_markup_mode == store.units[0].TARGET_MARKUP_PLAIN
+        assert (
+            bytes(store).decode()
+            == """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="id">&lt;not set&gt;</string>
+</resources>
+"""
+        )
+
+    def test_plain_angle_text_edit_stays_plain(self) -> None:
+        content = b"""<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="id">&lt;not set&gt;</string>
+</resources>
+"""
+        store = self.StoreClass()
+        store.parse(content)
+
+        store.units[0].target = "<b>x</b>"
+
+        assert store.units[0].target_markup_mode == store.units[0].TARGET_MARKUP_PLAIN
+        assert (
+            bytes(store).decode()
+            == """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="id">&lt;b&gt;x&lt;/b&gt;</string>
+</resources>
+"""
+        )
+
+    def test_target_markup_mode_setter_overrides_to_xml_markup(self) -> None:
         content = b"""<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="id">Other &lt;b&gt;tab&lt;/b&gt;</string>
@@ -891,10 +1000,11 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         store = self.StoreClass()
         store.parse(content)
 
-        store.units[0].target_markup = False
+        store.units[0].target_markup_mode = store.units[0].TARGET_MARKUP_XML
+        assert store.units[0].target_markup_mode == store.units[0].TARGET_MARKUP_XML
         store.units[0].target = "Next <b>tab</b>"
 
-        assert store.units[0].target_markup is False
+        assert store.units[0].target_markup_mode == store.units[0].TARGET_MARKUP_XML
         assert (
             bytes(store).decode()
             == """<?xml version="1.0" encoding="utf-8"?>
@@ -904,7 +1014,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
 """
         )
 
-    def test_target_markup_setter_overrides_to_escaped_markup(self) -> None:
+    def test_target_markup_mode_setter_overrides_to_plain(self) -> None:
         content = b"""<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="id">Other <b>tab</b></string>
@@ -913,10 +1023,104 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         store = self.StoreClass()
         store.parse(content)
 
-        store.units[0].target_markup = True
+        store.units[0].target_markup_mode = store.units[0].TARGET_MARKUP_PLAIN
+        assert store.units[0].target_markup_mode == store.units[0].TARGET_MARKUP_PLAIN
         store.units[0].target = "Next <b>tab</b>"
 
-        assert store.units[0].target_markup is True
+        assert store.units[0].target_markup_mode == store.units[0].TARGET_MARKUP_PLAIN
+        assert (
+            bytes(store).decode()
+            == """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="id">Next &lt;b&gt;tab&lt;/b&gt;</string>
+</resources>
+"""
+        )
+
+    def test_target_markup_deprecated_getter_alias(self) -> None:
+        content = b"""<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="id">Other &lt;b&gt;tab&lt;/b&gt;</string>
+</resources>
+"""
+        store = self.StoreClass()
+        store.parse(content)
+
+        with pytest.deprecated_call(match="target_markup"):
+            assert store.units[0].target_markup is True
+
+        store = self.StoreClass()
+        store.parse(
+            b"""<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="id">Other <b>tab</b></string>
+</resources>
+"""
+        )
+
+        with pytest.deprecated_call(match="target_markup"):
+            assert store.units[0].target_markup is False
+
+    def test_target_markup_deprecated_setter_alias_to_xml_markup(self) -> None:
+        content = b"""<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="id">Other &lt;b&gt;tab&lt;/b&gt;</string>
+</resources>
+"""
+        store = self.StoreClass()
+        store.parse(content)
+
+        with pytest.deprecated_call(match="target_markup"):
+            store.units[0].target_markup = False
+        store.units[0].target = "Next <b>tab</b>"
+
+        assert store.units[0].target_markup_mode == store.units[0].TARGET_MARKUP_XML
+        assert (
+            bytes(store).decode()
+            == """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="id">Next <b>tab</b></string>
+</resources>
+"""
+        )
+
+    def test_target_markup_deprecated_setter_alias_to_escaped_markup(self) -> None:
+        content = b"""<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="id">Other <b>tab</b></string>
+</resources>
+"""
+        store = self.StoreClass()
+        store.parse(content)
+
+        with pytest.deprecated_call(match="target_markup"):
+            store.units[0].target_markup = True
+        store.units[0].target = "Next <b>tab</b>"
+
+        assert store.units[0].target_markup_mode == store.units[0].TARGET_MARKUP_ESCAPED
+        assert (
+            bytes(store).decode()
+            == """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="id">Next &lt;b&gt;tab&lt;/b&gt;</string>
+</resources>
+"""
+        )
+
+    def test_target_markup_mode_setter_overrides_to_escaped_markup(self) -> None:
+        content = b"""<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="id">Other <b>tab</b></string>
+</resources>
+"""
+        store = self.StoreClass()
+        store.parse(content)
+
+        store.units[0].target_markup_mode = store.units[0].TARGET_MARKUP_ESCAPED
+        assert store.units[0].target_markup_mode == store.units[0].TARGET_MARKUP_ESCAPED
+        store.units[0].target = "Next <b>tab</b>"
+
+        assert store.units[0].target_markup_mode == store.units[0].TARGET_MARKUP_ESCAPED
         assert (
             bytes(store).decode()
             == """<?xml version="1.0" encoding="utf-8"?>
@@ -942,7 +1146,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         assert store.units[0].target == multistring(
             ["Other <b>tab</b>", "Other <b>tabs</b>"]
         )
-        assert store.units[0].target_markup is True
+        assert store.units[0].target_markup_mode == store.units[0].TARGET_MARKUP_ESCAPED
 
         store.units[0].target = multistring(["Next <b>tab</b>", "Next <b>tabs</b>"])
         assert (
@@ -957,7 +1161,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
 """
         )
 
-    def test_plural_target_markup_setter_overrides_to_nested_markup(self) -> None:
+    def test_plural_target_markup_mode_setter_overrides_to_xml_markup(self) -> None:
         content = b"""<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="teststring">
@@ -970,10 +1174,11 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         store.targetlanguage = "en"
         store.parse(content)
 
-        store.units[0].target_markup = False
+        store.units[0].target_markup_mode = store.units[0].TARGET_MARKUP_XML
+        assert store.units[0].target_markup_mode == store.units[0].TARGET_MARKUP_XML
         store.units[0].target = multistring(["Next <b>tab</b>", "Next <b>tabs</b>"])
 
-        assert store.units[0].target_markup is False
+        assert store.units[0].target_markup_mode == store.units[0].TARGET_MARKUP_XML
         assert (
             bytes(store).decode()
             == """<?xml version="1.0" encoding="utf-8"?>
@@ -986,7 +1191,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
 """
         )
 
-    def test_plural_target_markup_setter_overrides_to_escaped_markup(self) -> None:
+    def test_plural_target_markup_mode_setter_overrides_to_escaped_markup(self) -> None:
         content = b"""<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="teststring">
@@ -999,10 +1204,11 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         store.targetlanguage = "en"
         store.parse(content)
 
-        store.units[0].target_markup = True
+        store.units[0].target_markup_mode = store.units[0].TARGET_MARKUP_ESCAPED
+        assert store.units[0].target_markup_mode == store.units[0].TARGET_MARKUP_ESCAPED
         store.units[0].target = multistring(["Next <b>tab</b>", "Next <b>tabs</b>"])
 
-        assert store.units[0].target_markup is True
+        assert store.units[0].target_markup_mode == store.units[0].TARGET_MARKUP_ESCAPED
         assert (
             bytes(store).decode()
             == """<?xml version="1.0" encoding="utf-8"?>
@@ -1014,6 +1220,49 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
 </resources>
 """
         )
+
+    def test_plural_xml_markup_downgrades_to_plain(self) -> None:
+        content = b"""<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="teststring">
+        <item quantity="one">Other <b>tab</b></item>
+        <item quantity="other">Other <b>tabs</b></item>
+    </plurals>
+</resources>
+"""
+        store = self.StoreClass()
+        store.targetlanguage = "en"
+        store.parse(content)
+
+        assert store.units[0].target_markup_mode == store.units[0].TARGET_MARKUP_XML
+
+        store.units[0].target = multistring(["Next tab", "Next tabs"])
+
+        assert store.units[0].target_markup_mode == store.units[0].TARGET_MARKUP_PLAIN
+        assert (
+            bytes(store).decode()
+            == """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="teststring">
+        <item quantity="one">Next tab</item>
+        <item quantity="other">Next tabs</item>
+    </plurals>
+</resources>
+"""
+        )
+
+    def test_target_markup_mode_setter_rejects_invalid_value(self) -> None:
+        store = self.StoreClass()
+        store.parse(
+            b"""<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="id">Value</string>
+</resources>
+"""
+        )
+
+        with pytest.raises(ValueError, match="Unsupported target markup mode"):
+            store.units[0].target_markup_mode = "unsupported"
 
     def test_edit_plural_others(self) -> None:
         content = b"""<?xml version="1.0" encoding="utf-8"?>
