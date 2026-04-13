@@ -187,8 +187,7 @@ def hello():
         self.run_command("file.md", "test.po")
         assert os.path.isfile(self.get_testfilename("test.po"))
         content = self.read_testfile("test.po").decode()
-        assert "{1}" in content
-        assert "{2}" in content
+        assert 'msgid "Visit [Google]{1} and [GitHub]{2} for more."' in content
 
     def test_markdown_hyperlink_extraction_no_placeholders(self) -> None:
         """Test that --no-placeholders preserves full link syntax in msgids."""
