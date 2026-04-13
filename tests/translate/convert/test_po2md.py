@@ -267,6 +267,126 @@ You are only coming through in waves.
         assert "# Prehled" in output
         assert "Prelozeny obsah" in output
 
+    def test_no_placeholders_simple_link(self) -> None:
+        """po2md --no-placeholders: full-link msgid is translated correctly."""
+        self.given_markdown_file(
+            "The [OSPO Alliance EN](https://ospo-alliance.org) website\n"
+        )
+        self.given_translation_file(
+            lines=[
+                "#: file.md:1",
+                'msgid "The [OSPO Alliance EN](https://ospo-alliance.org) website"',
+                'msgstr "Die Website [OSPO Alliance DE](https://ospo-alliance.org)"',
+            ]
+        )
+        os.chdir(self.testdir)
+        try:
+            self.convertmodule.main(
+                [
+                    "translation.po",
+                    "out.md",
+                    "--progress=none",
+                    "--template=file.md",
+                    "--no-placeholders",
+                ]
+            )
+        finally:
+            os.chdir(self.rundir)
+        output = self.read_testfile("out.md").decode()
+        assert "Die Website [OSPO Alliance DE](https://ospo-alliance.org)" in output
+        assert "OSPO Alliance EN" not in output
+
+    def test_no_placeholders_multiple_links(self) -> None:
+        """po2md --no-placeholders: paragraph with multiple links is translated."""
+        self.given_markdown_file(
+            "Visit [Google](https://google.com) and [GitHub](https://github.com) for more.\n"
+        )
+        self.given_translation_file(
+            lines=[
+                "#: file.md:1",
+                'msgid "Visit [Google](https://google.com) and [GitHub](https://github.com) for more."',
+                'msgstr "Besök [Google](https://google.com) och [GitHub](https://github.com) för mer."',
+            ]
+        )
+        os.chdir(self.testdir)
+        try:
+            self.convertmodule.main(
+                [
+                    "translation.po",
+                    "out.md",
+                    "--progress=none",
+                    "--template=file.md",
+                    "--no-placeholders",
+                ]
+            )
+        finally:
+            os.chdir(self.rundir)
+        output = self.read_testfile("out.md").decode()
+        assert (
+            "Besök [Google](https://google.com) och [GitHub](https://github.com) för mer."
+            in output
+        )
+        assert "Visit" not in output
+
+    def test_no_placeholders_reference_link(self) -> None:
+        """po2md --no-placeholders: inline reference link is translated; definition stays verbatim."""
+        self.create_testfile(
+            "file.md",
+            '[foo]: https://example.com "Example site"\n[Visit the foo site][foo]\n',
+        )
+        self.given_translation_file(
+            lines=[
+                "#: file.md:2",
+                'msgid "[Visit the foo site][foo]"',
+                'msgstr "[Besuche die foo-Seite][foo]"',
+            ]
+        )
+        os.chdir(self.testdir)
+        try:
+            self.convertmodule.main(
+                [
+                    "translation.po",
+                    "out.md",
+                    "--progress=none",
+                    "--template=file.md",
+                    "--no-placeholders",
+                ]
+            )
+        finally:
+            os.chdir(self.rundir)
+        output = self.read_testfile("out.md").decode()
+        # Definition is preserved verbatim so the reference resolves
+        assert '[foo]: https://example.com "Example site"' in output
+        # Inline reference is translated with consistent label
+        assert "[Besuche die foo-Seite][foo]" in output
+
+    def test_no_placeholders_html_span(self) -> None:
+        """po2md --no-placeholders: HTML spans in msgid are translated verbatim."""
+        self.given_markdown_file("Read the <strong>important</strong> notice.\n")
+        self.given_translation_file(
+            lines=[
+                "#: file.md:1",
+                'msgid "Read the <strong>important</strong> notice."',
+                'msgstr "Läs det <strong>viktiga</strong> meddelandet."',
+            ]
+        )
+        os.chdir(self.testdir)
+        try:
+            self.convertmodule.main(
+                [
+                    "translation.po",
+                    "out.md",
+                    "--progress=none",
+                    "--template=file.md",
+                    "--no-placeholders",
+                ]
+            )
+        finally:
+            os.chdir(self.rundir)
+        output = self.read_testfile("out.md").decode()
+        assert "Läs det <strong>viktiga</strong> meddelandet." in output
+        assert "Read the" not in output
+
     def test_markdown_hyperlink_translation_with_full_link_in_po(self) -> None:
         """Test that PO entries with full markdown hyperlinks (without placeholders) are matched."""
         self.given_markdown_file(
