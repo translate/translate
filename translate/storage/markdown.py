@@ -363,8 +363,13 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         self, token: LinkReferenceDefinition
     ) -> Iterable[Fragment]:
         # note: these tokens will never be encountered in bypass mode.
-        # Translate label and title unless we're in an ignore section
-        if self.ignore_translation:
+        # Translate label and title unless we're in an ignore section or
+        # no_placeholders mode.  In no_placeholders mode we must not translate
+        # the label here — the definition is rendered verbatim (the whole block
+        # is treated as non-translatable) so that inline reference links, which
+        # are rendered verbatim in bypass mode with the original label, resolve
+        # correctly and no label mismatch occurs in the output.
+        if self.ignore_translation or self.no_placeholders:
             label = token.label
             title = token.title
         else:

@@ -612,32 +612,42 @@ class TestMarkdownNoPlaceholders(TestMarkdownTranslationUnitExtractionAndTransla
             "[railroad link][foo *bar*] hello\n",
         ]
         store = self.parse("".join(input))
-        # In no_placeholders mode, the inline full reference link label is NOT
-        # extracted separately; only the link-ref-def's label and title are.
+        # In no_placeholders mode, the definition is NOT extracted as translation
+        # units at all (no separate label or title units) — it is rendered verbatim
+        # so that inline reference links keep the same original label and resolve.
         self.assertCountEqual(
             self.get_translation_unit_sources(store),
             [
-                "foo *bar*",
-                "train & tracks",
                 "[railroad link][foo *bar*] hello",
             ],
         )
         expected = [
-            '[(foo *bar*)]: train.jpg "(train & tracks)"\n',
+            '[foo *bar*]: train.jpg "train & tracks"\n',
             "([railroad link][foo *bar*] hello)\n",
         ]
         assert self.get_translated_output(store) == "".join(expected)
-        # location: link title
-        locations = [
-            tu.getlocations()[0] for tu in store.units if tu.source == "train & tracks"
-        ]
-        assert len(locations) == 1
-        assert locations[0].endswith("1")
-        # location: link label (only one, from the definition — not from the inline ref)
-        locations = [
-            tu.getlocations()[0] for tu in store.units if tu.source == "foo *bar*"
-        ]
-        assert len(locations) == 1
+
+    def test_link_reference_definition_and_shortcut_reference_link(self) -> None:
+        store = self.parse('[foo *bar*]: train.jpg "train & tracks"\n![foo *bar*]\n')
+        unit_sources = self.get_translation_unit_sources(store)
+        # definition is verbatim; only the shortcut reference is translated
+        self.assertCountEqual(unit_sources, ["![foo *bar*]"])
+        translated_output = self.get_translated_output(store)
+        assert (
+            translated_output
+            == '[foo *bar*]: train.jpg "train & tracks"\n(![foo *bar*])\n'
+        )
+
+    def test_link_reference_definition_and_collapsed_reference_link(self) -> None:
+        store = self.parse('[foo *bar*]: train.jpg "train & tracks"\n![foo *bar*][]\n')
+        unit_sources = self.get_translation_unit_sources(store)
+        # definition is verbatim; only the collapsed reference is translated
+        self.assertCountEqual(unit_sources, ["![foo *bar*][]"])
+        translated_output = self.get_translated_output(store)
+        assert (
+            translated_output
+            == '[foo *bar*]: train.jpg "train & tracks"\n(![foo *bar*][])\n'
+        )
 
     def test_remove_placeholders_from_both_ends_of_translation_units(self) -> None:
         # In no_placeholders mode, inline elements are not trimmed from the ends
