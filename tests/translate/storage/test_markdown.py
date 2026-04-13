@@ -558,15 +558,6 @@ author: John Smith
         return markdown.MarkdownFile(inputfile=inputfile, callback=lambda x: f"({x})")
 
     @staticmethod
-    def parse_no_placeholders(md):
-        inputfile = BytesIO(md.encode())
-        return markdown.MarkdownFile(
-            inputfile=inputfile,
-            callback=lambda x: f"({x})",
-            no_placeholders=True,
-        )
-
-    @staticmethod
     def get_translation_unit_sources(store):
         return [tu.source for tu in store.units]
 

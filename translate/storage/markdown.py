@@ -589,9 +589,9 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
                         max_line_length=float("inf"),  # ty:ignore[invalid-argument-type]
                     )
                 )
-                # normalize hard line break markers (\\\n and trailing-space \n)
-                # to plain \n so translate_callback receives clean text and the
-                # subsequent replace("\n", "\\\n") round-trip works correctly.
+                # normalize hard line break markers to plain \n for translate_callback:
+                # \\\n = backslash hard break (e.g. "alpha\\\nbeta")
+                # (space){2+}\n = trailing-space hard break (e.g. "alpha  \nbeta")
                 content_md = re.sub(r"\\\n| {2,}\n", "\n", content_md)
                 if content_md:
                     translated_md = self.translate_callback(
@@ -652,13 +652,16 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
                     expanded_translated_md = self.lookup_callback(expanded_content_md)
                     if expanded_translated_md != expanded_content_md:
                         translated_md = expanded_translated_md
-                        # Clear placeholders since the expanded translation
-                        # already contains full markdown syntax (e.g. links)
-                        # and does not need placeholder replacement.
-                        placeholders = []
+                        # The expanded translation already contains full markdown
+                        # syntax (e.g. links), so skip placeholder replacement.
+                        use_placeholders = []
+                    else:
+                        use_placeholders = placeholders
+                else:
+                    use_placeholders = placeholders
                 translated_md = translated_md.replace("\n", "\\\n").strip(" \t")
                 translated_md = self.remove_placeholder_markers(
-                    translated_md, placeholders
+                    translated_md, use_placeholders
                 )
                 translated = self.make_fragments(
                     span_token.tokenize_inner(translated_md)
