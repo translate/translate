@@ -17,11 +17,11 @@ Formats and Converters
 
 - Android
 
-  - Improve XML formatting preserving
+  - Improve XML formatting preservation
 
 - Markdown
 
-  - Add optional full exposing of placeholders
+  - Add optional full exposure of placeholders
 
 - INI
 
