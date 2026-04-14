@@ -205,7 +205,7 @@ class RESXFile(lisa.LISAfile):
 
     def initbody(self) -> None:
         """Initialises self.body."""
-        self.namespace = self.document.getroot().nsmap.get(None, None)
+        self.namespace = self.document.getroot().nsmap.get(None, "")
         self.header = self.document.getroot()
         self.body = self.document.getroot()
 

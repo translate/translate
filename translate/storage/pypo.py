@@ -865,7 +865,7 @@ class pofile(pocommon.pofile[pounit]):
         wrapargs = {}
         if width is not None:
             wrapargs = {"width": width}
-        self.wrapper = PoWrapper(**wrapargs)
+        self.wrapper: PoWrapper | None = PoWrapper(**wrapargs)
         self.newline = "\n"
         super().__init__(inputfile, **kwargs)
 

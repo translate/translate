@@ -532,7 +532,7 @@ class Xliff1File(XliffFile[U]):
         else:
             # handle crappy xliff docs without proper namespace declaration
             # by simply using the xmlns default namespace
-            self.namespace = self.document.getroot().nsmap.get(None, None)
+            self.namespace = self.document.getroot().nsmap.get(None, "")
 
         if self._filename:
             filenode = self.getfilenode(self._filename, createifmissing=True)

@@ -107,7 +107,7 @@ class QphFile(lisa.LISAfile):
         Initialises self.body so it never needs to be retrieved from the XML
         again.
         """
-        self.namespace = self.document.getroot().nsmap.get(None, None)
+        self.namespace = self.document.getroot().nsmap.get(None, "")
         self.header = self.document.getroot()
         self.body = self.document.getroot()  # The root node contains the units
 

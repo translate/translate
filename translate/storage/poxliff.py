@@ -308,6 +308,7 @@ class PoXliffUnit(xliff.xliffunit):
 
     @classmethod
     def createfromxmlElement(cls, element, namespace=None):
+        namespace = namespace or ""
         if element.tag.endswith("trans-unit"):
             object = cls(None, empty=True)
             object.xmlelement = element

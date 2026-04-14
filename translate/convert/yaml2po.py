@@ -30,9 +30,9 @@ from translate.storage import po, yaml
 class yaml2po:
     """Convert one or two YAML files to a single PO file."""
 
-    SourceStoreClass = yaml.YAMLFile
-    TargetStoreClass = po.pofile
-    TargetUnitClass = po.pounit
+    SourceStoreClass: type[yaml.YAMLFile] = yaml.YAMLFile
+    TargetStoreClass: type[po.pofile] = po.pofile
+    TargetUnitClass: type[po.pounit] = po.pounit
 
     def __init__(
         self,

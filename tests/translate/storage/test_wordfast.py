@@ -1,3 +1,5 @@
+import time
+
 from translate.storage import wordfast as wf
 
 from . import test_base
@@ -15,7 +17,7 @@ class TestWFTime:
         """Setting and getting times set using time tuple."""
         wftime = wf.WordfastTime()
         assert wftime.time is None
-        wftime.time = (1999, 3, 27)
+        wftime.time = time.strptime("19990327~000000", wf.WF_TIMEFORMAT)
         wftime.timestring = "19990327~000000"
 
 

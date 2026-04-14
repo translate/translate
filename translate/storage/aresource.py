@@ -912,7 +912,7 @@ class AndroidResourceUnit(base.TranslationUnit):
         if (self.xmlelement is not None) and (self.xmlelement.getparent is not None):
             prevSibling = self.xmlelement.getprevious()
             while (prevSibling is not None) and (prevSibling.tag is etree.Comment):
-                prevSibling.getparent().remove(prevSibling)  # ty:ignore[unresolved-attribute]
+                prevSibling.getparent().remove(prevSibling)
                 prevSibling = self.xmlelement.getprevious()
 
         super().removenotes()

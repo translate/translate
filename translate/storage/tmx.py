@@ -175,7 +175,7 @@ class tmxfile(lisa.LISAfile):
         headernode.set("adminlang", "en")
         # TODO: consider adminlang. Used for notes, etc. Possibly same as
         # targetlanguage
-        headernode.set("srclang", self.sourcelanguage)
+        headernode.set("srclang", self.sourcelanguage or "en")
         headernode.set("datatype", "PlainText")
         # headernode.set("creationdate", "YYYYMMDDTHHMMSSZ"
         # headernode.set("creationid", "CodeSyntax"

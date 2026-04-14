@@ -446,7 +446,7 @@ class tsfile(lisa.LISAfile[tsunit]):
 
     def initbody(self) -> None:
         """Initialises self.body."""
-        self.namespace = self.document.getroot().nsmap.get(None, None)
+        self.namespace = self.document.getroot().nsmap.get(None, "")
         self.header = self.document.getroot()
         if self._contextname:
             self.body = self._getcontextnode(self._contextname)

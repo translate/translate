@@ -845,6 +845,7 @@ msgstr ""\r
         assert max(len(line) for line in bytes(store).decode().splitlines()) <= 77
 
         outstore = self.StoreClass()
+        assert outstore.wrapper is not None
         outstore.wrapper.width = -1
         unit = copy(store.units[0])
         outstore.addunit(unit)
@@ -852,6 +853,7 @@ msgstr ""\r
         assert max(len(line) for line in bytes(outstore).decode().splitlines()) > 77
 
         outstore = self.StoreClass()
+        assert outstore.wrapper is not None
         outstore.wrapper.width = -1
         unit = copy(store.units[0])
         unit.wrapper = None
@@ -870,6 +872,7 @@ msgstr ""\r
         outstore = self.StoreClass()
         outstore.wrapper = None
         unit = copy(store.units[0])
+        assert unit.wrapper is not None
         unit.wrapper.width = -1
         outstore.addunit(unit)
 

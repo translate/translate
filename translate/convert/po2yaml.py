@@ -30,9 +30,9 @@ from translate.storage import po, yaml
 class po2yaml:
     """Convert a PO file and a template YAML file to a YAML file."""
 
-    SourceStoreClass = po.pofile
-    TargetStoreClass = yaml.YAMLFile
-    TargetUnitClass = yaml.YAMLUnit
+    SourceStoreClass: type[po.pofile] = po.pofile
+    TargetStoreClass: type[yaml.YAMLFile] = yaml.YAMLFile
+    TargetUnitClass: type[yaml.YAMLUnit] = yaml.YAMLUnit
     MissingTemplateMessage = "A template YAML file must be provided."
 
     def __init__(

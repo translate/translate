@@ -253,7 +253,7 @@ class Xliff2File(XliffFile[Xliff2Unit]):
                 "Please use the XLIFF 1.x parser (xliff.xlifffile) instead."
             )
 
-        self.namespace = self.document.getroot().nsmap.get(None, self.namespace)
+        self.namespace = self.document.getroot().nsmap.get(None, self.namespace or "")
 
         # Get the file node
         if self._filename:
