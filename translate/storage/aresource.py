@@ -50,6 +50,7 @@ XML_ATTRIBUTE_CAPTURE = re.compile(rf"({XML_NAME})\s*=\s*(\"[^\"]*\"|'[^']*')")
 XML_TAG_NAME = re.compile(rf"^</?({XML_NAME})")
 MARKUP_TAG = re.compile(rf"</?{XML_NAME}(?:{XML_ATTRIBUTE})*\s*/?>")
 ESCAPED_MARKUP_TAG = re.compile(rf"&lt;/?{XML_NAME}(?:{XML_ATTRIBUTE})*\s*/?&gt;")
+CDATA_ONLY = re.compile(r"(?:<!\[CDATA\[.*?\]\]>)+", re.DOTALL)
 
 
 class DecodingXMLParser:
@@ -264,6 +265,7 @@ class AndroidResourceUnit(base.TranslationUnit):
     ESCAPE_ALL: ClassVar[bool] = True
     TARGET_MARKUP_PLAIN: ClassVar[str] = "plain"
     TARGET_MARKUP_ESCAPED: ClassVar[str] = "escaped-markup"
+    TARGET_MARKUP_CDATA: ClassVar[str] = "cdata"
     TARGET_MARKUP_XML: ClassVar[str] = "xml-markup"
 
     TargetType = str | multistring | list[str] | None
@@ -443,6 +445,23 @@ class AndroidResourceUnit(base.TranslationUnit):
         return self._has_escaped_markup_structure(xmltarget, serialized_text)
 
     @staticmethod
+    def _has_cdata_text(xmltarget: etree._Element) -> bool:
+        raw_xml = etree.tostring(xmltarget, encoding="unicode", with_tail=False)
+        return len(xmltarget) == 0 and "<![CDATA[" in raw_xml
+
+    @staticmethod
+    def _extract_inner_xml(raw_xml: str) -> str:
+        start = raw_xml.find(">")
+        end = raw_xml.rfind("<")
+        if start == -1 or end == -1 or end <= start:
+            return ""
+        return raw_xml[start + 1 : end]
+
+    @classmethod
+    def _has_only_cdata_sections(cls, raw_xml: str) -> bool:
+        return bool(CDATA_ONLY.fullmatch(cls._extract_inner_xml(raw_xml)))
+
+    @staticmethod
     def _has_literal_angle_text(xmltarget: etree._Element) -> bool:
         raw_xml = etree.tostring(xmltarget, encoding="unicode", with_tail=False)
         return (
@@ -465,6 +484,10 @@ class AndroidResourceUnit(base.TranslationUnit):
         if self._has_xml_markup():
             self._target_markup_mode = self.TARGET_MARKUP_XML
         elif any(
+            self._has_cdata_text(xmltarget) for xmltarget in self._get_markup_targets()
+        ):
+            self._target_markup_mode = self.TARGET_MARKUP_CDATA
+        elif any(
             self._uses_plain_markup_roundtrip(xmltarget)
             for xmltarget in self._get_markup_targets()
         ):
@@ -484,6 +507,7 @@ class AndroidResourceUnit(base.TranslationUnit):
         if target_markup_mode not in {
             self.TARGET_MARKUP_PLAIN,
             self.TARGET_MARKUP_ESCAPED,
+            self.TARGET_MARKUP_CDATA,
             self.TARGET_MARKUP_XML,
         }:
             msg = f"Unsupported target markup mode: {target_markup_mode}"
@@ -595,15 +619,27 @@ class AndroidResourceUnit(base.TranslationUnit):
 
         # Unescape as plain text in case there is no XML markup. Ufortunately
         # CDATA elements are not listed as children in lxml, so test for it in raw XML.
-        if len(xmltarget) == 0 and "<![CDATA[" not in raw_xml:
-            if xmltarget.text is None:
-                return ""
-            text, cleanup_start, cleanup_end = parser.process_string(xmltarget.text)
-            if cleanup_start:
-                text = text.lstrip()
-            if cleanup_end:
-                text = text.rstrip()
-            return text
+        if len(xmltarget) == 0:
+            if "<![CDATA[" not in raw_xml:
+                if xmltarget.text is None:
+                    return ""
+                text, cleanup_start, cleanup_end = parser.process_string(xmltarget.text)
+                if cleanup_start:
+                    text = text.lstrip()
+                if cleanup_end:
+                    text = text.rstrip()
+                return text
+            if self._has_only_cdata_sections(raw_xml):
+                text = xmltarget.text or ""
+                if self._contains_markup_text(text):
+                    unescaped = UNICODE_ESCAPE.sub(parser.decode_unicode_escapes, text)
+                    return CHAR_ESCAPE.sub(parser.decode_escapes, unescaped)
+                text, cleanup_start, cleanup_end = parser.process_string(text)
+                if cleanup_start:
+                    text = text.lstrip()
+                if cleanup_end:
+                    text = text.rstrip()
+                return text
 
         return parser.parse()
 
@@ -621,6 +657,70 @@ class AndroidResourceUnit(base.TranslationUnit):
         xmltarget.text = self.escape(target)
         self._set_target_markup_mode(target_markup_mode)
 
+    def _parse_target_xml(
+        self,
+        xmltarget: etree._Element,
+        target: str,
+        *,
+        escape_text_parts: bool = True,
+    ) -> etree._Element | None:
+        parser = get_safe_xml_parser(strip_cdata=False)
+        newstring = self._render_xml_context(xmltarget, target)
+        try:
+            etree.fromstring(newstring, parser)
+        except Exception:
+            return None
+        if escape_text_parts:
+            newstring = EncodingXMLParser(newstring).parse()
+        parsed_root = etree.fromstring(newstring, parser)
+        return parsed_root if parsed_root.tag == xmltarget.tag else parsed_root[0]
+
+    def _replace_xml_target(
+        self,
+        xmltarget: etree._Element,
+        newtree: etree._Element,
+    ) -> None:
+        # Copy existing attributes
+        for attribute, value in xmltarget.items():
+            newtree.attrib[attribute] = value
+        parent = xmltarget.getparent()
+        # Parent can be none when operating on Unit only without a storage
+        if parent is not None:
+            parent.replace(xmltarget, newtree)
+        # Update unit xmlelement if needed (plurals are inner elements here)
+        if xmltarget == self.xmlelement:
+            self.xmlelement = newtree
+
+    def set_xml_text_cdata(self, target: str | None, xmltarget: etree._Element) -> None:
+        if target is not None and "<![CDATA[" in target:
+            newtree = self._parse_target_xml(
+                xmltarget,
+                target,
+                escape_text_parts=True,
+            )
+            if newtree is not None and len(newtree) == 0:
+                self._replace_xml_target(xmltarget, newtree)
+                self._set_target_markup_mode(self.TARGET_MARKUP_CDATA)
+                return
+
+        # Remove possible old elements
+        for x in xmltarget.iterchildren():
+            xmltarget.remove(x)
+        # Handle text only
+        if target is None:
+            xmltarget.text = None
+        else:
+            newtree = self._parse_target_xml(xmltarget, target)
+            cdata_text = (
+                self._extract_inner_xml(
+                    etree.tostring(newtree, encoding="unicode", with_tail=False)
+                )
+                if newtree is not None
+                else self.escape(target)
+            )
+            xmltarget.text = etree.CDATA(cdata_text)
+        self._set_target_markup_mode(self.TARGET_MARKUP_CDATA)
+
     def set_xml_text_value(
         self,
         target: str | None,
@@ -631,16 +731,23 @@ class AndroidResourceUnit(base.TranslationUnit):
             target_markup_mode = self._get_target_markup_mode()
         if target is None:
             resulting_mode = (
-                self.TARGET_MARKUP_ESCAPED
-                if target_markup_mode == self.TARGET_MARKUP_ESCAPED
+                target_markup_mode
+                if target_markup_mode
+                in {self.TARGET_MARKUP_ESCAPED, self.TARGET_MARKUP_CDATA}
                 else self.TARGET_MARKUP_PLAIN
             )
-            self.set_xml_text_plain(
-                target,
-                xmltarget,
-                target_markup_mode=resulting_mode,
-            )
+            if resulting_mode == self.TARGET_MARKUP_CDATA:
+                self.set_xml_text_cdata(target, xmltarget)
+            else:
+                self.set_xml_text_plain(
+                    target,
+                    xmltarget,
+                    target_markup_mode=resulting_mode,
+                )
             return resulting_mode
+        if target_markup_mode == self.TARGET_MARKUP_CDATA:
+            self.set_xml_text_cdata(target, xmltarget)
+            return target_markup_mode
         if target_markup_mode != self.TARGET_MARKUP_XML:
             self.set_xml_text_plain(
                 target,
@@ -651,35 +758,15 @@ class AndroidResourceUnit(base.TranslationUnit):
 
         if "<" in target or "&" in target:
             # Try to handle it as legacy XML
-            parser = get_safe_xml_parser(strip_cdata=False)
-            newstring = self._render_xml_context(xmltarget, target)
-            try:
-                etree.fromstring(newstring, parser)
-            except Exception:
+            newtree = self._parse_target_xml(xmltarget, target)
+            if newtree is None:
                 self.set_xml_text_plain(
                     target,
                     xmltarget,
                     target_markup_mode=self.TARGET_MARKUP_PLAIN,
                 )
                 return self.TARGET_MARKUP_PLAIN
-            # Escape text parts
-            encoding_parser = EncodingXMLParser(newstring)
-            newstring = encoding_parser.parse()
-            parsed_root = etree.fromstring(newstring, parser)
-            newtree = (
-                parsed_root if parsed_root.tag == xmltarget.tag else parsed_root[0]
-            )
-            # Copy existing attributes
-            for attribute, value in xmltarget.items():
-                newtree.attrib[attribute] = value
-            # Update text
-            parent = xmltarget.getparent()
-            # Parent can be none when operating on Unit only without a storage
-            if parent is not None:
-                parent.replace(xmltarget, newtree)
-            # Update unit xmlelement if needed (plurals are inner elements here)
-            if xmltarget == self.xmlelement:
-                self.xmlelement = newtree
+            self._replace_xml_target(xmltarget, newtree)
             resulting_mode = (
                 self.TARGET_MARKUP_XML
                 if len(newtree) != 0 or "<![CDATA[" in target

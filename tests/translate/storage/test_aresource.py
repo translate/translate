@@ -309,6 +309,16 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         assert unit.target == "some <b>html code</b> here"
         assert unit.target_markup_mode == unit.TARGET_MARKUP_XML
 
+    def test_parse_cdata_flag(self) -> None:
+        xml = (
+            '<string name="teststring"><![CDATA[<a href="%1$s">Terms</a>]]></string>\n'
+        )
+        parser = etree.XMLParser(strip_cdata=False)
+        unit = self.UnitClass.createfromxmlElement(etree.fromstring(xml, parser))
+
+        assert unit.target == '<a href="%1$s">Terms</a>'
+        assert unit.target_markup_mode == unit.TARGET_MARKUP_CDATA
+
     def test_parse_arrows(self) -> None:
         string = "<<< arrow"
         xml = '<string name="teststring">&lt;&lt;&lt; arrow</string>\n'
@@ -1130,6 +1140,126 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
 """
         )
 
+    def test_cdata_roundtrip_preserves_existing_sections(self) -> None:
+        content = b"""<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="id">By continuing <![CDATA[<a href="%1$s">Terms</a>]]> and <![CDATA[<a href="%2$s">Privacy</a>]]></string>
+</resources>
+"""
+        store = self.StoreClass()
+        store.parse(content)
+
+        assert store.units[0].target_markup_mode == store.units[0].TARGET_MARKUP_CDATA
+
+        store.units[0].target = store.units[0].target
+        assert bytes(store) == content
+
+    def test_cdata_roundtrip_decodes_android_escapes(self) -> None:
+        content = b"""<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="id"><![CDATA[\\@twitterescape\\nwith newline]]></string>
+</resources>
+"""
+        store = self.StoreClass()
+        store.parse(content)
+
+        assert store.units[0].target == "@twitterescape\nwith newline"
+        assert store.units[0].target_markup_mode == store.units[0].TARGET_MARKUP_CDATA
+
+        store.units[0].target = store.units[0].target
+        assert bytes(store) == content
+
+    def test_target_markup_mode_setter_overrides_to_cdata(self) -> None:
+        content = b"""<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="id">Other tab</string>
+</resources>
+"""
+        store = self.StoreClass()
+        store.parse(content)
+
+        store.units[0].target_markup_mode = store.units[0].TARGET_MARKUP_CDATA
+        assert store.units[0].target_markup_mode == store.units[0].TARGET_MARKUP_CDATA
+        store.units[0].target = 'Next <a href="%1$s">tab</a>'
+
+        assert store.units[0].target_markup_mode == store.units[0].TARGET_MARKUP_CDATA
+        assert store.units[0].target == 'Next <a href="%1$s">tab</a>'
+        assert (
+            bytes(store).decode()
+            == """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="id"><![CDATA[Next <a href="%1$s">tab</a>]]></string>
+</resources>
+"""
+        )
+
+    def test_target_markup_mode_setter_to_cdata_applies_android_escaping(self) -> None:
+        content = b"""<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="id">Other tab</string>
+</resources>
+"""
+        store = self.StoreClass()
+        store.parse(content)
+
+        store.units[0].target_markup_mode = store.units[0].TARGET_MARKUP_CDATA
+        store.units[0].target = "?attr/foo"
+
+        assert store.units[0].target == "?attr/foo"
+        assert store.units[0].target_markup_mode == store.units[0].TARGET_MARKUP_CDATA
+        assert (
+            bytes(store).decode()
+            == """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="id"><![CDATA[\\?attr/foo]]></string>
+</resources>
+"""
+        )
+
+    def test_cdata_mode_setter_overrides_to_plain(self) -> None:
+        content = b"""<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="id"><![CDATA[<a href="%1$s">Terms</a>]]></string>
+</resources>
+"""
+        store = self.StoreClass()
+        store.parse(content)
+
+        store.units[0].target_markup_mode = store.units[0].TARGET_MARKUP_PLAIN
+        store.units[0].target = '<a href="%1$s">Terms</a>'
+
+        assert store.units[0].target_markup_mode == store.units[0].TARGET_MARKUP_PLAIN
+        assert (
+            bytes(store).decode()
+            == """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="id">&lt;a href=\\"%1$s\\"&gt;Terms&lt;/a&gt;</string>
+</resources>
+"""
+        )
+
+    def test_cdata_mode_setter_overrides_to_xml_markup(self) -> None:
+        content = b"""<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="id"><![CDATA[<a href="%1$s">Terms</a>]]></string>
+</resources>
+"""
+        store = self.StoreClass()
+        store.parse(content)
+
+        store.units[0].target_markup_mode = store.units[0].TARGET_MARKUP_XML
+        store.units[0].target = '<a href="%1$s">Terms</a>'
+
+        assert store.units[0].target_markup_mode == store.units[0].TARGET_MARKUP_XML
+        assert (
+            bytes(store).decode()
+            == """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="id"><a href="%1$s">Terms</a></string>
+</resources>
+"""
+        )
+
     def test_plural_markup_roundtrip_preserves_escaped_html(self) -> None:
         content = b"""<?xml version="1.0" encoding="utf-8"?>
 <resources>
@@ -1216,6 +1346,90 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
     <plurals name="teststring">
         <item quantity="one">Next &lt;b&gt;tab&lt;/b&gt;</item>
         <item quantity="other">Next &lt;b&gt;tabs&lt;/b&gt;</item>
+    </plurals>
+</resources>
+"""
+        )
+
+    def test_plural_markup_roundtrip_preserves_cdata(self) -> None:
+        content = b"""<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="teststring">
+        <item quantity="one"><![CDATA[<a href="%1$s">Tab</a>]]></item>
+        <item quantity="other"><![CDATA[<a href="%1$s">Tabs</a>]]></item>
+    </plurals>
+</resources>
+"""
+        store = self.StoreClass()
+        store.targetlanguage = "en"
+        store.parse(content)
+
+        assert store.units[0].target == multistring(
+            ['<a href="%1$s">Tab</a>', '<a href="%1$s">Tabs</a>']
+        )
+        assert store.units[0].target_markup_mode == store.units[0].TARGET_MARKUP_CDATA
+
+        store.units[0].target = store.units[0].target
+        assert bytes(store) == content
+
+    def test_plural_target_markup_mode_setter_overrides_to_cdata(self) -> None:
+        content = b"""<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="teststring">
+        <item quantity="one">Other tab</item>
+        <item quantity="other">Other tabs</item>
+    </plurals>
+</resources>
+"""
+        store = self.StoreClass()
+        store.targetlanguage = "en"
+        store.parse(content)
+
+        store.units[0].target_markup_mode = store.units[0].TARGET_MARKUP_CDATA
+        store.units[0].target = multistring(
+            ['<a href="%1$s">Tab</a>', '<a href="%1$s">Tabs</a>']
+        )
+
+        assert store.units[0].target_markup_mode == store.units[0].TARGET_MARKUP_CDATA
+        assert (
+            bytes(store).decode()
+            == """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="teststring">
+        <item quantity="one"><![CDATA[<a href="%1$s">Tab</a>]]></item>
+        <item quantity="other"><![CDATA[<a href="%1$s">Tabs</a>]]></item>
+    </plurals>
+</resources>
+"""
+        )
+
+    def test_mixed_plural_cdata_noop_edit_keeps_target_values(self) -> None:
+        content = b"""<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="teststring">
+        <item quantity="one"><![CDATA[<a href="%1$s">Tab</a>]]></item>
+        <item quantity="other">Other tabs</item>
+    </plurals>
+</resources>
+"""
+        store = self.StoreClass()
+        store.targetlanguage = "en"
+        store.parse(content)
+
+        expected = multistring(['<a href="%1$s">Tab</a>', "Other tabs"])
+        assert store.units[0].target == expected
+        assert store.units[0].target_markup_mode == store.units[0].TARGET_MARKUP_CDATA
+
+        store.units[0].target = store.units[0].target
+
+        assert store.units[0].target == expected
+        assert (
+            bytes(store).decode()
+            == """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="teststring">
+        <item quantity="one"><![CDATA[<a href="%1$s">Tab</a>]]></item>
+        <item quantity="other"><![CDATA[Other tabs]]></item>
     </plurals>
 </resources>
 """
@@ -1524,6 +1738,7 @@ files</strong> on the storage.</p>
         store.parse(content.encode())
         assert len(store.units) == 1
         assert store.units[0].target == body
+        assert store.units[0].target_markup_mode == store.units[0].TARGET_MARKUP_XML
         assert bytes(store).decode() == content
         store.units[0].target = body
         assert bytes(store).decode() == content
@@ -1541,6 +1756,7 @@ files</strong> on the storage.</p>
         store.parse(content.encode())
         assert len(store.units) == 1
         assert store.units[0].target == body
+        assert store.units[0].target_markup_mode == store.units[0].TARGET_MARKUP_CDATA
         assert bytes(store).decode() == content
         store.units[0].target = body
         assert bytes(store).decode() == content
@@ -1549,6 +1765,10 @@ files</strong> on the storage.</p>
         newstore = self.StoreClass()
         newstore.addunit(copy(store.units[0]), new=True)
         assert bytes(newstore).decode() == content
+        assert (
+            newstore.units[0].target_markup_mode
+            == newstore.units[0].TARGET_MARKUP_CDATA
+        )
         newstore.units[0].target = body
         assert bytes(newstore).decode() == content
 
@@ -1560,6 +1780,9 @@ files</strong> on the storage.</p>
         addstore.addunit(unit, new=True)
         assert len(addstore.units) == 1
         assert addstore.units[0].target == body
+        assert (
+            addstore.units[0].target_markup_mode == addstore.units[0].TARGET_MARKUP_XML
+        )
         assert bytes(addstore).decode() == content
         addstore.units[0].target = body
         assert bytes(addstore).decode() == content
