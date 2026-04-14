@@ -66,12 +66,20 @@ class EncodingDict(TypedDict):
     confidence: float | None
 
 
-class ParseError(Exception):
+class TranslateToolkitError(Exception):
+    """Base class for toolkit-defined storage exceptions."""
+
+
+class ParseError(TranslateToolkitError):
     def __init__(self, inner_exc) -> None:
         self.inner_exc = inner_exc
 
     def __str__(self) -> str:
         return repr(self.inner_exc)
+
+
+class SerializationError(TranslateToolkitError):
+    """Raised when in-memory content cannot be serialized."""
 
 
 class TranslationUnit:

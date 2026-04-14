@@ -38,6 +38,10 @@ if TYPE_CHECKING:
     from collections.abc import Iterator
 
 
+class FluentContentError(base.SerializationError):
+    """Raised when a Fluent unit contains content that cannot be serialized."""
+
+
 class _SanitizeVisitor(visitor.Visitor):
     """
     Private class used to replace special characters at the start of Fluent
@@ -915,7 +919,9 @@ class FluentUnit(base.TranslationUnit):
         Convert the unit into a corresponding fluent AST Entry.
 
         :return: A new fluent AST Entry, if one was created.
-        :raises ValueError: if the unit source contains an error.
+        :raises FluentContentError: if the unit source contains invalid Fluent
+            content that cannot be serialized.
+        :raises ValueError: if the unit has an unsupported ``fluent_type``.
         """
         if self.fluent_type == "ResourceComment":
             # Create a comment, even if empty. Especially since empty
@@ -931,10 +937,15 @@ class FluentUnit(base.TranslationUnit):
         raise ValueError(f"Unhandled fluent_type: {self.fluent_type}")
 
     def _source_to_fluent_entry(self) -> ast.Entry | None:
-        """Convert a FluentUnit's source to a fluent Term or Message."""
+        """
+        Convert a FluentUnit's source to a fluent Term or Message.
+
+        :raises FluentContentError: if the unit source contains invalid Fluent
+            content that cannot be serialized.
+        """
         entry_or_error = self._try_source_to_fluent_entry()
         if isinstance(entry_or_error, str):
-            raise TypeError(
+            raise FluentContentError(
                 f'Error in source of FluentUnit "{self.getid()}":\n{entry_or_error}'
             )
         return entry_or_error

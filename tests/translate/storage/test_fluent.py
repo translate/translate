@@ -25,7 +25,7 @@ from typing import Any
 
 from pytest import raises
 
-from translate.storage import fluent
+from translate.storage import base, fluent
 
 from . import test_monolingual
 
@@ -456,7 +456,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
         :param str error_msg: The expected syntax error for the unit.
         """
         with raises(
-            TypeError,
+            fluent.FluentContentError,
             match=f'^Error in source of FluentUnit "{error_unit.getid()}":\\n',
         ):
             self.fluent_serialize(fluent_file)
@@ -465,6 +465,12 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
         assert syntax_error is not None
         assert re.match(error_msg, syntax_error)
         assert error_unit.get_parts() is None
+
+    def test_exception_hierarchy(self) -> None:
+        """Test the shared storage exception hierarchy."""
+        assert issubclass(base.ParseError, base.TranslateToolkitError)
+        assert issubclass(base.SerializationError, base.TranslateToolkitError)
+        assert issubclass(fluent.FluentContentError, base.SerializationError)
 
     def test_simple_values(self) -> None:
         """Test a simple fluent Message and Term."""
