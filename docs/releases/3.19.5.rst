@@ -1,0 +1,40 @@
+Translate Toolkit 3.19.5
+************************
+
+*Released on 14 April 2026*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- Fluent
+
+  - Improve error handling
+
+- Android
+
+  - Improve XML formatting preserving
+
+- Markdown
+
+  - Add optional full exposing of placeholders
+
+- INI
+
+  - Preserve newline style
+
+Other
+-----
+
+- printf filter to detect POSIX thousands separator flag
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+Michal Čihař, Copilot
