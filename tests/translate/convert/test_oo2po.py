@@ -2,11 +2,31 @@ import os
 from io import BytesIO
 from urllib import parse
 
+import pytest
+
 from translate.convert import oo2po, po2oo
 from translate.storage import oo, po
 from translate.storage.poheader import poheader
 
 from . import test_convert
+
+
+def assert_recursive_archive_rejects_path_traversal(testcase, outputext) -> None:
+    """Exercise recursive archive input with one safe and one unsafe subfile."""
+    safe_line = r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58"
+    unsafe_line = r"..	escape/sub/file.src	0	string	RID_ESCAPE	STR_ESCAPE			0	en-US	Escape				20050924 09:13:58"
+    testcase.create_testfile("input.oo", f"{safe_line}\n{unsafe_line}")
+    outputdir = "root"
+    with pytest.warns(UserWarning, match="unsafe subfile path"):
+        testcase.run_command("input.oo", outputdir, lang="ku")
+    assert os.path.isfile(
+        testcase.get_testfilename(
+            os.path.join(outputdir, "svx", "source", "dialog" + os.extsep + outputext)
+        )
+    )
+    assert not os.path.exists(
+        testcase.get_testfilename(os.path.join("escape", "sub" + os.extsep + outputext))
+    )
 
 
 class TestOO2PO:
@@ -243,6 +263,9 @@ class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2PO):
         self.create_testfile("simple.oo", oosource)
         self.run_command("simple.oo", "simple.pot", pot=True, multifile="onefile")
         assert os.path.isfile(self.get_testfilename("simple.pot"))
+
+    def test_recursive_archive_rejects_path_traversal(self) -> None:
+        assert_recursive_archive_rejects_path_traversal(self, "po")
 
     def test_remove_duplicates(self) -> None:
         """Test that removing of duplicates works correctly (bug 171)."""

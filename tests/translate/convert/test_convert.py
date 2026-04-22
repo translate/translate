@@ -1,6 +1,8 @@
 import os
 import re
+from io import BytesIO
 from itertools import chain
+from types import SimpleNamespace
 
 import pytest
 
@@ -147,3 +149,55 @@ class TestConvertCommand:
 
         # We should parse all the options
         assert options == []
+
+
+class TestArchiveConvertOptionParser:
+    def test_recursiveprocess_closes_input_archive(self, tmp_path) -> None:
+        processed = []
+
+        class FakeArchive:
+            instances = []
+
+            def __init__(self, filename, **kwargs) -> None:
+                self.filename = filename
+                self.closed = False
+                self.__class__.instances.append(self)
+
+            def __iter__(self):
+                yield os.path.join("nested", "file.txt")
+
+            def openinputfile(self, subfile):
+                inputfile = BytesIO(b"content")
+                inputfile.filename = subfile  # ty:ignore[unresolved-attribute]
+                return inputfile
+
+            def close(self) -> None:
+                self.closed = True
+
+        def processor(inputfile, outputfile, templatefile):
+            processed.append(True)
+            outputfile.write(inputfile.read())
+            return True
+
+        parser = convert.ArchiveConvertOptionParser(
+            {"txt": ("po", processor)},
+            archiveformats={(None, "input"): FakeArchive},
+        )
+        inputarchive = tmp_path / "input.oo"
+        outputdir = tmp_path / "output"
+        inputarchive.write_text("unused", encoding="utf-8")
+        options = SimpleNamespace(
+            input=str(inputarchive),
+            output=str(outputdir),
+            template=None,
+            progress="none",
+            errorlevel="message",
+            timestamp=False,
+            exclude=["CVS", ".svn", ".git"],
+        )
+
+        parser.recursiveprocess(options)
+
+        assert processed == [True]
+        assert FakeArchive.instances[0].closed is True
+        assert (outputdir / "nested" / "file.po").read_bytes() == b"content"

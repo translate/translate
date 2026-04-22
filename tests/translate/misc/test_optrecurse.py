@@ -164,6 +164,27 @@ class TestGetFullOutputPath:
         result = optrecurse.RecursiveOptionParser.getfulloutputpath(options, "file.po")
         assert result == os.path.join("/out/dir", "file.po")
 
+    def test_recursive_normalizes_relative_path(self) -> None:
+        options = SimpleNamespace(recursiveoutput=True, output="/out/dir")
+        result = optrecurse.RecursiveOptionParser.getfulloutputpath(
+            options, os.path.join("nested", "..", "file.po")
+        )
+        assert result == os.path.join("/out/dir", "file.po")
+
+    def test_recursive_rejects_path_traversal(self) -> None:
+        options = SimpleNamespace(recursiveoutput=True, output="/out/dir")
+        with pytest.raises(ValueError, match="unsafe recursive path"):
+            optrecurse.RecursiveOptionParser.getfulloutputpath(
+                options, os.path.join("..", "escape.po")
+            )
+
+    def test_recursive_rejects_absolute_path(self) -> None:
+        options = SimpleNamespace(recursiveoutput=True, output="/out/dir")
+        with pytest.raises(ValueError, match="unsafe recursive path"):
+            optrecurse.RecursiveOptionParser.getfulloutputpath(
+                options, os.path.abspath("escape.po")
+            )
+
     def test_not_recursive(self) -> None:
         options = SimpleNamespace(recursiveoutput=False, output="/out/dir")
         result = optrecurse.RecursiveOptionParser.getfulloutputpath(options, "file.po")
@@ -412,6 +433,12 @@ class TestMkdir:
         with pytest.raises(ValueError, match=r"parent.*does not exist"):
             optrecurse.RecursiveOptionParser.mkdir("/nonexistent/path", "subdir")
 
+    def test_rejects_path_traversal(self, tmp_path) -> None:
+        with pytest.raises(ValueError, match="unsafe recursive path"):
+            optrecurse.RecursiveOptionParser.mkdir(
+                str(tmp_path), os.path.join("..", "escape")
+            )
+
 
 class TestCheckOutputSubdir:
     """Tests for RecursiveOptionParser.checkoutputsubdir."""
@@ -428,6 +455,12 @@ class TestCheckOutputSubdir:
         options = SimpleNamespace(output=str(tmp_path))
         parser.checkoutputsubdir(options, "sub")
         assert (tmp_path / "sub").is_dir()
+
+    def test_rejects_path_traversal(self, tmp_path) -> None:
+        parser = optrecurse.RecursiveOptionParser({"txt": ("po", None)})
+        options = SimpleNamespace(output=str(tmp_path))
+        with pytest.raises(ValueError, match="unsafe recursive path"):
+            parser.checkoutputsubdir(options, os.path.join("..", "escape"))
 
 
 class TestGetOutputName:
@@ -456,6 +489,12 @@ class TestGetOutputName:
         options = SimpleNamespace(recursiveoutput=True, output="/out")
         result = parser.getoutputname(options, "file.txt", None)
         assert result == "file"
+
+    def test_rejects_path_traversal(self) -> None:
+        parser = optrecurse.RecursiveOptionParser({"txt": ("po", None)})
+        options = SimpleNamespace(recursiveoutput=True, output="/out")
+        with pytest.raises(ValueError, match="unsafe recursive path"):
+            parser.getoutputname(options, os.path.join("..", "escape.txt"), "po")
 
 
 class TestGetTemplateName:

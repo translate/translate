@@ -379,6 +379,13 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
         archiveoptions.update(kwargs)
         return archiveclass(archivefilename, **archiveoptions)
 
+    @staticmethod
+    def closearchive(archive) -> None:
+        """Closes an archive object if it exposes a close method."""
+        close = getattr(archive, "close", None)
+        if close is not None:
+            close()
+
     def recurseinputfiles(self, options):
         """
         Recurse through archive file / directories and return files to be
@@ -447,9 +454,7 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
         """Gets the absolute path to an output file."""
         if self.isarchive(options.output, "output"):
             return outputpath
-        if options.recursiveoutput and options.output:
-            return os.path.join(options.output, outputpath)
-        return outputpath
+        return super().getfulloutputpath(options, outputpath)
 
     def checkoutputsubdir(self, options, subdir) -> None:
         """
@@ -474,25 +479,32 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
 
     def recursiveprocess(self, options):
         """Recurse through directories and convert files."""
-        if hasattr(options, "multifilestyle"):
-            self.archiveoptions = {"multifilestyle": options.multifilestyle}
-            for filetype in ("input", "output", "template"):
-                allowoption = f"allowrecursive{filetype}"
-                if options.multifilestyle == "onefile" and getattr(
-                    options, allowoption, True
-                ):
-                    setattr(options, allowoption, False)
+        try:
+            if hasattr(options, "multifilestyle"):
+                self.archiveoptions = {"multifilestyle": options.multifilestyle}
+                for filetype in ("input", "output", "template"):
+                    allowoption = f"allowrecursive{filetype}"
+                    if options.multifilestyle == "onefile" and getattr(
+                        options, allowoption, True
+                    ):
+                        setattr(options, allowoption, False)
 
-        if (
-            self.usetemplates
-            and options.template
-            and self.isarchive(options.template, "template")
-        ):
-            self.templatearchive = self.openarchive(options.template, "template")
+            if (
+                self.usetemplates
+                and options.template
+                and self.isarchive(options.template, "template")
+            ):
+                self.templatearchive = self.openarchive(options.template, "template")
 
-        if options.output and self.isarchive(options.output, "output"):
-            self.outputarchive = self.openarchive(options.output, "output", mode="w")
-        return super().recursiveprocess(options)
+            if options.output and self.isarchive(options.output, "output"):
+                self.outputarchive = self.openarchive(
+                    options.output, "output", mode="w"
+                )
+            return super().recursiveprocess(options)
+        finally:
+            self.closearchive(getattr(options, "inputarchive", None))
+            self.closearchive(getattr(self, "templatearchive", None))
+            self.closearchive(getattr(self, "outputarchive", None))
 
     def processfile(
         self, fileprocessor, options, fullinputpath, fulloutputpath, fulltemplatepath

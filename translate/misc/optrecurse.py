@@ -556,9 +556,33 @@ class RecursiveOptionParser(optparse.OptionParser):
         return inputpath
 
     @staticmethod
+    def normalizerelativepath(pathname, allow_empty: bool = False):
+        """Normalizes a recursive relative path and rejects path traversal."""
+        if pathname is None:
+            return None
+        normalized = os.path.normpath(pathname)
+        drive, _tail = os.path.splitdrive(normalized)
+        if drive or os.path.isabs(normalized):
+            raise ValueError(
+                f"unsafe recursive path {pathname!r}: absolute paths are not allowed"
+            )
+        if normalized in {"", "."}:
+            if allow_empty:
+                return ""
+            raise ValueError(
+                f"unsafe recursive path {pathname!r}: empty output paths are not allowed"
+            )
+        if normalized == os.pardir or normalized.startswith(os.pardir + os.sep):
+            raise ValueError(
+                f"unsafe recursive path {pathname!r}: path traversal outside the output directory is not allowed"
+            )
+        return normalized
+
+    @staticmethod
     def getfulloutputpath(options, outputpath):
         """Gets the full path to an output file."""
-        if options.recursiveoutput and options.output:
+        if options.recursiveoutput and options.output and outputpath is not None:
+            outputpath = RecursiveOptionParser.normalizerelativepath(outputpath)
             return os.path.join(options.output, outputpath)
         return outputpath
 
@@ -733,6 +757,9 @@ class RecursiveOptionParser(optparse.OptionParser):
             raise ValueError(
                 f"cannot make child directory {subdir!r} if parent {parent!r} does not exist"
             )
+        subdir = RecursiveOptionParser.normalizerelativepath(subdir, allow_empty=True)
+        if not subdir:
+            return
         currentpath = parent
         subparts = subdir.split(os.sep)
         for part in subparts:
@@ -745,6 +772,9 @@ class RecursiveOptionParser(optparse.OptionParser):
         Checks to see if subdir under options.output needs to be created,
         creates if necessary.
         """
+        subdir = self.normalizerelativepath(subdir, allow_empty=True)
+        if not subdir:
+            return
         fullpath = os.path.join(options.output, subdir)
         if not os.path.isdir(fullpath):
             self.mkdir(options.output, subdir)
@@ -861,7 +891,7 @@ class RecursiveOptionParser(optparse.OptionParser):
         outputname = inputbase
         if outputformat:
             outputname += os.extsep + outputformat
-        return outputname
+        return self.normalizerelativepath(outputname)
 
     def isvalidinputname(self, inputname):
         """Checks if this is a valid input filename."""

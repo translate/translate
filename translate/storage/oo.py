@@ -30,7 +30,9 @@ comments.
 """
 # FIXME: add simple test which reads in a file and writes it out again
 
+import ntpath
 import os
+import posixpath
 import re
 import warnings
 from io import BytesIO
@@ -60,6 +62,26 @@ normalizetable = normalizechar(normalfilenamechars.decode("ascii"))
 def normalizefilename(filename):
     """Converts any non-alphanumeric (standard roman) characters to _."""
     return filename.translate(normalizetable)
+
+
+class UnsafeOOSubfilePath(ValueError):
+    """Raised when an OO/SDF line derives an unsafe recursive subfile path."""
+
+
+def normalizesubfilepath(pathname):
+    """Normalizes OO/SDF-derived subfile paths and rejects path traversal."""
+    pathname = pathname.replace("\\", "/")
+    normalized = posixpath.normpath(pathname)
+    drive, _tail = ntpath.splitdrive(normalized)
+    if drive or normalized.startswith("/"):
+        raise UnsafeOOSubfilePath(
+            f"unsafe subfile path {pathname!r}: absolute paths are not allowed"
+        )
+    if normalized in {"", ".", ".."} or normalized.startswith("../"):
+        raise UnsafeOOSubfilePath(
+            f"unsafe subfile path {pathname!r}: path traversal outside the output directory is not allowed"
+        )
+    return os.path.join(*normalized.split("/"))
 
 
 def makekey(ookey: tuple, long_keys: bool) -> str:
@@ -412,7 +434,13 @@ class oomultifile:
     def createsubfileindex(self) -> None:
         """Reads in all the lines and works out the subfiles."""
         for linenum, line in enumerate(self.multifile):
-            subfile = self.getsubfilename(line)
+            try:
+                subfile = self.getsubfilename(line)
+            except UnsafeOOSubfilePath as exc:
+                warnings.warn(
+                    f"Skipping OO/SDF line {linenum + 1} in {self.filename!r}: {exc}"
+                )
+                continue
             if subfile not in self.subfilelines:
                 self.subfilelines[subfile] = []
             self.subfilelines[subfile].append(linenum)
@@ -426,11 +454,11 @@ class oomultifile:
         if self.multifilestyle == "onefile":
             ooname = self.multifilename
         elif self.multifilestyle == "toplevel":
-            ooname = module
+            ooname = normalizesubfilepath(module)
         else:
             filename = filename.replace("\\", "/")
             fileparts = [module, *filename.split("/")]
-            ooname = os.path.join(*fileparts[:-1])
+            ooname = normalizesubfilepath("/".join(fileparts[:-1]))
         return f"{ooname}{os.extsep}oo"
 
     def listsubfiles(self):
@@ -482,3 +510,7 @@ class oomultifile:
         oosubfile.filename = subfile
         oosubfile.parse(subfilesrc)
         return oosubfile
+
+    def close(self) -> None:
+        """Closes the underlying OO/SDF archive file."""
+        self.multifile.close()

@@ -1,5 +1,8 @@
+import os
 import warnings
 from io import BytesIO
+
+import pytest
 
 from translate.storage import oo
 
@@ -199,3 +202,40 @@ class TestOO:
         oosource = r"svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	size *2 \\langle x \\rangle				20050924 09:13:58"
         oofile = self.ooregen(oosource)
         assert r"size *2 \\langle x \\rangle" in oofile
+
+
+class TestOOMultifile:
+    def test_getsubfilename_normalizes_safe_path(self, tmp_path) -> None:
+        source = tmp_path / "input.sdf"
+        multifile = oo.oomultifile(str(source), mode="w")
+        try:
+            result = multifile.getsubfilename(r"svx	source\dialog\numpages.src	0")
+        finally:
+            multifile.multifile.close()
+        assert result == os.path.join("svx", "source", "dialog") + os.extsep + "oo"
+
+    def test_getsubfilename_rejects_path_traversal(self, tmp_path) -> None:
+        source = tmp_path / "input.sdf"
+        multifile = oo.oomultifile(str(source), mode="w")
+        try:
+            with pytest.raises(oo.UnsafeOOSubfilePath, match="unsafe subfile path"):
+                multifile.getsubfilename(r"..	../escape/sub/file.src	0")
+        finally:
+            multifile.multifile.close()
+
+    def test_createsubfileindex_skips_unsafe_subfiles(self, tmp_path) -> None:
+        source = tmp_path / "input.sdf"
+        safe_line = r"svx	source\dialog\numpages.src	0"
+        unsafe_line = r"..	../escape/sub/file.src	0"
+        source.write_text(
+            f"{safe_line}\n{unsafe_line}",
+            encoding="utf-8",
+        )
+        with pytest.warns(UserWarning, match="unsafe subfile path"):
+            multifile = oo.oomultifile(str(source))
+        try:
+            assert list(multifile.listsubfiles()) == [
+                os.path.join("svx", "source", "dialog") + os.extsep + "oo"
+            ]
+        finally:
+            multifile.multifile.close()
