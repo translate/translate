@@ -935,23 +935,34 @@ class pofile(pocommon.pofile):
         return all(not (not unit.isblank() and not unit.isobsolete()) for unit in units)
 
     def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
-        if hasattr(input, "name"):
-            self.filename = input.name
+        input_name = base.get_input_name(input)
+        if input_name:
+            self.filename = input_name
         elif not getattr(self, "filename", ""):
             self.filename = ""
 
-        if hasattr(input, "read"):
-            posrc = input.read()
-            input.close()
-            input = posrc
-
-        needtmpfile = not os.path.isfile(input)
+        prepared = base.prepare_input(input, close_handle=True)
+        input = prepared.data
+        if prepared.from_handle:
+            if isinstance(input, str):
+                raise TypeError("cpo requires bytes from file-like inputs")
+            needtmpfile = True
+        elif isinstance(input, str):
+            if not os.path.isfile(input):
+                raise TypeError("cpo requires a filesystem path or bytes content")
+            needtmpfile = False
+        else:
+            needtmpfile = True
         if needtmpfile:
-            # This is not a file - we write the string to a temporary file
+            # libgettextpo only accepts real files, so materialize in-memory content.
             fd, fname = tempfile.mkstemp(prefix="translate", suffix=".po")
-            os.write(fd, input)
-            input = fname
-            os.close(fd)
+            try:
+                with os.fdopen(fd, "wb") as temp_file:
+                    temp_file.write(input)
+                input = fname
+            except Exception:
+                os.remove(fname)
+                raise
 
         try:
             xerror_storage.exception = None

@@ -507,7 +507,7 @@ Wil = "Wil"
 [tool.typos.files]
 extend-exclude = [
   "docs/commands/poterminology_stopword_file.rst",
-  "tests/odf_xliff/test_inline-test_odf2xliff_inline-reference.xlf",
+  "tests/odf_xliff/*.xlf",
   "tests/translate/filters/test_checks.py",
   "tests/translate/lang/test_*.py",
   "tests/translate/lang/test_identify.py",

@@ -22,6 +22,8 @@ import json
 import os
 from io import BytesIO
 
+from pytest import raises
+
 from translate.misc.multistring import multistring
 from translate.storage import base, factory
 from translate.storage.placeables import general
@@ -460,3 +462,40 @@ class TestTranslationStore:
             assert ext in self.StoreClass.Mimetypes
         for ext in self.StoreClass.Mimetypes:
             assert ext in detail[1]
+
+
+class TestTranslationStoreParsefileOwnership:
+    def test_parsefile_closes_passed_handle(self) -> None:
+        store = JsonTranslationStore()
+        unit = store.addsourceunit("Test String")
+        unit.target = "Test Translation"
+
+        input_handle = BytesIO()
+        store.serialize(input_handle)
+        input_handle.seek(0)
+
+        newstore = JsonTranslationStore.parsefile(input_handle)
+
+        assert input_handle.closed
+        assert newstore.units[0].source == "Test String"
+        assert newstore.units[0].target == "Test Translation"
+
+
+class TestPrepareInputOwnership:
+    def test_prepare_input_closes_handle_on_read_error(self) -> None:
+        class FailingHandle:
+            closed = False
+
+            @staticmethod
+            def read() -> bytes:
+                raise OSError("boom")
+
+            def close(self) -> None:
+                self.closed = True
+
+        handle = FailingHandle()
+
+        with raises(OSError):
+            base.prepare_input(handle, close_handle=True)
+
+        assert handle.closed

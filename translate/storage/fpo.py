@@ -451,10 +451,18 @@ class pofile(pocommon.pofile):
             self._cpo_store.makeheader(charset=self.encoding, encoding="8bit")
 
     def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
-        """Parses the given file or file source string."""
+        """
+        Parse PO data from a path or bytes content.
+
+        Direct ``str`` and ``os.PathLike`` inputs are treated as filesystem
+        paths and opened. In-memory PO content should be passed as ``bytes`` or
+        as a binary readable stream. Plain ``str`` input is not treated as PO
+        source text, so raw PO content must not be passed as a decoded string.
+        """
         try:
-            if hasattr(input, "name"):
-                self.filename = input.name
+            input_name = base.get_input_name(input)
+            if input_name:
+                self.filename = input_name
             elif not getattr(self, "filename", ""):
                 self.filename = ""
             self.units = []

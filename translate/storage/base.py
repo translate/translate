@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import codecs
 import logging
+import os
 from io import BytesIO
 from itertools import starmap
 from typing import (
@@ -31,8 +32,10 @@ from typing import (
     ClassVar,
     Generic,
     Literal,
+    NamedTuple,
     Self,
     TypedDict,
+    TypeGuard,
     TypeVar,
 )
 
@@ -80,6 +83,82 @@ class ParseError(TranslateToolkitError):
 
 class SerializationError(TranslateToolkitError):
     """Raised when in-memory content cannot be serialized."""
+
+
+class PreparedInput(NamedTuple):
+    data: Any
+    from_handle: bool
+
+
+def is_path_input(value: object) -> TypeGuard[str | os.PathLike[str]]:
+    """Return whether the value should be treated as a filesystem path."""
+    return isinstance(value, (str, os.PathLike))
+
+
+def path_input_str(value: str | os.PathLike[str]) -> str:
+    """Convert a path-like value to a normalized string path."""
+    return os.fspath(value)
+
+
+def get_input_name(
+    value: object,
+    *,
+    include_filename_attr: bool = False,
+) -> str:
+    """
+    Extract a filename-like identifier from an input object.
+
+    This is used to preserve ``.filename`` metadata without reinterpreting
+    already-read content as a path.
+    """
+    if is_path_input(value):
+        return path_input_str(value)
+
+    attrs = ("name", "filename") if include_filename_attr else ("name",)
+    for attr in attrs:
+        attr_value = getattr(value, attr, None)
+        if is_path_input(attr_value):
+            return path_input_str(attr_value)
+    return ""
+
+
+def prepare_input(value: Any, *, close_handle: bool = False) -> PreparedInput:
+    """
+    Materialize file-like input while preserving whether it came from a handle.
+
+    Callers can use ``from_handle`` to decide whether a string result should be
+    treated as text content or as a direct filesystem path argument.
+
+    By default this helper leaves passed-in file objects open. Callers that need
+    compatibility with older ownership semantics can request closing after read.
+    """
+    if hasattr(value, "read"):
+        handle = value
+        read_error = None
+        try:
+            value = handle.read()
+        except BaseException as error:
+            read_error = error
+            raise
+        finally:
+            if close_handle:
+                close = getattr(handle, "close", None)
+                if callable(close):
+                    try:
+                        close()
+                    except Exception:
+                        if read_error is None:
+                            raise
+        from_handle = True
+    else:
+        from_handle = False
+
+    if isinstance(value, (bytearray, memoryview)):
+        value = bytes(value)
+    elif isinstance(value, os.PathLike):
+        value = os.fspath(value)
+
+    return PreparedInput(value, from_handle)
 
 
 class TranslationUnit:
@@ -1070,8 +1149,11 @@ class TranslationStore(Generic[U]):
     @classmethod
     def parsefile(cls, storefile):
         """
-        Reads the given file (or opens the given filename) and parses back
-        to an object.
+        Read and parse the given file path or file-like object.
+
+        When passed a filename, this method opens and closes the file
+        internally. When passed an existing readable file object, it consumes
+        and closes that handle for compatibility with the historical API.
         """
         if isinstance(storefile, str):
             with open(storefile, "rb") as storehandle:

@@ -191,19 +191,19 @@ class SubtitleFile(base.TranslationStore):
             raise base.ParseError(e) from e
 
     def _parsefile(self, storefile) -> None:
-        if hasattr(storefile, "name"):
-            self.filename = storefile.name
-            storefile.close()
-        elif hasattr(storefile, "filename"):
-            self.filename = storefile.filename
-            storefile.close()
-        elif isinstance(storefile, str):
-            self.filename = storefile
+        input_name = base.get_input_name(storefile, include_filename_attr=True)
+        if input_name:
+            self.filename = input_name
 
-        if self.filename and os.path.exists(self.filename):
+        prepared = base.prepare_input(storefile, close_handle=bool(input_name))
+        storefile = prepared.data
+        if not prepared.from_handle and base.is_path_input(storefile):
+            self.filename = base.path_input_str(storefile)
             self._parse()
         else:
-            self.parse(storefile.read())
+            if isinstance(storefile, str):
+                storefile = storefile.encode(self.encoding)
+            self.parse(storefile)
 
     @classmethod
     def parsefile(cls, storefile):
@@ -215,11 +215,14 @@ class SubtitleFile(base.TranslationStore):
     def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
         if isinstance(input, bytes):
             # Gaupol does not allow parsing from strings
-            kwargs = {"delete": False}
+            original_filename = self.filename
             if self.filename:
-                kwargs["suffix"] = self.filename
-
-            temp_file = NamedTemporaryFile(**kwargs)  # ty:ignore[no-matching-overload]
+                temp_file = NamedTemporaryFile(
+                    delete=False,
+                    suffix=os.path.basename(self.filename),
+                )
+            else:
+                temp_file = NamedTemporaryFile(delete=False)
             temp_file.close()
 
             try:
@@ -228,6 +231,8 @@ class SubtitleFile(base.TranslationStore):
                 self._parsefile(temp_file.name)
             finally:
                 os.unlink(temp_file.name)
+                if original_filename:
+                    self.filename = original_filename
         else:
             self._parsefile(input)
 

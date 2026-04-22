@@ -83,6 +83,40 @@ class TestTS:
         assert tsfile.filename == str(ts_path)
         assert tsfile.getmessagesource(tsfile.getmessagenodes("ctx")[0]) == "Hello"
 
+    def test_named_stream_does_not_reopen_existing_path(self, tmp_path) -> None:
+        ts_path = tmp_path / "sample.ts"
+        ts_path.write_bytes(
+            b"""<!DOCTYPE TS>
+<TS>
+  <context>
+    <name>ctx</name>
+    <message>
+      <source>File</source>
+      <translation>File</translation>
+    </message>
+  </context>
+</TS>""",
+        )
+
+        parser_input = BytesIO(
+            b"""<!DOCTYPE TS>
+<TS>
+  <context>
+    <name>ctx</name>
+    <message>
+      <source>Stream</source>
+      <translation>Stream</translation>
+    </message>
+  </context>
+</TS>"""
+        )
+        parser_input.name = str(ts_path)
+
+        tsfile = ts.QtTsParser(parser_input)
+
+        assert tsfile.filename == str(ts_path)
+        assert tsfile.getmessagesource(tsfile.getmessagenodes("ctx")[0]) == "Stream"
+
     def test_supports_text_stream_input_with_encoding_declaration(self) -> None:
         parser_input = StringIO(
             """<?xml version="1.0" encoding="ISO-8859-1"?>

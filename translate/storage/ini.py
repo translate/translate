@@ -161,21 +161,31 @@ class inifile(base.TranslationStore):
             out.write(output.encode("utf-8"))
 
     def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
-        """Parse the given file or file source string."""
-        if hasattr(input, "name"):
-            self.filename = input.name
+        """
+        Parse INI data from a path or in-memory content.
+
+        Direct ``str`` and ``os.PathLike`` inputs are treated as filesystem
+        paths and opened. In-memory content should be passed as ``bytes`` or as
+        a readable stream. Text streams are parsed as their stream content, not
+        reopened as paths, so raw INI text should be wrapped in ``StringIO``
+        instead of passed as a plain ``str``.
+        """
+        input_name = base.get_input_name(input)
+        if input_name:
+            self.filename = input_name
         elif not getattr(self, "filename", ""):
             self.filename = ""
-        if hasattr(input, "read"):
-            inisrc = input.read()
-            input.close()
-            input = inisrc
 
-        if isinstance(input, bytes):
+        prepared = base.prepare_input(input, close_handle=True)
+        input = prepared.data
+
+        if not prepared.from_handle and base.is_path_input(input):
+            with open(base.path_input_str(input), "rb") as source:
+                decoded = source.read().decode("utf-8")
+        elif isinstance(input, bytes):
             decoded = input.decode("utf-8")
         else:
-            with open(input, "rb") as source:
-                decoded = source.read().decode("utf-8")
+            decoded = input
 
         self.newline = self._detect_newline(decoded)
         self._inifile = INIConfig(StringIO(decoded), optionxformvalue=None)

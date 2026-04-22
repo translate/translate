@@ -1,3 +1,5 @@
+from io import BytesIO
+
 import pytest
 
 from translate.storage import subtitles
@@ -23,6 +25,25 @@ class TestSubRipFile(test_monolingual.TestMonolingualStore):
         assert len(newstore.units) == 2
         assert newstore.units[0].source == "First"
         assert newstore.units[1].source == "Second"
+
+    def test_file_like_input_uses_stream_content(self, tmp_path) -> None:
+        subtitle_path = tmp_path / "sample.srt"
+        subtitle_path.write_bytes(
+            b"1\n00:00:00,000 --> 00:00:01,000\nFile\n\n",
+        )
+
+        input_stream = BytesIO(b"1\n00:00:00,000 --> 00:00:01,000\nStream\n\n")
+        input_stream.name = str(subtitle_path)
+
+        store = self.StoreClass(input_stream)
+
+        assert len(store.units) == 1
+        assert store.units[0].source == "Stream"
+        assert store.filename == str(subtitle_path)
+
+        store.save()
+
+        assert b"Stream" in subtitle_path.read_bytes()
 
 
 class TestSubtitleUnit(TestSubRipFile):

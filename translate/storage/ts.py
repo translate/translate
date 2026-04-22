@@ -37,6 +37,7 @@ from typing import TYPE_CHECKING, BinaryIO, TextIO
 from lxml import etree
 
 from translate.misc.xml_helpers import parse_xml
+from translate.storage import base
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -53,7 +54,10 @@ XML_DECLARATION_RE = re.compile(
 class QtTsParser:
     def __init__(self, inputfile: TSInput | None = None) -> None:
         """Make a new QtTsParser, reading from the given inputfile if required."""
-        self.filename = getattr(inputfile, "filename", None)
+        input_name = None
+        if inputfile is not None and not isinstance(inputfile, str):
+            input_name = base.get_input_name(inputfile, include_filename_attr=True)
+        self.filename = input_name
         self.knowncontextnodes: dict[str, ContextNode] = {}
         self.doctype: str | None
         self.document: etree._ElementTree
@@ -61,16 +65,14 @@ class QtTsParser:
             self.doctype = "<!DOCTYPE TS>"
             self.document = self._parse_content(b"<TS></TS>")
         else:
-            if isinstance(inputfile, bytes):
-                content = inputfile
-            elif isinstance(inputfile, str) and not self._looks_like_xml(inputfile):
-                self.filename = inputfile
-                with open(inputfile, "rb") as input_handle:
-                    content = input_handle.read()
-            elif isinstance(inputfile, str):
-                content = inputfile
-            else:
-                content = inputfile.read()
+            prepared = base.prepare_input(inputfile)
+            content = prepared.data
+            if not prepared.from_handle and base.is_path_input(content):
+                content = base.path_input_str(content)
+                if not self._looks_like_xml(content):
+                    self.filename = content
+                    with open(content, "rb") as input_handle:
+                        content = input_handle.read()
             self.document = self._parse_content(content)
             # Preserve the original doctype so round-tripped TS files keep the
             # same declaration shape as the input.

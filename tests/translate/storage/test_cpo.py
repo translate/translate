@@ -1,4 +1,4 @@
-from io import BytesIO
+from io import BytesIO, StringIO
 from typing import cast
 
 from pytest import importorskip, mark, raises
@@ -80,6 +80,36 @@ class TestCPOUnit(test_po.TestPOUnit):
 
 class TestCPOFile(test_po.TestPOFile):
     StoreClass = cpo.pofile
+
+    def test_bytesio_path_content_is_not_reopened(self, tmp_path) -> None:
+        po_path = tmp_path / "payload.po"
+        po_path.write_text(
+            'msgid "secret"\nmsgstr "classified"\n',
+            encoding="utf-8",
+        )
+
+        with raises(ValueError):
+            self.StoreClass(BytesIO(str(po_path).encode("utf-8")))
+
+    def test_text_stream_is_treated_as_content(self) -> None:
+        with raises(TypeError):
+            self.StoreClass(
+                StringIO('msgid "secret"\nmsgstr "classified"\n'),
+                encoding="UTF-8",
+            )
+
+    def test_text_stream_uses_declared_header_charset(self) -> None:
+        with raises(TypeError):
+            self.StoreClass(
+                StringIO(
+                    'msgid ""\n'
+                    'msgstr ""\n'
+                    '"Content-Type: text/plain; charset=ISO-8859-1\\n"\n'
+                    "\n"
+                    'msgid "drink"\n'
+                    'msgstr "café"\n'
+                )
+            )
 
     @mark.skip(reason="Native gettext doesn't handle \\r\\r\\n line endings")
     def test_unusual_line_endings(self) -> None:
