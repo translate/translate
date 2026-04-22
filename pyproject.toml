@@ -65,7 +65,7 @@ classifiers = [
   "Topic :: Software Development :: Localization"
 ]
 dependencies = [
-  "lxml>=5.2.0,<6.2",
+  "lxml>=6.1.0,<7.0",
   "unicode-segmentation-rs>=0.2.0,<0.3"
 ]
 description = "Tools and API for translation and localization engineering."
