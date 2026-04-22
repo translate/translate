@@ -298,6 +298,42 @@ GENERAL@2|Notes,"cable, motor, switch"
         assert newstore.units[0].target == "Updated Translation 1"
         assert newstore.units[1].target == "Translation 2"
 
+    def test_spreadsheet_formula_prefixes_are_escaped_on_write(self) -> None:
+        """Test that CSV output escapes formula-like values without mutating imports."""
+        store = self.StoreClass(fieldnames=["context", "id", "source", "target"])
+        unit = store.addsourceunit("=SUM(1,1)")
+        unit.target = "+cmd"
+        unit.setcontext("@context")
+        unit.id = "-id"
+
+        csvsource = bytes(store).decode()
+
+        assert '"\'@context"' in csvsource
+        assert '"\'-id"' in csvsource
+        assert '"\'=SUM(1,1)"' in csvsource
+        assert '"\'+cmd"' in csvsource
+
+        newstore = self.parse_store(csvsource.encode())
+        assert len(newstore.units) == 1
+        assert newstore.units[0].context == "'@context"
+        assert newstore.units[0].id == "'-id"
+        assert newstore.units[0].source == "'=SUM(1,1)"
+        assert newstore.units[0].target == "'+cmd"
+
+    def test_formula_like_prefixes_are_preserved_on_import(self) -> None:
+        """Test that import keeps literal leading quote and backslash characters."""
+        content = (
+            b'"context","id","source","target"\n'
+            b'"\'@context","\\-id","\'=SUM(1,1)","\\+cmd"'
+        )
+        store = self.parse_store(content)
+
+        assert len(store.units) == 1
+        assert store.units[0].context == "'@context"
+        assert store.units[0].id == "\\-id"
+        assert store.units[0].source == "'=SUM(1,1)"
+        assert store.units[0].target == "\\+cmd"
+
     def test_quote_nonnumeric_handling(self) -> None:
         """Test that CSV files with QUOTE_NONNUMERIC dialect are handled correctly."""
         # Simulate a CSV that the sniffer might detect as QUOTE_NONNUMERIC

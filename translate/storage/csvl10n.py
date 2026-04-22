@@ -39,7 +39,7 @@ csv.register_dialect("default", DefaultDialect)
 
 
 class csvunit(base.TranslationUnit):
-    spreadsheetescapes = [("+", "\\+"), ("-", "\\-"), ("=", "\\="), ("'", "\\'")]
+    spreadsheetescapes = {"+", "-", "=", "@"}
 
     def __init__(self, source=None) -> None:
         super().__init__(source)
@@ -131,23 +131,11 @@ class csvunit(base.TranslationUnit):
                 return False
         return some_value
 
-    def add_spreadsheet_escapes(self, source, target):
-        """Add common spreadsheet escapes to two strings."""
-        for unescaped, escaped in self.spreadsheetescapes:
-            if source.startswith(unescaped):
-                source = source.replace(unescaped, escaped, 1)
-            if target.startswith(unescaped):
-                target = target.replace(unescaped, escaped, 1)
-        return source, target
-
-    def remove_spreadsheet_escapes(self, source, target):
-        """Remove common spreadsheet escapes from two strings."""
-        for unescaped, escaped in self.spreadsheetescapes:
-            if source.startswith(escaped):
-                source = source.replace(escaped, unescaped, 1)
-            if target.startswith(escaped):
-                target = target.replace(escaped, unescaped, 1)
-        return source, target
+    def add_spreadsheet_escape(self, value):
+        """Add a spreadsheet escape to a string when it starts like a formula."""
+        if value and value[0] in self.spreadsheetescapes:
+            return f"'{value}"
+        return value
 
     def fromdict(self, cedict, encoding="utf-8") -> None:
         for key, value in cedict.items():
@@ -171,20 +159,19 @@ class csvunit(base.TranslationUnit):
             elif rkey == "developer_comments":
                 self.developer_comments = value
 
-        # self.source, self.target = self.remove_spreadsheet_escapes(self.source, self.target)
-
     def todict(self, **kwargs):
         # FIXME: use apis?
-        # source, target = self.add_spreadsheet_escapes(self.source, self.target)
         return {
-            "location": self.location,
-            "source": self.source,
-            "target": self.target,
-            "id": self.id,
+            "location": self.add_spreadsheet_escape(self.location),
+            "source": self.add_spreadsheet_escape(self.source),
+            "target": self.add_spreadsheet_escape(self.target),
+            "id": self.add_spreadsheet_escape(self.id),
             "fuzzy": str(self.fuzzy),
-            "context": self.context,
-            "translator_comments": self.translator_comments,
-            "developer_comments": self.developer_comments,
+            "context": self.add_spreadsheet_escape(self.context),
+            "translator_comments": self.add_spreadsheet_escape(
+                self.translator_comments
+            ),
+            "developer_comments": self.add_spreadsheet_escape(self.developer_comments),
         }
 
     def __str__(self) -> str:

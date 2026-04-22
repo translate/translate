@@ -136,6 +136,19 @@ msgstr "Vind\\Opsies"
         assert unit.source == "Same"
         assert unit.target == "Same"
 
+    def test_spreadsheet_formulas_are_escaped_in_csv_output(self) -> None:
+        """Test that po2csv escapes formula-like values when writing CSV."""
+        minipo = 'msgid "=SUM(1,1)"\nmsgstr "=2+2"\n'
+        csvfile = self.po2csv(minipo)
+
+        unit = self.singleelement(csvfile)
+        assert unit.source == "=SUM(1,1)"
+        assert unit.target == "=2+2"
+
+        csvsource = bytes(csvfile).decode()
+        assert '"\'=SUM(1,1)"' in csvsource
+        assert '"\'=2+2"' in csvsource
+
 
 class TestPO2CSVCommand(test_convert.TestConvertCommand, TestPO2CSV):
     """Tests running actual po2csv commands on files."""

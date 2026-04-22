@@ -140,6 +140,14 @@ msgstr ""
         assert pofile.findunit("yellow pencil").target == "żółty\\nołówek"
         assert headerless_len(pofile.units) == 1
 
+    def test_formula_like_prefixes_are_preserved(self) -> None:
+        """Test that csv2po preserves literal leading quote and backslash characters."""
+        minicsv = '"source","target"\n"\'=SUM(1,1)","\\=2+2"'
+        pofile = self.csv2po(minicsv)
+        unit = self.singleelement(pofile)
+        assert unit.source == "'=SUM(1,1)"
+        assert unit.target == "\\=2+2"
+
     def test_line_numbers_in_errors(self, caplog) -> None:
         """Tests that line numbers are included in error messages."""
         # CSV with entries that won't be found in the template
