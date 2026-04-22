@@ -28,6 +28,7 @@ from zipfile import ZIP_DEFLATED, ZipFile
 from lxml import etree
 
 from translate.convert import convert
+from translate.misc.xml_helpers import parse_xml
 from translate.storage import factory
 from translate.storage.idml import (
     INLINE_ELEMENTS,
@@ -49,9 +50,8 @@ def translate_idml(template, input_file, translatable_files):
         the etrees for each of those translatable files.
         """
         idml_data = open_idml(template)
-        parser = etree.XMLParser(strip_cdata=False, resolve_entities=False)
         return {
-            filename: etree.fromstring(data, parser).getroottree()
+            filename: parse_xml(data, strip_cdata=False).getroottree()
             for filename, data in idml_data.items()
         }
 
@@ -116,7 +116,7 @@ def translate_idml(template, input_file, translatable_files):
                 fake_string = f"<whatever>{string}</whatever>"
 
                 # Copy the children to the XLIFF unit's source or target node.
-                fake_node = etree.fromstring(fake_string)
+                fake_node = parse_xml(fake_string)
                 node.extend(fake_node.getchildren())  # ty:ignore[deprecated]
 
                 return node

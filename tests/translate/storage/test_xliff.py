@@ -1,7 +1,7 @@
 import pytest
 from lxml import etree
 
-from translate.misc.xml_helpers import setXMLspace
+from translate.misc.xml_helpers import parse_xml, setXMLspace
 from translate.storage import xliff
 from translate.storage.placeables import StringElem
 from translate.storage.placeables.xliff import G, X
@@ -1151,7 +1151,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 
         # Parse with lxml to check namespace and structure
 
-        tree = etree.fromstring(serialized)
+        tree = parse_xml(serialized)
 
         # Verify the document uses target's namespace (1.1)
         assert tree.nsmap[None] == "urn:oasis:names:tc:xliff:document:1.1"

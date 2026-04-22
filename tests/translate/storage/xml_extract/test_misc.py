@@ -93,7 +93,7 @@ def test_safe_parser_rejects_entity_expansion() -> None:
     # nested entity definitions as a loop, depending on the build/version.
     # Both outcomes are acceptable here because neither expands the entity.
     try:
-        tree = etree.parse(xml, extract.get_safe_xml_parser())
+        tree = extract.parse_xml_file(xml)
     except etree.XMLSyntaxError:
         return
     root = tree.getroot()

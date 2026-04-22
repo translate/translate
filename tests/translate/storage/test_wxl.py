@@ -20,8 +20,7 @@
 
 from io import BytesIO
 
-from lxml import etree
-
+from translate.misc.xml_helpers import parse_xml
 from translate.storage import wxl
 
 from . import test_monolingual
@@ -264,7 +263,7 @@ class TestWxlFile(test_monolingual.TestMonolingualStore):
 
     def test_unit_target_value_attribute(self) -> None:
         """Setting target on a Value-attribute element updates the attribute."""
-        element = etree.fromstring(
+        element = parse_xml(
             '<String Id="Key" Value="Old" xmlns="http://wixtoolset.org/schemas/v4/wxl"/>'
         )
         unit = wxl.WxlUnit.createfromxmlElement(element)

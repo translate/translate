@@ -2,9 +2,8 @@
 
 from io import BytesIO
 
-from lxml import etree
-
 from translate.convert import po2wxl, wxl2po
+from translate.misc.xml_helpers import parse_xml
 from translate.storage import wxl
 
 from . import test_convert
@@ -295,7 +294,7 @@ msgstr "Cancelar"
         out = BytesIO()
         po2wxl.po2wxl(output_bytes, out).run()
         # Should not raise
-        etree.fromstring(out.getvalue())
+        parse_xml(out.getvalue())
 
     def test_with_template(self) -> None:
         """When a template is provided, extra attributes are preserved."""

@@ -21,8 +21,12 @@
 from __future__ import annotations
 
 import re
+from typing import TYPE_CHECKING, BinaryIO, TextIO
 
 from lxml import etree
+
+if TYPE_CHECKING:
+    import os
 
 # some useful xpath expressions
 xml_preserve_ancestors = etree.XPath(
@@ -49,6 +53,27 @@ def get_safe_xml_parser(
         strip_cdata=strip_cdata,
         resolve_entities=False,
         no_network=True,
+    )
+
+
+def parse_xml(
+    xml: str | bytes, *, encoding: str | None = None, strip_cdata: bool = False
+) -> etree._Element:
+    """Parse XML using the shared safe parser defaults."""
+    return etree.fromstring(
+        xml, parser=get_safe_xml_parser(encoding=encoding, strip_cdata=strip_cdata)
+    )
+
+
+def parse_xml_file(
+    source: str | bytes | os.PathLike[str] | os.PathLike[bytes] | BinaryIO | TextIO,
+    *,
+    encoding: str | None = None,
+    strip_cdata: bool = False,
+) -> etree._ElementTree:
+    """Parse an XML document source using the shared safe parser defaults."""
+    return etree.parse(
+        source, parser=get_safe_xml_parser(encoding=encoding, strip_cdata=strip_cdata)
     )
 
 

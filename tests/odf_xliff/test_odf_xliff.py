@@ -25,6 +25,7 @@ from os import path
 from lxml import etree
 
 from translate.convert import odf2xliff, xliff2odf
+from translate.misc.xml_helpers import parse_xml
 from translate.storage import factory, xliff
 
 
@@ -104,9 +105,7 @@ class ODF:
         return self.odf.read(filename)
 
     def _get_doc_root(self, filename):
-        return etree.tostring(
-            etree.fromstring(self._get_data(filename)), pretty_print=True
-        )
+        return etree.tostring(parse_xml(self._get_data(filename)), pretty_print=True)
 
     def __eq__(self, other):
         if other is None:

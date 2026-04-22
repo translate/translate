@@ -29,7 +29,7 @@ import re
 
 from lxml import etree
 
-from translate.misc.xml_helpers import get_safe_xml_parser, reindent
+from translate.misc.xml_helpers import parse_xml, reindent
 from translate.storage import base
 
 # WiX XML namespace identifiers
@@ -312,8 +312,7 @@ class WxlFile(base.TranslationStore):
         # Detect the file encoding, defaulting to windows-1252 per WXL convention.
         encoding = _detect_encoding(content)
 
-        parser = get_safe_xml_parser(encoding=encoding)
-        self.root = etree.fromstring(content, parser)
+        self.root = parse_xml(content, encoding=encoding)
         self.document = self.root.getroottree()
 
         # Read Codepage and verify the encoding we used was correct.
@@ -333,8 +332,7 @@ class WxlFile(base.TranslationStore):
             "-", ""
         ) != encoding.lower().replace("-", ""):
             # Re-parse with the correct encoding indicated by Codepage.
-            parser = get_safe_xml_parser(encoding=correct_encoding)
-            self.root = etree.fromstring(content, parser)
+            self.root = parse_xml(content, encoding=correct_encoding)
             self.document = self.root.getroottree()
 
         self._parse_units()

@@ -29,6 +29,7 @@ from io import BytesIO
 from lxml import etree
 
 from translate.convert import convert
+from translate.misc.xml_helpers import parse_xml_file
 from translate.storage import factory
 from translate.storage.odf_io import copy_odf, open_odf
 from translate.storage.odf_shared import inline_elements, no_translate_content_elements
@@ -47,7 +48,8 @@ def translate_odf(template, input_file):
         """
         odf_data = open_odf(template)
         return {
-            filename: etree.parse(BytesIO(data)) for filename, data in odf_data.items()
+            filename: parse_xml_file(BytesIO(data))
+            for filename, data in odf_data.items()
         }
 
     def load_unit_tree(input_file):

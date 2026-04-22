@@ -1,9 +1,9 @@
 from copy import copy, deepcopy
 
 import pytest
-from lxml import etree
 
 from translate.misc.multistring import multistring
+from translate.misc.xml_helpers import parse_xml
 from translate.storage import aresource
 from translate.storage.base import TranslationStore
 
@@ -31,10 +31,8 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
 
     def __check_parse(self, string, xml) -> None:
         """Helper that checks that a string is parsed correctly."""
-        parser = etree.XMLParser(strip_cdata=False)
-
         translatable = 'translatable="false"' not in xml
-        et = etree.fromstring(xml, parser)
+        et = parse_xml(xml, strip_cdata=False)
         unit = self.UnitClass.createfromxmlElement(et)
 
         print("unit.target:", repr(unit.target))
@@ -287,24 +285,21 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
 
     def test_parse_escaped_html_code_flag(self) -> None:
         xml = '<string name="teststring">some &lt;b&gt;html code&lt;/b&gt; here</string>\n'
-        parser = etree.XMLParser(strip_cdata=False)
-        unit = self.UnitClass.createfromxmlElement(etree.fromstring(xml, parser))
+        unit = self.UnitClass.createfromxmlElement(parse_xml(xml, strip_cdata=False))
 
         assert unit.target == "some <b>html code</b> here"
         assert unit.target_markup_mode == unit.TARGET_MARKUP_ESCAPED
 
     def test_parse_escaped_angle_text_flag(self) -> None:
         xml = '<string name="teststring">&lt;not set&gt;</string>\n'
-        parser = etree.XMLParser(strip_cdata=False)
-        unit = self.UnitClass.createfromxmlElement(etree.fromstring(xml, parser))
+        unit = self.UnitClass.createfromxmlElement(parse_xml(xml, strip_cdata=False))
 
         assert unit.target == "<not set>"
         assert unit.target_markup_mode == unit.TARGET_MARKUP_PLAIN
 
     def test_parse_nested_html_code_flag(self) -> None:
         xml = '<string name="teststring">some <b>html code</b> here</string>\n'
-        parser = etree.XMLParser(strip_cdata=False)
-        unit = self.UnitClass.createfromxmlElement(etree.fromstring(xml, parser))
+        unit = self.UnitClass.createfromxmlElement(parse_xml(xml, strip_cdata=False))
 
         assert unit.target == "some <b>html code</b> here"
         assert unit.target_markup_mode == unit.TARGET_MARKUP_XML
@@ -313,8 +308,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         xml = (
             '<string name="teststring"><![CDATA[<a href="%1$s">Terms</a>]]></string>\n'
         )
-        parser = etree.XMLParser(strip_cdata=False)
-        unit = self.UnitClass.createfromxmlElement(etree.fromstring(xml, parser))
+        unit = self.UnitClass.createfromxmlElement(parse_xml(xml, strip_cdata=False))
 
         assert unit.target == '<a href="%1$s">Terms</a>'
         assert unit.target_markup_mode == unit.TARGET_MARKUP_CDATA

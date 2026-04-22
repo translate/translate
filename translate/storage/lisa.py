@@ -27,11 +27,11 @@ from lxml import etree
 
 from translate.misc.xml_helpers import (
     expand_closing_tags,
-    get_safe_xml_parser,
     getText,
     getXMLlang,
     getXMLspace,
     namespaced,
+    parse_xml,
     reindent,
 )
 from translate.storage import base
@@ -102,7 +102,7 @@ class LISAunit(base.TranslationUnit):
         Consider implementing a more efficient copy method if performance becomes an issue.
         """
         new_unit = self.__class__(None, empty=True)
-        new_unit.xmlelement = etree.fromstring(etree.tostring(self.xmlelement))
+        new_unit.xmlelement = parse_xml(etree.tostring(self.xmlelement))
         return new_unit
 
     def namespaced(self, name):
@@ -405,8 +405,7 @@ class LISAfile(base.TranslationStore[U]):
             xml.seek(0)
             posrc = xml.read()
             xml = posrc
-        parser = get_safe_xml_parser(strip_cdata=False)
-        self.document = etree.fromstring(xml, parser).getroottree()
+        self.document = parse_xml(xml, strip_cdata=False).getroottree()
         self.encoding = self.document.docinfo.encoding
         self.initbody()
         assert self.document.getroot().tag == self.namespaced(self.rootNode)

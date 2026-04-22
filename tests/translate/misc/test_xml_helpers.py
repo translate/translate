@@ -1,12 +1,12 @@
 from lxml import etree
 
-from translate.misc.xml_helpers import reindent
+from translate.misc.xml_helpers import parse_xml, reindent
 
 
 class TestReindent:
     @staticmethod
     def _xmlfromstring(xmlstring):
-        return etree.fromstring(xmlstring)
+        return parse_xml(xmlstring)
 
     @staticmethod
     def _xmltostring(xml):

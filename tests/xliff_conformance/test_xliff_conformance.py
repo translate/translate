@@ -22,6 +22,8 @@ from subprocess import call
 import pytest
 from lxml import etree
 
+from translate.misc.xml_helpers import parse_xml_file
+
 
 @pytest.fixture(autouse=True, scope="module")
 def change_test_dir(request):
@@ -32,8 +34,8 @@ def change_test_dir(request):
 
 @pytest.fixture(scope="module")
 def xmllint():
-    schema = etree.XMLSchema(etree.parse("xliff-core-1.1.xsd"))
-    return lambda fullpath: schema.validate(etree.parse(fullpath))
+    schema = etree.XMLSchema(parse_xml_file("xliff-core-1.1.xsd"))
+    return lambda fullpath: schema.validate(parse_xml_file(fullpath))
 
 
 def find_files(base, check_ext):

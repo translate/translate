@@ -33,8 +33,8 @@ class XmlNamer:
     to generate fully qualified XML names.
 
     >>> xml = '<office:document-styles xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0"></office>'
-    >>> from lxml import etree
-    >>> namer = XmlNamer(etree.fromstring(xml))
+    >>> from translate.misc.xml_helpers import parse_xml
+    >>> namer = XmlNamer(parse_xml(xml))
     >>> namer.name('office', 'blah')
     {urn:oasis:names:tc:opendocument:xmlns:office:1.0}blah
     >>> namer.name('office:blah')

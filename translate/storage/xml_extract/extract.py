@@ -20,7 +20,7 @@ from contextlib import contextmanager
 
 from lxml import etree
 
-from translate.misc.xml_helpers import get_safe_xml_parser
+from translate.misc.xml_helpers import parse_xml_file
 from translate.storage.placeables import StringElem, xliff
 from translate.storage.xliff import xliffunit
 from translate.storage.xml_extract import misc, xpath_breadcrumb
@@ -430,7 +430,7 @@ def reverse_map(a_map):
 def build_idml_store(odf_file, store, parse_state, store_adder=None):
     """Build a store for the given IDML file."""
     store_adder = store_adder or _make_store_adder(store)
-    tree = etree.parse(odf_file, get_safe_xml_parser())
+    tree = parse_xml_file(odf_file)
     root = tree.getroot()
     parse_state.nsmap = reverse_map(root.nsmap)
     translatables = find_translatable_dom_nodes(
@@ -443,7 +443,7 @@ def build_idml_store(odf_file, store, parse_state, store_adder=None):
 def build_store(odf_file, store, parse_state, store_adder=None):
     """Build a store for the given XML file."""
     store_adder = store_adder or _make_store_adder(store)
-    tree = etree.parse(odf_file, get_safe_xml_parser())
+    tree = parse_xml_file(odf_file)
     root = tree.getroot()
     parse_state.nsmap = reverse_map(root.nsmap)
     translatables = find_translatable_dom_nodes(root, parse_state)

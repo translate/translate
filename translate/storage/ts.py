@@ -36,7 +36,7 @@ from typing import TYPE_CHECKING, BinaryIO, TextIO
 
 from lxml import etree
 
-from translate.misc.xml_helpers import get_safe_xml_parser
+from translate.misc.xml_helpers import parse_xml
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -81,7 +81,7 @@ class QtTsParser:
     def _parse_content(content: str | bytes) -> etree._ElementTree:
         if isinstance(content, str):
             content = QtTsParser._normalize_text_input(content).encode("utf-8")
-        root = etree.fromstring(content, parser=get_safe_xml_parser())
+        root = parse_xml(content)
         return root.getroottree()
 
     @staticmethod

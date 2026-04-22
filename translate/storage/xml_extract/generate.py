@@ -29,7 +29,8 @@ def _get_tag_arrays(dom_node):
     of dom_node.
 
     >>> xml = '<a><b></b><c></c><b></b><d/></a>'
-    >>> element = etree.fromstring(xml)
+    >>> from translate.misc.xml_helpers import parse_xml
+    >>> element = parse_xml(xml)
     >>> get_tag_arrays(element)
     {'b': [<Element a at 84df144>, <Element a at 84df148>], 'c': [<Element a at 84df120>], 'd': [<Element a at 84df152>]}
     """
