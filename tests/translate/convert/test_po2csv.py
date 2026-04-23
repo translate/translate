@@ -149,6 +149,17 @@ msgstr "Vind\\Opsies"
         assert '"\'=SUM(1,1)"' in csvsource
         assert '"\'=2+2"' in csvsource
 
+    def test_spreadsheet_escaped_sources_match_template_before_simplify(self) -> None:
+        """Test that escaped sources still merge exactly back into templates."""
+        template = 'msgid "=A1"\nmsgstr ""\n\nmsgid "@A1"\nmsgstr ""\n'
+        translated = 'msgid "=A1"\nmsgstr "Left"\n\nmsgid "@A1"\nmsgstr "Right"\n'
+
+        csvfile = self.po2csv(translated)
+        pofile = self.csv2po(bytes(csvfile), template)
+
+        assert pofile.findunit("=A1").target == "Left"
+        assert pofile.findunit("@A1").target == "Right"
+
 
 class TestPO2CSVCommand(test_convert.TestConvertCommand, TestPO2CSV):
     """Tests running actual po2csv commands on files."""

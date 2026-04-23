@@ -105,6 +105,27 @@ class csv2po:
                 del self.commentindex[comment]
 
     @staticmethod
+    def remove_spreadsheet_escape(value):
+        """Remove a spreadsheet escape used by CSV export when matching templates."""
+        if (
+            isinstance(value, str)
+            and len(value) > 1
+            and value[0] in {"'", "\\"}
+            and value[1] in csvl10n.csvunit.spreadsheetescapes
+        ):
+            return value[1:]
+        return value
+
+    @classmethod
+    def spreadsheet_variants(cls, value):
+        """Return raw and de-escaped variants for matching in priority order."""
+        variants = [value]
+        normalized = cls.remove_spreadsheet_escape(value)
+        if normalized != value:
+            variants.append(normalized)
+        return variants
+
+    @staticmethod
     def convertunit(csvunit):
         """Converts csv unit to po unit."""
         pounit = po.pounit(encoding="UTF-8")
@@ -125,33 +146,51 @@ class csv2po:
 
     def handlecsvunit(self, csvunit) -> None:
         """Handles reintegrating a csv unit into the .po file."""
-        if len(csvunit.location.strip()) > 0 and csvunit.location in self.commentindex:
-            pounit = self.commentindex[csvunit.location]
-        elif csvunit.source in self.sourceindex:
-            pounit = self.sourceindex[csvunit.source]
-        elif simplify(csvunit.source) in self.simpleindex:
-            thepolist = self.simpleindex[simplify(csvunit.source)]
-            if len(thepolist) > 1:
-                matches = "\n  ".join(
-                    f"possible match: {pounit.source}" for pounit in thepolist
-                )
-                logger.warning(
-                    "%s - csv entry not unique in pofile, "
-                    "multiple matches found:\n"
-                    "  location\t%s\n"
-                    "  original\t%s\n"
-                    "  translation\t%s\n"
-                    "  %s",
-                    self._get_csv_location(csvunit),
-                    csvunit.location,
-                    csvunit.source,
-                    csvunit.target,
-                    matches,
-                )
-                self.unmatched += 1
-                return
-            pounit = thepolist[0]
-        else:
+        csv_source = csvunit.source
+
+        pounit = None
+
+        for location in self.spreadsheet_variants(csvunit.location):
+            if len(location.strip()) > 0 and location in self.commentindex:
+                pounit = self.commentindex[location]
+                break
+
+        if pounit is None:
+            for source in self.spreadsheet_variants(csvunit.source):
+                if source in self.sourceindex:
+                    pounit = self.sourceindex[source]
+                    csv_source = source
+                    break
+
+        if pounit is None:
+            for source in self.spreadsheet_variants(csvunit.source):
+                if simplify(source) not in self.simpleindex:
+                    continue
+                thepolist = self.simpleindex[simplify(source)]
+                if len(thepolist) > 1:
+                    matches = "\n  ".join(
+                        f"possible match: {pounit.source}" for pounit in thepolist
+                    )
+                    logger.warning(
+                        "%s - csv entry not unique in pofile, "
+                        "multiple matches found:\n"
+                        "  location\t%s\n"
+                        "  original\t%s\n"
+                        "  translation\t%s\n"
+                        "  %s",
+                        self._get_csv_location(csvunit),
+                        csvunit.location,
+                        csvunit.source,
+                        csvunit.target,
+                        matches,
+                    )
+                    self.unmatched += 1
+                    return
+                pounit = thepolist[0]
+                csv_source = source
+                break
+
+        if pounit is None:
             logger.warning(
                 "%s - csv entry not found in pofile:\n"
                 "  location\t%s\n"
@@ -164,22 +203,23 @@ class csv2po:
             )
             self.unmatched += 1
             return
+
         if pounit.hasplural():
             # we need to work out whether we matched the singular or the plural
             singularid = pounit.source.strings[0]
             pluralid = pounit.source.strings[1]
-            if csvunit.source == singularid:
+            if csv_source == singularid:
                 pounit.msgstr[0] = csvunit.target
-            elif csvunit.source == pluralid:
+            elif csv_source == pluralid:
                 pounit.msgstr[1] = csvunit.target
-            elif simplify(csvunit.source) == simplify(singularid):
+            elif simplify(csv_source) == simplify(singularid):
                 pounit.msgstr[0] = csvunit.target
-            elif simplify(csvunit.source) == simplify(pluralid):
+            elif simplify(csv_source) == simplify(pluralid):
                 pounit.msgstr[1] = csvunit.target
             else:
                 logger.warning(
                     "couldn't work out singular/plural: %r, %r, %r",
-                    csvunit.source,
+                    csv_source,
                     singularid,
                     pluralid,
                 )

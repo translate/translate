@@ -334,6 +334,15 @@ GENERAL@2|Notes,"cable, motor, switch"
         assert store.units[0].source == "'=SUM(1,1)"
         assert store.units[0].target == "\\+cmd"
 
+    def test_non_string_values_serialize_without_crashing(self) -> None:
+        """Test that non-string values are left to csv.DictWriter for serialization."""
+        store = self.StoreClass(fieldnames=["id"])
+        unit = self.StoreClass.UnitClass()
+        unit.id = 123
+        store.addunit(unit)
+
+        assert bytes(store).decode() == '"id"\r\n"123"\r\n'
+
     def test_quote_nonnumeric_handling(self) -> None:
         """Test that CSV files with QUOTE_NONNUMERIC dialect are handled correctly."""
         # Simulate a CSV that the sniffer might detect as QUOTE_NONNUMERIC

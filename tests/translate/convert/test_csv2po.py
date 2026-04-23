@@ -148,6 +148,16 @@ msgstr ""
         assert unit.source == "'=SUM(1,1)"
         assert unit.target == "\\=2+2"
 
+    def test_deescaped_source_match_preserves_literal_target(self) -> None:
+        """Test that target text stays literal when only source matching is de-escaped."""
+        csvsource = '"source","target"\n"\'=A1","\'=literal"\n"\'+A1","\\=keep"'
+        potsource = 'msgid "=A1"\nmsgstr ""\n\nmsgid "+A1"\nmsgstr ""\n'
+
+        pofile = self.csv2po(csvsource, potsource)
+
+        assert pofile.findunit("=A1").target == "'=literal"
+        assert pofile.findunit("+A1").target == "\\=keep"
+
     def test_line_numbers_in_errors(self, caplog) -> None:
         """Tests that line numbers are included in error messages."""
         # CSV with entries that won't be found in the template
