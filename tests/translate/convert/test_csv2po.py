@@ -158,6 +158,30 @@ msgstr ""
         assert pofile.findunit("=A1").target == "'=literal"
         assert pofile.findunit("+A1").target == "\\=keep"
 
+    def test_backslash_prefix_is_not_deescaped_for_template_matching(
+        self, caplog
+    ) -> None:
+        """Test that literal backslash prefixes do not match formula-like templates."""
+        csvsource = (
+            '"location","source","target"\n'
+            '"\\=location","Different","Location target"\n'
+            '"","\\=A1","Source target"'
+        )
+        potsource = (
+            "#: =location\n"
+            'msgid "Location source"\n'
+            'msgstr ""\n\n'
+            'msgid "=A1"\n'
+            'msgstr ""\n'
+        )
+
+        with caplog.at_level(logging.WARNING):
+            pofile = self.csv2po(csvsource, potsource)
+
+        assert pofile.findunit("Location source").target == ""
+        assert pofile.findunit("=A1").target == ""
+        assert caplog.text.count("entry not found in pofile") == 2
+
     def test_line_numbers_in_errors(self, caplog) -> None:
         """Tests that line numbers are included in error messages."""
         # CSV with entries that won't be found in the template

@@ -105,14 +105,19 @@ class csv2po:
                 del self.commentindex[comment]
 
     @staticmethod
-    def remove_spreadsheet_escape(value):
-        """Remove a spreadsheet escape used by CSV export when matching templates."""
-        if (
+    def has_spreadsheet_escape_prefix(value):
+        """Return whether a value looks like spreadsheet escape syntax."""
+        return (
             isinstance(value, str)
             and len(value) > 1
             and value[0] in {"'", "\\"}
             and value[1] in csvl10n.csvunit.spreadsheetescapes
-        ):
+        )
+
+    @staticmethod
+    def remove_spreadsheet_escape(value):
+        """Remove a spreadsheet escape used by CSV export when matching templates."""
+        if csv2po.has_spreadsheet_escape_prefix(value) and value[0] == "'":
             return value[1:]
         return value
 
@@ -162,7 +167,7 @@ class csv2po:
                     csv_source = source
                     break
 
-        if pounit is None:
+        if pounit is None and not self.has_spreadsheet_escape_prefix(csvunit.source):
             for source in self.spreadsheet_variants(csvunit.source):
                 if simplify(source) not in self.simpleindex:
                     continue
