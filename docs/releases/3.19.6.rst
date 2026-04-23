@@ -1,0 +1,35 @@
+Translate Toolkit 3.19.6
+************************
+
+*Released on 23 April 2026*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- CSV
+
+  - Improve escaping handling
+
+- OpenOffice
+
+  - Sanitize used filenames
+
+Other
+-----
+
+- Consolidate XML parsing and storage parse handling
+- Update lxml dependency
+- Improve release notes structure for GitHub releases
+- Update development tooling and CI dependencies
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+Michal Čihař
