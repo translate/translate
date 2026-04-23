@@ -32,7 +32,19 @@ jobs:
     - name: Install apt dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y libgettextpo-dev
+        sudo apt-get install -y libgettextpo-dev pandoc
+    - name: Convert release notes
+      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/')
+      env:
+        VERSION: ${{ github.ref_name }}
+      run: |
+        RELEASE_NOTES="docs/releases/${VERSION}.rst"
+        if [ ! -f "$RELEASE_NOTES" ]; then
+          echo "Release notes not found: $RELEASE_NOTES" >&2
+          exit 1
+        fi
+        mkdir -p release-notes
+        pandoc --from rst --to gfm --output "release-notes/${VERSION}.md" "$RELEASE_NOTES"
     - name: Build pakcage
       run: uv build
     - name: Twine check
@@ -67,6 +79,11 @@ jobs:
       with:
         path: dist/*
         name: dist
+    - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/')
+      with:
+        path: release-notes/*.md
+        name: release-notes
 
   pypi-publish:
     if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/')
@@ -101,8 +118,17 @@ jobs:
       with:
         name: dist
         path: dist
+    - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      with:
+        name: release-notes
+        path: release-notes
     - env:
         VERSION: ${{ github.ref_name }}
         GH_TOKEN: ${{ github.token }}
       run: |
-        gh release create "$VERSION" --verify-tag --generate-notes dist/*
+        RELEASE_NOTES="release-notes/${VERSION}.md"
+        if [ ! -s "$RELEASE_NOTES" ]; then
+          echo "Release notes not found: $RELEASE_NOTES" >&2
+          exit 1
+        fi
+        gh release create "$VERSION" --verify-tag --title "Translate Toolkit $VERSION" --notes-file "$RELEASE_NOTES" dist/*
