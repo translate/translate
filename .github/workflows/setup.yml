@@ -45,7 +45,7 @@ jobs:
         fi
         mkdir -p release-notes
         pandoc --from rst --to gfm --output "release-notes/${VERSION}.md" "$RELEASE_NOTES"
-    - name: Build pakcage
+    - name: Build package
       run: uv build
     - name: Twine check
       run: uvx twine check dist/*
