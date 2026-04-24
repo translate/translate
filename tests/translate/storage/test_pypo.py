@@ -279,6 +279,16 @@ msgstr ""
 
 class TestPYPOFile(test_po.TestPOFile):
     StoreClass = pypo.pofile
+    LARGE_PO_ENTRY_COUNT = 10_000
+    LARGE_PO_HEADER = (
+        b'msgid ""\nmsgstr ""\n"Content-Type: text/plain; charset=UTF-8\\n"\n\n'
+    )
+
+    def _parse_large_po(self, entries) -> pypo.pofile:
+        pofile = self.poparse(self.LARGE_PO_HEADER + b"".join(entries))
+        assert len(pofile.units) == self.LARGE_PO_ENTRY_COUNT + 1
+        assert pofile.units[0].isheader()
+        return pofile
 
     def test_combine_msgidcomments(self) -> None:
         """Checks that we don't get duplicate msgid comments."""
@@ -312,6 +322,87 @@ class TestPYPOFile(test_po.TestPOFile):
         assert len(pofile.units) == 2
         assert pypo.unquotefrompo(pofile.units[0].msgidcomments) == "_: source1\n"
         assert pypo.unquotefrompo(pofile.units[1].msgidcomments) == "_: source2\n"
+
+    def test_parse_huge_plain_file(self) -> None:
+        entries = (
+            (
+                f"#: src/plain_{index}.py:{index}\n"
+                "#, fuzzy\n"
+                f'msgid "Plain source {index}"\n'
+                f'msgstr "Plain target {index}"\n\n'
+            ).encode()
+            for index in range(self.LARGE_PO_ENTRY_COUNT)
+        )
+
+        pofile = self._parse_large_po(entries)
+        first = pofile.units[1]
+        last = pofile.units[-1]
+
+        assert first.getlocations() == ["src/plain_0.py:0"]
+        assert first.isfuzzy()
+        assert first.source == "Plain source 0"
+        assert first.target == "Plain target 0"
+        assert last.getlocations() == ["src/plain_9999.py:9999"]
+        assert last.isfuzzy()
+        assert last.source == "Plain source 9999"
+        assert last.target == "Plain target 9999"
+
+    def test_parse_huge_plural_file(self) -> None:
+        entries = (
+            (
+                f"#: src/plural_{index}.py:{index}\n"
+                f'msgid "Plural source {index}"\n'
+                f'msgid_plural "Plural sources {index}"\n'
+                f'msgstr[0] "Plural target {index}"\n'
+                f'msgstr[1] "Plural targets {index}"\n\n'
+            ).encode()
+            for index in range(self.LARGE_PO_ENTRY_COUNT)
+        )
+
+        pofile = self._parse_large_po(entries)
+        first = pofile.units[1]
+        last = pofile.units[-1]
+        first_source = first.source
+        first_target = first.target
+        last_source = last.source
+        last_target = last.target
+
+        assert first.getlocations() == ["src/plural_0.py:0"]
+        assert isinstance(first_source, multistring)
+        assert first_source.strings == ["Plural source 0", "Plural sources 0"]
+        assert isinstance(first_target, multistring)
+        assert first_target.strings == ["Plural target 0", "Plural targets 0"]
+        assert last.getlocations() == ["src/plural_9999.py:9999"]
+        assert isinstance(last_source, multistring)
+        assert last_source.strings == [
+            "Plural source 9999",
+            "Plural sources 9999",
+        ]
+        assert isinstance(last_target, multistring)
+        assert last_target.strings == [
+            "Plural target 9999",
+            "Plural targets 9999",
+        ]
+
+    def test_parse_huge_obsolete_file(self) -> None:
+        entries = (
+            (
+                f'#~ msgid "Obsolete source {index}"\n'
+                f'#~ msgstr "Obsolete target {index}"\n\n'
+            ).encode()
+            for index in range(self.LARGE_PO_ENTRY_COUNT)
+        )
+
+        pofile = self._parse_large_po(entries)
+        first = pofile.units[1]
+        last = pofile.units[-1]
+
+        assert first.isobsolete()
+        assert first.source == "Obsolete source 0"
+        assert first.target == "Obsolete target 0"
+        assert last.isobsolete()
+        assert last.source == "Obsolete source 9999"
+        assert last.target == "Obsolete target 9999"
 
     def test_output_str_unicode(self) -> None:
         """Checks that we can str(element) which is in unicode."""

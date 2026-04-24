@@ -439,7 +439,8 @@ def parse_header(parse_state: PoParseState, store: pofile) -> pounit | None:
 def parse_units(parse_state: PoParseState, store: pofile) -> None:
     unit = parse_header(parse_state, store)
     while unit:
-        unit.infer_state()
+        if not unit.obsolete:
+            unit.infer_state()
         store.addunit(unit)
         unit = parse_unit(parse_state)
     if not parse_state.eof:
