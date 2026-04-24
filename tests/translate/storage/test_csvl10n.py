@@ -3,6 +3,7 @@ from io import BytesIO
 
 import pytest
 
+from translate.misc.multistring import multistring
 from translate.storage import csvl10n
 
 from . import test_base
@@ -319,6 +320,20 @@ GENERAL@2|Notes,"cable, motor, switch"
         assert newstore.units[0].id == "'-id"
         assert newstore.units[0].source == "'=SUM(1,1)"
         assert newstore.units[0].target == "'+cmd"
+
+    def test_multistring_with_empty_first_string_serializes(self) -> None:
+        """Test that plural values with an empty first string can be written."""
+        store = self.StoreClass(fieldnames=["source", "target"])
+        unit = store.UnitClass()
+        unit.source = multistring(
+            ["", "Download apps using IPFS web endpoints: %1$d enabled"]
+        )
+        unit.target = multistring(["", "Downloaded %1$d apps"])
+        store.addunit(unit)
+
+        csvsource = bytes(store).decode()
+
+        assert csvsource == '"source","target"\r\n"",""\r\n'
 
     def test_formula_like_prefixes_are_preserved_on_import(self) -> None:
         """Test that import keeps literal leading quote and backslash characters."""

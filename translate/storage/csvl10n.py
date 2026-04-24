@@ -133,7 +133,7 @@ class csvunit(base.TranslationUnit):
 
     def add_spreadsheet_escape(self, value):
         """Add a spreadsheet escape to a string when it starts like a formula."""
-        if isinstance(value, str) and value and value[0] in self.spreadsheetescapes:
+        if isinstance(value, str) and value[:1] in self.spreadsheetescapes:
             return f"'{value}"
         return value
 
