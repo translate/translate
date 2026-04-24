@@ -24,6 +24,12 @@ Conformance
   - Content from HTML attributes uses the HTML entities ``&quot;`` (") or
     ``&apos;`` (').
 
+  During ``po2html`` conversion, translated attribute values are escaped when
+  they are written back to the HTML template. Element content is not sanitized:
+  it is inserted as an HTML fragment so that inline markup can be preserved.
+  Treat PO files used for HTML generation as trusted input, or review and
+  sanitize the generated HTML before publishing it.
+
 * Leading and trailing tags are removed from the localisable text,
   but only in matching pairs.
 

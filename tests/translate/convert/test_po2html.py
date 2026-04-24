@@ -103,6 +103,40 @@ sin.
         htmlexpected = """<li><a href="logoColor.eps" download>EPS color</a></li>"""
         assert htmlexpected in self.converthtml(posource, htmlsource)
 
+    def test_translated_attribute_values_are_escaped(self) -> None:
+        htmlsource = '<img alt="Title">'
+        posource = """#: test.html
+msgid "Title"
+msgstr "bad\\" autofocus onfocus=alert(1) x=\\""
+"""
+        result = self.converthtml(posource, htmlsource)
+        assert '<img alt="bad&quot; autofocus onfocus=alert(1) x=&quot;">' in result
+        assert '<img alt="bad" autofocus' not in result
+
+    def test_translated_attribute_entities_are_preserved(self) -> None:
+        htmlsource = '<input value="Search &amp; filter">'
+        posource = """#: test.html
+msgid "Search & filter"
+msgstr "Use &quot;search&quot; &brandShortName; & filter <now>"
+"""
+        expected = (
+            '<input value="Use &quot;search&quot; &brandShortName; '
+            '&amp; filter &lt;now&gt;">'
+        )
+        assert expected in self.converthtml(posource, htmlsource)
+
+    def test_translated_meta_content_is_escaped(self) -> None:
+        htmlsource = '<meta property="og:description" content="Summary">'
+        posource = """#: test.html
+msgid "Summary"
+msgstr "A \\"quoted\\" <summary> & details"
+"""
+        expected = (
+            '<meta property="og:description" '
+            'content="A &quot;quoted&quot; &lt;summary&gt; &amp; details">'
+        )
+        assert expected in self.converthtml(posource, htmlsource)
+
     def test_entities(self) -> None:
         """Tests that entities are handled correctly."""
         htmlsource = "<p>5 less than 6</p>"

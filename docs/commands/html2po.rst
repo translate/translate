@@ -132,6 +132,24 @@ Notes
 The :doc:`HTML format description </formats/html>` gives more details on the
 format of the localisable HTML content and the capabilities of this converter.
 
+Security
+--------
+
+``po2html`` inserts translated element content as HTML fragments. This is
+intentional: it lets translations preserve or adjust inline markup that was
+extracted from the template. It also means that PO files used to generate HTML
+must be trusted or reviewed before the generated pages are served.
+
+Translated HTML attribute values are escaped when written back to the template,
+so quote characters and other reserved characters in translated attributes
+remain part of the attribute value. This escaping does not sanitize element
+content, URLs, scripts, or other markup supplied through translations.
+
+The same trust model applies to other converters that generate rendered or
+executable formats from translations and templates: validate the translated
+output according to the security requirements of the target application before
+publishing it.
+
 **Translator Comments**
 
 Use the ``--keepcomments`` option to preserve HTML comments and

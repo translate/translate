@@ -159,6 +159,10 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
     TRAILING_WHITESPACE_RE = re.compile(r"(\s+)$")
 
+    ATTRIBUTE_BARE_AMPERSAND_RE = re.compile(
+        r"&(?!(?:#[0-9]+|#[xX][0-9A-Fa-f]+|[A-Za-z][A-Za-z0-9._:-]*);)"
+    )
+
     ENCODING_RE = re.compile(
         rb"""<meta.*
                                 content.*=.*?charset=\s*?
@@ -546,7 +550,12 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                     # Similar to how dir is automatically set, this intentionally overrides
                     # any explicit translation to maintain consistency.
                     if name == "og:locale" and self._translated_lang:
-                        result.append((attrname, self._translated_lang))
+                        result.append(
+                            (
+                                attrname,
+                                self.escape_attribute_value(self._translated_lang),
+                            )
+                        )
                         continue
                     if name in self.TRANSLATABLE_METADATA:
                         normalized_value = self.WHITESPACE_RE.sub(
@@ -554,7 +563,12 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                         ).strip()
                         translated_value = self.callback(normalized_value)
                         if translated_value != normalized_value:
-                            result.append((attrname, translated_value))
+                            result.append(
+                                (
+                                    attrname,
+                                    self.escape_attribute_value(translated_value),
+                                )
+                            )
                             continue
                 # Only translate attributes that are translatable for this specific tag
                 if (
@@ -564,7 +578,9 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                     normalized_value = self.WHITESPACE_RE.sub(" ", attrvalue).strip()
                     translated_value = self.callback(normalized_value)
                     if translated_value != normalized_value:
-                        result.append((attrname, translated_value))
+                        result.append(
+                            (attrname, self.escape_attribute_value(translated_value))
+                        )
                         continue
             result.append((attrname, attrvalue))
 
@@ -573,6 +589,16 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             result.append(("dir", "rtl" if is_rtl(translated_lang) else "ltr"))
 
         return result
+
+    @staticmethod
+    def escape_attribute_value(value: str) -> str:
+        """Escape text for double-quoted HTML attributes, preserving entities."""
+        return (
+            htmlfile.ATTRIBUTE_BARE_AMPERSAND_RE.sub("&amp;", value)
+            .replace('"', "&quot;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+        )
 
     @staticmethod
     def create_start_tag(tag, attrs=None, startend=False) -> str:
