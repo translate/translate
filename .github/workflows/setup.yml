@@ -44,7 +44,9 @@ jobs:
           exit 1
         fi
         mkdir -p release-notes
-        pandoc --from rst --to gfm --output "release-notes/${VERSION}.md" "$RELEASE_NOTES"
+        RELEASE_NOTES_BODY="$(mktemp)"
+        pandoc --from rst --to gfm --output "$RELEASE_NOTES_BODY" "$RELEASE_NOTES"
+        sed '1{/^# Translate Toolkit /{N;d;}}' "$RELEASE_NOTES_BODY" > "release-notes/${VERSION}.md"
     - name: Build package
       run: uv build
     - name: Twine check
@@ -131,4 +133,4 @@ jobs:
           echo "Release notes not found: $RELEASE_NOTES" >&2
           exit 1
         fi
-        gh release create "$VERSION" --verify-tag --title "Translate Toolkit $VERSION" --notes-file "$RELEASE_NOTES" dist/*
+        gh release create "$VERSION" --verify-tag --title "$VERSION" --notes-file "$RELEASE_NOTES" dist/*

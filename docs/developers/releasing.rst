@@ -151,7 +151,8 @@ GitHub release notes
 
 The GitHub Action converts :file:`docs/releases/$version.rst` to Markdown using
 Pandoc, stores it as a workflow artifact, and uses it when creating the GitHub
-release.
+release. The GitHub release title is the version number, and the converted
+release notes omit the documentation page heading.
 
 Announce to the world
 ---------------------
