@@ -188,7 +188,7 @@ def extractwithoutquotes(
                     if callable_includeescapes:
                         replace_escape = includeescapes(
                             section[epos : epos + lenescape + 1]
-                        )  # ty:ignore[call-non-callable]
+                        )
                         # TODO: deprecate old method of returning boolean from
                         # includeescape, by removing this if block
                         if not isinstance(replace_escape, str):

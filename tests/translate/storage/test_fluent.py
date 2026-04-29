@@ -21,7 +21,7 @@ from __future__ import annotations
 import re
 import textwrap
 from io import BytesIO
-from typing import Any
+from typing import Any, cast
 
 from pytest import raises
 
@@ -300,7 +300,9 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                 # Each one visited at least once.
                 assert selector_branch["instance"] is not None
 
-            expect_variants = expected_part.get("pattern-variants", None)
+            expect_variants: list[dict[str, Any]] | None = expected_part.get(
+                "pattern-variants", None
+            )
             if expect_variants is None:
                 # Only expect one variant by default.
                 expect_variants = [
@@ -319,7 +321,7 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
                 strict=True,
             ):
                 assert expected_variant.get("source") == source
-                expect_path = expected_variant.get("select-path")
+                expect_path = cast("tuple[int, ...]", expected_variant["select-path"])
                 for branch, index in zip(path, expect_path, strict=True):
                     cls.assert_selector_branch(
                         branch,
