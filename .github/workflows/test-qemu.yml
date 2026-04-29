@@ -60,6 +60,7 @@ jobs:
           export UV_CACHE_DIR=/tmp/setup-uv-cache
           uv sync --group test --all-extras --no-dev
           source .venv/bin/activate
-          pytest --cov=. -r EfsxX
+          # Native test jobs collect coverage; QEMU jobs focus on architecture coverage.
+          pytest -r EfsxX -n auto --maxprocesses=4 --dist=worksteal
           ./tests/cli/run_tests.sh
           uv cache prune --ci
