@@ -1,0 +1,38 @@
+Translate Toolkit 3.19.7
+************************
+
+*Released on 29 April 2026*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- CSV
+
+  - Fix crash when escaping multistring values
+
+- HTML
+
+  - Properly escape translated HTML attributes
+
+- PO
+
+  - Avoid inferring obsolete unit state twice
+
+Other
+-----
+
+- Correct type annotations
+- Automate updating release notes on GitHub
+- Update development tooling and CI dependencies
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+Michal Čihař
