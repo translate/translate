@@ -32,12 +32,12 @@ jobs:
     - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd   # v6.0.2
       with:
         persist-credentials: false
-    - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+    - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
       with:
-        cache-local-path: /tmp/setup-uv-cache
-        cache-suffix: ${{ matrix.arch }}-${{ matrix.distro }}
-        prune-cache: false
-        version: 0.11.8
+        path: /tmp/setup-uv-cache
+        key: ${{ runner.os }}-qemu-uv-v1-${{ matrix.arch }}-${{ matrix.distro }}-${{ hashFiles('pyproject.toml') }}
+        restore-keys: |
+          ${{ runner.os }}-qemu-uv-v1-${{ matrix.arch }}-${{ matrix.distro }}-
     - uses: uraimo/run-on-arch-action@f9b26e3a1a408d5fd530d20c17b9f3f4428ff8d9   # v3.1.0
       name: Test
       with:
