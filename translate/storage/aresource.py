@@ -848,7 +848,7 @@ class AndroidResourceUnit(base.TranslationUnit):
                         plural_strings.append(plural_strings[-1])
 
             # Include "other" as copy of "many" if "other" is not present. This avoids crashes
-            # of Android builts with broken plurals handling.
+            # of Android builds with broken plurals handling.
             if "other" not in plural_tags and "many" in plural_tags:
                 # Create copy here to avoid modifications to language.data
                 plural_tags = [*plural_tags, "other"]
