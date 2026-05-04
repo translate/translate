@@ -22,6 +22,7 @@ Converters
    ini2po
    json2po
    md2po
+   mdx2po
    moz2po
    mozlang2po
    odf2xliff

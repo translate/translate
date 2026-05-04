@@ -118,6 +118,7 @@ Formats of translatable documents
    ical
    json
    md
+   mdx
    odf
    subtitles
    text
@@ -132,6 +133,7 @@ Formats of translatable documents
 * :doc:`ical`
 * :doc:`json`
 * :doc:`md`
+* :doc:`mdx`
 * :wp:`OpenDocument` -- all ODF file types
 * :doc:`subtitles` -- various formats (v1.4)
 * :doc:`Text <text>` -- plain text with blocks separated by whitespace
