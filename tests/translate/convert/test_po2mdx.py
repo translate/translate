@@ -298,7 +298,7 @@ For more details, see the [API reference](/api).
         assert "import { Callout, Steps } from '@docs/components'" in output
         assert "import DocImage from './assets/screenshot.png'" in output
         assert "export const toc" in output
-        assert "<Callout type=\"warning\">" in output
+        assert '<Callout type="warning">' in output
         assert "</Callout>" in output
         assert "<Steps>" in output
         assert "</Steps>" in output
@@ -314,7 +314,10 @@ Check [the docs](https://example.com) for details.
         postore = self._make_po(
             [
                 ("Title", "Titel"),
-                ("Check [the docs](https://example.com) for details.", "Bitte [die Docs](https://example.com) prüfen."),
+                (
+                    "Check [the docs](https://example.com) for details.",
+                    "Bitte [die Docs](https://example.com) prüfen.",
+                ),
             ]
         )
         translator = MDXTranslator(
