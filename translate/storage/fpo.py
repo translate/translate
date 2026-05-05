@@ -249,8 +249,10 @@ class pounit(pocommon.pounit):
                 self.source != otherpo.source
                 or self.getcontext() != otherpo.getcontext()
             ):
+                self.set_as_previous(otherpo)
                 self.markfuzzy()
             else:
+                self.copy_previous(otherpo)
                 self.markfuzzy(otherpo.isfuzzy())
         elif not otherpo.istranslated():
             if self.source != otherpo.source:
@@ -363,6 +365,10 @@ class pounit(pocommon.pounit):
         """Get the message context."""
         return self._msgctxt + self.msgidcomment
 
+    def getpreviouscontext(self):
+        """Get the real msgctxt without KDE-style msgidcomments."""
+        return self._msgctxt
+
     def setcontext(self, context) -> None:
         self._msgctxt = context or ""
 
@@ -396,6 +402,7 @@ class pounit(pocommon.pounit):
             newunit.msgidcomment = unit._extract_msgidcomments()
             if not newunit.msgidcomment:
                 newunit.setcontext(unit.getcontext())
+            newunit.copy_previous(unit)
 
             locations = unit.getlocations()
             if locations:

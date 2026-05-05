@@ -118,6 +118,7 @@ class Xliff1Unit(XliffUnit):
         lang: str | None = None,
         sourcetxt: str | None = None,
         matchquality: str | None = None,
+        context: str | None = None,
     ) -> None:
         """
         Adds an alt-trans tag and alt-trans components to the unit.
@@ -132,6 +133,13 @@ class Xliff1Unit(XliffUnit):
             altsource.text = sourcetxt
         alttarget = etree.SubElement(alttrans, self.namespaced("target"))
         alttarget.text = txt
+        if context:
+            contextgroup = etree.SubElement(alttrans, self.namespaced("context-group"))
+            contextgroup.set("name", "po-entry")
+            contextgroup.set("purpose", "information")
+            contextnode = etree.SubElement(contextgroup, self.namespaced("context"))
+            contextnode.set("context-type", "x-po-msgctxt")
+            safely_set_text(contextnode, context)
         if matchquality:
             alttrans.set("match-quality", matchquality)
         if origin:
@@ -165,6 +173,15 @@ class Xliff1Unit(XliffUnit):
                 )
                 # TODO: support multiple targets better
                 # TODO: support notes in alt-trans
+                for context in node.iterdescendants(self.namespaced("context")):
+                    if context.get("context-type") == "x-po-msgctxt":
+                        newunit.setcontext(
+                            lisa.getText(
+                                context,
+                                getXMLspace(node, self._default_xml_space),
+                            )
+                        )
+                        break
                 newunit.xmlelement = node  # ty:ignore[unresolved-attribute]
 
                 translist.append(newunit)

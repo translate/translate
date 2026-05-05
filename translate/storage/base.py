@@ -234,6 +234,10 @@ class TranslationUnit:
 
     def __init__(self, source=None) -> None:
         """Constructs a TranslationUnit containing the given source string."""
+        self._context = ""
+        self._prev_source = None
+        self._prev_context = ""
+        self._prev_target = None
         if source is not None:
             self.source = source
         self._docpath = ""
@@ -456,10 +460,88 @@ class TranslationUnit:
 
     def getcontext(self) -> str:
         """Get the message context."""
-        return ""
+        return getattr(self, "_context", "")
 
     def setcontext(self, context) -> None:
         """Set the message context."""
+        self._context = context or ""
+
+    def getpreviouscontext(self):
+        """Get the context value suitable for previous-message metadata."""
+        return self.getcontext()
+
+    @property
+    def prev_source(self):
+        """Previous source text for fuzzy/reused units, if available."""
+        return getattr(self, "_prev_source", None)
+
+    @prev_source.setter
+    def prev_source(self, source) -> None:
+        self._prev_source = source
+
+    @property
+    def prev_context(self):
+        """Previous source context for fuzzy/reused units, if available."""
+        return getattr(self, "_prev_context", "")
+
+    @prev_context.setter
+    def prev_context(self, context) -> None:
+        self._prev_context = context or ""
+
+    @property
+    def prev_target(self):
+        """Previous target text for formats that expose it."""
+        return getattr(self, "_prev_target", None)
+
+    @prev_target.setter
+    def prev_target(self, target) -> None:
+        self._prev_target = target
+
+    def has_previous(self) -> bool:
+        """Whether this unit has previous source/context metadata."""
+        return bool(self.prev_source or self.prev_context)
+
+    def clear_previous(self) -> None:
+        """Clear previous source/context metadata."""
+        self.prev_source = None
+        self.prev_context = ""
+        self.prev_target = None
+
+    def copy_previous(self, unit) -> None:
+        """Copy previous source/context metadata from another unit."""
+        if not unit.has_previous():
+            self.clear_previous()
+            return
+        self.prev_source = getattr(unit, "prev_source", None)
+        self.prev_context = getattr(unit, "prev_context", "")
+        self.prev_target = getattr(unit, "prev_target", None)
+
+    def set_as_previous(self, unit) -> None:
+        """Store another unit's current source/context as this unit's previous one."""
+        self.prev_source = unit.source
+        self.prev_context = unit.getpreviouscontext()
+        self.prev_target = unit.target
+
+    def getalttrans(self, origin=None):
+        """Return alternate translations derived from previous metadata."""
+        if origin is not None or not self.prev_source or not self.isfuzzy():
+            return []
+        unit = type(self)(self.prev_source)
+        target = self.target
+        if isinstance(self.prev_source, multistring):
+            count = len(self.prev_source.strings)
+            if isinstance(target, multistring):
+                target_strings = list(target.strings)
+                if len(target_strings) < count:
+                    target_strings += [target_strings[-1] if target_strings else ""] * (
+                        count - len(target_strings)
+                    )
+                target = multistring(target_strings[:count])
+            else:
+                target = multistring([target or ""] * count)
+        unit.target = target
+        unit.setcontext(self.prev_context)
+        return [unit]
 
     def getnotes(self, origin=None):
         """
@@ -623,6 +705,7 @@ class TranslationUnit:
         notes = unit.getnotes()
         if notes:
             newunit.addnote(notes)
+        newunit.copy_previous(unit)
         return newunit
 
     xid = property(lambda self: None, lambda self, value: None)

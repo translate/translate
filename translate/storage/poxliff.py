@@ -45,6 +45,7 @@ class PoXliffUnit(xliff.xliffunit):
     """A class to specifically handle the plural units created from a po file."""
 
     rich_parsers = general.parsers
+    XML_LANG = "{http://www.w3.org/XML/1998/namespace}lang"
 
     def __init__(self, source=None, empty=False, **kwargs) -> None:
         self._rich_source = None
@@ -204,6 +205,85 @@ class PoXliffUnit(xliff.xliffunit):
 
         for i, unit in enumerate(self.units):
             unit.target = targets[i]
+
+    def getalttrans(self, origin=None):
+        if not self.hasplural():
+            return super().getalttrans(origin=origin)
+
+        child_alternatives = [unit.getalttrans(origin=origin) for unit in self.units]
+        if not child_alternatives:
+            return []
+
+        alternatives = []
+        used_alternatives = [set() for _ in child_alternatives]
+        for key in self._aggregate_alttrans_keys(child_alternatives):
+            plural_alternatives = []
+            for child_index, child_units in enumerate(child_alternatives):
+                for unit_index, unit in enumerate(child_units):
+                    if self._alttrans_key(unit) == key:
+                        used_alternatives[child_index].add(unit_index)
+                        plural_alternatives.append(unit)
+                        break
+            contexts = {unit.getcontext() for unit in plural_alternatives}
+            alternative = base.TranslationUnit(
+                multistring([unit.source for unit in plural_alternatives])
+            )
+            alternative.target = multistring(
+                [unit.target for unit in plural_alternatives]
+            )
+            if contexts:
+                alternative.setcontext(contexts.pop())
+            alternative._xliff_alttrans_units = plural_alternatives  # ty:ignore[unresolved-attribute]
+            alternatives.append(alternative)
+        for child_index, child_units in enumerate(child_alternatives):
+            alternatives.extend(
+                unit
+                for unit_index, unit in enumerate(child_units)
+                if unit_index not in used_alternatives[child_index]
+            )
+        return alternatives
+
+    def _aggregate_alttrans_keys(self, child_alternatives):
+        """Return unambiguous alt-trans keys present in every plural child."""
+        if not child_alternatives:
+            return []
+
+        ordered_keys = []
+        for alternative in child_alternatives[0]:
+            key = self._alttrans_key(alternative)
+            if key not in ordered_keys:
+                ordered_keys.append(key)
+
+        return [
+            key
+            for key in ordered_keys
+            if all(
+                sum(
+                    1
+                    for alternative in alternatives
+                    if self._alttrans_key(alternative) == key
+                )
+                == 1
+                for alternatives in child_alternatives
+            )
+        ]
+
+    def _alttrans_key(self, alternative):
+        node = alternative.xmlelement
+        return (
+            node.get("origin"),
+            node.get("match-quality"),
+            node.get(self.XML_LANG),
+            alternative.getcontext(),
+        )
+
+    def delalttrans(self, alternative) -> None:
+        """Remove an alternate translation, including aggregated plural handles."""
+        for alt in getattr(alternative, "_xliff_alttrans_units", [alternative]):
+            xmlelement = alt.xmlelement
+            parent = xmlelement.getparent()
+            if parent is not None:
+                parent.remove(xmlelement)
 
     def addnote(self, text, origin=None, position="append") -> None:
         """Add a note specifically in a "note" tag."""

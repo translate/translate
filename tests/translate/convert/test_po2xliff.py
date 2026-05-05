@@ -239,6 +239,104 @@ msgstr "raro"
         assert xliff.units[0].isfuzzy()
         assert not xliff.units[1].isfuzzy()
 
+    def test_previous_msgid_becomes_alttrans(self) -> None:
+        minipo = r"""#, fuzzy
+#| msgctxt "old button"
+#| msgid "too many arguments"
+msgctxt "button"
+msgid "too few arguments"
+msgstr "trop d arguments"
+"""
+        xliff = self.po2xliff(minipo)
+        alternatives = xliff.units[0].getalttrans()
+        assert len(alternatives) == 1
+        assert alternatives[0].source == "too many arguments"
+        assert alternatives[0].target == "trop d arguments"
+        assert alternatives[0].getcontext() == "old button"
+
+    def test_previous_plural_msgid_becomes_alttrans(self) -> None:
+        minipo = r"""#, fuzzy
+#| msgctxt "animal"
+#| msgid "cow"
+#| msgid_plural "cows"
+msgctxt "young animal"
+msgid "calf"
+msgid_plural "calves"
+msgstr[0] "inkonyane"
+msgstr[1] "amankonyane"
+"""
+        xliff = self.po2xliff(minipo)
+        assert len(xliff.units) == 1
+        unit = xliff.units[0]
+        assert unit.hasplural()
+
+        alternatives = unit.getalttrans()
+        assert len(alternatives) == 1
+        assert alternatives[0].source.strings == ["cow", "cows"]
+        assert alternatives[0].target.strings == ["inkonyane", "amankonyane"]
+        assert alternatives[0].getcontext() == "animal"
+
+        singular_alternatives = unit.units[0].getalttrans()
+        assert len(singular_alternatives) == 1
+        assert singular_alternatives[0].source == "cow"
+        assert singular_alternatives[0].target == "inkonyane"
+        assert singular_alternatives[0].getcontext() == "animal"
+
+        plural_alternatives = unit.units[1].getalttrans()
+        assert len(plural_alternatives) == 1
+        assert plural_alternatives[0].source == "cows"
+        assert plural_alternatives[0].target == "amankonyane"
+        assert plural_alternatives[0].getcontext() == "animal"
+
+    def test_previous_singular_msgid_on_plural_unit_becomes_single_alttrans(
+        self,
+    ) -> None:
+        minipo = r"""#, fuzzy
+#| msgid "cow"
+msgid "calf"
+msgid_plural "calves"
+msgstr[0] "inkonyane"
+msgstr[1] "amankonyane"
+"""
+        xliff = self.po2xliff(minipo)
+        assert len(xliff.units) == 1
+        unit = xliff.units[0]
+        assert unit.hasplural()
+
+        alternatives = unit.getalttrans()
+        assert len(alternatives) == 1
+        assert alternatives[0].source == "cow"
+        assert alternatives[0].target == "inkonyane"
+
+        singular_alternatives = unit.units[0].getalttrans()
+        assert len(singular_alternatives) == 1
+        assert singular_alternatives[0].source == "cow"
+        assert singular_alternatives[0].target == "inkonyane"
+
+        assert unit.units[1].getalttrans() == []
+
+    def test_previous_plural_msgid_on_singular_unit_preserves_alttrans(
+        self,
+    ) -> None:
+        minipo = r"""#, fuzzy
+#| msgid "cow"
+#| msgid_plural "cows"
+msgid "calf"
+msgstr "inkonyane"
+"""
+        xliff = self.po2xliff(minipo)
+        assert len(xliff.units) == 1
+        unit = xliff.units[0]
+        assert not unit.hasplural()
+
+        alternatives = unit.getalttrans()
+        assert len(alternatives) == 2
+        assert [alternative.source for alternative in alternatives] == ["cow", "cows"]
+        assert [alternative.target for alternative in alternatives] == [
+            "inkonyane",
+            "inkonyane",
+        ]
+
     def test_germanic_plurals(self) -> None:
         minipo = r"""msgid "cow"
 msgid_plural "cows"

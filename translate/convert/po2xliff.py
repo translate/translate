@@ -24,10 +24,35 @@ for examples and usage instructions.
 """
 
 from translate.convert import convert
+from translate.misc.multistring import multistring
 from translate.storage import po, poxliff
 
 
 class po2xliff:
+    @staticmethod
+    def _string_list(value):
+        if isinstance(value, multistring):
+            return value.strings
+        return [value]
+
+    def addalttrans(self, unit, alternative) -> None:
+        """Add an alternate translation, preserving plural alternatives when possible."""
+        sources = self._string_list(alternative.source)
+        targets = self._string_list(alternative.target)
+        context = alternative.getcontext()
+        if unit.hasplural():
+            for index, source in enumerate(sources[: len(unit.units)]):
+                target = targets[index] if index < len(targets) else targets[-1]
+                unit.units[index].addalttrans(
+                    target, origin="previous", sourcetxt=source, context=context
+                )
+            return
+        for index, source in enumerate(sources):
+            target = targets[index] if index < len(targets) else targets[-1]
+            unit.addalttrans(
+                target, origin="previous", sourcetxt=source, context=context
+            )
+
     def convertunit(self, outputstore, inputunit, filename):
         """Creates a transunit node."""
         source = inputunit.source
@@ -43,6 +68,9 @@ class po2xliff:
                 unit.markfuzzy(inputunit.isfuzzy())
             else:
                 unit.markapproved(False)
+
+            for alternative in inputunit.getalttrans():
+                self.addalttrans(unit, alternative)
 
             # Handle #: location comments
             for location in inputunit.getlocations():

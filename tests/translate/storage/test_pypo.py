@@ -673,6 +673,37 @@ msgstr[1] "toetse"
         assert bytes(pofile).decode("utf-8") == posource
         # spellchecker:on
 
+    def test_prevmsgid_plural_with_current_singular(self) -> None:
+        """Previous plural metadata should not depend on current plural state."""
+        posource = r"""#, fuzzy
+#| msgid "file"
+#| msgid_plural "files"
+msgid "one file"
+msgstr "fichier"
+"""
+        pofile = self.poparse(posource)
+        unit = pofile.units[0]
+        assert unit.prev_source == multistring(["file", "files"])
+        alternatives = unit.getalttrans()
+        assert len(alternatives) == 1
+        assert alternatives[0].source.strings == ["file", "files"]
+        assert alternatives[0].target.strings == ["fichier", "fichier"]
+        assert unit.getalttrans(origin="tm") == []
+        assert bytes(pofile).decode("utf-8") == posource
+
+    def test_msgidcomment_not_used_as_previous_context(self) -> None:
+        """KDE-style msgid comments should not become previous msgctxt."""
+        current = pypo.pounit("new file")
+        previous = pypo.pounit("old file")
+        previous.target = "fichier"
+        previous.setmsgidcomment("certs.label")
+
+        current.merge(previous, authoritative=True)
+
+        assert current.prev_source == "old file"
+        assert current.prev_context == ""
+        assert "#| msgctxt" not in str(current)
+
     def test_wrap(self) -> None:
         hello = " ".join(["Hello"] * 100)
         posource = f'msgid "{hello}"\nmsgstr "{hello}"\n'.encode()

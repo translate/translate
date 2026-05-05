@@ -318,7 +318,11 @@ class pounit(pocommon.pounit):
 
     def _get_prev_source(self):
         """Returns the unescaped msgid."""
-        return self._get_source_vars(self.prev_msgid, self.prev_msgid_plural)
+        singular = unquotefrompo(self.prev_msgid)
+        if self.prev_msgid_plural:
+            pluralform = unquotefrompo(self.prev_msgid_plural)
+            return multistring([singular, pluralform])
+        return singular
 
     def _set_prev_source(self, source) -> None:
         """
@@ -326,9 +330,22 @@ class pounit(pocommon.pounit):
 
         :param source: an unescaped source string.
         """
+        if source is None:
+            self.prev_msgid = []
+            self.prev_msgid_plural = []
+            return
         self.prev_msgid, self.prev_msgid_plural = self._set_source_vars(source)
 
     prev_source = property(_get_prev_source, _set_prev_source)
+
+    @property
+    def prev_context(self):
+        """Returns the unescaped previous msgctxt."""
+        return unquotefrompo(self.prev_msgctxt)
+
+    @prev_context.setter
+    def prev_context(self, context) -> None:
+        self.prev_msgctxt = self.quote(context) if context else []
 
     @property
     def target(self):
@@ -371,19 +388,14 @@ class pounit(pocommon.pounit):
         else:
             self.msgstr = self.quote(target)
 
-    def getalttrans(self):
+    def getalttrans(self, origin=None):
         """
         Return a list of alternate units.
 
         Previous msgid and current msgstr is combined to form a single
         alternative unit.
         """
-        prev_source = self.prev_source
-        if prev_source and self.isfuzzy():
-            unit = type(self)(prev_source)
-            unit.target = self.target
-            return [unit]
-        return []
+        return super().getalttrans(origin=origin)
 
     def getnotes(self, origin: str | None = None) -> str:
         """
@@ -552,8 +564,10 @@ class pounit(pocommon.pounit):
                 self.source != otherunit.source
                 or self.getcontext() != otherunit.getcontext()
             ):
+                self.set_as_previous(otherunit)
                 self.markfuzzy()
             else:
+                self.copy_previous(otherunit)
                 self.markfuzzy(otherunit.isfuzzy())
         elif not otherunit.istranslated():
             if self.source != otherunit.source:
@@ -836,6 +850,10 @@ class pounit(pocommon.pounit):
     def getcontext(self):
         """Get the message context."""
         return unquotefrompo(self.msgctxt) + self._extract_msgidcomments()
+
+    def getpreviouscontext(self):
+        """Get the real msgctxt without KDE-style msgidcomments."""
+        return unquotefrompo(self.msgctxt)
 
     def setcontext(self, context) -> None:
         self.msgctxt = self.quote(context)

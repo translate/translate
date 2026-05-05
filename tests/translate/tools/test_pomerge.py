@@ -162,6 +162,17 @@ msgstr "Dimpled Ring"'''
         assert pounit.target == "Dimpled Ring"
         assert not pounit.isfuzzy()
 
+    def test_merging_fuzzy_preserves_previous_msgid(self) -> None:
+        """Merging a fuzzy snippet should preserve its previous source metadata."""
+        templatepo = """msgid "too few arguments"\nmsgstr ""\n"""
+        inputpo = """#, fuzzy
+#| msgid "too many arguments"
+msgid "too few arguments"
+msgstr "trop d arguments"
+"""
+        pofile = self.mergestore(templatepo, inputpo)
+        assert bytes(pofile).decode("utf-8") == inputpo
+
     def test_merging_locations(self) -> None:
         """
         Check that locations on separate lines are output in Gettext form

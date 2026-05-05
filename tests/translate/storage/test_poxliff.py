@@ -159,6 +159,79 @@ class TestPOXLIFFUnit(test_xliff.TestXLIFFUnit):
             targets = list(child_unit.xmlelement.iterchildren(ns))
             assert len(targets) == 0
 
+    def test_empty_unit_getcontext_defaults_to_empty(self) -> None:
+        """Tests that parsed-empty units still have a default context."""
+        unit = self.UnitClass(None, empty=True)
+
+        assert unit.getcontext() == ""
+
+    def test_plural_alttrans_aggregates_complete_suggestions(self) -> None:
+        """Tests that aligned plural alternatives are exposed as one unit."""
+        unit = self.UnitClass(multistring(["cow", "cows"]))
+        unit.units[0].addalttrans("inkonyane", sourcetxt="calf")
+        unit.units[1].addalttrans("amankonyane", sourcetxt="calves")
+
+        alternatives = unit.getalttrans()
+
+        assert len(alternatives) == 1
+        assert alternatives[0].source.strings == ["calf", "calves"]
+        assert alternatives[0].target.strings == ["inkonyane", "amankonyane"]
+
+    def test_plural_alttrans_aggregated_suggestion_can_be_deleted(self) -> None:
+        """Tests that aggregated plural alternatives remain deletable."""
+        unit = self.UnitClass(multistring(["cow", "cows"]))
+        unit.units[0].addalttrans("inkonyane", sourcetxt="calf")
+        unit.units[1].addalttrans("amankonyane", sourcetxt="calves")
+
+        alternatives = unit.getalttrans()
+        unit.delalttrans(alternatives[0])
+
+        assert unit.getalttrans() == []
+        assert unit.units[0].getalttrans() == []
+        assert unit.units[1].getalttrans() == []
+
+    def test_plural_alttrans_preserves_partial_suggestions(self) -> None:
+        """Tests that alternatives are kept when not every plural child has one."""
+        unit = self.UnitClass(multistring(["cow", "cows"]))
+        unit.units[0].addalttrans("inkonyane", sourcetxt="calf")
+
+        alternatives = unit.getalttrans()
+
+        assert len(alternatives) == 1
+        assert alternatives[0].source == "calf"
+        assert alternatives[0].target == "inkonyane"
+
+    def test_plural_alttrans_preserves_extra_suggestions(self) -> None:
+        """Tests that extra child alternatives are not truncated."""
+        unit = self.UnitClass(multistring(["cow", "cows"]))
+        unit.units[0].addalttrans("inkonyane", origin="previous", sourcetxt="calf")
+        unit.units[1].addalttrans("amankonyane", origin="previous", sourcetxt="calves")
+        unit.units[0].addalttrans("thole", origin="tm", sourcetxt="young cow")
+
+        alternatives = unit.getalttrans()
+
+        assert len(alternatives) == 2
+        assert alternatives[0].source.strings == ["calf", "calves"]
+        assert alternatives[0].target.strings == ["inkonyane", "amankonyane"]
+        assert alternatives[1].source == "young cow"
+        assert alternatives[1].target == "thole"
+
+    def test_plural_alttrans_aggregates_by_metadata_not_order(self) -> None:
+        """Tests that differently ordered child alternatives are matched by metadata."""
+        unit = self.UnitClass(multistring(["cow", "cows"]))
+        unit.units[0].addalttrans("thole", origin="tm", sourcetxt="young cow")
+        unit.units[0].addalttrans("inkonyane", origin="previous", sourcetxt="calf")
+        unit.units[1].addalttrans("amankonyane", origin="previous", sourcetxt="calves")
+        unit.units[1].addalttrans("amathole", origin="tm", sourcetxt="young cows")
+
+        alternatives = unit.getalttrans()
+
+        assert len(alternatives) == 2
+        assert alternatives[0].source.strings == ["young cow", "young cows"]
+        assert alternatives[0].target.strings == ["thole", "amathole"]
+        assert alternatives[1].source.strings == ["calf", "calves"]
+        assert alternatives[1].target.strings == ["inkonyane", "amankonyane"]
+
 
 class TestPOXLIFFfile(test_xliff.TestXLIFFfile):
     StoreClass = poxliff.PoXliffFile

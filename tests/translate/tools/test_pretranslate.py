@@ -133,7 +133,12 @@ msgstr[1] "%d handleidings."
         """
         input_source = f"""#: singlespace.label{po.lsep}singlespace.accesskey\nmsgid "&We have spaces"\nmsgstr ""\n"""
         template_source = f"""#: doublespace.label{po.lsep}doublespace.accesskey\nmsgid "&We  have  spaces"\nmsgstr "&One  het  spasies"\n"""
-        poexpected = f"""#: singlespace.label{po.lsep}singlespace.accesskey\n#, fuzzy\nmsgid "&We have spaces"\nmsgstr "&One  het  spasies"\n"""
+        poexpected = f"""#: singlespace.label{po.lsep}singlespace.accesskey
+#, fuzzy
+#| msgid "&We  have  spaces"
+msgid "&We have spaces"
+msgstr "&One  het  spasies"
+"""
         newpo = self.pretranslatepo(input_source, template_source)
         print(bytes(newpo))
         assert bytes(newpo).decode("utf-8") == poexpected
@@ -287,7 +292,12 @@ msgstr "36em"
 
         input_source = """#: file.c:1\n#, c-format\nmsgid "%d computers"\nmsgstr ""\n"""
         template_source = """#: file.c:2\n#, c-format\nmsgid "%s computers "\nmsgstr "%s-rekenaars"\n"""
-        poexpected = """#: file.c:1\n#, c-format, fuzzy\nmsgid "%d computers"\nmsgstr "%s-rekenaars"\n"""
+        poexpected = """#: file.c:1
+#, c-format, fuzzy
+#| msgid "%s computers "
+msgid "%d computers"
+msgstr "%s-rekenaars"
+"""
         newpo = self.pretranslatepo(input_source, template_source)
         newpounit = self.singleunit(newpo)
         assert newpounit.isfuzzy()

@@ -460,6 +460,44 @@ class pounit(pocommon.pounit):
             gpo.po_message_set_msgid_plural(self._gpo_message, None)  # ty:ignore[unresolved-attribute]
 
     @property
+    def prev_source(self):
+        singular = gpo_decode(gpo.po_message_prev_msgid(self._gpo_message)) or ""  # ty:ignore[unresolved-attribute]
+        plural = gpo.po_message_prev_msgid_plural(self._gpo_message)  # ty:ignore[unresolved-attribute]
+        if plural:
+            return multistring([singular, gpo_decode(plural) or ""])
+        return singular
+
+    @prev_source.setter
+    def prev_source(self, source) -> None:
+        if source is None:
+            gpo.po_message_set_prev_msgid(self._gpo_message, None)  # ty:ignore[unresolved-attribute]
+            gpo.po_message_set_prev_msgid_plural(self._gpo_message, None)  # ty:ignore[unresolved-attribute]
+            return
+        if isinstance(source, multistring):
+            source = source.strings
+        if isinstance(source, list):
+            gpo.po_message_set_prev_msgid(self._gpo_message, gpo_encode(source[0]))  # ty:ignore[unresolved-attribute]
+            if len(source) > 1:
+                gpo.po_message_set_prev_msgid_plural(  # ty:ignore[unresolved-attribute]
+                    self._gpo_message, gpo_encode(source[1])
+                )
+            else:
+                gpo.po_message_set_prev_msgid_plural(self._gpo_message, None)  # ty:ignore[unresolved-attribute]
+        else:
+            gpo.po_message_set_prev_msgid(self._gpo_message, gpo_encode(source))  # ty:ignore[unresolved-attribute]
+            gpo.po_message_set_prev_msgid_plural(self._gpo_message, None)  # ty:ignore[unresolved-attribute]
+
+    @property
+    def prev_context(self):
+        return gpo_decode(gpo.po_message_prev_msgctxt(self._gpo_message)) or ""  # ty:ignore[unresolved-attribute]
+
+    @prev_context.setter
+    def prev_context(self, context) -> None:
+        gpo.po_message_set_prev_msgctxt(  # ty:ignore[unresolved-attribute]
+            self._gpo_message, gpo_encode(context) if context else None
+        )
+
+    @property
     def target(self):
         if self.hasplural():
             plurals = []
@@ -636,8 +674,10 @@ class pounit(pocommon.pounit):
                 self.source != otherpo.source
                 or self.getcontext() != otherpo.getcontext()
             ):
+                self.set_as_previous(otherpo)
                 self.markfuzzy()
             else:
+                self.copy_previous(otherpo)
                 self.markfuzzy(otherpo.isfuzzy())
         elif not otherpo.istranslated():
             if self.source != otherpo.source:
@@ -739,6 +779,13 @@ class pounit(pocommon.pounit):
             return gpo_decode(msgctxt)
         return self._extract_msgidcomments()
 
+    def getpreviouscontext(self):
+        """Get the real msgctxt without KDE-style msgidcomments."""
+        msgctxt = gpo.po_message_msgctxt(self._gpo_message)  # ty:ignore[unresolved-attribute]
+        if msgctxt:
+            return gpo_decode(msgctxt)
+        return ""
+
     def setcontext(self, context) -> None:
         gpo.po_message_set_msgctxt(self._gpo_message, gpo_encode(context))  # ty:ignore[unresolved-attribute]
 
@@ -758,6 +805,7 @@ class pounit(pocommon.pounit):
             context = unit.getcontext()
             if not newunit.msgidcomment and context:
                 newunit.setcontext(context)
+            newunit.copy_previous(unit)
 
             locations = unit.getlocations()
             if locations:
