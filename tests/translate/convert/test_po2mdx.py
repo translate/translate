@@ -134,7 +134,7 @@ World.
 
 Text.
 """
-        postore = self._make_po([("Title", "Titel"), ("Text.", "Text.")])
+        postore = self._make_po([("Title", "Titel"), ("Text.", "Text.")])  # codespell:ignore
         translator = MDXTranslator(
             postore,
             includefuzzy=False,
@@ -147,7 +147,7 @@ Text.
         assert "import {" in output
         assert "Alert," in output
         assert "} from './components'" in output
-        assert "# Titel" in output
+        assert "# Titel" in output  # codespell:ignore
 
     def test_jsx_expression_block_preserved(self):
         """Standalone JSX expression blocks are preserved."""
@@ -313,7 +313,7 @@ Check [the docs](https://example.com) for details.
 """
         postore = self._make_po(
             [
-                ("Title", "Titel"),
+                ("Title", "Titel"),  # codespell:ignore
                 (
                     "Check [the docs](https://example.com) for details.",
                     "Bitte [die Docs](https://example.com) prüfen.",
