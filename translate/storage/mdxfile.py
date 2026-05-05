@@ -64,7 +64,7 @@ class MDXFile(MarkdownFile):
         translation.
         """
         # Storage for MDX blocks that are replaced with placeholders
-        self._mdx_blocks: dict[str, str] = {}
+        self._mdx_blocks: dict[str, tuple[str, int]] = {}
         self._mdx_block_counter = 0
         super().__init__(
             inputfile=inputfile,
