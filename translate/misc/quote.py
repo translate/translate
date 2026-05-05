@@ -391,7 +391,7 @@ def javapropertiesencode(source: str, encoding: str | None = None) -> str:
                 return True
         except (UnicodeEncodeError, LookupError):
             # Some characters can't be encoded, need per-character check
-            def is_valid_char(charnum:int ) -> bool | None:
+            def is_valid_char(charnum: int) -> bool | None:
                 return None  # Signal to use try/except
 
     # Process each character with the appropriate validation
