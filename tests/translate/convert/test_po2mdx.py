@@ -138,7 +138,6 @@ Text.
             [("Title", "Titel"), ("Text.", "Text.")]   # codespell:ignore
         )
         translator = MDXTranslator(
-        )
             postore,
             includefuzzy=False,
             outputthreshold=None,
