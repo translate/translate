@@ -376,11 +376,11 @@ def javapropertiesencode(source: str, encoding: str | None = None) -> str:
     # Fast path for common encodings using ordinal checks (no exceptions)
     if encoding in {"ascii", "us-ascii"}:
 
-        def is_valid_char(charnum):
+        def is_valid_char(charnum) -> bool | None:
             return 0 <= charnum < 128
     elif encoding in {"iso-8859-1", "latin-1", "latin1"}:
 
-        def is_valid_char(charnum):
+        def is_valid_char(charnum) -> bool | None:
             return 0 <= charnum <= 255
     else:
         # For other encodings, try the full string first for performance
@@ -388,11 +388,11 @@ def javapropertiesencode(source: str, encoding: str | None = None) -> str:
             source.encode(encoding)
             # All characters are valid, use a function that always returns True
 
-            def is_valid_char(charnum) -> bool:
+            def is_valid_char(charnum) -> bool | None:
                 return True
         except (UnicodeEncodeError, LookupError):
             # Some characters can't be encoded, need per-character check
-            def is_valid_char(charnum) -> None:
+            def is_valid_char(charnum) -> bool | None:
                 return None  # Signal to use try/except
 
     # Process each character with the appropriate validation
