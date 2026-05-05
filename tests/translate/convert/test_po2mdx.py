@@ -137,7 +137,8 @@ Text.
         postore = self._make_po(
             [("Title", "Titel"), ("Text.", "Text.")]
         )  # codespell:ignore
-        translator = MDXTranslator(
+            [("Title", "Titel"), ("Text.", "Text.")]   # codespell:ignore
+        )
             postore,
             includefuzzy=False,
             outputthreshold=None,
