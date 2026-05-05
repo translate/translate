@@ -142,6 +142,26 @@ def hello():
         sources = [unit.source for unit in output.units]
         assert not any("hello" in s for s in sources)
 
+    def test_markdown_hard_line_break_extraction(self) -> None:
+        self.given_markdown_file(
+            content=(
+                "- Use multiple keys: `OWC_ENCRYPTION_KEYS='Pj...48=,cx...Fw='`  \n"
+                "  If you use multiple keys, only the first one encrypts the data.\n"
+                "  The others are only used to decrypt the data.\n"
+            )
+        )
+        self.run_command("file.md", "test.po")
+        output = pofile()
+        with open(self.get_testfilename("test.po"), "rb") as handle:
+            output.parse(handle)
+
+        sources = [unit.source for unit in output.units]
+        assert (
+            "Use multiple keys: `OWC_ENCRYPTION_KEYS='Pj...48=,cx...Fw='`\n"
+            "If you use multiple keys, only the first one encrypts the data. "
+            "The others are only used to decrypt the data."
+        ) in sources
+
     def test_markdown_directory_ignores_txt_files(self) -> None:
         self.given_directory_of_markdown_files()
         self.create_testfile("mddir/notes.txt", "Text file content")

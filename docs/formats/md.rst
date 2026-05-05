@@ -28,7 +28,10 @@ Conformance
   the translated Markdown. The po2md converter has an option to do that.
 
 * Hard line breaks in the Markdown appear as hard line breaks in the translation
-  units (PO files), and vice versa.
+  units (PO files), and vice versa. A source hard break written as two trailing
+  spaces or as a trailing backslash is exposed in PO as a newline character
+  (``\n``). When writing Markdown, po2md may serialize that newline as a
+  backslash hard break.
 
 * Does not translate embedded HTML.
 

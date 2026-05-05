@@ -267,6 +267,38 @@ You are only coming through in waves.
         assert "# Prehled" in output
         assert "Prelozeny obsah" in output
 
+    def test_markdown_hard_line_break_translation(self) -> None:
+        self.given_markdown_file(
+            content=(
+                "- Use multiple keys: `OWC_ENCRYPTION_KEYS='Pj...48=,cx...Fw='`  \n"
+                "  If you use multiple keys, only the first one encrypts the data.\n"
+                "  The others are only used to decrypt the data.\n"
+            )
+        )
+        self.given_translation_file(
+            lines=[
+                "#: file.md:1",
+                'msgid ""',
+                "\"Use multiple keys: `OWC_ENCRYPTION_KEYS='Pj...48=,cx...Fw='`\\n\"",
+                (
+                    '"If you use multiple keys, only the first one encrypts the data. '
+                    'The others are only used to decrypt the data."'
+                ),
+                'msgstr ""',
+                "\"Translated keys: `OWC_ENCRYPTION_KEYS='xx'`\\n\"",
+                '"The first key encrypts the data. The others decrypt it."',
+            ]
+        )
+        self.run_command(
+            "translation.po", "out.md", template="file.md", maxlinelength=0
+        )
+        output = self.read_testfile("out.md").decode()
+
+        assert output == (
+            "- Translated keys: `OWC_ENCRYPTION_KEYS='xx'`\\\n"
+            "  The first key encrypts the data. The others decrypt it.\n"
+        )
+
     def test_no_placeholders_simple_link(self) -> None:
         """po2md --no-placeholders: full-link msgid is translated correctly."""
         self.given_markdown_file(
