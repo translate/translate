@@ -75,6 +75,31 @@ class TestXLIFFUnit(test_base.TestTranslationUnit):
         self.unit.target = "Een\x00"
         assert self.unit.target == "Een"
 
+    def test_copy_uses_independent_xml_subtree(self) -> None:
+        xlifffile = xliff.xlifffile()
+        unit = xlifffile.addsourceunit("Source")
+        unit.target = "Target"
+        unit.xmlelement.set("id", "unit-1")
+        sibling = xlifffile.addsourceunit("Sibling")
+
+        assert unit.xmlelement.getparent() is sibling.xmlelement.getparent()
+
+        copied = unit.copy()
+
+        assert copied is not unit
+        assert copied.xmlelement is not unit.xmlelement
+        assert copied.xmlelement.getparent() is None
+        assert copied.xmlelement.getprevious() is None
+        assert copied.xmlelement.getnext() is None
+        assert copied.xmlelement.getroottree().getroot() is copied.xmlelement
+        assert etree.tostring(copied.xmlelement) == etree.tostring(unit.xmlelement)
+
+        copied.xmlelement.set("id", "unit-2")
+        copied.target = "Changed"
+
+        assert unit.xmlelement.get("id") == "unit-1"
+        assert unit.target == "Target"
+
 
 class TestXLIFFfile(test_base.TestTranslationStore):
     StoreClass = xliff.xlifffile

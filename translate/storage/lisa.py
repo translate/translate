@@ -21,6 +21,7 @@
 from __future__ import annotations
 
 import contextlib
+import copy
 from typing import TypeVar
 
 from lxml import etree
@@ -94,15 +95,10 @@ class LISAunit(base.TranslationUnit):
         """
         Make a copy of the translation unit.
 
-        We don't want to make a deep copy - this could duplicate the whole XML
-        tree. For now we just serialise and reparse the unit's XML.
-
-        Performance caveat: This method uses serialization and reparsing
-        (etree.tostring/fromstring), which may be inefficient for large XML elements.
-        Consider implementing a more efficient copy method if performance becomes an issue.
+        Copy the XML subtree directly instead of serializing and reparsing it.
         """
         new_unit = self.__class__(None, empty=True)
-        new_unit.xmlelement = parse_xml(etree.tostring(self.xmlelement))
+        new_unit.xmlelement = copy.deepcopy(self.xmlelement)
         return new_unit
 
     def namespaced(self, name):
