@@ -10,14 +10,46 @@ from . import test_convert
 
 class TestPOT2PO:
     @staticmethod
-    def convertpot(potsource, posource=None):
+    def convertpot_raw(potsource, posource=None, **kwargs):
         """Helper that converts pot source to po source without requiring files."""
         potfile = BytesIO(potsource.encode())
         pofile = BytesIO(posource.encode()) if posource else None
         pooutfile = BytesIO()
-        pot2po.convertpot(potfile, pooutfile, pofile)
-        pooutfile.seek(0)
-        return po.pofile(pooutfile.read())
+        pot2po.convertpot(potfile, pooutfile, pofile, **kwargs)
+        return pooutfile.getvalue().decode()
+
+    @classmethod
+    def convertpot(cls, potsource, posource=None):
+        """Helper that converts pot source to po source without requiring files."""
+        poout = cls.convertpot_raw(potsource, posource)
+        return po.pofile(poout.encode())
+
+    @staticmethod
+    def quoted_payloads(block: str) -> list[str]:
+        return [
+            line[1:-1]
+            for line in block.splitlines()
+            if line.startswith('"') and line.endswith('"')
+        ]
+
+    def test_max_line_length_wraps_output(self) -> None:
+        long_text = (
+            "This sentence contains enough words to require wrapping in PO output."
+        )
+        output = self.convertpot_raw(f'msgid "{long_text}"\nmsgstr ""\n', maxlength=24)
+        unit_block = output.rsplit("\n\n", 1)[1].split("msgstr", 1)[0]
+
+        assert f'msgid "{long_text}"' not in unit_block
+        assert unit_block.startswith('msgid ""\n')
+        assert all(len(line) <= 24 for line in self.quoted_payloads(unit_block))
+
+    def test_max_line_length_zero_disables_wrapping(self) -> None:
+        long_text = (
+            "This sentence contains enough words to require wrapping in PO output."
+        )
+        output = self.convertpot_raw(f'msgid "{long_text}"\nmsgstr ""\n', maxlength=0)
+
+        assert f'msgid "{long_text}"' in output
 
     @staticmethod
     def singleunit(pofile):
@@ -857,6 +889,7 @@ class TestPOT2POCommand(test_convert.TestConvertCommand, TestPOT2PO):
     expected_options = [
         "-t TEMPLATE, --template=TEMPLATE",
         "-P, --pot",
+        "-m MAXLENGTH, --maxlinelength=MAXLENGTH",
         "--tm",
         "-s MIN_SIMILARITY, --similarity=MIN_SIMILARITY",
         "--nofuzzymatching",

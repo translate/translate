@@ -50,6 +50,9 @@ Options (md2po):
                       onefile <option_multifile>`)
                       (default: 'single'; if set to 'onefile', a single po/pot
                       file will be written. 'toplevel' not used.)
+-m MAXLENGTH, --maxlinelength=MAXLENGTH
+                      wrap PO output to the given maximum line length. set to
+                      0 to disable
 
 
 Options (po2md):

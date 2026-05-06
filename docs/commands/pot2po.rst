@@ -50,6 +50,9 @@ Options:
 --tm=TM              The file to use as translation memory when fuzzy matching
 -s MIN_SIMILARITY, --similarity=MIN_SIMILARITY   The minimum similarity for inclusion (default: 75%)
 --nofuzzymatching    Disable all fuzzy matching
+-m MAXLENGTH, --maxlinelength=MAXLENGTH
+                      wrap PO output to the given maximum line length. set to
+                      0 to disable
 
 
 .. _pot2po#examples:

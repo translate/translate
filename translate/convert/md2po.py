@@ -44,6 +44,7 @@ class MD2POOptionParser(convert.ConvertOptionParser, convert.DocpathMerger):
         super().__init__(formats, usetemplates=True, usepots=True, description=__doc__)
         self.add_duplicates_option()
         self.add_multifile_option()
+        self.add_po_max_line_length_option()
         self.add_option(
             "",
             "--no-code-blocks",
@@ -83,6 +84,7 @@ class MD2POOptionParser(convert.ConvertOptionParser, convert.DocpathMerger):
         templatefile,
         duplicatestyle: str,
         multifilestyle: str,
+        maxlength: int | None = None,
         extract_code_blocks: bool = True,
         extract_frontmatter: bool = True,
         no_placeholders: bool = False,
@@ -125,6 +127,7 @@ class MD2POOptionParser(convert.ConvertOptionParser, convert.DocpathMerger):
                     no_placeholders=no_placeholders,
                 )
             store.removeduplicates(duplicatestyle)
+            convert.set_po_max_line_length(store, maxlength)
             store.serialize(outputfile)
         return 1
 
@@ -190,6 +193,7 @@ class MD2POOptionParser(convert.ConvertOptionParser, convert.DocpathMerger):
             if not self.outputstore.isempty():
                 outputfile = super().openoutputfile(options, options.output)
                 self.outputstore.removeduplicates(options.duplicatestyle)
+                convert.set_po_max_line_length(self.outputstore, options.maxlength)
                 self.outputstore.serialize(outputfile)
                 if options.output:
                     outputfile.close()

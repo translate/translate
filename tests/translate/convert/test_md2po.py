@@ -17,6 +17,7 @@ class TestMD2PO(test_convert.TestConvertCommand):
         "-t TEMPLATE, --template=TEMPLATE",
         "--duplicates=DUPLICATESTYLE",
         "--multifile=MULTIFILESTYLE",
+        "-m MAXLENGTH, --maxlinelength=MAXLENGTH",
         "--no-code-blocks",
         "--no-frontmatter",
         "--no-placeholders",
@@ -54,6 +55,37 @@ class TestMD2PO(test_convert.TestConvertCommand):
         if content is None:
             content = "# Markdown\nYou are only coming through in waves."
         self.create_testfile("file.md", content)
+
+    @staticmethod
+    def quoted_payloads(block: str) -> list[str]:
+        return [
+            line[1:-1]
+            for line in block.splitlines()
+            if line.startswith('"') and line.endswith('"')
+        ]
+
+    def test_po_max_line_length_wraps_output(self) -> None:
+        long_text = (
+            "This sentence contains enough words to require wrapping in PO output."
+        )
+        self.given_markdown_file(long_text)
+        self.run_command("file.md", "test.po", maxlinelength=24)
+        content = self.read_testfile("test.po").decode()
+        unit_block = content.split("#: file.md:1\n", 1)[1].split("msgstr", 1)[0]
+
+        assert f'msgid "{long_text}"' not in unit_block
+        assert unit_block.startswith('msgid ""\n')
+        assert all(len(line) <= 24 for line in self.quoted_payloads(unit_block))
+
+    def test_po_max_line_length_zero_disables_wrapping(self) -> None:
+        long_text = (
+            "This sentence contains enough words to require wrapping in PO output."
+        )
+        self.given_markdown_file(long_text)
+        self.run_command("file.md", "test.po", maxlinelength=0)
+        content = self.read_testfile("test.po").decode()
+
+        assert f'msgid "{long_text}"' in content
 
     def test_markdown_frontmatter(self) -> None:
         self.given_markdown_file(

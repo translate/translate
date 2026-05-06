@@ -138,6 +138,21 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser):
         )
         self.passthrough.append("multifilestyle")
 
+    def add_po_max_line_length_option(self) -> None:
+        """Adds an option to control PO/POT output wrapping."""
+        self.add_option(
+            "-m",
+            "--maxlinelength",
+            type="int",
+            dest="maxlength",
+            default=None,
+            metavar="MAXLENGTH",
+            help=(
+                "wrap PO output to the given maximum line length. set to 0 to disable"
+            ),
+        )
+        self.passthrough.append("maxlength")
+
     @staticmethod
     def potifyformat(fileformat):
         """Converts a .po to a .pot where required."""
@@ -258,6 +273,39 @@ def copytemplate(inputfile, outputfile, templatefile, **kwargs) -> bool:
     """Copies the template file to the output file."""
     outputfile.write(templatefile.read())
     return True
+
+
+def set_po_max_line_length(store, maxlength) -> None:
+    """Apply a requested PO line length to stores that support PO wrapping."""
+    if maxlength is None:
+        return
+
+    wrapper = getattr(store, "wrapper", None)
+    if wrapper is None:
+        return
+
+    width = -1 if maxlength <= 0 else maxlength
+    store.wrapper = wrapper.__class__(width=width)
+
+    for unit in getattr(store, "units", []):
+        if not hasattr(unit, "wrapper"):
+            continue
+
+        unit.wrapper = store.wrapper
+        if getattr(unit, "msgctxt", None):
+            unit.msgctxt = unit.quote(unit.getpreviouscontext())
+        if getattr(unit, "prev_msgctxt", None):
+            prev_context = unit.prev_context
+            unit.prev_context = prev_context
+        if getattr(unit, "prev_msgid", None) or getattr(
+            unit, "prev_msgid_plural", None
+        ):
+            prev_source = unit.prev_source
+            unit.prev_source = prev_source
+        source = unit.source
+        target = unit.target
+        unit.source = source
+        unit.target = target
 
 
 class Replacer:

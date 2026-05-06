@@ -38,6 +38,7 @@ def convertpot(
     tm=None,
     min_similarity=75,
     fuzzymatching=True,
+    maxlength=None,
     classes=None,
     classes_str=None,
     **kwargs,
@@ -65,6 +66,7 @@ def convertpot(
         fuzzymatching,
         **kwargs,
     )
+    convert.set_po_max_line_length(output_store, maxlength)
     output_store.serialize(output_file)
 
     return 1
@@ -362,6 +364,8 @@ def main(argv=None) -> None:
         help="Disable fuzzy matching",
     )
     parser.passthrough.append("fuzzymatching")
+
+    parser.add_po_max_line_length_option()
 
     parser.run(argv)
 
