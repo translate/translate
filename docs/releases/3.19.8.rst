@@ -1,0 +1,45 @@
+Translate Toolkit 3.19.8
+************************
+
+*Released on 6 May 2026*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- MDX
+
+  - Add support for translating MDX documents
+
+- Markdown
+
+  - Improve documentation and tests for hard line breaks
+
+- PO
+
+  - Expose maximal length comments in PO converters
+  - Improve handling of previous source and context metadata
+
+- XLIFF
+
+  - Improve conversion of previous source and context metadata
+
+Other
+-----
+
+- Improve LISA storage copy performance
+- Improve GitHub release generation
+- Reduce generated documentation navigation size
+- Update development tooling and CI dependencies
+- Correct typos and improve typing
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+Michal Čihař, Kolja
