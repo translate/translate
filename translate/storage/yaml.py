@@ -21,7 +21,6 @@ r"""Class that manages YAML data files for translation."""
 from __future__ import annotations
 
 import uuid
-from contextlib import suppress
 from typing import TYPE_CHECKING, Any
 
 from ruamel.yaml import YAML, YAMLError
@@ -162,9 +161,7 @@ class YAMLFile(base.DictStore[YAMLUnit]):
     @property
     def yaml(self):
         yaml = YAML()
-        yaml_with_parser_options: Any = yaml
-        with suppress(AttributeError):
-            yaml_with_parser_options.max_depth = 128
+        yaml.max_depth = 128
         for arg, value in self.dump_args.items():
             setattr(yaml, arg, value)
         return yaml
@@ -296,8 +293,6 @@ class YAMLFile(base.DictStore[YAMLUnit]):
             input = input.decode("utf-8")
         try:
             self._original = self.yaml.load(input)
-        except RecursionError as e:
-            raise base.ParseError("YAML document nesting is too deep") from e
         except YAMLError as e:
             message = getattr(e, "problem", getattr(e, "message", str(e)))
             if hasattr(e, "problem_mark"):
