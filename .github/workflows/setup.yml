@@ -92,6 +92,7 @@ jobs:
     needs:
     - setup
     runs-on: ubuntu-24.04
+    environment: pypi
     permissions:
       # this permission is mandatory for trusted publishing
       id-token: write
