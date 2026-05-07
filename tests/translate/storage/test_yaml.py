@@ -472,6 +472,15 @@ location_batch:
         with pytest.raises(base.ParseError):
             store.parse("key: other\x08string")
 
+    def test_deep_nesting(self) -> None:
+        content = "root:\n" + "\n".join(
+            f"{'  ' * (level + 1)}-" for level in range(512)
+        )
+        content = f"{content} value\n"
+
+        with pytest.raises(base.ParseError):
+            self.StoreClass().parse(content)
+
     def test_quotes_roundtrip(self) -> None:
         data = """locales:
   quoted: "Quoted"
