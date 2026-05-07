@@ -3492,6 +3492,32 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             ],
         )
 
+    def test_many_unique_ids(self) -> None:
+        """Test parsing many unique Fluent entries."""
+        entry_count = 1000
+        fluent_file = self.fluent_parse(
+            "".join(
+                f"message-{entry_index} = Value {entry_index}\n"
+                for entry_index in range(entry_count)
+            )
+        )
+
+        assert len(fluent_file.units) == entry_count
+
+    def test_many_unique_attributes(self) -> None:
+        """Test parsing and validating many unique Fluent attributes."""
+        attribute_count = 1000
+        attributes = "\n".join(
+            f"    .attr-{attribute_index} = Value {attribute_index}"
+            for attribute_index in range(attribute_count)
+        )
+        fluent_file = self.fluent_parse(f"message =\n{attributes}\n")
+
+        assert len(fluent_file.units) == 1
+        unit = cast("fluent.FluentUnit", fluent_file.units[0])
+        assert unit.get_syntax_error() is None
+        assert len(unit.get_parts() or []) == attribute_count
+
     def test_serialize_errors(self) -> None:
         """Test that errors are extracted when serializing."""
         fluent_file = self.quick_fluent_file(
