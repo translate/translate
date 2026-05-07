@@ -721,11 +721,12 @@ def _duplicate_attribute(entry: ast.Term | ast.Message) -> ast.Attribute | None:
     has the same id as a previous attribute, or None if none of the attributes
     clash.
     """
-    for index, attr in enumerate(entry.attributes):
-        for other_index in range(index + 1, len(entry.attributes)):
-            other_attr = entry.attributes[other_index]
-            if attr.id.name == other_attr.id.name:
-                return other_attr
+    found_names: set[str] = set()
+    for attr in entry.attributes:
+        attr_name = attr.id.name
+        if attr_name in found_names:
+            return attr
+        found_names.add(attr_name)
     return None
 
 
@@ -1097,7 +1098,7 @@ class FluentFile(base.TranslationStore):
             self.parse(inputfile.read())
 
     def parse(self, fluentsrc: bytes) -> None:  # ty:ignore[invalid-method-override]
-        found_ids = []
+        found_ids: set[str] = set()
         resource = parse(fluentsrc.decode("utf-8"))
         for entry in resource.body:
             # Handle this unit separately if it is invalid.
@@ -1125,12 +1126,13 @@ class FluentFile(base.TranslationStore):
                     self._combine_comments(comment_prefix, entry.comment),  # ty:ignore[invalid-argument-type]
                 )
                 unit_id = unit.getid()
+                assert unit_id is not None
                 if unit_id in found_ids:
                     raise ValueError(
                         f'Entry "{unit_id}" has the same id as a previous entry'
                         f" [offset {entry.span.start}]"  # ty:ignore[unresolved-attribute]
                     )
-                found_ids.append(unit_id)
+                found_ids.add(unit_id)
 
                 dup_attr = _duplicate_attribute(entry)
                 if dup_attr:
