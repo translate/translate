@@ -328,4 +328,58 @@ def test_python_placeable() -> None:
     assert result[1] == pfp(["%(number)Ld"])
 
 
-# TODO: JavaMessageFormatPlaceable, UrlPlaceable, XMLTagPlaceable
+def test_java_message_format_placeable() -> None:
+    jmfp = general.JavaMessageFormatPlaceable
+    result = jmfp.parse("{0}")
+    assert result
+    assert result[0] == jmfp(["{0}"])
+
+    result = jmfp.parse("{0,number}")
+    assert result
+    assert result[0] == jmfp(["{0,number}"])
+
+    result = jmfp.parse("{0,number,integer}")
+    assert result
+    assert result[0] == jmfp(["{0,number,integer}"])
+
+    result = jmfp.parse("{0,number,percent}")
+    assert result
+    assert result[0] == jmfp(["{0,number,percent}"])
+
+    result = jmfp.parse("{0,date,short}")
+    assert result
+    assert result[0] == jmfp(["{0,date,short}"])
+
+    result = jmfp.parse("{0,time,yyyy-MM-dd}")
+    assert result
+    assert result[0] == jmfp(["{0,time,yyyy-MM-dd}"])
+
+    result = jmfp.parse("{0,choice,0#none|1#one|1<{1}}")
+    assert result
+    assert result[0] == jmfp(["{0,choice,0#none|1#one|1<{1}}"])
+
+
+def test_java_message_format_placeable_with_surrounding_text() -> None:
+    jmfp = general.JavaMessageFormatPlaceable
+    result = jmfp.parse("Before {0} after {1,number,percent}.")
+    assert result
+    assert str(result[0]) == "Before "
+    assert result[1] == jmfp(["{0}"])
+    assert str(result[2]) == " after "
+    assert result[3] == jmfp(["{1,number,percent}"])
+    assert str(result[4]) == "."
+
+
+def test_java_message_format_placeable_rejects_invalid_placeholders() -> None:
+    jmfp = general.JavaMessageFormatPlaceable
+    assert jmfp.parse("{name}") is None
+    assert jmfp.parse("{0,unknown}") is None
+    assert jmfp.parse("{0,choice,") is None
+
+
+def test_java_message_format_placeable_malformed_choice_is_linear() -> None:
+    jmfp = general.JavaMessageFormatPlaceable
+    assert jmfp.parse("{0,choice," + ("x" * 1000)) is None
+
+
+# TODO: UrlPlaceable, XMLTagPlaceable

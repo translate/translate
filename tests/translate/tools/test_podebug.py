@@ -265,6 +265,15 @@ msgstr[1] "%d articles"
             == f"{rewrite_func('This is a ')}%s{rewrite_func(' test, hooray.')}"
         )
 
+    def test_malformed_java_message_format_choice(self) -> None:
+        postore = po.pofile(
+            ('msgid "' + ("{0,choice,x{" * 100) + '"\nmsgstr ""\n').encode()
+        )
+        debug = podebug.podebug(rewritestyle="xxx")
+        po_out = debug.convertstore(postore)
+
+        assert po_out.units[0].target == f"xxx{postore.units[0].source}xxx"
+
     def test_xliff_rewrite(self) -> None:
         debug = podebug.podebug(rewritestyle="xxx")
         xliff_out = debug.convertstore(self.xliffstore)
