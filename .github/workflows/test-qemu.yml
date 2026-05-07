@@ -13,9 +13,6 @@ permissions:
 
 jobs:
   build_job:
-    permissions:
-      # Needed for Docker container caching
-      packages: write
     runs-on: ubuntu-24.04
     name: test (${{ matrix.arch }}, ${{ matrix.distro }})
 
@@ -43,9 +40,6 @@ jobs:
       with:
         arch: ${{ matrix.arch }}
         distro: ${{ matrix.distro }}
-
-          # Not required, but speeds up builds
-        githubToken: ${{ github.token }}
 
         dockerRunArgs: |
           --volume "/tmp/setup-uv-cache:/tmp/setup-uv-cache"
