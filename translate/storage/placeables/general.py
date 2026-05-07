@@ -162,7 +162,7 @@ class JavaMessageFormatPlaceable(RegexParseMixin, Ph):
       (,\s*                  # FormatType (optional) one of number,date,time,choice
         (number(,\s*(integer|currency|percent|[-0#.,E;%\u2030\u00a4']+)?)?|  # number FormatStyle (optional)
          (date|time)(,\s*(short|medium|long|full|.+?))?|                  # date/time FormatStyle (optional)
-         choice,([^{]+({.+})?)+)?                                      # choice with format, format required
+         choice,(?>(?:[^{}]+|{[^{}]*})+))?                              # choice with format, format required
       )?                     # END: (optional) FormatType
       }                      # END: MessageFormat"""
     )
