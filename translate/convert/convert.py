@@ -614,6 +614,9 @@ def should_output_store(store, threshold):
 
     translated_count = sourcewords(translated)
     total_count = sourcewords(units)
+    if total_count == 0:
+        return False
+
     percent = translated_count * 100 / total_count
 
     return percent >= threshold

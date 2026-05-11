@@ -103,6 +103,21 @@ msgstr ""
         )
         assert output == expected_output
 
+    def test_convert_header_only_below_threshold(self) -> None:
+        """Check no conversion if input has no translatable words."""
+        input_string = """msgid ""
+msgstr ""
+"Project-Id-Version: test\\n"
+"""
+        output = self._convert_to_string(
+            input_string,
+            output_threshold=70,
+            mark_active=False,
+            success_expected=False,
+        )
+
+        assert output == ""
+
     def test_convert_completion_above_threshold(self) -> None:
         """Check no conversion if input completion is below threshold."""
         input_string = """#: prop

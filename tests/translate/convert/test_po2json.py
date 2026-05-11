@@ -102,6 +102,23 @@ msgstr ""
         json_out = self.po2json(input_po, json_template)
         assert json_out == expected_json
 
+    def test_convert_header_only_below_threshold(self) -> None:
+        """Check no conversion if input has no translatable words."""
+        input_po = """msgid ""
+msgstr ""
+"Project-Id-Version: test\\n"
+"""
+        output_file = BytesIO()
+        result = po2json.convertjson(
+            BytesIO(input_po.encode()),
+            output_file,
+            BytesIO(self.example_json_template.encode()),
+            outputthreshold=70,
+        )
+
+        assert result is False
+        assert output_file.getvalue() == b""
+
     def test_includefuzzy_false_remove_untranslated_false(self) -> None:
         """When includefuzzy is False and remove_untranslated is False."""
         expected_json = """{

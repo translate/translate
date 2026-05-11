@@ -7,6 +7,7 @@ from types import SimpleNamespace
 import pytest
 
 from translate.convert import convert
+from translate.storage import po
 
 OPTION_RE = re.compile(r"^\s*-")
 
@@ -201,3 +202,29 @@ class TestArchiveConvertOptionParser:
         assert processed == [True]
         assert FakeArchive.instances[0].closed is True
         assert (outputdir / "nested" / "file.po").read_bytes() == b"content"
+
+
+class TestShouldOutputStore:
+    @staticmethod
+    def get_store(po_source):
+        return po.pofile(BytesIO(po_source.encode()))
+
+    def test_header_only_store_below_threshold(self) -> None:
+        store = self.get_store(
+            """msgid ""
+msgstr ""
+"Project-Id-Version: test\\n"
+"""
+        )
+
+        assert convert.should_output_store(store, 70) is False
+
+    def test_zero_word_store_below_threshold(self) -> None:
+        store = self.get_store(
+            """#: key
+msgid "<br/>"
+msgstr "<br/>"
+"""
+        )
+
+        assert convert.should_output_store(store, 70) is False
