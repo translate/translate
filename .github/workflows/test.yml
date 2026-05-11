@@ -61,6 +61,8 @@ jobs:
       run: sed -i '/^ *"/ s/>=/==/' pyproject.toml
     - name: Install pip dependencies
       run: uv sync --all-extras --dev
+    - name: Generate phply parser tables
+      run: uv run python -m phply.phpparse --generate
     - name: pytest
       run: make test
     - name: test-functional
