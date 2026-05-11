@@ -313,6 +313,25 @@ certificate.">
         dtdregen = self.dtdregen(dtdsource)
         assert dtdsource == dtdregen
 
+    def test_external_entity_reference_not_loaded_on_serialize(self, tmp_path) -> None:
+        """Checks that validation does not resolve external parameter entities."""
+        external_dtd = tmp_path / "external.dtd"
+        external_dtd.write_text('<!ENTITY broken "unterminated>\n', encoding="utf-8")
+        dtdsource = (
+            f'<!ENTITY % externalDTD SYSTEM "{external_dtd.as_uri()}">\n'
+            "%externalDTD;\n"
+            '<!ENTITY local "value">\n'
+        )
+        dtdregen = self.dtdregen(dtdsource)
+        assert dtdsource == dtdregen
+
+    def test_validation_catches_dtd_syntax_errors(self, recwarn) -> None:
+        """Checks that validation still catches syntax errors in the DTD itself."""
+        dtdfile = dtd.dtdfile()
+        assert not dtdfile._valid_store(b'<!ENTITY broken "unterminated>\n')
+        warning = recwarn.pop(UserWarning)
+        assert "DTD parse error" in str(warning.message)
+
     # test for bug #610
     def test_entitityreference_order_in_source(self) -> None:
         """Checks that an &entity; in the source is retained."""

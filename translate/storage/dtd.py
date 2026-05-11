@@ -85,7 +85,6 @@ Escaping in Android DTD
 
 import re
 import warnings
-from io import BytesIO
 
 from lxml import etree
 
@@ -101,6 +100,7 @@ ending in :attr:`.labelsuffixes` into accelerator notation"""
 
 
 end_entity_re = re.compile(rb"[\"']\s*>")
+DTD_VALIDATION_SYSTEM_ID = "translate-toolkit.dtd"
 
 
 def quoteforandroid(source):
@@ -210,6 +210,18 @@ def removeinvalidamps(name: str, value: str) -> str:
         for adjustment, amppos in enumerate(invalid_amps):
             value = value[: amppos - adjustment] + value[amppos - adjustment + 1 :]
     return value
+
+
+class DTDValidationResolver(etree.Resolver):
+    """Resolve only the in-memory DTD used for validation."""
+
+    def __init__(self, content: bytes) -> None:
+        self.content = content
+
+    def resolve(self, url, pubid, context):
+        if url == DTD_VALIDATION_SYSTEM_ID:
+            return self.resolve_string(self.content, context)
+        return self.resolve_string("", context)
 
 
 class dtdunit(base.TranslationUnit):
@@ -645,9 +657,18 @@ class dtdfile(base.TranslationStore):
         if not self.android:
             # #expand is a Mozilla hack and are removed as they are not valid in DTDs
             input_ = content.replace(rb"#expand", b"")
+            parser = etree.XMLParser(
+                load_dtd=True, no_network=True, resolve_entities=False
+            )
+            parser.resolvers.add(DTDValidationResolver(input_))
             try:
-                etree.DTD(BytesIO(input_))
-            except etree.DTDParseError as e:
+                etree.fromstring(
+                    b'<!DOCTYPE root SYSTEM "'
+                    + DTD_VALIDATION_SYSTEM_ID.encode()
+                    + b'"><root/>',
+                    parser,
+                )
+            except etree.XMLSyntaxError as e:
                 warnings.warn(f"DTD parse error: {e.error_log}")
                 return False
         return True
