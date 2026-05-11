@@ -24,4 +24,4 @@ test:
 	@uv run pytest --cov=. -r EfsxX
 
 test-functional:
-	@tests/cli/run_tests.sh
+	@uv run pytest tests/cli

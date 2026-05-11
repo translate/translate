@@ -1,9 +1,0 @@
-msgid "Un"
-msgstr "Een"
-
-#, fuzzy
-msgid "Duex"
-msgstr "Twee"
-
-msgid "Trois"
-msgstr ""

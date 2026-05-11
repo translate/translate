@@ -51,7 +51,4 @@ translate/convert/templates-recreated/
 # other
 tests/xliff_conformance/af-pootle.xlf
 
-# cli testing
-tests/cli/results
-
 /.codex

@@ -58,5 +58,4 @@ jobs:
           python -m phply.phpparse --generate
           # Native test jobs collect coverage; QEMU jobs focus on architecture coverage.
           pytest -r EfsxX -n auto --maxprocesses=4 --dist=worksteal
-          ./tests/cli/run_tests.sh
           uv cache prune --ci

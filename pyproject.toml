@@ -254,6 +254,7 @@ ignore = [
 [tool.coverage.run]
 # C Tracer not available in quemu testing
 disable_warnings = ["no-ctracer"]
+patch = ["subprocess"]
 
 [tool.isort]
 known_third_party = [
