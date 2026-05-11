@@ -1,0 +1,875 @@
+# serializer version: 1
+# name: test_cli_case[test_flatxml2po]
+  dict({
+    'outputs': dict({
+      'out.po': '''
+        #, fuzzy
+        msgid ""
+        msgstr ""
+        "Project-Id-Version: PACKAGE VERSION\n"
+        "Report-Msgid-Bugs-To: \n"
+        "POT-Creation-Date: @POT-CREATION-DATE@\n"
+        "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+        "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+        "Language-Team: LANGUAGE <LL@li.org>\n"
+        "MIME-Version: 1.0\n"
+        "Content-Type: text/plain; charset=UTF-8\n"
+        "Content-Transfer-Encoding: 8bit\n"
+        "X-Generator: @X-GENERATOR@\n"
+        
+        msgid "word"
+        msgstr "Word"
+        
+        msgid "line"
+        msgstr "Line of text."
+        
+        msgid "trailing_space"
+        msgstr "Trailing space follows here: "
+        
+        msgid "xml_characters"
+        msgstr "This XML has <root> and <str> elements."
+        
+        msgid "multiline"
+        msgstr ""
+        "This string has 4 lines.\n"
+        "And this is line two. Line three is empty.\n"
+        "\n"
+        "Because xml:space=\"preserve\" is assumed by default, we don't have to "
+        "specify it."
+  
+      ''',
+    }),
+    'returncode': 0,
+    'stderr': '',
+    'stdout': '',
+  })
+# ---
+# name: test_cli_case[test_flatxml2po_wrongkey]
+  dict({
+    'outputs': dict({
+      'out.txt': '',
+    }),
+    'returncode': 0,
+    'stderr': '''
+      flatxml2po: WARNING: Error processing: input ./data/test_flatxml2po_wrongkey/one.xml, output ./results/test_flatxml2po_wrongkey/out.txt, template None: expected key attribute to be wrong, found attribute(s): key
+  
+    ''',
+    'stdout': '',
+  })
+# ---
+# name: test_cli_case[test_flatxml2po_wrongns]
+  dict({
+    'outputs': dict({
+      'out.txt': '',
+    }),
+    'returncode': 0,
+    'stderr': '''
+      flatxml2po: WARNING: Error processing: input ./data/test_flatxml2po_wrongns/one.xml, output ./results/test_flatxml2po_wrongns/out.txt, template None: expected root name to be {wrong}root but got root
+  
+    ''',
+    'stdout': '',
+  })
+# ---
+# name: test_cli_case[test_flatxml2po_wrongroot]
+  dict({
+    'outputs': dict({
+      'out.txt': '',
+    }),
+    'returncode': 0,
+    'stderr': '''
+      flatxml2po: WARNING: Error processing: input ./data/test_flatxml2po_wrongroot/one.xml, output ./results/test_flatxml2po_wrongroot/out.txt, template None: expected root name to be wrong but got root
+  
+    ''',
+    'stdout': '',
+  })
+# ---
+# name: test_cli_case[test_flatxml2po_wrongvalue]
+  dict({
+    'outputs': dict({
+      'out.txt': '',
+    }),
+    'returncode': 0,
+    'stderr': '''
+      flatxml2po: WARNING: Error processing: input ./data/test_flatxml2po_wrongvalue/one.xml, output ./results/test_flatxml2po_wrongvalue/out.txt, template None: expected value name to be wrong but first node is str
+  
+    ''',
+    'stdout': '',
+  })
+# ---
+# name: test_cli_case[test_junitmsgfmt_failure]
+  dict({
+    'outputs': dict({
+    }),
+    'returncode': 0,
+    'stderr': '',
+    'stdout': '''
+      <testsuite name="msgfmt" errors="0" skips="0" failures="1" tests="1" time="0.0000">
+        <testcase classname="msgfmt" name="check[./data/test_junitmsgfmt_failure/one.po]" file="./data/test_junitmsgfmt_failure/one.po" time="0.0000">
+          <failure message="Failure">one.po:2: warning: header field 'Project-Id-Version' missing in header
+      one.po:2: warning: header field 'PO-Revision-Date' missing in header
+      one.po:2: warning: header field 'Last-Translator' missing in header
+      one.po:2: warning: header field 'Language-Team' missing in header
+      one.po:2: warning: header field 'MIME-Version' missing in header
+      one.po:2: warning: header field 'Content-Transfer-Encoding' missing in header
+      one.po:9: a format specification for argument 'input' doesn't exist in 'msgstr'
+      msgfmt: found 1 fatal error
+      1 translated message.
+      </failure>
+        </testcase>
+      </testsuite>
+      
+  
+    ''',
+  })
+# ---
+# name: test_cli_case[test_junitmsgfmt_untranslated]
+  dict({
+    'outputs': dict({
+    }),
+    'returncode': 0,
+    'stderr': '',
+    'stdout': '''
+      <testsuite name="msgfmt" errors="0" skips="0" failures="1" tests="1" time="0.0000">
+        <testcase classname="msgfmt" name="check[./data/test_junitmsgfmt_untranslated/one.po]" file="./data/test_junitmsgfmt_untranslated/one.po" time="0.0000">
+          <failure message="Untranslated messages">one.po:2: warning: header field 'Project-Id-Version' missing in header
+      one.po:2: warning: header field 'PO-Revision-Date' missing in header
+      one.po:2: warning: header field 'Last-Translator' missing in header
+      one.po:2: warning: header field 'Language-Team' missing in header
+      one.po:2: warning: header field 'MIME-Version' missing in header
+      one.po:2: warning: header field 'Content-Transfer-Encoding' missing in header
+      0 translated messages, 1 fuzzy translation, 1 untranslated message.
+      </failure>
+        </testcase>
+      </testsuite>
+      
+  
+    ''',
+  })
+# ---
+# name: test_cli_case[test_po2csv]
+  dict({
+    'outputs': dict({
+      'out.txt': '''
+        "location","source","target"
+        "simple.cpp","One","Een"
+        "unicode.cpp","†wo","†wee"
+  
+      ''',
+    }),
+    'returncode': 0,
+    'stderr': '',
+    'stdout': '',
+  })
+# ---
+# name: test_cli_case[test_po2flatxml]
+  dict({
+    'outputs': dict({
+      'out.xml': '''
+        <?xml version='1.0' encoding='UTF-8'?>
+        <root>
+          <str key="simple">Een</str>
+          <str key="unicode">†wee</str>
+        </root>
+  
+      ''',
+    }),
+    'returncode': 0,
+    'stderr': '',
+    'stdout': '',
+  })
+# ---
+# name: test_cli_case[test_po2flatxml_params]
+  dict({
+    'outputs': dict({
+      'out.xml': '''
+        <?xml version='1.0' encoding='UTF-8'?>
+        <ns0:dictionary xmlns:ns0="urn:translate-toolkit:flatxml-test-suite">
+                <ns0:translation resource="one">Eins</ns0:translation>
+                <ns0:translation resource="two">Zwei</ns0:translation>
+                <ns0:translation resource="three">Drei</ns0:translation>
+        </ns0:dictionary>
+  
+      ''',
+    }),
+    'returncode': 0,
+    'stderr': '',
+    'stdout': '',
+  })
+# ---
+# name: test_cli_case[test_po2flatxml_preserve]
+  dict({
+    'outputs': dict({
+      'out.xml': '''
+        <?xml version='1.0' encoding='UTF-8'?>
+        <root xml:lang="de">
+          <str key="one" other="attribute">Eins</str>
+          <str key="two">Zwei-mod</str>
+          <str key="three">Drei</str>
+          <!-- not used as translated resource -->
+            <constant name="answer">42</constant>
+          <str key="four">Vier-new</str>
+        </root>
+  
+      ''',
+    }),
+    'returncode': 0,
+    'stderr': '',
+    'stdout': '',
+  })
+# ---
+# name: test_cli_case[test_po2flatxml_template]
+  dict({
+    'outputs': dict({
+      'out.xml': '''
+        <?xml version='1.0' encoding='UTF-8'?>
+        <dictionary xmlns="urn:translate-toolkit:flatxml-test-suite">
+            <translation resource="one">Eins</translation>
+            <translation resource="two">Zwei</translation>
+            <translation resource="three">Drei</translation>
+        </dictionary>
+  
+      ''',
+    }),
+    'returncode': 0,
+    'stderr': '',
+    'stdout': '',
+  })
+# ---
+# name: test_cli_case[test_po2html]
+  dict({
+    'outputs': dict({
+      'out.txt': '''
+        <html>
+            <body>
+                <p>Een</p>
+                <p>†wee</p>
+            </body>
+        </html>
+  
+      ''',
+    }),
+    'returncode': 0,
+    'stderr': '',
+    'stdout': '',
+  })
+# ---
+# name: test_cli_case[test_po2json_files_removeuntranslated]
+  dict({
+    'outputs': dict({
+      'out.json': '''
+        {
+            "stringtwo": "Bar Foo Translated"
+        }
+  
+      ''',
+    }),
+    'returncode': 0,
+    'stderr': '',
+    'stdout': '',
+  })
+# ---
+# name: test_cli_case[test_po2prop_mozilla_files]
+  dict({
+    'outputs': dict({
+      'out.properties': '''
+        buddy.authRequest.allow.label=Baimendu
+        buddy.authRequest.allow.accesskey=B
+        buddy.authRequest.deny.label=Ukatu
+        buddy.authRequest.deny.accesskey=U
+  
+      ''',
+    }),
+    'returncode': 0,
+    'stderr': '',
+    'stdout': '',
+  })
+# ---
+# name: test_cli_case[test_po2ts]
+  dict({
+    'outputs': dict({
+      'out.txt': '''
+        <?xml version="1.0" encoding="utf-8"?>
+        <!DOCTYPE TS>
+        <TS>
+        <context>
+            <name>simple.cpp</name>
+            <message>
+                <source>One</source>
+                <translation>Een</translation>
+            </message>
+        </context>
+        <context>
+            <name>unicode.cpp</name>
+            <message>
+                <source>†wo</source>
+                <translation>†wee</translation>
+            </message>
+        </context>
+        </TS>
+  
+      ''',
+    }),
+    'returncode': 0,
+    'stderr': '',
+    'stdout': '',
+  })
+# ---
+# name: test_cli_case[test_po2txt]
+  dict({
+    'outputs': dict({
+      'out.txt': '''
+        Een
+        
+        Won
+        
+        Twee twee
+        
+        Three three
+      ''',
+    }),
+    'returncode': 0,
+    'stderr': '',
+    'stdout': '',
+  })
+# ---
+# name: test_cli_case[test_po2txt_threshold]
+  dict({
+    'outputs': dict({
+      'out.txt': None,
+    }),
+    'returncode': 0,
+    'stderr': '',
+    'stdout': '',
+  })
+# ---
+# name: test_cli_case[test_pofilter_listfilters]
+  dict({
+    'outputs': dict({
+    }),
+    'returncode': 0,
+    'stderr': '',
+    'stdout': '''
+      accelerators	Checks whether accelerators are consistent between the two strings.
+      acronyms	Checks that acronyms that appear are unchanged.
+      blank	Checks whether a translation is totally blank.
+      brackets	Checks that the number of brackets in both strings match.
+      compendiumconflicts	Checks for Gettext compendium conflicts (#-#-#-#-#).
+      credits	Checks for messages containing translation credits instead of normal translations.
+      doublequoting	Checks whether doublequoting is consistent between the two strings.
+      doublespacing	Checks for bad double-spaces by comparing to original.
+      doublewords	Checks for repeated words in the translation.
+      emails	Checks that emails are not translated.
+      endpunc	Checks whether punctuation at the end of the strings match.
+      endwhitespace	Checks whether whitespace at the end of the strings matches.
+      escapes	Checks whether escaping is consistent between the two strings.
+      filepaths	Checks that file paths have not been translated.
+      functions	Checks that function names are not translated.
+      hassuggestion	Checks if there is at least one suggested translation for this unit.
+      isfuzzy	Check if the unit has been marked fuzzy.
+      isreview	Check if the unit has been marked review.
+      kdecomments	Checks to ensure that no KDE style comments appear in the translation.
+      long	Checks whether a translation is much longer than the original string.
+      musttranslatewords	Checks that words configured as definitely translatable don't appear in the translation.
+      newlines	Checks whether newlines are consistent between the two strings.
+      notranslatewords	Checks that words configured as untranslatable appear in the translation too.
+      nplurals	Checks for the correct number of noun forms for plural translations.
+      numbers	Checks whether numbers of various forms are consistent between the two strings.
+      options	Checks that command line options are not translated.
+      printf	Checks whether printf format strings match.
+      puncspacing	Checks for bad spacing after punctuation.
+      purepunc	Checks that strings that are purely punctuation are not changed.
+      pythonbraceformat	Checks whether python brace format strings match.
+      sentencecount	Checks that the number of sentences in both strings match.
+      short	Checks whether a translation is much shorter than the original string.
+      simplecaps	Checks the capitalisation of two strings isn't wildly different.
+      simpleplurals	Checks for English style plural(s) for you to review.
+      singlequoting	Checks whether singlequoting is consistent between the two strings.
+      spellcheck	Checks words that don't pass a spell check.
+      startcaps	Checks that the message starts with the correct capitalisation.
+      startpunc	Checks whether punctuation at the beginning of the strings match.
+      startwhitespace	Checks whether whitespace at the beginning of the strings matches.
+      tabs	Checks whether tabs are consistent between the two strings.
+      unchanged	Checks whether a translation is basically identical to the original string.
+      untranslated	Checks whether a string has been translated at all.
+      urls	Checks that URLs are not translated.
+      validchars	Checks that only characters specified as valid appear in the translation.
+      variables	Checks whether variables of various forms are consistent between the two strings.
+      xmltags	Checks that XML/HTML tags have not been translated.
+  
+    ''',
+  })
+# ---
+# name: test_cli_case[test_pofilter_manpage]
+  dict({
+    'outputs': dict({
+    }),
+    'returncode': 0,
+    'stderr': '',
+    'stdout': '''
+      .\" Autogenerated manpage
+      .TH pofilter 1 "Translate Toolkit @VERSION@" "" "Translate Toolkit @VERSION@"
+      .SH NAME
+      pofilter \- Perform quality checks on Gettext PO, XLIFF and TMX localization files.
+      .SH SYNOPSIS
+      .PP
+      \fBpofilter \fR[\fP--version\fR]\fP \fR[\fP-h\fR|\fP--help\fR]\fP \fR[\fP--manpage\fR]\fP \fR[\fP--progress \fIPROGRESS\fP\fR]\fP \fR[\fP--errorlevel \fIERRORLEVEL\fP\fR]\fP \fR[\fP-i\fR|\fP--input\fR]\fP \fIINPUT\fP \fR[\fP-x\fR|\fP--exclude \fIEXCLUDE\fP\fR]\fP \fR[\fP-o\fR|\fP--output\fR]\fP \fIOUTPUT\fP \fR[\fP-l\fR|\fP--listfilters\fR]\fP \fR[\fP--review\fR]\fP \fR[\fP--noreview\fR]\fP \fR[\fP--fuzzy\fR]\fP \fR[\fP--nofuzzy\fR]\fP \fR[\fP--nonotes\fR]\fP \fR[\fP--autocorrect\fR]\fP \fR[\fP--language \fILANG\fP\fR]\fP \fR[\fP--openoffice\fR]\fP \fR[\fP--libreoffice\fR]\fP \fR[\fP--mozilla\fR]\fP \fR[\fP--drupal\fR]\fP \fR[\fP--gnome\fR]\fP \fR[\fP--kde\fR]\fP \fR[\fP--wx\fR]\fP \fR[\fP--excludefilter \fIFILTER\fP\fR]\fP \fR[\fP-t\fR|\fP--test \fIFILTER\fP\fR]\fP \fR[\fP--notranslatefile \fIFILE\fP\fR]\fP \fR[\fP--musttranslatefile \fIFILE\fP\fR]\fP \fR[\fP--validcharsfile \fIFILE\fP\fR]\fP\fP
+      .SH DESCRIPTION
+      Snippet files are created whenever a test fails.  These can be examined,
+      corrected and merged back into the originals using pomerge.
+      
+      See:
+      http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pofilter.html
+      for examples and usage instructions and
+      http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pofilter_tests.html
+      for full descriptions of all tests.
+      .SH OPTIONS
+      .PP
+      .TP
+      \-\-version
+      show program's version number and exit
+      .TP
+      \-h/\-\-help
+      show this help message and exit
+      .TP
+      \-\-manpage
+      output a manpage based on the help
+      .TP
+      \-\-progress
+      show progress as: dots, none, bar, names, verbose
+      .TP
+      \-\-errorlevel
+      show errorlevel as: none, message, exception, traceback
+      .TP
+      \-i/\-\-input
+      read from INPUT in po, pot, tmx, xlf, xliff formats
+      .TP
+      \-x/\-\-exclude
+      exclude names matching EXCLUDE from input paths
+      .TP
+      \-o/\-\-output
+      write to OUTPUT in po, pot, tmx, xlf, xliff formats
+      .TP
+      \-l/\-\-listfilters
+      list filters available
+      .TP
+      \-\-review
+      include units marked for review (default)
+      .TP
+      \-\-noreview
+      exclude units marked for review
+      .TP
+      \-\-fuzzy
+      include units marked fuzzy (default)
+      .TP
+      \-\-nofuzzy
+      exclude units marked fuzzy
+      .TP
+      \-\-nonotes
+      don't add notes about the errors
+      .TP
+      \-\-autocorrect
+      output automatic corrections where possible rather than describing issues
+      .TP
+      \-\-language
+      set target language code (e.g. af\-ZA) [required for spell check and recommended in general]
+      .TP
+      \-\-openoffice
+      use the standard checks for OpenOffice translations
+      .TP
+      \-\-libreoffice
+      use the standard checks for LibreOffice translations
+      .TP
+      \-\-mozilla
+      use the standard checks for Mozilla translations
+      .TP
+      \-\-drupal
+      use the standard checks for Drupal translations
+      .TP
+      \-\-gnome
+      use the standard checks for Gnome translations
+      .TP
+      \-\-kde
+      use the standard checks for KDE translations
+      .TP
+      \-\-wx
+      use the standard checks for wxWidgets translations
+      .TP
+      \-\-excludefilter
+      don't use FILTER when filtering
+      .TP
+      \-t/\-\-test
+      only use test FILTERs specified with this option when filtering
+      .TP
+      \-\-notranslatefile
+      read list of untranslatable words from FILE (must not be translated)
+      .TP
+      \-\-musttranslatefile
+      read list of translatable words from FILE (must be translated)
+      .TP
+      \-\-validcharsfile
+      read list of all valid characters from FILE (must be in UTF\-8)
+  
+    ''',
+  })
+# ---
+# name: test_cli_case[test_posegment]
+  dict({
+    'outputs': dict({
+      'out.po': '''
+        msgid ""
+        msgstr ""
+        "Project-Id-Version: PACKAGE VERSION\n"
+        "POT-Creation-Date: @POT-CREATION-DATE@\n"
+        "PO-Revision-Date: 2013-06-12 16:26+0000\n"
+        "Language: af\n"
+        "MIME-Version: 1.0\n"
+        "Content-Type: text/plain; charset=utf-8\n"
+        "Content-Transfer-Encoding: 8bit\n"
+        "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+        
+        msgid "Sentence 1."
+        msgstr "Sin 1."
+        
+        msgid "Sentence 2."
+        msgstr "Sin 2."
+  
+      ''',
+    }),
+    'returncode': 0,
+    'stderr': '',
+    'stdout': '',
+  })
+# ---
+# name: test_cli_case[test_poswap_comments]
+  dict({
+    'outputs': dict({
+      'out.po': '''
+        #: location.cpp
+        msgid "Un"
+        msgstr "Een"
+        
+        #. Developer
+        msgid "Duex"
+        msgstr "Twee"
+        
+        # Translator Afrikaans
+        msgid "Trois"
+        msgstr "Drie"
+  
+      ''',
+    }),
+    'returncode': 0,
+    'stderr': '',
+    'stdout': '',
+  })
+# ---
+# name: test_cli_case[test_poswap_fr_af]
+  dict({
+    'outputs': dict({
+      'out.po': '''
+        msgid "Un"
+        msgstr "Een"
+        
+        #, fuzzy
+        msgid "Duex"
+        msgstr "Twee"
+        
+        msgid "Trois"
+        msgstr ""
+  
+      ''',
+    }),
+    'returncode': 0,
+    'stderr': '',
+    'stdout': '',
+  })
+# ---
+# name: test_cli_case[test_poswap_fr_af_reverse]
+  dict({
+    'outputs': dict({
+      'out.po': '''
+        msgid "One"
+        msgstr "Een"
+        
+        msgid "Two"
+        msgstr "Twee"
+        
+        msgid "Three"
+        msgstr "Drie"
+  
+      ''',
+    }),
+    'returncode': 0,
+    'stderr': '',
+    'stdout': '',
+  })
+# ---
+# name: test_cli_case[test_poswap_intermediate]
+  dict({
+    'outputs': dict({
+      'out.po': '''
+        # Uno
+        #: location.cpp
+        msgid "One"
+        msgstr ""
+        
+        # Dos
+        msgid "Two"
+        msgstr ""
+        
+        # Tres
+        msgid "Three"
+        msgstr ""
+  
+      ''',
+    }),
+    'returncode': 0,
+    'stderr': '',
+    'stdout': '',
+  })
+# ---
+# name: test_cli_case[test_poswap_intermediate_partial]
+  dict({
+    'outputs': dict({
+      'out.po': '''
+        # Uno
+        #: location.cpp
+        msgid "One"
+        msgstr ""
+        
+        #. No translation found in ./data/test_poswap_intermediate_partial/es.po
+        msgid "Two"
+        msgstr ""
+        
+        #. No translation found in ./data/test_poswap_intermediate_partial/es.po
+        msgid "Three"
+        msgstr ""
+  
+      ''',
+    }),
+    'returncode': 0,
+    'stderr': '',
+    'stdout': '',
+  })
+# ---
+# name: test_cli_case[test_poswap_missing_units]
+  dict({
+    'outputs': dict({
+      'out.po': '''
+        msgid "Un"
+        msgstr "Een"
+        
+        msgid "Trois"
+        msgstr ""
+  
+      ''',
+    }),
+    'returncode': 0,
+    'stderr': '',
+    'stdout': '',
+  })
+# ---
+# name: test_cli_case[test_prop2po]
+  dict({
+    'outputs': dict({
+    }),
+    'returncode': 2,
+    'stderr': '''
+      Usage: prop2po [--version] [-h|--help] [--manpage] [--progress PROGRESS] [--errorlevel ERRORLEVEL] [-i|--input] INPUT [-x|--exclude EXCLUDE] [-o|--output] OUTPUT [-t|--template TEMPLATE] [-S|--timestamp] [-P|--pot] [--personality TYPE] [--encoding ENCODING] [--duplicates DUPLICATESTYLE]
+      
+      prop2po: error: You need to give an inputfile or use - for stdin ; use --help for full usage instructions
+  
+    ''',
+    'stdout': '',
+  })
+# ---
+# name: test_cli_case[test_prop2po_dirs]
+  dict({
+    'outputs': dict({
+      'out/a.po': '''
+        #. extracted from ./data/test_prop2po_dirs/one/a.properties
+        #, fuzzy
+        msgid ""
+        msgstr ""
+        "Project-Id-Version: PACKAGE VERSION\n"
+        "Report-Msgid-Bugs-To: \n"
+        "POT-Creation-Date: @POT-CREATION-DATE@\n"
+        "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+        "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+        "Language-Team: LANGUAGE <LL@li.org>\n"
+        "MIME-Version: 1.0\n"
+        "Content-Type: text/plain; charset=UTF-8\n"
+        "Content-Transfer-Encoding: 8bit\n"
+        "X-Generator: @X-GENERATOR@\n"
+        
+        #: key
+        msgid "value"
+        msgstr ""
+  
+      ''',
+    }),
+    'returncode': 0,
+    'stderr': '''
+      prop2po: WARNING: Output directory does not exist. Attempting to create
+      processing 1 files...
+      [###########################################] 100%
+  
+    ''',
+    'stdout': '',
+  })
+# ---
+# name: test_cli_case[test_prop2po_files]
+  dict({
+    'outputs': dict({
+      'out.po': '''
+        #. extracted from ./data/test_prop2po_files/one.properties
+        #, fuzzy
+        msgid ""
+        msgstr ""
+        "Project-Id-Version: PACKAGE VERSION\n"
+        "Report-Msgid-Bugs-To: \n"
+        "POT-Creation-Date: @POT-CREATION-DATE@\n"
+        "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+        "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+        "Language-Team: LANGUAGE <LL@li.org>\n"
+        "MIME-Version: 1.0\n"
+        "Content-Type: text/plain; charset=UTF-8\n"
+        "Content-Transfer-Encoding: 8bit\n"
+        "X-Generator: @X-GENERATOR@\n"
+        
+        #: key
+        msgid "value"
+        msgstr ""
+  
+      ''',
+    }),
+    'returncode': 0,
+    'stderr': '',
+    'stdout': '',
+  })
+# ---
+# name: test_cli_case[test_prop2po_files_templates]
+  dict({
+    'outputs': dict({
+      'out.po': '''
+        #. extracted from ./data/test_prop2po_files_templates/one.properties, ./data/test_prop2po_files_templates/two.properties
+        #, fuzzy
+        msgid ""
+        msgstr ""
+        "Project-Id-Version: PACKAGE VERSION\n"
+        "Report-Msgid-Bugs-To: \n"
+        "POT-Creation-Date: @POT-CREATION-DATE@\n"
+        "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+        "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+        "Language-Team: LANGUAGE <LL@li.org>\n"
+        "MIME-Version: 1.0\n"
+        "Content-Type: text/plain; charset=UTF-8\n"
+        "Content-Transfer-Encoding: 8bit\n"
+        "X-Generator: @X-GENERATOR@\n"
+        
+        #: key
+        msgid "value"
+        msgstr "waarde"
+  
+      ''',
+    }),
+    'returncode': 0,
+    'stderr': '',
+    'stdout': '',
+  })
+# ---
+# name: test_cli_case[test_rc2po]
+  dict({
+    'outputs': dict({
+      'out.po': '''
+        #. extracted from ./data/test_rc2po/one.rc
+        msgid ""
+        msgstr ""
+        "Project-Id-Version: PACKAGE VERSION\n"
+        "Report-Msgid-Bugs-To: \n"
+        "POT-Creation-Date: @POT-CREATION-DATE@\n"
+        "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+        "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+        "Language-Team: LANGUAGE <LL@li.org>\n"
+        "MIME-Version: 1.0\n"
+        "Content-Type: text/plain; charset=UTF-8\n"
+        "Content-Transfer-Encoding: 8bit\n"
+        "X-Accelerator-Marker: &\n"
+        "X-Generator: @X-GENERATOR@\n"
+        "X-Merge-On: location\n"
+        
+        #: DIALOGEX.IDD_REGGHC_DIALOG.CAPTION
+        msgid "License dialog"
+        msgstr ""
+        
+        #: DIALOGEX.IDD_REGGHC_DIALOG.PUSHBUTTON.ID_HELP
+        msgid "Help"
+        msgstr ""
+        
+        #: DIALOGEX.IDD_REGGHC_DIALOG.PUSHBUTTON.IDCANCEL
+        msgid "Close"
+        msgstr ""
+        
+        #: DIALOGEX.IDD_REGGHC_DIALOG.PUSHBUTTON.IDC_BUTTON1
+        msgid "Activate installation"
+        msgstr ""
+        
+        #: DIALOGEX.IDD_REGGHC_DIALOG.CTEXT.IDC_STATIC1
+        msgid "My very good program"
+        msgstr ""
+        
+        #: DIALOGEX.IDD_REGGHC_DIALOG.CTEXT.IDC_STATIC
+        msgid "You can use it without registering it"
+        msgstr ""
+        
+        #: DIALOGEX.IDD_REGGHC_DIALOG.PUSHBUTTON.IDC_OFFLINE
+        msgid "Offline"
+        msgstr ""
+        
+        #: DIALOGEX.IDD_REGGHC_DIALOG.PUSHBUTTON.IDC_LICENCIA
+        msgid "See license"
+        msgstr ""
+        
+        #: DIALOGEX.IDD_REGGHC_DIALOG.RTEXT.IDC_STATIC
+        msgid "If you don't have internet, please use magic."
+        msgstr ""
+        
+        #: DIALOGEX.IDD_REGGHC_DIALOG.CTEXT.IDC_ACTIVADA
+        msgid "Use your finger to activate the program."
+        msgstr ""
+        
+        #: STRINGTABLE.IDP_REGISTRONOV
+        msgid "Data isn't valid"
+        msgstr ""
+        
+        #: STRINGTABLE.IDS_ACTIVARINSTALACION
+        msgid "You need to try again and again."
+        msgstr ""
+        
+        #: STRINGTABLE.IDS_NOREGISTRADO
+        msgid "Error when making something important"
+        msgstr ""
+        
+        #: STRINGTABLE.IDS_REGISTRADO
+        msgid ""
+        "All done correctly.\n"
+        "Thank you very much."
+        msgstr ""
+        
+        #: STRINGTABLE.IDS_ACTIVADA
+        msgid ""
+        "This is what you do:\n"
+        "%s"
+        msgstr ""
+        
+        #: STRINGTABLE.IDS_ERRORACTIV
+        msgid "Error doing things"
+        msgstr ""
+  
+      ''',
+    }),
+    'returncode': 0,
+    'stderr': '',
+    'stdout': '',
+  })
+# ---

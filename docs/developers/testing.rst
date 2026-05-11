@@ -148,125 +148,34 @@ Functional tests allow us to validate the operation of the tools on the command
 line.  The execution by a user is simulated using reference data files and the
 results are captured for comparison.
 
-The tests are simple to craft and use some naming magic to make it easy to
-refer to test files, stdout and stderr.
+The tests live in ``tests/cli/test_cli_snapshots.py`` and are run by pytest.
+Input files live in ``tests/cli/data/${testname}``; generated files, stdout,
+stderr and the process return code are captured in syrupy snapshots.
 
-File name magic
----------------
+Each command line case is declared as a ``CliCase``:
 
-We use a special naming convention to make writing tests quick and easy.  Thus
-in the case of testing the following command:
+.. code-block:: python
+
+   CliCase(
+       "test_moz2po_help",
+       "moz2po",
+       ("-t", "{data}/one.dtd", "{data}/two.po", "{result}/out.dtd"),
+       ("out.dtd",),
+   )
+
+``{data}`` expands to the temporary copy of ``tests/cli/data/${testname}``.
+``{result}`` expands to a temporary output directory for that test case.  The
+``outputs`` tuple lists generated files or directories that should be included
+in the snapshot.
+
+Run the functional tests with:
 
 .. code-block:: console
 
-   $ moz2po -t template.dtd translations.po translated.dtd
+   $ uv run pytest tests/cli
 
-Our test would be written like this:
+Update snapshots after an intentional output change with:
 
 .. code-block:: console
 
-   $ moz2po -t $one $two $out
-
-Where ``$one`` and ``$two`` are the input files and ``$out`` is the result file
-that the test framework will validate.
-
-The files would be called:
-
-===========================    ============   =========   ===================
-File                            Function       Variable    File naming conventions
-===========================    ============   =========   ===================
-test_moz2po_help.sh             Test script    -           test_${command}_${description}.sh
-test_moz2po_help/one.dtd        Input          $one        ${testname}/${variable}.${extension}
-test_moz2po_help/two.po         Input          $two        ${testname}/${variable}.${extension}
-test_moz2po_help/out.dtd        Output         $out        ${testname}/${variable}.${extension}
-test_moz2po_help/stdout.txt     Output         $stdout     ${testname}/${variable}.${extension}
-test_moz2po_help/stderr.txt     Output         $stderr     ${testname}/${variable}.${extension}
-===========================    ============   =========   ===================
-
-.. note:: A test filename must start with ``test_`` and end in ``.sh``.  The
-   rest of the name may only use ASCII alphanumeric characters and underscore
-   ``_``.
-
-The test file is placed in the ``tests/`` directory while data files are placed
-in the ``tests/data/${testname}`` directory.
-
-There are three standard output files:
-
-1. ``$out`` - the output from the command
-2. ``$stdout`` - any output given to the user
-3. ``$stderr`` - any error output
-
-The output files are available for checking at the end of the test execution
-and a test will fail if there are differences between the reference output and
-that achieved in the test run.
-
-You do not need to define reference output for all three, if one is missing
-then checks will be against ``/dev/null``.
-
-There can be any number of input files.  They need to be named using only ASCII
-characters without any punctuation.  While you can give them any name we
-recommend using numbered positions such as one, two, three.  These are
-converted into variables in the test framework so ensure that none of your
-choices clash with existing bash commands and variables.
-
-Your test script can access variables for all of your files so e.g.
-``moz2po_conversion/one.dtd`` will be referenced as ``$one`` and output
-``moz2po_conversion/out.dtd`` as ``$out``.
-
-
-Writing
--------
-
-The tests are normal bash scripts so they can be executed on their own.  A
-template for a test is as follows:
-
-.. literalinclude:: ../../tests/cli/example_test.sh
-   :language: bash
-
-For simple tests, where we diff output and do the correct checking of output
-files, simply use ``check_results``.  More complex tests need to wrap tests in
-``start_checks`` and ``end_checks``.
-
-.. code-block:: bash
-
-   start_checks
-   has $out
-   containsi_stdout "Parsed:"
-   end_checks
-
-You can make use of the following commands in the ``start_checks`` scenario:
-
-=========================== ===========================================
-Command                      Description
-=========================== ===========================================
-has $file                    $file was output and it not empty
-has_stdout                   stdout is not empty
-has_stderr                   stderr is not empty
-startswith $file "String"    $file starts with "String"
-startswithi $file "String"   $file starts with "String" ignoring case
-startswith_stdout "String"   stdout starts with "String"
-startswithi_stdout "String"  stdout starts with "String" ignoring case
-startswith_stderr "String"   stderr starts with "String"
-startswithi_stderr "String"  stderr starts with "String" ignoring case
-contains $file "String"      $file contains "String"
-containsi $file "String"     $file contains "String" ignoring case
-contains_stdout "String"     stdout contains "String"
-containsi_stdout "String"    stdout contains "String" ignoring case
-contains_stderr "String"     stderr contains "String"
-containsi_stderr "String"    stderr contains "String" ignoring case
-endswith $file "String"      $file ends with "String"
-endswithi $file "String"     $file ends with "String" ignoring case
-endswith_stdout "String"     stdout ends with "String"
-endswithi_stdout "String"    stdout ends with "String" ignoring case
-endswith_stderr "String"     stderr ends with "String"
-endswithi_stderr "String"    stderr ends with "String" ignoring case
-=========================== ===========================================
-
-
---prep
-^^^^^^
-
-If you use the --prep options on any test then the test will change behavior.
-It won't validate the results against your reference data but will instead
-create your reference data.  This makes it easy to generate your expected
-result files when you are setting up your test.
+   $ uv run pytest --snapshot-update tests/cli

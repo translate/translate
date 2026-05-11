@@ -1,6 +1,0 @@
-<html>
-    <body>
-        <p>Een</p>
-        <p>†wee</p>
-    </body>
-</html>

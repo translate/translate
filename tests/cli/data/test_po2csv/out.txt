@@ -1,3 +1,0 @@
-"location","source","target"
-"simple.cpp","One","Een"
-"unicode.cpp","†wo","†wee"
