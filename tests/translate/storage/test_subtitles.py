@@ -1,7 +1,5 @@
 from io import BytesIO
 
-import pytest
-
 from translate.storage import subtitles
 
 from . import test_monolingual
@@ -49,9 +47,13 @@ class TestSubRipFile(test_monolingual.TestMonolingualStore):
 class TestSubtitleUnit(TestSubRipFile):
     UnitClass = subtitles.SubtitleUnit
 
-    @pytest.mark.xfail(reason="Not Implemented")
     def test_note_sanity(self) -> None:
-        super().test_note_sanity()  # ty:ignore[unresolved-attribute]
+        unit = self.UnitClass("Test String")
+        unit.settime("00:00:00.000", "00:00:01.500", 1.5)
+
+        assert unit.getnotes() == "visible for 1.5 seconds"
+        assert unit.getnotes(origin="developer") == "visible for 1.5 seconds"
+        assert unit.getnotes(origin="translator") == ""
 
 
 class TestMicroDVDFile(TestSubRipFile):

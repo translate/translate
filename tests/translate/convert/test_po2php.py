@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from pytest import mark, raises
+from pytest import raises
 
 from translate.convert import po2php
 from translate.storage import po
@@ -421,15 +421,14 @@ return array(
         print(phpfile)
         assert phpfile == phpexpected
 
-    @mark.xfail(reason="Need to review if we want this behaviour")
     def test_merging_propertyless_template(self) -> None:
-        """Check that when merging with a template with no property values that we copy the template."""
+        """Check merging with a template that has no translatable PHP values."""
         posource = ""
-        proptemplate = "# A comment\n"
-        propexpected = proptemplate
-        propfile = self.merge2prop(proptemplate, posource)  # ty:ignore[unresolved-attribute]
-        print(propfile)
-        assert propfile == [propexpected]
+        phptemplate = "<?php\n// A comment\n"
+        phpexpected = "<?php\n"
+        phpfile = self.merge2php(phptemplate, posource)
+        print(phpfile)
+        assert phpfile == phpexpected
 
 
 class TestPO2PhpCommand(test_convert.TestConvertCommand, TestPO2Php):

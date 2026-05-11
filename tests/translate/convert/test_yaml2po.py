@@ -3,6 +3,7 @@ from io import BytesIO
 import pytest
 
 from translate.convert import yaml2po
+from translate.storage import base
 
 from . import test_convert
 
@@ -102,18 +103,14 @@ eggs: spam
         assert target_store.units[4].source == "spam"
         assert target_store.units[4].target == ""
 
-    @pytest.mark.xfail(reason="This is invalid YAML document")
     def test_no_duplicates(self) -> None:
-        """Check converting drops duplicates."""
+        """Check converting fails on duplicate YAML keys."""
         input_string = """
 foo: bar
 foo: baz
 """
-        target_store = self._convert_to_store(input_string)
-        assert self._count_elements(target_store) == 1
-        assert target_store.units[1].getlocations() == ["foo"]
-        assert target_store.units[1].source == "baz"
-        assert target_store.units[1].target == ""
+        with pytest.raises(base.ParseError, match="duplicate key"):
+            self._convert_to_store(input_string)
 
     def test_convert_with_template(self) -> None:
         """Check converting a simple single-string YAML with newer template."""
