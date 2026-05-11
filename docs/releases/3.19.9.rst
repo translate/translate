@@ -1,0 +1,46 @@
+Translate Toolkit 3.19.9
+************************
+
+*Released on 11 May 2026*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- DTD
+
+  - Improve DTD validation
+
+- Fluent
+
+  - Improve detection of duplicate entries and attributes
+
+- Java MessageFormat
+
+  - Use safer matching for choice placeholders
+
+- YAML
+
+  - Limit YAML parser depth
+  - Require ruamel.yaml 0.19.1 or newer
+
+- Conversions
+
+  - Fix crash when applying output thresholds to stores without strings
+
+Other
+-----
+
+- Convert command-line tests to syrupy snapshots
+- Update development tooling and CI dependencies
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+Michal Čihař
