@@ -18,14 +18,23 @@
 
 """module for handling TBX glossary files."""
 
+from io import BytesIO
+
 from lxml import etree
 
 from translate.misc.xml_helpers import (
+    getXMLlang,
     getXMLspace,
     safely_set_text,
     setXMLlang,
 )
 from translate.storage import lisa
+
+
+def _normalize_language(language: str | None) -> str | None:
+    if not language:
+        return None
+    return language.replace("_", "-").lower()
 
 
 class tbxunit(lisa.LISAunit):
@@ -37,6 +46,136 @@ class tbxunit(lisa.LISAunit):
     rootNode = "termEntry"
     languageNode = "langSet"
     textNode = "term"
+
+    def _store_language(self, name: str) -> str | None:
+        store = getattr(self, "_store", None)
+        if store is None:
+            return None
+        return getattr(store, name, None)
+
+    def _store_language_or_default(self, name: str, default: str) -> str:
+        return self._store_language(name) or default
+
+    def _get_language_node(self, language: str | None):
+        language = _normalize_language(language)
+        if language is None:
+            return None
+        for node in self.getlanguageNodes():
+            if _normalize_language(getXMLlang(node)) == language:
+                return node
+        return None
+
+    def _get_source_language_node(self):
+        return self._get_language_node(self._store_language("sourcelanguage"))
+
+    def _get_target_language_node(self):
+        return self._get_language_node(self._store_language("targetlanguage"))
+
+    def _get_fallback_source_node(self):
+        language_nodes = self.getlanguageNodes()
+        target_node = self._get_target_language_node()
+        for node in language_nodes:
+            if node is not target_node:
+                return node
+        return self.getlanguageNode(lang=None, index=0)
+
+    def _get_fallback_target_node(self, language_nodes, source_node=None):
+        if len(language_nodes) < 2:
+            return None
+        target_node = self.getlanguageNode(lang=None, index=1)
+        if target_node is not None and target_node is not source_node:
+            return target_node
+        for node in language_nodes:
+            if node is not source_node:
+                return node
+        return None
+
+    def get_source_dom(self):
+        source_node = self._get_source_language_node()
+        if source_node is not None:
+            return source_node
+        return self._get_fallback_source_node()
+
+    def set_source_dom(self, dom_node) -> None:
+        source_node = self.get_source_dom()
+        if source_node is not None:
+            self.xmlelement.replace(source_node, dom_node)
+        else:
+            self.xmlelement.append(dom_node)
+
+    source_dom = property(get_source_dom, set_source_dom)
+
+    @property
+    def source(self):
+        return self.getNodeText(
+            self.source_dom, getXMLspace(self.xmlelement, self._default_xml_space)
+        )
+
+    @source.setter
+    def source(self, source) -> None:
+        self.setsource(source)
+
+    def setsource(self, text, sourcelang=None) -> None:
+        super().setsource(
+            text, sourcelang or self._store_language_or_default("sourcelanguage", "en")
+        )
+
+    def set_target_dom(self, dom_node, append=False) -> None:
+        language_nodes = self.getlanguageNodes()
+        target_node = self.get_target_dom()
+        if dom_node is None:
+            if not append and target_node is not None:
+                self.xmlelement.remove(target_node)
+            return
+
+        if append:
+            self.xmlelement.append(dom_node)
+        elif target_node is not None:
+            self.xmlelement.replace(target_node, dom_node)
+        elif not language_nodes:
+            self.xmlelement.append(dom_node)
+        else:
+            source_node = self.get_source_dom()
+            if source_node is None:
+                self.xmlelement.insert(1, dom_node)
+            else:
+                self.xmlelement.insert(self.xmlelement.index(source_node) + 1, dom_node)
+
+    def get_target_dom(self, lang=None):
+        if lang:
+            return self._get_language_node(lang)
+
+        language_nodes = self.getlanguageNodes()
+        if len(language_nodes) == 2:
+            source_node = self._get_source_language_node()
+            if source_node is not None:
+                return (
+                    language_nodes[1]
+                    if language_nodes[0] is source_node
+                    else language_nodes[0]
+                )
+            target_node = self._get_target_language_node()
+            if target_node is not None:
+                return target_node
+            return self._get_fallback_target_node(language_nodes)
+
+        if len(language_nodes) > 2:
+            source_node = self.get_source_dom()
+            target_node = self._get_target_language_node()
+            if target_node is not None and target_node is not source_node:
+                return target_node
+            return self._get_fallback_target_node(language_nodes, source_node)
+
+        return self._get_fallback_target_node(language_nodes)
+
+    target_dom = property(get_target_dom)
+
+    def settarget(self, target, lang=None, append=False) -> None:
+        super().settarget(
+            target,
+            lang or self._store_language_or_default("targetlanguage", "xx"),
+            append=append,
+        )
 
     def createlanguageNode(self, lang, text, purpose):  # ty:ignore[invalid-method-override]
         """Returns a langset xml Element setup with given parameters."""
@@ -188,6 +327,40 @@ class tbxfile(lisa.LISAfile[tbxunit]):
 <text><body></body></text>
 </martif>"""
     XMLindent = {"indent": "    ", "toplevel": False}
+
+    def __init__(
+        self, inputfile=None, sourcelanguage=None, targetlanguage=None, **kwargs
+    ) -> None:
+        if inputfile is None and sourcelanguage is None:
+            sourcelanguage = "en"
+        super().__init__(
+            inputfile,
+            sourcelanguage=sourcelanguage,
+            targetlanguage=targetlanguage,
+            **kwargs,
+        )
+        if inputfile is not None:
+            if sourcelanguage is not None:
+                self.setsourcelanguage(sourcelanguage)
+            if targetlanguage is not None:
+                self.settargetlanguage(targetlanguage)
+
+    @classmethod
+    def parsestring(cls, storestring, sourcelanguage=None, targetlanguage=None):
+        if isinstance(storestring, str):
+            storestring = storestring.encode(cls.default_encoding)
+        return cls(
+            BytesIO(storestring),
+            sourcelanguage=sourcelanguage,
+            targetlanguage=targetlanguage,
+        )
+
+    def addsourceunit(self, source):
+        unit = self.UnitClass(None)
+        unit._store = self
+        unit.source = source
+        self.addunit(unit)
+        return unit
 
     def addheader(self) -> None:
         """Initialise headers with TBX specific things."""

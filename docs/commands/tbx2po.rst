@@ -37,6 +37,10 @@ Options (tbx2po):
 -x EXCLUDE, --exclude=EXCLUDE    exclude names matching EXCLUDE from input paths
 -o OUTPUT, --output=OUTPUT   write to OUTPUT in tbx format
 -S, --timestamp      skip conversion if the output file has newer timestamp
+-l LANG, --language=LANG
+                      set target language code (e.g. af-ZA)
+--source-language=LANG
+                      set source language code
 
 
 .. _tbx2po#examples:
@@ -49,6 +53,10 @@ These examples demonstrate the use of tbx2po::
   tbx2po terms.tbx terms.po
 
 to simply convert *terms.tbx* to *terms.po*.
+
+To choose source and target languages from a multilingual TBX file::
+
+  tbx2po --source-language=en --language=es terms.tbx terms.po
 
 To convert a directory recursively to another directory with the same structure
 of files::

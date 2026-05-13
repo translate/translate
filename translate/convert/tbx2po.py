@@ -51,13 +51,21 @@ class tbx2po:
 
 
 def converttbx(
-    inputfile, outputfile, templatefile, charset=None, columnorder=None
+    inputfile,
+    outputfile,
+    templatefile,
+    charset=None,
+    columnorder=None,
+    sourcelanguage=None,
+    targetlanguage=None,
 ) -> int:
     """
     Reads in inputfile using tbx, converts using tbx2po, writes to
     outputfile.
     """
-    inputstore = tbx.tbxfile(inputfile)
+    inputstore = tbx.tbxfile(
+        inputfile, sourcelanguage=sourcelanguage, targetlanguage=targetlanguage
+    )
     convertor = tbx2po()
     outputstore = convertor.convertfile(inputstore)
     if len(outputstore.units) == 0:
@@ -66,14 +74,32 @@ def converttbx(
     return 1
 
 
-def main() -> None:
+def main(argv=None) -> None:
     formats = {
         ("tbx", None): ("po", converttbx),
     }
     parser = convert.ConvertOptionParser(
         formats, usetemplates=False, description=__doc__
     )
-    parser.run()
+    parser.add_option(
+        "-l",
+        "--language",
+        dest="targetlanguage",
+        default=None,
+        help="set target language code (e.g. af-ZA)",
+        metavar="LANG",
+    )
+    parser.add_option(
+        "",
+        "--source-language",
+        dest="sourcelanguage",
+        default=None,
+        help="set source language code",
+        metavar="LANG",
+    )
+    parser.passthrough.append("sourcelanguage")
+    parser.passthrough.append("targetlanguage")
+    parser.run(argv)
 
 
 if __name__ == "__main__":
