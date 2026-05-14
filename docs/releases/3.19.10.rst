@@ -1,0 +1,28 @@
+Translate Toolkit 3.19.10
+*************************
+
+*Released on 14 May 2026*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- TBX
+
+  - Honor languages configured in termEntry
+
+Other
+-----
+
+- Update development tooling dependencies
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+Michal Čihař
