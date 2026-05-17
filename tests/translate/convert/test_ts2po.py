@@ -197,6 +197,7 @@ new line</translation>
 
     def test_plural_unfinished(self) -> None:
         """Test the handling of unfinished plural forms in TS files."""
+        # spellchecker:off
         tssource = """<!DOCTYPE TS><TS language="be">
 <context>
     <name>TestContext</name>
@@ -207,6 +208,7 @@ new line</translation>
 </context>
 </TS>
 """
+        # spellchecker:on
         pofile = self.ts2po(tssource)
         assert len(pofile.units) == 2
         assert pofile.units[1].hasplural()
@@ -214,7 +216,7 @@ new line</translation>
         assert pofile.units[1].source.strings[0] == "%d items"
         assert pofile.units[1].source.strings[1] == "%d items"
         assert pofile.units[1].target.strings[0] == "%d element"
-        assert pofile.units[1].target.strings[1] == "%d elementy"
+        assert pofile.units[1].target.strings[1] == "%d elementy"  # codespell:ignore
 
 
 class TestTS2POCommand(test_convert.TestConvertCommand, TestTS2PO):
