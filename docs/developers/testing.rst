@@ -9,6 +9,13 @@ existing functionality is highly recommended before any major reimplementation
 
 We use `pytest`_ for (unit) testing.
 
+Install the test dependencies from the dependency groups together with all
+optional runtime dependencies before running the full suite:
+
+.. code-block:: console
+
+    $ uv sync --all-extras --dev
+
 To run tests:
 
 .. code-block:: console
