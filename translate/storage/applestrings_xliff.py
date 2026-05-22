@@ -55,8 +55,7 @@ class AppleStringsXliffUnit(xliff.Xliff1Unit):
     Regular (non-plural) units behave identically to :class:`xliff.Xliff1Unit`.
 
     Plural units expose their source/target as :class:`~translate.misc.multistring.multistring`
-    objects whose strings list corresponds to the target language's plural forms
-    (always including "zero" as the first entry, per Apple convention).
+    objects whose strings list corresponds to the target language's plural forms.
     """
 
     format_value_type: str = ""
@@ -272,21 +271,35 @@ class AppleStringsXliffFile(xliff.Xliff1File):
 
         return target_lang
 
-    @property
-    def target_plural_tags(self) -> list[str]:
+    def _get_target_plural_tags(self, target=None) -> list[str]:
         """
         Return the plural tags for the target language.
 
-        "zero" is always included first (Apple convention).
+        "zero" is included first when there is room for optional forms.
         """
         target_lang = self.gettargetlanguage()
         if target_lang is None:
             return list(data.cldr_plural_categories)
 
-        tags = self.get_plural_tags().copy()
-        if "zero" not in tags:
+        tags = self.get_plural_tags(target).copy()
+        count = (
+            len(self.UnitClass.get_plural_strings(target))
+            if target is not None
+            else None
+        )
+        if (
+            count == 2
+            and data.plural_tags.get(self.get_base_locale_code()) is None
+            and "zero" not in tags
+        ):
+            return ["zero", "other"]
+        if "zero" not in tags and count != 1:
             tags.insert(0, "zero")
         return tags
+
+    @property
+    def target_plural_tags(self) -> list[str]:
+        return self._get_target_plural_tags()
 
     # ------------------------------------------------------------------
     # Internal helpers
@@ -489,7 +502,7 @@ class AppleStringsXliffFile(xliff.Xliff1File):
         body.insert(marker_pos + 1, format_el)
 
         # --- Insert new form elements ---
-        plural_tags = self.target_plural_tags
+        plural_tags = self._get_target_plural_tags(unit._plural_target)
         source_strs = unit._plural_source.strings if unit._plural_source else []
         target_strs = unit._plural_target.strings if unit._plural_target else []
 

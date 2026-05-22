@@ -822,12 +822,11 @@ class AndroidResourceUnit(base.TranslationUnit):
                 else target_markup_mode
             )
 
-            plural_tags = self._store.get_plural_tags()  # ty:ignore[unresolved-attribute]
-
             # Sync plural_strings elements to plural_tags count.
             plural_target: str | multistring | list[str] = (
                 "" if target is None else target
             )
+            plural_tags = self._store.get_plural_tags(plural_target)  # ty:ignore[unresolved-attribute]
             plural_strings = self.sync_plural_count(plural_target, plural_tags)
 
             # Rebuild plurals.

@@ -113,20 +113,34 @@ class StringsDictFile(base.DictStore):
 
         return target_lang
 
-    @property
-    def target_plural_tags(self):
+    def _get_target_plural_tags(self, target=None):
         """
         Get all supported plural tags for the target language.
-        Note that 'zero' is always supported.
+        Note that 'zero' is supported when there is room for optional forms.
         """
         target_lang = self.gettargetlanguage()
         if target_lang is None:
             return data.cldr_plural_categories
 
-        tags = self.get_plural_tags().copy()
-        if "zero" not in tags:
+        tags = self.get_plural_tags(target).copy()
+        count = (
+            len(self.UnitClass.get_plural_strings(target))
+            if target is not None
+            else None
+        )
+        if (
+            count == 2
+            and data.plural_tags.get(self.get_base_locale_code()) is None
+            and "zero" not in tags
+        ):
+            return ["zero", "other"]
+        if "zero" not in tags and count != 1:
             tags.insert(0, "zero")
         return tags
+
+    @property
+    def target_plural_tags(self):
+        return self._get_target_plural_tags()
 
     def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
         """Read a .stringsdict file into a dictionary, and convert it to translation units."""
@@ -179,7 +193,7 @@ class StringsDictFile(base.DictStore):
                 plurals["NSStringFormatSpecTypeKey"] = "NSStringPluralRuleType"
                 plurals["NSStringFormatValueTypeKey"] = u.format_value_type
 
-                plural_tags = self.target_plural_tags
+                plural_tags = self._get_target_plural_tags(u.target)
 
                 # Sync plural_strings elements to plural_tags count.
                 plural_strings = self.UnitClass.sync_plural_count(u.target, plural_tags)

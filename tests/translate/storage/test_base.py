@@ -78,6 +78,20 @@ class JsonTranslationStore(base.TranslationStore):
         self.targetlanguage = store_data.get("targetlanguage")
 
 
+def test_unknown_language_single_plural_tags_use_other() -> None:
+    store = base.TranslationStore()
+    store.settargetlanguage("tok")
+
+    assert store.get_plural_tags(multistring(["the only form"])) == ["other"]
+
+
+def test_known_language_single_plural_tags_keep_language_mapping() -> None:
+    store = base.TranslationStore()
+    store.settargetlanguage("en")
+
+    assert store.get_plural_tags(multistring(["one form"])) == ["one", "other"]
+
+
 class TestTranslationUnit:
     """
     Tests a TranslationUnit.

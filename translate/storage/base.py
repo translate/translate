@@ -39,7 +39,7 @@ from typing import (
     TypeVar,
 )
 
-from translate.lang.data import plural_tags
+from translate.lang.data import get_cldr_plural_tags
 from translate.misc.multistring import multistring
 from translate.storage.placeables import StringElem
 from translate.storage.placeables import parse as rich_parse
@@ -736,18 +736,21 @@ class TranslationUnit:
         """
 
     @staticmethod
+    def get_plural_strings(target: list[str] | str | multistring) -> list[str]:
+        """Get plural strings from target."""
+        if isinstance(target, multistring):
+            # Coerce all items to string, they might be multistrings
+            return [str(string) for string in target.strings]
+        if isinstance(target, list):
+            return [str(string) for string in target]
+        return [target]
+
+    @staticmethod
     def sync_plural_count(
         target: list[str] | str | multistring, plural_tags: list[str]
     ) -> list[str]:
         """Ensure that plural count in string matches tags definition."""
-        # Get string list to handle, wrapping non multistring/list targets into a list.
-        if isinstance(target, multistring):
-            # Coerce all items to string, they might be multistrings
-            plural_strings = [str(string) for string in target.strings]
-        elif isinstance(target, list):
-            plural_strings = target
-        else:
-            plural_strings = [target]
+        plural_strings = TranslationUnit.get_plural_strings(target)
 
         # Add missing strings
         missing = len(plural_tags) - len(plural_strings)
@@ -1271,9 +1274,14 @@ class TranslationStore(Generic[U]):
             locale.removeprefix("b+").replace("_", "-").replace("+", "-").split("-")[0]
         )
 
-    def get_plural_tags(self) -> list[str]:
+    def get_plural_tags(
+        self, target: list[str] | str | multistring | None = None
+    ) -> list[str]:
         locale = self.get_base_locale_code()
-        return plural_tags.get(locale, plural_tags["en"])
+        plural_count = None
+        if target is not None:
+            plural_count = len(self.UnitClass.get_plural_strings(target))
+        return get_cldr_plural_tags(locale, plural_count)
 
 
 class UnitId:

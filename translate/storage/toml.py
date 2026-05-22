@@ -281,7 +281,7 @@ class GoI18nTOMLUnit(TOMLUnit):
             # to preserve the table structure
             return {"other": self.target}
 
-        tags = self._store.get_plural_tags()  # ty:ignore[unresolved-attribute]
+        tags = self._store.get_plural_tags(self.target)  # ty:ignore[unresolved-attribute]
 
         # Sync plural_strings elements to plural_tags count.
         strings = self.sync_plural_count(self.target, tags)
