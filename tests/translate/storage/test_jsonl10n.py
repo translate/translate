@@ -1275,6 +1275,19 @@ class TestI18NextV4Store(test_monolingual.TestMonolingualStore):
 
         assert bytes(store).decode() == EXPECTED
 
+    def test_unknown_language_single_plural_uses_other(self) -> None:
+        expected = """{
+    "simple_other": "the only form"
+}
+"""
+        store = self.StoreClass()
+        store.settargetlanguage("tok")
+
+        unit = self.StoreClass.UnitClass(multistring(["the only form"]), "simple")
+        store.addunit(unit)
+
+        assert bytes(store).decode() == expected
+
     def test_ru(self) -> None:
         data = """{
 "bet_one": "еще +{{count}} ставка",
@@ -1323,6 +1336,17 @@ class TestGoI18NJsonFile(test_monolingual.TestMonolingualStore):
         store.units[0].target = multistring(["{{.count}} tag"])
 
         assert '"other": ""' in bytes(store).decode()
+
+    def test_unknown_language_single_plural_uses_other(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("tok")
+
+        unit = self.StoreClass.UnitClass(multistring(["{{.count}} tag"]), "tag")
+        store.addunit(unit)
+
+        output = bytes(store).decode()
+        assert '"other": "{{.count}} tag"' in output
+        assert '"one"' not in output
 
     def test_invalid(self) -> None:
         store = self.StoreClass()

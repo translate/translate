@@ -172,6 +172,42 @@ class TestStringsDictFile(test_monolingual.TestMonolingualStore):
         plist = plistlib.load(bytes_io)
         assert plist["item"]["p"]["zero"]
 
+    def test_unknown_language_single_plural_uses_other(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("tok")
+        store.addsourceunit("item")
+
+        unit = store.UnitClass("item:p")
+        unit.target = multistring(["the only form"])
+        store.addunit(unit)
+
+        bytes_io = BytesIO()
+        store.serialize(bytes_io)
+        bytes_io.seek(0)
+
+        plural = plistlib.load(bytes_io)["item"]["p"]
+        assert plural["other"] == "the only form"
+        assert "one" not in plural
+        assert "zero" not in plural
+
+    def test_unknown_language_two_plurals_use_zero_and_other(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("tok")
+        store.addsourceunit("item")
+
+        unit = store.UnitClass("item:p")
+        unit.target = multistring(["no items", "items"])
+        store.addunit(unit)
+
+        bytes_io = BytesIO()
+        store.serialize(bytes_io)
+        bytes_io.seek(0)
+
+        plural = plistlib.load(bytes_io)["item"]["p"]
+        assert plural["zero"] == "no items"
+        assert plural["other"] == "items"
+        assert "one" not in plural
+
     def test_add_unit(self) -> None:
         store = self.StoreClass()
 

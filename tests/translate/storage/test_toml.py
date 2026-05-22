@@ -512,6 +512,19 @@ other = "You have {{ .Count }} messages"
         assert 'one = "Un mensaje"' in result
         assert 'other = "{{ .Count }} mensajes"' in result
 
+    def test_unknown_language_single_plural_uses_other(self) -> None:
+        """Test that unknown one-form plurals serialize as CLDR other."""
+        store = self.StoreClass()
+        store.settargetlanguage("tok")
+
+        unit = self.StoreClass.UnitClass(multistring(["You have messages"]))
+        unit.setid("messages")
+        store.addunit(unit)
+
+        result = bytes(store).decode("utf-8")
+        assert '[messages]\nother = "You have messages"' in result
+        assert "one =" not in result
+
     def test_mixed_content(self) -> None:
         """Test file with both regular and pluralized entries."""
         data = """title = "My Application"

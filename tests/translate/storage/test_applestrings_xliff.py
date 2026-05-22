@@ -330,6 +330,30 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
         assert "<source>One item</source>" in output
         assert "<source>%d items</source>" in output
 
+    def test_unknown_language_single_plural_uses_other(self):
+        """A single plural form for unknown CLDR data writes the other category."""
+        store = self.StoreClass()
+        store.settargetlanguage("tok")
+        _add_plural(store, "items:count", ["the only form"])
+
+        output = bytes(store).decode("utf-8")
+        assert 'id="items:count:dict/other:dict/:string"' in output
+        assert 'id="items:count:dict/one:dict/:string"' not in output
+        assert 'id="items:count:dict/zero:dict/:string"' not in output
+
+    def test_unknown_language_two_plurals_use_zero_and_other(self):
+        """Two plural forms for unknown CLDR data write zero and other."""
+        store = self.StoreClass()
+        store.settargetlanguage("tok")
+        _add_plural(store, "items:count", ["No items", "%d items"])
+
+        output = bytes(store).decode("utf-8")
+        assert 'id="items:count:dict/zero:dict/:string"' in output
+        assert 'id="items:count:dict/other:dict/:string"' in output
+        assert 'id="items:count:dict/one:dict/:string"' not in output
+        assert "<source>No items</source>" in output
+        assert "<source>%d items</source>" in output
+
     # ------------------------------------------------------------------
     # Conversion: singular → plural
     # ------------------------------------------------------------------

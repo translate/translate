@@ -878,6 +878,20 @@ plural_tags = {
     "zul": ["one", "other"],
 }
 
+
+def get_cldr_plural_tags(
+    locale: str | None, plural_count: int | None = None
+) -> list[str]:
+    """Return CLDR plural tags for locale, with a count-aware fallback."""
+    if locale:
+        tags = plural_tags.get(locale)
+        if tags is not None:
+            return tags
+    if plural_count == 1:
+        return ["other"]
+    return plural_tags["en"]
+
+
 # CLDR plurals with additional decimal tags
 DECIMAL_EXTRA_TAGS = {
     "be": ["other"],

@@ -695,7 +695,7 @@ class proppluralunit(base.TranslationUnit):
     def _get_language_mapping(lang):
         if lang:
             locale = lang.replace("_", "-").split("-")[0]
-            return data.plural_tags.get(locale, data.plural_tags["en"])
+            return data.get_cldr_plural_tags(locale)
         return None
 
     def _get_existing_mapping(self):
@@ -764,7 +764,7 @@ class proppluralunit(base.TranslationUnit):
         else:
             strings = [text]
         if mapping is None:
-            mapping = self._store.get_plural_tags()  # ty:ignore[unresolved-attribute]
+            mapping = self._store.get_plural_tags(text)  # ty:ignore[unresolved-attribute]
 
         strings = self._get_strings(strings, mapping)
         units = self._get_units(mapping)

@@ -395,10 +395,10 @@ class I18NextUnit(JsonNestedUnit):
         if not isinstance(self.target, multistring):
             super().storevalues(output)
         else:
-            if len(self.target.strings) > len(self._store.get_plural_tags()):  # ty:ignore[unresolved-attribute]
+            plural_tags = self._store.get_plural_tags(self.target)  # ty:ignore[unresolved-attribute]
+            if len(self.target.strings) > len(plural_tags):
                 self.target.extra_strings = self.target.extra_strings[
-                    : len(self._store.get_plural_tags())  # ty:ignore[unresolved-attribute]
-                    - 1
+                    : len(plural_tags) - 1
                 ]
             self._fixup_item()
             for i, value in enumerate(self.target.strings):
@@ -486,7 +486,8 @@ class I18NextV4Unit(I18NextUnit):
 
     def _get_plural_labels(self, count):
         base_name = self._get_base_name()
-        return [f"{base_name}_{self._store.get_plural_tags()[i]}" for i in range(count)]  # ty:ignore[unresolved-attribute]
+        plural_tags = self._store.get_plural_tags(self.target)  # ty:ignore[unresolved-attribute]
+        return [f"{base_name}_{plural_tags[i]}" for i in range(count)]
 
 
 class I18NextV4File(JsonNestedFile):
@@ -609,7 +610,8 @@ class GoTextJsonUnit(BaseJsonUnit):
     def getvalue(self):
         target = self.target
         if isinstance(target, multistring):
-            strings = self.sync_plural_count(target, self._store.get_plural_tags())  # ty:ignore[unresolved-attribute]
+            plural_tags = self._store.get_plural_tags(target)  # ty:ignore[unresolved-attribute]
+            strings = self.sync_plural_count(target, plural_tags)
             target = {
                 "select": {
                     "feature": "plural",
@@ -619,7 +621,7 @@ class GoTextJsonUnit(BaseJsonUnit):
                 target["select"]["arg"] = self.placeholders[0]["id"]
             target["select"]["cases"] = {
                 plural: {"msg": strings[offset]}
-                for offset, plural in enumerate(self._store.get_plural_tags())  # ty:ignore[unresolved-attribute]
+                for offset, plural in enumerate(plural_tags)
             }  # ty:ignore[invalid-assignment]
         value = {"id": self._unitid.parts if self._unitid else self.getid()}
         if self.message:
@@ -721,10 +723,10 @@ class GoI18NJsonUnit(FlatJsonUnit):
     def getvalue(self):
         target = self.target
         if isinstance(target, multistring):
-            strings = self.sync_plural_count(target, self._store.get_plural_tags())  # ty:ignore[unresolved-attribute]
+            plural_tags = self._store.get_plural_tags(target)  # ty:ignore[unresolved-attribute]
+            strings = self.sync_plural_count(target, plural_tags)
             target = {
-                plural: strings[offset]
-                for offset, plural in enumerate(self._store.get_plural_tags())  # ty:ignore[unresolved-attribute]
+                plural: strings[offset] for offset, plural in enumerate(plural_tags)
             }
         value = {"id": self.getid()}
         if self.notes:
@@ -803,8 +805,9 @@ class GoI18NV2JsonUnit(FlatJsonUnit):
         if self.notes:
             target["description"] = self.notes
 
-        strings = self.sync_plural_count(self.target, self._store.get_plural_tags())  # ty:ignore[unresolved-attribute]
-        for offset, plural in enumerate(self._store.get_plural_tags()):  # ty:ignore[unresolved-attribute]
+        plural_tags = self._store.get_plural_tags(self.target)  # ty:ignore[unresolved-attribute]
+        strings = self.sync_plural_count(self.target, plural_tags)
+        for offset, plural in enumerate(plural_tags):
             target[plural] = strings[offset]
 
         return target
