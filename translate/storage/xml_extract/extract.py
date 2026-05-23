@@ -264,13 +264,14 @@ def parse_status_set(namespace, tag, state):
     old_inline = state.is_inline
     state.is_inline = (namespace, tag) in state.inline_elements
 
-    yield state
-
-    # Reset inline status, placeable name and XPath breadcrumb to the
-    # previous values.
-    state.is_inline = old_inline
-    state.placeable_name = old_placeable_name
-    state.xpath_breadcrumb.end_tag()
+    try:
+        yield state
+    finally:
+        # Reset inline status, placeable name and XPath breadcrumb to the
+        # previous values.
+        state.is_inline = old_inline
+        state.placeable_name = old_placeable_name
+        state.xpath_breadcrumb.end_tag()
 
 
 def find_translatable_dom_nodes(dom_node, state, process_func=process_translatable):

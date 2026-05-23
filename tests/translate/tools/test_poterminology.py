@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 from translate.storage import factory
@@ -51,3 +52,18 @@ class TestPOTerminology:
                 assert isinstance(unit_info.transnotes, frozenset)
                 break
             break
+
+    def test_bad_stopword_entry_keeps_previous_entries_and_stops(
+        self, tmp_path, caplog
+    ) -> None:
+        """Invalid stopword actions should not discard already parsed entries."""
+        stopfile = tmp_path / "stopwords"
+        stopfile.write_text("+keep\n?bad\n=ignored\n")
+
+        with caplog.at_level(logging.WARNING):
+            extractor = poterminology.TerminologyExtractor(stopfile=str(stopfile))
+
+        assert extractor.stopwords["keep"] == frozenset()
+        assert "ignored" not in extractor.stopwords
+        assert "bad stopword entry starts with" in caplog.text
+        assert "all lines after error ignored" in caplog.text

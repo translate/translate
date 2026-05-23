@@ -38,6 +38,7 @@ to be reflowed anyway.
 from __future__ import annotations
 
 import re
+from contextlib import contextmanager
 from itertools import chain
 from typing import TYPE_CHECKING
 
@@ -206,6 +207,15 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         self._container_stack: list[tuple[str, int]] = []
         # _current_docpath: the current docpath string for the current block
         self._current_docpath = ""
+
+    @contextmanager
+    def _bypass_rendering(self):
+        original_bypass = self.bypass
+        self.bypass = True
+        try:
+            yield
+        finally:
+            self.bypass = original_bypass
 
     def render(self, token: mistletoe.token.Token) -> str:
         try:
@@ -555,17 +565,13 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         """Renders a sequence of span tokens to markdown, with translation."""
         # If we're in an ignore section, skip translation
         if self.ignore_translation:
-            original_bypass = self.bypass
-            try:
-                self.bypass = True
+            with self._bypass_rendering():
                 fragments = self.make_fragments(tokens)
                 # Expand placeholders before rendering
                 expanded = list(self.expand_placeholders(fragments))
                 return super().fragments_to_lines(
                     expanded, max_line_length=max_line_length
                 )
-            finally:
-                self.bypass = original_bypass
 
         # No-placeholders opt-in mode: render source-side fragments verbatim.
         # bypass=True is set BEFORE make_fragments so render_link_or_image,
@@ -581,9 +587,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         # so those placeholders end up in leader/trailer (not in content), which
         # prevents translate_callback from being called a second time for them.
         if self.no_placeholders:
-            original_bypass = self.bypass
-            try:
-                self.bypass = True
+            with self._bypass_rendering():
                 fragments = list(self.make_fragments(tokens))
                 merged = self.merge_adjacent_placeholders(fragments)
                 leader, content, trailer = self.trim_flanking_placeholders(merged)
@@ -614,16 +618,11 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
                 return super().fragments_to_lines(
                     expanded, max_line_length=max_line_length
                 )
-            finally:
-                self.bypass = original_bypass
 
         # turn the span into fragments, which may include placeholders.
         # list-ify the iterator because we may need to traverse it more than once
         fragments = list(self.make_fragments(tokens))
-        original_bypass = self.bypass
-        try:
-            self.bypass = True
-
+        with self._bypass_rendering():
             # pre-process placeholders
             merged = self.merge_adjacent_placeholders(fragments)
             leader, content, trailer = self.trim_flanking_placeholders(merged)
@@ -677,8 +676,6 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
             # list-ify to let all generators run before exiting the try/finally block
             expanded = list(self.expand_placeholders(fragments))
             return super().fragments_to_lines(expanded, max_line_length=max_line_length)
-        finally:
-            self.bypass = original_bypass
 
     @classmethod
     def merge_adjacent_placeholders(

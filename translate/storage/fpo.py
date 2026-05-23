@@ -457,6 +457,17 @@ class pofile(pocommon.pofile):
             # only add a temporary header
             self._cpo_store.makeheader(charset=self.encoding, encoding="8bit")
 
+    def _parse_cpo(self, input) -> None:
+        input_name = base.get_input_name(input)
+        if input_name:
+            self.filename = input_name
+        elif not getattr(self, "filename", ""):
+            self.filename = ""
+        self.units = []
+        self._cpo_store = cpo.pofile(input, noheader=True)
+        self._build_self_from_cpo()
+        del self._cpo_store
+
     def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
         """
         Parse PO data from a path or bytes content.
@@ -467,15 +478,7 @@ class pofile(pocommon.pofile):
         source text, so raw PO content must not be passed as a decoded string.
         """
         try:
-            input_name = base.get_input_name(input)
-            if input_name:
-                self.filename = input_name
-            elif not getattr(self, "filename", ""):
-                self.filename = ""
-            self.units = []
-            self._cpo_store = cpo.pofile(input, noheader=True)
-            self._build_self_from_cpo()
-            del self._cpo_store
+            self._parse_cpo(input)
         except Exception as e:
             raise base.ParseError(e) from e
 

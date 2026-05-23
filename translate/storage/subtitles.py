@@ -162,31 +162,34 @@ class SubtitleFile(base.TranslationStore):
             effect="",
         )
 
+    def _parse_subtitles(self) -> None:
+        self.encoding = detect(self.filename)
+        self._format = detect_format(self.filename, self.encoding)
+        self._subtitlefile = new(self._format, self.filename, self.encoding)
+        for subtitle in self._subtitlefile.read():
+            newunit = self.addsourceunit(subtitle.main_text)
+            newunit._start = subtitle.start
+            newunit._end = subtitle.end
+            newunit._duration = subtitle.duration_seconds
+            # Preserve SSA/ASS metadata only for SSA and ASS formats
+            if (
+                self._format in {formats.SSA, formats.ASS}  # ty:ignore[unresolved-attribute]
+                and hasattr(subtitle, "ssa")
+                and subtitle.ssa
+            ):
+                newunit.set_ssa_metadata(
+                    style=subtitle.ssa.style,
+                    layer=subtitle.ssa.layer,
+                    name=subtitle.ssa.name,
+                    margin_l=subtitle.ssa.margin_l,
+                    margin_r=subtitle.ssa.margin_r,
+                    margin_v=subtitle.ssa.margin_v,
+                    effect=subtitle.ssa.effect,
+                )
+
     def _parse(self) -> None:
         try:
-            self.encoding = detect(self.filename)
-            self._format = detect_format(self.filename, self.encoding)
-            self._subtitlefile = new(self._format, self.filename, self.encoding)
-            for subtitle in self._subtitlefile.read():
-                newunit = self.addsourceunit(subtitle.main_text)
-                newunit._start = subtitle.start
-                newunit._end = subtitle.end
-                newunit._duration = subtitle.duration_seconds
-                # Preserve SSA/ASS metadata only for SSA and ASS formats
-                if (
-                    self._format in {formats.SSA, formats.ASS}  # ty:ignore[unresolved-attribute]
-                    and hasattr(subtitle, "ssa")
-                    and subtitle.ssa
-                ):
-                    newunit.set_ssa_metadata(
-                        style=subtitle.ssa.style,
-                        layer=subtitle.ssa.layer,
-                        name=subtitle.ssa.name,
-                        margin_l=subtitle.ssa.margin_l,
-                        margin_r=subtitle.ssa.margin_r,
-                        margin_v=subtitle.ssa.margin_v,
-                        effect=subtitle.ssa.effect,
-                    )
+            self._parse_subtitles()
         except Exception as e:
             raise base.ParseError(e) from e
 

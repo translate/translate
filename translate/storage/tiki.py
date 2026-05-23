@@ -55,6 +55,7 @@ As far as I know no detailed documentation exists for the tiki language.php file
 
 import datetime
 import re
+from contextlib import closing
 from io import BytesIO
 
 from translate.storage import base
@@ -167,7 +168,7 @@ class TikiStore(base.TranslationStore[TikiUnit]):
 
         split_regex = re.compile(r"^(?:// )?\"(.*?)\" => \"(.*?)\",$", re.UNICODE)
 
-        try:
+        with closing(input):
             location = "translated"
 
             for line in input:
@@ -195,5 +196,3 @@ class TikiStore(base.TranslationStore[TikiUnit]):
                     if location != "untranslated":
                         unit.target = match.group(2)
                     unit.addlocation(location)
-        finally:
-            input.close()

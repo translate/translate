@@ -950,25 +950,27 @@ class pofile(pocommon.pofile):
             with open(filename, "rb") as tfile:
                 return tfile.read()
 
+        def getoutputstring(filename):
+            outputstring = writefile(filename)
+            if self.encoding == pounit.CPO_ENC:
+                return outputstring
+            try:
+                return outputstring.decode(pounit.CPO_ENC).encode(self.encoding)
+            except UnicodeEncodeError:
+                self.encoding = pounit.CPO_ENC
+                self.updateheader(
+                    content_type="text/plain; charset=UTF-8",
+                    content_transfer_encoding="8bit",
+                )
+                return writefile(filename)
+
         outputstring = ""
         if self._gpo_memory_file:
             obsolete_workaround()
             f, fname = tempfile.mkstemp(prefix="translate", suffix=".po")
             os.close(f)
             try:
-                outputstring = writefile(fname)
-                if self.encoding != pounit.CPO_ENC:
-                    try:
-                        outputstring = outputstring.decode(pounit.CPO_ENC).encode(
-                            self.encoding
-                        )
-                    except UnicodeEncodeError:
-                        self.encoding = pounit.CPO_ENC
-                        self.updateheader(
-                            content_type="text/plain; charset=UTF-8",
-                            content_transfer_encoding="8bit",
-                        )
-                        outputstring = writefile(fname)
+                outputstring = getoutputstring(fname)
             finally:
                 os.remove(fname)
         out.write(outputstring)
@@ -1012,7 +1014,7 @@ class pofile(pocommon.pofile):
                 os.remove(fname)
                 raise
 
-        try:
+        def read_gpo_memory_file() -> None:
             xerror_storage.exception = None
             self._free_memory_file()
             self._gpo_memory_file = gpo.po_file_read_v3(  # ty:ignore[unresolved-attribute]
@@ -1022,6 +1024,9 @@ class pofile(pocommon.pofile):
                 raise xerror_storage.exception
             if self._gpo_memory_file is None:
                 logger.error("Error:")
+
+        try:
+            read_gpo_memory_file()
         finally:
             if needtmpfile:
                 os.remove(input)

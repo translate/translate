@@ -140,43 +140,45 @@ class TerminologyExtractor:
 
         with open(self.stopfile) as stopfile:
             line_number = 0
-            try:
-                for stopline in stopfile:
-                    line_number += 1
-                    stoptype = stopline[0]
-                    if stoptype in {"#", "\n"}:
-                        continue
-                    if stoptype == "!":
-                        if stopline[1] == "C":
-                            self.stopfoldtitle = False
-                            self.stopignorecase = False
-                        elif stopline[1] == "F":
-                            self.stopfoldtitle = True
-                            self.stopignorecase = False
-                        elif stopline[1] == "I":
-                            self.stopignorecase = True
-                        else:
-                            logger.warning(
-                                "%s:%d - bad case mapping directive",
-                                self.stopfile,
-                                line_number,
-                            )
-                    elif stoptype == "/":
-                        self.stoprelist.append(re.compile(f"{stopline[1:-1]}$"))
+            for stopline in stopfile:
+                line_number += 1
+                stoptype = stopline[0]
+                if stoptype in {"#", "\n"}:
+                    continue
+                if stoptype == "!":
+                    if stopline[1] == "C":
+                        self.stopfoldtitle = False
+                        self.stopignorecase = False
+                    elif stopline[1] == "F":
+                        self.stopfoldtitle = True
+                        self.stopignorecase = False
+                    elif stopline[1] == "I":
+                        self.stopignorecase = True
                     else:
-                        self.stopwords[stopline[1:-1]] = actions[stoptype]
-            except KeyError as character:
-                logger.warning(
-                    "%s:%d - bad stopword entry starts with '%s'",
-                    self.stopfile,
-                    line_number,
-                    character,
-                )
-                logger.warning(
-                    "%s:%d all lines after error ignored",
-                    self.stopfile,
-                    line_number + 1,
-                )
+                        logger.warning(
+                            "%s:%d - bad case mapping directive",
+                            self.stopfile,
+                            line_number,
+                        )
+                elif stoptype == "/":
+                    self.stoprelist.append(re.compile(f"{stopline[1:-1]}$"))
+                else:
+                    try:
+                        action = actions[stoptype]
+                    except KeyError as character:
+                        logger.warning(
+                            "%s:%d - bad stopword entry starts with '%s'",
+                            self.stopfile,
+                            line_number,
+                            character,
+                        )
+                        logger.warning(
+                            "%s:%d all lines after error ignored",
+                            self.stopfile,
+                            line_number + 1,
+                        )
+                        break
+                    self.stopwords[stopline[1:-1]] = action
 
     def clean(self, string):
         """Returns the cleaned string that contains the text to be matched."""
