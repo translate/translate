@@ -84,9 +84,10 @@ gconf_attribute_re = re.compile(r'"[a-z_]+?"')
 # XML/HTML tags in LibreOffice help and readme, exclude short tags
 lo_tag_re = re.compile(r"""</?(?P<tag>[a-z][a-z_-]+)(?: +[a-z]+="[^"]+")* */?>""")
 lo_emptytags = frozenset(["br", "embed", "embedvar", "object", "help-id-missing"])
+TagProperty = tuple[str | None, str | None, str | None]
 
 
-def tagname(string):
+def tagname(string: str) -> str:
     """Returns the name of the XML/HTML tag in string."""
     tagname_match = tagname_re.match(string)
     assert tagname_match is not None, f"Expected tag in string: {string}"
@@ -96,7 +97,7 @@ def tagname(string):
     return group1 + group2
 
 
-def intuplelist(pair, list):
+def intuplelist(pair: TagProperty, patterns: list[TagProperty]) -> TagProperty:
     """
     Tests to see if pair == (a,b,c) is in list, but handles None entries in
     list as wildcards (only allowed in positions "a" and "c"). We take a
@@ -108,7 +109,7 @@ def intuplelist(pair, list):
         # This is a tagname
         return pair
 
-    for pattern in list:
+    for pattern in patterns:
         x, y, z = pattern
 
         if (x, y) in {(a, b), (None, b)} and z in {None, c}:
@@ -117,15 +118,13 @@ def intuplelist(pair, list):
     return pair
 
 
-def tagproperties(
-    matches: list[str], ignore: list[tuple[str, str, str]]
-) -> list[tuple[str, str, str]]:
+def tagproperties(matches: list[str], ignore: list[TagProperty]) -> list[TagProperty]:
     """
     Returns all the properties in the XML/HTML tag string as (tagname,
     propertyname, propertyvalue), but ignore those combinations specified in
     ignore.
     """
-    properties = []
+    properties: list[TagProperty] = []
 
     for match in matches:
         tag = tagname(match)

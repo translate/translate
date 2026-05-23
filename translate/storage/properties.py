@@ -133,6 +133,7 @@ import re
 from codecs import iterencode
 from copy import deepcopy
 from dataclasses import dataclass
+from typing import TypeVar
 
 from lxml import etree
 
@@ -243,20 +244,6 @@ def _key_strip(key: str) -> str:
     if newkey[-1:] == "\\":
         newkey += key[len(newkey) : len(newkey) + 1]
     return newkey.lstrip()
-
-
-dialects: dict[str, type[Dialect]] = {}
-default_dialect = "java"
-
-
-def register_dialect(dialect: type[Dialect]) -> type[Dialect]:
-    """Decorator that registers the dialect."""
-    dialects[dialect.name] = dialect
-    return dialect
-
-
-def get_dialect(dialect=default_dialect):
-    return dialects.get(dialect)
 
 
 class Dialect:
@@ -385,6 +372,22 @@ class Dialect:
     @staticmethod
     def get_expand_output_target_mapping(names: list[str]) -> list[str]:
         return names
+
+
+_DialectT = TypeVar("_DialectT", bound=Dialect)
+
+dialects: dict[str, type[Dialect]] = {}
+default_dialect = "java"
+
+
+def register_dialect(dialect: type[_DialectT]) -> type[_DialectT]:
+    """Decorator that registers the dialect."""
+    dialects[dialect.name] = dialect
+    return dialect
+
+
+def get_dialect(dialect=default_dialect):
+    return dialects.get(dialect)
 
 
 @register_dialect
