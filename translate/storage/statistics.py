@@ -44,7 +44,7 @@ class Statistics:
         self.language = factory.getlanguage(self.sourcelanguage)
         #        self.init_checker(checkerstyle)
 
-        self.classification = {}
+        self.classification: dict[str, list[int]] = {}
 
     def init_checker(self, checkerstyle=None) -> None:
         checkerclasses = [
@@ -122,7 +122,7 @@ class Statistics:
         return self.wordcount(text)
 
     @staticmethod
-    def classifyunit(unit):
+    def classifyunit(unit) -> list[str]:
         """
         Returns a list of the classes that the unit belongs to.
 
@@ -163,7 +163,7 @@ class Statistics:
                 if classname in self.classification:
                     self.classification[classname].append(item)
                 else:
-                    self.classification[classname] = item
+                    self.classification[classname] = [item]
         self.countwords()
 
     def countwords(self) -> None:
@@ -178,7 +178,7 @@ class Statistics:
                 [self.wordcount(text) for text in getattr(unit.target, "strings", [""])]
             )
 
-    def reclassifyunit(self, item) -> None:
+    def reclassifyunit(self, item: int) -> None:
         """
         Updates the classification of a unit in self.classification.
 
