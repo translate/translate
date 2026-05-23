@@ -358,7 +358,7 @@ GENERAL@2|Notes,"cable, motor, switch"
 
         assert bytes(store).decode() == '"id"\r\n"123"\r\n'
 
-    def test_quote_nonnumeric_handling(self) -> None:
+    def test_quote_nonnumeric_handling(self, monkeypatch) -> None:
         """Test that CSV files with QUOTE_NONNUMERIC dialect are handled correctly."""
         # Simulate a CSV that the sniffer might detect as QUOTE_NONNUMERIC
         # This happens when CSV files have unquoted numeric values
@@ -374,23 +374,19 @@ GENERAL@2|Notes,"cable, motor, switch"
             result.quoting = csv.QUOTE_NONNUMERIC
             return result
 
-        csv.Sniffer.sniff = patched_sniff  # ty:ignore[invalid-assignment]
+        monkeypatch.setattr(csv.Sniffer, "sniff", patched_sniff)
 
-        try:
-            # This should not raise ValueError about converting string to float
-            store = self.parse_store(content)
-            assert len(store.units) == 2
-            assert store.units[0].location == "test1"
-            assert store.units[0].source == "hello"
-            assert store.units[0].target == "hola"
-            assert store.units[1].location == "test2"
-            assert store.units[1].source == "world"
-            assert store.units[1].target == "mundo"
-        finally:
-            # Restore original method
-            csv.Sniffer.sniff = original_sniff
+        # This should not raise ValueError about converting string to float
+        store = self.parse_store(content)
+        assert len(store.units) == 2
+        assert store.units[0].location == "test1"
+        assert store.units[0].source == "hello"
+        assert store.units[0].target == "hola"
+        assert store.units[1].location == "test2"
+        assert store.units[1].source == "world"
+        assert store.units[1].target == "mundo"
 
-    def test_quote_nonnumeric_with_single_quotes(self) -> None:
+    def test_quote_nonnumeric_with_single_quotes(self, monkeypatch) -> None:
         """Test that CSV files with single quotes and QUOTE_NONNUMERIC are handled correctly."""
         # Test CSV with single quotes - ensure the fix doesn't break single-quoted CSVs
         content = b"'location','source','target'\n'test1','hello','hola'\n'test2','world','mundo'\n"
@@ -405,21 +401,34 @@ GENERAL@2|Notes,"cable, motor, switch"
             # The sniffer should have detected single quotes as quotechar
             return result
 
-        csv.Sniffer.sniff = patched_sniff  # ty:ignore[invalid-assignment]
+        monkeypatch.setattr(csv.Sniffer, "sniff", patched_sniff)
 
-        try:
-            # This should not raise ValueError and should correctly parse single-quoted CSV
-            store = self.parse_store(content)
-            assert len(store.units) == 2
-            assert store.units[0].location == "test1"
-            assert store.units[0].source == "hello"
-            assert store.units[0].target == "hola"
-            assert store.units[1].location == "test2"
-            assert store.units[1].source == "world"
-            assert store.units[1].target == "mundo"
-        finally:
-            # Restore original method
-            csv.Sniffer.sniff = original_sniff
+        # This should not raise ValueError and should correctly parse single-quoted CSV
+        store = self.parse_store(content)
+        assert len(store.units) == 2
+        assert store.units[0].location == "test1"
+        assert store.units[0].source == "hello"
+        assert store.units[0].target == "hola"
+        assert store.units[1].location == "test2"
+        assert store.units[1].source == "world"
+        assert store.units[1].target == "mundo"
+
+    def test_sniffer_error_uses_default_dialect(self, monkeypatch) -> None:
+        """Sniffer failures should fall back to the default dialect and still parse."""
+
+        def patched_sniff(self, sample, delimiters=None):
+            raise csv.Error("could not determine delimiter")
+
+        monkeypatch.setattr(csv.Sniffer, "sniff", patched_sniff)
+
+        store = self.parse_store(
+            b"location,source,target\ntest1,hello,hola\ntest2,world,mundo\n"
+        )
+
+        assert store.dialect == "default"
+        assert len(store.units) == 2
+        assert store.units[0].source == "hello"
+        assert store.units[0].target == "hola"
 
     def test_line_number(self) -> None:
         """Test that line numbers are correctly tracked for CSV units."""

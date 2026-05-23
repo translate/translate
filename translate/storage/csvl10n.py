@@ -353,7 +353,11 @@ class csvfile(base.TranslationStore):
             self.dialect = dialect
         else:
             try:
-                self.dialect = sniffer.sniff(sample)
+                sniffed_dialect = sniffer.sniff(sample)
+            except csv.Error:
+                self.dialect = "default"
+            else:
+                self.dialect = sniffed_dialect
                 if self.dialect.quoting == csv.QUOTE_MINIMAL:
                     # HACKISH: most probably a default, not real detection
                     self.dialect.quoting = csv.QUOTE_ALL
@@ -370,8 +374,6 @@ class csvfile(base.TranslationStore):
                     "\n",
                 }:
                     self.dialect.delimiter = ","
-            except csv.Error:
-                self.dialect = "default"
 
         inputfile = StringIO(text)
         has_header = False

@@ -56,21 +56,33 @@ def read_header_items(ps):
     return results
 
 
+def read_body_item(ps):
+    eat_whitespace(ps)
+    skip_no_translate(ps)
+    match = string_entry_re.match(ps.current_line)
+    if match is None:
+        unit = None
+    else:
+        unit = match.groupdict()["id"], unescape(match.groupdict()["str"][1:-1])
+    try:
+        ps.read_line()
+    except StopIteration:
+        return unit, False
+    return unit, True
+
+
 def parse(ps):
     header = read_header_items(ps)
     units = []
-    try:
-        while True:
-            eat_whitespace(ps)
-            skip_no_translate(ps)
-            match = string_entry_re.match(ps.current_line)
-            if match is not None:
-                units.append(
-                    (match.groupdict()["id"], unescape(match.groupdict()["str"][1:-1]))
-                )
-            ps.read_line()
-    except StopIteration:
-        pass
+    while True:
+        try:
+            unit, has_more = read_body_item(ps)
+        except StopIteration:
+            break
+        if unit is not None:
+            units.append(unit)
+        if not has_more:
+            break
     return header, units
 
 

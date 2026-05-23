@@ -30,7 +30,14 @@ try:
     # Enchant
     from enchant import Error as EnchantError
     from enchant import checker
+except ImportError:
 
+    def check(text, lang):
+        return []
+
+    def simple_check(text, lang):
+        return []
+else:
     available = True
     checkers = {}
 
@@ -62,11 +69,3 @@ try:
             return []
         spellchecker.set_text(str(text))
         return [err.word for err in spellchecker]
-
-except ImportError:
-
-    def check(text, lang):
-        return []
-
-    def simple_check(text, lang):
-        return []

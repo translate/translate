@@ -57,25 +57,27 @@ def replace_header_items(ps, replacements) -> None:
         ps.read_line()
 
 
+def replace_body_item(ps, body_replacements) -> None:
+    eat_whitespace(ps)
+    skip_no_translate(ps)
+    match = string_entry_re.match(ps.current_line)
+    if match is not None:
+        key = match.groupdict()["id"]
+        if key in body_replacements:
+            value = body_replacements[key].target or body_replacements[key].source
+            ps.current_line = match.expand(
+                f"\\g<start>\\g<id>\\g<space>{escape(value)}\n"
+            )
+    ps.read_line()
+
+
 def parse(ps, header_replacements, body_replacements) -> None:
     replace_header_items(ps, header_replacements)
-    try:
-        while True:
-            eat_whitespace(ps)
-            skip_no_translate(ps)
-            match = string_entry_re.match(ps.current_line)
-            if match is not None:
-                key = match.groupdict()["id"]
-                if key in body_replacements:
-                    value = (
-                        body_replacements[key].target or body_replacements[key].source
-                    )
-                    ps.current_line = match.expand(
-                        f"\\g<start>\\g<id>\\g<space>{escape(value)}\n"
-                    )
-            ps.read_line()
-    except StopIteration:
-        pass
+    while True:
+        try:
+            replace_body_item(ps, body_replacements)
+        except StopIteration:
+            break
 
 
 def line_saver(charset):

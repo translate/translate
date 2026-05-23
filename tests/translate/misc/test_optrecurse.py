@@ -535,6 +535,26 @@ class TestGetTemplateName:
         assert parser.gettemplatename(options, "file.po") is None
 
 
+class TestGetProcessingPaths:
+    """Tests for RecursiveOptionParser.getprocessingpaths."""
+
+    def test_missing_template_warning_identifies_expected_template(
+        self, tmp_path, caplog
+    ) -> None:
+        parser = optrecurse.RecursiveOptionParser(
+            {("po", "pot"): ("po", None)}, usetemplates=True
+        )
+        template_dir = tmp_path / "templates"
+        template_dir.mkdir()
+        options = SimpleNamespace(template=str(template_dir), recursivetemplate=True)
+
+        with caplog.at_level(logging.WARNING):
+            result = parser.getprocessingpaths(options, "subdir/file.po")
+
+        assert result is None
+        assert f"No template subdir/file.pot in {template_dir}" in caplog.text
+
+
 class TestGetUsageString:
     """Tests for RecursiveOptionParser.getusagestring."""
 

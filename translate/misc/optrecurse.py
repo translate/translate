@@ -602,6 +602,32 @@ class RecursiveOptionParser(optparse.OptionParser):
         (options, _args) = self.parse_args()
         self.recursiveprocess(options)
 
+    def getprocessingpaths(self, options, inputpath):
+        templatepath = self.gettemplatename(options, inputpath)
+        # If we have a recursive template, but the template doesn't
+        # have this input file, let's drop it.
+        if (
+            options.recursivetemplate
+            and templatepath is None
+            and not self.allowmissingtemplate
+        ):
+            missing_template = self.getmissingtemplatename(inputpath)
+            self.warning(
+                f"No template {missing_template} in {options.template}. "
+                f"Skipping {inputpath}."
+            )
+            return None
+        outputformat, fileprocessor = self.getoutputoptions(
+            options, inputpath, templatepath
+        )
+        fullinputpath = self.getfullinputpath(options, inputpath)
+        fulltemplatepath = self.getfulltemplatepath(options, templatepath)
+        outputpath = self.getoutputname(options, inputpath, outputformat)
+        fulloutputpath = self.getfulloutputpath(options, outputpath)
+        if options.recursiveoutput and outputpath:
+            self.checkoutputsubdir(options, os.path.dirname(outputpath))
+        return fileprocessor, fullinputpath, fulltemplatepath, fulloutputpath
+
     def recursiveprocess(self, options) -> None:
         """Recurse through directories and process files."""
         if self.isrecursive(options.input, "input") and getattr(
@@ -631,32 +657,17 @@ class RecursiveOptionParser(optparse.OptionParser):
         progress_bar = ProgressBar(options.progress, inputfiles)
         for inputpath in inputfiles:
             try:
-                templatepath = self.gettemplatename(options, inputpath)
-                # If we have a recursive template, but the template doesn't
-                # have this input file, let's drop it.
-                if (
-                    options.recursivetemplate
-                    and templatepath is None
-                    and not self.allowmissingtemplate
-                ):
-                    self.warning(
-                        f"No template at {templatepath}. Skipping {inputpath}."
-                    )
-                    continue
-                outputformat, fileprocessor = self.getoutputoptions(
-                    options, inputpath, templatepath
-                )
-                fullinputpath = self.getfullinputpath(options, inputpath)
-                fulltemplatepath = self.getfulltemplatepath(options, templatepath)
-                outputpath = self.getoutputname(options, inputpath, outputformat)
-                fulloutputpath = self.getfulloutputpath(options, outputpath)
-                if options.recursiveoutput and outputpath:
-                    self.checkoutputsubdir(options, os.path.dirname(outputpath))
+                processingpaths = self.getprocessingpaths(options, inputpath)
             except Exception:
                 self.warning(
                     f"Couldn't handle input file {inputpath}", options, sys.exc_info()
                 )
                 continue
+            if processingpaths is None:
+                continue
+            fileprocessor, fullinputpath, fulltemplatepath, fulloutputpath = (
+                processingpaths
+            )
             try:
                 success = self.processfile(
                     fileprocessor,
@@ -851,6 +862,21 @@ class RecursiveOptionParser(optparse.OptionParser):
     def splittemplateext(self, templatepath):
         """Splits a *templatepath* into name and extension."""
         return self.splitext(templatepath)
+
+    def getmissingtemplatename(self, inputname):
+        """Gets the relative template path expected for an input file."""
+        inputbase, inputext = self.splitinputext(inputname)
+        for inputext1, templateext1 in self.outputoptions:
+            if inputext == inputext1 and templateext1:
+                return inputbase + os.extsep + templateext1
+        if "*" in self.inputformats:
+            for inputext1, templateext1 in self.outputoptions:
+                if inputext1 in {inputext, "*"}:
+                    if templateext1 == "*":
+                        return inputname
+                    if templateext1:
+                        return inputbase + os.extsep + templateext1
+        return inputname
 
     def templateexists(self, options, templatepath):
         """Returns whether the given template exists..."""
