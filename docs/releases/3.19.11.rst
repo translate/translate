@@ -1,0 +1,38 @@
+Translate Toolkit 3.19.11
+*************************
+
+*Released on 28 May 2026*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- TBX
+
+  - Use stricter language tag parsing
+
+- Plural handling
+
+  - Make CLDR plural tags generation more robust across supported formats
+
+Tests
+-----
+
+- Improve testsuite behavior when optional dependencies are missing
+
+Other
+-----
+
+- Tighten exception handling and update type annotations
+- Update development tooling dependencies
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+Michal Čihař
