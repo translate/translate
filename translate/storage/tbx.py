@@ -91,9 +91,9 @@ class tbxunit(lisa.LISAunit):
         return None
 
     def get_source_dom(self):
-        source_node = self._get_source_language_node()
-        if source_node is not None:
-            return source_node
+        source_language = self._store_language("sourcelanguage")
+        if _normalize_language(source_language) is not None:
+            return self._get_source_language_node()
         return self._get_fallback_source_node()
 
     def set_source_dom(self, dom_node) -> None:
@@ -144,6 +144,10 @@ class tbxunit(lisa.LISAunit):
     def get_target_dom(self, lang=None):
         if lang:
             return self._get_language_node(lang)
+
+        target_language = self._store_language("targetlanguage")
+        if _normalize_language(target_language) is not None:
+            return self._get_target_language_node()
 
         language_nodes = self.getlanguageNodes()
         if len(language_nodes) == 2:

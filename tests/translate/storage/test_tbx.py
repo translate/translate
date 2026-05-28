@@ -257,7 +257,7 @@ class TestTBXfile(test_base.TestTranslationStore):
         assert unit.target == "color espanol"
         assert unit.gettarget("de") == "Farbe"
 
-    def test_bilingual_target_language_mismatch_is_tolerated(self) -> None:
+    def test_configured_target_language_mismatch_is_empty(self) -> None:
         tbxdata = self.language_selection_tbx(
             """                <langSet xml:lang="en"><tig><term>color</term></tig></langSet>
                 <langSet xml:lang="de"><tig><term>Farbe</term></tig></langSet>"""
@@ -266,7 +266,8 @@ class TestTBXfile(test_base.TestTranslationStore):
         tbxfile = tbx.tbxfile.parsestring(
             tbxdata, sourcelanguage="en", targetlanguage="es"
         )
-        assert tbxfile.units[0].target == "Farbe"
+        assert tbxfile.units[0].source == "color"
+        assert tbxfile.units[0].target is None
 
         tbxfile = tbx.tbxfile.parsestring(tbxdata, sourcelanguage="en")
         assert tbxfile.units[0].target == "Farbe"
@@ -279,7 +280,7 @@ class TestTBXfile(test_base.TestTranslationStore):
             tbxdata, sourcelanguage="en", targetlanguage="es"
         )
         assert tbxfile.units[0].source == "color"
-        assert tbxfile.units[0].target == "Farbe"
+        assert tbxfile.units[0].target is None
 
     def test_parsed_input_without_languages_uses_langset_order(self) -> None:
         tbxdata = self.language_selection_tbx(
@@ -331,7 +332,7 @@ class TestTBXfile(test_base.TestTranslationStore):
         assert unit.source == "color"
         assert unit.target is None
 
-    def test_messed_up_language_data_is_best_effort(self) -> None:
+    def test_messed_up_language_data_does_not_match_configured_language(self) -> None:
         tbxdata = self.language_selection_tbx(
             """                <langSet><tig><term>color</term></tig></langSet>
                 <langSet xml:lang="es"><tig><term>color espanol</term></tig></langSet>
@@ -343,10 +344,10 @@ class TestTBXfile(test_base.TestTranslationStore):
         )
         unit = tbxfile.units[0]
 
-        assert unit.source == "color"
+        assert unit.source is None
         assert unit.target == "color espanol"
 
-    def test_multilingual_missing_target_does_not_use_source_as_target(self) -> None:
+    def test_multilingual_missing_target_is_empty(self) -> None:
         tbxdata = self.language_selection_tbx(
             """                <langSet xml:lang="de"><tig><term>Farbe</term></tig></langSet>
                 <langSet xml:lang="en"><tig><term>color</term></tig></langSet>
@@ -359,7 +360,43 @@ class TestTBXfile(test_base.TestTranslationStore):
         unit = tbxfile.units[0]
 
         assert unit.source == "color"
-        assert unit.target == "Farbe"
+        assert unit.target is None
+
+    def test_multilingual_missing_configured_target_does_not_fallback(self) -> None:
+        tbxdata = """<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE martif PUBLIC "ISO 12200:1999A//DTD MARTIF core (DXFcdV04)//EN" "TBXcdv04.dtd">
+<martif type="TBX" xml:lang="en">
+    <martifHeader>
+        <fileDesc>
+            <sourceDesc>
+                <p>Translate Toolkit</p>
+            </sourceDesc>
+        </fileDesc>
+    </martifHeader>
+    <text>
+        <body>
+            <termEntry id="c5">
+                <langSet xml:lang="de"><tig><term>German term</term></tig></langSet>
+                <langSet xml:lang="en"><tig><term>English term</term></tig></langSet>
+                <langSet xml:lang="es"><tig><term>Spanish term</term></tig></langSet>
+            </termEntry>
+            <termEntry id="c6">
+                <langSet xml:lang="de"><tig><term>German second term</term></tig></langSet>
+                <langSet xml:lang="en"><tig><term>English second term</term></tig></langSet>
+            </termEntry>
+        </body>
+    </text>
+</martif>
+"""
+
+        tbxfile = tbx.tbxfile.parsestring(
+            tbxdata, sourcelanguage="en", targetlanguage="es"
+        )
+
+        assert tbxfile.units[0].source == "English term"
+        assert tbxfile.units[0].target == "Spanish term"
+        assert tbxfile.units[1].source == "English second term"
+        assert tbxfile.units[1].target is None
 
     def test_multilingual_target_language_selection_without_source_match(self) -> None:
         tbxdata = self.language_selection_tbx(
@@ -373,14 +410,14 @@ class TestTBXfile(test_base.TestTranslationStore):
         )
         unit = tbxfile.units[0]
 
-        assert unit.source == "Farbe"
+        assert unit.source is None
         assert unit.target == "couleur"
 
         unit.source = "color"
         assert unit.source == "color"
         assert unit.target == "couleur"
 
-    def test_bilingual_source_setter_preserves_fallback_target(self) -> None:
+    def test_bilingual_source_setter_preserves_configured_target(self) -> None:
         tbxdata = self.language_selection_tbx(
             """                <langSet xml:lang="de"><tig><term>Farbe</term></tig></langSet>
                 <langSet xml:lang="en-US"><tig><term>color</term></tig></langSet>"""
@@ -391,7 +428,7 @@ class TestTBXfile(test_base.TestTranslationStore):
         )
         unit = tbxfile.units[0]
 
-        assert unit.source == "color"
+        assert unit.source is None
         assert unit.target == "Farbe"
 
         unit.source = "colour"
@@ -410,5 +447,5 @@ class TestTBXfile(test_base.TestTranslationStore):
         )
         unit = tbxfile.units[0]
 
-        assert unit.source == "Farbe"
+        assert unit.source is None
         assert unit.target == "couleur"
