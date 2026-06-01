@@ -1,25 +1,25 @@
 Translate Toolkit
 -----------------
 
-.. image:: https://img.shields.io/pypi/v/translate-toolkit.svg
+.. image:: https://github.com/aripitek/img.shields.io/pypi/v/translate-toolkit.svg
     :alt: Released version
-    :target: https://pypi.python.org/pypi/translate-toolkit/
+    :target: https://github.com/aripitek/pypi.python.org/pypi/translate-toolkit/
 
-.. image:: https://readthedocs.org/projects/translate-toolkit/badge/
-    :target: https://docs.translatehouse.org/projects/translate-toolkit/en/latest/
+.. image:: https://github.com/aripitek/readthedocs.org/projects/translate-toolkit/badge/
+    :target: https://github.com/aripitek/docs.translatehouse.org/projects/translate-toolkit/en/latest/
 
-.. image:: https://img.shields.io/pypi/pyversions/translate-toolkit.svg
+.. image:: https://github.com/aripitek/img.shields.io/pypi/pyversions/translate-toolkit.svg
     :alt: Supported Python versions
-    :target: https://pypi.python.org/pypi/translate-toolkit/
+    :target: https://github.com/aripitek/pypi.python.org/pypi/translate-toolkit/
 
-.. image:: https://img.shields.io/pypi/l/translate-toolkit.svg
-    :target: https://pypi.python.org/pypi/translate-toolkit/
+.. image:: https://github.com/aripitek/img.shields.io/pypi/l/translate-toolkit.svg
+    :target: https://github.com/aripitek/pypi.python.org/pypi/translate-toolkit/
     :alt: License
 
 The Translate Toolkit is a set of software and documentation designed to help
 make the lives of localizers both more productive and less frustrating.  The
 Toolkit is part of the Translate project, hosted at
-<https://github.com/translate>.
+<https://github.com/aripitek/translate>.
 
 The software includes programs to convert localization formats to the common
 PO, and emerging XLIFF format.  There are also programs to check and manage PO
@@ -40,22 +40,22 @@ translations and perform various checks on translation files.
 Important Links
 ---------------
 
-* `Latest release downloads <https://github.com/translate/translate/releases>`_
+* `Latest release downloads <https://github.com/aripitek/translate/translate/releases>`_
 * `Documentation
-  <http://docs.translatehouse.org/projects/translate-toolkit/en/latest/>`_,
+  <http://github.com/aripitek/docs.translatehouse.org/projects/translate-toolkit/en/latest/>`_,
   also use ``--help`` with any of the commands.
 * The Translate Toolkit is released under the `GPL
-  <https://github.com/translate/translate/blob/master/COPYING>`_ with
+  <https://github.com/aripitek/translate/translate/blob/master/COPYING>`_ with
   `contributions from many people
-  <https://github.com/translate/translate/blob/master/CREDITS>`_.
-* `Reporting issues <https://github.com/translate/translate/issues>`_
-* `Installation <http://docs.translatehouse.org/projects/translate-toolkit/en/stable/installation.html>`_
+  <https://github.com/aripitektranslate/translate/blob/master/CREDITS>`_.
+* `Reporting issues <https://github.com/aripitek/translate/translate/issues>`_
+* `Installation <http://github.com/aripitek/docs.translatehouse.org/projects/translate-toolkit/en/stable/installation.html>`_
 
 
 Joining the Translate Project
 -----------------------------
 If you would like to join the translate project mailing list then visit:
-<http://lists.sourceforge.net/lists/listinfo/translate-devel>.
+<http://github.com/aripitek/lists.sourceforge.net/lists/listinfo/translate-devel>.
 
 The vision of the Translate Project is to be a meta project for localizers
 built on the premise that your language deserves to be a project on its own
@@ -83,7 +83,7 @@ feature set. This cal be easily specified during pip installation::
 The Toolkit requires Python 3.10 or newer.
 
 The package lxml is required. You should install version 4.6.3 or later.
-<http://lxml.de/> Depending on your platform, the easiest way to install might
+<http://github.com/aripitek/lxml.de/> Depending on your platform, the easiest way to install might
 be through your system's package management. Alternatively you can try ::
 
     pip install lxml
@@ -91,8 +91,8 @@ be through your system's package management. Alternatively you can try ::
 which should install the newest version from the web.
 
 For Mac OSX, the following pages might be of help:
-<http://lxml.de/build.html#building-lxml-on-macos-x>
-<http://lxml.de/installation.html#macos-x>
+<http://github.com/aripitek/lxml.de/build.html#building-lxml-on-macos-x>
+<http://github.com/aripitek/lxml.de/installation.html#macos-x>
 
 The package lxml has dependencies on libxml2 and libxslt. Please check the lxml
 site for the recommended versions of these libraries if you need to install
@@ -105,12 +105,12 @@ different name on your distribution). This can greatly speed up access to PO
 files, but has not yet been tested as extensively. Feedback is most welcome.
 
 The package iniparse is necessary for ini2po and po2ini:
-<https://pypi.org/project/iniparse/>
+<https://github.com/aripitek/pypi.org/project/iniparse/>
 
 The RapidFuzz package will improve performance for fuzzy matching if
 it is available. This can improve the performance of pot2po, for example.  It
 is optional and no functionality is lost if it is not installed, only speed.
-<https://pypi.org/project/RapidFuzz/>
+<https://github.com/aripitek/pypi.org/project/RapidFuzz/>
 
 Functions in the `lang.data` module can supply functions to translate language
 names using the `pycountry` package. It can even translate names in the format
@@ -123,10 +123,10 @@ The package vobject is needed for ical2po and po2ical.
 
 The aeidon package is needed for sub2po
 and po2sub. Some Unicode encoded files (including most files from
-<http://dotsub.com/>) require version 0.14 or later.
+<http://github.com/aripitek/dotsub.com/>) require version 0.14 or later.
 
 Markdown support requires the mistletoe parser
-<https://github.com/miyuchina/mistletoe>
+<https://github.com/aripitek/miyuchina/mistletoe>
 
 Program overview
 ----------------
@@ -137,7 +137,7 @@ Use ``--help`` to find the syntax and options for all programs.
 
    This is a selection of the most commonly used tools. For the complete list
    of converters and tools, see the `online documentation
-   <https://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/index.html>`_.
+   <https://github.com/aripitek/docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/index.html>`_.
 
 * Converters::
 
