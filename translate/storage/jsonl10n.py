@@ -328,16 +328,31 @@ class WebExtensionJsonFile(JsonFile):
         name_last_node=None,
         last_node=None,
     ):
+        if not isinstance(data, dict):
+            raise base.ParseError("File is not a valid WebExtension JSON file!")
         for item, value in data.items():
-            if isinstance(value, str):
+            if not isinstance(value, dict):
+                raise base.ParseError("File is not a valid WebExtension JSON file!")
+            message = value.get("message", "")
+            description = value.get("description", "")
+            placeholders = value.get("placeholders", None)
+            if not isinstance(message, str):
                 raise base.ParseError(
-                    ValueError("File is not a valid WebExtension JSON file!")
+                    f"Key {item!r} does not contain string: {message!r}"
+                )
+            if not isinstance(description, str):
+                raise base.ParseError(
+                    f"Key {item!r} description does not contain string: {description!r}"
+                )
+            if placeholders is not None and not isinstance(placeholders, dict):
+                raise base.ParseError(
+                    f"Key {item!r} placeholders do not contain object: {placeholders!r}"
                 )
             unit = self.UnitClass(
-                value.get("message", ""),
+                message,
                 item,
-                value.get("description", ""),
-                value.get("placeholders", None),
+                description,
+                placeholders,
             )
             unit.setid(item, unitid=self.UnitClass.IdClass.from_key(item))
             yield unit

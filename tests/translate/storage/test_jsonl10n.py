@@ -881,6 +881,26 @@ class TestWebExtensionStore(test_monolingual.TestMonolingualStore):
 """
         )
 
+    def test_invalid_top_level_entry(self) -> None:
+        store = self.StoreClass()
+        with raises(base.ParseError):
+            store.parse('{"key": "value"}')
+
+    def test_invalid_message_type(self) -> None:
+        store = self.StoreClass()
+        with raises(base.ParseError):
+            store.parse('{"key": {"message": {"nested": "value"}}}')
+
+    def test_invalid_description_type(self) -> None:
+        store = self.StoreClass()
+        with raises(base.ParseError):
+            store.parse('{"key": {"message": "value", "description": {}}}')
+
+    def test_invalid_placeholders_type(self) -> None:
+        store = self.StoreClass()
+        with raises(base.ParseError):
+            store.parse('{"key": {"message": "value", "placeholders": []}}')
+
 
 class TestI18NextStore(test_monolingual.TestMonolingualStore):
     StoreClass = jsonl10n.I18NextFile
