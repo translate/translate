@@ -1158,6 +1158,8 @@ class NextcloudJsonFile(JsonFile[NextcloudJsonUnit]):
                     require_json_string(item, f"Key {key!r} plural translation")
                 # Plural form - array of translations
                 unit = self.UnitClass(multistring(value), key)
+            elif value is None:
+                unit = self.UnitClass(value, key)
             else:
                 value = require_json_string(value, f"Key {key!r}")
                 # Simple string translation
