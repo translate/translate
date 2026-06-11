@@ -179,6 +179,24 @@ class DumpArgsType(TypedDict):
 JsonUnit = TypeVar("JsonUnit", bound=BaseJsonUnit)
 
 
+def require_json_dict(data: Any, format_name: str) -> dict[str, Any]:
+    if not isinstance(data, dict):
+        raise base.ParseError(f"File is not a valid {format_name} JSON file!")
+    return data
+
+
+def require_json_list(data: Any, format_name: str) -> list[Any]:
+    if not isinstance(data, list):
+        raise base.ParseError(f"File is not a valid {format_name} JSON file!")
+    return data
+
+
+def require_json_string(value: Any, field: str) -> str:
+    if not isinstance(value, str):
+        raise base.ParseError(f"{field} does not contain string: {value!r}")
+    return value
+
+
 class JsonFile(base.DictStore[JsonUnit], Generic[JsonUnit]):
     """A JSON file."""
 
@@ -328,22 +346,14 @@ class WebExtensionJsonFile(JsonFile):
         name_last_node=None,
         last_node=None,
     ):
-        if not isinstance(data, dict):
-            raise base.ParseError("File is not a valid WebExtension JSON file!")
-        for item, value in data.items():
+        for item, value in require_json_dict(data, "WebExtension").items():
             if not isinstance(value, dict):
                 raise base.ParseError("File is not a valid WebExtension JSON file!")
             message = value.get("message", "")
             description = value.get("description", "")
             placeholders = value.get("placeholders", None)
-            if not isinstance(message, str):
-                raise base.ParseError(
-                    f"Key {item!r} does not contain string: {message!r}"
-                )
-            if not isinstance(description, str):
-                raise base.ParseError(
-                    f"Key {item!r} description does not contain string: {description!r}"
-                )
+            message = require_json_string(message, f"Key {item!r}")
+            description = require_json_string(description, f"Key {item!r} description")
             if placeholders is not None and not isinstance(placeholders, dict):
                 raise base.ParseError(
                     f"Key {item!r} placeholders do not contain object: {placeholders!r}"
@@ -687,18 +697,35 @@ class GoTextJsonFile(JsonFile):
         def _get_msg(cases, key):
             value = cases.get(key, None)
             if isinstance(value, dict):
-                return value["msg"]
+                value = value.get("msg")
             # Direct string value and None as fallback
-            return value
+            return require_json_string(value, f"gotext plural case {key!r}")
 
         if prev is None:
+            data = require_json_dict(data, "gotext")
             lang = data.get("language")
             if lang is not None:
-                self.settargetlanguage(lang)
-        for value in data["messages"]:
+                self.settargetlanguage(require_json_string(lang, "language"))
+        messages = data.get("messages", [])
+        if not isinstance(messages, list):
+            raise base.ParseError("gotext messages do not contain array")
+        for value in messages:
+            if not isinstance(value, dict):
+                raise base.ParseError(
+                    f"gotext message does not contain object: {value!r}"
+                )
             translation = value.get("translation", "")
             if isinstance(translation, dict):
-                cases = translation.get("select", {}).get("cases", {})
+                select = translation.get("select", {})
+                if not isinstance(select, dict):
+                    raise base.ParseError(
+                        f"gotext translation select does not contain object: {select!r}"
+                    )
+                cases = select.get("cases", {})
+                if not isinstance(cases, dict):
+                    raise base.ParseError(
+                        f"gotext translation cases do not contain object: {cases!r}"
+                    )
                 # Ordered list of plurals
                 translation = multistring(
                     [
@@ -706,6 +733,10 @@ class GoTextJsonFile(JsonFile):
                         for key in cldr_plural_categories
                         if key in cases
                     ]
+                )
+            elif translation is not None and not isinstance(translation, (str, int)):
+                raise base.ParseError(
+                    f"gotext translation does not contain string: {translation!r}"
                 )
             unit = self.UnitClass(
                 source=translation,
@@ -771,32 +802,40 @@ class GoI18NJsonFile(JsonFile):
         name_last_node=None,
         last_node=None,
     ):
-        if not isinstance(data, list):
-            raise ValueError(  # noqa: TRY004
-                "Missing top-level array. Maybe this is not a go-i18n JSON file?"
-            )
-        for value in data:
+        for value in require_json_list(data, "go-i18n"):
+            if not isinstance(value, dict):
+                raise base.ParseError(
+                    f"go-i18n entry does not contain object: {value!r}"
+                )
+            item = value.get("id", "")
             translation = value.get("translation", "")
             if isinstance(translation, dict):
                 # Ordered list of plurals
                 try:
                     translation = multistring(
                         [
-                            translation.get(key)
+                            require_json_string(
+                                translation.get(key), f"Key {item!r} plural {key!r}"
+                            )
                             for key in cldr_plural_categories
                             if key in translation
                         ]
                     )
-                except ValueError as error:
-                    raise ValueError(
-                        f'"{id}" is an object but does not contain plurals. Maybe this is not a go-i18n JSON file?'
+                except (TypeError, ValueError) as error:
+                    raise base.ParseError(
+                        f'"{item}" is an object but does not contain plurals. Maybe this is not a go-i18n JSON file?'
                     ) from error
+            elif translation is not None and not isinstance(translation, (str, int)):
+                raise base.ParseError(
+                    f"go-i18n translation does not contain string: {translation!r}"
+                )
+            description = value.get("description", "")
+            description = require_json_string(description, "description")
             unit = self.UnitClass(
                 translation,
-                value.get("id", ""),
-                value.get("description", ""),
+                item,
+                description,
             )
-            item = value.get("id", "")
             unit.setid(item, unitid=self.UnitClass.IdClass.from_key(item))
             yield unit
 
@@ -849,26 +888,36 @@ class GoI18NV2JsonFile(JsonFile):
         name_last_node=None,
         last_node=None,
     ):
-        for id, value in data.items():
+        for id, value in require_json_dict(data, "go-i18n v2").items():
             if isinstance(value, str):
                 unit = self.UnitClass(value, id)
             else:
+                if not isinstance(value, dict):
+                    raise base.ParseError(
+                        f"Key {id!r} does not contain string or object: {value!r}"
+                    )
                 try:
                     translation = multistring(
                         [
-                            value.get(key)
+                            require_json_string(
+                                value.get(key), f"Key {id!r} plural {key!r}"
+                            )
                             for key in cldr_plural_categories
                             if key in value
                         ]
                     )
-                except ValueError as error:
-                    raise ValueError(
+                except (TypeError, ValueError) as error:
+                    raise base.ParseError(
                         f'"{id}" is an object but does not contain plurals. Maybe this is not a go-i18n v2 JSON file?'
                     ) from error
+                description = value.get("description", "")
+                description = require_json_string(
+                    description, f"Key {id!r} description"
+                )
                 unit = self.UnitClass(
                     translation,
                     id,
-                    value.get("description", ""),
+                    description,
                 )
             unit.setid(id, unitid=self.UnitClass.IdClass.from_key(id))
             yield unit
@@ -941,6 +990,7 @@ class ARBJsonFile(JsonFile):
         name_last_node=None,
         last_node=None,
     ):
+        data = require_json_dict(data, "ARB")
         # Extract metadata as header
         metadata = {key: value for key, value in data.items() if key.startswith("@@")}
         if metadata:
@@ -953,14 +1003,26 @@ class ARBJsonFile(JsonFile):
                 continue
             if not isinstance(value, (str, int)):
                 raise base.ParseError(
-                    ValueError(f"Key {item!r} does not contain string: {value!r}")
+                    f"Key {item!r} does not contain string: {value!r}"
                 )
             metadata = data.get(f"@{item}", {})
+            if not isinstance(metadata, dict):
+                raise base.ParseError(
+                    f"Key '@{item}' does not contain object: {metadata!r}"
+                )
+            description = metadata.get("description", "")
+            description = require_json_string(description, f"Key '@{item}' description")
+            placeholders = metadata.get("placeholders", None)
+            if placeholders is not None and not isinstance(placeholders, dict):
+                raise base.ParseError(
+                    f"Key '@{item}' placeholders do not contain object: "
+                    f"{placeholders!r}"
+                )
             unit = self.UnitClass(
                 value,
                 item,
-                metadata.get("description", ""),
-                metadata.get("placeholders", None),
+                description,
+                placeholders,
                 metadata=metadata,
             )
             unit.setid(item, unitid=self.UnitClass.IdClass.from_key(item))
@@ -995,17 +1057,25 @@ class FormatJSJsonFile(JsonFile):
         name_last_node=None,
         last_node=None,
     ):
-        for item, value in data.items():
+        for item, value in require_json_dict(data, "FormatJS").items():
             if not isinstance(value, dict):
                 raise base.ParseError(
-                    ValueError(
-                        f"Not a valid FormatJS file should be a object: {value!r}"
-                    )
+                    f"Not a valid FormatJS file should be a object: {value!r}"
+                )
+            default_message = value.get("defaultMessage", "")
+            default_message = require_json_string(
+                default_message, f"Key {item!r} defaultMessage"
+            )
+            description = value.get("description", "")
+            if not isinstance(description, (str, dict)):
+                raise base.ParseError(
+                    f"Key {item!r} description does not contain string or object: "
+                    f"{description!r}"
                 )
             unit = self.UnitClass(
-                value.get("defaultMessage", ""),
+                default_message,
                 item,
-                value.get("description", ""),
+                description,
             )
             unit.setid(item, unitid=self.UnitClass.IdClass.from_key(item))
             yield unit
@@ -1068,6 +1138,7 @@ class NextcloudJsonFile(JsonFile[NextcloudJsonUnit]):
         last_node: dict | list | None = None,
     ) -> Generator[NextcloudJsonUnit]:
         """Extract units from the translations key only."""
+        data = require_json_dict(data, "Nextcloud")
         # Store metadata (everything outside 'translations')
         for key, value in data.items():
             if key != "translations":
@@ -1076,14 +1147,19 @@ class NextcloudJsonFile(JsonFile[NextcloudJsonUnit]):
         # Only parse the translations key
         translations = data.get("translations", {})
         if not isinstance(translations, dict):
-            return
+            raise base.ParseError(
+                f"Nextcloud translations do not contain object: {translations!r}"
+            )
 
         for key, value in translations.items():
             # Check if this is a plural form (gettext style)
             if isinstance(value, list):
+                for item in value:
+                    require_json_string(item, f"Key {key!r} plural translation")
                 # Plural form - array of translations
                 unit = self.UnitClass(multistring(value), key)
             else:
+                value = require_json_string(value, f"Key {key!r}")
                 # Simple string translation
                 unit = self.UnitClass(value, key)
 
@@ -1183,6 +1259,7 @@ class RESJSONFile(JsonFile):
         name_last_node=None,
         last_node=None,
     ):
+        data = require_json_dict(data, "RESJSON")
         # First pass: identify all actual keys (not metadata)
         key_map = {
             key: key.removeprefix("_").rsplit(".", 1)[0]
@@ -1195,9 +1272,7 @@ class RESJSONFile(JsonFile):
         translations = defaultdict(str)
         for key, value in data.items():
             if not isinstance(value, (str, int)):
-                raise base.ParseError(
-                    ValueError(f"Key {key!r} does not contain string: {value!r}")
-                )
+                raise base.ParseError(f"Key {key!r} does not contain string: {value!r}")
             actual_key = key_map[key]
             if actual_key == key:
                 # Data
