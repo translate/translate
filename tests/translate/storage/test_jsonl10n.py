@@ -1711,6 +1711,14 @@ JSON_NEXTCLOUD_SIMPLE = b"""{
 }
 """
 
+JSON_NEXTCLOUD_WITH_NULL = b"""{
+    "translations": {
+        "Orangutan has %d banana.\\n": null,
+        "Goodbye": "Auf Wiedersehen"
+    }
+}
+"""
+
 JSON_NEXTCLOUD_WITH_PLURAL_FORM = rb"""{
     "translations": {
         "Hello": "Hallo",
@@ -1774,6 +1782,21 @@ class TestNextcloudJsonFile(test_monolingual.TestMonolingualStore):
         assert store.units[0].target == "Hallo"
         assert store.units[1].getid() == "Goodbye"
         assert store.units[1].target == "Auf Wiedersehen"
+
+    def test_parse_null_value(self) -> None:
+        store = self.StoreClass()
+        store.parse(JSON_NEXTCLOUD_WITH_NULL)
+
+        assert len(store.units) == 2
+        assert store.units[0].getid() == "Orangutan has %d banana.\n"
+        assert store.units[0].target is None
+        assert store.units[1].target == "Auf Wiedersehen"
+
+    def test_roundtrip_null_value(self) -> None:
+        store = self.StoreClass()
+        store.parse(JSON_NEXTCLOUD_WITH_NULL)
+
+        assert bytes(store) == JSON_NEXTCLOUD_WITH_NULL
 
     def test_serialize_simple(self) -> None:
         """Test serializing simple translations."""
