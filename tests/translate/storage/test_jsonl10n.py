@@ -1163,6 +1163,29 @@ class TestGoTextJsonFile(test_monolingual.TestMonolingualStore):
 
         assert bytes(store).decode() == text
 
+    def test_invalid_messages_type(self) -> None:
+        store = self.StoreClass()
+        with raises(base.ParseError):
+            store.parse('{"language": "en-US", "messages": {}}')
+
+    def test_invalid_message_entry(self) -> None:
+        store = self.StoreClass()
+        with raises(base.ParseError):
+            store.parse('{"language": "en-US", "messages": ["text"]}')
+
+    def test_invalid_translation_type(self) -> None:
+        store = self.StoreClass()
+        with raises(base.ParseError):
+            store.parse('{"language": "en-US", "messages": [{"translation": []}]}')
+
+    def test_invalid_plural_case_type(self) -> None:
+        store = self.StoreClass()
+        with raises(base.ParseError):
+            store.parse(
+                '{"language": "en-US", "messages": [{"translation": '
+                '{"select": {"cases": {"one": {}}}}}]}'
+            )
+
 
 class TestI18NextV4Store(test_monolingual.TestMonolingualStore):
     StoreClass = jsonl10n.I18NextV4File
@@ -1370,8 +1393,23 @@ class TestGoI18NJsonFile(test_monolingual.TestMonolingualStore):
 
     def test_invalid(self) -> None:
         store = self.StoreClass()
-        with raises(ValueError):
+        with raises(base.ParseError):
             store.parse(JSON_I18NEXT_PLURAL)
+
+    def test_invalid_entry(self) -> None:
+        store = self.StoreClass()
+        with raises(base.ParseError):
+            store.parse('["text"]')
+
+    def test_invalid_translation_type(self) -> None:
+        store = self.StoreClass()
+        with raises(base.ParseError):
+            store.parse('[{"id": "key", "translation": []}]')
+
+    def test_invalid_plural_type(self) -> None:
+        store = self.StoreClass()
+        with raises(base.ParseError):
+            store.parse('[{"id": "key", "translation": {"one": []}}]')
 
     def test_dot_keys(self) -> None:
         jsontext = """[
@@ -1477,8 +1515,18 @@ class TestGoI18NV2JsonFile(test_monolingual.TestMonolingualStore):
 
     def test_invalid(self) -> None:
         store = self.StoreClass()
-        with raises(ValueError):
+        with raises(base.ParseError):
             store.parse(JSON_I18NEXT_PLURAL)
+
+    def test_invalid_translation_type(self) -> None:
+        store = self.StoreClass()
+        with raises(base.ParseError):
+            store.parse('{"key": []}')
+
+    def test_invalid_plural_type(self) -> None:
+        store = self.StoreClass()
+        with raises(base.ParseError):
+            store.parse('{"key": {"one": []}}')
 
     def test_dot_keys(self) -> None:
         jsontext = """{
@@ -1536,6 +1584,16 @@ class TestARBJsonFile(test_monolingual.TestMonolingualStore):
         store = self.StoreClass()
         with raises(base.ParseError):
             store.parse(jsontext)
+
+    def test_invalid_metadata_type(self) -> None:
+        store = self.StoreClass()
+        with raises(base.ParseError):
+            store.parse('{"key": "value", "@key": "metadata"}')
+
+    def test_invalid_metadata_description_type(self) -> None:
+        store = self.StoreClass()
+        with raises(base.ParseError):
+            store.parse('{"key": "value", "@key": {"description": {}}}')
 
     def test_empty_metadata_not_stored(self) -> None:
         """Test that empty metadata is not stored in the output."""
@@ -1608,6 +1666,23 @@ class TestFormatJSJsonFile(test_monolingual.TestMonolingualStore):
         store.parse(jsontext)
         assert bytes(store).decode() == jsontext
 
+    def test_object_description(self) -> None:
+        jsontext = """{
+    "key": {
+        "defaultMessage": "Greeting",
+        "description": {
+            "text": "Greeting",
+            "context": "home"
+        }
+    }
+}
+"""
+        store = self.StoreClass()
+        store.parse(jsontext)
+
+        assert store.units[0].getnotes() == {"text": "Greeting", "context": "home"}
+        assert bytes(store).decode() == jsontext
+
     def test_invalid(self) -> None:
         jsontext = """{
     ".dot": "text"
@@ -1616,6 +1691,16 @@ class TestFormatJSJsonFile(test_monolingual.TestMonolingualStore):
         store = self.StoreClass()
         with raises(base.ParseError):
             store.parse(jsontext)
+
+    def test_invalid_default_message_type(self) -> None:
+        store = self.StoreClass()
+        with raises(base.ParseError):
+            store.parse('{"key": {"defaultMessage": {}}}')
+
+    def test_invalid_description_type(self) -> None:
+        store = self.StoreClass()
+        with raises(base.ParseError):
+            store.parse('{"key": {"defaultMessage": "value", "description": []}}')
 
 
 JSON_NEXTCLOUD_SIMPLE = b"""{
@@ -1852,6 +1937,16 @@ class TestNextcloudJsonFile(test_monolingual.TestMonolingualStore):
         assert '"translations": {}' in result
         assert '"pluralForm"' in result
 
+    def test_invalid_translations_type(self) -> None:
+        store = self.StoreClass()
+        with raises(base.ParseError):
+            store.parse('{"translations": []}')
+
+    def test_invalid_translation_value(self) -> None:
+        store = self.StoreClass()
+        with raises(base.ParseError):
+            store.parse('{"translations": {"key": {}}}')
+
 
 JSON_RESJSON = b"""{
     "greeting": "Hello",
@@ -1987,6 +2082,11 @@ class TestRESJSONFile(test_monolingual.TestMonolingualStore):
         store = self.StoreClass()
         with raises(base.ParseError):
             store.parse(jsontext)
+
+    def test_invalid_top_level_type(self) -> None:
+        store = self.StoreClass()
+        with raises(base.ParseError):
+            store.parse("[]")
 
     def test_source_property_get_set(self) -> None:
         """Test that source property can be read and written correctly."""
