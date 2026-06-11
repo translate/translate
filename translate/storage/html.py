@@ -217,6 +217,12 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
     def _simple_callback(string):
         return string
 
+    def translate_value(self, string: str, **kwargs) -> str:
+        """Translate a value, passing context to callbacks that support it."""
+        if getattr(self.callback, "context_aware", False):
+            return self.callback(string, **kwargs)
+        return self.callback(string)
+
     def guess_encoding(self, htmlsrc):
         """
         Returns the encoding of the html text.
@@ -416,7 +422,12 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
             html_content = (
                 self.get_leading_whitespace(html_content)
-                + self.callback(normalized_content)
+                + self.translate_value(
+                    normalized_content,
+                    context=explicit_context or context_hint,
+                    location=self.tu_location,
+                    docpath=self.tu_docpath,
+                )
                 + self.get_trailing_whitespace(html_content)
             )
             self.filesrc += html_content
@@ -475,10 +486,19 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             return {
                 "html_content": normalized_value,
                 "attrname": attrname,
-                "location": f"{self.filename}+{'.'.join(self.tag_path)}[{attrname}]:{self.getpos()[0]}-{self.getpos()[1] + 1}",
-                "docpath": self._build_docpath() + f"[{attrname}]",
+                "location": self.get_attribute_location(attrname),
+                "docpath": self.get_attribute_docpath(attrname),
             }
         return None
+
+    def get_attribute_location(self, attrname: str) -> str:
+        return (
+            f"{self.filename}+{'.'.join(self.tag_path)}"
+            f"[{attrname}]:{self.getpos()[0]}-{self.getpos()[1] + 1}"
+        )
+
+    def get_attribute_docpath(self, attrname: str) -> str:
+        return f"{self._build_docpath()}[{attrname}]"
 
     def emit_attribute_translation_units(self, markup) -> None:
         if "attribute_tus" in markup:
@@ -524,7 +544,11 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 normalized_value = self.WHITESPACE_RE.sub(
                     " ", attrs_dict["lang"]
                 ).strip()
-                translated_value = self.callback(normalized_value)
+                translated_value = self.translate_value(
+                    normalized_value,
+                    location=self.get_attribute_location("lang"),
+                    docpath=self.get_attribute_docpath("lang"),
+                )
                 if translated_value != normalized_value:
                     translated_lang = translated_value
                     # Store translated language for og:locale synchronization
@@ -561,7 +585,11 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                         normalized_value = self.WHITESPACE_RE.sub(
                             " ", attrvalue
                         ).strip()
-                        translated_value = self.callback(normalized_value)
+                        translated_value = self.translate_value(
+                            normalized_value,
+                            location=self.get_attribute_location(attrname),
+                            docpath=self.get_attribute_docpath(attrname),
+                        )
                         if translated_value != normalized_value:
                             result.append(
                                 (
@@ -576,7 +604,11 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                     and self.translatable_attribute_matches_tag(attrname, tag)
                 ):
                     normalized_value = self.WHITESPACE_RE.sub(" ", attrvalue).strip()
-                    translated_value = self.callback(normalized_value)
+                    translated_value = self.translate_value(
+                        normalized_value,
+                        location=self.get_attribute_location(attrname),
+                        docpath=self.get_attribute_docpath(attrname),
+                    )
                     if translated_value != normalized_value:
                         result.append(
                             (attrname, self.escape_attribute_value(translated_value))
