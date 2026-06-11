@@ -517,6 +517,24 @@ msgstr "Contenu"
         # og:title should be translated
         assert 'property="og:title" content="Page de Test"' in result
 
+    def test_og_locale_sync_uses_lang_context(self) -> None:
+        """Test that lang lookup uses context when source text is duplicated."""
+        htmlsource = '<html lang="en"><head><meta property="og:locale" content="en_US"></head><body><p>en</p></body></html>'
+        posource = """#: None%2Bhtml.body.p:1-79
+msgctxt "None+html.body.p:1-79"
+msgid "en"
+msgstr ""
+
+#: None%2Bhtml[lang]:1-1
+msgctxt "None+html[lang]:1-1"
+msgid "en"
+msgstr "fr"
+"""
+        result = self.converthtml(posource, htmlsource)
+        assert '<html lang="fr" dir="ltr">' in result
+        assert 'property="og:locale" content="fr"' in result
+        assert "<p>en</p>" in result
+
     def test_og_locale_state_reset_between_parses(self) -> None:
         """Test that og:locale state is properly reset between translations."""
         # First document with lang translation
@@ -709,6 +727,33 @@ msgstr "Une description de tweet"
             '<meta name="twitter:description" content="Une description de tweet">'
             in result
         )
+
+    def test_meta_titles_use_duplicate_context(self) -> None:
+        """Test duplicate meta titles use their matching contextual translations."""
+        htmlsource = (
+            "<html><head><title>Same</title>"
+            '<meta property="og:title" content="Same">'
+            '<meta name="twitter:title" content="Same"></head></html>'
+        )
+        posource = """#: None%2Bhtml.head.title:1-13
+msgctxt "None+html.head.title:1-13"
+msgid "Same"
+msgstr ""
+
+#: None%2Bhtml.head.meta[content]:1-32
+msgctxt "None+html.head.meta[content]:1-32"
+msgid "Same"
+msgstr "OG"
+
+#: None%2Bhtml.head.meta[content]:1-73
+msgctxt "None+html.head.meta[content]:1-73"
+msgid "Same"
+msgstr "Twitter"
+"""
+        result = self.converthtml(posource, htmlsource)
+        assert "<title>Same</title>" in result
+        assert '<meta property="og:title" content="OG">' in result
+        assert '<meta name="twitter:title" content="Twitter">' in result
 
     def test_meta_non_translatable_tags_preserved(self) -> None:
         """Test that non-translatable meta tags are preserved without translation."""

@@ -35,28 +35,49 @@ from translate.storage import html, po
 class po2html:
     """Read inputfile (po) and templatefile (html), write to outputfile (html)."""
 
-    def lookup(self, string: str) -> str:
-        # Try exact match first
-        unit = self.inputstore.sourceindex.get(string, None)
+    context_aware = True
 
-        # If not found, try with HTML entities unescaped
-        # This handles the case where template has &amp; but PO has &
-        if unit is None:
-            unescaped = html_module.unescape(string)
-            if unescaped != string:
-                unit = self.inputstore.sourceindex.get(unescaped, None)
+    def __call__(self, string: str, **kwargs) -> str:
+        return self.lookup(string, **kwargs)
 
-        # If still not found, try with HTML entities escaped
-        # This handles the case where template has & but PO has &amp;
-        if unit is None:
-            escaped = html_module.escape(string)
-            if escaped != string:
-                unit = self.inputstore.sourceindex.get(escaped, None)
+    def find_units(self, string: str):
+        for candidate in self.lookup_candidates(string):
+            units = self.inputstore.sourceindex.get(candidate, None)
+            if units is not None:
+                return units
+        return None
 
-        if unit is None:
+    @staticmethod
+    def lookup_candidates(string: str):
+        yield string
+
+        # Try with HTML entities unescaped. This handles the case where template
+        # has &amp; but PO has &.
+        unescaped = html_module.unescape(string)
+        if unescaped != string:
+            yield unescaped
+
+        # Try with HTML entities escaped. This handles the case where template
+        # has & but PO has &amp;.
+        escaped = html_module.escape(string)
+        if escaped != string:
+            yield escaped
+
+    def select_unit(self, units, context=None, location=None):
+        for reference in (context, location):
+            if not reference:
+                continue
+            for unit in units:
+                if unit.getcontext() == reference or reference in unit.getlocations():
+                    return unit
+        return units[0]
+
+    def lookup(self, string: str, context=None, location=None, **_kwargs) -> str:
+        units = self.find_units(string)
+        if units is None:
             return string
 
-        unit = unit[0]
+        unit = self.select_unit(units, context=context, location=location)
         if unit.istranslated():
             return unit.target
         if self.includefuzzy and unit.isfuzzy():
@@ -68,7 +89,7 @@ class po2html:
         self.inputstore = inputstore
         self.inputstore.require_index()
         self.includefuzzy = includefuzzy
-        output_store = html.htmlfile(inputfile=templatetext, callback=self.lookup)
+        output_store = html.htmlfile(inputfile=templatetext, callback=self)
         return output_store.filesrc
 
 
