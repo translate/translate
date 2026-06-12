@@ -817,6 +817,8 @@ class TestRecurseInputFileList:
         options = SimpleNamespace(input=list(original), exclude=[])
         result = parser.recurseinputfilelist(options)
         assert len(result) == 2
+        assert options.input == str(subdir)
+        assert sorted(result) == ["a.txt", "b.txt"]
         self._verify_roundtrip(original, result, options.input)
 
     def test_commonpath_not_commonprefix(self, tmp_path) -> None:
@@ -845,10 +847,11 @@ class TestRecurseInputFileList:
         assert os.path.isdir(options.input)
         self._verify_roundtrip(original, result, options.input)
 
-        # With the old commonprefix, the prefix "/path/ab" would be split
-        # mid-component, but dirname would fix it. With commonpath, the
-        # common path is correctly "/path" (tmp_path), so dirname goes up
-        # one more level. Either way, relative paths must round-trip.
+        assert options.input == str(tmp_path)
+        assert sorted(result) == [
+            os.path.join("abc", "file1.txt"),
+            os.path.join("abx", "file2.txt"),
+        ]
         for relpath in result:
             assert os.path.isfile(os.path.join(options.input, relpath))
 

@@ -51,6 +51,36 @@ class TestMD2PO(test_convert.TestConvertCommand):
         assert "Content of file 1" in content
         assert "Content of file 2" in content
 
+    def test_globbed_markdown_files_write_pots_to_output_root(self) -> None:
+        input_dir = os.path.join("resources", "locales", "en")
+        output_dir = os.path.join("resources", "locales")
+        one_md = os.path.join(input_dir, "one.md")
+        two_md = os.path.join(input_dir, "two.md")
+
+        self.create_testfile(one_md, "# One\nHello one")
+        self.create_testfile(two_md, "# Two\nHello two")
+
+        self.run_command(
+            one_md,
+            two_md,
+            output_dir,
+            pot=True,
+            timestamp=True,
+        )
+
+        assert os.path.isfile(
+            self.get_testfilename(os.path.join(output_dir, "one.pot"))
+        )
+        assert os.path.isfile(
+            self.get_testfilename(os.path.join(output_dir, "two.pot"))
+        )
+        assert not os.path.exists(
+            self.get_testfilename(os.path.join(input_dir, "one.pot"))
+        )
+        assert not os.path.exists(
+            self.get_testfilename(os.path.join(input_dir, "two.pot"))
+        )
+
     def given_markdown_file(self, content: str | None = None) -> None:
         if content is None:
             content = "# Markdown\nYou are only coming through in waves."
