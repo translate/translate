@@ -803,7 +803,9 @@ class RecursiveOptionParser(optparse.OptionParser):
         """Use a list of files, and find a common base directory for them."""
         # find a common base directory for the files to do everything
         # relative to
-        commondir = os.path.dirname(os.path.commonpath(options.input))
+        commondir = os.path.commonpath(options.input)
+        if not os.path.isdir(commondir):
+            commondir = os.path.dirname(commondir)
         inputfiles = []
         for inputfile in options.input:
             if self.isexcluded(options, inputfile):
