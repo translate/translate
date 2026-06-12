@@ -141,6 +141,18 @@ class csv2po:
         pounit.setcontext(csvunit.getcontext())
         return pounit
 
+    @staticmethod
+    def set_plural_target(pounit, plural_index, target) -> None:
+        """Set one plural target while preserving the remaining plural forms."""
+        plural_target = pounit.target
+        plural_strings = [
+            str(value) for value in getattr(plural_target, "strings", [plural_target])
+        ]
+        if len(plural_strings) <= plural_index:
+            plural_strings.extend([""] * (plural_index + 1 - len(plural_strings)))
+        plural_strings[plural_index] = target
+        pounit.target = plural_strings
+
     def _get_csv_location(self, csvunit) -> str:
         """Get a formatted string showing the CSV file location with line number."""
         csvfilename = getattr(self.csvfile, "filename", "(unknown)") or "(unknown)"
@@ -213,15 +225,16 @@ class csv2po:
             # we need to work out whether we matched the singular or the plural
             singularid = pounit.source.strings[0]
             pluralid = pounit.source.strings[1]
+            plural_index = None
             if csv_source == singularid:
-                pounit.msgstr[0] = csvunit.target
+                plural_index = 0
             elif csv_source == pluralid:
-                pounit.msgstr[1] = csvunit.target
+                plural_index = 1
             elif simplify(csv_source) == simplify(singularid):
-                pounit.msgstr[0] = csvunit.target
+                plural_index = 0
             elif simplify(csv_source) == simplify(pluralid):
-                pounit.msgstr[1] = csvunit.target
-            else:
+                plural_index = 1
+            if plural_index is None:
                 logger.warning(
                     "couldn't work out singular/plural: %r, %r, %r",
                     csv_source,
@@ -230,6 +243,7 @@ class csv2po:
                 )
                 self.unmatched += 1
                 return
+            self.set_plural_target(pounit, plural_index, csvunit.target)
         else:
             pounit.target = csvunit.target
 
