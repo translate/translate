@@ -132,6 +132,32 @@ msgstr ""
         assert pounit.source == "Source"
         assert pounit.target == "Target"
 
+    def test_plural_template_updates_msgstr_entries(self) -> None:
+        """Checks that plural template entries serialize as complete PO strings."""
+        csvsource = """"location","source","target"
+"src/test.cpp:23","Hello, %d world","Hello, %d world"
+"src/test.cpp:23","Hello, %d worlds","Hello, %d worlds"
+"""
+        potsource = r"""msgid ""
+msgstr ""
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: src/test.cpp:23
+#, c-format
+msgid "Hello, %d world"
+msgid_plural "Hello, %d worlds"
+msgstr[0] ""
+msgstr[1] ""
+"""
+
+        pofile = self.csv2po(csvsource, potsource)
+
+        pounit = self.singleelement(pofile)
+        assert pounit.target == ["Hello, %d world", "Hello, %d worlds"]
+        output = bytes(pofile).decode()
+        assert 'msgstr[0] "Hello, %d world"\n' in output
+        assert 'msgstr[1] "Hello, %d worlds"\n' in output
+
     def test_escaped_newlines(self) -> None:
         """Tests that things keep working with escaped newlines."""
         minicsv = '"source","target"\r\n"yellow pencil","żółty\\nołówek"'
