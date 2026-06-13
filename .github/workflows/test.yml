@@ -62,7 +62,11 @@ jobs:
     - name: Install pip dependencies
       run: uv sync --all-extras --dev
     - name: Generate phply parser tables
-      run: uv run python -m phply.phpparse --generate
+      run: |
+        # `python -m phply.phpparse --generate` is a no-op because the module
+        # does not call its main function.
+        uv run phpparse --generate
+        uv run python -c "import phply.parsetab as parsetab; assert hasattr(parsetab, '_tabversion'); print(f'Using {parsetab.__file__}')"
     - name: pytest
       run: make test
     - name: Coverage
