@@ -28,7 +28,7 @@ import re
 import sys
 from collections.abc import Callable
 from operator import itemgetter
-from typing import NamedTuple, cast
+from typing import NamedTuple
 
 from translate.lang import factory as lang_factory
 from translate.misc import file_discovery, optrecurse
@@ -394,7 +394,7 @@ class TerminologyExtractor:
     ) -> list[tuple[int, TranslationUnit]]:
         """Reduce subphrases from extracted terms."""
         # reduce subphrase
-        termlist = cast("list[str]", sorted(terms.keys(), key=len))
+        termlist = sorted(terms.keys(), key=len)
         logger.info("%d terms after thresholding", len(termlist))
         for term in termlist:
             words = term.split()
