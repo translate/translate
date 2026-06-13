@@ -55,7 +55,10 @@ jobs:
           uv sync --group test --all-extras --no-dev
           source .venv/bin/activate
           # Generate phply parser tables before pytest-xdist starts workers.
-          python -m phply.phpparse --generate
+          # `python -m phply.phpparse --generate` is a no-op because the module
+          # does not call its main function.
+          phpparse --generate
+          python -c "import phply.parsetab as parsetab; assert hasattr(parsetab, '_tabversion'); print(f'Using {parsetab.__file__}')"
           # Native test jobs collect coverage; QEMU jobs focus on architecture coverage.
           pytest -r EfsxX -n auto --maxprocesses=4 --dist=worksteal
           uv cache prune --ci
