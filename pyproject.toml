@@ -27,7 +27,7 @@ pre-commit = [
   "prek==0.4.4"
 ]
 pylint = [
-  "pylint==4.0.5"
+  "pylint==4.0.6"
 ]
 test = [
   "pytest-cov==7.1.0",
