@@ -1130,6 +1130,28 @@ class TestMarkdownFrontmatterTranslateValues(TestCase):
         assert "# a comment" in store.filesrc
         assert "title: (Hi)" in store.filesrc
 
+    def test_empty_front_matter_emits_no_unit(self) -> None:
+        # Empty front matter must not serialize a synthetic ``null`` document.
+        store = self.parse("---\n---\nBody\n")
+        assert self.sources(store) == ["Body"]
+        assert "null" not in store.filesrc
+        assert self.front_matter_of(store.filesrc) == "---\n---\n"
+
+    def test_comment_only_front_matter_preserved(self) -> None:
+        # Comment-only front matter has no scalar values: emit no unit, keep the
+        # comment, and do not serialize a synthetic ``null`` document.
+        store = self.parse("---\n# just a comment\n---\nBody\n")
+        assert self.sources(store) == ["Body"]
+        assert "null" not in store.filesrc
+        assert self.front_matter_of(store.filesrc) == "---\n# just a comment\n---\n"
+
+    def test_empty_string_value_preserved_without_unit(self) -> None:
+        # An empty scalar value is preserved verbatim but emits no unit.
+        store = self.parse("---\ntitle: ''\nname: Hi\n---\nBody\n")
+        assert self.sources(store) == ["Hi", "Body"]
+        assert "title: ''" in store.filesrc
+        assert "name: (Hi)" in store.filesrc
+
     def test_malformed_yaml_falls_back_to_blob(self) -> None:
         # An unterminated quote is invalid YAML; the whole block becomes one unit.
         store = self.parse('---\ntitle: "unterminated\nheading: x\n---\nBody\n')

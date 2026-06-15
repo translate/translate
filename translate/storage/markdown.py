@@ -100,7 +100,7 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
           for translation. If False, it is preserved as-is.
         :param frontmatter_translate_values: if True, front matter is parsed as
           YAML and one translation unit is emitted per scalar string value, using
-          the key path as the unit location/context (e.g. ``frontmatter.metaTitle``).
+          the key path as the unit location and docpath (e.g. ``frontmatter.metaTitle``).
           On serialization the YAML structure, keys, quoting style and comments are
           preserved and only the values are replaced by their translations. If
           False (default), ``extract_frontmatter`` governs front matter handling and
@@ -221,6 +221,9 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
           * If the body fails to parse as YAML, fall back to the opaque-blob
             behavior so a malformed file never raises here.
         """
+        # Imported lazily: ruamel.yaml is in the optional ``yaml`` extra, not
+        # ``markdown``, so a top-level import would break ``[markdown]``-only
+        # installs that never enable this flag.
         from ruamel.yaml import YAML, YAMLError  # noqa: PLC0415
 
         # In the source the last body line is followed by a newline before the
@@ -251,6 +254,14 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
             unit.setdocpath("frontmatter[1]")
             self.addunit(unit)
             return self.callback(front_matter)
+
+        if data is None:
+            # Empty or comment-only front matter: nothing to translate. Re-emit
+            # the original block verbatim so comments survive and we do not
+            # serialize a synthetic ``null`` document.
+            return "\n".join(
+                chain([open_fence], body_lines, [close_fence], trailing_lines, [""])
+            )
 
         self._walk_frontmatter(data, "frontmatter")
 
@@ -303,6 +314,12 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
             else:
                 content = str(value)
                 trailing_newlines = ""
+
+            if not content.strip():
+                # Empty or blank scalars are preserved verbatim and never emit a
+                # unit: an empty source would serialize as a spurious ``msgid ""``
+                # and a wrapping callback would corrupt the value.
+                return
 
             unit = self.addsourceunit(content)
             if self.filename:
