@@ -15,21 +15,22 @@ For information on more file formats, see :doc:`conformance`.
 References
 ==========
 
-* `Standard home page <http://www.gala-global.org/lisa-oscar-standards>`_
+* `Standard home page <https://www.tbxinfo.net/>`_
 * `Specification
-  <http://www.gala-global.org/oscarStandards/tbx/tbx_oscar.pdf>`_
+  <https://www.tbxinfo.net/wp-content/uploads/2020/12/TBXspecV1j.pdf>`_
 * `ISO 30042
   <http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=45797>`_
   -- TBX is an approved ISO standard
 * `Additional TBX resources <http://www.tbxconvert.gevterm.net/>`_
 
 You might also be interested in reading about `TBX-Basic
-<http://www.gala-global.org/oscarStandards/tbx/tbx-basic.html>`_ -- a simpler,
+<https://ltac-global.github.io/TBX-Basic_dialect/>`_ -- a simpler,
 reduced version of TBX with most of the useful features included.
 
 Additional notes and examples about TBX are available in `Terminator TBX
 conformance notes
-<http://terminator.readthedocs.org/en/latest/tbx_conformance.html>`_ which might
+<http://terminator.readthedocs.org/en/latest/tbx_conformance.html>`_ and on
+`www.tbxinfo.net <https://www.tbxinfo.net/>`_ which might
 help understanding this format.
 
 Also you might want to use `TBXChecker
