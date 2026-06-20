@@ -80,7 +80,7 @@ class TxtUnit(base.TranslationUnit):
 
     @property
     def target(self):
-        """Gets the unquoted target string."""
+        """Unquoted target string."""
         return self.source
 
     @target.setter

@@ -147,7 +147,7 @@ class WxlUnit(base.TranslationUnit):
 
     @property
     def target(self) -> str:
-        """Return the translatable text for this entry."""
+        """Translatable text for this entry."""
         tag = etree.QName(str(self.xmlelement.tag)).localname
         if tag == "UI":
             return self.xmlelement.get("Text", "")

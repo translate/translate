@@ -38,13 +38,14 @@ from collections import defaultdict
 from dataclasses import dataclass
 from functools import cached_property
 from operator import itemgetter
+from typing import BinaryIO, TypedDict, cast
 
 from translate.lang.common import Common
 from translate.misc.multistring import multistring
 from translate.storage import factory
 from translate.storage.workflow import StateEnum
 
-extended_state_strings = {
+extended_state_strings: dict[StateEnum | int, str] = {
     StateEnum.EMPTY: "empty",
     StateEnum.NEEDS_WORK: "needs-work",
     StateEnum.REJECTED: "rejected",
@@ -153,7 +154,24 @@ def wordsinunit(unit):
     return sourcewords, targetwords
 
 
-def calcstats(filename):
+class StatsDict(TypedDict, total=False):
+    filename: str | BinaryIO
+    total: int
+    translated: int
+    fuzzy: int
+    untranslated: int
+    review: int
+    translatedsourcewords: int
+    translatedtargetwords: int
+    fuzzysourcewords: int
+    untranslatedsourcewords: int
+    reviewsourcewords: int
+    totalsourcewords: int
+    units: int
+    extended: dict[str, StatsDict]
+
+
+def calcstats(filename: str | BinaryIO) -> StatsDict:
     # ignore totally blank or header units
     try:
         store = factory.getobject(filename)
@@ -162,7 +180,7 @@ def calcstats(filename):
         return {}
 
     # Initialize counters
-    stats = {"filename": filename}
+    stats: StatsDict = {"filename": filename}
     stats["translated"] = 0
     stats["fuzzy"] = 0
     stats["untranslated"] = 0
@@ -174,7 +192,7 @@ def calcstats(filename):
     stats["reviewsourcewords"] = 0
 
     # Extended state tracking
-    extended_stats = {}
+    extended_stats: dict[str, StatsDict] = {}
 
     # Single pass through all units
     for unit in store.units:
@@ -216,7 +234,7 @@ def calcstats(filename):
 
         extended_state = extended_state_strings[state]
         if extended_state not in extended_stats:
-            extended_stats[extended_state] = defaultdict(int)
+            extended_stats[extended_state] = cast("StatsDict", defaultdict(int))
 
         extended_stats[extended_state]["units"] += 1
         extended_stats[extended_state]["sourcewords"] += sourcewords
@@ -437,7 +455,7 @@ def percent(denominator: int, devisor: int) -> int:
 class StatCollector:
     def __init__(self, items: list[str], incomplete_only=False) -> None:
         self.incomplete_only = incomplete_only
-        self._results: list[dict] = []
+        self._results: list[StatsDict] = []
         self._handle_items(items)
 
     def render(self, renderer_class: type[Renderer]) -> None:
@@ -499,15 +517,15 @@ class StatCollector:
         return len(self._results)
 
     @cached_property
-    def totals(self) -> dict:
+    def totals(self) -> StatsDict:
         """Total stats."""
-        totals = defaultdict(int)
+        totals = cast("StatsDict", defaultdict(int))
         for stats in self._results:
             for key, value in stats.items():
                 if key in {"extended", "filename"}:
                     # FIXME: calculate extended totals
                     continue
-                totals[key] += value
+                totals[key] += cast("int", value)  # ty: ignore[unsupported-operator]
         return totals
 
 

@@ -303,7 +303,7 @@ class pounit(pocommon.pounit):
 
     @property
     def source(self):
-        """Returns the unescaped msgid."""
+        """Unescaped msgid."""
         return self._get_source_vars(self.msgid, self.msgid_plural)
 
     @source.setter
@@ -340,7 +340,7 @@ class pounit(pocommon.pounit):
 
     @property
     def prev_context(self):
-        """Returns the unescaped previous msgctxt."""
+        """Unescaped previous msgctxt."""
         return unquotefrompo(self.prev_msgctxt)
 
     @prev_context.setter
@@ -349,7 +349,7 @@ class pounit(pocommon.pounit):
 
     @property
     def target(self):
-        """Returns the unescaped msgstr."""
+        """Unescaped msgstr."""
         if self._target_cache is None:
             if isinstance(self.msgstr, dict):
                 self._target_cache = tuple(

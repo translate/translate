@@ -96,7 +96,7 @@ class pounit(pocommon.pounit):
 
     @property
     def target(self):
-        """Returns the unescaped msgstr."""
+        """Unescaped msgstr."""
         return self._target
 
     @target.setter
