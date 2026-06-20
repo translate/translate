@@ -16,7 +16,7 @@ class TestPOTerminology:
         assert extractor.extract_terms() == {}
 
         with open(sample_po_file, "rb") as fh:
-            inputfile = factory.getobject(fh)  # ty:ignore[invalid-argument-type]
+            inputfile = factory.getobject(fh)
         extractor.processunits(inputfile.units, str(sample_po_file))
         terms = extractor.extract_terms()
         assert len(terms) > 50
@@ -30,7 +30,7 @@ class TestPOTerminology:
         extractor = poterminology.TerminologyExtractor()
 
         with open(sample_po_file, "rb") as fh:
-            inputfile = factory.getobject(fh)  # ty:ignore[invalid-argument-type]
+            inputfile = factory.getobject(fh)
 
         # Process units
         extractor.processunits(inputfile.units, str(sample_po_file))

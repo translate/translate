@@ -64,7 +64,7 @@ class TOMLUnit(base.DictUnit):
 
     @property
     def source(self):
-        """Get the source text (alias for target in monolingual format)."""
+        """Source text (alias for target in monolingual format)."""
         return self.target
 
     @source.setter

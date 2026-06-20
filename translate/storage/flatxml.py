@@ -57,7 +57,7 @@ class FlatXMLUnit(base.TranslationUnit):
 
     @property
     def source(self):
-        """Returns the unique identifier of this unit."""
+        """Unique identifier of this unit."""
         return self.xmlelement.get(self.attribute_name)
 
     @source.setter
@@ -67,7 +67,7 @@ class FlatXMLUnit(base.TranslationUnit):
 
     @property
     def target(self):
-        """Returns the translated string of this unit."""
+        """Translated string of this unit."""
         return self.node_text
 
     @target.setter
@@ -83,7 +83,7 @@ class FlatXMLUnit(base.TranslationUnit):
 
     @property
     def node_text(self):
-        """Returns the text content of the XML element."""
+        """Rext content of the XML element."""
         if self.xmlelement is None:
             return None
 

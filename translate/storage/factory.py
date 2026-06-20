@@ -18,9 +18,12 @@
 
 """factory methods to build real storage objects that conform to base.py."""
 
+from __future__ import annotations
+
 import os
 from functools import lru_cache
 from importlib import import_module
+from typing import BinaryIO
 
 from translate.storage.base import TranslationStore
 
@@ -197,7 +200,7 @@ def getclass(
 
 
 def getobject(
-    storefile: str | TranslationStore,
+    storefile: str | TranslationStore | BinaryIO,
     localfiletype: str | None = None,
     ignore: str | None = None,
     classes: dict | None = None,

@@ -23,7 +23,7 @@ class BaseTestFilter:
         """Helper that parses xliff file content without requiring files."""
         dummyfile = BytesIO(filetext.encode())
         dummyfile.name = self.filename
-        return factory.getobject(dummyfile)  # ty:ignore[invalid-argument-type]
+        return factory.getobject(dummyfile)
 
     def filter(self, translationstore, checkerconfig=None, cmdlineoptions=None):
         """

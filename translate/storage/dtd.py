@@ -245,7 +245,7 @@ class dtdunit(base.TranslationUnit):
     # Note that source and target are equivalent for monolingual units
     @property
     def source(self):
-        """Gets the unquoted source string."""
+        """Unquoted source string."""
         if self.android:
             return unquotefromandroid(self.definition)
         return unquotefromdtd(self.definition)
@@ -261,7 +261,7 @@ class dtdunit(base.TranslationUnit):
 
     @property
     def target(self):
-        """Gets the unquoted target string."""
+        """Unquoted target string."""
         if self.android:
             return unquotefromandroid(self.definition)
         return unquotefromdtd(self.definition)
