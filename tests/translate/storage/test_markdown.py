@@ -1229,6 +1229,18 @@ class TestMarkdownFrontmatterTranslateValues(TestCase):
         assert "  (one\n  two)\n" in out
         assert "strip: |-\n  (trimmed)\n" in out
 
+    def test_kept_block_scalar_trailing_blank_lines_preserved(self) -> None:
+        """A trailing ``|+`` keep block scalar round-trips its blank lines."""
+        front_matter = (
+            "---\ntitle: Hello\nnotes: |+\n  first line\n  second line\n\n\n---\n"
+        )
+        store = self.parse(front_matter + "\nBody\n", callback=lambda x: x)
+        out = self.front_matter_of(store.filesrc)
+        # No spurious document-end marker leaks in, and the kept blank lines
+        # survive byte-for-byte on an identity translation.
+        assert "..." not in out
+        assert out == front_matter
+
     def test_quoted_block_sequence_indentation_preserved(self) -> None:
         """Block sequence dashes keep their two-space source indentation."""
         store = self.parse(

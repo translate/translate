@@ -269,9 +269,17 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
         buffer = StringIO()
         yaml.dump(data, buffer)
         rendered_body = buffer.getvalue()
-        # ruamel terminates the dump with a trailing newline; the fence lines and
-        # any preserved trailing blank lines are added back explicitly.
-        rendered_body = rendered_body.rstrip("\n")
+        if rendered_body.endswith("\n...\n"):
+            # When the final value is a kept block scalar (``|+`` / ``>+``), ruamel
+            # appends an explicit document-end marker (``...``) so the scalar's
+            # trailing blank lines are not lost. Drop the marker and the single
+            # terminating newline only; the blank lines stay part of the body and
+            # the join below re-adds one newline before the close fence.
+            rendered_body = rendered_body[: -len("\n...\n")]
+        else:
+            # ruamel terminates the dump with a trailing newline; the fence lines
+            # and any preserved trailing blank lines are added back explicitly.
+            rendered_body = rendered_body.rstrip("\n")
         parts = [open_fence]
         if rendered_body:
             parts.append(rendered_body)
