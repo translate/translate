@@ -242,6 +242,7 @@ class TestCSV2POCommand(test_convert.TestConvertCommand, TestCSV2PO):
         "--charset=CHARSET",
         "--columnorder=COLUMNORDER",
         "--duplicates=DUPLICATESTYLE",
+        "--unescape-formulas",
     ]
 
     def test_columnorder(self) -> None:
@@ -267,3 +268,13 @@ msgstr ""
 msgstr "Target"
 """
         )
+
+    def test_unescape_formulas(self) -> None:
+        csvcontent = '"source","target"\n"\'=SUM(1,1)","\'@target"\n'
+        self.create_testfile("test.csv", csvcontent)
+
+        self.run_command("test.csv", "test.po", unescape_formulas=True)
+        content = self.open_testfile("test.po", "r").read()
+
+        assert 'msgid "=SUM(1,1)"\n' in content
+        assert 'msgstr "@target"\n' in content

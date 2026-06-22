@@ -301,7 +301,9 @@ GENERAL@2|Notes,"cable, motor, switch"
 
     def test_spreadsheet_formula_prefixes_are_escaped_on_write(self) -> None:
         """Test that CSV output escapes formula-like values without mutating imports."""
-        store = self.StoreClass(fieldnames=["context", "id", "source", "target"])
+        store = self.StoreClass(
+            fieldnames=["context", "id", "source", "target"], escape_formulas=True
+        )
         unit = store.addsourceunit("=SUM(1,1)")
         unit.target = "+cmd"
         unit.setcontext("@context")
@@ -320,6 +322,15 @@ GENERAL@2|Notes,"cable, motor, switch"
         assert newstore.units[0].id == "'-id"
         assert newstore.units[0].source == "'=SUM(1,1)"
         assert newstore.units[0].target == "'+cmd"
+
+    def test_spreadsheet_formula_prefixes_are_preserved_by_default(self) -> None:
+        """Test that default CSV serialization preserves formula-like values."""
+        content = b'"source","target","id"\n"sometest1","@bump1","sometest1"\n'
+        store = self.parse_store(content)
+
+        assert bytes(store).decode() == (
+            '"source","target","id"\r\n"sometest1","@bump1","sometest1"\r\n'
+        )
 
     def test_multistring_with_empty_first_string_serializes(self) -> None:
         """Test that plural values with an empty first string can be written."""

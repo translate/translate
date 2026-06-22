@@ -161,17 +161,20 @@ class csvunit(base.TranslationUnit):
 
     def todict(self, **kwargs):
         # FIXME: use apis?
+        def maybe_escape(value):
+            if kwargs.get("escape_formulas"):
+                return self.add_spreadsheet_escape(value)
+            return value
+
         return {
-            "location": self.add_spreadsheet_escape(self.location),
-            "source": self.add_spreadsheet_escape(self.source),
-            "target": self.add_spreadsheet_escape(self.target),
-            "id": self.add_spreadsheet_escape(self.id),
+            "location": maybe_escape(self.location),
+            "source": maybe_escape(self.source),
+            "target": maybe_escape(self.target),
+            "id": maybe_escape(self.id),
             "fuzzy": str(self.fuzzy),
-            "context": self.add_spreadsheet_escape(self.context),
-            "translator_comments": self.add_spreadsheet_escape(
-                self.translator_comments
-            ),
-            "developer_comments": self.add_spreadsheet_escape(self.developer_comments),
+            "context": maybe_escape(self.context),
+            "translator_comments": maybe_escape(self.translator_comments),
+            "developer_comments": maybe_escape(self.developer_comments),
         }
 
     def __str__(self) -> str:
@@ -308,7 +311,9 @@ class csvfile(base.TranslationStore):
     Mimetypes = ["text/comma-separated-values", "text/csv"]
     Extensions = ["csv"]
 
-    def __init__(self, inputfile=None, fieldnames=None, encoding="auto") -> None:
+    def __init__(
+        self, inputfile=None, fieldnames=None, encoding="auto", escape_formulas=False
+    ) -> None:
         super().__init__(encoding=encoding)
         if not fieldnames:
             self.fieldnames = [
@@ -325,6 +330,7 @@ class csvfile(base.TranslationStore):
             self.fieldnames = fieldnames
         self.filename = getattr(inputfile, "name", "")
         self.dialect = "default"
+        self.escape_formulas = escape_formulas
         self._automatic_encoding = encoding == "auto"
         if inputfile is not None:
             csvsrc = inputfile.read()
@@ -428,5 +434,5 @@ class csvfile(base.TranslationStore):
         )
         writer.writeheader()
         for ce in self.units:
-            writer.writerow(ce.todict())
+            writer.writerow(ce.todict(escape_formulas=self.escape_formulas))
         return output.getvalue()
