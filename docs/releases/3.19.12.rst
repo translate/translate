@@ -1,0 +1,59 @@
+Translate Toolkit 3.19.12
+*************************
+
+*Released on 22 June 2026*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- Markdown
+
+  - Add an opt-in value-only YAML front matter translation mode
+
+- CSV
+
+  - Make spreadsheet formula escaping configurable
+  - Correctly handle plurals when using templates
+
+- JSON
+
+  - Improve JSON validation
+  - Tighten WebExtension JSON validation
+  - Loosen Nextcloud JSON validation
+
+- HTML
+
+  - Correctly load translations for msgctxt deduplicated strings
+
+- Conversions
+
+  - Honor provided output directories with multiple inputs
+
+Tests
+-----
+
+- Avoid changing global state in XLIFF conformance tests
+
+Documentation
+-------------
+
+- Update README and TBX format links
+
+Other
+-----
+
+- Update development tooling and CI dependencies
+- Clean up code and typing annotations
+- Correctly pregenerate the PHP parser in CI
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+Kees van den Broek, Michal Čihař, michael-smt
