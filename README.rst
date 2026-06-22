@@ -3,38 +3,43 @@ Translate Toolkit
 
 .. image:: https://img.shields.io/pypi/v/translate-toolkit.svg
     :alt: Released version
-    :target: https://pypi.python.org/pypi/translate-toolkit/
+    :target: https://pypi.org/project/translate-toolkit/
 
 .. image:: https://readthedocs.org/projects/translate-toolkit/badge/
     :target: https://docs.translatehouse.org/projects/translate-toolkit/en/latest/
 
 .. image:: https://img.shields.io/pypi/pyversions/translate-toolkit.svg
     :alt: Supported Python versions
-    :target: https://pypi.python.org/pypi/translate-toolkit/
+    :target: https://pypi.org/project/translate-toolkit/
 
 .. image:: https://img.shields.io/pypi/l/translate-toolkit.svg
-    :target: https://pypi.python.org/pypi/translate-toolkit/
+    :target: https://pypi.org/project/translate-toolkit/
     :alt: License
 
-The Translate Toolkit is a set of software and documentation designed to help
-make the lives of localizers both more productive and less frustrating.  The
-Toolkit is part of the Translate project, hosted at
-<https://github.com/translate>.
+The Translate Toolkit is an essential toolkit for localization engineers. It
+contains tools and documentation to help localizers convert, count, manipulate,
+review and debug localization files with less repetitive work.
 
-The software includes programs to convert localization formats to the common
-PO, and emerging XLIFF format.  There are also programs to check and manage PO
-and XLIFF files.  Online documentation includes guides on using the tools,
-running a localization project and how to localize various projects from
-OpenOffice.org to Mozilla.
+The software includes programs to convert localization formats to the common PO
+and XLIFF formats. There are also programs to check and manage PO and XLIFF
+files. The Toolkit is part of the Translate project, hosted at
+<https://github.com/translate/translate>.
 
-At its core the software contains a set of classes for handling various
-localization storage formats: DTD, properties, OpenOffice.org GSI/SDF,
-CSV, MO, Qt .ts, TMX, TBX, WordFast txt, Gettext .mo, Windows RC, and
-of course PO and XLIFF.  It also provides scripts to convert between
-these formats.
+At its core the software contains Python classes for handling localization
+storage formats such as DTD, properties, OpenOffice.org GSI/SDF, CSV, MO,
+Qt .ts, TMX, TBX, WordFast txt, Gettext .mo, Windows RC, PO and XLIFF. It also
+provides scripts to convert between these formats.
 
-Also part of the Toolkit are Python programs to create word counts, merge
-translations and perform various checks on translation files.
+
+Features
+--------
+
+* Format converters for localization, translation and software formats, so
+  translators can work in standard translation formats.
+* Quality assurance tools for pattern searches, language-aware checks,
+  terminology extraction and other review tasks.
+* Python APIs that can be expanded with new formats, project types,
+  localization tests and language modules.
 
 
 Important Links
@@ -42,20 +47,24 @@ Important Links
 
 * `Latest release downloads <https://github.com/translate/translate/releases>`_
 * `Documentation
-  <http://docs.translatehouse.org/projects/translate-toolkit/en/latest/>`_,
+  <https://docs.translatehouse.org/projects/translate-toolkit/en/latest/>`_,
   also use ``--help`` with any of the commands.
 * The Translate Toolkit is released under the `GPL
   <https://github.com/translate/translate/blob/master/COPYING>`_ with
   `contributions from many people
   <https://github.com/translate/translate/blob/master/CREDITS>`_.
 * `Reporting issues <https://github.com/translate/translate/issues>`_
-* `Installation <http://docs.translatehouse.org/projects/translate-toolkit/en/stable/installation.html>`_
+* `Reporting security vulnerabilities
+  <https://github.com/translate/translate/security/advisories/new>`_
+* `Installation
+  <https://docs.translatehouse.org/projects/translate-toolkit/en/latest/installation.html>`_
+* `Release notes
+  <https://docs.translatehouse.org/projects/translate-toolkit/en/latest/releases/index.html>`_
+* `Source code <https://github.com/translate/translate>`_
 
 
-Joining the Translate Project
------------------------------
-If you would like to join the translate project mailing list then visit:
-<http://lists.sourceforge.net/lists/listinfo/translate-devel>.
+Project goals
+-------------
 
 The vision of the Translate Project is to be a meta project for localizers
 built on the premise that your language deserves to be a project on its own
@@ -69,64 +78,34 @@ software.
 Requirements
 ------------
 
-There are several extra requirements which you might to install to get full
-feature set. This cal be easily specified during pip installation::
+The recommended installation is using ``uv`` or ``pip`` in a virtual
+environment::
 
-    # Install with XML support
-    pip install translate-toolkit[XML]
+    uv pip install translate-toolkit
+
+or::
+
+    pip install translate-toolkit
+
+You can also download a stable released version from
+<https://github.com/translate/translate/releases> and install it manually.
+
+The Toolkit requires Python 3.11 or newer. The required runtime dependencies
+are ``lxml>=6.1.0,<7.0`` and ``unicode-segmentation-rs>=0.2.0,<0.3``.
+
+There are several optional dependencies for format-specific features and speed
+ups. They can be requested as extras during installation::
 
     # Install all optional dependencies
     pip install translate-toolkit[all]
 
-.. note:: Please check ``pyproject.toml``
+    # Install selected optional dependencies
+    pip install translate-toolkit[markdown,ini,ical,subtitles,yaml,spellcheck]
 
-The Toolkit requires Python 3.10 or newer.
-
-The package lxml is required. You should install version 4.6.3 or later.
-<http://lxml.de/> Depending on your platform, the easiest way to install might
-be through your system's package management. Alternatively you can try ::
-
-    pip install lxml
-
-which should install the newest version from the web.
-
-For Mac OSX, the following pages might be of help:
-<http://lxml.de/build.html#building-lxml-on-macos-x>
-<http://lxml.de/installation.html#macos-x>
-
-The package lxml has dependencies on libxml2 and libxslt. Please check the lxml
-site for the recommended versions of these libraries if you need to install
-them separately at all. Most packaged versions of lxml will already contain
-these dependencies.
-
-When the environment variable USECPO is set to 1, the toolkit will attempt to
-use libgettextpo from the gettext-tools package (it might have a slightly
-different name on your distribution). This can greatly speed up access to PO
-files, but has not yet been tested as extensively. Feedback is most welcome.
-
-The package iniparse is necessary for ini2po and po2ini:
-<https://pypi.org/project/iniparse/>
-
-The RapidFuzz package will improve performance for fuzzy matching if
-it is available. This can improve the performance of pot2po, for example.  It
-is optional and no functionality is lost if it is not installed, only speed.
-<https://pypi.org/project/RapidFuzz/>
-
-Functions in the `lang.data` module can supply functions to translate language
-names using the `pycountry` package. It can even translate names in the format
-``Language (Country)`` such as ``English (South Africa)`` This is used by
-Pootle and Virtaal. If the package is not installed, the language names will
-simply appear in English. It is therefore recommended you install the
-`pycountry` package.
-
-The package vobject is needed for ical2po and po2ical.
-
-The aeidon package is needed for sub2po
-and po2sub. Some Unicode encoded files (including most files from
-<http://dotsub.com/>) require version 0.14 or later.
-
-Markdown support requires the mistletoe parser
-<https://github.com/miyuchina/mistletoe>
+Available extras include ``chardet``, ``fluent``, ``ical``, ``ini``,
+``levenshtein``, ``markdown``, ``php``, ``rc``, ``spellcheck``, ``subtitles``,
+``toml`` and ``yaml``. Please check ``pyproject.toml`` for the current
+dependency versions.
 
 Program overview
 ----------------
@@ -136,7 +115,7 @@ Use ``--help`` to find the syntax and options for all programs.
 .. note::
 
    This is a selection of the most commonly used tools. For the complete list
-   of converters and tools, see the `online documentation
+   of converters and tools, see the `command documentation
    <https://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/index.html>`_.
 
 * Converters::
