@@ -1033,3 +1033,218 @@ More text
     @staticmethod
     def get_translated_output(store):
         return store.filesrc
+
+
+class TestMarkdownFrontmatterTranslateValues(TestCase):
+    """Tests for the value-only front matter mode (frontmatter_translate_values=True)."""
+
+    # A realistic fixture resembling the pro6pp news front matter: literal block
+    # scalars, single-quoted scalars, a block sequence and a nested mapping.
+    REALISTIC_FRONT_MATTER = (
+        "---\n"
+        "metaTitle: |\n"
+        "  Discover the best deals\n"
+        "  in your neighborhood.\n"
+        "metaDescription: |\n"
+        "  Save money every day\n"
+        "  with local offers.\n"
+        "heading: 'Discover Amazing Deals'\n"
+        "date: '2024-07-25'\n"
+        "draft: false\n"
+        "order: 3\n"
+        "authors:\n"
+        "  - 'Kees'\n"
+        "  - 'Jan'\n"
+        "seo:\n"
+        "  description: 'Nested deals'\n"
+        "  keywords:\n"
+        "    - 'deals'\n"
+        "    - 'local'\n"
+        "---\n"
+    )
+
+    @staticmethod
+    def parse(md, callback=None, **kwargs):
+        inputfile = BytesIO(md.encode())
+        inputfile.name = "file.md"
+        return markdown.MarkdownFile(
+            inputfile=inputfile,
+            callback=callback or (lambda x: f"({x})"),
+            frontmatter_translate_values=True,
+            **kwargs,
+        )
+
+    @staticmethod
+    def sources(store):
+        return [tu.source for tu in store.units]
+
+    @staticmethod
+    def front_matter_of(text):
+        """Return the front matter block (fences included, body excluded)."""
+        return text.split("\n---\n", 1)[0] + "\n---\n"
+
+    def test_keys_preserved_values_translated(self) -> None:
+        store = self.parse(
+            "---\nmetaTitle: Welcome\npublisherName: ACME\n---\n\n# Heading\n"
+        )
+        # One unit per scalar value, plus the heading.
+        assert self.sources(store) == ["Welcome", "ACME", "Heading"]
+        # Keys are preserved; only the values are wrapped by the callback.
+        assert store.filesrc == (
+            "---\nmetaTitle: (Welcome)\npublisherName: (ACME)\n---\n\n# (Heading)\n"
+        )
+
+    def test_location_and_docpath_use_key_path(self) -> None:
+        store = self.parse("---\nmetaTitle: Welcome\n---\nBody\n")
+        unit = store.units[0]
+        assert unit.source == "Welcome"
+        assert unit.getlocations() == ["file.md:frontmatter.metaTitle"]
+        assert unit.getdocpath() == "frontmatter.metaTitle"
+
+    def test_non_string_scalars_not_translated(self) -> None:
+        store = self.parse("---\ntitle: Hi\ndraft: false\norder: 3\n---\nBody\n")
+        # bool and int values are left untouched.
+        assert self.sources(store) == ["Hi", "Body"]
+        assert "draft: false" in store.filesrc
+        assert "order: 3" in store.filesrc
+
+    def test_nested_map_and_list(self) -> None:
+        store = self.parse(
+            "---\nauthors:\n  - Alice\n  - Bob\nseo:\n  description: Deals\n---\nBody\n"
+        )
+        assert self.sources(store) == ["Alice", "Bob", "Deals", "Body"]
+        docpaths = [tu.getdocpath() for tu in store.units[:3]]
+        assert docpaths == [
+            "frontmatter.authors[0]",
+            "frontmatter.authors[1]",
+            "frontmatter.seo.description",
+        ]
+
+    def test_quoting_style_preserved(self) -> None:
+        store = self.parse("---\ndouble: \"Hello\"\nsingle: 'World'\n---\nBody\n")
+        assert 'double: "(Hello)"' in store.filesrc
+        assert "single: '(World)'" in store.filesrc
+
+    def test_comments_preserved(self) -> None:
+        store = self.parse("---\n# a comment\ntitle: Hi\n---\nBody\n")
+        assert "# a comment" in store.filesrc
+        assert "title: (Hi)" in store.filesrc
+
+    def test_empty_front_matter_emits_no_unit(self) -> None:
+        # Empty front matter must not serialize a synthetic ``null`` document.
+        store = self.parse("---\n---\nBody\n")
+        assert self.sources(store) == ["Body"]
+        assert "null" not in store.filesrc
+        assert self.front_matter_of(store.filesrc) == "---\n---\n"
+
+    def test_comment_only_front_matter_preserved(self) -> None:
+        # Comment-only front matter has no scalar values: emit no unit, keep the
+        # comment, and do not serialize a synthetic ``null`` document.
+        store = self.parse("---\n# just a comment\n---\nBody\n")
+        assert self.sources(store) == ["Body"]
+        assert "null" not in store.filesrc
+        assert self.front_matter_of(store.filesrc) == "---\n# just a comment\n---\n"
+
+    def test_empty_string_value_preserved_without_unit(self) -> None:
+        # An empty scalar value is preserved verbatim but emits no unit.
+        store = self.parse("---\ntitle: ''\nname: Hi\n---\nBody\n")
+        assert self.sources(store) == ["Hi", "Body"]
+        assert "title: ''" in store.filesrc
+        assert "name: (Hi)" in store.filesrc
+
+    def test_malformed_yaml_falls_back_to_blob(self) -> None:
+        # An unterminated quote is invalid YAML; the whole block becomes one unit.
+        store = self.parse('---\ntitle: "unterminated\nheading: x\n---\nBody\n')
+        assert store.units[0].getdocpath() == "frontmatter[1]"
+        assert store.units[0].source.startswith("---\n")
+        assert self.sources(store)[1:] == ["Body"]
+
+    def test_no_frontmatter_is_noop(self) -> None:
+        store = self.parse("# Heading\nBody text.\n")
+        assert self.sources(store) == ["Heading", "Body text."]
+
+    def test_default_mode_keeps_blob_behavior(self) -> None:
+        # Without the flag the front matter is still a single opaque unit.
+        inputfile = BytesIO(b"---\ntitle: Example\n---\n\nBody\n")
+        store = markdown.MarkdownFile(inputfile=inputfile, callback=lambda x: f"({x})")
+        assert store.units[0].getdocpath() == "frontmatter[1]"
+        assert store.units[0].source == "---\ntitle: Example\n---\n\n"
+
+    def test_identity_round_trip_is_byte_identical(self) -> None:
+        """An identity translation reproduces the front matter byte-for-byte."""
+        store = self.parse(
+            self.REALISTIC_FRONT_MATTER + "\n# Body\n", callback=lambda x: x
+        )
+        assert self.front_matter_of(store.filesrc) == self.REALISTIC_FRONT_MATTER
+
+    def test_translation_changes_only_values(self) -> None:
+        """
+        Translating wraps every value but touches nothing else.
+
+        Verified by a reversible marker translation: wrapping each value in
+        sentinels and then stripping the sentinels from the serialized output
+        must reproduce the byte-identical identity round-trip. Any change to a
+        key, fence, quote, comment, block-scalar style or list indentation would
+        survive the strip and break the comparison.
+        """
+        open_marker, close_marker = "QQOPEN_", "_CLOSEQQ"
+        store = self.parse(
+            self.REALISTIC_FRONT_MATTER + "\n# Body\n",
+            callback=lambda x: f"{open_marker}{x}{close_marker}",
+        )
+        stripped = (
+            self.front_matter_of(store.filesrc)
+            .replace(open_marker, "")
+            .replace(close_marker, "")
+        )
+        assert stripped == self.REALISTIC_FRONT_MATTER
+
+    def test_block_scalar_is_single_translatable_unit(self) -> None:
+        """A literal block scalar is one unit with its newlines intact."""
+        store = self.parse(self.REALISTIC_FRONT_MATTER + "\n# Body\n")
+        meta_title = store.units[0]
+        assert meta_title.getdocpath() == "frontmatter.metaTitle"
+        assert meta_title.source == "Discover the best deals\nin your neighborhood."
+
+    def test_block_scalar_style_and_chomping_preserved(self) -> None:
+        """Literal/folded style and the clip/strip/keep indicator survive."""
+        front_matter = (
+            "---\n"
+            "clip: |\n"
+            "  one\n"
+            "  two\n"
+            "strip: |-\n"
+            "  trimmed\n"
+            "folded: >\n"
+            "  fold me\n"
+            "  please\n"
+            "---\n"
+        )
+        store = self.parse(front_matter + "\nBody\n")
+        out = self.front_matter_of(store.filesrc)
+        assert "clip: |\n" in out
+        assert "strip: |-\n" in out
+        assert "folded: >\n" in out
+        # The clip indicator survives a translation that wraps the value.
+        assert "  (one\n  two)\n" in out
+        assert "strip: |-\n  (trimmed)\n" in out
+
+    def test_kept_block_scalar_trailing_blank_lines_preserved(self) -> None:
+        """A trailing ``|+`` keep block scalar round-trips its blank lines."""
+        front_matter = (
+            "---\ntitle: Hello\nnotes: |+\n  first line\n  second line\n\n\n---\n"
+        )
+        store = self.parse(front_matter + "\nBody\n", callback=lambda x: x)
+        out = self.front_matter_of(store.filesrc)
+        # No spurious document-end marker leaks in, and the kept blank lines
+        # survive byte-for-byte on an identity translation.
+        assert "..." not in out
+        assert out == front_matter
+
+    def test_quoted_block_sequence_indentation_preserved(self) -> None:
+        """Block sequence dashes keep their two-space source indentation."""
+        store = self.parse(
+            "---\nauthors:\n  - 'Kees'\n  - 'Jan'\n---\nBody\n", callback=lambda x: x
+        )
+        out = self.front_matter_of(store.filesrc)
+        assert out == "---\nauthors:\n  - 'Kees'\n  - 'Jan'\n---\n"

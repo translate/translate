@@ -39,6 +39,7 @@ from __future__ import annotations
 
 import re
 from contextlib import contextmanager
+from io import StringIO
 from itertools import chain
 from typing import TYPE_CHECKING
 
@@ -81,6 +82,7 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
         max_line_length=None,
         extract_code_blocks=True,
         extract_frontmatter=True,
+        frontmatter_translate_values=False,
         no_placeholders=False,
     ) -> None:
         """
@@ -96,6 +98,14 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
           for translation. If False, code blocks are left as-is.
         :param extract_frontmatter: if True (default), front matter is extracted
           for translation. If False, it is preserved as-is.
+        :param frontmatter_translate_values: if True, front matter is parsed as
+          YAML and one translation unit is emitted per scalar string value, using
+          the key path as the unit location and docpath (e.g. ``frontmatter.metaTitle``).
+          On serialization the YAML structure, keys, quoting style and comments are
+          preserved and only the values are replaced by their translations. If
+          False (default), ``extract_frontmatter`` governs front matter handling and
+          the whole block is treated as a single opaque unit. Requires the optional
+          ``ruamel.yaml`` dependency; takes precedence over ``extract_frontmatter``.
         :param no_placeholders: if True, inline elements (links, images, HTML
           spans, autolinks) are rendered verbatim in translation units instead
           of being replaced by {n} placeholder markers. Sub-attribute extraction
@@ -108,6 +118,7 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
         self.max_line_length = max_line_length
         self.extract_code_blocks = extract_code_blocks
         self.extract_frontmatter = extract_frontmatter
+        self.frontmatter_translate_values = frontmatter_translate_values
         self.no_placeholders = no_placeholders
         self.filesrc = ""
         if inputfile is not None:
@@ -133,13 +144,24 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
                 break
 
         if front_matter_end:
+            # front_matter_end indexes the closing fence line ("---" or "...").
+            close_fence_idx = front_matter_end
             # Include trailing space in the front matter
             if front_matter_end + 1 < len(lines) and (
                 not lines[front_matter_end + 1] or lines[front_matter_end + 1].isspace()
             ):
                 front_matter_end += 1
             front_matter = "\n".join(chain(lines[: front_matter_end + 1], [""]))
-            if self.extract_frontmatter:
+            if self.frontmatter_translate_values:
+                # Value-only mode: parse the YAML and emit one unit per scalar
+                # value, preserving keys/structure/quoting on serialization.
+                front_matter = self._translate_frontmatter_values(
+                    open_fence=lines[0],
+                    body_lines=lines[1:close_fence_idx],
+                    close_fence=lines[close_fence_idx],
+                    trailing_lines=lines[close_fence_idx + 1 : front_matter_end + 1],
+                )
+            elif self.extract_frontmatter:
                 # Keep front matter as a normal translation unit.
                 unit = self.UnitClass(front_matter)
                 if self.filename:
@@ -159,6 +181,186 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
         ) as renderer:
             document = block_token.Document(lines)
             self.filesrc = front_matter + renderer.render(document)
+
+    def _translate_frontmatter_values(
+        self,
+        open_fence: str,
+        body_lines: list[str],
+        close_fence: str,
+        trailing_lines: list[str],
+    ) -> str:
+        """
+        Parse the YAML front matter, emit one translation unit per scalar string
+        value, and re-serialize with keys/structure/quoting/comments preserved.
+
+        :param open_fence: the opening fence line (e.g. ``---``).
+        :param body_lines: the YAML body lines between the fences.
+        :param close_fence: the closing fence line (e.g. ``---`` or ``...``).
+        :param trailing_lines: blank lines that followed the closing fence and
+          were considered part of the front matter block.
+        :return: the rendered (translated) front matter, terminated by a newline,
+          ready to be prepended to the rendered document body.
+
+        Serialization is tuned so that only the translated values change and the
+        YAML formatting stays byte-stable on an identity translation:
+
+          * The block indentation is fixed at two-space mappings with a two-space
+            sequence offset (``yaml.indent(mapping=2, sequence=4, offset=2)``),
+            matching the front matter style of the target files, so block
+            sequences keep their source indentation (``  - item`` is not
+            flattened to ``- item``).
+          * Block scalars (``|`` / ``>``) keep their style, chomping indicator
+            and first-line comment: the trailing-newline pattern that drives
+            chomping is split off before translation and re-appended afterwards,
+            and the comment / fold positions are carried over to the re-wrapped
+            node. See ``_translate_frontmatter_child``.
+          * Only scalar *string* values are translated. Numbers, booleans, dates
+            and ``null`` are left untouched on purpose.
+          * Nested maps and lists are walked recursively; list items use a
+            ``[i]`` index segment in the location/docpath.
+          * If the body fails to parse as YAML, fall back to the opaque-blob
+            behavior so a malformed file never raises here.
+        """
+        # Imported lazily: ruamel.yaml is in the optional ``yaml`` extra, not
+        # ``markdown``, so a top-level import would break ``[markdown]``-only
+        # installs that never enable this flag.
+        # pylint: disable-next=import-outside-toplevel
+        from ruamel.yaml import YAML, YAMLError  # noqa: PLC0415
+
+        # In the source the last body line is followed by a newline before the
+        # closing fence, so terminate the body with one. Without it a trailing
+        # block scalar loses its final newline and its chomping indicator drifts
+        # (e.g. ``>`` would be emitted as ``>-``).
+        body = "\n".join(body_lines) + "\n"
+        yaml = YAML()
+        yaml.preserve_quotes = True
+        yaml.width = 2**31  # avoid reflowing/wrapping translated values
+        # Match the target front matter style: two-space mapping indentation with
+        # block-sequence dashes indented two spaces under their key. ruamel
+        # expresses this as a four-space sequence indent with a two-space offset
+        # for the dash, which keeps "  - item" intact instead of flattening it.
+        yaml.indent(mapping=2, sequence=4, offset=2)
+
+        try:
+            data = yaml.load(body) if body.strip() else None
+        except YAMLError:
+            # Malformed YAML: keep the original block as a single opaque unit so
+            # we never lose content or raise during parsing.
+            front_matter = "\n".join(
+                chain([open_fence], body_lines, [close_fence], trailing_lines, [""])
+            )
+            unit = self.UnitClass(front_matter)
+            if self.filename:
+                unit.addlocation(f"{self.filename}:1")
+            unit.setdocpath("frontmatter[1]")
+            self.addunit(unit)
+            return self.callback(front_matter)
+
+        if data is None:
+            # Empty or comment-only front matter: nothing to translate. Re-emit
+            # the original block verbatim so comments survive and we do not
+            # serialize a synthetic ``null`` document.
+            return "\n".join(
+                chain([open_fence], body_lines, [close_fence], trailing_lines, [""])
+            )
+
+        self._walk_frontmatter(data, "frontmatter")
+
+        buffer = StringIO()
+        yaml.dump(data, buffer)
+        rendered_body = buffer.getvalue()
+        if rendered_body.endswith("\n...\n"):
+            # When the final value is a kept block scalar (``|+`` / ``>+``), ruamel
+            # appends an explicit document-end marker (``...``) so the scalar's
+            # trailing blank lines are not lost. Drop the marker and the single
+            # terminating newline only; the blank lines stay part of the body and
+            # the join below re-adds one newline before the close fence.
+            rendered_body = rendered_body[: -len("\n...\n")]
+        else:
+            # ruamel terminates the dump with a trailing newline; the fence lines
+            # and any preserved trailing blank lines are added back explicitly.
+            rendered_body = rendered_body.rstrip("\n")
+        parts = [open_fence]
+        if rendered_body:
+            parts.append(rendered_body)
+        parts.extend([close_fence, *trailing_lines, ""])
+        return "\n".join(parts)
+
+    def _walk_frontmatter(self, node, path: str) -> None:
+        """
+        Recursively walk a parsed YAML node, translating scalar string values
+        in place. ``path`` is the dotted/indexed key path used as the unit
+        location and docpath (e.g. ``frontmatter.metaTitle`` or
+        ``frontmatter.authors[0]``).
+        """
+        if isinstance(node, dict):
+            for key in list(node.keys()):
+                self._translate_frontmatter_child(node, key, f"{path}.{key}")
+        elif isinstance(node, list):
+            for index in range(len(node)):
+                self._translate_frontmatter_child(node, index, f"{path}[{index}]")
+
+    def _translate_frontmatter_child(self, container, key, path: str) -> None:
+        """Translate or recurse into a single child of a map/list container."""
+        # pylint: disable-next=import-outside-toplevel
+        from ruamel.yaml.scalarstring import (  # noqa: PLC0415
+            FoldedScalarString,
+            LiteralScalarString,
+            ScalarString,
+        )
+
+        value = container[key]
+        if isinstance(value, (dict, list)):
+            self._walk_frontmatter(value, path)
+        elif isinstance(value, str):
+            # bool/int/float are not str, so only genuine strings are translated.
+            is_block = isinstance(value, (LiteralScalarString, FoldedScalarString))
+            if is_block:
+                # Block scalars (| and >): the trailing-newline run encodes the
+                # chomping indicator (none -> "-" strip, one -> clip, more ->
+                # "+" keep). Split it off so the unit holds only the content and
+                # the indicator survives an arbitrary translation unchanged.
+                content, trailing_newlines = self._split_trailing_newlines(str(value))
+            else:
+                content = str(value)
+                trailing_newlines = ""
+
+            if not content.strip():
+                # Empty or blank scalars are preserved verbatim and never emit a
+                # unit: an empty source would serialize as a spurious ``msgid ""``
+                # and a wrapping callback would corrupt the value.
+                return
+
+            unit = self.addsourceunit(content)
+            if self.filename:
+                unit.addlocation(f"{self.filename}:{path}")
+            else:
+                unit.addlocation(path)
+            unit.setdocpath(path)
+            translated = self.callback(content)
+
+            if is_block:
+                # Re-wrap in the same block subtype, restore the chomping via the
+                # trailing newlines, and carry over the first-line comment and
+                # (for folded scalars) the fold positions so an identity
+                # translation re-emits byte-for-byte.
+                new_value = type(value)(translated + trailing_newlines)
+                if hasattr(value, "comment"):
+                    new_value.comment = value.comment
+                if isinstance(value, FoldedScalarString) and hasattr(value, "fold_pos"):
+                    new_value.fold_pos = value.fold_pos
+                container[key] = new_value
+            elif isinstance(value, ScalarString):
+                # Preserve the original quoting style for flow scalars.
+                container[key] = type(value)(translated)
+            else:
+                container[key] = translated
+
+    @staticmethod
+    def _split_trailing_newlines(text: str) -> tuple[str, str]:
+        """Split ``text`` into its content and its trailing run of newlines."""
+        stripped = text.rstrip("\n")
+        return stripped, text[len(stripped) :]
 
     @staticmethod
     def _dummy_callback(text: str) -> str:

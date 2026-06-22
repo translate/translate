@@ -54,6 +54,7 @@ class MDXFile(MarkdownFile):
         max_line_length=None,
         extract_code_blocks=True,
         extract_frontmatter=True,
+        frontmatter_translate_values=False,
         no_placeholders=False,
     ) -> None:
         """
@@ -72,6 +73,7 @@ class MDXFile(MarkdownFile):
             max_line_length=max_line_length,
             extract_code_blocks=extract_code_blocks,
             extract_frontmatter=extract_frontmatter,
+            frontmatter_translate_values=frontmatter_translate_values,
             no_placeholders=no_placeholders,
         )
 
