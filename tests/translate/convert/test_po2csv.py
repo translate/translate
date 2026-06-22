@@ -168,6 +168,8 @@ class TestPO2CSVCommand(test_convert.TestConvertCommand, TestPO2CSV):
 
     expected_options = [
         "--columnorder=COLUMNORDER",
+        "--escape-formulas",
+        "--no-escape-formulas",
     ]
 
     def test_columnorder(self) -> None:
@@ -202,5 +204,19 @@ class TestPO2CSVCommand(test_convert.TestConvertCommand, TestPO2CSV):
             content
             == """"context","source","target"
 "Context","Same","Target"
+"""
+        )
+
+    def test_no_escape_formulas(self) -> None:
+        pocontent = 'msgid "=SUM(1,1)"\nmsgstr "@target"\n'
+        self.create_testfile("test.po", pocontent)
+
+        self.run_command("test.po", "test.csv", no_escape_formulas=True)
+        content = self.open_testfile("test.csv", "r").read()
+
+        assert (
+            content
+            == """"location","source","target"
+"","=SUM(1,1)","@target"
 """
         )

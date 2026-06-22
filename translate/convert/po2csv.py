@@ -60,10 +60,12 @@ class po2csv:
         csvunit.target = inputunit.target.strings[1]
         return csvunit
 
-    def convertstore(self, inputstore, columnorder=None):
+    def convertstore(self, inputstore, columnorder=None, escape_formulas=True):
         if columnorder is None:
             columnorder = ["location", "source", "target"]
-        outputstore = csvl10n.csvfile(fieldnames=columnorder)
+        outputstore = csvl10n.csvfile(
+            fieldnames=columnorder, escape_formulas=escape_formulas
+        )
         for inputunit in inputstore.units:
             outputunit = self.convertunit(inputunit)
             if outputunit is not None:
@@ -75,14 +77,16 @@ class po2csv:
         return outputstore
 
 
-def convertcsv(inputfile, outputfile, templatefile, columnorder=None) -> int:
+def convertcsv(
+    inputfile, outputfile, templatefile, columnorder=None, escape_formulas=True
+) -> int:
     """Reads in inputfile using po, converts using po2csv, writes to outputfile."""
     # note that templatefile is not used, but it is required by the converter...
     inputstore = po.pofile(inputfile)
     if inputstore.isempty():
         return 0
     convertor = po2csv()
-    outputstore = convertor.convertstore(inputstore, columnorder)
+    outputstore = convertor.convertstore(inputstore, columnorder, escape_formulas)
     outputstore.serialize(outputfile)
     return 1
 
@@ -104,7 +108,23 @@ def main(argv=None) -> None:
         default=None,
         help="specify the order and position of columns (location,source,target,context)",
     )
+    parser.add_option(
+        "",
+        "--escape-formulas",
+        dest="escape_formulas",
+        action="store_true",
+        default=True,
+        help="escape spreadsheet formula-like values in CSV output (default)",
+    )
+    parser.add_option(
+        "",
+        "--no-escape-formulas",
+        dest="escape_formulas",
+        action="store_false",
+        help="preserve spreadsheet formula-like values in CSV output",
+    )
     parser.passthrough.append("columnorder")
+    parser.passthrough.append("escape_formulas")
     parser.run(argv)
 
 
