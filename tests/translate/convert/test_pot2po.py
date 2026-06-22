@@ -32,7 +32,7 @@ class TestPOT2PO:
             if line.startswith('"') and line.endswith('"')
         ]
 
-    def test_max_line_length_wraps_output(self) -> None:
+    def test_max_line_length_wraps_quoted_payloads(self) -> None:
         long_text = (
             "This sentence contains enough words to require wrapping in PO output."
         )
@@ -485,6 +485,54 @@ msgstr ""
         print(f"Expected Header:\n{expected}")
         assert bytes(newpo).decode("utf-8") == expected
 
+    def test_header_initialisation_preserves_template_order(self) -> None:
+        """Existing PO headers keep their order when merged with a POT header."""
+        potsource = r"""msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: new@example.com\n"
+"POT-Creation-Date: 2006-11-11 11:11+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"X-Generator: Translate Toolkit 0.10rc2\n"
+"""
+        posource = r"""msgid ""
+msgstr ""
+"Language-Team: Pig Latin <piglatin@example.com>\n"
+"Project-Id-Version: Pootle 0.10\n"
+"POT-Creation-Date: 2006-01-01 01:01+0100\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Report-Msgid-Bugs-To: old@example.com\n"
+"PO-Revision-Date: 2006-09-09 09:09+0900\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Last-Translator: Joe Translate <joe@example.com>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Translate Toolkit 0.9\n"
+"""
+        expected = r"""msgid ""
+msgstr ""
+"Language-Team: Pig Latin <piglatin@example.com>\n"
+"Project-Id-Version: Pootle 0.10\n"
+"POT-Creation-Date: 2006-11-11 11:11+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Report-Msgid-Bugs-To: new@example.com\n"
+"PO-Revision-Date: 2006-09-09 09:09+0900\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Last-Translator: Joe Translate <joe@example.com>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Translate Toolkit 0.10rc2\n"
+"""
+        newpo = self.convertpot(potsource, posource)
+
+        assert bytes(newpo).decode("utf-8") == expected
+
     def test_merging_comments(self) -> None:
         """Test that we can merge comments correctly."""
         potsource = """#. Don't do it!\n#: file.py:1\nmsgid "One"\nmsgstr ""\n"""
@@ -867,8 +915,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Accelerator-Marker: &\n"
 "X-Generator: Translate Toolkit 0.10rc2\n"
+"X-Accelerator-Marker: &\n"
 "X-Merge-On: location\n"
 
 #: new_disassociated_mozilla_accesskey

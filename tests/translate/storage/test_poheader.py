@@ -47,6 +47,22 @@ def test_update() -> None:
         "POT-Creation-Date",
         "Test",
     ]
+    d = poheader.update(
+        {
+            "Language-Team": "LANGUAGE <LL@li.org>",
+            "Project-Id-Version": "abc",
+        },
+        add=True,
+        preserve_order=True,
+        Project_Id_Version="def",
+        Language="af",
+    )
+    assert list(d.keys()) == [
+        "Language-Team",
+        "Project-Id-Version",
+        "Language",
+    ]
+    assert d["Project-Id-Version"] == "def"
 
 
 def poparse(posource):
@@ -165,6 +181,33 @@ msgstr ""
 """
     pofile = poparse(posource)
     compare(pofile)
+
+
+def test_updateheader_preserves_existing_order() -> None:
+    """Updating a parsed header should not reorder existing fields."""
+    posource = r"""msgid ""
+msgstr ""
+"Language-Team: Pig Latin <piglatin@example.com>\n"
+"Project-Id-Version: Pootle 0.10\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Last-Translator: Joe Translate <joe@example.com>\n"
+"""
+    pofile = poparse(posource)
+    pofile.updateheader(
+        add=True,
+        Project_Id_Version="Pootle 0.11",
+        Language="af",
+    )
+
+    assert pofile.units[0].target == (
+        "Language-Team: Pig Latin <piglatin@example.com>\n"
+        "Project-Id-Version: Pootle 0.11\n"
+        "Content-Type: text/plain; charset=UTF-8\n"
+        "Content-Transfer-Encoding: 8bit\n"
+        "Last-Translator: Joe Translate <joe@example.com>\n"
+        "Language: af\n"
+    )
 
 
 ## TODO: enable this code if PoXliffFile is able to parse a header

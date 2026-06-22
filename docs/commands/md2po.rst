@@ -51,8 +51,8 @@ Options (md2po):
                       (default: 'single'; if set to 'onefile', a single po/pot
                       file will be written. 'toplevel' not used.)
 -m MAXLENGTH, --maxlinelength=MAXLENGTH
-                      wrap PO output to the given maximum line length. set to
-                      0 to disable
+                      wrap PO output so quoted string content is at most
+                      MAXLENGTH characters. set to 0 to disable
 
 
 Options (po2md):
