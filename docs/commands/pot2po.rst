@@ -51,8 +51,8 @@ Options:
 -s MIN_SIMILARITY, --similarity=MIN_SIMILARITY   The minimum similarity for inclusion (default: 75%)
 --nofuzzymatching    Disable all fuzzy matching
 -m MAXLENGTH, --maxlinelength=MAXLENGTH
-                      wrap PO output to the given maximum line length. set to
-                      0 to disable
+                      wrap PO output so quoted string content is at most
+                      MAXLENGTH characters. set to 0 to disable
 
 
 .. _pot2po#examples:

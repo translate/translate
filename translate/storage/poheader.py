@@ -69,15 +69,35 @@ def format_key(key: str) -> str:
     return key
 
 
-def update(existing: dict[str, str], add: bool = False, **kwargs) -> dict[str, str]:
+def update(
+    existing: dict[str, str],
+    add: bool = False,
+    *,
+    preserve_order: bool = False,
+    **kwargs,
+) -> dict[str, str]:
     """
     Update an existing header dictionary with the values in kwargs, adding
     new values only if add is true.
 
     :return: Updated dictionary of header entries
     """
-    headerargs = {}
     fixedargs = cidict((format_key(key), value) for key, value in kwargs.items())
+    if preserve_order:
+        headerargs = {}
+        for key, value in existing.items():
+            if key in fixedargs:
+                headerargs[key] = fixedargs.pop(key)
+            else:
+                headerargs[key] = value
+        if add:
+            for key in poheader.header_order:
+                if key in fixedargs:
+                    headerargs[key] = fixedargs.pop(key)
+            headerargs.update(fixedargs)
+        return headerargs
+
+    headerargs = {}
     removed = set()
     for key in poheader.header_order:
         if key in existing:
@@ -230,7 +250,7 @@ class poheader:
                 header = self.makeheader(**kwargs)
                 self._insert_header(header)
         else:
-            headeritems = update(self.parseheader(), add, **kwargs)
+            headeritems = update(self.parseheader(), add, preserve_order=True, **kwargs)
             keys = headeritems.keys()
             if (
                 "Content-Type" not in keys

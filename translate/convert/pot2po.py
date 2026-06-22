@@ -243,7 +243,9 @@ def _do_poheaders(input_store, output_store, template_store) -> None:
     plural_forms = None
     kwargs = {}
 
+    template_header = None
     if template_store is not None and isinstance(template_store, poheader.poheader):
+        template_header = template_store.header()
         templateheadervalues = template_store.parseheader()
         for key, value in templateheadervalues.items():
             if key == "Project-Id-Version":
@@ -286,6 +288,13 @@ def _do_poheaders(input_store, output_store, template_store) -> None:
         else:
             kwargs[key] = value
 
+    if template_header is not None:
+        output_header = output_store.header()
+        if output_header is None:
+            output_header = output_store.makeheader()
+            output_store._insert_header(output_header)
+        output_header.target = template_header.target
+
     output_header = output_store.init_headers(
         charset=charset,
         encoding=encoding,
@@ -301,16 +310,14 @@ def _do_poheaders(input_store, output_store, template_store) -> None:
 
     # Get the header comments and fuzziness state
     # override some values from input file
-    if template_store is not None:
-        template_header = template_store.header()
-        if template_header is not None:
-            if template_header.getnotes("translator"):
-                output_header.addnote(
-                    template_header.getnotes("translator"),
-                    "translator",
-                    position="replace",
-                )
-            output_header.markfuzzy(template_header.isfuzzy())
+    if template_header is not None:
+        if template_header.getnotes("translator"):
+            output_header.addnote(
+                template_header.getnotes("translator"),
+                "translator",
+                position="replace",
+            )
+        output_header.markfuzzy(template_header.isfuzzy())
 
 
 def main(argv=None) -> None:

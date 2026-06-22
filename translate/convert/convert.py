@@ -148,7 +148,8 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser):
             default=None,
             metavar="MAXLENGTH",
             help=(
-                "wrap PO output to the given maximum line length. set to 0 to disable"
+                "wrap PO output so quoted string content is at most MAXLENGTH "
+                "characters. set to 0 to disable"
             ),
         )
         self.passthrough.append("maxlength")

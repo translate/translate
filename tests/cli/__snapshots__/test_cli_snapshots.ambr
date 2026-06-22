@@ -794,8 +794,8 @@
         "MIME-Version: 1.0\n"
         "Content-Type: text/plain; charset=UTF-8\n"
         "Content-Transfer-Encoding: 8bit\n"
-        "X-Accelerator-Marker: &\n"
         "X-Generator: @X-GENERATOR@\n"
+        "X-Accelerator-Marker: &\n"
         "X-Merge-On: location\n"
         
         #: DIALOGEX.IDD_REGGHC_DIALOG.CAPTION
