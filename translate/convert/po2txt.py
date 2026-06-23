@@ -135,7 +135,9 @@ class po2txt:
         if not self.should_output_store:
             return False
 
-        outputstring = self.convert_store() if self.template_file is None else self.merge_stores()
+        outputstring = (
+            self.convert_store() if self.template_file is None else self.merge_stores()
+        )
 
         self.output_file.write(outputstring.encode("utf-8"))
         return True
