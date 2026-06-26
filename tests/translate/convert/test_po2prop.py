@@ -557,3 +557,46 @@ class TestPO2PropCommand(test_convert.TestConvertCommand, TestPO2Prop):
         "--removeuntranslated",
         "--nofuzzy",
     ]
+
+    def test_strings_output_uses_strings_personality_by_default(self) -> None:
+        """Check .strings output still uses the strings personality by default."""
+        self.create_testfile(
+            "translations.po",
+            """#: greeting
+msgid "Hello"
+msgstr "Ahoj"
+""",
+        )
+        self.create_testfile(
+            "template.strings", '"greeting" = "Hello";\n'.encode("utf-16")
+        )
+
+        self.run_command(
+            "translations.po", "output.strings", template="template.strings"
+        )
+
+        assert self.read_testfile("output.strings").decode("utf-16") == (
+            '"greeting" = "Ahoj";\n'
+        )
+
+    def test_strings_output_honors_personality_option(self) -> None:
+        """Check .strings output passes the personality option through."""
+        self.create_testfile(
+            "translations.po",
+            """#: greeting
+msgid "Hello"
+msgstr "Ahoj"
+""",
+        )
+        self.create_testfile("template.strings", '"greeting" = "Hello";')
+
+        self.run_command(
+            "translations.po",
+            "output.strings",
+            template="template.strings",
+            personality="strings-utf8",
+        )
+
+        assert self.read_testfile("output.strings").decode() == (
+            '"greeting" = "Ahoj";\n'
+        )
