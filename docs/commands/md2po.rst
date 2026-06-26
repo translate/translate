@@ -14,18 +14,17 @@ Usage
 
 ::
 
-  md2po [options] <md-src> <po>
+  md2po [options] [-t <md-src>] <md-src-or-dest> <po>
   po2md [options] -i <po> -t <md-src> -o <md-dest>
 
 Where:
 
-+-----------+----------------------------------------------------------------------------------------+
-| <md-src>  | is a Markdown file or a directory of Markdown files, source language                   |
-+-----------+----------------------------------------------------------------------------------------+
-| <md-dest> | is a Markdown file or a directory of Markdown files, translated to the target language |
-+-----------+----------------------------------------------------------------------------------------+
-| <po>      | is a PO file or directory of PO files                                                  |
-+-----------+----------------------------------------------------------------------------------------+
+* <md-src> is a Markdown file or a directory of Markdown files, source language
+* <md-dest> is a Markdown file or a directory of Markdown files, translated to
+  the target language
+* <md-src-or-dest> is a source Markdown file, or a translated Markdown file when
+  -t is used
+* <po> is a PO file or directory of PO files
 
 Options (md2po):
 
@@ -39,6 +38,7 @@ Options (md2po):
 -i INPUT, --input=INPUT   read from INPUT in Markdown format
 -x EXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -o OUTPUT, --output=OUTPUT  write to OUTPUT in po, pot formats
+-t TEMPLATE, --template=TEMPLATE   read from TEMPLATE in Markdown format
 -S, --timestamp      skip conversion if the output file has newer timestamp
 -P, --pot            output PO Templates (.pot) rather than PO files (.po)
 --duplicates=DUPLICATESTYLE
@@ -93,6 +93,17 @@ content) and place them in *pot*.
 See the :doc:`pot2po` command for more information about how to create PO files
 from the POT files, and to update existing PO files when the POT files have
 changed.
+
+If you already have translated Markdown and want to convert it back to PO, pass
+the translated Markdown as input and the source Markdown as template:
+
+::
+
+  md2po -i docs/index.nl.md -t docs/index.md -o i18n/nl/LC_MESSAGES/index.po
+
+The strings from *docs/index.md* will be written as ``msgid`` values, and the
+matching translated strings from *docs/index.nl.md* will be written as
+``msgstr`` values.
 
 Suppose you have created PO files for translation to Xhosa and placed them in
 the directory *xh*. You can then generate the translated version of the Markdown
