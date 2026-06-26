@@ -76,6 +76,19 @@ class TestPO2Prop:
         print(propfile)
         assert propfile == propexpected
 
+    def test_escaped_backslash_key_spacing(self) -> None:
+        """Check that key-owned whitespace is not duplicated as delimiter padding."""
+        posource = """#: path%5C%5C+
+msgid "old"
+msgstr "new"
+"""
+        proptemplate = r"""path\\ =old
+"""
+        propexpected = r"""path\\ =new
+"""
+        propfile = self.merge2prop(proptemplate, posource)
+        assert propfile == propexpected
+
     def test_no_value(self) -> None:
         """Check that we can handle keys without value."""
         posource = """#: KEY\nmsgctxt "KEY"\nmsgid ""\nmsgstr ""\n"""
@@ -268,6 +281,29 @@ msgstr "translated"
             proptemplate, posource, personality="strings", encoding="utf-16"
         )
         assert propfile == propexpectedstrings
+
+    def test_strings_preserves_quoted_key_spacing(self) -> None:
+        """Check merging .strings entries whose quoted key starts or ends with spaces."""
+        posource = """#: +todo+
+msgid " todo "
+msgstr " translated "
+
+#: +for+
+msgid " for "
+msgstr " translated "
+"""
+        proptemplate = """/*  todo  */
+" todo " = " todo ";
+" for "=" for ";
+""".encode("utf-16")
+        propexpected = """/*  todo  */
+" todo " = " translated ";
+" for "=" translated ";
+"""
+        propfile = self.merge2prop(
+            proptemplate, posource, personality="strings", encoding="utf-16"
+        )
+        assert propfile == propexpected
 
     def test_merging_untranslated_simple(self) -> None:
         """Check merging untranslated entries in two 1) use English 2) drop key, value pair."""
