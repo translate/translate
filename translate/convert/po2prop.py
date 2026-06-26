@@ -232,7 +232,7 @@ def convertstrings(
     inputfile,
     outputfile,
     templatefile,
-    personality="strings",
+    personality=None,
     includefuzzy=False,
     encoding=None,
     outputthreshold=None,
@@ -243,7 +243,7 @@ def convertstrings(
         inputfile,
         outputfile,
         templatefile,
-        personality="strings",
+        personality=personality or "strings",
         includefuzzy=includefuzzy,
         encoding=encoding,
         outputthreshold=outputthreshold,
@@ -275,12 +275,13 @@ def convertprop(
     inputfile,
     outputfile,
     templatefile,
-    personality="java",
+    personality=None,
     includefuzzy=False,
     encoding=None,
     remove_untranslated=False,
     outputthreshold=None,
 ) -> bool:
+    personality = personality or "java"
     inputstore = po.pofile(inputfile)
 
     if not convert.should_output_store(inputstore, outputthreshold):
@@ -312,7 +313,7 @@ def main(argv=None) -> None:
         "",
         "--personality",
         dest="personality",
-        default=properties.default_dialect,
+        default=None,
         type="choice",
         choices=list(properties.dialects),
         help=f"override the input file format: {', '.join(properties.dialects)} (for .properties files, default: {properties.default_dialect})",
