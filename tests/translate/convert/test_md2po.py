@@ -375,6 +375,37 @@ This text will also be translated.
         assert "World" in content  # source
         assert "Mundo" in content  # target
 
+    def test_translated_markdown_input_with_source_template(self) -> None:
+        """Test converting existing translated Markdown back to PO."""
+        self.create_testfile(
+            "docs/index.md",
+            "# Welcome\n\nRead the documentation before continuing.\n",
+        )
+        self.create_testfile(
+            "docs/index.nl.md",
+            "# Welkom\n\nLees de documentatie voordat u doorgaat.\n",
+        )
+
+        self.run_command(
+            "docs/index.nl.md",
+            "index.po",
+            template="docs/index.md",
+        )
+
+        output = pofile()
+        with open(self.get_testfilename("index.po"), "rb") as handle:
+            output.parse(handle)
+        units = {
+            unit.source: unit.target for unit in output.units if not unit.isheader()
+        }
+
+        assert units["Welcome"] == "Welkom"
+        assert (
+            units["Read the documentation before continuing."]
+            == "Lees de documentatie voordat u doorgaat."
+        )
+        assert "Welkom" not in units
+
     def test_markdown_with_template_complex(self):
         """Test md2po with template file for complex Markdown structure."""
         # Create template (source language)
