@@ -1,0 +1,40 @@
+Translate Toolkit 3.19.13
+*************************
+
+*Released on 26 June 2026*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- PO
+
+  - Preserve existing PO header order when updating files
+
+- Properties
+
+  - Honor explicit ``strings`` personality options in ``po2prop``
+  - Preserve spacing around quoted ``.strings`` keys
+
+Documentation
+-------------
+
+- Document importing translated Markdown using a source template
+- Clarify ``--maxlinelength`` handling for quoted string content
+
+Other
+-----
+
+- Modernize the Read the Docs setup
+- Update development tooling and CI dependencies
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+Michal Čihař
