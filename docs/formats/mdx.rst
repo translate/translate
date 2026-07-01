@@ -24,12 +24,35 @@ Conformance
 * Import and export statements at the top level are preserved verbatim and
   are not extracted for translation.
 
-* Block-level JSX components (tags starting with an uppercase letter, e.g.
-  ``<Alert>``, ``<Tabs>``) are preserved verbatim. Their inner content is
-  *not* separately extracted for translation.
+* The MDX-specific extractor intentionally recognizes only JSX components that
+  begin at column zero and occupy complete physical lines. Component names must
+  start with an uppercase letter, and component blocks must be separated from
+  surrounding Markdown by blank lines.
 
-* Inline JSX expressions such as ``{variable}`` at the block level are
-  preserved verbatim.
+* Simple boolean and quoted string attributes on one-line component tags are
+  supported. Quoted values are extracted for translation, for example
+  ``<Step title="Open" />`` or ``<Callout title="Warning">``.
+
+* Markdown children are extracted only when a supported one-line opening tag
+  and its matching closing tag are separate, column-zero lines and the child
+  block contains no JSX, raw HTML, JavaScript expressions, or top-level ESM
+  outside fenced code blocks. The child is parsed as an isolated Markdown
+  document and its common indentation is restored after translation.
+
+* Syntax requiring JSX or JavaScript parsing is deliberately opaque. This
+  includes multiline tags, expression or spread attributes, same-line children,
+  nested components, fragments, and component-like literals in child content.
+  Such syntax is preserved without partial extraction when it forms a
+  blank-delimited block. Same-name nesting is recognized only on complete
+  physical lines.
+
+* Brace-containing paragraphs and standalone JavaScript expressions are
+  preserved without attempting to balance JavaScript tokens. Top-level import
+  and export statements are preserved through the next blank line.
+
+* Inline JSX and JSX after Markdown container markers are not interpreted by
+  the MDX-specific extractor. They remain subject to the inherited Markdown
+  handling and their attributes are not separately extracted.
 
 * Regular Markdown content between JSX blocks is extracted for translation
   in the same way as the plain Markdown converter.
@@ -38,7 +61,8 @@ Conformance
   element handling, optional code block extraction, optional front matter
   extraction, and maximum line length reflowing in ``po2mdx``.
 
-* Does not translate embedded HTML.
+* Does not provide dedicated embedded HTML extraction; HTML handling is
+  inherited from the Markdown parser.
 
 * Does not perform any checks that the translated text has the same formatting
   as the source.
