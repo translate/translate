@@ -143,6 +143,161 @@ class TestTBXfile(test_base.TestTranslationStore):
             "Explanation", "Another explanation"
         )
 
+    def test_replace_nested_descrip(self) -> None:
+        tbxdata = """<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE martif PUBLIC "ISO 12200:1999A//DTD MARTIF core (DXFcdV04)//EN" "TBXcdv04.dtd">
+<martif type="TBX" xml:lang="en">
+    <martifHeader>
+        <fileDesc>
+            <sourceDesc>
+                <p>Translate Toolkit</p>
+            </sourceDesc>
+        </fileDesc>
+    </martifHeader>
+    <text>
+        <body>
+            <termEntry id="testid">
+                <langSet xml:lang="en">
+                    <tig>
+                        <term>Concept</term>
+                        <descrip>Explanation</descrip>
+                    </tig>
+                </langSet>
+            </termEntry>
+        </body>
+    </text>
+</martif>
+"""
+        tbxfile = tbx.tbxfile.parsestring(tbxdata.encode())
+        unit = tbxfile.units[0]
+
+        assert unit.getnotes(origin="definition") == "Explanation"
+        unit.addnote("Another explanation", origin="definition", position="replace")
+
+        assert unit.getnotes(origin="definition") == "Another explanation"
+        assert unit.xmlelement.find("./langSet/tig/descrip") is None
+        assert len(unit.xmlelement.findall("./descrip")) == 1
+
+    def test_replace_definition_preserves_translation_needed(self) -> None:
+        tbxdata = """<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE martif PUBLIC "ISO 12200:1999A//DTD MARTIF core (DXFcdV04)//EN" "TBXcdv04.dtd">
+<martif type="TBX" xml:lang="en">
+    <martifHeader>
+        <fileDesc>
+            <sourceDesc>
+                <p>Translate Toolkit</p>
+            </sourceDesc>
+        </fileDesc>
+    </martifHeader>
+    <text>
+        <body>
+            <termEntry id="testid">
+                <descrip>Explanation</descrip>
+                <descrip type="Translation needed">Yes</descrip>
+                <langSet xml:lang="en"><tig><term>Concept</term></tig></langSet>
+            </termEntry>
+        </body>
+    </text>
+</martif>
+"""
+        tbxfile = tbx.tbxfile.parsestring(tbxdata.encode())
+        unit = tbxfile.units[0]
+
+        assert unit.istranslatable()
+        assert unit.getnotes(origin="definition") == "Explanation"
+
+        unit.addnote("Another explanation", origin="definition", position="replace")
+
+        assert unit.istranslatable()
+        assert unit.getnotes(origin="definition") == "Another explanation"
+        translation_needed = unit.xmlelement.find(
+            "./descrip[@type='Translation needed']"
+        )
+        assert translation_needed is not None
+        assert translation_needed.text == "Yes"
+
+    def test_replace_translator_note_preserves_nested_developer_note(self) -> None:
+        tbxdata = """<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE martif PUBLIC "ISO 12200:1999A//DTD MARTIF core (DXFcdV04)//EN" "TBXcdv04.dtd">
+<martif type="TBX" xml:lang="en">
+    <martifHeader>
+        <fileDesc>
+            <sourceDesc>
+                <p>Translate Toolkit</p>
+            </sourceDesc>
+        </fileDesc>
+    </martifHeader>
+    <text>
+        <body>
+            <termEntry id="testid">
+                <langSet xml:lang="en">
+                    <tig>
+                        <term>Concept</term>
+                        <note from="developer">Developer note</note>
+                    </tig>
+                </langSet>
+                <note from="translator">Translator note</note>
+            </termEntry>
+        </body>
+    </text>
+</martif>
+"""
+        tbxfile = tbx.tbxfile.parsestring(tbxdata.encode())
+        unit = tbxfile.units[0]
+
+        unit.addnote("New translator note", origin="translator", position="replace")
+
+        assert unit.getnotes(origin="translator") == "New translator note"
+        assert unit.getnotes(origin="developer") == "Developer note"
+        nested_note = unit.xmlelement.find("./langSet/tig/note")
+        assert nested_note is not None
+        assert nested_note.get("from") == "developer"
+
+    def test_replace_pos_note_preserves_administrative_status(self) -> None:
+        tbxdata = """<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE martif PUBLIC "ISO 12200:1999A//DTD MARTIF core (DXFcdV04)//EN" "TBXcdv04.dtd">
+<martif type="TBX" xml:lang="en">
+    <martifHeader>
+        <fileDesc>
+            <sourceDesc>
+                <p>Translate Toolkit</p>
+            </sourceDesc>
+        </fileDesc>
+    </martifHeader>
+    <text>
+        <body>
+            <termEntry id="testid">
+                <langSet xml:lang="en">
+                    <tig>
+                        <term>Concept</term>
+                        <termNote type="administrativeStatus">deprecated</termNote>
+                        <termNote type="partOfSpeech">old noun</termNote>
+                    </tig>
+                </langSet>
+            </termEntry>
+        </body>
+    </text>
+</martif>
+"""
+        tbxfile = tbx.tbxfile.parsestring(tbxdata.encode())
+        unit = tbxfile.units[0]
+
+        assert unit.isobsolete()
+        assert unit.getnotes(origin="pos") == "old noun"
+
+        unit.addnote("new noun", origin="pos", position="replace")
+
+        assert unit.getnotes(origin="pos") == "new noun"
+        assert unit.isobsolete()
+        assert (
+            unit.xmlelement.find("./langSet/tig/termNote[@type='partOfSpeech']") is None
+        )
+        administrative_status = unit.xmlelement.find(
+            "./langSet/tig/termNote[@type='administrativeStatus']"
+        )
+        assert administrative_status is not None
+        assert administrative_status.text == "deprecated"
+
     def test_note_from(self) -> None:
         tbxdata = """<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE martif PUBLIC "ISO 12200:1999A//DTD MARTIF core (DXFcdV04)//EN" "TBXcdv04.dtd">
