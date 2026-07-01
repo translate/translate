@@ -199,18 +199,32 @@ class tbxunit(lisa.LISAunit):
     def setid(self, value):
         return self.xmlelement.set("id", value)
 
-    def _get_origin_element(self, origin: str):
+    def _get_origin_element(self, origin: str | None):
         if origin == "pos":
             return self.namespaced("termNote")
         if origin == "definition":
             return self.namespaced("descrip")
         return self.namespaced("note")
 
+    def _matches_note_origin(self, node, origin=None) -> bool:
+        return (
+            origin in {"pos", "definition", None} or node.get("from") == origin
+        ) and not (
+            self._is_administrative_status_term_node(node)
+            or self._is_translation_needed_node(node)
+        )
+
     def removenotes(self, origin=None) -> None:
         """Remove all the translator notes."""
-        notes = self.xmlelement.iterdescendants(self._get_origin_element(origin))  # ty:ignore[invalid-argument-type]
+        notes = [
+            note
+            for note in self._getnotenodes(origin=origin)
+            if self._matches_note_origin(note, origin)
+        ]
         for note in notes:
-            self.xmlelement.remove(note)
+            parent = note.getparent()
+            if parent is not None:
+                parent.remove(note)
 
     def addnote(self, text, origin=None, position="append") -> None:
         """Add a note specifically in a "note" tag."""
@@ -221,14 +235,14 @@ class tbxunit(lisa.LISAunit):
             text = text.strip()
         if not text:
             return
-        note = etree.SubElement(self.xmlelement, self._get_origin_element(origin))  # ty:ignore[invalid-argument-type]
+        note = etree.SubElement(self.xmlelement, self._get_origin_element(origin))
         safely_set_text(note, text)
         if origin and origin not in {"pos", "definition"}:
             note.set("from", origin)
 
     def _getnotenodes(self, origin=None):
         """Get all nodes matching ``origin`` in the XML document."""
-        return self.xmlelement.iterdescendants(self._get_origin_element(origin))  # ty:ignore[invalid-argument-type]
+        return self.xmlelement.iterdescendants(self._get_origin_element(origin))
 
     def _getnodetext(self, node):
         """
@@ -265,13 +279,7 @@ class tbxunit(lisa.LISAunit):
         initial_list = [
             self._getnodetext(node)
             for node in note_nodes
-            if (
-                (origin in {"pos", "definition", None} or node.get("from") == origin)
-                and not (
-                    self._is_administrative_status_term_node(node)
-                    or self._is_translation_needed_node(node)
-                )
-            )
+            if self._matches_note_origin(node, origin)
         ]
 
         # Remove duplicate entries from list:
