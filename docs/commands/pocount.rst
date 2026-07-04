@@ -174,7 +174,7 @@ Bugs
 * There are some miscounts related to word breaks.
 * When using the short output formats the columns may not be exactly aligned.
   This is because the number of digits in different columns is unknown before
-  all input files are processed. The chosen tradeoff here was instanteous
+  all input files are processed. The chosen tradeoff here was instantaneous
   output (after each processed file) instead of waiting for the last file to be
   processed.
 
