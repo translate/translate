@@ -242,12 +242,12 @@ ignore = [
   "tests/*/*/*/*",
   "tests/*/*/*/*/*",
   "tools/benchmark.py",  # Internal benchmarking
-  "tools/phase",  # TODO: investigate purpuse, it was never installed
-  "tools/phaselist2goals",  # TODO: investigate purpuse, it was never installed
-  "translate/convert/odfxml",  # TODO: investigate purpuse, it was never installed
-  "translate/convert/roundtrip-gaia",  # TODO: investigate purpuse, it was never installed
-  "translate/convert/roundtrip-mozilla",  # TODO: investigate purpuse, it was never installed
-  "translate/convert/roundtrip-OOo",  # TODO: investigate purpuse, it was never installed
+  "tools/phase",  # TODO: investigate purpose, it was never installed
+  "tools/phaselist2goals",  # TODO: investigate purpose, it was never installed
+  "translate/convert/odfxml",  # TODO: investigate purpose, it was never installed
+  "translate/convert/roundtrip-gaia",  # TODO: investigate purpose, it was never installed
+  "translate/convert/roundtrip-mozilla",  # TODO: investigate purpose, it was never installed
+  "translate/convert/roundtrip-OOo",  # TODO: investigate purpose, it was never installed
   "translate/storage/debug.properties"  # TODO: this should be converted to tests
 ]
 
