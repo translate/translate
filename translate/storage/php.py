@@ -353,11 +353,18 @@ class phpfile(base.TranslationStore):
 
     def serialize(self, out) -> None:
         """Convert the units back to lines."""
+        array_units: dict[str, list[phpunit]] = {}
+        for unit in self.units:
+            name_parts = unit.name.split("->")
+            array_name = name_parts[0]
+            for name_part in name_parts[1:]:
+                array_units.setdefault(array_name, []).append(unit)
+                array_name = f"{array_name}->{name_part}"
 
         def write(text) -> None:
             out.write(text.encode(self.encoding))
 
-        def handle_array(unit, arrname, handled, indent=0) -> None:
+        def handle_array(arrname, handled, indent=0) -> None:
             if arrname in handled:
                 return
             children = set()
@@ -383,14 +390,10 @@ class phpfile(base.TranslationStore):
             indent += 4
             prefix = f"{arrname}->"
             pref_len = len(prefix)
-            for item in self.units:
-                if not item.name.startswith(prefix):
-                    continue
+            for item in array_units[arrname]:
                 name = item.name[pref_len:]
                 if "->" in name:
-                    handle_array(
-                        item, prefix + name.split("->", 1)[0], children, indent
-                    )
+                    handle_array(prefix + name.split("->", 1)[0], children, indent)
                 else:
                     write(item.getoutput(" " * indent, name))
             # Write array end
@@ -403,7 +406,7 @@ class phpfile(base.TranslationStore):
         handled = set()
         for unit in self.units:
             if "->" in unit.name:
-                handle_array(unit, unit.name.split("->", 1)[0], handled)
+                handle_array(unit.name.split("->", 1)[0], handled)
             else:
                 write(unit.getoutput())
 

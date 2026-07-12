@@ -178,6 +178,34 @@ class TestPhpFile(test_monolingual.TestMonolingualStore):
         """Helper that converts php source to phpfile object and back."""
         return bytes(self.phpparse(phpsource)).decode("utf-8")
 
+    def test_nested_arrays_are_indexed_once(self) -> None:
+        """Serializing nested arrays should not rescan all units per array."""
+
+        class CountingList(list):
+            def __init__(self, *args) -> None:
+                super().__init__(*args)
+                self.iterations = 0
+
+            def __iter__(self):
+                self.iterations += 1
+                return super().__iter__()
+
+        phpsource = """<?php
+$messages = array(
+    'first' => array(
+        'message' => 'First message',
+    ),
+    'second' => array(
+        'message' => 'Second message',
+    ),
+);\n"""
+        store = self.phpparse(phpsource)
+        units = CountingList(store.units)
+        store.units = units
+
+        assert bytes(store).decode() == phpsource
+        assert units.iterations == 2
+
     def test_simpledefinition(self) -> None:
         """Checks that a simple php definition is parsed correctly."""
         phpsource = """$lang['mediaselect'] = 'Bestand selective';"""
