@@ -1,4 +1,5 @@
 import pytest
+from ruamel.yaml.comments import CommentedMap
 
 from translate.misc.multistring import multistring
 from translate.storage import base, yaml
@@ -564,6 +565,26 @@ key2: value2
         assert len(store.units) == 2
         assert store.units[0].getnotes() == ""
         assert store.units[1].getnotes() == ""
+
+    def test_sibling_keys_are_indexed_once(self) -> None:
+        """Comment extraction should not scan all sibling keys per value."""
+
+        class CountingCommentedMap(CommentedMap):
+            def __init__(self, *args, **kwargs) -> None:
+                self.keys_calls = 0
+                super().__init__(*args, **kwargs)
+
+            def keys(self):
+                self.keys_calls += 1
+                return super().keys()
+
+        data = CountingCommentedMap(
+            (f"key_{index}", f"value_{index}") for index in range(10)
+        )
+
+        list(self.StoreClass()._flatten(data))
+
+        assert data.keys_calls == 1
 
     def test_multiline_literal_format(self) -> None:
         """Test that multiline strings use literal format (|) for better readability."""
