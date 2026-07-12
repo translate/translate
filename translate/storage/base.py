@@ -881,6 +881,7 @@ class TranslationStore(Generic[U]):
         self.locationindex = {}
         self.sourceindex = {}
         self.id_index = {}
+        self._plural_tags_cache: dict[tuple[str | None, int | None], list[str]] = {}
 
     @property
     def encoding(self):
@@ -1277,11 +1278,20 @@ class TranslationStore(Generic[U]):
     def get_plural_tags(
         self, target: list[str] | str | multistring | None = None
     ) -> list[str]:
-        locale = self.get_base_locale_code()
         plural_count = None
         if target is not None:
-            plural_count = len(self.UnitClass.get_plural_strings(target))
-        return get_cldr_plural_tags(locale, plural_count)
+            if isinstance(target, multistring):
+                plural_count = len(target.strings)
+            elif isinstance(target, list):
+                plural_count = len(target)
+            else:
+                plural_count = 1
+        cache_key = (self.gettargetlanguage(), plural_count)
+        if cache_key not in self._plural_tags_cache:
+            self._plural_tags_cache[cache_key] = get_cldr_plural_tags(
+                self.get_base_locale_code(), plural_count
+            )
+        return self._plural_tags_cache[cache_key]
 
 
 class UnitId:

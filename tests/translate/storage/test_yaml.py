@@ -650,6 +650,26 @@ class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
         store.parse(data)
         assert bytes(store) == data.encode("ascii")
 
+    def test_plural_tags_only_resolved_for_plural_mappings(self, monkeypatch) -> None:
+        store = self.StoreClass()
+        get_plural_tags = store.get_plural_tags
+        get_plural_tags_calls = 0
+
+        def counting_get_plural_tags(target=None):
+            nonlocal get_plural_tags_calls
+            get_plural_tags_calls += 1
+            return get_plural_tags(target)
+
+        monkeypatch.setattr(store, "get_plural_tags", counting_get_plural_tags)
+        data = "en:\n" + "".join(
+            f"  group_{index}:\n    message: Value {index}\n" for index in range(100)
+        )
+
+        store.parse(data)
+
+        assert len(store.units) == 100
+        assert get_plural_tags_calls == 0
+
     def test_ruby_wrong(self) -> None:
         data = """no_data: No data
 """
