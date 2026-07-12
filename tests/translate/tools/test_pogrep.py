@@ -6,6 +6,32 @@ from translate.tools import pogrep
 from ..storage.test_base import first_translatable, headerless_len
 
 
+def test_real_index_normalization_expansion() -> None:
+    """Map indexes when one source character expands under NFC."""
+    expanding_character = "\u0344"
+
+    assert pogrep.real_index(expanding_character, 0) == 0
+    assert pogrep.real_index(expanding_character, 1) == 0
+    assert pogrep.real_index(expanding_character, 2) == 1
+
+
+def test_real_index_uses_binary_search(monkeypatch) -> None:
+    """Mapping a normalized index should take logarithmically many scans."""
+    text = "a\u0301" * 4096
+    normalize = pogrep.data.normalize
+    normalize_calls = 0
+
+    def counting_normalize(value):
+        nonlocal normalize_calls
+        normalize_calls += 1
+        return normalize(value)
+
+    monkeypatch.setattr(pogrep.data, "normalize", counting_normalize)
+
+    assert pogrep.real_index(text, 4096) == len(text)
+    assert normalize_calls < 20
+
+
 class TestPOGrep:
     @staticmethod
     def poparse(posource):

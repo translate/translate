@@ -106,13 +106,20 @@ def real_index(string, nfc_index):
     Calculate the real index in the unnormalized string that corresponds to
     the index nfc_index in the normalized string.
     """
-    length = nfc_index
     max_length = len(string)
-    while len(data.normalize(string[:length])) <= nfc_index:
-        if length == max_length:
-            return length
-        length += 1
-    return length - 1
+    lower = 0
+    # The extra position is a sentinel for normalized indexes at or beyond the
+    # end of the string. It also handles characters whose NFC form expands.
+    upper = max_length + 1
+
+    while lower < upper:
+        length = (lower + upper) // 2
+        if length > max_length or len(data.normalize(string[:length])) > nfc_index:
+            upper = length
+        else:
+            lower = length + 1
+
+    return min(lower - 1, max_length)
 
 
 def find_matches(unit, part, strings, re_search):
