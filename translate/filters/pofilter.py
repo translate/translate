@@ -414,7 +414,7 @@ def cmdlineparser():
     )
 
     parser.passthrough.append("checkfilter")
-    parser.description = f"{__doc__.strip()}\n"  # ty:ignore[unresolved-attribute]
+    parser.description = f"{__doc__.strip()}\n"
 
     return parser
 
