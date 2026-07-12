@@ -912,13 +912,9 @@ class pofile(pocommon.pofile[pounit]):
         # about files already containing msgctxt? - test
         id_dict = {}
         uniqueunits = []
-        # TODO: this is using a list as the pos aren't hashable, but this is slow.
-        # probably not used frequently enough to worry about it, though.
-        markedpos = []
 
         def addcomment(thepo) -> None:
             thepo.msgidcomments.append(f'"_: {" ".join(thepo.getlocations())}\\n"')
-            markedpos.append(thepo)
 
         for thepo in self.units:
             id = thepo.getid()
@@ -934,11 +930,10 @@ class pofile(pocommon.pofile[pounit]):
                         uniqueunits.append(thepo)
                 elif duplicatestyle == "msgctxt":
                     origpo = id_dict[id]
-                    if origpo not in markedpos and not origpo.msgctxt:
+                    if not origpo.msgctxt:
                         origpo.msgctxt.append(
                             f'"{escapeforpo(" ".join(origpo.getlocations()))}"'
                         )
-                        markedpos.append(thepo)
                     thepo.msgctxt.append(
                         f'"{escapeforpo(" ".join(thepo.getlocations()))}"'
                     )

@@ -311,6 +311,74 @@ class TestPYPOFile(test_po.TestPOFile):
         assert str(pofile.units[0]).count("source1") == 2
         assert str(pofile.units[1]).count("source2") == 2
 
+    def test_merge_duplicates_msgctxt_does_not_compare_units(self) -> None:
+        """Context assignment should not scan previously handled units."""
+
+        class CountingPoUnit(pypo.pounit):
+            comparisons = 0
+
+            def __eq__(self, other: object) -> bool:
+                type(self).comparisons += 1
+                return super().__eq__(other)
+
+        store = self.StoreClass(noheader=True)
+        for source in ("first", "second"):
+            for location in ("source1", "source2", "source3"):
+                unit = CountingPoUnit(source)
+                unit.addlocation(location)
+                store.addunit(unit)
+
+        store.removeduplicates("msgctxt")
+
+        assert CountingPoUnit.comparisons == 0
+        contexts = [unit.getpreviouscontext() for unit in store.units]
+        assert contexts == [
+            "source1",
+            "source2",
+            "source3",
+            "source1",
+            "source2",
+            "source3",
+        ]
+
+        store.removeduplicates("msgctxt")
+
+        assert CountingPoUnit.comparisons == 0
+        assert [unit.getpreviouscontext() for unit in store.units] == contexts
+
+    @mark.parametrize("location", ["same", ""])
+    def test_merge_duplicates_msgctxt_drops_identical_contexts(
+        self, location: str
+    ) -> None:
+        """Duplicates remain duplicates when their derived contexts match."""
+        store = self.StoreClass(noheader=True)
+        for _ in range(3):
+            unit = pypo.pounit("message")
+            if location:
+                unit.addlocation(location)
+            store.addunit(unit)
+
+        store.removeduplicates("msgctxt")
+
+        assert len(store.units) == 1
+        assert store.units[0].getpreviouscontext() == location
+
+    def test_merge_duplicates_msgctxt_extends_existing_context(self) -> None:
+        """Location context should extend rather than replace existing context."""
+        store = self.StoreClass(noheader=True)
+        for location in ("source1", "source2"):
+            unit = pypo.pounit("message")
+            unit.setcontext("existing")
+            unit.addlocation(location)
+            store.addunit(unit)
+
+        store.removeduplicates("msgctxt")
+
+        assert [unit.getpreviouscontext() for unit in store.units] == [
+            "existing",
+            "existingsource2",
+        ]
+
     def test_merge_blanks(self) -> None:
         """Checks that merging adds msgid_comments to blanks."""
         posource = (
