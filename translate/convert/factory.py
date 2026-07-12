@@ -22,7 +22,10 @@ from __future__ import annotations
 
 import os
 import tempfile
-from typing import IO, Any
+from typing import IO, TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 # from translate.convert import prop2po, po2prop, odf2xliff, xliff2odf
 
@@ -61,7 +64,7 @@ class UnsupportedConversionError(Exception):
         return msg
 
 
-def get_extension(filename):
+def get_extension(filename: str) -> str | None:
     _path, fname = os.path.split(filename)
     ext = fname.split(os.extsep)[-1]
     if ext == fname:
@@ -69,7 +72,9 @@ def get_extension(filename):
     return ext
 
 
-def get_converter(in_ext, out_ext=None, templ_ext=None):
+def get_converter(
+    in_ext: str, out_ext: str | None = None, templ_ext: str | None = None
+) -> Callable:
     convert_candidates = None
     if templ_ext:
         if (in_ext, templ_ext) in converters:
@@ -97,7 +102,7 @@ def get_converter(in_ext, out_ext=None, templ_ext=None):
     return convert_fn
 
 
-def get_output_extensions(ext):
+def get_output_extensions(ext: str) -> list[str]:
     """Compiles a list of possible output extensions for the given input extension."""
     out_exts = []
     for key, converter in converters.items():
@@ -137,7 +142,9 @@ def convert(
               the extension (format) of the output file. The caller is
               responsible for deleting the (temporary) output file.
     """
-    in_ext, out_ext, templ_ext = None, None, None
+    in_ext: str | None = None
+    out_ext: str | None = None
+    templ_ext: str | None = None
 
     # Get extensions from options
     if options is not None:

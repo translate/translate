@@ -47,7 +47,7 @@ def xliff___eq__(self, other):
     return self.units == other.units
 
 
-xliff.xlifffile.__eq__ = xliff___eq__  # ty:ignore[invalid-assignment]
+xliff.xlifffile.__eq__ = xliff___eq__
 
 
 def print_diff(store1, store2) -> None:
