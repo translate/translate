@@ -392,7 +392,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         lookup_callback: Callable[[str], str] | None = None,
         no_placeholders: bool = False,
     ) -> None:
-        super().__init__(*extras, max_line_length=max_line_length)  # ty:ignore[invalid-argument-type]
+        super().__init__(*extras, max_line_length=max_line_length)
         self.translate_callback = translate_callback
         self.lookup_callback = lookup_callback
         self.bypass = False
@@ -622,7 +622,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     # override to keep track of the content path
 
     def render_heading(
-        self, token: block_token.Heading, max_line_length: int
+        self, token: block_token.Heading, max_line_length: int | None
     ) -> Iterable[str]:
         self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
         self._current_docpath = self._enter_heading(token.level)
@@ -631,7 +631,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         return content
 
     def render_setext_heading(
-        self, token: block_token.SetextHeading, max_line_length: int
+        self, token: block_token.SetextHeading, max_line_length: int | None
     ) -> Iterable[str]:
         self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
         self._current_docpath = self._enter_heading(token.level)
@@ -642,7 +642,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         return content
 
     def render_quote(
-        self, token: block_token.Quote, max_line_length: int
+        self, token: block_token.Quote, max_line_length: int | None
     ) -> Iterable[str]:
         self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
         self._enter_container("blockquote")
@@ -652,7 +652,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         return content
 
     def render_paragraph(
-        self, token: block_token.Paragraph, max_line_length: int
+        self, token: block_token.Paragraph, max_line_length: int | None
     ) -> Iterable[str]:
         self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
         self._current_docpath = self._build_docpath("p")
@@ -661,7 +661,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         return content
 
     def render_html_block(
-        self, token: block_token.HtmlBlock, max_line_length: int
+        self, token: block_token.HtmlBlock, max_line_length: int | None
     ) -> Iterable[str]:
         # Check if this is a translation control comment
         content = token.content.strip()
@@ -674,7 +674,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         return super().render_html_block(token, max_line_length=max_line_length)
 
     def render_block_code(
-        self, token: block_token.BlockCode, max_line_length: int
+        self, token: block_token.BlockCode, max_line_length: int | None
     ) -> Iterable[str]:
         if not self.extract_code_blocks or self.ignore_translation:
             return super().render_block_code(token, max_line_length=max_line_length)
@@ -689,14 +689,14 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         self.path.pop()
         return self.prefix_lines(lines, "    ")
 
-    def render_fenced_code_block(  # ty:ignore[invalid-method-override]
+    def render_fenced_code_block(
         self,
         token: block_token.CodeFence,
-        max_line_length: int,
+        max_line_length: int | None,
     ) -> Iterable[str]:
         if not self.extract_code_blocks or self.ignore_translation:
             return super().render_fenced_code_block(
-                token,  # ty:ignore[invalid-argument-type]
+                token,
                 max_line_length=max_line_length,
             )
 
@@ -714,7 +714,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         return result
 
     def render_list_item(
-        self, token: block_token.ListItem, max_line_length: int
+        self, token: block_token.ListItem, max_line_length: int | None
     ) -> Iterable[str]:
         self.path.append(f":{token.line_number}")
         self._enter_container("li")
@@ -724,7 +724,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         return content
 
     def render_table(
-        self, token: block_token.Table, max_line_length: int
+        self, token: block_token.Table, max_line_length: int | None
     ) -> Iterable[str]:
         self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
         self._table_docpath = self._build_docpath("table")
@@ -747,7 +747,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         return result
 
     def render_link_reference_definition_block(
-        self, token: LinkReferenceDefinitionBlock, max_line_length: int
+        self, token: LinkReferenceDefinitionBlock, max_line_length: int | None
     ) -> Iterable[str]:
         self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
         self._current_docpath = self._build_docpath("link-ref-def")
@@ -762,7 +762,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     # translation and placeholder functions
 
     def span_to_lines(
-        self, tokens: Iterable[span_token.SpanToken], max_line_length: int
+        self, tokens: Iterable[span_token.SpanToken], max_line_length: int | None
     ) -> Iterable[str]:
         """Renders a sequence of span tokens to markdown, with translation."""
         # If we're in an ignore section, skip translation
