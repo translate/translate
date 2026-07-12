@@ -92,6 +92,37 @@ def test_known_language_single_plural_tags_keep_language_mapping() -> None:
     assert store.get_plural_tags(multistring(["one form"])) == ["one", "other"]
 
 
+def test_plural_tags_are_cached_by_language_and_count(monkeypatch) -> None:
+    get_cldr_plural_tags = base.get_cldr_plural_tags
+    get_cldr_plural_tags_calls = 0
+
+    def counting_get_cldr_plural_tags(locale, plural_count=None):
+        nonlocal get_cldr_plural_tags_calls
+        get_cldr_plural_tags_calls += 1
+        return get_cldr_plural_tags(locale, plural_count)
+
+    monkeypatch.setattr(base, "get_cldr_plural_tags", counting_get_cldr_plural_tags)
+    store = base.TranslationStore()
+    store.settargetlanguage("en")
+
+    assert store.get_plural_tags(multistring(["one", "other"])) == ["one", "other"]
+    assert store.get_plural_tags(multistring(["first", "second"])) == [
+        "one",
+        "other",
+    ]
+
+    store.settargetlanguage("ar")
+    assert store.get_plural_tags(multistring(["one", "other"])) == [
+        "zero",
+        "one",
+        "two",
+        "few",
+        "many",
+        "other",
+    ]
+    assert get_cldr_plural_tags_calls == 2
+
+
 class TestTranslationUnit:
     """
     Tests a TranslationUnit.

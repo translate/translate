@@ -378,8 +378,8 @@ class RubyYAMLFile(YAMLFile):
 
     def _parse_dict(self, data, prev):
         # Does this look like a plural?
-        tags = self.get_plural_tags()
         if data and all(x in cldr_plural_categories for x in data):
+            tags = self.get_plural_tags()
             # Ensure we have correct plurals ordering.
             values = [data[item] for item in tags if item in data]
 

@@ -1,3 +1,4 @@
+import json
 from io import BytesIO
 
 from pytest import mark, raises
@@ -1208,6 +1209,41 @@ class TestI18NextV4Store(test_monolingual.TestMonolingualStore):
         store.targetlanguage = "ar"
         store.parse(self.PartiallyPluralizedJson)
         assert len(store.units) == 4
+
+    def test_plural_tags_resolved_once(self, monkeypatch) -> None:
+        """Resolve invariant locale plural tags once for the whole catalog."""
+        store = self.StoreClass()
+        store.targetlanguage = "en"
+        get_plural_tags = store.get_plural_tags
+        get_plural_tags_calls = 0
+
+        def counting_get_plural_tags():
+            nonlocal get_plural_tags_calls
+            get_plural_tags_calls += 1
+            return get_plural_tags()
+
+        monkeypatch.setattr(store, "get_plural_tags", counting_get_plural_tags)
+        messages = {
+            f"message_{index}_{suffix}": suffix
+            for index in range(100)
+            for suffix in ("one", "other")
+        }
+
+        store.parse(json.dumps(messages))
+
+        assert len(store.units) == 100
+        assert get_plural_tags_calls == 1
+
+    def test_plural_base_processed_once(self) -> None:
+        """Do not duplicate a group containing an extra CLDR plural form."""
+        store = self.StoreClass()
+        store.targetlanguage = "en"
+
+        store.parse(
+            '{"message_one": "one", "message_other": "other", "message_few": "few"}'
+        )
+
+        assert len(store.units) == 1
 
     def test_plurals(self) -> None:
         store = self.StoreClass()
