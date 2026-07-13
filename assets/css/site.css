@@ -207,7 +207,7 @@ code {
 
 .eyebrow {
   margin: 0 0 1rem;
-  color: var(--teal);
+  color: var(--teal-dark);
   font-size: 0.76rem;
   font-weight: 850;
   letter-spacing: 0.13em;
@@ -446,7 +446,7 @@ code {
 .feature-card a {
   margin-top: auto;
   padding-top: 2rem;
-  color: var(--teal);
+  color: var(--teal-dark);
   font-weight: 760;
   text-decoration: none;
 }
@@ -545,7 +545,7 @@ code {
 .maintenance-note strong {
   display: block;
   margin-bottom: 0.15rem;
-  color: var(--teal);
+  color: var(--teal-dark);
   font-size: 0.8rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -564,7 +564,7 @@ code {
 .arrow-link {
   display: inline-block;
   margin-top: 1.25rem;
-  color: var(--teal);
+  color: var(--teal-dark);
   font-weight: 780;
   text-decoration: none;
 }
@@ -723,7 +723,8 @@ code {
   }
 
   .site-nav {
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(3, max-content);
     gap: 0.5rem 1rem;
     overflow-x: visible;
   }
