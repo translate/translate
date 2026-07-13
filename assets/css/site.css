@@ -23,18 +23,18 @@
 }
 
 :root {
-  --ink: #183337;
-  --ink-muted: #536b6e;
-  --paper: #f5f7f4;
-  --paper-deep: #e8eeea;
+  --ink: #2b3743;
+  --ink-muted: #596772;
+  --paper: #f6f8f9;
+  --paper-deep: #e8f5f2;
   --white: #fff;
-  --teal: #126b67;
-  --teal-dark: #123c40;
-  --teal-deep: #0a292c;
-  --mint: #9cddd0;
-  --amber: #f2b760;
-  --line: #d4dfda;
-  --shadow: 0 24px 60px rgb(12 43 45 / 14%);
+  --cyan: #00d2e6;
+  --mint: #2eccaa;
+  --teal: #1fa385;
+  --teal-dark: #144d3f;
+  --teal-deep: #2b3743;
+  --line: #d4e0df;
+  --shadow: 0 24px 60px rgb(43 55 67 / 16%);
   --radius: 1.25rem;
   --shell: 72rem;
 }
@@ -68,8 +68,9 @@ a:hover {
 }
 
 a:focus-visible {
-  outline: 3px solid var(--amber);
+  outline: 3px solid var(--cyan);
   outline-offset: 4px;
+  box-shadow: 0 0 0 2px var(--ink);
 }
 
 code,
@@ -137,7 +138,7 @@ code {
 }
 
 .brand-mark-accent {
-  fill: var(--amber);
+  fill: var(--cyan);
   opacity: 0.96;
 }
 
@@ -159,7 +160,7 @@ code {
 }
 
 .site-nav a {
-  color: #dce9e5;
+  color: #d9e9e5;
   text-decoration: none;
 }
 
@@ -179,7 +180,7 @@ code {
   overflow: hidden;
   padding: clamp(4.5rem, 9vw, 8rem) 0 clamp(5rem, 9vw, 7.5rem);
   background:
-    radial-gradient(circle at 86% 18%, rgb(156 221 208 / 20%), transparent 28rem),
+    radial-gradient(circle at 86% 18%, rgb(0 210 230 / 20%), transparent 28rem),
     linear-gradient(135deg, var(--teal-dark), var(--teal-deep));
   color: var(--white);
 }
@@ -230,7 +231,7 @@ code {
 .hero-lead {
   max-width: 39rem;
   margin: 1.75rem 0 0;
-  color: #d7e5e2;
+  color: #d8e7e3;
   font-size: clamp(1.08rem, 2vw, 1.3rem);
   line-height: 1.65;
 }
@@ -261,12 +262,12 @@ code {
 }
 
 .button-primary {
-  background: var(--amber);
+  background: var(--cyan);
   color: var(--teal-deep);
 }
 
 .button-primary:hover {
-  background: #ffc875;
+  background: var(--mint);
 }
 
 .button-secondary {
@@ -284,7 +285,7 @@ code {
   align-items: center;
   gap: 0.65rem;
   margin-top: 2rem;
-  color: #cfe0dd;
+  color: #cde1dc;
   font-size: 0.93rem;
   text-decoration: none;
 }
@@ -297,7 +298,7 @@ code {
   overflow: hidden;
   border: 1px solid rgb(255 255 255 / 16%);
   border-radius: var(--radius);
-  background: rgb(4 27 29 / 82%);
+  background: rgb(35 46 57 / 88%);
   box-shadow: 0 38px 85px rgb(0 0 0 / 28%);
   transform: rotate(1deg);
 }
@@ -313,15 +314,15 @@ code {
   width: 0.68rem;
   height: 0.68rem;
   border-radius: 50%;
-  background: #ef7d72;
+  background: var(--cyan);
 }
 
 .terminal-bar span:nth-child(2) {
-  background: var(--amber);
+  background: var(--mint);
 }
 
 .terminal-bar span:nth-child(3) {
-  background: var(--mint);
+  background: var(--teal);
 }
 
 .terminal-card pre {
@@ -334,12 +335,12 @@ code {
 }
 
 .prompt {
-  color: var(--amber);
+  color: var(--cyan);
   user-select: none;
 }
 
 .output {
-  color: #80bbb1;
+  color: var(--mint);
 }
 
 .quick-facts {
@@ -415,7 +416,7 @@ code {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--white);
-  box-shadow: 0 14px 36px rgb(18 60 64 / 5%);
+  box-shadow: 0 14px 36px rgb(43 55 67 / 7%);
 }
 
 .feature-number {
@@ -424,8 +425,8 @@ code {
   height: 2.7rem;
   place-items: center;
   border-radius: 50%;
-  background: #dceee8;
-  color: var(--teal);
+  background: rgb(46 204 170 / 16%);
+  color: var(--teal-dark);
   font-size: 0.78rem;
   font-weight: 850;
 }
@@ -465,7 +466,7 @@ code {
 .install-grid > div:first-child > p:not(.eyebrow) {
   max-width: 38rem;
   margin: 1.5rem 0 0;
-  color: #cee0dc;
+  color: #d1e4df;
   font-size: 1.08rem;
 }
 
@@ -508,14 +509,14 @@ code {
   margin: 0;
   padding: 1.2rem;
   border-radius: 0.7rem;
-  background: #061f21;
+  background: #202b35;
   color: var(--white);
   font-size: clamp(0.72rem, 1.3vw, 0.9rem);
 }
 
 .install-command .command-note {
   margin: 1.1rem 0 0;
-  color: #9fb9b5;
+  color: #abc3bd;
   font-size: 0.88rem;
 }
 
@@ -604,7 +605,7 @@ code {
   justify-content: space-between;
   gap: 1rem;
   padding: 1rem 0;
-  border-bottom: 1px solid #b9cbc4;
+  border-bottom: 1px solid #b7d0c9;
   color: var(--teal-deep);
   font-weight: 750;
   text-decoration: none;
@@ -613,7 +614,7 @@ code {
 .site-footer {
   padding: 4.5rem 0 2rem;
   background: var(--teal-deep);
-  color: #c8dcda;
+  color: #c9d9dd;
 }
 
 .footer-grid {
@@ -628,7 +629,7 @@ code {
 
 .footer-grid p {
   max-width: 22rem;
-  color: #91afab;
+  color: #a8babf;
 }
 
 .footer-grid h2 {
@@ -647,7 +648,7 @@ code {
 
 .footer-grid > div:not(:first-child) a {
   margin: 0.25rem 0;
-  color: #c8dcda;
+  color: #c9d9dd;
   text-decoration: none;
 }
 
@@ -659,7 +660,7 @@ code {
   margin-top: 3.5rem;
   padding-top: 1.5rem;
   border-top: 1px solid rgb(255 255 255 / 12%);
-  color: #789995;
+  color: #9bafb5;
   font-size: 0.84rem;
 }
 
