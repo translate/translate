@@ -518,26 +518,31 @@ class pounit(pocommon.pounit):
                 splitlist2 = []
                 prefix = "#"
                 for item in list1:
-                    splitlist1.extend(item.split()[1:])
-                    prefix = item.split()[0]
+                    parts = item.split()
+                    splitlist1.extend(parts[1:])
+                    prefix = parts[0]
                 for item in list2:
-                    splitlist2.extend(item.split()[1:])
-                    prefix = item.split()[0]
+                    parts = item.split()
+                    splitlist2.extend(parts[1:])
+                    prefix = parts[0]
+                existing = set(splitlist1)
                 list1.extend(
                     [
                         f"{prefix} {item}{lineend}"
                         for item in splitlist2
-                        if item not in splitlist1
+                        if item not in existing
                     ]
                 )
             elif list1 != list2:
                 # Normal merge, but conform to list1 newline style
+                existing = set(list1)
                 for item in list2:
                     if lineend:
                         item = item.rstrip() + lineend
                     # avoid duplicate comment lines (this might cause some problems)
-                    if item not in list1 or len(item) < 5:
+                    if item not in existing or len(item) < 5:
                         list1.append(item)
+                        existing.add(item)
 
         if not isinstance(otherunit, pounit):
             super().merge(otherunit, overwrite, comments)

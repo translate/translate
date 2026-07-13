@@ -1,5 +1,6 @@
 from copy import copy
 from io import BytesIO
+from typing import SupportsIndex
 
 from pytest import mark, raises
 
@@ -91,6 +92,66 @@ class TestHelpers:
 
 class TestPYPOUnit(test_po.TestPOUnit):
     UnitClass = pypo.pounit
+
+    def test_merge_comments_does_not_scan_existing_comments(self) -> None:
+        """Comment merging should index existing comments once."""
+
+        class CountingList(list):
+            contains_calls = 0
+
+            def __contains__(self, item: object) -> bool:
+                type(self).contains_calls += 1
+                return super().__contains__(item)
+
+        unit = self.UnitClass("message")
+        unit.othercomments = CountingList(["#\n", "# existing\n"])
+        other = self.UnitClass("message")
+        other.othercomments = ["#\n", "# existing\n", "# new\n", "# new\n"]
+
+        unit.merge(other)
+
+        assert CountingList.contains_calls == 0
+        assert unit.othercomments == ["#\n", "# existing\n", "#\n", "# new\n"]
+
+    def test_merge_source_references_does_not_scan_existing_references(self) -> None:
+        """Source reference merging should use indexed membership."""
+
+        class CountingReference(str):
+            comparisons = 0
+
+            def __eq__(self, other: object) -> bool:
+                type(self).comparisons += 1
+                return super().__eq__(other)
+
+            __hash__ = str.__hash__
+
+        class ReferenceComment(str):
+            def split(
+                self, sep: str | None = None, maxsplit: SupportsIndex = -1
+            ) -> list[str]:
+                parts = super().split(sep, maxsplit)
+                return [parts[0], *(CountingReference(part) for part in parts[1:])]
+
+        unit = self.UnitClass("message")
+        unit.sourcecomments = [ReferenceComment("#: old1 old2\n")]
+        other = self.UnitClass("message")
+        other.sourcecomments = [ReferenceComment("#: new1 new2\n")]
+
+        unit.merge(other)
+
+        assert CountingReference.comparisons == 0
+        assert unit.getlocations() == ["old1", "old2", "new1", "new2"]
+
+    def test_merge_source_references_preserves_order_and_duplicates(self) -> None:
+        """Reference indexing should retain the existing merge semantics."""
+        unit = self.UnitClass("message")
+        unit.sourcecomments = ["#: existing first\n"]
+        other = self.UnitClass("message")
+        other.sourcecomments = ["#: existing new new\n"]
+
+        unit.merge(other)
+
+        assert unit.getlocations() == ["existing", "first", "new", "new"]
 
     def test_plurals(self) -> None:
         """Tests that plurals are handled correctly."""
