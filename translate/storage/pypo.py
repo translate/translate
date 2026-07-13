@@ -247,6 +247,8 @@ class pounit(pocommon.pounit):
         self.msgstr: list[str] | dict[int, list[str]] = []
         self._msgstrlen_cache: int | None = None
         self._typecomments_cache: list[str] | None = None
+        self._source_cache: str | tuple[str, ...] | None = None
+        self._source_cache_key: tuple[str | None, ...] | None = None
         self._target_cache: str | tuple[str, ...] | None = None
         super().__init__(source)
 
@@ -280,12 +282,9 @@ class pounit(pocommon.pounit):
     def _invalidate_target_cache(self) -> None:
         self._target_cache = None
 
-    def _get_source_vars(self, msgid, msgid_plural):
-        singular = unquotefrompo(msgid)
-        if self.hasplural():
-            pluralform = unquotefrompo(msgid_plural)
-            return multistring([singular, pluralform])
-        return singular
+    def _invalidate_source_cache(self) -> None:
+        self._source_cache = None
+        self._source_cache_key = None
 
     def quote(self, text: str) -> list[str]:
         return quoteforpo(text, self.wrapper)
@@ -304,7 +303,22 @@ class pounit(pocommon.pounit):
     @property
     def source(self):
         """Unescaped msgid."""
-        return self._get_source_vars(self.msgid, self.msgid_plural)
+        # The raw fields are public mutable lists, so use their current contents
+        # as the key rather than relying solely on the source setter.
+        source_cache_key = (*self.msgid, None, *self.msgid_plural)
+        if self._source_cache is None or self._source_cache_key != source_cache_key:
+            singular = unquotefrompo(self.msgid)
+            if self.hasplural():
+                self._source_cache = (
+                    singular,
+                    unquotefrompo(self.msgid_plural),
+                )
+            else:
+                self._source_cache = singular
+            self._source_cache_key = source_cache_key
+        if isinstance(self._source_cache, tuple):
+            return multistring(list(self._source_cache))
+        return self._source_cache
 
     @source.setter
     def source(self, source: str | list[str] | multistring) -> None:
@@ -314,6 +328,7 @@ class pounit(pocommon.pounit):
         :param source: an unescaped source string.
         """
         self._rich_source = None
+        self._invalidate_source_cache()
         self.msgid, self.msgid_plural = self._set_source_vars(source)
 
     def _get_prev_source(self):
