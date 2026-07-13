@@ -718,11 +718,13 @@ code {
 
 @media (max-width: 42rem) {
   .shell {
-    width: min(calc(100% - 1.5rem), var(--shell));
+    width: min(calc(100% - 2rem), var(--shell));
   }
 
   .site-nav {
-    gap: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    overflow-x: visible;
   }
 
   .site-nav a {
@@ -739,7 +741,7 @@ code {
   }
 
   .hero h1 {
-    font-size: clamp(3rem, 16vw, 4.7rem);
+    font-size: clamp(2.8rem, 13vw, 4.2rem);
   }
 
   .button-row,
