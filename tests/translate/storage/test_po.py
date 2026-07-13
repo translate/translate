@@ -155,7 +155,7 @@ class TestPOUnit(test_base.TestTranslationUnit):
     def test_wrapping_bug(self) -> None:
         """This tests for a wrapping bug that existed at some stage."""
         unit = self.UnitClass("")
-        message = 'Projeke ya Pootle ka boyona e ho <a href="http://translate.sourceforge.net/">translate.sourceforge.net</a> moo o ka fumanang dintlha ka source code, di mailing list jwalo jwalo.'
+        message = 'Projeke ya Pootle ka boyona e ho <a href="https://translate.sourceforge.net/">translate.sourceforge.net</a> moo o ka fumanang dintlha ka source code, di mailing list jwalo jwalo.'
         unit.target = message
         print(unit.target)
         assert unit.target == message
@@ -663,7 +663,7 @@ msgstr "een"
         pofile.updateheader(
             add=True,
             **{
-                "Report-Msgid-Bugs-To": r"http://qa.openoffice.org/issues/enter_bug.cgi?subcomponent=ui&comment=&short_desc=Localization%20issue%20in%20file%3A%20dbaccess\source\core\resource.oo&component=l10n&form_name=enter_issue"
+                "Report-Msgid-Bugs-To": r"https://qa.openoffice.org/issues/enter_bug.cgi?subcomponent=ui&comment=&short_desc=Localization%20issue%20in%20file%3A%20dbaccess\source\core\resource.oo&component=l10n&form_name=enter_issue"
             },
         )
         filecontents = bytes(pofile).decode("utf-8")

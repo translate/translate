@@ -15,7 +15,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
 
 """
 This is a set of validation checks that can be performed on translation
@@ -44,7 +44,7 @@ logger = logging.getLogger(__name__)
 
 # These are some regular expressions that are compiled for use in some tests
 
-# printf syntax based on http://en.wikipedia.org/wiki/Printf which doesn't
+# printf syntax based on https://en.wikipedia.org/wiki/Printf which doesn't
 # cover everything we leave \w instead of specifying the exact letters as
 # this should capture printf types defined in other platforms.
 # Extended to support Python named format specifiers and objective-C special
@@ -1219,7 +1219,7 @@ class StandardChecker(TranslationChecker):
         pick up accelerators that are missing and ones that shouldn't be there.
 
         See `accelerators on the localization guide
-        <http://docs.translatehouse.org/projects/localization-guide/en/latest/guide/translation/accelerators.html>`_
+        <https://docs.translatehouse.org/projects/localization-guide/en/latest/guide/translation/accelerators.html>`_
         for a full description on accelerators.
         """
         str1 = self.filtervariables(str1)
@@ -2012,7 +2012,7 @@ class StandardChecker(TranslationChecker):
         <https://pyenchant.github.io/pyenchant/>`_. You need to have PyEnchant
         installed as well as a dictionary for your language (for example, one
         of the `Hunspell <https://wiki.openoffice.org/wiki/Dictionaries>`_ or
-        `aspell <http://ftp.gnu.org/gnu/aspell/dict/>`_ dictionaries). This
+        `aspell <https://ftp.gnu.org/gnu/aspell/dict/>`_ dictionaries). This
         test will only work if you have specified the ``--language`` option.
 
         The pofilter error that is created, lists the misspelled word, plus

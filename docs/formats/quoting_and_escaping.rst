@@ -46,7 +46,7 @@ within the single-quoted string.
 
 Some DTD files seem to have backslash-escapes, but these are anomalies: see
 `discussion thread on Mozilla l10n-dev
-<http://groups.google.com/group/mozilla.dev.l10n/browse_thread/thread/58256c1f59c22798/b4bac2de4182f3e0>`_
+<https://groups.google.com/group/mozilla.dev.l10n/browse_thread/thread/58256c1f59c22798/b4bac2de4182f3e0>`_
 
 .. _quoting_and_escaping#mozilla_properties_format:
 

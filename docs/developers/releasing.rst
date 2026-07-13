@@ -40,8 +40,8 @@ notes.  You should remove all log messages before the release.
 
 .. note:: Since the release notes will be used in places that allow linking we
    use links within the notes.  These should link back to products websites
-   (`Virtaal <http://virtaal.org>`_, `Pootle
-   <http://pootle.translatehouse.org>`_, etc), references to `Translate
+   (`Virtaal <https://virtaal.org>`_, `Pootle
+   <https://pootle.translatehouse.org>`_, etc), references to `Translate
    <http://translatehouse.org>`_ and possibly bug numbers, etc.
 
 Read for grammar and spelling errors.

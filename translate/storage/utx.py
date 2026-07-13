@@ -14,7 +14,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
 
 """
 Manage the Universal Terminology eXchange (UTX) format.
@@ -32,7 +32,7 @@ implement that.
 Specification
     The format is implemented according to UTX v1.0 (No longer available from
     their website. The current `UTX version
-    <http://www.aamt.info/english/utx/#Download>`_ may be downloaded instead).
+    <https://www.aamt.info/english/utx/#Download>`_ may be downloaded instead).
 
 Format Implementation
     The UTX format is a Tab Separated Value (TSV) file in UTF-8.  The

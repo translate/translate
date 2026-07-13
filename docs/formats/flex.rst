@@ -15,4 +15,4 @@ References
 ==========
 
 * `Description for Adobe Flex properties files
-  <http://help.adobe.com/en_US/Flex/4.0/UsingSDK/WS2db454920e96a9e51e63e3d11c0bf69084-7f2d.html>`_
+  <https://help.adobe.com/en_US/Flex/4.0/UsingSDK/WS2db454920e96a9e51e63e3d11c0bf69084-7f2d.html>`_

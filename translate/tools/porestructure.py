@@ -14,14 +14,14 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
 
 """
 Restructure Gettxt PO files produced by
 :doc:`poconflicts </commands/poconflicts>` into the original directory tree
 for merging using :doc:`pomerge </commands/pomerge>`.
 
-See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pomerge.html
+See: https://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pomerge.html
 for examples and usage instructions.
 """
 

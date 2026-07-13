@@ -117,18 +117,18 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         self.__check_escape(string, xml)
 
     def test_escape_link(self) -> None:
-        string = '<a href="http://example.net">link</a>'
+        string = '<a href="https://example.net">link</a>'
         xml = (
             '<string name="teststring">\n'
-            '  <a href="http://example.net">link</a>\n'
+            '  <a href="https://example.net">link</a>\n'
             "</string>\n"
         )
         self.__check_escape(string, xml)
 
     def test_escape_link_and_text(self) -> None:
-        string = '<a href="http://example.net">link</a> and text'
+        string = '<a href="https://example.net">link</a> and text'
         xml = (
-            '<string name="teststring"><a href="http://example.net">link'
+            '<string name="teststring"><a href="https://example.net">link'
             "</a> and text</string>\n"
         )
         self.__check_escape(string, xml)
@@ -319,16 +319,14 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         self.__check_parse(string, xml)
 
     def test_parse_link(self) -> None:
-        string = '<a href="http://example.net">link</a>'
-        xml = (
-            '<string name="teststring"><a href="http://example.net">link</a></string>\n'
-        )
+        string = '<a href="https://example.net">link</a>'
+        xml = '<string name="teststring"><a href="https://example.net">link</a></string>\n'
         self.__check_parse(string, xml)
 
     def test_parse_link_and_text(self) -> None:
-        string = '<a href="http://example.net">link</a> and text'
+        string = '<a href="https://example.net">link</a> and text'
         xml = (
-            '<string name="teststring"><a href="http://example.net">link'
+            '<string name="teststring"><a href="https://example.net">link'
             "</a> and text</string>\n"
         )
         self.__check_parse(string, xml)
@@ -724,7 +722,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
     def test_indent(self) -> None:
         content = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE resources [
-<!ENTITY url_privacy_policy "http://example.com/">
+<!ENTITY url_privacy_policy "https://example.com/">
 ]>
 <resources>
     <string name="privacy_policy"><u><a href="&url_privacy_policy;">Datenschutzerklärung</a></u></string>

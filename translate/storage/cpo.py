@@ -14,7 +14,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
 
 """
 Classes that hold units of .po files (pounit) or entire files (pofile).
@@ -206,7 +206,7 @@ def xerror2_cb(
 
 
 # Setup return and parameter types
-# See also http://git.savannah.gnu.org/cgit/gettext.git/tree/gettext-tools/libgettextpo/gettext-po.in.h
+# See also https://git.savannah.gnu.org/cgit/gettext.git/tree/gettext-tools/libgettextpo/gettext-po.in.h
 def setup_call_types(gpo) -> None:
     # File access
     gpo.po_file_create.restype = po_file_t

@@ -14,13 +14,13 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
 """
 Convert an OpenOffice.org (SDF) localization file to Gettext PO localization files.
 
-See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/oo2po.html
+See: https://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/oo2po.html
 for examples and usage instructions.
 """
 
@@ -96,7 +96,7 @@ class oo2po:
         """Converts an entire oo file to a base class format (.po or XLIFF)."""
         thetargetfile = po.pofile()
         # create a header for the file
-        bug_url = f"http://qa.openoffice.org/issues/enter_bug.cgi?{parse.urlencode({'subcomponent': 'ui', 'comment': '', 'short_desc': f'Localization issue in file: {theoofile.filename}', 'component': 'l10n', 'form_name': 'enter_issue'})}"
+        bug_url = f"https://qa.openoffice.org/issues/enter_bug.cgi?{parse.urlencode({'subcomponent': 'ui', 'comment': '', 'short_desc': f'Localization issue in file: {theoofile.filename}', 'component': 'l10n', 'form_name': 'enter_issue'})}"
         targetheader = thetargetfile.init_headers(
             x_accelerator_marker="~",
             x_merge_on="location",

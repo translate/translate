@@ -97,7 +97,7 @@ understanding that will make the converters much easier to use and understand.
 * :doc:`resx2po <resx2po>` -- .Net Resource (.resx) file converter
 * :doc:`sub2po <sub2po>` -- Converter for various subtitle files
 * :doc:`symb2po <symb2po>` -- Symbian-style translation to PO converter
-* :doc:`tiki2po <tiki2po>` -- `TikiWiki <http://tikiwiki.org/>`_ language.php
+* :doc:`tiki2po <tiki2po>` -- `TikiWiki <https://tiki.org/Facts>`_ language.php
   converter
 * :doc:`toml2po <toml2po>` -- TOML converter
 * :doc:`ts2po <ts2po>` -- Qt Linguist .ts converter

@@ -14,18 +14,18 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
 
 """
 Manage the Haiku catkeys translation format.
 
 The Haiku catkeys format is the translation format used for localisation of
-the `Haiku <http://www.haiku-os.org/>`_ operating system.
+the `Haiku <https://www.haiku-os.org/>`_ operating system.
 
 It is a bilingual base class derived format with :class:`CatkeysFile` and
 :class:`CatkeysUnit` providing file and unit level access.  The file format is
 described here:
-http://www.haiku-os.org/blog/pulkomandy/2009-09-24_haiku_locale_kit_translator_handbook
+https://www.haiku-os.org/blog/pulkomandy/2009-09-24_haiku_locale_kit_translator_handbook
 
 Implementation
     The implementation covers the full requirements of a catkeys file. The

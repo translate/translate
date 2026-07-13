@@ -15,7 +15,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
 
 from pytest import mark
 
@@ -23,7 +23,7 @@ from translate.storage.placeables import StringElem, base, general, parse, xliff
 
 
 class TestStringElem:
-    ORIGSTR = 'Ģët <a href="http://www.example.com" alt="Ģët &brand;!">&brandLong;</a>'
+    ORIGSTR = 'Ģët <a href="https://www.example.com" alt="Ģët &brand;!">&brandLong;</a>'
 
     def setup_method(self, method) -> None:
         self.elem = parse(self.ORIGSTR, general.parsers)
@@ -36,7 +36,7 @@ class TestStringElem:
         assert str(self.elem.sub[0]) == "Ģët "
         assert (
             str(self.elem.sub[1])
-            == '<a href="http://www.example.com" alt="Ģët &brand;!">'
+            == '<a href="https://www.example.com" alt="Ģët &brand;!">'
         )
         assert str(self.elem.sub[2]) == "&brandLong;"
         assert str(self.elem.sub[3]) == "</a>"
@@ -46,7 +46,7 @@ class TestStringElem:
         assert len(self.elem.sub[1].sub) == 1  # ty:ignore[unresolved-attribute]
         assert (
             self.elem.sub[1].sub[0]  # ty:ignore[unresolved-attribute]
-            == '<a href="http://www.example.com" alt="Ģët &brand;!">'
+            == '<a href="https://www.example.com" alt="Ģët &brand;!">'
         )
         assert len(self.elem.sub[2].sub) == 1  # ty:ignore[unresolved-attribute]
         assert self.elem.sub[2].sub[0] == "&brandLong;"  # ty:ignore[unresolved-attribute]
@@ -90,10 +90,10 @@ class TestStringElem:
         assert self.elem.elem_at_offset(self.elem.find("!")) is self.elem.sub[1]
 
     def test_find(self) -> None:
-        assert self.elem.find("example") == 24
-        assert self.elem.find("example") == 24
+        assert self.elem.find("example") == 25
+        assert self.elem.find("example") == 25
         searchelem = parse("&brand;", general.parsers)
-        assert self.elem.find(searchelem) == 46
+        assert self.elem.find(searchelem) == 47
 
     def test_find_elems_with(self) -> None:
         assert self.elem.find_elems_with("Ģët") == [self.elem.sub[0], self.elem.sub[1]]
@@ -138,7 +138,7 @@ class TestStringElem:
         assert parent is None
         assert offset is None
         assert len(elem.sub) == 2
-        assert str(elem) == 'Ģët <a href="http://www.example.com" alt="Ģët &brand;!">'
+        assert str(elem) == 'Ģët <a href="https://www.example.com" alt="Ģët &brand;!">'
 
         # A separate test case where the delete range include elements between
         # the start- and end elements.

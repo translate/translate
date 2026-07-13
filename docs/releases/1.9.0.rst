@@ -5,8 +5,8 @@ Translate Toolkit 1.9.0 Released
 
 This release contains many improvements and bug fixes. While it contains many
 general improvements, it also specifically contains needed changes for the
-upcoming `Pootle <http://pootle.translatehouse.org>`_ 2.1.6 and `Virtaal
-<http://virtaal.translatehouse.org/>`_ 0.7.
+upcoming `Pootle <https://pootle.translatehouse.org>`_ 2.1.6 and `Virtaal
+<https://virtaal.translatehouse.org/>`_ 0.7.
 
 
 Highlighted improvements
@@ -15,26 +15,26 @@ Highlighted improvements
 - Faster terminology matching
 - Several small optimisations to performance and memory use
 - More advanced state support (visible in `pocount
-  <http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pocount.html>`_
-  and `Virtaal <http://virtaal.translatehouse.org/>`_ 0.7)
+  <https://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pocount.html>`_
+  and `Virtaal <https://virtaal.translatehouse.org/>`_ 0.7)
 - Improved language detection models (+South African languages)
 - Improve handling of printf variable reordering [Jacques Beaurain]
 - Review of the wording of the messages of `pofilter
-  <http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pofilter.html>`_
+  <https://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pofilter.html>`_
   checks
 - Better sentence segmentation for some non-Latin languages
 - More supported formats for `podebug
-  <http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/podebug.html>`_
+  <https://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/podebug.html>`_
 - Extra options for `pomerge
-  <http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pomerge.html>`_,
+  <https://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pomerge.html>`_,
   `pogrep
-  <http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pogrep.html>`_
+  <https://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pogrep.html>`_
   and po2oo/xliff2oo.
 
 The new `pogrep
-<http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pogrep.html>`_
+<https://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pogrep.html>`_
 options made this `possible for GNOME
-<http://translate.org.za/blogs/friedel/en/content/better-lies-about-gnome-localisation>`_.
+<https://web.archive.org/web/20110808174802/https://translate.org.za/blogs/friedel/en/content/better-lies-about-gnome-localisation>`_.
 
 
 Most relevant for Pootle

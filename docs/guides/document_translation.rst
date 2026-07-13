@@ -19,7 +19,7 @@ will make translation easier. Possibilities:
 * Proofread the document (spelling, grammar, clarity)
 * Use consistent terminology
 * Read `"writing for translation"
-  <http://www.multilingualwebmaster.com/library/writing-TR.html>`_
+  <https://www.multilingualwebmaster.com/library/writing-TR.html>`_
 * For structured documents, use proper structure like headings and subheadings
   instead of using style only.
 

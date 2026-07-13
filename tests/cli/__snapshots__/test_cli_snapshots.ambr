@@ -418,9 +418,9 @@
       corrected and merged back into the originals using pomerge.
       
       See:
-      http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pofilter.html
+      https://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pofilter.html
       for examples and usage instructions and
-      http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pofilter_tests.html
+      https://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pofilter_tests.html
       for full descriptions of all tests.
       .SH OPTIONS
       .PP

@@ -14,13 +14,13 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
 
 """
 Manage the Wordfast Translation Memory format.
 
 Wordfast TM format is the Translation Memory format used by the
-`Wordfast <http://www.wordfast.net/>`_ computer aided translation tool.
+`Wordfast <https://www.wordfast.net/>`_ computer aided translation tool.
 
 It is a bilingual base class derived format with :class:`WordfastTMFile`
 and :class:`WordfastUnit` providing file and unit level access.

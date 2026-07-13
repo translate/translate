@@ -14,7 +14,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
 
 """
 Contains general placeable implementations. That is placeables that does not
@@ -91,7 +91,7 @@ class QtFormattingPlaceable(RegexParseMixin, Ph):
     Placeable representing a Qt string formatting variable.
 
     Implemented following Qt documentation on
-    `QString::arg <http://doc.trolltech.com/4.5/qstring.html#arg>`_ where
+    `QString::arg <https://doc.trolltech.com/4.5/qstring.html#arg>`_ where
     the placeables are referred to as 'place markers'
 
     Notes
@@ -120,7 +120,7 @@ class PythonFormattingPlaceable(RegexParseMixin, Ph):
     Placeable representing a Python string formatting variable.
 
     Implemented following Python documentation on `String Formatting Operations
-    <http://docs.python.org/library/stdtypes.html#string-formatting-operations>`_
+    <https://docs.python.org/library/stdtypes.html#string-formatting-operations>`_
     """
 
     iseditable = False
@@ -144,12 +144,12 @@ class JavaMessageFormatPlaceable(RegexParseMixin, Ph):
     Placeable representing a Java MessageFormat formatting variable.
 
     Implemented according to the Java `MessageFormat documentation
-    <http://java.sun.com/j2se/1.4.2/docs/api/java/text/MessageFormat.html>`_.
+    <https://java.sun.com/j2se/1.4.2/docs/api/java/text/MessageFormat.html>`_.
 
     Information about custom formats:
-      - number - `DecimalFormat <http://java.sun.com/j2se/1.4.2/docs/api/java/text/DecimalFormat.html>`_
-      - date/time - `SimpleDateFormat <http://java.sun.com/j2se/1.4.2/docs/api/java/text/SimpleDateFormat.html>`_
-      - choice - `ChoiceFormat <http://java.sun.com/j2se/1.4.2/docs/api/java/text/ChoiceFormat.html>`_
+      - number - `DecimalFormat <https://java.sun.com/j2se/1.4.2/docs/api/java/text/DecimalFormat.html>`_
+      - date/time - `SimpleDateFormat <https://java.sun.com/j2se/1.4.2/docs/api/java/text/SimpleDateFormat.html>`_
+      - choice - `ChoiceFormat <https://java.sun.com/j2se/1.4.2/docs/api/java/text/ChoiceFormat.html>`_
     """
 
     iseditable = False  # TODO: Technically incorrect as you need to change

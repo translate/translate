@@ -94,4 +94,4 @@ While the format is flexible, not all features are supported:
 References
 ==========
 
-* `XML specification <http://www.w3.org/TR/REC-xml/>`_
+* `XML specification <https://www.w3.org/TR/REC-xml/>`_

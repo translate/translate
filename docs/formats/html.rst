@@ -256,4 +256,4 @@ References
 * `Reserved characters
   <https://developer.mozilla.org/en-US/docs/Glossary/Entity>`__
 * `Using character entities
-  <http://www.w3.org/International/questions/qa-escapes>`__
+  <https://www.w3.org/International/questions/qa-escapes>`__

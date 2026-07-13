@@ -18,13 +18,13 @@ locales.
 Resources
 =========
 
-* `rfc2445 <http://tools.ietf.org/html/rfc2445>`_ -- Internet Calendaring and
+* `rfc2445 <https://tools.ietf.org/html/rfc2445>`_ -- Internet Calendaring and
   Scheduling Core Object Specification (iCalendar)
-* iCal `spec <http://www.kanzaki.com/docs/ical/>`_ in a simple adaptation of
+* iCal `spec <https://www.kanzaki.com/docs/ical/>`_ in a simple adaptation of
   the rfc that makes it easy to refer to all sections, items and attributes.
-* `VObject <http://eventable.github.io/vobject/>`_ -- the python library
+* `VObject <https://eventable.github.io/vobject/>`_ -- the python library
   used to read the iCal file.
-* `iCalender validator <http://severinghaus.org/projects/icv/>`_
+* `iCalendar validator <https://icalendar.org/validator.html>`_
 * :wp:`iCalendar <ICalendar>`
 * `Components and their properties
   <https://upload.wikimedia.org/wikipedia/commons/c/c0/ICalendarSpecification.png>`_

@@ -11,7 +11,7 @@ def test_php_escaping_single_quote() -> None:
     Test the helper escaping functions for 'single quotes'.
 
     The tests are built mostly from examples from the PHP
-    `string type definition <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.single>`_.
+    `string type definition <https://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.single>`_.
     """
     # Decoding - PHP -> Python
     assert (

@@ -14,7 +14,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
 
 from io import BytesIO
 
@@ -265,7 +265,7 @@ class TestDTD(test_monolingual.TestMonolingualStore):
         dtdsource = """<!ENTITY malformedURI.longDesc "
 <ul>
   <li>Web addresses are usually written like
-    <strong>http://www.example.com/</strong></li>
+    <strong>https://www.example.com/</strong></li>
   <li>Make sure that your using forward slashes (i.e.
     <strong>/</strong>).</li>
 </ul>

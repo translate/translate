@@ -17,9 +17,9 @@ Conformance
 Our format support allows:
 
 * `Single
-  <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.single>`_
+  <https://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.single>`_
   and `double
-  <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.double>`_
+  <https://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.double>`_
   quoted strings (both for keys and values)
 
   .. code-block:: html+php
@@ -79,7 +79,7 @@ Our format support allows:
       define("another_key", "yet another string");
 
 
-* PHP `short array syntax <http://php.net/manual/en/language.types.array.php>`_
+* PHP `short array syntax <https://php.net/manual/en/language.types.array.php>`_
 
   .. versionadded:: 2.3.0
 
@@ -93,7 +93,7 @@ Our format support allows:
 
 
 * `Heredoc
-  <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.heredoc>`_
+  <https://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.heredoc>`_
 
   .. versionadded:: 2.3.0
 
@@ -106,7 +106,7 @@ Our format support allows:
 
 
 * `Nowdoc
-  <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.nowdoc>`_
+  <https://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.nowdoc>`_
 
   .. versionadded:: 2.3.0
 
@@ -121,9 +121,9 @@ Our format support allows:
 
 
 * Escape sequences (both for `single
-  <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.single>`_
+  <https://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.single>`_
   and `double
-  <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.double>`_
+  <https://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.double>`_
   quoted strings)
 
   .. code-block:: html+php

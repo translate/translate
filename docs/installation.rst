@@ -105,7 +105,9 @@ from a stabilising branch then you need to use Git to get your sources:
 
 
 This will retrieve the ``master`` branch of the Toolkit.  Further Git
-`instructions <http://git.or.cz/course/svn.html>`_ are also available.
+`instructions
+<https://web.archive.org/web/20220520212103/https://git.or.cz/course/svn.html>`_
+are also available.
 
 **For users** wanting to install from source:
 

@@ -14,7 +14,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
 
 """Tests for the Markdown classes."""
 
@@ -537,7 +537,7 @@ author: John Smith
 
     def test_parse_without_callback_no_duplicate_units(self) -> None:
         """Parsing with default callback should not create duplicate units for links."""
-        md = "Click [here](http://example.com) for more info.\n"
+        md = "Click [here](https://example.com) for more info.\n"
         inputfile = BytesIO(md.encode())
         store = markdown.MarkdownFile(inputfile=inputfile)
         unit_sources = self.get_translation_unit_sources(store)
@@ -703,11 +703,11 @@ class TestMarkdownNoPlaceholders(TestMarkdownTranslationUnitExtractionAndTransla
 
     def test_parse_without_callback_no_duplicate_units(self) -> None:
         """In no_placeholders mode, full link syntax is preserved in unit sources."""
-        md = "Click [here](http://example.com) for more info.\n"
+        md = "Click [here](https://example.com) for more info.\n"
         inputfile = BytesIO(md.encode())
         store = markdown.MarkdownFile(inputfile=inputfile, no_placeholders=True)
         unit_sources = self.get_translation_unit_sources(store)
-        assert unit_sources == ["Click [here](http://example.com) for more info."]
+        assert unit_sources == ["Click [here](https://example.com) for more info."]
         assert store.units[0].getdocpath() == "p[1]"
 
     def test_parse_without_callback_multiple_links(self) -> None:
@@ -819,7 +819,7 @@ Don't translate this
 
 <!-- translate:off -->
 
-**Bold** and *italic* text with [links](http://example.com)
+**Bold** and *italic* text with [links](https://example.com)
 
 <!-- translate:on -->
 
@@ -833,7 +833,7 @@ After
 
 <!-- translate:off -->
 
-**Bold** and *italic* text with [links](http://example.com)
+**Bold** and *italic* text with [links](https://example.com)
 
 <!-- translate:on -->
 
@@ -934,8 +934,8 @@ After
 
 <!-- translate:off -->
 
-[Reference 1]: http://example.com "Title 1"
-[Reference 2]: http://example.org
+[Reference 1]: https://example.com "Title 1"
+[Reference 2]: https://example.org
 
 <!-- translate:on -->
 
@@ -945,8 +945,8 @@ More text
         unit_sources = self.get_translation_unit_sources(store)
         assert unit_sources == ["Text", "More text"]
         # Verify the link references are preserved in output
-        assert "[Reference 1]: http://example.com" in store.filesrc
-        assert "[Reference 2]: http://example.org" in store.filesrc
+        assert "[Reference 1]: https://example.com" in store.filesrc
+        assert "[Reference 2]: https://example.org" in store.filesrc
 
     def test_docpath_heading_hierarchy(self) -> None:
         """Test logical document path with heading hierarchy."""

@@ -16,10 +16,10 @@ References
 The format is XML and seems to only have been documented properly since Qt 4.3
 
 * `Current DTD Specification
-  <http://doc.qt.io/qt-5/linguist-ts-file-format.html>`_ for Qt 5,
+  <https://doc.qt.io/qt-5/linguist-ts-file-format.html>`_ for Qt 5,
   older versions; `Qt 4.3
-  <http://doc.qt.io/archives/4.3/linguist-ts-file-format.html>`_
-* http://svn.ez.no/svn/ezcomponents/trunk/Translation/docs/linguist-format.txt
+  <https://doc.qt.io/archives/4.3/linguist-ts-file-format.html>`_
+* https://github.com/zetacomponents/Translation/blob/master/docs/linguist-format.txt
 
 .. _ts#complete:
 
@@ -27,8 +27,8 @@ Complete
 ========
 
 Note that :doc:`ts2po </commands/ts2po>` uses an older version and does not
-support all of these features.  `Virtaal <http://virtaal.org>`_, `Pootle
-<http://pootle.translatehouse.org>`_ and other users of the new ts class
+support all of these features.  `Virtaal <https://virtaal.org>`_, `Pootle
+<https://pootle.translatehouse.org>`_ and other users of the new ts class
 support the following:
 
 * Context
@@ -44,7 +44,7 @@ TODO
 ====
 
 .. note:: A new parser has been added to the toolkit in v1.2. This allows
-   `Virtaal <http://virtaal.org>`_, :doc:`/commands/pocount` and other users to
+   `Virtaal <https://virtaal.org>`_, :doc:`/commands/pocount` and other users to
    work with v1.1 of the .ts format.  This corrects almost all of the issues
    listed below.  The converter :doc:`ts2po </commands/ts2po>` continues to use
    the older storage class and thus continue to experience some of these

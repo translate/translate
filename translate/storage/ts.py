@@ -14,7 +14,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
 """
@@ -22,11 +22,11 @@ Module for parsing Qt .ts files for translation.
 
 Currently this module supports the old format of .ts files. Some applications
 use the newer .ts format which are documented here:
-`TS file format 4.3 <http://doc.qt.io/archives/4.3/linguist-ts-file-format.html>`_,
-`Example <http://svn.ez.no/svn/ezcomponents/trunk/Translation/docs/linguist-format.txt>`_
+`TS file format 4.3 <https://doc.qt.io/archives/4.3/linguist-ts-file-format.html>`_,
+`Example <https://github.com/zetacomponents/Translation/blob/master/docs/linguist-format.txt>`_
 
-`Specification of the valid variable entries <http://doc.qt.io/qt-5/qstring.html#arg>`_,
-`2 <http://doc.qt.io/qt-5/qstring.html#arg-2>`_
+`Specification of the valid variable entries <https://doc.qt.io/qt-5/qstring.html#arg>`_,
+`2 <https://doc.qt.io/qt-5/qstring.html#arg-2>`_
 """
 
 from __future__ import annotations

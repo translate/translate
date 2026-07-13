@@ -25,9 +25,9 @@ Supported Wiki Formats
 The following is a list of the wikis supported together with a list of the
 items that we can process:
 
-* `dokuwiki <http://wiki.splitbrain.org/wiki:dokuwiki>`_ -- heading, bullet,
+* `DokuWiki <https://www.dokuwiki.org/>`_ -- heading, bullet,
   numbered list
-* `MediaWiki <http://www.mediawiki.org/wiki/MediaWiki>`_ -- heading, bullet,
+* `MediaWiki <https://www.mediawiki.org/wiki/MediaWiki>`_ -- heading, bullet,
   numbered list
 
 .. _wiki#possible_uses:
@@ -48,9 +48,8 @@ Additional notes on MediaWiki
 
 Media wiki can also export in XML format, see
 :wp:`Special:Export` and
-http://www.mediawiki.org/wiki/Manual:Parameters_to_Special:Export this however
+https://www.mediawiki.org/wiki/Manual:Parameters_to_Special:Export this however
 exports in XML so not directly usable by txt2po.
 
 For importing please see :wp:`Help:Import` this is
 disabled on most wikis so not directly usable currently.
-

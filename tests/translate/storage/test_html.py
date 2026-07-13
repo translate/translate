@@ -14,7 +14,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
 
 """Tests for the HTML classes."""
 
@@ -116,7 +116,7 @@ class TestHTMLExtraction:
         )
         assert (
             self.strip_html(
-                '<h3><a href="http://www.firefox.com/" class="producttitle"><img src="../images/product-firefox-50.png" width="50" height="50" alt="" class="featured" style="display: block; margin-bottom: 30px;" /><strong>Firefox for Desktop</strong></a></h3>'
+                '<h3><a href="https://www.firefox.com/" class="producttitle"><img src="../images/product-firefox-50.png" width="50" height="50" alt="" class="featured" style="display: block; margin-bottom: 30px;" /><strong>Firefox for Desktop</strong></a></h3>'
             )
             == "Firefox for Desktop"
         )
@@ -124,7 +124,7 @@ class TestHTMLExtraction:
     def test_extraction_tag_figcaption(self) -> None:
         """Check that we can extract figcaption."""
         h = html.htmlfile()
-        # Example form http://www.w3schools.com/tags/tag_figcaption.asp
+        # Example form https://www.w3schools.com/tags/tag_figcaption.asp
         store = h.parsestring(
             """
                <figure>
@@ -140,7 +140,7 @@ class TestHTMLExtraction:
     def test_extraction_tag_caption_td_th(self) -> None:
         """Check that we can extract table related translatable: th, td and caption."""
         h = html.htmlfile()
-        # Example form http://www.w3schools.com/tags/tag_caption.asp
+        # Example form https://www.w3schools.com/tags/tag_caption.asp
         store = h.parsestring(
             """
             <table>
@@ -166,7 +166,7 @@ class TestHTMLExtraction:
     def test_extraction_attr_alt(self) -> None:
         """Check that we can extract title attribute."""
         h = html.htmlfile()
-        # Example from http://www.netmechanic.com/news/vol6/html_no1.htm
+        # Example from https://www.netmechanic.com/news/vol6/html_no1.htm
         store = h.parsestring(
             """
             <img src="cafeteria.jpg" height="200" width="200" alt="UAHC campers enjoy a meal in the camp cafeteria">
@@ -181,7 +181,7 @@ class TestHTMLExtraction:
         """Check that we can extract title attribute."""
         h = html.htmlfile()
 
-        # Example form http://www.w3schools.com/tags/att_global_title.asp
+        # Example form https://www.w3schools.com/tags/att_global_title.asp
         store = h.parsestring(
             """
             <p><abbr title="World Health Organization">WHO</abbr> was founded in 1948.</p>
@@ -196,7 +196,7 @@ class TestHTMLExtraction:
         assert store.units[1].source == "Free Web tutorials"
         assert store.units[2].source == "W3Schools.com"
 
-        # Example from http://www.netmechanic.com/news/vol6/html_no1.htm
+        # Example from https://www.netmechanic.com/news/vol6/html_no1.htm
         store = h.parsestring(
             """
             <table width="100" border="2" title="Henry Jacobs Camp summer 2003 schedule">

@@ -14,7 +14,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
 
 """
 Merges XLIFF and Gettext PO localization files.
@@ -22,7 +22,7 @@ Merges XLIFF and Gettext PO localization files.
 Snippet file produced by e.g. :doc:`pogrep </commands/pogrep>` and updated by a
 translator can be merged back into the original files.
 
-See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pomerge.html
+See: https://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pomerge.html
 for examples and usage instructions.
 """
 

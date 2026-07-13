@@ -4,7 +4,7 @@
 TBX
 ***
 TBX is the `LISA OSCAR standard
-<http://www.gala-global.org/lisa-oscar-standards>`_ for terminology and term
+<https://www.gala-global.org/lisa-oscar-standards>`_ for terminology and term
 exchange.
 
 For information on more file formats, see :doc:`conformance`.
@@ -19,9 +19,9 @@ References
 * `Specification
   <https://www.tbxinfo.net/wp-content/uploads/2020/12/TBXspecV1j.pdf>`_
 * `ISO 30042
-  <http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=45797>`_
+  <https://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=45797>`_
   -- TBX is an approved ISO standard
-* `Additional TBX resources <http://www.tbxconvert.gevterm.net/>`_
+* `Additional TBX resources <https://www.tbxconvert.gevterm.net/>`_
 
 You might also be interested in reading about `TBX-Basic
 <https://ltac-global.github.io/TBX-Basic_dialect/>`_ -- a simpler,
@@ -29,14 +29,14 @@ reduced version of TBX with most of the useful features included.
 
 Additional notes and examples about TBX are available in `Terminator TBX
 conformance notes
-<http://terminator.readthedocs.org/en/latest/tbx_conformance.html>`_ and on
+<https://terminator.readthedocs.org/en/latest/tbx_conformance.html>`_ and on
 `www.tbxinfo.net <https://www.tbxinfo.net/>`_ which might
 help understanding this format.
 
 Also you might want to use `TBXChecker
-<http://sourceforge.net/projects/tbxutil/>`_ in order to check that TBX files
+<https://sourceforge.net/projects/tbxutil/>`_ in order to check that TBX files
 are valid. Check the `TBXChecker explanation
-<http://www.tbxconvert.gevterm.net/tbx_checker_explanation.html>`_.
+<https://www.tbxconvert.gevterm.net/tbx_checker_explanation.html>`_.
 
 
 .. _tbx#conformance:
@@ -69,6 +69,6 @@ The following are not yet supported:
 * ``<ntig>`` tag, read and write
 
 Other features can be picked from the `Terminator TBX conformance notes
-<http://terminator.readthedocs.org/en/latest/tbx_conformance.html>`_ which also
+<https://terminator.readthedocs.org/en/latest/tbx_conformance.html>`_ which also
 include examples and notes about the TBX format.
 

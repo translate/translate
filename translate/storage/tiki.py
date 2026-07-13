@@ -14,7 +14,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
 
 """
 Class that manages TikiWiki files for translation.
@@ -48,7 +48,7 @@ In addition there are several auto-generated //-style comments scattered through
 page and array, some of which matter when being parsed.
 
 This has all been gleaned from the
-`TikiWiki source <http://tikiwiki.svn.sourceforge.net/viewvc/tikiwiki/trunk/get_strings.php?view=markup>`_.
+`TikiWiki source <https://tikiwiki.svn.sourceforge.net/viewvc/tikiwiki/trunk/get_strings.php?view=markup>`_.
 As far as I know no detailed documentation exists for the tiki language.php files.
 
 """
