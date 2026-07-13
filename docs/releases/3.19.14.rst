@@ -1,0 +1,49 @@
+Translate Toolkit 3.19.14
+*************************
+
+*Released on 13 July 2026*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- MDX
+
+  - Safely extract translatable content from simple JSX elements
+
+- PO
+
+  - Improve performance when handling duplicates, comments, and source strings
+
+- PHP
+
+  - Improve array serialization performance
+
+- TBX
+
+  - Correctly remove nested notes while preserving unrelated metadata
+
+- YAML
+
+  - Improve comment lookup performance
+
+Other
+-----
+
+- Improve plural tag lookup performance
+- Improve normalized offset mapping performance in ``pogrep``
+- Improve release automation
+- Update the project website
+- Update development tooling and CI dependencies
+- Fix typos in comments and documentation
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+Michal Čihař
