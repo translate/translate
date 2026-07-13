@@ -141,9 +141,9 @@ function parameters:
         assert 'something' in str(w.message)
 
 
-.. _pytest: http://pytest.org/
+.. _pytest: https://pytest.org/
 
-.. _recwarn plugin: http://pytest.org/latest/recwarn.html
+.. _recwarn plugin: https://pytest.org/latest/recwarn.html
 .. |recwarn plugin| replace:: *recwarn plugin*
 .. we use |recwarn plugin| here and in ref above for italics like :ref:
 

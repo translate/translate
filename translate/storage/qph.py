@@ -14,20 +14,20 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
 """
 Module for handling Qt Linguist Phrase Book (.qph) files.
 
 Extract from the `Qt Linguist Manual: Translators
-<http://doc.trolltech.com/4.3/linguist-translators.html>`_:
+<https://doc.trolltech.com/4.3/linguist-translators.html>`_:
 .qph Qt Phrase Book Files are human-readable XML files containing standard
 phrases and their translations. These files are created and updated by Qt
 Linguist and may be used by any number of projects and applications.
 
 A DTD to define the format does not seem to exist, but the following `code
-<http://qt.gitorious.org/qt/qt/blobs/4.7/tools/linguist/shared/qph.cpp>`_
+<https://code.qt.io/cgit/qt/qttools.git/tree/src/linguist/shared/qph.cpp>`_
 provides the reference implementation for the Qt Linguist product.
 """
 

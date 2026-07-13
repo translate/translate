@@ -14,7 +14,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
 
 """
 Classes that hold units of .oo files (oounit) or entire files (oofile).
@@ -23,7 +23,7 @@ These are specific .oo files for localisation exported by OpenOffice.org - SDF
 format (previously knows as GSI files).
 
 .. There used to be an overview of the format here
-   http://l10n.openoffice.org/L10N_Framework/Intermediate_file_format.html
+   https://l10n.openoffice.org/L10N_Framework/Intermediate_file_format.html
 
 The behaviour in terms of escaping is explained in detail in the programming
 comments.

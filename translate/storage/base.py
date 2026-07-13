@@ -14,7 +14,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
 
 """Base classes for storage interfaces."""
 
@@ -166,7 +166,7 @@ class TranslationUnit:
     Base class for translation units.
 
     Our concept of a *translation unit* is influenced heavily by `XLIFF
-    <http://docs.oasis-open.org/xliff/xliff-core/xliff-core.html>`_.
+    <https://docs.oasis-open.org/xliff/xliff-core/xliff-core.html>`_.
 
     As such most of the method- and variable names borrows from XLIFF
     terminology.

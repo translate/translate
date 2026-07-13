@@ -14,7 +14,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
 
 """
 Builds a new translation file with the target of the input language as
@@ -40,7 +40,7 @@ intermediate language translation (Spanish) as a translator comment, making it
 easier to translate through an intermediate language while keeping both
 languages visible.
 
-See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/poswap.html
+See: https://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/poswap.html
 for examples and usage instructions.
 """
 

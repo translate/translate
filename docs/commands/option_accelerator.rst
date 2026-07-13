@@ -8,13 +8,13 @@
 | Accelerator  | Used by                                                   |
 | Marker       |                                                           |
 +==============+===========================================================+
-|  &           | `KDE Desktop <http://kde.org>`_ and `Mozilla              |
-|              | <http://mozilla.org>`_ (when using :doc:`moz2po           |
+|  &           | `KDE Desktop <https://kde.org>`_ and `Mozilla             |
+|              | <https://mozilla.org>`_ (when using :doc:`moz2po          |
 |              | <moz2po>`)                                                |
 +--------------+-----------------------------------------------------------+
-|  _           | `GNOME Desktop <http://www.gnome.org>`_ and other `GTK+   |
-|              | <http://www.gtk.org>`_ based applications                 |
+|  _           | `GNOME Desktop <https://www.gnome.org>`_ and other `GTK+  |
+|              | <https://www.gtk.org>`_ based applications                |
 +--------------+-----------------------------------------------------------+
-|  ~           | `LibreOffice <http://www.libreoffice.org>`_ and `Apache   |
-|              | OpenOffice <http://www.openoffice.org>`_                  |
+|  ~           | `LibreOffice <https://www.libreoffice.org>`_ and `Apache  |
+|              | OpenOffice <https://www.openoffice.org>`_                 |
 +--------------+-----------------------------------------------------------+

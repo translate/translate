@@ -11,7 +11,7 @@ developed by OSCAR [#f1]_.
 .. [#f1] OSCAR (Open Standards for Container/Content Allowing Re-use), a special
    interest group of the now defunct LISA (Localization Industry Standards
    Association). The Gala `LISA OSCAR Standards
-   <http://www.gala-global.org/lisa-oscar-standards>`_ page has more details on
+   <https://www.gala-global.org/lisa-oscar-standards>`_ page has more details on
    the possible future for the standards.
 
 If you are interested in po2tmx, you might also be interested in

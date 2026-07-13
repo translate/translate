@@ -216,8 +216,8 @@ newlines.</p></body></html>
     def test_sequence_of_anchor_elements(self) -> None:
         """Test that we can extract a sequence of anchor elements without mixing up start/end tags, issue #3768."""
         self.check_single(
-            '<p><a href="http://example.com">This is a link</a> but this is not. <a href="http://example.com">However this is too</a></p>',
-            '<a href="http://example.com">This is a link</a> but this is not. <a href="http://example.com">However this is too</a>',
+            '<p><a href="https://example.com">This is a link</a> but this is not. <a href="https://example.com">However this is too</a></p>',
+            '<a href="https://example.com">This is a link</a> but this is not. <a href="https://example.com">However this is too</a>',
         )
 
     def test_tag_img(self) -> None:

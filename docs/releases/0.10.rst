@@ -12,7 +12,8 @@ PO to XLIFF conversion
 
 Conversion from PO to XLIFF is greatly improved in 0.10 and this was done
 according to the specification at
-http://xliff-tools.freedesktop.org/wiki/Projects/XliffPoGuide -- please let us
+https://web.archive.org/web/20111022015039/https://xliff-tools.freedesktop.org/wiki/Projects/XliffPoGuide
+-- please let us
 know if there are features lacking.
 
 .. _changelog#pot2po_can_replace_msgmerge:

@@ -14,7 +14,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
 
 """
 This module represents the French language.
@@ -54,7 +54,8 @@ class fr(common.Common):
 
     validaccel = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890éÉ"
 
-    # According to http://french.about.com/library/writing/bl-punctuation.htm,
+    # According to
+    # https://our-languages.canada.ca/en/writing-tips-plus/punctuation-standard-spacing-in-english-and-french,
     # in French, a space is required both before and after all two- (or more)
     # part punctuation marks and symbols, including : ; « » ! ? % $ # etc.
     puncdict = {}

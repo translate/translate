@@ -168,7 +168,7 @@ class TestOO2PO:
         assert pofile.parseheader()["Report-Msgid-Bugs-To"]
         bug_url = parse.urlparse(pofile.parseheader()["Report-Msgid-Bugs-To"])
         print(bug_url)
-        assert bug_url[:3] == ("http", "qa.openoffice.org", "/issues/enter_bug.cgi")
+        assert bug_url[:3] == ("https", "qa.openoffice.org", "/issues/enter_bug.cgi")
         assert parse.parse_qs(bug_url[4], True) == {
             "comment": [""],
             "component": ["l10n"],

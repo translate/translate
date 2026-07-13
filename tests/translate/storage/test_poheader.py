@@ -374,7 +374,7 @@ msgstr ""
     pofile = poparse(posource)
     assert pofile.getprojectstyle() == "openoffice"
 
-    posource += '"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=system-\\n"\n'
+    posource += '"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?product=system-\\n"\n'
     pofile = poparse(posource)
     assert pofile.getprojectstyle() == "gnome"
 

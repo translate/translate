@@ -4,7 +4,7 @@
 TMX
 ***
 TMX is the `LISA OSCAR standard
-<http://www.gala-global.org/lisa-oscar-standards>`_ for translation memories.
+<https://www.gala-global.org/lisa-oscar-standards>`_ for translation memories.
 
 .. _tmx#standard_conformance:
 
@@ -12,7 +12,7 @@ Standard conformance
 ====================
 
 Summary: `TMX version 1.4
-<http://www.gala-global.org/oscarStandards/tmx/tmx14b.html>`_ conformance to
+<https://www.gala-global.org/oscarStandards/tmx/tmx14b.html>`_ conformance to
 Level 1, except that no markup is stripped.
 
 * All required header fields are supplied.

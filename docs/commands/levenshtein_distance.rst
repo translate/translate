@@ -8,7 +8,7 @@ The :wp:`levenshtein distance <Levenshtein_distance>` is used for measuring the
 can be supplied to the code that does the matching.
 
 This code is used in :doc:`pot2po` and `Virtaal
-<http://virtaal.org>`_. It is implemented in the toolkit, but can optionally use
+<https://virtaal.org>`_. It is implemented in the toolkit, but can optionally use
 the fast C implementation provided by `RapidFuzz
 <https://pypi.org/project/RapidFuzz/>`_ if it is installed. It is
 strongly recommended to have **RapidFuzz** installed.

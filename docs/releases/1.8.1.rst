@@ -57,18 +57,18 @@ Happy translating!
 
 The Translate team
 
-.. _ANLoc: http://africanlocalisation.net/
-.. _html2po: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/html2po.html
-.. _Universal Terminology Exchange (UTX): http://docs.translatehouse.org/projects/translate-toolkit/en/latest/formats/utx.html
-.. _Java properties: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/formats/properties.html
-.. _CSV: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/formats/csv.html
-.. _Qt .ts: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/formats/ts.html
-.. _XLIFF: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/formats/xliff.html
-.. _pocount: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pocount.html
-.. _PHP: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/formats/php.html
-.. _quality checks: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pofilter_tests.html
-.. _po2prop: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/prop2po.html
-.. _pot2po: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pot2po.html
-.. _Full feature list: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/features.html
-.. _Download: http://sourceforge.net/projects/translate/files/Translate%20Toolkit/1.8.1/
+.. _ANLoc: https://africanlocalisation.net/
+.. _html2po: https://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/html2po.html
+.. _Universal Terminology Exchange (UTX): https://docs.translatehouse.org/projects/translate-toolkit/en/latest/formats/utx.html
+.. _Java properties: https://docs.translatehouse.org/projects/translate-toolkit/en/latest/formats/properties.html
+.. _CSV: https://docs.translatehouse.org/projects/translate-toolkit/en/latest/formats/csv.html
+.. _Qt .ts: https://docs.translatehouse.org/projects/translate-toolkit/en/latest/formats/ts.html
+.. _XLIFF: https://docs.translatehouse.org/projects/translate-toolkit/en/latest/formats/xliff.html
+.. _pocount: https://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pocount.html
+.. _PHP: https://docs.translatehouse.org/projects/translate-toolkit/en/latest/formats/php.html
+.. _quality checks: https://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pofilter_tests.html
+.. _po2prop: https://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/prop2po.html
+.. _pot2po: https://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pot2po.html
+.. _Full feature list: https://docs.translatehouse.org/projects/translate-toolkit/en/latest/features.html
+.. _Download: https://sourceforge.net/projects/translate/files/Translate%20Toolkit/1.8.1/
 .. _Bugs: https://github.com/translate/translate/issues

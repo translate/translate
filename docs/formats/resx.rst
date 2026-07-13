@@ -31,6 +31,6 @@ References
 ==========
 
 * `Resources in .Resx File Format
-  <http://msdn.microsoft.com/en-us/library/ekyft91f%28v=VS.90%29.aspx>`_
+  <https://msdn.microsoft.com/en-us/library/ekyft91f%28v=VS.90%29.aspx>`_
 * `ASP.NET Web Page Resources Overview
-  <http://msdn.microsoft.com/en-us/library/ms227427.aspx>`_
+  <https://msdn.microsoft.com/en-us/library/ms227427.aspx>`_

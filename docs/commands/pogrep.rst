@@ -97,5 +97,4 @@ Further reading
 ===============
 Here is a blog post explaining how pogrep can be used to do more targeted
 localisation of GNOME:
-http://translate.org.za/blogs/friedel/en/content/better-lies-about-gnome-localisation
-
+https://web.archive.org/web/20110808174802/https://translate.org.za/blogs/friedel/en/content/better-lies-about-gnome-localisation

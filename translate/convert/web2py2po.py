@@ -14,13 +14,13 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
 """
 Convert web2py translation dictionaries (.py) to GNU/gettext PO files.
 
-See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/web2py2po.html
+See: https://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/web2py2po.html
 for examples and usage instructions.
 """
 

@@ -14,7 +14,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
 """
@@ -52,9 +52,9 @@ Module for parsing Qt .qm files.
     The code can parse files correctly.  But it could be cleaned up to be
     more readable, especially the part that breaks the file into sections.
 
-http://qt.gitorious.org/+kde-developers/qt/kde-qt/blobs/master/tools/linguist/shared/qm.cpp
-`Plural information <http://qt.gitorious.org/+kde-developers/qt/kde-qt/blobs/master/tools/linguist/shared/numerus.cpp>`_
-`QLocale languages <http://docs.huihoo.com/qt/4.5/qlocale.html#Language-enum>`_
+https://code.qt.io/cgit/qt/qttools.git/tree/src/linguist/shared/qm.cpp
+`Plural information <https://code.qt.io/cgit/qt/qttools.git/tree/src/linguist/shared/numerus.cpp>`_
+`QLocale languages <https://docs.huihoo.com/qt/4.5/qlocale.html#Language-enum>`_
 """
 
 import codecs

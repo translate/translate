@@ -16,10 +16,10 @@
       suitable for import by other schema documents.
      </p>
      <p>
-      See <a href="http://www.w3.org/XML/1998/namespace.html">
-      http://www.w3.org/XML/1998/namespace.html</a> and
-      <a href="http://www.w3.org/TR/REC-xml">
-      http://www.w3.org/TR/REC-xml</a> for information 
+      See <a href="https://www.w3.org/XML/1998/namespace.html">
+      https://www.w3.org/XML/1998/namespace.html</a> and
+      <a href="https://www.w3.org/TR/REC-xml">
+      https://www.w3.org/TR/REC-xml</a> for information
       about this namespace.
      </p>
      <p>
@@ -61,11 +61,11 @@
       going to be a realistic possibility.  
      </p>
      <p>
-      See BCP 47 at <a href="http://www.rfc-editor.org/rfc/bcp/bcp47.txt">
-       http://www.rfc-editor.org/rfc/bcp/bcp47.txt</a>
+      See BCP 47 at <a href="https://www.rfc-editor.org/rfc/bcp/bcp47.txt">
+       https://www.rfc-editor.org/rfc/bcp/bcp47.txt</a>
       and the IANA language subtag registry at
-      <a href="http://www.iana.org/assignments/language-subtag-registry">
-       http://www.iana.org/assignments/language-subtag-registry</a>
+      <a href="https://www.iana.org/assignments/language-subtag-registry">
+       https://www.iana.org/assignments/language-subtag-registry</a>
       for further information.
      </p>
      <p>
@@ -124,7 +124,7 @@
      
      <p>
       See <a
-      href="http://www.w3.org/TR/xmlbase/">http://www.w3.org/TR/xmlbase/</a>
+      href="https://www.w3.org/TR/xmlbase/">https://www.w3.org/TR/xmlbase/</a>
       for information about this attribute.
      </p>
     </div>
@@ -146,7 +146,7 @@
      
      <p>
       See <a
-      href="http://www.w3.org/TR/xml-id/">http://www.w3.org/TR/xml-id/</a>
+      href="https://www.w3.org/TR/xml-id/">https://www.w3.org/TR/xml-id/</a>
       for information about this attribute.
      </p>
     </div>
@@ -207,14 +207,14 @@
           &lt;schema . . .>
            . . .
            &lt;import namespace="http://www.w3.org/XML/1998/namespace"
-                      schemaLocation="http://www.w3.org/2001/xml.xsd"/>
+                      schemaLocation="https://www.w3.org/2001/xml.xsd"/>
      </pre>
      <p>
       or
      </p>
      <pre>
            &lt;import namespace="http://www.w3.org/XML/1998/namespace"
-                      schemaLocation="http://www.w3.org/2009/01/xml.xsd"/>
+                      schemaLocation="https://www.w3.org/2009/01/xml.xsd"/>
      </pre>
      <p>
       Subsequently, qualified reference to any of the attributes or the
@@ -242,25 +242,25 @@
      <p>
       In keeping with the XML Schema WG's standard versioning
       policy, this schema document will persist at
-      <a href="http://www.w3.org/2009/01/xml.xsd">
-       http://www.w3.org/2009/01/xml.xsd</a>.
+      <a href="https://www.w3.org/2009/01/xml.xsd">
+       https://www.w3.org/2009/01/xml.xsd</a>.
      </p>
      <p>
       At the date of issue it can also be found at
-      <a href="http://www.w3.org/2001/xml.xsd">
-       http://www.w3.org/2001/xml.xsd</a>.
+      <a href="https://www.w3.org/2001/xml.xsd">
+       https://www.w3.org/2001/xml.xsd</a>.
      </p>
      <p>
       The schema document at that URI may however change in the future,
       in order to remain compatible with the latest version of XML
       Schema itself, or with the XML namespace itself.  In other words,
       if the XML Schema or XML namespaces change, the version of this
-      document at <a href="http://www.w3.org/2001/xml.xsd">
-       http://www.w3.org/2001/xml.xsd 
+      document at <a href="https://www.w3.org/2001/xml.xsd">
+       https://www.w3.org/2001/xml.xsd
       </a> 
       will change accordingly; the version at 
-      <a href="http://www.w3.org/2009/01/xml.xsd">
-       http://www.w3.org/2009/01/xml.xsd 
+      <a href="https://www.w3.org/2009/01/xml.xsd">
+       https://www.w3.org/2009/01/xml.xsd
       </a> 
       will not change.
      </p>
@@ -269,14 +269,14 @@
       document are at:
      </p>
      <ul>
-      <li><a href="http://www.w3.org/2009/01/xml.xsd">
-	http://www.w3.org/2009/01/xml.xsd</a></li>
-      <li><a href="http://www.w3.org/2007/08/xml.xsd">
-	http://www.w3.org/2007/08/xml.xsd</a></li>
-      <li><a href="http://www.w3.org/2004/10/xml.xsd">
-	http://www.w3.org/2004/10/xml.xsd</a></li>
-      <li><a href="http://www.w3.org/2001/03/xml.xsd">
-	http://www.w3.org/2001/03/xml.xsd</a></li>
+      <li><a href="https://www.w3.org/2009/01/xml.xsd">
+	https://www.w3.org/2009/01/xml.xsd</a></li>
+      <li><a href="https://www.w3.org/2007/08/xml.xsd">
+	https://www.w3.org/2007/08/xml.xsd</a></li>
+      <li><a href="https://www.w3.org/2004/10/xml.xsd">
+	https://www.w3.org/2004/10/xml.xsd</a></li>
+      <li><a href="https://www.w3.org/2001/03/xml.xsd">
+	https://www.w3.org/2001/03/xml.xsd</a></li>
      </ul>
     </div>
    </div>

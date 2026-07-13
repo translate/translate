@@ -5,8 +5,8 @@ Translate Toolkit 2.0.0
 
 This release contains many improvements and bug fixes. While it contains many
 general improvements, it also specifically contains needed changes and
-optimizations for the upcoming `Pootle <http://pootle.translatehouse.org/>`_
-2.8.0 and `Virtaal <http://virtaal.translatehouse.org>`_ releases.
+optimizations for the upcoming `Pootle <https://pootle.translatehouse.org/>`_
+2.8.0 and `Virtaal <https://virtaal.translatehouse.org>`_ releases.
 
 
 Major changes

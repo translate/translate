@@ -14,7 +14,8 @@ Conception
 ==========
 
 The toolkit was developed by David Fraser while working for `Translate.org.za
-<http://translate.org.za>`_.  Initially Translate.org.za had focussed on
+<https://web.archive.org/web/20181225203124/https://www.translate.org.za/>`_.
+Initially Translate.org.za had focussed on
 translating KDE into South Africa languages, this work was PO based.  The next
 project was to translate Mozilla which used a combination of DTD and
 .properties files.  The Mozilla project used a tool called Mozilla Translator,
@@ -71,8 +72,8 @@ WordForge project
 =================
 
 In 2006 with funding from the `Open Society Institute
-<http://www.opensocietyfoundations.org/>`_ (OSI) and `IDRC
-<http://www.idrc.ca/>`_ the toolkit was adapted to allow many core changes.
+<https://www.opensocietyfoundations.org/>`_ (OSI) and `IDRC
+<https://www.idrc.ca/>`_ the toolkit was adapted to allow many core changes.
 The first being to introduce the concept of a base class from which PO and
 XLIFF storage formats are derived.  This allowed tools to be adapted to allow
 output to XLIFF or PO files.  The tools themselves where adapted to allow them
@@ -95,9 +96,9 @@ wrapper around the toolkit.
 
 ANLoc project
 =============
-The `African Network for Localisation <http://africanlocalisation.net>`_
+The `African Network for Localisation <https://africanlocalisation.net>`_
 provided the opportunity for further improvements to the project.  We saw the
-first official releases of `Virtaal <http://virtaal.org>`_ and massive
+first official releases of `Virtaal <https://virtaal.org>`_ and massive
 improvements to all the translation tools.
 
 Format support improved a lot, with several bilingual file formats now support

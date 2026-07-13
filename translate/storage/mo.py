@@ -22,14 +22,14 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
 
 """
 Module for parsing Gettext .mo files for translation.
 
 The coding of .mo files was produced from `Gettext documentation
-<http://www.gnu.org/software/gettext/manual/gettext.html#MO-Files>`_,
+<https://www.gnu.org/software/gettext/manual/gettext.html#MO-Files>`_,
 Pythons msgfmt.py and by observing and testing existing .mo files in the wild.
 
 The hash algorithm is implemented for MO files, this should result in

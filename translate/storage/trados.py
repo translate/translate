@@ -14,7 +14,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
 
 r"""
 Manage the Trados .txt Translation Memory format.
@@ -81,7 +81,7 @@ RTF_ESCAPES = {
     # "\\'hh": "",
 }
 """RTF control to Unicode map. See
-http://msdn.microsoft.com/en-us/library/aa140283(v=office.10).aspx
+https://msdn.microsoft.com/en-us/library/aa140283(v=office.10).aspx
 """
 
 

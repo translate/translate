@@ -14,12 +14,12 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
 
 """
 Segment Gettext PO, XLIFF and TMX localization files at the sentence level.
 
-See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/posegment.html
+See: https://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/posegment.html
 for examples and usage instructions.
 """
 

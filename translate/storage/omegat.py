@@ -14,13 +14,13 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
 
 """
 Manage the OmegaT glossary format.
 
 OmegaT glossary format is used by the
-`OmegaT <http://www.omegat.org/en/omegat.html>`_ computer aided
+`OmegaT <https://www.omegat.org/en/omegat.html>`_ computer aided
 translation tool.
 
 It is a bilingual base class derived format with :class:`OmegaTFile`

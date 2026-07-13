@@ -15,14 +15,14 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
 
 """
 Count strings and words for supported localization files.
 
 These include: XLIFF, TMX, Gettex PO and MO, Qt .ts and .qm, Wordfast TM, etc
 
-See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pocount.html
+See: https://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pocount.html
 for examples and usage instructions.
 """
 

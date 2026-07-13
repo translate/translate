@@ -14,7 +14,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
 
 """
 This module contains all the common features for languages.
@@ -109,7 +109,7 @@ class Common:
 
     .. seealso::
 
-       `Gettext manual <http://www.gnu.org/software/gettext/manual/html_node/gettext_150.html#Plural-forms>`_, :mod:`translate.lang.data`
+       `Gettext manual <https://www.gnu.org/software/gettext/manual/html_node/gettext_150.html#Plural-forms>`_, :mod:`translate.lang.data`
     """
     # Don't change these defaults of nplurals or pluralequation willy-nilly:
     # some code probably depends on these for unrecognised languages

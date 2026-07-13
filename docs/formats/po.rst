@@ -5,7 +5,7 @@ PO Files
 ********
 PO files use the file format of the Gettext tools.
 
-.. seealso:: `Gettext manual <http://www.gnu.org/software/gettext/>`_
+.. seealso:: `Gettext manual <https://www.gnu.org/software/gettext/>`_
 
 
 .. _po#supported_features:

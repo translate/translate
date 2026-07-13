@@ -14,7 +14,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
 
 """
 Module for handling Qt linguist (.ts) files.
@@ -23,13 +23,13 @@ This will eventually replace the older ts.py which only supports the older
 format. While converters haven't been updated to use this module, we retain
 both.
 
-`TS file format 4.3 <http://doc.qt.io/archives/4.3/linguist-ts-file-format.html>`_,
-`4.8 <http://doc.qt.io/qt-4.8/linguist-ts-file-format.html>`_,
-`5 <http://doc.qt.io/qt-5/linguist-ts-file-format.html>`_.
-`Example <http://svn.ez.no/svn/ezcomponents/trunk/Translation/docs/linguist-format.txt>`_.
+`TS file format 4.3 <https://doc.qt.io/archives/4.3/linguist-ts-file-format.html>`_,
+`4.8 <https://doc.qt.io/qt-4.8/linguist-ts-file-format.html>`_,
+`5 <https://doc.qt.io/qt-5/linguist-ts-file-format.html>`_.
+`Example <https://github.com/zetacomponents/Translation/blob/master/docs/linguist-format.txt>`_.
 
-`Specification of the valid variable entries <http://doc.qt.io/qt-5/qstring.html#arg>`_,
-`2 <http://doc.qt.io/qt-5/qstring.html#arg-2>`_
+`Specification of the valid variable entries <https://doc.qt.io/qt-5/qstring.html#arg>`_,
+`2 <https://doc.qt.io/qt-5/qstring.html#arg-2>`_
 """
 
 from lxml import etree
@@ -276,7 +276,7 @@ class tsunit(lisa.LISAunit):
     def istranslatable(self):
         # Found a file in the wild with no context and an empty source. This
         # served as a header, so let's classify this as not translatable.
-        # http://bibletime.svn.sourceforge.net/viewvc/bibletime/trunk/bibletime/i18n/messages/bibletime_ui.ts
+        # https://bibletime.svn.sourceforge.net/viewvc/bibletime/trunk/bibletime/i18n/messages/bibletime_ui.ts
         # Furthermore, let's decide to handle obsolete units as untranslatable
         # like we do with PO.
         return bool(self.getid()) and not self.isobsolete()

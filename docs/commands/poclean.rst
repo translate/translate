@@ -45,8 +45,8 @@ Examples
 ========
 
 To create a text version of the unclean RTF file, you need UnRTF, available
-here: `project site <http://www.gnu.org/software/unrtf/unrtf.html>`_ or `here
-(windows) <http://gnuwin32.sourceforge.net/packages/unrtf.htm>`_. ::
+here: `project site <https://www.gnu.org/software/unrtf/unrtf.html>`_ or `here
+(windows) <https://gnuwin32.sourceforge.net/packages/unrtf.htm>`_. ::
 
   unrtf translation.rtf  --text > translation.po
 

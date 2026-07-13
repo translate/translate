@@ -13,8 +13,8 @@ UTX is implemented by the Asia-Pacific Association for Machine Translation
 Resources
 =========
 
-* `UTX site <http://www.aamt.info/english/utx/index.htm>`_
-* `Current Specification <http://www.aamt.info/english/utx/#Download>`_
+* `UTX site <https://www.aamt.info/english/utx/index.htm>`_
+* `Current Specification <https://www.aamt.info/english/utx/#Download>`_
   (implementation is based on UTX 1.0 which is no longer available)
 
 .. _utx#conformance:

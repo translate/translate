@@ -26,9 +26,9 @@ the extraction will prove robust for all .rc files.
 Useful resource
 ===============
 
-* `RC converter <http://www.soft-gems.net:8080/browse/RC-Converter>`_
+* `RC converter <https://soft-gems.net/windows-resource-file-parser-and-converter/rc-converter/>`_
 * `ReactOS translation instructions
-  <http://www.reactos.org/wiki/index.php/Translating_introduction>`_
+  <https://www.reactos.org/wiki/index.php/Translating_introduction>`_
 
 .. _rc#supported_elements:
 
@@ -49,4 +49,3 @@ Bugs
 * There may be problems with very deeply nested MENU's
 * LANGUAGE elements cannot yet be updated in :doc:`po2rc </commands/rc2po>`
   (:issue:`Issue 360 <360>`)
-

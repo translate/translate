@@ -176,8 +176,8 @@ Usings podebug
 ==============
 
 Here are some more examples in a `series
-<http://translate.org.za/blogs/friedel/en/content/pseudolocalisation-podebug-1>`_
+<https://web.archive.org/web/20111109084924/https://translate.org.za/blogs/friedel/en/content/pseudolocalisation-podebug-1>`_
 `of
-<http://translate.org.za/blogs/friedel/en/content/pseudolocalisation-podebug-2>`_
+<https://web.archive.org/web/20111109091913/https://translate.org.za/blogs/friedel/en/content/pseudolocalisation-podebug-2>`_
 `blog posts
-<http://translate.org.za/blogs/friedel/en/content/pseudolocalisation-podebug-3-interview-rail-aliev>`_.
+<https://web.archive.org/web/20111109093211/https://translate.org.za/blogs/friedel/en/content/pseudolocalisation-podebug-3-interview-rail-aliev>`_.

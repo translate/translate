@@ -12,7 +12,7 @@ the :doc:`moz2po </commands/moz2po>` converter can handle these.
 References
 ==========
 
-* `XML specification <http://www.w3.org/TR/REC-xml/>`_
+* `XML specification <https://www.w3.org/TR/REC-xml/>`_
 
 .. _dtd#features:
 

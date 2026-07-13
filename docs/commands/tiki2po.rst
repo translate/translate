@@ -5,7 +5,7 @@
 tiki2po
 *******
 
-Converts `TikiWiki <http://tikiwiki.org>`_ language.php files to Gettext PO
+Converts `TikiWiki <https://tiki.org/Facts>`_ language.php files to Gettext PO
 format.
 
 .. _tiki2po#usage:

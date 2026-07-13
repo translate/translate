@@ -25,9 +25,9 @@ The Translate Toolkit supports both XLIFF 1.x and XLIFF 2.0:
 References
 ----------
 - `XLIFF 1.2 Standard
-  <http://docs.oasis-open.org/xliff/xliff-core/xliff-core.html>`_
+  <https://docs.oasis-open.org/xliff/xliff-core/xliff-core.html>`_
 - `XLIFF 2.0 Standard
-  <http://docs.oasis-open.org/xliff/xliff-core/v2.0/xliff-core-v2.0.html>`_
+  <https://docs.oasis-open.org/xliff/xliff-core/v2.0/xliff-core-v2.0.html>`_
 - `OASIS XLIFF Technical Committee
   <https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=xliff>`_ website
 
@@ -43,18 +43,18 @@ source documents and localisation formats.
   </commands/xliff2po>`.
 
   * Draft `XLIFF 1.2 Representation Guide for Gettext PO
-    <http://docs.oasis-open.org/xliff/v1.2/xliff-profile-po/xliff-profile-po-1.2.html>`_
+    <https://docs.oasis-open.org/xliff/v1.2/xliff-profile-po/xliff-profile-po-1.2.html>`_
 * HTML -- not implemented
 
   * Draft `XLIFF 1.2 Representation Guide for HTML
-    <http://docs.oasis-open.org/xliff/v1.2/xliff-profile-html/xliff-profile-html-1.2.html>`_
+    <https://docs.oasis-open.org/xliff/v1.2/xliff-profile-html/xliff-profile-html-1.2.html>`_
 * Java (includes .properties and Java resource bundles) -- not implemented
 
   * Draft `XLIFF 1.2 Representation Guide for Java Resource Bundles
-    <http://docs.oasis-open.org/xliff/v1.2/xliff-profile-java/xliff-profile-java-v1.2.html>`_
+    <https://docs.oasis-open.org/xliff/v1.2/xliff-profile-java/xliff-profile-java-v1.2.html>`_
 * ICU Resource Bundles -- not officially being developed by XLIFF -- Proposed
   `representation guide
-  <http://www.icu-project.org/repos/icu/icuhtml/trunk/design/locale/xliff-profile-icuresourcebundle-1.2.htm>`_
+  <https://www.icu-project.org/repos/icu/icuhtml/trunk/design/locale/xliff-profile-icuresourcebundle-1.2.htm>`_
 
 .. _xliff#apple_xliff:
 

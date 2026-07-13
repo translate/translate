@@ -14,7 +14,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
 
 """
 Convert Gettext PO localization files to OpenDocument (ODF) files.
@@ -22,7 +22,7 @@ Convert Gettext PO localization files to OpenDocument (ODF) files.
 This converter combines the functionality of po2xliff and xliff2odf to provide
 a direct conversion from PO files to ODF files.
 
-See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/
+See: https://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/
 for examples and usage instructions.
 """
 

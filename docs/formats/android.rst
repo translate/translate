@@ -18,10 +18,10 @@ References
 ==========
 
 * Android `Resource files reference
-  <http://developer.android.com/guide/topics/resources/resources-i18n.html>`_
+  <https://developer.android.com/guide/topics/resources/resources-i18n.html>`_
 * Android `String resources reference
-  <http://developer.android.com/guide/topics/resources/available-resources.html#stringresources>`_
-* `Localizing Android Applications <http://www.linux-mag.com/id/7794>`_ tutorial
+  <https://developer.android.com/guide/topics/resources/available-resources.html#stringresources>`_
+* `Localizing Android Applications <https://www.linux-mag.com/id/7794>`_ tutorial
 * Reference for `translatable attribute
-  <http://tools.android.com/recent/non-translatablestrings>`_
+  <https://developer.android.com/studio/write/translations-editor>`_
 * `Mobile Kotlin resources <https://github.com/icerockdev/moko-resources>`_

@@ -14,7 +14,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
 
 """
 Classes that hold units of PHP localisation files :class:`phpunit` or
@@ -51,7 +51,7 @@ Nested arrays without key for nested array are not supported:
 The working of PHP strings and specifically the escaping conventions which
 differ between single quote (') and double quote (") characters are
 implemented as outlined in the PHP documentation for the
-`String type <http://www.php.net/language.types.string>`_.
+`String type <https://www.php.net/language.types.string>`_.
 """
 
 import re
@@ -177,8 +177,8 @@ def phpencode(text, quotechar="'"):
     Convert Python string to PHP escaping.
 
     The encoding is implemented for
-    `'single quote' <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.single>`_
-    and `"double quote" <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.double>`_
+    `'single quote' <https://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.single>`_
+    and `"double quote" <https://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.double>`_
     syntax.
 
     heredoc and nowdoc are not implemented and it is not certain whether this

@@ -14,12 +14,12 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, see <https://www.gnu.org/licenses/>.
 
 """
 Convert XLIFF localization files to an OpenOffice.org (SDF) localization file.
 
-See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/oo2po.html
+See: https://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/oo2po.html
 for examples and usage instructions.
 """
 

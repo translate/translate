@@ -51,7 +51,7 @@ References
 ==========
 
 - Java Properties Class's `load()
-  <http://docs.oracle.com/javase/7/docs/api/java/util/Properties.html#load(java.io.Reader)>`_
+  <https://docs.oracle.com/javase/7/docs/api/java/util/Properties.html#load(java.io.Reader)>`_
   describes the properties format.
-- http://www.oracle.com/webfolder/technetwork/jsc/dtd/properties.dtd --
+- https://www.oracle.com/webfolder/technetwork/jsc/dtd/properties.dtd --
   alternate XML based property representation

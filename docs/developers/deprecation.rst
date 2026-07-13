@@ -23,7 +23,7 @@ Documentation
 -------------
 Use the ``@deprecated`` decorator with a comment and change the docstring to
 use the Sphinx `deprecation syntax
-<http://sphinx-doc.org/markup/para.html#directive-deprecated>`_.
+<https://sphinx-doc.org/markup/para.html#directive-deprecated>`_.
 
 .. code-block:: python
 
