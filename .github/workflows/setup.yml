@@ -149,16 +149,14 @@ jobs:
       contents: write
       pages: write
     steps:
-    - name: Update website release
+    - name: Check latest stable release
+      id: check_release
       env:
         GH_TOKEN: ${{ github.token }}
         VERSION: ${{ github.ref_name }}
       run: |
         set -euo pipefail
 
-        WEBSITE_PATH="_data/release.yml"
-        WEBSITE_ENDPOINT="repos/${GITHUB_REPOSITORY}/contents/${WEBSITE_PATH}"
-        ENCODED_CONTENT="$(printf 'version: %s\n' "${VERSION}" | base64 --wrap=0)"
         LATEST_VERSION="$(
           gh api \
             --paginate \
@@ -174,9 +172,24 @@ jobs:
         fi
         if [[ "${VERSION}" != "${LATEST_VERSION}" ]]; then
           echo "Skipping ${VERSION}; the latest version tag is ${LATEST_VERSION}."
+          echo "publish=false" >> "${GITHUB_OUTPUT}"
           exit 0
         fi
 
+        echo "publish=true" >> "${GITHUB_OUTPUT}"
+
+    - name: Update website release
+      if: steps.check_release.outputs.publish == 'true'
+      id: update_website
+      env:
+        GH_TOKEN: ${{ github.token }}
+        VERSION: ${{ github.ref_name }}
+      run: |
+        set -euo pipefail
+
+        WEBSITE_PATH="_data/release.yml"
+        WEBSITE_ENDPOINT="repos/${GITHUB_REPOSITORY}/contents/${WEBSITE_PATH}"
+        ENCODED_CONTENT="$(printf 'version: %s\n' "${VERSION}" | base64 --wrap=0)"
         CURRENT_COMMIT="$(
           gh api \
             "repos/${GITHUB_REPOSITORY}/git/ref/heads/gh-pages" \
@@ -191,20 +204,8 @@ jobs:
 
         if [[ "${CURRENT_CONTENT}" == "${ENCODED_CONTENT}" ]]; then
           WEBSITE_COMMIT="${CURRENT_COMMIT}"
-          BUILD="$(gh api "repos/${GITHUB_REPOSITORY}/pages/builds/latest")"
-          BUILD_COMMIT="$(jq --raw-output '.commit' <<< "${BUILD}")"
-          BUILD_STATUS="$(jq --raw-output '.status' <<< "${BUILD}")"
-          if [[ "${BUILD_COMMIT}" == "${WEBSITE_COMMIT}" ]]; then
-            case "${BUILD_STATUS}" in
-              built)
-                echo "Website already advertises ${VERSION}."
-                exit 0
-                ;;
-              queued|building)
-                BUILD_URL="$(jq --raw-output '.url' <<< "${BUILD}")"
-                ;;
-            esac
-          fi
+          CONTENT_CHANGED=false
+          echo "Website already advertises ${VERSION}."
         else
           WEBSITE_COMMIT="$(
             gh api \
@@ -216,16 +217,73 @@ jobs:
               --raw-field sha="${CURRENT_SHA}" \
               --jq '.commit.sha'
           )"
+          CONTENT_CHANGED=true
+          echo "Updated website release to ${VERSION} in ${WEBSITE_COMMIT}."
         fi
 
-        if [[ -z "${BUILD_URL:-}" ]]; then
-          BUILD_URL="$(
-            gh api \
-              --method POST \
-              "repos/${GITHUB_REPOSITORY}/pages/builds" \
-              --jq '.url'
-          )"
+        echo "content_changed=${CONTENT_CHANGED}" >> "${GITHUB_OUTPUT}"
+        echo "website_commit=${WEBSITE_COMMIT}" >> "${GITHUB_OUTPUT}"
+
+    - name: Check existing website build
+      if: steps.update_website.outputs.content_changed == 'false'
+      id: existing_build
+      env:
+        GH_TOKEN: ${{ github.token }}
+        WEBSITE_COMMIT: ${{ steps.update_website.outputs.website_commit }}
+      run: |
+        set -euo pipefail
+
+        BUILD="$(gh api "repos/${GITHUB_REPOSITORY}/pages/builds/latest")"
+        BUILD_COMMIT="$(jq --raw-output '.commit' <<< "${BUILD}")"
+        BUILD_STATUS="$(jq --raw-output '.status' <<< "${BUILD}")"
+        BUILD_COMPLETE=false
+        BUILD_URL=
+
+        if [[ "${BUILD_COMMIT}" == "${WEBSITE_COMMIT}" ]]; then
+          case "${BUILD_STATUS}" in
+            built)
+              BUILD_COMPLETE=true
+              echo "Website build for ${WEBSITE_COMMIT} is already complete."
+              ;;
+            queued|building)
+              BUILD_URL="$(jq --raw-output '.url' <<< "${BUILD}")"
+              echo "Website build for ${WEBSITE_COMMIT} is ${BUILD_STATUS}."
+              ;;
+          esac
         fi
+
+        echo "build_complete=${BUILD_COMPLETE}" >> "${GITHUB_OUTPUT}"
+        echo "build_url=${BUILD_URL}" >> "${GITHUB_OUTPUT}"
+
+    - name: Start website build
+      if: >-
+        steps.check_release.outputs.publish == 'true' &&
+        steps.existing_build.outputs.build_complete != 'true' &&
+        steps.existing_build.outputs.build_url == ''
+      id: start_build
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        set -euo pipefail
+
+        BUILD_URL="$(
+          gh api \
+            --method POST \
+            "repos/${GITHUB_REPOSITORY}/pages/builds" \
+            --jq '.url'
+        )"
+        echo "build_url=${BUILD_URL}" >> "${GITHUB_OUTPUT}"
+
+    - name: Wait for website build
+      if: >-
+        steps.check_release.outputs.publish == 'true' &&
+        steps.existing_build.outputs.build_complete != 'true'
+      env:
+        BUILD_URL: ${{ steps.existing_build.outputs.build_url || steps.start_build.outputs.build_url }}
+        GH_TOKEN: ${{ github.token }}
+        WEBSITE_COMMIT: ${{ steps.update_website.outputs.website_commit }}
+      run: |
+        set -euo pipefail
 
         for _ in {1..60}; do
           BUILD="$(
