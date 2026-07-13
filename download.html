@@ -1,18 +1,16 @@
 ---
-layout: default
-title: Download
+permalink: /download.html
 ---
-<div class="container content">
-  <h2>Download the Translate Toolkit</h2>
-  <p>The latest version is <strong>{{ site.latest_version }}</strong>.</p>
-  <p><a class="btn btn-success btn-huge"
-    href="https://github.com/translate/translate/releases/download/{{ site.latest_version }}/translate_toolkit-{{ site.latest_version }}.tar.gz">Download
-    Now&nbsp;<i class="icon-circle-arrow-down icon-large"></i></a></p>
-
-  <hr>
-
-  <h2>About this release <small>{{ site.latest_version }}</small></h2>
-  {% for post in site.categories.releases limit:1 %}
-  {{ post.content }}
-  {% endfor %}
-</div>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="refresh" content="0; url=/#install">
+    <link rel="canonical" href="{{ '/#install' | absolute_url }}">
+    <title>Install Translate Toolkit</title>
+  </head>
+  <body>
+    <p>Continue to <a href="{{ '/#install' | relative_url }}">Translate Toolkit installation</a>.</p>
+  </body>
+</html>

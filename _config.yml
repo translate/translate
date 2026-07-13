@@ -1,12 +1,10 @@
-auto: true
+title: Translate Toolkit
+description: Tools and Python APIs for translation and localization engineering.
+url: https://toolkit.translatehouse.org
+baseurl: ""
+repository: translate/translate
+
 markdown: kramdown
 
-name: Translate Toolkit
-description: A collection of useful tools for localization, and a powerful API for programmers of localization tools.
-latest_version: 3.19.5
-author: Translate House
-
-about_url: http://translatehouse.org/about.html
-docs_url: https://docs.translatehouse.org/projects/translate-toolkit/en/latest/
-gh_url: https://github.com/translate/translate
-contact_url: mailto:dev@translate.org.za
+exclude:
+- requirements

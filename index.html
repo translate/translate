@@ -1,49 +1,121 @@
 ---
 layout: default
-title: The essential toolkit for localization engineers
+title: Localization tools for people and software
+description: Convert, inspect, and automate localization files with command-line tools and a powerful Python API.
 ---
-<div class="hero-unit ac">
-  <div class="container">
-    <h1>Essential Toolkit for Localization Engineers.</h1>
-  </div>
-</div>
-
-<div class="container">
-  <div class="row">
-    <div class="span8">
-      <h2>The localization engineers' Swiss Army Knife. Use it to convert,
-      count, manipulate, review and debug texts. Tools that you can
-      expand, adapt and grow.</h2>
-    </div>
-    <div class="span4 ac">
-      <p><a class="btn btn-success btn-huge" href="download.html">Download
-        Now&nbsp;<i class="icon-circle-arrow-down icon-large"></i></a></p>
-      <p>Version {{ site.latest_version }} — It's <strong>free</strong>!</p>
-    </div>
-  </div>
-</div>
-
-<div class="container content">
-  <section>
-    <div class="row">
-      <div class="span4">
-	<h3>Format converters</h3>
-	<p>Convert between a number of localization, translation and software
-	formats. Allowing you and your translators to work on industry standard
-	translation formats.</p>
+<section class="hero">
+  <div class="shell hero-grid">
+    <div class="hero-copy">
+      <p class="eyebrow">Open-source localization engineering</p>
+      <h1>Make localization files work for you.</h1>
+      <p class="hero-lead">Translate Toolkit brings format conversion, quality checks, and localization automation into one dependable command-line and Python toolbox.</p>
+      <div class="button-row">
+        <a class="button button-primary" href="https://docs.translatehouse.org/projects/translate-toolkit/en/latest/">Read the documentation</a>
+        <a class="button button-secondary" href="https://github.com/translate/translate">Explore on GitHub</a>
       </div>
-      <div class="span4">
-	<h3>Quality assurance.</h3>
-	<p>Search for pattern matches.  Run tests that adapt to languages and
-	source projects. Extract terminology.  A large toolset to allow you to
-	increase localisation quality.</p>
-     </div>
-      <div class="span4">
-	<h3>Localization hacking</h3>
-	<p>The code is available for you to add new formats, project types,
-	localization tests and language modules. Adapting the toolkit to your
-	project and needs.</p>
+      <a class="release-link" href="https://github.com/translate/translate/releases/tag/{{ site.data.release.version }}">
+        <span>Latest release</span>
+        <strong>{{ site.data.release.version }}</strong>
+        <span aria-hidden="true">→</span>
+      </a>
+    </div>
+    <div class="terminal-card" aria-label="Example Translate Toolkit commands">
+      <div class="terminal-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+      <pre><code><span class="prompt">$</span> md2po handbook/ locale/messages.po
+<span class="output">processing 18 Markdown files</span>
+
+<span class="prompt">$</span> pofilter locale/messages.po
+<span class="output">checking translations for quality</span>
+
+<span class="prompt">$</span> pocount locale/
+<span class="output">summarizing translation progress</span></code></pre>
+    </div>
+  </div>
+</section>
+
+<section class="quick-facts" aria-label="Project highlights">
+  <div class="shell facts-grid">
+    <p><strong>Dozens</strong><span>of localization formats</span></p>
+    <p><strong>CLI + API</strong><span>for scripts and applications</span></p>
+    <p><strong>GPL-2.0+</strong><span>free and open source</span></p>
+    <p><strong>Production-ready</strong><span>maintained and tested</span></p>
+  </div>
+</section>
+
+<section class="section" id="capabilities">
+  <div class="shell">
+    <div class="section-heading">
+      <p class="eyebrow">A complete working toolbox</p>
+      <h2>Move between formats. Find problems. Build better workflows.</h2>
+      <p>Use focused commands for everyday tasks or compose the Python library into larger localization systems.</p>
+    </div>
+    <div class="card-grid">
+      <article class="feature-card">
+        <span class="feature-number">01</span>
+        <h3>Convert localization files</h3>
+        <p>Move content between PO, XLIFF, Android resources, Fluent, Qt TS, Markdown, JSON, and many more formats while preserving the details translators need.</p>
+        <a href="https://docs.translatehouse.org/projects/translate-toolkit/en/latest/formats/index.html">Browse supported formats <span aria-hidden="true">→</span></a>
+      </article>
+      <article class="feature-card">
+        <span class="feature-number">02</span>
+        <h3>Inspect translation quality</h3>
+        <p>Run language-aware checks, search translation files, extract terminology, and measure progress before localization problems reach users.</p>
+        <a href="https://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/index.html">Explore the commands <span aria-hidden="true">→</span></a>
+      </article>
+      <article class="feature-card">
+        <span class="feature-number">03</span>
+        <h3>Automate with Python</h3>
+        <p>Read, write, filter, and transform localization resources using the same storage and language APIs that power the command-line tools.</p>
+        <a href="https://docs.translatehouse.org/projects/translate-toolkit/en/latest/api/index.html">Use the Python API <span aria-hidden="true">→</span></a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section section-dark" id="install">
+  <div class="shell install-grid">
+    <div>
+      <p class="eyebrow">Get started</p>
+      <h2>Install the Toolkit and put it to work.</h2>
+      <p>Translate Toolkit supports Python 3.11 and newer. Install it in a virtual environment, then use any included command with <code>--help</code> to explore its options.</p>
+      <div class="button-row">
+        <a class="button button-light" href="https://docs.translatehouse.org/projects/translate-toolkit/en/latest/installation.html">Installation guide</a>
+        <a class="text-link" href="https://github.com/translate/translate/releases">Release notes <span aria-hidden="true">→</span></a>
       </div>
     </div>
-  </section>
-</div>
+    <div class="install-command">
+      <p>Install from PyPI</p>
+      <pre><code><span class="prompt">$</span> python -m pip install translate-toolkit</code></pre>
+      <p class="command-note">Optional extras add support for formats and features only when you need them.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="project">
+  <div class="shell project-grid">
+    <div class="section-heading project-heading">
+      <p class="eyebrow">The Translate project today</p>
+      <h2>Active tools, honest status.</h2>
+    </div>
+    <div class="project-copy">
+      <p>Translate Toolkit is the actively maintained project in the Translate organization. It continues the project's original goal: giving localizers practical, adaptable tools so they can focus on translation instead of repetitive file handling.</p>
+      <p>The organization also preserves historical projects—including Pootle, Virtaal, and Amagama—as open-source work. Those legacy tools are not actively maintained and should be evaluated accordingly.</p>
+      <a class="arrow-link" href="https://github.com/orgs/translate/repositories">View all Translate repositories <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="section contribute-section">
+  <div class="shell contribute-panel">
+    <div>
+      <p class="eyebrow">Built in the open</p>
+      <h2>Help improve localization tooling.</h2>
+      <p>Report a problem, contribute code or documentation, or help make another file format work better.</p>
+    </div>
+    <div class="contribute-links">
+      <a href="https://github.com/translate/translate/blob/master/CONTRIBUTING.md">Contribution guide <span aria-hidden="true">→</span></a>
+      <a href="https://github.com/translate/translate/issues">Issue tracker <span aria-hidden="true">→</span></a>
+      <a href="https://github.com/translate/translate/security/advisories/new">Report a vulnerability <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</section>

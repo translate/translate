@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#123c40">
+    <meta name="description" content="{{ page.description | default: site.description }}">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{{ page.title | default: site.title }}">
+    <meta property="og:description" content="{{ page.description | default: site.description }}">
+    <meta property="og:url" content="{{ page.url | absolute_url }}">
+    <meta property="og:site_name" content="{{ site.title }}">
+    <meta name="twitter:card" content="summary">
+    <link rel="canonical" href="{{ page.url | absolute_url }}">
+    <link rel="stylesheet" href="{{ '/assets/css/site.css' | relative_url }}">
+    <title>{% if page.title %}{{ page.title }} · {% endif %}{{ site.title }}</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header">
+      <div class="shell header-inner">
+        <a class="brand" href="{{ '/' | relative_url }}" aria-label="Translate Toolkit home">
+          <svg class="brand-mark" aria-hidden="true" viewBox="0 0 44 44">
+            <path d="M6 8h23a5 5 0 0 1 5 5v12a5 5 0 0 1-5 5H18l-8 7v-7H6a5 5 0 0 1-5-5V13a5 5 0 0 1 5-5Z"/>
+            <path class="brand-mark-accent" d="M21 15h22v19a5 5 0 0 1-5 5H26a5 5 0 0 1-5-5V15Z"/>
+            <path class="brand-mark-glyph" d="M11 15h13M17.5 13v3c0 5-3 8-7 10m4-7c2 3 5 5 9 7M27 32l4-11 4 11m-6.5-4h5"/>
+          </svg>
+          <span>Translate Toolkit</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a href="{{ '/#capabilities' | relative_url }}">Capabilities</a>
+          <a href="{{ '/#install' | relative_url }}">Install</a>
+          <a href="{{ '/#project' | relative_url }}">Project</a>
+          <a href="https://docs.translatehouse.org/projects/translate-toolkit/en/latest/">Documentation</a>
+          <a class="nav-github" href="https://github.com/translate/translate">GitHub</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main-content">
+      {{ content }}
+    </main>
+
+    <footer class="site-footer">
+      <div class="shell footer-grid">
+        <div>
+          <a class="brand footer-brand" href="{{ '/' | relative_url }}">Translate Toolkit</a>
+          <p>Free and open-source tools for localization engineers.</p>
+        </div>
+        <div>
+          <h2>Use the Toolkit</h2>
+          <a href="https://docs.translatehouse.org/projects/translate-toolkit/en/latest/">Documentation</a>
+          <a href="https://github.com/translate/translate/releases">Releases</a>
+          <a href="https://pypi.org/project/translate-toolkit/">Python package</a>
+        </div>
+        <div>
+          <h2>Project</h2>
+          <a href="https://github.com/translate/translate">Source code</a>
+          <a href="https://github.com/translate/translate/issues">Issue tracker</a>
+          <a href="https://github.com/translate/translate/security/advisories/new">Security</a>
+        </div>
+      </div>
+      <div class="shell footer-note">
+        <p>Translate Toolkit is licensed under GPL-2.0-or-later.</p>
+      </div>
+    </footer>
+  </body>
+</html>

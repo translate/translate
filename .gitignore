@@ -1,26 +1,11 @@
-# Stuff from the master branch
-*.pyc
-translate/
-translate_toolkit.egg-info/
-docs/
-build/
-dist/
-tests/
-MANIFEST
-MANIFEST.in
-.coverage*
-.cache*
+# Jekyll-generated files
+_site/
+.jekyll-cache/
+.jekyll-metadata
+.sass-cache/
 
-# LESS
-assets/less/bootstrap
-
-# Jekyll-generated
-_site
-
-# ViM-generated
+# Editor files
 *.swn
 *.swo
 *.swp
 *~
-
-uv.lock
