@@ -698,6 +698,44 @@ msgstr ""
         unit.target = "Glow"
         assert unit.target == "Glow"
 
+    def test_source_cache_invalidation(self) -> None:
+        unit = pypo.pounit("Aurora")
+        assert unit._source_cache is None
+        assert unit.source == "Aurora"
+        assert unit._source_cache == "Aurora"
+        unit.source = "Dawn"
+        assert unit._source_cache is None
+        assert unit.source == "Dawn"
+        assert unit._source_cache == "Dawn"
+
+    def test_source_cache_tracks_raw_message_mutations(self) -> None:
+        unit = pypo.pounit("Aurora")
+        assert unit.source == "Aurora"
+
+        unit.msgid = ['"Dawn"']
+        assert unit.source == "Dawn"
+        assert unit.getid() == "Dawn"
+
+        unit.msgid[0] = '"Glow"'
+        assert unit.source == "Glow"
+        assert 'msgid "Glow"' in str(unit)
+
+        unit.msgid_plural = ['"Glows"']
+        assert unit.source.strings == ["Glow", "Glows"]
+
+        unit.msgid_plural.append('" again"')
+        assert unit.source.strings == ["Glow", "Glows again"]
+
+    def test_plural_source_returns_fresh_multistring(self) -> None:
+        unit = pypo.pounit(multistring(["Aurora", "Auroras"]))
+
+        first = unit.source
+        second = unit.source
+
+        assert first.strings == ["Aurora", "Auroras"]
+        assert second.strings == ["Aurora", "Auroras"]
+        assert first is not second
+
     def test_plural_target_returns_fresh_multistring(self) -> None:
         unit = pypo.pounit("Aurora")
         unit.msgid_plural = ['"Auroras"']
