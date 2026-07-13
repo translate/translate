@@ -1,3 +1,27 @@
+@font-face {
+  font-family: "Source Sans 3";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../font/SourceSans3-Regular.ttf.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Source Sans 3";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("../font/SourceSans3-Semibold.ttf.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Source Sans 3";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../font/SourceSans3-Bold.ttf.woff2") format("woff2");
+}
+
 :root {
   --ink: #183337;
   --ink-muted: #536b6e;
@@ -27,7 +51,7 @@ body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: "Source Sans 3", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 1rem;
   line-height: 1.65;
   text-rendering: optimizeLegibility;
@@ -507,6 +531,27 @@ code {
 
 .project-copy {
   padding-top: 1.85rem;
+}
+
+.maintenance-note {
+  padding: 1.15rem 1.3rem;
+  border-left: 0.3rem solid var(--teal);
+  border-radius: 0 0.7rem 0.7rem 0;
+  background: var(--paper-deep);
+  color: var(--ink) !important;
+}
+
+.maintenance-note strong {
+  display: block;
+  margin-bottom: 0.15rem;
+  color: var(--teal);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.maintenance-note a {
+  font-weight: 700;
 }
 
 .project-copy p {
