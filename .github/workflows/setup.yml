@@ -135,3 +135,120 @@ jobs:
           exit 1
         fi
         gh release create "$VERSION" --verify-tag --title "$VERSION" --notes-file "$RELEASE_NOTES" dist/*
+
+  website-publish:
+    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/')
+    needs:
+    - github-publish
+    - pypi-publish
+    runs-on: ubuntu-24.04
+    concurrency:
+      group: website-publish
+      cancel-in-progress: false
+    permissions:
+      contents: write
+      pages: write
+    steps:
+    - name: Update website release
+      env:
+        GH_TOKEN: ${{ github.token }}
+        VERSION: ${{ github.ref_name }}
+      run: |
+        set -euo pipefail
+
+        WEBSITE_PATH="_data/release.yml"
+        WEBSITE_ENDPOINT="repos/${GITHUB_REPOSITORY}/contents/${WEBSITE_PATH}"
+        ENCODED_CONTENT="$(printf 'version: %s\n' "${VERSION}" | base64 --wrap=0)"
+        LATEST_VERSION="$(
+          gh api \
+            --paginate \
+            "repos/${GITHUB_REPOSITORY}/tags?per_page=100" \
+            --jq '.[].name | select(test("^[0-9]+\\.[0-9]+\\.[0-9]+$"))' \
+            | sort --version-sort \
+            | tail --lines=1
+        )"
+
+        if [[ -z "${LATEST_VERSION}" ]]; then
+          echo "No stable version tags found." >&2
+          exit 1
+        fi
+        if [[ "${VERSION}" != "${LATEST_VERSION}" ]]; then
+          echo "Skipping ${VERSION}; the latest version tag is ${LATEST_VERSION}."
+          exit 0
+        fi
+
+        CURRENT_COMMIT="$(
+          gh api \
+            "repos/${GITHUB_REPOSITORY}/git/ref/heads/gh-pages" \
+            --jq '.object.sha'
+        )"
+        CURRENT_FILE="$(gh api "${WEBSITE_ENDPOINT}?ref=${CURRENT_COMMIT}")"
+        CURRENT_SHA="$(jq --raw-output '.sha' <<< "${CURRENT_FILE}")"
+        CURRENT_CONTENT="$(
+          jq --raw-output '.content' <<< "${CURRENT_FILE}" \
+            | tr --delete '\n'
+        )"
+
+        if [[ "${CURRENT_CONTENT}" == "${ENCODED_CONTENT}" ]]; then
+          WEBSITE_COMMIT="${CURRENT_COMMIT}"
+          BUILD="$(gh api "repos/${GITHUB_REPOSITORY}/pages/builds/latest")"
+          BUILD_COMMIT="$(jq --raw-output '.commit' <<< "${BUILD}")"
+          BUILD_STATUS="$(jq --raw-output '.status' <<< "${BUILD}")"
+          if [[ "${BUILD_COMMIT}" == "${WEBSITE_COMMIT}" ]]; then
+            case "${BUILD_STATUS}" in
+              built)
+                echo "Website already advertises ${VERSION}."
+                exit 0
+                ;;
+              queued|building)
+                BUILD_URL="$(jq --raw-output '.url' <<< "${BUILD}")"
+                ;;
+            esac
+          fi
+        else
+          WEBSITE_COMMIT="$(
+            gh api \
+              --method PUT \
+              "${WEBSITE_ENDPOINT}" \
+              --raw-field branch=gh-pages \
+              --raw-field message="chore: publish website for ${VERSION}" \
+              --raw-field content="${ENCODED_CONTENT}" \
+              --raw-field sha="${CURRENT_SHA}" \
+              --jq '.commit.sha'
+          )"
+        fi
+
+        if [[ -z "${BUILD_URL:-}" ]]; then
+          BUILD_URL="$(
+            gh api \
+              --method POST \
+              "repos/${GITHUB_REPOSITORY}/pages/builds" \
+              --jq '.url'
+          )"
+        fi
+
+        for _ in {1..60}; do
+          BUILD="$(
+            gh api \
+              "${BUILD_URL}"
+          )"
+          BUILD_COMMIT="$(jq --raw-output '.commit' <<< "${BUILD}")"
+          BUILD_STATUS="$(jq --raw-output '.status' <<< "${BUILD}")"
+          if [[ "${BUILD_COMMIT}" != "${WEBSITE_COMMIT}" ]]; then
+            echo "GitHub Pages built ${BUILD_COMMIT}, expected ${WEBSITE_COMMIT}." >&2
+            exit 1
+          fi
+          case "${BUILD_STATUS}" in
+            built)
+              exit 0
+              ;;
+            errored)
+              echo "GitHub Pages build for ${WEBSITE_COMMIT} failed." >&2
+              exit 1
+              ;;
+          esac
+          sleep 5
+        done
+
+        echo "Timed out waiting for GitHub Pages build ${WEBSITE_COMMIT}." >&2
+        exit 1
