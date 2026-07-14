@@ -23,6 +23,32 @@ _SINGULAR_XLIFF = b"""<?xml version="1.0" encoding="UTF-8"?>
   </file>
 </xliff>"""
 
+# Based on Apple's documented XLIFF editing example:
+# https://developer.apple.com/documentation/xcode/editing-xliff-and-string-catalog-files
+_APPLE_WORKFLOW_XLIFF = b"""<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file original="Localizable.strings" source-language="en" target-language="de" datatype="plaintext">
+    <body>
+      <trans-unit id="greeting" xml:space="preserve">
+        <source>Hello, world!</source>
+        <target>Hallo, Welt!</target>
+        <note>A friendly greeting.</note>
+      </trans-unit>
+      <trans-unit id="missing-target" xml:space="preserve">
+        <source>Missing target</source>
+      </trans-unit>
+      <trans-unit id="empty-target" xml:space="preserve">
+        <source>Empty target</source>
+        <target></target>
+      </trans-unit>
+      <trans-unit id="explicit-state" xml:space="preserve">
+        <source>Explicit state</source>
+        <target state="needs-review-translation" state-qualifier="leveraged-mt">Expliziter Status</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>"""
+
 _BASIC_PLURAL_XLIFF = b"""<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file original="Localizable.strings" source-language="en" target-language="en" datatype="plaintext">
@@ -87,6 +113,7 @@ class TestAppleStringsXliffUnit(test_xliff.TestXLIFFUnit):
     """Tests for AppleStringsXliffUnit."""
 
     UnitClass = applestrings_xliff.AppleStringsXliffUnit
+    StoreClass = applestrings_xliff.AppleStringsXliffFile
 
 
 # ---------------------------------------------------------------------------
@@ -98,6 +125,9 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
     """Tests for AppleStringsXliffFile."""
 
     StoreClass = applestrings_xliff.AppleStringsXliffFile
+    translated_unit_attributes = ""
+    translated_target_attributes = ""
+    fuzzy_without_target_attribute = ""
 
     # ------------------------------------------------------------------
     # Basic parsing
@@ -113,6 +143,170 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
         assert unit.source == "Hello"
         assert unit.target == "Hello"
         assert not unit.hasplural()
+
+    def test_parse_apple_workflow(self):
+        """Apple targets and bare developer notes have implicit semantics."""
+        store = self.StoreClass.parsestring(_APPLE_WORKFLOW_XLIFF)
+        greeting, missing_target, empty_target, explicit_state = store.units
+
+        assert greeting.get_state_n() == greeting.S_TRANSLATED
+        assert greeting.isapproved()
+        assert not greeting.isfuzzy()
+        assert greeting.getnotes() == "A friendly greeting."
+        assert greeting.getnotes(origin="developer") == "A friendly greeting."
+
+        assert missing_target.get_state_n() == missing_target.S_UNTRANSLATED
+        assert not missing_target.isapproved()
+        assert not missing_target.isfuzzy()
+
+        assert empty_target.get_state_n() == empty_target.S_UNTRANSLATED
+        assert not empty_target.isapproved()
+        assert not empty_target.isfuzzy()
+
+        assert explicit_state.get_state_n() == explicit_state.S_NEEDS_REVIEW
+        assert not explicit_state.isapproved()
+        assert explicit_state.isfuzzy()
+
+    def test_whitespace_target_inherits_unit_xml_space(self):
+        """Whitespace-only targets respect xml:space on the trans-unit."""
+        content = _APPLE_WORKFLOW_XLIFF.replace(
+            b"<target>Hallo, Welt!</target>",
+            b"<target>   </target>",
+        )
+        greeting = self.StoreClass.parsestring(content).units[0]
+
+        assert greeting.target == "   "
+        assert greeting.get_state_n() == greeting.S_TRANSLATED
+        assert greeting.isapproved()
+        assert greeting.istranslated()
+        assert not greeting.isfuzzy()
+
+    def test_apple_workflow_serialization(self):
+        """Apple metadata round-trips without synthesized XLIFF attributes."""
+        store = self.StoreClass.parsestring(_APPLE_WORKFLOW_XLIFF)
+        greeting = store.units[0]
+
+        greeting.target = "Guten Tag!"
+        greeting.addnote("Shown to translators.", origin="developer")
+        greeting.addnote("Internal note.", origin="translator")
+
+        serialized = bytes(store)
+        reparsed = self.StoreClass.parsestring(serialized)
+        greeting = reparsed.units[0]
+        explicit_state = reparsed.units[3]
+
+        assert "approved" not in greeting.xmlelement.attrib
+        assert "state" not in greeting.get_target_dom().attrib
+        assert greeting.getnotes(origin="developer") == (
+            "A friendly greeting.\nShown to translators."
+        )
+        assert greeting.getnotes(origin="translator") == "Internal note."
+
+        note_nodes = list(
+            greeting.xmlelement.iterdescendants(greeting.namespaced("note"))
+        )
+        assert [note.get("from") for note in note_nodes] == [
+            None,
+            None,
+            "translator",
+        ]
+
+        explicit_target = explicit_state.get_target_dom()
+        assert explicit_target.get("state") == "needs-review-translation"
+        assert explicit_target.get("state-qualifier") == "leveraged-mt"
+
+    def test_apple_state_transitions(self):
+        """Explicit workflow transitions remain observable without approval tags."""
+        store = self.StoreClass.parsestring(_APPLE_WORKFLOW_XLIFF)
+        greeting = store.units[0]
+        target = greeting.get_target_dom()
+
+        greeting.set_state_n(greeting.S_UNTRANSLATED)
+        assert target.get("state") == "new"
+        assert greeting.get_state_n() == greeting.S_UNTRANSLATED
+        assert not greeting.isapproved()
+
+        greeting.markapproved()
+        assert target.get("state") == "translated"
+        assert greeting.isapproved()
+
+        greeting.markapproved(False)
+        assert target.get("state") == "needs-review-translation"
+        assert not greeting.isapproved()
+        assert greeting.isfuzzy()
+        assert "approved" not in greeting.xmlelement.attrib
+
+    def test_state_transition_creates_missing_singular_target(self):
+        """A singular state transition persists without an existing target."""
+        store = self.StoreClass.parsestring(_APPLE_WORKFLOW_XLIFF)
+        missing_target = store.units[1]
+        assert missing_target.get_target_dom() is None
+
+        missing_target.markapproved()
+
+        target = missing_target.get_target_dom()
+        assert target is not None
+        assert target.get("state") == "translated"
+        assert missing_target.get_state_n() == missing_target.S_TRANSLATED
+        assert missing_target.isapproved()
+
+        reparsed = self.StoreClass.parsestring(bytes(store)).units[1]
+        assert reparsed.get_target_dom() is not None
+        assert reparsed.get_state_n() == reparsed.S_TRANSLATED
+        assert reparsed.isapproved()
+
+    def test_state_transition_removes_generic_approval(self):
+        """Apple target state does not conflict with generic approval metadata."""
+        content = _APPLE_WORKFLOW_XLIFF.replace(
+            b'<trans-unit id="greeting"',
+            b'<trans-unit id="greeting" approved="yes"',
+        )
+        store = self.StoreClass.parsestring(content)
+        greeting = store.units[0]
+        assert greeting.xmlelement.get("approved") == "yes"
+
+        greeting.markapproved(False)
+
+        assert "approved" not in greeting.xmlelement.attrib
+        assert greeting.get_target_dom().get("state") == "needs-review-translation"
+        serialized = bytes(store)
+        assert b"approved=" not in serialized
+
+        reparsed = self.StoreClass.parsestring(serialized).units[0]
+        assert reparsed.get_state_n() == reparsed.S_NEEDS_REVIEW
+        assert not reparsed.isapproved()
+
+    def test_exact_xliff_states_are_preserved(self):
+        """Setting an exact numeric state does not collapse XLIFF variants."""
+        greeting = self.StoreClass.parsestring(_APPLE_WORKFLOW_XLIFF).units[0]
+        target = greeting.get_target_dom()
+
+        for xml_state, state_n in greeting.statemap.items():
+            if xml_state == "new":
+                continue
+            target.set("state", xml_state)
+            assert greeting.get_state_n() == state_n
+
+            greeting.set_state_n(greeting.get_state_n())
+
+            assert target.get("state") == xml_state
+
+    def test_remove_bare_developer_notes(self):
+        store = self.StoreClass.parsestring(_APPLE_WORKFLOW_XLIFF)
+        greeting = store.units[0]
+        greeting.addnote("Internal note.", origin="translator")
+        greeting.addnote(
+            "Replacement developer note.",
+            origin="developer",
+            position="replace",
+        )
+
+        assert greeting.getnotes(origin="developer") == "Replacement developer note."
+        assert greeting.getnotes(origin="translator") == "Internal note."
+
+        greeting.removenotes(origin="developer")
+
+        assert greeting.getnotes() == "Internal note."
 
     def test_parse_apple_plural_basic(self):
         """Plurals are folded into one unit with a multistring source/target."""
@@ -134,6 +328,214 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
         assert unit.source.strings[2] == "%d items"  # 'other' form
         assert unit.target.strings[1] == "One item"
         assert unit.target.strings[2] == "%d items"
+
+    def test_plural_state_aggregation_and_propagation(self):
+        """Folded plurals expose and update their least-complete form state."""
+        content = _BASIC_PLURAL_XLIFF.replace(
+            b"<target>One item</target>",
+            b'<target state="needs-review-translation">One item</target>',
+        )
+        store = self.StoreClass.parsestring(content)
+        unit = store.units[0]
+
+        assert unit.get_state_n() == unit.S_NEEDS_REVIEW
+        assert not unit.isapproved()
+        assert unit.isfuzzy()
+
+        unit.markapproved()
+        assert unit.get_state_n() == unit.S_TRANSLATED
+        assert unit.isapproved()
+        assert bytes(store).count(b'state="translated"') == 2
+
+        unit.markapproved(False)
+        assert unit.get_state_n() == unit.S_NEEDS_REVIEW
+        assert not unit.isapproved()
+        assert bytes(store).count(b'state="needs-review-translation"') == 2
+
+        unit.set_state_n(unit.S_UNTRANSLATED)
+        assert unit.get_state_n() == unit.S_UNTRANSLATED
+        assert bytes(store).count(b'state="new"') == 2
+
+        unit.markapproved(False)
+        unit.target = multistring(["", "One translated item", "%d translated items"])
+        serialized = bytes(store)
+        assert serialized.count(b'state="needs-review-translation"') == 2
+
+        reparsed = self.StoreClass.parsestring(serialized)
+        assert reparsed.units[0].get_state_n() == unit.S_NEEDS_REVIEW
+
+    def test_dirty_plural_state_uses_in_memory_targets(self):
+        """Plural state changes immediately when implicit target forms are edited."""
+        store = self.StoreClass.parsestring(_BASIC_PLURAL_XLIFF)
+        unit = store.units[0]
+
+        unit.target = multistring(["", "", "%d items"])
+
+        assert unit.get_state_n() == unit.S_UNTRANSLATED
+        assert not unit.isapproved()
+        assert not unit.istranslated()
+        assert unit.isfuzzy()
+
+        unit.target = multistring(["", "One translated item", "%d items"])
+
+        assert unit.get_state_n() == unit.S_TRANSLATED
+        assert unit.isapproved()
+        assert unit.istranslated()
+        assert not unit.isfuzzy()
+
+    def test_dirty_empty_plural_ignores_stale_translated_state(self):
+        """Clearing a form supersedes its old explicit translated state."""
+        content = _BASIC_PLURAL_XLIFF.replace(
+            b"<target>One item</target>",
+            b'<target state="translated">One item</target>',
+        ).replace(
+            b"<target>%d items</target>",
+            b'<target state="translated">%d items</target>',
+        )
+        store = self.StoreClass.parsestring(content)
+        unit = store.units[0]
+        assert unit.get_state_n() == unit.S_TRANSLATED
+
+        unit.target = multistring(["", "", "%d items"])
+
+        assert unit.get_state_n() == unit.S_UNTRANSLATED
+        assert not unit.isapproved()
+        assert not unit.istranslated()
+        assert unit.isfuzzy()
+
+        serialized = bytes(store)
+        assert serialized.count(b'state="translated"') == 1
+        reparsed = self.StoreClass.parsestring(serialized).units[0]
+        assert reparsed.get_state_n() == reparsed.S_UNTRANSLATED
+        assert not reparsed.isapproved()
+
+    def test_plural_target_edit_clears_state_override(self):
+        """Editing targets invalidates an earlier plural-wide transition."""
+        store = self.StoreClass.parsestring(_BASIC_PLURAL_XLIFF)
+        unit = store.units[0]
+        unit.markapproved()
+        assert unit._plural_state_override == unit.S_TRANSLATED
+
+        unit.target = multistring(["", "", "%d items"])
+
+        assert unit._plural_state_override is None
+        assert unit.get_state_n() == unit.S_UNTRANSLATED
+        assert not unit.isapproved()
+        assert not unit.istranslated()
+
+        serialized = bytes(store)
+        assert serialized.count(b'state="translated"') == 1
+        reparsed = self.StoreClass.parsestring(serialized).units[0]
+        assert reparsed.get_state_n() == reparsed.S_UNTRANSLATED
+
+    def test_dirty_plural_preserves_unchanged_empty_form_state(self):
+        """Editing another form retains state metadata on an empty target."""
+        content = _BASIC_PLURAL_XLIFF.replace(
+            b"<target>One item</target>",
+            b'<target state="needs-review-translation"></target>',
+        )
+        store = self.StoreClass.parsestring(content)
+        unit = store.units[0]
+        assert unit.get_state_n() == unit.S_NEEDS_REVIEW
+
+        unit.target = multistring(["", "", "%d translated items"])
+
+        assert unit._plural_dirty_targets == {"other"}
+        assert unit.get_state_n() == unit.S_NEEDS_REVIEW
+        serialized = bytes(store)
+        assert serialized.count(b'state="needs-review-translation"') == 1
+
+        reparsed = self.StoreClass.parsestring(serialized).units[0]
+        assert reparsed.get_state_n() == reparsed.S_NEEDS_REVIEW
+
+    def test_new_plural_state_derives_target_tags(self):
+        """New plural state evaluates each required in-memory target form."""
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        unit = _add_plural(
+            store,
+            "items:count",
+            ["", "", "%d items"],
+            source_strings=["", "One item", "%d items"],
+        )
+        assert unit._plural_tags == []
+
+        assert unit.get_state_n() == unit.S_UNTRANSLATED
+        assert not unit.isapproved()
+        assert not unit.istranslated()
+        assert unit.isfuzzy()
+
+    def test_plural_state_transition_creates_missing_targets(self):
+        """A plural state transition persists when form targets are absent."""
+        content = _BASIC_PLURAL_XLIFF.replace(
+            b"        <target>One item</target>\n",
+            b"",
+        ).replace(
+            b"        <target>%d items</target>\n",
+            b"",
+        )
+        store = self.StoreClass.parsestring(content)
+        unit = store.units[0]
+        assert all(
+            next(form.iterchildren(unit.namespaced("target")), None) is None
+            for form in unit._plural_forms.values()
+        )
+
+        unit.markapproved()
+
+        assert unit._plural_dirty
+        serialized = bytes(store)
+        assert serialized.count(b'state="translated"') == 2
+
+        reparsed = self.StoreClass.parsestring(serialized).units[0]
+        assert reparsed.get_state_n() == reparsed.S_TRANSLATED
+        assert reparsed.isapproved()
+
+    def test_dirty_plural_preserves_per_form_state(self):
+        """Rebuilding edited forms retains each form's exact explicit state."""
+        content = _BASIC_PLURAL_XLIFF.replace(
+            b"<target>One item</target>",
+            b'<target state="needs-review-adaptation" '
+            b'state-qualifier="leveraged-mt">One item</target>',
+        )
+        store = self.StoreClass.parsestring(content)
+        unit = store.units[0]
+
+        unit.target = multistring(["", "One translated item", "%d translated items"])
+        serialized = bytes(store)
+
+        assert serialized.count(b'state="needs-review-adaptation"') == 1
+        assert serialized.count(b'state-qualifier="leveraged-mt"') == 1
+        assert serialized.count(b" state=") == 1
+        reparsed = self.StoreClass.parsestring(serialized)
+        assert (
+            reparsed.units[0].get_state_n() == unit.statemap["needs-review-adaptation"]
+        )
+        one_target = next(
+            reparsed.units[0]
+            ._plural_forms["one"]
+            .iterchildren(reparsed.units[0].namespaced("target"))
+        )
+        assert one_target.get("state-qualifier") == "leveraged-mt"
+
+    def test_plural_state_uses_folded_form_index(self, monkeypatch):
+        """State reads and writes do not rescan the containing XML body."""
+        store = self.StoreClass.parsestring(_BASIC_PLURAL_XLIFF)
+        unit = store.units[0]
+        assert set(unit._plural_forms) == {"one", "other"}
+
+        def fail_on_scan(*args):
+            raise AssertionError("plural state rescanned the XML body")
+
+        monkeypatch.setattr(
+            self.StoreClass,
+            "_is_plural_form_sibling",
+            fail_on_scan,
+        )
+
+        assert unit.get_state_n() == unit.S_TRANSLATED
+        unit.markapproved(False)
+        assert unit.get_state_n() == unit.S_NEEDS_REVIEW
 
     def test_parse_apple_plural_complex(self):
         """Each plural group becomes one unit; regular units are preserved."""

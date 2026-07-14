@@ -11,6 +11,7 @@ from . import test_base
 
 class TestXLIFFUnit(test_base.TestTranslationUnit):
     UnitClass = xliff.xliffunit
+    StoreClass = xliff.xlifffile
 
     def test_markreview(self) -> None:
         """Tests if we can mark the unit to need review."""
@@ -76,7 +77,7 @@ class TestXLIFFUnit(test_base.TestTranslationUnit):
         assert self.unit.target == "Een"
 
     def test_copy_uses_independent_xml_subtree(self) -> None:
-        xlifffile = xliff.xlifffile()
+        xlifffile = self.StoreClass()
         unit = xlifffile.addsourceunit("Source")
         unit.target = "Target"
         unit.xmlelement.set("id", "unit-1")
@@ -103,6 +104,12 @@ class TestXLIFFUnit(test_base.TestTranslationUnit):
 
 class TestXLIFFfile(test_base.TestTranslationStore):
     StoreClass = xliff.xlifffile
+    supports_inline_placeables = True
+    supports_plain_rich_target = True
+    supports_xliff_locations = True
+    translated_unit_attributes = ' approved="yes"'
+    translated_target_attributes = ' state="translated"'
+    fuzzy_without_target_attribute = 'approved="no"'
     skeleton = """<?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
         <file original="doc.txt" source-language="en-US">
@@ -113,11 +120,11 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 </xliff>"""
 
     def test_basic(self) -> None:
-        xlifffile = xliff.xlifffile()
+        xlifffile = self.StoreClass()
         assert xlifffile.units == []
         xlifffile.addsourceunit("Bla")
         assert len(xlifffile.units) == 1
-        newfile = xliff.xlifffile.parsestring(bytes(xlifffile))
+        newfile = self.StoreClass.parsestring(bytes(xlifffile))
         print(bytes(xlifffile))
         assert len(newfile.units) == 1
         assert newfile.units[0].source == "Bla"
@@ -136,12 +143,14 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         </xliff:body>
     </xliff:file>
 </xliff:xliff>"""
-        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        xlifffile = self.StoreClass.parsestring(xlfsource)
         print(bytes(xlifffile))
         assert xlifffile.units[0].source == "File 1"
 
     def test_rich_source(self) -> None:
-        xlifffile = xliff.xlifffile()
+        if not self.supports_inline_placeables:
+            pytest.skip("store does not expose XLIFF inline source placeables")
+        xlifffile = self.StoreClass()
         xliffunit = xlifffile.addsourceunit("")
 
         # Test 1
@@ -190,7 +199,9 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         ]
 
     def test_rich_target(self) -> None:
-        xlifffile = xliff.xlifffile()
+        if not self.supports_inline_placeables:
+            pytest.skip("store does not expose XLIFF inline target placeables")
+        xlifffile = self.StoreClass()
         xliffunit = xlifffile.addsourceunit("")
 
         # Test 1
@@ -241,13 +252,13 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         print(bytes(xlifffile).decode())
         assert (
             bytes(xlifffile).decode()
-            == """<?xml version="1.0" encoding="UTF-8"?>
+            == f"""<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.1" version="1.1">
   <file original="NoName" source-language="en" datatype="plaintext">
     <body>
-      <trans-unit xml:space="preserve" id="2" approved="yes">
+      <trans-unit xml:space="preserve" id="2"{self.translated_unit_attributes}>
         <source></source>
-        <target state="translated">foobaz<g id="oof"><g id="zab">barrab</g></g></target>
+        <target{self.translated_target_attributes}>foobaz<g id="oof"><g id="zab">barrab</g></g></target>
       </trans-unit>
     </body>
   </file>
@@ -267,7 +278,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         </body>
     </file>
 </xliff>"""
-        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        xlifffile = self.StoreClass.parsestring(xlfsource)
         xliffunit = xlifffile.units[0]
 
         assert xliffunit.source == "Label A: %1 | Label B: %2 |  Label C: %3"
@@ -295,31 +306,31 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         )
 
     def test_source(self) -> None:
-        xlifffile = xliff.xlifffile()
+        xlifffile = self.StoreClass()
         xliffunit = xlifffile.addsourceunit("Concept")
         xliffunit.source = "Term"
-        newfile = xliff.xlifffile.parsestring(bytes(xlifffile))
+        newfile = self.StoreClass.parsestring(bytes(xlifffile))
         print(bytes(xlifffile))
         assert newfile.findunit("Concept") is None
         assert newfile.findunit("Term") is not None
 
     def test_target(self) -> None:
-        xlifffile = xliff.xlifffile()
+        xlifffile = self.StoreClass()
         xliffunit = xlifffile.addsourceunit("Concept")
         xliffunit.target = "Konsep"
-        newfile = xliff.xlifffile.parsestring(bytes(xlifffile))
+        newfile = self.StoreClass.parsestring(bytes(xlifffile))
         print(bytes(xlifffile))
         assert newfile.findunit("Concept").target == "Konsep"
 
     def test_sourcelanguage(self) -> None:
-        xlifffile = xliff.xlifffile(sourcelanguage="xh")
+        xlifffile = self.StoreClass(sourcelanguage="xh")
         xmltext = bytes(xlifffile).decode("utf-8")
         print(xmltext)
         assert xmltext.find('source-language="xh"') > 0
         # TODO: test that it also works for new files.
 
     def test_targetlanguage(self) -> None:
-        xlifffile = xliff.xlifffile(sourcelanguage="zu", targetlanguage="af")
+        xlifffile = self.StoreClass(sourcelanguage="zu", targetlanguage="af")
         xmltext = bytes(xlifffile).decode("utf-8")
         print(xmltext)
         assert xmltext.find('source-language="zu"') > 0
@@ -334,7 +345,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         <file original="doc.txt" source-language="en-US">
         </file>
 </xliff>"""
-        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        xlifffile = self.StoreClass.parsestring(xlfsource)
         xlifffile.settargetlanguage("cs")
         xlifffile.setsourcelanguage("de")
         xmltext = bytes(xlifffile).decode()
@@ -343,7 +354,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert xmltext.count('target-language="cs"') == 2
 
     def test_notes(self) -> None:
-        xlifffile = xliff.xlifffile()
+        xlifffile = self.StoreClass()
         unit = xlifffile.addsourceunit("Concept")
         # We don't want to add unnecessary notes
         assert "note" not in bytes(xlifffile).decode("utf-8")
@@ -386,7 +397,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 
     def test_alttrans(self) -> None:
         """Test xliff <alt-trans> accessors."""
-        xlifffile = xliff.xlifffile()
+        xlifffile = self.StoreClass()
         unit = xlifffile.addsourceunit("Testing")
 
         unit.addalttrans("ginmi")
@@ -434,7 +445,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         )
 
     def test_fuzzy(self) -> None:
-        xlifffile = xliff.xlifffile()
+        xlifffile = self.StoreClass()
         unit = xlifffile.addsourceunit("Concept")
         unit.markfuzzy()
         assert not unit.isfuzzy()  # untranslated
@@ -454,7 +465,10 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert unit.target is None
         print(unit)
         unit.markfuzzy(True)
-        assert 'approved="no"' in str(unit)
+        if self.fuzzy_without_target_attribute:
+            assert self.fuzzy_without_target_attribute in str(unit)
+        else:
+            assert "approved=" not in str(unit)
         # assert unit.isfuzzy()
 
     def test_xml_space(self) -> None:
@@ -464,7 +478,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
                    <source> File  1 </source>
                </trans-unit>"""
         )
-        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        xlifffile = self.StoreClass.parsestring(xlfsource)
         assert xlifffile.units[0].source == " File  1 "
         root_node = xlifffile.document.getroot()
         setXMLspace(root_node, "preserve")
@@ -477,7 +491,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
                    <source> File  1 </source>
                </trans-unit>"""
         )
-        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        xlifffile = self.StoreClass.parsestring(xlfsource)
         assert xlifffile.units[0].source == "File 1"
         root_node = xlifffile.document.getroot()
         setXMLspace(root_node, "preserve")
@@ -491,7 +505,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
                </trans-unit>"""
         )
         # we currently always normalize as default behaviour for xliff
-        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        xlifffile = self.StoreClass.parsestring(xlfsource)
         assert xlifffile.units[0].source == "File 1"
         root_node = xlifffile.document.getroot()
         setXMLspace(root_node, "preserve")
@@ -506,7 +520,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
                </trans-unit>"""
         )
         # we currently always normalize as default behaviour for xliff
-        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        xlifffile = self.StoreClass.parsestring(xlfsource)
         assert xlifffile.units[0].source == "File 1"
         root_node = xlifffile.document.getroot()
         setXMLspace(root_node, "preserve")
@@ -522,7 +536,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
                      <target/>
                  </trans-unit>"""
         )
-        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        xlifffile = self.StoreClass.parsestring(xlfsource)
         assert xlifffile.units[0].istranslatable()
 
         xlfsource = (
@@ -532,7 +546,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
                      <target/>
                  </trans-unit>"""
         )
-        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        xlifffile = self.StoreClass.parsestring(xlfsource)
         assert not xlifffile.units[0].istranslatable()
 
         xlfsource = (
@@ -542,7 +556,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
                      <target/>
                  </trans-unit>"""
         )
-        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        xlifffile = self.StoreClass.parsestring(xlfsource)
         assert xlifffile.units[0].istranslatable()
 
     def test_marktranslatable(self) -> None:
@@ -554,7 +568,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
                      <target/>
                  </trans-unit>"""
         )
-        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        xlifffile = self.StoreClass.parsestring(xlfsource)
         unit = xlifffile.units[0]
 
         # Test marking as untranslatable
@@ -596,7 +610,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
                 </body>
         </file>
 </xliff>"""
-        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        xlifffile = self.StoreClass.parsestring(xlfsource)
         assert xlifffile.units[0].istranslatable()
         assert xlifffile.units[0].source == ""
         assert xlifffile.units[1].istranslatable()
@@ -620,20 +634,20 @@ class TestXLIFFfile(test_base.TestTranslationStore):
     </body>
   </file>
 </xliff>"""
-        xfile = xliff.xlifffile.parsestring(xlfsource)
+        xfile = self.StoreClass.parsestring(xlfsource)
         assert len(xfile.units) == 2
         assert xfile.units[0].getid() == "file0\x04hello"
         assert xfile.units[1].getid() == "file1\x04world"
-        xunit = xliff.xlifffile.UnitClass(source="goodbye")
+        xunit = self.StoreClass.UnitClass(source="goodbye")
         xunit.setid("file2\x04goodbye")
         xfile.addunit(xunit)
         assert xfile.units[2].getid() == "file2\x04goodbye"
         # if there is no file set it will use the active context
-        xunit = xliff.xlifffile.UnitClass(source="lastfile")
+        xunit = self.StoreClass.UnitClass(source="lastfile")
         xunit.setid("lastfile")
         xfile.addunit(xunit)
         assert xfile.units[3].getid() == "file2\x04lastfile"
-        newxfile = xliff.xlifffile()
+        newxfile = self.StoreClass()
         newxfile.addunit(xfile.units[0])
         newxfile.addunit(xfile.units[1])
         assert newxfile.units[0].getid() == "file0\x04hello"
@@ -681,11 +695,11 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 </xliff>
 """
 
-        source = xliff.xlifffile.parsestring(source_xliff)
+        source = self.StoreClass.parsestring(source_xliff)
         assert len(source.units) == 2
 
         # Add units to a new translation store
-        translation = xliff.xlifffile()
+        translation = self.StoreClass()
         translation.sourcelanguage = "en"
         translation.targetlanguage = "fr"
 
@@ -697,7 +711,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert serialized == expected_output
 
         # Also verify by parsing and checking structure
-        translation_reloaded = xliff.xlifffile.parsestring(serialized)
+        translation_reloaded = self.StoreClass.parsestring(serialized)
         assert len(translation_reloaded.units) == 2
         for unit in translation_reloaded.units:
             parent = unit.xmlelement.getparent()
@@ -727,11 +741,11 @@ class TestXLIFFfile(test_base.TestTranslationStore):
     </file>
 </xliff>"""
 
-        source = xliff.xlifffile.parsestring(source_xliff)
+        source = self.StoreClass.parsestring(source_xliff)
         assert len(source.units) == 2
 
         # Add units to a new translation store
-        translation = xliff.xlifffile()
+        translation = self.StoreClass()
         translation.sourcelanguage = "en"
         translation.targetlanguage = "fr"
 
@@ -741,7 +755,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         # Verify both files and groups are preserved
         assert translation.getfilenames() == ["file1.txt", "file2.txt"]
         serialized = bytes(translation)
-        translation_reloaded = xliff.xlifffile.parsestring(serialized)
+        translation_reloaded = self.StoreClass.parsestring(serialized)
 
         # Verify structure matches original
         assert translation_reloaded.getfilenames() == ["file1.txt", "file2.txt"]
@@ -780,7 +794,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
     </file>
 </xliff>"""
 
-        translation = xliff.xlifffile.parsestring(translation_xliff)
+        translation = self.StoreClass.parsestring(translation_xliff)
 
         # Add a new unit from a source that has the same group
         source_xliff = b"""<?xml version="1.0" encoding="utf-8"?>
@@ -796,7 +810,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
     </file>
 </xliff>"""
 
-        source = xliff.xlifffile.parsestring(source_xliff)
+        source = self.StoreClass.parsestring(source_xliff)
         new_unit = source.units[0]
 
         # Add the new unit
@@ -805,7 +819,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         # Verify the new unit is in the same group
         assert len(translation.units) == 2
         serialized = bytes(translation)
-        translation_reloaded = xliff.xlifffile.parsestring(serialized)
+        translation_reloaded = self.StoreClass.parsestring(serialized)
 
         # Both units should be in group1
         for unit in translation_reloaded.units:
@@ -828,7 +842,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
     </file>
 </xliff>"""
 
-        translation = xliff.xlifffile.parsestring(translation_xliff)
+        translation = self.StoreClass.parsestring(translation_xliff)
         assert translation.getfilenames() == ["file1.txt"]
 
         # Add a new unit from a different file
@@ -843,7 +857,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
     </file>
 </xliff>"""
 
-        source = xliff.xlifffile.parsestring(source_xliff)
+        source = self.StoreClass.parsestring(source_xliff)
         new_unit = source.units[0]
 
         # Add the new unit
@@ -855,7 +869,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 
         # Verify structure is correct
         serialized = bytes(translation)
-        translation_reloaded = xliff.xlifffile.parsestring(serialized)
+        translation_reloaded = self.StoreClass.parsestring(serialized)
         assert set(translation_reloaded.getfilenames()) == {"file1.txt", "file2.txt"}
 
         # Verify each unit is in the correct file
@@ -884,8 +898,8 @@ class TestXLIFFfile(test_base.TestTranslationStore):
     </file>
 </xliff>"""
 
-        source = xliff.xlifffile.parsestring(source_xliff)
-        translation = xliff.xlifffile()
+        source = self.StoreClass.parsestring(source_xliff)
+        translation = self.StoreClass()
         translation.sourcelanguage = "en"
         translation.targetlanguage = "fr"
 
@@ -894,7 +908,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 
         # Verify structure is preserved
         serialized = bytes(translation)
-        translation_reloaded = xliff.xlifffile.parsestring(serialized)
+        translation_reloaded = self.StoreClass.parsestring(serialized)
         assert len(translation_reloaded.units) == 2
 
         # First unit should be in group
@@ -920,8 +934,8 @@ class TestXLIFFfile(test_base.TestTranslationStore):
     </file>
 </xliff>"""
 
-        source = xliff.xlifffile.parsestring(source_xliff)
-        translation = xliff.xlifffile()
+        source = self.StoreClass.parsestring(source_xliff)
+        translation = self.StoreClass()
         translation.sourcelanguage = "en"
         translation.targetlanguage = "fr"
 
@@ -937,7 +951,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         # But xmlelement should not be in the body or any group
         serialized = bytes(translation)
         # Should not contain the trans-unit since new=False
-        translation_reloaded = xliff.xlifffile.parsestring(serialized)
+        translation_reloaded = self.StoreClass.parsestring(serialized)
         assert len(translation_reloaded.units) == 0
 
     def test_namespace_preservation_across_versions(self) -> None:
@@ -956,8 +970,8 @@ class TestXLIFFfile(test_base.TestTranslationStore):
     </file>
 </xliff>"""
 
-        source = xliff.xlifffile.parsestring(source_xliff)
-        translation = xliff.xlifffile()
+        source = self.StoreClass.parsestring(source_xliff)
+        translation = self.StoreClass()
         translation.sourcelanguage = "en"
         translation.targetlanguage = "fr"
 
@@ -1006,8 +1020,8 @@ class TestXLIFFfile(test_base.TestTranslationStore):
     </file>
 </xliff>"""
 
-        source = xliff.xlifffile.parsestring(source_xliff)
-        target = xliff.xlifffile.parsestring(target_xliff)
+        source = self.StoreClass.parsestring(source_xliff)
+        target = self.StoreClass.parsestring(target_xliff)
 
         # Add units from source to target
         for unit in source.units:
@@ -1015,7 +1029,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 
         # Verify all three files are present
         serialized = bytes(target)
-        target_reloaded = xliff.xlifffile.parsestring(serialized)
+        target_reloaded = self.StoreClass.parsestring(serialized)
 
         filenames = target_reloaded.getfilenames()
         assert len(filenames) == 3
@@ -1063,8 +1077,8 @@ class TestXLIFFfile(test_base.TestTranslationStore):
     </file>
 </xliff>"""
 
-        source = xliff.xlifffile.parsestring(source_xliff)
-        target = xliff.xlifffile.parsestring(target_xliff)
+        source = self.StoreClass.parsestring(source_xliff)
+        target = self.StoreClass.parsestring(target_xliff)
 
         # Verify initial state
         assert len(source.units) == 1
@@ -1078,7 +1092,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 
         # Serialize and reload to verify structure
         serialized = bytes(target)
-        target_reloaded = xliff.xlifffile.parsestring(serialized)
+        target_reloaded = self.StoreClass.parsestring(serialized)
 
         # Should still have 2 units after round-trip
         assert len(target_reloaded.units) == 2
@@ -1148,8 +1162,8 @@ class TestXLIFFfile(test_base.TestTranslationStore):
     </file>
 </xliff>"""
 
-        source = xliff.xlifffile.parsestring(source_xliff)
-        target = xliff.xlifffile.parsestring(target_xliff)
+        source = self.StoreClass.parsestring(source_xliff)
+        target = self.StoreClass.parsestring(target_xliff)
 
         # Verify different namespaces
         assert source.namespace == "urn:oasis:names:tc:xliff:document:1.2"
@@ -1233,12 +1247,14 @@ class TestXLIFFfile(test_base.TestTranslationStore):
   </file>
 </xliff>
 """
-        xfile = xliff.xlifffile.parsestring(xlfsource)
+        xfile = self.StoreClass.parsestring(xlfsource)
         assert bytes(xfile) == xlfsource
         xfile.units[0].addnote("Test note")
         assert bytes(xfile) == xlfsourcenote
 
     def test_add_target(self) -> None:
+        if not self.supports_plain_rich_target:
+            pytest.skip("store requires rich target elements")
         xlfsource = """<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.1" version="1.1">
   <file original="doc.txt" source-language="en-US">
@@ -1260,7 +1276,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
   </file>
 </xliff>
 """
-        xfile = xliff.xlifffile.parsestring(xlfsource)
+        xfile = self.StoreClass.parsestring(xlfsource)
         assert bytes(xfile).decode() == xlfsource
         xfile.units[0].rich_target = ["Soubor"]
         assert bytes(xfile).decode("ascii") == xlftarget
@@ -1278,10 +1294,10 @@ class TestXLIFFfile(test_base.TestTranslationStore):
   </file>
 </xliff>
 """
-        xfile = xliff.xlifffile.parsestring(xlfsource)
+        xfile = self.StoreClass.parsestring(xlfsource)
         assert bytes(xfile).decode() == xlfsource
         xfile.units[0].target = "H  E"
-        newfile = xliff.xlifffile.parsestring(bytes(xfile))
+        newfile = self.StoreClass.parsestring(bytes(xfile))
         assert newfile.units[0].target == "H  E"
 
     def test_closing_tags(self) -> None:
@@ -1301,7 +1317,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
   </file>
 </xliff>
 """
-        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        xlifffile = self.StoreClass.parsestring(xlfsource)
         xlifffile.XMLSelfClosingTags = False
         xlifffile.XMLuppercaseEncoding = False
 
@@ -1326,7 +1342,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
   </file>
 </xliff>
 """
-        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        xlifffile = self.StoreClass.parsestring(xlfsource)
         contextGroups = xlifffile.units[0].getcontextgroupsbyattribute(
             "purpose", "location"
         )
@@ -1338,6 +1354,8 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert contextGroups[0][1][1] == "222"
 
     def test_getlocations(self) -> None:
+        if not self.supports_xliff_locations:
+            pytest.skip("store uses format-specific location metadata")
         xlfsource = """<?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
   <file datatype="xml" source-language="en-US" target-language="en-US" original="Email - SMTP API">
@@ -1356,12 +1374,14 @@ class TestXLIFFfile(test_base.TestTranslationStore):
   </file>
 </xliff>
 """
-        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        xlifffile = self.StoreClass.parsestring(xlfsource)
         locations = xlifffile.units[0].getlocations()
 
         assert locations == ["some-directory/on-some-test/test.file:222"]
 
     def test_addlocation(self) -> None:
+        if not self.supports_xliff_locations:
+            pytest.skip("store uses format-specific location metadata")
         xlfsource = """<?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
   <file datatype="xml" source-language="en-US" target-language="en-US" original="Email - SMTP API">
@@ -1380,7 +1400,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
   </file>
 </xliff>
 """
-        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        xlifffile = self.StoreClass.parsestring(xlfsource)
         xlifffile.units[0].addlocation("some-directory/on-some-test/test.file2:333")
         xlifffile.units[0].addlocation("docs/config.md:block 1 (header)")
         xlifffile.units[0].addlocation("file.rst")
@@ -1401,7 +1421,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
                  </trans-unit>"""
             * 100_000
         )
-        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        xlifffile = self.StoreClass.parsestring(xlfsource)
         assert len(xlifffile.units) == 100_000
 
     def test_preserve_add(self) -> None:
@@ -1431,13 +1451,13 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 </xliff>
 """
         target_element = f"""
-          <target state="translated">{target}</target>"""
+          <target{self.translated_target_attributes}>{target}</target>"""
         xlfsource_blank = xlfsource_template.format(target="", extra="")
         xlfsource_plain = xlfsource_template.format(target=target_element, extra="")
         xlfsource_preserve = xlfsource_template.format(
             target=target_element, extra=' xml:space="preserve"'
         )
-        xlifffile = xliff.xlifffile.parsestring(xlfsource_plain)
+        xlifffile = self.StoreClass.parsestring(xlfsource_plain)
 
         assert len(xlifffile.units) == 1
         unit = xlifffile.units[0]
@@ -1447,7 +1467,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 
         assert bytes(xlifffile).decode() == xlfsource_preserve
 
-        xlifffile = xliff.xlifffile.parsestring(xlfsource_blank)
+        xlifffile = self.StoreClass.parsestring(xlfsource_blank)
 
         assert len(xlifffile.units) == 1
         unit = xlifffile.units[0]
@@ -1456,10 +1476,11 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         unit.target = target
 
         assert bytes(xlifffile).decode() == xlfsource_template.format(
-            target=target_element, extra=' xml:space="preserve" approved="yes"'
+            target=target_element,
+            extra=f' xml:space="preserve"{self.translated_unit_attributes}',
         )
 
-        xlifffile = xliff.xlifffile.parsestring(xlfsource_preserve)
+        xlifffile = self.StoreClass.parsestring(xlfsource_preserve)
 
         assert len(xlifffile.units) == 1
         unit = xlifffile.units[0]
@@ -1468,12 +1489,14 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 
         assert bytes(xlifffile).decode() == xlfsource_preserve
 
-        xlifffile = xliff.xlifffile.parsestring(xlfsource_plain)
+        xlifffile = self.StoreClass.parsestring(xlfsource_plain)
 
         assert len(xlifffile.units) == 1
         unit = xlifffile.units[0]
 
         assert unit.target == target.replace("\n", " ")
+        if not self.supports_plain_rich_target:
+            return
         unit.rich_target = [target]
 
         assert bytes(xlifffile).decode() == xlfsource_preserve
@@ -1492,7 +1515,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
     </file>
 </xliff>"""
         with pytest.raises(ValueError) as exc_info:
-            xliff.xlifffile.parsestring(xliff2_content)
+            self.StoreClass.parsestring(xliff2_content)
         assert "XLIFF 2" in str(exc_info.value)
         assert "version='2.0'" in str(exc_info.value)
         assert "xliff2.Xliff2File" in str(exc_info.value)
@@ -1511,7 +1534,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
     </file>
 </xliff>"""
         with pytest.raises(ValueError) as exc_info:
-            xliff.xlifffile.parsestring(xliff2_no_version)
+            self.StoreClass.parsestring(xliff2_no_version)
         assert "XLIFF 2" in str(exc_info.value)
         assert "namespace" in str(exc_info.value)
         assert "xliff2.Xliff2File" in str(exc_info.value)
