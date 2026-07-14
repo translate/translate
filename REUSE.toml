@@ -1,0 +1,62 @@
+version = 1
+
+[[annotations]]
+path = "**"
+precedence = "closest"
+SPDX-FileCopyrightText = "Translate Toolkit contributors"
+SPDX-License-Identifier = "GPL-2.0-or-later"
+
+[[annotations]]
+path = [
+  "translate/share/langmodels/*.lm",
+  "translate/share/langmodels/fpdb.conf"
+]
+precedence = "override"
+SPDX-FileCopyrightText = "2003 WiseGuys Internet B.V."
+SPDX-License-Identifier = "BSD-3-Clause"
+
+[[annotations]]
+path = "translate/share/stoplist-en"
+precedence = "override"
+SPDX-FileCopyrightText = "2008 Alexander Dupuy"
+SPDX-License-Identifier = "LicenseRef-Public-Domain"
+
+[[annotations]]
+path = "translate/storage/odf_shared.py"
+precedence = "override"
+SPDX-FileCopyrightText = [
+  "2004-2014 Zuza Software Foundation",
+  "2008 David Versmisse <david.versmisse@itaapy.com>",
+  "2008 Romain Gauthier <romain.gauthier@itaapy.com>"
+]
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = "translate/storage/mo.py"
+precedence = "override"
+SPDX-FileCopyrightText = [
+  "2001-2006 Python Software Foundation",
+  "2007 Zuza Software Foundation"
+]
+SPDX-License-Identifier = "GPL-2.0-or-later AND PSF-2.0"
+
+[[annotations]]
+path = "translate/lang/ngram.py"
+precedence = "override"
+SPDX-FileCopyrightText = [
+  "2006 Thomas Mangin",
+  "2009-2010 Zuza Software Foundation"
+]
+SPDX-License-Identifier = "GPL-2.0-or-later"
+
+[[annotations]]
+path = "tests/xliff_conformance/xliff-core-1.1.xsd"
+precedence = "override"
+SPDX-FileCopyrightText = "2003 OASIS Open"
+SPDX-License-Identifier = "LicenseRef-OASIS"
+
+[[annotations]]
+path = "tests/xliff_conformance/xml.xsd"
+precedence = "override"
+SPDX-FileCopyrightText = "2009 World Wide Web Consortium"
+SPDX-License-Identifier = "W3C"

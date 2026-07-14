@@ -8,6 +8,10 @@ repos:
   - id: check-merge-conflict
   - id: check-json
   - id: check-toml
+- repo: https://codeberg.org/fsfe/reuse-tool
+  rev: v6.2.0
+  hooks:
+  - id: reuse
 - repo: meta
   hooks:
   - id: check-hooks-apply
