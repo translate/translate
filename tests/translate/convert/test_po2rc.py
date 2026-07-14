@@ -209,6 +209,146 @@ msgstr "Zkopirovano"
         assert rc_result.units[0].target == "Zkopirovano"
         assert rc_result.units[1].target == "Copied"
 
+    def test_convert_changed_source(self) -> None:
+        self.create_testfile(
+            "simple.rc",
+            """
+STRINGTABLE
+BEGIN
+    IDS_MESSAGE "Current source"
+END
+""",
+        )
+        self.create_testfile(
+            "simple.po",
+            """
+#: STRINGTABLE.IDS_MESSAGE
+msgid "Old source"
+msgstr "Translated"
+""",
+        )
+        self.run_command(
+            template="simple.rc", i="simple.po", o="output.rc", l="LANG_CZECH"
+        )
+        with self.open_testfile("output.rc") as handle:
+            rc_result = rcfile(handle)
+        assert rc_result.units[0].target == "Current source"
+
+    def test_convert_fuzzy(self) -> None:
+        self.create_testfile(
+            "simple.rc",
+            """
+STRINGTABLE
+BEGIN
+    IDS_MESSAGE "Hello"
+END
+""",
+        )
+        self.create_testfile(
+            "simple.po",
+            """
+#: STRINGTABLE.IDS_MESSAGE
+#, fuzzy
+msgid "Hello"
+msgstr "Ahoj"
+""",
+        )
+        self.run_command(
+            template="simple.rc", i="simple.po", o="output.rc", l="LANG_CZECH"
+        )
+        with self.open_testfile("output.rc") as handle:
+            rc_result = rcfile(handle)
+        assert rc_result.units[0].target == "Hello"
+
+        self.run_command(
+            template="simple.rc",
+            i="simple.po",
+            o="output-fuzzy.rc",
+            l="LANG_CZECH",
+            fuzzy=True,
+        )
+        with self.open_testfile("output-fuzzy.rc") as handle:
+            rc_result = rcfile(handle)
+        assert rc_result.units[0].target == "Ahoj"
+
+    def test_convert_empty_target(self) -> None:
+        self.create_testfile(
+            "simple.rc",
+            """
+STRINGTABLE
+BEGIN
+    IDS_MESSAGE "Hello"
+END
+""",
+        )
+        self.create_testfile(
+            "simple.po",
+            """
+#: STRINGTABLE.IDS_MESSAGE
+msgid "Hello"
+msgstr ""
+""",
+        )
+        self.run_command(
+            template="simple.rc", i="simple.po", o="output.rc", l="LANG_CZECH"
+        )
+        with self.open_testfile("output.rc") as handle:
+            rc_result = rcfile(handle)
+        assert rc_result.units[0].target == "Hello"
+
+    def test_convert_locationless_literal_escape(self) -> None:
+        self.create_testfile(
+            "simple.rc",
+            r"""
+STRINGTABLE
+BEGIN
+    IDS_PATH "C:\\new"
+END
+""",
+        )
+        self.create_testfile(
+            "simple.po",
+            r"""
+msgid "C:\\new"
+msgstr "Translated"
+""",
+        )
+        self.run_command(
+            template="simple.rc", i="simple.po", o="output.rc", l="LANG_CZECH"
+        )
+        with self.open_testfile("output.rc") as handle:
+            rc_result = rcfile(handle)
+        assert rc_result.units[0].target == "Translated"
+
+    def test_convert_plural_source(self) -> None:
+        self.create_testfile(
+            "simple.rc",
+            """
+STRINGTABLE
+BEGIN
+    IDS_SINGULAR "apple"
+    IDS_PLURAL   "apples"
+END
+""",
+        )
+        self.create_testfile(
+            "simple.po",
+            """
+#: STRINGTABLE.IDS_SINGULAR STRINGTABLE.IDS_PLURAL
+msgid "apple"
+msgid_plural "apples"
+msgstr[0] "jablko"
+msgstr[1] "jablka"
+""",
+        )
+        self.run_command(
+            template="simple.rc", i="simple.po", o="output.rc", l="LANG_CZECH"
+        )
+        with self.open_testfile("output.rc") as handle:
+            rc_result = rcfile(handle)
+        assert rc_result.units[0].target == "jablko"
+        assert rc_result.units[1].target == "apples"
+
     def test_convert_popup(self) -> None:
         self.create_testfile(
             "simple.rc",
@@ -236,6 +376,14 @@ END
             "simple.po",
             """
 #: MENU.IDR_MAINFRAME.POPUP.CAPTION
+msgid "&File"
+msgstr "&Soubor"
+
+#: MENU.IDR_MAINFRAME.POPUP.CAPTION
+msgid "&View"
+msgstr "&Zobrazení"
+
+#: MENU.IDR_MAINFRAME.POPUP.CAPTION
 msgid "&Help"
 msgstr "&Pomoc"
 """,
@@ -246,7 +394,8 @@ msgstr "&Pomoc"
         with self.open_testfile("output.rc") as handle:
             rc_result = rcfile(handle)
         assert len(rc_result.units) == 8
-        assert rc_result.units[0].target == "&File"
+        assert rc_result.units[0].target == "&Soubor"
+        assert rc_result.units[4].target == "&Zobrazení"
         assert rc_result.units[6].target == "&Pomoc"
 
     def test_convert_discardable(self) -> None:

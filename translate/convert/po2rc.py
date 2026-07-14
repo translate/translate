@@ -37,8 +37,6 @@ from translate.storage.rc import (
 BLOCK_START = "BEGIN"
 BLOCK_END = "END"
 
-EMPTY_LOCATION = ""
-
 
 def is_iterable_but_not_string(o):
     """Check if object is iterable but not a string."""
@@ -51,10 +49,56 @@ class rerc:
         self.templatestore = rcfile()
         self.templatestore.charset = charset  # ty:ignore[unresolved-attribute]
         self.templatestore.parse(self.templatecontent)
-        self.inputdict = {}
+        self.inputstore = None
+        self.escaped_sourceindex = {}
+        self.includefuzzy = False
         self.charset = charset
         self.lang = lang
         self.sublang = sublang
+
+    def get_translation(self, msgid, location):
+        """Return an escaped translation matching the source and location."""
+        if not msgid:
+            return None
+
+        assert self.inputstore is not None
+        candidates = [
+            candidate
+            for candidate in self.escaped_sourceindex.get(msgid, [])
+            if rc.escape_to_rc(str(candidate.source)) == msgid
+        ]
+        inputunit = self.inputstore.locationindex.get(location)
+        if inputunit is not None and rc.escape_to_rc(inputunit.source) != msgid:
+            inputunit = None
+
+        if inputunit is not None and inputunit.isfuzzy() and not self.includefuzzy:
+            inputunit = None
+
+        if inputunit is None:
+            for candidate in candidates:
+                if location not in candidate.getlocations():
+                    continue
+                if candidate.isfuzzy() and not self.includefuzzy:
+                    continue
+                inputunit = candidate
+                break
+
+        if inputunit is None:
+            for candidate in candidates:
+                if candidate.getlocations():
+                    continue
+                if candidate.isfuzzy() and not self.includefuzzy:
+                    continue
+                inputunit = candidate
+                break
+
+        if inputunit is None:
+            return None
+
+        value = inputunit.target
+        if not value.strip():
+            value = inputunit.source
+        return rc.escape_to_rc(value)
 
     @staticmethod
     def convert_comment(addnl, comment):
@@ -68,11 +112,9 @@ class rerc:
         yield "CAPTION "
 
         msgid = toks.caption[1:-1]
-        if msgid in self.inputdict:
-            if name in self.inputdict[msgid]:
-                yield f'"{self.inputdict[msgid][name]}"'
-            elif EMPTY_LOCATION in self.inputdict[msgid]:
-                yield f'"{self.inputdict[msgid][EMPTY_LOCATION]}"'
+        translation = self.get_translation(msgid, name)
+        if translation is not None:
+            yield f'"{translation}"'
         else:
             yield toks.caption
 
@@ -129,11 +171,9 @@ class rerc:
             )
 
             # append translation if available, otherwise use as is
-            if msgid in self.inputdict:
-                if name in self.inputdict[msgid]:
-                    tmp.append(f'"{self.inputdict[msgid][name]}"')
-                elif EMPTY_LOCATION in self.inputdict[msgid]:
-                    tmp.append(f'"{self.inputdict[msgid][EMPTY_LOCATION]}"')
+            translation = self.get_translation(msgid, name)
+            if translation is not None:
+                tmp.append(f'"{translation}"')
             elif i > 1:
                 tmp.append(" ".join(c[1:i]))
 
@@ -180,11 +220,9 @@ class rerc:
             msgid = "".join(cn[1:-1] for cn in c[1:])
 
             tmp = c[1:]
-            if msgid in self.inputdict:
-                if name in self.inputdict[msgid]:
-                    tmp = [f'"{self.inputdict[msgid][name]}"']
-                elif EMPTY_LOCATION in self.inputdict[msgid]:
-                    tmp = [f'"{self.inputdict[msgid][EMPTY_LOCATION]}"']
+            translation = self.get_translation(msgid, name)
+            if translation is not None:
+                tmp = [f'"{translation}"']
 
             for part in tmp[:-1]:
                 yield part
@@ -213,11 +251,9 @@ class rerc:
             yield popup.pre_caption
             name = generate_popup_caption_name(pre_name)
             msgid = popup.caption[1:-1]
-            if msgid in self.inputdict:
-                if name in self.inputdict[msgid]:
-                    yield f'"{self.inputdict[msgid][name]}"'
-                elif EMPTY_LOCATION in self.inputdict[msgid]:
-                    yield f'"{self.inputdict[msgid][EMPTY_LOCATION]}"'
+            translation = self.get_translation(msgid, name)
+            if translation is not None:
+                yield f'"{translation}"'
             else:
                 yield popup.caption
         else:
@@ -248,13 +284,9 @@ class rerc:
                         pre_name, element.block_type, element.values_[1]
                     )
                     msgid = element.values_[0][1:-1]
-                    if msgid in self.inputdict:
-                        if name in self.inputdict[msgid]:
-                            element.values_[0] = f'"{self.inputdict[msgid][name]}"'
-                        elif EMPTY_LOCATION in self.inputdict[msgid]:
-                            element.values_[0] = (
-                                f'"{self.inputdict[msgid][EMPTY_LOCATION]}"'
-                            )
+                    translation = self.get_translation(msgid, name)
+                    if translation is not None:
+                        element.values_[0] = f'"{translation}"'
 
                     yield ", ".join(element.values_)
                 elif element.values_[0] == "SEPARATOR":
@@ -312,36 +344,16 @@ class rerc:
         return toks
 
     def convertstore(self, inputstore, includefuzzy=False):
-        self.makestoredict(inputstore, includefuzzy)
+        self.inputstore = inputstore
+        self.includefuzzy = includefuzzy
+        self.inputstore.makeindex()
+        self.escaped_sourceindex = {
+            rc.escape_to_rc(source): units
+            for source, units in self.inputstore.sourceindex.items()
+        }
         statement = rc.rc_statement()
         statement.add_parse_action(self.translate_strings)
         return statement.transform_string(self.templatecontent.decode(self.charset))
-
-    def makestoredict(self, store, includefuzzy=False) -> None:
-        """Make a dictionary of the translations."""
-        for unit in store.units:
-            if includefuzzy or not unit.isfuzzy():
-                rcstring = unit.target
-                if len(rcstring.strip()) == 0:
-                    rcstring = unit.source
-
-                escaped_source = rc.escape_to_rc(unit.source)
-
-                if not escaped_source:
-                    continue
-
-                if escaped_source not in self.inputdict:
-                    self.inputdict[escaped_source] = {}
-
-                if len(unit.getlocations()) == 0:
-                    self.inputdict[escaped_source][EMPTY_LOCATION] = rc.escape_to_rc(
-                        rcstring
-                    )
-                else:
-                    for location in unit.getlocations():
-                        self.inputdict[escaped_source][location] = rc.escape_to_rc(
-                            rcstring
-                        )
 
 
 def convertrc(
