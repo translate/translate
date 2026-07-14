@@ -75,12 +75,11 @@ dynamic = [
 keywords = [
   "i18n l10n gettext translate"
 ]
-license = "GPL-2.0-or-later"
+license = "GPL-3.0-or-later"
 license-files = [
   "COPYING",
   "LICENSES/BSD-3-Clause.txt",
   "LICENSES/GPL-2.0-or-later.txt",
-  "LICENSES/GPL-3.0-or-later.txt",
   "LICENSES/LicenseRef-Public-Domain.txt",
   "LICENSES/PSF-2.0.txt"
 ]
