@@ -8,6 +8,7 @@ from . import test_xliff
 
 class TestPOXLIFFUnit(test_xliff.TestXLIFFUnit):
     UnitClass = poxliff.PoXliffUnit
+    StoreClass = poxliff.PoXliffFile
 
     def test_plurals(self) -> None:
         """Tests that plurals are handled correctly."""
@@ -235,6 +236,9 @@ class TestPOXLIFFUnit(test_xliff.TestXLIFFUnit):
 
 class TestPOXLIFFfile(test_xliff.TestXLIFFfile):
     StoreClass = poxliff.PoXliffFile
+    supports_inline_placeables = False
+    supports_plain_rich_target = False
+    supports_xliff_locations = False
     xliffskeleton = """<?xml version="1.0" ?>
 <xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
   <file original="filename.po" source-language="en-US" datatype="po">
