@@ -4,7 +4,7 @@ version = 1
 path = "**"
 precedence = "closest"
 SPDX-FileCopyrightText = "Translate Toolkit contributors"
-SPDX-License-Identifier = "GPL-2.0-or-later"
+SPDX-License-Identifier = "GPL-3.0-or-later"
 
 [[annotations]]
 path = [
