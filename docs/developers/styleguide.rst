@@ -24,6 +24,11 @@ You can also trigger check manually, to check all files run:
 
     pre-commit run --all
 
+The checks include `REUSE <https://reuse.software/>`_ compliance validation.
+When adding files, especially third-party material, ensure their copyright and
+licensing information is recorded in the file header or :file:`REUSE.toml` and
+that the corresponding license text is available in :file:`LICENSES`.
+
 .. _pre-commit: https://pre-commit.com/
 
 .. _styleguide-python:

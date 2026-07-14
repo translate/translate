@@ -1,4 +1,14 @@
 include COPYING
+include REUSE.toml
+include LICENSES/BSD-3-Clause.txt
+include LICENSES/GPL-2.0-or-later.txt
+include LICENSES/GPL-3.0-or-later.txt
+include LICENSES/LicenseRef-Public-Domain.txt
+include LICENSES/PSF-2.0.txt
+# These licenses apply only to test-only schemas, which are not included in the
+# source distribution.
+exclude LICENSES/LicenseRef-OASIS.txt
+exclude LICENSES/W3C.txt
 recursive-include translate/share *.conf
 recursive-include translate/share *.lm
 include translate/share/langmodels/README

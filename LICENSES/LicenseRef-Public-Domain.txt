@@ -1,0 +1,11 @@
+Public Domain Dedication
+
+The file translate/share/stoplist-en was written by Alexander Dupuy, who
+confirmed that the work is in the public domain. To the extent possible under
+law, the author has waived all copyright and related or neighbouring rights to
+this work.
+
+The public-domain status is documented at:
+https://alioth-lists.debian.net/pipermail/debian-l10n-devel/2013-March/002440.html
+
+This work is provided without any warranty.
