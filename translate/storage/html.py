@@ -92,6 +92,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         "p",
         "pre",
         "section",
+        "span",
         "td",
         "th",
         "title",
@@ -99,7 +100,13 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
     """These HTML elements (tags) will be extracted as translation units, unless
     they lack translatable text content.
     In case one translatable element is embedded in another, the outer translation
-    unit will be split into the parts before and after the inner translation unit."""
+    unit will be split into the parts before and after the inner translation unit,
+    except for elements listed in INLINE_TRANSLATABLE_ELEMENTS."""
+
+    INLINE_TRANSLATABLE_ELEMENTS = {"span"}
+    """These elements start a translation unit only when they are not already
+    contained in one. This allows standalone inline content to be translated without
+    splitting an enclosing translation unit."""
 
     TRANSLATABLE_ATTRIBUTES = [
         "abbr",  # abbreviation for a table header cell
@@ -163,13 +170,23 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         r"&(?!(?:#[0-9]+|#[xX][0-9A-Fa-f]+|[A-Za-z][A-Za-z0-9._:-]*);)"
     )
 
+    META_RE = re.compile(
+        rb"<meta\b(?:[^>\"']|\"[^\"]*\"|'[^']*')*>",
+        re.IGNORECASE,
+    )
+
+    META_ATTRIBUTE_RE = re.compile(
+        rb"""(?P<name>[^\s"'<>/=]+)\s*=\s*(?:
+            "(?P<double>[^\"]*)"
+            |'(?P<single>[^']*)'
+            |(?P<bare>[^\s"'=<>`]+)
+        )""",
+        re.VERBOSE,
+    )
+
     ENCODING_RE = re.compile(
-        rb"""<meta.*
-                                content.*=.*?charset=\s*?
-                                ([^\s]*)
-                                \s*?["']\s*?>
-                             """,
-        re.VERBOSE | re.IGNORECASE,
+        rb"(?:^|[;\s])charset\s*=\s*[\"']?\s*([^\s\"'/>;]+)",
+        re.IGNORECASE,
     )
 
     def __init__(self, inputfile=None, callback=None) -> None:
@@ -186,9 +203,12 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         # initialize state
         self.filesrc = ""
         self.tag_path = []
+        self._translation_unit_element_stack = []
+        self._element_markup_stack = []
         self.tu_content = []
         self.tu_location = None
         self.tu_docpath = None
+        self.tu_inherited_metadata = {}
         self.ignore_depth = 0  # Track nesting level of ignored elements
         self.comment_ignore = False  # Track if inside <!-- translate:off -->
         self.ignore_tag_stack = []  # Track which tags have ignore attribute
@@ -229,9 +249,21 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
         We look for 'charset=' within a meta tag to do this.
         """
-        result = self.ENCODING_RE.findall(htmlsrc)
-        if result:
-            self.encoding = result[0].decode("ascii")
+        declarations = []
+        for meta_match in self.META_RE.finditer(htmlsrc):
+            for attribute_match in self.META_ATTRIBUTE_RE.finditer(meta_match.group()):
+                name = attribute_match.group("name").lower()
+                value = next(
+                    group for group in attribute_match.groups()[1:] if group is not None
+                )
+                if name == b"charset":
+                    declarations.append(value.strip())
+                elif name == b"content":
+                    encoding_match = self.ENCODING_RE.search(value)
+                    if encoding_match:
+                        declarations.append(encoding_match.group(1))
+        if declarations:
+            self.encoding = declarations[-1].decode("ascii")
         return self.encoding
 
     def do_encoding(self, htmlsrc):
@@ -249,11 +281,103 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         """Check if we're currently in an ignored section."""
         return self.ignore_depth > 0 or self.comment_ignore
 
+    def suspend_translation_unit_for_ignored_content(self) -> None:
+        """Finish queued text before entering an ignored section."""
+        if not self.is_extraction_ignored() and self.tu_location:
+            self.end_translation_unit()
+
+    def resume_translation_unit_after_ignored_content(self) -> None:
+        """Resume an enclosing translation unit after an ignored section."""
+        if self.is_extraction_ignored() or self.tu_location is not None:
+            return
+        active_element = self.get_active_translation_unit_element()
+        if (
+            active_element is not None
+            and self.prepare_resumed_translation_unit_elements()
+        ):
+            self.begin_translation_unit(
+                self.get_active_translation_unit_metadata(active_element)
+            )
+
+    def get_active_translation_unit_element(self) -> int | None:
+        """Return the open element that owns the current translation unit."""
+        active_element = None
+        for index, tag in enumerate(self.tag_path):
+            if tag not in self.TRANSLATABLE_ELEMENTS:
+                continue
+            if tag in self.INLINE_TRANSLATABLE_ELEMENTS and active_element is not None:
+                continue
+            active_element = index
+        return active_element
+
+    def prepare_resumed_translation_unit_elements(self) -> bool:
+        """Mark open element boundaries needed by a resumed translation unit."""
+        started_elements = [
+            index
+            for index, started in enumerate(self._translation_unit_element_stack)
+            if started
+        ]
+        if started_elements:
+            first_resumed_element = started_elements[-1]
+        else:
+            first_resumed_element = next(
+                (
+                    index
+                    for index, tag in enumerate(self.tag_path)
+                    if tag in self.TRANSLATABLE_ELEMENTS
+                ),
+                None,
+            )
+        if first_resumed_element is None:
+            return False
+
+        for index in range(
+            first_resumed_element, len(self._translation_unit_element_stack)
+        ):
+            self._translation_unit_element_stack[index] = True
+        return True
+
+    def get_active_translation_unit_metadata(
+        self, active_element: int | None = None
+    ) -> dict:
+        """Collect metadata inherited from currently open elements."""
+        if active_element is None:
+            active_element = self.get_active_translation_unit_element()
+        active_markup = (
+            self._element_markup_stack[active_element:]
+            if active_element is not None
+            else []
+        )
+        return {
+            "translate_context": next(
+                (
+                    markup["translate_context"]
+                    for markup in active_markup
+                    if "translate_context" in markup
+                ),
+                None,
+            ),
+            "context_hint": next(
+                (
+                    markup["context_hint"]
+                    for markup in active_markup
+                    if "context_hint" in markup
+                ),
+                None,
+            ),
+            "translate_comments": [
+                markup["translate_comment"]
+                for markup in active_markup
+                if "translate_comment" in markup
+            ],
+            "preformatted": "pre" in self.tag_path,
+        }
+
     def _build_docpath(self) -> str:
         """Build the current document path from the docpath stack."""
         return "/".join(f"{tag}[{index}]" for tag, index in self._docpath_stack)
 
-    def begin_translation_unit(self) -> None:
+    def begin_translation_unit(self, inherited_metadata=None) -> None:
         # at the start of a translation unit:
         # this interrupts any translation unit in progress, so process the queue
         # and prepare for the new.
@@ -261,6 +385,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         self.tu_content = []
         self.tu_location = f"{self.filename}+{'.'.join(self.tag_path)}:{self.getpos()[0]}-{self.getpos()[1] + 1}"
         self.tu_docpath = self._build_docpath()
+        self.tu_inherited_metadata = inherited_metadata or {}
 
     def end_translation_unit(self) -> None:
         # at the end of a translation unit:
@@ -269,6 +394,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         self.tu_content = []
         self.tu_location = None
         self.tu_docpath = None
+        self.tu_inherited_metadata = {}
 
     def append_markup(self, markup) -> None:
         # if within a translation unit: add to the queue to be processed later.
@@ -299,7 +425,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         tagstack = []
         tagmap = {}
         tag = None
-        do_normalize = True
+        do_normalize = not self.tu_inherited_metadata.get("preformatted", False)
         for pos, content in enumerate(self.tu_content):
             if content["type"] != "endtag" and tag in self.EMPTY_HTML_ELEMENTS:
                 match = tagstack.pop()
@@ -362,7 +488,9 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             # Determine context from data-translate-context (outermost wins)
             # tu_content starts at the unit's opening tag, so the first
             # translate_context encountered is the correct one.
-            explicit_context = next(
+            explicit_context = self.tu_inherited_metadata.get(
+                "translate_context"
+            ) or next(
                 (
                     m["translate_context"]
                     for m in self.tu_content
@@ -378,6 +506,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                 unit = self._units_by_src_ctx.get(
                     (normalized_content, explicit_context)
                 )
+            unit_reused = unit is not None
             if unit is None:
                 unit = self.addsourceunit(normalized_content)
                 if explicit_context:
@@ -392,7 +521,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             # If no explicit context, capture a context hint (from id/ancestor) for potential disambiguation
             context_hint = None
             if not explicit_context:
-                context_hint = next(
+                context_hint = self.tu_inherited_metadata.get("context_hint") or next(
                     (m["context_hint"] for m in self.tu_content if "context_hint" in m),
                     None,
                 )
@@ -409,10 +538,25 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             ]
 
             # Extract translator comments from data-translate-comment attributes on any tags within the translation unit
+            inherited_translate_comments = self.tu_inherited_metadata.get(
+                "translate_comments", []
+            )
+            if unit_reused:
+                existing_comments = set(
+                    unit.getnotes(origin="source code").splitlines()
+                )
+                inherited_translate_comments = [
+                    comment
+                    for comment in inherited_translate_comments
+                    if comment not in existing_comments
+                ]
             translate_comments = [
-                markup["translate_comment"]
-                for markup in self.tu_content
-                if "translate_comment" in markup
+                *inherited_translate_comments,
+                *(
+                    markup["translate_comment"]
+                    for markup in self.tu_content
+                    if "translate_comment" in markup
+                ),
             ]
 
             # Combine and add all comments to the unit
@@ -653,7 +797,15 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
     def auto_close_empty_element(self) -> None:
         if self.tag_path and self.tag_path[-1] in self.EMPTY_HTML_ELEMENTS:
             self.tag_path.pop()
+            self._translation_unit_element_stack.pop()
+            self._element_markup_stack.pop()
             self._pop_docpath_level()
+
+    def starts_translation_unit(self, tag: str) -> bool:
+        """Return whether this element should start a translation unit."""
+        return tag in self.TRANSLATABLE_ELEMENTS and (
+            tag not in self.INLINE_TRANSLATABLE_ELEMENTS or self.tu_location is None
+        )
 
     def get_leading_whitespace(self, text: str):
         match = self.LEADING_WHITESPACE_RE.search(text)
@@ -680,11 +832,16 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         has_ignore_attr = "data-translate-ignore" in attrs_dict
 
         if has_ignore_attr:
+            self.suspend_translation_unit_for_ignored_content()
             self.ignore_depth += 1
             self.ignore_tag_stack.append(tag)
 
         # Only begin translation unit if not in ignored section
-        if tag in self.TRANSLATABLE_ELEMENTS and not self.is_extraction_ignored():
+        starts_translation_unit = (
+            not self.is_extraction_ignored() and self.starts_translation_unit(tag)
+        )
+        self._translation_unit_element_stack.append(starts_translation_unit)
+        if starts_translation_unit:
             self.begin_translation_unit()
 
         translated_attrs = self.translate_attributes(tag, attrs)
@@ -756,16 +913,21 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             self._id_pushed_stack.append(False)
 
         self.append_markup(markup)
+        self._element_markup_stack.append(markup)
 
     def handle_endtag(self, tag) -> None:
         try:
             popped = self.tag_path.pop()
+            started_translation_unit = self._translation_unit_element_stack.pop()
+            self._element_markup_stack.pop()
         except IndexError:
             raise ParseError(
                 f"Mismatched tags: no more tags: line {self.getpos()[0]}"
             ) from None
         if popped != tag and popped in self.EMPTY_HTML_ELEMENTS:
             popped = self.tag_path.pop()
+            started_translation_unit = self._translation_unit_element_stack.pop()
+            self._element_markup_stack.pop()
             self._pop_docpath_level()
         if popped != tag:
             raise ParseError(
@@ -779,14 +941,18 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
         # Check if this closing tag corresponds to an ignored tag
         # We match from the end of the stack because tags are properly nested
+        resume_after_ignored_content = False
         if self.ignore_tag_stack and self.ignore_tag_stack[-1] == tag:
             self.ignore_tag_stack.pop()
             self.ignore_depth -= 1
+            resume_after_ignored_content = not self.is_extraction_ignored()
 
-        if tag in self.TRANSLATABLE_ELEMENTS and not self.is_extraction_ignored():
+        if started_translation_unit and self.tu_location is not None:
             self.end_translation_unit()
-            if any(t in self.TRANSLATABLE_ELEMENTS for t in self.tag_path):
-                self.begin_translation_unit()
+            if not self.is_extraction_ignored() and any(
+                self._translation_unit_element_stack
+            ):
+                self.begin_translation_unit(self.get_active_translation_unit_metadata())
 
         # Pop ancestor id if closing the element that defined it
         if self._id_pushed_stack:
@@ -799,6 +965,9 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                     self._id_pos_stack.pop()
                 if self._ancestor_id_label_stack:
                     self._ancestor_id_label_stack.pop()
+
+        if resume_after_ignored_content:
+            self.resume_translation_unit_after_ignored_content()
 
     def handle_startendtag(self, tag, attrs) -> None:
         self.auto_close_empty_element()
@@ -816,9 +985,13 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
         # For self-closing tags with ignore attribute, temporarily set ignore state
         if has_ignore_attr:
+            self.suspend_translation_unit_for_ignored_content()
             self.ignore_depth += 1
 
-        if tag in self.TRANSLATABLE_ELEMENTS and not self.is_extraction_ignored():
+        starts_translation_unit = (
+            not self.is_extraction_ignored() and self.starts_translation_unit(tag)
+        )
+        if starts_translation_unit:
             self.begin_translation_unit()
 
         translated_attrs = self.translate_attributes(tag, attrs)
@@ -887,10 +1060,10 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
         self.append_markup(markup)
 
-        if tag in self.TRANSLATABLE_ELEMENTS and not self.is_extraction_ignored():
+        resume_parent_translation_unit = False
+        if starts_translation_unit:
             self.end_translation_unit()
-            if any(t in self.TRANSLATABLE_ELEMENTS for t in self.tag_path):
-                self.begin_translation_unit()
+            resume_parent_translation_unit = any(self._translation_unit_element_stack)
 
         # Restore ignore state if we set it
         if has_ignore_attr:
@@ -909,6 +1082,11 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                     self._id_pos_stack.pop()
                 if self._ancestor_id_label_stack:
                     self._ancestor_id_label_stack.pop()
+
+        if has_ignore_attr:
+            self.resume_translation_unit_after_ignored_content()
+        elif resume_parent_translation_unit:
+            self.begin_translation_unit(self.get_active_translation_unit_metadata())
 
     def _register_unit_for_disambiguation(self, unit, source, context_hint) -> None:
         bucket = self._units_by_source.setdefault(source, [])
@@ -945,13 +1123,23 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         # Check for translate:off and translate:on directives
         stripped_data = data.strip()
         if stripped_data == "translate:off":
+            self.suspend_translation_unit_for_ignored_content()
             self.comment_ignore = True
+            self.append_markup(
+                {"type": "comment", "html_content": f"<!--{data}-->", "note": data}
+            )
         elif stripped_data == "translate:on":
+            was_ignored = self.comment_ignore
+            self.append_markup(
+                {"type": "comment", "html_content": f"<!--{data}-->", "note": data}
+            )
             self.comment_ignore = False
-
-        self.append_markup(
-            {"type": "comment", "html_content": f"<!--{data}-->", "note": data}
-        )
+            if was_ignored:
+                self.resume_translation_unit_after_ignored_content()
+        else:
+            self.append_markup(
+                {"type": "comment", "html_content": f"<!--{data}-->", "note": data}
+            )
 
     def handle_decl(self, decl) -> None:
         self.auto_close_empty_element()

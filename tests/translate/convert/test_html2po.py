@@ -335,6 +335,142 @@ newlines.</p></body></html>
             "You are a <span>Spanish</span> sentence.",
         )
 
+    def test_standalone_span(self) -> None:
+        """Standalone spans should be extracted and translated, issue #1610."""
+        htmlsource = (
+            "<html><head></head><body>"
+            "<span>First span</span><span>Second span</span>"
+            "</body></html>"
+        )
+        pofile = self.html2po(htmlsource)
+        self.countunits(pofile, 2)
+        self.compareunit(pofile, 1, "First span")
+        self.compareunit(pofile, 2, "Second span")
+
+        pofile.units[1].target = "Premier span"
+        pofile.units[2].target = "Deuxième span"
+        assert self.po2html(pofile, htmlsource) == (
+            "<html><head></head><body>"
+            "<span>Premier span</span><span>Deuxième span</span>"
+            "</body></html>"
+        )
+
+    def test_nested_standalone_span(self) -> None:
+        """Nested spans should remain inline in a standalone span unit."""
+        self.check_single(
+            "<html><head></head><body>"
+            "<span>Outer <span>inner</span> text</span>"
+            "</body></html>",
+            "Outer <span>inner</span> text",
+        )
+
+    def test_standalone_span_with_ignored_descendant(self) -> None:
+        """Ignored descendants should retain their position in standalone spans."""
+        htmlsource = "<span>before <em data-translate-ignore>skip</em> after</span>"
+        pofile = self.html2po(htmlsource)
+        self.countunits(pofile, 2)
+        self.compareunit(pofile, 1, "before")
+        self.compareunit(pofile, 2, "after")
+
+        pofile.units[1].target = "avant"
+        pofile.units[2].target = "après"
+        assert self.po2html(pofile, htmlsource) == (
+            "<span>avant <em data-translate-ignore>skip</em> après</span>"
+        )
+
+    def test_standalone_span_with_comment_ignored_descendant(self) -> None:
+        """Comment-ignored descendants should retain their position in spans."""
+        htmlsource = (
+            "<span>before <!-- translate:off --><em>skip</em>"
+            "<!-- translate:on --> after</span>"
+        )
+        pofile = self.html2po(htmlsource)
+        self.countunits(pofile, 2)
+        self.compareunit(pofile, 1, "before")
+        self.compareunit(pofile, 2, "after")
+
+        pofile.units[1].target = "avant"
+        pofile.units[2].target = "après"
+        assert self.po2html(pofile, htmlsource) == (
+            "<span>avant <!-- translate:off --><em>skip</em>"
+            "<!-- translate:on --> après</span>"
+        )
+
+    def test_resumed_span_inherits_metadata(self) -> None:
+        """A resumed span unit should inherit context and translator comments."""
+        pofile = self.html2po(
+            '<span data-translate-context="cta" '
+            'data-translate-comment="Button label">'
+            "<i data-translate-ignore>skip</i>Save</span>",
+            keepcomments=True,
+        )
+        self.countunits(pofile, 1)
+        self.compareunit(pofile, 1, "Save")
+        assert pofile.units[1].getcontext() == "cta"
+        assert str(pofile.units[1].getnotes()) == "Button label"
+
+    def test_resumed_preformatted_span_preserves_whitespace(self) -> None:
+        """A resumed preformatted unit should not normalize whitespace."""
+        htmlsource = "<pre><i data-translate-ignore>skip</i>a  b\n c</pre>"
+        pofile = self.html2po(htmlsource)
+        self.countunits(pofile, 1)
+        self.compareunit(pofile, 1, "a  b\n c")
+
+        pofile.units[1].target = "x  y\n z"
+        assert self.po2html(pofile, htmlsource) == (
+            "<pre><i data-translate-ignore>skip</i>x  y\n z</pre>"
+        )
+
+    def test_translate_on_resumes_active_child(self) -> None:
+        """translate:on should resume the child opened in the ignored region."""
+        htmlsource = (
+            "<div>before<!-- translate:off --><p>skip"
+            "<!-- translate:on -->text</p>after</div>"
+        )
+        pofile = self.html2po(htmlsource)
+        self.countunits(pofile, 3)
+        self.compareunit(pofile, 1, "before")
+        self.compareunit(pofile, 2, "text")
+        self.compareunit(pofile, 3, "after")
+
+        pofile.units[1].target = "avant"
+        pofile.units[2].target = "texte"
+        pofile.units[3].target = "après"
+        assert self.po2html(pofile, htmlsource) == (
+            "<div>avant<!-- translate:off --><p>skip"
+            "<!-- translate:on -->texte</p>après</div>"
+        )
+
+    def test_translate_on_resumes_child_without_active_ancestor(self) -> None:
+        """translate:on should activate an eligible child opened while ignored."""
+        htmlsource = "<!-- translate:off --><p>skip<!-- translate:on -->text</p>"
+        pofile = self.html2po(htmlsource)
+        self.countunits(pofile, 1)
+        self.compareunit(pofile, 1, "text")
+
+        pofile.units[1].target = "texte"
+        assert self.po2html(pofile, htmlsource) == (
+            "<!-- translate:off --><p>skip<!-- translate:on -->texte</p>"
+        )
+
+    def test_translate_on_resumes_later_sibling(self) -> None:
+        """An ignored region crossing siblings should resume the later child."""
+        htmlsource = (
+            "<div><p><!-- translate:off --></p>"
+            "<p>skip<!-- translate:on -->text</p>after</div>"
+        )
+        pofile = self.html2po(htmlsource)
+        self.countunits(pofile, 2)
+        self.compareunit(pofile, 1, "text")
+        self.compareunit(pofile, 2, "after")
+
+        pofile.units[1].target = "texte"
+        pofile.units[2].target = "après"
+        assert self.po2html(pofile, htmlsource) == (
+            "<div><p><!-- translate:off --></p>"
+            "<p>skip<!-- translate:on -->texte</p>après</div>"
+        )
+
     def test_ul(self) -> None:
         """Test to see if the list item <li> is extracted."""
         markup = "<html><head></head><body><ul><li>Unordered One</li><li>Unordered Two</li></ul><ol><li>Ordered One</li><li>Ordered Two</li></ol></body></html>"
@@ -459,6 +595,22 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
         self.compareunit(pofile, 3, "We aim to please – will you aim too, please?")
         self.compareunit(
             pofile, 4, "South Africa’s language diversity can be challenging."
+        )
+
+    def test_encoding_http_equiv_attribute_order(self) -> None:
+        """Detect charset regardless of meta attribute order, issue #909."""
+        self.check_single(
+            b'<meta content="text/html; charset=windows-1250" '
+            b'http-equiv="content-type"><p>South Africa\x92s language</p>',
+            "South Africa’s language",
+        )
+
+    def test_encoding_ignores_custom_charset_attribute(self) -> None:
+        """Custom attributes containing charset must not control decoding."""
+        self.check_single(
+            '<meta charset="UTF-8" data-charset="windows-1252">'
+            "<p>South Africa’s language</p>",
+            "South Africa’s language",
         )
 
     def test_strip_html(self) -> None:
@@ -752,6 +904,18 @@ ghi ?>"""
         unit = pofile.units[1] if pofile.units[0].isheader() else pofile.units[0]
         # Comments should not be extracted when keepcomments=False
         assert unit.getnotes(origin="developer") == ""
+
+    def test_resumed_comment_is_not_duplicated(self) -> None:
+        """Reused fragments should not duplicate an inherited comment."""
+        pofile = self.html2po(
+            '<p data-translate-context="shared" data-translate-comment="note">'
+            "Same<i data-translate-ignore>skip</i>Same</p>",
+            keepcomments=True,
+        )
+
+        self.countunits(pofile, 1)
+        unit = pofile.units[1] if pofile.units[0].isheader() else pofile.units[0]
+        assert unit.getnotes(origin="developer") == "note"
 
     def test_text_after_empty_tags(self) -> None:
         """Test that text is extracted after empty tags (regression test for issue #xxx)."""
