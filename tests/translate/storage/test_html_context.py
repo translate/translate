@@ -137,6 +137,30 @@ def test_html_context_disambiguates_duplicates_with_id() -> None:
     assert contexts == {"test.html:a", "test.html:b"}
 
 
+def test_html_context_hint_resumed_after_ignored_content() -> None:
+    """A resumed unit should inherit its enclosing element's context hint."""
+    store = parse_html(
+        '<div id="outer"><p id="inner">'
+        "<i data-translate-ignore>skip</i>Hello</p></div>"
+        '<span id="b">Hello</span>'
+    )
+    hello_units = [u for u in store.getunits() if u.source == "Hello"]
+    assert len(hello_units) == 2
+    assert {u.getcontext() for u in hello_units} == {"test.html:inner", "test.html:b"}
+
+
+def test_html_context_resumed_nested_inner_wins() -> None:
+    """A resumed nested unit should use its own explicit context."""
+    store = parse_html(
+        '<div data-translate-context="outer">'
+        '<p data-translate-context="inner">'
+        "<i data-translate-ignore>skip</i>Hello</p></div>"
+    )
+    hello_units = [u for u in store.getunits() if u.source == "Hello"]
+    assert len(hello_units) == 1
+    assert hello_units[0].getcontext() == "inner"
+
+
 def test_html_context_disambiguates_duplicates_with_ancestor_id() -> None:
     """Test that when identical sources are under different ancestor IDs, ancestor path hints are applied."""
     src = (

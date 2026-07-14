@@ -38,6 +38,16 @@ def test_guess_encoding() -> None:
         )
         == "iso-8859-1"
     )
+    assert (
+        h.guess_encoding(
+            b'<meta content="text/html; charset=windows-1250" http-equiv="content-type">'
+        )
+        == "windows-1250"
+    )
+    assert (
+        h.guess_encoding(b'<meta charset="UTF-8"><meta data-charset="windows-1252">')
+        == "UTF-8"
+    )
 
 
 class TestHTMLParsing:
@@ -628,6 +638,18 @@ pre tag
         assert store.units[0].source == "<strong>Bold</strong> text here"
         notes = store.units[0].getnotes(origin="source code")
         assert notes == "This is important"
+
+    def test_inherited_translate_comment_is_not_duplicated(self) -> None:
+        """A reused resumed unit should retain one copy of an inherited note."""
+        store = html.htmlfile().parsestring(
+            '<p data-translate-context="shared" data-translate-comment="note">'
+            "Same<i data-translate-ignore>skip</i>Same</p>"
+        )
+
+        assert len(store.units) == 1
+        assert store.units[0].source == "Same"
+        assert store.units[0].getcontext() == "shared"
+        assert store.units[0].getnotes(origin="source code") == "note"
 
 
 class TestHTMLDocpath:
