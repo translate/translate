@@ -12,7 +12,10 @@ path = [
   "translate/share/langmodels/fpdb.conf"
 ]
 precedence = "override"
-SPDX-FileCopyrightText = "2003 WiseGuys Internet B.V."
+SPDX-FileCopyrightText = [
+  "Gertjan van Noord",
+  "Jocelyn Merand <joc.mer@gmail.com>"
+]
 SPDX-License-Identifier = "BSD-3-Clause"
 
 [[annotations]]
