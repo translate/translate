@@ -199,24 +199,20 @@ sepComma = ،\\u0020
         print(propfile)
         assert propfile == propexpected
 
-    def test_mozilla_all_whitespace(self) -> None:
-        """
-        Check for all white-space Mozilla hack, remove when the corresponding code
-        is removed.
-        """
-        posource = """#: accesskey-accept
-msgctxt "accesskey-accept"
-msgid ""
+    def test_mozilla_single_space(self) -> None:
+        """Check that a single-space translation does not fall back to the source."""
+        posource = """#: separator
+msgid "source separator"
 msgstr " "
 
 #: accesskey-help
 msgid "H"
 msgstr "م"
 """
-        proptemplate = """accesskey-accept=
+        proptemplate = """separator=source separator
 accesskey-help=H
 """
-        propexpected = r"""accesskey-accept=\u0020
+        propexpected = r"""separator=\u0020
 accesskey-help=م
 """
         propfile = self.merge2prop(proptemplate, posource, personality="mozilla")
