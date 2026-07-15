@@ -66,7 +66,7 @@ classifiers = [
 ]
 dependencies = [
   "lxml>=6.1.0,<7.0",
-  "unicode-segmentation-rs>=0.2.0,<0.3"
+  "unicode-segmentation-rs>=0.2.0,<0.4"
 ]
 description = "Tools and API for translation and localization engineering."
 dynamic = [
