@@ -1,0 +1,44 @@
+Translate Toolkit 3.19.15
+*************************
+
+*Released on 15 July 2026*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- Apple strings XLIFF
+
+  - Preserve workflow state and developer notes
+  - Aggregate and propagate workflow state across plural forms
+
+- HTML
+
+  - Extract standalone ``span`` elements while preserving nested spans
+  - Preserve element boundaries, metadata, and preformatted whitespace around
+    ignored content
+  - Improve meta charset detection
+
+- RC
+
+  - Improve translation matching by source and location in ``po2rc``
+
+Other
+-----
+
+- Align package licensing with GPL-3 and add REUSE compliance metadata
+- Correct language model copyright attribution
+- Replace insecure and broken documentation links
+- Improve release automation
+- Update the Unicode segmentation dependency
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+Michal Čihař
