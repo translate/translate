@@ -19,57 +19,36 @@
 """
 Convert Gettext PO localization files to OpenDocument (ODF) files.
 
-This converter combines the functionality of po2xliff and xliff2odf to provide
-a direct conversion from PO files to ODF files.
-
-See: https://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/
+See: https://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/odf2po.html
 for examples and usage instructions.
 """
 
-from io import BytesIO
 from typing import IO
 
-from translate.convert import convert, po2xliff, xliff2odf
-from translate.storage import po
+from translate.convert import convert
+from translate.convert.xliff2odf import translate_odf, write_odf
+from translate.storage.odf_shared import ODF_EXTENSIONS
+from translate.storage.xml_extract.generate import get_po_source_target_doms
 
 
 def convertpo(
     input_file: IO[bytes], output_file: IO[bytes], template: IO[bytes]
-) -> int:
+) -> bool:
     """Create a translated ODF using an ODF template and a PO file."""
-    # Read the PO file
-    inputstore = po.pofile(input_file)
-    if inputstore.isempty():
-        return 0
-
-    # Convert PO to XLIFF
-    convertor = po2xliff.po2xliff()
-    xliff_bytes = convertor.convertstore(inputstore, None)
-
-    # Convert XLIFF to ODF
-    xliff_file = BytesIO(xliff_bytes)
-    xliff2odf.convertxliff(xliff_file, output_file, template)
-    return 1
+    dom_trees = translate_odf(
+        template,
+        input_file,
+        get_po_source_target_doms,
+        include_fuzzy=False,
+    )
+    write_odf(template, output_file, dom_trees)
+    output_file.close()
+    return True
 
 
 def main(argv=None) -> None:
     formats = {
-        ("po", "odt"): ("odt", convertpo),  # Text
-        ("po", "ods"): ("ods", convertpo),  # Spreadsheet
-        ("po", "odp"): ("odp", convertpo),  # Presentation
-        ("po", "odg"): ("odg", convertpo),  # Drawing
-        ("po", "odc"): ("odc", convertpo),  # Chart
-        ("po", "odf"): ("odf", convertpo),  # Formula
-        ("po", "odi"): ("odi", convertpo),  # Image
-        ("po", "odm"): ("odm", convertpo),  # Master Document
-        ("po", "ott"): ("ott", convertpo),  # Text template
-        ("po", "ots"): ("ots", convertpo),  # Spreadsheet template
-        ("po", "otp"): ("otp", convertpo),  # Presentation template
-        ("po", "otg"): ("otg", convertpo),  # Drawing template
-        ("po", "otc"): ("otc", convertpo),  # Chart template
-        ("po", "otf"): ("otf", convertpo),  # Formula template
-        ("po", "oti"): ("oti", convertpo),  # Image template
-        ("po", "oth"): ("oth", convertpo),  # Web page template
+        ("po", extension): (extension, convertpo) for extension in ODF_EXTENSIONS
     }
     parser = convert.ConvertOptionParser(
         formats, usetemplates=True, description=__doc__

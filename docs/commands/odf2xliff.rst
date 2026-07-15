@@ -85,6 +85,12 @@ the other ODF files, including ODS, ODG, etc.). ::
 Using english.odt as the template document, and english_français.xlf as the
 file of translations, create a translated file français.odt.
 
+Each ODF XML package member is stored in a separate XLIFF ``<file>`` element.
+The ``original`` attribute contains the member path, such as ``content.xml`` or
+``Object 1/content.xml`` for an embedded chart. Non-empty XLIFF targets are
+used regardless of their approval or state metadata; an empty or absent target
+leaves the template content unchanged.
+
 .. _odf2xliff#bugs:
 
 Bugs

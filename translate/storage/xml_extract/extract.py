@@ -56,7 +56,15 @@ class Translatable:
 
         If not, then there's nothing to translate.
         """
-        return any(isinstance(chunk, str) and chunk.strip() for chunk in self.source)
+        return any(
+            (isinstance(chunk, str) and bool(chunk.strip()))
+            or (
+                isinstance(chunk, Translatable)
+                and chunk.is_inline
+                and chunk.has_translatable_text
+            )
+            for chunk in self.source
+        )
 
 
 def reduce_unit_tree(f, unit_node, *state):
@@ -245,8 +253,11 @@ def _process_children(dom_node, state, process_func):
 
 
 def compact_tag(nsmap, namespace, tag) -> str:
+    if namespace is None:
+        return tag
     if namespace in nsmap:
-        return f"{nsmap[namespace]}:{tag}"
+        prefix = nsmap[namespace]
+        return f"{prefix or ''}:{tag}"
     return f"{{{namespace}}}{tag}"
 
 
@@ -441,10 +452,17 @@ def build_idml_store(odf_file, store, parse_state, store_adder=None):
     return tree
 
 
-def build_store(odf_file, store, parse_state, store_adder=None):
+def build_store(
+    odf_file,
+    store,
+    parse_state,
+    store_adder=None,
+    *,
+    collect_ids: bool = True,
+):
     """Build a store for the given XML file."""
     store_adder = store_adder or _make_store_adder(store)
-    tree = parse_xml_file(odf_file)
+    tree = parse_xml_file(odf_file, collect_ids=collect_ids)
     root = tree.getroot()
     parse_state.nsmap = reverse_map(root.nsmap)
     translatables = find_translatable_dom_nodes(root, parse_state)

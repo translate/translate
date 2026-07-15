@@ -25,6 +25,7 @@ Converters
    mdx2po
    moz2po
    mozlang2po
+   odf2po
    odf2xliff
    oo2po
    php2po
@@ -83,6 +84,8 @@ understanding that will make the converters much easier to use and understand.
   Firefox and Thunderbird
 * :doc:`mozlang2po <mozlang2po>` -- Mozilla .lang file converter.  Works with
   Mozilla websites
+* :doc:`odf2po <odf2po>` -- Convert OpenDocument (ODF) documents to PO and
+  vice-versa.
 * :doc:`odf2xliff <odf2xliff>` -- Convert OpenDocument (ODF) documents to XLIFF
   and vice-versa.
 * :doc:`oo2po <oo2po>` -- OpenOffice.org SDF converter (Also works as
