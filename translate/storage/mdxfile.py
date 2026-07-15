@@ -23,7 +23,13 @@ from __future__ import annotations
 import re
 from typing import TYPE_CHECKING
 
-from translate.storage.markdown import MarkdownFile, MarkdownUnit
+from mistletoe import block_token
+
+from translate.storage.markdown import (
+    MarkdownFile,
+    MarkdownUnit,
+    _split_explicit_heading_id,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -58,6 +64,7 @@ _ESM_START = re.compile(
 )
 _FENCE = re.compile(r"^ {0,3}(?P<delimiter>`{3,}|~{3,})")
 _LOWER_HTML_START = re.compile(r"^ {0,3}<(?P<tag>[a-z][A-Za-z0-9-]*)(?:[\s>/]|$)")
+_SETEXT_HEADING_UNDERLINE = re.compile(r"^ {0,3}(?:=+|-+)[ \t]*$")
 
 
 class MDXUnit(MarkdownUnit):
@@ -78,6 +85,7 @@ class MDXFile(MarkdownFile):
         extract_frontmatter=True,
         frontmatter_translate_values=False,
         no_placeholders=False,
+        lookup_callback=None,
     ) -> None:
         """Construct an MDX store with the same options as MarkdownFile."""
         self._mdx_blocks: dict[str, tuple[str, int]] = {}
@@ -88,6 +96,7 @@ class MDXFile(MarkdownFile):
         super().__init__(
             inputfile=inputfile,
             callback=callback,
+            lookup_callback=lookup_callback,
             max_line_length=max_line_length,
             extract_code_blocks=extract_code_blocks,
             extract_frontmatter=extract_frontmatter,
@@ -239,6 +248,7 @@ class MDXFile(MarkdownFile):
         dedented_lines = [line[indent:] for line in child_lines]
         child_store = MarkdownFile(
             callback=self.callback,
+            lookup_callback=self.lookup_callback,
             max_line_length=self.max_line_length,
             extract_code_blocks=self.extract_code_blocks,
             extract_frontmatter=False,
@@ -343,7 +353,7 @@ class MDXFile(MarkdownFile):
         ):
             return False
 
-        for _, line in cls._structural_lines(lines):
+        for index, line in cls._structural_lines(lines):
             if (
                 re.search(
                     r"</?[A-Z][A-Za-z0-9_$]*(?:\.[A-Za-z_$][A-Za-z0-9_$]*)*",
@@ -351,8 +361,10 @@ class MDXFile(MarkdownFile):
                 )
                 or "<>" in line
                 or "</>" in line
-                or "{" in line
-                or "}" in line
+                or (
+                    ("{" in line or "}" in line)
+                    and not cls._is_explicit_heading_id_line(lines, index)
+                )
                 or cls._is_esm_start(line.lstrip())
             ):
                 return False
@@ -520,7 +532,7 @@ class MDXFile(MarkdownFile):
     @classmethod
     def _chunk_requires_opaque(cls, lines: list[str]) -> bool:
         """Reject an ordinary Markdown block containing structural MDX."""
-        for line in lines:
+        for index, line in enumerate(lines):
             logical_line = cls._logical_line(line)
             if (
                 _COMPONENT_START.match(logical_line)
@@ -533,9 +545,26 @@ class MDXFile(MarkdownFile):
                 not cls._is_indented_code(line)
                 and not re.match(r"(?:>|[-+*]\s|\d+[.)]\s)", line.lstrip())
                 and ("{" in line or "}" in line)
+                and not cls._is_explicit_heading_id_line(lines, index)
             ):
                 return True
         return False
+
+    @classmethod
+    def _is_explicit_heading_id_line(cls, lines: list[str], index: int) -> bool:
+        """Return whether a brace-containing line has only a heading ID."""
+        line = cls._logical_line(lines[index])
+        heading_match = block_token.Heading.pattern.match(line + "\n")
+        if heading_match is not None:
+            title, suffix = _split_explicit_heading_id(heading_match.group(2) or "")
+            return bool(suffix) and "{" not in title and "}" not in title
+
+        if index + 1 >= len(lines) or not _SETEXT_HEADING_UNDERLINE.fullmatch(
+            cls._logical_line(lines[index + 1])
+        ):
+            return False
+        title, suffix = _split_explicit_heading_id(line.strip())
+        return bool(suffix) and "{" not in title and "}" not in title
 
     @staticmethod
     def _is_indented_code(line: str) -> bool:

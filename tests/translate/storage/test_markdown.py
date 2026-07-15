@@ -164,6 +164,49 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
         assert translated_output == "\n## (sweet *potato*) ##\n"
         assert store.units[0].getlocations()[0].endswith("2")
 
+    def test_atx_heading_with_mdx_explicit_id(self) -> None:
+        store = self.parse("### Anonymous learners {/* #anonymous */}\n")
+        unit_sources = self.get_translation_unit_sources(store)
+        assert unit_sources == ["Anonymous learners"]
+        translated_output = self.get_translated_output(store)
+        assert translated_output == "### (Anonymous learners) {/* #anonymous */}\n"
+
+    def test_atx_heading_strips_explicit_id_from_migrated_translation(self) -> None:
+        inputfile = BytesIO(b"### Anonymous learners {/* #anonymous */}\n")
+        store = markdown.MarkdownFile(
+            inputfile=inputfile,
+            callback=lambda text: (
+                "Anonyme Lernende {/* #anonymous */}"
+                if text == "Anonymous learners"
+                else text
+            ),
+        )
+
+        assert store.filesrc == "### Anonyme Lernende {/* #anonymous */}\n"
+
+    def test_atx_heading_with_classic_explicit_id(self) -> None:
+        store = self.parse("### Anonymous *learners* {#anonymous} ###\n")
+        unit_sources = self.get_translation_unit_sources(store)
+        assert unit_sources == ["Anonymous *learners*"]
+        translated_output = self.get_translated_output(store)
+        assert translated_output == "### (Anonymous *learners*) {#anonymous} ###\n"
+
+    def test_setext_heading_with_explicit_id(self) -> None:
+        store = self.parse("Anonymous learners {/* #anonymous */}\n----------\n")
+        unit_sources = self.get_translation_unit_sources(store)
+        assert unit_sources == ["Anonymous learners"]
+        translated_output = self.get_translated_output(store)
+        assert translated_output == (
+            "(Anonymous learners) {/* #anonymous */}\n----------\n"
+        )
+
+    def test_heading_with_malformed_explicit_id(self) -> None:
+        store = self.parse("### Anonymous learners {/* #anonymous /*}\n")
+        unit_sources = self.get_translation_unit_sources(store)
+        assert unit_sources == ["Anonymous learners {/* #anonymous /*}"]
+        translated_output = self.get_translated_output(store)
+        assert translated_output == "### (Anonymous learners {/* #anonymous /*})\n"
+
     def test_empty_atx_heading(self) -> None:
         input = [
             "## \n",
@@ -729,6 +772,26 @@ class TestMarkdownNoPlaceholders(TestMarkdownTranslationUnitExtractionAndTransla
 
 
 class TestMarkdownRendering:
+    def test_legacy_explicit_heading_id_translation(self) -> None:
+        source = "### Anonymous learners {/* #anonymous */}\n"
+        legacy_source = "Anonymous learners {/* #anonymous */}"
+
+        for legacy_target in (
+            "Anonyme Lernende",
+            "Anonyme Lernende {/* #anonymous */}",
+            "Anonyme Lernende {#translated-anchor}",
+        ):
+            inputfile = BytesIO(source.encode())
+            store = markdown.MarkdownFile(
+                inputfile=inputfile,
+                callback=lambda text, target=legacy_target: (
+                    target if text == legacy_source else text
+                ),
+            )
+
+            assert [unit.source for unit in store.units] == ["Anonymous learners"]
+            assert store.filesrc == "### Anonyme Lernende {/* #anonymous */}\n"
+
     def test_hard_line_break_in_translation_unit(self) -> None:
         input = "yes box\n"
         inputfile = BytesIO(input.encode())

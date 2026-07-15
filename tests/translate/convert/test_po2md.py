@@ -299,6 +299,117 @@ You are only coming through in waves.
             "  The first key encrypts the data. The others decrypt it.\n"
         )
 
+    def test_markdown_explicit_heading_id_translation(self) -> None:
+        self.given_markdown_file("### Anonymous learners {/* #anonymous */}\n")
+        self.given_translation_file(
+            lines=[
+                "#: file.md:1",
+                'msgid "Anonymous learners"',
+                'msgstr "Anonyme Lernende"',
+            ]
+        )
+        self.run_command("translation.po", "out.md", template="file.md")
+
+        assert self.read_testfile("out.md").decode() == (
+            "### Anonyme Lernende {/* #anonymous */}\n"
+        )
+
+    def test_markdown_explicit_heading_id_migrated_translation(self) -> None:
+        self.given_markdown_file("### Anonymous learners {/* #anonymous */}\n")
+        self.given_translation_file(
+            lines=[
+                "#: file.md:1",
+                'msgid "Anonymous learners"',
+                'msgstr "Anonyme Lernende {/* #anonymous */}"',
+            ]
+        )
+        self.run_command("translation.po", "out.md", template="file.md")
+
+        assert self.read_testfile("out.md").decode() == (
+            "### Anonyme Lernende {/* #anonymous */}\n"
+        )
+
+    @pytest.mark.parametrize(
+        "legacy_target",
+        [
+            "Anonyme Lernende",
+            "Anonyme Lernende {/* #anonymous */}",
+        ],
+    )
+    def test_markdown_explicit_heading_id_legacy_translation(
+        self, legacy_target: str
+    ) -> None:
+        self.given_markdown_file("### Anonymous learners {/* #anonymous */}\n")
+        self.given_translation_file(
+            lines=[
+                "#: file.md:1",
+                'msgid "Anonymous learners {/* #anonymous */}"',
+                f'msgstr "{legacy_target}"',
+            ]
+        )
+        self.run_command("translation.po", "out.md", template="file.md")
+
+        assert self.read_testfile("out.md").decode() == (
+            "### Anonyme Lernende {/* #anonymous */}\n"
+        )
+
+    def test_markdown_explicit_heading_id_expanded_legacy_translation(
+        self,
+    ) -> None:
+        self.given_markdown_file(
+            "### See [documentation](https://example.com) {/* #docs */}\n"
+        )
+        self.given_translation_file(
+            lines=[
+                "#: file.md:1",
+                'msgid "See [documentation](https://example.com) {/* #docs */}"',
+                'msgstr "Siehe [Dokumentation](https://example.com) {/* #docs */}"',
+            ]
+        )
+        self.run_command("translation.po", "out.md", template="file.md")
+
+        assert self.read_testfile("out.md").decode() == (
+            "### Siehe [Dokumentation](https://example.com) {/* #docs */}\n"
+        )
+
+    def test_markdown_explicit_heading_id_expanded_migrated_translation(
+        self,
+    ) -> None:
+        self.given_markdown_file(
+            "### See [documentation](https://example.com) {/* #docs */}\n"
+        )
+        self.given_translation_file(
+            lines=[
+                "#: file.md:1",
+                'msgid "See [documentation](https://example.com)"',
+                'msgstr "Siehe [Dokumentation](https://example.com) {/* #docs */}"',
+            ]
+        )
+        self.run_command("translation.po", "out.md", template="file.md")
+
+        assert self.read_testfile("out.md").decode() == (
+            "### Siehe [Dokumentation](https://example.com) {/* #docs */}\n"
+        )
+
+    def test_markdown_explicit_heading_id_identity_translation_beats_legacy(
+        self,
+    ) -> None:
+        self.given_markdown_file("### Name {#name}\n")
+        self.given_translation_file(
+            lines=[
+                "#: file.md:1",
+                'msgid "Name"',
+                'msgstr "Name"',
+                "",
+                "#: file.md:1",
+                'msgid "Name {#name}"',
+                'msgstr "Nombre {#name}"',
+            ]
+        )
+        self.run_command("translation.po", "out.md", template="file.md")
+
+        assert self.read_testfile("out.md").decode() == "### Name {#name}\n"
+
     def test_no_placeholders_simple_link(self) -> None:
         """po2md --no-placeholders: full-link msgid is translated correctly."""
         self.given_markdown_file(

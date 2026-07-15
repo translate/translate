@@ -224,6 +224,22 @@ def hello():
             "The others are only used to decrypt the data."
         ) in sources
 
+    def test_markdown_explicit_heading_id_extraction(self) -> None:
+        self.given_markdown_file(
+            "### Anonymous learners {/* #anonymous */}\n"
+            "### Registered learners {#registered}\n"
+        )
+        self.run_command("file.md", "test.po")
+        output = pofile()
+        with open(self.get_testfilename("test.po"), "rb") as handle:
+            output.parse(handle)
+
+        sources = [unit.source for unit in output.units]
+        assert "Anonymous learners" in sources
+        assert "Registered learners" in sources
+        assert not any("#anonymous" in source for source in sources)
+        assert not any("#registered" in source for source in sources)
+
     def test_markdown_directory_ignores_txt_files(self) -> None:
         self.given_directory_of_markdown_files()
         self.create_testfile("mddir/notes.txt", "Text file content")

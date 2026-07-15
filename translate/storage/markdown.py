@@ -58,6 +58,21 @@ if TYPE_CHECKING:
     from collections.abc import Callable, Iterable
 
 
+_EXPLICIT_HEADING_ID = re.compile(
+    r"(?P<title>.*?)(?P<suffix>[ \t]+(?:"
+    r"\{/\*\s*#[^\s{}*]+\s*\*/\}|"
+    r"\{#[^\s{}]+\}))$"
+)
+
+
+def _split_explicit_heading_id(text: str) -> tuple[str, str]:
+    """Split a trailing explicit heading ID from translatable text."""
+    match = _EXPLICIT_HEADING_ID.fullmatch(text)
+    if match is None:
+        return text, ""
+    return match.group("title"), match.group("suffix")
+
+
 class MarkdownUnit(base.TranslationUnit):
     """A unit of translatable/localisable markdown content."""
 
@@ -84,6 +99,7 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
         extract_frontmatter=True,
         frontmatter_translate_values=False,
         no_placeholders=False,
+        lookup_callback=None,
     ) -> None:
         """
         Construct a new object instance.
@@ -111,10 +127,18 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
           of being replaced by {n} placeholder markers. Sub-attribute extraction
           (e.g. link titles as separate units) is suppressed in this mode. If
           False (default), the classic placeholder behavior is used.
+        :param lookup_callback: a function which returns a translation for a source
+          string, or None when no translation exists. Defaults to adapting callback
+          by treating an unchanged result as missing.
         """
         base.TranslationStore.__init__(self)
         self.filename = getattr(inputfile, "name", None)
         self.callback = callback or self._dummy_callback
+        self.lookup_callback = (
+            self._default_lookup_callback
+            if lookup_callback is None
+            else lookup_callback
+        )
         self.max_line_length = max_line_length
         self.extract_code_blocks = extract_code_blocks
         self.extract_frontmatter = extract_frontmatter
@@ -176,7 +200,7 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
             block_token.Table,
             max_line_length=self.max_line_length,
             extract_code_blocks=self.extract_code_blocks,
-            lookup_callback=self.callback,
+            lookup_callback=self.lookup_callback,
             no_placeholders=self.no_placeholders,
         ) as renderer:
             document = block_token.Document(lines)
@@ -366,6 +390,11 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
     def _dummy_callback(text: str) -> str:
         return text
 
+    def _default_lookup_callback(self, text: str) -> str | None:
+        """Adapt a translation callback to the lookup callback contract."""
+        translation = self.callback(text)
+        return translation if translation != text else None
+
     def _translate_callback(self, text: str, path: list[str], docpath: str = "") -> str:
         text = text.strip()
         if not text:
@@ -389,7 +418,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         *extras,
         max_line_length: int | None = None,
         extract_code_blocks: bool = True,
-        lookup_callback: Callable[[str], str] | None = None,
+        lookup_callback: Callable[[str], str | None] | None = None,
         no_placeholders: bool = False,
     ) -> None:
         super().__init__(*extras, max_line_length=max_line_length)
@@ -473,6 +502,56 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         if self._container_stack:
             self._container_stack.pop()
             self._section_counts.pop()
+
+    @classmethod
+    def _split_explicit_heading_id_tokens(
+        cls, tokens: Iterable[mistletoe.token.Token] | None
+    ) -> tuple[list[span_token.SpanToken], str]:
+        """Remove an explicit heading ID from the final raw-text token."""
+        result: list[span_token.SpanToken] = []
+        for token in tokens or ():
+            assert isinstance(token, span_token.SpanToken)
+            result.append(token)
+        if not result or not isinstance(result[-1], span_token.RawText):
+            return result, ""
+
+        title, suffix = _split_explicit_heading_id(result[-1].content)
+        if not suffix:
+            return result, ""
+        if title:
+            result[-1] = span_token.RawText(title)
+        else:
+            result.pop()
+        return result, suffix
+
+    def _lookup_heading_translation(
+        self, source: str, translation: str, suffix: str
+    ) -> tuple[str, bool]:
+        """Look up current and legacy heading translations without ambiguity."""
+        if not suffix:
+            return translation, translation != source
+        if translation != source:
+            translated_title, _translated_suffix = _split_explicit_heading_id(
+                translation
+            )
+            return translated_title, True
+        if self.lookup_callback is None:
+            return translation, False
+
+        current_translation = self.lookup_callback(source)
+        if current_translation is not None:
+            current_title, _current_suffix = _split_explicit_heading_id(
+                current_translation
+            )
+            return current_title, True
+
+        legacy_source = source + suffix
+        legacy_translation = self.lookup_callback(legacy_source)
+        if legacy_translation is None:
+            return translation, False
+
+        legacy_title, _legacy_suffix = _split_explicit_heading_id(legacy_translation)
+        return legacy_title, True
 
     _leading_ws = re.compile(r"^(\s+)\S")
     _trailing_ws = re.compile(r"\S(\s+)$")
@@ -626,7 +705,29 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     ) -> Iterable[str]:
         self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
         self._current_docpath = self._enter_heading(token.level)
-        content = list(super().render_heading(token, max_line_length=max_line_length))
+        title_tokens, suffix = self._split_explicit_heading_id_tokens(token.children)
+        if suffix:
+            translated = next(
+                iter(
+                    self.span_to_lines(
+                        title_tokens,
+                        max_line_length=None,
+                        legacy_heading_suffix=suffix,
+                    )
+                ),
+                "",
+            )
+            heading = "#" * token.level
+            if translated:
+                heading += " " + translated
+            heading += suffix
+            if token.closing_sequence:
+                heading += " " + token.closing_sequence
+            content = [heading]
+        else:
+            content = list(
+                super().render_heading(token, max_line_length=max_line_length)
+            )
         self.path.pop()
         return content
 
@@ -635,9 +736,24 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     ) -> Iterable[str]:
         self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
         self._current_docpath = self._enter_heading(token.level)
-        content = list(
-            super().render_setext_heading(token, max_line_length=max_line_length)
-        )
+        title_tokens, suffix = self._split_explicit_heading_id_tokens(token.children)
+        if suffix:
+            content = list(
+                self.span_to_lines(
+                    title_tokens,
+                    max_line_length=max_line_length,
+                    legacy_heading_suffix=suffix,
+                )
+            )
+            if content:
+                content[-1] += suffix
+            else:
+                content.append(suffix.lstrip())
+            content.append(token.underline)
+        else:
+            content = list(
+                super().render_setext_heading(token, max_line_length=max_line_length)
+            )
         self.path.pop()
         return content
 
@@ -762,7 +878,10 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     # translation and placeholder functions
 
     def span_to_lines(
-        self, tokens: Iterable[span_token.SpanToken], max_line_length: int | None
+        self,
+        tokens: Iterable[span_token.SpanToken],
+        max_line_length: int | None,
+        legacy_heading_suffix: str = "",
     ) -> Iterable[str]:
         """Renders a sequence of span tokens to markdown, with translation."""
         # If we're in an ignore section, skip translation
@@ -808,6 +927,11 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
                     translated_md = self.translate_callback(
                         content_md, self.path, self._current_docpath
                     )
+                    translated_md, _translation_found = (
+                        self._lookup_heading_translation(
+                            content_md, translated_md, legacy_heading_suffix
+                        )
+                    )
                     translated_md = translated_md.replace("\n", "\\\n").strip(" \t")
                     translated = list(
                         self.make_fragments(span_token.tokenize_inner(translated_md))
@@ -840,23 +964,25 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
                 translated_md = self.translate_callback(
                     content_md, self.path, self._current_docpath
                 )
-                # If translation with placeholders didn't match and there are
-                # placeholders, try looking up with expanded placeholders
-                # (full markdown links, etc.) to support PO files that contain
-                # the original markdown syntax instead of placeholder markers.
-                # Note: if the translation is intentionally identical to the
-                # source, this fallback is harmless — it will also not find a
-                # different translation.
-                if (
-                    translated_md == content_md
-                    and placeholders
-                    and self.lookup_callback
-                ):
+                translated_md, translation_found = self._lookup_heading_translation(
+                    content_md, translated_md, legacy_heading_suffix
+                )
+                # If no placeholder-based translation matched, try expanded
+                # Markdown links and their legacy heading-ID form.
+                if not translation_found and placeholders and self.lookup_callback:
                     expanded_content_md = self.remove_placeholder_markers(
                         content_md, list(placeholders)
                     )
                     expanded_translated_md = self.lookup_callback(expanded_content_md)
-                    if expanded_translated_md != expanded_content_md:
+                    if expanded_translated_md is None and legacy_heading_suffix:
+                        expanded_translated_md = self.lookup_callback(
+                            expanded_content_md + legacy_heading_suffix
+                        )
+                    if expanded_translated_md is not None:
+                        if legacy_heading_suffix:
+                            expanded_translated_md, _expanded_suffix = (
+                                _split_explicit_heading_id(expanded_translated_md)
+                            )
                         translated_md = expanded_translated_md
                         # The expanded translation already contains full markdown
                         # syntax (e.g. links), so skip placeholder replacement.

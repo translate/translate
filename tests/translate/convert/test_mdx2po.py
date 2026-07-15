@@ -50,6 +50,16 @@ Another paragraph.
         assert not any("import" in source for source in sources)
         assert not any("Alert" in source for source in sources)
 
+    def test_explicit_heading_id_extraction(self):
+        """Heading IDs are preserved outside MDX translation units."""
+        store = self.mdx2po(
+            b"### Anonymous learners {/* #anonymous */}\n"
+            b"### Registered learners {#registered}\n"
+        )
+
+        sources = [unit.source for unit in store.units if unit.source]
+        assert sources == ["Anonymous learners", "Registered learners"]
+
     def test_no_code_blocks(self):
         """Code blocks can be excluded from extraction."""
         content = b"""# Title

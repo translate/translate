@@ -61,6 +61,26 @@ Another paragraph.
         assert '<Alert type="info" />' in output
         assert "Another paragraph translated." in output
 
+    def test_explicit_heading_id_translation(self):
+        """Visible heading text translates without changing its ID."""
+        template = b"### Anonymous learners {/* #anonymous */}\n"
+        output = self.translate(template, [("Anonymous learners", "Anonyme Lernende")])
+
+        assert output == b"### Anonyme Lernende {/* #anonymous */}\n"
+
+    def test_explicit_heading_id_identity_translation_beats_legacy(self):
+        """A current identity translation wins over a stale legacy unit."""
+        template = b"### Name {#name}\n"
+        output = self.translate(
+            template,
+            [
+                ("Name", "Name"),
+                ("Name {#name}", "Nombre {#name}"),
+            ],
+        )
+
+        assert output == template
+
     def test_standalone_jsx_block_children_and_attrs_translate(self):
         """Standalone JSX tag attrs and child Markdown are translated."""
         template = b"""# Title
