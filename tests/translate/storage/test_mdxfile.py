@@ -24,6 +24,35 @@ class TestSupportedSubset:
         store = mdx_store(b"# Hello World\n\nThis is a paragraph.\n")
         assert sources(store) == ["Hello World", "This is a paragraph."]
 
+    def test_explicit_heading_ids_match_markdown(self):
+        content = b"""### Anonymous learners {/* #anonymous */}
+
+Registered learners {#registered}
+--------------------------------
+"""
+        translations = {
+            "Anonymous learners": "Anonymous learners translated",
+            "Registered learners": "Registered learners translated",
+        }
+        store = mdx_store(content, callback=lambda text: translations.get(text, text))
+
+        assert sources(store) == ["Anonymous learners", "Registered learners"]
+        assert store.filesrc == (
+            "### Anonymous learners translated {/* #anonymous */}\n\n"
+            "Registered learners translated {#registered}\n"
+            "--------------------------------\n"
+        )
+
+    def test_explicit_heading_id_does_not_expose_other_expression(self):
+        content = b"""### Result {value} {/* #result */}
+
+After.
+"""
+        store = mdx_store(content)
+
+        assert sources(store) == ["After."]
+        assert store.filesrc == content.decode()
+
     def test_top_level_esm_is_opaque(self):
         content = b"""import {
   Alert,
@@ -92,6 +121,23 @@ After.
         assert "  Translated **Markdown**." in store.filesrc
         assert "  - Translated list item" in store.filesrc
         assert store.filesrc.endswith("\nAfter.\n")
+
+    def test_simple_component_child_explicit_heading_id(self):
+        content = b"""<Tab>
+  ### Anonymous learners {/* #anonymous */}
+</Tab>
+"""
+        store = mdx_store(
+            content,
+            callback=lambda text: (
+                "Anonyme Lernende" if text == "Anonymous learners" else text
+            ),
+        )
+
+        assert sources(store) == ["Anonymous learners"]
+        assert store.filesrc == (
+            "<Tab>\n  ### Anonyme Lernende {/* #anonymous */}\n</Tab>\n"
+        )
 
     def test_simple_child_locations_and_docpaths(self):
         content = b"""# Heading
