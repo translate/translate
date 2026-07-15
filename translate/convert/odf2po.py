@@ -1,5 +1,5 @@
 #
-# Copyright 2004-2014 Zuza Software Foundation
+# Copyright 2026 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -16,49 +16,50 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 
-"""
-Convert OpenDocument (ODF) files to XLIFF localization files.
-
-See: https://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/odf2xliff.html
-for examples and usage instructions.
-"""
+"""Convert OpenDocument (ODF) files to Gettext PO localization files."""
 
 from io import BytesIO
 
 from translate.convert import convert
-from translate.storage import factory, xliff
+from translate.storage import factory, po
 from translate.storage.odf_io import open_odf
 from translate.storage.odf_shared import (
     ODF_INPUT_EXTENSIONS,
     inline_elements,
     no_translate_content_elements,
 )
-from translate.storage.xml_extract.extract import ParseState, build_store
+from translate.storage.xml_extract.extract import (
+    IdMaker,
+    ParseState,
+    build_store,
+    make_postore_adder,
+)
 
 
 def convertodf(inputfile, outputfile, templates) -> bool:
-    """Convert an ODF package to XLIFF."""
+    """Convert an ODF package to PO."""
     store = factory.getobject(outputfile)
-    if not isinstance(store, xliff.xlifffile):
-        raise TypeError("ODF extraction requires an XLIFF 1.x output store")
+    if not isinstance(store, po.pofile):
+        raise TypeError("ODF extraction requires a PO output store")
+    id_maker = IdMaker()
 
-    contents = open_odf(inputfile)
-    for filename, data in contents.items():
-        store.switchfile(filename, createifmissing=True)
+    for filename, data in open_odf(inputfile).items():
         parse_state = ParseState(no_translate_content_elements, inline_elements)
-        build_store(BytesIO(data), store, parse_state, collect_ids=False)
+        build_store(
+            BytesIO(data),
+            store,
+            parse_state,
+            store_adder=make_postore_adder(store, id_maker, filename),
+            collect_ids=False,
+        )
 
-    store.removedefaultfile()
+    store.removeduplicates("msgctxt")
     store.save()
     return True
 
 
 def main(argv=None) -> None:
-    formats = tuple(
-        (extension, (output_extension, convertodf))
-        for output_extension in ("xlf", "xliff")
-        for extension in ODF_INPUT_EXTENSIONS
-    )
+    formats = dict.fromkeys(ODF_INPUT_EXTENSIONS, ("po", convertodf))
     parser = convert.ConvertOptionParser(formats, description=__doc__)
     parser.run(argv)
 

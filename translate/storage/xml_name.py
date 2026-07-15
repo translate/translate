@@ -67,6 +67,10 @@ class XmlNamer:
             except ValueError:
                 # If there is no namespace in namespace_shortcut.
                 return namespace_shortcut.lstrip("{}")
+        # An empty shortcut is the internal, unambiguous spelling for a
+        # document's default namespace; an XML prefix itself cannot be empty.
+        if not namespace_shortcut:
+            namespace_shortcut = None
         return f"{{{self.nsmap[namespace_shortcut]}}}{tag}"
 
     def namespace(self, namespace_shortcut):

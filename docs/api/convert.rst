@@ -116,6 +116,13 @@ odf2xliff
    :members:
    :inherited-members:
 
+odf2po
+------
+
+.. automodule:: translate.convert.odf2po
+   :members:
+   :inherited-members:
+
 
 oo2po
 -----

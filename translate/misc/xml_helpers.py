@@ -45,10 +45,14 @@ string_xpath_normalized = etree.XPath("normalize-space()")
 
 
 def get_safe_xml_parser(
-    *, encoding: str | None = None, strip_cdata: bool = False
+    *,
+    encoding: str | None = None,
+    strip_cdata: bool = False,
+    collect_ids: bool = True,
 ) -> etree.XMLParser:
     """Return an XML parser suitable for untrusted input."""
     return etree.XMLParser(
+        collect_ids=collect_ids,
         encoding=encoding,
         strip_cdata=strip_cdata,
         resolve_entities=False,
@@ -57,11 +61,20 @@ def get_safe_xml_parser(
 
 
 def parse_xml(
-    xml: str | bytes, *, encoding: str | None = None, strip_cdata: bool = False
+    xml: str | bytes,
+    *,
+    encoding: str | None = None,
+    strip_cdata: bool = False,
+    collect_ids: bool = True,
 ) -> etree._Element:
     """Parse XML using the shared safe parser defaults."""
     return etree.fromstring(
-        xml, parser=get_safe_xml_parser(encoding=encoding, strip_cdata=strip_cdata)
+        xml,
+        parser=get_safe_xml_parser(
+            encoding=encoding,
+            strip_cdata=strip_cdata,
+            collect_ids=collect_ids,
+        ),
     )
 
 
@@ -70,10 +83,16 @@ def parse_xml_file(
     *,
     encoding: str | None = None,
     strip_cdata: bool = False,
+    collect_ids: bool = True,
 ) -> etree._ElementTree:
     """Parse an XML document source using the shared safe parser defaults."""
     return etree.parse(
-        source, parser=get_safe_xml_parser(encoding=encoding, strip_cdata=strip_cdata)
+        source,
+        parser=get_safe_xml_parser(
+            encoding=encoding,
+            strip_cdata=strip_cdata,
+            collect_ids=collect_ids,
+        ),
     )
 
 

@@ -55,3 +55,21 @@ def test_copy_odf_allows_large_total_size_when_members_are_bounded(tmp_path) -> 
 
     with ZipFile(output, "r") as output_zip:
         assert output_zip.read("asset-4.bin") == b"G" * member_size
+
+
+@pytest.mark.parametrize("member", ["content.xml", "styles.xml"])
+def test_open_odf_accepts_optional_members(tmp_path, member) -> None:
+    archive = tmp_path / "minimal.odt"
+    with ZipFile(archive, "w") as zip_file:
+        zip_file.writestr(member, f"<{member.removesuffix('.xml')}/>")
+
+    assert list(odf_io.open_odf(archive)) == [member]
+
+
+def test_open_odf_requires_content_or_styles(tmp_path) -> None:
+    archive = tmp_path / "metadata-only.odt"
+    with ZipFile(archive, "w") as zip_file:
+        zip_file.writestr("meta.xml", b"<meta/>")
+
+    with pytest.raises(KeyError, match=r"neither content\.xml nor styles\.xml"):
+        odf_io.open_odf(archive)

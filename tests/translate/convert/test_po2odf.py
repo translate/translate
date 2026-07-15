@@ -1,6 +1,8 @@
 import os
+from zipfile import ZipFile
 
-from translate.convert import po2odf
+from translate.convert import odf2po, po2odf
+from translate.storage import po
 
 from . import test_convert
 
@@ -56,3 +58,26 @@ msgstr "Třetí"
         )
         # Check that the output file was created
         assert os.path.exists(self.get_testfilename("multi.odt"))
+
+    def test_odf2po_roundtrip_with_inline_placeable(self) -> None:
+        template = os.path.join(os.path.dirname(__file__), "test.odt")
+        po_path = self.get_testfilename("roundtrip.po")
+        odf2po.main([template, po_path, "--progress=none"])
+        with open(po_path, "rb") as po_file:
+            store = po.pofile(po_file)
+        unit = next(
+            unit for unit in store.units if unit.source.startswith("Try Weblate")
+        )
+        unit.sourcecomments.reverse()
+        assert unit.getlocations()[0] == "content.xml"
+        unit.target = 'Vyzkoušejte <g id="0">weblate.org</g>!'
+        store.save()
+
+        self.run_command(
+            i="roundtrip.po",
+            o="roundtrip.odt",
+            template=template,
+        )
+
+        with ZipFile(self.get_testfilename("roundtrip.odt")) as archive:
+            assert "Vyzkoušejte" in archive.read("content.xml").decode()

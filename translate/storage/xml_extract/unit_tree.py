@@ -106,7 +106,13 @@ def _add_unit_to_tree(node, xpath_components, unit) -> None:
         node.unit = unit
 
 
-def build_unit_tree(store, filename=None):
+def build_unit_tree(
+    store,
+    filename=None,
+    *,
+    require_target: bool = False,
+    include_fuzzy: bool = False,
+):
     """
     Enumerate a translation store and build a tree with XPath components as nodes
     and where a node contains a unit if a path from the root of the tree to the node
@@ -130,13 +136,39 @@ def build_unit_tree(store, filename=None):
     tree = XPathTree()
     is_xliff = isinstance(store, xliff.xlifffile)
     for unit in store.units:
-        if unit.source and not unit.isfuzzy():
-            locations = [unit.getid()] if is_xliff else unit.getlocations()
-            if filename is not None and len(locations) > 1 and filename != locations[1]:
-                # Skip units that don't come from the filename we are currently
-                # trying to get units for.
-                # This is not used for ODF, right now only for IDML.
+        if not unit.source:
+            continue
+        if require_target and is_xliff:
+            target_dom = unit.target_dom
+            if target_dom is None or (target_dom.text is None and len(target_dom) == 0):
                 continue
-            location = _split_xpath(locations[0])
-            _add_unit_to_tree(tree, location, unit)
+        elif require_target and not unit.target:
+            continue
+        if not include_fuzzy and unit.isfuzzy():
+            continue
+
+        if is_xliff:
+            location = unit.getid()
+            unit_filename = None
+            if xliff.ID_SEPARATOR in location:
+                unit_filename, location = location.rsplit(xliff.ID_SEPARATOR, 1)
+            if filename is not None and filename != unit_filename:
+                continue
+        else:
+            locations = unit.getlocations()
+            if not locations:
+                continue
+            if filename is None:
+                location = locations[0]
+            else:
+                if filename not in locations:
+                    continue
+                try:
+                    location = next(
+                        reference for reference in locations if reference != filename
+                    )
+                except StopIteration:
+                    continue
+
+        _add_unit_to_tree(tree, _split_xpath(location), unit)
     return tree

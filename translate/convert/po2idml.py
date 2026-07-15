@@ -37,7 +37,11 @@ from translate.storage.idml import (
     open_idml,
 )
 from translate.storage.xml_extract.extract import ParseState, process_idml_translatable
-from translate.storage.xml_extract.generate import apply_translations, replace_dom_text
+from translate.storage.xml_extract.generate import (
+    apply_translations,
+    get_po_source_target_doms,
+    replace_dom_text,
+)
 from translate.storage.xml_extract.unit_tree import XPathTree, build_unit_tree
 
 
@@ -92,46 +96,6 @@ def translate_idml(template, input_file, translatable_files):
         for each of those files.
         """
 
-        def get_po_doms(unit):
-            """
-            Return a tuple with unit source and target DOM objects.
-
-            This method is method is meant to provide a way to retrieve the DOM
-            objects for the unit source and target for PO stores.
-
-            Since POunit doesn't have any source_dom nor target_dom attributes,
-            it is necessary to craft those objects.
-            """
-
-            def add_node_content(string, node):
-                """
-                Append the translatable content to the node.
-
-                The string is going to have XLIFF placeables, so we have to
-                parse it as XML in order to get the right nodes to append to
-                the node.
-                """
-                # Add a wrapper "whatever" tag to avoid problems when parsing
-                # several sibling tags at the root level.
-                fake_string = f"<whatever>{string}</whatever>"
-
-                # Copy the children to the XLIFF unit's source or target node.
-                fake_node = parse_xml(fake_string)
-                node.extend(fake_node.getchildren())  # ty:ignore[deprecated]
-
-                return node
-
-            source_dom = etree.Element("source")
-            source_dom = add_node_content(unit.source, source_dom)
-            target_dom = etree.Element("target")
-
-            if unit.target:
-                target_dom = add_node_content(unit.target, target_dom)
-            else:
-                target_dom = add_node_content(unit.source, target_dom)
-
-            return (source_dom, target_dom)
-
         def make_parse_state():
             return ParseState(NO_TRANSLATE_ELEMENTS, INLINE_ELEMENTS)
 
@@ -142,7 +106,7 @@ def translate_idml(template, input_file, translatable_files):
                 file_unit_tree,
                 replace_dom_text(
                     make_parse_state,
-                    dom_retriever=get_po_doms,
+                    dom_retriever=get_po_source_target_doms,
                     process_translatable=process_idml_translatable,
                 ),
             )

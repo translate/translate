@@ -23,22 +23,36 @@ See: https://docs.translatehouse.org/projects/translate-toolkit/en/latest/comman
 for examples and usage instructions.
 """
 
-import zipfile
 from io import BytesIO
 
 from lxml import etree
 
 from translate.convert import convert
 from translate.misc.xml_helpers import parse_xml_file
-from translate.storage import factory
-from translate.storage.odf_io import copy_odf, open_odf
-from translate.storage.odf_shared import inline_elements, no_translate_content_elements
-from translate.storage.xml_extract.extract import ParseState
-from translate.storage.xml_extract.generate import apply_translations, replace_dom_text
+from translate.storage import factory, xliff
+from translate.storage.odf_io import ODFPackage, open_odf
+from translate.storage.odf_shared import (
+    ODF_EXTENSIONS,
+    inline_elements,
+    no_translate_content_elements,
+)
+from translate.storage.xml_extract import misc
+from translate.storage.xml_extract.extract import ParseState, compact_tag, reverse_map
+from translate.storage.xml_extract.generate import (
+    apply_translations,
+    get_xliff_source_target_doms,
+    replace_dom_text,
+)
 from translate.storage.xml_extract.unit_tree import XPathTree, build_unit_tree
 
 
-def translate_odf(template, input_file):
+def translate_odf(
+    template,
+    input_file,
+    dom_retriever=get_xliff_source_target_doms,
+    *,
+    include_fuzzy: bool = True,
+):
     def load_dom_trees(template):
         """
         Return a dict with translatable files in the template ODF package.
@@ -48,11 +62,16 @@ def translate_odf(template, input_file):
         """
         odf_data = open_odf(template)
         return {
-            filename: parse_xml_file(BytesIO(data))
+            filename: parse_xml_file(BytesIO(data), collect_ids=False)
             for filename, data in odf_data.items()
         }
 
-    def load_unit_tree(input_file):
+    def root_name(dom_tree):
+        root = dom_tree.getroot()
+        namespace, tag = misc.parse_tag(root.tag)
+        return compact_tag(reverse_map(root.nsmap), namespace, tag)
+
+    def load_unit_trees(input_file, dom_trees):
         """
         Return a dict with the translations grouped by files ODF package.
 
@@ -60,27 +79,31 @@ def translate_odf(template, input_file):
         values are XPathTree instances for each of those files.
         """
         store = factory.getobject(input_file)
-        tree = build_unit_tree(store)
+        is_xliff = isinstance(store, xliff.xlifffile)
+        store_filenames = set(store.getfilenames()) if is_xliff else set()
+        has_member_files = bool(store_filenames.intersection(dom_trees))
+        shared_tree = None
+        if is_xliff and not has_member_files:
+            # Older odf2xliff releases stored every XML member in one <file>.
+            shared_tree = build_unit_tree(
+                store,
+                require_target=True,
+                include_fuzzy=include_fuzzy,
+            )
 
-        def extract_unit_tree(filename, root_dom_element_name):
-            """
-            Find the subtree in 'tree' which corresponds to the data in XML
-            file 'filename'.
-            """
-            try:
-                file_tree = tree.children[root_dom_element_name, 0]
-            except KeyError:
-                file_tree = XPathTree()
-
-            return (filename, file_tree)
-
-        return dict(
-            [
-                extract_unit_tree("content.xml", "office:document-content"),
-                extract_unit_tree("meta.xml", "office:document-meta"),
-                extract_unit_tree("styles.xml", "office:document-styles"),
-            ]
-        )
+        result = {}
+        for filename, dom_tree in dom_trees.items():
+            tree = shared_tree or build_unit_tree(
+                store,
+                filename,
+                require_target=True,
+                include_fuzzy=include_fuzzy,
+            )
+            result[filename] = tree.children.get(
+                (root_name(dom_tree), 0),
+                XPathTree(),
+            )
+        return result
 
     def translate_dom_trees(unit_trees, dom_trees):
         """
@@ -97,12 +120,14 @@ def translate_odf(template, input_file):
         for filename, dom_tree in dom_trees.items():
             file_unit_tree = unit_trees[filename]
             apply_translations(
-                dom_tree.getroot(), file_unit_tree, replace_dom_text(make_parse_state)
+                dom_tree.getroot(),
+                file_unit_tree,
+                replace_dom_text(make_parse_state, dom_retriever=dom_retriever),
             )
         return dom_trees
 
     dom_trees = load_dom_trees(template)
-    unit_trees = load_unit_tree(input_file)
+    unit_trees = load_unit_trees(input_file, dom_trees)
     return translate_dom_trees(unit_trees, dom_trees)
 
 
@@ -113,17 +138,16 @@ def write_odf(template, output_file, dom_trees) -> None:
     The resulting ODF package is a copy of the template ODF package, with the
     translatable files replaced by their translated versions.
     """
-    template_zip = zipfile.ZipFile(template, "r")
-    output_zip = zipfile.ZipFile(output_file, "w", compression=zipfile.ZIP_DEFLATED)
-
-    # Copy the ODF package.
-    output_zip = copy_odf(template_zip, output_zip, dom_trees.keys())
-
-    # Overwrite the translated files to the ODF package.
-    for filename, dom_tree in dom_trees.items():
-        output_zip.writestr(
-            filename, etree.tostring(dom_tree, encoding="UTF-8", xml_declaration=True)
+    replacements = {
+        filename: etree.tostring(
+            dom_tree,
+            encoding="UTF-8",
+            xml_declaration=True,
         )
+        for filename, dom_tree in dom_trees.items()
+    }
+    with ODFPackage(template) as package:
+        package.write(output_file, replacements)
 
 
 def convertxliff(input_file, output_file, template) -> bool:
@@ -136,22 +160,7 @@ def convertxliff(input_file, output_file, template) -> bool:
 
 def main(argv=None) -> None:
     formats = {
-        ("xlf", "odt"): ("odt", convertxliff),  # Text
-        ("xlf", "ods"): ("ods", convertxliff),  # Spreadsheet
-        ("xlf", "odp"): ("odp", convertxliff),  # Presentation
-        ("xlf", "odg"): ("odg", convertxliff),  # Drawing
-        ("xlf", "odc"): ("odc", convertxliff),  # Chart
-        ("xlf", "odf"): ("odf", convertxliff),  # Formula
-        ("xlf", "odi"): ("odi", convertxliff),  # Image
-        ("xlf", "odm"): ("odm", convertxliff),  # Master Document
-        ("xlf", "ott"): ("ott", convertxliff),  # Text template
-        ("xlf", "ots"): ("ots", convertxliff),  # Spreadsheet template
-        ("xlf", "otp"): ("otp", convertxliff),  # Presentation template
-        ("xlf", "otg"): ("otg", convertxliff),  # Drawing template
-        ("xlf", "otc"): ("otc", convertxliff),  # Chart template
-        ("xlf", "otf"): ("otf", convertxliff),  # Formula template
-        ("xlf", "oti"): ("oti", convertxliff),  # Image template
-        ("xlf", "oth"): ("oth", convertxliff),  # Web page template
+        ("xlf", extension): (extension, convertxliff) for extension in ODF_EXTENSIONS
     }
     parser = convert.ConvertOptionParser(
         formats, usetemplates=True, description=__doc__

@@ -30,6 +30,27 @@ text_uri = "urn:oasis:names:tc:opendocument:xmlns:text:1.0"
 svg_uri = "urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0"
 
 
+ODF_EXTENSIONS = (
+    "odt",
+    "ods",
+    "odp",
+    "odg",
+    "odc",
+    "odf",
+    "odi",
+    "odm",
+    "ott",
+    "ots",
+    "otp",
+    "otg",
+    "otc",
+    "otf",
+    "oti",
+    "oth",
+)
+ODF_INPUT_EXTENSIONS = ("sxw", *ODF_EXTENSIONS)
+
+
 inline_elements = [
     (text_uri, "page-count"),
     (text_uri, "page-number"),
