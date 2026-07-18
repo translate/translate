@@ -310,9 +310,8 @@ class poheader:
         header = self.parseheader()
         if lang := header.get("Language"):
             # pylint: disable-next=import-outside-toplevel
-            from translate.lang.data import (
-                langcode_ire,
-            )
+            # ruff:ignore[import-outside-top-level]
+            from translate.lang.data import langcode_ire
 
             if langcode_ire.match(lang):
                 return lang

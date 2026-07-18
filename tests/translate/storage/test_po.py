@@ -266,9 +266,8 @@ class TestPOFile(test_base.TestTranslationStore):
 
         # Choose matching output depending on gettext version
         # pylint: disable-next=import-outside-toplevel
-        from translate.storage.cpo import (
-            get_libgettextpo_version,
-        )
+        # ruff:ignore[import-outside-top-level]
+        from translate.storage.cpo import get_libgettextpo_version
 
         actual_version = get_libgettextpo_version()
 
