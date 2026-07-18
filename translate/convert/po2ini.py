@@ -48,7 +48,7 @@ class po2ini:
     ) -> None:
         """Initialize the converter."""
         if ini.INIConfig is None:
-            print("Missing iniparse library!")  # noqa: T201
+            print("Missing iniparse library!")  # ruff:ignore[print]
             sys.exit()
 
         if template_file is None:

@@ -119,7 +119,7 @@ class qmfile(base.TranslationStore):
         sectionheader = 5
 
         def section_debug(name, section_type, startsection, length) -> None:
-            print(  # noqa: T201
+            print(  # ruff:ignore[print]
                 f"Section: {name} (type: {section_type:#x}, offset: {startsection:#x}, length: {length})"
             )
 

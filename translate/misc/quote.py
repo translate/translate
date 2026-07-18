@@ -589,7 +589,7 @@ def propertiesdecode(source: str) -> str:
                 output.append(f"\\{c}")
                 continue
             # pylint: disable-next=import-outside-toplevel
-            import unicodedata  # noqa: PLC0415
+            import unicodedata  # ruff:ignore[import-outside-top-level]
 
             name = source[s:e]
             output.append(unicodedata.lookup(name))

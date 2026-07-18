@@ -797,7 +797,7 @@ class Xliff1File(XliffFile[U]):
     def parsestring(cls, storestring):
         """Parses the string to return the correct file object."""
         # pylint: disable-next=import-outside-toplevel
-        from translate.storage import poxliff  # noqa: PLC0415
+        from translate.storage import poxliff  # ruff:ignore[import-outside-top-level]
 
         xliff = super().parsestring(storestring)
         if xliff.units:

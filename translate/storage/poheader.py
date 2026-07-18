@@ -310,13 +310,15 @@ class poheader:
         header = self.parseheader()
         if lang := header.get("Language"):
             # pylint: disable-next=import-outside-toplevel
-            from translate.lang.data import langcode_ire  # noqa: PLC0415
+            from translate.lang.data import (
+                langcode_ire,
+            )
 
             if langcode_ire.match(lang):
                 return lang
         if "X-Poedit-Language" in header:
             # pylint: disable-next=import-outside-toplevel
-            from translate.lang import poedit  # noqa: PLC0415
+            from translate.lang import poedit  # ruff:ignore[import-outside-top-level]
 
             language = header.get("X-Poedit-Language")
             country = header.get("X-Poedit-Country")
@@ -325,7 +327,9 @@ class poheader:
             return header.get("Language-Code")
         if "Language-Team" in header:
             # pylint: disable-next=import-outside-toplevel
-            from translate.lang.team import guess_language  # noqa: PLC0415
+            from translate.lang.team import (
+                guess_language,
+            )
 
             return guess_language(header.get("Language-Team"))
         return None

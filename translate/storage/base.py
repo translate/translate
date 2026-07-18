@@ -1127,7 +1127,9 @@ class TranslationStore(Generic[U]):
         detected_encoding: EncodingDict
         try:
             # pylint: disable-next=import-outside-toplevel
-            from charset_normalizer import detect  # noqa: PLC0415
+            from charset_normalizer import (
+                detect,
+            )
         except ImportError:
             detected_encoding = self.fallback_detection(text)
         else:

@@ -27,12 +27,12 @@ class TestMultistring:
         s1 = multistring("test")
         assert repr(s1) == "multistring(['test'])"
         # pylint: disable-next=eval-used
-        assert eval(f"{s1!r}") == s1  # noqa: S307
+        assert eval(f"{s1!r}") == s1  # ruff:ignore[suspicious-eval-usage]
 
         s2 = multistring(["test", "mé"])
         assert repr(s2) == "multistring(['test', 'mé'])"
         # pylint: disable-next=eval-used
-        assert eval(f"{s2!r}") == s2  # noqa: S307
+        assert eval(f"{s2!r}") == s2  # ruff:ignore[suspicious-eval-usage]
 
     def test_replace(self) -> None:
         s1 = multistring(["abcdef", "def"])
