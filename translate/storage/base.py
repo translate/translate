@@ -1126,8 +1126,8 @@ class TranslationStore(Generic[U]):
             default_encodings = ["utf-8"]
         detected_encoding: EncodingDict
         try:
-            # pylint: disable-next=import-outside-toplevel
             # ruff:ignore[import-outside-top-level]
+            # pylint: disable-next=import-outside-toplevel
             from charset_normalizer import detect
         except ImportError:
             detected_encoding = self.fallback_detection(text)
