@@ -47,7 +47,7 @@ class ini2po:
     ) -> None:
         """Initialize the converter."""
         if ini.INIConfig is None:
-            print("Missing iniparse library!")  # noqa: T201
+            print("Missing iniparse library!")  # ruff:ignore[print]
             sys.exit()
 
         self.blank_msgstr = blank_msgstr

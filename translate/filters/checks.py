@@ -525,7 +525,7 @@ class UnitChecker:
                 if not filtermessage:
                     # Should be quite rare
                     # pylint: disable-next=import-outside-toplevel
-                    import pydoc  # noqa: PLC0415
+                    import pydoc  # ruff:ignore[import-outside-top-level]
 
                     # Strip out unnecessary whitespace from docstring
                     filtermessage = pydoc.getdoc(filterfunction)
@@ -2865,7 +2865,7 @@ def runtests(str1, str2, ignorelist=()):
     failures = checker.run_filters(unit)
 
     for test, value in failures.items():
-        print(  # noqa: T201
+        print(  # ruff:ignore[print]
             f"failure: {test}: {value['message']}\n  {str1!r}\n  {str2!r}"
         )
 
@@ -2880,7 +2880,7 @@ def batchruntests(pairs) -> None:
         if runtests(str1, str2):
             passed += 1
 
-    print(f"\ntotal: {passed}/{numpairs} pairs passed")  # noqa: T201
+    print(f"\ntotal: {passed}/{numpairs} pairs passed")  # ruff:ignore[print]
 
 
 if __name__ == "__main__":

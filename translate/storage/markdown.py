@@ -249,7 +249,7 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
         # ``markdown``, so a top-level import would break ``[markdown]``-only
         # installs that never enable this flag.
         # pylint: disable-next=import-outside-toplevel
-        from ruamel.yaml import YAML, YAMLError  # noqa: PLC0415
+        from ruamel.yaml import YAML, YAMLError  # ruff:ignore[import-outside-top-level]
 
         # In the source the last body line is followed by a newline before the
         # closing fence, so terminate the body with one. Without it a trailing
@@ -327,7 +327,7 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
     def _translate_frontmatter_child(self, container, key, path: str) -> None:
         """Translate or recurse into a single child of a map/list container."""
         # pylint: disable-next=import-outside-toplevel
-        from ruamel.yaml.scalarstring import (  # noqa: PLC0415
+        from ruamel.yaml.scalarstring import (  # ruff:ignore[import-outside-top-level]
             FoldedScalarString,
             LiteralScalarString,
             ScalarString,

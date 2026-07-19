@@ -34,7 +34,7 @@ tmmatcher = None
 
 def memory(tmfiles, max_candidates=1, min_similarity=75, max_length=1000):
     """Returns the TM store to use. Only initialises on first call."""
-    global tmmatcher  # noqa: PLW0603
+    global tmmatcher  # ruff:ignore[global-statement]
     # Only initialise first time
     if tmmatcher is None:
         if isinstance(tmfiles, list):

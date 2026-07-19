@@ -48,7 +48,7 @@ from .base import Bpt, Bx, Ept, Ex, G, It, Ph, Sub, X, to_base_placeables
 from .parse import parse
 from .strelem import StringElem
 
-__all__ = (  # noqa: RUF022
+__all__ = (  # ruff:ignore[unsorted-dunder-all]
     "base",
     "interfaces",
     "general",

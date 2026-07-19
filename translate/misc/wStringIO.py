@@ -1,4 +1,4 @@
-# noqa: N999
+# ruff:ignore[invalid-module-name]
 #
 # Copyright 2004-2006 Zuza Software Foundation
 #

@@ -665,7 +665,7 @@ class DialectStrings(Dialect):
         return ret.replace('\\"', '"')
 
     @classmethod
-    def encode(cls, string, encoding=None):  # noqa: ARG003
+    def encode(cls, string, encoding=None):  # ruff:ignore[unused-class-method-argument]
         return string.translate(cls.encode_trans)
 
     @classmethod
@@ -928,7 +928,7 @@ class DialectJoomla(Dialect):
         return string.replace('"_QQ_"', '"')
 
     @classmethod
-    def encode(cls, string, encoding=None):  # noqa: ARG003
+    def encode(cls, string, encoding=None):  # ruff:ignore[unused-class-method-argument]
         """Encode the string."""
         if not string:
             return string

@@ -111,7 +111,7 @@ def convertpo(
             unit.target = templateunit.target
         if unit.isobsolete():
             # TODO: should not modify loop variable
-            del inputpo.units[i]  # noqa: B909
+            del inputpo.units[i]  # ruff:ignore[loop-iterator-mutation]
     inputpo.serialize(outputpotfile)
     return 1
 

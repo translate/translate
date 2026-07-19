@@ -170,7 +170,7 @@ class TestTranslationUnit:
         # Normalize metadata before first set of comparisons
         self.normalize_unit_metadata(unit1, unit2, unit3, unit4, unit5, unit6)
         # pylint: disable-next=comparison-with-itself
-        assert unit1 == unit1  # noqa: PLR0124
+        assert unit1 == unit1  # ruff:ignore[comparison-with-itself]
         assert unit1 == unit2
         assert unit1 != unit4
         unit1.target = "Stressed Ting"

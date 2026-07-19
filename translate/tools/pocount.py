@@ -301,7 +301,7 @@ class FullRenderer(Renderer):
         print(f"Processing file : {ConsoleColor.HEADER()}{title}{ConsoleColor.ENDC()}")
         print("Type               Strings      Words (source)    Words (translation)")
         print(
-            f"{ConsoleColor.OKGREEN()}Translated:   %5d (%3d%%) %10d (%3d%%) %15d"  # noqa: RUF073
+            f"{ConsoleColor.OKGREEN()}Translated:   %5d (%3d%%) %10d (%3d%%) %15d"  # ruff:ignore[f-string-percent-format]
             % (
                 stats["translated"],
                 percent(stats["translated"], stats["total"]),
@@ -312,7 +312,7 @@ class FullRenderer(Renderer):
             + ConsoleColor.ENDC()
         )
         print(
-            f"{ConsoleColor.WARNING()}Fuzzy:        %5d (%3d%%) %10d (%3d%%)             n/a"  # noqa: RUF073
+            f"{ConsoleColor.WARNING()}Fuzzy:        %5d (%3d%%) %10d (%3d%%)             n/a"  # ruff:ignore[f-string-percent-format]
             % (
                 stats["fuzzy"],
                 percent(stats["fuzzy"], stats["total"]),
@@ -322,7 +322,7 @@ class FullRenderer(Renderer):
             + ConsoleColor.ENDC()
         )
         print(
-            f"{ConsoleColor.FAIL()}Untranslated: %5d (%3d%%) %10d (%3d%%)             n/a"  # noqa: RUF073
+            f"{ConsoleColor.FAIL()}Untranslated: %5d (%3d%%) %10d (%3d%%)             n/a"  # ruff:ignore[f-string-percent-format]
             % (
                 stats["untranslated"],
                 percent(stats["untranslated"], stats["total"]),
