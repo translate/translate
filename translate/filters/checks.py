@@ -1919,9 +1919,10 @@ class StandardChecker(TranslationChecker):
             for property2 in properties2:
                 filtered2 += [intuplelist(property2, self.config.canchangetags)]
 
-            # TODO: consider the consequences of different ordering of
-            # attributes/tags
-            if filtered1 != filtered2:
+            def _sort_key(item):
+                return [(str(v) if v is not None else "") for v in (item if isinstance(item, (list, tuple)) else [item])]
+
+            if sorted(filtered1, key=_sort_key) != sorted(filtered2, key=_sort_key):
                 raise FilterFailure("Different XML tags")
         else:
             # No tags in str1, let's just check that none were added in str2.

@@ -1976,6 +1976,11 @@ def test_xmltags() -> None:
     )
     assert passes(
         stdchecker.xmltags,
+        'We <a href="u1">co-founded</a> the <a href="u2">WHAT-WG</a>',
+        'We <a href="u2">WHAT-WG</a> <a href="u1">co-founded</a>',
+    )
+    assert passes(
+        stdchecker.xmltags,
         'Click <a title="tip">here</a>',
         'Klik <a title="wenk">hier</a>',
     )
