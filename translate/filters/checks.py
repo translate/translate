@@ -1920,7 +1920,10 @@ class StandardChecker(TranslationChecker):
                 filtered2 += [intuplelist(property2, self.config.canchangetags)]
 
             def _sort_key(item):
-                return [(str(v) if v is not None else "") for v in (item if isinstance(item, (list, tuple)) else [item])]
+                return [
+                    (str(v) if v is not None else "")
+                    for v in (item if isinstance(item, (list, tuple)) else [item])
+                ]
 
             if sorted(filtered1, key=_sort_key) != sorted(filtered2, key=_sort_key):
                 raise FilterFailure("Different XML tags")
