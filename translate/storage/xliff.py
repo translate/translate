@@ -611,11 +611,11 @@ class Xliff1File(XliffFile[U]):
 
     sourcelanguage = property(getsourcelanguage, setsourcelanguage)
 
-    def settargetlanguage(self, language) -> None:  # ty:ignore[invalid-method-override]
-        if not language:
+    def settargetlanguage(self, targetlanguage: str | None) -> None:
+        if not targetlanguage:
             return
         for filenode in self.document.getroot().iterchildren(self.namespaced("file")):
-            filenode.set("target-language", language)
+            filenode.set("target-language", targetlanguage)
 
     def gettargetlanguage(self):
         filenode = next(self.document.getroot().iterchildren(self.namespaced("file")))

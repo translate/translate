@@ -898,19 +898,19 @@ class TranslationStore(Generic[U]):
             value = "utf-8"
         self._encoding = value
 
-    def getsourcelanguage(self):
+    def getsourcelanguage(self) -> str | None:
         """Get the source language for this store."""
         return self.sourcelanguage
 
-    def setsourcelanguage(self, sourcelanguage) -> None:
+    def setsourcelanguage(self, sourcelanguage: str) -> None:
         """Set the source language for this store."""
         self.sourcelanguage = sourcelanguage
 
-    def gettargetlanguage(self):
+    def gettargetlanguage(self) -> str | None:
         """Get the target language for this store."""
         return self.targetlanguage
 
-    def settargetlanguage(self, targetlanguage) -> None:
+    def settargetlanguage(self, targetlanguage: str | None) -> None:
         """Set the target language for this store."""
         self.targetlanguage = targetlanguage
 

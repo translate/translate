@@ -232,7 +232,7 @@ class WxlFile(base.TranslationStore):
         """Return the target language (WXL ``Culture`` attribute)."""
         return self.targetlanguage or ""
 
-    def settargetlanguage(self, targetlanguage: str) -> None:
+    def settargetlanguage(self, targetlanguage: str | None) -> None:
         """Set the target language and update the ``Culture`` attribute."""
         self.targetlanguage = targetlanguage
         if hasattr(self, "root") and self.root is not None:

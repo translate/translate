@@ -333,17 +333,20 @@ class poheader:
             return guess_language(header.get("Language-Team"))
         return None
 
-    def settargetlanguage(self, lang: str) -> None:
+    def settargetlanguage(self, targetlanguage: str | None) -> None:
         """
         Set the target language in the header.
 
         This removes any custom Poedit headers if they exist.
 
-        :param lang: the new target language code
+        :param targetlanguage: the new target language code
         """
-        if isinstance(lang, str) and len(lang) > 1:
+        if isinstance(targetlanguage, str) and len(targetlanguage) > 1:
             self.updateheader(
-                add=True, Language=lang, X_Poedit_Language=None, X_Poedit_Country=None
+                add=True,
+                Language=targetlanguage,
+                X_Poedit_Language=None,
+                X_Poedit_Country=None,
             )
 
     def getprojectstyle(self) -> str | None:
