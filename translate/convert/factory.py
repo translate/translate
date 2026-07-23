@@ -52,7 +52,12 @@ class UnknownExtensionError(Exception):
 
 
 class UnsupportedConversionError(Exception):
-    def __init__(self, in_ext=None, out_ext=None, templ_ext=None) -> None:
+    def __init__(
+        self,
+        in_ext: str | None = None,
+        out_ext: str | None = None,
+        templ_ext: str | None = None,
+    ) -> None:
         self.in_ext = in_ext
         self.out_ext = out_ext
         self.templ_ext = templ_ext
@@ -118,7 +123,7 @@ def get_output_extensions(ext: str) -> list[str]:
 def convert(
     inputfile: IO[Any],
     template: IO[Any] | None = None,
-    options: dict | None = None,
+    options: dict[str, str] | None = None,
     convert_options: dict | None = None,
 ) -> tuple[IO[Any], str]:
     """
@@ -195,6 +200,9 @@ def convert(
     #      issues when being closed (and deleted) by the rest of the toolkit
     #      (eg. TranslationStore.savefile()). Therefore none of mkstemp()'s
     #      security features are being utilised.
+
+    if out_ext is None:
+        raise TypeError("Output extension cannot be None")
 
     tempfd, tempfname = tempfile.mkstemp(
         prefix="ttk_convert", suffix=os.extsep + out_ext
