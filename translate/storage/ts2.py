@@ -446,12 +446,18 @@ class tsfile(lisa.LISAfile[tsunit]):
 
     def initbody(self) -> None:
         """Initialises self.body."""
-        self.namespace = self.document.getroot().nsmap.get(None, "")
-        self.header = self.document.getroot()
+        root = self.document.getroot()
+        version = root.get("version")
+        if version is not None and not version.startswith("2."):
+            raise ValueError(
+                f"TS version '{version}' is not compatible with the TS 2.x format."
+            )
+        self.namespace = root.nsmap.get(None, "")
+        self.header = root
         if self._contextname:
             self.body = self._getcontextnode(self._contextname)
         else:
-            self.body = self.document.getroot()
+            self.body = root
 
     def getsourcelanguage(self) -> str:
         """

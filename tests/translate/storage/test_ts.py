@@ -1,5 +1,7 @@
 from io import BytesIO, StringIO
 
+import pytest
+
 from translate.storage import ts
 
 
@@ -7,6 +9,18 @@ class TestTS:
     def test_construct(self) -> None:
         tsfile = ts.QtTsParser()
         tsfile.addtranslation("ryan", "Bread", "Brood", "Wit", createifmissing=True)
+
+    @pytest.mark.parametrize("version", ["1.0", "1.1"])
+    def test_accepts_legacy_version(self, version: str) -> None:
+        ts.QtTsParser(f'<TS version="{version}"></TS>')
+
+    @pytest.mark.parametrize("version", ["2.0", "2.1", "3.0", "invalid"])
+    def test_rejects_incompatible_version(self, version: str) -> None:
+        with pytest.raises(
+            ValueError,
+            match=rf"TS version '{version}'.*legacy TS format",
+        ):
+            ts.QtTsParser(f'<TS version="{version}"></TS>')
 
     def test_rejects_entity_expansion(self) -> None:
         parser_input = BytesIO(

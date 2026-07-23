@@ -23,6 +23,8 @@ Reference implementation & tests:
 https://code.qt.io/cgit/qt/qttools.git/tree/tests/auto/linguist/lconvert/data
 """
 
+import pytest
+
 from translate.storage import ts2 as ts
 from translate.storage.placeables import parse, xliff
 
@@ -138,6 +140,18 @@ class TestTSUnit(test_base.TestTranslationUnit):
 
 class TestTSfile(test_base.TestTranslationStore):
     StoreClass = ts.tsfile
+
+    @pytest.mark.parametrize("version", ["2.0", "2.1"])
+    def test_accepts_modern_version(self, version: str) -> None:
+        ts.tsfile.parsestring(f'<TS version="{version}"></TS>')
+
+    @pytest.mark.parametrize("version", ["1.0", "1.1", "3.0", "invalid"])
+    def test_rejects_incompatible_version(self, version: str) -> None:
+        with pytest.raises(
+            ValueError,
+            match=rf"TS version '{version}'.*TS 2\.x format",
+        ):
+            ts.tsfile.parsestring(f'<TS version="{version}"></TS>')
 
     def test_basic(self) -> None:
         tsfile = ts.tsfile()
