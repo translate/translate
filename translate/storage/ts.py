@@ -77,7 +77,9 @@ class QtTsParser:
             # Preserve the original doctype so round-tripped TS files keep the
             # same declaration shape as the input.
             self.doctype = self.document.docinfo.doctype or None
-            assert self.document.getroot().tag == "TS"
+            root = self.document.getroot()
+            assert root.tag == "TS"
+            self._validate_version(root)
 
     @staticmethod
     def _parse_content(content: str | bytes) -> etree._ElementTree:
@@ -89,6 +91,15 @@ class QtTsParser:
     @staticmethod
     def _looks_like_xml(content: str) -> bool:
         return content.lstrip().startswith("<")
+
+    @staticmethod
+    def _validate_version(root: etree._Element) -> None:
+        """Ensure the document uses a legacy TS version."""
+        version = root.get("version")
+        if version is not None and not version.startswith("1."):
+            raise ValueError(
+                f"TS version '{version}' is not compatible with the legacy TS format."
+            )
 
     @staticmethod
     def _normalize_text_input(content: str) -> str:
