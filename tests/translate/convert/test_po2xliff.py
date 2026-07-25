@@ -157,6 +157,20 @@ msgstr "kunye"
             ("sourcefile", "asdf.c"),
         ]
 
+    def test_location_without_linenumber(self) -> None:
+        """Non-numeric locations must not be split into sourcefile/linenumber."""
+        location = "office:document-content[0]/office:body[0]/text:p[0]"
+        minipo = f"""#: {location}
+msgid "one"
+msgstr "kunye"
+"""
+        xliff = self.po2xliff(minipo)
+        node = xliff.units[0].xmlelement
+        assert self.getcontexttuples(node, xliff.namespace) == [
+            ("sourcefile", location)
+        ]
+        assert xliff.units[0].getlocations() == [location]
+
     def test_othercomments(self) -> None:
         minipo = r"""# Translate?
 # How?
