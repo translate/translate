@@ -329,7 +329,8 @@ class XMLTagPlaceable(RegexParseMixin, Ph):
         <                         # start of opening tag
         ([\w.:]+)                 # tag name, possibly namespaced
         (\s([\w.:]+=              # space and attribute name followed by =
-            ((".*?")|('.*?'))     # attribute value, single or double quoted
+            ((".*?")|('.*?')      # attribute value, single or double quoted
+             |([^\s'"<>]+))       # or unquoted
         )?)*/?>                   # end of opening tag, possibly self closing
         |</([\w.]+)>              # or a closing tag
         """,

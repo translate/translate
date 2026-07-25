@@ -145,6 +145,14 @@ msgstr[1] "%d articles"
             == "<style0>Ŧḗşŧ</style0>"
         )
 
+    def test_rewrite_unicode_preserves_html_unquoted_attribute(self) -> None:
+        """Test that HTML tags with unquoted attribute values are preserved."""
+        debug = podebug.podebug(preserveplaceholders=True)
+        assert (
+            str(debug.rewrite_unicode("<a href=%(url)s>Test</a>"))
+            == "<a href=%(url)s>Ŧḗşŧ</a>"
+        )
+
     def test_rewrite_unicode_preserves_multiple_styles_of_placeholder(self) -> None:
         """Test the unicode rewrite function."""
         debug = podebug.podebug(preserveplaceholders=True)

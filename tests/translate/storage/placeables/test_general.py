@@ -121,6 +121,9 @@ def test_placeable_xml_tag() -> None:
     result = general.XMLTagPlaceable.parse('<img src="koei.jpg" />')
     assert result
     assert result[0] == general.XMLTagPlaceable(['<img src="koei.jpg" />'])
+    result = general.XMLTagPlaceable.parse("<a href=%(url)s>")
+    assert result
+    assert result[0] == general.XMLTagPlaceable(["<a href=%(url)s>"])
     # We don't want this to be recognised, so we test for None - not sure if that is a stable assumption
     assert general.XMLTagPlaceable.parse("<important word>") is None
     assert general.XMLTagPlaceable.parse('<img ="koei.jpg" />') is None
