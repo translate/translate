@@ -112,6 +112,8 @@ class po2xliff:
 
     def convertstore(self, inputstore, templatefile=None, **kwargs):
         """Converts a .po file to .xlf format."""
+        if not kwargs.get("targetlanguage"):
+            kwargs["targetlanguage"] = inputstore.parseheader().get("Language")
         if templatefile is None:
             outputstore = poxliff.PoXliffFile(**kwargs)
         else:
