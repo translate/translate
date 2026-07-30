@@ -1,0 +1,42 @@
+Translate Toolkit 3.19.16
+*************************
+
+*Released on 30 July 2026*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- Markdown and MDX
+
+  - Preserve explicit heading IDs outside translatable content
+  - Retain compatibility with existing catalogs that include heading IDs
+
+- ODF
+
+  - Add ``odf2po`` and ``po2odf`` converters
+  - Support translation of styles, metadata, and embedded ODF objects
+  - Preserve package members and metadata when creating translated documents
+  - Apply non-empty XLIFF translations regardless of approval or state metadata
+
+- TS
+
+  - Reject documents with incompatible major versions instead of silently
+    loading them with the wrong parser
+
+Other
+-----
+
+- Improve storage type annotations
+- Update development tooling and CI dependencies
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+Michal Čihař
