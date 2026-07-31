@@ -1378,7 +1378,7 @@ class DictUnit(TranslationUnit):
                 while len(target) <= key and not unset:
                     target.append(default.copy())
             elif element == "key":
-                if key not in target or isinstance(target[key], str):
+                if key not in target:
                     target[key] = default
             else:
                 raise ValueError(f"Unsupported element: {element}")
@@ -1388,8 +1388,8 @@ class DictUnit(TranslationUnit):
             elif use_list and isinstance(target[key], dict):
                 # Replace with an empty list if needed (this loses previous content)
                 target[key] = []
-            # Handle placeholders
-            if target[key] is None:
+            elif not isinstance(target[key], list if use_list else dict):
+                # Replace a stale scalar when the structure has changed
                 target[key] = default.copy()
             parent = target
             target = target[key]
