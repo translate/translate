@@ -42,6 +42,26 @@ class TestCatkeysUnit(test_base.TestTranslationUnit):
 class TestCatkeysFile(test_base.TestTranslationStore):
     StoreClass = catkeys.CatkeysFile
 
+    def test_serialize_omits_untranslated_units(self) -> None:
+        store = self.StoreClass()
+        translated = store.addsourceunit("Translated source")
+        translated.target = "Translated target"
+        store.addsourceunit("Untranslated source")
+        fuzzy = store.addsourceunit("Fuzzy source")
+        fuzzy.target = "Fuzzy target"
+        fuzzy.markfuzzy()
+        unchanged = store.addsourceunit("Same source and target")
+        unchanged.target = unchanged.source
+
+        fingerprint = store._compute_fingerprint()
+        header, *units = bytes(store).decode().splitlines()
+
+        assert header.split("\t")[-1] == str(fingerprint)
+        assert units == [
+            "Translated source\t\t\tTranslated target",
+            "Same source and target\t\t\tSame source and target",
+        ]
+
     def test_checksum(self) -> None:
         """Tests that the checksum for a file is properly calculated."""
         # The following test is based on: https://github.com/haiku/haiku/blob/d30c60446a40ba4aa1418a548c82e6aaf72b409a/data/catalogs/add-ons/disk_systems/fat/tr.catkeys
