@@ -638,6 +638,28 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
 """
         assert bytes(store).decode() == expected
 
+    @mark.parametrize(
+        ("nested_id", "expected"),
+        [
+            ("values[0][1]", {"values": [[None, "new"]]}),
+            ("values[0].child", {"values": [{"child": "new"}]}),
+        ],
+    )
+    def test_replace_scalar_with_nested_structure(
+        self, nested_id: str, expected: dict
+    ) -> None:
+        store = self.StoreClass()
+
+        unit = self.StoreClass.UnitClass("old")
+        unit.setid("values[0]")
+        store.addunit(unit)
+
+        unit = self.StoreClass.UnitClass("new")
+        unit.setid(nested_id)
+        store.addunit(unit)
+
+        assert json.loads(bytes(store)) == expected
+
     def test_nested_list_mixed(self) -> None:
         data = """{
     "story_9795": {
