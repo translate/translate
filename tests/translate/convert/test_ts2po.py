@@ -1,6 +1,7 @@
 from io import BytesIO
 
-from translate.convert import ts2po
+from translate.convert import po2ts, ts2po
+from translate.storage import ts2
 
 from . import test_convert
 
@@ -140,8 +141,45 @@ new line</translation>
 """
         pofile = self.ts2po(tssource)
         assert (
-            pofile.units[1].getnotes()
+            pofile.units[1].getnotes("developer")
             == "Appears in the Help menu (on Windows and Linux) or the app menu (on macOS)."
+        )
+
+    def test_comment_types(self) -> None:
+        """Keep disambiguation, developer, and translator comments distinct."""
+        tssource = """<!DOCTYPE TS><TS>
+<context>
+    <name>Dialog</name>
+    <message>
+        <source>Open</source>
+        <comment>Button label</comment>
+        <extracomment>Shown on the welcome screen.\nKeep it short.</extracomment>
+        <translatorcomment>Needs review.\nCheck terminology.</translatorcomment>
+        <translation>Abrir</translation>
+    </message>
+</context>
+</TS>
+"""
+        pofile = self.ts2po(tssource)
+        pounit = pofile.units[1]
+        assert pounit.getcontext() == "Button label"
+        assert (
+            pounit.getnotes("developer")
+            == "Shown on the welcome screen.\nKeep it short."
+        )
+        assert pounit.getnotes("translator") == "Needs review.\nCheck terminology."
+
+        output = BytesIO()
+        po2ts.po2ts.convertstore(pofile, output)
+        roundtripped = ts2.tsfile(BytesIO(output.getvalue())).units[0]
+        assert roundtripped.getcontextname() == "Dialog"
+        assert roundtripped._get_disambiguation() == "Button label"
+        assert (
+            roundtripped.getnotes("developer")
+            == "Shown on the welcome screen.\nKeep it short."
+        )
+        assert (
+            roundtripped.getnotes("translator") == "Needs review.\nCheck terminology."
         )
 
     def test_emptycontext(self) -> None:
