@@ -235,9 +235,9 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
             flattened to ``- item``).
           * Block scalars (``|`` / ``>``) keep their style, chomping indicator
             and first-line comment: the trailing-newline pattern that drives
-            chomping is split off before translation and re-appended afterwards,
-            and the comment / fold positions are carried over to the re-wrapped
-            node. See ``_translate_frontmatter_child``.
+            chomping is split off before translation and re-appended afterwards.
+            Fold positions are retained only when the content is unchanged. See
+            ``_translate_frontmatter_child``.
           * Only scalar *string* values are translated. Numbers, booleans, dates
             and ``null`` are left untouched on purpose.
           * Nested maps and lists are walked recursively; list items use a
@@ -365,13 +365,17 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
 
             if is_block:
                 # Re-wrap in the same block subtype, restore the chomping via the
-                # trailing newlines, and carry over the first-line comment and
-                # (for folded scalars) the fold positions so an identity
-                # translation re-emits byte-for-byte.
+                # trailing newlines, and carry over the first-line comment.
+                # Fold positions are offsets into the scalar content, so they
+                # are safe to retain only for an identity translation.
                 new_value = type(value)(translated + trailing_newlines)
                 if hasattr(value, "comment"):
                     new_value.comment = value.comment
-                if isinstance(value, FoldedScalarString) and hasattr(value, "fold_pos"):
+                if (
+                    translated == content
+                    and isinstance(value, FoldedScalarString)
+                    and hasattr(value, "fold_pos")
+                ):
                     new_value.fold_pos = value.fold_pos
                 container[key] = new_value
             elif isinstance(value, ScalarString):
