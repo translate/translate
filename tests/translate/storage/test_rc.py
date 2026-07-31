@@ -45,6 +45,17 @@ class TestRcFile:
         """Helper that converts source to store object and back."""
         return bytes(self.source_parse(source))
 
+    def test_one_line_comment_position(self) -> None:
+        result = rc.rc_statement().parse_string(
+            'STRINGTABLE\nBEGIN\n// standalone\nID_1 "First" // inline\nEND\n'
+        )
+
+        standalone, _control, inline = result.controls
+        assert isinstance(standalone, str)
+        assert not getattr(standalone, "inline", False)
+        assert isinstance(inline, str)
+        assert getattr(inline, "inline", False)
+
     def test_parse_only_comments(self) -> None:
         """Test parsing a RC string with only comments."""
         rc_source = r"""

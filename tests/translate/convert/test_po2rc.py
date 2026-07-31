@@ -181,6 +181,78 @@ msgstr "Zkopirovano"
         assert len(rc_result.units) == 1
         assert rc_result.units[0].target == "Zkopirovano"
 
+    def test_convert_inline_comment(self) -> None:
+        source = """
+STRINGTABLE
+BEGIN
+    // standalone
+    ID_1 "First" // inline
+    ID_2 "Second"
+    ID_3 "Third" // untranslated inline
+END
+"""
+        expected = """
+STRINGTABLE
+BEGIN
+    // standalone
+    ID_1                    "Translated first" // inline
+    ID_2                    "Translated second"
+    ID_3                    "Third" // untranslated inline
+END
+"""
+        self.create_testfile("simple.rc", source)
+        self.create_testfile(
+            "simple.po",
+            """
+#: STRINGTABLE.ID_1
+msgid "First"
+msgstr "Translated first"
+
+#: STRINGTABLE.ID_2
+msgid "Second"
+msgstr "Translated second"
+""",
+        )
+        self.run_command(
+            template="simple.rc", i="simple.po", o="output.rc", l="LANG_CZECH"
+        )
+
+        with self.open_testfile("output.rc") as handle:
+            assert handle.read().decode() == expected
+
+    def test_convert_dialog_inline_comment(self) -> None:
+        source = """
+IDD_TEST DIALOG 0, 0, 100, 100
+BEGIN
+    LTEXT "First",IDC_FIRST,1,2,3,4 // inline
+    LTEXT "Second",IDC_SECOND,5,6,7,8
+END
+"""
+        self.create_testfile("simple.rc", source)
+        self.create_testfile(
+            "simple.po",
+            """
+#: DIALOG.IDD_TEST.LTEXT.IDC_FIRST
+msgid "First"
+msgstr "Translated first"
+
+#: DIALOG.IDD_TEST.LTEXT.IDC_SECOND
+msgid "Second"
+msgstr "Translated second"
+""",
+        )
+        self.run_command(
+            template="simple.rc", i="simple.po", o="output.rc", l="LANG_CZECH"
+        )
+
+        with self.open_testfile("output.rc") as handle:
+            lines = handle.read().decode().splitlines()
+        assert (
+            '    LTEXT           "Translated first",IDC_FIRST,1,2,3,4 // inline'
+            in lines
+        )
+        assert '    LTEXT           "Translated second",IDC_SECOND,5,6,7,8' in lines
+
     def test_convert_double_string(self) -> None:
         self.create_testfile(
             "simple.rc",
