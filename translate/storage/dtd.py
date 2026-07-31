@@ -55,7 +55,7 @@ Escaping in regular DTD
 
     - The % character is escaped using &#037; or &#37; or &#x25;
     - The " character is escaped using &quot;
-    - The ' character is escaped using &apos; (partial roundtrip)
+    - The ' character is escaped using &apos;
     - The & character is escaped using &amp;
     - The < character is escaped using &lt; (not yet implemented)
     - The > character is escaped using &gt; (not yet implemented)
@@ -68,13 +68,10 @@ Escaping in regular DTD
     not yet implemented since they are not really necessary, or because its
     implementation is too hard.
 
-    A special case is the ' escaping using &apos; which doesn't provide a full
-    roundtrip conversion in order to support some special Mozilla DTD files.
-
-    Also the " character is never escaped in the case that the previous
-    character is = (the sequence =" is present on the string) in order to avoid
-    escaping the " character indicating an attribute assignment, for example in
-    a href attribute for an a tag in HTML (anchor tag).
+    Quote entities are decoded and encoded in XML character data. Attribute
+    values, CDATA, comments, and processing instructions are excluded from
+    that transformation. Numeric character references escape the selected DTD
+    declaration delimiter without changing the expanded XML content.
 
 Escaping in Android DTD
     It has the sames escapes as in regular DTD, plus this ones:
@@ -85,10 +82,12 @@ Escaping in Android DTD
 
 import re
 import warnings
+from xml.parsers.expat import ExpatError
 
 from lxml import etree
 
 from translate.misc import quote
+from translate.misc.xml_helpers import XMLTextParser
 from translate.storage import base
 
 labelsuffixes = (".label", ".title")
@@ -101,6 +100,7 @@ ending in :attr:`.labelsuffixes` into accelerator notation"""
 
 end_entity_re = re.compile(rb"[\"']\s*>")
 DTD_VALIDATION_SYSTEM_ID = "translate-toolkit.dtd"
+_DTD_XML_WRAPPER = "translate-toolkit-root"
 
 
 def quoteforandroid(source):
@@ -128,12 +128,62 @@ _DTD_CODEPOINT2NAME: dict[int, str] = {
     # ord(">"): "gt",  # Not really so useful.
 }
 
+_DTD_TEXT_CODEPOINT2NAME = {
+    ord('"'): "quot",
+    ord("'"): "apos",
+}
+
+_DTD_TEXT_NAME2CODEPOINT = {
+    "quot": ord('"'),
+    "apos": ord("'"),
+    "#x0022": ord('"'),
+}
+
+# Double quotes delimit the value only when the value contains no literal
+# double quote, so only an apostrophe can require a numeric delimiter escape.
+_DTD_DELIMITER_CODEPOINT2NAME = {
+    ord("'"): "#39",
+}
+
+_DTD_DELIMITER_NAME2CODEPOINT = {
+    "#39": ord("'"),
+}
+
+
+class _DTDEncodeParser(XMLTextParser):
+    def process_string(self, content: str) -> tuple[str, bool, bool]:
+        return quote.entityencode(content, _DTD_TEXT_CODEPOINT2NAME), False, False
+
+
+class _DTDDecodeParser(XMLTextParser):
+    def process_string(self, content: str) -> tuple[str, bool, bool]:
+        return quote.entitydecode(content, _DTD_TEXT_NAME2CODEPOINT), False, False
+
+
+def _transform_dtd_xml_text(
+    source: str, parser_class: type[XMLTextParser]
+) -> str | None:
+    """Transform XML character data while preserving raw markup."""
+    wrapped = f"<{_DTD_XML_WRAPPER}>{source}</{_DTD_XML_WRAPPER}>"
+    try:
+        return parser_class(wrapped).parse()
+    except ExpatError:
+        return None
+
 
 def quotefordtd(source):
     """Quotes and escapes a line for regular DTD files."""
     source = quote.entityencode(source, _DTD_CODEPOINT2NAME)
+    transformed = _transform_dtd_xml_text(source, _DTDEncodeParser)
+    if transformed is not None:
+        delimiter = "'" if '"' in transformed else '"'
+        if delimiter == "'":
+            transformed = quote.entityencode(transformed, _DTD_DELIMITER_CODEPOINT2NAME)
+        return f"{delimiter}{transformed}{delimiter}"
+
+    # Preserve the legacy behavior for malformed or partial XML fragments.
     if '"' in source:
-        source = source.replace("'", "&apos;")  # This seems not to run.
+        source = source.replace("'", "&apos;")
         if '="' not in source:  # Avoid escaping " chars in href attributes.
             source = source.replace('"', "&quot;")
             value = f'"{source}"'  # Quote using double quotes.
@@ -145,12 +195,10 @@ def quotefordtd(source):
 
 
 _DTD_NAME2CODEPOINT = {
-    "quot": ord('"'),
     "amp": ord("&"),
     # "lt": ord("<"),  # Not really so useful.
     # "gt": ord(">"),  # Not really so useful.
     # FIXME these should probably be handled in a more general way
-    "#x0022": ord('"'),
     "#187": ord("»"),
     "#037": ord("%"),
     "#37": ord("%"),
@@ -169,8 +217,14 @@ def unquotefromdtd(source):
     extracted, _quotefinished = quote.extractwithoutquotes(
         source, quotechar, quotechar, allowreentry=False
     )
+    transformed = _transform_dtd_xml_text(extracted, _DTDDecodeParser)
+    if transformed is not None:
+        extracted = transformed
+    else:
+        extracted = quote.entitydecode(extracted, _DTD_TEXT_NAME2CODEPOINT)
+    # quotefordtd only introduces numeric apostrophes for single-quoted values.
     if quotechar == "'":
-        extracted = extracted.replace("&apos;", "'")
+        extracted = quote.entitydecode(extracted, _DTD_DELIMITER_NAME2CODEPOINT)
     return quote.entitydecode(extracted, _DTD_NAME2CODEPOINT)
 
 

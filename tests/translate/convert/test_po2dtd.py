@@ -437,8 +437,16 @@ msgstr "Simple string 3"
             r"""'Quote Escape "" '""", r'''"Quote Escape &quot;&quot; "'''
         )
         self.check_roundtrip(r'''"Double-Quote Escape &quot;&quot; "''')
-        self.check_roundtrip(r'''"Single-Quote ' "''')
-        self.check_roundtrip(r'''"Single-Quote Escape \' "''')
+        self.check_roundtrip(r'''"Single-Quote ' "''', r'''"Single-Quote &apos; "''')
+        self.check_roundtrip(
+            r'''"Single-Quote Escape \' "''',
+            r'''"Single-Quote Escape \&apos; "''',
+        )
+        self.check_roundtrip("\"<a href='http'>link</a>\"")
+        self.check_roundtrip("\"<a href = 'http'>link</a>\"")
+        self.check_roundtrip("\"<a title='Bob&apos;s'>Hi</a>\"")
+        self.check_roundtrip("'<a title=\"Bob&#34;s\">Hi</a>'")
+        self.check_roundtrip("\"<a title='Bob&#39;s'>Hi</a>\"")
         # NOTE: during the roundtrip, if " quote mark is present, then ' is
         # converted to &apos; and " is converted to &quot; Also the resulting
         # string is always enclosed between " characters independently of which

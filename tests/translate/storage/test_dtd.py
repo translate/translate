@@ -18,6 +18,7 @@
 
 from io import BytesIO
 
+from lxml import etree
 from pytest import mark
 
 from translate.storage import dtd
@@ -52,10 +53,22 @@ def test_roundtrip_quoting() -> None:
         "&#x00A0;",
         "&intro-point2-a;",
         "&basePBMenu.label;",
-        # "Don't buy",
-        # "Don't \"buy\"",
+        "Don't buy",
+        'Don\'t "buy"',
         'A "thing"',
         '<a href="http',
+        "<a href='http'>link</a>",
+        '<a href = "http">link</a>',
+        "<é href='x'>Hi</é>",
+        "<![CDATA[Don't]]>",
+        '<![CDATA[Don\'t say "x"]]>',
+        "<!-- Don't -->",
+        '<!-- Don\'t say "x" -->',
+        "<?test Don't?>",
+        '<?test Don\'t say "x"?>',
+        '<a title="Don\'t">Hi</a>',
+        '<a title="Bob&#34;s">Hi</a>',
+        "<a title='Bob&#39;s'>Hi</a>",
     ]
     for special in specials:
         quoted_special = dtd.quotefordtd(special)
@@ -83,18 +96,90 @@ def test_quotefordtd() -> None:
     assert dtd.quotefordtd("&#x00A0;") == '"&#x00A0;"'
     assert dtd.quotefordtd("&intro-point2-a;") == '"&intro-point2-a;"'
     assert dtd.quotefordtd("&basePBMenu.label;") == '"&basePBMenu.label;"'
-    # The ' character isn't escaped as &apos; since the " char isn't present.
-    assert dtd.quotefordtd("Don't buy") == '"Don\'t buy"'
-    # The ' character is escaped as &apos; because the " character is present.
+    assert dtd.quotefordtd("Don't buy") == '"Don&apos;t buy"'
     assert dtd.quotefordtd('Don\'t "buy"') == '"Don&apos;t &quot;buy&quot;"'
     assert dtd.quotefordtd('A "thing"') == '"A &quot;thing&quot;"'
     # The " character is not escaped when it indicates an attribute value.
     assert dtd.quotefordtd('<a href="http') == "'<a href=\"http'"
+    # The ' character is not escaped when it indicates an attribute value.
+    assert dtd.quotefordtd("<a href='http'>link</a>") == ("\"<a href='http'>link</a>\"")
+    assert dtd.quotefordtd("<a href = 'http'>link</a>") == (
+        "\"<a href = 'http'>link</a>\""
+    )
+    assert dtd.quotefordtd("<a href='http'>Don't</a>") == (
+        "\"<a href='http'>Don&apos;t</a>\""
+    )
+    assert dtd.quotefordtd('<a href = "http">link</a>') == (
+        "'<a href = \"http\">link</a>'"
+    )
+    assert dtd.quotefordtd('<a title="Bob&#34;s">Hi</a>') == (
+        "'<a title=\"Bob&#34;s\">Hi</a>'"
+    )
+    assert dtd.quotefordtd("<a title='Bob&#39;s'>Hi</a>") == (
+        "\"<a title='Bob&#39;s'>Hi</a>\""
+    )
+    assert dtd.quotefordtd("<é href='x'>Hi</é>") == "\"<é href='x'>Hi</é>\""
+    assert dtd.quotefordtd("<![CDATA[Don't]]>") == '"<![CDATA[Don\'t]]>"'
+    assert dtd.quotefordtd('<![CDATA[Don\'t say "x"]]>') == (
+        "'<![CDATA[Don&#39;t say \"x\"]]>'"
+    )
+    assert dtd.quotefordtd("<!-- Don't -->") == '"<!-- Don\'t -->"'
+    assert dtd.quotefordtd("<?test Don't?>") == '"<?test Don\'t?>"'
     # &amp;
     assert dtd.quotefordtd("Color & Light") == '"Color &amp; Light"'
     assert dtd.quotefordtd("Color & &block;") == '"Color &amp; &block;"'
     assert dtd.quotefordtd("Color&Light &red;") == '"Color&amp;Light &red;"'
     assert dtd.quotefordtd("Color & Light; Yes") == '"Color &amp; Light; Yes"'
+    # Preserve apostrophes when malformed markup prevents contextual processing.
+    assert dtd.quotefordtd("Don't & &block; <b>") == ('"Don\'t &amp; &block; <b>"')
+
+
+@mark.parametrize(
+    ("markup", "tag", "attributes", "text"),
+    [
+        ("<a href='http'>link</a>", "a", {"href": "http"}, "link"),
+        ('<a href = "http">link</a>', "a", {"href": "http"}, "link"),
+        ('<a title="Don\'t">Hi</a>', "a", {"title": "Don't"}, "Hi"),
+        ("<é href='x'>Hi</é>", "é", {"href": "x"}, "Hi"),
+        ("<a title='Bob&apos;s'>Hi</a>", "a", {"title": "Bob's"}, "Hi"),
+    ],
+)
+def test_quotefordtd_attribute_quotes_are_valid_markup(
+    markup: str, tag: str, attributes: dict[str, str], text: str
+) -> None:
+    """Inline attribute quotes remain syntactic after entity expansion."""
+    value = dtd.quotefordtd(markup)
+    document = f"<!DOCTYPE root [<!ENTITY test {value}>]><root>&test;</root>"
+    parser = etree.XMLParser(load_dtd=True, resolve_entities=True)
+
+    root = etree.fromstring(document.encode(), parser)
+
+    assert root[0].tag == tag
+    assert root[0].attrib == attributes
+    assert root[0].text == text
+
+
+@mark.parametrize(
+    ("markup", "expected"),
+    [
+        ("<![CDATA[Don't]]>", b"<root>Don't</root>"),
+        ('<![CDATA[Don\'t say "x"]]>', b'<root>Don\'t say "x"</root>'),
+        ("<!-- Don't -->", b"<root><!-- Don't --></root>"),
+        ('<!-- Don\'t say "x" -->', b'<root><!-- Don\'t say "x" --></root>'),
+        ("<?test Don't?>", b"<root><?test Don't?></root>"),
+        ('<?test Don\'t say "x"?>', b'<root><?test Don\'t say "x"?></root>'),
+    ],
+)
+def test_quotefordtd_opaque_xml_preserves_apostrophes(
+    markup: str, expected: bytes
+) -> None:
+    value = dtd.quotefordtd(markup)
+    document = f"<!DOCTYPE root [<!ENTITY test {value}>]><root>&test;</root>"
+    parser = etree.XMLParser(load_dtd=True, resolve_entities=True)
+
+    root = etree.fromstring(document.encode(), parser)
+
+    assert etree.tostring(root) == expected
 
 
 @mark.xfail(reason="Not Implemented")
@@ -118,14 +203,34 @@ def test_unquotefromdtd() -> None:
     # &amp;
     assert dtd.unquotefromdtd('"Color &amp; Light"') == "Color & Light"
     assert dtd.unquotefromdtd('"Color &amp; &block;"') == "Color & &block;"
+    assert dtd.unquotefromdtd('"Don&apos;t &amp; &block; <b>"') == (
+        "Don't & &block; <b>"
+    )
+    assert dtd.unquotefromdtd('"A &quot;thing&quot; <b>"') == 'A "thing" <b>'
+    assert dtd.unquotefromdtd('"A &#x0022;thing&#x0022; <b>"') == 'A "thing" <b>'
+    assert dtd.unquotefromdtd("'<a title=\"Bob&#34;s\">Hi</a>'") == (
+        '<a title="Bob&#34;s">Hi</a>'
+    )
+    assert dtd.unquotefromdtd("\"<a title='Bob&#39;s'>Hi</a>\"") == (
+        "<a title='Bob&#39;s'>Hi</a>"
+    )
+    assert dtd.unquotefromdtd('"R&amp;D&apos;s"') == "R&D's"
+    assert dtd.unquotefromdtd(dtd.quotefordtd("R&D's")) == "R&D's"
     # nbsp
     assert dtd.unquotefromdtd('"&#x00A0;"') == "&#x00A0;"
     # '
     assert dtd.unquotefromdtd("'Don&apos;t buy'") == "Don't buy"
+    assert dtd.unquotefromdtd('"Don&apos;t buy"') == "Don't buy"
     # "
     assert dtd.unquotefromdtd("'Don&apos;t &quot;buy&quot;'") == 'Don\'t "buy"'
     assert dtd.unquotefromdtd('"A &quot;thing&quot;"') == 'A "thing"'
     assert dtd.unquotefromdtd('"A &#x0022;thing&#x0022;"') == 'A "thing"'
+    assert dtd.unquotefromdtd("\"<a title='Bob&apos;s'>Hi</a>\"") == (
+        "<a title='Bob&apos;s'>Hi</a>"
+    )
+    assert dtd.unquotefromdtd('"<![CDATA[Don&apos;t]]>"') == ("<![CDATA[Don&apos;t]]>")
+    assert dtd.unquotefromdtd('"<!-- Don&apos;t -->"') == "<!-- Don&apos;t -->"
+    assert dtd.unquotefromdtd('"<?test Don&apos;t?>"') == "<?test Don&apos;t?>"
     assert dtd.unquotefromdtd("'<a href=\"http'") == '<a href="http'
     # other chars
     assert dtd.unquotefromdtd('"&#187;"') == "»"
