@@ -95,7 +95,13 @@ class po2ts:
                     source = source.strings[0]
                 # If strings is empty, source remains as multistring (will be handled by tsunit)
             translation = inputunit.target
-            comment = inputunit.getnotes("translator")
+            developer_comments = inputunit.getnotes("developer")
+            developer_comment_lines = developer_comments.splitlines()
+            is_obsolete = "(obsolete)" in developer_comment_lines
+            developer_comments = "\n".join(
+                line for line in developer_comment_lines if line != "(obsolete)"
+            )
+            translator_comments = inputunit.getnotes("translator")
             locations = inputunit.getlocations()
             # If there are no locations, we still need to add the unit
             # Use the provided context or an empty string as default
@@ -114,11 +120,16 @@ class po2ts:
                     contextname = context
                 tsunit = ts2.tsunit(source)
                 tsunit.target = translation
-                if not inputunit.istranslated():
-                    tsunit.markfuzzy()
-                elif inputunit.getnotes("developer") == "(obsolete)":
+                tsunit._set_disambiguation(inputunit.getcontext())
+                if developer_comments:
+                    tsunit.addnote(developer_comments, origin="developer")
+                if translator_comments:
+                    tsunit.addnote(translator_comments, origin="translator")
+                if is_obsolete:
                     tsunit.set_state_n(tsunit.S_OBSOLETE)
-                tsfile.addunit(tsunit, True, contextname, comment, True)
+                elif not inputunit.istranslated():
+                    tsunit.markfuzzy()
+                tsfile.addunit(tsunit, True, contextname, createifmissing=True)
         tsfile.serialize(outputfile)
 
 

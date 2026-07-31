@@ -198,11 +198,11 @@ class tsunit(lisa.LISAunit):
         current_notes = self.getnotes(origin)
         self.removenotes(origin)
         if origin in {"programmer", "developer", "source code"}:
-            note = etree.SubElement(self.xmlelement, self.namespaced("extracomment"))
+            note = etree.Element(self.namespaced("extracomment"))
         else:
-            note = etree.SubElement(
-                self.xmlelement, self.namespaced("translatorcomment")
-            )
+            note = etree.Element(self.namespaced("translatorcomment"))
+        targetnode = self._gettargetnode()
+        self.xmlelement.insert(self.xmlelement.index(targetnode), note)
         if position == "append":
             safely_set_text(
                 note, "\n".join(item for item in [current_notes, text.strip()] if item)
@@ -305,14 +305,34 @@ class tsunit(lisa.LISAunit):
 
     def getcontext(self):
         contexts = [self.getcontextname()]
-        commentnode = self.xmlelement.find(self.namespaced("comment"))
-        if commentnode is not None and commentnode.text is not None:
-            contexts.append(commentnode.text)
+        contexts.append(self._get_disambiguation())
         message_id = self.xmlelement.get("id")
         if message_id is not None:
             contexts.append(message_id)
         contexts = filter(None, contexts)
         return "\n".join(contexts)
+
+    def _get_disambiguation(self) -> str:
+        """Return the message disambiguation stored in ``<comment>``."""
+        commentnode = self.xmlelement.find(self.namespaced("comment"))
+        if commentnode is None or commentnode.text is None:
+            return ""
+        return commentnode.text
+
+    def _set_disambiguation(self, value: str) -> None:
+        """Set the message disambiguation stored in ``<comment>``."""
+        commentnode = self.xmlelement.find(self.namespaced("comment"))
+        if not value:
+            if commentnode is not None:
+                self.xmlelement.remove(commentnode)
+            return
+        if commentnode is None:
+            commentnode = etree.Element(self.namespaced("comment"))
+            sourcenode = self._getsourcenode()
+            assert sourcenode is not None
+            index = self.xmlelement.index(sourcenode) + 1
+            self.xmlelement.insert(index, commentnode)
+        safely_set_text(commentnode, value)
 
     def addlocation(self, location) -> None:
         self._locations = None

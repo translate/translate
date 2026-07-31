@@ -50,16 +50,29 @@ msgstr "†arget"'''
     def test_fullunit(self) -> None:
         """Check that an entry with various settings is converted correctly."""
         posource = """# Translator comment
-#. Automatic comment
+# Second translator line
+#. Developer comment
+#. Second developer line
 #: location.cpp:100
+msgctxt "Button label"
 msgid "Source"
 msgstr "Target"
 """
         tsfile = self.po2ts(posource)
         print(tsfile)
         # The other section are a duplicate of test_simplentry
-        # FIXME need to think about auto vs trans comments maybe in TS v1.1
-        assert "<comment>Translator comment</comment>" in tsfile
+        assert "<comment>Button label</comment>" in tsfile
+        assert (
+            "<extracomment>Developer comment\nSecond developer line</extracomment>"
+            in tsfile
+        )
+        assert (
+            "<translatorcomment>Translator comment\nSecond translator line"
+            "</translatorcomment>" in tsfile
+        )
+        assert tsfile.index("<comment>") < tsfile.index("<translation>")
+        assert tsfile.index("<extracomment>") < tsfile.index("<translation>")
+        assert tsfile.index("<translatorcomment>") < tsfile.index("<translation>")
 
     def test_fuzzyunit(self) -> None:
         """Check that we handle fuzzy units correctly."""
@@ -73,13 +86,16 @@ msgstr "Target"'''
 
     def test_obsolete(self) -> None:
         """Test that we can take back obsolete messages."""
-        posource = '''#. (obsolete)
+        posource = '''#. Keep this note
+#. (obsolete)
 #: term.cpp
 msgid "Source"
 msgstr "Target"'''
         tsfile = self.po2ts(posource)
         print(tsfile)
         assert """<translation type="obsolete">Target</translation>""" in tsfile
+        assert "<extracomment>Keep this note</extracomment>" in tsfile
+        assert "(obsolete)" not in tsfile
 
     def test_duplicates(self) -> None:
         """Test that we can handle duplicates in the same context block."""

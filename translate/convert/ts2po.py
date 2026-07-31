@@ -40,7 +40,8 @@ class ts2po:
         source,
         target,
         disambiguation,
-        msgcomments,
+        developer_comments,
+        translator_comments,
         transtype,
         hasplural,
     ):
@@ -59,8 +60,10 @@ class ts2po:
             thepo.target = target
         if len(disambiguation) > 0:
             thepo.setcontext(disambiguation)
-        if len(msgcomments) > 0:
-            thepo.addnote(msgcomments)
+        if developer_comments:
+            thepo.addnote(developer_comments, origin="developer")
+        if translator_comments:
+            thepo.addnote(translator_comments, origin="translator")
         if transtype == "unfinished" and thepo.istranslated():
             thepo.markfuzzy()
         if transtype == "obsolete":
@@ -76,9 +79,7 @@ class ts2po:
 
         previouscontext = ""
         for inputunit in tsfile.units:
-            contexts = inputunit.getcontext().split("\n")
-
-            context = contexts[0].strip()
+            context = (inputunit.getcontextname() or "").strip()
             # skip the unit if the context is empty
             if not context:
                 continue
@@ -87,9 +88,9 @@ class ts2po:
                 previouscontext = context
                 messagenum = 0
 
-            disambiguation = ""
-            if len(contexts) > 1:
-                disambiguation = contexts[1]
+            disambiguation = (
+                inputunit._get_disambiguation() or inputunit.xmlelement.get("id", "")
+            )
             messagenum += 1
             thepo = self.convertmessage(
                 context,
@@ -97,7 +98,8 @@ class ts2po:
                 inputunit.source,
                 inputunit.target,
                 disambiguation,
-                inputunit.getnotes(),
+                inputunit.getnotes("developer"),
+                inputunit.getnotes("translator"),
                 inputunit._gettype(),
                 inputunit.hasplural(),
             )
