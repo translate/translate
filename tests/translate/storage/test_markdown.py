@@ -1292,6 +1292,30 @@ class TestMarkdownFrontmatterTranslateValues(TestCase):
         assert "  (one\n  two)\n" in out
         assert "strip: |-\n  (trimmed)\n" in out
 
+    def test_short_folded_scalar_translation_drops_fold_positions(self) -> None:
+        """Source fold offsets do not break serialization of shorter text."""
+        front_matter = (
+            "---\n"
+            "summary: >\n"
+            "  A long source sentence with enough words to establish a fold.\n"
+            "  Another source line makes the recorded offset even larger.\n"
+            "---\n"
+        )
+        translation = "进行 SAFETAG 评估可以评估工具。"
+        store = self.parse(front_matter, callback=lambda text: translation)
+        assert self.front_matter_of(store.filesrc) == (
+            f"---\nsummary: >\n  {translation}\n---\n"
+        )
+
+    def test_changed_folded_scalar_ignores_in_range_fold_positions(self) -> None:
+        """Changed text is not folded at an applicable source offset."""
+        front_matter = "---\nsummary: >\n  0123456789\n  source text\n---\n"
+        translation = "abcdefghij translated text"
+        store = self.parse(front_matter, callback=lambda text: translation)
+        assert self.front_matter_of(store.filesrc) == (
+            f"---\nsummary: >\n  {translation}\n---\n"
+        )
+
     def test_kept_block_scalar_trailing_blank_lines_preserved(self) -> None:
         """A trailing ``|+`` keep block scalar round-trips its blank lines."""
         front_matter = (
