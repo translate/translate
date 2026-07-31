@@ -26,13 +26,12 @@ import os
 import re
 import warnings
 from typing import ClassVar, cast, overload
-from xml.parsers.expat import XML_PARAM_ENTITY_PARSING_NEVER, ParserCreate
 
 from lxml import etree
 
 from translate.lang import data
 from translate.misc.multistring import multistring
-from translate.misc.xml_helpers import get_safe_xml_parser
+from translate.misc.xml_helpers import XMLTextParser, get_safe_xml_parser
 from translate.storage import base, lisa
 
 WHITESPACE = {" ", "\n", "\t"}  # Whitespace that we collapse.
@@ -53,7 +52,7 @@ ESCAPED_MARKUP_TAG = re.compile(rf"&lt;/?{XML_NAME}(?:{XML_ATTRIBUTE})*\s*/?&gt;
 CDATA_ONLY = re.compile(r"(?:<!\[CDATA\[.*?\]\]>)+", re.DOTALL)
 
 
-class DecodingXMLParser:
+class DecodingXMLParser(XMLTextParser):
     """
     XML parser that processes non CDATA strings.
 
@@ -62,30 +61,10 @@ class DecodingXMLParser:
     - process_string() is called on all other textual content
     """
 
-    EMIT_DEPTH = 1
-    FOREIGN_DTD = True
-
     def __init__(self, text: str, *, escape_all: bool = True) -> None:
-        self.text = text.encode("utf-8")
-        self.output: list[str] = []
-        self.emit_start: int | None = None
-        self.character_data = False
-        self.raw_string = True
-        self.in_string = False
         self.inside_quoted = False
-        self.do_cleanup = False
-        self.depth = 0
         self.escape_all = escape_all
-        self.parser = parser = ParserCreate()
-        if self.FOREIGN_DTD:
-            parser.UseForeignDTD(self.FOREIGN_DTD)
-        parser.SetParamEntityParsing(XML_PARAM_ENTITY_PARSING_NEVER)
-        parser.StartElementHandler = self.StartElementHandler
-        parser.EndElementHandler = self.EndElementHandler
-        parser.CharacterDataHandler = self.CharacterDataHandler
-        parser.StartCdataSectionHandler = self.StartCdataSectionHandler
-        parser.EndCdataSectionHandler = self.EndCdataSectionHandler
-        parser.DefaultHandler = self.DefaultHandler
+        super().__init__(text)
 
     @staticmethod
     def decode_unicode_escapes(match: re.Match) -> str:
@@ -167,69 +146,6 @@ class DecodingXMLParser:
             cleanup_end = False
 
         return unescaped_text, cleanup_start, cleanup_end
-
-    def cleanup_text(self, text: str) -> str:
-        """Remove leading whitespace from text."""
-        if not self.output:
-            return text.lstrip()
-        return text
-
-    def emit(self) -> None:
-        if self.emit_start is not None:
-            text = self.text[self.emit_start : self.parser.CurrentByteIndex].decode(
-                "utf-8"
-            )
-            self.do_cleanup = not self.raw_string
-            if not self.raw_string:
-                text, cleanup_start, self.do_cleanup = self.process_string(text)
-                if cleanup_start:
-                    text = self.cleanup_text(text)
-            self.output.append(text)
-            self.emit_start = None
-        self.character_data = False
-        self.raw_string = True
-        self.in_string = False
-
-    def StartElementHandler(self, _name, _attributes) -> None:
-        self.emit()
-        if self.depth >= self.EMIT_DEPTH:
-            self.emit_start = self.parser.CurrentByteIndex
-        self.depth += 1
-
-    def EndElementHandler(self, _name) -> None:
-        self.emit()
-        if self.depth >= self.EMIT_DEPTH:
-            self.emit_start = self.parser.CurrentByteIndex
-        self.depth -= 1
-
-    def CharacterDataHandler(self, _data) -> None:
-        if not self.character_data and not self.in_string:
-            self.emit()
-            self.emit_start = self.parser.CurrentByteIndex
-            self.raw_string = False
-            self.in_string = True
-
-    def StartCdataSectionHandler(self) -> None:
-        self.emit()
-        self.character_data = True
-        self.emit_start = self.parser.CurrentByteIndex
-
-    def EndCdataSectionHandler(self) -> None:
-        self.character_data = False
-
-    def DefaultHandler(self, _data) -> None:
-        if self.depth >= self.EMIT_DEPTH:
-            self.emit()
-            self.emit_start = self.parser.CurrentByteIndex
-
-    def parse(self) -> str:
-        self.parser.Parse(self.text, True)
-        if self.depth >= self.EMIT_DEPTH:
-            self.emit()
-        # Remove trailing whitespace from text
-        if self.do_cleanup and self.output:
-            self.output[-1] = self.output[-1].rstrip()
-        return "".join(self.output)
 
 
 class EncodingXMLParser(DecodingXMLParser):

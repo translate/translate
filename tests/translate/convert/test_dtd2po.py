@@ -71,12 +71,32 @@ class TestDTD2PO:
         assert unit.source == "Save As..."
         assert unit.target == ""
 
-    def test_apos(self) -> None:
-        """Apostrophe should not break a single-quoted entity definition, bug 69."""
-        dtdsource = "<!ENTITY test.me 'bananas &apos; for sale'>\n"
+    @mark.parametrize("quotechar", ["'", '"'])
+    def test_apos(self, quotechar) -> None:
+        """Decode apostrophes regardless of the entity's outer quotes."""
+        dtdsource = f"<!ENTITY test.me {quotechar}bananas &apos; for sale{quotechar}>\n"
         pofile = self.dtd2po(dtdsource)
         pounit = self.singleelement(pofile)
         assert pounit.source == "bananas ' for sale"
+
+    def test_apos_in_attribute(self) -> None:
+        """Keep apostrophe entities in attributes to preserve their context."""
+        dtdsource = "<!ENTITY test.me \"<a title='Bob&apos;s'>Hi</a>\">\n"
+        pofile = self.dtd2po(dtdsource)
+        pounit = self.singleelement(pofile)
+        assert pounit.source == "<a title='Bob&apos;s'>Hi</a>"
+
+    def test_decimal_quote_in_attribute(self) -> None:
+        """Keep decimal quote references in attributes lexical."""
+        dtdsource = "<!ENTITY test.me '<a title=\"Bob&#34;s\">Hi</a>'>\n"
+        pofile = self.dtd2po(dtdsource)
+        pounit = self.singleelement(pofile)
+        assert pounit.source == '<a title="Bob&#34;s">Hi</a>'
+
+        dtdsource = "<!ENTITY test.me \"<a title='Bob&#39;s'>Hi</a>\">\n"
+        pofile = self.dtd2po(dtdsource)
+        pounit = self.singleelement(pofile)
+        assert pounit.source == "<a title='Bob&#39;s'>Hi</a>"
 
     def test_quotes(self) -> None:
         """Quotes should be handled in a single-quoted entity definition."""

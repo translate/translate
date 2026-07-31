@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import re
 from typing import TYPE_CHECKING, BinaryIO, TextIO
+from xml.parsers.expat import XML_PARAM_ENTITY_PARSING_NEVER, ParserCreate
 
 from lxml import etree
 
@@ -94,6 +95,101 @@ def parse_xml_file(
             collect_ids=collect_ids,
         ),
     )
+
+
+class XMLTextParser:
+    """Process XML character data while preserving the original markup."""
+
+    EMIT_DEPTH = 1
+    FOREIGN_DTD = True
+
+    def __init__(self, text: str) -> None:
+        self.text = text.encode("utf-8")
+        self.output: list[str] = []
+        self.emit_start: int | None = None
+        self.character_data = False
+        self.raw_string = True
+        self.in_string = False
+        self.do_cleanup = False
+        self.depth = 0
+        self.parser = parser = ParserCreate()
+        if self.FOREIGN_DTD:
+            parser.UseForeignDTD(self.FOREIGN_DTD)
+        parser.SetParamEntityParsing(XML_PARAM_ENTITY_PARSING_NEVER)
+        parser.StartElementHandler = self.StartElementHandler
+        parser.EndElementHandler = self.EndElementHandler
+        parser.CharacterDataHandler = self.CharacterDataHandler
+        parser.StartCdataSectionHandler = self.StartCdataSectionHandler
+        parser.EndCdataSectionHandler = self.EndCdataSectionHandler
+        parser.DefaultHandler = self.DefaultHandler
+
+    def process_string(self, content: str) -> tuple[str, bool, bool]:
+        """Transform a character-data section and return cleanup flags."""
+        return content, False, False
+
+    def cleanup_text(self, text: str) -> str:
+        """Remove leading whitespace from the first transformed section."""
+        if not self.output:
+            return text.lstrip()
+        return text
+
+    def emit(self) -> None:
+        """Emit the raw or transformed input since the previous parser event."""
+        if self.emit_start is not None:
+            text = self.text[self.emit_start : self.parser.CurrentByteIndex].decode(
+                "utf-8"
+            )
+            self.do_cleanup = not self.raw_string
+            if not self.raw_string:
+                text, cleanup_start, self.do_cleanup = self.process_string(text)
+                if cleanup_start:
+                    text = self.cleanup_text(text)
+            self.output.append(text)
+            self.emit_start = None
+        self.character_data = False
+        self.raw_string = True
+        self.in_string = False
+
+    def StartElementHandler(self, _name, _attributes) -> None:
+        self.emit()
+        if self.depth >= self.EMIT_DEPTH:
+            self.emit_start = self.parser.CurrentByteIndex
+        self.depth += 1
+
+    def EndElementHandler(self, _name) -> None:
+        self.emit()
+        if self.depth >= self.EMIT_DEPTH:
+            self.emit_start = self.parser.CurrentByteIndex
+        self.depth -= 1
+
+    def CharacterDataHandler(self, _data) -> None:
+        if not self.character_data and not self.in_string:
+            self.emit()
+            self.emit_start = self.parser.CurrentByteIndex
+            self.raw_string = False
+            self.in_string = True
+
+    def StartCdataSectionHandler(self) -> None:
+        self.emit()
+        self.character_data = True
+        self.emit_start = self.parser.CurrentByteIndex
+
+    def EndCdataSectionHandler(self) -> None:
+        self.character_data = False
+
+    def DefaultHandler(self, _data) -> None:
+        if self.depth >= self.EMIT_DEPTH:
+            self.emit()
+            self.emit_start = self.parser.CurrentByteIndex
+
+    def parse(self) -> str:
+        """Parse and return the transformed XML text."""
+        self.parser.Parse(self.text, True)
+        if self.depth >= self.EMIT_DEPTH:
+            self.emit()
+        if self.do_cleanup and self.output:
+            self.output[-1] = self.output[-1].rstrip()
+        return "".join(self.output)
 
 
 def getText(node, xml_space="preserve"):

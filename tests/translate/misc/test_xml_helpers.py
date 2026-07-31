@@ -1,6 +1,23 @@
 from lxml import etree
 
-from translate.misc.xml_helpers import parse_xml, reindent
+from translate.misc.xml_helpers import XMLTextParser, parse_xml, reindent
+
+
+class UppercaseXMLTextParser(XMLTextParser):
+    def process_string(self, content: str) -> tuple[str, bool, bool]:
+        return content.upper(), False, False
+
+
+def test_xml_text_parser_preserves_markup() -> None:
+    source = (
+        "<root>plain<é title='Bob&apos;s'>inner</é>"
+        "<![CDATA[Don't]]><!-- Don't --><?test Don't?>&brand;</root>"
+    )
+
+    assert UppercaseXMLTextParser(source).parse() == (
+        "PLAIN<é title='Bob&apos;s'>INNER</é>"
+        "<![CDATA[Don't]]><!-- Don't --><?test Don't?>&brand;"
+    )
 
 
 class TestReindent:
