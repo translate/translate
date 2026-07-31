@@ -305,7 +305,8 @@ class CatkeysFile(base.TranslationStore):
             )
         )
         for unit in self.units:
-            writer.writerow(unit.metadata)
+            if unit.istranslated():
+                writer.writerow(unit.metadata)
         out.write(output.getvalue().encode(self.encoding))
 
     def _compute_fingerprint(self):
