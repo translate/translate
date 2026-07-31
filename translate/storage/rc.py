@@ -157,9 +157,28 @@ class rcunit(base.TranslationUnit):
         return not (self.name or self.value)  # ty:ignore[unresolved-attribute]
 
 
+class _RCComment(str):
+    """RC comment with information about its position on the source line."""
+
+    inline: bool
+
+    def __new__(cls, value: str, *, inline: bool = False):
+        comment = super().__new__(cls, value)
+        comment.inline = inline
+        return comment
+
+
+def _mark_one_line_comment(source: str, location: int, tokens):
+    """Retain whether a ``//`` comment followed content on the same line."""
+    line_start = source.rfind("\n", 0, location) + 1
+    return _RCComment(tokens[0], inline=bool(source[line_start:location].strip()))
+
+
 def rc_statement() -> ParserElement:
     """Generate a RC statement parser that can be used to parse a RC file."""
-    one_line_comment = Combine("//" + rest_of_line)
+    one_line_comment = Combine("//" + rest_of_line).set_parse_action(
+        _mark_one_line_comment
+    )
 
     comments = c_style_comment ^ one_line_comment
 

@@ -108,6 +108,23 @@ class rerc:
         comment = comment.removesuffix("\r")
         yield comment
 
+    @staticmethod
+    def iter_controls_with_inline_comments(controls):
+        """Yield controls together with a following same-line comment."""
+        index = 0
+        while index < len(controls):
+            control = controls[index]
+            inline_comment = None
+            if (
+                not isinstance(control, str)
+                and index + 1 < len(controls)
+                and getattr(controls[index + 1], "inline", False)
+            ):
+                inline_comment = controls[index + 1]
+                index += 1
+            yield control, inline_comment
+            index += 1
+
     def convert_caption(self, toks, name):
         yield "CAPTION "
 
@@ -141,7 +158,7 @@ class rerc:
         yield self.templatestore.newline
         addnl = False
 
-        for c in toks.controls:
+        for c, inline_comment in self.iter_controls_with_inline_comments(toks.controls):
             if isinstance(c, str):
                 yield from self.convert_comment(addnl, c)
                 addnl = True
@@ -185,6 +202,9 @@ class rerc:
                     tmp.append(a)
 
             yield ",".join(tmp)
+            if inline_comment is not None:
+                yield " "
+                yield from self.convert_comment(True, inline_comment)
             yield self.templatestore.newline
 
         if addnl:
@@ -200,7 +220,7 @@ class rerc:
         yield self.templatestore.newline
 
         addnl = False
-        for c in toks.controls:
+        for c, inline_comment in self.iter_controls_with_inline_comments(toks.controls):
             if isinstance(c, str):
                 yield from self.convert_comment(addnl, c)
                 addnl = True
@@ -229,6 +249,9 @@ class rerc:
                 yield self.templatestore.newline + " " * (24 + 4)
             yield tmp[-1]
 
+            if inline_comment is not None:
+                yield " "
+                yield from self.convert_comment(True, inline_comment)
             yield self.templatestore.newline
 
         if addnl:
