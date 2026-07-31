@@ -1,0 +1,46 @@
+Translate Toolkit 3.19.17
+*************************
+
+*Released on 31 July 2026*
+
+This release contains bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- catkeys
+
+  - Omit untranslated units when serializing catalogs
+
+- DTD
+
+  - Preserve apostrophe entities during round trips
+
+- Markdown
+
+  - Avoid applying stale YAML folded scalar offsets to translated content
+
+- RC
+
+  - Preserve inline comments next to their original controls in ``po2rc``
+
+- TS
+
+  - Preserve disambiguation, developer guidance, and translator comment types
+    during PO conversion
+
+Other
+-----
+
+- Handle source changes from scalar values to nested containers without
+  serialization errors
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+Michal Čihař
