@@ -1267,6 +1267,48 @@ class TestI18NextV4Store(test_monolingual.TestMonolingualStore):
 
         assert len(store.units) == 1
 
+    def test_nested_object_with_plural_suffix(self) -> None:
+        """Do not treat a nested object as a plural form."""
+        data = """{
+    "section_other": {
+        "related_space_usage": "Analyze the space usage within the database",
+        "related_space_usage_description": "See which items take up space."
+    }
+}
+"""
+        store = self.StoreClass()
+        store.targetlanguage = "en"
+
+        store.parse(data)
+
+        assert [unit.getid() for unit in store.units] == [
+            ".section_other.related_space_usage",
+            ".section_other.related_space_usage_description",
+        ]
+        assert bytes(store).decode() == data
+
+    def test_mixed_plural_values_are_regular_entries(self) -> None:
+        """Do not partially group plural-like entries containing an object."""
+        data = """{
+    "message_one": "one",
+    "message_other": "other",
+    "message_few": {
+        "nested": "value"
+    }
+}
+"""
+        store = self.StoreClass()
+        store.targetlanguage = "en"
+
+        store.parse(data)
+
+        assert [unit.getid() for unit in store.units] == [
+            ".message_one",
+            ".message_other",
+            ".message_few.nested",
+        ]
+        assert bytes(store).decode() == data
+
     def test_plurals(self) -> None:
         store = self.StoreClass()
         store.targetlanguage = "ar"
