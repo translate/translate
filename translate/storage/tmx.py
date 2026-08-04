@@ -18,19 +18,38 @@
 
 """module for parsing TMX translation memory files."""
 
+from io import BytesIO
+
 from lxml import etree
 
 from translate import __version__
-from translate.misc.xml_helpers import safely_set_text, setXMLlang
+from translate.misc.xml_helpers import (
+    getXMLlang,
+    getXMLspace,
+    safely_set_text,
+    setXMLlang,
+)
 from translate.storage import lisa
 
 
-class tmxunit(lisa.LISAunit):
+class tmxunit(lisa.MultilingualLISAunit):
     """A single unit in the TMX file."""
 
     rootNode = "tu"
     languageNode = "tuv"
     textNode = "seg"
+
+    def _get_source_language(self) -> str | None:
+        store = getattr(self, "_store", None)
+        if store is not None and getattr(store, "_source_language_explicit", False):
+            language = super()._get_source_language()
+        else:
+            language = self.xmlelement.get("srclang")
+            if language is None:
+                language = super()._get_source_language()
+        if lisa.normalize_language(language) == "*all*":
+            return None
+        return language
 
     def createlanguageNode(self, lang, text, purpose):  # ty:ignore[invalid-method-override]
         """Returns a langset xml Element setup with given parameters."""
@@ -148,7 +167,7 @@ class tmxunit(lisa.LISAunit):
         return ""
 
 
-class tmxfile(lisa.LISAfile):
+class tmxfile(lisa.LISAfile[tmxunit]):
     """Class representing a TMX file store."""
 
     UnitClass = tmxunit
@@ -163,6 +182,73 @@ class tmxfile(lisa.LISAfile):
 <header></header>
 <body></body>
 </tmx>"""
+
+    def __init__(
+        self, inputfile=None, sourcelanguage=None, targetlanguage=None, **kwargs
+    ) -> None:
+        self._source_language_explicit = sourcelanguage is not None
+        if inputfile is None and sourcelanguage is None:
+            sourcelanguage = "en"
+        super().__init__(
+            inputfile,
+            sourcelanguage=sourcelanguage,
+            targetlanguage=targetlanguage,
+            **kwargs,
+        )
+        if inputfile is not None:
+            if self._source_language_explicit:
+                assert sourcelanguage is not None
+                self.setsourcelanguage(sourcelanguage)
+            else:
+                header = self.document.getroot().find(self.namespaced("header"))
+                self.sourcelanguage = (
+                    header.get("srclang") if header is not None else None
+                )
+            if targetlanguage is not None:
+                self.settargetlanguage(targetlanguage)
+
+    @classmethod
+    def parsestring(cls, storestring, sourcelanguage=None, targetlanguage=None):
+        if isinstance(storestring, str):
+            storestring = storestring.encode(cls.default_encoding)
+        return cls(
+            BytesIO(storestring),
+            sourcelanguage=sourcelanguage,
+            targetlanguage=targetlanguage,
+        )
+
+    def _invalidate_indexes(self) -> None:
+        self.locationindex = {}
+        self.sourceindex = {}
+        self.id_index = {}
+        self.languageindex = {}
+
+    def setsourcelanguage(self, sourcelanguage: str) -> None:
+        self._source_language_explicit = True
+        super().setsourcelanguage(sourcelanguage)
+        self._invalidate_indexes()
+
+    def settargetlanguage(self, targetlanguage: str | None) -> None:
+        super().settargetlanguage(targetlanguage)
+        self._invalidate_indexes()
+
+    def makeindex(self) -> None:
+        super().makeindex()
+        self.languageindex: dict[tuple[str, str], list[tmxunit]] = {}
+        for unit in self.units:
+            xml_space = getXMLspace(unit.xmlelement, unit._default_xml_space)
+            for language_node in unit.getlanguageNodes():
+                language = lisa.normalize_language(getXMLlang(language_node))
+                text = unit.getNodeText(language_node, xml_space)
+                if language is not None and text is not None:
+                    self.languageindex.setdefault((language, text), []).append(unit)
+
+    def addsourceunit(self, source):
+        unit = self.UnitClass(None)
+        unit._store = self
+        unit.source = source
+        self.addunit(unit)
+        return unit
 
     def addheader(self) -> None:
         headernode = next(
@@ -196,5 +282,16 @@ class tmxfile(lisa.LISAfile):
         setXMLlang(next(tuvs), translang)
 
     def translate(self, sourcetext, sourcelang=None, targetlang=None):  # ty:ignore[invalid-method-override]
-        """Method to test old unit tests."""
-        return getattr(self.findunit(sourcetext), "target", None)
+        """Return the requested translation for a source string."""
+        source_language = lisa.normalize_language(sourcelang)
+        if source_language is None:
+            unit = self.findunit(sourcetext)
+        else:
+            self.require_index()
+            units = self.languageindex.get((source_language, sourcetext))
+            unit = units[0] if units else None
+        if unit is None:
+            return None
+        if targetlang:
+            return unit.gettarget(targetlang)
+        return unit.target
