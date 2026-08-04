@@ -39,6 +39,32 @@ class TestTMXfile(test_base.TestTranslationStore):
     StoreClass = tmx.tmxfile
 
     @staticmethod
+    def language_selection_tmx(tus: str, srclang: str = "en") -> str:
+        return f"""<?xml version="1.0" encoding="utf-8"?>
+<tmx version="1.4">
+    <header creationtool="test" creationtoolversion="1" datatype="unknown"
+            segtype="sentence" adminlang="en" srclang="{srclang}" o-tmf="TMX"/>
+    <body>
+{tus}
+    </body>
+</tmx>"""
+
+    @classmethod
+    def multilingual_tmx(cls) -> str:
+        return cls.language_selection_tmx(
+            """        <tu tuid="test1">
+            <tuv xml:lang="ar"><seg>test1_ar</seg></tuv>
+            <tuv xml:lang="de"><seg>test1_de</seg></tuv>
+            <tuv xml:lang="en"><seg>test1_en</seg></tuv>
+        </tu>
+        <tu tuid="test2">
+            <tuv xml:lang="en"><seg>test2_en</seg></tuv>
+            <tuv xml:lang="de"><seg>test2_de</seg></tuv>
+            <tuv xml:lang="ar"><seg>test2_ar</seg></tuv>
+        </tu>"""
+        )
+
+    @staticmethod
     def tmxparse(tmxsource):
         """Helper that parses tmx source without requiring files."""
         dummyfile = BytesIO(tmxsource)
@@ -52,6 +78,131 @@ class TestTMXfile(test_base.TestTranslationStore):
             "A string of characters", "en", "'n String karakters", "af"
         )
         assert tmxfile.translate("A string of characters") == "'n String karakters"
+
+    def test_multilingual_configured_language_selection(self) -> None:
+        store = tmx.tmxfile(
+            BytesIO(self.multilingual_tmx().encode()),
+            sourcelanguage="de",
+            targetlanguage="en",
+        )
+
+        assert store.sourcelanguage == "de"
+        assert store.targetlanguage == "en"
+        assert [(unit.source, unit.target) for unit in store.units] == [
+            ("test1_de", "test1_en"),
+            ("test2_de", "test2_en"),
+        ]
+        assert store.translate("test1_de") == "test1_en"
+        assert store.translate("test1_ar", sourcelang="ar", targetlang="de") == (
+            "test1_de"
+        )
+        assert store.translate("test1", sourcelang="de", targetlang="en") is None
+        assert store.findid("test1").gettarget("en") == "test1_en"
+
+    def test_multilingual_parsestring_language_selection(self) -> None:
+        store = tmx.tmxfile.parsestring(
+            self.multilingual_tmx(), sourcelanguage="de", targetlanguage="ar"
+        )
+
+        assert store.units[0].source == "test1_de"
+        assert store.units[0].target == "test1_ar"
+
+    def test_multilingual_header_language_and_target_fallback(self) -> None:
+        store = tmx.tmxfile.parsestring(self.multilingual_tmx())
+
+        assert store.sourcelanguage == "en"
+        assert store.targetlanguage is None
+        assert [(unit.source, unit.target) for unit in store.units] == [
+            ("test1_en", "test1_de"),
+            ("test2_en", "test2_de"),
+        ]
+        assert store.translate("test1_en") == "test1_de"
+
+    def test_translation_unit_source_language_precedence(self) -> None:
+        source = self.language_selection_tmx(
+            """        <tu tuid="test" srclang="ar">
+            <tuv xml:lang="en"><seg>English</seg></tuv>
+            <tuv xml:lang="de"><seg>Deutsch</seg></tuv>
+            <tuv xml:lang="ar"><seg>Arabic</seg></tuv>
+        </tu>"""
+        )
+
+        store = tmx.tmxfile.parsestring(source)
+        assert store.units[0].source == "Arabic"
+        assert store.units[0].target == "Deutsch"
+
+        store = tmx.tmxfile.parsestring(
+            source, sourcelanguage="de", targetlanguage="en"
+        )
+        assert store.units[0].source == "Deutsch"
+        assert store.units[0].target == "English"
+
+    def test_all_source_languages_use_order_fallback(self) -> None:
+        source = self.language_selection_tmx(
+            """        <tu tuid="test" srclang="*all*">
+            <tuv xml:lang="ar"><seg>Arabic</seg></tuv>
+            <tuv xml:lang="de"><seg>Deutsch</seg></tuv>
+            <tuv xml:lang="en"><seg>English</seg></tuv>
+        </tu>"""
+        )
+
+        unit = tmx.tmxfile.parsestring(source).units[0]
+        assert unit.source == "Arabic"
+        assert unit.target == "Deutsch"
+
+    def test_language_matching_normalizes_case_and_separator(self) -> None:
+        source = self.language_selection_tmx(
+            """        <tu tuid="test">
+            <tuv xml:lang="de-DE"><seg>Farbe</seg></tuv>
+            <tuv xml:lang="EN-us"><seg>color</seg></tuv>
+        </tu>""",
+            srclang="de-DE",
+        )
+
+        store = tmx.tmxfile.parsestring(
+            source, sourcelanguage="de_de", targetlanguage="en_US"
+        )
+        assert store.units[0].source == "Farbe"
+        assert store.units[0].target == "color"
+        assert store.translate("Farbe", sourcelang="DE-de", targetlang="en_us") == (
+            "color"
+        )
+
+        store = tmx.tmxfile.parsestring(source, sourcelanguage="de")
+        assert store.units[0].source is None
+
+    def test_missing_configured_language_does_not_fallback(self) -> None:
+        store = tmx.tmxfile.parsestring(
+            self.multilingual_tmx(), sourcelanguage="fr", targetlanguage="es"
+        )
+
+        assert store.units[0].source is None
+        assert store.units[0].target is None
+        assert store.translate("test1_en", sourcelang="en", targetlang="es") is None
+
+    def test_multilingual_setters_preserve_other_languages(self) -> None:
+        store = tmx.tmxfile.parsestring(
+            self.multilingual_tmx(), sourcelanguage="en", targetlanguage="ar"
+        )
+        unit = store.units[0]
+
+        unit.source = "updated English"
+        unit.target = "updated Arabic"
+
+        assert unit.gettarget("en") == "updated English"
+        assert unit.gettarget("ar") == "updated Arabic"
+        assert unit.gettarget("de") == "test1_de"
+
+    def test_language_change_invalidates_indexes(self) -> None:
+        store = tmx.tmxfile.parsestring(
+            self.multilingual_tmx(), sourcelanguage="en", targetlanguage="de"
+        )
+        assert store.translate("test1_en") == "test1_de"
+
+        store.setsourcelanguage("ar")
+        store.settargetlanguage("en")
+
+        assert store.translate("test1_ar") == "test1_en"
 
     def test_addtranslation(self) -> None:
         """Tests that addtranslation() stores strings correctly."""
