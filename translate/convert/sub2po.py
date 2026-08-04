@@ -96,17 +96,25 @@ def convert_unit(input_unit, commenttype):
 
 
 def convertsub(
-    input_file, output_file, template_file=None, pot=False, duplicatestyle="msgctxt"
+    input_file,
+    output_file,
+    template_file=None,
+    pot=False,
+    duplicatestyle="msgctxt",
+    encoding=None,
+    template_encoding=None,
 ) -> int:
     """
     Reads in *input_file* using translate.subtitles, converts using
     :class:`sub2po`, writes to *output_file*.
     """
-    input_store = subtitles.SubtitleFile(input_file)
+    input_store = subtitles.SubtitleFile(input_file, encoding=encoding)
     if template_file is None:
         output_store = convert_store(input_store, duplicatestyle=duplicatestyle)
     else:
-        template_store = subtitles.SubtitleFile(template_file)
+        template_store = subtitles.SubtitleFile(
+            template_file, encoding=template_encoding
+        )
         output_store = merge_store(
             template_store, input_store, blankmsgstr=pot, duplicatestyle=duplicatestyle
         )
@@ -130,6 +138,7 @@ def main(argv=None) -> None:
     parser = convert.ConvertOptionParser(
         formats, usetemplates=True, usepots=True, description=__doc__
     )
+    parser.add_encoding_option(use_template=True)
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.run(argv)

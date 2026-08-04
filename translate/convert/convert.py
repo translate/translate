@@ -124,6 +124,36 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser):
         )
         self.passthrough.append("duplicatestyle")
 
+    def add_encoding_option(
+        self,
+        *,
+        aliases: tuple[str, ...] = (),
+        dest: str = "encoding",
+        help_text: str = "override the encoding of the input file",
+        use_template: bool = False,
+    ) -> None:
+        """Add input and optional template encoding options."""
+        self.add_option(
+            "",
+            "--encoding",
+            *aliases,
+            dest=dest,
+            default=None,
+            help=help_text,
+            metavar="ENCODING",
+        )
+        self.passthrough.append(dest)
+        if use_template:
+            self.add_option(
+                "",
+                "--encoding-template",
+                dest="template_encoding",
+                default=None,
+                help="override the encoding of the template file",
+                metavar="ENCODING",
+            )
+            self.passthrough.append("template_encoding")
+
     def add_multifile_option(self, default="single") -> None:
         """Adds an option to say how to split the po/pot files."""
         self.add_option(

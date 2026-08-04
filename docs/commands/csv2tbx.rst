@@ -14,7 +14,7 @@ Usage
 
 ::
 
-  csv2tbx [--charset=CHARSET] [--columnorder=COLUMNORDER] <csv> <tbx>
+  csv2tbx [--encoding=ENCODING] [--columnorder=COLUMNORDER] <csv> <tbx>
 
 Where:
 
@@ -37,7 +37,8 @@ Options (csv2tbx):
 -x EXCLUDE, --exclude=EXCLUDE    exclude names matching EXCLUDE from input paths
 -o OUTPUT, --output=OUTPUT   write to OUTPUT in tbx format
 -S, --timestamp      skip conversion if the output file has newer timestamp
---charset=CHARSET    set charset to decode from csv files
+--encoding=ENCODING, --charset=ENCODING
+                      override the encoding of the input file
 --columnorder=COLUMNORDER   specify the order and position of columns (comment,source,target)
 
 

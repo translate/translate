@@ -163,7 +163,8 @@ class SubtitleFile(base.TranslationStore):
         )
 
     def _parse_subtitles(self) -> None:
-        self.encoding = detect(self.filename)
+        if self._encoding in {None, "auto"}:
+            self.encoding = detect(self.filename)
         self._format = detect_format(self.filename, self.encoding)
         self._subtitlefile = new(self._format, self.filename, self.encoding)
         for subtitle in self._subtitlefile.read():

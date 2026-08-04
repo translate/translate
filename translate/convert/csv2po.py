@@ -74,6 +74,8 @@ class csv2po:
     ) -> None:
         """Construct the converter..."""
         self.pofile = templatepo
+        # Retained for compatibility with callers constructing this class directly.
+        # Input decoding is handled by csvl10n.csvfile before conversion.
         self.charset = charset
         self.duplicatestyle = duplicatestyle
         self.unescape_formulas = unescape_formulas
@@ -287,9 +289,6 @@ class csv2po:
         targetheader.addnote(f"extracted from {self.csvfile.filename}", "developer")
         mightbeheader = True
         for csvunit in self.csvfile.units:
-            # if self.charset is not None:
-            #    csvunit.source = csvunit.source.decode(self.charset)
-            #    csvunit.target = csvunit.target.decode(self.charset)
             if mightbeheader:
                 # ignore typical header strings...
                 mightbeheader = False
@@ -322,10 +321,11 @@ def convertcsv(
     Reads in inputfile using csvl10n, converts using csv2po, writes to
     outputfile.
     """
-    inputstore = csvl10n.csvfile(inputfile, fieldnames=columnorder)
+    inputstore = csvl10n.csvfile(
+        inputfile, fieldnames=columnorder, encoding=charset or "auto"
+    )
     if templatefile is None:
         convertor = csv2po(
-            charset=charset,
             duplicatestyle=duplicatestyle,
             unescape_formulas=unescape_formulas,
         )
@@ -333,7 +333,6 @@ def convertcsv(
         templatestore = po.pofile(templatefile)
         convertor = csv2po(
             templatestore,
-            charset=charset,
             duplicatestyle=duplicatestyle,
             unescape_formulas=unescape_formulas,
         )
@@ -357,13 +356,9 @@ def main(argv=None) -> None:
     parser = convert.ConvertOptionParser(
         formats, usetemplates=True, usepots=True, description=__doc__
     )
-    parser.add_option(
-        "",
-        "--charset",
+    parser.add_encoding_option(
+        aliases=("--charset",),
         dest="charset",
-        default=None,
-        help="set charset to decode from csv files",
-        metavar="CHARSET",
     )
     parser.add_option(
         "",
@@ -384,7 +379,6 @@ def main(argv=None) -> None:
         default=False,
         help="remove spreadsheet formula escaping from CSV values",
     )
-    parser.passthrough.append("charset")
     parser.passthrough.append("columnorder")
     parser.passthrough.append("unescape_formulas")
     parser.run(argv)

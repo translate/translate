@@ -1,6 +1,8 @@
 import logging
 from io import BytesIO
 
+import pytest
+
 from translate.convert import csv2po
 from translate.storage import csvl10n, po
 
@@ -14,6 +16,37 @@ def test_replacestrings() -> None:
         csv2po.replacestrings("Test one two three", ("one", "een"), ("two", "twee"))
         == "Test een twee three"
     )
+
+
+@pytest.mark.parametrize("charset", ["utf8", "iso-8859-2"])
+def test_convertcsv_charset(charset) -> None:
+    """Test that convertcsv decodes its input using the requested charset."""
+    content = "source,target\ntest,zkouška sirén\n"
+    output = BytesIO()
+
+    assert (
+        csv2po.convertcsv(
+            BytesIO(content.encode(charset)), output, None, charset=charset
+        )
+        == 1
+    )
+
+    result = po.pofile(BytesIO(output.getvalue()))
+    unit = result.findunit("test")
+    assert unit is not None
+    assert unit.target == "zkouška sirén"
+    assert result.parseheader()["Content-Type"] == "text/plain; charset=UTF-8"
+
+
+def test_convertcsv_invalid_charset() -> None:
+    """Test that convertcsv does not silently ignore an invalid charset."""
+    with pytest.raises(LookupError):
+        csv2po.convertcsv(
+            BytesIO(b"source,target\ntest,translation\n"),
+            BytesIO(),
+            None,
+            charset="not-a-codec",
+        )
 
 
 class TestCSV2PO:
@@ -239,7 +272,7 @@ class TestCSV2POCommand(test_convert.TestConvertCommand, TestCSV2PO):
     expected_options = [
         "-t TEMPLATE, --template=TEMPLATE",
         "-P, --pot",
-        "--charset=CHARSET",
+        "--encoding=ENCODING, --charset=ENCODING",
         "--columnorder=COLUMNORDER",
         "--duplicates=DUPLICATESTYLE",
         "--unescape-formulas",
