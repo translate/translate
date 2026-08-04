@@ -494,6 +494,49 @@ message-multiedit-header[many]={0,number} selected
         assert units[1].source == "Goodbye"
         assert units[1].target == "Adeu"
 
+    def test_input_and_template_encoding(self) -> None:
+        """Allow input and template property files to use different encodings."""
+        input_file = BytesIO('"greeting" = "Dobrý den";'.encode("utf-16"))
+        template_file = BytesIO('"greeting" = "Hello — UTF-8";'.encode())
+        output_file = BytesIO()
+
+        assert (
+            prop2po.convertstrings(
+                input_file,
+                output_file,
+                template_file,
+                encoding="utf-16",
+                template_encoding="utf-8",
+            )
+            == 1
+        )
+
+        result = po.pofile(BytesIO(output_file.getvalue()))
+        unit = result.findunit("Hello — UTF-8")
+        assert unit is not None
+        assert unit.target == "Dobrý den"
+
+    def test_template_encoding_falls_back_to_input_encoding(self) -> None:
+        """Keep applying the input encoding to templates unless overridden."""
+        input_file = BytesIO("greeting=Dobrý den".encode())
+        template_file = BytesIO("greeting=Hello — UTF-8".encode())
+        output_file = BytesIO()
+
+        assert (
+            prop2po.convertprop(
+                input_file,
+                output_file,
+                template_file,
+                encoding="utf-8",
+            )
+            == 1
+        )
+
+        result = po.pofile(BytesIO(output_file.getvalue()))
+        unit = result.findunit("Hello — UTF-8")
+        assert unit is not None
+        assert unit.target == "Dobrý den"
+
 
 class TestProp2POCommand(test_convert.TestConvertCommand, TestProp2PO):
     """Tests running actual prop2po commands on files."""
@@ -505,5 +548,6 @@ class TestProp2POCommand(test_convert.TestConvertCommand, TestProp2PO):
         "-t TEMPLATE, --template=TEMPLATE",
         "--personality=TYPE",
         "--encoding=ENCODING",
+        "--encoding-template=ENCODING",
         "--duplicates=DUPLICATESTYLE",
     ]

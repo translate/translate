@@ -433,6 +433,7 @@ def convertstrings(
     pot=False,
     duplicatestyle="msgctxt",
     encoding=None,
+    template_encoding=None,
 ):
     """.strings specific convertor function."""
     return convertprop(
@@ -443,6 +444,7 @@ def convertstrings(
         pot=pot,
         duplicatestyle=duplicatestyle,
         encoding=encoding,
+        template_encoding=template_encoding,
     )
 
 
@@ -468,6 +470,7 @@ def convertprop(
     pot=False,
     duplicatestyle="msgctxt",
     encoding=None,
+    template_encoding=None,
 ) -> int:
     """
     Reads in inputfile using properties, converts using prop2po, writes to
@@ -480,7 +483,11 @@ def convertprop(
     if templatefile is None:
         outputstore = convertor.convertstore(inputstore)
     else:
-        templatestore = properties.propfile(templatefile, personality, encoding)
+        if template_encoding is None:
+            template_encoding = encoding
+        templatestore = properties.propfile(
+            templatefile, personality, template_encoding
+        )
         outputstore = convertor.mergestore(templatestore, inputstore)
     if outputstore.isempty():
         return 0
@@ -512,18 +519,12 @@ def main(argv=None) -> None:
         help=f"override the input file format: {', '.join(properties.dialects.keys())} (for .properties files, default: {properties.default_dialect})",
         metavar="TYPE",
     )
-    parser.add_option(
-        "",
-        "--encoding",
-        dest="encoding",
-        default=None,
-        help="override the encoding set by the personality",
-        metavar="ENCODING",
+    parser.add_encoding_option(
+        help_text="override the encoding set by the personality", use_template=True
     )
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.passthrough.append("personality")
-    parser.passthrough.append("encoding")
     parser.run(argv)
 
 

@@ -72,6 +72,28 @@ class TestPhp2PO:
         assert pounit.source == "source"
         assert pounit.target == "entry"
 
+    def test_input_and_template_encoding(self) -> None:
+        """Allow input and template PHP files to use different encodings."""
+        inputfile = BytesIO("$lang['simple'] = 'zkouška sirén';".encode("iso-8859-2"))
+        templatefile = BytesIO("$lang['simple'] = 'Source — UTF-8';".encode())
+        outputfile = BytesIO()
+
+        assert (
+            php2po.run_converter(
+                inputfile,
+                outputfile,
+                templatefile,
+                encoding="iso-8859-2",
+                template_encoding="utf-8",
+            )
+            == 1
+        )
+
+        result = po.pofile(BytesIO(outputfile.getvalue()))
+        pounit = self.singleelement(result)
+        assert pounit.source == "Source — UTF-8"
+        assert pounit.target == "zkouška sirén"
+
     def test_convertphpmissing(self) -> None:
         """Checks that the convertphp function is working with missing key."""
         phpsource = """$_LANG['simple'] = 'entry';"""
@@ -282,5 +304,7 @@ class TestPhp2POCommand(test_convert.TestConvertCommand, TestPhp2PO):
     expected_options = [
         "-P, --pot",
         "-t TEMPLATE, --template=TEMPLATE",
+        "--encoding=ENCODING",
+        "--encoding-template=ENCODING",
         "--duplicates=DUPLICATESTYLE",
     ]

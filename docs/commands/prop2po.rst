@@ -61,6 +61,8 @@ Options (prop2po):
                       java-utf8, skype, gaia, strings <option_personality>`
                       (for .properties files, default: java)
 --encoding=ENCODING  override the encoding set by the personality
+--encoding-template=ENCODING
+                     override the encoding of the template file
 --duplicates=DUPLICATESTYLE
                       what to do with duplicate strings (identical source
                       text): :doc:`merge, msgctxt <option_duplicates>`

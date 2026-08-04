@@ -44,6 +44,8 @@ class ini2po:
         blank_msgstr=False,
         duplicate_style="msgctxt",
         dialect="default",
+        encoding=None,
+        template_encoding=None,
     ) -> None:
         """Initialize the converter."""
         if ini.INIConfig is None:
@@ -55,12 +57,16 @@ class ini2po:
 
         self.extraction_msg = None
         self.output_file = output_file
-        self.source_store = self.SourceStoreClass(input_file, dialect=dialect)
+        self.source_store = self.SourceStoreClass(
+            input_file, dialect=dialect, encoding=encoding
+        )
         self.target_store = self.TargetStoreClass()
         self.template_store = None
 
         if template_file is not None:
-            self.template_store = self.SourceStoreClass(template_file, dialect=dialect)
+            self.template_store = self.SourceStoreClass(
+                template_file, dialect=dialect, encoding=template_encoding
+            )
 
     def convert_unit(self, unit):
         """Convert a source format unit to a target format unit."""
@@ -121,6 +127,8 @@ def run_converter(
     pot=False,
     duplicatestyle="msgctxt",
     dialect="default",
+    encoding=None,
+    template_encoding=None,
 ):
     """Wrapper around converter."""
     return ini2po(
@@ -130,6 +138,8 @@ def run_converter(
         blank_msgstr=pot,
         duplicate_style=duplicatestyle,
         dialect=dialect,
+        encoding=encoding,
+        template_encoding=template_encoding,
     ).run()
 
 
@@ -140,9 +150,18 @@ def convertisl(
     pot=False,
     duplicatestyle="msgctxt",
     dialect="inno",
+    encoding=None,
+    template_encoding=None,
 ):
     return run_converter(
-        input_file, output_file, template_file, pot, duplicatestyle, dialect
+        input_file,
+        output_file,
+        template_file,
+        pot=pot,
+        duplicatestyle=duplicatestyle,
+        dialect=dialect,
+        encoding=encoding,
+        template_encoding=template_encoding,
     )
 
 
@@ -160,6 +179,7 @@ def main(argv=None) -> None:
     parser = convert.ConvertOptionParser(
         formats, usetemplates=True, usepots=True, description=__doc__
     )
+    parser.add_encoding_option(use_template=True)
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.run(argv)

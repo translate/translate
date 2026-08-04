@@ -36,6 +36,8 @@ class csv2tbx:
 
     def __init__(self, charset=None) -> None:
         """Construct the converter..."""
+        # Retained for compatibility with callers constructing this class directly.
+        # Input decoding is handled by csvl10n.csvfile before conversion.
         self.charset = charset
 
     def convertfile(self, csvfile):
@@ -70,8 +72,10 @@ def convertcsv(
     Reads in inputfile using csvl10n, converts using csv2tbx, writes to
     outputfile.
     """
-    inputstore = csvl10n.csvfile(inputfile, fieldnames=columnorder)
-    convertor = csv2tbx(charset=charset)
+    inputstore = csvl10n.csvfile(
+        inputfile, fieldnames=columnorder, encoding=charset or "auto"
+    )
+    convertor = csv2tbx()
     outputstore = convertor.convertfile(inputstore)
     if len(outputstore.units) == 0:
         return 0
@@ -79,7 +83,7 @@ def convertcsv(
     return 1
 
 
-def main() -> None:
+def main(argv=None) -> None:
     formats = {
         ("csv", "tbx"): ("tbx", convertcsv),
         ("csv", None): ("tbx", convertcsv),
@@ -87,13 +91,9 @@ def main() -> None:
     parser = convert.ConvertOptionParser(
         formats, usetemplates=False, description=__doc__
     )
-    parser.add_option(
-        "",
-        "--charset",
+    parser.add_encoding_option(
+        aliases=("--charset",),
         dest="charset",
-        default=None,
-        help="set charset to decode from csv files",
-        metavar="CHARSET",
     )
     parser.add_option(
         "",
@@ -102,9 +102,8 @@ def main() -> None:
         default=None,
         help="specify the order and position of columns (comment,source,target)",
     )
-    parser.passthrough.append("charset")
     parser.passthrough.append("columnorder")
-    parser.run()
+    parser.run(argv)
 
 
 if __name__ == "__main__":

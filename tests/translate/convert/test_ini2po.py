@@ -3,6 +3,7 @@ from io import BytesIO
 from pytest import importorskip
 
 from translate.convert import ini2po
+from translate.storage import po
 
 from . import test_convert
 
@@ -96,6 +97,28 @@ msgstr "valor"
         assert expected_output in output
         assert "extracted from " in output
 
+    def test_input_and_template_encoding(self) -> None:
+        """Allow input and template INI files to use different encodings."""
+        input_file = BytesIO("[section]\nkey=zkouška sirén\n".encode("iso-8859-2"))
+        template_file = BytesIO("[section]\nkey=Source — UTF-8\n".encode())
+        output_file = BytesIO()
+
+        assert (
+            ini2po.run_converter(
+                input_file,
+                output_file,
+                template_file,
+                encoding="iso-8859-2",
+                template_encoding="utf-8",
+            )
+            == 1
+        )
+
+        result = po.pofile(BytesIO(output_file.getvalue()))
+        unit = result.findunit("Source — UTF-8")
+        assert unit is not None
+        assert unit.target == "zkouška sirén"
+
     def test_merge_misaligned_files(self) -> None:
         """Check merging two files that are not aligned."""
         input_string = """[section]
@@ -151,5 +174,7 @@ class TestIni2POCommand(test_convert.TestConvertCommand, TestIni2PO):
     expected_options = [
         "-t TEMPLATE, --template=TEMPLATE",
         "-P, --pot",
+        "--encoding=ENCODING",
+        "--encoding-template=ENCODING",
         "--duplicates=DUPLICATESTYLE",
     ]

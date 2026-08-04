@@ -48,6 +48,9 @@ Options (sub2po):
                         read from TEMPLATE in ass, srt, ssa, sub formats
 -S, --timestamp       skip conversion if the output file has newer timestamp
 -P, --pot            output PO Templates (.pot) rather than PO files (.po)
+--encoding=ENCODING  override the encoding of the input file
+--encoding-template=ENCODING
+                     override the encoding of the template file
 --duplicates=DUPLICATESTYLE
                       what to do with duplicate strings (identical source
                       text): :doc:`merge, msgctxt <option_duplicates>`
@@ -67,6 +70,7 @@ Options (po2sub):
 -o OUTPUT, --output=OUTPUT   write to OUTPUT in srt format
 -t TEMPLATE, --template=TEMPLATE   read from TEMPLATE in txt format
 -S, --timestamp      skip conversion if the output file has newer timestamp
+--encoding=ENCODING  override the encoding of the subtitle template and output
 --threshold=PERCENT  only convert files where the translation completion is above PERCENT
 --fuzzy              use translations marked fuzzy
 --nofuzzy            don't use translations marked fuzzy (default)
@@ -100,7 +104,8 @@ Translate as normal. However, see the issues mentioned at
 
 Bugs
 ----
-There might be some issues with encodings, since the srt files don't specify
-them. We assume files to be encoded in UTF-8, so a conversion should solve this
-easily. Note that most of the handling of the srt files come from aeidon.
-
+Subtitle files do not always specify their encoding. aeidon detects it by
+default; use :opt:`--encoding` for the input subtitle file (and for the
+subtitle template and output with po2sub), or :opt:`--encoding-template` for a
+sub2po template when detection is incorrect. Most subtitle handling comes from
+aeidon.

@@ -40,6 +40,9 @@ Options (ini2po):
 -t TEMPLATE, --template=TEMPLATE  read from TEMPLATE in ini, isl, iss formats
 -S, --timestamp       skip conversion if the output file has newer timestamp
 -P, --pot    output PO Templates (.pot) rather than PO files (.po)
+--encoding=ENCODING   override the encoding of the input file
+--encoding-template=ENCODING
+                      override the encoding of the template file
 --duplicates=DUPLICATESTYLE
                       what to do with duplicate strings (identical source
                       text): :doc:`merge, msgctxt <option_duplicates>`

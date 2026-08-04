@@ -158,7 +158,7 @@ class inifile(base.TranslationStore):
                 outinifile[section][entry] = value
         if outinifile:
             output = self._normalize_newlines(str(outinifile))
-            out.write(output.encode("utf-8"))
+            out.write(output.encode(self.encoding))
 
     def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
         """
@@ -181,9 +181,9 @@ class inifile(base.TranslationStore):
 
         if not prepared.from_handle and base.is_path_input(input):
             with open(base.path_input_str(input), "rb") as source:
-                decoded = source.read().decode("utf-8")
+                decoded = source.read().decode(self.encoding)
         elif isinstance(input, bytes):
-            decoded = input.decode("utf-8")
+            decoded = input.decode(self.encoding)
         else:
             decoded = input
 

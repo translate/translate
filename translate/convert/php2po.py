@@ -41,6 +41,8 @@ class php2po:
         template_file=None,
         blank_msgstr=False,
         duplicate_style="msgctxt",
+        encoding=None,
+        template_encoding=None,
     ) -> None:
         """Initialize the converter."""
         self.blank_msgstr = blank_msgstr
@@ -48,12 +50,14 @@ class php2po:
 
         self.extraction_msg = None
         self.output_file = output_file
-        self.source_store = self.SourceStoreClass(input_file)
+        self.source_store = self.SourceStoreClass(input_file, encoding=encoding)
         self.target_store = self.TargetStoreClass()
         self.template_store = None
 
         if template_file is not None:
-            self.template_store = self.SourceStoreClass(template_file)
+            self.template_store = self.SourceStoreClass(
+                template_file, encoding=template_encoding
+            )
 
     def convert_unit(self, unit):
         """Convert a source format unit to a target format unit."""
@@ -108,7 +112,13 @@ class php2po:
 
 
 def run_converter(
-    input_file, output_file, template_file=None, pot=False, duplicatestyle="msgctxt"
+    input_file,
+    output_file,
+    template_file=None,
+    pot=False,
+    duplicatestyle="msgctxt",
+    encoding=None,
+    template_encoding=None,
 ):
     """Wrapper around converter."""
     return php2po(
@@ -117,6 +127,8 @@ def run_converter(
         template_file,
         blank_msgstr=pot,
         duplicate_style=duplicatestyle,
+        encoding=encoding,
+        template_encoding=template_encoding,
     ).run()
 
 
@@ -132,6 +144,7 @@ def main(argv=None) -> None:
     parser = convert.ConvertOptionParser(
         formats, usetemplates=True, usepots=True, description=__doc__
     )
+    parser.add_encoding_option(use_template=True)
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.run(argv)

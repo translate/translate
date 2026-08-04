@@ -3,7 +3,7 @@ from io import BytesIO
 from pytest import importorskip
 
 from translate.convert import po2sub
-from translate.storage import po
+from translate.storage import po, subtitles
 
 from . import test_convert
 
@@ -53,6 +53,32 @@ Koei koei koei koei
         print(subexpected)
         assert subfile == subexpected
 
+    def test_encoding_override(self, monkeypatch) -> None:
+        """Override incorrect subtitle encoding detection for input and output."""
+        posource = """#: 00:00:20.000-->00:00:24.400
+msgid "Source"
+msgstr "L’été"
+"""
+        subtemplate = """1
+00:00:20,000 --> 00:00:24,400
+Source
+"""
+        input_file = BytesIO(posource.encode())
+        template_file = BytesIO(subtemplate.encode())
+        output_file = BytesIO()
+        monkeypatch.setattr(subtitles, "detect", lambda _filename: "iso-8859-1")
+
+        assert (
+            po2sub.convertsub(
+                input_file,
+                output_file,
+                template_file,
+                encoding="utf-8",
+            )
+            == 1
+        )
+        assert "L’été" in output_file.getvalue().decode()
+
 
 class TestPO2SubCommand(test_convert.TestConvertCommand, TestPO2Sub):
     """Tests running actual po2sub commands on files."""
@@ -62,6 +88,7 @@ class TestPO2SubCommand(test_convert.TestConvertCommand, TestPO2Sub):
 
     expected_options = [
         "-t TEMPLATE, --template=TEMPLATE",
+        "--encoding=ENCODING",
         "--threshold=PERCENT",
         "--fuzzy",
         "--nofuzzy",

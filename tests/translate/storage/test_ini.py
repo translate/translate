@@ -67,6 +67,15 @@ class TestINIStore(test_monolingual.TestMonolingualStore):
         assert len(store.units) == 1
         assert store.units[0].source == "value"
 
+    def test_encoding(self) -> None:
+        content = "[default]\nkey=zkouška sirén\n".encode("iso-8859-2")
+        store = self.StoreClass(encoding="iso-8859-2")
+
+        store.parse(content)
+
+        assert store.units[0].source == "zkouška sirén"
+        assert bytes(store) == content
+
     def test_new_entry_preserves_crlf(self) -> None:
         content = b"[default]\r\n; comment\r\nkey=value\r\n"
         store = self.StoreClass()

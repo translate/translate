@@ -47,7 +47,8 @@ Options (csv2po):
 -t TEMPLATE, --template=TEMPLATE   read from TEMPLATE in po, pot, pot formats
 -S, --timestamp       skip conversion if the output file has newer timestamp
 -P, --pot             output PO Templates (.pot) rather than PO files (.po)
---charset=CHARSET     set charset to decode from csv files
+--encoding=ENCODING, --charset=ENCODING
+                      override the encoding of the input file
 --columnorder=COLUMNORDER   specify the order and position of columns (location,source,target,context)
 --duplicates=DUPLICATESTYLE
                       what to do with duplicate strings (identical source
