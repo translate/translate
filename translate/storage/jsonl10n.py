@@ -539,6 +539,20 @@ class I18NextV4File(JsonNestedFile):
         if plural_tags is None:
             plural_tags = self.get_plural_tags()
         if isinstance(data, dict):
+            valid_plural_bases = set()
+            invalid_plural_bases = set()
+            for key, value in data.items():
+                if "_" not in key:
+                    continue
+                plural_base, suffix = key.rsplit("_", 1)
+                if suffix not in cldr_plural_categories:
+                    continue
+                if isinstance(value, str):
+                    valid_plural_bases.add(plural_base)
+                else:
+                    invalid_plural_bases.add(plural_base)
+            valid_plural_bases.difference_update(invalid_plural_bases)
+
             processed_plural_bases = set()
 
             for k, v in data.items():
@@ -548,7 +562,10 @@ class I18NextV4File(JsonNestedFile):
                 if "_" in k:
                     plural_base, suffix = k.rsplit("_", 1)
 
-                if suffix in cldr_plural_categories:
+                if (
+                    suffix in cldr_plural_categories
+                    and plural_base in valid_plural_bases
+                ):
                     if plural_base in processed_plural_bases:
                         continue
                     processed_plural_bases.add(plural_base)
