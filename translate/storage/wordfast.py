@@ -81,8 +81,10 @@ Extended Attributes
 
 import csv
 import time
+from codecs import BOM_UTF16_BE, BOM_UTF16_LE
 from io import StringIO
 
+from translate.lang import data
 from translate.storage import base
 
 WF_TIMEFORMAT = "%Y%m%d~%H%M%S"
@@ -182,7 +184,52 @@ WF_ESCAPE_MAP = (
 """Mapping of Wordfast &'XX; escapes to correct Unicode characters"""
 
 TAB_UTF16 = b"\x00\x09"
-"""The tab \\t character as it would appear in UTF-16 encoding"""
+"""The tab \\t character as it would appear in UTF-16BE encoding."""
+
+TAB_UTF16_LE = b"\x09\x00"
+"""The tab \\t character as it would appear in UTF-16LE encoding."""
+
+
+def detect_encoding(content: bytes) -> str:
+    """Detect the encodings supported by Wordfast files."""
+    if content.startswith((BOM_UTF16_LE, BOM_UTF16_BE)):
+        return "utf-16"
+    if content.startswith(b"%\x00"):
+        return "utf-16-le"
+    if content.startswith(b"\x00%"):
+        return "utf-16-be"
+
+    first_line = content.split(b"\n", maxsplit=1)[0]
+    positions = range(0, len(first_line) - 1, 2)
+    if any(
+        first_line[position : position + 2] == TAB_UTF16_LE for position in positions
+    ):
+        return "utf-16-le"
+    if any(first_line[position : position + 2] == TAB_UTF16 for position in positions):
+        return "utf-16-be"
+    if TAB_UTF16 in first_line:
+        return "utf-16"
+    return "iso-8859-1"
+
+
+def _from_wordfast_language(language: str | None) -> str | None:
+    """Convert a Wordfast language code to the toolkit representation."""
+    if not language:
+        return None
+    normalized = data.normalize_code(language.removeprefix("%"))
+    if normalized.endswith("-01"):
+        return normalized[:-3]
+    return normalized
+
+
+def _to_wordfast_language(language: str | None) -> str:
+    """Convert a toolkit language code to the Wordfast representation."""
+    if not language:
+        return ""
+    normalized = data.normalize_code(language.removeprefix("%"))
+    if len(normalized) == 2:
+        normalized = f"{normalized}-01"
+    return normalized.upper()
 
 
 def _char_to_wf(string):
@@ -276,7 +323,7 @@ class WordfastHeader:
     """A wordfast translation memory header."""
 
     def __init__(self, header=None) -> None:
-        self._header_dict = []
+        self._header_dict: dict[str, str | None] = {}
         if not header:
             self.header = self._create_default_header()
         elif isinstance(header, dict):
@@ -302,13 +349,29 @@ class WordfastHeader:
 
     header = property(getheader, setheader)
 
-    def settargetlang(self, newlang) -> None:
-        self._header_dict["target-lang"] = f"%{newlang}"  # ty:ignore[invalid-assignment]
+    def getsourcelang(self) -> str | None:
+        """Get the source language without Wordfast-specific syntax."""
+        return _from_wordfast_language(self._header_dict.get("src-lang"))
 
-    targetlang = property(None, settargetlang)
+    def setsourcelang(self, newlang: str | None) -> None:
+        """Set the source language using Wordfast-specific syntax."""
+        language = _to_wordfast_language(newlang)
+        self._header_dict["src-lang"] = f"%{language}" if language else ""
+
+    sourcelang = property(getsourcelang, setsourcelang)
+
+    def gettargetlang(self) -> str | None:
+        """Get the target language without Wordfast-specific syntax."""
+        return _from_wordfast_language(self._header_dict.get("target-lang"))
+
+    def settargetlang(self, newlang) -> None:
+        language = _to_wordfast_language(newlang)
+        self._header_dict["target-lang"] = f"%{language}" if language else ""
+
+    targetlang = property(gettargetlang, settargetlang)
 
     def settucount(self, count) -> None:
-        self._header_dict["tucount"] = f"%TU={count:08d}"  # ty:ignore[invalid-assignment]
+        self._header_dict["tucount"] = f"%TU={count:08d}"
 
     tucount = property(None, settucount)
 
@@ -353,10 +416,25 @@ class WordfastUnit(base.MetadataTranslationUnit):
         self._rich_target = None
         self._set_source_or_target("target", target)
 
-    def settargetlang(self, newlang: str) -> None:
-        self._metadata_dict["target-lang"] = newlang
+    def getsourcelang(self) -> str | None:
+        """Get the unit source language."""
+        return _from_wordfast_language(self._metadata_dict.get("src-lang"))
 
-    targetlang = property(None, settargetlang)
+    def setsourcelang(self, newlang: str | None) -> None:
+        """Set the unit source language."""
+        self._metadata_dict["src-lang"] = _to_wordfast_language(newlang)
+
+    sourcelang = property(getsourcelang, setsourcelang)
+
+    def gettargetlang(self) -> str | None:
+        """Get the unit target language."""
+        return _from_wordfast_language(self._metadata_dict.get("target-lang"))
+
+    def settargetlang(self, newlang: str | None) -> None:
+        """Set the unit target language."""
+        self._metadata_dict["target-lang"] = _to_wordfast_language(newlang)
+
+    targetlang = property(gettargetlang, settargetlang)
 
     def __str__(self) -> str:
         return str(self._metadata_dict)
@@ -384,6 +462,26 @@ class WordfastTMFile(base.TranslationStore):
         if inputfile is not None:
             self.parse(inputfile)
 
+    def getsourcelanguage(self) -> str | None:
+        """Get the file-level source language from the Wordfast header."""
+        return self.header.sourcelang
+
+    def setsourcelanguage(self, sourcelanguage: str) -> None:
+        """Set the file-level source language in the Wordfast header."""
+        self.header.sourcelang = sourcelanguage
+
+    sourcelanguage = property(getsourcelanguage, setsourcelanguage)
+
+    def gettargetlanguage(self) -> str | None:
+        """Get the file-level target language from the Wordfast header."""
+        return self.header.targetlang
+
+    def settargetlanguage(self, targetlanguage: str | None) -> None:
+        """Set the file-level target language in the Wordfast header."""
+        self.header.targetlang = targetlanguage
+
+    targetlanguage = property(gettargetlanguage, settargetlanguage)
+
     def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
         """Parsese the given file or file source string."""
         if hasattr(input, "name"):
@@ -394,10 +492,7 @@ class WordfastTMFile(base.TranslationStore):
             tmsrc = input.read()
             input.close()
             input = tmsrc
-        if TAB_UTF16 in input.split(b"\n")[0]:
-            self.encoding = "utf-16"
-        else:
-            self.encoding = "iso-8859-1"
+        self.encoding = detect_encoding(input)
         try:
             input = input.decode(self.encoding)
         except UnicodeDecodeError as error:
@@ -444,4 +539,15 @@ class WordfastTMFile(base.TranslationStore):
 
         for unit in translated_units:
             writer.writerow(unit.metadata)
-        out.write(output.getvalue().encode(self.encoding))
+        content = output.getvalue()
+        try:
+            if self.encoding == "utf-16":
+                serialized = BOM_UTF16_LE + content.encode("utf-16-le")
+            else:
+                serialized = content.encode(self.encoding)
+        except UnicodeEncodeError:
+            if self.encoding != self.default_encoding:
+                raise
+            self.encoding = "utf-16"
+            serialized = BOM_UTF16_LE + content.encode("utf-16-le")
+        out.write(serialized)
