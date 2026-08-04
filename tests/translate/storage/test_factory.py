@@ -1,5 +1,6 @@
 import os
 from bz2 import BZ2File
+from codecs import BOM_UTF16_BE, BOM_UTF16_LE
 from gzip import GzipFile
 from io import BytesIO
 
@@ -171,3 +172,23 @@ class TestWordfastFactory(BaseTestFactory):
         b"""%20070801~103212	%User ID,S,S SMURRAY,SMS Samuel Murray-Smit,SM Samuel Murray-Smit,MW Mary White,DS Deepak Shota,MT! Machine translation (15),AL! Alignment (10),SM Samuel Murray,	%TU=00000075	%AF-ZA	%Wordfast TM v.5.51r/00	%EN-ZA	%---80597535	Subject (5),EL,EL Electronics,AC Accounting,LE Legal,ME Mechanics,MD Medical,LT Literary,AG Agriculture,CO Commercial	Client (5),LS,LS LionSoft Corp,ST SuperTron Inc,CA CompArt Ltd			"""
         b"""20070801~103248	SM	0	AF-ZA	Langeraad en duimpie	EN-ZA	Big Ben and Little John	EL	LS"""
     )
+
+    @pytest.mark.parametrize(
+        ("encoding", "bom"),
+        [("utf-16-le", BOM_UTF16_LE), ("utf-16-be", BOM_UTF16_BE)],
+    )
+    def test_utf16_getobject(self, encoding: str, bom: bytes) -> None:
+        content = bom + self.file_content.decode("iso-8859-1").encode(encoding)
+        store = factory.getobject(givefile(self.filename, content))
+        assert isinstance(store, self.expected_instance)
+        assert store.encoding == "utf-16"
+
+    @pytest.mark.parametrize(
+        ("encoding", "bom"),
+        [("utf-16-le", BOM_UTF16_LE), ("utf-16-be", BOM_UTF16_BE)],
+    )
+    def test_utf16_getobject_without_name(self, encoding: str, bom: bytes) -> None:
+        content = bom + self.file_content.decode("iso-8859-1").encode(encoding)
+        store = factory.getobject(BytesIO(content))
+        assert isinstance(store, self.expected_instance)
+        assert store.encoding == "utf-16"

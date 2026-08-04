@@ -44,6 +44,7 @@ class po2wordfast:
             target = inunit.target
             newunit = wffile.addsourceunit(source)
             newunit.target = target
+            newunit.sourcelang = sourcelanguage
             newunit.targetlang = targetlanguage
 
 
@@ -52,7 +53,8 @@ def convertpo(
 ) -> int:
     """Reads in stdin using fromfileclass, converts using convertorclass, writes to stdout."""
     convertor = po2wordfast()
-    outputfile.wffile.header.targetlang = targetlanguage
+    outputfile.wffile.setsourcelanguage(sourcelanguage)
+    outputfile.wffile.settargetlanguage(targetlanguage)
     convertor.convertfiles(inputfile, outputfile.wffile, sourcelanguage, targetlanguage)
     return 1
 
@@ -85,7 +87,6 @@ class WfOptionParser(convert.ArchiveConvertOptionParser):
             raise ValueError("You must specify the target language")
         super().recursiveprocess(options)
         with open(options.output, "wb") as self.output:
-            # self.outputarchive.wffile.setsourcelanguage(options.sourcelanguage)
             self.outputarchive.wffile.serialize(self.output)
 
 

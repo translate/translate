@@ -74,14 +74,14 @@ def _examine_txt(storefile):
     if isinstance(storefile, str) and os.path.exists(storefile):
         storefile = open(storefile, "rb")
     try:
-        start = storefile.read(600).strip()
+        start = storefile.read(600)
     except AttributeError:
         raise ValueError("Need to read object to determine type") from None
     # Some encoding magic for Wordfast
     # pylint: disable-next=import-outside-toplevel
     from translate.storage import wordfast  # ruff:ignore[import-outside-top-level]
 
-    encoding = "utf-16" if wordfast.TAB_UTF16 in start.split(b"\n")[0] else "iso-8859-1"
+    encoding = wordfast.detect_encoding(start)
     start = start.decode(encoding)
     if "%Wordfast TM" in start:
         pseudo_extension = "_wftm"
@@ -96,17 +96,28 @@ def _examine_txt(storefile):
 _hiddenclasses = {"txt": _examine_txt}
 
 
+def _is_wordfast(content: bytes) -> bool:
+    """Detect Wordfast content using its supported encodings."""
+    # pylint: disable-next=import-outside-toplevel
+    from translate.storage import wordfast  # ruff:ignore[import-outside-top-level]
+
+    try:
+        return "%Wordfast TM" in content.decode(wordfast.detect_encoding(content))
+    except UnicodeDecodeError:
+        return False
+
+
 def _guess_extension(storefile):
     """
     Guesses the type of a file object by looking at the first few
     characters.  The return value is a file extension.
     """
-    start = storefile.read(300).strip()
+    start = storefile.read(600)
     if b"<xliff " in start:
         extension = "xlf"
     elif b'msgid "' in start:
         extension = "po"
-    elif b"%Wordfast TM" in start:
+    elif _is_wordfast(start):
         extension = "txt"
     elif b"<!DOCTYPE TS>" in start:
         extension = "ts"
