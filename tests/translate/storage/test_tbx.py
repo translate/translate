@@ -553,6 +553,22 @@ class TestTBXfile(test_base.TestTranslationStore):
         assert tbxfile.units[1].source == "English second term"
         assert tbxfile.units[1].target is None
 
+    def test_missing_source_target_insert_preserves_order_fallback(self) -> None:
+        tbxdata = self.language_selection_tbx(
+            """                <langSet xml:lang="de"><tig><term>Farbe</term></tig></langSet>"""
+        )
+        tbxfile = tbx.tbxfile.parsestring(
+            tbxdata, sourcelanguage="en", targetlanguage="fr"
+        )
+        unit = tbxfile.units[0]
+
+        assert unit.source is None
+        unit.target = "couleur"
+
+        reparsed = tbx.tbxfile.parsestring(bytes(tbxfile))
+        assert reparsed.units[0].source == "Farbe"
+        assert reparsed.units[0].target == "couleur"
+
     def test_multilingual_target_language_selection_without_source_match(self) -> None:
         tbxdata = self.language_selection_tbx(
             """                <langSet xml:lang="de"><tig><term>Farbe</term></tig></langSet>
