@@ -186,7 +186,8 @@ class tmxfile(lisa.LISAfile[tmxunit]):
     def __init__(
         self, inputfile=None, sourcelanguage=None, targetlanguage=None, **kwargs
     ) -> None:
-        self._source_language_explicit = sourcelanguage is not None
+        source_language_explicit = sourcelanguage is not None
+        self._source_language_explicit = source_language_explicit
         if inputfile is None and sourcelanguage is None:
             sourcelanguage = "en"
         super().__init__(
@@ -195,6 +196,7 @@ class tmxfile(lisa.LISAfile[tmxunit]):
             targetlanguage=targetlanguage,
             **kwargs,
         )
+        self._source_language_explicit = source_language_explicit
         if inputfile is not None:
             if self._source_language_explicit:
                 assert sourcelanguage is not None
@@ -243,10 +245,12 @@ class tmxfile(lisa.LISAfile[tmxunit]):
                 if language is not None and text is not None:
                     self.languageindex.setdefault((language, text), []).append(unit)
 
-    def addsourceunit(self, source):
+    def addsourceunit(self, source, sourcelang=None):
         unit = self.UnitClass(None)
         unit._store = self
-        unit.source = source
+        if sourcelang is not None:
+            unit.xmlelement.set("srclang", sourcelang)
+        unit.setsource(source, sourcelang)
         self.addunit(unit)
         return unit
 
@@ -270,16 +274,12 @@ class tmxfile(lisa.LISAfile[tmxunit]):
         self, source, srclang, translation, translang, comment=None, context=None
     ) -> None:
         """Addtranslation method for testing old unit tests."""
-        unit = self.addsourceunit(source)
-        unit.target = translation
+        unit = self.addsourceunit(source, srclang)
+        unit.settarget(translation, translang, append=True)
         if comment is not None and len(comment) > 0:
             unit.addnote(comment)
         if context is not None and len(context) > 0:
             unit.setcontext(context)
-
-        tuvs = unit.xmlelement.iterdescendants(self.namespaced("tuv"))
-        setXMLlang(next(tuvs), srclang)
-        setXMLlang(next(tuvs), translang)
 
     def translate(self, sourcetext, sourcelang=None, targetlang=None):  # ty:ignore[invalid-method-override]
         """Return the requested translation for a source string."""
@@ -294,4 +294,12 @@ class tmxfile(lisa.LISAfile[tmxunit]):
             return None
         if targetlang:
             return unit.gettarget(targetlang)
+        if source_language is not None and self.targetlanguage is None:
+            source_node = unit._get_language_node(source_language)
+            target_node = unit._get_fallback_target_node(
+                unit.getlanguageNodes(), source_node
+            )
+            return unit.getNodeText(
+                target_node, getXMLspace(unit.xmlelement, unit._default_xml_space)
+            )
         return unit.target

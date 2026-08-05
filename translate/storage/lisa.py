@@ -352,14 +352,27 @@ class MultilingualLISAunit(LISAunit):
     def source(self, source) -> None:
         self.setsource(source)
 
+    def _invalidate_store_indexes(self) -> None:
+        store = getattr(self, "_store", None)
+        if store is not None:
+            if hasattr(store, "_invalidate_indexes"):
+                store._invalidate_indexes()
+            else:
+                store.locationindex = {}
+                store.sourceindex = {}
+                store.id_index = {}
+
     def setsource(self, text, sourcelang=None) -> None:
-        super().setsource(
-            text, sourcelang or self._store_language_or_default("sourcelanguage", "en")
-        )
+        super().setsource(text, sourcelang or self._get_source_language() or "en")
+        self._invalidate_store_indexes()
 
     def set_target_dom(self, dom_node, append=False) -> None:
         language_nodes = self.getlanguageNodes()
-        target_node = self.get_target_dom()
+        target_node = (
+            self._get_language_node(getXMLlang(dom_node))
+            if dom_node is not None
+            else self.get_target_dom()
+        )
         if dom_node is None:
             if not append and target_node is not None:
                 self.xmlelement.remove(target_node)
@@ -373,10 +386,12 @@ class MultilingualLISAunit(LISAunit):
             self.xmlelement.append(dom_node)
         else:
             source_node = self.get_source_dom()
-            if source_node is None:
-                self.xmlelement.insert(1, dom_node)
+            insert_index = self.xmlelement.index(language_nodes[0])
+            if source_node is not None:
+                insert_index = self.xmlelement.index(source_node) + 1
             else:
-                self.xmlelement.insert(self.xmlelement.index(source_node) + 1, dom_node)
+                insert_index += 1
+            self.xmlelement.insert(insert_index, dom_node)
 
     def get_target_dom(self, lang=None):
         if lang:
@@ -412,11 +427,31 @@ class MultilingualLISAunit(LISAunit):
     target_dom = property(get_target_dom)
 
     def settarget(self, target, lang=None, append=False) -> None:
-        super().settarget(
-            target,
-            lang or self._store_language_or_default("targetlanguage", "xx"),
-            append=append,
+        if self._rich_target is not None:
+            self._rich_target = None
+        target_language = lang or self._store_language_or_default(
+            "targetlanguage", "xx"
         )
+        language_node = (
+            self._get_language_node(target_language)
+            if lang is not None
+            else self.target_dom
+        )
+        if target is not None:
+            if language_node is None:
+                language_node = self.createlanguageNode(
+                    target_language, target, "target"
+                )
+                self.set_target_dom(language_node, append)
+            else:
+                if self.textNode:
+                    terms = language_node.iter(self.namespaced(self.textNode))
+                    with contextlib.suppress(StopIteration):
+                        language_node = next(terms)
+                language_node.text = target
+        elif language_node is not None:
+            self.xmlelement.remove(language_node)
+        self._invalidate_store_indexes()
 
 
 U = TypeVar("U", bound=LISAunit)
