@@ -154,6 +154,12 @@ def wordsinunit(unit):
     return sourcewords, targetwords
 
 
+class ExtendedStatsDict(TypedDict):
+    units: int
+    sourcewords: int
+    targetwords: int
+
+
 class StatsDict(TypedDict, total=False):
     filename: str | BinaryIO
     total: int
@@ -167,8 +173,7 @@ class StatsDict(TypedDict, total=False):
     untranslatedsourcewords: int
     reviewsourcewords: int
     totalsourcewords: int
-    units: int
-    extended: dict[str, StatsDict]
+    extended: dict[str, ExtendedStatsDict]
 
 
 def calcstats(filename: str | BinaryIO) -> StatsDict:
@@ -192,7 +197,7 @@ def calcstats(filename: str | BinaryIO) -> StatsDict:
     stats["reviewsourcewords"] = 0
 
     # Extended state tracking
-    extended_stats: dict[str, StatsDict] = {}
+    extended_stats: dict[str, ExtendedStatsDict] = {}
 
     # Single pass through all units
     for unit in store.units:
@@ -234,7 +239,11 @@ def calcstats(filename: str | BinaryIO) -> StatsDict:
 
         extended_state = extended_state_strings[state]
         if extended_state not in extended_stats:
-            extended_stats[extended_state] = cast("StatsDict", defaultdict(int))
+            extended_stats[extended_state] = {
+                "units": 0,
+                "sourcewords": 0,
+                "targetwords": 0,
+            }
 
         extended_stats[extended_state]["units"] += 1
         extended_stats[extended_state]["sourcewords"] += sourcewords
@@ -519,14 +528,14 @@ class StatCollector:
     @cached_property
     def totals(self) -> StatsDict:
         """Total stats."""
-        totals = cast("StatsDict", defaultdict(int))
+        totals: defaultdict[str, int] = defaultdict(int)
         for stats in self._results:
             for key, value in stats.items():
                 if key in {"extended", "filename"}:
                     # FIXME: calculate extended totals
                     continue
-                totals[key] += cast("int", value)  # ty: ignore[unsupported-operator]
-        return totals
+                totals[key] += cast("int", value)
+        return cast("StatsDict", totals)
 
 
 def main(arguments=None) -> None:
