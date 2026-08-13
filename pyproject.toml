@@ -515,7 +515,7 @@ Wil = "Wil"
 extend-exclude = [
   "docs/commands/poterminology_stopword_file.rst",
   "tests/odf_xliff/*.xlf",
-  "tests/translate/filters/test_checks.py",
+  "tests/translate/filters/checks/",
   "tests/translate/lang/test_*.py",
   "tests/translate/lang/test_identify.py",
   "tests/translate/tools/data/pocount_syntax_errors/",
