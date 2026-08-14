@@ -225,8 +225,10 @@ PO or XLIFF files.  Here are the helper file and their descriptions.
 
 * autocorrect.py -- when using :opt:`--autocorrect` it will attempt some basic
   corrections found in this file
-* checks.py -- the heart. This contains: the actual checks and their error
-  reports, and defined variables and accelerators for e.g, :opt:`--mozilla`
+* checks/ -- the heart. This package contains: the actual checks and their
+  error reports, and defined variables and accelerators for e.g,
+  :opt:`--mozilla` (one module per project, ``standard.py`` holds the checks
+  shared by all of them)
 * decorations.py -- various helper functions to identify accelerators,
   variables and markers
 * helpers.py -- functions used by the tests

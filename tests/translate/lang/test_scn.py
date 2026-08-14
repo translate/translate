@@ -1,8 +1,7 @@
 import string
 
+from tests.translate.filters.checks.helpers import fails, passes
 from translate.lang.scn import SicilianChecker
-
-from ..filters.test_checks import fails, passes
 
 
 def test_italianisms() -> None:
