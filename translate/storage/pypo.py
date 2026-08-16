@@ -769,8 +769,8 @@ class pounit(pocommon.pounit):
 
         def add_prev_msgid_lines(lines, prefix, header, var) -> None:
             if var:
-                lines.append(f"{prefix} {header} {var[0]}\n")
-                lines.extend(f"{prefix} {line}\n" for line in var[1:])
+                lines.append(f"{prefix} {header} {var[0]}{self.newline}")
+                lines.extend(f"{prefix} {line}{self.newline}" for line in var[1:])
 
         def add_prev_msgid_info(lines, prefix) -> None:
             add_prev_msgid_lines(lines, prefix, "msgctxt", self.prev_msgctxt)

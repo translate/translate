@@ -938,6 +938,19 @@ msgstr "fichier"
         assert pofile.units[0].getnotes() == "Note!"
         assert bytes(pofile) == posource
 
+    def test_dos_newlines_prev_msgid(self) -> None:
+        """Checks that previous msgid comments honor dos newlines."""
+        posource = (
+            b"#, fuzzy\r\n"
+            b'#| msgid "Encryption"\r\n'
+            b'msgid "256-bit encryption"\r\n'
+            b'msgstr "test"\r\n'
+        )
+        pofile = self.poparse(posource)
+        assert len(pofile.units) == 1
+        assert pofile.units[0].prev_source == "Encryption"
+        assert bytes(pofile) == posource
+
     def test_mac_newlines(self) -> None:
         """Checks that mac newlines are properly parsed."""
         posource = b'msgid "test me"\rmsgstr ""\r'
