@@ -2452,6 +2452,18 @@ wheels = [
 ]
 
 [[package]]
+name = "tomlrt"
+version = "2.3.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "typing-extensions", marker = "python_full_version < '3.12'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/72/76/d79f58d95f40b0a2fe66a34b770f9dbbba808457627d03b21af3a98f3e67/tomlrt-2.3.3.tar.gz", hash = "sha256:36782cf6821cd1962f34a548c2023984e4a60e32f286c36d7dc1430b77ac59ba", size = 137213, upload-time = "2026-10-31T13:41:48.755Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/cc/f7/e95278e99677fdc69ecfde788ee6fc8d7309ac5e9e8805d1af2fa8e0debe/tomlrt-2.3.3-py3-none-any.whl", hash = "sha256:40a4c27d11566f1746673dd1693fec4f31d7f2e45a22483ec93d9a3a8554f63e", size = 149808, upload-time = "2026-10-31T13:41:47.303Z" },
+]
+
+[[package]]
 name = "translate-toolkit"
 source = { editable = "." }
 dependencies = [
@@ -2471,7 +2483,7 @@ all = [
     { name = "pyparsing" },
     { name = "rapidfuzz" },
     { name = "ruamel-yaml" },
-    { name = "tomlkit" },
+    { name = "tomlrt" },
     { name = "vobject" },
 ]
 chardet = [
@@ -2505,7 +2517,7 @@ subtitles = [
     { name = "aeidon" },
 ]
 toml = [
-    { name = "tomlkit" },
+    { name = "tomlrt" },
 ]
 yaml = [
     { name = "ruamel-yaml" },
@@ -2579,7 +2591,7 @@ requires-dist = [
     { name = "pyparsing", marker = "extra == 'rc'", specifier = ">=3.2.0,<3.4" },
     { name = "rapidfuzz", marker = "extra == 'levenshtein'", specifier = ">=3.14.0" },
     { name = "ruamel-yaml", marker = "extra == 'yaml'", specifier = ">=0.19.1,<0.20.0" },
-    { name = "tomlkit", marker = "extra == 'toml'", specifier = ">=0.13.0,<0.16.0" },
+    { name = "tomlrt", marker = "extra == 'toml'", specifier = ">=2.2.2,<3.0" },
     { name = "translate-toolkit", extras = ["chardet", "fluent", "ical", "ini", "levenshtein", "markdown", "php", "rc", "spellcheck", "subtitles", "toml", "yaml"], marker = "extra == 'all'" },
     { name = "unicode-segmentation-rs", specifier = ">=0.2.0,<1.1" },
     { name = "vobject", marker = "extra == 'ical'", specifier = ">=0.9.9,<0.10" },
