@@ -21,12 +21,10 @@ r"""Class that manages TOML data files for translation."""
 from __future__ import annotations
 
 import uuid
+from io import BytesIO
 from typing import IO, TYPE_CHECKING, Any, cast
 
-from tomlkit import TOMLDocument, document, loads
-from tomlkit.exceptions import TOMLKitError
-from tomlkit.items import AbstractTable
-from tomlkit.items import Comment as TOMLComment
+from tomlrt import Array, Document, Table, TOMLError, dump, load
 
 from translate.lang.data import cldr_plural_categories
 from translate.misc.multistring import multistring
@@ -34,7 +32,6 @@ from translate.storage import base
 
 if TYPE_CHECKING:
     from collections.abc import Generator
-    from io import BytesIO
 
 
 class TOMLUnit(base.DictUnit):
@@ -43,6 +40,9 @@ class TOMLUnit(base.DictUnit):
 
     Represents a single translatable string extracted from a TOML file.
     """
+
+    # New nested mappings are rendered as ``[section]`` blocks, not inline tables.
+    dict_factory = Table.section
 
     def __init__(self, source=None, **kwargs) -> None:
         """Initialize a TOML unit with optional source text."""
@@ -97,7 +97,7 @@ class TOMLFile(base.DictStore[TOMLUnit]):
     A TOML localization file.
 
     Handles plain TOML files with key-value pairs and nested structures.
-    Uses tomlkit library to preserve formatting and comments during roundtrips.
+    Uses tomlrt library to preserve formatting and comments during roundtrips.
     """
 
     UnitClass = TOMLUnit
@@ -110,9 +110,9 @@ class TOMLFile(base.DictStore[TOMLUnit]):
         if inputfile is not None:
             self.parse(inputfile)
 
-    def get_root_node(self) -> TOMLDocument:
+    def get_root_node(self) -> Document:
         """Return an empty root node for serialization."""
-        return document()
+        return Document()
 
     def serialize(self, out: IO[bytes]) -> None:
         """Serialize the store to a file."""
@@ -122,76 +122,26 @@ class TOMLFile(base.DictStore[TOMLUnit]):
 
         self.serialize_units(self._original)
 
-        # Convert TOMLDocument to string
-        result = self._original.as_string()
-        # Add trailing newline if not empty and not already present
-        if result and not result.endswith("\n"):
-            result += "\n"
-
-        # Write to file
-        out.write(result.encode(self.encoding))
-
-    def _get_key_comment(
-        self, table: AbstractTable | TOMLDocument | None, key: str | int | None
-    ) -> str | None:
-        """
-        Extract the comment that appears before a key in a TOML table.
-
-        TOML comments appear in the body as (None, Comment) tuples.
-        Returns comment text without the '#' prefix, or None if no comment.
-        """
-        if not isinstance(table, (AbstractTable, TOMLDocument)):
-            return None
-
-        # Check if the table has a body attribute
-        if not hasattr(table, "body"):
-            return None
-
-        # Find comments that appear before this key in the body
-        comments = []
-
-        for item in table.body:  # ty:ignore[not-iterable]
-            if not isinstance(item, tuple) or len(item) != 2:
-                continue
-
-            item_key, item_value = item
-
-            # If this is our key, we found it
-            if item_key is not None and str(item_key).strip() == str(key):
-                # Return the collected comments for this key
-                return "\n".join(comments) if comments else None
-
-            # If we hit another key before finding ours, reset comments
-            if item_key is not None:
-                comments = []
-                continue
-
-            # Collect comments that appear before our key
-            # Check if this is a Comment (not Whitespace)
-            if item_key is None and isinstance(item_value, TOMLComment):
-                # Get the comment text directly
-                comment_text = str(item_value)
-                if comment_text.startswith("#"):
-                    comments.append(comment_text[1:].strip())
-
-        return None
+        dump(self._original, out)
 
     def _parse_dict(
         self,
-        data: AbstractTable | TOMLDocument,
+        data: Table | Document,
         prev: base.UnitId,
-    ) -> Generator[tuple[base.UnitId, str, str | None]]:
+    ) -> Generator[tuple[base.UnitId, str, str]]:
         """Parse a TOML table/dictionary recursively, yielding units."""
+        comments = data.leading_comments
         for k, v in data.items():
-            yield from self._flatten(v, prev.extend("key", k), parent_map=data, key=k)
+            yield from self._flatten(
+                v, prev.extend("key", k), comment="\n".join(comments.get(k, ()))
+            )
 
     def _flatten(
         self,
-        data: AbstractTable | TOMLDocument,
+        data: Any,
         prev: base.UnitId | None = None,
-        parent_map: AbstractTable | TOMLDocument | None = None,
-        key: str | int | None = None,
-    ) -> Generator[tuple[base.UnitId, str, str | None]]:
+        comment: str = "",
+    ) -> Generator[tuple[base.UnitId, str, str]]:
         """
         Flatten TOML structure recursively into translatable units.
 
@@ -200,16 +150,19 @@ class TOMLFile(base.DictStore[TOMLUnit]):
         """
         if prev is None:
             prev = self.UnitClass.IdClass([])
-        if isinstance(data, (AbstractTable, TOMLDocument)):
+        if isinstance(data, dict):
             yield from self._parse_dict(data, prev)
         elif isinstance(data, str):
-            yield (prev, data, self._get_key_comment(parent_map, key))
+            yield (prev, data, comment)
         elif isinstance(data, (bool, int, float)):
-            yield (prev, str(data), self._get_key_comment(parent_map, key))
+            yield (prev, str(data), comment)
         elif isinstance(data, list):
+            # Only an Array carries element comments; an AoT keeps them on the
+            # headers of its entries, which _parse_dict reads.
+            comments = data.leading_comments if isinstance(data, Array) else {}
             for k, v in enumerate(data):
                 yield from self._flatten(
-                    v, prev.extend("index", k), parent_map=data, key=k
+                    v, prev.extend("index", k), comment="\n".join(comments.get(k, ()))
                 )
         elif data is None:
             pass
@@ -236,11 +189,15 @@ class TOMLFile(base.DictStore[TOMLUnit]):
             src = input.read()  # ty:ignore[call-non-callable]
             input.close()  # ty:ignore[unresolved-attribute]
             input = src
-        if isinstance(input, bytes):
-            input = input.decode(self.encoding)
+        if isinstance(input, str):
+            # TOML is defined to be UTF-8, load() decodes it as such.
+            input = input.encode("utf-8")
+        if input and not input.endswith(b"\n"):
+            # Ensure output ends with a newline, matching the file's line endings.
+            input += b"\r\n" if b"\r\n" in input else b"\n"
         try:
-            self._original = loads(input)
-        except TOMLKitError as e:
+            self._original = load(BytesIO(input))
+        except TOMLError as e:
             raise base.ParseError(e) from e
 
         for k, data, comment in self._flatten(self._original):
@@ -269,28 +226,26 @@ class GoI18nTOMLUnit(TOMLUnit):
         """Check if this unit contains plural strings (more than one form)."""
         return isinstance(self.target, multistring) and len(self.target.strings) > 1
 
-    def convert_target(self) -> str | dict[str, str | None]:
+    def convert_target(self) -> Table:
         """
         Convert the target value for serialization.
 
-        For Go i18n format, returns a dict with CLDR plural category keys.
+        For Go i18n format, returns a table with CLDR plural category keys.
         Singular strings are wrapped in {"other": value} to preserve structure.
         """
         if not isinstance(self.target, multistring):
-            # For Go i18n format, even singular strings should be in a dict with "other" key
-            # to preserve the table structure
-            return {"other": self.target}
+            # For Go i18n format, even singular strings should be in a table with "other"
+            # key to preserve the table structure
+            return Table.section({"other": self.target})
 
         tags = self._store.get_plural_tags(self.target)  # ty:ignore[unresolved-attribute]
 
-        # Sync plural_strings elements to plural_tags count.
+        # Sync plural_strings elements to plural_tags count. TOML has no null, so
+        # untranslated forms are serialized as blank strings.
         strings = self.sync_plural_count(self.target, tags)
-        if any(strings):
-            # Replace blank strings by None to distinguish not completed translations
-            strings = [string or None for string in strings]
 
-        # Return a dict with plural tags as keys
-        return dict(zip(tags, strings, strict=True))
+        # Return a table with plural tags as keys
+        return Table.section(dict(zip(tags, strings, strict=True)))
 
 
 class GoI18nTOMLFile(TOMLFile):
@@ -318,18 +273,22 @@ class GoI18nTOMLFile(TOMLFile):
 
     def _parse_dict(
         self,
-        data: AbstractTable | TOMLDocument,
+        data: Table | Document,
         prev: base.UnitId,
-    ) -> Generator[tuple[base.UnitId, str | multistring, str | None]]:
+    ) -> Generator[tuple[base.UnitId, str | multistring, str]]:
         """
         Parse a TOML table, checking for plural forms.
 
         Detects pluralized strings where all keys are CLDR plural categories.
         Special case: a table with only "other" key is treated as singular.
+
+        Such a table is a single unit, so its header comment is that unit's note.
         """
+        header_comment = "\n".join(data.header_leading_comments)
+
         # Special case: table with only "other" key is treated as singular
         if data and len(data) == 1 and "other" in data:
-            yield (prev, str(data["other"]), None)
+            yield (prev, str(data["other"]), header_comment)
             return
 
         # Does this look like a plural?
@@ -344,7 +303,7 @@ class GoI18nTOMLFile(TOMLFile):
             # Skip blank values (all plurals are None or empty)
             if values and not all(not value for value in values):
                 # Use blank string instead of None for missing forms
-                yield (prev, multistring(values), None)
+                yield (prev, multistring(values), header_comment)
 
             return
 
