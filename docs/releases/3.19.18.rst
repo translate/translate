@@ -1,0 +1,55 @@
+Translate Toolkit 3.19.18
+*************************
+
+*Released on 19 August 2026*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- CSV, INI, PHP, properties, and subtitles
+
+  - Support explicit input and template encoding overrides
+
+- Fluent
+
+  - Report unexpected entry types correctly during syntax validation
+
+- Gettext PO
+
+  - Preserve the catalog newline style in previous msgid comments
+
+- i18next JSON
+
+  - Preserve nested objects whose keys end in CLDR plural suffixes
+
+- TMX
+
+  - Select source and target variants by language in multilingual memories
+  - Preserve variant language identity and translation lookup indexes during
+    edits
+
+- Wordfast
+
+  - Restore Unicode output for content outside Latin-1
+  - Populate, normalize, and detect source and target language metadata
+
+Other
+-----
+
+- Refactor translation checks into focused modules while preserving public
+  imports
+- Support aeidon 2 for subtitle handling
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+Michal Čihař
+Volker Braun
+Xavi Ivars
