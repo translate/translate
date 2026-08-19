@@ -84,13 +84,13 @@ def create_termunit(
 class TerminologyExtractor:
     def __init__(
         self,
-        foldtitle=True,
-        ignorecase=False,
-        accelchars="",
-        termlength=3,
-        sourcelanguage="en",
-        invert=False,
-        stopfile=None,
+        foldtitle: bool = True,
+        ignorecase: bool = False,
+        accelchars: str = "",
+        termlength: int = 3,
+        sourcelanguage: str = "en",
+        invert: bool = False,
+        stopfile: str | None = None,
     ) -> None:
         self.foldtitle = foldtitle
         self.ignorecase = ignorecase
@@ -105,12 +105,14 @@ class TerminologyExtractor:
         self.stopfoldtitle = True
         self.stopignorecase = False
 
-        if stopfile is None:
+        self.stopfile: str
+        if stopfile is not None:
+            self.stopfile = stopfile
+        else:
             with contextlib.suppress(Exception):
-                stopfile = file_discovery.get_abs_data_filename(
+                self.stopfile = file_discovery.get_abs_data_filename(
                     f"stoplist-{self.sourcelanguage}"
                 )
-        self.stopfile = stopfile
         self.parse_stopword_file()
 
         # handles c-format and python-format
