@@ -1017,19 +1017,19 @@ class FluentUnit(base.TranslationUnit):
             # Also unexpected since we started with "-tmp =", which starts a new
             # Term.
             return (
-                f"Unexpectedly found a fluent {entry.__class__.name__} "
+                f"Unexpectedly found a fluent {entry.__class__.__name__} "
                 "Entry rather than a Term"
             )
         if self.fluent_type != "Term" and not isinstance(entry, ast.Message):
             # Also unexpected since we started with "tmp =", which starts a new
             # Message.
             return (
-                f"Unexpectedly found a fluent {entry.__class__.name__} "
+                f"Unexpectedly found a fluent {entry.__class__.__name__} "
                 "Entry rather than a Message"
             )
 
         if not isinstance(entry, (ast.Term, ast.Message)):
-            return f"Unexpectedly found a fluent {entry.__class__.name__}"
+            return f"Unexpectedly found a fluent {entry.__class__.__name__}"
 
         dup_attr = _duplicate_attribute(entry)
         if dup_attr:
