@@ -31,7 +31,7 @@ A lot can be said about translation in general, but this is only meant to give
 you some tips.
 
 Be aware of potential complications arising from translation memory. For example, you can have
-exact matches (in which the translated string is identical to what was translated before),
+exact matches (in which the source string is identical to one translated before),
 or In Context Exact (ICE) matches, in which some translation tools specifically indicate
 that surrounding text in the paragraph is identical as well. Matches could also indicate agreement
 with regards to domain, file, date, etc.
