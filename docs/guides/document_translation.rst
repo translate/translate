@@ -6,7 +6,7 @@ Document translation
 Translating documents can be quite different from translating software
 interfaces. Many issues specific to software localisation might not be relevant
 in documents, such as accelerators, translation length, constructed phrases,
-etc.  However, document translation has several other issues that is good to be
+etc.  However, document translation has several other issues that are good to be
 aware of.
 
 .. _document_translation#preparing_for_translation:
@@ -30,18 +30,17 @@ Translation
 A lot can be said about translation in general, but this is only meant to give
 you some tips.
 
-Be to be aware of issues arising out of translation memory. You could possibly
-have exact matches (identical string translated before), or In Context Exact
-(ICE) matches, where some translation tools will specifically indicate that the
-translation is identical, but also that the surrounding text from the paragraph
-is the same. It could also indicate agreement with regards to domain, file,
-date, etc.
+Be aware of potential complications arising from translation memory. For example, you can have
+exact matches (in which the translated string is identical to what was translated before),
+or In Context Exact (ICE) matches, in which some translation tools specifically indicate
+that surrounding text in the paragraph is identical as well. Matches could also indicate agreement
+with regards to domain, file, date, etc.
 
 .. _document_translation#post-processing:
 
 Post-processing
 ===============
-After generating the translated document, you very likely need to do some post
+After generating the translated document, you will very likely need to do some post
 processing. Things to consider:
 
 * Ensuring correct translation in cases where context might not have been
