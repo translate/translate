@@ -19,7 +19,7 @@ def test_untranslated() -> None:
 
 def test_unchanged() -> None:
     """Tests unchanged entries."""
-    stdchecker = checks.StandardChecker(checks.CheckerConfig(accelmarkers="&"))
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(accelmarkers=["&"]))
     assert fails(stdchecker.unchanged, "Unchanged", "Unchanged")
     assert fails(stdchecker.unchanged, "&Unchanged", "Un&changed")
     assert passes(stdchecker.unchanged, "Unchanged", "Changed")

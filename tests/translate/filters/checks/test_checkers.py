@@ -141,7 +141,7 @@ def test_skip_checks_per_language_in_some_checkers() -> None:
     # Prepare the checkers and the unit.
     mozillachecker = checks.MozillaChecker(checkerconfig=checker_config)
     stdchecker = checks.StandardChecker(
-        checkerconfig=checks.CheckerConfig(accelmarkers="&", targetlanguage="gl")
+        checkerconfig=checks.CheckerConfig(accelmarkers=["&"], targetlanguage="gl")
     )
 
     str1, str2, __ = strprep("&Check for updates", "আপডেইটসমূহৰ বাবে নিৰীক্ষণ কৰক")

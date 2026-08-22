@@ -5,9 +5,12 @@ This used to be the ``__main__`` block of ``translate.filters.checks``, which
 only printed the failures it found; the failures are asserted here instead.
 """
 
+from collections.abc import Mapping
+
 from pytest import mark
 
 from translate.filters import checks
+from translate.filters.checks.checker import CheckFailureInfo
 from translate.filters.decorators import Category
 from translate.lang import data
 from translate.storage import base
@@ -44,7 +47,9 @@ TESTSET = [
 ]
 
 
-def run_filters(str1, str2, categorised=False):
+def run_filters(
+    str1: str, str2: str, categorised: bool = False
+) -> Mapping[str, str | CheckFailureInfo]:
     """Runs the standard checks over a pair of strings."""
     unit = base.TranslationUnit(data.normalize(str1))
     unit.target = data.normalize(str2)
@@ -53,7 +58,7 @@ def run_filters(str1, str2, categorised=False):
 
 
 @mark.parametrize(("source", "target", "expected"), TESTSET)
-def test_standard_batch_run(source, target, expected) -> None:
+def test_standard_batch_run(source: str, target: str, expected: list[str]) -> None:
     """Tests that the standard checks flag exactly the expected problems."""
     failures = run_filters(source, target)
 

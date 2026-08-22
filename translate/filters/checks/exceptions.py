@@ -26,7 +26,7 @@ class FilterFailure(Exception):
     explanation or a comment.
     """
 
-    def __init__(self, messages) -> None:
+    def __init__(self, messages: str | list[str]) -> None:
         if not isinstance(messages, list):
             messages = [messages]
 
