@@ -19,8 +19,15 @@
 
 """Checks specific to iOS."""
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Unpack
+
 from translate.filters.checks.config import CheckerConfig
 from translate.filters.checks.standard import StandardChecker
+
+if TYPE_CHECKING:
+    from translate.filters.checks.checker import CheckerKwargs
 
 iosconfig = CheckerConfig(
     varmatches=[("$(", ")"), ("%", "@")],
@@ -28,7 +35,7 @@ iosconfig = CheckerConfig(
 
 
 class IOSChecker(StandardChecker):
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs: Unpack[CheckerKwargs]) -> None:
         checkerconfig = kwargs.get("checkerconfig")
 
         if checkerconfig is None:

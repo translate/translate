@@ -9,7 +9,7 @@ from translate.storage import base
 
 def test_accelerators() -> None:
     """Tests accelerators."""
-    stdchecker = checks.StandardChecker(checks.CheckerConfig(accelmarkers="&"))
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(accelmarkers=["&"]))
     assert passes(stdchecker.accelerators, "&File", "&Fayile")
     assert fails(stdchecker.accelerators, "&File", "Fayile")
     assert fails(stdchecker.accelerators, "File", "&Fayile")
@@ -55,12 +55,12 @@ def test_accelerators() -> None:
 
     # Bug 289: accept accented accelerator characters
     afchecker = checks.StandardChecker(
-        checks.CheckerConfig(accelmarkers="&", targetlanguage="fi")
+        checks.CheckerConfig(accelmarkers=["&"], targetlanguage="fi")
     )
     assert passes(afchecker.accelerators, "&Reload Frame", "P&äivitä kehys")
 
     trchecker = checks.StandardChecker(
-        checks.CheckerConfig(accelmarkers="&", targetlanguage="tr")
+        checks.CheckerConfig(accelmarkers=["&"], targetlanguage="tr")
     )
     assert passes(trchecker.accelerators, "&Download", "&İndir")
     assert passes(trchecker.accelerators, "&Business", "İ&ş")
@@ -143,7 +143,7 @@ def test_noaccelerators_only_in_mozilla_checker() -> None:
         checkerconfig=checks.CheckerConfig(targetlanguage="gl")
     )
     stdchecker = checks.StandardChecker(
-        checkerconfig=checks.CheckerConfig(accelmarkers="&", targetlanguage="as")
+        checkerconfig=checks.CheckerConfig(accelmarkers=["&"], targetlanguage="as")
     )
 
     # Accelerators check passes for Assamesse in Mozilla checker. It fails for

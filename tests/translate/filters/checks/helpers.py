@@ -1,10 +1,13 @@
 """Shared assertion helpers for the checker tests."""
 
 from translate.filters import checks
+from translate.filters.decorators import BoundCheckFunction
 from translate.lang import data
 
 
-def strprep(str1, str2, message=None):
+def strprep(
+    str1: str, str2: str, message: str | None = None
+) -> tuple[str, str, str | None]:
     return (
         data.normalize(str1),
         data.normalize(str2),
@@ -12,12 +15,12 @@ def strprep(str1, str2, message=None):
     )
 
 
-def check_category(filterfunction):
+def check_category(filterfunction: BoundCheckFunction) -> bool:
     """Checks whether ``filterfunction`` has defined a category or not."""
     return filterfunction.__name__ in filterfunction.__self__.categories
 
 
-def passes(filterfunction, str1, str2):
+def passes(filterfunction: BoundCheckFunction, str1: str, str2: str) -> bool:
     """Returns whether the given strings pass on the given test, handling FilterFailures."""
     str1, str2, _no_message = strprep(str1, str2)
     try:
@@ -28,7 +31,9 @@ def passes(filterfunction, str1, str2):
     return filterresult and check_category(filterfunction)
 
 
-def fails(filterfunction, str1, str2, message=None) -> bool:
+def fails(
+    filterfunction: BoundCheckFunction, str1: str, str2: str, message: str | None = None
+) -> bool:
     """Returns whether the given strings fail on the given test, handling only FilterFailures."""
     str1, str2, message = strprep(str1, str2, message)
     try:
@@ -48,7 +53,9 @@ def fails(filterfunction, str1, str2, message=None) -> bool:
     return not filterresult
 
 
-def fails_serious(filterfunction, str1, str2, message=None) -> bool:
+def fails_serious(
+    filterfunction: BoundCheckFunction, str1: str, str2: str, message: str | None = None
+) -> bool:
     """Returns whether the given strings fail on the given test, handling only SeriousFilterFailures."""
     str1, str2, message = strprep(str1, str2, message)
     try:
