@@ -59,7 +59,7 @@ class StandardChecker(TranslationChecker):
     """The basic test suite for source -> target translations."""
 
     @extraction
-    def untranslated(self, str1, str2) -> bool:
+    def untranslated(self, str1: str, str2: str) -> bool:
         """
         Checks whether a string has been translated at all.
 
@@ -71,7 +71,7 @@ class StandardChecker(TranslationChecker):
         return not (len(str1.strip()) > 0 and len(str2) == 0)
 
     @functional
-    def unchanged(self, str1, str2) -> bool:
+    def unchanged(self, str1: str, str2: str) -> bool:
         """
         Checks whether a translation is basically identical to the original
         string.
@@ -110,7 +110,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @functional
-    def blank(self, str1, str2) -> bool:
+    def blank(self, str1: str, str2: str) -> bool:
         """
         Checks whether a translation is totally blank.
 
@@ -127,7 +127,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @functional
-    def short(self, str1, str2) -> bool:
+    def short(self, str1: str, str2: str) -> bool:
         """
         Checks whether a translation is much shorter than the original
         string.
@@ -145,7 +145,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @functional
-    def long(self, str1, str2) -> bool:
+    def long(self, str1: str, str2: str) -> bool:
         """
         Checks whether a translation is much longer than the original
         string.
@@ -164,7 +164,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @critical
-    def escapes(self, str1, str2) -> bool:
+    def escapes(self, str1: str, str2: str) -> bool:
         r"""
         Checks whether escaping is consistent between the two strings.
 
@@ -182,7 +182,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @critical
-    def newlines(self, str1, str2) -> bool:
+    def newlines(self, str1: str, str2: str) -> bool:
         r"""
         Checks whether newlines are consistent between the two strings.
 
@@ -201,7 +201,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @critical
-    def tabs(self, str1, str2) -> bool:
+    def tabs(self, str1: str, str2: str) -> bool:
         r"""
         Checks whether tabs are consistent between the two strings.
 
@@ -213,7 +213,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @cosmetic
-    def singlequoting(self, str1, str2) -> bool:
+    def singlequoting(self, str1: str, str2: str) -> bool:
         """
         Checks whether singlequoting is consistent between the two strings.
 
@@ -238,7 +238,7 @@ class StandardChecker(TranslationChecker):
         raise FilterFailure("Different quotation marks")
 
     @cosmetic
-    def doublequoting(self, str1, str2) -> bool:
+    def doublequoting(self, str1: str, str2: str) -> bool:
         """
         Checks whether doublequoting is consistent between the two strings.
 
@@ -259,7 +259,7 @@ class StandardChecker(TranslationChecker):
         raise FilterFailure("Different quotation marks")
 
     @cosmetic
-    def doublespacing(self, str1, str2) -> bool:
+    def doublespacing(self, str1: str, str2: str) -> bool:
         """
         Checks for bad double-spaces by comparing to original.
 
@@ -276,7 +276,7 @@ class StandardChecker(TranslationChecker):
         raise FilterFailure("Different use of double spaces")
 
     @cosmetic
-    def puncspacing(self, str1, str2) -> bool:
+    def puncspacing(self, str1: str, str2: str) -> bool:
         """
         Checks for bad spacing after punctuation.
 
@@ -351,7 +351,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @critical
-    def printf(self, str1, str2) -> int:
+    def printf(self, str1: str, str2: str) -> int:
         """
         Checks whether printf format strings match.
 
@@ -481,11 +481,11 @@ class StandardChecker(TranslationChecker):
         return 1
 
     @critical
-    def pythonbraceformat(self, str1, str2) -> int:
+    def pythonbraceformat(self, str1: str, str2: str) -> int:
         """Checks whether python brace format strings match."""
 
         # Helper function
-        def max_anons(anons):
+        def max_anons(anons: list[str]) -> int:
             """
             Takes a list of anonymous placeholder variables, e.g.
             ['', '1', ...]
@@ -572,7 +572,7 @@ class StandardChecker(TranslationChecker):
         )
 
     @functional
-    def accelerators(self, str1, str2) -> bool:
+    def accelerators(self, str1: str, str2: str) -> bool:
         """
         Checks whether accelerators are consistent between the two strings.
 
@@ -646,7 +646,7 @@ class StandardChecker(TranslationChecker):
     #        return True
 
     @critical
-    def variables(self, str1, str2) -> bool:
+    def variables(self, str1: str, str2: str) -> bool:
         """
         Checks whether variables of various forms are consistent between the
         two strings.
@@ -660,7 +660,7 @@ class StandardChecker(TranslationChecker):
         mismatch1, mismatch2 = [], []
         varnames1, varnames2 = [], []
 
-        def redecorate(startmaker, endmaker, var):
+        def redecorate(startmaker: str, endmaker: str | int | None, var: str) -> str:
             if startmarker and endmarker:
                 if isinstance(endmarker, int):
                     return startmarker + var
@@ -706,7 +706,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @functional
-    def functions(self, str1, str2) -> bool:
+    def functions(self, str1: str, str2: str) -> bool:
         """
         Checks that function names are not translated.
 
@@ -721,7 +721,7 @@ class StandardChecker(TranslationChecker):
         raise FilterFailure("Different functions")
 
     @functional
-    def emails(self, str1, str2) -> bool:
+    def emails(self, str1: str, str2: str) -> bool:
         """
         Checks that emails are not translated.
 
@@ -735,7 +735,7 @@ class StandardChecker(TranslationChecker):
         raise FilterFailure("Different e-mails")
 
     @functional
-    def urls(self, str1, str2) -> bool:
+    def urls(self, str1: str, str2: str) -> bool:
         """
         Checks that URLs are not translated.
 
@@ -752,7 +752,7 @@ class StandardChecker(TranslationChecker):
         raise FilterFailure("Different URLs")
 
     @functional
-    def numbers(self, str1, str2) -> bool:
+    def numbers(self, str1: str, str2: str) -> bool:
         """
         Checks whether numbers of various forms are consistent between the
         two strings.
@@ -768,7 +768,7 @@ class StandardChecker(TranslationChecker):
         raise FilterFailure("Different numbers")
 
     @cosmetic
-    def startwhitespace(self, str1, str2) -> bool:
+    def startwhitespace(self, str1: str, str2: str) -> bool:
         """
         Checks whether whitespace at the beginning of the strings matches.
 
@@ -779,7 +779,7 @@ class StandardChecker(TranslationChecker):
         raise FilterFailure("Different whitespace at the start")
 
     @cosmetic
-    def endwhitespace(self, str1, str2) -> bool:
+    def endwhitespace(self, str1: str, str2: str) -> bool:
         """
         Checks whether whitespace at the end of the strings matches.
 
@@ -800,7 +800,7 @@ class StandardChecker(TranslationChecker):
         raise FilterFailure("Different whitespace at the end")
 
     @cosmetic
-    def startpunc(self, str1, str2) -> bool:
+    def startpunc(self, str1: str, str2: str) -> bool:
         """
         Checks whether punctuation at the beginning of the strings match.
 
@@ -823,7 +823,7 @@ class StandardChecker(TranslationChecker):
         raise FilterFailure("Different punctuation at the start")
 
     @cosmetic
-    def endpunc(self, str1, str2) -> bool:
+    def endpunc(self, str1: str, str2: str) -> bool:
         """
         Checks whether punctuation at the end of the strings match.
 
@@ -863,7 +863,7 @@ class StandardChecker(TranslationChecker):
         raise FilterFailure("Different punctuation at the end")
 
     @functional
-    def purepunc(self, str1, str2) -> bool:
+    def purepunc(self, str1: str, str2: str) -> bool:
         """
         Checks that strings that are purely punctuation are not changed.
 
@@ -881,7 +881,7 @@ class StandardChecker(TranslationChecker):
         raise FilterFailure("Consider not translating punctuation")
 
     @cosmetic
-    def brackets(self, str1, str2) -> bool:
+    def brackets(self, str1: str, str2: str) -> bool:
         """
         Checks that the number of brackets in both strings match.
 
@@ -916,7 +916,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @functional
-    def sentencecount(self, str1, str2) -> bool:
+    def sentencecount(self, str1: str, str2: str) -> bool:
         """
         Checks that the number of sentences in both strings match.
 
@@ -942,7 +942,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @functional
-    def options(self, str1, str2) -> bool:
+    def options(self, str1: str, str2: str) -> bool:
         """
         Checks that command line options are not translated.
 
@@ -971,7 +971,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @cosmetic
-    def startcaps(self, str1, str2) -> bool:
+    def startcaps(self, str1: str, str2: str) -> bool:
         """
         Checks that the message starts with the correct capitalisation.
 
@@ -1005,7 +1005,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @cosmetic
-    def simplecaps(self, str1, str2) -> bool:
+    def simplecaps(self, str1: str, str2: str) -> bool:
         """
         Checks the capitalisation of two strings isn't wildly different.
 
@@ -1053,7 +1053,7 @@ class StandardChecker(TranslationChecker):
         raise FilterFailure("Different capitalization")
 
     @functional
-    def acronyms(self, str1, str2) -> bool:
+    def acronyms(self, str1: str, str2: str) -> bool:
         """
         Checks that acronyms that appear are unchanged.
 
@@ -1094,7 +1094,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @cosmetic
-    def doublewords(self, str1, str2) -> bool:
+    def doublewords(self, str1: str, str2: str) -> bool:
         """
         Checks for repeated words in the translation.
 
@@ -1123,7 +1123,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @functional
-    def notranslatewords(self, str1, str2) -> bool:
+    def notranslatewords(self, str1: str, str2: str) -> bool:
         """
         Checks that words configured as untranslatable appear in the
         translation too.
@@ -1159,7 +1159,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @functional
-    def musttranslatewords(self, str1, str2) -> bool:
+    def musttranslatewords(self, str1: str, str2: str) -> bool:
         """
         Checks that words configured as definitely translatable don't appear
         in the translation.
@@ -1196,7 +1196,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @cosmetic
-    def validchars(self, str1, str2) -> bool:
+    def validchars(self, str1: str, str2: str) -> bool:
         """
         Checks that only characters specified as valid appear in the
         translation.
@@ -1231,7 +1231,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @functional
-    def filepaths(self, str1, str2) -> bool:
+    def filepaths(self, str1: str, str2: str) -> bool:
         """
         Checks that file paths have not been translated.
 
@@ -1246,7 +1246,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @critical
-    def xmltags(self, str1, str2) -> bool:
+    def xmltags(self, str1: str, str2: str) -> bool:
         """
         Checks that XML/HTML tags have not been translated.
 
@@ -1296,7 +1296,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @functional
-    def kdecomments(self, str1, str2):
+    def kdecomments(self, str1: str, str2: str) -> bool:
         r"""
         Checks to ensure that no KDE style comments appear in the
         translation.
@@ -1308,7 +1308,7 @@ class StandardChecker(TranslationChecker):
         return str2.find("\n_:") == -1 and not str2.startswith("_:")
 
     @extraction
-    def compendiumconflicts(self, str1, str2):
+    def compendiumconflicts(self, str1: str, str2: str) -> bool:
         """
         Checks for Gettext compendium conflicts (#-#-#-#-#).
 
@@ -1320,7 +1320,7 @@ class StandardChecker(TranslationChecker):
         return str2.find("#-#-#-#-#") == -1
 
     @cosmetic
-    def simpleplurals(self, str1, str2) -> bool:
+    def simpleplurals(self, str1: str, str2: str) -> bool:
         """
         Checks for English style plural(s) for you to review.
 
@@ -1337,7 +1337,7 @@ class StandardChecker(TranslationChecker):
         simply test that nothing like "(s)" was used in the translation.
         """
 
-        def numberofpatterns(string, patterns):
+        def numberofpatterns(string: str, patterns: list[str]) -> int:
             number = 0
 
             for pattern in patterns:
@@ -1360,7 +1360,7 @@ class StandardChecker(TranslationChecker):
         raise FilterFailure("The original uses plural(s)")
 
     @functional
-    def spellcheck(self, str1, str2) -> bool:
+    def spellcheck(self, str1: str, str2: str) -> bool:
         """
         Checks words that don't pass a spell check.
 
@@ -1418,7 +1418,7 @@ class StandardChecker(TranslationChecker):
         return True
 
     @extraction
-    def credits(self, str1, str2) -> bool:
+    def credits(self, str1: str, str2: str) -> bool:
         """
         Checks for messages containing translation credits instead of
         normal translations.

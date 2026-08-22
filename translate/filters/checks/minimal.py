@@ -19,14 +19,21 @@
 
 """Checkers running only a small selection of the standard checks."""
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Unpack
+
 from translate.filters.checks.config import CheckerConfig
 from translate.filters.checks.standard import StandardChecker
+
+if TYPE_CHECKING:
+    from translate.filters.checks.checker import CheckerKwargs
 
 minimalconfig = CheckerConfig()
 
 
 class MinimalChecker(StandardChecker):
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs: Unpack[CheckerKwargs]) -> None:
         checkerconfig = kwargs.get("checkerconfig")
 
         if checkerconfig is None:
@@ -47,7 +54,7 @@ reducedconfig = CheckerConfig()
 
 
 class ReducedChecker(StandardChecker):
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs: Unpack[CheckerKwargs]) -> None:
         checkerconfig = kwargs.get("checkerconfig")
 
         if checkerconfig is None:

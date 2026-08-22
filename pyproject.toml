@@ -360,7 +360,6 @@ extend-safe-fixes = [
 ignore = [
   "A001",  # TODO: Variable is shadowing a Python builtin
   "A002",  # TODO: overriding builtins (might need noqa tags)
-  "ANN",  # TODO: type annotations missing
   "ARG001",  # TODO: Unused function argument (mostly for API compatibility)
   "ARG002",  # TODO: Unused method argument (mostly for API compatibility)
   "ARG004",  # TODO: Unused static method argument
@@ -455,6 +454,8 @@ preview = true
 select = ["ALL"]
 
 [tool.ruff.lint.per-file-ignores]
+"!**/translate/filters/checks/**.py" = ["ANN"]  # turn annotations on for select files
+"pyproject.toml" = ["rule-codes-in-selectors"]
 "tests/**.py" = ["PLC1901", "T201"]
 "tools/benchmark.py" = ["T201"]
 "translate/misc/progressbar.py" = ["T201"]

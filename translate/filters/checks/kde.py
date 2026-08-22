@@ -19,8 +19,15 @@
 
 """Checks specific to KDE."""
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Unpack
+
 from translate.filters.checks.config import CheckerConfig
 from translate.filters.checks.standard import StandardChecker
+
+if TYPE_CHECKING:
+    from translate.filters.checks.checker import CheckerKwargs
 
 kdeconfig = CheckerConfig(
     accelmarkers=["&"],
@@ -30,7 +37,7 @@ kdeconfig = CheckerConfig(
 
 
 class KdeChecker(StandardChecker):
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs: Unpack[CheckerKwargs]) -> None:
         # TODO allow setup of KDE plural and translator comments so that they do
         # not create false positives
         checkerconfig = kwargs.get("checkerconfig")

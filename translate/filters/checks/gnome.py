@@ -19,12 +19,18 @@
 
 """Checks specific to GNOME."""
 
+from __future__ import annotations
+
 import re
+from typing import TYPE_CHECKING, Unpack
 
 from translate.filters.checks.config import CheckerConfig
 from translate.filters.checks.exceptions import FilterFailure
 from translate.filters.checks.standard import StandardChecker
 from translate.filters.decorators import functional
+
+if TYPE_CHECKING:
+    from translate.filters.checks.checker import CheckerKwargs
 
 gconf_attribute_re = re.compile(r'"[a-z_]+?"')
 
@@ -36,7 +42,7 @@ gnomeconfig = CheckerConfig(
 
 
 class GnomeChecker(StandardChecker):
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs: Unpack[CheckerKwargs]) -> None:
         checkerconfig = kwargs.get("checkerconfig")
 
         if checkerconfig is None:
@@ -47,7 +53,7 @@ class GnomeChecker(StandardChecker):
         super().__init__(**kwargs)
 
     @functional
-    def gconf(self, str1, str2) -> bool:
+    def gconf(self, str1: str, str2: str) -> bool:
         """
         Checks if we have any gconf config settings translated.
 

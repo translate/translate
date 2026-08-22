@@ -19,14 +19,21 @@
 
 """Checks specific to Mozilla."""
 
+from __future__ import annotations
+
 import re
 import string
+from typing import TYPE_CHECKING, Unpack
 
 from translate.filters import decoration
 from translate.filters.checks.config import CheckerConfig
 from translate.filters.checks.exceptions import FilterFailure
 from translate.filters.checks.standard import StandardChecker
 from translate.filters.decorators import cosmetic, critical, extraction, functional
+
+if TYPE_CHECKING:
+    from translate.filters.checks.checker import CheckerKwargs, CheckFailures
+    from translate.storage.base import TranslationUnit
 
 mozillaconfig = CheckerConfig(
     accelmarkers=["&"],
@@ -67,7 +74,7 @@ class MozillaChecker(StandardChecker):
         # spellchecker:on
     ]
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs: Unpack[CheckerKwargs]) -> None:
         checkerconfig = kwargs.get("checkerconfig")
 
         if checkerconfig is None:
@@ -78,7 +85,7 @@ class MozillaChecker(StandardChecker):
         super().__init__(**kwargs)
 
     @extraction
-    def credits(self, str1, str2) -> bool:
+    def credits(self, str1: str, str2: str) -> bool:
         """
         Checks for messages containing translation credits instead of
         normal translations.
@@ -109,7 +116,7 @@ class MozillaChecker(StandardChecker):
     mozilla_dialog_valid_units = ["em", "px", "ch"]
 
     @critical
-    def dialogsizes(self, str1, str2) -> bool:
+    def dialogsizes(self, str1: str, str2: str) -> bool:
         """
         Checks that dialog sizes are not translated.
 
@@ -154,7 +161,7 @@ class MozillaChecker(StandardChecker):
         return True
 
     @functional
-    def numbers(self, str1, str2):
+    def numbers(self, str1: str, str2: str) -> bool:
         """
         Checks that numbers are not translated.
 
@@ -166,7 +173,7 @@ class MozillaChecker(StandardChecker):
         return super().numbers(str1, str2)
 
     @functional
-    def unchanged(self, str1, str2):
+    def unchanged(self, str1: str, str2: str) -> bool:
         """
         Checks whether a translation is basically identical to the original
         string.
@@ -182,7 +189,7 @@ class MozillaChecker(StandardChecker):
         return super().unchanged(str1, str2)
 
     @cosmetic
-    def accelerators(self, str1, str2):
+    def accelerators(self, str1: str, str2: str) -> bool:
         """
         Checks whether accelerators are consistent between the
         two strings.
@@ -230,7 +237,7 @@ class L20nChecker(MozillaChecker):
     ]
     complex_unit_pattern = "->"
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs: Unpack[CheckerKwargs]) -> None:
         checkerconfig = kwargs.get("checkerconfig")
 
         if checkerconfig is None:
@@ -239,7 +246,9 @@ class L20nChecker(MozillaChecker):
 
         super().__init__(**kwargs)
 
-    def run_filters(self, unit, categorised=False):
+    def run_filters(
+        self, unit: TranslationUnit, categorised: bool = False
+    ) -> CheckFailures:
         is_unit_complex = (
             self.complex_unit_pattern in unit.source
             or self.complex_unit_pattern in unit.target
