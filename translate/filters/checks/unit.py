@@ -19,15 +19,22 @@
 
 """Checks that inspect a whole translation unit rather than its strings."""
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from translate.filters.checks.checker import UnitChecker
 from translate.filters.decorators import critical, extraction
+
+if TYPE_CHECKING:
+    from translate.storage.base import TranslationUnit
 
 
 class StandardUnitChecker(UnitChecker):
     """The standard checks for common checks on translation units."""
 
     @extraction
-    def isfuzzy(self, unit) -> bool:
+    def isfuzzy(self, unit: TranslationUnit) -> bool:
         """
         Check if the unit has been marked fuzzy.
 
@@ -39,7 +46,7 @@ class StandardUnitChecker(UnitChecker):
         return not unit.isfuzzy()
 
     @extraction
-    def isreview(self, unit) -> bool:
+    def isreview(self, unit: TranslationUnit) -> bool:
         """
         Check if the unit has been marked review.
 
@@ -56,7 +63,7 @@ class StandardUnitChecker(UnitChecker):
         return not unit.isreview()
 
     @critical
-    def nplurals(self, unit):
+    def nplurals(self, unit: TranslationUnit) -> bool:
         """
         Checks for the correct number of noun forms for plural translations.
 
@@ -75,7 +82,7 @@ class StandardUnitChecker(UnitChecker):
         return True
 
     @extraction
-    def hassuggestion(self, unit) -> bool:
+    def hassuggestion(self, unit: TranslationUnit) -> bool:
         """
         Checks if there is at least one suggested translation for this unit.
 

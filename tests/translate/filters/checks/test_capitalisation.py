@@ -38,7 +38,7 @@ def test_startcaps() -> None:
     )
     assert fails(stdchecker.startcaps, "A text enclosed...", "ḽiṅwalwa ḽo katelwaho...")
     # Accelerators
-    stdchecker = checks.StandardChecker(checks.CheckerConfig(accelmarkers="&"))
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(accelmarkers=["&"]))
     assert passes(stdchecker.startcaps, "&Find", "Vi&nd")
     # Numbers - we really can't tell what should happen with numbers, so ignore
     # source or target that start with a number

@@ -19,7 +19,16 @@
 
 """Configuration of the checkers."""
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, TypeVar
+
 from translate.lang import data, factory
+
+if TYPE_CHECKING:
+    from translate.filters.checks.tags import TagProperty
+
+_T = TypeVar("_T")
 
 # (tag, attribute, value) specifies a certain attribute which can be changed/
 # ignored if it exists inside tag. In the case where there is a third element
@@ -28,8 +37,8 @@ from translate.lang import data, factory
 # If a certain item is None, it indicates that it is relevant for all values of
 # the property/tag that is specified as None. A non-None value of "value"
 # indicates that the value of the attribute must be taken into account.
-common_ignoretags = [(None, "xml-lang", None)]
-common_canchangetags = [
+common_ignoretags: list[TagProperty] = [(None, "xml-lang", None)]
+common_canchangetags: list[TagProperty] = [
     ("img", "alt", None),
     (None, "title", None),
     (None, "dir", None),
@@ -43,18 +52,18 @@ class CheckerConfig:
 
     def __init__(
         self,
-        targetlanguage=None,
-        accelmarkers=None,
-        varmatches=None,
-        notranslatewords=None,
-        musttranslatewords=None,
-        validchars=None,
-        punctuation=None,
-        endpunctuation=None,
-        ignoretags=None,
-        canchangetags=None,
-        criticaltests=None,
-        credit_sources=None,
+        targetlanguage: str | None = None,
+        accelmarkers: list[str] | None = None,
+        varmatches: list[tuple[str, str | int | None]] | None = None,
+        notranslatewords: list[str] | None = None,
+        musttranslatewords: list[str] | None = None,
+        validchars: str | None = None,
+        punctuation: str | None = None,
+        endpunctuation: str | None = None,
+        ignoretags: list[TagProperty] | None = None,
+        canchangetags: list[TagProperty] | None = None,
+        criticaltests: list[str] | None = None,
+        credit_sources: list[str] | None = None,
     ) -> None:
         # Init lists
         self.accelmarkers = self._init_list(accelmarkers)
@@ -89,7 +98,7 @@ class CheckerConfig:
         self.updatevalidchars(validchars)
 
     @staticmethod
-    def _init_list(list: list | None) -> list:
+    def _init_list(list: list[_T] | None) -> list[_T]:
         """
         Initialise configuration parameters that are lists.
 
@@ -101,7 +110,7 @@ class CheckerConfig:
         return list
 
     @staticmethod
-    def _init_default(param, default):
+    def _init_default(param: _T | None, default: _T) -> _T:
         """
         Initialise parameters that can have default options.
 
@@ -114,7 +123,7 @@ class CheckerConfig:
 
         return param
 
-    def update(self, otherconfig) -> None:
+    def update(self, otherconfig: CheckerConfig) -> None:
         """Combines the info in ``otherconfig`` into this config object."""
         self.targetlanguage = otherconfig.targetlanguage or self.targetlanguage
         self.updatetargetlanguage(self.targetlanguage)
@@ -133,7 +142,7 @@ class CheckerConfig:
         self.criticaltests.extend(otherconfig.criticaltests)
         self.credit_sources = otherconfig.credit_sources
 
-    def updatevalidchars(self, validchars) -> None:
+    def updatevalidchars(self, validchars: str | None) -> None:
         """Updates the map that eliminates valid characters."""
         if validchars is None:
             return
@@ -143,7 +152,7 @@ class CheckerConfig:
         }
         self.validcharsmap.update(validcharsmap)
 
-    def updatetargetlanguage(self, langcode) -> None:
+    def updatetargetlanguage(self, langcode: str | None) -> None:
         """
         Updates the target language in the config to the given target
         language and sets its script.

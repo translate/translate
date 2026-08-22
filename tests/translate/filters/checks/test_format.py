@@ -93,7 +93,7 @@ def test_printf() -> None:
     assert fails(stdchecker.printf, "delete %'d items", "supprimer éléments")
     assert fails(stdchecker.printf, "delete %'d items", "supprimer %d éléments")
     # checking omitted plural format string placeholder %.0s
-    stdchecker.hasplural = 1
+    stdchecker.hasplural = True
     assert passes(stdchecker.printf, "%d plurals", "%.0s plural")
     # checking POSIX thousands separator flag with plural
     assert passes(stdchecker.printf, "delete %'d items", "supprimer %'d éléments")

@@ -19,7 +19,10 @@
 
 """Checks specific to LibreOffice."""
 
+from __future__ import annotations
+
 import re
+from typing import TYPE_CHECKING, Unpack
 
 from translate.filters.checks.config import CheckerConfig
 from translate.filters.checks.exceptions import FilterFailure
@@ -27,6 +30,9 @@ from translate.filters.checks.openoffice import openofficeconfig
 from translate.filters.checks.standard import StandardChecker
 from translate.filters.checks.tags import tagname
 from translate.filters.decorators import critical
+
+if TYPE_CHECKING:
+    from translate.filters.checks.checker import CheckerKwargs
 
 # XML/HTML tags in LibreOffice help and readme, exclude short tags
 lo_tag_re = re.compile(r"""</?(?P<tag>[a-z][a-z_-]+)(?: +[a-z]+="[^"]+")* */?>""")
@@ -62,7 +68,7 @@ libreofficeconfig = CheckerConfig(
 
 
 class LibreOfficeChecker(StandardChecker):
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs: Unpack[CheckerKwargs]) -> None:
         checkerconfig = kwargs.get("checkerconfig")
 
         if checkerconfig is None:
@@ -74,7 +80,7 @@ class LibreOfficeChecker(StandardChecker):
         super().__init__(**kwargs)
 
     @critical
-    def validxml(self, str1, str2) -> bool:
+    def validxml(self, str1: str, str2: str) -> bool:
         """
         Check that all XML/HTML open/close tags has close/open pair in the
         translation.
@@ -112,6 +118,6 @@ class LibreOfficeChecker(StandardChecker):
         return True
 
     @critical
-    def pythonbraceformat(self, str1, str2) -> bool:
+    def pythonbraceformat(self, str1: str, str2: str) -> bool:
         """Not used in LibreOffice."""
         return True

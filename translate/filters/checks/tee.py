@@ -19,9 +19,25 @@
 
 """A checker delegating to several other checkers."""
 
+from __future__ import annotations
+
 import logging
+from typing import TYPE_CHECKING
 
 from translate.filters.checks.standard import StandardChecker
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
+    from translate.filters.checks.checker import (
+        CheckerErrorHandler,
+        CheckFailureInfo,
+        CheckFailures,
+        UnitChecker,
+    )
+    from translate.filters.checks.config import CheckerConfig
+    from translate.filters.decorators import CheckFunction
+    from translate.storage.base import TranslationStore, TranslationUnit
 
 logger = logging.getLogger(__name__)
 
@@ -31,16 +47,16 @@ class TeeChecker:
 
     #: Categories where each checking function falls into
     #: Function names are used as keys, categories are the values
-    categories = {}
+    categories: dict[str, int] = {}
 
     def __init__(
         self,
-        checkerconfig=None,
-        excludefilters=None,
-        limitfilters=None,
-        checkerclasses=None,
-        errorhandler=None,
-        languagecode=None,
+        checkerconfig: CheckerConfig | None = None,
+        excludefilters: dict[str, object] | None = None,
+        limitfilters: list[str] | None = None,
+        checkerclasses: Sequence[type[UnitChecker]] | None = None,
+        errorhandler: CheckerErrorHandler | None = None,
+        languagecode: str | None = None,
     ) -> None:
         """Construct a TeeChecker from the given checkers."""
         self.limitfilters = limitfilters
@@ -71,7 +87,11 @@ class TeeChecker:
         self.combinedfilters = self.getfilters(excludefilters, limitfilters)
         self.config = checkerconfig or self.checkers[0].config
 
-    def getfilters(self, excludefilters=None, limitfilters=None):
+    def getfilters(
+        self,
+        excludefilters: dict[str, object] | None = None,
+        limitfilters: list[str] | None = None,
+    ) -> dict[str, CheckFunction]:
         """
         Returns a dictionary of available filters, including/excluding
         those in the given lists.
@@ -96,16 +116,18 @@ class TeeChecker:
 
         return self.combinedfilters
 
-    def run_filters(self, unit, categorised=False):
+    def run_filters(
+        self, unit: TranslationUnit, categorised: bool = False
+    ) -> CheckFailures:
         """Run all the tests in the checker's suites."""
-        failures = {}
+        failures: dict[str, str | CheckFailureInfo] = {}
 
         for checker in self.checkers:
             failures.update(checker.run_filters(unit, categorised))
 
         return failures
 
-    def setsuggestionstore(self, store) -> None:
+    def setsuggestionstore(self, store: TranslationStore[TranslationUnit]) -> None:
         """
         Sets the filename that a checker should use for evaluating
         suggestions.

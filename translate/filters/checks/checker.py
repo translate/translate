@@ -21,21 +21,51 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable, Mapping
+from typing import TYPE_CHECKING, TypedDict
+
 from translate.filters import helpers, prefilters
 from translate.filters.checks.config import CheckerConfig
 from translate.filters.checks.exceptions import FilterFailure
 from translate.filters.checks.tags import tag_re
 from translate.lang import data
 
+if TYPE_CHECKING:
+    from types import FunctionType
 
-def cache_results(f):
-    def cached_f(self, param1):
+    from translate.filters.decorators import CheckFunction
+    from translate.storage.base import TranslationStore, TranslationUnit
+
+#: Signature of the callback invoked when a check raises an unexpected error.
+CheckerErrorHandler = Callable[..., object]
+
+
+class CheckerKwargs(TypedDict, total=False):
+    """Keyword arguments accepted by :class:`UnitChecker` and its subclasses."""
+
+    checkerconfig: CheckerConfig | None
+    excludefilters: dict[str, object] | None
+    limitfilters: list[str] | None
+    errorhandler: CheckerErrorHandler | None
+
+
+class CheckFailureInfo(TypedDict):
+    message: str
+    category: int
+
+
+#: Result of :meth:`UnitChecker.run_filters`, keyed by check/filter name.
+CheckFailures = Mapping[str, str | CheckFailureInfo]
+
+
+def cache_results(f: FunctionType) -> FunctionType:
+    def cached_f(self: UnitChecker, param1: str) -> str:
         key = (f.__name__, param1)
         res_cache = self.results_cache
 
         if key in res_cache:
             return res_cache[key]
-        value = f(self, param1)
+        value: str = f(self, param1)
         res_cache[key] = value
         return value
 
@@ -48,20 +78,20 @@ class UnitChecker:
     available in derived classes.
     """
 
-    preconditions = {}
+    preconditions: dict[str, tuple[str, ...]] = {}
 
     def __init__(
         self,
-        checkerconfig=None,
-        excludefilters=None,
-        limitfilters=None,
-        errorhandler=None,
+        checkerconfig: CheckerConfig | None = None,
+        excludefilters: dict[str, object] | None = None,
+        limitfilters: list[str] | None = None,
+        errorhandler: CheckerErrorHandler | None = None,
     ) -> None:
         self.errorhandler = errorhandler
 
         #: Categories where each checking function falls into
         #: Function names are used as keys, categories are the values
-        self.categories = {}
+        self.categories: dict[str, int] = {}
 
         if checkerconfig is None:
             self.setconfig(CheckerConfig())
@@ -78,9 +108,13 @@ class UnitChecker:
                 self.helperfunctions[functionname] = function
 
         self.defaultfilters = self.getfilters(excludefilters, limitfilters)
-        self.results_cache = {}
+        self.results_cache: dict[tuple[str, str], str] = {}
 
-    def getfilters(self, excludefilters=None, limitfilters=None):
+    def getfilters(
+        self,
+        excludefilters: dict[str, object] | None = None,
+        limitfilters: list[str] | None = None,
+    ) -> dict[str, CheckFunction]:
         """
         Returns dictionary of available filters, including/excluding those
         in the given lists.
@@ -112,7 +146,7 @@ class UnitChecker:
 
         return filters
 
-    def setconfig(self, config) -> None:
+    def setconfig(self, config: CheckerConfig) -> None:
         """Sets the accelerator list."""
         self.config = config
         self.accfilters = [
@@ -128,7 +162,7 @@ class UnitChecker:
             for startmatch, endmatch in self.config.varmatches
         ]
 
-    def setsuggestionstore(self, store) -> None:
+    def setsuggestionstore(self, store: TranslationStore[TranslationUnit]) -> None:
         """
         Sets the filename that a checker should use for evaluating
         suggestions.
@@ -139,26 +173,28 @@ class UnitChecker:
             self.suggestion_store.require_index()
 
     @cache_results
-    def filtervariables(self, str1):
+    def filtervariables(self, str1: str) -> str:
         """Filter out variables from ``str1``."""
         return helpers.multifilter(str1, self.varfilters)
 
     @cache_results
-    def removevariables(self, str1):
+    def removevariables(self, str1: str) -> str:
         """Remove variables from ``str1``."""
         return helpers.multifilter(str1, self.removevarfilter)
 
     @cache_results
-    def filteraccelerators(self, str1):
+    def filteraccelerators(self, str1: str) -> str:
         """Filter out accelerators from ``str1``."""
         return helpers.multifilter(str1, self.accfilters, None)
 
-    def filteraccelerators_by_list(self, str1, acceptlist=None):
+    def filteraccelerators_by_list(
+        self, str1: str, acceptlist: list[str] | None = None
+    ) -> str:
         """Filter out accelerators from ``str1``."""
         return helpers.multifilter(str1, self.accfilters, acceptlist)
 
     @cache_results
-    def filterwordswithpunctuation(self, str1):
+    def filterwordswithpunctuation(self, str1: str) -> str:
         """
         Replaces words with punctuation with their unpunctuated
         equivalents.
@@ -166,12 +202,12 @@ class UnitChecker:
         return prefilters.filterwordswithpunctuation(str1)
 
     @cache_results
-    def filterxml(self, str1):
+    def filterxml(self, str1: str) -> str:
         """Filter out XML from the string so only text remains."""
         return tag_re.sub("", str1)
 
     @staticmethod
-    def run_test(test, unit):
+    def run_test(test: Callable[..., object], unit: TranslationUnit) -> object:
         """
         Runs the given test on the given unit.
 
@@ -180,11 +216,11 @@ class UnitChecker:
         return test(unit)
 
     @property
-    def checker_name(self):
+    def checker_name(self) -> str:
         """Extract checker name, for example 'mozilla' from MozillaChecker."""
         return str(self.__class__.__name__).lower()[: -len("checker")]
 
-    def get_ignored_filters(self):
+    def get_ignored_filters(self) -> list[str]:
         """Return checker's additional filters for current language."""
         return list(
             set(
@@ -193,7 +229,9 @@ class UnitChecker:
             )
         )
 
-    def run_filters(self, unit, categorised: bool = False) -> dict[str, dict]:
+    def run_filters(
+        self, unit: TranslationUnit, categorised: bool = False
+    ) -> CheckFailures:
         """
         Run all the tests in this suite.
 
@@ -202,7 +240,7 @@ class UnitChecker:
            {'testname': { 'message': message_or_exception, 'category': failure_category } }
         """
         self.results_cache = {}
-        failures = {}
+        failures: dict[str, CheckFailureInfo] = {}
         ignores = self.get_ignored_filters()
         functionnames = self.defaultfilters.keys()
         priorityfunctionnames = self.preconditions.keys()
@@ -259,8 +297,7 @@ class UnitChecker:
         self.results_cache = {}
 
         if not categorised:
-            for name, info in failures.items():
-                failures[name] = info["message"]
+            return {name: info["message"] for name, info in failures.items()}
         return failures
 
 
@@ -274,16 +311,16 @@ class TranslationChecker(UnitChecker):
 
     def __init__(
         self,
-        checkerconfig=None,
-        excludefilters=None,
-        limitfilters=None,
-        errorhandler=None,
+        checkerconfig: CheckerConfig | None = None,
+        excludefilters: dict[str, object] | None = None,
+        limitfilters: list[str] | None = None,
+        errorhandler: CheckerErrorHandler | None = None,
     ) -> None:
         super().__init__(checkerconfig, excludefilters, limitfilters, errorhandler)
 
         self.locations = []
 
-    def run_test(self, test, unit):
+    def run_test(self, test: Callable[..., object], unit: TranslationUnit) -> object:
         """
         Runs the given test on the given unit.
 
@@ -307,7 +344,9 @@ class TranslationChecker(UnitChecker):
             return filterresult
         return test(self.str1, self.str2)
 
-    def run_filters(self, unit, categorised=False):
+    def run_filters(
+        self, unit: TranslationUnit, categorised: bool = False
+    ) -> CheckFailures:
         """
         Do some optimisation by caching some data of the unit for the
         benefit of :meth:`~TranslationChecker.run_test`.
