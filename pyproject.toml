@@ -454,13 +454,13 @@ preview = true
 select = ["ALL"]
 
 [tool.ruff.lint.per-file-ignores]
+"!**/translate/filters/checks/**.py" = ["ANN"]  # turn annotations on for select files
+"pyproject.toml" = ["rule-codes-in-selectors"]
 "tests/**.py" = ["PLC1901", "T201"]
 "tools/benchmark.py" = ["T201"]
 "translate/misc/progressbar.py" = ["T201"]
 "translate/storage/placeables/strelem.py" = ["T201"]
 "translate/tools/**.py" = ["T201"]
-"!**/translate/filters/checks/**.py" = ["ANN"]  # turn annotations on for select files
-"pyproject.toml" = ["rule-codes-in-selectors"]
 
 [tool.setuptools]
 include-package-data = true

@@ -660,9 +660,7 @@ class StandardChecker(TranslationChecker):
         mismatch1, mismatch2 = [], []
         varnames1, varnames2 = [], []
 
-        def redecorate(
-            startmaker: str, endmaker: str | int | None, var: str
-        ) -> str:
+        def redecorate(startmaker: str, endmaker: str | int | None, var: str) -> str:
             if startmarker and endmarker:
                 if isinstance(endmarker, int):
                     return startmarker + var
