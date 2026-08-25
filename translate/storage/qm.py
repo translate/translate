@@ -157,8 +157,9 @@ class qmfile(base.TranslationStore):
                 section_debug("Unknown", section_type, startsection, length)
             startsection = startsection + sectionheader + length
         pos = messages_start
+        messages_end = messages_start + len(messages_data)
         source = target = None
-        while pos < messages_start + len(messages_data):
+        while pos < messages_end:
             (subsection,) = struct.unpack(">B", input[pos : pos + 1])
             if subsection == 0x01:  # End
                 pos += 1
@@ -170,30 +171,48 @@ class qmfile(base.TranslationStore):
                     raise ValueError("Old .qm format with no source defined")
                 continue
             pos += 1
-            (length,) = struct.unpack(">l", input[pos : pos + 4])
+            if pos + 4 > messages_end:
+                raise ValueError("This is not a .qm file: message record truncated")
             if subsection == 0x03:  # Translation
-                if length != -1:
-                    (raw,) = struct.unpack(
-                        f">{length}s", input[pos + 4 : pos + 4 + length]
-                    )
+                (length,) = struct.unpack(">l", input[pos : pos + 4])
+                pos += 4
+                if length == -1:
+                    target = ""
+                else:
+                    if length < 0 or length % 2:
+                        raise ValueError(
+                            "This is not a .qm file: invalid translation length"
+                        )
+                    payload_end = pos + length
+                    if payload_end > messages_end:
+                        raise ValueError(
+                            "This is not a .qm file: translation length out of range"
+                        )
+                    raw = input[pos:payload_end]
                     string, _templen = codecs.utf_16_be_decode(raw)
                     if target:
                         target.extra_strings.append(string)
                     else:
                         target = multistring(string)
-                    pos = pos + 4 + length
-                else:
-                    target = ""
-                    pos += 4
-            elif subsection == 0x06:  # SourceText
-                source = input[pos + 4 : pos + 4 + length].decode("iso-8859-1")
-                pos = pos + 4 + length
-            elif subsection == 0x07:  # Context
-                # context = input[pos + 4:pos + 4 + length].decode('iso-8859-1')
-                pos = pos + 4 + length
-            elif subsection == 0x08:  # Disambiguating-comment
-                # comment = input[pos + 4:pos + 4 + length]
-                pos = pos + 4 + length
+                    pos = payload_end
+            elif subsection in {0x06, 0x07, 0x08}:
+                (length,) = struct.unpack(">L", input[pos : pos + 4])
+                pos += 4
+                payload_end = pos + length
+                if payload_end > messages_end:
+                    subsection_names = {
+                        0x06: "source",
+                        0x07: "context",
+                        0x08: "comment",
+                    }
+                    raise ValueError(
+                        f"This is not a .qm file: {subsection_names[subsection]} "
+                        "length out of range"
+                    )
+                if subsection == 0x06:  # SourceText
+                    source = input[pos:payload_end].decode("iso-8859-1")
+                # Context and disambiguating-comment are currently ignored.
+                pos = payload_end
             elif subsection == 0x05:  # hash
                 # hash = input[pos:pos + 4]
                 pos += 4
