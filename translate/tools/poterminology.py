@@ -21,7 +21,6 @@ See: https://docs.translatehouse.org/projects/translate-toolkit/en/latest/comman
 for examples and usage instructions.
 """
 
-import contextlib
 import logging
 import os
 import re
@@ -109,10 +108,9 @@ class TerminologyExtractor:
         if stopfile is not None:
             self.stopfile = stopfile
         else:
-            with contextlib.suppress(Exception):
-                self.stopfile = file_discovery.get_abs_data_filename(
-                    f"stoplist-{self.sourcelanguage}"
-                )
+            self.stopfile = file_discovery.get_abs_data_filename(
+                f"stoplist-{self.sourcelanguage}"
+            )
         self.parse_stopword_file()
 
         # handles c-format and python-format
