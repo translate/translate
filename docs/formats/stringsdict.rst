@@ -13,6 +13,12 @@ many, other) in a plist (property list) format.
 The Translate Toolkit supports .stringsdict files via
 ``translate.storage.stringsdict``.
 
+Entries whose localized format is a direct reference to a single plural
+variable are exposed as one plural unit. The variable name is included in the
+unit identifier, for example ``items:count``. Entries containing literal text
+in the localized format or multiple plural variables are exposed as separate
+format and plural units.
+
 .. seealso::
 
    :doc:`strings`
