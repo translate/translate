@@ -1,9 +1,11 @@
 import plistlib
 from io import BytesIO
 
+import pytest
+
 from translate.lang import data
 from translate.misc.multistring import multistring
-from translate.storage import stringsdict
+from translate.storage import base, stringsdict
 
 from . import test_monolingual
 
@@ -32,6 +34,14 @@ class TestStringsDictUnit(test_monolingual.TestMonolingualUnit):
         unit.format_value_type = "d"
         assert unit == unit2
 
+    def test_eq_other_unit_type(self) -> None:
+        unit = self.UnitClass("Test String:p")
+        unit.target = "target"
+        unit2 = base.TranslationUnit("Test String:p")
+        unit2.target = "target"
+
+        assert unit != unit2
+
     def test_innerkey(self) -> None:
         unit = self.UnitClass()
         unit.set_unitid(unit.IdClass([("key", "Test String"), ("key", "p")]))
@@ -41,6 +51,22 @@ class TestStringsDictUnit(test_monolingual.TestMonolingualUnit):
 
 class TestStringsDictFile(test_monolingual.TestMonolingualStore):
     StoreClass = stringsdict.StringsDictFile
+
+    @staticmethod
+    def get_simple_plural(
+        localized_format="%#@count@", *, include_format=True, include_plural=True
+    ):
+        outer = {}
+        if include_format:
+            outer["NSStringLocalizedFormatKey"] = localized_format
+        if include_plural:
+            outer["count"] = {
+                "NSStringFormatSpecTypeKey": "NSStringPluralRuleType",
+                "NSStringFormatValueTypeKey": "d",
+                "one": "One item",
+                "other": "%d items",
+            }
+        return {"items": outer}
 
     def test_serialize(self) -> None:
         content = b"""<?xml version="1.0" encoding="UTF-8"?>
@@ -102,6 +128,118 @@ class TestStringsDictFile(test_monolingual.TestMonolingualStore):
 
         newstore = self.reparse(store)
         self.check_equality(store, newstore)
+
+    def test_single_plural_is_folded(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        store.parse(plistlib.dumps(self.get_simple_plural()))
+
+        assert len(store.units) == 1
+        unit = store.units[0]
+        assert unit.source == "items:count"
+        assert unit.target.strings == ["", "One item", "%d items"]
+        assert unit.localized_format == "%#@count@"
+        assert unit.format_value_type == "d"
+
+        newstore = self.reparse(store)
+        self.check_equality(store, newstore)
+
+    def test_single_plural_preserves_positional_format(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        store.parse(plistlib.dumps(self.get_simple_plural("%1$#@count@")))
+
+        assert len(store.units) == 1
+        assert store.units[0].localized_format == "%1$#@count@"
+
+        output = plistlib.loads(bytes(store))
+        assert output["items"]["NSStringLocalizedFormatKey"] == "%1$#@count@"
+
+        store.units[0].setid(store.units[0].getid())
+        output = plistlib.loads(bytes(store))
+        assert output["items"]["NSStringLocalizedFormatKey"] == "%1$#@count@"
+
+    def test_single_plural_with_literal_format_is_not_folded(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        store.parse(plistlib.dumps(self.get_simple_plural("There are %#@count@.")))
+
+        assert [unit.source for unit in store.units] == ["items", "items:count"]
+        assert store.units[0].target == "There are %#@count@."
+        assert store.units[1].localized_format is None
+
+        newstore = self.reparse(store)
+        self.check_equality(store, newstore)
+
+    def test_format_only_plural_is_folded(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        store.parse(plistlib.dumps(self.get_simple_plural(include_plural=False)))
+
+        assert len(store.units) == 1
+        unit = store.units[0]
+        assert unit.source == "items:count"
+        assert unit.target.strings == ["", "", ""]
+        assert unit.localized_format == "%#@count@"
+
+        # Do not serialize the incomplete entry.
+        assert plistlib.loads(bytes(store)) == {}
+
+        unit.target = multistring(["", "One item", "%d items"])
+        output = plistlib.loads(bytes(store))["items"]
+        assert output["NSStringLocalizedFormatKey"] == "%#@count@"
+        assert output["count"]["other"] == "%d items"
+        assert "NSStringFormatValueTypeKey" not in output["count"]
+
+    def test_plural_only_is_omitted_without_format(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        store.parse(plistlib.dumps(self.get_simple_plural(include_format=False)))
+
+        assert len(store.units) == 1
+        unit = store.units[0]
+        assert unit.source == "items:count"
+        assert unit.localized_format is None
+
+        # The missing format might have contained literal text, so it cannot be
+        # reconstructed safely from the plural variable name.
+        assert plistlib.loads(bytes(store)) == {}
+
+    def test_new_plural_synthesizes_format(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        unit = store.UnitClass("items:amount")
+        unit.target = multistring(["", "One item", "%d items"])
+        store.addunit(unit)
+
+        output = plistlib.loads(bytes(store))["items"]
+        assert output["NSStringLocalizedFormatKey"] == "%#@amount@"
+        assert output["amount"]["other"] == "%d items"
+
+    def test_set_unitid_plural_synthesizes_format(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        unit = store.UnitClass()
+        unit.set_unitid(unit.IdClass([("key", "items"), ("key", "amount")]))
+        unit.target = multistring(["", "One item", "%d items"])
+        store.addunit(unit)
+
+        output = plistlib.loads(bytes(store))["items"]
+        assert output["NSStringLocalizedFormatKey"] == "%#@amount@"
+        assert output["amount"]["other"] == "%d items"
+
+    def test_new_plural_requires_variable_in_id(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        unit = store.UnitClass("items")
+        unit.target = multistring(["", "One item", "%d items"])
+        store.addunit(unit)
+
+        with pytest.raises(
+            TypeError,
+            match="Plural stringsdict unit IDs must include a variable name",
+        ):
+            bytes(store)
 
     def test_targetlanguage_default_handlings(self) -> None:
         store = self.StoreClass()
