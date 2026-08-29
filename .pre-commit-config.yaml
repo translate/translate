@@ -48,7 +48,7 @@ repos:
   hooks:
   - id: zizmor
 - repo: https://github.com/crate-ci/typos
-  rev: v1.49.0
+  rev: v1.50.0
   hooks:
   - id: typos
     args: []
