@@ -24,7 +24,7 @@ lint = [
   {include-group = "pylint"}
 ]
 pre-commit = [
-  "prek==0.4.14"
+  "prek==0.5.0"
 ]
 pylint = [
   "pylint==4.0.8"
