@@ -174,6 +174,7 @@ class DumpArgsType(TypedDict):
     indent: int
     ensure_ascii: bool
     sort_keys: NotRequired[bool]
+    cls: NotRequired[type[json.JSONEncoder]]
 
 
 JsonUnit = TypeVar("JsonUnit", bound=BaseJsonUnit)
