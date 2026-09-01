@@ -45,3 +45,31 @@ def test_is_rtl() -> None:
     # Edge cases
     assert data.is_rtl("") is False
     assert data.is_rtl(None) is False
+
+
+def test_is_rtl_script_specific_codes() -> None:
+    """RTL variants of languages whose base language is not RTL."""
+    # Punjabi is Gurmukhi (LTR) in India and Shahmukhi (Perso-Arabic) in Pakistan
+    assert data.is_rtl("pa") is False
+    assert data.is_rtl("pa_PK") is True
+    assert data.is_rtl("pa-PK") is True
+    # Malay is Latin by default and Jawi (Perso-Arabic) when tagged as such
+    assert data.is_rtl("ms") is False
+    assert data.is_rtl("ms_Arab") is True
+    assert data.is_rtl("ms-Arab") is True
+
+
+def test_rtl_langs_are_all_reachable() -> None:
+    """Every code listed in RTL_LANGS has to be detected by is_rtl()."""
+    assert [code for code in sorted(data.RTL_LANGS) if not data.is_rtl(code)] == []
+
+
+def test_is_rtl_perso_arabic_and_hebrew_script_languages() -> None:
+    """Languages CLDR resolves to an RTL script."""
+    for code in ("azb", "glk", "haz", "lki", "hno", "swb", "prs"):
+        assert data.is_rtl(code) is True, code
+    for code in ("jpr", "jrb", "lad"):
+        assert data.is_rtl(code) is True, code
+    # Tuareg varieties: CLDR resolves these to the Latin script
+    for code in ("tmh", "ttq", "thv"):
+        assert data.is_rtl(code) is False, code
