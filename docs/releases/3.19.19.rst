@@ -1,0 +1,41 @@
+Translate Toolkit 3.19.19
+*************************
+
+*Released on 1 September 2026*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- Apple Stringsdict
+
+  - Keep direct single-variable format references with their plural units
+
+- Qt QM
+
+  - Reject malformed messages with invalid lengths
+
+- XML-based formats
+
+  - Honor inherited ``xml:space`` attributes to preserve significant whitespace
+
+Other
+-----
+
+- Correct right-to-left detection for script-specific and previously missing
+  language codes
+- Report missing stopword files correctly in ``poterminology``
+- Improve type annotations for translation checks and JSON storage
+- Improve the document translation guide
+- Update development tooling and CI dependencies
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+Dylan Pulver, Gersona, Kit Cox, Michal Čihař, Volker Braun
