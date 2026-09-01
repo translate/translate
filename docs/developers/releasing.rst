@@ -61,6 +61,10 @@ We create a list of contributors using this command:
 
     $ git log $(git describe --tags --abbrev=0)..HEAD --format='%aN, ' | awk '{arr[$0]++} END{for (i in arr){print arr[i], i;}}' | sort -rn | cut -d\  -f2- >> docs/releases/$version.rst
 
+Format the contributor names as a comma-separated list. reStructuredText
+renders consecutive lines in a paragraph without adding punctuation, so a bare
+name on each line does not produce a correctly separated list.
+
 
 .. _releasing#up-version-numbers:
 
