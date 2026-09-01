@@ -1156,36 +1156,56 @@ RTL_LANGS = {
     "ars",
     "arz",
     "ave",
+    "azb",
     "bal",
+    "bej",
     "bgn",
     "bqi",
+    "brh",
+    "chg",
     "ckb",
     "ckb_IR",
+    "dcc",
     "dv",
     "egy",
     "fa",
     "fa_AF",
     "fas",
+    "glk",
     "ha",
+    "hac",
+    "haz",
     "he",
     "heb",
+    "hnd",
+    "hno",
+    "jpr",
+    "jrb",
     "khw",
     "ks",
+    "lad",
+    "lki",
     "lrc",
     "luz",
+    "mey",
+    "mfa",
     "ms_Arab",
     "mzn",
     "nqo",
+    "ota",
     "pa_PK",
     "pal",
     "per",
     "phn",
+    "prs",
     "ps",
     "rhg",
+    "rmt",
     "sam",
     "sd",
     "sdh",
     "skr",
+    "swb",
     "syc",
     "syr",
     "ug",
@@ -1208,6 +1228,11 @@ def _normalize_to_underscore(code: str) -> str:
     return code.replace("-", "_").replace("@", "_").lower()
 
 
+_NORMALIZED_RTL_LANGS = {_normalize_to_underscore(code) for code in RTL_LANGS}
+"""RTL_LANGS normalized for lookup, as RTL_LANGS keeps the canonical casing of
+region and script subtags (``pa_PK``, ``ms_Arab``)."""
+
+
 def is_rtl(language_code: str | None) -> bool:
     """
     Check if a language is right-to-left.
@@ -1223,11 +1248,11 @@ def is_rtl(language_code: str | None) -> bool:
     # Normalize the language code (convert hyphens to underscores)
     normalized = _normalize_to_underscore(language_code)
     # Check both the full code and the base language code
-    if normalized in RTL_LANGS:
+    if normalized in _NORMALIZED_RTL_LANGS:
         return True
     # Check base language (e.g., 'ar' for 'ar_SA')
     base = normalized.split("_")[0]
-    return base in RTL_LANGS
+    return base in _NORMALIZED_RTL_LANGS
 
 
 def get_language(code):
