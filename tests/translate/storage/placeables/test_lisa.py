@@ -62,6 +62,20 @@ def test_xml_space() -> None:
     assert elem.sub == [StringElem("a "), X(id="foo[1]/bar[1]/baz[1]"), StringElem(" ")]
 
 
+def test_inherited_xml_space() -> None:
+    root = parse_xml(
+        '<root xml:space="preserve"><source> a '
+        '<x id="foo[1]/bar[1]/baz[1]"/> </source></root>'
+    )
+    elem = lisa.xml_to_strelem(root[0], xml_space="default")
+
+    assert elem.sub == [
+        StringElem(" a "),
+        X(id="foo[1]/bar[1]/baz[1]"),
+        StringElem(" "),
+    ]
+
+
 def test_chunk_list() -> None:
     left = StringElem(
         [
