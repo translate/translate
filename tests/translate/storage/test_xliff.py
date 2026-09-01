@@ -509,7 +509,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert xlifffile.units[0].source == "File 1"
         root_node = xlifffile.document.getroot()
         setXMLspace(root_node, "preserve")
-        assert xlifffile.units[0].source == "File 1"
+        assert xlifffile.units[0].source == " File  1 "
         setXMLspace(root_node, "default")
         assert xlifffile.units[0].source == "File 1"
 
@@ -524,9 +524,36 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert xlifffile.units[0].source == "File 1"
         root_node = xlifffile.document.getroot()
         setXMLspace(root_node, "preserve")
-        assert xlifffile.units[0].source == "File 1"
+        assert xlifffile.units[0].source == " File  1\n"
         setXMLspace(root_node, "default")
         assert xlifffile.units[0].source == "File 1"
+
+    def test_xml_space_inherited_from_file_and_group(self) -> None:
+        xlfsource = (
+            self.skeleton.replace(
+                '<file original="doc.txt"',
+                '<file xml:space="preserve" original="doc.txt"',
+            )
+            % """<group>
+                  <trans-unit id="1">
+                    <source> File  1 </source>
+                    <target> Target  1 </target>
+                  </trans-unit>
+                </group>"""
+        )
+        unit = self.StoreClass.parsestring(xlfsource).units[0]
+
+        assert unit.source == " File  1 "
+        assert unit.target == " Target  1 "
+        assert str(unit.rich_source[0]) == " File  1 "
+        assert str(unit.rich_target[0]) == " Target  1 "
+
+        xlfsource = xlfsource.replace("<group>", '<group xml:space="default">')
+        overridden_unit = self.StoreClass.parsestring(xlfsource).units[0]
+        assert overridden_unit.source == "File 1"
+        assert overridden_unit.target == "Target 1"
+        assert str(overridden_unit.rich_source[0]) == "File 1"
+        assert str(overridden_unit.rich_target[0]) == "Target 1"
 
     def test_parsing(self) -> None:
         xlfsource = (

@@ -97,6 +97,33 @@ class TestXLIFF2file(test_base.TestTranslationStore):
         assert newfile.units[0].source == "Hello"
         assert newfile.units[0].target == "Hola"
 
+    def test_inherited_xml_space(self) -> None:
+        xliff2_content = b"""<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="fr">
+  <file id="f1" xml:space="preserve">
+    <unit id="preserved">
+      <segment>
+        <source> Source  1 </source>
+        <target> Target  1 </target>
+      </segment>
+    </unit>
+    <unit id="normalized" xml:space="default">
+      <segment>
+        <source> Source  2 </source>
+        <target> Target  2 </target>
+      </segment>
+    </unit>
+  </file>
+</xliff>"""
+        xliff2file = xliff2.Xliff2File.parsestring(xliff2_content)
+
+        assert xliff2file.units[0].source == " Source  1 "
+        assert xliff2file.units[0].target == " Target  1 "
+        assert str(xliff2file.units[0].rich_target[0]) == " Target  1 "
+        assert xliff2file.units[1].source == "Source 2"
+        assert xliff2file.units[1].target == "Target 2"
+        assert str(xliff2file.units[1].rich_target[0]) == "Target 2"
+
     def test_language_attributes(self) -> None:
         """Test language attributes in XLIFF 2.0."""
         xliff2file = xliff2.Xliff2File()

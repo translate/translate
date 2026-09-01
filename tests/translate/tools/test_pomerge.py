@@ -407,6 +407,32 @@ msgstr "Eerste\tTweede"
         assert unit.source == "red"
         assert unit.target == "rooi"
 
+    def test_xliff_preserves_inherited_xml_space(self) -> None:
+        skeleton = self.xliffskeleton.replace(
+            '<file original="filename.po"',
+            '<file xml:space="preserve" original="filename.po"',
+        )
+        templatexliff = (
+            skeleton
+            % """<trans-unit id="Queued">
+        <source>Queued</source>
+        <target>old target text</target>
+</trans-unit>"""
+        )
+        mergexliff = (
+            skeleton
+            % """<trans-unit id="Queued">
+        <source>Queued</source>
+        <target> leading and trailing spaces </target>
+</trans-unit>"""
+        )
+
+        xlifffile = self.mergexliff(templatexliff, mergexliff)
+        unit = self.singleunit(xlifffile)
+
+        assert unit.target == " leading and trailing spaces "
+        assert unit.get_target_dom().text == " leading and trailing spaces "
+
     def test_po_into_xliff(self) -> None:
         templatexliff = (
             self.xliffskeleton

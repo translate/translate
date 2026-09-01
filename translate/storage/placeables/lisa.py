@@ -22,7 +22,7 @@ from typing import Never
 from lxml import etree
 
 from translate.misc.xml_helpers import (
-    getXMLspace,
+    getXMLspaceInherited,
     normalize_xml_space,
     parse_xml,
 )
@@ -102,7 +102,7 @@ def xml_to_strelem(dom_node, xml_space="preserve"):
         return StringElem()
     if isinstance(dom_node, str):
         dom_node = parse_xml(dom_node)
-    xml_space = getXMLspace(dom_node) or xml_space
+    xml_space = getXMLspaceInherited(dom_node, xml_space)
     normalize_xml_space(dom_node, xml_space, remove_start=True)
     result = StringElem()
     sub = result.sub  # just an optimisation

@@ -196,21 +196,14 @@ def getText(node, xml_space="preserve"):
     """
     Extracts the plain text content out of the given node.
 
-    This method checks the xml:space attribute of the given node, and takes an
-    optional default to use in case nothing is specified in this node.
+    This method resolves the effective xml:space attribute of the given node,
+    and takes an optional default to use in case nothing is specified on the
+    node or its ancestors.
     """
-    xml_space = getXMLspace(node, xml_space)
+    xml_space = getXMLspaceInherited(node, xml_space)
     if xml_space == "default":
         return str(string_xpath_normalized(node))  # specific to lxml.etree
     return str(string_xpath(node))  # specific to lxml.etree
-
-    # If we want to normalise space and only preserve it when the directive
-    # xml:space="preserve" is given in node or in parents, consider this code:
-    # xml_preserves = xml_preserve_ancestors(node)
-    # if xml_preserves and xml_preserves[-1] == "preserve":
-    #    return unicode(string_xpath(node)) # specific to lxml.etree
-    # else:
-    #    return unicode(string_xpath_normalized(node)) # specific to lxml.etree
 
 
 XML_NS = "http://www.w3.org/XML/1998/namespace"
@@ -232,6 +225,14 @@ def getXMLspace(node, default=None):
     if value is None:
         return default
     return value
+
+
+def getXMLspaceInherited(node, default=None):
+    """Gets the nearest xml:space attribute on node or its ancestors."""
+    values = xml_space_ancestors(node)
+    if values:
+        return str(values[-1])
+    return default
 
 
 def setXMLspace(node, value) -> None:
