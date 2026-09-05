@@ -68,6 +68,32 @@ Another paragraph.
 
         assert output == b"### Anonyme Lernende {/* #anonymous */}\n"
 
+    def test_placeholder_identity_translation_beats_expanded(self):
+        """An identity target keeps its markup despite an expanded-key match."""
+        template = b"Text.<br /> [Read](../events/index.mdx)\n"
+        source = "Text.{1} [Read]{2}"
+        output = self.translate(
+            template,
+            [
+                (source, source),
+                (
+                    "Text.<br /> [Read](../events/index.mdx)",
+                    "Other.<br /> [Read](../events/index.mdx)",
+                ),
+            ],
+        )
+
+        assert output == template
+
+    def test_expanded_translation_preserves_literal_braces(self):
+        """A fallback target uses literal markup, not placeholder markers."""
+        output = self.translate(
+            b"See [docs](url).\n",
+            [("See [docs](url).", "Read [docs](url) and {1}.")],
+        )
+
+        assert output == b"Read [docs](url) and {1}.\n"
+
     def test_explicit_heading_id_identity_translation_beats_legacy(self):
         """A current identity translation wins over a stale legacy unit."""
         template = b"### Name {#name}\n"

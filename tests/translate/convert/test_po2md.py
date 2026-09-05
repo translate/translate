@@ -429,6 +429,24 @@ You are only coming through in waves.
         assert "Die Website [OSPO Alliance DE](https://ospo-alliance.org)" in output
         assert "OSPO Alliance EN" not in output
 
+    def test_placeholder_identity_translation_beats_expanded(self) -> None:
+        """A current identity target takes precedence over an expanded key."""
+        self.given_markdown_file("See [docs](https://example.com).\n")
+        self.given_translation_file(
+            lines=[
+                'msgid "See [docs]{1}."',
+                'msgstr "See [docs]{1}."',
+                "",
+                'msgid "See [docs](https://example.com)."',
+                'msgstr "Other [docs](https://example.com)."',
+            ]
+        )
+        self.run_command("translation.po", "out.md", template="file.md")
+
+        assert self.read_testfile("out.md").decode() == (
+            "See [docs](https://example.com).\n"
+        )
+
     def test_no_placeholders_multiple_links(self) -> None:
         """po2md --no-placeholders: paragraph with multiple links is translated."""
         self.given_markdown_file(

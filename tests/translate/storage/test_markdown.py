@@ -550,6 +550,31 @@ author: John Smith
             == "([*embedded image* ![moon](moon.jpg \"(the moon y'all)\")](/uri '(link title)'))\n"
         )
 
+    def test_identity_lookup_preserves_duplicate_occurrences(self) -> None:
+        """Presence checks must not consume the next translation occurrence."""
+        source = "See [docs]{1}."
+        targets = iter([source, "Read [docs]{1}."])
+
+        def callback(text: str) -> str:
+            return next(targets) if text == source else text
+
+        store = markdown.MarkdownFile(
+            inputfile=BytesIO(b"See [docs](url).\n\nSee [docs](url).\n"),
+            callback=callback,
+        )
+
+        assert store.filesrc == "See [docs](url).\n\nRead [docs](url).\n"
+
+    def test_identity_lookup_keeps_primary_translation(self) -> None:
+        """The presence lookup must not replace a context-selected identity."""
+        store = markdown.MarkdownFile(
+            inputfile=BytesIO(b"See [docs](url).\n"),
+            callback=lambda text: text,
+            lookup_callback=lambda text: "Other [docs]{1}.",
+        )
+
+        assert store.filesrc == "See [docs](url).\n"
+
     def test_placeholder_trimming(self) -> None:
         fragments = [
             markdown.Fragment("a", placeholder_content=[markdown.Fragment("")]),
