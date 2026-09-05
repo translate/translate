@@ -134,6 +134,7 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
         base.TranslationStore.__init__(self)
         self.filename = getattr(inputfile, "name", None)
         self.callback = callback or self._dummy_callback
+        self._last_translation: tuple[str, str] | None = None
         self.lookup_callback = (
             self._default_lookup_callback
             if lookup_callback is None
@@ -396,7 +397,10 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
 
     def _default_lookup_callback(self, text: str) -> str | None:
         """Adapt a translation callback to the lookup callback contract."""
-        translation = self.callback(text)
+        if self._last_translation is not None and self._last_translation[0] == text:
+            translation = self._last_translation[1]
+        else:
+            translation = self.callback(text)
         return translation if translation != text else None
 
     def _translate_callback(self, text: str, path: list[str], docpath: str = "") -> str:
@@ -412,7 +416,9 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
             unit.setdocpath(docpath)
 
         # return translated text
-        return self.callback(text)
+        translation = self.callback(text)
+        self._last_translation = text, translation
+        return translation
 
 
 class TranslatingMarkdownRenderer(MarkdownRenderer):
@@ -533,7 +539,13 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     ) -> tuple[str, bool]:
         """Look up current and legacy heading translations without ambiguity."""
         if not suffix:
-            return translation, translation != source
+            # An identity target is still a successful lookup. Only use the
+            # secondary lookup to check presence: the primary callback may have
+            # selected a different occurrence of a duplicated source.
+            return translation, translation != source or (
+                self.lookup_callback is not None
+                and self.lookup_callback(source) is not None
+            )
         if translation != source:
             translated_title, _translated_suffix = _split_explicit_heading_id(
                 translation
