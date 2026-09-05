@@ -244,7 +244,7 @@ def get_po_source_target_doms(unit):
         wrapper = parse_xml(f"<wrapper>{value}</wrapper>")
         node = etree.Element(name)
         node.text = wrapper.text
-        node.extend(wrapper)
+        node.extend(wrapper.iterchildren())
         return node
 
     source_dom = parse_fragment(unit.source, "source")
