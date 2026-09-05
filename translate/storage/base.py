@@ -1354,6 +1354,8 @@ class UnitId:
 
 class DictUnit(TranslationUnit):
     IdClass = UnitId
+    # Factory for mappings created while serializing nested values.
+    dict_factory: Callable[[], dict] = dict
 
     def __init__(self, source=None) -> None:
         super().__init__(source)
@@ -1373,13 +1375,13 @@ class DictUnit(TranslationUnit):
         for pos, part in enumerate(parts[:-1]):
             element, key = part
             use_list = parts[pos + 1][0] == "index"
-            default = [] if use_list else {}
+            default = list if use_list else self.dict_factory
             if element == "index":
                 while len(target) <= key and not unset:
-                    target.append(default.copy())
+                    target.append(default())
             elif element == "key":
                 if key not in target:
-                    target[key] = default
+                    target[key] = default()
             else:
                 raise ValueError(f"Unsupported element: {element}")
             if not use_list and isinstance(target[key], list):
@@ -1390,7 +1392,7 @@ class DictUnit(TranslationUnit):
                 target[key] = []
             elif not isinstance(target[key], list if use_list else dict):
                 # Replace a stale scalar when the structure has changed
-                target[key] = default.copy()
+                target[key] = default()
             parent = target
             target = target[key]
         if override_key:
