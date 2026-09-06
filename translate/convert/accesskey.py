@@ -154,7 +154,7 @@ def combine(
     label: str, accesskey: str, accesskey_marker: str = DEFAULT_ACCESSKEY_MARKER
 ) -> str | None:
     """
-    Combine a label and and accesskey to form a label+accesskey string.
+    Combine a label and accesskey to form a label+accesskey string.
 
     We place an accesskey marker before the accesskey in the label and this
     creates a string with the two combined e.g. "File" + "F" = "&File"
