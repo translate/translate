@@ -287,6 +287,7 @@ def test_rich_source_edit_refreshes_lookup(store_class) -> None:
     store = store_class()
     unit = store.addsourceunit("Old source")
     unit.target = "Translation"
+    unit.setid("source-id")
     unit_id = unit.getid()
     assert store.findunit("Old source") is unit
     replacement = store_class.UnitClass("New source")
@@ -454,3 +455,22 @@ def test_xml_key_and_source_roundtrip(store_class) -> None:
     assert unit.target == "Translation"
     assert "Keep note" in unit.getnotes()
     assert reloaded.findid(old_key) is None
+
+
+@pytest.mark.parametrize("keep_other", [False, True])
+def test_removing_unit_invalidates_tmx_language_index(keep_other):
+    store = tmx.tmxfile(sourcelanguage="en", targetlanguage="fr")
+    unit = store.addsourceunit("Source")
+    unit.target = "Translation"
+    if keep_other:
+        other = store.addsourceunit("Other")
+        other.target = "Other translation"
+    assert store.translate("Source", sourcelang="en", targetlang="fr") == "Translation"
+    store.removeunit(unit)
+    assert store.translate("Source", sourcelang="en", targetlang="fr") is None
+    assert store.translate("Translation", sourcelang="fr", targetlang="en") is None
+    if keep_other:
+        assert (
+            store.translate("Other", sourcelang="en", targetlang="fr")
+            == "Other translation"
+        )

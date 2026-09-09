@@ -888,6 +888,7 @@ class TranslationStore(Generic[U]):
         self.locationindex = {}
         self.sourceindex = {}
         self.id_index = {}
+        self._indexes_ready = False
         self._plural_tags_cache: dict[tuple[str | None, int | None], list[str]] = {}
 
     @property
@@ -946,6 +947,7 @@ class TranslationStore(Generic[U]):
 
         :param unit: The unit that will be added.
         """
+        self._indexes_ready = False
         unit._store = self
         self.units.append(unit)
 
@@ -960,6 +962,7 @@ class TranslationStore(Generic[U]):
         """
         self.units.remove(unit)
         self.remove_unit_from_index(unit)
+        self._indexes_ready = False
         unit._store = None
 
     def addsourceunit(self, source: str) -> U:
@@ -1028,9 +1031,13 @@ class TranslationStore(Generic[U]):
 
     def add_unit_to_index(self, unit) -> None:
         """Add a unit to source and location indices."""
-        self.id_index[unit.getid()] = unit
+        unit_id = unit.getid()
+        if unit_id is not None:
+            self.id_index[unit_id] = unit
 
         def insert_unit(source) -> None:
+            if source is None:
+                return
             if source not in self.sourceindex:
                 self.sourceindex[source] = [unit]
             else:
@@ -1051,6 +1058,7 @@ class TranslationStore(Generic[U]):
 
     def _invalidate_indexes(self) -> None:
         """Discard indexes so the next lookup rebuilds them."""
+        self._indexes_ready = False
         self.locationindex = {}
         self.sourceindex = {}
         self.id_index = {}
@@ -1060,6 +1068,7 @@ class TranslationStore(Generic[U]):
         Indexes the items in this store. At least .sourceindex should be
         useful.
         """
+        self._indexes_ready = False
         self.locationindex = {}
         self.sourceindex = {}
         self.id_index = {}
@@ -1067,10 +1076,11 @@ class TranslationStore(Generic[U]):
             unit.index = index
             if not (unit.isheader() or unit.isblank()):
                 self.add_unit_to_index(unit)
+        self._indexes_ready = True
 
     def require_index(self) -> None:
         """Make sure source index exists."""
-        if not self.id_index:
+        if not self._indexes_ready:
             self.makeindex()
 
     def getids(self):

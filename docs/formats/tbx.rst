@@ -15,6 +15,7 @@ For information on more file formats, see :doc:`conformance`.
 References
 ==========
 
+
 * `Standard home page <https://www.tbxinfo.net/>`_
 * `Specification
   <https://www.tbxinfo.net/wp-content/uploads/2020/12/TBXspecV1j.pdf>`_
@@ -44,12 +45,15 @@ are valid. Check the `TBXChecker explanation
 Conformance
 ===========
 
+
 Translate Toolkit TBX format support allows:
 
 * Basic TBX file creation
 * Creating a bilingual TBX from CSV using :doc:`/commands/csv2tbx`
 * Using ``<tig>`` tags only
-* Simple extraction of Parts of Speech and definitions
+* Extraction of parts of speech, definitions, and scoped notes
+* Independent ordered alternatives within each language
+* Preservation of term IDs and metadata when editing alternatives
 
 
 .. _tbx#non-conformance:
@@ -57,15 +61,12 @@ Translate Toolkit TBX format support allows:
 Non-Conformance
 ===============
 
+
 The following are not yet supported:
 
-* ``id`` attribute for ``<termEntry>`` tags
-* Multiple languages
-* Multiple translations in the same language
 * Cross references
 * Context
 * Abbreviations
-* Synonyms
 * ``<ntig>`` tag, read and write
 
 Other features can be picked from the `Terminator TBX conformance notes
@@ -75,6 +76,7 @@ include examples and notes about the TBX format.
 
 Language matching
 =================
+
 
 Language lookup first matches the requested code exactly, ignoring case and
 ``_`` versus ``-`` separators. If a bare language code has no exact match, its
@@ -86,3 +88,32 @@ Regional and script-qualified requests remain exact-only: ``en-GB`` does not
 select ``en-US``, and ``en-US`` does not select ``en``. Unmatched languages remain
 empty; target fallback does not reuse the source node for a distinct requested
 language. Editing a matched language preserves its existing XML language tag.
+
+
+Term alternatives
+=================
+
+
+``tbxunit.get_source_terms()`` and ``get_target_terms()`` return ordered
+``TBXTerm`` records with text, optional ID, administrative status, and notes.
+The ID comes from ``<tig>`` when present, falling back to the ``<term>`` ID.
+Each ``TBXNote`` retains its origin, category, and scope (concept, language,
+or term). Notes from unrelated languages or sibling terms are excluded.
+The scalar ``source`` and ``target`` properties continue to return the first
+term for compatibility with converters. Assigning ``None`` to ``target`` clears
+that first term's text, retaining its metadata, sibling alternatives, and language
+notes. The cleared scalar target is an empty string.
+
+``set_source_terms()`` and ``set_target_terms()`` accept lists of strings.
+They match unchanged occurrences first, then reuse remaining terms in order.
+Reused terms retain their IDs and metadata; new terms do not require IDs.
+An empty list clears an existing language to one empty term without term metadata,
+preserving language notes and the required TBX structure. Its term list then
+contains one record with empty text. Clearing a missing language leaves it absent.
+When renaming and deleting terms together, this positional fallback can assign
+the first unmatched term's metadata to a renamed alternative.
+
+Languages are selected independently; term IDs do not pair translations
+across languages. A missing selected target produces an empty term list.
+A concept is obsolete only when all its nonempty terms are deprecated, including terms
+in languages outside the selected source and target pair.
