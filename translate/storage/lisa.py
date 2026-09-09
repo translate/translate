@@ -26,6 +26,7 @@ from typing import TypeVar
 
 from lxml import etree
 
+from translate.lang.data import DEFAULT_LANGS
 from translate.misc.xml_helpers import (
     expand_closing_tags,
     getText,
@@ -275,6 +276,11 @@ def normalize_language(language: str | None) -> str | None:
     return language.replace("_", "-").lower()
 
 
+DEFAULT_LANGUAGE_VARIANTS = {
+    language.split("_", 1)[0]: language.replace("_", "-") for language in DEFAULT_LANGS
+}
+
+
 class MultilingualLISAunit(LISAunit):
     """A LISA unit with sibling nodes representing different languages."""
 
@@ -300,13 +306,28 @@ class MultilingualLISAunit(LISAunit):
         for node in self.getlanguageNodes():
             if normalize_language(getXMLlang(node)) == language:
                 return node
+        default_language = DEFAULT_LANGUAGE_VARIANTS.get(language)
+        if default_language is not None:
+            for node in self.getlanguageNodes():
+                if normalize_language(getXMLlang(node)) == default_language:
+                    return node
         return None
 
     def _get_source_language_node(self):
         return self._get_language_node(self._get_source_language())
 
-    def _get_target_language_node(self):
-        return self._get_language_node(self._get_target_language())
+    def _get_target_language_node(self, language=None):
+        language = normalize_language(language or self._get_target_language())
+        node = self._get_language_node(language)
+        if (
+            node is not None
+            and normalize_language(getXMLlang(node)) != language
+            and normalize_language(self._get_source_language()) != language
+            and node is self._get_source_language_node()
+        ):
+            # A regional source is not an absent, distinct target language.
+            return None
+        return node
 
     def _get_fallback_source_node(self):
         language_nodes = self.getlanguageNodes()
@@ -363,13 +384,17 @@ class MultilingualLISAunit(LISAunit):
                 store.id_index = {}
 
     def setsource(self, text, sourcelang=None) -> None:
-        super().setsource(text, sourcelang or self._get_source_language() or "en")
+        language = sourcelang or self._get_source_language() or "en"
+        source_node = self._get_language_node(language)
+        if source_node is not None and source_node is self.source_dom:
+            language = getXMLlang(source_node)
+        super().setsource(text, language)
         self._invalidate_store_indexes()
 
     def set_target_dom(self, dom_node, append=False) -> None:
         language_nodes = self.getlanguageNodes()
         target_node = (
-            self._get_language_node(getXMLlang(dom_node))
+            self._get_target_language_node(getXMLlang(dom_node))
             if dom_node is not None
             else self.get_target_dom()
         )
@@ -395,7 +420,7 @@ class MultilingualLISAunit(LISAunit):
 
     def get_target_dom(self, lang=None):
         if lang:
-            return self._get_language_node(lang)
+            return self._get_target_language_node(lang)
 
         target_language = self._get_target_language()
         if normalize_language(target_language) is not None:
@@ -433,7 +458,7 @@ class MultilingualLISAunit(LISAunit):
             "targetlanguage", "xx"
         )
         language_node = (
-            self._get_language_node(target_language)
+            self._get_target_language_node(target_language)
             if lang is not None
             else self.target_dom
         )

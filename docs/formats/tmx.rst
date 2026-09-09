@@ -26,3 +26,17 @@ Level 1, except that no markup is stripped.
 * Currently text is treated as plain text, in other words no markup like HTML
   inside messages are stripped or interpreted as it should be for complete
   Level 1 conformance.
+
+Language matching
+=================
+
+Language lookup first matches the requested code exactly, ignoring case and
+``_`` versus ``-`` separators. If a bare language code has no exact match, its
+Weblate language-data default-country variant is used when present. For example,
+``en`` can select ``en-US`` and ``ko`` can select ``ko-KR``. An explicit ``en``
+entry always takes precedence over ``en-US``.
+
+Regional and script-qualified requests remain exact-only: ``en-GB`` does not
+select ``en-US``, and ``en-US`` does not select ``en``. Unmatched languages remain
+empty; target fallback does not reuse the source node for a distinct requested
+language. Editing a matched language preserves its existing XML language tag.

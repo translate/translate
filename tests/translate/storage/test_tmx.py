@@ -169,7 +169,7 @@ class TestTMXfile(test_base.TestTranslationStore):
         )
 
         store = tmx.tmxfile.parsestring(source, sourcelanguage="de")
-        assert store.units[0].source is None
+        assert store.units[0].source == "Farbe"
 
     def test_missing_configured_language_does_not_fallback(self) -> None:
         store = tmx.tmxfile.parsestring(

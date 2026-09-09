@@ -233,6 +233,19 @@ class tbxfile(lisa.LISAfile[tbxunit]):
         self.addunit(unit)
         return unit
 
+    def _invalidate_indexes(self) -> None:
+        self.locationindex = {}
+        self.sourceindex = {}
+        self.id_index = {}
+
+    def setsourcelanguage(self, sourcelanguage: str) -> None:
+        super().setsourcelanguage(sourcelanguage)
+        self._invalidate_indexes()
+
+    def settargetlanguage(self, targetlanguage: str | None) -> None:
+        super().settargetlanguage(targetlanguage)
+        self._invalidate_indexes()
+
     def addheader(self) -> None:
         """Initialise headers with TBX specific things."""
         setXMLlang(self.document.getroot(), self.sourcelanguage)

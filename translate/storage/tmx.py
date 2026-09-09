@@ -237,6 +237,7 @@ class tmxfile(lisa.LISAfile[tmxunit]):
     def makeindex(self) -> None:
         super().makeindex()
         self.languageindex: dict[tuple[str, str], list[tmxunit]] = {}
+        fallback_index: dict[tuple[str, str], list[tmxunit]] = {}
         for unit in self.units:
             xml_space = getXMLspace(unit.xmlelement, unit._default_xml_space)
             for language_node in unit.getlanguageNodes():
@@ -244,6 +245,17 @@ class tmxfile(lisa.LISAfile[tmxunit]):
                 text = unit.getNodeText(language_node, xml_space)
                 if language is not None and text is not None:
                     self.languageindex.setdefault((language, text), []).append(unit)
+                    base_language = language.split("-", 1)[0]
+                    if (
+                        lisa.DEFAULT_LANGUAGE_VARIANTS.get(base_language) == language
+                        and unit._get_language_node(base_language) is language_node
+                    ):
+                        fallback_index.setdefault((base_language, text), []).append(
+                            unit
+                        )
+        # Exact matches take precedence even when their units occur later.
+        for key, units in fallback_index.items():
+            self.languageindex.setdefault(key, []).extend(units)
 
     def addsourceunit(self, source, sourcelang=None):
         unit = self.UnitClass(None)

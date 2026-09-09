@@ -599,7 +599,7 @@ class TestTBXfile(test_base.TestTranslationStore):
         )
         unit = tbxfile.units[0]
 
-        assert unit.source is None
+        assert unit.source == "color"
         assert unit.target == "Farbe"
 
         unit.source = "colour"
