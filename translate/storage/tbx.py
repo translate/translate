@@ -56,6 +56,7 @@ class tbxunit(lisa.MultilingualLISAunit):
         return self.xmlelement.get("id") or self.source
 
     def setid(self, value):
+        self._invalidate_store_indexes()
         return self.xmlelement.set("id", value)
 
     def _get_origin_element(self, origin: str | None):

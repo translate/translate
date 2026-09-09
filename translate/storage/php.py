@@ -260,6 +260,7 @@ class phpunit(base.TranslationUnit):
     @source.setter
     def source(self, source) -> None:
         """Set the source AND the target to be equal."""
+        self._invalidate_store_indexes()
         self._rich_source = None
         self.value = source
 
@@ -331,6 +332,7 @@ class phpunit(base.TranslationUnit):
 
     def setid(self, value) -> None:
         # Sanitize name to produce valid syntax
+        self._invalidate_store_indexes()
         if not value.startswith(("$", "define(", "return")):
             self.name = f"${value.replace(' ', '_')}"
         else:
@@ -527,6 +529,7 @@ class LaravelPHPUnit(phpunit):
 
     def setid(self, value) -> None:
         """Set the key, preserving the Laravel return array structure."""
+        self._invalidate_store_indexes()
         # Ensure value is a string
         if not isinstance(value, str):
             value = str(value)

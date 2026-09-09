@@ -176,6 +176,7 @@ class CatkeysUnit(base.MetadataTranslationUnit):
 
     @source.setter
     def source(self, source) -> None:
+        self._invalidate_store_indexes()
         self._rich_source = None
         self._set_source_or_target("source", source)
 
@@ -197,6 +198,7 @@ class CatkeysUnit(base.MetadataTranslationUnit):
         return self._metadata_dict.get("context", "")
 
     def setcontext(self, context) -> None:
+        self._invalidate_store_indexes()
         self._metadata_dict["context"] = context
 
     def getid(self):

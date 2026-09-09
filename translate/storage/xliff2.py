@@ -152,6 +152,7 @@ class Xliff2Unit(XliffUnit):
 
     def setid(self, value: str) -> None:
         """Set the unit id."""
+        self._invalidate_store_indexes()
         if value:
             segment_id = None
             if SEGMENT_SEPARATOR in value:

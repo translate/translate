@@ -78,6 +78,10 @@ class redtd:
 
     def __init__(self, dtdfile, android=False, remove_untranslated=False) -> None:
         self.dtdfile = dtdfile
+        self.dtdfile.require_index()
+        # Source edits invalidate the store indexes. Entity names stay fixed
+        # during this conversion, so retain the original lookup for the batch.
+        self.dtd_index = self.dtdfile.id_index
         self.mixer = accesskey.UnitMixer(dtd.labelsuffixes, dtd.accesskeysuffixes)
         self.android = False
         self.remove_untranslated = remove_untranslated
@@ -90,11 +94,10 @@ class redtd:
     def handleinunit(self, inunit, includefuzzy) -> None:
         entities = inunit.getlocations()
         mixedentities = self.mixer.match_entities(entities)
-        self.dtdfile.require_index()
         for entity in entities:
-            if entity in self.dtdfile.id_index:
+            if entity in self.dtd_index:
                 # now we need to replace the definition of entity with msgstr
-                dtdunit = self.dtdfile.id_index[entity]  # find the dtd
+                dtdunit = self.dtd_index[entity]  # find the dtd
                 if inunit.istranslated() or not bool(inunit.source):
                     applytranslation(entity, dtdunit, inunit, mixedentities)
                 elif self.remove_untranslated and not (

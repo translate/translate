@@ -117,6 +117,7 @@ class rcunit(base.TranslationUnit):
     @source.setter
     def source(self, source) -> None:
         """Sets the source AND the target to be equal."""
+        self._invalidate_store_indexes()
         self._rich_source = None
         self._value = source or ""
 

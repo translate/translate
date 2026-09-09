@@ -121,6 +121,7 @@ class UtxUnit(base.MetadataTranslationUnit):
 
     @source.setter
     def source(self, source) -> None:
+        self._invalidate_store_indexes()
         self._rich_source = None
         self._set_field("src", source)
 

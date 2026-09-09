@@ -471,6 +471,7 @@ class AndroidResourceUnit(base.TranslationUnit):
         return self.xmlelement.get("name")
 
     def setid(self, newid):  # ty:ignore[invalid-method-override]
+        self._invalidate_store_indexes()
         return self.xmlelement.set("name", newid)
 
     def getcontext(self):

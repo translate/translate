@@ -95,9 +95,11 @@ class PoXliffUnit(xliff.xliffunit):
 
     @source.setter
     def source(self, source) -> None:
+        self._invalidate_store_indexes()
         self.setsource(source, sourcelang="en")
 
     def setsource(self, source, sourcelang="en") -> None:  # ty:ignore[invalid-method-override]
+        self._invalidate_store_indexes()
         self._rich_source = None
         if not hasplurals(source):
             if self.hasplural():
@@ -329,6 +331,7 @@ class PoXliffUnit(xliff.xliffunit):
             unit.marktranslated()
 
     def setid(self, id) -> None:
+        self._invalidate_store_indexes()
         super().setid(id)
         if len(self.units) > 1:
             for i, unit in enumerate(self.units):

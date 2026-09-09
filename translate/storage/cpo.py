@@ -447,6 +447,7 @@ class pounit(pocommon.pounit):
 
     @source.setter
     def source(self, source) -> None:
+        self._invalidate_store_indexes()
         if isinstance(source, multistring):
             source = source.strings
         if isinstance(source, list):
@@ -787,6 +788,7 @@ class pounit(pocommon.pounit):
         return ""
 
     def setcontext(self, context) -> None:
+        self._invalidate_store_indexes()
         gpo.po_message_set_msgctxt(self._gpo_message, gpo_encode(context))  # ty:ignore[unresolved-attribute]
 
     @classmethod

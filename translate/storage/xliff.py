@@ -374,6 +374,7 @@ class Xliff1Unit(XliffUnit):
 
     def setid(self, id) -> None:  # ty:ignore[invalid-method-override]
         # sanitize id in case ID_SEPARATOR is present
+        self._invalidate_store_indexes()
         self.xmlelement.set("id", id.replace(ID_SEPARATOR, ID_SEPARATOR_SAFE))
 
     def getid(self):

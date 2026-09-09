@@ -96,6 +96,7 @@ class XliffUnit(lisa.LISAunit):
         return nodes
 
     def set_rich_source(self, value, sourcelang="en") -> None:
+        self._invalidate_store_indexes()
         sourcelanguageNode = self.get_source_dom()
         if sourcelanguageNode is None:
             sourcelanguageNode = self.createlanguageNode(sourcelang, "", "source")

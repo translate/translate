@@ -67,6 +67,7 @@ class YAMLUnit(base.DictUnit):
 
     @source.setter
     def source(self, source) -> None:
+        self._invalidate_store_indexes()
         self.target = source
 
     def getid(self):
@@ -335,6 +336,27 @@ class YAMLFile(base.DictStore[YAMLUnit]):
             units = self.preprocess(self._original)
             unit.storevalue(units, None, unset=True)
         super().removeunit(unit)
+
+    def _rename_unit(self, unit: YAMLUnit, unitid: base.UnitId) -> None:
+        previous = unit.get_unitid()
+        parent = self._get_rename_parent(self.preprocess(self._original), unit, unitid)
+        if parent is None:
+            return
+        old_key = previous.parts[-1][1]
+        new_key = unitid.parts[-1][1]
+        if not isinstance(parent, CommentedMap):
+            items = [
+                (new_key if key == old_key else key, value)
+                for key, value in parent.items()
+            ]
+            parent.clear()
+            parent.update(items)
+            return
+        position = list(parent).index(old_key)
+        value = parent.pop(old_key)
+        parent.insert(position, new_key, value)
+        if old_key in parent.ca.items:
+            parent.ca.items[new_key] = parent.ca.items.pop(old_key)
 
 
 class RubyYAMLUnit(YAMLUnit):

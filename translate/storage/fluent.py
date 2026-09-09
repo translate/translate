@@ -804,6 +804,7 @@ class FluentUnit(base.TranslationUnit):
         a "-".
         For a fluent Comment, GroupComment or ResourceComment, the id is unused.
         """
+        self._invalidate_store_indexes()
         regex = self._FLUENT_ID_REGEXES.get(self._fluent_type, "")
         if not re.fullmatch(regex, value or ""):
             raise ValueError(

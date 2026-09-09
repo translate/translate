@@ -313,6 +313,11 @@ class TranslationUnit:
             return [rich_parse(s, self.rich_parsers) for s in mulstring.strings]
         return [rich_parse(mulstring, self.rich_parsers)]
 
+    def _invalidate_store_indexes(self) -> None:
+        """Discard lookups affected by changes to this unit's identity."""
+        if self._store is not None:
+            self._store._invalidate_indexes()
+
     @property
     def source(self):
         return self._source
@@ -320,6 +325,7 @@ class TranslationUnit:
     @source.setter
     def source(self, source) -> None:
         """Set the source string to the given value."""
+        self._invalidate_store_indexes()
         self._rich_source = None
         self._source = source
 
@@ -464,6 +470,7 @@ class TranslationUnit:
 
     def setcontext(self, context) -> None:
         """Set the message context."""
+        self._invalidate_store_indexes()
         self._context = context or ""
 
     def getpreviouscontext(self):
@@ -944,15 +951,16 @@ class TranslationStore(Generic[U]):
 
     def removeunit(self, unit: U) -> None:
         """
-        Remove the given unit to the object's list of units.
+        Remove the given unit from the store and detach it.
 
         This method should always be used rather than trying to modify the
         list manually.
 
-        :param unit: The unit that will be added.
+        :param unit: The unit that will be removed.
         """
         self.units.remove(unit)
         self.remove_unit_from_index(unit)
+        unit._store = None
 
     def addsourceunit(self, source: str) -> U:
         """Add and returns a new unit with the given source string."""
@@ -988,6 +996,19 @@ class TranslationStore(Generic[U]):
 
     def remove_unit_from_index(self, unit) -> None:
         """Remove a unit from source and locaton indexes."""
+        unit_id = unit.getid()
+        if self.id_index.get(unit_id) is unit:
+            del self.id_index[unit_id]
+            # makeindex() selects the last nonblank, nonheader unit for an ID.
+            # Keep that behavior when removing one of several duplicates.
+            for candidate in reversed(self.units):
+                if (
+                    candidate is not unit
+                    and candidate.getid() == unit_id
+                    and not (candidate.isheader() or candidate.isblank())
+                ):
+                    self.id_index[unit_id] = candidate
+                    break
 
         def remove_source(source) -> None:
             if source in self.sourceindex:
@@ -1027,6 +1048,12 @@ class TranslationStore(Generic[U]):
                 # FIXME: maybe better store a list of units like sourceindex in
                 # case there are several units with the same location.
                 self.locationindex[location] = unit
+
+    def _invalidate_indexes(self) -> None:
+        """Discard indexes so the next lookup rebuilds them."""
+        self.locationindex = {}
+        self.sourceindex = {}
+        self.id_index = {}
 
     def makeindex(self) -> None:
         """
@@ -1429,6 +1456,9 @@ class DictUnit(TranslationUnit):
         return result
 
     def setid(self, value, unitid=None) -> None:
+        self._invalidate_store_indexes()
+        if self._store is not None:
+            self._store._rename_unit(self, unitid or self.IdClass.from_string(value))
         self._id = value
         self._unitid = unitid
 
@@ -1441,6 +1471,51 @@ T = TypeVar("T", bound=DictUnit)
 
 
 class DictStore(TranslationStore[T]):
+    def _rename_unit(self, unit: T, unitid: UnitId) -> None:
+        """Update any retained document when an attached unit changes its key."""
+
+    def _get_rename_parent(self, document, unit: T, new: UnitId):
+        """Validate an in-place mapping-key rename in a retained document."""
+        old = unit.get_unitid()
+        if old.parts == new.parts:
+            return None
+        if any(
+            other is not unit and other.get_unitid().parts == new.parts
+            for other in self.units
+        ):
+            raise ValueError(f"Key already exists: {new}")
+        self._check_document_key(document, new)
+        if not old.parts:
+            return None
+        parent = document
+        try:
+            for _kind, key in old.parts[:-1]:
+                parent = parent[key]
+            _ = parent[old.parts[-1][1]]
+        except (KeyError, IndexError, TypeError):
+            # A newly added unit might not have been serialized yet.
+            return None
+        if (
+            not new.parts
+            or old.parts[:-1] != new.parts[:-1]
+            or old.parts[-1][0] != "key"
+            or new.parts[-1][0] != "key"
+        ):
+            raise ValueError("Renaming is only supported within the same mapping")
+        return parent
+
+    @staticmethod
+    def _check_document_key(document, unitid: UnitId) -> None:
+        """Reject existing keys, including entries not represented by units."""
+        if not unitid.parts:
+            return
+        try:
+            for _kind, key in unitid.parts:
+                document = document[key]
+        except (KeyError, IndexError, TypeError):
+            return
+        raise ValueError(f"Key already exists: {unitid}")
+
     def get_root_node(self):
         if self.units and all(
             unit.get_unitid().parts[0][0] == "index" for unit in self.units

@@ -293,6 +293,7 @@ class tsunit(lisa.LISAunit):
         return context.text
 
     def setcontext(self, value) -> None:  # ty:ignore[invalid-method-override]
+        self._invalidate_store_indexes()
         if value == self.getcontextname():
             return
         parent = self.xmlelement.getparent()

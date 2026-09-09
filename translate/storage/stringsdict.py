@@ -79,6 +79,7 @@ class StringsDictUnit(base.DictUnit):
         return self.source
 
     def setid(self, value, unitid=None) -> None:
+        self._invalidate_store_indexes()
         previous_innerkey = (
             self.innerkey if getattr(self, "_unitid", None) is not None else None
         )

@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import pytest
+from lxml import etree
+
 from translate.misc.multistring import multistring
 from translate.storage import applestrings_xliff
 
@@ -72,6 +75,74 @@ _BASIC_PLURAL_XLIFF = b"""<?xml version="1.0" encoding="UTF-8"?>
     </body>
   </file>
 </xliff>"""
+
+
+@pytest.mark.parametrize(
+    "renames",
+    [
+        ("renamed:count",),
+        ("temporary:count", "renamed:count"),
+        ("temporary:count", "items:count"),
+    ],
+)
+@pytest.mark.parametrize("remove_after_rename", [False, True])
+@pytest.mark.parametrize("with_marker", [False, True])
+def test_rename_parsed_plural_removes_old_siblings(
+    renames, remove_after_rename, with_marker
+) -> None:
+    document = etree.fromstring(_BASIC_PLURAL_XLIFF)
+    if not with_marker:
+        marker = document.find(".//{*}trans-unit")
+        assert marker is not None
+        body = marker.getparent()
+        assert body is not None
+        body.remove(marker)
+    store = applestrings_xliff.AppleStringsXliffFile.parsestring(
+        etree.tostring(document)
+    )
+    unit = store.units[0]
+    old_id = unit.getid()
+    original_source = unit.source.strings[:]
+    original_target = unit.target.strings[:]
+    assert store.findid(old_id) is unit
+    for key in renames:
+        unit.setid(key)
+    if remove_after_rename:
+        store.removeunit(unit)
+    output = bytes(store)
+    reloaded = applestrings_xliff.AppleStringsXliffFile.parsestring(output)
+    if remove_after_rename:
+        assert not reloaded.units
+    else:
+        assert len(reloaded.units) == 1
+        assert reloaded.units[0].getid().endswith(renames[-1])
+        assert reloaded.units[0].source.strings == original_source
+        assert reloaded.units[0].target.strings == original_target
+    if renames[-1] != "items:count" or remove_after_rename:
+        assert b'id="items:count' not in output
+    assert b'id="temporary:count' not in output
+
+
+def test_plural_rich_source_edit_refreshes_indexes() -> None:
+    store = applestrings_xliff.AppleStringsXliffFile.parsestring(_BASIC_PLURAL_XLIFF)
+    unit = store.units[0]
+    unit_id = unit.getid()
+    old_sources = unit.source.strings[:]
+    original_targets = unit.target.strings[:]
+    for source in old_sources:
+        assert store.findunit(source) is unit
+    replacement = applestrings_xliff.AppleStringsXliffUnit(
+        multistring([f"Updated {source}" for source in old_sources])
+    )
+    unit.rich_source = replacement.rich_source
+    for old_source, new_source in zip(old_sources, unit.source.strings, strict=True):
+        assert store.findunit(old_source) is None
+        assert store.findunit(new_source) is unit
+    assert store.findid(unit_id) is unit
+    reloaded = applestrings_xliff.AppleStringsXliffFile.parsestring(bytes(store))
+    edited = reloaded.findid(unit_id)
+    assert edited.source.strings == unit.source.strings
+    assert edited.target.strings == original_targets
 
 
 def _add_plural(

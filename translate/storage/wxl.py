@@ -143,6 +143,7 @@ class WxlUnit(base.TranslationUnit):
 
     @source.setter
     def source(self, value: str) -> None:
+        self._invalidate_store_indexes()
         self.setid(value)
 
     @property
@@ -171,6 +172,7 @@ class WxlUnit(base.TranslationUnit):
             self.xmlelement.text = value or ""
 
     def setid(self, value: str) -> None:
+        self._invalidate_store_indexes()
         if value:
             self.xmlelement.set("Id", value)
 

@@ -796,6 +796,7 @@ class proppluralunit(base.TranslationUnit):
         return ll[0]
 
     def setsource(self, text) -> None:
+        self._invalidate_store_indexes()
         mapping = None
         if isinstance(text, multistring):
             strings = text.strings
@@ -874,7 +875,15 @@ class proppluralunit(base.TranslationUnit):
         return self.name
 
     def setid(self, value) -> None:
+        self._invalidate_store_indexes()
+        previous = self.name
         self.name = value
+        for variant, unit in self.units.items():
+            unit.setid(
+                value
+                if variant == self.KEY and unit.name == previous
+                else self.personality.get_key(value, variant)
+            )
 
     @property
     def missing(self):
@@ -993,6 +1002,7 @@ class propunit(base.TranslationUnit):
 
     @source.setter
     def source(self, source) -> None:
+        self._invalidate_store_indexes()
         self._rich_source = None
         self.value = self.personality.encode(source or "", self.encoding)
 
@@ -1103,6 +1113,7 @@ class propunit(base.TranslationUnit):
         return self.name
 
     def setid(self, value) -> None:
+        self._invalidate_store_indexes()
         self.name = value
 
 

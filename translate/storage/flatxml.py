@@ -63,6 +63,7 @@ class FlatXMLUnit(base.TranslationUnit):
     @source.setter
     def source(self, source) -> None:
         """Updates the unique identifier of this unit."""
+        self._invalidate_store_indexes()
         self.xmlelement.set(self.attribute_name, source)
 
     @property

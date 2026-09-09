@@ -247,6 +247,7 @@ class AppleStringsXliffUnit(xliff.Xliff1Unit):
 
     @source.setter
     def source(self, value) -> None:
+        self._invalidate_store_indexes()
         if isinstance(value, multistring):
             self._plural_source = value
             self._plural_dirty = True
@@ -294,6 +295,7 @@ class AppleStringsXliffUnit(xliff.Xliff1Unit):
     @rich_source.setter
     def rich_source(self, value) -> None:
         if self.hasplural():
+            self._invalidate_store_indexes()
             self._plural_source = self.rich_to_multistring(value)
             self._plural_dirty = True
         else:
@@ -329,7 +331,22 @@ class AppleStringsXliffUnit(xliff.Xliff1Unit):
         return super().getid()
 
     def setid(self, id) -> None:
+        self._invalidate_store_indexes()
         if self.hasplural():
+            # Move the retained XML siblings to the new group before replacing
+            # its base key, so serialization and removal can still find them.
+            body = self.xmlelement.getparent()
+            old_base_key = self._plural_base_key
+            if body is not None and old_base_key is not None and old_base_key != id:
+                for child in body:
+                    child_id = child.get("id", "")
+                    if (
+                        child is not self.xmlelement
+                        and AppleStringsXliffFile._is_plural_sibling(
+                            child_id, old_base_key
+                        )
+                    ):
+                        child.set("id", id + child_id[len(old_base_key) :])
             # Plural unit: the logical ID is the base key; update XML element id.
             self._plural_base_key = id
             self.xmlelement.set(

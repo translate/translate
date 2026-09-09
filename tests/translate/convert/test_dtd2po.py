@@ -177,6 +177,28 @@ class TestDTD2PO:
         pofile = self.dtd2po(dtdsource)
         assert self.countelements(pofile) == 1
 
+    def test_donttranslate_merge_preserves_following_translations(self) -> None:
+        template = """<!ENTITY ignored "Ignored">
+<!ENTITY following "Following">
+<!ENTITY action.label "Action">
+<!ENTITY action.accesskey "A">"""
+        translated = """<!-- LOCALIZATION NOTE (ignored): DONT_TRANSLATE -->
+<!ENTITY ignored "Ignored">
+<!ENTITY following "Translated">
+<!ENTITY action.label "Translated action">
+<!ENTITY action.accesskey "T">"""
+        output = self.dtd2po(translated, template)
+        assert output.findunit("Following").target == "Translated"
+        assert output.findunit("&Action").target == "&Translated action"
+
+    def test_donttranslate_preserves_following_accesskey_pair(self) -> None:
+        source = """<!-- LOCALIZATION NOTE (ignored): DONT_TRANSLATE -->
+<!ENTITY ignored "Ignored">
+<!ENTITY action.label "Action">
+<!ENTITY action.accesskey "A">"""
+        output = self.dtd2po(source)
+        assert output.findunit("&Action") is not None
+
     def test_donttranslate_label(self) -> None:
         """Test strangeness when label entity is marked DONT_TRANSLATE and accesskey is not, bug 30."""
         dtdsource = (

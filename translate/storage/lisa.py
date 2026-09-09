@@ -135,11 +135,38 @@ class LISAunit(base.TranslationUnit):
 
     @source.setter
     def source(self, source) -> None:
+        self._invalidate_store_indexes()
         self.setsource(source, sourcelang="en")
 
     def setsource(self, text, sourcelang="en") -> None:
         self._rich_source = None
-        self.source_dom = self.createlanguageNode(sourcelang, text, "source")
+        self._invalidate_store_indexes()
+        replacement = self.createlanguageNode(sourcelang, text, "source")
+        current = self.source_dom
+        if current is None or current.tag != replacement.tag:
+            self.source_dom = replacement
+            return
+        current_text = current
+        replacement_text = replacement
+        if self.textNode:
+            current_text = current.find(f".//{self.namespaced(self.textNode)}")
+            replacement_text = replacement.find(f".//{self.namespaced(self.textNode)}")
+        if current_text is None or replacement_text is None:
+            self.source_dom = replacement
+            return
+        # Keep language-level metadata and text-node attributes. Inline content
+        # belongs to the old text, but must survive a no-op source assignment.
+        if (
+            self.getNodeText(
+                current, getXMLspace(self.xmlelement, self._default_xml_space)
+            )
+            != text
+        ):
+            current_text.text = replacement_text.text
+            for child in list(current_text):
+                current_text.remove(child)
+            current_text.extend(replacement_text)
+        current.attrib.update(replacement.attrib)
 
     def set_target_dom(self, dom_node, append=False) -> None:
         languageNodes = self.getlanguageNodes()
@@ -204,12 +231,12 @@ class LISAunit(base.TranslationUnit):
         self.settarget(target)
 
     @staticmethod
-    def createlanguageNode(lang, text, purpose=None) -> None:
+    def createlanguageNode(lang, text, purpose=None) -> etree._Element:
         """
         Returns a xml Element setup with given parameters to represent a
         single language entry. Has to be overridden.
         """
-        return
+        raise NotImplementedError
 
     def getlanguageNodes(self):
         """Returns a list of all nodes that contain per language information."""
@@ -371,17 +398,8 @@ class MultilingualLISAunit(LISAunit):
 
     @source.setter
     def source(self, source) -> None:
+        self._invalidate_store_indexes()
         self.setsource(source)
-
-    def _invalidate_store_indexes(self) -> None:
-        store = getattr(self, "_store", None)
-        if store is not None:
-            if hasattr(store, "_invalidate_indexes"):
-                store._invalidate_indexes()
-            else:
-                store.locationindex = {}
-                store.sourceindex = {}
-                store.id_index = {}
 
     def setsource(self, text, sourcelang=None) -> None:
         language = sourcelang or self._get_source_language() or "en"

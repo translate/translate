@@ -327,6 +327,7 @@ class pounit(pocommon.pounit):
 
         :param source: an unescaped source string.
         """
+        self._invalidate_store_indexes()
         self._rich_source = None
         self._invalidate_source_cache()
         self.msgid, self.msgid_plural = self._set_source_vars(source)
@@ -876,6 +877,7 @@ class pounit(pocommon.pounit):
         return unquotefrompo(self.msgctxt)
 
     def setcontext(self, context) -> None:
+        self._invalidate_store_indexes()
         self.msgctxt = self.quote(context)
 
     def getid(self):

@@ -53,6 +53,7 @@ class htmlunit(base.TranslationUnit):
 
     def setcontext(self, context) -> None:
         """Set the message context."""
+        self._invalidate_store_indexes()
         self._context = context or ""
 
     def getid(self):

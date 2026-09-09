@@ -307,6 +307,7 @@ class dtdunit(base.TranslationUnit):
     @source.setter
     def source(self, source) -> None:
         """Sets the definition to the quoted value of source."""
+        self._invalidate_store_indexes()
         if self.android:
             self.definition = quoteforandroid(source)
         else:
@@ -335,6 +336,7 @@ class dtdunit(base.TranslationUnit):
         return self.entity
 
     def setid(self, new_id) -> None:  # ty:ignore[invalid-method-override]
+        self._invalidate_store_indexes()
         self.entity = new_id
 
     def getlocations(self):
@@ -686,7 +688,7 @@ class dtdfile(base.TranslationStore):
             if not malformed and (
                 not newdtd.isblank() or newdtd.unparsedlines or newdtd.comments
             ):
-                self.units.append(newdtd)
+                self.addunit(newdtd)
 
     def serialize(self, out) -> None:
         """Write content to file."""

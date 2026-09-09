@@ -185,6 +185,8 @@ class dtd2po:
             return self.convertunit(unit)
 
         # assert alreadymixed is None
+        # An earlier DONT_TRANSLATE entry may have invalidated the index.
+        store.require_index()
         labelentity, accesskeyentity = self.mixer.find_mixed_pair(
             self.mixedentities, store, unit
         )
@@ -267,8 +269,8 @@ class dtd2po:
                 # this means its a mixed entity (with accesskey) that's
                 # already been dealt with)
                 continue
-            if orig_entity in translateddtdfile.id_index:
-                translateddtd = translateddtdfile.id_index[orig_entity]
+            translateddtd = translateddtdfile.findid(orig_entity)
+            if translateddtd is not None:
                 translatedpo = self.convertdtdunit(
                     translateddtdfile, translateddtd, mixbucket=mixbucket
                 )

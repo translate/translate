@@ -56,11 +56,11 @@ class TOMLUnit(base.DictUnit):
 
     def setid(self, value, unitid=None) -> None:
         """Set the unit ID, stripping leading separator if present."""
+        self._invalidate_store_indexes()
         # Strip leading separator from the string representation
         if isinstance(value, str) and value.startswith(self.IdClass.KEY_SEPARATOR):
             value = value[len(self.IdClass.KEY_SEPARATOR) :]
-        self._id = value
-        self._unitid = unitid
+        super().setid(value, unitid)
 
     @property
     def source(self):
@@ -70,6 +70,7 @@ class TOMLUnit(base.DictUnit):
     @source.setter
     def source(self, source) -> None:
         """Set the source text (alias for target in monolingual format)."""
+        self._invalidate_store_indexes()
         self.target = source
 
     def getid(self):
@@ -255,6 +256,27 @@ class TOMLFile(base.DictStore[TOMLUnit]):
         if self._original is not None:
             unit.storevalue(self._original, None, unset=True)  # ty:ignore[unresolved-attribute]
         super().removeunit(unit)  # ty:ignore[invalid-argument-type]
+
+    def _rename_unit(self, unit: TOMLUnit, unitid: base.UnitId) -> None:
+        previous = unit.get_unitid()
+        parent = self._get_rename_parent(self._original, unit, unitid)
+        if parent is None:
+            return
+        old_key = previous.parts[-1][1]
+        new_key = unitid.parts[-1][1]
+        # tomlkit's container replacement retains the key's position, trivia,
+        # and preceding comments; pop/assignment would move it to the end.
+        container = parent.value if isinstance(parent, AbstractTable) else parent
+        value = container.item(old_key)
+        if hasattr(value, "invalidate_display_name"):
+            value.invalidate_display_name()
+        container._replace(old_key, new_key, value)
+        # Renaming a scalar updates the body and key map, but tomlkit leaves
+        # the dict backing the container (and its enclosing table) unchanged.
+        dict.update(container, {new_key: value.value})
+        if isinstance(parent, AbstractTable):
+            dict.pop(parent, old_key)
+            dict.update(parent, {new_key: value})
 
 
 class GoI18nTOMLUnit(TOMLUnit):

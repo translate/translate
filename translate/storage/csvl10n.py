@@ -64,6 +64,7 @@ class csvunit(base.TranslationUnit):
         return result
 
     def setid(self, value) -> None:
+        self._invalidate_store_indexes()
         self.id = value
 
     def getlocations(self):
@@ -77,6 +78,7 @@ class csvunit(base.TranslationUnit):
         return self.context
 
     def setcontext(self, value) -> None:  # ty:ignore[invalid-method-override]
+        self._invalidate_store_indexes()
         self.context = value
 
     def getnotes(self, origin=None):

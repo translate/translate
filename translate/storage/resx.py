@@ -105,6 +105,7 @@ class RESXUnit(lisa.LISAunit):
             self.xmlelement.remove(note)
 
     def setid(self, value) -> None:
+        self._invalidate_store_indexes()
         if id is not None:
             self.xmlelement.set("name", value)
 

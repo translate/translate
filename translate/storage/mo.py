@@ -108,6 +108,7 @@ class mounit(base.TranslationUnit):
         return "".join(self.msgctxt)
 
     def setcontext(self, context) -> None:
+        self._invalidate_store_indexes()
         self.msgctxt = [context]
 
     def isheader(self) -> bool:

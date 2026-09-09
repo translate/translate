@@ -87,6 +87,7 @@ class pounit(pocommon.pounit):
 
     @source.setter
     def source(self, source) -> None:
+        self._invalidate_store_indexes()
         self._rich_source = None
         source = source or ""
         if isinstance(source, (multistring, str)):
@@ -370,6 +371,7 @@ class pounit(pocommon.pounit):
         return self._msgctxt
 
     def setcontext(self, context) -> None:
+        self._invalidate_store_indexes()
         self._msgctxt = context or ""
 
     def getid(self):

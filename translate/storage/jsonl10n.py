@@ -127,9 +127,11 @@ class BaseJsonUnit(base.DictUnit):
 
     @source.setter
     def source(self, source) -> None:
+        self._invalidate_store_indexes()
         self.target = source
 
     def setid(self, value, unitid=None) -> None:
+        self._invalidate_store_indexes()
         super().setid(value, unitid)
         self.get_unitid()
         self._item = self._unitid.parts[-1][1]  # ty:ignore[unresolved-attribute]
@@ -683,6 +685,7 @@ class GoTextJsonUnit(BaseJsonUnit):
         return value
 
     def setid(self, value, unitid=None) -> None:
+        self._invalidate_store_indexes()
         if unitid is None:
             unitid = self.IdClass(value)
         # Skip BaseJsonUnit.setid override
@@ -1115,6 +1118,7 @@ class NextcloudJsonUnit(FlatJsonUnit):
 
     @source.setter
     def source(self, source) -> None:
+        self._invalidate_store_indexes()
         self.setid(source)
 
 
@@ -1249,6 +1253,7 @@ class RESJSONUnit(base.MetadataTranslationUnit, FlatJsonUnit):
 
     @source.setter
     def source(self, source) -> None:
+        self._invalidate_store_indexes()
         self._source = source
 
     def getcontext(self):

@@ -145,6 +145,7 @@ class tmxunit(lisa.MultilingualLISAunit):
         return errordict
 
     def setcontext(self, context) -> None:
+        self._invalidate_store_indexes()
         context_prop = self.xmlelement.find(
             f"{self.namespaced('prop')}[@type='x-context']"
         )
@@ -220,9 +221,7 @@ class tmxfile(lisa.LISAfile[tmxunit]):
         )
 
     def _invalidate_indexes(self) -> None:
-        self.locationindex = {}
-        self.sourceindex = {}
-        self.id_index = {}
+        super()._invalidate_indexes()
         self.languageindex = {}
 
     def setsourcelanguage(self, sourcelanguage: str) -> None:

@@ -4,6 +4,38 @@ storage
 .. automodule:: translate.storage
    :show-inheritance:
 
+Editing existing units
+----------------------
+
+Use a unit's ``source`` property to change its source text, ``setcontext()`` to
+change a supported context, and ``setid()`` to change an independent key. These
+operations update the existing unit instead of replacing it, retaining its
+translations and other metadata. They do not automatically mark translations
+as needing review.
+
+Key and context support depends on the format. The base ``setid()`` does
+nothing, and an in-memory context is not necessarily serialized. Applications
+must check format support and validate destination keys before editing. Some
+formats expose composite identifiers, such as XLIFF file or segment identifiers;
+these must be handled according to that format's setter conventions.
+
+Source, key, and context setters invalidate attached store indexes. Use
+``findid()``, ``findunit()``, or ``findunits()`` for subsequent lookups; they
+rebuild the indexes when needed. Call ``makeindex()`` before accessing index
+dictionaries directly after an edit. Add units through ``addunit()`` so their
+setters can notify the store.
+
+JSON supports changing nested key paths. YAML and TOML retain their original
+documents to preserve formatting and comments; attached units support renaming
+a key within its existing mapping, including nested mappings. Moving a stored
+unit between mappings or renaming an array index raises ``ValueError``, as does
+renaming to an existing key in the retained document.
+
+XML source edits preserve language and text-node attributes and surrounding
+metadata. Assigning the existing source text preserves inline markup; changing
+the text replaces its inline content. Use the rich-source interface when the
+replacement needs inline markup.
+
 
 base
 ----
