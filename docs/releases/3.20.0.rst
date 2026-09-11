@@ -1,0 +1,57 @@
+Translate Toolkit 3.20.0
+************************
+
+*Released on 11 September 2026*
+
+This release adds support for SPDX contributor comments and TBX term
+alternatives, and improves editing of existing translation units.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- Gettext PO
+
+  - Add an opt-in SPDX format for contributor comments, preserving historical
+    years and unrelated copyright notices
+
+- Markdown and MDX
+
+  - Preserve translations identical to the source before trying legacy lookup
+    keys, and avoid consuming duplicate translation occurrences
+
+- TBX
+
+  - Expose ordered term alternatives with IDs, administrative status, and scoped
+    notes
+  - Preserve term IDs, metadata, and unrelated XML when editing alternatives
+  - Keep usable terms when another term is deprecated or the selected target
+    language is missing
+
+- TBX and TMX
+
+  - Fall back from bare language codes to default-country variants, such as
+    ``en`` to ``en-US``, when no exact match exists
+  - Preserve existing XML language tags when editing matched terms
+
+- XML-based formats
+
+  - Fix copying wrapper children during XML generation
+
+Other
+-----
+
+- Keep store lookup indexes in sync when editing sources, keys, and contexts
+- Preserve translations, XML metadata, plural keys, and retained YAML and TOML
+  documents when editing existing units
+- Document source, key, and context setter behavior in the storage API
+- Update development tooling and CI dependencies
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+Léon Avic Simmons, Michal Čihař
