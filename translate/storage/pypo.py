@@ -422,7 +422,10 @@ class pounit(pocommon.pounit):
         parts: list[Iterable[str]] = []
         newline = self.newline
         if origin == "translator" or origin is None:
-            parts.append(comment[2:] or newline for comment in self.othercomments)
+            parts.append(
+                comment.removeprefix("#").removeprefix(" ") or newline
+                for comment in self.othercomments
+            )
         if origin in {"programmer", "developer", "source code", None}:
             parts.append(comment[3:] or newline for comment in self.automaticcomments)
         if not parts:

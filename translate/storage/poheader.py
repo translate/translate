@@ -25,6 +25,58 @@ from translate import __version__
 from translate.misc.dictutils import cidict
 
 author_re = re.compile(r".*<\S+@\S+>.*\d{4,4}")
+
+_contributor_years = (
+    r"[0-9]{4}(?: *[-–] *[0-9]{4})?(?:, *[0-9]{4}(?: *[-–] *[0-9]{4})?)*"
+)
+_gettext_contributor_re = re.compile(
+    rf"(?P<identity>.+?), (?P<years>{_contributor_years})\.?"
+)
+_spdx_contributor_re = re.compile(
+    rf"SPDX-FileCopyrightText: (?:© )?(?P<years>{_contributor_years}) (?P<identity>.+)"
+)
+_contributor_identity_re = re.compile(r"(?P<name>[^<>]+?)(?: <(?P<email>[^<>\s]+)>)?")
+
+
+def _parse_contributor(
+    line: str, *, current_name: str, in_contributor_block: bool
+) -> tuple[tuple[str, str | None], list[str]] | None:
+    """Recognize contributor entries without interpreting arbitrary notices."""
+    line = line.strip()
+    if line.startswith(("Copyright", "©", "(C)", "(c)")):
+        return None
+    match = _spdx_contributor_re.fullmatch(line)
+    explicit_spdx = match is not None
+    if match is None and not line.startswith("SPDX-"):
+        match = _gettext_contributor_re.fullmatch(line)
+    if match is None:
+        return None
+    identity = _contributor_identity_re.fullmatch(match["identity"])
+    if identity is None:
+        return None
+    if (
+        not explicit_spdx
+        and identity["email"] is None
+        and identity["name"].strip() != current_name
+        and not in_contributor_block
+    ):
+        return None
+    years = [part.strip() for part in match["years"].split(",")]
+    for year in years:
+        bounds = re.split(r" *[-–] *", year)
+        if len(bounds) == 2 and int(bounds[0]) > int(bounds[1]):
+            return None
+    return (identity["name"].strip(), identity["email"]), years
+
+
+def _contributor_has_year(years: list[str], year: str) -> bool:
+    for value in years:
+        bounds = re.split(r" *[-–] *", value)
+        if int(bounds[0]) <= int(year) <= int(bounds[-1]):
+            return True
+    return False
+
+
 nplural_re = re.compile(r"nplurals=(.+?);")
 plural_re = re.compile(r"plural=(.+?);?$")
 
@@ -413,8 +465,23 @@ class poheader:
         }
         self.updateheader(**retain)
 
-    def updatecontributor(self, name: str, email: str | None = None) -> None:
-        """Add contribution comments if necessary."""
+    def updatecontributor(
+        self, name: str, email: str | None = None, *, spdx: bool = False
+    ) -> None:
+        """
+        Add contribution comments, optionally using SPDX copyright entries.
+
+        With ``spdx=True``, convert recognized historical contributor entries to
+        ``SPDX-FileCopyrightText`` and add the current contribution year. Other
+        notices are preserved. Email-less traditional entries are recognized only
+        for the current author or in explicit "Translators:" / "Contributors:"
+        sections. When email is omitted, a unique exact-name match retains the
+        existing email address. Ambiguous names get a separate email-less entry.
+        The default retains traditional gettext formatting.
+        """
+        if spdx:
+            self._update_spdx_contributor(name, email)
+            return
         header = self.header()
         if not header:
             return
@@ -466,6 +533,72 @@ class poheader:
         header.addnote("\n".join(prelines))
         header.addnote("\n".join(contriblines))
         header.addnote("\n".join(postlines))
+
+    def _update_spdx_contributor(self, name: str, email: str | None) -> None:
+        header = self.header()
+        if not header:
+            return
+        # Retain comments in their original positions, replacing only recognized
+        # contributor entries and dropping duplicate entries for the same person.
+        lines: list[str | tuple[str, str | None]] = []
+        contributors: dict[tuple[str, str | None], list[str]] = {}
+        insertion = None
+        current_name = name.strip()
+        in_contributor_block = False
+        newline = getattr(header, "newline", "\n")
+        for line in header.getnotes("translator").split(newline):
+            if line.strip().casefold() in {"translators:", "contributors:"}:
+                in_contributor_block = True
+                lines.append(line)
+                continue
+            if line.strip() == "FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.":
+                insertion = len(lines)
+                continue
+            entry = _parse_contributor(
+                line,
+                current_name=current_name,
+                in_contributor_block=in_contributor_block,
+            )
+            if entry is None:
+                in_contributor_block = False
+                lines.append(line)
+                continue
+            identity, years = entry
+            if identity not in contributors:
+                contributors[identity] = []
+                lines.append(identity)
+                insertion = len(lines)
+            for year in years:
+                if year not in contributors[identity]:
+                    contributors[identity].append(year)
+
+        identity = (current_name, email)
+        if email is None and identity not in contributors:
+            matches = [key for key in contributors if key[0] == current_name]
+            if len(matches) == 1:
+                identity = matches[0]
+        year = time.strftime("%Y")
+        if identity not in contributors:
+            contributors[identity] = []
+            if insertion is None:
+                insertion = len(lines)
+                while insertion and not lines[insertion - 1]:
+                    insertion -= 1
+            lines.insert(insertion, identity)
+        if not _contributor_has_year(contributors[identity], year):
+            contributors[identity].append(year)
+
+        result = []
+        for line in lines:
+            if isinstance(line, str):
+                result.append(line)
+            else:
+                name, email = line
+                author = f"{name} <{email}>" if email else name
+                years = ", ".join(contributors[line])
+                result.append(f"SPDX-FileCopyrightText: {years} {author}")
+        header.removenotes("translator")
+        header.addnote(newline.join(result), "translator")
 
     def makeheader(self, **kwargs):
         """
