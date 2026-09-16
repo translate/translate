@@ -2,7 +2,8 @@ from io import BytesIO
 
 import pytest
 
-from translate.convert import po2yaml
+from translate.convert import po2yaml, yaml2po
+from translate.storage import po, yaml
 
 from . import test_convert
 
@@ -197,12 +198,12 @@ msgstr "Ola mundo!"
         )
         assert output == expected_output
 
-    def test_duplicates_merge(self) -> None:
+    @pytest.mark.parametrize("separator", [" ", "\n#: "])
+    def test_duplicates_merge(self, separator) -> None:
         """Check that PO files created with --duplicates=merge are handled."""
         # A single PO unit with two locations (result of yaml2po --duplicates=merge)
-        input_string = """
-#: navbar->about
-#: footer->about_aboutus
+        input_string = f"""
+#: navbar-%3Eabout{separator}footer-%3Eabout_aboutus
 msgid "About us"
 msgstr "Über uns"
 """
@@ -218,11 +219,11 @@ footer:
         assert target_store.units[1].getlocations() == ["footer->about_aboutus"]
         assert target_store.units[1].source == "Über uns"
 
-    def test_duplicates_merge_untranslated(self) -> None:
+    @pytest.mark.parametrize("separator", [" ", "\n#: "])
+    def test_duplicates_merge_untranslated(self, separator) -> None:
         """Check that untranslated PO with multiple locations copies source."""
-        input_string = """
-#: navbar->about
-#: footer->about_aboutus
+        input_string = f"""
+#: navbar-%3Eabout{separator}footer-%3Eabout_aboutus
 msgid "About us"
 msgstr ""
 """
@@ -352,3 +353,49 @@ class TestPO2YAMLCommand(test_convert.TestConvertCommand, TestPO2YAML):
         "--nofuzzy",
         "--personality=TYPE",
     ]
+
+    @pytest.mark.parametrize("translation", ["", "Začít"])
+    def test_duplicates_merge_roundtrip(self, translation) -> None:
+        """Preserve every YAML key through merged POT extraction and PO import."""
+        self.create_testfile(
+            "en.yaml",
+            """section1:
+  tile1_button: Get Started
+  tile2_button: Get Started
+  tile3_button: Get Started
+""",
+        )
+        yaml2po.main(
+            [
+                "--input",
+                self.get_testfilename("en.yaml"),
+                "--output",
+                self.get_testfilename("messages.pot"),
+                "--duplicates=merge",
+                "--pot",
+                "--progress=none",
+            ]
+        )
+        with self.open_testfile("messages.pot") as pot_file:
+            store = po.pofile(pot_file)
+        units = [unit for unit in store.units if not unit.isheader()]
+        assert len(units) == 1
+        unit = units[0]
+        locations = [f"section1->tile{i}_button" for i in range(1, 4)]
+        assert unit.getlocations() == locations
+        assert unit.source == "Get Started"
+        assert unit.target == ""
+        unit.target = translation
+        with self.open_testfile("messages.po", "wb") as po_file:
+            store.serialize(po_file)
+
+        self.run_command(
+            input="messages.po", output="translated.yaml", template="en.yaml"
+        )
+
+        with self.open_testfile("translated.yaml") as yaml_file:
+            result = yaml.YAMLFile(yaml_file)
+        assert len(result.units) == 3
+        assert {unit.getid(): unit.source for unit in result.units} == dict.fromkeys(
+            locations, translation or "Get Started"
+        )
