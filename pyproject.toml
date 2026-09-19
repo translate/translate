@@ -6,10 +6,10 @@ requires = [
 
 [dependency-groups]
 dev = [
-  {include-group = "docs"},
-  {include-group = "lint"},
-  {include-group = "test"},
-  {include-group = "types"}
+  { include-group = "docs" },
+  { include-group = "lint" },
+  { include-group = "test" },
+  { include-group = "types" }
 ]
 docs = [
   # Do not attempt to build doc on older Python
@@ -20,8 +20,8 @@ docs = [
   "sphinxext-opengraph==0.13.0; python_version >= '3.12'"
 ]
 lint = [
-  {include-group = "pre-commit"},
-  {include-group = "pylint"}
+  { include-group = "pre-commit" },
+  { include-group = "pylint" }
 ]
 pre-commit = [
   "prek==0.5.3"
@@ -43,7 +43,7 @@ types = [
 
 [project]
 authors = [
-  {email = "translate-devel@lists.sourceforge.net", name = "Translate"}
+  { email = "translate-devel@lists.sourceforge.net", name = "Translate" }
 ]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
@@ -53,13 +53,13 @@ classifiers = [
   "Operating System :: Microsoft :: Windows",
   "Operating System :: OS Independent",
   "Operating System :: Unix",
-  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python",
   "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
-  "Programming Language :: Python",
   "Topic :: Software Development :: Internationalization",
   "Topic :: Software Development :: Libraries :: Python Modules",
   "Topic :: Software Development :: Localization"
@@ -336,14 +336,14 @@ disable = [
 
 [tool.pytest.ini_options]
 filterwarnings = [
+  # TODO: these might be worth investigating
+  'default:unclosed:ResourceWarning',
   # Treat all unfiltered warnings as errors
   "error",
   # translate-toolkit warning for accesskeys
   "ignore:Could not find accesskey:UserWarning:translate.convert",
   # warning in a third-party library
-  "ignore:The 'u' type code is deprecated:DeprecationWarning:enchant.checker",
-  # TODO: these might be worth investigating
-  'default:unclosed:ResourceWarning'
+  "ignore:The 'u' type code is deprecated:DeprecationWarning:enchant.checker"
 ]
 norecursedirs = ".git build docs"
 
@@ -395,6 +395,7 @@ ignore = [
   "FURB103",  # TODO: `open` and `write` should be replaced by `Path(outputfile.name).write_bytes(outputmo)`
   "FURB189",  # TODO: Subclassing `dict` can be error prone, use `collections.UserDict` instead
   "INP001",  # TODO: File is part of an implicit namespace package. Add an `__init__.py`.
+  'ISC001',  # CONFIG: formatter
   "N801",  # TODO: Class name should use CapWords convention
   "N802",  # TODO: Function name `FAIL` should be lowercase
   "N803",  # TODO: Argument name `attributeValue` should be lowercase
@@ -422,6 +423,10 @@ ignore = [
   "PT011",  # TODO: `pytest.raises(ValueError)` is too broad, set the `match` parameter or use a more specific exception
   "PT013",  # TODO: Found incorrect import of pytest, use simple `import pytest` instead
   "PTH",  # TODO: Not using pathlib for now
+  'Q000',  # CONFIG: formatter
+  'Q001',  # CONFIG: formatter
+  'Q002',  # CONFIG: formatter
+  'Q003',  # CONFIG: formatter
   "RUF001",  # WONTFIX: String contains ambiguous unicode character, we are using Unicode
   "RUF002",  # WONTFIX: Docstring contains ambiguous
   "RUF003",  # WONTFIX: Comment contains ambiguous
@@ -443,11 +448,6 @@ ignore = [
   "TD007",  # TODO: Missing space after colon in TODO
   "TID252",  # TODO: Relative imports from parent modules are banned
   "TRY003",  # WONTFIX: Avoid specifying long messages outside the exception class
-  'ISC001',  # CONFIG: formatter
-  'Q000',  # CONFIG: formatter
-  'Q001',  # CONFIG: formatter
-  'Q002',  # CONFIG: formatter
-  'Q003',  # CONFIG: formatter
   'W191'  # CONFIG: formatter
 ]
 preview = true
