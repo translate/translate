@@ -987,7 +987,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
                 # Markdown links and their legacy heading-ID form.
                 if not translation_found and placeholders and self.lookup_callback:
                     expanded_content_md = self.remove_placeholder_markers(
-                        content_md, list(placeholders)
+                        content_md, placeholders
                     )
                     expanded_translated_md = self.lookup_callback(expanded_content_md)
                     if expanded_translated_md is None and legacy_heading_suffix:
@@ -1083,7 +1083,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     @classmethod
     def insert_placeholder_markers(
         cls, fragments: Iterable[Fragment]
-    ) -> Iterable[Fragment]:
+    ) -> list[Fragment]:
         """
         Sets the text of the (top-level) placeholder fragments to "{n}".
         Returns an ordered list of placeholders.
