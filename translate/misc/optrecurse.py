@@ -82,7 +82,7 @@ class ManPageOption(RecursiveOption):
         return super().take_action(action, dest, opt, value, values, parser)
 
 
-class ManHelpFormatter(optparse.HelpFormatter):
+class ManHelpFormatter(optparse.IndentedHelpFormatter):
     def __init__(
         self, indent_increment=0, max_help_position=0, width=80, short_first=1
     ) -> None:
