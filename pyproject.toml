@@ -336,14 +336,14 @@ disable = [
 
 [tool.pytest.ini_options]
 filterwarnings = [
-  # TODO: these might be worth investigating
-  'default:unclosed:ResourceWarning',
   # Treat all unfiltered warnings as errors
   "error",
   # translate-toolkit warning for accesskeys
   "ignore:Could not find accesskey:UserWarning:translate.convert",
   # warning in a third-party library
-  "ignore:The 'u' type code is deprecated:DeprecationWarning:enchant.checker"
+  "ignore:The 'u' type code is deprecated:DeprecationWarning:enchant.checker",
+  # TODO: these might be worth investigating
+  'default:unclosed:ResourceWarning'
 ]
 norecursedirs = ".git build docs"
 
@@ -492,6 +492,10 @@ sort_inline_arrays = true
 sort_inline_tables = true
 sort_table_keys = true
 spaces_before_inline_comment = 2
+
+[tool.tomlsort.overrides."tool.pytest.ini_options.filterwarnings"]
+# Pytest applies the last matching filter, so preserve the warning precedence.
+inline_arrays = false
 
 [tool.typos.default]
 extend-ignore-re = [
