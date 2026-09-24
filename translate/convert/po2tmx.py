@@ -27,6 +27,7 @@ import os
 
 from translate.convert import convert
 from translate.misc import wStringIO
+from translate.misc.multistring import multistring
 from translate.storage import po, tmx
 
 
@@ -44,6 +45,13 @@ class po2tmx:
 
         return "".join(comments)
 
+    @staticmethod
+    def stringlist(value):
+        """Returns the individual strings of a (possibly plural) value."""
+        if isinstance(value, multistring):
+            return value.strings
+        return [value]
+
     def convertfiles(
         self, inputfile, tmxfile, sourcelanguage="en", targetlanguage=None, comment=None
     ) -> None:
@@ -57,8 +65,8 @@ class po2tmx:
                 or inunit.isfuzzy()
             ):
                 continue
-            source = inunit.source
-            translation = inunit.target
+            sources = self.stringlist(inunit.source)
+            translations = self.stringlist(inunit.target)
 
             commenttext = {
                 "source": self.cleancomments(inunit.sourcecomments, "source"),
@@ -66,14 +74,20 @@ class po2tmx:
                 "others": self.cleancomments(inunit.othercomments),
             }.get(comment)
 
-            tmxfile.addtranslation(
-                source,
-                sourcelanguage,
-                translation,
-                targetlanguage,
-                commenttext,
-                inunit.getcontext(),
-            )
+            for index, translation in enumerate(translations):
+                # Plural targets pair with the singular source at index 0
+                # and the plural source at every following index.
+                source = sources[index] if index < len(sources) else sources[-1]
+                if not source or not translation:
+                    continue
+                tmxfile.addtranslation(
+                    source,
+                    sourcelanguage,
+                    translation,
+                    targetlanguage,
+                    commenttext,
+                    inunit.getcontext(),
+                )
 
 
 def convertpo(
