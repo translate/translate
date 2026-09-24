@@ -98,7 +98,7 @@ ANLoc project
 =============
 The `African Network for Localisation <https://africanlocalisation.net>`_
 provided the opportunity for further improvements to the project.  We saw the
-first official releases of `Virtaal <https://virtaal.org>`_ and massive
+first official releases of `Virtaal <https://virtaal.translatehouse.org>`_ and massive
 improvements to all the translation tools.
 
 Format support improved a lot, with several bilingual file formats now support
