@@ -27,7 +27,7 @@ Complete
 ========
 
 Note that :doc:`ts2po </commands/ts2po>` uses an older version and does not
-support all of these features.  `Virtaal <https://virtaal.org>`_, `Pootle
+support all of these features.  `Virtaal <https://virtaal.translatehouse.org>`_, `Pootle
 <https://pootle.translatehouse.org>`_ and other users of the new ts class
 support the following:
 
@@ -44,7 +44,7 @@ TODO
 ====
 
 .. note:: A new parser has been added to the toolkit in v1.2. This allows
-   `Virtaal <https://virtaal.org>`_, :doc:`/commands/pocount` and other users to
+   `Virtaal <https://virtaal.translatehouse.org>`_, :doc:`/commands/pocount` and other users to
    work with v1.1 of the .ts format.  This corrects almost all of the issues
    listed below.  The converter :doc:`ts2po </commands/ts2po>` continues to use
    the older storage class and thus continue to experience some of these

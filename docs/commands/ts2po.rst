@@ -13,13 +13,13 @@ The Qt toolkit comes with a localization application, Qt Linguist, however you
 might wish to standardise on one localization tool.  ts2po allows you to
 standardise on the PO format and PO related tools.
 
-.. note:: `Virtaal <https://virtaal.org>`_ and `Pootle
+.. note:: `Virtaal <https://virtaal.translatehouse.org>`_ and `Pootle
    <https://pootle.translatehouse.org>`_ can edit .ts files directly without the
    need for any conversion.
 
 .. warning:: po2ts uses our older .ts support.  Thus many of the newer features
    in .ts are not supported.  To support those features rather edit directly in
-   `Virtaal <https://virtaal.org>`_ or `Pootle
+   `Virtaal <https://virtaal.translatehouse.org>`_ or `Pootle
    <https://pootle.translatehouse.org>`_.
 
 .. _ts2po#usage:
