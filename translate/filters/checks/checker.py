@@ -29,6 +29,7 @@ from translate.filters.checks.config import CheckerConfig
 from translate.filters.checks.exceptions import FilterFailure
 from translate.filters.checks.tags import tag_re
 from translate.lang import data
+from translate.misc.multistring import multistring
 
 if TYPE_CHECKING:
     from types import FunctionType
@@ -330,10 +331,19 @@ class TranslationChecker(UnitChecker):
         if self.hasplural:
             filtermessages = []
             filterresult = True
+            sources = (
+                unit.source.strings
+                if isinstance(unit.source, multistring)
+                else [unit.source]
+            )
 
-            for pluralform in unit.target.strings:
+            for index, pluralform in enumerate(unit.target.strings):
+                # The first target form pairs with the singular source and
+                # all following forms pair with the plural source.
+                source = sources[index] if index < len(sources) else sources[-1]
+                str1 = data.normalize(source) or ""
                 try:
-                    if not test(self.str1, str(pluralform)):
+                    if not test(str1, str(pluralform)):
                         filterresult = False
                 except FilterFailure as e:
                     filterresult = False
