@@ -512,6 +512,18 @@ class RecursiveOptionParser(optparse.OptionParser):
         elif (None, "*") in self.outputoptions:
             outputformat, fileprocessor = self.outputoptions[None, "*"]
         else:
+            if inputext is None:
+                # Standard input has no file name to guess the format from.
+                # When all registered input formats resolve to the same
+                # processor for the given template, the format is unambiguous.
+                matches = {
+                    self.outputoptions[fmt, templateext]
+                    for fmt in self.inputformats
+                    if fmt not in {None, "*"}
+                    and (fmt, templateext) in self.outputoptions
+                }
+                if len(matches) == 1:
+                    return next(iter(matches))
             if self.usetemplates:
                 if inputext is None:
                     raise ValueError(
@@ -695,11 +707,19 @@ class RecursiveOptionParser(optparse.OptionParser):
             except OSError:
                 self.error("Output directory does not exist, attempt to create failed")
 
-    @staticmethod
-    def openinputfile(options, fullinputpath):
+    def openinputfile(self, options, fullinputpath):
         """Opens the input file."""
         if fullinputpath is None:
-            return sys.stdin
+            # Buffer standard input so it is seekable and binary like
+            # files opened with "rb".
+            stdin = getattr(sys.stdin, "buffer", sys.stdin)
+            contents = stdin.read()
+            inputfile = BytesIO(
+                contents if isinstance(contents, bytes) else contents.encode()
+            )
+            formats = [fmt for fmt in self.inputformats if fmt not in {None, "*"}]
+            inputfile.name = f"<stdin>.{formats[0]}" if len(formats) == 1 else "<stdin>"
+            return inputfile
         return open(fullinputpath, "rb")
 
     @staticmethod
