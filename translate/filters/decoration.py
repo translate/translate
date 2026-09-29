@@ -138,14 +138,16 @@ def findaccelerators(str1, accelmarker, acceptlist=None):
     return accelerators, badaccelerators
 
 
-def findmarkedvariables(str1, startmarker, endmarker, ignorelist=[]):
+def findmarkedvariables(
+    str1: str, startmarker: str | None, endmarker: str | int | None, ignorelist=[]
+) -> list[tuple[int, str]]:
     """
     Returns all the variables and locations in str1 marked with a given
     marker.
     """
-    variables = []
+    variables: list[tuple[int, str]] = []
     current_position = 0
-    while current_position >= 0:
+    while current_position >= 0 and startmarker is not None:
         variable = None
         current_position = str1.find(startmarker, current_position)
         if current_position >= 0:
