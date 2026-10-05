@@ -489,7 +489,7 @@ class rcfile(base.TranslationStore):
 
                     continue
 
-                if statement.block_type in ("STRINGTABLE"):
+                if statement.block_type == "STRINGTABLE":
                     for text in statement.controls:
                         if isinstance(text, str):
                             # This is a comment

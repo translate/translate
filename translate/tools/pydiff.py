@@ -137,10 +137,12 @@ def main() -> None:
             parser.error(
                 f"File {fromfile} is a directory while file {tofile} is a regular file"
             )
+            return
     elif os.path.isdir(tofile):
         parser.error(
             f"File {fromfile} is a regular file while file {tofile} is a directory"
         )
+        return
     else:
         differ = FileDiffer(fromfile, tofile, args)
     differ.writediff(sys.stdout)

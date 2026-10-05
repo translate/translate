@@ -123,6 +123,8 @@ class qmfile(base.TranslationStore):
                 f"Section: {name} (type: {section_type:#x}, offset: {startsection:#x}, length: {length})"
             )
 
+        messages_start: int | None = None
+        messages_data: tuple[int] | None = None
         while startsection < len(input):
             section_type, length = struct.unpack(
                 ">BL", input[startsection : startsection + sectionheader]
@@ -156,6 +158,8 @@ class qmfile(base.TranslationStore):
             else:
                 section_debug("Unknown", section_type, startsection, length)
             startsection = startsection + sectionheader + length
+        if messages_start is None or messages_data is None:
+            raise ValueError("Could not parse Messages section start")
         pos = messages_start
         messages_end = messages_start + len(messages_data)
         source = target = None
