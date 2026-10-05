@@ -256,6 +256,7 @@ def entityencode(source: str, codepoint2name: dict[int, str]) -> str:
     """
     output = []
     inentity = False
+    possibleentity = ""
     for char in source:
         if char == "&":
             inentity = True
@@ -306,6 +307,7 @@ def entitydecode(source: str, name2codepoint: dict[str, int]) -> str:
     """
     output = []
     inentity = False
+    possibleentity = ""
     for i, char in enumerate(source):
         if char == "&":
             inentity = True
