@@ -224,6 +224,7 @@ class reprop:
                 unit = self.inputstore.locationindex[lookup_key]
                 if unit is None or (
                     not unit.istranslated()
+                    and not (unit.isfuzzy() and self.includefuzzy and bool(unit.target))
                     and bool(unit.source)
                     and self.remove_untranslated
                 ):

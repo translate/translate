@@ -1,5 +1,7 @@
 from io import BytesIO
 
+import pytest
+
 from translate.convert import po2prop
 from translate.storage import po
 
@@ -589,6 +591,61 @@ class TestPO2PropCommand(test_convert.TestConvertCommand, TestPO2Prop):
         "--removeuntranslated",
         "--nofuzzy",
     ]
+
+    @pytest.mark.parametrize(
+        ("options", "expected"),
+        [
+            (
+                ["--fuzzy", "--removeuntranslated"],
+                "translated=Vertaling\nfuzzy=Voorlopig\n",
+            ),
+            (["--nofuzzy", "--removeuntranslated"], "translated=Vertaling\n"),
+            (
+                ["--fuzzy"],
+                "translated=Vertaling\nfuzzy=Voorlopig\nempty=Empty\nfuzzy_empty=Fuzzy empty\n",
+            ),
+            (
+                ["--nofuzzy"],
+                "translated=Vertaling\nfuzzy=Fuzzy\nempty=Empty\nfuzzy_empty=Fuzzy empty\n",
+            ),
+        ],
+    )
+    def test_fuzzy_removeuntranslated(self, options: list[str], expected: str) -> None:
+        """Keep requested fuzzy translations while still removing empty targets."""
+        self.create_testfile(
+            "translations.po",
+            """#: translated
+msgid "Translated"
+msgstr "Vertaling"
+
+#: fuzzy
+#, fuzzy
+msgid "Fuzzy"
+msgstr "Voorlopig"
+
+#: empty
+msgid "Empty"
+msgstr ""
+
+#: fuzzy_empty
+#, fuzzy
+msgid "Fuzzy empty"
+msgstr ""
+""",
+        )
+        self.create_testfile(
+            "template.properties",
+            "translated=Translated\nfuzzy=Fuzzy\nempty=Empty\nfuzzy_empty=Fuzzy empty\n",
+        )
+
+        self.run_command(
+            "translations.po",
+            "output.properties",
+            *options,
+            template="template.properties",
+        )
+
+        assert self.read_testfile("output.properties").decode() == expected
 
     def test_strings_output_uses_strings_personality_by_default(self) -> None:
         """Check .strings output still uses the strings personality by default."""
