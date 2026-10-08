@@ -615,7 +615,7 @@ class StandardChecker(TranslationChecker):
                     messages.append(f"Missing accelerator '{accelmarker}'")
             elif count1 == 0:
                 messages.append(f"Added accelerator '{accelmarker}'")
-            elif count1 == 1 and count2 > count1:
+            elif count1 == 1 and count2 > 1:
                 messages.append(
                     f"Accelerator '{accelmarker}' is repeated in translation"
                 )
