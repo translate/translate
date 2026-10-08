@@ -131,7 +131,7 @@ class PO2AsciiDocOptionParser(convert.ConvertOptionParser):
                 success = self.processfile(
                     self.process_file_with_fixed_inputstore,
                     options,
-                    None,
+                    options.input,
                     fulloutputpath,
                     fulltemplatepath,
                 )

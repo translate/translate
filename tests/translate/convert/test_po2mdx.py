@@ -1,10 +1,14 @@
 """Tests for PO to MDX conversion."""
 
+import sys
 from io import BytesIO
 
+from translate.convert import po2mdx
 from translate.convert.po2mdx import MDXTranslator
 from translate.storage import po
 from translate.storage.mdxfile import MDXFile
+
+from . import test_convert
 
 
 class TestPO2MDX:
@@ -529,3 +533,80 @@ World.
         outputfile = BytesIO()
         translator.translate(BytesIO(b"# Hello\n"), outputfile)
         assert b"# Hello translated" in outputfile.getvalue()
+
+
+class _RecordingStdin:
+    """Standard input stand-in that records reads instead of blocking."""
+
+    def __init__(self) -> None:
+        self.readcount = 0
+        self.buffer = self
+
+    def read(self, *args, **kwargs) -> bytes:
+        self.readcount += 1
+        return b""
+
+
+class TestPO2MDXCommand(test_convert.TestConvertCommand):
+    """Tests running actual po2mdx commands on files."""
+
+    convertmodule = po2mdx
+    defaultoptions = {"progress": "none"}
+
+    expected_options = [
+        "-t TEMPLATE, --template=TEMPLATE",
+        "-m MAXLENGTH, --maxlinelength=MAXLENGTH",
+        "--no-code-blocks",
+        "--no-frontmatter",
+        "--no-placeholders",
+        "--threshold=PERCENT",
+        "--fuzzy",
+        "--nofuzzy",
+    ]
+
+    def given_translation_file(self) -> None:
+        """Creates a test PO file."""
+        self.create_testfile(
+            "translation.po",
+            """msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\\n"
+"Content-Transfer-Encoding: 8bit\\n"
+
+msgid "Hello"
+msgstr "Bonjour"
+
+msgid "World."
+msgstr "Monde."
+""",
+        )
+
+    def given_mdx_template(self, filename: str) -> None:
+        """Creates an MDX template file."""
+        self.create_testfile(filename, "# Hello\n\nWorld.\n")
+
+    def test_directory_of_templates_with_single_po(self) -> None:
+        """A single PO file is applied to every template in a directory."""
+        self.given_mdx_template("template/page.mdx")
+        self.given_mdx_template("template/subdir/other.mdx")
+        self.given_translation_file()
+
+        self.run_command("translation.po", "translated", template="template")
+
+        assert self.read_testfile("translated/page.mdx") == b"# Bonjour\n\nMonde.\n"
+        assert (
+            self.read_testfile("translated/subdir/other.mdx")
+            == b"# Bonjour\n\nMonde.\n"
+        )
+
+    def test_directory_of_templates_does_not_read_stdin(self, monkeypatch) -> None:
+        """A file input is converted without consuming standard input."""
+        stdin = _RecordingStdin()
+        monkeypatch.setattr(sys, "stdin", stdin)
+        self.given_mdx_template("template/page.mdx")
+        self.given_translation_file()
+
+        self.run_command("translation.po", "translated", template="template")
+
+        assert stdin.readcount == 0
+        assert self.read_testfile("translated/page.mdx") == b"# Bonjour\n\nMonde.\n"
