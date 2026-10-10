@@ -53,7 +53,7 @@ As far as I know no detailed documentation exists for the tiki language.php file
 
 """
 
-import datetime
+import datetime as dt
 import re
 from contextlib import closing
 from io import BytesIO
@@ -147,7 +147,7 @@ class TikiStore(base.TranslationStore[TikiUnit]):
     @staticmethod
     def _tiki_header() -> str:
         """Returns a tiki-file header string."""
-        return f"<?php // -*- coding:utf-8 -*-\n// Generated from po2tiki on {datetime.datetime.now(tz=datetime.UTC)}\n\n$lang=Array(\n"
+        return f"<?php // -*- coding:utf-8 -*-\n// Generated from po2tiki on {dt.datetime.now(tz=dt.UTC)}\n\n$lang=Array(\n"
 
     @staticmethod
     def _tiki_footer() -> str:
