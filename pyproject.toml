@@ -121,7 +121,7 @@ subtitles = [
   "aeidon>=1.15,<2.1"
 ]
 toml = [
-  "tomlkit>=0.13.0,<0.16.0"
+  "tomlrt>=2.2.2,<3.0"
 ]
 yaml = [
   "ruamel.yaml>=0.19.1,<0.20.0"

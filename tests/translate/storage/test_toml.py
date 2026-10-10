@@ -28,6 +28,19 @@ class TestTOMLResourceStore(test_monolingual.TestMonolingualStore):
         store.parse("")
         assert bytes(store) == b""
 
+    def test_crlf_line_endings(self) -> None:
+        """Test that CRLF line endings survive a roundtrip."""
+        store = self.StoreClass()
+        store.parse(b'key = "value"\r\nother = "second"\r\n')
+        store.units[0].target = "changed"
+        assert bytes(store) == b'key = "changed"\r\nother = "second"\r\n'
+
+    def test_missing_trailing_newline(self) -> None:
+        """Test that a missing trailing newline is added using the file's endings."""
+        store = self.StoreClass()
+        store.parse(b'key = "value"\r\nother = "second"')
+        assert bytes(store) == b'key = "value"\r\nother = "second"\r\n'
+
     def test_edit(self) -> None:
         store = self.StoreClass()
         store.parse('key = "value"')
@@ -303,9 +316,10 @@ key2 = "value2"
         store = self.StoreClass()
         store.parse(data)
         assert len(store.units) == 2
-        # TOML comments are line-by-line, need to check the actual behavior
-        # For now, we expect the first line of comment
-        assert "This is a comment for key1" in store.units[0].getnotes()
+        assert store.units[0].getnotes() == (
+            "This is a comment for key1\nwith multiple lines\nexplaining the key"
+        )
+        assert store.units[1].getnotes() == "Another comment\nfor key2"
 
     def test_no_comment_backwards_compat(self) -> None:
         """Test that TOML without comments still works."""
@@ -317,6 +331,53 @@ key2 = "value2"
         assert len(store.units) == 2
         assert store.units[0].getnotes() == ""
         assert store.units[1].getnotes() == ""
+
+    def test_comment_extraction_nested(self) -> None:
+        """Test extracting comments for keys nested inside a table."""
+        data = """# Comment above the section
+[section]
+# Comment for nested key
+key = "value"
+"""
+        store = self.StoreClass()
+        store.parse(data)
+        assert len(store.units) == 1
+        assert store.units[0].getid() == "section.key"
+        assert store.units[0].getnotes() == "Comment for nested key"
+
+    def test_comment_extraction_list(self) -> None:
+        """Test extracting comments for individual array elements."""
+        data = """items = [
+    # first item
+    "a",
+    # second item
+    "b",
+]
+"""
+        store = self.StoreClass()
+        store.parse(data)
+        assert len(store.units) == 2
+        assert store.units[0].getnotes() == "first item"
+        assert store.units[1].getnotes() == "second item"
+        assert bytes(store).decode() == data
+
+    def test_comment_extraction_blank_separated(self) -> None:
+        """Test that only comments directly above a key become notes."""
+        data = """a = "1"
+
+# banner separated by a blank line
+
+# attached note
+b = "2"
+"""
+        store = self.StoreClass()
+        store.parse(data)
+        assert len(store.units) == 2
+        assert store.units[0].getnotes() == ""
+        # A blank line detaches the banner, so only the attached run is a note
+        assert store.units[1].getnotes() == "attached note"
+        # Both comments still survive the roundtrip untouched
+        assert bytes(store).decode() == data
 
     def test_comment_preservation_simple(self) -> None:
         """Test that comments are preserved during roundtrip."""
@@ -334,10 +395,8 @@ key2 = "value2"
         assert store.units[0].getnotes() == "This is a comment for key1"
         assert store.units[1].getnotes() == "This is a comment for key2"
 
-        # Roundtrip should preserve comments
-        output = bytes(store).decode("utf-8")
-        assert "# This is a comment for key1" in output
-        assert "# This is a comment for key2" in output
+        # Roundtrip should be byte for byte identical
+        assert bytes(store).decode("utf-8") == data
 
     def test_comment_preservation_multiline(self) -> None:
         """Test that multi-line comments are preserved during roundtrip."""
@@ -350,11 +409,8 @@ key1 = "value1"
         store.parse(data)
         assert len(store.units) == 1
 
-        # Roundtrip should preserve all comment lines
-        output = bytes(store).decode("utf-8")
-        assert "# This is a comment for key1" in output
-        assert "# with multiple lines" in output
-        assert "# explaining the key" in output
+        # Roundtrip should be byte for byte identical
+        assert bytes(store).decode("utf-8") == data
 
     def test_comment_preservation_nested(self) -> None:
         """Test that comments are preserved in nested structures."""
@@ -368,9 +424,8 @@ key = "value"
         store.parse(data)
         assert len(store.units) == 1
 
-        # Roundtrip should preserve comments
-        output = bytes(store).decode("utf-8")
-        assert "# Top-level comment" in output or "# Comment for nested key" in output
+        # Roundtrip should be byte for byte identical
+        assert bytes(store).decode("utf-8") == data
 
     def test_comment_preservation_with_modification(self) -> None:
         """Test that comments are preserved when values are modified."""
@@ -383,10 +438,10 @@ key1 = "original value"
         # Modify the value
         store.units[0].target = "modified value"
 
-        # Roundtrip should preserve comment
-        output = bytes(store).decode("utf-8")
-        assert "# This is a comment" in output
-        assert "modified value" in output
+        # Only the value should change, everything else is untouched
+        assert bytes(store).decode("utf-8") == data.replace(
+            "original value", "modified value"
+        )
 
     def test_literal_string(self) -> None:
         """Test TOML literal strings (single quotes)."""
@@ -406,7 +461,8 @@ The quick brown fox jumps over the lazy dog."""
         store = self.StoreClass()
         store.parse(data)
         assert len(store.units) == 1
-        assert "The quick brown fox" in store.units[0].source
+        assert store.units[0].source == "The quick brown fox jumps over the lazy dog."
+        assert bytes(store).decode() == data
 
     def test_multiline_literal_string(self) -> None:
         """Test TOML multiline literal strings (triple single quotes)."""
@@ -420,8 +476,11 @@ trimmed in raw strings.
         store = self.StoreClass()
         store.parse(data)
         assert len(store.units) == 1
-        assert "The first newline is" in store.units[0].source
-        assert "preserved" in store.units[0].source
+        assert store.units[0].source == (
+            "The first newline is\ntrimmed in raw strings.\n"
+            "   All other whitespace\n   is preserved.\n"
+        )
+        assert bytes(store).decode() == data
 
 
 class TestGoI18nTOMLResourceStore(test_monolingual.TestMonolingualStore):
@@ -508,9 +567,10 @@ other = "You have {{ .Count }} messages"
 
         store.units[0].target = multistring(["Un mensaje", "{{ .Count }} mensajes"])
 
-        result = bytes(store).decode("utf-8")
-        assert 'one = "Un mensaje"' in result
-        assert 'other = "{{ .Count }} mensajes"' in result
+        # Only the values should change, the layout is untouched
+        assert bytes(store).decode("utf-8") == (
+            '[messages]\none = "Un mensaje"\nother = "{{ .Count }} mensajes"\n'
+        )
 
     def test_unknown_language_single_plural_uses_other(self) -> None:
         """Test that unknown one-form plurals serialize as CLDR other."""
@@ -521,9 +581,9 @@ other = "You have {{ .Count }} messages"
         unit.setid("messages")
         store.addunit(unit)
 
-        result = bytes(store).decode("utf-8")
-        assert '[messages]\nother = "You have messages"' in result
-        assert "one =" not in result
+        assert (
+            bytes(store).decode("utf-8") == '[messages]\nother = "You have messages"\n'
+        )
 
     def test_mixed_content(self) -> None:
         """Test file with both regular and pluralized entries."""
@@ -595,6 +655,28 @@ View our <a href="/trademarks/">trademark policy</a>.
             'View our <a href="/privacy/">privacy policy</a>.' in store.units[2].source
         )
 
+    def test_comment_extraction_array_of_tables(self) -> None:
+        """Test extracting comments from array-of-tables entry headers."""
+        data = """# note for first entry
+[[messages]]
+one = "One minute"
+other = "{{ .Count }} minutes"
+
+# note for second entry
+[[messages]]
+other = "Hello"
+"""
+        store = self.StoreClass()
+        store.parse(data)
+        assert len(store.units) == 2
+        assert store.units[0].getid() == "messages[0]"
+        assert store.units[0].hasplural()
+        assert store.units[0].getnotes() == "note for first entry"
+        assert store.units[1].getid() == "messages[1]"
+        assert not store.units[1].hasplural()
+        assert store.units[1].getnotes() == "note for second entry"
+        assert bytes(store).decode() == data
+
     def test_comment_preservation_goi18n(self) -> None:
         """Test that comments are preserved in Go i18n format."""
         data = """# See https://github.com/nicksnyder/go-i18n for format documentation
@@ -610,11 +692,13 @@ other = "Get Started"
         store.parse(data)
         assert len(store.units) == 2
 
-        # Roundtrip should preserve at least top-level comments
-        output = bytes(store).decode("utf-8")
-        assert "# See https://github.com/nicksnyder/go-i18n" in output
-        # First table's comment should be preserved
-        assert "# Welcome message for the home page" in output
+        # A table is a single unit, so its header comment is that unit's note.
+        # The opening paragraph is the file preamble and belongs to no unit.
+        assert store.units[0].getnotes() == "Welcome message for the home page"
+        assert store.units[1].getnotes() == ""
+
+        # Roundtrip should be byte for byte identical
+        assert bytes(store).decode("utf-8") == data
 
     def test_comment_preservation_goi18n_plural(self) -> None:
         """Test that comments are preserved with plural forms."""
@@ -627,7 +711,7 @@ other = "{{ .Count }} minutes to read"
         store.parse(data)
         assert len(store.units) == 1
         assert store.units[0].hasplural()
+        assert store.units[0].getnotes() == "Comment about reading time"
 
-        # Roundtrip should preserve comments
-        output = bytes(store).decode("utf-8")
-        assert "# Comment about reading time" in output
+        # Roundtrip should be byte for byte identical
+        assert bytes(store).decode("utf-8") == data
