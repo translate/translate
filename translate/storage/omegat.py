@@ -183,5 +183,5 @@ class OmegaTFileTab(OmegaTFile):
     Extensions = ["tab"]
 
     @property
-    def encoding(self):
+    def encoding(self):  # ty:ignore[invalid-property-type-override]
         return locale.getlocale()[1]

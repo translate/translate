@@ -82,12 +82,9 @@ def make_tree_2(unit_1, unit_2):
 
 
 def test__add_unit_to_tree() -> None:
-    xliff_file = xliff.xlifffile
-    #    xliff_file = factory.classes['xlf']()
-
     # Add the first unit
 
-    unit_1 = xliff_file.UnitClass("Hello")
+    unit_1 = xliff.xliffunit("Hello")
     xpath_1 = "document-content[1]/body[1]/text[1]/p[1]"
 
     constructed_tree_1 = unit_tree.XPathTree()
@@ -99,7 +96,7 @@ def test__add_unit_to_tree() -> None:
 
     # Add another unit
 
-    unit_2 = xliff_file.UnitClass("World")
+    unit_2 = xliff.xliffunit("World")
     xpath_2 = "document-content[1]/body[2]/text[3]/p[4]"
 
     constructed_tree_2 = make_tree_1(unit_1)
