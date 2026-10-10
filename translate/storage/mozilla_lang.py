@@ -75,7 +75,7 @@ class LangUnit(base.TranslationUnit):
 class LangStore(txt.TxtFile):
     """We extend TxtFile, since that has a lot of useful stuff for encoding."""
 
-    UnitClass = LangUnit
+    UnitClass = LangUnit  # ty:ignore[invalid-assignment]
 
     Name = "Mozilla .lang"
     Extensions = ["lang"]
