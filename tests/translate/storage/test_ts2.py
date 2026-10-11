@@ -393,6 +393,45 @@ class TestTSfile(test_base.TestTranslationStore):
         tsfile = ts.tsfile.parsestring(TS_CONTEXT_QT5)
         assert bytes(tsfile).decode("utf-8") == TS_CONTEXT_QT5
 
+    def test_duplicate_context_name_uses_first_node(self) -> None:
+        store = ts.tsfile.parsestring(
+            '<TS version="2.1"><context><name>Shared</name></context>'
+            "<context><name>Shared</name></context></TS>"
+        )
+        contexts = store.document.getroot().findall("context")
+
+        unit = ts.tsunit("New source")
+        store.addunit(unit, contextname="Shared")
+
+        assert unit.xmlelement.getparent() is contexts[0]
+        assert len(contexts[0].findall("message")) == 1
+        assert not contexts[1].findall("message")
+
+    def test_many_contexts_are_indexed_once(self, monkeypatch) -> None:
+        context_count = 100
+        content = (
+            '<TS version="2.1">'
+            + "".join(
+                f"<context><name>Context {index}</name><message><source>Source</source>"
+                "</message></context>"
+                for index in range(context_count)
+            )
+            + "</TS>"
+        )
+        get_name = ts.tsfile._getcontextname
+        calls = 0
+
+        def counted_get_name(store, context):
+            nonlocal calls
+            calls += 1
+            return get_name(store, context)
+
+        monkeypatch.setattr(ts.tsfile, "_getcontextname", counted_get_name)
+        store = ts.tsfile.parsestring(content)
+
+        assert len(store.units) == context_count
+        assert calls == context_count
+
     def test_edit_missing_translation(self) -> None:
         """Test editing with missing translation element works well."""
         tsstr = """<?xml version="1.0" encoding="utf-8"?>
