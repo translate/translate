@@ -47,6 +47,35 @@ def test_nplurals() -> None:
     assert not checker.nplurals(unit)
 
 
+def test_plural_source_target_pairing() -> None:
+    """
+    Test that plural target forms are checked against their matching source
+    form, not only the singular source.
+    """
+    checker = checks.StandardChecker()
+    unit = po.pounit("")
+
+    unit.source = [
+        "Start polishing the book",
+        "Start polishing of {} books",
+    ]
+    unit.target = [
+        "Perfektionieren des Buchs starten",
+        "Perfektionieren von {} Büchern starten",
+    ]
+    failures = checker.run_filters(unit)
+    assert "pythonbraceformat" not in failures
+    assert "brackets" not in failures
+
+    # A placeholder only present in the translation is still caught.
+    unit.target = [
+        "Perfektionieren des {} Buchs starten",
+        "Perfektionieren von {} Büchern starten",
+    ]
+    failures = checker.run_filters(unit)
+    assert "pythonbraceformat" in failures
+
+
 def test_hassuggestion() -> None:
     """Test that hassuggestion() works."""
     checker = checks.StandardUnitChecker()

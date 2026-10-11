@@ -30,6 +30,12 @@ storage formats such as DTD, properties, OpenOffice.org GSI/SDF, CSV, MO,
 Qt .ts, TMX, TBX, WordFast txt, Gettext .mo, Windows RC, PO and XLIFF. It also
 provides scripts to convert between these formats.
 
+.. image:: https://s.weblate.org/cdn/Logo-Darktext-borders.png
+   :target: https://weblate.org/
+   :alt: Weblate
+   :height: 55px
+
+Maintained by `Weblate <https://weblate.org/>`_ — a privacy-respecting localization platform built on open-source foundations.
 
 Features
 --------

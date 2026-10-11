@@ -498,7 +498,7 @@ U = TypeVar("U", bound=Xliff1Unit)
 class Xliff1File(XliffFile[U]):
     """Class representing a XLIFF file store."""
 
-    UnitClass = Xliff1Unit
+    UnitClass = Xliff1Unit  # ty:ignore[invalid-assignment]
     Name = "XLIFF Translation File"
     Mimetypes = ["application/x-xliff", "application/x-xliff+xml"]
     Extensions = ["xlf", "xliff", "sdlxliff"]

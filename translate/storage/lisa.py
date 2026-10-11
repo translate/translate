@@ -503,7 +503,7 @@ U = TypeVar("U", bound=LISAunit)
 class LISAfile(base.TranslationStore[U]):
     """A class representing a file store for one of the LISA file formats."""
 
-    UnitClass = LISAunit
+    UnitClass = LISAunit  # ty:ignore[invalid-assignment]
     # The root node of the XML document:
     rootNode = ""
     # The root node of the content section:

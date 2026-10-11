@@ -119,7 +119,7 @@ def varnone(variable: str, startmarker: str, endmarker: str) -> str:
 
 
 def filtervariables(
-    startmarker: str | None, endmarker: str | None, varfilter: Callable
+    startmarker: str | None, endmarker: str | int | None, varfilter: Callable
 ) -> Callable:
     """
     Returns a function that filters variables marked using *startmarker* and

@@ -193,6 +193,52 @@ msgstr "Bézier-kurwe"
         unit = tmx.findunits("Bézier curve")
         assert unit[0].getnotes() == "csharp-format"
 
+    def test_plurals(self) -> None:
+        """Each plural form is exported as its own translation unit."""
+        minipo = r"""msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8\n"
+
+#: file.cpp:1
+msgid "One file"
+msgid_plural "%d files"
+msgstr[0] "Een lêer"
+msgstr[1] "%d lêers"
+"""
+        tmx = self.po2tmx(minipo)
+        print("The generated xml:")
+        print(bytes(tmx))
+        assert tmx.translate("One file") == "Een lêer"
+        assert tmx.translate("%d files") == "%d lêers"
+        assert len(tmx.units) == 2
+
+    def test_plurals_extra_target_forms(self) -> None:
+        """Target forms beyond the second all pair with the plural source."""
+        minipo = r"""msgid "apple"
+msgid_plural "apples"
+msgstr[0] "en-apple"
+msgstr[1] "some-apples"
+msgstr[2] "many-apples"
+"""
+        tmx = self.po2tmx(minipo)
+        print("The generated xml:")
+        print(bytes(tmx))
+        assert tmx.translate("apple") == "en-apple"
+        assert tmx.translate("apples") == "some-apples"
+        assert len(tmx.units) == 3
+
+    def test_plurals_partial_untranslated(self) -> None:
+        """Empty plural forms are not exported."""
+        minipo = r"""msgid "One file"
+msgid_plural "%d files"
+msgstr[0] "Een lêer"
+msgstr[1] ""
+"""
+        tmx = self.po2tmx(minipo)
+        print("The generated xml:")
+        print(bytes(tmx))
+        assert tmx.translate("One file") == "Een lêer"
+        assert len(tmx.units) == 1
+
 
 class TestPO2TMXCommand(test_convert.TestConvertCommand, TestPO2TMX):
     """Tests running actual po2tmx commands on files."""
