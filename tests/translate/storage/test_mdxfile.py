@@ -667,3 +667,24 @@ After.
         store = mdx_store(content)
         assert sources(store) == ["After."]
         assert not any("MDX_BLOCK" in source for source in sources(store))
+
+    def test_restore_blocks_preserves_padding_and_extra_blank_lines(self):
+        store = MDXFile()
+        padded = store._make_placeholder("first\nsecond\nthird", source_line_count=3)
+        single = store._make_placeholder("last", source_line_count=1)
+
+        result = store._restore_mdx_blocks(
+            padded + "\n\n" + single + "\n<!-- MDX_BLOCK_999 -->"
+        )
+
+        assert result == "first\nsecond\nthird\n\nlast\n<!-- MDX_BLOCK_999 -->"
+
+    def test_restore_many_blocks(self):
+        store = MDXFile()
+        placeholders = [
+            store._make_placeholder(f"Block {index}") for index in range(1000)
+        ]
+
+        assert store._restore_mdx_blocks("\n".join(placeholders)) == "\n".join(
+            f"Block {index}" for index in range(1000)
+        )

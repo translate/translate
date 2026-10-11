@@ -476,10 +476,25 @@ class MDXFile(MarkdownFile):
 
     def _restore_mdx_blocks(self, text: str) -> str:
         """Restore all opaque and rendered MDX blocks."""
-        for key, (content, padding_lines) in self._mdx_blocks.items():
-            text = text.replace(key + ("\n" * padding_lines), content)
-            text = text.replace(key, content)
-        return text
+        if not self._mdx_blocks:
+            return text
+
+        pattern = re.compile(
+            rf"(?P<key><!-- {re.escape(self._mdx_block_placeholder_prefix)}_[0-9]+ -->)"
+            r"(?P<newlines>\n*)"
+        )
+
+        def restore(match: re.Match[str]) -> str:
+            block = self._mdx_blocks.get(match["key"])
+            if block is None:
+                return match.group()
+            content, padding_lines = block
+            newlines = match["newlines"]
+            if len(newlines) >= padding_lines:
+                return content + newlines[padding_lines:]
+            return content + newlines
+
+        return pattern.sub(restore, text)
 
     @staticmethod
     def _choose_placeholder_prefix(text: str) -> str:
