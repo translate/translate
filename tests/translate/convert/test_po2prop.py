@@ -647,6 +647,64 @@ msgstr ""
 
         assert self.read_testfile("output.properties").decode() == expected
 
+    @pytest.mark.parametrize("options", [[], ["--removeuntranslated"]])
+    @pytest.mark.parametrize(
+        ("personality", "template", "expected"),
+        [
+            (
+                "gwt",
+                (
+                    "items=Source other\nitems[none]=Source zero\nitems[one]=Source one\n"
+                    "items[two]=Source two\nitems[few]=Source few\nitems[many]=Source many\n"
+                ),
+                (
+                    "items=Translated other\nitems[none]=Translated zero\n"
+                    "items[one]=Translated one\nitems[two]=Translated two\n"
+                    "items[few]=Translated few\nitems[many]=Translated many\n"
+                ),
+            ),
+            (
+                "gaia",
+                (
+                    "items={[ plural(n) ]}\nitems[one]=Source one\nitems[two]=Source two\n"
+                    "items[few]=Source few\nitems[many]=Source many\nitems[other]=Source other\n"
+                ),
+                (
+                    "items={[ plural(n) ]}\nitems[one]=Translated one\nitems[two]=Translated two\n"
+                    "items[few]=Translated few\nitems[many]=Translated many\nitems[other]=Translated other\n"
+                ),
+            ),
+        ],
+    )
+    def test_requested_fuzzy_plurals(
+        self, options: list[str], personality: str, template: str, expected: str
+    ) -> None:
+        """Expand requested fuzzy plurals before converting template lines."""
+        self.create_testfile(
+            "translations.po",
+            """#: items
+#, fuzzy
+msgid "Source one"
+msgid_plural "Source other"
+msgstr[0] "Translated zero"
+msgstr[1] "Translated one"
+msgstr[2] "Translated two"
+msgstr[3] "Translated few"
+msgstr[4] "Translated many"
+msgstr[5] "Translated other"
+""",
+        )
+        self.create_testfile("template.properties", template)
+        self.run_command(
+            "translations.po",
+            "output.properties",
+            "--fuzzy",
+            f"--personality={personality}",
+            *options,
+            template="template.properties",
+        )
+        assert self.read_testfile("output.properties").decode() == expected
+
     def test_strings_output_uses_strings_personality_by_default(self) -> None:
         """Check .strings output still uses the strings personality by default."""
         self.create_testfile(
