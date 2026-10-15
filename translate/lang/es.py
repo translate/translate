@@ -20,7 +20,8 @@
 This module represents the Spanish language.
 
 .. note:: As it only has special case code for initial inverted punctuation,
-   it could also be used for Asturian, Galician, or Catalan.
+   it could also be used for Asturian or Galician. Catalan does not use the
+   inverted opening marks and has its own module, :mod:`translate.lang.ca`.
 """
 
 from translate.lang import common
