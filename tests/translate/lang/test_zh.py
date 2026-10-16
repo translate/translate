@@ -1,3 +1,5 @@
+import pytest
+
 from translate.lang import factory
 
 
@@ -11,6 +13,22 @@ def test_punctranslate() -> None:
     assert language.punctranslate("(abc efg). hijk") == "(abc efg)。hijk"
     assert language.punctranslate(".") == "。"
     assert language.punctranslate("abc efg...") == "abc efg..."
+
+
+@pytest.mark.parametrize(
+    ("text", "expected"),
+    [
+        ("第一行?\n第二行.", "第一行？\n第二行。"),
+        ("First?\n\nSecond.", "First？\n\nSecond。"),
+        ("First?\nSecond?\n", "First？\nSecond？\n"),
+        ("Hello!\nQuestion?\nEnd.", "Hello！\nQuestion？\nEnd。"),
+        ("First? Second.", "First？Second。"),
+        ("First!\nSecond.", "First！\nSecond。"),
+    ],
+)
+def test_punctranslate_preserves_newlines(text: str, expected: str) -> None:
+    language = factory.getlanguage("zh")
+    assert language.punctranslate(text) == expected
 
 
 def test_sentences() -> None:
