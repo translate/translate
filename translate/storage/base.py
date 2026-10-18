@@ -221,7 +221,7 @@ class TranslationUnit:
     # """
     #
     # ... but by default a format will not support state:
-    STATE: dict[states, tuple[states, states]] = {}
+    STATE: dict[int, tuple[int, int]] = {}
 
     _store = None
     _source = None

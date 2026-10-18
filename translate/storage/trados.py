@@ -177,7 +177,7 @@ class TradosUnit(base.TranslationUnit):
             return unescape(text.strip())
         return ""
 
-    target = property(gettarget, None)
+    target = property(gettarget, None)  # ty:ignore[invalid-property-type-override]
 
 
 class TradosTxtTmFile(base.TranslationStore):

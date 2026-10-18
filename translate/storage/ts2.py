@@ -462,6 +462,7 @@ class tsfile(lisa.LISAfile[tsunit]):
 
     def __init__(self, *args, **kwargs) -> None:
         self._contextname = None
+        self._context_nodes: dict[str | None, etree._Element] = {}
         self.last_location = None
         super().__init__(*args, **kwargs)
 
@@ -475,6 +476,9 @@ class tsfile(lisa.LISAfile[tsunit]):
             )
         self.namespace = root.nsmap.get(None, "")
         self.header = root
+        self._context_nodes = {}
+        for context in root.iterchildren(self.namespaced(self.bodyNode)):
+            self._context_nodes.setdefault(self._getcontextname(context), context)
         if self._contextname:
             self.body = self._getcontextnode(self._contextname)
         else:
@@ -525,6 +529,7 @@ class tsfile(lisa.LISAfile[tsunit]):
         if comment:
             comment_node = etree.SubElement(context, "comment")
             safely_set_text(comment_node, comment)
+        self._context_nodes.setdefault(contextname, context)
         return context
 
     def _getcontextname(self, contextnode):
@@ -538,11 +543,7 @@ class tsfile(lisa.LISAfile[tsunit]):
 
     def _getcontextnode(self, contextname):
         """Returns the context node with the given name."""
-        contextnodes = self.document.findall(self.namespaced("context"))
-        for contextnode in contextnodes:
-            if self._getcontextname(contextnode) == contextname:
-                return contextnode
-        return None
+        return self._context_nodes.get(contextname)
 
     def addunit(
         self, unit, new=True, contextname=None, comment=None, createifmissing=True

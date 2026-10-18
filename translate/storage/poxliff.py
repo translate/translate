@@ -418,7 +418,7 @@ U = TypeVar("U", bound=PoXliffUnit)
 class PoXliffFile(xliff.xlifffile[U], poheader.poheader):
     """a file for the po variant of Xliff files."""
 
-    UnitClass = PoXliffUnit
+    UnitClass = PoXliffUnit  # ty:ignore[invalid-assignment]
 
     def __init__(self, *args, **kwargs) -> None:
         if "sourcelanguage" not in kwargs:
