@@ -524,10 +524,11 @@ def normalize_language(code: str | None) -> str | None:
         return None
     code = code.split("@", 1)[0].split(".", 1)[0].replace("_", "-").strip()
     parts = code.split("-")
+    by_lowercase = {key.lower(): key for key in plural_rules}
     for candidate in ("-".join(parts[:2]), parts[0]):
-        for variant in (candidate, candidate.lower()):
-            if variant in plural_rules:
-                return variant
+        key = by_lowercase.get(candidate.lower())
+        if key is not None:
+            return key
     return None
 
 

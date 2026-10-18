@@ -155,6 +155,8 @@ def test_consistent_with_plural_tags() -> None:
         ("de_DE.UTF-8", "de"),
         ("zh_Hans_CN", "zh"),
         ("EN", "en"),
+        ("pt-pt", "pt-PT"),
+        ("PT_PT", "pt-PT"),
         ("xx", None),
         ("", None),
         (None, None),

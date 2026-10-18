@@ -356,6 +356,7 @@ class TestPluralMapping:
             ("en", 2, "n +* 1", "Invalid plural expression"),
             ("en", 0, "0", "Invalid nplurals"),
             ("en", 2, "n", "gives form 2 for 2"),
+            ("en", 2, "n % 0", "can not be evaluated"),
         ],
     )
     def test_invalid(self, language, nplurals, plural, message) -> None:
@@ -392,6 +393,10 @@ class TestPluralForms:
         with caplog.at_level(logging.WARNING):
             result = self.get(po_header("de", "nplurals=two; plural=(n != 1);"))
         assert result == ("de", 2, "(n != 1)")
+
+    def test_language_data_case_insensitive(self) -> None:
+        assert self.get(po_header("EN")) == ("EN", 2, "(n != 1)")
+        assert self.get(po_header("DE_at"))[1:] == (2, "(n != 1)")
 
     def test_unknown(self) -> None:
         assert self.get(po_header("xx")) == ("xx", None, None)
@@ -558,6 +563,22 @@ bye = Bye
             "female": "Compartida",
             "other": "Compartit",
         }
+
+    def test_other_only_select_is_not_plural_selector(self) -> None:
+        template = (
+            "emails =\n"
+            "    { $gender ->\n"
+            "        [male] He has mail\n"
+            "       *[other] They have mail\n"
+            "    }\n"
+            "    { $count ->\n"
+            "        [one] one email\n"
+            "       *[other] { $count } emails\n"
+            "    }\n"
+        )
+        output = convert(plural_po("en"), template)
+        selector = get_select(output).selector
+        assert selector.id.name == "count"
 
     def test_mixed_plural_and_singular(self) -> None:
         template = (

@@ -120,7 +120,16 @@ def get_plural_forms(
         else:
             return language, nplurals, plural
     if language:
-        for code in (language, re.split(r"[_@.-]", language)[0]):
+        normalized = language.replace("-", "_")
+        base = re.split(r"[_@.-]", language)[0]
+        for code in (
+            language,
+            normalized,
+            language.lower(),
+            normalized.lower(),
+            base,
+            base.lower(),
+        ):
             if code in data.languages:
                 _name, nplurals, plural = data.languages[code]
                 return language, nplurals, plural
@@ -133,7 +142,12 @@ def _classify_samples(code: str, nplurals: int, plural: str) -> dict[str, Counte
     expression = gettext.c2py(plural)
     forms: dict[str, Counter[int]] = {}
     for number in SAMPLE_NUMBERS:
-        index = expression(number)
+        try:
+            index = expression(number)
+        except (ArithmeticError, ValueError) as error:
+            raise PluralFormsError(
+                f"Plural expression {plural} can not be evaluated for {number}: {error}"
+            ) from error
         if not 0 <= index < nplurals:
             raise PluralFormsError(
                 f"Plural expression {plural} gives form {index} for {number}, "
@@ -223,8 +237,12 @@ def _template_selector(entry: ast.Message | ast.Term) -> ast.InlineExpression | 
             continue
         for variant in expression.variants:
             key = variant.key
+            # ``other`` is the usual fallback of any select, so it is no proof
+            # of a plural select.
             if isinstance(key, ast.NumberLiteral) or (
-                isinstance(key, ast.Identifier) and key.name in cldr_plurals.CATEGORIES
+                isinstance(key, ast.Identifier)
+                and key.name != "other"
+                and key.name in cldr_plurals.CATEGORIES
             ):
                 return deepcopy(expression.selector)
     return None
