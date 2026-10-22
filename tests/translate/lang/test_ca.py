@@ -1,6 +1,13 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from translate.filters import checks
 from translate.lang import factory
 from translate.storage import base
+
+if TYPE_CHECKING:
+    from translate.filters.checks.checker import CheckFailures
 
 
 def test_no_inverted_opening_punctuation() -> None:
@@ -24,7 +31,7 @@ def test_sentences() -> None:
     ]
 
 
-def _check(source: str, target: str, language: str) -> dict:
+def _check(source: str, target: str, language: str) -> CheckFailures:
     checker = checks.StandardChecker(
         checkerconfig=checks.CheckerConfig(targetlanguage=language)
     )
