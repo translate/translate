@@ -152,7 +152,7 @@ class PO2HtmlOptionParser(convert.ConvertOptionParser):
                 success = self.processfile(
                     self.processfile_with_fixed_inputstore,
                     options,
-                    None,
+                    options.input,
                     fulloutputpath,
                     fulltemplatepath,
                 )
