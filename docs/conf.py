@@ -70,6 +70,7 @@ toc_object_entries = False
 autodoc_mock_imports = [
     "aeidon",
     "BeautifulSoup",
+    "fluent",
     "glib",
     "gobject",
     "gtk",
