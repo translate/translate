@@ -13,11 +13,11 @@ dev = [
 ]
 docs = [
   # Do not attempt to build doc on older Python
-  "furo==2025.12.19; python_version >= '3.12'",
-  "matplotlib==3.11.2; python_version >= '3.12'",
-  "sphinx-copybutton==0.5.2; python_version >= '3.12'",
-  "Sphinx==9.2.0; python_version >= '3.12'",
-  "sphinxext-opengraph==0.13.0; python_version >= '3.12'"
+  "furo==2025.12.19; python_version >= '3.14'",
+  "matplotlib==3.11.2; python_version >= '3.14'",
+  "sphinx-copybutton==0.5.2; python_version >= '3.14'",
+  "Sphinx==9.2.0; python_version >= '3.14'",
+  "sphinxext-opengraph==0.13.0; python_version >= '3.14'"
 ]
 lint = [
   { include-group = "pre-commit" },
