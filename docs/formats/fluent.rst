@@ -25,4 +25,5 @@ Fluent is used by Firefox, Anki, and other projects. See the
 `Fluent Syntax Guide <https://projectfluent.org/fluent/guide/>`_ for more
 details on the format.
 
-Convert Fluent files to PO format using :doc:`/commands/fluent2po`.
+Convert Fluent files to PO format and back using :doc:`/commands/fluent2po`
+(``fluent2po`` and ``po2fluent``).
