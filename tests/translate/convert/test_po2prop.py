@@ -705,6 +705,67 @@ msgstr[5] "Translated other"
         )
         assert self.read_testfile("output.properties").decode() == expected
 
+    @pytest.mark.parametrize("remove_untranslated", [False, True])
+    @pytest.mark.parametrize(
+        "targets",
+        [
+            ["Translated zero", "Translated one"],
+            ["Translated zero", "Translated one", "", "", "", ""],
+            ["", "Translated one", "", "", "", "Translated other"],
+        ],
+    )
+    @pytest.mark.parametrize("personality", ["gwt", "gaia"])
+    def test_incomplete_requested_fuzzy_plurals(
+        self, personality: str, targets: list[str], remove_untranslated: bool
+    ) -> None:
+        """Use each available form and retain or remove missing template forms."""
+        self.create_testfile(
+            "translations.po",
+            '#: items\n#, fuzzy\nmsgid "Source one"\nmsgid_plural "Source other"\n'
+            + "".join(
+                f'msgstr[{index}] "{text}"\n' for index, text in enumerate(targets)
+            ),
+        )
+        if personality == "gwt":
+            template = (
+                "items=Source other\nitems[none]=Source zero\nitems[one]=Source one\n"
+                "items[two]=Source two\nitems[few]=Source few\nitems[many]=Source many\n"
+            )
+            if targets[0]:
+                expected = "items[none]=Translated zero\nitems[one]=Translated one\n"
+                if not remove_untranslated:
+                    expected = "items=Source other\n" + expected
+            else:
+                expected = "items=Translated other\n"
+                if not remove_untranslated:
+                    expected += "items[none]=Source zero\n"
+                expected += "items[one]=Translated one\n"
+        else:
+            template = (
+                "items={[ plural(n) ]}\nitems[zero]=Separate zero\nitems[one]=Source one\n"
+                "items[two]=Source two\nitems[few]=Source few\nitems[many]=Source many\n"
+                "items[other]=Source other\n"
+            )
+            expected = "items={[ plural(n) ]}\nitems[zero]=Separate zero\nitems[one]=Translated one\n"
+        if not remove_untranslated:
+            expected += "items[two]=Source two\nitems[few]=Source few\nitems[many]=Source many\n"
+        if personality == "gaia":
+            if not targets[0]:
+                expected += "items[other]=Translated other\n"
+            elif not remove_untranslated:
+                expected += "items[other]=Source other\n"
+        self.create_testfile("template.properties", template)
+        options = ["--removeuntranslated"] if remove_untranslated else []
+        self.run_command(
+            "translations.po",
+            "output.properties",
+            "--fuzzy",
+            f"--personality={personality}",
+            *options,
+            template="template.properties",
+        )
+        assert self.read_testfile("output.properties").decode() == expected
+
     def test_strings_output_uses_strings_personality_by_default(self) -> None:
         """Check .strings output still uses the strings personality by default."""
         self.create_testfile(

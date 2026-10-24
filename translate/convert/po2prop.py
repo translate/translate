@@ -137,6 +137,21 @@ class reprop:
 
         return value
 
+    def _add_plural_unit(self, location, text) -> None:
+        # The first multistring form also carries the remaining plural forms.
+        text = str(text)
+        if not text:
+            if self.remove_untranslated:
+                self.inputstore.locationindex[location] = None
+            else:
+                # Echo the template value when this category has no translation.
+                self.inputstore.locationindex.pop(location, None)
+            return
+        new_unit = self.inputstore.addsourceunit("fish")  # not used
+        new_unit.addlocation(location)
+        new_unit.target = text
+        self.inputstore.locationindex[location] = new_unit
+
     def _explode_gaia_plurals(self) -> None:
         """Explode the gaia plurals."""
         for unit in self.inputstore.units:
@@ -150,17 +165,17 @@ class reprop:
 
             names = data.cldr_plural_categories
             location = unit.getlocations()[0]
-            for category, text in zip(names, unit.target.strings, strict=True):
-                # TODO: for now we assume all forms are present. We need to
-                # fill in the rest after mapping things to the proper CLDR names.
+            for index, category in enumerate(names):
                 if category == "zero":
                     # [zero] cases are translated as separate units
                     continue
-                new_unit = self.inputstore.addsourceunit("fish")  # not used
                 new_location = f"{location}[{category}]"
-                new_unit.addlocation(new_location)
-                new_unit.target = text
-                self.inputstore.locationindex[new_location] = new_unit
+                text = (
+                    unit.target.strings[index]
+                    if index < len(unit.target.strings)
+                    else ""
+                )
+                self._add_plural_unit(new_location, text)
 
             # We don't want the plural marker to be translated:
             del self.inputstore.locationindex[location]
@@ -189,12 +204,14 @@ class reprop:
             names = data.cldr_plural_categories
             names = [cldr2gwt.get(name) for name in names]
             location = unit.getlocations()[0]
-            for category, text in zip(names, unit.target.strings, strict=True):
-                new_unit = self.inputstore.addsourceunit("fish")  # not used
+            for index, category in enumerate(names):
                 new_location = f"{location}[{category}]" if category else f"{location}"
-                new_unit.addlocation(new_location)
-                new_unit.target = text
-                self.inputstore.locationindex[new_location] = new_unit
+                text = (
+                    unit.target.strings[index]
+                    if index < len(unit.target.strings)
+                    else ""
+                )
+                self._add_plural_unit(new_location, text)
 
     def convertline(self, line):
         returnline = ""
