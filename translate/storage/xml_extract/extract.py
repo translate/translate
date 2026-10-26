@@ -17,10 +17,12 @@
 # along with this program; if not, see <https://www.gnu.org/licenses/>.
 
 from contextlib import contextmanager
+from io import BytesIO
 
 from lxml import etree
 
 from translate.misc.xml_helpers import parse_xml_file
+from translate.storage.extraction_limits import ExtractionBudget
 from translate.storage.placeables import StringElem, xliff
 from translate.storage.xliff import xliffunit
 from translate.storage.xml_extract import misc, xpath_breadcrumb
@@ -439,10 +441,40 @@ def reverse_map(a_map):
     return {value: key for key, value in a_map.items()}
 
 
-def build_idml_store(odf_file, store, parse_state, store_adder=None):
+def _preflight_xml(odf_file, budget: ExtractionBudget):
+    data = odf_file.read(
+        max(0, budget.max_xml_bytes - budget.xml_bytes) + 1
+        if budget.max_xml_bytes is not None
+        else -1
+    )
+    budget.add_xml_bytes(len(data))
+    budget.count_elements(data)
+    return BytesIO(data)
+
+
+def _budget_store_adder(store_adder, budget: ExtractionBudget):
+    def add_translatable(parent_translatable, translatable) -> None:
+        budget.count_unit()
+        store_adder(parent_translatable, translatable)
+
+    return add_translatable
+
+
+def build_idml_store(
+    odf_file,
+    store,
+    parse_state,
+    store_adder=None,
+    *,
+    budget: ExtractionBudget | None = None,
+):
     """Build a store for the given IDML file."""
     store_adder = store_adder or _make_store_adder(store)
-    tree = parse_xml_file(odf_file)
+    if budget is not None:
+        odf_file = _preflight_xml(odf_file, budget)
+        store_adder = _budget_store_adder(store_adder, budget)
+
+    tree = parse_xml_file(odf_file, collect_ids=False)
     root = tree.getroot()
     parse_state.nsmap = reverse_map(root.nsmap)
     translatables = find_translatable_dom_nodes(
@@ -459,9 +491,14 @@ def build_store(
     store_adder=None,
     *,
     collect_ids: bool = True,
+    budget: ExtractionBudget | None = None,
 ):
     """Build a store for the given XML file."""
     store_adder = store_adder or _make_store_adder(store)
+    if budget is not None:
+        odf_file = _preflight_xml(odf_file, budget)
+        store_adder = _budget_store_adder(store_adder, budget)
+
     tree = parse_xml_file(odf_file, collect_ids=collect_ids)
     root = tree.getroot()
     parse_state.nsmap = reverse_map(root.nsmap)

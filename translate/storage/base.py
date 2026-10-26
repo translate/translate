@@ -23,6 +23,8 @@ from __future__ import annotations
 import codecs
 import logging
 import os
+from contextlib import contextmanager
+from contextvars import ContextVar
 from io import BytesIO
 from itertools import starmap
 from typing import (
@@ -49,6 +51,10 @@ if TYPE_CHECKING:
     from collections.abc import Callable, Generator
 
 logger = logging.getLogger(__name__)
+
+_parsed_unit_limit: ContextVar[list[int] | None] = ContextVar(
+    "parsed_unit_limit", default=None
+)
 
 # Simple BOM based encoding detection
 ENCODING_BOMS = (
@@ -79,6 +85,22 @@ class ParseError(TranslateToolkitError):
 
     def __str__(self) -> str:
         return repr(self.inner_exc)
+
+
+@contextmanager
+def limit_parsed_units(max_units: int | None):
+    """Apply an optional unit limit to stores parsed in this context."""
+    if max_units is None:
+        yield
+        return
+    if max_units < 0:
+        raise ValueError("unit extraction limit must be nonnegative")
+    remaining = [max_units]
+    token = _parsed_unit_limit.set(remaining)
+    try:
+        yield
+    finally:
+        _parsed_unit_limit.reset(token)
 
 
 class SerializationError(TranslateToolkitError):
@@ -947,6 +969,11 @@ class TranslationStore(Generic[U]):
 
         :param unit: The unit that will be added.
         """
+        remaining = _parsed_unit_limit.get()
+        if remaining is not None:
+            if remaining[0] == 0:
+                raise ParseError("translation file exceeds the unit extraction limit")
+            remaining[0] -= 1
         self._indexes_ready = False
         unit._store = self
         self.units.append(unit)

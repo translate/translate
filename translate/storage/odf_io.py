@@ -32,6 +32,7 @@ from translate.misc.zipfile_helpers import (
     read_archive_members,
     validate_archive_members,
 )
+from translate.storage.extraction_limits import ExtractionBudget
 
 if TYPE_CHECKING:
     from collections.abc import Collection, Mapping
@@ -63,9 +64,12 @@ def _clone_info(info: zipfile.ZipInfo, *, stored: bool = False) -> zipfile.ZipIn
 class ODFPackage:
     """Reader and writer for the XML members of an ODF package."""
 
-    def __init__(self, source: ZipInput) -> None:
+    def __init__(
+        self, source: ZipInput, *, budget: ExtractionBudget | None = None
+    ) -> None:
         self.archive = zipfile.ZipFile(source, "r")
         self._infos = {info.filename: info for info in self.archive.infolist()}
+        self.budget = budget
 
     def __enter__(self) -> Self:
         return self
@@ -83,7 +87,12 @@ class ODFPackage:
             return []
 
         validate_archive_members([info])
-        manifest = parse_xml(self.archive.read(info), collect_ids=False)
+        if self.budget is not None:
+            self.budget.check_xml_bytes(info.file_size)
+        data = self.archive.read(info)
+        if self.budget is not None:
+            ExtractionBudget(max_elements=self.budget.max_elements).count_elements(data)
+        manifest = parse_xml(data, collect_ids=False)
         result: list[str] = []
         for entry in manifest.iter(f"{{{MANIFEST_NS}}}file-entry"):
             media_type = entry.get(MANIFEST_MEDIA_TYPE, "")
@@ -106,12 +115,21 @@ class ODFPackage:
         """Order embedded documents by first reference in the main XML."""
         remaining = set(candidates)
         result: list[str] = []
+        if not remaining:
+            return result
         for member in ("content.xml", "styles.xml"):
             info = self._infos.get(member)
             if info is None:
                 continue
             validate_archive_members([info])
-            root = parse_xml(self.archive.read(info), collect_ids=False)
+            if self.budget is not None:
+                self.budget.check_xml_bytes(info.file_size)
+            data = self.archive.read(info)
+            if self.budget is not None:
+                ExtractionBudget(max_elements=self.budget.max_elements).count_elements(
+                    data
+                )
+            root = parse_xml(data, collect_ids=False)
             for element in root.iter():
                 for attribute, value in element.attrib.items():
                     if etree.QName(attribute).localname != "href":
@@ -120,6 +138,8 @@ class ODFPackage:
                     if referenced in remaining:
                         remaining.remove(referenced)
                         result.append(referenced)
+            if not remaining:
+                break
         result.extend(candidate for candidate in candidates if candidate in remaining)
         return result
 
@@ -127,6 +147,11 @@ class ODFPackage:
         """Return translatable XML members in stable document-reading order."""
         if not any(member in self._infos for member in ("content.xml", "styles.xml")):
             raise KeyError("ODF package has neither content.xml nor styles.xml")
+
+        if self.budget is not None:
+            for name in ("content.xml", "styles.xml"):
+                if info := self._infos.get(name):
+                    self.budget.check_xml_bytes(info.file_size)
 
         names: list[str] = []
         if "content.xml" in self._infos:
@@ -146,7 +171,10 @@ class ODFPackage:
 
     def read_translatable_members(self) -> dict[str, bytes]:
         """Read and validate all translatable XML members."""
-        return read_archive_members(self.archive, self.translatable_members())
+        members = self.translatable_members()
+        if self.budget is not None:
+            self.budget.check_xml_bytes(sum(info.file_size for info in members))
+        return read_archive_members(self.archive, members)
 
     def write(self, target: ZipInput, replacements: Mapping[str, bytes]) -> None:
         """Copy the package to target, replacing selected members safely."""
@@ -172,8 +200,10 @@ class ODFPackage:
                     )
 
 
-def open_odf(filename: ZipInput) -> dict[str, bytes]:
-    with ODFPackage(filename) as package:
+def open_odf(
+    filename: ZipInput, *, budget: ExtractionBudget | None = None
+) -> dict[str, bytes]:
+    with ODFPackage(filename, budget=budget) as package:
         return package.read_translatable_members()
 
 

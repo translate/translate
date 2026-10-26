@@ -30,6 +30,8 @@ from translate.misc.zipfile_helpers import (
 if TYPE_CHECKING:
     from collections.abc import Collection
 
+    from translate.storage.extraction_limits import ExtractionBudget
+
 ZipInput = str | PathLike[str] | IO[bytes]
 
 # Tags to be extracted as placeables (tags that are within translatable texts).
@@ -84,11 +86,15 @@ NO_TRANSLATE_ELEMENTS = [
 ]
 
 
-def open_idml(filename: ZipInput) -> dict[str, bytes]:
+def open_idml(
+    filename: ZipInput, *, budget: ExtractionBudget | None = None
+) -> dict[str, bytes]:
     with zipfile.ZipFile(filename, "r") as z:
         selected = [
             info for info in z.infolist() if info.filename.startswith("Stories/")
         ]
+        if budget is not None:
+            budget.check_xml_bytes(sum(info.file_size for info in selected))
         return read_archive_members(z, selected)
 
 
