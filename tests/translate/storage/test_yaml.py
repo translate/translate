@@ -19,6 +19,40 @@ class TestYAMLResourceUnit(test_monolingual.TestMonolingualUnit):
 class TestYAMLResourceStore(test_monolingual.TestMonolingualStore):
     StoreClass = yaml.YAMLFile
 
+    @staticmethod
+    def alias_chain(depth: int, leaf: str = "value") -> str:
+        return f"a0: &a0 [{leaf}]\n" + "".join(
+            f"a{index}: &a{index} [*a{index - 1}, *a{index - 1}]\n"
+            for index in range(1, depth + 1)
+        )
+
+    def test_alias_unit_limit(self) -> None:
+        store = self.StoreClass(max_yaml_nodes=None, max_yaml_units=10)
+        with pytest.raises(base.ParseError, match="10 unit extraction limit"):
+            store.parse(self.alias_chain(6))
+
+    def test_default_alias_limit(self) -> None:
+        with pytest.raises(base.ParseError, match="extraction limit"):
+            self.StoreClass(self.alias_chain(16))
+
+    def test_alias_node_limit_without_units(self) -> None:
+        store = self.StoreClass(max_yaml_nodes=10, max_yaml_units=None)
+        with pytest.raises(base.ParseError, match="10 node extraction limit"):
+            store.parse(self.alias_chain(6, leaf=""))
+
+    def test_alias_limits_can_be_disabled(self) -> None:
+        store = self.StoreClass(
+            self.alias_chain(4), max_yaml_nodes=None, max_yaml_units=None
+        )
+        assert len(store.units) == 31
+
+    def test_cyclic_collection(self) -> None:
+        store = self.StoreClass()
+        data = CommentedMap()
+        data["loop"] = [data]
+        with pytest.raises(base.ParseError, match="cyclic collection"):
+            list(store._flatten(data))
+
     def test_serialize(self) -> None:
         store = self.StoreClass()
         store.parse("key: value")
@@ -638,6 +672,17 @@ key2: value2
 
 class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
     StoreClass = yaml.RubyYAMLFile
+
+    def test_alias_node_limit(self) -> None:
+        store = self.StoreClass(max_yaml_nodes=10, max_yaml_units=None)
+        data = "en:\n" + "".join(
+            f"  a{index}: &a{index} [*a{index - 1}, *a{index - 1}]\n"
+            if index
+            else "  a0: &a0 []\n"
+            for index in range(6)
+        )
+        with pytest.raises(base.ParseError, match="10 node extraction limit"):
+            store.parse(data)
 
     def test_ruby_list(self) -> None:
         data = """en-US:
