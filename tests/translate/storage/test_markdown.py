@@ -21,7 +21,9 @@
 from io import BytesIO
 from unittest import TestCase
 
-from translate.storage import markdown
+import pytest
+
+from translate.storage import base, markdown
 
 
 class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
@@ -1125,6 +1127,30 @@ More text
 
 class TestMarkdownFrontmatterTranslateValues(TestCase):
     """Tests for the value-only front matter mode (frontmatter_translate_values=True)."""
+
+    @staticmethod
+    def alias_frontmatter(depth: int, leaf: str = "value") -> str:
+        body = f"a0: &a0 [{leaf}]\n" + "".join(
+            f"a{index}: &a{index} [*a{index - 1}, *a{index - 1}]\n"
+            for index in range(1, depth + 1)
+        )
+        return f"---\n{body}---\n"
+
+    def test_alias_node_limit_without_units(self) -> None:
+        with pytest.raises(base.ParseError, match="10 node extraction limit"):
+            self.parse(
+                self.alias_frontmatter(6, leaf=""),
+                max_yaml_nodes=10,
+                max_yaml_units=None,
+            )
+
+    def test_alias_unit_limit(self) -> None:
+        with pytest.raises(base.ParseError, match="10 unit extraction limit"):
+            self.parse(
+                self.alias_frontmatter(6),
+                max_yaml_nodes=None,
+                max_yaml_units=10,
+            )
 
     # A realistic fixture resembling the pro6pp news front matter: literal block
     # scalars, single-quoted scalars, a block sequence and a nested mapping.

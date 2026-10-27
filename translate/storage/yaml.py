@@ -30,6 +30,11 @@ from ruamel.yaml.scalarstring import LiteralScalarString
 from translate.lang.data import cldr_plural_categories
 from translate.misc.multistring import multistring
 from translate.storage import base
+from translate.storage.yaml_limits import (
+    DEFAULT_MAX_YAML_NODES,
+    DEFAULT_MAX_YAML_UNITS,
+    YAMLTraversalBudget,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Generator
@@ -143,9 +148,21 @@ class YAMLFile(base.DictStore[YAMLUnit]):
 
     UnitClass = YAMLUnit
 
-    def __init__(self, inputfile=None, **kwargs) -> None:
-        """Construct a YAML file, optionally reading in from inputfile."""
+    def __init__(
+        self,
+        inputfile=None,
+        *,
+        max_yaml_nodes: int | None = DEFAULT_MAX_YAML_NODES,
+        max_yaml_units: int | None = DEFAULT_MAX_YAML_UNITS,
+        **kwargs,
+    ) -> None:
+        """
+        Construct a YAML file with optional traversal and unit limits.
+
+        Pass None for either limit to disable it for trusted input.
+        """
         super().__init__(**kwargs)
+        self._yaml_budget = YAMLTraversalBudget(max_yaml_nodes, max_yaml_units)
         self.filename = ""
         self._original = self.get_root_node()
         self.dump_args = {
@@ -260,42 +277,43 @@ class YAMLFile(base.DictStore[YAMLUnit]):
 
         Yields tuples of (unit_id, data, comment) where comment may be None.
         """
-        if prev is None:
-            prev = self.UnitClass.IdClass([])
-        if isinstance(data, dict):
-            yield from self._parse_dict(data, prev)
-        elif isinstance(data, str):
-            yield (
-                prev,
-                data,
-                self._get_key_comment(parent_map, key, previous_key, is_first_key),
-            )
-        elif isinstance(data, (bool, int)):
-            yield (
-                prev,
-                str(data),
-                self._get_key_comment(parent_map, key, previous_key, is_first_key),
-            )
-        elif isinstance(data, list):
-            for k, v in enumerate(data):
-                yield from self._flatten(
-                    v, prev.extend("index", k), parent_map=data, key=k
+        with self._yaml_budget.visit(data):
+            if prev is None:
+                prev = self.UnitClass.IdClass([])
+            if isinstance(data, dict):
+                yield from self._parse_dict(data, prev)
+            elif isinstance(data, str):
+                yield (
+                    prev,
+                    data,
+                    self._get_key_comment(parent_map, key, previous_key, is_first_key),
                 )
-        elif isinstance(data, TaggedScalar):
-            yield (
-                prev,
-                data.value,
-                self._get_key_comment(parent_map, key, previous_key, is_first_key),
-            )
-        elif data is None:
-            pass
-        else:
-            raise ValueError(
-                "We don't handle these values:\n"
-                f"Type: {type(data)}\n"
-                f"Data: {data}\n"
-                f"Previous: {prev}"
-            )
+            elif isinstance(data, (bool, int)):
+                yield (
+                    prev,
+                    str(data),
+                    self._get_key_comment(parent_map, key, previous_key, is_first_key),
+                )
+            elif isinstance(data, list):
+                for k, v in enumerate(data):
+                    yield from self._flatten(
+                        v, prev.extend("index", k), parent_map=data, key=k
+                    )
+            elif isinstance(data, TaggedScalar):
+                yield (
+                    prev,
+                    data.value,
+                    self._get_key_comment(parent_map, key, previous_key, is_first_key),
+                )
+            elif data is None:
+                pass
+            else:
+                raise ValueError(
+                    "We don't handle these values:\n"
+                    f"Type: {type(data)}\n"
+                    f"Data: {data}\n"
+                    f"Previous: {prev}"
+                )
 
     @staticmethod
     def preprocess(data):
@@ -304,6 +322,7 @@ class YAMLFile(base.DictStore[YAMLUnit]):
 
     def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
         """Parse the given file or file source string."""
+        self._yaml_budget.reset()
         if hasattr(input, "name"):
             self.filename = input.name
         elif not getattr(self, "filename", ""):
@@ -325,6 +344,7 @@ class YAMLFile(base.DictStore[YAMLUnit]):
         content = self.preprocess(self._original)
 
         for k, data, comment in self._flatten(content):
+            self._yaml_budget.count_unit()
             unit = self.UnitClass(data)
             unit.set_unitid(k)
             if comment:

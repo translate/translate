@@ -53,6 +53,11 @@ from mistletoe.markdown_renderer import (
 )
 
 from translate.storage import base
+from translate.storage.yaml_limits import (
+    DEFAULT_MAX_YAML_NODES,
+    DEFAULT_MAX_YAML_UNITS,
+    YAMLTraversalBudget,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable
@@ -100,6 +105,8 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
         frontmatter_translate_values=False,
         no_placeholders=False,
         lookup_callback=None,
+        max_yaml_nodes: int | None = DEFAULT_MAX_YAML_NODES,
+        max_yaml_units: int | None = DEFAULT_MAX_YAML_UNITS,
     ) -> None:
         """
         Construct a new object instance.
@@ -130,6 +137,10 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
         :param lookup_callback: a function which returns a translation for a source
           string, or None when no translation exists. Defaults to adapting callback
           by treating an unchanged result as missing.
+        :param max_yaml_nodes: maximum visits while extracting YAML front matter
+            values, including repeated visits through aliases; None disables it.
+        :param max_yaml_units: maximum units extracted from YAML front matter;
+            None disables it.
         """
         base.TranslationStore.__init__(self)
         self.filename = getattr(inputfile, "name", None)
@@ -145,6 +156,7 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
         self.extract_frontmatter = extract_frontmatter
         self.frontmatter_translate_values = frontmatter_translate_values
         self.no_placeholders = no_placeholders
+        self._yaml_budget = YAMLTraversalBudget(max_yaml_nodes, max_yaml_units)
         self.filesrc = ""
         if inputfile is not None:
             md_src = inputfile.read()
@@ -153,6 +165,7 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
 
     def parse(self, data) -> None:
         """Process the given source string (binary)."""
+        self._yaml_budget.reset()
         lines = data.decode().splitlines(keepends=False)
         front_matter_end = 0
         front_matter = ""
@@ -318,15 +331,28 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
         location and docpath (e.g. ``frontmatter.metaTitle`` or
         ``frontmatter.authors[0]``).
         """
-        if isinstance(node, dict):
-            for key in list(node.keys()):
-                self._translate_frontmatter_child(node, key, f"{path}.{key}")
-        elif isinstance(node, list):
-            for index in range(len(node)):
-                self._translate_frontmatter_child(node, index, f"{path}[{index}]")
+        with self._yaml_budget.visit(node):
+            if isinstance(node, dict):
+                for key in list(node.keys()):
+                    self._translate_frontmatter_child(node, key, f"{path}.{key}")
+            elif isinstance(node, list):
+                for index in range(len(node)):
+                    self._translate_frontmatter_child(node, index, f"{path}[{index}]")
 
     def _translate_frontmatter_child(self, container, key, path: str) -> None:
         """Translate or recurse into a single child of a map/list container."""
+        value = container[key]
+        if isinstance(value, (dict, list)):
+            self._walk_frontmatter(value, path)
+        else:
+            with self._yaml_budget.visit(value):
+                if isinstance(value, str):
+                    self._translate_frontmatter_scalar(container, key, path, value)
+
+    def _translate_frontmatter_scalar(
+        self, container, key, path: str, value: str
+    ) -> None:
+        """Extract and translate one YAML front matter scalar."""
         # pylint: disable-next=import-outside-toplevel
         from ruamel.yaml.scalarstring import (  # ruff:ignore[import-outside-top-level]
             FoldedScalarString,
@@ -334,56 +360,42 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
             ScalarString,
         )
 
-        value = container[key]
-        if isinstance(value, (dict, list)):
-            self._walk_frontmatter(value, path)
-        elif isinstance(value, str):
-            # bool/int/float are not str, so only genuine strings are translated.
-            is_block = isinstance(value, (LiteralScalarString, FoldedScalarString))
-            if is_block:
-                # Block scalars (| and >): the trailing-newline run encodes the
-                # chomping indicator (none -> "-" strip, one -> clip, more ->
-                # "+" keep). Split it off so the unit holds only the content and
-                # the indicator survives an arbitrary translation unchanged.
-                content, trailing_newlines = self._split_trailing_newlines(str(value))
-            else:
-                content = str(value)
-                trailing_newlines = ""
+        is_block = isinstance(value, (LiteralScalarString, FoldedScalarString))
+        if is_block:
+            # Block scalars carry trailing newlines that encode their style.
+            content, trailing_newlines = self._split_trailing_newlines(str(value))
+        else:
+            content = str(value)
+            trailing_newlines = ""
 
-            if not content.strip():
-                # Empty or blank scalars are preserved verbatim and never emit a
-                # unit: an empty source would serialize as a spurious ``msgid ""``
-                # and a wrapping callback would corrupt the value.
-                return
+        if not content.strip():
+            return
 
-            unit = self.addsourceunit(content)
-            if self.filename:
-                unit.addlocation(f"{self.filename}:{path}")
-            else:
-                unit.addlocation(path)
-            unit.setdocpath(path)
-            translated = self.callback(content)
+        self._yaml_budget.count_unit()
+        unit = self.addsourceunit(content)
+        if self.filename:
+            unit.addlocation(f"{self.filename}:{path}")
+        else:
+            unit.addlocation(path)
+        unit.setdocpath(path)
+        translated = self.callback(content)
 
-            if is_block:
-                # Re-wrap in the same block subtype, restore the chomping via the
-                # trailing newlines, and carry over the first-line comment.
-                # Fold positions are offsets into the scalar content, so they
-                # are safe to retain only for an identity translation.
-                new_value = type(value)(translated + trailing_newlines)
-                if hasattr(value, "comment"):
-                    new_value.comment = value.comment
-                if (
-                    translated == content
-                    and isinstance(value, FoldedScalarString)
-                    and hasattr(value, "fold_pos")
-                ):
-                    new_value.fold_pos = value.fold_pos
-                container[key] = new_value
-            elif isinstance(value, ScalarString):
-                # Preserve the original quoting style for flow scalars.
-                container[key] = type(value)(translated)
-            else:
-                container[key] = translated
+        if is_block:
+            new_value = type(value)(translated + trailing_newlines)
+            if hasattr(value, "comment"):
+                new_value.comment = value.comment
+            if (
+                translated == content
+                and isinstance(value, FoldedScalarString)
+                and isinstance(new_value, FoldedScalarString)
+                and hasattr(value, "fold_pos")
+            ):
+                new_value.fold_pos = value.fold_pos
+            container[key] = new_value
+        elif isinstance(value, ScalarString):
+            container[key] = type(value)(translated)
+        else:
+            container[key] = translated
 
     @staticmethod
     def _split_trailing_newlines(text: str) -> tuple[str, str]:
