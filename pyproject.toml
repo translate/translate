@@ -101,7 +101,7 @@ ical = [
   "vobject==0.9.9"
 ]
 ini = [
-  "iniparse==0.5"
+  "iniparse==0.5.2"
 ]
 levenshtein = [
   "RapidFuzz>=3.14.0"
