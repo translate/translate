@@ -98,10 +98,10 @@ fluent = [
   "fluent.syntax>=0.19.0,<0.20"
 ]
 ical = [
-  "vobject==0.9.9"
+  "vobject>=0.9.9,<0.10"
 ]
 ini = [
-  "iniparse==0.5"
+  "iniparse>=0.5,<0.6"
 ]
 levenshtein = [
   "RapidFuzz>=3.14.0"
@@ -116,7 +116,7 @@ rc = [
   "pyparsing>=3.2.0,<3.4"
 ]
 spellcheck = [
-  "pyenchant==3.3.0"
+  "pyenchant>=3.3.0,<3.4.0"
 ]
 subtitles = [
   "aeidon>=1.15,<2.1"
