@@ -9,7 +9,7 @@ repos:
   - id: check-json
   - id: check-toml
 - repo: https://codeberg.org/fsfe/reuse-tool
-  rev: v6.2.0
+  rev: v6.3.0
   hooks:
   - id: reuse
 - repo: meta
