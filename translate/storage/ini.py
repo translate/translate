@@ -32,8 +32,13 @@ b : a string
 import re
 import uuid
 from io import StringIO
+from typing import TYPE_CHECKING, cast
 
 from translate.storage import base
+
+if TYPE_CHECKING:
+    from iniparse.config import Undefined
+    from iniparse.ini import INISection
 
 try:
     from iniparse import INIConfig, change_comment_syntax
@@ -144,7 +149,7 @@ class inifile(base.TranslationStore):
         )
 
     def serialize(self, out) -> None:
-        outinifile = self._inifile or INIConfig(optionxformvalue=None)
+        outinifile = self._inifile or INIConfig(optionxformvalue=str)
         for unit in self.units:
             for location in unit.getlocations():
                 match = location_re.match(location)
@@ -155,7 +160,7 @@ class inifile(base.TranslationStore):
                     section = match.groupdict()["section"]
                     entry = match.groupdict()["entry"]
                 value = self._dialect.escape(unit.target)
-                outinifile[section][entry] = value
+                cast("INISection | Undefined", outinifile[section])[entry] = value
         if outinifile:
             output = self._normalize_newlines(str(outinifile))
             out.write(output.encode(self.encoding))
@@ -188,10 +193,11 @@ class inifile(base.TranslationStore):
             decoded = input
 
         self.newline = self._detect_newline(decoded)
-        self._inifile = INIConfig(StringIO(decoded), optionxformvalue=None)
+        self._inifile = INIConfig(StringIO(decoded), optionxformvalue=str)
 
         for section in self._inifile:
-            for entry in self._inifile[section]:
-                source = self._dialect.unescape(self._inifile[section][entry])
+            section_data = cast("INISection", self._inifile[section])
+            for entry in section_data:
+                source = self._dialect.unescape(section_data[entry])
                 newunit = self.addsourceunit(source)
                 newunit.addlocation(f"[{section}]{entry}")
