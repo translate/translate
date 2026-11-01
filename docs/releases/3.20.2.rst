@@ -1,0 +1,42 @@
+Translate Toolkit 3.20.2
+************************
+
+*Released on 1 November 2026*
+
+This release adds resource limits for translation extraction and prevents
+excessive processing of YAML aliases.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- Compressed translation files
+
+  - Add optional limits on decompressed bytes and extracted units when loading
+    gzip and bzip2 files through the storage factory
+
+- ODF and IDML
+
+  - Add optional limits on XML bytes, elements, and extracted units
+  - Skip unnecessary ODF reference scanning when there are no embedded documents
+
+- YAML and Markdown
+
+  - Reject cyclic YAML collections and limit alias traversal and extracted units
+    in YAML files and Markdown YAML front matter
+  - Allow callers to adjust or disable the traversal and unit limits
+
+Other
+-----
+
+- Widen supported dependency ranges for vobject, iniparse, and PyEnchant
+- Improve type annotations and update development tooling and CI dependencies
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+Michal Čihař
