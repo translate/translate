@@ -259,6 +259,11 @@ class StringsDictFile(base.DictStore):
             )
             if plural_string
         )
+        # Apple requires "other" even for languages whose represented integer
+        # categories end in "many". Keep the existing plural indexes and use
+        # the final category as a compatibility fallback.
+        if "other" not in plural_tags and plural_strings[-1]:
+            plurals["other"] = plural_strings[-1]
         return plurals
 
     def serialize(self, out) -> None:
@@ -281,23 +286,17 @@ class StringsDictFile(base.DictStore):
                 and plural_units[0].localized_format is not None
             ):
                 unit = plural_units[0]
-                plural_tags = self._get_target_plural_tags(unit.target)
-                plural_strings = self.UnitClass.sync_plural_count(
-                    unit.target, plural_tags
-                )
+                plurals = self._serialize_plural(unit)
 
                 # Omit an untranslated or incomplete entry instead of writing
                 # a dictionary which Apple cannot resolve at runtime.
-                if (
-                    "other" not in plural_tags
-                    or not plural_strings[plural_tags.index("other")]
-                ):
+                if not plurals.get("other"):
                     continue
 
                 plist[outerkey] = {
                     "NSStringLocalizedFormatKey": unit.localized_format
                     or f"%#@{unit.innerkey}@",
-                    unit.innerkey: self._serialize_plural(unit),
+                    unit.innerkey: plurals,
                 }
                 continue
 

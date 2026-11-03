@@ -159,6 +159,76 @@ class TestStringsDictFile(test_monolingual.TestMonolingualStore):
         output = plistlib.loads(bytes(store))
         assert output["items"]["NSStringLocalizedFormatKey"] == "%1$#@count@"
 
+    @pytest.mark.parametrize(
+        "language", ["ru", "pl", "uk", "be", "rus", "pol", "ukr", "bel", "ru_RU"]
+    )
+    @pytest.mark.parametrize("localized_format", ["%1$#@count@", "Count: %#@count@"])
+    @pytest.mark.parametrize("value_type", ["d", "f"])
+    def test_plural_without_other_uses_many(
+        self, language, localized_format, value_type
+    ) -> None:
+        content = self.get_simple_plural(localized_format)
+        plural = content["items"]["count"]
+        plural.update(
+            {
+                "NSStringFormatValueTypeKey": value_type,
+                "zero": "No items",
+                "few": "%d few items",
+                "many": "%d many items",
+                "other": "Distinct imported fallback",
+            }
+        )
+        store = self.StoreClass()
+        store.settargetlanguage(language)
+        store.parse(plistlib.dumps(content))
+        target = ["No items", "One item", "%d few items", "%d many items"]
+        assert store.units[-1].target.strings == target
+
+        serialized = bytes(store)
+        output = plistlib.loads(serialized)
+        expected = self.get_simple_plural(localized_format)
+        expected["items"]["count"] = {**plural, "other": plural["many"]}
+        assert output == expected
+        assert store.units[-1].target.strings == target
+
+        newstore = self.reparse(store)
+        self.check_equality(store, newstore)
+        assert bytes(newstore) == serialized
+
+    @pytest.mark.parametrize("language", ["ru", "pl", "uk", "be"])
+    @pytest.mark.parametrize("many", [None, ""])
+    @pytest.mark.parametrize("localized_format", ["%#@count@", "Count: %#@count@"])
+    def test_plural_without_other_and_empty_many(
+        self, language, many, localized_format
+    ) -> None:
+        content = self.get_simple_plural(localized_format)
+        plural = content["items"]["count"]
+        plural["few"] = "%d few items"
+        if many is not None:
+            plural["many"] = many
+        store = self.StoreClass()
+        store.settargetlanguage(language)
+        store.parse(plistlib.dumps(content))
+
+        output = plistlib.loads(bytes(store))
+        if localized_format == "%#@count@":
+            assert output == {}
+        else:
+            # Keep existing inclusion rules for complex entries.
+            assert output["items"]["NSStringLocalizedFormatKey"] == localized_format
+            assert output["items"]["count"]["few"] == "%d few items"
+            assert "other" not in output["items"]["count"]
+
+    @pytest.mark.parametrize("language", ["en", "de"])
+    def test_represented_other_cannot_use_one_as_fallback(self, language) -> None:
+        content = self.get_simple_plural()
+        content["items"]["count"]["other"] = ""
+        store = self.StoreClass()
+        store.settargetlanguage(language)
+        store.parse(plistlib.dumps(content))
+
+        assert plistlib.loads(bytes(store)) == {}
+
     def test_single_plural_with_literal_format_is_not_folded(self) -> None:
         store = self.StoreClass()
         store.settargetlanguage("en")
