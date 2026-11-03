@@ -19,6 +19,15 @@ unit identifier, for example ``items:count``. Entries containing literal text
 in the localized format or multiple plural variables are exposed as separate
 format and plural units.
 
+Apple requires an ``other`` category in plural dictionaries. For languages
+whose represented plural categories lack ``other`` (Russian, Polish, Ukrainian
+and Belarusian), serialization copies the last category, ``many``, to ``other``.
+This compatibility fallback keeps the existing plural counts and indexes.
+An imported distinct ``other`` translation is not represented separately and
+is regenerated from ``many`` on save. This also applies to fractional numeric
+formats; the generated fallback may not provide correct fractional wording.
+Folded entries with an empty fallback are omitted.
+
 .. seealso::
 
    :doc:`strings`
