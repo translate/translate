@@ -130,7 +130,7 @@ Name and Value pairs:
 from __future__ import annotations
 
 import re
-from codecs import iterencode
+from codecs import BOM_UTF16_LE, BOM_UTF32_LE, iterencode
 from copy import deepcopy
 from dataclasses import dataclass
 from typing import TypeVar
@@ -148,7 +148,7 @@ from translate.misc.quote import (
     xwiki_properties_decode,
     xwiki_properties_encode,
 )
-from translate.misc.xml_helpers import get_safe_xml_parser
+from translate.misc.xml_helpers import extract_xml_prolog, get_safe_xml_parser
 from translate.storage import base
 
 labelsuffixes = (".label", ".title")
@@ -1425,29 +1425,7 @@ class XWikiPageProperties(xwikifile):
 
     Name = "XWiki Page Properties"
     Extensions = ["xml"]
-    XML_HEADER = """<?xml version="1.1" encoding="UTF-8"?>
-
-<!--
- * See the NOTICE file distributed with this work for additional
- * information regarding copyright ownership.
- *
- * This is free software; you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of
- * the License, or (at your option) any later version.
- *
- * This software is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this software; if not, write to the Free
- * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- * 02110-1301 USA, or see the FSF site: https://www.fsf.org.
--->
-
-"""
+    XML_HEADER = '<?xml version="1.1" encoding="UTF-8"?>\n'
 
     XWIKI_BASIC_XML = """<xwikidoc>
     <translation>0</translation>
@@ -1461,6 +1439,8 @@ class XWikiPageProperties(xwikifile):
         kwargs["personality"] = "xwiki"
         kwargs["encoding"] = "utf-8"
         self.root = None
+        self.xml_prolog = self.XML_HEADER.encode("utf-8")
+        self.xml_encoding = "utf-8"
         super(xwikifile, self).__init__(*args, **kwargs)
 
     def is_source_file(self):
@@ -1479,9 +1459,29 @@ class XWikiPageProperties(xwikifile):
             if language_node is not None and language_node.text:
                 self.setsourcelanguage(language_node.text)
 
-    def parse(self, propsrc) -> None:
+    def parse_xwiki_xml(self, propsrc) -> None:
+        """Read the XML wrapper and preserve its original prolog and encoding."""
+        self.root = None
+        self.xml_prolog = self.XML_HEADER.encode(self.encoding)
+        self.xml_encoding = "utf-8"
         if propsrc != b"\n":
             self.root = etree.XML(propsrc, self.get_parser())
+            self.xml_prolog = extract_xml_prolog(propsrc)
+            self.xml_encoding = self.root.getroottree().docinfo.encoding
+            # The prolog already contains any BOM. Use an explicit byte order
+            # so encoding the body and final newline does not insert another.
+            if self.xml_encoding.upper() == "UTF-16":
+                self.xml_encoding = (
+                    "UTF-16LE" if propsrc.startswith(BOM_UTF16_LE) else "UTF-16BE"
+                )
+            elif self.xml_encoding.upper() == "UTF-32":
+                self.xml_encoding = (
+                    "UTF-32LE" if propsrc.startswith(BOM_UTF32_LE) else "UTF-32BE"
+                )
+
+    def parse(self, propsrc) -> None:
+        self.parse_xwiki_xml(propsrc)
+        if self.root is not None:
             content = "".join(self.root.find("content").itertext())
             content = content.encode(self.encoding)
             self.extract_language()
@@ -1504,10 +1504,12 @@ class XWikiPageProperties(xwikifile):
             newroot.set("locale", language_node.text)
 
     def write_xwiki_xml(self, newroot, out) -> None:
-        xml_content = etree.tostring(newroot, encoding=self.encoding, method="xml")
-        out.write(self.XML_HEADER.encode(self.encoding))
+        xml_content = etree.tostring(
+            newroot, encoding=self.xml_encoding, method="xml", xml_declaration=False
+        )
+        out.write(self.xml_prolog)
         out.write(xml_content)
-        out.write(b"\n")
+        out.write("\n".encode(self.xml_encoding))
 
     def serialize(self, out) -> None:
         if self.root is None:
@@ -1538,8 +1540,8 @@ class XWikiFullPage(XWikiPageProperties):
     Name = "XWiki Full Page"
 
     def parse(self, propsrc) -> None:
-        if propsrc != b"\n":
-            self.root = etree.XML(propsrc, self.get_parser())
+        self.parse_xwiki_xml(propsrc)
+        if self.root is not None:
             content = "".join(self.root.find("content").itertext()).replace("\n", "\\n")
             title = "".join(self.root.find("title").itertext())
             forparsing = ""
