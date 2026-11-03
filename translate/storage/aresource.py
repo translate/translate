@@ -876,6 +876,7 @@ class AndroidResourceFile(lisa.LISAfile):
             xml = posrc
         parser = get_safe_xml_parser(strip_cdata=False)
         self.document = etree.fromstring(xml, parser).getroottree()
+        self._remember_utf8_bom(xml)
         self._encoding = self.document.docinfo.encoding
         self.initbody()
         assert self.document.getroot().tag == self.namespaced(self.rootNode)

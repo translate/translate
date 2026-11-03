@@ -495,6 +495,7 @@ class PoXliffFile(xliff.xlifffile[U], poheader.poheader):
             xmlsrc = xml.read()
             xml = xmlsrc
         self.document = parse_xml(xml).getroottree()
+        self._remember_utf8_bom(xml)
         self.initbody()
         root_node = self.document.getroot()
         assert root_node.tag == self.namespaced(self.rootNode)
