@@ -1,0 +1,48 @@
+Translate Toolkit 3.20.3
+************************
+
+*Released on 3 November 2026*
+
+This release adds a TBX to TMX converter, improves XML header and byte order
+mark handling, and fixes Apple .stringsdict plural fallbacks.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- TBX to TMX
+
+  - Add the ``tbx2tmx`` converter with configurable source and target languages
+  - Export all nonempty, nondeprecated term pairs and preserve notes
+
+- XML
+
+  - Preserve input UTF-8 byte order marks by default in LISA-based stores,
+    including XLIFF, and QPH stores
+  - Add the ``XMLutf8BOM`` option to preserve, force, or omit UTF-8 byte order
+    marks when writing these stores
+
+- XWiki
+
+  - Preserve original XML headers, including declarations, comments, byte order
+    marks, and encoding, when saving page properties and full pages
+
+- Apple .stringsdict
+
+  - Generate the required ``other`` plural fallback from ``many`` for Russian,
+    Polish, Ukrainian, and Belarusian
+  - Omit folded entries with an empty fallback
+
+Other
+-----
+
+- Update development tooling
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+Michal Čihař
