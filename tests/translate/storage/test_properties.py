@@ -8,6 +8,30 @@ from translate.storage import properties
 
 from . import test_monolingual
 
+XWIKI_LEGACY_HEADER = """<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: https://www.fsf.org.
+-->
+
+"""
+
 # Note that DialectJava delimiters are ["=", ":", " "]
 
 
@@ -1462,7 +1486,7 @@ job.log.label=Job log
 
 class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
     StoreClass = properties.XWikiPageProperties
-    FILE_SCHEME = f'{properties.XWikiPageProperties.XML_HEADER}<xwikidoc locale="%(language)s">\n    <translation>1</translation>\n    <language>%(language)s</language>\n    <title/>\n    <content>%(content)s</content>\n</xwikidoc>'
+    FILE_SCHEME = f'{XWIKI_LEGACY_HEADER}<xwikidoc locale="%(language)s">\n    <translation>1</translation>\n    <language>%(language)s</language>\n    <title/>\n    <content>%(content)s</content>\n</xwikidoc>'
 
     def getcontent(self, content, language="en"):
         return self.FILE_SCHEME % {"content": f"{content}\n", "language": language}
@@ -1582,7 +1606,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         ## Real XWiki files are containing multiple attributes on xwikidoc tag: we're not testing it there
         ## because ElementTree changed its implementation between Python 3.7 and 3.8 which changed the order of output of the attributes
         ## it makes it more difficult to assert it on multiple versions of Python.
-        propsource = f"""{properties.XWikiPageProperties.XML_HEADER}<xwikidoc reference="XWiki.AdminTranslations">
+        propsource = f"""{XWIKI_LEGACY_HEADER}<xwikidoc reference="XWiki.AdminTranslations">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language/>
@@ -1657,7 +1681,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         propunit.target = "Je peux coder !"
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
-        expected_xml = f"""{properties.XWikiPageProperties.XML_HEADER}<xwikidoc reference="XWiki.AdminTranslations" locale="fr">
+        expected_xml = f"""{XWIKI_LEGACY_HEADER}<xwikidoc reference="XWiki.AdminTranslations" locale="fr">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language>fr</language>
@@ -1694,7 +1718,7 @@ test_me=Je peux coder !
         ## Real XWiki files are containing multiple attributes on xwikidoc tag: we're not testing it there
         ## because ElementTree changed its implementation between Python 3.7 and 3.8 which changed the order of output of the attributes
         ## it makes it more difficult to assert it on multiple versions of Python.
-        propsource = f"""{properties.XWikiPageProperties.XML_HEADER}<xwikidoc reference="XWiki.AdminTranslations">
+        propsource = f"""{XWIKI_LEGACY_HEADER}<xwikidoc reference="XWiki.AdminTranslations">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language/>
@@ -1769,7 +1793,7 @@ test_me=Je peux coder !
         propunit.target = "I can change the translation source"
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
-        expected_xml = f"""{properties.XWikiPageProperties.XML_HEADER}<xwikidoc reference="XWiki.AdminTranslations">
+        expected_xml = f"""{XWIKI_LEGACY_HEADER}<xwikidoc reference="XWiki.AdminTranslations">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language/>
@@ -1845,7 +1869,7 @@ test_me=I can change the translation source
 
 class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
     StoreClass = properties.XWikiFullPage
-    FILE_SCHEME = f"""{properties.XWikiPageProperties.XML_HEADER}<xwikidoc locale="%(language)s">
+    FILE_SCHEME = f"""{XWIKI_LEGACY_HEADER}<xwikidoc locale="%(language)s">
     <translation>1</translation>
     <language>%(language)s</language>
     <title>%(title)s</title>
@@ -2002,7 +2026,7 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
         ## Real XWiki files are containing multiple attributes on xwikidoc tag: we're not testing it there
         ## because ElementTree changed its implementation between Python 3.7 and 3.8 which changed the order of output of the attributes
         ## it makes it more difficult to assert it on multiple versions of Python.
-        propsource = f"""{properties.XWikiPageProperties.XML_HEADER}<xwikidoc reference="XWiki.AdminTranslations">
+        propsource = f"""{XWIKI_LEGACY_HEADER}<xwikidoc reference="XWiki.AdminTranslations">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language/>
@@ -2100,7 +2124,7 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
         propfile.settargetlanguage("fr")
         propfile.serialize(generatedcontent)
 
-        expected_xml = f"""{properties.XWikiPageProperties.XML_HEADER}<xwikidoc reference="XWiki.AdminTranslations" locale="fr">
+        expected_xml = f"""{XWIKI_LEGACY_HEADER}<xwikidoc reference="XWiki.AdminTranslations" locale="fr">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language>fr</language>
@@ -2130,3 +2154,92 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
     @mark.xfail(reason="removal not working in full page")
     def test_remove(self) -> None:
         super().test_remove()
+
+
+@mark.parametrize(
+    "store_class", [properties.XWikiPageProperties, properties.XWikiFullPage]
+)
+@mark.parametrize(
+    "prolog",
+    [
+        b"",
+        b"\xef\xbb\xbf",
+        b"<?xml version='1.0' encoding='UTF-8'?>\n",
+        b'<?xml version="1.1" encoding="UTF-8"?>\r\n\r\n<!-- Custom license -->\r\n',
+        b'<?xml version="1.0"?>\n<?project test?>\n<!-- <xwikidoc/> -->\n\n',
+        XWIKI_LEGACY_HEADER.encode(),
+    ],
+)
+@mark.parametrize("target_language", ["en", "fr"])
+def test_xwiki_preserves_prolog(store_class, prolog, target_language) -> None:
+    document = (
+        b'<xwikidoc reference="Example.Translations"><translation>0</translation>'
+        b"<language/><defaultLanguage>en</defaultLanguage><title>Example</title>"
+        b"<content>hello=Hello</content><object/><attachment/></xwikidoc>"
+    )
+    store = store_class(BytesIO(prolog + document))
+    store.settargetlanguage(target_language)
+    key = "hello" if store_class is properties.XWikiPageProperties else "content"
+    store.findid(key).target = "Bonjour"
+    for _ in range(2):
+        result = bytes(store)
+        assert result.startswith(prolog + b"<xwikidoc reference=")
+        assert b"Bonjour" in result
+        assert b'reference="Example.Translations"' in result
+        if target_language == "fr":
+            assert b'locale="fr"' in result
+            assert b"<translation>1</translation>" in result
+            assert b"<object" not in result
+            assert b"<attachment" not in result
+        else:
+            assert b"<translation>0</translation>" in result
+            assert b"<object" in result
+            assert b"<attachment" in result
+        store = store_class(BytesIO(result))
+        store.settargetlanguage(target_language)
+
+
+@mark.parametrize(
+    "store_class", [properties.XWikiPageProperties, properties.XWikiFullPage]
+)
+def test_xwiki_resets_prolog(store_class) -> None:
+    document = b"<xwikidoc><translation>0</translation><language/><title/><content/></xwikidoc>"
+    store = store_class(BytesIO(b"<!-- Old license -->\n" + document))
+    store.parse(document)
+    assert bytes(store).startswith(b"<xwikidoc")
+    store.parse(b"\n")
+    assert bytes(store).startswith(store.XML_HEADER.encode() + b"<xwikidoc")
+    assert b"Old license" not in bytes(store)
+
+
+@mark.parametrize(
+    "store_class", [properties.XWikiPageProperties, properties.XWikiFullPage]
+)
+def test_xwiki_new_store_has_no_license(store_class) -> None:
+    result = bytes(store_class())
+    assert result.startswith(b'<?xml version="1.1" encoding="UTF-8"?>\n<xwikidoc>')
+    assert b"<!--" not in result
+    assert b"GNU Lesser General Public License" not in result
+
+
+@mark.parametrize(
+    "store_class", [properties.XWikiPageProperties, properties.XWikiFullPage]
+)
+@mark.parametrize("encoding", ["ISO-8859-1", "UTF-16", "UTF-16BE", "UTF-16LE"])
+def test_xwiki_preserves_xml_encoding(store_class, encoding) -> None:
+    prolog = f'<?xml version="1.0" encoding="{encoding}"?>\n<!-- Café -->\n'.encode(
+        encoding
+    )
+    document = (
+        f'<?xml version="1.0" encoding="{encoding}"?>\n<!-- Café -->\n'
+        "<xwikidoc><translation>0</translation><language/>"
+        "<title>Café</title><content>hello=Café</content></xwikidoc>"
+    ).encode(encoding)
+    store = store_class(BytesIO(document))
+    key = "hello" if store_class is properties.XWikiPageProperties else "content"
+    store.findid(key).target = "Crème ☕"
+    result = bytes(store)
+    assert result.startswith(prolog)
+    # Reparse the actual output to verify the declaration matches the body.
+    reloaded = store_class(BytesIO(result))
+    assert "Crème ☕" in reloaded.findid(key).source

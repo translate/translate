@@ -97,6 +97,35 @@ def parse_xml_file(
     )
 
 
+class _XMLRootFound(Exception):
+    """Stop scanning once the XML root start tag has been reached."""
+
+
+def extract_xml_prolog(xml: bytes) -> bytes:
+    """
+    Return the original bytes before the root element of an XML document.
+
+    Like XMLTextParser, use parser byte offsets to preserve original markup.
+    Stop before parsing the root contents; callers must validate the document
+    separately. External entities are never loaded.
+    """
+    parser = ParserCreate()
+    parser.SetParamEntityParsing(XML_PARAM_ENTITY_PARSING_NEVER)
+    root_start = 0
+
+    def root_found(_name, _attributes) -> None:
+        nonlocal root_start
+        root_start = parser.CurrentByteIndex
+        raise _XMLRootFound
+
+    parser.StartElementHandler = root_found
+    try:
+        parser.Parse(xml, True)
+    except _XMLRootFound:
+        return xml[:root_start]
+    return b""
+
+
 class XMLTextParser:
     """Process XML character data while preserving the original markup."""
 
