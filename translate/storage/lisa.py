@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import contextlib
 import copy
+from codecs import BOM_UTF8, lookup
 from typing import TypeVar
 
 from lxml import etree
@@ -514,6 +515,8 @@ class LISAfile(base.TranslationStore[U]):
     XMLdoublequotes = True
     XMLdoctype = None
     XMLuppercaseEncoding = True
+    XMLutf8BOM: bool | None = None
+    """UTF-8 output BOM: preserve input (None), always (True), or never (False)."""
     # Determine how empty tags should be serialized (<note></note> or <note />)
     XMLSelfClosingTags = True
 
@@ -592,6 +595,22 @@ class LISAfile(base.TranslationStore[U]):
     def serialize_hook(self, treestring: str) -> bytes:
         return treestring.encode(self.encoding)
 
+    def _remember_utf8_bom(self, xml: str | bytes) -> None:
+        """Record the input BOM for subsequent serialization."""
+        self._xml_utf8_bom = (
+            xml.startswith(BOM_UTF8)
+            if isinstance(xml, bytes)
+            else xml.startswith("\ufeff")
+        )
+
+    def _write_utf8_bom(self, out, encoding: str) -> bool:
+        """Write a BOM if required for the output encoding and return whether written."""
+        write_bom = self._xml_utf8_bom if self.XMLutf8BOM is None else self.XMLutf8BOM
+        if write_bom and lookup(encoding).name == "utf-8":
+            out.write(BOM_UTF8)
+            return True
+        return False
+
     def serialize(self, out) -> None:
         """Converts to a string containing the file's XML."""
         root = self.document.getroot()
@@ -601,6 +620,9 @@ class LISAfile(base.TranslationStore[U]):
             if self.XMLuppercaseEncoding
             else self.encoding.lower()
         )
+
+        if self._write_utf8_bom(out, self.encoding):
+            xml_encoding = "UTF-8" if self.XMLuppercaseEncoding else "utf-8"
 
         xml_declaration = f"<?xml version={xml_quote_format}1.0{xml_quote_format} encoding={xml_quote_format}{xml_encoding}{xml_quote_format}?>\n"
 
@@ -631,6 +653,7 @@ class LISAfile(base.TranslationStore[U]):
             posrc = xml.read()
             xml = posrc
         self.document = parse_xml(xml, strip_cdata=False).getroottree()
+        self._remember_utf8_bom(xml)
         self.encoding = self.document.docinfo.encoding
         self.initbody()
         assert self.document.getroot().tag == self.namespaced(self.rootNode)

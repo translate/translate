@@ -1,9 +1,130 @@
-"""Shared language selection behavior for multilingual LISA formats."""
+"""Shared XML serialization and language selection behavior for LISA formats."""
+
+from codecs import BOM_UTF8
+from io import BytesIO
 
 import pytest
 
 from translate.misc.xml_helpers import getXMLlang
-from translate.storage import tbx, tmx
+from translate.storage import aresource, poxliff, tbx, tmx, xliff, xliff2
+
+
+@pytest.fixture(params=["1.2", "2.0"])
+def xliff_document(request):
+    if request.param == "1.2":
+        store_class = xliff.Xliff1File
+        document = """<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<file original="test" source-language="en" target-language="cs" datatype="plaintext">
+<body><trans-unit id="1"><source>Hello</source><target>Příliš žluťoučký</target></trans-unit></body>
+</file></xliff>"""
+    else:
+        store_class = xliff2.Xliff2File
+        document = """<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="cs">
+<file id="f1"><unit id="1"><segment><source>Hello</source><target>Příliš žluťoučký</target></segment></unit></file>
+</xliff>"""
+    return store_class, ('<?xml version="1.0" encoding="UTF-8"?>\n' + document).encode()
+
+
+@pytest.mark.parametrize("input_bom", [False, True])
+@pytest.mark.parametrize("option", [None, False, True])
+@pytest.mark.parametrize("uppercase", [False, True])
+@pytest.mark.parametrize("file_like", [False, True])
+def test_utf8_bom(xliff_document, input_bom, option, uppercase, file_like) -> None:
+    store_class, document = xliff_document
+    data = (BOM_UTF8 if input_bom else b"") + document
+    store = store_class(BytesIO(data)) if file_like else store_class.parsestring(data)
+    assert store.XMLutf8BOM is None
+    store.XMLutf8BOM = option
+    store.XMLuppercaseEncoding = uppercase
+    encoding = store.encoding
+    expected_bom = input_bom if option is None else option
+    declaration_encoding = "UTF-8" if uppercase else "utf-8"
+    declaration = f'<?xml version="1.0" encoding="{declaration_encoding}"?>\n'.encode()
+
+    outputs = []
+    for _ in range(2):
+        out = BytesIO()
+        store.serialize(out)
+        outputs.extend([out.getvalue(), bytes(store)])
+    assert all(output == outputs[0] for output in outputs)
+    for output in outputs:
+        assert output.count(BOM_UTF8) == int(expected_bom)
+        assert output.startswith((BOM_UTF8 if expected_bom else b"") + declaration)
+        assert BOM_UTF8 not in output.split(b"?>", 1)[1]
+        assert "Příliš žluťoučký".encode() in output
+        restored = store_class.parsestring(output)
+        assert restored.units[0].target == "Příliš žluťoučký"
+    assert store.encoding == encoding
+
+
+@pytest.mark.parametrize("input_bom", [False, True])
+def test_utf8_bom_option_changes(xliff_document, input_bom) -> None:
+    store_class, document = xliff_document
+    store = store_class.parsestring((BOM_UTF8 if input_bom else b"") + document)
+    other = store_class.parsestring(document)
+    assert store_class().XMLutf8BOM is None
+    assert not bytes(store_class()).startswith(BOM_UTF8)
+    for option in (True, False, None, True, None):
+        store.XMLutf8BOM = option
+        expected_bom = input_bom if option is None else option
+        assert bytes(store).startswith(BOM_UTF8) == expected_bom
+        assert other.XMLutf8BOM is None
+        assert not bytes(other).startswith(BOM_UTF8)
+    store.parse(document if input_bom else BOM_UTF8 + document)
+    assert store.XMLutf8BOM is None
+    assert bytes(store).startswith(BOM_UTF8) != input_bom
+
+
+@pytest.mark.parametrize("encoding", ["UTF-8", "utf8", "utf_8"])
+@pytest.mark.parametrize("uppercase", [False, True])
+def test_utf8_bom_encoding_alias(xliff_document, encoding, uppercase) -> None:
+    store_class, document = xliff_document
+    store = store_class.parsestring(document)
+    store.encoding = encoding
+    store.XMLutf8BOM = True
+    store.XMLuppercaseEncoding = uppercase
+    output = bytes(store)
+    declaration_encoding = "UTF-8" if uppercase else "utf-8"
+    assert output.startswith(
+        BOM_UTF8 + f'<?xml version="1.0" encoding="{declaration_encoding}"?>'.encode()
+    )
+    assert output.count(BOM_UTF8) == 1
+    assert store_class.parsestring(output).units[0].target == "Příliš žluťoučký"
+    assert store.encoding == encoding
+
+
+def test_utf8_bom_non_utf8_encoding(xliff_document) -> None:
+    store_class, document = xliff_document
+    store = store_class.parsestring(BOM_UTF8 + document)
+    store.units[0].target = "café"
+    store.encoding = "ISO-8859-1"
+    store.XMLutf8BOM = False
+    expected = bytes(store)
+    for option in (True, None):
+        store.XMLutf8BOM = option
+        assert bytes(store) == expected
+    assert BOM_UTF8 not in expected
+    assert b'encoding="ISO-8859-1"' in expected
+    assert "café".encode("ISO-8859-1") in expected
+    assert store_class.parsestring(expected).units[0].target == "café"
+
+
+@pytest.mark.parametrize(
+    "store_class", [aresource.AndroidResourceFile, poxliff.PoXliffFile]
+)
+@pytest.mark.parametrize("input_bom", [False, True])
+def test_utf8_bom_custom_parser(store_class, input_bom) -> None:
+    document = bytes(store_class())
+    store = store_class.parsestring((BOM_UTF8 if input_bom else b"") + document)
+    assert store.XMLutf8BOM is None
+    assert bytes(store).startswith(BOM_UTF8) == input_bom
+    for option in (True, False, None):
+        store.XMLutf8BOM = option
+        output = bytes(store)
+        expected_bom = input_bom if option is None else option
+        assert output.startswith(BOM_UTF8) == expected_bom
+        assert output.count(BOM_UTF8) == int(expected_bom)
+        store_class.parsestring(output)
 
 
 @pytest.fixture(params=[tbx.tbxfile, tmx.tmxfile])

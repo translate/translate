@@ -137,6 +137,20 @@ jsonl10n
 lisa
 ----
 
+Stores based on ``LISAfile``, including XLIFF 1.2 and 2.0, expose the per-store
+``XMLutf8BOM`` option. Set ``store.XMLutf8BOM = True`` to write a UTF-8 byte order
+mark (BOM), or ``False`` to omit it. The default, ``None``, preserves whether the
+parsed input started with a UTF-8 BOM; new stores omit it. This default preserves
+input BOMs that earlier versions discarded.
+
+The option applies only to UTF-8 output and leaves other encodings unchanged.
+Keep the store encoding as UTF-8; do not use ``utf-8-sig``. Both
+``store.serialize(out)`` and ``bytes(store)`` write a single BOM before the XML
+declaration when requested. The declaration still uses ``UTF-8`` or ``utf-8``,
+according to ``XMLuppercaseEncoding``.
+QPH stores also honor this option while retaining their declaration-free UTF-8
+output.
+
 .. automodule:: translate.storage.lisa
    :members:
    :inherited-members:
