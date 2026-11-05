@@ -1,3 +1,5 @@
+from typing import cast
+
 import pytest
 
 from translate.storage import xliff2
@@ -37,6 +39,30 @@ class TestXLIFF2Unit(test_base.TestTranslationUnit):
 
         unit.setid("unit-1")
         assert unit.getid() == "unit-1"
+
+    @pytest.mark.parametrize("invalid", ["", "::segment", "unit::", "unit\x00bad"])
+    def test_validate_id_rejects_without_mutation(self, invalid: str) -> None:
+        unit = self.unit
+        unit.setid("old")
+        with pytest.raises(ValueError):
+            unit.validate_id(invalid)
+        assert unit.getid() == "old"
+
+    def test_exact_segment_id_round_trip(self) -> None:
+        unit = cast("xliff2.Xliff2Unit", self.unit)
+        unit.setid("old")
+        parent = unit.xmlelement.getparent()
+        assert parent is not None
+        unit.validate_id("new::part")
+        assert unit.xmlelement.getparent() is parent
+        assert parent.get("id") == "old"
+        assert unit.getid() == "old"
+        unit.setid("new::part")
+        store = xliff2.Xliff2File()
+        store.addunit(unit)
+        assert (
+            xliff2.Xliff2File.parsestring(bytes(store)).units[0].getid() == "new::part"
+        )
 
     def test_marktranslatable(self) -> None:
         """Test marking units as translatable or untranslatable."""
@@ -382,6 +408,49 @@ class TestXLIFF2file(test_base.TestTranslationStore):
         assert xliff2file.units[2].istranslated()
 
         assert bytes(xliff2file).decode() == xliff2_content.decode()
+
+        for unit in xliff2file.units:
+            key = unit.getid()
+            assert key is not None
+            before = bytes(xliff2file)
+            unit.validate_id(key)
+            assert bytes(xliff2file) == before
+            unit.setid(key)
+            assert "id" not in unit.xmlelement.attrib
+            assert bytes(xliff2file) == before
+        assert [
+            unit.getid()
+            for unit in xliff2.Xliff2File.parsestring(bytes(xliff2file)).units
+        ] == ["unit1::segment-1", "unit1::segment-2", "unit1::segment-3"]
+
+    @pytest.mark.parametrize("segment_id", ["segment-1", "segment-custom"])
+    def test_explicit_segment_id_with_generated_neighbor(self, segment_id: str) -> None:
+        content = f'''<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en"><file id="f1"><unit id="unit1"><segment id="{segment_id}"><source>First</source></segment><segment><source>Second</source></segment></unit></file></xliff>'''
+        store = xliff2.Xliff2File.parsestring(content.encode())
+        assert len(store.units) == 2
+        explicit = store.units[0]
+        generated = store.units[1]
+        assert explicit.getid() == f"unit1::{segment_id}"
+        assert generated.getid() == "unit1::segment-2"
+
+        before = bytes(store)
+        explicit.validate_id(f"unit1::{segment_id}")
+        generated.validate_id("unit1::segment-2")
+        assert bytes(store) == before
+        explicit.setid(f"unit1::{segment_id}")
+        generated.setid("unit1::segment-2")
+        assert explicit.xmlelement.get("id") == segment_id
+        assert "id" not in generated.xmlelement.attrib
+        assert bytes(store) == before
+
+        generated.validate_id("unit1::segment-new")
+        generated.setid("unit1::segment-new")
+        assert generated.xmlelement.get("id") == "segment-new"
+        reparsed = xliff2.Xliff2File.parsestring(bytes(store))
+        assert [unit.getid() for unit in reparsed.units] == [
+            f"unit1::{segment_id}",
+            "unit1::segment-new",
+        ]
 
     def test_escaped_inline_tags(self) -> None:
         """

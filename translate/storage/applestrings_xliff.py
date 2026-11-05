@@ -330,14 +330,18 @@ class AppleStringsXliffUnit(xliff.Xliff1Unit):
             return uid + self._plural_base_key
         return super().getid()
 
-    def setid(self, id) -> None:
+    def _set_local_id(self, component: str) -> None:
         self._invalidate_store_indexes()
         if self.hasplural():
             # Move the retained XML siblings to the new group before replacing
             # its base key, so serialization and removal can still find them.
             body = self.xmlelement.getparent()
             old_base_key = self._plural_base_key
-            if body is not None and old_base_key is not None and old_base_key != id:
+            if (
+                body is not None
+                and old_base_key is not None
+                and old_base_key != component
+            ):
                 for child in body:
                     child_id = child.get("id", "")
                     if (
@@ -346,12 +350,13 @@ class AppleStringsXliffUnit(xliff.Xliff1Unit):
                             child_id, old_base_key
                         )
                     ):
-                        child.set("id", id + child_id[len(old_base_key) :])
+                        child.set("id", component + child_id[len(old_base_key) :])
             # Plural unit: the logical ID is the base key; update XML element id.
-            self._plural_base_key = id
+            self._plural_base_key = component
             self.xmlelement.set(
                 "id",
-                id.replace(xliff.ID_SEPARATOR, xliff.ID_SEPARATOR_SAFE) + ":dict",
+                component.replace(xliff.ID_SEPARATOR, xliff.ID_SEPARATOR_SAFE)
+                + ":dict",
             )
             self._plural_dirty = True
         else:
@@ -367,7 +372,7 @@ class AppleStringsXliffUnit(xliff.Xliff1Unit):
                         ):
                             body.remove(child)
                 self._plural_base_key = None
-            super().setid(id)
+            super()._set_local_id(component)
 
     # ------------------------------------------------------------------
     # Helpers used during parsing to identify the role of a raw unit

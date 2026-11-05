@@ -10,6 +10,20 @@ class TestPOXLIFFUnit(test_xliff.TestXLIFFUnit):
     UnitClass = poxliff.PoXliffUnit
     StoreClass = poxliff.PoXliffFile
 
+    def test_encoded_plural_group_id_survives_source_and_target_expansion(self) -> None:
+        unit = self.UnitClass(multistring(["item", "items"]))
+        unit.setid("context\x04message")
+        unit.target = multistring(["one", "many"])
+        unit.source = multistring(["new item", "new items"])
+        assert unit.target.strings == ["one", "many"]
+        assert [child.xmlelement.get("id") for child in unit.units] == [
+            "context__%04__message[0]",
+            "context__%04__message[1]",
+        ]
+        unit.target = multistring(["one", "few", "many"])
+        assert unit.target.strings == ["one", "few", "many"]
+        assert unit.units[2].xmlelement.get("id") == "context__%04__message[2]"
+
     def test_plurals(self) -> None:
         """Tests that plurals are handled correctly."""
         unit = self.UnitClass(multistring(["Cow", "Cows"]))
