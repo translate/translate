@@ -13,7 +13,7 @@ dev = [
 ]
 docs = [
   # Always include docutils for type checking
-  "docutils==0.22.4",
+  "docutils==0.23",
   # Do not attempt to build doc on older Python
   "furo==2025.12.19; python_version >= '3.14'",
   "matplotlib==3.11.2; python_version >= '3.14'",
