@@ -157,8 +157,9 @@ class PoXliffUnit(xliff.xliffunit):
             # Propagate group ID to new child trans-units
             group_id = self.xmlelement.get("id")
             if group_id and self.units:
+                group_id = group_id.replace(xliff.ID_SEPARATOR_SAFE, xliff.ID_SEPARATOR)
                 for i, unit in enumerate(self.units):
-                    unit.setid(f"{group_id}[{i}]")
+                    unit._set_local_id(f"{group_id}[{i}]")
             if had_target and target is not None:
                 self.target = target
 

@@ -374,8 +374,41 @@ class Xliff1Unit(XliffUnit):
 
     def setid(self, id) -> None:  # ty:ignore[invalid-method-override]
         # sanitize id in case ID_SEPARATOR is present
+        if not isinstance(id, str):
+            raise TypeError("unit identifier must be a string")
+        prefix = self._file_id_prefix()
+        component = id.removeprefix(prefix) if prefix and id.startswith(prefix) else id
+        self._set_local_id(component)
+
+    def _set_local_id(self, component: str) -> None:
+        """Store an ID already separated from its XLIFF file component."""
+        self._validate_xml_component(component)
         self._invalidate_store_indexes()
-        self.xmlelement.set("id", id.replace(ID_SEPARATOR, ID_SEPARATOR_SAFE))
+        self.xmlelement.set("id", component.replace(ID_SEPARATOR, ID_SEPARATOR_SAFE))
+
+    def _file_id_prefix(self) -> str:
+        try:
+            filename = next(self.xmlelement.iterancestors(self.namespaced("file"))).get(
+                "original"
+            )
+        except StopIteration:
+            return ""
+        return f"{filename}{ID_SEPARATOR}" if filename else ""
+
+    def _validate_xml_component(self, value: str) -> None:
+        encoded = value.replace(ID_SEPARATOR, ID_SEPARATOR_SAFE)
+        base.TranslationUnit.validate_id(self, encoded)
+        base.validate_xml_id(encoded)
+        if ID_SEPARATOR_SAFE in value:
+            raise ValueError("XLIFF identifier contains a reserved escape sequence")
+
+    def validate_id(self, value: str) -> None:
+        if not isinstance(value, str):
+            raise TypeError("unit identifier must be a string")
+        prefix = self._file_id_prefix()
+        if prefix and not value.startswith(prefix):
+            raise ValueError("XLIFF identifier must include its file prefix")
+        self._validate_xml_component(value[len(prefix) :])
 
     def getid(self):
         uid = ""
@@ -700,7 +733,7 @@ class Xliff1File(XliffFile[U]):
         if len(parts) > 1:
             filename, unitid = parts[0], "\x04".join(parts[1:])
             self.switchfile(filename, createifmissing=True)
-            unit.setid(unitid)
+            unit._set_local_id(unitid)
 
         # Check if unit belongs to a group and preserve group structure (only when new=True)
         group_parent = None

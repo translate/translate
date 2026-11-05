@@ -794,6 +794,15 @@ class FluentUnit(base.TranslationUnit):
         "Term": rf"-{_FLUENT_ID_PATTERN}",
     }
 
+    def validate_id(self, value: str) -> None:
+        """Validate an exact message or term ID; comments have no editable ID."""
+        super().validate_id(value)
+        regex = self._FLUENT_ID_REGEXES.get(self._fluent_type)
+        if regex is None or re.fullmatch(regex, value) is None:
+            raise ValueError(
+                f"Invalid id for a {self._fluent_type} FluentUnit: {value}"
+            )
+
     def setid(self, value: str | None) -> None:
         """
         Set the id of the unit.
@@ -804,13 +813,17 @@ class FluentUnit(base.TranslationUnit):
         a "-".
         For a fluent Comment, GroupComment or ResourceComment, the id is unused.
         """
-        self._invalidate_store_indexes()
-        regex = self._FLUENT_ID_REGEXES.get(self._fluent_type, "")
-        if not re.fullmatch(regex, value or ""):
+        if self._is_comment and value in {None, ""}:
+            self._invalidate_store_indexes()
+            self._id = None
+            return
+        if value is None:
             raise ValueError(
                 f"Invalid id for a {self._fluent_type} FluentUnit: {value}"
             )
-        self._id = value or None
+        self.validate_id(value)
+        self._invalidate_store_indexes()
+        self._id = value
 
     def isheader(self) -> bool:
         return self._is_comment

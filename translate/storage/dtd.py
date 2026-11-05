@@ -101,6 +101,14 @@ ending in :attr:`.labelsuffixes` into accelerator notation"""
 end_entity_re = re.compile(rb"[\"']\s*>")
 DTD_VALIDATION_SYSTEM_ID = "translate-toolkit.dtd"
 _DTD_XML_WRAPPER = "translate-toolkit-root"
+_XML_NAME_START = (
+    r"A-Z_a-z\xC0-\xD6\xD8-\xF6\xF8-\u02FF\u0370-\u037D\u037F-\u1FFF"
+    r"\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF"
+    r"\uFDF0-\uFFFD\U00010000-\U000EFFFF"
+)
+_XML_NAME = re.compile(
+    rf"[{_XML_NAME_START}][{_XML_NAME_START}0-9.\-\xB7\u0300-\u036F\u203F-\u2040]*"
+)
 
 
 def quoteforandroid(source):
@@ -335,7 +343,26 @@ class dtdunit(base.TranslationUnit):
     def getid(self):
         return self.entity
 
+    def validate_id(self, value: str) -> None:
+        super().validate_id(value)
+        if _XML_NAME.fullmatch(value) is None or any(char.isspace() for char in value):
+            raise ValueError("DTD entity name cannot be represented safely")
+        encoding = (
+            self._store.encoding
+            if self._store is not None
+            else dtdfile.default_encoding
+        )
+        try:
+            value.encode(encoding)
+        except UnicodeEncodeError as error:
+            raise ValueError(
+                "DTD entity name cannot be represented in file encoding"
+            ) from error
+
     def setid(self, new_id) -> None:  # ty:ignore[invalid-method-override]
+        # Empty names mark omitted entities during DTD to PO conversion.
+        if new_id or not isinstance(new_id, str):
+            self.validate_id(new_id)
         self._invalidate_store_indexes()
         self.entity = new_id
 
@@ -692,14 +719,10 @@ class dtdfile(base.TranslationStore):
 
     def serialize(self, out) -> None:
         """Write content to file."""
-        content = b""
-        for dtd in self.units:
-            unit_str = str(dtd).encode(self.encoding)
-            out.write(unit_str)
-            content += unit_str
+        content = b"".join(str(unit).encode(self.encoding) for unit in self.units)
         if not self._valid_store(content):
-            warnings.warn(f"DTD file '{self.filename}' does not validate")
-            out.truncate(0)
+            raise ValueError(f"DTD file '{self.filename}' does not validate")
+        out.write(content)
 
     def _valid_store(self, content: bytes) -> bool:
         """

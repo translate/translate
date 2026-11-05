@@ -1,5 +1,6 @@
 import warnings
 from io import BytesIO
+from time import perf_counter
 
 from pytest import mark, raises
 
@@ -148,6 +149,246 @@ def test_get_comment_end() -> None:
 class TestPropUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = properties.propunit
 
+    @mark.parametrize("personality", ["java", "java-utf8"])
+    def test_copy_preserves_personality_and_effective_encoding(
+        self, personality: str
+    ) -> None:
+        source = properties.propfile(
+            BytesIO("鍵=value\n".encode()), personality, "utf-8"
+        )
+        unit = source.units[0]
+        copied = properties.propunit.buildfromunit(unit)
+        assert copied.personality is unit.personality
+        assert copied.encoding == "utf-8"
+        copied.validate_id("鍵")
+        destination = properties.propfile(personality=personality, encoding="utf-8")
+        destination.addunit(copied)
+        reparsed = properties.propfile(
+            BytesIO(bytes(destination)), personality, "utf-8"
+        )
+        assert reparsed.units[0].getid() == "鍵"
+        assert reparsed.units[0].source == "value"
+
+    @mark.parametrize("encoding", [None, "utf-8"])
+    def test_id_uses_effective_store_encoding(self, encoding: str | None) -> None:
+        store = properties.propfile(encoding=encoding)
+        unit = properties.propunit("value", "java")
+        unit.setid("old")
+        store.addunit(unit)
+        before = bytes(store)
+        if encoding is None:
+            with raises(ValueError, match="encoding"):
+                unit.validate_id("鍵")
+            with raises(ValueError, match="encoding"):
+                unit.setid("鍵")
+            assert unit.getid() == "old"
+            assert bytes(store) == before
+        else:
+            unit.validate_id("鍵")
+            assert bytes(store) == before
+            unit.setid("鍵")
+            assert (
+                properties.propfile(BytesIO(bytes(store)), encoding=encoding)
+                .units[0]
+                .getid()
+                == "鍵"
+            )
+
+    def test_latin1_key_is_encodable(self) -> None:
+        unit = properties.propunit("value", "java")
+        unit.validate_id("étiquette")
+        unit.setid("étiquette")
+        assert (
+            properties.propfile(BytesIO(unit.getoutput().encode("latin-1")))
+            .units[0]
+            .getid()
+            == "étiquette"
+        )
+
+    @mark.parametrize("personality", ["strings", "strings-utf8"])
+    def test_unquoted_strings_key_cannot_inject_entry(self, personality: str) -> None:
+        unit = properties.propunit("value", personality)
+        unit.setid("NSMenuDescription")
+        key = "NSFirst = attacker; NSSecondDescription"
+        with raises(ValueError, match="Property key"):
+            unit.validate_id(key)
+        with raises(ValueError, match="Property key"):
+            unit.setid(key)
+        assert unit.getid() == "NSMenuDescription"
+        assert unit.getoutput().startswith("NSMenuDescription = ")
+
+    def test_validate_id_is_read_only(self) -> None:
+        unit = self.UnitClass("value")
+        unit.setid("old")
+        unit.validate_id(r"new\=key")
+        with raises(ValueError, match="Property key"):
+            unit.validate_id("new\ninjected=1")
+        assert unit.getid() == "old"
+
+    def test_validate_id_handles_long_backslash_run(self) -> None:
+        unit = self.UnitClass("value")
+        start = perf_counter()
+        unit.validate_id("a" + "\\" * 100_000 + "end")
+        assert perf_counter() - start < 10
+
+    @mark.parametrize("key", [r"key\\", r"key\\\\"])
+    def test_unquoted_key_cannot_escape_output_delimiter(self, key: str) -> None:
+        store = properties.propfile()
+        unit = properties.propunit("value", "java")
+        unit.setid("old")
+        store.addunit(unit)
+        before = bytes(store)
+        with raises(ValueError, match="Property key"):
+            unit.validate_id(key)
+        with raises(ValueError, match="Property key"):
+            unit.setid(key)
+        assert unit.getid() == "old"
+        assert bytes(store) == before
+
+    @mark.parametrize("personality", ["strings", "strings-utf8"])
+    def test_quoted_key_rejects_escaped_quote_injection(self, personality: str) -> None:
+        unit = properties.propunit("value", personality)
+        unit.setid("old")
+        with raises(ValueError, match="Property key"):
+            unit.setid('x\\" = attacker; victim = hacked; // ')
+        assert unit.getid() == "old"
+
+    @mark.parametrize("personality", ["strings", "strings-utf8"])
+    def test_quoted_key_accepts_literal_tab(self, personality: str) -> None:
+        key = "tab\tkey"
+        unit = properties.propunit("value", personality)
+        unit.validate_id(key)
+        unit.setid(key)
+        assert unit.getid() == key
+        output = unit.getoutput()
+        assert output.startswith(f'"{key}"')
+        store = properties.propfile(BytesIO(output.encode()), personality, "utf-8")
+        assert store.units[0].getid() == key
+
+    @mark.parametrize("personality", ["strings", "strings-utf8"])
+    @mark.parametrize("slashes", [2, 4])
+    def test_quoted_key_ending_in_backslashes_round_trips(
+        self, personality: str, slashes: int
+    ) -> None:
+        key = "key" + "\\" * slashes
+        unit = properties.propunit("value", personality)
+        unit.setid("old")
+        unit.validate_id(key)
+        assert unit.getid() == "old"
+        unit.setid(key)
+        output = unit.getoutput().encode()
+        parsed = properties.propfile(BytesIO(output), personality, "utf-8")
+        assert parsed.units[0].getid() == key
+        assert parsed.units[0].source == "value"
+
+    @mark.parametrize("personality", ["strings", "strings-utf8"])
+    @mark.parametrize("key", ["NSFirst Description", "NSFirst\tDescription"])
+    def test_unquoted_strings_key_rejects_non_token_characters(
+        self, personality: str, key: str
+    ) -> None:
+        unit = properties.propunit("value", personality)
+        unit.setid("old")
+        with raises(ValueError, match="Property key"):
+            unit.setid(key)
+        assert unit.getid() == "old"
+
+    @mark.parametrize("key", [r"key\\=attacker", r"key\\:attacker", r"key\\ attacker"])
+    def test_unquoted_key_rejects_even_backslashes_before_delimiter(
+        self, key: str
+    ) -> None:
+        unit = self.UnitClass("value")
+        unit.setid("old")
+        with raises(ValueError, match="Property key"):
+            unit.setid(key)
+        assert unit.getid() == "old"
+
+    @mark.parametrize("key", [r"key\uZZZZ", r"key\u123", r"key\uu1234"])
+    def test_setid_rejects_malformed_java_unicode_escape(self, key: str) -> None:
+        unit = self.UnitClass("value")
+        unit.setid("old")
+        with raises(ValueError, match="Property key"):
+            unit.setid(key)
+        assert unit.getid() == "old"
+
+    @mark.parametrize("key", [r"key\u0041", r"key\\uZZZZ"])
+    def test_setid_accepts_valid_or_inert_java_unicode_escape(self, key: str) -> None:
+        unit = self.UnitClass("value")
+        unit.setid(key)
+        assert unit.getid() == key
+
+    @mark.parametrize("key", [r"key\u0041", r"key\=part", r"key\\uZZZZ"])
+    def test_java_serialized_key_spelling_round_trips(self, key: str) -> None:
+        unit = properties.propunit("value", "java")
+        unit.setid("old")
+        unit.validate_id(key)
+        assert unit.getid() == "old"
+        unit.setid(key)
+        parsed = properties.propfile(BytesIO(unit.getoutput().encode()), "java")
+        assert parsed.units[0].getid() == key
+
+    @mark.parametrize(
+        "key", ["123_NAME", "étiquette", "_PRIVATE", "COM:LABEL", "USER@DOMAIN"]
+    )
+    def test_joomla_valid_key_round_trips(self, key: str) -> None:
+        unit = properties.propunit("value", "joomla")
+        unit.validate_id(key)
+        unit.setid(key)
+        parsed = properties.propfile(BytesIO(unit.getoutput().encode()), "joomla")
+        assert parsed.units[0].getid() == key
+
+    @mark.parametrize(
+        "key",
+        [
+            "[section]victim",
+            "[section]",
+            "COM EXAMPLE",
+            "KEY?",
+            "KEY|OTHER",
+            "TRUE",
+            "COM_$LABEL",
+        ],
+    )
+    def test_joomla_key_rejects_ini_structure(self, key: str) -> None:
+        unit = properties.propunit("value", "joomla")
+        unit.setid("COM_EXAMPLE")
+        with raises(ValueError, match="Property key"):
+            unit.setid(key)
+        assert unit.getid() == "COM_EXAMPLE"
+
+    @mark.parametrize("personality", ["java", "gwt", "strings"])
+    @mark.parametrize("key", ["old\ninjected=1", "old\rinjected=1", "old\\"])
+    def test_setid_rejects_line_injection(self, personality: str, key: str) -> None:
+        unit = properties.propunit("value", personality)
+        unit.setid("old")
+        with raises(ValueError, match="Property key"):
+            unit.setid(key)
+        assert unit.getid() == "old"
+
+    @mark.parametrize("key", ["#old", "old=x", "old x", " old"])
+    def test_setid_rejects_changed_key(self, key: str) -> None:
+        unit = self.UnitClass("value")
+        unit.setid("old")
+        with raises(ValueError, match="Property key"):
+            unit.setid(key)
+        assert unit.getid() == "old"
+
+    def test_setid_accepts_escaped_delimiter(self) -> None:
+        unit = self.UnitClass("value")
+        unit.setid(r"old\=new")
+        assert unit.getid() == r"old\=new"
+
+    def test_plural_setid_rejects_without_changing_variants(self) -> None:
+        plural = properties.proppluralunit(None, "gwt")
+        plural.name = "old"
+        other = properties.propunit("other", "gwt")
+        other.name = "old"
+        one = properties.propunit("one", "gwt")
+        one.name = "old[one]"
+        plural.units = {"other": other, "one": one}
+        with raises(ValueError, match="Property key"):
+            plural.setid("old\ninjected=1")
+        assert (plural.name, other.name, one.name) == ("old", "old", "old[one]")
+
     def test_rich_get(self) -> None:
         pass
 
@@ -157,6 +398,35 @@ class TestPropUnit(test_monolingual.TestMonolingualUnit):
 
 class TestGwtProp(test_monolingual.TestMonolingualStore):
     StoreClass = properties.gwtfile
+
+    def test_moved_plural_uses_destination_encoding(self) -> None:
+        source = self.propparse("old=other\nold[one]=one\n", encoding="iso-8859-1")
+        unit = source.units[0]
+        destination = properties.gwtfile()
+        destination.addunit(unit)
+        before = bytes(destination)
+        unit.validate_id("鍵")
+        assert bytes(destination) == before
+        unit.setid("鍵")
+        reparsed = self.propparse(bytes(destination).decode())
+        assert reparsed.units[0].getid() == "鍵"
+        assert reparsed.units[0].units["other"].source == "other"
+        assert reparsed.units[0].units["one"].source == "one"
+
+    @mark.parametrize("invalid", ["", "new[one]", "new[foo]"])
+    def test_plural_id_rejects_variant_reinterpretation(self, invalid: str) -> None:
+        store = self.propparse("old=other\nold[one]=one\n")
+        unit = store.units[0]
+        before = bytes(store)
+        with raises(ValueError, match="plural"):
+            unit.validate_id(invalid)
+        with raises(ValueError, match="plural"):
+            unit.setid(invalid)
+        assert unit.getid() == "old"
+        assert bytes(store) == before
+        unit.validate_id("new")
+        unit.setid("new")
+        assert self.propparse(bytes(store).decode()).units[0].getid() == "new"
 
     @staticmethod
     def propparse(

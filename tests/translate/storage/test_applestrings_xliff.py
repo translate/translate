@@ -1059,6 +1059,20 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
         assert plural.target.strings[1] == "One item"
         assert plural.target.strings[2] == "%d items"
 
+    def test_move_parsed_plural_preserves_forms(self) -> None:
+        source = self.StoreClass.parsestring(_BASIC_PLURAL_XLIFF)
+        unit = source.units[0]
+        source_forms = list(unit.source.strings)
+        target_forms = list(unit.target.strings)
+        destination = self.StoreClass()
+        destination.settargetlanguage("en")
+        destination.addunit(unit)
+        assert unit.xmlelement.get("id") == "items:count:dict"
+        reparsed = self.StoreClass.parsestring(bytes(destination))
+        assert len(reparsed.units) == 1
+        assert reparsed.units[0].source.strings == source_forms
+        assert reparsed.units[0].target.strings == target_forms
+
     # ------------------------------------------------------------------
     # Target update round-trip
     # ------------------------------------------------------------------

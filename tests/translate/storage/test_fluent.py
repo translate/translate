@@ -23,7 +23,7 @@ import textwrap
 from io import BytesIO
 from typing import Any, cast
 
-from pytest import raises
+from pytest import mark, raises
 
 from translate.storage import base, fluent
 
@@ -3444,6 +3444,27 @@ class TestFluentFile(test_monolingual.TestMonolingualStore):
             with raises(ValueError, match=r"^Invalid id "):
                 unit.setid(unit_id)
             assert unit.getid() == ok_id
+
+    @mark.parametrize(
+        ("fluent_type", "old_id", "new_id", "invalid_id"),
+        [
+            ("Message", "old", "new-key", "-term"),
+            ("Term", "-old", "-new-key", "message"),
+        ],
+    )
+    def test_validate_id_matches_setid(
+        self, fluent_type: str, old_id: str, new_id: str, invalid_id: str
+    ) -> None:
+        unit = fluent.FluentUnit(
+            source="value", unit_id=old_id, fluent_type=fluent_type
+        )
+        unit.validate_id(new_id)
+        assert unit.getid() == old_id
+        with raises(ValueError, match="Invalid id"):
+            unit.validate_id(invalid_id)
+        assert unit.getid() == old_id
+        unit.setid(new_id)
+        assert unit.getid() == new_id
 
     def test_duplicate_ids(self) -> None:
         """

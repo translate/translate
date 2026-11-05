@@ -212,7 +212,9 @@ class AndroidResourceUnit(base.TranslationUnit):
             self.xmlelement = etree.Element(self.SINGULAR_TAG)
             self._target_markup_mode = self.TARGET_MARKUP_XML
         if source is not None:
-            self.setid(source)
+            # New units initially use their source as a placeholder name.
+            # It may contain spaces until an actual resource name is assigned.
+            self.xmlelement.set("name", source)
         super().__init__(source)
 
     @staticmethod
@@ -470,7 +472,19 @@ class AndroidResourceUnit(base.TranslationUnit):
     def getid(self):
         return self.xmlelement.get("name")
 
+    def validate_id(self, value: str) -> None:
+        """Check Android resource entry name syntax and XML representation."""
+        super().validate_id(value)
+        base.validate_xml_id(value)
+        if not value or not (value[0] == "_" or value[0].isidentifier()):
+            raise ValueError("Invalid Android resource name")
+        if any(
+            char not in ".-" and not ("_" + char).isidentifier() for char in value[1:]
+        ):
+            raise ValueError("Invalid Android resource name")
+
     def setid(self, newid):  # ty:ignore[invalid-method-override]
+        self.validate_id(newid)
         self._invalidate_store_indexes()
         return self.xmlelement.set("name", newid)
 
@@ -721,11 +735,13 @@ class AndroidResourceUnit(base.TranslationUnit):
         if self.xmlelement.tag != expected:
             old_id = self.getid()
             newelement = etree.Element(expected)
+            if old_id is not None:
+                newelement.set("name", old_id)
+            self._invalidate_store_indexes()
             parent = self.xmlelement.getparent()
             if parent is not None:
                 parent.replace(self.xmlelement, newelement)
             self.xmlelement = newelement
-            self.setid(old_id)
 
     @target.setter
     def target(self, target: TargetType) -> None:

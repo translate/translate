@@ -15,9 +15,37 @@ as needing review.
 
 Key and context support depends on the format. The base ``setid()`` does
 nothing, and an in-memory context is not necessarily serialized. Applications
-must check format support and validate destination keys before editing. Some
-formats expose composite identifiers, such as XLIFF file or segment identifiers;
-these must be handled according to that format's setter conventions.
+must check format support before editing. Call ``unit.validate_id(new_key)``
+before ``unit.setid(new_key)`` to check a proposed key without changing the
+unit or its store. Invalid or unsafe string keys raise ``ValueError``. The
+base validator checks common control characters; it does not establish that
+every format can represent the key or round-trip it exactly.
+File-level BOM detection is outside the scope of these key checks.
+
+Fluent checks its message or term identifier grammar; comment units have no
+editable identifier. Android resources check resource name syntax. RESX and
+XLIFF 1 and 2 check XML character safety. PHP, Laravel PHP, properties, and
+DTD check their respective key syntax. Java properties IDs use the serialized
+key spelling, including backslash escapes, rather than the decoded key text.
+PHP IDs similarly represent PHP source expressions; numeric offsets retain
+PHP's normal key coercion. These format-specific checks should be used before
+key edits, but a successful base-class check alone does not promise an exact
+serialized round trip.
+
+Where a format has an independent, exactly representable key,
+``validate_id(value)`` succeeding means ``setid(value)`` will retain that ID
+through serialization and reparsing. XLIFF IDs can be composite: XLIFF 1 may
+include a file prefix, and XLIFF 2 may include an explicit or generated
+segment ID. Their validators account for the current unit and its XML context;
+generated XLIFF 2 segment IDs do not become explicit XML attributes when
+reapplied. Dictionary-backed formats such as JSON, YAML, and TOML use paths
+of keys and indexes, so their base validation alone cannot guarantee exact
+path representation. Setters can also retain format-specific normalization:
+PHP and Laravel PHP accept some source-style or shorthand names, XLIFF 1
+accepts an unprefixed ID within its current file, and DTD uses an empty name
+internally to omit an entity during conversion. Such inputs may be accepted
+by ``setid()`` even when ``validate_id()`` does not promise exact
+representation for them.
 
 Source, key, and context setters invalidate attached store indexes. Use
 ``findid()``, ``findunit()``, or ``findunits()`` for subsequent lookups; they

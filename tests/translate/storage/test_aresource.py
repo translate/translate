@@ -10,6 +10,42 @@ from translate.storage.base import TranslationStore
 from . import test_monolingual
 
 
+def test_plural_tag_fixup_preserves_placeholder_name() -> None:
+    store = aresource.AndroidResourceFile()
+    store.settargetlanguage("en")
+    unit = aresource.AndroidResourceUnit("one message")
+    store.addunit(unit)
+    unit.target = multistring(["one", "many"])
+    assert unit.getid() == "one message"
+    assert unit.xmlelement.tag == "plurals"
+    assert unit.xmlelement.getparent() is not None
+    unit.setid("message_count")
+    reparsed = aresource.AndroidResourceFile.parsestring(bytes(store))
+    assert reparsed.units[0].getid() == "message_count"
+    assert reparsed.units[0].target == multistring(["one", "many"])
+
+
+@pytest.mark.parametrize(
+    "name", ["hello_world", "_name", "étiquette", "name.with-dash"]
+)
+def test_resource_id_round_trip(name: str) -> None:
+    unit = aresource.AndroidResourceUnit("old")
+    unit.validate_id(name)
+    assert unit.getid() == "old"
+    unit.setid(name)
+    assert parse_xml(str(unit)).get("name") == name
+
+
+@pytest.mark.parametrize("name", ["", "1name", "bad name", "bad:name", "bad\x00name"])
+def test_resource_id_rejected_without_mutation(name: str) -> None:
+    unit = aresource.AndroidResourceUnit("old")
+    with pytest.raises(ValueError):
+        unit.validate_id(name)
+    with pytest.raises(ValueError):
+        unit.setid(name)
+    assert unit.getid() == "old"
+
+
 class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = aresource.AndroidResourceUnit
 
