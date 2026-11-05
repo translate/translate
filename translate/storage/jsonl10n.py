@@ -1193,6 +1193,8 @@ class NextcloudJsonFile(JsonFile[NextcloudJsonUnit]):
         # Build translations dictionary
         translations = {}
         for unit in self.units:
+            if not unit.istranslated():
+                continue
             key = unit.getid()
             value = unit.converttarget()
             translations[key] = value

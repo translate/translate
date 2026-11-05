@@ -1892,11 +1892,58 @@ class TestNextcloudJsonFile(test_monolingual.TestMonolingualStore):
         assert store.units[0].target is None
         assert store.units[1].target == "Auf Wiedersehen"
 
-    def test_roundtrip_null_value(self) -> None:
+    def test_serialize_omits_null_value(self) -> None:
         store = self.StoreClass()
         store.parse(JSON_NEXTCLOUD_WITH_NULL)
 
-        assert bytes(store) == JSON_NEXTCLOUD_WITH_NULL
+        assert json.loads(bytes(store)) == {
+            "translations": {"Goodbye": "Auf Wiedersehen"}
+        }
+        assert len(store.units) == 2
+        assert store.units[0].target is None
+
+    @mark.parametrize(
+        "target",
+        ["", [""], ["", ""]],
+    )
+    def test_serialize_omits_empty_translation(self, target) -> None:
+        data = {
+            "translations": {"Empty": target, "Hello": "Hallo"},
+            "pluralForm": "nplurals=2; plural=(n != 1);",
+            "customField": "customValue",
+        }
+        store = self.StoreClass()
+        store.parse(json.dumps(data))
+
+        result = json.loads(bytes(store))
+        assert result == {**data, "translations": {"Hello": "Hallo"}}
+        assert len(store.units) == 2
+
+    @mark.parametrize("target", [["%n Baum", ""], ["", "%n Bäume"]])
+    def test_serialize_preserves_partial_plural(self, target) -> None:
+        data = {"translations": {"_%n tree_::_%n trees_": target}}
+        store = self.StoreClass()
+        store.parse(json.dumps(data))
+
+        assert json.loads(bytes(store)) == data
+
+    def test_serialize_new_and_cleared_translations(self) -> None:
+        store = self.StoreClass()
+        store.parse(JSON_NEXTCLOUD_WITH_PLURAL_FORM)
+        unit = self.StoreClass.UnitClass()
+        unit.source = "New key"
+        unit.target = ""
+        store.addunit(unit)
+
+        assert len(json.loads(bytes(store))["translations"]) == 2
+        store.units[0].target = ""
+        store.units[1].target = multistring(["", ""])
+
+        assert json.loads(bytes(store)) == {
+            "translations": {},
+            "pluralForm": "nplurals=2; plural=(n != 1);",
+        }
+        assert len(store.units) == 3
 
     def test_serialize_simple(self) -> None:
         """Test serializing simple translations."""
