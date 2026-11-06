@@ -116,3 +116,28 @@ msgstr "Fonctionnalité deux"
         assert translated.startswith("==")
         assert "\n\n" in translated  # Empty lines preserved
         assert translated.count("*") == 2  # Two list items
+
+    def test_directory_of_templates_with_single_po(self):
+        """Test a single PO file applied to a directory of templates."""
+        adoc_source = "== Heading\n\nThis is a paragraph.\n"
+        self.create_testfile("templates/page.adoc", adoc_source)
+        self.create_testfile("templates/subdir/other.adoc", adoc_source)
+
+        po_source = """
+#: :1
+msgid "Heading"
+msgstr "Titre"
+
+#: :3
+msgid "This is a paragraph."
+msgstr "C'est un paragraphe."
+"""
+        self.create_testfile("translations.po", po_source)
+
+        self.run_command("translations.po", "translated", template="templates")
+
+        for path in ("translated/page.adoc", "translated/subdir/other.adoc"):
+            assert os.path.isfile(self.get_testfilename(path))
+            output = self.read_testfile(path).decode()
+            assert "== Titre" in output
+            assert "C'est un paragraphe." in output
