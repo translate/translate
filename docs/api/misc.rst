@@ -5,6 +5,14 @@ misc
    :show-inheritance:
 
 
+cldr_plurals
+------------
+
+.. automodule:: translate.misc.cldr_plurals
+   :members:
+   :inherited-members:
+
+
 dictutils
 ---------
 
