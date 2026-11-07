@@ -695,10 +695,9 @@ def validate_property_key(value: str, personality: Dialect) -> None:
     quoted_key: bool = bool(personality.key_wrap_char) and not (
         personality.skip_key_quote_re and personality.skip_key_quote_re.match(value)
     )
-    if any(
-        (ord(char) < 32 and (char != "\t" or not quoted_key)) or ord(char) == 127
-        for char in value
-    ):
+    # Tab is allowed only inside quoted keys
+    control_chars = r"[\x00-\x08\x0a-\x1f\x7f]" if quoted_key else r"[\x00-\x1f\x7f]"
+    if re.search(control_chars, value):
         raise ValueError("Property key cannot be represented safely")
     if is_line_continuation(value):
         raise ValueError("Property key cannot be represented safely")
