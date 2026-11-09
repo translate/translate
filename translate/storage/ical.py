@@ -86,16 +86,19 @@ class icalfile(base.TranslationStore):
         """Construct an ical file, optionally reading in from inputfile."""
         super().__init__(**kwargs)
         self.filename = ""
-        self._icalfile = None
+        self._icalfile: vobject.base.Component | None = None
         if inputfile is not None:
             self.parse(inputfile)
 
     def serialize(self, out) -> None:
         outicalfile = self._icalfile
+        if outicalfile is None:
+            return
+
         for unit in self.units:
             for location in unit.getlocations():
                 match = ICAL_UNIT_LOCATION_RE.match(location)
-                for component in self._icalfile.components():  # ty:ignore[unresolved-attribute]
+                for component in outicalfile.components():
                     if component.name != "VEVENT":
                         continue
                     if component.uid.value != match.groupdict()["uid"]:  # ty:ignore[unresolved-attribute]
@@ -104,8 +107,7 @@ class icalfile(base.TranslationStore):
                         if property.name == match.groupdict()["property"]:  # ty:ignore[unresolved-attribute]
                             property.value = unit.target
 
-        if outicalfile:
-            outicalfile.serialize(out)
+        outicalfile.serialize(out)
 
     def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
         """Parse the given file or file source string."""
@@ -121,9 +123,10 @@ class icalfile(base.TranslationStore):
             input = inisrc
         if isinstance(input, bytes):
             input = input.decode(self.encoding)
-        self._icalfile = next(vobject.readComponents(input))
+        icalfile: vobject.base.Component = next(vobject.readComponents(input))
+        self._icalfile = icalfile
 
-        for component in self._icalfile.components():
+        for component in icalfile.components():
             if component.name == "VEVENT":
                 for property in component.getChildren():
                     if property.name in {
