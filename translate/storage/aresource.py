@@ -883,7 +883,7 @@ class AndroidResourceFile(lisa.LISAfile):
         self.body = self.document.getroot()
 
     def parse(self, xml) -> None:
-        """Populates this object from the given xml string."""
+        """Populate from XML, rejecting encodings unsupported by Python."""
         if not hasattr(self, "filename"):
             self.filename = getattr(xml, "name", "")
         if hasattr(xml, "read"):
@@ -892,6 +892,7 @@ class AndroidResourceFile(lisa.LISAfile):
             xml = posrc
         parser = get_safe_xml_parser(strip_cdata=False)
         self.document = etree.fromstring(xml, parser).getroottree()
+        self._validate_xml_encoding(self.document.docinfo.encoding)
         self._remember_utf8_bom(xml)
         self._encoding = self.document.docinfo.encoding
         self.initbody()

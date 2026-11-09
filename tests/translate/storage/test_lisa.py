@@ -6,7 +6,71 @@ from io import BytesIO
 import pytest
 
 from translate.misc.xml_helpers import getXMLlang
-from translate.storage import aresource, poxliff, tbx, tmx, xliff, xliff2
+from translate.storage import (
+    aresource,
+    base,
+    lisa,
+    poxliff,
+    resx,
+    tbx,
+    tmx,
+    ts2,
+    xliff,
+    xliff2,
+)
+
+
+@pytest.fixture(
+    params=[
+        xliff.Xliff1File,
+        xliff2.Xliff2File,
+        ts2.tsfile,
+        resx.RESXFile,
+        aresource.AndroidResourceFile,
+    ]
+)
+def encoded_xml_document(request):
+    store_class = request.param
+    store = store_class()
+    unit = store.addsourceunit("café")
+    unit.target = "café"
+    return store_class, bytes(store)
+
+
+@pytest.mark.parametrize("file_like", [False, True])
+def test_unsupported_xml_encoding(encoded_xml_document, file_like, monkeypatch) -> None:
+    store_class, document = encoded_xml_document
+    store = store_class()
+    error = LookupError("Codec unavailable")
+
+    def reject_encoding(encoding):
+        assert encoding.upper() == "UTF-8"
+        raise error
+
+    monkeypatch.setattr(lisa, "lookup", reject_encoding)
+    with pytest.raises(
+        base.ParseError, match=r"(?i)Unsupported XML encoding: UTF-8"
+    ) as exc:
+        store.parse(BytesIO(document) if file_like else document)
+    assert exc.value.__cause__ is error
+    assert store.units == []
+
+
+@pytest.mark.parametrize("encoding", ["UTF-8", "ISO-8859-1"])
+@pytest.mark.parametrize("file_like", [False, True])
+def test_supported_xml_encoding(encoded_xml_document, encoding, file_like) -> None:
+    store_class, document = encoded_xml_document
+    text = document.decode("utf-8")
+    declaration, body = text.split("?>", 1)
+    declaration = declaration.replace("utf-8", encoding).replace("UTF-8", encoding)
+    data = (declaration + "?>" + body).encode(encoding)
+    store = store_class(BytesIO(data) if file_like else data)
+    assert store.encoding.upper() == encoding
+    assert store.units[0].target == "café"
+    output = bytes(store)
+    assert f'encoding="{encoding}"'.lower() in output.decode(encoding).lower()
+    assert "café".encode(encoding) in output
+    assert store_class.parsestring(output).units[0].target == "café"
 
 
 @pytest.fixture(params=["1.2", "2.0"])
