@@ -539,17 +539,15 @@ def propertiesdecode(source: str) -> str:
             return chr(i)
         return f"\\u{i:04x}"
 
-    while s < len(source):
-        c = source[s]
-        if c != "\\":
-            output.append(c)
-            s += 1
-            continue
-        s += 1
-        if s >= len(source):
+    end = len(source)
+    # copy each run of plain text up to the next backslash as one slice
+    while (e := source.find("\\", s)) != -1:
+        output.append(source[s:e])
+        s = e + 1
+        if s >= end:
             # this is an escape at the end of the line, which implies
             # a continuation..., return the escape to inform the parser
-            output.append(c)
+            output.append("\\")
             continue
         c = source[s]
         s += 1
@@ -561,23 +559,17 @@ def propertiesdecode(source: str) -> str:
         # \uXXXX escapes
         # \UXXXX escapes
         elif c in "uU":
-            digits = 4
             x = 0
-            for digit in range(digits):
-                if s + digit >= len(source):
-                    digits = digit
-                    break
-                c = source[s + digit].lower()
-                if c.isdigit() or c in "abcdef":
-                    x <<= 4
-                    if c.isdigit():
-                        x += ord(c) - ord("0")
-                    else:
-                        x += ord(c) - ord("a") + 10
+            # consume up to four hex digits, stopping at the first non-hex one
+            for c in source[s : s + 4]:
+                c = c.lower()
+                if c.isdigit():
+                    x = (x << 4) + ord(c) - ord("0")
+                elif c in "abcdef":
+                    x = (x << 4) + ord(c) - ord("a") + 10
                 else:
-                    digits = digit
                     break
-            s += digits
+                s += 1
             output.append(unichr2(x))
         elif c == "N":
             if source[s] != "{":
@@ -598,6 +590,7 @@ def propertiesdecode(source: str) -> str:
             s = e + 1
         else:
             output.append(c)  # Drop any \ that we don't specifically handle
+    output.append(source[s:])
     return "".join(output)
 
 
