@@ -587,12 +587,17 @@ class DialectStrings(Dialect):
         - After value: ``"key" = "value" /* comment */;``
         """
         comments = []
+        # Most lines carry no comment at all, nothing to strip there
+        if "/*" not in line:
+            return line, comments
+
         result = []
+        length = len(line)
         i = 0
         in_quote = False
         escape_next = False
 
-        while i < len(line):
+        while i < length:
             char = line[i]
 
             # Handle escape sequences
@@ -616,37 +621,21 @@ class DialectStrings(Dialect):
                 continue
 
             # Only process comments outside of quotes
-            if not in_quote and i + 1 < len(line) and line[i : i + 2] == "/*":
-                # Found start of comment, find the end
-                comment_start = i
-                # Skip any whitespace before the comment
-                ws_start = i
-                while ws_start > 0 and line[ws_start - 1] in " \t":
-                    ws_start -= 1
+            if not in_quote and line.startswith("/*", i):
                 # Trim trailing whitespace before comment from result
                 while result and result[-1] in " \t":
                     result.pop()
 
-                i += 2
-                comment_found = False
-                while i < len(line):
-                    if i + 1 < len(line) and line[i : i + 2] == "*/":
-                        # Found end of comment
-                        comment = line[comment_start : i + 2]
-                        comments.append(comment)
-                        i += 2
-                        # Skip whitespace after comment
-                        while i < len(line) and line[i] in " \t":
-                            i += 1
-                        comment_found = True
-                        break
-                    i += 1
-
-                # If no closing */ found, treat rest of line as comment
-                if not comment_found:
-                    comment = line[comment_start:]
-                    comments.append(comment)
-                    # i is already at end of line, loop will exit
+                # Found start of comment, find the end
+                comment_end = line.find("*/", i + 2)
+                if comment_end == -1:
+                    # If no closing */ found, treat rest of line as comment
+                    comments.append(line[i:])
+                    break
+                comment_end += 2
+                comments.append(line[i:comment_end])
+                # Skip whitespace after comment
+                i = length - len(line[comment_end:].lstrip(" \t"))
             else:
                 result.append(char)
                 i += 1
