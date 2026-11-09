@@ -172,6 +172,14 @@ class TestPO2CSVCommand(test_convert.TestConvertCommand, TestPO2CSV):
         "--no-escape-formulas",
     ]
 
+    def test_backslash_round_trip(self) -> None:
+        posource = '#: a\nmsgid "a \\\\ b"\nmsgstr "c \\\\ d"\n'
+        csvfile = BytesIO(bytes(self.po2csv(posource)))
+        unit = first_translatable(csv2po.csv2po().convertstore(csvl10n.csvfile(csvfile)))
+
+        assert unit.source == "a \\ b"
+        assert unit.target == "c \\ d"
+
     def test_columnorder(self) -> None:
         pocontent = '#: simple.c\nmsgid "Same"\nmsgstr "Target"\n'
         self.create_testfile("test.po", pocontent)
