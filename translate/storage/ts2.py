@@ -287,9 +287,12 @@ class tsunit(lisa.LISAunit):
             if self._context:
                 return self._context
             return None
-        context = parent.find("name")
-        if context is None:
-            return None
+        # <name> is normally the first child, avoid scanning all messages
+        context = parent[0]
+        if context.tag != "name":
+            context = next(parent.iterfind("name"), None)
+            if context is None:
+                return None
         return context.text
 
     def setcontext(self, value) -> None:  # ty:ignore[invalid-method-override]
