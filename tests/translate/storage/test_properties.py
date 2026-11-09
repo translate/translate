@@ -1102,6 +1102,16 @@ key=value
         assert propunit.comments == ["/* unterminated comment"]
         assert propunit.getnotes() == "unterminated comment"
 
+    def test_mac_strings_inline_comment_with_escaped_quote(self) -> None:
+        """Test that an escaped quote does not hide a later inline comment."""
+        line = r'"key" = "say \"hi\" /* kept */"; /* note */'
+        stripped, comments = properties.DialectStrings.strip_inline_comments_from_line(
+            line
+        )
+
+        assert stripped == r'"key" = "say \"hi\" /* kept */";'
+        assert comments == ["/* note */"]
+
     def test_mac_strings_comment_before_entry(self) -> None:
         """Test .strings comment before entry - parsing and round-trip."""
         # Test parsing
