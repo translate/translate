@@ -153,12 +153,10 @@ def filtervariables(
     return filtermarkedvariables
 
 
-# a list of special words with punctuation
-# all apostrophes in the middle of the word are handled already
-wordswithpunctuation = ["'n", "'t"]  # Afrikaans
-# map all the words to their non-punctified equivalent
-wordswithpunctuation = {
-    word: "".join(filter(str.isalnum, word)) for word in wordswithpunctuation
+# Map special Afrikaans words to their non-punctified equivalents.
+# Apostrophes in the middle of words are handled separately.
+wordswithpunctuation: dict[str, str] = {
+    word: "".join(filter(str.isalnum, word)) for word in ("'n", "'t")
 }
 
 word_with_apos_re = re.compile(r"(?u)\w+'\w+")
@@ -172,7 +170,7 @@ def filterwordswithpunctuation(str1):
     if "'" not in str1:
         return str1
     occurrences = []
-    for word, replacement in wordswithpunctuation.items():  # ty:ignore[missing-union-attribute]
+    for word, replacement in wordswithpunctuation.items():
         occurrences.extend(
             [(pos, word, replacement) for pos in quote.find_all(str1, word)]
         )
