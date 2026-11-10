@@ -428,7 +428,7 @@ class PoXliffFile(xliff.xlifffile[U], poheader.poheader):
 
     def createfilenode(
         self, filename, sourcelanguage="en-US", datatype="po"
-    ) -> etree.Element:  # ty:ignore[incompatible-method-override]
+    ) -> etree._Element:  # ty:ignore[incompatible-method-override]
         # Let's ignore the sourcelanguage parameter opting for the internal
         # one. PO files will probably be one language
         return super().createfilenode(

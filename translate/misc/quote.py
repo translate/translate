@@ -432,7 +432,7 @@ def java_utf8_properties_encode(source: str) -> str:
     return "".join(output)
 
 
-def xwiki_properties_encode(source: str, encoding: str) -> str:
+def xwiki_properties_encode(source: str, encoding: str | None) -> str:
     if re.search(r"\{[0-9]+\}", source):
         source = source.replace("'", "''")
     if encoding == "utf-8":

@@ -386,7 +386,7 @@ class FluentSelectorBranch:
         self._parent_node = parent_node
 
         self._child_nodes: list[FluentSelectorNode] = []
-        self._elements: list[FluentSelectorNode | ast.PatternElement] = []
+        self._elements: list[FluentSelectorNode | ast.TextElement | ast.Placeable] = []
         for element in pattern.elements:
             # If we have a select expression, we convert it into a
             # FluentSelectorNode. Otherwise we keep a copy of the raw
@@ -404,7 +404,7 @@ class FluentSelectorBranch:
 
     @staticmethod
     def _get_select_expression(
-        fluent_node: ast.PatternElement,
+        fluent_node: ast.PatternElement | ast.Expression,
     ) -> ast.SelectExpression | None:
         """
         Get the SelectExpression found below the given PatternElement
@@ -413,7 +413,7 @@ class FluentSelectorBranch:
         # A SelectExpression will be wrapped by at least on Placeable, but in
         # principle could be be wrapped by a longer series of Placeables.
         while isinstance(fluent_node, ast.Placeable):
-            fluent_node = fluent_node.expression  # ty:ignore[invalid-assignment]
+            fluent_node = fluent_node.expression
             if isinstance(fluent_node, ast.SelectExpression):
                 return fluent_node
         return None
@@ -489,7 +489,7 @@ class FluentSelectorBranch:
     def to_flat_pattern_elements(
         self,
         branches: list[FluentSelectorBranch],
-    ) -> Iterator[ast.PatternElement]:
+    ) -> Iterator[ast.TextElement | ast.Placeable]:
         """
         Extract a stream of PatternElements using the given branches.
 
@@ -540,7 +540,7 @@ class FluentSelectorBranch:
         :raise ValueError: If we reach a node that has no branch in the given
         list.
         """
-        pattern = ast.Pattern(list(self.to_flat_pattern_elements(branches)))  # ty:ignore[invalid-argument-type]
+        pattern = ast.Pattern(list(self.to_flat_pattern_elements(branches)))
         return _fluent_pattern_to_source(pattern)
 
     def branch_paths(self) -> Iterator[list[FluentSelectorBranch]]:
@@ -1137,7 +1137,7 @@ class FluentFile(base.TranslationStore):
             elif isinstance(entry, (ast.Term, ast.Message)):
                 unit = FluentUnit.new_from_entry(
                     entry,
-                    self._combine_comments(comment_prefix, entry.comment),  # ty:ignore[invalid-argument-type]
+                    self._combine_comments(comment_prefix, entry.comment),
                 )
                 unit_id = unit.getid()
                 assert unit_id is not None
@@ -1176,7 +1176,7 @@ class FluentFile(base.TranslationStore):
         return ValueError("\n".join(error_message))
 
     @staticmethod
-    def _combine_comments(*comments: ast.BaseComment | str) -> str:
+    def _combine_comments(*comments: ast.BaseComment | str | None) -> str:
         """
         Combine the given string or fluent BaseComment objects into a single
         string.

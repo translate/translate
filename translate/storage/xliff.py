@@ -595,7 +595,7 @@ class Xliff1File(XliffFile[U]):
 
     def createfilenode(
         self, filename, sourcelanguage=None, targetlanguage=None, datatype="plaintext"
-    ) -> etree.Element:
+    ) -> etree._Element:
         """
         Creates a filenode with the given filename. All parameters are
         needed for XLIFF compliance.

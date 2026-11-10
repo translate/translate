@@ -269,6 +269,7 @@ context_re = re.compile(r"\s+\(.*\)\s*$")
 class terminologymatcher(matcher):
     """A matcher with settings specifically for terminology matching."""
 
+    comparer: terminology.TerminologyComparer
     sort_reverse = True
 
     def __init__(
@@ -336,7 +337,7 @@ class terminologymatcher(matcher):
             return []
         text = text.lower()
         comparer = self.comparer
-        comparer.match_info = {}  # ty:ignore[invalid-assignment]
+        comparer.match_info = {}
         match_info = {}
         matches = []
         known = set()
@@ -361,7 +362,7 @@ class terminologymatcher(matcher):
             if (source, cand.target) in known:
                 continue
             if comparer.similarity(text, source, self.MIN_SIMILARITY):
-                match_info[source] = {"pos": comparer.match_info[source]["pos"]}  # ty:ignore[missing-union-attribute]
+                match_info[source] = {"pos": comparer.match_info[source]["pos"]}
                 matches.append(cand)
                 known.add((source, cand.target))
 

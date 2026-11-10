@@ -59,21 +59,21 @@ class StringsDictUnit(base.DictUnit):
 
     @property
     def outerkey(self):
-        self.get_unitid()
+        unitid = self.get_unitid()
 
-        if len(self._unitid.parts) < 1:  # ty:ignore[missing-union-attribute]
+        if len(unitid.parts) < 1:
             return None
 
-        return self._unitid.parts[0][1]  # ty:ignore[missing-union-attribute]
+        return unitid.parts[0][1]
 
     @property
     def innerkey(self):
-        self.get_unitid()
+        unitid = self.get_unitid()
 
-        if len(self._unitid.parts) < 2:  # ty:ignore[missing-union-attribute]
+        if len(unitid.parts) < 2:
             return None
 
-        return self._unitid.parts[1][1]  # ty:ignore[missing-union-attribute]
+        return unitid.parts[1][1]
 
     def getid(self):
         return self.source
