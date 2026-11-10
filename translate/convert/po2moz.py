@@ -29,6 +29,8 @@ from translate.convert import convert, po2dtd, po2mozlang, po2prop, prop2mozfunn
 
 
 class MozConvertOptionParser(convert.ConvertOptionParser):
+    replacer: convert.Replacer
+
     def __init__(
         self, formats, usetemplates=False, usepots=False, description=None
     ) -> None:
@@ -52,7 +54,7 @@ class MozConvertOptionParser(convert.ConvertOptionParser):
 
     def recursiveprocess(self, options):
         """Recurse through directories and convert files."""
-        self.replacer.replacestring = options.locale  # ty:ignore[missing-attribute]
+        self.replacer.replacestring = options.locale
         return super().recursiveprocess(options)
 
 
@@ -90,7 +92,7 @@ def main(argv=None) -> None:
     parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.add_remove_untranslated_option()
-    parser.replacer = replacer  # ty:ignore[missing-attribute]
+    parser.replacer = replacer
     parser.run(argv)
 
 

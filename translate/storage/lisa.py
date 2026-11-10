@@ -23,7 +23,7 @@ from __future__ import annotations
 import contextlib
 import copy
 from codecs import BOM_UTF8, lookup
-from typing import TypeVar
+from typing import Self, TypeVar
 
 from lxml import etree
 
@@ -93,7 +93,7 @@ class LISAunit(base.TranslationUnit):
                 return False
         return True
 
-    def copy(self) -> LISAunit:
+    def copy(self) -> Self:
         """
         Make a copy of the translation unit.
 

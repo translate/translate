@@ -1463,7 +1463,7 @@ class DictUnit(TranslationUnit):
         super().__init__(source)
         self._unitid = None
 
-    def get_unitid(self):
+    def get_unitid(self) -> UnitId:
         if self._unitid is None:
             self._unitid = self.IdClass.from_string(self._id)
         return self._unitid

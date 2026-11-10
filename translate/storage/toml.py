@@ -251,11 +251,11 @@ class TOMLFile(base.DictStore[TOMLUnit]):
                 unit.addnote(comment, origin="developer")
             self.addunit(unit)
 
-    def removeunit(self, unit: base.TranslationUnit) -> None:
+    def removeunit(self, unit: TOMLUnit) -> None:
         """Remove a unit from the store and its underlying TOML structure."""
         if self._original is not None:
-            unit.storevalue(self._original, None, unset=True)  # ty:ignore[missing-attribute]
-        super().removeunit(unit)  # ty:ignore[invalid-argument-type]
+            unit.storevalue(self._original, None, unset=True)
+        super().removeunit(unit)
 
     def _rename_unit(self, unit: TOMLUnit, unitid: base.UnitId) -> None:
         previous = unit.get_unitid()

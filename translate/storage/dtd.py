@@ -289,12 +289,21 @@ class DTDValidationResolver(etree.Resolver):
 class dtdunit(base.TranslationUnit):
     """An entity definition from a DTD file (and any associated comments)."""
 
+    # Populated by dtdfile.parse when the corresponding content is encountered.
+    hashprefix: str
+    entitytype: str
+    entityparameter: str
+    _locfilenotes: list[tuple[str, str]]
+    _locgroupstarts: list[tuple[str, str]]
+    _locgroupends: list[tuple[str, str]]
+    _locnotes: list[tuple[str, str]]
+
     def __init__(self, source="", android=False) -> None:
         """Construct the dtdunit, prepare it for parsing."""
         self.android = android
 
         super().__init__(source)
-        self.comments = []
+        self.comments: list[tuple[str, str]] = []
         self.unparsedlines = []
         self.incomment = False
         self.inentity = False
@@ -402,11 +411,11 @@ class dtdunit(base.TranslationUnit):
         # for n in self._locnotes: yield n
         if len(self.entity) > 0:
             if getattr(self, "entitytype", None) == "external":
-                entityline = f"<!ENTITY % {self.entity} {self.entityparameter} {self.definition}{self.closing}"  # ty:ignore[missing-attribute]
+                entityline = f"<!ENTITY % {self.entity} {self.entityparameter} {self.definition}{self.closing}"
             else:
                 entityline = f"<!ENTITY{self.space_pre_entity}{self.entity}{self.space_pre_definition}{self.definition}{self.closing}"
             if getattr(self, "hashprefix", None):
-                entityline = f"{self.hashprefix} {entityline}"  # ty:ignore[missing-attribute]
+                entityline = f"{self.hashprefix} {entityline}"
             lines.append(f"{entityline}\n")
         return "".join(lines)
 
@@ -444,10 +453,10 @@ class dtdfile(base.TranslationStore):
         """Store a comment in the appropriate list on the unit."""
         commentpair = (commenttype, comment)
         comment_targets = {
-            "locfile": unit._locfilenotes,  # ty:ignore[missing-attribute]
-            "locgroupstart": unit._locgroupstarts,  # ty:ignore[missing-attribute]
-            "locgroupend": unit._locgroupends,  # ty:ignore[missing-attribute]
-            "locnote": unit._locnotes,  # ty:ignore[missing-attribute]
+            "locfile": unit._locfilenotes,
+            "locgroupstart": unit._locgroupstarts,
+            "locgroupend": unit._locgroupends,
+            "locnote": unit._locnotes,
             "comment": unit.comments,
         }
         comment_targets.get(commenttype, unit.comments).append(commentpair)
@@ -533,10 +542,10 @@ class dtdfile(base.TranslationStore):
 
             # Initialize unit state
             newdtd.comments = []
-            newdtd._locfilenotes = newdtd.comments  # ty:ignore[missing-attribute]
-            newdtd._locgroupstarts = newdtd.comments  # ty:ignore[missing-attribute]
-            newdtd._locgroupends = newdtd.comments  # ty:ignore[missing-attribute]
-            newdtd._locnotes = newdtd.comments  # ty:ignore[missing-attribute]
+            newdtd._locfilenotes = newdtd.comments
+            newdtd._locgroupstarts = newdtd.comments
+            newdtd._locgroupends = newdtd.comments
+            newdtd._locnotes = newdtd.comments
             newdtd.entity = None
             newdtd.definition = ""
             newdtd.unparsedlines = []
@@ -601,7 +610,7 @@ class dtdfile(base.TranslationStore):
                         has_content = True
                         beforeentity = line[:entitypos].strip()
                         if beforeentity.startswith("#"):
-                            newdtd.hashprefix = beforeentity  # ty:ignore[missing-attribute]
+                            newdtd.hashprefix = beforeentity
                         entitypart = "start"
                     else:
                         # Add to unparsed lines
@@ -628,10 +637,10 @@ class dtdfile(base.TranslationStore):
                         newdtd.entity = entity_name
                         assert quote.rstripeol(entity_name) == entity_name
                         if newdtd.entity:
-                            newdtd.entitytype = entitytype  # ty:ignore[missing-attribute]
+                            newdtd.entitytype = entitytype
                             if entitytype == "external":
                                 entitypart = "parameter"
-                                newdtd.entityparameter = ""  # ty:ignore[missing-attribute]
+                                newdtd.entityparameter = ""
                             else:
                                 entitypart = "definition"
                             # Remember the start position and the quote character
@@ -650,7 +659,7 @@ class dtdfile(base.TranslationStore):
                         paramstart = e
                         while e < len(line) and line[e].isalnum():
                             e += 1
-                        newdtd.entityparameter += line[paramstart:e]  # ty:ignore[missing-attribute]
+                        newdtd.entityparameter += line[paramstart:e]
                         while e < len(line) and line[e].isspace():
                             e += 1
                         line = line[e:]

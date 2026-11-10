@@ -89,7 +89,8 @@ class LanguageIdentifier:
         return result
 
     def identify_source_lang(
-        self, instore: TranslationStore | list[TranslationUnit] | tuple[TranslationUnit]
+        self,
+        instore: TranslationStore | list[TranslationUnit] | tuple[TranslationUnit, ...],
     ) -> str | None:
         """
         Identify the source language of the given translation store or

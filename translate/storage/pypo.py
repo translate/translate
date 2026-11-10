@@ -195,7 +195,7 @@ def unescape(line: str) -> str:
 
 
 @lru_cache(maxsize=2048)
-def _unquotefrompo(postr: tuple[str]) -> str:
+def _unquotefrompo(postr: tuple[str, ...]) -> str:
     return "".join(unescape(line[1:-1]) for line in postr)
 
 
@@ -203,7 +203,7 @@ def unquotefrompo(postr: list[str]) -> str:
     return _unquotefrompo(tuple(postr))
 
 
-def is_null(lst: list[str]) -> bool:
+def is_null(lst: list[str] | dict[int, list[str]]) -> bool:
     lst_len = len(lst)
     return lst_len == 0 or (lst_len == 1 and lst[0] == '""')
 
@@ -604,7 +604,7 @@ class pounit(pocommon.pounit):
         # rewritten here for performance:
         return (
             is_null(self.msgid)
-            and not is_null(self.msgstr)  # ty:ignore[invalid-argument-type]
+            and not is_null(self.msgstr)
             and len(self.msgidcomments) == 0
             and is_null(self.msgctxt)
         )
@@ -629,16 +629,16 @@ class pounit(pocommon.pounit):
                     continue
                 yield value
 
-    def _ensure_typecomments_cache(self) -> None:
+    def _ensure_typecomments_cache(self) -> list[str]:
         if self._typecomments_cache is None:
             self._typecomments_cache = list(self._extracttypecomment())
+        return self._typecomments_cache
 
     def hastypecomment(self, typecomment: str) -> bool:
         """Check whether the given type comment is present."""
         if not self.typecomments:
             return False
-        self._ensure_typecomments_cache()
-        return typecomment in self._typecomments_cache  # ty:ignore[unsupported-operator]
+        return typecomment in self._ensure_typecomments_cache()
 
     def hasmarkedcomment(self, commentmarker: str) -> bool:
         """
@@ -658,14 +658,14 @@ class pounit(pocommon.pounit):
         """Alters whether a given typecomment is present."""
         if self.hastypecomment(typecomment) != present:
             # The typecomments cache might be still missing if typecomments are not present
-            self._ensure_typecomments_cache()
+            typecomments = self._ensure_typecomments_cache()
             if present:
-                self._typecomments_cache.append(typecomment)  # ty:ignore[missing-union-attribute]
+                typecomments.append(typecomment)
             else:
-                self._typecomments_cache.remove(typecomment)  # ty:ignore[missing-union-attribute]
-            if self._typecomments_cache:
-                self._typecomments_cache.sort()
-                comments_str = ", ".join(self._typecomments_cache)
+                typecomments.remove(typecomment)
+            if typecomments:
+                typecomments.sort()
+                comments_str = ", ".join(typecomments)
                 self.typecomments = [f"#, {comments_str}{self.newline}"]
             else:
                 self.typecomments = []
@@ -676,7 +676,7 @@ class pounit(pocommon.pounit):
     def markfuzzy(self, present=True) -> None:
         if present:
             self.set_state_n(self.STATE[self.S_FUZZY][0])
-        elif (self.hasplural() and not self._msgstrlen()) or is_null(self.msgstr):  # ty:ignore[invalid-argument-type]
+        elif (self.hasplural() and not self._msgstrlen()) or is_null(self.msgstr):
             self.set_state_n(self.STATE[self.S_UNTRANSLATED][0])
         else:
             self.set_state_n(self.STATE[self.S_TRANSLATED][0])

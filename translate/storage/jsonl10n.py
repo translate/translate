@@ -133,8 +133,8 @@ class BaseJsonUnit(base.DictUnit):
     def setid(self, value, unitid=None) -> None:
         self._invalidate_store_indexes()
         super().setid(value, unitid)
-        self.get_unitid()
-        self._item = self._unitid.parts[-1][1]  # ty:ignore[missing-union-attribute]
+        unitid = self.get_unitid()
+        self._item = unitid.parts[-1][1]
 
     def getid(self):
         return self._id

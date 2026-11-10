@@ -430,7 +430,7 @@ class DialectXWiki(DialectJava):
 
     @staticmethod
     def encode(string, encoding=None):
-        return xwiki_properties_encode(string or "", encoding)  # ty:ignore[invalid-argument-type]
+        return xwiki_properties_encode(string or "", encoding)
 
     @staticmethod
     def decode(string):
