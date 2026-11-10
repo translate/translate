@@ -50,7 +50,7 @@ def make_empty_replacement_placeable(klass, node, xml_space="preserve"):
 def make_g_placeable(klass, node, xml_space="default"):
     return klass(
         id=node.attrib["id"],
-        sub=xml_to_strelem(node, xml_space).sub,
+        sub=_normalized_xml_to_strelem(node, xml_space).sub,
         xml_attrib=node.attrib,
     )
 
@@ -62,7 +62,7 @@ def not_yet_implemented(klass, node, xml_space="preserve") -> Never:
 def make_unknown(klass, node, xml_space="preserve"):
     assert klass is xliff.UnknownXML
 
-    sub = xml_to_strelem(node, xml_space).sub
+    sub = _normalized_xml_to_strelem(node, xml_space).sub
     id = node.get("id", None)
     rid = node.get("rid", None)
     xid = node.get("xid", None)
@@ -84,6 +84,8 @@ _class_dictionary = {
 
 
 def make_placeable(node, xml_space):
+    if node.tag is etree.Entity:
+        return xliff.Entity(f"&{node.name};")
     _namespace, tag = misc.parse_tag(node.tag)
     klass, maker = _class_dictionary.get(tag, (xliff.UnknownXML, make_unknown))
     return maker(klass, node, xml_space)
@@ -104,12 +106,17 @@ def xml_to_strelem(dom_node, xml_space="preserve"):
         dom_node = parse_xml(dom_node)
     xml_space = getXMLspaceInherited(dom_node, xml_space)
     normalize_xml_space(dom_node, xml_space, remove_start=True)
+    return _normalized_xml_to_strelem(dom_node, xml_space)
+
+
+def _normalized_xml_to_strelem(dom_node, xml_space: str) -> StringElem:
+    """Build placeables without normalizing nested text a second time."""
+    xml_space = getXMLspaceInherited(dom_node, xml_space)
     result = StringElem()
     sub = result.sub  # just an optimisation
     for child_dom_node in dom_node:
-        if child_dom_node.tag is etree.Comment:
-            continue
-        sub.append(make_placeable(child_dom_node, xml_space))
+        if child_dom_node.tag not in {etree.Comment, etree.ProcessingInstruction}:
+            sub.append(make_placeable(child_dom_node, xml_space))
         if child_dom_node.tail:
             sub.append(StringElem(str(child_dom_node.tail)))
 
@@ -195,6 +202,10 @@ def strelem_to_xml(parent_node, elem):
     if isinstance(elem, str):
         return xml_append_string(parent_node, elem)
     if not isinstance(elem, StringElem):
+        return parent_node
+
+    if isinstance(elem, xliff.Entity):
+        parent_node.append(etree.Entity(str(elem)[1:-1]))
         return parent_node
 
     if type(elem) is StringElem and elem.isleaf():
