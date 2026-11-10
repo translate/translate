@@ -20,7 +20,7 @@
 from copy import copy
 
 from lxml import etree
-from pytest import mark
+from pytest import mark, raises
 
 from translate.misc.xml_helpers import parse_xml
 from translate.storage.placeables import StringElem, lisa
@@ -95,21 +95,57 @@ def test_normalized_inline_whitespace(content: str, expected: str) -> None:
     assert str(lisa.xml_to_strelem(source)) == expected
 
 
-@mark.parametrize("markup", ["<!--note-->", "<?note value?>"])
 @mark.parametrize(
     ("xml_space", "expected_tail"),
     [("default", " world"), ("preserve", " \t world")],
 )
 @mark.parametrize("nested", [False, True])
-def test_xml_to_strelem_nontext_markup_tail(
-    markup: str, xml_space: str, expected_tail: str, nested: bool
+def test_xml_to_strelem_comment_tail(
+    xml_space: str, expected_tail: str, nested: bool
 ) -> None:
-    content = f"Hello{markup} \t world"
+    content = "Hello<!--note--> \t world"
     if nested:
         content = f'<g id="group">{content}</g>'
     source = parse_xml(f'<source xml:space="{xml_space}">{content}</source>')
 
     assert str(lisa.xml_to_strelem(source)) == f"Hello{expected_tail}"
+
+
+@mark.parametrize("markup", ['<?php echo "hello"; ?>', "<?note value?>"])
+@mark.parametrize("tag", [None, "g", "unknown"])
+@mark.parametrize("xml_space", ["default", "preserve"])
+@mark.parametrize("multiple", [False, True])
+def test_xml_to_strelem_rejects_processing_instructions(
+    markup: str, tag: str | None, xml_space: str, multiple: bool
+) -> None:
+    content = f"Hello {markup} \t world"
+    if multiple:
+        content += f" {markup} again"
+    if tag is not None:
+        content = f'<{tag} id="group">{content}</{tag}>'
+    source = parse_xml(f'<source xml:space="{xml_space}">{content}</source>')
+
+    with raises(TypeError):
+        lisa.xml_to_strelem(source)
+    with raises(TypeError):
+        lisa.parse_xliff(etree.tostring(source, encoding="unicode"))
+
+
+@mark.parametrize("cdata", [False, True])
+@mark.parametrize("xml_space", ["default", "preserve"])
+def test_literal_php_roundtrip(cdata: bool, xml_space: str) -> None:
+    text = 'Hello <?php echo "hello"; ?> world'
+    escaped = 'Hello &lt;?php echo "hello"; ?&gt; world'
+    content = f"<![CDATA[{text}]]>" if cdata else escaped
+    source = parse_xml(f'<source xml:space="{xml_space}">{content}</source>')
+    restored = etree.Element("source")
+
+    elem = lisa.xml_to_strelem(source)
+    assert str(elem) == text
+    lisa.strelem_to_xml(restored, elem)
+
+    assert etree.tostring(restored, encoding="unicode") == f"<source>{escaped}</source>"
+    assert str(lisa.parse_xliff(content)) == text
 
 
 @mark.parametrize("tag", [None, "g", "unknown"])
