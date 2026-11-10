@@ -84,6 +84,9 @@ _class_dictionary = {
 
 
 def make_placeable(node, xml_space):
+    if node.tag is etree.ProcessingInstruction:
+        # Let callers fall back to plain text instead of silently losing content.
+        raise TypeError("Processing instructions cannot be converted to rich text")
     if node.tag is etree.Entity:
         return xliff.Entity(f"&{node.name};")
     _namespace, tag = misc.parse_tag(node.tag)
@@ -115,7 +118,7 @@ def _normalized_xml_to_strelem(dom_node, xml_space: str) -> StringElem:
     result = StringElem()
     sub = result.sub  # just an optimisation
     for child_dom_node in dom_node:
-        if child_dom_node.tag not in {etree.Comment, etree.ProcessingInstruction}:
+        if child_dom_node.tag is not etree.Comment:
             sub.append(make_placeable(child_dom_node, xml_space))
         if child_dom_node.tail:
             sub.append(StringElem(str(child_dom_node.tail)))

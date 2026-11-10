@@ -1,0 +1,26 @@
+Translate Toolkit 3.20.6
+************************
+
+*Released on 10 November 2026*
+
+This release fixes a regression in rich-text conversion introduced in 3.20.5
+that could discard PHP code during XLIFF export in Weblate.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- XML
+
+  - Restore rejection of unsupported processing instructions during rich-text
+    conversion, allowing callers to preserve the original text through their
+    fallback instead of silently discarding content
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+Michal Čihař
