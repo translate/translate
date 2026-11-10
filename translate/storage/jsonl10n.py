@@ -134,7 +134,7 @@ class BaseJsonUnit(base.DictUnit):
         self._invalidate_store_indexes()
         super().setid(value, unitid)
         self.get_unitid()
-        self._item = self._unitid.parts[-1][1]  # ty:ignore[unresolved-attribute]
+        self._item = self._unitid.parts[-1][1]  # ty:ignore[missing-union-attribute]
 
     def getid(self):
         return self._id
@@ -423,7 +423,7 @@ class I18NextUnit(JsonNestedUnit):
         if not isinstance(self.target, multistring):
             super().storevalues(output)
         else:
-            plural_tags = self._store.get_plural_tags(self.target)  # ty:ignore[unresolved-attribute]
+            plural_tags = self._store.get_plural_tags(self.target)  # ty:ignore[missing-union-attribute]
             if len(self.target.strings) > len(plural_tags):
                 self.target.extra_strings = self.target.extra_strings[
                     : len(plural_tags) - 1
@@ -514,7 +514,7 @@ class I18NextV4Unit(I18NextUnit):
 
     def _get_plural_labels(self, count):
         base_name = self._get_base_name()
-        plural_tags = self._store.get_plural_tags(self.target)  # ty:ignore[unresolved-attribute]
+        plural_tags = self._store.get_plural_tags(self.target)  # ty:ignore[missing-union-attribute]
         return [f"{base_name}_{plural_tags[i]}" for i in range(count)]
 
 
@@ -653,7 +653,7 @@ class GoTextJsonUnit(BaseJsonUnit):
     def getvalue(self):
         target = self.target
         if isinstance(target, multistring):
-            plural_tags = self._store.get_plural_tags(target)  # ty:ignore[unresolved-attribute]
+            plural_tags = self._store.get_plural_tags(target)  # ty:ignore[missing-union-attribute]
             strings = self.sync_plural_count(target, plural_tags)
             target = {
                 "select": {
@@ -788,7 +788,7 @@ class GoI18NJsonUnit(FlatJsonUnit):
     def getvalue(self):
         target = self.target
         if isinstance(target, multistring):
-            plural_tags = self._store.get_plural_tags(target)  # ty:ignore[unresolved-attribute]
+            plural_tags = self._store.get_plural_tags(target)  # ty:ignore[missing-union-attribute]
             strings = self.sync_plural_count(target, plural_tags)
             target = {
                 plural: strings[offset] for offset, plural in enumerate(plural_tags)
@@ -878,7 +878,7 @@ class GoI18NV2JsonUnit(FlatJsonUnit):
         if self.notes:
             target["description"] = self.notes
 
-        plural_tags = self._store.get_plural_tags(self.target)  # ty:ignore[unresolved-attribute]
+        plural_tags = self._store.get_plural_tags(self.target)  # ty:ignore[missing-union-attribute]
         strings = self.sync_plural_count(self.target, plural_tags)
         for offset, plural in enumerate(plural_tags):
             target[plural] = strings[offset]

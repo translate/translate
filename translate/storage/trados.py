@@ -177,7 +177,7 @@ class TradosUnit(base.TranslationUnit):
             return unescape(text.strip())
         return ""
 
-    target = property(gettarget, None)  # ty:ignore[invalid-property-type-override]
+    target = property(gettarget, None)  # ty:ignore[incompatible-property-override]
 
 
 class TradosTxtTmFile(base.TranslationStore):
@@ -197,7 +197,7 @@ class TradosTxtTmFile(base.TranslationStore):
         if inputfile is not None:
             self.parse(inputfile)
 
-    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
+    def parse(self, input) -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         if hasattr(input, "name"):
             self.filename = input.name
         elif not getattr(self, "filename", ""):

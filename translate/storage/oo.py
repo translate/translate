@@ -487,7 +487,7 @@ class oomultifile:
         """Returns a pseudo-file object for the given subfile."""
         subfilesrc = self.getsubfilesrc(subfile)
         inputfile = BytesIO(subfilesrc.encode())
-        inputfile.filename = subfile  # ty:ignore[unresolved-attribute]
+        inputfile.filename = subfile  # ty:ignore[missing-attribute]
         return inputfile
 
     def openoutputfile(self, subfile):
@@ -500,7 +500,7 @@ class oomultifile:
             self.multifile.flush()
 
         outputfile = wStringIO.CatchStringOutput(onclose)
-        outputfile.filename = subfile  # ty:ignore[unresolved-attribute]
+        outputfile.filename = subfile  # ty:ignore[missing-attribute]
         return outputfile
 
     def getoofile(self, subfile):

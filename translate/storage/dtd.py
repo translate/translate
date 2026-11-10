@@ -359,7 +359,7 @@ class dtdunit(base.TranslationUnit):
                 "DTD entity name cannot be represented in file encoding"
             ) from error
 
-    def setid(self, new_id) -> None:  # ty:ignore[invalid-method-override]
+    def setid(self, new_id) -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         # Empty names mark omitted entities during DTD to PO conversion.
         if new_id or not isinstance(new_id, str):
             self.validate_id(new_id)
@@ -402,11 +402,11 @@ class dtdunit(base.TranslationUnit):
         # for n in self._locnotes: yield n
         if len(self.entity) > 0:
             if getattr(self, "entitytype", None) == "external":
-                entityline = f"<!ENTITY % {self.entity} {self.entityparameter} {self.definition}{self.closing}"  # ty:ignore[unresolved-attribute]
+                entityline = f"<!ENTITY % {self.entity} {self.entityparameter} {self.definition}{self.closing}"  # ty:ignore[missing-attribute]
             else:
                 entityline = f"<!ENTITY{self.space_pre_entity}{self.entity}{self.space_pre_definition}{self.definition}{self.closing}"
             if getattr(self, "hashprefix", None):
-                entityline = f"{self.hashprefix} {entityline}"  # ty:ignore[unresolved-attribute]
+                entityline = f"{self.hashprefix} {entityline}"  # ty:ignore[missing-attribute]
             lines.append(f"{entityline}\n")
         return "".join(lines)
 
@@ -444,10 +444,10 @@ class dtdfile(base.TranslationStore):
         """Store a comment in the appropriate list on the unit."""
         commentpair = (commenttype, comment)
         comment_targets = {
-            "locfile": unit._locfilenotes,  # ty:ignore[unresolved-attribute]
-            "locgroupstart": unit._locgroupstarts,  # ty:ignore[unresolved-attribute]
-            "locgroupend": unit._locgroupends,  # ty:ignore[unresolved-attribute]
-            "locnote": unit._locnotes,  # ty:ignore[unresolved-attribute]
+            "locfile": unit._locfilenotes,  # ty:ignore[missing-attribute]
+            "locgroupstart": unit._locgroupstarts,  # ty:ignore[missing-attribute]
+            "locgroupend": unit._locgroupends,  # ty:ignore[missing-attribute]
+            "locnote": unit._locnotes,  # ty:ignore[missing-attribute]
             "comment": unit.comments,
         }
         comment_targets.get(commenttype, unit.comments).append(commentpair)
@@ -507,7 +507,7 @@ class dtdfile(base.TranslationStore):
             )
         raise ValueError(f"Unexpected quote character... {quote_char!r}")
 
-    def parse(self, dtdsrc) -> None:  # ty:ignore[invalid-method-override]
+    def parse(self, dtdsrc) -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         """Read the source code of a dtd file in and include them as dtdunits in self.units."""
         if not dtdsrc:
             return
@@ -533,10 +533,10 @@ class dtdfile(base.TranslationStore):
 
             # Initialize unit state
             newdtd.comments = []
-            newdtd._locfilenotes = newdtd.comments  # ty:ignore[unresolved-attribute]
-            newdtd._locgroupstarts = newdtd.comments  # ty:ignore[unresolved-attribute]
-            newdtd._locgroupends = newdtd.comments  # ty:ignore[unresolved-attribute]
-            newdtd._locnotes = newdtd.comments  # ty:ignore[unresolved-attribute]
+            newdtd._locfilenotes = newdtd.comments  # ty:ignore[missing-attribute]
+            newdtd._locgroupstarts = newdtd.comments  # ty:ignore[missing-attribute]
+            newdtd._locgroupends = newdtd.comments  # ty:ignore[missing-attribute]
+            newdtd._locnotes = newdtd.comments  # ty:ignore[missing-attribute]
             newdtd.entity = None
             newdtd.definition = ""
             newdtd.unparsedlines = []
@@ -601,7 +601,7 @@ class dtdfile(base.TranslationStore):
                         has_content = True
                         beforeentity = line[:entitypos].strip()
                         if beforeentity.startswith("#"):
-                            newdtd.hashprefix = beforeentity  # ty:ignore[unresolved-attribute]
+                            newdtd.hashprefix = beforeentity  # ty:ignore[missing-attribute]
                         entitypart = "start"
                     else:
                         # Add to unparsed lines
@@ -628,10 +628,10 @@ class dtdfile(base.TranslationStore):
                         newdtd.entity = entity_name
                         assert quote.rstripeol(entity_name) == entity_name
                         if newdtd.entity:
-                            newdtd.entitytype = entitytype  # ty:ignore[unresolved-attribute]
+                            newdtd.entitytype = entitytype  # ty:ignore[missing-attribute]
                             if entitytype == "external":
                                 entitypart = "parameter"
-                                newdtd.entityparameter = ""  # ty:ignore[unresolved-attribute]
+                                newdtd.entityparameter = ""  # ty:ignore[missing-attribute]
                             else:
                                 entitypart = "definition"
                             # Remember the start position and the quote character
@@ -650,7 +650,7 @@ class dtdfile(base.TranslationStore):
                         paramstart = e
                         while e < len(line) and line[e].isalnum():
                             e += 1
-                        newdtd.entityparameter += line[paramstart:e]  # ty:ignore[unresolved-attribute]
+                        newdtd.entityparameter += line[paramstart:e]  # ty:ignore[missing-attribute]
                         while e < len(line) and line[e].isspace():
                             e += 1
                         line = line[e:]

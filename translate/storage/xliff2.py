@@ -80,7 +80,7 @@ class Xliff2Unit(XliffUnit):
             return
         self._ensure_xml_space_preserve()
 
-    def addnote(self, text: str, origin: str | None = None) -> None:  # ty:ignore[invalid-method-override]
+    def addnote(self, text: str, origin: str | None = None) -> None:  # ty:ignore[incompatible-method-override]
         """Add a note specifically in the XLIFF 2.0 way."""
         if not text:
             return
@@ -136,7 +136,7 @@ class Xliff2Unit(XliffUnit):
         unit_element.append(self.xmlelement)
         return unit_element
 
-    def getid(self) -> str | None:  # ty:ignore[invalid-method-override]
+    def getid(self) -> str | None:  # ty:ignore[incompatible-method-override]
         """Get the unit id."""
         segment_id = self.xmlelement.get("id")
         unit_element = self.getunitelement()
@@ -328,13 +328,13 @@ class Xliff2File(XliffFile[Xliff2Unit]):
         super().addunit(unit, new=False)
         if new:
             # TODO: merge units with same ID and different segment
-            self.body.append(unit.getunitelement())  # ty:ignore[unresolved-attribute]
+            self.body.append(unit.getunitelement())  # ty:ignore[missing-union-attribute]
 
     def getsourcelanguage(self) -> str:
         """Get the source language for this file."""
         return self.document.getroot().get("srcLang", "en")
 
-    def setsourcelanguage(self, lang: str) -> None:  # ty:ignore[invalid-method-override]
+    def setsourcelanguage(self, lang: str) -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         """Set the source language for this file."""
         self.document.getroot().set("srcLang", lang)
 
@@ -342,7 +342,7 @@ class Xliff2File(XliffFile[Xliff2Unit]):
         """Get the target language for this file."""
         return self.document.getroot().get("trgLang")
 
-    def settargetlanguage(self, lang: str) -> None:  # ty:ignore[invalid-method-override]
+    def settargetlanguage(self, lang: str) -> None:  # ty:ignore[incompatible-method-override]
         """Set the target language for this file."""
         if lang:
             self.document.getroot().set("trgLang", lang)

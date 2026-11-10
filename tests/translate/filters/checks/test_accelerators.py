@@ -84,27 +84,27 @@ def test_acceleratedvariables() -> None:
     """Test for accelerated variables."""
     # FIXME: disabled since acceleratedvariables has been removed, but these checks are still needed
     mozillachecker = checks.MozillaChecker()
-    assert fails(mozillachecker.acceleratedvariables, "%S &Options", "&%S Ikhetho")  # ty:ignore[unresolved-attribute]
-    assert passes(mozillachecker.acceleratedvariables, "%S &Options", "%S &Ikhetho")  # ty:ignore[unresolved-attribute]
+    assert fails(mozillachecker.acceleratedvariables, "%S &Options", "&%S Ikhetho")  # ty:ignore[missing-attribute]
+    assert passes(mozillachecker.acceleratedvariables, "%S &Options", "%S &Ikhetho")  # ty:ignore[missing-attribute]
     ooochecker = checks.OpenOfficeChecker()
     assert fails(
-        ooochecker.acceleratedvariables,  # ty:ignore[unresolved-attribute]
+        ooochecker.acceleratedvariables,  # ty:ignore[missing-attribute]
         "%PRODUCTNAME% ~Options",
         "~%PRODUCTNAME% Ikhetho",
     )
     assert passes(
-        ooochecker.acceleratedvariables,  # ty:ignore[unresolved-attribute]
+        ooochecker.acceleratedvariables,  # ty:ignore[missing-attribute]
         "%PRODUCTNAME% ~Options",
         "%PRODUCTNAME% ~Ikhetho",
     )
     lochecker = checks.LibreOfficeChecker()
     assert fails(
-        lochecker.acceleratedvariables,  # ty:ignore[unresolved-attribute]
+        lochecker.acceleratedvariables,  # ty:ignore[missing-attribute]
         "%PRODUCTNAME% ~Options",
         "~%PRODUCTNAME% Ikhetho",
     )
     assert passes(
-        lochecker.acceleratedvariables,  # ty:ignore[unresolved-attribute]
+        lochecker.acceleratedvariables,  # ty:ignore[missing-attribute]
         "%PRODUCTNAME% ~Options",
         "%PRODUCTNAME% ~Ikhetho",
     )

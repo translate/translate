@@ -586,7 +586,7 @@ class LISAfile(base.TranslationStore[U]):
                         node.tag = namespaced(self.namespace, qname.localname)
         super().addunit(unit)
         if new:
-            self.body.append(unit.xmlelement)  # ty:ignore[unresolved-attribute]
+            self.body.append(unit.xmlelement)  # ty:ignore[missing-union-attribute]
 
     def removeunit(self, unit) -> None:
         super().removeunit(unit)
@@ -652,7 +652,7 @@ class LISAfile(base.TranslationStore[U]):
 
         out.write(self.serialize_hook(treestring))  # ty:ignore[invalid-argument-type]
 
-    def parse(self, xml) -> None:  # ty:ignore[invalid-method-override]
+    def parse(self, xml) -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         """Populate from XML, rejecting encodings unsupported by Python."""
         if not hasattr(self, "filename"):
             self.filename = getattr(xml, "name", "")

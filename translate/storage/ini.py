@@ -165,7 +165,7 @@ class inifile(base.TranslationStore):
             output = self._normalize_newlines(str(outinifile))
             out.write(output.encode(self.encoding))
 
-    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
+    def parse(self, input) -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         """
         Parse INI data from a path or in-memory content.
 

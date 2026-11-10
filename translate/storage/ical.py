@@ -101,15 +101,15 @@ class icalfile(base.TranslationStore):
                 for component in outicalfile.components():
                     if component.name != "VEVENT":
                         continue
-                    if component.uid.value != match.groupdict()["uid"]:  # ty:ignore[unresolved-attribute]
+                    if component.uid.value != match.groupdict()["uid"]:  # ty:ignore[missing-union-attribute]
                         continue
                     for property in component.getChildren():
-                        if property.name == match.groupdict()["property"]:  # ty:ignore[unresolved-attribute]
+                        if property.name == match.groupdict()["property"]:  # ty:ignore[missing-union-attribute]
                             property.value = unit.target
 
         outicalfile.serialize(out)
 
-    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
+    def parse(self, input) -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         """Parse the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name

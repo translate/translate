@@ -629,49 +629,49 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
 
         yield from self.embed_span(Fragment("["), token.children, Fragment("]"))  # ty:ignore[invalid-argument-type]
 
-        if token.dest_type in {"uri", "angle_uri"}:  # ty:ignore[unresolved-attribute]
+        if token.dest_type in {"uri", "angle_uri"}:  # ty:ignore[missing-attribute]
             # Markdown link format: "[" description "](" dest_part [" " title] ")"
-            dest_part = f"<{target}>" if token.dest_type == "angle_uri" else target  # ty:ignore[unresolved-attribute]
+            dest_part = f"<{target}>" if token.dest_type == "angle_uri" else target  # ty:ignore[missing-attribute]
             placeholder = Fragment(None, important=True)  # ty:ignore[invalid-argument-type]
-            placeholder.placeholder_content = [  # ty:ignore[unresolved-attribute]
+            placeholder.placeholder_content = [  # ty:ignore[missing-attribute]
                 Fragment("("),
                 Fragment(dest_part),
             ]
-            if token.title:  # ty:ignore[unresolved-attribute]
+            if token.title:  # ty:ignore[missing-attribute]
                 translated_title = self.translate_callback(
-                    token.title,  # ty:ignore[unresolved-attribute]
+                    token.title,  # ty:ignore[missing-attribute]
                     [*self.path, "link-title"],
                     self._current_docpath,
                 )
-                placeholder.placeholder_content.extend(  # ty:ignore[unresolved-attribute]
+                placeholder.placeholder_content.extend(  # ty:ignore[missing-attribute]
                     [
                         Fragment(" ", wordwrap=True),
-                        Fragment(token.title_delimiter),  # ty:ignore[unresolved-attribute]
+                        Fragment(token.title_delimiter),  # ty:ignore[missing-attribute]
                         Fragment(translated_title, wordwrap=True),
                         Fragment(
                             ")"
-                            if token.title_delimiter == "("  # ty:ignore[unresolved-attribute]
-                            else token.title_delimiter  # ty:ignore[unresolved-attribute]
+                            if token.title_delimiter == "("  # ty:ignore[missing-attribute]
+                            else token.title_delimiter  # ty:ignore[missing-attribute]
                         ),
                     ]
                 )
-            placeholder.placeholder_content.append(Fragment(")"))  # ty:ignore[unresolved-attribute]
+            placeholder.placeholder_content.append(Fragment(")"))  # ty:ignore[missing-attribute]
             yield placeholder
-        elif token.dest_type == "full":  # ty:ignore[unresolved-attribute]
+        elif token.dest_type == "full":  # ty:ignore[missing-attribute]
             # Markdown link format: "[" description "][" label "]"
             translated_label = self.translate_callback(
-                token.label,  # ty:ignore[unresolved-attribute]
+                token.label,  # ty:ignore[missing-attribute]
                 [*self.path, "link-label"],
                 self._current_docpath,
             )
             placeholder = Fragment(None, important=True)  # ty:ignore[invalid-argument-type]
-            placeholder.placeholder_content = [  # ty:ignore[unresolved-attribute]
+            placeholder.placeholder_content = [  # ty:ignore[missing-attribute]
                 Fragment("["),
                 Fragment(translated_label, wordwrap=True),
                 Fragment("]"),
             ]
             yield placeholder
-        elif token.dest_type == "collapsed":  # ty:ignore[unresolved-attribute]
+        elif token.dest_type == "collapsed":  # ty:ignore[missing-attribute]
             # Markdown link format: "[" description "][]"
             yield Fragment("[]")
         else:
@@ -704,7 +704,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
             )
 
         placeholder = Fragment(None)  # ty:ignore[invalid-argument-type]
-        placeholder.placeholder_content = [  # ty:ignore[unresolved-attribute]
+        placeholder.placeholder_content = [  # ty:ignore[missing-attribute]
             Fragment("["),
             Fragment(label, wordwrap=True),
             Fragment("]: ", wordwrap=True),
@@ -713,7 +713,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
             ),
         ]
         if title:
-            placeholder.placeholder_content.extend(  # ty:ignore[unresolved-attribute]
+            placeholder.placeholder_content.extend(  # ty:ignore[missing-attribute]
                 [
                     Fragment(" ", wordwrap=True),
                     Fragment(token.title_delimiter),
@@ -731,7 +731,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     def render_heading(
         self, token: block_token.Heading, max_line_length: int | None
     ) -> Iterable[str]:
-        self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
+        self.path.append(f":{token.line_number}")  # ty:ignore[missing-attribute]
         self._current_docpath = self._enter_heading(token.level)
         title_tokens, suffix = self._split_explicit_heading_id_tokens(token.children)
         if suffix:
@@ -762,7 +762,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     def render_setext_heading(
         self, token: block_token.SetextHeading, max_line_length: int | None
     ) -> Iterable[str]:
-        self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
+        self.path.append(f":{token.line_number}")  # ty:ignore[missing-attribute]
         self._current_docpath = self._enter_heading(token.level)
         title_tokens, suffix = self._split_explicit_heading_id_tokens(token.children)
         if suffix:
@@ -788,7 +788,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     def render_quote(
         self, token: block_token.Quote, max_line_length: int | None
     ) -> Iterable[str]:
-        self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
+        self.path.append(f":{token.line_number}")  # ty:ignore[missing-attribute]
         self._enter_container("blockquote")
         content = list(super().render_quote(token, max_line_length=max_line_length))
         self._exit_container()
@@ -798,7 +798,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     def render_paragraph(
         self, token: block_token.Paragraph, max_line_length: int | None
     ) -> Iterable[str]:
-        self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
+        self.path.append(f":{token.line_number}")  # ty:ignore[missing-attribute]
         self._current_docpath = self._build_docpath("p")
         content = list(super().render_paragraph(token, max_line_length=max_line_length))
         self.path.pop()
@@ -823,7 +823,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         if not self.extract_code_blocks or self.ignore_translation:
             return super().render_block_code(token, max_line_length=max_line_length)
 
-        self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
+        self.path.append(f":{token.line_number}")  # ty:ignore[missing-attribute]
         self._current_docpath = self._build_docpath("code")
         code_content = token.content[:-1]  # strip trailing \n
         translated = self.translate_callback(
@@ -844,7 +844,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
                 max_line_length=max_line_length,
             )
 
-        self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
+        self.path.append(f":{token.line_number}")  # ty:ignore[missing-attribute]
         self._current_docpath = self._build_docpath("code")
         code_content = token.content[:-1]  # strip trailing \n
         translated = self.translate_callback(
@@ -870,7 +870,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     def render_table(
         self, token: block_token.Table, max_line_length: int | None
     ) -> Iterable[str]:
-        self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
+        self.path.append(f":{token.line_number}")  # ty:ignore[missing-attribute]
         self._table_docpath = self._build_docpath("table")
         self._table_row_index = 0
         content = list(super().render_table(token, max_line_length=max_line_length))
@@ -893,7 +893,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     def render_link_reference_definition_block(
         self, token: LinkReferenceDefinitionBlock, max_line_length: int | None
     ) -> Iterable[str]:
-        self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
+        self.path.append(f":{token.line_number}")  # ty:ignore[missing-attribute]
         self._current_docpath = self._build_docpath("link-ref-def")
         content = list(
             super().render_link_reference_definition_block(
@@ -1053,7 +1053,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
                 if end:
                     chunk = fragments[start:end]
                     placeholder = Fragment(None, placeholder_content=chunk)  # ty:ignore[invalid-argument-type]
-                    placeholder.important = any(  # ty:ignore[unresolved-attribute]
+                    placeholder.important = any(  # ty:ignore[missing-attribute]
                         getattr(fragment, "important", False) for fragment in chunk
                     )
                     fragments[start:end] = (placeholder,)
@@ -1114,7 +1114,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     ) -> str:
         """Replaces placeholder markers in the given markdown with placeholder content."""
         for index, placeholder in enumerate(placeholders):
-            content = self.expand_placeholders(placeholder.placeholder_content)  # ty:ignore[unresolved-attribute]
+            content = self.expand_placeholders(placeholder.placeholder_content)  # ty:ignore[missing-attribute]
             content_md = "\n".join(
                 self.fragments_to_lines(content, max_line_length=float("inf"))  # ty:ignore[invalid-argument-type]
             )

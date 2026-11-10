@@ -14,7 +14,7 @@ class TestPO2Php:
         """Helper that converts po source to .php source without requiring files."""
         inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
-        convertor = po2php.po2php()  # ty:ignore[unresolved-attribute]
+        convertor = po2php.po2php()  # ty:ignore[missing-attribute]
         return convertor.convertstore(inputpo)
 
     @staticmethod

@@ -222,7 +222,7 @@ class TOMLFile(base.DictStore[TOMLUnit]):
                 f"Previous: {prev}"
             )
 
-    def parse(self, input: str | bytes | BytesIO) -> None:  # ty:ignore[invalid-method-override]
+    def parse(self, input: str | bytes | BytesIO) -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         """
         Parse the given file, file object, or string content.
 
@@ -235,7 +235,7 @@ class TOMLFile(base.DictStore[TOMLUnit]):
             self.filename = ""
         if hasattr(input, "read"):
             src = input.read()  # ty:ignore[call-non-callable]
-            input.close()  # ty:ignore[unresolved-attribute]
+            input.close()  # ty:ignore[missing-union-attribute]
             input = src
         if isinstance(input, bytes):
             input = input.decode(self.encoding)
@@ -254,7 +254,7 @@ class TOMLFile(base.DictStore[TOMLUnit]):
     def removeunit(self, unit: base.TranslationUnit) -> None:
         """Remove a unit from the store and its underlying TOML structure."""
         if self._original is not None:
-            unit.storevalue(self._original, None, unset=True)  # ty:ignore[unresolved-attribute]
+            unit.storevalue(self._original, None, unset=True)  # ty:ignore[missing-attribute]
         super().removeunit(unit)  # ty:ignore[invalid-argument-type]
 
     def _rename_unit(self, unit: TOMLUnit, unitid: base.UnitId) -> None:
@@ -303,7 +303,7 @@ class GoI18nTOMLUnit(TOMLUnit):
             # to preserve the table structure
             return {"other": self.target}
 
-        tags = self._store.get_plural_tags(self.target)  # ty:ignore[unresolved-attribute]
+        tags = self._store.get_plural_tags(self.target)  # ty:ignore[missing-union-attribute]
 
         # Sync plural_strings elements to plural_tags count.
         strings = self.sync_plural_count(self.target, tags)

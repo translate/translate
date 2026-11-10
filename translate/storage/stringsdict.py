@@ -61,19 +61,19 @@ class StringsDictUnit(base.DictUnit):
     def outerkey(self):
         self.get_unitid()
 
-        if len(self._unitid.parts) < 1:  # ty:ignore[unresolved-attribute]
+        if len(self._unitid.parts) < 1:  # ty:ignore[missing-union-attribute]
             return None
 
-        return self._unitid.parts[0][1]  # ty:ignore[unresolved-attribute]
+        return self._unitid.parts[0][1]  # ty:ignore[missing-union-attribute]
 
     @property
     def innerkey(self):
         self.get_unitid()
 
-        if len(self._unitid.parts) < 2:  # ty:ignore[unresolved-attribute]
+        if len(self._unitid.parts) < 2:  # ty:ignore[missing-union-attribute]
             return None
 
-        return self._unitid.parts[1][1]  # ty:ignore[unresolved-attribute]
+        return self._unitid.parts[1][1]  # ty:ignore[missing-union-attribute]
 
     def getid(self):
         return self.source
@@ -159,7 +159,7 @@ class StringsDictFile(base.DictStore):
     def target_plural_tags(self):
         return self._get_target_plural_tags()
 
-    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
+    def parse(self, input) -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         """Read a .stringsdict file into a dictionary, and convert it to translation units."""
         if isinstance(input, (bytes, str)):
             plist = plistlib.loads(input)

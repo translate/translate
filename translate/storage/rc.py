@@ -155,7 +155,7 @@ class rcunit(base.TranslationUnit):
 
     def isblank(self) -> bool:
         """Returns whether this is a blank element, containing only comments."""
-        return not (self.name or self.value)  # ty:ignore[unresolved-attribute]
+        return not (self.name or self.value)  # ty:ignore[missing-attribute]
 
 
 class _RCComment(str):
@@ -380,7 +380,7 @@ class rcfile(base.TranslationStore):
                         sub_popup,
                     )
 
-    def parse(self, rcsrc, encoding="auto") -> None:  # ty:ignore[invalid-method-override]
+    def parse(self, rcsrc, encoding="auto") -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         """Read the source of a .rc file in and include them as units."""
         self.encoding = encoding
         if encoding != "auto":
@@ -394,14 +394,14 @@ class rcfile(base.TranslationStore):
             )
 
         # Extract first newline
-        for line in decoded.splitlines(True):  # ty:ignore[unresolved-attribute]
+        for line in decoded.splitlines(True):  # ty:ignore[missing-union-attribute]
             if len(line) >= 2 and line[-2] in {"\r", "\n"}:
                 self.newline = line[-2:]
             else:
                 self.newline = line[-1]
             break
 
-        decoded = decoded.replace("\r", "")  # ty:ignore[unresolved-attribute]
+        decoded = decoded.replace("\r", "")  # ty:ignore[missing-union-attribute]
 
         # Parse the strings into a structure.
         results = rc_statement().search_string(decoded)
@@ -506,4 +506,4 @@ class rcfile(base.TranslationStore):
 
     def serialize(self, out) -> None:
         """Write the units back to file."""
-        out.write(("".join(self.blocks)).encode(self.encoding))  # ty:ignore[unresolved-attribute]
+        out.write(("".join(self.blocks)).encode(self.encoding))  # ty:ignore[missing-attribute]

@@ -273,9 +273,9 @@ class poheader:
         allowed to be a header. Note that this could still return an empty
         header element, if present.
         """
-        if len(self.units) == 0:  # ty:ignore[unresolved-attribute]
+        if len(self.units) == 0:  # ty:ignore[missing-attribute]
             return None
-        candidate = self.units[0]  # ty:ignore[unresolved-attribute]
+        candidate = self.units[0]  # ty:ignore[missing-attribute]
         if candidate.isheader():
             return candidate
         return None
@@ -328,7 +328,7 @@ class poheader:
         # subtly broken for POXLIFF, since we don't duplicate the code
         # from lisa::addunit().
         header._store = self
-        self.units.insert(0, header)  # ty:ignore[unresolved-attribute]
+        self.units.insert(0, header)  # ty:ignore[missing-attribute]
 
     def getheaderplural(self):
         """Returns the nplural and plural values from the header."""
@@ -606,7 +606,7 @@ class poheader:
 
         Check .makeheaderdict() for information on parameters.
         """
-        headerpo = self.UnitClass("", encoding=self._encoding)  # ty:ignore[unresolved-attribute]
+        headerpo = self.UnitClass("", encoding=self._encoding)  # ty:ignore[missing-attribute]
         # This is hack to make sure proper newlines are used
         # in markfuzzy -> settypecomment calls.
         headerpo._store = self

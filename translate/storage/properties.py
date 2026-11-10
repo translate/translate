@@ -483,8 +483,8 @@ class DialectGwt(DialectJavaUtf8):
     @classmethod
     def get_key_cldr_name(cls, key):
         match = cls.plural_regex.fullmatch(key)
-        basekey = match.group(1)  # ty:ignore[unresolved-attribute]
-        variant = match.group(2)  # ty:ignore[unresolved-attribute]
+        basekey = match.group(1)  # ty:ignore[missing-union-attribute]
+        variant = match.group(2)  # ty:ignore[missing-union-attribute]
         if variant is None:
             variant = ""
 
@@ -785,7 +785,7 @@ class proppluralunit(base.TranslationUnit):
         return [key for key in data.cldr_plural_categories if key in existing]
 
     def _get_source_mapping(self):
-        cldr_mapping = proppluralunit._get_language_mapping(self._store.sourcelanguage)  # ty:ignore[unresolved-attribute]
+        cldr_mapping = proppluralunit._get_language_mapping(self._store.sourcelanguage)  # ty:ignore[missing-union-attribute]
         if cldr_mapping:
             return cldr_mapping
         return self._get_existing_mapping()
@@ -824,7 +824,7 @@ class proppluralunit(base.TranslationUnit):
     def _get_ordered_units(self):
         # Used for str (GWT order)
         mapping = self.personality.get_expand_output_target_mapping(
-            self._store.get_plural_tags()  # ty:ignore[unresolved-attribute]
+            self._store.get_plural_tags()  # ty:ignore[missing-union-attribute]
         )
         names = [
             name for name in self.personality.get_cldr_names_order() if name in mapping
@@ -847,7 +847,7 @@ class proppluralunit(base.TranslationUnit):
         else:
             strings = [text]
         if mapping is None:
-            mapping = self._store.get_plural_tags(text)  # ty:ignore[unresolved-attribute]
+            mapping = self._store.get_plural_tags(text)  # ty:ignore[missing-union-attribute]
 
         strings = self._get_strings(strings, mapping)
         units = self._get_units(mapping)
@@ -862,7 +862,7 @@ class proppluralunit(base.TranslationUnit):
             b.target = a
 
     def gettarget(self):
-        ll = [x.target for x in self._get_units(self._store.get_plural_tags())]  # ty:ignore[unresolved-attribute]
+        ll = [x.target for x in self._get_units(self._store.get_plural_tags())]  # ty:ignore[missing-union-attribute]
         if len(ll) > 1:
             return multistring(ll)
         return ll[0]
@@ -1303,7 +1303,7 @@ class propfile(base.TranslationStore):
             self.parse(propsrc)
             self.makeindex()
 
-    def parse(self, propsrc) -> None:  # ty:ignore[invalid-method-override]
+    def parse(self, propsrc) -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         """Read the source of a properties file in and include them as units."""
         text, encoding = self.detect_encoding(
             propsrc,
@@ -1582,11 +1582,11 @@ class XWikiPageProperties(xwikifile):
         return get_safe_xml_parser(strip_cdata=False)
 
     def extract_language(self) -> None:
-        language_node = self.root.find("language")  # ty:ignore[unresolved-attribute]
+        language_node = self.root.find("language")  # ty:ignore[missing-union-attribute]
         if language_node is not None and language_node.text:
             self.setsourcelanguage(language_node.text)
         else:
-            language_node = self.root.find("defaultLanguage")  # ty:ignore[unresolved-attribute]
+            language_node = self.root.find("defaultLanguage")  # ty:ignore[missing-union-attribute]
             if language_node is not None and language_node.text:
                 self.setsourcelanguage(language_node.text)
 

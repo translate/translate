@@ -116,7 +116,7 @@ def convert_symbian(
 ) -> int:
     store = factory.getobject(input_file)
     location_index = build_location_index(store)
-    header_index = {"Author": store.parseheader()["Last-Translator"]}  # ty:ignore[unresolved-attribute]
+    header_index = {"Author": store.parseheader()["Last-Translator"]}  # ty:ignore[missing-attribute]
     output = write_symbian(template_file, header_index, location_index)
     for line in output:
         output_file.write(line)
