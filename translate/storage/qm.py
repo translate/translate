@@ -100,7 +100,7 @@ class qmfile(base.TranslationStore):
         """Output a string representation of the .qm data file."""
         raise NotImplementedError("Writing of .qm files is not supported yet")
 
-    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
+    def parse(self, input) -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         """Parses the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name

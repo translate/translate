@@ -320,7 +320,7 @@ class YAMLFile(base.DictStore[YAMLUnit]):
         """Preprocess hook for child formats."""
         return data
 
-    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
+    def parse(self, input) -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         """Parse the given file or file source string."""
         self._yaml_budget.reset()
         if hasattr(input, "name"):
@@ -384,7 +384,7 @@ class RubyYAMLUnit(YAMLUnit):
         if not isinstance(self.target, multistring):
             return self.target
 
-        tags = self._store.get_plural_tags(self.target)  # ty:ignore[unresolved-attribute]
+        tags = self._store.get_plural_tags(self.target)  # ty:ignore[missing-union-attribute]
 
         # Sync plural_strings elements to plural_tags count.
         strings = self.sync_plural_count(self.target, tags)

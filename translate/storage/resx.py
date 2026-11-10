@@ -38,7 +38,7 @@ class RESXUnit(lisa.LISAunit):
     namespace = ""
     rich_parsers = general.parsers
 
-    def createlanguageNode(self, lang, text, purpose):  # ty:ignore[invalid-method-override]
+    def createlanguageNode(self, lang, text, purpose):  # ty:ignore[incompatible-method-override]
         """Returns an xml Element setup with given parameters."""
         langset = etree.Element(self.namespaced(self.languageNode))
 

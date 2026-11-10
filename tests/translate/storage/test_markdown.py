@@ -594,8 +594,8 @@ author: John Smith
         assert content == fragments[2:3]
         assert trailer == fragments[3:5]
 
-        fragments[0].important = True  # ty:ignore[unresolved-attribute]
-        fragments[4].important = True  # ty:ignore[unresolved-attribute]
+        fragments[0].important = True  # ty:ignore[missing-attribute]
+        fragments[4].important = True  # ty:ignore[missing-attribute]
         (
             leader,
             content,

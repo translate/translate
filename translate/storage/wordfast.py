@@ -483,7 +483,7 @@ class WordfastTMFile(base.TranslationStore):
 
     targetlanguage = property(gettargetlanguage, settargetlanguage)
 
-    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
+    def parse(self, input) -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         """Parsese the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name

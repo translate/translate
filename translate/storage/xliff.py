@@ -182,7 +182,7 @@ class Xliff1Unit(XliffUnit):
                             )
                         )
                         break
-                newunit.xmlelement = node  # ty:ignore[unresolved-attribute]
+                newunit.xmlelement = node  # ty:ignore[missing-attribute]
 
                 translist.append(newunit)
         return translist
@@ -372,7 +372,7 @@ class Xliff1Unit(XliffUnit):
         if state_id < self.S_UNREVIEWED:
             self.set_state_n(self.S_UNREVIEWED)
 
-    def setid(self, id) -> None:  # ty:ignore[invalid-method-override]
+    def setid(self, id) -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         # sanitize id in case ID_SEPARATOR is present
         if not isinstance(id, str):
             raise TypeError("unit identifier must be a string")
@@ -633,7 +633,7 @@ class Xliff1File(XliffFile[U]):
         """Set the name of the given file."""
         return filenode.set("original", filename)
 
-    def setsourcelanguage(self, language) -> None:  # ty:ignore[invalid-method-override]
+    def setsourcelanguage(self, language) -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         if not language:
             return
         for filenode in self.document.getroot().iterchildren(self.namespaced("file")):
@@ -758,7 +758,7 @@ class Xliff1File(XliffFile[U]):
                 target_group.append(unit.xmlelement)
             else:
                 # Add directly to body
-                self.body.append(unit.xmlelement)  # ty:ignore[unresolved-attribute]
+                self.body.append(unit.xmlelement)  # ty:ignore[missing-union-attribute]
 
     def addsourceunit(self, source, filename="NoName", createifmissing=False):
         """
@@ -812,7 +812,7 @@ class Xliff1File(XliffFile[U]):
         :returns: The matching or newly created group element
         """
         # Try to find a matching group in the current body
-        for group in self.body.iterchildren(self.namespaced("group")):  # ty:ignore[unresolved-attribute]
+        for group in self.body.iterchildren(self.namespaced("group")):  # ty:ignore[missing-union-attribute]
             # Check if all attributes match
             if group.attrib == source_group.attrib:
                 return group

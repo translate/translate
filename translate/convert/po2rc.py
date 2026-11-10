@@ -47,7 +47,7 @@ class rerc:
     def __init__(self, templatefile, charset="utf-8", lang=None, sublang=None) -> None:
         self.templatecontent = templatefile.read()
         self.templatestore = rcfile()
-        self.templatestore.charset = charset  # ty:ignore[unresolved-attribute]
+        self.templatestore.charset = charset  # ty:ignore[missing-attribute]
         self.templatestore.parse(self.templatecontent)
         self.inputstore = None
         self.escaped_sourceindex = {}

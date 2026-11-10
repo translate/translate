@@ -52,7 +52,7 @@ class MozConvertOptionParser(convert.ConvertOptionParser):
 
     def recursiveprocess(self, options):
         """Recurse through directories and convert files."""
-        self.replacer.replacestring = options.locale  # ty:ignore[unresolved-attribute]
+        self.replacer.replacestring = options.locale  # ty:ignore[missing-attribute]
         return super().recursiveprocess(options)
 
 
@@ -90,7 +90,7 @@ def main(argv=None) -> None:
     parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.add_remove_untranslated_option()
-    parser.replacer = replacer  # ty:ignore[unresolved-attribute]
+    parser.replacer = replacer  # ty:ignore[missing-attribute]
     parser.run(argv)
 
 

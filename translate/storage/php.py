@@ -825,7 +825,7 @@ class phpfile(base.TranslationStore):
             newunit.addnote(comment, "developer")
         self.addunit(newunit)
 
-    def parse(self, phpsrc) -> None:  # ty:ignore[invalid-method-override]
+    def parse(self, phpsrc) -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         """Read the source of a PHP file in and include them as units."""
 
         def handle_array(prefix, nodes, lexer) -> None:

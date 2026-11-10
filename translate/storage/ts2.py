@@ -113,7 +113,7 @@ class tsunit(lisa.LISAunit):
     _context = None
     _locations = None
 
-    def createlanguageNode(self, lang, text, purpose):  # ty:ignore[invalid-method-override]
+    def createlanguageNode(self, lang, text, purpose):  # ty:ignore[incompatible-method-override]
         """Returns an xml Element setup with given parameters."""
         assert purpose
         if purpose == "target":
@@ -292,7 +292,7 @@ class tsunit(lisa.LISAunit):
             return None
         return context.text
 
-    def setcontext(self, value) -> None:  # ty:ignore[invalid-method-override]
+    def setcontext(self, value) -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         self._invalidate_store_indexes()
         if value == self.getcontextname():
             return
@@ -386,7 +386,7 @@ class tsunit(lisa.LISAunit):
 
     def get_previous_unit(self):
         found = None
-        for pos, unit in enumerate(self._store.units):  # ty:ignore[unresolved-attribute]
+        for pos, unit in enumerate(self._store.units):  # ty:ignore[missing-union-attribute]
             # Use is here to compare objects as __eq__ implementation in
             # LISAUnit might give unexpected results
             if unit is self:
@@ -394,7 +394,7 @@ class tsunit(lisa.LISAunit):
                 break
         if not found or found == 0:
             return None
-        return self._store.units[found - 1]  # ty:ignore[unresolved-attribute]
+        return self._store.units[found - 1]  # ty:ignore[missing-union-attribute]
 
     def getlocations(self):
         if self._locations is None:
@@ -539,7 +539,7 @@ class tsfile(lisa.LISAfile[tsunit]):
     def _getcontextnames(self):
         """Returns all contextnames in this TS file."""
         contextnodes = self.document.findall(self.namespaced("context"))
-        return [self.getcontextname(contextnode) for contextnode in contextnodes]  # ty:ignore[unresolved-attribute]
+        return [self.getcontextname(contextnode) for contextnode in contextnodes]  # ty:ignore[missing-attribute]
 
     def _getcontextnode(self, contextname):
         """Returns the context node with the given name."""
@@ -581,7 +581,7 @@ class tsfile(lisa.LISAfile[tsunit]):
         return self.body is not None
 
     def nplural(self):
-        code = self.header.get("language").lower().replace("-", "_").split("_")[0]  # ty:ignore[unresolved-attribute]
+        code = self.header.get("language").lower().replace("-", "_").split("_")[0]  # ty:ignore[missing-union-attribute]
         if code in data.qt_plural_tags:
             return len(data.qt_plural_tags[code])
         lang = data.get_language(self.header.get("language"))

@@ -85,40 +85,40 @@ class BaseTestFactory:
 
     def test_getobject_store(self) -> None:
         """Tests that we get a valid object."""
-        fileobj = givefile(self.filename, self.file_content)  # ty:ignore[unresolved-attribute]
+        fileobj = givefile(self.filename, self.file_content)  # ty:ignore[missing-attribute]
         store = factory.getobject(fileobj)
-        assert isinstance(store, self.expected_instance)  # ty:ignore[unresolved-attribute]
+        assert isinstance(store, self.expected_instance)  # ty:ignore[missing-attribute]
         assert store == factory.getobject(store)
 
     def test_getobject(self) -> None:
         """Tests that we get a valid object."""
-        fileobj = givefile(self.filename, self.file_content)  # ty:ignore[unresolved-attribute]
+        fileobj = givefile(self.filename, self.file_content)  # ty:ignore[missing-attribute]
         store = factory.getobject(fileobj)
-        assert isinstance(store, self.expected_instance)  # ty:ignore[unresolved-attribute]
+        assert isinstance(store, self.expected_instance)  # ty:ignore[missing-attribute]
 
     def test_get_noname_object(self) -> None:
         """Tests that we get a valid object from a file object without a name."""
-        fileobj = BytesIO(self.file_content)  # ty:ignore[unresolved-attribute]
+        fileobj = BytesIO(self.file_content)  # ty:ignore[missing-attribute]
         assert not hasattr(fileobj, "name")
         store = factory.getobject(fileobj)
-        assert isinstance(store, self.expected_instance)  # ty:ignore[unresolved-attribute]
+        assert isinstance(store, self.expected_instance)  # ty:ignore[missing-attribute]
 
     def test_gzfile(self) -> None:
         """Test that we can open a gzip file correctly."""
-        filename = os.path.join(self.testdir, f"{self.filename}.gz")  # ty:ignore[unresolved-attribute]
+        filename = os.path.join(self.testdir, f"{self.filename}.gz")  # ty:ignore[missing-attribute]
         gzfile = GzipFile(filename, mode="wb")
-        gzfile.write(self.file_content)  # ty:ignore[unresolved-attribute]
+        gzfile.write(self.file_content)  # ty:ignore[missing-attribute]
         gzfile.close()
         store = factory.getobject(filename)
-        assert isinstance(store, self.expected_instance)  # ty:ignore[unresolved-attribute]
+        assert isinstance(store, self.expected_instance)  # ty:ignore[missing-attribute]
 
     def test_bz2file(self) -> None:
         """Test that we can open a gzip file correctly."""
-        filename = os.path.join(self.testdir, f"{self.filename}.bz2")  # ty:ignore[unresolved-attribute]
+        filename = os.path.join(self.testdir, f"{self.filename}.bz2")  # ty:ignore[missing-attribute]
         with BZ2File(filename, mode="wb") as bz2file:
-            bz2file.write(self.file_content)  # ty:ignore[unresolved-attribute]
+            bz2file.write(self.file_content)  # ty:ignore[missing-attribute]
         store = factory.getobject(filename)
-        assert isinstance(store, self.expected_instance)  # ty:ignore[unresolved-attribute]
+        assert isinstance(store, self.expected_instance)  # ty:ignore[missing-attribute]
 
     def test_directory(self) -> None:
         """Test that a directory is correctly detected."""

@@ -154,7 +154,7 @@ class TikiStore(base.TranslationStore[TikiUnit]):
         """Returns a tiki-file footer string."""
         return '"###end###"=>"###end###");\n?>'
 
-    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
+    def parse(self, input) -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         """
         Parse the given input into source units.
 

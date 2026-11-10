@@ -29,7 +29,7 @@ from translate.storage.base import ParseError
 
 # Override the piclose tag from simple > to ?> otherwise we consume HTML
 # within the processing instructions
-html.parser.piclose = re.compile(r"\?>")  # ty:ignore[unresolved-attribute]
+html.parser.piclose = re.compile(r"\?>")  # ty:ignore[missing-attribute]
 
 
 class htmlunit(base.TranslationUnit):
@@ -272,7 +272,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         self.guess_encoding(htmlsrc)
         return htmlsrc.decode(self.encoding)
 
-    def parse(self, htmlsrc) -> None:  # ty:ignore[invalid-method-override]
+    def parse(self, htmlsrc) -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         # Reset translation state for new parse
         self._translated_lang = None
         htmlsrc = self.do_encoding(htmlsrc)

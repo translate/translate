@@ -49,7 +49,7 @@ class pocheckfilter:
             excludefilters=options.excludefilters,
             limitfilters=options.limitfilters,
             checkerclasses=checkerclasses,
-            languagecode=checkerconfig.targetlanguage,  # ty:ignore[unresolved-attribute]
+            languagecode=checkerconfig.targetlanguage,  # ty:ignore[missing-union-attribute]
         )
         self.options = options
 
@@ -224,7 +224,7 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
 def runfilter(inputfile, outputfile, templatefile, checkfilter=None) -> int:
     """Reads in inputfile, filters using checkfilter, writes to outputfile."""
     fromfile = factory.getobject(inputfile)
-    tofile = checkfilter.filterfile(fromfile)  # ty:ignore[unresolved-attribute]
+    tofile = checkfilter.filterfile(fromfile)  # ty:ignore[missing-union-attribute]
 
     if tofile.isempty():
         return 0

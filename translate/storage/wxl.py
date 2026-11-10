@@ -297,7 +297,7 @@ class WxlFile(base.TranslationStore):
         super().removeunit(unit)
         self.root.remove(unit.xmlelement)
 
-    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
+    def parse(self, input) -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         """Parse a WXL file from a file object or bytes."""
         if not hasattr(self, "filename"):
             self.filename = getattr(input, "name", "")

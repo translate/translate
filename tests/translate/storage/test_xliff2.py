@@ -73,23 +73,23 @@ class TestXLIFF2Unit(test_base.TestTranslationUnit):
         assert unit.istranslatable()
         unit.marktranslatable(False)
         assert not unit.istranslatable()
-        assert unit.getunitelement().get("translate") == "no"  # ty:ignore[unresolved-attribute]
+        assert unit.getunitelement().get("translate") == "no"  # ty:ignore[missing-attribute]
 
         # Test marking as translatable
         unit.marktranslatable(True)
         assert unit.istranslatable()
-        assert unit.getunitelement().get("translate") == "yes"  # ty:ignore[unresolved-attribute]
+        assert unit.getunitelement().get("translate") == "yes"  # ty:ignore[missing-attribute]
 
         # Test that marking as translatable again when already translatable sets to "yes"
         unit.marktranslatable(True)
         assert unit.istranslatable()
-        assert unit.getunitelement().get("translate") == "yes"  # ty:ignore[unresolved-attribute]
+        assert unit.getunitelement().get("translate") == "yes"  # ty:ignore[missing-attribute]
 
         # Test that marking as untranslatable when already untranslatable doesn't change it
         unit.marktranslatable(False)
         unit.marktranslatable(False)
         assert not unit.istranslatable()
-        assert unit.getunitelement().get("translate") == "no"  # ty:ignore[unresolved-attribute]
+        assert unit.getunitelement().get("translate") == "no"  # ty:ignore[missing-attribute]
 
 
 class TestXLIFF2file(test_base.TestTranslationStore):

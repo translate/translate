@@ -172,7 +172,7 @@ class DirDiffer:
         fromfiles = os.listdir(self.fromdir)
         tofiles = os.listdir(self.todir)
         difffiles = dict.fromkeys(fromfiles + tofiles).keys()
-        difffiles.sort()  # ty:ignore[unresolved-attribute]
+        difffiles.sort()  # ty:ignore[missing-attribute]
         for difffile in difffiles:
             if self.isexcluded(difffile):
                 continue

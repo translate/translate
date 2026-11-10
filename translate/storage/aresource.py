@@ -152,7 +152,7 @@ class EncodingXMLParser(DecodingXMLParser):
     EMIT_DEPTH = 0
     FOREIGN_DTD = False
 
-    def process_string(self, text: str) -> tuple[str, bool, bool]:  # ty:ignore[invalid-method-override]
+    def process_string(self, text: str) -> tuple[str, bool, bool]:  # ty:ignore[lost-keyword-for-regular-parameter]
         return (
             AndroidResourceUnit.escape(text, quote_wrapping_whitespaces=False),
             False,
@@ -483,7 +483,7 @@ class AndroidResourceUnit(base.TranslationUnit):
         ):
             raise ValueError("Invalid Android resource name")
 
-    def setid(self, newid):  # ty:ignore[invalid-method-override]
+    def setid(self, newid):  # ty:ignore[lost-keyword-for-regular-parameter]
         self.validate_id(newid)
         self._invalidate_store_indexes()
         return self.xmlelement.set("name", newid)
@@ -759,7 +759,7 @@ class AndroidResourceUnit(base.TranslationUnit):
             plural_target: str | multistring | list[str] = (
                 "" if target is None else target
             )
-            plural_tags = self._store.get_plural_tags(plural_target)  # ty:ignore[unresolved-attribute]
+            plural_tags = self._store.get_plural_tags(plural_target)  # ty:ignore[missing-union-attribute]
             plural_strings = self.sync_plural_count(plural_target, plural_tags)
 
             # Rebuild plurals.
@@ -771,7 +771,7 @@ class AndroidResourceUnit(base.TranslationUnit):
             # Include additional plural for decimal numbers if not present. This is
             # enforced by Android lint but translate-toolkit currently does not support
             # editing this.
-            locale = self._store.get_base_locale_code()  # ty:ignore[unresolved-attribute]
+            locale = self._store.get_base_locale_code()  # ty:ignore[missing-union-attribute]
             if locale in data.DECIMAL_EXTRA_TAGS:
                 for extra in data.DECIMAL_EXTRA_TAGS[locale]:
                     if extra not in plural_tags:
@@ -933,7 +933,7 @@ class AndroidResourceFile(lisa.LISAfile):
         do_cleanup = False
         if new:
             # Include any possible new namespaces
-            newns = self.body.nsmap  # ty:ignore[unresolved-attribute]
+            newns = self.body.nsmap  # ty:ignore[missing-union-attribute]
             for ns in unit.xmlelement.nsmap:
                 if ns not in newns:
                     do_cleanup = True

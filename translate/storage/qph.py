@@ -46,7 +46,7 @@ class QphUnit(lisa.LISAunit):
     textNode = ""
     namespace = ""
 
-    def createlanguageNode(self, lang, text, purpose):  # ty:ignore[invalid-method-override]
+    def createlanguageNode(self, lang, text, purpose):  # ty:ignore[incompatible-method-override]
         """Returns an xml Element setup with given parameters."""
         assert purpose
         langset = etree.Element(self.namespaced(purpose))

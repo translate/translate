@@ -53,7 +53,7 @@ msgstr "lêernaam"
         assert isinstance(tree.sub[2], general.XMLTagPlaceable)
 
         tree.print_tree()
-        term = tree.sub[3].sub[1]  # ty:ignore[unresolved-attribute]
+        term = tree.sub[3].sub[1]  # ty:ignore[missing-union-attribute]
 
         assert isinstance(term, TerminologyPlaceable)
         assert str(term) == self.term_po.getunits()[2].source
