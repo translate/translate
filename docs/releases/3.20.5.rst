@@ -1,0 +1,56 @@
+Translate Toolkit 3.20.5
+************************
+
+*Released on 10 November 2026*
+
+This release fixes CSV backslash handling and XML whitespace normalization,
+and improves properties and Qt TS parsing performance.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- CSV
+
+  - Preserve backslashes without doubling them when writing files
+
+- XML
+
+  - Preserve word separators across inline elements, tails, and entity
+    references during whitespace normalization
+  - Respect inherited ``xml:space`` modes and preserve entity references during
+    rich-text conversion
+  - Reject encodings unsupported by Python when parsing LISA and Android XML
+    files, preventing stores that cannot be serialized
+
+- Properties and Apple .strings
+
+  - Reduce memory use when decoding escaped properties values
+  - Speed up property key validation and inline comment handling
+
+- Qt TS
+
+  - Speed up context name lookup when parsing files
+
+- iCalendar
+
+  - Handle serialization of stores that have not been parsed
+
+Tools
+-----
+
+- Fix directory comparisons in ``pydiff`` by sorting unique filenames
+
+Other
+-----
+
+- Improve type annotations and update development tooling
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+Michal Čihař, Dixing Xu, Jay Hemnani, renovate[bot]
