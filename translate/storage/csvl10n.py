@@ -32,7 +32,6 @@ from translate.storage import base
 class DefaultDialect(csv.excel):
     skipinitialspace = True
     quoting = csv.QUOTE_ALL
-    escapechar = "\\"
 
 
 csv.register_dialect("default", DefaultDialect)
