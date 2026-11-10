@@ -635,7 +635,9 @@ class DialectStrings(Dialect):
                 comment_end += 2
                 comments.append(line[i:comment_end])
                 # Skip whitespace after comment
-                i = length - len(line[comment_end:].lstrip(" \t"))
+                i = comment_end
+                while i < length and line[i] in " \t":
+                    i += 1
             else:
                 result.append(char)
                 i += 1
