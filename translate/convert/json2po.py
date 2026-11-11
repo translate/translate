@@ -86,7 +86,8 @@ class json2po:
 
         :return: None if empty or not for translation
         """
-        if input_unit is None:
+        # Numbers and booleans (bool is an int) are not translatable.
+        if input_unit is None or isinstance(input_unit.source, (int, float)):
             return None
         # escape unicode
         output_unit = po.pounit(encoding="UTF-8")
