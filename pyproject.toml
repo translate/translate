@@ -25,6 +25,13 @@ lint = [
   { include-group = "pre-commit" },
   { include-group = "pylint" }
 ]
+package-lint = [
+  "check-manifest==0.51",
+  "check-wheel-contents==0.6.3",
+  "pydistcheck==0.11.3",
+  "pyroma==5.0.1",
+  "twine==7.0.0"
+]
 pre-commit = [
   "prek==0.5.10"
 ]
@@ -259,7 +266,8 @@ ignore = [
   "translate/convert/roundtrip-gaia",  # TODO: investigate purpose, it was never installed
   "translate/convert/roundtrip-mozilla",  # TODO: investigate purpose, it was never installed
   "translate/convert/roundtrip-OOo",  # TODO: investigate purpose, it was never installed
-  "translate/storage/debug.properties"  # TODO: this should be converted to tests
+  "translate/storage/debug.properties",  # TODO: this should be converted to tests
+  "uv.lock"
 ]
 
 [tool.coverage.run]
