@@ -31,7 +31,6 @@ MANIFEST
 # Common virtualenv locations
 .venv
 venv
-uv.lock
 
 ##############################
 # translate/ specific excludes
