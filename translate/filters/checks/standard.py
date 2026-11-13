@@ -483,6 +483,13 @@ class StandardChecker(TranslationChecker):
     @critical
     def pythonbraceformat(self, str1: str, str2: str) -> int:
         """Checks whether python brace format strings match."""
+        if (
+            type(str1) is str
+            and type(str2) is str
+            and "{" not in str1
+            and "{" not in str2
+        ):
+            return 1
 
         # Helper function
         def max_anons(anons: list[str]) -> int:
@@ -499,15 +506,14 @@ class StandardChecker(TranslationChecker):
             # implicit_n: you need at least as many anonymous args as
             # there are anonymous placeholders.
             implicit_n = anons.count("")
+            if implicit_n == len(anons):
+                return implicit_n
             # explicit_n: you need at least as many anonymous args as
             # the highest '{99}'-style placeholder. (The `+ 1` is to
             # correct for 0-indexing)
             try:
-                explicit_n = max(
-                    int(numbered_anon) + 1
-                    for numbered_anon in anons
-                    if len(numbered_anon) >= 1
-                )
+                numbered = filter(None, anons) if implicit_n else anons
+                explicit_n = max(map(int, numbered)) + 1
             except ValueError:
                 explicit_n = 0
 
@@ -518,23 +524,26 @@ class StandardChecker(TranslationChecker):
         STATE_OK, STATE_MILD, STATE_SERIOUS = 0, 1, 2
         failure_state = STATE_OK
         pythonbraceformat_pat = re.compile(r"{[^}]*}")
-        data1 = {}
-        data2 = {}
+        variables = []
 
-        # Populate the data1 and data2 dicts.
-        for data_, str_ in [(data1, str1), (data2, str2)]:
+        for str_ in (str1, str2):
             # Remove all escaped braces {{ and }}
-            data_["strclean"] = re.sub(r"{{|}}", "", str_)
-            data_["allvars"] = pythonbraceformat_pat.findall(data_["strclean"])
-            data_["anonvars"] = [
-                var[1:-1] for var in data_["allvars"] if anonvar_re.match(var)
-            ]
-            data_["namedvars"] = [
-                var for var in data_["allvars"] if not anonvar_re.match(var)
-            ]
+            strclean = (
+                str_
+                if type(str_) is str and "{{" not in str_ and "}}" not in str_
+                else re.sub(r"{{|}}", "", str_)
+            )
+            anonvars = []
+            namedvars = []
+            for var in pythonbraceformat_pat.findall(strclean):
+                if var == "{}" or anonvar_re.match(var):
+                    anonvars.append(var[1:-1])
+                else:
+                    namedvars.append(var)
+            variables.append((anonvars, namedvars))
 
-        max1 = max_anons(data1["anonvars"])
-        max2 = max_anons(data2["anonvars"])
+        max1 = max_anons(variables[0][0]) if variables[0][0] else 0
+        max2 = max_anons(variables[1][0]) if variables[1][0] else 0
 
         if max1 < max2:
             failure_state = max(failure_state, STATE_SERIOUS)
@@ -547,14 +556,16 @@ class StandardChecker(TranslationChecker):
                 f"Highest anonymous placeholder in original is {max1}, in translation {max2}"
             )
 
-        extra_in_2 = set(data2["namedvars"]).difference(set(data1["namedvars"]))
+        named1 = set(variables[0][1])
+        named2 = set(variables[1][1])
+        extra_in_2 = named2.difference(named1)
         if len(extra_in_2) > 0:
             failure_state = max(failure_state, STATE_SERIOUS)
             messages.append(
                 f"Unknown named placeholders in translation: {', '.join(extra_in_2)}"
             )
 
-        extra_in_1 = set(data1["namedvars"]).difference(set(data2["namedvars"]))
+        extra_in_1 = named1.difference(named2)
         if len(extra_in_1) > 0:
             failure_state = max(failure_state, STATE_MILD)
             messages.append(
