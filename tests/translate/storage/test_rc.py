@@ -1,6 +1,75 @@
 from io import BytesIO
 
+import pytest
+from pyparsing import Keyword
+
 from translate.storage import rc
+
+
+def test_compact_resource_boundary_checks_scale_linearly() -> None:
+    """Boundary checks must not examine growing prefixes of a compact block."""
+    inspected = 0
+
+    class TrackedSource(str):
+        def __getitem__(self, index):
+            nonlocal inspected
+            value = super().__getitem__(index)
+            inspected += len(value)
+            return value
+
+        def rfind(self, sub, start=0, end=None):
+            nonlocal inspected
+            inspected += len(range(*slice(start, end).indices(len(self))))
+            return super().rfind(sub, start, end)
+
+    counts = []
+    entry = '0 "Label" '
+    header = "STRINGTABLE BEGIN "
+    for repetitions in (100, 200):
+        source = TrackedSource(header + entry * repetitions + "END")
+        inspected = 0
+        for location in range(len(header), len(source), len(entry)):
+            assert not rc._at_resource_line_start(source, location, [])
+        counts.append(inspected)
+
+        store = rc.rcfile(BytesIO(source.encode()))
+        assert [unit.source for unit in store.units] == ["Label"] * repetitions
+
+    assert counts[0] > 0
+    assert counts[1] < 2.5 * counts[0]
+
+
+@pytest.mark.parametrize(
+    "incomplete",
+    [
+        "STRINGTABLE\n",
+        'STRINGTABLE\nBEGIN\nID_TEST "Test"\n',
+        "ID_DIALOG DIALOG 0, 0, 100, 100\n",
+        "ID_DIALOG DIALOGEX 0, 0, 100, 100\n",
+        "ID_MENU MENU\n",
+        "ID_MENU MENUEX\n",
+    ],
+)
+def test_incomplete_resources_scale_linearly(monkeypatch, incomplete) -> None:
+    """Incomplete resources must not repeatedly parse the remaining suffix."""
+    calls = 0
+    original_parse = Keyword.parseImpl
+
+    def count_keywords(parser, *args, **kwargs):
+        nonlocal calls
+        calls += 1
+        return original_parse(parser, *args, **kwargs)
+
+    monkeypatch.setattr(Keyword, "parseImpl", count_keywords)
+    counts = []
+    for repetitions in (20, 40):
+        calls = 0
+        store = rc.rcfile(BytesIO((incomplete * repetitions).encode()))
+        assert not store.units
+        counts.append(calls)
+
+    assert counts[0] > 0
+    assert counts[1] < 2.5 * counts[0]
 
 
 def test_escaping() -> None:
@@ -45,6 +114,80 @@ class TestRcFile:
         """Helper that converts source to store object and back."""
         return bytes(self.source_parse(source))
 
+    @pytest.mark.parametrize(
+        "incomplete",
+        [
+            "STRINGTABLE\n",
+            'STRINGTABLE\nBEGIN\nID_BAD "Incomplete"\n',
+            'ID_DIALOG DIALOG 0, 0, 100, 100\nCAPTION "Incomplete"\n',
+            'ID_DIALOG DIALOGEX 0, 0, 100, 100\nBEGIN\nLTEXT "Incomplete", ID_BAD\n',
+            'ID_MENU MENU\nBEGIN\nPOPUP "Incomplete"\nBEGIN\n',
+            'ID_MENU MENUEX\nBEGIN\nPOPUP "Incomplete"\nBEGIN\n',
+        ],
+    )
+    @pytest.mark.parametrize(
+        ("complete", "name"),
+        [
+            ('STRINGTABLE\nBEGIN\nID_GOOD "Good"\nEND\n', "STRINGTABLE.ID_GOOD"),
+            (
+                'ID_GOOD DIALOG 0, 0, 100, 100\nCAPTION "Good"\nBEGIN\nEND\n',
+                "DIALOG.ID_GOOD.CAPTION",
+            ),
+            (
+                'ID_GOOD DIALOGEX 0, 0, 100, 100\nCAPTION "Good"\nBEGIN\nEND\n',
+                "DIALOGEX.ID_GOOD.CAPTION",
+            ),
+            (
+                'ID_GOOD MENU\nBEGIN\nPOPUP "Good"\nBEGIN\nEND\nEND\n',
+                "MENU.ID_GOOD.POPUP.CAPTION",
+            ),
+            (
+                'ID_GOOD MENUEX\nBEGIN\nPOPUP "Good"\nBEGIN\nEND\nEND\n',
+                "MENUEX.ID_GOOD.POPUP.CAPTION",
+            ),
+        ],
+    )
+    @pytest.mark.parametrize("indent", ["", " \t"])
+    def test_recover_after_incomplete_resource(
+        self, incomplete, complete, name, indent
+    ) -> None:
+        store = self.source_parse(incomplete + indent + complete)
+        assert [(unit.name, unit.source) for unit in store.units] == [(name, "Good")]
+
+    def test_resource_headers_in_strings_and_comments(self) -> None:
+        store = self.source_parse("""\
+ID_DIALOG DIALOG 0, 0, 100, 100
+CAPTION "STRINGTABLE"
+BEGIN
+    // STRINGTABLE
+    /* ID_BAD DIALOGEX */
+    LTEXT "ID_BAD MENU", ID_TEXT, 0, 0, 10, 10
+END
+STRINGTABLE
+BEGIN
+    ID_TEXT "STRINGTABLE" " ID_BAD DIALOG"
+            " ID_BAD MENUEX"
+END
+ID_MENU MENU
+BEGIN
+    POPUP "STRINGTABLE"
+    BEGIN
+        POPUP "ID_BAD MENU"
+        BEGIN
+            MENUITEM "ID_BAD DIALOGEX", ID_ITEM
+        END
+    END
+END
+""")
+        assert [unit.source for unit in store.units] == [
+            "STRINGTABLE",
+            "ID_BAD MENU",
+            "STRINGTABLE ID_BAD DIALOG ID_BAD MENUEX",
+            "STRINGTABLE",
+            "ID_BAD MENU",
+            "ID_BAD DIALOGEX",
+        ]
+
     def test_one_line_comment_position(self) -> None:
         result = rc.rc_statement().parse_string(
             'STRINGTABLE\nBEGIN\n// standalone\nID_1 "First" // inline\nEND\n'
@@ -55,6 +198,75 @@ class TestRcFile:
         assert not getattr(standalone, "inline", False)
         assert isinstance(inline, str)
         assert getattr(inline, "inline", False)
+
+    @pytest.mark.parametrize(
+        "macro", ["MENU", "MENUEX", "DIALOG", "DIALOGEX", "STRINGTABLE"]
+    )
+    @pytest.mark.parametrize("identifier", ["101", "ID_MACRO"])
+    def test_stringtable_keyword_macro(self, macro, identifier) -> None:
+        store = self.source_parse(f"""\
+#define {macro} "Macro text"
+STRINGTABLE
+BEGIN
+    100 "First"
+    {identifier} {macro}
+    102 "Last"
+END
+""")
+        assert [(unit.name, unit.source) for unit in store.units] == [
+            ("STRINGTABLE.100", "First"),
+            ("STRINGTABLE.102", "Last"),
+        ]
+
+    @pytest.mark.parametrize("block_type", ["DIALOG", "DIALOGEX"])
+    @pytest.mark.parametrize(
+        "style", ["WS_POPUP | WS_SYSMENU", "WS_POPUP |\nWS_SYSMENU"]
+    )
+    def test_dialog_menu_option(self, block_type, style) -> None:
+        store = self.source_parse(f"""\
+ID_DIALOG {block_type} 0, 0, 100, 100
+STYLE {style}
+MENU IDR_MAINMENU
+CAPTION "Caption"
+BEGIN
+    LTEXT "Label", ID_TEXT, 0, 0, 10, 10
+END
+""")
+        assert [(unit.name, unit.source) for unit in store.units] == [
+            (f"{block_type}.ID_DIALOG.CAPTION", "Caption"),
+            (f"{block_type}.ID_DIALOG.LTEXT.ID_TEXT", "Label"),
+        ]
+
+    @pytest.mark.parametrize(
+        "comment",
+        [
+            "// See IDD_ABOUT DIALOG",
+            "// STRINGTABLE",
+            "/* ID_FAKE DIALOGEX */",
+            "/*\nSTRINGTABLE\nID_FAKE MENU\n*/",
+        ],
+    )
+    @pytest.mark.parametrize(
+        ("header", "body", "expected"),
+        [
+            ("STRINGTABLE", 'ID_TEXT "Label"', ["Label"]),
+            (
+                'ID_DIALOG DIALOG 0, 0, 100, 100\nCAPTION "Caption"',
+                'LTEXT "Label", ID_TEXT, 0, 0, 10, 10',
+                ["Caption", "Label"],
+            ),
+            (
+                'ID_DIALOG DIALOGEX 0, 0, 100, 100\nCAPTION "Caption"',
+                'LTEXT "Label", ID_TEXT, 0, 0, 10, 10',
+                ["Caption", "Label"],
+            ),
+            ("ID_MENU MENU", 'POPUP "Label"\nBEGIN\nEND', ["Label"]),
+            ("ID_MENU MENUEX", 'POPUP "Label"\nBEGIN\nEND', ["Label"]),
+        ],
+    )
+    def test_comments_before_begin(self, comment, header, body, expected) -> None:
+        store = self.source_parse(f"{header}\n{comment}\nBEGIN\n{body}\nEND\n")
+        assert [unit.source for unit in store.units] == expected
 
     def test_parse_only_comments(self) -> None:
         """Test parsing a RC string with only comments."""
