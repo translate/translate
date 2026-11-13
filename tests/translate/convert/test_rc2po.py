@@ -1,3 +1,5 @@
+import pytest
+
 from translate.convert import rc2po
 from translate.storage.po import pofile
 
@@ -101,6 +103,53 @@ class TestRC2POCommand(test_convert.TestConvertCommand):
         assert po_result.units[15].source == "&File"
         assert po_result.units[15].getlocations() == [
             "MENU.IDR_MAINFRAME.POPUP.CAPTION"
+        ]
+
+    @pytest.mark.parametrize(
+        "comment", ["", "// See IDD_ABOUT DIALOG", "/*\nSTRINGTABLE\n*/"]
+    )
+    def test_convert_dialog_menu_and_preamble_comments(self, comment) -> None:
+        source = RC_SOURCE.replace(
+            "\nEXSTYLE", "\nMENU IDR_MAINMENU\nEXSTYLE", 1
+        ).replace("\nBEGIN", f"\n{comment}\nBEGIN", 1)
+        self.create_testfile("simple.rc", source)
+        self.run_command(i="simple.rc", o="simple.po")
+        with self.open_testfile("simple.po") as handle:
+            store = pofile(handle)
+        assert len(store.units) == 23
+        assert store.units[1].source == "License dialog"
+        assert store.units[2].source == "Help"
+
+    def test_convert_stringtable_keyword_macro(self) -> None:
+        self.create_testfile(
+            "simple.rc",
+            """\
+#define MENU "Menu"
+STRINGTABLE
+BEGIN
+    100 "First"
+    101 MENU
+    102 "Last"
+END
+""",
+        )
+        self.run_command(i="simple.rc", o="simple.po")
+        with self.open_testfile("simple.po") as handle:
+            store = pofile(handle)
+        assert [(unit.getlocations(), unit.source) for unit in store.units[1:]] == [
+            (["STRINGTABLE.100"], "First"),
+            (["STRINGTABLE.102"], "Last"),
+        ]
+
+    def test_convert_after_incomplete_resource(self) -> None:
+        self.create_testfile("simple.rc", "STRINGTABLE\n" * 40 + RC_SOURCE)
+        self.run_command(i="simple.rc", o="simple.po")
+        with self.open_testfile("simple.po") as handle:
+            po_result = pofile(handle)
+        assert len(po_result.units) == 23
+        assert po_result.units[1].source == "License dialog"
+        assert po_result.units[1].getlocations() == [
+            "DIALOGEX.IDD_REGGHC_DIALOG.CAPTION"
         ]
 
     def test_convert_encoding_utf16(self) -> None:

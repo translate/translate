@@ -1,3 +1,5 @@
+import pytest
+
 from translate.convert import po2rc
 from translate.storage.rc import rcfile
 
@@ -96,6 +98,96 @@ class TestPO2RCCommand(test_convert.TestConvertCommand):
         assert len(rc_result.units) == 14
         assert rc_result.units[0].target == "Licenční dialog"
         assert rc_result.units[4].target == "Mój bardzo dobry program"
+
+    @pytest.mark.parametrize(
+        "comment", ["", "// See IDD_ABOUT DIALOG", "/*\nSTRINGTABLE\n*/"]
+    )
+    @pytest.mark.parametrize("newline", ["\n", "\r\n"])
+    def test_convert_dialog_menu_and_preamble_comments(self, comment, newline) -> None:
+        source = (
+            RC_SOURCE.replace("\nEXSTYLE", "\nMENU IDR_MAINMENU\nEXSTYLE", 1)
+            .replace("\nBEGIN", f"\n{comment}\nBEGIN", 1)
+            .replace("\n", newline)
+        )
+        self.create_testfile("simple.rc", source)
+        self.create_testfile("simple.po", POFILE)
+        self.run_command(
+            template="simple.rc",
+            i="simple.po",
+            o="output.rc",
+            l="LANG_CZECH",
+            charset_output="utf-8",
+        )
+        with self.open_testfile("output.rc") as handle:
+            output = handle.read()
+        assert b"\r\r\n" not in output
+        assert "MENU IDR_MAINMENU" in output.decode()
+        if comment:
+            assert comment.replace("\n", newline) in output.decode()
+        store = rcfile()
+        store.parse(output)
+        assert len(store.units) == 14
+        assert store.units[0].target == "Licenční dialog"
+        assert store.units[4].target == "Mój bardzo dobry program"
+
+    def test_convert_stringtable_keyword_macro(self) -> None:
+        self.create_testfile(
+            "simple.rc",
+            """\
+#define MENU "Menu"
+STRINGTABLE
+BEGIN
+    100 "First"
+    101 MENU
+    102 "Last"
+END
+""",
+        )
+        self.create_testfile(
+            "simple.po",
+            """\
+#: STRINGTABLE.100
+msgid "First"
+msgstr "Translated first"
+
+#: STRINGTABLE.102
+msgid "Last"
+msgstr "Translated last"
+""",
+        )
+        self.run_command(
+            template="simple.rc", i="simple.po", o="output.rc", l="LANG_CZECH"
+        )
+        with self.open_testfile("output.rc") as handle:
+            output = handle.read()
+        assert b'#define MENU "Menu"' in output
+        assert b"101                     MENU" in output
+        store = rcfile()
+        store.parse(output)
+        assert [(unit.name, unit.source) for unit in store.units] == [
+            ("STRINGTABLE.100", "Translated first"),
+            ("STRINGTABLE.102", "Translated last"),
+        ]
+
+    def test_convert_after_incomplete_resource(self) -> None:
+        prefix = "STRINGTABLE\n" * 40
+        self.create_testfile("simple.rc", prefix + RC_SOURCE)
+        self.create_testfile("simple.po", POFILE)
+        self.run_command(
+            template="simple.rc",
+            i="simple.po",
+            o="output.rc",
+            l="LANG_CZECH",
+            charset_output="utf-8",
+        )
+        with self.open_testfile("output.rc") as handle:
+            output = handle.read()
+        assert output.startswith(prefix.encode())
+        store = rcfile()
+        store.parse(output)
+        assert len(store.units) == 14
+        assert store.units[0].target == "Licenční dialog"
+        assert store.units[4].target == "Mój bardzo dobry program"
 
     def test_convert_quotes(self) -> None:
         """Tests the conversion to a po file."""
