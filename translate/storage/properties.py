@@ -313,12 +313,9 @@ class Dialect:
             spacepos = -1
             end = len(line) if minpos == -1 else minpos
             pos = start_pos
-            while pos < end:
-                if not line[pos].isspace():
-                    # Split the bounded key to skip non-whitespace in C.
-                    pos += len(line[pos:end].split(None, 1)[0])
-                if pos == end:
-                    break
+            whitespace = re.compile(r"\s")
+            while match := whitespace.search(line, pos, end):
+                pos = match.start()
                 if pos == 0 or line[pos - 1] != "\\":
                     spacepos = pos
                     break
