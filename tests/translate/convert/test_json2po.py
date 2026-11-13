@@ -82,6 +82,21 @@ msgstr ""
         poresult = self.json2po(jsonsource, filter=["text"])
         assert str(poresult.units[1]) == poexpected
 
+    def test_non_string_values(self) -> None:
+        """Numbers and booleans are not extracted and do not stop the conversion."""
+        jsonsource = """{ "text": "A simple string", "max": 5, "rtl": false }"""
+        poresult = self.json2po(jsonsource)
+        assert len(poresult.units) == 2
+        assert poresult.units[1].source == "A simple string"
+
+    def test_non_string_template_value(self) -> None:
+        """A number in the template is skipped even if the translation has a string."""
+        template = jsonl10n.JsonFile(BytesIO(b'{"a": "A", "count": 5}'))
+        translated = jsonl10n.JsonFile(BytesIO(b'{"a": "Ahoj", "count": "5"}'))
+        poresult = json2po.json2po().merge_store(template, translated)
+        assert len(poresult.units) == 2
+        assert poresult.units[1].target == "Ahoj"
+
     def test_multiple_units(self) -> None:
         """Test that we can handle json with multiple units."""
         jsonsource = """
