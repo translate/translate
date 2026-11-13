@@ -1600,6 +1600,21 @@ return array(
         assert phpunit.source == "pesca"
         assert bytes(phpfile).decode() == phpsource
 
+    def test_return_array_concatenated_value(self) -> None:
+        phpsource = """<?php
+return [
+    'long' => 'This is a long ' .
+        'sentence',
+];
+"""
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 1
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "return[]->'long'"
+        assert phpunit.source == "This is a long sentence"
+        phpunit.target = "Une longue phrase"
+        assert "'long' => 'Une longue phrase'" in bytes(phpfile).decode()
+
     def test_return_array_with_spaces(self) -> None:
         """Test that return array with spaces before 'array' is handled correctly."""
         phpsource = """<?php

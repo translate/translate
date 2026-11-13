@@ -854,6 +854,13 @@ class phpfile(base.TranslationStore):
                         lexer.extract_quote(),
                         lexer.extract_comments(item.lexpositions[1]),
                     )
+                elif isinstance(item.value, BinaryOp) and item.value.op == ".":
+                    self.create_and_add_unit(
+                        name,
+                        concatenate(item.value),
+                        lexer.extract_quote(),
+                        lexer.extract_comments(item.lexpositions[1]),
+                    )
 
         def concatenate(item):
             if isinstance(item, str):
