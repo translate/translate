@@ -20,11 +20,17 @@
 """The standard set of checks for (source, target) translation pairs."""
 
 import re
+from collections import Counter
 
 from translate.filters import decoration, helpers, prefilters, spelling
 from translate.filters.checks.checker import TranslationChecker
 from translate.filters.checks.exceptions import FilterFailure, SeriousFilterFailure
-from translate.filters.checks.tags import intuplelist, tag_re, tagproperties
+from translate.filters.checks.tags import (
+    TagProperty,
+    intuplelist,
+    tag_re,
+    tagproperties,
+)
 from translate.filters.decorators import cosmetic, critical, extraction, functional
 
 # These are some regular expressions that are compiled for use in some tests
@@ -1255,6 +1261,9 @@ class StandardChecker(TranslationChecker):
         then either the tag is missing or it was mistakenly translated by the
         translator, both of which are errors.
 
+        Repeated tags may exchange positions while retaining the same tag-name
+        sequence. Each tag's non-translatable attributes must stay together.
+
         The check ignores tags or things that look like tags that cover the
         whole string e.g. ``<Error>`` but will produce false positives for
         things like ``An <Error> occurred`` as here ``Error`` should be
@@ -1269,21 +1278,21 @@ class StandardChecker(TranslationChecker):
                 return True
 
             tags2 = tag_re.findall(str2)
-            properties1 = tagproperties(tags1, self.config.ignoretags)
-            properties2 = tagproperties(tags2, self.config.ignoretags)
 
-            filtered1 = []
-            filtered2 = []
+            def normalized_tags(tags: list[str]) -> list[tuple[TagProperty, ...]]:
+                return [
+                    tuple(
+                        intuplelist(prop, self.config.canchangetags)
+                        for prop in tagproperties([tag], self.config.ignoretags)
+                    )
+                    for tag in tags
+                ]
 
-            for property1 in properties1:
-                filtered1 += [intuplelist(property1, self.config.canchangetags)]
-
-            for property2 in properties2:
-                filtered2 += [intuplelist(property2, self.config.canchangetags)]
-
-            # TODO: consider the consequences of different ordering of
-            # attributes/tags
-            if filtered1 != filtered2:
+            filtered1 = normalized_tags(tags1)
+            filtered2 = normalized_tags(tags2)
+            if [tag[0] for tag in filtered1] != [
+                tag[0] for tag in filtered2
+            ] or Counter(filtered1) != Counter(filtered2):
                 raise FilterFailure("Different XML tags")
         else:
             # No tags in str1, let's just check that none were added in str2.
