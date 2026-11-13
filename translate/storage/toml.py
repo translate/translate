@@ -234,7 +234,7 @@ class TOMLFile(base.DictStore[TOMLUnit]):
         elif not getattr(self, "filename", ""):
             self.filename = ""
         if hasattr(input, "read"):
-            src = input.read()  # ty:ignore[call-non-callable]
+            src = input.read()  # ty:ignore[not-callable]
             input.close()  # ty:ignore[missing-union-attribute]
             input = src
         if isinstance(input, bytes):
