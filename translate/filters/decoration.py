@@ -235,29 +235,25 @@ def getnumbers(str1):
     # TODO: handle locale-based periods e.g. 2,5 for Afrikaans
     assert isinstance(str1, str)
     numbers = []
-    innumber = False
-    degreesign = "\xb0"
-    lastnumber = ""
-    carryperiod = ""
-    for chr1 in str1:
-        if chr1.isdigit():
-            innumber = True
-        elif innumber and chr1 not in {".", degreesign}:
-            innumber = False
-            if lastnumber:
-                numbers.append(lastnumber)
-            lastnumber = ""
-        if innumber:
-            if chr1 == degreesign:
+    characters = iter(str1)
+    for chr1 in characters:
+        if not chr1.isdigit():
+            continue
+        lastnumber = chr1
+        carryperiod = ""
+        for chr1 in characters:
+            if chr1.isdigit():
+                if carryperiod:
+                    lastnumber += carryperiod + chr1
+                    carryperiod = ""
+                else:
+                    lastnumber += chr1
+            elif chr1 == "°":
                 lastnumber += chr1
             elif chr1 == ".":
                 carryperiod += chr1
             else:
-                lastnumber += carryperiod + chr1
-                carryperiod = ""
-        else:
-            carryperiod = ""
-    if innumber and lastnumber:
+                break
         numbers.append(lastnumber)
     return numbers
 
