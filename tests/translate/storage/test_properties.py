@@ -79,6 +79,14 @@ def test_find_delimiter_pos_escapes() -> None:
     )
 
 
+@mark.parametrize("space", [" ", "\t", "\v", "\f", "\x1c", "\x85", "\u2003", "\u3000"])
+@mark.parametrize("ending", ["", "=value", ":value", " value"])
+def test_find_delimiter_many_escaped_spaces(space: str, ending: str) -> None:
+    key = ("key\\" + space) * 1000 + "last"
+    expected = (ending[0], len(key)) if ending else (None, -1)
+    assert properties.DialectJava.find_delimiter(key + ending) == expected
+
+
 def test_find_delimiter_pos_empty_and_whitespace() -> None:
     """Test that empty and whitespace-only lines don't cause IndexError."""
     # These should work for DialectJava (no key_wrap_char)
