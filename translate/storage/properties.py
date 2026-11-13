@@ -278,10 +278,6 @@ class Dialect:
         :param delimiters: valid delimiters
         :return: delimiter character and offset within *line*
         """
-        delimiter_dict = {}
-        for delimiter in cls.delimiters:
-            delimiter_dict[delimiter] = -1
-        delimiters = delimiter_dict
         # Figure out starting position
         start_pos = len(line) - len(line.lstrip())  # Skip initial whitespace
         if (
@@ -298,45 +294,37 @@ class Dialect:
                     break
                 escaped = char == "\\" and not escaped
                 start_pos += 1
-        # Find the position of each delimiter type
-        for delimiter, value in delimiters.items():
-            if delimiter == " ":
-                # For whitespace delimiter, find any whitespace character (tab, space, etc.)
-                pos = start_pos
-                while pos < len(line):
-                    if line[pos].isspace() and (pos == 0 or line[pos - 1] != "\\"):
-                        delimiters[delimiter] = pos
-                        break
-                    pos += 1
-            else:
-                pos = line.find(delimiter, start_pos)
-                while pos != -1:
-                    if value == -1 and line[pos - 1] != "\\":
-                        delimiters[delimiter] = pos
-                        break
-                    pos = line.find(delimiter, pos + 1)
-        # Find the first delimiter
         mindelimiter = None
         minpos = -1
-        for delimiter, pos in delimiters.items():
-            if pos == -1 or delimiter == " ":
+        for delimiter in cls.delimiters:
+            if delimiter == " ":
                 continue
-            if minpos == -1 or pos < minpos:
-                minpos = pos
-                mindelimiter = delimiter
-        if mindelimiter is None and delimiters.get(" ", -1) != -1:
-            # Use space delimiter if we found nothing else
-            return (" ", delimiters[" "])
-        # If space delimiter occurs earlier than ":" or "=" then it is the
-        # delimiter only if there are non-whitespace characters between it and
-        # the other detected delimiter.
-        if (
-            mindelimiter is not None
-            and " " in delimiters
-            and delimiters[" "] < delimiters[mindelimiter]
-            and len(line[delimiters[" "] : delimiters[mindelimiter]].strip()) > 0
-        ):
-            return (" ", delimiters[" "])
+            # Later searches only need matches before the current delimiter.
+            end = len(line) if minpos == -1 else minpos + len(delimiter) - 1
+            pos = line.find(delimiter, start_pos, end)
+            while pos != -1:
+                if line[pos - 1] != "\\":
+                    mindelimiter = delimiter
+                    minpos = pos
+                    break
+                pos = line.find(delimiter, pos + 1, end)
+
+        if " " in cls.delimiters:
+            spacepos = -1
+            end = len(line) if minpos == -1 else minpos
+            pos = start_pos
+            whitespace = re.compile(r"\s")
+            while match := whitespace.search(line, pos, end):
+                pos = match.start()
+                if pos == 0 or line[pos - 1] != "\\":
+                    spacepos = pos
+                    break
+                pos += 1
+            if mindelimiter is None:
+                return (" ", spacepos) if spacepos != -1 else (None, -1)
+            # Retain the negative-index slice when whitespace is absent.
+            if spacepos < minpos and line[spacepos:minpos].strip():
+                return (" ", spacepos)
         return (mindelimiter, minpos)
 
     @staticmethod
