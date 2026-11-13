@@ -32,12 +32,15 @@ from pyparsing import (
     AtLineStart,
     Combine,
     DelimitedList,
+    Empty,
+    FollowedBy,
     Forward,
     Group,
     Keyword,
     OneOrMore,
     Optional,
     ParserElement,
+    White,
     Word,
     ZeroOrMore,
     alphanums,
@@ -175,6 +178,15 @@ def _mark_one_line_comment(source: str, location: int, tokens):
     return _RCComment(tokens[0], inline=bool(source[line_start:location].strip()))
 
 
+def _at_resource_line_start(source: str, location: int, _tokens) -> bool:
+    """Accept an indented declaration, but not a header inside an option line."""
+    # Inspect only the preceding indentation. Scanning or copying the entire
+    # line prefix for every probe is quadratic for compact, single-line blocks.
+    while location and source[location - 1] in " \t\r":
+        location -= 1
+    return location == 0 or source[location - 1] == "\n"
+
+
 def rc_statement() -> ParserElement:
     """Generate a RC statement parser that can be used to parse a RC file."""
     one_line_comment = Combine("//" + rest_of_line).set_parse_action(
@@ -212,10 +224,61 @@ def rc_statement() -> ParserElement:
 
     caption = "CAPTION" + quoted_string("caption")
 
-    block_options = ZeroOrMore(
-        Group(caption ^ language_definition ^ quoted_string ^ Word(printables)),
-        stop_on=block_start,
-    )("block_options")
+    # A new resource cannot be an option or control of the previous resource.
+    # Without this boundary, an incomplete block can consume the remaining file
+    # before failing, and search_string retries against every following header.
+    # Keep the identifier and resource type on the same line: otherwise a style
+    # flag followed by a dialog's MENU option looks like a menu resource.
+    resource_line_start = Empty().add_condition(
+        _at_resource_line_start, call_during_try=True
+    )
+    named_resource_header = Combine(
+        name_id
+        + White(" \t")
+        + (
+            Keyword("DIALOGEX")
+            | Keyword("DIALOG")
+            | Keyword("MENUEX")
+            | Keyword("MENU")
+        )
+    )
+    string_table_header = resource_line_start + Keyword("STRINGTABLE")
+    resource_header = resource_line_start + (
+        Keyword("STRINGTABLE") | named_resource_header
+    )
+
+    block_option = Group(
+        comments("comment")
+        | (caption ^ language_definition ^ quoted_string ^ Word(printables))
+    )
+    options = ZeroOrMore(
+        block_option,
+        stop_on=block_start | resource_header,
+    )
+    block_options = options("block_options")
+    macro_caption = Group(Keyword("CAPTION") + constant)
+    # CAPTION MENU can be a dialog option rather than a resource header.
+    # Permit one macro caption between otherwise bounded option sequences;
+    # repeated incomplete CAPTION DIALOG headers must still fail promptly.
+    dialog_options = (options + Optional(macro_caption) + options)("block_options")
+
+    header_options = ZeroOrMore(
+        block_option, stop_on=block_start | block_end | resource_header
+    )
+
+    # Inside a block, identifier + MENU/DIALOG can also be a macro-valued row
+    # or control. Confirm the declaration's opening block before stopping.
+    # Stop this lookahead at END or the next candidate header, so failed
+    # candidates cannot repeatedly scan the rest of the file.
+    resource_block_header = string_table_header | (
+        resource_line_start
+        + named_resource_header
+        + ~FollowedBy(",")
+        + header_options
+        + Optional(macro_caption)
+        + header_options
+        + FollowedBy(block_start)
+    )
 
     undefined_control = (
         Group(
@@ -230,14 +293,16 @@ def rc_statement() -> ParserElement:
 
     block = (
         block_start
-        + ZeroOrMore(undefined_control, stop_on=block_end)("controls")
+        + ZeroOrMore(undefined_control, stop_on=block_end | resource_block_header)(
+            "controls"
+        )
         + block_end
     )
 
     dialog = (
         name_id("block_id")
         + (Keyword("DIALOGEX") | Keyword("DIALOG"))("block_type")
-        + block_options
+        + dialog_options
         + block
     )
 
@@ -259,9 +324,10 @@ def rc_statement() -> ParserElement:
             ).set_results_name("values_")
         )
         + block_start
-        + ZeroOrMore(Group(menu_item | popup_block | comments), stop_on=block_end)(
-            "elements"
-        )
+        + ZeroOrMore(
+            Group(menu_item | popup_block | comments),
+            stop_on=block_end | resource_block_header,
+        )("elements")
         + block_end
     )("popups*")
 
@@ -270,7 +336,7 @@ def rc_statement() -> ParserElement:
         + (Keyword("MENU") | Keyword("MENUEX"))("block_type")
         + block_options
         + block_start
-        + ZeroOrMore(popup_block | comments, stop_on=block_end)
+        + ZeroOrMore(popup_block | comments, stop_on=block_end | resource_block_header)
         + block_end
     )
 
