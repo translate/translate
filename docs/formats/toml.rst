@@ -86,7 +86,7 @@ Supported Features
 * **Comments**: Developer comments are extracted as translator notes
 * **String types**: Basic strings, literal strings (single quotes), and
   multiline strings (triple quotes)
-* **Formatting preservation**: tomlkit library preserves original formatting
+* **Formatting preservation**: tomlrt library preserves original formatting
   during round-trips
 * **Plurals** (Go i18n only): CLDR plural categories
 
