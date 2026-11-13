@@ -755,7 +755,7 @@ class TranslationUnit:
         Preserving as much information as possible.
         """
         if type(unit) is cls and hasattr(unit, "copy") and callable(unit.copy):
-            return unit.copy()  # ty:ignore[invalid-return-type]
+            return unit.copy()  # ty:ignore[invalid-explicit-return]
         newunit = cls(unit.source)
         newunit.target = unit.target
         newunit.markfuzzy(unit.isfuzzy())
