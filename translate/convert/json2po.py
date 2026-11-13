@@ -23,12 +23,8 @@ See: https://docs.translatehouse.org/projects/translate-toolkit/en/latest/comman
 for examples and usage instructions.
 """
 
-import logging
-
 from translate.convert import convert
 from translate.storage import jsonl10n, po
-
-logger = logging.getLogger(__name__)
 
 
 class json2po:
@@ -72,10 +68,6 @@ class json2po:
                 if translatedpo is not None and not blankmsgstr:
                     origpo.target = translatedpo.source
                 output_store.addunit(origpo)
-            elif translatedpo is not None:
-                logger.error(
-                    "error converting original JSON definition %s", origpo.name
-                )
         output_store.removeduplicates(duplicatestyle)
         return output_store
 

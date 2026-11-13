@@ -89,6 +89,14 @@ msgstr ""
         assert len(poresult.units) == 2
         assert poresult.units[1].source == "A simple string"
 
+    def test_non_string_template_value(self) -> None:
+        """A number in the template is skipped even if the translation has a string."""
+        template = jsonl10n.JsonFile(BytesIO(b'{"a": "A", "count": 5}'))
+        translated = jsonl10n.JsonFile(BytesIO(b'{"a": "Ahoj", "count": "5"}'))
+        poresult = json2po.json2po().merge_store(template, translated)
+        assert len(poresult.units) == 2
+        assert poresult.units[1].target == "Ahoj"
+
     def test_multiple_units(self) -> None:
         """Test that we can handle json with multiple units."""
         jsonsource = """
