@@ -138,7 +138,11 @@ class rerc:
     def convert_block_options(self, s, loc, toks, name=None):
         for option in toks:
             yield " "
-            if option.language:
+            if option.comment:
+                yield from self.convert_comment(True, option.comment)
+                # A following option or BEGIN must not become part of // text.
+                yield self.templatestore.newline
+            elif option.language:
                 yield from self.convert_language(s, loc, option)
             elif option.caption:
                 yield from self.convert_caption(option, name)
