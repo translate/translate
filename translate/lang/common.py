@@ -175,7 +175,8 @@ class Common:
         .*?         # anything, but match non-greedy
         [{sentenceend}]        # the puntuation for sentence ending
         \s+         # the spacing after the puntuation
-        (?=[^a-zа-џ\d])  # lookahead that next part starts with caps
+        (?![+-]\d)  # signed numbers do not start a new sentence
+        (?=[^a-zа-џ\d\s])  # lookahead that next part starts with caps
         """,
         re.VERBOSE | re.UNICODE,
     )
