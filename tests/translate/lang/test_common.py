@@ -1,3 +1,5 @@
+from pytest import mark
+
 from translate.lang import common
 
 
@@ -116,3 +118,19 @@ def test_length_difference() -> None:
 def test_alter_length() -> None:
     """Test that we create the correct length by adding or removing characters."""
     assert common.Common.alter_length("One two three") == "One twOne two three"
+
+
+@mark.parametrize("separator", [" ", "  ", "\n"])
+@mark.parametrize("number", ["+1", "-1", "+972"])
+def test_sentences_keep_signed_numbers_after_abbreviations(
+    separator: str, number: str
+) -> None:
+    """Keep signed-number examples in the same sentence as their abbreviation."""
+    text = f"Please enter a phone number (e.g.{separator}{number} 555 555 5555)"
+    assert common.Common.sentences(text) == [text]
+
+
+def test_sentences_keep_lowercase_continuations_after_multiple_spaces() -> None:
+    """Whitespace must not let the uppercase lookahead match a lowercase word."""
+    text = "Apples, bananas, etc.  are nice."
+    assert common.Common.sentences(text) == [text]
