@@ -142,10 +142,12 @@ class mofile(poheader.poheader, base.TranslationStore):
         def add_to_hash_table(string, i) -> None:
             hash_value = hashpjw(string)
             hash_cursor = hash_value % hash_size
-            increment = 1 + (hash_value % (hash_size - 2))
-            while hash_table[hash_cursor] != 0:
-                hash_cursor += increment
-                hash_cursor %= hash_size
+            if hash_table[hash_cursor] != 0:
+                increment = 1 + (hash_value % (hash_size - 2))
+                while hash_table[hash_cursor] != 0:
+                    hash_cursor += increment
+                    if hash_cursor >= hash_size:
+                        hash_cursor -= hash_size
             hash_table[hash_cursor] = i + 1
 
         def lst_encode(lst, join_char=b""):
@@ -184,29 +186,31 @@ class mofile(poheader.poheader, base.TranslationStore):
         hash_table = array.array("I", [0] * hash_size)
         # the keys are sorted in the .mo file
         keys = sorted(MESSAGES.keys())
-        offsets = []
-        ids = strs = b""
+        # The header is 7 32-bit unsigned integers.
+        keystart = 7 * 4 + 16 * len(keys) + hash_size * 4
+        ids = b"\0".join([*keys, b""])
+        valuestart = keystart + len(ids)
+        koffsets = []
+        voffsets = []
+        str_parts = []
+        id_size = str_size = 0
         for i, id in enumerate(keys):
             # For each string, we need size and file offset.  Each string is
             # NUL terminated; the NUL does not count into the size.
             # TODO: We don't do any encoding detection from the PO Header
             add_to_hash_table(id, i)
             string = MESSAGES[id]  # id already encoded for use as dictionary key
-            offsets.append((len(ids), len(id), len(strs), len(string)))
-            ids = ids + id + b"\0"
-            strs = strs + string + b"\0"
-        # The header is 7 32-bit unsigned integers
-        keystart = 7 * 4 + 16 * len(keys) + hash_size * 4
-        # and the values start after the keys
-        valuestart = keystart + len(ids)
-        koffsets = []
-        voffsets = []
-        # The string table first has the list of keys, then the list of values.
-        # Each entry has first the size of the string, then the file offset.
-        for o1, l1, o2, l2 in offsets:
-            koffsets = [*koffsets, l1, o1 + keystart]
-            voffsets = [*voffsets, l2, o2 + valuestart]
-        offsets = koffsets + voffsets
+            id_length = len(id)
+            str_length = len(string)
+            koffsets.extend((id_length, id_size + keystart))
+            voffsets.extend((str_length, str_size + valuestart))
+            str_parts.append(string)
+            id_size += id_length + 1
+            str_size += str_length + 1
+        str_parts.append(b"")
+        strs = b"\0".join(str_parts)
+        koffsets.extend(voffsets)
+        offsets = koffsets
         out.write(
             struct.pack(
                 "Iiiiiii",
