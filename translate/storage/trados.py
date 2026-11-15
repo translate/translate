@@ -87,6 +87,8 @@ https://msdn.microsoft.com/en-us/library/aa140283(v=office.10).aspx
 
 def unescape(text):
     """Convert Trados text to normal Unicode string."""
+    if type(text) is str and "\\" not in text:
+        return text
     for trados_escape, char in RTF_ESCAPES.items():
         text = text.replace(trados_escape, char)
     return text
