@@ -54,7 +54,6 @@ implemented as outlined in the PHP documentation for the
 `String type <https://www.php.net/language.types.string>`_.
 """
 
-import re
 import string
 
 from phply.phpast import (
@@ -573,39 +572,6 @@ def phpencode(text, quotechar="'"):
             text = text.replace(a, b)
         return text
     return text.replace(f"{quotechar}", f"\\{quotechar}")
-
-
-def phpdecode(text, quotechar="'"):
-    """Convert PHP escaped string to a Python string."""
-    escape_encoding = "unicode_escape"
-
-    def decode_octal_hex(match):
-        r"""Decode Octal \NNN and Hex values."""
-        if "octal" in match.groupdict():
-            return match.groupdict()["octal"].encode("latin-1").decode(escape_encoding)
-        if "hex" in match.groupdict():
-            return match.groupdict()["hex"].encode("latin-1").decode(escape_encoding)
-        return match.group
-
-    if not text:
-        return text
-    if quotechar == '"':
-        # We do not escape \$ as it is used by variables and we can't
-        # roundtrip that item.
-        escapes = [
-            ('\\"', '"'),
-            ("\\\\", "\\"),
-            ("\\n", "\n"),
-            ("\\r", "\r"),
-            ("\\t", "\t"),
-            ("\\v", "\v"),
-            ("\\f", "\f"),
-        ]
-        for a, b in escapes:
-            text = text.replace(a, b)
-        text = re.sub(r"(?P<octal>\\[0-7]{1,3})", decode_octal_hex, text)
-        return re.sub(r"(?P<hex>\\x[0-9A-Fa-f]{1,2})", decode_octal_hex, text)
-    return text.replace("\\'", "'").replace("\\\\", "\\")
 
 
 class phpunit(base.TranslationUnit):
