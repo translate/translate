@@ -469,7 +469,7 @@ class StatCollector:
 
     def render(self, renderer_class: type[Renderer]) -> None:
         if renderer_class in {ShortWordsRenderer, ShortStringsRenderer}:
-            renderer = renderer_class(self, indent=self.longest_filename)  # ty:ignore[unknown-argument]
+            renderer = renderer_class(self, indent=self.longest_filename)
         else:
             renderer = renderer_class(self)
 
