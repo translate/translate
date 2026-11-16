@@ -4,9 +4,30 @@
 PHP
 ***
 
-Many :wp:`PHP` programs make use of a localisable string array.  The toolkit
-supports the full localisation of such files with :doc:`/commands/php2po` and
-po2php.
+Many :wp:`PHP` programs use localisable string arrays. The toolkit supports
+these files with :doc:`/commands/php2po` and po2php.
+
+Translation values
+==================
+
+PHP translation entries may contain quoted text, simple variable interpolation,
+or concatenations of quoted text and simple variables. Unsupported expressions
+in translation entries raise a parse error that identifies the entry. Literal
+numbers, booleans, and ``null`` are skipped as metadata.
+
+The toolkit exports variables as explicit placeholders such as ``{$name}``.
+Edited translations also accept standalone ``$name`` in prose and HTML, as in
+``Hello $name!`` or ``href="$url"``. A bare placeholder starts at the beginning
+of the value or follows whitespace, a quote, ``>``, or ``;``. It ends before
+whitespace, a quote, ``<``, ``&``, or the end of the value. A single sentence
+punctuation mark (``.,!?;:``) may precede that ending boundary.
+Laravel's ``|`` plural separator also counts as a boundary on both sides.
+
+Use the braced form when a placeholder touches other text, as in ``{$name}s``
+or ``({$name})``. PHP expressions such as ``$items[$key]`` remain literal
+under the boundary rule. Escape literal placeholders as ``\$name`` or
+``\{$name}``. Immediately before a placeholder or escaped placeholder, write
+two backslashes for each literal backslash you want in the PHP value.
 
 
 .. _php#conformance:
