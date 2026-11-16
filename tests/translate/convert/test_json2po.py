@@ -84,7 +84,9 @@ msgstr ""
 
     def test_non_string_values(self) -> None:
         """Numbers and booleans are not extracted and do not stop the conversion."""
-        jsonsource = """{ "text": "A simple string", "max": 5, "ratio": 1.5, "rtl": false }"""
+        jsonsource = (
+            """{ "text": "A simple string", "max": 5, "ratio": 1.5, "rtl": false }"""
+        )
         poresult = self.json2po(jsonsource)
         assert len(poresult.units) == 2
         assert poresult.units[1].source == "A simple string"
