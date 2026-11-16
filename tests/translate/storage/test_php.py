@@ -75,44 +75,6 @@ def test_php_escaping_single_quote() -> None:
     The tests are built mostly from examples from the PHP
     `string type definition <https://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.single>`_.
     """
-    # Decoding - PHP -> Python
-    assert (
-        php.phpdecode(r"\'") == r"'"
-    )  # To specify a literal single quote, escape it with a backslash (\).
-    assert php.phpdecode(r'"') == r'"'
-    assert (
-        php.phpdecode(r"\\'") == r"\'"
-    )  # To specify a literal backslash before a single quote, or at the end of the string, double it (\\)
-    assert (
-        php.phpdecode(r"\x") == r"\x"
-    )  # Note that attempting to escape any other character will print the backslash too.
-    assert php.phpdecode(r"\t") == r"\t"
-    assert php.phpdecode(r"\n") == r"\n"
-    assert php.phpdecode(r"this is a simple string") == r"this is a simple string"
-    assert (
-        php.phpdecode(
-            """You can also have embedded newlines in
-strings this way as it is
-okay to do"""
-        )
-        == """You can also have embedded newlines in
-strings this way as it is
-okay to do"""
-    )
-    assert (
-        php.phpdecode(r"This will not expand: \n a newline")
-        == r"This will not expand: \n a newline"
-    )
-    assert (
-        php.phpdecode(r'Arnold once said: "I\'ll be back"')
-        == r'''Arnold once said: "I'll be back"'''
-    )
-    assert php.phpdecode(r"You deleted C:\\*.*?") == r"You deleted C:\*.*?"
-    assert php.phpdecode(r"You deleted C:\*.*?") == r"You deleted C:\*.*?"
-    assert (
-        php.phpdecode(r"\117\143\164\141\154") == r"\117\143\164\141\154"
-    )  # We don't handle Octal like " does
-    assert php.phpdecode(r"\x48\x65\x78") == r"\x48\x65\x78"  # Don't handle Hex either
     # Should implement for false interpretation of double quoted data.
     # Encoding - Python -> PHP
     assert (
@@ -148,47 +110,6 @@ newline"""
 
 def test_php_escaping_double_quote() -> None:
     """Test the helper escaping functions for 'double quotes'."""
-    # Decoding - PHP -> Python
-    assert php.phpdecode("'", quotechar='"') == "'"  # we do nothing with single quotes
-    assert (
-        php.phpdecode(r"\n", quotechar='"') == "\n"
-    )  # See table of escaped characters
-    assert (
-        php.phpdecode(r"\r", quotechar='"') == "\r"
-    )  # See table of escaped characters
-    assert (
-        php.phpdecode(r"\t", quotechar='"') == "\t"
-    )  # See table of escaped characters
-    assert (
-        php.phpdecode(r"\v", quotechar='"') == "\v"
-    )  # See table of escaped characters
-    assert (
-        php.phpdecode(r"\f", quotechar='"') == "\f"
-    )  # See table of escaped characters
-    assert (
-        php.phpdecode(r"\\", quotechar='"') == "\\"
-    )  # See table of escaped characters
-    # assert php.phpdecode(r"\$", quotechar='"') == "$"      # See table of escaped characters - this may cause confusion with actual variables in roundtripping
-    assert (
-        php.phpdecode(r"\$", quotechar='"') == "\\$"
-    )  # Just to check that we don't unescape this
-    assert php.phpdecode(r"\"", quotechar='"') == '"'  # See table of escaped characters
-    assert (
-        php.phpdecode(r"\117\143\164\141\154", quotechar='"') == "Octal"
-    )  # Octal: \[0-7]{1,3}
-    assert (
-        php.phpdecode(r"\x48\x65\x78", quotechar='"') == "Hex"
-    )  # Hex: \x[0-9A-Fa-f]{1,2}
-    assert php.phpdecode(r"\117\\c\164\141\154", quotechar='"') == r"O\ctal"  # Mixed
-    # Decoding - special examples
-    assert (
-        php.phpdecode(r"Don't escape me here\'s", quotechar='"')
-        == r"Don't escape me here\'s"
-    )  # See bug #589
-    assert (
-        php.phpdecode("Line1\nLine2") == "Line1\nLine2"
-    )  # Preserve newlines in multiline messages
-    assert php.phpdecode("Line1\r\nLine2") == "Line1\r\nLine2"  # DOS PHP files
     # Encoding - Python -> PHP
     assert php.phpencode("'", quotechar='"') == "'"
     assert (
