@@ -46,7 +46,7 @@ test = [
 ]
 types = [
   "setuptools>=61.2",
-  "ty==0.0.102",
+  "ty==0.0.104",
   "types-lxml==2026.2.16"
 ]
 
