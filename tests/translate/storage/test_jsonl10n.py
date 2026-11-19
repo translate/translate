@@ -1092,7 +1092,10 @@ class TestGoTextJsonFile(test_monolingual.TestMonolingualStore):
         store.units[0].target = multistring(["{N} tag"])
 
         assert (
-            '"other": {\n                            "msg": ""' in bytes(store).decode()
+            "other"
+            not in json.loads(bytes(store))["messages"][0]["translation"]["select"][
+                "cases"
+            ]
         )
 
     def test_case_no_msg(self) -> None:
@@ -1138,12 +1141,8 @@ class TestGoTextJsonFile(test_monolingual.TestMonolingualStore):
                 "select": {
                     "feature": "plural",
                     "cases": {
-                        "one": {
-                            "msg": "One file remaining!"
-                        },
-                        "other": {
-                            "msg": "There are {N} more files remaining!"
-                        }
+                        "one": "One file remaining!",
+                        "other": "There are {N} more files remaining!"
                     }
                 }
             }
@@ -1152,6 +1151,221 @@ class TestGoTextJsonFile(test_monolingual.TestMonolingualStore):
 }
 """
         )
+
+    def test_sparse_selector_edits(self) -> None:
+        message = {
+            "id": "k",
+            "translation": {
+                "select": {
+                    "feature": "plural",
+                    "arg": "n",
+                    "cases": {
+                        "other": {"msg": "old", "note": "keep"},
+                        "=2": {"msg": "two"},
+                    },
+                }
+            },
+        }
+        store = self.StoreClass()
+        store.parse(json.dumps({"language": "en", "messages": [message]}))
+        unit = store.units[0]
+        unit.rich_source = unit.multistring_to_rich("edited")
+        cases = message["translation"]["select"]["cases"]
+        cases["other"]["msg"] = "edited"
+        assert json.loads(bytes(store))["messages"] == [message]
+        unit.update_plural_forms({"many": "fraction"})
+        clone = unit.buildfromunit(unit)
+        assert clone == unit
+        clone.update_plural_forms({"many": "other fraction"})
+        assert clone != unit
+        clone.target.extra_strings.append("single")
+        assert clone.plural_forms == {
+            "other": "edited",
+            "many": "other fraction",
+            "one": "single",
+        }
+        clone.update_plural_forms({"other": "clone"})
+        assert unit.plural_forms["other"] == "edited"
+
+    def test_rich_edit_after_retargeting_selector(self) -> None:
+        store = self.StoreClass()
+        selector = {"feature": "plural", "cases": {"one": "1", "few": "2", "many": "5"}}
+        store.parse(
+            json.dumps(
+                {
+                    "language": "ru",
+                    "messages": [{"id": "k", "translation": {"select": selector}}],
+                }
+            )
+        )
+        store.settargetlanguage("cs")
+        unit = store.units[0]
+        unit.rich_target = unit.multistring_to_rich(multistring(["one", "few", "rest"]))
+        assert unit.plural_forms == {
+            "one": "one",
+            "few": "few",
+            "many": "5",
+            "other": "rest",
+        }
+
+    def test_rich_roundtrip_exact_cases(self) -> None:
+        selector = {"feature": "plural", "arg": "n", "cases": {"=2": {"msg": "two"}}}
+        catalog = {
+            "language": "en",
+            "messages": [{"id": "k", "translation": {"select": selector}}],
+        }
+        store = self.StoreClass()
+        store.parse(json.dumps(catalog))
+        unit = store.units[0]
+        assert unit.plural_forms == {}
+        unit.plural_forms = {}
+        assert unit.istranslated()
+        assert store.findid("k") is unit
+        unit.merge(jsonl10n.FlatJsonUnit("replacement"))
+        unit.rich_target = unit.rich_target
+        assert json.loads(bytes(store)) == catalog
+
+    def test_scalar_merge_into_exact_selector(self) -> None:
+        store = self.StoreClass.parsestring(
+            '{"language":"en","messages":[{"id":"k","translation":{"select":{"feature":"plural","cases":{"=2":{"msg":"two"}}}}}]}'
+        )
+        store.units[0].merge(jsonl10n.FlatJsonUnit("replacement"), overwrite=True)
+        cases = json.loads(bytes(store))["messages"][0]["translation"]["select"][
+            "cases"
+        ]
+        assert cases == {"=2": {"msg": "two"}, "other": {"msg": "replacement"}}
+
+    def test_detached_scalar_then_plural(self) -> None:
+        store = self.StoreClass.parsestring(
+            '{"language":"en","messages":[{"id":"k","translation":{"select":{"feature":"plural","cases":{"one":"old","other":"rest"}}}}]}'
+        )
+        unit = store.units[0].copy()
+        unit.target = "scalar"
+        unit.target = multistring(["new one", "new rest"])
+        destination = self.StoreClass()
+        destination.settargetlanguage("en")
+        destination.addunit(unit)
+        assert self.StoreClass.parsestring(bytes(destination)).units[
+            0
+        ].plural_forms == {"one": "new one", "other": "new rest"}
+
+    def test_unattached_positional_donor(self) -> None:
+        store = self.StoreClass.parsestring(
+            '{"language":"en","messages":[{"id":"k","translation":"old"}]}'
+        )
+        donor = jsonl10n.GoTextJsonUnit(multistring(["single", "rest"]))
+        store.units[0].merge(donor, overwrite=True)
+        saved = self.StoreClass.parsestring(bytes(store))
+        assert saved.units[0].plural_forms == {"one": "single", "other": "rest"}
+        assert donor.plural_forms is None
+
+    def test_nonplural_selector_retains_cases(self) -> None:
+        selector = {"feature": "gender", "cases": {"one": "a", "other": "b"}}
+        catalog = {"messages": [{"id": "k", "translation": {"select": selector}}]}
+        store = self.StoreClass.parsestring(json.dumps(catalog))
+        unit = store.units[0]
+        assert unit.plural_forms is None
+        unit.target.extra_strings[0] = "edit"
+        assert (
+            json.loads(bytes(store))["messages"][0]["translation"]["select"] == selector
+        )
+
+    def test_bind_detached_append(self) -> None:
+        store = self.StoreClass()
+        store.parse(
+            '{"language":"cs","messages":[{"id":"k","translation":{"select":{"feature":"plural","cases":{"one":"one"}}}}]}'
+        )
+        unit = store.units[0].copy()
+        unit.target.extra_strings.append("few")
+        destination = self.StoreClass()
+        destination.settargetlanguage("en")
+        destination.addunit(unit)
+        assert unit.plural_forms == {"one": "one", "few": "few"}
+
+    def test_merge_native_selector(self) -> None:
+        store = self.StoreClass()
+        donor = self.StoreClass()
+        selector = {
+            "feature": "plural",
+            "arg": "n",
+            "cases": {"many": {"msg": "fraction"}, "=2": {"msg": "two"}},
+        }
+        donor.parse(
+            json.dumps(
+                {
+                    "language": "en",
+                    "messages": [{"id": "k", "translation": {"select": selector}}],
+                }
+            )
+        )
+        store.parse(
+            '{"language":"en","messages":[{"id":"k","translation":"old","comment":"keep"}]}'
+        )
+        store.units[0].merge(donor.units[0], overwrite=True)
+        result = json.loads(bytes(store))["messages"][0]
+        assert result["comment"] == "keep"
+        assert (
+            result["translation"]
+            == json.loads(bytes(donor))["messages"][0]["translation"]
+        )
+
+    def test_merge_foreign_plural_categories(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("cs")
+        store.parse(
+            '{"language":"cs","messages":[{"id":"k","translation":{"select":{"feature":"plural","cases":{"one":"1","many":"fraction","other":"5"}}}}]}'
+        )
+        unit = store.units[0]
+        donor = jsonl10n.I18NextV4File()
+        donor.settargetlanguage("cs")
+        donor.parse('{"k_one":"single","k_few":"several","k_other":"rest"}')
+        unit.merge(donor.units[0], overwrite=True)
+        assert unit.plural_forms == {"one": "single", "few": "several", "other": "rest"}
+        assert (
+            type(store).parsestring(bytes(store)).units[0].plural_forms
+            == unit.plural_forms
+        )
+
+    def test_foreign_scalar_merge(self) -> None:
+        store = self.StoreClass()
+        store.parse(
+            '{"language":"en","messages":[{"id":"k","translation":{"select":{"feature":"plural","cases":{"one":"one","other":"rest"}}}}]}'
+        )
+        unit = store.units[0]
+        donor = base.TranslationUnit()
+        donor.target = "replacement"
+        store.settargetlanguage("cs")
+        unit.merge(donor, overwrite=True)
+        assert unit.plural_forms["other"] == "replacement"
+        unit.rich_target = unit.rich_target
+        assert unit.plural_forms["other"] == "replacement"
+
+    def test_named_forms(self) -> None:
+        cases = {
+            "other": "",
+            "many": {"msg": "fraction", "note": "keep"},
+            "=2": {"msg": "two"},
+        }
+        selector = {"feature": "plural", "arg": "count", "cases": cases}
+        msg = {"id": "k", "translation": {"select": selector}}
+        store = self.StoreClass()
+        store.parse(json.dumps({"language": "cs", "messages": [msg]}))
+        assert json.loads(bytes(store))["messages"][0] == msg
+        unit = store.units[0]
+        assert unit.plural_forms == {"many": "fraction", "other": ""}
+        unit.update_plural_forms({"many": "updated", "other": None, "few": "few"})
+        with raises(ValueError):
+            unit.plural_forms = {}
+        expected = {
+            "many": {"msg": "updated", "note": "keep"},
+            "=2": {"msg": "two"},
+            "few": {"msg": "few"},
+        }
+        assert json.loads(bytes(store))["messages"][0]["translation"]["select"] == {
+            **selector,
+            "cases": expected,
+        }
+        assert self.reparse(store).units[0].plural_forms == unit.plural_forms
 
     def test_complex_id(self) -> None:
         text = """{
