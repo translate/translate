@@ -302,6 +302,11 @@ class GoI18nTOMLUnit(base.NamedPluralUnit, TOMLUnit):
         forms = super()._get_plural_forms()
         return forms if forms is not None and len(forms) >= 2 else None
 
+    def _merge_named_target(self, forms) -> None:
+        if len(forms) < 2:
+            forms = {**dict.fromkeys(self.plural_forms or {}, ""), **forms}
+        super()._merge_named_target(forms)
+
     def _replace_plural_forms(self, forms: dict[str, str]) -> None:
         if len(forms) < 2:
             raise ValueError("Go-i18n plural tables require at least two categories")

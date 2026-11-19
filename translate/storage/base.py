@@ -779,6 +779,20 @@ class TranslationUnit:
         """Do basic format agnostic merging."""
         if not overwrite and self._has_target_text():
             return
+        donor_forms = otherunit._plural_forms_for_merge()
+        if donor_forms is not None and (current := self.plural_forms) is not None:
+            # Formats can retain nonstandard identifiers already on the unit.
+            compatible = {
+                tag: value
+                for tag, value in donor_forms.items()
+                if tag in cldr_plural_categories or tag in current
+            }
+            if donor_forms and not compatible:
+                raise ValueError(
+                    f"No compatible plural identifiers: {', '.join(donor_forms)}"
+                )
+            self._merge_named_target(compatible)
+            return
         target = otherunit.target
         if isinstance(target, str) and not isinstance(target, multistring):
             forms = self.plural_forms
@@ -786,7 +800,17 @@ class TranslationUnit:
                 tag = next(iter(forms)) if len(forms) == 1 else "other"
                 self._merge_scalar_target(tag, target)
                 return
-        self.rich_target = otherunit.rich_target
+        if isinstance(target, multistring) and isinstance(self, NamedPluralUnit):
+            self.target = multistring(target.strings)
+        else:
+            self.rich_target = otherunit.rich_target
+
+    def _plural_forms_for_merge(self) -> Mapping[str, str] | None:
+        """Return named donor values when their identities are known."""
+        return self.plural_forms
+
+    def _merge_named_target(self, forms: Mapping[str, str]) -> None:
+        self.plural_forms = forms
 
     def _merge_scalar_target(self, tag: str, text: str) -> None:
         """Update the default translation without interpreting a scalar as position zero."""
@@ -875,9 +899,17 @@ class TranslationUnit:
         return plural_strings[: len(plural_tags)]
 
 
+def _base_locale_code(locale: str | None) -> str:
+    if not locale:
+        return "en"
+    # Handle b+ style language codes and standardize
+    return locale.removeprefix("b+").replace("_", "-").replace("+", "-").split("-")[0]
+
+
 class NamedPluralUnit(TranslationUnit):
     """A named target mapping with a legacy positional view."""
 
+    _allows_empty_plural_group = False
     _forms: dict[str, str] | None = None
     _projection: tuple[str, ...] = ()
     # None is a valid store language. Ellipsis marks a projection awaiting its first store.
@@ -904,8 +936,17 @@ class NamedPluralUnit(TranslationUnit):
         return forms or dict.fromkeys(tags[: len(strings)], "")
 
     @staticmethod
-    def _positional_tags(store, target: multistring) -> tuple[str, ...]:
-        return tuple(store.get_plural_tags(target))
+    def _tags_for_locale(locale: str | None, count: int) -> list[str]:
+        return get_cldr_plural_tags(locale or "en", count)
+
+    @classmethod
+    def _positional_tags(cls, store, target: multistring) -> tuple[str, ...]:
+        locale = (
+            store.get_base_locale_code()
+            if store.gettargetlanguage() is not None
+            else None
+        )
+        return tuple(cls._tags_for_locale(locale, len(target.strings)))
 
     def bind_plural_projection(self, store) -> None:
         """Resolve a newly constructed positional unit against its destination."""
@@ -940,19 +981,30 @@ class NamedPluralUnit(TranslationUnit):
 
     def _merge_scalar_target(self, tag: str, text: str) -> None:
         super()._merge_scalar_target(tag, text)
-        if (
-            self._store is not None
-            and self._store.gettargetlanguage() != self._projection_language
-        ):
+        self._refresh_merged_projection()
+
+    def _merge_named_target(self, forms: Mapping[str, str]) -> None:
+        # Keep an empty group representable in formats requiring a category.
+        if not forms and not self._allows_empty_plural_group:
+            forms = dict.fromkeys(self._projection, "")
+        super()._merge_named_target(forms)
+        self._refresh_merged_projection()
+
+    def _refresh_merged_projection(self) -> None:
+        """Expose a merged target in the destination's actual positional order."""
+        if self._store is None:
+            return
+        tags = self._positional_tags(self._store, self.target)
+        if self._projection != tags:
             forms = self._get_plural_forms()
             if forms is not None:
-                self.set_plural_projection(
-                    forms, self._positional_tags(self._store, self.target)
-                )
-                self._projection_language = self._store.gettargetlanguage()
+                self.set_plural_projection(forms, tags)
+        self._projection_language = self._store.gettargetlanguage()
 
     def _replace_plural_forms(self, forms: dict[str, str]) -> None:
-        if not forms or any(tag not in cldr_plural_categories for tag in forms):
+        if (not forms and not self._allows_empty_plural_group) or any(
+            tag not in cldr_plural_categories for tag in forms
+        ):
             raise ValueError("Expected at least one recognized plural category")
         self.set_plural_projection(forms, self._projection)
 
@@ -1529,13 +1581,7 @@ class TranslationStore(Generic[U]):
         return "id"
 
     def get_base_locale_code(self) -> str:
-        locale = self.gettargetlanguage()
-        if not locale:
-            return "en"
-        # Handle b+ style language codes and standardize
-        return (
-            locale.removeprefix("b+").replace("_", "-").replace("+", "-").split("-")[0]
-        )
+        return _base_locale_code(self.gettargetlanguage())
 
     def get_plural_tags(
         self, target: list[str] | str | multistring | None = None

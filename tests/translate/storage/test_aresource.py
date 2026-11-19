@@ -834,6 +834,20 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         unit.plural_forms = {}
         assert unit.plural_forms == {}
 
+    def test_incompatible_donor_leaves_group_untouched(self) -> None:
+        store = self.StoreClass.parsestring(
+            b'<resources><plurals name="x"><item quantity="one">original</item></plurals></resources>'
+        )
+        donor = self.StoreClass.parsestring(
+            b'<resources><plurals name="x"><item quantity="custom">custom</item></plurals></resources>'
+        )
+        before = bytes(store)
+        with pytest.raises(
+            ValueError, match="No compatible plural identifiers: custom"
+        ):
+            store.units[0].merge(donor.units[0], overwrite=True)
+        assert bytes(store) == before
+
     def test_fractional_status(self) -> None:
         store = self.StoreClass()
         store.targetlanguage = "cs"

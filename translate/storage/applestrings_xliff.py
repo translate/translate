@@ -474,25 +474,17 @@ class AppleStringsXliffFile(xliff.Xliff1File):
 
         "zero" is included first when there is room for optional forms.
         """
-        target_lang = self.gettargetlanguage()
-        if target_lang is None:
-            return list(data.cldr_plural_categories)
-
-        tags = self.get_plural_tags(target).copy()
+        locale = (
+            self.get_base_locale_code()
+            if self.gettargetlanguage() is not None
+            else None
+        )
         count = (
             len(self.UnitClass.get_plural_strings(target))
             if target is not None
             else None
         )
-        if (
-            count == 2
-            and data.plural_tags.get(self.get_base_locale_code()) is None
-            and "zero" not in tags
-        ):
-            return ["zero", "other"]
-        if "zero" not in tags and count != 1:
-            tags.insert(0, "zero")
-        return tags
+        return data.get_apple_plural_tags(locale, count)
 
     @property
     def target_plural_tags(self) -> list[str]:
