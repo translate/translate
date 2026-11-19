@@ -1309,6 +1309,32 @@ class TestI18NextV4Store(test_monolingual.TestMonolingualStore):
             "k_other": "ostatní",
         }
 
+    @mark.parametrize(
+        ("language", "original", "expected"),
+        [
+            (
+                "ru",
+                {"k_one": "1", "k_few": "2", "k_many": "5"},
+                {"k_one": "1", "k_few": "2", "k_many": "5", "k_other": "5"},
+            ),
+            (None, {"k_one": "1", "k_other": "5"}, {"k_one": "1", "k_few": "5"}),
+        ],
+    )
+    def test_rebind_detached_projection(self, language, original, expected) -> None:
+        source = self.StoreClass()
+        source.settargetlanguage(language)
+        source.parse(json.dumps(original))
+        unit = source.units[0]
+        source.removeunit(unit)
+
+        destination = self.StoreClass()
+        destination.settargetlanguage("cs")
+        destination.addunit(unit)
+        assert json.loads(bytes(destination)) == original
+
+        unit.target = unit.target
+        assert json.loads(bytes(destination)) == expected
+
     def test_shorter_positional(self) -> None:
         store = self.StoreClass()
         store.targetlanguage = "en"

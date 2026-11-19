@@ -27,7 +27,7 @@ from contextlib import contextmanager
 from contextvars import ContextVar
 from io import BytesIO
 from itertools import starmap
-from types import MappingProxyType
+from types import EllipsisType, MappingProxyType
 from typing import (
     IO,
     TYPE_CHECKING,
@@ -868,7 +868,8 @@ class NamedPluralUnit(TranslationUnit):
 
     _forms: dict[str, str] | None = None
     _projection: tuple[str, ...] = ()
-    _projection_language: str | None = None
+    # None is a valid store language. Ellipsis marks a projection awaiting its first store.
+    _projection_language: str | EllipsisType | None = ...
 
     @staticmethod
     def _merge_positional(
@@ -902,7 +903,7 @@ class NamedPluralUnit(TranslationUnit):
             tags = self._positional_tags(store, self.target)
             self._forms = self._merge_positional(self.target, tags, None)
             self._projection = tags
-        if self._store is None:
+        if self._projection_language is ...:
             self._projection_language = store.gettargetlanguage()
 
     def _get_plural_forms(self) -> dict[str, str] | None:
@@ -954,6 +955,7 @@ class NamedPluralUnit(TranslationUnit):
         else:
             self._forms = None
             self._projection = ()
+            self._projection_language = ...
         self._rich_source = None
         self._rich_target = None
         self._target = target
