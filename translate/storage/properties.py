@@ -752,6 +752,39 @@ class proppluralunit(base.TranslationUnit):
         self.units = {}
         self.name = ""
 
+    _detached_target_language: str | None = None
+    _detached_source_tags: tuple[str, ...] = ()
+
+    def copy(self) -> Self:
+        members = {id(child): child.copy() for child in self.units.values()}
+        result = deepcopy(self, {id(self._store): None, **members})
+        result._detached_source_tags = tuple(self._get_source_mapping())
+        if self._store is not None:
+            result._detached_target_language = self._store.get_base_locale_code()
+        return result
+
+    def _target_mapping(self, target=None):
+        if (
+            self.personality.name == "gwt"
+            and isinstance(target, (list, multistring))
+            and len(self.get_plural_strings(target)) == 1
+        ):
+            return [self.KEY]
+        if self._store is None:
+            if self._detached_target_language is not None:
+                count = None if target is None else len(self.get_plural_strings(target))
+                return data.get_cldr_plural_tags(self._detached_target_language, count)
+            return self._get_existing_mapping()
+        return self._store.get_plural_tags(target)
+
+    def __eq__(self, other):
+        return super().__eq__(other) and (
+            not isinstance(other, proppluralunit)
+            or self.plural_forms == other.plural_forms
+        )
+
+    __hash__ = base.TranslationUnit.__hash__
+
     @staticmethod
     def _get_language_mapping(lang):
         if lang:
@@ -764,21 +797,32 @@ class proppluralunit(base.TranslationUnit):
         return [key for key in data.cldr_plural_categories if key in existing]
 
     def _get_source_mapping(self):
-        cldr_mapping = proppluralunit._get_language_mapping(self._store.sourcelanguage)  # ty:ignore[missing-union-attribute]
+        if self._store is None:
+            return self._detached_source_tags or self._get_existing_mapping()
+        cldr_mapping = self._get_language_mapping(self._store.sourcelanguage)
         if cldr_mapping:
             return cldr_mapping
         return self._get_existing_mapping()
 
-    def _get_units(self, mapping):
+    def _new_variant(self, tag):
+        child = propunit("", self.personality.name)
+        child._store = self._store
+        if self._store is None and self.KEY in self.units:
+            child._encoding = self.units[self.KEY].encoding
+        child.name = self.personality.get_key(self.name, tag)
+        return child
+
+    def _get_units(self, mapping, *, create=False):
         ret = []
         if len(self.units) > 1:
             for name in mapping:
                 if name not in self.units:
-                    unit = propunit("", self.personality.name)
-                    unit._store = self._store
-                    unit.name = self.personality.get_key(self.name, name)
-                    self.units[name] = unit
-                ret.append(self.units[name])
+                    unit = self._new_variant(name)
+                    if create:
+                        self.units[name] = unit
+                else:
+                    unit = self.units[name]
+                ret.append(unit)
         else:
             ret.append(self.units[proppluralunit.KEY])
         return ret
@@ -797,18 +841,48 @@ class proppluralunit(base.TranslationUnit):
         return ret
 
     def _get_source_unit(self):
-        self._get_units(self._get_source_mapping())  # Generate missing forms
         return self.units[proppluralunit.KEY]
 
-    def _get_ordered_units(self):
-        # Used for str (GWT order)
-        mapping = self.personality.get_expand_output_target_mapping(
-            self._store.get_plural_tags()  # ty:ignore[missing-union-attribute]
-        )
-        names = [
-            name for name in self.personality.get_cldr_names_order() if name in mapping
-        ]
-        return self._get_units(names)
+    def _get_plural_forms(self) -> dict[str, str] | None:
+        if self.personality.name != "gwt" or not self.hasplural():
+            return None
+        return {
+            tag: child.target
+            if child.translation or child.explicit_empty_target
+            else child.source
+            for tag, child in self.units.items()
+        }
+
+    def _merge_named_target(self, forms) -> None:
+        if self.KEY not in forms or len(forms) < 2:
+            forms = {**dict.fromkeys(self.units, ""), **forms}
+        self._write_plural_forms(forms, merging=True)
+
+    def _replace_plural_forms(self, forms: dict[str, str]) -> None:
+        self._write_plural_forms(forms, merging=False)
+
+    def _write_plural_forms(self, forms: dict[str, str], *, merging: bool) -> None:
+        if "other" not in forms or len(forms) < 2:
+            raise ValueError("A GWT plural group needs a default and a named variant")
+        if forms.keys() - set(self.personality.get_cldr_names_order()):
+            raise ValueError("Unknown GWT plural variant")
+        current = self._get_plural_forms()
+        for tag in self.units.keys() - forms:
+            del self.units[tag]
+        for tag, value in forms.items():
+            if not merging and current is not None and current.get(tag) == value:
+                continue
+            child = self.units.get(tag)
+            if child is None:
+                child = self._new_variant(tag)
+                self.units[tag] = child
+            child.target = value
+            child.explicit_empty_target = not value
+        self._rich_source = self._rich_target = None
+        self._invalidate_store_indexes()
+
+    def _has_target_text(self) -> bool:
+        return any(child.target for child in self.units.values())
 
     def hasplural(self, key=None):
         if key is None:
@@ -826,22 +900,64 @@ class proppluralunit(base.TranslationUnit):
         else:
             strings = [text]
         if mapping is None:
-            mapping = self._store.get_plural_tags(text)  # ty:ignore[missing-union-attribute]
+            mapping = self._target_mapping(text)
+
+        removed: set[str] = set()
+        if (
+            self.personality.name == "gwt"
+            and self.hasplural()
+            and isinstance(text, (multistring, list))
+        ):
+            if len(strings) > len(mapping):
+                raise ValueError(
+                    f"Cannot map {len(strings)} positional forms to {', '.join(mapping)}"
+                )
+            if len(strings) == len(mapping) and strings == self.get_plural_strings(
+                self.target
+            ):
+                return
+            removed = set(mapping[len(strings) :])
+            if (
+                self.KEY in removed
+                or len((self.units.keys() | set(mapping[: len(strings)])) - removed) < 2
+            ):
+                raise ValueError(
+                    "A GWT plural group needs a default and a named variant"
+                )
+            mapping = mapping[: len(strings)]
 
         strings = self._get_strings(strings, mapping)
-        units = self._get_units(mapping)
+        sparse = (
+            self.personality.name == "gwt"
+            and self.hasplural()
+            and isinstance(text, (list, multistring))
+        )
+        units = self._get_units(mapping, create=not sparse)
         if len(strings) != len(units):
             raise ValueError(
                 f'Not same plural counts between "{strings}" and "{units}"'
             )
-        if "other" not in mapping and "other" in self.units:
-            self.units["other"].target = strings[-1]
 
-        for a, b in zip(strings, units, strict=True):
-            b.target = a
+        for tag in self.units.keys() & removed:
+            del self.units[tag]
+        for tag, value, child in zip(mapping, strings, units, strict=False):
+            if (sparse or child.explicit_empty_target) and value == child.target:
+                continue
+            if sparse:
+                self.units[tag] = child
+            child.target = value
+            if (sparse or isinstance(text, dict)) and not value:
+                child.explicit_empty_target = True
+        self._rich_source = self._rich_target = None
+        self._invalidate_store_indexes()
+        self.units = {
+            key: self.units[key]
+            for key in self.personality.get_cldr_names_order()
+            if key in self.units
+        }
 
     def gettarget(self):
-        ll = [x.target for x in self._get_units(self._store.get_plural_tags())]  # ty:ignore[missing-union-attribute]
+        ll = [x.target for x in self._get_units(self._target_mapping())]
         if len(ll) > 1:
             return multistring(ll)
         return ll[0]
@@ -869,7 +985,7 @@ class proppluralunit(base.TranslationUnit):
             mapping = self._get_source_mapping()
 
         strings = self._get_strings(strings, mapping)
-        units = self._get_units(mapping)
+        units = self._get_units(mapping, create=True)
         if len(strings) != len(units):
             raise ValueError(
                 f'Not same plural counts between "{strings}" and "{units}"'
@@ -991,7 +1107,7 @@ class proppluralunit(base.TranslationUnit):
         return self.getoutput()
 
     def getoutput(self):
-        return "".join(unit.getoutput() for unit in self._get_ordered_units())
+        return "".join(unit.getoutput() for unit in self.units.values())
 
     @property
     def encoding(self):
@@ -1054,6 +1170,7 @@ class propunit(base.TranslationUnit):
         super().__init__(source)
         self.name = ""
         self.value = ""
+        self.explicit_empty_target = False
         self.translation = ""
         self.delimiter = "="
         self.comments = []
@@ -1111,6 +1228,7 @@ class propunit(base.TranslationUnit):
     @target.setter
     def target(self, target) -> None:
         self._rich_target = None
+        self.explicit_empty_target = False
         self.translation = self.personality.encode(target or "", self.encoding)
         self.explicitly_missing = not bool(target)
 
@@ -1141,7 +1259,11 @@ class propunit(base.TranslationUnit):
             key = key.replace(kwc, f"\\{kwc}")
             key = f"{kwc}{key}{kwc}"
         # encode value, if needed
-        value = self.translation or self.value
+        value = (
+            self.translation
+            if self.explicit_empty_target
+            else self.translation or self.value
+        )
         vwc = self.personality.value_wrap_char
         if vwc:
             value = value.replace(vwc, f"\\{vwc}")

@@ -5,7 +5,7 @@ from time import perf_counter
 from pytest import mark, raises
 
 from translate.misc.multistring import multistring
-from translate.storage import properties
+from translate.storage import base, jsonl10n, properties
 
 from . import test_monolingual
 
@@ -502,6 +502,126 @@ class TestGwtProp(test_monolingual.TestMonolingualStore):
         propregen = self.propregen(propsource).decode()
         assert f"{propsource}\n" == propregen
 
+    def test_positional_edit_preserves_sparse_variants(self) -> None:
+        store = self.propparse(
+            "k=base\nk[many]=fraction\nk[one]=one\n", targetlanguage="cs"
+        )
+        unit = store.units[0]
+        unit.update_plural_forms({"one": ""})
+        before = bytes(store)
+        unit.rich_target = unit.rich_target
+        assert bytes(store) == before
+        unit.target = multistring(["", "", "edited"])
+        expected = {"one": "", "many": "fraction", "other": "edited"}
+        assert unit.plural_forms == expected
+        assert self.propparse(bytes(store).decode()).units[0].plural_forms == expected
+
+    def test_merge_foreign_plural_categories(self) -> None:
+        store = self.propparse(
+            "k=base\nk[many]=fraction\nk[one]=one\n", targetlanguage="cs"
+        )
+        unit = store.units[0]
+        donor = jsonl10n.I18NextV4File()
+        donor.settargetlanguage("cs")
+        donor.parse('{"k_one":"single","k_few":"several","k_other":"rest"}')
+        unit.merge(donor.units[0], overwrite=True)
+        assert unit.plural_forms == {"one": "single", "few": "several", "other": "rest"}
+        assert (
+            self.propparse(bytes(store).decode()).units[0].plural_forms
+            == unit.plural_forms
+        )
+
+    def test_foreign_scalar_merge(self) -> None:
+        store = self.propparse("k=rest\nk[one]=one\n", targetlanguage="en")
+        unit = store.units[0]
+        donor = base.TranslationUnit()
+        donor.target = "replacement"
+        store.settargetlanguage("cs")
+        unit.merge(donor, overwrite=True)
+        assert unit.plural_forms["other"] == "replacement"
+        unit.rich_target = unit.rich_target
+        assert unit.plural_forms["other"] == "replacement"
+
+    def test_named_edit_refreshes_rich_source(self) -> None:
+        store = self.propparse("k=base\nk[many]=fraction\n")
+        unit = store.units[0]
+        assert len(unit.rich_source) == 2
+        unit.update_plural_forms({"one": "single"})
+        before = bytes(store)
+        assert len(unit.rich_source) == 3
+        unit.rich_source = unit.rich_source
+        assert bytes(store) == before
+
+    def test_scalar_writeback_after_clearing_default(self) -> None:
+        store = self.propparse("k=base\nk[one]=one\n", targetlanguage="ja")
+        unit = store.units[0]
+        unit.update_plural_forms({"other": ""})
+        unit.target = unit.target
+        assert b"k=\n" in bytes(store)
+
+    def test_detached_variant_inherits_encoding(self) -> None:
+        store = self.propparse("k=base\nk[one]=one\n", encoding="iso-8859-1")
+        unit = store.units[0].copy()
+        unit.update_plural_forms({"few": "漢"})
+        dest = self.propparse("", encoding="iso-8859-1")
+        dest.addunit(unit)
+        assert b"k[few]=\\u6f22" in bytes(dest).lower()
+
+    def test_edit_detached_default(self) -> None:
+        store = self.propparse("k=base\nk[one]=one\n", targetlanguage="en")
+        unit = store.units[0].copy()
+        unit.target = ["default"]
+        assert unit.plural_forms == {"one": "one", "other": "default"}
+
+    def test_merge_targets_matching_source(self) -> None:
+        store = self.propparse("k=base\nk[one]=one\n", targetlanguage="en")
+        unit = store.units[0]
+        donor = unit.copy()
+        donor.target = ["one", "base"]
+        assert not unit.istranslated()
+        assert not any(map(str, unit.rich_target))
+        unit.merge(donor)
+        assert unit.istranslated()
+        unit.rich_target = unit.rich_target
+        assert unit.target.strings == ["one", "base"]
+        unit.target = {"one": ""}
+        assert b"k[one]=\n" in bytes(store)
+
+    def test_copy_and_merge_named_variants(self) -> None:
+        store = self.propparse(
+            "k=base\nk[many]=fraction\nk[one]=one\n", targetlanguage="en"
+        )
+        unit = store.units[0]
+        unit.update_plural_forms({"one": ""})
+        clone = unit.buildfromunit(unit)
+        destination = self.propparse("", targetlanguage="en")
+        destination.addunit(clone)
+        assert bytes(destination) == bytes(store)
+        clone.update_plural_forms({"many": "new fraction"})
+        assert clone != unit
+        assert unit.plural_forms["many"] == "fraction"
+        unit.merge(clone, overwrite=True)
+        assert unit.plural_forms == clone.plural_forms
+
+    def test_named_forms(self) -> None:
+        original = "k=base\nk[many]=fraction\nk[one]=one\n"
+        store = self.propparse(original, targetlanguage="en")
+        unit = store.units[0]
+        assert unit.plural_forms == {"other": "base", "many": "fraction", "one": "one"}
+        assert bytes(store).decode() == original
+        unit.update_plural_forms({"one": "", "few": "few", "many": None})
+        reparsed = self.propparse(bytes(store).decode())
+        assert reparsed.units[0].plural_forms == {
+            "other": "base",
+            "one": "",
+            "few": "few",
+        }
+        with raises(ValueError):
+            unit.plural_forms = {"other": "base"}
+        assert (
+            self.propparse(original, personality="xwiki").units[0].plural_forms is None
+        )
+
     def test_reduce(self) -> None:
         """Checks that if the target language has less plural form the generated properties file is correct."""
         propsource = "test_me=I can code!\ntest_me[one]=I can code single!"
@@ -510,7 +630,7 @@ class TestGwtProp(test_monolingual.TestMonolingualStore):
         )  # Only "other" plural form
         print(propfile)
         print(str(propfile))
-        assert (bytes(propfile)) == b"test_me=I can code!\n"
+        assert bytes(propfile).decode() == propsource + "\n"
 
     def test_increase(self) -> None:
         """Checks that if the target language has more plural form the generated properties file is correct."""
@@ -523,11 +643,7 @@ class TestGwtProp(test_monolingual.TestMonolingualStore):
 
         assert isinstance(propunit.target, multistring)
         assert propunit.target.strings == ["", "", "", "", "", ""]
-        assert (
-            (bytes(propfile))
-            == b"test_me=I can code!\ntest_me[none]=\ntest_me[one]=I can code single!\n"
-            b"test_me[two]=\ntest_me[few]=\ntest_me[many]=\n"
-        )
+        assert bytes(propfile).decode() == propsource + "\n"
 
         propunit.target = {
             "other": "other",
@@ -670,11 +786,11 @@ userItems.test[one]=One item can be added.
 
         assert (
             bytes(propfile).decode()
-            == """userItems.limit=Only many {0} items can be added.
+            == """userItems.limit=Only X items can be added.
 userItems.limit[one]=Only one item can be added.
 userItems.limit[few]=Only {0} items can be added.
 userItems.limit[many]=Only many {0} items can be added.
-userItems.test=Only many {0} items can be added.
+userItems.test={0} items can be added.
 userItems.test[one]=Only one item can be added.
 userItems.test[few]=Only {0} items can be added.
 userItems.test[many]=Only many {0} items can be added.

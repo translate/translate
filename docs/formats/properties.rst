@@ -26,6 +26,10 @@ Features
 * Mozilla accelerators -- if a unit has an associated access key entry then
   these are combined into a single unit
 
+GWT plural groups expose the default key as ``other`` and the ``[none]``
+variant as ``zero``. Named edits require the default and at least one named
+variant.
+
 .. _properties#not_implemented:
 
 Not implemented
