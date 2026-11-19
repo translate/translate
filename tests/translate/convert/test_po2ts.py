@@ -35,6 +35,46 @@ msgstr "asdf"'''
         assert "<translation>asdf</translation>" in tsfile
         assert "<comment>" not in tsfile
 
+    def test_template_units_get_the_translation(self) -> None:
+        """With a template, its messages are filled in, not added again."""
+        template = BytesIO(
+            b"""<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="de">
+<context>
+    <name>Main</name>
+    <message>
+        <source>Open</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+</TS>
+"""
+        )
+        inputpo = po.pofile(
+            BytesIO(
+                b"""#: Main#1
+msgid "Open"
+msgstr "Offnen"
+
+#: Main#2
+msgid "Save"
+msgstr "Speichern"
+"""
+            )
+        )
+        output = BytesIO()
+        po2ts.po2ts().convertstore(inputpo, output, template)
+        tsfile = output.getvalue().decode("utf-8")
+        assert tsfile.count("<message>") == 2
+        assert "<translation>Offnen</translation>" in tsfile
+        assert "<translation>Speichern</translation>" in tsfile
+        assert 'language="de"' in tsfile
+
     def test_simple_unicode_unit(self) -> None:
         """Checks that a simple unit with unicode strings."""
         minipo = r'''#: unicode.cpp
