@@ -201,10 +201,12 @@ class AndroidResourceUnit(base.TranslationUnit):
         xmlelement: etree._Element | None = None,
         **kwargs,
     ) -> None:
+        self._explicit_markup_mode = False
         if xmlelement is not None:
             self.xmlelement = xmlelement
-            self._target_markup_mode = self.TARGET_MARKUP_PLAIN
-            self._init_target_markup_mode()
+            self._target_markup_mode = self._detect_markup_mode(
+                self._get_markup_targets()
+            )
         elif self.hasplurals(source):
             self.xmlelement = etree.Element(self.PLURAL_TAG)
             self._target_markup_mode = self.TARGET_MARKUP_XML
@@ -395,28 +397,16 @@ class AndroidResourceUnit(base.TranslationUnit):
             return list(self.xmlelement.iterchildren("item"))
         return [self.xmlelement]
 
-    def _has_xml_markup(self) -> bool:
-        return any(len(xmltarget) != 0 for xmltarget in self._get_markup_targets())
-
-    def _init_target_markup_mode(self) -> None:
-        if self._has_xml_markup():
-            self._target_markup_mode = self.TARGET_MARKUP_XML
-        elif any(
-            self._has_cdata_text(xmltarget) for xmltarget in self._get_markup_targets()
-        ):
-            self._target_markup_mode = self.TARGET_MARKUP_CDATA
-        elif any(
-            self._uses_plain_markup_roundtrip(xmltarget)
-            for xmltarget in self._get_markup_targets()
-        ):
-            self._target_markup_mode = self.TARGET_MARKUP_ESCAPED
-        elif any(
-            self._has_literal_angle_text(xmltarget)
-            for xmltarget in self._get_markup_targets()
-        ):
-            self._target_markup_mode = self.TARGET_MARKUP_PLAIN
-        else:
-            self._target_markup_mode = self.TARGET_MARKUP_XML
+    def _detect_markup_mode(self, targets: list[etree._Element]) -> str:
+        if any(len(item) for item in targets):
+            return self.TARGET_MARKUP_XML
+        if any(self._has_cdata_text(item) for item in targets):
+            return self.TARGET_MARKUP_CDATA
+        if any(self._uses_plain_markup_roundtrip(item) for item in targets):
+            return self.TARGET_MARKUP_ESCAPED
+        if any(self._has_literal_angle_text(item) for item in targets):
+            return self.TARGET_MARKUP_PLAIN
+        return self.TARGET_MARKUP_XML
 
     def _get_target_markup_mode(self) -> str:
         return self._target_markup_mode
@@ -437,6 +427,7 @@ class AndroidResourceUnit(base.TranslationUnit):
 
     def settargetmarkupmode(self, target_markup_mode: str) -> None:
         self._set_target_markup_mode(target_markup_mode)
+        self._explicit_markup_mode = True
 
     target_markup_mode = property(gettargetmarkupmode, settargetmarkupmode)
 
@@ -454,7 +445,7 @@ class AndroidResourceUnit(base.TranslationUnit):
             DeprecationWarning,
             stacklevel=2,
         )
-        self._set_target_markup_mode(
+        self.settargetmarkupmode(
             self.TARGET_MARKUP_ESCAPED if preserve_markup else self.TARGET_MARKUP_XML
         )
 
@@ -614,6 +605,7 @@ class AndroidResourceUnit(base.TranslationUnit):
         # Copy existing attributes
         for attribute, value in xmltarget.items():
             newtree.attrib[attribute] = value
+        newtree.tail = xmltarget.tail
         parent = xmltarget.getparent()
         # Parent can be none when operating on Unit only without a storage
         if parent is not None:
@@ -717,14 +709,58 @@ class AndroidResourceUnit(base.TranslationUnit):
             return "en"
         return super().gettargetlanguage()
 
+    def _get_plural_forms(self) -> dict[str, str] | None:
+        if self.xmlelement.tag != self.PLURAL_TAG:
+            return None
+        return {
+            quantity: self.get_xml_text_value(entry)
+            for entry in self.xmlelement.iterchildren("item")
+            if (quantity := entry.get("quantity")) is not None
+        }
+
+    def _replace_plural_forms(self, forms: dict[str, str]) -> None:
+        current = self._get_plural_forms()
+        if current == forms:
+            return
+        entries = {}
+        mode = self._get_target_markup_mode()
+        # Validate XML characters before modifying any of the items.
+        probe = etree.Element("item")
+        for quantity, value in forms.items():
+            if quantity not in data.cldr_plural_categories and (
+                current is None or quantity not in current
+            ):
+                raise ValueError(f"Unsupported Android plural quantity: {quantity!r}")
+            probe.set("quantity", quantity)
+            probe.text = value
+        for entry in self.xmlelement.iterchildren("item"):
+            quantity = entry.get("quantity")
+            if quantity is None:
+                continue
+            if quantity not in forms:
+                self.xmlelement.remove(entry)
+            else:
+                entries[quantity] = entry
+        for quantity, value in forms.items():
+            if current is not None and current.get(quantity) == value:
+                continue
+            item = entries.get(quantity)
+            item_mode = mode
+            if item is None:
+                item = etree.SubElement(self.xmlelement, "item", quantity=quantity)
+            elif not self._explicit_markup_mode:
+                item_mode = self._detect_markup_mode([item])
+            self.set_xml_text_value(value, item, target_markup_mode=item_mode)
+        self._set_target_markup_mode(mode)
+        self._rich_source = None
+        self._rich_target = None
+        self._invalidate_store_indexes()
+
     @property
     def target(self):
-        if self.xmlelement.tag != self.PLURAL_TAG:
+        plurals = self._get_plural_forms()
+        if plurals is None:
             return self.get_xml_text_value(self.xmlelement)
-        plurals = {
-            entry.get("quantity"): self.get_xml_text_value(entry)
-            for entry in self.xmlelement.iterchildren("item")
-        }
         plural_tags = (
             self._store.get_plural_tags() if self._store else data.plural_tags["en"]
         )
@@ -762,39 +798,48 @@ class AndroidResourceUnit(base.TranslationUnit):
             plural_tags = self._store.get_plural_tags(plural_target)  # ty:ignore[missing-union-attribute]
             plural_strings = self.sync_plural_count(plural_target, plural_tags)
 
-            # Rebuild plurals.
-            for entry in self.xmlelement.iterchildren():
-                self.xmlelement.remove(entry)
-
-            self.xmlelement.text = "\n    "
-
-            # Include additional plural for decimal numbers if not present. This is
-            # enforced by Android lint but translate-toolkit currently does not support
-            # editing this.
+            existing = {
+                entry.get("quantity"): entry
+                for entry in self.xmlelement.iterchildren("item")
+            }
+            if not len(self.xmlelement) and self.xmlelement.text is None:
+                self.xmlelement.text = "\n    "
+            values = dict(zip(plural_tags, plural_strings, strict=True))
             locale = self._store.get_base_locale_code()  # ty:ignore[missing-union-attribute]
-            if locale in data.DECIMAL_EXTRA_TAGS:
-                for extra in data.DECIMAL_EXTRA_TAGS[locale]:
-                    if extra not in plural_tags:
-                        # Create copy here to avoid modifications to language.data
-                        plural_tags = [*plural_tags, extra]
-                        plural_strings.append(plural_strings[-1])
+            fallbacks = list(data.DECIMAL_EXTRA_TAGS.get(locale, []))
+            if "many" in values:
+                fallbacks.append("other")
+            for tag in fallbacks:
+                if tag not in existing:
+                    values.setdefault(tag, plural_strings[-1])
 
-            # Include "other" as copy of "many" if "other" is not present. This avoids crashes
-            # of Android builds with broken plurals handling.
-            if "other" not in plural_tags and "many" in plural_tags:
-                # Create copy here to avoid modifications to language.data
-                plural_tags = [*plural_tags, "other"]
-                plural_strings.append(plural_strings[-1])
+            # A scalar assignment replaces the positional group with one form.
+            if not self.hasplurals(target):
+                for tag, item in existing.items():
+                    if tag and tag not in values and tag not in fallbacks:
+                        self.xmlelement.remove(item)
 
             for plural_tag, plural_string in sorted(
-                zip(plural_tags, plural_strings, strict=True),
+                values.items(),
                 key=lambda item: data.cldr_plural_categories.index(item[0]),
             ):
-                if not plural_string:
+                item = existing.get(plural_tag)
+                if not str(plural_string):
+                    if item is not None:
+                        self.xmlelement.remove(item)
                     continue
-                item = etree.Element("item")
-                item.set("quantity", plural_tag)
-                self.xmlelement.append(item)
+                if item is None:
+                    item = etree.Element("item", quantity=plural_tag)
+                    # Insert new legacy forms in their customary CLDR order.
+                    following = data.cldr_plural_categories[
+                        data.cldr_plural_categories.index(plural_tag) + 1 :
+                    ]
+                    for sibling in self.xmlelement.iterchildren("item"):
+                        if sibling.get("quantity") in following:
+                            sibling.addprevious(item)
+                            break
+                    else:
+                        self.xmlelement.append(item)
                 item_markup_mode = self.set_xml_text_value(
                     plural_string,
                     item,
@@ -815,6 +860,9 @@ class AndroidResourceUnit(base.TranslationUnit):
 
             self.set_xml_text_value(cast("str | None", target), self.xmlelement)
 
+        if super().source is None:
+            self._rich_source = None
+            self._invalidate_store_indexes()
         self._rich_target = None
         self._target = target
 

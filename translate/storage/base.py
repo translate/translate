@@ -27,6 +27,7 @@ from contextlib import contextmanager
 from contextvars import ContextVar
 from io import BytesIO
 from itertools import starmap
+from types import MappingProxyType
 from typing import (
     IO,
     TYPE_CHECKING,
@@ -48,7 +49,7 @@ from translate.storage.placeables import parse as rich_parse
 from translate.storage.workflow import StateEnum as states
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Generator
+    from collections.abc import Callable, Generator, Mapping
 
 logger = logging.getLogger(__name__)
 
@@ -668,7 +669,11 @@ class TranslationUnit:
         to ensure that other classes can implement more functionality
         (as XLIFF does).
         """
-        return bool(self.target) and not self.isfuzzy()
+        return self._has_target_text() and not self.isfuzzy()
+
+    def _has_target_text(self) -> bool:
+        forms = self._get_plural_forms()  # pylint: disable=assignment-from-none
+        return any(forms.values()) if forms is not None else bool(self.target)
 
     def istranslatable(self):
         """
@@ -725,6 +730,42 @@ class TranslationUnit:
         """Tells whether or not this specific unit has plural strings."""
         # TODO: Reconsider
         return False
+
+    def _get_plural_forms(self) -> dict[str, str] | None:
+        return None
+
+    def _replace_plural_forms(self, forms: dict[str, str]) -> None:
+        raise NotImplementedError
+
+    @property
+    def plural_forms(self) -> Mapping[str, str] | None:
+        """An immutable snapshot of the explicitly present target forms."""
+        forms = self._get_plural_forms()  # pylint: disable=assignment-from-none
+        return None if forms is None else MappingProxyType(forms)
+
+    @plural_forms.setter
+    def plural_forms(self, forms: Mapping[str, str]) -> None:
+        if self._get_plural_forms() is None:
+            raise NotImplementedError("Unit has no named plural forms")
+        if not all(isinstance(k, str) and isinstance(v, str) for k, v in forms.items()):
+            raise TypeError("Plural identifiers and values must be strings")
+        self._replace_plural_forms(dict(forms))
+
+    def update_plural_forms(self, changes: Mapping[str, str | None]) -> None:
+        """Patch named target forms, deleting entries with a value of None."""
+        forms = self._get_plural_forms()  # pylint: disable=assignment-from-none
+        if forms is None:
+            raise NotImplementedError("Unit has no named plural forms")
+        for key, value in changes.items():
+            if not isinstance(key, str):
+                raise TypeError("Plural identifiers must be strings")
+            if value is None:
+                forms.pop(key, None)
+            elif isinstance(value, str):
+                forms[key] = value
+            else:
+                raise TypeError("Plural values must be strings or None")
+        self._replace_plural_forms(forms)
 
     def getsourcelanguage(self):
         return self._store.getsourcelanguage()  # ty:ignore[missing-union-attribute]

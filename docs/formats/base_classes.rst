@@ -7,6 +7,46 @@ NOTE: This page is mostly useful for :doc:`developers
 </developers/developers>` as it describes some programming detail of the
 :doc:`toolkit <index>`.
 
+Editing named plural forms
+==========================
+
+Android and i18next v4 units expose their explicit target forms by identifier.
+Read ``unit.plural_forms`` as an immutable snapshot. An absent key denotes a
+missing form and an empty string denotes a present, empty translation.
+
+.. code-block:: python
+
+    forms = unit.plural_forms
+    if forms is not None:
+        unit.update_plural_forms({"many": decimal_translation})
+        unit.update_plural_forms({"few": None})  # delete this form
+
+A patch preserves every unmentioned category. Assign a mapping to
+``unit.plural_forms`` to replace the complete set, removing omitted categories.
+Android supports empty plural groups. i18next requires at least one recognized
+suffix to identify a group after serialization. Unknown i18next suffixes
+remain ordinary keys. Android accepts new quantities named ``zero``, ``one``,
+``two``, ``few``, ``many``, and ``other``. Existing nonstandard quantities can
+be read, edited, and deleted.
+
+Earlier i18next v4 serializers filled in missing locale categories with empty
+strings. A parse/serialize round trip now preserves absent keys. Assigning a
+positional target uses the current target locale. A shorter assignment removes
+trailing projected forms and retains categories outside that projection.
+Supplying more values than the locale has positional labels raises
+``ValueError``. Use ``update_plural_forms({"many": decimal_translation})`` to
+supply a translation outside the positional projection.
+
+Editors can pass the identifiers through to their editing interface and submit
+only changed entries. When ``unit.plural_forms is None``, use the existing
+``source`` and ``target`` API. This includes singular units and indexed formats
+such as gettext. Writing named forms on those units raises
+``NotImplementedError``. Positional Android callers retain their decimal-category
+fallbacks. Named edits never synthesize translations.
+
+Storage design
+==============
+
 For the implementation of the different storage classes that the toolkit
 supports, we want to define a set of base classes to form a common API for all
 formats. This will simplify implementation of new storage formats, and enable
