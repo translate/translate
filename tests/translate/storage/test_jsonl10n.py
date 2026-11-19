@@ -1820,6 +1820,20 @@ class TestGoI18NJsonFile(test_monolingual.TestMonolingualStore):
         with raises(ValueError, match="3 positional forms"):
             bytes(store)
 
+    def test_build_from_foreign_named_unit(self) -> None:
+        source = jsonl10n.I18NextV4File()
+        source.settargetlanguage("cs")
+        source.parse('{"k_other":"rest","k_many":"fraction"}')
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        store.addunit(store.UnitClass.buildfromunit(source.units[0]))
+        assert json.loads(bytes(store)) == [
+            {
+                "id": source.units[0].getid(),
+                "translation": {"other": "rest", "many": "fraction"},
+            }
+        ]
+
     def test_buildfromunit_preserves_named_forms(self) -> None:
         source = self.StoreClass()
         source.settargetlanguage("en")
@@ -1915,6 +1929,23 @@ class TestGoI18NJsonFile(test_monolingual.TestMonolingualStore):
             "other": "rest",
             "many": "fraction",
         }
+
+    @mark.parametrize("detached", [False, True])
+    def test_direct_named_edit_after_retarget(self, detached) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("ru")
+        store.parse('[{"id":"k","translation":{"one":"1","few":"2","many":"5"}}]')
+        unit = store.units[0]
+        store.settargetlanguage("cs")
+        if detached:
+            store.removeunit(unit)
+        forms = {"one": "single", "few": "several", "other": "rest"}
+        unit.plural_forms = forms
+        unit.rich_target = unit.rich_target
+        assert unit.plural_forms == forms
+        if detached:
+            store.addunit(unit)
+        assert json.loads(bytes(store)) == [{"id": "k", "translation": forms}]
 
     @mark.parametrize("detached", [False, True])
     def test_merge_foreign_plural_categories(self, detached) -> None:
@@ -2046,6 +2077,266 @@ class TestGoI18NJsonFile(test_monolingual.TestMonolingualStore):
 class TestGoI18NV2JsonFile(test_monolingual.TestMonolingualStore):
     StoreClass = jsonl10n.GoI18NV2JsonFile
 
+    @mark.parametrize(
+        ("message", "edited"),
+        [
+            ("old", "new"),
+            (
+                {"description": "note", "other": "old"},
+                {"description": "note", "other": "new"},
+            ),
+            ({"many": "old"}, {"many": "new"}),
+        ],
+    )
+    def test_rich_edit_single_form(self, message, edited) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        store.parse(json.dumps({"k": message}))
+        unit = store.units[0]
+        unit.rich_target = unit.rich_target
+        assert json.loads(bytes(store)) == {"k": message}
+        unit.rich_source = store.UnitClass("new").rich_source
+        assert json.loads(bytes(store)) == {"k": edited}
+        unit.rich_source = store.UnitClass("old").rich_source
+        unit.merge(store.UnitClass("new"), overwrite=True)
+        assert json.loads(bytes(store)) == {"k": edited}
+
+    def test_buildfromunit_preserves_named_forms(self) -> None:
+        source = self.StoreClass()
+        source.settargetlanguage("en")
+        entry = {"description": "note", "other": "old", "custom": "keep"}
+        catalog = {"k": entry}
+        source.parse(json.dumps(catalog))
+        unit = source.units[0]
+        unit.update_plural_forms({"many": "fraction"})
+        clone = unit.buildfromunit(unit)
+        destination = self.StoreClass()
+        destination.settargetlanguage("en")
+        destination.addunit(clone)
+        assert clone.target.strings == ["old"]
+        assert clone.plural_forms == {"other": "old", "many": "fraction"}
+        entry["many"] = "fraction"
+        assert json.loads(bytes(destination)) == catalog
+        clone.update_plural_forms({"other": "edited"})
+        assert json.loads(bytes(source)) == catalog
+
+    @mark.parametrize("attribute", ["rich_source", "rich_target"])
+    def test_rich_edit_after_language_change(self, attribute) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("ru")
+        store.parse('{"k":{"one":"1","few":"2","many":"5"}}')
+        store.settargetlanguage("cs")
+        unit = store.units[0]
+        edited = unit.multistring_to_rich(multistring(["one", "few", "rest"]))
+        setattr(unit, attribute, edited)
+        assert json.loads(bytes(store))["k"] == {
+            "one": "one",
+            "few": "few",
+            "many": "5",
+            "other": "rest",
+        }
+
+    def test_merge_positional_donor(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("cs")
+        store.parse('{"k":{"one":"1","many":"fraction","other":"5"}}')
+        unit = store.units[0]
+        donor = base.TranslationUnit()
+        donor.target = multistring(["single", "several", "rest"])
+        unit.merge(donor, overwrite=True)
+        saved = self.StoreClass.parsestring(bytes(store))
+        assert saved.units[0].plural_forms == {
+            "one": "single",
+            "few": "several",
+            "other": "rest",
+            "many": "fraction",
+        }
+
+    def test_merge_foreign_plural_categories(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("cs")
+        store.parse('{"k":{"one":"1","many":"fraction","other":"5"}}')
+        unit = store.units[0]
+        donor = jsonl10n.I18NextV4File()
+        donor.settargetlanguage("cs")
+        donor.parse('{"k_one":"single","k_few":"several","k_other":"rest"}')
+        unit.merge(donor.units[0], overwrite=True)
+        assert unit.plural_forms == {"one": "single", "few": "several", "other": "rest"}
+        assert (
+            type(store).parsestring(bytes(store)).units[0].plural_forms
+            == unit.plural_forms
+        )
+
+    @mark.parametrize("native", [False, True])
+    @mark.parametrize("detached", [False, True])
+    def test_merge_scalar_into_plural(self, native, detached) -> None:
+        store = self.StoreClass()
+        message = {"description": "keep", "one": "singular", "other": "plural"}
+        store.parse(json.dumps({"k": message}))
+        donor = (
+            self.StoreClass(BytesIO(b'{"k": "new"}')).units[0]
+            if native
+            else jsonl10n.FlatJsonUnit("new")
+        )
+        store.settargetlanguage("cs")
+        unit = store.units[0]
+        unit.merge(donor)
+        assert json.loads(bytes(store)) == {"k": message}
+        if detached:
+            store.removeunit(unit)
+        unit.merge(donor, overwrite=True)
+        if detached:
+            store.addunit(unit)
+        unit.rich_target = unit.rich_target
+        assert json.loads(bytes(store)) == {
+            "k": {"description": "keep", "other": "new"}
+        }
+
+    def test_index_after_projection_expands(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        store.parse('{"k":{"one":""}}')
+        unit = store.units[0]
+        assert store.findid("k") is None
+        unit.target.extra_strings.append("new")
+        assert unit.plural_forms == {"one": "", "other": "new"}
+        assert store.findid("k") is unit
+
+    def test_bind_detached_append(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("cs")
+        store.parse('{"k":{"one":"one"}}')
+        unit = store.units[0].copy()
+        unit.target.extra_strings.append("few")
+        destination = self.StoreClass()
+        destination.settargetlanguage("en")
+        destination.addunit(unit)
+        assert unit.plural_forms == {"one": "one", "few": "few"}
+
+    @mark.parametrize(("original", "replacement"), [(None, "en"), ("en", "en-US")])
+    def test_equivalent_locale_keeps_sparse_labels(self, original, replacement) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage(original)
+        store.parse('{"k":{"description":"keep","other":"value"}}')
+        unit = store.units[0]
+        store.settargetlanguage(replacement)
+        unit.rich_target = unit.rich_target
+        unit.target = unit.target
+        assert json.loads(bytes(store)) == {
+            "k": {"description": "keep", "other": "value"}
+        }
+
+    @mark.parametrize("attr", ["rich_target", "rich_source"])
+    @mark.parametrize("detach", ["copy", "remove"])
+    def test_detached_rich_edit_uses_saved_locale(self, attr, detach) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("ru")
+        store.parse('{"k":{"one":"1","few":"2","many":"5"}}')
+        unit = store.units[0]
+        store.settargetlanguage("cs")
+        if detach == "copy":
+            unit = unit.copy()
+        else:
+            store.removeunit(unit)
+        incoming = multistring(["single", "few", "rest"])
+        setattr(unit, attr, unit.multistring_to_rich(incoming))
+        destination = self.StoreClass()
+        destination.settargetlanguage("cs")
+        destination.addunit(unit)
+        assert json.loads(bytes(destination))["k"] == {
+            "one": "single",
+            "few": "few",
+            "many": "5",
+            "other": "rest",
+        }
+
+    def test_merge_scalar_before_first_attachment(self) -> None:
+        unit = jsonl10n.GoI18NV2JsonUnit(multistring(["singular", "plural"]))
+        unit.setid("k")
+        unit.notes = "keep"
+        unit.merge(jsonl10n.GoI18NV2JsonUnit("new"), overwrite=True)
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        store.addunit(unit)
+        assert json.loads(bytes(store)) == {
+            "k": {"description": "keep", "other": "new"}
+        }
+
+    def test_build_from_sparse_v1_unit(self) -> None:
+        donor = jsonl10n.GoI18NJsonFile.parsestring(
+            b'[{"id":"k","translation":{"other":"new"}}]'
+        )
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        store.addunit(store.UnitClass.buildfromunit(donor.units[0]))
+        assert json.loads(bytes(store)) == {"k": {"other": "new"}}
+
+    def test_foreign_plural_into_scalar(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        store.parse('{"k":"old"}')
+        donor = jsonl10n.GoI18NJsonFile.parsestring(
+            b'[{"id":"k","translation":{"other":"new"}}]'
+        )
+        store.units[0].merge(donor.units[0], overwrite=True)
+        assert json.loads(bytes(store)) == {"k": {"other": "new"}}
+
+    def test_detached_merge_keeps_receiver_locale(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        store.parse('{"k":{"one":"old","other":"old"}}')
+        unit = store.units[0].copy()
+        donor = self.StoreClass.parsestring(b'{"k":{"other":"new"}}')
+        unit.merge(donor.units[0], overwrite=True)
+        dest = self.StoreClass()
+        dest.settargetlanguage("en")
+        dest.addunit(unit)
+        unit.rich_target = unit.rich_target
+        assert json.loads(bytes(dest)) == {"k": {"other": "new"}}
+
+    def test_merge_named_forms(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        message = {"description": "keep", "one": "one", "other": "other"}
+        store.parse(json.dumps({"k": message}))
+        incoming = self.StoreClass()
+        incoming.parse('{"k": {"other": "new"}}')
+        donor = incoming.units[0]
+        donor.update_plural_forms({"many": "fraction"})
+        unit = store.units[0]
+        unit.merge(donor)
+        assert json.loads(bytes(store)) == {"k": message}
+        unit.merge(donor, overwrite=True)
+        unit.rich_target = unit.rich_target
+        assert json.loads(bytes(store)) == {
+            "k": {"description": "keep", "other": "new", "many": "fraction"}
+        }
+
+    def test_named_forms(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("cs")
+        forms = {"many": "fraction", "other": ""}
+        catalog = {"k": {"description": "keep", **forms}}
+        store.parse(json.dumps(catalog))
+        unit = store.units[0]
+        assert json.loads(bytes(store)) == catalog
+        assert unit.plural_forms == forms
+        unit.target = unit.target
+        assert unit.plural_forms == forms
+        assert store.findid(unit.getid()) is unit
+        with raises(ValueError, match="4 positional forms"):
+            unit.target = multistring(["a", "b", "c", "d"])
+        assert json.loads(bytes(store)) == catalog
+        unit.update_plural_forms({"one": "one", "other": None})
+        assert unit.plural_forms == {"many": "fraction", "one": "one"}
+        with raises(ValueError):
+            unit.plural_forms = {}
+        unit.plural_forms = {"many": "fraction"}
+        parsed = self.StoreClass()
+        parsed.parse(bytes(store))
+        assert parsed.units[0].plural_forms == {"many": "fraction"}
+        assert parsed.units[0].getnotes() == "keep"
+
     def test_plurals_1(self) -> None:
         store = self.StoreClass()
         store.parse(JSON_GOI18N_V2_SIMPLE)
@@ -2100,7 +2391,9 @@ class TestGoI18NV2JsonFile(test_monolingual.TestMonolingualStore):
             ]
         )
 
-        assert bytes(store).decode() == JSON_GOI18N_V2.replace("the plural form 5", "")
+        expected = json.loads(JSON_GOI18N_V2)
+        del expected["plural"]["other"]
+        assert json.loads(bytes(store)) == expected
 
     def test_plurals_missing(self) -> None:
         store = self.StoreClass()
@@ -2113,9 +2406,9 @@ class TestGoI18NV2JsonFile(test_monolingual.TestMonolingualStore):
 
         store.units[2].target = multistring(["{{.count}} tag"])
 
-        assert '"other": "{{.count}} tag"' in bytes(store).decode()
+        assert json.loads(bytes(store))["tag"]["one"] == "{{.count}} tag"
 
-    def test_simplification(self) -> None:
+    def test_preserve_objects(self) -> None:
         store = self.StoreClass()
         store.parse(JSON_GOI18N_V2_COMPLEX)
 
@@ -2128,7 +2421,7 @@ class TestGoI18NV2JsonFile(test_monolingual.TestMonolingualStore):
         assert store.units[3].target == "world"
         assert store.units[4].target == "hello"
 
-        assert bytes(store).decode() == JSON_GOI18N_V2_SIMPLE
+        assert bytes(store).decode() == JSON_GOI18N_V2_COMPLEX
 
     def test_invalid(self) -> None:
         store = self.StoreClass()
