@@ -44,3 +44,11 @@ Following JSON dialects are supported
 * `ARB <https://github.com/google/app-resource-bundle/wiki/ApplicationResourceBundleSpecification>`_
 * `FormatJS <https://formatjs.io/docs/getting-started/message-extraction/>`_
 * `RESJSON <https://docs.rws.com/en-US/sdl-passolo-help-785448/add-in-for-javascript-object-notation-json-file-format-types-410873>`_ (JavaScript Resource File)
+
+Go-i18n v2 plural objects
+-------------------------
+
+Use ``unit.plural_forms`` to edit categories by name. A JSON object with one
+category remains an object, including when it has no description. A scalar
+translation without notes remains a scalar. Adding notes serializes it as an
+object with the fields ``description`` and ``other``.

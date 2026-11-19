@@ -925,6 +925,7 @@ def _base_locale_code(locale: str | None) -> str:
 class NamedPluralUnit(TranslationUnit):
     """A named target mapping with a legacy positional view."""
 
+    _minimum_named_forms = 1
     _allows_empty_plural_group = False
     _forms: dict[str, str] | None = None
     _projection: tuple[str, ...] = ()
@@ -1018,6 +1019,18 @@ class NamedPluralUnit(TranslationUnit):
             return self._projection
         locale = _base_locale_code(language) if language is not None else None
         return tuple(self._tags_for_locale(locale, len(target.strings)))
+
+    @classmethod
+    def buildfromunit(cls, unit: TranslationUnit) -> Self:
+        newunit = super().buildfromunit(unit)
+        if type(unit) is not cls and (forms := unit._plural_forms_for_merge()):
+            # A foreign positional view can omit named translations or put a
+            # lone category in a slot with a different destination meaning.
+            named = {tag: forms[tag] for tag in cldr_plural_categories if tag in forms}
+            if len(named) >= cls._minimum_named_forms:
+                newunit._projection = tuple(named)
+                newunit._replace_plural_forms(named)
+        return newunit
 
     def snapshot_plural_locale(self) -> None:
         """Resolve appended positions and remember the locale for detached edits."""
