@@ -777,8 +777,20 @@ class TranslationUnit:
         self, otherunit, overwrite=False, comments=True, authoritative=False
     ) -> None:
         """Do basic format agnostic merging."""
-        if not self.target or overwrite:
-            self.rich_target = otherunit.rich_target
+        if not overwrite and self._has_target_text():
+            return
+        target = otherunit.target
+        if isinstance(target, str) and not isinstance(target, multistring):
+            forms = self.plural_forms
+            if forms is not None:
+                tag = next(iter(forms)) if len(forms) == 1 else "other"
+                self._merge_scalar_target(tag, target)
+                return
+        self.rich_target = otherunit.rich_target
+
+    def _merge_scalar_target(self, tag: str, text: str) -> None:
+        """Update the default translation without interpreting a scalar as position zero."""
+        self.update_plural_forms({tag: text})
 
     def unit_iter(self) -> Generator[Self]:
         """Iterator that only returns this unit."""
@@ -925,6 +937,19 @@ class NamedPluralUnit(TranslationUnit):
 
     def istranslatable(self) -> bool:
         return super().istranslatable() or self._has_target_text()
+
+    def _merge_scalar_target(self, tag: str, text: str) -> None:
+        super()._merge_scalar_target(tag, text)
+        if (
+            self._store is not None
+            and self._store.gettargetlanguage() != self._projection_language
+        ):
+            forms = self._get_plural_forms()
+            if forms is not None:
+                self.set_plural_projection(
+                    forms, self._positional_tags(self._store, self.target)
+                )
+                self._projection_language = self._store.gettargetlanguage()
 
     def _replace_plural_forms(self, forms: dict[str, str]) -> None:
         if not forms or any(tag not in cldr_plural_categories for tag in forms):
