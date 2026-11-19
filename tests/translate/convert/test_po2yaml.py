@@ -301,6 +301,73 @@ msgstr "Ola mundo!"
         )
         assert "key: Ola mundo!" in output
 
+    def test_partial_plural_keeps_empty_slot_untranslated(self) -> None:
+        catalog = '\n#: count\nmsgid "item"\nmsgid_plural "items"\nmsgstr[0] "translated"\nmsgstr[1] ""\n'
+        store, output = self._convert(catalog, "en: {count: {one: item, other: items}}")
+        parsed = type(store).parsestring(output.getvalue())
+        assert parsed.units[0].plural_forms == {"one": "translated"}
+
+    def test_untranslated_source_in_single_form_locale(self) -> None:
+        catalog = 'msgid ""\nmsgstr "Language: ja\\n"\n\n#: count\nmsgid "item"\nmsgid_plural "items"\nmsgstr[0] ""\n'
+        output = self._convert_to_string(
+            catalog, "en: {count: {one: item, other: items}}"
+        )
+        assert "one: item" in output
+        assert "other: items" in output
+
+    def test_declared_locale_headers(self) -> None:
+        for locale, header, values in [
+            ("en", "plural=(n != 1); nplurals=2;", ["one", "other"]),
+            ("ckb", "nplurals= 2; plural=n != 1;", ["one", "other"]),
+            (
+                "mk",
+                "nplurals=2; plural=n%10==1 && n%100!=11 ? 0 : 1;",
+                ["one", "other"],
+            ),
+            ("is", "nplurals=2; plural=(n%10!=1 || n%100==11);", ["one", "other"]),
+            (
+                "cy",
+                "nplurals=6; plural=n==0?5:n==1?4:n==2?3:n==3?2:n==6?1:0;",
+                ["other", "many", "few", "two", "one", "zero"],
+            ),
+            ("cy", "nplurals=2; plural=n==2;", ["other", "two"]),
+            ("zh", "nplurals=1; plural=0;", ["other"]),
+            ("pt_PT", "nplurals=2; plural=(n != 1);", ["one", "other"]),
+        ]:
+            catalog = f'msgid ""\nmsgstr ""\n"Language: {locale}\\n"\n"Plural-Forms: {header}\\n"\n\n#: count\nmsgid "item"\nmsgid_plural "items"\n'
+            catalog += "".join(
+                f'msgstr[{i}] "{value}"\n' for i, value in enumerate(values)
+            )
+            output = self._convert_to_string(
+                catalog, "en: {count: {one: item, other: items}}"
+            )
+            for value in values:
+                assert f"{value}: {value}" in output
+
+    def test_declared_french_plural_order(self) -> None:
+        catalog = 'msgid ""\nmsgstr ""\n"Language: fr\\n"\n"Plural-Forms: nplurals=3; plural=n<=1 ? 2 : n%1000000==0 ? 0 : 1;\\n"\n\n#: count\nmsgid "item"\nmsgid_plural "items"\nmsgstr[0] "millions"\nmsgstr[1] "rest"\nmsgstr[2] "single"\n'
+        output = self._convert_to_string(
+            catalog, "en: {count: {one: item, other: items}}"
+        )
+        assert "many: millions" in output
+        assert "other: rest" in output
+        assert "one: single" in output
+
+    def test_plural_import_uses_target_locale(self) -> None:
+        catalog = '\n#: count\nmsgid "item"\nmsgid_plural "items"\nmsgstr[0] "single"\nmsgstr[1] "several"\nmsgstr[2] "rest"\n'
+        for header, template_lang in [
+            ("", "cs"),
+            ('msgid ""\nmsgstr "Language: cs\\n"\n', "en"),
+        ]:
+            output = self._convert_to_string(
+                header + catalog,
+                f"{template_lang}: {{count: {{one: item, other: items}}}}",
+            )
+            assert "cs:" in output
+            assert "one: single" in output
+            assert "few: several" in output
+            assert "other: rest" in output
+
     def test_ruby_roundtrip(self) -> None:
         """Check PO converts back to Ruby YAML with language root key."""
         input_string = """
