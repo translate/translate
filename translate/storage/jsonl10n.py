@@ -502,95 +502,26 @@ class I18NextFile(JsonNestedFile):
             )
 
 
-class I18NextV4Unit(I18NextUnit):
+class I18NextV4Unit(base.NamedPluralUnit, I18NextUnit):
     """
     A i18next v4 format, JSON with plurals.
 
     See https://www.i18next.com/
     """
 
-    _forms: dict[str, str] | None = None
-    _projection: tuple[str, ...] = ()
-
     @classmethod
     def from_plural_forms(
         cls, forms: dict[str, str], tags: list[str], name: str
     ) -> Self:
         unit = cls(multistring([forms.get(tag, "") for tag in tags]), name)
-        unit._forms = forms
-        unit._projection = tuple(tags)
+        unit.set_plural_projection(forms, tags)
         return unit
-
-    @staticmethod
-    def _merge_positional(
-        target: multistring, tags: tuple[str, ...], existing: dict[str, str] | None
-    ) -> dict[str, str]:
-        strings = target.strings
-        if len(strings) > len(tags):
-            raise ValueError(
-                f"Cannot map {len(strings)} positional forms to {', '.join(tags)}"
-            )
-        forms = dict(existing or {})
-        for tag in tags[len(strings) :]:
-            forms.pop(tag, None)
-        for tag, value in zip(tags, strings, strict=False):
-            if existing is None or str(value) or tag in forms:
-                forms[tag] = str(value)
-        # Even an all-empty replacement needs a key to represent the group.
-        return forms or dict.fromkeys(tags[: len(strings)], "")
-
-    def bind_plural_projection(self, store) -> None:
-        """Resolve a newly constructed positional unit against its destination."""
-        if isinstance(self.target, multistring) and not self._projection:
-            tags = tuple(store.get_plural_tags(self.target))
-            self._forms = self._merge_positional(self.target, tags, None)
-            self._projection = tags
-
-    def _get_plural_forms(self) -> dict[str, str] | None:
-        if not isinstance(self.target, multistring) or not self._projection:
-            return None
-        return self._merge_positional(self.target, self._projection, self._forms)
 
     def istranslatable(self) -> bool:
         return self._has_target_text()
 
     def isblank(self) -> bool:
         return not self._has_target_text()
-
-    def _replace_plural_forms(self, forms: dict[str, str]) -> None:
-        if not forms or any(tag not in cldr_plural_categories for tag in forms):
-            raise ValueError("i18next requires at least one recognized plural suffix")
-        tags = self._projection or self._store.get_plural_tags(self.target)  # ty:ignore[missing-union-attribute]
-        self._forms = forms
-        self._projection = tuple(tags)
-        self._target = multistring([forms.get(tag, "") for tag in tags])
-        self._rich_source = None
-        self._rich_target = None
-        self._invalidate_store_indexes()
-
-    @I18NextUnit.target.setter
-    def target(self, target) -> None:
-        if isinstance(target, multistring) and (
-            self._store is not None or self._projection
-        ):
-            tags = (
-                tuple(self._store.get_plural_tags(target))
-                if self._store is not None
-                else self._projection
-            )
-            # Capture edits to mutable legacy strings before changing their labels.
-            existing = (
-                self._get_plural_forms() if tags != self._projection else self._forms
-            )
-            self._forms = self._merge_positional(target, tags, existing)
-            self._projection = tags
-        else:
-            self._forms = None
-            self._projection = ()
-        self._rich_source = None
-        self._rich_target = None
-        self._target = target
-        self._invalidate_store_indexes()
 
     def storevalues(self, output) -> None:
         forms = self._get_plural_forms()
