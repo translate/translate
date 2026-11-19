@@ -42,7 +42,7 @@ from typing import (
     TypeVar,
 )
 
-from translate.lang.data import get_cldr_plural_tags
+from translate.lang.data import cldr_plural_categories, get_cldr_plural_tags
 from translate.misc.multistring import multistring
 from translate.storage.placeables import StringElem
 from translate.storage.placeables import parse as rich_parse
@@ -861,6 +861,103 @@ class TranslationUnit:
 
         # Remove extra ones
         return plural_strings[: len(plural_tags)]
+
+
+class NamedPluralUnit(TranslationUnit):
+    """A named target mapping with a legacy positional view."""
+
+    _forms: dict[str, str] | None = None
+    _projection: tuple[str, ...] = ()
+    _projection_language: str | None = None
+
+    @staticmethod
+    def _merge_positional(
+        target: multistring, tags: tuple[str, ...], existing: dict[str, str] | None
+    ) -> dict[str, str]:
+        strings = target.strings
+        if len(strings) > len(tags):
+            raise ValueError(
+                f"Cannot map {len(strings)} positional forms to {', '.join(tags)}"
+            )
+        forms = dict(existing or {})
+        for tag in tags[len(strings) :]:
+            forms.pop(tag, None)
+        for tag, value in zip(tags, strings, strict=False):
+            if existing is None or str(value) or tag in forms:
+                forms[tag] = str(value)
+        # Even an all-empty replacement needs a key to represent the group.
+        if existing == {}:
+            return forms
+        return forms or dict.fromkeys(tags[: len(strings)], "")
+
+    @staticmethod
+    def _positional_tags(store, target: multistring) -> tuple[str, ...]:
+        return tuple(store.get_plural_tags(target))
+
+    def bind_plural_projection(self, store) -> None:
+        """Resolve a newly constructed positional unit against its destination."""
+        if not isinstance(self.target, multistring):
+            return
+        if not self._projection:
+            tags = self._positional_tags(store, self.target)
+            self._forms = self._merge_positional(self.target, tags, None)
+            self._projection = tags
+        if self._store is None:
+            self._projection_language = store.gettargetlanguage()
+
+    def _get_plural_forms(self) -> dict[str, str] | None:
+        if not isinstance(self.target, multistring) or not self._projection:
+            return None
+        return self._merge_positional(self.target, self._projection, self._forms)
+
+    def set_plural_projection(self, forms: dict[str, str], tags) -> None:
+        """Load explicit forms and the labels used for positional access."""
+        self._forms = forms
+        self._projection = tuple(tags)
+        self._target = multistring([forms.get(tag, "") for tag in self._projection])
+        self._rich_source = None
+        self._rich_target = None
+        self._invalidate_store_indexes()
+
+    def isblank(self) -> bool:
+        return super().isblank() and not self._has_target_text()
+
+    def istranslatable(self) -> bool:
+        return super().istranslatable() or self._has_target_text()
+
+    def _replace_plural_forms(self, forms: dict[str, str]) -> None:
+        if not forms or any(tag not in cldr_plural_categories for tag in forms):
+            raise ValueError("Expected at least one recognized plural category")
+        self.set_plural_projection(forms, self._projection)
+
+    @TranslationUnit.target.setter
+    def target(self, target) -> None:
+        if isinstance(target, multistring) and (
+            self._store is not None or self._projection
+        ):
+            tags = self._projection
+            language = self._projection_language
+            if self._store is not None:
+                language = self._store.gettargetlanguage()
+                # A parsed sparse projection carries its own labels. Writing it
+                # back verbatim must keep them unless the locale changed.
+                if target is not self._target or language != self._projection_language:
+                    tags = self._positional_tags(self._store, target)
+
+            # Capture edits to mutable legacy strings before changing their labels.
+            existing = (
+                self._get_plural_forms() if tags != self._projection else self._forms
+            )
+            self._forms = self._merge_positional(target, tags, existing)
+            self._projection = tags
+            self._projection_language = language
+        else:
+            self._forms = None
+            self._projection = ()
+        self._rich_source = None
+        self._rich_target = None
+        self._target = target
+        self._invalidate_store_indexes()
 
 
 class MetadataTranslationUnit(TranslationUnit):
