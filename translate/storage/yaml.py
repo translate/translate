@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import uuid
 from copy import deepcopy
+from datetime import date
 from typing import TYPE_CHECKING, Any
 
 from ruamel.yaml import YAML, YAMLError
@@ -285,10 +286,16 @@ class YAMLFile(base.DictStore[YAMLUnit]):
                     data,
                     self._get_key_comment(parent_map, key, previous_key, is_first_key),
                 )
-            elif isinstance(data, (bool, int)):
+            elif isinstance(data, (bool, int, float)):
                 yield (
                     prev,
                     str(data),
+                    self._get_key_comment(parent_map, key, previous_key, is_first_key),
+                )
+            elif isinstance(data, date):
+                yield (
+                    prev,
+                    data.isoformat(),
                     self._get_key_comment(parent_map, key, previous_key, is_first_key),
                 )
             elif isinstance(data, list):
