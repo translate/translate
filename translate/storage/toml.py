@@ -21,7 +21,7 @@ r"""Class that manages TOML data files for translation."""
 from __future__ import annotations
 
 import uuid
-from typing import IO, TYPE_CHECKING, Any, cast
+from typing import IO, TYPE_CHECKING, Any
 
 from tomlkit import TOMLDocument, document, loads
 from tomlkit.exceptions import TOMLKitError
@@ -181,7 +181,7 @@ class TOMLFile(base.DictStore[TOMLUnit]):
         self,
         data: AbstractTable | TOMLDocument,
         prev: base.UnitId,
-    ) -> Generator[tuple[base.UnitId, str, str | None]]:
+    ) -> Generator[tuple[base.UnitId, str | TOMLUnit, str | None]]:
         """Parse a TOML table/dictionary recursively, yielding units."""
         for k, v in data.items():
             yield from self._flatten(v, prev.extend("key", k), parent_map=data, key=k)
@@ -192,7 +192,7 @@ class TOMLFile(base.DictStore[TOMLUnit]):
         prev: base.UnitId | None = None,
         parent_map: AbstractTable | TOMLDocument | None = None,
         key: str | int | None = None,
-    ) -> Generator[tuple[base.UnitId, str, str | None]]:
+    ) -> Generator[tuple[base.UnitId, str | TOMLUnit, str | None]]:
         """
         Flatten TOML structure recursively into translatable units.
 
@@ -245,7 +245,7 @@ class TOMLFile(base.DictStore[TOMLUnit]):
             raise base.ParseError(e) from e
 
         for k, data, comment in self._flatten(self._original):
-            unit = self.UnitClass(data)
+            unit = data if isinstance(data, TOMLUnit) else self.UnitClass(data)
             unit.set_unitid(k)
             if comment:
                 unit.addnote(comment, origin="developer")
@@ -279,7 +279,7 @@ class TOMLFile(base.DictStore[TOMLUnit]):
             dict.update(parent, {new_key: value})
 
 
-class GoI18nTOMLUnit(TOMLUnit):
+class GoI18nTOMLUnit(base.NamedPluralUnit, TOMLUnit):
     """
     A TOML entry for Go i18n format with plural support.
 
@@ -290,6 +290,43 @@ class GoI18nTOMLUnit(TOMLUnit):
     def hasplural(self) -> bool:
         """Check if this unit contains plural strings (more than one form)."""
         return isinstance(self.target, multistring) and len(self.target.strings) > 1
+
+    @staticmethod
+    def _merge_positional(target, tags, existing):
+        forms = base.NamedPluralUnit._merge_positional(target, tags, existing)
+        if existing and len(forms) < 2 <= len(existing):
+            raise ValueError("Go-i18n plural tables require at least two categories")
+        return forms
+
+    def _get_plural_forms(self) -> dict[str, str] | None:
+        forms = super()._get_plural_forms()
+        return forms if forms is not None and len(forms) >= 2 else None
+
+    def _replace_plural_forms(self, forms: dict[str, str]) -> None:
+        if len(forms) < 2:
+            raise ValueError("Go-i18n plural tables require at least two categories")
+        super()._replace_plural_forms(forms)
+
+    def storevalues(self, output) -> None:
+        forms = self._get_plural_forms()
+        if forms is None:
+            super().storevalues(output)
+            return
+        table = output
+        try:
+            for _, key in self.get_unitid().parts:
+                table = table[key]
+        except (KeyError, IndexError, TypeError):
+            table = None
+        if not isinstance(table, dict):
+            self.storevalue(output, forms)
+            return
+        for tag in list(table):
+            if tag not in forms:
+                del table[tag]
+        for tag, value in forms.items():
+            if table.get(tag) != value:
+                table[tag] = value
 
     def convert_target(self) -> str | dict[str, str | None]:
         """
@@ -338,11 +375,16 @@ class GoI18nTOMLFile(TOMLFile):
 
     UnitClass = GoI18nTOMLUnit
 
+    def addunit(self, unit) -> None:
+        if isinstance(unit, GoI18nTOMLUnit):
+            unit.bind_plural_projection(self)
+        super().addunit(unit)
+
     def _parse_dict(
         self,
         data: AbstractTable | TOMLDocument,
         prev: base.UnitId,
-    ) -> Generator[tuple[base.UnitId, str | multistring, str | None]]:
+    ) -> Generator[tuple[base.UnitId, str | TOMLUnit, str | None]]:
         """
         Parse a TOML table, checking for plural forms.
 
@@ -357,17 +399,14 @@ class GoI18nTOMLFile(TOMLFile):
         # Does this look like a plural?
         # Need at least 2 keys and all keys must be CLDR plural categories
         if data and len(data) >= 2 and all(x in cldr_plural_categories for x in data):
-            # Extract plural forms in CLDR order
-            values = cast(
-                "list[str]",
-                [data[tag] for tag in cldr_plural_categories if tag in data],
-            )
-
-            # Skip blank values (all plurals are None or empty)
-            if values and not all(not value for value in values):
-                # Use blank string instead of None for missing forms
-                yield (prev, multistring(values), None)
-
+            forms = dict(data.items())
+            tags = [tag for tag in cldr_plural_categories if tag in forms]
+            unit = self.UnitClass()
+            assert isinstance(unit, GoI18nTOMLUnit)
+            if not all(isinstance(text, str) for text in forms.values()):
+                raise base.ParseError("Plural forms must contain strings")
+            unit.set_plural_projection(forms, tags)
+            yield prev, unit, None
             return
 
         # Handle normal dict
