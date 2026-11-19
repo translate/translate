@@ -287,6 +287,8 @@ class GoI18nTOMLUnit(base.NamedPluralUnit, TOMLUnit):
     pluralized strings used in Go applications and Hugo static sites.
     """
 
+    _minimum_named_forms = 2
+
     def hasplural(self) -> bool:
         """Check if this unit contains plural strings (more than one form)."""
         return isinstance(self.target, multistring) and len(self.target.strings) > 1
@@ -308,7 +310,7 @@ class GoI18nTOMLUnit(base.NamedPluralUnit, TOMLUnit):
         super()._merge_named_target(forms)
 
     def _replace_plural_forms(self, forms: dict[str, str]) -> None:
-        if len(forms) < 2:
+        if len(forms) < self._minimum_named_forms:
             raise ValueError("Go-i18n plural tables require at least two categories")
         super()._replace_plural_forms(forms)
 
