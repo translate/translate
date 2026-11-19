@@ -49,20 +49,28 @@ class StringsDictUnit(base.NamedPluralUnit, base.DictUnit):
         else:
             self.set_unitid(self.IdClass([("key", loc)]))
 
+    _allows_empty_plural_group = True
     _variable_fields: dict | None = None
+    _has_named_edits = False
+    _parsed_format_only = False
 
-    @staticmethod
-    def _positional_tags(store, target: multistring) -> tuple[str, ...]:
-        return tuple(store._get_target_plural_tags(target))
+    _tags_for_locale = staticmethod(data.get_apple_plural_tags)
 
     def _replace_plural_forms(self, forms: dict[str, str]) -> None:
         if any(tag not in data.cldr_plural_categories for tag in forms):
             raise ValueError("Unknown stringsdict plural category")
         self.set_plural_projection(forms, self._projection)
-        if self._variable_fields is None:
-            self._variable_fields = {
-                "NSStringFormatSpecTypeKey": "NSStringPluralRuleType"
-            }
+        self._has_named_edits = True
+
+    def _plural_forms_for_merge(self):
+        forms = self.plural_forms
+        if (
+            forms is not None
+            and self._variable_fields is None
+            and not self._has_named_edits
+        ):
+            return self.serialized_forms()
+        return forms
 
     def variable_fields(self) -> dict:
         """Return the variable metadata as it will appear in the plist."""
@@ -76,7 +84,7 @@ class StringsDictUnit(base.NamedPluralUnit, base.DictUnit):
         """Return explicit categories or apply the legacy positional fallback."""
         if self.innerkey is None:
             return {}
-        if self._variable_fields is not None:
+        if self._variable_fields is not None or self._has_named_edits:
             forms = self.plural_forms
             if forms is not None:
                 return dict(forms)
@@ -194,25 +202,17 @@ class StringsDictFile(base.DictStore):
         Get all supported plural tags for the target language.
         Note that 'zero' is supported when there is room for optional forms.
         """
-        target_lang = self.gettargetlanguage()
-        if target_lang is None:
-            return data.cldr_plural_categories
-
-        tags = self.get_plural_tags(target).copy()
+        locale = (
+            self.get_base_locale_code()
+            if self.gettargetlanguage() is not None
+            else None
+        )
         count = (
             len(self.UnitClass.get_plural_strings(target))
             if target is not None
             else None
         )
-        if (
-            count == 2
-            and data.plural_tags.get(self.get_base_locale_code()) is None
-            and "zero" not in tags
-        ):
-            return ["zero", "other"]
-        if "zero" not in tags and count != 1:
-            tags.insert(0, "zero")
-        return tags
+        return data.get_apple_plural_tags(locale, count)
 
     @property
     def target_plural_tags(self):
@@ -310,6 +310,7 @@ class StringsDictFile(base.DictStore):
             unit._variable_fields = {
                 tag: text for tag, text in fields.items() if tag not in forms
             }
+        unit._parsed_format_only = value is None
         unit.format_value_type = fields.get("NSStringFormatValueTypeKey", "")
         unit.localized_format = localized_format
         self.addunit(unit)
@@ -341,8 +342,12 @@ class StringsDictFile(base.DictStore):
 
                 # Omit an untranslated or incomplete entry instead of writing
                 # a dictionary which Apple cannot resolve at runtime.
-                if unit._variable_fields is None and not plurals.get("other"):
-                    if unit._forms == {} and unit.localized_format:
+                if unit._variable_fields is None and "other" not in plurals:
+                    if (
+                        unit._parsed_format_only
+                        and unit._forms == {}
+                        and unit.localized_format
+                    ):
                         plist[outerkey] = {
                             "NSStringLocalizedFormatKey": unit.localized_format
                         }
@@ -360,7 +365,10 @@ class StringsDictFile(base.DictStore):
             if (
                 plural_units
                 and not format_units
-                and all(unit._variable_fields is None for unit in plural_units)
+                and all(
+                    unit._variable_fields is None and not unit._has_named_edits
+                    for unit in plural_units
+                )
             ):
                 continue
 

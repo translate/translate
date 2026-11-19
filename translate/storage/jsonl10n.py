@@ -831,17 +831,33 @@ class GoTextJsonFile(JsonFile):
         out.write(b"\n")
 
 
-class GoI18NJsonUnit(FlatJsonUnit):
+class GoI18NJsonUnit(base.NamedPluralUnit, FlatJsonUnit):
     ID_FORMAT = "{}"
+    _plural_fields: dict | None = None
+
+    def merge(
+        self, otherunit, overwrite=False, comments=True, authoritative=False
+    ) -> None:
+        forms = otherunit._plural_forms_for_merge()
+        if (
+            forms
+            and self.plural_forms is None
+            and (overwrite or not self._has_target_text())
+        ):
+            tags = tuple(tag for tag in cldr_plural_categories if tag in forms)
+            if tags:
+                self.set_plural_projection({tag: forms[tag] for tag in tags}, tags)
+                self._projection_language = self._receiver_projection_language(
+                    self._projection_language
+                )
+                return
+        super().merge(otherunit, overwrite, comments, authoritative)
 
     def getvalue(self):
-        target = self.target
-        if isinstance(target, multistring):
-            plural_tags = self._store.get_plural_tags(target)  # ty:ignore[missing-union-attribute]
-            strings = self.sync_plural_count(target, plural_tags)
-            target = {
-                plural: strings[offset] for offset, plural in enumerate(plural_tags)
-            }
+        forms = self._get_plural_forms()
+        target = (
+            self.target if forms is None else {**(self._plural_fields or {}), **forms}
+        )
         value = {"id": self.getid()}
         if self.notes:
             value["description"] = self.notes
@@ -861,6 +877,11 @@ class GoI18NJsonFile(JsonFile):
 
     UnitClass = GoI18NJsonUnit
 
+    def addunit(self, unit) -> None:
+        if isinstance(unit, GoI18NJsonUnit):
+            unit.bind_plural_projection(self)
+        super().addunit(unit)
+
     def _extract_units(
         self,
         data,
@@ -879,20 +900,15 @@ class GoI18NJsonFile(JsonFile):
             translation = value.get("translation", "")
             if isinstance(translation, dict):
                 # Ordered list of plurals
-                try:
-                    translation = multistring(
-                        [
-                            require_json_string(
-                                translation.get(key), f"Key {item!r} plural {key!r}"
-                            )
-                            for key in cldr_plural_categories
-                            if key in translation
-                        ]
-                    )
-                except (TypeError, ValueError) as error:
-                    raise base.ParseError(
-                        f'"{item}" is an object but does not contain plurals. Maybe this is not a go-i18n JSON file?'
-                    ) from error
+                forms = {
+                    key: require_json_string(text, f"Plural form {key!r}")
+                    for key, text in translation.items()
+                    if key in cldr_plural_categories
+                }
+                if not forms:
+                    raise base.ParseError("Translation object does not contain plurals")
+                tags = [key for key in cldr_plural_categories if key in forms]
+                translation = multistring([forms[key] for key in tags])
             elif translation is not None and not isinstance(translation, (str, int)):
                 raise base.ParseError(
                     f"go-i18n translation does not contain string: {translation!r}"
@@ -904,6 +920,13 @@ class GoI18NJsonFile(JsonFile):
                 item,
                 description,
             )
+            if isinstance(translation, multistring):
+                unit._plural_fields = {
+                    key: text
+                    for key, text in value["translation"].items()
+                    if key not in cldr_plural_categories
+                }
+                unit.set_plural_projection(forms, tags)
             unit.setid(item, unitid=self.UnitClass.IdClass.from_key(item))
             yield unit
 

@@ -37,6 +37,7 @@ Following JSON dialects are supported
 * i18next v3 & v4
 * Web Extension i18n
 * `go-i18n v1 & v2 <https://github.com/nicksnyder/go-i18n>`_
+  V1 translation objects preserve explicit plural identifiers and empty forms. Use ``unit.plural_forms`` to edit them by name.
 * `gotext <https://pkg.go.dev/golang.org/x/text/cmd/gotext>`_
 * `ARB <https://github.com/google/app-resource-bundle/wiki/ApplicationResourceBundleSpecification>`_
 * `FormatJS <https://formatjs.io/docs/getting-started/message-extraction/>`_

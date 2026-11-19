@@ -895,6 +895,18 @@ def get_cldr_plural_tags(
     return plural_tags["en"]
 
 
+def get_apple_plural_tags(locale: str | None, count: int | None) -> list[str]:
+    """Resolve the legacy Apple projection, including the optional zero slot."""
+    if locale is None:
+        return list(cldr_plural_categories)
+    tags = get_cldr_plural_tags(locale, count).copy()
+    if "zero" not in tags and count != 1:
+        if count == 2 and locale not in plural_tags:
+            return ["zero", "other"]
+        tags.insert(0, "zero")
+    return tags
+
+
 # CLDR plurals with additional decimal tags
 DECIMAL_EXTRA_TAGS = {
     "be": ["other"],

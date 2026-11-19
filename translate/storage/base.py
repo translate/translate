@@ -25,6 +25,7 @@ import logging
 import os
 from contextlib import contextmanager
 from contextvars import ContextVar
+from copy import deepcopy
 from io import BytesIO
 from itertools import starmap
 from types import EllipsisType, MappingProxyType
@@ -264,7 +265,9 @@ class TranslationUnit:
     _source = None
     _target = None
     _rich_source = None
+    _rich_source_count = 0
     _rich_target = None
+    _rich_target_count = 0
     _state_n = 0
     _line_number: int | None = None
     notes = ""
@@ -379,8 +382,12 @@ class TranslationUnit:
     @property
     def rich_source(self):
         """.. seealso:: :meth:`.rich_to_multistring`, :meth:`multistring_to_rich`."""
-        if self._rich_source is None:
+        if self._rich_source is None or (
+            isinstance(self.source, multistring)
+            and self._rich_source_count != len(self.source.strings)
+        ):
             self._rich_source = self.multistring_to_rich(self.source)
+            self._rich_source_count = len(self._rich_source)
         return self._rich_source
 
     @rich_source.setter
@@ -392,6 +399,7 @@ class TranslationUnit:
         if not isinstance(value[0], StringElem):
             raise TypeError("value[0] must be of type StringElem.")
         self._rich_source = list(value)
+        self._rich_source_count = len(value)
         multi = self.rich_to_multistring(value)
         if self.source != multi:
             self.source = multi
@@ -399,8 +407,12 @@ class TranslationUnit:
     @property
     def rich_target(self):
         """.. seealso:: :meth:`.rich_to_multistring`, :meth:`.multistring_to_rich`."""
-        if self._rich_target is None:
+        if self._rich_target is None or (
+            isinstance(self.target, multistring)
+            and self._rich_target_count != len(self.target.strings)
+        ):
             self._rich_target = self.multistring_to_rich(self.target)
+            self._rich_target_count = len(self._rich_target)
         return self._rich_target
 
     @rich_target.setter
@@ -412,7 +424,11 @@ class TranslationUnit:
         if not isinstance(value[0], StringElem):
             raise TypeError("value[0] must be of type StringElem.")
         self._rich_target = list(value)
-        self.target = self.rich_to_multistring(value)
+        self._rich_target_count = len(value)
+        self._set_target_from_rich(self.rich_to_multistring(value))
+
+    def _set_target_from_rich(self, target: multistring) -> None:
+        self.target = target
 
     def gettargetlen(self) -> int:
         """
@@ -779,6 +795,20 @@ class TranslationUnit:
         """Do basic format agnostic merging."""
         if not overwrite and self._has_target_text():
             return
+        donor_forms = otherunit._plural_forms_for_merge()
+        if donor_forms is not None and (current := self.plural_forms) is not None:
+            # Formats can retain nonstandard identifiers already on the unit.
+            compatible = {
+                tag: value
+                for tag, value in donor_forms.items()
+                if tag in cldr_plural_categories or tag in current
+            }
+            if donor_forms and not compatible:
+                raise ValueError(
+                    f"No compatible plural identifiers: {', '.join(donor_forms)}"
+                )
+            self._merge_named_target(compatible)
+            return
         target = otherunit.target
         if isinstance(target, str) and not isinstance(target, multistring):
             forms = self.plural_forms
@@ -786,7 +816,17 @@ class TranslationUnit:
                 tag = next(iter(forms)) if len(forms) == 1 else "other"
                 self._merge_scalar_target(tag, target)
                 return
-        self.rich_target = otherunit.rich_target
+        if isinstance(target, multistring) and isinstance(self, NamedPluralUnit):
+            self.target = multistring(target.strings)
+        else:
+            self.rich_target = otherunit.rich_target
+
+    def _plural_forms_for_merge(self) -> Mapping[str, str] | None:
+        """Return named donor values when their identities are known."""
+        return self.plural_forms
+
+    def _merge_named_target(self, forms: Mapping[str, str]) -> None:
+        self.plural_forms = forms
 
     def _merge_scalar_target(self, tag: str, text: str) -> None:
         """Update the default translation without interpreting a scalar as position zero."""
@@ -875,13 +915,23 @@ class TranslationUnit:
         return plural_strings[: len(plural_tags)]
 
 
+def _base_locale_code(locale: str | None) -> str:
+    if not locale:
+        return "en"
+    # Handle b+ style language codes and standardize
+    return locale.removeprefix("b+").replace("_", "-").replace("+", "-").split("-")[0]
+
+
 class NamedPluralUnit(TranslationUnit):
     """A named target mapping with a legacy positional view."""
 
+    _allows_empty_plural_group = False
     _forms: dict[str, str] | None = None
     _projection: tuple[str, ...] = ()
     # None is a valid store language. Ellipsis marks a projection awaiting its first store.
     _projection_language: str | EllipsisType | None = ...
+
+    _detached_language: str | EllipsisType | None = ...
 
     @staticmethod
     def _merge_positional(
@@ -904,8 +954,17 @@ class NamedPluralUnit(TranslationUnit):
         return forms or dict.fromkeys(tags[: len(strings)], "")
 
     @staticmethod
-    def _positional_tags(store, target: multistring) -> tuple[str, ...]:
-        return tuple(store.get_plural_tags(target))
+    def _tags_for_locale(locale: str | None, count: int) -> list[str]:
+        return get_cldr_plural_tags(locale or "en", count)
+
+    @classmethod
+    def _positional_tags(cls, store, target: multistring) -> tuple[str, ...]:
+        locale = (
+            store.get_base_locale_code()
+            if store.gettargetlanguage() is not None
+            else None
+        )
+        return tuple(cls._tags_for_locale(locale, len(target.strings)))
 
     def bind_plural_projection(self, store) -> None:
         """Resolve a newly constructed positional unit against its destination."""
@@ -915,13 +974,83 @@ class NamedPluralUnit(TranslationUnit):
             tags = self._positional_tags(store, self.target)
             self._forms = self._merge_positional(self.target, tags, None)
             self._projection = tags
+        elif self._detached_language is not ...:
+            # Label pending appends before the destination store owns the unit.
+            self._merge_positional(self.target, self._current_projection(), self._forms)
         if self._projection_language is ...:
             self._projection_language = store.gettargetlanguage()
+
+    def copy(self) -> Self:
+        """Copy native fields and preserve category labels for detached edits."""
+        self.snapshot_plural_locale()
+        return deepcopy(self, {id(self._store): None})
+
+    def _set_target_from_rich(self, target: multistring) -> None:
+        # A rich target carries the edited values but no category labels.
+        tags = self._current_projection()
+        if (
+            tags
+            and len(target.strings) == len(tags)
+            and self._same_plural_order(
+                self._receiver_projection_language(self._projection_language), target
+            )
+        ):
+            forms = self._merge_positional(target, tags, self._forms)
+            self.set_plural_projection(forms, tags)
+        elif not isinstance(self.target, multistring) and len(target.strings) == 1:
+            self.target = str(target)
+        else:
+            super()._set_target_from_rich(target)
+
+    def _receiver_projection_language(self, fallback):
+        """Prefer the receiving store's current or saved locale to donor metadata."""
+        if self._store is not None:
+            return self._store.gettargetlanguage()
+        if self._detached_language is not ...:
+            return self._detached_language
+        return fallback
+
+    def _available_tags(self, target: multistring) -> tuple[str, ...]:
+        if self._store is not None:
+            return self._positional_tags(self._store, target)
+        language = self._receiver_projection_language(self._projection_language)
+        if language is ...:
+            return self._projection
+        locale = _base_locale_code(language) if language is not None else None
+        return tuple(self._tags_for_locale(locale, len(target.strings)))
+
+    def snapshot_plural_locale(self) -> None:
+        """Resolve appended positions and remember the locale for detached edits."""
+        if self._store is not None:
+            self._current_projection()
+            self._detached_language = self._store.gettargetlanguage()
+
+    def _current_projection(self) -> tuple[str, ...]:
+        target = self.target
+        tags = self._projection
+        if (
+            not isinstance(target, multistring)
+            or not tags
+            or len(target.strings) <= len(tags)
+        ):
+            return tags
+        available = self._available_tags(target)
+        expanded = (tags + tuple(tag for tag in available if tag not in tags))[
+            : len(target.strings)
+        ]
+        if len(expanded) == len(target.strings):
+            # Once a position has a label it travels with the unit.
+            self._projection = expanded
+            if self._store is not None and self._store._indexes_ready:
+                self._invalidate_store_indexes()
+        return expanded
 
     def _get_plural_forms(self) -> dict[str, str] | None:
         if not isinstance(self.target, multistring) or not self._projection:
             return None
-        return self._merge_positional(self.target, self._projection, self._forms)
+        return self._merge_positional(
+            self.target, self._current_projection(), self._forms
+        )
 
     def set_plural_projection(self, forms: dict[str, str], tags) -> None:
         """Load explicit forms and the labels used for positional access."""
@@ -932,6 +1061,19 @@ class NamedPluralUnit(TranslationUnit):
         self._rich_target = None
         self._invalidate_store_indexes()
 
+    def _same_plural_order(self, language, target: multistring) -> bool:
+        saved = self._projection_language
+        if saved == language:
+            return True
+        if saved is ... or language is ...:
+            return False
+        count = len(target.strings)
+        previous = _base_locale_code(saved) if saved is not None else None
+        current = _base_locale_code(language) if language is not None else None
+        return self._tags_for_locale(previous, count) == self._tags_for_locale(
+            current, count
+        )
+
     def isblank(self) -> bool:
         return super().isblank() and not self._has_target_text()
 
@@ -940,19 +1082,30 @@ class NamedPluralUnit(TranslationUnit):
 
     def _merge_scalar_target(self, tag: str, text: str) -> None:
         super()._merge_scalar_target(tag, text)
-        if (
-            self._store is not None
-            and self._store.gettargetlanguage() != self._projection_language
-        ):
+        self._refresh_merged_projection()
+
+    def _merge_named_target(self, forms: Mapping[str, str]) -> None:
+        # Keep an empty group representable in formats requiring a category.
+        if not forms and not self._allows_empty_plural_group:
+            forms = dict.fromkeys(self._projection, "")
+        super()._merge_named_target(forms)
+        self._refresh_merged_projection()
+
+    def _refresh_merged_projection(self) -> None:
+        """Expose a merged target in the destination's actual positional order."""
+        if self._store is None:
+            return
+        tags = self._positional_tags(self._store, self.target)
+        if self._projection != tags:
             forms = self._get_plural_forms()
             if forms is not None:
-                self.set_plural_projection(
-                    forms, self._positional_tags(self._store, self.target)
-                )
-                self._projection_language = self._store.gettargetlanguage()
+                self.set_plural_projection(forms, tags)
+        self._projection_language = self._store.gettargetlanguage()
 
     def _replace_plural_forms(self, forms: dict[str, str]) -> None:
-        if not forms or any(tag not in cldr_plural_categories for tag in forms):
+        if (not forms and not self._allows_empty_plural_group) or any(
+            tag not in cldr_plural_categories for tag in forms
+        ):
             raise ValueError("Expected at least one recognized plural category")
         self.set_plural_projection(forms, self._projection)
 
@@ -961,14 +1114,15 @@ class NamedPluralUnit(TranslationUnit):
         if isinstance(target, multistring) and (
             self._store is not None or self._projection
         ):
-            tags = self._projection
             language = self._projection_language
             if self._store is not None:
                 language = self._store.gettargetlanguage()
-                # A parsed sparse projection carries its own labels. Writing it
-                # back verbatim must keep them unless the locale changed.
-                if target is not self._target or language != self._projection_language:
-                    tags = self._positional_tags(self._store, target)
+            elif target is not self._target and self._detached_language is not ...:
+                language = self._detached_language
+            if target is self._target and self._same_plural_order(language, target):
+                tags = self._current_projection()
+            else:
+                tags = self._available_tags(target)
 
             # Capture edits to mutable legacy strings before changing their labels.
             existing = (
@@ -1184,6 +1338,8 @@ class TranslationStore(Generic[U]):
 
         :param unit: The unit that will be removed.
         """
+        if isinstance(unit, NamedPluralUnit):
+            unit.snapshot_plural_locale()
         self.units.remove(unit)
         self.remove_unit_from_index(unit)
         self._indexes_ready = False
@@ -1529,13 +1685,7 @@ class TranslationStore(Generic[U]):
         return "id"
 
     def get_base_locale_code(self) -> str:
-        locale = self.gettargetlanguage()
-        if not locale:
-            return "en"
-        # Handle b+ style language codes and standardize
-        return (
-            locale.removeprefix("b+").replace("_", "-").replace("+", "-").split("-")[0]
-        )
+        return _base_locale_code(self.gettargetlanguage())
 
     def get_plural_tags(
         self, target: list[str] | str | multistring | None = None

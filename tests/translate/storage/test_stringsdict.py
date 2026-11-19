@@ -177,6 +177,17 @@ class TestStringsDictFile(test_monolingual.TestMonolingualStore):
         unit.format_value_type = "f"
         assert self.reparse(store).units[0] == unit
 
+    def test_merge_metadata_only_group(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        store.parse(plistlib.dumps(self.get_simple_plural()))
+        unit = store.units[0]
+        unit.plural_forms = {}
+        before = bytes(store)
+        unit.merge(unit, overwrite=True)
+        assert unit.plural_forms == {}
+        assert bytes(store) == before
+
     @pytest.mark.parametrize("field", ["many", "custom"])
     def test_equality_includes_unprojected_fields(self, field) -> None:
         content = self.get_simple_plural()
@@ -374,6 +385,71 @@ class TestStringsDictFile(test_monolingual.TestMonolingualStore):
         parsed.update_plural_forms({"zero": ""})
         assert unit != parsed
 
+    def test_new_variable_preserves_explicit_empty_other(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        unit = store.UnitClass("items:amount")
+        unit.target = multistring(["", "", ""])
+        store.addunit(unit)
+        unit.plural_forms = {"one": "single", "other": ""}
+        saved = self.StoreClass.parsestring(bytes(store))
+        assert saved.units[0].plural_forms == {"one": "single", "other": ""}
+
+    def test_new_named_variable_requires_other(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        unit = store.UnitClass("items:amount")
+        unit.target = multistring(["", "", ""])
+        store.addunit(unit)
+        donor = store.UnitClass("source:amount")
+        donor.target = multistring(["", "single", ""])
+        store.addunit(donor)
+        donor.plural_forms = {"one": "single"}
+        unit.merge(donor, overwrite=True)
+        assert "items" not in plistlib.loads(bytes(store))
+        unit.update_plural_forms({"other": "rest"})
+        variable = plistlib.loads(bytes(store))["items"]["amount"]
+        assert variable["one"] == "single"
+        assert variable["other"] == "rest"
+
+    def test_merge_preserves_positional_apple_fallback(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("ru")
+        unit = store.UnitClass("items:amount")
+        unit.target = multistring(["", "single", "few", "many"])
+        store.addunit(unit)
+        before = bytes(store)
+        assert plistlib.loads(before)["items"]["amount"]["other"] == "many"
+        unit.merge(unit, overwrite=True)
+        assert bytes(store) == before
+
+    def test_empty_merge_omits_new_variable(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        unit = store.UnitClass("items:amount")
+        unit.target = multistring(["", "one", "other"])
+        store.addunit(unit)
+        donor = self.StoreClass.parsestring(
+            plistlib.dumps(self.get_simple_plural())
+        ).units[0]
+        donor.plural_forms = {}
+        unit.merge(donor, overwrite=True)
+        assert plistlib.loads(bytes(store)) == {}
+
+    def test_serialize_named_plural_only_group(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        for name in ("amount", "duration"):
+            unit = store.UnitClass(f"items:{name}")
+            unit.target = multistring(["", "", ""])
+            store.addunit(unit)
+            unit.plural_forms = {"other": name}
+        group = plistlib.loads(bytes(store))["items"]
+        assert {name: variable["other"] for name, variable in group.items()} == {
+            "amount": "amount",
+            "duration": "duration",
+        }
+
     def test_new_plural_synthesizes_format(self) -> None:
         store = self.StoreClass()
         store.settargetlanguage("en")
@@ -456,6 +532,23 @@ class TestStringsDictFile(test_monolingual.TestMonolingualStore):
 
         store.filename = "invalid_filename"
         assert store.gettargetlanguage() == "nl"
+
+    @pytest.mark.parametrize("copy", [True, False])
+    def test_detached_apple_projection(self, copy) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        store.parse(plistlib.dumps(self.get_simple_plural()))
+        unit = store.units[0]
+        if copy:
+            unit = unit.copy()
+        else:
+            store.removeunit(unit)
+        unit.target = multistring(["none", "single", "several"])
+        assert unit.plural_forms == {
+            "zero": "none",
+            "one": "single",
+            "other": "several",
+        }
 
     def test_plural_zero_always_set(self) -> None:
         def lang_without_zero(tuple):
