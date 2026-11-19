@@ -82,6 +82,7 @@ from typing import (
     Generic,
     Never,
     NotRequired,
+    Self,
     TextIO,
     TypedDict,
     TypeVar,
@@ -508,6 +509,100 @@ class I18NextV4Unit(I18NextUnit):
     See https://www.i18next.com/
     """
 
+    _forms: dict[str, str] | None = None
+    _projection: tuple[str, ...] = ()
+
+    @classmethod
+    def from_plural_forms(
+        cls, forms: dict[str, str], tags: list[str], name: str
+    ) -> Self:
+        unit = cls(multistring([forms.get(tag, "") for tag in tags]), name)
+        unit._forms = forms
+        unit._projection = tuple(tags)
+        return unit
+
+    @staticmethod
+    def _merge_positional(
+        target: multistring, tags: tuple[str, ...], existing: dict[str, str] | None
+    ) -> dict[str, str]:
+        strings = target.strings
+        if len(strings) > len(tags):
+            raise ValueError(
+                f"Cannot map {len(strings)} positional forms to {', '.join(tags)}"
+            )
+        forms = dict(existing or {})
+        for tag in tags[len(strings) :]:
+            forms.pop(tag, None)
+        for tag, value in zip(tags, strings, strict=False):
+            if existing is None or str(value) or tag in forms:
+                forms[tag] = str(value)
+        # Even an all-empty replacement needs a key to represent the group.
+        return forms or dict.fromkeys(tags[: len(strings)], "")
+
+    def bind_plural_projection(self, store) -> None:
+        """Resolve a newly constructed positional unit against its destination."""
+        if isinstance(self.target, multistring) and not self._projection:
+            tags = tuple(store.get_plural_tags(self.target))
+            self._forms = self._merge_positional(self.target, tags, None)
+            self._projection = tags
+
+    def _get_plural_forms(self) -> dict[str, str] | None:
+        if not isinstance(self.target, multistring) or not self._projection:
+            return None
+        return self._merge_positional(self.target, self._projection, self._forms)
+
+    def istranslatable(self) -> bool:
+        return self._has_target_text()
+
+    def isblank(self) -> bool:
+        return not self._has_target_text()
+
+    def _replace_plural_forms(self, forms: dict[str, str]) -> None:
+        if not forms or any(tag not in cldr_plural_categories for tag in forms):
+            raise ValueError("i18next requires at least one recognized plural suffix")
+        tags = self._projection or self._store.get_plural_tags(self.target)  # ty:ignore[missing-union-attribute]
+        self._forms = forms
+        self._projection = tuple(tags)
+        self._target = multistring([forms.get(tag, "") for tag in tags])
+        self._rich_source = None
+        self._rich_target = None
+        self._invalidate_store_indexes()
+
+    @I18NextUnit.target.setter
+    def target(self, target) -> None:
+        if isinstance(target, multistring) and (
+            self._store is not None or self._projection
+        ):
+            tags = (
+                tuple(self._store.get_plural_tags(target))
+                if self._store is not None
+                else self._projection
+            )
+            # Capture edits to mutable legacy strings before changing their labels.
+            existing = (
+                self._get_plural_forms() if tags != self._projection else self._forms
+            )
+            self._forms = self._merge_positional(target, tags, existing)
+            self._projection = tags
+        else:
+            self._forms = None
+            self._projection = ()
+        self._rich_source = None
+        self._rich_target = None
+        self._target = target
+        self._invalidate_store_indexes()
+
+    def storevalues(self, output) -> None:
+        forms = self._get_plural_forms()
+        if forms is None:
+            super().storevalues(output)
+            return
+        base_name = (
+            self._get_base_name() if isinstance(self._item, list) else self._item
+        )
+        for tag, value in forms.items():
+            self.storevalue(output, value, override_key=f"{base_name}_{tag}")
+
     @staticmethod
     def _is_valid_suffix(suffix: str) -> bool:
         return suffix in cldr_plural_categories
@@ -527,6 +622,31 @@ class I18NextV4File(JsonNestedFile):
 
     UnitClass = I18NextV4Unit
 
+    def addunit(self, unit) -> None:
+        if isinstance(unit, I18NextV4Unit):
+            unit.bind_plural_projection(self)
+        super().addunit(unit)
+
+    def serialize_units(self, output) -> None:
+        super().serialize_units(output)
+        self._restore_key_order(output, self._file)
+
+    @classmethod
+    def _restore_key_order(cls, output, original) -> None:
+        """Keep interleaved plural groups and ordinary keys in document order."""
+        if isinstance(output, dict) and isinstance(original, dict):
+            existing = [key for key in original if key in output]
+            if existing != [key for key in output if key in original]:
+                ordered = {key: output[key] for key in existing}
+                ordered.update(output)
+                output.clear()
+                output.update(ordered)
+            for key in existing:
+                cls._restore_key_order(output[key], original[key])
+        elif isinstance(output, list) and isinstance(original, list):
+            for value, previous in zip(output, original, strict=False):
+                cls._restore_key_order(value, previous)
+
     def _extract_units(
         self,
         data,
@@ -542,7 +662,7 @@ class I18NextV4File(JsonNestedFile):
         if plural_tags is None:
             plural_tags = self.get_plural_tags()
         if isinstance(data, dict):
-            valid_plural_bases = set()
+            groups = defaultdict(dict)
             invalid_plural_bases = set()
             for key, value in data.items():
                 if "_" not in key:
@@ -551,10 +671,10 @@ class I18NextV4File(JsonNestedFile):
                 if suffix not in cldr_plural_categories:
                     continue
                 if isinstance(value, str):
-                    valid_plural_bases.add(plural_base)
+                    groups[plural_base][suffix] = value
                 else:
                     invalid_plural_bases.add(plural_base)
-            valid_plural_bases.difference_update(invalid_plural_bases)
+            valid_plural_bases = groups.keys() - invalid_plural_bases
 
             processed_plural_bases = set()
 
@@ -572,12 +692,10 @@ class I18NextV4File(JsonNestedFile):
                     if plural_base in processed_plural_bases:
                         continue
                     processed_plural_bases.add(plural_base)
-                    items = [f"{plural_base}_{suffix}" for suffix in plural_tags]
-                    sources = [data.get(key, "") for key in items]
-
-                    unit = self.UnitClass(multistring(sources), items)
-                    newid = prev.extend("key", plural_base)
-                    unit.set_unitid(newid)
+                    unit = self.UnitClass.from_plural_forms(
+                        groups[plural_base], plural_tags, plural_base
+                    )
+                    unit.set_unitid(prev.extend("key", plural_base))
                     yield unit
                     continue
 

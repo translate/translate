@@ -1223,14 +1223,115 @@ class TestI18NextV4Store(test_monolingual.TestMonolingualStore):
         out = BytesIO()
         store.serialize(out)
 
-        # This will add missing plurals
-        assert out.getvalue().decode() == JSON_I18NEXT_V4_FIXED
+        assert out.getvalue().decode() == JSON_I18NEXT_V4
 
     def test_units(self) -> None:
         store = self.StoreClass()
         store.targetlanguage = "ar"
         store.parse(self.PartiallyPluralizedJson)
         assert len(store.units) == 4
+
+    def test_named_forms(self) -> None:
+        store = self.StoreClass()
+        store.targetlanguage = "cs"
+        data = {
+            "k_many": "fraction",
+            "k_unknown": "ordinary",
+            "k_other": "",
+            "k_one": "unit",
+        }
+        store.parse(json.dumps(data))
+        unit = store.units[0]
+        snapshot = unit.plural_forms
+        assert snapshot == {"many": "fraction", "other": "", "one": "unit"}
+        assert unit.target.strings == ["unit", "", ""]
+        unit.plural_forms = snapshot
+        assert list(json.loads(bytes(store)).items()) == list(data.items())
+        unit.update_plural_forms({"few": "few", "other": "other"})
+        unit.target = multistring(["one", "few", "several"])
+        assert unit.plural_forms == {
+            "one": "one",
+            "few": "few",
+            "many": "fraction",
+            "other": "several",
+        }
+        assert snapshot["other"] == ""
+        with raises(ValueError):
+            unit.update_plural_forms({"many": "lost", "invalid": "bad"})
+        with raises(ValueError):
+            unit.plural_forms = {}
+        unit.update_plural_forms({"other": None})
+        assert "other" not in unit.plural_forms
+        unit.plural_forms = {"many": "fraction", "few": ""}
+        reparsed = self.StoreClass()
+        reparsed.parse(bytes(store))
+        assert reparsed.units[0].plural_forms == unit.plural_forms
+        assert json.loads(bytes(store)) == {
+            "k_many": "fraction",
+            "k_unknown": "ordinary",
+            "k_few": "",
+        }
+
+    def test_fractional_status_and_index(self) -> None:
+        store = self.StoreClass()
+        store.targetlanguage = "cs"
+        store.parse('{"k_many": "fraction"}')
+        unit = store.units[0]
+        assert not unit.target
+        unit.target = unit.target
+        assert json.loads(bytes(store)) == {"k_many": "fraction"}
+        assert unit.istranslated()
+        assert unit.istranslatable()
+        assert not unit.isblank()
+        assert store.findid(unit.getid()) is unit
+        unit.update_plural_forms({"many": ""})
+        assert not unit.istranslated()
+        assert not unit.istranslatable()
+        assert unit.isblank()
+        assert unit.getid() not in store.getids()
+        unit.target = multistring(["one"])
+        assert store.findid(unit.getid()) is unit
+        unit.target = multistring([""])
+        assert store.findid(unit.getid()) is None
+
+    def test_retarget_positional(self) -> None:
+        store = self.StoreClass()
+        store.targetlanguage = "ru"
+        original = {"k_one": "1", "k_few": "2", "k_many": "5"}
+        store.parse(json.dumps(original))
+        store.settargetlanguage("cs")
+        assert json.loads(bytes(store)) == original
+        store.units[0].target = multistring(["jeden", "dva", "ostatní"])
+        assert json.loads(bytes(store)) == {
+            "k_one": "jeden",
+            "k_few": "dva",
+            "k_many": "5",
+            "k_other": "ostatní",
+        }
+
+    def test_shorter_positional(self) -> None:
+        store = self.StoreClass()
+        store.targetlanguage = "en"
+        store.parse('{"k_other": "other", "k_one": "one", "k_many": ""}')
+        store.units[0].target = multistring(["new one"])
+        assert json.loads(bytes(store)) == {"k_one": "new one", "k_many": ""}
+
+    def test_oversized_positional(self) -> None:
+        store = self.StoreClass()
+        store.targetlanguage = "cs"
+        store.parse('{"k_one": "one", "k_many": "fraction"}')
+        unit = store.units[0]
+        original = bytes(store)
+        oversized = multistring(["a", "b", "c", "d"])
+        with raises(ValueError, match="4 positional forms to one, few, other"):
+            unit.target = oversized
+        assert bytes(store) == original
+        with raises(ValueError, match="4 positional forms"):
+            store.addunit(store.UnitClass(oversized, "new"))
+        assert store.units == [unit]
+        unit.target.extra_strings.append("extra")
+        with raises(ValueError, match="4 positional forms"):
+            bytes(store)
 
     def test_plural_tags_resolved_once(self, monkeypatch) -> None:
         """Resolve invariant locale plural tags once for the whole catalog."""
@@ -1342,9 +1443,12 @@ class TestI18NextV4Store(test_monolingual.TestMonolingualStore):
                 "the plural form 3",
                 "the plural form 4",
                 "the plural form 5",
-                "the plural form 6",
             ]
         )
+        with raises(ValueError, match="7 positional forms"):
+            store.units[3].target = multistring(
+                [*store.units[3].target.strings, "extra"]
+            )
         out = BytesIO()
         store.serialize(out)
 

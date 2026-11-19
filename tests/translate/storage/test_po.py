@@ -43,6 +43,14 @@ def test_roundtrip_quoting() -> None:
 class TestPOUnit(test_base.TestTranslationUnit):
     UnitClass = po.pounit
 
+    def test_positional_plural(self) -> None:
+        unit = self.UnitClass(multistring(["day", "days"]))
+        assert unit.plural_forms is None
+        with raises(NotImplementedError):
+            unit.update_plural_forms({"one": "day"})
+        with raises(NotImplementedError):
+            unit.plural_forms = {"other": "days"}
+
     def test_istranslatable(self) -> None:
         """Tests for the correct behaviour of istranslatable()."""
         unit = self.UnitClass("Message")
