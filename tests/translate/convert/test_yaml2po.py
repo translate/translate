@@ -235,6 +235,39 @@ class TestRubyYAML2PO(TestYAML2PO):
         notes = target_store.units[2].getnotes(origin="developer")
         assert "This is the version" in notes
 
+    def test_merge_sparse_target_by_category(self) -> None:
+        template = "en: {message: {one: item, other: items}}"
+        for translated, expected in [
+            ("{many: fractional}", ["", "", ""]),
+            ("{few: several, many: fractional}", ["", "several", ""]),
+        ]:
+            store = self._convert_to_store(f"cs: {{message: {translated}}}", template)
+            assert self._single_element(store).target.strings == expected
+
+    def test_portuguese_integer_plural_indexes(self) -> None:
+        store = self._convert_to_store(
+            "pt: {k: {one: um, many: milhão, other: vários}}",
+            "en: {k: {one: item, other: items}}",
+        )
+        assert self._single_element(store).target.strings == ["um", "vários"]
+
+    def test_single_form_template_merge(self) -> None:
+        store = self._convert_to_store(
+            "en: {k: {one: one, other: translated}}", "en: {k: {other: items}}"
+        )
+        assert self._single_element(store).target == "translated"
+
+    def test_single_category_target_locale(self) -> None:
+        store = self._convert_to_store(
+            "ja: {k: {other: translated}}", "en: {k: {one: item}}"
+        )
+        assert self._single_element(store).target == "translated"
+
+    def test_ruby_sparse_plural(self) -> None:
+        store = self._convert_to_store("en: {message: {other: items}}")
+        assert self._count_elements(store) == 1
+        assert store.units[1].source == "items"
+
     def test_ruby_single(self) -> None:
         """Check that a Ruby YAML file strips the language root key."""
         input_string = """en:

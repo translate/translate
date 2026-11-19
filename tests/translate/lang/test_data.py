@@ -73,3 +73,11 @@ def test_is_rtl_perso_arabic_and_hebrew_script_languages() -> None:
     # Tuareg varieties: CLDR resolves these to the Latin script
     for code in ("tmh", "ttq", "thv"):
         assert data.is_rtl(code) is False, code
+
+
+def test_gettext_plural_tags() -> None:
+    for locale, (_, count, _) in data.languages.items():
+        assert len(data.get_gettext_plural_tags(locale)) == count, locale
+    assert data.get_gettext_plural_tags("pt-BR") == ["one", "other"]
+    assert data.get_gettext_plural_tags("cy") == ["other", "two"]
+    assert data.get_gettext_plural_tags("lv") == ["zero", "one", "other"]
