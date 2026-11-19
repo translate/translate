@@ -552,3 +552,14 @@ class TestPrepareInputOwnership:
             base.prepare_input(handle, close_handle=True)
 
         assert handle.closed
+
+
+def test_rich_list_append_survives_getter() -> None:
+    unit = base.TranslationUnit(multistring(["source"]))
+    unit.target = multistring(["first"])
+    unit.rich_target.append(rich_parse("second", general.parsers))
+    unit.rich_target = unit.rich_target
+    assert unit.target.strings == ["first", "second"]
+    unit.rich_source.append(rich_parse("plural", general.parsers))
+    unit.rich_source = unit.rich_source
+    assert unit.source.strings == ["source", "plural"]

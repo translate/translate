@@ -1,7 +1,7 @@
 import pytest
 
 from translate.misc.multistring import multistring
-from translate.storage import base, toml
+from translate.storage import base, jsonl10n, toml
 
 from . import test_monolingual
 
@@ -426,6 +426,29 @@ trimmed in raw strings.
 
 class TestGoI18nTOMLResourceStore(test_monolingual.TestMonolingualStore):
     StoreClass = toml.GoI18nTOMLFile
+
+    def test_scalar_merge_refreshes_sparse_projection(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("cs")
+        store.parse('[days]\none = "single"\nother = "rest"\n')
+        unit = store.units[0]
+        store.settargetlanguage("cs-CZ")
+        unit.merge(jsonl10n.FlatJsonUnit("merged"), overwrite=True)
+        assert unit.target.strings == ["single", "", "merged"]
+        unit.rich_target = unit.rich_target
+        assert self.StoreClass.parsestring(bytes(store)).units[0].plural_forms == {
+            "one": "single",
+            "other": "merged",
+        }
+
+    def test_merge_sparse_named_group(self) -> None:
+        store = self.StoreClass.parsestring(b'[k]\none = "one"\nother = "old"\n')
+        donor = jsonl10n.I18NextV4File.parsestring(b'{"k_other":"new"}')
+        store.units[0].merge(donor.units[0], overwrite=True)
+        assert self.StoreClass.parsestring(bytes(store)).units[0].plural_forms == {
+            "one": "",
+            "other": "new",
+        }
 
     def test_named_forms(self) -> None:
         store = self.StoreClass()
