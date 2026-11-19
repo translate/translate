@@ -64,6 +64,8 @@ site generators. It supports pluralized strings using CLDR plural categories:
 When a table contains 2 or more keys that are all CLDR plural categories
 (zero, one, two, few, many, other), it is automatically recognized as a
 plural entry.
+Named edits use ``plural_forms`` and must retain at least two categories so
+the table reparses as a plural unit.
 
 To use the Go i18n format, import ``GoI18nTOMLFile`` instead of ``TOMLFile``:
 
