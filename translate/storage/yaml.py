@@ -21,6 +21,7 @@ r"""Class that manages YAML data files for translation."""
 from __future__ import annotations
 
 import uuid
+from datetime import date
 from typing import TYPE_CHECKING, Any
 
 from ruamel.yaml import YAML, YAMLError
@@ -294,6 +295,9 @@ class YAMLFile(base.DictStore[YAMLUnit]):
                     str(data),
                     self._get_key_comment(parent_map, key, previous_key, is_first_key),
                 )
+            elif isinstance(data, (float, date)):
+                # Not translatable; left as is in the output.
+                pass
             elif isinstance(data, list):
                 for k, v in enumerate(data):
                     yield from self._flatten(

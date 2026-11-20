@@ -178,6 +178,18 @@ foo: True
 """
         )
 
+    def test_float_and_date(self) -> None:
+        store = self.StoreClass()
+        store.parse(
+            """
+hello: Hi
+version: 1.5
+when: 2026-01-01
+"""
+        )
+        assert [unit.source for unit in store.units] == ["Hi"]
+        assert bytes(store).decode() == "hello: Hi\nversion: 1.5\nwhen: 2026-01-01\n"
+
     def test_integer(self) -> None:
         store = self.StoreClass()
         store.parse(
