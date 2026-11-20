@@ -112,13 +112,28 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
     TRANSLATABLE_ATTRIBUTES = [
         "abbr",  # abbreviation for a table header cell
         "alt",
-        "lang",  # only for the html element -- see extract_translatable_attributes()
+        "aria-braillelabel",
+        "aria-brailleroledescription",
+        "aria-colindextext",
+        "aria-description",
+        "aria-label",
+        "aria-placeholder",
+        "aria-roledescription",
+        "aria-rowindextext",
+        "aria-valuetext",
         "summary",
         "title",  # tooltip text for an element
         "value",
     ]
     """Text from these HTML attributes will be extracted as translation units.
     Note: the content attribute of meta tags is a special case."""
+
+    TRANSLATABLE_ATTRIBUTE_TAGS = {
+        "download": {"a", "area"},
+        "label": {"optgroup", "option", "track"},
+        "lang": {"html"},
+        "placeholder": {"input", "textarea"},
+    }
 
     TRANSLATABLE_METADATA = [
         "description",
@@ -594,47 +609,40 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             return []
 
         result = []
-        if tag == "meta":
-            tu = self.create_metadata_attribute_tu(attrs)
-            if tu:
-                result.append(tu)
-        else:
-            for attrname, attrvalue in attrs:
-                if (
-                    attrname in self.TRANSLATABLE_ATTRIBUTES
-                    and self.translatable_attribute_matches_tag(attrname, tag)
-                ):
-                    tu = self.create_attribute_tu(attrname, attrvalue)
-                    if tu:
-                        result.append(tu)
+        for attrname, attrvalue in attrs:
+            source = self.attribute_source(tag, attrname, attrvalue, attrs)
+            if source:
+                result.append(
+                    {
+                        "html_content": source,
+                        "attrname": attrname,
+                        "location": self.get_attribute_location(attrname),
+                        "docpath": self.get_attribute_docpath(attrname),
+                    }
+                )
         return result
 
-    def create_metadata_attribute_tu(self, attrs):
-        attrs_dict = dict(attrs)
-        # Check both 'name' and 'property' attributes (Open Graph uses 'property')
-        name = attrs_dict.get("name", "").lower()
-        if not name:
-            name = attrs_dict.get("property", "").lower()
-        if name in self.TRANSLATABLE_METADATA and "content" in attrs_dict:
-            return self.create_attribute_tu("content", attrs_dict["content"])
-        return None
-
     @staticmethod
-    def translatable_attribute_matches_tag(attrname, tag):
-        if attrname == "lang":
-            return tag == "html"
-        return True
+    def metadata_name(attrs):
+        attributes = dict(attrs)
+        return (attributes.get("name") or attributes.get("property") or "").lower()
 
-    def create_attribute_tu(self, attrname, attrvalue):
-        normalized_value = self.WHITESPACE_RE.sub(" ", attrvalue).strip()
-        if normalized_value:
-            return {
-                "html_content": normalized_value,
-                "attrname": attrname,
-                "location": self.get_attribute_location(attrname),
-                "docpath": self.get_attribute_docpath(attrname),
-            }
-        return None
+    def attribute_source(self, tag, attrname, attrvalue, attrs):
+        """Return the normalized source used for both extraction and lookup."""
+        if not attrvalue:
+            return ""
+        if tag == "meta" and attrname == "content":
+            name = self.metadata_name(attrs)
+            if name not in self.TRANSLATABLE_METADATA and not (
+                name == "application-name" and dict(attrs).get("name")
+            ):
+                return ""
+        elif (
+            attrname not in self.TRANSLATABLE_ATTRIBUTES
+            and tag not in self.TRANSLATABLE_ATTRIBUTE_TAGS.get(attrname, ())
+        ):
+            return ""
+        return self.WHITESPACE_RE.sub(" ", attrvalue).strip()
 
     def get_attribute_location(self, attrname: str) -> str:
         return (
@@ -679,13 +687,15 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
     def translate_attributes(self, tag, attrs):
         if not attrs:
             return []
+        if self.is_extraction_ignored():
+            return attrs
         result = []
         translated_lang = None
 
         # First pass: check if lang is being translated on html tag
         if tag == "html":
             attrs_dict = dict(attrs)
-            if "lang" in attrs_dict:
+            if attrs_dict.get("lang"):
                 normalized_value = self.WHITESPACE_RE.sub(
                     " ", attrs_dict["lang"]
                 ).strip()
@@ -705,60 +715,27 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             # This ensures dir reflects the text directionality of the target language.
             if tag == "html" and attrname == "dir" and translated_lang:
                 continue
-            if attrvalue:
-                # Special handling for meta tag content attribute
-                if tag == "meta" and attrname == "content":
-                    # Check both 'name' and 'property' attributes
-                    attrs_dict = dict(attrs)
-                    name = attrs_dict.get("name", "").lower()
-                    if not name:
-                        name = attrs_dict.get("property", "").lower()
-                    # Automatically synchronize og:locale with the translated language when
-                    # the <html lang=""> attribute was translated during this parse.
-                    # This ensures consistency between the page language and Open Graph metadata.
-                    # Similar to how dir is automatically set, this intentionally overrides
-                    # any explicit translation to maintain consistency.
-                    if name == "og:locale" and self._translated_lang:
-                        result.append(
-                            (
-                                attrname,
-                                self.escape_attribute_value(self._translated_lang),
-                            )
-                        )
-                        continue
-                    if name in self.TRANSLATABLE_METADATA:
-                        normalized_value = self.WHITESPACE_RE.sub(
-                            " ", attrvalue
-                        ).strip()
-                        translated_value = self.translate_value(
-                            normalized_value,
-                            location=self.get_attribute_location(attrname),
-                            docpath=self.get_attribute_docpath(attrname),
-                        )
-                        if translated_value != normalized_value:
-                            result.append(
-                                (
-                                    attrname,
-                                    self.escape_attribute_value(translated_value),
-                                )
-                            )
-                            continue
-                # Only translate attributes that are translatable for this specific tag
-                if (
-                    attrname in self.TRANSLATABLE_ATTRIBUTES
-                    and self.translatable_attribute_matches_tag(attrname, tag)
-                ):
-                    normalized_value = self.WHITESPACE_RE.sub(" ", attrvalue).strip()
-                    translated_value = self.translate_value(
-                        normalized_value,
-                        location=self.get_attribute_location(attrname),
-                        docpath=self.get_attribute_docpath(attrname),
-                    )
-                    if translated_value != normalized_value:
-                        result.append(
-                            (attrname, self.escape_attribute_value(translated_value))
-                        )
-                        continue
+            if (
+                tag == "meta"
+                and attrname == "content"
+                and attrvalue
+                and self._translated_lang
+                and self.metadata_name(attrs) == "og:locale"
+            ):
+                result.append(
+                    (attrname, self.escape_attribute_value(self._translated_lang))
+                )
+                continue
+            source = self.attribute_source(tag, attrname, attrvalue, attrs)
+            if source:
+                translation = self.translate_value(
+                    source,
+                    location=self.get_attribute_location(attrname),
+                    docpath=self.get_attribute_docpath(attrname),
+                )
+                if translation != source:
+                    result.append((attrname, self.escape_attribute_value(translation)))
+                    continue
             result.append((attrname, attrvalue))
 
         # Set dir attribute on html tag when lang is being translated
