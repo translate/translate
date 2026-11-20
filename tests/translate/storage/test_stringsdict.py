@@ -5,7 +5,7 @@ import pytest
 
 from translate.lang import data
 from translate.misc.multistring import multistring
-from translate.storage import base, stringsdict
+from translate.storage import base, jsonl10n, stringsdict
 
 from . import test_monolingual
 
@@ -177,6 +177,17 @@ class TestStringsDictFile(test_monolingual.TestMonolingualStore):
         unit.format_value_type = "f"
         assert self.reparse(store).units[0] == unit
 
+    def test_merge_metadata_only_group(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        store.parse(plistlib.dumps(self.get_simple_plural()))
+        unit = store.units[0]
+        unit.plural_forms = {}
+        before = bytes(store)
+        unit.merge(unit, overwrite=True)
+        assert unit.plural_forms == {}
+        assert bytes(store) == before
+
     @pytest.mark.parametrize("field", ["many", "custom"])
     def test_equality_includes_unprojected_fields(self, field) -> None:
         content = self.get_simple_plural()
@@ -186,6 +197,21 @@ class TestStringsDictFile(test_monolingual.TestMonolingualStore):
             content["items"]["count"][field] = str(index)
             store.parse(plistlib.dumps(content))
         assert stores[0].units[0] != stores[1].units[0]
+
+    def test_merge_foreign_plural_categories(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("cs")
+        store.parse(plistlib.dumps(self.get_simple_plural()))
+        unit = store.units[0]
+        donor = jsonl10n.I18NextV4File()
+        donor.settargetlanguage("cs")
+        donor.parse('{"k_one":"single","k_few":"several","k_other":"rest"}')
+        unit.merge(donor.units[0], overwrite=True)
+        assert unit.plural_forms == {"one": "single", "few": "several", "other": "rest"}
+        assert (
+            type(store).parsestring(bytes(store)).units[0].plural_forms
+            == unit.plural_forms
+        )
 
     def test_foreign_scalar_merge(self) -> None:
         store = self.StoreClass()
@@ -373,6 +399,71 @@ class TestStringsDictFile(test_monolingual.TestMonolingualStore):
         assert unit == parsed
         parsed.update_plural_forms({"zero": ""})
         assert unit != parsed
+
+    def test_new_variable_preserves_explicit_empty_other(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        unit = store.UnitClass("items:amount")
+        unit.target = multistring(["", "", ""])
+        store.addunit(unit)
+        unit.plural_forms = {"one": "single", "other": ""}
+        saved = self.StoreClass.parsestring(bytes(store))
+        assert saved.units[0].plural_forms == {"one": "single", "other": ""}
+
+    def test_new_named_variable_requires_other(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        unit = store.UnitClass("items:amount")
+        unit.target = multistring(["", "", ""])
+        store.addunit(unit)
+        donor = store.UnitClass("source:amount")
+        donor.target = multistring(["", "single", ""])
+        store.addunit(donor)
+        donor.plural_forms = {"one": "single"}
+        unit.merge(donor, overwrite=True)
+        assert "items" not in plistlib.loads(bytes(store))
+        unit.update_plural_forms({"other": "rest"})
+        variable = plistlib.loads(bytes(store))["items"]["amount"]
+        assert variable["one"] == "single"
+        assert variable["other"] == "rest"
+
+    def test_merge_preserves_positional_apple_fallback(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("ru")
+        unit = store.UnitClass("items:amount")
+        unit.target = multistring(["", "single", "few", "many"])
+        store.addunit(unit)
+        before = bytes(store)
+        assert plistlib.loads(before)["items"]["amount"]["other"] == "many"
+        unit.merge(unit, overwrite=True)
+        assert bytes(store) == before
+
+    def test_empty_merge_omits_new_variable(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        unit = store.UnitClass("items:amount")
+        unit.target = multistring(["", "one", "other"])
+        store.addunit(unit)
+        donor = self.StoreClass.parsestring(
+            plistlib.dumps(self.get_simple_plural())
+        ).units[0]
+        donor.plural_forms = {}
+        unit.merge(donor, overwrite=True)
+        assert plistlib.loads(bytes(store)) == {}
+
+    def test_serialize_named_plural_only_group(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        for name in ("amount", "duration"):
+            unit = store.UnitClass(f"items:{name}")
+            unit.target = multistring(["", "", ""])
+            store.addunit(unit)
+            unit.plural_forms = {"other": name}
+        group = plistlib.loads(bytes(store))["items"]
+        assert {name: variable["other"] for name, variable in group.items()} == {
+            "amount": "amount",
+            "duration": "duration",
+        }
 
     def test_new_plural_synthesizes_format(self) -> None:
         store = self.StoreClass()
