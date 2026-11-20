@@ -289,18 +289,15 @@ class YAMLFile(base.DictStore[YAMLUnit]):
                     data,
                     self._get_key_comment(parent_map, key, previous_key, is_first_key),
                 )
-            elif isinstance(data, (bool, int, float)):
+            elif isinstance(data, (bool, int)):
                 yield (
                     prev,
                     str(data),
                     self._get_key_comment(parent_map, key, previous_key, is_first_key),
                 )
-            elif isinstance(data, date):
-                yield (
-                    prev,
-                    data.isoformat(),
-                    self._get_key_comment(parent_map, key, previous_key, is_first_key),
-                )
+            elif isinstance(data, (float, date)):
+                # Not translatable; left as is in the output.
+                pass
             elif isinstance(data, list):
                 for k, v in enumerate(data):
                     yield from self._flatten(
