@@ -5,7 +5,7 @@ import pytest
 
 from translate.lang import data
 from translate.misc.multistring import multistring
-from translate.storage import base, stringsdict
+from translate.storage import base, jsonl10n, stringsdict
 
 from . import test_monolingual
 
@@ -197,6 +197,21 @@ class TestStringsDictFile(test_monolingual.TestMonolingualStore):
             content["items"]["count"][field] = str(index)
             store.parse(plistlib.dumps(content))
         assert stores[0].units[0] != stores[1].units[0]
+
+    def test_merge_foreign_plural_categories(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("cs")
+        store.parse(plistlib.dumps(self.get_simple_plural()))
+        unit = store.units[0]
+        donor = jsonl10n.I18NextV4File()
+        donor.settargetlanguage("cs")
+        donor.parse('{"k_one":"single","k_few":"several","k_other":"rest"}')
+        unit.merge(donor.units[0], overwrite=True)
+        assert unit.plural_forms == {"one": "single", "few": "several", "other": "rest"}
+        assert (
+            type(store).parsestring(bytes(store)).units[0].plural_forms
+            == unit.plural_forms
+        )
 
     def test_foreign_scalar_merge(self) -> None:
         store = self.StoreClass()
