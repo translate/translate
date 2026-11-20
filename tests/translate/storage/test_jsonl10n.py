@@ -1917,6 +1917,23 @@ class TestGoI18NJsonFile(test_monolingual.TestMonolingualStore):
         }
 
     @mark.parametrize("detached", [False, True])
+    def test_direct_named_edit_after_retarget(self, detached) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("ru")
+        store.parse('[{"id":"k","translation":{"one":"1","few":"2","many":"5"}}]')
+        unit = store.units[0]
+        store.settargetlanguage("cs")
+        if detached:
+            store.removeunit(unit)
+        forms = {"one": "single", "few": "several", "other": "rest"}
+        unit.plural_forms = forms
+        unit.rich_target = unit.rich_target
+        assert unit.plural_forms == forms
+        if detached:
+            store.addunit(unit)
+        assert json.loads(bytes(store)) == [{"id": "k", "translation": forms}]
+
+    @mark.parametrize("detached", [False, True])
     def test_merge_foreign_plural_categories(self, detached) -> None:
         store = self.StoreClass()
         store.settargetlanguage("ru" if detached else "cs")

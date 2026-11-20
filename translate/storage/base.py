@@ -1107,7 +1107,12 @@ class NamedPluralUnit(TranslationUnit):
             tag not in cldr_plural_categories for tag in forms
         ):
             raise ValueError("Expected at least one recognized plural category")
-        self.set_plural_projection(forms, self._projection)
+        language = self._receiver_projection_language(self._projection_language)
+        tags = self._projection
+        if not self._same_plural_order(language, self.target):
+            tags = self._available_tags(self.target)
+        self.set_plural_projection(forms, tags)
+        self._projection_language = language
 
     @TranslationUnit.target.setter
     def target(self, target) -> None:
