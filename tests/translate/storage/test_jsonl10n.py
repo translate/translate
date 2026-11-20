@@ -1916,17 +1916,24 @@ class TestGoI18NJsonFile(test_monolingual.TestMonolingualStore):
             "many": "fraction",
         }
 
-    def test_merge_foreign_plural_categories(self) -> None:
+    @mark.parametrize("detached", [False, True])
+    def test_merge_foreign_plural_categories(self, detached) -> None:
         store = self.StoreClass()
-        store.settargetlanguage("cs")
+        store.settargetlanguage("ru" if detached else "cs")
         store.parse(
             '[{"id":"k","translation":{"one":"1","many":"fraction","other":"5"}}]'
         )
         unit = store.units[0]
+        store.settargetlanguage("cs")
+        if detached:
+            store.removeunit(unit)
         donor = jsonl10n.I18NextV4File()
         donor.settargetlanguage("cs")
         donor.parse('{"k_one":"single","k_few":"several","k_other":"rest"}')
         unit.merge(donor.units[0], overwrite=True)
+        if detached:
+            store.addunit(unit)
+        unit.rich_target = unit.rich_target
         assert unit.plural_forms == {"one": "single", "few": "several", "other": "rest"}
         assert (
             type(store).parsestring(bytes(store)).units[0].plural_forms

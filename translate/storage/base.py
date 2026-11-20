@@ -1093,14 +1093,14 @@ class NamedPluralUnit(TranslationUnit):
 
     def _refresh_merged_projection(self) -> None:
         """Expose a merged target in the destination's actual positional order."""
-        if self._store is None:
-            return
-        tags = self._positional_tags(self._store, self.target)
+        tags = self._available_tags(self.target)
         if self._projection != tags:
             forms = self._get_plural_forms()
             if forms is not None:
                 self.set_plural_projection(forms, tags)
-        self._projection_language = self._store.gettargetlanguage()
+        self._projection_language = self._receiver_projection_language(
+            self._projection_language
+        )
 
     def _replace_plural_forms(self, forms: dict[str, str]) -> None:
         if (not forms and not self._allows_empty_plural_group) or any(
