@@ -169,7 +169,6 @@ def test_ooxmltags() -> None:
         )
 
 
-@mark.xfail(reason="Bug #3506")
 def test_bengali_mozilla_inverted_xmltags() -> None:
     """Test Bengali Mozilla XML tags."""
     bn_mozilla_checker = checks.MozillaChecker(
@@ -178,3 +177,26 @@ def test_bengali_mozilla_inverted_xmltags() -> None:
     str_en = """We <a href="%(cofound_url)s" rel="external">co-founded</a> the <a href="%(whatwg_url)s" rel="external">WHAT-WG</a> to."""
     str_bn = """এর প্রচলন ঘটাতে আমরা <a href="%(whatwg_url)s" rel="external">WHAT-WG</a> প্রতিষ্ঠায় <a href="%(cofound_url)s" rel="external">সহযোগী</a> ছিলাম।ন।"""
     assert passes(bn_mozilla_checker.xmltags, str_en, str_bn)
+
+
+@mark.parametrize(
+    "translated",
+    [
+        '<a href="one" id="second"></a><a href="two" id="first"></a>',
+        '<a href="one" id="first"></a><a href="one" id="first"></a>',
+        '<a href="one" id="first"></a>',
+    ],
+)
+def test_xmltags_reordering_preserves_attributes_and_counts(translated: str) -> None:
+    """Reordered tags must retain each attribute combination and occurrence."""
+    source = '<a href="one" id="first"></a><a href="two" id="second"></a>'
+    assert fails(checks.StandardChecker().xmltags, source, translated)
+
+
+def test_xmltags_reordering_preserves_nesting() -> None:
+    """Keep rejecting changed tag structure."""
+    assert fails(
+        checks.StandardChecker().xmltags,
+        "<b><i>Nested</i></b>",
+        "<b><i>Nested</b></i>",
+    )
