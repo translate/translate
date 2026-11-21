@@ -151,3 +151,9 @@ XLIFF and other tools
 
 Here is a small report on :doc:`XLIFF support by Windows programs
 <guide:guide/tools/xliff_support_by_ms_windows_programs>`.
+
+Apple XLIFF folded plural groups expose explicit target values through
+``plural_forms``. Deleting a target keeps the corresponding source unit.
+An explicitly empty string retains an empty target element.
+Nonempty edits confined to a single text node preserve inline markup. Plain-text replacements spanning multiple
+inline text nodes raise ``ValueError`` because code placement would be ambiguous.
