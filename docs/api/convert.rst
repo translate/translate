@@ -163,6 +163,14 @@ po2dtd
    :inherited-members:
 
 
+po2fluent
+---------
+
+.. automodule:: translate.convert.po2fluent
+   :members:
+   :inherited-members:
+
+
 po2html
 -------
 
