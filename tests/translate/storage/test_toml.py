@@ -441,6 +441,17 @@ class TestGoI18nTOMLResourceStore(test_monolingual.TestMonolingualStore):
             "other": "merged",
         }
 
+    def test_rich_source_keeps_sparse_labels(self) -> None:
+        store = self.StoreClass.parsestring(
+            b'[days]\nmany = "fraction"\nother = "rest"\n'
+        )
+        unit = store.units[0]
+        unit.rich_source = unit.multistring_to_rich(multistring(["edited", "rest"]))
+        assert self.StoreClass.parsestring(bytes(store)).units[0].plural_forms == {
+            "many": "edited",
+            "other": "rest",
+        }
+
     def test_merge_sparse_named_group(self) -> None:
         store = self.StoreClass.parsestring(b'[k]\none = "one"\nother = "old"\n')
         donor = jsonl10n.I18NextV4File.parsestring(b'{"k_other":"new"}')

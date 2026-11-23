@@ -288,6 +288,7 @@ class GoI18nTOMLUnit(base.NamedPluralUnit, TOMLUnit):
     """
 
     _minimum_named_forms = 2
+    rich_source = base.TranslationUnit.rich_target
 
     def hasplural(self) -> bool:
         """Check if this unit contains plural strings (more than one form)."""
