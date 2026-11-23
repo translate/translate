@@ -299,10 +299,56 @@ class TestGetOutputOptions:
         with pytest.raises(ValueError, match="don't know what to do"):
             parser.getoutputoptions(None, "file.csv", None)
 
-    def test_no_input_ext_raises(self) -> None:
-        parser = optrecurse.RecursiveOptionParser({"txt": ("po", None)})
+    def test_no_input_ext_ambiguous_formats_raises(self) -> None:
+        parser = optrecurse.RecursiveOptionParser(
+            {"txt": ("po", None), "csv": ("po", _noop_processor)}
+        )
         with pytest.raises(ValueError, match="no file extension"):
             parser.getoutputoptions(None, None, None)
+
+    def test_stdin_single_format(self) -> None:
+        """Standard input resolves to the only registered input format."""
+        parser = optrecurse.RecursiveOptionParser({"json": ("po", _noop_processor)})
+        fmt, proc = parser.getoutputoptions(None, None, None)
+        assert fmt == "po"
+        assert proc is _noop_processor
+
+    def test_stdin_shared_processor_formats(self) -> None:
+        """Standard input resolves when all input formats share a processor."""
+        parser = optrecurse.RecursiveOptionParser(
+            {"yml": ("po", _noop_processor), "yaml": ("po", _noop_processor)}
+        )
+        fmt, proc = parser.getoutputoptions(None, None, None)
+        assert fmt == "po"
+        assert proc is _noop_processor
+
+    def test_stdin_explicit_none_wins(self) -> None:
+        """An explicit stdin registration takes precedence over inference."""
+
+        def stdin_processor(inputfile, outputfile, templatefile):
+            return True
+
+        parser = optrecurse.RecursiveOptionParser(
+            {"json": ("po", _noop_processor), None: ("po", stdin_processor)}
+        )
+        _fmt, proc = parser.getoutputoptions(None, None, None)
+        assert proc is stdin_processor
+
+    def test_stdin_with_template(self) -> None:
+        """Standard input resolves the registered format for the template."""
+        parser = optrecurse.RecursiveOptionParser(
+            {("json", "json"): ("po", _noop_processor)}, usetemplates=True
+        )
+        fmt, proc = parser.getoutputoptions(None, None, "template.json")
+        assert fmt == "po"
+        assert proc is _noop_processor
+
+    def test_stdin_template_mismatch_raises(self) -> None:
+        parser = optrecurse.RecursiveOptionParser(
+            {("json", "json"): ("po", _noop_processor)}, usetemplates=True
+        )
+        with pytest.raises(ValueError, match="no file extension"):
+            parser.getoutputoptions(None, None, "template.yaml")
 
     def test_wildcard_output_uses_input_ext(self) -> None:
         parser = optrecurse.RecursiveOptionParser({"*": ("*", _noop_processor)})
@@ -359,15 +405,47 @@ class TestOpenInputFile:
     def test_open_existing_file(self, tmp_path) -> None:
         f = tmp_path / "input.txt"
         f.write_bytes(b"test content")
-        result = optrecurse.RecursiveOptionParser.openinputfile(None, str(f))
+        parser = optrecurse.RecursiveOptionParser({"txt": ("po", None)})
+        result = parser.openinputfile(None, str(f))
         try:
             assert result.read() == b"test content"
         finally:
             result.close()
 
-    def test_open_stdin(self) -> None:
-        # openinputfile returns sys.stdin when path is None; stdin must not be closed
-        assert optrecurse.RecursiveOptionParser.openinputfile(None, None) is sys.stdin
+    def test_open_stdin(self, monkeypatch) -> None:
+        # Standard input is buffered into a seekable binary stream
+        fake = BytesIO(b"stdin content")
+        monkeypatch.setattr(sys, "stdin", fake)
+        parser = optrecurse.RecursiveOptionParser({"txt": ("po", None)})
+        result = parser.openinputfile(None, None)
+        assert result.read() == b"stdin content"
+        assert result.seekable()
+
+    def test_open_stdin_named_by_single_format(self, monkeypatch) -> None:
+        # A single registered input format names the stream for type sniffing
+        fake = BytesIO(b"")
+        monkeypatch.setattr(sys, "stdin", fake)
+        parser = optrecurse.RecursiveOptionParser({"po": ("txt", None)})
+        result = parser.openinputfile(None, None)
+        assert result.name == "<stdin>.po"
+
+    def test_open_stdin_ambiguous_formats_unnamed(self, monkeypatch) -> None:
+        # Multiple input formats leave the stream unnamed
+        fake = BytesIO(b"")
+        monkeypatch.setattr(sys, "stdin", fake)
+        parser = optrecurse.RecursiveOptionParser(
+            {"ini": ("po", None), "isl": ("po", None)}
+        )
+        result = parser.openinputfile(None, None)
+        assert result.name == "<stdin>"
+
+    def test_open_stdin_text_fallback(self, monkeypatch) -> None:
+        # Exotic stdin replacements without a buffer attribute pass through
+        fake = StringIO("stdin content")
+        monkeypatch.setattr(sys, "stdin", fake)
+        parser = optrecurse.RecursiveOptionParser({"txt": ("po", None)})
+        result = parser.openinputfile(None, None)
+        assert result.read() == b"stdin content"
 
 
 class TestOpenTempOutputFile:
