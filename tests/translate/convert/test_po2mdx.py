@@ -2,6 +2,8 @@
 
 from io import BytesIO
 
+import pytest
+
 from translate.convert.po2mdx import MDXTranslator
 from translate.storage import po
 from translate.storage.mdxfile import MDXFile
@@ -60,6 +62,52 @@ Another paragraph.
         assert "Paragraph translated." in output
         assert '<Alert type="info" />' in output
         assert "Another paragraph translated." in output
+
+    @pytest.mark.parametrize(
+        ("no_placeholders", "source", "target"),
+        [
+            (False, "See [setup]{1}.", "Use [guide]{1}."),
+            (
+                True,
+                "See [setup](./setup.mdx#start).",
+                "Use [guide](./setup.mdx#start).",
+            ),
+        ],
+    )
+    def test_documentation_table_and_fenced_example(
+        self, no_placeholders: bool, source: str, target: str
+    ) -> None:
+        template = b"""# Status messages
+
+| State   | Meaning                         | Preview              |
+| ------- | ------------------------------- | -------------------- |
+| `ready` | See [setup](./setup.mdx#start). | ![](/img/ready.webp) |
+
+<details>
+<summary>Example response</summary>
+
+```json
+{"status": "ready"}
+```
+
+</details>
+
+The status appears on the dashboard.
+"""
+        output = self.translate(
+            template,
+            [
+                (source, target),
+                ("Example response", "Translated response"),
+                ('{"status": "ready"}', '{"status": "changed"}'),
+                ("The status appears on the dashboard.", "Check the dashboard."),
+            ],
+            extract_code_blocks=False,
+            no_placeholders=no_placeholders,
+        )
+        assert output == template.replace(b"See [setup]", b"Use [guide]").replace(
+            b"The status appears on the dashboard.", b"Check the dashboard."
+        )
 
     def test_explicit_heading_id_translation(self):
         """Visible heading text translates without changing its ID."""

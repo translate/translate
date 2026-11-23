@@ -75,7 +75,7 @@ autodoc_mock_imports = [
     "gtk",
     "iniparse",
     "vobject",
-    "mistletoe",
+    "markdown_it",
     "lxml",
     "phply",
     "ruamel",

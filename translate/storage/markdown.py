@@ -39,20 +39,16 @@ from __future__ import annotations
 
 import re
 from contextlib import contextmanager
+from dataclasses import dataclass
 from io import StringIO
 from itertools import chain
 from typing import TYPE_CHECKING
 
-import mistletoe.token
-from mistletoe import block_token, span_token
-from mistletoe.markdown_renderer import (
-    Fragment,
-    LinkReferenceDefinition,
-    LinkReferenceDefinitionBlock,
-    MarkdownRenderer,
-)
+from markdown_it.token import Token
+from markdown_it.tree import SyntaxTreeNode
 
 from translate.storage import base
+from translate.storage._markdown_parser import ATX_HEADING, markdown_parser
 from translate.storage.yaml_limits import (
     DEFAULT_MAX_YAML_NODES,
     DEFAULT_MAX_YAML_UNITS,
@@ -61,6 +57,8 @@ from translate.storage.yaml_limits import (
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable
+
+    from markdown_it.utils import EnvType
 
 
 _EXPLICIT_HEADING_ID = re.compile(
@@ -209,16 +207,14 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
                 front_matter = self.callback(front_matter)
             lines = lines[front_matter_end + 1 :]
 
-        with TranslatingMarkdownRenderer(
+        renderer = TranslatingMarkdownRenderer(
             self._translate_callback,
-            block_token.Table,
             max_line_length=self.max_line_length,
             extract_code_blocks=self.extract_code_blocks,
             lookup_callback=self.lookup_callback,
             no_placeholders=self.no_placeholders,
-        ) as renderer:
-            document = block_token.Document(lines)
-            self.filesrc = front_matter + renderer.render(document)
+        )
+        self.filesrc = front_matter + renderer.render(lines)
 
     def _translate_frontmatter_values(
         self,
@@ -423,7 +419,7 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
         # emit a translation unit. The PO store takes care of the escaping.
         unit = self.addsourceunit(text)
         # Index path to avoid duplicate location on list items.
-        unit.addlocation(f"{self.filename or ''}{''.join(path[0])}")
+        unit.addlocation(f"{self.filename or ''}{path[0]}")
         if docpath:
             unit.setdocpath(docpath)
 
@@ -433,33 +429,41 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
         return translation
 
 
-class TranslatingMarkdownRenderer(MarkdownRenderer):
+@dataclass(slots=True)
+class Fragment:
+    text: str
+    wordwrap: bool = False
+    hard_line_break: bool = False
+    placeholder_content: list[Fragment] | None = None
+    important: bool = False
+
+
+class TranslatingMarkdownRenderer:
+    """Render parsed Markdown back to Markdown while translating its content."""
+
     def __init__(
         self,
         translate_callback: Callable[[str, list[str], str], str],
-        *extras,
+        *,
         max_line_length: int | None = None,
         extract_code_blocks: bool = True,
         lookup_callback: Callable[[str], str | None] | None = None,
         no_placeholders: bool = False,
     ) -> None:
-        super().__init__(*extras, max_line_length=max_line_length)
         self.translate_callback = translate_callback
         self.lookup_callback = lookup_callback
+        self.max_line_length = max_line_length
         self.bypass = False
         self.no_placeholders = no_placeholders
-        self.path = []
+        self.path: list[str] = []
         self.ignore_translation = False
         self.extract_code_blocks = extract_code_blocks
-        # Docpath tracking: heading hierarchy and sibling counts
-        # _heading_stack: list of (level, heading_index) for current heading nesting
         self._heading_stack: list[tuple[int, int]] = []
-        # _section_counts: dict mapping element type to count at current section level
         self._section_counts: list[dict[str, int]] = [{}]
-        # _container_stack: list of (container_type, index) for nested containers
         self._container_stack: list[tuple[str, int]] = []
-        # _current_docpath: the current docpath string for the current block
         self._current_docpath = ""
+        self._env: EnvType = {}
+        self._lines: list[str] = []
 
     @contextmanager
     def _bypass_rendering(self):
@@ -470,17 +474,31 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         finally:
             self.bypass = original_bypass
 
-    def render(self, token: mistletoe.token.Token) -> str:
-        try:
-            # set the root node here, because the rendering also involves some parsing,
-            # and the parsing requires a valid root node.
-            mistletoe.token._root_node = token  # ty:ignore[invalid-assignment]
-            return super().render(token)
-        finally:
-            mistletoe.token._root_node = None
+    def render(self, lines: list[str]) -> str:
+        self._lines = lines
+        source = "".join(f"{line}\n" for line in lines)
+        self._env.clear()
+        nodes = markdown_parser(block_only=True).parse(source, self._env)
+        if self._env.get("nesting_limit_reached"):
+            return source
+        return "".join(
+            f"{line}\n"
+            for line in self.render_blocks(
+                SyntaxTreeNode(nodes), 0, len(lines), self.max_line_length
+            )
+        )
 
-    # rendering of span tokens:
-    # override to inject placeholders and translate content
+    def _parse_inline(
+        self, text: str, *, normalized: bool = False
+    ) -> list[SyntaxTreeNode]:
+        parser = markdown_parser(block_only=normalized)
+        if normalized:
+            # The block pass already normalized source text. Targets supplied
+            # by translation callbacks still go through the full inline API.
+            tokens = parser.inline.parse(text, parser, self._env, [])
+        else:
+            tokens = parser.parseInline(text, self._env)[0].children or []
+        return SyntaxTreeNode(tokens).children
 
     def _build_docpath(self, element_type: str) -> str:
         """Build the current docpath string for a block element."""
@@ -525,26 +543,22 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
             self._container_stack.pop()
             self._section_counts.pop()
 
-    @classmethod
+    @staticmethod
     def _split_explicit_heading_id_tokens(
-        cls, tokens: Iterable[mistletoe.token.Token] | None
-    ) -> tuple[list[span_token.SpanToken], str]:
-        """Remove an explicit heading ID from the final raw-text token."""
-        result: list[span_token.SpanToken] = []
-        for token in tokens or ():
-            assert isinstance(token, span_token.SpanToken)
-            result.append(token)
-        if not result or not isinstance(result[-1], span_token.RawText):
-            return result, ""
-
-        title, suffix = _split_explicit_heading_id(result[-1].content)
+        nodes: list[SyntaxTreeNode],
+    ) -> tuple[list[SyntaxTreeNode], str]:
+        """Remove an explicit heading ID from the final text node."""
+        if not nodes or nodes[-1].type != "text":
+            return nodes, ""
+        title, suffix = _split_explicit_heading_id(nodes[-1].content)
         if not suffix:
-            return result, ""
+            return nodes, ""
         if title:
-            result[-1] = span_token.RawText(title)
-        else:
-            result.pop()
-        return result, suffix
+            node = SyntaxTreeNode(
+                [Token("text", "", 0, content=title)], create_root=False
+            )
+            return [*nodes[:-1], node], suffix
+        return nodes[:-1], suffix
 
     def _lookup_heading_translation(
         self, source: str, translation: str, suffix: str
@@ -581,395 +595,387 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         legacy_title, _legacy_suffix = _split_explicit_heading_id(legacy_translation)
         return legacy_title, True
 
-    _leading_ws = re.compile(r"^(\s+)\S")
-    _trailing_ws = re.compile(r"\S(\s+)$")
-
-    def render_raw_text(self, token: span_token.RawText) -> Iterable[Fragment]:
-        # make separate fragments for leading and trailing space, if applicable
-        match = self._leading_ws.search(token.content)
-        if match:
-            yield Fragment(match.group(1), wordwrap=True)
-            token.content = token.content.lstrip()
-        match = self._trailing_ws.search(token.content)
-        if match:
-            yield Fragment(token.content.rstrip(), wordwrap=True)
-            yield Fragment(match.group(1), wordwrap=True)
-        else:
-            yield Fragment(token.content, wordwrap=True)
-
-    def render_auto_link(self, token: span_token.AutoLink) -> Iterable[Fragment]:
-        # replace with placeholder, unless in bypass mode
-        if self.bypass:
-            yield from super().render_auto_link(token)
-            return
-
-        yield Fragment(None, placeholder_content=list(super().render_auto_link(token)))  # ty:ignore[invalid-argument-type]
-
-    def render_line_break(self, token: span_token.LineBreak) -> Iterable[Fragment]:
-        if self.bypass:
-            yield from super().render_line_break(token)
-            return
-
-        yield Fragment("\n", wordwrap=token.soft, hard_line_break=not token.soft)
-
-    def render_html_span(self, token: span_token.HTMLSpan) -> Iterable[Fragment]:
-        # replace with placeholder, unless in bypass mode
-        if self.bypass:
-            yield from super().render_html_span(token)
-            return
-
-        yield Fragment(None, placeholder_content=list(super().render_html_span(token)))  # ty:ignore[invalid-argument-type]
-
-    def render_link_or_image(
-        self, token: span_token.SpanToken, target: str
-    ) -> Iterable[Fragment]:
-        if self.bypass:
-            yield from super().render_link_or_image(token, target)
-            return
-
-        yield from self.embed_span(Fragment("["), token.children, Fragment("]"))  # ty:ignore[invalid-argument-type]
-
-        if token.dest_type in {"uri", "angle_uri"}:  # ty:ignore[missing-attribute]
-            # Markdown link format: "[" description "](" dest_part [" " title] ")"
-            dest_part = f"<{target}>" if token.dest_type == "angle_uri" else target  # ty:ignore[missing-attribute]
-            placeholder = Fragment(None, important=True)  # ty:ignore[invalid-argument-type]
-            placeholder.placeholder_content = [  # ty:ignore[missing-attribute]
-                Fragment("("),
-                Fragment(dest_part),
-            ]
-            if token.title:  # ty:ignore[missing-attribute]
-                translated_title = self.translate_callback(
-                    token.title,  # ty:ignore[missing-attribute]
-                    [*self.path, "link-title"],
-                    self._current_docpath,
-                )
-                placeholder.placeholder_content.extend(  # ty:ignore[missing-attribute]
-                    [
-                        Fragment(" ", wordwrap=True),
-                        Fragment(token.title_delimiter),  # ty:ignore[missing-attribute]
-                        Fragment(translated_title, wordwrap=True),
-                        Fragment(
-                            ")"
-                            if token.title_delimiter == "("  # ty:ignore[missing-attribute]
-                            else token.title_delimiter  # ty:ignore[missing-attribute]
-                        ),
-                    ]
-                )
-            placeholder.placeholder_content.append(Fragment(")"))  # ty:ignore[missing-attribute]
-            yield placeholder
-        elif token.dest_type == "full":  # ty:ignore[missing-attribute]
-            # Markdown link format: "[" description "][" label "]"
-            translated_label = self.translate_callback(
-                token.label,  # ty:ignore[missing-attribute]
-                [*self.path, "link-label"],
-                self._current_docpath,
-            )
-            placeholder = Fragment(None, important=True)  # ty:ignore[invalid-argument-type]
-            placeholder.placeholder_content = [  # ty:ignore[missing-attribute]
-                Fragment("["),
-                Fragment(translated_label, wordwrap=True),
-                Fragment("]"),
-            ]
-            yield placeholder
-        elif token.dest_type == "collapsed":  # ty:ignore[missing-attribute]
-            # Markdown link format: "[" description "][]"
-            yield Fragment("[]")
-        else:
-            # Markdown link format: "[" description "]"
-            pass
-
-    def render_link_reference_definition(
-        self, token: LinkReferenceDefinition
-    ) -> Iterable[Fragment]:
-        # note: these tokens will never be encountered in bypass mode.
-        # Translate label and title unless we're in an ignore section or
-        # no_placeholders mode.  In no_placeholders mode we must not translate
-        # the label here — the definition is rendered verbatim (the whole block
-        # is treated as non-translatable) so that inline reference links, which
-        # are rendered verbatim in bypass mode with the original label, resolve
-        # correctly and no label mismatch occurs in the output.
-        if self.ignore_translation or self.no_placeholders:
-            label = token.label
-            title = token.title
-        else:
-            label = self.translate_callback(
-                token.label, [*self.path, "link-label"], self._current_docpath
-            )
-            title = (
-                self.translate_callback(
-                    token.title, [*self.path, "link-title"], self._current_docpath
-                )
-                if token.title
-                else None
-            )
-
-        placeholder = Fragment(None)  # ty:ignore[invalid-argument-type]
-        placeholder.placeholder_content = [  # ty:ignore[missing-attribute]
-            Fragment("["),
-            Fragment(label, wordwrap=True),
-            Fragment("]: ", wordwrap=True),
-            Fragment(
-                f"<{token.dest}>" if token.dest_type == "angle_uri" else token.dest
-            ),
-        ]
-        if title:
-            placeholder.placeholder_content.extend(  # ty:ignore[missing-attribute]
-                [
-                    Fragment(" ", wordwrap=True),
-                    Fragment(token.title_delimiter),
-                    Fragment(title, wordwrap=True),
-                    Fragment(
-                        ")" if token.title_delimiter == "(" else token.title_delimiter
-                    ),
-                ]
-            )
-        yield placeholder
-
-    # rendering of block tokens:
-    # override to keep track of the content path
-
-    def render_heading(
-        self, token: block_token.Heading, max_line_length: int | None
-    ) -> Iterable[str]:
-        self.path.append(f":{token.line_number}")  # ty:ignore[missing-attribute]
-        self._current_docpath = self._enter_heading(token.level)
-        title_tokens, suffix = self._split_explicit_heading_id_tokens(token.children)
-        if suffix:
-            translated = next(
-                iter(
-                    self.span_to_lines(
-                        title_tokens,
-                        max_line_length=None,
-                        legacy_heading_suffix=suffix,
-                    )
-                ),
-                "",
-            )
-            heading = "#" * token.level
-            if translated:
-                heading += " " + translated
-            heading += suffix
-            if token.closing_sequence:
-                heading += " " + token.closing_sequence
-            content = [heading]
-        else:
-            content = list(
-                super().render_heading(token, max_line_length=max_line_length)
-            )
-        self.path.pop()
-        return content
-
-    def render_setext_heading(
-        self, token: block_token.SetextHeading, max_line_length: int | None
-    ) -> Iterable[str]:
-        self.path.append(f":{token.line_number}")  # ty:ignore[missing-attribute]
-        self._current_docpath = self._enter_heading(token.level)
-        title_tokens, suffix = self._split_explicit_heading_id_tokens(token.children)
-        if suffix:
-            content = list(
-                self.span_to_lines(
-                    title_tokens,
-                    max_line_length=max_line_length,
-                    legacy_heading_suffix=suffix,
-                )
-            )
-            if content:
-                content[-1] += suffix
+    def make_fragments(self, nodes: list[SyntaxTreeNode]) -> Iterable[Fragment]:
+        for index, node in enumerate(nodes):
+            if node.type == "softbreak" and (
+                (index and nodes[index - 1].type == "html_inline")
+                or (index + 1 < len(nodes) and nodes[index + 1].type == "html_inline")
+            ):
+                yield Fragment("\n", hard_line_break=True)
             else:
-                content.append(suffix.lstrip())
-            content.append(token.underline)
+                yield from self.render_inline(node)
+
+    def render_inline(self, node: SyntaxTreeNode) -> Iterable[Fragment]:
+        match node.type:
+            case "text":
+                yield from self.render_text(node.content)
+            case "text_special":
+                if node.info == "escape":
+                    yield Fragment(node.markup)
+                else:
+                    yield from self.render_text(node.content)
+            case "strong" | "em" | "s":
+                yield Fragment(node.markup)
+                yield from self.make_fragments(node.children)
+                yield Fragment(node.markup)
+            case "code_inline":
+                yield Fragment(node.meta["source"])
+            case "softbreak":
+                yield Fragment("\n", wordwrap=True)
+            case "hardbreak":
+                marker = node.meta["source"] if self.bypass else "\n"
+                yield Fragment(marker, hard_line_break=True)
+            case "html_inline":
+                yield self.protect_inline(node.content)
+            case "link" if node.markup == "autolink":
+                yield self.protect_inline(node.meta["source"])
+            case "link" | "image":
+                yield from self.render_link_or_image(node)
+
+    @staticmethod
+    def render_text(text: str) -> Iterable[Fragment]:
+        # Isolate whitespace so flanking placeholders can be trimmed.
+        content = text.strip()
+        if not content:
+            if text:
+                yield Fragment(text, wordwrap=True)
+            return
+        if (leading := len(text) - len(text.lstrip())) > 0:
+            yield Fragment(text[:leading], wordwrap=True)
+        yield Fragment(content, wordwrap=True)
+        if (trailing := len(text.rstrip())) < len(text):
+            yield Fragment(text[trailing:], wordwrap=True)
+
+    def protect_inline(self, text: str) -> Fragment:
+        fragment = Fragment(text)
+        if self.bypass or self.no_placeholders:
+            return fragment
+        return Fragment("", placeholder_content=[fragment])
+
+    def render_link_or_image(self, node: SyntaxTreeNode) -> Iterable[Fragment]:
+        yield Fragment("![" if node.type == "image" else "[")
+        yield from self.make_fragments(node.children)
+        yield Fragment("]")
+
+        if "reference_suffix" in node.meta:
+            suffix = node.meta["reference_suffix"]
+            if suffix and suffix != "[]":
+                label = self.translate_subattribute(suffix[1:-1], "link-label")
+                fragments = [
+                    Fragment("["),
+                    Fragment(label, wordwrap=True),
+                    Fragment("]"),
+                ]
+            else:
+                if suffix:
+                    yield Fragment(suffix)
+                return
         else:
-            content = list(
-                super().render_setext_heading(token, max_line_length=max_line_length)
+            fragments = [Fragment("("), Fragment(node.meta["destination"])]
+            fragments.extend(self.title_fragments(node))
+            fragments.append(Fragment(")"))
+
+        if self.bypass or self.no_placeholders:
+            yield from fragments
+        else:
+            yield Fragment("", placeholder_content=fragments, important=True)
+
+    def translate_subattribute(self, text: str, kind: str) -> str:
+        if self.bypass or self.ignore_translation or self.no_placeholders:
+            return text
+        return self.translate_callback(text, [*self.path, kind], self._current_docpath)
+
+    def title_fragments(self, node: SyntaxTreeNode) -> Iterable[Fragment]:
+        if title := node.meta["title"]:
+            delimiter = node.meta["title_delimiter"] or '"'
+            yield Fragment(" ", wordwrap=True)
+            yield Fragment(delimiter)
+            yield Fragment(
+                self.translate_subattribute(title, "link-title"), wordwrap=True
             )
-        self.path.pop()
-        return content
+            yield Fragment(")" if delimiter == "(" else delimiter)
 
-    def render_quote(
-        self, token: block_token.Quote, max_line_length: int | None
+    def render_definition(
+        self, node: SyntaxTreeNode, max_line_length: int | None
     ) -> Iterable[str]:
-        self.path.append(f":{token.line_number}")  # ty:ignore[missing-attribute]
-        self._enter_container("blockquote")
-        content = list(super().render_quote(token, max_line_length=max_line_length))
-        self._exit_container()
-        self.path.pop()
-        return content
-
-    def render_paragraph(
-        self, token: block_token.Paragraph, max_line_length: int | None
-    ) -> Iterable[str]:
-        self.path.append(f":{token.line_number}")  # ty:ignore[missing-attribute]
-        self._current_docpath = self._build_docpath("p")
-        content = list(super().render_paragraph(token, max_line_length=max_line_length))
-        self.path.pop()
-        return content
-
-    def render_html_block(
-        self, token: block_token.HtmlBlock, max_line_length: int | None
-    ) -> Iterable[str]:
-        # Check if this is a translation control comment
-        content = token.content.strip()
-        if content == "<!-- translate:off -->":
-            self.ignore_translation = True
-        elif content == "<!-- translate:on -->":
-            self.ignore_translation = False
-
-        # Return the raw HTML block content
-        return super().render_html_block(token, max_line_length=max_line_length)
-
-    def render_block_code(
-        self, token: block_token.BlockCode, max_line_length: int | None
-    ) -> Iterable[str]:
-        if not self.extract_code_blocks or self.ignore_translation:
-            return super().render_block_code(token, max_line_length=max_line_length)
-
-        self.path.append(f":{token.line_number}")  # ty:ignore[missing-attribute]
-        self._current_docpath = self._build_docpath("code")
-        code_content = token.content[:-1]  # strip trailing \n
-        translated = self.translate_callback(
-            code_content, self.path, self._current_docpath
+        label = self.translate_subattribute(node.meta["label"], "link-label")
+        yield from self.fragments_to_lines(
+            chain(
+                (
+                    Fragment("["),
+                    Fragment(label, wordwrap=True),
+                    Fragment("]: ", wordwrap=True),
+                    Fragment(node.meta["destination"]),
+                ),
+                self.title_fragments(node),
+            ),
+            max_line_length,
         )
-        lines = translated.split("\n")
-        self.path.pop()
-        return self.prefix_lines(lines, "    ")
 
-    def render_fenced_code_block(
+    def render_blocks(
+        self, parent: SyntaxTreeNode, start: int, end: int, max_line_length: int | None
+    ) -> Iterable[str]:
+        definition_start = None
+        list_gap = None
+        for node in parent.children:
+            assert node.map is not None
+            node_start, node_end = node.map
+            is_list = node.type in {"ordered_list", "bullet_list"}
+            gap = node_start - start
+            if list_gap is not None and (not is_list or list_gap == 0):
+                gap = min(gap, list_gap)
+            for _ in range(gap):
+                yield ""
+            if node.type == "definition":
+                if definition_start is None or node_start != start:
+                    definition_start = node_start
+                    self._current_docpath = self._build_docpath("link-ref-def")
+                yield from self.render_with_location(
+                    definition_start, self.render_definition(node, max_line_length)
+                )
+            elif is_list:
+                definition_start = None
+                yield from self.render_blocks(
+                    node, node_start, node_end, max_line_length
+                )
+            else:
+                definition_start = None
+                yield from self.render_with_location(
+                    node_start, self.render_block(node, max_line_length)
+                )
+            start = node_end
+            # Retain a single separator after a list. Empty final items absorb
+            # following blank lines, as in the existing Markdown output.
+            list_gap = int(bool(node[-1].children)) if is_list else None
+        gap = end - start
+        if list_gap is not None:
+            gap = min(gap, list_gap)
+        for _ in range(gap):
+            yield ""
+
+    def render_with_location(self, line: int, lines: Iterable[str]) -> Iterable[str]:
+        self.path.append(f":{line + 1}")
+        try:
+            yield from lines
+        finally:
+            self.path.pop()
+
+    def render_block(
+        self, node: SyntaxTreeNode, max_line_length: int | None
+    ) -> Iterable[str]:
+        assert node.map is not None
+        start, end = node.map
+        match node.type:
+            case "paragraph":
+                self._current_docpath = self._build_docpath("p")
+                yield from self.span_to_lines(node[0].content, max_line_length)
+            case "heading":
+                yield from self.render_heading(node, max_line_length)
+            case "html_block":
+                content = node.content.strip()
+                if content == "<!-- translate:off -->":
+                    self.ignore_translation = True
+                elif content == "<!-- translate:on -->":
+                    self.ignore_translation = False
+                yield from node.content.removesuffix("\n").split("\n")
+            case "code_block" | "fence":
+                yield from self.render_code(node)
+            case "hr":
+                yield node.meta["source"]
+            case "blockquote":
+                yield from self.render_container(
+                    node, "blockquote", "> ", "> ", max_line_length
+                )
+            case "list_item":
+                prefix = node.meta.get("prefix", f"{node.info}{node.markup} ")
+                yield from self.render_container(
+                    node, "li", prefix, " " * len(prefix), max_line_length
+                )
+            case "table":
+                yield from self.render_table(node)
+            case _:
+                yield from self._lines[start:end]
+
+    def render_container(
         self,
-        token: block_token.CodeFence,
+        node: SyntaxTreeNode,
+        kind: str,
+        prefix: str,
+        continuation: str,
         max_line_length: int | None,
     ) -> Iterable[str]:
-        if not self.extract_code_blocks or self.ignore_translation:
-            return super().render_fenced_code_block(
-                token,
-                max_line_length=max_line_length,
-            )
+        assert node.map is not None
+        start, end = node.map
+        self._enter_container(kind)
+        try:
+            width = max_line_length - len(continuation) if max_line_length else None
+            if kind == "li" and not node.children:
+                yield prefix
+                return
+            lines = self.render_blocks(node, start, end, width)
+            yield from self.prefix_lines(lines, prefix, continuation)
+        finally:
+            self._exit_container()
 
-        self.path.append(f":{token.line_number}")  # ty:ignore[missing-attribute]
-        self._current_docpath = self._build_docpath("code")
-        code_content = token.content[:-1]  # strip trailing \n
-        translated = self.translate_callback(
-            code_content, self.path, self._current_docpath
+    def render_heading(
+        self, node: SyntaxTreeNode, max_line_length: int | None
+    ) -> Iterable[str]:
+        self._current_docpath = self._enter_heading(int(node.tag[1:]))
+        inline_source = node[0].content
+        title, suffix = self._split_explicit_heading_id_tokens(
+            self._parse_inline(inline_source, normalized=True)
         )
-        indentation = " " * token.indentation
-        result = [indentation + token.delimiter + token.info_string]
-        result.extend(self.prefix_lines(translated.split("\n"), indentation))
-        result.append(indentation + token.delimiter)
-        self.path.pop()
-        return result
-
-    def render_list_item(
-        self, token: block_token.ListItem, max_line_length: int | None
-    ) -> Iterable[str]:
-        self.path.append(f":{token.line_number}")
-        self._enter_container("li")
-        content = list(super().render_list_item(token, max_line_length=max_line_length))
-        self._exit_container()
-        self.path.pop()
-        return content
-
-    def render_table(
-        self, token: block_token.Table, max_line_length: int | None
-    ) -> Iterable[str]:
-        self.path.append(f":{token.line_number}")  # ty:ignore[missing-attribute]
-        self._table_docpath = self._build_docpath("table")
-        self._table_row_index = 0
-        content = list(super().render_table(token, max_line_length=max_line_length))
-        self.path.pop()
-        return content
-
-    def table_row_to_text(self, row) -> list[str]:
-        """Render each table cell with a unique docpath."""
-        self._table_row_index += 1
-        result = []
-        for col_index, col in enumerate(row.children):
-            self._current_docpath = (
-                f"{self._table_docpath}/r[{self._table_row_index}]/c[{col_index + 1}]"
+        source = node.meta["source"]
+        if node.markup.startswith("#"):
+            text = next(
+                iter(self.span_to_lines(inline_source, None, suffix, tokens=title)), ""
             )
-            result.append(
-                next(self.span_to_lines(col.children, max_line_length=None), "")  # ty:ignore[invalid-argument-type]
+            heading = node.markup + (f" {text}" if text else "") + suffix
+            match = ATX_HEADING.fullmatch(source)
+            if match is not None and match["closing"]:
+                heading += f" {match['closing']}"
+            yield heading
+        else:
+            lines = list(
+                self.span_to_lines(inline_source, max_line_length, suffix, tokens=title)
             )
-        return result
+            if lines:
+                lines[-1] += suffix
+            elif suffix:
+                lines.append(suffix.lstrip())
+            yield from lines
+            yield source
 
-    def render_link_reference_definition_block(
-        self, token: LinkReferenceDefinitionBlock, max_line_length: int | None
+    def render_code(self, node: SyntaxTreeNode) -> Iterable[str]:
+        content = node.content.removesuffix("\n")
+        if self.extract_code_blocks and not self.ignore_translation:
+            self._current_docpath = self._build_docpath("code")
+            content = self.translate_callback(content, self.path, self._current_docpath)
+        if node.type == "code_block":
+            yield from self.prefix_lines(content.split("\n"), "    ", "    ")
+        else:
+            indent = " " * node.meta["indent"]
+            fence = indent + node.markup
+            yield fence + node.info
+            yield from self.prefix_lines(content.split("\n"), indent, indent)
+            yield fence
+
+    def render_table(self, node: SyntaxTreeNode) -> Iterable[str]:
+        docpath = self._build_docpath("table")
+        rows = [row for group in node.children for row in group.children]
+        styles = [cell.attrGet("style") for cell in rows[0].children]
+        alignment = {"text-align:center": "^", "text-align:right": ">"}
+        align = [alignment.get(style, "<") for style in styles]
+        widths = [3] * len(styles)
+        cells = []
+        for row_index, row in enumerate(rows, 1):
+            cell_text = []
+            sources = chain(
+                (cell[0].content for cell in row.children),
+                (text.strip() for text in row.meta.get("extra_cells", ())),
+            )
+            for column_index, source in enumerate(sources, 1):
+                self._current_docpath = f"{docpath}/r[{row_index}]/c[{column_index}]"
+                lines = self.span_to_lines(source, None)
+                text = next(iter(lines), "").replace("|", r"\|")
+                cell_text.append(text)
+                if column_index > len(widths):
+                    align.append("<")
+                    widths.append(3)
+                widths[column_index - 1] = max(widths[column_index - 1], len(text))
+            cells.append(cell_text)
+
+        separator = [
+            (":" if style == "^" else "-")
+            + "-" * (width - 2)
+            + (":" if style in "^>" else "-")
+            for width, style in zip(widths, align, strict=True)
+        ]
+        for index, row_cells in enumerate(cells):
+            padded = row_cells + [""] * (len(widths) - len(row_cells))
+            yield (
+                "| "
+                + " | ".join(
+                    f"{text:{style}{width}}"
+                    for text, width, style in zip(padded, widths, align, strict=True)
+                )
+                + " |"
+            )
+            if index == 0:
+                yield "| " + " | ".join(separator) + " |"
+
+    @staticmethod
+    def prefix_lines(lines: Iterable[str], first: str, following: str) -> Iterable[str]:
+        for index, line in enumerate(lines):
+            prefixed = (first if index == 0 else following) + line
+            yield "" if prefixed.isspace() else prefixed
+
+    @classmethod
+    def fragments_to_lines(
+        cls, fragments: Iterable[Fragment], max_line_length: float | None
     ) -> Iterable[str]:
-        self.path.append(f":{token.line_number}")  # ty:ignore[missing-attribute]
-        self._current_docpath = self._build_docpath("link-ref-def")
-        content = list(
-            super().render_link_reference_definition_block(
-                token, max_line_length=max_line_length
-            )
-        )
-        self.path.pop()
-        return content
+        if not max_line_length:
+            lines = "".join(fragment.text for fragment in fragments).split("\n")
+            yield from lines[:-1]
+            if lines[-1]:
+                yield lines[-1]
+            return
 
-    # translation and placeholder functions
+        line = ""
+        for word in cls.make_words(fragments):
+            if word == "\n":
+                yield line
+                line = ""
+            elif not line:
+                line = word
+            elif len(line) + 1 + len(word) <= max_line_length:
+                line += f" {word}"
+            else:
+                yield line
+                line = word
+        if line:
+            yield line
+
+    _whitespace = re.compile(r"\s+")
+
+    @classmethod
+    def make_words(cls, fragments: Iterable[Fragment]) -> Iterable[str]:
+        word = ""
+        for fragment in fragments:
+            if fragment.wordwrap:
+                first, *rest = cls._whitespace.split(fragment.text)
+                word += first
+                for part in rest:
+                    if word:
+                        yield word
+                    word = part
+            elif fragment.hard_line_break:
+                yield word + fragment.text[:-1]
+                yield "\n"
+                word = ""
+            else:
+                word += fragment.text
+        if word:
+            yield word
 
     def span_to_lines(
         self,
-        tokens: Iterable[span_token.SpanToken],
+        source: str,
         max_line_length: int | None,
         legacy_heading_suffix: str = "",
+        *,
+        tokens: list[SyntaxTreeNode] | None = None,
     ) -> Iterable[str]:
-        """Renders a sequence of span tokens to markdown, with translation."""
+        """Render an inline Markdown span, with translation."""
+        if tokens is None:
+            tokens = self._parse_inline(source, normalized=True)
         # If we're in an ignore section, skip translation
         if self.ignore_translation:
             with self._bypass_rendering():
                 fragments = self.make_fragments(tokens)
                 # Expand placeholders before rendering
                 expanded = list(self.expand_placeholders(fragments))
-                return super().fragments_to_lines(
-                    expanded, max_line_length=max_line_length
-                )
-
-        # No-placeholders opt-in mode: render source-side fragments verbatim.
-        # bypass=True is set BEFORE make_fragments so render_link_or_image,
-        # render_auto_link, and render_html_span fall through to their super()
-        # implementations, yielding raw text fragments instead of Fragment(None,
-        # placeholder_content=...) placeholders.  This means links/images/HTML
-        # appear in full in the translation unit rather than as {n} markers, and
-        # no sub-attribute extraction (e.g. link titles as separate units) occurs.
-        #
-        # render_link_reference_definition does NOT check bypass; it always
-        # creates Fragment(None, ...) placeholders with label/title already
-        # extracted via translate_callback.  We reuse trim_flanking_placeholders
-        # so those placeholders end up in leader/trailer (not in content), which
-        # prevents translate_callback from being called a second time for them.
-        if self.no_placeholders:
-            with self._bypass_rendering():
-                fragments = list(self.make_fragments(tokens))
-                merged = self.merge_adjacent_placeholders(fragments)
-                leader, content, trailer = self.trim_flanking_placeholders(merged)
-                content_frags = list(self.expand_placeholders(content))
-                content_md = "\n".join(
-                    super().fragments_to_lines(
-                        content_frags,
-                        max_line_length=float("inf"),  # ty:ignore[invalid-argument-type]
-                    )
-                )
-                # normalize hard line break markers to plain \n for translate_callback:
-                # \\\n = backslash hard break (e.g. "alpha\\\nbeta")
-                # (space){2+}\n = trailing-space hard break (e.g. "alpha  \nbeta")
-                content_md = re.sub(r"\\\n| {2,}\n", "\n", content_md)
-                if content_md:
-                    translated_md = self.translate_callback(
-                        content_md, self.path, self._current_docpath
-                    )
-                    translated_md, _translation_found = (
-                        self._lookup_heading_translation(
-                            content_md, translated_md, legacy_heading_suffix
-                        )
-                    )
-                    translated_md = translated_md.replace("\n", "\\\n").strip(" \t")
-                    translated = list(
-                        self.make_fragments(span_token.tokenize_inner(translated_md))
-                    )
-                    expanded = list(
-                        self.expand_placeholders(chain(leader, translated, trailer))
-                    )
-                else:
-                    expanded = list(self.expand_placeholders(chain(leader, trailer)))
-                return super().fragments_to_lines(
+                return self.fragments_to_lines(
                     expanded, max_line_length=max_line_length
                 )
 
@@ -984,7 +990,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
 
             # render the translatable content (with placeholders) to markdown
             content_md = "\n".join(
-                self.fragments_to_lines(content, max_line_length=float("inf"))  # ty:ignore[invalid-argument-type]
+                self.fragments_to_lines(content, max_line_length=float("inf"))
             )
 
             # translate and parse into new fragments. handle hard line breaks.
@@ -1023,15 +1029,17 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
                 translated_md = self.remove_placeholder_markers(
                     translated_md, use_placeholders
                 )
-                translated = self.make_fragments(
-                    span_token.tokenize_inner(translated_md)
-                )
+                # Reuse the source tokens when normalization, translation and
+                # placeholder restoration reproduce the exact same span.
+                if translated_md != source or legacy_heading_suffix:
+                    tokens = self._parse_inline(translated_md)
+                translated = self.make_fragments(tokens)
                 fragments = chain(leader, translated, trailer)
 
             # expand placeholders and render into final markdown.
             # list-ify to let all generators run before exiting the try/finally block
             expanded = list(self.expand_placeholders(fragments))
-            return super().fragments_to_lines(expanded, max_line_length=max_line_length)
+            return self.fragments_to_lines(expanded, max_line_length=max_line_length)
 
     @classmethod
     def merge_adjacent_placeholders(
@@ -1041,10 +1049,10 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         fragments = list(fragments)
         start = 0
         while start < len(fragments):
-            if getattr(fragments[start], "placeholder_content", None):
+            if fragments[start].placeholder_content:
                 end = 0
                 for j in range(start + 1, len(fragments)):
-                    if getattr(fragments[j], "placeholder_content", None):
+                    if fragments[j].placeholder_content:
                         end = j + 1
                     elif fragments[j].text.isspace():
                         pass
@@ -1052,9 +1060,9 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
                         break
                 if end:
                     chunk = fragments[start:end]
-                    placeholder = Fragment(None, placeholder_content=chunk)  # ty:ignore[invalid-argument-type]
-                    placeholder.important = any(  # ty:ignore[missing-attribute]
-                        getattr(fragment, "important", False) for fragment in chunk
+                    placeholder = Fragment("", placeholder_content=chunk)
+                    placeholder.important = any(
+                        fragment.important for fragment in chunk
                     )
                     fragments[start:end] = (placeholder,)
             start += 1
@@ -1074,8 +1082,8 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
 
         pos = 0
         while pos < len(fragments):
-            if getattr(fragments[pos], "placeholder_content", None):
-                if getattr(fragments[pos], "important", False):
+            if fragments[pos].placeholder_content:
+                if fragments[pos].important:
                     break
             elif not fragments[pos].text.isspace():
                 break
@@ -1083,8 +1091,8 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
 
         t = len(fragments)
         while t - 1 >= pos:
-            if getattr(fragments[t - 1], "placeholder_content", None):
-                if getattr(fragments[t - 1], "important", False):
+            if fragments[t - 1].placeholder_content:
+                if fragments[t - 1].important:
                     break
             elif not fragments[t - 1].text.isspace():
                 break
@@ -1102,7 +1110,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         """
         placeholders = []
         for fragment in fragments:
-            content = getattr(fragment, "placeholder_content", None)
+            content = fragment.placeholder_content
             if content:
                 placeholders.append(fragment)
                 fragment.text = f"{{{len(placeholders)}}}"
@@ -1114,9 +1122,9 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     ) -> str:
         """Replaces placeholder markers in the given markdown with placeholder content."""
         for index, placeholder in enumerate(placeholders):
-            content = self.expand_placeholders(placeholder.placeholder_content)  # ty:ignore[missing-attribute]
+            content = self.expand_placeholders(placeholder.placeholder_content or [])
             content_md = "\n".join(
-                self.fragments_to_lines(content, max_line_length=float("inf"))  # ty:ignore[invalid-argument-type]
+                self.fragments_to_lines(content, max_line_length=float("inf"))
             )
             markdown = markdown.replace(f"{{{index + 1}}}", content_md)
 
@@ -1125,7 +1133,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     def expand_placeholders(self, fragments: Iterable[Fragment]) -> Iterable[Fragment]:
         """Expands placeholder fragments, recursively."""
         for fragment in fragments:
-            content = getattr(fragment, "placeholder_content", None)
+            content = fragment.placeholder_content
             if content:
                 yield from self.expand_placeholders(content)
             else:

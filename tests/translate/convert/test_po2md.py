@@ -42,7 +42,6 @@ class TestPO2MD(test_convert.TestConvertCommand):
         self.run_command("podir", "testout", template="mddir")
         self.then_directory_of_translated_markdown_files_is_written()
 
-    @pytest.mark.xfail(reason="https://github.com/miyuchina/mistletoe/issues/244")
     def test_markdown_table(self) -> None:
         self.given_markdown_file(r"""
 | Left column | Right column                   |

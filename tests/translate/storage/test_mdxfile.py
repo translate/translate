@@ -43,6 +43,51 @@ Registered learners {#registered}
             "--------------------------------\n"
         )
 
+    @pytest.mark.parametrize(
+        ("no_placeholders", "guide", "image"),
+        [
+            (False, "[the setup guide]{1}", "![]{1}"),
+            (True, "[the setup guide](../setup.mdx#start)", "![](/img/example.webp)"),
+        ],
+    )
+    def test_documentation_note_keeps_links_breaks_and_paths(
+        self, no_placeholders: bool, guide: str, image: str
+    ) -> None:
+        content = (
+            b"---\nsidebar_position: 2\n---\n\n"
+            b"## Quick start {/* #quick-start */}\n\n"
+            b"> [!NOTE]\n>\n"
+            b"> See [the setup guide](../setup.mdx#start) before continuing.  \n"
+            b"> Keep the guide nearby.\n>\n"
+            b"> ![](/img/example.webp)\n\n"
+            b"Continue below.\n"
+        )
+        store = mdx_store(
+            content,
+            extract_frontmatter=False,
+            no_placeholders=no_placeholders,
+        )
+
+        assert [
+            (unit.source, unit.getlocations(), unit.getdocpath())
+            for unit in store.units
+        ] == [
+            ("Quick start", [":1"], "h2[1]"),
+            ("[!NOTE]", [":3"], "h2[1]/blockquote[1]/p[1]"),
+            (
+                f"See {guide} before continuing.\nKeep the guide nearby.",
+                [":3"],
+                "h2[1]/blockquote[1]/p[2]",
+            ),
+            (image, [":3"], "h2[1]/blockquote[1]/p[3]"),
+            ("Continue below.", [":10"], "h2[1]/p[1]"),
+        ]
+        assert store.filesrc == (
+            content.decode()
+            .replace("before continuing.  \n", "before continuing.\\\n")
+            .replace("\n>\n", "\n> \n")
+        )
+
     def test_explicit_heading_id_does_not_expose_other_expression(self):
         content = b"""### Result {value} {/* #result */}
 

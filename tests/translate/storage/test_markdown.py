@@ -26,6 +26,121 @@ import pytest
 from translate.storage import base, markdown
 
 
+@pytest.mark.parametrize("no_placeholders", [False, True])
+def test_reference_syntax_order_and_body_locations(no_placeholders: bool) -> None:
+    source = """\
+---
+title: Untouched
+---
+
+[first
+ label]:
+   <résumé here> 'title'
+[second]: /other
+
+> 3. See [the guide][first label] and [inline](<résumé here> (caption)).
+>    - Next
+>
+> 7. Done
+"""
+    store = markdown.MarkdownFile(
+        BytesIO(source.encode()),
+        extract_frontmatter=False,
+        no_placeholders=no_placeholders,
+    )
+    paragraph_path = "blockquote[1]/li[1]/p[1]"
+    if no_placeholders:
+        expected = [
+            (
+                "See [the guide][first label] and [inline](<résumé here> (caption)).",
+                [":6"],
+                paragraph_path,
+            ),
+        ]
+    else:
+        expected = [
+            ("first\n label", [":1"], "link-ref-def[1]"),
+            ("title", [":1"], "link-ref-def[1]"),
+            ("second", [":1"], "link-ref-def[1]"),
+            ("first label", [":6"], paragraph_path),
+            ("caption", [":6"], paragraph_path),
+            ("See [the guide]{1} and [inline]{2}.", [":6"], paragraph_path),
+        ]
+    expected.extend(
+        [
+            ("Next", [":6"], "blockquote[1]/li[1]/li[1]/p[1]"),
+            ("Done", [":6"], "blockquote[1]/li[2]/p[1]"),
+        ]
+    )
+    assert [
+        (unit.source, unit.getlocations(), unit.getdocpath()) for unit in store.units
+    ] == expected
+    assert store.filesrc == source.replace(
+        "[first\n label]:\n   <résumé here> 'title'",
+        "[first\n label]: <résumé here> 'title'",
+    ).replace("\n>\n", "\n> \n")
+
+
+@pytest.mark.parametrize(
+    ("no_placeholders", "source_key", "target"),
+    [
+        (False, "Read [the guide]{1}.", "Lire [le guide]{1}."),
+        (True, "Read [the guide][Guide].", "Lire [le guide][Guide]."),
+    ],
+)
+def test_forward_reference_survives_inline_translation(
+    no_placeholders: bool, source_key: str, target: str
+) -> None:
+    source = "Read [the guide][Guide].\n\n[Guide]: <guide path> 'Title'\n"
+
+    def translate(text: str) -> str:
+        return target if text == source_key else text
+
+    store = markdown.MarkdownFile(
+        BytesIO(source.encode()),
+        callback=translate,
+        no_placeholders=no_placeholders,
+    )
+    assert source_key in [unit.source for unit in store.units]
+    assert store.filesrc == "Lire [le guide][Guide].\n\n[Guide]: <guide path> 'Title'\n"
+
+
+def test_tables_keep_pipes_and_surplus_cells_on_reparse() -> None:
+    source = r"""| Name | Example |
+| ---- | ------- |
+| x \| y | `x\|y` | Extra |
+After the table.
+"""
+    store = markdown.MarkdownFile(BytesIO(source.encode()))
+    expected = [
+        ("Name", "table[1]/r[1]/c[1]"),
+        ("Example", "table[1]/r[1]/c[2]"),
+        ("x | y", "table[1]/r[2]/c[1]"),
+        ("`x|y`", "table[1]/r[2]/c[2]"),
+        ("Extra", "table[1]/r[2]/c[3]"),
+        ("After the table.", "p[1]"),
+    ]
+    assert [(unit.source, unit.getdocpath()) for unit in store.units] == expected
+    assert r"x \| y" in store.filesrc
+    assert r"`x\|y`" in store.filesrc
+    reparsed = markdown.MarkdownFile(BytesIO(store.filesrc.encode()))
+    assert [(unit.source, unit.getdocpath()) for unit in reparsed.units] == expected
+
+
+def test_excessive_block_nesting_preserves_document_source() -> None:
+    source = "Introduction\n\n" + "> " * 25 + "Quoted text.\n\nConclusion.\n"
+    store = markdown.MarkdownFile(BytesIO(source.encode()))
+    assert store.filesrc == source
+    assert not store.units
+
+
+def test_ignored_hard_breaks_keep_their_original_markers() -> None:
+    source = "<!-- translate:off -->\nOne  \nTwo\\\nThree\n<!-- translate:on -->\n"
+    store = markdown.MarkdownFile(BytesIO(source.encode()))
+    assert store.filesrc == source
+    assert not store.units
+
+
 class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
     def test_empty_document(self) -> None:
         store = self.parse("")
@@ -594,8 +709,8 @@ author: John Smith
         assert content == fragments[2:3]
         assert trailer == fragments[3:5]
 
-        fragments[0].important = True  # ty:ignore[missing-attribute]
-        fragments[4].important = True  # ty:ignore[missing-attribute]
+        fragments[0].important = True
+        fragments[4].important = True
         (
             leader,
             content,
