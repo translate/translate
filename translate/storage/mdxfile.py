@@ -23,8 +23,7 @@ from __future__ import annotations
 import re
 from typing import TYPE_CHECKING
 
-from mistletoe import block_token
-
+from translate.storage._markdown_parser import ATX_HEADING
 from translate.storage.markdown import (
     MarkdownFile,
     MarkdownUnit,
@@ -569,9 +568,9 @@ class MDXFile(MarkdownFile):
     def _is_explicit_heading_id_line(cls, lines: list[str], index: int) -> bool:
         """Return whether a brace-containing line has only a heading ID."""
         line = cls._logical_line(lines[index])
-        heading_match = block_token.Heading.pattern.match(line + "\n")
+        heading_match = ATX_HEADING.fullmatch(line)
         if heading_match is not None:
-            title, suffix = _split_explicit_heading_id(heading_match.group(2) or "")
+            title, suffix = _split_explicit_heading_id(heading_match["title"] or "")
             return bool(suffix) and "{" not in title and "}" not in title
 
         if index + 1 >= len(lines) or not _SETEXT_HEADING_UNDERLINE.fullmatch(

@@ -19,7 +19,7 @@ Conformance
 
 * Extends the :doc:`Markdown <md>` parser with MDX-specific pre-processing.
 
-* Uses the CommonMark-compliant mistletoe parser for the Markdown portions.
+* Uses the CommonMark-compliant markdown-it-py parser for the Markdown portions.
 
 * Import and export statements at the top level are preserved verbatim and
   are not extracted for translation.
@@ -84,4 +84,4 @@ References
 
 * `MDX documentation <https://mdxjs.com/>`__
 * `The CommonMark specification <https://spec.commonmark.org/>`__
-* `The mistletoe parser <https://github.com/miyuchina/mistletoe>`__
+* `The markdown-it-py parser <https://markdown-it-py.readthedocs.io/>`__

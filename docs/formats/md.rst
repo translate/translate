@@ -13,7 +13,7 @@ The Translate Toolkit is able to process Markdown files using the :doc:`md2po
 Conformance
 ===========
 
-* Uses the CommonMark-compliant mistletoe parser.
+* Uses the CommonMark-compliant markdown-it-py parser.
 
 * Capable of handling nested containers, such as lists in lists, and other
   esoteric Markdown features.
@@ -88,5 +88,5 @@ References
 
 * `The CommonMark specification
   <https://spec.commonmark.org/>`__
-* `The mistletoe parser
-  <https://github.com/miyuchina/mistletoe>`__
+* `The markdown-it-py parser
+  <https://markdown-it-py.readthedocs.io/>`__
