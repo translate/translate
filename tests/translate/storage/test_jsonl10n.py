@@ -1848,6 +1848,16 @@ class TestGoI18NJsonFile(test_monolingual.TestMonolingualStore):
             }
         ]
 
+    def test_rich_source_keeps_sparse_label(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        store.parse('[{"id":"k","translation":{"other":"old"}}]')
+        unit = store.units[0]
+        unit.rich_source = unit.multistring_to_rich("edited")
+        assert json.loads(bytes(store)) == [
+            {"id": "k", "translation": {"other": "edited"}}
+        ]
+
     def test_buildfromunit_preserves_named_forms(self) -> None:
         source = self.StoreClass()
         source.settargetlanguage("en")

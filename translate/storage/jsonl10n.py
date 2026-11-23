@@ -927,6 +927,9 @@ class GoTextJsonFile(JsonFile):
 class _GoI18NJsonUnit(base.NamedPluralUnit, FlatJsonUnit):
     """Shared support for promoting scalar Go-i18n messages to named forms."""
 
+    # Source and target refer to the same translation in this monolingual format.
+    rich_source = base.TranslationUnit.rich_target
+
     ID_FORMAT = "{}"
     _plural_fields: dict | None = None
 
@@ -1034,9 +1037,6 @@ class GoI18NJsonFile(JsonFile):
 
 
 class GoI18NV2JsonUnit(_GoI18NJsonUnit):
-    # Source and target refer to the same translation in this monolingual format.
-    rich_source = base.TranslationUnit.rich_target
-
     def merge(
         self, otherunit, overwrite=False, comments=True, authoritative=False
     ) -> None:
